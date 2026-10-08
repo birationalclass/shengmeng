@@ -1,0 +1,12 @@
+/* Fujita-only responsive constraints; preserve sibling modules. */
+body.proof-editor {grid-template-columns:minmax(0,1fr);width:100%;max-width:100vw;min-width:0}
+.proof-editor .topbar,.proof-editor .atlas-statusbar {min-width:0;width:100%;max-width:100vw;box-sizing:border-box}
+.proof-editor .proof-bottom-tools {min-width:0;max-width:100%;box-sizing:border-box}
+.proof-editor .lean-source-total[data-lean-total-lines=""],.proof-editor .node-lean-lines[data-lean-lines=""] {color:#667785;background:#edf0f666}
+@media(max-width:760px){
+ .proof-editor .refuge-identity {max-width:calc(100% - 135px)}
+ .proof-editor .refuge-identity h1 {font-size:17px}
+ .proof-editor .refuge-identity .lean-source-total {display:block;width:max-content;max-width:100%;margin:3px auto 0}
+ .proof-editor .refuge-identity p {display:none}
+ .proof-editor .proof-bottom-tools {width:calc(100% - 36px);flex-basis:auto;overflow-x:auto}
+}

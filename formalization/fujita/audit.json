@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "project": "fujita-freeness",
+  "mainTheoremVerified": false,
+  "targetVerified": false,
+  "status": "formalization-source-not-located",
+  "checkedAt": "2026-10-08",
+  "main": {
+    "id": "lemma",
+    "titles": [
+      "Fujita 自由性猜想",
+      "Fujita’s freeness conjecture"
+    ],
+    "status": "pending",
+    "compactSetup": [
+      "X/ℂ 光滑连通射影，dim X = n ≥ 1；L 为 ample 线丛。",
+      "X/ℂ smooth connected projective, dim X = n ≥ 1; L an ample line bundle."
+    ],
+    "compactResult": [
+      "Kₓ + (n + 1)L 由全局截面生成。",
+      "Kₓ + (n + 1)L is globally generated."
+    ],
+    "setup": [
+      "<p>X/ℂ 光滑连通射影，dim X = n ≥ 1；L 为 ample 线丛。</p>",
+      "<p>X/ℂ smooth connected projective, dim X = n ≥ 1; L an ample line bundle.</p>"
+    ],
+    "result": [
+      "<p>Kₓ + (n + 1)L 由全局截面生成。</p>",
+      "<p>Kₓ + (n + 1)L is globally generated.</p>"
+    ],
+    "scope": [
+      "原稿 Theorem 1.1 的陈述；本模块尚未取得相应 Lean 源码或核验最终声明。不包含 very ampleness 部分。",
+      "Statement of manuscript Theorem 1.1. The corresponding Lean source and checked final declaration have not been obtained for this module. This is the freeness part only."
+    ],
+    "richStatement": true,
+    "paperReference": "Theorem 1.1; Corollary 6.3",
+    "deps": [
+      "orders",
+      "minimum",
+      "center",
+      "isolate",
+      "lift"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "orders",
+      "titles": [
+        "普通消失阶的严格超额",
+        "Strict ordinary-order excess"
+      ],
+      "status": "pending",
+      "compactSetup": [
+        "假设 Kₓ + (n + 1)L 在 x 有基点。",
+        "Assume Kₓ + (n + 1)L has a base point at x."
+      ],
+      "compactResult": [
+        "适配基底的平均消失阶，除以次数后的 lim inf > n/(n + 1)。",
+        "The lim inf of the degree-normalized mean ordinary order exceeds n/(n + 1)."
+      ],
+      "setup": [
+        "<p>假设 Kₓ + (n + 1)L 在 x 有基点。</p>",
+        "<p>Assume Kₓ + (n + 1)L has a base point at x.</p>"
+      ],
+      "result": [
+        "<p>适配基底的平均消失阶，除以次数后的 lim inf > n/(n + 1)。</p>",
+        "<p>The lim inf of the degree-normalized mean ordinary order exceeds n/(n + 1).</p>"
+      ],
+      "scope": [
+        "原稿 Proposition 3.2 的证明路线；未与 Lean 声明对应。",
+        "Manuscript Proposition 3.2; no corresponding Lean declaration has been identified."
+      ],
+      "richStatement": true,
+      "paperReference": "Section 3, Proposition 3.2",
+      "deps": []
+    },
+    {
+      "id": "minimum",
+      "titles": [
+        "指数目标的极小值",
+        "Attainment of the exponential minimum"
+      ],
+      "status": "pending",
+      "compactSetup": [
+        "利用严格超额；在充分大次数选取 t < n + 1。",
+        "Use the strict excess and choose t < n + 1 in sufficiently large degree."
+      ],
+      "compactResult": [
+        "指数目标取得极小值，值在 (0, 1)，并有文中所需 discrepancy 控制。",
+        "The exponential objective attains a minimum in (0, 1), with the discrepancy bounds required in the paper."
+      ],
+      "setup": [
+        "<p>利用严格超额；在充分大次数选取 t < n + 1。</p>",
+        "<p>Use the strict excess and choose t < n + 1 in sufficiently large degree.</p>"
+      ],
+      "result": [
+        "<p>指数目标取得极小值，值在 (0, 1)，并有文中所需 discrepancy 控制。</p>",
+        "<p>The exponential objective attains a minimum in (0, 1), with the discrepancy bounds required in the paper.</p>"
+      ],
+      "scope": [
+        "原稿 Proposition 4.4；量词和一致性界需以原文为准。这里仅标记阅读路径。",
+        "Manuscript Proposition 4.4. See the original for quantifiers and uniform bounds; these edges describe a reading route."
+      ],
+      "richStatement": true,
+      "paperReference": "Section 4, Proposition 4.4",
+      "deps": [
+        "orders"
+      ]
+    },
+    {
+      "id": "center",
+      "titles": [
+        "极小值的中心为点",
+        "Every minimizing center is a point"
+      ],
+      "status": "pending",
+      "compactSetup": [
+        "考虑上述指数目标的极小值。",
+        "Consider a minimizer of the preceding exponential objective."
+      ],
+      "compactResult": [
+        "每个极小值的闭中心均为 x。",
+        "Every minimizer has closed center x."
+      ],
+      "setup": [
+        "<p>考虑上述指数目标的极小值。</p>",
+        "<p>Consider a minimizer of the preceding exponential objective.</p>"
+      ],
+      "result": [
+        "<p>每个极小值的闭中心均为 x。</p>",
+        "<p>Every minimizer has closed center x.</p>"
+      ],
+      "scope": [
+        "原稿 Proposition 5.1；关键输入是统一限制空间增长与切向变分，结合 Brunn–Minkowski。未做独立证明核验。",
+        "Manuscript Proposition 5.1: uniform restriction-space growth and tangential variation, using Brunn–Minkowski. The proof has not been independently checked here."
+      ],
+      "richStatement": true,
+      "paperReference": "Section 5, Proposition 5.1",
+      "deps": [
+        "minimum"
+      ]
+    },
+    {
+      "id": "isolate",
+      "titles": [
+        "有理隔离",
+        "Rational isolation"
+      ],
+      "status": "pending",
+      "compactSetup": [
+        "极小值的中心是 x。",
+        "The minimizing center is x."
+      ],
+      "compactResult": [
+        "构造有理数据：在约化除子 S 上 discrepancy 等号成立，邻近有严格不等式。",
+        "Construct rational data: discrepancy equality holds on a reduced divisor S, with strict inequalities nearby."
+      ],
+      "setup": [
+        "<p>极小值的中心是 x。</p>",
+        "<p>The minimizing center is x.</p>"
+      ],
+      "result": [
+        "<p>构造有理数据：在约化除子 S 上 discrepancy 等号成立，邻近有严格不等式。</p>",
+        "<p>Construct rational data: discrepancy equality holds on a reduced divisor S, with strict inequalities nearby.</p>"
+      ],
+      "scope": [
+        "原稿 Lemma 6.2；需要使用文中的精确局部构造，不预设全局 log canonical boundary。",
+        "Manuscript Lemma 6.2. The precise local construction matters; no globally log canonical boundary is assumed."
+      ],
+      "richStatement": true,
+      "paperReference": "Section 6, Lemma 6.2",
+      "deps": [
+        "center"
+      ]
+    },
+    {
+      "id": "lift",
+      "titles": [
+        "消失、提升与下降",
+        "Vanishing, lifting and descent"
+      ],
+      "status": "pending",
+      "compactSetup": [
+        "应用隔离得到的局部 discrepancy 配置。",
+        "Use the local discrepancy configuration supplied by isolation."
+      ],
+      "compactResult": [
+        "Kawamata–Viehweg vanishing 提升截面并下降，得到 s(x) ≠ 0，与基点矛盾。",
+        "Kawamata–Viehweg vanishing lifts a section; descent gives s(x) ≠ 0, contradicting the base point."
+      ],
+      "setup": [
+        "<p>应用隔离得到的局部 discrepancy 配置。</p>",
+        "<p>Use the local discrepancy configuration supplied by isolation.</p>"
+      ],
+      "result": [
+        "<p>Kawamata–Viehweg vanishing 提升截面并下降，得到 s(x) ≠ 0，与基点矛盾。</p>",
+        "<p>Kawamata–Viehweg vanishing lifts a section; descent gives s(x) ≠ 0, contradicting the base point.</p>"
+      ],
+      "scope": [
+        "原稿 Section 6.3；这是论文声称的最后一步，尚无本模块的 Lean 编译及公理审计。",
+        "Manuscript Section 6.3, the claimed final step. This module has no corresponding Lean build or axiom audit yet."
+      ],
+      "richStatement": true,
+      "paperReference": "Section 6.3",
+      "deps": [
+        "isolate"
+      ]
+    }
+  ],
+  "declarations": {},
+  "sourceRanges": {},
+  "files": [],
+  "verifiedTheoremCount": 0,
+  "definitionCount": 0,
+  "lean": null,
+  "mathlib": null,
+  "allowedAxioms": null,
+  "upstream": {
+    "repository": "https://github.com/openai/math",
+    "commit": "fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb",
+    "paperPath": "preprints/Fujitas-freeness-conjecture-September-23-2026/Fujitas-freeness-conjecture-September-23-2026.pdf"
+  },
+  "manuscript": {
+    "filename": "paper.pdf",
+    "sha256": "73aefa0b0e5578dfba86cca2231608f2ba628519238cad062e49b3dc095be40b",
+    "pages": 25,
+    "date": "2026-09-23"
+  },
+  "sourceSearch": {
+    "catalogueMatch": false,
+    "algebraicGeometryTreeTruncated": false,
+    "geometryTreeTruncated": false,
+    "comparatorTreeTruncated": false,
+    "note": "No corresponding target was identified in the checked catalogue, aggregator, or relevant complete subtrees. This is not a claim about every possible external repository."
+  },
+  "remaining": [
+    [
+      "取得对应最终定理的已发布 Lean 源码和依赖。",
+      "Obtain the published Lean source for the corresponding final theorem and its dependencies."
+    ],
+    [
+      "核对精确类型及其定义与原稿 Theorem 1.1 的数学一致性。",
+      "Compare exact types and definitions with manuscript Theorem 1.1."
+    ],
+    [
+      "按上游固定版本编译并审计公理，记录日志和实际声明区间。",
+      "Build at the pinned upstream versions and audit axioms, logs and actual declaration ranges."
+    ]
+  ]
+}

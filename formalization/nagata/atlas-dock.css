@@ -1,0 +1,48 @@
+/* Refuge action arc, placed beneath the center of the proof canvas. */
+.proof-editor .graph-panel {position:relative;isolation:isolate}
+.proof-editor .graph-scroll,.proof-editor #spatialGraph {isolation:isolate}
+.proof-editor .atlas-dock {position:absolute;left:50%;bottom:54px;transform:translateX(-50%);width:320px;height:116px;z-index:6;pointer-events:none}
+.atlas-dock .view-switch {display:contents}
+.proof-editor .atlas-dock .dock-action {position:absolute;display:flex;flex-direction:column;align-items:center;gap:4px;width:66px;min-height:72px;padding:0;border:0;background:none;box-shadow:none;pointer-events:auto;cursor:pointer;text-align:center;color:#526f83;font-size:0;touch-action:manipulation}
+.atlas-dock [data-dock-action="2d"] {left:8px;top:30px}
+.atlas-dock [data-dock-action="3d"] {left:86px;top:4px}
+.atlas-dock [data-dock-action="scope"] {left:164px;top:4px}
+.atlas-dock [data-dock-action="node"] {left:242px;top:30px}
+.atlas-dock .dock-orb {display:grid;place-items:center;width:48px;height:48px;border:.65px solid #67869c40;border-radius:50%;background:radial-gradient(circle at 42% 30%,#ffffff6b,#b9cedb24 78%);box-shadow:inset 0 .65px 0 #ffffff9e;transition:transform .24s cubic-bezier(.22,1,.36,1),color .2s,border-color .2s,background .2s;pointer-events:none}
+.atlas-dock .dock-orb svg {width:23px;height:23px;pointer-events:none}
+.atlas-dock .dock-caption {font:500 10px/1.4 var(--ui-font);white-space:nowrap;pointer-events:none}
+.atlas-dock .dock-value {display:block;width:92px;font:400 9px/1.4 var(--ui-font);color:#718797;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.proof-editor .atlas-dock .dock-action[aria-pressed=true] {background:none!important;color:#087cd0!important;box-shadow:none!important}
+.atlas-dock [aria-pressed=true] .dock-orb {border-color:#269bf47a;background:radial-gradient(circle at 42% 30%,#e6f5ffb8,#9bc9eb35 78%)}
+.atlas-dock .dock-action:hover .dock-orb {transform:translateY(-2px);border-color:#158fe280;color:#087cd0}
+.atlas-dock .dock-action:active .dock-orb {transform:scale(.95)}
+.atlas-dock .dock-action:focus-visible,.atlas-dock .dock-action:focus-within {outline:0}
+.atlas-dock .dock-action:focus-visible .dock-orb,.atlas-dock .dock-action:focus-within .dock-orb {outline:2px solid #249bf6;outline-offset:3px}
+.proof-editor .atlas-dock select {position:absolute;inset:0;width:100%;height:100%;max-width:none;margin:0;padding:0;opacity:0;cursor:pointer;font:12px var(--ui-font)}
+@media(max-width:400px){.proof-editor .atlas-dock{width:300px;bottom:58px}.atlas-dock [data-dock-action="2d"]{left:0}.atlas-dock [data-dock-action="3d"]{left:76px}.atlas-dock [data-dock-action="scope"]{left:152px}.atlas-dock [data-dock-action="node"]{left:228px}}
+@media(prefers-reduced-motion:reduce){.atlas-dock .dock-orb{transition:none}}
+
+/* Status stays visible when unrelated cards are faded in the full graph. */
+.proof-editor .node.assumption,.proof-editor .spatial-node.assumption {
+  background:linear-gradient(165deg,#ffffff45 0%,#fff5d812 37%,#ae812014 54%,#ffffff28 100%),var(--state-glass);
+}
+.proof-editor .node.assumption[aria-pressed=true],.proof-editor .spatial-node.assumption[data-relation=selected] {
+  background:linear-gradient(165deg,#ffffff45,#fff2cb20),var(--state-glass-selected);
+}
+.proof-editor .node.assumption.dimmed,.proof-editor .spatial-node.assumption[data-relation=other] {opacity:.48}
+.proof-editor .node.assumption.dimmed:hover,.proof-editor .spatial-node.assumption[data-relation=other]:hover {opacity:.85}
+
+/* An opaque sticky shelf keeps scrolling content from showing through the tabs. */
+.proof-editor .detail {scrollbar-gutter:stable;isolation:isolate}
+.proof-editor .detail-tabs {position:sticky;top:-20px;z-index:6;margin:16px -20px 12px;padding:12px 20px 0;background:#e8edf3;border-bottom:.65px solid #ffffffa8;box-shadow:0 5px 10px #5368790b}
+.proof-editor .detail-tabs button {position:relative;min-height:38px;padding:6px 3px 10px;line-height:1.4}
+@media(max-width:760px){
+  .proof-editor .detail {background:#e8edf3fa;box-shadow:-8px 0 28px #52687920}
+  .proof-editor.inspector-open .atlas-dock {visibility:hidden}
+  .proof-editor .workspace>.inspector-toggle {position:absolute;right:18px;top:12px;z-index:9;display:grid;place-items:center;width:34px;height:34px;min-height:34px;padding:7px;border:0;border-radius:50%;background:#e8edf3;color:#526f83;box-shadow:none}
+  .inspector-toggle svg {width:20px;height:20px;pointer-events:none}
+  .inspector-toggle .inspector-caption {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .inspector-toggle .inspector-close-icon {display:none}
+  .inspector-open .inspector-toggle .inspector-open-icon {display:none}
+  .inspector-open .inspector-toggle .inspector-close-icon {display:block}
+}

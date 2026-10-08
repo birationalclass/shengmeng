@@ -1,0 +1,149 @@
+OAI.Nagata.nagata_conjecture (r : ℕ) :
+  10 ≤ r →
+    ∃ E,
+      (∀ (n : ℕ), OAI.Nagata.ProjectiveGeometry.IsConfigurationZariskiClosed (E n) ∧ E n ≠ Set.univ) ∧
+        (∃ p, ∀ (n : ℕ), p ∉ E n) ∧
+          ∀ (p : OAI.Nagata.ProjectiveGeometry.OrderedDistinctPoints r),
+            (∀ (n : ℕ), p ∉ E n) →
+              ∀ (C : OAI.Nagata.Workers.W10.EffectivePlaneCurve) (m : Fin r → ℕ),
+                (∀ (i : Fin r), m i ≤ OAI.Nagata.W15.curveOrdinaryMultiplicity C (↑p i)) →
+                  ∑ i, ↑(m i) < ↑(OAI.Nagata.Workers.W10.curveDegree C) * √↑r
+'OAI.Nagata.nagata_conjecture' depends on axioms: [propext, Classical.choice, Quot.sound]
+OAI.Nagata.nagata_conjecture_coordinates : OAI.Nagata.FullNagata
+'OAI.Nagata.nagata_conjecture_coordinates' depends on axioms: [propext, Classical.choice, Quot.sound]
+OAI.Nagata.W13.nagata_full : OAI.Nagata.FullNagata
+'OAI.Nagata.W13.nagata_full' depends on axioms: [propext, Classical.choice, Quot.sound]
+OAI.Nagata.W13.nagata_full_effectiveCurves : OAI.Nagata.Workers.W10.FullNagataEffectiveCurves
+'OAI.Nagata.W13.nagata_full_effectiveCurves' depends on axioms: [propext, Classical.choice, Quot.sound]
+OAI.Nagata.Workers.W10.fullNagata_iff_genuineEffectiveCurves :
+  OAI.Nagata.FullNagata ↔ OAI.Nagata.Workers.W10.FullNagataEffectiveCurves
+'OAI.Nagata.Workers.W10.fullNagata_iff_genuineEffectiveCurves' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+OAI.Nagata.W13.fullNagata_of_genuine_source_construction
+  (hconstruction :
+    ∀ (r : ℕ),
+      10 ≤ r →
+        ¬IsSquare r →
+          ∀ (d m : ℕ),
+            0 < d →
+              0 < m →
+                3 < ↑d / ↑m →
+                  ↑d / ↑m < √↑r →
+                    (OAI.Nagata.W13.UniversalSupport r d fun x => m) →
+                      ∀ (n : ℕ) (delta : ℝ) (x : Fin 9 → ℝ),
+                        0 < n →
+                          0 < delta →
+                            delta < 1 / 2 →
+                              Function.Injective x →
+                                (∀ (i : Fin 9), 0 < x i ∧ x i < 1 / 2) →
+                                  ∑ i, OAI.Nagata.W29.sourceOffsets x i = delta →
+                                    (∀ (j : ℤ),
+                                        0 ≤ j →
+                                          j ≤ ↑(n * m) →
+                                            OAI.Nagata.FiniteExponents.firstLower (↑(n * d)) (↑(n * m)) j
+                                                (3 * (√↑r - 3)) delta ∉
+                                              Set.range Int.cast) →
+                                      (∀ (j : ℤ),
+                                          ↑(n * m) < j →
+                                            j ≤ ↑(n * d) / 3 →
+                                              0 < ↑(n * d) - 3 * j →
+                                                OAI.Nagata.FiniteExponents.secondLower (↑(n * d)) j (3 * (√↑r - 3))
+                                                    delta ∉
+                                                  Set.range Int.cast) →
+                                        (OAI.Nagata.FiniteExponents.exponentSet (↑(n * d)) (↑(n * m)) (3 * (√↑r - 3))
+                                              delta).Nonempty →
+                                          ∀ᶠ (τ : ℝ) in nhdsWithin 0 (Set.Ioi 0),
+                                            ∃ (hτ : 0 < τ) (hτone : τ < 1),
+                                              ∃ U,
+                                                IsOpen U ∧
+                                                  0 ∈ U ∧
+                                                    ∀ (p : Fin (r - 9) → ℂ),
+                                                      Function.Injective p →
+                                                        (∀ (i : Fin (r - 9)), p i ∈ U) →
+                                                          ∃ F,
+                                                            F ≠ 0 ∧
+                                                              ∀ (i : Fin (r - 9)),
+                                                                OAI.Nagata.Workers.W28.HasAnalyticOrderAtLeast
+                                                                  (fun z =>
+                                                                    OAI.Nagata.W20.localScalar F
+                                                                      (OAI.Nagata.Workers.W10.tauPower τ (1 / 2)) z.1
+                                                                      z.2)
+                                                                  (p i, 0) (n * m)) :
+  OAI.Nagata.FullNagata
+'OAI.Nagata.W13.fullNagata_of_genuine_source_construction' depends on axioms: [propext, Classical.choice, Quot.sound]
+OAI.Nagata.CoefficientSpaces.source_fixed_scaled_construction {r d m : ℕ} (hr : 9 ≤ r)
+  (hUniversal : OAI.Nagata.W13.UniversalSupport r d fun x => m) (n : ℕ) (marks : Fin 9 → ℝ)
+  (hmarks : Function.Injective marks) (hmbounds : ∀ (i : Fin 9), 0 < marks i ∧ marks i < 1 / 2) (a : ℝ) :
+  ∀ᶠ (τ : ℝ) in nhdsWithin 0 (Set.Ioi 0),
+    ∃ (hτ : 0 < τ) (hτone : τ < 1),
+      ∃ U,
+        IsOpen U ∧
+          0 ∈ U ∧
+            ∀ (ξ : Fin (r - 9) → ℂ),
+              Function.Injective ξ →
+                (∀ (i : Fin (r - 9)), ξ i ∈ U) →
+                  ∃ F,
+                    F ≠ 0 ∧
+                      ∀ (i : Fin (r - 9)),
+                        OAI.Nagata.Workers.W28.HasAnalyticOrderAtLeast
+                          (fun x => OAI.Nagata.W20.localScalar F (OAI.Nagata.Workers.W10.tauPower τ (1 / 2)) x.1 x.2)
+                          (ξ i, 0) (n * m)
+'OAI.Nagata.CoefficientSpaces.source_fixed_scaled_construction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+OAI.Nagata.Workers.W12.genuine_source_geometric_contradiction (r d m : ℕ) (hr : 10 ≤ r) (hm : 0 < m)
+  (hlow : 3 < ↑d / ↑m) (hupp : ↑d / ↑m < √↑r)
+  (hgeometry :
+    ∀ (n : ℕ) (delta : ℝ) (x : Fin 9 → ℝ),
+      0 < n →
+        0 < delta →
+          delta < 1 / 2 →
+            Function.Injective x →
+              (∀ (i : Fin 9), 0 < x i ∧ x i < 1 / 2) →
+                ∑ i, OAI.Nagata.W29.sourceOffsets x i = delta →
+                  (∀ (j : ℤ),
+                      0 ≤ j →
+                        j ≤ ↑(n * m) →
+                          OAI.Nagata.FiniteExponents.firstLower (↑(n * d)) (↑(n * m)) j (3 * (√↑r - 3)) delta ∉
+                            Set.range Int.cast) →
+                    (∀ (j : ℤ),
+                        ↑(n * m) < j →
+                          j ≤ ↑(n * d) / 3 →
+                            0 < ↑(n * d) - 3 * j →
+                              OAI.Nagata.FiniteExponents.secondLower (↑(n * d)) j (3 * (√↑r - 3)) delta ∉
+                                Set.range Int.cast) →
+                      (OAI.Nagata.FiniteExponents.exponentSet (↑(n * d)) (↑(n * m)) (3 * (√↑r - 3)) delta).Nonempty →
+                        ∀ᶠ (τ : ℝ) in nhdsWithin 0 (Set.Ioi 0),
+                          ∃ (hτ : 0 < τ) (hτone : τ < 1),
+                            ∃ U,
+                              IsOpen U ∧
+                                0 ∈ U ∧
+                                  ∀ (p : Fin (r - 9) → ℂ),
+                                    Function.Injective p →
+                                      (∀ (i : Fin (r - 9)), p i ∈ U) →
+                                        ∃ F,
+                                          F ≠ 0 ∧
+                                            ∀ (i : Fin (r - 9)),
+                                              OAI.Nagata.Workers.W28.HasAnalyticOrderAtLeast
+                                                (fun z =>
+                                                  OAI.Nagata.W20.localScalar F
+                                                    (OAI.Nagata.Workers.W10.tauPower τ (1 / 2)) z.1 z.2)
+                                                (p i, 0) (n * m)) :
+  False
+'OAI.Nagata.Workers.W12.genuine_source_geometric_contradiction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+OAI.Nagata.Workers.W30.exists_positive_degree_equation_of_homogeneous_cycle
+  (D : Ideal OAI.Nagata.Workers.W30.TernaryPolynomial →₀ ℕ) (hD0 : D ≠ 0)
+  (hD :
+    ∀ I ∈ D.support,
+      I.IsPrime ∧
+        I ≠ ⊥ ∧ Submodule.IsPrincipal I ∧ Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin 3) ℂ) I) :
+  ∃ F,
+    F ≠ 0 ∧
+      MvPolynomial.IsHomogeneous F (MvPolynomial.totalDegree F) ∧
+        0 < MvPolynomial.totalDegree F ∧ OAI.Nagata.Workers.W30.equationIdealCycle F = D
+'OAI.Nagata.Workers.W30.exists_positive_degree_equation_of_homogeneous_cycle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

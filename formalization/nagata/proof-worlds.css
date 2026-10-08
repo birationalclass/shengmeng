@@ -1,0 +1,227 @@
+/* New packaging and navigation; ordinary .node materials stay in glass-cards.css. */
+.proof-editor .proof-worlds{display:flex;flex:1;min-height:0;flex-direction:column;gap:20px;padding:14px 24px 8px;overflow:hidden;--node-unit:1;--card-unit:1}
+.proof-editor .proof-worlds[hidden],.proof-editor .graph-scroll[hidden],.proof-editor #spatialGraph[hidden]{display:none!important}
+.proof-editor .proof-world-bar{display:flex;align-items:center;gap:8px;padding:5px 18px;min-height:40px;flex-shrink:0}
+.proof-world-bar .button{border:0;background:#ffffff72;border-radius:10px;color:#466581;font:12px var(--ui-font);min-height:28px;padding:6px 10px}
+.proof-world-bar svg{height:18px;width:18px;display:block}
+.proof-world-path{flex:1;min-width:0;font:12px/1.4 var(--ui-font);color:#5d7789;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proof-world-mode .workspace{grid-template-columns:1fr}
+.proof-world-mode .detail{display:none}
+.proof-world-mode .graph-scroll,.proof-world-mode #spatialGraph{display:none!important}
+.proof-editor .graph-toolbar,.proof-editor .relation-legend{display:none}
+.proof-editor .graph-panel{position:relative}
+.proof-editor .proof-world-deck{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(165px,1fr);gap:22px;flex:1;min-height:0;align-content:stretch}
+.proof-package{position:relative;isolation:isolate;min-width:0;min-height:0;--node-unit:1;--card-unit:1}
+.proof-package[data-has-cards=true]::before,.proof-package[data-has-cards=true]::after{content:'';position:absolute;inset:0;border-radius:16px;background:linear-gradient(135deg,#eaf3fff0,#a6c9efe8);box-shadow:0 4px 9px #00000017;pointer-events:none;z-index:-1}
+.proof-package[data-has-cards=true]::before{transform:translate(6px,-6px)}
+.proof-package[data-has-cards=true]::after{transform:translate(3px,-3px)}
+.proof-editor .proof-package>.node{position:relative!important;left:auto!important;top:auto!important;width:100%;height:100%;min-height:165px;padding-bottom:28px;overflow:visible;text-align:left}
+.proof-editor .proof-package .node-heading{font-family:var(--ui-font);font-size:16px;line-height:1.3;height:48px;padding:8px 12px 4px;flex:none}
+.proof-editor .proof-package .node-proposition{height:auto;flex:1;min-height:65px;display:grid;gap:4px;padding:0 12px}
+.proof-editor .proof-package .node-proposition>div{height:auto;min-height:30px}
+.proof-editor .proof-package .node-proposition span{font-size:13px;line-height:1.3;-webkit-line-clamp:2}
+.world-package-caption{font:10px/1.35 var(--ui-font);color:#607c91;padding:3px 12px;display:block;margin-bottom:3px}
+.proof-editor .world-enter{position:absolute;left:12px;bottom:7px;z-index:4;border:0;border-radius:7px;background:#ffffff6e;color:#3c6d8c;font:11px/1.4 var(--ui-font);padding:4px 7px;cursor:pointer}
+.proof-editor .world-enter:hover{background:#ffffffde;color:#0789e8}
+.world-pack-mark{font:600 20px/1 Georgia,serif;margin-right:9px;color:#47698b}
+.proof-editor .reference-pack-card{background:linear-gradient(165deg,#ffffff69,#ffffff08 37%,#7596b51c 54%,#ffffff40),linear-gradient(135deg,#f4fafff2,#c8dff0e8);box-shadow:inset 0 1px 1px #ffffffc9,inset 0 -1px 1px #6e91ad30,0 4px 9px #00000017}
+.proof-editor .reference-pack-card::before{display:none}
+.proof-editor .reference-pack-card .node-heading{height:48px}
+.proof-world-tools{display:flex;justify-content:center;align-items:center;gap:9px;flex-shrink:0;font:12px var(--ui-font);color:#617e91;min-height:26px}
+.proof-world-tools .button{min-height:24px;padding:3px 9px;border:0;border-radius:8px;background:#ffffff68;color:#557c98;font:12px var(--ui-font)}
+.proof-world-tools output:empty{display:none}
+.world-leaf{grid-column:1/-1;align-self:center;justify-self:center;text-align:center;color:#5b7284}
+/* Gold denotes the current main theorem only; it is independent of Lean status. */
+.proof-editor .theorem-target-card{color:#51412b;background:radial-gradient(ellipse at 10% 0%,#fffff6ef,transparent 62%),linear-gradient(145deg,#fff8e3f7,#eddaadf0 43%,#fff6ddf2 66%,#d5b978e8);border:0!important;box-shadow:inset 0 1px 1px #fffdf1,inset 0 -1px 1px #a27e4238,0 5px 15px #8b75352b}
+.proof-editor .theorem-target-card h2,.proof-editor .theorem-target-card math,.proof-editor .theorem-target-hypotheses,.proof-editor .theorem-target-conclusion p{color:#51412b}
+.proof-editor .theorem-target-card h3,.proof-editor .theorem-target-label,.proof-editor .theorem-target-status,.proof-editor .theorem-target-fiber>span,.proof-editor .theorem-target-conventions summary,.proof-editor .theorem-target-conventions p,.proof-editor .theorem-target-footnote>p{color:#7a613d}
+.proof-editor .theorem-target-heading{background:transparent;border:0}
+.proof-editor .theorem-target-actions .button{background:#fffbef7d;color:#80623a}
+.proof-editor .theorem-target-card .formal-proposition{margin:0}
+.proof-editor .theorem-target-card .proposition-part{border-color:#bd9c60;color:#51412b}
+.proof-editor .theorem-target-card .proposition-part h3{color:#876935}
+.proof-editor .theorem-target-card .proposition-part+.proposition-part{margin-top:12px}
+.proof-editor .proof-world-target{position:relative!important;left:auto!important;top:auto!important;width:100%;--theorem-unit:1;flex-shrink:0;max-height:43%;overflow:auto;scrollbar-width:thin;scrollbar-color:#c6ad7d transparent}
+.proof-world-target .theorem-target-body{padding:4px 20px 12px;font-size:15px;line-height:1.45}
+.proof-world-target .theorem-target-heading{padding:10px 20px 4px}
+.proof-world-target .theorem-target-hypotheses{margin-bottom:7px}
+.proof-world-target .theorem-target-conclusions{display:block}
+.proof-world-target .theorem-target-conclusion+.theorem-target-conclusion{padding:7px 0 0;border:0}
+.proof-world-target .theorem-target-conclusion{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.proof-world-target .theorem-target-conclusion h3,.proof-world-target .theorem-target-conclusion p{margin:0}
+.proof-world-target .theorem-target-conclusion>math{font-size:19px;margin:3px 0}
+.proof-world-target .theorem-target-footnote{padding:0;margin:5px 0 0;border:0}
+.proof-world-target .theorem-target-footnote>p{display:none}
+.proof-world-target .statement-part-label{margin:4px 0;font-size:11px}
+.proof-world-target .theorem-target-card h3{font-size:12px}
+/* A single bottom icon strip owns workspace actions and document navigation. */
+.proof-editor footer.atlas-statusbar{flex-wrap:wrap;gap:4px 12px;padding:5px 12px 7px;position:relative}
+.proof-editor .proof-bottom-tools{display:flex;align-items:center;justify-content:center;gap:12px;flex:1 0 calc(100% - 50px);min-width:0;min-height:34px}
+.proof-editor .proof-bottom-tools .module-navigation{padding:0;min-height:0;gap:3px}
+.proof-bottom-tools .module-navigation a{padding:6px;border-radius:9px;display:grid;place-items:center;width:32px;height:32px}
+.proof-bottom-tools svg{width:18px;height:18px;display:block}
+.proof-bottom-tools .bottom-module-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.proof-editor .proof-bottom-tools .atlas-dock{position:static;left:auto;right:auto;top:auto;bottom:auto;transform:none;width:auto;height:auto;display:flex;gap:3px;pointer-events:auto}
+.proof-editor .proof-bottom-tools .atlas-dock .dock-action{position:relative;left:auto;top:auto;width:32px;min-height:32px;height:32px;gap:0}
+.proof-bottom-tools .dock-caption,.proof-bottom-tools .dock-value{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.proof-bottom-tools .atlas-dock .dock-orb{width:30px;height:30px;border:0;border-radius:9px;box-shadow:none;background:#ffffff46}
+.proof-editor .proof-bottom-tools .editor-navigation{position:static;left:auto;bottom:auto;padding:0;border:0;background:transparent;display:flex;gap:2px;z-index:auto}
+.proof-editor .proof-bottom-tools .editor-navigation .button{width:30px;height:30px;min-height:30px;padding:6px;background:#ffffff46}
+.proof-bottom-tools .editor-navigation output{font-size:10px;min-width:34px}
+.proof-editor .proof-bottom-tools .node-history{padding:0;margin:0;border:0}
+.proof-editor .proof-bottom-tools .node-history .icon-button{height:30px;width:30px;min-height:30px}
+.proof-editor .proof-bottom-tools .inspector-toggle{position:static;display:grid;place-items:center;height:30px;width:30px;min-height:30px;padding:6px;background:#ffffff46;border:0}
+.proof-bottom-tools .inspector-caption{display:none}
+.proof-editor .atlas-statusbar .legend{flex:1 1 100%;justify-content:center;gap:4px 10px}
+.proof-editor .atlas-statusbar .pill{font-size:10px;line-height:1.2;padding:2px 5px}
+.proof-editor #expandGraph{position:absolute;right:12px;top:7px;width:30px;height:30px;min-height:30px;padding:5px;background:#ffffff46}
+.proof-editor #expandGraph>span{display:none}
+.proof-editor .refuge-back{width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:#ffffff25;transition:background .2s,color .2s,transform .2s,box-shadow .2s}
+.proof-editor .refuge-back:hover{background:#ffffffa0;color:#087cd0;box-shadow:0 3px 10px #38678b20;transform:translateY(-2px)}
+.proof-editor .refuge-back:active{transform:scale(.92)}
+.proof-editor .refuge-back:focus-visible{outline:2px solid #249bf6;outline-offset:3px}
+.proof-editor .refuge-back span{display:none}
+@media(max-width:1000px){.proof-editor .proof-world-deck{gap:16px;grid-auto-rows:minmax(150px,1fr)}.proof-editor .proof-worlds{padding:10px 18px 6px;gap:14px}.proof-editor .proof-package>.node{min-height:150px}.proof-editor .proof-package .node-heading{font-size:15px}.proof-editor .proof-package .node-proposition span{font-size:12px}}
+@media(max-width:760px){.proof-editor .proof-world-deck{grid-template-columns:repeat(2,minmax(0,1fr));overflow:auto;padding:7px 6px 3px;grid-auto-rows:minmax(170px,auto)}.proof-editor .proof-world-target{max-height:36%}.proof-editor .proof-worlds{padding:8px 9px;gap:10px}.proof-editor .proof-world-bar{padding:4px 9px}.proof-editor .proof-bottom-tools{gap:4px;justify-content:flex-start;overflow-x:auto;flex-basis:calc(100% - 36px);padding-right:35px}.proof-editor .proof-bottom-tools>*{flex-shrink:0}.proof-editor .proof-bottom-tools .editor-navigation output{display:none}.proof-editor .proof-bottom-tools .inspector-toggle{right:auto;top:auto}.proof-editor .atlas-statusbar .legend{justify-content:flex-start}.proof-editor .proof-world-target h2{font-size:18px}.proof-editor .proof-world-target .theorem-target-body{padding:3px 12px 10px}.proof-editor .proof-world-target .theorem-target-heading{padding:8px 12px}.proof-world-path{font-size:11px}}
+@media(max-height:780px) and (min-width:761px){.proof-editor .proof-worlds{gap:12px;padding-top:8px}.proof-editor .proof-world-deck{grid-auto-rows:minmax(125px,1fr);gap:15px}.proof-editor .proof-package>.node{min-height:125px;padding-bottom:24px}.proof-editor .proof-package .node-heading{height:39px;font-size:14px}.proof-editor .proof-package .node-proposition{min-height:56px;gap:2px}.proof-editor .proof-package .node-proposition span{-webkit-line-clamp:1}.world-package-caption{display:none}.proof-editor .proof-world-target{max-height:44%}.proof-editor .proof-world-target .theorem-target-body{font-size:13px}.proof-editor .proof-world-target .theorem-target-heading{padding:8px 16px 3px}.proof-editor .proof-world-target h2{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.proof-editor .refuge-back{transition:none}}
+/* Compact central goal with four independent metal connection ports. */
+.proof-editor .proof-world-canvas{position:relative;flex:1;min-height:0;isolation:isolate}
+.proof-editor .proof-world-scene>.proof-world-deck{position:absolute;inset:0;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));grid-auto-rows:auto;gap:26px 40px;overflow:visible;padding:0}
+.proof-package[data-world-slot=top]{grid-area:1/2}
+.proof-package[data-world-slot=left]{grid-area:2/1}
+.proof-package[data-world-slot=right]{grid-area:2/3}
+.proof-package[data-world-slot=bottom]{grid-area:3/2}
+.proof-package[data-world-slot=top-left]{grid-area:1/1}
+.proof-package[data-world-slot=bottom-right]{grid-area:3/3}
+.proof-editor .proof-world-canvas .proof-package>.node{min-height:0}
+.proof-editor .proof-world-canvas .proof-package .node-heading{height:36px;font-size:14px}
+.proof-editor .proof-world-canvas .proof-package .node-proposition{min-height:40px}
+.proof-editor .proof-world-canvas .world-package-caption{display:none}
+.proof-editor .proof-world-canvas .proof-package .node-proposition span{-webkit-line-clamp:2}
+.proof-editor .proof-world-target{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%);width:calc((100% - 80px)/3);max-height:none;overflow:visible;z-index:4}
+.proof-editor .theorem-target-card{width:calc(420px * var(--theorem-unit));--node-unit:var(--theorem-unit)}
+.proof-editor .theorem-target-heading{gap:4px 10px;padding:8px 12px 5px}
+.proof-editor .theorem-target-title{display:block;min-width:0;flex:1 0 100%}
+.proof-editor .theorem-target-card h2{font-size:calc(18px * var(--theorem-unit));line-height:1.22;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.proof-editor .theorem-target-label{font-size:calc(8px * var(--theorem-unit));letter-spacing:.04em}
+.proof-editor .theorem-target-status{font-size:calc(9px * var(--theorem-unit))}
+.proof-editor .theorem-target-actions{gap:3px;margin-left:auto}
+.proof-editor .theorem-target-actions .button{font-size:calc(10px * var(--theorem-unit));padding:3px 5px}
+.theorem-target-summary{height:auto;padding:2px 12px 10px}
+.theorem-target-summary[hidden],.theorem-target-body[hidden]{display:none!important}
+.theorem-target-summary>div{height:auto;margin-top:4px}
+.theorem-target-summary span{font-size:calc(13px * var(--theorem-unit));line-height:1.3}
+.theorem-target-summary .graph-conclusion span{-webkit-line-clamp:3}
+.theorem-target-summary b,.theorem-target-summary span{color:#715a38}
+.theorem-target-summary .graph-conclusion b{color:#98702f}
+.theorem-target-summary math[display=block]{display:inline;font-size:1em;margin:0}
+.proof-editor .proof-world-target[data-expanded=true]{width:min(680px,75%)}
+.proof-editor .theorem-target-body{max-height:calc(330px * var(--theorem-unit));overflow:auto;scrollbar-width:thin}
+.proof-editor .proof-world-target .theorem-target-body{max-height:45vh}
+.theorem-port{position:absolute;width:calc(6px * var(--theorem-unit));height:calc(12px * var(--theorem-unit));background:linear-gradient(180deg,#fff9eb,#bca571 24%,#fcf2d7 42%,#8f815f 60%,#dac490 80%,#7a765f);box-shadow:inset 0 1px 1px #fff9df,0 1px 2px #77664735;pointer-events:none;z-index:6}
+.theorem-port[data-side=left]{left:calc(-6px * var(--theorem-unit));top:50%;transform:translateY(-50%);border-radius:100% 0 0 100%/50% 0 0 50%}
+.theorem-port[data-side=right]{right:calc(-6px * var(--theorem-unit));top:50%;transform:translateY(-50%);border-radius:0 100% 100% 0/0 50% 50% 0}
+.theorem-port[data-side=top],.theorem-port[data-side=bottom]{width:calc(12px * var(--theorem-unit));height:calc(6px * var(--theorem-unit));left:50%;transform:translateX(-50%)}
+.theorem-port[data-side=top]{top:calc(-6px * var(--theorem-unit));border-radius:50% 50% 0 0/100% 100% 0 0}
+.theorem-port[data-side=bottom]{bottom:calc(-6px * var(--theorem-unit));border-radius:0 0 50% 50%/0 0 100% 100%}
+.world-wires{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:-1}
+.world-wire path{fill:none;stroke-linecap:round}
+.world-wire-shadow{stroke:#58738a35;stroke-width:4.5}
+.world-wire-body{stroke:url(#world-wire-metal);stroke-width:2.3}
+.world-wire-shine{stroke:#e9f8ffbd;stroke-width:.7}
+.source-wire path{stroke-dasharray:4 5;opacity:.7}
+.world-leaf{position:absolute;bottom:4px;left:20%;right:20%;font-size:12px}
+.proof-editor [data-view="3d"]{display:none!important}
+.proof-editor .refuge-identity{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:4px 12px}
+.refuge-identity p{flex:1 0 100%;margin-top:0}
+.proof-editor .refuge-identity .lean-source-total{color:#15815b;background:#d6f4e346;font:600 11px/1.4 var(--ui-font);padding:3px 7px;border-radius:8px;white-space:nowrap}
+.proof-editor .proof-world-canvas .proof-package{width:min(100%,280px);height:min(100%,156px);align-self:center;justify-self:center;min-height:0}
+.proof-editor .proof-world-scene>.proof-world-target{width:min(380px,calc((100% - 80px)/3))}
+.proof-editor .proof-world-scene>.proof-world-target[data-expanded=true]{width:min(680px,75%)}
+.world-wire-terminal path{fill:none;stroke-linecap:round}
+.world-source-port{position:absolute;width:12px;height:6px;left:50%;transform:translateX(-50%);background:linear-gradient(180deg,#f5fcff,#a5c1d2 22%,#e6f7ff 39%,#799cb4 55%,#bed8e7 72%,#57788f);pointer-events:none;z-index:4}
+.world-source-port[data-side=top]{top:-6px;border-radius:50% 50% 0 0/100% 100% 0 0}
+.world-source-port[data-side=bottom]{bottom:-6px;border-radius:0 0 50% 50%/0 0 100% 100%}
+.world-source-port[data-side=left],.world-source-port[data-side=right]{display:none}
+.proof-world-canvas .node-input-socket,.proof-world-canvas .node-output-socket{top:calc(50% - 6px)}
+@media(max-width:760px){.proof-editor .proof-world-scene>.proof-world-deck{gap:30px 18px;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) minmax(0,1fr)}.proof-editor .proof-world-scene>.proof-world-target{width:calc((100% - 36px)*1.4/3.4)}.proof-editor .proof-world-scene>.proof-world-target[data-expanded=true]{width:92%}.proof-editor .proof-world-canvas .proof-package .node-heading{font-size:12px;height:43px;padding:7px 9px 3px}.proof-editor .proof-world-canvas .proof-package .node-proposition{padding:0 9px}.proof-editor .proof-world-canvas .proof-package .node-proposition span{font-size:11px}.proof-editor .world-enter{font-size:10px;left:8px;bottom:6px;padding:2px 4px}.proof-editor .theorem-target-heading{padding:7px 9px 3px}.proof-editor .theorem-target-card h2{font-size:16px}.theorem-target-summary{padding:0 9px 8px}.theorem-target-summary span{font-size:12px}.proof-editor .theorem-target-status{display:none}.proof-editor .refuge-identity .lean-source-total{font-size:10px;padding:2px 5px}}
+
+/* Proof-reading layout: steps left, one compact goal right. Source packs are vertical fans. */
+.proof-editor .proof-world-scene>.proof-world-target{left:auto!important;right:10px;top:50%!important;transform:translateY(-50%);width:min(340px,31%)}
+.proof-editor .proof-world-scene>.proof-world-target[data-expanded=true]{width:min(560px,48%)}
+.proof-world-target[hidden]{display:none!important}
+.proof-editor .proof-world-scene>.proof-world-deck{inset:40px calc(min(340px,31%) + 80px) 0 0;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:36px 30px}
+.proof-editor .proof-worlds[data-main-proof=true] .proof-world-deck{grid-template-columns:repeat(3,minmax(0,1fr))}
+.proof-editor .proof-world-canvas .proof-package{grid-area:auto}
+.world-reading-heading{position:absolute;left:4px;top:0;right:380px;color:#58758a;font:12px/1.5 var(--ui-font)}
+.proof-editor .proof-worlds[data-reference-world]:not([data-reference-world=""]) .world-reading-heading{right:0;text-align:center}
+.proof-editor .proof-worlds[data-reference-world]:not([data-reference-world=""]) .proof-world-deck{inset:36px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:0;overflow:auto;padding:12px 25px 20px}
+.proof-editor .proof-worlds[data-reference-world]:not([data-reference-world=""]) .proof-package{width:min(480px,85%);height:156px;flex:0 0 156px;align-self:center;margin-bottom:-98px;z-index:var(--fan-order)}
+.proof-editor .proof-worlds[data-reference-world]:not([data-reference-world=""]) .proof-package:last-child{margin-bottom:0}
+.proof-editor .proof-worlds[data-reference-world]:not([data-reference-world=""]) .proof-package .node-heading{height:54px;min-height:54px;font-size:15px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;padding:10px 14px 5px}
+.proof-editor .proof-worlds[data-reference-world]:not([data-reference-world=""]) .proof-package:hover>.node,.proof-editor .proof-worlds[data-reference-world]:not([data-reference-world=""]) .proof-package:focus-within>.node{box-shadow:inset 0 1px 1px #ffffffd9,0 8px 24px #4c88ab4a}
+@media(max-width:1000px){.proof-editor .proof-worlds[data-main-proof=true] .proof-world-deck{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(5,minmax(160px,1fr));overflow:auto;gap:28px 18px;padding-top:12px}.proof-editor .proof-world-scene>.proof-world-deck{inset:40px 38% 0 0;gap:30px 18px}.proof-editor .proof-world-scene>.proof-world-target{right:0;width:34%}.world-reading-heading{right:38%}.proof-editor .proof-world-scene>.proof-world-target[data-expanded=true]{width:80%}}
+@media(max-width:700px){.proof-editor .proof-world-scene>.proof-world-deck,.proof-editor .proof-worlds[data-main-proof=true] .proof-world-deck{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-auto-rows:156px;overflow:auto;padding:24px 8px 16px;gap:28px}.proof-editor .proof-worlds[data-reference-world]:not([data-reference-world=""]) .proof-world-deck{padding:12px 15px 20px}.proof-editor .proof-worlds[data-reference-world]:not([data-reference-world=""]) .proof-package{width:95%}.proof-editor .proof-world-scene>.proof-world-target{width:34%}.proof-editor .proof-world-scene>.proof-world-target[data-expanded=true]{width:94%}}
+
+/* Ports represent actual visible links, never decorative unused sockets. */
+.theorem-port[hidden],.node-input-socket[hidden],.node-output-socket[hidden]{display:none!important}
+.proof-world-canvas .node-input-socket,.proof-world-canvas .world-source-port,#graph .theorem-port{display:none!important}
+.proof-editor .proof-worlds[data-reference-world]:not([data-reference-world=""]) .node-output-socket{display:none!important}
+.theorem-target-summary math,.theorem-target-summary math[display=block]{display:inline math;white-space:nowrap}
+
+.proof-editor .proof-world-canvas .proof-package .node-heading{height:48px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* Chinese card annotations share the proof-path caption's clean system sans serif. */
+.proof-editor .reference-pack-card .node-proposition,html[lang=zh-CN] .proof-worlds .node-proposition{font-family:var(--ui-font)}
+.proof-editor .reference-pack-card .node-proposition span{font-family:var(--ui-font);font-size:12px;line-height:1.45}
+.proof-editor .reference-pack-card .node-proposition b{font-family:var(--ui-font);font-weight:500;line-height:1.45}
+
+.proof-editor .proof-world-canvas .proof-package>.node{padding-bottom:16px}
+
+/* Left click pans the whole proof scene, preserving card positions and link geometry. */
+.proof-world-mode .workspace{position:relative}
+.proof-world-mode.world-inspector-open .detail{display:block;position:absolute;inset:42px 8px 12px auto;width:min(420px,36%);height:auto;max-height:none;margin:0;box-sizing:border-box;overflow:auto;scroll-padding-bottom:24px;z-index:40;padding:18px 22px 28px;box-shadow:-8px 0 30px #668fa327;background:linear-gradient(150deg,#f8fcfff5,#e8edf8f5 65%,#f4eaf5f5);border-radius:18px 0 0 18px}
+.world-detail-close{position:sticky;top:0;float:right;z-index:5;border:0;border-radius:50%;width:27px;height:27px;background:#ffffffa8;color:#57788f;cursor:pointer;font:20px/1 var(--ui-font)}
+.world-pack-info[hidden]{display:none!important}
+.detail[data-world-pack] > :not(.world-pack-info):not(.world-detail-close){display:none!important}
+.world-pack-info{padding-top:12px;font-family:var(--ui-font)}
+.world-pack-info .world-pack-kind{font-size:10px;letter-spacing:.08em;color:#648397}
+.world-pack-info h3{font:600 13px var(--ui-font);color:#56768d;margin:22px 0 10px}
+.world-pack-info .dep-link{width:100%;text-align:left;margin-bottom:8px}
+.proof-world-scene{position:absolute;inset:0;isolation:isolate;transition:transform 240ms ease}
+.proof-world-mode:not(.world-inspector-open) .world-detail-close{display:none}
+@media(max-width:760px){.proof-world-mode.world-inspector-open .detail{width:44%;padding:12px}.proof-world-mode.world-inspector-open .detail h2{font-size:18px}.proof-world-mode.world-inspector-open .detail .statement,.proof-world-mode.world-inspector-open .detail p{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.proof-world-scene{transition:none}}
+
+.world-detail-close[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){.proof-editor .proof-world-canvas .proof-world-target{transition:none}}
+
+@media(max-width:760px){.proof-editor .proof-worlds[data-reference-world]:not([data-reference-world=""]) .proof-package{width:min(480px,calc(55vw - 28px))}.proof-editor .proof-worlds[data-reference-world]:not([data-reference-world=""]) .proof-package .node-heading{font-size:13px}}
+
+.proof-world-mode.world-inspector-open #performanceHUD{left:12px;right:auto}
+
+/* During camera focus, the canvas clips the scene; the inner deck must not clip the selected card. */
+.proof-world-mode.world-inspector-open .proof-world-scene>.proof-world-deck{overflow:visible!important}
+
+.proof-world-scene{transform-origin:0 0}
+.proof-world-canvas{touch-action:none;cursor:grab}
+.proof-world-canvas.is-panning,.proof-world-canvas.is-panning *{cursor:grabbing!important;user-select:none}
+
+/* Adaptive proof spacing: occupied rows remain compact even in a tall, sparse world. */
+.proof-editor .proof-worlds[data-reference-world=""] .proof-world-scene>.proof-world-deck {
+  inset:auto; left:auto; right:calc(var(--world-goal-width,340px) + var(--world-goal-gap,40px) + var(--world-padding,16px));
+  top:var(--world-deck-top,52px); width:var(--world-deck-width,65%); height:var(--world-deck-height,540px);
+  grid-template-columns:repeat(var(--world-columns,2),var(--world-card-width,280px));
+  grid-template-rows:repeat(var(--world-rows,3),var(--world-card-height,156px)); grid-auto-rows:var(--world-card-height,156px);
+  gap:var(--world-y-gap,24px) var(--world-x-gap,28px); align-content:start; justify-content:end;
+  padding:0; overflow:visible;
+}
+.proof-editor .proof-worlds[data-reference-world=""] .proof-world-canvas .proof-package {width:100%;height:var(--world-card-height,156px)}
+.proof-editor .proof-worlds[data-reference-world=""] .proof-world-scene>.proof-world-target {
+  right:var(--world-padding,16px); width:var(--world-goal-width,340px);
+}
+.proof-editor .proof-worlds[data-reference-world=""] .proof-world-scene>.proof-world-target[data-expanded=true] {width:min(560px,80%)}
+
+.proof-editor .proof-worlds[data-reference-world=""] .proof-package>.node {padding-bottom:24px}
+.proof-editor .proof-worlds[data-reference-world=""][data-compact-rows=true] .proof-package .node-proposition span {-webkit-line-clamp:1}
