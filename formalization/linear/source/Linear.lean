@@ -557,3 +557,23 @@ public import Linear.ProjectiveConeRatioRatFunc
 public import Linear.RatFuncScaledPowerDegree
 
 public import Linear.ProjectiveConePullbackScaling
+
+public import Linear.TranscendentalAdjoinBaseDegree
+
+public import Linear.FieldEndomorphismSimpleImage
+
+public import Linear.ScaledPowerTranscendental
+
+public import Linear.StableFieldImageDegree
+
+public import Linear.FieldEndomorphismRationalDegree
+
+public import Linear.ProjectiveConeDegreeFactor
+
+public import Linear.ProjectiveRatioHilbertDegree
+
+public import Linear.FieldEndomorphismConjugateDegree
+
+public import Linear.ProjectiveChartHilbertDegree
+
+public import Linear.ProjectiveWholeFiberHilbertPower

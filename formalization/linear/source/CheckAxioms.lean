@@ -367,6 +367,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.rescaled_evaluation_relation
 #check LinearStudy.rescaled_evaluation_relation_zero
 #print axioms LinearStudy.rescaled_evaluation_relation_zero
+#check LinearStudy.fieldEndomorphism_finrank_conjugate
+#print axioms LinearStudy.fieldEndomorphism_finrank_conjugate
 #check LinearStudy.fieldEndomorphism_finrank_comp
 #print axioms LinearStudy.fieldEndomorphism_finrank_comp
 #check LinearStudy.fieldEndomorphism_finrank_one
@@ -377,6 +379,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.fieldEndomorphism_finite
 #check LinearStudy.fieldEndomorphism_formallyUnramified
 #print axioms LinearStudy.fieldEndomorphism_formallyUnramified
+#check LinearStudy.fieldEndomorphism_rational_degree_factor
+#print axioms LinearStudy.fieldEndomorphism_rational_degree_factor
+#check LinearStudy.fieldEndomorphism_simple_fieldRange
+#print axioms LinearStudy.fieldEndomorphism_simple_fieldRange
 #check LinearStudy.polynomial_zero_or_degree_lt_of_top_zero
 #print axioms LinearStudy.polynomial_zero_or_degree_lt_of_top_zero
 #check LinearStudy.homogeneousComponent_mul_top
@@ -1919,6 +1925,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveChartFractionMap_formallyUnramified
 #check LinearStudy.projectiveChartOpenMap_exists_good_rational_point
 #print axioms LinearStudy.projectiveChartOpenMap_exists_good_rational_point
+#check LinearStudy.projectiveChartFractionMap_finrank_eq_ratio
+#print axioms LinearStudy.projectiveChartFractionMap_finrank_eq_ratio
+#check LinearStudy.projectiveChartField_exists_hilbert_degree_power
+#print axioms LinearStudy.projectiveChartField_exists_hilbert_degree_power
 #check LinearStudy.projectiveChartOpenMap_exists_good_local_parameters
 #print axioms LinearStudy.projectiveChartOpenMap_exists_good_local_parameters
 #check LinearStudy.projectiveChartFractionEmbedding_algebraMap
@@ -1985,6 +1995,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveCone_exists_nonvanishing_point
 #check LinearStudy.projectiveConeFractionCoordinates_zero_transcendental
 #print axioms LinearStudy.projectiveConeFractionCoordinates_zero_transcendental
+#check LinearStudy.projectiveConeFractionField_degree_factor
+#print axioms LinearStudy.projectiveConeFractionField_degree_factor
 #check LinearStudy.projectiveCoordinateDomainMap_finrank_eq_fieldRange
 #print axioms LinearStudy.projectiveCoordinateDomainMap_finrank_eq_fieldRange
 #check LinearStudy.projectiveConeFractionField_exists_hilbert_degree_power
@@ -2197,6 +2209,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.localization_lift_kernel
 #check LinearStudy.projectiveRatioPolynomialMap_kernel
 #print axioms LinearStudy.projectiveRatioPolynomialMap_kernel
+#check LinearStudy.projectiveRatioField_exists_hilbert_degree_power
+#print axioms LinearStudy.projectiveRatioField_exists_hilbert_degree_power
 #check LinearStudy.rationalPolynomialChartMap
 #print axioms LinearStudy.rationalPolynomialChartMap
 #check LinearStudy.polynomialAwayPointEvaluation
@@ -2251,6 +2265,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveWholeFiber_chart_avoidance
 #check LinearStudy.projective_exists_whole_fiber_good_target_point
 #print axioms LinearStudy.projective_exists_whole_fiber_good_target_point
+#check LinearStudy.projective_iterates_whole_fiber_hilbert_power
+#print axioms LinearStudy.projective_iterates_whole_fiber_hilbert_power
 #check LinearStudy.projectiveWholeFiber_card_eq_affine_quotient_finrank
 #print axioms LinearStudy.projectiveWholeFiber_card_eq_affine_quotient_finrank
 #check LinearStudy.projective_exists_whole_reduced_fiber_point_count
@@ -2379,6 +2395,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.primitive_of_residue_tensor_nonzero
 #check LinearStudy.finiteFlat_annihilator_from_closed_socle
 #print axioms LinearStudy.finiteFlat_annihilator_from_closed_socle
+#check LinearStudy.transcendental_scaled_power
+#print axioms LinearStudy.transcendental_scaled_power
 #check LinearStudy.transcendental_of_scaling_orbit
 #print axioms LinearStudy.transcendental_of_scaling_orbit
 #check LinearStudy.smooth_points_have_common_polynomial_coordinates
@@ -2555,6 +2573,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.split_basis_residue_coordinates_linearIndependent
 #check LinearStudy.split_basis_residue_coordinates_nonzero_minor
 #print axioms LinearStudy.split_basis_residue_coordinates_nonzero_minor
+#check LinearStudy.stableField_image_le
+#print axioms LinearStudy.stableField_image_le
+#check LinearStudy.stableField_image_finrank_and_finite
+#print axioms LinearStudy.stableField_image_finrank_and_finite
 #check LinearStudy.equationIdeal
 #print axioms LinearStudy.equationIdeal
 #check LinearStudy.relativeJacobian
@@ -2691,6 +2713,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.traceElement_generates_annihilator
 #check LinearStudy.eq_traceElement_of_residue_trace
 #print axioms LinearStudy.eq_traceElement_of_residue_trace
+#check LinearStudy.transcendentalAdjoinScalarInclusion
+#print axioms LinearStudy.transcendentalAdjoinScalarInclusion
+#check LinearStudy.transcendental_adjoin_base_finrank
+#print axioms LinearStudy.transcendental_adjoin_base_finrank
 #check LinearStudy.polynomialDoubleDiagonal
 #print axioms LinearStudy.polynomialDoubleDiagonal
 #check LinearStudy.polynomialDoubleRightZero
