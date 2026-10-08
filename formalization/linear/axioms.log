@@ -36,6 +36,34 @@ LinearStudy.polynomial_equation_quotient_actual_point.{u_1, u_2} {K : Type u_1} 
   (p : σ → MvPolynomial σ K) (hp : ∀ (i : σ), (MvPolynomial.eval x) (p i) = 0) :
   ∃ q, x = fun i => q ((Ideal.Quotient.mk (Ideal.span (Set.range p))) (MvPolynomial.X i))
 'LinearStudy.polynomial_equation_quotient_actual_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.localized_annihilator_generator_at_equal_primes.{u_1} {R : Type u_1} [CommRing R] (u : R) (P Q : Ideal R)
+  [P.IsPrime] [Q.IsPrime] (hPQ : P = Q)
+  (h :
+    Submodule.annihilator (nilradical (Localization.AtPrime P)) =
+        Ideal.span {(algebraMap R (Localization.AtPrime P)) u} ∧
+      (algebraMap R (Localization.AtPrime P)) u ≠ 0) :
+  Submodule.annihilator (nilradical (Localization.AtPrime Q)) = Ideal.span {(algebraMap R (Localization.AtPrime Q)) u} ∧
+    (algebraMap R (Localization.AtPrime Q)) u ≠ 0
+'LinearStudy.localized_annihilator_generator_at_equal_primes' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_coordinate_socles_cover_maximal_ideals.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
+  {τ : Type u_3} [Field K] [IsAlgClosed K] (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (I : Ideal (MvPolynomial σ K))
+  (J : Ideal (MvPolynomial τ K)) (hJ : J = Ideal.map E.toRingEquiv.toRingHom I) (Θ : MvPolynomial τ K)
+  [Module.Finite K (MvPolynomial τ K ⧸ J)]
+  (hloc :
+    ∀ (x : ↑(MvPolynomial.zeroLocus K I)),
+      ∃ q,
+        ((fun i => (MvPolynomial.eval ↑x) (E.symm (MvPolynomial.X i))) = fun i =>
+            q ((Ideal.Quotient.mk J) (MvPolynomial.X i))) ∧
+          have t :=
+            (algebraMap (MvPolynomial τ K ⧸ J) (Localization.AtPrime (RingHom.ker q.toRingHom)))
+              ((Ideal.Quotient.mk J) Θ);
+          Submodule.annihilator (nilradical (Localization.AtPrime (RingHom.ker q.toRingHom))) = Ideal.span {t} ∧ t ≠ 0)
+  (L : Ideal (MvPolynomial τ K ⧸ J)) [L.IsMaximal] :
+  have t := (algebraMap (MvPolynomial τ K ⧸ J) (Localization.AtPrime L)) ((Ideal.Quotient.mk J) Θ);
+  Submodule.annihilator (nilradical (Localization.AtPrime L)) = Ideal.span {t} ∧ t ≠ 0
+'LinearStudy.polynomial_coordinate_socles_cover_maximal_ideals' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.actual_target_normal_equations_unramified_pullback_parameters.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
   [Nonempty (Fin r)] [Nonempty (Fin c)] (I P Q : Ideal (MvPolynomial (Fin r ⊕ Fin c) K)) [P.IsPrime] [Q.IsPrime]
   (x y : Fin r ⊕ Fin c → K) (hP : P = RingHom.ker (MvPolynomial.aeval x).toRingHom)
@@ -3579,6 +3607,38 @@ LinearStudy.boundedPolynomialSpan_mul_of_matrix.{u_1, u_2, u_3, u_4} {k : Type u
   (hdeg : ∀ (i : σ) (j l : Fin m), (M i j l).totalDegree ≤ c) (N : ℕ) (a : A)
   (ha : a ∈ LinearStudy.boundedPolynomialSpan g b N) (i : σ) : a * x i ∈ LinearStudy.boundedPolynomialSpan g b (N + c)
 'LinearStudy.boundedPolynomialSpan_mul_of_matrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneousComponent_matrix_polynomial_combination.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
+  {τ : Type u_3} [CommRing K] [Fintype τ] (M : Matrix τ τ K) (P : τ → MvPolynomial σ K) (q : ℕ) (i : τ) :
+  (MvPolynomial.homogeneousComponent q) ((MvPolynomial.aeval P) (M.toMvPolynomial i)) =
+    (MvPolynomial.aeval fun j => (MvPolynomial.homogeneousComponent q) (P j)) (M.toMvPolynomial i)
+'LinearStudy.homogeneousComponent_matrix_polynomial_combination' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.matrix_polynomial_combination_totalDegree_le.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [CommRing K] [Fintype τ] (M : Matrix τ τ K) (P : τ → MvPolynomial σ K) (q : ℕ) (hP : ∀ (j : τ), (P j).totalDegree ≤ q)
+  (i : τ) : ((MvPolynomial.aeval P) (M.toMvPolynomial i)).totalDegree ≤ q
+'LinearStudy.matrix_polynomial_combination_totalDegree_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_equation_coordinates_highest_zeroLocus.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
+  {τ : Type u_3} [Field K] [Fintype τ] [DecidableEq τ] (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (b : σ ≃ τ)
+  (M : Matrix τ τ K) (hM : M.det ≠ 0) (P : σ → MvPolynomial σ K) (q : ℕ)
+  (hE :
+    ∀ (G : MvPolynomial σ K), (MvPolynomial.homogeneousComponent q) (E G) = E ((MvPolynomial.homogeneousComponent q) G))
+  (h0 : ∀ (j : τ), (MvPolynomial.eval 0) (E.symm (MvPolynomial.X j)) = 0)
+  (hz : MvPolynomial.zeroLocus K (Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent q) (P i))) = {0}) :
+  have Pc := fun i => (MvPolynomial.aeval fun j => E (P (b.symm j))) (M⁻¹.toMvPolynomial i);
+  MvPolynomial.zeroLocus K (Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent q) (Pc i))) = {0}
+'LinearStudy.polynomial_equation_coordinates_highest_zeroLocus' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.polynomial_equations_exact_degree_of_highest_zeroLocus.{u_1} {K : Type u_1} [Field K] [IsAlgClosed K]
+  {n q : ℕ} (P : Fin n → MvPolynomial (Fin n) K) (hle : ∀ (i : Fin n), (P i).totalDegree ≤ q)
+  (hz : MvPolynomial.zeroLocus K (Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent q) (P i))) = {0}) :
+  (∀ (i : Fin n), (P i).totalDegree = q) ∧
+    RingTheory.Sequence.IsRegular (MvPolynomial (Fin n) K)
+      (List.ofFn fun i => (MvPolynomial.homogeneousComponent (P i).totalDegree) (P i))
+'LinearStudy.polynomial_equations_exact_degree_of_highest_zeroLocus' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.powerSeries_hasEval_of_nilpotent.{u_2} {S : Type u_2} [CommRing S] {n : ℕ} [TopologicalSpace S]
   (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) : MvPowerSeries.HasEval a
 'LinearStudy.powerSeries_hasEval_of_nilpotent' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -4056,6 +4116,11 @@ LinearStudy.polynomialDoubleRightZero_totalDegree.{u_1, u_2} {K : Type u_1} {ι 
   [DecidableEq ι] (p : MvPolynomial (ι ⊕ ι) K) :
   ((LinearStudy.polynomialDoubleRightPoint 0) p).totalDegree ≤ p.totalDegree
 'LinearStudy.polynomialDoubleRightZero_totalDegree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_coordinate_origin_zeroLocus.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field K] (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K)
+  (h0 : ∀ (j : τ), (MvPolynomial.eval 0) (E.symm (MvPolynomial.X j)) = 0) (I : Ideal (MvPolynomial σ K))
+  (hz : MvPolynomial.zeroLocus K I = {0}) : MvPolynomial.zeroLocus K (Ideal.map E.toRingEquiv.toRingHom I) = {0}
+'LinearStudy.polynomial_coordinate_origin_zeroLocus' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_coordinate_point_evaluation.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
   [Field K] (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (x : σ → K) :
   have y := fun j => (MvPolynomial.eval x) (E.symm (MvPolynomial.X j));
@@ -4574,6 +4639,28 @@ LinearStudy.polynomialLinearChangeEquiv_totalDegree.{u_1, u_2} {K : Type u_1} {�
   [DecidableEq σ] (P : Matrix σ σ K) (hP : P.det ≠ 0) (G : MvPolynomial σ K) :
   ((LinearStudy.polynomialLinearChangeEquiv P hP) G).totalDegree = G.totalDegree
 'LinearStudy.polynomialLinearChangeEquiv_totalDegree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_grading_map_homogeneousComponent.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [CommRing K] (E : MvPolynomial σ K →ₐ[K] MvPolynomial τ K)
+  (hE : ∀ (d : ℕ) (P : MvPolynomial σ K), P.IsHomogeneous d → (E P).IsHomogeneous d) (q : ℕ) (G : MvPolynomial σ K) :
+  (MvPolynomial.homogeneousComponent q) (E G) = E ((MvPolynomial.homogeneousComponent q) G)
+'LinearStudy.polynomial_grading_map_homogeneousComponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialLinearChange_homogeneousComponent.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K]
+  [Fintype σ] (M : Matrix σ σ K) (q : ℕ) (G : MvPolynomial σ K) :
+  (MvPolynomial.homogeneousComponent q) ((LinearStudy.polynomialLinearChange M) G) =
+    (LinearStudy.polynomialLinearChange M) ((MvPolynomial.homogeneousComponent q) G)
+'LinearStudy.polynomialLinearChange_homogeneousComponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialLinearChangeEquiv_homogeneousComponent.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
+  [Fintype σ] [DecidableEq σ] (M : Matrix σ σ K) (hM : M.det ≠ 0) (q : ℕ) (G : MvPolynomial σ K) :
+  (MvPolynomial.homogeneousComponent q) ((LinearStudy.polynomialLinearChangeEquiv M hM) G) =
+    (LinearStudy.polynomialLinearChangeEquiv M hM) ((MvPolynomial.homogeneousComponent q) G)
+'LinearStudy.polynomialLinearChangeEquiv_homogeneousComponent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.polynomial_linear_reindex_homogeneousComponent.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field K] [Fintype σ] [DecidableEq σ] (M : Matrix σ σ K) (hM : M.det ≠ 0) (e : σ ≃ τ) (q : ℕ) (G : MvPolynomial σ K) :
+  have E := (LinearStudy.polynomialLinearChangeEquiv M hM).trans (MvPolynomial.renameEquiv K e);
+  (MvPolynomial.homogeneousComponent q) (E G) = E ((MvPolynomial.homogeneousComponent q) G)
+'LinearStudy.polynomial_linear_reindex_homogeneousComponent' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
   [Finite σ] (x : σ → K) :
   RingHom.ker (MvPolynomial.aeval x).toRingHom = Ideal.span (Set.range fun i => MvPolynomial.X i - MvPolynomial.C (x i))
@@ -4643,6 +4730,13 @@ LinearStudy.polynomial_equations_adapted_normal_generators.{u_1, u_2, u_3} {K : 
               (MvPolynomial.eval (M⁻¹.mulVec x)) ((MvPolynomial.pderiv j) (H i)) = if j = Sum.inr i then 1 else 0) ∧
             Ideal.span (Set.range H) = Ideal.span (Set.range fun i => (LinearStudy.polynomialLinearChange M) (G i))
 'LinearStudy.polynomial_equations_adapted_normal_generators' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_partial_derivative_totalDegree.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K]
+  (P : MvPolynomial σ K) (j : σ) : ((MvPolynomial.pderiv j) P).totalDegree ≤ P.totalDegree - 1
+'LinearStudy.polynomial_partial_derivative_totalDegree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_normal_jacobian_totalDegree.{u_1} {K : Type u_1} [Field K] {r c q : ℕ}
+  (P : Fin r ⊕ Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hP : ∀ (i : Fin r ⊕ Fin c), (P i).totalDegree ≤ q) :
+  (Matrix.det fun i j => (MvPolynomial.pderiv (Sum.inr j)) (P (Sum.inr i))).totalDegree ≤ c * (q - 1)
+'LinearStudy.polynomial_normal_jacobian_totalDegree' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_origin_radical.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [IsAlgClosed K] [Finite ι]
   (I : Ideal (MvPolynomial ι K)) (hI : MvPolynomial.zeroLocus K I = {0}) :
   I.radical = RingHom.ker (MvPolynomial.aeval 0).toRingHom
@@ -4749,6 +4843,42 @@ LinearStudy.polynomial_centered_variables_regular.{u_1} {R : Type u_1} [CommRing
   (a : Fin n → R) :
   RingTheory.Sequence.IsRegular (MvPolynomial (Fin n) R) (List.ofFn fun i => MvPolynomial.X i - MvPolynomial.C (a i))
 'LinearStudy.polynomial_centered_variables_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.perfectMultiplicationPairingTransport.{u_1, u_4, u_5} {K : Type u_1} [Field K] {A : Type u_4} {B : Type u_5}
+  [CommRing A] [CommRing B] [Algebra K A] [Algebra K B] (e : A ≃ₐ[K] B) (p : LinearStudy.PerfectMultiplicationPairing) :
+  LinearStudy.PerfectMultiplicationPairing
+'LinearStudy.perfectMultiplicationPairingTransport' depends on axioms: [propext, Quot.sound]
+LinearStudy.polynomial_reindex_equations_ideal.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
+  (e : σ ≃ τ) (P : σ → MvPolynomial σ K) :
+  Ideal.span (Set.range fun i => (MvPolynomial.renameEquiv K e) (P (e.symm i))) =
+    Ideal.map (MvPolynomial.renameEquiv K e).toRingEquiv.toRingHom (Ideal.span (Set.range P))
+'LinearStudy.polynomial_reindex_equations_ideal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_reindex_highest_origin.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
+  (e : σ ≃ τ) (P : σ → MvPolynomial σ K) (q : ℕ)
+  (hz : MvPolynomial.zeroLocus K (Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent q) (P i))) = {0}) :
+  MvPolynomial.zeroLocus K
+      (Ideal.span
+        (Set.range fun i => (MvPolynomial.homogeneousComponent q) ((MvPolynomial.renameEquiv K e) (P (e.symm i))))) =
+    {0}
+'LinearStudy.polynomial_reindex_highest_origin' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_reindex_exact_highest.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [IsAlgClosed K]
+  {n q : ℕ} (e : σ ≃ Fin n) (P : σ → MvPolynomial σ K) (hle : ∀ (i : σ), (P i).totalDegree ≤ q)
+  (hz : MvPolynomial.zeroLocus K (Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent q) (P i))) = {0}) :
+  have P' := fun i => (MvPolynomial.renameEquiv K e) (P (e.symm i));
+  (∀ (i : Fin n), (P' i).totalDegree = q) ∧
+    RingTheory.Sequence.IsRegular (MvPolynomial (Fin n) K)
+        (List.ofFn fun i => (MvPolynomial.homogeneousComponent (P' i).totalDegree) (P' i)) ∧
+      MvPolynomial.zeroLocus K
+          (Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent (P' i).totalDegree) (P' i))) =
+        {0}
+'LinearStudy.polynomial_reindex_exact_highest' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_reindexed_low_degree_pairing.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [IsAlgClosed K]
+  [CharZero K] {n q : ℕ} (e : σ ≃ Fin (n + 1)) (P : σ → MvPolynomial σ K) (hq : 0 < q)
+  (hle : ∀ (i : σ), (P i).totalDegree ≤ q)
+  (hz : MvPolynomial.zeroLocus K (Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent q) (P i))) = {0}) :
+  have I := Ideal.span (Set.range P);
+  let A := MvPolynomial σ K ⧸ I;
+  ∃ p, ∀ (F : MvPolynomial σ K), F.totalDegree < (n + 1) * (q - 1) → p.functional ((Ideal.Quotient.mk I) F) = 0
+'LinearStudy.polynomial_reindexed_low_degree_pairing' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomialSmoothCoordinateEquiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]
   (x : Fin r ⊕ Fin c → K) (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K)
   (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
@@ -4911,6 +5041,33 @@ LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero.{u_1} {K : T
 'LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.polynomialMaximalPointEquiv.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [IsAlgClosed K]
+  (I : Ideal (MvPolynomial σ K)) [Module.Finite K (MvPolynomial σ K ⧸ I)]
+  (q : MaximalSpectrum (MvPolynomial σ K ⧸ I) → MvPolynomial σ K ⧸ I →ₐ[K] K)
+  (hq : ∀ (j : MaximalSpectrum (MvPolynomial σ K ⧸ I)), RingHom.ker (q j).toRingHom = j.asIdeal) :
+  MaximalSpectrum (MvPolynomial σ K ⧸ I) ≃ ↑(MvPolynomial.zeroLocus K I)
+'LinearStudy.polynomialMaximalPointEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialMaximalPointEquiv_evaluation.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [IsAlgClosed K]
+  (I : Ideal (MvPolynomial σ K)) [Module.Finite K (MvPolynomial σ K ⧸ I)]
+  (q : MaximalSpectrum (MvPolynomial σ K ⧸ I) → MvPolynomial σ K ⧸ I →ₐ[K] K)
+  (hq : ∀ (j : MaximalSpectrum (MvPolynomial σ K ⧸ I)), RingHom.ker (q j).toRingHom = j.asIdeal)
+  (j : MaximalSpectrum (MvPolynomial σ K ⧸ I)) (F : MvPolynomial σ K) :
+  (MvPolynomial.eval ↑((LinearStudy.polynomialMaximalPointEquiv I q hq) j)) F = (q j) ((Ideal.Quotient.mk I) F)
+'LinearStudy.polynomialMaximalPointEquiv_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_zeroLocus_weighted_relation.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [IsAlgClosed K]
+  [CharZero K] {n q : ℕ} (e : σ ≃ Fin (n + 1)) (P : σ → MvPolynomial σ K) (hq : 0 < q)
+  (hle : ∀ (i : σ), (P i).totalDegree ≤ q)
+  (hz : MvPolynomial.zeroLocus K (Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent q) (P i))) = {0})
+  (Θ : MvPolynomial σ K) [Module.Finite K (MvPolynomial σ K ⧸ Ideal.span (Set.range P))]
+  (hgen :
+    have I := Ideal.span (Set.range P);
+    Submodule.annihilator (nilradical (MvPolynomial σ K ⧸ I)) = Ideal.span {(Ideal.Quotient.mk I) Θ}) :
+  let I := Ideal.span (Set.range P);
+  ∃ lam,
+    (∀ (x : ↑(MvPolynomial.zeroLocus K I)), lam x ≠ 0) ∧
+      ∀ (F : MvPolynomial σ K),
+        Θ.totalDegree + F.totalDegree < (n + 1) * (q - 1) → ∑ x, lam x * (MvPolynomial.eval ↑x) F = 0
+'LinearStudy.polynomial_zeroLocus_weighted_relation' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.powerSeriesConstantCoeffAlgHom.{u_1} {K : Type u_1} [Field K] {n : ℕ} :
   MvPowerSeries (Fin (n + 1)) K →ₐ[K] K
 'LinearStudy.powerSeriesConstantCoeffAlgHom' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -6042,6 +6199,60 @@ LinearStudy.projective_actual_centered_fiber_algebra_finite.{u_1} {n : ℕ} {τ 
   let pC := fun i => (MvPolynomial.aeval p) (M⁻¹.toMvPolynomial i) - MvPolynomial.C (z i) * p0;
   Module.Finite ℂ (MvPolynomial τ ℂ ⧸ Ideal.span (Set.range pC))
 'LinearStudy.projective_actual_centered_fiber_algebra_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_actual_centered_fiber_polynomials.{u_1} {n : ℕ} {τ : Type u_1} [Fintype τ] [DecidableEq τ]
+  (f : LinearStudy.HomogeneousEndomorphism n) (y : Fin n → ℂ) (E : MvPolynomial (Fin n) ℂ ≃ₐ[ℂ] MvPolynomial τ ℂ)
+  (eT : τ ≃ Fin n) (M : Matrix τ τ ℂ) :
+  have z := M⁻¹.mulVec (y ∘ ⇑eT);
+  have p0 := E (LinearStudy.affineChartPolynomialMap (f.forms 0));
+  have p := fun j => E (LinearStudy.affineChartPolynomialMap (f.forms (eT j).succ));
+  (fun i => (MvPolynomial.aeval p) (M⁻¹.toMvPolynomial i) - MvPolynomial.C (z i) * p0) = fun i =>
+    (MvPolynomial.aeval fun j => E (LinearStudy.projectiveAmbientFiberPolynomials f y (eT j))) (M⁻¹.toMvPolynomial i)
+'LinearStudy.projective_actual_centered_fiber_polynomials' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_linear_centered_fiber_highest.{u_1} {n : ℕ} {τ : Type u_1} [Fintype τ] [DecidableEq τ]
+  (f : LinearStudy.HomogeneousEndomorphism n) (y : Fin n → ℂ) (MS : Matrix (Fin n) (Fin n) ℂ) (hMS : MS.det ≠ 0)
+  (eS eT : τ ≃ Fin n) (M : Matrix τ τ ℂ) (hM : M.det ≠ 0)
+  (hdegree : ∀ (i : Fin n), (LinearStudy.projectiveAmbientFiberPolynomials f y i).totalDegree = f.degree)
+  (hz :
+    MvPolynomial.zeroLocus ℂ
+        (Ideal.span
+          (Set.range fun i =>
+            (MvPolynomial.homogeneousComponent f.degree) (LinearStudy.projectiveAmbientFiberPolynomials f y i))) =
+      {0}) :
+  have E := (LinearStudy.polynomialLinearChangeEquiv MS hMS).trans (MvPolynomial.renameEquiv ℂ eS.symm);
+  have z := M⁻¹.mulVec (y ∘ ⇑eT);
+  have p0 := E (LinearStudy.affineChartPolynomialMap (f.forms 0));
+  have p := fun j => E (LinearStudy.affineChartPolynomialMap (f.forms (eT j).succ));
+  have Pc := fun i => (MvPolynomial.aeval p) (M⁻¹.toMvPolynomial i) - MvPolynomial.C (z i) * p0;
+  (∀ (i : τ), (Pc i).totalDegree ≤ f.degree) ∧
+    MvPolynomial.zeroLocus ℂ (Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent f.degree) (Pc i))) = {0}
+'LinearStudy.projective_linear_centered_fiber_highest' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_equation_coordinate_ideal.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
+  [Fintype τ] [DecidableEq τ] (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (b : σ ≃ τ) (M : Matrix τ τ K)
+  (hM : M.det ≠ 0) (P : σ → MvPolynomial σ K) :
+  Ideal.span (Set.range fun i => (MvPolynomial.aeval fun j => E (P (b.symm j))) (M⁻¹.toMvPolynomial i)) =
+    Ideal.map E.toRingEquiv.toRingHom (Ideal.span (Set.range P))
+'LinearStudy.polynomial_equation_coordinate_ideal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_actual_centered_fiber_ideal.{u_1} {n : ℕ} {τ : Type u_1} [Fintype τ] [DecidableEq τ]
+  (f : LinearStudy.HomogeneousEndomorphism n) (y : Fin n → ℂ) (E : MvPolynomial (Fin n) ℂ ≃ₐ[ℂ] MvPolynomial τ ℂ)
+  (b : Fin n ≃ τ) (M : Matrix τ τ ℂ) (hM : M.det ≠ 0) :
+  have z := M⁻¹.mulVec (y ∘ ⇑b.symm);
+  have p0 := E (LinearStudy.affineChartPolynomialMap (f.forms 0));
+  have p := fun j => E (LinearStudy.affineChartPolynomialMap (f.forms (b.symm j).succ));
+  have pC := fun i => (MvPolynomial.aeval p) (M⁻¹.toMvPolynomial i) - MvPolynomial.C (z i) * p0;
+  Ideal.span (Set.range pC) = Ideal.map E.toRingEquiv.toRingHom (LinearStudy.projectiveAmbientFiberIdeal f y)
+'LinearStudy.projective_actual_centered_fiber_ideal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_quotient_coordinate_actual_zero.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field K] (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (I : Ideal (MvPolynomial σ K)) (J : Ideal (MvPolynomial τ K))
+  (hJ : J = Ideal.map E.toRingEquiv.toRingHom I) (q : MvPolynomial τ K ⧸ J →ₐ[K] K) :
+  have u := fun j => q ((Ideal.Quotient.mk J) (MvPolynomial.X j));
+  have x := fun i => (MvPolynomial.eval u) (E (MvPolynomial.X i));
+  x ∈ MvPolynomial.zeroLocus K I ∧ (fun j => (MvPolynomial.eval x) (E.symm (MvPolynomial.X j))) = u
+'LinearStudy.polynomial_quotient_coordinate_actual_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_quotient_hom_eq_of_coordinates.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
+  (I : Ideal (MvPolynomial σ K)) (q₁ q₂ : MvPolynomial σ K ⧸ I →ₐ[K] K)
+  (h : ∀ (j : σ), q₁ ((Ideal.Quotient.mk I) (MvPolynomial.X j)) = q₂ ((Ideal.Quotient.mk I) (MvPolynomial.X j))) :
+  q₁ = q₂
+'LinearStudy.polynomial_quotient_hom_eq_of_coordinates' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.projective_whole_fiber_centered_rational_local_inputs.{u_1} {n : ℕ} {τ : Type u_1} [Fintype τ]
   [DecidableEq τ] (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
   (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
@@ -8288,6 +8499,34 @@ LinearStudy.projective_iterates_whole_fiber_hilbert_power {n : ℕ} (f : LinearS
                         Nat.card ↑((f.iterate k).onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =
                           (f.degree ^ k) ^ P.natDegree
 'LinearStudy.projective_iterates_whole_fiber_hilbert_power' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.ProjectiveWholeFiberJacobianSystemConclusion {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (y : Fin n → ℂ) (r : ℕ) : Prop
+'LinearStudy.ProjectiveWholeFiberJacobianSystemConclusion' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_actual_whole_fiber_jacobian_system {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ)
+  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet)
+  (hgeom : LinearStudy.ProjectiveWholeAmbientFiberConclusion f V y hy r)
+  (hmax : LinearStudy.ProjectiveWholeFiberMaximalSocleConclusion f V y r) :
+  LinearStudy.ProjectiveWholeFiberJacobianSystemConclusion f y r
+'LinearStudy.projective_actual_whole_fiber_jacobian_system' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_iterates_whole_fibers_jacobian_system {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (hproper : V.ideal.toIdeal ≠ ⊥) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ r ≤ n,
+    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧
+      Module.finrank (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) Ω[MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal⁄ℂ] = r ∧
+        ∀ (k : ℕ),
+          ∃ p ∉ V.affineIdeal,
+            (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧
+              ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),
+                (MvPolynomial.eval y) p ≠ 0 →
+                  0 < r →
+                    LinearStudy.ProjectiveWholeAmbientFiberConclusion (f.iterate k) V y hy r ∧
+                      LinearStudy.ProjectiveWholeFiberJacobianSystemConclusion (f.iterate k) y r
+'LinearStudy.projective_iterates_whole_fibers_jacobian_system' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projective_chart_degree_krull_power {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
   (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
   (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
@@ -8356,6 +8595,34 @@ LinearStudy.projective_iterates_whole_fibers_actual_local_maps {n : ℕ} (f : Li
                       LinearStudy.ProjectiveCenteredNormalTargetConclusion V y r ∧
                         LinearStudy.ProjectiveWholeFiberLocalMapConclusion F V ⋯ ⋯ ⋯ x0 hx0 y
 'LinearStudy.projective_iterates_whole_fibers_actual_local_maps' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.ProjectiveWholeFiberMaximalSocleConclusion {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ) (r : ℕ) : Prop
+'LinearStudy.ProjectiveWholeFiberMaximalSocleConclusion' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_actual_whole_fiber_maximal_socles {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ)
+  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet)
+  (hgeom : LinearStudy.ProjectiveWholeAmbientFiberConclusion f V y hy r)
+  (hcommon : LinearStudy.ProjectiveWholeFiberCommonSocleConclusion f V y r) :
+  LinearStudy.ProjectiveWholeFiberMaximalSocleConclusion f V y r
+'LinearStudy.projective_actual_whole_fiber_maximal_socles' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_iterates_whole_fibers_maximal_jacobian_socles {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (hproper : V.ideal.toIdeal ≠ ⊥) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ r ≤ n,
+    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧
+      Module.finrank (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) Ω[MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal⁄ℂ] = r ∧
+        ∀ (k : ℕ),
+          ∃ p ∉ V.affineIdeal,
+            (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧
+              ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),
+                (MvPolynomial.eval y) p ≠ 0 →
+                  0 < r →
+                    LinearStudy.ProjectiveWholeAmbientFiberConclusion (f.iterate k) V y hy r ∧
+                      LinearStudy.ProjectiveWholeFiberMaximalSocleConclusion (f.iterate k) V y r
+'LinearStudy.projective_iterates_whole_fibers_maximal_jacobian_socles' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.projectiveWholeFiber_card_eq_affine_quotient_finrank {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)

@@ -683,3 +683,25 @@ public import Linear.ActualCoordinateFiberPoints
 public import Linear.ProjectiveOriginalFiberLocalSocle
 
 public import Linear.ProjectiveWholeFiberCommonSocle
+
+public import Linear.ProjectiveCenteredFiberIdeal
+
+public import Linear.ActualEquationMaximalSocles
+
+public import Linear.ProjectiveWholeFiberMaximalSocle
+
+public import Linear.PolynomialLinearHighestComponents
+
+public import Linear.PolynomialCoordinateOrigin
+
+public import Linear.MatrixPolynomialHighest
+
+public import Linear.PolynomialNormalJacobianDegree
+
+public import Linear.ProjectiveCenteredFiberHighest
+
+public import Linear.ProjectiveWholeFiberJacobianSystem
+
+public import Linear.PolynomialReindexResiduePairing
+
+public import Linear.PolynomialZeroLocusResidueRelation
