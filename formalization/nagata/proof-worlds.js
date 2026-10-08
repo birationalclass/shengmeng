@@ -107,7 +107,7 @@ export function installProofWorlds({complete,nodes,select,selected,nodeEditor,th
     const cardWidth=Math.min(280,(available-xGap*(columns-1))/columns),rows=Math.ceil(count/columns);
     const cardHeight=clamp(Math.floor((height-60-(rows-1)*yGap)/rows),140,156);
     root.dataset.compactRows=String(cardHeight<156);
-    const deckHeight=rows*cardHeight+(rows-1)*yGap,top=Math.max(36,(height-deckHeight)/2);scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';
+    const deckHeight=rows*cardHeight+(rows-1)*yGap,top=Math.max(36,(height-deckHeight)/2);scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';
     const values={'--world-columns':columns,'--world-rows':rows,'--world-card-width':cardWidth+'px','--world-card-height':cardHeight+'px','--world-x-gap':xGap+'px','--world-y-gap':yGap+'px','--world-deck-width':available+'px','--world-deck-height':deckHeight+'px','--world-deck-top':top+'px','--world-goal-width':goalWidth+'px','--world-goal-gap':goalGap+'px','--world-padding':padding+'px'};
     for(const [name,value] of Object.entries(values))root.style.setProperty(name,String(value));
   }
@@ -198,7 +198,7 @@ export function installProofWorlds({complete,nodes,select,selected,nodeEditor,th
     else members=(isRoot?model.roots:model.children(state.target)).map(id=>originalById.get(id)).filter(Boolean);
     const refs=state.pack?model.packFor(state.pack).subpacks:isRoot?model.references:[];
     // References already have their own pack; they appear once as a pack cover.
-    
+
     const pageSize=state.pack?(innerWidth<600?4:8):isRoot?(innerWidth<600?3:24):6,items=[...members.map(n=>({n})),...refs.map(p=>({p}))],pages=Math.max(1,Math.ceil(items.length/pageSize));state.page=Math.min(state.page,pages-1);
     deck.replaceChildren(...items.slice(state.page*pageSize,(state.page+1)*pageSize).map(item=>item.n?proofCard(item.n):referenceCard(item.p)));
     target.element.querySelectorAll('.theorem-port').forEach(port=>port.hidden=!!state.pack||!items.length||port.dataset.side!=='left');
@@ -213,6 +213,7 @@ export function installProofWorlds({complete,nodes,select,selected,nodeEditor,th
     if(state.mode==='graph')nodeEditor.setWorldContext({target:originalById.get(state.target),allowed:new Set([...model.closure(state.target),...model.closure(selected())]),reference:isReferenceCard(originalById.get(selected()))});
     document.dispatchEvent(new Event('proofworldrender'));
   }
+  function fitOverview(){if(state.target==='lemma'&&!state.pack&&innerWidth>=600){requestAnimationFrame(()=>{const s=Math.min(1,(canvas.clientWidth-24)/scene.clientWidth,(canvas.clientHeight-24)/scene.clientHeight);moveCamera((canvas.clientWidth-scene.clientWidth*s)/2,(canvas.clientHeight-scene.clientHeight*s)/2,s);});}}
   function fitOverview(){if(state.target==='lemma'&&!state.pack&&innerWidth>=600){requestAnimationFrame(()=>{const s=Math.min(1,(canvas.clientWidth-24)/scene.clientWidth,(canvas.clientHeight-24)/scene.clientHeight);moveCamera((canvas.clientWidth-scene.clientWidth*s)/2,(canvas.clientHeight-scene.clientHeight*s)/2,s);});}}
   function fitOverview(){if(state.target==='lemma'&&!state.pack&&innerWidth>=600){requestAnimationFrame(()=>{const s=Math.min(1,(canvas.clientWidth-24)/scene.clientWidth,(canvas.clientHeight-24)/scene.clientHeight);moveCamera((canvas.clientWidth-scene.clientWidth*s)/2,(canvas.clientHeight-scene.clientHeight*s)/2,s);});}}
   function fitOverview(){if(state.target==='lemma'&&!state.pack&&innerWidth>=600){requestAnimationFrame(()=>{const s=Math.min(1,(canvas.clientWidth-24)/scene.clientWidth,(canvas.clientHeight-24)/scene.clientHeight);moveCamera((canvas.clientWidth-scene.clientWidth*s)/2,(canvas.clientHeight-scene.clientHeight*s)/2,s);});}}
