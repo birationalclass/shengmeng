@@ -505,3 +505,31 @@ public import Linear.HomogeneousCoordinateFiltration
 public import Linear.HomogeneousCumulativeHilbert
 
 public import Linear.ProjectiveCoordinateHilbertGrowth
+
+public import Linear.ProjectiveFilteredPullback
+
+public import Linear.ProjectiveFilteredReflection
+
+public import Linear.GradedModuleHomogeneousGenerators
+
+public import Linear.ProjectiveHomogeneousModuleGenerators
+
+public import Linear.GradedGenericHomogeneousBasis
+
+public import Linear.ProjectiveGenericHomogeneousBasis
+
+public import Linear.GenericSpanDenominator
+
+public import Linear.ProjectiveHomogeneousGenericControl
+
+public import Linear.HomogeneousCoordinateComponentProduct
+
+public import Linear.ProjectivePullbackAllComponents
+
+public import Linear.ProjectiveHomogeneousCoefficientBound
+
+public import Linear.ProjectiveFilteredCombination
+
+public import Linear.ProjectiveFilteredUpperBound
+
+public import Linear.ProjectiveGenericGrowthComparison
