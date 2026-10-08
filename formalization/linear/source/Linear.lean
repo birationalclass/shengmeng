@@ -715,3 +715,11 @@ public import Linear.ProjectiveFiberRepresentativeRelation
 public import Linear.HomogeneousLinearNormalization
 
 public import Linear.ProjectiveLinearNormalization
+
+public import Linear.ProjectiveLinearProjectionGoodOpen
+
+public import Linear.ProjectiveLinearProjectionTensorFibers
+
+public import Linear.ProjectiveLinearSectionPointEquiv
+
+public import Linear.LinearProjectionFilteredGrowth

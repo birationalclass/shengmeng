@@ -1298,11 +1298,65 @@ LinearStudy.affine_ideal_top_component_mem.{u_1, u_2} {K : Type u_1} {ι : Type 
   (MvPolynomial.homogeneousComponent N) f ∈
     Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent (P i).totalDegree) (P i))
 'LinearStudy.affine_ideal_top_component_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finite_injective_algHom_fraction_comp_formallyUnramified.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2}
+  {A : Type u_3} [Field K] [CharZero K] [CommRing R] [IsDomain R] [Algebra K R] [CommRing A] [IsDomain A] [Algebra K A]
+  (φ : R →ₐ[K] A) (hinj : Function.Injective ⇑φ) (hfinite : φ.Finite) :
+  ((algebraMap A (FractionRing A)).comp φ.toRingHom).FormallyUnramified
+'LinearStudy.finite_injective_algHom_fraction_comp_formallyUnramified' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.finite_injective_algHom_exists_target_good_loci.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {A : Type u_3}
+  [Field K] [CharZero K] [CommRing R] [IsDomain R] [Algebra K R] [Algebra.FinitePresentation K R] [CommRing A]
+  [IsDomain A] [Algebra K A] [Algebra.FinitePresentation K A] (φ : R →ₐ[K] A) (hinj : Function.Injective ⇑φ)
+  (hfinite : φ.Finite) :
+  ∃ c,
+    c ≠ 0 ∧
+      φ c ≠ 0 ∧
+        ∀ (P : PrimeSpectrum A),
+          φ c ∉ P.asIdeal →
+            P ∈ Algebra.smoothLocus K A ∧
+              PrimeSpectrum.comap φ.toRingHom P ∈ Algebra.smoothLocus K R ∧ P ∈ Algebra.unramifiedLocus R A
+'LinearStudy.finite_injective_algHom_exists_target_good_loci' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finite_injective_algHom_exists_target_good_loci_avoiding.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2}
+  {A : Type u_3} [Field K] [CharZero K] [CommRing R] [IsDomain R] [Algebra K R] [Algebra.FinitePresentation K R]
+  [CommRing A] [IsDomain A] [Algebra K A] [Algebra.FinitePresentation K A] (φ : R →ₐ[K] A)
+  (hinj : Function.Injective ⇑φ) (hfinite : φ.Finite) (a : A) (ha : a ≠ 0) :
+  ∃ c,
+    c ≠ 0 ∧
+      φ c ≠ 0 ∧
+        ∀ (P : PrimeSpectrum A),
+          φ c ∉ P.asIdeal →
+            a ∉ P.asIdeal ∧
+              P ∈ Algebra.smoothLocus K A ∧
+                PrimeSpectrum.comap φ.toRingHom P ∈ Algebra.smoothLocus K R ∧ P ∈ Algebra.unramifiedLocus R A
+'LinearStudy.finite_injective_algHom_exists_target_good_loci_avoiding' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.finite_normalization_polynomial_filtered_bound.{u_1, u_2, u_3, u_4} {k : Type u_1} {τ : Type u_2}
   {σ : Type u_3} {A : Type u_4} [Field k] [Finite σ] [CommRing A] [Algebra k A] (g : MvPolynomial τ k →ₐ[k] A)
   (hg : g.Finite) (α : MvPolynomial σ k →ₐ[k] A) :
   ∃ m b c B, 0 < c ∧ ∀ (p : MvPolynomial σ k), α p ∈ LinearStudy.boundedPolynomialSpan g b (c * p.totalDegree + B)
 'LinearStudy.finite_normalization_polynomial_filtered_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finite_projection_tensor_fiber_isReduced.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {A : Type u_3}
+  [Field K] [CommRing R] [CommRing A] [Algebra K R] [Algebra K A] (φ : R →ₐ[K] A) (ρ : R →ₐ[K] K) (hfinite : φ.Finite)
+  (c : R) (hc : ρ c ≠ 0) (hgood : ↑(PrimeSpectrum.basicOpen (φ c)) ⊆ Algebra.unramifiedLocus R A) :
+  IsReduced (TensorProduct R K A)
+'LinearStudy.finite_projection_tensor_fiber_isReduced' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finite_injective_algHom_exists_reduced_rank_fibers.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2}
+  {A : Type u_3} [Field K] [IsAlgClosed K] [CharZero K] [CommRing R] [IsDomain R] [IsNoetherianRing R] [Algebra K R]
+  [Algebra.FinitePresentation K R] [CommRing A] [IsDomain A] [Algebra K A] [Algebra.FinitePresentation K A]
+  (φ : R →ₐ[K] A) (hinj : Function.Injective ⇑φ) (hfinite : φ.Finite) :
+  ∃ c,
+    c ≠ 0 ∧
+      ∀ (ρ : R →ₐ[K] K),
+        ρ c ≠ 0 →
+          Module.Finite K (TensorProduct R K A) ∧
+            IsReduced (TensorProduct R K A) ∧
+              Module.finrank K (TensorProduct R K A) = Module.finrank R A ∧
+                Nat.card (TensorProduct R K A →ₐ[K] K) = Module.finrank R A
+'LinearStudy.finite_injective_algHom_exists_reduced_rank_fibers' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.finite_rational_points_of_module_finite.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]
   [Algebra K A] [Module.Finite K A] : Finite (A →ₐ[K] K)
 'LinearStudy.finite_rational_points_of_module_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -3123,6 +3177,186 @@ LinearStudy.integral_linear_normalization_origin_zeroLocus.{u_1} {K : Type u_1} 
   (hg : ∀ (i : Fin s), g (MvPolynomial.X i) = (Ideal.Quotient.mk I) (L i)) (hint : g.IsIntegral) (v : Fin n → K)
   (hv : v ∈ MvPolynomial.zeroLocus K I) (hLv : ∀ (i : Fin s), (MvPolynomial.eval v) (L i) = 0) : v = 0
 'LinearStudy.integral_linear_normalization_origin_zeroLocus' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.compatibleScalarPointEquiv.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {A : Type u_3} [Field K]
+  [CommRing R] [CommRing A] [Algebra K R] [Algebra K A] (φ : R →ₐ[K] A) (ρ : R →ₐ[K] K) :
+  { ψ // ψ.comp φ = ρ } ≃ (A →ₐ[R] K)
+'LinearStudy.compatibleScalarPointEquiv' depends on axioms: [propext, Quot.sound]
+LinearStudy.tensorFiberScalarPointEquiv.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {A : Type u_3} [Field K]
+  [CommRing R] [CommRing A] [Algebra K R] [Algebra K A] (φ : R →ₐ[K] A) (ρ : R →ₐ[K] K) :
+  { ψ // ψ.comp φ = ρ } ≃ (TensorProduct R K A →ₐ[K] K)
+'LinearStudy.tensorFiberScalarPointEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialProjectionFiberPointEquiv.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
+  (I : Ideal (MvPolynomial σ K)) (L : τ → MvPolynomial σ K) (w : τ → K) :
+  { v // (fun i => (MvPolynomial.eval ↑v) (L i)) = w } ≃
+    { ψ // ψ.comp ((Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval L)) = MvPolynomial.aeval w }
+'LinearStudy.polynomialProjectionFiberPointEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialProjectionTensorPointEquiv.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
+  (I : Ideal (MvPolynomial σ K)) (L : τ → MvPolynomial σ K) (w : τ → K) :
+  let R := MvPolynomial τ K;
+  let A := MvPolynomial σ K ⧸ I;
+  have φ := (Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval L);
+  { v // (fun i => (MvPolynomial.eval ↑v) (L i)) = w } ≃ (TensorProduct R K A →ₐ[K] K)
+'LinearStudy.polynomialProjectionTensorPointEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_exists_linear_projection_cone_fiber_card {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) :
+  ∃ r P,
+    r ≤ n ∧
+      P ≠ 0 ∧
+        P.natDegree = r ∧
+          (∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)) ∧
+            ∃ L,
+              (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧
+                Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧
+                  (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧
+                    (∀ (v : LinearStudy.CoordinateVector n),
+                        v ≠ 0 →
+                          (∀ H ∈ V.ideal.toIdeal, (MvPolynomial.eval v) H = 0) →
+                            (fun i => (MvPolynomial.eval v) (L i)) ≠ 0) ∧
+                      let R := MvPolynomial (Fin (r + 1)) ℂ;
+                      let A := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+                      have φ := LinearStudy.projectiveLinearNormalizationMap V L;
+                      ∃ c,
+                        c ≠ 0 ∧
+                          (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (r + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                w 0 ≠ 0 ∧
+                                  Nat.card { v // (fun i => (MvPolynomial.eval ↑v) (L i)) = w } = Module.finrank R A
+'LinearStudy.projective_exists_linear_projection_cone_fiber_card' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.linearProjectionFilteredCombination.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
+  {m : ℕ} (I : Ideal (MvPolynomial σ K)) (L : τ → MvPolynomial σ K) (b : Fin m → MvPolynomial σ K ⧸ I) (N : ℕ) :
+  (Fin m → ↥(MvPolynomial.restrictTotalDegree τ K N)) →ₗ[K] MvPolynomial σ K ⧸ I
+'LinearStudy.linearProjectionFilteredCombination' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.linearProjectionFilteredCombination_degree_bound.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
+  {τ : Type u_3} [Field K] {m : ℕ} (I : Ideal (MvPolynomial σ K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (L : τ → MvPolynomial σ K)
+  (hL : ∀ (i : τ), (L i).IsHomogeneous 1) (b : Fin m → MvPolynomial σ K ⧸ I) (N B : ℕ)
+  (hb : ∀ (i : Fin m), b i ∈ LinearStudy.homogeneousQuotientFiltration I B)
+  (c : Fin m → ↥(MvPolynomial.restrictTotalDegree τ K N)) :
+  (LinearStudy.linearProjectionFilteredCombination I L b N) c ∈ LinearStudy.homogeneousQuotientFiltration I (N + B)
+'LinearStudy.linearProjectionFilteredCombination_degree_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.linearProjectionFilteredCombination_injective.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field K] {m : ℕ} (I : Ideal (MvPolynomial σ K)) (L : τ → MvPolynomial σ K) (b : Fin m → MvPolynomial σ K ⧸ I)
+  (hli :
+    let R := MvPolynomial τ K;
+    let A := MvPolynomial σ K ⧸ I;
+    have φ := (Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval L);
+    LinearIndependent R b)
+  (N : ℕ) : Function.Injective ⇑(LinearStudy.linearProjectionFilteredCombination I L b N)
+'LinearStudy.linearProjectionFilteredCombination_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.linearProjectionFilteredCombination_finrank_lower.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
+  {τ : Type u_3} [Field K] {m : ℕ} [Finite σ] [Finite τ] (I : Ideal (MvPolynomial σ K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (L : τ → MvPolynomial σ K)
+  (hL : ∀ (i : τ), (L i).IsHomogeneous 1) (b : Fin m → MvPolynomial σ K ⧸ I)
+  (hli :
+    let R := MvPolynomial τ K;
+    let A := MvPolynomial σ K ⧸ I;
+    have φ := (Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval L);
+    LinearIndependent R b)
+  (N B : ℕ) (hb : ∀ (i : Fin m), b i ∈ LinearStudy.homogeneousQuotientFiltration I B) :
+  m * Module.finrank K ↥(MvPolynomial.restrictTotalDegree τ K N) ≤
+    Module.finrank K ↥(LinearStudy.homogeneousQuotientFiltration I (N + B))
+'LinearStudy.linearProjectionFilteredCombination_finrank_lower' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.linear_projection_exists_generic_growth_comparison.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
+  {τ : Type u_3} [Field K] [Finite σ] [Finite τ] (I : Ideal (MvPolynomial σ K)) (hprime : I.IsPrime)
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (L : τ → MvPolynomial σ K)
+  (hL : ∀ (i : τ), (L i).IsHomogeneous 1)
+  (hinj : Function.Injective ⇑((Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval L)))
+  (hfinite : ((Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval L)).Finite) :
+  let R := MvPolynomial τ K;
+  let A := MvPolynomial σ K ⧸ I;
+  have φ := (Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval L);
+  ∃ m B E,
+    m = Module.finrank R A ∧
+      ∀ (N : ℕ),
+        m * Module.finrank K ↥(MvPolynomial.restrictTotalDegree τ K N) ≤
+            Module.finrank K ↥(LinearStudy.homogeneousQuotientFiltration I (N + B)) ∧
+          Module.finrank K ↥(LinearStudy.homogeneousQuotientFiltration I N) ≤
+            m * Module.finrank K ↥(MvPolynomial.restrictTotalDegree τ K (N + E))
+'LinearStudy.linear_projection_exists_generic_growth_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_exists_same_linear_section_generic_growth {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) :
+  ∃ r P,
+    r ≤ n ∧
+      P ≠ 0 ∧
+        P.natDegree = r ∧
+          (∃ N, ∀ j > N, Polynomial.eval (↑j) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal j)) ∧
+            ∃ L,
+              (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧
+                Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧
+                  (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧
+                    let R := MvPolynomial (Fin (r + 1)) ℂ;
+                    let A := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+                    have φ := LinearStudy.projectiveLinearNormalizationMap V L;
+                    ∃ m B E c,
+                      m = Module.finrank R A ∧
+                        c ≠ 0 ∧
+                          (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧
+                            (∀ (w : Fin (r + 1) → ℂ),
+                                (MvPolynomial.eval w) c ≠ 0 →
+                                  w 0 ≠ 0 ∧ Nat.card ↑(LinearStudy.projectiveLinearSection V L w) = m) ∧
+                              ∀ (N : ℕ),
+                                m * Module.finrank ℂ ↥(MvPolynomial.restrictTotalDegree (Fin (r + 1)) ℂ N) ≤
+                                    Module.finrank ℂ
+                                      ↥(LinearStudy.homogeneousQuotientFiltration V.ideal.toIdeal (N + B)) ∧
+                                  Module.finrank ℂ ↥(LinearStudy.homogeneousQuotientFiltration V.ideal.toIdeal N) ≤
+                                    m * Module.finrank ℂ ↥(MvPolynomial.restrictTotalDegree (Fin (r + 1)) ℂ (N + E))
+'LinearStudy.projective_exists_same_linear_section_generic_growth' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.finite_coordinate_map_exists_generic_homogeneous_control.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
+  {R : Type u_3} [Field K] [CommRing R] [IsDomain R] [Algebra K R] (I : Ideal (MvPolynomial σ K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (φ : R →ₐ[K] MvPolynomial σ K ⧸ I)
+  (hfinite : φ.Finite) :
+  let A := MvPolynomial σ K ⧸ I;
+  ∃ m b s,
+    m = Module.finrank R A ∧
+      (∀ (i : Fin m), ∃ d, b i ∈ LinearStudy.homogeneousQuotientPiece I d) ∧
+        LinearIndependent R b ∧ s ≠ 0 ∧ ∀ (x : A), ∃ c, ∑ i, φ (c i) * b i = φ s * x
+'LinearStudy.finite_coordinate_map_exists_generic_homogeneous_control' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.polynomial_totalDegree_le_of_components_zero.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
+  (H : MvPolynomial σ K) (N : ℕ) (hzero : ∀ j > N, (MvPolynomial.homogeneousComponent j) H = 0) : H.totalDegree ≤ N
+'LinearStudy.polynomial_totalDegree_le_of_components_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.linear_projection_homogeneousComponent.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field K] (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I)
+  (L : τ → MvPolynomial σ K) (hL : ∀ (i : τ), (L i).IsHomogeneous 1) (k : ℕ) (H : MvPolynomial τ K) :
+  have φ := (Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval L);
+  (LinearStudy.homogeneousQuotientComponent I hI k) (φ H) = φ ((MvPolynomial.homogeneousComponent k) H)
+'LinearStudy.linear_projection_homogeneousComponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.linear_projection_filtration_mem.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
+  (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I)
+  (L : τ → MvPolynomial σ K) (hL : ∀ (i : τ), (L i).IsHomogeneous 1) (N : ℕ) (H : MvPolynomial τ K)
+  (hH : H.totalDegree ≤ N) :
+  ((Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval L)) H ∈ LinearStudy.homogeneousQuotientFiltration I N
+'LinearStudy.linear_projection_filtration_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.linear_projection_combination_coefficients_bounded.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
+  {τ : Type u_3} [Field K] {m : ℕ} (I : Ideal (MvPolynomial σ K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (L : τ → MvPolynomial σ K)
+  (hL : ∀ (i : τ), (L i).IsHomogeneous 1) (b : Fin m → MvPolynomial σ K ⧸ I) (d : Fin m → ℕ)
+  (hb : ∀ (i : Fin m), b i ∈ LinearStudy.homogeneousQuotientPiece I (d i))
+  (hli :
+    let R := MvPolynomial τ K;
+    let A := MvPolynomial σ K ⧸ I;
+    have φ := (Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval L);
+    LinearIndependent R b)
+  (c : Fin m → MvPolynomial τ K) (N : ℕ)
+  (hc :
+    ∑ i, ((Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval L)) (c i) * b i ∈
+      LinearStudy.homogeneousQuotientFiltration I N)
+  (i : Fin m) : (c i).totalDegree ≤ N
+'LinearStudy.linear_projection_combination_coefficients_bounded' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.linearEquationSubmodule.{u_1} {n : ℕ} {ι : Type u_1}
   (equations : ι → LinearStudy.CoordinateVector n →ₗ[ℂ] ℂ) : Submodule ℂ (LinearStudy.CoordinateVector n)
 'LinearStudy.linearEquationSubmodule' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -7926,6 +8160,109 @@ LinearStudy.projective_exists_linear_normalization_chart_dimension {n : ℕ}
                 v ≠ 0 →
                   (∀ H ∈ V.ideal.toIdeal, (MvPolynomial.eval v) H = 0) → (fun i => (MvPolynomial.eval v) (L i)) ≠ 0
 'LinearStudy.projective_exists_linear_normalization_chart_dimension' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_exists_linear_projection_target_good_loci {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) :
+  ∃ r P,
+    r ≤ n ∧
+      P ≠ 0 ∧
+        P.natDegree = r ∧
+          (∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)) ∧
+            ∃ L,
+              (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧
+                Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧
+                  (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧
+                    (∀ (v : LinearStudy.CoordinateVector n),
+                        v ≠ 0 →
+                          (∀ H ∈ V.ideal.toIdeal, (MvPolynomial.eval v) H = 0) →
+                            (fun i => (MvPolynomial.eval v) (L i)) ≠ 0) ∧
+                      ∀ (a : LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal),
+                        a ≠ 0 →
+                          have φ := LinearStudy.projectiveLinearNormalizationMap V L;
+                          ∃ c,
+                            c ≠ 0 ∧
+                              φ c ≠ 0 ∧
+                                ∀ (Q : PrimeSpectrum (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)),
+                                  φ c ∉ Q.asIdeal →
+                                    a ∉ Q.asIdeal ∧
+                                      Q ∈ Algebra.smoothLocus ℂ (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) ∧
+                                        PrimeSpectrum.comap φ.toRingHom Q ∈
+                                            Algebra.smoothLocus ℂ (MvPolynomial (Fin (r + 1)) ℂ) ∧
+                                          Q ∈
+                                            Algebra.unramifiedLocus (MvPolynomial (Fin (r + 1)) ℂ)
+                                              (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+'LinearStudy.projective_exists_linear_projection_target_good_loci' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_exists_linear_projection_reduced_rank_fibers {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) :
+  ∃ r P,
+    r ≤ n ∧
+      P ≠ 0 ∧
+        P.natDegree = r ∧
+          (∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)) ∧
+            ∃ L,
+              (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧
+                Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧
+                  (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧
+                    (∀ (v : LinearStudy.CoordinateVector n),
+                        v ≠ 0 →
+                          (∀ H ∈ V.ideal.toIdeal, (MvPolynomial.eval v) H = 0) →
+                            (fun i => (MvPolynomial.eval v) (L i)) ≠ 0) ∧
+                      let R := MvPolynomial (Fin (r + 1)) ℂ;
+                      let A := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+                      have φ := LinearStudy.projectiveLinearNormalizationMap V L;
+                      ∃ c,
+                        c ≠ 0 ∧
+                          (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (r + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                w 0 ≠ 0 ∧
+                                  Module.Finite ℂ (TensorProduct R ℂ A) ∧
+                                    IsReduced (TensorProduct R ℂ A) ∧
+                                      Module.finrank ℂ (TensorProduct R ℂ A) = Module.finrank R A ∧
+                                        Nat.card (TensorProduct R ℂ A →ₐ[ℂ] ℂ) = Module.finrank R A
+'LinearStudy.projective_exists_linear_projection_reduced_rank_fibers' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveLinearSection {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ) : Set (LinearStudy.ProjectivePoint n)
+'LinearStudy.projectiveLinearSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.linear_projection_coordinate_fiber_nonzero {n r : ℕ} (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ) (hw0 : w 0 ≠ 0)
+  (v : LinearStudy.CoordinateVector n) (hvL : (fun i => (MvPolynomial.eval v) (L i)) = w) : v ≠ 0
+'LinearStudy.linear_projection_coordinate_fiber_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_linear_section_coordinate_point_equiv {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hfree :
+    ∀ (v : LinearStudy.CoordinateVector n),
+      v ≠ 0 → (∀ H ∈ V.ideal.toIdeal, (MvPolynomial.eval v) H = 0) → (fun i => (MvPolynomial.eval v) (L i)) ≠ 0)
+  (w : Fin (r + 1) → ℂ) (hw0 : w 0 ≠ 0) :
+  Nonempty ({ v // (fun i => (MvPolynomial.eval ↑v) (L i)) = w } ≃ ↑(LinearStudy.projectiveLinearSection V L w))
+'LinearStudy.projective_linear_section_coordinate_point_equiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_exists_linear_projection_section_card {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) :
+  ∃ r P,
+    r ≤ n ∧
+      P ≠ 0 ∧
+        P.natDegree = r ∧
+          (∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)) ∧
+            ∃ L,
+              (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧
+                Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧
+                  (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧
+                    let R := MvPolynomial (Fin (r + 1)) ℂ;
+                    let A := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+                    have φ := LinearStudy.projectiveLinearNormalizationMap V L;
+                    ∃ c,
+                      c ≠ 0 ∧
+                        (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧
+                          ∀ (w : Fin (r + 1) → ℂ),
+                            (MvPolynomial.eval w) c ≠ 0 →
+                              w 0 ≠ 0 ∧ Nat.card ↑(LinearStudy.projectiveLinearSection V L w) = Module.finrank R A
+'LinearStudy.projective_exists_linear_projection_section_card' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.ProjectiveChartPolynomialParameterConclusion {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
