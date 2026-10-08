@@ -1,8 +1,8 @@
-import {isReferenceCard} from './theorem-statements.js?v=20261008-nagata-2';
+import {isReferenceCard} from './theorem-statements.js?v=20261008-nagata-3';
 // Semantic roots stay in one input rail. Filtering never turns a derived result into a base input.
 export function visibleProofIds(nodes,current,scope,includeReferences=false){
   const byId=new Map(nodes.map(n=>[n.id,n])),ids=new Set([current]);
-  function visit(id){if(ids.has(id)&&id!==current)return;ids.add(id);byId.get(id).deps.forEach(visit);}
+  const visited=new Set();function visit(id){if(visited.has(id))return;visited.add(id);ids.add(id);byId.get(id).deps.forEach(visit);}
   if(scope==='direct')byId.get(current).deps.forEach(id=>ids.add(id));
   else if(scope==='path')byId.get(current).deps.forEach(visit);
   else nodes.forEach(n=>{if(scope==='all'||['assumption','pending'].includes(n.status))ids.add(n.id);});
@@ -10,7 +10,7 @@ export function visibleProofIds(nodes,current,scope,includeReferences=false){
 }
 export function compactProofLayout(nodes,ids,factor=1,maxRows=4,options={}){
   const byId=new Map(nodes.map(n=>[n.id,n])),ranks=new Map(),layout=new Map();
-  function rank(id){if(!ranks.has(id)){const n=byId.get(id);ranks.set(id,n.deps.length?Math.max(0,...n.deps.filter(d=>ids.has(d)).map(rank))+1:0);}return ranks.get(id);}
+  function rank(id){if(!ranks.has(id)){const n=byId.get(id);ranks.set(id,0);ranks.set(id,n.deps.length?Math.max(0,...n.deps.filter(d=>ids.has(d)).map(rank))+1:0);}return ranks.get(id);}
   [...ids].forEach(rank);
   // Root status is a graph property; it does not define a reference pack.
   const inputHeight=0;let left=65;

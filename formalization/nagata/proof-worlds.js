@@ -1,9 +1,9 @@
-import {english} from './i18n.js?v=20261008-nagata-2';
-import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261008-nagata-2';
-import {createProofPackages} from './proof-package-model.js?v=20261008-nagata-2';
+import {english} from './i18n.js?v=20261008-nagata-3';
+import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261008-nagata-3';
+import {createProofPackages} from './proof-package-model.js?v=20261008-nagata-3';
 
-export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarget}){
-  const model=createProofPackages(nodes),panel=document.querySelector('.graph-panel'),viewport=document.querySelector('.graph-scroll');
+export function installProofWorlds({complete,nodes,select,selected,nodeEditor,theoremTarget}){
+  const model=createProofPackages(nodes,complete),panel=document.querySelector('.graph-panel'),viewport=document.querySelector('.graph-scroll');
   const state={target:'lemma',pack:null,mode:'world',catalog:false,page:0,trail:[],reading:null};
   const text=(zh,en)=>english?en:zh;
   const root=document.createElement('section');root.className='proof-worlds';root.setAttribute('aria-label',text('按原稿组织的证明世界','Proof worlds from the manuscript'));
@@ -84,7 +84,7 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
         const bend=Math.max(15,Math.abs(a.x-b.x)*.45);controlA={x:a.x-sign*bend,y:a.y};controlB={x:b.x+sign*bend,y:b.y};
       }
       const source=card.dataset.worldNode||card.dataset.worldPack,reference=!!card.dataset.worldPack||!!state.pack,reading=reference||state.target==='lemma';
-      const label=reference?text('参考来源；不是新增证明依赖','Reference source; not an added proof dependency'):reading?text('原稿证明模块的阅读路径','Reading path through manuscript proof modules'):text('当前声明的直接前提','Direct premise of the current declaration');
+      const label=reference?text('论文模块阅读路径；内部依赖逐层展开','Paper-module reading route; dependencies unfold inside'):reading?text('原稿证明模块的阅读路径','Reading path through manuscript proof modules'):text('当前声明的直接前提','Direct premise of the current declaration');
       const d=`M${a.x} ${a.y} C${controlA.x} ${controlA.y},${controlB.x} ${controlB.y},${b.x} ${b.y}`;
       html+=`<g class="world-wire${reference?' source-wire':''}" data-source="${escapeHTML(source)}" data-side="${side}" data-relation="${reading?'reading':'premise'}"><title>${escapeHTML(label)}</title><path class="world-wire-shadow" d="${d}"/><path class="world-wire-body" d="${d}"/><path class="world-wire-shine" d="${d}"/></g>`;
       shell.dataset.connectionSide=side;
@@ -95,19 +95,19 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
   }
   // Size the occupied grid, not empty fractional tracks spanning the entire window.
   function layoutDeck(){
-    if(state.pack||state.mode!=='world')return;
-    const width=canvas.clientWidth,height=canvas.clientHeight,count=deck.querySelectorAll('.proof-package').length;
+    if(state.mode!=='world')return;if(state.pack){scene.style.height='';scene.style.width='';return;}
+    const width=state.target==='lemma'&&innerWidth>=600?1660:canvas.clientWidth,height=canvas.clientHeight,count=deck.querySelectorAll('.proof-package').length;
     if(!width||!height||!count)return;
     const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
     const xGap=Math.round(clamp(width*.025,18,48)),yGap=Math.round(clamp(height*.035,16,40));
     const goalWidth=Math.round(clamp(width*.27,width<600?140:180,340)),goalGap=Math.round(clamp(width*.035,24,56)),padding=Math.round(clamp(width*.014,12,24));
     const available=Math.max(width<600?120:220,width-goalWidth-goalGap-padding*2);
-    const preferred=count===4?2:state.target==='lemma'?3:2;
+    const preferred=state.target==='lemma'?4:2;
     const columns=Math.max(1,Math.min(preferred,count,Math.floor((available+xGap)/(230+xGap))));
     const cardWidth=Math.min(280,(available-xGap*(columns-1))/columns),rows=Math.ceil(count/columns);
     const cardHeight=clamp(Math.floor((height-60-(rows-1)*yGap)/rows),140,156);
     root.dataset.compactRows=String(cardHeight<156);
-    const deckHeight=rows*cardHeight+(rows-1)*yGap,top=Math.max(36,(height-deckHeight)/2);
+    const deckHeight=rows*cardHeight+(rows-1)*yGap,top=Math.max(36,(height-deckHeight)/2);scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';
     const values={'--world-columns':columns,'--world-rows':rows,'--world-card-width':cardWidth+'px','--world-card-height':cardHeight+'px','--world-x-gap':xGap+'px','--world-y-gap':yGap+'px','--world-deck-width':available+'px','--world-deck-height':deckHeight+'px','--world-deck-top':top+'px','--world-goal-width':goalWidth+'px','--world-goal-gap':goalGap+'px','--world-padding':padding+'px'};
     for(const [name,value] of Object.entries(values))root.style.setProperty(name,String(value));
   }
@@ -128,11 +128,10 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
   }
   function referenceCard(p){
     const shell=document.createElement('div');shell.className='proof-package reference-package';shell.dataset.hasCards='true';
-    const card=document.createElement('button');card.type='button';card.className='node reference-pack-card';card.dataset.worldPack=p.id;card.setAttribute('aria-label',p.name[english?1:0]+' · '+p.cards.length+' '+text('张卡片','cards'));
-    card.innerHTML=`<b class="node-heading"><span class="world-pack-mark">${p.mark}</span>${escapeHTML(p.name[english?1:0])}</b><div class="node-proposition"><div><b>${text('参考来源','REFERENCE SOURCE')}</b><span>${escapeHTML(p.reference[english?1:0])}</span></div><div><b>${text('包内定理与构造','THEOREMS AND CONSTRUCTIONS')}</b><span>${p.cards.length} ${text('张已编入的卡片','indexed cards')}</span></div></div><span class="node-output-socket" aria-hidden="true"></span><span class="world-package-caption">${text('阅读来源，不是新增假设','Reading source, not an added hypothesis')}</span>`;
-    card.title=text('左击阅读卡包信息；右击打开卡包（Shift＋F10）','Click for pack information; right-click to open pack (Shift+F10)');
-    card.onclick=()=>inspectPack(p.id);card.oncontextmenu=e=>{e.preventDefault();enter(state.target,p.id);};
-    card.onkeydown=e=>{if(e.key==='ContextMenu'||(e.shiftKey&&e.key==='F10')){e.preventDefault();enter(state.target,p.id);}};shell.append(card);return shell;
+    const card=document.createElement('button');card.type='button';card.className='node reference-pack-card';card.dataset.worldPack=p.id;
+    card.innerHTML=`<b class="node-heading">${escapeHTML(p.name[english?1:0])}</b><div class="node-proposition"><div><span>${p.allCards.length} ${text('Lean 常量','Lean constants')} · ${p.subpacks.length||1} ${text('源文件','source files')}</span></div><div><span>${text('章节 → 文件 → 声明 → 真实依赖','Section → file → declaration → actual dependencies')}</span></div></div><small class="done" aria-label="${text('声明已核验','Declarations audited')}">✓</small>`;
+    card.setAttribute('aria-label',p.name[english?1:0]);card.title=text('左击阅读信息；右击展开实际模块（Shift＋F10）','Click for information; right-click to unfold modules (Shift+F10)');
+    card.onclick=()=>inspectPack(p.id);card.oncontextmenu=e=>{e.preventDefault();enter(state.target,p.id);};card.onkeydown=e=>{if(e.key==='ContextMenu'||e.shiftKey&&e.key==='F10'){e.preventDefault();enter(state.target,p.id);}};shell.append(card);return shell;
   }
   const detail=document.querySelector('#detail');
   const closeInfo=document.createElement('button');closeInfo.type='button';closeInfo.className='world-detail-close';closeInfo.textContent='×';closeInfo.hidden=true;
@@ -172,12 +171,10 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
     requestAnimationFrame(focusReading);
   }
   function packInformation(id){
-    const p=model.packFor(id);if(!p)return;
-    detail.dataset.worldPack=id;packInfo.hidden=false;
-    const chain=model.closure(state.target),used=p.cards.filter(n=>chain.has(n.id));
-    const list=cards=>cards.map(n=>`<button type="button" class="dep-link" data-inspect-node="${escapeHTML(n.id)}">${escapeHTML(n.title)}<span>${['done','conditional'].includes(n.status)?text('✓ Lean 已验证','✓ Lean verified'):text('待补证明','Open proof')}</span></button>`).join('');
-    packInfo.innerHTML=`<p class="world-pack-kind">${text('参考卡包','REFERENCE PACK')}</p><h2>${escapeHTML(p.name[english?1:0])}</h2><p>${escapeHTML(p.reference[english?1:0])}</p><p>${p.cards.length} ${text('张定理与构造卡片','theorem and construction cards')}</p><h3>${text('当前证明引用','Used in the current proof')}</h3>${used.length?list(used):`<p>${text('此模块没有引用该包中的卡片。','This module uses no cards from this pack.')}</p>`}<h3>${text('包内全部卡片','All cards in this pack')}</h3>${list(p.cards)}`;
-    packInfo.querySelectorAll('[data-inspect-node]').forEach(button=>button.onclick=()=>inspectNode(button.dataset.inspectNode));
+    const p=model.packFor(id);if(!p)return;detail.dataset.worldPack=id;packInfo.hidden=false;
+    const chain=model.closure('lemma'),used=p.allCards.filter(n=>chain.has(n.id)).length;
+    packInfo.innerHTML=`<p class="world-pack-kind">${text('论文实现卡包','PAPER IMPLEMENTATION PACK')}</p><h2>${escapeHTML(p.name[english?1:0])}</h2><p>${escapeHTML(p.reference[english?1:0])}</p><p>${p.allCards.length} ${text('常量，其中','constants, including')} ${p.allCards.filter(n=>n.generated).length} ${text('编译器辅助项；','compiler auxiliaries;')} ${used} ${text('用于最终定理。','used by the final theorem.')}</p><p>${text('分组用于组织阅读，不声称章节标题本身是新核验的定理。右击逐层查看源文件、声明和真实直接依赖。','This grouping organizes reading; its title is not an additional checked theorem. Right-click to inspect source files, declarations and actual direct dependencies.')}</p>${p.subpacks.length?'<h3>'+text('源文件模块','Source modules')+'</h3>'+p.subpacks.map(f=>'<p><code>'+escapeHTML(f.file)+'</code> · '+f.allCards.length+'</p>').join(''):p.cards.map(n=>`<button class="dep-link" data-inspect-node="${escapeHTML(n.id)}">${escapeHTML(n.title)}</button>`).join('')}`;
+    packInfo.querySelectorAll('[data-inspect-node]').forEach(b=>b.onclick=()=>inspectNode(b.dataset.inspectNode));
   }
   function inspectPack(id){
     if(!model.packFor(id))return;state.reading={pack:id};packInformation(id);showInformation();requestAnimationFrame(focusReading);
@@ -195,27 +192,30 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
     const isRoot=state.target==='lemma'&&!state.pack;let members;
     root.dataset.mainProof=String(isRoot);target.element.hidden=!!state.pack;
     root.dataset.referenceWorld=state.pack||'';
-    canvas.setAttribute('aria-label',state.pack?text('参考卡牌：从上到下展开','Reference cards: vertical fan'):isRoot?text('PDF 原稿证明脉络与主定理','PDF proof path and main theorem'):text('证明步骤与目标','Proof steps and target'));
-    if(state.pack)members=model.members('pack:'+state.pack);
+    canvas.setAttribute('aria-label',state.pack?text('源文件模块与声明','Source modules and declarations'):isRoot?text('PDF 原稿证明脉络与主定理','PDF proof path and main theorem'):text('证明步骤与目标','Proof steps and target'));
+    if(state.pack)members=model.packFor(state.pack).subpacks.length?[]:model.members('pack:'+state.pack);
     else if(state.catalog)members=model.members(catalogOwner()||state.target).filter(n=>n.id!==state.target);
     else members=(isRoot?model.roots:model.children(state.target)).map(id=>originalById.get(id)).filter(Boolean);
-    const refs=state.pack?[]:isRoot?model.references:packUses();
+    const refs=state.pack?model.packFor(state.pack).subpacks:isRoot?model.references:[];
     // References already have their own pack; they appear once as a pack cover.
-    if(!state.pack)members=members.filter(n=>!model.owner.get(n.id)?.startsWith('pack:'));
-    const pageSize=state.pack?Math.max(1,members.length):isRoot?(innerWidth<600?3:9):6,items=[...members.map(n=>({n})),...refs.map(p=>({p}))],pages=Math.max(1,Math.ceil(items.length/pageSize));state.page=Math.min(state.page,pages-1);
+    
+    const pageSize=state.pack?(innerWidth<600?4:8):isRoot?(innerWidth<600?3:24):6,items=[...members.map(n=>({n})),...refs.map(p=>({p}))],pages=Math.max(1,Math.ceil(items.length/pageSize));state.page=Math.min(state.page,pages-1);
     deck.replaceChildren(...items.slice(state.page*pageSize,(state.page+1)*pageSize).map(item=>item.n?proofCard(item.n):referenceCard(item.p)));
     target.element.querySelectorAll('.theorem-port').forEach(port=>port.hidden=!!state.pack||!items.length||port.dataset.side!=='left');
     [...deck.children].forEach((card,i)=>{card.dataset.worldSlot=slots[i];card.style.setProperty('--fan-order',i);});layoutDeck();queueWires();
     if(!items.length){const note=document.createElement('div');note.className='world-leaf';note.innerHTML=`<p>${text('此阅读节点没有更细分的项目卡片。','This reading node has no finer project cards.')}</p>`;const evidence=document.createElement('button');evidence.type='button';evidence.className='button';evidence.textContent=text('查看原文与源码状态','Read the manuscript and source status');evidence.onclick=()=>openGraph(state.target);note.append(evidence);deck.append(note);}
-    reading.textContent=state.pack?model.packFor(state.pack).name[english?1:0]+text(' · 纵向卡牌',' · Vertical cards'):isRoot?text('Nagata 猜想 · 形式化','Nagata conjecture · formalization'):text('当前目标的证明步骤','Proof steps for the current goal');
+    reading.textContent=state.pack?model.packFor(state.pack).name[english?1:0]+text(' · 模块与声明',' · Modules and declarations'):isRoot?text('Nagata 猜想 · 形式化','Nagata conjecture · formalization'):text('当前目标的证明步骤','Proof steps for the current goal');
     root.dataset.worldTarget=state.target;root.dataset.referenceWorld=state.pack||'';root.dataset.catalog=String(state.catalog);
     previous.textContent='←';next.textContent='→';previous.setAttribute('aria-label',text('上一组卡片','Previous cards'));next.setAttribute('aria-label',text('下一组卡片','Next cards'));previous.disabled=state.page===0;next.disabled=state.page===pages-1;previous.hidden=next.hidden=pages===1;
     count.textContent=items.length?`${state.page*pageSize+1}–${Math.min(items.length,(state.page+1)*pageSize)} / ${items.length}`:'';
-    catalog.hidden=!!state.pack||!model.members(catalogOwner()||state.target).some(n=>n.id!==state.target);catalog.textContent=state.catalog?text('当前证明步骤','Current proof steps'):text('模块全部卡片','All module cards');catalog.setAttribute('aria-pressed',String(state.catalog));
+    catalog.hidden=false;catalog.textContent=text('全部 Lean 声明','All Lean declarations');catalog.setAttribute('aria-pressed',String(state.catalog));
     if(state.reading&&state.mode==='world'){showInformation();if(state.reading.pack)packInformation(state.reading.pack);requestAnimationFrame(focusReading);}
     if(state.mode==='graph')nodeEditor.setWorldContext({target:originalById.get(state.target),allowed:new Set([...model.closure(state.target),...model.closure(selected())]),reference:isReferenceCard(originalById.get(selected()))});
     document.dispatchEvent(new Event('proofworldrender'));
   }
+  function fitOverview(){if(state.target==='lemma'&&!state.pack&&innerWidth>=600){requestAnimationFrame(()=>{const s=Math.min(1,(canvas.clientWidth-24)/scene.clientWidth,(canvas.clientHeight-24)/scene.clientHeight);moveCamera((canvas.clientWidth-scene.clientWidth*s)/2,(canvas.clientHeight-scene.clientHeight*s)/2,s);});}}
+  function fitOverview(){if(state.target==='lemma'&&!state.pack&&innerWidth>=600){requestAnimationFrame(()=>{const s=Math.min(1,(canvas.clientWidth-24)/scene.clientWidth,(canvas.clientHeight-24)/scene.clientHeight);moveCamera((canvas.clientWidth-scene.clientWidth*s)/2,(canvas.clientHeight-scene.clientHeight*s)/2,s);});}}
+  function fitOverview(){if(state.target==='lemma'&&!state.pack&&innerWidth>=600){requestAnimationFrame(()=>{const s=Math.min(1,(canvas.clientWidth-24)/scene.clientWidth,(canvas.clientHeight-24)/scene.clientHeight);moveCamera((canvas.clientWidth-scene.clientWidth*s)/2,(canvas.clientHeight-scene.clientHeight*s)/2,s);});}}
   function save(){const url=new URL(location);if(state.mode==='world'&&!state.pack)url.hash='node='+state.target;if(state.target==='lemma')url.searchParams.delete('world');else url.searchParams.set('world',state.target);if(state.pack)url.searchParams.set('pack',state.pack);else url.searchParams.delete('pack');history.replaceState(history.state,'',url);}
   async function enter(id,pack=null){
     if(!originalById.has(id))return;const priorCamera=cameraPose();closeReading();
@@ -232,7 +232,7 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
     if(state.mode==='graph'){state.mode='world';render();save();return;}
     const prior=state.trail.pop();if(!prior)return;Object.assign(state,prior);if(prior.worldCamera)moveCamera(prior.worldCamera.x,prior.worldCamera.y,prior.worldCamera.scale);render();if(prior.mode==='graph')nodeEditor.restoreCamera(prior.camera);save();
   }
-  back.onclick=restore;home.onclick=()=>{closeReading();moveCamera(0,0,1);Object.assign(state,{target:'lemma',pack:null,mode:'world',catalog:false,page:0,trail:[]});render();save();};toggle.onclick=()=>state.mode==='world'?openGraph():restore();catalog.onclick=()=>{state.catalog=!state.catalog;state.page=0;render();};previous.onclick=()=>{state.page--;render();};next.onclick=()=>{state.page++;render();};
+  back.onclick=restore;home.onclick=()=>{closeReading();moveCamera(0,0,1);Object.assign(state,{target:'lemma',pack:null,mode:'world',catalog:false,page:0,trail:[]});render();fitOverview();save();};toggle.onclick=()=>state.mode==='world'?openGraph():restore();catalog.onclick=()=>document.dispatchEvent(new Event('leancatalogrequest'));previous.onclick=()=>{state.page--;render();};next.onclick=()=>{state.page++;render();};
   document.querySelector('#graph').addEventListener('contextmenu',e=>{const card=e.target.closest('.node[data-node]');if(card){e.preventDefault();enter(card.dataset.node,null,card);}});
   document.addEventListener('referencecardrequest',e=>{const id=e.detail;if(originalById.has(id)){const source=model.owner.get(id);if(source?.startsWith('pack:'))enter(state.target,source.slice(5)).then(()=>{state.page=Math.floor(model.members(source).findIndex(n=>n.id===id)/6);render();});}});
   document.addEventListener('click',e=>{const b=e.target.closest('[data-select]');if(!b)return;if(state.mode==='world'){e.preventDefault();inspectNode(b.dataset.select);}});
@@ -241,7 +241,7 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
   document.querySelector('#scope')?.addEventListener('change',()=>{if(state.mode==='world')openGraph();});
   document.addEventListener('proofgraphtoolrequest',e=>{if(state.mode==='world'){openGraph();requestAnimationFrame(()=>e.detail?.());}else e.detail?.();});
   const params=new URLSearchParams(location.search),initial=params.get('world'),initialPack=params.get('pack');if(originalById.has(initial))state.target=initial;if(model.packFor(initialPack))state.pack=initialPack;
-  render();
+  render();fitOverview();
   // Deep links to old cards remain valid; they are initially inside the matching module.
   if(!params.has('world')&&selected()!=='lemma'){const owner=model.owner.get(selected());if(owner?.startsWith('pack:'))state.pack=owner.slice(5);else if(owner)state.target=owner;render();}
   installBottomTools();
@@ -253,7 +253,7 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
       if(button.dataset.nodeZoom){const k=button.dataset.nodeZoom==='in'?1.2:1/1.2,scale=Math.max(.25,Math.min(2.5,pose.scale*k)),x=canvas.clientWidth/2,y=canvas.clientHeight/2;moveCamera(x-(x-pose.x)*scale/pose.scale,y-(y-pose.y)*scale/pose.scale,scale);}
       else if(button.dataset.frame==='selected'&&state.reading)focusReading();
       else if(button.dataset.frame==='theorem')inspectNode(state.target);
-      else moveCamera(0,0,1);
+      else {moveCamera(0,0,1);fitOverview();}
     };
   });
   return {state,model,openGraph,enter,render};

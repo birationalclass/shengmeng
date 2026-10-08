@@ -3,7 +3,7 @@ export function createLineCountModel(snapshot,nodes){
   const ranges=snapshot.sourceRanges||{},byId=new Map(nodes.map(n=>[n.id,n]));
   const union=items=>{
     const files=new Map();
-    for(const r of items){if(!files.has(r.path))files.set(r.path,[]);files.get(r.path).push([r.startLine,r.endLine]);}
+    for(const r of items){if(!Number.isInteger(r.startLine)||!Number.isInteger(r.endLine))continue;if(!files.has(r.path))files.set(r.path,[]);files.get(r.path).push([r.startLine,r.endLine]);}
     const merged=[];
     for(const [path,list] of files){
       list.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);let current=null;
@@ -16,7 +16,7 @@ export function createLineCountModel(snapshot,nodes){
   };
   const own=node=>{
     const r=ranges[node?.decl||node?.declaration];
-    return r?{...union([r]),complete:true}:{ranges:[],count:null,complete:false};
+    return r&&Number.isInteger(r.startLine)?{...union([r]),complete:true}:{ranges:[],count:null,complete:false};
   };
   const pack=members=>{
     const seen=new Set(),items=[];let complete=true;
