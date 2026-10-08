@@ -551,6 +551,17 @@ LinearStudy.boundedPolynomialSpan_finrank_le.{u_1, u_2, u_3} {k : Type u_1} {τ 
   [CommRing A] [Algebra k A] {m : ℕ} [Finite τ] (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) (N : ℕ) :
   Module.finrank k ↥(LinearStudy.boundedPolynomialSpan g b N) ≤ m * (N + 1) ^ Nat.card τ
 'LinearStudy.boundedPolynomialSpan_finrank_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.centered_target_coordinate_point_kernel.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field K] [Fintype τ] [DecidableEq τ] (b : σ ≃ τ) (M : Matrix τ τ K) (hM : M.det ≠ 0) (y : σ → K) :
+  have E0 := MvPolynomial.renameEquiv K b;
+  have EL := LinearStudy.polynomialLinearChangeEquiv M hM;
+  have z := M⁻¹.mulVec (y ∘ ⇑b.symm);
+  have EC := LinearStudy.polynomialTranslation z;
+  Ideal.comap EC.symm.toRingEquiv.toRingHom
+      (Ideal.comap EL.symm.toRingEquiv.toRingHom
+        (Ideal.comap E0.symm.toRingEquiv.toRingHom (RingHom.ker (MvPolynomial.aeval y).toRingHom))) =
+    RingHom.ker (MvPolynomial.aeval 0).toRingHom
+'LinearStudy.centered_target_coordinate_point_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.finiteFlat_centered_jacobian_annihilator.{u_1} {K : Type u_1} [Field K] [CharZero K] {r n : ℕ}
   (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K))
   (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))
@@ -571,6 +582,37 @@ LinearStudy.finiteFlat_centered_jacobian_annihilator.{u_1} {K : Type u_1} [Field
       (nilradical (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))) x ↔
     ∃ u, x = u • (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i))
 'LinearStudy.finiteFlat_centered_jacobian_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_local_generators_imply_point_containment.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
+  {ι : Type u_3} [Field K] [Finite σ] (I P : Ideal (MvPolynomial σ K)) [P.IsPrime] (z : σ → K)
+  (hP : P = RingHom.ker (MvPolynomial.aeval z).toRingHom) (H : ι → MvPolynomial σ K)
+  (hlocal :
+    Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I =
+      Ideal.span (Set.range fun i => (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) (H i)))
+  (h0 : ∀ (i : ι), (MvPolynomial.eval z) (H i) = 0) : I ≤ P
+'LinearStudy.polynomial_local_generators_imply_point_containment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.polynomial_local_generators_actual_centering.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {ι : Type u_3}
+  [Field K] [Finite σ] (I P : Ideal (MvPolynomial σ K)) [P.IsPrime] (z : σ → K)
+  (hP : P = RingHom.ker (MvPolynomial.aeval z).toRingHom) (H : ι → MvPolynomial σ K)
+  (hlocal :
+    Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I =
+      Ideal.span (Set.range fun i => (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) (H i)))
+  (h0 : ∀ (i : ι), (MvPolynomial.eval z) (H i) = 0) :
+  have E := LinearStudy.polynomialTranslation z;
+  let Q := RingHom.ker (MvPolynomial.aeval 0).toRingHom;
+  Ideal.map E.toRingEquiv.toRingHom I ≤ Q ∧
+    (∀ (i : ι), (MvPolynomial.eval 0) (E (H i)) = 0) ∧
+      Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime Q)) (Ideal.map E.toRingEquiv.toRingHom I) =
+        Ideal.span (Set.range fun i => (algebraMap (MvPolynomial σ K) (Localization.AtPrime Q)) (E (H i)))
+'LinearStudy.polynomial_local_generators_actual_centering' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_normal_firstJet_actual_centering.{u_1, u_4, u_5} {K : Type u_1} [Field K] {α : Type u_4}
+  {β : Type u_5} [Finite α] [Finite β] [DecidableEq α] [DecidableEq β] (z : α ⊕ β → K) (H : β → MvPolynomial (α ⊕ β) K)
+  (hD : ∀ (i : β) (j : α ⊕ β), (MvPolynomial.eval z) ((MvPolynomial.pderiv j) (H i)) = if j = Sum.inr i then 1 else 0)
+  (i : β) (j : α ⊕ β) :
+  (MvPolynomial.eval 0) ((MvPolynomial.pderiv j) ((LinearStudy.polynomialTranslation z) (H i))) =
+    if j = Sum.inr i then 1 else 0
+'LinearStudy.polynomial_normal_firstJet_actual_centering' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.genericNormalBlock.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K] [Fintype σ] {c : ℕ}
   (A : Matrix (Fin c) σ K) (ν : Fin c → σ) : Matrix (Fin c) (Fin c) (MvPolynomial (σ × σ) K)
 'LinearStudy.genericNormalBlock' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -3976,6 +4018,40 @@ LinearStudy.polynomialDoubleRightZero_totalDegree.{u_1, u_2} {K : Type u_1} {ι 
   [DecidableEq ι] (p : MvPolynomial (ι ⊕ ι) K) :
   ((LinearStudy.polynomialDoubleRightPoint 0) p).totalDegree ≤ p.totalDegree
 'LinearStudy.polynomialDoubleRightZero_totalDegree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_coordinate_point_evaluation.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field K] (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (x : σ → K) :
+  have y := fun j => (MvPolynomial.eval x) (E.symm (MvPolynomial.X j));
+  (MvPolynomial.aeval y).comp ↑E = MvPolynomial.aeval x
+'LinearStudy.polynomial_coordinate_point_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_coordinate_point_kernel.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
+  (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (x : σ → K) :
+  have y := fun j => (MvPolynomial.eval x) (E.symm (MvPolynomial.X j));
+  RingHom.ker (MvPolynomial.aeval x).toRingHom =
+    Ideal.comap E.toRingEquiv.toRingHom (RingHom.ker (MvPolynomial.aeval y).toRingHom)
+'LinearStudy.polynomial_coordinate_point_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_coordinate_away_point_evaluation.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field K] (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (x : σ → K) (p0 : MvPolynomial σ K)
+  (hp0 : (MvPolynomial.eval x) p0 ≠ 0) :
+  have y := fun j => (MvPolynomial.eval x) (E.symm (MvPolynomial.X j));
+  ∃ (hp0' : (MvPolynomial.eval y) (E p0) ≠ 0),
+    (LinearStudy.polynomialAwayPointEvaluation y (E p0) hp0').comp ↑(LinearStudy.polynomialAwayCoordinateEquiv E p0) =
+        LinearStudy.polynomialAwayPointEvaluation x p0 hp0 ∧
+      Ideal.comap (LinearStudy.polynomialAwayCoordinateEquiv E p0).symm.toRingEquiv.toRingHom
+          (RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom) =
+        RingHom.ker (LinearStudy.polynomialAwayPointEvaluation y (E p0) hp0').toRingHom
+'LinearStudy.polynomial_coordinate_away_point_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_coordinate_local_generators.{u_1, u_2, u_3, u_4} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  {ι : Type u_4} [Field K] (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (x : σ → K) (I : Ideal (MvPolynomial σ K))
+  (G : ι → MvPolynomial σ K)
+  (hs :
+    let P := RingHom.ker (MvPolynomial.aeval x).toRingHom;
+    Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I =
+      Ideal.span (Set.range fun i => (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) (G i))) :
+  have y := fun j => (MvPolynomial.eval x) (E.symm (MvPolynomial.X j));
+  let Q := RingHom.ker (MvPolynomial.aeval y).toRingHom;
+  Ideal.map (algebraMap (MvPolynomial τ K) (Localization.AtPrime Q)) (Ideal.map E.toRingEquiv.toRingHom I) =
+    Ideal.span (Set.range fun i => (algebraMap (MvPolynomial τ K) (Localization.AtPrime Q)) (E (G i)))
+'LinearStudy.polynomial_coordinate_local_generators' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_derivation_chain.{u_1, u_2, u_3, u_4} {K : Type u_1} {R : Type u_2} {B : Type u_3} {σ : Type u_4}
   [CommRing K] [CommRing R] [CommRing B] [Algebra B R] [Fintype σ] (ψ : MvPolynomial σ K →+* R) (D : Derivation B R R)
   (hC : ∀ (a : K), D (ψ (MvPolynomial.C a)) = 0) (P : MvPolynomial σ K) :
@@ -5897,6 +5973,117 @@ LinearStudy.projectiveAmbientChart_exists_unramified_local_quotient {n : ℕ} (f
 'LinearStudy.projectiveAmbientChart_exists_unramified_local_quotient' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projective_whole_fiber_centered_rational_local_inputs.{u_1} {n : ℕ} {τ : Type u_1} [Fintype τ]
+  [DecidableEq τ] (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) (a : MvPolynomial (Fin n) ℂ)
+  (hgood :
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+    let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);
+    have φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0;
+    ∀ (P : PrimeSpectrum A),
+      φ ((Ideal.Quotient.mk V.affineIdeal) a) ∉ P.asIdeal →
+        P ∈ Algebra.smoothLocus ℂ A ∧
+          PrimeSpectrum.comap φ.toRingHom P ∈ Algebra.smoothLocus ℂ B ∧ P ∈ Algebra.unramifiedLocus B A)
+  (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) (ha : (MvPolynomial.eval y) a ≠ 0)
+  (E : MvPolynomial (Fin n) ℂ ≃ₐ[ℂ] MvPolynomial τ ℂ) (b : Fin n ≃ τ) (M : Matrix τ τ ℂ) (hM : M.det ≠ 0) :
+  have z := M⁻¹.mulVec (y ∘ ⇑b.symm);
+  have p0 := E (LinearStudy.affineChartPolynomialMap (f.forms 0));
+  have p := fun j => E (LinearStudy.affineChartPolynomialMap (f.forms (b.symm j).succ));
+  have pL := fun i => (MvPolynomial.aeval p) (M⁻¹.toMvPolynomial i);
+  have pC := fun i => pL i - MvPolynomial.C (z i) * p0;
+  let I :=
+    Ideal.map (LinearStudy.polynomialTranslation z).toRingEquiv.toRingHom
+      (Ideal.map (LinearStudy.polynomialLinearChangeEquiv M hM).toRingEquiv.toRingHom
+        (Ideal.map (MvPolynomial.renameEquiv ℂ b).toRingEquiv.toRingHom V.affineIdeal));
+  have J := Ideal.map E.toRingEquiv.toRingHom V.affineIdeal;
+  let Jaway := Ideal.map (algebraMap (MvPolynomial τ ℂ) (Localization.Away p0)) J;
+  let ψ := LinearStudy.rationalPolynomialChartMap p0 pC;
+  let Q := RingHom.ker (MvPolynomial.aeval 0).toRingHom;
+  ∃ e,
+    0 < e ∧
+      Jaway ^ e ≤ Ideal.map ψ.toRingHom I ∧
+        ∃ (hhi : Ideal.map ψ.toRingHom I ≤ Jaway),
+          ∀ x ∈ MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAffineFiberIdeal f V y),
+            have x' := fun j => (MvPolynomial.eval x) (E.symm (MvPolynomial.X j));
+            ∃ (hp0 : (MvPolynomial.eval x') p0 ≠ 0),
+              let P := RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x' p0 hp0).toRingHom;
+              ∃ (hQP : Q = Ideal.comap ψ.toRingHom P),
+                (LinearStudy.generalPointLocalQuotientPullback I Jaway P Q ψ.toRingHom hQP hhi).FormallyUnramified
+'LinearStudy.projective_whole_fiber_centered_rational_local_inputs' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.ProjectiveCenteredNormalTargetConclusion {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (y : Fin n → ℂ) (r : ℕ) : Prop
+'LinearStudy.ProjectiveCenteredNormalTargetConclusion' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_actual_normal_target_centering {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (y : Fin n → ℂ) (r : ℕ) (h : LinearStudy.ProjectiveTargetNormalCoordinateConclusion V y r) :
+  LinearStudy.ProjectiveCenteredNormalTargetConclusion V y r
+'LinearStudy.projective_actual_normal_target_centering' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_iterates_whole_fibers_centered_normal_targets {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (hproper : V.ideal.toIdeal ≠ ⊥) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ r ≤ n,
+    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧
+      Module.finrank (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) Ω[MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal⁄ℂ] = r ∧
+        ∀ (k : ℕ),
+          let F := f.iterate k;
+          let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+          let A := Localization.Away (LinearStudy.projectiveChartDenominator F V);
+          have φ := LinearStudy.projectiveChartOpenMap F V ⋯ ⋯ ⋯ x0 hx0;
+          ∃ p ∉ V.affineIdeal,
+            (∀ (P : PrimeSpectrum A),
+                φ ((Ideal.Quotient.mk V.affineIdeal) p) ∉ P.asIdeal →
+                  P ∈ Algebra.smoothLocus ℂ A ∧
+                    PrimeSpectrum.comap φ.toRingHom P ∈ Algebra.smoothLocus ℂ B ∧ P ∈ Algebra.unramifiedLocus B A) ∧
+              (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧
+                ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),
+                  (MvPolynomial.eval y) p ≠ 0 →
+                    LinearStudy.ProjectiveWholeAmbientFiberConclusion (f.iterate k) V y hy r ∧
+                      LinearStudy.ProjectiveLinearTargetParameterConclusion V y hy r ∧
+                        LinearStudy.ProjectiveCenteredNormalTargetConclusion V y r
+'LinearStudy.projective_iterates_whole_fibers_centered_normal_targets' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.rational_target_linear_coordinates_actual_power_sandwich.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
+  [Fintype σ] [DecidableEq σ] (M : Matrix σ σ K) (hM : M.det ≠ 0) (p0 : MvPolynomial σ K) (p : σ → MvPolynomial σ K)
+  (I : Ideal (MvPolynomial σ K)) (J : Ideal (Localization.Away p0)) (m : ℕ)
+  (hlo : J ^ m ≤ Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I)
+  (hhi : Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤ J) :
+  J ^ m ≤
+      Ideal.map
+        (LinearStudy.rationalPolynomialChartMap p0 fun i => (MvPolynomial.aeval p) (M⁻¹.toMvPolynomial i)).toRingHom
+        (Ideal.map (LinearStudy.polynomialLinearChangeEquiv M hM).toRingEquiv.toRingHom I) ∧
+    Ideal.map
+        (LinearStudy.rationalPolynomialChartMap p0 fun i => (MvPolynomial.aeval p) (M⁻¹.toMvPolynomial i)).toRingHom
+        (Ideal.map (LinearStudy.polynomialLinearChangeEquiv M hM).toRingEquiv.toRingHom I) ≤
+      J
+'LinearStudy.rational_target_linear_coordinates_actual_power_sandwich' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_original_centered_rational_power_sandwich.{u_1} {n : ℕ} {τ : Type u_1} [Fintype τ]
+  [DecidableEq τ] (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (hf : f.degree ≠ 0) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (E : MvPolynomial (Fin n) ℂ ≃ₐ[ℂ] MvPolynomial τ ℂ)
+  (b : Fin n ≃ τ) (M : Matrix τ τ ℂ) (hM : M.det ≠ 0) (z : τ → ℂ) :
+  have p0 := E (LinearStudy.affineChartPolynomialMap (f.forms 0));
+  have p := fun j => E (LinearStudy.affineChartPolynomialMap (f.forms (b.symm j).succ));
+  have pL := fun i => (MvPolynomial.aeval p) (M⁻¹.toMvPolynomial i);
+  have pC := fun i => pL i - MvPolynomial.C (z i) * p0;
+  have I :=
+    Ideal.map (LinearStudy.polynomialTranslation z).toRingEquiv.toRingHom
+      (Ideal.map (LinearStudy.polynomialLinearChangeEquiv M hM).toRingEquiv.toRingHom
+        (Ideal.map (MvPolynomial.renameEquiv ℂ b).toRingEquiv.toRingHom V.affineIdeal));
+  have J := Ideal.map E.toRingEquiv.toRingHom V.affineIdeal;
+  ∃ e,
+    0 < e ∧
+      Ideal.map (algebraMap (MvPolynomial τ ℂ) (Localization.Away p0)) J ^ e ≤
+          Ideal.map (LinearStudy.rationalPolynomialChartMap p0 pC).toRingHom I ∧
+        Ideal.map (LinearStudy.rationalPolynomialChartMap p0 pC).toRingHom I ≤
+          Ideal.map (algebraMap (MvPolynomial τ ℂ) (Localization.Away p0)) J
+'LinearStudy.projective_original_centered_rational_power_sandwich' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.affineDehomogenize.{u_1} {K : Type u_1} [Field K] {n : ℕ} (P : MvPolynomial (Fin (n + 1)) K) :
   MvPolynomial (Fin n) K
 'LinearStudy.affineDehomogenize' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -7479,6 +7666,22 @@ LinearStudy.projective_total_invariance_rational_chart_radical.{u_1} {n : ℕ} (
 'LinearStudy.projective_total_invariance_rational_chart_radical' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projective_original_reindexed_rational_power_sandwich.{u_1} {n : ℕ} {τ : Type u_1}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hf : f.degree ≠ 0)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (E : MvPolynomial (Fin n) ℂ ≃ₐ[ℂ] MvPolynomial τ ℂ) (b : Fin n ≃ τ) :
+  have p0 := E (LinearStudy.affineChartPolynomialMap (f.forms 0));
+  have p := fun j => E (LinearStudy.affineChartPolynomialMap (f.forms (b.symm j).succ));
+  have I := Ideal.map (MvPolynomial.renameEquiv ℂ b).toRingEquiv.toRingHom V.affineIdeal;
+  have J := Ideal.map E.toRingEquiv.toRingHom V.affineIdeal;
+  ∃ e,
+    0 < e ∧
+      Ideal.map (algebraMap (MvPolynomial τ ℂ) (Localization.Away p0)) J ^ e ≤
+          Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ∧
+        Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤
+          Ideal.map (algebraMap (MvPolynomial τ ℂ) (Localization.Away p0)) J
+'LinearStudy.projective_original_reindexed_rational_power_sandwich' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectiveConeScalingMap_ratio {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (u : ℂˣ)
   (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (i : Fin n) :
   (LinearStudy.projectiveConeScalingMap V u)
@@ -7930,6 +8133,52 @@ LinearStudy.projective_iterates_whole_fiber_krull_power {n : ℕ} (f : LinearStu
                     Nat.card ↑((f.iterate k).onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =
                       (f.degree ^ k) ^ r
 'LinearStudy.projective_iterates_whole_fiber_krull_power' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.ProjectiveWholeFiberLocalMapConclusion {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) (y : Fin n → ℂ) : Prop
+'LinearStudy.ProjectiveWholeFiberLocalMapConclusion' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_whole_fiber_actual_local_maps {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) (b : MvPolynomial (Fin n) ℂ)
+  (hgood :
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+    let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);
+    have φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0;
+    ∀ (P : PrimeSpectrum A),
+      φ ((Ideal.Quotient.mk V.affineIdeal) b) ∉ P.asIdeal →
+        P ∈ Algebra.smoothLocus ℂ A ∧
+          PrimeSpectrum.comap φ.toRingHom P ∈ Algebra.smoothLocus ℂ B ∧ P ∈ Algebra.unramifiedLocus B A)
+  (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) (hb : (MvPolynomial.eval y) b ≠ 0) :
+  LinearStudy.ProjectiveWholeFiberLocalMapConclusion f V hq hf hV x0 hx0 y
+'LinearStudy.projective_whole_fiber_actual_local_maps' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_iterates_whole_fibers_actual_local_maps {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (hproper : V.ideal.toIdeal ≠ ⊥) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ r ≤ n,
+    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧
+      Module.finrank (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) Ω[MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal⁄ℂ] = r ∧
+        ∀ (k : ℕ),
+          let F := f.iterate k;
+          let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+          let A := Localization.Away (LinearStudy.projectiveChartDenominator F V);
+          have φ := LinearStudy.projectiveChartOpenMap F V ⋯ ⋯ ⋯ x0 hx0;
+          ∃ p ∉ V.affineIdeal,
+            (∀ (P : PrimeSpectrum A),
+                φ ((Ideal.Quotient.mk V.affineIdeal) p) ∉ P.asIdeal →
+                  P ∈ Algebra.smoothLocus ℂ A ∧
+                    PrimeSpectrum.comap φ.toRingHom P ∈ Algebra.smoothLocus ℂ B ∧ P ∈ Algebra.unramifiedLocus B A) ∧
+              (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧
+                ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),
+                  (MvPolynomial.eval y) p ≠ 0 →
+                    LinearStudy.ProjectiveWholeAmbientFiberConclusion F V y hy r ∧
+                      LinearStudy.ProjectiveCenteredNormalTargetConclusion V y r ∧
+                        LinearStudy.ProjectiveWholeFiberLocalMapConclusion F V ⋯ ⋯ ⋯ x0 hx0 y
+'LinearStudy.projective_iterates_whole_fibers_actual_local_maps' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectiveWholeFiber_card_eq_affine_quotient_finrank {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
   (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ)
   (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)
@@ -8142,6 +8391,52 @@ LinearStudy.rationalPolynomialChartMap_target_local_generators.{u_1, u_2, u_3} {
       (Set.range fun i =>
         (LinearStudy.polynomialAwayFormalMap x p0 hp0) ((LinearStudy.rationalPolynomialChartMap p0 p) (H i)))
 'LinearStudy.rationalPolynomialChartMap_target_local_generators' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.ideal_power_sandwich_under_coordinate_diagram.{u_1, u_2, u_3, u_4} {R : Type u_1} {T : Type u_2}
+  {A : Type u_3} {C : Type u_4} [CommRing R] [CommRing T] [CommRing A] [CommRing C] (e : R ≃+* T) (d : A ≃+* C)
+  (φ : R →+* A) (ψ : T →+* C) (hd : d.toRingHom.comp φ = ψ.comp e.toRingHom) (I : Ideal R) (J : Ideal A) (m : ℕ)
+  (hlo : J ^ m ≤ Ideal.map φ I) (hhi : Ideal.map φ I ≤ J) :
+  Ideal.map d.toRingHom J ^ m ≤ Ideal.map ψ (Ideal.map e.toRingHom I) ∧
+    Ideal.map ψ (Ideal.map e.toRingHom I) ≤ Ideal.map d.toRingHom J
+'LinearStudy.ideal_power_sandwich_under_coordinate_diagram' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.rational_target_centering_actual_map.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (z : σ → K)
+  (p0 : MvPolynomial σ K) (p : σ → MvPolynomial σ K) :
+  (LinearStudy.rationalPolynomialChartMap p0 fun i => p i - MvPolynomial.C (z i) * p0) =
+    (LinearStudy.rationalPolynomialChartMap p0 p).comp ↑(LinearStudy.polynomialTranslation z).symm
+'LinearStudy.rational_target_centering_actual_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.rational_target_centering_actual_square.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (z : σ → K)
+  (p0 : MvPolynomial σ K) (p : σ → MvPolynomial σ K) :
+  (LinearStudy.rationalPolynomialChartMap p0 fun i => p i - MvPolynomial.C (z i) * p0).comp
+      (LinearStudy.polynomialTranslation z).toRingEquiv.toRingHom =
+    (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom
+'LinearStudy.rational_target_centering_actual_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.rational_target_centering_actual_power_sandwich.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
+  (z : σ → K) (p0 : MvPolynomial σ K) (p : σ → MvPolynomial σ K) (I : Ideal (MvPolynomial σ K))
+  (J : Ideal (Localization.Away p0)) (m : ℕ)
+  (hlo : J ^ m ≤ Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I)
+  (hhi : Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤ J) :
+  J ^ m ≤
+      Ideal.map (LinearStudy.rationalPolynomialChartMap p0 fun i => p i - MvPolynomial.C (z i) * p0).toRingHom
+        (Ideal.map (LinearStudy.polynomialTranslation z).toRingEquiv.toRingHom I) ∧
+    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 fun i => p i - MvPolynomial.C (z i) * p0).toRingHom
+        (Ideal.map (LinearStudy.polynomialTranslation z).toRingEquiv.toRingHom I) ≤
+      J
+'LinearStudy.rational_target_centering_actual_power_sandwich' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.rational_source_coordinates_actual_power_sandwich.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
+  (e : MvPolynomial σ K ≃ₐ[K] MvPolynomial σ K) (p0 : MvPolynomial σ K) (p : σ → MvPolynomial σ K)
+  (I J : Ideal (MvPolynomial σ K)) (m : ℕ)
+  (hlo :
+    Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away p0)) J ^ m ≤
+      Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I)
+  (hhi :
+    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤
+      Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away p0)) J) :
+  Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away (e p0))) (Ideal.map e.toRingEquiv.toRingHom J) ^ m ≤
+      Ideal.map (LinearStudy.rationalPolynomialChartMap (e p0) fun i => e (p i)).toRingHom I ∧
+    Ideal.map (LinearStudy.rationalPolynomialChartMap (e p0) fun i => e (p i)).toRingHom I ≤
+      Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away (e p0))) (Ideal.map e.toRingEquiv.toRingHom J)
+'LinearStudy.rational_source_coordinates_actual_power_sandwich' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.rational_smooth_unramified_socle_without_finite_type_input {r c : ℕ} [Nonempty (Fin r)] [Nonempty (Fin c)]
@@ -8444,6 +8739,85 @@ LinearStudy.rationalPointPrime_comp_formallyUnramified.{u_1, u_2, u_3} {K : Type
   (hρ : LinearStudy.rationalPointPrime ρ ∈ Algebra.unramifiedLocus R A) :
   ((algebraMap A (Localization.AtPrime (LinearStudy.rationalPointPrime ρ).asIdeal)).comp φ.toRingHom).FormallyUnramified
 'LinearStudy.rationalPointPrime_comp_formallyUnramified' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.rational_reindexed_centered_actual_local_map.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field K] [Fintype τ] [DecidableEq τ] (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (b : σ ≃ τ) (M : Matrix τ τ K)
+  (hM : M.det ≠ 0) (z : τ → K) (p0 : MvPolynomial σ K) (p : σ → MvPolynomial σ K) (I J Q : Ideal (MvPolynomial σ K))
+  [Q.IsPrime] (P : Ideal (Localization.Away p0)) [P.IsPrime]
+  (hQP : Q = Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P)
+  (hφ :
+    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤
+      Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away p0)) J)
+  (h :
+    (LinearStudy.generalPointLocalQuotientPullback I
+        (Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away p0)) J) P Q
+        (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom hQP hφ).FormallyUnramified) :
+  have E0 := MvPolynomial.renameEquiv K b;
+  have EL := LinearStudy.polynomialLinearChangeEquiv M hM;
+  have EC := LinearStudy.polynomialTranslation z;
+  have d := LinearStudy.polynomialAwayCoordinateEquiv E p0;
+  let P' := Ideal.comap d.symm.toRingEquiv.toRingHom P;
+  let Q' :=
+    Ideal.comap EC.symm.toRingEquiv.toRingHom
+      (Ideal.comap EL.symm.toRingEquiv.toRingHom (Ideal.comap E0.symm.toRingEquiv.toRingHom Q));
+  have p' := fun j => E (p (b.symm j));
+  have pL := fun i => (MvPolynomial.aeval p') (M⁻¹.toMvPolynomial i);
+  have pC := fun i => pL i - MvPolynomial.C (z i) * E p0;
+  let ψ := LinearStudy.rationalPolynomialChartMap (E p0) pC;
+  let I' :=
+    Ideal.map EC.toRingEquiv.toRingHom (Ideal.map EL.toRingEquiv.toRingHom (Ideal.map E0.toRingEquiv.toRingHom I));
+  let J' := Ideal.map (algebraMap (MvPolynomial τ K) (Localization.Away (E p0))) (Ideal.map E.toRingEquiv.toRingHom J);
+  ∃ (hQP' : Q' = Ideal.comap ψ.toRingHom P') (hψ : Ideal.map ψ.toRingHom I' ≤ J'),
+    (LinearStudy.generalPointLocalQuotientPullback I' J' P' Q' ψ.toRingHom hQP' hψ).FormallyUnramified
+'LinearStudy.rational_reindexed_centered_actual_local_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.rational_source_coordinates_target_reindex_square.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
+  {τ : Type u_3} [Field K] (e : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (b : σ ≃ τ) (p0 : MvPolynomial σ K)
+  (p : σ → MvPolynomial σ K) :
+  (↑(LinearStudy.polynomialAwayCoordinateEquiv e p0)).comp (LinearStudy.rationalPolynomialChartMap p0 p) =
+    (LinearStudy.rationalPolynomialChartMap (e p0) fun j => e (p (b.symm j))).comp ↑(MvPolynomial.renameEquiv K b)
+'LinearStudy.rational_source_coordinates_target_reindex_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.rational_source_coordinates_target_reindex_power_sandwich.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
+  {τ : Type u_3} [Field K] (e : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (b : σ ≃ τ) (p0 : MvPolynomial σ K)
+  (p : σ → MvPolynomial σ K) (I J : Ideal (MvPolynomial σ K)) (m : ℕ)
+  (hlo :
+    Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away p0)) J ^ m ≤
+      Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I)
+  (hhi :
+    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤
+      Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away p0)) J) :
+  Ideal.map (algebraMap (MvPolynomial τ K) (Localization.Away (e p0))) (Ideal.map e.toRingEquiv.toRingHom J) ^ m ≤
+      Ideal.map (LinearStudy.rationalPolynomialChartMap (e p0) fun j => e (p (b.symm j))).toRingHom
+        (Ideal.map (MvPolynomial.renameEquiv K b).toRingEquiv.toRingHom I) ∧
+    Ideal.map (LinearStudy.rationalPolynomialChartMap (e p0) fun j => e (p (b.symm j))).toRingHom
+        (Ideal.map (MvPolynomial.renameEquiv K b).toRingEquiv.toRingHom I) ≤
+      Ideal.map (algebraMap (MvPolynomial τ K) (Localization.Away (e p0))) (Ideal.map e.toRingEquiv.toRingHom J)
+'LinearStudy.rational_source_coordinates_target_reindex_power_sandwich' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.rational_source_coordinates_target_reindex_unramified.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
+  {τ : Type u_3} [Field K] (e : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (b : σ ≃ τ) (p0 : MvPolynomial σ K)
+  (p : σ → MvPolynomial σ K) (I J Q : Ideal (MvPolynomial σ K)) [Q.IsPrime] (P : Ideal (Localization.Away p0))
+  [P.IsPrime] (hQP : Q = Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P)
+  (hφ :
+    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤
+      Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away p0)) J)
+  (h :
+    (LinearStudy.generalPointLocalQuotientPullback I
+        (Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away p0)) J) P Q
+        (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom hQP hφ).FormallyUnramified) :
+  have E := MvPolynomial.renameEquiv K b;
+  have d := LinearStudy.polynomialAwayCoordinateEquiv e p0;
+  let Q' := Ideal.comap E.symm.toRingEquiv.toRingHom Q;
+  let P' := Ideal.comap d.symm.toRingEquiv.toRingHom P;
+  let ψ := LinearStudy.rationalPolynomialChartMap (e p0) fun j => e (p (b.symm j));
+  let I' := Ideal.map E.toRingEquiv.toRingHom I;
+  let J' := Ideal.map (algebraMap (MvPolynomial τ K) (Localization.Away (e p0))) (Ideal.map e.toRingEquiv.toRingHom J);
+  ∃ (hQP' : Q' = Ideal.comap ψ.toRingHom P') (hψ : Ideal.map ψ.toRingHom I' ≤ J'),
+    (LinearStudy.generalPointLocalQuotientPullback I' J' P' Q' ψ.toRingHom hQP' hψ).FormallyUnramified
+'LinearStudy.rational_source_coordinates_target_reindex_unramified' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.rational_smooth_unramified_constructs_jacobian_socle {r c : ℕ} [Nonempty (Fin r)] [Nonempty (Fin c)]
   (x : Fin r ⊕ Fin c → ℂ) (p0 : MvPolynomial (Fin r ⊕ Fin c) ℂ) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)
   (p : Fin r ⊕ Fin c → MvPolynomial (Fin r ⊕ Fin c) ℂ) (I J : Ideal (MvPolynomial (Fin r ⊕ Fin c) ℂ)) [I.IsPrime]
@@ -8677,6 +9051,23 @@ LinearStudy.rationalPolynomialChartMap_unramified_source_coordinates.{u_1, u_2} 
   ∃ (hQP' : Q = Ideal.comap ψ.toRingHom P') (hψ : Ideal.map ψ.toRingHom I ≤ J'),
     (LinearStudy.generalPointLocalQuotientPullback I J' P' Q ψ.toRingHom hQP' hψ).FormallyUnramified
 'LinearStudy.rationalPolynomialChartMap_unramified_source_coordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.rationalPolynomialChartMap_unramified_target_centering.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
+  (z : σ → K) (p0 : MvPolynomial σ K) (p : σ → MvPolynomial σ K) (I Q : Ideal (MvPolynomial σ K)) [Q.IsPrime]
+  (J P : Ideal (Localization.Away p0)) [P.IsPrime]
+  (hQP : Q = Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P)
+  (hφ : Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤ J)
+  (h :
+    (LinearStudy.generalPointLocalQuotientPullback I J P Q (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom hQP
+        hφ).FormallyUnramified) :
+  have E := LinearStudy.polynomialTranslation z;
+  let Q' := Ideal.comap E.symm.toRingEquiv.toRingHom Q;
+  let ψ := LinearStudy.rationalPolynomialChartMap p0 fun i => p i - MvPolynomial.C (z i) * p0;
+  ∃ (hQP' : Q' = Ideal.comap ψ.toRingHom P) (hψ : Ideal.map ψ.toRingHom (Ideal.map E.toRingEquiv.toRingHom I) ≤ J),
+    (LinearStudy.generalPointLocalQuotientPullback (Ideal.map E.toRingEquiv.toRingHom I) J P Q' ψ.toRingHom hQP'
+        hψ).FormallyUnramified
+'LinearStudy.rationalPolynomialChartMap_unramified_target_centering' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.rational_unramified_actual_formal_parameters.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin r)]

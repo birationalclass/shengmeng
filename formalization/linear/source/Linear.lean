@@ -649,3 +649,27 @@ public import Linear.RationalLinearTargetCoordinates
 public import Linear.RationalLinearNormalSocle
 
 public import Linear.RationalLinearNormalLocalSocle
+
+public import Linear.CenteredTargetNormalCoordinates
+
+public import Linear.ProjectiveCenteredNormalTarget
+
+public import Linear.RationalCoordinateSandwich
+
+public import Linear.RationalTargetCenterUnramified
+
+public import Linear.RationalReindexedSourceCoordinates
+
+public import Linear.PolynomialCoordinatePoints
+
+public import Linear.ProjectiveReindexedRationalInvariance
+
+public import Linear.ProjectiveWholeFiberLocalMaps
+
+public import Linear.ProjectiveCenteredRationalInvariance
+
+public import Linear.RationalReindexedCenteredLocalMap
+
+public import Linear.CenteredCoordinatePointKernel
+
+public import Linear.ProjectiveCenteredFiberLocalMaps
