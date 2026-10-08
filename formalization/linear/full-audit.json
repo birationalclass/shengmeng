@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1788,
-  "verifiedTheorems": 1336,
-  "definitions": 256,
+  "audited": 1819,
+  "verifiedTheorems": 1363,
+  "definitions": 260,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -9109,6 +9109,106 @@
       ]
     },
     {
+      "declaration": "LinearStudy.hilbertPoly_coeff_top",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HilbertLeadingCoeffCumulative.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.hilbertPoly_coeff_top (p : Polynomial ℚ) (r : ℕ) :\n  (p.hilbertPoly (r + 1)).coeff r = Polynomial.eval 1 p * (↑r.factorial)⁻¹",
+      "sha256": "cece1c71571983b9f883e1e991fa3c47d2b15cfacfcac24d9a41d7d326b4b713",
+      "lines": 8,
+      "moduleLineCount": 137,
+      "startLine": 11,
+      "endLine": 18,
+      "lineCount": 8,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.hilbertPoly_leadingCoeff_of_eval_one_ne_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HilbertLeadingCoeffCumulative.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.hilbertPoly_leadingCoeff_of_eval_one_ne_zero (p : Polynomial ℚ) (hp : Polynomial.eval 1 p ≠ 0) (r : ℕ) :\n  (p.hilbertPoly (r + 1)).leadingCoeff = Polynomial.eval 1 p * (↑r.factorial)⁻¹",
+      "sha256": "cece1c71571983b9f883e1e991fa3c47d2b15cfacfcac24d9a41d7d326b4b713",
+      "lines": 16,
+      "moduleLineCount": 137,
+      "startLine": 20,
+      "endLine": 35,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.hilbertPoly_coeff_top"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.hilbertPoly_cumulative_normalized_leadingCoeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HilbertLeadingCoeffCumulative.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.hilbertPoly_cumulative_normalized_leadingCoeff (p : Polynomial ℚ) (D : ℕ) (hP : p.hilbertPoly D ≠ 0) :\n  ↑(p.hilbertPoly (D + 1)).natDegree.factorial * (p.hilbertPoly (D + 1)).leadingCoeff =\n    ↑(p.hilbertPoly D).natDegree.factorial * (p.hilbertPoly D).leadingCoeff",
+      "sha256": "cece1c71571983b9f883e1e991fa3c47d2b15cfacfcac24d9a41d7d326b4b713",
+      "lines": 43,
+      "moduleLineCount": 137,
+      "startLine": 37,
+      "endLine": 79,
+      "lineCount": 43,
+      "dependencies": [
+        "LinearStudy.hilbertPoly_leadingCoeff_of_eval_one_ne_zero",
+        "LinearStudy.hilbertPoly_natDegree_succ"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneousQuotientCumulativeHilbertPolynomial_normalized_leadingCoeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HilbertLeadingCoeffCumulative.lean",
+      "line": 85,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousQuotientCumulativeHilbertPolynomial_normalized_leadingCoeff.{u_1, u_2} {K : Type u_1}\n  {σ : Type u_2} [Field K] [Finite σ] (I : Ideal (MvPolynomial σ K))\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (P : Polynomial ℚ) (hP : P ≠ 0)\n  (hN : ∃ N, ∀ n > N, Polynomial.eval (↑n) P = ↑(LinearStudy.homogeneousQuotientHilbert I n)) :\n  ∃ C,\n    C ≠ 0 ∧\n      C.natDegree = P.natDegree + 1 ∧\n        ↑C.natDegree.factorial * C.leadingCoeff = ↑P.natDegree.factorial * P.leadingCoeff ∧\n          ∃ N, ∀ n > N, Polynomial.eval (↑n) C = ↑(Module.finrank K ↥(LinearStudy.homogeneousQuotientFiltration I n))",
+      "sha256": "cece1c71571983b9f883e1e991fa3c47d2b15cfacfcac24d9a41d7d326b4b713",
+      "lines": 53,
+      "moduleLineCount": 137,
+      "startLine": 83,
+      "endLine": 135,
+      "lineCount": 53,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.hilbertPoly_cumulative_normalized_leadingCoeff",
+        "LinearStudy.hilbertPoly_natDegree_succ",
+        "LinearStudy.hilbertPolynomial_eq_of_rational_series",
+        "LinearStudy.homogeneousQuotientCumulativeHilbertPolynomial_existsUnique",
+        "LinearStudy.homogeneousQuotientFiltration",
+        "LinearStudy.homogeneousQuotientFiltration_series_recurrence",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.homogeneousQuotientHilbertSeries_rational",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    {
       "declaration": "LinearStudy.adjoinLiftedGenerators",
       "kind": "def",
       "origin": "project",
@@ -9197,6 +9297,137 @@
       "dependencies": [
         "LinearStudy.adjoinLiftedGenerators",
         "LinearStudy.gradedSubalgebraPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineHomogeneousLift",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/HomogeneousChartLift.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.affineHomogeneousLift.{u_1} {K : Type u_1} [Field K] {n : ℕ} (p : MvPolynomial (Fin n) K) :\n  MvPolynomial (Fin (n + 1)) K",
+      "sha256": "ba91ed85bbb59ac65b17bcabc1392c5672f5140ce5180ba33f817110aca7a0c2",
+      "lines": 6,
+      "moduleLineCount": 88,
+      "startLine": 11,
+      "endLine": 16,
+      "lineCount": 6,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.affineChartPolynomialMap_rename_succ",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousChartLift.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineChartPolynomialMap_rename_succ.{u_1} {K : Type u_1} [Field K] {n : ℕ} (p : MvPolynomial (Fin n) K) :\n  LinearStudy.affineChartPolynomialMap ((MvPolynomial.rename Fin.succ) p) = p",
+      "sha256": "ba91ed85bbb59ac65b17bcabc1392c5672f5140ce5180ba33f817110aca7a0c2",
+      "lines": 9,
+      "moduleLineCount": 88,
+      "startLine": 18,
+      "endLine": 26,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineHomogeneousLift_isHomogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousChartLift.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineHomogeneousLift_isHomogeneous.{u_1} {K : Type u_1} [Field K] {n : ℕ} (p : MvPolynomial (Fin n) K) :\n  (LinearStudy.affineHomogeneousLift p).IsHomogeneous ((MvPolynomial.rename Fin.succ) p).totalDegree",
+      "sha256": "ba91ed85bbb59ac65b17bcabc1392c5672f5140ce5180ba33f817110aca7a0c2",
+      "lines": 12,
+      "moduleLineCount": 88,
+      "startLine": 28,
+      "endLine": 39,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.affineHomogeneousLift"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineChartPolynomialMap_homogeneousLift",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousChartLift.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineChartPolynomialMap_homogeneousLift.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (p : MvPolynomial (Fin n) K) : LinearStudy.affineChartPolynomialMap (LinearStudy.affineHomogeneousLift p) = p",
+      "sha256": "ba91ed85bbb59ac65b17bcabc1392c5672f5140ce5180ba33f817110aca7a0c2",
+      "lines": 10,
+      "moduleLineCount": 88,
+      "startLine": 41,
+      "endLine": 50,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_rename_succ",
+        "LinearStudy.affineHomogeneousLift"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_exists_homogeneous_chart_avoidance",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousChartLift.lean",
+      "line": 54,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_homogeneous_chart_avoidance {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x0 : Fin n → ℂ) (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) (p : MvPolynomial (Fin n) ℂ)\n  (hp : p ∉ V.affineIdeal) :\n  ∃ D H,\n    MvPolynomial.IsHomogeneous H D ∧\n      H ∉ V.ideal.toIdeal ∧\n        ∀ (v : LinearStudy.CoordinateVector n),\n          (MvPolynomial.eval v) H ≠ 0 → v 0 ≠ 0 ∧ (MvPolynomial.eval fun i => v i.succ / v 0) p ≠ 0",
+      "sha256": "ba91ed85bbb59ac65b17bcabc1392c5672f5140ce5180ba33f817110aca7a0c2",
+      "lines": 35,
+      "moduleLineCount": 88,
+      "startLine": 52,
+      "endLine": 86,
+      "lineCount": 35,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_eq_dehomogenize",
+        "LinearStudy.affineChartPolynomialMap_homogeneousLift",
+        "LinearStudy.affineDehomogenize",
+        "LinearStudy.affineHomogeneousLift",
+        "LinearStudy.affineHomogeneousLift_isHomogeneous",
+        "LinearStudy.homogeneous_affine_chart_eval",
+        "LinearStudy.normalizedProjectivePoint"
       ]
     },
     {
@@ -13565,6 +13796,67 @@
         "LinearStudy.homogeneousQuotientPiece",
         "LinearStudy.linear_projection_homogeneousComponent",
         "LinearStudy.polynomial_totalDegree_le_of_components_zero"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finite_polynomial_projection_exists_cone_fiber_avoiding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LinearProjectionSectionAvoidance.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finite_polynomial_projection_exists_cone_fiber_avoiding.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}\n  {τ : Type u_3} [Field K] (I : Ideal (MvPolynomial σ K)) [I.IsPrime] (L : τ → MvPolynomial σ K)\n  (hfinite : ((Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval L)).Finite) (H : MvPolynomial σ K) (hH : H ∉ I) :\n  ∃ b,\n    b ≠ 0 ∧\n      ∀ (w : τ → K),\n        (MvPolynomial.eval w) b ≠ 0 →\n          ∀ v ∈ MvPolynomial.zeroLocus K I, (fun i => (MvPolynomial.eval v) (L i)) = w → (MvPolynomial.eval v) H ≠ 0",
+      "sha256": "20f56361535b98aeec54f0c02cadad907523c656195dd4fa5b1929152278f96f",
+      "lines": 34,
+      "moduleLineCount": 97,
+      "startLine": 13,
+      "endLine": 46,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.polynomialProjectionFiberPointEquiv",
+        "LinearStudy.polynomialZeroLocusPointEquiv",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.ringHom_algebraic_target_open_avoids_source_closed"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finite_linear_projection_exists_projective_section_avoiding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LinearProjectionSectionAvoidance.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finite_linear_projection_exists_projective_section_avoiding {n r D : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (H : LinearStudy.CoordinateRing n)\n  (hHom : MvPolynomial.IsHomogeneous H D) (hH : H ∉ V.ideal.toIdeal) :\n  ∃ b,\n    b ≠ 0 ∧\n      ∀ (w : Fin (r + 1) → ℂ),\n        w 0 ≠ 0 →\n          (MvPolynomial.eval w) b ≠ 0 →\n            ∀ p ∈ LinearStudy.projectiveLinearSection V L w, (MvPolynomial.eval (Projectivization.rep p)) H ≠ 0",
+      "sha256": "20f56361535b98aeec54f0c02cadad907523c656195dd4fa5b1929152278f96f",
+      "lines": 48,
+      "moduleLineCount": 97,
+      "startLine": 48,
+      "endLine": 95,
+      "lineCount": 48,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.finite_polynomial_projection_exists_cone_fiber_avoiding",
+        "LinearStudy.homogeneous_eval_smul",
+        "LinearStudy.homogeneous_zeroLocus_smul",
+        "LinearStudy.integral_linear_normalization_origin_zeroLocus",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearSection"
       ]
     },
     {
@@ -18952,6 +19244,75 @@
       "dependencies": []
     },
     {
+      "declaration": "LinearStudy.polynomial_nat_shifted_ratio_tendsto",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialGrowthLeadingCoeff.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_nat_shifted_ratio_tendsto (P Q : Polynomial ℚ) (hP : P ≠ 0) (hQ : Q ≠ 0)\n  (hd : Q.natDegree = P.natDegree) (B : ℕ) :\n  Filter.Tendsto (fun N => Polynomial.eval (↑N + ↑B) Q / Polynomial.eval (↑N) P) Filter.atTop\n    (nhds (Q.leadingCoeff / P.leadingCoeff))",
+      "sha256": "98faf57c996362f26c25c50f82a1af2a0858e67d62b740b1d397dc7bdb62dbc0",
+      "lines": 28,
+      "moduleLineCount": 87,
+      "startLine": 12,
+      "endLine": 39,
+      "lineCount": 28,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.polynomial_nat_denominator_shift_ratio_tendsto",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialGrowthLeadingCoeff.lean",
+      "line": 42,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_nat_denominator_shift_ratio_tendsto (P Q : Polynomial ℚ) (hP : P ≠ 0) (hQ : Q ≠ 0)\n  (hd : Q.natDegree = P.natDegree) (B : ℕ) :\n  Filter.Tendsto (fun N => Polynomial.eval (↑N) Q / Polynomial.eval (↑N + ↑B) P) Filter.atTop\n    (nhds (Q.leadingCoeff / P.leadingCoeff))",
+      "sha256": "98faf57c996362f26c25c50f82a1af2a0858e67d62b740b1d397dc7bdb62dbc0",
+      "lines": 19,
+      "moduleLineCount": 87,
+      "startLine": 41,
+      "endLine": 59,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.polynomial_nat_affine_ratio_tendsto",
+        "LinearStudy.polynomial_nat_shifted_ratio_tendsto"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomial_two_sided_growth_leadingCoeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialGrowthLeadingCoeff.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_two_sided_growth_leadingCoeff (P Q : Polynomial ℚ) (hP : P ≠ 0) (hQ : Q ≠ 0)\n  (hd : Q.natDegree = P.natDegree) (m B E : ℕ) (hpos : ∀ᶠ (N : ℕ) in Filter.atTop, 0 < Polynomial.eval (↑N) P)\n  (hlow : ∀ᶠ (N : ℕ) in Filter.atTop, ↑m * Polynomial.eval (↑N) P ≤ Polynomial.eval (↑N + ↑B) Q)\n  (hupp : ∀ᶠ (N : ℕ) in Filter.atTop, Polynomial.eval (↑N) Q ≤ ↑m * Polynomial.eval (↑N + ↑E) P) :\n  Q.leadingCoeff = ↑m * P.leadingCoeff",
+      "sha256": "98faf57c996362f26c25c50f82a1af2a0858e67d62b740b1d397dc7bdb62dbc0",
+      "lines": 25,
+      "moduleLineCount": 87,
+      "startLine": 61,
+      "endLine": 85,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.polynomial_nat_denominator_shift_ratio_tendsto",
+        "LinearStudy.polynomial_nat_shifted_ratio_tendsto"
+      ]
+    },
+    {
       "declaration": "LinearStudy.polynomial_nat_affine_ratio_tendsto",
       "kind": "theorem",
       "origin": "project",
@@ -20808,6 +21169,96 @@
         "LinearStudy.ideal_ofFn",
         "LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal",
         "LinearStudy.powerSeries_variables_regular"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.totalDegreeSlackEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PolynomialTotalDegreeHilbert.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.totalDegreeSlackEquiv (s N : ℕ) : { a // ∑ i, a i ≤ N } ≃ { b // ∑ i, b i = N }",
+      "sha256": "45a97a23d9383eef64f4b63ac17dd0f83cdbef7ca61d9d48c9e7809582a3849e",
+      "lines": 25,
+      "moduleLineCount": 72,
+      "startLine": 13,
+      "endLine": 37,
+      "lineCount": 25,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.totalDegreeMonomials_natCard",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialTotalDegreeHilbert.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.totalDegreeMonomials_natCard (s N : ℕ) : Nat.card { a // (a.sum fun x e => e) ≤ N } = (N + s).choose s",
+      "sha256": "45a97a23d9383eef64f4b63ac17dd0f83cdbef7ca61d9d48c9e7809582a3849e",
+      "lines": 14,
+      "moduleLineCount": 72,
+      "startLine": 39,
+      "endLine": 52,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.totalDegreeSlackEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomial_restrictTotalDegree_finrank",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialTotalDegreeHilbert.lean",
+      "line": 55,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_restrictTotalDegree_finrank.{u_1} (K : Type u_1) [Field K] (s N : ℕ) :\n  Module.finrank K ↥(MvPolynomial.restrictTotalDegree (Fin s) K N) = (N + s).choose s",
+      "sha256": "45a97a23d9383eef64f4b63ac17dd0f83cdbef7ca61d9d48c9e7809582a3849e",
+      "lines": 9,
+      "moduleLineCount": 72,
+      "startLine": 54,
+      "endLine": 62,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.totalDegreeMonomials_natCard"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomial_restrictTotalDegree_hilbert_eval",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialTotalDegreeHilbert.lean",
+      "line": 65,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_restrictTotalDegree_hilbert_eval.{u_1} (K : Type u_1) [Field K] (s N : ℕ) :\n  Polynomial.eval (↑N) (Polynomial.preHilbertPoly ℚ s 0) =\n    ↑(Module.finrank K ↥(MvPolynomial.restrictTotalDegree (Fin s) K N))",
+      "sha256": "45a97a23d9383eef64f4b63ac17dd0f83cdbef7ca61d9d48c9e7809582a3849e",
+      "lines": 7,
+      "moduleLineCount": 72,
+      "startLine": 64,
+      "endLine": 70,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.polynomial_restrictTotalDegree_finrank"
       ]
     },
     {
@@ -32232,6 +32683,78 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projective_exists_linear_section_hilbert_degree",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveLinearSectionDegree.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_linear_section_hilbert_degree {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) :\n  ∃ r P,\n    r ≤ n ∧\n      P ≠ 0 ∧\n        P.natDegree = r ∧\n          (∃ N, ∀ j > N, Polynomial.eval (↑j) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal j)) ∧\n            ∃ L,\n              (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧\n                Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧\n                  (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧\n                    let R := MvPolynomial (Fin (r + 1)) ℂ;\n                    let A := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n                    have φ := LinearStudy.projectiveLinearNormalizationMap V L;\n                    ∃ d c,\n                      0 < d ∧\n                        d = Module.finrank R A ∧\n                          ↑d = ↑r.factorial * P.leadingCoeff ∧\n                            c ≠ 0 ∧\n                              (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧\n                                ∀ (w : Fin (r + 1) → ℂ),\n                                  (MvPolynomial.eval w) c ≠ 0 →\n                                    w 0 ≠ 0 ∧ Nat.card ↑(LinearStudy.projectiveLinearSection V L w) = d",
+      "sha256": "b53aeee664629d62faf30d9d9e41d82755fe18598e73829533446c230ff8c582",
+      "lines": 78,
+      "moduleLineCount": 97,
+      "startLine": 18,
+      "endLine": 95,
+      "lineCount": 78,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientCumulativeHilbertPolynomial_normalized_leadingCoeff",
+        "LinearStudy.homogeneousQuotientFiltration",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.polynomial_restrictTotalDegree_hilbert_eval",
+        "LinearStudy.polynomial_two_sided_growth_leadingCoeff",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearSection",
+        "LinearStudy.projective_coordinate_filtration_finrank_pos",
+        "LinearStudy.projective_exists_same_linear_section_generic_growth"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_exists_linear_sections_in_every_affine_open",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveLinearSectionGoodTargets.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_linear_sections_in_every_affine_open {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ r P,\n    r ≤ n ∧\n      P ≠ 0 ∧\n        P.natDegree = r ∧\n          ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧\n            (∃ N, ∀ j > N, Polynomial.eval (↑j) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal j)) ∧\n              ∃ L,\n                (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧\n                  Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧\n                    (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧\n                      ∃ d,\n                        0 < d ∧\n                          ↑d = ↑r.factorial * P.leadingCoeff ∧\n                            ∀ p ∉ V.affineIdeal,\n                              ∃ c,\n                                c ≠ 0 ∧\n                                  (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧\n                                    ∀ (w : Fin (r + 1) → ℂ),\n                                      (MvPolynomial.eval w) c ≠ 0 →\n                                        w 0 ≠ 0 ∧\n                                          Nat.card ↑(LinearStudy.projectiveLinearSection V L w) = d ∧\n                                            ∀ z ∈ LinearStudy.projectiveLinearSection V L w,\n                                              Projectivization.rep z 0 ≠ 0 ∧\n                                                (MvPolynomial.eval fun i =>\n                                                      Projectivization.rep z i.succ / Projectivization.rep z 0)\n                                                    p ≠\n                                                  0",
+      "sha256": "b4e6521d2e1bc48b2a2894504c5689cfa354b0692323cc2510a96dcf675dbb8c",
+      "lines": 52,
+      "moduleLineCount": 68,
+      "startLine": 15,
+      "endLine": 66,
+      "lineCount": 52,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.finite_linear_projection_exists_projective_section_avoiding",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearSection",
+        "LinearStudy.projective_chart_krull_dimension_of_hilbertPolynomial",
+        "LinearStudy.projective_exists_homogeneous_chart_avoidance",
+        "LinearStudy.projective_exists_linear_section_hilbert_degree"
+      ]
+    },
+    {
       "declaration": "LinearStudy.projectiveLinearSection",
       "kind": "def",
       "origin": "project",
@@ -33529,6 +34052,329 @@
         "LinearStudy.projectiveConeScalingMap",
         "LinearStudy.projectiveCoordinateFractionMap",
         "LinearStudy.projectiveCoordinateFractionMap_coordinate"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.linearSectionSourceForms",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveSectionDefiningForms.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.linearSectionSourceForms {r : ℕ} (w : Fin (r + 1) → ℂ) : Fin r → MvPolynomial (Fin (r + 1)) ℂ",
+      "sha256": "922775dd1691966d4894e46c984e50a7aa2f5674f46c572fdca096e3747bfaa9",
+      "lines": 4,
+      "moduleLineCount": 147,
+      "startLine": 13,
+      "endLine": 16,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.projectiveLinearSectionForms",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveSectionDefiningForms.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveLinearSectionForms {n r : ℕ} (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (w : Fin (r + 1) → ℂ) : Fin r → LinearStudy.CoordinateRing n",
+      "sha256": "922775dd1691966d4894e46c984e50a7aa2f5674f46c572fdca096e3747bfaa9",
+      "lines": 3,
+      "moduleLineCount": 147,
+      "startLine": 18,
+      "endLine": 20,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.linearSectionSourceForms"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.linearSectionSourceForms_linearIndependent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSectionDefiningForms.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.linearSectionSourceForms_linearIndependent {r : ℕ} (w : Fin (r + 1) → ℂ) (hw : w 0 ≠ 0) :\n  LinearIndependent ℂ (LinearStudy.linearSectionSourceForms w)",
+      "sha256": "922775dd1691966d4894e46c984e50a7aa2f5674f46c572fdca096e3747bfaa9",
+      "lines": 11,
+      "moduleLineCount": 147,
+      "startLine": 22,
+      "endLine": 32,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.linearSectionSourceForms"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveLinearSectionForms_homogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSectionDefiningForms.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveLinearSectionForms_homogeneous {n r : ℕ} (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ) (i : Fin r) :\n  MvPolynomial.IsHomogeneous (LinearStudy.projectiveLinearSectionForms L w i) 1",
+      "sha256": "922775dd1691966d4894e46c984e50a7aa2f5674f46c572fdca096e3747bfaa9",
+      "lines": 6,
+      "moduleLineCount": 147,
+      "startLine": 34,
+      "endLine": 39,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.projectiveLinearSectionForms"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveLinearSectionForms_linearIndependent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSectionDefiningForms.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveLinearSectionForms_linearIndependent {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L)) (w : Fin (r + 1) → ℂ) (hw : w 0 ≠ 0) :\n  LinearIndependent ℂ (LinearStudy.projectiveLinearSectionForms L w)",
+      "sha256": "922775dd1691966d4894e46c984e50a7aa2f5674f46c572fdca096e3747bfaa9",
+      "lines": 14,
+      "moduleLineCount": 147,
+      "startLine": 41,
+      "endLine": 54,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.linearSectionSourceForms",
+        "LinearStudy.linearSectionSourceForms_linearIndependent",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearSectionForms"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_linear_section_defining_forms_iff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSectionDefiningForms.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_linear_section_defining_forms_iff {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ) (z : LinearStudy.ProjectivePoint n) :\n  z ∈ LinearStudy.projectiveLinearSection V L w ↔\n    z ∈ V.zeroSet ∧\n      ∀ (i : Fin r), (MvPolynomial.eval (Projectivization.rep z)) (LinearStudy.projectiveLinearSectionForms L w i) = 0",
+      "sha256": "922775dd1691966d4894e46c984e50a7aa2f5674f46c572fdca096e3747bfaa9",
+      "lines": 19,
+      "moduleLineCount": 147,
+      "startLine": 56,
+      "endLine": 74,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.linearSectionSourceForms",
+        "LinearStudy.projectiveLinearSection",
+        "LinearStudy.projectiveLinearSectionForms"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneous_pullback_vanish_iff_onPoints",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSectionDefiningForms.lean",
+      "line": 78,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_pullback_vanish_iff_onPoints {n D : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (P : LinearStudy.CoordinateRing n) (hP : MvPolynomial.IsHomogeneous P D) (x : LinearStudy.ProjectivePoint n) :\n  (MvPolynomial.eval (Projectivization.rep x)) ((MvPolynomial.aeval f.forms) P) = 0 ↔\n    (MvPolynomial.eval (Projectivization.rep (f.onPoints x))) P = 0",
+      "sha256": "922775dd1691966d4894e46c984e50a7aa2f5674f46c572fdca096e3747bfaa9",
+      "lines": 18,
+      "moduleLineCount": 147,
+      "startLine": 76,
+      "endLine": 93,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneous_eval_smul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_pulled_back_section_common_points",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSectionDefiningForms.lean",
+      "line": 98,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_pulled_back_section_common_points {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (w : Fin (r + 1) → ℂ) :\n  {x |\n      x ∈ V.zeroSet ∧\n        ∀ (i : Fin r),\n          (MvPolynomial.eval (Projectivization.rep x))\n              ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)) =\n            0} =\n    f.onPoints ⁻¹' LinearStudy.projectiveLinearSection V L w",
+      "sha256": "922775dd1691966d4894e46c984e50a7aa2f5674f46c572fdca096e3747bfaa9",
+      "lines": 22,
+      "moduleLineCount": 147,
+      "startLine": 95,
+      "endLine": 116,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneous_pullback_vanish_iff_onPoints",
+        "LinearStudy.projectiveLinearSection",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectiveLinearSectionForms_homogeneous",
+        "LinearStudy.projective_linear_section_defining_forms_iff"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_pulled_back_section_forms_homogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSectionDefiningForms.lean",
+      "line": 118,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_pulled_back_section_forms_homogeneous {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (w : Fin (r + 1) → ℂ) (i : Fin r) :\n  MvPolynomial.IsHomogeneous ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)) f.degree",
+      "sha256": "922775dd1691966d4894e46c984e50a7aa2f5674f46c572fdca096e3747bfaa9",
+      "lines": 6,
+      "moduleLineCount": 147,
+      "startLine": 118,
+      "endLine": 123,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectiveLinearSectionForms_homogeneous"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_pulled_back_section_common_points_eq_fiber_union",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSectionDefiningForms.lean",
+      "line": 127,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_pulled_back_section_common_points_eq_fiber_union {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ) :\n  {x |\n      x ∈ V.zeroSet ∧\n        ∀ (i : Fin r),\n          (MvPolynomial.eval (Projectivization.rep x))\n              ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)) =\n            0} =\n    ⋃ z, f.onPoints ⁻¹' {↑z}",
+      "sha256": "922775dd1691966d4894e46c984e50a7aa2f5674f46c572fdca096e3747bfaa9",
+      "lines": 21,
+      "moduleLineCount": 147,
+      "startLine": 125,
+      "endLine": 145,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveLinearSection",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projective_pulled_back_section_common_points"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_iterates_simultaneous_linear_section_fiber_relations",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSimultaneousFiberRelations.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_iterates_simultaneous_linear_section_fiber_relations {n : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (hproper : V.ideal.toIdeal ≠ ⊥)\n  (x0 : Fin n → ℂ) (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ r P,\n    r ≤ n ∧\n      P ≠ 0 ∧\n        P.natDegree = r ∧\n          ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧\n            (∃ N, ∀ j > N, Polynomial.eval (↑j) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal j)) ∧\n              ∃ L,\n                (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧\n                  Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧\n                    (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧\n                      ∃ d,\n                        0 < d ∧\n                          ↑d = ↑r.factorial * P.leadingCoeff ∧\n                            ∀ (k : ℕ),\n                              0 < r →\n                                1 < (f.iterate k).degree →\n                                  ∃ c,\n                                    c ≠ 0 ∧\n                                      (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧\n                                        ∀ (w : Fin (r + 1) → ℂ),\n                                          (MvPolynomial.eval w) c ≠ 0 →\n                                            w 0 ≠ 0 ∧\n                                              Nat.card ↑(LinearStudy.projectiveLinearSection V L w) = d ∧\n                                                ∀ z ∈ LinearStudy.projectiveLinearSection V L w,\n                                                  Projectivization.rep z 0 ≠ 0 ∧\n                                                    have y := fun i =>\n                                                      Projectivization.rep z i.succ / Projectivization.rep z 0;\n                                                    ∃ (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),\n                                                      LinearStudy.normalizedProjectivePoint y = z ∧\n                                                        LinearStudy.ProjectiveWholeAmbientFiberConclusion (f.iterate k)\n                                                            V y hy r ∧\n                                                          LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion\n                                                            (f.iterate k) V y r",
+      "sha256": "d32790d48c8e12ba82a847f93d071783a513020250ac11f8dfc7ddcb0f0e7738",
+      "lines": 54,
+      "moduleLineCount": 69,
+      "startLine": 14,
+      "endLine": 67,
+      "lineCount": 54,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.iterate",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedConePoint_mem",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.ProjectiveWholeAmbientFiberConclusion",
+        "LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint_coordinate_ratios",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearSection",
+        "LinearStudy.projective_exists_linear_sections_in_every_affine_open",
+        "LinearStudy.projective_iterates_whole_fibers_homogeneous_relations"
       ]
     },
     {

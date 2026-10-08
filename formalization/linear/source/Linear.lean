@@ -723,3 +723,9 @@ public import Linear.ProjectiveLinearProjectionTensorFibers
 public import Linear.ProjectiveLinearSectionPointEquiv
 
 public import Linear.LinearProjectionFilteredGrowth
+
+public import Linear.ProjectiveLinearSectionDegree
+
+public import Linear.ProjectiveSimultaneousFiberRelations
+
+public import Linear.ProjectiveSectionDefiningForms
