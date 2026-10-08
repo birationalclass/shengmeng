@@ -17,7 +17,7 @@ $('unlock-form').addEventListener('submit',async event=>{
   event.preventDefault();const password=$('password').value;$('unlock').disabled=true;message('gate-error','正在打开…');
   const current=++generation;
   try{
-    const r=await fetch('vault.json');if(!r.ok)throw new Error('页面加载失败，请重试。');
+    const r=await fetch('vault.json',{cache:'no-store'});if(!r.ok)throw new Error('页面加载失败，请重试。');
     const unlocked=await unlockVault(password,await r.json());if(current!==generation)return;
     opened=unlocked;controller=new AbortController();$('password').value='';$('work-title').textContent=opened.manifest.title;
     $('gate').hidden=true;$('gallery').hidden=false;$('lock').hidden=false;message('gate-error','');
@@ -28,10 +28,10 @@ $('unlock-form').addEventListener('submit',async event=>{
 });
 async function music(){
   if(!opened)throw new Error('请先输入访问密码。');
-  if(!musicPromise){const current=generation;musicPromise=loadAsset(opened.manifest.assets.music,opened.key,p=>message('music-status',`音乐加载中 · ${Math.round(p*100)}%`),controller.signal).then(blob=>{if(current!==generation)throw new DOMException('Aborted','AbortError');message('music-status','');return url(blob);}).catch(e=>{musicPromise=null;throw e;});}return musicPromise;
+  if(!musicPromise){message('music-status','音乐加载中 · 0%');const current=generation;musicPromise=loadAsset(opened.manifest.assets.music,opened.key,p=>message('music-status',`音乐加载中 · ${Math.round(p*100)}%`),controller.signal).then(blob=>{if(current!==generation)throw new DOMException('Aborted','AbortError');message('music-status','');return url(blob);}).catch(e=>{musicPromise=null;throw e;});}return musicPromise;
 }
 $('play').addEventListener('click',async()=>{
-  if(!opened)return;const current=generation;$('play').disabled=true;
+  if(!opened)return;const current=generation;$('play').disabled=true;message('video-status','MV 加载中 · 0%');
   try{if(!videoPromise)videoPromise=loadAsset(opened.manifest.assets.movie,opened.key,p=>message('video-status',`MV 加载中 · ${Math.round(p*100)}%`),controller.signal).then(blob=>{if(current!==generation)throw new DOMException('Aborted','AbortError');return url(blob);}).catch(e=>{videoPromise=null;throw e;});
     const source=await videoPromise;if(current!==generation)return;$('video').src=source;$('video').controls=true;$('play').hidden=true;message('video-status','');await $('video').play();
   }catch(e){if(current!==generation||e.name==='AbortError')return;message('video-status',e.name==='NotAllowedError'?'点击视频播放按钮继续。':e.message,true);}
