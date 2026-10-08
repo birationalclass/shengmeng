@@ -35,3 +35,10 @@ export async function loadAsset(asset,key,onProgress=()=>{},signal) {
   if(signal?.aborted)throw new DOMException('Aborted','AbortError');
   const blob=new Blob(parts,{type:asset.type});if(blob.size!==asset.size)throw new Error('文件校验失败。');return blob;
 }
+export async function loadPart(asset,index,key,signal) {
+  const chunk=asset.chunks[index];if(!chunk)throw new Error('视频片段不存在。');
+  const response=await fetch(chunk.url,{signal});if(!response.ok)throw new Error('视频加载失败，请重试。');
+  const data=await response.arrayBuffer();if(signal?.aborted)throw new DOMException('Aborted','AbortError');
+  const plain=chunk.iv?await crypto.subtle.decrypt({name:'AES-GCM',iv:bytes(chunk.iv),additionalData:encoder.encode(`${asset.id}:${index}:${chunk.size}`)},key,data):data;
+  if(plain.byteLength!==chunk.size)throw new Error('视频片段校验失败。');return plain;
+}

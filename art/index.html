@@ -6,27 +6,29 @@
   <meta name="description" content="Art — Sheng Meng 的影像与音乐作品。">
   <title>Art · Sheng Meng</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="art.css"><script type="module" src="app.js?v=20261008-v7"></script>
+  <link rel="stylesheet" href="art.css?v=20261009-stream2"><script type="module" src="app.js?v=20261009-stream2"></script>
 </head>
 <body>
   <header><a href="../" class="home-link">SHENG MENG <span>↗</span></a><span class="wordmark">ART</span><button id="lock" class="quiet" hidden>锁定 ↗</button></header>
   <main>
-    <section id="gate" class="gate" aria-labelledby="gate-title">
-      <div class="gate-mark" aria-hidden="true"><span></span><i></i><b></b></div>
-      <p class="eyebrow">MOVING IMAGES / MUSIC</p><h1 id="gate-title">Art<span>.</span></h1>
-      <form id="unlock-form">
-        <label for="password">访问密码</label>
-        <div class="password-row"><input id="password" name="password" type="password" autocomplete="off" required spellcheck="false" aria-describedby="gate-error"><button id="unlock" type="submit">进入 <span>→</span></button></div>
-        <p id="gate-error" class="message" role="status" aria-live="polite"></p>
-      </form>
-      <noscript><p>请启用 JavaScript 以打开作品。</p></noscript>
+    <section class="gallery featured" aria-labelledby="public-title">
+      <div class="work-heading"><div><p class="eyebrow">01 / MOVING IMAGE</p><h1 id="public-title">千数变<span class="accent">.</span></h1></div><p class="byline">数学与 AI <span>·</span> 2026</p></div>
+      <div class="player" id="public-player">
+        <div class="screen" style="--aspect:1920/804"><video id="public-video" playsinline preload="none" controlslist="nodownload noremoteplayback" disableremoteplayback aria-label="千数变改编视频" poster="media/qin-poster.jpg"></video><button id="public-play" class="play" aria-label="播放千数变"><span>▶</span><b>播放影像</b></button></div>
+        <div id="public-controls" class="video-controls" hidden><button data-toggle aria-label="暂停">Ⅱ</button><input data-seek type="range" min="0" max="199.834" step="0.1" value="0" aria-label="视频进度"><output data-time>0:00 / 3:20</output><input data-volume type="range" min="0" max="1" step="0.05" value="1" aria-label="音量"><button data-fullscreen aria-label="全屏">⛶</button></div>
+      </div>
+      <p id="public-status" class="message" role="status" aria-live="polite"></p>
     </section>
-    <section id="gallery" class="gallery" hidden aria-labelledby="work-title">
-      <div class="work-heading"><div><p class="eyebrow">01 / MUSIC VIDEO</p><h1 id="work-title"></h1></div><p class="byline">OPENAI <span>·</span> 2026</p></div>
-      <div class="screen"><video id="video" playsinline preload="none" aria-label="音乐视频"></video><button id="play" class="play" aria-label="播放 MV"><span>▶</span><b>播放 MV</b></button></div>
+    <section id="gate" class="archive-gate" aria-labelledby="gate-title">
+      <p class="eyebrow">02 / MUSIC VIDEO</p><h2 id="gate-title">Credit Where It's Due</h2>
+      <form id="unlock-form"><label for="password">访问密码</label><div class="password-row"><input id="password" name="password" type="password" autocomplete="off" required spellcheck="false" aria-describedby="gate-error"><button id="unlock" type="submit">进入 <span>→</span></button></div><p id="gate-error" class="message" role="status" aria-live="polite"></p></form>
+      <noscript><p>请启用 JavaScript 以播放作品。</p></noscript>
+    </section>
+    <section id="gallery" class="gallery archive-gallery" hidden aria-labelledby="work-title">
+      <div class="work-heading"><div><p class="eyebrow">02 / MUSIC VIDEO</p><h2 id="work-title"></h2></div><p class="byline">OPENAI <span>·</span> 2026</p></div>
+      <div class="player"><div class="screen"><video id="video" playsinline preload="none" controlslist="nodownload noremoteplayback" disableremoteplayback aria-label="音乐视频"></video><button id="play" class="play" aria-label="播放 MV"><span>▶</span><b>播放 MV</b></button></div><div id="video-controls" class="video-controls" hidden><button data-toggle aria-label="暂停">Ⅱ</button><input data-seek type="range" min="0" max="140.767" step="0.1" value="0" aria-label="视频进度"><output data-time>0:00 / 2:21</output><input data-volume type="range" min="0" max="1" step="0.05" value="1" aria-label="音量"><button data-fullscreen aria-label="全屏">⛶</button></div></div>
       <p id="video-status" class="message" role="status" aria-live="polite"></p>
-      <div class="music-row"><div><p class="eyebrow">SOUNDTRACK</p><h2>Music.</h2></div><audio id="audio" controls preload="none" aria-label="音乐试听" hidden></audio><div class="music-actions"><button id="listen" class="quiet">试听 ↗</button><button id="download" class="download">下载 MP3 <span>↓</span></button></div></div>
-      <p id="music-status" class="message" role="status" aria-live="polite"></p>
+      <div class="music-row"><div><p class="eyebrow">SOUNDTRACK</p><h2>Music.</h2></div><audio id="audio" controls preload="none" aria-label="音乐试听" hidden></audio><div class="music-actions"><button id="listen" class="quiet">试听 ↗</button><button id="download" class="download">下载 MP3 <span>↓</span></button></div></div><p id="music-status" class="message" role="status" aria-live="polite"></p>
     </section>
   </main>
   <footer><span>ART / SHENG MENG</span><span>IMAGES IN MOTION.</span></footer>
