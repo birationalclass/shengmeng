@@ -1661,6 +1661,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.polynomialPointLocalQuotientEvaluation
 #check LinearStudy.polynomialPointLocalQuotientEvaluation_polynomial
 #print axioms LinearStudy.polynomialPointLocalQuotientEvaluation_polynomial
+#check LinearStudy.polynomialProjectionFiberIdeal
+#print axioms LinearStudy.polynomialProjectionFiberIdeal
+#check LinearStudy.polynomialProjectionFiber_exists_unique_lift
+#print axioms LinearStudy.polynomialProjectionFiber_exists_unique_lift
+#check LinearStudy.polynomialProjectionFiber_exists_tensor_equiv
+#print axioms LinearStudy.polynomialProjectionFiber_exists_tensor_equiv
 #check LinearStudy.polynomialTranslation_evaluation
 #print axioms LinearStudy.polynomialTranslation_evaluation
 #check LinearStudy.polynomialTranslation_origin_kernel
@@ -2013,6 +2019,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.IntegralProjectiveEquations.zeroSet_nonempty
 #check LinearStudy.LinearityTheoremGoal
 #print axioms LinearStudy.LinearityTheoremGoal
+#check LinearStudy.ProjectiveActualFamilyRelationConclusion
+#print axioms LinearStudy.ProjectiveActualFamilyRelationConclusion
+#check LinearStudy.projective_iterates_actual_family_supported_relation
+#print axioms LinearStudy.projective_iterates_actual_family_supported_relation
 #check LinearStudy.normalizedProjectivePoint_injective
 #print axioms LinearStudy.normalizedProjectivePoint_injective
 #check LinearStudy.projectiveAffineFiberIdeal
@@ -2399,6 +2409,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.finite_ringHom_exists_nonzero_target_multiple
 #check LinearStudy.projectiveConeMap_exists_chart_avoidance_polynomial
 #print axioms LinearStudy.projectiveConeMap_exists_chart_avoidance_polynomial
+#check LinearStudy.finite_target_preimage_card
+#print axioms LinearStudy.finite_target_preimage_card
+#check LinearStudy.finite_target_fiber_enumeration
+#print axioms LinearStudy.finite_target_fiber_enumeration
 #check LinearStudy.regular_sequence_mem_ne_zero
 #print axioms LinearStudy.regular_sequence_mem_ne_zero
 #check LinearStudy.homogeneous_affine_exact_degree_and_highest_regular
@@ -2627,6 +2641,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.projective_pulled_back_section_common_points_eq_fiber_union
 #check LinearStudy.projective_iterates_simultaneous_linear_section_fiber_relations
 #print axioms LinearStudy.projective_iterates_simultaneous_linear_section_fiber_relations
+#check LinearStudy.projective_iterates_simultaneous_whole_point_fiber_relations
+#print axioms LinearStudy.projective_iterates_simultaneous_whole_point_fiber_relations
 #check LinearStudy.ProjectiveCommonNormalPresentation
 #print axioms LinearStudy.ProjectiveCommonNormalPresentation
 #check LinearStudy.projective_smooth_points_common_coordinates_actual_dimension
@@ -2645,6 +2661,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point_avoiding
 #check LinearStudy.IntegralProjectiveEquations.smoothPoint_polynomial_parameters
 #print axioms LinearStudy.IntegralProjectiveEquations.smoothPoint_polynomial_parameters
+#check LinearStudy.extend_point_relation_to_actual_superset
+#print axioms LinearStudy.extend_point_relation_to_actual_superset
 #check LinearStudy.projectiveChartOpenMap_exists_target_good_loci
 #print axioms LinearStudy.projectiveChartOpenMap_exists_target_good_loci
 #check LinearStudy.projectiveChartOpenMap_isAlgebraic
@@ -2717,6 +2735,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.IntegralProjectiveEquations.affinePoint_eq_rationalPoint_of_evaluation
 #check LinearStudy.projective_whole_fiber_point_actual_good_loci
 #print axioms LinearStudy.projective_whole_fiber_point_actual_good_loci
+#check LinearStudy.projectiveAffineFiber_whole_point_equiv_action
+#print axioms LinearStudy.projectiveAffineFiber_whole_point_equiv_action
+#check LinearStudy.projective_whole_point_fiber_arbitrary_representative_relation
+#print axioms LinearStudy.projective_whole_point_fiber_arbitrary_representative_relation
 #check LinearStudy.projective_exists_whole_reduced_fiber
 #print axioms LinearStudy.projective_exists_whole_reduced_fiber
 #check LinearStudy.projective_exists_whole_reduced_tensor_fiber_point_count
@@ -2843,6 +2865,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.rational_unramified_actual_formal_parameters
 #check LinearStudy.exists_nonzero_coordinate_minor
 #print axioms LinearStudy.exists_nonzero_coordinate_minor
+#check LinearStudy.polynomial_finite_projection_exists_radical_equation_fibers
+#print axioms LinearStudy.polynomial_finite_projection_exists_radical_equation_fibers
 #check LinearStudy.Annihilates
 #print axioms LinearStudy.Annihilates
 #check LinearStudy.multiplication_factors_through_reduction

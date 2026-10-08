@@ -729,3 +729,9 @@ public import Linear.ProjectiveLinearSectionDegree
 public import Linear.ProjectiveSimultaneousFiberRelations
 
 public import Linear.ProjectiveSectionDefiningForms
+
+public import Linear.ProjectiveSimultaneousWholePointFibers
+
+public import Linear.ProjectiveActualFamilyRelation
+
+public import Linear.ReducedPolynomialProjectionFibers
