@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-08T22:53:20+08:00",
+  "checkedAt": "2026-10-08T23:34:40+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "4211382bcdc7d0302cdfcf33460cbcb37664105cad283d78d03d79ea289c219b",
-      "lineCount": 3230
+      "sha256": "73f9e27b7ceefd9353b8cb61227481bd4b7d18c41a19e6ee91e800b4c5bebd8e",
+      "lineCount": 3288
     },
     {
       "path": "Linear/ActualTargetParameters.lean",
@@ -787,9 +787,19 @@
       "lineCount": 74
     },
     {
+      "path": "Linear/PointLocalPullbackCoordinateComparison.lean",
+      "sha256": "aa9c3987b19d11fc8721888351c226587fdcedf1fa2eafbfefc6b9c09c9a1e92",
+      "lineCount": 66
+    },
+    {
       "path": "Linear/PolynomialApproximation.lean",
       "sha256": "113efcfc5c5beaf7150cff35b3fda3d1853fa9c19897a1e128b9158d1887a187",
       "lineCount": 82
+    },
+    {
+      "path": "Linear/PolynomialAwayCoordinateEquiv.lean",
+      "sha256": "3d0bac3c520973d4187f096f34ad66d814beb1144cb84d7360c692f744838828",
+      "lineCount": 62
     },
     {
       "path": "Linear/PolynomialContraction.lean",
@@ -1117,6 +1127,21 @@
       "lineCount": 83
     },
     {
+      "path": "Linear/ProjectiveAmbientFiber.lean",
+      "sha256": "7cb420e39c74bfe063eec3cd74e80c63b59c2e1c3574a039631f7db1a4c2ef37",
+      "lineCount": 103
+    },
+    {
+      "path": "Linear/ProjectiveAmbientFiberCompleteIntersection.lean",
+      "sha256": "93944dd807535e77b245730eb331409364c6913b574e66eaf83476f0df7e288d",
+      "lineCount": 110
+    },
+    {
+      "path": "Linear/ProjectiveAmbientFiberHighest.lean",
+      "sha256": "ab9792c069d91a9a27d6304ee8ef5ece27a88d32c02c512c2f8def4f429d87a9",
+      "lineCount": 79
+    },
+    {
       "path": "Linear/ProjectiveAmbientOpenComparison.lean",
       "sha256": "01f275531e7e8eb257cf714988d981219a39d321fbeeab17ae4724640aafc3b0",
       "lineCount": 71
@@ -1307,6 +1332,11 @@
       "lineCount": 57
     },
     {
+      "path": "Linear/ProjectiveFiberHighestRegular.lean",
+      "sha256": "3043ed152e3dcdc5a14a435d582d5f819a7c24e3a7107fae60e7b4610a996a20",
+      "lineCount": 63
+    },
+    {
       "path": "Linear/ProjectiveFibersFinite.lean",
       "sha256": "bb29ccabd7bd6615c67af648b93aa78e480f5f49a5f08b2e2c7a3aa79543ac7a",
       "lineCount": 50
@@ -1480,6 +1510,11 @@
       "path": "Linear/ProjectiveSmoothCommonDimension.lean",
       "sha256": "1b6e6a82cb290ab86895e42ccbc1a99de2e8e52f2fa541c3f292d39226fa96ff",
       "lineCount": 148
+    },
+    {
+      "path": "Linear/ProjectiveSmoothLinearParameters.lean",
+      "sha256": "bbb782971c8d901630141ba28a65b529f369f7e41837c3ff723cf7b1d839d9e0",
+      "lineCount": 99
     },
     {
       "path": "Linear/ProjectiveSmoothLocal.lean",
@@ -1742,6 +1777,11 @@
       "lineCount": 100
     },
     {
+      "path": "Linear/SmoothLinearTargetParameters.lean",
+      "sha256": "b3a3b383891d8b3fbefd3d1f5afce409f369e7973eb2e9454bd3fc3617506e97",
+      "lineCount": 129
+    },
+    {
       "path": "Linear/SmoothLocusCoordinates.lean",
       "sha256": "231d99f87da00d8eba87682d5bddbaa7ff979723e19ae4908cac39214cda5707",
       "lineCount": 69
@@ -1938,8 +1978,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "351241e000a7a2398f526dfb571a832850b4cdef27d7b871088ed62d0a0a34c8",
-      "lineCount": 625
+      "sha256": "c4cf4f0c52ce47a265688f7fd4795a2a215e797636181ef50b43a2af06906209",
+      "lineCount": 641
     }
   ],
   "declarations": {
@@ -17466,6 +17506,57 @@
         "LinearStudy.pointLocalCoordinateEquiv_symm_mk"
       ]
     },
+    "LinearStudy.generalPointLocalQuotientPullback_coordinate_commutes": {
+      "declaration": "LinearStudy.generalPointLocalQuotientPullback_coordinate_commutes",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PointLocalPullbackCoordinateComparison.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.generalPointLocalQuotientPullback_coordinate_commutes.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2}\n  {T : Type u_3} {C : Type u_4} [CommRing R] [CommRing A] [CommRing T] [CommRing C] (I Q : Ideal R) (J P : Ideal A)\n  [Q.IsPrime] [P.IsPrime] (Q' : Ideal T) (P' : Ideal C) [Q'.IsPrime] [P'.IsPrime] (e : R ≃+* T) (d : A ≃+* C)\n  (hQ : Q = Ideal.comap e Q') (hP : P = Ideal.comap d P') (φ : R →+* A) (ψ : T →+* C) (hQP : Q = Ideal.comap φ P)\n  (hQ'P' : Q' = Ideal.comap ψ P') (hφ : Ideal.map φ I ≤ J)\n  (hψ : Ideal.map ψ (Ideal.map e.toRingHom I) ≤ Ideal.map d.toRingHom J)\n  (hd : d.toRingHom.comp φ = ψ.comp e.toRingHom) :\n  (LinearStudy.pointLocalCoordinateEquiv J P P' d hP).toRingHom.comp\n      (LinearStudy.generalPointLocalQuotientPullback I J P Q φ hQP hφ) =\n    (LinearStudy.generalPointLocalQuotientPullback (Ideal.map e.toRingHom I) (Ideal.map d.toRingHom J) P' Q' ψ hQ'P'\n          hψ).comp\n      (LinearStudy.pointLocalCoordinateEquiv I Q Q' e hQ).toRingHom",
+      "sha256": "aa9c3987b19d11fc8721888351c226587fdcedf1fa2eafbfefc6b9c09c9a1e92",
+      "lines": 31,
+      "moduleLineCount": 66,
+      "startLine": 12,
+      "endLine": 42,
+      "lineCount": 31,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_mk",
+        "LinearStudy.pointLocalCoordinateEquiv",
+        "LinearStudy.pointLocalCoordinateEquiv_mk"
+      ]
+    },
+    "LinearStudy.generalPointLocalQuotientPullback_unramified_coordinates": {
+      "declaration": "LinearStudy.generalPointLocalQuotientPullback_unramified_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PointLocalPullbackCoordinateComparison.lean",
+      "line": 46,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.generalPointLocalQuotientPullback_unramified_coordinates.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2}\n  {T : Type u_3} {C : Type u_4} [CommRing R] [CommRing A] [CommRing T] [CommRing C] (I Q : Ideal R) (J P : Ideal A)\n  [Q.IsPrime] [P.IsPrime] (Q' : Ideal T) (P' : Ideal C) [Q'.IsPrime] [P'.IsPrime] (e : R ≃+* T) (d : A ≃+* C)\n  (hQ : Q = Ideal.comap e Q') (hP : P = Ideal.comap d P') (φ : R →+* A) (ψ : T →+* C) (hQP : Q = Ideal.comap φ P)\n  (hQ'P' : Q' = Ideal.comap ψ P') (hφ : Ideal.map φ I ≤ J)\n  (hψ : Ideal.map ψ (Ideal.map e.toRingHom I) ≤ Ideal.map d.toRingHom J) (hd : d.toRingHom.comp φ = ψ.comp e.toRingHom)\n  (h : (LinearStudy.generalPointLocalQuotientPullback I J P Q φ hQP hφ).FormallyUnramified) :\n  (LinearStudy.generalPointLocalQuotientPullback (Ideal.map e.toRingHom I) (Ideal.map d.toRingHom J) P' Q' ψ hQ'P'\n      hψ).FormallyUnramified",
+      "sha256": "aa9c3987b19d11fc8721888351c226587fdcedf1fa2eafbfefc6b9c09c9a1e92",
+      "lines": 21,
+      "moduleLineCount": 66,
+      "startLine": 44,
+      "endLine": 64,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_coordinate_commutes",
+        "LinearStudy.pointLocalCoordinateEquiv"
+      ]
+    },
     "LinearStudy.powerSeries_polynomial_equations_unit_change": {
       "declaration": "LinearStudy.powerSeries_polynomial_equations_unit_change",
       "kind": "theorem",
@@ -17487,6 +17578,124 @@
       "lineCount": 64,
       "dependencies": [
         "LinearStudy.powerSeries_boxZero_expansion"
+      ]
+    },
+    "LinearStudy.polynomialAwayCoordinateEquiv": {
+      "declaration": "LinearStudy.polynomialAwayCoordinateEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PolynomialAwayCoordinateEquiv.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialAwayCoordinateEquiv.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {T : Type u_3} [CommRing K]\n  [CommRing R] [CommRing T] [Algebra K R] [Algebra K T] (e : R ≃ₐ[K] T) (a : R) :\n  Localization.Away a ≃ₐ[K] Localization.Away (e a)",
+      "sha256": "3d0bac3c520973d4187f096f34ad66d814beb1144cb84d7360c692f744838828",
+      "lines": 6,
+      "moduleLineCount": 62,
+      "startLine": 10,
+      "endLine": 15,
+      "lineCount": 6,
+      "dependencies": []
+    },
+    "LinearStudy.polynomialAwayCoordinateEquiv_algebraMap": {
+      "declaration": "LinearStudy.polynomialAwayCoordinateEquiv_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialAwayCoordinateEquiv.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialAwayCoordinateEquiv_algebraMap.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {T : Type u_3}\n  [CommRing K] [CommRing R] [CommRing T] [Algebra K R] [Algebra K T] (e : R ≃ₐ[K] T) (a b : R) :\n  (LinearStudy.polynomialAwayCoordinateEquiv e a) ((algebraMap R (Localization.Away a)) b) =\n    (algebraMap T (Localization.Away (e a))) (e b)",
+      "sha256": "3d0bac3c520973d4187f096f34ad66d814beb1144cb84d7360c692f744838828",
+      "lines": 6,
+      "moduleLineCount": 62,
+      "startLine": 17,
+      "endLine": 22,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.polynomialAwayCoordinateEquiv"
+      ]
+    },
+    "LinearStudy.polynomialAwayCoordinateEquiv_invSelf": {
+      "declaration": "LinearStudy.polynomialAwayCoordinateEquiv_invSelf",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialAwayCoordinateEquiv.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialAwayCoordinateEquiv_invSelf.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {T : Type u_3}\n  [CommRing K] [CommRing R] [CommRing T] [Algebra K R] [Algebra K T] (e : R ≃ₐ[K] T) (a : R) :\n  (LinearStudy.polynomialAwayCoordinateEquiv e a) (IsLocalization.Away.invSelf a) = IsLocalization.Away.invSelf (e a)",
+      "sha256": "3d0bac3c520973d4187f096f34ad66d814beb1144cb84d7360c692f744838828",
+      "lines": 11,
+      "moduleLineCount": 62,
+      "startLine": 24,
+      "endLine": 34,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.polynomialAwayCoordinateEquiv",
+        "LinearStudy.polynomialAwayCoordinateEquiv_algebraMap"
+      ]
+    },
+    "LinearStudy.polynomialAwayCoordinateEquiv_original_ideal": {
+      "declaration": "LinearStudy.polynomialAwayCoordinateEquiv_original_ideal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialAwayCoordinateEquiv.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialAwayCoordinateEquiv_original_ideal.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {T : Type u_3}\n  [CommRing K] [CommRing R] [CommRing T] [Algebra K R] [Algebra K T] (e : R ≃ₐ[K] T) (a : R) (I : Ideal R) :\n  Ideal.map (LinearStudy.polynomialAwayCoordinateEquiv e a).toRingEquiv.toRingHom\n      (Ideal.map (algebraMap R (Localization.Away a)) I) =\n    Ideal.map (algebraMap T (Localization.Away (e a))) (Ideal.map e.toRingEquiv.toRingHom I)",
+      "sha256": "3d0bac3c520973d4187f096f34ad66d814beb1144cb84d7360c692f744838828",
+      "lines": 12,
+      "moduleLineCount": 62,
+      "startLine": 36,
+      "endLine": 47,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.polynomialAwayCoordinateEquiv",
+        "LinearStudy.polynomialAwayCoordinateEquiv_algebraMap"
+      ]
+    },
+    "LinearStudy.rationalPolynomialChartMap_source_coordinate_equiv": {
+      "declaration": "LinearStudy.rationalPolynomialChartMap_source_coordinate_equiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialAwayCoordinateEquiv.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPolynomialChartMap_source_coordinate_equiv.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  (e : MvPolynomial σ K ≃ₐ[K] MvPolynomial σ K) (p0 : MvPolynomial σ K) (p : σ → MvPolynomial σ K) :\n  (↑(LinearStudy.polynomialAwayCoordinateEquiv e p0)).comp (LinearStudy.rationalPolynomialChartMap p0 p) =\n    LinearStudy.rationalPolynomialChartMap (e p0) fun i => e (p i)",
+      "sha256": "3d0bac3c520973d4187f096f34ad66d814beb1144cb84d7360c692f744838828",
+      "lines": 12,
+      "moduleLineCount": 62,
+      "startLine": 49,
+      "endLine": 60,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.polynomialAwayCoordinateEquiv",
+        "LinearStudy.polynomialAwayCoordinateEquiv_algebraMap",
+        "LinearStudy.polynomialAwayCoordinateEquiv_invSelf",
+        "LinearStudy.rationalPolynomialChartMap"
       ]
     },
     "LinearStudy.polynomial_double_monomial_split": {
@@ -25374,6 +25583,478 @@
         "LinearStudy.projectiveChartDenominator"
       ]
     },
+    "LinearStudy.projectiveAmbientFiberIdeal": {
+      "declaration": "LinearStudy.projectiveAmbientFiberIdeal",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiber.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveAmbientFiberIdeal {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (y : Fin n → ℂ) :\n  Ideal (MvPolynomial (Fin n) ℂ)",
+      "sha256": "7cb420e39c74bfe063eec3cd74e80c63b59c2e1c3574a039631f7db1a4c2ef37",
+      "lines": 6,
+      "moduleLineCount": 103,
+      "startLine": 12,
+      "endLine": 17,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.affineChartPolynomialMap"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberIdeal_point": {
+      "declaration": "LinearStudy.projectiveAmbientFiberIdeal_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiber.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientFiberIdeal_point {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (y z : Fin n → ℂ)\n  (hz : z ∈ MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAmbientFiberIdeal f y)) :\n  (MvPolynomial.eval z) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0 ∧\n    f.onPoints (LinearStudy.normalizedProjectivePoint z) = LinearStudy.normalizedProjectivePoint y",
+      "sha256": "7cb420e39c74bfe063eec3cd74e80c63b59c2e1c3574a039631f7db1a4c2ef37",
+      "lines": 34,
+      "moduleLineCount": 103,
+      "startLine": 19,
+      "endLine": 52,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAmbientFiberIdeal"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_eq_inside": {
+      "declaration": "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_eq_inside",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiber.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_eq_inside {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (y : Fin n → ℂ)\n  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) :\n  MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAmbientFiberIdeal f y) =\n    MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAffineFiberIdeal f V y)",
+      "sha256": "7cb420e39c74bfe063eec3cd74e80c63b59c2e1c3574a039631f7db1a4c2ef37",
+      "lines": 21,
+      "moduleLineCount": 103,
+      "startLine": 54,
+      "endLine": 74,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAffineFiberIdeal_mem_of_point",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal_point"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_finite": {
+      "declaration": "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiber.lean",
+      "line": 78,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (hq : 0 < f.degree) (y : Fin n → ℂ) : (MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAmbientFiberIdeal f y)).Finite",
+      "sha256": "7cb420e39c74bfe063eec3cd74e80c63b59c2e1c3574a039631f7db1a4c2ef37",
+      "lines": 10,
+      "moduleLineCount": 103,
+      "startLine": 76,
+      "endLine": 85,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_fibers_finite",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint_injective",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal_point"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberQuotient_finite": {
+      "declaration": "LinearStudy.projectiveAmbientFiberQuotient_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiber.lean",
+      "line": 87,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientFiberQuotient_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (hq : 0 < f.degree) (y : Fin n → ℂ) :\n  Module.Finite ℂ (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAmbientFiberIdeal f y)",
+      "sha256": "7cb420e39c74bfe063eec3cd74e80c63b59c2e1c3574a039631f7db1a4c2ef37",
+      "lines": 4,
+      "moduleLineCount": 103,
+      "startLine": 87,
+      "endLine": 90,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.polynomialQuotient_finite_of_finite_zeroLocus",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_finite"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberIdeal_radical_eq_inside": {
+      "declaration": "LinearStudy.projectiveAmbientFiberIdeal_radical_eq_inside",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiber.lean",
+      "line": 94,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientFiberIdeal_radical_eq_inside {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (y : Fin n → ℂ)\n  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) :\n  (LinearStudy.projectiveAmbientFiberIdeal f y).radical = (LinearStudy.projectiveAffineFiberIdeal f V y).radical",
+      "sha256": "7cb420e39c74bfe063eec3cd74e80c63b59c2e1c3574a039631f7db1a4c2ef37",
+      "lines": 10,
+      "moduleLineCount": 103,
+      "startLine": 92,
+      "endLine": 101,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_eq_inside"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberPolynomials": {
+      "declaration": "LinearStudy.projectiveAmbientFiberPolynomials",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiberCompleteIntersection.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveAmbientFiberPolynomials {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (y : Fin n → ℂ) :\n  Fin n → MvPolynomial (Fin n) ℂ",
+      "sha256": "93944dd807535e77b245730eb331409364c6913b574e66eaf83476f0df7e288d",
+      "lines": 4,
+      "moduleLineCount": 110,
+      "startLine": 15,
+      "endLine": 18,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveAmbientFiberForms"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberIdeal_eq_polynomial_span": {
+      "declaration": "LinearStudy.projectiveAmbientFiberIdeal_eq_polynomial_span",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiberCompleteIntersection.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientFiberIdeal_eq_polynomial_span {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (y : Fin n → ℂ) :\n  LinearStudy.projectiveAmbientFiberIdeal f y =\n    Ideal.span (Set.range (LinearStudy.projectiveAmbientFiberPolynomials f y))",
+      "sha256": "93944dd807535e77b245730eb331409364c6913b574e66eaf83476f0df7e288d",
+      "lines": 12,
+      "moduleLineCount": 110,
+      "startLine": 20,
+      "endLine": 31,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberPolynomials"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberPolynomials_regular": {
+      "declaration": "LinearStudy.projectiveAmbientFiberPolynomials_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiberCompleteIntersection.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientFiberPolynomials_regular {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (hq : 0 < f.degree) (y : Fin n → ℂ)\n  (havoid :\n    ∀ (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0),\n      f.onPoints (Projectivization.mk ℂ v hv) = LinearStudy.normalizedProjectivePoint y → v 0 ≠ 0) :\n  have P := LinearStudy.projectiveAmbientFiberPolynomials f y;\n  (∀ (i : Fin n), (P i).totalDegree = f.degree) ∧\n    RingTheory.Sequence.IsRegular (MvPolynomial (Fin n) ℂ)\n        (List.ofFn fun i => (MvPolynomial.homogeneousComponent (P i).totalDegree) (P i)) ∧\n      MvPolynomial.zeroLocus ℂ\n          (Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent (P i).totalDegree) (P i))) =\n        {0}",
+      "sha256": "93944dd807535e77b245730eb331409364c6913b574e66eaf83476f0df7e288d",
+      "lines": 14,
+      "moduleLineCount": 110,
+      "startLine": 33,
+      "endLine": 46,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap_eq_dehomogenize",
+        "LinearStudy.affineDehomogenize",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAmbientFiberForms",
+        "LinearStudy.projectiveAmbientFiberForms_actual_highest_regular",
+        "LinearStudy.projectiveAmbientFiberPolynomials"
+      ]
+    },
+    "LinearStudy.ProjectiveWholeAmbientFiberConclusion": {
+      "declaration": "LinearStudy.ProjectiveWholeAmbientFiberConclusion",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiberCompleteIntersection.lean",
+      "line": 50,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.ProjectiveWholeAmbientFiberConclusion {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ)\n  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) (r : ℕ) : Prop",
+      "sha256": "93944dd807535e77b245730eb331409364c6913b574e66eaf83476f0df7e288d",
+      "lines": 16,
+      "moduleLineCount": 110,
+      "startLine": 48,
+      "endLine": 63,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.ProjectiveWholeFiberCommonCoordinateConclusion",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberPolynomials"
+      ]
+    },
+    "LinearStudy.projective_iterates_whole_ambient_fibers_common_geometry": {
+      "declaration": "LinearStudy.projective_iterates_whole_ambient_fibers_common_geometry",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiberCompleteIntersection.lean",
+      "line": 71,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_iterates_whole_ambient_fibers_common_geometry {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (hproper : V.ideal.toIdeal ≠ ⊥) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ r ≤ n,\n    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧\n      Module.finrank (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) Ω[MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal⁄ℂ] = r ∧\n        ∀ (k : ℕ),\n          let F := f.iterate k;\n          let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n          let A := Localization.Away (LinearStudy.projectiveChartDenominator F V);\n          have φ := LinearStudy.projectiveChartOpenMap F V ⋯ ⋯ ⋯ x0 hx0;\n          ∃ p ∉ V.affineIdeal,\n            (∀ (P : PrimeSpectrum A),\n                φ ((Ideal.Quotient.mk V.affineIdeal) p) ∉ P.asIdeal →\n                  P ∈ Algebra.smoothLocus ℂ A ∧\n                    PrimeSpectrum.comap φ.toRingHom P ∈ Algebra.smoothLocus ℂ B ∧ P ∈ Algebra.unramifiedLocus B A) ∧\n              (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧\n                ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),\n                  (MvPolynomial.eval y) p ≠ 0 → LinearStudy.ProjectiveWholeAmbientFiberConclusion (f.iterate k) V y hy r",
+      "sha256": "93944dd807535e77b245730eb331409364c6913b574e66eaf83476f0df7e288d",
+      "lines": 44,
+      "moduleLineCount": 110,
+      "startLine": 65,
+      "endLine": 108,
+      "lineCount": 44,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.iterate",
+        "LinearStudy.HomogeneousEndomorphism.iterate_degree_pos",
+        "LinearStudy.HomogeneousEndomorphism.iterate_surjective",
+        "LinearStudy.HomogeneousEndomorphism.iterate_total_invariance",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.ProjectiveWholeAmbientFiberConclusion",
+        "LinearStudy.ProjectiveWholeFiberCommonCoordinateConclusion",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal_radical_eq_inside",
+        "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_eq_inside",
+        "LinearStudy.projectiveAmbientFiberPolynomials",
+        "LinearStudy.projectiveAmbientFiberPolynomials_regular",
+        "LinearStudy.projectiveAmbientFiberQuotient_finite",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projective_iterates_whole_fibers_actual_common_coordinates"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberForms": {
+      "declaration": "LinearStudy.projectiveAmbientFiberForms",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiberHighest.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveAmbientFiberForms {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (y : Fin n → ℂ) :\n  Fin n → LinearStudy.CoordinateRing n",
+      "sha256": "ab9792c069d91a9a27d6304ee8ef5ece27a88d32c02c512c2f8def4f429d87a9",
+      "lines": 5,
+      "moduleLineCount": 79,
+      "startLine": 12,
+      "endLine": 16,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberForms_homogeneous": {
+      "declaration": "LinearStudy.projectiveAmbientFiberForms_homogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiberHighest.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientFiberForms_homogeneous {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (y : Fin n → ℂ)\n  (i : Fin n) : MvPolynomial.IsHomogeneous (LinearStudy.projectiveAmbientFiberForms f y i) f.degree",
+      "sha256": "ab9792c069d91a9a27d6304ee8ef5ece27a88d32c02c512c2f8def4f429d87a9",
+      "lines": 4,
+      "moduleLineCount": 79,
+      "startLine": 18,
+      "endLine": 21,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.projectiveAmbientFiberForms"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberForms_no_infinity": {
+      "declaration": "LinearStudy.projectiveAmbientFiberForms_no_infinity",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiberHighest.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientFiberForms_no_infinity {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (y : Fin n → ℂ)\n  (havoid :\n    ∀ (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0),\n      f.onPoints (Projectivization.mk ℂ v hv) = LinearStudy.normalizedProjectivePoint y → v 0 ≠ 0)\n  (z : Fin n → ℂ) :\n  z ≠ 0 → ∃ i, (MvPolynomial.eval fun i => Fin.cases 0 z i) (LinearStudy.projectiveAmbientFiberForms f y i) ≠ 0",
+      "sha256": "ab9792c069d91a9a27d6304ee8ef5ece27a88d32c02c512c2f8def4f429d87a9",
+      "lines": 39,
+      "moduleLineCount": 79,
+      "startLine": 23,
+      "endLine": 61,
+      "lineCount": 39,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAmbientFiberForms"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberForms_actual_highest_regular": {
+      "declaration": "LinearStudy.projectiveAmbientFiberForms_actual_highest_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientFiberHighest.lean",
+      "line": 66,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientFiberForms_actual_highest_regular {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (hq : 0 < f.degree) (y : Fin n → ℂ)\n  (havoid :\n    ∀ (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0),\n      f.onPoints (Projectivization.mk ℂ v hv) = LinearStudy.normalizedProjectivePoint y → v 0 ≠ 0) :\n  have P := fun i => LinearStudy.affineDehomogenize (LinearStudy.projectiveAmbientFiberForms f y i);\n  (∀ (i : Fin n), (P i).totalDegree = f.degree) ∧\n    RingTheory.Sequence.IsRegular (MvPolynomial (Fin n) ℂ)\n        (List.ofFn fun i => (MvPolynomial.homogeneousComponent (P i).totalDegree) (P i)) ∧\n      MvPolynomial.zeroLocus ℂ\n          (Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent (P i).totalDegree) (P i))) =\n        {0}",
+      "sha256": "ab9792c069d91a9a27d6304ee8ef5ece27a88d32c02c512c2f8def4f429d87a9",
+      "lines": 15,
+      "moduleLineCount": 79,
+      "startLine": 63,
+      "endLine": 77,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineDehomogenize",
+        "LinearStudy.homogeneous_affine_exact_degree_and_highest_regular",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAmbientFiberForms",
+        "LinearStudy.projectiveAmbientFiberForms_homogeneous",
+        "LinearStudy.projectiveAmbientFiberForms_no_infinity"
+      ]
+    },
     "LinearStudy.projectiveChartOpenPolynomialMap_ambient_comp": {
       "declaration": "LinearStudy.projectiveChartOpenPolynomialMap_ambient_comp",
       "kind": "theorem",
@@ -29161,6 +29842,55 @@
         "LinearStudy.projectiveCoordinateDomainMap_mk"
       ]
     },
+    "LinearStudy.regular_sequence_mem_ne_zero": {
+      "declaration": "LinearStudy.regular_sequence_mem_ne_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveFiberHighestRegular.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.regular_sequence_mem_ne_zero.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [AddCommGroup M]\n  [Module R M] {rs : List R} (h : RingTheory.Sequence.IsRegular M rs) (x : R) : x ∈ rs → x ≠ 0",
+      "sha256": "3043ed152e3dcdc5a14a435d582d5f819a7c24e3a7107fae60e7b4610a996a20",
+      "lines": 18,
+      "moduleLineCount": 63,
+      "startLine": 11,
+      "endLine": 28,
+      "lineCount": 18,
+      "dependencies": []
+    },
+    "LinearStudy.homogeneous_affine_exact_degree_and_highest_regular": {
+      "declaration": "LinearStudy.homogeneous_affine_exact_degree_and_highest_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveFiberHighestRegular.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_affine_exact_degree_and_highest_regular.{u_1} {K : Type u_1} [Field K] [IsAlgClosed K] {n q : ℕ}\n  (F : Fin n → MvPolynomial (Fin (n + 1)) K) (hq : 0 < q) (hF : ∀ (i : Fin n), (F i).IsHomogeneous q)\n  (hno : ∀ (z : Fin n → K), z ≠ 0 → ∃ i, (MvPolynomial.eval fun i => Fin.cases 0 z i) (F i) ≠ 0) :\n  (∀ (i : Fin n), (LinearStudy.affineDehomogenize (F i)).totalDegree = q) ∧\n    RingTheory.Sequence.IsRegular (MvPolynomial (Fin n) K)\n        (List.ofFn fun i =>\n          (MvPolynomial.homogeneousComponent (LinearStudy.affineDehomogenize (F i)).totalDegree)\n            (LinearStudy.affineDehomogenize (F i))) ∧\n      MvPolynomial.zeroLocus K\n          (Ideal.span\n            (Set.range fun i =>\n              (MvPolynomial.homogeneousComponent (LinearStudy.affineDehomogenize (F i)).totalDegree)\n                (LinearStudy.affineDehomogenize (F i)))) =\n        {0}",
+      "sha256": "3043ed152e3dcdc5a14a435d582d5f819a7c24e3a7107fae60e7b4610a996a20",
+      "lines": 32,
+      "moduleLineCount": 63,
+      "startLine": 30,
+      "endLine": 61,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.affineDehomogenize",
+        "LinearStudy.affine_highest_zeroLocus_of_no_infinity",
+        "LinearStudy.homogeneous_affine_chart_degree",
+        "LinearStudy.homogeneous_affine_chart_top_component",
+        "LinearStudy.homogeneous_origin_regular",
+        "LinearStudy.regular_sequence_mem_ne_zero"
+      ]
+    },
     "LinearStudy.HomogeneousEndomorphism.evalVector_fibers_finite": {
       "declaration": "LinearStudy.HomogeneousEndomorphism.evalVector_fibers_finite",
       "kind": "theorem",
@@ -32013,6 +32743,117 @@
         "LinearStudy.smooth_points_have_common_polynomial_coordinates",
         "LinearStudy.smooth_polynomial_conormal_finrank",
         "LinearStudy.smooth_prime_polynomial_conormal_rank_positive"
+      ]
+    },
+    "LinearStudy.ProjectiveLinearTargetParameterConclusion": {
+      "declaration": "LinearStudy.ProjectiveLinearTargetParameterConclusion",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveSmoothLinearParameters.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.ProjectiveLinearTargetParameterConclusion {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) (r : ℕ) : Prop",
+      "sha256": "bbb782971c8d901630141ba28a65b529f369f7e41837c3ff723cf7b1d839d9e0",
+      "lines": 11,
+      "moduleLineCount": 99,
+      "startLine": 15,
+      "endLine": 25,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    "LinearStudy.IntegralProjectiveEquations.smoothPoint_linear_parameters": {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.smoothPoint_linear_parameters",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSmoothLinearParameters.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.smoothPoint_linear_parameters {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (hproper : V.ideal.toIdeal ≠ ⊥) (y : Fin n → ℂ)\n  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) (hs : Algebra.IsSmoothAt ℂ (V.affinePoint y hy).asIdeal) :\n  ∃ r,\n    r = Module.finrank (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) Ω[MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal⁄ℂ] ∧\n      LinearStudy.ProjectiveLinearTargetParameterConclusion V y hy r",
+      "sha256": "bbb782971c8d901630141ba28a65b529f369f7e41837c3ff723cf7b1d839d9e0",
+      "lines": 28,
+      "moduleLineCount": 99,
+      "startLine": 27,
+      "endLine": 54,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_ne_bot",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectiveLinearTargetParameterConclusion",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.point_local_quotient_maximalIdeal_map",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.smoothLocus_constructs_original_linear_parameters"
+      ]
+    },
+    "LinearStudy.projective_iterates_whole_ambient_fibers_linear_targets": {
+      "declaration": "LinearStudy.projective_iterates_whole_ambient_fibers_linear_targets",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSmoothLinearParameters.lean",
+      "line": 59,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_iterates_whole_ambient_fibers_linear_targets {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (hproper : V.ideal.toIdeal ≠ ⊥) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ r ≤ n,\n    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧\n      Module.finrank (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) Ω[MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal⁄ℂ] = r ∧\n        ∀ (k : ℕ),\n          let F := f.iterate k;\n          let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n          let A := Localization.Away (LinearStudy.projectiveChartDenominator F V);\n          have φ := LinearStudy.projectiveChartOpenMap F V ⋯ ⋯ ⋯ x0 hx0;\n          ∃ p ∉ V.affineIdeal,\n            (∀ (P : PrimeSpectrum A),\n                φ ((Ideal.Quotient.mk V.affineIdeal) p) ∉ P.asIdeal →\n                  P ∈ Algebra.smoothLocus ℂ A ∧\n                    PrimeSpectrum.comap φ.toRingHom P ∈ Algebra.smoothLocus ℂ B ∧ P ∈ Algebra.unramifiedLocus B A) ∧\n              (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧\n                ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),\n                  (MvPolynomial.eval y) p ≠ 0 →\n                    LinearStudy.ProjectiveWholeAmbientFiberConclusion (f.iterate k) V y hy r ∧\n                      LinearStudy.ProjectiveLinearTargetParameterConclusion V y hy r",
+      "sha256": "bbb782971c8d901630141ba28a65b529f369f7e41837c3ff723cf7b1d839d9e0",
+      "lines": 42,
+      "moduleLineCount": 99,
+      "startLine": 56,
+      "endLine": 97,
+      "lineCount": 42,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.iterate",
+        "LinearStudy.HomogeneousEndomorphism.iterate_degree_pos",
+        "LinearStudy.HomogeneousEndomorphism.iterate_surjective",
+        "LinearStudy.HomogeneousEndomorphism.iterate_total_invariance",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.smoothPoint_linear_parameters",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectiveCommonNormalPresentation",
+        "LinearStudy.ProjectiveLinearTargetParameterConclusion",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.ProjectiveWholeAmbientFiberConclusion",
+        "LinearStudy.ProjectiveWholeFiberCommonCoordinateConclusion",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberPolynomials",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projective_iterates_whole_ambient_fibers_common_geometry"
       ]
     },
     "LinearStudy.projective_smooth_local_pullback_structure": {
@@ -35537,6 +36378,64 @@
         "LinearStudy.polynomialPointLocalQuotientEvaluation",
         "LinearStudy.polynomialPointLocalQuotientEvaluation_polynomial",
         "LinearStudy.smooth_polynomial_jacobian_nonzero_minor"
+      ]
+    },
+    "LinearStudy.smooth_point_constructs_original_linear_parameters": {
+      "declaration": "LinearStudy.smooth_point_constructs_original_linear_parameters",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SmoothLinearTargetParameters.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.smooth_point_constructs_original_linear_parameters.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  [Fintype σ] [DecidableEq σ] (I P : Ideal (MvPolynomial σ K)) [P.IsPrime] (hIP : I ≤ P) (x : σ → K)\n  (hP : P = RingHom.ker (MvPolynomial.aeval x).toRingHom)\n  (hI : Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I ≠ ⊥)\n  [Algebra.FormallySmooth K\n      (Localization.AtPrime P ⧸ Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I)] :\n  let J := Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I;\n  ∃ r a,\n    r = Module.finrank (Localization.AtPrime P ⧸ J) Ω[Localization.AtPrime P ⧸ J⁄K] ∧\n      (∀ (i : Fin r), (a i).totalDegree ≤ 1 ∧ (MvPolynomial.eval x) (a i) = 0) ∧\n        Ideal.span\n            (Set.range fun i =>\n              (Ideal.Quotient.mk J) ((algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) (a i))) =\n          IsLocalRing.maximalIdeal (Localization.AtPrime P ⧸ J)",
+      "sha256": "b3a3b383891d8b3fbefd3d1f5afce409f369e7973eb2e9454bd3fc3617506e97",
+      "lines": 70,
+      "moduleLineCount": 129,
+      "startLine": 13,
+      "endLine": 82,
+      "lineCount": 70,
+      "dependencies": [
+        "LinearStudy.actual_point_parameters_transport_under_coordinates",
+        "LinearStudy.eval_polynomialLinearChange",
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialLocalDifferentialModule",
+        "LinearStudy.polynomial_eval_coordinate_equiv",
+        "LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.smooth_point_original_ideal_normal_polynomial_generators"
+      ]
+    },
+    "LinearStudy.smoothLocus_constructs_original_linear_parameters": {
+      "declaration": "LinearStudy.smoothLocus_constructs_original_linear_parameters",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SmoothLinearTargetParameters.lean",
+      "line": 86,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.smoothLocus_constructs_original_linear_parameters.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  [Fintype σ] [DecidableEq σ] (I : Ideal (MvPolynomial σ K)) [I.IsPrime] (hI : I ≠ ⊥) (p : Ideal (MvPolynomial σ K ⧸ I))\n  [p.IsPrime] [Algebra.IsSmoothAt K p] (x : σ → K)\n  (hp : Ideal.comap (Ideal.Quotient.mk I) p = RingHom.ker (MvPolynomial.aeval x).toRingHom) :\n  let P := Ideal.comap (Ideal.Quotient.mk I) p;\n  let J := Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I;\n  ∃ r a,\n    r = Module.finrank (MvPolynomial σ K ⧸ I) Ω[MvPolynomial σ K ⧸ I⁄K] ∧\n      (∀ (i : Fin r), (a i).totalDegree ≤ 1 ∧ (MvPolynomial.eval x) (a i) = 0) ∧\n        Ideal.span\n            (Set.range fun i =>\n              (Ideal.Quotient.mk J) ((algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) (a i))) =\n          IsLocalRing.maximalIdeal (Localization.AtPrime P ⧸ J)",
+      "sha256": "b3a3b383891d8b3fbefd3d1f5afce409f369e7973eb2e9454bd3fc3617506e97",
+      "lines": 44,
+      "moduleLineCount": 129,
+      "startLine": 84,
+      "endLine": 127,
+      "lineCount": 44,
+      "dependencies": [
+        "LinearStudy.polynomialLocalDifferentialModule",
+        "LinearStudy.polynomial_local_differential_finrank",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal",
+        "LinearStudy.smooth_point_constructs_original_linear_parameters"
       ]
     },
     "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal": {
@@ -44012,12 +44911,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 1187,
-  "definitionCount": 228,
+  "verifiedTheoremCount": 1210,
+  "definitionCount": 234,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
   "auditExitCode": 0,
-  "scope": "The full original LinearityTheoremGoal remains UNPROVED. The exact relative-Jacobian local Lemma31Goal is PROVED by lemma31_complete; its historical name corresponds to Lemma 2.1 of the CURRENT manuscript. Actual finite freeness, arbitrary parameter actions, nonzero Jacobian socle generation and the required pairings are constructed. Actual affine completely-intersecting polynomial quotients have constructed perfect pairings, low-degree vanishing, Jacobian trace and nonzero weighted relations under their explicit local generator hypotheses. Original smooth/point-local/formal and completion comparisons have been advanced, but the SAME original Setup fiber to the full projective relation has not been closed. From the original homogeneous endomorphism f and nonempty homogeneous prime V, the actual cone and chart pullbacks, function fields, ratio field, total invariance and original iterates are constructed. Original general WHOLE fibers are finite/reduced and smooth/unramified on constructed nonempty target opens. Actual cone Hilbert-Serre and the ORIGINAL Hilbert polynomials P,C give deg(C)=deg(P)+1, cone image degree=q^deg(C), and WHOLE projective/chart image degree=q^deg(P). NEW checkpoint 87 proves integral Krull-dimension preservation and compares ACTUAL finite Noether normalization with the ORIGINAL coordinate filtration using constructed representatives, module generators, multiplication matrices and bounded coefficients. The actual cumulative Hilbert degree equals actual cone Krull dimension. Constructed cone/chart/ratio fraction fields and transcendence-degree towers then prove deg(P)=r for the ACTUAL inhabited original affine chart ring Krull dimension AND its actual spectrum topological dimension. Therefore the ORIGINAL actual chart degree is q^r and EVERY original iterate has a constructed nonempty open where each WHOLE point fiber has (q^k)^r points. No dimension, cardinality, degree formula or normalization/growth bound is an input to the aggregate original-map theorems. The GLOBAL projective Proj/Scheme comparison, Bertini selection, original full relation assembly, canonical-sheaf fixed-twist injection, geometric Koszul/proper duality/uniform Serre lifting and actual Cartier/Bezout intersection remain OPEN. The final numeric contradiction is checked only as an implication under its explicit intersection inputs; it does not prove the full Linearity Theorem. NEW checkpoint 88 constructs the actual normalization/fraction scalar tower, separable characteristic-zero extension and differential base-change basis. It proves actual Krull dimension equals actual differential rank for finite-type characteristic-zero domains WITHOUT global smoothness. For the ORIGINAL inhabited projective chart, Hilbert degree, Krull dimension and actual differential rank are identified. One aggregate original-map theorem gives the SAME dimension for actual polynomial local parameters at EVERY original smooth chart point and for EVERY original iterate WHOLE general fiber point count. The original full projective polynomial relation and all remaining geometric lifting and intersection obligations above remain OPEN; the final theorem is still unproved. NEW checkpoint 89 intersects the ORIGINAL iterate good-locus and point-count opens, constructs their nonempty witness and preserves the SAME whole-fiber dimension count and actual reduced in-V equation quotient. EVERY actual coordinate point is linked to the SAME smooth target and genuine unramified chart map. Common actual ambient linear coordinates, original local generators and formal normal-ideal identities are constructed on the ENTIRE original fiber, with r identified with actual Krull/differential dimension and c=n-r. The ambient fiber may have normal nilpotents; reducedness is claimed only for the in-V quotient. The SAME-fiber common Jacobian socle and full homogeneous relation, all Section 4 lifting, global Proj/Bertini and actual intersection obligations remain OPEN. The final theorem is unproved.",
+  "scope": "The full original LinearityTheoremGoal remains UNPROVED. The exact relative-Jacobian local Lemma31Goal is PROVED by lemma31_complete; its historical name corresponds to Lemma 2.1 of the CURRENT manuscript. Actual finite freeness, arbitrary parameter actions, nonzero Jacobian socle generation and the required pairings are constructed. Actual affine completely-intersecting polynomial quotients have constructed perfect pairings, low-degree vanishing, Jacobian trace and nonzero weighted relations under their explicit local generator hypotheses. Original smooth/point-local/formal and completion comparisons have been advanced, but the SAME original Setup fiber to the full projective relation has not been closed. From the original homogeneous endomorphism f and nonempty homogeneous prime V, the actual cone and chart pullbacks, function fields, ratio field, total invariance and original iterates are constructed. Original general WHOLE fibers are finite/reduced and smooth/unramified on constructed nonempty target opens. Actual cone Hilbert-Serre and the ORIGINAL Hilbert polynomials P,C give deg(C)=deg(P)+1, cone image degree=q^deg(C), and WHOLE projective/chart image degree=q^deg(P). NEW checkpoint 87 proves integral Krull-dimension preservation and compares ACTUAL finite Noether normalization with the ORIGINAL coordinate filtration using constructed representatives, module generators, multiplication matrices and bounded coefficients. The actual cumulative Hilbert degree equals actual cone Krull dimension. Constructed cone/chart/ratio fraction fields and transcendence-degree towers then prove deg(P)=r for the ACTUAL inhabited original affine chart ring Krull dimension AND its actual spectrum topological dimension. Therefore the ORIGINAL actual chart degree is q^r and EVERY original iterate has a constructed nonempty open where each WHOLE point fiber has (q^k)^r points. No dimension, cardinality, degree formula or normalization/growth bound is an input to the aggregate original-map theorems. The GLOBAL projective Proj/Scheme comparison, Bertini selection, original full relation assembly, canonical-sheaf fixed-twist injection, geometric Koszul/proper duality/uniform Serre lifting and actual Cartier/Bezout intersection remain OPEN. The final numeric contradiction is checked only as an implication under its explicit intersection inputs; it does not prove the full Linearity Theorem. NEW checkpoint 88 constructs the actual normalization/fraction scalar tower, separable characteristic-zero extension and differential base-change basis. It proves actual Krull dimension equals actual differential rank for finite-type characteristic-zero domains WITHOUT global smoothness. For the ORIGINAL inhabited projective chart, Hilbert degree, Krull dimension and actual differential rank are identified. One aggregate original-map theorem gives the SAME dimension for actual polynomial local parameters at EVERY original smooth chart point and for EVERY original iterate WHOLE general fiber point count. The original full projective polynomial relation and all remaining geometric lifting and intersection obligations above remain OPEN; the final theorem is still unproved. NEW checkpoint 89 intersects the ORIGINAL iterate good-locus and point-count opens, constructs their nonempty witness and preserves the SAME whole-fiber dimension count and actual reduced in-V equation quotient. EVERY actual coordinate point is linked to the SAME smooth target and genuine unramified chart map. Common actual ambient linear coordinates, original local generators and formal normal-ideal identities are constructed on the ENTIRE original fiber, with r identified with actual Krull/differential dimension and c=n-r. The ambient fiber may have normal nilpotents; reducedness is claimed only for the in-V quotient. The SAME-fiber common Jacobian socle and full homogeneous relation, all Section 4 lifting, global Proj/Bertini and actual intersection obligations remain OPEN. The final theorem is unproved. NEW checkpoint 90 constructs the ORIGINAL ambient fiber ideal from f_i-y_i*f_0, proves its quotient finite while retaining possible normal nilpotents, and compares its actual point set and radical with the reduced in-V fiber. The actual homogeneous fiber forms have no points at infinity; their dehomogenized equations have exact degree q, regular highest forms and origin-only highest-form zero locus. These are derived on the SAME original whole good fiber for EVERY iterate, together with actual common coordinates and local normal equations, not supplied as assumptions. This is ONE whole general fiber; simultaneous Bertini selection of d target points and their fiber union is not yet proved. Common normal Jacobian socle, the full homogeneous relation, Section 4 geometric lifting, global Proj comparison and actual intersection remain OPEN. The final theorem remains unproved. NEW checkpoint 91 constructs centered LINEAR polynomial target parameters from actual original smoothness, with count equal to the SAME actual differential/Krull dimension r. They generate the actual target local quotient maximal ideal on EVERY original iterate good fiber. Original local quotient pullbacks commute with independent source/target coordinate equivalences, preserving genuine unramification under an actual ambient ring-map diagram. Actual denominator localizations and rational chart pullbacks are compared under source coordinate equivalences. These coordinate bridges do not yet assemble the same-fiber common Jacobian socle or full homogeneous relation. Bertini d-fiber union, Section 4 geometric lifting and actual intersection remain OPEN; full theorem unproved.",
   "sourceRanges": {
     "LinearStudy.affine_polynomial_weighted_point_relation": {
       "path": "Linear/AffinePointRelation.lean",
@@ -44333,6 +45232,39 @@
         "LinearStudy.artinian_local_isAdicComplete"
       ]
     },
+    "LinearStudy.projective_iterates_whole_ambient_fibers_linear_targets": {
+      "path": "Linear/ProjectiveSmoothLinearParameters.lean",
+      "startLine": 56,
+      "endLine": 97,
+      "lineCount": 42,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.iterate",
+        "LinearStudy.HomogeneousEndomorphism.iterate_degree_pos",
+        "LinearStudy.HomogeneousEndomorphism.iterate_surjective",
+        "LinearStudy.HomogeneousEndomorphism.iterate_total_invariance",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.smoothPoint_linear_parameters",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectiveCommonNormalPresentation",
+        "LinearStudy.ProjectiveLinearTargetParameterConclusion",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.ProjectiveWholeAmbientFiberConclusion",
+        "LinearStudy.ProjectiveWholeFiberCommonCoordinateConclusion",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberPolynomials",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projective_iterates_whole_ambient_fibers_common_geometry"
+      ]
+    },
     "LinearStudy.completionCompatibleMap": {
       "path": "Linear/CompletionCongr.lean",
       "startLine": 10,
@@ -44638,6 +45570,40 @@
       "lineCount": 5,
       "dependencies": [
         "LinearStudy.powerSeriesThickeningReduction"
+      ]
+    },
+    "LinearStudy.projective_iterates_whole_ambient_fibers_common_geometry": {
+      "path": "Linear/ProjectiveAmbientFiberCompleteIntersection.lean",
+      "startLine": 65,
+      "endLine": 108,
+      "lineCount": 44,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.iterate",
+        "LinearStudy.HomogeneousEndomorphism.iterate_degree_pos",
+        "LinearStudy.HomogeneousEndomorphism.iterate_surjective",
+        "LinearStudy.HomogeneousEndomorphism.iterate_total_invariance",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.ProjectiveWholeAmbientFiberConclusion",
+        "LinearStudy.ProjectiveWholeFiberCommonCoordinateConclusion",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal_radical_eq_inside",
+        "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_eq_inside",
+        "LinearStudy.projectiveAmbientFiberPolynomials",
+        "LinearStudy.projectiveAmbientFiberPolynomials_regular",
+        "LinearStudy.projectiveAmbientFiberQuotient_finite",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projective_iterates_whole_fibers_actual_common_coordinates"
       ]
     },
     "LinearStudy.polynomialSmoothLocalQuotient_isLocalRing": {
@@ -45000,6 +45966,16 @@
       "lineCount": 6,
       "dependencies": [
         "LinearStudy.powerSeries_nilpotent_quotient_finite"
+      ]
+    },
+    "LinearStudy.polynomialAwayCoordinateEquiv_invSelf": {
+      "path": "Linear/PolynomialAwayCoordinateEquiv.lean",
+      "startLine": 24,
+      "endLine": 34,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.polynomialAwayCoordinateEquiv",
+        "LinearStudy.polynomialAwayCoordinateEquiv_algebraMap"
       ]
     },
     "LinearStudy.dualGenerator_functional": {
@@ -45492,6 +46468,25 @@
       "dependencies": [
         "LinearStudy.functionKoszulAugmentationMap",
         "koszulComplex"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberPolynomials_regular": {
+      "path": "Linear/ProjectiveAmbientFiberCompleteIntersection.lean",
+      "startLine": 33,
+      "endLine": 46,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap_eq_dehomogenize",
+        "LinearStudy.affineDehomogenize",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAmbientFiberForms",
+        "LinearStudy.projectiveAmbientFiberForms_actual_highest_regular",
+        "LinearStudy.projectiveAmbientFiberPolynomials"
       ]
     },
     "LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates": {
@@ -48472,6 +49467,16 @@
         "LinearStudy.thickeningTop_nonzero"
       ]
     },
+    "LinearStudy.polynomialAwayCoordinateEquiv_original_ideal": {
+      "path": "Linear/PolynomialAwayCoordinateEquiv.lean",
+      "startLine": 36,
+      "endLine": 47,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.polynomialAwayCoordinateEquiv",
+        "LinearStudy.polynomialAwayCoordinateEquiv_algebraMap"
+      ]
+    },
     "LinearStudy.gradedQuotientProjection_mk": {
       "path": "Linear/GradedQuotientDecomposition.lean",
       "startLine": 32,
@@ -49426,6 +50431,15 @@
         "exteriorPower.instIsScalarTowerExteriorAlgebraTensorProduct_linear"
       ]
     },
+    "LinearStudy.polynomialAwayCoordinateEquiv_algebraMap": {
+      "path": "Linear/PolynomialAwayCoordinateEquiv.lean",
+      "startLine": 17,
+      "endLine": 22,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.polynomialAwayCoordinateEquiv"
+      ]
+    },
     "LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open": {
       "path": "Linear/AwayFractionUnramified.lean",
       "startLine": 9,
@@ -50001,6 +51015,25 @@
         "LinearStudy.parameterSpecialization_jacobian",
         "LinearStudy.powerSeriesClosedQuotientEquiv",
         "LinearStudy.powerSeriesClosedQuotientEquiv_mk"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberForms_actual_highest_regular": {
+      "path": "Linear/ProjectiveAmbientFiberHighest.lean",
+      "startLine": 63,
+      "endLine": 77,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineDehomogenize",
+        "LinearStudy.homogeneous_affine_exact_degree_and_highest_regular",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAmbientFiberForms",
+        "LinearStudy.projectiveAmbientFiberForms_homogeneous",
+        "LinearStudy.projectiveAmbientFiberForms_no_infinity"
       ]
     },
     "LinearStudy.projectiveConeScalingMap_coordinate": {
@@ -51104,6 +52137,19 @@
         "LinearStudy.domain_exists_nonzero_smooth_unramified_open"
       ]
     },
+    "LinearStudy.projectiveAmbientFiberQuotient_finite": {
+      "path": "Linear/ProjectiveAmbientFiber.lean",
+      "startLine": 87,
+      "endLine": 90,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.polynomialQuotient_finite_of_finite_zeroLocus",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_finite"
+      ]
+    },
     "SemiLinearMapAlgebraMapOfLinearMap": {
       "path": "Linear/Vendor/CM/CohenMacaulayBasic.lean",
       "startLine": 164,
@@ -51221,6 +52267,20 @@
       "dependencies": [
         "LinearStudy.formalPolynomialAtPoint",
         "LinearStudy.formalPolynomialAtPointUnit"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberIdeal_eq_polynomial_span": {
+      "path": "Linear/ProjectiveAmbientFiberCompleteIntersection.lean",
+      "startLine": 20,
+      "endLine": 31,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberPolynomials"
       ]
     },
     "LinearStudy.powerSeries_substitution_firstOrder": {
@@ -51869,6 +52929,18 @@
         "LinearStudy.polynomialLinearChange_isHomogeneous"
       ]
     },
+    "LinearStudy.generalPointLocalQuotientPullback_coordinate_commutes": {
+      "path": "Linear/PointLocalPullbackCoordinateComparison.lean",
+      "startLine": 12,
+      "endLine": 42,
+      "lineCount": 31,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_mk",
+        "LinearStudy.pointLocalCoordinateEquiv",
+        "LinearStudy.pointLocalCoordinateEquiv_mk"
+      ]
+    },
     "LinearStudy.polynomial_firstOrder_normal_pointIdeal": {
       "path": "Linear/PolynomialLocalParameters.lean",
       "startLine": 30,
@@ -51940,6 +53012,20 @@
         "LinearStudy.exists_smooth_local_generators_of_conormal_rank",
         "LinearStudy.polynomialLinearChangeEquiv",
         "LinearStudy.polynomialLocalQuotientExtension"
+      ]
+    },
+    "LinearStudy.homogeneous_affine_exact_degree_and_highest_regular": {
+      "path": "Linear/ProjectiveFiberHighestRegular.lean",
+      "startLine": 30,
+      "endLine": 61,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.affineDehomogenize",
+        "LinearStudy.affine_highest_zeroLocus_of_no_infinity",
+        "LinearStudy.homogeneous_affine_chart_degree",
+        "LinearStudy.homogeneous_affine_chart_top_component",
+        "LinearStudy.homogeneous_origin_regular",
+        "LinearStudy.regular_sequence_mem_ne_zero"
       ]
     },
     "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff": {
@@ -52723,6 +53809,13 @@
       "lineCount": 15,
       "dependencies": []
     },
+    "LinearStudy.polynomialAwayCoordinateEquiv": {
+      "path": "Linear/PolynomialAwayCoordinateEquiv.lean",
+      "startLine": 10,
+      "endLine": 15,
+      "lineCount": 6,
+      "dependencies": []
+    },
     "LinearStudy.projectiveChartOpenMap_exists_nonzero_unramified_open": {
       "path": "Linear/ProjectiveChartUnramifiedOpen.lean",
       "startLine": 58,
@@ -53236,6 +54329,17 @@
         "LinearStudy.parameter_substitution_hasSubst"
       ]
     },
+    "LinearStudy.projectiveAmbientFiberIdeal": {
+      "path": "Linear/ProjectiveAmbientFiber.lean",
+      "startLine": 12,
+      "endLine": 17,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.affineChartPolynomialMap"
+      ]
+    },
     "LinearStudy.artinian_maximal_annihilator_nonzero": {
       "path": "Linear/ArtinianGlobalPairing.lean",
       "startLine": 16,
@@ -53690,6 +54794,23 @@
       "endLine": 91,
       "lineCount": 6,
       "dependencies": []
+    },
+    "LinearStudy.projectiveAmbientFiberIdeal_radical_eq_inside": {
+      "path": "Linear/ProjectiveAmbientFiber.lean",
+      "startLine": 92,
+      "endLine": 101,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_eq_inside"
+      ]
     },
     "LinearStudy.gradedQuotientDecomposition": {
       "path": "Linear/GradedQuotientDecomposition.lean",
@@ -54392,6 +55513,26 @@
       "endLine": 82,
       "lineCount": 22,
       "dependencies": []
+    },
+    "LinearStudy.projectiveAmbientFiberForms_no_infinity": {
+      "path": "Linear/ProjectiveAmbientFiberHighest.lean",
+      "startLine": 23,
+      "endLine": 61,
+      "lineCount": 39,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAmbientFiberForms"
+      ]
     },
     "maximalIdeal_mem_ofList_append_minimalPrimes_of_ofList_height_eq_length": {
       "path": "Linear/Vendor/CM/CohenMacaulayCatenary.lean",
@@ -55586,6 +56727,13 @@
         "LinearStudy.thickeningMk"
       ]
     },
+    "LinearStudy.regular_sequence_mem_ne_zero": {
+      "path": "Linear/ProjectiveFiberHighestRegular.lean",
+      "startLine": 11,
+      "endLine": 28,
+      "lineCount": 18,
+      "dependencies": []
+    },
     "exteriorPower.degreeProjection": {
       "path": "Linear/Vendor/ExteriorBaseChange.lean",
       "startLine": 143,
@@ -55791,6 +56939,28 @@
       "dependencies": [
         "ModuleCat.depth",
         "ModuleCat.depth_eq_top_iff"
+      ]
+    },
+    "LinearStudy.IntegralProjectiveEquations.smoothPoint_linear_parameters": {
+      "path": "Linear/ProjectiveSmoothLinearParameters.lean",
+      "startLine": 27,
+      "endLine": 54,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_ne_bot",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectiveLinearTargetParameterConclusion",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.point_local_quotient_maximalIdeal_map",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.smoothLocus_constructs_original_linear_parameters"
       ]
     },
     "LinearStudy.homogeneous_perfect_pairing_high_degree_mem": {
@@ -57626,6 +58796,27 @@
         "LinearStudy.powerSeries_boxZero_expansion"
       ]
     },
+    "LinearStudy.projectiveAmbientFiberIdeal_point": {
+      "path": "Linear/ProjectiveAmbientFiber.lean",
+      "startLine": 19,
+      "endLine": 52,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAmbientFiberIdeal"
+      ]
+    },
     "LinearStudy.artinian_ambient_socle_generator_descends": {
       "path": "Linear/CompletionQuotient.lean",
       "startLine": 113,
@@ -58258,6 +59449,17 @@
       "lineCount": 1,
       "dependencies": []
     },
+    "LinearStudy.projectiveAmbientFiberForms": {
+      "path": "Linear/ProjectiveAmbientFiberHighest.lean",
+      "startLine": 12,
+      "endLine": 16,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms"
+      ]
+    },
     "LinearStudy.gradedQuotientProjection_mem": {
       "path": "Linear/GradedQuotientDecomposition.lean",
       "startLine": 43,
@@ -58384,6 +59586,19 @@
       "dependencies": [
         "LinearStudy.CoordinateVector",
         "LinearStudy.homogeneousPointEvaluation"
+      ]
+    },
+    "LinearStudy.smoothLocus_constructs_original_linear_parameters": {
+      "path": "Linear/SmoothLinearTargetParameters.lean",
+      "startLine": 84,
+      "endLine": 127,
+      "lineCount": 44,
+      "dependencies": [
+        "LinearStudy.polynomialLocalDifferentialModule",
+        "LinearStudy.polynomial_local_differential_finrank",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal",
+        "LinearStudy.smooth_point_constructs_original_linear_parameters"
       ]
     },
     "LinearStudy.projective_invariant_formal_parameter_jacobian_socle": {
@@ -59300,6 +60515,20 @@
       "dependencies": [
         "exteriorPowerProdEquivProd",
         "exteriorPowerProdEquivProd_apply_inl_ιMulti"
+      ]
+    },
+    "LinearStudy.ProjectiveLinearTargetParameterConclusion": {
+      "path": "Linear/ProjectiveSmoothLinearParameters.lean",
+      "startLine": 15,
+      "endLine": 25,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint"
       ]
     },
     "LinearStudy.HomogeneousEndomorphism.iterate": {
@@ -60826,6 +62055,23 @@
         "LinearStudy.powerSeriesMapEquiv"
       ]
     },
+    "LinearStudy.smooth_point_constructs_original_linear_parameters": {
+      "path": "Linear/SmoothLinearTargetParameters.lean",
+      "startLine": 13,
+      "endLine": 82,
+      "lineCount": 70,
+      "dependencies": [
+        "LinearStudy.actual_point_parameters_transport_under_coordinates",
+        "LinearStudy.eval_polynomialLinearChange",
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialLocalDifferentialModule",
+        "LinearStudy.polynomial_eval_coordinate_equiv",
+        "LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.smooth_point_original_ideal_normal_polynomial_generators"
+      ]
+    },
     "LinearStudy.coordinateRatioFieldMap_finite": {
       "path": "Linear/HomogeneousRatioFieldMap.lean",
       "startLine": 50,
@@ -61295,6 +62541,17 @@
         "LinearStudy.homogeneous_aeval_smul"
       ]
     },
+    "LinearStudy.generalPointLocalQuotientPullback_unramified_coordinates": {
+      "path": "Linear/PointLocalPullbackCoordinateComparison.lean",
+      "startLine": 44,
+      "endLine": 64,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_coordinate_commutes",
+        "LinearStudy.pointLocalCoordinateEquiv"
+      ]
+    },
     "LinearStudy.projective_exists_whole_reduced_fiber_point_count": {
       "path": "Linear/ProjectiveWholeFiberPointCount.lean",
       "startLine": 28,
@@ -61503,6 +62760,17 @@
       "dependencies": [
         "ExteriorAlgebra.map_mem_exteriorPower",
         "ExteriorAlgebra.ι_mul_mem_exteriorPower_anticomm"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberPolynomials": {
+      "path": "Linear/ProjectiveAmbientFiberCompleteIntersection.lean",
+      "startLine": 15,
+      "endLine": 18,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveAmbientFiberForms"
       ]
     },
     "LinearStudy.doublePoint_nilradical": {
@@ -62093,6 +63361,27 @@
         "koszulComplex.equiv_comp_koszulComplex.d_zero_eq"
       ]
     },
+    "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_eq_inside": {
+      "path": "Linear/ProjectiveAmbientFiber.lean",
+      "startLine": 54,
+      "endLine": 74,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAffineFiberIdeal_mem_of_point",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal_point"
+      ]
+    },
     "LinearStudy.generalPointLocalQuotientPullback_isLocalHom": {
       "path": "Linear/GeneralLocalQuotientPullback.lean",
       "startLine": 44,
@@ -62574,6 +63863,18 @@
       "lineCount": 4,
       "dependencies": [
         "Ideal.ofList_spanFinrank_le_length"
+      ]
+    },
+    "LinearStudy.rationalPolynomialChartMap_source_coordinate_equiv": {
+      "path": "Linear/PolynomialAwayCoordinateEquiv.lean",
+      "startLine": 49,
+      "endLine": 60,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.polynomialAwayCoordinateEquiv",
+        "LinearStudy.polynomialAwayCoordinateEquiv_algebraMap",
+        "LinearStudy.polynomialAwayCoordinateEquiv_invSelf",
+        "LinearStudy.rationalPolynomialChartMap"
       ]
     },
     "LinearStudy.liftedParameterCoordinateEquiv": {
@@ -63241,6 +64542,20 @@
         "LinearStudy.weaklyRegular_transport_ringEquiv"
       ]
     },
+    "LinearStudy.projectiveAmbientFiberForms_homogeneous": {
+      "path": "Linear/ProjectiveAmbientFiberHighest.lean",
+      "startLine": 18,
+      "endLine": 21,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.projectiveAmbientFiberForms"
+      ]
+    },
     "LinearStudy.powerSeries_map_pderiv_eq_trunc_of_nilpotent": {
       "path": "Linear/NilpotentEvaluationUnique.lean",
       "startLine": 84,
@@ -63403,6 +64718,25 @@
       "dependencies": [
         "LinearStudy.exists_finite_normalization_krull_dimension",
         "LinearStudy.finite_normalization_trdeg"
+      ]
+    },
+    "LinearStudy.projectiveAmbientFiberIdeal_zeroLocus_finite": {
+      "path": "Linear/ProjectiveAmbientFiber.lean",
+      "startLine": 76,
+      "endLine": 85,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_fibers_finite",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint_injective",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal_point"
       ]
     },
     "LinearStudy.formal_pullback_firstOrder_unit_division": {
@@ -63608,6 +64942,24 @@
       "lineCount": 3,
       "dependencies": [
         "LinearStudy.weightedEvaluation"
+      ]
+    },
+    "LinearStudy.ProjectiveWholeAmbientFiberConclusion": {
+      "path": "Linear/ProjectiveAmbientFiberCompleteIntersection.lean",
+      "startLine": 48,
+      "endLine": 63,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.ProjectiveWholeFiberCommonCoordinateConclusion",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberPolynomials"
       ]
     },
     "LinearStudy.koszul_first_differential_wedge": {

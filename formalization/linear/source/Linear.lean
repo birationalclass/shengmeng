@@ -623,3 +623,19 @@ public import Linear.ProjectiveWholeFiberPointLoci
 public import Linear.ProjectiveSmoothCommonDimension
 
 public import Linear.ProjectiveWholeFiberCommonCoordinates
+
+public import Linear.ProjectiveAmbientFiber
+
+public import Linear.ProjectiveFiberHighestRegular
+
+public import Linear.ProjectiveAmbientFiberHighest
+
+public import Linear.ProjectiveAmbientFiberCompleteIntersection
+
+public import Linear.PointLocalPullbackCoordinateComparison
+
+public import Linear.SmoothLinearTargetParameters
+
+public import Linear.ProjectiveSmoothLinearParameters
+
+public import Linear.PolynomialAwayCoordinateEquiv
