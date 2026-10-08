@@ -533,3 +533,27 @@ public import Linear.ProjectiveFilteredCombination
 public import Linear.ProjectiveFilteredUpperBound
 
 public import Linear.ProjectiveGenericGrowthComparison
+
+public import Linear.PolynomialGrowthLimits
+
+public import Linear.PolynomialGrowthRank
+
+public import Linear.ProjectiveGenericGrowthDegree
+
+public import Linear.FractionPullbackFieldDegree
+
+public import Linear.ProjectiveConeFieldGrowthDegree
+
+public import Linear.ProjectiveScalingMap
+
+public import Linear.ProjectiveScalingFixedRatios
+
+public import Linear.ScalingOrbitTranscendental
+
+public import Linear.ProjectiveConeCoordinateTranscendental
+
+public import Linear.ProjectiveConeRatioRatFunc
+
+public import Linear.RatFuncScaledPowerDegree
+
+public import Linear.ProjectiveConePullbackScaling

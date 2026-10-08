@@ -1563,6 +1563,13 @@ LinearStudy.ringHom_algebraic_target_open_avoids_source_closed.{u_1, u_2} {R : T
 'LinearStudy.ringHom_algebraic_target_open_avoids_source_closed' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.fractionPullback_finrank_eq_fieldRange.{u_1, u_2, u_3, u_4, u_5} {k : Type u_1} {R : Type u_2}
+  {S : Type u_3} {K : Type u_4} {L : Type u_5} [Field k] [CommRing R] [IsDomain R] [CommRing S] [IsDomain S] [Field K]
+  [Field L] [Algebra k R] [Algebra k S] [Algebra R K] [Algebra S L] [Algebra k K] [Algebra k L] [IsScalarTower k R K]
+  [IsScalarTower k S L] [IsFractionRing R K] [IsFractionRing S L] (γ : K →ₐ[k] L) (φ : R →ₐ[k] S)
+  (h : (IsScalarTower.toAlgHom k S L).comp φ = γ.comp (IsScalarTower.toAlgHom k R K)) :
+  Module.finrank R S = Module.finrank (↥γ.fieldRange) L
+'LinearStudy.fractionPullback_finrank_eq_fieldRange' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.module_tensor_finrank_eq_of_free_away.{u_1, u_2, u_3} {R : Type u_1} {M : Type u_2} {K : Type u_3}
   [CommRing R] [IsDomain R] [AddCommGroup M] [Module R M] [Field K] [Algebra R K] (r : R) (hr : r ≠ 0)
   [Module.Free (Localization.Away r) (LocalizedModule.Away r M)] (hrK : (algebraMap R K) r ≠ 0) :
@@ -4224,6 +4231,25 @@ LinearStudy.polynomialQuotient_perfectPairing.{u_1} {K : Type u_1} [Field K] [Is
   [Module.Finite K (MvPolynomial (Fin (n + 1)) K ⧸ Ideal.span (Set.range P))] :
   Nonempty LinearStudy.PerfectMultiplicationPairing
 'LinearStudy.polynomialQuotient_perfectPairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_nat_affine_ratio_tendsto (P : Polynomial ℚ) (hP : P ≠ 0) (q B : ℕ) (hq : 0 < q) :
+  Filter.Tendsto (fun N => Polynomial.eval (↑q * ↑N + ↑B) P / Polynomial.eval (↑N) P) Filter.atTop
+    (nhds (↑q ^ P.natDegree))
+'LinearStudy.polynomial_nat_affine_ratio_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_leadingCoeff_pos_of_eventually_nat_pos (P : Polynomial ℚ)
+  (hpos : ∀ᶠ (N : ℕ) in Filter.atTop, 0 < Polynomial.eval (↑N) P) : 0 < P.leadingCoeff
+'LinearStudy.polynomial_leadingCoeff_pos_of_eventually_nat_pos' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.polynomial_nat_scaled_shift_ratio_tendsto (P : Polynomial ℚ) (hP : P ≠ 0) (q R : ℕ) (hq : 0 < q) :
+  Filter.Tendsto (fun N => Polynomial.eval (↑q * ↑N) P / Polynomial.eval (↑N + ↑R) P) Filter.atTop
+    (nhds (↑q ^ P.natDegree))
+'LinearStudy.polynomial_nat_scaled_shift_ratio_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_nat_two_sided_growth_rank (P : Polynomial ℚ) (hP : P ≠ 0) (q m B R : ℕ) (hq : 0 < q)
+  (hpos : ∀ᶠ (N : ℕ) in Filter.atTop, 0 < Polynomial.eval (↑N) P)
+  (hlow : ∀ᶠ (N : ℕ) in Filter.atTop, ↑m * Polynomial.eval (↑N) P ≤ Polynomial.eval (↑q * ↑N + ↑B) P)
+  (hupp : ∀ᶠ (N : ℕ) in Filter.atTop, Polynomial.eval (↑q * ↑N) P ≤ ↑m * Polynomial.eval (↑N + ↑R) P) :
+  m = q ^ P.natDegree
+'LinearStudy.polynomial_nat_two_sided_growth_rank' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomialLinearChange.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K] [Fintype σ]
   (P : Matrix σ σ K) : MvPolynomial σ K →ₐ[K] MvPolynomial σ K
 'LinearStudy.polynomialLinearChange' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -6058,6 +6084,42 @@ LinearStudy.projectiveCone_exists_nonvanishing_point {n : ℕ} (V : LinearStudy.
   (H : LinearStudy.CoordinateRing n) (hH : H ∉ V.ideal.toIdeal) :
   ∃ w ∈ MvPolynomial.zeroLocus ℂ V.ideal.toIdeal, (MvPolynomial.eval w) H ≠ 0
 'LinearStudy.projectiveCone_exists_nonvanishing_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveConeFractionCoordinates_zero_transcendental {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  Transcendental (↥(LinearStudy.projectiveCoordinateRatioField V)) (LinearStudy.projectiveConeFractionCoordinates V 0)
+'LinearStudy.projectiveConeFractionCoordinates_zero_transcendental' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveCoordinateDomainMap_finrank_eq_fieldRange {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :
+  let A := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  have γ := LinearStudy.projectiveCoordinateFractionMap f V hq hf hV;
+  have φ := LinearStudy.projectiveCoordinateDomainMap f V hq hf hV;
+  Module.finrank A A = Module.finrank (↥γ.fieldRange) (FractionRing A)
+'LinearStudy.projectiveCoordinateDomainMap_finrank_eq_fieldRange' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveConeFractionField_exists_hilbert_degree_power {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :
+  let A := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  have γ := LinearStudy.projectiveCoordinateFractionMap f V hq hf hV;
+  ∃ P C,
+    P ≠ 0 ∧
+      C ≠ 0 ∧
+        P.natDegree ≤ n ∧
+          C.natDegree = P.natDegree + 1 ∧
+            Module.finrank (↥γ.fieldRange) (FractionRing A) = f.degree ^ C.natDegree ∧
+              ∃ K,
+                ∀ N > K,
+                  Polynomial.eval (↑N) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal N) ∧
+                    Polynomial.eval (↑N) C =
+                      ↑(Module.finrank ℂ ↥(LinearStudy.homogeneousQuotientFiltration V.ideal.toIdeal N))
+'LinearStudy.projectiveConeFractionField_exists_hilbert_degree_power' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.HomogeneousEndomorphism.forms_zeroLocus {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
   (hq : 0 < f.degree) : MvPolynomial.zeroLocus ℂ (Ideal.span (Set.range f.forms)) = {0}
 'LinearStudy.HomogeneousEndomorphism.forms_zeroLocus' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -6074,6 +6136,33 @@ LinearStudy.projectiveCone_exists_target_chart_open_point {n : ℕ} (V : LinearS
   ∃ w ∈ MvPolynomial.zeroLocus ℂ V.ideal.toIdeal,
     w 0 ≠ 0 ∧ (MvPolynomial.eval w) H ≠ 0 ∧ (MvPolynomial.eval fun i => w i.succ / w 0) p ≠ 0
 'LinearStudy.projectiveCone_exists_target_chart_open_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveConePullback_exists_scaling_coefficient {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  ∃ u,
+    u ≠ 0 ∧
+      (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV) (LinearStudy.projectiveConeFractionCoordinates V 0) =
+        (algebraMap (↥(LinearStudy.projectiveCoordinateRatioField V))
+              (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)))
+            u *
+          LinearStudy.projectiveConeFractionCoordinates V 0 ^ f.degree
+'LinearStudy.projectiveConePullback_exists_scaling_coefficient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveConeRatioField_adjoin_coordinate_top {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  (↥(LinearStudy.projectiveCoordinateRatioField V))⟮LinearStudy.projectiveConeFractionCoordinates V 0⟯ = ⊤
+'LinearStudy.projectiveConeRatioField_adjoin_coordinate_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveConeRatioRatFuncEquiv {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  RatFunc ↥(LinearStudy.projectiveCoordinateRatioField V) ≃ₐ[↥(LinearStudy.projectiveCoordinateRatioField V)]
+    FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+'LinearStudy.projectiveConeRatioRatFuncEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveConeRatioRatFuncEquiv_X {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  (LinearStudy.projectiveConeRatioRatFuncEquiv V x hx) RatFunc.X = LinearStudy.projectiveConeFractionCoordinates V 0
+'LinearStudy.projectiveConeRatioRatFuncEquiv_X' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.HomogeneousEndomorphism.evalVector_surjective {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
   (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints) : Function.Surjective f.evalVector
 'LinearStudy.HomogeneousEndomorphism.evalVector_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -6544,6 +6633,41 @@ LinearStudy.projectiveCoordinateDomainMap_generic_growth_comparison {n : ℕ} (f
 'LinearStudy.projectiveCoordinateDomainMap_generic_growth_comparison' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projective_coordinate_filtration_finrank_pos {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (N : ℕ) : 0 < Module.finrank ℂ ↥(LinearStudy.homogeneousQuotientFiltration V.ideal.toIdeal N)
+'LinearStudy.projective_coordinate_filtration_finrank_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveCoordinateDomainMap_rank_eq_growth_power {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (C : Polynomial ℚ) (hC : C ≠ 0)
+  (hCgrowth :
+    ∃ K,
+      ∀ N > K,
+        Polynomial.eval (↑N) C = ↑(Module.finrank ℂ ↥(LinearStudy.homogeneousQuotientFiltration V.ideal.toIdeal N))) :
+  let A := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  have φ := LinearStudy.projectiveCoordinateDomainMap f V hq hf hV;
+  Module.finrank A A = f.degree ^ C.natDegree
+'LinearStudy.projectiveCoordinateDomainMap_rank_eq_growth_power' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveCoordinateDomainMap_exists_hilbert_rank_power {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :
+  let A := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  have φ := LinearStudy.projectiveCoordinateDomainMap f V hq hf hV;
+  ∃ P C,
+    P ≠ 0 ∧
+      C ≠ 0 ∧
+        P.natDegree ≤ n ∧
+          C.natDegree = P.natDegree + 1 ∧
+            Module.finrank A A = f.degree ^ C.natDegree ∧
+              ∃ K,
+                ∀ N > K,
+                  Polynomial.eval (↑N) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal N) ∧
+                    Polynomial.eval (↑N) C =
+                      ↑(Module.finrank ℂ ↥(LinearStudy.homogeneousQuotientFiltration V.ideal.toIdeal N))
+'LinearStudy.projectiveCoordinateDomainMap_exists_hilbert_rank_power' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectiveCoordinateDomainMap_exists_generic_homogeneous_basis {n : ℕ}
   (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)
   (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :
@@ -6980,6 +7104,35 @@ LinearStudy.projective_total_invariance_rational_chart_radical.{u_1} {n : ℕ} (
 'LinearStudy.projective_total_invariance_rational_chart_radical' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projectiveConeScalingMap_ratio {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (u : ℂˣ)
+  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (i : Fin n) :
+  (LinearStudy.projectiveConeScalingMap V u)
+      (LinearStudy.projectiveConeFractionCoordinates V i.succ / LinearStudy.projectiveConeFractionCoordinates V 0) =
+    LinearStudy.projectiveConeFractionCoordinates V i.succ / LinearStudy.projectiveConeFractionCoordinates V 0
+'LinearStudy.projectiveConeScalingMap_ratio' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveConeScalingMap_fixes_ratioField {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (u : ℂˣ)
+  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)
+  (a : FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)) :
+  a ∈ LinearStudy.projectiveCoordinateRatioField V → (LinearStudy.projectiveConeScalingMap V u) a = a
+'LinearStudy.projectiveConeScalingMap_fixes_ratioField' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.HomogeneousEndomorphism.scaling (n : ℕ) (u : ℂˣ) : LinearStudy.HomogeneousEndomorphism n
+'LinearStudy.HomogeneousEndomorphism.scaling' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.HomogeneousEndomorphism.scaling_evalVector {n : ℕ} (u : ℂˣ) (v : LinearStudy.CoordinateVector n) :
+  (LinearStudy.HomogeneousEndomorphism.scaling n u).evalVector v = ↑u • v
+'LinearStudy.HomogeneousEndomorphism.scaling_evalVector' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.HomogeneousEndomorphism.scaling_onPoints {n : ℕ} (u : ℂˣ) :
+  (LinearStudy.HomogeneousEndomorphism.scaling n u).onPoints = id
+'LinearStudy.HomogeneousEndomorphism.scaling_onPoints' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveConeScalingMap {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (u : ℂˣ) :
+  FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) →ₐ[ℂ]
+    FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+'LinearStudy.projectiveConeScalingMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveConeScalingMap_coordinate {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (u : ℂˣ)
+  (i : Fin (n + 1)) :
+  (LinearStudy.projectiveConeScalingMap V u) (LinearStudy.projectiveConeFractionCoordinates V i) =
+    (algebraMap ℂ (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal))) ↑u *
+      LinearStudy.projectiveConeFractionCoordinates V i
+'LinearStudy.projectiveConeScalingMap_coordinate' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.projective_smooth_local_pullback_structure {n r c : ℕ} [Nonempty (Fin c)]
   (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hf : 1 < f.degree)
   (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (e : Fin (n + 1) ≃ Fin r ⊕ Fin c) (hr : 0 < r) (hc : 0 < c)
@@ -7218,6 +7371,13 @@ LinearStudy.quotientLocalPullback_formallyUnramified.{u_1, u_2} {R : Type u_1} {
   let q := Ideal.comap (Ideal.Quotient.mk I) Q;
   (LinearStudy.generalPointLocalQuotientPullback I J p q φ ⋯ hφ).FormallyUnramified
 'LinearStudy.quotientLocalPullback_formallyUnramified' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.ratFunc_scaled_power_finrank.{u_1} {E : Type u_1} [Field E] (u : E) (hu : u ≠ 0) (q : ℕ) :
+  Module.finrank (↥E⟮(algebraMap (Polynomial E) (RatFunc E)) (Polynomial.C u * Polynomial.X ^ q)⟯) (RatFunc E) = q
+'LinearStudy.ratFunc_scaled_power_finrank' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.rationalField_scaled_power_finrank.{u_1, u_2} {E : Type u_1} {F : Type u_2} [Field E] [Field F]
+  [Algebra E F] (e : RatFunc E ≃ₐ[E] F) (u : E) (hu : u ≠ 0) (q : ℕ) :
+  Module.finrank (↥E⟮(algebraMap E F) u * e RatFunc.X ^ q⟯) F = q
+'LinearStudy.rationalField_scaled_power_finrank' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.formalPolynomialAtPointAlg.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K) :
   MvPolynomial σ K →ₐ[K] MvPowerSeries σ K
 'LinearStudy.formalPolynomialAtPointAlg' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -7831,6 +7991,11 @@ LinearStudy.finiteFlat_annihilator_from_closed_socle.{u_1, u_2} {B : Type u_1} {
       ∃ u, x = u • 1 ⊗ₜ[B] delta)
   (x : A) : LinearStudy.Annihilates (RingHom.ker q.toRingHom) x ↔ ∃ u, x = u • delta
 'LinearStudy.finiteFlat_annihilator_from_closed_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.transcendental_of_scaling_orbit.{u_1, u_2} {k : Type u_1} {F : Type u_2} [Field k] [CharZero k] [Field F]
+  [Algebra k F] (E : IntermediateField k F) (t : F) (ht : t ≠ 0) (Φ : ℕ → F →ₐ[k] F)
+  (hfix : ∀ (N : ℕ), ∀ a ∈ E, (Φ N) a = a) (hscale : ∀ (N : ℕ), (Φ N) t = (algebraMap k F) ↑(N + 1) * t) :
+  Transcendental (↥E) t
+'LinearStudy.transcendental_of_scaling_orbit' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.smooth_points_have_common_polynomial_coordinates.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
   {ι : Type u_3} [Field K] [Infinite K] [Fintype σ] [DecidableEq σ] [Fintype ι] (I : Ideal (MvPolynomial σ K))
   (P : ι → Ideal (MvPolynomial σ K)) [∀ (a : ι), (P a).IsPrime] (x : ι → σ → K) (hIP : ∀ (a : ι), I ≤ P a)
