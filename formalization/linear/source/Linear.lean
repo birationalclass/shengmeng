@@ -417,3 +417,25 @@ public import Linear.PolynomialReducedPointCount
 public import Linear.ProjectiveAffineFiberPointEquiv
 
 public import Linear.ProjectiveWholeFiberPointCount
+
+public import Linear.ProjectiveAffineFiberUniversal
+
+public import Linear.ProjectiveAffineFiberTensor
+
+public import Linear.ProjectiveWholeTensorFiber
+
+public import Linear.HomogeneousPullbackComponents
+
+public import Linear.ProjectiveHomogeneousChartAvoidance
+
+public import Linear.ProjectiveGeneralReducedFibers
+
+public import Linear.ProjectiveGeneralTensorFibers
+
+public import Linear.AlgebraicFiniteTypeAway
+
+public import Linear.GenericFreeAway
+
+public import Linear.ProjectiveChartFiniteAway
+
+public import Linear.ProjectiveChartFiniteFree

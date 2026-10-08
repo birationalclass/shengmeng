@@ -323,6 +323,10 @@ LinearStudy.IntegralProjectiveEquations.affineAlgHom_point_evaluation {n : ℕ}
 'LinearStudy.IntegralProjectiveEquations.affineAlgHom_point_evaluation' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.algebraic_finiteType_exists_finite_away.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S]
+  [Algebra R S] [Algebra.FiniteType R S] [Algebra.IsAlgebraic R S] :
+  ∃ r, r ≠ 0 ∧ (Localization.awayMapₐ (Algebra.ofId R S) r).Finite
+'LinearStudy.algebraic_finiteType_exists_finite_away' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.annihilates_nilradical_ringEquiv.{u_1, u_2} {A : Type u_1} {D : Type u_2} [CommRing A] [CommRing D]
   (e : D ≃+* A) (x : D) : LinearStudy.Annihilates (nilradical D) x ↔ LinearStudy.Annihilates (nilradical A) (e x)
 'LinearStudy.annihilates_nilradical_ringEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1592,6 +1596,13 @@ LinearStudy.flat_genericFiber_descend_annihilation.{u_1, u_2, u_3} {B : Type u_1
   [IsLocalizedModule (nonZeroDivisors B) f.toLinearMap] (N : Ideal A) (delta : A)
   (hgeneric : LinearStudy.Annihilates (Ideal.map f.toRingHom N) (f delta)) : LinearStudy.Annihilates N delta
 'LinearStudy.flat_genericFiber_descend_annihilation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteModule_exists_free_away.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [IsDomain R]
+  [IsNoetherianRing R] [AddCommGroup M] [Module R M] [Module.Finite R M] :
+  ∃ r,
+    r ≠ 0 ∧
+      Module.Free (Localization.Away r) (LocalizedModule.Away r M) ∧
+        Module.finrank (Localization.Away r) (LocalizedModule.Away r M) = Module.finrank R M
+'LinearStudy.finiteModule_exists_free_away' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.domain_exists_nonzero_smooth_basic_open.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [PerfectField K]
   [CommRing A] [IsDomain A] [Algebra K A] [Algebra.FinitePresentation K A] :
   ∃ a, a ≠ 0 ∧ Algebra.Smooth K (Localization.Away a)
@@ -1693,6 +1704,14 @@ LinearStudy.homogeneous_polynomial_map_finite_of_origin_zeroLocus.{u_1, u_2, u_3
   (hP : ∀ (i : κ), (P i).IsHomogeneous q) (hZ : MvPolynomial.zeroLocus K (Ideal.span (Set.range P)) = {0}) :
   (MvPolynomial.aeval P).Finite
 'LinearStudy.homogeneous_polynomial_map_finite_of_origin_zeroLocus' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.homogeneousComponent_aeval_common_positive_degree.{u_1, u_2, u_3} {K : Type u_1} {ι : Type u_2}
+  {κ : Type u_3} [Field K] (P : κ → MvPolynomial ι K) (q : ℕ) (hq : 0 < q) (hP : ∀ (i : κ), (P i).IsHomogeneous q)
+  (H : MvPolynomial κ K) (m : ℕ) :
+  (MvPolynomial.homogeneousComponent (q * m)) ((MvPolynomial.aeval P) H) =
+    (MvPolynomial.aeval P) ((MvPolynomial.homogeneousComponent m) H)
+'LinearStudy.homogeneousComponent_aeval_common_positive_degree' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.homogeneousQuotientComponent.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]
@@ -4747,6 +4766,16 @@ LinearStudy.projectiveAffineFiberQuotient_isReduced_of_target_open {n : ℕ} (f 
 'LinearStudy.projectiveAffineFiberQuotient_isReduced_of_target_open' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projectiveAffineFiber_exists_tensor_equiv {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (y : Fin n → ℂ)
+  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) :
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);
+  have φ := LinearStudy.projectiveChartOpenMap f V hq hf hV y hy;
+  have ρ := V.affinePointEvaluation y hy;
+  Nonempty (TensorProduct B A ℂ ≃ₐ[ℂ] MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y)
+'LinearStudy.projectiveAffineFiber_exists_tensor_equiv' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomialQuotient_isUnit_of_nonvanishing.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [IsAlgClosed K]
   [Finite σ] (I : Ideal (MvPolynomial σ K)) (p : MvPolynomial σ K)
   (hp : ∀ x ∈ MvPolynomial.zeroLocus K I, (MvPolynomial.eval x) p ≠ 0) : IsUnit ((Ideal.Quotient.mk I) p)
@@ -4757,6 +4786,17 @@ LinearStudy.projectiveAffineFiberQuotient_denominator_isUnit {n : ℕ} (f : Line
     ((Ideal.Quotient.mk (LinearStudy.projectiveAffineFiberIdeal f V y))
       (LinearStudy.affineChartPolynomialMap (f.forms 0)))
 'LinearStudy.projectiveAffineFiberQuotient_denominator_isUnit' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveAffineFiberChartMap_exists_unique_lift.{u_1} {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet)
+  {C : Type u_1} [CommRing C] [Algebra ℂ C] (χ : Localization.Away (LinearStudy.projectiveChartDenominator f V) →ₐ[ℂ] C)
+  (hχ :
+    χ.comp (LinearStudy.projectiveChartOpenMap f V hq hf hV y hy) =
+      (Algebra.ofId ℂ C).comp (V.affinePointEvaluation y hy)) :
+  ∃! ψ, ψ.comp (LinearStudy.projectiveAffineFiberChartMap f V y) = χ
+'LinearStudy.projectiveAffineFiberChartMap_exists_unique_lift' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.affineChartPolynomialMap_pointKernel_comap.{u_1} {K : Type u_1} [Field K] {n : ℕ} (x : Fin n → K) :
@@ -5114,6 +5154,42 @@ LinearStudy.projectiveFiber_actual_highest_zeroLocus {n : ℕ} (f : LinearStudy.
             (LinearStudy.affineDehomogenize (f.forms i.succ)))) =
     {0}
 'LinearStudy.projectiveFiber_actual_highest_zeroLocus' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartOpenMap_exists_finite_target_away {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);
+  let φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x hx;
+  ∃ b,
+    b ≠ 0 ∧
+      let R := Localization.Away b;
+      let S := Localization.Away ((algebraMap B A) b);
+      have ψ := Localization.awayMapₐ (Algebra.ofId B A) b;
+      Module.Finite R S
+'LinearStudy.projectiveChartOpenMap_exists_finite_target_away' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveChartOpenMap_exists_finite_free_target_opens {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);
+  let φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x hx;
+  ∃ b,
+    b ≠ 0 ∧
+      let R := Localization.Away b;
+      let S := Localization.Away ((algebraMap B A) b);
+      have ψ := Localization.awayMapₐ (Algebra.ofId B A) b;
+      Module.Finite R S ∧
+        ∃ c,
+          c ≠ 0 ∧
+            Module.Free (Localization.Away c) (LocalizedModule.Away c S) ∧
+              Module.finrank (Localization.Away c) (LocalizedModule.Away c S) = Module.finrank R S
+'LinearStudy.projectiveChartOpenMap_exists_finite_free_target_opens' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectiveChartCoordinateEmbedding {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)
   (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
   MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal →ₐ[ℂ] FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
@@ -5664,6 +5740,52 @@ LinearStudy.HomogeneousEndomorphism.evalVector_fibers_finite {n : ℕ} (f : Line
 LinearStudy.HomogeneousEndomorphism.onPoints_fibers_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
   (hq : 0 < f.degree) (y : LinearStudy.ProjectivePoint n) : (f.onPoints ⁻¹' {y}).Finite
 'LinearStudy.HomogeneousEndomorphism.onPoints_fibers_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_exists_general_whole_reduced_fibers {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ p ∉ V.affineIdeal,
+    (let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+      let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);
+      have φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0;
+      ∀ (P : PrimeSpectrum A),
+        φ ((Ideal.Quotient.mk V.affineIdeal) p) ∉ P.asIdeal →
+          P ∈ Algebra.smoothLocus ℂ A ∧
+            PrimeSpectrum.comap φ.toRingHom P ∈ Algebra.smoothLocus ℂ B ∧ P ∈ Algebra.unramifiedLocus B A) ∧
+      (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧
+        ∀ (y : Fin n → ℂ),
+          LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet →
+            (MvPolynomial.eval y) p ≠ 0 →
+              (f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}).Finite ∧
+                (∀ (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0),
+                    f.onPoints (Projectivization.mk ℂ v hv) = LinearStudy.normalizedProjectivePoint y → v 0 ≠ 0) ∧
+                  Module.Finite ℂ (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y) ∧
+                    IsReduced (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y) ∧
+                      Nat.card ↑(f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =
+                        Module.finrank ℂ (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y)
+'LinearStudy.projective_exists_general_whole_reduced_fibers' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_exists_general_whole_reduced_tensor_fibers {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ p ∉ V.affineIdeal,
+    (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧
+      ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),
+        (MvPolynomial.eval y) p ≠ 0 →
+          (f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}).Finite ∧
+            (∀ (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0),
+                f.onPoints (Projectivization.mk ℂ v hv) = LinearStudy.normalizedProjectivePoint y → v 0 ≠ 0) ∧
+              let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+              let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);
+              let φ := LinearStudy.projectiveChartOpenMap f V hq hf hV y hy;
+              have ρ := V.affinePointEvaluation y hy;
+              Module.Finite ℂ (TensorProduct B A ℂ) ∧
+                IsReduced (TensorProduct B A ℂ) ∧
+                  Nat.card ↑(f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =
+                    Module.finrank ℂ (TensorProduct B A ℂ)
+'LinearStudy.projective_exists_general_whole_reduced_tensor_fibers' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectiveCoordinateDomainMap_finiteType {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
   (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
   (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) : (LinearStudy.projectiveCoordinateDomainMap f V hq hf hV).FiniteType
@@ -5717,6 +5839,16 @@ LinearStudy.projectiveChartOpenMap_exists_good_affine_coordinates {n : ℕ} (f :
               (ρ.comp ι).comp (Ideal.Quotient.mkₐ ℂ V.affineIdeal) = MvPolynomial.aeval x ∧
                 (ρ.comp φ).comp (Ideal.Quotient.mkₐ ℂ V.affineIdeal) = MvPolynomial.aeval y
 'LinearStudy.projectiveChartOpenMap_exists_good_affine_coordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveConeMap_exists_homogeneous_chart_avoidance_polynomial {n : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)
+  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  ∃ k H C,
+    MvPolynomial.IsHomogeneous H k ∧
+      H ∉ V.ideal.toIdeal ∧ (MvPolynomial.aeval f.forms) H - MvPolynomial.X 0 * C ∈ V.ideal.toIdeal
+'LinearStudy.projectiveConeMap_exists_homogeneous_chart_avoidance_polynomial' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.polynomial_pullback_zeroLocus.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (P : σ → MvPolynomial σ K)
@@ -6090,6 +6222,26 @@ LinearStudy.projective_exists_whole_reduced_fiber {n : ℕ} (f : LinearStudy.Hom
           Module.Finite ℂ (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y) ∧
             IsReduced (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y)
 'LinearStudy.projective_exists_whole_reduced_fiber' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_exists_whole_reduced_tensor_fiber_point_count {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ y,
+    ∃ (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),
+      (f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}).Finite ∧
+        (∀ (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0),
+            f.onPoints (Projectivization.mk ℂ v hv) = LinearStudy.normalizedProjectivePoint y → v 0 ≠ 0) ∧
+          let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+          let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);
+          let φ := LinearStudy.projectiveChartOpenMap f V hq hf hV y hy;
+          have ρ := V.affinePointEvaluation y hy;
+          Module.Finite ℂ (TensorProduct B A ℂ) ∧
+            IsReduced (TensorProduct B A ℂ) ∧
+              Nat.card ↑(f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =
+                Module.finrank ℂ (TensorProduct B A ℂ)
+'LinearStudy.projective_exists_whole_reduced_tensor_fiber_point_count' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.quotientLocalPullback_comparison.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]
   (I : Ideal R) (J : Ideal A) (φ : R →+* A) (hφ : Ideal.map φ I ≤ J) (P : Ideal (A ⧸ J)) [P.IsPrime] :
   let ψ := Ideal.quotientMap J φ ⋯;
