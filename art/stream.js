@@ -1,4 +1,4 @@
-import {loadPart} from './crypto.js?v=20261009-stream';
+import {loadPart} from './crypto.js?v=20261009-stream2';
 export class SegmentedVideo {
   constructor(video,asset,key,signal,onStatus=()=>{}) {
     Object.assign(this,{video,asset,key,signal,onStatus});this.loaded=new Set();this.destroyed=false;this.busy=false;this.again=false;
@@ -70,12 +70,27 @@ export class SegmentedVideo {
 }
 export function playerControls(video,root) {
   const toggle=root.querySelector('[data-toggle]'),seek=root.querySelector('[data-seek]'),time=root.querySelector('[data-time]'),volume=root.querySelector('[data-volume]'),full=root.querySelector('[data-fullscreen]');
+  const wrapper=root.parentElement;let hideTimer;
+  wrapper.tabIndex=0;wrapper.setAttribute('aria-label',video.getAttribute('aria-label')||'视频播放器');
+  const show=()=>{clearTimeout(hideTimer);wrapper.classList.remove('controls-hidden');root.removeAttribute('aria-hidden');root.inert=false;};
+  const hide=()=>{if(video.paused||video.seeking||root.hidden||wrapper.querySelector(':focus-visible'))return;wrapper.classList.add('controls-hidden');root.setAttribute('aria-hidden','true');root.inert=true;};
+  const activity=()=>{show();if(!video.paused)hideTimer=setTimeout(hide,2800);};
+  for(const event of ['pointermove','pointerdown','focusin'])wrapper.addEventListener(event,activity);
+  wrapper.addEventListener('pointerleave',()=>{clearTimeout(hideTimer);if(!video.paused)hideTimer=setTimeout(hide,1000);});
+  wrapper.addEventListener('focusout',activity);
+  wrapper.addEventListener('keydown',event=>{
+    activity();if(event.target!==wrapper)return;
+    if(event.key===' '){event.preventDefault();video.paused?video.play().catch(()=>{}):video.pause();}
+    if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();video.currentTime=Math.max(0,Math.min(video.duration||0,video.currentTime+(event.key==='ArrowLeft'?-5:5)));}
+  });
+  for(const event of ['play','playing','seeked'])video.addEventListener(event,activity);
+  for(const event of ['pause','ended','emptied'])video.addEventListener(event,show);
   const stamp=n=>`${Math.floor(n/60)}:${String(Math.floor(n%60)).padStart(2,'0')}`;
   const update=()=>{const duration=Number.isFinite(video.duration)?video.duration:Number(seek.max);if(duration>0)seek.max=String(duration);seek.value=String(video.currentTime);toggle.textContent=video.paused?'▶':'Ⅱ';toggle.setAttribute('aria-label',video.paused?'播放':'暂停');time.textContent=`${stamp(video.currentTime)} / ${stamp(duration||0)}`;};
   toggle.addEventListener('click',()=>video.paused?video.play().catch(()=>{}):video.pause());
   seek.addEventListener('input',()=>{video.currentTime=Number(seek.value);update();});
   volume.addEventListener('input',()=>{video.volume=Number(volume.value);});
-  full.addEventListener('click',()=>{const wrapper=root.parentElement;if(document.fullscreenElement)document.exitFullscreen();else if(wrapper.requestFullscreen)wrapper.requestFullscreen();else video.webkitEnterFullscreen?.();});
+  full.addEventListener('click',()=>{if(document.fullscreenElement)document.exitFullscreen();else if(wrapper.requestFullscreen)wrapper.requestFullscreen();else video.webkitEnterFullscreen?.();});
   for(const event of ['play','pause','timeupdate','loadedmetadata','durationchange','ended'])video.addEventListener(event,update);
   video.addEventListener('contextmenu',event=>event.preventDefault());update();return update;
 }

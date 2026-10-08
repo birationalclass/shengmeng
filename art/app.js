@@ -1,5 +1,5 @@
-import {unlockVault,loadAsset,shanghaiDate} from './crypto.js?v=20261009-stream';
-import {SegmentedVideo,playerControls} from './stream.js?v=20261009-stream';
+import {unlockVault,loadAsset,shanghaiDate} from './crypto.js?v=20261009-stream2';
+import {SegmentedVideo,playerControls} from './stream.js?v=20261009-stream2';
 const $=id=>document.getElementById(id);
 let opened=null,controller=null,generation=0,urls=[],musicPromise=null,videoPromise=null,privateStream=null;
 function message(id,text,error=false){$(id).textContent=text;$(id).classList.toggle('error',error);}
