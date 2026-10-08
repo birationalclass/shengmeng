@@ -495,3 +495,13 @@ public import Linear.GradedHilbertSerre
 public import Linear.HomogeneousCoordinateHilbertSeries
 
 public import Linear.HomogeneousCoordinateHilbertPolynomial
+
+public import Linear.HomogeneousCoordinateHilbertPositive
+
+public import Linear.GradedHilbertDegree
+
+public import Linear.HomogeneousCoordinateFiltration
+
+public import Linear.HomogeneousCumulativeHilbert
+
+public import Linear.ProjectiveCoordinateHilbertGrowth
