@@ -561,12 +561,144 @@ set_option pp.proofs false
 #print axioms LinearStudy.global_diagonal_normalized_trace
 #check LinearStudy.injectiveMap_exists_smooth_unramified_rational_point
 #print axioms LinearStudy.injectiveMap_exists_smooth_unramified_rational_point
+#check LinearStudy.gradedHilbertSeries
+#print axioms LinearStudy.gradedHilbertSeries
+#check LinearStudy.gradedHilbertSeries_coeff
+#print axioms LinearStudy.gradedHilbertSeries_coeff
+#check LinearStudy.gradedHilbertSeries_scalar_recurrence
+#print axioms LinearStudy.gradedHilbertSeries_scalar_recurrence
+#check LinearStudy.gradedHilbertSeries_polynomial_of_bounded
+#print axioms LinearStudy.gradedHilbertSeries_polynomial_of_bounded
+#check LinearStudy.gradedHilbertSeries_polynomial_of_finite
+#print axioms LinearStudy.gradedHilbertSeries_polynomial_of_finite
+#check LinearStudy.gradedHilbertSeries_polynomial_of_empty_generators
+#print axioms LinearStudy.gradedHilbertSeries_polynomial_of_empty_generators
+#check LinearStudy.gradedHilbertSeries_rational
+#print axioms LinearStudy.gradedHilbertSeries_rational
+#check LinearStudy.gradedModule_eventually_eq_bot
+#print axioms LinearStudy.gradedModule_eventually_eq_bot
+#check LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators
+#print axioms LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators
+#check LinearStudy.gradedModuleProjection
+#print axioms LinearStudy.gradedModuleProjection
+#check LinearStudy.gradedModuleProjection_apply
+#print axioms LinearStudy.gradedModuleProjection_apply
+#check LinearStudy.gradedModuleProjection_on_piece
+#print axioms LinearStudy.gradedModuleProjection_on_piece
+#check LinearStudy.gradedModuleProjection_smul_homogeneous
+#print axioms LinearStudy.gradedModuleProjection_smul_homogeneous
+#check LinearStudy.gradedScalarKernel
+#print axioms LinearStudy.gradedScalarKernel
+#check LinearStudy.gradedScalarImage
+#print axioms LinearStudy.gradedScalarImage
+#check LinearStudy.gradedQuotientPiece
+#print axioms LinearStudy.gradedQuotientPiece
+#check LinearStudy.gradedQuotientProjection
+#print axioms LinearStudy.gradedQuotientProjection
+#check LinearStudy.gradedQuotientProjection_mk
+#print axioms LinearStudy.gradedQuotientProjection_mk
+#check LinearStudy.gradedQuotientProjection_on_piece
+#print axioms LinearStudy.gradedQuotientProjection_on_piece
+#check LinearStudy.gradedQuotientProjection_mem
+#print axioms LinearStudy.gradedQuotientProjection_mem
+#check LinearStudy.gradedQuotientProjection_sum
+#print axioms LinearStudy.gradedQuotientProjection_sum
+#check LinearStudy.gradedQuotientPiece_independent
+#print axioms LinearStudy.gradedQuotientPiece_independent
+#check LinearStudy.gradedQuotientPiece_total
+#print axioms LinearStudy.gradedQuotientPiece_total
+#check LinearStudy.gradedQuotientDecomposition
+#print axioms LinearStudy.gradedQuotientDecomposition
+#check LinearStudy.gradedQuotientPiece_finite
+#print axioms LinearStudy.gradedQuotientPiece_finite
+#check LinearStudy.gradedScalarMultiplication
+#print axioms LinearStudy.gradedScalarMultiplication
+#check LinearStudy.gradedScalarCokernelPiece
+#print axioms LinearStudy.gradedScalarCokernelPiece
+#check LinearStudy.gradedScalarCokernelProjection
+#print axioms LinearStudy.gradedScalarCokernelProjection
+#check LinearStudy.gradedScalarCokernelProjection_surjective
+#print axioms LinearStudy.gradedScalarCokernelProjection_surjective
+#check LinearStudy.gradedScalarCokernelProjection_injective_of_lt
+#print axioms LinearStudy.gradedScalarCokernelProjection_injective_of_lt
+#check LinearStudy.gradedScalarCokernelPieceEquiv_of_lt
+#print axioms LinearStudy.gradedScalarCokernelPieceEquiv_of_lt
+#check LinearStudy.gradedScalarMultiplication_exact
+#print axioms LinearStudy.gradedScalarMultiplication_exact
+#check LinearStudy.gradedScalarKernelPiece
+#print axioms LinearStudy.gradedScalarKernelPiece
+#check LinearStudy.gradedScalarKernelPieceEquiv
+#print axioms LinearStudy.gradedScalarKernelPieceEquiv
+#check LinearStudy.gradedScalar_finrank_recurrence
+#print axioms LinearStudy.gradedScalar_finrank_recurrence
+#check LinearStudy.gradedScalarKernel_finite_over_adjoin
+#print axioms LinearStudy.gradedScalarKernel_finite_over_adjoin
+#check LinearStudy.gradedScalarCokernel_finite_over_adjoin
+#print axioms LinearStudy.gradedScalarCokernel_finite_over_adjoin
+#check LinearStudy.gradedScalarKernelModule
+#print axioms LinearStudy.gradedScalarKernelModule
+#check LinearStudy.gradedScalarCokernelModule
+#print axioms LinearStudy.gradedScalarCokernelModule
+#check LinearStudy.gradedScalarKernelGradedSMul
+#print axioms LinearStudy.gradedScalarKernelGradedSMul
+#check LinearStudy.gradedScalarCokernelGradedSMul
+#print axioms LinearStudy.gradedScalarCokernelGradedSMul
+#check LinearStudy.gradedSubalgebraModuleGradedSMul
+#print axioms LinearStudy.gradedSubalgebraModuleGradedSMul
+#check LinearStudy.homogeneousAdjoin
+#print axioms LinearStudy.homogeneousAdjoin
+#check LinearStudy.gradedSubalgebraPiece
+#print axioms LinearStudy.gradedSubalgebraPiece
+#check LinearStudy.gradedSubalgebraGrading
+#print axioms LinearStudy.gradedSubalgebraGrading
+#check LinearStudy.gradedSubalgebraPiece_finite
+#print axioms LinearStudy.gradedSubalgebraPiece_finite
+#check LinearStudy.gradedSubmodulePiece
+#print axioms LinearStudy.gradedSubmodulePiece
+#check LinearStudy.gradedSubmoduleProjection
+#print axioms LinearStudy.gradedSubmoduleProjection
+#check LinearStudy.gradedSubmoduleProjection_coe
+#print axioms LinearStudy.gradedSubmoduleProjection_coe
+#check LinearStudy.gradedSubmoduleProjection_mem
+#print axioms LinearStudy.gradedSubmoduleProjection_mem
+#check LinearStudy.gradedSubmoduleProjection_on_piece
+#print axioms LinearStudy.gradedSubmoduleProjection_on_piece
+#check LinearStudy.gradedSubmodulePiece_independent
+#print axioms LinearStudy.gradedSubmodulePiece_independent
+#check LinearStudy.gradedSubmoduleProjection_sum
+#print axioms LinearStudy.gradedSubmoduleProjection_sum
+#check LinearStudy.gradedSubmodulePiece_total
+#print axioms LinearStudy.gradedSubmodulePiece_total
+#check LinearStudy.gradedSubmoduleDecomposition
+#print axioms LinearStudy.gradedSubmoduleDecomposition
+#check LinearStudy.gradedSubmodulePiece_finite
+#print axioms LinearStudy.gradedSubmodulePiece_finite
+#check LinearStudy.finiteAdjoin_isNoetherian
+#print axioms LinearStudy.finiteAdjoin_isNoetherian
+#check LinearStudy.adjoin_annihilator_scalar_representative
+#print axioms LinearStudy.adjoin_annihilator_scalar_representative
+#check LinearStudy.adjoin_finiteModule_of_annihilator
+#print axioms LinearStudy.adjoin_finiteModule_of_annihilator
+#check LinearStudy.adjoinLiftedGenerators
+#print axioms LinearStudy.adjoinLiftedGenerators
+#check LinearStudy.adjoinLiftedGenerators_card
+#print axioms LinearStudy.adjoinLiftedGenerators_card
+#check LinearStudy.adjoinLiftedGenerators_generate
+#print axioms LinearStudy.adjoinLiftedGenerators_generate
+#check LinearStudy.adjoinLiftedGenerators_homogeneous
+#print axioms LinearStudy.adjoinLiftedGenerators_homogeneous
 #check LinearStudy.homogeneousQuotientPieces_iSupIndep
 #print axioms LinearStudy.homogeneousQuotientPieces_iSupIndep
 #check LinearStudy.homogeneousQuotientPieces_iSup_eq_top
 #print axioms LinearStudy.homogeneousQuotientPieces_iSup_eq_top
 #check LinearStudy.homogeneousQuotientGrading
 #print axioms LinearStudy.homogeneousQuotientGrading
+#check LinearStudy.gradedHilbertPolynomial_existsUnique
+#print axioms LinearStudy.gradedHilbertPolynomial_existsUnique
+#check LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique
+#print axioms LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique
+#check LinearStudy.homogeneousQuotientHilbertSeries_rational
+#print axioms LinearStudy.homogeneousQuotientHilbertSeries_rational
 #check LinearStudy.homogeneousQuotientPiece
 #print axioms LinearStudy.homogeneousQuotientPiece
 #check LinearStudy.homogeneousQuotientPiece_mem_iff

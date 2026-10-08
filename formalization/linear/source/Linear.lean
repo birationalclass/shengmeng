@@ -469,3 +469,29 @@ public import Linear.HomogeneousCoordinatePieces
 public import Linear.ProjectiveGradedPullback
 
 public import Linear.HomogeneousCoordinateGrading
+
+public import Linear.HilbertFiniteInstances
+
+public import Linear.GradedModuleProjection
+
+public import Linear.GradedModuleFiniteSupport
+
+public import Linear.GradedSubmoduleDecomposition
+
+public import Linear.GradedQuotientDecomposition
+
+public import Linear.GradedSubalgebraDecomposition
+
+public import Linear.GradedScalarExactSequence
+
+public import Linear.GradedScalarInductionModules
+
+public import Linear.GradedHilbertSeriesRecurrence
+
+public import Linear.HomogeneousAdjoinGenerators
+
+public import Linear.GradedHilbertSerre
+
+public import Linear.HomogeneousCoordinateHilbertSeries
+
+public import Linear.HomogeneousCoordinateHilbertPolynomial

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-08T13:00:13+08:00",
+  "checkedAt": "2026-10-08T13:44:47+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "56ebc8b10692ac342603d7ec82463a13ce955fe9ee16a362e984035976478685",
-      "lineCount": 2838
+      "sha256": "4c62c0ee841447b0e033bf2abcfb901643b82d499d2d0543ed241659df442ecd",
+      "lineCount": 2970
     },
     {
       "path": "Linear/ActualTargetParameters.lean",
@@ -352,9 +352,74 @@
       "lineCount": 47
     },
     {
+      "path": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lineCount": 81
+    },
+    {
+      "path": "Linear/GradedHilbertSerre.lean",
+      "sha256": "355b736fdb2fa9f4c05d25889e2ff7d6b08b7e82e5f544ec6a31a5f2ca80eaec",
+      "lineCount": 122
+    },
+    {
+      "path": "Linear/GradedModuleFiniteSupport.lean",
+      "sha256": "a0638ff3a59a8e2f1456c904c8ff4aadd3d5f14ddf3ca00ebd489303e18699c8",
+      "lineCount": 62
+    },
+    {
+      "path": "Linear/GradedModuleProjection.lean",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lineCount": 82
+    },
+    {
+      "path": "Linear/GradedQuotientDecomposition.lean",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lineCount": 95
+    },
+    {
+      "path": "Linear/GradedScalarExactSequence.lean",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lineCount": 115
+    },
+    {
+      "path": "Linear/GradedScalarInductionModules.lean",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lineCount": 79
+    },
+    {
+      "path": "Linear/GradedSubalgebraDecomposition.lean",
+      "sha256": "0b2dbecf77fe528a79743a1d4c8b0b83f9402ff973d168232d585bef8131c933",
+      "lineCount": 53
+    },
+    {
+      "path": "Linear/GradedSubmoduleDecomposition.lean",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lineCount": 92
+    },
+    {
+      "path": "Linear/HilbertFiniteInstances.lean",
+      "sha256": "735f7bcb7d7e642a820091c4f9551d333b2ab36cea67f081bc8f22db92191373",
+      "lineCount": 71
+    },
+    {
+      "path": "Linear/HomogeneousAdjoinGenerators.lean",
+      "sha256": "2ae3f4e39b948b70950368783f080001d5d966322d24144dcfe0950ac3031552",
+      "lineCount": 49
+    },
+    {
       "path": "Linear/HomogeneousCoordinateGrading.lean",
       "sha256": "51027580a417a916c5d14b47257422ec0fd6060b6bb820ac573eb30af1562540",
       "lineCount": 55
+    },
+    {
+      "path": "Linear/HomogeneousCoordinateHilbertPolynomial.lean",
+      "sha256": "9397aaf85ba24315f8772f783908e1612691f4deb5ef8e670d1a676a77840622",
+      "lineCount": 55
+    },
+    {
+      "path": "Linear/HomogeneousCoordinateHilbertSeries.lean",
+      "sha256": "cf89b2c83ba69a190118bff42756c3e0fccdaabaec06cb697423adeee88978e0",
+      "lineCount": 56
     },
     {
       "path": "Linear/HomogeneousCoordinatePieces.lean",
@@ -1553,8 +1618,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "ab29c0515046744506ad41557b45519a0c46f4af03446164355614806becc732",
-      "lineCount": 471
+      "sha256": "d3e27dd723f8aba18153610ba955780fc18d061ae01bdd65dd4a3cfdc9a510aa",
+      "lineCount": 497
     }
   ],
   "declarations": {
@@ -8466,6 +8531,1505 @@
         "LinearStudy.rationalPointPrime"
       ]
     },
+    "LinearStudy.gradedHilbertSeries": {
+      "declaration": "LinearStudy.gradedHilbertSeries",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedHilbertSeries.{u_1, u_4} {K : Type u_1} [Field K] {P : Type u_4} [AddCommGroup P] [Module K P]\n  (pieces : ℕ → Submodule K P) : PowerSeries ℤ",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 4,
+      "moduleLineCount": 81,
+      "startLine": 20,
+      "endLine": 23,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    "LinearStudy.gradedHilbertSeries_coeff": {
+      "declaration": "LinearStudy.gradedHilbertSeries_coeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertSeries_coeff.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (n : ℕ) :\n  (PowerSeries.coeff n) (LinearStudy.gradedHilbertSeries ℳ) = ↑(Module.finrank K ↥(ℳ n))",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 3,
+      "moduleLineCount": 81,
+      "startLine": 25,
+      "endLine": 27,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries"
+      ]
+    },
+    "LinearStudy.gradedHilbertSeries_scalar_recurrence": {
+      "declaration": "LinearStudy.gradedHilbertSeries_scalar_recurrence",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertSeries_scalar_recurrence.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) [∀ (n : ℕ), Module.Finite K ↥(ℳ n)] :\n  (1 - PowerSeries.X ^ d) * LinearStudy.gradedHilbertSeries ℳ =\n    LinearStudy.gradedHilbertSeries\n        (LinearStudy.gradedQuotientPiece ℳ\n          (Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)) -\n      PowerSeries.X ^ d *\n        LinearStudy.gradedHilbertSeries\n          (LinearStudy.gradedSubmodulePiece ℳ\n            (Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule))",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 25,
+      "moduleLineCount": 81,
+      "startLine": 29,
+      "endLine": 53,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelPieceEquiv_of_lt",
+        "LinearStudy.gradedScalarImage",
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedScalarKernelPiece",
+        "LinearStudy.gradedScalar_finrank_recurrence",
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    "LinearStudy.gradedHilbertSeries_polynomial_of_bounded": {
+      "declaration": "LinearStudy.gradedHilbertSeries_polynomial_of_bounded",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertSeries_polynomial_of_bounded.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K]\n  [AddCommGroup M] [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ]\n  (h : ∃ N, ∀ (n : ℕ), N < n → ℳ n = ⊥) : ∃ p, ↑p = LinearStudy.gradedHilbertSeries ℳ",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 14,
+      "moduleLineCount": 81,
+      "startLine": 55,
+      "endLine": 68,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries"
+      ]
+    },
+    "LinearStudy.gradedHilbertSeries_polynomial_of_finite": {
+      "declaration": "LinearStudy.gradedHilbertSeries_polynomial_of_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "line": 71,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertSeries_polynomial_of_finite.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [Module.Finite K M] :\n  ∃ p, ↑p = LinearStudy.gradedHilbertSeries ℳ",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 4,
+      "moduleLineCount": 81,
+      "startLine": 70,
+      "endLine": 73,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedHilbertSeries_polynomial_of_bounded",
+        "LinearStudy.gradedModule_eventually_eq_bot"
+      ]
+    },
+    "LinearStudy.gradedHilbertSeries_polynomial_of_empty_generators": {
+      "declaration": "LinearStudy.gradedHilbertSeries_polynomial_of_empty_generators",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "line": 75,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertSeries_polynomial_of_empty_generators.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2}\n  {M : Type u_3} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [Module.Finite A M] (hgen : K[] = ⊤) :\n  ∃ p, ↑p = LinearStudy.gradedHilbertSeries ℳ",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 5,
+      "moduleLineCount": 81,
+      "startLine": 75,
+      "endLine": 79,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedHilbertSeries_polynomial_of_bounded",
+        "LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators"
+      ]
+    },
+    "LinearStudy.gradedHilbertSeries_rational": {
+      "declaration": "LinearStudy.gradedHilbertSeries_rational",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSerre.lean",
+      "line": 109,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertSeries_rational.{uK, uA, uM} {K : Type uK} [Field K] {A : Type uA} [CommRing A] [Algebra K A]\n  [IsNoetherianRing A] {M : Type uM} [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [Module.Finite A M] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ]\n  [SetLike.GradedSMul 𝒜 ℳ] [∀ (n : ℕ), Module.Finite K ↥(ℳ n)] (s : Finset A) (hgen : Algebra.adjoin K ↑s = ⊤)\n  (hdegree : ∀ x ∈ s, x ∈ 𝒜 1) : ∃ p, (1 - PowerSeries.X) ^ s.card * LinearStudy.gradedHilbertSeries ℳ = ↑p",
+      "sha256": "355b736fdb2fa9f4c05d25889e2ff7d6b08b7e82e5f544ec6a31a5f2ca80eaec",
+      "lines": 14,
+      "moduleLineCount": 122,
+      "startLine": 107,
+      "endLine": 120,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "_private.Linear.GradedHilbertSerre.0.LinearStudy.gradedHilbertSerre_induction"
+      ]
+    },
+    "LinearStudy.gradedModule_eventually_eq_bot": {
+      "declaration": "LinearStudy.gradedModule_eventually_eq_bot",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedModuleFiniteSupport.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedModule_eventually_eq_bot.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [Module.Finite K M] : ∃ N, ∀ (n : ℕ), N < n → ℳ n = ⊥",
+      "sha256": "a0638ff3a59a8e2f1456c904c8ff4aadd3d5f14ddf3ca00ebd489303e18699c8",
+      "lines": 24,
+      "moduleLineCount": 62,
+      "startLine": 23,
+      "endLine": 46,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece"
+      ]
+    },
+    "LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators": {
+      "declaration": "LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedModuleFiniteSupport.lean",
+      "line": 50,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators.{u_1, u_2, u_3} {K : Type u_1} {M : Type u_2} [Field K]\n  [AddCommGroup M] [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] {A : Type u_3} [CommRing A]\n  [Algebra K A] [Module A M] [IsScalarTower K A M] [Module.Finite A M] (hgen : K[] = ⊤) :\n  ∃ N, ∀ (n : ℕ), N < n → ℳ n = ⊥",
+      "sha256": "a0638ff3a59a8e2f1456c904c8ff4aadd3d5f14ddf3ca00ebd489303e18699c8",
+      "lines": 14,
+      "moduleLineCount": 62,
+      "startLine": 48,
+      "endLine": 61,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.gradedModule_eventually_eq_bot"
+      ]
+    },
+    "LinearStudy.gradedModuleProjection": {
+      "declaration": "LinearStudy.gradedModuleProjection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedModuleProjection.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedModuleProjection.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (n : ℕ) : M →ₗ[K] M",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lines": 3,
+      "moduleLineCount": 82,
+      "startLine": 21,
+      "endLine": 23,
+      "lineCount": 3,
+      "dependencies": []
+    },
+    "LinearStudy.gradedModuleProjection_apply": {
+      "declaration": "LinearStudy.gradedModuleProjection_apply",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedModuleProjection.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedModuleProjection_apply.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (n : ℕ) (m : M) :\n  (LinearStudy.gradedModuleProjection ℳ n) m = ↑(((DirectSum.decompose ℳ) m) n)",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lines": 2,
+      "moduleLineCount": 82,
+      "startLine": 25,
+      "endLine": 26,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection"
+      ]
+    },
+    "LinearStudy.gradedModuleProjection_on_piece": {
+      "declaration": "LinearStudy.gradedModuleProjection_on_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedModuleProjection.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedModuleProjection_on_piece.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (n k : ℕ) (m : M) (hm : m ∈ ℳ k) :\n  (LinearStudy.gradedModuleProjection ℳ n) m = if n = k then m else 0",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lines": 7,
+      "moduleLineCount": 82,
+      "startLine": 28,
+      "endLine": 34,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_apply"
+      ]
+    },
+    "LinearStudy.gradedModuleProjection_smul_homogeneous": {
+      "declaration": "LinearStudy.gradedModuleProjection_smul_homogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedModuleProjection.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedModuleProjection_smul_homogeneous.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]\n  (d n : ℕ) (a : A) (ha : a ∈ 𝒜 d) (m : M) :\n  (LinearStudy.gradedModuleProjection ℳ n) (a • m) =\n    if d ≤ n then a • (LinearStudy.gradedModuleProjection ℳ (n - d)) m else 0",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lines": 22,
+      "moduleLineCount": 82,
+      "startLine": 36,
+      "endLine": 57,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece"
+      ]
+    },
+    "LinearStudy.gradedScalarKernel": {
+      "declaration": "LinearStudy.gradedScalarKernel",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedModuleProjection.lean",
+      "line": 60,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarKernel.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K] [CommRing A]\n  [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (a : A)\n  (ha : a ∈ 𝒜 d) : HomogeneousSubmodule 𝒜 ℳ",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lines": 9,
+      "moduleLineCount": 82,
+      "startLine": 59,
+      "endLine": 67,
+      "lineCount": 9,
+      "dependencies": []
+    },
+    "LinearStudy.gradedScalarImage": {
+      "declaration": "LinearStudy.gradedScalarImage",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedModuleProjection.lean",
+      "line": 70,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarImage.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K] [CommRing A]\n  [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (a : A)\n  (ha : a ∈ 𝒜 d) : HomogeneousSubmodule 𝒜 ℳ",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lines": 13,
+      "moduleLineCount": 82,
+      "startLine": 69,
+      "endLine": 81,
+      "lineCount": 13,
+      "dependencies": []
+    },
+    "LinearStudy.gradedQuotientPiece": {
+      "declaration": "LinearStudy.gradedQuotientPiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedQuotientPiece.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) (p : Submodule K M) (n : ℕ) : Submodule K (M ⧸ p)",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 1,
+      "moduleLineCount": 95,
+      "startLine": 23,
+      "endLine": 23,
+      "lineCount": 1,
+      "dependencies": []
+    },
+    "LinearStudy.gradedQuotientProjection": {
+      "declaration": "LinearStudy.gradedQuotientProjection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedQuotientProjection.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ) :\n  M ⧸ p →ₗ[K] M ⧸ p",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 6,
+      "moduleLineCount": 95,
+      "startLine": 25,
+      "endLine": 30,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection"
+      ]
+    },
+    "LinearStudy.gradedQuotientProjection_mk": {
+      "declaration": "LinearStudy.gradedQuotientProjection_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientProjection_mk.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ) (m : M) :\n  (LinearStudy.gradedQuotientProjection ℳ p hp n) (p.mkQ m) = p.mkQ ((LinearStudy.gradedModuleProjection ℳ n) m)",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 3,
+      "moduleLineCount": 95,
+      "startLine": 32,
+      "endLine": 34,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedQuotientProjection"
+      ]
+    },
+    "LinearStudy.gradedQuotientProjection_on_piece": {
+      "declaration": "LinearStudy.gradedQuotientProjection_on_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientProjection_on_piece.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ)\n  (n k : ℕ) (a : M ⧸ p) (ha : a ∈ LinearStudy.gradedQuotientPiece ℳ p k) :\n  (LinearStudy.gradedQuotientProjection ℳ p hp n) a = if n = k then a else 0",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 6,
+      "moduleLineCount": 95,
+      "startLine": 36,
+      "endLine": 41,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece",
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientProjection",
+        "LinearStudy.gradedQuotientProjection_mk"
+      ]
+    },
+    "LinearStudy.gradedQuotientProjection_mem": {
+      "declaration": "LinearStudy.gradedQuotientProjection_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientProjection_mem.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ)\n  (a : M ⧸ p) : (LinearStudy.gradedQuotientProjection ℳ p hp n) a ∈ LinearStudy.gradedQuotientPiece ℳ p n",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 7,
+      "moduleLineCount": 95,
+      "startLine": 43,
+      "endLine": 49,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientProjection",
+        "LinearStudy.gradedQuotientProjection_mk"
+      ]
+    },
+    "LinearStudy.gradedQuotientProjection_sum": {
+      "declaration": "LinearStudy.gradedQuotientProjection_sum",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientProjection_sum.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ)\n  (a : M ⧸ p) : ∃ s, ∑ n ∈ s, (LinearStudy.gradedQuotientProjection ℳ p hp n) a = a",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 10,
+      "moduleLineCount": 95,
+      "startLine": 51,
+      "endLine": 60,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedQuotientProjection"
+      ]
+    },
+    "LinearStudy.gradedQuotientPiece_independent": {
+      "declaration": "LinearStudy.gradedQuotientPiece_independent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 63,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientPiece_independent.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  iSupIndep (LinearStudy.gradedQuotientPiece ℳ p)",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 11,
+      "moduleLineCount": 95,
+      "startLine": 63,
+      "endLine": 73,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientProjection",
+        "LinearStudy.gradedQuotientProjection_on_piece"
+      ]
+    },
+    "LinearStudy.gradedQuotientPiece_total": {
+      "declaration": "LinearStudy.gradedQuotientPiece_total",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 76,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientPiece_total.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  ⨆ n, LinearStudy.gradedQuotientPiece ℳ p n = ⊤",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 7,
+      "moduleLineCount": 95,
+      "startLine": 76,
+      "endLine": 82,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientProjection",
+        "LinearStudy.gradedQuotientProjection_mem",
+        "LinearStudy.gradedQuotientProjection_sum"
+      ]
+    },
+    "LinearStudy.gradedQuotientDecomposition": {
+      "declaration": "LinearStudy.gradedQuotientDecomposition",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 85,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedQuotientDecomposition.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  DirectSum.Decomposition (LinearStudy.gradedQuotientPiece ℳ p)",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 6,
+      "moduleLineCount": 95,
+      "startLine": 84,
+      "endLine": 89,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece"
+      ]
+    },
+    "LinearStudy.gradedQuotientPiece_finite": {
+      "declaration": "LinearStudy.gradedQuotientPiece_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 91,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientPiece_finite.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (n : ℕ) [Module.Finite K ↥(ℳ n)] :\n  Module.Finite K ↥(LinearStudy.gradedQuotientPiece ℳ p n)",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 4,
+      "moduleLineCount": 95,
+      "startLine": 91,
+      "endLine": 94,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece"
+      ]
+    },
+    "LinearStudy.gradedScalarMultiplication": {
+      "declaration": "LinearStudy.gradedScalarMultiplication",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarMultiplication.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  (ℳ : ℕ → Submodule K M) [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) (n : ℕ) : ↥(ℳ n) →ₗ[K] ↥(ℳ (d + n))",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 4,
+      "moduleLineCount": 115,
+      "startLine": 21,
+      "endLine": 24,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    "LinearStudy.gradedScalarCokernelPiece": {
+      "declaration": "LinearStudy.gradedScalarCokernelPiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarCokernelPiece.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) :\n  Submodule K (M ⧸ Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 2,
+      "moduleLineCount": 115,
+      "startLine": 26,
+      "endLine": 27,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    "LinearStudy.gradedScalarCokernelProjection": {
+      "declaration": "LinearStudy.gradedScalarCokernelProjection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarCokernelProjection.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) : ↥(ℳ n) →ₗ[K] ↥(LinearStudy.gradedScalarCokernelPiece 𝒜 ℳ d x hx n)",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 5,
+      "moduleLineCount": 115,
+      "startLine": 29,
+      "endLine": 33,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    "LinearStudy.gradedScalarCokernelProjection_surjective": {
+      "declaration": "LinearStudy.gradedScalarCokernelProjection_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarCokernelProjection_surjective.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]\n  (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) (n : ℕ) :\n  Function.Surjective ⇑(LinearStudy.gradedScalarCokernelProjection 𝒜 ℳ d x hx n)",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 5,
+      "moduleLineCount": 115,
+      "startLine": 35,
+      "endLine": 39,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    "LinearStudy.gradedScalarCokernelProjection_injective_of_lt": {
+      "declaration": "LinearStudy.gradedScalarCokernelProjection_injective_of_lt",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 42,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarCokernelProjection_injective_of_lt.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]\n  (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) (n : ℕ) (hn : n < d) :\n  Function.Injective ⇑(LinearStudy.gradedScalarCokernelProjection 𝒜 ℳ d x hx n)",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 15,
+      "moduleLineCount": 115,
+      "startLine": 41,
+      "endLine": 55,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece",
+        "LinearStudy.gradedModuleProjection_smul_homogeneous",
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    "LinearStudy.gradedScalarCokernelPieceEquiv_of_lt": {
+      "declaration": "LinearStudy.gradedScalarCokernelPieceEquiv_of_lt",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 57,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarCokernelPieceEquiv_of_lt.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) (hn : n < d) : ↥(ℳ n) ≃ₗ[K] ↥(LinearStudy.gradedScalarCokernelPiece 𝒜 ℳ d x hx n)",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 5,
+      "moduleLineCount": 115,
+      "startLine": 57,
+      "endLine": 61,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    "LinearStudy.gradedScalarMultiplication_exact": {
+      "declaration": "LinearStudy.gradedScalarMultiplication_exact",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 64,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarMultiplication_exact.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) :\n  (LinearStudy.gradedScalarMultiplication 𝒜 ℳ d x hx n).range =\n    (LinearStudy.gradedScalarCokernelProjection 𝒜 ℳ d x hx (d + n)).ker",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 23,
+      "moduleLineCount": 115,
+      "startLine": 63,
+      "endLine": 85,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece",
+        "LinearStudy.gradedModuleProjection_smul_homogeneous",
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarImage",
+        "LinearStudy.gradedScalarMultiplication"
+      ]
+    },
+    "LinearStudy.gradedScalarKernelPiece": {
+      "declaration": "LinearStudy.gradedScalarKernelPiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 87,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarKernelPiece.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K] [CommRing A]\n  [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) :\n  Submodule K ↥(Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule)",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 2,
+      "moduleLineCount": 115,
+      "startLine": 87,
+      "endLine": 88,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    "LinearStudy.gradedScalarKernelPieceEquiv": {
+      "declaration": "LinearStudy.gradedScalarKernelPieceEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 91,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarKernelPieceEquiv.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) :\n  ↥(LinearStudy.gradedScalarKernelPiece 𝒜 ℳ d x hx n) ≃ₗ[K] ↥(LinearStudy.gradedScalarMultiplication 𝒜 ℳ d x hx n).ker",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 10,
+      "moduleLineCount": 115,
+      "startLine": 90,
+      "endLine": 99,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedScalarKernelPiece",
+        "LinearStudy.gradedScalarMultiplication"
+      ]
+    },
+    "LinearStudy.gradedScalar_finrank_recurrence": {
+      "declaration": "LinearStudy.gradedScalar_finrank_recurrence",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 102,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalar_finrank_recurrence.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) [Module.Finite K ↥(ℳ n)] [Module.Finite K ↥(ℳ (d + n))] :\n  Module.finrank K ↥(ℳ n) + Module.finrank K ↥(LinearStudy.gradedScalarCokernelPiece 𝒜 ℳ d x hx (d + n)) =\n    Module.finrank K ↥(LinearStudy.gradedScalarKernelPiece 𝒜 ℳ d x hx n) + Module.finrank K ↥(ℳ (d + n))",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 13,
+      "moduleLineCount": 115,
+      "startLine": 101,
+      "endLine": 113,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarCokernelProjection_surjective",
+        "LinearStudy.gradedScalarImage",
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedScalarKernelPiece",
+        "LinearStudy.gradedScalarKernelPieceEquiv",
+        "LinearStudy.gradedScalarMultiplication",
+        "LinearStudy.gradedScalarMultiplication_exact"
+      ]
+    },
+    "LinearStudy.gradedScalarKernel_finite_over_adjoin": {
+      "declaration": "LinearStudy.gradedScalarKernel_finite_over_adjoin",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarKernel_finite_over_adjoin.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) [IsNoetherianRing A] [Module.Finite A M] (s : Set A) (hgen : Algebra.adjoin K (insert x s) = ⊤) :\n  Module.Finite ↥(Algebra.adjoin K s) ↥(LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 9,
+      "moduleLineCount": 79,
+      "startLine": 22,
+      "endLine": 30,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.adjoin_finiteModule_of_annihilator",
+        "LinearStudy.gradedScalarKernel"
+      ]
+    },
+    "LinearStudy.gradedScalarCokernel_finite_over_adjoin": {
+      "declaration": "LinearStudy.gradedScalarCokernel_finite_over_adjoin",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarCokernel_finite_over_adjoin.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]\n  (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) [Module.Finite A M] (s : Set A) (hgen : Algebra.adjoin K (insert x s) = ⊤) :\n  Module.Finite (↥(Algebra.adjoin K s)) (M ⧸ (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 11,
+      "moduleLineCount": 79,
+      "startLine": 32,
+      "endLine": 42,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.adjoin_finiteModule_of_annihilator",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    "LinearStudy.gradedScalarKernelModule": {
+      "declaration": "LinearStudy.gradedScalarKernelModule",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarKernelModule.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K] [CommRing A]\n  [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) : Module A ↥(Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule)",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 3,
+      "moduleLineCount": 79,
+      "startLine": 44,
+      "endLine": 46,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedScalarKernel"
+      ]
+    },
+    "LinearStudy.gradedScalarCokernelModule": {
+      "declaration": "LinearStudy.gradedScalarCokernelModule",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 49,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarCokernelModule.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) : Module A (M ⧸ Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 4,
+      "moduleLineCount": 79,
+      "startLine": 48,
+      "endLine": 51,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    "LinearStudy.gradedScalarKernelGradedSMul": {
+      "declaration": "LinearStudy.gradedScalarKernelGradedSMul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 55,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarKernelGradedSMul.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) :\n  SetLike.GradedSMul 𝒜\n    (LinearStudy.gradedSubmodulePiece ℳ\n      (Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule))",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 7,
+      "moduleLineCount": 79,
+      "startLine": 55,
+      "endLine": 61,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    "LinearStudy.gradedScalarCokernelGradedSMul": {
+      "declaration": "LinearStudy.gradedScalarCokernelGradedSMul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 63,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarCokernelGradedSMul.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) :\n  SetLike.GradedSMul 𝒜\n    (LinearStudy.gradedQuotientPiece ℳ\n      (Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule))",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 6,
+      "moduleLineCount": 79,
+      "startLine": 63,
+      "endLine": 68,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedScalarCokernelModule",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    "LinearStudy.gradedSubalgebraModuleGradedSMul": {
+      "declaration": "LinearStudy.gradedSubalgebraModuleGradedSMul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 71,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubalgebraModuleGradedSMul.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (B : Subalgebra K A) :\n  SetLike.GradedSMul (LinearStudy.gradedSubalgebraPiece 𝒜 B) ℳ",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 8,
+      "moduleLineCount": 79,
+      "startLine": 70,
+      "endLine": 77,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.gradedSubalgebraPiece"
+      ]
+    },
+    "LinearStudy.homogeneousAdjoin": {
+      "declaration": "LinearStudy.homogeneousAdjoin",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubalgebraDecomposition.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousAdjoin.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (s : Set A) (hs : ∀ a ∈ s, SetLike.IsHomogeneousElem 𝒜 a) :\n  (Subalgebra.toSubmodule (Algebra.adjoin K s)).IsHomogeneous 𝒜",
+      "sha256": "0b2dbecf77fe528a79743a1d4c8b0b83f9402ff973d168232d585bef8131c933",
+      "lines": 14,
+      "moduleLineCount": 53,
+      "startLine": 18,
+      "endLine": 31,
+      "lineCount": 14,
+      "dependencies": []
+    },
+    "LinearStudy.gradedSubalgebraPiece": {
+      "declaration": "LinearStudy.gradedSubalgebraPiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedSubalgebraDecomposition.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedSubalgebraPiece.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (𝒜 : ℕ → Submodule K A) (B : Subalgebra K A) (n : ℕ) : Submodule K ↥B",
+      "sha256": "0b2dbecf77fe528a79743a1d4c8b0b83f9402ff973d168232d585bef8131c933",
+      "lines": 3,
+      "moduleLineCount": 53,
+      "startLine": 33,
+      "endLine": 35,
+      "lineCount": 3,
+      "dependencies": []
+    },
+    "LinearStudy.gradedSubalgebraGrading": {
+      "declaration": "LinearStudy.gradedSubalgebraGrading",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedSubalgebraDecomposition.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedSubalgebraGrading.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (B : Subalgebra K A) (hB : (Subalgebra.toSubmodule B).IsHomogeneous 𝒜) :\n  GradedAlgebra (LinearStudy.gradedSubalgebraPiece 𝒜 B)",
+      "sha256": "0b2dbecf77fe528a79743a1d4c8b0b83f9402ff973d168232d585bef8131c933",
+      "lines": 11,
+      "moduleLineCount": 53,
+      "startLine": 37,
+      "endLine": 47,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedSubalgebraPiece",
+        "LinearStudy.gradedSubmoduleDecomposition",
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    "LinearStudy.gradedSubalgebraPiece_finite": {
+      "declaration": "LinearStudy.gradedSubalgebraPiece_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubalgebraDecomposition.lean",
+      "line": 49,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubalgebraPiece_finite.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (B : Subalgebra K A) (n : ℕ) [Module.Finite K ↥(𝒜 n)] :\n  Module.Finite K ↥(LinearStudy.gradedSubalgebraPiece 𝒜 B n)",
+      "sha256": "0b2dbecf77fe528a79743a1d4c8b0b83f9402ff973d168232d585bef8131c933",
+      "lines": 3,
+      "moduleLineCount": 53,
+      "startLine": 49,
+      "endLine": 51,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedSubalgebraPiece",
+        "LinearStudy.gradedSubmodulePiece_finite"
+      ]
+    },
+    "LinearStudy.gradedSubmodulePiece": {
+      "declaration": "LinearStudy.gradedSubmodulePiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedSubmodulePiece.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) (p : Submodule K M) (n : ℕ) : Submodule K ↥p",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 1,
+      "moduleLineCount": 92,
+      "startLine": 23,
+      "endLine": 23,
+      "lineCount": 1,
+      "dependencies": []
+    },
+    "LinearStudy.gradedSubmoduleProjection": {
+      "declaration": "LinearStudy.gradedSubmoduleProjection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedSubmoduleProjection.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ) : ↥p →ₗ[K] ↥p",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 5,
+      "moduleLineCount": 92,
+      "startLine": 25,
+      "endLine": 29,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection"
+      ]
+    },
+    "LinearStudy.gradedSubmoduleProjection_coe": {
+      "declaration": "LinearStudy.gradedSubmoduleProjection_coe",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmoduleProjection_coe.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ)\n  (m : ↥p) : ↑((LinearStudy.gradedSubmoduleProjection ℳ p hp n) m) = (LinearStudy.gradedModuleProjection ℳ n) ↑m",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 2,
+      "moduleLineCount": 92,
+      "startLine": 31,
+      "endLine": 32,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedSubmoduleProjection"
+      ]
+    },
+    "LinearStudy.gradedSubmoduleProjection_mem": {
+      "declaration": "LinearStudy.gradedSubmoduleProjection_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmoduleProjection_mem.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ)\n  (m : ↥p) : (LinearStudy.gradedSubmoduleProjection ℳ p hp n) m ∈ LinearStudy.gradedSubmodulePiece ℳ p n",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 3,
+      "moduleLineCount": 92,
+      "startLine": 34,
+      "endLine": 36,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmoduleProjection"
+      ]
+    },
+    "LinearStudy.gradedSubmoduleProjection_on_piece": {
+      "declaration": "LinearStudy.gradedSubmoduleProjection_on_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmoduleProjection_on_piece.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ)\n  (n k : ℕ) (m : ↥p) (hm : m ∈ LinearStudy.gradedSubmodulePiece ℳ p k) :\n  (LinearStudy.gradedSubmoduleProjection ℳ p hp n) m = if n = k then m else 0",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 7,
+      "moduleLineCount": 92,
+      "startLine": 38,
+      "endLine": 44,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece",
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmoduleProjection"
+      ]
+    },
+    "LinearStudy.gradedSubmodulePiece_independent": {
+      "declaration": "LinearStudy.gradedSubmodulePiece_independent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmodulePiece_independent.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  iSupIndep (LinearStudy.gradedSubmodulePiece ℳ p)",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 11,
+      "moduleLineCount": 92,
+      "startLine": 47,
+      "endLine": 57,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmoduleProjection",
+        "LinearStudy.gradedSubmoduleProjection_on_piece"
+      ]
+    },
+    "LinearStudy.gradedSubmoduleProjection_sum": {
+      "declaration": "LinearStudy.gradedSubmoduleProjection_sum",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 59,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmoduleProjection_sum.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ)\n  (m : ↥p) : ∑ n ∈ DFinsupp.support ((DirectSum.decompose ℳ) ↑m), (LinearStudy.gradedSubmoduleProjection ℳ p hp n) m = m",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 6,
+      "moduleLineCount": 92,
+      "startLine": 59,
+      "endLine": 64,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedSubmoduleProjection"
+      ]
+    },
+    "LinearStudy.gradedSubmodulePiece_total": {
+      "declaration": "LinearStudy.gradedSubmodulePiece_total",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 67,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmodulePiece_total.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  ⨆ n, LinearStudy.gradedSubmodulePiece ℳ p n = ⊤",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 6,
+      "moduleLineCount": 92,
+      "startLine": 67,
+      "endLine": 72,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmoduleProjection",
+        "LinearStudy.gradedSubmoduleProjection_mem",
+        "LinearStudy.gradedSubmoduleProjection_sum"
+      ]
+    },
+    "LinearStudy.gradedSubmoduleDecomposition": {
+      "declaration": "LinearStudy.gradedSubmoduleDecomposition",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 75,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedSubmoduleDecomposition.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  DirectSum.Decomposition (LinearStudy.gradedSubmodulePiece ℳ p)",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 6,
+      "moduleLineCount": 92,
+      "startLine": 74,
+      "endLine": 79,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    "LinearStudy.gradedSubmodulePiece_finite": {
+      "declaration": "LinearStudy.gradedSubmodulePiece_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 81,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmodulePiece_finite.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (n : ℕ) [Module.Finite K ↥(ℳ n)] :\n  Module.Finite K ↥(LinearStudy.gradedSubmodulePiece ℳ p n)",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 11,
+      "moduleLineCount": 92,
+      "startLine": 81,
+      "endLine": 91,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    "LinearStudy.finiteAdjoin_isNoetherian": {
+      "declaration": "LinearStudy.finiteAdjoin_isNoetherian",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HilbertFiniteInstances.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteAdjoin_isNoetherian.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  [IsNoetherianRing R] (s : Finset A) : IsNoetherianRing ↥(Algebra.adjoin R ↑s)",
+      "sha256": "735f7bcb7d7e642a820091c4f9551d333b2ab36cea67f081bc8f22db92191373",
+      "lines": 4,
+      "moduleLineCount": 71,
+      "startLine": 23,
+      "endLine": 26,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    "LinearStudy.adjoin_annihilator_scalar_representative": {
+      "declaration": "LinearStudy.adjoin_annihilator_scalar_representative",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HilbertFiniteInstances.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.adjoin_annihilator_scalar_representative.{u_1, u_2, u_3} {R : Type u_1} {A : Type u_2} {M : Type u_3}\n  [CommRing R] [CommRing A] [Algebra R A] [AddCommGroup M] [Module A M] (s : Set A) (x : A) (hx : ∀ (m : M), x • m = 0)\n  (a : A) (ha : a ∈ Algebra.adjoin R (insert x s)) : ∃ b ∈ Algebra.adjoin R s, ∀ (m : M), a • m = b • m",
+      "sha256": "735f7bcb7d7e642a820091c4f9551d333b2ab36cea67f081bc8f22db92191373",
+      "lines": 22,
+      "moduleLineCount": 71,
+      "startLine": 28,
+      "endLine": 49,
+      "lineCount": 22,
+      "dependencies": []
+    },
+    "LinearStudy.adjoin_finiteModule_of_annihilator": {
+      "declaration": "LinearStudy.adjoin_finiteModule_of_annihilator",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HilbertFiniteInstances.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.adjoin_finiteModule_of_annihilator.{u_1, u_2, u_3} {R : Type u_1} {A : Type u_2} {M : Type u_3} [CommRing R]\n  [CommRing A] [Algebra R A] [AddCommGroup M] [Module A M] [Module.Finite A M] (s : Set A) (x : A)\n  (hgen : Algebra.adjoin R (insert x s) = ⊤) (hx : ∀ (m : M), x • m = 0) : Module.Finite (↥(Algebra.adjoin R s)) M",
+      "sha256": "735f7bcb7d7e642a820091c4f9551d333b2ab36cea67f081bc8f22db92191373",
+      "lines": 20,
+      "moduleLineCount": 71,
+      "startLine": 51,
+      "endLine": 70,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.adjoin_annihilator_scalar_representative"
+      ]
+    },
+    "LinearStudy.adjoinLiftedGenerators": {
+      "declaration": "LinearStudy.adjoinLiftedGenerators",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/HomogeneousAdjoinGenerators.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.adjoinLiftedGenerators.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (s : Finset A) : Finset ↥(Algebra.adjoin K ↑s)",
+      "sha256": "2ae3f4e39b948b70950368783f080001d5d966322d24144dcfe0950ac3031552",
+      "lines": 6,
+      "moduleLineCount": 49,
+      "startLine": 10,
+      "endLine": 15,
+      "lineCount": 6,
+      "dependencies": []
+    },
+    "LinearStudy.adjoinLiftedGenerators_card": {
+      "declaration": "LinearStudy.adjoinLiftedGenerators_card",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousAdjoinGenerators.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.adjoinLiftedGenerators_card.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (s : Finset A) : (LinearStudy.adjoinLiftedGenerators s).card = s.card",
+      "sha256": "2ae3f4e39b948b70950368783f080001d5d966322d24144dcfe0950ac3031552",
+      "lines": 3,
+      "moduleLineCount": 49,
+      "startLine": 17,
+      "endLine": 19,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.adjoinLiftedGenerators"
+      ]
+    },
+    "LinearStudy.adjoinLiftedGenerators_generate": {
+      "declaration": "LinearStudy.adjoinLiftedGenerators_generate",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousAdjoinGenerators.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.adjoinLiftedGenerators_generate.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] (s : Finset A) : Algebra.adjoin K ↑(LinearStudy.adjoinLiftedGenerators s) = ⊤",
+      "sha256": "2ae3f4e39b948b70950368783f080001d5d966322d24144dcfe0950ac3031552",
+      "lines": 19,
+      "moduleLineCount": 49,
+      "startLine": 21,
+      "endLine": 39,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.adjoinLiftedGenerators"
+      ]
+    },
+    "LinearStudy.adjoinLiftedGenerators_homogeneous": {
+      "declaration": "LinearStudy.adjoinLiftedGenerators_homogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousAdjoinGenerators.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.adjoinLiftedGenerators_homogeneous.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (s : Finset A) (d : ℕ) (hs : ∀ a ∈ s, a ∈ 𝒜 d)\n  (b : ↥(Algebra.adjoin K ↑s)) :\n  b ∈ LinearStudy.adjoinLiftedGenerators s → b ∈ LinearStudy.gradedSubalgebraPiece 𝒜 (Algebra.adjoin K ↑s) d",
+      "sha256": "2ae3f4e39b948b70950368783f080001d5d966322d24144dcfe0950ac3031552",
+      "lines": 7,
+      "moduleLineCount": 49,
+      "startLine": 41,
+      "endLine": 47,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.adjoinLiftedGenerators",
+        "LinearStudy.gradedSubalgebraPiece"
+      ]
+    },
     "LinearStudy.homogeneousQuotientPieces_iSupIndep": {
       "declaration": "LinearStudy.homogeneousQuotientPieces_iSupIndep",
       "kind": "theorem",
@@ -8538,6 +10102,82 @@
       "lineCount": 15,
       "dependencies": [
         "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    "LinearStudy.gradedHilbertPolynomial_existsUnique": {
+      "declaration": "LinearStudy.gradedHilbertPolynomial_existsUnique",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousCoordinateHilbertPolynomial.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertPolynomial_existsUnique.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) (d : ℕ)\n  (h : ∃ p, (1 - PowerSeries.X) ^ d * LinearStudy.gradedHilbertSeries ℳ = ↑p) :\n  ∃! P, ∃ N, ∀ n > N, Polynomial.eval (↑n) P = ↑(Module.finrank K ↥(ℳ n))",
+      "sha256": "9397aaf85ba24315f8772f783908e1612691f4deb5ef8e670d1a676a77840622",
+      "lines": 31,
+      "moduleLineCount": 55,
+      "startLine": 12,
+      "endLine": 42,
+      "lineCount": 31,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries"
+      ]
+    },
+    "LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique": {
+      "declaration": "LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousCoordinateHilbertPolynomial.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique.{u_1, u_3} {K : Type u_1} [Field K] {σ : Type u_3}\n  [Finite σ] (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) :\n  ∃! P, ∃ N, ∀ n > N, Polynomial.eval (↑n) P = ↑(LinearStudy.homogeneousQuotientHilbert I n)",
+      "sha256": "9397aaf85ba24315f8772f783908e1612691f4deb5ef8e670d1a676a77840622",
+      "lines": 10,
+      "moduleLineCount": 55,
+      "startLine": 44,
+      "endLine": 53,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.gradedHilbertPolynomial_existsUnique",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.homogeneousQuotientHilbertSeries_rational",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    "LinearStudy.homogeneousQuotientHilbertSeries_rational": {
+      "declaration": "LinearStudy.homogeneousQuotientHilbertSeries_rational",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousCoordinateHilbertSeries.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousQuotientHilbertSeries_rational.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Finite σ]\n  (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) :\n  ∃ p, (1 - PowerSeries.X) ^ Nat.card σ * LinearStudy.gradedHilbertSeries (LinearStudy.homogeneousQuotientPiece I) = ↑p",
+      "sha256": "cf89b2c83ba69a190118bff42756c3e0fccdaabaec06cb697423adeee88978e0",
+      "lines": 42,
+      "moduleLineCount": 56,
+      "startLine": 13,
+      "endLine": 54,
+      "lineCount": 42,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedHilbertSeries_rational",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.homogeneousQuotientPiece_finite"
       ]
     },
     "LinearStudy.homogeneousQuotientPiece": {
@@ -38299,12 +39939,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 1023,
-  "definitionCount": 196,
+  "verifiedTheoremCount": 1068,
+  "definitionCount": 217,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
   "auditExitCode": 0,
-  "scope": "The exact original local Lemma31Goal is PROVED by lemma31_complete, including arbitrary parameter lifts, actual finite freeness and nonzero Jacobian socle generation. The global LinearityTheoremGoal remains UNPROVED. Actual affine perfect pairings, low-degree vanishing and weighted point relations are proved under their precise polynomial highest-part and local generator hypotheses, with highest-part regularity derived from the origin-only zero locus. Actual polynomial point completions and canonical Artinian fiber/localization comparisons are constructed. Original projective total invariance yields affine-cone radical pullback equality. Actual point-local source generators and a unit Jacobian minor construct smooth formal coordinates; target point-local generators determine the formal pullback ideal. The resulting radical condition derives regularity, finiteness and freeness, without opaque coordinate or structure inputs. Actual local quotient pullback maps are constructed from polynomial substitution, proved local and compatible with every polynomial. Essential finite type and formal unramifiedness of that specific map imply generation by actual pulled-back target parameters. Formal normal and normal polynomial Jacobians differ by a proved unit. Their nonzero socle generation descends through a constructed equivalence to the original Artinian polynomial fiber localization. Geometric local presentations, minors, unramifiedness and target parameter systems remain to be derived from the manuscript geometry. The local pulled-back-generator Jacobian is identified with the single common projective-chart Theta when the explicit target first-order, normal radical and reduced-parameter conditions hold. The full fiber ideal equality is constructed from actual unit-denominator substitution, and the same Theta class descends to the original localized Artinian polynomial fiber. Those conditions still require geometric derivation. Other remaining obligations are Scheme/projective coordinate comparison, Bertini/generic finite fiber geometry and cardinality, uniform global duality/Serre polynomial lifting and actual geometric Bezout. No final conclusion is hidden in a field, assumption, axiom or placeholder. Compiler stdin/setup mode preserves exact source bytes, module names and declaration ranges without changing kernel trust or dependencies. Actual formal smoothness of an embedded polynomial point-local quotient now constructs polynomial local ideal generators whose conormal classes form a basis: cotangent splitting, finite projectivity, local freeness and Nakayama are derived using the pinned library, and denominators are cleared without losing the basis. Actual localized ambient differential coordinates are constructed and identified with polynomial partial derivatives, including quotient base change. A row-independent rectangular matrix yields a nonzero original-coordinate maximal minor. Connecting the smooth conormal splitting to that actual Jacobian minor and geometric codimension is the next bridge; no complete geometric smooth-chart existence theorem or global Linearity proof is claimed. From formal smoothness of the actual localized quotient at a rational polynomial point, actual local polynomial generators, point vanishing and a nonzero original-coordinate Jacobian minor are now CONSTRUCTED. No conormal basis, ideal presentation, residue comparison, full-rank Jacobian or unit minor is an input to exists_smooth_polynomial_jacobian_generators_at_point. The actual rational point evaluation on the localized quotient is constructed. The number of generators still needs geometric codimension identification and the remaining global inputs are not proved by this theorem. The selected normal coordinates are now extended to an actual ambient coordinate permutation, with polynomial evaluation/derivative and point-translation compatibility. From smoothness of the actual rational point-local quotient and a nonzero localized ideal, smooth_point_has_formal_normal_coordinates CONSTRUCTS polynomial equations, a unit normal minor, the coordinate map and the original ideal normal-variable image equality. Geometric dimension/count identification and common coordinates over all points remain to be proved, as do the other global obligations. The actual smooth cotangent sequence now gives a product decomposition and a conormal/differential finite-rank sum for the localized polynomial quotient. A finite family of row-independent derivative matrices admits a single nonsingular ambient matrix with all fixed normal blocks nonsingular over an infinite field. The actual polynomial algebra automorphism, inverse point change and derivative chain rule are constructed. This common polynomial result still assumes original derivative-row independence and a fixed normal count; geometric dimension and common local generation are separate remaining obligations. No global Linearity proof is claimed. From actual formal smoothness at finitely many rational point primes and their common actual conormal rank, smooth_points_have_common_formal_normal_coordinates now CONSTRUCTS local equations, row independence, one common ambient polynomial automorphism and coordinate split, unit normal minors and formal maps taking the ORIGINAL ideal exactly to the normal-variable ideal at every selected point. Local ideal generation is transported through an actual localization ring equivalence and point-kernel compatibility is proved. Constancy of conormal rank, geometric smoothness/fibers and the remaining global inputs are explicit unfinished obligations. Constancy of conormal rank for the nonempty finite family of rational smooth points is now derived from the original nonzero prime ideal. The actual injective projective chart map yields a simultaneous smooth source, smooth image and unramified rational point. Canonical denominator-open quotient and point-local comparisons transport unramification to the actual ambient rational-polynomial local quotient pullback. The rational point is identified with actual affine coordinates on V, and its image with the original ratios f_i/f_0. This is a same-point coordinate bridge, not construction of all points in a general fiber. Combining the ambient comparison with those coordinates at one specified witness, whole generic fiber cardinality/degree, geometric dimension, uniform global duality lifting and geometric Bezout remain open. The exact LinearityTheoremGoal is still UNPROVED. The ambient local comparison and original affine coordinates are now combined at one SPECIFIED witness. Smooth target polynomial parameters are CONSTRUCTED and their actual rational pullbacks generate that same source local maximal ideal. Their count is the actual Kaehler differential rank; identifying it with geometric dimension is still open. Algebraicity of the original rational chart map is DERIVED from its actual finite fraction-field model, without replacing its Algebra action. A nonzero target basic open now has EVERY preimage inside the present denominator chart contained in one smooth unramified source open. This does NOT yet cover projective preimages outside the source affine chart, construct full general fibers, or compute their cardinality. Uniform global lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED. Positive-degree no-base-point original forms now give an origin-only zero locus and an ACTUALLY FINITE polynomial ring substitution by homogeneous degree descent. Finiteness descends to the original invariant homogeneous coordinate-domain map. Actual vector fiber quotient algebras are finite dimensional and their actual rational point sets are finite. Every WHOLE projective point fiber, including points outside the original affine chart, is proved finite by q-th-root normalization. Reducedness and q^r cardinality are not claimed. The chart-level target good open now explicitly controls source smoothness, image smoothness and actual unramification at every prime preimage. Whole generic fiber smoothness, geometric dimension/degree, uniform global lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED. The ACTUAL finite coordinate-domain map now constructs a nonzero target polynomial whose pullback is divisible by the source coordinate X0. Clearing the actual cone-chart denominator and the pinned Nullstellensatz construct a target vector meeting both this nonvanishing set and the original chart target good open. q-th-root normalization proves that its ENTIRE projective fiber lies in the same source affine chart. The original source-point evaluation, image coordinate ratios and prime kernels are identified: EVERY point of this WHOLE finite fiber has smooth source, smooth image and actual unramification. No whole-good-fiber assumption is inserted. This constructs one good full fiber, not yet a general scheme-fiber open or its reducedness/cardinality. The q^r count, geometric dimension, uniform global lifting, geometric Bezout and exact Linearity target remain UNPROVED. The actual affine polynomial fiber-equation quotient is now proved finite-dimensional. No base point forces the ORIGINAL denominator to be a unit in this quotient, including any prior nilpotents. Its actual localization quotient map is surjective and the original pullback composite is proved exactly equal to target evaluation followed by scalar inclusion. A constructed target unramified open and pinned formally-unramified field theorem prove this original fiber-equation quotient REDUCED. The original f,V construct a target whose ENTIRE projective point fiber avoids the source hyperplane. An explicit whole-fiber/actual-affine-zero-locus bijection and actual maximal residue evaluations prove that this WHOLE fiber cardinality equals the finite-dimensional fiber-equation quotient finrank. Reducedness and point/dimension equality are derived, not input fields. General scheme-fiber opens, a tensor-product/Scheme fiber comparison, the q^r degree identity and geometric dimension, uniform global polynomial lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED. NEW: the original polynomial fiber-equation quotient satisfies the actual pullback/target-evaluation universal property. An explicit COMPLEX ALGEBRA isomorphism identifies it with A tensor_B C, where B acts on A by the ORIGINAL chart pullback and on C by evaluation at the SAME target y. Both the SMul and Module actions are explicitly fixed to that pullback, not the source-chart inclusion. From original f,V one complete finite reduced actual TENSOR fiber is constructed and its whole projective point count equals tensor-ring finrank. This closes the affine algebraic tensor-fiber comparison only; Scheme-level gluing, general fibers, q^r dimension formula, geometric dimension, uniform global lifting and Bezout remain unproved. NEW: homogeneous pullback components construct a genuine homogeneous target chart-avoidance polynomial. From ORIGINAL f,V we construct a nonempty actual target principal open whose EVERY whole projective point fiber lies in one source chart. Every corresponding fiber-equation and actual tensor ring is finite-dimensional and reduced, and the ENTIRE point-fiber cardinality equals the tensor finrank. Every prime over that target open in the denominator chart has smooth source, smooth image and actual unramification. No general good-fiber conclusion is an input. This closes general good affine tensor fibers; the q^r dimension identity, Scheme gluing, geometric dimension, Bertini linear sections, uniform global lifting and geometric Bezout remain unproved. NEW: from the ORIGINAL chart pullback, clearing denominators of finitely many algebraic generators constructs a nonzero target element b such that the localized ring map B_b -> A_phi(b) is MODULE-FINITE. A further nonzero localization of that finite module is FREE and its finrank equals the actual generic module rank. Neither finiteness nor freeness is an input. The second object is a module localization. Comparison of these ranks with all rational tensor fibers, their value q^r, Scheme gluing, Bertini and global uniform lifting remain unproved. NEW: on a constructed nonempty ORIGINAL target open, every actual field-valued chart fiber has the original pullback module generic rank. Residue maps need not be injective; only the constructed free localization is used for free base change. Localized algebra/module fiber equivalences retain the ORIGINAL actions. Intersecting with the constructed whole reduced fiber open gives every WHOLE projective point fiber cardinality equal to that actual generic rank. This rank is NOT computed as q^r. Scheme gluing, geometric dimension, Bertini and uniform global lifting remain open. NEW: the ORIGINAL chart pullback generic rank is identified with the actual image-field extension degree of the ORIGINAL function-field pullback. Source and target scalar actions are separated through its actual intermediate-field range. EVERY whole point fiber on a constructed nonempty target open has that degree as its cardinality. No value q^r or Scheme fiber identification is assumed or claimed. NEW: actual original cone and projective function-field pullbacks commute with composition and iteration. The actual image-field extension degree D is positive and the kth original iterate has degree D^k. For EACH original iterate a nonempty target open is constructed, on which EVERY WHOLE projective point fiber has cardinality D^k. The open and fibers may change with the iterate. The value D=q^r is still unproved. NEW: the original homogeneous polynomial quotient now has actual finite-dimensional degree pieces, an actual internal GradedAlgebra constructed from its homogeneous ideal, and the original pullback maps the degree-m piece injectively to the degree-q*m piece. The actual Hilbert functions satisfy H(m)<=H(q*m). No Hilbert polynomial, growth degree, geometric dimension or equality D=q^r is assumed or proved here.",
+  "scope": "The exact original local Lemma31Goal is PROVED by lemma31_complete, including arbitrary parameter lifts, actual finite freeness and nonzero Jacobian socle generation. The global LinearityTheoremGoal remains UNPROVED. Actual affine perfect pairings, low-degree vanishing and weighted point relations are proved under their precise polynomial highest-part and local generator hypotheses, with highest-part regularity derived from the origin-only zero locus. Actual polynomial point completions and canonical Artinian fiber/localization comparisons are constructed. Original projective total invariance yields affine-cone radical pullback equality. Actual point-local source generators and a unit Jacobian minor construct smooth formal coordinates; target point-local generators determine the formal pullback ideal. The resulting radical condition derives regularity, finiteness and freeness, without opaque coordinate or structure inputs. Actual local quotient pullback maps are constructed from polynomial substitution, proved local and compatible with every polynomial. Essential finite type and formal unramifiedness of that specific map imply generation by actual pulled-back target parameters. Formal normal and normal polynomial Jacobians differ by a proved unit. Their nonzero socle generation descends through a constructed equivalence to the original Artinian polynomial fiber localization. Geometric local presentations, minors, unramifiedness and target parameter systems remain to be derived from the manuscript geometry. The local pulled-back-generator Jacobian is identified with the single common projective-chart Theta when the explicit target first-order, normal radical and reduced-parameter conditions hold. The full fiber ideal equality is constructed from actual unit-denominator substitution, and the same Theta class descends to the original localized Artinian polynomial fiber. Those conditions still require geometric derivation. Other remaining obligations are Scheme/projective coordinate comparison, Bertini/generic finite fiber geometry and cardinality, uniform global duality/Serre polynomial lifting and actual geometric Bezout. No final conclusion is hidden in a field, assumption, axiom or placeholder. Compiler stdin/setup mode preserves exact source bytes, module names and declaration ranges without changing kernel trust or dependencies. Actual formal smoothness of an embedded polynomial point-local quotient now constructs polynomial local ideal generators whose conormal classes form a basis: cotangent splitting, finite projectivity, local freeness and Nakayama are derived using the pinned library, and denominators are cleared without losing the basis. Actual localized ambient differential coordinates are constructed and identified with polynomial partial derivatives, including quotient base change. A row-independent rectangular matrix yields a nonzero original-coordinate maximal minor. Connecting the smooth conormal splitting to that actual Jacobian minor and geometric codimension is the next bridge; no complete geometric smooth-chart existence theorem or global Linearity proof is claimed. From formal smoothness of the actual localized quotient at a rational polynomial point, actual local polynomial generators, point vanishing and a nonzero original-coordinate Jacobian minor are now CONSTRUCTED. No conormal basis, ideal presentation, residue comparison, full-rank Jacobian or unit minor is an input to exists_smooth_polynomial_jacobian_generators_at_point. The actual rational point evaluation on the localized quotient is constructed. The number of generators still needs geometric codimension identification and the remaining global inputs are not proved by this theorem. The selected normal coordinates are now extended to an actual ambient coordinate permutation, with polynomial evaluation/derivative and point-translation compatibility. From smoothness of the actual rational point-local quotient and a nonzero localized ideal, smooth_point_has_formal_normal_coordinates CONSTRUCTS polynomial equations, a unit normal minor, the coordinate map and the original ideal normal-variable image equality. Geometric dimension/count identification and common coordinates over all points remain to be proved, as do the other global obligations. The actual smooth cotangent sequence now gives a product decomposition and a conormal/differential finite-rank sum for the localized polynomial quotient. A finite family of row-independent derivative matrices admits a single nonsingular ambient matrix with all fixed normal blocks nonsingular over an infinite field. The actual polynomial algebra automorphism, inverse point change and derivative chain rule are constructed. This common polynomial result still assumes original derivative-row independence and a fixed normal count; geometric dimension and common local generation are separate remaining obligations. No global Linearity proof is claimed. From actual formal smoothness at finitely many rational point primes and their common actual conormal rank, smooth_points_have_common_formal_normal_coordinates now CONSTRUCTS local equations, row independence, one common ambient polynomial automorphism and coordinate split, unit normal minors and formal maps taking the ORIGINAL ideal exactly to the normal-variable ideal at every selected point. Local ideal generation is transported through an actual localization ring equivalence and point-kernel compatibility is proved. Constancy of conormal rank, geometric smoothness/fibers and the remaining global inputs are explicit unfinished obligations. Constancy of conormal rank for the nonempty finite family of rational smooth points is now derived from the original nonzero prime ideal. The actual injective projective chart map yields a simultaneous smooth source, smooth image and unramified rational point. Canonical denominator-open quotient and point-local comparisons transport unramification to the actual ambient rational-polynomial local quotient pullback. The rational point is identified with actual affine coordinates on V, and its image with the original ratios f_i/f_0. This is a same-point coordinate bridge, not construction of all points in a general fiber. Combining the ambient comparison with those coordinates at one specified witness, whole generic fiber cardinality/degree, geometric dimension, uniform global duality lifting and geometric Bezout remain open. The exact LinearityTheoremGoal is still UNPROVED. The ambient local comparison and original affine coordinates are now combined at one SPECIFIED witness. Smooth target polynomial parameters are CONSTRUCTED and their actual rational pullbacks generate that same source local maximal ideal. Their count is the actual Kaehler differential rank; identifying it with geometric dimension is still open. Algebraicity of the original rational chart map is DERIVED from its actual finite fraction-field model, without replacing its Algebra action. A nonzero target basic open now has EVERY preimage inside the present denominator chart contained in one smooth unramified source open. This does NOT yet cover projective preimages outside the source affine chart, construct full general fibers, or compute their cardinality. Uniform global lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED. Positive-degree no-base-point original forms now give an origin-only zero locus and an ACTUALLY FINITE polynomial ring substitution by homogeneous degree descent. Finiteness descends to the original invariant homogeneous coordinate-domain map. Actual vector fiber quotient algebras are finite dimensional and their actual rational point sets are finite. Every WHOLE projective point fiber, including points outside the original affine chart, is proved finite by q-th-root normalization. Reducedness and q^r cardinality are not claimed. The chart-level target good open now explicitly controls source smoothness, image smoothness and actual unramification at every prime preimage. Whole generic fiber smoothness, geometric dimension/degree, uniform global lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED. The ACTUAL finite coordinate-domain map now constructs a nonzero target polynomial whose pullback is divisible by the source coordinate X0. Clearing the actual cone-chart denominator and the pinned Nullstellensatz construct a target vector meeting both this nonvanishing set and the original chart target good open. q-th-root normalization proves that its ENTIRE projective fiber lies in the same source affine chart. The original source-point evaluation, image coordinate ratios and prime kernels are identified: EVERY point of this WHOLE finite fiber has smooth source, smooth image and actual unramification. No whole-good-fiber assumption is inserted. This constructs one good full fiber, not yet a general scheme-fiber open or its reducedness/cardinality. The q^r count, geometric dimension, uniform global lifting, geometric Bezout and exact Linearity target remain UNPROVED. The actual affine polynomial fiber-equation quotient is now proved finite-dimensional. No base point forces the ORIGINAL denominator to be a unit in this quotient, including any prior nilpotents. Its actual localization quotient map is surjective and the original pullback composite is proved exactly equal to target evaluation followed by scalar inclusion. A constructed target unramified open and pinned formally-unramified field theorem prove this original fiber-equation quotient REDUCED. The original f,V construct a target whose ENTIRE projective point fiber avoids the source hyperplane. An explicit whole-fiber/actual-affine-zero-locus bijection and actual maximal residue evaluations prove that this WHOLE fiber cardinality equals the finite-dimensional fiber-equation quotient finrank. Reducedness and point/dimension equality are derived, not input fields. General scheme-fiber opens, a tensor-product/Scheme fiber comparison, the q^r degree identity and geometric dimension, uniform global polynomial lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED. NEW: the original polynomial fiber-equation quotient satisfies the actual pullback/target-evaluation universal property. An explicit COMPLEX ALGEBRA isomorphism identifies it with A tensor_B C, where B acts on A by the ORIGINAL chart pullback and on C by evaluation at the SAME target y. Both the SMul and Module actions are explicitly fixed to that pullback, not the source-chart inclusion. From original f,V one complete finite reduced actual TENSOR fiber is constructed and its whole projective point count equals tensor-ring finrank. This closes the affine algebraic tensor-fiber comparison only; Scheme-level gluing, general fibers, q^r dimension formula, geometric dimension, uniform global lifting and Bezout remain unproved. NEW: homogeneous pullback components construct a genuine homogeneous target chart-avoidance polynomial. From ORIGINAL f,V we construct a nonempty actual target principal open whose EVERY whole projective point fiber lies in one source chart. Every corresponding fiber-equation and actual tensor ring is finite-dimensional and reduced, and the ENTIRE point-fiber cardinality equals the tensor finrank. Every prime over that target open in the denominator chart has smooth source, smooth image and actual unramification. No general good-fiber conclusion is an input. This closes general good affine tensor fibers; the q^r dimension identity, Scheme gluing, geometric dimension, Bertini linear sections, uniform global lifting and geometric Bezout remain unproved. NEW: from the ORIGINAL chart pullback, clearing denominators of finitely many algebraic generators constructs a nonzero target element b such that the localized ring map B_b -> A_phi(b) is MODULE-FINITE. A further nonzero localization of that finite module is FREE and its finrank equals the actual generic module rank. Neither finiteness nor freeness is an input. The second object is a module localization. Comparison of these ranks with all rational tensor fibers, their value q^r, Scheme gluing, Bertini and global uniform lifting remain unproved. NEW: on a constructed nonempty ORIGINAL target open, every actual field-valued chart fiber has the original pullback module generic rank. Residue maps need not be injective; only the constructed free localization is used for free base change. Localized algebra/module fiber equivalences retain the ORIGINAL actions. Intersecting with the constructed whole reduced fiber open gives every WHOLE projective point fiber cardinality equal to that actual generic rank. This rank is NOT computed as q^r. Scheme gluing, geometric dimension, Bertini and uniform global lifting remain open. NEW: the ORIGINAL chart pullback generic rank is identified with the actual image-field extension degree of the ORIGINAL function-field pullback. Source and target scalar actions are separated through its actual intermediate-field range. EVERY whole point fiber on a constructed nonempty target open has that degree as its cardinality. No value q^r or Scheme fiber identification is assumed or claimed. NEW: actual original cone and projective function-field pullbacks commute with composition and iteration. The actual image-field extension degree D is positive and the kth original iterate has degree D^k. For EACH original iterate a nonempty target open is constructed, on which EVERY WHOLE projective point fiber has cardinality D^k. The open and fibers may change with the iterate. The value D=q^r is still unproved. NEW: the original homogeneous polynomial quotient now has actual finite-dimensional degree pieces, an actual internal GradedAlgebra constructed from its homogeneous ideal, and the original pullback maps the degree-m piece injectively to the degree-q*m piece. The actual Hilbert functions satisfy H(m)<=H(q*m). No Hilbert polynomial, growth degree, geometric dimension or equality D=q^r is assumed or proved here. NEW: Hilbert--Serre is PROVED for actual finite graded modules over a Noetherian algebra with degree-one generators, by actual kernel/cokernel gradings, generator removal and the rank-nullity recurrence. Applied to the ORIGINAL homogeneous coordinate quotient, its actual Hilbert function agrees eventually with a UNIQUE polynomial over Q. The polynomial is derived from the homogeneous ideal and its finite degree pieces, not supplied as input. Identifying its growth degree with geometric dimension and proving D=q^dim(V) remain open, as do the global geometric lifting and intersection steps.",
   "sourceRanges": {
     "LinearStudy.affine_polynomial_weighted_point_relation": {
       "path": "Linear/AffinePointRelation.lean",
@@ -38477,6 +40117,15 @@
       "lineCount": 24,
       "dependencies": [
         "LinearStudy.continuous_powerSeries_pderiv"
+      ]
+    },
+    "LinearStudy.gradedScalarKernelModule": {
+      "path": "Linear/GradedScalarInductionModules.lean",
+      "startLine": 44,
+      "endLine": 46,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedScalarKernel"
       ]
     },
     "LinearStudy.quotientSpecialization": {
@@ -38656,6 +40305,15 @@
       "lineCount": 7,
       "dependencies": []
     },
+    "LinearStudy.gradedQuotientProjection": {
+      "path": "Linear/GradedQuotientDecomposition.lean",
+      "startLine": 25,
+      "endLine": 30,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection"
+      ]
+    },
     "LinearStudy.finiteAlgebra_nonempty_rationalPoint_maximal_equiv": {
       "path": "Linear/FiniteReducedAlgebraPoints.lean",
       "startLine": 65,
@@ -38792,6 +40450,16 @@
       "lineCount": 3,
       "dependencies": []
     },
+    "LinearStudy.gradedScalarCokernelPiece": {
+      "path": "Linear/GradedScalarExactSequence.lean",
+      "startLine": 26,
+      "endLine": 27,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
     "LinearStudy.powerSeriesThickeningReduction_mk": {
       "path": "Linear/PowerSeriesThickeningReduction.lean",
       "startLine": 45,
@@ -38855,6 +40523,18 @@
       "lineCount": 3,
       "dependencies": []
     },
+    "LinearStudy.gradedQuotientPiece_total": {
+      "path": "Linear/GradedQuotientDecomposition.lean",
+      "startLine": 76,
+      "endLine": 82,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientProjection",
+        "LinearStudy.gradedQuotientProjection_mem",
+        "LinearStudy.gradedQuotientProjection_sum"
+      ]
+    },
     "LinearStudy.polynomial_universal_difference_determinant_degree": {
       "path": "Linear/PolynomialDifferenceDegree.lean",
       "startLine": 125,
@@ -38897,6 +40577,15 @@
         "LinearStudy.polynomialLinearChange"
       ]
     },
+    "LinearStudy.gradedSubmoduleProjection": {
+      "path": "Linear/GradedSubmoduleDecomposition.lean",
+      "startLine": 25,
+      "endLine": 29,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection"
+      ]
+    },
     "LinearStudy.IntegralProjectiveEquations.affineIdeal_le_pointKernel": {
       "path": "Linear/ProjectiveAffineVariety.lean",
       "startLine": 38,
@@ -38912,6 +40601,22 @@
         "LinearStudy.affineChartPolynomialMap_ideal_le_pointKernel",
         "LinearStudy.normalizedProjectivePoint"
       ]
+    },
+    "LinearStudy.adjoinLiftedGenerators_generate": {
+      "path": "Linear/HomogeneousAdjoinGenerators.lean",
+      "startLine": 21,
+      "endLine": 39,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.adjoinLiftedGenerators"
+      ]
+    },
+    "LinearStudy.gradedModuleProjection": {
+      "path": "Linear/GradedModuleProjection.lean",
+      "startLine": 21,
+      "endLine": 23,
+      "lineCount": 3,
+      "dependencies": []
     },
     "LinearStudy.polynomial_coefficientDeterminant_ne_zero_at_point": {
       "path": "Linear/PolynomialDoubleFiber.lean",
@@ -39077,6 +40782,32 @@
         "LinearStudy.ringEquiv_nilradical_annihilator_generator"
       ]
     },
+    "LinearStudy.gradedScalarCokernelModule": {
+      "path": "Linear/GradedScalarInductionModules.lean",
+      "startLine": 48,
+      "endLine": 51,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    "LinearStudy.gradedScalarKernel_finite_over_adjoin": {
+      "path": "Linear/GradedScalarInductionModules.lean",
+      "startLine": 22,
+      "endLine": 30,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.adjoin_finiteModule_of_annihilator",
+        "LinearStudy.gradedScalarKernel"
+      ]
+    },
+    "LinearStudy.adjoin_annihilator_scalar_representative": {
+      "path": "Linear/HilbertFiniteInstances.lean",
+      "startLine": 28,
+      "endLine": 49,
+      "lineCount": 22,
+      "dependencies": []
+    },
     "LinearStudy.powerSeries_coordinateIdeal_power_quotient_finite": {
       "path": "Linear/PowerSeriesThickeningFinite.lean",
       "startLine": 62,
@@ -39226,6 +40957,16 @@
         "LinearStudy.IntegralProjectiveEquations.zeroSet",
         "LinearStudy.ProjectivePoint",
         "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    "LinearStudy.gradedSubmoduleProjection_coe": {
+      "path": "Linear/GradedSubmoduleDecomposition.lean",
+      "startLine": 31,
+      "endLine": 32,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedSubmoduleProjection"
       ]
     },
     "LinearStudy.projectiveCone_exists_nonvanishing_point": {
@@ -39503,6 +41244,13 @@
       "startLine": 314,
       "endLine": 325,
       "lineCount": 12,
+      "dependencies": []
+    },
+    "LinearStudy.gradedSubmodulePiece": {
+      "path": "Linear/GradedSubmoduleDecomposition.lean",
+      "startLine": 23,
+      "endLine": 23,
+      "lineCount": 1,
       "dependencies": []
     },
     "IsCohenMacaulayRing.recOn": {
@@ -40245,6 +41993,23 @@
         "LinearStudy.relativeJacobian"
       ]
     },
+    "LinearStudy.gradedHilbertSeries_scalar_recurrence": {
+      "path": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "startLine": 29,
+      "endLine": 53,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelPieceEquiv_of_lt",
+        "LinearStudy.gradedScalarImage",
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedScalarKernelPiece",
+        "LinearStudy.gradedScalar_finrank_recurrence",
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
     "ringKrullDim_quotient_eq_iSup_quotient_minimalPrimes": {
       "path": "Linear/Vendor/CM/CohenMacaulayCatenary.lean",
       "startLine": 350,
@@ -40460,6 +42225,19 @@
         "LinearStudy.generalPointLocalQuotientPullback_scalar_comp"
       ]
     },
+    "LinearStudy.gradedQuotientProjection_on_piece": {
+      "path": "Linear/GradedQuotientDecomposition.lean",
+      "startLine": 36,
+      "endLine": 41,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece",
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientProjection",
+        "LinearStudy.gradedQuotientProjection_mk"
+      ]
+    },
     "LinearStudy.powerSeries_constantCoeff_kernel": {
       "path": "Linear/PowerSeriesCoefficients.lean",
       "startLine": 79,
@@ -40628,6 +42406,15 @@
         "LinearStudy.affineChartPolynomialMap",
         "LinearStudy.affineChartPolynomialMap_point_quotient_prime",
         "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    "LinearStudy.adjoin_finiteModule_of_annihilator": {
+      "path": "Linear/HilbertFiniteInstances.lean",
+      "startLine": 51,
+      "endLine": 70,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.adjoin_annihilator_scalar_representative"
       ]
     },
     "LinearStudy.powerSeriesQuotient_jacobian_trace_multiple": {
@@ -41781,6 +43568,24 @@
         "LinearStudy.regular_first_syzygy_skew"
       ]
     },
+    "LinearStudy.gradedHilbertSeries": {
+      "path": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "startLine": 20,
+      "endLine": 23,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    "LinearStudy.gradedQuotientPiece_independent": {
+      "path": "Linear/GradedQuotientDecomposition.lean",
+      "startLine": 63,
+      "endLine": 73,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientProjection",
+        "LinearStudy.gradedQuotientProjection_on_piece"
+      ]
+    },
     "LinearStudy.perfect_socle_functional_nonzero": {
       "path": "Linear/LocalResidueEvaluation.lean",
       "startLine": 141,
@@ -42206,6 +44011,16 @@
         "LinearStudy.thickeningTop_nonzero"
       ]
     },
+    "LinearStudy.gradedQuotientProjection_mk": {
+      "path": "Linear/GradedQuotientDecomposition.lean",
+      "startLine": 32,
+      "endLine": 34,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedQuotientProjection"
+      ]
+    },
     "LinearStudy.homogeneousQuotientPieces_iSup_eq_top": {
       "path": "Linear/HomogeneousCoordinateGrading.lean",
       "startLine": 27,
@@ -42280,6 +44095,19 @@
         "LinearStudy.smooth_normal_coordinate_jacobian_det_unit",
         "LinearStudy.smooth_normal_jacobian_det_factor",
         "LinearStudy.smooth_projective_full_fiber_ideal"
+      ]
+    },
+    "LinearStudy.homogeneousQuotientHilbertSeries_rational": {
+      "path": "Linear/HomogeneousCoordinateHilbertSeries.lean",
+      "startLine": 13,
+      "endLine": 54,
+      "lineCount": 42,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedHilbertSeries_rational",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.homogeneousQuotientPiece_finite"
       ]
     },
     "LinearStudy.topKoszulCoordinate_reconstruct": {
@@ -42427,6 +44255,13 @@
         "koszulComplex.d"
       ]
     },
+    "LinearStudy.adjoinLiftedGenerators": {
+      "path": "Linear/HomogeneousAdjoinGenerators.lean",
+      "startLine": 10,
+      "endLine": 15,
+      "lineCount": 6,
+      "dependencies": []
+    },
     "LinearStudy.smooth_local_quotient_pullback_reduction": {
       "path": "Linear/LocalQuotientPullback.lean",
       "startLine": 75,
@@ -42456,6 +44291,16 @@
       "lineCount": 14,
       "dependencies": []
     },
+    "LinearStudy.gradedSubalgebraPiece_finite": {
+      "path": "Linear/GradedSubalgebraDecomposition.lean",
+      "startLine": 49,
+      "endLine": 51,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedSubalgebraPiece",
+        "LinearStudy.gradedSubmodulePiece_finite"
+      ]
+    },
     "LinearStudy.localization_map_finite_span_annihilator": {
       "path": "Linear/LocalizedAnnihilator.lean",
       "startLine": 32,
@@ -42480,6 +44325,16 @@
         "LinearStudy.IntegralProjectiveEquations.zeroSet",
         "LinearStudy.ProjectivePoint",
         "LinearStudy.projectiveCoordinateDomainMap"
+      ]
+    },
+    "LinearStudy.gradedHilbertSeries_rational": {
+      "path": "Linear/GradedHilbertSerre.lean",
+      "startLine": 107,
+      "endLine": 120,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "_private.Linear.GradedHilbertSerre.0.LinearStudy.gradedHilbertSerre_induction"
       ]
     },
     "LinearStudy.polynomial_double_monomial_degree": {
@@ -42669,6 +44524,13 @@
         "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal",
         "LinearStudy.smooth_point_constructs_original_polynomial_parameters"
       ]
+    },
+    "LinearStudy.gradedSubalgebraPiece": {
+      "path": "Linear/GradedSubalgebraDecomposition.lean",
+      "startLine": 33,
+      "endLine": 35,
+      "lineCount": 3,
+      "dependencies": []
     },
     "LinearStudy.polynomialDoubleTensor_left": {
       "path": "Linear/TensorDifference.lean",
@@ -43267,6 +45129,15 @@
         "LinearStudy.powerSeriesCentering_coordinate_reduction_zero"
       ]
     },
+    "LinearStudy.gradedSubalgebraModuleGradedSMul": {
+      "path": "Linear/GradedScalarInductionModules.lean",
+      "startLine": 70,
+      "endLine": 77,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.gradedSubalgebraPiece"
+      ]
+    },
     "LinearStudy.isAdicComplete_of_nilpotent_ideal": {
       "path": "Linear/ArtinianCompletion.lean",
       "startLine": 15,
@@ -43707,6 +45578,20 @@
         "LinearStudy.rationalPointPrime"
       ]
     },
+    "LinearStudy.gradedScalarCokernelProjection_injective_of_lt": {
+      "path": "Linear/GradedScalarExactSequence.lean",
+      "startLine": 41,
+      "endLine": 55,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece",
+        "LinearStudy.gradedModuleProjection_smul_homogeneous",
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
     "ModuleCat.IsCohenMacaulay.casesOn": {
       "path": "Linear/Vendor/CM/CohenMacaulayBasic.lean",
       "startLine": 52,
@@ -43835,6 +45720,15 @@
       "endLine": 41,
       "lineCount": 16,
       "dependencies": []
+    },
+    "LinearStudy.gradedHilbertSeries_coeff": {
+      "path": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "startLine": 25,
+      "endLine": 27,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries"
+      ]
     },
     "LinearStudy.completionCompatibleMap_eval": {
       "path": "Linear/CompletionCongr.lean",
@@ -44264,6 +46158,16 @@
         "LinearStudy.trace_eq_rank_smul_reduction"
       ]
     },
+    "LinearStudy.gradedScalarCokernel_finite_over_adjoin": {
+      "path": "Linear/GradedScalarInductionModules.lean",
+      "startLine": 32,
+      "endLine": 42,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.adjoin_finiteModule_of_annihilator",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
     "ExteriorAlgebra.baseChangeι": {
       "path": "Linear/Vendor/ExteriorBaseChange.lean",
       "startLine": 33,
@@ -44420,6 +46324,15 @@
         "LinearStudy.projectiveChartDenominator",
         "LinearStudy.projectiveChartOpenMap",
         "LinearStudy.projectiveChartOpenMap_exists_finite_target_away"
+      ]
+    },
+    "LinearStudy.gradedQuotientPiece_finite": {
+      "path": "Linear/GradedQuotientDecomposition.lean",
+      "startLine": 91,
+      "endLine": 94,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece"
       ]
     },
     "LinearStudy.polynomialAwayFormalMap_constantCoeff": {
@@ -44585,6 +46498,16 @@
       "lineCount": 10,
       "dependencies": []
     },
+    "LinearStudy.gradedScalarKernelGradedSMul": {
+      "path": "Linear/GradedScalarInductionModules.lean",
+      "startLine": 55,
+      "endLine": 61,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
     "LinearStudy.HomogeneousEndomorphism.onPoints_fibers_finite": {
       "path": "Linear/ProjectiveFibersFinite.lean",
       "startLine": 19,
@@ -44705,6 +46628,17 @@
         "LinearStudy.affineChartPolynomialMap",
         "LinearStudy.projectiveChartLocalizationMap",
         "LinearStudy.projectiveChartLocalizationMap_comap_ideal"
+      ]
+    },
+    "LinearStudy.gradedScalarCokernelPieceEquiv_of_lt": {
+      "path": "Linear/GradedScalarExactSequence.lean",
+      "startLine": 57,
+      "endLine": 61,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarImage"
       ]
     },
     "LinearStudy.weightedEvaluation_single": {
@@ -44851,6 +46785,13 @@
       "startLine": 15,
       "endLine": 20,
       "lineCount": 6,
+      "dependencies": []
+    },
+    "LinearStudy.finiteAdjoin_isNoetherian": {
+      "path": "Linear/HilbertFiniteInstances.lean",
+      "startLine": 23,
+      "endLine": 26,
+      "lineCount": 4,
       "dependencies": []
     },
     "LinearStudy.nilpotentPowerSeriesEval_C": {
@@ -45438,6 +47379,35 @@
         "LinearStudy.polynomialLinearChange_isHomogeneous"
       ]
     },
+    "LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique": {
+      "path": "Linear/HomogeneousCoordinateHilbertPolynomial.lean",
+      "startLine": 44,
+      "endLine": 53,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.gradedHilbertPolynomial_existsUnique",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.homogeneousQuotientHilbertSeries_rational",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    "LinearStudy.gradedScalar_finrank_recurrence": {
+      "path": "Linear/GradedScalarExactSequence.lean",
+      "startLine": 101,
+      "endLine": 113,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarCokernelProjection_surjective",
+        "LinearStudy.gradedScalarImage",
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedScalarKernelPiece",
+        "LinearStudy.gradedScalarKernelPieceEquiv",
+        "LinearStudy.gradedScalarMultiplication",
+        "LinearStudy.gradedScalarMultiplication_exact"
+      ]
+    },
     "LinearStudy.projectiveCoordinateDomainMap_component": {
       "path": "Linear/ProjectiveGradedPullback.lean",
       "startLine": 49,
@@ -45838,6 +47808,16 @@
         "LinearStudy.total_invariance_membership"
       ]
     },
+    "LinearStudy.gradedScalarCokernelProjection": {
+      "path": "Linear/GradedScalarExactSequence.lean",
+      "startLine": 29,
+      "endLine": 33,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
     "exteriorPower.baseChangeGenerator_map_update_add": {
       "path": "Linear/Vendor/ExteriorBaseChange.lean",
       "startLine": 83,
@@ -45933,6 +47913,17 @@
         "LinearStudy.annihilates_iff_mem_annihilator",
         "LinearStudy.powerSeries_coefficientDeterminant_annihilator",
         "LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal"
+      ]
+    },
+    "LinearStudy.gradedSubmodulePiece_independent": {
+      "path": "Linear/GradedSubmoduleDecomposition.lean",
+      "startLine": 47,
+      "endLine": 57,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmoduleProjection",
+        "LinearStudy.gradedSubmoduleProjection_on_piece"
       ]
     },
     "isCohenMacaulayRing_of_ringEquiv": {
@@ -46539,6 +48530,15 @@
       "endLine": 91,
       "lineCount": 6,
       "dependencies": []
+    },
+    "LinearStudy.gradedQuotientDecomposition": {
+      "path": "Linear/GradedQuotientDecomposition.lean",
+      "startLine": 84,
+      "endLine": 89,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece"
+      ]
     },
     "LinearStudy.powerSeries_diagonal_jacobian_matrix": {
       "path": "Linear/PowerSeriesDiagonal.lean",
@@ -47476,6 +49476,17 @@
         "LinearStudy.powerSeriesCoordinateChart_X"
       ]
     },
+    "LinearStudy.gradedScalarCokernelGradedSMul": {
+      "path": "Linear/GradedScalarInductionModules.lean",
+      "startLine": 63,
+      "endLine": 68,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedScalarCokernelModule",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
     "LinearStudy.fiber_jacobian_annihilates": {
       "path": "Linear/LocalFiberJacobian.lean",
       "startLine": 86,
@@ -47818,6 +49829,31 @@
         "LinearStudy.homogeneousQuotientPiece_mem_iff"
       ]
     },
+    "LinearStudy.gradedScalarMultiplication_exact": {
+      "path": "Linear/GradedScalarExactSequence.lean",
+      "startLine": 63,
+      "endLine": 85,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece",
+        "LinearStudy.gradedModuleProjection_smul_homogeneous",
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarImage",
+        "LinearStudy.gradedScalarMultiplication"
+      ]
+    },
+    "LinearStudy.gradedModuleProjection_on_piece": {
+      "path": "Linear/GradedModuleProjection.lean",
+      "startLine": 28,
+      "endLine": 34,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_apply"
+      ]
+    },
     "IsCohenMacaulayLocalRing.casesOn": {
       "path": "Linear/Vendor/CM/CohenMacaulayBasic.lean",
       "startLine": 385,
@@ -48009,6 +50045,15 @@
         "LinearStudy.polynomialLinearChangeEquiv",
         "LinearStudy.polynomial_equations_adapted_normal_generators",
         "LinearStudy.polynomial_local_generators_under_linear_change"
+      ]
+    },
+    "LinearStudy.gradedSubmoduleDecomposition": {
+      "path": "Linear/GradedSubmoduleDecomposition.lean",
+      "startLine": 74,
+      "endLine": 79,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece"
       ]
     },
     "LinearStudy.projectiveCoordinateFractionMap_finite": {
@@ -48840,6 +50885,13 @@
       "lineCount": 15,
       "dependencies": []
     },
+    "LinearStudy.gradedScalarMultiplication": {
+      "path": "Linear/GradedScalarExactSequence.lean",
+      "startLine": 21,
+      "endLine": 24,
+      "lineCount": 4,
+      "dependencies": []
+    },
     "ModuleCat.depth_eq_of_iso_right": {
       "path": "Linear/Vendor/CM/DepthBasic.lean",
       "startLine": 194,
@@ -49144,6 +51196,16 @@
       "dependencies": [
         "IsLocalRing.depth",
         "ModuleCat.IsCohenMacaulay"
+      ]
+    },
+    "LinearStudy.adjoinLiftedGenerators_homogeneous": {
+      "path": "Linear/HomogeneousAdjoinGenerators.lean",
+      "startLine": 41,
+      "endLine": 47,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.adjoinLiftedGenerators",
+        "LinearStudy.gradedSubalgebraPiece"
       ]
     },
     "LinearStudy.IntegralProjectiveEquations.affinePointIdeal": {
@@ -50269,6 +52331,17 @@
         "LinearStudy.parameterReductionToField_kernel"
       ]
     },
+    "LinearStudy.gradedScalarCokernelProjection_surjective": {
+      "path": "Linear/GradedScalarExactSequence.lean",
+      "startLine": 35,
+      "endLine": 39,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
     "LinearStudy.coefficientComparison_augmentation": {
       "path": "Linear/KoszulSocleDeterminant.lean",
       "startLine": 34,
@@ -50374,6 +52447,15 @@
       "endLine": 168,
       "lineCount": 4,
       "dependencies": []
+    },
+    "LinearStudy.gradedHilbertPolynomial_existsUnique": {
+      "path": "Linear/HomogeneousCoordinateHilbertPolynomial.lean",
+      "startLine": 12,
+      "endLine": 42,
+      "lineCount": 31,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries"
+      ]
     },
     "Ideal.depth_eq_height": {
       "path": "Linear/Vendor/CM/CohenMacaulayCatenary.lean",
@@ -50585,6 +52667,13 @@
         "LinearStudy.projectiveChartOpenPolynomialMap"
       ]
     },
+    "LinearStudy.gradedScalarImage": {
+      "path": "Linear/GradedModuleProjection.lean",
+      "startLine": 69,
+      "endLine": 81,
+      "lineCount": 13,
+      "dependencies": []
+    },
     "LinearStudy.powerSeriesMapEquiv": {
       "path": "Linear/PowerSeriesFlatten.lean",
       "startLine": 10,
@@ -50626,6 +52715,25 @@
         "IsCohenMacaulayRing.mk"
       ]
     },
+    "LinearStudy.gradedQuotientPiece": {
+      "path": "Linear/GradedQuotientDecomposition.lean",
+      "startLine": 23,
+      "endLine": 23,
+      "lineCount": 1,
+      "dependencies": []
+    },
+    "LinearStudy.gradedQuotientProjection_mem": {
+      "path": "Linear/GradedQuotientDecomposition.lean",
+      "startLine": 43,
+      "endLine": 49,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientProjection",
+        "LinearStudy.gradedQuotientProjection_mk"
+      ]
+    },
     "LinearStudy.unramified_completed_parameters_coordinates": {
       "path": "Linear/UnramifiedParameters.lean",
       "startLine": 35,
@@ -50642,6 +52750,17 @@
       "endLine": 25,
       "lineCount": 13,
       "dependencies": []
+    },
+    "LinearStudy.gradedSubalgebraGrading": {
+      "path": "Linear/GradedSubalgebraDecomposition.lean",
+      "startLine": 37,
+      "endLine": 47,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedSubalgebraPiece",
+        "LinearStudy.gradedSubmoduleDecomposition",
+        "LinearStudy.gradedSubmodulePiece"
+      ]
     },
     "LinearStudy.affine_ideal_top_component_mem": {
       "path": "Linear/FilteredIdeal.lean",
@@ -50744,6 +52863,25 @@
         "LinearStudy.parameterSpecialization",
         "LinearStudy.parameterSpecialization_surjective",
         "LinearStudy.quotientSpecializationEquiv"
+      ]
+    },
+    "LinearStudy.gradedModule_eventually_eq_bot": {
+      "path": "Linear/GradedModuleFiniteSupport.lean",
+      "startLine": 23,
+      "endLine": 46,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece"
+      ]
+    },
+    "LinearStudy.gradedHilbertSeries_polynomial_of_bounded": {
+      "path": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "startLine": 55,
+      "endLine": 68,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries"
       ]
     },
     "LinearStudy.unit_divided_derivative_quotient": {
@@ -51001,6 +53139,15 @@
         "LinearStudy.polynomial_idealOfVars_isMaximal"
       ]
     },
+    "LinearStudy.adjoinLiftedGenerators_card": {
+      "path": "Linear/HomogeneousAdjoinGenerators.lean",
+      "startLine": 17,
+      "endLine": 19,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.adjoinLiftedGenerators"
+      ]
+    },
     "LinearStudy.nestedPowerSeriesEquiv_C": {
       "path": "Linear/PowerSeriesFlatten.lean",
       "startLine": 139,
@@ -51114,6 +53261,13 @@
         "LinearStudy.fieldEndomorphism_range_finite",
         "LinearStudy.projectiveCoordinateFractionMap"
       ]
+    },
+    "LinearStudy.homogeneousAdjoin": {
+      "path": "Linear/GradedSubalgebraDecomposition.lean",
+      "startLine": 18,
+      "endLine": 31,
+      "lineCount": 14,
+      "dependencies": []
     },
     "LinearStudy.HomogeneousEndomorphism.noConfusion": {
       "path": "Linear/Projective.lean",
@@ -51374,6 +53528,16 @@
       "lineCount": 15,
       "dependencies": []
     },
+    "LinearStudy.gradedScalarKernelPiece": {
+      "path": "Linear/GradedScalarExactSequence.lean",
+      "startLine": 87,
+      "endLine": 88,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
     "LinearStudy.rationalPointPrime_comp_comap": {
       "path": "Linear/RationalPointLocalMap.lean",
       "startLine": 11,
@@ -51476,6 +53640,16 @@
       "endLine": 16,
       "lineCount": 2,
       "dependencies": []
+    },
+    "LinearStudy.gradedModuleProjection_smul_homogeneous": {
+      "path": "Linear/GradedModuleProjection.lean",
+      "startLine": 36,
+      "endLine": 57,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece"
+      ]
     },
     "LinearStudy.multiplication_factors_through_reduction": {
       "path": "Linear/Reduction.lean",
@@ -51626,6 +53800,15 @@
         "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
         "LinearStudy.projectiveCoordinateFractionMap",
         "LinearStudy.projectiveCoordinateFractionMap_coordinate"
+      ]
+    },
+    "LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators": {
+      "path": "Linear/GradedModuleFiniteSupport.lean",
+      "startLine": 48,
+      "endLine": 61,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.gradedModule_eventually_eq_bot"
       ]
     },
     "LinearStudy.equationIdeal_le_coordinateIdeal": {
@@ -52426,6 +54609,27 @@
       "lineCount": 8,
       "dependencies": []
     },
+    "LinearStudy.gradedSubmoduleProjection_mem": {
+      "path": "Linear/GradedSubmoduleDecomposition.lean",
+      "startLine": 34,
+      "endLine": 36,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmoduleProjection"
+      ]
+    },
+    "LinearStudy.gradedScalarKernelPieceEquiv": {
+      "path": "Linear/GradedScalarExactSequence.lean",
+      "startLine": 90,
+      "endLine": 99,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedScalarKernelPiece",
+        "LinearStudy.gradedScalarMultiplication"
+      ]
+    },
     "LinearStudy.regularSequence_change_equations": {
       "path": "Linear/CompleteIntersectionChange.lean",
       "startLine": 32,
@@ -52806,6 +55010,17 @@
         "ModuleCat.subsingleton_ext_of_lt_depth"
       ]
     },
+    "LinearStudy.gradedHilbertSeries_polynomial_of_finite": {
+      "path": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "startLine": 70,
+      "endLine": 73,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedHilbertSeries_polynomial_of_bounded",
+        "LinearStudy.gradedModule_eventually_eq_bot"
+      ]
+    },
     "LinearStudy.HomogeneousEndomorphism.iterate_onPoints": {
       "path": "Linear/Projective.lean",
       "startLine": 138,
@@ -52887,6 +55102,17 @@
       "dependencies": [
         "LinearStudy.topKoszulCoordinate",
         "LinearStudy.topKoszulGenerator"
+      ]
+    },
+    "LinearStudy.gradedHilbertSeries_polynomial_of_empty_generators": {
+      "path": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "startLine": 75,
+      "endLine": 79,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedHilbertSeries_polynomial_of_bounded",
+        "LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators"
       ]
     },
     "LinearStudy.powerSeriesMapEquiv_X": {
@@ -53267,6 +55493,18 @@
         "LinearStudy.polynomial_highest_parts_regular_of_zeroLocus"
       ]
     },
+    "LinearStudy.gradedSubmodulePiece_total": {
+      "path": "Linear/GradedSubmoduleDecomposition.lean",
+      "startLine": 67,
+      "endLine": 72,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmoduleProjection",
+        "LinearStudy.gradedSubmoduleProjection_mem",
+        "LinearStudy.gradedSubmoduleProjection_sum"
+      ]
+    },
     "LinearStudy.powerSeriesCentering_symm_jacobian": {
       "path": "Linear/PowerSeriesCentering.lean",
       "startLine": 66,
@@ -53357,6 +55595,39 @@
         "LinearStudy.polynomialSmoothPointLocalReduction",
         "LinearStudy.polynomialSmoothPointLocalReduction_polynomial",
         "LinearStudy.polynomialSmoothReducedMap"
+      ]
+    },
+    "_private.Linear.GradedHilbertSerre.0.LinearStudy.gradedHilbertSerre_induction": {
+      "path": "Linear/GradedHilbertSerre.lean",
+      "startLine": 23,
+      "endLine": 105,
+      "lineCount": 83,
+      "dependencies": [
+        "LinearStudy.adjoinLiftedGenerators",
+        "LinearStudy.adjoinLiftedGenerators_card",
+        "LinearStudy.adjoinLiftedGenerators_generate",
+        "LinearStudy.adjoinLiftedGenerators_homogeneous",
+        "LinearStudy.finiteAdjoin_isNoetherian",
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedHilbertSeries_polynomial_of_empty_generators",
+        "LinearStudy.gradedHilbertSeries_scalar_recurrence",
+        "LinearStudy.gradedQuotientDecomposition",
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientPiece_finite",
+        "LinearStudy.gradedScalarCokernelGradedSMul",
+        "LinearStudy.gradedScalarCokernelModule",
+        "LinearStudy.gradedScalarCokernel_finite_over_adjoin",
+        "LinearStudy.gradedScalarImage",
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedScalarKernelGradedSMul",
+        "LinearStudy.gradedScalarKernel_finite_over_adjoin",
+        "LinearStudy.gradedSubalgebraGrading",
+        "LinearStudy.gradedSubalgebraModuleGradedSMul",
+        "LinearStudy.gradedSubalgebraPiece",
+        "LinearStudy.gradedSubmoduleDecomposition",
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmodulePiece_finite",
+        "LinearStudy.homogeneousAdjoin"
       ]
     },
     "LinearStudy.projectiveChartCoordinateEmbedding": {
@@ -53545,6 +55816,15 @@
         "LinearStudy.homogeneousComponent_mul_homogeneous"
       ]
     },
+    "LinearStudy.gradedSubmoduleProjection_sum": {
+      "path": "Linear/GradedSubmoduleDecomposition.lean",
+      "startLine": 59,
+      "endLine": 64,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedSubmoduleProjection"
+      ]
+    },
     "ExteriorAlgebra.prodEquivProd_comp_inl": {
       "path": "Linear/Vendor/ExteriorProduct.lean",
       "startLine": 124,
@@ -53598,6 +55878,18 @@
       "endLine": 19,
       "lineCount": 8,
       "dependencies": []
+    },
+    "LinearStudy.gradedSubmoduleProjection_on_piece": {
+      "path": "Linear/GradedSubmoduleDecomposition.lean",
+      "startLine": 38,
+      "endLine": 44,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece",
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmoduleProjection"
+      ]
     },
     "koszulComplex.ofListIsoOfEq": {
       "path": "Linear/Vendor/KoszulComplex.lean",
@@ -53743,6 +56035,16 @@
       "lineCount": 6,
       "dependencies": [
         "LinearStudy.parameter_generator_constantCoeff_zero"
+      ]
+    },
+    "LinearStudy.gradedQuotientProjection_sum": {
+      "path": "Linear/GradedQuotientDecomposition.lean",
+      "startLine": 51,
+      "endLine": 60,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedQuotientProjection"
       ]
     },
     "LinearStudy.coordinateChart_nestedPowerSeriesTranslation": {
@@ -53986,6 +56288,15 @@
       "dependencies": [
         "koszulComplex",
         "koszulComplex.ofList"
+      ]
+    },
+    "LinearStudy.gradedSubmodulePiece_finite": {
+      "path": "Linear/GradedSubmoduleDecomposition.lean",
+      "startLine": 81,
+      "endLine": 91,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece"
       ]
     },
     "LinearStudy.smoothFormalQuotientEquiv_parameter_series": {
@@ -55573,6 +57884,13 @@
         "ModuleCat.IsCohenMacaulay"
       ]
     },
+    "LinearStudy.gradedScalarKernel": {
+      "path": "Linear/GradedModuleProjection.lean",
+      "startLine": 59,
+      "endLine": 67,
+      "lineCount": 9,
+      "dependencies": []
+    },
     "LinearStudy.completionLocalizationForward_eval": {
       "path": "Linear/CompletionLocalization.lean",
       "startLine": 99,
@@ -55655,6 +57973,15 @@
       "lineCount": 5,
       "dependencies": [
         "koszulComplex"
+      ]
+    },
+    "LinearStudy.gradedModuleProjection_apply": {
+      "path": "Linear/GradedModuleProjection.lean",
+      "startLine": 25,
+      "endLine": 26,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection"
       ]
     },
     "LinearStudy.factored_relation_nonzero": {
@@ -58692,7 +61019,8 @@
         "projective-chart-finite-free",
         "projective-general-field-degree",
         "coordinate-graded-algebra",
-        "projective-hilbert-pullback"
+        "projective-hilbert-pullback",
+        "coordinate-hilbert-polynomial"
       ],
       "setup": [
         "<p>原稿 Setup 1.4；t=r(q−1)−1，第一纤维 S₁。</p>",
@@ -66559,16 +68887,16 @@
         "<p>H(m) is defined from actual pieces of the ORIGINAL coordinate quotient.</p>"
       ],
       "result": [
-        "<p>H(m)≤H(qm)。Hilbert 多项式、增长维数和 D=q^dim(V) 尚待证明。</p>",
-        "<p>H(m)≤H(qm). A Hilbert polynomial, growth dimension and D=q^dim(V) remain unproved.</p>"
+        "<p>H(m)≤H(qm)。原坐标环的唯一 Hilbert 多项式现已另行推导；增长维数和 D=q^dim(V) 仍待证。</p>",
+        "<p>H(m)≤H(qm). A unique Hilbert polynomial of the original coordinate ring is now separately derived; growth dimension and D=q^dim(V) remain unproved.</p>"
       ],
       "compactSetup": [
         "由原坐标商实际分量定义 H(m)。",
         "H(m) is defined from actual pieces of the ORIGINAL coordinate quotient."
       ],
       "compactResult": [
-        "H(m)≤H(qm)。Hilbert 多项式、增长维数和 D=q^dim(V) 尚待证明。",
-        "H(m)≤H(qm). A Hilbert polynomial, growth dimension and D=q^dim(V) remain unproved."
+        "H(m)≤H(qm)；Hilbert 多项式已推导，几何维数与 D=q^dim(V) 仍待证。",
+        "H(m)≤H(qm); the Hilbert polynomial is derived, but geometric dimension and D=q^dim(V) remain unproved."
       ],
       "scope": [
         "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
@@ -66620,6 +68948,468 @@
       "formalType": "LinearStudy.homogeneousQuotientGrading.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (I : Ideal (MvPolynomial σ K))\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) :\n  GradedAlgebra (LinearStudy.homogeneousQuotientPiece I)",
       "sha256": "51027580a417a916c5d14b47257422ec0fd6060b6bb820ac573eb30af1562540",
       "lines": 15,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "graded-support-bounded",
+      "titles": [
+        "有限向量空间的分次支撑有界",
+        "Bounded graded support of a finite vector space"
+      ],
+      "title": "有限向量空间的分次支撑有界",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GradedModuleFiniteSupport.lean",
+      "decl": "LinearStudy.gradedModule_eventually_eq_bot",
+      "declaration": "LinearStudy.gradedModule_eventually_eq_bot",
+      "deps": [],
+      "setup": [
+        "<p>实际内部直和分解；整个模在基域 K 上有限维。</p>",
+        "<p>An actual internal direct-sum decomposition; the whole module is finite over the base field K.</p>"
+      ],
+      "result": [
+        "<p>从有限基的分量支撑构造 N，使所有 n>N 的分量为零。</p>",
+        "<p>Construct N from the finite supports of a finite basis; all pieces above N vanish.</p>"
+      ],
+      "compactSetup": [
+        "实际内部直和分解；整个模在基域 K 上有限维。",
+        "An actual internal direct-sum decomposition; the whole module is finite over the base field K."
+      ],
+      "compactResult": [
+        "从有限基的分量支撑构造 N，使所有 n>N 的分量为零。",
+        "Construct N from the finite supports of a finite basis; all pieces above N vanish."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.gradedModule_eventually_eq_bot.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [Module.Finite K M] : ∃ N, ∀ (n : ℕ), N < n → ℳ n = ⊥",
+      "sha256": "a0638ff3a59a8e2f1456c904c8ff4aadd3d5f14ddf3ca00ebd489303e18699c8",
+      "lines": 24,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "graded-submodule-total",
+      "titles": [
+        "实际齐次子模的内部直和",
+        "Internal direct sum of an actual homogeneous submodule"
+      ],
+      "title": "实际齐次子模的内部直和",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "decl": "LinearStudy.gradedSubmodulePiece_total",
+      "declaration": "LinearStudy.gradedSubmodulePiece_total",
+      "deps": [],
+      "setup": [
+        "<p>原分次模及实际齐次子模 p。</p>",
+        "<p>An original graded module and an actual homogeneous submodule p.</p>"
+      ],
+      "result": [
+        "<p>构造分量投影，证明独立性与分量总和为 top；由此构造子模分次。</p>",
+        "<p>Construct component projections and prove independence and total span, yielding the submodule grading.</p>"
+      ],
+      "compactSetup": [
+        "原分次模及实际齐次子模 p。",
+        "An original graded module and an actual homogeneous submodule p."
+      ],
+      "compactResult": [
+        "构造分量投影，证明独立性与分量总和为 top；由此构造子模分次。",
+        "Construct component projections and prove independence and total span, yielding the submodule grading."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.gradedSubmodulePiece_total.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  ⨆ n, LinearStudy.gradedSubmodulePiece ℳ p n = ⊤",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 6,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "graded-quotient-total",
+      "titles": [
+        "实际齐次商模的内部直和",
+        "Internal direct sum of an actual homogeneous quotient"
+      ],
+      "title": "实际齐次商模的内部直和",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "decl": "LinearStudy.gradedQuotientPiece_total",
+      "declaration": "LinearStudy.gradedQuotientPiece_total",
+      "deps": [],
+      "setup": [
+        "<p>同一原分次模和实际齐次子模 p。</p>",
+        "<p>The SAME original graded module and an actual homogeneous submodule p.</p>"
+      ],
+      "result": [
+        "<p>商分量及投影由原商映射构造；独立性、总和及每个分量的有限性均已证明。</p>",
+        "<p>Quotient pieces and projections are constructed from the actual quotient map; independence, total span and finiteness of each piece are proved.</p>"
+      ],
+      "compactSetup": [
+        "同一原分次模和实际齐次子模 p。",
+        "The SAME original graded module and an actual homogeneous submodule p."
+      ],
+      "compactResult": [
+        "商分量及投影由原商映射构造；独立性、总和及每个分量的有限性均已证明。",
+        "Quotient pieces and projections are constructed from the actual quotient map; independence, total span and finiteness of each piece are proved."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.gradedQuotientPiece_total.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  ⨆ n, LinearStudy.gradedQuotientPiece ℳ p n = ⊤",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 7,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "graded-kernel-finite",
+      "titles": [
+        "删去生成元后核仍有限",
+        "The kernel remains finite after removing a generator"
+      ],
+      "title": "删去生成元后核仍有限",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "decl": "LinearStudy.gradedScalarKernel_finite_over_adjoin",
+      "declaration": "LinearStudy.gradedScalarKernel_finite_over_adjoin",
+      "deps": [
+        "graded-submodule-total"
+      ],
+      "setup": [
+        "<p>Noetherian 代数上的实际有限模；次数齐次的生成元 x。</p>",
+        "<p>An actual finite module over a Noetherian algebra, and a homogeneous generator x.</p>"
+      ],
+      "result": [
+        "<p>x 湮灭乘法核；从原有限性推出核在其余生成元的实际子代数上仍有限。</p>",
+        "<p>x annihilates the multiplication kernel; its finiteness over the actual algebra of the remaining generators is derived.</p>"
+      ],
+      "compactSetup": [
+        "Noetherian 代数上的实际有限模；次数齐次的生成元 x。",
+        "An actual finite module over a Noetherian algebra, and a homogeneous generator x."
+      ],
+      "compactResult": [
+        "x 湮灭乘法核；从原有限性推出核在其余生成元的实际子代数上仍有限。",
+        "x annihilates the multiplication kernel; its finiteness over the actual algebra of the remaining generators is derived."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.gradedScalarKernel_finite_over_adjoin.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) [IsNoetherianRing A] [Module.Finite A M] (s : Set A) (hgen : Algebra.adjoin K (insert x s) = ⊤) :\n  Module.Finite ↥(Algebra.adjoin K s) ↥(LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 9,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "graded-cokernel-finite",
+      "titles": [
+        "删去生成元后余核仍有限",
+        "The cokernel remains finite after removing a generator"
+      ],
+      "title": "删去生成元后余核仍有限",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "decl": "LinearStudy.gradedScalarCokernel_finite_over_adjoin",
+      "declaration": "LinearStudy.gradedScalarCokernel_finite_over_adjoin",
+      "deps": [
+        "graded-quotient-total"
+      ],
+      "setup": [
+        "<p>同一有限模与实际齐次乘法像。</p>",
+        "<p>The SAME finite module and the actual homogeneous multiplication image.</p>"
+      ],
+      "result": [
+        "<p>构造余核标量作用；x 湮灭它，故它在其余生成元的子代数上仍有限。</p>",
+        "<p>Construct the cokernel scalar action; x annihilates it, so it remains finite over the remaining-generator subalgebra.</p>"
+      ],
+      "compactSetup": [
+        "同一有限模与实际齐次乘法像。",
+        "The SAME finite module and the actual homogeneous multiplication image."
+      ],
+      "compactResult": [
+        "构造余核标量作用；x 湮灭它，故它在其余生成元的子代数上仍有限。",
+        "Construct the cokernel scalar action; x annihilates it, so it remains finite over the remaining-generator subalgebra."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.gradedScalarCokernel_finite_over_adjoin.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]\n  (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) [Module.Finite A M] (s : Set A) (hgen : Algebra.adjoin K (insert x s) = ⊤) :\n  Module.Finite (↥(Algebra.adjoin K s)) (M ⧸ (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 11,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "graded-scalar-exact",
+      "titles": [
+        "逐次数乘法序列的实际正合性",
+        "Actual exactness of degreewise multiplication maps"
+      ],
+      "title": "逐次数乘法序列的实际正合性",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "decl": "LinearStudy.gradedScalarMultiplication_exact",
+      "declaration": "LinearStudy.gradedScalarMultiplication_exact",
+      "deps": [
+        "graded-submodule-total",
+        "graded-quotient-total"
+      ],
+      "setup": [
+        "<p>原分次代数与模；x 的次数为 d。</p>",
+        "<p>An original graded algebra and module; x has degree d.</p>"
+      ],
+      "result": [
+        "<p>乘法像等于相应次数商映射的核；从齐次投影证明，正合性不是输入。</p>",
+        "<p>The multiplication range equals the kernel of the corresponding quotient map, proved using homogeneous projections rather than assumed.</p>"
+      ],
+      "compactSetup": [
+        "原分次代数与模；x 的次数为 d。",
+        "An original graded algebra and module; x has degree d."
+      ],
+      "compactResult": [
+        "乘法像等于相应次数商映射的核；从齐次投影证明，正合性不是输入。",
+        "The multiplication range equals the kernel of the corresponding quotient map, proved using homogeneous projections rather than assumed."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.gradedScalarMultiplication_exact.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) :\n  (LinearStudy.gradedScalarMultiplication 𝒜 ℳ d x hx n).range =\n    (LinearStudy.gradedScalarCokernelProjection 𝒜 ℳ d x hx (d + n)).ker",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 23,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "graded-hilbert-rank-recurrence",
+      "titles": [
+        "实际 Hilbert 维数递推",
+        "Recurrence of actual Hilbert dimensions"
+      ],
+      "title": "实际 Hilbert 维数递推",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "decl": "LinearStudy.gradedScalar_finrank_recurrence",
+      "declaration": "LinearStudy.gradedScalar_finrank_recurrence",
+      "deps": [
+        "graded-scalar-exact"
+      ],
+      "setup": [
+        "<p>实际次数分量、乘法核及余核；分量在 K 上有限。</p>",
+        "<p>Actual degree pieces, multiplication kernel and cokernel; pieces are finite over K.</p>"
+      ],
+      "result": [
+        "<p>秩零度公式给出 H_M(n)+H_C(d+n)=H_K(n)+H_M(d+n)。</p>",
+        "<p>Rank-nullity gives H_M(n)+H_C(d+n)=H_K(n)+H_M(d+n).</p>"
+      ],
+      "compactSetup": [
+        "实际次数分量、乘法核及余核；分量在 K 上有限。",
+        "Actual degree pieces, multiplication kernel and cokernel; pieces are finite over K."
+      ],
+      "compactResult": [
+        "秩零度公式给出 H_M(n)+H_C(d+n)=H_K(n)+H_M(d+n)。",
+        "Rank-nullity gives H_M(n)+H_C(d+n)=H_K(n)+H_M(d+n)."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.gradedScalar_finrank_recurrence.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) [Module.Finite K ↥(ℳ n)] [Module.Finite K ↥(ℳ (d + n))] :\n  Module.finrank K ↥(ℳ n) + Module.finrank K ↥(LinearStudy.gradedScalarCokernelPiece 𝒜 ℳ d x hx (d + n)) =\n    Module.finrank K ↥(LinearStudy.gradedScalarKernelPiece 𝒜 ℳ d x hx n) + Module.finrank K ↥(ℳ (d + n))",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 13,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "graded-hilbert-series-recurrence",
+      "titles": [
+        "实际 Hilbert 级数递推",
+        "Recurrence of actual Hilbert series"
+      ],
+      "title": "实际 Hilbert 级数递推",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "decl": "LinearStudy.gradedHilbertSeries_scalar_recurrence",
+      "declaration": "LinearStudy.gradedHilbertSeries_scalar_recurrence",
+      "deps": [
+        "graded-hilbert-rank-recurrence"
+      ],
+      "setup": [
+        "<p>级数系数是实际分量的 finrank；不是给定的增长函数。</p>",
+        "<p>Series coefficients are finranks of ACTUAL pieces, not a supplied growth function.</p>"
+      ],
+      "result": [
+        "<p>(1-X^d)H_M=H_C-X^dH_K；低于 d 的商映射同构也参与证明。</p>",
+        "<p>(1-X^d)H_M=H_C-X^dH_K; quotient isomorphisms below d are also used in the proof.</p>"
+      ],
+      "compactSetup": [
+        "级数系数是实际分量的 finrank；不是给定的增长函数。",
+        "Series coefficients are finranks of ACTUAL pieces, not a supplied growth function."
+      ],
+      "compactResult": [
+        "(1-X^d)H_M=H_C-X^dH_K；低于 d 的商映射同构也参与证明。",
+        "(1-X^d)H_M=H_C-X^dH_K; quotient isomorphisms below d are also used in the proof."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.gradedHilbertSeries_scalar_recurrence.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) [∀ (n : ℕ), Module.Finite K ↥(ℳ n)] :\n  (1 - PowerSeries.X ^ d) * LinearStudy.gradedHilbertSeries ℳ =\n    LinearStudy.gradedHilbertSeries\n        (LinearStudy.gradedQuotientPiece ℳ\n          (Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)) -\n      PowerSeries.X ^ d *\n        LinearStudy.gradedHilbertSeries\n          (LinearStudy.gradedSubmodulePiece ℳ\n            (Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule))",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 25,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "graded-hilbert-serre",
+      "titles": [
+        "已证明的实际 Hilbert–Serre",
+        "Proved Hilbert–Serre for actual graded modules"
+      ],
+      "title": "已证明的实际 Hilbert–Serre",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GradedHilbertSerre.lean",
+      "decl": "LinearStudy.gradedHilbertSeries_rational",
+      "declaration": "LinearStudy.gradedHilbertSeries_rational",
+      "deps": [
+        "graded-support-bounded",
+        "graded-kernel-finite",
+        "graded-cokernel-finite",
+        "graded-hilbert-series-recurrence"
+      ],
+      "setup": [
+        "<p>有限分次模；Noetherian K-代数由有限个一次齐次元生成；实际分量有限维。</p>",
+        "<p>A finite graded module; a Noetherian K-algebra generated by finitely many degree-one homogeneous elements; actual pieces are finite-dimensional.</p>"
+      ],
+      "result": [
+        "<p>对实际生成元数量归纳，构造 p∈ℤ[X]，使 (1-X)^#generators H_M=p。没有预设 Hilbert 多项式。</p>",
+        "<p>Induction on the ACTUAL generator count constructs p∈ℤ[X] with (1-X)^#generators H_M=p. No Hilbert polynomial is assumed.</p>"
+      ],
+      "compactSetup": [
+        "有限分次模；Noetherian K-代数由有限个一次齐次元生成；实际分量有限维。",
+        "A finite graded module; a Noetherian K-algebra generated by finitely many degree-one homogeneous elements; actual pieces are finite-dimensional."
+      ],
+      "compactResult": [
+        "对实际生成元数量归纳，构造 p∈ℤ[X]，使 (1-X)^#generators H_M=p。没有预设 Hilbert 多项式。",
+        "Induction on the ACTUAL generator count constructs p∈ℤ[X] with (1-X)^#generators H_M=p. No Hilbert polynomial is assumed."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.gradedHilbertSeries_rational.{uK, uA, uM} {K : Type uK} [Field K] {A : Type uA} [CommRing A] [Algebra K A]\n  [IsNoetherianRing A] {M : Type uM} [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [Module.Finite A M] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ]\n  [SetLike.GradedSMul 𝒜 ℳ] [∀ (n : ℕ), Module.Finite K ↥(ℳ n)] (s : Finset A) (hgen : Algebra.adjoin K ↑s = ⊤)\n  (hdegree : ∀ x ∈ s, x ∈ 𝒜 1) : ∃ p, (1 - PowerSeries.X) ^ s.card * LinearStudy.gradedHilbertSeries ℳ = ↑p",
+      "sha256": "355b736fdb2fa9f4c05d25889e2ff7d6b08b7e82e5f544ec6a31a5f2ca80eaec",
+      "lines": 14,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "coordinate-hilbert-series",
+      "titles": [
+        "原齐次坐标商的 Hilbert 级数",
+        "Hilbert series of the original homogeneous coordinate quotient"
+      ],
+      "title": "原齐次坐标商的 Hilbert 级数",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/HomogeneousCoordinateHilbertSeries.lean",
+      "decl": "LinearStudy.homogeneousQuotientHilbertSeries_rational",
+      "declaration": "LinearStudy.homogeneousQuotientHilbertSeries_rational",
+      "deps": [
+        "graded-hilbert-serre",
+        "coordinate-graded-algebra",
+        "coordinate-piece-finite"
+      ],
+      "setup": [
+        "<p>原齐次理想 I；有限变量上的实际多项式商。</p>",
+        "<p>Original homogeneous ideal I; the actual polynomial quotient in finitely many variables.</p>"
+      ],
+      "result": [
+        "<p>原变量的实际像给出生成元，推导 (1-X)^#variables H_I=p。</p>",
+        "<p>Images of the ORIGINAL variables supply the generators, deriving (1-X)^#variables H_I=p.</p>"
+      ],
+      "compactSetup": [
+        "原齐次理想 I；有限变量上的实际多项式商。",
+        "Original homogeneous ideal I; the actual polynomial quotient in finitely many variables."
+      ],
+      "compactResult": [
+        "原变量的实际像给出生成元，推导 (1-X)^#variables H_I=p。",
+        "Images of the ORIGINAL variables supply the generators, deriving (1-X)^#variables H_I=p."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.homogeneousQuotientHilbertSeries_rational.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Finite σ]\n  (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) :\n  ∃ p, (1 - PowerSeries.X) ^ Nat.card σ * LinearStudy.gradedHilbertSeries (LinearStudy.homogeneousQuotientPiece I) = ↑p",
+      "sha256": "cf89b2c83ba69a190118bff42756c3e0fccdaabaec06cb697423adeee88978e0",
+      "lines": 42,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "coordinate-hilbert-polynomial",
+      "titles": [
+        "原坐标环的唯一 Hilbert 多项式",
+        "Unique Hilbert polynomial of the original coordinate ring"
+      ],
+      "title": "原坐标环的唯一 Hilbert 多项式",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/HomogeneousCoordinateHilbertPolynomial.lean",
+      "decl": "LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique",
+      "declaration": "LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique",
+      "deps": [
+        "coordinate-hilbert-series"
+      ],
+      "setup": [
+        "<p>原齐次理想 I；其实际有限维次数分量。</p>",
+        "<p>Original homogeneous ideal I and its ACTUAL finite-dimensional degree pieces.</p>"
+      ],
+      "result": [
+        "<p>推导唯一 P∈ℚ[X]，使充分大的 n 有 P(n)=H_I(n)。增长次数与几何维数的识别、D=q^dim(V) 仍待证明。</p>",
+        "<p>Derive a UNIQUE P∈ℚ[X] with P(n)=H_I(n) for all sufficiently large n. Identification of the growth degree with geometric dimension and D=q^dim(V) remain unproved.</p>"
+      ],
+      "compactSetup": [
+        "原齐次理想 I；其实际有限维次数分量。",
+        "Original homogeneous ideal I and its ACTUAL finite-dimensional degree pieces."
+      ],
+      "compactResult": [
+        "推导唯一 P∈ℚ[X]，使充分大的 n 有 P(n)=H_I(n)。增长次数与几何维数的识别、D=q^dim(V) 仍待证明。",
+        "Derive a UNIQUE P∈ℚ[X] with P(n)=H_I(n) for all sufficiently large n. Identification of the growth degree with geometric dimension and D=q^dim(V) remain unproved."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique.{u_1, u_3} {K : Type u_1} [Field K] {σ : Type u_3}\n  [Finite σ] (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) :\n  ∃! P, ∃ N, ∀ n > N, Polynomial.eval (↑n) P = ↑(LinearStudy.homogeneousQuotientHilbert I n)",
+      "sha256": "9397aaf85ba24315f8772f783908e1612691f4deb5ef8e670d1a676a77840622",
+      "lines": 10,
       "richStatement": true,
       "x": 30,
       "y": 60

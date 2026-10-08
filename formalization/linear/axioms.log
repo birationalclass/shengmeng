@@ -1708,6 +1708,305 @@ LinearStudy.injectiveMap_exists_smooth_unramified_rational_point.{u_1, u_2, u_3}
 'LinearStudy.injectiveMap_exists_smooth_unramified_rational_point' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.gradedHilbertSeries.{u_1, u_4} {K : Type u_1} [Field K] {P : Type u_4} [AddCommGroup P] [Module K P]
+  (pieces : ℕ → Submodule K P) : PowerSeries ℤ
+'LinearStudy.gradedHilbertSeries' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedHilbertSeries_coeff.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M] [Module K M]
+  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (n : ℕ) :
+  (PowerSeries.coeff n) (LinearStudy.gradedHilbertSeries ℳ) = ↑(Module.finrank K ↥(ℳ n))
+'LinearStudy.gradedHilbertSeries_coeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedHilbertSeries_scalar_recurrence.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) [∀ (n : ℕ), Module.Finite K ↥(ℳ n)] :
+  (1 - PowerSeries.X ^ d) * LinearStudy.gradedHilbertSeries ℳ =
+    LinearStudy.gradedHilbertSeries
+        (LinearStudy.gradedQuotientPiece ℳ
+          (Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)) -
+      PowerSeries.X ^ d *
+        LinearStudy.gradedHilbertSeries
+          (LinearStudy.gradedSubmodulePiece ℳ
+            (Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule))
+'LinearStudy.gradedHilbertSeries_scalar_recurrence' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedHilbertSeries_polynomial_of_bounded.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K]
+  [AddCommGroup M] [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ]
+  (h : ∃ N, ∀ (n : ℕ), N < n → ℳ n = ⊥) : ∃ p, ↑p = LinearStudy.gradedHilbertSeries ℳ
+'LinearStudy.gradedHilbertSeries_polynomial_of_bounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedHilbertSeries_polynomial_of_finite.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [Module.Finite K M] :
+  ∃ p, ↑p = LinearStudy.gradedHilbertSeries ℳ
+'LinearStudy.gradedHilbertSeries_polynomial_of_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedHilbertSeries_polynomial_of_empty_generators.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2}
+  {M : Type u_3} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]
+  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [Module.Finite A M] (hgen : K[] = ⊤) :
+  ∃ p, ↑p = LinearStudy.gradedHilbertSeries ℳ
+'LinearStudy.gradedHilbertSeries_polynomial_of_empty_generators' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.gradedHilbertSeries_rational.{uK, uA, uM} {K : Type uK} [Field K] {A : Type uA} [CommRing A] [Algebra K A]
+  [IsNoetherianRing A] {M : Type uM} [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]
+  [Module.Finite A M] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ]
+  [SetLike.GradedSMul 𝒜 ℳ] [∀ (n : ℕ), Module.Finite K ↥(ℳ n)] (s : Finset A) (hgen : Algebra.adjoin K ↑s = ⊤)
+  (hdegree : ∀ x ∈ s, x ∈ 𝒜 1) : ∃ p, (1 - PowerSeries.X) ^ s.card * LinearStudy.gradedHilbertSeries ℳ = ↑p
+'LinearStudy.gradedHilbertSeries_rational' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedModule_eventually_eq_bot.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [Module.Finite K M] : ∃ N, ∀ (n : ℕ), N < n → ℳ n = ⊥
+'LinearStudy.gradedModule_eventually_eq_bot' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators.{u_1, u_2, u_3} {K : Type u_1} {M : Type u_2} [Field K]
+  [AddCommGroup M] [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] {A : Type u_3} [CommRing A]
+  [Algebra K A] [Module A M] [IsScalarTower K A M] [Module.Finite A M] (hgen : K[] = ⊤) :
+  ∃ N, ∀ (n : ℕ), N < n → ℳ n = ⊥
+'LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.gradedModuleProjection.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M] [Module K M]
+  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (n : ℕ) : M →ₗ[K] M
+'LinearStudy.gradedModuleProjection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedModuleProjection_apply.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (n : ℕ) (m : M) :
+  (LinearStudy.gradedModuleProjection ℳ n) m = ↑(((DirectSum.decompose ℳ) m) n)
+'LinearStudy.gradedModuleProjection_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedModuleProjection_on_piece.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (n k : ℕ) (m : M) (hm : m ∈ ℳ k) :
+  (LinearStudy.gradedModuleProjection ℳ n) m = if n = k then m else 0
+'LinearStudy.gradedModuleProjection_on_piece' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedModuleProjection_smul_homogeneous.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}
+  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]
+  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]
+  (d n : ℕ) (a : A) (ha : a ∈ 𝒜 d) (m : M) :
+  (LinearStudy.gradedModuleProjection ℳ n) (a • m) =
+    if d ≤ n then a • (LinearStudy.gradedModuleProjection ℳ (n - d)) m else 0
+'LinearStudy.gradedModuleProjection_smul_homogeneous' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarKernel.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K] [CommRing A]
+  [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (a : A)
+  (ha : a ∈ 𝒜 d) : HomogeneousSubmodule 𝒜 ℳ
+'LinearStudy.gradedScalarKernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarImage.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K] [CommRing A]
+  [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (a : A)
+  (ha : a ∈ 𝒜 d) : HomogeneousSubmodule 𝒜 ℳ
+'LinearStudy.gradedScalarImage' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedQuotientPiece.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]
+  (ℳ : ℕ → Submodule K M) (p : Submodule K M) (n : ℕ) : Submodule K (M ⧸ p)
+'LinearStudy.gradedQuotientPiece' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedQuotientProjection.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]
+  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ) :
+  M ⧸ p →ₗ[K] M ⧸ p
+'LinearStudy.gradedQuotientProjection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedQuotientProjection_mk.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]
+  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ) (m : M) :
+  (LinearStudy.gradedQuotientProjection ℳ p hp n) (p.mkQ m) = p.mkQ ((LinearStudy.gradedModuleProjection ℳ n) m)
+'LinearStudy.gradedQuotientProjection_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedQuotientProjection_on_piece.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ)
+  (n k : ℕ) (a : M ⧸ p) (ha : a ∈ LinearStudy.gradedQuotientPiece ℳ p k) :
+  (LinearStudy.gradedQuotientProjection ℳ p hp n) a = if n = k then a else 0
+'LinearStudy.gradedQuotientProjection_on_piece' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedQuotientProjection_mem.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ)
+  (a : M ⧸ p) : (LinearStudy.gradedQuotientProjection ℳ p hp n) a ∈ LinearStudy.gradedQuotientPiece ℳ p n
+'LinearStudy.gradedQuotientProjection_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedQuotientProjection_sum.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ)
+  (a : M ⧸ p) : ∃ s, ∑ n ∈ s, (LinearStudy.gradedQuotientProjection ℳ p hp n) a = a
+'LinearStudy.gradedQuotientProjection_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedQuotientPiece_independent.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :
+  iSupIndep (LinearStudy.gradedQuotientPiece ℳ p)
+'LinearStudy.gradedQuotientPiece_independent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedQuotientPiece_total.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]
+  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :
+  ⨆ n, LinearStudy.gradedQuotientPiece ℳ p n = ⊤
+'LinearStudy.gradedQuotientPiece_total' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedQuotientDecomposition.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]
+  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :
+  DirectSum.Decomposition (LinearStudy.gradedQuotientPiece ℳ p)
+'LinearStudy.gradedQuotientDecomposition' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedQuotientPiece_finite.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]
+  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (n : ℕ) [Module.Finite K ↥(ℳ n)] :
+  Module.Finite K ↥(LinearStudy.gradedQuotientPiece ℳ p n)
+'LinearStudy.gradedQuotientPiece_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarMultiplication.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  (ℳ : ℕ → Submodule K M) [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) (n : ℕ) : ↥(ℳ n) →ₗ[K] ↥(ℳ (d + n))
+'LinearStudy.gradedScalarMultiplication' depends on axioms: [propext, Quot.sound]
+LinearStudy.gradedScalarCokernelPiece.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) (n : ℕ) :
+  Submodule K (M ⧸ Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)
+'LinearStudy.gradedScalarCokernelPiece' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarCokernelProjection.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) (n : ℕ) : ↥(ℳ n) →ₗ[K] ↥(LinearStudy.gradedScalarCokernelPiece 𝒜 ℳ d x hx n)
+'LinearStudy.gradedScalarCokernelProjection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarCokernelProjection_surjective.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}
+  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]
+  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]
+  (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) (n : ℕ) :
+  Function.Surjective ⇑(LinearStudy.gradedScalarCokernelProjection 𝒜 ℳ d x hx n)
+'LinearStudy.gradedScalarCokernelProjection_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarCokernelProjection_injective_of_lt.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}
+  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]
+  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]
+  (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) (n : ℕ) (hn : n < d) :
+  Function.Injective ⇑(LinearStudy.gradedScalarCokernelProjection 𝒜 ℳ d x hx n)
+'LinearStudy.gradedScalarCokernelProjection_injective_of_lt' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarCokernelPieceEquiv_of_lt.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) (n : ℕ) (hn : n < d) : ↥(ℳ n) ≃ₗ[K] ↥(LinearStudy.gradedScalarCokernelPiece 𝒜 ℳ d x hx n)
+'LinearStudy.gradedScalarCokernelPieceEquiv_of_lt' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarMultiplication_exact.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) (n : ℕ) :
+  (LinearStudy.gradedScalarMultiplication 𝒜 ℳ d x hx n).range =
+    (LinearStudy.gradedScalarCokernelProjection 𝒜 ℳ d x hx (d + n)).ker
+'LinearStudy.gradedScalarMultiplication_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarKernelPiece.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K] [CommRing A]
+  [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) (n : ℕ) :
+  Submodule K ↥(Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule)
+'LinearStudy.gradedScalarKernelPiece' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarKernelPieceEquiv.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) (n : ℕ) :
+  ↥(LinearStudy.gradedScalarKernelPiece 𝒜 ℳ d x hx n) ≃ₗ[K] ↥(LinearStudy.gradedScalarMultiplication 𝒜 ℳ d x hx n).ker
+'LinearStudy.gradedScalarKernelPieceEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalar_finrank_recurrence.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) (n : ℕ) [Module.Finite K ↥(ℳ n)] [Module.Finite K ↥(ℳ (d + n))] :
+  Module.finrank K ↥(ℳ n) + Module.finrank K ↥(LinearStudy.gradedScalarCokernelPiece 𝒜 ℳ d x hx (d + n)) =
+    Module.finrank K ↥(LinearStudy.gradedScalarKernelPiece 𝒜 ℳ d x hx n) + Module.finrank K ↥(ℳ (d + n))
+'LinearStudy.gradedScalar_finrank_recurrence' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarKernel_finite_over_adjoin.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) [IsNoetherianRing A] [Module.Finite A M] (s : Set A) (hgen : Algebra.adjoin K (insert x s) = ⊤) :
+  Module.Finite ↥(Algebra.adjoin K s) ↥(LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule
+'LinearStudy.gradedScalarKernel_finite_over_adjoin' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarCokernel_finite_over_adjoin.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}
+  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]
+  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]
+  (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) [Module.Finite A M] (s : Set A) (hgen : Algebra.adjoin K (insert x s) = ⊤) :
+  Module.Finite (↥(Algebra.adjoin K s)) (M ⧸ (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)
+'LinearStudy.gradedScalarCokernel_finite_over_adjoin' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarKernelModule.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K] [CommRing A]
+  [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) : Module A ↥(Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule)
+'LinearStudy.gradedScalarKernelModule' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarCokernelModule.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) : Module A (M ⧸ Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)
+'LinearStudy.gradedScalarCokernelModule' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarKernelGradedSMul.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) :
+  SetLike.GradedSMul 𝒜
+    (LinearStudy.gradedSubmodulePiece ℳ
+      (Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule))
+'LinearStudy.gradedScalarKernelGradedSMul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedScalarCokernelGradedSMul.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)
+  (hx : x ∈ 𝒜 d) :
+  SetLike.GradedSMul 𝒜
+    (LinearStudy.gradedQuotientPiece ℳ
+      (Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule))
+'LinearStudy.gradedScalarCokernelGradedSMul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedSubalgebraModuleGradedSMul.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]
+  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)
+  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (B : Subalgebra K A) :
+  SetLike.GradedSMul (LinearStudy.gradedSubalgebraPiece 𝒜 B) ℳ
+'LinearStudy.gradedSubalgebraModuleGradedSMul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneousAdjoin.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]
+  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (s : Set A) (hs : ∀ a ∈ s, SetLike.IsHomogeneousElem 𝒜 a) :
+  (Subalgebra.toSubmodule (Algebra.adjoin K s)).IsHomogeneous 𝒜
+'LinearStudy.homogeneousAdjoin' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedSubalgebraPiece.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]
+  (𝒜 : ℕ → Submodule K A) (B : Subalgebra K A) (n : ℕ) : Submodule K ↥B
+'LinearStudy.gradedSubalgebraPiece' depends on axioms: [propext, Quot.sound]
+LinearStudy.gradedSubalgebraGrading.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]
+  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (B : Subalgebra K A) (hB : (Subalgebra.toSubmodule B).IsHomogeneous 𝒜) :
+  GradedAlgebra (LinearStudy.gradedSubalgebraPiece 𝒜 B)
+'LinearStudy.gradedSubalgebraGrading' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedSubalgebraPiece_finite.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]
+  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (B : Subalgebra K A) (n : ℕ) [Module.Finite K ↥(𝒜 n)] :
+  Module.Finite K ↥(LinearStudy.gradedSubalgebraPiece 𝒜 B n)
+'LinearStudy.gradedSubalgebraPiece_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedSubmodulePiece.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]
+  (ℳ : ℕ → Submodule K M) (p : Submodule K M) (n : ℕ) : Submodule K ↥p
+'LinearStudy.gradedSubmodulePiece' depends on axioms: [propext, Quot.sound]
+LinearStudy.gradedSubmoduleProjection.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]
+  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ) : ↥p →ₗ[K] ↥p
+'LinearStudy.gradedSubmoduleProjection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedSubmoduleProjection_coe.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ)
+  (m : ↥p) : ↑((LinearStudy.gradedSubmoduleProjection ℳ p hp n) m) = (LinearStudy.gradedModuleProjection ℳ n) ↑m
+'LinearStudy.gradedSubmoduleProjection_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedSubmoduleProjection_mem.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ)
+  (m : ↥p) : (LinearStudy.gradedSubmoduleProjection ℳ p hp n) m ∈ LinearStudy.gradedSubmodulePiece ℳ p n
+'LinearStudy.gradedSubmoduleProjection_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedSubmoduleProjection_on_piece.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ)
+  (n k : ℕ) (m : ↥p) (hm : m ∈ LinearStudy.gradedSubmodulePiece ℳ p k) :
+  (LinearStudy.gradedSubmoduleProjection ℳ p hp n) m = if n = k then m else 0
+'LinearStudy.gradedSubmoduleProjection_on_piece' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedSubmodulePiece_independent.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :
+  iSupIndep (LinearStudy.gradedSubmodulePiece ℳ p)
+'LinearStudy.gradedSubmodulePiece_independent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedSubmoduleProjection_sum.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ)
+  (m : ↥p) : ∑ n ∈ DFinsupp.support ((DirectSum.decompose ℳ) ↑m), (LinearStudy.gradedSubmoduleProjection ℳ p hp n) m = m
+'LinearStudy.gradedSubmoduleProjection_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedSubmodulePiece_total.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]
+  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :
+  ⨆ n, LinearStudy.gradedSubmodulePiece ℳ p n = ⊤
+'LinearStudy.gradedSubmodulePiece_total' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedSubmoduleDecomposition.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :
+  DirectSum.Decomposition (LinearStudy.gradedSubmodulePiece ℳ p)
+'LinearStudy.gradedSubmoduleDecomposition' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedSubmodulePiece_finite.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]
+  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (n : ℕ) [Module.Finite K ↥(ℳ n)] :
+  Module.Finite K ↥(LinearStudy.gradedSubmodulePiece ℳ p n)
+'LinearStudy.gradedSubmodulePiece_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteAdjoin_isNoetherian.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]
+  [IsNoetherianRing R] (s : Finset A) : IsNoetherianRing ↥(Algebra.adjoin R ↑s)
+'LinearStudy.finiteAdjoin_isNoetherian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.adjoin_annihilator_scalar_representative.{u_1, u_2, u_3} {R : Type u_1} {A : Type u_2} {M : Type u_3}
+  [CommRing R] [CommRing A] [Algebra R A] [AddCommGroup M] [Module A M] (s : Set A) (x : A) (hx : ∀ (m : M), x • m = 0)
+  (a : A) (ha : a ∈ Algebra.adjoin R (insert x s)) : ∃ b ∈ Algebra.adjoin R s, ∀ (m : M), a • m = b • m
+'LinearStudy.adjoin_annihilator_scalar_representative' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.adjoin_finiteModule_of_annihilator.{u_1, u_2, u_3} {R : Type u_1} {A : Type u_2} {M : Type u_3} [CommRing R]
+  [CommRing A] [Algebra R A] [AddCommGroup M] [Module A M] [Module.Finite A M] (s : Set A) (x : A)
+  (hgen : Algebra.adjoin R (insert x s) = ⊤) (hx : ∀ (m : M), x • m = 0) : Module.Finite (↥(Algebra.adjoin R s)) M
+'LinearStudy.adjoin_finiteModule_of_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.adjoinLiftedGenerators.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]
+  (s : Finset A) : Finset ↥(Algebra.adjoin K ↑s)
+'LinearStudy.adjoinLiftedGenerators' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.adjoinLiftedGenerators_card.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]
+  (s : Finset A) : (LinearStudy.adjoinLiftedGenerators s).card = s.card
+'LinearStudy.adjoinLiftedGenerators_card' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.adjoinLiftedGenerators_generate.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]
+  [Algebra K A] (s : Finset A) : Algebra.adjoin K ↑(LinearStudy.adjoinLiftedGenerators s) = ⊤
+'LinearStudy.adjoinLiftedGenerators_generate' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.adjoinLiftedGenerators_homogeneous.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]
+  [Algebra K A] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (s : Finset A) (d : ℕ) (hs : ∀ a ∈ s, a ∈ 𝒜 d)
+  (b : ↥(Algebra.adjoin K ↑s)) :
+  b ∈ LinearStudy.adjoinLiftedGenerators s → b ∈ LinearStudy.gradedSubalgebraPiece 𝒜 (Algebra.adjoin K ↑s) d
+'LinearStudy.adjoinLiftedGenerators_homogeneous' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.homogeneousQuotientPieces_iSupIndep.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
   (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) :
   iSupIndep (LinearStudy.homogeneousQuotientPiece I)
@@ -1720,6 +2019,21 @@ LinearStudy.homogeneousQuotientGrading.{u_1, u_2} {K : Type u_1} {σ : Type u_2}
   (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) :
   GradedAlgebra (LinearStudy.homogeneousQuotientPiece I)
 'LinearStudy.homogeneousQuotientGrading' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.gradedHilbertPolynomial_existsUnique.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]
+  [Module K M] (ℳ : ℕ → Submodule K M) (d : ℕ)
+  (h : ∃ p, (1 - PowerSeries.X) ^ d * LinearStudy.gradedHilbertSeries ℳ = ↑p) :
+  ∃! P, ∃ N, ∀ n > N, Polynomial.eval (↑n) P = ↑(Module.finrank K ↥(ℳ n))
+'LinearStudy.gradedHilbertPolynomial_existsUnique' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique.{u_1, u_3} {K : Type u_1} [Field K] {σ : Type u_3}
+  [Finite σ] (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) :
+  ∃! P, ∃ N, ∀ n > N, Polynomial.eval (↑n) P = ↑(LinearStudy.homogeneousQuotientHilbert I n)
+'LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.homogeneousQuotientHilbertSeries_rational.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Finite σ]
+  (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) :
+  ∃ p, (1 - PowerSeries.X) ^ Nat.card σ * LinearStudy.gradedHilbertSeries (LinearStudy.homogeneousQuotientPiece I) = ↑p
+'LinearStudy.homogeneousQuotientHilbertSeries_rational' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.homogeneousQuotientPiece.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (I : Ideal (MvPolynomial σ K))
   (m : ℕ) : Submodule K (MvPolynomial σ K ⧸ I)
 'LinearStudy.homogeneousQuotientPiece' depends on axioms: [propext, Classical.choice, Quot.sound]

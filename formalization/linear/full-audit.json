@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1415,
-  "verifiedTheorems": 1023,
-  "definitions": 196,
+  "audited": 1481,
+  "verifiedTheorems": 1068,
+  "definitions": 217,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -6916,6 +6916,1505 @@
       ]
     },
     {
+      "declaration": "LinearStudy.gradedHilbertSeries",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedHilbertSeries.{u_1, u_4} {K : Type u_1} [Field K] {P : Type u_4} [AddCommGroup P] [Module K P]\n  (pieces : ℕ → Submodule K P) : PowerSeries ℤ",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 4,
+      "moduleLineCount": 81,
+      "startLine": 20,
+      "endLine": 23,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.gradedHilbertSeries_coeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertSeries_coeff.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (n : ℕ) :\n  (PowerSeries.coeff n) (LinearStudy.gradedHilbertSeries ℳ) = ↑(Module.finrank K ↥(ℳ n))",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 3,
+      "moduleLineCount": 81,
+      "startLine": 25,
+      "endLine": 27,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHilbertSeries_scalar_recurrence",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertSeries_scalar_recurrence.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) [∀ (n : ℕ), Module.Finite K ↥(ℳ n)] :\n  (1 - PowerSeries.X ^ d) * LinearStudy.gradedHilbertSeries ℳ =\n    LinearStudy.gradedHilbertSeries\n        (LinearStudy.gradedQuotientPiece ℳ\n          (Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)) -\n      PowerSeries.X ^ d *\n        LinearStudy.gradedHilbertSeries\n          (LinearStudy.gradedSubmodulePiece ℳ\n            (Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule))",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 25,
+      "moduleLineCount": 81,
+      "startLine": 29,
+      "endLine": 53,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelPieceEquiv_of_lt",
+        "LinearStudy.gradedScalarImage",
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedScalarKernelPiece",
+        "LinearStudy.gradedScalar_finrank_recurrence",
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHilbertSeries_polynomial_of_bounded",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertSeries_polynomial_of_bounded.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K]\n  [AddCommGroup M] [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ]\n  (h : ∃ N, ∀ (n : ℕ), N < n → ℳ n = ⊥) : ∃ p, ↑p = LinearStudy.gradedHilbertSeries ℳ",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 14,
+      "moduleLineCount": 81,
+      "startLine": 55,
+      "endLine": 68,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHilbertSeries_polynomial_of_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "line": 71,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertSeries_polynomial_of_finite.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [Module.Finite K M] :\n  ∃ p, ↑p = LinearStudy.gradedHilbertSeries ℳ",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 4,
+      "moduleLineCount": 81,
+      "startLine": 70,
+      "endLine": 73,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedHilbertSeries_polynomial_of_bounded",
+        "LinearStudy.gradedModule_eventually_eq_bot"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHilbertSeries_polynomial_of_empty_generators",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSeriesRecurrence.lean",
+      "line": 75,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertSeries_polynomial_of_empty_generators.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2}\n  {M : Type u_3} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [Module.Finite A M] (hgen : K[] = ⊤) :\n  ∃ p, ↑p = LinearStudy.gradedHilbertSeries ℳ",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "lines": 5,
+      "moduleLineCount": 81,
+      "startLine": 75,
+      "endLine": 79,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedHilbertSeries_polynomial_of_bounded",
+        "LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHilbertSeries_rational",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHilbertSerre.lean",
+      "line": 109,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertSeries_rational.{uK, uA, uM} {K : Type uK} [Field K] {A : Type uA} [CommRing A] [Algebra K A]\n  [IsNoetherianRing A] {M : Type uM} [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [Module.Finite A M] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ]\n  [SetLike.GradedSMul 𝒜 ℳ] [∀ (n : ℕ), Module.Finite K ↥(ℳ n)] (s : Finset A) (hgen : Algebra.adjoin K ↑s = ⊤)\n  (hdegree : ∀ x ∈ s, x ∈ 𝒜 1) : ∃ p, (1 - PowerSeries.X) ^ s.card * LinearStudy.gradedHilbertSeries ℳ = ↑p",
+      "sha256": "355b736fdb2fa9f4c05d25889e2ff7d6b08b7e82e5f544ec6a31a5f2ca80eaec",
+      "lines": 14,
+      "moduleLineCount": 122,
+      "startLine": 107,
+      "endLine": 120,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "_private.Linear.GradedHilbertSerre.0.LinearStudy.gradedHilbertSerre_induction"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedModule_eventually_eq_bot",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedModuleFiniteSupport.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedModule_eventually_eq_bot.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [Module.Finite K M] : ∃ N, ∀ (n : ℕ), N < n → ℳ n = ⊥",
+      "sha256": "a0638ff3a59a8e2f1456c904c8ff4aadd3d5f14ddf3ca00ebd489303e18699c8",
+      "lines": 24,
+      "moduleLineCount": 62,
+      "startLine": 23,
+      "endLine": 46,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedModuleFiniteSupport.lean",
+      "line": 50,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators.{u_1, u_2, u_3} {K : Type u_1} {M : Type u_2} [Field K]\n  [AddCommGroup M] [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] {A : Type u_3} [CommRing A]\n  [Algebra K A] [Module A M] [IsScalarTower K A M] [Module.Finite A M] (hgen : K[] = ⊤) :\n  ∃ N, ∀ (n : ℕ), N < n → ℳ n = ⊥",
+      "sha256": "a0638ff3a59a8e2f1456c904c8ff4aadd3d5f14ddf3ca00ebd489303e18699c8",
+      "lines": 14,
+      "moduleLineCount": 62,
+      "startLine": 48,
+      "endLine": 61,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.gradedModule_eventually_eq_bot"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedModuleProjection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedModuleProjection.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedModuleProjection.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (n : ℕ) : M →ₗ[K] M",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lines": 3,
+      "moduleLineCount": 82,
+      "startLine": 21,
+      "endLine": 23,
+      "lineCount": 3,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.gradedModuleProjection_apply",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedModuleProjection.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedModuleProjection_apply.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (n : ℕ) (m : M) :\n  (LinearStudy.gradedModuleProjection ℳ n) m = ↑(((DirectSum.decompose ℳ) m) n)",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lines": 2,
+      "moduleLineCount": 82,
+      "startLine": 25,
+      "endLine": 26,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedModuleProjection_on_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedModuleProjection.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedModuleProjection_on_piece.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (n k : ℕ) (m : M) (hm : m ∈ ℳ k) :\n  (LinearStudy.gradedModuleProjection ℳ n) m = if n = k then m else 0",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lines": 7,
+      "moduleLineCount": 82,
+      "startLine": 28,
+      "endLine": 34,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_apply"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedModuleProjection_smul_homogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedModuleProjection.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedModuleProjection_smul_homogeneous.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]\n  (d n : ℕ) (a : A) (ha : a ∈ 𝒜 d) (m : M) :\n  (LinearStudy.gradedModuleProjection ℳ n) (a • m) =\n    if d ≤ n then a • (LinearStudy.gradedModuleProjection ℳ (n - d)) m else 0",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lines": 22,
+      "moduleLineCount": 82,
+      "startLine": 36,
+      "endLine": 57,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarKernel",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedModuleProjection.lean",
+      "line": 60,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarKernel.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K] [CommRing A]\n  [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (a : A)\n  (ha : a ∈ 𝒜 d) : HomogeneousSubmodule 𝒜 ℳ",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lines": 9,
+      "moduleLineCount": 82,
+      "startLine": 59,
+      "endLine": 67,
+      "lineCount": 9,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarImage",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedModuleProjection.lean",
+      "line": 70,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarImage.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K] [CommRing A]\n  [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (a : A)\n  (ha : a ∈ 𝒜 d) : HomogeneousSubmodule 𝒜 ℳ",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "lines": 13,
+      "moduleLineCount": 82,
+      "startLine": 69,
+      "endLine": 81,
+      "lineCount": 13,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.gradedQuotientPiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedQuotientPiece.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) (p : Submodule K M) (n : ℕ) : Submodule K (M ⧸ p)",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 1,
+      "moduleLineCount": 95,
+      "startLine": 23,
+      "endLine": 23,
+      "lineCount": 1,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.gradedQuotientProjection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedQuotientProjection.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ) :\n  M ⧸ p →ₗ[K] M ⧸ p",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 6,
+      "moduleLineCount": 95,
+      "startLine": 25,
+      "endLine": 30,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedQuotientProjection_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientProjection_mk.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ) (m : M) :\n  (LinearStudy.gradedQuotientProjection ℳ p hp n) (p.mkQ m) = p.mkQ ((LinearStudy.gradedModuleProjection ℳ n) m)",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 3,
+      "moduleLineCount": 95,
+      "startLine": 32,
+      "endLine": 34,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedQuotientProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedQuotientProjection_on_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientProjection_on_piece.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ)\n  (n k : ℕ) (a : M ⧸ p) (ha : a ∈ LinearStudy.gradedQuotientPiece ℳ p k) :\n  (LinearStudy.gradedQuotientProjection ℳ p hp n) a = if n = k then a else 0",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 6,
+      "moduleLineCount": 95,
+      "startLine": 36,
+      "endLine": 41,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece",
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientProjection",
+        "LinearStudy.gradedQuotientProjection_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedQuotientProjection_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientProjection_mem.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ)\n  (a : M ⧸ p) : (LinearStudy.gradedQuotientProjection ℳ p hp n) a ∈ LinearStudy.gradedQuotientPiece ℳ p n",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 7,
+      "moduleLineCount": 95,
+      "startLine": 43,
+      "endLine": 49,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientProjection",
+        "LinearStudy.gradedQuotientProjection_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedQuotientProjection_sum",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientProjection_sum.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ)\n  (a : M ⧸ p) : ∃ s, ∑ n ∈ s, (LinearStudy.gradedQuotientProjection ℳ p hp n) a = a",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 10,
+      "moduleLineCount": 95,
+      "startLine": 51,
+      "endLine": 60,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedQuotientProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedQuotientPiece_independent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 63,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientPiece_independent.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  iSupIndep (LinearStudy.gradedQuotientPiece ℳ p)",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 11,
+      "moduleLineCount": 95,
+      "startLine": 63,
+      "endLine": 73,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientProjection",
+        "LinearStudy.gradedQuotientProjection_on_piece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedQuotientPiece_total",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 76,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientPiece_total.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  ⨆ n, LinearStudy.gradedQuotientPiece ℳ p n = ⊤",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 7,
+      "moduleLineCount": 95,
+      "startLine": 76,
+      "endLine": 82,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedQuotientProjection",
+        "LinearStudy.gradedQuotientProjection_mem",
+        "LinearStudy.gradedQuotientProjection_sum"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedQuotientDecomposition",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 85,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedQuotientDecomposition.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  DirectSum.Decomposition (LinearStudy.gradedQuotientPiece ℳ p)",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 6,
+      "moduleLineCount": 95,
+      "startLine": 84,
+      "endLine": 89,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedQuotientPiece_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedQuotientDecomposition.lean",
+      "line": 91,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedQuotientPiece_finite.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (n : ℕ) [Module.Finite K ↥(ℳ n)] :\n  Module.Finite K ↥(LinearStudy.gradedQuotientPiece ℳ p n)",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "lines": 4,
+      "moduleLineCount": 95,
+      "startLine": 91,
+      "endLine": 94,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarMultiplication",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarMultiplication.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  (ℳ : ℕ → Submodule K M) [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) (n : ℕ) : ↥(ℳ n) →ₗ[K] ↥(ℳ (d + n))",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 4,
+      "moduleLineCount": 115,
+      "startLine": 21,
+      "endLine": 24,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarCokernelPiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarCokernelPiece.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) :\n  Submodule K (M ⧸ Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 2,
+      "moduleLineCount": 115,
+      "startLine": 26,
+      "endLine": 27,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarCokernelProjection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarCokernelProjection.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) : ↥(ℳ n) →ₗ[K] ↥(LinearStudy.gradedScalarCokernelPiece 𝒜 ℳ d x hx n)",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 5,
+      "moduleLineCount": 115,
+      "startLine": 29,
+      "endLine": 33,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarCokernelProjection_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarCokernelProjection_surjective.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]\n  (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) (n : ℕ) :\n  Function.Surjective ⇑(LinearStudy.gradedScalarCokernelProjection 𝒜 ℳ d x hx n)",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 5,
+      "moduleLineCount": 115,
+      "startLine": 35,
+      "endLine": 39,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarCokernelProjection_injective_of_lt",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 42,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarCokernelProjection_injective_of_lt.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]\n  (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) (n : ℕ) (hn : n < d) :\n  Function.Injective ⇑(LinearStudy.gradedScalarCokernelProjection 𝒜 ℳ d x hx n)",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 15,
+      "moduleLineCount": 115,
+      "startLine": 41,
+      "endLine": 55,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece",
+        "LinearStudy.gradedModuleProjection_smul_homogeneous",
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarCokernelPieceEquiv_of_lt",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 57,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarCokernelPieceEquiv_of_lt.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) (hn : n < d) : ↥(ℳ n) ≃ₗ[K] ↥(LinearStudy.gradedScalarCokernelPiece 𝒜 ℳ d x hx n)",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 5,
+      "moduleLineCount": 115,
+      "startLine": 57,
+      "endLine": 61,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarMultiplication_exact",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 64,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarMultiplication_exact.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) :\n  (LinearStudy.gradedScalarMultiplication 𝒜 ℳ d x hx n).range =\n    (LinearStudy.gradedScalarCokernelProjection 𝒜 ℳ d x hx (d + n)).ker",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 23,
+      "moduleLineCount": 115,
+      "startLine": 63,
+      "endLine": 85,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece",
+        "LinearStudy.gradedModuleProjection_smul_homogeneous",
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarImage",
+        "LinearStudy.gradedScalarMultiplication"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarKernelPiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 87,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarKernelPiece.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K] [CommRing A]\n  [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) :\n  Submodule K ↥(Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule)",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 2,
+      "moduleLineCount": 115,
+      "startLine": 87,
+      "endLine": 88,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarKernelPieceEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 91,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarKernelPieceEquiv.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) :\n  ↥(LinearStudy.gradedScalarKernelPiece 𝒜 ℳ d x hx n) ≃ₗ[K] ↥(LinearStudy.gradedScalarMultiplication 𝒜 ℳ d x hx n).ker",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 10,
+      "moduleLineCount": 115,
+      "startLine": 90,
+      "endLine": 99,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedScalarKernelPiece",
+        "LinearStudy.gradedScalarMultiplication"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalar_finrank_recurrence",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarExactSequence.lean",
+      "line": 102,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalar_finrank_recurrence.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) (n : ℕ) [Module.Finite K ↥(ℳ n)] [Module.Finite K ↥(ℳ (d + n))] :\n  Module.finrank K ↥(ℳ n) + Module.finrank K ↥(LinearStudy.gradedScalarCokernelPiece 𝒜 ℳ d x hx (d + n)) =\n    Module.finrank K ↥(LinearStudy.gradedScalarKernelPiece 𝒜 ℳ d x hx n) + Module.finrank K ↥(ℳ (d + n))",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "lines": 13,
+      "moduleLineCount": 115,
+      "startLine": 101,
+      "endLine": 113,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.gradedScalarCokernelPiece",
+        "LinearStudy.gradedScalarCokernelProjection",
+        "LinearStudy.gradedScalarCokernelProjection_surjective",
+        "LinearStudy.gradedScalarImage",
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedScalarKernelPiece",
+        "LinearStudy.gradedScalarKernelPieceEquiv",
+        "LinearStudy.gradedScalarMultiplication",
+        "LinearStudy.gradedScalarMultiplication_exact"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarKernel_finite_over_adjoin",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarKernel_finite_over_adjoin.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) [IsNoetherianRing A] [Module.Finite A M] (s : Set A) (hgen : Algebra.adjoin K (insert x s) = ⊤) :\n  Module.Finite ↥(Algebra.adjoin K s) ↥(LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 9,
+      "moduleLineCount": 79,
+      "startLine": 22,
+      "endLine": 30,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.adjoin_finiteModule_of_annihilator",
+        "LinearStudy.gradedScalarKernel"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarCokernel_finite_over_adjoin",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarCokernel_finite_over_adjoin.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]\n  (d : ℕ) (x : A) (hx : x ∈ 𝒜 d) [Module.Finite A M] (s : Set A) (hgen : Algebra.adjoin K (insert x s) = ⊤) :\n  Module.Finite (↥(Algebra.adjoin K s)) (M ⧸ (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 11,
+      "moduleLineCount": 79,
+      "startLine": 32,
+      "endLine": 42,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.adjoin_finiteModule_of_annihilator",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarKernelModule",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarKernelModule.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K] [CommRing A]\n  [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) : Module A ↥(Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule)",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 3,
+      "moduleLineCount": 79,
+      "startLine": 44,
+      "endLine": 46,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedScalarKernel"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarCokernelModule",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 49,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedScalarCokernelModule.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) : Module A (M ⧸ Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule)",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 4,
+      "moduleLineCount": 79,
+      "startLine": 48,
+      "endLine": 51,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarKernelGradedSMul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 55,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarKernelGradedSMul.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) :\n  SetLike.GradedSMul 𝒜\n    (LinearStudy.gradedSubmodulePiece ℳ\n      (Submodule.restrictScalars K (LinearStudy.gradedScalarKernel 𝒜 ℳ d x hx).toSubmodule))",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 7,
+      "moduleLineCount": 79,
+      "startLine": 55,
+      "endLine": 61,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedScalarKernel",
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedScalarCokernelGradedSMul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 63,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedScalarCokernelGradedSMul.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (d : ℕ) (x : A)\n  (hx : x ∈ 𝒜 d) :\n  SetLike.GradedSMul 𝒜\n    (LinearStudy.gradedQuotientPiece ℳ\n      (Submodule.restrictScalars K (LinearStudy.gradedScalarImage 𝒜 ℳ d x hx).toSubmodule))",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 6,
+      "moduleLineCount": 79,
+      "startLine": 63,
+      "endLine": 68,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedQuotientPiece",
+        "LinearStudy.gradedScalarCokernelModule",
+        "LinearStudy.gradedScalarImage"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedSubalgebraModuleGradedSMul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedScalarInductionModules.lean",
+      "line": 71,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubalgebraModuleGradedSMul.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] (𝒜 : ℕ → Submodule K A)\n  [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ] (B : Subalgebra K A) :\n  SetLike.GradedSMul (LinearStudy.gradedSubalgebraPiece 𝒜 B) ℳ",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "lines": 8,
+      "moduleLineCount": 79,
+      "startLine": 70,
+      "endLine": 77,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.gradedSubalgebraPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneousAdjoin",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubalgebraDecomposition.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousAdjoin.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (s : Set A) (hs : ∀ a ∈ s, SetLike.IsHomogeneousElem 𝒜 a) :\n  (Subalgebra.toSubmodule (Algebra.adjoin K s)).IsHomogeneous 𝒜",
+      "sha256": "0b2dbecf77fe528a79743a1d4c8b0b83f9402ff973d168232d585bef8131c933",
+      "lines": 14,
+      "moduleLineCount": 53,
+      "startLine": 18,
+      "endLine": 31,
+      "lineCount": 14,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.gradedSubalgebraPiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedSubalgebraDecomposition.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedSubalgebraPiece.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (𝒜 : ℕ → Submodule K A) (B : Subalgebra K A) (n : ℕ) : Submodule K ↥B",
+      "sha256": "0b2dbecf77fe528a79743a1d4c8b0b83f9402ff973d168232d585bef8131c933",
+      "lines": 3,
+      "moduleLineCount": 53,
+      "startLine": 33,
+      "endLine": 35,
+      "lineCount": 3,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.gradedSubalgebraGrading",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedSubalgebraDecomposition.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedSubalgebraGrading.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (B : Subalgebra K A) (hB : (Subalgebra.toSubmodule B).IsHomogeneous 𝒜) :\n  GradedAlgebra (LinearStudy.gradedSubalgebraPiece 𝒜 B)",
+      "sha256": "0b2dbecf77fe528a79743a1d4c8b0b83f9402ff973d168232d585bef8131c933",
+      "lines": 11,
+      "moduleLineCount": 53,
+      "startLine": 37,
+      "endLine": 47,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedSubalgebraPiece",
+        "LinearStudy.gradedSubmoduleDecomposition",
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedSubalgebraPiece_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubalgebraDecomposition.lean",
+      "line": 49,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubalgebraPiece_finite.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (B : Subalgebra K A) (n : ℕ) [Module.Finite K ↥(𝒜 n)] :\n  Module.Finite K ↥(LinearStudy.gradedSubalgebraPiece 𝒜 B n)",
+      "sha256": "0b2dbecf77fe528a79743a1d4c8b0b83f9402ff973d168232d585bef8131c933",
+      "lines": 3,
+      "moduleLineCount": 53,
+      "startLine": 49,
+      "endLine": 51,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedSubalgebraPiece",
+        "LinearStudy.gradedSubmodulePiece_finite"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedSubmodulePiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedSubmodulePiece.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) (p : Submodule K M) (n : ℕ) : Submodule K ↥p",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 1,
+      "moduleLineCount": 92,
+      "startLine": 23,
+      "endLine": 23,
+      "lineCount": 1,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.gradedSubmoduleProjection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedSubmoduleProjection.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ) : ↥p →ₗ[K] ↥p",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 5,
+      "moduleLineCount": 92,
+      "startLine": 25,
+      "endLine": 29,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedSubmoduleProjection_coe",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmoduleProjection_coe.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ)\n  (m : ↥p) : ↑((LinearStudy.gradedSubmoduleProjection ℳ p hp n) m) = (LinearStudy.gradedModuleProjection ℳ n) ↑m",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 2,
+      "moduleLineCount": 92,
+      "startLine": 31,
+      "endLine": 32,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedSubmoduleProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedSubmoduleProjection_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmoduleProjection_mem.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) (n : ℕ)\n  (m : ↥p) : (LinearStudy.gradedSubmoduleProjection ℳ p hp n) m ∈ LinearStudy.gradedSubmodulePiece ℳ p n",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 3,
+      "moduleLineCount": 92,
+      "startLine": 34,
+      "endLine": 36,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmoduleProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedSubmoduleProjection_on_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmoduleProjection_on_piece.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ)\n  (n k : ℕ) (m : ↥p) (hm : m ∈ LinearStudy.gradedSubmodulePiece ℳ p k) :\n  (LinearStudy.gradedSubmoduleProjection ℳ p hp n) m = if n = k then m else 0",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 7,
+      "moduleLineCount": 92,
+      "startLine": 38,
+      "endLine": 44,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece",
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmoduleProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedSubmodulePiece_independent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmodulePiece_independent.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  iSupIndep (LinearStudy.gradedSubmodulePiece ℳ p)",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 11,
+      "moduleLineCount": 92,
+      "startLine": 47,
+      "endLine": 57,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmoduleProjection",
+        "LinearStudy.gradedSubmoduleProjection_on_piece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedSubmoduleProjection_sum",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 59,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmoduleProjection_sum.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ)\n  (m : ↥p) : ∑ n ∈ DFinsupp.support ((DirectSum.decompose ℳ) ↑m), (LinearStudy.gradedSubmoduleProjection ℳ p hp n) m = m",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 6,
+      "moduleLineCount": 92,
+      "startLine": 59,
+      "endLine": 64,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedSubmoduleProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedSubmodulePiece_total",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 67,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmodulePiece_total.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  ⨆ n, LinearStudy.gradedSubmodulePiece ℳ p n = ⊤",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 6,
+      "moduleLineCount": 92,
+      "startLine": 67,
+      "endLine": 72,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece",
+        "LinearStudy.gradedSubmoduleProjection",
+        "LinearStudy.gradedSubmoduleProjection_mem",
+        "LinearStudy.gradedSubmoduleProjection_sum"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedSubmoduleDecomposition",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 75,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedSubmoduleDecomposition.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (hp : p.IsHomogeneous ℳ) :\n  DirectSum.Decomposition (LinearStudy.gradedSubmodulePiece ℳ p)",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 6,
+      "moduleLineCount": 92,
+      "startLine": 74,
+      "endLine": 79,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedSubmodulePiece_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSubmoduleDecomposition.lean",
+      "line": 81,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedSubmodulePiece_finite.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (p : Submodule K M) (n : ℕ) [Module.Finite K ↥(ℳ n)] :\n  Module.Finite K ↥(LinearStudy.gradedSubmodulePiece ℳ p n)",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "lines": 11,
+      "moduleLineCount": 92,
+      "startLine": 81,
+      "endLine": 91,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteAdjoin_isNoetherian",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HilbertFiniteInstances.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteAdjoin_isNoetherian.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  [IsNoetherianRing R] (s : Finset A) : IsNoetherianRing ↥(Algebra.adjoin R ↑s)",
+      "sha256": "735f7bcb7d7e642a820091c4f9551d333b2ab36cea67f081bc8f22db92191373",
+      "lines": 4,
+      "moduleLineCount": 71,
+      "startLine": 23,
+      "endLine": 26,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.adjoin_annihilator_scalar_representative",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HilbertFiniteInstances.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.adjoin_annihilator_scalar_representative.{u_1, u_2, u_3} {R : Type u_1} {A : Type u_2} {M : Type u_3}\n  [CommRing R] [CommRing A] [Algebra R A] [AddCommGroup M] [Module A M] (s : Set A) (x : A) (hx : ∀ (m : M), x • m = 0)\n  (a : A) (ha : a ∈ Algebra.adjoin R (insert x s)) : ∃ b ∈ Algebra.adjoin R s, ∀ (m : M), a • m = b • m",
+      "sha256": "735f7bcb7d7e642a820091c4f9551d333b2ab36cea67f081bc8f22db92191373",
+      "lines": 22,
+      "moduleLineCount": 71,
+      "startLine": 28,
+      "endLine": 49,
+      "lineCount": 22,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.adjoin_finiteModule_of_annihilator",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HilbertFiniteInstances.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.adjoin_finiteModule_of_annihilator.{u_1, u_2, u_3} {R : Type u_1} {A : Type u_2} {M : Type u_3} [CommRing R]\n  [CommRing A] [Algebra R A] [AddCommGroup M] [Module A M] [Module.Finite A M] (s : Set A) (x : A)\n  (hgen : Algebra.adjoin R (insert x s) = ⊤) (hx : ∀ (m : M), x • m = 0) : Module.Finite (↥(Algebra.adjoin R s)) M",
+      "sha256": "735f7bcb7d7e642a820091c4f9551d333b2ab36cea67f081bc8f22db92191373",
+      "lines": 20,
+      "moduleLineCount": 71,
+      "startLine": 51,
+      "endLine": 70,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.adjoin_annihilator_scalar_representative"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.adjoinLiftedGenerators",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/HomogeneousAdjoinGenerators.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.adjoinLiftedGenerators.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (s : Finset A) : Finset ↥(Algebra.adjoin K ↑s)",
+      "sha256": "2ae3f4e39b948b70950368783f080001d5d966322d24144dcfe0950ac3031552",
+      "lines": 6,
+      "moduleLineCount": 49,
+      "startLine": 10,
+      "endLine": 15,
+      "lineCount": 6,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.adjoinLiftedGenerators_card",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousAdjoinGenerators.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.adjoinLiftedGenerators_card.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (s : Finset A) : (LinearStudy.adjoinLiftedGenerators s).card = s.card",
+      "sha256": "2ae3f4e39b948b70950368783f080001d5d966322d24144dcfe0950ac3031552",
+      "lines": 3,
+      "moduleLineCount": 49,
+      "startLine": 17,
+      "endLine": 19,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.adjoinLiftedGenerators"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.adjoinLiftedGenerators_generate",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousAdjoinGenerators.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.adjoinLiftedGenerators_generate.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] (s : Finset A) : Algebra.adjoin K ↑(LinearStudy.adjoinLiftedGenerators s) = ⊤",
+      "sha256": "2ae3f4e39b948b70950368783f080001d5d966322d24144dcfe0950ac3031552",
+      "lines": 19,
+      "moduleLineCount": 49,
+      "startLine": 21,
+      "endLine": 39,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.adjoinLiftedGenerators"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.adjoinLiftedGenerators_homogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousAdjoinGenerators.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.adjoinLiftedGenerators_homogeneous.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (s : Finset A) (d : ℕ) (hs : ∀ a ∈ s, a ∈ 𝒜 d)\n  (b : ↥(Algebra.adjoin K ↑s)) :\n  b ∈ LinearStudy.adjoinLiftedGenerators s → b ∈ LinearStudy.gradedSubalgebraPiece 𝒜 (Algebra.adjoin K ↑s) d",
+      "sha256": "2ae3f4e39b948b70950368783f080001d5d966322d24144dcfe0950ac3031552",
+      "lines": 7,
+      "moduleLineCount": 49,
+      "startLine": 41,
+      "endLine": 47,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.adjoinLiftedGenerators",
+        "LinearStudy.gradedSubalgebraPiece"
+      ]
+    },
+    {
       "declaration": "LinearStudy.homogeneousQuotientPieces_iSupIndep",
       "kind": "theorem",
       "origin": "project",
@@ -6987,6 +8486,82 @@
       "lineCount": 15,
       "dependencies": [
         "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHilbertPolynomial_existsUnique",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousCoordinateHilbertPolynomial.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHilbertPolynomial_existsUnique.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) (d : ℕ)\n  (h : ∃ p, (1 - PowerSeries.X) ^ d * LinearStudy.gradedHilbertSeries ℳ = ↑p) :\n  ∃! P, ∃ N, ∀ n > N, Polynomial.eval (↑n) P = ↑(Module.finrank K ↥(ℳ n))",
+      "sha256": "9397aaf85ba24315f8772f783908e1612691f4deb5ef8e670d1a676a77840622",
+      "lines": 31,
+      "moduleLineCount": 55,
+      "startLine": 12,
+      "endLine": 42,
+      "lineCount": 31,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousCoordinateHilbertPolynomial.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousQuotientHilbertPolynomial_existsUnique.{u_1, u_3} {K : Type u_1} [Field K] {σ : Type u_3}\n  [Finite σ] (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) :\n  ∃! P, ∃ N, ∀ n > N, Polynomial.eval (↑n) P = ↑(LinearStudy.homogeneousQuotientHilbert I n)",
+      "sha256": "9397aaf85ba24315f8772f783908e1612691f4deb5ef8e670d1a676a77840622",
+      "lines": 10,
+      "moduleLineCount": 55,
+      "startLine": 44,
+      "endLine": 53,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.gradedHilbertPolynomial_existsUnique",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.homogeneousQuotientHilbertSeries_rational",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneousQuotientHilbertSeries_rational",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousCoordinateHilbertSeries.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousQuotientHilbertSeries_rational.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Finite σ]\n  (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) :\n  ∃ p, (1 - PowerSeries.X) ^ Nat.card σ * LinearStudy.gradedHilbertSeries (LinearStudy.homogeneousQuotientPiece I) = ↑p",
+      "sha256": "cf89b2c83ba69a190118bff42756c3e0fccdaabaec06cb697423adeee88978e0",
+      "lines": 42,
+      "moduleLineCount": 56,
+      "startLine": 13,
+      "endLine": 54,
+      "lineCount": 42,
+      "dependencies": [
+        "LinearStudy.gradedHilbertSeries",
+        "LinearStudy.gradedHilbertSeries_rational",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.homogeneousQuotientPiece_finite"
       ]
     },
     {
