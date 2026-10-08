@@ -1,6 +1,6 @@
-import {english} from './i18n.js?v=20261008-linear-32';
-import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261008-linear-32';
-import {createProofPackages} from './proof-package-model.js?v=20261008-linear-32';
+import {english} from './i18n.js?v=20261008-linear-33';
+import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261008-linear-33';
+import {createProofPackages} from './proof-package-model.js?v=20261008-linear-33';
 
 export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarget}){
   const model=createProofPackages(nodes),panel=document.querySelector('.graph-panel'),viewport=document.querySelector('.graph-scroll');

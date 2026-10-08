@@ -365,3 +365,31 @@ public import Linear.ProjectiveLocalParametersConstructed
 public import Linear.FractionModelAlgebraicOpen
 
 public import Linear.ProjectiveTargetGoodOpen
+
+public import Linear.TargetGoodLoci
+
+public import Linear.ProjectiveTargetGoodLoci
+
+public import Linear.HomogeneousMapFinite
+
+public import Linear.ProjectiveConeFinite
+
+public import Linear.FiniteRationalPoints
+
+public import Linear.PolynomialMapFibersFinite
+
+public import Linear.ProjectiveFibersFinite
+
+public import Linear.ProjectiveFiberChartAvoidance
+
+public import Linear.ProjectiveConeChartOpenIntersection
+
+public import Linear.ProjectiveConeChartEvaluation
+
+public import Linear.ProjectiveWholeFiberChart
+
+public import Linear.ProjectiveConeGoodTargetPoint
+
+public import Linear.ProjectiveChartPointEvaluation
+
+public import Linear.ProjectiveWholeFiberGoodPoint
