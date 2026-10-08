@@ -107,7 +107,7 @@ export function installProofWorlds({complete,nodes,select,selected,nodeEditor,th
     const cardWidth=Math.min(280,(available-xGap*(columns-1))/columns),rows=Math.ceil(count/columns);
     const cardHeight=clamp(Math.floor((height-60-(rows-1)*yGap)/rows),140,156);
     root.dataset.compactRows=String(cardHeight<156);
-    const deckHeight=rows*cardHeight+(rows-1)*yGap,top=Math.max(36,(height-deckHeight)/2);scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';
+    const deckHeight=rows*cardHeight+(rows-1)*yGap,top=Math.max(36,(height-deckHeight)/2);scene.style.width=width+'px';scene.style.height=Math.max(height,deckHeight+72)+'px';
     const values={'--world-columns':columns,'--world-rows':rows,'--world-card-width':cardWidth+'px','--world-card-height':cardHeight+'px','--world-x-gap':xGap+'px','--world-y-gap':yGap+'px','--world-deck-width':available+'px','--world-deck-height':deckHeight+'px','--world-deck-top':top+'px','--world-goal-width':goalWidth+'px','--world-goal-gap':goalGap+'px','--world-padding':padding+'px'};
     for(const [name,value] of Object.entries(values))root.style.setProperty(name,String(value));
   }
@@ -181,7 +181,7 @@ export function installProofWorlds({complete,nodes,select,selected,nodeEditor,th
   }
   function updatePath(){
     back.disabled=!state.trail.length&&state.mode==='world';back.textContent=text('← 返回','← Back');home.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9"/></svg>';home.setAttribute('aria-label',text('返回主证明','Return to the main proof'));home.title=home.getAttribute('aria-label');toggle.textContent=state.mode==='graph'?text('卡片模块','Proof modules'):text('连接图','Connections');
-    const labels=[text('原稿 · Nagata conjecture','Manuscript · Nagata conjecture'),...state.trail.filter(s=>s.target!=='lemma'||s.pack).map(s=>s.pack?model.packFor(s.pack)?.name[english?1:0]:originalById.get(s.target)?.title),state.target==='lemma'?null:originalById.get(state.target)?.title,state.pack?model.packFor(state.pack)?.name[english?1:0]:null].filter(Boolean);
+    const labels=[text('原稿 · Fujita freeness','Manuscript · Fujita freeness'),...state.trail.filter(s=>s.target!=='lemma'||s.pack).map(s=>s.pack?model.packFor(s.pack)?.name[english?1:0]:originalById.get(s.target)?.title),state.target==='lemma'?null:originalById.get(state.target)?.title,state.pack?model.packFor(state.pack)?.name[english?1:0]:null].filter(Boolean);
     path.textContent=labels.join(' / ');path.title=path.textContent;
     document.body.classList.toggle('proof-world-mode',state.mode==='world');document.body.classList.toggle('proof-graph-mode',state.mode==='graph');root.hidden=state.mode!=='world';viewport.hidden=state.mode==='world';
     if(state.mode==='world'){const zoom=document.querySelector('.editor-navigation output');if(zoom)zoom.textContent=`${Math.round(cameraPose().scale*100)}%`;}
@@ -204,7 +204,7 @@ export function installProofWorlds({complete,nodes,select,selected,nodeEditor,th
     target.element.querySelectorAll('.theorem-port').forEach(port=>port.hidden=!!state.pack||!items.length||port.dataset.side!=='left');
     [...deck.children].forEach((card,i)=>{card.dataset.worldSlot=slots[i];card.style.setProperty('--fan-order',i);});layoutDeck();queueWires();
     if(!items.length){const note=document.createElement('div');note.className='world-leaf';note.innerHTML=`<p>${text('此阅读节点没有更细分的项目卡片。','This reading node has no finer project cards.')}</p>`;const evidence=document.createElement('button');evidence.type='button';evidence.className='button';evidence.textContent=text('查看原文与源码状态','Read the manuscript and source status');evidence.onclick=()=>openGraph(state.target);note.append(evidence);deck.append(note);}
-    reading.textContent=state.pack?model.packFor(state.pack).name[english?1:0]+text(' · 模块与声明',' · Modules and declarations'):isRoot?text('Nagata 猜想 · 形式化','Nagata conjecture · formalization'):text('当前目标的证明步骤','Proof steps for the current goal');
+    reading.textContent=state.pack?model.packFor(state.pack).name[english?1:0]+text(' · 模块与声明',' · Modules and declarations'):isRoot?text('Fujita 自由性 · 源码定位','Fujita freeness · source discovery'):text('当前目标的证明步骤','Proof steps for the current goal');
     root.dataset.worldTarget=state.target;root.dataset.referenceWorld=state.pack||'';root.dataset.catalog=String(state.catalog);
     previous.textContent='←';next.textContent='→';previous.setAttribute('aria-label',text('上一组卡片','Previous cards'));next.setAttribute('aria-label',text('下一组卡片','Next cards'));previous.disabled=state.page===0;next.disabled=state.page===pages-1;previous.hidden=next.hidden=pages===1;
     count.textContent=items.length?`${state.page*pageSize+1}–${Math.min(items.length,(state.page+1)*pageSize)} / ${items.length}`:'';
@@ -213,9 +213,6 @@ export function installProofWorlds({complete,nodes,select,selected,nodeEditor,th
     if(state.mode==='graph')nodeEditor.setWorldContext({target:originalById.get(state.target),allowed:new Set([...model.closure(state.target),...model.closure(selected())]),reference:isReferenceCard(originalById.get(selected()))});
     document.dispatchEvent(new Event('proofworldrender'));
   }
-  function fitOverview(){if(state.target==='lemma'&&!state.pack&&innerWidth>=600){requestAnimationFrame(()=>{const s=Math.min(1,(canvas.clientWidth-24)/scene.clientWidth,(canvas.clientHeight-24)/scene.clientHeight);moveCamera((canvas.clientWidth-scene.clientWidth*s)/2,(canvas.clientHeight-scene.clientHeight*s)/2,s);});}}
-  function fitOverview(){if(state.target==='lemma'&&!state.pack&&innerWidth>=600){requestAnimationFrame(()=>{const s=Math.min(1,(canvas.clientWidth-24)/scene.clientWidth,(canvas.clientHeight-24)/scene.clientHeight);moveCamera((canvas.clientWidth-scene.clientWidth*s)/2,(canvas.clientHeight-scene.clientHeight*s)/2,s);});}}
-  function fitOverview(){if(state.target==='lemma'&&!state.pack&&innerWidth>=600){requestAnimationFrame(()=>{const s=Math.min(1,(canvas.clientWidth-24)/scene.clientWidth,(canvas.clientHeight-24)/scene.clientHeight);moveCamera((canvas.clientWidth-scene.clientWidth*s)/2,(canvas.clientHeight-scene.clientHeight*s)/2,s);});}}
   function fitOverview(){if(state.target==='lemma'&&!state.pack&&innerWidth>=600){requestAnimationFrame(()=>{const s=Math.min(1,(canvas.clientWidth-24)/scene.clientWidth,(canvas.clientHeight-24)/scene.clientHeight);moveCamera((canvas.clientWidth-scene.clientWidth*s)/2,(canvas.clientHeight-scene.clientHeight*s)/2,s);});}}
   function save(){const url=new URL(location);if(state.mode==='world'&&!state.pack)url.hash='node='+state.target;if(state.target==='lemma')url.searchParams.delete('world');else url.searchParams.set('world',state.target);if(state.pack)url.searchParams.set('pack',state.pack);else url.searchParams.delete('pack');history.replaceState(history.state,'',url);}
   async function enter(id,pack=null){
