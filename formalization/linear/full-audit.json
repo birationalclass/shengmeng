@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1333,
-  "verifiedTheorems": 949,
-  "definitions": 188,
+  "audited": 1363,
+  "verifiedTheorems": 975,
+  "definitions": 192,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -4686,6 +4686,145 @@
       "lineCount": 20,
       "dependencies": [
         "LinearStudy.finite_rational_points_of_module_finite"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteAlgebra_exists_maximal_residue_evaluations",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteReducedAlgebraPoints.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteAlgebra_exists_maximal_residue_evaluations.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K]\n  [IsAlgClosed K] [CommRing A] [Algebra K A] [Module.Finite K A] :\n  ∃ q, ∀ (p : MaximalSpectrum A), RingHom.ker (q p).toRingHom = p.asIdeal",
+      "sha256": "a5acf68c074decc24199a18502b1fc73fcf0159607c67647f995b6ccbb29a0c9",
+      "lines": 16,
+      "moduleLineCount": 88,
+      "startLine": 15,
+      "endLine": 30,
+      "lineCount": 16,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.finiteReducedAlgebra_exists_point_function_equiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteReducedAlgebraPoints.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteReducedAlgebra_exists_point_function_equiv.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K]\n  [IsAlgClosed K] [CommRing A] [Algebra K A] [Module.Finite K A] [IsReduced A] :\n  Nonempty (A ≃ₐ[K] MaximalSpectrum A → K)",
+      "sha256": "a5acf68c074decc24199a18502b1fc73fcf0159607c67647f995b6ccbb29a0c9",
+      "lines": 12,
+      "moduleLineCount": 88,
+      "startLine": 32,
+      "endLine": 43,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.finiteAlgebra_exists_maximal_residue_evaluations",
+        "LinearStudy.maximalResidueEvaluation",
+        "LinearStudy.maximalResidueEvaluation_kernel",
+        "LinearStudy.maximalResidueEvaluation_surjective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteReducedAlgebra_finrank_eq_maximal_card",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteReducedAlgebraPoints.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteReducedAlgebra_finrank_eq_maximal_card.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K]\n  [IsAlgClosed K] [CommRing A] [Algebra K A] [Module.Finite K A] [IsReduced A] :\n  Module.finrank K A = Nat.card (MaximalSpectrum A)",
+      "sha256": "a5acf68c074decc24199a18502b1fc73fcf0159607c67647f995b6ccbb29a0c9",
+      "lines": 6,
+      "moduleLineCount": 88,
+      "startLine": 45,
+      "endLine": 50,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.finiteReducedAlgebra_exists_point_function_equiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.scalarAlgHom_eq_of_kernel_eq",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteReducedAlgebraPoints.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.scalarAlgHom_eq_of_kernel_eq.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [IsAlgClosed K] [CommRing A]\n  [Algebra K A] [Module.Finite K A] (φ ψ : A →ₐ[K] K) (hk : RingHom.ker φ.toRingHom = RingHom.ker ψ.toRingHom) : φ = ψ",
+      "sha256": "a5acf68c074decc24199a18502b1fc73fcf0159607c67647f995b6ccbb29a0c9",
+      "lines": 12,
+      "moduleLineCount": 88,
+      "startLine": 52,
+      "endLine": 63,
+      "lineCount": 12,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.finiteAlgebra_nonempty_rationalPoint_maximal_equiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteReducedAlgebraPoints.lean",
+      "line": 67,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteAlgebra_nonempty_rationalPoint_maximal_equiv.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K]\n  [IsAlgClosed K] [CommRing A] [Algebra K A] [Module.Finite K A] : Nonempty ((A →ₐ[K] K) ≃ MaximalSpectrum A)",
+      "sha256": "a5acf68c074decc24199a18502b1fc73fcf0159607c67647f995b6ccbb29a0c9",
+      "lines": 16,
+      "moduleLineCount": 88,
+      "startLine": 65,
+      "endLine": 80,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.finiteAlgebra_exists_maximal_residue_evaluations",
+        "LinearStudy.scalarAlgHom_eq_of_kernel_eq"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteReducedAlgebra_finrank_eq_rationalPoint_card",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteReducedAlgebraPoints.lean",
+      "line": 82,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteReducedAlgebra_finrank_eq_rationalPoint_card.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K]\n  [IsAlgClosed K] [CommRing A] [Algebra K A] [Module.Finite K A] [IsReduced A] :\n  Module.finrank K A = Nat.card (A →ₐ[K] K)",
+      "sha256": "a5acf68c074decc24199a18502b1fc73fcf0159607c67647f995b6ccbb29a0c9",
+      "lines": 5,
+      "moduleLineCount": 88,
+      "startLine": 82,
+      "endLine": 86,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.finiteAlgebra_nonempty_rationalPoint_maximal_equiv",
+        "LinearStudy.finiteReducedAlgebra_finrank_eq_maximal_card"
       ]
     },
     {
@@ -13068,6 +13207,27 @@
       ]
     },
     {
+      "declaration": "LinearStudy.polynomialQuotient_finite_of_finite_zeroLocus",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialFiniteZeroLocus.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialQuotient_finite_of_finite_zeroLocus.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  [IsAlgClosed K] [Finite σ] (I : Ideal (MvPolynomial σ K)) (hZ : (MvPolynomial.zeroLocus K I).Finite) :\n  Module.Finite K (MvPolynomial σ K ⧸ I)",
+      "sha256": "17a4e18039643153eaa49f5d3638b61914aa24b9e1c8af6ee81dec0c91b9d51a",
+      "lines": 41,
+      "moduleLineCount": 52,
+      "startLine": 10,
+      "endLine": 50,
+      "lineCount": 41,
+      "dependencies": []
+    },
+    {
       "declaration": "LinearStudy.polynomial_zero_firstJet_mem_vars_square",
       "kind": "theorem",
       "origin": "project",
@@ -14555,6 +14715,51 @@
         "LinearStudy.polynomialTranslation",
         "LinearStudy.polynomialTranslation_primeCompl",
         "LinearStudy.polynomial_idealOfVars_isMaximal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomialZeroLocusPointEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PolynomialReducedPointCount.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialZeroLocusPointEquiv.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  (I : Ideal (MvPolynomial σ K)) : ↑(MvPolynomial.zeroLocus K I) ≃ (MvPolynomial σ K ⧸ I →ₐ[K] K)",
+      "sha256": "7163e1fd9613326a4868d970fceabd046fbe68e1dab4f23c83ba1d74c864de31",
+      "lines": 32,
+      "moduleLineCount": 55,
+      "startLine": 11,
+      "endLine": 42,
+      "lineCount": 32,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.polynomialZeroLocus_card_eq_finrank",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialReducedPointCount.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialZeroLocus_card_eq_finrank.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [IsAlgClosed K]\n  (I : Ideal (MvPolynomial σ K)) [Module.Finite K (MvPolynomial σ K ⧸ I)] [IsReduced (MvPolynomial σ K ⧸ I)] :\n  Nat.card ↑(MvPolynomial.zeroLocus K I) = Module.finrank K (MvPolynomial σ K ⧸ I)",
+      "sha256": "7163e1fd9613326a4868d970fceabd046fbe68e1dab4f23c83ba1d74c864de31",
+      "lines": 10,
+      "moduleLineCount": 55,
+      "startLine": 44,
+      "endLine": 53,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.finiteReducedAlgebra_finrank_eq_rationalPoint_card",
+        "LinearStudy.polynomialZeroLocusPointEquiv"
       ]
     },
     {
@@ -18356,6 +18561,484 @@
         "LinearStudy.IntegralProjectiveEquations",
         "LinearStudy.IntegralProjectiveEquations.zeroSet",
         "LinearStudy.ProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.normalizedProjectivePoint_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberFinite.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.normalizedProjectivePoint_injective {n : ℕ} : Function.Injective LinearStudy.normalizedProjectivePoint",
+      "sha256": "91933591141126e80066723446274965a9ed1e36ddb731d846afc09f19eb43b9",
+      "lines": 13,
+      "moduleLineCount": 104,
+      "startLine": 12,
+      "endLine": 24,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiberIdeal",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberFinite.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveAffineFiberIdeal {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ) : Ideal (MvPolynomial (Fin n) ℂ)",
+      "sha256": "91933591141126e80066723446274965a9ed1e36ddb731d846afc09f19eb43b9",
+      "lines": 7,
+      "moduleLineCount": 104,
+      "startLine": 26,
+      "endLine": 32,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.affineChartPolynomialMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiberIdeal_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberFinite.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAffineFiberIdeal_point {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y z : Fin n → ℂ)\n  (hz : z ∈ MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAffineFiberIdeal f V y)) :\n  LinearStudy.normalizedProjectivePoint z ∈ V.zeroSet ∧\n    (MvPolynomial.eval z) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0 ∧\n      f.onPoints (LinearStudy.normalizedProjectivePoint z) = LinearStudy.normalizedProjectivePoint y",
+      "sha256": "91933591141126e80066723446274965a9ed1e36ddb731d846afc09f19eb43b9",
+      "lines": 50,
+      "moduleLineCount": 104,
+      "startLine": 34,
+      "endLine": 83,
+      "lineCount": 50,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiberIdeal_zeroLocus_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberFinite.lean",
+      "line": 85,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAffineFiberIdeal_zeroLocus_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (y : Fin n → ℂ) :\n  (MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAffineFiberIdeal f V y)).Finite",
+      "sha256": "91933591141126e80066723446274965a9ed1e36ddb731d846afc09f19eb43b9",
+      "lines": 9,
+      "moduleLineCount": 104,
+      "startLine": 85,
+      "endLine": 93,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_fibers_finite",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint_injective",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAffineFiberIdeal_point"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiberQuotient_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberFinite.lean",
+      "line": 97,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAffineFiberQuotient_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (y : Fin n → ℂ) :\n  Module.Finite ℂ (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y)",
+      "sha256": "91933591141126e80066723446274965a9ed1e36ddb731d846afc09f19eb43b9",
+      "lines": 8,
+      "moduleLineCount": 104,
+      "startLine": 95,
+      "endLine": 102,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.polynomialQuotient_finite_of_finite_zeroLocus",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAffineFiberIdeal_zeroLocus_finite"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiberCoordinateMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberMap.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveAffineFiberCoordinateMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ) :\n  MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal →ₐ[ℂ] MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y",
+      "sha256": "faf121f5a85d4b87f126b607607d4dd32e006d38db7f237b4d110282a2d3667c",
+      "lines": 6,
+      "moduleLineCount": 94,
+      "startLine": 11,
+      "endLine": 16,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.projectiveAffineFiberIdeal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiberChartMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberMap.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveAffineFiberChartMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ) :\n  Localization.Away (LinearStudy.projectiveChartDenominator f V) →ₐ[ℂ]\n    MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y",
+      "sha256": "faf121f5a85d4b87f126b607607d4dd32e006d38db7f237b4d110282a2d3667c",
+      "lines": 8,
+      "moduleLineCount": 94,
+      "startLine": 18,
+      "endLine": 25,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.projectiveAffineFiberCoordinateMap",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAffineFiberQuotient_denominator_isUnit",
+        "LinearStudy.projectiveChartDenominator"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiberChartMap_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberMap.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAffineFiberChartMap_algebraMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ) (b : MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) :\n  (LinearStudy.projectiveAffineFiberChartMap f V y)\n      ((algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)\n          (Localization.Away (LinearStudy.projectiveChartDenominator f V)))\n        b) =\n    (LinearStudy.projectiveAffineFiberCoordinateMap f V y) b",
+      "sha256": "faf121f5a85d4b87f126b607607d4dd32e006d38db7f237b4d110282a2d3667c",
+      "lines": 7,
+      "moduleLineCount": 94,
+      "startLine": 27,
+      "endLine": 33,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.projectiveAffineFiberChartMap",
+        "LinearStudy.projectiveAffineFiberCoordinateMap",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAffineFiberQuotient_denominator_isUnit",
+        "LinearStudy.projectiveChartDenominator"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiberChartMap_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberMap.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAffineFiberChartMap_surjective {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ) :\n  Function.Surjective ⇑(LinearStudy.projectiveAffineFiberChartMap f V y)",
+      "sha256": "faf121f5a85d4b87f126b607607d4dd32e006d38db7f237b4d110282a2d3667c",
+      "lines": 8,
+      "moduleLineCount": 94,
+      "startLine": 35,
+      "endLine": 42,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.projectiveAffineFiberChartMap",
+        "LinearStudy.projectiveAffineFiberChartMap_algebraMap",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveChartDenominator"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiberChartMap_pullback",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberMap.lean",
+      "line": 46,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAffineFiberChartMap_pullback {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (y : Fin n → ℂ)\n  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) :\n  (LinearStudy.projectiveAffineFiberChartMap f V y).comp (LinearStudy.projectiveChartOpenMap f V hq hf hV y hy) =\n    (Algebra.ofId ℂ (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y)).comp\n      (V.affinePointEvaluation y hy)",
+      "sha256": "faf121f5a85d4b87f126b607607d4dd32e006d38db7f237b4d110282a2d3667c",
+      "lines": 49,
+      "moduleLineCount": 94,
+      "startLine": 44,
+      "endLine": 92,
+      "lineCount": 49,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation_mk",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberChartMap",
+        "LinearStudy.projectiveAffineFiberChartMap_algebraMap",
+        "LinearStudy.projectiveAffineFiberCoordinateMap",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_mk",
+        "LinearStudy.projectiveChartOpenPolynomialMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiberIdeal_mem_of_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberPointEquiv.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAffineFiberIdeal_mem_of_point {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y z : Fin n → ℂ)\n  (hz : LinearStudy.normalizedProjectivePoint z ∈ V.zeroSet)\n  (hfy : f.onPoints (LinearStudy.normalizedProjectivePoint z) = LinearStudy.normalizedProjectivePoint y) :\n  z ∈ MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAffineFiberIdeal f V y)",
+      "sha256": "b2e9424003ec3096231650800c743525e4d643685123c6a86df526ff250d5a31",
+      "lines": 34,
+      "moduleLineCount": 84,
+      "startLine": 11,
+      "endLine": 44,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_le_pointKernel",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiber_nonempty_whole_point_equiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberPointEquiv.lean",
+      "line": 48,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAffineFiber_nonempty_whole_point_equiv {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ)\n  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)\n  (hchart :\n    ∀ (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0),\n      f.onPoints (Projectivization.mk ℂ v hv) = LinearStudy.normalizedProjectivePoint y → v 0 ≠ 0) :\n  Nonempty\n    (↑(MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAffineFiberIdeal f V y)) ≃\n      ↑(f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}))",
+      "sha256": "b2e9424003ec3096231650800c743525e4d643685123c6a86df526ff250d5a31",
+      "lines": 37,
+      "moduleLineCount": 84,
+      "startLine": 46,
+      "endLine": 82,
+      "lineCount": 37,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint_coordinate_ratios",
+        "LinearStudy.normalizedProjectivePoint_injective",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAffineFiberIdeal_mem_of_point",
+        "LinearStudy.projectiveAffineFiberIdeal_point"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiberQuotient_isReduced_of_target_open",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberReduced.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAffineFiberQuotient_isReduced_of_target_open {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet)\n  (b : MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) (hb : (V.affinePointEvaluation y hy) b ≠ 0)\n  (hgood :\n    have φ := LinearStudy.projectiveChartOpenMap f V hq hf hV y hy;\n    ↑(PrimeSpectrum.basicOpen (φ b)) ⊆\n      Algebra.unramifiedLocus (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)\n        (Localization.Away (LinearStudy.projectiveChartDenominator f V))) :\n  IsReduced (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y)",
+      "sha256": "11b569f2000c682c439dd18084fa2fe928b8239411f3a919baf73ae6a9cfc9d0",
+      "lines": 23,
+      "moduleLineCount": 35,
+      "startLine": 11,
+      "endLine": 33,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.isReduced_of_unramified_evaluation_quotient",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberChartMap",
+        "LinearStudy.projectiveAffineFiberChartMap_pullback",
+        "LinearStudy.projectiveAffineFiberChartMap_surjective",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomialQuotient_isUnit_of_nonvanishing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberUnit.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialQuotient_isUnit_of_nonvanishing.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [IsAlgClosed K]\n  [Finite σ] (I : Ideal (MvPolynomial σ K)) (p : MvPolynomial σ K)\n  (hp : ∀ x ∈ MvPolynomial.zeroLocus K I, (MvPolynomial.eval x) p ≠ 0) : IsUnit ((Ideal.Quotient.mk I) p)",
+      "sha256": "d77fbae68c839964f0b3f2adf6cf977d3b3c38f3040c3ca849d955cc7ec45dd8",
+      "lines": 28,
+      "moduleLineCount": 50,
+      "startLine": 10,
+      "endLine": 37,
+      "lineCount": 28,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.projectiveAffineFiberQuotient_denominator_isUnit",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineFiberUnit.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAffineFiberQuotient_denominator_isUnit {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ) :\n  IsUnit\n    ((Ideal.Quotient.mk (LinearStudy.projectiveAffineFiberIdeal f V y))\n      (LinearStudy.affineChartPolynomialMap (f.forms 0)))",
+      "sha256": "d77fbae68c839964f0b3f2adf6cf977d3b3c38f3040c3ca849d955cc7ec45dd8",
+      "lines": 10,
+      "moduleLineCount": 50,
+      "startLine": 39,
+      "endLine": 48,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomialQuotient_isUnit_of_nonvanishing",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAffineFiberIdeal_point"
       ]
     },
     {
@@ -22831,6 +23514,62 @@
       ]
     },
     {
+      "declaration": "LinearStudy.normalizedProjectivePoint_coordinate_ratios",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNormalizedConePoint.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.normalizedProjectivePoint_coordinate_ratios {n : ℕ} (w : LinearStudy.CoordinateVector n) (hw : w ≠ 0)\n  (hw0 : w 0 ≠ 0) : (LinearStudy.normalizedProjectivePoint fun i => w i.succ / w 0) = Projectivization.mk ℂ w hw",
+      "sha256": "90d600733985b0509292e7094581486ad0d90c90e1aec8c327506036ff242852",
+      "lines": 10,
+      "moduleLineCount": 32,
+      "startLine": 11,
+      "endLine": 20,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.normalizedConePoint_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNormalizedConePoint.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.normalizedConePoint_mem {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (w : LinearStudy.CoordinateVector n) (hwV : w ∈ MvPolynomial.zeroLocus ℂ V.ideal.toIdeal) (hw0 : w 0 ≠ 0) :\n  (LinearStudy.normalizedProjectivePoint fun i => w i.succ / w 0) ∈ V.zeroSet",
+      "sha256": "90d600733985b0509292e7094581486ad0d90c90e1aec8c327506036ff242852",
+      "lines": 9,
+      "moduleLineCount": 32,
+      "startLine": 22,
+      "endLine": 30,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.mem_zeroSet_mk",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint_coordinate_ratios"
+      ]
+    },
+    {
       "declaration": "LinearStudy.localization_lift_kernel",
       "kind": "theorem",
       "origin": "project",
@@ -23546,6 +24285,119 @@
         "LinearStudy.projectiveCone_exists_target_chart_open_point",
         "LinearStudy.projectiveWholeFiber_chart_avoidance",
         "LinearStudy.rationalPointPrime"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveWholeFiber_card_eq_affine_quotient_finrank",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveWholeFiberPointCount.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveWholeFiber_card_eq_affine_quotient_finrank {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ)\n  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)\n  (hchart :\n    ∀ (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0),\n      f.onPoints (Projectivization.mk ℂ v hv) = LinearStudy.normalizedProjectivePoint y → v 0 ≠ 0)\n  [Module.Finite ℂ (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y)]\n  [IsReduced (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y)] :\n  Nat.card ↑(f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =\n    Module.finrank ℂ (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y)",
+      "sha256": "545bb161ac462c1a6d68adce4e5c1ea00c71d1caf0aa3d5deb1ae29326cba9e4",
+      "lines": 15,
+      "moduleLineCount": 51,
+      "startLine": 12,
+      "endLine": 26,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomialZeroLocus_card_eq_finrank",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAffineFiber_nonempty_whole_point_equiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_exists_whole_reduced_fiber_point_count",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveWholeFiberPointCount.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_whole_reduced_fiber_point_count {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ y,\n    LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧\n      (f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}).Finite ∧\n        (∀ (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0),\n            f.onPoints (Projectivization.mk ℂ v hv) = LinearStudy.normalizedProjectivePoint y → v 0 ≠ 0) ∧\n          Module.Finite ℂ (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y) ∧\n            IsReduced (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y) ∧\n              Nat.card ↑(f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =\n                Module.finrank ℂ (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y)",
+      "sha256": "545bb161ac462c1a6d68adce4e5c1ea00c71d1caf0aa3d5deb1ae29326cba9e4",
+      "lines": 22,
+      "moduleLineCount": 51,
+      "startLine": 28,
+      "endLine": 49,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveWholeFiber_card_eq_affine_quotient_finrank",
+        "LinearStudy.projective_exists_whole_reduced_fiber"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_exists_whole_reduced_fiber",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveWholeReducedFiber.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_whole_reduced_fiber {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ y,\n    LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧\n      (f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}).Finite ∧\n        (∀ (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0),\n            f.onPoints (Projectivization.mk ℂ v hv) = LinearStudy.normalizedProjectivePoint y → v 0 ≠ 0) ∧\n          Module.Finite ℂ (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y) ∧\n            IsReduced (MvPolynomial (Fin n) ℂ ⧸ LinearStudy.projectiveAffineFiberIdeal f V y)",
+      "sha256": "2803fd053e50c9e637b9beecac77ca76cd3e873491ab219d4a36af88f70ec100",
+      "lines": 42,
+      "moduleLineCount": 57,
+      "startLine": 14,
+      "endLine": 55,
+      "lineCount": 42,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_fibers_finite",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation_mk",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedConePoint_mem",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint_coordinate_ratios",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAffineFiberQuotient_finite",
+        "LinearStudy.projectiveAffineFiberQuotient_isReduced_of_target_open",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_exists_target_good_loci",
+        "LinearStudy.projectiveConeMap_exists_chart_avoidance_polynomial",
+        "LinearStudy.projectiveCone_exists_target_chart_open_point",
+        "LinearStudy.projectiveWholeFiber_chart_avoidance"
       ]
     },
     {
@@ -29124,6 +29976,27 @@
         "LinearStudy.polynomialDoubleRightZero_right",
         "LinearStudy.polynomial_diagonal_difference"
       ]
+    },
+    {
+      "declaration": "LinearStudy.isReduced_of_unramified_evaluation_quotient",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/UnramifiedEvaluationQuotient.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.isReduced_of_unramified_evaluation_quotient.{u_1, u_2, u_3, u_4} {K : Type u_1} {R : Type u_2}\n  {A : Type u_3} {Q : Type u_4} [Field K] [CommRing R] [CommRing A] [CommRing Q] [Algebra K Q]\n  [Algebra.EssFiniteType K Q] (φ : R →+* A) (ρ : R →+* K) (ψ : A →+* Q) (b : R) (hψ : Function.Surjective ⇑ψ)\n  (hcomp : ψ.comp φ = (algebraMap K Q).comp ρ) (hb : ρ b ≠ 0)\n  (hgood : ↑(PrimeSpectrum.basicOpen (φ b)) ⊆ Algebra.unramifiedLocus R A) : IsReduced Q",
+      "sha256": "5d233f1b47424d6fc044b7f95f8f956a53e59c34eec67f71862d3701190d8bd9",
+      "lines": 40,
+      "moduleLineCount": 53,
+      "startLine": 12,
+      "endLine": 51,
+      "lineCount": 40,
+      "dependencies": []
     },
     {
       "declaration": "LinearStudy.ringHom_pointwiseUnramified_localRingHom",

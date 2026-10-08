@@ -393,3 +393,27 @@ public import Linear.ProjectiveConeGoodTargetPoint
 public import Linear.ProjectiveChartPointEvaluation
 
 public import Linear.ProjectiveWholeFiberGoodPoint
+
+public import Linear.PolynomialFiniteZeroLocus
+
+public import Linear.ProjectiveAffineFiberFinite
+
+public import Linear.ProjectiveAffineFiberUnit
+
+public import Linear.ProjectiveAffineFiberMap
+
+public import Linear.UnramifiedEvaluationQuotient
+
+public import Linear.ProjectiveAffineFiberReduced
+
+public import Linear.ProjectiveNormalizedConePoint
+
+public import Linear.ProjectiveWholeReducedFiber
+
+public import Linear.FiniteReducedAlgebraPoints
+
+public import Linear.PolynomialReducedPointCount
+
+public import Linear.ProjectiveAffineFiberPointEquiv
+
+public import Linear.ProjectiveWholeFiberPointCount
