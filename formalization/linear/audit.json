@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-09T02:43:13+08:00",
+  "checkedAt": "2026-10-09T03:28:41+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "26cf4ee8d75678ab1548a6116fee18aa5cd05ae9103214725e5988842290f00b",
-      "lineCount": 3484
+      "sha256": "981c69d9bebd5a9099fed0bc106cfe98cc340ce313bb3e58792034ea3713d0a5",
+      "lineCount": 3530
     },
     {
       "path": "Linear/ActualCoordinateFiberPoints.lean",
@@ -522,6 +522,21 @@
       "lineCount": 101
     },
     {
+      "path": "Linear/HomogeneousLinearElimination.lean",
+      "sha256": "c655fb3edb0f3415b00b6f01175aaf4402babff42368dab95ed9fda3cc728989",
+      "lineCount": 129
+    },
+    {
+      "path": "Linear/HomogeneousLinearMonic.lean",
+      "sha256": "bcd87ba68a42becd989f6926919d85a7d2c512150b3796f6d59f46a07a09e53d",
+      "lineCount": 139
+    },
+    {
+      "path": "Linear/HomogeneousLinearNormalization.lean",
+      "sha256": "4d1ef9328693e90095888380c6017342fb25ad3b0544f214bcd94417f50c6dc5",
+      "lineCount": 143
+    },
+    {
       "path": "Linear/HomogeneousLocalization.lean",
       "sha256": "07c925b964309b02c095e56eec7a3670c259b2ef927b1c960d891151dad3afbd",
       "lineCount": 114
@@ -635,6 +650,11 @@
       "path": "Linear/LiftedParametersRegular.lean",
       "sha256": "76e7a5d5b67de8f986aca4a87f40879f2442ee4d01487437cd922450d0bcd873",
       "lineCount": 85
+    },
+    {
+      "path": "Linear/LinearNormalizationBasePoint.lean",
+      "sha256": "c1413d43fe4f620f0bfe0fb7f12fe4af1c5841298cc79c5d3ccbef9b3f4976df",
+      "lineCount": 79
     },
     {
       "path": "Linear/LinearSubspace.lean",
@@ -1547,6 +1567,11 @@
       "lineCount": 52
     },
     {
+      "path": "Linear/ProjectiveLinearNormalization.lean",
+      "sha256": "58ffa926ce85e66e84eda558dd0ca64d96e255c222ee8ca12fa47e4c49db1039",
+      "lineCount": 83
+    },
+    {
       "path": "Linear/ProjectiveLocalParametersConstructed.lean",
       "sha256": "03a5432007dbcb907467a68786ca2dc78f0677466d3b3835210d15c7895c4ebe",
       "lineCount": 115
@@ -2158,8 +2183,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "432f57c88cfc588ca5d537be7e26e15de22ef4a6fbe8915600caec08d16dbeb8",
-      "lineCount": 713
+      "sha256": "02fb46c661e89bad7b4f2ad125b2ad1ff48c4532b6b3af93b6608008c5438f0c",
+      "lineCount": 717
     }
   ],
   "declarations": {
@@ -12080,6 +12105,438 @@
       "lineCount": 17,
       "dependencies": []
     },
+    "LinearStudy.polynomialLinearEliminationBaseHom": {
+      "declaration": "LinearStudy.polynomialLinearEliminationBaseHom",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearElimination.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialLinearEliminationBaseHom.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (E : MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K) (I : Ideal (MvPolynomial (Fin (n + 1)) K)) :\n  MvPolynomial (Fin n) K →ₐ[MvPolynomial (Fin n) K]\n    Polynomial (MvPolynomial (Fin n) K) ⧸\n      Ideal.map (MvPolynomial.finSuccEquiv K n).toRingEquiv.toRingHom (Ideal.map E.toRingEquiv.toRingHom I)",
+      "sha256": "c655fb3edb0f3415b00b6f01175aaf4402babff42368dab95ed9fda3cc728989",
+      "lines": 9,
+      "moduleLineCount": 129,
+      "startLine": 19,
+      "endLine": 27,
+      "lineCount": 9,
+      "dependencies": []
+    },
+    "LinearStudy.polynomialLinearEliminationHom": {
+      "declaration": "LinearStudy.polynomialLinearEliminationHom",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearElimination.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialLinearEliminationHom.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (E : MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K) (I : Ideal (MvPolynomial (Fin (n + 1)) K)) :\n  MvPolynomial (Fin n) K →ₐ[K] MvPolynomial (Fin (n + 1)) K ⧸ I",
+      "sha256": "c655fb3edb0f3415b00b6f01175aaf4402babff42368dab95ed9fda3cc728989",
+      "lines": 9,
+      "moduleLineCount": 129,
+      "startLine": 29,
+      "endLine": 37,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialLinearEliminationBaseHom"
+      ]
+    },
+    "LinearStudy.polynomialLinearEliminationHom_isIntegral": {
+      "declaration": "LinearStudy.polynomialLinearEliminationHom_isIntegral",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearElimination.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialLinearEliminationHom_isIntegral.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (E : MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K) (I : Ideal (MvPolynomial (Fin (n + 1)) K))\n  (H : MvPolynomial (Fin (n + 1)) K) (hH : H ∈ I) (hu : IsUnit ((MvPolynomial.finSuccEquiv K n) (E H)).leadingCoeff) :\n  (LinearStudy.polynomialLinearEliminationHom E I).IsIntegral",
+      "sha256": "c655fb3edb0f3415b00b6f01175aaf4402babff42368dab95ed9fda3cc728989",
+      "lines": 35,
+      "moduleLineCount": 129,
+      "startLine": 39,
+      "endLine": 73,
+      "lineCount": 35,
+      "dependencies": [
+        "LinearStudy.polynomialLinearEliminationBaseHom",
+        "LinearStudy.polynomialLinearEliminationHom"
+      ]
+    },
+    "LinearStudy.polynomialLinearEliminationHom_X": {
+      "declaration": "LinearStudy.polynomialLinearEliminationHom_X",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearElimination.lean",
+      "line": 76,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialLinearEliminationHom_X.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (E : MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K) (I : Ideal (MvPolynomial (Fin (n + 1)) K))\n  (i : Fin n) :\n  (LinearStudy.polynomialLinearEliminationHom E I) (MvPolynomial.X i) =\n    (Ideal.Quotient.mk I) (E.symm (MvPolynomial.X i.succ))",
+      "sha256": "c655fb3edb0f3415b00b6f01175aaf4402babff42368dab95ed9fda3cc728989",
+      "lines": 20,
+      "moduleLineCount": 129,
+      "startLine": 75,
+      "endLine": 94,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.polynomialLinearEliminationHom"
+      ]
+    },
+    "LinearStudy.polynomialLinearEliminationHom_formula": {
+      "declaration": "LinearStudy.polynomialLinearEliminationHom_formula",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearElimination.lean",
+      "line": 98,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialLinearEliminationHom_formula.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (E : MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K) (I : Ideal (MvPolynomial (Fin (n + 1)) K))\n  (P : MvPolynomial (Fin n) K) :\n  (LinearStudy.polynomialLinearEliminationHom E I) P = (Ideal.Quotient.mk I) (E.symm ((MvPolynomial.rename Fin.succ) P))",
+      "sha256": "c655fb3edb0f3415b00b6f01175aaf4402babff42368dab95ed9fda3cc728989",
+      "lines": 14,
+      "moduleLineCount": 129,
+      "startLine": 96,
+      "endLine": 109,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.polynomialLinearEliminationHom",
+        "LinearStudy.polynomialLinearEliminationHom_X"
+      ]
+    },
+    "LinearStudy.homogeneous_exists_linear_integral_elimination": {
+      "declaration": "LinearStudy.homogeneous_exists_linear_integral_elimination",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearElimination.lean",
+      "line": 113,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_exists_linear_integral_elimination.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K)) (H : MvPolynomial (Fin (n + 1)) K) {d : ℕ} (hH : H.IsHomogeneous d)\n  (hne : H ≠ 0) (hmem : H ∈ I) :\n  ∃ a,\n    (LinearStudy.polynomialLinearEliminationHom (LinearStudy.homogeneousCoordinateShearEquiv a) I).IsIntegral ∧\n      ∀ (i : Fin n),\n        ∃ L,\n          L.IsHomogeneous 1 ∧\n            (LinearStudy.polynomialLinearEliminationHom (LinearStudy.homogeneousCoordinateShearEquiv a) I)\n                (MvPolynomial.X i) =\n              (Ideal.Quotient.mk I) L",
+      "sha256": "c655fb3edb0f3415b00b6f01175aaf4402babff42368dab95ed9fda3cc728989",
+      "lines": 17,
+      "moduleLineCount": 129,
+      "startLine": 111,
+      "endLine": 127,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShearEquiv",
+        "LinearStudy.homogeneousCoordinateShear_isHomogeneous",
+        "LinearStudy.homogeneous_exists_linear_unit_leadingCoeff",
+        "LinearStudy.polynomialLinearEliminationHom",
+        "LinearStudy.polynomialLinearEliminationHom_X",
+        "LinearStudy.polynomialLinearEliminationHom_isIntegral"
+      ]
+    },
+    "LinearStudy.homogeneousCoordinateShear": {
+      "declaration": "LinearStudy.homogeneousCoordinateShear",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearMonic.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.homogeneousCoordinateShear.{u_1} {K : Type u_1} [Field K] {n : ℕ} (a : Fin n → K) :\n  MvPolynomial (Fin (n + 1)) K →ₐ[K] MvPolynomial (Fin (n + 1)) K",
+      "sha256": "bcd87ba68a42becd989f6926919d85a7d2c512150b3796f6d59f46a07a09e53d",
+      "lines": 7,
+      "moduleLineCount": 139,
+      "startLine": 11,
+      "endLine": 17,
+      "lineCount": 7,
+      "dependencies": []
+    },
+    "LinearStudy.homogeneousCoordinateShear_comp_neg": {
+      "declaration": "LinearStudy.homogeneousCoordinateShear_comp_neg",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearMonic.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousCoordinateShear_comp_neg.{u_1} {K : Type u_1} [Field K] {n : ℕ} (a : Fin n → K) :\n  (LinearStudy.homogeneousCoordinateShear a).comp (LinearStudy.homogeneousCoordinateShear (-a)) =\n    AlgHom.id K (MvPolynomial (Fin (n + 1)) K)",
+      "sha256": "bcd87ba68a42becd989f6926919d85a7d2c512150b3796f6d59f46a07a09e53d",
+      "lines": 8,
+      "moduleLineCount": 139,
+      "startLine": 19,
+      "endLine": 26,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShear"
+      ]
+    },
+    "LinearStudy.homogeneousCoordinateShearEquiv": {
+      "declaration": "LinearStudy.homogeneousCoordinateShearEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearMonic.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.homogeneousCoordinateShearEquiv.{u_1} {K : Type u_1} [Field K] {n : ℕ} (a : Fin n → K) :\n  MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K",
+      "sha256": "bcd87ba68a42becd989f6926919d85a7d2c512150b3796f6d59f46a07a09e53d",
+      "lines": 5,
+      "moduleLineCount": 139,
+      "startLine": 28,
+      "endLine": 32,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShear",
+        "LinearStudy.homogeneousCoordinateShear_comp_neg"
+      ]
+    },
+    "LinearStudy.homogeneousCoordinateShear_isHomogeneous": {
+      "declaration": "LinearStudy.homogeneousCoordinateShear_isHomogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearMonic.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousCoordinateShear_isHomogeneous.{u_1} {K : Type u_1} [Field K] {n : ℕ} (a : Fin n → K)\n  (H : MvPolynomial (Fin (n + 1)) K) {d : ℕ} (hH : H.IsHomogeneous d) :\n  ((LinearStudy.homogeneousCoordinateShear a) H).IsHomogeneous d",
+      "sha256": "bcd87ba68a42becd989f6926919d85a7d2c512150b3796f6d59f46a07a09e53d",
+      "lines": 12,
+      "moduleLineCount": 139,
+      "startLine": 34,
+      "endLine": 45,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShear"
+      ]
+    },
+    "LinearStudy.homogeneousCoordinateShear_axis_eval": {
+      "declaration": "LinearStudy.homogeneousCoordinateShear_axis_eval",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearMonic.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousCoordinateShear_axis_eval.{u_1} {K : Type u_1} [Field K] {n : ℕ} (a : Fin n → K)\n  (H : MvPolynomial (Fin (n + 1)) K) :\n  (MvPolynomial.eval fun i => Fin.cases 1 0 i) ((LinearStudy.homogeneousCoordinateShear a) H) =\n    (MvPolynomial.eval fun i => Fin.cases 1 a i) H",
+      "sha256": "bcd87ba68a42becd989f6926919d85a7d2c512150b3796f6d59f46a07a09e53d",
+      "lines": 10,
+      "moduleLineCount": 139,
+      "startLine": 47,
+      "endLine": 56,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShear"
+      ]
+    },
+    "LinearStudy.homogeneous_exists_chart_nonzero": {
+      "declaration": "LinearStudy.homogeneous_exists_chart_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearMonic.lean",
+      "line": 60,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_exists_chart_nonzero.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]\n  (H : MvPolynomial (Fin (n + 1)) K) {d : ℕ} (hH : H.IsHomogeneous d) (hne : H ≠ 0) :\n  ∃ a, (MvPolynomial.eval fun i => Fin.cases 1 a i) H ≠ 0",
+      "sha256": "bcd87ba68a42becd989f6926919d85a7d2c512150b3796f6d59f46a07a09e53d",
+      "lines": 15,
+      "moduleLineCount": 139,
+      "startLine": 58,
+      "endLine": 72,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.affineDehomogenize",
+        "LinearStudy.affineDehomogenize_eval",
+        "LinearStudy.homogeneous_affine_chart_eval"
+      ]
+    },
+    "LinearStudy.homogeneous_axis_eval_coeff": {
+      "declaration": "LinearStudy.homogeneous_axis_eval_coeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearMonic.lean",
+      "line": 76,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_axis_eval_coeff.{u_1} {K : Type u_1} [Field K] {n : ℕ} (H : MvPolynomial (Fin (n + 1)) K)\n  {d : ℕ} (hH : H.IsHomogeneous d) :\n  (MvPolynomial.eval fun i => Fin.cases 1 0 i) H = (MvPolynomial.eval 0) (((MvPolynomial.finSuccEquiv K n) H).coeff d)",
+      "sha256": "bcd87ba68a42becd989f6926919d85a7d2c512150b3796f6d59f46a07a09e53d",
+      "lines": 34,
+      "moduleLineCount": 139,
+      "startLine": 74,
+      "endLine": 107,
+      "lineCount": 34,
+      "dependencies": []
+    },
+    "LinearStudy.homogeneous_exists_linear_unit_leadingCoeff": {
+      "declaration": "LinearStudy.homogeneous_exists_linear_unit_leadingCoeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearMonic.lean",
+      "line": 112,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_exists_linear_unit_leadingCoeff.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]\n  (H : MvPolynomial (Fin (n + 1)) K) {d : ℕ} (hH : H.IsHomogeneous d) (hne : H ≠ 0) :\n  ∃ a, IsUnit ((MvPolynomial.finSuccEquiv K n) ((LinearStudy.homogeneousCoordinateShearEquiv a) H)).leadingCoeff",
+      "sha256": "bcd87ba68a42becd989f6926919d85a7d2c512150b3796f6d59f46a07a09e53d",
+      "lines": 29,
+      "moduleLineCount": 139,
+      "startLine": 109,
+      "endLine": 137,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShear",
+        "LinearStudy.homogeneousCoordinateShearEquiv",
+        "LinearStudy.homogeneousCoordinateShear_axis_eval",
+        "LinearStudy.homogeneousCoordinateShear_isHomogeneous",
+        "LinearStudy.homogeneous_axis_eval_coeff",
+        "LinearStudy.homogeneous_exists_chart_nonzero"
+      ]
+    },
+    "LinearStudy.homogeneous_linear_elimination_kernel": {
+      "declaration": "LinearStudy.homogeneous_linear_elimination_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearNormalization.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_linear_elimination_kernel.{u_1} {K : Type u_1} [Field K] {n : ℕ} (a : Fin n → K)\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K))\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I) :\n  Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K)\n    (RingHom.ker (LinearStudy.polynomialLinearEliminationHom (LinearStudy.homogeneousCoordinateShearEquiv a) I))",
+      "sha256": "4d1ef9328693e90095888380c6017342fb25ad3b0544f214bcd94417f50c6dc5",
+      "lines": 27,
+      "moduleLineCount": 143,
+      "startLine": 19,
+      "endLine": 45,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShearEquiv",
+        "LinearStudy.homogeneousCoordinateShear_isHomogeneous",
+        "LinearStudy.polynomialLinearEliminationHom",
+        "LinearStudy.polynomialLinearEliminationHom_formula",
+        "LinearStudy.polynomial_grading_map_homogeneousComponent"
+      ]
+    },
+    "LinearStudy.homogeneous_ideal_nonzero_equation": {
+      "declaration": "LinearStudy.homogeneous_ideal_nonzero_equation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearNormalization.lean",
+      "line": 49,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_ideal_nonzero_equation.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (I : Ideal (MvPolynomial (Fin n) K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I)\n  (hne : I ≠ ⊥) : ∃ d, ∃ H ∈ I, H ≠ 0 ∧ H.IsHomogeneous d",
+      "sha256": "4d1ef9328693e90095888380c6017342fb25ad3b0544f214bcd94417f50c6dc5",
+      "lines": 16,
+      "moduleLineCount": 143,
+      "startLine": 47,
+      "endLine": 62,
+      "lineCount": 16,
+      "dependencies": []
+    },
+    "LinearStudy.exists_linear_integral_normalization": {
+      "declaration": "LinearStudy.exists_linear_integral_normalization",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearNormalization.lean",
+      "line": 68,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_linear_integral_normalization.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]\n  (I : Ideal (MvPolynomial (Fin n) K)) (hi : I ≠ ⊤)\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I) :\n  ∃ s ≤ n,\n    ∃ g,\n      Function.Injective ⇑g ∧\n        g.IsIntegral ∧ ∀ (i : Fin s), ∃ L, L.IsHomogeneous 1 ∧ g (MvPolynomial.X i) = (Ideal.Quotient.mk I) L",
+      "sha256": "4d1ef9328693e90095888380c6017342fb25ad3b0544f214bcd94417f50c6dc5",
+      "lines": 46,
+      "moduleLineCount": 143,
+      "startLine": 64,
+      "endLine": 109,
+      "lineCount": 46,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShearEquiv",
+        "LinearStudy.homogeneousCoordinateShear_isHomogeneous",
+        "LinearStudy.homogeneous_exists_linear_integral_elimination",
+        "LinearStudy.homogeneous_ideal_nonzero_equation",
+        "LinearStudy.homogeneous_linear_elimination_kernel",
+        "LinearStudy.polynomialLinearEliminationHom",
+        "LinearStudy.polynomialLinearEliminationHom_formula"
+      ]
+    },
+    "LinearStudy.exists_linear_finite_normalization_krull_dimension": {
+      "declaration": "LinearStudy.exists_linear_finite_normalization_krull_dimension",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLinearNormalization.lean",
+      "line": 114,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_linear_finite_normalization_krull_dimension.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]\n  (I : Ideal (MvPolynomial (Fin n) K)) (hi : I ≠ ⊤)\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I) :\n  ∃ s ≤ n,\n    ∃ g,\n      Function.Injective ⇑g ∧\n        g.Finite ∧\n          ringKrullDim (MvPolynomial (Fin n) K ⧸ I) = ↑s ∧\n            ∀ (i : Fin s), ∃ L, L.IsHomogeneous 1 ∧ g (MvPolynomial.X i) = (Ideal.Quotient.mk I) L",
+      "sha256": "4d1ef9328693e90095888380c6017342fb25ad3b0544f214bcd94417f50c6dc5",
+      "lines": 31,
+      "moduleLineCount": 143,
+      "startLine": 111,
+      "endLine": 141,
+      "lineCount": 31,
+      "dependencies": [
+        "LinearStudy.exists_linear_integral_normalization",
+        "LinearStudy.integral_injective_ringKrullDim_eq"
+      ]
+    },
     "LinearStudy.ideal_smul_top_self": {
       "declaration": "LinearStudy.ideal_smul_top_self",
       "kind": "theorem",
@@ -14716,6 +15173,53 @@
         "LinearStudy.ParameterRing",
         "LinearStudy.arbitrary_parameter_lifts_regular",
         "LinearStudy.equationIdeal"
+      ]
+    },
+    "LinearStudy.homogeneous_zeroLocus_smul": {
+      "declaration": "LinearStudy.homogeneous_zeroLocus_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LinearNormalizationBasePoint.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_zeroLocus_smul.{u_1} {K : Type u_1} [Field K] {n : ℕ} (I : Ideal (MvPolynomial (Fin n) K))\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I) (v : Fin n → K)\n  (hv : v ∈ MvPolynomial.zeroLocus K I) (a : K) : a • v ∈ MvPolynomial.zeroLocus K I",
+      "sha256": "c1413d43fe4f620f0bfe0fb7f12fe4af1c5841298cc79c5d3ccbef9b3f4976df",
+      "lines": 15,
+      "moduleLineCount": 79,
+      "startLine": 14,
+      "endLine": 28,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.homogeneous_eval_smul"
+      ]
+    },
+    "LinearStudy.integral_linear_normalization_origin_zeroLocus": {
+      "declaration": "LinearStudy.integral_linear_normalization_origin_zeroLocus",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LinearNormalizationBasePoint.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.integral_linear_normalization_origin_zeroLocus.{u_1} {K : Type u_1} [Field K] [Infinite K] {n s : ℕ}\n  (I : Ideal (MvPolynomial (Fin n) K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I)\n  (L : Fin s → MvPolynomial (Fin n) K) (hL : ∀ (i : Fin s), (L i).IsHomogeneous 1)\n  (g : MvPolynomial (Fin s) K →ₐ[K] MvPolynomial (Fin n) K ⧸ I)\n  (hg : ∀ (i : Fin s), g (MvPolynomial.X i) = (Ideal.Quotient.mk I) (L i)) (hint : g.IsIntegral) (v : Fin n → K)\n  (hv : v ∈ MvPolynomial.zeroLocus K I) (hLv : ∀ (i : Fin s), (MvPolynomial.eval v) (L i) = 0) : v = 0",
+      "sha256": "c1413d43fe4f620f0bfe0fb7f12fe4af1c5841298cc79c5d3ccbef9b3f4976df",
+      "lines": 48,
+      "moduleLineCount": 79,
+      "startLine": 30,
+      "endLine": 77,
+      "lineCount": 48,
+      "dependencies": [
+        "LinearStudy.homogeneous_eval_smul",
+        "LinearStudy.homogeneous_zeroLocus_smul"
       ]
     },
     "LinearStudy.linearEquationSubmodule": {
@@ -33229,6 +33733,97 @@
         "LinearStudy.projective_exists_general_whole_fiber_field_degree"
       ]
     },
+    "LinearStudy.projectiveLinearNormalizationMap": {
+      "declaration": "LinearStudy.projectiveLinearNormalizationMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveLinearNormalization.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveLinearNormalizationMap {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) :\n  MvPolynomial (Fin (r + 1)) ℂ →ₐ[ℂ] LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal",
+      "sha256": "58ffa926ce85e66e84eda558dd0ca64d96e255c222ee8ca12fa47e4c49db1039",
+      "lines": 6,
+      "moduleLineCount": 83,
+      "startLine": 13,
+      "endLine": 18,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal"
+      ]
+    },
+    "LinearStudy.projective_exists_linear_normalization": {
+      "declaration": "LinearStudy.projective_exists_linear_normalization",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveLinearNormalization.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_linear_normalization {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) :\n  ∃ r P,\n    r ≤ n ∧\n      P ≠ 0 ∧\n        P.natDegree = r ∧\n          (∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)) ∧\n            ∃ L,\n              (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧\n                Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧\n                  (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧\n                    ringKrullDim (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) = ↑(r + 1) ∧\n                      ∀ (v : LinearStudy.CoordinateVector n),\n                        v ≠ 0 →\n                          (∀ H ∈ V.ideal.toIdeal, (MvPolynomial.eval v) H = 0) →\n                            (fun i => (MvPolynomial.eval v) (L i)) ≠ 0",
+      "sha256": "58ffa926ce85e66e84eda558dd0ca64d96e255c222ee8ca12fa47e4c49db1039",
+      "lines": 41,
+      "moduleLineCount": 83,
+      "startLine": 20,
+      "endLine": 60,
+      "lineCount": 41,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.exists_linear_finite_normalization_krull_dimension",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.integral_linear_normalization_origin_zeroLocus",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projective_cone_hilbertPolynomial_krull_dimension"
+      ]
+    },
+    "LinearStudy.projective_exists_linear_normalization_chart_dimension": {
+      "declaration": "LinearStudy.projective_exists_linear_normalization_chart_dimension",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveLinearNormalization.lean",
+      "line": 65,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_linear_normalization_chart_dimension {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ∃ r ≤ n,\n    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧\n      ∃ L,\n        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧\n          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧\n            (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧\n              ∀ (v : LinearStudy.CoordinateVector n),\n                v ≠ 0 →\n                  (∀ H ∈ V.ideal.toIdeal, (MvPolynomial.eval v) H = 0) → (fun i => (MvPolynomial.eval v) (L i)) ≠ 0",
+      "sha256": "58ffa926ce85e66e84eda558dd0ca64d96e255c222ee8ca12fa47e4c49db1039",
+      "lines": 20,
+      "moduleLineCount": 83,
+      "startLine": 62,
+      "endLine": 81,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projective_chart_krull_dimension_of_hilbertPolynomial",
+        "LinearStudy.projective_exists_linear_normalization"
+      ]
+    },
     "LinearStudy.ProjectiveChartPolynomialParameterConclusion": {
       "declaration": "LinearStudy.ProjectiveChartPolynomialParameterConclusion",
       "kind": "def",
@@ -47917,12 +48512,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 1297,
-  "definitionCount": 245,
+  "verifiedTheoremCount": 1315,
+  "definitionCount": 250,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
   "auditExitCode": 0,
-  "scope": "The full original LinearityTheoremGoal remains UNPROVED. The exact relative-Jacobian local Lemma31Goal is PROVED by lemma31_complete; its historical name corresponds to Lemma 2.1 of the CURRENT manuscript. Actual finite freeness, arbitrary parameter actions, nonzero Jacobian socle generation and the required pairings are constructed. Actual affine completely-intersecting polynomial quotients have constructed perfect pairings, low-degree vanishing, Jacobian trace and nonzero weighted relations under their explicit local generator hypotheses. Original smooth/point-local/formal and completion comparisons have been advanced, but the SAME original Setup fiber to the full projective relation has not been closed. From the original homogeneous endomorphism f and nonempty homogeneous prime V, the actual cone and chart pullbacks, function fields, ratio field, total invariance and original iterates are constructed. Original general WHOLE fibers are finite/reduced and smooth/unramified on constructed nonempty target opens. Actual cone Hilbert-Serre and the ORIGINAL Hilbert polynomials P,C give deg(C)=deg(P)+1, cone image degree=q^deg(C), and WHOLE projective/chart image degree=q^deg(P). NEW checkpoint 87 proves integral Krull-dimension preservation and compares ACTUAL finite Noether normalization with the ORIGINAL coordinate filtration using constructed representatives, module generators, multiplication matrices and bounded coefficients. The actual cumulative Hilbert degree equals actual cone Krull dimension. Constructed cone/chart/ratio fraction fields and transcendence-degree towers then prove deg(P)=r for the ACTUAL inhabited original affine chart ring Krull dimension AND its actual spectrum topological dimension. Therefore the ORIGINAL actual chart degree is q^r and EVERY original iterate has a constructed nonempty open where each WHOLE point fiber has (q^k)^r points. No dimension, cardinality, degree formula or normalization/growth bound is an input to the aggregate original-map theorems. The GLOBAL projective Proj/Scheme comparison, Bertini selection, original full relation assembly, canonical-sheaf fixed-twist injection, geometric Koszul/proper duality/uniform Serre lifting and actual Cartier/Bezout intersection remain OPEN. The final numeric contradiction is checked only as an implication under its explicit intersection inputs; it does not prove the full Linearity Theorem. NEW checkpoint 88 constructs the actual normalization/fraction scalar tower, separable characteristic-zero extension and differential base-change basis. It proves actual Krull dimension equals actual differential rank for finite-type characteristic-zero domains WITHOUT global smoothness. For the ORIGINAL inhabited projective chart, Hilbert degree, Krull dimension and actual differential rank are identified. One aggregate original-map theorem gives the SAME dimension for actual polynomial local parameters at EVERY original smooth chart point and for EVERY original iterate WHOLE general fiber point count. The original full projective polynomial relation and all remaining geometric lifting and intersection obligations above remain OPEN; the final theorem is still unproved. NEW checkpoint 89 intersects the ORIGINAL iterate good-locus and point-count opens, constructs their nonempty witness and preserves the SAME whole-fiber dimension count and actual reduced in-V equation quotient. EVERY actual coordinate point is linked to the SAME smooth target and genuine unramified chart map. Common actual ambient linear coordinates, original local generators and formal normal-ideal identities are constructed on the ENTIRE original fiber, with r identified with actual Krull/differential dimension and c=n-r. The ambient fiber may have normal nilpotents; reducedness is claimed only for the in-V quotient. The SAME-fiber common Jacobian socle and full homogeneous relation, all Section 4 lifting, global Proj/Bertini and actual intersection obligations remain OPEN. The final theorem is unproved. NEW checkpoint 90 constructs the ORIGINAL ambient fiber ideal from f_i-y_i*f_0, proves its quotient finite while retaining possible normal nilpotents, and compares its actual point set and radical with the reduced in-V fiber. The actual homogeneous fiber forms have no points at infinity; their dehomogenized equations have exact degree q, regular highest forms and origin-only highest-form zero locus. These are derived on the SAME original whole good fiber for EVERY iterate, together with actual common coordinates and local normal equations, not supplied as assumptions. This is ONE whole general fiber; simultaneous Bertini selection of d target points and their fiber union is not yet proved. Common normal Jacobian socle, the full homogeneous relation, Section 4 geometric lifting, global Proj comparison and actual intersection remain OPEN. The final theorem remains unproved. NEW checkpoint 91 constructs centered LINEAR polynomial target parameters from actual original smoothness, with count equal to the SAME actual differential/Krull dimension r. They generate the actual target local quotient maximal ideal on EVERY original iterate good fiber. Original local quotient pullbacks commute with independent source/target coordinate equivalences, preserving genuine unramification under an actual ambient ring-map diagram. Actual denominator localizations and rational chart pullbacks are compared under source coordinate equivalences. These coordinate bridges do not yet assemble the same-fiber common Jacobian socle or full homogeneous relation. Bertini d-fiber union, Section 4 geometric lifting and actual intersection remain OPEN; full theorem unproved. NEW checkpoint 92 constructs normal polynomial and formal first-order equations of the ORIGINAL ideal at the SAME actual smooth target, with c=n-r and the SAME original dimension r. The actual whole-fiber aggregate retains these target equations. Original rational source and linear target coordinate changes transport actual local unramification; affine centering transforms original numerators using the actual unchanged denominator. These bridges still do not discharge the SAME common-Jacobian socle or full homogeneous relation. Bertini union, Section 4, global Proj and actual intersection remain OPEN; the final theorem remains unproved. NEW checkpoint 93 derives both formal normal radical and tangent parameter generation from actual rational local unramification, actual polynomial source/target generators with normalized target first jets, and an actual ideal-power sandwich. It proves the SAME common normal polynomial Jacobian is a nonzero annihilator generator in the formal and actual Artinian local polynomial fiber ring; no socle or either formal condition is assumed. This remains conditional on those actual geometric inputs; their full original whole-fiber assembly and homogeneous relation are OPEN. Bertini, Section 4, global Proj and actual intersection remain OPEN. Final theorem UNPROVED. NEW checkpoint 94 constructs centered actual original target normal equations at the SAME whole-fiber target and with the SAME actual r. Actual local generators imply actual point-ideal containment. Original rational numerator formulas derive the target-centering diagram, transport genuine unramification and ideal-power inequalities; actual source denominator equivalences also transport the original power sandwich. No transformed inequality or unramification is newly assumed. Full original whole-fiber common-Jacobian assembly and homogeneous relation remain OPEN; Bertini, Section 4, global Proj and actual intersection OPEN. The final theorem remains UNPROVED. NEW checkpoint 95 derives original whole-fiber actual centered rational local inputs at EVERY source point over the SAME constructed good target open. Independent source coordinates, target reindexing, inverse linear coordinates and centering construct the actual map and primes. The original total invariance supplies the original and transformed ideal power sandwich; genuine unramification and actual origin/source-point prime identities are derived, not input. These are actual local inputs for the common-Jacobian bridge, not the completed homogeneous relation. The transformed ambient quotient finiteness, source/target normal data and SAME polynomial Jacobian still need full assembly; simultaneous Bertini union, Section 4, global Proj and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 96 constructs, for EVERY original iterate and every whole fiber on the SAME nonempty good target open, actual common linear source and centered target coordinates and the SAME polynomial normal Jacobian as a nonzero local socle generator at EVERY original source point, assuming the ACTUAL chart dimension r>0 explicitly. Original normal generators are constructed, not supplied. The transformed ambient equation quotient is finite, retains normal nilpotents, and its actual point evaluations are derived. This closes the original whole-fiber local-Jacobian assembly, not the full homogeneous relation: covering all maximal ideals, transformed leading forms, the residue/degree bound and original homogeneous conversion still need assembly. Simultaneous Bertini union, global Proj, Section 4 and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 97 covers EVERY maximal ideal of the SAME actual centered ambient equation quotient by constructing its original source point from its actual scalar residue map and the exact changed ambient ideal. The SAME original whole-fiber Jacobian now generates a NONZERO local socle at EVERY maximal ideal, for every original iterate with positive actual chart dimension explicit. Actual linear source coordinate changes and reindexing commute with homogeneous component projections. Neither reducedness of the ambient ring nor point coverage is assumed. Transformed leading-form regularity, degree bounds, residue assembly and ORIGINAL homogeneous relation remain OPEN. Bertini union, Section 4 and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 98 derives the SAME actual centered whole-fiber degree and highest system, the c(q-1) normal Jacobian bound, and the global nilradical annihilator for EVERY original iterate with positive actual chart dimension explicit. An actual quotient algebra equivalence transports the perfect multiplication pairing and low-degree vanishing. Actual zero-locus weights are constructed and all nonzero under explicit highest-system and annihilator hypotheses, without reducedness. Insertion into the ORIGINAL whole-fiber homogeneous relation is still OPEN. Bertini union, Section 4 geometry and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 99 proves the ORIGINAL homogeneous weighted relation on the SAME original whole good fiber for EVERY original iterate, on a constructed nonempty good target open, with actual r>0 and iterate degree >1 explicit. ALL coefficients are nonzero and ALL original homogeneous polynomials of degree t=r(q-1)-1 satisfy the relation. The vectors use normalized representatives (1,x). Actual source quotient algebra and point equivalences, degree preservation and dehomogenization are proved. Local socles, transformed highest system, degree bound and residue relation are derived from original f,V, rather than added as geometric inputs. Simultaneous Bertini target intersection/fiber union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 100 derives the ORIGINAL whole-good-fiber homogeneous relation for EVERY original iterate and ANY chosen nonzero homogeneous coordinate representatives. The degree remains t=r(q-1)-1 and every coefficient is nonzero. Coordinate zero and affine ratios are derived from actual projective equality, and the exact homogeneous scaling factor transports the already proved normalized relation. The original wrapper assumes no extra residue or normalized relation. Positive actual dimension, iterate degree >1 and the constructed good target open remain explicit. Simultaneous Bertini union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED.",
+  "scope": "The full original LinearityTheoremGoal remains UNPROVED. The exact relative-Jacobian local Lemma31Goal is PROVED by lemma31_complete; its historical name corresponds to Lemma 2.1 of the CURRENT manuscript. Actual finite freeness, arbitrary parameter actions, nonzero Jacobian socle generation and the required pairings are constructed. Actual affine completely-intersecting polynomial quotients have constructed perfect pairings, low-degree vanishing, Jacobian trace and nonzero weighted relations under their explicit local generator hypotheses. Original smooth/point-local/formal and completion comparisons have been advanced, but the SAME original Setup fiber to the full projective relation has not been closed. From the original homogeneous endomorphism f and nonempty homogeneous prime V, the actual cone and chart pullbacks, function fields, ratio field, total invariance and original iterates are constructed. Original general WHOLE fibers are finite/reduced and smooth/unramified on constructed nonempty target opens. Actual cone Hilbert-Serre and the ORIGINAL Hilbert polynomials P,C give deg(C)=deg(P)+1, cone image degree=q^deg(C), and WHOLE projective/chart image degree=q^deg(P). NEW checkpoint 87 proves integral Krull-dimension preservation and compares ACTUAL finite Noether normalization with the ORIGINAL coordinate filtration using constructed representatives, module generators, multiplication matrices and bounded coefficients. The actual cumulative Hilbert degree equals actual cone Krull dimension. Constructed cone/chart/ratio fraction fields and transcendence-degree towers then prove deg(P)=r for the ACTUAL inhabited original affine chart ring Krull dimension AND its actual spectrum topological dimension. Therefore the ORIGINAL actual chart degree is q^r and EVERY original iterate has a constructed nonempty open where each WHOLE point fiber has (q^k)^r points. No dimension, cardinality, degree formula or normalization/growth bound is an input to the aggregate original-map theorems. The GLOBAL projective Proj/Scheme comparison, Bertini selection, original full relation assembly, canonical-sheaf fixed-twist injection, geometric Koszul/proper duality/uniform Serre lifting and actual Cartier/Bezout intersection remain OPEN. The final numeric contradiction is checked only as an implication under its explicit intersection inputs; it does not prove the full Linearity Theorem. NEW checkpoint 88 constructs the actual normalization/fraction scalar tower, separable characteristic-zero extension and differential base-change basis. It proves actual Krull dimension equals actual differential rank for finite-type characteristic-zero domains WITHOUT global smoothness. For the ORIGINAL inhabited projective chart, Hilbert degree, Krull dimension and actual differential rank are identified. One aggregate original-map theorem gives the SAME dimension for actual polynomial local parameters at EVERY original smooth chart point and for EVERY original iterate WHOLE general fiber point count. The original full projective polynomial relation and all remaining geometric lifting and intersection obligations above remain OPEN; the final theorem is still unproved. NEW checkpoint 89 intersects the ORIGINAL iterate good-locus and point-count opens, constructs their nonempty witness and preserves the SAME whole-fiber dimension count and actual reduced in-V equation quotient. EVERY actual coordinate point is linked to the SAME smooth target and genuine unramified chart map. Common actual ambient linear coordinates, original local generators and formal normal-ideal identities are constructed on the ENTIRE original fiber, with r identified with actual Krull/differential dimension and c=n-r. The ambient fiber may have normal nilpotents; reducedness is claimed only for the in-V quotient. The SAME-fiber common Jacobian socle and full homogeneous relation, all Section 4 lifting, global Proj/Bertini and actual intersection obligations remain OPEN. The final theorem is unproved. NEW checkpoint 90 constructs the ORIGINAL ambient fiber ideal from f_i-y_i*f_0, proves its quotient finite while retaining possible normal nilpotents, and compares its actual point set and radical with the reduced in-V fiber. The actual homogeneous fiber forms have no points at infinity; their dehomogenized equations have exact degree q, regular highest forms and origin-only highest-form zero locus. These are derived on the SAME original whole good fiber for EVERY iterate, together with actual common coordinates and local normal equations, not supplied as assumptions. This is ONE whole general fiber; simultaneous Bertini selection of d target points and their fiber union is not yet proved. Common normal Jacobian socle, the full homogeneous relation, Section 4 geometric lifting, global Proj comparison and actual intersection remain OPEN. The final theorem remains unproved. NEW checkpoint 91 constructs centered LINEAR polynomial target parameters from actual original smoothness, with count equal to the SAME actual differential/Krull dimension r. They generate the actual target local quotient maximal ideal on EVERY original iterate good fiber. Original local quotient pullbacks commute with independent source/target coordinate equivalences, preserving genuine unramification under an actual ambient ring-map diagram. Actual denominator localizations and rational chart pullbacks are compared under source coordinate equivalences. These coordinate bridges do not yet assemble the same-fiber common Jacobian socle or full homogeneous relation. Bertini d-fiber union, Section 4 geometric lifting and actual intersection remain OPEN; full theorem unproved. NEW checkpoint 92 constructs normal polynomial and formal first-order equations of the ORIGINAL ideal at the SAME actual smooth target, with c=n-r and the SAME original dimension r. The actual whole-fiber aggregate retains these target equations. Original rational source and linear target coordinate changes transport actual local unramification; affine centering transforms original numerators using the actual unchanged denominator. These bridges still do not discharge the SAME common-Jacobian socle or full homogeneous relation. Bertini union, Section 4, global Proj and actual intersection remain OPEN; the final theorem remains unproved. NEW checkpoint 93 derives both formal normal radical and tangent parameter generation from actual rational local unramification, actual polynomial source/target generators with normalized target first jets, and an actual ideal-power sandwich. It proves the SAME common normal polynomial Jacobian is a nonzero annihilator generator in the formal and actual Artinian local polynomial fiber ring; no socle or either formal condition is assumed. This remains conditional on those actual geometric inputs; their full original whole-fiber assembly and homogeneous relation are OPEN. Bertini, Section 4, global Proj and actual intersection remain OPEN. Final theorem UNPROVED. NEW checkpoint 94 constructs centered actual original target normal equations at the SAME whole-fiber target and with the SAME actual r. Actual local generators imply actual point-ideal containment. Original rational numerator formulas derive the target-centering diagram, transport genuine unramification and ideal-power inequalities; actual source denominator equivalences also transport the original power sandwich. No transformed inequality or unramification is newly assumed. Full original whole-fiber common-Jacobian assembly and homogeneous relation remain OPEN; Bertini, Section 4, global Proj and actual intersection OPEN. The final theorem remains UNPROVED. NEW checkpoint 95 derives original whole-fiber actual centered rational local inputs at EVERY source point over the SAME constructed good target open. Independent source coordinates, target reindexing, inverse linear coordinates and centering construct the actual map and primes. The original total invariance supplies the original and transformed ideal power sandwich; genuine unramification and actual origin/source-point prime identities are derived, not input. These are actual local inputs for the common-Jacobian bridge, not the completed homogeneous relation. The transformed ambient quotient finiteness, source/target normal data and SAME polynomial Jacobian still need full assembly; simultaneous Bertini union, Section 4, global Proj and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 96 constructs, for EVERY original iterate and every whole fiber on the SAME nonempty good target open, actual common linear source and centered target coordinates and the SAME polynomial normal Jacobian as a nonzero local socle generator at EVERY original source point, assuming the ACTUAL chart dimension r>0 explicitly. Original normal generators are constructed, not supplied. The transformed ambient equation quotient is finite, retains normal nilpotents, and its actual point evaluations are derived. This closes the original whole-fiber local-Jacobian assembly, not the full homogeneous relation: covering all maximal ideals, transformed leading forms, the residue/degree bound and original homogeneous conversion still need assembly. Simultaneous Bertini union, global Proj, Section 4 and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 97 covers EVERY maximal ideal of the SAME actual centered ambient equation quotient by constructing its original source point from its actual scalar residue map and the exact changed ambient ideal. The SAME original whole-fiber Jacobian now generates a NONZERO local socle at EVERY maximal ideal, for every original iterate with positive actual chart dimension explicit. Actual linear source coordinate changes and reindexing commute with homogeneous component projections. Neither reducedness of the ambient ring nor point coverage is assumed. Transformed leading-form regularity, degree bounds, residue assembly and ORIGINAL homogeneous relation remain OPEN. Bertini union, Section 4 and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 98 derives the SAME actual centered whole-fiber degree and highest system, the c(q-1) normal Jacobian bound, and the global nilradical annihilator for EVERY original iterate with positive actual chart dimension explicit. An actual quotient algebra equivalence transports the perfect multiplication pairing and low-degree vanishing. Actual zero-locus weights are constructed and all nonzero under explicit highest-system and annihilator hypotheses, without reducedness. Insertion into the ORIGINAL whole-fiber homogeneous relation is still OPEN. Bertini union, Section 4 geometry and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 99 proves the ORIGINAL homogeneous weighted relation on the SAME original whole good fiber for EVERY original iterate, on a constructed nonempty good target open, with actual r>0 and iterate degree >1 explicit. ALL coefficients are nonzero and ALL original homogeneous polynomials of degree t=r(q-1)-1 satisfy the relation. The vectors use normalized representatives (1,x). Actual source quotient algebra and point equivalences, degree preservation and dehomogenization are proved. Local socles, transformed highest system, degree bound and residue relation are derived from original f,V, rather than added as geometric inputs. Simultaneous Bertini target intersection/fiber union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 100 derives the ORIGINAL whole-good-fiber homogeneous relation for EVERY original iterate and ANY chosen nonzero homogeneous coordinate representatives. The degree remains t=r(q-1)-1 and every coefficient is nonzero. Coordinate zero and affine ratios are derived from actual projective equality, and the exact homogeneous scaling factor transports the already proved normalized relation. The original wrapper assumes no extra residue or normalized relation. Positive actual dimension, iterate degree >1 and the constructed good target open remain explicit. Simultaneous Bertini union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 101 constructs genuine degree-one linear Noether normalization for proper homogeneous ideals over infinite fields. The actual monic linear shear, integral elimination, homogeneous kernel and induction derive an injective integral and module-finite map whose generators are actual degree-one original forms. Its variable count equals actual Krull dimension, not an input parameter. Ordinary nonlinear Nagata normalization is not substituted. This is a foundation for simultaneous Bertini selection, NOT that selection: exact projective section degree, simultaneous smooth target points, global Proj/Scheme comparison, Section 4 geometric lifting and actual intersection remain OPEN; full theorem still UNPROVED. NEW checkpoint 102 proves basepoint-freeness of actual integral linear normalization by evaluating a monic equation on all scalar multiples over an infinite field. It constructs actual original degree-one forms L_0,...,L_r for V, the injective finite cone map defined by those forms, and no nonzero common zero on the original cone. The number r is derived from the actual Hilbert-polynomial degree and original affine-chart Krull dimension. No basepoint-free tuple, finite map or dimension is added as an input. Exact generic linear-section cardinality and its identification with degree V, simultaneous Bertini, global scheme comparison, Section 4 and actual intersection remain OPEN; the full theorem is UNPROVED.",
   "sourceRanges": {
     "LinearStudy.affine_polynomial_weighted_point_relation": {
       "path": "Linear/AffinePointRelation.lean",
@@ -49467,6 +50062,15 @@
         "LinearStudy.powerSeries_constantCoeff_kernel"
       ]
     },
+    "LinearStudy.polynomialLinearEliminationHom": {
+      "path": "Linear/HomogeneousLinearElimination.lean",
+      "startLine": 29,
+      "endLine": 37,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialLinearEliminationBaseHom"
+      ]
+    },
     "LinearStudy.projectiveCoordinateFractionMap_comp": {
       "path": "Linear/ProjectivePullbackComposition.lean",
       "startLine": 37,
@@ -49509,6 +50113,17 @@
         "LinearStudy.IntegralProjectiveEquations",
         "LinearStudy.IntegralProjectiveEquations.mk",
         "LinearStudy.IntegralProjectiveEquations.noConfusion"
+      ]
+    },
+    "LinearStudy.homogeneous_exists_chart_nonzero": {
+      "path": "Linear/HomogeneousLinearMonic.lean",
+      "startLine": 58,
+      "endLine": 72,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.affineDehomogenize",
+        "LinearStudy.affineDehomogenize_eval",
+        "LinearStudy.homogeneous_affine_chart_eval"
       ]
     },
     "LinearStudy.perfectPairingOfNormalizedContraction": {
@@ -51019,6 +51634,15 @@
         "LinearStudy.polynomialLinearChangeEquiv"
       ]
     },
+    "LinearStudy.homogeneousCoordinateShear_isHomogeneous": {
+      "path": "Linear/HomogeneousLinearMonic.lean",
+      "startLine": 34,
+      "endLine": 45,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShear"
+      ]
+    },
     "LinearStudy.normalizedProjectivePoint_injective": {
       "path": "Linear/ProjectiveAffineFiberFinite.lean",
       "startLine": 12,
@@ -51073,6 +51697,15 @@
       "endLine": 36,
       "lineCount": 3,
       "dependencies": []
+    },
+    "LinearStudy.polynomialLinearEliminationHom_X": {
+      "path": "Linear/HomogeneousLinearElimination.lean",
+      "startLine": 75,
+      "endLine": 94,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.polynomialLinearEliminationHom"
+      ]
     },
     "LinearStudy.homogeneousQuotientComponent_of_low_degree": {
       "path": "Linear/HomogeneousQuotient.lean",
@@ -52176,6 +52809,24 @@
       "lineCount": 8,
       "dependencies": [
         "koszulComplex.dAlternating"
+      ]
+    },
+    "LinearStudy.projective_exists_linear_normalization": {
+      "path": "Linear/ProjectiveLinearNormalization.lean",
+      "startLine": 20,
+      "endLine": 60,
+      "lineCount": 41,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.exists_linear_finite_normalization_krull_dimension",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.integral_linear_normalization_origin_zeroLocus",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projective_cone_hilbertPolynomial_krull_dimension"
       ]
     },
     "LinearStudy.HomogeneousEndomorphism.comp": {
@@ -53333,6 +53984,16 @@
       "lineCount": 3,
       "dependencies": []
     },
+    "LinearStudy.polynomialLinearEliminationHom_isIntegral": {
+      "path": "Linear/HomogeneousLinearElimination.lean",
+      "startLine": 39,
+      "endLine": 73,
+      "lineCount": 35,
+      "dependencies": [
+        "LinearStudy.polynomialLinearEliminationBaseHom",
+        "LinearStudy.polynomialLinearEliminationHom"
+      ]
+    },
     "LinearStudy.homogeneousQuotientComponent_mem_piece": {
       "path": "Linear/HomogeneousCoordinatePieces.lean",
       "startLine": 34,
@@ -53551,6 +54212,20 @@
       "endLine": 35,
       "lineCount": 3,
       "dependencies": []
+    },
+    "LinearStudy.homogeneous_exists_linear_unit_leadingCoeff": {
+      "path": "Linear/HomogeneousLinearMonic.lean",
+      "startLine": 109,
+      "endLine": 137,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShear",
+        "LinearStudy.homogeneousCoordinateShearEquiv",
+        "LinearStudy.homogeneousCoordinateShear_axis_eval",
+        "LinearStudy.homogeneousCoordinateShear_isHomogeneous",
+        "LinearStudy.homogeneous_axis_eval_coeff",
+        "LinearStudy.homogeneous_exists_chart_nonzero"
+      ]
     },
     "LinearStudy.polynomialDoubleTensor_left": {
       "path": "Linear/TensorDifference.lean",
@@ -54469,6 +55144,15 @@
       "endLine": 56,
       "lineCount": 6,
       "dependencies": []
+    },
+    "LinearStudy.homogeneousCoordinateShear_axis_eval": {
+      "path": "Linear/HomogeneousLinearMonic.lean",
+      "startLine": 47,
+      "endLine": 56,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShear"
+      ]
     },
     "ExteriorAlgebra.baseChangeι_mul_add_swap": {
       "path": "Linear/Vendor/ExteriorBaseChange.lean",
@@ -55392,6 +56076,17 @@
       "lineCount": 19,
       "dependencies": []
     },
+    "LinearStudy.projectiveLinearNormalizationMap": {
+      "path": "Linear/ProjectiveLinearNormalization.lean",
+      "startLine": 13,
+      "endLine": 18,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal"
+      ]
+    },
     "LinearStudy.unit_coefficient_generates_annihilator": {
       "path": "Linear/Primitive.lean",
       "startLine": 35,
@@ -56005,6 +56700,26 @@
         "LinearStudy.HomogeneousEndomorphism.onPoints",
         "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
         "LinearStudy.ProjectivePoint"
+      ]
+    },
+    "LinearStudy.projective_exists_linear_normalization_chart_dimension": {
+      "path": "Linear/ProjectiveLinearNormalization.lean",
+      "startLine": 62,
+      "endLine": 81,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projective_chart_krull_dimension_of_hilbertPolynomial",
+        "LinearStudy.projective_exists_linear_normalization"
       ]
     },
     "LinearStudy.ideal_generators_of_conormal_span": {
@@ -57284,6 +57999,16 @@
         "LinearStudy.rationalPolynomialChartMap"
       ]
     },
+    "LinearStudy.polynomialLinearEliminationHom_formula": {
+      "path": "Linear/HomogeneousLinearElimination.lean",
+      "startLine": 96,
+      "endLine": 109,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.polynomialLinearEliminationHom",
+        "LinearStudy.polynomialLinearEliminationHom_X"
+      ]
+    },
     "LinearStudy.smoothProjectivePullbackEquations": {
       "path": "Linear/SmoothProjectiveFormalSocle.lean",
       "startLine": 43,
@@ -57712,6 +58437,13 @@
         "LinearStudy.ProjectivePoint"
       ]
     },
+    "LinearStudy.polynomialLinearEliminationBaseHom": {
+      "path": "Linear/HomogeneousLinearElimination.lean",
+      "startLine": 19,
+      "endLine": 27,
+      "lineCount": 9,
+      "dependencies": []
+    },
     "LinearStudy.affineChartPolynomialMap_pointKernel_comap": {
       "path": "Linear/ProjectiveAffinePoint.lean",
       "startLine": 12,
@@ -58100,6 +58832,21 @@
         "LinearStudy.powerSeriesCoordinateChart",
         "LinearStudy.totalVariableSplit",
         "LinearStudy.totalVariableSplit_normal"
+      ]
+    },
+    "LinearStudy.exists_linear_integral_normalization": {
+      "path": "Linear/HomogeneousLinearNormalization.lean",
+      "startLine": 64,
+      "endLine": 109,
+      "lineCount": 46,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShearEquiv",
+        "LinearStudy.homogeneousCoordinateShear_isHomogeneous",
+        "LinearStudy.homogeneous_exists_linear_integral_elimination",
+        "LinearStudy.homogeneous_ideal_nonzero_equation",
+        "LinearStudy.homogeneous_linear_elimination_kernel",
+        "LinearStudy.polynomialLinearEliminationHom",
+        "LinearStudy.polynomialLinearEliminationHom_formula"
       ]
     },
     "LinearStudy.polynomial_reindexed_low_degree_pairing": {
@@ -60595,6 +61342,16 @@
       "lineCount": 17,
       "dependencies": []
     },
+    "LinearStudy.exists_linear_finite_normalization_krull_dimension": {
+      "path": "Linear/HomogeneousLinearNormalization.lean",
+      "startLine": 111,
+      "endLine": 141,
+      "lineCount": 31,
+      "dependencies": [
+        "LinearStudy.exists_linear_integral_normalization",
+        "LinearStudy.integral_injective_ringKrullDim_eq"
+      ]
+    },
     "LinearStudy.powerSeriesResidueFieldEquiv_mk": {
       "path": "Linear/TensorSpecialization.lean",
       "startLine": 92,
@@ -61125,6 +61882,16 @@
         "LinearStudy.projectiveChartFractionMap",
         "LinearStudy.projectiveChartFractionMap_comp",
         "LinearStudy.projectiveChartFractionMap_identity"
+      ]
+    },
+    "LinearStudy.homogeneousCoordinateShearEquiv": {
+      "path": "Linear/HomogeneousLinearMonic.lean",
+      "startLine": 28,
+      "endLine": 32,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShear",
+        "LinearStudy.homogeneousCoordinateShear_comp_neg"
       ]
     },
     "LinearStudy.projective_coordinate_hilbertPolynomial_degree_bound": {
@@ -63876,6 +64643,13 @@
         "ExteriorAlgebra.prodEquivProd"
       ]
     },
+    "LinearStudy.homogeneous_ideal_nonzero_equation": {
+      "path": "Linear/HomogeneousLinearNormalization.lean",
+      "startLine": 47,
+      "endLine": 62,
+      "lineCount": 16,
+      "dependencies": []
+    },
     "LinearStudy.HomogeneousEndomorphism.comp_evalVector": {
       "path": "Linear/Projective.lean",
       "startLine": 95,
@@ -64761,6 +65535,15 @@
         "ExteriorAlgebra.prodRingEquiv"
       ]
     },
+    "LinearStudy.homogeneous_zeroLocus_smul": {
+      "path": "Linear/LinearNormalizationBasePoint.lean",
+      "startLine": 14,
+      "endLine": 28,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.homogeneous_eval_smul"
+      ]
+    },
     "LinearStudy.projectiveCoordinateRatioMap_finite": {
       "path": "Linear/ProjectiveCoordinateRatioMap.lean",
       "startLine": 86,
@@ -65210,6 +65993,13 @@
         "depth_le_ringKrullDim"
       ]
     },
+    "LinearStudy.homogeneous_axis_eval_coeff": {
+      "path": "Linear/HomogeneousLinearMonic.lean",
+      "startLine": 74,
+      "endLine": 107,
+      "lineCount": 34,
+      "dependencies": []
+    },
     "LinearStudy.rational_linear_normal_common_theta_formal_socle": {
       "path": "Linear/RationalLinearNormalSocle.lean",
       "startLine": 111,
@@ -65359,6 +66149,19 @@
         "LinearStudy.normalVariableIndex",
         "LinearStudy.powerSeriesMapEquiv",
         "LinearStudy.powerSeriesMapEquiv_univariate_coeff"
+      ]
+    },
+    "LinearStudy.homogeneous_linear_elimination_kernel": {
+      "path": "Linear/HomogeneousLinearNormalization.lean",
+      "startLine": 19,
+      "endLine": 45,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShearEquiv",
+        "LinearStudy.homogeneousCoordinateShear_isHomogeneous",
+        "LinearStudy.polynomialLinearEliminationHom",
+        "LinearStudy.polynomialLinearEliminationHom_formula",
+        "LinearStudy.polynomial_grading_map_homogeneousComponent"
       ]
     },
     "LinearStudy.powerSeries_substitution_maps_square": {
@@ -66136,6 +66939,13 @@
         "LinearStudy.dualGenerator"
       ]
     },
+    "LinearStudy.homogeneousCoordinateShear": {
+      "path": "Linear/HomogeneousLinearMonic.lean",
+      "startLine": 11,
+      "endLine": 17,
+      "lineCount": 7,
+      "dependencies": []
+    },
     "isCohenMacaulayLocalRing_iff": {
       "path": "Linear/Vendor/CM/CohenMacaulayBasic.lean",
       "startLine": 406,
@@ -66238,6 +67048,25 @@
         "LinearStudy.thickeningIdeal",
         "LinearStudy.thickeningMk",
         "LinearStudy.thickeningReduction"
+      ]
+    },
+    "LinearStudy.homogeneousCoordinateShear_comp_neg": {
+      "path": "Linear/HomogeneousLinearMonic.lean",
+      "startLine": 19,
+      "endLine": 26,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShear"
+      ]
+    },
+    "LinearStudy.integral_linear_normalization_origin_zeroLocus": {
+      "path": "Linear/LinearNormalizationBasePoint.lean",
+      "startLine": 30,
+      "endLine": 77,
+      "lineCount": 48,
+      "dependencies": [
+        "LinearStudy.homogeneous_eval_smul",
+        "LinearStudy.homogeneous_zeroLocus_smul"
       ]
     },
     "LinearStudy.smooth_normal_polynomial_jacobian_nonzero": {
@@ -67860,6 +68689,20 @@
         "LinearStudy.pairingRightReduction",
         "LinearStudy.pairingRightReduction_pairing",
         "LinearStudy.pairingTensorEndEquiv"
+      ]
+    },
+    "LinearStudy.homogeneous_exists_linear_integral_elimination": {
+      "path": "Linear/HomogeneousLinearElimination.lean",
+      "startLine": 111,
+      "endLine": 127,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.homogeneousCoordinateShearEquiv",
+        "LinearStudy.homogeneousCoordinateShear_isHomogeneous",
+        "LinearStudy.homogeneous_exists_linear_unit_leadingCoeff",
+        "LinearStudy.polynomialLinearEliminationHom",
+        "LinearStudy.polynomialLinearEliminationHom_X",
+        "LinearStudy.polynomialLinearEliminationHom_isIntegral"
       ]
     },
     "LinearStudy.CompleteIntersection": {
@@ -69920,7 +70763,8 @@
       "jacobian",
       "relation",
       "lifting",
-      "intersection"
+      "intersection",
+      "original-linear-normalization"
     ],
     "setup": [
       "<p>设 f:ℙⁿ→ℙⁿ 为满射自态射，代数次数 q&gt;1；V⊆ℙⁿ 为整的闭子簇，且 f⁻¹(V)=V（集合意义）。当前 Lean 目标用复数域上的齐次素理想、无基点齐次坐标组及真实 projective points 表述。</p>",
@@ -84731,6 +85575,214 @@
       "richStatement": true,
       "x": 30,
       "y": 60
+    },
+    {
+      "id": "linear-monic-coordinate-change",
+      "titles": [
+        "保留一次形式的首项变换",
+        "Degree-one coordinate change with unit leading coefficient"
+      ],
+      "title": "保留一次形式的首项变换",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/HomogeneousLinearMonic.lean",
+      "decl": "LinearStudy.homogeneous_exists_linear_unit_leadingCoeff",
+      "declaration": "LinearStudy.homogeneous_exists_linear_unit_leadingCoeff",
+      "deps": [],
+      "setup": [
+        "<p>无限域上的非零齐次方程。</p>",
+        "<p>A nonzero homogeneous equation over an infinite field.</p>"
+      ],
+      "result": [
+        "<p>用真正的一次剪切换坐标，使首项系数可逆；没有代入高次 Nagata 变换。</p>",
+        "<p>A genuine degree-one shear makes the leading coefficient a unit; no higher-degree Nagata substitution is used.</p>"
+      ],
+      "compactSetup": [
+        "无限域上的非零齐次方程。",
+        "A nonzero homogeneous equation over an infinite field."
+      ],
+      "compactResult": [
+        "用真正的一次剪切换坐标，使首项系数可逆；没有代入高次 Nagata 变换。",
+        "A genuine degree-one shear makes the leading coefficient a unit; no higher-degree Nagata substitution is used."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.homogeneous_exists_linear_unit_leadingCoeff.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]\n  (H : MvPolynomial (Fin (n + 1)) K) {d : ℕ} (hH : H.IsHomogeneous d) (hne : H ≠ 0) :\n  ∃ a, IsUnit ((MvPolynomial.finSuccEquiv K n) ((LinearStudy.homogeneousCoordinateShearEquiv a) H)).leadingCoeff",
+      "sha256": "bcd87ba68a42becd989f6926919d85a7d2c512150b3796f6d59f46a07a09e53d",
+      "lines": 29,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "linear-integral-elimination",
+      "titles": [
+        "实际线性整消元",
+        "Actual integral elimination using linear forms"
+      ],
+      "title": "实际线性整消元",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/HomogeneousLinearElimination.lean",
+      "decl": "LinearStudy.homogeneous_exists_linear_integral_elimination",
+      "declaration": "LinearStudy.homogeneous_exists_linear_integral_elimination",
+      "deps": [
+        "linear-monic-coordinate-change"
+      ],
+      "setup": [
+        "<p>真齐次理想及其中非零齐次方程。</p>",
+        "<p>A proper homogeneous ideal and a nonzero homogeneous equation in it.</p>"
+      ],
+      "result": [
+        "<p>通过实际商环等价构造整映射，其变量像来自一次齐次形式。</p>",
+        "<p>Construct an integral map through actual quotient equivalences; images of variables are actual degree-one forms.</p>"
+      ],
+      "compactSetup": [
+        "真齐次理想及其中非零齐次方程。",
+        "A proper homogeneous ideal and a nonzero homogeneous equation in it."
+      ],
+      "compactResult": [
+        "通过实际商环等价构造整映射，其变量像来自一次齐次形式。",
+        "Construct an integral map through actual quotient equivalences; images of variables are actual degree-one forms."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.homogeneous_exists_linear_integral_elimination.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K)) (H : MvPolynomial (Fin (n + 1)) K) {d : ℕ} (hH : H.IsHomogeneous d)\n  (hne : H ≠ 0) (hmem : H ∈ I) :\n  ∃ a,\n    (LinearStudy.polynomialLinearEliminationHom (LinearStudy.homogeneousCoordinateShearEquiv a) I).IsIntegral ∧\n      ∀ (i : Fin n),\n        ∃ L,\n          L.IsHomogeneous 1 ∧\n            (LinearStudy.polynomialLinearEliminationHom (LinearStudy.homogeneousCoordinateShearEquiv a) I)\n                (MvPolynomial.X i) =\n              (Ideal.Quotient.mk I) L",
+      "sha256": "c655fb3edb0f3415b00b6f01175aaf4402babff42368dab95ed9fda3cc728989",
+      "lines": 17,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "linear-finite-normalization",
+      "titles": [
+        "线性有限归一化与实际维数",
+        "Linear finite normalization and actual dimension"
+      ],
+      "title": "线性有限归一化与实际维数",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/HomogeneousLinearNormalization.lean",
+      "decl": "LinearStudy.exists_linear_finite_normalization_krull_dimension",
+      "declaration": "LinearStudy.exists_linear_finite_normalization_krull_dimension",
+      "deps": [
+        "linear-integral-elimination"
+      ],
+      "setup": [
+        "<p>无限域上的真齐次理想。</p>",
+        "<p>A proper homogeneous ideal over an infinite field.</p>"
+      ],
+      "result": [
+        "<p>递归齐次核给出单射模有限映射，变量个数等于实际 Krull 维数；有限性与维数不是输入。</p>",
+        "<p>Homogeneous recursive kernels give an injective module-finite map, with variable count equal to actual Krull dimension; finiteness and dimension are derived.</p>"
+      ],
+      "compactSetup": [
+        "无限域上的真齐次理想。",
+        "A proper homogeneous ideal over an infinite field."
+      ],
+      "compactResult": [
+        "递归齐次核给出单射模有限映射，变量个数等于实际 Krull 维数；有限性与维数不是输入。",
+        "Homogeneous recursive kernels give an injective module-finite map, with variable count equal to actual Krull dimension; finiteness and dimension are derived."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.exists_linear_finite_normalization_krull_dimension.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]\n  (I : Ideal (MvPolynomial (Fin n) K)) (hi : I ≠ ⊤)\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I) :\n  ∃ s ≤ n,\n    ∃ g,\n      Function.Injective ⇑g ∧\n        g.Finite ∧\n          ringKrullDim (MvPolynomial (Fin n) K ⧸ I) = ↑s ∧\n            ∀ (i : Fin s), ∃ L, L.IsHomogeneous 1 ∧ g (MvPolynomial.X i) = (Ideal.Quotient.mk I) L",
+      "sha256": "4d1ef9328693e90095888380c6017342fb25ad3b0544f214bcd94417f50c6dc5",
+      "lines": 31,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "linear-normalization-no-basepoint",
+      "titles": [
+        "线性归一化没有射影基点",
+        "Linear normalization has no projective basepoint"
+      ],
+      "title": "线性归一化没有射影基点",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/LinearNormalizationBasePoint.lean",
+      "decl": "LinearStudy.integral_linear_normalization_origin_zeroLocus",
+      "declaration": "LinearStudy.integral_linear_normalization_origin_zeroLocus",
+      "deps": [
+        "linear-finite-normalization"
+      ],
+      "setup": [
+        "<p>实际整归一化映射及其一次形式，在无限域上的原齐次锥中。</p>",
+        "<p>The actual integral normalization map and its degree-one forms, on the original homogeneous cone over an infinite field.</p>"
+      ],
+      "result": [
+        "<p>一次形式的公共零点只能是零向量：将首一整方程在全部数乘向量上求值。</p>",
+        "<p>The common zero locus of the forms contains only the zero vector, by evaluating a monic integral equation on all scalar multiples.</p>"
+      ],
+      "compactSetup": [
+        "实际整归一化映射及其一次形式，在无限域上的原齐次锥中。",
+        "The actual integral normalization map and its degree-one forms, on the original homogeneous cone over an infinite field."
+      ],
+      "compactResult": [
+        "一次形式的公共零点只能是零向量：将首一整方程在全部数乘向量上求值。",
+        "The common zero locus of the forms contains only the zero vector, by evaluating a monic integral equation on all scalar multiples."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.integral_linear_normalization_origin_zeroLocus.{u_1} {K : Type u_1} [Field K] [Infinite K] {n s : ℕ}\n  (I : Ideal (MvPolynomial (Fin n) K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I)\n  (L : Fin s → MvPolynomial (Fin n) K) (hL : ∀ (i : Fin s), (L i).IsHomogeneous 1)\n  (g : MvPolynomial (Fin s) K →ₐ[K] MvPolynomial (Fin n) K ⧸ I)\n  (hg : ∀ (i : Fin s), g (MvPolynomial.X i) = (Ideal.Quotient.mk I) (L i)) (hint : g.IsIntegral) (v : Fin n → K)\n  (hv : v ∈ MvPolynomial.zeroLocus K I) (hLv : ∀ (i : Fin s), (MvPolynomial.eval v) (L i) = 0) : v = 0",
+      "sha256": "c1413d43fe4f620f0bfe0fb7f12fe4af1c5841298cc79c5d3ccbef9b3f4976df",
+      "lines": 48,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "original-linear-normalization",
+      "titles": [
+        "原 V 的无基点有限线性投影",
+        "Basepoint-free finite linear projection for original V"
+      ],
+      "title": "原 V 的无基点有限线性投影",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/ProjectiveLinearNormalization.lean",
+      "decl": "LinearStudy.projective_exists_linear_normalization_chart_dimension",
+      "declaration": "LinearStudy.projective_exists_linear_normalization_chart_dimension",
+      "deps": [
+        "linear-normalization-no-basepoint"
+      ],
+      "setup": [
+        "<p>原整射影方程 V 和原仿射图表中的一个点。</p>",
+        "<p>The original integral projective equations V and a point in the original affine chart.</p>"
+      ],
+      "result": [
+        "<p>构造 r+1 个一次形式及其单射有限锥映射，在 V 上没有公共零点；r 等于实际图表 Krull 维数。一般截面点数等于 deg V、同时 Bertini 及第四节仍开放。</p>",
+        "<p>Construct r+1 degree-one forms and their injective finite cone map, with no common zero on V; r equals actual chart Krull dimension. Generic section cardinality = degree V, simultaneous Bertini and Section 4 remain OPEN.</p>"
+      ],
+      "compactSetup": [
+        "原整射影方程 V 和原仿射图表中的一个点。",
+        "The original integral projective equations V and a point in the original affine chart."
+      ],
+      "compactResult": [
+        "构造 r+1 个一次形式及其单射有限锥映射，在 V 上没有公共零点；r 等于实际图表 Krull 维数。一般截面点数等于 deg V、同时 Bertini 及第四节仍开放。",
+        "Construct r+1 degree-one forms and their injective finite cone map, with no common zero on V; r equals actual chart Krull dimension. Generic section cardinality = degree V, simultaneous Bertini and Section 4 remain OPEN."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projective_exists_linear_normalization_chart_dimension {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ∃ r ≤ n,\n    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧\n      ∃ L,\n        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧\n          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧\n            (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧\n              ∀ (v : LinearStudy.CoordinateVector n),\n                v ≠ 0 →\n                  (∀ H ∈ V.ideal.toIdeal, (MvPolynomial.eval v) H = 0) → (fun i => (MvPolynomial.eval v) (L i)) ≠ 0",
+      "sha256": "58ffa926ce85e66e84eda558dd0ca64d96e255c222ee8ca12fa47e4c49db1039",
+      "lines": 20,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
     }
   ],
   "rootSteps": [
@@ -84739,12 +85791,13 @@
     "jacobian",
     "relation",
     "lifting",
-    "intersection"
+    "intersection",
+    "original-linear-normalization"
   ],
   "remaining": [
     [
-      "原文整射影子簇与齐次素理想坐标目标的概形比较、全局维数比较接口；实际图表 Krull、Spec、Hilbert 次数与微分秩已识别；整个原一般纤维的共同坐标、原理想局部生成元和形式法向理想已构造；实际环境方程精确次数 q 与最高项正则性、同一目标的线性参数和法向方程已核验；同一多项式 Jacobian 的实际局部条件连接已证明，原完整纤维的共同 Jacobian 非零局部 socle 已接入；全部极大理想覆盖、变换后最高项和 Jacobian 次数界已核验；原单良好完整纤维的全部齐次关系和任意非零代表转换已核验；多纤维 Bertini、第四节与实际交叉数仍开放。",
-      "Scheme comparison of integral projective varieties and the homogeneous-prime-ideal target, global dimension comparison; actual chart Krull/Spec dimensions, Hilbert degree and differential rank are identified. Common coordinates, original-ideal local generators and formal normal ideals are constructed on the ENTIRE original general fiber; exact-q ambient equations, regular highest forms, linear parameters and normal equations at the SAME target are checked. The SAME polynomial Jacobian conditional local bridge is checked; the SAME original whole-fiber Jacobian nonzero local socle is derived; all-maximal-ideal coverage, transformed highest forms and Jacobian degree bounds are checked; the original single-whole-good-fiber homogeneous relation for arbitrary nonzero representatives is checked; simultaneous Bertini, Section 4 and actual intersection remain OPEN."
+      "原文整射影子簇与齐次素理想坐标目标的概形比较、全局维数比较接口；实际图表 Krull、Spec、Hilbert 次数与微分秩已识别；整个原一般纤维的共同坐标、原理想局部生成元和形式法向理想已构造；实际环境方程精确次数 q 与最高项正则性、同一目标的线性参数和法向方程已核验；同一多项式 Jacobian 的实际局部条件连接已证明，原完整纤维的共同 Jacobian 非零局部 socle 已接入；全部极大理想覆盖、变换后最高项和 Jacobian 次数界已核验；原单良好完整纤维的全部齐次关系和任意非零代表转换已核验；原 V 的无基点有限线性投影及实际维数已构造；一般线性截面次数、多纤维 Bertini、第四节与实际交叉数仍开放。",
+      "Scheme comparison of integral projective varieties and the homogeneous-prime-ideal target, global dimension comparison; actual chart Krull/Spec dimensions, Hilbert degree and differential rank are identified. Common coordinates, original-ideal local generators and formal normal ideals are constructed on the ENTIRE original general fiber; exact-q ambient equations, regular highest forms, linear parameters and normal equations at the SAME target are checked. The SAME polynomial Jacobian conditional local bridge is checked; the SAME original whole-fiber Jacobian nonzero local socle is derived; all-maximal-ideal coverage, transformed highest forms and Jacobian degree bounds are checked; the original single-whole-good-fiber homogeneous relation for arbitrary nonzero representatives is checked; a basepoint-free finite linear projection with actual dimension is constructed for original V; generic linear-section degree, simultaneous Bertini, Section 4 and actual intersection remain OPEN."
     ],
     [
       "原函数域次数 D>0；每次原迭代的一般完整纤维点数为 D^k。原齐次坐标商的实际分次及次数缩放已构造。已证明 D=q^r，r 为实际原图表 Krull 维数；全局 Proj/Scheme 粘合和 Bertini 仍待证明。",

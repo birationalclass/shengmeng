@@ -711,3 +711,7 @@ public import Linear.PolynomialCoordinateZeroLocusEquiv
 public import Linear.ProjectiveWholeFiberHomogeneousRelation
 
 public import Linear.ProjectiveFiberRepresentativeRelation
+
+public import Linear.HomogeneousLinearNormalization
+
+public import Linear.ProjectiveLinearNormalization

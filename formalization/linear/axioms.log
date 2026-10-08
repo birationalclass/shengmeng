@@ -2366,6 +2366,105 @@ LinearStudy.hilbertPolynomial_eq_of_rational_series (H : PowerSeries ℚ) (p : P
 LinearStudy.hilbertPoly_natDegree_succ (p : Polynomial ℚ) (d : ℕ) (hP : p.hilbertPoly d ≠ 0) :
   (p.hilbertPoly (d + 1)).natDegree = (p.hilbertPoly d).natDegree + 1
 'LinearStudy.hilbertPoly_natDegree_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialLinearEliminationBaseHom.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (E : MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K) (I : Ideal (MvPolynomial (Fin (n + 1)) K)) :
+  MvPolynomial (Fin n) K →ₐ[MvPolynomial (Fin n) K]
+    Polynomial (MvPolynomial (Fin n) K) ⧸
+      Ideal.map (MvPolynomial.finSuccEquiv K n).toRingEquiv.toRingHom (Ideal.map E.toRingEquiv.toRingHom I)
+'LinearStudy.polynomialLinearEliminationBaseHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialLinearEliminationHom.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (E : MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K) (I : Ideal (MvPolynomial (Fin (n + 1)) K)) :
+  MvPolynomial (Fin n) K →ₐ[K] MvPolynomial (Fin (n + 1)) K ⧸ I
+'LinearStudy.polynomialLinearEliminationHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialLinearEliminationHom_isIntegral.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (E : MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K) (I : Ideal (MvPolynomial (Fin (n + 1)) K))
+  (H : MvPolynomial (Fin (n + 1)) K) (hH : H ∈ I) (hu : IsUnit ((MvPolynomial.finSuccEquiv K n) (E H)).leadingCoeff) :
+  (LinearStudy.polynomialLinearEliminationHom E I).IsIntegral
+'LinearStudy.polynomialLinearEliminationHom_isIntegral' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialLinearEliminationHom_X.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (E : MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K) (I : Ideal (MvPolynomial (Fin (n + 1)) K))
+  (i : Fin n) :
+  (LinearStudy.polynomialLinearEliminationHom E I) (MvPolynomial.X i) =
+    (Ideal.Quotient.mk I) (E.symm (MvPolynomial.X i.succ))
+'LinearStudy.polynomialLinearEliminationHom_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialLinearEliminationHom_formula.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (E : MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K) (I : Ideal (MvPolynomial (Fin (n + 1)) K))
+  (P : MvPolynomial (Fin n) K) :
+  (LinearStudy.polynomialLinearEliminationHom E I) P = (Ideal.Quotient.mk I) (E.symm ((MvPolynomial.rename Fin.succ) P))
+'LinearStudy.polynomialLinearEliminationHom_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneous_exists_linear_integral_elimination.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]
+  (I : Ideal (MvPolynomial (Fin (n + 1)) K)) (H : MvPolynomial (Fin (n + 1)) K) {d : ℕ} (hH : H.IsHomogeneous d)
+  (hne : H ≠ 0) (hmem : H ∈ I) :
+  ∃ a,
+    (LinearStudy.polynomialLinearEliminationHom (LinearStudy.homogeneousCoordinateShearEquiv a) I).IsIntegral ∧
+      ∀ (i : Fin n),
+        ∃ L,
+          L.IsHomogeneous 1 ∧
+            (LinearStudy.polynomialLinearEliminationHom (LinearStudy.homogeneousCoordinateShearEquiv a) I)
+                (MvPolynomial.X i) =
+              (Ideal.Quotient.mk I) L
+'LinearStudy.homogeneous_exists_linear_integral_elimination' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneousCoordinateShear.{u_1} {K : Type u_1} [Field K] {n : ℕ} (a : Fin n → K) :
+  MvPolynomial (Fin (n + 1)) K →ₐ[K] MvPolynomial (Fin (n + 1)) K
+'LinearStudy.homogeneousCoordinateShear' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneousCoordinateShear_comp_neg.{u_1} {K : Type u_1} [Field K] {n : ℕ} (a : Fin n → K) :
+  (LinearStudy.homogeneousCoordinateShear a).comp (LinearStudy.homogeneousCoordinateShear (-a)) =
+    AlgHom.id K (MvPolynomial (Fin (n + 1)) K)
+'LinearStudy.homogeneousCoordinateShear_comp_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneousCoordinateShearEquiv.{u_1} {K : Type u_1} [Field K] {n : ℕ} (a : Fin n → K) :
+  MvPolynomial (Fin (n + 1)) K ≃ₐ[K] MvPolynomial (Fin (n + 1)) K
+'LinearStudy.homogeneousCoordinateShearEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneousCoordinateShear_isHomogeneous.{u_1} {K : Type u_1} [Field K] {n : ℕ} (a : Fin n → K)
+  (H : MvPolynomial (Fin (n + 1)) K) {d : ℕ} (hH : H.IsHomogeneous d) :
+  ((LinearStudy.homogeneousCoordinateShear a) H).IsHomogeneous d
+'LinearStudy.homogeneousCoordinateShear_isHomogeneous' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneousCoordinateShear_axis_eval.{u_1} {K : Type u_1} [Field K] {n : ℕ} (a : Fin n → K)
+  (H : MvPolynomial (Fin (n + 1)) K) :
+  (MvPolynomial.eval fun i => Fin.cases 1 0 i) ((LinearStudy.homogeneousCoordinateShear a) H) =
+    (MvPolynomial.eval fun i => Fin.cases 1 a i) H
+'LinearStudy.homogeneousCoordinateShear_axis_eval' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneous_exists_chart_nonzero.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]
+  (H : MvPolynomial (Fin (n + 1)) K) {d : ℕ} (hH : H.IsHomogeneous d) (hne : H ≠ 0) :
+  ∃ a, (MvPolynomial.eval fun i => Fin.cases 1 a i) H ≠ 0
+'LinearStudy.homogeneous_exists_chart_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneous_axis_eval_coeff.{u_1} {K : Type u_1} [Field K] {n : ℕ} (H : MvPolynomial (Fin (n + 1)) K)
+  {d : ℕ} (hH : H.IsHomogeneous d) :
+  (MvPolynomial.eval fun i => Fin.cases 1 0 i) H = (MvPolynomial.eval 0) (((MvPolynomial.finSuccEquiv K n) H).coeff d)
+'LinearStudy.homogeneous_axis_eval_coeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneous_exists_linear_unit_leadingCoeff.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]
+  (H : MvPolynomial (Fin (n + 1)) K) {d : ℕ} (hH : H.IsHomogeneous d) (hne : H ≠ 0) :
+  ∃ a, IsUnit ((MvPolynomial.finSuccEquiv K n) ((LinearStudy.homogeneousCoordinateShearEquiv a) H)).leadingCoeff
+'LinearStudy.homogeneous_exists_linear_unit_leadingCoeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneous_linear_elimination_kernel.{u_1} {K : Type u_1} [Field K] {n : ℕ} (a : Fin n → K)
+  (I : Ideal (MvPolynomial (Fin (n + 1)) K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I) :
+  Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K)
+    (RingHom.ker (LinearStudy.polynomialLinearEliminationHom (LinearStudy.homogeneousCoordinateShearEquiv a) I))
+'LinearStudy.homogeneous_linear_elimination_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneous_ideal_nonzero_equation.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (I : Ideal (MvPolynomial (Fin n) K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I)
+  (hne : I ≠ ⊥) : ∃ d, ∃ H ∈ I, H ≠ 0 ∧ H.IsHomogeneous d
+'LinearStudy.homogeneous_ideal_nonzero_equation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.exists_linear_integral_normalization.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]
+  (I : Ideal (MvPolynomial (Fin n) K)) (hi : I ≠ ⊤)
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I) :
+  ∃ s ≤ n,
+    ∃ g,
+      Function.Injective ⇑g ∧
+        g.IsIntegral ∧ ∀ (i : Fin s), ∃ L, L.IsHomogeneous 1 ∧ g (MvPolynomial.X i) = (Ideal.Quotient.mk I) L
+'LinearStudy.exists_linear_integral_normalization' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.exists_linear_finite_normalization_krull_dimension.{u_1} {K : Type u_1} [Field K] {n : ℕ} [Infinite K]
+  (I : Ideal (MvPolynomial (Fin n) K)) (hi : I ≠ ⊤)
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I) :
+  ∃ s ≤ n,
+    ∃ g,
+      Function.Injective ⇑g ∧
+        g.Finite ∧
+          ringKrullDim (MvPolynomial (Fin n) K ⧸ I) = ↑s ∧
+            ∀ (i : Fin s), ∃ L, L.IsHomogeneous 1 ∧ g (MvPolynomial.X i) = (Ideal.Quotient.mk I) L
+'LinearStudy.exists_linear_finite_normalization_krull_dimension' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.ideal_smul_top_self.{u_3} {A : Type u_3} [CommRing A] (J : Ideal A) : J • ⊤ = J
 'LinearStudy.ideal_smul_top_self' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.homogeneous_ideal_saturated_at_origin.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]
@@ -3013,6 +3112,17 @@ LinearStudy.completeIntersection_parameter_lifts_regular {r c : ℕ} (H : Fin c 
   (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
   RingTheory.Sequence.IsRegular (LinearStudy.CompleteIntersection H) (List.ofFn tau)
 'LinearStudy.completeIntersection_parameter_lifts_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneous_zeroLocus_smul.{u_1} {K : Type u_1} [Field K] {n : ℕ} (I : Ideal (MvPolynomial (Fin n) K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I) (v : Fin n → K)
+  (hv : v ∈ MvPolynomial.zeroLocus K I) (a : K) : a • v ∈ MvPolynomial.zeroLocus K I
+'LinearStudy.homogeneous_zeroLocus_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.integral_linear_normalization_origin_zeroLocus.{u_1} {K : Type u_1} [Field K] [Infinite K] {n s : ℕ}
+  (I : Ideal (MvPolynomial (Fin n) K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I)
+  (L : Fin s → MvPolynomial (Fin n) K) (hL : ∀ (i : Fin s), (L i).IsHomogeneous 1)
+  (g : MvPolynomial (Fin s) K →ₐ[K] MvPolynomial (Fin n) K ⧸ I)
+  (hg : ∀ (i : Fin s), g (MvPolynomial.X i) = (Ideal.Quotient.mk I) (L i)) (hint : g.IsIntegral) (v : Fin n → K)
+  (hv : v ∈ MvPolynomial.zeroLocus K I) (hLv : ∀ (i : Fin s), (MvPolynomial.eval v) (L i) = 0) : v = 0
+'LinearStudy.integral_linear_normalization_origin_zeroLocus' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.linearEquationSubmodule.{u_1} {n : ℕ} {ι : Type u_1}
   (equations : ι → LinearStudy.CoordinateVector n →ₗ[ℂ] ℂ) : Submodule ℂ (LinearStudy.CoordinateVector n)
 'LinearStudy.linearEquationSubmodule' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -7783,6 +7893,41 @@ LinearStudy.projective_iterates_general_whole_fiber_degree {n : ℕ} (f : Linear
                 ((f.iterate k).onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}).Finite ∧
                   Nat.card ↑((f.iterate k).onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) = D ^ k
 'LinearStudy.projective_iterates_general_whole_fiber_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveLinearNormalizationMap {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) :
+  MvPolynomial (Fin (r + 1)) ℂ →ₐ[ℂ] LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal
+'LinearStudy.projectiveLinearNormalizationMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_exists_linear_normalization {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) :
+  ∃ r P,
+    r ≤ n ∧
+      P ≠ 0 ∧
+        P.natDegree = r ∧
+          (∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)) ∧
+            ∃ L,
+              (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧
+                Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧
+                  (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧
+                    ringKrullDim (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) = ↑(r + 1) ∧
+                      ∀ (v : LinearStudy.CoordinateVector n),
+                        v ≠ 0 →
+                          (∀ H ∈ V.ideal.toIdeal, (MvPolynomial.eval v) H = 0) →
+                            (fun i => (MvPolynomial.eval v) (L i)) ≠ 0
+'LinearStudy.projective_exists_linear_normalization' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_exists_linear_normalization_chart_dimension {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  ∃ r ≤ n,
+    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧
+      ∃ L,
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧
+              ∀ (v : LinearStudy.CoordinateVector n),
+                v ≠ 0 →
+                  (∀ H ∈ V.ideal.toIdeal, (MvPolynomial.eval v) H = 0) → (fun i => (MvPolynomial.eval v) (L i)) ≠ 0
+'LinearStudy.projective_exists_linear_normalization_chart_dimension' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.ProjectiveChartPolynomialParameterConclusion {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
   (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)
   (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)
