@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-08T01:23:09+08:00",
+  "checkedAt": "2026-10-08T02:16:55+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "fe7f69aac2b7bdb2503f6d3a87a4f445b1cb031c16151c5e9685466c39d1cc01",
-      "lineCount": 2590
+      "sha256": "4cd974f583559fe324463919fe214f2f38b1e16cfc74a5394488d2ed50891aa1",
+      "lineCount": 2614
     },
     {
       "path": "Linear/ActualTargetParameters.lean",
@@ -260,6 +260,11 @@
       "path": "Linear/FormalPullbackFiber.lean",
       "sha256": "38e2f1562f1410124ccb6bd1e8d9c186f196212211b2eae865245c11ac8871c0",
       "lineCount": 102
+    },
+    {
+      "path": "Linear/FractionModelAlgebraicOpen.lean",
+      "sha256": "7c8d920e0a654300a2686b93bf4d25b0c51308bea00c9605d9152ab4bb02d18c",
+      "lineCount": 48
     },
     {
       "path": "Linear/GeneralLocalQuotientPullback.lean",
@@ -797,6 +802,11 @@
       "lineCount": 85
     },
     {
+      "path": "Linear/ProjectiveAmbientAtPoint.lean",
+      "sha256": "7b8315bd28f3372232831a44240033916749c36b02a30d237ec9c8bd2a30f121",
+      "lineCount": 83
+    },
+    {
       "path": "Linear/ProjectiveAmbientOpenComparison.lean",
       "sha256": "01f275531e7e8eb257cf714988d981219a39d321fbeeab17ae4724640aafc3b0",
       "lineCount": 71
@@ -892,6 +902,11 @@
       "lineCount": 45
     },
     {
+      "path": "Linear/ProjectiveCoordinateUnramified.lean",
+      "sha256": "e4fa1ef90e90c142eca8170465aac6445c8215cf86f64f11a6d9581d95325909",
+      "lineCount": 110
+    },
+    {
       "path": "Linear/ProjectiveGenericUnramified.lean",
       "sha256": "2bf0cff807fd04162e3097d7e3ebf1305d31c0ae72a5c922f63b4d0000409edb",
       "lineCount": 53
@@ -905,6 +920,11 @@
       "path": "Linear/ProjectiveIdealInvariance.lean",
       "sha256": "e2bd7d4a0a5f18eb9b02fd8501bb27e26e3128626ba43bddf751b6f2000e0b66",
       "lineCount": 111
+    },
+    {
+      "path": "Linear/ProjectiveLocalParametersConstructed.lean",
+      "sha256": "03a5432007dbcb907467a68786ca2dc78f0677466d3b3835210d15c7895c4ebe",
+      "lineCount": 115
     },
     {
       "path": "Linear/ProjectiveRatioChartKernel.lean",
@@ -935,6 +955,16 @@
       "path": "Linear/ProjectiveSmoothOpenPoint.lean",
       "sha256": "5ec8b2fc19d0d42deead9805b645d070e0f7c268d458be29bfaa8321ba1ed4a0",
       "lineCount": 44
+    },
+    {
+      "path": "Linear/ProjectiveSmoothPointParameters.lean",
+      "sha256": "771847d173cc81db460d8203caa0cc47b6ca2d8cb51b91fe13555fcab9a7caaa",
+      "lineCount": 57
+    },
+    {
+      "path": "Linear/ProjectiveTargetGoodOpen.lean",
+      "sha256": "3df278f1458cc48dd583642318b611d1735632d30d5c8c45553aba1f6fc72ad9",
+      "lineCount": 70
     },
     {
       "path": "Linear/QuotientLocalPullbackComparison.lean",
@@ -1263,8 +1293,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "0725b768f63f25075538e36f59e888ba6471e431a16ac87e1d575e104027f3f5",
-      "lineCount": 355
+      "sha256": "8e739c768ad0489c24250faca69aabf147dd6d36c350ba72357f620114539764",
+      "lineCount": 367
     }
   ],
   "declarations": {
@@ -7309,6 +7339,48 @@
       "dependencies": [
         "LinearStudy.formal_pullback_firstOrder_unit_division"
       ]
+    },
+    "LinearStudy.ringHom_finite_fraction_model_isAlgebraic": {
+      "declaration": "LinearStudy.ringHom_finite_fraction_model_isAlgebraic",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FractionModelAlgebraicOpen.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.ringHom_finite_fraction_model_isAlgebraic.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {K : Type u_3}\n  {L : Type u_4} [CommRing R] [IsDomain R] [CommRing A] [Field K] [Field L] [Algebra R K] [IsFractionRing R K]\n  (φ : R →+* A) (e : A →+* L) (he : Function.Injective ⇑e) (χ : K →+* L) (hχ : χ.Finite)\n  (hcomp : e.comp φ = χ.comp (algebraMap R K)) : Algebra.IsAlgebraic R A",
+      "sha256": "7c8d920e0a654300a2686b93bf4d25b0c51308bea00c9605d9152ab4bb02d18c",
+      "lines": 19,
+      "moduleLineCount": 48,
+      "startLine": 12,
+      "endLine": 30,
+      "lineCount": 19,
+      "dependencies": []
+    },
+    "LinearStudy.ringHom_algebraic_target_open_avoids_source_closed": {
+      "declaration": "LinearStudy.ringHom_algebraic_target_open_avoids_source_closed",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FractionModelAlgebraicOpen.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.ringHom_algebraic_target_open_avoids_source_closed.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R]\n  [CommRing A] [IsDomain A] (φ : R →+* A) (halg : Algebra.IsAlgebraic R A) (a : A) (ha : a ≠ 0) :\n  ∃ b, b ≠ 0 ∧ ∀ (P : PrimeSpectrum A), φ b ∉ P.asIdeal → a ∉ P.asIdeal",
+      "sha256": "7c8d920e0a654300a2686b93bf4d25b0c51308bea00c9605d9152ab4bb02d18c",
+      "lines": 15,
+      "moduleLineCount": 48,
+      "startLine": 32,
+      "endLine": 46,
+      "lineCount": 15,
+      "dependencies": []
     },
     "LinearStudy.general_local_pullback_ideal_le": {
       "declaration": "LinearStudy.general_local_pullback_ideal_le",
@@ -20292,6 +20364,83 @@
         "LinearStudy.normalizedProjectivePoint"
       ]
     },
+    "LinearStudy.projectiveAmbientChart_unramified_at_rational_point": {
+      "declaration": "LinearStudy.projectiveAmbientChart_unramified_at_rational_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientAtPoint.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientChart_unramified_at_rational_point {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet)\n  (ρ : Localization.Away (LinearStudy.projectiveChartDenominator f V) →ₐ[ℂ] ℂ)\n  (hρ :\n    have φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0;\n    LinearStudy.rationalPointPrime ρ ∈\n      Algebra.unramifiedLocus (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)\n        (Localization.Away (LinearStudy.projectiveChartDenominator f V))) :\n  let p0 := LinearStudy.affineChartPolynomialMap (f.forms 0);\n  let p := fun i => LinearStudy.affineChartPolynomialMap (f.forms i.succ);\n  let J := Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0)) V.affineIdeal;\n  let E := LinearStudy.awayQuotientEquiv V.affineIdeal p0;\n  have hI := ⋯;\n  let ψ := Ideal.quotientMap J (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom ⋯;\n  let P := Ideal.comap E.toRingEquiv.toRingHom (LinearStudy.rationalPointPrime ρ).asIdeal;\n  let Q := Ideal.comap ψ P;\n  (LinearStudy.generalPointLocalQuotientPullback V.affineIdeal J (Ideal.comap (Ideal.Quotient.mk J) P)\n      (Ideal.comap (Ideal.Quotient.mk V.affineIdeal) Q) (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom ⋯\n      hI).FormallyUnramified",
+      "sha256": "7b8315bd28f3372232831a44240033916749c36b02a30d237ec9c8bd2a30f121",
+      "lines": 40,
+      "moduleLineCount": 83,
+      "startLine": 14,
+      "endLine": 53,
+      "lineCount": 40,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayQuotientEquiv",
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.localRingHom_formallyUnramified_of_equiv_comp",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_ambient_quotient_comp",
+        "LinearStudy.projectiveRationalPolynomialChartMap_ideal",
+        "LinearStudy.quotientLocalPullback_formallyUnramified",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPointPrime_comp_formallyUnramified",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.ringHom_pointwiseUnramified_localRingHom"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_ambient_rational_evaluation": {
+      "declaration": "LinearStudy.projectiveChartOpenMap_ambient_rational_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientAtPoint.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_ambient_rational_evaluation {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n)\n  (ρ : Localization.Away (LinearStudy.projectiveChartDenominator f V) →ₐ[ℂ] ℂ) (x : Fin n → ℂ)\n  (hx :\n    (ρ.comp\n            (IsScalarTower.toAlgHom ℂ (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)\n              (Localization.Away (LinearStudy.projectiveChartDenominator f V)))).comp\n        (Ideal.Quotient.mkₐ ℂ V.affineIdeal) =\n      MvPolynomial.aeval x)\n  (hp0 : (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0) :\n  let p0 := LinearStudy.affineChartPolynomialMap (f.forms 0);\n  let J := Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0)) V.affineIdeal;\n  ρ.comp ((↑(LinearStudy.awayQuotientBaseEquiv V.affineIdeal p0)).comp (Ideal.Quotient.mkₐ ℂ J)) =\n    LinearStudy.polynomialAwayPointEvaluation x p0 hp0",
+      "sha256": "7b8315bd28f3372232831a44240033916749c36b02a30d237ec9c8bd2a30f121",
+      "lines": 27,
+      "moduleLineCount": 83,
+      "startLine": 55,
+      "endLine": 81,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayQuotientBaseEquiv",
+        "LinearStudy.awayQuotientEquiv",
+        "LinearStudy.awayQuotientEquiv_mk",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_algebraMap",
+        "LinearStudy.projectiveChartDenominator"
+      ]
+    },
     "LinearStudy.projectiveChartOpenPolynomialMap_ambient_comp": {
       "declaration": "LinearStudy.projectiveChartOpenPolynomialMap_ambient_comp",
       "kind": "theorem",
@@ -22715,6 +22864,115 @@
         "LinearStudy.projective_total_invariance_pullback_radical"
       ]
     },
+    "LinearStudy.generalPointLocalQuotientPullback_unramified_transport": {
+      "declaration": "LinearStudy.generalPointLocalQuotientPullback_unramified_transport",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateUnramified.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.generalPointLocalQuotientPullback_unramified_transport.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R]\n  [CommRing A] (I : Ideal R) (J : Ideal A) (φ : R →+* A) (hφ : Ideal.map φ I ≤ J) (P P' : Ideal A) (Q Q' : Ideal R)\n  [P.IsPrime] [P'.IsPrime] [Q.IsPrime] [Q'.IsPrime] (hP : P = P') (hQ : Q = Q') (hq : Q = Ideal.comap φ P)\n  (hq' : Q' = Ideal.comap φ P')\n  (h : (LinearStudy.generalPointLocalQuotientPullback I J P Q φ hq hφ).FormallyUnramified) :\n  (LinearStudy.generalPointLocalQuotientPullback I J P' Q' φ hq' hφ).FormallyUnramified",
+      "sha256": "e4fa1ef90e90c142eca8170465aac6445c8215cf86f64f11a6d9581d95325909",
+      "lines": 12,
+      "moduleLineCount": 110,
+      "startLine": 12,
+      "endLine": 23,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback"
+      ]
+    },
+    "LinearStudy.projectiveAmbientChart_unramified_at_affine_coordinates": {
+      "declaration": "LinearStudy.projectiveAmbientChart_unramified_at_affine_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateUnramified.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientChart_unramified_at_affine_coordinates {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet)\n  (ρ : Localization.Away (LinearStudy.projectiveChartDenominator f V) →ₐ[ℂ] ℂ)\n  (hρ :\n    have φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0;\n    LinearStudy.rationalPointPrime ρ ∈\n      Algebra.unramifiedLocus (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)\n        (Localization.Away (LinearStudy.projectiveChartDenominator f V)))\n  (x : Fin n → ℂ)\n  (hx :\n    (ρ.comp\n            (IsScalarTower.toAlgHom ℂ (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)\n              (Localization.Away (LinearStudy.projectiveChartDenominator f V)))).comp\n        (Ideal.Quotient.mkₐ ℂ V.affineIdeal) =\n      MvPolynomial.aeval x)\n  (hp0 : (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0) :\n  let p0 := LinearStudy.affineChartPolynomialMap (f.forms 0);\n  let p := fun i => LinearStudy.affineChartPolynomialMap (f.forms i.succ);\n  let J := Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0)) V.affineIdeal;\n  let P := RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom;\n  let Q := Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P;\n  have hI := ⋯;\n  (LinearStudy.generalPointLocalQuotientPullback V.affineIdeal J P Q\n      (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom ⋯ hI).FormallyUnramified",
+      "sha256": "e4fa1ef90e90c142eca8170465aac6445c8215cf86f64f11a6d9581d95325909",
+      "lines": 55,
+      "moduleLineCount": 110,
+      "startLine": 25,
+      "endLine": 79,
+      "lineCount": 55,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayQuotientBaseEquiv",
+        "LinearStudy.awayQuotientEquiv",
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_unramified_transport",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.projectiveAmbientChart_unramified_at_rational_point",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_ambient_rational_evaluation",
+        "LinearStudy.projectiveRationalPolynomialChartMap_ideal",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
+    "LinearStudy.projectiveChart_exists_smooth_unramified_coordinate_point": {
+      "declaration": "LinearStudy.projectiveChart_exists_smooth_unramified_coordinate_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateUnramified.lean",
+      "line": 83,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChart_exists_smooth_unramified_coordinate_point {n : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  let p0 := LinearStudy.affineChartPolynomialMap (f.forms 0);\n  let p := fun i => LinearStudy.affineChartPolynomialMap (f.forms i.succ);\n  let J := Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0)) V.affineIdeal;\n  have hI := ⋯;\n  ∃ x,\n    ∃ (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (hp0 : (MvPolynomial.eval x) p0 ≠ 0),\n      have y := fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0;\n      ∃ (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),\n        Algebra.IsSmoothAt ℂ (V.affinePoint x hx).asIdeal ∧\n          Algebra.IsSmoothAt ℂ (V.affinePoint y hy).asIdeal ∧\n            let P := RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom;\n            let Q := Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P;\n            (LinearStudy.generalPointLocalQuotientPullback V.affineIdeal J P Q\n                (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom ⋯ hI).FormallyUnramified",
+      "sha256": "e4fa1ef90e90c142eca8170465aac6445c8215cf86f64f11a6d9581d95325909",
+      "lines": 28,
+      "moduleLineCount": 110,
+      "startLine": 81,
+      "endLine": 108,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.projectiveAmbientChart_unramified_at_affine_coordinates",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_exists_good_affine_coordinates",
+        "LinearStudy.projectiveRationalPolynomialChartMap_ideal",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
     "LinearStudy.projectiveCoordinateDomainMap_finiteType": {
       "declaration": "LinearStudy.projectiveCoordinateDomainMap_finiteType",
       "kind": "theorem",
@@ -23069,6 +23327,92 @@
         "LinearStudy.IntegralProjectiveEquations.zeroSet",
         "LinearStudy.ProjectivePoint",
         "LinearStudy.projective_total_invariance_ideal_power_sandwich"
+      ]
+    },
+    "LinearStudy.ProjectiveChartPolynomialParameterConclusion": {
+      "declaration": "LinearStudy.ProjectiveChartPolynomialParameterConclusion",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveLocalParametersConstructed.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.ProjectiveChartPolynomialParameterConclusion {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)\n  (hp0 : (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0)\n  (hy :\n    (LinearStudy.normalizedProjectivePoint fun i =>\n        (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms i.succ)) /\n          (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0))) ∈\n      V.zeroSet) :\n  Prop",
+      "sha256": "03a5432007dbcb907467a68786ca2dc78f0677466d3b3835210d15c7895c4ebe",
+      "lines": 26,
+      "moduleLineCount": 115,
+      "startLine": 16,
+      "endLine": 41,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
+    "LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters": {
+      "declaration": "LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveLocalParametersConstructed.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters {n : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (hproper : V.ideal.toIdeal ≠ ⊥)\n  (x0 : Fin n → ℂ) (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  let p0 := LinearStudy.affineChartPolynomialMap (f.forms 0);\n  let p := fun i => LinearStudy.affineChartPolynomialMap (f.forms i.succ);\n  have J := Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0)) V.affineIdeal;\n  ∃ x,\n    ∃ (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (hp0 : (MvPolynomial.eval x) p0 ≠ 0),\n      let y := fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0;\n      ∃ (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),\n        Algebra.IsSmoothAt ℂ (V.affinePoint x hx).asIdeal ∧\n          Algebra.IsSmoothAt ℂ (V.affinePoint y hy).asIdeal ∧\n            LinearStudy.ProjectiveChartPolynomialParameterConclusion f V x hx hp0 hy",
+      "sha256": "03a5432007dbcb907467a68786ca2dc78f0677466d3b3835210d15c7895c4ebe",
+      "lines": 71,
+      "moduleLineCount": 115,
+      "startLine": 43,
+      "endLine": 113,
+      "lineCount": 71,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_le_pointKernel",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.smoothPoint_polynomial_parameters",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectiveChartPolynomialParameterConclusion",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_mk",
+        "LinearStudy.generalPointLocalQuotientPullback_unramified_transport",
+        "LinearStudy.general_point_local_unramified_parameters_generate",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.point_local_quotient_maximalIdeal_map",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_algebraMap",
+        "LinearStudy.projectiveChart_exists_smooth_unramified_coordinate_point",
+        "LinearStudy.projectiveRationalPolynomialChartMap_ideal",
+        "LinearStudy.rationalPointLocalQuotientPullback_essFiniteType",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_point_kernel"
       ]
     },
     "LinearStudy.localization_lift_kernel": {
@@ -23519,6 +23863,118 @@
         "LinearStudy.domain_exists_smooth_rational_point_avoiding",
         "LinearStudy.normalizedProjectivePoint",
         "LinearStudy.rationalPointPrime"
+      ]
+    },
+    "LinearStudy.IntegralProjectiveEquations.smoothPoint_polynomial_parameters": {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.smoothPoint_polynomial_parameters",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSmoothPointParameters.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.smoothPoint_polynomial_parameters {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (hproper : V.ideal.toIdeal ≠ ⊥) (y : Fin n → ℂ)\n  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) (hs : Algebra.IsSmoothAt ℂ (V.affinePoint y hy).asIdeal) :\n  let P := Ideal.comap (Ideal.Quotient.mk V.affineIdeal) (V.affinePoint y hy).asIdeal;\n  have J := Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.AtPrime P)) V.affineIdeal;\n  ∃ r a,\n    r = Module.finrank (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) Ω[MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal⁄ℂ] ∧\n      Ideal.span\n          (Set.range fun i =>\n            (Ideal.Quotient.mk J) ((algebraMap (MvPolynomial (Fin n) ℂ) (Localization.AtPrime P)) (a i))) =\n        Ideal.map (Ideal.Quotient.mk J) (Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.AtPrime P)) P)",
+      "sha256": "771847d173cc81db460d8203caa0cc47b6ca2d8cb51b91fe13555fcab9a7caaa",
+      "lines": 40,
+      "moduleLineCount": 57,
+      "startLine": 16,
+      "endLine": 55,
+      "lineCount": 40,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_ne_bot",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.point_local_quotient_maximalIdeal_map",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.smoothLocus_constructs_original_polynomial_parameters"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_isAlgebraic": {
+      "declaration": "LinearStudy.projectiveChartOpenMap_isAlgebraic",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveTargetGoodOpen.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_isAlgebraic {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);\n  Algebra.IsAlgebraic B A",
+      "sha256": "3df278f1458cc48dd583642318b611d1735632d30d5c8c45553aba1f6fc72ad9",
+      "lines": 28,
+      "moduleLineCount": 70,
+      "startLine": 12,
+      "endLine": 39,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_injective",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartFractionMap_finite",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_fraction_comp",
+        "LinearStudy.projectiveChart_denominator_ne_zero",
+        "LinearStudy.ringHom_finite_fraction_model_isAlgebraic"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_exists_target_good_open": {
+      "declaration": "LinearStudy.projectiveChartOpenMap_exists_target_good_open",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveTargetGoodOpen.lean",
+      "line": 44,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_exists_target_good_open {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ∃ b a,\n    b ≠ 0 ∧\n      a ≠ 0 ∧\n        Algebra.Smooth ℂ (Localization.Away a) ∧\n          ((algebraMap (Localization.Away (LinearStudy.projectiveChartDenominator f V)) (Localization.Away a)).comp\n                (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx).toRingHom).FormallyUnramified ∧\n            ∀ (P : PrimeSpectrum (Localization.Away (LinearStudy.projectiveChartDenominator f V))),\n              (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx) b ∉ P.asIdeal → a ∉ P.asIdeal",
+      "sha256": "3df278f1458cc48dd583642318b611d1735632d30d5c8c45553aba1f6fc72ad9",
+      "lines": 28,
+      "moduleLineCount": 70,
+      "startLine": 41,
+      "endLine": 68,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_exists_smooth_unramified_open",
+        "LinearStudy.projectiveChartOpenMap_isAlgebraic",
+        "LinearStudy.projectiveChart_denominator_ne_zero",
+        "LinearStudy.ringHom_algebraic_target_open_avoids_source_closed"
       ]
     },
     "LinearStudy.quotientLocalPullback_comparison": {
@@ -34258,12 +34714,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 911,
-  "definitionCount": 184,
+  "verifiedTheoremCount": 922,
+  "definitionCount": 185,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
   "auditExitCode": 0,
-  "scope": "The exact original local Lemma31Goal is PROVED by lemma31_complete, including arbitrary parameter lifts, actual finite freeness and nonzero Jacobian socle generation. The global LinearityTheoremGoal remains UNPROVED. Actual affine perfect pairings, low-degree vanishing and weighted point relations are proved under their precise polynomial highest-part and local generator hypotheses, with highest-part regularity derived from the origin-only zero locus. Actual polynomial point completions and canonical Artinian fiber/localization comparisons are constructed. Original projective total invariance yields affine-cone radical pullback equality. Actual point-local source generators and a unit Jacobian minor construct smooth formal coordinates; target point-local generators determine the formal pullback ideal. The resulting radical condition derives regularity, finiteness and freeness, without opaque coordinate or structure inputs. Actual local quotient pullback maps are constructed from polynomial substitution, proved local and compatible with every polynomial. Essential finite type and formal unramifiedness of that specific map imply generation by actual pulled-back target parameters. Formal normal and normal polynomial Jacobians differ by a proved unit. Their nonzero socle generation descends through a constructed equivalence to the original Artinian polynomial fiber localization. Geometric local presentations, minors, unramifiedness and target parameter systems remain to be derived from the manuscript geometry. The local pulled-back-generator Jacobian is identified with the single common projective-chart Theta when the explicit target first-order, normal radical and reduced-parameter conditions hold. The full fiber ideal equality is constructed from actual unit-denominator substitution, and the same Theta class descends to the original localized Artinian polynomial fiber. Those conditions still require geometric derivation. Other remaining obligations are Scheme/projective coordinate comparison, Bertini/generic finite fiber geometry and cardinality, uniform global duality/Serre polynomial lifting and actual geometric Bezout. No final conclusion is hidden in a field, assumption, axiom or placeholder. Compiler stdin/setup mode preserves exact source bytes, module names and declaration ranges without changing kernel trust or dependencies. Actual formal smoothness of an embedded polynomial point-local quotient now constructs polynomial local ideal generators whose conormal classes form a basis: cotangent splitting, finite projectivity, local freeness and Nakayama are derived using the pinned library, and denominators are cleared without losing the basis. Actual localized ambient differential coordinates are constructed and identified with polynomial partial derivatives, including quotient base change. A row-independent rectangular matrix yields a nonzero original-coordinate maximal minor. Connecting the smooth conormal splitting to that actual Jacobian minor and geometric codimension is the next bridge; no complete geometric smooth-chart existence theorem or global Linearity proof is claimed. From formal smoothness of the actual localized quotient at a rational polynomial point, actual local polynomial generators, point vanishing and a nonzero original-coordinate Jacobian minor are now CONSTRUCTED. No conormal basis, ideal presentation, residue comparison, full-rank Jacobian or unit minor is an input to exists_smooth_polynomial_jacobian_generators_at_point. The actual rational point evaluation on the localized quotient is constructed. The number of generators still needs geometric codimension identification and the remaining global inputs are not proved by this theorem. The selected normal coordinates are now extended to an actual ambient coordinate permutation, with polynomial evaluation/derivative and point-translation compatibility. From smoothness of the actual rational point-local quotient and a nonzero localized ideal, smooth_point_has_formal_normal_coordinates CONSTRUCTS polynomial equations, a unit normal minor, the coordinate map and the original ideal normal-variable image equality. Geometric dimension/count identification and common coordinates over all points remain to be proved, as do the other global obligations. The actual smooth cotangent sequence now gives a product decomposition and a conormal/differential finite-rank sum for the localized polynomial quotient. A finite family of row-independent derivative matrices admits a single nonsingular ambient matrix with all fixed normal blocks nonsingular over an infinite field. The actual polynomial algebra automorphism, inverse point change and derivative chain rule are constructed. This common polynomial result still assumes original derivative-row independence and a fixed normal count; geometric dimension and common local generation are separate remaining obligations. No global Linearity proof is claimed. From actual formal smoothness at finitely many rational point primes and their common actual conormal rank, smooth_points_have_common_formal_normal_coordinates now CONSTRUCTS local equations, row independence, one common ambient polynomial automorphism and coordinate split, unit normal minors and formal maps taking the ORIGINAL ideal exactly to the normal-variable ideal at every selected point. Local ideal generation is transported through an actual localization ring equivalence and point-kernel compatibility is proved. Constancy of conormal rank, geometric smoothness/fibers and the remaining global inputs are explicit unfinished obligations. Constancy of conormal rank for the nonempty finite family of rational smooth points is now derived from the original nonzero prime ideal. The actual injective projective chart map yields a simultaneous smooth source, smooth image and unramified rational point. Canonical denominator-open quotient and point-local comparisons transport unramification to the actual ambient rational-polynomial local quotient pullback. The rational point is identified with actual affine coordinates on V, and its image with the original ratios f_i/f_0. This is a same-point coordinate bridge, not construction of all points in a general fiber. Combining the ambient comparison with those coordinates at one specified witness, whole generic fiber cardinality/degree, geometric dimension, uniform global duality lifting and geometric Bezout remain open. The exact LinearityTheoremGoal is still UNPROVED.",
+  "scope": "The exact original local Lemma31Goal is PROVED by lemma31_complete, including arbitrary parameter lifts, actual finite freeness and nonzero Jacobian socle generation. The global LinearityTheoremGoal remains UNPROVED. Actual affine perfect pairings, low-degree vanishing and weighted point relations are proved under their precise polynomial highest-part and local generator hypotheses, with highest-part regularity derived from the origin-only zero locus. Actual polynomial point completions and canonical Artinian fiber/localization comparisons are constructed. Original projective total invariance yields affine-cone radical pullback equality. Actual point-local source generators and a unit Jacobian minor construct smooth formal coordinates; target point-local generators determine the formal pullback ideal. The resulting radical condition derives regularity, finiteness and freeness, without opaque coordinate or structure inputs. Actual local quotient pullback maps are constructed from polynomial substitution, proved local and compatible with every polynomial. Essential finite type and formal unramifiedness of that specific map imply generation by actual pulled-back target parameters. Formal normal and normal polynomial Jacobians differ by a proved unit. Their nonzero socle generation descends through a constructed equivalence to the original Artinian polynomial fiber localization. Geometric local presentations, minors, unramifiedness and target parameter systems remain to be derived from the manuscript geometry. The local pulled-back-generator Jacobian is identified with the single common projective-chart Theta when the explicit target first-order, normal radical and reduced-parameter conditions hold. The full fiber ideal equality is constructed from actual unit-denominator substitution, and the same Theta class descends to the original localized Artinian polynomial fiber. Those conditions still require geometric derivation. Other remaining obligations are Scheme/projective coordinate comparison, Bertini/generic finite fiber geometry and cardinality, uniform global duality/Serre polynomial lifting and actual geometric Bezout. No final conclusion is hidden in a field, assumption, axiom or placeholder. Compiler stdin/setup mode preserves exact source bytes, module names and declaration ranges without changing kernel trust or dependencies. Actual formal smoothness of an embedded polynomial point-local quotient now constructs polynomial local ideal generators whose conormal classes form a basis: cotangent splitting, finite projectivity, local freeness and Nakayama are derived using the pinned library, and denominators are cleared without losing the basis. Actual localized ambient differential coordinates are constructed and identified with polynomial partial derivatives, including quotient base change. A row-independent rectangular matrix yields a nonzero original-coordinate maximal minor. Connecting the smooth conormal splitting to that actual Jacobian minor and geometric codimension is the next bridge; no complete geometric smooth-chart existence theorem or global Linearity proof is claimed. From formal smoothness of the actual localized quotient at a rational polynomial point, actual local polynomial generators, point vanishing and a nonzero original-coordinate Jacobian minor are now CONSTRUCTED. No conormal basis, ideal presentation, residue comparison, full-rank Jacobian or unit minor is an input to exists_smooth_polynomial_jacobian_generators_at_point. The actual rational point evaluation on the localized quotient is constructed. The number of generators still needs geometric codimension identification and the remaining global inputs are not proved by this theorem. The selected normal coordinates are now extended to an actual ambient coordinate permutation, with polynomial evaluation/derivative and point-translation compatibility. From smoothness of the actual rational point-local quotient and a nonzero localized ideal, smooth_point_has_formal_normal_coordinates CONSTRUCTS polynomial equations, a unit normal minor, the coordinate map and the original ideal normal-variable image equality. Geometric dimension/count identification and common coordinates over all points remain to be proved, as do the other global obligations. The actual smooth cotangent sequence now gives a product decomposition and a conormal/differential finite-rank sum for the localized polynomial quotient. A finite family of row-independent derivative matrices admits a single nonsingular ambient matrix with all fixed normal blocks nonsingular over an infinite field. The actual polynomial algebra automorphism, inverse point change and derivative chain rule are constructed. This common polynomial result still assumes original derivative-row independence and a fixed normal count; geometric dimension and common local generation are separate remaining obligations. No global Linearity proof is claimed. From actual formal smoothness at finitely many rational point primes and their common actual conormal rank, smooth_points_have_common_formal_normal_coordinates now CONSTRUCTS local equations, row independence, one common ambient polynomial automorphism and coordinate split, unit normal minors and formal maps taking the ORIGINAL ideal exactly to the normal-variable ideal at every selected point. Local ideal generation is transported through an actual localization ring equivalence and point-kernel compatibility is proved. Constancy of conormal rank, geometric smoothness/fibers and the remaining global inputs are explicit unfinished obligations. Constancy of conormal rank for the nonempty finite family of rational smooth points is now derived from the original nonzero prime ideal. The actual injective projective chart map yields a simultaneous smooth source, smooth image and unramified rational point. Canonical denominator-open quotient and point-local comparisons transport unramification to the actual ambient rational-polynomial local quotient pullback. The rational point is identified with actual affine coordinates on V, and its image with the original ratios f_i/f_0. This is a same-point coordinate bridge, not construction of all points in a general fiber. Combining the ambient comparison with those coordinates at one specified witness, whole generic fiber cardinality/degree, geometric dimension, uniform global duality lifting and geometric Bezout remain open. The exact LinearityTheoremGoal is still UNPROVED. The ambient local comparison and original affine coordinates are now combined at one SPECIFIED witness. Smooth target polynomial parameters are CONSTRUCTED and their actual rational pullbacks generate that same source local maximal ideal. Their count is the actual Kaehler differential rank; identifying it with geometric dimension is still open. Algebraicity of the original rational chart map is DERIVED from its actual finite fraction-field model, without replacing its Algebra action. A nonzero target basic open now has EVERY preimage inside the present denominator chart contained in one smooth unramified source open. This does NOT yet cover projective preimages outside the source affine chart, construct full general fibers, or compute their cardinality. Uniform global lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED.",
   "sourceRanges": {
     "LinearStudy.affine_polynomial_weighted_point_relation": {
       "path": "Linear/AffinePointRelation.lean",
@@ -35073,6 +35529,34 @@
         "LinearStudy.totalVariableSplit"
       ]
     },
+    "LinearStudy.projectiveChart_exists_smooth_unramified_coordinate_point": {
+      "path": "Linear/ProjectiveCoordinateUnramified.lean",
+      "startLine": 81,
+      "endLine": 108,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.projectiveAmbientChart_unramified_at_affine_coordinates",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_exists_good_affine_coordinates",
+        "LinearStudy.projectiveRationalPolynomialChartMap_ideal",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
     "LinearStudy.powerSeries_map_eq_trunc_of_nilpotent": {
       "path": "Linear/NilpotentEvaluationUnique.lean",
       "startLine": 62,
@@ -35185,6 +35669,15 @@
         "LinearStudy.polynomialSmoothPointLocalReduction",
         "LinearStudy.polynomialSmoothPointLocalReduction_ideal_kernel",
         "LinearStudy.polynomialSmoothPointLocalReduction_maximalIdeal"
+      ]
+    },
+    "LinearStudy.generalPointLocalQuotientPullback_unramified_transport": {
+      "path": "Linear/ProjectiveCoordinateUnramified.lean",
+      "startLine": 12,
+      "endLine": 23,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback"
       ]
     },
     "quotient_isSMulRegular_smul_top_isCohenMacaulay_iff_isCohenMacaulay": {
@@ -36489,6 +36982,26 @@
       "lineCount": 5,
       "dependencies": [
         "LinearStudy.powerSeriesMapEquiv"
+      ]
+    },
+    "LinearStudy.ProjectiveChartPolynomialParameterConclusion": {
+      "path": "Linear/ProjectiveLocalParametersConstructed.lean",
+      "startLine": 16,
+      "endLine": 41,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPolynomialChartMap"
       ]
     },
     "LinearStudy.artinianAmbientCompletionQuotientEquiv": {
@@ -39321,6 +39834,25 @@
         "LinearStudy.homogeneous_eval_smul"
       ]
     },
+    "LinearStudy.projectiveChartOpenMap_ambient_rational_evaluation": {
+      "path": "Linear/ProjectiveAmbientAtPoint.lean",
+      "startLine": 55,
+      "endLine": 81,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayQuotientBaseEquiv",
+        "LinearStudy.awayQuotientEquiv",
+        "LinearStudy.awayQuotientEquiv_mk",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_algebraMap",
+        "LinearStudy.projectiveChartDenominator"
+      ]
+    },
     "LinearStudy.HomogeneousEndomorphism.casesOn": {
       "path": "Linear/Projective.lean",
       "startLine": 43,
@@ -40217,6 +40749,44 @@
       "dependencies": [
         "IsCohenMacaulayLocalRing",
         "IsCohenMacaulayRing"
+      ]
+    },
+    "LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters": {
+      "path": "Linear/ProjectiveLocalParametersConstructed.lean",
+      "startLine": 43,
+      "endLine": 113,
+      "lineCount": 71,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_le_pointKernel",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.smoothPoint_polynomial_parameters",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectiveChartPolynomialParameterConclusion",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_mk",
+        "LinearStudy.generalPointLocalQuotientPullback_unramified_transport",
+        "LinearStudy.general_point_local_unramified_parameters_generate",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.point_local_quotient_maximalIdeal_map",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_algebraMap",
+        "LinearStudy.projectiveChart_exists_smooth_unramified_coordinate_point",
+        "LinearStudy.projectiveRationalPolynomialChartMap_ideal",
+        "LinearStudy.rationalPointLocalQuotientPullback_essFiniteType",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_point_kernel"
       ]
     },
     "LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero": {
@@ -42069,6 +42639,32 @@
         "koszulComplex.dAlternating_apply"
       ]
     },
+    "LinearStudy.projectiveChartOpenMap_isAlgebraic": {
+      "path": "Linear/ProjectiveTargetGoodOpen.lean",
+      "startLine": 12,
+      "endLine": 39,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_injective",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartFractionMap_finite",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_fraction_comp",
+        "LinearStudy.projectiveChart_denominator_ne_zero",
+        "LinearStudy.ringHom_finite_fraction_model_isAlgebraic"
+      ]
+    },
     "LinearStudy.exists_nonzero_coordinate_minor": {
       "path": "Linear/RectangularMinor.lean",
       "startLine": 11,
@@ -43322,6 +43918,36 @@
         "IsCohenMacaulayRing.mk"
       ]
     },
+    "LinearStudy.projectiveAmbientChart_unramified_at_rational_point": {
+      "path": "Linear/ProjectiveAmbientAtPoint.lean",
+      "startLine": 14,
+      "endLine": 53,
+      "lineCount": 40,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayQuotientEquiv",
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.localRingHom_formallyUnramified_of_equiv_comp",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_ambient_quotient_comp",
+        "LinearStudy.projectiveRationalPolynomialChartMap_ideal",
+        "LinearStudy.quotientLocalPullback_formallyUnramified",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPointPrime_comp_formallyUnramified",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.ringHom_pointwiseUnramified_localRingHom"
+      ]
+    },
     "LinearStudy.projectiveRatioPolynomialMap_kernel": {
       "path": "Linear/ProjectiveRatioChartKernel.lean",
       "startLine": 24,
@@ -43515,6 +44141,13 @@
       "startLine": 16,
       "endLine": 19,
       "lineCount": 4,
+      "dependencies": []
+    },
+    "LinearStudy.ringHom_algebraic_target_open_avoids_source_closed": {
+      "path": "Linear/FractionModelAlgebraicOpen.lean",
+      "startLine": 32,
+      "endLine": 46,
+      "lineCount": 15,
       "dependencies": []
     },
     "ModuleCat.depth_eq_of_iso_right": {
@@ -44801,6 +45434,13 @@
       "dependencies": [
         "LinearStudy.powerSeriesMapEquiv"
       ]
+    },
+    "LinearStudy.ringHom_finite_fraction_model_isAlgebraic": {
+      "path": "Linear/FractionModelAlgebraicOpen.lean",
+      "startLine": 12,
+      "endLine": 30,
+      "lineCount": 19,
+      "dependencies": []
     },
     "ModuleCat.depth_eq_zero_iff_nontrivial_linearMap": {
       "path": "Linear/Vendor/CM/DepthBasic.lean",
@@ -46689,6 +47329,27 @@
         "LinearStudy.parameter_generator_constantCoeff_zero"
       ]
     },
+    "LinearStudy.IntegralProjectiveEquations.smoothPoint_polynomial_parameters": {
+      "path": "Linear/ProjectiveSmoothPointParameters.lean",
+      "startLine": 16,
+      "endLine": 55,
+      "lineCount": 40,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_ne_bot",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.point_local_quotient_maximalIdeal_map",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.smoothLocus_constructs_original_polynomial_parameters"
+      ]
+    },
     "LinearStudy.polynomial_quotient_kernel_socle": {
       "path": "Linear/PolynomialGlobalResidue.lean",
       "startLine": 81,
@@ -47415,6 +48076,36 @@
         "koszulComplex.appendMap",
         "koszulComplex.fromOfListHomSucc",
         "koszulComplex.fromOfListHomZero"
+      ]
+    },
+    "LinearStudy.projectiveAmbientChart_unramified_at_affine_coordinates": {
+      "path": "Linear/ProjectiveCoordinateUnramified.lean",
+      "startLine": 25,
+      "endLine": 79,
+      "lineCount": 55,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayQuotientBaseEquiv",
+        "LinearStudy.awayQuotientEquiv",
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_unramified_transport",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.projectiveAmbientChart_unramified_at_rational_point",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_ambient_rational_evaluation",
+        "LinearStudy.projectiveRationalPolynomialChartMap_ideal",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPolynomialChartMap"
       ]
     },
     "LinearStudy.polynomialDoubleRightZero_left": {
@@ -48424,6 +49115,29 @@
       "dependencies": [
         "LinearStudy.ideal_ofFn",
         "LinearStudy.parameterSpecialization"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_exists_target_good_open": {
+      "path": "Linear/ProjectiveTargetGoodOpen.lean",
+      "startLine": 41,
+      "endLine": 68,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_exists_smooth_unramified_open",
+        "LinearStudy.projectiveChartOpenMap_isAlgebraic",
+        "LinearStudy.projectiveChart_denominator_ne_zero",
+        "LinearStudy.ringHom_algebraic_target_open_avoids_source_closed"
       ]
     },
     "LinearStudy.projectiveChartCoordinateEmbedding_injective": {

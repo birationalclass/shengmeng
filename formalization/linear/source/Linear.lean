@@ -353,3 +353,15 @@ public import Linear.RationalPointLocalization
 public import Linear.AffineRationalPointValues
 
 public import Linear.ProjectiveGoodAffineCoordinates
+
+public import Linear.ProjectiveAmbientAtPoint
+
+public import Linear.ProjectiveCoordinateUnramified
+
+public import Linear.ProjectiveSmoothPointParameters
+
+public import Linear.ProjectiveLocalParametersConstructed
+
+public import Linear.FractionModelAlgebraicOpen
+
+public import Linear.ProjectiveTargetGoodOpen
