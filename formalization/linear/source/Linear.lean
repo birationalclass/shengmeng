@@ -609,3 +609,17 @@ public import Linear.FractionFieldTranscendence
 public import Linear.ProjectiveChartHilbertKrullDimension
 
 public import Linear.ProjectiveWholeFiberKrullPower
+
+public import Linear.NormalizationDifferentialRank
+
+public import Linear.ProjectiveDifferentialDimension
+
+public import Linear.ProjectiveWholeFiberDimensionParameters
+
+public import Linear.ProjectiveWholeFiberGoodDimension
+
+public import Linear.ProjectiveWholeFiberPointLoci
+
+public import Linear.ProjectiveSmoothCommonDimension
+
+public import Linear.ProjectiveWholeFiberCommonCoordinates
