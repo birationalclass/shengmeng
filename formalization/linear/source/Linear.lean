@@ -577,3 +577,35 @@ public import Linear.FieldEndomorphismConjugateDegree
 public import Linear.ProjectiveChartHilbertDegree
 
 public import Linear.ProjectiveWholeFiberHilbertPower
+
+public import Linear.IntegralKrullDimension
+
+public import Linear.NoetherNormalizationKrull
+
+public import Linear.PolynomialFilteredImage
+
+public import Linear.PolynomialRectangleDimension
+
+public import Linear.BoundedPolynomialCombination
+
+public import Linear.MatrixControlledPolynomialSpan
+
+public import Linear.FiniteNormalizationFilteredBound
+
+public import Linear.QuotientNormalizationFilteredLower
+
+public import Linear.PolynomialGrowthDegreeComparison
+
+public import Linear.QuotientNormalizationFilteredUpper
+
+public import Linear.QuotientHilbertKrullDimension
+
+public import Linear.ProjectiveConeHilbertKrullDimension
+
+public import Linear.NoetherNormalizationTranscendence
+
+public import Linear.FractionFieldTranscendence
+
+public import Linear.ProjectiveChartHilbertKrullDimension
+
+public import Linear.ProjectiveWholeFiberKrullPower

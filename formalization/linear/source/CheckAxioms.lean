@@ -129,6 +129,16 @@ set_option pp.proofs false
 #print axioms LinearStudy.awayQuotientEquiv_invSelf
 #check LinearStudy.rationalPolynomialChartMap_awayQuotient_comp
 #print axioms LinearStudy.rationalPolynomialChartMap_awayQuotient_comp
+#check LinearStudy.boundedPolynomialCombination
+#print axioms LinearStudy.boundedPolynomialCombination
+#check LinearStudy.boundedPolynomialSpan
+#print axioms LinearStudy.boundedPolynomialSpan
+#check LinearStudy.boundedPolynomialSpan_mono
+#print axioms LinearStudy.boundedPolynomialSpan_mono
+#check LinearStudy.boundedPolynomialSpan_finite
+#print axioms LinearStudy.boundedPolynomialSpan_finite
+#check LinearStudy.boundedPolynomialSpan_finrank_le
+#print axioms LinearStudy.boundedPolynomialSpan_finrank_le
 #check LinearStudy.finiteFlat_centered_jacobian_annihilator
 #print axioms LinearStudy.finiteFlat_centered_jacobian_annihilator
 #check LinearStudy.genericNormalBlock
@@ -395,6 +405,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.affine_ideal_degree_bounded_representation
 #check LinearStudy.affine_ideal_top_component_mem
 #print axioms LinearStudy.affine_ideal_top_component_mem
+#check LinearStudy.finite_normalization_polynomial_filtered_bound
+#print axioms LinearStudy.finite_normalization_polynomial_filtered_bound
 #check LinearStudy.finite_rational_points_of_module_finite
 #print axioms LinearStudy.finite_rational_points_of_module_finite
 #check LinearStudy.polynomial_zeroLocus_finite_of_module_finite
@@ -523,6 +535,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.formal_unit_divided_fiber_ideal
 #check LinearStudy.formal_unit_divided_transformed_firstOrder
 #print axioms LinearStudy.formal_unit_divided_transformed_firstOrder
+#check LinearStudy.fraction_field_trdeg
+#print axioms LinearStudy.fraction_field_trdeg
+#check LinearStudy.rational_function_trdeg
+#print axioms LinearStudy.rational_function_trdeg
 #check LinearStudy.ringHom_finite_fraction_model_isAlgebraic
 #print axioms LinearStudy.ringHom_finite_fraction_model_isAlgebraic
 #check LinearStudy.ringHom_algebraic_target_open_avoids_source_closed
@@ -837,6 +853,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.affineChartPolynomialMap_comp_aeval
 #check LinearStudy.homogeneous_rational_chart_pullback
 #print axioms LinearStudy.homogeneous_rational_chart_pullback
+#check LinearStudy.integral_injective_ringKrullDim_eq
+#print axioms LinearStudy.integral_injective_ringKrullDim_eq
 #check LinearStudy.total_invariance_membership
 #print axioms LinearStudy.total_invariance_membership
 #check LinearStudy.total_invariance_iterate
@@ -1129,6 +1147,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.exists_perfectPairing_of_kernel_socle
 #check LinearStudy.lemma31_local_perfectPairing
 #print axioms LinearStudy.lemma31_local_perfectPairing
+#check LinearStudy.boundedPolynomialSpan_mul_of_matrix
+#print axioms LinearStudy.boundedPolynomialSpan_mul_of_matrix
 #check LinearStudy.powerSeries_hasEval_of_nilpotent
 #print axioms LinearStudy.powerSeries_hasEval_of_nilpotent
 #check LinearStudy.nilpotentPowerSeriesEval
@@ -1155,6 +1175,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.regular_cons_replace_nilpotent
 #check LinearStudy.regular_nilpotent_perturbation
 #print axioms LinearStudy.regular_nilpotent_perturbation
+#check LinearStudy.exists_finite_normalization_krull_dimension
+#print axioms LinearStudy.exists_finite_normalization_krull_dimension
+#check LinearStudy.finite_normalization_trdeg
+#print axioms LinearStudy.finite_normalization_trdeg
+#check LinearStudy.finiteType_domain_exists_krull_trdeg
+#print axioms LinearStudy.finiteType_domain_exists_krull_trdeg
 #check LinearStudy.oneVariable_unit_factorization
 #print axioms LinearStudy.oneVariable_unit_factorization
 #check LinearStudy.oneVariable_closedFiber_jacobian
@@ -1313,6 +1339,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.polynomial_pullback_normal_jacobian_quotient_span
 #check LinearStudy.polynomial_pullback_normal_jacobian_image_factor
 #print axioms LinearStudy.polynomial_pullback_normal_jacobian_image_factor
+#check LinearStudy.polynomial_image_mem_filtration
+#print axioms LinearStudy.polynomial_image_mem_filtration
 #check LinearStudy.polynomialQuotient_finite_of_finite_zeroLocus
 #print axioms LinearStudy.polynomialQuotient_finite_of_finite_zeroLocus
 #check LinearStudy.polynomial_zero_firstJet_mem_vars_square
@@ -1369,6 +1397,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.polynomial_quotient_kernel_socle
 #check LinearStudy.polynomialQuotient_perfectPairing
 #print axioms LinearStudy.polynomialQuotient_perfectPairing
+#check LinearStudy.polynomial_natDegree_le_of_eventually_le
+#print axioms LinearStudy.polynomial_natDegree_le_of_eventually_le
 #check LinearStudy.polynomial_nat_affine_ratio_tendsto
 #print axioms LinearStudy.polynomial_nat_affine_ratio_tendsto
 #check LinearStudy.polynomial_leadingCoeff_pos_of_eventually_nat_pos
@@ -1447,6 +1477,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.polynomialPointLocalEquiv
 #check LinearStudy.polynomialPointLocalEquiv_polynomial
 #print axioms LinearStudy.polynomialPointLocalEquiv_polynomial
+#check LinearStudy.polynomial_restrictDegree_finrank
+#print axioms LinearStudy.polynomial_restrictDegree_finrank
+#check LinearStudy.polynomial_restrictDegree_le_totalDegree
+#print axioms LinearStudy.polynomial_restrictDegree_le_totalDegree
 #check LinearStudy.polynomialZeroLocusPointEquiv
 #print axioms LinearStudy.polynomialZeroLocusPointEquiv
 #check LinearStudy.polynomialZeroLocus_card_eq_finrank
@@ -1929,6 +1963,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveChartFractionMap_finrank_eq_ratio
 #check LinearStudy.projectiveChartField_exists_hilbert_degree_power
 #print axioms LinearStudy.projectiveChartField_exists_hilbert_degree_power
+#check LinearStudy.projective_chart_krull_dimension_of_hilbertPolynomial
+#print axioms LinearStudy.projective_chart_krull_dimension_of_hilbertPolynomial
+#check LinearStudy.projective_chart_spec_dimension_of_hilbertPolynomial
+#print axioms LinearStudy.projective_chart_spec_dimension_of_hilbertPolynomial
 #check LinearStudy.projectiveChartOpenMap_exists_good_local_parameters
 #print axioms LinearStudy.projectiveChartOpenMap_exists_good_local_parameters
 #check LinearStudy.projectiveChartFractionEmbedding_algebraMap
@@ -2009,6 +2047,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveCoordinateDomainMap_finite
 #check LinearStudy.projectiveCone_exists_target_chart_open_point
 #print axioms LinearStudy.projectiveCone_exists_target_chart_open_point
+#check LinearStudy.projective_cone_krull_dimension_of_hilbertPolynomial
+#print axioms LinearStudy.projective_cone_krull_dimension_of_hilbertPolynomial
+#check LinearStudy.projective_cone_hilbertPolynomial_krull_dimension
+#print axioms LinearStudy.projective_cone_hilbertPolynomial_krull_dimension
 #check LinearStudy.projectiveConePullback_exists_scaling_coefficient
 #print axioms LinearStudy.projectiveConePullback_exists_scaling_coefficient
 #check LinearStudy.projectiveConeRatioField_adjoin_coordinate_top
@@ -2267,6 +2309,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.projective_exists_whole_fiber_good_target_point
 #check LinearStudy.projective_iterates_whole_fiber_hilbert_power
 #print axioms LinearStudy.projective_iterates_whole_fiber_hilbert_power
+#check LinearStudy.projective_chart_degree_krull_power
+#print axioms LinearStudy.projective_chart_degree_krull_power
+#check LinearStudy.projective_iterates_whole_fiber_krull_power
+#print axioms LinearStudy.projective_iterates_whole_fiber_krull_power
 #check LinearStudy.projectiveWholeFiber_card_eq_affine_quotient_finrank
 #print axioms LinearStudy.projectiveWholeFiber_card_eq_affine_quotient_finrank
 #check LinearStudy.projective_exists_whole_reduced_fiber_point_count
@@ -2275,10 +2321,22 @@ set_option pp.proofs false
 #print axioms LinearStudy.projective_exists_whole_reduced_fiber
 #check LinearStudy.projective_exists_whole_reduced_tensor_fiber_point_count
 #print axioms LinearStudy.projective_exists_whole_reduced_tensor_fiber_point_count
+#check LinearStudy.homogeneousQuotientFiltration_finrank_pos
+#print axioms LinearStudy.homogeneousQuotientFiltration_finrank_pos
+#check LinearStudy.quotient_normalization_hilbert_degree
+#print axioms LinearStudy.quotient_normalization_hilbert_degree
+#check LinearStudy.quotient_cumulative_hilbert_degree_eq_ringKrullDim
+#print axioms LinearStudy.quotient_cumulative_hilbert_degree_eq_ringKrullDim
 #check LinearStudy.quotientLocalPullback_comparison
 #print axioms LinearStudy.quotientLocalPullback_comparison
 #check LinearStudy.quotientLocalPullback_formallyUnramified
 #print axioms LinearStudy.quotientLocalPullback_formallyUnramified
+#check LinearStudy.polynomial_to_quotient_exists_filtration_bound
+#print axioms LinearStudy.polynomial_to_quotient_exists_filtration_bound
+#check LinearStudy.quotient_normalization_filtration_lower
+#print axioms LinearStudy.quotient_normalization_filtration_lower
+#check LinearStudy.quotient_normalization_filtration_upper
+#print axioms LinearStudy.quotient_normalization_filtration_upper
 #check LinearStudy.ratFunc_scaled_power_finrank
 #print axioms LinearStudy.ratFunc_scaled_power_finrank
 #check LinearStudy.rationalField_scaled_power_finrank

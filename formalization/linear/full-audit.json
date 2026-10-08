@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1568,
-  "verifiedTheorems": 1148,
-  "definitions": 224,
+  "audited": 1597,
+  "verifiedTheorems": 1175,
+  "definitions": 226,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -1633,6 +1633,123 @@
         "LinearStudy.awayQuotientEquiv_invSelf",
         "LinearStudy.awayQuotientEquiv_mk",
         "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.boundedPolynomialCombination",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/BoundedPolynomialCombination.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.boundedPolynomialCombination.{u_1, u_2, u_3} {k : Type u_1} {τ : Type u_2} {A : Type u_3} [Field k]\n  [CommRing A] [Algebra k A] {m : ℕ} (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) (N : ℕ) :\n  (Fin m → ↥(MvPolynomial.restrictTotalDegree τ k N)) →ₗ[k] A",
+      "sha256": "085fd32d496c7a20c4427dfb2e442c474c4c00876a5e07ce425b4567e2eb1457",
+      "lines": 7,
+      "moduleLineCount": 51,
+      "startLine": 12,
+      "endLine": 18,
+      "lineCount": 7,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.boundedPolynomialSpan",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/BoundedPolynomialCombination.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.boundedPolynomialSpan.{u_1, u_2, u_3} {k : Type u_1} {τ : Type u_2} {A : Type u_3} [Field k] [CommRing A]\n  [Algebra k A] {m : ℕ} (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) (N : ℕ) : Submodule k A",
+      "sha256": "085fd32d496c7a20c4427dfb2e442c474c4c00876a5e07ce425b4567e2eb1457",
+      "lines": 3,
+      "moduleLineCount": 51,
+      "startLine": 20,
+      "endLine": 22,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.boundedPolynomialCombination"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.boundedPolynomialSpan_mono",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/BoundedPolynomialCombination.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.boundedPolynomialSpan_mono.{u_1, u_2, u_3} {k : Type u_1} {τ : Type u_2} {A : Type u_3} [Field k]\n  [CommRing A] [Algebra k A] {m : ℕ} (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) :\n  Monotone (LinearStudy.boundedPolynomialSpan g b)",
+      "sha256": "085fd32d496c7a20c4427dfb2e442c474c4c00876a5e07ce425b4567e2eb1457",
+      "lines": 6,
+      "moduleLineCount": 51,
+      "startLine": 24,
+      "endLine": 29,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.boundedPolynomialCombination",
+        "LinearStudy.boundedPolynomialSpan"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.boundedPolynomialSpan_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/BoundedPolynomialCombination.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.boundedPolynomialSpan_finite.{u_1, u_2, u_3} {k : Type u_1} {τ : Type u_2} {A : Type u_3} [Field k]\n  [CommRing A] [Algebra k A] {m : ℕ} [Finite τ] (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) (N : ℕ) :\n  Module.Finite k ↥(LinearStudy.boundedPolynomialSpan g b N)",
+      "sha256": "085fd32d496c7a20c4427dfb2e442c474c4c00876a5e07ce425b4567e2eb1457",
+      "lines": 5,
+      "moduleLineCount": 51,
+      "startLine": 31,
+      "endLine": 35,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.boundedPolynomialCombination",
+        "LinearStudy.boundedPolynomialSpan"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.boundedPolynomialSpan_finrank_le",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/BoundedPolynomialCombination.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.boundedPolynomialSpan_finrank_le.{u_1, u_2, u_3} {k : Type u_1} {τ : Type u_2} {A : Type u_3} [Field k]\n  [CommRing A] [Algebra k A] {m : ℕ} [Finite τ] (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) (N : ℕ) :\n  Module.finrank k ↥(LinearStudy.boundedPolynomialSpan g b N) ≤ m * (N + 1) ^ Nat.card τ",
+      "sha256": "085fd32d496c7a20c4427dfb2e442c474c4c00876a5e07ce425b4567e2eb1457",
+      "lines": 13,
+      "moduleLineCount": 51,
+      "startLine": 37,
+      "endLine": 49,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.boundedPolynomialCombination",
+        "LinearStudy.boundedPolynomialSpan",
+        "LinearStudy.polynomial_restrictDegree_finrank"
       ]
     },
     {
@@ -4876,6 +4993,33 @@
       ]
     },
     {
+      "declaration": "LinearStudy.finite_normalization_polynomial_filtered_bound",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteNormalizationFilteredBound.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finite_normalization_polynomial_filtered_bound.{u_1, u_2, u_3, u_4} {k : Type u_1} {τ : Type u_2}\n  {σ : Type u_3} {A : Type u_4} [Field k] [Finite σ] [CommRing A] [Algebra k A] (g : MvPolynomial τ k →ₐ[k] A)\n  (hg : g.Finite) (α : MvPolynomial σ k →ₐ[k] A) :\n  ∃ m b c B, 0 < c ∧ ∀ (p : MvPolynomial σ k), α p ∈ LinearStudy.boundedPolynomialSpan g b (c * p.totalDegree + B)",
+      "sha256": "b027f1f3f2e933170b227a0c9982be9ef0aef48b72b36f6237ba85810b7166ca",
+      "lines": 45,
+      "moduleLineCount": 59,
+      "startLine": 13,
+      "endLine": 57,
+      "lineCount": 45,
+      "dependencies": [
+        "LinearStudy.boundedPolynomialCombination",
+        "LinearStudy.boundedPolynomialSpan",
+        "LinearStudy.boundedPolynomialSpan_mono",
+        "LinearStudy.boundedPolynomialSpan_mul_of_matrix",
+        "LinearStudy.polynomial_image_mem_filtration"
+      ]
+    },
+    {
       "declaration": "LinearStudy.finite_rational_points_of_module_finite",
       "kind": "theorem",
       "origin": "project",
@@ -6461,6 +6605,50 @@
       "lineCount": 19,
       "dependencies": [
         "LinearStudy.formal_pullback_firstOrder_unit_division"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.fraction_field_trdeg",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FractionFieldTranscendence.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fraction_field_trdeg.{u} (k A F : Type u) [Field k] [CommRing A] [IsDomain A] [Field F] [Algebra k A]\n  [Algebra A F] [Algebra k F] [IsScalarTower k A F] [IsFractionRing A F] : Algebra.trdeg k F = Algebra.trdeg k A",
+      "sha256": "51b79b6c73bce7a8f9320b13a5c3cd4a1ca19b07af234017c0eaddc6905db500",
+      "lines": 11,
+      "moduleLineCount": 35,
+      "startLine": 12,
+      "endLine": 22,
+      "lineCount": 11,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.rational_function_trdeg",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FractionFieldTranscendence.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rational_function_trdeg.{u} (k E : Type u) [Field k] [Field E] [Algebra k E] :\n  Algebra.trdeg k (RatFunc E) = Algebra.trdeg k E + 1",
+      "sha256": "51b79b6c73bce7a8f9320b13a5c3cd4a1ca19b07af234017c0eaddc6905db500",
+      "lines": 10,
+      "moduleLineCount": 35,
+      "startLine": 24,
+      "endLine": 33,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.fraction_field_trdeg"
       ]
     },
     {
@@ -10235,6 +10423,27 @@
       ]
     },
     {
+      "declaration": "LinearStudy.integral_injective_ringKrullDim_eq",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/IntegralKrullDimension.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.integral_injective_ringKrullDim_eq.{u_1, u_2} (R : Type u_1) (S : Type u_2) [CommRing R] [CommRing S]\n  [Algebra R S] [Algebra.IsIntegral R S] (hinj : Function.Injective ⇑(algebraMap R S)) : ringKrullDim R = ringKrullDim S",
+      "sha256": "d681b25882bf796f4ad924060297d43e5ec5c8fc19ffecf410192ceca1e65d88",
+      "lines": 22,
+      "moduleLineCount": 32,
+      "startLine": 9,
+      "endLine": 30,
+      "lineCount": 22,
+      "dependencies": []
+    },
+    {
       "declaration": "LinearStudy.total_invariance_membership",
       "kind": "theorem",
       "origin": "project",
@@ -13845,6 +14054,30 @@
       ]
     },
     {
+      "declaration": "LinearStudy.boundedPolynomialSpan_mul_of_matrix",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/MatrixControlledPolynomialSpan.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.boundedPolynomialSpan_mul_of_matrix.{u_1, u_2, u_3, u_4} {k : Type u_1} {τ : Type u_2} {σ : Type u_3}\n  {A : Type u_4} [Field k] [CommRing A] [Algebra k A] {m : ℕ} (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) (x : σ → A)\n  (M : σ → Fin m → Fin m → MvPolynomial τ k) (c : ℕ) (hM : ∀ (i : σ) (j : Fin m), x i * b j = ∑ l, g (M i j l) * b l)\n  (hdeg : ∀ (i : σ) (j l : Fin m), (M i j l).totalDegree ≤ c) (N : ℕ) (a : A)\n  (ha : a ∈ LinearStudy.boundedPolynomialSpan g b N) (i : σ) : a * x i ∈ LinearStudy.boundedPolynomialSpan g b (N + c)",
+      "sha256": "26610c035b595805cb05e15a0256ac527a5e0b81ebe1b07f38a96da8e90a16d2",
+      "lines": 34,
+      "moduleLineCount": 45,
+      "startLine": 10,
+      "endLine": 43,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.boundedPolynomialCombination",
+        "LinearStudy.boundedPolynomialSpan"
+      ]
+    },
+    {
       "declaration": "LinearStudy.powerSeries_hasEval_of_nilpotent",
       "kind": "theorem",
       "origin": "project",
@@ -14132,6 +14365,74 @@
       "lineCount": 17,
       "dependencies": [
         "LinearStudy.regular_cons_replace_nilpotent"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.exists_finite_normalization_krull_dimension",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NoetherNormalizationKrull.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_finite_normalization_krull_dimension.{u_1, u_2} (k : Type u_1) (A : Type u_2) [Field k] [CommRing A]\n  [Nontrivial A] [Algebra k A] [Algebra.FiniteType k A] : ∃ s g, Function.Injective ⇑g ∧ g.Finite ∧ ringKrullDim A = ↑s",
+      "sha256": "a24227f25eaf095723dee05331e2b96800fc204ff3ba3f9f016a689bc19e719f",
+      "lines": 16,
+      "moduleLineCount": 29,
+      "startLine": 12,
+      "endLine": 27,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.integral_injective_ringKrullDim_eq"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finite_normalization_trdeg",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NoetherNormalizationTranscendence.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finite_normalization_trdeg.{u} {k A : Type u} [Field k] [CommRing A] [IsDomain A] [Algebra k A] (s : ℕ)\n  (g : MvPolynomial (Fin s) k →ₐ[k] A) (hinj : Function.Injective ⇑g) (hfin : g.Finite) : Algebra.trdeg k A = ↑s",
+      "sha256": "d6f58ed7e987f4b635e041b66404b63ba0635b645da0b5b894770c7d53f6b1a5",
+      "lines": 16,
+      "moduleLineCount": 39,
+      "startLine": 11,
+      "endLine": 26,
+      "lineCount": 16,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.finiteType_domain_exists_krull_trdeg",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NoetherNormalizationTranscendence.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteType_domain_exists_krull_trdeg.{u} (k A : Type u) [Field k] [CommRing A] [IsDomain A] [Algebra k A]\n  [Algebra.FiniteType k A] : ∃ s, ringKrullDim A = ↑s ∧ Algebra.trdeg k A = ↑s",
+      "sha256": "d6f58ed7e987f4b635e041b66404b63ba0635b645da0b5b894770c7d53f6b1a5",
+      "lines": 10,
+      "moduleLineCount": 39,
+      "startLine": 28,
+      "endLine": 37,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.exists_finite_normalization_krull_dimension",
+        "LinearStudy.finite_normalization_trdeg"
       ]
     },
     {
@@ -16072,6 +16373,27 @@
       ]
     },
     {
+      "declaration": "LinearStudy.polynomial_image_mem_filtration",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialFilteredImage.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_image_mem_filtration.{u_1, u_2, u_3} {k : Type u_1} {σ : Type u_2} {A : Type u_3} [Field k]\n  [CommRing A] [Algebra k A] (α : MvPolynomial σ k →ₐ[k] A) (G : ℕ → Submodule k A) (hmono : Monotone G) (c B : ℕ)\n  (h1 : 1 ∈ G B) (hX : ∀ (N : ℕ), ∀ a ∈ G N, ∀ (i : σ), a * α (MvPolynomial.X i) ∈ G (N + c)) (p : MvPolynomial σ k) :\n  α p ∈ G (c * p.totalDegree + B)",
+      "sha256": "4bad9265e7c1f35869923686e6d7c08e1573ed0713e76c3a48059a2d8ba45809",
+      "lines": 42,
+      "moduleLineCount": 53,
+      "startLine": 10,
+      "endLine": 51,
+      "lineCount": 42,
+      "dependencies": []
+    },
+    {
       "declaration": "LinearStudy.polynomialQuotient_finite_of_finite_zeroLocus",
       "kind": "theorem",
       "origin": "project",
@@ -16749,6 +17071,27 @@
         "LinearStudy.kernel_socle_scalar_generation",
         "LinearStudy.polynomial_quotient_kernel_socle"
       ]
+    },
+    {
+      "declaration": "LinearStudy.polynomial_natDegree_le_of_eventually_le",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialGrowthDegreeComparison.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_natDegree_le_of_eventually_le (P Q : Polynomial ℚ) (hP : P ≠ 0)\n  (hpos : ∀ᶠ (N : ℕ) in Filter.atTop, 0 < Polynomial.eval (↑N) P)\n  (hle : ∀ᶠ (N : ℕ) in Filter.atTop, Polynomial.eval (↑N) P ≤ Polynomial.eval (↑N) Q) : P.natDegree ≤ Q.natDegree",
+      "sha256": "50c55fd649c009d07d8ad62d61a9517c39c9939cc5d1864a73f39801e1bbfde9",
+      "lines": 28,
+      "moduleLineCount": 40,
+      "startLine": 11,
+      "endLine": 38,
+      "lineCount": 28,
+      "dependencies": []
     },
     {
       "declaration": "LinearStudy.polynomial_nat_affine_ratio_tendsto",
@@ -17670,6 +18013,48 @@
         "LinearStudy.polynomialTranslation_primeCompl",
         "LinearStudy.polynomial_idealOfVars_isMaximal"
       ]
+    },
+    {
+      "declaration": "LinearStudy.polynomial_restrictDegree_finrank",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialRectangleDimension.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_restrictDegree_finrank.{u_1, u_2} (k : Type u_1) (σ : Type u_2) [Field k] [Finite σ] (N : ℕ) :\n  Module.finrank k ↥(MvPolynomial.restrictDegree σ k N) = (N + 1) ^ Nat.card σ",
+      "sha256": "09eb2cd446f0c3ada072b34af72a40dbee8a7da8b80c404856a8da5c1d12b1be",
+      "lines": 19,
+      "moduleLineCount": 51,
+      "startLine": 12,
+      "endLine": 30,
+      "lineCount": 19,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.polynomial_restrictDegree_le_totalDegree",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialRectangleDimension.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_restrictDegree_le_totalDegree.{u_1, u_2} (k : Type u_1) (σ : Type u_2) [Field k] [Finite σ]\n  (N : ℕ) : MvPolynomial.restrictDegree σ k N ≤ MvPolynomial.restrictTotalDegree σ k (Nat.card σ * N)",
+      "sha256": "09eb2cd446f0c3ada072b34af72a40dbee8a7da8b80c404856a8da5c1d12b1be",
+      "lines": 18,
+      "moduleLineCount": 51,
+      "startLine": 32,
+      "endLine": 49,
+      "lineCount": 18,
+      "dependencies": []
     },
     {
       "declaration": "LinearStudy.polynomialZeroLocusPointEquiv",
@@ -24085,6 +24470,75 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projective_chart_krull_dimension_of_hilbertPolynomial",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartHilbertKrullDimension.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_chart_krull_dimension_of_hilbertPolynomial {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (P : Polynomial ℚ) (hP : P ≠ 0)\n  (hHilbert : ∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)) :\n  ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑P.natDegree",
+      "sha256": "83f62ccaa5c81c1c0677a37af1fc1c6b7940986f7415898b125351b88013cba9",
+      "lines": 38,
+      "moduleLineCount": 69,
+      "startLine": 17,
+      "endLine": 54,
+      "lineCount": 38,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.finiteType_domain_exists_krull_trdeg",
+        "LinearStudy.fraction_field_trdeg",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionRatioEquiv",
+        "LinearStudy.projectiveConeRatioRatFuncEquiv",
+        "LinearStudy.projectiveCoordinateRatioField",
+        "LinearStudy.projective_cone_krull_dimension_of_hilbertPolynomial",
+        "LinearStudy.rational_function_trdeg"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_chart_spec_dimension_of_hilbertPolynomial",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartHilbertKrullDimension.lean",
+      "line": 58,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_chart_spec_dimension_of_hilbertPolynomial {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (P : Polynomial ℚ) (hP : P ≠ 0)\n  (hHilbert : ∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)) :\n  topologicalKrullDim (PrimeSpectrum (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)) = ↑P.natDegree",
+      "sha256": "83f62ccaa5c81c1c0677a37af1fc1c6b7940986f7415898b125351b88013cba9",
+      "lines": 12,
+      "moduleLineCount": 69,
+      "startLine": 56,
+      "endLine": 67,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projective_chart_krull_dimension_of_hilbertPolynomial"
+      ]
+    },
+    {
       "declaration": "LinearStudy.projectiveChartOpenMap_exists_good_local_parameters",
       "kind": "theorem",
       "origin": "project",
@@ -25426,6 +25880,66 @@
         "LinearStudy.projectiveChartPolynomial_exists_cone_numerator",
         "LinearStudy.projectiveConeChart_numerator_eval",
         "LinearStudy.projectiveCone_exists_nonvanishing_point"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_cone_krull_dimension_of_hilbertPolynomial",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveConeHilbertKrullDimension.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_cone_krull_dimension_of_hilbertPolynomial {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (P : Polynomial ℚ) (hP : P ≠ 0)\n  (hHilbert : ∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)) :\n  ringKrullDim (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) = ↑(P.natDegree + 1)",
+      "sha256": "011443a30b5ec0780994b66f87d35f2d2ffb7f79af18c05d8f0b77bf3cae4b9e",
+      "lines": 14,
+      "moduleLineCount": 43,
+      "startLine": 11,
+      "endLine": 24,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.homogeneousQuotientCumulativeHilbertPolynomial_degree",
+        "LinearStudy.homogeneousQuotientFiltration",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.quotient_cumulative_hilbert_degree_eq_ringKrullDim"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_cone_hilbertPolynomial_krull_dimension",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveConeHilbertKrullDimension.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_cone_hilbertPolynomial_krull_dimension {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) :\n  ∃ P,\n    P ≠ 0 ∧\n      P.natDegree ≤ n ∧\n        ringKrullDim (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) = ↑(P.natDegree + 1) ∧\n          ∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)",
+      "sha256": "011443a30b5ec0780994b66f87d35f2d2ffb7f79af18c05d8f0b77bf3cae4b9e",
+      "lines": 16,
+      "moduleLineCount": 43,
+      "startLine": 26,
+      "endLine": 41,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.homogeneousQuotientFiltration",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.projective_coordinate_hilbertPolynomial_growth",
+        "LinearStudy.quotient_cumulative_hilbert_degree_eq_ringKrullDim"
       ]
     },
     {
@@ -29746,6 +30260,77 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projective_chart_degree_krull_power",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveWholeFiberKrullPower.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_chart_degree_krull_power {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  have γ := LinearStudy.projectiveChartFractionMap f V hq hf hV x0 hx0;\n  ∃ r ≤ n, ringKrullDim B = ↑r ∧ Module.finrank (↥γ.fieldRange) (FractionRing B) = f.degree ^ r",
+      "sha256": "9a2c1b14fc903876caf895db71464c73f21ea1cb8fe4ac210085f4c696d2749e",
+      "lines": 19,
+      "moduleLineCount": 54,
+      "startLine": 12,
+      "endLine": 30,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartField_exists_hilbert_degree_power",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projective_chart_krull_dimension_of_hilbertPolynomial"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_iterates_whole_fiber_krull_power",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveWholeFiberKrullPower.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_iterates_whole_fiber_krull_power {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ r ≤ n,\n    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧\n      ∀ (k : ℕ),\n        ∃ p ∉ V.affineIdeal,\n          (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧\n            ∀ (y : Fin n → ℂ),\n              LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet →\n                (MvPolynomial.eval y) p ≠ 0 →\n                  ((f.iterate k).onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}).Finite ∧\n                    Nat.card ↑((f.iterate k).onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =\n                      (f.degree ^ k) ^ r",
+      "sha256": "9a2c1b14fc903876caf895db71464c73f21ea1cb8fe4ac210085f4c696d2749e",
+      "lines": 21,
+      "moduleLineCount": 54,
+      "startLine": 32,
+      "endLine": 52,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.iterate",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projective_chart_krull_dimension_of_hilbertPolynomial",
+        "LinearStudy.projective_iterates_whole_fiber_hilbert_power"
+      ]
+    },
+    {
       "declaration": "LinearStudy.projectiveWholeFiber_card_eq_affine_quotient_finrank",
       "kind": "theorem",
       "origin": "project",
@@ -29896,6 +30481,83 @@
       ]
     },
     {
+      "declaration": "LinearStudy.homogeneousQuotientFiltration_finrank_pos",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/QuotientHilbertKrullDimension.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousQuotientFiltration_finrank_pos.{u_1, u_2} {k : Type u_1} {σ : Type u_2} [Field k] [Finite σ]\n  (I : Ideal (MvPolynomial σ k)) [Nontrivial (MvPolynomial σ k ⧸ I)] (N : ℕ) :\n  0 < Module.finrank k ↥(LinearStudy.homogeneousQuotientFiltration I N)",
+      "sha256": "01519fc0126c79863f1181816eab5ba1e052d402017727129053da5edb403476",
+      "lines": 9,
+      "moduleLineCount": 121,
+      "startLine": 15,
+      "endLine": 23,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientFiltration",
+        "LinearStudy.homogeneousQuotientFiltration_finite",
+        "LinearStudy.homogeneousQuotientFiltration_mem_iff"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.quotient_normalization_hilbert_degree",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/QuotientHilbertKrullDimension.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.quotient_normalization_hilbert_degree.{u_1, u_2} {k : Type u_1} {σ : Type u_2} [Field k] [Finite σ]\n  (I : Ideal (MvPolynomial σ k)) [Nontrivial (MvPolynomial σ k ⧸ I)] (s : ℕ)\n  (g : MvPolynomial (Fin s) k →ₐ[k] MvPolynomial σ k ⧸ I) (hinj : Function.Injective ⇑g) (hfin : g.Finite)\n  (H : Polynomial ℚ) (hH : H ≠ 0)\n  (hHilbert :\n    ∃ K, ∀ N > K, Polynomial.eval (↑N) H = ↑(Module.finrank k ↥(LinearStudy.homogeneousQuotientFiltration I N))) :\n  H.natDegree = s",
+      "sha256": "01519fc0126c79863f1181816eab5ba1e052d402017727129053da5edb403476",
+      "lines": 80,
+      "moduleLineCount": 121,
+      "startLine": 25,
+      "endLine": 104,
+      "lineCount": 80,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientFiltration",
+        "LinearStudy.homogeneousQuotientFiltration_finrank_pos",
+        "LinearStudy.polynomial_natDegree_le_of_eventually_le",
+        "LinearStudy.quotient_normalization_filtration_lower",
+        "LinearStudy.quotient_normalization_filtration_upper"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.quotient_cumulative_hilbert_degree_eq_ringKrullDim",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/QuotientHilbertKrullDimension.lean",
+      "line": 109,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.quotient_cumulative_hilbert_degree_eq_ringKrullDim.{u_1, u_2} {k : Type u_1} {σ : Type u_2} [Field k]\n  [Finite σ] (I : Ideal (MvPolynomial σ k)) [Nontrivial (MvPolynomial σ k ⧸ I)] (H : Polynomial ℚ) (hH : H ≠ 0)\n  (hHilbert :\n    ∃ K, ∀ N > K, Polynomial.eval (↑N) H = ↑(Module.finrank k ↥(LinearStudy.homogeneousQuotientFiltration I N))) :\n  ringKrullDim (MvPolynomial σ k ⧸ I) = ↑H.natDegree",
+      "sha256": "01519fc0126c79863f1181816eab5ba1e052d402017727129053da5edb403476",
+      "lines": 14,
+      "moduleLineCount": 121,
+      "startLine": 106,
+      "endLine": 119,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.exists_finite_normalization_krull_dimension",
+        "LinearStudy.homogeneousQuotientFiltration",
+        "LinearStudy.quotient_normalization_hilbert_degree"
+      ]
+    },
+    {
       "declaration": "LinearStudy.quotientLocalPullback_comparison",
       "kind": "theorem",
       "origin": "project",
@@ -29944,6 +30606,90 @@
         "LinearStudy.generalPointLocalQuotientPullback",
         "LinearStudy.localizationQuotientEquiv",
         "LinearStudy.quotientLocalPullback_comparison"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomial_to_quotient_exists_filtration_bound",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/QuotientNormalizationFilteredLower.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_to_quotient_exists_filtration_bound.{u_1, u_2, u_3} {k : Type u_1} {σ : Type u_2} {τ : Type u_3}\n  [Field k] [Finite τ] (I : Ideal (MvPolynomial σ k)) (g : MvPolynomial τ k →ₐ[k] MvPolynomial σ k ⧸ I) :\n  ∃ c, 0 < c ∧ ∀ (p : MvPolynomial τ k), g p ∈ LinearStudy.homogeneousQuotientFiltration I (c * p.totalDegree)",
+      "sha256": "6302854bf9f4a87c90b5c93d32630de0865532f164321a7440505e4b519649a5",
+      "lines": 26,
+      "moduleLineCount": 68,
+      "startLine": 12,
+      "endLine": 37,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientFiltration",
+        "LinearStudy.homogeneousQuotientFiltration_mem_iff",
+        "LinearStudy.homogeneousQuotientFiltration_mono",
+        "LinearStudy.homogeneousQuotientFiltration_mul_mem",
+        "LinearStudy.polynomial_image_mem_filtration"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.quotient_normalization_filtration_lower",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/QuotientNormalizationFilteredLower.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.quotient_normalization_filtration_lower.{u_1, u_2, u_3} {k : Type u_1} {σ : Type u_2} {τ : Type u_3}\n  [Field k] [Finite σ] [Finite τ] (I : Ideal (MvPolynomial σ k)) (g : MvPolynomial τ k →ₐ[k] MvPolynomial σ k ⧸ I)\n  (hg : Function.Injective ⇑g) :\n  ∃ c,\n    0 < c ∧\n      ∀ (N : ℕ),\n        (N + 1) ^ Nat.card τ ≤ Module.finrank k ↥(LinearStudy.homogeneousQuotientFiltration I (c * (Nat.card τ * N)))",
+      "sha256": "6302854bf9f4a87c90b5c93d32630de0865532f164321a7440505e4b519649a5",
+      "lines": 28,
+      "moduleLineCount": 68,
+      "startLine": 39,
+      "endLine": 66,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientFiltration",
+        "LinearStudy.homogeneousQuotientFiltration_finite",
+        "LinearStudy.homogeneousQuotientFiltration_mono",
+        "LinearStudy.polynomial_restrictDegree_finrank",
+        "LinearStudy.polynomial_restrictDegree_le_totalDegree",
+        "LinearStudy.polynomial_to_quotient_exists_filtration_bound"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.quotient_normalization_filtration_upper",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/QuotientNormalizationFilteredUpper.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.quotient_normalization_filtration_upper.{u_1, u_2, u_3} {k : Type u_1} {σ : Type u_2} {τ : Type u_3}\n  [Field k] [Finite σ] [Finite τ] (I : Ideal (MvPolynomial σ k)) (g : MvPolynomial τ k →ₐ[k] MvPolynomial σ k ⧸ I)\n  (hg : g.Finite) :\n  ∃ m c B,\n    0 < c ∧\n      ∀ (N : ℕ), Module.finrank k ↥(LinearStudy.homogeneousQuotientFiltration I N) ≤ m * (c * N + B + 1) ^ Nat.card τ",
+      "sha256": "9f2f119f2c37a44495aa7af4e48478ed20280a97509dd6431b941a580b958eba",
+      "lines": 21,
+      "moduleLineCount": 32,
+      "startLine": 10,
+      "endLine": 30,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.boundedPolynomialSpan",
+        "LinearStudy.boundedPolynomialSpan_finite",
+        "LinearStudy.boundedPolynomialSpan_finrank_le",
+        "LinearStudy.boundedPolynomialSpan_mono",
+        "LinearStudy.finite_normalization_polynomial_filtered_bound",
+        "LinearStudy.homogeneousQuotientFiltration",
+        "LinearStudy.homogeneousQuotientFiltration_mem_iff"
       ]
     },
     {

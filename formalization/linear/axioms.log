@@ -532,6 +532,25 @@ LinearStudy.rationalPolynomialChartMap_awayQuotient_comp.{u_1, u_2} {K : Type u_
       (algebraMap (MvPolynomial σ K ⧸ I) (Localization.Away ((Ideal.Quotient.mk I) p0))) ((Ideal.Quotient.mk I) (p i)) *
         IsLocalization.Away.invSelf ((Ideal.Quotient.mk I) p0)
 'LinearStudy.rationalPolynomialChartMap_awayQuotient_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.boundedPolynomialCombination.{u_1, u_2, u_3} {k : Type u_1} {τ : Type u_2} {A : Type u_3} [Field k]
+  [CommRing A] [Algebra k A] {m : ℕ} (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) (N : ℕ) :
+  (Fin m → ↥(MvPolynomial.restrictTotalDegree τ k N)) →ₗ[k] A
+'LinearStudy.boundedPolynomialCombination' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.boundedPolynomialSpan.{u_1, u_2, u_3} {k : Type u_1} {τ : Type u_2} {A : Type u_3} [Field k] [CommRing A]
+  [Algebra k A] {m : ℕ} (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) (N : ℕ) : Submodule k A
+'LinearStudy.boundedPolynomialSpan' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.boundedPolynomialSpan_mono.{u_1, u_2, u_3} {k : Type u_1} {τ : Type u_2} {A : Type u_3} [Field k]
+  [CommRing A] [Algebra k A] {m : ℕ} (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) :
+  Monotone (LinearStudy.boundedPolynomialSpan g b)
+'LinearStudy.boundedPolynomialSpan_mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.boundedPolynomialSpan_finite.{u_1, u_2, u_3} {k : Type u_1} {τ : Type u_2} {A : Type u_3} [Field k]
+  [CommRing A] [Algebra k A] {m : ℕ} [Finite τ] (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) (N : ℕ) :
+  Module.Finite k ↥(LinearStudy.boundedPolynomialSpan g b N)
+'LinearStudy.boundedPolynomialSpan_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.boundedPolynomialSpan_finrank_le.{u_1, u_2, u_3} {k : Type u_1} {τ : Type u_2} {A : Type u_3} [Field k]
+  [CommRing A] [Algebra k A] {m : ℕ} [Finite τ] (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) (N : ℕ) :
+  Module.finrank k ↥(LinearStudy.boundedPolynomialSpan g b N) ≤ m * (N + 1) ^ Nat.card τ
+'LinearStudy.boundedPolynomialSpan_finrank_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.finiteFlat_centered_jacobian_annihilator.{u_1} {K : Type u_1} [Field K] [CharZero K] {r n : ℕ}
   (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K))
   (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))
@@ -1171,6 +1190,11 @@ LinearStudy.affine_ideal_top_component_mem.{u_1, u_2} {K : Type u_1} {ι : Type 
   (MvPolynomial.homogeneousComponent N) f ∈
     Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent (P i).totalDegree) (P i))
 'LinearStudy.affine_ideal_top_component_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finite_normalization_polynomial_filtered_bound.{u_1, u_2, u_3, u_4} {k : Type u_1} {τ : Type u_2}
+  {σ : Type u_3} {A : Type u_4} [Field k] [Finite σ] [CommRing A] [Algebra k A] (g : MvPolynomial τ k →ₐ[k] A)
+  (hg : g.Finite) (α : MvPolynomial σ k →ₐ[k] A) :
+  ∃ m b c B, 0 < c ∧ ∀ (p : MvPolynomial σ k), α p ∈ LinearStudy.boundedPolynomialSpan g b (c * p.totalDegree + B)
+'LinearStudy.finite_normalization_polynomial_filtered_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.finite_rational_points_of_module_finite.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]
   [Algebra K A] [Module.Finite K A] : Finite (A →ₐ[K] K)
 'LinearStudy.finite_rational_points_of_module_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1565,6 +1589,12 @@ LinearStudy.formal_unit_divided_transformed_firstOrder.{u_1, u_2} {K : Type u_1}
   ∀ (i : Fin c),
     E ((MvPowerSeries.substAlgHom ⋯) (H i)) - E ↑u⁻¹ * E (p (Sum.inr i)) ∈ Ideal.span (Set.range fun j => E (p j)) ^ 2
 'LinearStudy.formal_unit_divided_transformed_firstOrder' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.fraction_field_trdeg.{u} (k A F : Type u) [Field k] [CommRing A] [IsDomain A] [Field F] [Algebra k A]
+  [Algebra A F] [Algebra k F] [IsScalarTower k A F] [IsFractionRing A F] : Algebra.trdeg k F = Algebra.trdeg k A
+'LinearStudy.fraction_field_trdeg' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.rational_function_trdeg.{u} (k E : Type u) [Field k] [Field E] [Algebra k E] :
+  Algebra.trdeg k (RatFunc E) = Algebra.trdeg k E + 1
+'LinearStudy.rational_function_trdeg' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.ringHom_finite_fraction_model_isAlgebraic.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {K : Type u_3}
   {L : Type u_4} [CommRing R] [IsDomain R] [CommRing A] [Field K] [Field L] [Algebra R K] [IsFractionRing R K]
   (φ : R →+* A) (e : A →+* L) (he : Function.Injective ⇑e) (χ : K →+* L) (hχ : χ.Finite)
@@ -2406,6 +2436,9 @@ LinearStudy.homogeneous_rational_chart_pullback.{u_1} {K : Type u_1} [Field K] {
             (fun i => (algebraMap (MvPolynomial (Fin n) K) (Localization.Away p0)) (p i)) i)
         H
 'LinearStudy.homogeneous_rational_chart_pullback' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.integral_injective_ringKrullDim_eq.{u_1, u_2} (R : Type u_1) (S : Type u_2) [CommRing R] [CommRing S]
+  [Algebra R S] [Algebra.IsIntegral R S] (hinj : Function.Injective ⇑(algebraMap R S)) : ringKrullDim R = ringKrullDim S
+'LinearStudy.integral_injective_ringKrullDim_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.total_invariance_membership.{u_1} {X : Type u_1} (f : X → X) (V : Set X) (h : f ⁻¹' V = V) (x : X) :
   f x ∈ V ↔ x ∈ V
 'LinearStudy.total_invariance_membership' does not depend on any axioms
@@ -3460,6 +3493,12 @@ LinearStudy.lemma31_local_perfectPairing {r c : ℕ} (H : Fin c → LinearStudy.
       ∀ (h : LinearStudy.CompleteIntersection H),
         p.functional ((Ideal.Quotient.mk J) h * delta) = MvPowerSeries.constantCoeff (q h)
 'LinearStudy.lemma31_local_perfectPairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.boundedPolynomialSpan_mul_of_matrix.{u_1, u_2, u_3, u_4} {k : Type u_1} {τ : Type u_2} {σ : Type u_3}
+  {A : Type u_4} [Field k] [CommRing A] [Algebra k A] {m : ℕ} (g : MvPolynomial τ k →ₐ[k] A) (b : Fin m → A) (x : σ → A)
+  (M : σ → Fin m → Fin m → MvPolynomial τ k) (c : ℕ) (hM : ∀ (i : σ) (j : Fin m), x i * b j = ∑ l, g (M i j l) * b l)
+  (hdeg : ∀ (i : σ) (j l : Fin m), (M i j l).totalDegree ≤ c) (N : ℕ) (a : A)
+  (ha : a ∈ LinearStudy.boundedPolynomialSpan g b N) (i : σ) : a * x i ∈ LinearStudy.boundedPolynomialSpan g b (N + c)
+'LinearStudy.boundedPolynomialSpan_mul_of_matrix' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.powerSeries_hasEval_of_nilpotent.{u_2} {S : Type u_2} [CommRing S] {n : ℕ} [TopologicalSpace S]
   (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) : MvPowerSeries.HasEval a
 'LinearStudy.powerSeries_hasEval_of_nilpotent' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -3519,6 +3558,15 @@ LinearStudy.regular_nilpotent_perturbation.{u_1, u_2} {R : Type u_1} {M : Type u
   (hmem' : ∀ x ∈ ts, x ∈ IsLocalRing.maximalIdeal R) (hdiff : List.Forall₂ (fun a b => IsNilpotent (b - a)) rs ts) :
   RingTheory.Sequence.IsRegular M ts
 'LinearStudy.regular_nilpotent_perturbation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.exists_finite_normalization_krull_dimension.{u_1, u_2} (k : Type u_1) (A : Type u_2) [Field k] [CommRing A]
+  [Nontrivial A] [Algebra k A] [Algebra.FiniteType k A] : ∃ s g, Function.Injective ⇑g ∧ g.Finite ∧ ringKrullDim A = ↑s
+'LinearStudy.exists_finite_normalization_krull_dimension' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finite_normalization_trdeg.{u} {k A : Type u} [Field k] [CommRing A] [IsDomain A] [Algebra k A] (s : ℕ)
+  (g : MvPolynomial (Fin s) k →ₐ[k] A) (hinj : Function.Injective ⇑g) (hfin : g.Finite) : Algebra.trdeg k A = ↑s
+'LinearStudy.finite_normalization_trdeg' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteType_domain_exists_krull_trdeg.{u} (k A : Type u) [Field k] [CommRing A] [IsDomain A] [Algebra k A]
+  [Algebra.FiniteType k A] : ∃ s, ringKrullDim A = ↑s ∧ Algebra.trdeg k A = ↑s
+'LinearStudy.finiteType_domain_exists_krull_trdeg' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.oneVariable_unit_factorization.{u_1} {K : Type u_1} [Field K] (H : PowerSeries K) (hH : H ≠ 0)
   (h0 : PowerSeries.constantCoeff H = 0) : ∃ s u, IsUnit u ∧ H = u * PowerSeries.X ^ (s + 1)
 'LinearStudy.oneVariable_unit_factorization' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -4092,6 +4140,11 @@ LinearStudy.polynomial_pullback_normal_jacobian_image_factor.{u_1, u_2} {K : Typ
 'LinearStudy.polynomial_pullback_normal_jacobian_image_factor' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.polynomial_image_mem_filtration.{u_1, u_2, u_3} {k : Type u_1} {σ : Type u_2} {A : Type u_3} [Field k]
+  [CommRing A] [Algebra k A] (α : MvPolynomial σ k →ₐ[k] A) (G : ℕ → Submodule k A) (hmono : Monotone G) (c B : ℕ)
+  (h1 : 1 ∈ G B) (hX : ∀ (N : ℕ), ∀ a ∈ G N, ∀ (i : σ), a * α (MvPolynomial.X i) ∈ G (N + c)) (p : MvPolynomial σ k) :
+  α p ∈ G (c * p.totalDegree + B)
+'LinearStudy.polynomial_image_mem_filtration' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomialQuotient_finite_of_finite_zeroLocus.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
   [IsAlgClosed K] [Finite σ] (I : Ideal (MvPolynomial σ K)) (hZ : (MvPolynomial.zeroLocus K I).Finite) :
   Module.Finite K (MvPolynomial σ K ⧸ I)
@@ -4244,6 +4297,10 @@ LinearStudy.polynomialQuotient_perfectPairing.{u_1} {K : Type u_1} [Field K] [Is
   [Module.Finite K (MvPolynomial (Fin (n + 1)) K ⧸ Ideal.span (Set.range P))] :
   Nonempty LinearStudy.PerfectMultiplicationPairing
 'LinearStudy.polynomialQuotient_perfectPairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_natDegree_le_of_eventually_le (P Q : Polynomial ℚ) (hP : P ≠ 0)
+  (hpos : ∀ᶠ (N : ℕ) in Filter.atTop, 0 < Polynomial.eval (↑N) P)
+  (hle : ∀ᶠ (N : ℕ) in Filter.atTop, Polynomial.eval (↑N) P ≤ Polynomial.eval (↑N) Q) : P.natDegree ≤ Q.natDegree
+'LinearStudy.polynomial_natDegree_le_of_eventually_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_nat_affine_ratio_tendsto (P : Polynomial ℚ) (hP : P ≠ 0) (q B : ℕ) (hq : 0 < q) :
   Filter.Tendsto (fun N => Polynomial.eval (↑q * ↑N + ↑B) P / Polynomial.eval (↑N) P) Filter.atTop
     (nhds (↑q ^ P.natDegree))
@@ -4458,6 +4515,12 @@ LinearStudy.polynomialPointLocalEquiv_polynomial.{u_1, u_2} {σ : Type u_1} {K :
     (algebraMap (MvPolynomial σ K) (Localization.AtPrime (MvPolynomial.idealOfVars σ K)))
       ((LinearStudy.polynomialTranslation x) P)
 'LinearStudy.polynomialPointLocalEquiv_polynomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_restrictDegree_finrank.{u_1, u_2} (k : Type u_1) (σ : Type u_2) [Field k] [Finite σ] (N : ℕ) :
+  Module.finrank k ↥(MvPolynomial.restrictDegree σ k N) = (N + 1) ^ Nat.card σ
+'LinearStudy.polynomial_restrictDegree_finrank' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_restrictDegree_le_totalDegree.{u_1, u_2} (k : Type u_1) (σ : Type u_2) [Field k] [Finite σ]
+  (N : ℕ) : MvPolynomial.restrictDegree σ k N ≤ MvPolynomial.restrictTotalDegree σ k (Nat.card σ * N)
+'LinearStudy.polynomial_restrictDegree_le_totalDegree' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomialZeroLocusPointEquiv.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
   (I : Ideal (MvPolynomial σ K)) : ↑(MvPolynomial.zeroLocus K I) ≃ (MvPolynomial σ K ⧸ I →ₐ[K] K)
 'LinearStudy.polynomialZeroLocusPointEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -5876,6 +5939,21 @@ LinearStudy.projectiveChartField_exists_hilbert_degree_power {n : ℕ} (f : Line
 'LinearStudy.projectiveChartField_exists_hilbert_degree_power' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projective_chart_krull_dimension_of_hilbertPolynomial {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (P : Polynomial ℚ) (hP : P ≠ 0)
+  (hHilbert : ∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)) :
+  ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑P.natDegree
+'LinearStudy.projective_chart_krull_dimension_of_hilbertPolynomial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_chart_spec_dimension_of_hilbertPolynomial {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (P : Polynomial ℚ) (hP : P ≠ 0)
+  (hHilbert : ∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)) :
+  topologicalKrullDim (PrimeSpectrum (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)) = ↑P.natDegree
+'LinearStudy.projective_chart_spec_dimension_of_hilbertPolynomial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectiveChartOpenMap_exists_good_local_parameters.{u_1} {n : ℕ} {ι : Type u_1}
   (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)
   (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
@@ -6182,6 +6260,22 @@ LinearStudy.projectiveCone_exists_target_chart_open_point {n : ℕ} (V : LinearS
   ∃ w ∈ MvPolynomial.zeroLocus ℂ V.ideal.toIdeal,
     w 0 ≠ 0 ∧ (MvPolynomial.eval w) H ≠ 0 ∧ (MvPolynomial.eval fun i => w i.succ / w 0) p ≠ 0
 'LinearStudy.projectiveCone_exists_target_chart_open_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_cone_krull_dimension_of_hilbertPolynomial {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (P : Polynomial ℚ) (hP : P ≠ 0)
+  (hHilbert : ∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)) :
+  ringKrullDim (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) = ↑(P.natDegree + 1)
+'LinearStudy.projective_cone_krull_dimension_of_hilbertPolynomial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_cone_hilbertPolynomial_krull_dimension {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) :
+  ∃ P,
+    P ≠ 0 ∧
+      P.natDegree ≤ n ∧
+        ringKrullDim (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) = ↑(P.natDegree + 1) ∧
+          ∃ N, ∀ m > N, Polynomial.eval (↑m) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal m)
+'LinearStudy.projective_cone_hilbertPolynomial_krull_dimension' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectiveConePullback_exists_scaling_coefficient {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
   (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
   (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
@@ -7367,6 +7461,30 @@ LinearStudy.projective_iterates_whole_fiber_hilbert_power {n : ℕ} (f : LinearS
                         Nat.card ↑((f.iterate k).onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =
                           (f.degree ^ k) ^ P.natDegree
 'LinearStudy.projective_iterates_whole_fiber_hilbert_power' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_chart_degree_krull_power {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  have γ := LinearStudy.projectiveChartFractionMap f V hq hf hV x0 hx0;
+  ∃ r ≤ n, ringKrullDim B = ↑r ∧ Module.finrank (↥γ.fieldRange) (FractionRing B) = f.degree ^ r
+'LinearStudy.projective_chart_degree_krull_power' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_iterates_whole_fiber_krull_power {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ r ≤ n,
+    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧
+      ∀ (k : ℕ),
+        ∃ p ∉ V.affineIdeal,
+          (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧
+            ∀ (y : Fin n → ℂ),
+              LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet →
+                (MvPolynomial.eval y) p ≠ 0 →
+                  ((f.iterate k).onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}).Finite ∧
+                    Nat.card ↑((f.iterate k).onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =
+                      (f.degree ^ k) ^ r
+'LinearStudy.projective_iterates_whole_fiber_krull_power' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.projectiveWholeFiber_card_eq_affine_quotient_finrank {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
   (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ)
   (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)
@@ -7428,6 +7546,26 @@ LinearStudy.projective_exists_whole_reduced_tensor_fiber_point_count {n : ℕ} (
 'LinearStudy.projective_exists_whole_reduced_tensor_fiber_point_count' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.homogeneousQuotientFiltration_finrank_pos.{u_1, u_2} {k : Type u_1} {σ : Type u_2} [Field k] [Finite σ]
+  (I : Ideal (MvPolynomial σ k)) [Nontrivial (MvPolynomial σ k ⧸ I)] (N : ℕ) :
+  0 < Module.finrank k ↥(LinearStudy.homogeneousQuotientFiltration I N)
+'LinearStudy.homogeneousQuotientFiltration_finrank_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.quotient_normalization_hilbert_degree.{u_1, u_2} {k : Type u_1} {σ : Type u_2} [Field k] [Finite σ]
+  (I : Ideal (MvPolynomial σ k)) [Nontrivial (MvPolynomial σ k ⧸ I)] (s : ℕ)
+  (g : MvPolynomial (Fin s) k →ₐ[k] MvPolynomial σ k ⧸ I) (hinj : Function.Injective ⇑g) (hfin : g.Finite)
+  (H : Polynomial ℚ) (hH : H ≠ 0)
+  (hHilbert :
+    ∃ K, ∀ N > K, Polynomial.eval (↑N) H = ↑(Module.finrank k ↥(LinearStudy.homogeneousQuotientFiltration I N))) :
+  H.natDegree = s
+'LinearStudy.quotient_normalization_hilbert_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.quotient_cumulative_hilbert_degree_eq_ringKrullDim.{u_1, u_2} {k : Type u_1} {σ : Type u_2} [Field k]
+  [Finite σ] (I : Ideal (MvPolynomial σ k)) [Nontrivial (MvPolynomial σ k ⧸ I)] (H : Polynomial ℚ) (hH : H ≠ 0)
+  (hHilbert :
+    ∃ K, ∀ N > K, Polynomial.eval (↑N) H = ↑(Module.finrank k ↥(LinearStudy.homogeneousQuotientFiltration I N))) :
+  ringKrullDim (MvPolynomial σ k ⧸ I) = ↑H.natDegree
+'LinearStudy.quotient_cumulative_hilbert_degree_eq_ringKrullDim' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.quotientLocalPullback_comparison.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]
   (I : Ideal R) (J : Ideal A) (φ : R →+* A) (hφ : Ideal.map φ I ≤ J) (P : Ideal (A ⧸ J)) [P.IsPrime] :
   let ψ := Ideal.quotientMap J φ ⋯;
@@ -7449,6 +7587,25 @@ LinearStudy.quotientLocalPullback_formallyUnramified.{u_1, u_2} {R : Type u_1} {
   let q := Ideal.comap (Ideal.Quotient.mk I) Q;
   (LinearStudy.generalPointLocalQuotientPullback I J p q φ ⋯ hφ).FormallyUnramified
 'LinearStudy.quotientLocalPullback_formallyUnramified' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_to_quotient_exists_filtration_bound.{u_1, u_2, u_3} {k : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field k] [Finite τ] (I : Ideal (MvPolynomial σ k)) (g : MvPolynomial τ k →ₐ[k] MvPolynomial σ k ⧸ I) :
+  ∃ c, 0 < c ∧ ∀ (p : MvPolynomial τ k), g p ∈ LinearStudy.homogeneousQuotientFiltration I (c * p.totalDegree)
+'LinearStudy.polynomial_to_quotient_exists_filtration_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.quotient_normalization_filtration_lower.{u_1, u_2, u_3} {k : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field k] [Finite σ] [Finite τ] (I : Ideal (MvPolynomial σ k)) (g : MvPolynomial τ k →ₐ[k] MvPolynomial σ k ⧸ I)
+  (hg : Function.Injective ⇑g) :
+  ∃ c,
+    0 < c ∧
+      ∀ (N : ℕ),
+        (N + 1) ^ Nat.card τ ≤ Module.finrank k ↥(LinearStudy.homogeneousQuotientFiltration I (c * (Nat.card τ * N)))
+'LinearStudy.quotient_normalization_filtration_lower' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.quotient_normalization_filtration_upper.{u_1, u_2, u_3} {k : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field k] [Finite σ] [Finite τ] (I : Ideal (MvPolynomial σ k)) (g : MvPolynomial τ k →ₐ[k] MvPolynomial σ k ⧸ I)
+  (hg : g.Finite) :
+  ∃ m c B,
+    0 < c ∧
+      ∀ (N : ℕ), Module.finrank k ↥(LinearStudy.homogeneousQuotientFiltration I N) ≤ m * (c * N + B + 1) ^ Nat.card τ
+'LinearStudy.quotient_normalization_filtration_upper' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.ratFunc_scaled_power_finrank.{u_1} {E : Type u_1} [Field E] (u : E) (hu : u ≠ 0) (q : ℕ) :
   Module.finrank (↥E⟮(algebraMap (Polynomial E) (RatFunc E)) (Polynomial.C u * Polynomial.X ^ q)⟯) (RatFunc E) = q
 'LinearStudy.ratFunc_scaled_power_finrank' depends on axioms: [propext, Classical.choice, Quot.sound]
