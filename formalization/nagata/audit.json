@@ -38,6 +38,12 @@
     "sha256": "64f1c8b56d0407fdaa022e2898d45591a6322f6cbada5e384ab855df6b5b8ad5",
     "deps": [
       "effective"
+    ],
+    "overview": [
+      "source",
+      "contradiction",
+      "assemble",
+      "cycle"
     ]
   },
   "nodes": [
@@ -79,7 +85,8 @@
       "deps": [
         "coordinate",
         "cycle"
-      ]
+      ],
+      "displayRole": "wrapper"
     },
     {
       "id": "coordinate",
@@ -119,22 +126,23 @@
       "deps": [
         "assemble",
         "source"
-      ]
+      ],
+      "displayRole": "wrapper"
     },
     {
       "id": "cycle",
       "titles": [
-        "方程与曲线的等价",
+        "方程与有效曲线",
         "Equations and effective curves"
       ],
       "status": "done",
       "compactSetup": [
         "完整坐标形式 FullNagata。",
-        "The full coordinate statement FullNagata."
+        "FullNagata in coordinates."
       ],
       "compactResult": [
-        "等价于用实际次数和普通局部重数表述的有效曲线形式。",
-        "Equivalent to the effective-curve formulation using actual degree and ordinary local multiplicity."
+        "等价于有效曲线的普通重数不等式。",
+        "Equivalent ordinary-multiplicity inequality for effective curves."
       ],
       "setup": [
         "<p>完整坐标形式 FullNagata。</p>",
@@ -156,22 +164,23 @@
       "sourceLineStart": 82,
       "sourceLineEnd": 84,
       "sha256": "64f1c8b56d0407fdaa022e2898d45591a6322f6cbada5e384ab855df6b5b8ad5",
-      "deps": []
+      "deps": [],
+      "displayRole": "step"
     },
     {
       "id": "assemble",
       "titles": [
-        "由真实源构造装配",
-        "Assembly from the genuine source construction"
+        "完整定理装配",
+        "Full theorem assembly"
       ],
       "status": "done",
       "compactSetup": [
-        "给定声明中全部量词下的真实源构造。",
-        "Assume the genuine source construction with all quantifiers in the exact declaration."
+        "对全部所需数据给出真实源构造。",
+        "A genuine source construction for all required data."
       ],
       "compactResult": [
-        "得到完整 FullNagata；构造前提由另一节点提供。",
-        "Deduce FullNagata; another node supplies the construction premise."
+        "得到完整坐标定理 FullNagata。",
+        "FullNagata follows."
       ],
       "setup": [
         "<p>给定声明中全部量词下的真实源构造。</p>",
@@ -195,22 +204,23 @@
       "sha256": "71ffcda44ae36064da53fb6293d260ac2968985a64e2b938631caf6fa7261c5b",
       "deps": [
         "contradiction"
-      ]
+      ],
+      "displayRole": "step"
     },
     {
       "id": "source",
       "titles": [
-        "固定标记的缩放源构造",
-        "Scaled source construction with fixed marks"
+        "缩放源截面构造",
+        "Scaled source sections"
       ],
       "status": "done",
       "compactSetup": [
-        "真实的 universal support；固定九个互异标记及其界。",
-        "Actual universal support; nine fixed distinct marks with the stated bounds."
+        "真实 universal support；九个互异有界标记。",
+        "Universal support; nine distinct bounded marks."
       ],
       "compactResult": [
-        "在 τ → 0⁺ 的穿孔邻域构造非零源截面，满足所需阶数。",
-        "Construct nonzero genuine source sections with the required orders as τ → 0⁺."
+        "构造满足所需消失阶的非零截面。",
+        "Construct nonzero sections with required vanishing orders."
       ],
       "setup": [
         "<p>真实的 universal support；固定九个互异标记及其界。</p>",
@@ -232,22 +242,23 @@
       "sourceLineStart": 138,
       "sourceLineEnd": 161,
       "sha256": "4be01c6a738b553a3f60736839a3dc795286b40c48de7ca680876726663ee300",
-      "deps": []
+      "deps": [],
+      "displayRole": "step"
     },
     {
       "id": "contradiction",
       "titles": [
-        "非平方内部的几何矛盾",
-        "Geometric contradiction in the nonsquare interior"
+        "几何矛盾",
+        "Geometric contradiction"
       ],
       "status": "done",
       "compactSetup": [
-        "假设 universal support 与声明中的源构造。",
-        "Assume universal support and the source construction in the declaration."
+        "Universal support 与真实源构造。",
+        "Universal support and the genuine source construction."
       ],
       "compactResult": [
-        "结合源空间、非抵消及指数计数排除内部情形。",
-        "Source spaces, noncancellation and exponent counts exclude the interior case."
+        "非抵消与指数计数导出矛盾。",
+        "Noncancellation gives a contradiction."
       ],
       "setup": [
         "<p>假设 universal support 与声明中的源构造。</p>",
@@ -269,10 +280,25 @@
       "sourceLineStart": 393,
       "sourceLineEnd": 449,
       "sha256": "9bfcfe5d2621ff01120f28d8ee08354d7fd22c2dd84d4eb94942cd5c9149e349",
-      "deps": []
+      "deps": [],
+      "displayRole": "step"
     }
   ],
   "upstreamFormalizationPublished": true,
+  "displayPolicy": {
+    "packageMinimumSteps": 2,
+    "overview": [
+      "source",
+      "contradiction",
+      "assemble",
+      "cycle"
+    ],
+    "wrappers": [
+      "effective",
+      "coordinate"
+    ],
+    "relation": "manuscript-reading-route; exact Lean dependencies remain in deps"
+  },
   "mainTheoremVerified": true,
   "targetVerified": true,
   "checkedAt": "2026-10-08",
