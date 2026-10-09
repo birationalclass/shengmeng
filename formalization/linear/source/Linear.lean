@@ -804,3 +804,10 @@ public import Linear.ProjectiveFiniteDualTorsionFree
 public import Linear.FiniteCoextensionModule
 public import Linear.FieldCoextensionRankOne
 public import Linear.ProjectiveFiniteDualFinite
+
+public import Linear.CoextensionFractionFunctional
+public import Linear.CoextensionFractionNaturality
+public import Linear.FiniteCoextensionUpper
+public import Linear.CoextensionFractionEmbedding
+public import Linear.CoextensionIntegralEmbedding
+public import Linear.ProjectiveFiniteDualEmbedding

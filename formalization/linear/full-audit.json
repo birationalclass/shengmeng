@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1982,
-  "verifiedTheorems": 1489,
-  "definitions": 297,
+  "audited": 1998,
+  "verifiedTheorems": 1499,
+  "definitions": 303,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -2025,6 +2025,318 @@
         "LinearStudy.polynomialTranslation",
         "LinearStudy.polynomialTranslation_evaluation",
         "LinearStudy.polynomialTranslation_pderiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionFractionRankOneIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CoextensionFractionEmbedding.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coextensionFractionRankOneIso.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S] [IsDomain S]\n  [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] :\n  ↑((ModuleCat.coextendScalars (algebraMap (FractionRing R) (FractionRing S))).obj ↧(FractionRing R)) ≃ₗ[FractionRing S]\n    FractionRing S",
+      "sha256": "4b7028ae0e1d3515ad0293bc523d480930ba301c7dcb1a1e45ea2726de16f453",
+      "lines": 7,
+      "moduleLineCount": 44,
+      "startLine": 17,
+      "endLine": 23,
+      "lineCount": 7,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.coextensionFractionEmbedding",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CoextensionFractionEmbedding.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coextensionFractionEmbedding.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S] [IsDomain S]\n  [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] :\n  ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R) →ₗ[S] FractionRing S",
+      "sha256": "4b7028ae0e1d3515ad0293bc523d480930ba301c7dcb1a1e45ea2726de16f453",
+      "lines": 9,
+      "moduleLineCount": 44,
+      "startLine": 25,
+      "endLine": 33,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.coextensionFractionNativeLinear",
+        "LinearStudy.coextensionFractionRankOneIso",
+        "LinearStudy.restrictedAlgebraModuleEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionFractionEmbedding_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionFractionEmbedding.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionFractionEmbedding_injective.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S]\n  [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] :\n  Function.Injective ⇑LinearStudy.coextensionFractionEmbedding",
+      "sha256": "4b7028ae0e1d3515ad0293bc523d480930ba301c7dcb1a1e45ea2726de16f453",
+      "lines": 8,
+      "moduleLineCount": 44,
+      "startLine": 35,
+      "endLine": 42,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.coextensionFractionEmbedding",
+        "LinearStudy.coextensionFractionNativeLinear",
+        "LinearStudy.coextensionFractionNativeLinear_injective",
+        "LinearStudy.coextensionFractionRankOneIso"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionOriginalDualEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CoextensionFractionFunctional.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coextensionOriginalDualEquiv.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] :\n  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[R]\n    Module.Dual R S",
+      "sha256": "3b9893c8c5b50778e28f3dc657c9da9a43ca5134d54534c080f16d5d955cc75c",
+      "lines": 7,
+      "moduleLineCount": 62,
+      "startLine": 18,
+      "endLine": 24,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.restrictedAlgebraModuleEquiv",
+        "LinearStudy.restrictedCoextensionDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionFractionFunctional",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CoextensionFractionFunctional.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coextensionFractionFunctional.{u} {R S : Type u} [CommRing R] [CommRing S] [IsDomain S] [Algebra R S]\n  [FaithfulSMul R S] [Algebra.IsAlgebraic R S] (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) :\n  Module.Dual (FractionRing R) (FractionRing S)",
+      "sha256": "3b9893c8c5b50778e28f3dc657c9da9a43ca5134d54534c080f16d5d955cc75c",
+      "lines": 9,
+      "moduleLineCount": 62,
+      "startLine": 26,
+      "endLine": 34,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.coextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionFractionFunctional_apply_original",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionFractionFunctional.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionFractionFunctional_apply_original.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S]\n  [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Algebra.IsAlgebraic R S]\n  (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) (x : S) :\n  (LinearStudy.coextensionFractionFunctional ell) ((algebraMap S (FractionRing S)) x) =\n    (algebraMap R (FractionRing R)) (((ModuleCat.CoextendScalars.equiv (algebraMap R S) ↧R) ell) x)",
+      "sha256": "3b9893c8c5b50778e28f3dc657c9da9a43ca5134d54534c080f16d5d955cc75c",
+      "lines": 13,
+      "moduleLineCount": 62,
+      "startLine": 36,
+      "endLine": 48,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.coextensionFractionFunctional",
+        "LinearStudy.coextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionFractionFunctional_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionFractionFunctional.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionFractionFunctional_injective.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S]\n  [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Algebra.IsAlgebraic R S] :\n  Function.Injective LinearStudy.coextensionFractionFunctional",
+      "sha256": "3b9893c8c5b50778e28f3dc657c9da9a43ca5134d54534c080f16d5d955cc75c",
+      "lines": 11,
+      "moduleLineCount": 62,
+      "startLine": 50,
+      "endLine": 60,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.coextensionFractionFunctional",
+        "LinearStudy.coextensionFractionFunctional_apply_original"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionFractionFunctional_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionFractionNaturality.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionFractionFunctional_smul.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S] [IsDomain S]\n  [Algebra R S] [FaithfulSMul R S] [Algebra.IsAlgebraic R S] (b : S)\n  (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) :\n  LinearStudy.coextensionFractionFunctional (b • ell) =\n    LinearStudy.coextensionFractionFunctional ell ∘ₗ\n      LinearMap.mulRight (FractionRing R) ((algebraMap S (FractionRing S)) b)",
+      "sha256": "ef5fe4dd900266337bc467cee9459a70e27f1d61aede94260975f910d39cf247",
+      "lines": 20,
+      "moduleLineCount": 83,
+      "startLine": 15,
+      "endLine": 34,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.coextensionFractionFunctional",
+        "LinearStudy.coextensionFractionFunctional_apply_original"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionFractionNative",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CoextensionFractionNaturality.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coextensionFractionNative.{u} {R S : Type u} [CommRing R] [CommRing S] [IsDomain S] [Algebra R S]\n  [FaithfulSMul R S] [Algebra.IsAlgebraic R S] (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) :\n  ↑((ModuleCat.coextendScalars (algebraMap (FractionRing R) (FractionRing S))).obj ↧(FractionRing R))",
+      "sha256": "ef5fe4dd900266337bc467cee9459a70e27f1d61aede94260975f910d39cf247",
+      "lines": 8,
+      "moduleLineCount": 83,
+      "startLine": 36,
+      "endLine": 43,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.coextensionFractionFunctional",
+        "LinearStudy.coextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionFractionNativeLinear",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CoextensionFractionNaturality.lean",
+      "line": 46,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coextensionFractionNativeLinear.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S] [IsDomain S]\n  [Algebra R S] [FaithfulSMul R S] [Algebra.IsAlgebraic R S] :\n  ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R) →ₗ[S]\n    ↑((ModuleCat.restrictScalars (algebraMap S (FractionRing S))).obj\n        ((ModuleCat.coextendScalars (algebraMap (FractionRing R) (FractionRing S))).obj ↧(FractionRing R)))",
+      "sha256": "ef5fe4dd900266337bc467cee9459a70e27f1d61aede94260975f910d39cf247",
+      "lines": 27,
+      "moduleLineCount": 83,
+      "startLine": 45,
+      "endLine": 71,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.coextensionFractionNative"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionFractionNativeLinear_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionFractionNaturality.lean",
+      "line": 73,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionFractionNativeLinear_injective.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S]\n  [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Algebra.IsAlgebraic R S] :\n  Function.Injective ⇑LinearStudy.coextensionFractionNativeLinear",
+      "sha256": "ef5fe4dd900266337bc467cee9459a70e27f1d61aede94260975f910d39cf247",
+      "lines": 9,
+      "moduleLineCount": 83,
+      "startLine": 73,
+      "endLine": 81,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.coextensionFractionFunctional",
+        "LinearStudy.coextensionFractionFunctional_injective",
+        "LinearStudy.coextensionFractionNativeLinear",
+        "LinearStudy.coextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionDual_exists_common_denominator",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionIntegralEmbedding.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionDual_exists_common_denominator.{u} {R S : Type u} [CommRing R] [IsDomain R] [IsNoetherianRing R]\n  [CommRing S] [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] :\n  ∃ a,\n    a ≠ 0 ∧\n      ∀ (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)),\n        IsLocalization.IsInteger S (a • LinearStudy.coextensionFractionEmbedding ell)",
+      "sha256": "808decde385ab4a637c7e4261b44811ba8d2ef20df588e798e0709155497e44a",
+      "lines": 15,
+      "moduleLineCount": 65,
+      "startLine": 18,
+      "endLine": 32,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.coextensionDual_finite_upper",
+        "LinearStudy.coextensionFractionEmbedding"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionDual_exists_integral_embedding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionIntegralEmbedding.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionDual_exists_integral_embedding.{u} {R S : Type u} [CommRing R] [IsDomain R] [IsNoetherianRing R]\n  [CommRing S] [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] : ∃ e, Function.Injective ⇑e",
+      "sha256": "808decde385ab4a637c7e4261b44811ba8d2ef20df588e798e0709155497e44a",
+      "lines": 30,
+      "moduleLineCount": 65,
+      "startLine": 34,
+      "endLine": 63,
+      "lineCount": 30,
+      "dependencies": [
+        "LinearStudy.coextensionDual_exists_common_denominator",
+        "LinearStudy.coextensionFractionEmbedding",
+        "LinearStudy.coextensionFractionEmbedding_injective"
       ]
     },
     {
@@ -5420,6 +5732,29 @@
       "endLine": 44,
       "lineCount": 30,
       "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.coextensionDual_finite_upper",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteCoextensionUpper.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionDual_finite_upper.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] [IsNoetherianRing R]\n  [Module.Finite R S] : Module.Finite S ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)",
+      "sha256": "aa8f0839a9e8d4cd0dee341e4046f28c3a24c137877687218a9ddc0dd6de3a31",
+      "lines": 13,
+      "moduleLineCount": 27,
+      "startLine": 13,
+      "endLine": 25,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.restrictedCoextensionDual_finite"
+      ]
     },
     {
       "declaration": "LinearStudy.artinian_polynomial_cut_prime_has_coordinates",
@@ -34193,6 +34528,67 @@
         "LinearStudy.projectiveCoordinateDomainMap_filtration_mem",
         "LinearStudy.projectiveCoordinateDomainMap_injective",
         "LinearStudy.projectiveFilteredCombination"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveLinearNormalization_finiteDual_exists_embedding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveFiniteDualEmbedding.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveLinearNormalization_finiteDual_exists_embedding {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) : ∃ e, Function.Injective ⇑e",
+      "sha256": "a651087466a98d07d7b21c394c5f93c1598a5108d9b81614f805909472fbc3a6",
+      "lines": 19,
+      "moduleLineCount": 55,
+      "startLine": 15,
+      "endLine": 33,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.coextensionDual_exists_integral_embedding",
+        "LinearStudy.projectiveLinearNormalizationMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_exists_linear_normalization_with_dual_embedding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveFiniteDualEmbedding.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_linear_normalization_with_dual_embedding {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ∃ r ≤ n,\n    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧\n      ∃ L,\n        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧\n          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧\n            (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧ ∃ e, Function.Injective ⇑e",
+      "sha256": "a651087466a98d07d7b21c394c5f93c1598a5108d9b81614f805909472fbc3a6",
+      "lines": 19,
+      "moduleLineCount": 55,
+      "startLine": 35,
+      "endLine": 53,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_finiteDual_exists_embedding",
+        "LinearStudy.projective_exists_linear_normalization_chart_dimension"
       ]
     },
     {

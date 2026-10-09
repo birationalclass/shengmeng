@@ -679,6 +679,68 @@ LinearStudy.polynomial_normal_firstJet_actual_centering.{u_1, u_4, u_5} {K : Typ
   (MvPolynomial.eval 0) ((MvPolynomial.pderiv j) ((LinearStudy.polynomialTranslation z) (H i))) =
     if j = Sum.inr i then 1 else 0
 'LinearStudy.polynomial_normal_firstJet_actual_centering' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionFractionRankOneIso.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S] [IsDomain S]
+  [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] :
+  ↑((ModuleCat.coextendScalars (algebraMap (FractionRing R) (FractionRing S))).obj ↧(FractionRing R)) ≃ₗ[FractionRing S]
+    FractionRing S
+'LinearStudy.coextensionFractionRankOneIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionFractionEmbedding.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S] [IsDomain S]
+  [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] :
+  ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R) →ₗ[S] FractionRing S
+'LinearStudy.coextensionFractionEmbedding' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionFractionEmbedding_injective.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S]
+  [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] :
+  Function.Injective ⇑LinearStudy.coextensionFractionEmbedding
+'LinearStudy.coextensionFractionEmbedding_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionOriginalDualEquiv.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] :
+  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[R]
+    Module.Dual R S
+'LinearStudy.coextensionOriginalDualEquiv' depends on axioms: [propext, Quot.sound]
+LinearStudy.coextensionFractionFunctional.{u} {R S : Type u} [CommRing R] [CommRing S] [IsDomain S] [Algebra R S]
+  [FaithfulSMul R S] [Algebra.IsAlgebraic R S] (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) :
+  Module.Dual (FractionRing R) (FractionRing S)
+'LinearStudy.coextensionFractionFunctional' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionFractionFunctional_apply_original.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S]
+  [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Algebra.IsAlgebraic R S]
+  (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) (x : S) :
+  (LinearStudy.coextensionFractionFunctional ell) ((algebraMap S (FractionRing S)) x) =
+    (algebraMap R (FractionRing R)) (((ModuleCat.CoextendScalars.equiv (algebraMap R S) ↧R) ell) x)
+'LinearStudy.coextensionFractionFunctional_apply_original' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionFractionFunctional_injective.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S]
+  [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Algebra.IsAlgebraic R S] :
+  Function.Injective LinearStudy.coextensionFractionFunctional
+'LinearStudy.coextensionFractionFunctional_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionFractionFunctional_smul.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S] [IsDomain S]
+  [Algebra R S] [FaithfulSMul R S] [Algebra.IsAlgebraic R S] (b : S)
+  (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) :
+  LinearStudy.coextensionFractionFunctional (b • ell) =
+    LinearStudy.coextensionFractionFunctional ell ∘ₗ
+      LinearMap.mulRight (FractionRing R) ((algebraMap S (FractionRing S)) b)
+'LinearStudy.coextensionFractionFunctional_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionFractionNative.{u} {R S : Type u} [CommRing R] [CommRing S] [IsDomain S] [Algebra R S]
+  [FaithfulSMul R S] [Algebra.IsAlgebraic R S] (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) :
+  ↑((ModuleCat.coextendScalars (algebraMap (FractionRing R) (FractionRing S))).obj ↧(FractionRing R))
+'LinearStudy.coextensionFractionNative' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionFractionNativeLinear.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S] [IsDomain S]
+  [Algebra R S] [FaithfulSMul R S] [Algebra.IsAlgebraic R S] :
+  ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R) →ₗ[S]
+    ↑((ModuleCat.restrictScalars (algebraMap S (FractionRing S))).obj
+        ((ModuleCat.coextendScalars (algebraMap (FractionRing R) (FractionRing S))).obj ↧(FractionRing R)))
+'LinearStudy.coextensionFractionNativeLinear' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionFractionNativeLinear_injective.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S]
+  [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Algebra.IsAlgebraic R S] :
+  Function.Injective ⇑LinearStudy.coextensionFractionNativeLinear
+'LinearStudy.coextensionFractionNativeLinear_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionDual_exists_common_denominator.{u} {R S : Type u} [CommRing R] [IsDomain R] [IsNoetherianRing R]
+  [CommRing S] [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] :
+  ∃ a,
+    a ≠ 0 ∧
+      ∀ (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)),
+        IsLocalization.IsInteger S (a • LinearStudy.coextensionFractionEmbedding ell)
+'LinearStudy.coextensionDual_exists_common_denominator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionDual_exists_integral_embedding.{u} {R S : Type u} [CommRing R] [IsDomain R] [IsNoetherianRing R]
+  [CommRing S] [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] : ∃ e, Function.Injective ⇑e
+'LinearStudy.coextensionDual_exists_integral_embedding' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.genericNormalBlock.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K] [Fintype σ] {c : ℕ}
   (A : Matrix (Fin c) σ K) (ν : Fin c → σ) : Matrix (Fin c) (Fin c) (MvPolynomial (σ × σ) K)
 'LinearStudy.genericNormalBlock' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1331,6 +1393,9 @@ LinearStudy.coextension_smul_eq_zero.{u} {R S : Type u} [CommRing R] [IsDomain R
   [Algebra R S] [Algebra.IsAlgebraic R S] (b : S) (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))
   (h : b • ell = 0) : b = 0 ∨ ell = 0
 'LinearStudy.coextension_smul_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextensionDual_finite_upper.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] [IsNoetherianRing R]
+  [Module.Finite R S] : Module.Finite S ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)
+'LinearStudy.coextensionDual_finite_upper' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.artinian_polynomial_cut_prime_has_coordinates.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]
   [IsAlgClosed K] [Finite ι] (I P : Ideal (MvPolynomial ι K)) [P.IsPrime] [IsArtinianRing (MvPolynomial ι K ⧸ I)]
   (hIP : I ≤ P) : ∃ x ∈ MvPolynomial.zeroLocus K I, P = RingHom.ker (MvPolynomial.aeval x).toRingHom
@@ -8736,6 +8801,25 @@ LinearStudy.projectiveCoordinateFiltration_generic_upper {n m : ℕ} (f : Linear
   Module.finrank ℂ ↥(LinearStudy.homogeneousQuotientFiltration V.ideal.toIdeal N) ≤
     m * Module.finrank ℂ ↥(LinearStudy.homogeneousQuotientFiltration V.ideal.toIdeal ((f.degree * R + N) / f.degree))
 'LinearStudy.projectiveCoordinateFiltration_generic_upper' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveLinearNormalization_finiteDual_exists_embedding {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) : ∃ e, Function.Injective ⇑e
+'LinearStudy.projectiveLinearNormalization_finiteDual_exists_embedding' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_exists_linear_normalization_with_dual_embedding {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  ∃ r ≤ n,
+    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧
+      ∃ L,
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧ ∃ e, Function.Injective ⇑e
+'LinearStudy.projective_exists_linear_normalization_with_dual_embedding' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectiveLinearNormalization_finiteDual_finite {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
   (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
   (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) :
