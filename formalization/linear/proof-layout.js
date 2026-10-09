@@ -1,4 +1,4 @@
-import {isReferenceCard} from './theorem-statements.js?v=20261010-linear-76';
+import {isReferenceCard} from './theorem-statements.js?v=20261010-linear-77';
 // Semantic roots stay in one input rail. Filtering never turns a derived result into a base input.
 export function visibleProofIds(nodes,current,scope,includeReferences=false){
   const byId=new Map(nodes.map(n=>[n.id,n])),ids=new Set([current]);

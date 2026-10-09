@@ -1,8 +1,8 @@
-import {paginateOverview} from './proof-overview-model.js?v=20261010-linear-76';
-import {drawOverviewWires} from './proof-overview-wires.js?v=20261010-linear-76';
-import {english} from './i18n.js?v=20261010-linear-76';
-import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261010-linear-76';
-import {createProofPackages} from './proof-package-model.js?v=20261010-linear-76';
+import {paginateOverview} from './proof-overview-model.js?v=20261010-linear-77';
+import {drawOverviewWires} from './proof-overview-wires.js?v=20261010-linear-77';
+import {english} from './i18n.js?v=20261010-linear-77';
+import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261010-linear-77';
+import {createProofPackages} from './proof-package-model.js?v=20261010-linear-77';
 
 export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarget}){
   const model=createProofPackages(nodes),panel=document.querySelector('.graph-panel'),viewport=document.querySelector('.graph-scroll');
@@ -86,7 +86,7 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
         a={x:side==='left'?r.right-box.left+5:r.left-box.left-5,y};b={x:center.x+sign*(goal.width/2+6),y:center.y};
         const bend=Math.max(15,Math.abs(a.x-b.x)*.45);controlA={x:a.x-sign*bend,y:a.y};controlB={x:b.x+sign*bend,y:b.y};
       }
-      const source=card.dataset.worldNode||card.dataset.worldPack,reference=!!card.dataset.worldPack||!!state.pack,reading=reference||state.target==='lemma';
+      const source=card.dataset.worldNode||card.dataset.worldPack,reference=!!card.dataset.worldPack||!!state.pack,reading=reference||state.target==='lemma'||!!originalById.get(state.target)?.overviewSteps;
       const label=reference?text('参考来源；不是新增证明依赖','Reference source; not an added proof dependency'):reading?text('原稿证明模块的阅读路径','Reading path through manuscript proof modules'):text('当前声明的直接前提','Direct premise of the current declaration');
       const d=`M${a.x} ${a.y} C${controlA.x} ${controlA.y},${controlB.x} ${controlB.y},${b.x} ${b.y}`;
       html+=`<g class="world-wire${reference?' source-wire':''}" data-source="${escapeHTML(source)}" data-side="${side}" data-relation="${reading?'reading':'premise'}"><title>${escapeHTML(label)}</title><path class="world-wire-shadow" d="${d}"/><path class="world-wire-body" d="${d}"/><path class="world-wire-shine" d="${d}"/></g>`;

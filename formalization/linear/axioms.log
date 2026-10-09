@@ -4983,6 +4983,12 @@ LinearStudy.finiteNativeCoextensionUpperLocalizationMap_isLocalizedModule.{u} {R
 'LinearStudy.finiteNativeCoextensionUpperLocalizationMap_isLocalizedModule' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.finiteNativeDualDegreeZeroChartMap_injective.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))) :
+  Function.Injective ⇑(LinearStudy.finiteNativeDualDegreeZeroChartMap 𝒜 𝓑 a ha hinj)
+'LinearStudy.finiteNativeDualDegreeZeroChartMap_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.finiteNativeDualDegreeZeroChartMap.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]
   [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
   [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
@@ -5148,6 +5154,22 @@ LinearStudy.nativeLocalizedUpperAlgebra.{u} {R S : Type u} [CommRing R] [CommRin
 LinearStudy.nativeLocalizedUpperAlgebra_isLocalization.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
   (P : Submonoid R) : IsLocalization (Algebra.algebraMapSubmonoid S P) (LocalizedModule P S)
 'LinearStudy.nativeLocalizedUpperAlgebra_isLocalization' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeNormalizationFullChart_isLocalization.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+  (a : R) : IsLocalization (Submonoid.powers ((algebraMap R S) a)) (LocalizedModule (Submonoid.powers a) S)
+'LinearStudy.nativeNormalizationFullChart_isLocalization' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeNormalizationFullChartEquiv.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] (a : R) :
+  LocalizedModule (Submonoid.powers a) S ≃ₐ[S] Localization.Away ((algebraMap R S) a)
+'LinearStudy.nativeNormalizationFullChartEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeNormalizationFullChartEquiv_numerator.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+  (a : R) (b : S) :
+  (LinearStudy.nativeNormalizationFullChartEquiv a) (LocalizedModule.mk b 1) =
+    (algebraMap S (Localization.Away ((algebraMap R S) a))) b
+'LinearStudy.nativeNormalizationFullChartEquiv_numerator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeNormalizationFullChartEquiv_mk.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] (a : R)
+  (b : S) (s : ↥(Submonoid.powers a)) :
+  (LinearStudy.nativeNormalizationFullChartEquiv a) (LocalizedModule.mk b s) =
+    IsLocalization.mk' (Localization.Away ((algebraMap R S) a)) b ⟨(algebraMap R S) ↑s, ⋯⟩
+'LinearStudy.nativeNormalizationFullChartEquiv_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.projectiveNativeChartFractionEmbedding {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
   (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
   HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
@@ -11635,6 +11657,17 @@ LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters {n : ℕ}
           Algebra.IsSmoothAt ℂ (V.affinePoint y hy).asIdeal ∧
             LinearStudy.ProjectiveChartPolynomialParameterConclusion f V x hx hp0 hy
 'LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap_injective {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :
+  have A := MvPolynomial (Fin (r + 1)) ℂ;
+  have B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  have φ := LinearStudy.projectiveLinearNormalizationMap V L;
+  Function.Injective ⇑(LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap V L hL hfinite i)
+'LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap_injective' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)

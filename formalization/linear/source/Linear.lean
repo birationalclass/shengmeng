@@ -946,3 +946,7 @@ public import Linear.NativeDualDegreeZeroSpanValues
 public import Linear.NativeDualHomogeneousEvaluationMap
 public import Linear.NativeDualDegreeZeroChartMap
 public import Linear.ProjectiveNativeDegreeZeroDualMap
+
+public import Linear.NativeDualDegreeZeroChartInjective
+public import Linear.ProjectiveNativeDegreeZeroDualInjective
+public import Linear.NativeNormalizationFullChartComparison

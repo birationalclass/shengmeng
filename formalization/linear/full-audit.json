@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2302,
-  "verifiedTheorems": 1693,
-  "definitions": 413,
+  "audited": 2308,
+  "verifiedTheorems": 1698,
+  "definitions": 414,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -19606,6 +19606,39 @@
       ]
     },
     {
+      "declaration": "LinearStudy.finiteNativeDualDegreeZeroChartMap_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeDualDegreeZeroChartInjective.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeDualDegreeZeroChartMap_injective.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))) :\n  Function.Injective ⇑(LinearStudy.finiteNativeDualDegreeZeroChartMap 𝒜 𝓑 a ha hinj)",
+      "sha256": "859d899afc1cf23135f3abb7c380136def41ace9690b4200e612cd5f9241435d",
+      "lines": 49,
+      "moduleLineCount": 72,
+      "startLine": 22,
+      "endLine": 70,
+      "lineCount": 49,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+        "LinearStudy.finiteNativeDualDegreeZeroChartMap",
+        "LinearStudy.finiteNativeDualDegreeZeroChartMap_apply",
+        "LinearStudy.functionalSourceLocalizationRestriction",
+        "LinearStudy.functionalSourceLocalizationRestriction_bijective",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationSourceAwayZero"
+      ]
+    },
+    {
       "declaration": "LinearStudy.finiteNativeDualDegreeZeroChartMap",
       "kind": "def",
       "origin": "project",
@@ -20292,6 +20325,103 @@
       "lineCount": 16,
       "dependencies": [
         "LinearStudy.nativeLocalizedUpperAlgebra"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationFullChart_isLocalization",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationFullChartComparison.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationFullChart_isLocalization.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  (a : R) : IsLocalization (Submonoid.powers ((algebraMap R S) a)) (LocalizedModule (Submonoid.powers a) S)",
+      "sha256": "7242a62525a256bb5d774984a5ea5f304c7686377320bd82aeeb0671c6190de4",
+      "lines": 9,
+      "moduleLineCount": 71,
+      "startLine": 14,
+      "endLine": 22,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.nativeLocalizedUpperAlgebra",
+        "LinearStudy.nativeLocalizedUpperAlgebra_isLocalization"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationFullChartEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationFullChartComparison.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeNormalizationFullChartEquiv.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] (a : R) :\n  LocalizedModule (Submonoid.powers a) S ≃ₐ[S] Localization.Away ((algebraMap R S) a)",
+      "sha256": "7242a62525a256bb5d774984a5ea5f304c7686377320bd82aeeb0671c6190de4",
+      "lines": 10,
+      "moduleLineCount": 71,
+      "startLine": 24,
+      "endLine": 33,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.nativeLocalizedUpperAlgebra",
+        "LinearStudy.nativeNormalizationFullChart_isLocalization"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationFullChartEquiv_numerator",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationFullChartComparison.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationFullChartEquiv_numerator.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  (a : R) (b : S) :\n  (LinearStudy.nativeNormalizationFullChartEquiv a) (LocalizedModule.mk b 1) =\n    (algebraMap S (Localization.Away ((algebraMap R S) a))) b",
+      "sha256": "7242a62525a256bb5d774984a5ea5f304c7686377320bd82aeeb0671c6190de4",
+      "lines": 6,
+      "moduleLineCount": 71,
+      "startLine": 35,
+      "endLine": 40,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.nativeLocalizedUpperAlgebra",
+        "LinearStudy.nativeNormalizationFullChartEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationFullChartEquiv_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationFullChartComparison.lean",
+      "line": 44,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationFullChartEquiv_mk.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] (a : R)\n  (b : S) (s : ↥(Submonoid.powers a)) :\n  (LinearStudy.nativeNormalizationFullChartEquiv a) (LocalizedModule.mk b s) =\n    IsLocalization.mk' (Localization.Away ((algebraMap R S) a)) b ⟨(algebraMap R S) ↑s, ⋯⟩",
+      "sha256": "7242a62525a256bb5d774984a5ea5f304c7686377320bd82aeeb0671c6190de4",
+      "lines": 28,
+      "moduleLineCount": 71,
+      "startLine": 42,
+      "endLine": 69,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.nativeLocalizedUpperAlgebra",
+        "LinearStudy.nativeNormalizationFullChartEquiv",
+        "LinearStudy.nativeNormalizationFullChart_isLocalization"
       ]
     },
     {
@@ -44082,6 +44212,43 @@
         "LinearStudy.rationalPointPrime",
         "LinearStudy.rationalPolynomialChartMap",
         "LinearStudy.rationalPolynomialChartMap_point_kernel"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeDegreeZeroDualInjective.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap_injective {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :\n  have A := MvPolynomial (Fin (r + 1)) ℂ;\n  have B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  have φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  Function.Injective ⇑(LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap V L hL hfinite i)",
+      "sha256": "e1972a97dc9cde5160262408992da6f25533f8908ca3fe15fe360904c9f3f7d4",
+      "lines": 32,
+      "moduleLineCount": 50,
+      "startLine": 17,
+      "endLine": 48,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.finiteNativeDualDegreeZeroChartMap_injective",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationSourceAwayZero",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul",
+        "LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap"
       ]
     },
     {
