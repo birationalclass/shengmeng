@@ -1,6 +1,8 @@
-import {english} from './i18n.js?v=20261009-linear-55';
-import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261009-linear-55';
-import {createProofPackages} from './proof-package-model.js?v=20261009-linear-55';
+import {paginateOverview} from './proof-overview-model.js?v=20261009-linear-56';
+import {drawOverviewWires} from './proof-overview-wires.js?v=20261009-linear-56';
+import {english} from './i18n.js?v=20261009-linear-56';
+import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261009-linear-56';
+import {createProofPackages} from './proof-package-model.js?v=20261009-linear-56';
 
 export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarget}){
   const model=createProofPackages(nodes),panel=document.querySelector('.graph-panel'),viewport=document.querySelector('.graph-scroll');
@@ -63,6 +65,7 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
   function drawWires(){
     if(state.mode!=='world')return;
     if(state.pack){wires.innerHTML='';return;}
+    if(state.target==='lemma'){drawOverviewWires({scene,wires,deck,target:target.element,model,scale:cameraPose().scale,english,escapeHTML});if(performance.now()<focusUntil)queueWires();return;}
     const screen=scene.getBoundingClientRect(),scale=cameraPose().scale,box={left:0,top:0,width:scene.clientWidth,height:scene.clientHeight};if(!box.width||!box.height)return;
     const localRect=el=>{const r=el.getBoundingClientRect();return {left:(r.left-screen.left)/scale,top:(r.top-screen.top)/scale,right:(r.right-screen.left)/scale,bottom:(r.bottom-screen.top)/scale,width:r.width/scale,height:r.height/scale};};
     const goal=localRect(target.element);
@@ -201,15 +204,19 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
     const refs=state.pack?[]:isRoot?model.references:packUses();
     // References already have their own pack; they appear once as a pack cover.
     if(!state.pack)members=members.filter(n=>!model.owner.get(n.id)?.startsWith('pack:'));
-    const pageSize=state.pack?Math.max(1,members.length):isRoot?9:6,items=[...members.map(n=>({n})),...refs.map(p=>({p}))],pages=Math.max(1,Math.ceil(items.length/pageSize));state.page=Math.min(state.page,pages-1);
-    deck.replaceChildren(...items.slice(state.page*pageSize,(state.page+1)*pageSize).map(item=>item.n?proofCard(item.n):referenceCard(item.p)));
+    const pageSize=state.pack?Math.max(1,members.length):isRoot?9:6,items=[...members.map(n=>({n})),...refs.map(p=>({p}))];
+    const overview=isRoot&&!state.catalog?paginateOverview(items,state.page,pageSize):null;
+    const pages=overview?.pages||Math.max(1,Math.ceil(items.length/pageSize));state.page=overview?.page??Math.min(state.page,pages-1);
+    const shown=overview?.shown||items.slice(state.page*pageSize,(state.page+1)*pageSize);
+    root.dataset.pinnedLemmaCount=String(overview?.pinned||0);
+    deck.replaceChildren(...shown.map(item=>item.n?proofCard(item.n):referenceCard(item.p)));
     target.element.querySelectorAll('.theorem-port').forEach(port=>port.hidden=!!state.pack||!items.length||port.dataset.side!=='left');
     [...deck.children].forEach((card,i)=>{card.dataset.worldSlot=slots[i];card.style.setProperty('--fan-order',i);});layoutDeck();queueWires();
     if(!items.length){const note=document.createElement('div');note.className='world-leaf';note.innerHTML=`<p>${text('这个声明没有其他项目卡片作为前提。','This declaration has no other project-card prerequisites.')}</p>`;const evidence=document.createElement('button');evidence.type='button';evidence.className='button';evidence.textContent=text('查看 Lean 声明与源码','Read the Lean declaration and source');evidence.onclick=()=>openGraph(state.target);note.append(evidence);deck.append(note);}
     reading.textContent=state.pack?model.packFor(state.pack).name[english?1:0]+text(' · 纵向卡牌',' · Vertical cards'):isRoot?text('线性定理 · 形式化进度','Linearity Theorem · formalization progress'):text('当前目标的证明步骤','Proof steps for the current goal');
     root.dataset.worldTarget=state.target;root.dataset.referenceWorld=state.pack||'';root.dataset.catalog=String(state.catalog);
     previous.textContent='←';next.textContent='→';previous.setAttribute('aria-label',text('上一组卡片','Previous cards'));next.setAttribute('aria-label',text('下一组卡片','Next cards'));previous.disabled=state.page===0;next.disabled=state.page===pages-1;previous.hidden=next.hidden=pages===1;
-    count.textContent=items.length?`${state.page*pageSize+1}–${Math.min(items.length,(state.page+1)*pageSize)} / ${items.length}`:'';
+    count.textContent=overview?.pinned?`${overview.pinned} ${text('引理','lemmas')} · ${overview.start}–${overview.end} / ${overview.total} ${text('辅助卡片','support cards')}`:items.length?`${state.page*pageSize+1}–${Math.min(items.length,(state.page+1)*pageSize)} / ${items.length}`:'';
     catalog.hidden=!!state.pack||!model.members(catalogOwner()||state.target).some(n=>n.id!==state.target);catalog.textContent=state.catalog?text('当前证明步骤','Current proof steps'):text('模块全部卡片','All module cards');catalog.setAttribute('aria-pressed',String(state.catalog));
     if(state.reading&&state.mode==='world'){showInformation();if(state.reading.pack)packInformation(state.reading.pack);requestAnimationFrame(focusReading);}
     if(state.mode==='graph')nodeEditor.setWorldContext({target:originalById.get(state.target),allowed:new Set([...model.closure(state.target),...model.closure(selected())]),reference:isReferenceCard(originalById.get(selected()))});

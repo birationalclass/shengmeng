@@ -29,5 +29,15 @@ export function createLineCountModel(snapshot,nodes){
     const visit=k=>{if(seen.has(k))return;seen.add(k);const n=byId.get(k);if(!n)return;members.push(n);n.deps.forEach(visit);};
     visit(id);return pack(members);
   };
-  return {own,pack,module,union};
+  const memberOwn=members=>{
+    const items=[];let complete=true;
+    for(const n of members){const r=ranges[n?.decl||n?.declaration];if(r)items.push(r);else complete=false;}
+    const result=union(items);return {...result,count:items.length?result.count:null,complete};
+  };
+  const moduleOwn=id=>{
+    const members=[],seen=new Set();
+    const visit=k=>{if(seen.has(k))return;seen.add(k);const n=byId.get(k);if(!n)return;members.push(n);n.deps.forEach(visit);};
+    visit(id);return memberOwn(members);
+  };
+  return {own,pack,module,memberOwn,moduleOwn,union};
 }

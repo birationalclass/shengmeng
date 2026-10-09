@@ -739,3 +739,5 @@ public import Linear.ReducedPolynomialProjectionFibers
 public import Linear.ProjectiveLinearSectionEquationFibers
 
 public import Linear.NativeProjectiveChart
+
+public import Linear.NativeProjectiveChartPullback

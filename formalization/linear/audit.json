@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-09T11:42:07+08:00",
+  "checkedAt": "2026-10-09T12:32:00+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "dba04aed5b22af1898db6b7690023e591c7d20d913a45777433fb7a6c20dd81b",
-      "lineCount": 3676
+      "sha256": "4bcdc5798e86c939eeeb286e412d039a95e007558580c463e21ca31433286c9e",
+      "lineCount": 3714
     },
     {
       "path": "Linear/ActualCoordinateFiberPoints.lean",
@@ -788,8 +788,13 @@
     },
     {
       "path": "Linear/NativeProjectiveChart.lean",
-      "sha256": "0ca2a35d3e54b627cb52493168575419bee20d03d5a0052a20964d900c33816e",
-      "lineCount": 150
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lineCount": 310
+    },
+    {
+      "path": "Linear/NativeProjectiveChartPullback.lean",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lineCount": 269
     },
     {
       "path": "Linear/NilpotentEvaluation.lean",
@@ -2313,8 +2318,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "68ff4bc5b6808acf4cd03a2a4a7f7ac933929c3ca4abb5480d0b512ef2a882a7",
-      "lineCount": 741
+      "sha256": "9c0d3973b569d976e1de93659a0a2ea468bb93adaca640b3ddb8b4904d90229a",
+      "lineCount": 743
     }
   ],
   "declarations": {
@@ -18023,25 +18028,156 @@
         "LinearStudy.regular_sequence_mem_ne_zero"
       ]
     },
-    "LinearStudy.projective_native_chart_ring_equiv": {
-      "declaration": "LinearStudy.projective_native_chart_ring_equiv",
+    "LinearStudy.projectiveNativeChartFractionEmbedding": {
+      "declaration": "LinearStudy.projectiveNativeChartFractionEmbedding",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChart.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNativeChartFractionEmbedding {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n      ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)) →+*\n    FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lines": 21,
+      "moduleLineCount": 310,
+      "startLine": 16,
+      "endLine": 36,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartHomogeneousElement": {
+      "declaration": "LinearStudy.projectiveNativeChartHomogeneousElement",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChart.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNativeChartHomogeneousElement {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (m : ℕ)\n  (H : LinearStudy.CoordinateRing n) (hH : MvPolynomial.IsHomogeneous H m) :\n  HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n    ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lines": 15,
+      "moduleLineCount": 310,
+      "startLine": 38,
+      "endLine": 52,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartFractionEmbedding_injective": {
+      "declaration": "LinearStudy.projectiveNativeChartFractionEmbedding_injective",
       "kind": "theorem",
       "origin": "project",
       "file": "Linear/NativeProjectiveChart.lean",
-      "line": 19,
+      "line": 54,
       "axioms": [
         "propext",
         "Classical.choice",
         "Quot.sound"
       ],
       "verified": true,
-      "formalType": "LinearStudy.projective_native_chart_ring_equiv {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  Nonempty\n    (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal ≃+*\n      HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n        ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)))",
-      "sha256": "0ca2a35d3e54b627cb52493168575419bee20d03d5a0052a20964d900c33816e",
-      "lines": 112,
-      "moduleLineCount": 150,
-      "startLine": 16,
-      "endLine": 127,
-      "lineCount": 112,
+      "formalType": "LinearStudy.projectiveNativeChartFractionEmbedding_injective {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  Function.Injective ⇑(LinearStudy.projectiveNativeChartFractionEmbedding V x hx)",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lines": 19,
+      "moduleLineCount": 310,
+      "startLine": 54,
+      "endLine": 72,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding_injective",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveNativeChartFractionEmbedding"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartFractionEmbedding_homogeneous_mk": {
+      "declaration": "LinearStudy.projectiveNativeChartFractionEmbedding_homogeneous_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChart.lean",
+      "line": 74,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNativeChartFractionEmbedding_homogeneous_mk {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (m : ℕ) (H : LinearStudy.CoordinateRing n)\n  (hH : MvPolynomial.IsHomogeneous H m) :\n  (LinearStudy.projectiveNativeChartFractionEmbedding V x hx)\n      (LinearStudy.projectiveNativeChartHomogeneousElement V m H hH) =\n    (LinearStudy.projectiveConeFractionCoordinates V 0)⁻¹ ^ m *\n      (MvPolynomial.aeval (LinearStudy.projectiveConeFractionCoordinates V)) H",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lines": 47,
+      "moduleLineCount": 310,
+      "startLine": 74,
+      "endLine": 120,
+      "lineCount": 47,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_aeval",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveNativeChartFractionEmbedding",
+        "LinearStudy.projectiveNativeChartHomogeneousElement"
+      ]
+    },
+    "LinearStudy.projective_native_chart_ring_equiv_compatible": {
+      "declaration": "LinearStudy.projective_native_chart_ring_equiv_compatible",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChart.lean",
+      "line": 125,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_native_chart_ring_equiv_compatible {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ∃ ec,\n    (LinearStudy.projectiveNativeChartFractionEmbedding V x hx).comp ec.toRingHom =\n      (LinearStudy.projectiveChartCoordinateEmbedding V x hx).toRingHom",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lines": 102,
+      "moduleLineCount": 310,
+      "startLine": 122,
+      "endLine": 223,
+      "lineCount": 102,
       "dependencies": [
         "LinearStudy.CoordinateRing",
         "LinearStudy.IntegralProjectiveEquations",
@@ -18052,7 +18188,6 @@
         "LinearStudy.ProjectivePoint",
         "LinearStudy.affineChartPolynomialMap",
         "LinearStudy.awayFractionEmbedding",
-        "LinearStudy.awayFractionEmbedding_algebraMap",
         "LinearStudy.awayFractionEmbedding_injective",
         "LinearStudy.coordinateRatioPolynomialMap",
         "LinearStudy.coordinateRatioPolynomialMap_homogeneous",
@@ -18064,8 +18199,157 @@
         "LinearStudy.projectiveChartCoordinateEmbedding_injective",
         "LinearStudy.projectiveChartCoordinateEmbedding_mk",
         "LinearStudy.projectiveConeFractionCoordinates",
-        "LinearStudy.projectiveConeFractionCoordinates_aeval",
-        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero"
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveNativeChartFractionEmbedding",
+        "LinearStudy.projectiveNativeChartFractionEmbedding_homogeneous_mk"
+      ]
+    },
+    "LinearStudy.projective_native_chart_ring_equiv": {
+      "declaration": "LinearStudy.projective_native_chart_ring_equiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChart.lean",
+      "line": 226,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_native_chart_ring_equiv {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  Nonempty\n    (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal ≃+*\n      HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n        ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)))",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lines": 13,
+      "moduleLineCount": 310,
+      "startLine": 225,
+      "endLine": 237,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveNativeChartFractionEmbedding",
+        "LinearStudy.projective_native_chart_ring_equiv_compatible"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartRingEquiv": {
+      "declaration": "LinearStudy.projectiveNativeChartRingEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChart.lean",
+      "line": 241,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNativeChartRingEquiv {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal ≃+*\n    HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n      ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lines": 11,
+      "moduleLineCount": 310,
+      "startLine": 239,
+      "endLine": 249,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveNativeChartFractionEmbedding",
+        "LinearStudy.projective_native_chart_ring_equiv_compatible"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartRingEquiv_fraction_comp": {
+      "declaration": "LinearStudy.projectiveNativeChartRingEquiv_fraction_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChart.lean",
+      "line": 251,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNativeChartRingEquiv_fraction_comp {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (LinearStudy.projectiveNativeChartFractionEmbedding V x hx).comp\n      (LinearStudy.projectiveNativeChartRingEquiv V x hx).toRingHom =\n    (LinearStudy.projectiveChartCoordinateEmbedding V x hx).toRingHom",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lines": 9,
+      "moduleLineCount": 310,
+      "startLine": 251,
+      "endLine": 259,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveNativeChartFractionEmbedding",
+        "LinearStudy.projectiveNativeChartRingEquiv",
+        "LinearStudy.projective_native_chart_ring_equiv_compatible"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartRingEquiv_homogeneous_mk": {
+      "declaration": "LinearStudy.projectiveNativeChartRingEquiv_homogeneous_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChart.lean",
+      "line": 264,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNativeChartRingEquiv_homogeneous_mk {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (m : ℕ) (H : LinearStudy.CoordinateRing n)\n  (hH : MvPolynomial.IsHomogeneous H m) :\n  (LinearStudy.projectiveNativeChartRingEquiv V x hx)\n      ((Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap H)) =\n    LinearStudy.projectiveNativeChartHomogeneousElement V m H hH",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lines": 26,
+      "moduleLineCount": 310,
+      "startLine": 262,
+      "endLine": 287,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap_homogeneous",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveChartCoordinateEmbedding_mk",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveNativeChartFractionEmbedding",
+        "LinearStudy.projectiveNativeChartFractionEmbedding_homogeneous_mk",
+        "LinearStudy.projectiveNativeChartFractionEmbedding_injective",
+        "LinearStudy.projectiveNativeChartHomogeneousElement",
+        "LinearStudy.projectiveNativeChartRingEquiv",
+        "LinearStudy.projectiveNativeChartRingEquiv_fraction_comp"
       ]
     },
     "LinearStudy.projective_native_chart_scheme_iso": {
@@ -18073,7 +18357,7 @@
       "kind": "theorem",
       "origin": "project",
       "file": "Linear/NativeProjectiveChart.lean",
-      "line": 133,
+      "line": 293,
       "axioms": [
         "propext",
         "Classical.choice",
@@ -18081,11 +18365,11 @@
       ],
       "verified": true,
       "formalType": "LinearStudy.projective_native_chart_scheme_iso {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  Nonempty\n    (↑(AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n          ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))) ≅\n      AlgebraicGeometry.Spec ↧(MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal))",
-      "sha256": "0ca2a35d3e54b627cb52493168575419bee20d03d5a0052a20964d900c33816e",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
       "lines": 18,
-      "moduleLineCount": 150,
-      "startLine": 131,
-      "endLine": 148,
+      "moduleLineCount": 310,
+      "startLine": 291,
+      "endLine": 308,
       "lineCount": 18,
       "dependencies": [
         "LinearStudy.IntegralProjectiveEquations",
@@ -18097,6 +18381,410 @@
         "LinearStudy.homogeneousQuotientPiece",
         "LinearStudy.normalizedProjectivePoint",
         "LinearStudy.projective_native_chart_ring_equiv"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_homogeneous_pullback": {
+      "declaration": "LinearStudy.projectiveChartOpenMap_homogeneous_pullback",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_homogeneous_pullback {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)\n  (m : ℕ) (H : LinearStudy.CoordinateRing n) (hH : MvPolynomial.IsHomogeneous H m) :\n  (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx)\n      ((Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap H)) =\n    IsLocalization.Away.invSelf (LinearStudy.projectiveChartDenominator f V) ^ m *\n      (algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)\n          (Localization.Away (LinearStudy.projectiveChartDenominator f V)))\n        ((Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap ((MvPolynomial.aeval f.forms) H)))",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 46,
+      "moduleLineCount": 269,
+      "startLine": 14,
+      "endLine": 59,
+      "lineCount": 46,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval",
+        "LinearStudy.homogeneous_aeval_smul",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_mk",
+        "LinearStudy.projectiveChartOpenPolynomialMap"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartPullback": {
+      "declaration": "LinearStudy.projectiveNativeChartPullback",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "line": 63,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNativeChartPullback {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n      ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)) →+*\n    Localization.Away (LinearStudy.projectiveChartDenominator f V)",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 16,
+      "moduleLineCount": 269,
+      "startLine": 61,
+      "endLine": 76,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveNativeChartRingEquiv"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartPullback_homogeneous_mk": {
+      "declaration": "LinearStudy.projectiveNativeChartPullback_homogeneous_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "line": 78,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNativeChartPullback_homogeneous_mk {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)\n  (m : ℕ) (H : LinearStudy.CoordinateRing n) (hH : MvPolynomial.IsHomogeneous H m) :\n  (LinearStudy.projectiveNativeChartPullback f V hq hf hV x hx)\n      (LinearStudy.projectiveNativeChartHomogeneousElement V m H hH) =\n    IsLocalization.Away.invSelf (LinearStudy.projectiveChartDenominator f V) ^ m *\n      (algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)\n          (Localization.Away (LinearStudy.projectiveChartDenominator f V)))\n        ((Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap ((MvPolynomial.aeval f.forms) H)))",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 23,
+      "moduleLineCount": 269,
+      "startLine": 78,
+      "endLine": 100,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_homogeneous_pullback",
+        "LinearStudy.projectiveNativeChartHomogeneousElement",
+        "LinearStudy.projectiveNativeChartPullback",
+        "LinearStudy.projectiveNativeChartRingEquiv",
+        "LinearStudy.projectiveNativeChartRingEquiv_homogeneous_mk"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartSchemeIso": {
+      "declaration": "LinearStudy.projectiveNativeChartSchemeIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "line": 106,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNativeChartSchemeIso {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ↑(AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n        ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))) ≅\n    AlgebraicGeometry.Spec ↧(MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 17,
+      "moduleLineCount": 269,
+      "startLine": 104,
+      "endLine": 120,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveNativeChartRingEquiv"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartSchemeMap": {
+      "declaration": "LinearStudy.projectiveNativeChartSchemeMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "line": 124,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNativeChartSchemeMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  AlgebraicGeometry.Spec ↧(Localization.Away (LinearStudy.projectiveChartDenominator f V)) ⟶\n    ↑(AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n        ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)))",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 14,
+      "moduleLineCount": 269,
+      "startLine": 122,
+      "endLine": 135,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveNativeChartSchemeIso"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartSchemeMap_chart_comp": {
+      "declaration": "LinearStudy.projectiveNativeChartSchemeMap_chart_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "line": 137,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNativeChartSchemeMap_chart_comp {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  CategoryTheory.CategoryStruct.comp (LinearStudy.projectiveNativeChartSchemeMap f V hq hf hV x hx)\n      (LinearStudy.projectiveNativeChartSchemeIso V x hx).hom =\n    AlgebraicGeometry.Spec.map (CommRingCat.ofHom (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx).toRingHom)",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 13,
+      "moduleLineCount": 269,
+      "startLine": 137,
+      "endLine": 149,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveNativeChartSchemeIso",
+        "LinearStudy.projectiveNativeChartSchemeMap"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartPullback_map_span": {
+      "declaration": "LinearStudy.projectiveNativeChartPullback_map_span",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "line": 154,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNativeChartPullback_map_span.{u_1} {n : ℕ} {ι : Type u_1}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (m : ι → ℕ) (H : ι → LinearStudy.CoordinateRing n)\n  (hH : ∀ (i : ι), MvPolynomial.IsHomogeneous (H i) (m i)) :\n  Ideal.map (LinearStudy.projectiveNativeChartPullback f V hq hf hV x hx)\n      (Ideal.span (Set.range fun i => LinearStudy.projectiveNativeChartHomogeneousElement V (m i) (H i) ⋯)) =\n    Ideal.span\n      (Set.range fun i =>\n        (algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)\n            (Localization.Away (LinearStudy.projectiveChartDenominator f V)))\n          ((Ideal.Quotient.mk V.affineIdeal)\n            (LinearStudy.affineChartPolynomialMap ((MvPolynomial.aeval f.forms) (H i)))))",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 44,
+      "moduleLineCount": 269,
+      "startLine": 151,
+      "endLine": 194,
+      "lineCount": 44,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveNativeChartHomogeneousElement",
+        "LinearStudy.projectiveNativeChartPullback",
+        "LinearStudy.projectiveNativeChartPullback_homogeneous_mk"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartDenominatorOpen": {
+      "declaration": "LinearStudy.projectiveNativeChartDenominatorOpen",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "line": 198,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNativeChartDenominatorOpen {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (↑(AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n        ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)))).Opens",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 13,
+      "moduleLineCount": 269,
+      "startLine": 196,
+      "endLine": 208,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveNativeChartSchemeIso"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartDenominatorOpenIso": {
+      "declaration": "LinearStudy.projectiveNativeChartDenominatorOpenIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "line": 210,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNativeChartDenominatorOpenIso {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ↑(LinearStudy.projectiveNativeChartDenominatorOpen f V x hx) ≅\n    AlgebraicGeometry.Spec ↧(Localization.Away (LinearStudy.projectiveChartDenominator f V))",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 13,
+      "moduleLineCount": 269,
+      "startLine": 210,
+      "endLine": 222,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveNativeChartDenominatorOpen",
+        "LinearStudy.projectiveNativeChartSchemeIso"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartDenominatorSchemeMap": {
+      "declaration": "LinearStudy.projectiveNativeChartDenominatorSchemeMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "line": 226,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNativeChartDenominatorSchemeMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ↑(LinearStudy.projectiveNativeChartDenominatorOpen f V x hx) ⟶\n    ↑(AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n        ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)))",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 14,
+      "moduleLineCount": 269,
+      "startLine": 224,
+      "endLine": 237,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveNativeChartDenominatorOpen",
+        "LinearStudy.projectiveNativeChartDenominatorOpenIso",
+        "LinearStudy.projectiveNativeChartSchemeMap"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartSchemeMap_native_comp": {
+      "declaration": "LinearStudy.projectiveNativeChartSchemeMap_native_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "line": 241,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNativeChartSchemeMap_native_comp {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  have hg := ⋯;\n  CategoryTheory.CategoryStruct.comp (LinearStudy.projectiveNativeChartSchemeMap f V hq hf hV x hx)\n      (AlgebraicGeometry.Proj.basicOpenIsoSpec (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n          ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)) hg Nat.zero_lt_one).hom =\n    AlgebraicGeometry.Spec.map (CommRingCat.ofHom (LinearStudy.projectiveNativeChartPullback f V hq hf hV x hx))",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 29,
+      "moduleLineCount": 269,
+      "startLine": 239,
+      "endLine": 267,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveNativeChartPullback",
+        "LinearStudy.projectiveNativeChartRingEquiv",
+        "LinearStudy.projectiveNativeChartSchemeMap"
       ]
     },
     "LinearStudy.powerSeries_hasEval_of_nilpotent": {
@@ -50677,12 +51365,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 1376,
-  "definitionCount": 262,
+  "verifiedTheoremCount": 1386,
+  "definitionCount": 271,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
   "auditExitCode": 0,
-  "scope": "The full original LinearityTheoremGoal remains UNPROVED. The exact relative-Jacobian local Lemma31Goal is PROVED by lemma31_complete; its historical name corresponds to Lemma 2.1 of the CURRENT manuscript. Actual finite freeness, arbitrary parameter actions, nonzero Jacobian socle generation and the required pairings are constructed. Actual affine completely-intersecting polynomial quotients have constructed perfect pairings, low-degree vanishing, Jacobian trace and nonzero weighted relations under their explicit local generator hypotheses. Original smooth/point-local/formal and completion comparisons have been advanced, but the SAME original Setup fiber to the full projective relation has not been closed. From the original homogeneous endomorphism f and nonempty homogeneous prime V, the actual cone and chart pullbacks, function fields, ratio field, total invariance and original iterates are constructed. Original general WHOLE fibers are finite/reduced and smooth/unramified on constructed nonempty target opens. Actual cone Hilbert-Serre and the ORIGINAL Hilbert polynomials P,C give deg(C)=deg(P)+1, cone image degree=q^deg(C), and WHOLE projective/chart image degree=q^deg(P). NEW checkpoint 87 proves integral Krull-dimension preservation and compares ACTUAL finite Noether normalization with the ORIGINAL coordinate filtration using constructed representatives, module generators, multiplication matrices and bounded coefficients. The actual cumulative Hilbert degree equals actual cone Krull dimension. Constructed cone/chart/ratio fraction fields and transcendence-degree towers then prove deg(P)=r for the ACTUAL inhabited original affine chart ring Krull dimension AND its actual spectrum topological dimension. Therefore the ORIGINAL actual chart degree is q^r and EVERY original iterate has a constructed nonempty open where each WHOLE point fiber has (q^k)^r points. No dimension, cardinality, degree formula or normalization/growth bound is an input to the aggregate original-map theorems. The GLOBAL projective Proj/Scheme comparison, Bertini selection, original full relation assembly, canonical-sheaf fixed-twist injection, geometric Koszul/proper duality/uniform Serre lifting and actual Cartier/Bezout intersection remain OPEN. The final numeric contradiction is checked only as an implication under its explicit intersection inputs; it does not prove the full Linearity Theorem. NEW checkpoint 88 constructs the actual normalization/fraction scalar tower, separable characteristic-zero extension and differential base-change basis. It proves actual Krull dimension equals actual differential rank for finite-type characteristic-zero domains WITHOUT global smoothness. For the ORIGINAL inhabited projective chart, Hilbert degree, Krull dimension and actual differential rank are identified. One aggregate original-map theorem gives the SAME dimension for actual polynomial local parameters at EVERY original smooth chart point and for EVERY original iterate WHOLE general fiber point count. The original full projective polynomial relation and all remaining geometric lifting and intersection obligations above remain OPEN; the final theorem is still unproved. NEW checkpoint 89 intersects the ORIGINAL iterate good-locus and point-count opens, constructs their nonempty witness and preserves the SAME whole-fiber dimension count and actual reduced in-V equation quotient. EVERY actual coordinate point is linked to the SAME smooth target and genuine unramified chart map. Common actual ambient linear coordinates, original local generators and formal normal-ideal identities are constructed on the ENTIRE original fiber, with r identified with actual Krull/differential dimension and c=n-r. The ambient fiber may have normal nilpotents; reducedness is claimed only for the in-V quotient. The SAME-fiber common Jacobian socle and full homogeneous relation, all Section 4 lifting, global Proj/Bertini and actual intersection obligations remain OPEN. The final theorem is unproved. NEW checkpoint 90 constructs the ORIGINAL ambient fiber ideal from f_i-y_i*f_0, proves its quotient finite while retaining possible normal nilpotents, and compares its actual point set and radical with the reduced in-V fiber. The actual homogeneous fiber forms have no points at infinity; their dehomogenized equations have exact degree q, regular highest forms and origin-only highest-form zero locus. These are derived on the SAME original whole good fiber for EVERY iterate, together with actual common coordinates and local normal equations, not supplied as assumptions. This is ONE whole general fiber; simultaneous Bertini selection of d target points and their fiber union is not yet proved. Common normal Jacobian socle, the full homogeneous relation, Section 4 geometric lifting, global Proj comparison and actual intersection remain OPEN. The final theorem remains unproved. NEW checkpoint 91 constructs centered LINEAR polynomial target parameters from actual original smoothness, with count equal to the SAME actual differential/Krull dimension r. They generate the actual target local quotient maximal ideal on EVERY original iterate good fiber. Original local quotient pullbacks commute with independent source/target coordinate equivalences, preserving genuine unramification under an actual ambient ring-map diagram. Actual denominator localizations and rational chart pullbacks are compared under source coordinate equivalences. These coordinate bridges do not yet assemble the same-fiber common Jacobian socle or full homogeneous relation. Bertini d-fiber union, Section 4 geometric lifting and actual intersection remain OPEN; full theorem unproved. NEW checkpoint 92 constructs normal polynomial and formal first-order equations of the ORIGINAL ideal at the SAME actual smooth target, with c=n-r and the SAME original dimension r. The actual whole-fiber aggregate retains these target equations. Original rational source and linear target coordinate changes transport actual local unramification; affine centering transforms original numerators using the actual unchanged denominator. These bridges still do not discharge the SAME common-Jacobian socle or full homogeneous relation. Bertini union, Section 4, global Proj and actual intersection remain OPEN; the final theorem remains unproved. NEW checkpoint 93 derives both formal normal radical and tangent parameter generation from actual rational local unramification, actual polynomial source/target generators with normalized target first jets, and an actual ideal-power sandwich. It proves the SAME common normal polynomial Jacobian is a nonzero annihilator generator in the formal and actual Artinian local polynomial fiber ring; no socle or either formal condition is assumed. This remains conditional on those actual geometric inputs; their full original whole-fiber assembly and homogeneous relation are OPEN. Bertini, Section 4, global Proj and actual intersection remain OPEN. Final theorem UNPROVED. NEW checkpoint 94 constructs centered actual original target normal equations at the SAME whole-fiber target and with the SAME actual r. Actual local generators imply actual point-ideal containment. Original rational numerator formulas derive the target-centering diagram, transport genuine unramification and ideal-power inequalities; actual source denominator equivalences also transport the original power sandwich. No transformed inequality or unramification is newly assumed. Full original whole-fiber common-Jacobian assembly and homogeneous relation remain OPEN; Bertini, Section 4, global Proj and actual intersection OPEN. The final theorem remains UNPROVED. NEW checkpoint 95 derives original whole-fiber actual centered rational local inputs at EVERY source point over the SAME constructed good target open. Independent source coordinates, target reindexing, inverse linear coordinates and centering construct the actual map and primes. The original total invariance supplies the original and transformed ideal power sandwich; genuine unramification and actual origin/source-point prime identities are derived, not input. These are actual local inputs for the common-Jacobian bridge, not the completed homogeneous relation. The transformed ambient quotient finiteness, source/target normal data and SAME polynomial Jacobian still need full assembly; simultaneous Bertini union, Section 4, global Proj and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 96 constructs, for EVERY original iterate and every whole fiber on the SAME nonempty good target open, actual common linear source and centered target coordinates and the SAME polynomial normal Jacobian as a nonzero local socle generator at EVERY original source point, assuming the ACTUAL chart dimension r>0 explicitly. Original normal generators are constructed, not supplied. The transformed ambient equation quotient is finite, retains normal nilpotents, and its actual point evaluations are derived. This closes the original whole-fiber local-Jacobian assembly, not the full homogeneous relation: covering all maximal ideals, transformed leading forms, the residue/degree bound and original homogeneous conversion still need assembly. Simultaneous Bertini union, global Proj, Section 4 and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 97 covers EVERY maximal ideal of the SAME actual centered ambient equation quotient by constructing its original source point from its actual scalar residue map and the exact changed ambient ideal. The SAME original whole-fiber Jacobian now generates a NONZERO local socle at EVERY maximal ideal, for every original iterate with positive actual chart dimension explicit. Actual linear source coordinate changes and reindexing commute with homogeneous component projections. Neither reducedness of the ambient ring nor point coverage is assumed. Transformed leading-form regularity, degree bounds, residue assembly and ORIGINAL homogeneous relation remain OPEN. Bertini union, Section 4 and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 98 derives the SAME actual centered whole-fiber degree and highest system, the c(q-1) normal Jacobian bound, and the global nilradical annihilator for EVERY original iterate with positive actual chart dimension explicit. An actual quotient algebra equivalence transports the perfect multiplication pairing and low-degree vanishing. Actual zero-locus weights are constructed and all nonzero under explicit highest-system and annihilator hypotheses, without reducedness. Insertion into the ORIGINAL whole-fiber homogeneous relation is still OPEN. Bertini union, Section 4 geometry and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 99 proves the ORIGINAL homogeneous weighted relation on the SAME original whole good fiber for EVERY original iterate, on a constructed nonempty good target open, with actual r>0 and iterate degree >1 explicit. ALL coefficients are nonzero and ALL original homogeneous polynomials of degree t=r(q-1)-1 satisfy the relation. The vectors use normalized representatives (1,x). Actual source quotient algebra and point equivalences, degree preservation and dehomogenization are proved. Local socles, transformed highest system, degree bound and residue relation are derived from original f,V, rather than added as geometric inputs. Simultaneous Bertini target intersection/fiber union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 100 derives the ORIGINAL whole-good-fiber homogeneous relation for EVERY original iterate and ANY chosen nonzero homogeneous coordinate representatives. The degree remains t=r(q-1)-1 and every coefficient is nonzero. Coordinate zero and affine ratios are derived from actual projective equality, and the exact homogeneous scaling factor transports the already proved normalized relation. The original wrapper assumes no extra residue or normalized relation. Positive actual dimension, iterate degree >1 and the constructed good target open remain explicit. Simultaneous Bertini union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 101 constructs genuine degree-one linear Noether normalization for proper homogeneous ideals over infinite fields. The actual monic linear shear, integral elimination, homogeneous kernel and induction derive an injective integral and module-finite map whose generators are actual degree-one original forms. Its variable count equals actual Krull dimension, not an input parameter. Ordinary nonlinear Nagata normalization is not substituted. This is a foundation for simultaneous Bertini selection, NOT that selection: exact projective section degree, simultaneous smooth target points, global Proj/Scheme comparison, Section 4 geometric lifting and actual intersection remain OPEN; full theorem still UNPROVED. NEW checkpoint 102 proves basepoint-freeness of actual integral linear normalization by evaluating a monic equation on all scalar multiples over an infinite field. It constructs actual original degree-one forms L_0,...,L_r for V, the injective finite cone map defined by those forms, and no nonzero common zero on the original cone. The number r is derived from the actual Hilbert-polynomial degree and original affine-chart Krull dimension. No basepoint-free tuple, finite map or dimension is added as an input. Exact generic linear-section cardinality and its identification with degree V, simultaneous Bertini, global scheme comparison, Section 4 and actual intersection remain OPEN; the full theorem is UNPROVED. NEW checkpoint 103 derives generic unramification of a finite injective map in characteristic zero from its actual fraction map, then constructs a nonempty target open whose ENTIRE source preimage is smooth, unramified and avoids any specified nonzero source element. This is applied to the SAME actual original linear normalization of V, preserving its degree-one forms, finite injection, Hilbert dimension and no-basepoint conclusion. No good fiber, source smoothness or fraction separability is a new input. Exact reduced generic linear-section cardinality, its identification with degree V, simultaneous projective selection, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 104 constructs actual finite REDUCED tensor fibers K tensor_R A of the SAME original finite linear normalization on a nonempty scalar target open away from w0=0. Their actual vector dimension and scalar-point cardinality equal the generic module rank; no fiber reducedness, point count or rank formula is assumed. Comparison with actual projective linear-section points, generic rank equals degree V, simultaneous Bertini, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 105 proves actual tensor-point/coordinate-cone-fiber and projective-linear-section point equivalences, using the SAME original V, degree-one tuple and finite map. On a constructed nonempty target open, the ACTUAL projective linear section has cardinality equal to the actual generic module rank. Homogeneity and derived no-basepoint make normalization possible and unique. The rank equals Hilbert leading-coefficient degree V, simultaneous good selection/transversality, global scheme comparisons, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 106 derives homogeneous generic basis/control and two-sided total-degree filtered growth estimates retaining the ACTUAL generic rank. A combined original-V entry uses the SAME constructed finite linear projection for its actual projective section cardinality and both growth estimates. No rank, basis, growth estimate or projection is supplied as an extra input. Rank equals the Hilbert leading-coefficient degree V remains OPEN, as do simultaneous good selection/transversality, global Scheme comparisons, Section 4 uniform lifting and actual intersection. The full theorem remains UNPROVED. NEW checkpoint 107 proves generic rank equals the factorial-normalized leading coefficient of the ACTUAL original homogeneous Hilbert polynomial. An exact source monomial count, same-projection two-sided filtered growth and cumulative/component leading-coefficient comparison prove the equality; degree V is not redefined as rank to bypass it. The ORIGINAL V alone now gives generic actual linear sections of cardinality d, with d>0 and d=r! times the actual Hilbert leading coefficient. Simultaneous original-f good target selection and transversality, global Scheme comparison, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 108 constructs d=degree V simultaneous original-f good targets on one actual linear section for EVERY original iterate. A homogeneous lift of the actual affine good-open equation and finite-projection whole-fiber avoidance ensure ALL d points lie in the good open. Original chart Krull dimension equals the projection dimension; the same original complete fibers have q^r points and actual ambient geometry/homogeneous relations. Fixed projection and d remain independent of the iterate; selected section and fibers may vary. Global scheme intersections/transversality and actual pulled-back common-zero scheme comparisons, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 109 constructs r actual independent linear equations of the SAME original projective section and the actual degree-q pullbacks. Their common projective POINT set on V is proved equal to the union of the original whole fibers over ALL section targets, with actual projective representative scaling accounted for. This is point-set equality, NOT a nonreduced scheme equality. Global Scheme intersection/transversality and reducedness, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 110 explicitly transports homogeneous relations to the ACTUAL whole PROJECTIVE point fibers for arbitrary chosen nonzero representatives, with the actual affine/projective equivalence action proved. Intersecting BOTH original good opens retains no-infinity and actual whole-fiber q^r cardinality for ALL d targets simultaneously. The original f and V are not replaced by an abstract point family. Scheme intersection/transversality/reducedness, Section 4 uniform lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 111 constructs the original degree-d target enumeration, pairwise disjoint actual WHOLE projective fibers, their inverse-image union S of cardinality d*q^r, and the actual degree-q common POINTS. For EVERY chosen nonzero representative system on S, the first-fiber relation extends by zero to a nonzero actual evaluation functional annihilating ALL degree-t homogeneous forms. This derives the finite-point input to Section 4 from original f,V, without an abstract assumed family or assumed Koszul/cohomology/duality conclusion. Scheme intersections, uniform geometric lifting, actual intersection and main theorem remain OPEN. NEW checkpoint 112 proves an actual coefficient-field algebra equivalence (K[X]/I) tensor_(K[Y]) K = K[X]/(I+(L_i-w_i)), deriving its universal property and scalar compatibilities. For an original finite dominant polynomial projection over an algebraically closed characteristic-zero field, it derives a nonempty target open with radical original equation-fiber ideals, finite reduced quotients and dimensions/point counts equal to original generic rank. This is an affine equation-ring bridge, NOT a global projective Proj comparison or all pullback scheme transversality; it does not redefine generic rank as degree V. Geometric Koszul/duality, uniform fixed-degree Q, actual intersection and the full theorem remain OPEN. NEW checkpoint 113 connects the equation-ring radicality to ONE original degree-one projection derived from the original projective V, on the SAME nonempty open as its actual projective section cardinality. Its original equation quotient has dimension and scalar-point cardinality d, and d=r! times the original Hilbert leading coefficient, without redefining degree as rank. This does not assert a global Proj scheme equivalence or all endomorphism pullback scheme transversality. Section 4 lifting and actual intersection remain OPEN. NEW checkpoint 114 proves the actual original dehomogenized coordinate quotient is ring-isomorphic to mathlib HomogeneousLocalization.Away of the original graded quotient at X0. Using the pinned native Proj basicOpenIsoSpec, its actual first-coordinate open SUBSCHEME is isomorphic to Spec of that original affine coordinate quotient. This compares real rings and schemes, not just points. It does not yet construct all-chart gluing, original-endomorphism scheme pullback/transversality or Section 4 uniform lifting, and does not claim the full theorem.",
+  "scope": "The full original LinearityTheoremGoal remains UNPROVED. The exact relative-Jacobian local Lemma31Goal is PROVED by lemma31_complete; its historical name corresponds to Lemma 2.1 of the CURRENT manuscript. Actual finite freeness, arbitrary parameter actions, nonzero Jacobian socle generation and the required pairings are constructed. Actual affine completely-intersecting polynomial quotients have constructed perfect pairings, low-degree vanishing, Jacobian trace and nonzero weighted relations under their explicit local generator hypotheses. Original smooth/point-local/formal and completion comparisons have been advanced, but the SAME original Setup fiber to the full projective relation has not been closed. From the original homogeneous endomorphism f and nonempty homogeneous prime V, the actual cone and chart pullbacks, function fields, ratio field, total invariance and original iterates are constructed. Original general WHOLE fibers are finite/reduced and smooth/unramified on constructed nonempty target opens. Actual cone Hilbert-Serre and the ORIGINAL Hilbert polynomials P,C give deg(C)=deg(P)+1, cone image degree=q^deg(C), and WHOLE projective/chart image degree=q^deg(P). NEW checkpoint 87 proves integral Krull-dimension preservation and compares ACTUAL finite Noether normalization with the ORIGINAL coordinate filtration using constructed representatives, module generators, multiplication matrices and bounded coefficients. The actual cumulative Hilbert degree equals actual cone Krull dimension. Constructed cone/chart/ratio fraction fields and transcendence-degree towers then prove deg(P)=r for the ACTUAL inhabited original affine chart ring Krull dimension AND its actual spectrum topological dimension. Therefore the ORIGINAL actual chart degree is q^r and EVERY original iterate has a constructed nonempty open where each WHOLE point fiber has (q^k)^r points. No dimension, cardinality, degree formula or normalization/growth bound is an input to the aggregate original-map theorems. The GLOBAL projective Proj/Scheme comparison, Bertini selection, original full relation assembly, canonical-sheaf fixed-twist injection, geometric Koszul/proper duality/uniform Serre lifting and actual Cartier/Bezout intersection remain OPEN. The final numeric contradiction is checked only as an implication under its explicit intersection inputs; it does not prove the full Linearity Theorem. NEW checkpoint 88 constructs the actual normalization/fraction scalar tower, separable characteristic-zero extension and differential base-change basis. It proves actual Krull dimension equals actual differential rank for finite-type characteristic-zero domains WITHOUT global smoothness. For the ORIGINAL inhabited projective chart, Hilbert degree, Krull dimension and actual differential rank are identified. One aggregate original-map theorem gives the SAME dimension for actual polynomial local parameters at EVERY original smooth chart point and for EVERY original iterate WHOLE general fiber point count. The original full projective polynomial relation and all remaining geometric lifting and intersection obligations above remain OPEN; the final theorem is still unproved. NEW checkpoint 89 intersects the ORIGINAL iterate good-locus and point-count opens, constructs their nonempty witness and preserves the SAME whole-fiber dimension count and actual reduced in-V equation quotient. EVERY actual coordinate point is linked to the SAME smooth target and genuine unramified chart map. Common actual ambient linear coordinates, original local generators and formal normal-ideal identities are constructed on the ENTIRE original fiber, with r identified with actual Krull/differential dimension and c=n-r. The ambient fiber may have normal nilpotents; reducedness is claimed only for the in-V quotient. The SAME-fiber common Jacobian socle and full homogeneous relation, all Section 4 lifting, global Proj/Bertini and actual intersection obligations remain OPEN. The final theorem is unproved. NEW checkpoint 90 constructs the ORIGINAL ambient fiber ideal from f_i-y_i*f_0, proves its quotient finite while retaining possible normal nilpotents, and compares its actual point set and radical with the reduced in-V fiber. The actual homogeneous fiber forms have no points at infinity; their dehomogenized equations have exact degree q, regular highest forms and origin-only highest-form zero locus. These are derived on the SAME original whole good fiber for EVERY iterate, together with actual common coordinates and local normal equations, not supplied as assumptions. This is ONE whole general fiber; simultaneous Bertini selection of d target points and their fiber union is not yet proved. Common normal Jacobian socle, the full homogeneous relation, Section 4 geometric lifting, global Proj comparison and actual intersection remain OPEN. The final theorem remains unproved. NEW checkpoint 91 constructs centered LINEAR polynomial target parameters from actual original smoothness, with count equal to the SAME actual differential/Krull dimension r. They generate the actual target local quotient maximal ideal on EVERY original iterate good fiber. Original local quotient pullbacks commute with independent source/target coordinate equivalences, preserving genuine unramification under an actual ambient ring-map diagram. Actual denominator localizations and rational chart pullbacks are compared under source coordinate equivalences. These coordinate bridges do not yet assemble the same-fiber common Jacobian socle or full homogeneous relation. Bertini d-fiber union, Section 4 geometric lifting and actual intersection remain OPEN; full theorem unproved. NEW checkpoint 92 constructs normal polynomial and formal first-order equations of the ORIGINAL ideal at the SAME actual smooth target, with c=n-r and the SAME original dimension r. The actual whole-fiber aggregate retains these target equations. Original rational source and linear target coordinate changes transport actual local unramification; affine centering transforms original numerators using the actual unchanged denominator. These bridges still do not discharge the SAME common-Jacobian socle or full homogeneous relation. Bertini union, Section 4, global Proj and actual intersection remain OPEN; the final theorem remains unproved. NEW checkpoint 93 derives both formal normal radical and tangent parameter generation from actual rational local unramification, actual polynomial source/target generators with normalized target first jets, and an actual ideal-power sandwich. It proves the SAME common normal polynomial Jacobian is a nonzero annihilator generator in the formal and actual Artinian local polynomial fiber ring; no socle or either formal condition is assumed. This remains conditional on those actual geometric inputs; their full original whole-fiber assembly and homogeneous relation are OPEN. Bertini, Section 4, global Proj and actual intersection remain OPEN. Final theorem UNPROVED. NEW checkpoint 94 constructs centered actual original target normal equations at the SAME whole-fiber target and with the SAME actual r. Actual local generators imply actual point-ideal containment. Original rational numerator formulas derive the target-centering diagram, transport genuine unramification and ideal-power inequalities; actual source denominator equivalences also transport the original power sandwich. No transformed inequality or unramification is newly assumed. Full original whole-fiber common-Jacobian assembly and homogeneous relation remain OPEN; Bertini, Section 4, global Proj and actual intersection OPEN. The final theorem remains UNPROVED. NEW checkpoint 95 derives original whole-fiber actual centered rational local inputs at EVERY source point over the SAME constructed good target open. Independent source coordinates, target reindexing, inverse linear coordinates and centering construct the actual map and primes. The original total invariance supplies the original and transformed ideal power sandwich; genuine unramification and actual origin/source-point prime identities are derived, not input. These are actual local inputs for the common-Jacobian bridge, not the completed homogeneous relation. The transformed ambient quotient finiteness, source/target normal data and SAME polynomial Jacobian still need full assembly; simultaneous Bertini union, Section 4, global Proj and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 96 constructs, for EVERY original iterate and every whole fiber on the SAME nonempty good target open, actual common linear source and centered target coordinates and the SAME polynomial normal Jacobian as a nonzero local socle generator at EVERY original source point, assuming the ACTUAL chart dimension r>0 explicitly. Original normal generators are constructed, not supplied. The transformed ambient equation quotient is finite, retains normal nilpotents, and its actual point evaluations are derived. This closes the original whole-fiber local-Jacobian assembly, not the full homogeneous relation: covering all maximal ideals, transformed leading forms, the residue/degree bound and original homogeneous conversion still need assembly. Simultaneous Bertini union, global Proj, Section 4 and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 97 covers EVERY maximal ideal of the SAME actual centered ambient equation quotient by constructing its original source point from its actual scalar residue map and the exact changed ambient ideal. The SAME original whole-fiber Jacobian now generates a NONZERO local socle at EVERY maximal ideal, for every original iterate with positive actual chart dimension explicit. Actual linear source coordinate changes and reindexing commute with homogeneous component projections. Neither reducedness of the ambient ring nor point coverage is assumed. Transformed leading-form regularity, degree bounds, residue assembly and ORIGINAL homogeneous relation remain OPEN. Bertini union, Section 4 and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 98 derives the SAME actual centered whole-fiber degree and highest system, the c(q-1) normal Jacobian bound, and the global nilradical annihilator for EVERY original iterate with positive actual chart dimension explicit. An actual quotient algebra equivalence transports the perfect multiplication pairing and low-degree vanishing. Actual zero-locus weights are constructed and all nonzero under explicit highest-system and annihilator hypotheses, without reducedness. Insertion into the ORIGINAL whole-fiber homogeneous relation is still OPEN. Bertini union, Section 4 geometry and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 99 proves the ORIGINAL homogeneous weighted relation on the SAME original whole good fiber for EVERY original iterate, on a constructed nonempty good target open, with actual r>0 and iterate degree >1 explicit. ALL coefficients are nonzero and ALL original homogeneous polynomials of degree t=r(q-1)-1 satisfy the relation. The vectors use normalized representatives (1,x). Actual source quotient algebra and point equivalences, degree preservation and dehomogenization are proved. Local socles, transformed highest system, degree bound and residue relation are derived from original f,V, rather than added as geometric inputs. Simultaneous Bertini target intersection/fiber union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 100 derives the ORIGINAL whole-good-fiber homogeneous relation for EVERY original iterate and ANY chosen nonzero homogeneous coordinate representatives. The degree remains t=r(q-1)-1 and every coefficient is nonzero. Coordinate zero and affine ratios are derived from actual projective equality, and the exact homogeneous scaling factor transports the already proved normalized relation. The original wrapper assumes no extra residue or normalized relation. Positive actual dimension, iterate degree >1 and the constructed good target open remain explicit. Simultaneous Bertini union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 101 constructs genuine degree-one linear Noether normalization for proper homogeneous ideals over infinite fields. The actual monic linear shear, integral elimination, homogeneous kernel and induction derive an injective integral and module-finite map whose generators are actual degree-one original forms. Its variable count equals actual Krull dimension, not an input parameter. Ordinary nonlinear Nagata normalization is not substituted. This is a foundation for simultaneous Bertini selection, NOT that selection: exact projective section degree, simultaneous smooth target points, global Proj/Scheme comparison, Section 4 geometric lifting and actual intersection remain OPEN; full theorem still UNPROVED. NEW checkpoint 102 proves basepoint-freeness of actual integral linear normalization by evaluating a monic equation on all scalar multiples over an infinite field. It constructs actual original degree-one forms L_0,...,L_r for V, the injective finite cone map defined by those forms, and no nonzero common zero on the original cone. The number r is derived from the actual Hilbert-polynomial degree and original affine-chart Krull dimension. No basepoint-free tuple, finite map or dimension is added as an input. Exact generic linear-section cardinality and its identification with degree V, simultaneous Bertini, global scheme comparison, Section 4 and actual intersection remain OPEN; the full theorem is UNPROVED. NEW checkpoint 103 derives generic unramification of a finite injective map in characteristic zero from its actual fraction map, then constructs a nonempty target open whose ENTIRE source preimage is smooth, unramified and avoids any specified nonzero source element. This is applied to the SAME actual original linear normalization of V, preserving its degree-one forms, finite injection, Hilbert dimension and no-basepoint conclusion. No good fiber, source smoothness or fraction separability is a new input. Exact reduced generic linear-section cardinality, its identification with degree V, simultaneous projective selection, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 104 constructs actual finite REDUCED tensor fibers K tensor_R A of the SAME original finite linear normalization on a nonempty scalar target open away from w0=0. Their actual vector dimension and scalar-point cardinality equal the generic module rank; no fiber reducedness, point count or rank formula is assumed. Comparison with actual projective linear-section points, generic rank equals degree V, simultaneous Bertini, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 105 proves actual tensor-point/coordinate-cone-fiber and projective-linear-section point equivalences, using the SAME original V, degree-one tuple and finite map. On a constructed nonempty target open, the ACTUAL projective linear section has cardinality equal to the actual generic module rank. Homogeneity and derived no-basepoint make normalization possible and unique. The rank equals Hilbert leading-coefficient degree V, simultaneous good selection/transversality, global scheme comparisons, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 106 derives homogeneous generic basis/control and two-sided total-degree filtered growth estimates retaining the ACTUAL generic rank. A combined original-V entry uses the SAME constructed finite linear projection for its actual projective section cardinality and both growth estimates. No rank, basis, growth estimate or projection is supplied as an extra input. Rank equals the Hilbert leading-coefficient degree V remains OPEN, as do simultaneous good selection/transversality, global Scheme comparisons, Section 4 uniform lifting and actual intersection. The full theorem remains UNPROVED. NEW checkpoint 107 proves generic rank equals the factorial-normalized leading coefficient of the ACTUAL original homogeneous Hilbert polynomial. An exact source monomial count, same-projection two-sided filtered growth and cumulative/component leading-coefficient comparison prove the equality; degree V is not redefined as rank to bypass it. The ORIGINAL V alone now gives generic actual linear sections of cardinality d, with d>0 and d=r! times the actual Hilbert leading coefficient. Simultaneous original-f good target selection and transversality, global Scheme comparison, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 108 constructs d=degree V simultaneous original-f good targets on one actual linear section for EVERY original iterate. A homogeneous lift of the actual affine good-open equation and finite-projection whole-fiber avoidance ensure ALL d points lie in the good open. Original chart Krull dimension equals the projection dimension; the same original complete fibers have q^r points and actual ambient geometry/homogeneous relations. Fixed projection and d remain independent of the iterate; selected section and fibers may vary. Global scheme intersections/transversality and actual pulled-back common-zero scheme comparisons, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 109 constructs r actual independent linear equations of the SAME original projective section and the actual degree-q pullbacks. Their common projective POINT set on V is proved equal to the union of the original whole fibers over ALL section targets, with actual projective representative scaling accounted for. This is point-set equality, NOT a nonreduced scheme equality. Global Scheme intersection/transversality and reducedness, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 110 explicitly transports homogeneous relations to the ACTUAL whole PROJECTIVE point fibers for arbitrary chosen nonzero representatives, with the actual affine/projective equivalence action proved. Intersecting BOTH original good opens retains no-infinity and actual whole-fiber q^r cardinality for ALL d targets simultaneously. The original f and V are not replaced by an abstract point family. Scheme intersection/transversality/reducedness, Section 4 uniform lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 111 constructs the original degree-d target enumeration, pairwise disjoint actual WHOLE projective fibers, their inverse-image union S of cardinality d*q^r, and the actual degree-q common POINTS. For EVERY chosen nonzero representative system on S, the first-fiber relation extends by zero to a nonzero actual evaluation functional annihilating ALL degree-t homogeneous forms. This derives the finite-point input to Section 4 from original f,V, without an abstract assumed family or assumed Koszul/cohomology/duality conclusion. Scheme intersections, uniform geometric lifting, actual intersection and main theorem remain OPEN. NEW checkpoint 112 proves an actual coefficient-field algebra equivalence (K[X]/I) tensor_(K[Y]) K = K[X]/(I+(L_i-w_i)), deriving its universal property and scalar compatibilities. For an original finite dominant polynomial projection over an algebraically closed characteristic-zero field, it derives a nonempty target open with radical original equation-fiber ideals, finite reduced quotients and dimensions/point counts equal to original generic rank. This is an affine equation-ring bridge, NOT a global projective Proj comparison or all pullback scheme transversality; it does not redefine generic rank as degree V. Geometric Koszul/duality, uniform fixed-degree Q, actual intersection and the full theorem remain OPEN. NEW checkpoint 113 connects the equation-ring radicality to ONE original degree-one projection derived from the original projective V, on the SAME nonempty open as its actual projective section cardinality. Its original equation quotient has dimension and scalar-point cardinality d, and d=r! times the original Hilbert leading coefficient, without redefining degree as rank. This does not assert a global Proj scheme equivalence or all endomorphism pullback scheme transversality. Section 4 lifting and actual intersection remain OPEN. NEW checkpoint 114 proves the actual original dehomogenized coordinate quotient is ring-isomorphic to mathlib HomogeneousLocalization.Away of the original graded quotient at X0. Using the pinned native Proj basicOpenIsoSpec, its actual first-coordinate open SUBSCHEME is isomorphic to Spec of that original affine coordinate quotient. This compares real rings and schemes, not just points. It does not yet construct all-chart gluing, original-endomorphism scheme pullback/transversality or Section 4 uniform lifting, and does not claim the full theorem. NEW checkpoint 115 strengthens the native chart equivalence by ORIGINAL coordinate compatibility and the actual homogeneous fraction H/X0^m formula. From the original f,V it constructs an actual scheme morphism on the denominator OPEN SUBSCHEME of the native first-coordinate chart. Its native Spec diagram commutes with the same original-f pullback. It proves exact pullback equality of arbitrary homogeneous defining ideals, including nilpotents, on that open; not merely equality of point sets or radicals. Global all-chart gluing, projective common-zero scheme coverage and transversality, geometric Koszul, canonical/duality/Serre fixed-degree lifting, and actual intersection remain OPEN. Main theorem UNPROVED.",
   "sourceRanges": {
     "LinearStudy.affine_polynomial_weighted_point_relation": {
       "path": "Linear/AffinePointRelation.lean",
@@ -50917,6 +51605,25 @@
       "lineCount": 24,
       "dependencies": [
         "LinearStudy.continuous_powerSeries_pderiv"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartDenominatorOpen": {
+      "path": "Linear/NativeProjectiveChartPullback.lean",
+      "startLine": 196,
+      "endLine": 208,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveNativeChartSchemeIso"
       ]
     },
     "LinearStudy.gradedScalarKernelModule": {
@@ -54067,6 +54774,37 @@
         "ModuleCat.subsingleton_ext_of_lt_depth"
       ]
     },
+    "LinearStudy.projectiveNativeChartRingEquiv_homogeneous_mk": {
+      "path": "Linear/NativeProjectiveChart.lean",
+      "startLine": 262,
+      "endLine": 287,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap_homogeneous",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveChartCoordinateEmbedding_mk",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveNativeChartFractionEmbedding",
+        "LinearStudy.projectiveNativeChartFractionEmbedding_homogeneous_mk",
+        "LinearStudy.projectiveNativeChartFractionEmbedding_injective",
+        "LinearStudy.projectiveNativeChartHomogeneousElement",
+        "LinearStudy.projectiveNativeChartRingEquiv",
+        "LinearStudy.projectiveNativeChartRingEquiv_fraction_comp"
+      ]
+    },
     "LinearStudy.span_unit_scaled_family": {
       "path": "Linear/ConormalGenerators.lean",
       "startLine": 57,
@@ -55313,6 +56051,30 @@
       "lineCount": 4,
       "dependencies": []
     },
+    "LinearStudy.projectiveNativeChartSchemeMap_native_comp": {
+      "path": "Linear/NativeProjectiveChartPullback.lean",
+      "startLine": 239,
+      "endLine": 267,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveNativeChartPullback",
+        "LinearStudy.projectiveNativeChartRingEquiv",
+        "LinearStudy.projectiveNativeChartSchemeMap"
+      ]
+    },
     "LinearStudy.gradedQuotientPiece_independent": {
       "path": "Linear/GradedQuotientDecomposition.lean",
       "startLine": 63,
@@ -56411,6 +57173,23 @@
         "koszulComplex.snocLinearEquiv"
       ]
     },
+    "LinearStudy.projectiveNativeChartSchemeIso": {
+      "path": "Linear/NativeProjectiveChartPullback.lean",
+      "startLine": 104,
+      "endLine": 120,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveNativeChartRingEquiv"
+      ]
+    },
     "LinearStudy.affineChartPolynomialMap_ideal_isPrime_of_point": {
       "path": "Linear/ProjectiveAffinePoint.lean",
       "startLine": 29,
@@ -56758,6 +57537,29 @@
         "LinearStudy.smooth_extension_cotangent_decomposition"
       ]
     },
+    "LinearStudy.projectiveNativeChartDenominatorSchemeMap": {
+      "path": "Linear/NativeProjectiveChartPullback.lean",
+      "startLine": 224,
+      "endLine": 237,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveNativeChartDenominatorOpen",
+        "LinearStudy.projectiveNativeChartDenominatorOpenIso",
+        "LinearStudy.projectiveNativeChartSchemeMap"
+      ]
+    },
     "LinearStudy.polynomialTranslation_pderiv": {
       "path": "Linear/PolynomialFormalDerivative.lean",
       "startLine": 14,
@@ -57017,6 +57819,37 @@
         "LinearStudy.projectiveCoordinateDomainMap",
         "LinearStudy.projectiveCoordinateDomainMap_generic_growth_comparison",
         "LinearStudy.projective_coordinate_filtration_finrank_pos"
+      ]
+    },
+    "LinearStudy.projective_native_chart_ring_equiv_compatible": {
+      "path": "Linear/NativeProjectiveChart.lean",
+      "startLine": 122,
+      "endLine": 223,
+      "lineCount": 102,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_injective",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap_homogeneous",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.homogeneousQuotientPiece_mem_iff",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveChartCoordinateEmbedding_injective",
+        "LinearStudy.projectiveChartCoordinateEmbedding_mk",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveNativeChartFractionEmbedding",
+        "LinearStudy.projectiveNativeChartFractionEmbedding_homogeneous_mk"
       ]
     },
     "LinearStudy.smoothCoordinateImages_constantCoeff_zero": {
@@ -59126,6 +59959,31 @@
       "lineCount": 10,
       "dependencies": []
     },
+    "LinearStudy.projectiveChartOpenMap_homogeneous_pullback": {
+      "path": "Linear/NativeProjectiveChartPullback.lean",
+      "startLine": 14,
+      "endLine": 59,
+      "lineCount": 46,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval",
+        "LinearStudy.homogeneous_aeval_smul",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_mk",
+        "LinearStudy.projectiveChartOpenPolynomialMap"
+      ]
+    },
     "LinearStudy.gradedScalarKernelGradedSMul": {
       "path": "Linear/GradedScalarInductionModules.lean",
       "startLine": 55,
@@ -59758,6 +60616,26 @@
         "LinearStudy.homogeneous_affine_chart_top_component",
         "LinearStudy.homogeneous_origin_regular",
         "LinearStudy.regular_sequence_mem_ne_zero"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartRingEquiv": {
+      "path": "Linear/NativeProjectiveChart.lean",
+      "startLine": 239,
+      "endLine": 249,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveNativeChartFractionEmbedding",
+        "LinearStudy.projective_native_chart_ring_equiv_compatible"
       ]
     },
     "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff": {
@@ -60464,33 +61342,22 @@
     },
     "LinearStudy.projective_native_chart_ring_equiv": {
       "path": "Linear/NativeProjectiveChart.lean",
-      "startLine": 16,
-      "endLine": 127,
-      "lineCount": 112,
+      "startLine": 225,
+      "endLine": 237,
+      "lineCount": 13,
       "dependencies": [
         "LinearStudy.CoordinateRing",
         "LinearStudy.IntegralProjectiveEquations",
         "LinearStudy.IntegralProjectiveEquations.affineIdeal",
         "LinearStudy.IntegralProjectiveEquations.ideal",
-        "LinearStudy.IntegralProjectiveEquations.prime",
         "LinearStudy.IntegralProjectiveEquations.zeroSet",
         "LinearStudy.ProjectivePoint",
-        "LinearStudy.affineChartPolynomialMap",
-        "LinearStudy.awayFractionEmbedding",
-        "LinearStudy.awayFractionEmbedding_algebraMap",
-        "LinearStudy.awayFractionEmbedding_injective",
-        "LinearStudy.coordinateRatioPolynomialMap",
-        "LinearStudy.coordinateRatioPolynomialMap_homogeneous",
         "LinearStudy.homogeneousQuotientGrading",
         "LinearStudy.homogeneousQuotientPiece",
-        "LinearStudy.homogeneousQuotientPiece_mem_iff",
         "LinearStudy.normalizedProjectivePoint",
         "LinearStudy.projectiveChartCoordinateEmbedding",
-        "LinearStudy.projectiveChartCoordinateEmbedding_injective",
-        "LinearStudy.projectiveChartCoordinateEmbedding_mk",
-        "LinearStudy.projectiveConeFractionCoordinates",
-        "LinearStudy.projectiveConeFractionCoordinates_aeval",
-        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero"
+        "LinearStudy.projectiveNativeChartFractionEmbedding",
+        "LinearStudy.projective_native_chart_ring_equiv_compatible"
       ]
     },
     "LinearStudy.dualGenerator_annihilates": {
@@ -65677,6 +66544,26 @@
         "LinearStudy.HomogeneousEndomorphism.mk"
       ]
     },
+    "LinearStudy.projectiveNativeChartDenominatorOpenIso": {
+      "path": "Linear/NativeProjectiveChartPullback.lean",
+      "startLine": 210,
+      "endLine": 222,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveNativeChartDenominatorOpen",
+        "LinearStudy.projectiveNativeChartSchemeIso"
+      ]
+    },
     "LinearStudy.nilpotentPowerSeriesEval": {
       "path": "Linear/NilpotentEvaluation.lean",
       "startLine": 27,
@@ -65878,6 +66765,27 @@
         "LinearStudy.doublePointPowerSeriesEquiv_mk",
         "LinearStudy.doublePoint_actual_jacobian_generates",
         "LinearStudy.firstJet"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartRingEquiv_fraction_comp": {
+      "path": "Linear/NativeProjectiveChart.lean",
+      "startLine": 251,
+      "endLine": 259,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveNativeChartFractionEmbedding",
+        "LinearStudy.projectiveNativeChartRingEquiv",
+        "LinearStudy.projective_native_chart_ring_equiv_compatible"
       ]
     },
     "LinearStudy.exists_common_normal_coordinate_matrix": {
@@ -66496,6 +67404,35 @@
         "LinearStudy.normalizedProjectivePoint",
         "LinearStudy.projectiveChartCoordinateEmbedding",
         "LinearStudy.projectiveConeFractionCoordinates"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartPullback_homogeneous_mk": {
+      "path": "Linear/NativeProjectiveChartPullback.lean",
+      "startLine": 78,
+      "endLine": 100,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_homogeneous_pullback",
+        "LinearStudy.projectiveNativeChartHomogeneousElement",
+        "LinearStudy.projectiveNativeChartPullback",
+        "LinearStudy.projectiveNativeChartRingEquiv",
+        "LinearStudy.projectiveNativeChartRingEquiv_homogeneous_mk"
       ]
     },
     "LinearStudy.nestedPowerSeriesEquiv": {
@@ -67684,6 +68621,27 @@
         "LinearStudy.projectiveRatioField_exists_hilbert_degree_power"
       ]
     },
+    "LinearStudy.projectiveNativeChartFractionEmbedding_injective": {
+      "path": "Linear/NativeProjectiveChart.lean",
+      "startLine": 54,
+      "endLine": 72,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding_injective",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveNativeChartFractionEmbedding"
+      ]
+    },
     "LinearStudy.projectiveCoordinateHilbert_pullback_le": {
       "path": "Linear/ProjectiveGradedPullback.lean",
       "startLine": 62,
@@ -67954,6 +68912,28 @@
         "LinearStudy.CoordinateVector",
         "LinearStudy.HomogeneousEndomorphism",
         "LinearStudy.HomogeneousEndomorphism.casesOn"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartPullback": {
+      "path": "Linear/NativeProjectiveChartPullback.lean",
+      "startLine": 61,
+      "endLine": 76,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveNativeChartRingEquiv"
       ]
     },
     "IsLocalRing.depth_eq_of_linearEquiv": {
@@ -68602,8 +69582,8 @@
     },
     "LinearStudy.projective_native_chart_scheme_iso": {
       "path": "Linear/NativeProjectiveChart.lean",
-      "startLine": 131,
-      "endLine": 148,
+      "startLine": 291,
+      "endLine": 308,
       "lineCount": 18,
       "dependencies": [
         "LinearStudy.IntegralProjectiveEquations",
@@ -68760,6 +69740,30 @@
       "lineCount": 22,
       "dependencies": [
         "LinearStudy.polynomialZeroLocusPointEquiv"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartFractionEmbedding_homogeneous_mk": {
+      "path": "Linear/NativeProjectiveChart.lean",
+      "startLine": 74,
+      "endLine": 120,
+      "lineCount": 47,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_aeval",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveNativeChartFractionEmbedding",
+        "LinearStudy.projectiveNativeChartHomogeneousElement"
       ]
     },
     "LinearStudy.parameterQuotient_finiteOverComplex": {
@@ -69951,6 +70955,19 @@
       "endLine": 17,
       "lineCount": 7,
       "dependencies": []
+    },
+    "LinearStudy.projectiveNativeChartHomogeneousElement": {
+      "path": "Linear/NativeProjectiveChart.lean",
+      "startLine": 38,
+      "endLine": 52,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
     },
     "isCohenMacaulayLocalRing_iff": {
       "path": "Linear/Vendor/CM/CohenMacaulayBasic.lean",
@@ -71716,6 +72733,28 @@
         "LinearStudy.projectiveCoordinateRatioField"
       ]
     },
+    "LinearStudy.projectiveNativeChartSchemeMap": {
+      "path": "Linear/NativeProjectiveChartPullback.lean",
+      "startLine": 122,
+      "endLine": 135,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveNativeChartSchemeIso"
+      ]
+    },
     "LinearStudy.projectiveChartFractionEmbedding": {
       "path": "Linear/ProjectiveChartFractionField.lean",
       "startLine": 60,
@@ -72430,6 +73469,29 @@
         "LinearStudy.homogeneousQuotientComponent_mk"
       ]
     },
+    "LinearStudy.projectiveNativeChartSchemeMap_chart_comp": {
+      "path": "Linear/NativeProjectiveChartPullback.lean",
+      "startLine": 137,
+      "endLine": 149,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveNativeChartSchemeIso",
+        "LinearStudy.projectiveNativeChartSchemeMap"
+      ]
+    },
     "LinearStudy.socle_linear_evaluation_exists": {
       "path": "Linear/LocalResidueEvaluation.lean",
       "startLine": 25,
@@ -72863,6 +73925,23 @@
         "LinearStudy.linearSectionSourceForms",
         "LinearStudy.projectiveLinearSection",
         "LinearStudy.projectiveLinearSectionForms"
+      ]
+    },
+    "LinearStudy.projectiveNativeChartFractionEmbedding": {
+      "path": "Linear/NativeProjectiveChart.lean",
+      "startLine": 16,
+      "endLine": 36,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint"
       ]
     },
     "LinearStudy.projectiveChartOpenPolynomialMap_ideal": {
@@ -73435,6 +74514,32 @@
         "LinearStudy.ofList_smul_top"
       ]
     },
+    "LinearStudy.projectiveNativeChartPullback_map_span": {
+      "path": "Linear/NativeProjectiveChartPullback.lean",
+      "startLine": 151,
+      "endLine": 194,
+      "lineCount": 44,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveNativeChartHomogeneousElement",
+        "LinearStudy.projectiveNativeChartPullback",
+        "LinearStudy.projectiveNativeChartPullback_homogeneous_mk"
+      ]
+    },
     "LinearStudy.polynomialSmoothLocalQuotientReduction": {
       "path": "Linear/PolynomialSmoothReduction.lean",
       "startLine": 131,
@@ -73949,7 +75054,8 @@
       "pulled-section-whole-fiber-union",
       "actual-family-supported-functional",
       "native-projective-chart-scheme",
-      "canonical-embedding"
+      "canonical-embedding",
+      "native-projective-pullback-scheme"
     ],
     "setup": [
       "<p>设 f:ℙⁿ→ℙⁿ 为满射自态射，代数次数 q&gt;1；V⊆ℙⁿ 为整的闭子簇，且 f⁻¹(V)=V（集合意义）。当前 Lean 目标用复数域上的齐次素理想、无基点齐次坐标组及真实 projective points 表述。</p>",
@@ -73982,28 +75088,81 @@
       "relation",
       "canonical-embedding",
       "lifting",
-      "coordinates",
-      "iteration",
-      "intersection",
       "general-relative-jac",
+      "lifted-action-compatible",
+      "lifted-presentation",
       "arbitrary-jacobian-nonzero",
       "arbitrary-socle-generation",
+      "weights",
+      "local-residue-pairing",
+      "fiber-jacobian-annihilator",
+      "polynomial-global-pairing",
+      "polynomial-fiber-diagonal",
+      "global-diagonal-normalization",
       "polynomial-normalized-trace",
       "polynomial-diagonal-functional",
-      "whole-fiber-chosen-representatives",
+      "polynomial-difference-degree",
+      "polynomial-origin-finite",
+      "affine-weighted-relation",
+      "projective-highest-regular",
+      "common-theta",
+      "common-formal-normal",
+      "smooth-locus-common-normal",
+      "smooth-target-first-order",
+      "smooth-unramified-parameters",
+      "rational-formal-equations",
+      "rational-smooth-socle",
+      "projective-smooth-common-coordinates",
+      "projective-common-smooth-chart",
+      "projective-cone-generic-unramified",
+      "projective-ratio-field-unramified",
+      "projective-chart-function-field",
+      "projective-chart-unramified-open",
+      "projective-chart-local-parameters",
+      "projective-ambient-unramified-point",
+      "projective-good-affine-coordinates",
+      "projective-local-parameters-constructed",
+      "projective-target-good-open",
+      "projective-whole-fiber-good-target",
+      "projective-whole-reduced-fiber-count",
+      "projective-general-tensor-fibers",
+      "projective-chart-finite-free",
+      "projective-general-field-degree",
+      "coordinate-graded-algebra",
+      "projective-hilbert-pullback",
+      "coordinate-hilbert-polynomial",
+      "coordinate-hilbert-growth",
+      "coordinate-generic-growth-comparison",
+      "cone-original-field-growth-degree",
+      "rational-scaled-power-degree",
+      "whole-iterate-fiber-hilbert-power",
+      "whole-iterate-fiber-krull-power",
+      "whole-fiber-actual-common-coordinates",
+      "whole-fiber-same-linear-target",
+      "same-polynomial-jacobian-local-bridge",
+      "original-whole-fiber-centered-local-inputs",
+      "original-iterates-common-jacobian-socles",
+      "original-iterates-jacobian-system",
+      "actual-zero-locus-residue-relation",
+      "original-fiber-arbitrary-representatives",
       "simultaneous-whole-point-relations",
-      "actual-family-supported-functional",
       "canonical-global-generation",
       "canonical-generic-injection",
       "exact-factor",
-      "nonzero-lift",
       "point-dual",
+      "coordinates",
+      "iteration",
+      "intersection",
+      "whole-fiber-chosen-representatives",
+      "actual-family-supported-functional",
+      "nonzero-lift",
       "linear-section-radical-equation-fibers",
       "native-projective-chart-scheme",
       "original-linear-normalization",
       "original-linear-section-growth",
       "simultaneous-original-fiber-relations",
-      "pulled-section-whole-fiber-union"
+      "pulled-section-whole-fiber-union",
+      "native-projective-pullback-scheme"
     ]
   },
   "nodes": [
@@ -90320,8 +91479,8 @@
         "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
       ],
       "formalType": "LinearStudy.projective_native_chart_ring_equiv {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  Nonempty\n    (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal ≃+*\n      HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n        ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)))",
-      "sha256": "0ca2a35d3e54b627cb52493168575419bee20d03d5a0052a20964d900c33816e",
-      "lines": 112,
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lines": 13,
       "richStatement": true,
       "x": 30,
       "y": 60
@@ -90362,7 +91521,7 @@
         "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
       ],
       "formalType": "LinearStudy.projective_native_chart_scheme_iso {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  Nonempty\n    (↑(AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n          ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))) ≅\n      AlgebraicGeometry.Spec ↧(MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal))",
-      "sha256": "0ca2a35d3e54b627cb52493168575419bee20d03d5a0052a20964d900c33816e",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
       "lines": 18,
       "richStatement": true,
       "x": 30,
@@ -90497,6 +91656,218 @@
       "paperProofStatus": "open",
       "paperSourceLine": 374,
       "paperCard": true
+    },
+    {
+      "id": "native-projective-chart-compatible",
+      "titles": [
+        "原 Proj 图表的坐标兼容同构",
+        "Coordinate-compatible native Proj chart equivalence"
+      ],
+      "title": "原 Proj 图表的坐标兼容同构",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/NativeProjectiveChart.lean",
+      "decl": "LinearStudy.projective_native_chart_ring_equiv_compatible",
+      "declaration": "LinearStudy.projective_native_chart_ring_equiv_compatible",
+      "deps": [
+        "native-projective-chart-ring"
+      ],
+      "setup": [
+        "<p>原整 V 的第一坐标图表；同一去齐次商环与原分次坐标商。</p>",
+        "<p>Original integral V first-coordinate chart; the same affine quotient and original graded quotient.</p>"
+      ],
+      "result": [
+        "<p>构造环同构 e，且原分式嵌入满足 θ∘e=ι。选择同构保留原坐标，不引入另一份 V。</p>",
+        "<p>Construct a ring equivalence e with original fraction embeddings θ∘e=ι. The chosen equivalence preserves original coordinates and does not replace V.</p>"
+      ],
+      "compactSetup": [
+        "原整 V 的第一坐标图表；同一去齐次商环与原分次坐标商。",
+        "Original integral V first-coordinate chart; the same affine quotient and original graded quotient."
+      ],
+      "compactResult": [
+        "构造环同构 e，且原分式嵌入满足 θ∘e=ι。选择同构保留原坐标，不引入另一份 V。",
+        "Construct a ring equivalence e with original fraction embeddings θ∘e=ι. The chosen equivalence preserves original coordinates and does not replace V."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projective_native_chart_ring_equiv_compatible {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ∃ ec,\n    (LinearStudy.projectiveNativeChartFractionEmbedding V x hx).comp ec.toRingHom =\n      (LinearStudy.projectiveChartCoordinateEmbedding V x hx).toRingHom",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lines": 102,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "native-projective-chart-homogeneous",
+      "titles": [
+        "原齐次分式的精确图表公式",
+        "Exact native chart formula for homogeneous fractions"
+      ],
+      "title": "原齐次分式的精确图表公式",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/NativeProjectiveChart.lean",
+      "decl": "LinearStudy.projectiveNativeChartRingEquiv_homogeneous_mk",
+      "declaration": "LinearStudy.projectiveNativeChartRingEquiv_homogeneous_mk",
+      "deps": [
+        "native-projective-chart-compatible"
+      ],
+      "setup": [
+        "<p>同一原图表及次数 m 的齐次多项式 H。</p>",
+        "<p>The same original chart and a degree-m homogeneous polynomial H.</p>"
+      ],
+      "result": [
+        "<p>原去齐次 H 的类精确对应 native H/X₀ᵐ。公式与原分式嵌入兼容。</p>",
+        "<p>The original dehomogenized H class maps exactly to native H/X₀ᵐ, compatibly with the original fraction embeddings.</p>"
+      ],
+      "compactSetup": [
+        "同一原图表及次数 m 的齐次多项式 H。",
+        "The same original chart and a degree-m homogeneous polynomial H."
+      ],
+      "compactResult": [
+        "原去齐次 H 的类精确对应 native H/X₀ᵐ。公式与原分式嵌入兼容。",
+        "The original dehomogenized H class maps exactly to native H/X₀ᵐ, compatibly with the original fraction embeddings."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projectiveNativeChartRingEquiv_homogeneous_mk {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (m : ℕ) (H : LinearStudy.CoordinateRing n)\n  (hH : MvPolynomial.IsHomogeneous H m) :\n  (LinearStudy.projectiveNativeChartRingEquiv V x hx)\n      ((Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap H)) =\n    LinearStudy.projectiveNativeChartHomogeneousElement V m H hH",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "lines": 26,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "native-projective-pullback-formula",
+      "titles": [
+        "原 f 的 native 图表拉回公式",
+        "Native chart pullback formula for original f"
+      ],
+      "title": "原 f 的 native 图表拉回公式",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "decl": "LinearStudy.projectiveNativeChartPullback_homogeneous_mk",
+      "declaration": "LinearStudy.projectiveNativeChartPullback_homogeneous_mk",
+      "deps": [
+        "native-projective-chart-homogeneous",
+        "native-projective-chart-scheme"
+      ],
+      "setup": [
+        "<p>原满射 f、全不变整 V；非空第一坐标图表；其实际 f₀ 分母开集。</p>",
+        "<p>Original surjective f, totally invariant integral V, nonempty first chart and its actual f₀ denominator open.</p>"
+      ],
+      "result": [
+        "<p>构造实际环拉回，H/X₀ᵐ 精确变为 H(f₀,…,fₙ)/f₀ᵐ；仍限于此图表。</p>",
+        "<p>Construct the actual ring pullback taking H/X₀ᵐ exactly to H(f₀,…,fₙ)/f₀ᵐ; the result is still chart-local.</p>"
+      ],
+      "compactSetup": [
+        "原满射 f、全不变整 V；非空第一坐标图表；其实际 f₀ 分母开集。",
+        "Original surjective f, totally invariant integral V, nonempty first chart and its actual f₀ denominator open."
+      ],
+      "compactResult": [
+        "构造实际环拉回，H/X₀ᵐ 精确变为 H(f₀,…,fₙ)/f₀ᵐ；仍限于此图表。",
+        "Construct the actual ring pullback taking H/X₀ᵐ exactly to H(f₀,…,fₙ)/f₀ᵐ; the result is still chart-local."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projectiveNativeChartPullback_homogeneous_mk {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)\n  (m : ℕ) (H : LinearStudy.CoordinateRing n) (hH : MvPolynomial.IsHomogeneous H m) :\n  (LinearStudy.projectiveNativeChartPullback f V hq hf hV x hx)\n      (LinearStudy.projectiveNativeChartHomogeneousElement V m H hH) =\n    IsLocalization.Away.invSelf (LinearStudy.projectiveChartDenominator f V) ^ m *\n      (algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)\n          (Localization.Away (LinearStudy.projectiveChartDenominator f V)))\n        ((Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap ((MvPolynomial.aeval f.forms) H)))",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 23,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "native-projective-pullback-ideal",
+      "titles": [
+        "原齐次定义理想的精确拉回",
+        "Exact pullback of original homogeneous defining ideals"
+      ],
+      "title": "原齐次定义理想的精确拉回",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "decl": "LinearStudy.projectiveNativeChartPullback_map_span",
+      "declaration": "LinearStudy.projectiveNativeChartPullback_map_span",
+      "deps": [
+        "native-projective-pullback-formula"
+      ],
+      "setup": [
+        "<p>原 f,V 的同一实际拉回；任意一族齐次方程 Hᵢ，各次数 mᵢ。</p>",
+        "<p>The same actual original-f,V pullback and any family of homogeneous equations Hᵢ of degrees mᵢ.</p>"
+      ],
+      "result": [
+        "<p>native span(Hᵢ/X₀ᵐⁱ) 的像等于实际代入方程 span(Hᵢ(f))，包含幂零结构。不是仅零点集或根理想相等；全局共同零概形仍待证。</p>",
+        "<p>The image of native span(Hᵢ/X₀ᵐⁱ) equals the actual substituted-equation ideal span(Hᵢ(f)), including nilpotent structure. This is exact ideal equality, not just points or radicals. The global common-zero scheme remains open.</p>"
+      ],
+      "compactSetup": [
+        "原 f,V 的同一实际拉回；任意一族齐次方程 Hᵢ，各次数 mᵢ。",
+        "The same actual original-f,V pullback and any family of homogeneous equations Hᵢ of degrees mᵢ."
+      ],
+      "compactResult": [
+        "native span(Hᵢ/X₀ᵐⁱ) 的像等于实际代入方程 span(Hᵢ(f))，包含幂零结构。不是仅零点集或根理想相等；全局共同零概形仍待证。",
+        "The image of native span(Hᵢ/X₀ᵐⁱ) equals the actual substituted-equation ideal span(Hᵢ(f)), including nilpotent structure. This is exact ideal equality, not just points or radicals. The global common-zero scheme remains open."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projectiveNativeChartPullback_map_span.{u_1} {n : ℕ} {ι : Type u_1}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (m : ι → ℕ) (H : ι → LinearStudy.CoordinateRing n)\n  (hH : ∀ (i : ι), MvPolynomial.IsHomogeneous (H i) (m i)) :\n  Ideal.map (LinearStudy.projectiveNativeChartPullback f V hq hf hV x hx)\n      (Ideal.span (Set.range fun i => LinearStudy.projectiveNativeChartHomogeneousElement V (m i) (H i) ⋯)) =\n    Ideal.span\n      (Set.range fun i =>\n        (algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)\n            (Localization.Away (LinearStudy.projectiveChartDenominator f V)))\n          ((Ideal.Quotient.mk V.affineIdeal)\n            (LinearStudy.affineChartPolynomialMap ((MvPolynomial.aeval f.forms) (H i)))))",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 44,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "native-projective-pullback-scheme",
+      "titles": [
+        "原 native 开子概形上的 f 拉回",
+        "Original-f pullback on a native open subscheme"
+      ],
+      "title": "原 native 开子概形上的 f 拉回",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/NativeProjectiveChartPullback.lean",
+      "decl": "LinearStudy.projectiveNativeChartSchemeMap_native_comp",
+      "declaration": "LinearStudy.projectiveNativeChartSchemeMap_native_comp",
+      "deps": [
+        "native-projective-pullback-ideal",
+        "native-projective-chart-scheme"
+      ],
+      "setup": [
+        "<p>原 Proj 第一图表中的实际分母开子概形，及同一原 f 的环拉回。</p>",
+        "<p>The actual denominator open subscheme inside the original first Proj chart, and the same original-f ring pullback.</p>"
+      ],
+      "result": [
+        "<p>构造此开子概形到原 native 图表的概形态射，其 native Spec 图表交换式由实际环拉回证明。所有图表粘合、全局纤维交与横截性仍待证。</p>",
+        "<p>Construct a scheme morphism from this open subscheme to the original native chart. Its native Spec comparison commutes by the actual ring pullback. All-chart gluing, global fiber intersection and transversality remain open.</p>"
+      ],
+      "compactSetup": [
+        "原 Proj 第一图表中的实际分母开子概形，及同一原 f 的环拉回。",
+        "The actual denominator open subscheme inside the original first Proj chart, and the same original-f ring pullback."
+      ],
+      "compactResult": [
+        "构造此开子概形到原 native 图表的概形态射，其 native Spec 图表交换式由实际环拉回证明。所有图表粘合、全局纤维交与横截性仍待证。",
+        "Construct a scheme morphism from this open subscheme to the original native chart. Its native Spec comparison commutes by the actual ring pullback. All-chart gluing, global fiber intersection and transversality remain open."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projectiveNativeChartSchemeMap_native_comp {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  have hg := ⋯;\n  CategoryTheory.CategoryStruct.comp (LinearStudy.projectiveNativeChartSchemeMap f V hq hf hV x hx)\n      (AlgebraicGeometry.Proj.basicOpenIsoSpec (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n          ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)) hg Nat.zero_lt_one).hom =\n    AlgebraicGeometry.Spec.map (CommRingCat.ofHom (LinearStudy.projectiveNativeChartPullback f V hq hf hV x hx))",
+      "sha256": "8a18f49ec9a453feee5dc42269890d8bbc4f8da64baf58e25035fdfae5b16c82",
+      "lines": 29,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
     }
   ],
   "rootSteps": [
@@ -90512,7 +91883,8 @@
     "pulled-section-whole-fiber-union",
     "actual-family-supported-functional",
     "native-projective-chart-scheme",
-    "canonical-embedding"
+    "canonical-embedding",
+    "native-projective-pullback-scheme"
   ],
   "paperLemmas": {
     "manuscript": {
@@ -90550,11 +91922,149 @@
       }
     ],
     "allOriginalLemmasIndexed": true,
+    "overviewCompanions": {
+      "jacobian": [
+        "general-relative-jac",
+        "lifted-action-compatible",
+        "lifted-presentation",
+        "arbitrary-jacobian-nonzero",
+        "arbitrary-socle-generation"
+      ],
+      "relation": [
+        "jacobian",
+        "weights",
+        "local-residue-pairing",
+        "fiber-jacobian-annihilator",
+        "polynomial-global-pairing",
+        "polynomial-fiber-diagonal",
+        "global-diagonal-normalization",
+        "polynomial-normalized-trace",
+        "polynomial-diagonal-functional",
+        "polynomial-difference-degree",
+        "polynomial-origin-finite",
+        "affine-weighted-relation",
+        "projective-highest-regular",
+        "common-theta",
+        "common-formal-normal",
+        "smooth-locus-common-normal",
+        "smooth-target-first-order",
+        "smooth-unramified-parameters",
+        "rational-formal-equations",
+        "rational-smooth-socle",
+        "projective-smooth-common-coordinates",
+        "projective-common-smooth-chart",
+        "projective-cone-generic-unramified",
+        "projective-ratio-field-unramified",
+        "projective-chart-function-field",
+        "projective-chart-unramified-open",
+        "projective-chart-local-parameters",
+        "projective-ambient-unramified-point",
+        "projective-good-affine-coordinates",
+        "projective-local-parameters-constructed",
+        "projective-target-good-open",
+        "projective-whole-fiber-good-target",
+        "projective-whole-reduced-fiber-count",
+        "projective-general-tensor-fibers",
+        "projective-chart-finite-free",
+        "projective-general-field-degree",
+        "coordinate-graded-algebra",
+        "projective-hilbert-pullback",
+        "coordinate-hilbert-polynomial",
+        "coordinate-hilbert-growth",
+        "coordinate-generic-growth-comparison",
+        "cone-original-field-growth-degree",
+        "rational-scaled-power-degree",
+        "whole-iterate-fiber-hilbert-power",
+        "whole-iterate-fiber-krull-power",
+        "whole-fiber-actual-common-coordinates",
+        "whole-fiber-same-linear-target",
+        "same-polynomial-jacobian-local-bridge",
+        "original-whole-fiber-centered-local-inputs",
+        "original-iterates-common-jacobian-socles",
+        "original-iterates-jacobian-system",
+        "actual-zero-locus-residue-relation",
+        "original-fiber-arbitrary-representatives",
+        "simultaneous-whole-point-relations"
+      ],
+      "canonical-embedding": [
+        "canonical-global-generation",
+        "canonical-generic-injection"
+      ],
+      "lifting": [
+        "canonical-embedding",
+        "relation",
+        "exact-factor",
+        "point-dual"
+      ]
+    },
+    "originalLemmaCardsPinnedDuringPagination": true,
     "defaultOverviewPriority": [
       "jacobian",
       "relation",
       "canonical-embedding",
       "lifting",
+      "general-relative-jac",
+      "lifted-action-compatible",
+      "lifted-presentation",
+      "arbitrary-jacobian-nonzero",
+      "arbitrary-socle-generation",
+      "weights",
+      "local-residue-pairing",
+      "fiber-jacobian-annihilator",
+      "polynomial-global-pairing",
+      "polynomial-fiber-diagonal",
+      "global-diagonal-normalization",
+      "polynomial-normalized-trace",
+      "polynomial-diagonal-functional",
+      "polynomial-difference-degree",
+      "polynomial-origin-finite",
+      "affine-weighted-relation",
+      "projective-highest-regular",
+      "common-theta",
+      "common-formal-normal",
+      "smooth-locus-common-normal",
+      "smooth-target-first-order",
+      "smooth-unramified-parameters",
+      "rational-formal-equations",
+      "rational-smooth-socle",
+      "projective-smooth-common-coordinates",
+      "projective-common-smooth-chart",
+      "projective-cone-generic-unramified",
+      "projective-ratio-field-unramified",
+      "projective-chart-function-field",
+      "projective-chart-unramified-open",
+      "projective-chart-local-parameters",
+      "projective-ambient-unramified-point",
+      "projective-good-affine-coordinates",
+      "projective-local-parameters-constructed",
+      "projective-target-good-open",
+      "projective-whole-fiber-good-target",
+      "projective-whole-reduced-fiber-count",
+      "projective-general-tensor-fibers",
+      "projective-chart-finite-free",
+      "projective-general-field-degree",
+      "coordinate-graded-algebra",
+      "projective-hilbert-pullback",
+      "coordinate-hilbert-polynomial",
+      "coordinate-hilbert-growth",
+      "coordinate-generic-growth-comparison",
+      "cone-original-field-growth-degree",
+      "rational-scaled-power-degree",
+      "whole-iterate-fiber-hilbert-power",
+      "whole-iterate-fiber-krull-power",
+      "whole-fiber-actual-common-coordinates",
+      "whole-fiber-same-linear-target",
+      "same-polynomial-jacobian-local-bridge",
+      "original-whole-fiber-centered-local-inputs",
+      "original-iterates-common-jacobian-socles",
+      "original-iterates-jacobian-system",
+      "actual-zero-locus-residue-relation",
+      "original-fiber-arbitrary-representatives",
+      "simultaneous-whole-point-relations",
+      "canonical-global-generation",
+      "canonical-generic-injection",
+      "exact-factor",
+      "point-dual",
       "coordinates",
       "iteration",
       "intersection",
@@ -90572,7 +92082,8 @@
       "nonzero-lift",
       "point-dual",
       "linear-section-radical-equation-fibers",
-      "native-projective-chart-scheme"
+      "native-projective-chart-scheme",
+      "native-projective-pullback-scheme"
     ],
     "mainTheoremVerified": false,
     "groupingScope": "Original lemmas are ordinary cards; support cards and module covers remain peers in the overview. Reading routes are separate from Lean dependencies."
