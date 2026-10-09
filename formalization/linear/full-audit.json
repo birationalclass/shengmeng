@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2273,
-  "verifiedTheorems": 1676,
-  "definitions": 401,
+  "audited": 2289,
+  "verifiedTheorems": 1686,
+  "definitions": 407,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -19306,6 +19306,306 @@
       ]
     },
     {
+      "declaration": "LinearStudy.nativeCoextensionOriginalDualEquiv_upper_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionLocalizationUpper.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeCoextensionOriginalDualEquiv_upper_smul.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))\n  (b x : S) :\n  (LinearStudy.nativeCoextensionOriginalDualEquiv (b • ell)) x =\n    (LinearStudy.nativeCoextensionOriginalDualEquiv ell) (x * b)",
+      "sha256": "ea80d0dd451826bc61a71e8dde666f0c0d45867817f931870f4d54a1ba15de61",
+      "lines": 9,
+      "moduleLineCount": 89,
+      "startLine": 18,
+      "endLine": 26,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.nativeCoextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeCoextensionLocalizationEquiv_upper_smul_original",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionLocalizationUpper.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeCoextensionLocalizationEquiv_upper_smul_original.{u} {R S Q : Type u} [CommRing R] [CommRing S]\n  [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) :\n  let S' := LocalizedModule P S;\n  ∀ (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))\n    (b : S),\n    (LinearStudy.finiteNativeCoextensionLocalizationEquiv P hinj) (LocalizedModule.mk (b • ell) 1) =\n      (LinearStudy.finiteNativeCoextensionLocalizationEquiv P hinj) (LocalizedModule.mk ell 1) ∘ₗ\n        LinearMap.mulRight Q (LocalizedModule.mk b 1)",
+      "sha256": "ea80d0dd451826bc61a71e8dde666f0c0d45867817f931870f4d54a1ba15de61",
+      "lines": 27,
+      "moduleLineCount": 89,
+      "startLine": 28,
+      "endLine": 54,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv_apply_mk",
+        "LinearStudy.functionalSourceLocalizationRestriction",
+        "LinearStudy.functionalSourceLocalizationRestriction_bijective",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv_upper_smul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv_upper_smul_original",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionLocalizationUpper.lean",
+      "line": 58,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv_upper_smul_original.{u} {R S Q : Type u} [CommRing R]\n  [CommRing S] [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) :\n  have S' := LocalizedModule P S;\n  ∀ (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))\n    (b : S),\n    (LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv P hinj) (LocalizedModule.mk (b • ell) 1) =\n      LocalizedModule.mk b 1 •\n        (LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv P hinj) (LocalizedModule.mk ell 1)",
+      "sha256": "ea80d0dd451826bc61a71e8dde666f0c0d45867817f931870f4d54a1ba15de61",
+      "lines": 32,
+      "moduleLineCount": 89,
+      "startLine": 56,
+      "endLine": 87,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv",
+        "LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv_apply_original",
+        "LinearStudy.functionalSourceLocalizationRestriction",
+        "LinearStudy.functionalSourceLocalizationRestriction_bijective",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv_upper_smul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionLocalizedTarget.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv.{u} {R S Q : Type u} [CommRing R] [CommRing S] [CommRing Q]\n  [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) :\n  let S' := LocalizedModule P S;\n  LocalizedModule P\n      ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[Q]\n    ↑((ModuleCat.restrictScalars (algebraMap Q S')).obj ((ModuleCat.coextendScalars (algebraMap Q S')).obj ↧Q))",
+      "sha256": "76770797d672d17b6a404faf853e2ee3a420cc84ddcbd8e08544d6646b5bcce4",
+      "lines": 17,
+      "moduleLineCount": 56,
+      "startLine": 17,
+      "endLine": 33,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv_apply_original",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionLocalizedTarget.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv_apply_original.{u} {R S Q : Type u} [CommRing R] [CommRing S]\n  [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) :\n  let S' := LocalizedModule P S;\n  ∀ (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))\n    (x : S),\n    (LinearStudy.nativeCoextensionOriginalDualEquiv\n          ((LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv P hinj) (LocalizedModule.mk ell 1)))\n        (LocalizedModule.mk x 1) =\n      (algebraMap R Q) ((LinearStudy.nativeCoextensionOriginalDualEquiv ell) x)",
+      "sha256": "76770797d672d17b6a404faf853e2ee3a420cc84ddcbd8e08544d6646b5bcce4",
+      "lines": 20,
+      "moduleLineCount": 56,
+      "startLine": 35,
+      "endLine": 54,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv_apply_mk",
+        "LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionSemilinearLocalization.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap.{u} {R S Q : Type u} [CommRing R] [CommRing S] [CommRing Q]\n  [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) :\n  let S' := LocalizedModule P S;\n  ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R) →ₛₗ[LocalizedModule.numeratorRingHom]\n    ↑((ModuleCat.coextendScalars (algebraMap Q S')).obj ↧Q)",
+      "sha256": "92edfbde40bdeb4259b5aa3cdacfe75156944d7d42502e03b18e876ea7a68301",
+      "lines": 27,
+      "moduleLineCount": 62,
+      "startLine": 17,
+      "endLine": 43,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap_apply_original",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionSemilinearLocalization.lean",
+      "line": 46,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap_apply_original.{u} {R S Q : Type u} [CommRing R]\n  [CommRing S] [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) :\n  let S' := LocalizedModule P S;\n  ∀ (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) (x : S),\n    (LinearStudy.nativeCoextensionOriginalDualEquiv\n          ((LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap P hinj) ell))\n        (LocalizedModule.mk x 1) =\n      (algebraMap R Q) ((LinearStudy.nativeCoextensionOriginalDualEquiv ell) x)",
+      "sha256": "92edfbde40bdeb4259b5aa3cdacfe75156944d7d42502e03b18e876ea7a68301",
+      "lines": 16,
+      "moduleLineCount": 62,
+      "startLine": 45,
+      "endLine": 60,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv_apply_original",
+        "LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionUpperLocalizationEquiv.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv.{u} {R S Q : Type u} [CommRing R] [CommRing S] [CommRing Q]\n  [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) :\n  let S' := LocalizedModule P S;\n  have D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;\n  LocalizedModule (Algebra.algebraMapSubmonoid S P) ↑D ≃ₗ[S'] ↑((ModuleCat.coextendScalars (algebraMap Q S')).obj ↧Q)",
+      "sha256": "f067b679550ccf7bc5ea3b77829a86283b8d1ace7a23c673842a9fa9811e537a",
+      "lines": 30,
+      "moduleLineCount": 84,
+      "startLine": 18,
+      "endLine": 47,
+      "lineCount": 30,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionUpperLocalizationMap",
+        "LinearStudy.finiteNativeCoextensionUpperLocalizationMap_isLocalizedModule",
+        "LinearStudy.nativeLocalizedUpperAlgebra",
+        "LinearStudy.nativeLocalizedUpperAlgebra_isLocalization"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv_apply_original",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionUpperLocalizationEquiv.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv_apply_original.{u} {R S Q : Type u} [CommRing R] [CommRing S]\n  [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) :\n  let S' := LocalizedModule P S;\n  ∀ (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) (x : S),\n    (LinearStudy.nativeCoextensionOriginalDualEquiv\n          ((LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv P hinj) (LocalizedModule.mk ell 1)))\n        (LocalizedModule.mk x 1) =\n      (algebraMap R Q) ((LinearStudy.nativeCoextensionOriginalDualEquiv ell) x)",
+      "sha256": "f067b679550ccf7bc5ea3b77829a86283b8d1ace7a23c673842a9fa9811e537a",
+      "lines": 34,
+      "moduleLineCount": 84,
+      "startLine": 49,
+      "endLine": 82,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap_apply_original",
+        "LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv",
+        "LinearStudy.finiteNativeCoextensionUpperLocalizationMap",
+        "LinearStudy.finiteNativeCoextensionUpperLocalizationMap_isLocalizedModule",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv",
+        "LinearStudy.nativeLocalizedUpperAlgebra",
+        "LinearStudy.nativeLocalizedUpperAlgebra_isLocalization"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeLocalizedAlgebra_base_map_commutes",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionUpperLocalizationProperty.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeLocalizedAlgebra_base_map_commutes.{u} {R S Q : Type u} [CommRing R] [CommRing S] [CommRing Q]\n  [Algebra R S] [Algebra R Q] (P : Submonoid R) [IsLocalization P Q] :\n  let S' := LocalizedModule P S;\n  ∀ (a : R), LocalizedModule.numeratorRingHom ((algebraMap R S) a) = (algebraMap Q S') ((algebraMap R Q) a)",
+      "sha256": "68c96a7d6602cded469a728335018ef020408624bd30ba06c86427ae5c9116b1",
+      "lines": 16,
+      "moduleLineCount": 107,
+      "startLine": 18,
+      "endLine": 33,
+      "lineCount": 16,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeCoextensionUpperLocalizationMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionUpperLocalizationProperty.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.finiteNativeCoextensionUpperLocalizationMap.{u} {R S Q : Type u} [CommRing R] [CommRing S] [CommRing Q]\n  [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) :\n  let S' := LocalizedModule P S;\n  ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R) →ₗ[S]\n    ↑((ModuleCat.restrictScalars LocalizedModule.numeratorRingHom).obj\n        ((ModuleCat.coextendScalars (algebraMap Q S')).obj ↧Q))",
+      "sha256": "68c96a7d6602cded469a728335018ef020408624bd30ba06c86427ae5c9116b1",
+      "lines": 18,
+      "moduleLineCount": 107,
+      "startLine": 35,
+      "endLine": 52,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeCoextensionUpperLocalizationMap_isLocalizedModule",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionUpperLocalizationProperty.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeCoextensionUpperLocalizationMap_isLocalizedModule.{u} {R S Q : Type u} [CommRing R] [CommRing S]\n  [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) :\n  have S' := LocalizedModule P S;\n  IsLocalizedModule (Algebra.algebraMapSubmonoid S P) (LinearStudy.finiteNativeCoextensionUpperLocalizationMap P hinj)",
+      "sha256": "68c96a7d6602cded469a728335018ef020408624bd30ba06c86427ae5c9116b1",
+      "lines": 52,
+      "moduleLineCount": 107,
+      "startLine": 54,
+      "endLine": 105,
+      "lineCount": 52,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv",
+        "LinearStudy.finiteNativeCoextensionUpperLocalizationMap",
+        "LinearStudy.nativeLocalizedAlgebra_base_map_commutes"
+      ]
+    },
+    {
       "declaration": "LinearStudy.nativeHomogeneousAwayModuleScalar",
       "kind": "def",
       "origin": "project",
@@ -19666,6 +19966,49 @@
         "LinearStudy.nativeHomogeneousAwayTwistMap",
         "LinearStudy.nativeHomogeneousAwayTwistMap_fraction",
         "LinearStudy.nativeHomogeneousAwayTwistModule"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeLocalizedUpperAlgebra",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeLocalizedUpperAlgebra.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeLocalizedUpperAlgebra.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] (P : Submonoid R) :\n  Algebra S (LocalizedModule P S)",
+      "sha256": "3d2c44703228ebbab9e73e1a9e2b704ff4037719467b3c042aee8f55e2df810c",
+      "lines": 4,
+      "moduleLineCount": 36,
+      "startLine": 14,
+      "endLine": 17,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.nativeLocalizedUpperAlgebra_isLocalization",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeLocalizedUpperAlgebra.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeLocalizedUpperAlgebra_isLocalization.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  (P : Submonoid R) : IsLocalization (Algebra.algebraMapSubmonoid S P) (LocalizedModule P S)",
+      "sha256": "3d2c44703228ebbab9e73e1a9e2b704ff4037719467b3c042aee8f55e2df810c",
+      "lines": 16,
+      "moduleLineCount": 36,
+      "startLine": 19,
+      "endLine": 34,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.nativeLocalizedUpperAlgebra"
       ]
     },
     {
@@ -43456,6 +43799,66 @@
         "LinearStudy.rationalPointPrime",
         "LinearStudy.rationalPolynomialChartMap",
         "LinearStudy.rationalPolynomialChartMap_point_kernel"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeDualCoordinateLocalization.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  have φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  have P := Submonoid.powers (MvPolynomial.X i);\n  let Q := Localization P;\n  let B' := LocalizedModule P B;\n  have D := (ModuleCat.coextendScalars (algebraMap A B)).obj ↧A;\n  LocalizedModule (Algebra.algebraMapSubmonoid B P) ↑D ≃ₗ[B'] ↑((ModuleCat.coextendScalars (algebraMap Q B')).obj ↧Q)",
+      "sha256": "38b0454df708fbdf9f0a5d527eac57a03fb9bcae320cb099c667f04f177b53ad",
+      "lines": 46,
+      "moduleLineCount": 105,
+      "startLine": 16,
+      "endLine": 61,
+      "lineCount": 46,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv",
+        "LinearStudy.nativeLocalizedUpperAlgebra",
+        "LinearStudy.nativeLocalizedUpperAlgebra_isLocalization",
+        "LinearStudy.projectiveLinearNormalizationMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv_apply_original",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeDualCoordinateLocalization.lean",
+      "line": 65,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv_apply_original {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let P := Submonoid.powers (MvPolynomial.X i);\n  let Q := Localization P;\n  let B' := LocalizedModule P B;\n  ∀ (ell : ↑((ModuleCat.coextendScalars (algebraMap A B)).obj ↧A)) (x : B),\n    (LinearStudy.nativeCoextensionOriginalDualEquiv\n          ((LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv V L hfinite i)\n            (LocalizedModule.mk ell 1)))\n        (LocalizedModule.mk x 1) =\n      (algebraMap A Q) ((LinearStudy.nativeCoextensionOriginalDualEquiv ell) x)",
+      "sha256": "38b0454df708fbdf9f0a5d527eac57a03fb9bcae320cb099c667f04f177b53ad",
+      "lines": 41,
+      "moduleLineCount": 105,
+      "startLine": 63,
+      "endLine": 103,
+      "lineCount": 41,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv_apply_original",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv",
+        "LinearStudy.nativeLocalizedUpperAlgebra",
+        "LinearStudy.nativeLocalizedUpperAlgebra_isLocalization",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv"
       ]
     },
     {

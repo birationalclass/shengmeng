@@ -930,3 +930,11 @@ public import Linear.FiniteFunctionalLocalizationEquiv
 public import Linear.FiniteFunctionalLocalizationFractions
 public import Linear.FiniteNativeCoextensionLocalization
 public import Linear.ProjectiveDualCoordinateLocalization
+
+public import Linear.NativeCoextensionLocalizedTarget
+public import Linear.NativeCoextensionLocalizationUpper
+public import Linear.NativeCoextensionSemilinearLocalization
+public import Linear.NativeCoextensionUpperLocalizationProperty
+public import Linear.NativeLocalizedUpperAlgebra
+public import Linear.NativeCoextensionUpperLocalizationEquiv
+public import Linear.ProjectiveNativeDualCoordinateLocalization

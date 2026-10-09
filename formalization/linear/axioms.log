@@ -4871,6 +4871,118 @@ LinearStudy.polynomial_equations_exact_degree_of_highest_zeroLocus.{u_1} {K : Ty
 'LinearStudy.polynomial_equations_exact_degree_of_highest_zeroLocus' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.nativeCoextensionOriginalDualEquiv_upper_smul.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+  (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+  (b x : S) :
+  (LinearStudy.nativeCoextensionOriginalDualEquiv (b • ell)) x =
+    (LinearStudy.nativeCoextensionOriginalDualEquiv ell) (x * b)
+'LinearStudy.nativeCoextensionOriginalDualEquiv_upper_smul' depends on axioms: [propext, Quot.sound]
+LinearStudy.finiteNativeCoextensionLocalizationEquiv_upper_smul_original.{u} {R S Q : Type u} [CommRing R] [CommRing S]
+  [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]
+  (hinj : Function.Injective ⇑(algebraMap R Q)) :
+  let S' := LocalizedModule P S;
+  ∀ (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+    (b : S),
+    (LinearStudy.finiteNativeCoextensionLocalizationEquiv P hinj) (LocalizedModule.mk (b • ell) 1) =
+      (LinearStudy.finiteNativeCoextensionLocalizationEquiv P hinj) (LocalizedModule.mk ell 1) ∘ₗ
+        LinearMap.mulRight Q (LocalizedModule.mk b 1)
+'LinearStudy.finiteNativeCoextensionLocalizationEquiv_upper_smul_original' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv_upper_smul_original.{u} {R S Q : Type u} [CommRing R]
+  [CommRing S] [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]
+  (hinj : Function.Injective ⇑(algebraMap R Q)) :
+  have S' := LocalizedModule P S;
+  ∀ (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+    (b : S),
+    (LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv P hinj) (LocalizedModule.mk (b • ell) 1) =
+      LocalizedModule.mk b 1 •
+        (LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv P hinj) (LocalizedModule.mk ell 1)
+'LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv_upper_smul_original' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv.{u} {R S Q : Type u} [CommRing R] [CommRing S] [CommRing Q]
+  [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]
+  (hinj : Function.Injective ⇑(algebraMap R Q)) :
+  let S' := LocalizedModule P S;
+  LocalizedModule P
+      ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[Q]
+    ↑((ModuleCat.restrictScalars (algebraMap Q S')).obj ((ModuleCat.coextendScalars (algebraMap Q S')).obj ↧Q))
+'LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv_apply_original.{u} {R S Q : Type u} [CommRing R] [CommRing S]
+  [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]
+  (hinj : Function.Injective ⇑(algebraMap R Q)) :
+  let S' := LocalizedModule P S;
+  ∀ (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+    (x : S),
+    (LinearStudy.nativeCoextensionOriginalDualEquiv
+          ((LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv P hinj) (LocalizedModule.mk ell 1)))
+        (LocalizedModule.mk x 1) =
+      (algebraMap R Q) ((LinearStudy.nativeCoextensionOriginalDualEquiv ell) x)
+'LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv_apply_original' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap.{u} {R S Q : Type u} [CommRing R] [CommRing S] [CommRing Q]
+  [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]
+  (hinj : Function.Injective ⇑(algebraMap R Q)) :
+  let S' := LocalizedModule P S;
+  ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R) →ₛₗ[LocalizedModule.numeratorRingHom]
+    ↑((ModuleCat.coextendScalars (algebraMap Q S')).obj ↧Q)
+'LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap_apply_original.{u} {R S Q : Type u} [CommRing R]
+  [CommRing S] [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]
+  (hinj : Function.Injective ⇑(algebraMap R Q)) :
+  let S' := LocalizedModule P S;
+  ∀ (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) (x : S),
+    (LinearStudy.nativeCoextensionOriginalDualEquiv
+          ((LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap P hinj) ell))
+        (LocalizedModule.mk x 1) =
+      (algebraMap R Q) ((LinearStudy.nativeCoextensionOriginalDualEquiv ell) x)
+'LinearStudy.finiteNativeCoextensionSemilinearLocalizationMap_apply_original' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv.{u} {R S Q : Type u} [CommRing R] [CommRing S] [CommRing Q]
+  [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]
+  (hinj : Function.Injective ⇑(algebraMap R Q)) :
+  let S' := LocalizedModule P S;
+  have D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+  LocalizedModule (Algebra.algebraMapSubmonoid S P) ↑D ≃ₗ[S'] ↑((ModuleCat.coextendScalars (algebraMap Q S')).obj ↧Q)
+'LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv_apply_original.{u} {R S Q : Type u} [CommRing R] [CommRing S]
+  [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]
+  (hinj : Function.Injective ⇑(algebraMap R Q)) :
+  let S' := LocalizedModule P S;
+  ∀ (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) (x : S),
+    (LinearStudy.nativeCoextensionOriginalDualEquiv
+          ((LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv P hinj) (LocalizedModule.mk ell 1)))
+        (LocalizedModule.mk x 1) =
+      (algebraMap R Q) ((LinearStudy.nativeCoextensionOriginalDualEquiv ell) x)
+'LinearStudy.finiteNativeCoextensionUpperLocalizationEquiv_apply_original' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.nativeLocalizedAlgebra_base_map_commutes.{u} {R S Q : Type u} [CommRing R] [CommRing S] [CommRing Q]
+  [Algebra R S] [Algebra R Q] (P : Submonoid R) [IsLocalization P Q] :
+  let S' := LocalizedModule P S;
+  ∀ (a : R), LocalizedModule.numeratorRingHom ((algebraMap R S) a) = (algebraMap Q S') ((algebraMap R Q) a)
+'LinearStudy.nativeLocalizedAlgebra_base_map_commutes' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteNativeCoextensionUpperLocalizationMap.{u} {R S Q : Type u} [CommRing R] [CommRing S] [CommRing Q]
+  [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]
+  (hinj : Function.Injective ⇑(algebraMap R Q)) :
+  let S' := LocalizedModule P S;
+  ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R) →ₗ[S]
+    ↑((ModuleCat.restrictScalars LocalizedModule.numeratorRingHom).obj
+        ((ModuleCat.coextendScalars (algebraMap Q S')).obj ↧Q))
+'LinearStudy.finiteNativeCoextensionUpperLocalizationMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteNativeCoextensionUpperLocalizationMap_isLocalizedModule.{u} {R S Q : Type u} [CommRing R] [CommRing S]
+  [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]
+  (hinj : Function.Injective ⇑(algebraMap R Q)) :
+  have S' := LocalizedModule P S;
+  IsLocalizedModule (Algebra.algebraMapSubmonoid S P) (LinearStudy.finiteNativeCoextensionUpperLocalizationMap P hinj)
+'LinearStudy.finiteNativeCoextensionUpperLocalizationMap_isLocalizedModule' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.nativeHomogeneousAwayModuleScalar.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]
   [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) :
   Module (HomogeneousLocalization.Away 𝓑 a) (LocalizedModule (Submonoid.powers a) D)
@@ -4949,6 +5061,12 @@ LinearStudy.nativeHomogeneousAwayTwist_fraction_mem.{u_1, u_2} {K : Type u_1} {S
   (hh : h ∈ 𝓑 (n + m)) :
   IsLocalization.mk' (Localization.Away a) h ⟨a ^ n, ⋯⟩ ∈ LinearStudy.nativeHomogeneousAwayTwistModule 𝓑 a m
 'LinearStudy.nativeHomogeneousAwayTwist_fraction_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeLocalizedUpperAlgebra.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] (P : Submonoid R) :
+  Algebra S (LocalizedModule P S)
+'LinearStudy.nativeLocalizedUpperAlgebra' depends on axioms: [propext, Quot.sound]
+LinearStudy.nativeLocalizedUpperAlgebra_isLocalization.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+  (P : Submonoid R) : IsLocalization (Algebra.algebraMapSubmonoid S P) (LocalizedModule P S)
+'LinearStudy.nativeLocalizedUpperAlgebra_isLocalization' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.projectiveNativeChartFractionEmbedding {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
   (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
   HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
@@ -11436,6 +11554,38 @@ LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters {n : ℕ}
           Algebra.IsSmoothAt ℂ (V.affinePoint y hy).asIdeal ∧
             LinearStudy.ProjectiveChartPolynomialParameterConclusion f V x hx hp0 hy
 'LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :
+  let A := MvPolynomial (Fin (r + 1)) ℂ;
+  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  have φ := LinearStudy.projectiveLinearNormalizationMap V L;
+  have P := Submonoid.powers (MvPolynomial.X i);
+  let Q := Localization P;
+  let B' := LocalizedModule P B;
+  have D := (ModuleCat.coextendScalars (algebraMap A B)).obj ↧A;
+  LocalizedModule (Algebra.algebraMapSubmonoid B P) ↑D ≃ₗ[B'] ↑((ModuleCat.coextendScalars (algebraMap Q B')).obj ↧Q)
+'LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv_apply_original {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :
+  let A := MvPolynomial (Fin (r + 1)) ℂ;
+  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  let φ := LinearStudy.projectiveLinearNormalizationMap V L;
+  let P := Submonoid.powers (MvPolynomial.X i);
+  let Q := Localization P;
+  let B' := LocalizedModule P B;
+  ∀ (ell : ↑((ModuleCat.coextendScalars (algebraMap A B)).obj ↧A)) (x : B),
+    (LinearStudy.nativeCoextensionOriginalDualEquiv
+          ((LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv V L hfinite i)
+            (LocalizedModule.mk ell 1)))
+        (LocalizedModule.mk x 1) =
+      (algebraMap A Q) ((LinearStudy.nativeCoextensionOriginalDualEquiv ell) x)
+'LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv_apply_original' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.projectiveNativeIntegerTwist_isLocallyFree {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (m : ℤ) :
