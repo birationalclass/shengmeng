@@ -890,3 +890,19 @@ public import Linear.IntegerGradedFiniteFreeSurjection
 public import Linear.IntegerGradedFiniteRelations
 public import Linear.NativeProjectiveFiniteFreeEpi
 public import Linear.ProjectiveDualNativeFreeSheafEpi
+
+public import Linear.IntegerGradedFinitePresentation
+public import Linear.NativeProjectivePrimeMapExact
+public import Linear.NativeProjectiveFinitePresentation
+public import Linear.IntegerGradedHomogeneousAnnihilator
+public import Linear.NativeProjectiveKernelGrading
+public import Linear.NativeProjectiveKernelFraction
+public import Linear.NativeProjectiveKernelLocalLift
+public import Linear.NativeProjectiveDegreeZeroMap
+public import Linear.NativeProjectiveKernelSectionExact
+public import Linear.NativeProjectiveKernelSheaf
+public import Linear.NativeProjectiveDegreeZeroEpi
+public import Linear.NativeProjectiveDegreeZeroComposition
+public import Linear.NativeProjectiveSheafExact
+public import Linear.NativeProjectiveExactFinitePresentation
+public import Linear.ProjectiveDualExactNativePresentation

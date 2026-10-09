@@ -1,8 +1,8 @@
-import {paginateOverview} from './proof-overview-model.js?v=20261009-linear-71';
-import {drawOverviewWires} from './proof-overview-wires.js?v=20261009-linear-71';
-import {english} from './i18n.js?v=20261009-linear-71';
-import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261009-linear-71';
-import {createProofPackages} from './proof-package-model.js?v=20261009-linear-71';
+import {paginateOverview} from './proof-overview-model.js?v=20261010-linear-72';
+import {drawOverviewWires} from './proof-overview-wires.js?v=20261010-linear-72';
+import {english} from './i18n.js?v=20261010-linear-72';
+import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261010-linear-72';
+import {createProofPackages} from './proof-package-model.js?v=20261010-linear-72';
 
 export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarget}){
   const model=createProofPackages(nodes),panel=document.querySelector('.graph-panel'),viewport=document.querySelector('.graph-scroll');
