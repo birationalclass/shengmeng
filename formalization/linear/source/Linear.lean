@@ -840,3 +840,15 @@ public import Linear.NativeHomogeneousAwayTwist
 public import Linear.NativeHomogeneousAwayTwistFraction
 public import Linear.NativeGradedModuleAway
 public import Linear.ProjectiveNormalizationNativeChartEmbedding
+
+public import Linear.NativeProjectiveModuleLocalPredicate
+public import Linear.NativeProjectiveModuleLocalAdd
+public import Linear.NativeProjectiveModuleLocalSMul
+public import Linear.NativeProjectiveModuleSections
+public import Linear.NativeProjectiveModulePresheaf
+public import Linear.NativeProjectiveModuleSheaf
+public import Linear.NativeProjectiveModuleLocalMap
+public import Linear.NativeProjectiveModuleSheafMap
+public import Linear.NativeProjectiveRingIntegerPieces
+public import Linear.CoextensionProjectiveGradeCompatibility
+public import Linear.ProjectiveNormalizationNativeSheafEmbedding

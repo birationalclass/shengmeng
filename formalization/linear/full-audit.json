@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2068,
-  "verifiedTheorems": 1546,
-  "definitions": 326,
+  "audited": 2104,
+  "verifiedTheorems": 1565,
+  "definitions": 343,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -2586,6 +2586,31 @@
         "LinearStudy.coextensionDual_exists_common_denominator",
         "LinearStudy.coextensionFractionEmbedding",
         "LinearStudy.coextensionFractionEmbedding_injective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionProjectiveGradeCompatibility",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionProjectiveGradeCompatibility.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionProjectiveGradeCompatibility.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] (n : ℕ) (d : ℤ) (b : S) :\n  b ∈ 𝓑 n → ∀ ell ∈ LinearStudy.coextensionGradedPiece 𝒜 𝓑 d, b • ell ∈ LinearStudy.coextensionGradedPiece 𝒜 𝓑 (↑n + d)",
+      "sha256": "db93cd8405138def3d94580f5637c5ab492a312ee751b7351dfde55ce278e569",
+      "lines": 10,
+      "moduleLineCount": 30,
+      "startLine": 19,
+      "endLine": 28,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionGradedPiece_smul_homogeneous"
       ]
     },
     {
@@ -19609,6 +19634,846 @@
         "LinearStudy.projectiveNativeChartEquationIdeal",
         "LinearStudy.projectiveNativeChartLinearSection_isReduced_of_affine",
         "LinearStudy.projective_linear_normalization_exists_affine_radical_sections"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleFraction_add",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalAdd.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleFraction_add.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K D) (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ)\n  {U V : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}\n  {a : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p}\n  {b : (p : ↥V) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p}\n  (ha : LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 k a)\n  (hb : LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 k b) :\n  LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 k fun p => a ⟨↑p, ⋯⟩ + b ⟨↑p, ⋯⟩",
+      "sha256": "57a228b3302c5b94f2711f717cf6d08b53937bf3288fe60a0466d91435668e5a",
+      "lines": 30,
+      "moduleLineCount": 84,
+      "startLine": 15,
+      "endLine": 44,
+      "lineCount": 30,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleIsFraction"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleLocalPredicate_add",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalAdd.lean",
+      "line": 48,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleLocalPredicate_add.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3}\n  [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d))\n  (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}\n  {a b : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p}\n  (ha : (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred a)\n  (hb : (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred b) :\n  (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred (a + b)",
+      "sha256": "57a228b3302c5b94f2711f717cf6d08b53937bf3288fe60a0466d91435668e5a",
+      "lines": 16,
+      "moduleLineCount": 84,
+      "startLine": 46,
+      "endLine": 61,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleFractionPrelocal",
+        "LinearStudy.nativeProjectiveModuleFraction_add",
+        "LinearStudy.nativeProjectiveModuleLocalPredicate"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleFraction_neg",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalAdd.lean",
+      "line": 63,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleFraction_neg.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K D) (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}\n  {a : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p}\n  (ha : LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 k a) : LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 k (-a)",
+      "sha256": "57a228b3302c5b94f2711f717cf6d08b53937bf3288fe60a0466d91435668e5a",
+      "lines": 11,
+      "moduleLineCount": 84,
+      "startLine": 63,
+      "endLine": 73,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleIsFraction"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleLocalPredicate_neg",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalAdd.lean",
+      "line": 75,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleLocalPredicate_neg.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3}\n  [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}\n  {a : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p}\n  (ha : (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred a) :\n  (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred (-a)",
+      "sha256": "57a228b3302c5b94f2711f717cf6d08b53937bf3288fe60a0466d91435668e5a",
+      "lines": 8,
+      "moduleLineCount": 84,
+      "startLine": 75,
+      "endLine": 82,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleFractionPrelocal",
+        "LinearStudy.nativeProjectiveModuleFraction_neg",
+        "LinearStudy.nativeProjectiveModuleLocalPredicate"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleAtPrimeMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalMap.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModuleAtPrimeMap.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup D] [Module S D] [AddCommGroup E] [Module S E] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (e : D →ₗ[S] E)\n  (p : ProjectiveSpectrum 𝓑) :\n  LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p →ₗ[HomogeneousLocalization.AtPrime 𝓑 p.asHomogeneousIdeal.toIdeal]\n    LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p",
+      "sha256": "4efe6440880dd3c95ef5d5c2bbf6d06a24d29ac94265603222222a44f1696f8b",
+      "lines": 13,
+      "moduleLineCount": 80,
+      "startLine": 19,
+      "endLine": 31,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveAtPrimeModuleScalar",
+        "LinearStudy.nativeProjectiveModuleAtPrime"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleAtPrimeMap_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalMap.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleAtPrimeMap_mk.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (e : D →ₗ[S] E) (p : ProjectiveSpectrum 𝓑) (ell : D)\n  (b : ↥p.asHomogeneousIdeal.toIdeal.primeCompl) :\n  (LinearStudy.nativeProjectiveModuleAtPrimeMap 𝓑 e p) (LocalizedModule.mk ell b) = LocalizedModule.mk (e ell) b",
+      "sha256": "4efe6440880dd3c95ef5d5c2bbf6d06a24d29ac94265603222222a44f1696f8b",
+      "lines": 6,
+      "moduleLineCount": 80,
+      "startLine": 33,
+      "endLine": 38,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveAtPrimeModuleScalar",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleAtPrimeMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleAtPrimeMap_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalMap.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleAtPrimeMap_injective.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (e : D →ₗ[S] E) (he : Function.Injective ⇑e) (p : ProjectiveSpectrum 𝓑) :\n  Function.Injective ⇑(LinearStudy.nativeProjectiveModuleAtPrimeMap 𝓑 e p)",
+      "sha256": "4efe6440880dd3c95ef5d5c2bbf6d06a24d29ac94265603222222a44f1696f8b",
+      "lines": 4,
+      "moduleLineCount": 80,
+      "startLine": 40,
+      "endLine": 43,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveAtPrimeModuleScalar",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleAtPrimeMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleFraction_map",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalMap.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleFraction_map.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E) (δ : ℤ) (e : D →ₗ[S] E)\n  (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + δ)) (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}\n  {f : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p}\n  (hf : LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 k f) :\n  LinearStudy.nativeProjectiveModuleIsFraction 𝓑 ℰ (k + δ) fun p =>\n    (LinearStudy.nativeProjectiveModuleAtPrimeMap 𝓑 e ↑p) (f p)",
+      "sha256": "4efe6440880dd3c95ef5d5c2bbf6d06a24d29ac94265603222222a44f1696f8b",
+      "lines": 16,
+      "moduleLineCount": 80,
+      "startLine": 50,
+      "endLine": 65,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveAtPrimeModuleScalar",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleAtPrimeMap",
+        "LinearStudy.nativeProjectiveModuleAtPrimeMap_mk",
+        "LinearStudy.nativeProjectiveModuleIsFraction"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleLocalPredicate_map",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalMap.lean",
+      "line": 69,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleLocalPredicate_map.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E) (δ : ℤ) (e : D →ₗ[S] E)\n  (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + δ)) (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}\n  {f : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p}\n  (hf : (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred f) :\n  (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 ℰ (k + δ)).pred fun p =>\n    (LinearStudy.nativeProjectiveModuleAtPrimeMap 𝓑 e ↑p) (f p)",
+      "sha256": "4efe6440880dd3c95ef5d5c2bbf6d06a24d29ac94265603222222a44f1696f8b",
+      "lines": 12,
+      "moduleLineCount": 80,
+      "startLine": 67,
+      "endLine": 78,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveAtPrimeModuleScalar",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleAtPrimeMap",
+        "LinearStudy.nativeProjectiveModuleFractionPrelocal",
+        "LinearStudy.nativeProjectiveModuleFraction_map",
+        "LinearStudy.nativeProjectiveModuleLocalPredicate"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleIsFraction",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalPredicate.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModuleIsFraction.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K D) (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}\n  (f : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p) : Prop",
+      "sha256": "e2115c92d44050cc2877e9bca10ead5657be45b49de9526fae7af55e3d7f48e0",
+      "lines": 8,
+      "moduleLineCount": 64,
+      "startLine": 21,
+      "endLine": 28,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleAtPrime"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleFractionPrelocal",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalPredicate.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModuleFractionPrelocal.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3}\n  [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (k : ℤ) :\n  TopCat.PrelocalPredicate fun p => LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p",
+      "sha256": "e2115c92d44050cc2877e9bca10ead5657be45b49de9526fae7af55e3d7f48e0",
+      "lines": 8,
+      "moduleLineCount": 64,
+      "startLine": 30,
+      "endLine": 37,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleIsFraction"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleLocalPredicate",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalPredicate.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModuleLocalPredicate.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K D) (k : ℤ) : TopCat.LocalPredicate fun p => LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p",
+      "sha256": "e2115c92d44050cc2877e9bca10ead5657be45b49de9526fae7af55e3d7f48e0",
+      "lines": 5,
+      "moduleLineCount": 64,
+      "startLine": 39,
+      "endLine": 43,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleFractionPrelocal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleSheafInType",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalPredicate.lean",
+      "line": 48,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModuleSheafInType.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K D) (k : ℤ) : TopCat.Sheaf (Type (max u_2 u_3)) (ProjectiveSpectrum.top 𝓑)",
+      "sha256": "e2115c92d44050cc2877e9bca10ead5657be45b49de9526fae7af55e3d7f48e0",
+      "lines": 6,
+      "moduleLineCount": 64,
+      "startLine": 45,
+      "endLine": 50,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleLocalPredicate"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleLocalPredicate_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalPredicate.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleLocalPredicate_zero.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3}\n  [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (k : ℤ) (U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)) :\n  (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred 0",
+      "sha256": "e2115c92d44050cc2877e9bca10ead5657be45b49de9526fae7af55e3d7f48e0",
+      "lines": 11,
+      "moduleLineCount": 64,
+      "startLine": 52,
+      "endLine": 62,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleFractionPrelocal",
+        "LinearStudy.nativeProjectiveModuleLocalPredicate"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveAtPrimeModuleScalar",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalSMul.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveAtPrimeModuleScalar.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (p : ProjectiveSpectrum 𝓑) :\n  Module (HomogeneousLocalization.AtPrime 𝓑 p.asHomogeneousIdeal.toIdeal)\n    (LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p)",
+      "sha256": "a56eef16375a14c18d7b612579a93b2cda12b8bba38801c3f6676d069750c26f",
+      "lines": 7,
+      "moduleLineCount": 95,
+      "startLine": 19,
+      "endLine": 25,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleAtPrime"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveAmbientSectionModule",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalSMul.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveAmbientSectionModule.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) :\n  Module (↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U))\n    ((p : ↥(Opposite.unop U)) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p)",
+      "sha256": "a56eef16375a14c18d7b612579a93b2cda12b8bba38801c3f6676d069750c26f",
+      "lines": 7,
+      "moduleLineCount": 95,
+      "startLine": 29,
+      "endLine": 35,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveAtPrimeModuleScalar",
+        "LinearStudy.nativeProjectiveModuleAtPrime"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectivePrimeFraction_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalSMul.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectivePrimeFraction_smul.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (p : ProjectiveSpectrum 𝓑) (n : ℕ) (r b : ↥(𝓑 n)) (hb : ↑b ∉ p.asHomogeneousIdeal) (ell : D) (c : S)\n  (hc : c ∉ p.asHomogeneousIdeal) :\n  HomogeneousLocalization.mk { deg := n, num := r, den := b, den_mem := hb } • LocalizedModule.mk ell ⟨c, hc⟩ =\n    LocalizedModule.mk (↑r • ell) ⟨↑b * c, ⋯⟩",
+      "sha256": "a56eef16375a14c18d7b612579a93b2cda12b8bba38801c3f6676d069750c26f",
+      "lines": 13,
+      "moduleLineCount": 95,
+      "startLine": 37,
+      "endLine": 49,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveAtPrimeModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleFraction_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalSMul.lean",
+      "line": 53,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleFraction_smul.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K D) (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ)\n  {U V : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}\n  {a : (p : ↥U) → HomogeneousLocalization.AtPrime 𝓑 (↑p).asHomogeneousIdeal.toIdeal}\n  {b : (p : ↥V) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p}\n  (ha : AlgebraicGeometry.ProjectiveSpectrum.StructureSheaf.IsFraction a)\n  (hb : LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 k b) :\n  LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 k fun p => a ⟨↑p, ⋯⟩ • b ⟨↑p, ⋯⟩",
+      "sha256": "a56eef16375a14c18d7b612579a93b2cda12b8bba38801c3f6676d069750c26f",
+      "lines": 27,
+      "moduleLineCount": 95,
+      "startLine": 51,
+      "endLine": 77,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveAtPrimeModuleScalar",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleIsFraction",
+        "LinearStudy.nativeProjectivePrimeFraction_smul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleLocalPredicate_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleLocalSMul.lean",
+      "line": 79,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleLocalPredicate_smul.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3}\n  [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d))\n  (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}\n  {a : (p : ↥U) → HomogeneousLocalization.AtPrime 𝓑 (↑p).asHomogeneousIdeal.toIdeal}\n  {b : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p}\n  (ha : (AlgebraicGeometry.ProjectiveSpectrum.StructureSheaf.isLocallyFraction 𝓑).pred a)\n  (hb : (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred b) :\n  (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred fun p => a p • b p",
+      "sha256": "a56eef16375a14c18d7b612579a93b2cda12b8bba38801c3f6676d069750c26f",
+      "lines": 15,
+      "moduleLineCount": 95,
+      "startLine": 79,
+      "endLine": 93,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveAtPrimeModuleScalar",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleFractionPrelocal",
+        "LinearStudy.nativeProjectiveModuleFraction_smul",
+        "LinearStudy.nativeProjectiveModuleLocalPredicate"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModulePresheaf",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModulePresheaf.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModulePresheaf.{u} {K S D : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup D]\n  [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)\n  (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ) :\n  (AlgebraicGeometry.Proj 𝓑).PresheafOfModules",
+      "sha256": "32a57fb96bba0b23e7b7eca54c1bd0a68374c102bd1c0f247c56739ffbfff867",
+      "lines": 28,
+      "moduleLineCount": 57,
+      "startLine": 21,
+      "endLine": 48,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleSectionGroup",
+        "LinearStudy.nativeProjectiveModuleSectionModule",
+        "LinearStudy.nativeProjectiveModuleSheafInType"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModulePresheafForgetIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModulePresheaf.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModulePresheafForgetIso.{u} {K S D : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)\n  (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ) :\n  (PresheafOfModules.presheaf (LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hgrade k)).comp\n      (CategoryTheory.forget AddCommGrpCat) ≅\n    (LinearStudy.nativeProjectiveModuleSheafInType 𝓑 𝒟 k).obj",
+      "sha256": "32a57fb96bba0b23e7b7eca54c1bd0a68374c102bd1c0f247c56739ffbfff867",
+      "lines": 6,
+      "moduleLineCount": 57,
+      "startLine": 50,
+      "endLine": 55,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModulePresheaf",
+        "LinearStudy.nativeProjectiveModuleSheafInType"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleSections",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleSections.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModuleSections.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K D) (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ)\n  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) :\n  Submodule (↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U))\n    ((p : ↥(Opposite.unop U)) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p)",
+      "sha256": "1ada8ff22c27caf3391a2e3080fddae3d2d30fb01140838b56cb11ccae289d2d",
+      "lines": 11,
+      "moduleLineCount": 48,
+      "startLine": 18,
+      "endLine": 28,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleLocalPredicate"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleSectionGroup",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleSections.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModuleSectionGroup.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K D) (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ)\n  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) :\n  AddCommGroup ((LinearStudy.nativeProjectiveModuleSheafInType 𝓑 𝒟 k).obj.obj U)",
+      "sha256": "1ada8ff22c27caf3391a2e3080fddae3d2d30fb01140838b56cb11ccae289d2d",
+      "lines": 6,
+      "moduleLineCount": 48,
+      "startLine": 30,
+      "endLine": 35,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleSheafInType"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleSectionModule",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleSections.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModuleSectionModule.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K D) (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ)\n  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) :\n  Module (↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U))\n    ((LinearStudy.nativeProjectiveModuleSheafInType 𝓑 𝒟 k).obj.obj U)",
+      "sha256": "1ada8ff22c27caf3391a2e3080fddae3d2d30fb01140838b56cb11ccae289d2d",
+      "lines": 10,
+      "moduleLineCount": 48,
+      "startLine": 37,
+      "endLine": 46,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleSectionGroup",
+        "LinearStudy.nativeProjectiveModuleSheafInType"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModulePresheaf_isSheaf",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleSheaf.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModulePresheaf_isSheaf.{u} {K S D : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)\n  (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ) :\n  TopCat.Presheaf.IsSheaf (PresheafOfModules.presheaf (LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hgrade k))",
+      "sha256": "f1d285c41b1325dfeb3d8fa8ff3e3d508af7b7c1307f70d34058192052a29201",
+      "lines": 10,
+      "moduleLineCount": 37,
+      "startLine": 20,
+      "endLine": 29,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModulePresheaf",
+        "LinearStudy.nativeProjectiveModulePresheafForgetIso",
+        "LinearStudy.nativeProjectiveModuleSheafInType"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleSheaf",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleSheaf.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModuleSheaf.{u} {K S D : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup D]\n  [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)\n  (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ) :\n  (AlgebraicGeometry.Proj 𝓑).Modules",
+      "sha256": "f1d285c41b1325dfeb3d8fa8ff3e3d508af7b7c1307f70d34058192052a29201",
+      "lines": 5,
+      "moduleLineCount": 37,
+      "startLine": 31,
+      "endLine": 35,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModulePresheaf",
+        "LinearStudy.nativeProjectiveModulePresheaf_isSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleSectionMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleSheafMap.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModuleSectionMap.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E)\n  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d))\n  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ ℰ d, b • ell ∈ ℰ (↑n + d)) (δ : ℤ) (e : D →ₗ[S] E)\n  (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + δ)) (k : ℤ)\n  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) :\n  ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD k\n        U) →ₗ[↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)]\n    ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 ℰ hE (k + δ) U)",
+      "sha256": "d349cd4c673e7e8805c983666a310b579e0738f424ab24f397968cc65331b074",
+      "lines": 17,
+      "moduleLineCount": 89,
+      "startLine": 25,
+      "endLine": 41,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveAtPrimeModuleScalar",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleAtPrimeMap",
+        "LinearStudy.nativeProjectiveModuleSections"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleSectionMap_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleSheafMap.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleSectionMap_injective.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E)\n  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d))\n  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ ℰ d, b • ell ∈ ℰ (↑n + d)) (δ : ℤ) (e : D →ₗ[S] E)\n  (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + δ)) (he : Function.Injective ⇑e) (k : ℤ)\n  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) :\n  Function.Injective ⇑(LinearStudy.nativeProjectiveModuleSectionMap 𝓑 𝒟 ℰ hD hE δ e hh k U)",
+      "sha256": "d349cd4c673e7e8805c983666a310b579e0738f424ab24f397968cc65331b074",
+      "lines": 8,
+      "moduleLineCount": 89,
+      "startLine": 43,
+      "endLine": 50,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleAtPrimeMap_injective",
+        "LinearStudy.nativeProjectiveModuleSectionMap",
+        "LinearStudy.nativeProjectiveModuleSections"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModulePresheafMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleSheafMap.lean",
+      "line": 54,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModulePresheafMap.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E)\n  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d))\n  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ ℰ d, b • ell ∈ ℰ (↑n + d)) (δ : ℤ) (e : D →ₗ[S] E)\n  (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + δ)) (k : ℤ) :\n  LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hD k ⟶ LinearStudy.nativeProjectiveModulePresheaf 𝓑 ℰ hE (k + δ)",
+      "sha256": "d349cd4c673e7e8805c983666a310b579e0738f424ab24f397968cc65331b074",
+      "lines": 14,
+      "moduleLineCount": 89,
+      "startLine": 52,
+      "endLine": 65,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModulePresheaf",
+        "LinearStudy.nativeProjectiveModuleSectionGroup",
+        "LinearStudy.nativeProjectiveModuleSectionMap",
+        "LinearStudy.nativeProjectiveModuleSectionModule",
+        "LinearStudy.nativeProjectiveModuleSheafInType"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleSheafMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleSheafMap.lean",
+      "line": 69,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveModuleSheafMap.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup D]\n  [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E) (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d))\n  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ ℰ d, b • ell ∈ ℰ (↑n + d)) (δ : ℤ) (e : D →ₗ[S] E)\n  (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + δ)) (k : ℤ) :\n  LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD k ⟶ LinearStudy.nativeProjectiveModuleSheaf 𝓑 ℰ hE (k + δ)",
+      "sha256": "d349cd4c673e7e8805c983666a310b579e0738f424ab24f397968cc65331b074",
+      "lines": 6,
+      "moduleLineCount": 89,
+      "startLine": 67,
+      "endLine": 72,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModulePresheafMap",
+        "LinearStudy.nativeProjectiveModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveModuleSheafMap_mono",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveModuleSheafMap.lean",
+      "line": 76,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveModuleSheafMap_mono.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E)\n  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d))\n  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ ℰ d, b • ell ∈ ℰ (↑n + d)) (δ : ℤ) (e : D →ₗ[S] E)\n  (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + δ)) (he : Function.Injective ⇑e) (k : ℤ) :\n  CategoryTheory.Mono (LinearStudy.nativeProjectiveModuleSheafMap 𝓑 𝒟 ℰ hD hE δ e hh k)",
+      "sha256": "d349cd4c673e7e8805c983666a310b579e0738f424ab24f397968cc65331b074",
+      "lines": 14,
+      "moduleLineCount": 89,
+      "startLine": 74,
+      "endLine": 87,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveModuleSectionMap_injective",
+        "LinearStudy.nativeProjectiveModuleSheaf",
+        "LinearStudy.nativeProjectiveModuleSheafMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveRingIntegerPiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveRingIntegerPieces.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveRingIntegerPiece.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S]\n  [Algebra K S] (𝓑 : ℕ → Submodule K S) (d : ℤ) : Submodule K S",
+      "sha256": "4017d431d5faf02665d8c5d299aaf3adc2747ed9f426d0dcbdffb3835f8e1dfb",
+      "lines": 4,
+      "moduleLineCount": 48,
+      "startLine": 13,
+      "endLine": 16,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveRingIntegerPiece_graded",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveRingIntegerPieces.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveRingIntegerPiece_graded.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S]\n  [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (n : ℕ) (d : ℤ) (b : S) (hb : b ∈ 𝓑 n) (ell : S)\n  (hell : ell ∈ LinearStudy.nativeProjectiveRingIntegerPiece 𝓑 d) :\n  b • ell ∈ LinearStudy.nativeProjectiveRingIntegerPiece 𝓑 (↑n + d)",
+      "sha256": "4017d431d5faf02665d8c5d299aaf3adc2747ed9f426d0dcbdffb3835f8e1dfb",
+      "lines": 15,
+      "moduleLineCount": 48,
+      "startLine": 18,
+      "endLine": 32,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.nativeProjectiveRingIntegerPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveRingIntegerPiece_mem_of_projection",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveRingIntegerPieces.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveRingIntegerPiece_mem_of_projection.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K]\n  [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (d : ℤ) (x : S)\n  (hx : x = (LinearStudy.gradedIntegerProjection 𝓑 d) x) : x ∈ LinearStudy.nativeProjectiveRingIntegerPiece 𝓑 d",
+      "sha256": "4017d431d5faf02665d8c5d299aaf3adc2747ed9f426d0dcbdffb3835f8e1dfb",
+      "lines": 13,
+      "moduleLineCount": 48,
+      "startLine": 34,
+      "endLine": 46,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.nativeProjectiveRingIntegerPiece"
       ]
     },
     {
@@ -38496,6 +39361,46 @@
         "LinearStudy.nativeHomogeneousAwayTwistModule",
         "LinearStudy.projectiveLinearNormalizationMap",
         "LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_embedding"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveLinearNormalization_exists_native_sheaf_embedding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNormalizationNativeSheafEmbedding.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveLinearNormalization_exists_native_sheaf_embedding {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;\n  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;\n  let D := (ModuleCat.coextendScalars (algebraMap A B)).obj ↧A;\n  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;\n  let ℰ := LinearStudy.nativeProjectiveRingIntegerPiece 𝓑;\n  have hD := ⋯;\n  have hE := ⋯;\n  ∃ m,\n    0 < m ∧\n      ∃ e,\n        Function.Injective ⇑e ∧\n          ∃ (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + ↑m)),\n            CategoryTheory.Mono (LinearStudy.nativeProjectiveModuleSheafMap 𝓑 𝒟 ℰ hD hE (↑m) e hh 0)",
+      "sha256": "9c2f9b896e5b77f5ab5492508b5dd40b2652721dae0ed534161c33e4f238c578",
+      "lines": 50,
+      "moduleLineCount": 66,
+      "startLine": 15,
+      "endLine": 64,
+      "lineCount": 50,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeProjectiveModuleSheaf",
+        "LinearStudy.nativeProjectiveModuleSheafMap",
+        "LinearStudy.nativeProjectiveModuleSheafMap_mono",
+        "LinearStudy.nativeProjectiveRingIntegerPiece",
+        "LinearStudy.nativeProjectiveRingIntegerPiece_graded",
+        "LinearStudy.nativeProjectiveRingIntegerPiece_mem_of_projection",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_embedding",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul"
       ]
     },
     {
