@@ -747,3 +747,10 @@ public import Linear.NativeProjectiveChartClosedPullback
 public import Linear.ProjectiveAffineLinearSection
 public import Linear.ProjectiveAffineLinearSectionComparison
 public import Linear.NativeProjectiveChartSectionReduced
+
+public import Linear.ReducedClosedBaseChange
+public import Linear.ProjectiveAffineFiberClosedPullback
+public import Linear.ProjectiveLinearSectionClosedReduced
+public import Linear.ProjectiveLinearSectionReducedPullbackOpen
+public import Linear.FiniteReducedClosedBaseChange
+public import Linear.ProjectiveLinearSectionFinitePullback
