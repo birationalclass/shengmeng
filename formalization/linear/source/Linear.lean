@@ -830,3 +830,13 @@ public import Linear.IntegerDomainHomComponentNonzero
 public import Linear.CoextensionGradedEmbedding
 public import Linear.HomogeneousPositiveEmbeddingShift
 public import Linear.ProjectiveNormalizationHomogeneousEmbedding
+
+public import Linear.IntegerGradedModuleProjection
+public import Linear.HomogeneousDualImageIdeal
+public import Linear.FiniteDomainDualNonzero
+public import Linear.ProjectiveNormalizationHomogeneousImage
+public import Linear.CoextensionFractionLocalization
+public import Linear.NativeHomogeneousAwayTwist
+public import Linear.NativeHomogeneousAwayTwistFraction
+public import Linear.NativeGradedModuleAway
+public import Linear.ProjectiveNormalizationNativeChartEmbedding

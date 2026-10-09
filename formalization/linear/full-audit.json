@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2042,
-  "verifiedTheorems": 1530,
-  "definitions": 316,
+  "audited": 2068,
+  "verifiedTheorems": 1546,
+  "definitions": 326,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -2191,6 +2191,31 @@
       "dependencies": [
         "LinearStudy.coextensionFractionFunctional",
         "LinearStudy.coextensionFractionFunctional_apply_original"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionFractionEmbedding_isLocalizedModule",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionFractionLocalization.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionFractionEmbedding_isLocalizedModule.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S]\n  [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] :\n  IsLocalizedModule (nonZeroDivisors S) LinearStudy.coextensionFractionEmbedding",
+      "sha256": "3a34c653c78d755d3688df93614d56f54715f4a7affc309963fa834cb3b4ad9e",
+      "lines": 30,
+      "moduleLineCount": 48,
+      "startLine": 17,
+      "endLine": 46,
+      "lineCount": 30,
+      "dependencies": [
+        "LinearStudy.coextensionDual_exists_nonzero_at_one",
+        "LinearStudy.coextensionFractionEmbedding",
+        "LinearStudy.coextensionFractionEmbedding_injective"
       ]
     },
     {
@@ -6000,6 +6025,51 @@
       "endLine": 40,
       "lineCount": 30,
       "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.finiteDomainExtension_exists_dual_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteDomainDualNonzero.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteDomainExtension_exists_dual_nonzero.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S]\n  [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] : ∃ ell, ell 1 ≠ 0",
+      "sha256": "809bd994a7a88374c15921ad107196721094f32ff5fd3c76ec76d2f79c9c2830",
+      "lines": 30,
+      "moduleLineCount": 63,
+      "startLine": 17,
+      "endLine": 46,
+      "lineCount": 30,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.coextensionDual_exists_nonzero_at_one",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteDomainDualNonzero.lean",
+      "line": 50,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionDual_exists_nonzero_at_one.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S] [IsDomain S]\n  [Algebra R S] [FaithfulSMul R S] [Module.Finite R S] :\n  ∃ ell, ((ModuleCat.CoextendScalars.equiv (algebraMap R S) ↧R) ell) 1 ≠ 0",
+      "sha256": "809bd994a7a88374c15921ad107196721094f32ff5fd3c76ec76d2f79c9c2830",
+      "lines": 14,
+      "moduleLineCount": 63,
+      "startLine": 48,
+      "endLine": 61,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.coextensionOriginalDualEquiv",
+        "LinearStudy.finiteDomainExtension_exists_dual_nonzero"
+      ]
     },
     {
       "declaration": "LinearStudy.finite_injective_algHom_fraction_comp_formallyUnramified",
@@ -11886,6 +11956,81 @@
       ]
     },
     {
+      "declaration": "LinearStudy.homogeneousDualImageIdeal",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/HomogeneousDualImageIdeal.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.homogeneousDualImageIdeal.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module K D] [Module S D] [IsScalarTower K S D] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) [DirectSum.Decomposition 𝒟] (k : ℤ) (e : D →ₗ[S] S)\n  (hh : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, e x = (LinearStudy.gradedIntegerProjection 𝓑 (d + k)) (e x)) : HomogeneousIdeal 𝓑",
+      "sha256": "e8c67f7d0da6bccca0549e2a4ccc34d7fcb88372b5caf4708f06b1a76c4ef343",
+      "lines": 11,
+      "moduleLineCount": 45,
+      "startLine": 14,
+      "endLine": 24,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneousDualImageEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/HomogeneousDualImageIdeal.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.homogeneousDualImageEquiv.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module K D] [Module S D] [IsScalarTower K S D] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) [DirectSum.Decomposition 𝒟] (k : ℤ) (e : D →ₗ[S] S)\n  (he : Function.Injective ⇑e)\n  (hh : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, e x = (LinearStudy.gradedIntegerProjection 𝓑 (d + k)) (e x)) :\n  D ≃ₗ[S] ↥(LinearStudy.homogeneousDualImageIdeal 𝓑 𝒟 k e hh).toIdeal",
+      "sha256": "e8c67f7d0da6bccca0549e2a4ccc34d7fcb88372b5caf4708f06b1a76c4ef343",
+      "lines": 8,
+      "moduleLineCount": 45,
+      "startLine": 26,
+      "endLine": 33,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.homogeneousDualImageIdeal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneousDualImageEquiv_projection",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousDualImageIdeal.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousDualImageEquiv_projection.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module K D] [Module S D] [IsScalarTower K S D] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) [DirectSum.Decomposition 𝒟] (k : ℤ) (e : D →ₗ[S] S)\n  (he : Function.Injective ⇑e) (hh : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, e x = (LinearStudy.gradedIntegerProjection 𝓑 (d + k)) (e x))\n  (i : ℕ) (x : D) :\n  ↑((LinearStudy.homogeneousDualImageEquiv 𝓑 𝒟 k e he hh) ((LinearStudy.integerGradedModuleProjection 𝒟 (↑i - k)) x)) =\n    (LinearStudy.gradedModuleProjection 𝓑 i) ↑((LinearStudy.homogeneousDualImageEquiv 𝓑 𝒟 k e he hh) x)",
+      "sha256": "e8c67f7d0da6bccca0549e2a4ccc34d7fcb88372b5caf4708f06b1a76c4ef343",
+      "lines": 9,
+      "moduleLineCount": 45,
+      "startLine": 35,
+      "endLine": 43,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.homogeneousDualImageEquiv",
+        "LinearStudy.homogeneousDualImageIdeal",
+        "LinearStudy.integerGradedModuleProjection",
+        "LinearStudy.integerHomogeneousMap_projection"
+      ]
+    },
+    {
       "declaration": "LinearStudy.polynomialLinearEliminationBaseHom",
       "kind": "def",
       "origin": "project",
@@ -13311,6 +13456,77 @@
         "LinearStudy.gradedModuleProjection",
         "LinearStudy.integerDomainHomComponent",
         "LinearStudy.integerDomainHomComponent_on_piece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.integerGradedModuleProjection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/IntegerGradedModuleProjection.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.integerGradedModuleProjection.{u_1, u_3} {K : Type u_1} {D : Type u_3} [Field K] [AddCommGroup D]\n  [Module K D] (𝒟 : ℤ → Submodule K D) [DirectSum.Decomposition 𝒟] (d : ℤ) : D →ₗ[K] D",
+      "sha256": "12dc84575739244cf64391a7577b13bd35b6b21e1ddf53d2cbdd8a413cf977eb",
+      "lines": 3,
+      "moduleLineCount": 50,
+      "startLine": 14,
+      "endLine": 16,
+      "lineCount": 3,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.integerGradedModuleProjection_on_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/IntegerGradedModuleProjection.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.integerGradedModuleProjection_on_piece.{u_1, u_3} {K : Type u_1} {D : Type u_3} [Field K] [AddCommGroup D]\n  [Module K D] (𝒟 : ℤ → Submodule K D) [DirectSum.Decomposition 𝒟] (i j : ℤ) (x : D) (hx : x ∈ 𝒟 j) :\n  (LinearStudy.integerGradedModuleProjection 𝒟 i) x = if i = j then x else 0",
+      "sha256": "12dc84575739244cf64391a7577b13bd35b6b21e1ddf53d2cbdd8a413cf977eb",
+      "lines": 7,
+      "moduleLineCount": 50,
+      "startLine": 18,
+      "endLine": 24,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.integerGradedModuleProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.integerHomogeneousMap_projection",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/IntegerGradedModuleProjection.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.integerHomogeneousMap_projection.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module K D] [Module S D] [IsScalarTower K S D] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) [DirectSum.Decomposition 𝒟] (k : ℤ) (e : D →ₗ[S] S)\n  (hh : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, e x = (LinearStudy.gradedIntegerProjection 𝓑 (d + k)) (e x)) (i : ℕ) (x : D) :\n  e ((LinearStudy.integerGradedModuleProjection 𝒟 (↑i - k)) x) = (LinearStudy.gradedModuleProjection 𝓑 i) (e x)",
+      "sha256": "12dc84575739244cf64391a7577b13bd35b6b21e1ddf53d2cbdd8a413cf977eb",
+      "lines": 23,
+      "moduleLineCount": 50,
+      "startLine": 26,
+      "endLine": 48,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedIntegerProjection_projector",
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.integerGradedModuleProjection",
+        "LinearStudy.integerGradedModuleProjection_on_piece"
       ]
     },
     {
@@ -17806,6 +18022,369 @@
       "dependencies": [
         "LinearStudy.homogeneous_origin_regular",
         "LinearStudy.regular_sequence_mem_ne_zero"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeHomogeneousAwayModuleScalar",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeGradedModuleAway.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeHomogeneousAwayModuleScalar.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) :\n  Module (HomogeneousLocalization.Away 𝓑 a) (LocalizedModule (Submonoid.powers a) D)",
+      "sha256": "6b5c1087bd05665d6ca558b7701dcd9b7f2359ab11732ccc9a98994113525f9b",
+      "lines": 6,
+      "moduleLineCount": 115,
+      "startLine": 17,
+      "endLine": 22,
+      "lineCount": 6,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.nativeHomogeneousAwayLocalizedMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeGradedModuleAway.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeHomogeneousAwayLocalizedMap.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S)\n  (e : D →ₗ[S] S) : LocalizedModule (Submonoid.powers a) D →ₗ[HomogeneousLocalization.Away 𝓑 a] Localization.Away a",
+      "sha256": "6b5c1087bd05665d6ca558b7701dcd9b7f2359ab11732ccc9a98994113525f9b",
+      "lines": 12,
+      "moduleLineCount": 115,
+      "startLine": 26,
+      "endLine": 37,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeHomogeneousAwayLocalizedMap_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedModuleAway.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeHomogeneousAwayLocalizedMap_mk.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S)\n  (e : D →ₗ[S] S) (x : D) (b : ↥(Submonoid.powers a)) :\n  (LinearStudy.nativeHomogeneousAwayLocalizedMap 𝓑 a e) (LocalizedModule.mk x b) =\n    IsLocalization.mk' (Localization.Away a) (e x) b",
+      "sha256": "6b5c1087bd05665d6ca558b7701dcd9b7f2359ab11732ccc9a98994113525f9b",
+      "lines": 9,
+      "moduleLineCount": 115,
+      "startLine": 39,
+      "endLine": 47,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.nativeHomogeneousAwayLocalizedMap",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeHomogeneousAwayLocalizedMap_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedModuleAway.lean",
+      "line": 49,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeHomogeneousAwayLocalizedMap_injective.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3}\n  [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S)\n  (e : D →ₗ[S] S) (he : Function.Injective ⇑e) :\n  Function.Injective ⇑(LinearStudy.nativeHomogeneousAwayLocalizedMap 𝓑 a e)",
+      "sha256": "6b5c1087bd05665d6ca558b7701dcd9b7f2359ab11732ccc9a98994113525f9b",
+      "lines": 6,
+      "moduleLineCount": 115,
+      "startLine": 49,
+      "endLine": 54,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.nativeHomogeneousAwayLocalizedMap",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedModuleAwayZero",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeGradedModuleAway.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeGradedModuleAwayZero.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [Module K D]\n  (𝒟 : ℤ → Submodule K D) (a : S) :\n  Submodule (HomogeneousLocalization.Away 𝓑 a) (LocalizedModule (Submonoid.powers a) D)",
+      "sha256": "6b5c1087bd05665d6ca558b7701dcd9b7f2359ab11732ccc9a98994113525f9b",
+      "lines": 8,
+      "moduleLineCount": 115,
+      "startLine": 59,
+      "endLine": 66,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedModuleAwayZero_map_mem_twist",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedModuleAway.lean",
+      "line": 70,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeGradedModuleAwayZero_map_mem_twist.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3}\n  [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [Module K D] (𝒟 : ℤ → Submodule K D) (a : S) (ha : a ∈ 𝓑 1) (m : ℕ) (e : D →ₗ[S] S)\n  (hh : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, e x = (LinearStudy.gradedIntegerProjection 𝓑 (d + ↑m)) (e x)) :\n  LinearStudy.nativeGradedModuleAwayZero 𝓑 𝒟 a ≤\n    Submodule.comap (LinearStudy.nativeHomogeneousAwayLocalizedMap 𝓑 a e)\n      (LinearStudy.nativeHomogeneousAwayTwistModule 𝓑 a m)",
+      "sha256": "6b5c1087bd05665d6ca558b7701dcd9b7f2359ab11732ccc9a98994113525f9b",
+      "lines": 24,
+      "moduleLineCount": 115,
+      "startLine": 68,
+      "endLine": 91,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayLocalizedMap",
+        "LinearStudy.nativeHomogeneousAwayLocalizedMap_mk",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeHomogeneousAwayTwistModule",
+        "LinearStudy.nativeHomogeneousAwayTwist_fraction_mem"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedModuleAwayTwistEmbedding",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeGradedModuleAway.lean",
+      "line": 95,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeGradedModuleAwayTwistEmbedding.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]\n  [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [Module K D]\n  (𝒟 : ℤ → Submodule K D) (a : S) (ha : a ∈ 𝓑 1) (m : ℕ) (e : D →ₗ[S] S)\n  (hh : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, e x = (LinearStudy.gradedIntegerProjection 𝓑 (d + ↑m)) (e x)) :\n  ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 𝒟 a) →ₗ[HomogeneousLocalization.Away 𝓑 a]\n    ↥(LinearStudy.nativeHomogeneousAwayTwistModule 𝓑 a m)",
+      "sha256": "6b5c1087bd05665d6ca558b7701dcd9b7f2359ab11732ccc9a98994113525f9b",
+      "lines": 11,
+      "moduleLineCount": 115,
+      "startLine": 93,
+      "endLine": 103,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayLocalizedMap",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeHomogeneousAwayTwistModule"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedModuleAwayTwistEmbedding_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedModuleAway.lean",
+      "line": 105,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeGradedModuleAwayTwistEmbedding_injective.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3}\n  [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [Module K D] (𝒟 : ℤ → Submodule K D) (a : S) (ha : a ∈ 𝓑 1) (m : ℕ) (e : D →ₗ[S] S) (he : Function.Injective ⇑e)\n  (hh : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, e x = (LinearStudy.gradedIntegerProjection 𝓑 (d + ↑m)) (e x)) :\n  Function.Injective ⇑(LinearStudy.nativeGradedModuleAwayTwistEmbedding 𝓑 𝒟 a ha m e hh)",
+      "sha256": "6b5c1087bd05665d6ca558b7701dcd9b7f2359ab11732ccc9a98994113525f9b",
+      "lines": 9,
+      "moduleLineCount": 115,
+      "startLine": 105,
+      "endLine": 113,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.nativeGradedModuleAwayTwistEmbedding",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayLocalizedMap_injective",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeHomogeneousAwayTwistModule"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeHomogeneousAwayTwistMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeHomogeneousAwayTwist.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeHomogeneousAwayTwistMap.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S] [Algebra K S]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (m : ℕ) :\n  HomogeneousLocalization.Away 𝓑 a →ₗ[HomogeneousLocalization.Away 𝓑 a] Localization.Away a",
+      "sha256": "de142e593999aa2294ef534b3aa3522aeb955c190b9635d2c0fc23f89691c571",
+      "lines": 8,
+      "moduleLineCount": 51,
+      "startLine": 13,
+      "endLine": 20,
+      "lineCount": 8,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.nativeHomogeneousAwayTwistMap_apply",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeHomogeneousAwayTwist.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeHomogeneousAwayTwistMap_apply.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S]\n  [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (m : ℕ) (z : HomogeneousLocalization.Away 𝓑 a) :\n  (LinearStudy.nativeHomogeneousAwayTwistMap 𝓑 a m) z =\n    (algebraMap S (Localization.Away a)) a ^ m * HomogeneousLocalization.val z",
+      "sha256": "de142e593999aa2294ef534b3aa3522aeb955c190b9635d2c0fc23f89691c571",
+      "lines": 4,
+      "moduleLineCount": 51,
+      "startLine": 22,
+      "endLine": 25,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.nativeHomogeneousAwayTwistMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeHomogeneousAwayTwistMap_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeHomogeneousAwayTwist.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeHomogeneousAwayTwistMap_injective.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S]\n  [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (m : ℕ) :\n  Function.Injective ⇑(LinearStudy.nativeHomogeneousAwayTwistMap 𝓑 a m)",
+      "sha256": "de142e593999aa2294ef534b3aa3522aeb955c190b9635d2c0fc23f89691c571",
+      "lines": 10,
+      "moduleLineCount": 51,
+      "startLine": 27,
+      "endLine": 36,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.nativeHomogeneousAwayTwistMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeHomogeneousAwayTwistModule",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeHomogeneousAwayTwist.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeHomogeneousAwayTwistModule.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S]\n  [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (m : ℕ) :\n  Submodule (HomogeneousLocalization.Away 𝓑 a) (Localization.Away a)",
+      "sha256": "de142e593999aa2294ef534b3aa3522aeb955c190b9635d2c0fc23f89691c571",
+      "lines": 6,
+      "moduleLineCount": 51,
+      "startLine": 38,
+      "endLine": 43,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.nativeHomogeneousAwayTwistMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeHomogeneousAwayTwistEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeHomogeneousAwayTwist.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeHomogeneousAwayTwistEquiv.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S]\n  [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (m : ℕ) :\n  HomogeneousLocalization.Away 𝓑 a ≃ₗ[HomogeneousLocalization.Away 𝓑 a]\n    ↥(LinearStudy.nativeHomogeneousAwayTwistModule 𝓑 a m)",
+      "sha256": "de142e593999aa2294ef534b3aa3522aeb955c190b9635d2c0fc23f89691c571",
+      "lines": 5,
+      "moduleLineCount": 51,
+      "startLine": 45,
+      "endLine": 49,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.nativeHomogeneousAwayTwistMap",
+        "LinearStudy.nativeHomogeneousAwayTwistMap_injective",
+        "LinearStudy.nativeHomogeneousAwayTwistModule"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeHomogeneousAwayTwistMap_fraction",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeHomogeneousAwayTwistFraction.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeHomogeneousAwayTwistMap_fraction.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S]\n  [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) (m n : ℕ) (h : S)\n  (hh : h ∈ 𝓑 (n + m)) :\n  (LinearStudy.nativeHomogeneousAwayTwistMap 𝓑 a m) (HomogeneousLocalization.Away.mk 𝓑 ha (n + m) h ⋯) =\n    IsLocalization.mk' (Localization.Away a) h ⟨a ^ n, ⋯⟩",
+      "sha256": "7105a3db6f7ebe801595d4f3d51fbafb5e269173c2e75ed176af45c94695dc38",
+      "lines": 32,
+      "moduleLineCount": 55,
+      "startLine": 12,
+      "endLine": 43,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.nativeHomogeneousAwayTwistMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeHomogeneousAwayTwist_fraction_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeHomogeneousAwayTwistFraction.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeHomogeneousAwayTwist_fraction_mem.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S]\n  [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) (m n : ℕ) (h : S)\n  (hh : h ∈ 𝓑 (n + m)) :\n  IsLocalization.mk' (Localization.Away a) h ⟨a ^ n, ⋯⟩ ∈ LinearStudy.nativeHomogeneousAwayTwistModule 𝓑 a m",
+      "sha256": "7105a3db6f7ebe801595d4f3d51fbafb5e269173c2e75ed176af45c94695dc38",
+      "lines": 9,
+      "moduleLineCount": 55,
+      "startLine": 45,
+      "endLine": 53,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.nativeHomogeneousAwayTwistMap",
+        "LinearStudy.nativeHomogeneousAwayTwistMap_fraction",
+        "LinearStudy.nativeHomogeneousAwayTwistModule"
       ]
     },
     {
@@ -37842,6 +38421,81 @@
         "LinearStudy.projectiveLinearNormalizationMap",
         "LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_embedding",
         "LinearStudy.projective_exists_linear_normalization_chart_dimension"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_image",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNormalizationHomogeneousImage.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_image {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let D := (ModuleCat.coextendScalars (algebraMap A B)).obj ↧A;\n  ∃ m,\n    0 < m ∧\n      ∃ I,\n        I.toIdeal ≠ ⊥ ∧\n          ∃ e,\n            ∀ (d : ℤ),\n              ∀\n                ell ∈\n                  LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n                    (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) d,\n                ↑(e ell) =\n                  (LinearStudy.gradedIntegerProjection (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) (d + ↑m))\n                    ↑(e ell)",
+      "sha256": "16ead9e83c00a1c81f5410b2c0e5369ee8f493e7a7240d780a05d7edb75da7b3",
+      "lines": 53,
+      "moduleLineCount": 70,
+      "startLine": 16,
+      "endLine": 68,
+      "lineCount": 53,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.coextensionDual_exists_nonzero_at_one",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedDecomposition",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.homogeneousDualImageEquiv",
+        "LinearStudy.homogeneousDualImageIdeal",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_embedding",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveLinearNormalization_exists_native_chart_embeddings",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNormalizationNativeChartEmbedding.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveLinearNormalization_exists_native_chart_embeddings {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let D := (ModuleCat.coextendScalars (algebraMap A B)).obj ↧A;\n  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;\n  have 𝒟 := LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ) 𝓑;\n  ∃ m,\n    0 < m ∧\n      ∃ e,\n        Function.Injective ⇑e ∧\n          ∃ (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell = (LinearStudy.gradedIntegerProjection 𝓑 (d + ↑m)) (e ell)),\n            ∀ (a : B) (ha : a ∈ 𝓑 1),\n              Function.Injective ⇑(LinearStudy.nativeGradedModuleAwayTwistEmbedding 𝓑 𝒟 a ha m e hh)",
+      "sha256": "ec2b005e5fa60cb0bab145e7bac0c893928ac730e37334ed0398dfefe31e1de5",
+      "lines": 37,
+      "moduleLineCount": 54,
+      "startLine": 16,
+      "endLine": 52,
+      "lineCount": 37,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeGradedModuleAwayTwistEmbedding",
+        "LinearStudy.nativeGradedModuleAwayTwistEmbedding_injective",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeHomogeneousAwayTwistModule",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_embedding"
       ]
     },
     {
