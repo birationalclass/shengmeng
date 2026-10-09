@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-09T16:37:40+08:00",
+  "checkedAt": "2026-10-09T17:10:22+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "ffeeccad3960f725fd533501c44cf7be9385d612f527aed7d961497690b678a1",
-      "lineCount": 3914
+      "sha256": "c9f4d2a4397c46a40047b7e1a12f81b593ff101b237128ad0c19bf885d0e1c0a",
+      "lineCount": 3950
     },
     {
       "path": "Linear/ActualCoordinateFiberPoints.lean",
@@ -1627,6 +1627,11 @@
       "lineCount": 57
     },
     {
+      "path": "Linear/ProjectiveCutAffineSheaf.lean",
+      "sha256": "ea1013849bc63d892e702a5ab87a19c37feb0d317114e46368e6ba62434f6aa5",
+      "lineCount": 57
+    },
+    {
       "path": "Linear/ProjectiveCutAllPrimeKoszul.lean",
       "sha256": "26209291f6797f68b6e01133f11cab8bcc62ee8c8a1998b4d7b09ea0f58ac78f",
       "lineCount": 84
@@ -2442,6 +2447,36 @@
       "lineCount": 89
     },
     {
+      "path": "Linear/TildeBasicOpenMono.lean",
+      "sha256": "c92b4035b60b5f587e29437afe8c9fd0a0b63e0caae6cb356b5fef71a836c566",
+      "lineCount": 36
+    },
+    {
+      "path": "Linear/TildeComplexExact.lean",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lineCount": 62
+    },
+    {
+      "path": "Linear/TildeKoszulStructureAugmentation.lean",
+      "sha256": "a739be823687caa4b33d5e570a71a4eacdc8c435fcca3e2b456e6495aad29771",
+      "lineCount": 47
+    },
+    {
+      "path": "Linear/TildePreservesMono.lean",
+      "sha256": "e1cbb671327b88e257d8fdb170901f2c53d68fba01b711a4745500f0759edbc2",
+      "lineCount": 46
+    },
+    {
+      "path": "Linear/TildePushforward.lean",
+      "sha256": "6f8cc19c5a145aafa3fd567cda601b5d6219a7ecd96bcd1357427b619864aacb",
+      "lineCount": 34
+    },
+    {
+      "path": "Linear/TildeQuotientPushforward.lean",
+      "sha256": "15ccc51b87d643fb9ba540c2bdabd1ebd7b7f464a009a4375179a1ae8fe07166",
+      "lineCount": 28
+    },
+    {
       "path": "Linear/TopDeterminant.lean",
       "sha256": "f5a953036500ed76a920918807de7a9df2eb3ee8410a33d1109ac50ea630086d",
       "lineCount": 65
@@ -2523,8 +2558,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "bdf29ce52c1f9e91df89083ac91f760886bfc2446c997d92d30542fd4c680134",
-      "lineCount": 791
+      "sha256": "dfb39dff0f8f4bb52bc7805e7e428d14a39ea3893b0882dadd6ed2064ec7ba98",
+      "lineCount": 799
     }
   ],
   "declarations": {
@@ -35554,6 +35589,53 @@
         "koszulComplex"
       ]
     },
+    "LinearStudy.projectivePulledLinearSection_exists_affineSheafKoszul_exactAt": {
+      "declaration": "LinearStudy.projectivePulledLinearSection_exists_affineSheafKoszul_exactAt",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCutAffineSheaf.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectivePulledLinearSection_exists_affineSheafKoszul_exactAt {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hproper : V.ideal.toIdeal ≠ ⊥) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite)\n  (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ c,\n    c ≠ 0 ∧\n      (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧\n        ∀ (w : Fin (r + 1) → ℂ),\n          (MvPolynomial.eval w) c ≠ 0 →\n            have I :=\n              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n                (LinearStudy.projectivePulledLinearSectionIdeal f V L w);\n            let C := MvPolynomial (Fin n) ℂ ⧸ I;\n            let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n            have H := fun i =>\n              (Ideal.Quotient.mk V.affineIdeal)\n                (LinearStudy.affineChartPolynomialMap\n                  ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));\n            w 0 ≠ 0 ∧\n              IsReduced C ∧\n                Module.Finite ℂ C ∧\n                  Nonempty (LinearStudy.projectivePulledLinearSectionScheme f V L hL w ≅ AlgebraicGeometry.Spec ↧C) ∧\n                    AlgebraicGeometry.IsReduced (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) ∧\n                      (∀ (j : ℕ),\n                          0 < j → HomologicalComplex.ExactAt (LinearStudy.tildeFunctionKoszulComplex (↧B) H) j) ∧\n                        QuasiIso (LinearStudy.tildeFunctionKoszulAugmentation (↧B) H) ∧\n                          QuasiIso (LinearStudy.tildeKoszulStructureAugmentation (↧B) H)",
+      "sha256": "ea1013849bc63d892e702a5ab87a19c37feb0d317114e46368e6ba62434f6aa5",
+      "lines": 41,
+      "moduleLineCount": 57,
+      "startLine": 15,
+      "endLine": 55,
+      "lineCount": 41,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionScheme",
+        "LinearStudy.projectivePulledLinearSection_exists_affineKoszul_exactAt",
+        "LinearStudy.tildeFunctionKoszulAugmentation",
+        "LinearStudy.tildeFunctionKoszulComplex",
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "LinearStudy.tildeKoszulStructureAugmentation",
+        "LinearStudy.tildeKoszulStructureAugmentation_quasiIso",
+        "LinearStudy.tilde_functionKoszul_augmentation_quasiIso",
+        "LinearStudy.tilde_functionKoszul_exactAt",
+        "koszulComplex"
+      ]
+    },
     "LinearStudy.projectivePulledLinearSection_exists_localKoszul_exactAt_all_primes": {
       "declaration": "LinearStudy.projectivePulledLinearSection_exists_localKoszul_exactAt_all_primes",
       "kind": "theorem",
@@ -49043,6 +49125,409 @@
         "LinearStudy.relativeJacobian"
       ]
     },
+    "LinearStudy.tilde_basicOpen_map_eq_localized": {
+      "declaration": "LinearStudy.tilde_basicOpen_map_eq_localized",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeBasicOpenMono.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_basicOpen_map_eq_localized.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N) (a : ↑R) :\n  ModuleCat.Hom.hom\n      ((AlgebraicGeometry.modulesSpecToSheaf.map (AlgebraicGeometry.tilde.map f)).hom.app\n        (Opposite.op (PrimeSpectrum.basicOpen a))) =\n    (IsLocalizedModule.map (Submonoid.powers a)\n        (ModuleCat.Hom.hom (AlgebraicGeometry.tilde.toOpen M (PrimeSpectrum.basicOpen a)))\n        (ModuleCat.Hom.hom (AlgebraicGeometry.tilde.toOpen N (PrimeSpectrum.basicOpen a))))\n      (ModuleCat.Hom.hom f)",
+      "sha256": "c92b4035b60b5f587e29437afe8c9fd0a0b63e0caae6cb356b5fef71a836c566",
+      "lines": 15,
+      "moduleLineCount": 36,
+      "startLine": 13,
+      "endLine": 27,
+      "lineCount": 15,
+      "dependencies": []
+    },
+    "LinearStudy.tilde_basicOpen_map_injective": {
+      "declaration": "LinearStudy.tilde_basicOpen_map_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeBasicOpenMono.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_basicOpen_map_injective.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N)\n  (hf : Function.Injective ⇑(ModuleCat.Hom.hom f)) (a : ↑R) :\n  Function.Injective\n    ⇑(ModuleCat.Hom.hom\n        ((AlgebraicGeometry.modulesSpecToSheaf.map (AlgebraicGeometry.tilde.map f)).hom.app\n          (Opposite.op (PrimeSpectrum.basicOpen a))))",
+      "sha256": "c92b4035b60b5f587e29437afe8c9fd0a0b63e0caae6cb356b5fef71a836c566",
+      "lines": 6,
+      "moduleLineCount": 36,
+      "startLine": 29,
+      "endLine": 34,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.tilde_basicOpen_map_eq_localized"
+      ]
+    },
+    "LinearStudy.tildeFunctionKoszulComplex": {
+      "declaration": "LinearStudy.tildeFunctionKoszulComplex",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeComplexExact.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeFunctionKoszulComplex.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  ChainComplex (AlgebraicGeometry.Spec R).Modules ℕ",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 5,
+      "moduleLineCount": 62,
+      "startLine": 13,
+      "endLine": 17,
+      "lineCount": 5,
+      "dependencies": [
+        "koszulComplex"
+      ]
+    },
+    "LinearStudy.tildeFunctionKoszulQuotientComplex": {
+      "declaration": "LinearStudy.tildeFunctionKoszulQuotientComplex",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeComplexExact.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeFunctionKoszulQuotientComplex.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  ChainComplex (AlgebraicGeometry.Spec R).Modules ℕ",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 5,
+      "moduleLineCount": 62,
+      "startLine": 19,
+      "endLine": 23,
+      "lineCount": 5,
+      "dependencies": []
+    },
+    "LinearStudy.tildeFunctionKoszulAugmentation": {
+      "declaration": "LinearStudy.tildeFunctionKoszulAugmentation",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeComplexExact.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeFunctionKoszulAugmentation.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  LinearStudy.tildeFunctionKoszulComplex R H ⟶ LinearStudy.tildeFunctionKoszulQuotientComplex R H",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 5,
+      "moduleLineCount": 62,
+      "startLine": 25,
+      "endLine": 29,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.functionKoszulAugmentationMap",
+        "LinearStudy.tildeFunctionKoszulComplex",
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "koszulComplex"
+      ]
+    },
+    "LinearStudy.tilde_chainComplex_exactAt": {
+      "declaration": "LinearStudy.tilde_chainComplex_exactAt",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeComplexExact.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_chainComplex_exactAt.{u} (R : CommRingCat) (K : ChainComplex (ModuleCat ↑R) ℕ) (j : ℕ)\n  (h : HomologicalComplex.ExactAt K j) :\n  (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).obj K).ExactAt j",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 8,
+      "moduleLineCount": 62,
+      "startLine": 31,
+      "endLine": 38,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.tilde_functor_preservesHomology"
+      ]
+    },
+    "LinearStudy.tilde_functionKoszul_exactAt": {
+      "declaration": "LinearStudy.tilde_functionKoszul_exactAt",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeComplexExact.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_functionKoszul_exactAt.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)\n  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) (j : ℕ)\n  (hj : 0 < j) :\n  (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).obj\n        (koszulComplex (Fintype.linearCombination (↑R) H))).ExactAt\n    j",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 10,
+      "moduleLineCount": 62,
+      "startLine": 40,
+      "endLine": 49,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.tilde_chainComplex_exactAt",
+        "koszulComplex"
+      ]
+    },
+    "LinearStudy.tilde_functionKoszul_augmentation_quasiIso": {
+      "declaration": "LinearStudy.tilde_functionKoszul_augmentation_quasiIso",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeComplexExact.lean",
+      "line": 53,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_functionKoszul_augmentation_quasiIso.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)\n  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) :\n  QuasiIso\n    (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).map\n      (LinearStudy.functionKoszulAugmentationMap H))",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 10,
+      "moduleLineCount": 62,
+      "startLine": 51,
+      "endLine": 60,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.functionKoszulAugmentationMap",
+        "LinearStudy.functionKoszulAugmentation_quasiIso_of_exact",
+        "LinearStudy.tilde_functor_preservesHomology",
+        "koszulComplex"
+      ]
+    },
+    "LinearStudy.tildeKoszulStructureTargetIso": {
+      "declaration": "LinearStudy.tildeKoszulStructureTargetIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeKoszulStructureAugmentation.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeKoszulStructureTargetIso.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  LinearStudy.tildeFunctionKoszulQuotientComplex R H ≅\n    (ChainComplex.single₀ (AlgebraicGeometry.Spec R).Modules).obj\n      ((AlgebraicGeometry.Scheme.Modules.pushforward\n            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj\n        (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ Ideal.span (Set.range H))).ringCatSheaf))",
+      "sha256": "a739be823687caa4b33d5e570a71a4eacdc8c435fcca3e2b456e6495aad29771",
+      "lines": 13,
+      "moduleLineCount": 47,
+      "startLine": 12,
+      "endLine": 24,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "LinearStudy.tildeQuotientPushforwardIso"
+      ]
+    },
+    "LinearStudy.tildeKoszulStructureAugmentation": {
+      "declaration": "LinearStudy.tildeKoszulStructureAugmentation",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeKoszulStructureAugmentation.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeKoszulStructureAugmentation.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  LinearStudy.tildeFunctionKoszulComplex R H ⟶\n    (ChainComplex.single₀ (AlgebraicGeometry.Spec R).Modules).obj\n      ((AlgebraicGeometry.Scheme.Modules.pushforward\n            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj\n        (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ Ideal.span (Set.range H))).ringCatSheaf))",
+      "sha256": "a739be823687caa4b33d5e570a71a4eacdc8c435fcca3e2b456e6495aad29771",
+      "lines": 9,
+      "moduleLineCount": 47,
+      "startLine": 26,
+      "endLine": 34,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.tildeFunctionKoszulAugmentation",
+        "LinearStudy.tildeFunctionKoszulComplex",
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "LinearStudy.tildeKoszulStructureTargetIso"
+      ]
+    },
+    "LinearStudy.tildeKoszulStructureAugmentation_quasiIso": {
+      "declaration": "LinearStudy.tildeKoszulStructureAugmentation_quasiIso",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeKoszulStructureAugmentation.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tildeKoszulStructureAugmentation_quasiIso.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)\n  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) :\n  QuasiIso (LinearStudy.tildeKoszulStructureAugmentation R H)",
+      "sha256": "a739be823687caa4b33d5e570a71a4eacdc8c435fcca3e2b456e6495aad29771",
+      "lines": 10,
+      "moduleLineCount": 47,
+      "startLine": 36,
+      "endLine": 45,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.tildeFunctionKoszulAugmentation",
+        "LinearStudy.tildeFunctionKoszulComplex",
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "LinearStudy.tildeKoszulStructureAugmentation",
+        "LinearStudy.tildeKoszulStructureTargetIso",
+        "LinearStudy.tilde_functionKoszul_augmentation_quasiIso",
+        "koszulComplex"
+      ]
+    },
+    "LinearStudy.tilde_open_map_injective": {
+      "declaration": "LinearStudy.tilde_open_map_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildePreservesMono.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_open_map_injective.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N)\n  (hf : Function.Injective ⇑(ModuleCat.Hom.hom f)) (U : (AlgebraicGeometry.Spec R).Opens) :\n  Function.Injective\n    ⇑(ModuleCat.Hom.hom\n        ((AlgebraicGeometry.modulesSpecToSheaf.map (AlgebraicGeometry.tilde.map f)).hom.app (Opposite.op U)))",
+      "sha256": "e1cbb671327b88e257d8fdb170901f2c53d68fba01b711a4745500f0759edbc2",
+      "lines": 14,
+      "moduleLineCount": 46,
+      "startLine": 14,
+      "endLine": 27,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.tilde_basicOpen_map_injective"
+      ]
+    },
+    "LinearStudy.tilde_map_mono": {
+      "declaration": "LinearStudy.tilde_map_mono",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildePreservesMono.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_map_mono.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N) [CategoryTheory.Mono f] :\n  CategoryTheory.Mono (AlgebraicGeometry.tilde.map f)",
+      "sha256": "e1cbb671327b88e257d8fdb170901f2c53d68fba01b711a4745500f0759edbc2",
+      "lines": 9,
+      "moduleLineCount": 46,
+      "startLine": 29,
+      "endLine": 37,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.tilde_open_map_injective"
+      ]
+    },
+    "LinearStudy.tilde_functor_preservesHomology": {
+      "declaration": "LinearStudy.tilde_functor_preservesHomology",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildePreservesMono.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_functor_preservesHomology.{u} (R : CommRingCat) :\n  (AlgebraicGeometry.tilde.functor R).PreservesHomology",
+      "sha256": "e1cbb671327b88e257d8fdb170901f2c53d68fba01b711a4745500f0759edbc2",
+      "lines": 6,
+      "moduleLineCount": 46,
+      "startLine": 39,
+      "endLine": 44,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.tilde_map_mono"
+      ]
+    },
+    "LinearStudy.tildePushforwardGlobalIso": {
+      "declaration": "LinearStudy.tildePushforwardGlobalIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildePushforward.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildePushforwardGlobalIso.{u} {R S : CommRingCat} (φ : R ⟶ S) (M : ModuleCat ↑S) :\n  AlgebraicGeometry.moduleSpecΓFunctor.obj\n      ((AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map φ)).obj (AlgebraicGeometry.tilde M)) ≅\n    (ModuleCat.restrictScalars (CommRingCat.Hom.hom φ)).obj M",
+      "sha256": "6f8cc19c5a145aafa3fd567cda601b5d6219a7ecd96bcd1357427b619864aacb",
+      "lines": 9,
+      "moduleLineCount": 34,
+      "startLine": 13,
+      "endLine": 21,
+      "lineCount": 9,
+      "dependencies": []
+    },
+    "LinearStudy.tildePushforwardIso": {
+      "declaration": "LinearStudy.tildePushforwardIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildePushforward.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildePushforwardIso.{u} {R S : CommRingCat} (φ : R ⟶ S) (M : ModuleCat ↑S) :\n  AlgebraicGeometry.tilde ((ModuleCat.restrictScalars (CommRingCat.Hom.hom φ)).obj M) ≅\n    (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map φ)).obj (AlgebraicGeometry.tilde M)",
+      "sha256": "6f8cc19c5a145aafa3fd567cda601b5d6219a7ecd96bcd1357427b619864aacb",
+      "lines": 10,
+      "moduleLineCount": 34,
+      "startLine": 23,
+      "endLine": 32,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.tildePushforwardGlobalIso"
+      ]
+    },
+    "LinearStudy.tildeQuotientPushforwardIso": {
+      "declaration": "LinearStudy.tildeQuotientPushforwardIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeQuotientPushforward.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeQuotientPushforwardIso.{u} (R : CommRingCat) (J : Ideal ↑R) :\n  AlgebraicGeometry.tilde ↧(↑R ⧸ J) ≅\n    (AlgebraicGeometry.Scheme.Modules.pushforward\n          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk J)))).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ J)).ringCatSheaf)",
+      "sha256": "15ccc51b87d643fb9ba540c2bdabd1ebd7b7f464a009a4375179a1ae8fe07166",
+      "lines": 14,
+      "moduleLineCount": 28,
+      "startLine": 13,
+      "endLine": 26,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.restrictedAlgebraModuleEquiv",
+        "LinearStudy.tildePushforwardIso"
+      ]
+    },
     "LinearStudy.homogeneousComponent_prod_top": {
       "declaration": "LinearStudy.homogeneousComponent_prod_top",
       "kind": "theorem",
@@ -54740,12 +55225,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 1470,
-  "definitionCount": 287,
+  "verifiedTheoremCount": 1480,
+  "definitionCount": 295,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
   "auditExitCode": 0,
-  "scope": "The full original LinearityTheoremGoal remains UNPROVED. The exact relative-Jacobian local Lemma31Goal is PROVED by lemma31_complete; its historical name corresponds to Lemma 2.1 of the CURRENT manuscript. Actual finite freeness, arbitrary parameter actions, nonzero Jacobian socle generation and the required pairings are constructed. Actual affine completely-intersecting polynomial quotients have constructed perfect pairings, low-degree vanishing, Jacobian trace and nonzero weighted relations under their explicit local generator hypotheses. Original smooth/point-local/formal and completion comparisons have been advanced, but the SAME original Setup fiber to the full projective relation has not been closed. From the original homogeneous endomorphism f and nonempty homogeneous prime V, the actual cone and chart pullbacks, function fields, ratio field, total invariance and original iterates are constructed. Original general WHOLE fibers are finite/reduced and smooth/unramified on constructed nonempty target opens. Actual cone Hilbert-Serre and the ORIGINAL Hilbert polynomials P,C give deg(C)=deg(P)+1, cone image degree=q^deg(C), and WHOLE projective/chart image degree=q^deg(P). NEW checkpoint 87 proves integral Krull-dimension preservation and compares ACTUAL finite Noether normalization with the ORIGINAL coordinate filtration using constructed representatives, module generators, multiplication matrices and bounded coefficients. The actual cumulative Hilbert degree equals actual cone Krull dimension. Constructed cone/chart/ratio fraction fields and transcendence-degree towers then prove deg(P)=r for the ACTUAL inhabited original affine chart ring Krull dimension AND its actual spectrum topological dimension. Therefore the ORIGINAL actual chart degree is q^r and EVERY original iterate has a constructed nonempty open where each WHOLE point fiber has (q^k)^r points. No dimension, cardinality, degree formula or normalization/growth bound is an input to the aggregate original-map theorems. The GLOBAL projective Proj/Scheme comparison, Bertini selection, original full relation assembly, canonical-sheaf fixed-twist injection, geometric Koszul/proper duality/uniform Serre lifting and actual Cartier/Bezout intersection remain OPEN. The final numeric contradiction is checked only as an implication under its explicit intersection inputs; it does not prove the full Linearity Theorem. NEW checkpoint 88 constructs the actual normalization/fraction scalar tower, separable characteristic-zero extension and differential base-change basis. It proves actual Krull dimension equals actual differential rank for finite-type characteristic-zero domains WITHOUT global smoothness. For the ORIGINAL inhabited projective chart, Hilbert degree, Krull dimension and actual differential rank are identified. One aggregate original-map theorem gives the SAME dimension for actual polynomial local parameters at EVERY original smooth chart point and for EVERY original iterate WHOLE general fiber point count. The original full projective polynomial relation and all remaining geometric lifting and intersection obligations above remain OPEN; the final theorem is still unproved. NEW checkpoint 89 intersects the ORIGINAL iterate good-locus and point-count opens, constructs their nonempty witness and preserves the SAME whole-fiber dimension count and actual reduced in-V equation quotient. EVERY actual coordinate point is linked to the SAME smooth target and genuine unramified chart map. Common actual ambient linear coordinates, original local generators and formal normal-ideal identities are constructed on the ENTIRE original fiber, with r identified with actual Krull/differential dimension and c=n-r. The ambient fiber may have normal nilpotents; reducedness is claimed only for the in-V quotient. The SAME-fiber common Jacobian socle and full homogeneous relation, all Section 4 lifting, global Proj/Bertini and actual intersection obligations remain OPEN. The final theorem is unproved. NEW checkpoint 90 constructs the ORIGINAL ambient fiber ideal from f_i-y_i*f_0, proves its quotient finite while retaining possible normal nilpotents, and compares its actual point set and radical with the reduced in-V fiber. The actual homogeneous fiber forms have no points at infinity; their dehomogenized equations have exact degree q, regular highest forms and origin-only highest-form zero locus. These are derived on the SAME original whole good fiber for EVERY iterate, together with actual common coordinates and local normal equations, not supplied as assumptions. This is ONE whole general fiber; simultaneous Bertini selection of d target points and their fiber union is not yet proved. Common normal Jacobian socle, the full homogeneous relation, Section 4 geometric lifting, global Proj comparison and actual intersection remain OPEN. The final theorem remains unproved. NEW checkpoint 91 constructs centered LINEAR polynomial target parameters from actual original smoothness, with count equal to the SAME actual differential/Krull dimension r. They generate the actual target local quotient maximal ideal on EVERY original iterate good fiber. Original local quotient pullbacks commute with independent source/target coordinate equivalences, preserving genuine unramification under an actual ambient ring-map diagram. Actual denominator localizations and rational chart pullbacks are compared under source coordinate equivalences. These coordinate bridges do not yet assemble the same-fiber common Jacobian socle or full homogeneous relation. Bertini d-fiber union, Section 4 geometric lifting and actual intersection remain OPEN; full theorem unproved. NEW checkpoint 92 constructs normal polynomial and formal first-order equations of the ORIGINAL ideal at the SAME actual smooth target, with c=n-r and the SAME original dimension r. The actual whole-fiber aggregate retains these target equations. Original rational source and linear target coordinate changes transport actual local unramification; affine centering transforms original numerators using the actual unchanged denominator. These bridges still do not discharge the SAME common-Jacobian socle or full homogeneous relation. Bertini union, Section 4, global Proj and actual intersection remain OPEN; the final theorem remains unproved. NEW checkpoint 93 derives both formal normal radical and tangent parameter generation from actual rational local unramification, actual polynomial source/target generators with normalized target first jets, and an actual ideal-power sandwich. It proves the SAME common normal polynomial Jacobian is a nonzero annihilator generator in the formal and actual Artinian local polynomial fiber ring; no socle or either formal condition is assumed. This remains conditional on those actual geometric inputs; their full original whole-fiber assembly and homogeneous relation are OPEN. Bertini, Section 4, global Proj and actual intersection remain OPEN. Final theorem UNPROVED. NEW checkpoint 94 constructs centered actual original target normal equations at the SAME whole-fiber target and with the SAME actual r. Actual local generators imply actual point-ideal containment. Original rational numerator formulas derive the target-centering diagram, transport genuine unramification and ideal-power inequalities; actual source denominator equivalences also transport the original power sandwich. No transformed inequality or unramification is newly assumed. Full original whole-fiber common-Jacobian assembly and homogeneous relation remain OPEN; Bertini, Section 4, global Proj and actual intersection OPEN. The final theorem remains UNPROVED. NEW checkpoint 95 derives original whole-fiber actual centered rational local inputs at EVERY source point over the SAME constructed good target open. Independent source coordinates, target reindexing, inverse linear coordinates and centering construct the actual map and primes. The original total invariance supplies the original and transformed ideal power sandwich; genuine unramification and actual origin/source-point prime identities are derived, not input. These are actual local inputs for the common-Jacobian bridge, not the completed homogeneous relation. The transformed ambient quotient finiteness, source/target normal data and SAME polynomial Jacobian still need full assembly; simultaneous Bertini union, Section 4, global Proj and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 96 constructs, for EVERY original iterate and every whole fiber on the SAME nonempty good target open, actual common linear source and centered target coordinates and the SAME polynomial normal Jacobian as a nonzero local socle generator at EVERY original source point, assuming the ACTUAL chart dimension r>0 explicitly. Original normal generators are constructed, not supplied. The transformed ambient equation quotient is finite, retains normal nilpotents, and its actual point evaluations are derived. This closes the original whole-fiber local-Jacobian assembly, not the full homogeneous relation: covering all maximal ideals, transformed leading forms, the residue/degree bound and original homogeneous conversion still need assembly. Simultaneous Bertini union, global Proj, Section 4 and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 97 covers EVERY maximal ideal of the SAME actual centered ambient equation quotient by constructing its original source point from its actual scalar residue map and the exact changed ambient ideal. The SAME original whole-fiber Jacobian now generates a NONZERO local socle at EVERY maximal ideal, for every original iterate with positive actual chart dimension explicit. Actual linear source coordinate changes and reindexing commute with homogeneous component projections. Neither reducedness of the ambient ring nor point coverage is assumed. Transformed leading-form regularity, degree bounds, residue assembly and ORIGINAL homogeneous relation remain OPEN. Bertini union, Section 4 and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 98 derives the SAME actual centered whole-fiber degree and highest system, the c(q-1) normal Jacobian bound, and the global nilradical annihilator for EVERY original iterate with positive actual chart dimension explicit. An actual quotient algebra equivalence transports the perfect multiplication pairing and low-degree vanishing. Actual zero-locus weights are constructed and all nonzero under explicit highest-system and annihilator hypotheses, without reducedness. Insertion into the ORIGINAL whole-fiber homogeneous relation is still OPEN. Bertini union, Section 4 geometry and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 99 proves the ORIGINAL homogeneous weighted relation on the SAME original whole good fiber for EVERY original iterate, on a constructed nonempty good target open, with actual r>0 and iterate degree >1 explicit. ALL coefficients are nonzero and ALL original homogeneous polynomials of degree t=r(q-1)-1 satisfy the relation. The vectors use normalized representatives (1,x). Actual source quotient algebra and point equivalences, degree preservation and dehomogenization are proved. Local socles, transformed highest system, degree bound and residue relation are derived from original f,V, rather than added as geometric inputs. Simultaneous Bertini target intersection/fiber union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 100 derives the ORIGINAL whole-good-fiber homogeneous relation for EVERY original iterate and ANY chosen nonzero homogeneous coordinate representatives. The degree remains t=r(q-1)-1 and every coefficient is nonzero. Coordinate zero and affine ratios are derived from actual projective equality, and the exact homogeneous scaling factor transports the already proved normalized relation. The original wrapper assumes no extra residue or normalized relation. Positive actual dimension, iterate degree >1 and the constructed good target open remain explicit. Simultaneous Bertini union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 101 constructs genuine degree-one linear Noether normalization for proper homogeneous ideals over infinite fields. The actual monic linear shear, integral elimination, homogeneous kernel and induction derive an injective integral and module-finite map whose generators are actual degree-one original forms. Its variable count equals actual Krull dimension, not an input parameter. Ordinary nonlinear Nagata normalization is not substituted. This is a foundation for simultaneous Bertini selection, NOT that selection: exact projective section degree, simultaneous smooth target points, global Proj/Scheme comparison, Section 4 geometric lifting and actual intersection remain OPEN; full theorem still UNPROVED. NEW checkpoint 102 proves basepoint-freeness of actual integral linear normalization by evaluating a monic equation on all scalar multiples over an infinite field. It constructs actual original degree-one forms L_0,...,L_r for V, the injective finite cone map defined by those forms, and no nonzero common zero on the original cone. The number r is derived from the actual Hilbert-polynomial degree and original affine-chart Krull dimension. No basepoint-free tuple, finite map or dimension is added as an input. Exact generic linear-section cardinality and its identification with degree V, simultaneous Bertini, global scheme comparison, Section 4 and actual intersection remain OPEN; the full theorem is UNPROVED. NEW checkpoint 103 derives generic unramification of a finite injective map in characteristic zero from its actual fraction map, then constructs a nonempty target open whose ENTIRE source preimage is smooth, unramified and avoids any specified nonzero source element. This is applied to the SAME actual original linear normalization of V, preserving its degree-one forms, finite injection, Hilbert dimension and no-basepoint conclusion. No good fiber, source smoothness or fraction separability is a new input. Exact reduced generic linear-section cardinality, its identification with degree V, simultaneous projective selection, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 104 constructs actual finite REDUCED tensor fibers K tensor_R A of the SAME original finite linear normalization on a nonempty scalar target open away from w0=0. Their actual vector dimension and scalar-point cardinality equal the generic module rank; no fiber reducedness, point count or rank formula is assumed. Comparison with actual projective linear-section points, generic rank equals degree V, simultaneous Bertini, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 105 proves actual tensor-point/coordinate-cone-fiber and projective-linear-section point equivalences, using the SAME original V, degree-one tuple and finite map. On a constructed nonempty target open, the ACTUAL projective linear section has cardinality equal to the actual generic module rank. Homogeneity and derived no-basepoint make normalization possible and unique. The rank equals Hilbert leading-coefficient degree V, simultaneous good selection/transversality, global scheme comparisons, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 106 derives homogeneous generic basis/control and two-sided total-degree filtered growth estimates retaining the ACTUAL generic rank. A combined original-V entry uses the SAME constructed finite linear projection for its actual projective section cardinality and both growth estimates. No rank, basis, growth estimate or projection is supplied as an extra input. Rank equals the Hilbert leading-coefficient degree V remains OPEN, as do simultaneous good selection/transversality, global Scheme comparisons, Section 4 uniform lifting and actual intersection. The full theorem remains UNPROVED. NEW checkpoint 107 proves generic rank equals the factorial-normalized leading coefficient of the ACTUAL original homogeneous Hilbert polynomial. An exact source monomial count, same-projection two-sided filtered growth and cumulative/component leading-coefficient comparison prove the equality; degree V is not redefined as rank to bypass it. The ORIGINAL V alone now gives generic actual linear sections of cardinality d, with d>0 and d=r! times the actual Hilbert leading coefficient. Simultaneous original-f good target selection and transversality, global Scheme comparison, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 108 constructs d=degree V simultaneous original-f good targets on one actual linear section for EVERY original iterate. A homogeneous lift of the actual affine good-open equation and finite-projection whole-fiber avoidance ensure ALL d points lie in the good open. Original chart Krull dimension equals the projection dimension; the same original complete fibers have q^r points and actual ambient geometry/homogeneous relations. Fixed projection and d remain independent of the iterate; selected section and fibers may vary. Global scheme intersections/transversality and actual pulled-back common-zero scheme comparisons, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 109 constructs r actual independent linear equations of the SAME original projective section and the actual degree-q pullbacks. Their common projective POINT set on V is proved equal to the union of the original whole fibers over ALL section targets, with actual projective representative scaling accounted for. This is point-set equality, NOT a nonreduced scheme equality. Global Scheme intersection/transversality and reducedness, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 110 explicitly transports homogeneous relations to the ACTUAL whole PROJECTIVE point fibers for arbitrary chosen nonzero representatives, with the actual affine/projective equivalence action proved. Intersecting BOTH original good opens retains no-infinity and actual whole-fiber q^r cardinality for ALL d targets simultaneously. The original f and V are not replaced by an abstract point family. Scheme intersection/transversality/reducedness, Section 4 uniform lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 111 constructs the original degree-d target enumeration, pairwise disjoint actual WHOLE projective fibers, their inverse-image union S of cardinality d*q^r, and the actual degree-q common POINTS. For EVERY chosen nonzero representative system on S, the first-fiber relation extends by zero to a nonzero actual evaluation functional annihilating ALL degree-t homogeneous forms. This derives the finite-point input to Section 4 from original f,V, without an abstract assumed family or assumed Koszul/cohomology/duality conclusion. Scheme intersections, uniform geometric lifting, actual intersection and main theorem remain OPEN. NEW checkpoint 112 proves an actual coefficient-field algebra equivalence (K[X]/I) tensor_(K[Y]) K = K[X]/(I+(L_i-w_i)), deriving its universal property and scalar compatibilities. For an original finite dominant polynomial projection over an algebraically closed characteristic-zero field, it derives a nonempty target open with radical original equation-fiber ideals, finite reduced quotients and dimensions/point counts equal to original generic rank. This is an affine equation-ring bridge, NOT a global projective Proj comparison or all pullback scheme transversality; it does not redefine generic rank as degree V. Geometric Koszul/duality, uniform fixed-degree Q, actual intersection and the full theorem remain OPEN. NEW checkpoint 113 connects the equation-ring radicality to ONE original degree-one projection derived from the original projective V, on the SAME nonempty open as its actual projective section cardinality. Its original equation quotient has dimension and scalar-point cardinality d, and d=r! times the original Hilbert leading coefficient, without redefining degree as rank. This does not assert a global Proj scheme equivalence or all endomorphism pullback scheme transversality. Section 4 lifting and actual intersection remain OPEN. NEW checkpoint 114 proves the actual original dehomogenized coordinate quotient is ring-isomorphic to mathlib HomogeneousLocalization.Away of the original graded quotient at X0. Using the pinned native Proj basicOpenIsoSpec, its actual first-coordinate open SUBSCHEME is isomorphic to Spec of that original affine coordinate quotient. This compares real rings and schemes, not just points. It does not yet construct all-chart gluing, original-endomorphism scheme pullback/transversality or Section 4 uniform lifting, and does not claim the full theorem. NEW checkpoint 115 strengthens the native chart equivalence by ORIGINAL coordinate compatibility and the actual homogeneous fraction H/X0^m formula. From the original f,V it constructs an actual scheme morphism on the denominator OPEN SUBSCHEME of the native first-coordinate chart. Its native Spec diagram commutes with the same original-f pullback. It proves exact pullback equality of arbitrary homogeneous defining ideals, including nilpotents, on that open; not merely equality of point sets or radicals. Global all-chart gluing, projective common-zero scheme coverage and transversality, geometric Koszul, canonical/duality/Serre fixed-degree lifting, and actual intersection remain OPEN. Main theorem UNPROVED. NEW checkpoint 116 proves the actual CLOSED native-chart zero-scheme pullback square and closed immersions using quotient pushouts, retaining nilpotents. For the ORIGINAL finite linear normalization it constructs a nonempty target open with REDUCED ACTUAL native first-chart linear sections. Reducedness follows from a proved original affine-section quotient comparison, original denominator invertibility and the actual native quotient ring equivalence, not an assumed reduced zero scheme. The SOURCE pulled common-zero scheme reducedness, all-chart/global coverage, geometric Koszul, canonical/duality/Serre fixed-degree Q lifting and actual intersection remain OPEN. Main theorem UNPROVED. NEW checkpoint 117 DERIVES a nonempty target open on which the SAME original-f pulled common-zero quotient in the original first-coordinate denominator chart is FINITE and REDUCED. It proves exact point-ideal extension equals the actual fiber-map kernel, transports finite reduced target sections through their actual residue points and pairwise-coprime ideal intersections, and derives ALL fiber conditions from original good-open constructors. No assumed reduced source cut or radicalization is used. The actual closed-source Spec quotient is reduced. Earlier notes marking SOURCE reducedness open now apply only to global Proj coverage/all-chart gluing. Those global bridges, geometric Koszul, canonical/duality/Serre fixed-degree Q lifting and actual intersection remain OPEN. Full Linearity Theorem UNPROVED. NEW checkpoint 118 DERIVES full native Proj coverage of the ACTUAL original-f pulled homogeneous section cut, including nonclosed primes and unreduced quotient structure. It proves a general first native chart ring equivalence for ANY homogeneous polynomial ideal, without primality or radicality. Original f0 is a unit in the whole actual affine cut quotient, which is isomorphic to the prior finite reduced denominator quotient. On a constructed nonempty open, the ENTIRE actual native pulled section scheme is isomorphic to Spec of its actual finite reduced affine quotient and is REDUCED. No source reducedness, native-chart comparison or coverage is supplied as an assumption. Prior global coverage/source-cut reducedness OPEN notes are superseded by this theorem. The native cut-to-original V closed embedding, intrinsic point/degree interfaces, geometric Koszul, canonical/duality/Serre uniform fixed-degree lifting and actual intersection remain OPEN. Full Linearity Theorem UNPROVED. NEW checkpoint 119 combines the SAME original f,V, fixed finite linear normalization, Hilbert polynomial and degree-d target section with BOTH the actual whole-fiber nonzero supported evaluation relation and the ENTIRE native finite reduced pulled-cut scheme, for every admissible iterate on a constructed nonempty common parameter open. It uses the product of the two proved good-open polynomials and preserves all original equations and quantifiers. No unrelated point family, source reducedness or coverage is assumed. Natural native cut-to-V embedding, intrinsic scheme point/degree interfaces, geometric Koszul, canonical embedding and proper-duality/Serre fixed-m polynomial lifting and actual intersection remain OPEN. Full Linearity Theorem UNPROVED. NEW checkpoint 120 constructs the genuine native Proj closed immersion for any surjective graded map. It proves the closed point embedding by homogeneous prime ideals and surjectivity of the actual native stalk maps, without reducedness or integrality assumptions. Applying the SAME original homogeneous quotient factor map constructs the pulled cut closed embedding into original V. This closes the native cut-to-V embedding bridge; it does not prove geometric Koszul exactness, canonical embedding, proper-duality or Serre fixed-degree polynomial lifting, nor actual intersection. Full Linearity Theorem UNPROVED. NEW checkpoint 121 constructs a nonempty parameter open of actual original pulled cuts that are finite reduced native schemes and lie in the original smooth locus. Original dehomogenized cut equations are proved regular in actual variety local rings at cut points using local polynomial parameters and the ORIGINAL ideal, without global Cohen-Macaulayness. At every prime outside the cut an ORIGINAL equation is a unit; its actual exterior-power Koszul complex is proved exact by the genuine long homology sequence. Artinianity and Nullstellensatz derive rational coordinates of every cut prime. Thus all positive-degree localized Koszul complexes of the original affine variety are exact. This does NOT yet prove global affine Koszul exactness, twisted native sheaf Koszul exactness, proper duality, canonical embedding, Serre fixed-degree Q lifting or actual intersection. Full Linearity Theorem UNPROVED. NEW checkpoint 122 reflects actual tensor-localized module and chain complex exactness at maximal ideals to actual global affine exactness. The categorical scalar-extension functor is compared to the original algebra tensor product by a constructed natural additive equivalence, not an assumed equality. For a constructed nonempty parameter open of original f,V cuts, the ORIGINAL exterior-power affine Koszul complex is proved positive-exact, its natural augmentation is a quasi-isomorphism and a projective resolution using that SAME complex is constructed. Its quotient is identified naturally on polynomial classes with the whole ORIGINAL cut coordinate ring. No global smoothness, global CM or global regular-sequence assumption on V is introduced. This closes the previously open global AFFINE Koszul step only. The native global TWISTED SHEAF Koszul, proper duality, canonical embedding, Serre fixed-degree Q lifting and actual intersection remain open. Full Linearity Theorem UNPROVED.",
+  "scope": "The full original LinearityTheoremGoal remains UNPROVED. The exact relative-Jacobian local Lemma31Goal is PROVED by lemma31_complete; its historical name corresponds to Lemma 2.1 of the CURRENT manuscript. Actual finite freeness, arbitrary parameter actions, nonzero Jacobian socle generation and the required pairings are constructed. Actual affine completely-intersecting polynomial quotients have constructed perfect pairings, low-degree vanishing, Jacobian trace and nonzero weighted relations under their explicit local generator hypotheses. Original smooth/point-local/formal and completion comparisons have been advanced, but the SAME original Setup fiber to the full projective relation has not been closed. From the original homogeneous endomorphism f and nonempty homogeneous prime V, the actual cone and chart pullbacks, function fields, ratio field, total invariance and original iterates are constructed. Original general WHOLE fibers are finite/reduced and smooth/unramified on constructed nonempty target opens. Actual cone Hilbert-Serre and the ORIGINAL Hilbert polynomials P,C give deg(C)=deg(P)+1, cone image degree=q^deg(C), and WHOLE projective/chart image degree=q^deg(P). NEW checkpoint 87 proves integral Krull-dimension preservation and compares ACTUAL finite Noether normalization with the ORIGINAL coordinate filtration using constructed representatives, module generators, multiplication matrices and bounded coefficients. The actual cumulative Hilbert degree equals actual cone Krull dimension. Constructed cone/chart/ratio fraction fields and transcendence-degree towers then prove deg(P)=r for the ACTUAL inhabited original affine chart ring Krull dimension AND its actual spectrum topological dimension. Therefore the ORIGINAL actual chart degree is q^r and EVERY original iterate has a constructed nonempty open where each WHOLE point fiber has (q^k)^r points. No dimension, cardinality, degree formula or normalization/growth bound is an input to the aggregate original-map theorems. The GLOBAL projective Proj/Scheme comparison, Bertini selection, original full relation assembly, canonical-sheaf fixed-twist injection, geometric Koszul/proper duality/uniform Serre lifting and actual Cartier/Bezout intersection remain OPEN. The final numeric contradiction is checked only as an implication under its explicit intersection inputs; it does not prove the full Linearity Theorem. NEW checkpoint 88 constructs the actual normalization/fraction scalar tower, separable characteristic-zero extension and differential base-change basis. It proves actual Krull dimension equals actual differential rank for finite-type characteristic-zero domains WITHOUT global smoothness. For the ORIGINAL inhabited projective chart, Hilbert degree, Krull dimension and actual differential rank are identified. One aggregate original-map theorem gives the SAME dimension for actual polynomial local parameters at EVERY original smooth chart point and for EVERY original iterate WHOLE general fiber point count. The original full projective polynomial relation and all remaining geometric lifting and intersection obligations above remain OPEN; the final theorem is still unproved. NEW checkpoint 89 intersects the ORIGINAL iterate good-locus and point-count opens, constructs their nonempty witness and preserves the SAME whole-fiber dimension count and actual reduced in-V equation quotient. EVERY actual coordinate point is linked to the SAME smooth target and genuine unramified chart map. Common actual ambient linear coordinates, original local generators and formal normal-ideal identities are constructed on the ENTIRE original fiber, with r identified with actual Krull/differential dimension and c=n-r. The ambient fiber may have normal nilpotents; reducedness is claimed only for the in-V quotient. The SAME-fiber common Jacobian socle and full homogeneous relation, all Section 4 lifting, global Proj/Bertini and actual intersection obligations remain OPEN. The final theorem is unproved. NEW checkpoint 90 constructs the ORIGINAL ambient fiber ideal from f_i-y_i*f_0, proves its quotient finite while retaining possible normal nilpotents, and compares its actual point set and radical with the reduced in-V fiber. The actual homogeneous fiber forms have no points at infinity; their dehomogenized equations have exact degree q, regular highest forms and origin-only highest-form zero locus. These are derived on the SAME original whole good fiber for EVERY iterate, together with actual common coordinates and local normal equations, not supplied as assumptions. This is ONE whole general fiber; simultaneous Bertini selection of d target points and their fiber union is not yet proved. Common normal Jacobian socle, the full homogeneous relation, Section 4 geometric lifting, global Proj comparison and actual intersection remain OPEN. The final theorem remains unproved. NEW checkpoint 91 constructs centered LINEAR polynomial target parameters from actual original smoothness, with count equal to the SAME actual differential/Krull dimension r. They generate the actual target local quotient maximal ideal on EVERY original iterate good fiber. Original local quotient pullbacks commute with independent source/target coordinate equivalences, preserving genuine unramification under an actual ambient ring-map diagram. Actual denominator localizations and rational chart pullbacks are compared under source coordinate equivalences. These coordinate bridges do not yet assemble the same-fiber common Jacobian socle or full homogeneous relation. Bertini d-fiber union, Section 4 geometric lifting and actual intersection remain OPEN; full theorem unproved. NEW checkpoint 92 constructs normal polynomial and formal first-order equations of the ORIGINAL ideal at the SAME actual smooth target, with c=n-r and the SAME original dimension r. The actual whole-fiber aggregate retains these target equations. Original rational source and linear target coordinate changes transport actual local unramification; affine centering transforms original numerators using the actual unchanged denominator. These bridges still do not discharge the SAME common-Jacobian socle or full homogeneous relation. Bertini union, Section 4, global Proj and actual intersection remain OPEN; the final theorem remains unproved. NEW checkpoint 93 derives both formal normal radical and tangent parameter generation from actual rational local unramification, actual polynomial source/target generators with normalized target first jets, and an actual ideal-power sandwich. It proves the SAME common normal polynomial Jacobian is a nonzero annihilator generator in the formal and actual Artinian local polynomial fiber ring; no socle or either formal condition is assumed. This remains conditional on those actual geometric inputs; their full original whole-fiber assembly and homogeneous relation are OPEN. Bertini, Section 4, global Proj and actual intersection remain OPEN. Final theorem UNPROVED. NEW checkpoint 94 constructs centered actual original target normal equations at the SAME whole-fiber target and with the SAME actual r. Actual local generators imply actual point-ideal containment. Original rational numerator formulas derive the target-centering diagram, transport genuine unramification and ideal-power inequalities; actual source denominator equivalences also transport the original power sandwich. No transformed inequality or unramification is newly assumed. Full original whole-fiber common-Jacobian assembly and homogeneous relation remain OPEN; Bertini, Section 4, global Proj and actual intersection OPEN. The final theorem remains UNPROVED. NEW checkpoint 95 derives original whole-fiber actual centered rational local inputs at EVERY source point over the SAME constructed good target open. Independent source coordinates, target reindexing, inverse linear coordinates and centering construct the actual map and primes. The original total invariance supplies the original and transformed ideal power sandwich; genuine unramification and actual origin/source-point prime identities are derived, not input. These are actual local inputs for the common-Jacobian bridge, not the completed homogeneous relation. The transformed ambient quotient finiteness, source/target normal data and SAME polynomial Jacobian still need full assembly; simultaneous Bertini union, Section 4, global Proj and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 96 constructs, for EVERY original iterate and every whole fiber on the SAME nonempty good target open, actual common linear source and centered target coordinates and the SAME polynomial normal Jacobian as a nonzero local socle generator at EVERY original source point, assuming the ACTUAL chart dimension r>0 explicitly. Original normal generators are constructed, not supplied. The transformed ambient equation quotient is finite, retains normal nilpotents, and its actual point evaluations are derived. This closes the original whole-fiber local-Jacobian assembly, not the full homogeneous relation: covering all maximal ideals, transformed leading forms, the residue/degree bound and original homogeneous conversion still need assembly. Simultaneous Bertini union, global Proj, Section 4 and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 97 covers EVERY maximal ideal of the SAME actual centered ambient equation quotient by constructing its original source point from its actual scalar residue map and the exact changed ambient ideal. The SAME original whole-fiber Jacobian now generates a NONZERO local socle at EVERY maximal ideal, for every original iterate with positive actual chart dimension explicit. Actual linear source coordinate changes and reindexing commute with homogeneous component projections. Neither reducedness of the ambient ring nor point coverage is assumed. Transformed leading-form regularity, degree bounds, residue assembly and ORIGINAL homogeneous relation remain OPEN. Bertini union, Section 4 and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 98 derives the SAME actual centered whole-fiber degree and highest system, the c(q-1) normal Jacobian bound, and the global nilradical annihilator for EVERY original iterate with positive actual chart dimension explicit. An actual quotient algebra equivalence transports the perfect multiplication pairing and low-degree vanishing. Actual zero-locus weights are constructed and all nonzero under explicit highest-system and annihilator hypotheses, without reducedness. Insertion into the ORIGINAL whole-fiber homogeneous relation is still OPEN. Bertini union, Section 4 geometry and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 99 proves the ORIGINAL homogeneous weighted relation on the SAME original whole good fiber for EVERY original iterate, on a constructed nonempty good target open, with actual r>0 and iterate degree >1 explicit. ALL coefficients are nonzero and ALL original homogeneous polynomials of degree t=r(q-1)-1 satisfy the relation. The vectors use normalized representatives (1,x). Actual source quotient algebra and point equivalences, degree preservation and dehomogenization are proved. Local socles, transformed highest system, degree bound and residue relation are derived from original f,V, rather than added as geometric inputs. Simultaneous Bertini target intersection/fiber union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 100 derives the ORIGINAL whole-good-fiber homogeneous relation for EVERY original iterate and ANY chosen nonzero homogeneous coordinate representatives. The degree remains t=r(q-1)-1 and every coefficient is nonzero. Coordinate zero and affine ratios are derived from actual projective equality, and the exact homogeneous scaling factor transports the already proved normalized relation. The original wrapper assumes no extra residue or normalized relation. Positive actual dimension, iterate degree >1 and the constructed good target open remain explicit. Simultaneous Bertini union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 101 constructs genuine degree-one linear Noether normalization for proper homogeneous ideals over infinite fields. The actual monic linear shear, integral elimination, homogeneous kernel and induction derive an injective integral and module-finite map whose generators are actual degree-one original forms. Its variable count equals actual Krull dimension, not an input parameter. Ordinary nonlinear Nagata normalization is not substituted. This is a foundation for simultaneous Bertini selection, NOT that selection: exact projective section degree, simultaneous smooth target points, global Proj/Scheme comparison, Section 4 geometric lifting and actual intersection remain OPEN; full theorem still UNPROVED. NEW checkpoint 102 proves basepoint-freeness of actual integral linear normalization by evaluating a monic equation on all scalar multiples over an infinite field. It constructs actual original degree-one forms L_0,...,L_r for V, the injective finite cone map defined by those forms, and no nonzero common zero on the original cone. The number r is derived from the actual Hilbert-polynomial degree and original affine-chart Krull dimension. No basepoint-free tuple, finite map or dimension is added as an input. Exact generic linear-section cardinality and its identification with degree V, simultaneous Bertini, global scheme comparison, Section 4 and actual intersection remain OPEN; the full theorem is UNPROVED. NEW checkpoint 103 derives generic unramification of a finite injective map in characteristic zero from its actual fraction map, then constructs a nonempty target open whose ENTIRE source preimage is smooth, unramified and avoids any specified nonzero source element. This is applied to the SAME actual original linear normalization of V, preserving its degree-one forms, finite injection, Hilbert dimension and no-basepoint conclusion. No good fiber, source smoothness or fraction separability is a new input. Exact reduced generic linear-section cardinality, its identification with degree V, simultaneous projective selection, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 104 constructs actual finite REDUCED tensor fibers K tensor_R A of the SAME original finite linear normalization on a nonempty scalar target open away from w0=0. Their actual vector dimension and scalar-point cardinality equal the generic module rank; no fiber reducedness, point count or rank formula is assumed. Comparison with actual projective linear-section points, generic rank equals degree V, simultaneous Bertini, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 105 proves actual tensor-point/coordinate-cone-fiber and projective-linear-section point equivalences, using the SAME original V, degree-one tuple and finite map. On a constructed nonempty target open, the ACTUAL projective linear section has cardinality equal to the actual generic module rank. Homogeneity and derived no-basepoint make normalization possible and unique. The rank equals Hilbert leading-coefficient degree V, simultaneous good selection/transversality, global scheme comparisons, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 106 derives homogeneous generic basis/control and two-sided total-degree filtered growth estimates retaining the ACTUAL generic rank. A combined original-V entry uses the SAME constructed finite linear projection for its actual projective section cardinality and both growth estimates. No rank, basis, growth estimate or projection is supplied as an extra input. Rank equals the Hilbert leading-coefficient degree V remains OPEN, as do simultaneous good selection/transversality, global Scheme comparisons, Section 4 uniform lifting and actual intersection. The full theorem remains UNPROVED. NEW checkpoint 107 proves generic rank equals the factorial-normalized leading coefficient of the ACTUAL original homogeneous Hilbert polynomial. An exact source monomial count, same-projection two-sided filtered growth and cumulative/component leading-coefficient comparison prove the equality; degree V is not redefined as rank to bypass it. The ORIGINAL V alone now gives generic actual linear sections of cardinality d, with d>0 and d=r! times the actual Hilbert leading coefficient. Simultaneous original-f good target selection and transversality, global Scheme comparison, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 108 constructs d=degree V simultaneous original-f good targets on one actual linear section for EVERY original iterate. A homogeneous lift of the actual affine good-open equation and finite-projection whole-fiber avoidance ensure ALL d points lie in the good open. Original chart Krull dimension equals the projection dimension; the same original complete fibers have q^r points and actual ambient geometry/homogeneous relations. Fixed projection and d remain independent of the iterate; selected section and fibers may vary. Global scheme intersections/transversality and actual pulled-back common-zero scheme comparisons, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 109 constructs r actual independent linear equations of the SAME original projective section and the actual degree-q pullbacks. Their common projective POINT set on V is proved equal to the union of the original whole fibers over ALL section targets, with actual projective representative scaling accounted for. This is point-set equality, NOT a nonreduced scheme equality. Global Scheme intersection/transversality and reducedness, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 110 explicitly transports homogeneous relations to the ACTUAL whole PROJECTIVE point fibers for arbitrary chosen nonzero representatives, with the actual affine/projective equivalence action proved. Intersecting BOTH original good opens retains no-infinity and actual whole-fiber q^r cardinality for ALL d targets simultaneously. The original f and V are not replaced by an abstract point family. Scheme intersection/transversality/reducedness, Section 4 uniform lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 111 constructs the original degree-d target enumeration, pairwise disjoint actual WHOLE projective fibers, their inverse-image union S of cardinality d*q^r, and the actual degree-q common POINTS. For EVERY chosen nonzero representative system on S, the first-fiber relation extends by zero to a nonzero actual evaluation functional annihilating ALL degree-t homogeneous forms. This derives the finite-point input to Section 4 from original f,V, without an abstract assumed family or assumed Koszul/cohomology/duality conclusion. Scheme intersections, uniform geometric lifting, actual intersection and main theorem remain OPEN. NEW checkpoint 112 proves an actual coefficient-field algebra equivalence (K[X]/I) tensor_(K[Y]) K = K[X]/(I+(L_i-w_i)), deriving its universal property and scalar compatibilities. For an original finite dominant polynomial projection over an algebraically closed characteristic-zero field, it derives a nonempty target open with radical original equation-fiber ideals, finite reduced quotients and dimensions/point counts equal to original generic rank. This is an affine equation-ring bridge, NOT a global projective Proj comparison or all pullback scheme transversality; it does not redefine generic rank as degree V. Geometric Koszul/duality, uniform fixed-degree Q, actual intersection and the full theorem remain OPEN. NEW checkpoint 113 connects the equation-ring radicality to ONE original degree-one projection derived from the original projective V, on the SAME nonempty open as its actual projective section cardinality. Its original equation quotient has dimension and scalar-point cardinality d, and d=r! times the original Hilbert leading coefficient, without redefining degree as rank. This does not assert a global Proj scheme equivalence or all endomorphism pullback scheme transversality. Section 4 lifting and actual intersection remain OPEN. NEW checkpoint 114 proves the actual original dehomogenized coordinate quotient is ring-isomorphic to mathlib HomogeneousLocalization.Away of the original graded quotient at X0. Using the pinned native Proj basicOpenIsoSpec, its actual first-coordinate open SUBSCHEME is isomorphic to Spec of that original affine coordinate quotient. This compares real rings and schemes, not just points. It does not yet construct all-chart gluing, original-endomorphism scheme pullback/transversality or Section 4 uniform lifting, and does not claim the full theorem. NEW checkpoint 115 strengthens the native chart equivalence by ORIGINAL coordinate compatibility and the actual homogeneous fraction H/X0^m formula. From the original f,V it constructs an actual scheme morphism on the denominator OPEN SUBSCHEME of the native first-coordinate chart. Its native Spec diagram commutes with the same original-f pullback. It proves exact pullback equality of arbitrary homogeneous defining ideals, including nilpotents, on that open; not merely equality of point sets or radicals. Global all-chart gluing, projective common-zero scheme coverage and transversality, geometric Koszul, canonical/duality/Serre fixed-degree lifting, and actual intersection remain OPEN. Main theorem UNPROVED. NEW checkpoint 116 proves the actual CLOSED native-chart zero-scheme pullback square and closed immersions using quotient pushouts, retaining nilpotents. For the ORIGINAL finite linear normalization it constructs a nonempty target open with REDUCED ACTUAL native first-chart linear sections. Reducedness follows from a proved original affine-section quotient comparison, original denominator invertibility and the actual native quotient ring equivalence, not an assumed reduced zero scheme. The SOURCE pulled common-zero scheme reducedness, all-chart/global coverage, geometric Koszul, canonical/duality/Serre fixed-degree Q lifting and actual intersection remain OPEN. Main theorem UNPROVED. NEW checkpoint 117 DERIVES a nonempty target open on which the SAME original-f pulled common-zero quotient in the original first-coordinate denominator chart is FINITE and REDUCED. It proves exact point-ideal extension equals the actual fiber-map kernel, transports finite reduced target sections through their actual residue points and pairwise-coprime ideal intersections, and derives ALL fiber conditions from original good-open constructors. No assumed reduced source cut or radicalization is used. The actual closed-source Spec quotient is reduced. Earlier notes marking SOURCE reducedness open now apply only to global Proj coverage/all-chart gluing. Those global bridges, geometric Koszul, canonical/duality/Serre fixed-degree Q lifting and actual intersection remain OPEN. Full Linearity Theorem UNPROVED. NEW checkpoint 118 DERIVES full native Proj coverage of the ACTUAL original-f pulled homogeneous section cut, including nonclosed primes and unreduced quotient structure. It proves a general first native chart ring equivalence for ANY homogeneous polynomial ideal, without primality or radicality. Original f0 is a unit in the whole actual affine cut quotient, which is isomorphic to the prior finite reduced denominator quotient. On a constructed nonempty open, the ENTIRE actual native pulled section scheme is isomorphic to Spec of its actual finite reduced affine quotient and is REDUCED. No source reducedness, native-chart comparison or coverage is supplied as an assumption. Prior global coverage/source-cut reducedness OPEN notes are superseded by this theorem. The native cut-to-original V closed embedding, intrinsic point/degree interfaces, geometric Koszul, canonical/duality/Serre uniform fixed-degree lifting and actual intersection remain OPEN. Full Linearity Theorem UNPROVED. NEW checkpoint 119 combines the SAME original f,V, fixed finite linear normalization, Hilbert polynomial and degree-d target section with BOTH the actual whole-fiber nonzero supported evaluation relation and the ENTIRE native finite reduced pulled-cut scheme, for every admissible iterate on a constructed nonempty common parameter open. It uses the product of the two proved good-open polynomials and preserves all original equations and quantifiers. No unrelated point family, source reducedness or coverage is assumed. Natural native cut-to-V embedding, intrinsic scheme point/degree interfaces, geometric Koszul, canonical embedding and proper-duality/Serre fixed-m polynomial lifting and actual intersection remain OPEN. Full Linearity Theorem UNPROVED. NEW checkpoint 120 constructs the genuine native Proj closed immersion for any surjective graded map. It proves the closed point embedding by homogeneous prime ideals and surjectivity of the actual native stalk maps, without reducedness or integrality assumptions. Applying the SAME original homogeneous quotient factor map constructs the pulled cut closed embedding into original V. This closes the native cut-to-V embedding bridge; it does not prove geometric Koszul exactness, canonical embedding, proper-duality or Serre fixed-degree polynomial lifting, nor actual intersection. Full Linearity Theorem UNPROVED. NEW checkpoint 121 constructs a nonempty parameter open of actual original pulled cuts that are finite reduced native schemes and lie in the original smooth locus. Original dehomogenized cut equations are proved regular in actual variety local rings at cut points using local polynomial parameters and the ORIGINAL ideal, without global Cohen-Macaulayness. At every prime outside the cut an ORIGINAL equation is a unit; its actual exterior-power Koszul complex is proved exact by the genuine long homology sequence. Artinianity and Nullstellensatz derive rational coordinates of every cut prime. Thus all positive-degree localized Koszul complexes of the original affine variety are exact. This does NOT yet prove global affine Koszul exactness, twisted native sheaf Koszul exactness, proper duality, canonical embedding, Serre fixed-degree Q lifting or actual intersection. Full Linearity Theorem UNPROVED. NEW checkpoint 122 reflects actual tensor-localized module and chain complex exactness at maximal ideals to actual global affine exactness. The categorical scalar-extension functor is compared to the original algebra tensor product by a constructed natural additive equivalence, not an assumed equality. For a constructed nonempty parameter open of original f,V cuts, the ORIGINAL exterior-power affine Koszul complex is proved positive-exact, its natural augmentation is a quasi-isomorphism and a projective resolution using that SAME complex is constructed. Its quotient is identified naturally on polynomial classes with the whole ORIGINAL cut coordinate ring. No global smoothness, global CM or global regular-sequence assumption on V is introduced. This closes the previously open global AFFINE Koszul step only. The native global TWISTED SHEAF Koszul, proper duality, canonical embedding, Serre fixed-degree Q lifting and actual intersection remain open. Full Linearity Theorem UNPROVED. NEW checkpoint 123 derives exactness of the ACTUAL native associated sheaf Koszul on Spec of the original affine V coordinate ring. The native tilde functor preserves monomorphisms by actual basic-open localization and the sheaf cover; the existing adjunction supplies cokernel preservation, hence actual homology preservation. The mapped natural quotient augmentation is a quasi-isomorphism. Constructed native sheaf isomorphisms identify its quotient target with the structure sheaf of the actual Spec cut pushed forward along the original quotient ring map, and the structure-sheaf augmentation is proved quasi-isomorphic. The original f,V geometric application derives both augmentations and positive sheaf exactness on the same constructed nonempty parameter open. No CM, global smoothness or assumed sheaf-duality bridge is added. The native GLOBAL TWISTED PROJECTIVE sheaf complex, canonical embedding, proper duality, Serre fixed-degree Q lifting and actual intersection remain OPEN. The full Linearity Theorem remains UNPROVED.",
   "sourceRanges": {
     "LinearStudy.projectiveAffineLinearSection_exists_injective_cone_map": {
       "path": "Linear/ProjectiveAffineLinearSectionComparison.lean",
@@ -56118,6 +56603,15 @@
         "LinearStudy.polynomial_local_differential_finrank",
         "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal",
         "LinearStudy.smooth_point_original_ideal_normal_polynomial_generators"
+      ]
+    },
+    "LinearStudy.tilde_basicOpen_map_injective": {
+      "path": "Linear/TildeBasicOpenMono.lean",
+      "startLine": 29,
+      "endLine": 34,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.tilde_basicOpen_map_eq_localized"
       ]
     },
     "ExteriorAlgebra.prodEquivProd_mem_exteriorPower": {
@@ -57782,6 +58276,18 @@
         "LinearStudy.polynomial_double_monomial_split",
         "LinearStudy.tensorFunctionalContraction",
         "LinearStudy.tensorFunctionalContraction_tmul"
+      ]
+    },
+    "LinearStudy.tildeFunctionKoszulAugmentation": {
+      "path": "Linear/TildeComplexExact.lean",
+      "startLine": 25,
+      "endLine": 29,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.functionKoszulAugmentationMap",
+        "LinearStudy.tildeFunctionKoszulComplex",
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "koszulComplex"
       ]
     },
     "LinearStudy.nonzero_ideal_meets_socle": {
@@ -61066,6 +61572,15 @@
         "koszulComplex.dAlternating_apply"
       ]
     },
+    "LinearStudy.tildeFunctionKoszulComplex": {
+      "path": "Linear/TildeComplexExact.lean",
+      "startLine": 13,
+      "endLine": 17,
+      "lineCount": 5,
+      "dependencies": [
+        "koszulComplex"
+      ]
+    },
     "LinearStudy.projectiveChartLinearSection_map_eq_pulled_equationIdeal": {
       "path": "Linear/ProjectiveLinearSectionClosedReduced.lean",
       "startLine": 106,
@@ -62350,6 +62865,13 @@
         "LinearStudy.powerSeriesClosedQuotientEquiv",
         "LinearStudy.powerSeriesClosedQuotientEquiv_mk"
       ]
+    },
+    "LinearStudy.tildePushforwardGlobalIso": {
+      "path": "Linear/TildePushforward.lean",
+      "startLine": 13,
+      "endLine": 21,
+      "lineCount": 9,
+      "dependencies": []
     },
     "LinearStudy.projectiveAmbientFiberForms_actual_highest_regular": {
       "path": "Linear/ProjectiveAmbientFiberHighest.lean",
@@ -64443,6 +64965,15 @@
       "lineCount": 10,
       "dependencies": []
     },
+    "LinearStudy.tildePushforwardIso": {
+      "path": "Linear/TildePushforward.lean",
+      "startLine": 23,
+      "endLine": 32,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.tildePushforwardGlobalIso"
+      ]
+    },
     "LinearStudy.PerfectMultiplicationPairing.noConfusion": {
       "path": "Linear/Duality.lean",
       "startLine": 21,
@@ -64560,6 +65091,21 @@
         "Ideal.height_add_ringKrullDim_quotient_eq_ringKrullDim_of_isPrime",
         "IsCohenMacaulayLocalRing",
         "ringKrullDim_quotient_eq_iSup_quotient_minimalPrimes"
+      ]
+    },
+    "LinearStudy.tildeKoszulStructureAugmentation_quasiIso": {
+      "path": "Linear/TildeKoszulStructureAugmentation.lean",
+      "startLine": 36,
+      "endLine": 45,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.tildeFunctionKoszulAugmentation",
+        "LinearStudy.tildeFunctionKoszulComplex",
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "LinearStudy.tildeKoszulStructureAugmentation",
+        "LinearStudy.tildeKoszulStructureTargetIso",
+        "LinearStudy.tilde_functionKoszul_augmentation_quasiIso",
+        "koszulComplex"
       ]
     },
     "LinearStudy.exists_perfectPairing_of_global_scalar_socles": {
@@ -64699,6 +65245,18 @@
         "Ideal.ofList_height_eq_length_of_isWeaklyRegular",
         "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal",
         "LinearStudy.powerSeries_variables_regular"
+      ]
+    },
+    "LinearStudy.tildeKoszulStructureAugmentation": {
+      "path": "Linear/TildeKoszulStructureAugmentation.lean",
+      "startLine": 26,
+      "endLine": 34,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.tildeFunctionKoszulAugmentation",
+        "LinearStudy.tildeFunctionKoszulComplex",
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "LinearStudy.tildeKoszulStructureTargetIso"
       ]
     },
     "LinearStudy.thickeningTop_scalar_eq_zero_iff": {
@@ -65921,6 +66479,13 @@
       "lineCount": 12,
       "dependencies": []
     },
+    "LinearStudy.tildeFunctionKoszulQuotientComplex": {
+      "path": "Linear/TildeComplexExact.lean",
+      "startLine": 19,
+      "endLine": 23,
+      "lineCount": 5,
+      "dependencies": []
+    },
     "LinearStudy.projectiveCoordinateDomainMap_exists_generic_homogeneous_basis": {
       "path": "Linear/ProjectiveGenericHomogeneousBasis.lean",
       "startLine": 14,
@@ -67082,6 +67647,15 @@
       "dependencies": [
         "LinearStudy.artinianAmbientCompletionQuotientEquiv",
         "LinearStudy.completionQuotientEquiv_mk"
+      ]
+    },
+    "LinearStudy.tilde_functor_preservesHomology": {
+      "path": "Linear/TildePreservesMono.lean",
+      "startLine": 39,
+      "endLine": 44,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.tilde_map_mono"
       ]
     },
     "LinearStudy.doublePoint_quotient_generator_nonzero": {
@@ -68648,6 +69222,16 @@
       "dependencies": [
         "LinearStudy.PerfectMultiplicationPairing",
         "LinearStudy.PerfectMultiplicationPairing.equiv"
+      ]
+    },
+    "LinearStudy.tildeQuotientPushforwardIso": {
+      "path": "Linear/TildeQuotientPushforward.lean",
+      "startLine": 13,
+      "endLine": 26,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.restrictedAlgebraModuleEquiv",
+        "LinearStudy.tildePushforwardIso"
       ]
     },
     "LinearStudy.boundedPolynomialSpan": {
@@ -71459,6 +72043,15 @@
         "LinearStudy.smooth_point_original_ideal_firstOrder_normal_form"
       ]
     },
+    "LinearStudy.tilde_map_mono": {
+      "path": "Linear/TildePreservesMono.lean",
+      "startLine": 29,
+      "endLine": 37,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.tilde_open_map_injective"
+      ]
+    },
     "LinearStudy.eq_traceElement_of_residue_trace": {
       "path": "Linear/TraceElement.lean",
       "startLine": 110,
@@ -71502,6 +72095,39 @@
       "endLine": 18,
       "lineCount": 3,
       "dependencies": []
+    },
+    "LinearStudy.projectivePulledLinearSection_exists_affineSheafKoszul_exactAt": {
+      "path": "Linear/ProjectiveCutAffineSheaf.lean",
+      "startLine": 15,
+      "endLine": 55,
+      "lineCount": 41,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionScheme",
+        "LinearStudy.projectivePulledLinearSection_exists_affineKoszul_exactAt",
+        "LinearStudy.tildeFunctionKoszulAugmentation",
+        "LinearStudy.tildeFunctionKoszulComplex",
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "LinearStudy.tildeKoszulStructureAugmentation",
+        "LinearStudy.tildeKoszulStructureAugmentation_quasiIso",
+        "LinearStudy.tilde_functionKoszul_augmentation_quasiIso",
+        "LinearStudy.tilde_functionKoszul_exactAt",
+        "koszulComplex"
+      ]
     },
     "LinearStudy.homogeneousQuotientFiltration_disjoint_next": {
       "path": "Linear/HomogeneousCoordinateFiltration.lean",
@@ -72591,6 +73217,13 @@
         "LinearStudy.parameter_generators_jacobian_constantCoeff_unit",
         "LinearStudy.unramified_completed_parameters_generate"
       ]
+    },
+    "LinearStudy.tilde_basicOpen_map_eq_localized": {
+      "path": "Linear/TildeBasicOpenMono.lean",
+      "startLine": 13,
+      "endLine": 27,
+      "lineCount": 15,
+      "dependencies": []
     },
     "LinearStudy.ProjectiveWholeFiberLocalMapConclusion": {
       "path": "Linear/ProjectiveWholeFiberLocalMaps.lean",
@@ -75610,6 +76243,18 @@
         "ModuleCat.depth"
       ]
     },
+    "LinearStudy.tilde_functionKoszul_augmentation_quasiIso": {
+      "path": "Linear/TildeComplexExact.lean",
+      "startLine": 51,
+      "endLine": 60,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.functionKoszulAugmentationMap",
+        "LinearStudy.functionKoszulAugmentation_quasiIso_of_exact",
+        "LinearStudy.tilde_functor_preservesHomology",
+        "koszulComplex"
+      ]
+    },
     "LinearStudy.diagonal_annihilator_multiplication_nonzero": {
       "path": "Linear/DiagonalNonzero.lean",
       "startLine": 34,
@@ -76067,6 +76712,16 @@
         "LinearStudy.localizationQuotientEquiv_mk"
       ]
     },
+    "LinearStudy.tildeKoszulStructureTargetIso": {
+      "path": "Linear/TildeKoszulStructureAugmentation.lean",
+      "startLine": 12,
+      "endLine": 24,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "LinearStudy.tildeQuotientPushforwardIso"
+      ]
+    },
     "LinearStudy.fieldEndomorphism_finrank_one": {
       "path": "Linear/FieldEndomorphismDegree.lean",
       "startLine": 51,
@@ -76327,6 +76982,15 @@
       "lineCount": 6,
       "dependencies": []
     },
+    "LinearStudy.tilde_open_map_injective": {
+      "path": "Linear/TildePreservesMono.lean",
+      "startLine": 14,
+      "endLine": 27,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.tilde_basicOpen_map_injective"
+      ]
+    },
     "LinearStudy.projectivePulledLinearSectionScheme": {
       "path": "Linear/ProjectivePulledSectionGlobalReduced.lean",
       "startLine": 34,
@@ -76425,6 +77089,15 @@
       "lineCount": 7,
       "dependencies": [
         "LinearStudy.completionLocalizationBackward_compatible"
+      ]
+    },
+    "LinearStudy.tilde_chainComplex_exactAt": {
+      "path": "Linear/TildeComplexExact.lean",
+      "startLine": 31,
+      "endLine": 38,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.tilde_functor_preservesHomology"
       ]
     },
     "LinearStudy.primitive_of_residue_tensor_nonzero": {
@@ -77790,6 +78463,16 @@
         "LinearStudy.AmbientRing",
         "LinearStudy.ParameterRing",
         "LinearStudy.equationIdeal"
+      ]
+    },
+    "LinearStudy.tilde_functionKoszul_exactAt": {
+      "path": "Linear/TildeComplexExact.lean",
+      "startLine": 40,
+      "endLine": 49,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.tilde_chainComplex_exactAt",
+        "koszulComplex"
       ]
     },
     "koszulComplex.appendMap_d_eq_pos": {
@@ -80210,7 +80893,8 @@
       "same-family-native-cut",
       "actual-cut-closed-in-variety",
       "actual-cut-all-prime-koszul",
-      "actual-cut-affine-resolution"
+      "actual-cut-affine-resolution",
+      "actual-cut-affine-sheaf"
     ],
     "setup": [
       "<p>设 f:ℙⁿ→ℙⁿ 为满射自态射，代数次数 q&gt;1；V⊆ℙⁿ 为整的闭子簇，且 f⁻¹(V)=V（集合意义）。当前 Lean 目标用复数域上的齐次素理想、无基点齐次坐标组及真实 projective points 表述。</p>",
@@ -80326,7 +81010,8 @@
       "same-family-native-cut",
       "actual-cut-closed-in-variety",
       "actual-cut-all-prime-koszul",
-      "actual-cut-affine-resolution"
+      "actual-cut-affine-resolution",
+      "actual-cut-affine-sheaf"
     ]
   },
   "nodes": [
@@ -98798,6 +99483,385 @@
       "richStatement": true,
       "x": 30,
       "y": 60
+    },
+    {
+      "id": "actual-tilde-basic-open",
+      "titles": [
+        "原生关联层在基本开集上的局部化",
+        "Native tilde localization on actual basic opens"
+      ],
+      "title": "原生关联层在基本开集上的局部化",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/TildeBasicOpenMono.lean",
+      "decl": "LinearStudy.tilde_basicOpen_map_injective",
+      "declaration": "LinearStudy.tilde_basicOpen_map_injective",
+      "deps": [],
+      "setup": [
+        "<p>原模映射单射，D(a) 为原 Spec 上的基本开集。</p>",
+        "<p>An injective original module map and actual basic open D(a) of Spec.</p>"
+      ],
+      "result": [
+        "<p>原生关联层映射与实际局部化映射一致，因此在 D(a) 上单射。</p>",
+        "<p>The native tilde map agrees with actual localization, hence is injective on D(a).</p>"
+      ],
+      "compactSetup": [
+        "原模映射单射，D(a) 为原 Spec 上的基本开集。",
+        "An injective original module map and actual basic open D(a) of Spec."
+      ],
+      "compactResult": [
+        "原生关联层映射与实际局部化映射一致，因此在 D(a) 上单射。",
+        "The native tilde map agrees with actual localization, hence is injective on D(a)."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.tilde_basicOpen_map_injective.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N)\n  (hf : Function.Injective ⇑(ModuleCat.Hom.hom f)) (a : ↑R) :\n  Function.Injective\n    ⇑(ModuleCat.Hom.hom\n        ((AlgebraicGeometry.modulesSpecToSheaf.map (AlgebraicGeometry.tilde.map f)).hom.app\n          (Opposite.op (PrimeSpectrum.basicOpen a))))",
+      "sha256": "c92b4035b60b5f587e29437afe8c9fd0a0b63e0caae6cb356b5fef71a836c566",
+      "lines": 6,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "actual-tilde-mono",
+      "titles": [
+        "原生关联层保持单射",
+        "Native affine tilde preserves monomorphisms"
+      ],
+      "title": "原生关联层保持单射",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/TildePreservesMono.lean",
+      "decl": "LinearStudy.tilde_map_mono",
+      "declaration": "LinearStudy.tilde_map_mono",
+      "deps": [
+        "actual-tilde-basic-open"
+      ],
+      "setup": [
+        "<p>原 ModuleCat 模映射为单射。</p>",
+        "<p>The original ModuleCat morphism is a monomorphism.</p>"
+      ],
+      "result": [
+        "<p>从基本开集覆盖及层条件推导原生 Spec 关联层映射为单射。</p>",
+        "<p>The actual basic-open cover and sheaf condition prove the native Spec tilde map is mono.</p>"
+      ],
+      "compactSetup": [
+        "原 ModuleCat 模映射为单射。",
+        "The original ModuleCat morphism is a monomorphism."
+      ],
+      "compactResult": [
+        "从基本开集覆盖及层条件推导原生 Spec 关联层映射为单射。",
+        "The actual basic-open cover and sheaf condition prove the native Spec tilde map is mono."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.tilde_map_mono.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N) [CategoryTheory.Mono f] :\n  CategoryTheory.Mono (AlgebraicGeometry.tilde.map f)",
+      "sha256": "e1cbb671327b88e257d8fdb170901f2c53d68fba01b711a4745500f0759edbc2",
+      "lines": 9,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "actual-tilde-homology",
+      "titles": [
+        "原生关联层保持同调",
+        "Native affine tilde preserves homology"
+      ],
+      "title": "原生关联层保持同调",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/TildePreservesMono.lean",
+      "decl": "LinearStudy.tilde_functor_preservesHomology",
+      "declaration": "LinearStudy.tilde_functor_preservesHomology",
+      "deps": [
+        "actual-tilde-mono"
+      ],
+      "setup": [
+        "<p>任意原仿射环 R；已证明原生关联层保持单射。</p>",
+        "<p>Any original affine ring R, with native mono preservation proved.</p>"
+      ],
+      "result": [
+        "<p>结合已有伴随与余核保持，证明实际关联层函子保持同调。</p>",
+        "<p>The existing adjunction and cokernel preservation combine with the proved monos to give actual homology preservation.</p>"
+      ],
+      "compactSetup": [
+        "任意原仿射环 R；已证明原生关联层保持单射。",
+        "Any original affine ring R, with native mono preservation proved."
+      ],
+      "compactResult": [
+        "结合已有伴随与余核保持，证明实际关联层函子保持同调。",
+        "The existing adjunction and cokernel preservation combine with the proved monos to give actual homology preservation."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.tilde_functor_preservesHomology.{u} (R : CommRingCat) :\n  (AlgebraicGeometry.tilde.functor R).PreservesHomology",
+      "sha256": "e1cbb671327b88e257d8fdb170901f2c53d68fba01b711a4745500f0759edbc2",
+      "lines": 6,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "actual-affine-sheaf-koszul",
+      "titles": [
+        "实际仿射关联层 Koszul 正合",
+        "Exact actual affine associated-sheaf Koszul"
+      ],
+      "title": "实际仿射关联层 Koszul 正合",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/TildeComplexExact.lean",
+      "decl": "LinearStudy.tilde_functionKoszul_exactAt",
+      "declaration": "LinearStudy.tilde_functionKoszul_exactAt",
+      "deps": [
+        "actual-tilde-homology"
+      ],
+      "setup": [
+        "<p>原外幂 Koszul 已证明正次数正合。</p>",
+        "<p>Positive exactness of the original exterior Koszul has been proved.</p>"
+      ],
+      "result": [
+        "<p>同一复形在原生 Spec 上的实际关联层复形正次数正合；射影扭转与粘合仍待证。</p>",
+        "<p>Its actual associated-sheaf complex on native Spec is positive-exact; projective twists and gluing remain open.</p>"
+      ],
+      "compactSetup": [
+        "原外幂 Koszul 已证明正次数正合。",
+        "Positive exactness of the original exterior Koszul has been proved."
+      ],
+      "compactResult": [
+        "同一复形在原生 Spec 上的实际关联层复形正次数正合；射影扭转与粘合仍待证。",
+        "Its actual associated-sheaf complex on native Spec is positive-exact; projective twists and gluing remain open."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.tilde_functionKoszul_exactAt.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)\n  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) (j : ℕ)\n  (hj : 0 < j) :\n  (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).obj\n        (koszulComplex (Fintype.linearCombination (↑R) H))).ExactAt\n    j",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 10,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "actual-affine-sheaf-augmentation",
+      "titles": [
+        "实际仿射层的自然增广",
+        "Natural augmentation of the actual affine sheaf complex"
+      ],
+      "title": "实际仿射层的自然增广",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/TildeComplexExact.lean",
+      "decl": "LinearStudy.tilde_functionKoszul_augmentation_quasiIso",
+      "declaration": "LinearStudy.tilde_functionKoszul_augmentation_quasiIso",
+      "deps": [
+        "actual-tilde-homology",
+        "koszul-natural-augmentation"
+      ],
+      "setup": [
+        "<p>原 Koszul 正合及原始商映射增广。</p>",
+        "<p>The exact original Koszul and original quotient augmentation.</p>"
+      ],
+      "result": [
+        "<p>实际关联层增广为拟同构，未假定对偶桥接。</p>",
+        "<p>The actual associated-sheaf augmentation is a quasi-isomorphism, without an assumed duality bridge.</p>"
+      ],
+      "compactSetup": [
+        "原 Koszul 正合及原始商映射增广。",
+        "The exact original Koszul and original quotient augmentation."
+      ],
+      "compactResult": [
+        "实际关联层增广为拟同构，未假定对偶桥接。",
+        "The actual associated-sheaf augmentation is a quasi-isomorphism, without an assumed duality bridge."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.tilde_functionKoszul_augmentation_quasiIso.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)\n  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) :\n  QuasiIso\n    (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).map\n      (LinearStudy.functionKoszulAugmentationMap H))",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 10,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "actual-cut-structure-augmentation",
+      "titles": [
+        "实际截面结构层的 Koszul 增广",
+        "Koszul augmentation to the actual cut structure sheaf"
+      ],
+      "title": "实际截面结构层的 Koszul 增广",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/TildeKoszulStructureAugmentation.lean",
+      "decl": "LinearStudy.tildeKoszulStructureAugmentation_quasiIso",
+      "declaration": "LinearStudy.tildeKoszulStructureAugmentation_quasiIso",
+      "deps": [
+        "actual-affine-sheaf-augmentation",
+        "actual-quotient-structure-sheaf"
+      ],
+      "setup": [
+        "<p>同一实际 Koszul、原始商映射及构造的目标同构。</p>",
+        "<p>The same actual Koszul, original quotient map and constructed target isomorphism.</p>"
+      ],
+      "result": [
+        "<p>增广目标为真实 Spec 截面结构层的推前；对应原生层映射是拟同构。</p>",
+        "<p>The target is the pushed-forward actual Spec cut structure sheaf, and the corresponding native map is quasi-isomorphic.</p>"
+      ],
+      "compactSetup": [
+        "同一实际 Koszul、原始商映射及构造的目标同构。",
+        "The same actual Koszul, original quotient map and constructed target isomorphism."
+      ],
+      "compactResult": [
+        "增广目标为真实 Spec 截面结构层的推前；对应原生层映射是拟同构。",
+        "The target is the pushed-forward actual Spec cut structure sheaf, and the corresponding native map is quasi-isomorphic."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.tildeKoszulStructureAugmentation_quasiIso.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)\n  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) :\n  QuasiIso (LinearStudy.tildeKoszulStructureAugmentation R H)",
+      "sha256": "a739be823687caa4b33d5e570a71a4eacdc8c435fcca3e2b456e6495aad29771",
+      "lines": 10,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "actual-cut-affine-sheaf",
+      "titles": [
+        "原截面的实际仿射层 Koszul",
+        "Actual affine sheaf Koszul of the original cut"
+      ],
+      "title": "原截面的实际仿射层 Koszul",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/ProjectiveCutAffineSheaf.lean",
+      "decl": "LinearStudy.projectivePulledLinearSection_exists_affineSheafKoszul_exactAt",
+      "declaration": "LinearStudy.projectivePulledLinearSection_exists_affineSheafKoszul_exactAt",
+      "deps": [
+        "actual-cut-affine-koszul",
+        "actual-affine-sheaf-koszul",
+        "actual-cut-structure-augmentation",
+        "actual-cut-koszul-quotient"
+      ],
+      "setup": [
+        "<p>原 f,V、实际维数与有限线性正规化；没有全局 CM 或光滑假设。</p>",
+        "<p>Original f,V, actual dimension and finite linear normalization, with no global CM or smoothness assumption.</p>"
+      ],
+      "result": [
+        "<p>构造同一非空参数开集上的实际仿射层 Koszul 正合，增广到原截面结构层为拟同构；全局扭转层仍待证。</p>",
+        "<p>A constructed nonempty parameter open gives actual affine sheaf Koszul exactness and a quasi-isomorphic augmentation to the original cut structure sheaf; the global twisted complex remains open.</p>"
+      ],
+      "compactSetup": [
+        "原 f,V、实际维数与有限线性正规化；没有全局 CM 或光滑假设。",
+        "Original f,V, actual dimension and finite linear normalization, with no global CM or smoothness assumption."
+      ],
+      "compactResult": [
+        "构造同一非空参数开集上的实际仿射层 Koszul 正合，增广到原截面结构层为拟同构；全局扭转层仍待证。",
+        "A constructed nonempty parameter open gives actual affine sheaf Koszul exactness and a quasi-isomorphic augmentation to the original cut structure sheaf; the global twisted complex remains open."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projectivePulledLinearSection_exists_affineSheafKoszul_exactAt {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hproper : V.ideal.toIdeal ≠ ⊥) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite)\n  (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ c,\n    c ≠ 0 ∧\n      (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧\n        ∀ (w : Fin (r + 1) → ℂ),\n          (MvPolynomial.eval w) c ≠ 0 →\n            have I :=\n              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n                (LinearStudy.projectivePulledLinearSectionIdeal f V L w);\n            let C := MvPolynomial (Fin n) ℂ ⧸ I;\n            let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n            have H := fun i =>\n              (Ideal.Quotient.mk V.affineIdeal)\n                (LinearStudy.affineChartPolynomialMap\n                  ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));\n            w 0 ≠ 0 ∧\n              IsReduced C ∧\n                Module.Finite ℂ C ∧\n                  Nonempty (LinearStudy.projectivePulledLinearSectionScheme f V L hL w ≅ AlgebraicGeometry.Spec ↧C) ∧\n                    AlgebraicGeometry.IsReduced (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) ∧\n                      (∀ (j : ℕ),\n                          0 < j → HomologicalComplex.ExactAt (LinearStudy.tildeFunctionKoszulComplex (↧B) H) j) ∧\n                        QuasiIso (LinearStudy.tildeFunctionKoszulAugmentation (↧B) H) ∧\n                          QuasiIso (LinearStudy.tildeKoszulStructureAugmentation (↧B) H)",
+      "sha256": "ea1013849bc63d892e702a5ab87a19c37feb0d317114e46368e6ba62434f6aa5",
+      "lines": 41,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "actual-affine-pushforward-tilde",
+      "titles": [
+        "原生仿射推前与关联层的同构",
+        "Native affine pushforward and tilde isomorphism"
+      ],
+      "title": "原生仿射推前与关联层的同构",
+      "status": "definition",
+      "kind": "definition",
+      "file": "Linear/TildePushforward.lean",
+      "decl": "LinearStudy.tildePushforwardIso",
+      "declaration": "LinearStudy.tildePushforwardIso",
+      "deps": [],
+      "setup": [
+        "<p>实际环映射 R→S 与原 S 模。</p>",
+        "<p>An actual ring map R→S and original S module.</p>"
+      ],
+      "result": [
+        "<p>构造真实关联层与沿 Spec 映射推前的同构；这是同构构造，不是主定理证明。</p>",
+        "<p>Construct a native tilde/pushforward isomorphism; this is a construction, not a main-theorem proof.</p>"
+      ],
+      "compactSetup": [
+        "实际环映射 R→S 与原 S 模。",
+        "An actual ring map R→S and original S module."
+      ],
+      "compactResult": [
+        "构造真实关联层与沿 Spec 映射推前的同构；这是同构构造，不是主定理证明。",
+        "Construct a native tilde/pushforward isomorphism; this is a construction, not a main-theorem proof."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.tildePushforwardIso.{u} {R S : CommRingCat} (φ : R ⟶ S) (M : ModuleCat ↑S) :\n  AlgebraicGeometry.tilde ((ModuleCat.restrictScalars (CommRingCat.Hom.hom φ)).obj M) ≅\n    (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map φ)).obj (AlgebraicGeometry.tilde M)",
+      "sha256": "6f8cc19c5a145aafa3fd567cda601b5d6219a7ecd96bcd1357427b619864aacb",
+      "lines": 10,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "actual-quotient-structure-sheaf",
+      "titles": [
+        "实际商模关联层就是截面结构层",
+        "Actual quotient tilde is the cut structure sheaf"
+      ],
+      "title": "实际商模关联层就是截面结构层",
+      "status": "definition",
+      "kind": "definition",
+      "file": "Linear/TildeQuotientPushforward.lean",
+      "decl": "LinearStudy.tildeQuotientPushforwardIso",
+      "declaration": "LinearStudy.tildeQuotientPushforwardIso",
+      "deps": [
+        "actual-affine-pushforward-tilde"
+      ],
+      "setup": [
+        "<p>原环 R 与原理想 J，实际商映射 R→R/J。</p>",
+        "<p>The original ring R, ideal J and actual quotient map R→R/J.</p>"
+      ],
+      "result": [
+        "<p>构造商模关联层与原截面结构层推前的原生同构；没有取根式更换截面。</p>",
+        "<p>Construct a native isomorphism of quotient tilde and the actual cut structure pushforward, without replacing the cut by its radical.</p>"
+      ],
+      "compactSetup": [
+        "原环 R 与原理想 J，实际商映射 R→R/J。",
+        "The original ring R, ideal J and actual quotient map R→R/J."
+      ],
+      "compactResult": [
+        "构造商模关联层与原截面结构层推前的原生同构；没有取根式更换截面。",
+        "Construct a native isomorphism of quotient tilde and the actual cut structure pushforward, without replacing the cut by its radical."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.tildeQuotientPushforwardIso.{u} (R : CommRingCat) (J : Ideal ↑R) :\n  AlgebraicGeometry.tilde ↧(↑R ⧸ J) ≅\n    (AlgebraicGeometry.Scheme.Modules.pushforward\n          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk J)))).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ J)).ringCatSheaf)",
+      "sha256": "15ccc51b87d643fb9ba540c2bdabd1ebd7b7f464a009a4375179a1ae8fe07166",
+      "lines": 14,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
     }
   ],
   "rootSteps": [
@@ -98823,7 +99887,8 @@
     "same-family-native-cut",
     "actual-cut-closed-in-variety",
     "actual-cut-all-prime-koszul",
-    "actual-cut-affine-resolution"
+    "actual-cut-affine-resolution",
+    "actual-cut-affine-sheaf"
   ],
   "paperLemmas": {
     "manuscript": {
@@ -98939,7 +100004,8 @@
         "exact-factor",
         "point-dual",
         "actual-cut-all-prime-koszul",
-        "actual-cut-affine-resolution"
+        "actual-cut-affine-resolution",
+        "actual-cut-affine-sheaf"
       ]
     },
     "originalLemmaCardsPinnedDuringPagination": true,
@@ -99037,7 +100103,8 @@
       "same-family-native-cut",
       "actual-cut-closed-in-variety",
       "actual-cut-all-prime-koszul",
-      "actual-cut-affine-resolution"
+      "actual-cut-affine-resolution",
+      "actual-cut-affine-sheaf"
     ],
     "mainTheoremVerified": false,
     "groupingScope": "Original lemmas are ordinary cards; support cards and module covers remain peers in the overview. Reading routes are separate from Lean dependencies."

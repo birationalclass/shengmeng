@@ -8352,6 +8352,41 @@ LinearStudy.projectivePulledLinearSection_exists_actual_affineKoszul_resolution 
 'LinearStudy.projectivePulledLinearSection_exists_actual_affineKoszul_resolution' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projectivePulledLinearSection_exists_affineSheafKoszul_exactAt {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (hproper : V.ideal.toIdeal ≠ ⊥) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite)
+  (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ c,
+    c ≠ 0 ∧
+      (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧
+        ∀ (w : Fin (r + 1) → ℂ),
+          (MvPolynomial.eval w) c ≠ 0 →
+            have I :=
+              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+            let C := MvPolynomial (Fin n) ℂ ⧸ I;
+            let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+            have H := fun i =>
+              (Ideal.Quotient.mk V.affineIdeal)
+                (LinearStudy.affineChartPolynomialMap
+                  ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+            w 0 ≠ 0 ∧
+              IsReduced C ∧
+                Module.Finite ℂ C ∧
+                  Nonempty (LinearStudy.projectivePulledLinearSectionScheme f V L hL w ≅ AlgebraicGeometry.Spec ↧C) ∧
+                    AlgebraicGeometry.IsReduced (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) ∧
+                      (∀ (j : ℕ),
+                          0 < j → HomologicalComplex.ExactAt (LinearStudy.tildeFunctionKoszulComplex (↧B) H) j) ∧
+                        QuasiIso (LinearStudy.tildeFunctionKoszulAugmentation (↧B) H) ∧
+                          QuasiIso (LinearStudy.tildeKoszulStructureAugmentation (↧B) H)
+'LinearStudy.projectivePulledLinearSection_exists_affineSheafKoszul_exactAt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectivePulledLinearSection_exists_localKoszul_exactAt_all_primes {n r : ℕ}
   (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
   (hproper : V.ideal.toIdeal ≠ ⊥) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
@@ -13314,6 +13349,93 @@ LinearStudy.formalThickening_relativeJacobian_socle {r c : ℕ} (H : Fin c → L
             Submodule.annihilator m = Ideal.span {(Ideal.Quotient.mk J) (LinearStudy.relativeJacobian H)} ∧
               (Ideal.Quotient.mk J) (LinearStudy.relativeJacobian H) ≠ 0
 'LinearStudy.formalThickening_relativeJacobian_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tilde_basicOpen_map_eq_localized.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N) (a : ↑R) :
+  ModuleCat.Hom.hom
+      ((AlgebraicGeometry.modulesSpecToSheaf.map (AlgebraicGeometry.tilde.map f)).hom.app
+        (Opposite.op (PrimeSpectrum.basicOpen a))) =
+    (IsLocalizedModule.map (Submonoid.powers a)
+        (ModuleCat.Hom.hom (AlgebraicGeometry.tilde.toOpen M (PrimeSpectrum.basicOpen a)))
+        (ModuleCat.Hom.hom (AlgebraicGeometry.tilde.toOpen N (PrimeSpectrum.basicOpen a))))
+      (ModuleCat.Hom.hom f)
+'LinearStudy.tilde_basicOpen_map_eq_localized' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tilde_basicOpen_map_injective.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N)
+  (hf : Function.Injective ⇑(ModuleCat.Hom.hom f)) (a : ↑R) :
+  Function.Injective
+    ⇑(ModuleCat.Hom.hom
+        ((AlgebraicGeometry.modulesSpecToSheaf.map (AlgebraicGeometry.tilde.map f)).hom.app
+          (Opposite.op (PrimeSpectrum.basicOpen a))))
+'LinearStudy.tilde_basicOpen_map_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeFunctionKoszulComplex.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :
+  ChainComplex (AlgebraicGeometry.Spec R).Modules ℕ
+'LinearStudy.tildeFunctionKoszulComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeFunctionKoszulQuotientComplex.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :
+  ChainComplex (AlgebraicGeometry.Spec R).Modules ℕ
+'LinearStudy.tildeFunctionKoszulQuotientComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeFunctionKoszulAugmentation.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :
+  LinearStudy.tildeFunctionKoszulComplex R H ⟶ LinearStudy.tildeFunctionKoszulQuotientComplex R H
+'LinearStudy.tildeFunctionKoszulAugmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tilde_chainComplex_exactAt.{u} (R : CommRingCat) (K : ChainComplex (ModuleCat ↑R) ℕ) (j : ℕ)
+  (h : HomologicalComplex.ExactAt K j) :
+  (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).obj K).ExactAt j
+'LinearStudy.tilde_chainComplex_exactAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tilde_functionKoszul_exactAt.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) (j : ℕ)
+  (hj : 0 < j) :
+  (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).obj
+        (koszulComplex (Fintype.linearCombination (↑R) H))).ExactAt
+    j
+'LinearStudy.tilde_functionKoszul_exactAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tilde_functionKoszul_augmentation_quasiIso.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) :
+  QuasiIso
+    (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).map
+      (LinearStudy.functionKoszulAugmentationMap H))
+'LinearStudy.tilde_functionKoszul_augmentation_quasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulStructureTargetIso.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :
+  LinearStudy.tildeFunctionKoszulQuotientComplex R H ≅
+    (ChainComplex.single₀ (AlgebraicGeometry.Spec R).Modules).obj
+      ((AlgebraicGeometry.Scheme.Modules.pushforward
+            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+        (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ Ideal.span (Set.range H))).ringCatSheaf))
+'LinearStudy.tildeKoszulStructureTargetIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulStructureAugmentation.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :
+  LinearStudy.tildeFunctionKoszulComplex R H ⟶
+    (ChainComplex.single₀ (AlgebraicGeometry.Spec R).Modules).obj
+      ((AlgebraicGeometry.Scheme.Modules.pushforward
+            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+        (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ Ideal.span (Set.range H))).ringCatSheaf))
+'LinearStudy.tildeKoszulStructureAugmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulStructureAugmentation_quasiIso.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) :
+  QuasiIso (LinearStudy.tildeKoszulStructureAugmentation R H)
+'LinearStudy.tildeKoszulStructureAugmentation_quasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tilde_open_map_injective.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N)
+  (hf : Function.Injective ⇑(ModuleCat.Hom.hom f)) (U : (AlgebraicGeometry.Spec R).Opens) :
+  Function.Injective
+    ⇑(ModuleCat.Hom.hom
+        ((AlgebraicGeometry.modulesSpecToSheaf.map (AlgebraicGeometry.tilde.map f)).hom.app (Opposite.op U)))
+'LinearStudy.tilde_open_map_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tilde_map_mono.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N) [CategoryTheory.Mono f] :
+  CategoryTheory.Mono (AlgebraicGeometry.tilde.map f)
+'LinearStudy.tilde_map_mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tilde_functor_preservesHomology.{u} (R : CommRingCat) :
+  (AlgebraicGeometry.tilde.functor R).PreservesHomology
+'LinearStudy.tilde_functor_preservesHomology' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildePushforwardGlobalIso.{u} {R S : CommRingCat} (φ : R ⟶ S) (M : ModuleCat ↑S) :
+  AlgebraicGeometry.moduleSpecΓFunctor.obj
+      ((AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map φ)).obj (AlgebraicGeometry.tilde M)) ≅
+    (ModuleCat.restrictScalars (CommRingCat.Hom.hom φ)).obj M
+'LinearStudy.tildePushforwardGlobalIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildePushforwardIso.{u} {R S : CommRingCat} (φ : R ⟶ S) (M : ModuleCat ↑S) :
+  AlgebraicGeometry.tilde ((ModuleCat.restrictScalars (CommRingCat.Hom.hom φ)).obj M) ≅
+    (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map φ)).obj (AlgebraicGeometry.tilde M)
+'LinearStudy.tildePushforwardIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeQuotientPushforwardIso.{u} (R : CommRingCat) (J : Ideal ↑R) :
+  AlgebraicGeometry.tilde ↧(↑R ⧸ J) ≅
+    (AlgebraicGeometry.Scheme.Modules.pushforward
+          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk J)))).obj
+      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ J)).ringCatSheaf)
+'LinearStudy.tildeQuotientPushforwardIso' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.homogeneousComponent_prod_top.{u_1, u_2, u_3} {K : Type u_1} {ι : Type u_2} {κ : Type u_3} [Field K]
   [DecidableEq κ] (s : Finset κ) (p : κ → MvPolynomial ι K) (e : κ → ℕ) (hp : ∀ i ∈ s, (p i).totalDegree ≤ e i) :
   (MvPolynomial.homogeneousComponent (∑ i ∈ s, e i)) (∏ i ∈ s, p i) =

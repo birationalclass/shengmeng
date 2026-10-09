@@ -789,3 +789,11 @@ public import Linear.ProjectiveCutAffineKoszul
 public import Linear.KoszulExactResolution
 public import Linear.ProjectiveCutKoszulQuotient
 public import Linear.ProjectiveCutAffineResolution
+
+public import Linear.TildeBasicOpenMono
+public import Linear.TildePreservesMono
+public import Linear.TildeComplexExact
+public import Linear.TildePushforward
+public import Linear.TildeQuotientPushforward
+public import Linear.TildeKoszulStructureAugmentation
+public import Linear.ProjectiveCutAffineSheaf

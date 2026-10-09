@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1953,
-  "verifiedTheorems": 1470,
-  "definitions": 287,
+  "audited": 1971,
+  "verifiedTheorems": 1480,
+  "definitions": 295,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -33034,6 +33034,53 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectivePulledLinearSection_exists_affineSheafKoszul_exactAt",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCutAffineSheaf.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectivePulledLinearSection_exists_affineSheafKoszul_exactAt {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hproper : V.ideal.toIdeal ≠ ⊥) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite)\n  (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ c,\n    c ≠ 0 ∧\n      (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧\n        ∀ (w : Fin (r + 1) → ℂ),\n          (MvPolynomial.eval w) c ≠ 0 →\n            have I :=\n              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n                (LinearStudy.projectivePulledLinearSectionIdeal f V L w);\n            let C := MvPolynomial (Fin n) ℂ ⧸ I;\n            let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n            have H := fun i =>\n              (Ideal.Quotient.mk V.affineIdeal)\n                (LinearStudy.affineChartPolynomialMap\n                  ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));\n            w 0 ≠ 0 ∧\n              IsReduced C ∧\n                Module.Finite ℂ C ∧\n                  Nonempty (LinearStudy.projectivePulledLinearSectionScheme f V L hL w ≅ AlgebraicGeometry.Spec ↧C) ∧\n                    AlgebraicGeometry.IsReduced (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) ∧\n                      (∀ (j : ℕ),\n                          0 < j → HomologicalComplex.ExactAt (LinearStudy.tildeFunctionKoszulComplex (↧B) H) j) ∧\n                        QuasiIso (LinearStudy.tildeFunctionKoszulAugmentation (↧B) H) ∧\n                          QuasiIso (LinearStudy.tildeKoszulStructureAugmentation (↧B) H)",
+      "sha256": "ea1013849bc63d892e702a5ab87a19c37feb0d317114e46368e6ba62434f6aa5",
+      "lines": 41,
+      "moduleLineCount": 57,
+      "startLine": 15,
+      "endLine": 55,
+      "lineCount": 41,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionScheme",
+        "LinearStudy.projectivePulledLinearSection_exists_affineKoszul_exactAt",
+        "LinearStudy.tildeFunctionKoszulAugmentation",
+        "LinearStudy.tildeFunctionKoszulComplex",
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "LinearStudy.tildeKoszulStructureAugmentation",
+        "LinearStudy.tildeKoszulStructureAugmentation_quasiIso",
+        "LinearStudy.tilde_functionKoszul_augmentation_quasiIso",
+        "LinearStudy.tilde_functionKoszul_exactAt",
+        "koszulComplex"
+      ]
+    },
+    {
       "declaration": "LinearStudy.projectivePulledLinearSection_exists_localKoszul_exactAt_all_primes",
       "kind": "theorem",
       "origin": "project",
@@ -46520,6 +46567,409 @@
         "LinearStudy.lemma31_complete",
         "LinearStudy.powerSeries_thickening_structure_from_radical",
         "LinearStudy.relativeJacobian"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tilde_basicOpen_map_eq_localized",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeBasicOpenMono.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_basicOpen_map_eq_localized.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N) (a : ↑R) :\n  ModuleCat.Hom.hom\n      ((AlgebraicGeometry.modulesSpecToSheaf.map (AlgebraicGeometry.tilde.map f)).hom.app\n        (Opposite.op (PrimeSpectrum.basicOpen a))) =\n    (IsLocalizedModule.map (Submonoid.powers a)\n        (ModuleCat.Hom.hom (AlgebraicGeometry.tilde.toOpen M (PrimeSpectrum.basicOpen a)))\n        (ModuleCat.Hom.hom (AlgebraicGeometry.tilde.toOpen N (PrimeSpectrum.basicOpen a))))\n      (ModuleCat.Hom.hom f)",
+      "sha256": "c92b4035b60b5f587e29437afe8c9fd0a0b63e0caae6cb356b5fef71a836c566",
+      "lines": 15,
+      "moduleLineCount": 36,
+      "startLine": 13,
+      "endLine": 27,
+      "lineCount": 15,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.tilde_basicOpen_map_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeBasicOpenMono.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_basicOpen_map_injective.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N)\n  (hf : Function.Injective ⇑(ModuleCat.Hom.hom f)) (a : ↑R) :\n  Function.Injective\n    ⇑(ModuleCat.Hom.hom\n        ((AlgebraicGeometry.modulesSpecToSheaf.map (AlgebraicGeometry.tilde.map f)).hom.app\n          (Opposite.op (PrimeSpectrum.basicOpen a))))",
+      "sha256": "c92b4035b60b5f587e29437afe8c9fd0a0b63e0caae6cb356b5fef71a836c566",
+      "lines": 6,
+      "moduleLineCount": 36,
+      "startLine": 29,
+      "endLine": 34,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.tilde_basicOpen_map_eq_localized"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tildeFunctionKoszulComplex",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeComplexExact.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeFunctionKoszulComplex.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  ChainComplex (AlgebraicGeometry.Spec R).Modules ℕ",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 5,
+      "moduleLineCount": 62,
+      "startLine": 13,
+      "endLine": 17,
+      "lineCount": 5,
+      "dependencies": [
+        "koszulComplex"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tildeFunctionKoszulQuotientComplex",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeComplexExact.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeFunctionKoszulQuotientComplex.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  ChainComplex (AlgebraicGeometry.Spec R).Modules ℕ",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 5,
+      "moduleLineCount": 62,
+      "startLine": 19,
+      "endLine": 23,
+      "lineCount": 5,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.tildeFunctionKoszulAugmentation",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeComplexExact.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeFunctionKoszulAugmentation.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  LinearStudy.tildeFunctionKoszulComplex R H ⟶ LinearStudy.tildeFunctionKoszulQuotientComplex R H",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 5,
+      "moduleLineCount": 62,
+      "startLine": 25,
+      "endLine": 29,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.functionKoszulAugmentationMap",
+        "LinearStudy.tildeFunctionKoszulComplex",
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "koszulComplex"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tilde_chainComplex_exactAt",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeComplexExact.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_chainComplex_exactAt.{u} (R : CommRingCat) (K : ChainComplex (ModuleCat ↑R) ℕ) (j : ℕ)\n  (h : HomologicalComplex.ExactAt K j) :\n  (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).obj K).ExactAt j",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 8,
+      "moduleLineCount": 62,
+      "startLine": 31,
+      "endLine": 38,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.tilde_functor_preservesHomology"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tilde_functionKoszul_exactAt",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeComplexExact.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_functionKoszul_exactAt.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)\n  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) (j : ℕ)\n  (hj : 0 < j) :\n  (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).obj\n        (koszulComplex (Fintype.linearCombination (↑R) H))).ExactAt\n    j",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 10,
+      "moduleLineCount": 62,
+      "startLine": 40,
+      "endLine": 49,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.tilde_chainComplex_exactAt",
+        "koszulComplex"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tilde_functionKoszul_augmentation_quasiIso",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeComplexExact.lean",
+      "line": 53,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_functionKoszul_augmentation_quasiIso.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)\n  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) :\n  QuasiIso\n    (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).map\n      (LinearStudy.functionKoszulAugmentationMap H))",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "lines": 10,
+      "moduleLineCount": 62,
+      "startLine": 51,
+      "endLine": 60,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.functionKoszulAugmentationMap",
+        "LinearStudy.functionKoszulAugmentation_quasiIso_of_exact",
+        "LinearStudy.tilde_functor_preservesHomology",
+        "koszulComplex"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tildeKoszulStructureTargetIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeKoszulStructureAugmentation.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeKoszulStructureTargetIso.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  LinearStudy.tildeFunctionKoszulQuotientComplex R H ≅\n    (ChainComplex.single₀ (AlgebraicGeometry.Spec R).Modules).obj\n      ((AlgebraicGeometry.Scheme.Modules.pushforward\n            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj\n        (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ Ideal.span (Set.range H))).ringCatSheaf))",
+      "sha256": "a739be823687caa4b33d5e570a71a4eacdc8c435fcca3e2b456e6495aad29771",
+      "lines": 13,
+      "moduleLineCount": 47,
+      "startLine": 12,
+      "endLine": 24,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "LinearStudy.tildeQuotientPushforwardIso"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tildeKoszulStructureAugmentation",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeKoszulStructureAugmentation.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeKoszulStructureAugmentation.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  LinearStudy.tildeFunctionKoszulComplex R H ⟶\n    (ChainComplex.single₀ (AlgebraicGeometry.Spec R).Modules).obj\n      ((AlgebraicGeometry.Scheme.Modules.pushforward\n            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj\n        (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ Ideal.span (Set.range H))).ringCatSheaf))",
+      "sha256": "a739be823687caa4b33d5e570a71a4eacdc8c435fcca3e2b456e6495aad29771",
+      "lines": 9,
+      "moduleLineCount": 47,
+      "startLine": 26,
+      "endLine": 34,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.tildeFunctionKoszulAugmentation",
+        "LinearStudy.tildeFunctionKoszulComplex",
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "LinearStudy.tildeKoszulStructureTargetIso"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tildeKoszulStructureAugmentation_quasiIso",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeKoszulStructureAugmentation.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tildeKoszulStructureAugmentation_quasiIso.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)\n  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) :\n  QuasiIso (LinearStudy.tildeKoszulStructureAugmentation R H)",
+      "sha256": "a739be823687caa4b33d5e570a71a4eacdc8c435fcca3e2b456e6495aad29771",
+      "lines": 10,
+      "moduleLineCount": 47,
+      "startLine": 36,
+      "endLine": 45,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.tildeFunctionKoszulAugmentation",
+        "LinearStudy.tildeFunctionKoszulComplex",
+        "LinearStudy.tildeFunctionKoszulQuotientComplex",
+        "LinearStudy.tildeKoszulStructureAugmentation",
+        "LinearStudy.tildeKoszulStructureTargetIso",
+        "LinearStudy.tilde_functionKoszul_augmentation_quasiIso",
+        "koszulComplex"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tilde_open_map_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildePreservesMono.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_open_map_injective.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N)\n  (hf : Function.Injective ⇑(ModuleCat.Hom.hom f)) (U : (AlgebraicGeometry.Spec R).Opens) :\n  Function.Injective\n    ⇑(ModuleCat.Hom.hom\n        ((AlgebraicGeometry.modulesSpecToSheaf.map (AlgebraicGeometry.tilde.map f)).hom.app (Opposite.op U)))",
+      "sha256": "e1cbb671327b88e257d8fdb170901f2c53d68fba01b711a4745500f0759edbc2",
+      "lines": 14,
+      "moduleLineCount": 46,
+      "startLine": 14,
+      "endLine": 27,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.tilde_basicOpen_map_injective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tilde_map_mono",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildePreservesMono.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_map_mono.{u} {R : CommRingCat} {M N : ModuleCat ↑R} (f : M ⟶ N) [CategoryTheory.Mono f] :\n  CategoryTheory.Mono (AlgebraicGeometry.tilde.map f)",
+      "sha256": "e1cbb671327b88e257d8fdb170901f2c53d68fba01b711a4745500f0759edbc2",
+      "lines": 9,
+      "moduleLineCount": 46,
+      "startLine": 29,
+      "endLine": 37,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.tilde_open_map_injective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tilde_functor_preservesHomology",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildePreservesMono.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tilde_functor_preservesHomology.{u} (R : CommRingCat) :\n  (AlgebraicGeometry.tilde.functor R).PreservesHomology",
+      "sha256": "e1cbb671327b88e257d8fdb170901f2c53d68fba01b711a4745500f0759edbc2",
+      "lines": 6,
+      "moduleLineCount": 46,
+      "startLine": 39,
+      "endLine": 44,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.tilde_map_mono"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tildePushforwardGlobalIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildePushforward.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildePushforwardGlobalIso.{u} {R S : CommRingCat} (φ : R ⟶ S) (M : ModuleCat ↑S) :\n  AlgebraicGeometry.moduleSpecΓFunctor.obj\n      ((AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map φ)).obj (AlgebraicGeometry.tilde M)) ≅\n    (ModuleCat.restrictScalars (CommRingCat.Hom.hom φ)).obj M",
+      "sha256": "6f8cc19c5a145aafa3fd567cda601b5d6219a7ecd96bcd1357427b619864aacb",
+      "lines": 9,
+      "moduleLineCount": 34,
+      "startLine": 13,
+      "endLine": 21,
+      "lineCount": 9,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.tildePushforwardIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildePushforward.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildePushforwardIso.{u} {R S : CommRingCat} (φ : R ⟶ S) (M : ModuleCat ↑S) :\n  AlgebraicGeometry.tilde ((ModuleCat.restrictScalars (CommRingCat.Hom.hom φ)).obj M) ≅\n    (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map φ)).obj (AlgebraicGeometry.tilde M)",
+      "sha256": "6f8cc19c5a145aafa3fd567cda601b5d6219a7ecd96bcd1357427b619864aacb",
+      "lines": 10,
+      "moduleLineCount": 34,
+      "startLine": 23,
+      "endLine": 32,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.tildePushforwardGlobalIso"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tildeQuotientPushforwardIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeQuotientPushforward.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeQuotientPushforwardIso.{u} (R : CommRingCat) (J : Ideal ↑R) :\n  AlgebraicGeometry.tilde ↧(↑R ⧸ J) ≅\n    (AlgebraicGeometry.Scheme.Modules.pushforward\n          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk J)))).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ J)).ringCatSheaf)",
+      "sha256": "15ccc51b87d643fb9ba540c2bdabd1ebd7b7f464a009a4375179a1ae8fe07166",
+      "lines": 14,
+      "moduleLineCount": 28,
+      "startLine": 13,
+      "endLine": 26,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.restrictedAlgebraModuleEquiv",
+        "LinearStudy.tildePushforwardIso"
       ]
     },
     {
