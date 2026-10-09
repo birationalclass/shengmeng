@@ -811,3 +811,22 @@ public import Linear.FiniteCoextensionUpper
 public import Linear.CoextensionFractionEmbedding
 public import Linear.CoextensionIntegralEmbedding
 public import Linear.ProjectiveFiniteDualEmbedding
+
+public import Linear.GradedIntegerProjection
+public import Linear.GradedHomComponent
+public import Linear.GradedHomComponentNonzero
+public import Linear.GradedHomFiniteSupport
+public import Linear.GradedIntegerProjector
+public import Linear.GradedHomPiece
+public import Linear.GradedHomProjection
+public import Linear.GradedHomDecomposition
+public import Linear.CoextensionGradedBaseEquiv
+public import Linear.GradedDecompositionTransport
+public import Linear.CoextensionHomInjective
+public import Linear.CoextensionGradedModule
+public import Linear.ProjectiveNormalizationGradedDual
+public import Linear.IntegerDomainHomComponent
+public import Linear.IntegerDomainHomComponentNonzero
+public import Linear.CoextensionGradedEmbedding
+public import Linear.HomogeneousPositiveEmbeddingShift
+public import Linear.ProjectiveNormalizationHomogeneousEmbedding

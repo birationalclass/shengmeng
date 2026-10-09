@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1998,
-  "verifiedTheorems": 1499,
-  "definitions": 303,
+  "audited": 2042,
+  "verifiedTheorems": 1530,
+  "definitions": 316,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -2288,6 +2288,230 @@
         "LinearStudy.coextensionFractionFunctional_injective",
         "LinearStudy.coextensionFractionNativeLinear",
         "LinearStudy.coextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionGradedBaseModule",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CoextensionGradedBaseEquiv.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coextensionGradedBaseModule.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K S]\n  [Algebra R S] : Module K ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)",
+      "sha256": "e7e2728f3a477f857a65703b3d87492332fb7e216e99bb42fcb5c533f1a9205f",
+      "lines": 4,
+      "moduleLineCount": 46,
+      "startLine": 16,
+      "endLine": 19,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.coextensionGradedBaseEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CoextensionGradedBaseEquiv.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coextensionGradedBaseEquiv.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]\n  [Algebra K S] [Algebra R S] [IsScalarTower K R S] :\n  ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R) ≃ₗ[K] Module.Dual R S",
+      "sha256": "e7e2728f3a477f857a65703b3d87492332fb7e216e99bb42fcb5c533f1a9205f",
+      "lines": 22,
+      "moduleLineCount": 46,
+      "startLine": 23,
+      "endLine": 44,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionDual_exists_homogeneous_embedding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionGradedEmbedding.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionDual_exists_homogeneous_embedding.{u} {K R S : Type u} [Field K] [CommRing R] [IsDomain R]\n  [IsNoetherianRing R] [CommRing S] [IsDomain S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]\n  [FaithfulSMul R S] [Module.Finite R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] :\n  ∃ k e,\n    Function.Injective ⇑e ∧\n      ∀ (d : ℤ),\n        ∀ ell ∈ LinearStudy.coextensionGradedPiece 𝒜 𝓑 d,\n          e ell = (LinearStudy.gradedIntegerProjection 𝓑 (d + k)) (e ell)",
+      "sha256": "ffc1d4074fd35bef060cfea7bbde12bc67fcfa0c116d18b22492ec8aaf2a98bf",
+      "lines": 26,
+      "moduleLineCount": 49,
+      "startLine": 22,
+      "endLine": 47,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.coextensionDual_exists_integral_embedding",
+        "LinearStudy.coextensionDual_nonzero_linear_map_injective",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedDecomposition",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionGradedPiece_smul_homogeneous",
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.integerDomainHomComponent",
+        "LinearStudy.integerDomainHomComponent_exists_nonzero",
+        "LinearStudy.integerDomainHomComponent_homogeneous"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionGradedPiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CoextensionGradedModule.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coextensionGradedPiece.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S]\n  [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) (k : ℤ) :\n  Submodule K ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)",
+      "sha256": "bfb0d210d8d39789b51f36470022c65eab26f3903fa5a7b0f1fa272e0cd60c41",
+      "lines": 5,
+      "moduleLineCount": 54,
+      "startLine": 20,
+      "endLine": 24,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseEquiv",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.gradedHomPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionGradedPiece_mem_iff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionGradedModule.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionGradedPiece_mem_iff.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]\n  [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] (k : ℤ) (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) :\n  ell ∈ LinearStudy.coextensionGradedPiece 𝒜 𝓑 k ↔\n    ∀ (n : ℕ),\n      ∀ x ∈ 𝓑 n,\n        ((ModuleCat.CoextendScalars.equiv (algebraMap R S) ↧R) ell) x =\n          (LinearStudy.gradedIntegerProjection 𝒜 (↑n + k))\n            (((ModuleCat.CoextendScalars.equiv (algebraMap R S) ↧R) ell) x)",
+      "sha256": "bfb0d210d8d39789b51f36470022c65eab26f3903fa5a7b0f1fa272e0cd60c41",
+      "lines": 5,
+      "moduleLineCount": 54,
+      "startLine": 26,
+      "endLine": 30,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.gradedIntegerProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionGradedDecomposition",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CoextensionGradedModule.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coextensionGradedDecomposition.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]\n  [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] :\n  DirectSum.Decomposition (LinearStudy.coextensionGradedPiece 𝒜 𝓑)",
+      "sha256": "bfb0d210d8d39789b51f36470022c65eab26f3903fa5a7b0f1fa272e0cd60c41",
+      "lines": 7,
+      "moduleLineCount": 54,
+      "startLine": 32,
+      "endLine": 38,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseEquiv",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.gradedHomDecomposition",
+        "LinearStudy.gradedHomPiece",
+        "LinearStudy.transportedGrading"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextensionGradedPiece_smul_homogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionGradedModule.lean",
+      "line": 42,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionGradedPiece_smul_homogeneous.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] (d : ℕ) (k : ℤ) (b : S) (hb : b ∈ 𝓑 d)\n  (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))\n  (hell : ell ∈ LinearStudy.coextensionGradedPiece 𝒜 𝓑 k) : b • ell ∈ LinearStudy.coextensionGradedPiece 𝒜 𝓑 (k + ↑d)",
+      "sha256": "bfb0d210d8d39789b51f36470022c65eab26f3903fa5a7b0f1fa272e0cd60c41",
+      "lines": 13,
+      "moduleLineCount": 54,
+      "startLine": 40,
+      "endLine": 52,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionGradedPiece_mem_iff",
+        "LinearStudy.gradedIntegerProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.embeddedDomainModule_nonzero_map_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionHomInjective.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.embeddedDomainModule_nonzero_map_injective.{u_1, u_2} {S : Type u_1} {D : Type u_2} [CommRing S]\n  [IsDomain S] [AddCommGroup D] [Module S D] (e : D →ₗ[S] S) (he : Function.Injective ⇑e) (f : D →ₗ[S] S) (hf : f ≠ 0) :\n  Function.Injective ⇑f",
+      "sha256": "a9c4f164f4952c4fcbf05001f10deb52bc4c67620ded1f812b308480f830c599",
+      "lines": 25,
+      "moduleLineCount": 49,
+      "startLine": 12,
+      "endLine": 36,
+      "lineCount": 25,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.coextensionDual_nonzero_linear_map_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoextensionHomInjective.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextensionDual_nonzero_linear_map_injective.{u} {R S : Type u} [CommRing R] [IsDomain R]\n  [IsNoetherianRing R] [CommRing S] [IsDomain S] [Algebra R S] [FaithfulSMul R S] [Module.Finite R S]\n  (f : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R) →ₗ[S] S) (hf : f ≠ 0) : Function.Injective ⇑f",
+      "sha256": "a9c4f164f4952c4fcbf05001f10deb52bc4c67620ded1f812b308480f830c599",
+      "lines": 10,
+      "moduleLineCount": 49,
+      "startLine": 38,
+      "endLine": 47,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.coextensionDual_exists_integral_embedding",
+        "LinearStudy.embeddedDomainModule_nonzero_map_injective"
       ]
     },
     {
@@ -8211,6 +8435,69 @@
       ]
     },
     {
+      "declaration": "LinearStudy.transportedGrading_independent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedDecompositionTransport.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.transportedGrading_independent.{u_1, u_2, u_3, u_4} {K : Type u_1} {M : Type u_2} {N : Type u_3}\n  {ι : Type u_4} [DecidableEq ι] [Field K] [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N]\n  (𝓝 : ι → Submodule K N) [DirectSum.Decomposition 𝓝] (e : M ≃ₗ[K] N) : iSupIndep fun i => Submodule.comap (↑e) (𝓝 i)",
+      "sha256": "d38f1a34efdb6be2486648e08fed365a994a7834fa368a6127fe2a67bf90fdc2",
+      "lines": 5,
+      "moduleLineCount": 34,
+      "startLine": 13,
+      "endLine": 17,
+      "lineCount": 5,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.transportedGrading_total",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedDecompositionTransport.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.transportedGrading_total.{u_1, u_2, u_3, u_4} {K : Type u_1} {M : Type u_2} {N : Type u_3} {ι : Type u_4}\n  [DecidableEq ι] [Field K] [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N] (𝓝 : ι → Submodule K N)\n  [DirectSum.Decomposition 𝓝] (e : M ≃ₗ[K] N) : ⨆ i, Submodule.comap (↑e) (𝓝 i) = ⊤",
+      "sha256": "d38f1a34efdb6be2486648e08fed365a994a7834fa368a6127fe2a67bf90fdc2",
+      "lines": 6,
+      "moduleLineCount": 34,
+      "startLine": 19,
+      "endLine": 24,
+      "lineCount": 6,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.transportedGrading",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedDecompositionTransport.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.transportedGrading.{u_1, u_2, u_3, u_4} {K : Type u_1} {M : Type u_2} {N : Type u_3} {ι : Type u_4}\n  [DecidableEq ι] [Field K] [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N] (𝓝 : ι → Submodule K N)\n  [DirectSum.Decomposition 𝓝] (e : M ≃ₗ[K] N) : DirectSum.Decomposition fun i => Submodule.comap (↑e) (𝓝 i)",
+      "sha256": "d38f1a34efdb6be2486648e08fed365a994a7834fa368a6127fe2a67bf90fdc2",
+      "lines": 7,
+      "moduleLineCount": 34,
+      "startLine": 26,
+      "endLine": 32,
+      "lineCount": 7,
+      "dependencies": []
+    },
+    {
       "declaration": "LinearStudy.finiteModule_exists_generic_homogeneous_basis",
       "kind": "theorem",
       "origin": "project",
@@ -8456,6 +8743,506 @@
       "dependencies": [
         "LinearStudy.gradedHilbertSeries",
         "_private.Linear.GradedHilbertSerre.0.LinearStudy.gradedHilbertSerre_induction"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomComponentAux",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedHomComponent.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedHomComponentAux.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3} {N : Type u_4}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] [AddCommGroup N]\n  [Module K N] [Module A N] [IsScalarTower K A N] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ]\n  (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] (f : M →ₗ[A] N) (k : ℤ) : M →ₗ[K] N",
+      "sha256": "a1cb07276d7950e24b7cbb5b7a128650fdfa963f1d8f346403d524e90991c9af",
+      "lines": 8,
+      "moduleLineCount": 72,
+      "startLine": 18,
+      "endLine": 25,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomComponentAux_on_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHomComponent.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHomComponentAux_on_piece.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ]\n  (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] (f : M →ₗ[A] N) (k : ℤ) (d : ℕ) (x : M) (hx : x ∈ ℳ d) :\n  (LinearStudy.gradedHomComponentAux ℳ 𝓝 f k) x = (LinearStudy.gradedIntegerProjection 𝓝 (↑d + k)) (f x)",
+      "sha256": "a1cb07276d7950e24b7cbb5b7a128650fdfa963f1d8f346403d524e90991c9af",
+      "lines": 14,
+      "moduleLineCount": 72,
+      "startLine": 27,
+      "endLine": 40,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.gradedHomComponentAux",
+        "LinearStudy.gradedIntegerProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomComponentAux_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHomComponent.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHomComponentAux_smul.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3} {N : Type u_4}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] [AddCommGroup N]\n  [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M)\n  [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] [hM : SetLike.GradedSMul 𝒜 ℳ]\n  [hN : SetLike.GradedSMul 𝒜 𝓝] (f : M →ₗ[A] N) (k : ℤ) (a : A) (x : M) :\n  (LinearStudy.gradedHomComponentAux ℳ 𝓝 f k) (a • x) = a • (LinearStudy.gradedHomComponentAux ℳ 𝓝 f k) x",
+      "sha256": "a1cb07276d7950e24b7cbb5b7a128650fdfa963f1d8f346403d524e90991c9af",
+      "lines": 23,
+      "moduleLineCount": 72,
+      "startLine": 43,
+      "endLine": 65,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.gradedHomComponentAux",
+        "LinearStudy.gradedHomComponentAux_on_piece",
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedIntegerProjection_smul_homogeneous"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomComponent",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedHomComponent.lean",
+      "line": 67,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedHomComponent.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3} {N : Type u_4}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] [AddCommGroup N]\n  [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M)\n  [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] [hM : SetLike.GradedSMul 𝒜 ℳ]\n  [hN : SetLike.GradedSMul 𝒜 𝓝] (f : M →ₗ[A] N) (k : ℤ) : M →ₗ[A] N",
+      "sha256": "a1cb07276d7950e24b7cbb5b7a128650fdfa963f1d8f346403d524e90991c9af",
+      "lines": 4,
+      "moduleLineCount": 72,
+      "startLine": 67,
+      "endLine": 70,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.gradedHomComponentAux",
+        "LinearStudy.gradedHomComponentAux_smul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomComponent_on_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHomComponentNonzero.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHomComponent_on_piece.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3} {N : Type u_4}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] [AddCommGroup N]\n  [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M)\n  [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] [SetLike.GradedSMul 𝒜 ℳ]\n  [SetLike.GradedSMul 𝒜 𝓝] (f : M →ₗ[A] N) (k : ℤ) (d : ℕ) (x : M) (hx : x ∈ ℳ d) :\n  (LinearStudy.gradedHomComponent 𝒜 ℳ 𝓝 f k) x = (LinearStudy.gradedIntegerProjection 𝓝 (↑d + k)) (f x)",
+      "sha256": "47ec26bf1823d86131d970ba5a46a68c0ece4872693b561d348657a09aab2d98",
+      "lines": 5,
+      "moduleLineCount": 50,
+      "startLine": 17,
+      "endLine": 21,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedHomComponent",
+        "LinearStudy.gradedHomComponentAux_on_piece",
+        "LinearStudy.gradedIntegerProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomComponent_exists_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHomComponentNonzero.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHomComponent_exists_nonzero.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝]\n  [SetLike.GradedSMul 𝒜 ℳ] [SetLike.GradedSMul 𝒜 𝓝] (f : M →ₗ[A] N) (hf : f ≠ 0) :\n  ∃ k, LinearStudy.gradedHomComponent 𝒜 ℳ 𝓝 f k ≠ 0",
+      "sha256": "47ec26bf1823d86131d970ba5a46a68c0ece4872693b561d348657a09aab2d98",
+      "lines": 26,
+      "moduleLineCount": 50,
+      "startLine": 23,
+      "endLine": 48,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.gradedHomComponent",
+        "LinearStudy.gradedHomComponent_on_piece",
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedModuleProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomPiece_independent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHomDecomposition.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHomPiece_independent.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3} {N : Type u_4}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] [AddCommGroup N]\n  [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M)\n  [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] [SetLike.GradedSMul 𝒜 ℳ]\n  [SetLike.GradedSMul 𝒜 𝓝] : iSupIndep (LinearStudy.gradedHomPiece ℳ 𝓝)",
+      "sha256": "66eda7a2e06fae8234a31fcdb3ae5d2bba0f1180f146fa8b55966098969eca39",
+      "lines": 12,
+      "moduleLineCount": 49,
+      "startLine": 18,
+      "endLine": 29,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.gradedHomComponent_on_homogeneous_map",
+        "LinearStudy.gradedHomPiece",
+        "LinearStudy.gradedHomProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomPiece_total",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHomDecomposition.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHomPiece_total.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3} {N : Type u_4}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] [AddCommGroup N]\n  [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M)\n  [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] [SetLike.GradedSMul 𝒜 ℳ]\n  [SetLike.GradedSMul 𝒜 𝓝] [Module.Finite A M] : ⨆ k, LinearStudy.gradedHomPiece ℳ 𝓝 k = ⊤",
+      "sha256": "66eda7a2e06fae8234a31fcdb3ae5d2bba0f1180f146fa8b55966098969eca39",
+      "lines": 7,
+      "moduleLineCount": 49,
+      "startLine": 32,
+      "endLine": 38,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.gradedHomComponent_mem_piece",
+        "LinearStudy.gradedHomPiece",
+        "LinearStudy.gradedHomProjection",
+        "LinearStudy.gradedHomProjection_exists_sum"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomDecomposition",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedHomDecomposition.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedHomDecomposition.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3} {N : Type u_4}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] [AddCommGroup N]\n  [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M)\n  [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] [SetLike.GradedSMul 𝒜 ℳ]\n  [SetLike.GradedSMul 𝒜 𝓝] [Module.Finite A M] : DirectSum.Decomposition (LinearStudy.gradedHomPiece ℳ 𝓝)",
+      "sha256": "66eda7a2e06fae8234a31fcdb3ae5d2bba0f1180f146fa8b55966098969eca39",
+      "lines": 8,
+      "moduleLineCount": 49,
+      "startLine": 40,
+      "endLine": 47,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.gradedHomPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomComponent_finite_support",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHomFiniteSupport.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHomComponent_finite_support.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝]\n  [SetLike.GradedSMul 𝒜 ℳ] [SetLike.GradedSMul 𝒜 𝓝] [Module.Finite A M] (f : M →ₗ[A] N) :\n  ∃ s, ∀ k ∉ s, LinearStudy.gradedHomComponent 𝒜 ℳ 𝓝 f k = 0",
+      "sha256": "de8c775c82ad2521c53034610ccfbe7d269e0527d15519c103319a96e4441829",
+      "lines": 36,
+      "moduleLineCount": 55,
+      "startLine": 18,
+      "endLine": 53,
+      "lineCount": 36,
+      "dependencies": [
+        "LinearStudy.finiteModule_exists_homogeneous_generators",
+        "LinearStudy.gradedHomComponent",
+        "LinearStudy.gradedHomComponent_on_piece",
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedModuleProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomPiece",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedHomPiece.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedHomPiece.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3} {N : Type u_4} [Field K]\n  [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [AddCommGroup N] [Module K N] [Module A N]\n  [IsScalarTower K A N] (ℳ : ℕ → Submodule K M) (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] (k : ℤ) :\n  Submodule K (M →ₗ[A] N)",
+      "sha256": "26025bcbb334d5786225aab6f6978eab94bcc74d06d8305a74f47c44bfeecea2",
+      "lines": 14,
+      "moduleLineCount": 66,
+      "startLine": 18,
+      "endLine": 31,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomComponent_mem_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHomPiece.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHomComponent_mem_piece.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝]\n  [SetLike.GradedSMul 𝒜 ℳ] [SetLike.GradedSMul 𝒜 𝓝] (f : M →ₗ[A] N) (k : ℤ) :\n  LinearStudy.gradedHomComponent 𝒜 ℳ 𝓝 f k ∈ LinearStudy.gradedHomPiece ℳ 𝓝 k",
+      "sha256": "26025bcbb334d5786225aab6f6978eab94bcc74d06d8305a74f47c44bfeecea2",
+      "lines": 6,
+      "moduleLineCount": 66,
+      "startLine": 33,
+      "endLine": 38,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedHomComponent",
+        "LinearStudy.gradedHomComponent_on_piece",
+        "LinearStudy.gradedHomPiece",
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedIntegerProjection_projector"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomComponent_on_homogeneous_map",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHomPiece.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHomComponent_on_homogeneous_map.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝]\n  [SetLike.GradedSMul 𝒜 ℳ] [SetLike.GradedSMul 𝒜 𝓝] (j k : ℤ) (f : M →ₗ[A] N)\n  (hf : f ∈ LinearStudy.gradedHomPiece ℳ 𝓝 k) : LinearStudy.gradedHomComponent 𝒜 ℳ 𝓝 f j = if j = k then f else 0",
+      "sha256": "26025bcbb334d5786225aab6f6978eab94bcc74d06d8305a74f47c44bfeecea2",
+      "lines": 24,
+      "moduleLineCount": 66,
+      "startLine": 41,
+      "endLine": 64,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.gradedHomComponent",
+        "LinearStudy.gradedHomComponent_on_piece",
+        "LinearStudy.gradedHomPiece",
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedIntegerProjection_projector"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomProjection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedHomProjection.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedHomProjection.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3} {N : Type u_4}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] [AddCommGroup N]\n  [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M)\n  [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] [SetLike.GradedSMul 𝒜 ℳ]\n  [SetLike.GradedSMul 𝒜 𝓝] (k : ℤ) : (M →ₗ[A] N) →ₗ[K] M →ₗ[A] N",
+      "sha256": "1e45acad4397d605d89d819b8dafabaa31c939069408607be5ddf1cc3346f0aa",
+      "lines": 27,
+      "moduleLineCount": 77,
+      "startLine": 18,
+      "endLine": 44,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.gradedHomComponent"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomProjection_joint_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHomProjection.lean",
+      "line": 46,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHomProjection_joint_injective.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝]\n  [SetLike.GradedSMul 𝒜 ℳ] [SetLike.GradedSMul 𝒜 𝓝] (f g : M →ₗ[A] N)\n  (h : ∀ (k : ℤ), (LinearStudy.gradedHomProjection 𝒜 ℳ 𝓝 k) f = (LinearStudy.gradedHomProjection 𝒜 ℳ 𝓝 k) g) : f = g",
+      "sha256": "1e45acad4397d605d89d819b8dafabaa31c939069408607be5ddf1cc3346f0aa",
+      "lines": 8,
+      "moduleLineCount": 77,
+      "startLine": 46,
+      "endLine": 53,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.gradedHomComponent",
+        "LinearStudy.gradedHomComponent_exists_nonzero",
+        "LinearStudy.gradedHomProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedHomProjection_exists_sum",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedHomProjection.lean",
+      "line": 57,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedHomProjection_exists_sum.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝]\n  [SetLike.GradedSMul 𝒜 ℳ] [SetLike.GradedSMul 𝒜 𝓝] [Module.Finite A M] (f : M →ₗ[A] N) :\n  ∃ s, ∑ k ∈ s, (LinearStudy.gradedHomProjection 𝒜 ℳ 𝓝 k) f = f",
+      "sha256": "1e45acad4397d605d89d819b8dafabaa31c939069408607be5ddf1cc3346f0aa",
+      "lines": 21,
+      "moduleLineCount": 77,
+      "startLine": 55,
+      "endLine": 75,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.gradedHomComponent",
+        "LinearStudy.gradedHomComponent_finite_support",
+        "LinearStudy.gradedHomComponent_mem_piece",
+        "LinearStudy.gradedHomComponent_on_homogeneous_map",
+        "LinearStudy.gradedHomProjection",
+        "LinearStudy.gradedHomProjection_joint_injective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedIntegerProjection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GradedIntegerProjection.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.gradedIntegerProjection.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M] [Module K M]\n  (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (i : ℤ) : M →ₗ[K] M",
+      "sha256": "52892ad4e5bf6091a82d60f482e115ab760c8483261a5e73abd3ccbe9cf4fa19",
+      "lines": 4,
+      "moduleLineCount": 49,
+      "startLine": 14,
+      "endLine": 17,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.gradedModuleProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedIntegerProjection_on_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedIntegerProjection.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedIntegerProjection_on_piece.{u_1, u_3} {K : Type u_1} {M : Type u_3} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (i : ℤ) (n : ℕ) (m : M) (hm : m ∈ ℳ n) :\n  (LinearStudy.gradedIntegerProjection ℳ i) m = if i = ↑n then m else 0",
+      "sha256": "52892ad4e5bf6091a82d60f482e115ab760c8483261a5e73abd3ccbe9cf4fa19",
+      "lines": 11,
+      "moduleLineCount": 49,
+      "startLine": 19,
+      "endLine": 29,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_on_piece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedIntegerProjection_smul_homogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedIntegerProjection.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedIntegerProjection_smul_homogeneous.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] [SetLike.GradedSMul 𝒜 ℳ]\n  (d : ℕ) (i : ℤ) (a : A) (ha : a ∈ 𝒜 d) (m : M) :\n  (LinearStudy.gradedIntegerProjection ℳ i) (a • m) = a • (LinearStudy.gradedIntegerProjection ℳ (i - ↑d)) m",
+      "sha256": "52892ad4e5bf6091a82d60f482e115ab760c8483261a5e73abd3ccbe9cf4fa19",
+      "lines": 17,
+      "moduleLineCount": 49,
+      "startLine": 31,
+      "endLine": 47,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.gradedModuleProjection_smul_homogeneous"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.gradedIntegerProjection_projector",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedIntegerProjector.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.gradedIntegerProjection_projector.{u_1, u_2} {K : Type u_1} {M : Type u_2} [Field K] [AddCommGroup M]\n  [Module K M] (ℳ : ℕ → Submodule K M) [DirectSum.Decomposition ℳ] (i j : ℤ) (x : M) :\n  (LinearStudy.gradedIntegerProjection ℳ i) ((LinearStudy.gradedIntegerProjection ℳ j) x) =\n    if i = j then (LinearStudy.gradedIntegerProjection ℳ j) x else 0",
+      "sha256": "3c146b5ea3ccae9a3566b6fc1ec19fb3474c1426b42aed3d12b3e83fcf150e7f",
+      "lines": 15,
+      "moduleLineCount": 27,
+      "startLine": 11,
+      "endLine": 25,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedIntegerProjection_on_piece",
+        "LinearStudy.gradedModuleProjection"
       ]
     },
     {
@@ -11649,6 +12436,30 @@
       ]
     },
     {
+      "declaration": "LinearStudy.homogeneous_embedding_exists_positive_shift",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousPositiveEmbeddingShift.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_embedding_exists_positive_shift.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {M : Type u_3}\n  [Field K] [CommRing S] [IsDomain S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M) (k : ℤ) (e : M →ₗ[S] S) (he : Function.Injective ⇑e)\n  (hhom : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, e x = (LinearStudy.gradedIntegerProjection 𝓑 (d + k)) (e x)) (b : S) (hb : b ∈ 𝓑 1)\n  (hne : b ≠ 0) :\n  ∃ m,\n    0 < m ∧\n      ∃ g, Function.Injective ⇑g ∧ ∀ (d : ℤ), ∀ x ∈ 𝒟 d, g x = (LinearStudy.gradedIntegerProjection 𝓑 (d + ↑m)) (g x)",
+      "sha256": "05dddd6ef1251f4cffee28c6bd0446071fff1d71cd877e87586ee938ad233634",
+      "lines": 29,
+      "moduleLineCount": 44,
+      "startLine": 14,
+      "endLine": 42,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedIntegerProjection_smul_homogeneous"
+      ]
+    },
+    {
       "declaration": "LinearStudy.homogeneousComponent_aeval_common_positive_degree",
       "kind": "theorem",
       "origin": "project",
@@ -12326,6 +13137,180 @@
         "LinearStudy.affineChartPolynomialMap_comp_aeval",
         "LinearStudy.homogeneous_aeval_smul",
         "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.integerDomainHomComponentAux",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/IntegerDomainHomComponent.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.integerDomainHomComponentAux.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟]\n  (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] (f : M →ₗ[A] N) (k : ℤ) : M →ₗ[K] N",
+      "sha256": "00957668a6d932230a0f051fabcf632aed82e14da36f0b5e117a39fb1e19a81e",
+      "lines": 6,
+      "moduleLineCount": 72,
+      "startLine": 18,
+      "endLine": 23,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.integerDomainHomComponentAux_on_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/IntegerDomainHomComponent.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.integerDomainHomComponentAux_on_piece.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟]\n  (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] (f : M →ₗ[A] N) (k d : ℤ) (x : M) (hx : x ∈ 𝒟 d) :\n  (LinearStudy.integerDomainHomComponentAux 𝒟 𝓝 f k) x = (LinearStudy.gradedIntegerProjection 𝓝 (d + k)) (f x)",
+      "sha256": "00957668a6d932230a0f051fabcf632aed82e14da36f0b5e117a39fb1e19a81e",
+      "lines": 13,
+      "moduleLineCount": 72,
+      "startLine": 25,
+      "endLine": 37,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.integerDomainHomComponentAux"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.integerDomainHomComponentAux_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/IntegerDomainHomComponent.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.integerDomainHomComponentAux_smul.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜]\n  (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝]\n  [SetLike.GradedSMul 𝒜 𝓝] (hgrade : ∀ (d : ℕ), ∀ a ∈ 𝒜 d, ∀ (j : ℤ), ∀ x ∈ 𝒟 j, a • x ∈ 𝒟 (j + ↑d)) (f : M →ₗ[A] N)\n  (k : ℤ) (a : A) (x : M) :\n  (LinearStudy.integerDomainHomComponentAux 𝒟 𝓝 f k) (a • x) = a • (LinearStudy.integerDomainHomComponentAux 𝒟 𝓝 f k) x",
+      "sha256": "00957668a6d932230a0f051fabcf632aed82e14da36f0b5e117a39fb1e19a81e",
+      "lines": 24,
+      "moduleLineCount": 72,
+      "startLine": 39,
+      "endLine": 62,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedIntegerProjection_smul_homogeneous",
+        "LinearStudy.integerDomainHomComponentAux",
+        "LinearStudy.integerDomainHomComponentAux_on_piece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.integerDomainHomComponent",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/IntegerDomainHomComponent.lean",
+      "line": 64,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.integerDomainHomComponent.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3} {N : Type u_4}\n  [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M] [AddCommGroup N]\n  [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M)\n  [DirectSum.Decomposition 𝒟] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝] [SetLike.GradedSMul 𝒜 𝓝]\n  (hgrade : ∀ (d : ℕ), ∀ a ∈ 𝒜 d, ∀ (j : ℤ), ∀ x ∈ 𝒟 j, a • x ∈ 𝒟 (j + ↑d)) (f : M →ₗ[A] N) (k : ℤ) : M →ₗ[A] N",
+      "sha256": "00957668a6d932230a0f051fabcf632aed82e14da36f0b5e117a39fb1e19a81e",
+      "lines": 7,
+      "moduleLineCount": 72,
+      "startLine": 64,
+      "endLine": 70,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.integerDomainHomComponentAux",
+        "LinearStudy.integerDomainHomComponentAux_smul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.integerDomainHomComponent_on_piece",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/IntegerDomainHomComponentNonzero.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.integerDomainHomComponent_on_piece.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜]\n  (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝]\n  [SetLike.GradedSMul 𝒜 𝓝] (hgrade : ∀ (d : ℕ), ∀ a ∈ 𝒜 d, ∀ (j : ℤ), ∀ x ∈ 𝒟 j, a • x ∈ 𝒟 (j + ↑d)) (f : M →ₗ[A] N)\n  (k d : ℤ) (x : M) (hx : x ∈ 𝒟 d) :\n  (LinearStudy.integerDomainHomComponent 𝒜 𝒟 𝓝 hgrade f k) x = (LinearStudy.gradedIntegerProjection 𝓝 (d + k)) (f x)",
+      "sha256": "9192c9313862eea32f83a20fba3bf7fd08ab8c932331fefbed75498475015d21",
+      "lines": 5,
+      "moduleLineCount": 60,
+      "startLine": 19,
+      "endLine": 23,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.integerDomainHomComponent",
+        "LinearStudy.integerDomainHomComponentAux_on_piece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.integerDomainHomComponent_homogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/IntegerDomainHomComponentNonzero.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.integerDomainHomComponent_homogeneous.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜]\n  (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝]\n  [SetLike.GradedSMul 𝒜 𝓝] (hgrade : ∀ (d : ℕ), ∀ a ∈ 𝒜 d, ∀ (j : ℤ), ∀ x ∈ 𝒟 j, a • x ∈ 𝒟 (j + ↑d)) (f : M →ₗ[A] N)\n  (k d : ℤ) (x : M) (hx : x ∈ 𝒟 d) :\n  (LinearStudy.integerDomainHomComponent 𝒜 𝒟 𝓝 hgrade f k) x =\n    (LinearStudy.gradedIntegerProjection 𝓝 (d + k)) ((LinearStudy.integerDomainHomComponent 𝒜 𝒟 𝓝 hgrade f k) x)",
+      "sha256": "9192c9313862eea32f83a20fba3bf7fd08ab8c932331fefbed75498475015d21",
+      "lines": 9,
+      "moduleLineCount": 60,
+      "startLine": 25,
+      "endLine": 33,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedIntegerProjection_projector",
+        "LinearStudy.integerDomainHomComponent",
+        "LinearStudy.integerDomainHomComponent_on_piece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.integerDomainHomComponent_exists_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/IntegerDomainHomComponentNonzero.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.integerDomainHomComponent_exists_nonzero.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {M : Type u_3}\n  {N : Type u_4} [Field K] [CommRing A] [Algebra K A] [AddCommGroup M] [Module K M] [Module A M] [IsScalarTower K A M]\n  [AddCommGroup N] [Module K N] [Module A N] [IsScalarTower K A N] (𝒜 : ℕ → Submodule K A) [GradedAlgebra 𝒜]\n  (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟] (𝓝 : ℕ → Submodule K N) [DirectSum.Decomposition 𝓝]\n  [SetLike.GradedSMul 𝒜 𝓝] (hgrade : ∀ (d : ℕ), ∀ a ∈ 𝒜 d, ∀ (j : ℤ), ∀ x ∈ 𝒟 j, a • x ∈ 𝒟 (j + ↑d)) (f : M →ₗ[A] N)\n  (hf : f ≠ 0) : ∃ k, LinearStudy.integerDomainHomComponent 𝒜 𝒟 𝓝 hgrade f k ≠ 0",
+      "sha256": "9192c9313862eea32f83a20fba3bf7fd08ab8c932331fefbed75498475015d21",
+      "lines": 24,
+      "moduleLineCount": 60,
+      "startLine": 35,
+      "endLine": 58,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.gradedModuleProjection",
+        "LinearStudy.integerDomainHomComponent",
+        "LinearStudy.integerDomainHomComponent_on_piece"
       ]
     },
     {
@@ -36722,6 +37707,141 @@
         "LinearStudy.rationalPointPrime",
         "LinearStudy.rationalPolynomialChartMap",
         "LinearStudy.rationalPolynomialChartMap_point_kernel"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveLinearNormalization_gradedSMul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNormalizationGradedDual.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveLinearNormalization_gradedSMul {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) :\n  have A := MvPolynomial (Fin (r + 1)) ℂ;\n  have B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  have φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n    (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)",
+      "sha256": "4fef4effbdfa400d5c50896b460cb54cec9fc8c8d053e564046f9a5a5e7de48f",
+      "lines": 23,
+      "moduleLineCount": 67,
+      "startLine": 16,
+      "endLine": 38,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.homogeneousQuotientPiece_mem_iff",
+        "LinearStudy.homogeneousQuotientPiece_mul_mem",
+        "LinearStudy.projectiveLinearNormalizationMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveLinearNormalization_exists_gradedDual",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNormalizationGradedDual.lean",
+      "line": 42,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveLinearNormalization_exists_gradedDual {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  Nonempty\n    (DirectSum.Decomposition\n      (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n        (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)))",
+      "sha256": "4fef4effbdfa400d5c50896b460cb54cec9fc8c8d053e564046f9a5a5e7de48f",
+      "lines": 26,
+      "moduleLineCount": 67,
+      "startLine": 40,
+      "endLine": 65,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedDecomposition",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_embedding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNormalizationHomogeneousEmbedding.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_embedding {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  ∃ m,\n    0 < m ∧\n      ∃ e,\n        Function.Injective ⇑e ∧\n          ∀ (d : ℤ),\n            ∀\n              ell ∈\n                LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n                  (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) d,\n              e ell =\n                (LinearStudy.gradedIntegerProjection (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) (d + ↑m))\n                  (e ell)",
+      "sha256": "641ddf5f7959234b0bbc1ec07c05724b118e500fa50de97433ce9b5419413e00",
+      "lines": 48,
+      "moduleLineCount": 95,
+      "startLine": 16,
+      "endLine": 63,
+      "lineCount": 48,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.coextensionDual_exists_homogeneous_embedding",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.homogeneousQuotientPiece_mem_iff",
+        "LinearStudy.homogeneous_embedding_exists_positive_shift",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_exists_linear_normalization_with_homogeneous_dual_embedding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNormalizationHomogeneousEmbedding.lean",
+      "line": 68,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_linear_normalization_with_homogeneous_dual_embedding {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ∃ r ≤ n,\n    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧\n      ∃ L,\n        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧\n          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧\n            (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧\n              let A := MvPolynomial (Fin (r + 1)) ℂ;\n              let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n              let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n              ∃ m,\n                0 < m ∧\n                  ∃ e,\n                    Function.Injective ⇑e ∧\n                      ∀ (d : ℤ),\n                        ∀\n                          ell ∈\n                            LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n                              (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) d,\n                          e ell =\n                            (LinearStudy.gradedIntegerProjection (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n                                (d + ↑m))\n                              (e ell)",
+      "sha256": "641ddf5f7959234b0bbc1ec07c05724b118e500fa50de97433ce9b5419413e00",
+      "lines": 29,
+      "moduleLineCount": 95,
+      "startLine": 65,
+      "endLine": 93,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.gradedIntegerProjection",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_embedding",
+        "LinearStudy.projective_exists_linear_normalization_chart_dimension"
       ]
     },
     {

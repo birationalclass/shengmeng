@@ -183,6 +183,24 @@ set_option pp.proofs false
 #print axioms LinearStudy.coextensionFractionNativeLinear
 #check LinearStudy.coextensionFractionNativeLinear_injective
 #print axioms LinearStudy.coextensionFractionNativeLinear_injective
+#check LinearStudy.coextensionGradedBaseModule
+#print axioms LinearStudy.coextensionGradedBaseModule
+#check LinearStudy.coextensionGradedBaseEquiv
+#print axioms LinearStudy.coextensionGradedBaseEquiv
+#check LinearStudy.coextensionDual_exists_homogeneous_embedding
+#print axioms LinearStudy.coextensionDual_exists_homogeneous_embedding
+#check LinearStudy.coextensionGradedPiece
+#print axioms LinearStudy.coextensionGradedPiece
+#check LinearStudy.coextensionGradedPiece_mem_iff
+#print axioms LinearStudy.coextensionGradedPiece_mem_iff
+#check LinearStudy.coextensionGradedDecomposition
+#print axioms LinearStudy.coextensionGradedDecomposition
+#check LinearStudy.coextensionGradedPiece_smul_homogeneous
+#print axioms LinearStudy.coextensionGradedPiece_smul_homogeneous
+#check LinearStudy.embeddedDomainModule_nonzero_map_injective
+#print axioms LinearStudy.embeddedDomainModule_nonzero_map_injective
+#check LinearStudy.coextensionDual_nonzero_linear_map_injective
+#print axioms LinearStudy.coextensionDual_nonzero_linear_map_injective
 #check LinearStudy.coextensionDual_exists_common_denominator
 #print axioms LinearStudy.coextensionDual_exists_common_denominator
 #check LinearStudy.coextensionDual_exists_integral_embedding
@@ -671,6 +689,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.global_diagonal_normalized_trace
 #check LinearStudy.injectiveMap_exists_smooth_unramified_rational_point
 #print axioms LinearStudy.injectiveMap_exists_smooth_unramified_rational_point
+#check LinearStudy.transportedGrading_independent
+#print axioms LinearStudy.transportedGrading_independent
+#check LinearStudy.transportedGrading_total
+#print axioms LinearStudy.transportedGrading_total
+#check LinearStudy.transportedGrading
+#print axioms LinearStudy.transportedGrading
 #check LinearStudy.finiteModule_exists_generic_homogeneous_basis
 #print axioms LinearStudy.finiteModule_exists_generic_homogeneous_basis
 #check LinearStudy.gradedHilbertPolynomial_natDegree_le
@@ -691,6 +715,46 @@ set_option pp.proofs false
 #print axioms LinearStudy.gradedHilbertSeries_polynomial_of_empty_generators
 #check LinearStudy.gradedHilbertSeries_rational
 #print axioms LinearStudy.gradedHilbertSeries_rational
+#check LinearStudy.gradedHomComponentAux
+#print axioms LinearStudy.gradedHomComponentAux
+#check LinearStudy.gradedHomComponentAux_on_piece
+#print axioms LinearStudy.gradedHomComponentAux_on_piece
+#check LinearStudy.gradedHomComponentAux_smul
+#print axioms LinearStudy.gradedHomComponentAux_smul
+#check LinearStudy.gradedHomComponent
+#print axioms LinearStudy.gradedHomComponent
+#check LinearStudy.gradedHomComponent_on_piece
+#print axioms LinearStudy.gradedHomComponent_on_piece
+#check LinearStudy.gradedHomComponent_exists_nonzero
+#print axioms LinearStudy.gradedHomComponent_exists_nonzero
+#check LinearStudy.gradedHomPiece_independent
+#print axioms LinearStudy.gradedHomPiece_independent
+#check LinearStudy.gradedHomPiece_total
+#print axioms LinearStudy.gradedHomPiece_total
+#check LinearStudy.gradedHomDecomposition
+#print axioms LinearStudy.gradedHomDecomposition
+#check LinearStudy.gradedHomComponent_finite_support
+#print axioms LinearStudy.gradedHomComponent_finite_support
+#check LinearStudy.gradedHomPiece
+#print axioms LinearStudy.gradedHomPiece
+#check LinearStudy.gradedHomComponent_mem_piece
+#print axioms LinearStudy.gradedHomComponent_mem_piece
+#check LinearStudy.gradedHomComponent_on_homogeneous_map
+#print axioms LinearStudy.gradedHomComponent_on_homogeneous_map
+#check LinearStudy.gradedHomProjection
+#print axioms LinearStudy.gradedHomProjection
+#check LinearStudy.gradedHomProjection_joint_injective
+#print axioms LinearStudy.gradedHomProjection_joint_injective
+#check LinearStudy.gradedHomProjection_exists_sum
+#print axioms LinearStudy.gradedHomProjection_exists_sum
+#check LinearStudy.gradedIntegerProjection
+#print axioms LinearStudy.gradedIntegerProjection
+#check LinearStudy.gradedIntegerProjection_on_piece
+#print axioms LinearStudy.gradedIntegerProjection_on_piece
+#check LinearStudy.gradedIntegerProjection_smul_homogeneous
+#print axioms LinearStudy.gradedIntegerProjection_smul_homogeneous
+#check LinearStudy.gradedIntegerProjection_projector
+#print axioms LinearStudy.gradedIntegerProjection_projector
 #check LinearStudy.gradedModule_eventually_eq_bot
 #print axioms LinearStudy.gradedModule_eventually_eq_bot
 #check LinearStudy.gradedModule_eventually_eq_bot_of_empty_generators
@@ -955,6 +1019,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.homogeneous_weaklyRegular_of_origin_localization
 #check LinearStudy.homogeneous_polynomial_map_finite_of_origin_zeroLocus
 #print axioms LinearStudy.homogeneous_polynomial_map_finite_of_origin_zeroLocus
+#check LinearStudy.homogeneous_embedding_exists_positive_shift
+#print axioms LinearStudy.homogeneous_embedding_exists_positive_shift
 #check LinearStudy.homogeneousComponent_aeval_common_positive_degree
 #print axioms LinearStudy.homogeneousComponent_aeval_common_positive_degree
 #check LinearStudy.homogeneousQuotientComponent
@@ -1011,6 +1077,20 @@ set_option pp.proofs false
 #print axioms LinearStudy.affineChartPolynomialMap_comp_aeval
 #check LinearStudy.homogeneous_rational_chart_pullback
 #print axioms LinearStudy.homogeneous_rational_chart_pullback
+#check LinearStudy.integerDomainHomComponentAux
+#print axioms LinearStudy.integerDomainHomComponentAux
+#check LinearStudy.integerDomainHomComponentAux_on_piece
+#print axioms LinearStudy.integerDomainHomComponentAux_on_piece
+#check LinearStudy.integerDomainHomComponentAux_smul
+#print axioms LinearStudy.integerDomainHomComponentAux_smul
+#check LinearStudy.integerDomainHomComponent
+#print axioms LinearStudy.integerDomainHomComponent
+#check LinearStudy.integerDomainHomComponent_on_piece
+#print axioms LinearStudy.integerDomainHomComponent_on_piece
+#check LinearStudy.integerDomainHomComponent_homogeneous
+#print axioms LinearStudy.integerDomainHomComponent_homogeneous
+#check LinearStudy.integerDomainHomComponent_exists_nonzero
+#print axioms LinearStudy.integerDomainHomComponent_exists_nonzero
 #check LinearStudy.integral_injective_ringKrullDim_eq
 #print axioms LinearStudy.integral_injective_ringKrullDim_eq
 #check LinearStudy.total_invariance_membership
@@ -2779,6 +2859,14 @@ set_option pp.proofs false
 #print axioms LinearStudy.ProjectiveChartPolynomialParameterConclusion
 #check LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters
 #print axioms LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters
+#check LinearStudy.projectiveLinearNormalization_gradedSMul
+#print axioms LinearStudy.projectiveLinearNormalization_gradedSMul
+#check LinearStudy.projectiveLinearNormalization_exists_gradedDual
+#print axioms LinearStudy.projectiveLinearNormalization_exists_gradedDual
+#check LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_embedding
+#print axioms LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_embedding
+#check LinearStudy.projective_exists_linear_normalization_with_homogeneous_dual_embedding
+#print axioms LinearStudy.projective_exists_linear_normalization_with_homogeneous_dual_embedding
 #check LinearStudy.normalizedProjectivePoint_coordinate_ratios
 #print axioms LinearStudy.normalizedProjectivePoint_coordinate_ratios
 #check LinearStudy.IntegralProjectiveEquations.normalizedConePoint_mem
