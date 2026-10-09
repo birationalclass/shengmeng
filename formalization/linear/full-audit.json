@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2249,
-  "verifiedTheorems": 1661,
-  "definitions": 392,
+  "audited": 2273,
+  "verifiedTheorems": 1676,
+  "definitions": 401,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -6147,6 +6147,124 @@
       ]
     },
     {
+      "declaration": "LinearStudy.finiteLinearFunctional_exists_denominator",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteFunctionalLocalization.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteLinearFunctional_exists_denominator.{u} {R Q M : Type u} [CommRing R] [CommRing Q] [Algebra R Q]\n  [AddCommGroup M] [Module R M] [Module.Finite R M] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) (φ : M →ₗ[R] Q) : ∃ s ψ, Algebra.linearMap R Q ∘ₗ ψ = ↑s • φ",
+      "sha256": "3fa926d21ecc3f7c073fbb6572d09457bd056ab08fb336c78ed5273531c12f96",
+      "lines": 20,
+      "moduleLineCount": 61,
+      "startLine": 15,
+      "endLine": 34,
+      "lineCount": 20,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.finiteLinearFunctional_compRight_isLocalizedModule",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteFunctionalLocalization.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteLinearFunctional_compRight_isLocalizedModule.{u} {R Q M : Type u} [CommRing R] [CommRing Q]\n  [Algebra R Q] [AddCommGroup M] [Module R M] [Module.Finite R M] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) : IsLocalizedModule P (LinearMap.compRight R (Algebra.linearMap R Q))",
+      "sha256": "3fa926d21ecc3f7c073fbb6572d09457bd056ab08fb336c78ed5273531c12f96",
+      "lines": 24,
+      "moduleLineCount": 61,
+      "startLine": 36,
+      "endLine": 59,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.finiteLinearFunctional_exists_denominator"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteFunctionalLocalizationEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/FiniteFunctionalLocalizationEquiv.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.finiteFunctionalLocalizationEquiv.{u} {R Q M : Type u} [CommRing R] [CommRing Q] [Algebra R Q]\n  [AddCommGroup M] [Module R M] [Module.Finite R M] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) : LocalizedModule P (M →ₗ[R] R) ≃ₗ[Q] LocalizedModule P M →ₗ[Q] Q",
+      "sha256": "35f0a3990423a9db8e0763fa5f1ea60bdff4308fb51e14c8157155d2f8adec39",
+      "lines": 9,
+      "moduleLineCount": 43,
+      "startLine": 18,
+      "endLine": 26,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.finiteLinearFunctional_compRight_isLocalizedModule",
+        "LinearStudy.functionalSourceLocalizationEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteFunctionalLocalizationEquiv_apply_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteFunctionalLocalizationEquiv.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFunctionalLocalizationEquiv_apply_mk.{u} {R Q M : Type u} [CommRing R] [CommRing Q] [Algebra R Q]\n  [AddCommGroup M] [Module R M] [Module.Finite R M] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) (ψ : M →ₗ[R] R) (x : M) :\n  ((LinearStudy.finiteFunctionalLocalizationEquiv P hinj) ((LocalizedModule.mkLinearMap P (M →ₗ[R] R)) ψ))\n      ((LocalizedModule.mkLinearMap P M) x) =\n    (algebraMap R Q) (ψ x)",
+      "sha256": "35f0a3990423a9db8e0763fa5f1ea60bdff4308fb51e14c8157155d2f8adec39",
+      "lines": 14,
+      "moduleLineCount": 43,
+      "startLine": 28,
+      "endLine": 41,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.finiteFunctionalLocalizationEquiv",
+        "LinearStudy.finiteLinearFunctional_compRight_isLocalizedModule",
+        "LinearStudy.functionalSourceLocalizationEquiv",
+        "LinearStudy.functionalSourceLocalizationEquiv_apply_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteFunctionalLocalizationEquiv_apply_fraction",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteFunctionalLocalizationFractions.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFunctionalLocalizationEquiv_apply_fraction.{u} {R Q M : Type u} [CommRing R] [CommRing Q]\n  [Algebra R Q] [AddCommGroup M] [Module R M] [Module.Finite R M] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) (ψ : M →ₗ[R] R) (x : M) (s t : ↥P) :\n  ((LinearStudy.finiteFunctionalLocalizationEquiv P hinj) (LocalizedModule.mk ψ s)) (LocalizedModule.mk x t) =\n    IsLocalization.mk' Q (ψ x) (s * t)",
+      "sha256": "3298bae7c40d42a77d871fadba7103dc74d11aea0ffb6fe2a83ca1a92d04a005",
+      "lines": 35,
+      "moduleLineCount": 52,
+      "startLine": 16,
+      "endLine": 50,
+      "lineCount": 35,
+      "dependencies": [
+        "LinearStudy.finiteFunctionalLocalizationEquiv",
+        "LinearStudy.finiteFunctionalLocalizationEquiv_apply_mk"
+      ]
+    },
+    {
       "declaration": "LinearStudy.finite_injective_algHom_fraction_comp_formallyUnramified",
       "kind": "theorem",
       "origin": "project",
@@ -6214,6 +6332,129 @@
       "dependencies": [
         "LinearStudy.finite_injective_algHom_exists_target_good_loci",
         "LinearStudy.ringHom_algebraic_target_open_avoids_source_closed"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeCoextensionOriginalDualEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/FiniteNativeCoextensionLocalization.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeCoextensionOriginalDualEquiv.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] :\n  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[R]\n    S →ₗ[R] R",
+      "sha256": "1bf7535400dbbe701b0167302ac8164277d97d6e5a6fe5201f89c4e64aa48410",
+      "lines": 7,
+      "moduleLineCount": 76,
+      "startLine": 20,
+      "endLine": 26,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.restrictedAlgebraModuleEquiv",
+        "LinearStudy.restrictedCoextensionDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeCoextensionFunctionalLocalizationMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/FiniteNativeCoextensionLocalization.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeCoextensionFunctionalLocalizationMap.{u} {R S Q : Type u} [CommRing R] [CommRing S] [CommRing Q]\n  [Algebra R S] [Algebra R Q] :\n  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) →ₗ[R]\n    S →ₗ[R] Q",
+      "sha256": "1bf7535400dbbe701b0167302ac8164277d97d6e5a6fe5201f89c4e64aa48410",
+      "lines": 7,
+      "moduleLineCount": 76,
+      "startLine": 28,
+      "endLine": 34,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.nativeCoextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeCoextensionFunctionalLocalizationMap_isLocalizedModule",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteNativeCoextensionLocalization.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeCoextensionFunctionalLocalizationMap_isLocalizedModule.{u} {R S Q : Type u} [CommRing R] [CommRing S]\n  [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) :\n  IsLocalizedModule P LinearStudy.nativeCoextensionFunctionalLocalizationMap",
+      "sha256": "1bf7535400dbbe701b0167302ac8164277d97d6e5a6fe5201f89c4e64aa48410",
+      "lines": 10,
+      "moduleLineCount": 76,
+      "startLine": 36,
+      "endLine": 45,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.finiteLinearFunctional_compRight_isLocalizedModule",
+        "LinearStudy.nativeCoextensionFunctionalLocalizationMap",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/FiniteNativeCoextensionLocalization.lean",
+      "line": 49,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.finiteNativeCoextensionLocalizationEquiv.{u} {R S Q : Type u} [CommRing R] [CommRing S] [CommRing Q]\n  [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q)) :\n  LocalizedModule P\n      ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[Q]\n    LocalizedModule P S →ₗ[Q] Q",
+      "sha256": "1bf7535400dbbe701b0167302ac8164277d97d6e5a6fe5201f89c4e64aa48410",
+      "lines": 12,
+      "moduleLineCount": 76,
+      "startLine": 47,
+      "endLine": 58,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.functionalSourceLocalizationEquiv",
+        "LinearStudy.nativeCoextensionFunctionalLocalizationMap",
+        "LinearStudy.nativeCoextensionFunctionalLocalizationMap_isLocalizedModule"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeCoextensionLocalizationEquiv_apply_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteNativeCoextensionLocalization.lean",
+      "line": 60,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeCoextensionLocalizationEquiv_apply_mk.{u} {R S Q : Type u} [CommRing R] [CommRing S]\n  [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]\n  (hinj : Function.Injective ⇑(algebraMap R Q))\n  (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))\n  (x : S) :\n  ((LinearStudy.finiteNativeCoextensionLocalizationEquiv P hinj) (LocalizedModule.mk ell 1)) (LocalizedModule.mk x 1) =\n    (algebraMap R Q) ((LinearStudy.nativeCoextensionOriginalDualEquiv ell) x)",
+      "sha256": "1bf7535400dbbe701b0167302ac8164277d97d6e5a6fe5201f89c4e64aa48410",
+      "lines": 15,
+      "moduleLineCount": 76,
+      "startLine": 60,
+      "endLine": 74,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+        "LinearStudy.functionalSourceLocalizationEquiv",
+        "LinearStudy.functionalSourceLocalizationEquiv_apply_mk",
+        "LinearStudy.nativeCoextensionFunctionalLocalizationMap",
+        "LinearStudy.nativeCoextensionFunctionalLocalizationMap_isLocalizedModule",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv"
       ]
     },
     {
@@ -8076,6 +8317,99 @@
       "endLine": 40,
       "lineCount": 29,
       "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.functionalSourceLocalizationRestriction",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/FunctionalSourceLocalization.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.functionalSourceLocalizationRestriction.{u} {R Q M : Type u} [CommRing R] [CommRing Q] [Algebra R Q]\n  [AddCommGroup M] [Module R M] (P : Submonoid R) [IsLocalization P Q] : (LocalizedModule P M →ₗ[Q] Q) →ₗ[Q] M →ₗ[R] Q",
+      "sha256": "635f759d98b0a53e3ec73c4a118b0141e92920abf5ba3141e7d369e1301f4ae9",
+      "lines": 7,
+      "moduleLineCount": 58,
+      "startLine": 17,
+      "endLine": 23,
+      "lineCount": 7,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.functionalSourceLocalizationRestriction_bijective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FunctionalSourceLocalization.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.functionalSourceLocalizationRestriction_bijective.{u} {R Q M : Type u} [CommRing R] [CommRing Q]\n  [Algebra R Q] [AddCommGroup M] [Module R M] (P : Submonoid R) [IsLocalization P Q] :\n  Function.Bijective ⇑(LinearStudy.functionalSourceLocalizationRestriction P)",
+      "sha256": "635f759d98b0a53e3ec73c4a118b0141e92920abf5ba3141e7d369e1301f4ae9",
+      "lines": 17,
+      "moduleLineCount": 58,
+      "startLine": 25,
+      "endLine": 41,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.functionalSourceLocalizationRestriction"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.functionalSourceLocalizationEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/FunctionalSourceLocalization.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.functionalSourceLocalizationEquiv.{u} {R Q M : Type u} [CommRing R] [CommRing Q] [Algebra R Q]\n  [AddCommGroup M] [Module R M] (P : Submonoid R) [IsLocalization P Q] : (M →ₗ[R] Q) ≃ₗ[Q] LocalizedModule P M →ₗ[Q] Q",
+      "sha256": "635f759d98b0a53e3ec73c4a118b0141e92920abf5ba3141e7d369e1301f4ae9",
+      "lines": 7,
+      "moduleLineCount": 58,
+      "startLine": 43,
+      "endLine": 49,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.functionalSourceLocalizationRestriction",
+        "LinearStudy.functionalSourceLocalizationRestriction_bijective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.functionalSourceLocalizationEquiv_apply_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FunctionalSourceLocalization.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.functionalSourceLocalizationEquiv_apply_mk.{u} {R Q M : Type u} [CommRing R] [CommRing Q] [Algebra R Q]\n  [AddCommGroup M] [Module R M] (P : Submonoid R) [IsLocalization P Q] (φ : M →ₗ[R] Q) (x : M) :\n  ((LinearStudy.functionalSourceLocalizationEquiv P) φ) ((LocalizedModule.mkLinearMap P M) x) = φ x",
+      "sha256": "635f759d98b0a53e3ec73c4a118b0141e92920abf5ba3141e7d369e1301f4ae9",
+      "lines": 6,
+      "moduleLineCount": 58,
+      "startLine": 51,
+      "endLine": 56,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.functionalSourceLocalizationEquiv",
+        "LinearStudy.functionalSourceLocalizationRestriction",
+        "LinearStudy.functionalSourceLocalizationRestriction_bijective"
+      ]
     },
     {
       "declaration": "LinearStudy.general_local_pullback_ideal_le",
@@ -20963,6 +21297,164 @@
       "lineCount": 7,
       "dependencies": [
         "LinearStudy.nativeFiniteGradedChartPresentation_nonempty",
+        "LinearStudy.nativeProjectiveModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeFiniteGradedFiniteChartPresentation_exists",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveFiniteGradedFiniteChart.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeFiniteGradedFiniteChartPresentation_exists.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟] (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d))\n  [IsNoetherianRing S] [Module.Finite S M] (v : S) (hv : v ∈ 𝓑 1)\n  (U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)) (hp : ∀ (p : ↥U), v ∉ (↑p).asHomogeneousIdeal) :\n  ∃ p, p.IsFinite",
+      "sha256": "62239cfb62ded9746c2c864c405b3534b0baf479ba20196c8757eee92403b00b",
+      "lines": 39,
+      "moduleLineCount": 76,
+      "startLine": 22,
+      "endLine": 60,
+      "lineCount": 39,
+      "dependencies": [
+        "LinearStudy.integerShiftedFreeDecomposition",
+        "LinearStudy.integerShiftedFreeGeneratorMap",
+        "LinearStudy.integerShiftedFreePiece",
+        "LinearStudy.integerShiftedFreePiece_smul_homogeneous",
+        "LinearStudy.nativeProjectiveDegreeZeroSheafMap",
+        "LinearStudy.nativeProjectiveDegreeZeroSheafMap_comp_zero",
+        "LinearStudy.nativeProjectiveFiniteGraded_exists_exact_native_presentation",
+        "LinearStudy.nativeProjectiveModuleSheaf",
+        "LinearStudy.nativeSheafOverFunctor_additive",
+        "LinearStudy.nativeSheafOverFunctor_isLeftAdjoint",
+        "LinearStudy.nativeShiftedFreeChartIso",
+        "LinearStudy.sheafFreePresentationOfExact",
+        "LinearStudy.sheafFreePresentationOfExact_isFinite"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeFiniteGradedFiniteChartPresentation",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveFiniteGradedFiniteChart.lean",
+      "line": 63,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeFiniteGradedFiniteChartPresentation.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟] (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d))\n  [IsNoetherianRing S] [Module.Finite S M] (v : S) (hv : v ∈ 𝓑 1)\n  (U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)) (hp : ∀ (p : ↥U), v ∉ (↑p).asHomogeneousIdeal) :\n  (SheafOfModules.over (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0) U).Presentation",
+      "sha256": "62239cfb62ded9746c2c864c405b3534b0baf479ba20196c8757eee92403b00b",
+      "lines": 6,
+      "moduleLineCount": 76,
+      "startLine": 62,
+      "endLine": 67,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.nativeFiniteGradedFiniteChartPresentation_exists",
+        "LinearStudy.nativeProjectiveModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeFiniteGradedFiniteChartPresentation_isFinite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveFiniteGradedFiniteChart.lean",
+      "line": 70,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeFiniteGradedFiniteChartPresentation_isFinite.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟] (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d))\n  [IsNoetherianRing S] [Module.Finite S M] (v : S) (hv : v ∈ 𝓑 1)\n  (U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)) (hp : ∀ (p : ↥U), v ∉ (↑p).asHomogeneousIdeal) :\n  (LinearStudy.nativeFiniteGradedFiniteChartPresentation 𝓑 𝒟 hD v hv U hp).IsFinite",
+      "sha256": "62239cfb62ded9746c2c864c405b3534b0baf479ba20196c8757eee92403b00b",
+      "lines": 6,
+      "moduleLineCount": 76,
+      "startLine": 69,
+      "endLine": 74,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.nativeFiniteGradedFiniteChartPresentation",
+        "LinearStudy.nativeFiniteGradedFiniteChartPresentation_exists",
+        "LinearStudy.nativeProjectiveModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeFiniteGradedFiniteQuasicoherentData",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveFiniteGradedFinitePresentation.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeFiniteGradedFiniteQuasicoherentData.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟] (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d))\n  [IsNoetherianRing S] [Module.Finite S M] {ι : Type u} (a : ι → S) (ha : ∀ (i : ι), a i ∈ 𝓑 1)\n  (hcover : ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤) :\n  SheafOfModules.QuasicoherentData (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0)",
+      "sha256": "10a330256ecd9a646edb7c11deb6b2fb207c54cb5b04add577036640e65d744d",
+      "lines": 11,
+      "moduleLineCount": 53,
+      "startLine": 21,
+      "endLine": 31,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.nativeFiniteGradedFiniteChartPresentation",
+        "LinearStudy.nativeProjectiveModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeFiniteGradedFiniteQuasicoherentData_isFinitePresentation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveFiniteGradedFinitePresentation.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeFiniteGradedFiniteQuasicoherentData_isFinitePresentation.{u} {K S M : Type u} [Field K] [CommRing S]\n  [Algebra K S] [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟]\n  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d)) [IsNoetherianRing S] [Module.Finite S M]\n  {ι : Type u} (a : ι → S) (ha : ∀ (i : ι), a i ∈ 𝓑 1) (hcover : ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤) :\n  (LinearStudy.nativeFiniteGradedFiniteQuasicoherentData 𝓑 𝒟 hD a ha hcover).IsFinitePresentation",
+      "sha256": "10a330256ecd9a646edb7c11deb6b2fb207c54cb5b04add577036640e65d744d",
+      "lines": 9,
+      "moduleLineCount": 53,
+      "startLine": 33,
+      "endLine": 41,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.nativeFiniteGradedFiniteChartPresentation_isFinite",
+        "LinearStudy.nativeFiniteGradedFiniteQuasicoherentData",
+        "LinearStudy.nativeProjectiveModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeFiniteGraded_isFinitePresentation_of_cover",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveFiniteGradedFinitePresentation.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeFiniteGraded_isFinitePresentation_of_cover.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟] (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d))\n  [IsNoetherianRing S] [Module.Finite S M] {ι : Type u} (a : ι → S) (ha : ∀ (i : ι), a i ∈ 𝓑 1)\n  (hcover : ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤) :\n  SheafOfModules.IsFinitePresentation (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0)",
+      "sha256": "10a330256ecd9a646edb7c11deb6b2fb207c54cb5b04add577036640e65d744d",
+      "lines": 9,
+      "moduleLineCount": 53,
+      "startLine": 43,
+      "endLine": 51,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.nativeFiniteGradedFiniteQuasicoherentData",
+        "LinearStudy.nativeFiniteGradedFiniteQuasicoherentData_isFinitePresentation",
         "LinearStudy.nativeProjectiveModuleSheaf"
       ]
     },
@@ -39735,6 +40227,62 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectiveNormalizationDualCoordinateLocalizationEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveDualCoordinateLocalization.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNormalizationDualCoordinateLocalizationEquiv {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  have φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let P := Submonoid.powers (MvPolynomial.X i);\n  let Q := Localization P;\n  let D := (ModuleCat.restrictScalars (algebraMap A B)).obj ((ModuleCat.coextendScalars (algebraMap A B)).obj ↧A);\n  LocalizedModule P ↑D ≃ₗ[Q] LocalizedModule P B →ₗ[Q] Q",
+      "sha256": "2a3af5e461b1089a60105b71cb7610c800a0852e6e9a6a41ec0aae305e4df0ab",
+      "lines": 35,
+      "moduleLineCount": 89,
+      "startLine": 16,
+      "endLine": 50,
+      "lineCount": 35,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+        "LinearStudy.projectiveLinearNormalizationMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveNormalizationDualCoordinateLocalizationEquiv_apply_original",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveDualCoordinateLocalization.lean",
+      "line": 54,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNormalizationDualCoordinateLocalizationEquiv_apply_original {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let P := Submonoid.powers (MvPolynomial.X i);\n  let Q := Localization P;\n  let D := (ModuleCat.restrictScalars (algebraMap A B)).obj ((ModuleCat.coextendScalars (algebraMap A B)).obj ↧A);\n  ∀ (ell : ↑D) (x : B),\n    ((LinearStudy.projectiveNormalizationDualCoordinateLocalizationEquiv V L hfinite i) (LocalizedModule.mk ell 1))\n        (LocalizedModule.mk x 1) =\n      (algebraMap A Q) ((LinearStudy.nativeCoextensionOriginalDualEquiv ell) x)",
+      "sha256": "2a3af5e461b1089a60105b71cb7610c800a0852e6e9a6a41ec0aae305e4df0ab",
+      "lines": 36,
+      "moduleLineCount": 89,
+      "startLine": 52,
+      "endLine": 87,
+      "lineCount": 36,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv_apply_mk",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveNormalizationDualCoordinateLocalizationEquiv"
+      ]
+    },
+    {
       "declaration": "LinearStudy.projectiveLinearNormalization_exists_exact_native_dual_presentation",
       "kind": "theorem",
       "origin": "project",
@@ -39804,6 +40352,43 @@
         "LinearStudy.homogeneousQuotientGrading",
         "LinearStudy.homogeneousQuotientPiece",
         "LinearStudy.nativeCoextensionDual_exists_homogeneous_generators",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveLinearNormalization_native_dual_isFinitePresentation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveDualNativeFinitePresentation.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveLinearNormalization_native_dual_isFinitePresentation {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;\n  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;\n  have D := (ModuleCat.coextendScalars (algebraMap A B)).obj ↧A;\n  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;\n  have hD := ⋯;\n  SheafOfModules.IsFinitePresentation (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0)",
+      "sha256": "adef2d58b8e2cc7a5166f980fd27222eee46aac6d5199336f3dd9a6d9225c05d",
+      "lines": 46,
+      "moduleLineCount": 62,
+      "startLine": 15,
+      "endLine": 60,
+      "lineCount": 46,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedDecomposition",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.homogeneousQuotient_native_coordinate_chart_cover",
+        "LinearStudy.nativeCoextensionDual_finite_upper",
+        "LinearStudy.nativeFiniteGraded_isFinitePresentation_of_cover",
+        "LinearStudy.nativeProjectiveModuleSheaf",
         "LinearStudy.projectiveLinearNormalizationMap",
         "LinearStudy.projectiveLinearNormalization_gradedSMul"
       ]
@@ -49996,6 +50581,29 @@
       "endLine": 33,
       "lineCount": 18,
       "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.sheafFreePresentationOfExact_isFinite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SheafFreePresentationOfExactFinite.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.sheafFreePresentationOfExact_isFinite.{u, v₁, u₁} {C : Type u₁} [CategoryTheory.Category C]\n  {J : CategoryTheory.GrothendieckTopology C} {R : CategoryTheory.Sheaf J RingCat}\n  [CategoryTheory.HasSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat] {ι σ : Type u} [Finite ι]\n  [Finite σ] (c : CategoryTheory.ShortComplex (SheafOfModules R)) (hc : c.Exact) [CategoryTheory.Epi c.g]\n  (e₁ : SheafOfModules.free ι ≅ c.X₁) (e₂ : SheafOfModules.free σ ≅ c.X₂) :\n  (LinearStudy.sheafFreePresentationOfExact c hc e₁ e₂).IsFinite",
+      "sha256": "2fddbb75d6d2e056416721620d75672b4f057a4becd2c5659e0db0ea27b0c927",
+      "lines": 11,
+      "moduleLineCount": 27,
+      "startLine": 15,
+      "endLine": 25,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.sheafFreePresentationOfExact"
+      ]
     },
     {
       "declaration": "LinearStudy.smooth_points_have_common_polynomial_coordinates",

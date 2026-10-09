@@ -918,3 +918,15 @@ public import Linear.SheafFreePresentationOfExact
 public import Linear.NativeProjectiveFiniteGradedChartPresentation
 public import Linear.NativeProjectiveFiniteGradedQuasicoherent
 public import Linear.ProjectiveDualNativeQuasicoherent
+
+public import Linear.SheafFreePresentationOfExactFinite
+public import Linear.NativeProjectiveFiniteGradedFiniteChart
+public import Linear.NativeProjectiveFiniteGradedFinitePresentation
+public import Linear.ProjectiveDualNativeFinitePresentation
+
+public import Linear.FiniteFunctionalLocalization
+public import Linear.FunctionalSourceLocalization
+public import Linear.FiniteFunctionalLocalizationEquiv
+public import Linear.FiniteFunctionalLocalizationFractions
+public import Linear.FiniteNativeCoextensionLocalization
+public import Linear.ProjectiveDualCoordinateLocalization
