@@ -754,3 +754,12 @@ public import Linear.ProjectiveLinearSectionClosedReduced
 public import Linear.ProjectiveLinearSectionReducedPullbackOpen
 public import Linear.FiniteReducedClosedBaseChange
 public import Linear.ProjectiveLinearSectionFinitePullback
+
+public import Linear.HomogeneousCutChartCoverage
+public import Linear.ProjectivePulledSectionNativeCoverage
+public import Linear.HomogeneousQuotientNativeChart
+public import Linear.QuotientAwayAtUnit
+public import Linear.ProjectivePulledSectionAffineComparison
+public import Linear.ProjectivePulledSectionGlobalReduced
+
+public import Linear.ProjectiveActualFamilyNativeCut
