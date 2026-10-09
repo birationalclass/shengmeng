@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-09T14:41:10+08:00",
+  "checkedAt": "2026-10-09T15:00:24+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "bda1988dc96fbf26dff4fab5e41a9a6b97cbcb48f8e7b8f037c2b872681581d7",
-      "lineCount": 3828
+      "sha256": "b6377b864e7d4272116aed4414349ff15469ba2aff2fbaa88315498e17f78784",
+      "lineCount": 3854
     },
     {
       "path": "Linear/ActualCoordinateFiberPoints.lean",
@@ -485,6 +485,16 @@
       "path": "Linear/GradedSubmoduleDecomposition.lean",
       "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
       "lineCount": 92
+    },
+    {
+      "path": "Linear/GradedSurjectiveNativeCharts.lean",
+      "sha256": "9336dcc7d128ec1e8cc464bb8b90672612e813dc4a1ad0de0a321dab5b14927e",
+      "lineCount": 37
+    },
+    {
+      "path": "Linear/GradedSurjectiveProjClosed.lean",
+      "sha256": "9cef94ed92c87e3625a2273fe31e0cb808537efef693078c5a28b100ee84c431",
+      "lineCount": 122
     },
     {
       "path": "Linear/HilbertFiniteInstances.lean",
@@ -1772,6 +1782,11 @@
       "lineCount": 114
     },
     {
+      "path": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lineCount": 79
+    },
+    {
       "path": "Linear/ProjectivePulledSectionGlobalReduced.lean",
       "sha256": "9ea69c6f5ce3f6e7f325d4c644d68ea740a31cb5102d37a3632a55b4792c04fd",
       "lineCount": 89
@@ -2408,8 +2423,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "2008d7b299de9d9a9e276dea8739487627c5fdda4e502611edd114157e8e04e0",
-      "lineCount": 765
+      "sha256": "3c9eed9930a1fe62f3619c5b7bc1844fab6872653d78934995b420dcee85729c",
+      "lineCount": 769
     }
   ],
   "declarations": {
@@ -11470,6 +11485,168 @@
       "lineCount": 11,
       "dependencies": [
         "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    "LinearStudy.graded_surjective_homogeneous_lift": {
+      "declaration": "LinearStudy.graded_surjective_homogeneous_lift",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveNativeCharts.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.graded_surjective_homogeneous_lift.{u_1, u_2, u_3, u_4} {A : Type u_1} {B : Type u_2} {σ : Type u_3}\n  {τ : Type u_4} [CommRing A] [CommRing B] [SetLike σ A] [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B]\n  {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ] (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) (j : ℕ) (b : B)\n  (hb : b ∈ ℬ j) : ∃ a ∈ 𝒜 j, f a = b",
+      "sha256": "9336dcc7d128ec1e8cc464bb8b90672612e813dc4a1ad0de0a321dab5b14927e",
+      "lines": 9,
+      "moduleLineCount": 37,
+      "startLine": 14,
+      "endLine": 22,
+      "lineCount": 9,
+      "dependencies": []
+    },
+    "LinearStudy.graded_surjective_native_away_map": {
+      "declaration": "LinearStudy.graded_surjective_native_away_map",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveNativeCharts.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.graded_surjective_native_away_map.{u_1, u_2, u_3, u_4} {A : Type u_1} {B : Type u_2} {σ : Type u_3}\n  {τ : Type u_4} [CommRing A] [CommRing B] [SetLike σ A] [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B]\n  {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ] (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) (j : ℕ) (s : A)\n  (hs : s ∈ 𝒜 j) : Function.Surjective ⇑(HomogeneousLocalization.Away.map f s)",
+      "sha256": "9336dcc7d128ec1e8cc464bb8b90672612e813dc4a1ad0de0a321dab5b14927e",
+      "lines": 12,
+      "moduleLineCount": 37,
+      "startLine": 24,
+      "endLine": 35,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.graded_surjective_homogeneous_lift"
+      ]
+    },
+    "LinearStudy.graded_surjective_irrelevant_le_map": {
+      "declaration": "LinearStudy.graded_surjective_irrelevant_le_map",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveProjClosed.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.graded_surjective_irrelevant_le_map.{u} {A B σ τ : Type u} [CommRing A] [CommRing B] [SetLike σ A]\n  [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B] {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ]\n  (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) :\n  HomogeneousIdeal.irrelevant ℬ ≤ HomogeneousIdeal.map f (HomogeneousIdeal.irrelevant 𝒜)",
+      "sha256": "9cef94ed92c87e3625a2273fe31e0cb808537efef693078c5a28b100ee84c431",
+      "lines": 6,
+      "moduleLineCount": 122,
+      "startLine": 17,
+      "endLine": 22,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.graded_surjective_homogeneous_lift"
+      ]
+    },
+    "LinearStudy.projective_surjective_comap_image_zeroLocus": {
+      "declaration": "LinearStudy.projective_surjective_comap_image_zeroLocus",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveProjClosed.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_comap_image_zeroLocus.{u} {A B σ τ : Type u} [CommRing A] [CommRing B] [SetLike σ A]\n  [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B] {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ]\n  (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) (s : Set B) :\n  ⇑(AlgebraicGeometry.ProjectiveSpectrum.comap f ⋯) '' ProjectiveSpectrum.zeroLocus ℬ s =\n    ProjectiveSpectrum.zeroLocus 𝒜 (⇑f ⁻¹' s ∪ ↑(RingHom.ker ↑f))",
+      "sha256": "9cef94ed92c87e3625a2273fe31e0cb808537efef693078c5a28b100ee84c431",
+      "lines": 40,
+      "moduleLineCount": 122,
+      "startLine": 24,
+      "endLine": 63,
+      "lineCount": 40,
+      "dependencies": [
+        "LinearStudy.graded_surjective_irrelevant_le_map"
+      ]
+    },
+    "LinearStudy.projective_surjective_comap_closedEmbedding": {
+      "declaration": "LinearStudy.projective_surjective_comap_closedEmbedding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveProjClosed.lean",
+      "line": 65,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_comap_closedEmbedding.{u} {A B σ τ : Type u} [CommRing A] [CommRing B] [SetLike σ A]\n  [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B] {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ]\n  (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) :\n  Topology.IsClosedEmbedding ⇑(AlgebraicGeometry.ProjectiveSpectrum.comap f ⋯)",
+      "sha256": "9cef94ed92c87e3625a2273fe31e0cb808537efef693078c5a28b100ee84c431",
+      "lines": 15,
+      "moduleLineCount": 122,
+      "startLine": 65,
+      "endLine": 79,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.graded_surjective_irrelevant_le_map",
+        "LinearStudy.projective_surjective_comap_image_zeroLocus"
+      ]
+    },
+    "LinearStudy.graded_surjective_native_localRingHom": {
+      "declaration": "LinearStudy.graded_surjective_native_localRingHom",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveProjClosed.lean",
+      "line": 83,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.graded_surjective_native_localRingHom.{u} {A B σ τ : Type u} [CommRing A] [CommRing B] [SetLike σ A]\n  [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B] {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ]\n  (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) (J : Ideal B) [J.IsPrime] :\n  Function.Surjective ⇑(HomogeneousLocalization.localRingHom f (Ideal.comap f J) J ⋯)",
+      "sha256": "9cef94ed92c87e3625a2273fe31e0cb808537efef693078c5a28b100ee84c431",
+      "lines": 20,
+      "moduleLineCount": 122,
+      "startLine": 81,
+      "endLine": 100,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.graded_surjective_homogeneous_lift"
+      ]
+    },
+    "LinearStudy.graded_surjective_Proj_map_closedImmersion": {
+      "declaration": "LinearStudy.graded_surjective_Proj_map_closedImmersion",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveProjClosed.lean",
+      "line": 105,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.graded_surjective_Proj_map_closedImmersion.{u} {A B σ τ : Type u} [CommRing A] [CommRing B] [SetLike σ A]\n  [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B] {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ]\n  (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) : AlgebraicGeometry.IsClosedImmersion (AlgebraicGeometry.Proj.map f ⋯)",
+      "sha256": "9cef94ed92c87e3625a2273fe31e0cb808537efef693078c5a28b100ee84c431",
+      "lines": 19,
+      "moduleLineCount": 122,
+      "startLine": 102,
+      "endLine": 120,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.graded_surjective_irrelevant_le_map",
+        "LinearStudy.graded_surjective_native_localRingHom",
+        "LinearStudy.projective_surjective_comap_closedEmbedding"
       ]
     },
     "LinearStudy.finiteAdjoin_isNoetherian": {
@@ -38288,6 +38465,173 @@
         "LinearStudy.projectivePulledLinearSection_exists_chart_avoidance_open"
       ]
     },
+    "LinearStudy.homogeneousQuotientFactorGraded": {
+      "declaration": "LinearStudy.homogeneousQuotientFactorGraded",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.homogeneousQuotientFactorGraded.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  (I J : Ideal (MvPolynomial ι K)) (hIJ : I ≤ J) :\n  LinearStudy.homogeneousQuotientPiece I →+*ᵍ LinearStudy.homogeneousQuotientPiece J",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 10,
+      "moduleLineCount": 79,
+      "startLine": 14,
+      "endLine": 23,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    "LinearStudy.homogeneousQuotientFactorGraded_surjective": {
+      "declaration": "LinearStudy.homogeneousQuotientFactorGraded_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousQuotientFactorGraded_surjective.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  (I J : Ideal (MvPolynomial ι K)) (hIJ : I ≤ J) :\n  Function.Surjective ⇑(LinearStudy.homogeneousQuotientFactorGraded I J hIJ)",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 4,
+      "moduleLineCount": 79,
+      "startLine": 25,
+      "endLine": 28,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientFactorGraded",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    "LinearStudy.homogeneousQuotientClosedEmbedding": {
+      "declaration": "LinearStudy.homogeneousQuotientClosedEmbedding",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.homogeneousQuotientClosedEmbedding.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  (I J : Ideal (MvPolynomial ι K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule ι K) I)\n  (hJ : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule ι K) J) (hIJ : I ≤ J) :\n  AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece J) ⟶\n    AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece I)",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 14,
+      "moduleLineCount": 79,
+      "startLine": 30,
+      "endLine": 43,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientFactorGraded",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    "LinearStudy.homogeneousQuotientClosedEmbedding_isClosedImmersion": {
+      "declaration": "LinearStudy.homogeneousQuotientClosedEmbedding_isClosedImmersion",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousQuotientClosedEmbedding_isClosedImmersion.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  (I J : Ideal (MvPolynomial ι K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule ι K) I)\n  (hJ : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule ι K) J) (hIJ : I ≤ J) :\n  AlgebraicGeometry.IsClosedImmersion (LinearStudy.homogeneousQuotientClosedEmbedding I J hI hJ hIJ)",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 11,
+      "moduleLineCount": 79,
+      "startLine": 45,
+      "endLine": 55,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.graded_surjective_Proj_map_closedImmersion",
+        "LinearStudy.homogeneousQuotientClosedEmbedding",
+        "LinearStudy.homogeneousQuotientFactorGraded",
+        "LinearStudy.homogeneousQuotientFactorGraded_surjective",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    "LinearStudy.projectivePulledLinearSectionClosedEmbedding": {
+      "declaration": "LinearStudy.projectivePulledLinearSectionClosedEmbedding",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "line": 59,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectivePulledLinearSectionClosedEmbedding {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ) :\n  LinearStudy.projectivePulledLinearSectionScheme f V L hL w ⟶\n    AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 11,
+      "moduleLineCount": 79,
+      "startLine": 57,
+      "endLine": 67,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.homogeneousQuotientClosedEmbedding",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionIdeal_isHomogeneous",
+        "LinearStudy.projectivePulledLinearSectionScheme"
+      ]
+    },
+    "LinearStudy.projectivePulledLinearSectionClosedEmbedding_isClosedImmersion": {
+      "declaration": "LinearStudy.projectivePulledLinearSectionClosedEmbedding_isClosedImmersion",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "line": 69,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectivePulledLinearSectionClosedEmbedding_isClosedImmersion {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (w : Fin (r + 1) → ℂ) :\n  AlgebraicGeometry.IsClosedImmersion (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 9,
+      "moduleLineCount": 79,
+      "startLine": 69,
+      "endLine": 77,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.homogeneousQuotientClosedEmbedding_isClosedImmersion",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionClosedEmbedding",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionIdeal_isHomogeneous",
+        "LinearStudy.projectivePulledLinearSectionScheme"
+      ]
+    },
     "LinearStudy.homogeneousCut_exists_actual_affine_scheme_iso": {
       "declaration": "LinearStudy.homogeneousCut_exists_actual_affine_scheme_iso",
       "kind": "theorem",
@@ -53365,12 +53709,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 1434,
-  "definitionCount": 280,
+  "verifiedTheoremCount": 1444,
+  "definitionCount": 283,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
   "auditExitCode": 0,
-  "scope": "The full original LinearityTheoremGoal remains UNPROVED. The exact relative-Jacobian local Lemma31Goal is PROVED by lemma31_complete; its historical name corresponds to Lemma 2.1 of the CURRENT manuscript. Actual finite freeness, arbitrary parameter actions, nonzero Jacobian socle generation and the required pairings are constructed. Actual affine completely-intersecting polynomial quotients have constructed perfect pairings, low-degree vanishing, Jacobian trace and nonzero weighted relations under their explicit local generator hypotheses. Original smooth/point-local/formal and completion comparisons have been advanced, but the SAME original Setup fiber to the full projective relation has not been closed. From the original homogeneous endomorphism f and nonempty homogeneous prime V, the actual cone and chart pullbacks, function fields, ratio field, total invariance and original iterates are constructed. Original general WHOLE fibers are finite/reduced and smooth/unramified on constructed nonempty target opens. Actual cone Hilbert-Serre and the ORIGINAL Hilbert polynomials P,C give deg(C)=deg(P)+1, cone image degree=q^deg(C), and WHOLE projective/chart image degree=q^deg(P). NEW checkpoint 87 proves integral Krull-dimension preservation and compares ACTUAL finite Noether normalization with the ORIGINAL coordinate filtration using constructed representatives, module generators, multiplication matrices and bounded coefficients. The actual cumulative Hilbert degree equals actual cone Krull dimension. Constructed cone/chart/ratio fraction fields and transcendence-degree towers then prove deg(P)=r for the ACTUAL inhabited original affine chart ring Krull dimension AND its actual spectrum topological dimension. Therefore the ORIGINAL actual chart degree is q^r and EVERY original iterate has a constructed nonempty open where each WHOLE point fiber has (q^k)^r points. No dimension, cardinality, degree formula or normalization/growth bound is an input to the aggregate original-map theorems. The GLOBAL projective Proj/Scheme comparison, Bertini selection, original full relation assembly, canonical-sheaf fixed-twist injection, geometric Koszul/proper duality/uniform Serre lifting and actual Cartier/Bezout intersection remain OPEN. The final numeric contradiction is checked only as an implication under its explicit intersection inputs; it does not prove the full Linearity Theorem. NEW checkpoint 88 constructs the actual normalization/fraction scalar tower, separable characteristic-zero extension and differential base-change basis. It proves actual Krull dimension equals actual differential rank for finite-type characteristic-zero domains WITHOUT global smoothness. For the ORIGINAL inhabited projective chart, Hilbert degree, Krull dimension and actual differential rank are identified. One aggregate original-map theorem gives the SAME dimension for actual polynomial local parameters at EVERY original smooth chart point and for EVERY original iterate WHOLE general fiber point count. The original full projective polynomial relation and all remaining geometric lifting and intersection obligations above remain OPEN; the final theorem is still unproved. NEW checkpoint 89 intersects the ORIGINAL iterate good-locus and point-count opens, constructs their nonempty witness and preserves the SAME whole-fiber dimension count and actual reduced in-V equation quotient. EVERY actual coordinate point is linked to the SAME smooth target and genuine unramified chart map. Common actual ambient linear coordinates, original local generators and formal normal-ideal identities are constructed on the ENTIRE original fiber, with r identified with actual Krull/differential dimension and c=n-r. The ambient fiber may have normal nilpotents; reducedness is claimed only for the in-V quotient. The SAME-fiber common Jacobian socle and full homogeneous relation, all Section 4 lifting, global Proj/Bertini and actual intersection obligations remain OPEN. The final theorem is unproved. NEW checkpoint 90 constructs the ORIGINAL ambient fiber ideal from f_i-y_i*f_0, proves its quotient finite while retaining possible normal nilpotents, and compares its actual point set and radical with the reduced in-V fiber. The actual homogeneous fiber forms have no points at infinity; their dehomogenized equations have exact degree q, regular highest forms and origin-only highest-form zero locus. These are derived on the SAME original whole good fiber for EVERY iterate, together with actual common coordinates and local normal equations, not supplied as assumptions. This is ONE whole general fiber; simultaneous Bertini selection of d target points and their fiber union is not yet proved. Common normal Jacobian socle, the full homogeneous relation, Section 4 geometric lifting, global Proj comparison and actual intersection remain OPEN. The final theorem remains unproved. NEW checkpoint 91 constructs centered LINEAR polynomial target parameters from actual original smoothness, with count equal to the SAME actual differential/Krull dimension r. They generate the actual target local quotient maximal ideal on EVERY original iterate good fiber. Original local quotient pullbacks commute with independent source/target coordinate equivalences, preserving genuine unramification under an actual ambient ring-map diagram. Actual denominator localizations and rational chart pullbacks are compared under source coordinate equivalences. These coordinate bridges do not yet assemble the same-fiber common Jacobian socle or full homogeneous relation. Bertini d-fiber union, Section 4 geometric lifting and actual intersection remain OPEN; full theorem unproved. NEW checkpoint 92 constructs normal polynomial and formal first-order equations of the ORIGINAL ideal at the SAME actual smooth target, with c=n-r and the SAME original dimension r. The actual whole-fiber aggregate retains these target equations. Original rational source and linear target coordinate changes transport actual local unramification; affine centering transforms original numerators using the actual unchanged denominator. These bridges still do not discharge the SAME common-Jacobian socle or full homogeneous relation. Bertini union, Section 4, global Proj and actual intersection remain OPEN; the final theorem remains unproved. NEW checkpoint 93 derives both formal normal radical and tangent parameter generation from actual rational local unramification, actual polynomial source/target generators with normalized target first jets, and an actual ideal-power sandwich. It proves the SAME common normal polynomial Jacobian is a nonzero annihilator generator in the formal and actual Artinian local polynomial fiber ring; no socle or either formal condition is assumed. This remains conditional on those actual geometric inputs; their full original whole-fiber assembly and homogeneous relation are OPEN. Bertini, Section 4, global Proj and actual intersection remain OPEN. Final theorem UNPROVED. NEW checkpoint 94 constructs centered actual original target normal equations at the SAME whole-fiber target and with the SAME actual r. Actual local generators imply actual point-ideal containment. Original rational numerator formulas derive the target-centering diagram, transport genuine unramification and ideal-power inequalities; actual source denominator equivalences also transport the original power sandwich. No transformed inequality or unramification is newly assumed. Full original whole-fiber common-Jacobian assembly and homogeneous relation remain OPEN; Bertini, Section 4, global Proj and actual intersection OPEN. The final theorem remains UNPROVED. NEW checkpoint 95 derives original whole-fiber actual centered rational local inputs at EVERY source point over the SAME constructed good target open. Independent source coordinates, target reindexing, inverse linear coordinates and centering construct the actual map and primes. The original total invariance supplies the original and transformed ideal power sandwich; genuine unramification and actual origin/source-point prime identities are derived, not input. These are actual local inputs for the common-Jacobian bridge, not the completed homogeneous relation. The transformed ambient quotient finiteness, source/target normal data and SAME polynomial Jacobian still need full assembly; simultaneous Bertini union, Section 4, global Proj and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 96 constructs, for EVERY original iterate and every whole fiber on the SAME nonempty good target open, actual common linear source and centered target coordinates and the SAME polynomial normal Jacobian as a nonzero local socle generator at EVERY original source point, assuming the ACTUAL chart dimension r>0 explicitly. Original normal generators are constructed, not supplied. The transformed ambient equation quotient is finite, retains normal nilpotents, and its actual point evaluations are derived. This closes the original whole-fiber local-Jacobian assembly, not the full homogeneous relation: covering all maximal ideals, transformed leading forms, the residue/degree bound and original homogeneous conversion still need assembly. Simultaneous Bertini union, global Proj, Section 4 and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 97 covers EVERY maximal ideal of the SAME actual centered ambient equation quotient by constructing its original source point from its actual scalar residue map and the exact changed ambient ideal. The SAME original whole-fiber Jacobian now generates a NONZERO local socle at EVERY maximal ideal, for every original iterate with positive actual chart dimension explicit. Actual linear source coordinate changes and reindexing commute with homogeneous component projections. Neither reducedness of the ambient ring nor point coverage is assumed. Transformed leading-form regularity, degree bounds, residue assembly and ORIGINAL homogeneous relation remain OPEN. Bertini union, Section 4 and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 98 derives the SAME actual centered whole-fiber degree and highest system, the c(q-1) normal Jacobian bound, and the global nilradical annihilator for EVERY original iterate with positive actual chart dimension explicit. An actual quotient algebra equivalence transports the perfect multiplication pairing and low-degree vanishing. Actual zero-locus weights are constructed and all nonzero under explicit highest-system and annihilator hypotheses, without reducedness. Insertion into the ORIGINAL whole-fiber homogeneous relation is still OPEN. Bertini union, Section 4 geometry and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 99 proves the ORIGINAL homogeneous weighted relation on the SAME original whole good fiber for EVERY original iterate, on a constructed nonempty good target open, with actual r>0 and iterate degree >1 explicit. ALL coefficients are nonzero and ALL original homogeneous polynomials of degree t=r(q-1)-1 satisfy the relation. The vectors use normalized representatives (1,x). Actual source quotient algebra and point equivalences, degree preservation and dehomogenization are proved. Local socles, transformed highest system, degree bound and residue relation are derived from original f,V, rather than added as geometric inputs. Simultaneous Bertini target intersection/fiber union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 100 derives the ORIGINAL whole-good-fiber homogeneous relation for EVERY original iterate and ANY chosen nonzero homogeneous coordinate representatives. The degree remains t=r(q-1)-1 and every coefficient is nonzero. Coordinate zero and affine ratios are derived from actual projective equality, and the exact homogeneous scaling factor transports the already proved normalized relation. The original wrapper assumes no extra residue or normalized relation. Positive actual dimension, iterate degree >1 and the constructed good target open remain explicit. Simultaneous Bertini union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 101 constructs genuine degree-one linear Noether normalization for proper homogeneous ideals over infinite fields. The actual monic linear shear, integral elimination, homogeneous kernel and induction derive an injective integral and module-finite map whose generators are actual degree-one original forms. Its variable count equals actual Krull dimension, not an input parameter. Ordinary nonlinear Nagata normalization is not substituted. This is a foundation for simultaneous Bertini selection, NOT that selection: exact projective section degree, simultaneous smooth target points, global Proj/Scheme comparison, Section 4 geometric lifting and actual intersection remain OPEN; full theorem still UNPROVED. NEW checkpoint 102 proves basepoint-freeness of actual integral linear normalization by evaluating a monic equation on all scalar multiples over an infinite field. It constructs actual original degree-one forms L_0,...,L_r for V, the injective finite cone map defined by those forms, and no nonzero common zero on the original cone. The number r is derived from the actual Hilbert-polynomial degree and original affine-chart Krull dimension. No basepoint-free tuple, finite map or dimension is added as an input. Exact generic linear-section cardinality and its identification with degree V, simultaneous Bertini, global scheme comparison, Section 4 and actual intersection remain OPEN; the full theorem is UNPROVED. NEW checkpoint 103 derives generic unramification of a finite injective map in characteristic zero from its actual fraction map, then constructs a nonempty target open whose ENTIRE source preimage is smooth, unramified and avoids any specified nonzero source element. This is applied to the SAME actual original linear normalization of V, preserving its degree-one forms, finite injection, Hilbert dimension and no-basepoint conclusion. No good fiber, source smoothness or fraction separability is a new input. Exact reduced generic linear-section cardinality, its identification with degree V, simultaneous projective selection, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 104 constructs actual finite REDUCED tensor fibers K tensor_R A of the SAME original finite linear normalization on a nonempty scalar target open away from w0=0. Their actual vector dimension and scalar-point cardinality equal the generic module rank; no fiber reducedness, point count or rank formula is assumed. Comparison with actual projective linear-section points, generic rank equals degree V, simultaneous Bertini, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 105 proves actual tensor-point/coordinate-cone-fiber and projective-linear-section point equivalences, using the SAME original V, degree-one tuple and finite map. On a constructed nonempty target open, the ACTUAL projective linear section has cardinality equal to the actual generic module rank. Homogeneity and derived no-basepoint make normalization possible and unique. The rank equals Hilbert leading-coefficient degree V, simultaneous good selection/transversality, global scheme comparisons, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 106 derives homogeneous generic basis/control and two-sided total-degree filtered growth estimates retaining the ACTUAL generic rank. A combined original-V entry uses the SAME constructed finite linear projection for its actual projective section cardinality and both growth estimates. No rank, basis, growth estimate or projection is supplied as an extra input. Rank equals the Hilbert leading-coefficient degree V remains OPEN, as do simultaneous good selection/transversality, global Scheme comparisons, Section 4 uniform lifting and actual intersection. The full theorem remains UNPROVED. NEW checkpoint 107 proves generic rank equals the factorial-normalized leading coefficient of the ACTUAL original homogeneous Hilbert polynomial. An exact source monomial count, same-projection two-sided filtered growth and cumulative/component leading-coefficient comparison prove the equality; degree V is not redefined as rank to bypass it. The ORIGINAL V alone now gives generic actual linear sections of cardinality d, with d>0 and d=r! times the actual Hilbert leading coefficient. Simultaneous original-f good target selection and transversality, global Scheme comparison, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 108 constructs d=degree V simultaneous original-f good targets on one actual linear section for EVERY original iterate. A homogeneous lift of the actual affine good-open equation and finite-projection whole-fiber avoidance ensure ALL d points lie in the good open. Original chart Krull dimension equals the projection dimension; the same original complete fibers have q^r points and actual ambient geometry/homogeneous relations. Fixed projection and d remain independent of the iterate; selected section and fibers may vary. Global scheme intersections/transversality and actual pulled-back common-zero scheme comparisons, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 109 constructs r actual independent linear equations of the SAME original projective section and the actual degree-q pullbacks. Their common projective POINT set on V is proved equal to the union of the original whole fibers over ALL section targets, with actual projective representative scaling accounted for. This is point-set equality, NOT a nonreduced scheme equality. Global Scheme intersection/transversality and reducedness, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 110 explicitly transports homogeneous relations to the ACTUAL whole PROJECTIVE point fibers for arbitrary chosen nonzero representatives, with the actual affine/projective equivalence action proved. Intersecting BOTH original good opens retains no-infinity and actual whole-fiber q^r cardinality for ALL d targets simultaneously. The original f and V are not replaced by an abstract point family. Scheme intersection/transversality/reducedness, Section 4 uniform lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 111 constructs the original degree-d target enumeration, pairwise disjoint actual WHOLE projective fibers, their inverse-image union S of cardinality d*q^r, and the actual degree-q common POINTS. For EVERY chosen nonzero representative system on S, the first-fiber relation extends by zero to a nonzero actual evaluation functional annihilating ALL degree-t homogeneous forms. This derives the finite-point input to Section 4 from original f,V, without an abstract assumed family or assumed Koszul/cohomology/duality conclusion. Scheme intersections, uniform geometric lifting, actual intersection and main theorem remain OPEN. NEW checkpoint 112 proves an actual coefficient-field algebra equivalence (K[X]/I) tensor_(K[Y]) K = K[X]/(I+(L_i-w_i)), deriving its universal property and scalar compatibilities. For an original finite dominant polynomial projection over an algebraically closed characteristic-zero field, it derives a nonempty target open with radical original equation-fiber ideals, finite reduced quotients and dimensions/point counts equal to original generic rank. This is an affine equation-ring bridge, NOT a global projective Proj comparison or all pullback scheme transversality; it does not redefine generic rank as degree V. Geometric Koszul/duality, uniform fixed-degree Q, actual intersection and the full theorem remain OPEN. NEW checkpoint 113 connects the equation-ring radicality to ONE original degree-one projection derived from the original projective V, on the SAME nonempty open as its actual projective section cardinality. Its original equation quotient has dimension and scalar-point cardinality d, and d=r! times the original Hilbert leading coefficient, without redefining degree as rank. This does not assert a global Proj scheme equivalence or all endomorphism pullback scheme transversality. Section 4 lifting and actual intersection remain OPEN. NEW checkpoint 114 proves the actual original dehomogenized coordinate quotient is ring-isomorphic to mathlib HomogeneousLocalization.Away of the original graded quotient at X0. Using the pinned native Proj basicOpenIsoSpec, its actual first-coordinate open SUBSCHEME is isomorphic to Spec of that original affine coordinate quotient. This compares real rings and schemes, not just points. It does not yet construct all-chart gluing, original-endomorphism scheme pullback/transversality or Section 4 uniform lifting, and does not claim the full theorem. NEW checkpoint 115 strengthens the native chart equivalence by ORIGINAL coordinate compatibility and the actual homogeneous fraction H/X0^m formula. From the original f,V it constructs an actual scheme morphism on the denominator OPEN SUBSCHEME of the native first-coordinate chart. Its native Spec diagram commutes with the same original-f pullback. It proves exact pullback equality of arbitrary homogeneous defining ideals, including nilpotents, on that open; not merely equality of point sets or radicals. Global all-chart gluing, projective common-zero scheme coverage and transversality, geometric Koszul, canonical/duality/Serre fixed-degree lifting, and actual intersection remain OPEN. Main theorem UNPROVED. NEW checkpoint 116 proves the actual CLOSED native-chart zero-scheme pullback square and closed immersions using quotient pushouts, retaining nilpotents. For the ORIGINAL finite linear normalization it constructs a nonempty target open with REDUCED ACTUAL native first-chart linear sections. Reducedness follows from a proved original affine-section quotient comparison, original denominator invertibility and the actual native quotient ring equivalence, not an assumed reduced zero scheme. The SOURCE pulled common-zero scheme reducedness, all-chart/global coverage, geometric Koszul, canonical/duality/Serre fixed-degree Q lifting and actual intersection remain OPEN. Main theorem UNPROVED. NEW checkpoint 117 DERIVES a nonempty target open on which the SAME original-f pulled common-zero quotient in the original first-coordinate denominator chart is FINITE and REDUCED. It proves exact point-ideal extension equals the actual fiber-map kernel, transports finite reduced target sections through their actual residue points and pairwise-coprime ideal intersections, and derives ALL fiber conditions from original good-open constructors. No assumed reduced source cut or radicalization is used. The actual closed-source Spec quotient is reduced. Earlier notes marking SOURCE reducedness open now apply only to global Proj coverage/all-chart gluing. Those global bridges, geometric Koszul, canonical/duality/Serre fixed-degree Q lifting and actual intersection remain OPEN. Full Linearity Theorem UNPROVED. NEW checkpoint 118 DERIVES full native Proj coverage of the ACTUAL original-f pulled homogeneous section cut, including nonclosed primes and unreduced quotient structure. It proves a general first native chart ring equivalence for ANY homogeneous polynomial ideal, without primality or radicality. Original f0 is a unit in the whole actual affine cut quotient, which is isomorphic to the prior finite reduced denominator quotient. On a constructed nonempty open, the ENTIRE actual native pulled section scheme is isomorphic to Spec of its actual finite reduced affine quotient and is REDUCED. No source reducedness, native-chart comparison or coverage is supplied as an assumption. Prior global coverage/source-cut reducedness OPEN notes are superseded by this theorem. The native cut-to-original V closed embedding, intrinsic point/degree interfaces, geometric Koszul, canonical/duality/Serre uniform fixed-degree lifting and actual intersection remain OPEN. Full Linearity Theorem UNPROVED. NEW checkpoint 119 combines the SAME original f,V, fixed finite linear normalization, Hilbert polynomial and degree-d target section with BOTH the actual whole-fiber nonzero supported evaluation relation and the ENTIRE native finite reduced pulled-cut scheme, for every admissible iterate on a constructed nonempty common parameter open. It uses the product of the two proved good-open polynomials and preserves all original equations and quantifiers. No unrelated point family, source reducedness or coverage is assumed. Natural native cut-to-V embedding, intrinsic scheme point/degree interfaces, geometric Koszul, canonical embedding and proper-duality/Serre fixed-m polynomial lifting and actual intersection remain OPEN. Full Linearity Theorem UNPROVED.",
+  "scope": "The full original LinearityTheoremGoal remains UNPROVED. The exact relative-Jacobian local Lemma31Goal is PROVED by lemma31_complete; its historical name corresponds to Lemma 2.1 of the CURRENT manuscript. Actual finite freeness, arbitrary parameter actions, nonzero Jacobian socle generation and the required pairings are constructed. Actual affine completely-intersecting polynomial quotients have constructed perfect pairings, low-degree vanishing, Jacobian trace and nonzero weighted relations under their explicit local generator hypotheses. Original smooth/point-local/formal and completion comparisons have been advanced, but the SAME original Setup fiber to the full projective relation has not been closed. From the original homogeneous endomorphism f and nonempty homogeneous prime V, the actual cone and chart pullbacks, function fields, ratio field, total invariance and original iterates are constructed. Original general WHOLE fibers are finite/reduced and smooth/unramified on constructed nonempty target opens. Actual cone Hilbert-Serre and the ORIGINAL Hilbert polynomials P,C give deg(C)=deg(P)+1, cone image degree=q^deg(C), and WHOLE projective/chart image degree=q^deg(P). NEW checkpoint 87 proves integral Krull-dimension preservation and compares ACTUAL finite Noether normalization with the ORIGINAL coordinate filtration using constructed representatives, module generators, multiplication matrices and bounded coefficients. The actual cumulative Hilbert degree equals actual cone Krull dimension. Constructed cone/chart/ratio fraction fields and transcendence-degree towers then prove deg(P)=r for the ACTUAL inhabited original affine chart ring Krull dimension AND its actual spectrum topological dimension. Therefore the ORIGINAL actual chart degree is q^r and EVERY original iterate has a constructed nonempty open where each WHOLE point fiber has (q^k)^r points. No dimension, cardinality, degree formula or normalization/growth bound is an input to the aggregate original-map theorems. The GLOBAL projective Proj/Scheme comparison, Bertini selection, original full relation assembly, canonical-sheaf fixed-twist injection, geometric Koszul/proper duality/uniform Serre lifting and actual Cartier/Bezout intersection remain OPEN. The final numeric contradiction is checked only as an implication under its explicit intersection inputs; it does not prove the full Linearity Theorem. NEW checkpoint 88 constructs the actual normalization/fraction scalar tower, separable characteristic-zero extension and differential base-change basis. It proves actual Krull dimension equals actual differential rank for finite-type characteristic-zero domains WITHOUT global smoothness. For the ORIGINAL inhabited projective chart, Hilbert degree, Krull dimension and actual differential rank are identified. One aggregate original-map theorem gives the SAME dimension for actual polynomial local parameters at EVERY original smooth chart point and for EVERY original iterate WHOLE general fiber point count. The original full projective polynomial relation and all remaining geometric lifting and intersection obligations above remain OPEN; the final theorem is still unproved. NEW checkpoint 89 intersects the ORIGINAL iterate good-locus and point-count opens, constructs their nonempty witness and preserves the SAME whole-fiber dimension count and actual reduced in-V equation quotient. EVERY actual coordinate point is linked to the SAME smooth target and genuine unramified chart map. Common actual ambient linear coordinates, original local generators and formal normal-ideal identities are constructed on the ENTIRE original fiber, with r identified with actual Krull/differential dimension and c=n-r. The ambient fiber may have normal nilpotents; reducedness is claimed only for the in-V quotient. The SAME-fiber common Jacobian socle and full homogeneous relation, all Section 4 lifting, global Proj/Bertini and actual intersection obligations remain OPEN. The final theorem is unproved. NEW checkpoint 90 constructs the ORIGINAL ambient fiber ideal from f_i-y_i*f_0, proves its quotient finite while retaining possible normal nilpotents, and compares its actual point set and radical with the reduced in-V fiber. The actual homogeneous fiber forms have no points at infinity; their dehomogenized equations have exact degree q, regular highest forms and origin-only highest-form zero locus. These are derived on the SAME original whole good fiber for EVERY iterate, together with actual common coordinates and local normal equations, not supplied as assumptions. This is ONE whole general fiber; simultaneous Bertini selection of d target points and their fiber union is not yet proved. Common normal Jacobian socle, the full homogeneous relation, Section 4 geometric lifting, global Proj comparison and actual intersection remain OPEN. The final theorem remains unproved. NEW checkpoint 91 constructs centered LINEAR polynomial target parameters from actual original smoothness, with count equal to the SAME actual differential/Krull dimension r. They generate the actual target local quotient maximal ideal on EVERY original iterate good fiber. Original local quotient pullbacks commute with independent source/target coordinate equivalences, preserving genuine unramification under an actual ambient ring-map diagram. Actual denominator localizations and rational chart pullbacks are compared under source coordinate equivalences. These coordinate bridges do not yet assemble the same-fiber common Jacobian socle or full homogeneous relation. Bertini d-fiber union, Section 4 geometric lifting and actual intersection remain OPEN; full theorem unproved. NEW checkpoint 92 constructs normal polynomial and formal first-order equations of the ORIGINAL ideal at the SAME actual smooth target, with c=n-r and the SAME original dimension r. The actual whole-fiber aggregate retains these target equations. Original rational source and linear target coordinate changes transport actual local unramification; affine centering transforms original numerators using the actual unchanged denominator. These bridges still do not discharge the SAME common-Jacobian socle or full homogeneous relation. Bertini union, Section 4, global Proj and actual intersection remain OPEN; the final theorem remains unproved. NEW checkpoint 93 derives both formal normal radical and tangent parameter generation from actual rational local unramification, actual polynomial source/target generators with normalized target first jets, and an actual ideal-power sandwich. It proves the SAME common normal polynomial Jacobian is a nonzero annihilator generator in the formal and actual Artinian local polynomial fiber ring; no socle or either formal condition is assumed. This remains conditional on those actual geometric inputs; their full original whole-fiber assembly and homogeneous relation are OPEN. Bertini, Section 4, global Proj and actual intersection remain OPEN. Final theorem UNPROVED. NEW checkpoint 94 constructs centered actual original target normal equations at the SAME whole-fiber target and with the SAME actual r. Actual local generators imply actual point-ideal containment. Original rational numerator formulas derive the target-centering diagram, transport genuine unramification and ideal-power inequalities; actual source denominator equivalences also transport the original power sandwich. No transformed inequality or unramification is newly assumed. Full original whole-fiber common-Jacobian assembly and homogeneous relation remain OPEN; Bertini, Section 4, global Proj and actual intersection OPEN. The final theorem remains UNPROVED. NEW checkpoint 95 derives original whole-fiber actual centered rational local inputs at EVERY source point over the SAME constructed good target open. Independent source coordinates, target reindexing, inverse linear coordinates and centering construct the actual map and primes. The original total invariance supplies the original and transformed ideal power sandwich; genuine unramification and actual origin/source-point prime identities are derived, not input. These are actual local inputs for the common-Jacobian bridge, not the completed homogeneous relation. The transformed ambient quotient finiteness, source/target normal data and SAME polynomial Jacobian still need full assembly; simultaneous Bertini union, Section 4, global Proj and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 96 constructs, for EVERY original iterate and every whole fiber on the SAME nonempty good target open, actual common linear source and centered target coordinates and the SAME polynomial normal Jacobian as a nonzero local socle generator at EVERY original source point, assuming the ACTUAL chart dimension r>0 explicitly. Original normal generators are constructed, not supplied. The transformed ambient equation quotient is finite, retains normal nilpotents, and its actual point evaluations are derived. This closes the original whole-fiber local-Jacobian assembly, not the full homogeneous relation: covering all maximal ideals, transformed leading forms, the residue/degree bound and original homogeneous conversion still need assembly. Simultaneous Bertini union, global Proj, Section 4 and actual intersection remain OPEN. The final Linearity Theorem remains UNPROVED. NEW checkpoint 97 covers EVERY maximal ideal of the SAME actual centered ambient equation quotient by constructing its original source point from its actual scalar residue map and the exact changed ambient ideal. The SAME original whole-fiber Jacobian now generates a NONZERO local socle at EVERY maximal ideal, for every original iterate with positive actual chart dimension explicit. Actual linear source coordinate changes and reindexing commute with homogeneous component projections. Neither reducedness of the ambient ring nor point coverage is assumed. Transformed leading-form regularity, degree bounds, residue assembly and ORIGINAL homogeneous relation remain OPEN. Bertini union, Section 4 and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 98 derives the SAME actual centered whole-fiber degree and highest system, the c(q-1) normal Jacobian bound, and the global nilradical annihilator for EVERY original iterate with positive actual chart dimension explicit. An actual quotient algebra equivalence transports the perfect multiplication pairing and low-degree vanishing. Actual zero-locus weights are constructed and all nonzero under explicit highest-system and annihilator hypotheses, without reducedness. Insertion into the ORIGINAL whole-fiber homogeneous relation is still OPEN. Bertini union, Section 4 geometry and actual intersection remain OPEN; the full Linearity Theorem is still UNPROVED. NEW checkpoint 99 proves the ORIGINAL homogeneous weighted relation on the SAME original whole good fiber for EVERY original iterate, on a constructed nonempty good target open, with actual r>0 and iterate degree >1 explicit. ALL coefficients are nonzero and ALL original homogeneous polynomials of degree t=r(q-1)-1 satisfy the relation. The vectors use normalized representatives (1,x). Actual source quotient algebra and point equivalences, degree preservation and dehomogenization are proved. Local socles, transformed highest system, degree bound and residue relation are derived from original f,V, rather than added as geometric inputs. Simultaneous Bertini target intersection/fiber union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 100 derives the ORIGINAL whole-good-fiber homogeneous relation for EVERY original iterate and ANY chosen nonzero homogeneous coordinate representatives. The degree remains t=r(q-1)-1 and every coefficient is nonzero. Coordinate zero and affine ratios are derived from actual projective equality, and the exact homogeneous scaling factor transports the already proved normalized relation. The original wrapper assumes no extra residue or normalized relation. Positive actual dimension, iterate degree >1 and the constructed good target open remain explicit. Simultaneous Bertini union, global Proj comparison, Section 4 geometric lifting and actual intersection remain OPEN. The full Linearity Theorem is still UNPROVED. NEW checkpoint 101 constructs genuine degree-one linear Noether normalization for proper homogeneous ideals over infinite fields. The actual monic linear shear, integral elimination, homogeneous kernel and induction derive an injective integral and module-finite map whose generators are actual degree-one original forms. Its variable count equals actual Krull dimension, not an input parameter. Ordinary nonlinear Nagata normalization is not substituted. This is a foundation for simultaneous Bertini selection, NOT that selection: exact projective section degree, simultaneous smooth target points, global Proj/Scheme comparison, Section 4 geometric lifting and actual intersection remain OPEN; full theorem still UNPROVED. NEW checkpoint 102 proves basepoint-freeness of actual integral linear normalization by evaluating a monic equation on all scalar multiples over an infinite field. It constructs actual original degree-one forms L_0,...,L_r for V, the injective finite cone map defined by those forms, and no nonzero common zero on the original cone. The number r is derived from the actual Hilbert-polynomial degree and original affine-chart Krull dimension. No basepoint-free tuple, finite map or dimension is added as an input. Exact generic linear-section cardinality and its identification with degree V, simultaneous Bertini, global scheme comparison, Section 4 and actual intersection remain OPEN; the full theorem is UNPROVED. NEW checkpoint 103 derives generic unramification of a finite injective map in characteristic zero from its actual fraction map, then constructs a nonempty target open whose ENTIRE source preimage is smooth, unramified and avoids any specified nonzero source element. This is applied to the SAME actual original linear normalization of V, preserving its degree-one forms, finite injection, Hilbert dimension and no-basepoint conclusion. No good fiber, source smoothness or fraction separability is a new input. Exact reduced generic linear-section cardinality, its identification with degree V, simultaneous projective selection, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 104 constructs actual finite REDUCED tensor fibers K tensor_R A of the SAME original finite linear normalization on a nonempty scalar target open away from w0=0. Their actual vector dimension and scalar-point cardinality equal the generic module rank; no fiber reducedness, point count or rank formula is assumed. Comparison with actual projective linear-section points, generic rank equals degree V, simultaneous Bertini, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 105 proves actual tensor-point/coordinate-cone-fiber and projective-linear-section point equivalences, using the SAME original V, degree-one tuple and finite map. On a constructed nonempty target open, the ACTUAL projective linear section has cardinality equal to the actual generic module rank. Homogeneity and derived no-basepoint make normalization possible and unique. The rank equals Hilbert leading-coefficient degree V, simultaneous good selection/transversality, global scheme comparisons, Section 4 and actual intersection remain OPEN; full theorem UNPROVED. NEW checkpoint 106 derives homogeneous generic basis/control and two-sided total-degree filtered growth estimates retaining the ACTUAL generic rank. A combined original-V entry uses the SAME constructed finite linear projection for its actual projective section cardinality and both growth estimates. No rank, basis, growth estimate or projection is supplied as an extra input. Rank equals the Hilbert leading-coefficient degree V remains OPEN, as do simultaneous good selection/transversality, global Scheme comparisons, Section 4 uniform lifting and actual intersection. The full theorem remains UNPROVED. NEW checkpoint 107 proves generic rank equals the factorial-normalized leading coefficient of the ACTUAL original homogeneous Hilbert polynomial. An exact source monomial count, same-projection two-sided filtered growth and cumulative/component leading-coefficient comparison prove the equality; degree V is not redefined as rank to bypass it. The ORIGINAL V alone now gives generic actual linear sections of cardinality d, with d>0 and d=r! times the actual Hilbert leading coefficient. Simultaneous original-f good target selection and transversality, global Scheme comparison, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 108 constructs d=degree V simultaneous original-f good targets on one actual linear section for EVERY original iterate. A homogeneous lift of the actual affine good-open equation and finite-projection whole-fiber avoidance ensure ALL d points lie in the good open. Original chart Krull dimension equals the projection dimension; the same original complete fibers have q^r points and actual ambient geometry/homogeneous relations. Fixed projection and d remain independent of the iterate; selected section and fibers may vary. Global scheme intersections/transversality and actual pulled-back common-zero scheme comparisons, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 109 constructs r actual independent linear equations of the SAME original projective section and the actual degree-q pullbacks. Their common projective POINT set on V is proved equal to the union of the original whole fibers over ALL section targets, with actual projective representative scaling accounted for. This is point-set equality, NOT a nonreduced scheme equality. Global Scheme intersection/transversality and reducedness, Section 4 uniform geometric lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 110 explicitly transports homogeneous relations to the ACTUAL whole PROJECTIVE point fibers for arbitrary chosen nonzero representatives, with the actual affine/projective equivalence action proved. Intersecting BOTH original good opens retains no-infinity and actual whole-fiber q^r cardinality for ALL d targets simultaneously. The original f and V are not replaced by an abstract point family. Scheme intersection/transversality/reducedness, Section 4 uniform lifting and actual intersection remain OPEN. Full theorem UNPROVED. NEW checkpoint 111 constructs the original degree-d target enumeration, pairwise disjoint actual WHOLE projective fibers, their inverse-image union S of cardinality d*q^r, and the actual degree-q common POINTS. For EVERY chosen nonzero representative system on S, the first-fiber relation extends by zero to a nonzero actual evaluation functional annihilating ALL degree-t homogeneous forms. This derives the finite-point input to Section 4 from original f,V, without an abstract assumed family or assumed Koszul/cohomology/duality conclusion. Scheme intersections, uniform geometric lifting, actual intersection and main theorem remain OPEN. NEW checkpoint 112 proves an actual coefficient-field algebra equivalence (K[X]/I) tensor_(K[Y]) K = K[X]/(I+(L_i-w_i)), deriving its universal property and scalar compatibilities. For an original finite dominant polynomial projection over an algebraically closed characteristic-zero field, it derives a nonempty target open with radical original equation-fiber ideals, finite reduced quotients and dimensions/point counts equal to original generic rank. This is an affine equation-ring bridge, NOT a global projective Proj comparison or all pullback scheme transversality; it does not redefine generic rank as degree V. Geometric Koszul/duality, uniform fixed-degree Q, actual intersection and the full theorem remain OPEN. NEW checkpoint 113 connects the equation-ring radicality to ONE original degree-one projection derived from the original projective V, on the SAME nonempty open as its actual projective section cardinality. Its original equation quotient has dimension and scalar-point cardinality d, and d=r! times the original Hilbert leading coefficient, without redefining degree as rank. This does not assert a global Proj scheme equivalence or all endomorphism pullback scheme transversality. Section 4 lifting and actual intersection remain OPEN. NEW checkpoint 114 proves the actual original dehomogenized coordinate quotient is ring-isomorphic to mathlib HomogeneousLocalization.Away of the original graded quotient at X0. Using the pinned native Proj basicOpenIsoSpec, its actual first-coordinate open SUBSCHEME is isomorphic to Spec of that original affine coordinate quotient. This compares real rings and schemes, not just points. It does not yet construct all-chart gluing, original-endomorphism scheme pullback/transversality or Section 4 uniform lifting, and does not claim the full theorem. NEW checkpoint 115 strengthens the native chart equivalence by ORIGINAL coordinate compatibility and the actual homogeneous fraction H/X0^m formula. From the original f,V it constructs an actual scheme morphism on the denominator OPEN SUBSCHEME of the native first-coordinate chart. Its native Spec diagram commutes with the same original-f pullback. It proves exact pullback equality of arbitrary homogeneous defining ideals, including nilpotents, on that open; not merely equality of point sets or radicals. Global all-chart gluing, projective common-zero scheme coverage and transversality, geometric Koszul, canonical/duality/Serre fixed-degree lifting, and actual intersection remain OPEN. Main theorem UNPROVED. NEW checkpoint 116 proves the actual CLOSED native-chart zero-scheme pullback square and closed immersions using quotient pushouts, retaining nilpotents. For the ORIGINAL finite linear normalization it constructs a nonempty target open with REDUCED ACTUAL native first-chart linear sections. Reducedness follows from a proved original affine-section quotient comparison, original denominator invertibility and the actual native quotient ring equivalence, not an assumed reduced zero scheme. The SOURCE pulled common-zero scheme reducedness, all-chart/global coverage, geometric Koszul, canonical/duality/Serre fixed-degree Q lifting and actual intersection remain OPEN. Main theorem UNPROVED. NEW checkpoint 117 DERIVES a nonempty target open on which the SAME original-f pulled common-zero quotient in the original first-coordinate denominator chart is FINITE and REDUCED. It proves exact point-ideal extension equals the actual fiber-map kernel, transports finite reduced target sections through their actual residue points and pairwise-coprime ideal intersections, and derives ALL fiber conditions from original good-open constructors. No assumed reduced source cut or radicalization is used. The actual closed-source Spec quotient is reduced. Earlier notes marking SOURCE reducedness open now apply only to global Proj coverage/all-chart gluing. Those global bridges, geometric Koszul, canonical/duality/Serre fixed-degree Q lifting and actual intersection remain OPEN. Full Linearity Theorem UNPROVED. NEW checkpoint 118 DERIVES full native Proj coverage of the ACTUAL original-f pulled homogeneous section cut, including nonclosed primes and unreduced quotient structure. It proves a general first native chart ring equivalence for ANY homogeneous polynomial ideal, without primality or radicality. Original f0 is a unit in the whole actual affine cut quotient, which is isomorphic to the prior finite reduced denominator quotient. On a constructed nonempty open, the ENTIRE actual native pulled section scheme is isomorphic to Spec of its actual finite reduced affine quotient and is REDUCED. No source reducedness, native-chart comparison or coverage is supplied as an assumption. Prior global coverage/source-cut reducedness OPEN notes are superseded by this theorem. The native cut-to-original V closed embedding, intrinsic point/degree interfaces, geometric Koszul, canonical/duality/Serre uniform fixed-degree lifting and actual intersection remain OPEN. Full Linearity Theorem UNPROVED. NEW checkpoint 119 combines the SAME original f,V, fixed finite linear normalization, Hilbert polynomial and degree-d target section with BOTH the actual whole-fiber nonzero supported evaluation relation and the ENTIRE native finite reduced pulled-cut scheme, for every admissible iterate on a constructed nonempty common parameter open. It uses the product of the two proved good-open polynomials and preserves all original equations and quantifiers. No unrelated point family, source reducedness or coverage is assumed. Natural native cut-to-V embedding, intrinsic scheme point/degree interfaces, geometric Koszul, canonical embedding and proper-duality/Serre fixed-m polynomial lifting and actual intersection remain OPEN. Full Linearity Theorem UNPROVED. NEW checkpoint 120 constructs the genuine native Proj closed immersion for any surjective graded map. It proves the closed point embedding by homogeneous prime ideals and surjectivity of the actual native stalk maps, without reducedness or integrality assumptions. Applying the SAME original homogeneous quotient factor map constructs the pulled cut closed embedding into original V. This closes the native cut-to-V embedding bridge; it does not prove geometric Koszul exactness, canonical embedding, proper-duality or Serre fixed-degree polynomial lifting, nor actual intersection. Full Linearity Theorem UNPROVED.",
   "sourceRanges": {
     "LinearStudy.projectiveAffineLinearSection_exists_injective_cone_map": {
       "path": "Linear/ProjectiveAffineLinearSectionComparison.lean",
@@ -53816,6 +54160,17 @@
       "endLine": 25,
       "lineCount": 16,
       "dependencies": []
+    },
+    "LinearStudy.homogeneousQuotientClosedEmbedding": {
+      "path": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "startLine": 30,
+      "endLine": 43,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientFactorGraded",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
     },
     "LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient": {
       "path": "Linear/PolynomialLocalParameters.lean",
@@ -57054,6 +57409,20 @@
         "LinearStudy.projective_total_invariance_pullback_radical"
       ]
     },
+    "LinearStudy.homogeneousQuotientClosedEmbedding_isClosedImmersion": {
+      "path": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "startLine": 45,
+      "endLine": 55,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.graded_surjective_Proj_map_closedImmersion",
+        "LinearStudy.homogeneousQuotientClosedEmbedding",
+        "LinearStudy.homogeneousQuotientFactorGraded",
+        "LinearStudy.homogeneousQuotientFactorGraded_surjective",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
     "LinearStudy.scalarPointPrecompositionEquiv": {
       "path": "Linear/PolynomialCoordinateZeroLocusEquiv.lean",
       "startLine": 12,
@@ -58035,6 +58404,15 @@
         "LinearStudy.projectiveChartOpenMap",
         "LinearStudy.projectiveLinearSectionForms",
         "LinearStudy.reducedArtinian_closed_baseChange_ideal_isRadical"
+      ]
+    },
+    "LinearStudy.graded_surjective_native_away_map": {
+      "path": "Linear/GradedSurjectiveNativeCharts.lean",
+      "startLine": 24,
+      "endLine": 35,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.graded_surjective_homogeneous_lift"
       ]
     },
     "LinearStudy.powerSeries_retraction_coordinate_constantCoeff_zero": {
@@ -60248,6 +60626,15 @@
       "lineCount": 8,
       "dependencies": []
     },
+    "LinearStudy.graded_surjective_native_localRingHom": {
+      "path": "Linear/GradedSurjectiveProjClosed.lean",
+      "startLine": 81,
+      "endLine": 100,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.graded_surjective_homogeneous_lift"
+      ]
+    },
     "LinearStudy.projectiveChartDenominator": {
       "path": "Linear/ProjectiveChartOpenMap.lean",
       "startLine": 12,
@@ -61251,6 +61638,13 @@
         "LinearStudy.boundedPolynomialSpan"
       ]
     },
+    "LinearStudy.graded_surjective_homogeneous_lift": {
+      "path": "Linear/GradedSurjectiveNativeCharts.lean",
+      "startLine": 14,
+      "endLine": 22,
+      "lineCount": 9,
+      "dependencies": []
+    },
     "ModuleCat.IsCohenMacaulay.casesOn": {
       "path": "Linear/Vendor/CM/CohenMacaulayBasic.lean",
       "startLine": 52,
@@ -61949,6 +62343,17 @@
         "LinearStudy.homogeneousQuotientPiece",
         "LinearStudy.linear_projection_homogeneousComponent",
         "LinearStudy.polynomial_totalDegree_le_of_components_zero"
+      ]
+    },
+    "LinearStudy.graded_surjective_Proj_map_closedImmersion": {
+      "path": "Linear/GradedSurjectiveProjClosed.lean",
+      "startLine": 102,
+      "endLine": 120,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.graded_surjective_irrelevant_le_map",
+        "LinearStudy.graded_surjective_native_localRingHom",
+        "LinearStudy.projective_surjective_comap_closedEmbedding"
       ]
     },
     "LinearStudy.exists_smooth_polynomial_jacobian_generators_at_point": {
@@ -63998,6 +64403,15 @@
         "LinearStudy.polynomialZeroLocusPointEquiv"
       ]
     },
+    "LinearStudy.homogeneousQuotientFactorGraded": {
+      "path": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "startLine": 14,
+      "endLine": 23,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
     "LinearStudy.projective_iterates_whole_ambient_fibers_normal_targets": {
       "path": "Linear/ProjectiveTargetNormalCoordinates.lean",
       "startLine": 99,
@@ -64416,6 +64830,27 @@
         "IsCohenMacaulayRing",
         "isCohenMacaulayLocalRing_of_ringEquiv",
         "isCohenMacaulayRing_def"
+      ]
+    },
+    "LinearStudy.projectivePulledLinearSectionClosedEmbedding_isClosedImmersion": {
+      "path": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "startLine": 69,
+      "endLine": 77,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.homogeneousQuotientClosedEmbedding_isClosedImmersion",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionClosedEmbedding",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionIdeal_isHomogeneous",
+        "LinearStudy.projectivePulledLinearSectionScheme"
       ]
     },
     "LinearStudy.homogeneousQuotientCumulativeHilbertPolynomial_normalized_leadingCoeff": {
@@ -65086,6 +65521,16 @@
         "LinearStudy.noetherian_ringEnd_injective_of_surjective",
         "LinearStudy.parameter_substitution_hasSubst",
         "LinearStudy.parameter_substitution_surjective"
+      ]
+    },
+    "LinearStudy.projective_surjective_comap_closedEmbedding": {
+      "path": "Linear/GradedSurjectiveProjClosed.lean",
+      "startLine": 65,
+      "endLine": 79,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.graded_surjective_irrelevant_le_map",
+        "LinearStudy.projective_surjective_comap_image_zeroLocus"
       ]
     },
     "LinearStudy.powerSeries_map_pderiv": {
@@ -65936,6 +66381,15 @@
         "LinearStudy.Thickening",
         "LinearStudy.thickeningIdeal",
         "LinearStudy.thickeningMk"
+      ]
+    },
+    "LinearStudy.graded_surjective_irrelevant_le_map": {
+      "path": "Linear/GradedSurjectiveProjClosed.lean",
+      "startLine": 17,
+      "endLine": 22,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.graded_surjective_homogeneous_lift"
       ]
     },
     "LinearStudy.normalize_formal_normal_equations_firstOrder": {
@@ -69622,6 +70076,16 @@
       "lineCount": 23,
       "dependencies": []
     },
+    "LinearStudy.homogeneousQuotientFactorGraded_surjective": {
+      "path": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "startLine": 25,
+      "endLine": 28,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientFactorGraded",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
     "LinearStudy.smooth_point_has_formal_normal_coordinates": {
       "path": "Linear/SmoothReindexedFormalIdeal.lean",
       "startLine": 69,
@@ -72520,6 +72984,15 @@
         "LinearStudy.polynomialZeroLocusPointEquiv"
       ]
     },
+    "LinearStudy.projective_surjective_comap_image_zeroLocus": {
+      "path": "Linear/GradedSurjectiveProjClosed.lean",
+      "startLine": 24,
+      "endLine": 63,
+      "lineCount": 40,
+      "dependencies": [
+        "LinearStudy.graded_surjective_irrelevant_le_map"
+      ]
+    },
     "LinearStudy.projectiveNativeChartFractionEmbedding_homogeneous_mk": {
       "path": "Linear/NativeProjectiveChart.lean",
       "startLine": 74,
@@ -72653,6 +73126,24 @@
       "lineCount": 9,
       "dependencies": [
         "LinearStudy.ideal_generators_of_conormal_quotient_span"
+      ]
+    },
+    "LinearStudy.projectivePulledLinearSectionClosedEmbedding": {
+      "path": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "startLine": 57,
+      "endLine": 67,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.homogeneousQuotientClosedEmbedding",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionIdeal_isHomogeneous",
+        "LinearStudy.projectivePulledLinearSectionScheme"
       ]
     },
     "LinearStudy.projective_linear_centered_fiber_highest": {
@@ -78173,7 +78664,8 @@
       "actual-pulled-cut-finite-reduced",
       "actual-closed-fiber-kernel",
       "actual-global-pulled-cut",
-      "same-family-native-cut"
+      "same-family-native-cut",
+      "actual-cut-closed-in-variety"
     ],
     "setup": [
       "<p>设 f:ℙⁿ→ℙⁿ 为满射自态射，代数次数 q&gt;1；V⊆ℙⁿ 为整的闭子簇，且 f⁻¹(V)=V（集合意义）。当前 Lean 目标用复数域上的齐次素理想、无基点齐次坐标组及真实 projective points 表述。</p>",
@@ -78286,7 +78778,8 @@
       "actual-pulled-cut-finite-reduced",
       "actual-closed-fiber-kernel",
       "actual-global-pulled-cut",
-      "same-family-native-cut"
+      "same-family-native-cut",
+      "actual-cut-closed-in-variety"
     ]
   },
   "nodes": [
@@ -95736,8 +96229,8 @@
         "<p>Original surjective f, totally invariant integral V, the same finite linear normalization and a nonempty chart.</p>"
       ],
       "result": [
-        "<p>在构造出的非空参数开集上，整个原齐次理想定义的 native Proj 与实际有限约化仿射商的 Spec 同构，并且约化。原 V 上自然闭嵌入及几何 Koszul、对偶提升仍待证。</p>",
-        "<p>On a constructed nonempty parameter open, the whole native Proj defined by the original homogeneous ideal is isomorphic to the Spec of its actual finite reduced affine quotient and is reduced. Natural closed embedding into V, geometric Koszul and duality lifting remain open.</p>"
+        "<p>在构造出的非空参数开集上，整个原齐次理想定义的 native Proj 与实际有限约化仿射商的 Spec 同构，并且约化。后续卡片已证明原 V 上的自然闭嵌入；几何 Koszul、对偶提升仍待证。</p>",
+        "<p>On a constructed nonempty parameter open, the whole native Proj defined by the original homogeneous ideal is isomorphic to the Spec of its actual finite reduced affine quotient and is reduced. A subsequent card proves the natural closed embedding into V; geometric Koszul and duality lifting remain open.</p>"
       ],
       "compactSetup": [
         "原 f,V；同一有限线性正规化。",
@@ -95800,6 +96293,131 @@
       "richStatement": true,
       "x": 30,
       "y": 60
+    },
+    {
+      "id": "graded-native-chart-surjection",
+      "titles": [
+        "满射分次映射的实际图表满射",
+        "Surjectivity on actual charts of a graded surjection"
+      ],
+      "title": "满射分次映射的实际图表满射",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GradedSurjectiveNativeCharts.lean",
+      "decl": "LinearStudy.graded_surjective_native_away_map",
+      "declaration": "LinearStudy.graded_surjective_native_away_map",
+      "deps": [],
+      "setup": [
+        "<p>任意满射分次交换环映射；保持原齐次分量。</p>",
+        "<p>Any surjective graded commutative-ring map, with its original homogeneous pieces.</p>"
+      ],
+      "result": [
+        "<p>由同次数齐次提升证明 native 齐次图表映射满射。无需域、整性或约化性。</p>",
+        "<p>Same-degree homogeneous lifts prove surjectivity of native chart maps, without field, integrality or reducedness hypotheses.</p>"
+      ],
+      "compactSetup": [
+        "满射分次环映射。",
+        "Surjective graded ring map."
+      ],
+      "compactResult": [
+        "实际齐次图表映射满射。",
+        "Actual homogeneous chart maps are surjective."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.graded_surjective_native_away_map.{u_1, u_2, u_3, u_4} {A : Type u_1} {B : Type u_2} {σ : Type u_3}\n  {τ : Type u_4} [CommRing A] [CommRing B] [SetLike σ A] [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B]\n  {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ] (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) (j : ℕ) (s : A)\n  (hs : s ∈ 𝒜 j) : Function.Surjective ⇑(HomogeneousLocalization.Away.map f s)",
+      "sha256": "9336dcc7d128ec1e8cc464bb8b90672612e813dc4a1ad0de0a321dab5b14927e",
+      "lines": 12,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "graded-proj-closed-immersion",
+      "titles": [
+        "满射分次映射给出 native Proj 闭嵌入",
+        "Graded surjections give native Proj closed immersions"
+      ],
+      "title": "满射分次映射给出 native Proj 闭嵌入",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GradedSurjectiveProjClosed.lean",
+      "decl": "LinearStudy.graded_surjective_Proj_map_closedImmersion",
+      "declaration": "LinearStudy.graded_surjective_Proj_map_closedImmersion",
+      "deps": [
+        "graded-native-chart-surjection"
+      ],
+      "setup": [
+        "<p>任意满射分次交换环映射；mathlib 原生 Proj 与茎映射。</p>",
+        "<p>Any surjective graded commutative-ring map; mathlib native Proj and its actual stalk maps.</p>"
+      ],
+      "result": [
+        "<p>证明齐次素理想上的闭像、单射和实际茎映射满射，得到真正的概形闭嵌入。</p>",
+        "<p>Closed images and injectivity on homogeneous primes, together with surjectivity on actual stalk maps, give a genuine scheme closed immersion.</p>"
+      ],
+      "compactSetup": [
+        "实际满射分次映射。",
+        "Actual surjective graded map."
+      ],
+      "compactResult": [
+        "native Proj.map 是闭嵌入。",
+        "native Proj.map is a closed immersion."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.graded_surjective_Proj_map_closedImmersion.{u} {A B σ τ : Type u} [CommRing A] [CommRing B] [SetLike σ A]\n  [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B] {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ]\n  (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) : AlgebraicGeometry.IsClosedImmersion (AlgebraicGeometry.Proj.map f ⋯)",
+      "sha256": "9cef94ed92c87e3625a2273fe31e0cb808537efef693078c5a28b100ee84c431",
+      "lines": 19,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "actual-cut-closed-in-variety",
+      "titles": [
+        "原实际截面在原 V 上的自然闭嵌入",
+        "Natural closed embedding of the actual cut into original V"
+      ],
+      "title": "原实际截面在原 V 上的自然闭嵌入",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "decl": "LinearStudy.projectivePulledLinearSectionClosedEmbedding_isClosedImmersion",
+      "declaration": "LinearStudy.projectivePulledLinearSectionClosedEmbedding_isClosedImmersion",
+      "deps": [
+        "graded-proj-closed-immersion",
+        "actual-global-pulled-cut"
+      ],
+      "setup": [
+        "<p>同一原 f,V、同一原拉回齐次方程；原定义理想包含。</p>",
+        "<p>The same original f,V and pulled homogeneous equations, with the original defining-ideal inclusion.</p>"
+      ],
+      "result": [
+        "<p>由原齐次商映射构造整个实际截面到原 V 的自然闭嵌入，不取根式替换，不假设覆盖或约化。几何 Koszul 与第四节对偶提升仍待证。</p>",
+        "<p>The original homogeneous quotient factor constructs the natural closed embedding of the whole actual cut into original V, without radical replacement or assumed coverage or reducedness. Geometric Koszul and section-four duality lifting remain open.</p>"
+      ],
+      "compactSetup": [
+        "原 V 理想包含于原截面理想。",
+        "Original V ideal contained in original cut ideal."
+      ],
+      "compactResult": [
+        "整个实际 native 截面闭嵌入原 V。",
+        "The whole actual native cut embeds closed into original V."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projectivePulledLinearSectionClosedEmbedding_isClosedImmersion {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (w : Fin (r + 1) → ℂ) :\n  AlgebraicGeometry.IsClosedImmersion (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 9,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
     }
   ],
   "rootSteps": [
@@ -95822,7 +96440,8 @@
     "actual-pulled-cut-finite-reduced",
     "actual-closed-fiber-kernel",
     "actual-global-pulled-cut",
-    "same-family-native-cut"
+    "same-family-native-cut",
+    "actual-cut-closed-in-variety"
   ],
   "paperLemmas": {
     "manuscript": {
@@ -95925,7 +96544,8 @@
         "simultaneous-whole-point-relations",
         "actual-pulled-cut-finite-reduced",
         "actual-global-pulled-cut",
-        "same-family-native-cut"
+        "same-family-native-cut",
+        "actual-cut-closed-in-variety"
       ],
       "canonical-embedding": [
         "canonical-global-generation",
@@ -96030,7 +96650,8 @@
       "actual-pulled-cut-finite-reduced",
       "actual-closed-fiber-kernel",
       "actual-global-pulled-cut",
-      "same-family-native-cut"
+      "same-family-native-cut",
+      "actual-cut-closed-in-variety"
     ],
     "mainTheoremVerified": false,
     "groupingScope": "Original lemmas are ordinary cards; support cards and module covers remain peers in the overview. Reading routes are separate from Lean dependencies."

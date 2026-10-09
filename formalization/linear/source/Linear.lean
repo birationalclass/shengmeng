@@ -763,3 +763,7 @@ public import Linear.ProjectivePulledSectionAffineComparison
 public import Linear.ProjectivePulledSectionGlobalReduced
 
 public import Linear.ProjectiveActualFamilyNativeCut
+
+public import Linear.GradedSurjectiveNativeCharts
+public import Linear.GradedSurjectiveProjClosed
+public import Linear.ProjectivePulledSectionClosedEmbedding

@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1910,
-  "verifiedTheorems": 1434,
-  "definitions": 280,
+  "audited": 1923,
+  "verifiedTheorems": 1444,
+  "definitions": 283,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -9064,6 +9064,168 @@
       "lineCount": 11,
       "dependencies": [
         "LinearStudy.gradedSubmodulePiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.graded_surjective_homogeneous_lift",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveNativeCharts.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.graded_surjective_homogeneous_lift.{u_1, u_2, u_3, u_4} {A : Type u_1} {B : Type u_2} {σ : Type u_3}\n  {τ : Type u_4} [CommRing A] [CommRing B] [SetLike σ A] [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B]\n  {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ] (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) (j : ℕ) (b : B)\n  (hb : b ∈ ℬ j) : ∃ a ∈ 𝒜 j, f a = b",
+      "sha256": "9336dcc7d128ec1e8cc464bb8b90672612e813dc4a1ad0de0a321dab5b14927e",
+      "lines": 9,
+      "moduleLineCount": 37,
+      "startLine": 14,
+      "endLine": 22,
+      "lineCount": 9,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.graded_surjective_native_away_map",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveNativeCharts.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.graded_surjective_native_away_map.{u_1, u_2, u_3, u_4} {A : Type u_1} {B : Type u_2} {σ : Type u_3}\n  {τ : Type u_4} [CommRing A] [CommRing B] [SetLike σ A] [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B]\n  {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ] (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) (j : ℕ) (s : A)\n  (hs : s ∈ 𝒜 j) : Function.Surjective ⇑(HomogeneousLocalization.Away.map f s)",
+      "sha256": "9336dcc7d128ec1e8cc464bb8b90672612e813dc4a1ad0de0a321dab5b14927e",
+      "lines": 12,
+      "moduleLineCount": 37,
+      "startLine": 24,
+      "endLine": 35,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.graded_surjective_homogeneous_lift"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.graded_surjective_irrelevant_le_map",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveProjClosed.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.graded_surjective_irrelevant_le_map.{u} {A B σ τ : Type u} [CommRing A] [CommRing B] [SetLike σ A]\n  [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B] {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ]\n  (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) :\n  HomogeneousIdeal.irrelevant ℬ ≤ HomogeneousIdeal.map f (HomogeneousIdeal.irrelevant 𝒜)",
+      "sha256": "9cef94ed92c87e3625a2273fe31e0cb808537efef693078c5a28b100ee84c431",
+      "lines": 6,
+      "moduleLineCount": 122,
+      "startLine": 17,
+      "endLine": 22,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.graded_surjective_homogeneous_lift"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_surjective_comap_image_zeroLocus",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveProjClosed.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_comap_image_zeroLocus.{u} {A B σ τ : Type u} [CommRing A] [CommRing B] [SetLike σ A]\n  [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B] {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ]\n  (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) (s : Set B) :\n  ⇑(AlgebraicGeometry.ProjectiveSpectrum.comap f ⋯) '' ProjectiveSpectrum.zeroLocus ℬ s =\n    ProjectiveSpectrum.zeroLocus 𝒜 (⇑f ⁻¹' s ∪ ↑(RingHom.ker ↑f))",
+      "sha256": "9cef94ed92c87e3625a2273fe31e0cb808537efef693078c5a28b100ee84c431",
+      "lines": 40,
+      "moduleLineCount": 122,
+      "startLine": 24,
+      "endLine": 63,
+      "lineCount": 40,
+      "dependencies": [
+        "LinearStudy.graded_surjective_irrelevant_le_map"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_surjective_comap_closedEmbedding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveProjClosed.lean",
+      "line": 65,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_comap_closedEmbedding.{u} {A B σ τ : Type u} [CommRing A] [CommRing B] [SetLike σ A]\n  [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B] {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ]\n  (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) :\n  Topology.IsClosedEmbedding ⇑(AlgebraicGeometry.ProjectiveSpectrum.comap f ⋯)",
+      "sha256": "9cef94ed92c87e3625a2273fe31e0cb808537efef693078c5a28b100ee84c431",
+      "lines": 15,
+      "moduleLineCount": 122,
+      "startLine": 65,
+      "endLine": 79,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.graded_surjective_irrelevant_le_map",
+        "LinearStudy.projective_surjective_comap_image_zeroLocus"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.graded_surjective_native_localRingHom",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveProjClosed.lean",
+      "line": 83,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.graded_surjective_native_localRingHom.{u} {A B σ τ : Type u} [CommRing A] [CommRing B] [SetLike σ A]\n  [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B] {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ]\n  (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) (J : Ideal B) [J.IsPrime] :\n  Function.Surjective ⇑(HomogeneousLocalization.localRingHom f (Ideal.comap f J) J ⋯)",
+      "sha256": "9cef94ed92c87e3625a2273fe31e0cb808537efef693078c5a28b100ee84c431",
+      "lines": 20,
+      "moduleLineCount": 122,
+      "startLine": 81,
+      "endLine": 100,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.graded_surjective_homogeneous_lift"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.graded_surjective_Proj_map_closedImmersion",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GradedSurjectiveProjClosed.lean",
+      "line": 105,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.graded_surjective_Proj_map_closedImmersion.{u} {A B σ τ : Type u} [CommRing A] [CommRing B] [SetLike σ A]\n  [AddSubgroupClass σ A] [SetLike τ B] [AddSubgroupClass τ B] {𝒜 : ℕ → σ} {ℬ : ℕ → τ} [GradedRing 𝒜] [GradedRing ℬ]\n  (f : 𝒜 →+*ᵍ ℬ) (hf : Function.Surjective ⇑f) : AlgebraicGeometry.IsClosedImmersion (AlgebraicGeometry.Proj.map f ⋯)",
+      "sha256": "9cef94ed92c87e3625a2273fe31e0cb808537efef693078c5a28b100ee84c431",
+      "lines": 19,
+      "moduleLineCount": 122,
+      "startLine": 102,
+      "endLine": 120,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.graded_surjective_irrelevant_le_map",
+        "LinearStudy.graded_surjective_native_localRingHom",
+        "LinearStudy.projective_surjective_comap_closedEmbedding"
       ]
     },
     {
@@ -35880,6 +36042,173 @@
         "LinearStudy.projectivePulledLinearSectionIdeal",
         "LinearStudy.projectivePulledLinearSection_affine_exists_quotient_algEquiv",
         "LinearStudy.projectivePulledLinearSection_exists_chart_avoidance_open"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneousQuotientFactorGraded",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.homogeneousQuotientFactorGraded.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  (I J : Ideal (MvPolynomial ι K)) (hIJ : I ≤ J) :\n  LinearStudy.homogeneousQuotientPiece I →+*ᵍ LinearStudy.homogeneousQuotientPiece J",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 10,
+      "moduleLineCount": 79,
+      "startLine": 14,
+      "endLine": 23,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneousQuotientFactorGraded_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousQuotientFactorGraded_surjective.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  (I J : Ideal (MvPolynomial ι K)) (hIJ : I ≤ J) :\n  Function.Surjective ⇑(LinearStudy.homogeneousQuotientFactorGraded I J hIJ)",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 4,
+      "moduleLineCount": 79,
+      "startLine": 25,
+      "endLine": 28,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientFactorGraded",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneousQuotientClosedEmbedding",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.homogeneousQuotientClosedEmbedding.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  (I J : Ideal (MvPolynomial ι K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule ι K) I)\n  (hJ : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule ι K) J) (hIJ : I ≤ J) :\n  AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece J) ⟶\n    AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece I)",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 14,
+      "moduleLineCount": 79,
+      "startLine": 30,
+      "endLine": 43,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.homogeneousQuotientFactorGraded",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneousQuotientClosedEmbedding_isClosedImmersion",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousQuotientClosedEmbedding_isClosedImmersion.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  (I J : Ideal (MvPolynomial ι K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule ι K) I)\n  (hJ : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule ι K) J) (hIJ : I ≤ J) :\n  AlgebraicGeometry.IsClosedImmersion (LinearStudy.homogeneousQuotientClosedEmbedding I J hI hJ hIJ)",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 11,
+      "moduleLineCount": 79,
+      "startLine": 45,
+      "endLine": 55,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.graded_surjective_Proj_map_closedImmersion",
+        "LinearStudy.homogeneousQuotientClosedEmbedding",
+        "LinearStudy.homogeneousQuotientFactorGraded",
+        "LinearStudy.homogeneousQuotientFactorGraded_surjective",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectivePulledLinearSectionClosedEmbedding",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "line": 59,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectivePulledLinearSectionClosedEmbedding {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ) :\n  LinearStudy.projectivePulledLinearSectionScheme f V L hL w ⟶\n    AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 11,
+      "moduleLineCount": 79,
+      "startLine": 57,
+      "endLine": 67,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.homogeneousQuotientClosedEmbedding",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionIdeal_isHomogeneous",
+        "LinearStudy.projectivePulledLinearSectionScheme"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectivePulledLinearSectionClosedEmbedding_isClosedImmersion",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionClosedEmbedding.lean",
+      "line": 69,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectivePulledLinearSectionClosedEmbedding_isClosedImmersion {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (w : Fin (r + 1) → ℂ) :\n  AlgebraicGeometry.IsClosedImmersion (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)",
+      "sha256": "6a692f50ae641d6c9a270f18acdfd9bb0c57410dec96ba671cb60a7439cc7420",
+      "lines": 9,
+      "moduleLineCount": 79,
+      "startLine": 69,
+      "endLine": 77,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.homogeneousQuotientClosedEmbedding_isClosedImmersion",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionClosedEmbedding",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionIdeal_isHomogeneous",
+        "LinearStudy.projectivePulledLinearSectionScheme"
       ]
     },
     {
