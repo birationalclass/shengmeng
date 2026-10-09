@@ -4051,6 +4051,20 @@ LinearStudy.polynomial_equations_exact_degree_of_highest_zeroLocus.{u_1} {K : Ty
 'LinearStudy.polynomial_equations_exact_degree_of_highest_zeroLocus' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projective_native_chart_ring_equiv {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  Nonempty
+    (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal ≃+*
+      HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+        ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)))
+'LinearStudy.projective_native_chart_ring_equiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_native_chart_scheme_iso {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  Nonempty
+    (↑(AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+          ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))) ≅
+      AlgebraicGeometry.Spec ↧(MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal))
+'LinearStudy.projective_native_chart_scheme_iso' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.powerSeries_hasEval_of_nilpotent.{u_2} {S : Type u_2} [CommRing S] {n : ℕ} [TopologicalSpace S]
   (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) : MvPowerSeries.HasEval a
 'LinearStudy.powerSeries_hasEval_of_nilpotent' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -8408,6 +8422,34 @@ LinearStudy.projective_exists_linear_section_hilbert_degree {n : ℕ} (V : Linea
                                   (MvPolynomial.eval w) c ≠ 0 →
                                     w 0 ≠ 0 ∧ Nat.card ↑(LinearStudy.projectiveLinearSection V L w) = d
 'LinearStudy.projective_exists_linear_section_hilbert_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_exists_linear_section_radical_equation_fibers {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) :
+  ∃ r P,
+    r ≤ n ∧
+      P ≠ 0 ∧
+        P.natDegree = r ∧
+          (∃ N, ∀ j > N, Polynomial.eval (↑j) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal j)) ∧
+            ∃ L,
+              (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧
+                Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧
+                  (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧
+                    ∃ d c,
+                      0 < d ∧
+                        ↑d = ↑r.factorial * P.leadingCoeff ∧
+                          c ≠ 0 ∧
+                            (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧
+                              ∀ (w : Fin (r + 1) → ℂ),
+                                (MvPolynomial.eval w) c ≠ 0 →
+                                  w 0 ≠ 0 ∧
+                                    Nat.card ↑(LinearStudy.projectiveLinearSection V L w) = d ∧
+                                      have J := LinearStudy.polynomialProjectionFiberIdeal V.ideal.toIdeal L w;
+                                      J.IsRadical ∧
+                                        Module.Finite ℂ (LinearStudy.CoordinateRing n ⧸ J) ∧
+                                          Module.finrank ℂ (LinearStudy.CoordinateRing n ⧸ J) = d ∧
+                                            Nat.card ↑(MvPolynomial.zeroLocus ℂ J) = d
+'LinearStudy.projective_exists_linear_section_radical_equation_fibers' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projective_exists_linear_sections_in_every_affine_open {n : ℕ}
   (V : LinearStudy.IntegralProjectiveEquations n) (x0 : Fin n → ℂ)
   (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :

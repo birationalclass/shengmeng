@@ -735,3 +735,7 @@ public import Linear.ProjectiveSimultaneousWholePointFibers
 public import Linear.ProjectiveActualFamilyRelation
 
 public import Linear.ReducedPolynomialProjectionFibers
+
+public import Linear.ProjectiveLinearSectionEquationFibers
+
+public import Linear.NativeProjectiveChart

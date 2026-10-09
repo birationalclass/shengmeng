@@ -1,8 +1,8 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1831,
-  "verifiedTheorems": 1373,
+  "audited": 1834,
+  "verifiedTheorems": 1376,
   "definitions": 262,
   "mainTheoremVerified": false,
   "violations": [],
@@ -15710,6 +15710,82 @@
       "dependencies": [
         "LinearStudy.homogeneous_origin_regular",
         "LinearStudy.regular_sequence_mem_ne_zero"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_native_chart_ring_equiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChart.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_native_chart_ring_equiv {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  Nonempty\n    (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal ≃+*\n      HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n        ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)))",
+      "sha256": "0ca2a35d3e54b627cb52493168575419bee20d03d5a0052a20964d900c33816e",
+      "lines": 112,
+      "moduleLineCount": 150,
+      "startLine": 16,
+      "endLine": 127,
+      "lineCount": 112,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap",
+        "LinearStudy.awayFractionEmbedding_injective",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap_homogeneous",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.homogeneousQuotientPiece_mem_iff",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveChartCoordinateEmbedding_injective",
+        "LinearStudy.projectiveChartCoordinateEmbedding_mk",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_aeval",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_native_chart_scheme_iso",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeProjectiveChart.lean",
+      "line": 133,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_native_chart_scheme_iso {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  Nonempty\n    (↑(AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n          ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))) ≅\n      AlgebraicGeometry.Spec ↧(MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal))",
+      "sha256": "0ca2a35d3e54b627cb52493168575419bee20d03d5a0052a20964d900c33816e",
+      "lines": 18,
+      "moduleLineCount": 150,
+      "startLine": 131,
+      "endLine": 148,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projective_native_chart_ring_equiv"
       ]
     },
     {
@@ -32910,6 +32986,39 @@
         "LinearStudy.projectiveLinearSection",
         "LinearStudy.projective_coordinate_filtration_finrank_pos",
         "LinearStudy.projective_exists_same_linear_section_generic_growth"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_exists_linear_section_radical_equation_fibers",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveLinearSectionEquationFibers.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_linear_section_radical_equation_fibers {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) :\n  ∃ r P,\n    r ≤ n ∧\n      P ≠ 0 ∧\n        P.natDegree = r ∧\n          (∃ N, ∀ j > N, Polynomial.eval (↑j) P = ↑(LinearStudy.homogeneousQuotientHilbert V.ideal.toIdeal j)) ∧\n            ∃ L,\n              (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧\n                Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧\n                  (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧\n                    ∃ d c,\n                      0 < d ∧\n                        ↑d = ↑r.factorial * P.leadingCoeff ∧\n                          c ≠ 0 ∧\n                            (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧\n                              ∀ (w : Fin (r + 1) → ℂ),\n                                (MvPolynomial.eval w) c ≠ 0 →\n                                  w 0 ≠ 0 ∧\n                                    Nat.card ↑(LinearStudy.projectiveLinearSection V L w) = d ∧\n                                      have J := LinearStudy.polynomialProjectionFiberIdeal V.ideal.toIdeal L w;\n                                      J.IsRadical ∧\n                                        Module.Finite ℂ (LinearStudy.CoordinateRing n ⧸ J) ∧\n                                          Module.finrank ℂ (LinearStudy.CoordinateRing n ⧸ J) = d ∧\n                                            Nat.card ↑(MvPolynomial.zeroLocus ℂ J) = d",
+      "sha256": "a277953097b185d83b8006b6f1432d6110007de984d1bc7518eb6f9bbd5bd742",
+      "lines": 45,
+      "moduleLineCount": 59,
+      "startLine": 13,
+      "endLine": 57,
+      "lineCount": 45,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.homogeneousQuotientHilbert",
+        "LinearStudy.polynomialProjectionFiberIdeal",
+        "LinearStudy.polynomial_finite_projection_exists_radical_equation_fibers",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearSection",
+        "LinearStudy.projective_exists_linear_section_hilbert_degree"
       ]
     },
     {
