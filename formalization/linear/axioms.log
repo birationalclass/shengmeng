@@ -1235,6 +1235,18 @@ LinearStudy.rescaled_evaluation_relation_zero.{u_1, u_2, u_5} {K : Type u_1} {ι
   (weights : ι → K) (h : ∑ i, weights i * (MvPolynomial.eval (points i)) P = 0) :
   ∑ i, weights i / ↑(scalars i) ^ t * (MvPolynomial.eval (↑(scalars i) • points i)) P = 0
 'LinearStudy.rescaled_evaluation_relation_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.restrictedAlgebraModuleEquiv.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] :
+  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ↧S) ≃ₗ[R] S
+'LinearStudy.restrictedAlgebraModuleEquiv' depends on axioms: [propext, Quot.sound]
+LinearStudy.extendScalarsActualTensorAddEquiv.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+  (M : ModuleCat R) : ↑((ModuleCat.extendScalars (algebraMap R S)).obj M) ≃+ TensorProduct R S ↑M
+'LinearStudy.extendScalarsActualTensorAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.extendScalarsActualTensor_naturality.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+  {M N : ModuleCat R} (f : M ⟶ N) :
+  ⇑(LinearMap.baseChange S (ModuleCat.Hom.hom f)) ∘ ⇑(LinearStudy.extendScalarsActualTensorAddEquiv M) =
+    ⇑(LinearStudy.extendScalarsActualTensorAddEquiv N) ∘
+      ⇑(CategoryTheory.ConcreteCategory.hom ((ModuleCat.extendScalars (algebraMap R S)).map f))
+'LinearStudy.extendScalarsActualTensor_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.fieldEndomorphism_finrank_conjugate.{u_1, u_2, u_3} {k : Type u_1} {L : Type u_2} {M : Type u_3} [Field k]
   [Field L] [Field M] [Algebra k L] [Algebra k M] (e : L ≃ₐ[k] M) (φ : L →ₐ[k] L) (ψ : M →ₐ[k] M)
   (hc : ∀ (x : L), e (φ x) = ψ (e x)) : Module.finrank (↥φ.fieldRange) L = Module.finrank (↥ψ.fieldRange) M
@@ -2978,6 +2990,14 @@ LinearStudy.coefficientKoszulComparison_top.{u_1} {R : Type u_1} [CommRing R] {n
   (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) (v : ↥(⋀[R]^n (Fin n → R))) :
   (ModuleCat.Hom.hom ((LinearStudy.coefficientKoszulComparison H x M h).f n)) v = M.det • v
 'LinearStudy.coefficientKoszulComparison_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.functionKoszulAugmentation_quasiIso_of_exact.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R)
+  (he : ∀ (k : ℕ), 0 < k → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) k) :
+  QuasiIso (LinearStudy.functionKoszulAugmentationMap H)
+'LinearStudy.functionKoszulAugmentation_quasiIso_of_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.functionKoszulResolutionOfExact.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R)
+  (he : ∀ (k : ℕ), 0 < k → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) k) :
+  CategoryTheory.ProjectiveResolution ↧(R ⧸ Ideal.span (Set.range H))
+'LinearStudy.functionKoszulResolutionOfExact' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.ideal_ofFn.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :
   Ideal.ofList (List.ofFn H) = Ideal.span (Set.range H)
 'LinearStudy.ideal_ofFn' depends on axioms: [propext, Quot.sound]
@@ -3026,6 +3046,15 @@ LinearStudy.homotopic_koszul_top_coordinates_congr.{u_1} {R : Type u_1} [CommRin
         ((ModuleCat.Hom.hom (g.f (n + 1))) (LinearStudy.topKoszulGenerator (n + 1))) ∈
     Ideal.span (Set.range H)
 'LinearStudy.homotopic_koszul_top_coordinates_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.functionKoszul_exactAt_of_local.{u} {R : Type u} [CommRing R] {r : ℕ} (H : Fin r → R) (j : ℕ)
+  (hlocal :
+    ∀ (P : Ideal R) [inst : P.IsMaximal],
+      HomologicalComplex.ExactAt
+        (koszulComplex
+          (Fintype.linearCombination (Localization.AtPrime P) fun i => (algebraMap R (Localization.AtPrime P)) (H i)))
+        j) :
+  HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j
+'LinearStudy.functionKoszul_exactAt_of_local' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.koszulAugmentation.{u_1} {R : Type u_1} [CommRing R] (rs : List R) :
   ↥(⋀[R]^0 (Fin rs.length → R)) →ₗ[R] R ⧸ Ideal.ofList rs
 'LinearStudy.koszulAugmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -3555,6 +3584,24 @@ LinearStudy.mem_linearEquationSubspace.{u_1} {n : ℕ} {ι : Type u_1}
   (equations : ι → LinearStudy.CoordinateVector n →ₗ[ℂ] ℂ) (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0) :
   Projectivization.mk ℂ v hv ∈ LinearStudy.linearEquationSubspace equations ↔ ∀ (i : ι), (equations i) v = 0
 'LinearStudy.mem_linearEquationSubspace' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.moduleChainComplex_exactAt_of_local.{u} {R : Type u} [CommRing R] (K : ChainComplex (ModuleCat R) ℕ) (j : ℕ)
+  (hlocal :
+    ∀ (P : Ideal R) [inst : P.IsMaximal],
+      (((ModuleCat.extendScalars (algebraMap R (Localization.AtPrime P))).mapHomologicalComplex
+                (ComplexShape.down ℕ)).obj
+            K).ExactAt
+        j) :
+  HomologicalComplex.ExactAt K j
+'LinearStudy.moduleChainComplex_exactAt_of_local' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.linearMaps_exact_of_baseChange_exact_maximal.{u_1, u_2, u_3, u_4} {R : Type u_1} [CommRing R]
+  {M₀ : Type u_2} {M₁ : Type u_3} {M₂ : Type u_4} [AddCommGroup M₀] [Module R M₀] [AddCommGroup M₁] [Module R M₁]
+  [AddCommGroup M₂] [Module R M₂] (f : M₀ →ₗ[R] M₁) (g : M₁ →ₗ[R] M₂) (hzero : g ∘ₗ f = 0)
+  (hlocal :
+    ∀ (P : Ideal R) [inst : P.IsMaximal],
+      Function.Exact ⇑(LinearMap.baseChange (Localization.AtPrime P) f)
+        ⇑(LinearMap.baseChange (Localization.AtPrime P) g)) :
+  Function.Exact ⇑f ⇑g
+'LinearStudy.linearMaps_exact_of_baseChange_exact_maximal' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.localizationQuotientEquiv.{u_1} {R : Type u_1} [CommRing R] (I : Ideal R) (p : Ideal (R ⧸ I)) [p.IsPrime] :
   let P := Ideal.comap (Ideal.Quotient.mk I) p;
   let A := Localization.AtPrime P;
@@ -8238,6 +8285,73 @@ LinearStudy.projectiveChart_exists_smooth_unramified_coordinate_point {n : ℕ}
 'LinearStudy.projectiveChart_exists_smooth_unramified_coordinate_point' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projectivePulledLinearSection_exists_affineKoszul_exactAt {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (hproper : V.ideal.toIdeal ≠ ⊥) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite)
+  (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ c,
+    c ≠ 0 ∧
+      (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧
+        ∀ (w : Fin (r + 1) → ℂ),
+          (MvPolynomial.eval w) c ≠ 0 →
+            have I :=
+              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+            let C := MvPolynomial (Fin n) ℂ ⧸ I;
+            let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+            have H := fun i =>
+              (Ideal.Quotient.mk V.affineIdeal)
+                (LinearStudy.affineChartPolynomialMap
+                  ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+            w 0 ≠ 0 ∧
+              IsReduced C ∧
+                Module.Finite ℂ C ∧
+                  Nonempty (LinearStudy.projectivePulledLinearSectionScheme f V L hL w ≅ AlgebraicGeometry.Spec ↧C) ∧
+                    AlgebraicGeometry.IsReduced (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) ∧
+                      ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination B H)) j
+'LinearStudy.projectivePulledLinearSection_exists_affineKoszul_exactAt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectivePulledLinearSection_exists_actual_affineKoszul_resolution {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (hproper : V.ideal.toIdeal ≠ ⊥) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite)
+  (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ c,
+    c ≠ 0 ∧
+      (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧
+        ∀ (w : Fin (r + 1) → ℂ),
+          (MvPolynomial.eval w) c ≠ 0 →
+            have I :=
+              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+            let C := MvPolynomial (Fin n) ℂ ⧸ I;
+            let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+            have H := fun i =>
+              (Ideal.Quotient.mk V.affineIdeal)
+                (LinearStudy.affineChartPolynomialMap
+                  ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+            w 0 ≠ 0 ∧
+              IsReduced C ∧
+                Module.Finite ℂ C ∧
+                  Nonempty (LinearStudy.projectivePulledLinearSectionScheme f V L hL w ≅ AlgebraicGeometry.Spec ↧C) ∧
+                    AlgebraicGeometry.IsReduced (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) ∧
+                      (∀ (j : ℕ),
+                          0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination B H)) j) ∧
+                        QuasiIso (LinearStudy.functionKoszulAugmentationMap H) ∧
+                          ∃ P, P.complex = koszulComplex (Fintype.linearCombination B H)
+'LinearStudy.projectivePulledLinearSection_exists_actual_affineKoszul_resolution' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectivePulledLinearSection_exists_localKoszul_exactAt_all_primes {n r : ℕ}
   (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
   (hproper : V.ideal.toIdeal ≠ ⊥) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
@@ -8270,6 +8384,38 @@ LinearStudy.projectivePulledLinearSection_exists_localKoszul_exactAt_all_primes 
                                 ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))));
                         ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j
 'LinearStudy.projectivePulledLinearSection_exists_localKoszul_exactAt_all_primes' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectivePulledLinearSection_koszulQuotientAlgEquiv {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (w : Fin (r + 1) → ℂ) :
+  ((MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) ⧸
+      Ideal.span
+        (Set.range fun i =>
+          (Ideal.Quotient.mk V.affineIdeal)
+            (LinearStudy.affineChartPolynomialMap
+              ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))))) ≃ₐ[ℂ]
+    MvPolynomial (Fin n) ℂ ⧸
+      Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom (LinearStudy.projectivePulledLinearSectionIdeal f V L w)
+'LinearStudy.projectivePulledLinearSection_koszulQuotientAlgEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectivePulledLinearSection_koszulQuotientAlgEquiv_mk {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ) (p : MvPolynomial (Fin n) ℂ) :
+  (LinearStudy.projectivePulledLinearSection_koszulQuotientAlgEquiv f V L w)
+      ((Ideal.Quotient.mk
+          (Ideal.span
+            (Set.range fun i =>
+              (Ideal.Quotient.mk V.affineIdeal)
+                (LinearStudy.affineChartPolynomialMap
+                  ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))))))
+        ((Ideal.Quotient.mk V.affineIdeal) p)) =
+    (Ideal.Quotient.mk
+        (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+          (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+      p
+'LinearStudy.projectivePulledLinearSection_koszulQuotientAlgEquiv_mk' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.projectivePulledLinearSection_localKoszul_exactAt_outside_cut {n r : ℕ}

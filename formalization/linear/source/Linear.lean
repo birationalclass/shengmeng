@@ -780,3 +780,12 @@ public import Linear.KoszulFunctionUnit
 public import Linear.FiniteCutPrimeCoordinates
 public import Linear.ProjectiveCutOutsideExact
 public import Linear.ProjectiveCutAllPrimeKoszul
+
+public import Linear.LocalExactReflection
+public import Linear.ExtendScalarsActualTensor
+public import Linear.LocalComplexExactReflection
+public import Linear.KoszulLocalGlobalExact
+public import Linear.ProjectiveCutAffineKoszul
+public import Linear.KoszulExactResolution
+public import Linear.ProjectiveCutKoszulQuotient
+public import Linear.ProjectiveCutAffineResolution

@@ -399,6 +399,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.rescaled_evaluation_relation
 #check LinearStudy.rescaled_evaluation_relation_zero
 #print axioms LinearStudy.rescaled_evaluation_relation_zero
+#check LinearStudy.restrictedAlgebraModuleEquiv
+#print axioms LinearStudy.restrictedAlgebraModuleEquiv
+#check LinearStudy.extendScalarsActualTensorAddEquiv
+#print axioms LinearStudy.extendScalarsActualTensorAddEquiv
+#check LinearStudy.extendScalarsActualTensor_naturality
+#print axioms LinearStudy.extendScalarsActualTensor_naturality
 #check LinearStudy.fieldEndomorphism_finrank_conjugate
 #print axioms LinearStudy.fieldEndomorphism_finrank_conjugate
 #check LinearStudy.fieldEndomorphism_finrank_comp
@@ -1009,6 +1015,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.coefficientKoszulComparison
 #check LinearStudy.coefficientKoszulComparison_top
 #print axioms LinearStudy.coefficientKoszulComparison_top
+#check LinearStudy.functionKoszulAugmentation_quasiIso_of_exact
+#print axioms LinearStudy.functionKoszulAugmentation_quasiIso_of_exact
+#check LinearStudy.functionKoszulResolutionOfExact
+#print axioms LinearStudy.functionKoszulResolutionOfExact
 #check LinearStudy.ideal_ofFn
 #print axioms LinearStudy.ideal_ofFn
 #check LinearStudy.koszul_ofFn
@@ -1031,6 +1041,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.koszul_top_differential_functional_mem
 #check LinearStudy.homotopic_koszul_top_coordinates_congr
 #print axioms LinearStudy.homotopic_koszul_top_coordinates_congr
+#check LinearStudy.functionKoszul_exactAt_of_local
+#print axioms LinearStudy.functionKoszul_exactAt_of_local
 #check LinearStudy.koszulAugmentation
 #print axioms LinearStudy.koszulAugmentation
 #check LinearStudy.koszulAugmentation_comp_d
@@ -1175,6 +1187,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.mem_linearEquationSubmodule
 #check LinearStudy.mem_linearEquationSubspace
 #print axioms LinearStudy.mem_linearEquationSubspace
+#check LinearStudy.moduleChainComplex_exactAt_of_local
+#print axioms LinearStudy.moduleChainComplex_exactAt_of_local
+#check LinearStudy.linearMaps_exact_of_baseChange_exact_maximal
+#print axioms LinearStudy.linearMaps_exact_of_baseChange_exact_maximal
 #check LinearStudy.localizationQuotientEquiv
 #print axioms LinearStudy.localizationQuotientEquiv
 #check LinearStudy.localizationQuotientEquiv_mk
@@ -2529,8 +2545,16 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveAmbientChart_unramified_at_affine_coordinates
 #check LinearStudy.projectiveChart_exists_smooth_unramified_coordinate_point
 #print axioms LinearStudy.projectiveChart_exists_smooth_unramified_coordinate_point
+#check LinearStudy.projectivePulledLinearSection_exists_affineKoszul_exactAt
+#print axioms LinearStudy.projectivePulledLinearSection_exists_affineKoszul_exactAt
+#check LinearStudy.projectivePulledLinearSection_exists_actual_affineKoszul_resolution
+#print axioms LinearStudy.projectivePulledLinearSection_exists_actual_affineKoszul_resolution
 #check LinearStudy.projectivePulledLinearSection_exists_localKoszul_exactAt_all_primes
 #print axioms LinearStudy.projectivePulledLinearSection_exists_localKoszul_exactAt_all_primes
+#check LinearStudy.projectivePulledLinearSection_koszulQuotientAlgEquiv
+#print axioms LinearStudy.projectivePulledLinearSection_koszulQuotientAlgEquiv
+#check LinearStudy.projectivePulledLinearSection_koszulQuotientAlgEquiv_mk
+#print axioms LinearStudy.projectivePulledLinearSection_koszulQuotientAlgEquiv_mk
 #check LinearStudy.projectivePulledLinearSection_localKoszul_exactAt_outside_cut
 #print axioms LinearStudy.projectivePulledLinearSection_localKoszul_exactAt_outside_cut
 #check LinearStudy.IntegralProjectiveEquations.chart_krull_dimension_eq_differential_rank
