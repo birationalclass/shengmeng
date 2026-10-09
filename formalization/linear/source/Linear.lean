@@ -767,3 +767,16 @@ public import Linear.ProjectiveActualFamilyNativeCut
 public import Linear.GradedSurjectiveNativeCharts
 public import Linear.GradedSurjectiveProjClosed
 public import Linear.ProjectivePulledSectionClosedEmbedding
+
+public import Linear.CutLocalRegularSequence
+public import Linear.FiniteReducedLocalCut
+public import Linear.PolynomialLocalCutRegular
+public import Linear.ProjectivePulledSectionSmoothPoints
+public import Linear.ProjectiveSmoothCutRegular
+public import Linear.ProjectiveVarietyLocalCutRegular
+public import Linear.ProjectiveRegularCutOpen
+public import Linear.KoszulUnitExactness
+public import Linear.KoszulFunctionUnit
+public import Linear.FiniteCutPrimeCoordinates
+public import Linear.ProjectiveCutOutsideExact
+public import Linear.ProjectiveCutAllPrimeKoszul

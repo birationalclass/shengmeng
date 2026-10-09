@@ -1,8 +1,8 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1923,
-  "verifiedTheorems": 1444,
+  "audited": 1941,
+  "verifiedTheorems": 1462,
   "definitions": 283,
   "mainTheoremVerified": false,
   "violations": [],
@@ -3320,6 +3320,32 @@
       ]
     },
     {
+      "declaration": "LinearStudy.local_cut_regular_of_ambient_parameters",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CutLocalRegularSequence.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.local_cut_regular_of_ambient_parameters.{u_1} {R : Type u_1} [CommRing R] [IsNoetherianRing R]\n  [IsCohenMacaulayLocalRing R] (normal cut : List R) (hgen : Ideal.ofList (normal ++ cut) = IsLocalRing.maximalIdeal R)\n  (hlen : ↑(normal ++ cut).length = ringKrullDim R) :\n  RingTheory.Sequence.IsRegular (R ⧸ Ideal.ofList normal) (List.map (⇑(Ideal.Quotient.mk (Ideal.ofList normal))) cut)",
+      "sha256": "a70635f9f85b49cf7946d1e2227ddb6679cb707c98ed62106e09408a1a1826e9",
+      "lines": 38,
+      "moduleLineCount": 54,
+      "startLine": 15,
+      "endLine": 52,
+      "lineCount": 38,
+      "dependencies": [
+        "IsCohenMacaulayLocalRing",
+        "IsCohenMacaulayLocalRing.toIsLocalRing",
+        "LinearStudy.ideal_smul_top_self",
+        "isRegular_of_maximalIdeal_mem_ofList_minimalPrimes"
+      ]
+    },
+    {
       "declaration": "LinearStudy.iterate_degree_exceeds",
       "kind": "theorem",
       "origin": "project",
@@ -5240,6 +5266,27 @@
       ]
     },
     {
+      "declaration": "LinearStudy.artinian_polynomial_cut_prime_has_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteCutPrimeCoordinates.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.artinian_polynomial_cut_prime_has_coordinates.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  [IsAlgClosed K] [Finite ι] (I P : Ideal (MvPolynomial ι K)) [P.IsPrime] [IsArtinianRing (MvPolynomial ι K ⧸ I)]\n  (hIP : I ≤ P) : ∃ x ∈ MvPolynomial.zeroLocus K I, P = RingHom.ker (MvPolynomial.aeval x).toRingHom",
+      "sha256": "d44ee3042e690a4a392a1c527cfc477bcc886fb695ff13df798c9d5e5cfee2fe",
+      "lines": 30,
+      "moduleLineCount": 42,
+      "startLine": 11,
+      "endLine": 40,
+      "lineCount": 30,
+      "dependencies": []
+    },
+    {
       "declaration": "LinearStudy.finite_injective_algHom_fraction_comp_formallyUnramified",
       "kind": "theorem",
       "origin": "project",
@@ -5589,6 +5636,52 @@
       "lineCount": 57,
       "dependencies": [
         "LinearStudy.ideal_map_iInf_of_pairwise_isCoprime"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.artinian_reduced_cut_local_ideal_eq_maximalIdeal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteReducedLocalCut.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.artinian_reduced_cut_local_ideal_eq_maximalIdeal.{u_1} {R : Type u_1} [CommRing R] (I : Ideal R)\n  [IsArtinianRing (R ⧸ I)] [IsReduced (R ⧸ I)] (p : Ideal (R ⧸ I)) [p.IsPrime] :\n  Ideal.map (algebraMap R (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p))) I =\n    IsLocalRing.maximalIdeal (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p))",
+      "sha256": "93a8ea448bb4c1ae9b4899c44514a29289f98ddda9f0516bd66a335c208d60a9",
+      "lines": 19,
+      "moduleLineCount": 56,
+      "startLine": 13,
+      "endLine": 31,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.localizationQuotientEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.artinian_reduced_cut_local_ideal_eq_maximalIdeal_of_le",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteReducedLocalCut.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.artinian_reduced_cut_local_ideal_eq_maximalIdeal_of_le.{u_1} {R : Type u_1} [CommRing R] (I P : Ideal R)\n  [P.IsPrime] [IsArtinianRing (R ⧸ I)] [IsReduced (R ⧸ I)] (hIP : I ≤ P) :\n  Ideal.map (algebraMap R (Localization.AtPrime P)) I = IsLocalRing.maximalIdeal (Localization.AtPrime P)",
+      "sha256": "93a8ea448bb4c1ae9b4899c44514a29289f98ddda9f0516bd66a335c208d60a9",
+      "lines": 22,
+      "moduleLineCount": 56,
+      "startLine": 33,
+      "endLine": 54,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.artinian_reduced_cut_local_ideal_eq_maximalIdeal"
       ]
     },
     {
@@ -12432,6 +12525,59 @@
       ]
     },
     {
+      "declaration": "LinearStudy.functionKoszul_last_unit_exactAt",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulFunctionUnit.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.functionKoszul_last_unit_exactAt.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin (n + 1) → R)\n  (hunit : IsUnit (H (Fin.last n))) (j : ℕ) (hj : 0 < j) :\n  HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j",
+      "sha256": "d93db4c920a59d612b59ce25f502650186066c608676aa8f6e0d7a3002ee3250",
+      "lines": 11,
+      "moduleLineCount": 47,
+      "startLine": 12,
+      "endLine": 22,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.koszul_append_unit_exactAt",
+        "LinearStudy.koszul_ofFn",
+        "koszulComplex",
+        "koszulComplex.appendMap",
+        "koszulComplex.ofList",
+        "koszulComplex.ofListIsoOfEq"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.functionKoszul_unit_exactAt",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulFunctionUnit.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.functionKoszul_unit_exactAt.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) (i : Fin n)\n  (hunit : IsUnit (H i)) (j : ℕ) (hj : 0 < j) :\n  HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j",
+      "sha256": "d93db4c920a59d612b59ce25f502650186066c608676aa8f6e0d7a3002ee3250",
+      "lines": 22,
+      "moduleLineCount": 47,
+      "startLine": 24,
+      "endLine": 45,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.functionKoszul_last_unit_exactAt",
+        "koszulComplex",
+        "koszulComplex.isoOfEquiv"
+      ]
+    },
+    {
       "declaration": "LinearStudy.koszul_top_differential_functional_mem",
       "kind": "theorem",
       "origin": "project",
@@ -13038,6 +13184,61 @@
         "LinearStudy.topKoszulCoordinate_map_generator",
         "LinearStudy.topKoszulCoordinate_reconstruct",
         "LinearStudy.topKoszulGenerator"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.koszul_append_unit_delta_bijective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulUnitExactness.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.koszul_append_unit_delta_bijective.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [AddCommGroup M]\n  [Module R M] (φ : M →ₗ[R] R) (a : R) (ha : IsUnit a) (i : ℕ) :\n  Function.Bijective ⇑(CategoryTheory.ConcreteCategory.hom (⋯.δ (i + 1) i ⋯))",
+      "sha256": "464fa7e86794aad040ae48abc2f1bae5ec81e46216bc754ec1cc805c3b9ddfb4",
+      "lines": 8,
+      "moduleLineCount": 38,
+      "startLine": 13,
+      "endLine": 20,
+      "lineCount": 8,
+      "dependencies": [
+        "koszulComplex",
+        "koszulComplex.shortComplexProd",
+        "koszulComplex.shortComplexProd_shortExact",
+        "koszulComplex.shortComplexProd_δ_eq",
+        "koszulComplex.upOne",
+        "koszulComplex.upOneHomologyIso"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.koszul_append_unit_exactAt",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulUnitExactness.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.koszul_append_unit_exactAt.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [AddCommGroup M]\n  [Module R M] (φ : M →ₗ[R] R) (a : R) (ha : IsUnit a) (i : ℕ) (hi : 0 < i) :\n  HomologicalComplex.ExactAt (koszulComplex (koszulComplex.appendMap φ a)) i",
+      "sha256": "464fa7e86794aad040ae48abc2f1bae5ec81e46216bc754ec1cc805c3b9ddfb4",
+      "lines": 15,
+      "moduleLineCount": 38,
+      "startLine": 22,
+      "endLine": 36,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.koszul_append_unit_delta_bijective",
+        "koszulComplex",
+        "koszulComplex.appendMap",
+        "koszulComplex.shortComplexProd",
+        "koszulComplex.shortComplexProd_shortExact"
       ]
     },
     {
@@ -21315,6 +21516,61 @@
       "dependencies": [
         "LinearStudy.polynomialLinearChangeEquiv",
         "LinearStudy.polynomialLinearChangeEquiv_homogeneousComponent"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomial_rationalPoint_height",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialLocalCutRegular.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_rationalPoint_height.{u_1} {K : Type u_1} [Field K] {n : ℕ} (x : Fin n → K) :\n  (RingHom.ker (MvPolynomial.aeval x).toRingHom).height = ↑n",
+      "sha256": "c1d1f97f2b6153fc765a72261b5967b58be3ebe359a06261dd0669b0c31e572b",
+      "lines": 13,
+      "moduleLineCount": 77,
+      "startLine": 14,
+      "endLine": 26,
+      "lineCount": 13,
+      "dependencies": [
+        "Ideal.ofList_height_eq_length_of_isWeaklyRegular",
+        "LinearStudy.polynomial_centered_variables_regular",
+        "LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomial_local_cut_equations_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialLocalCutRegular.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_local_cut_equations_regular.{u_1} {K : Type u_1} [Field K] {n r c : ℕ} (x : Fin n → K)\n  (I : Ideal (MvPolynomial (Fin n) K)) (G : Fin c → MvPolynomial (Fin n) K) (H : Fin r → MvPolynomial (Fin n) K)\n  (hdim : c + r = n)\n  (hlocal :\n    let P := RingHom.ker (MvPolynomial.aeval x).toRingHom;\n    Ideal.map (algebraMap (MvPolynomial (Fin n) K) (Localization.AtPrime P)) I =\n      Ideal.span (Set.range fun i => (algebraMap (MvPolynomial (Fin n) K) (Localization.AtPrime P)) (G i)))\n  (hpoint : I ⊔ Ideal.span (Set.range H) ≤ RingHom.ker (MvPolynomial.aeval x).toRingHom)\n  [IsArtinianRing (MvPolynomial (Fin n) K ⧸ I ⊔ Ideal.span (Set.range H))]\n  [IsReduced (MvPolynomial (Fin n) K ⧸ I ⊔ Ideal.span (Set.range H))] :\n  let P := RingHom.ker (MvPolynomial.aeval x).toRingHom;\n  let A := Localization.AtPrime P;\n  RingTheory.Sequence.IsRegular (A ⧸ Ideal.map (algebraMap (MvPolynomial (Fin n) K) A) I)\n    (List.ofFn fun i =>\n      (Ideal.Quotient.mk (Ideal.map (algebraMap (MvPolynomial (Fin n) K) A) I))\n        ((algebraMap (MvPolynomial (Fin n) K) A) (H i)))",
+      "sha256": "c1d1f97f2b6153fc765a72261b5967b58be3ebe359a06261dd0669b0c31e572b",
+      "lines": 48,
+      "moduleLineCount": 77,
+      "startLine": 28,
+      "endLine": 75,
+      "lineCount": 48,
+      "dependencies": [
+        "IsCohenMacaulayLocalRing",
+        "IsCohenMacaulayRing",
+        "LinearStudy.artinian_reduced_cut_local_ideal_eq_maximalIdeal_of_le",
+        "LinearStudy.field_isCohenMacaulay",
+        "LinearStudy.local_cut_regular_of_ambient_parameters",
+        "LinearStudy.polynomial_rationalPoint_height",
+        "MvPolynomial.isCM_of_isCM_of_finite",
+        "isCohenMacaulayRing_def"
       ]
     },
     {
@@ -32502,6 +32758,84 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectivePulledLinearSection_exists_localKoszul_exactAt_all_primes",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCutAllPrimeKoszul.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectivePulledLinearSection_exists_localKoszul_exactAt_all_primes {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hproper : V.ideal.toIdeal ≠ ⊥) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite)\n  (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ c,\n    c ≠ 0 ∧\n      (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧\n        ∀ (w : Fin (r + 1) → ℂ),\n          (MvPolynomial.eval w) c ≠ 0 →\n            have I :=\n              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n                (LinearStudy.projectivePulledLinearSectionIdeal f V L w);\n            let C := MvPolynomial (Fin n) ℂ ⧸ I;\n            w 0 ≠ 0 ∧\n              IsReduced C ∧\n                Module.Finite ℂ C ∧\n                  Nonempty (LinearStudy.projectivePulledLinearSectionScheme f V L hL w ≅ AlgebraicGeometry.Spec ↧C) ∧\n                    AlgebraicGeometry.IsReduced (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) ∧\n                      ∀ (p : PrimeSpectrum (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)),\n                        let R := Localization.AtPrime p.asIdeal;\n                        have H := fun i =>\n                          (algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) R)\n                            ((Ideal.Quotient.mk V.affineIdeal)\n                              (LinearStudy.affineChartPolynomialMap\n                                ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))));\n                        ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j",
+      "sha256": "26209291f6797f68b6e01133f11cab8bcc62ee8c8a1998b4d7b09ea0f58ac78f",
+      "lines": 67,
+      "moduleLineCount": 84,
+      "startLine": 16,
+      "endLine": 82,
+      "lineCount": 67,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.artinian_polynomial_cut_prime_has_coordinates",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionScheme",
+        "LinearStudy.projectivePulledLinearSection_exists_finite_reduced_localKoszul_cuts",
+        "LinearStudy.projectivePulledLinearSection_localKoszul_exactAt_outside_cut",
+        "koszulComplex"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectivePulledLinearSection_localKoszul_exactAt_outside_cut",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCutOutsideExact.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectivePulledLinearSection_localKoszul_exactAt_outside_cut {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ)\n  (p : PrimeSpectrum (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal))\n  (hout :\n    ¬Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom (LinearStudy.projectivePulledLinearSectionIdeal f V L w) ≤\n        Ideal.comap (Ideal.Quotient.mk V.affineIdeal) p.asIdeal) :\n  let R := Localization.AtPrime p.asIdeal;\n  have H := fun i =>\n    (algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) R)\n      ((Ideal.Quotient.mk V.affineIdeal)\n        (LinearStudy.affineChartPolynomialMap\n          ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))));\n  ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j",
+      "sha256": "45e5458afe12c699255f54944f8353ae96c4c586d212b0b2f165eb11c455f286",
+      "lines": 34,
+      "moduleLineCount": 48,
+      "startLine": 13,
+      "endLine": 46,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.functionKoszul_unit_exactAt",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionIdeal_map_affine",
+        "koszulComplex"
+      ]
+    },
+    {
       "declaration": "LinearStudy.IntegralProjectiveEquations.chart_krull_dimension_eq_differential_rank",
       "kind": "theorem",
       "origin": "project",
@@ -36476,6 +36810,102 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectivePulledLinearSection_affinePoint_image_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionSmoothPoints.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectivePulledLinearSection_affinePoint_image_mem {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (w : Fin (r + 1) → ℂ) (x : Fin n → ℂ)\n  (hx :\n    x ∈\n      MvPolynomial.zeroLocus ℂ\n        (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n          (LinearStudy.projectivePulledLinearSectionIdeal f V L w))) :\n  LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet ∧\n    f.onPoints (LinearStudy.normalizedProjectivePoint x) ∈ LinearStudy.projectiveLinearSection V L w",
+      "sha256": "c276100c02b30315e5d76682b363617c5430b2a213e1d24ffe5e2694717ccf65",
+      "lines": 38,
+      "moduleLineCount": 108,
+      "startLine": 15,
+      "endLine": 52,
+      "lineCount": 38,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval",
+        "LinearStudy.homogeneous_eval_smul",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearSection",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projective_pulled_back_section_common_points",
+        "LinearStudy.projective_pulled_back_section_forms_homogeneous"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectivePulledLinearSection_exists_smooth_finite_reduced_cuts",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectivePulledSectionSmoothPoints.lean",
+      "line": 57,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectivePulledLinearSection_exists_smooth_finite_reduced_cuts {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ c,\n    c ≠ 0 ∧\n      (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧\n        ∀ (w : Fin (r + 1) → ℂ),\n          (MvPolynomial.eval w) c ≠ 0 →\n            have I :=\n              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n                (LinearStudy.projectivePulledLinearSectionIdeal f V L w);\n            let C := MvPolynomial (Fin n) ℂ ⧸ I;\n            w 0 ≠ 0 ∧\n              IsReduced C ∧\n                Module.Finite ℂ C ∧\n                  Nonempty (LinearStudy.projectivePulledLinearSectionScheme f V L hL w ≅ AlgebraicGeometry.Spec ↧C) ∧\n                    AlgebraicGeometry.IsReduced (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) ∧\n                      ∀ x ∈ MvPolynomial.zeroLocus ℂ I,\n                        ∃ (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet),\n                          Algebra.IsSmoothAt ℂ (V.affinePoint x hx).asIdeal",
+      "sha256": "c276100c02b30315e5d76682b363617c5430b2a213e1d24ffe5e2694717ccf65",
+      "lines": 53,
+      "moduleLineCount": 108,
+      "startLine": 54,
+      "endLine": 106,
+      "lineCount": 53,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedConePoint_mem",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.finite_linear_projection_exists_projective_section_avoiding",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint_coordinate_ratios",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartPointEvaluation",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearSection",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionScheme",
+        "LinearStudy.projectivePulledLinearSection_affinePoint_image_mem",
+        "LinearStudy.projectivePulledLinearSection_exists_global_finite_reduced_schemes",
+        "LinearStudy.projective_exists_general_whole_reduced_fibers",
+        "LinearStudy.projective_exists_homogeneous_chart_avoidance",
+        "LinearStudy.projective_whole_fiber_point_actual_good_loci",
+        "LinearStudy.rationalPointPrime"
+      ]
+    },
+    {
       "declaration": "LinearStudy.localization_lift_kernel",
       "kind": "theorem",
       "origin": "project",
@@ -36850,6 +37280,49 @@
         "LinearStudy.affineChartPolynomialMap",
         "LinearStudy.projective_total_invariance_rational_chart_sandwich",
         "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectivePulledLinearSection_exists_finite_reduced_localKoszul_cuts",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveRegularCutOpen.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectivePulledLinearSection_exists_finite_reduced_localKoszul_cuts {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hproper : V.ideal.toIdeal ≠ ⊥) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite)\n  (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ c,\n    c ≠ 0 ∧\n      (∃ w, (MvPolynomial.eval w) c ≠ 0) ∧\n        ∀ (w : Fin (r + 1) → ℂ),\n          (MvPolynomial.eval w) c ≠ 0 →\n            have I :=\n              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n                (LinearStudy.projectivePulledLinearSectionIdeal f V L w);\n            let C := MvPolynomial (Fin n) ℂ ⧸ I;\n            w 0 ≠ 0 ∧\n              IsReduced C ∧\n                Module.Finite ℂ C ∧\n                  Nonempty (LinearStudy.projectivePulledLinearSectionScheme f V L hL w ≅ AlgebraicGeometry.Spec ↧C) ∧\n                    AlgebraicGeometry.IsReduced (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) ∧\n                      ∀ x ∈ MvPolynomial.zeroLocus ℂ I,\n                        ∃ (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet),\n                          let p := (V.affinePoint x hx).asIdeal;\n                          let R := Localization.AtPrime p;\n                          have H := fun i =>\n                            (algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) R)\n                              ((Ideal.Quotient.mk V.affineIdeal)\n                                (LinearStudy.affineChartPolynomialMap\n                                  ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))));\n                          RingTheory.Sequence.IsRegular R (List.ofFn H) ∧\n                            ∀ (j : ℕ),\n                              0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j",
+      "sha256": "8efe314d34102be5128768d821f677dd68bc46721bd06e9ae6f88f5ec65ed0f7",
+      "lines": 49,
+      "moduleLineCount": 64,
+      "startLine": 14,
+      "endLine": 62,
+      "lineCount": 49,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionScheme",
+        "LinearStudy.projectivePulledLinearSection_exists_smooth_finite_reduced_cuts",
+        "LinearStudy.projectivePulledLinearSection_localKoszul_exactAt_smooth_cut_point",
+        "LinearStudy.projectivePulledLinearSection_regular_in_variety_localRing",
+        "koszulComplex"
       ]
     },
     {
@@ -37552,6 +38025,48 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectivePulledLinearSection_regular_at_smooth_affine_cut_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSmoothCutRegular.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectivePulledLinearSection_regular_at_smooth_affine_cut_point {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hproper : V.ideal.toIdeal ≠ ⊥) (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ)\n  (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r) (x : Fin n → ℂ)\n  (hxV : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (hs : Algebra.IsSmoothAt ℂ (V.affinePoint x hxV).asIdeal)\n  (hx :\n    x ∈\n      MvPolynomial.zeroLocus ℂ\n        (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n          (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))\n  [IsReduced\n      (MvPolynomial (Fin n) ℂ ⧸\n        Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n          (LinearStudy.projectivePulledLinearSectionIdeal f V L w))]\n  [Module.Finite ℂ\n      (MvPolynomial (Fin n) ℂ ⧸\n        Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n          (LinearStudy.projectivePulledLinearSectionIdeal f V L w))] :\n  let P := RingHom.ker (MvPolynomial.aeval x).toRingHom;\n  let A := Localization.AtPrime P;\n  have J := Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) A) V.affineIdeal;\n  RingTheory.Sequence.IsRegular (A ⧸ J)\n    (List.ofFn fun i =>\n      (Ideal.Quotient.mk J)\n        ((algebraMap (MvPolynomial (Fin n) ℂ) A)\n          (LinearStudy.affineChartPolynomialMap\n            ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)))))",
+      "sha256": "a8a1d1e935781c96e2b55d64ef7af9a4cc436d2f21ccd85672145e0d78166b0d",
+      "lines": 72,
+      "moduleLineCount": 89,
+      "startLine": 16,
+      "endLine": 87,
+      "lineCount": 72,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialSmoothFormalMap",
+        "LinearStudy.polynomial_local_cut_equations_regular",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSectionIdeal_map_affine",
+        "LinearStudy.projective_smooth_points_common_coordinates_actual_dimension"
+      ]
+    },
+    {
       "declaration": "LinearStudy.ProjectiveLinearTargetParameterConclusion",
       "kind": "def",
       "origin": "project",
@@ -38070,6 +38585,85 @@
         "LinearStudy.projectiveChartDenominator",
         "LinearStudy.projectiveChartOpenMap",
         "LinearStudy.projective_iterates_whole_ambient_fibers_linear_targets"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectivePulledLinearSection_regular_in_variety_localRing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveVarietyLocalCutRegular.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectivePulledLinearSection_regular_in_variety_localRing {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hproper : V.ideal.toIdeal ≠ ⊥) (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ)\n  (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r) (x : Fin n → ℂ)\n  (hxV : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (hs : Algebra.IsSmoothAt ℂ (V.affinePoint x hxV).asIdeal)\n  (hx :\n    x ∈\n      MvPolynomial.zeroLocus ℂ\n        (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n          (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))\n  [IsReduced\n      (MvPolynomial (Fin n) ℂ ⧸\n        Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n          (LinearStudy.projectivePulledLinearSectionIdeal f V L w))]\n  [Module.Finite ℂ\n      (MvPolynomial (Fin n) ℂ ⧸\n        Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n          (LinearStudy.projectivePulledLinearSectionIdeal f V L w))] :\n  let p := (V.affinePoint x hxV).asIdeal;\n  RingTheory.Sequence.IsRegular (Localization.AtPrime p)\n    (List.ofFn fun i =>\n      (algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) (Localization.AtPrime p))\n        ((Ideal.Quotient.mk V.affineIdeal)\n          (LinearStudy.affineChartPolynomialMap\n            ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)))))",
+      "sha256": "2490c60dc00fa130a57fe6c47fb4341f627897e17e0774d4e8419ad94875b4cc",
+      "lines": 58,
+      "moduleLineCount": 105,
+      "startLine": 14,
+      "endLine": 71,
+      "lineCount": 58,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.localizationQuotientEquiv",
+        "LinearStudy.localizationQuotientEquiv_mk",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSection_regular_at_smooth_affine_cut_point"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectivePulledLinearSection_localKoszul_exactAt_smooth_cut_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveVarietyLocalCutRegular.lean",
+      "line": 75,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectivePulledLinearSection_localKoszul_exactAt_smooth_cut_point {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hproper : V.ideal.toIdeal ≠ ⊥) (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ)\n  (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r) (x : Fin n → ℂ)\n  (hxV : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (hs : Algebra.IsSmoothAt ℂ (V.affinePoint x hxV).asIdeal)\n  (hx :\n    x ∈\n      MvPolynomial.zeroLocus ℂ\n        (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n          (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))\n  [IsReduced\n      (MvPolynomial (Fin n) ℂ ⧸\n        Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n          (LinearStudy.projectivePulledLinearSectionIdeal f V L w))]\n  [Module.Finite ℂ\n      (MvPolynomial (Fin n) ℂ ⧸\n        Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom\n          (LinearStudy.projectivePulledLinearSectionIdeal f V L w))] :\n  let p := (V.affinePoint x hxV).asIdeal;\n  let R := Localization.AtPrime p;\n  have H := fun i =>\n    (algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) R)\n      ((Ideal.Quotient.mk V.affineIdeal)\n        (LinearStudy.affineChartPolynomialMap\n          ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))));\n  ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j",
+      "sha256": "2490c60dc00fa130a57fe6c47fb4341f627897e17e0774d4e8419ad94875b4cc",
+      "lines": 31,
+      "moduleLineCount": 105,
+      "startLine": 73,
+      "endLine": 103,
+      "lineCount": 31,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.koszul_ofFn",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearSectionForms",
+        "LinearStudy.projectivePulledLinearSectionIdeal",
+        "LinearStudy.projectivePulledLinearSection_regular_in_variety_localRing",
+        "koszulComplex",
+        "koszulComplex.exactAt_of_isRegular",
+        "koszulComplex.ofList"
       ]
     },
     {
