@@ -861,3 +861,16 @@ public import Linear.NativeProjectivePrimeTwistUnit
 public import Linear.NativeProjectiveTwistFraction
 public import Linear.NativeProjectiveTwistSectionEquiv
 public import Linear.NativeProjectiveTwistSheafOverIso
+
+public import Linear.NativeProjectiveDegreeOneCover
+public import Linear.SheafFreeIsoGenerators
+public import Linear.NativeProjectiveTwistChartFree
+public import Linear.NativeProjectiveTwistLocallyFree
+public import Linear.ProjectiveNativePositiveTwist
+public import Linear.ProjectiveNormalizationLocallyFreeEmbedding
+
+public import Linear.NativeProjectiveModuleFractionLift
+public import Linear.NativeProjectiveModuleSheafEpi
+public import Linear.IntegerGradedSurjectionPreimage
+public import Linear.NativeProjectiveHomogeneousSurjection
+public import Linear.IntegerGradedModuleGenerators

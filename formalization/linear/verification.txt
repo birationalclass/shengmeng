@@ -560,23 +560,31 @@ Linear.NativeProjectiveModuleSheafMap: cached compiled module (source and projec
 Linear.NativeProjectiveRingIntegerPieces: cached compiled module (source and project dependencies unchanged)
 Linear.CoextensionProjectiveGradeCompatibility: cached compiled module (source and project dependencies unchanged)
 Linear.ProjectiveNormalizationNativeSheafEmbedding: cached compiled module (source and project dependencies unchanged)
-Linear.NativeProjectiveRingModuleLocalization: exit 0; source 13d48996b79724616983b634cde070ea8def5b4e97a213c7f2d855d966461750
+Linear.NativeProjectiveRingModuleLocalization: cached compiled module (source and project dependencies unchanged)
+Linear.NativeStructureModuleFraction: cached compiled module (source and project dependencies unchanged)
+Linear.NativeStructureModuleSections: cached compiled module (source and project dependencies unchanged)
+Linear.NativeStructureModuleSheaf: cached compiled module (source and project dependencies unchanged)
+Linear.NativeProjectivePrimeTwistUnit: cached compiled module (source and project dependencies unchanged)
+Linear.NativeProjectiveTwistFraction: cached compiled module (source and project dependencies unchanged)
+Linear.NativeProjectiveTwistSectionEquiv: cached compiled module (source and project dependencies unchanged)
+Linear.NativeProjectiveTwistSheafOverIso: cached compiled module (source and project dependencies unchanged)
+Linear.NativeProjectiveDegreeOneCover: cached compiled module (source and project dependencies unchanged)
+Linear.SheafFreeIsoGenerators: cached compiled module (source and project dependencies unchanged)
+Linear.NativeProjectiveTwistChartFree: cached compiled module (source and project dependencies unchanged)
+Linear.NativeProjectiveTwistLocallyFree: cached compiled module (source and project dependencies unchanged)
+Linear.ProjectiveNativePositiveTwist: cached compiled module (source and project dependencies unchanged)
+Linear.ProjectiveNormalizationLocallyFreeEmbedding: cached compiled module (source and project dependencies unchanged)
+Linear.NativeProjectiveModuleFractionLift: exit 0; source a3de4ba746f376a7570f0ab8acffdb5b2541d57873e7a40d8b4b631fed1c67c7
 
-Linear.NativeStructureModuleFraction: exit 0; source d680e9e569b17f4604591f1eddecd1a9b9fbc1b08e7e0cc5928023ba72594b09
+Linear.NativeProjectiveModuleSheafEpi: exit 0; source 7fd740502e375dd4970499c989b7c93ee7b3bdeae763c7eb2d0c8b725d374d5a
 
-Linear.NativeStructureModuleSections: exit 0; source 4e7fd6269baae74fb097b15fe0f9e9ee80c9e85cb5ffe4284a7e3e1e436d1d16
+Linear.IntegerGradedSurjectionPreimage: exit 0; source 7cc92f566e10c0e9a0b9683481e879c9cdfcfe8bb6dc1b5e9394427d2a6006f7
 
-Linear.NativeStructureModuleSheaf: exit 0; source e32a4e6e7c54ea04b4fb2795008ab5c652d071ca42d3dba3cfb77134a642fdf7
+Linear.NativeProjectiveHomogeneousSurjection: exit 0; source c9d8b8a8abf18e4a88b88020bb13431b08a5f8d5e8adef99b85be52df2d141fd
 
-Linear.NativeProjectivePrimeTwistUnit: exit 0; source 2fdcddebb7bcfd76e4feef9e7ef3c6ca8dde0991e1f2e8b9470dd15f0f2cfffb
+Linear.IntegerGradedModuleGenerators: exit 0; source 68bd621aa09129ef7d7e50bd7ba9d5989c78b507e3965c2d098440ab32d24238
 
-Linear.NativeProjectiveTwistFraction: exit 0; source a5ae39d7ff084d4e673a65a019aa2ab18e60df97a7bc8346220eef877297d4bb
-
-Linear.NativeProjectiveTwistSectionEquiv: exit 0; source 0aa852ed6dd392689f64d63aa2e72922c50ed6d18d2b625996e24107eab57a51
-
-Linear.NativeProjectiveTwistSheafOverIso: exit 0; source a23bad63d87d551b02c02645a12bd7cbc4f6c6eed6941fb124433773a62a998e
-
-Linear: exit 0; source c0bbd67e43c2332ef28e291f1b547a110bd35a00a81d1082500752e57a7c84e9
+Linear: exit 0; source 71dbabf222eec5ebaf18181f2748a0f733a36e88ce1eef8d5cdf148c5a29de31
 
 Local audit: python audit.py
 LinearStudy.linear_reindexed_actual_source_point.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
@@ -3789,6 +3797,12 @@ LinearStudy.integerDomainHomComponent_exists_nonzero.{u_1, u_2, u_3, u_4} {K : T
   [SetLike.GradedSMul 𝒜 𝓝] (hgrade : ∀ (d : ℕ), ∀ a ∈ 𝒜 d, ∀ (j : ℤ), ∀ x ∈ 𝒟 j, a • x ∈ 𝒟 (j + ↑d)) (f : M →ₗ[A] N)
   (hf : f ≠ 0) : ∃ k, LinearStudy.integerDomainHomComponent 𝒜 𝒟 𝓝 hgrade f k ≠ 0
 'LinearStudy.integerDomainHomComponent_exists_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.integerGradedModule_exists_homogeneous_generators.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2}
+  {M : Type u_3} [Field K] [CommRing A] [AddCommGroup M] [Module K M] [Module A M] (ℳ : ℤ → Submodule K M)
+  [DirectSum.Decomposition ℳ] [Module.Finite A M] : ∃ s, Submodule.span A ↑s = ⊤ ∧ ∀ x ∈ s, ∃ d, x ∈ ℳ d
+'LinearStudy.integerGradedModule_exists_homogeneous_generators' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.integerGradedModuleProjection.{u_1, u_3} {K : Type u_1} {D : Type u_3} [Field K] [AddCommGroup D]
   [Module K D] (𝒟 : ℤ → Submodule K D) [DirectSum.Decomposition 𝒟] (d : ℤ) : D →ₗ[K] D
 'LinearStudy.integerGradedModuleProjection' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -3802,6 +3816,20 @@ LinearStudy.integerHomogeneousMap_projection.{u_1, u_2, u_3} {K : Type u_1} {S :
   (hh : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, e x = (LinearStudy.gradedIntegerProjection 𝓑 (d + k)) (e x)) (i : ℕ) (x : D) :
   e ((LinearStudy.integerGradedModuleProjection 𝒟 (↑i - k)) x) = (LinearStudy.gradedModuleProjection 𝓑 i) (e x)
 'LinearStudy.integerHomogeneousMap_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.integerDegreeZeroMap_projection.{u_1, u_2, u_3, u_4} {K : Type u_1} {S : Type u_2} {D : Type u_3}
+  {E : Type u_4} [Field K] [Ring S] [AddCommGroup D] [Module K D] [Module S D] [AddCommGroup E] [Module K E]
+  [Module S E] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E) [DirectSum.Decomposition 𝒟] [DirectSum.Decomposition ℰ]
+  (e : D →ₗ[S] E) (hh : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, e x ∈ ℰ d) (d : ℤ) (x : D) :
+  e ((LinearStudy.integerGradedModuleProjection 𝒟 d) x) = (LinearStudy.integerGradedModuleProjection ℰ d) (e x)
+'LinearStudy.integerDegreeZeroMap_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.integerDegreeZeroSurjection_homogeneous_preimages.{u_1, u_2, u_3, u_4} {K : Type u_1} {S : Type u_2}
+  {D : Type u_3} {E : Type u_4} [Field K] [Ring S] [AddCommGroup D] [Module K D] [Module S D] [AddCommGroup E]
+  [Module K E] [Module S E] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E) [DirectSum.Decomposition 𝒟]
+  [DirectSum.Decomposition ℰ] (e : D →ₗ[S] E) (hh : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, e x ∈ ℰ d) (he : Function.Surjective ⇑e)
+  (d : ℤ) (ell : E) : ell ∈ ℰ d → ∃ x ∈ 𝒟 d, e x = ell
+'LinearStudy.integerDegreeZeroSurjection_homogeneous_preimages' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.integral_injective_ringKrullDim_eq.{u_1, u_2} (R : Type u_1) (S : Type u_2) [CommRing R] [CommRing S]
   [Algebra R S] [Algebra.IsIntegral R S] (hinj : Function.Injective ⇑(algebraMap R S)) : ringKrullDim R = ringKrullDim S
 'LinearStudy.integral_injective_ringKrullDim_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -5564,6 +5592,37 @@ LinearStudy.projectiveNativeChartLinearSection_exists_reduced_schemes {n r : ℕ
 'LinearStudy.projectiveNativeChartLinearSection_exists_reduced_schemes' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.degreeOneGenerated_nativeProj_cover.{u} {K S : Type u} [Field K] [CommRing S] [Algebra K S]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {ι : Type u} (a : ι → S) (ha : ∀ (i : ι), a i ∈ 𝓑 1)
+  (hgen : Algebra.adjoin K (Set.range a) = ⊤) : ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤
+'LinearStudy.degreeOneGenerated_nativeProj_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneousQuotient_native_coordinate_chart_cover.{u} {K : Type u} [Field K] {σ : Type u}
+  (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) :
+  ⨆ i,
+      AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece I)
+        ((Ideal.Quotient.mk I) (MvPolynomial.X i)) =
+    ⊤
+'LinearStudy.homogeneousQuotient_native_coordinate_chart_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.nativeProjectiveHomogeneousSurjectionSheaf_epi.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S)
+  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E) [DirectSum.Decomposition 𝒟]
+  [DirectSum.Decomposition ℰ] (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d))
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ ℰ d, b • ell ∈ ℰ (↑n + d)) (e : D →ₗ[S] E)
+  (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + 0)) (he : Function.Surjective ⇑e) (k : ℤ) :
+  CategoryTheory.Epi (LinearStudy.nativeProjectiveModuleSheafMap 𝓑 𝒟 ℰ hD hE 0 e hh k)
+'LinearStudy.nativeProjectiveHomogeneousSurjectionSheaf_epi' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeProjectiveModuleFraction_lifts.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S)
+  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E) (e : D →ₗ[S] E)
+  (hpre : ∀ (d : ℤ), ∀ ell ∈ ℰ d, ∃ x ∈ 𝒟 d, e x = ell) (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}
+  {f : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p}
+  (hf : LinearStudy.nativeProjectiveModuleIsFraction 𝓑 ℰ k f) :
+  ∃ g,
+    LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 k g ∧
+      ∀ (p : ↥U), (LinearStudy.nativeProjectiveModuleAtPrimeMap 𝓑 e ↑p) (g p) = f p
+'LinearStudy.nativeProjectiveModuleFraction_lifts' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.nativeProjectiveModuleFraction_add.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]
   [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
   (𝒟 : ℤ → Submodule K D) (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ)
@@ -5735,6 +5794,25 @@ LinearStudy.nativeProjectiveModuleSheaf.{u} {K S D : Type u} [Field K] [CommRing
   (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ) :
   (AlgebraicGeometry.Proj 𝓑).Modules
 'LinearStudy.nativeProjectiveModuleSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeProjectiveModulePresheafMap_isLocallySurjective.{u} {K S D E : Type u} [Field K] [CommRing S]
+  [Algebra K S] [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d))
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ ℰ d, b • ell ∈ ℰ (↑n + d)) (e : D →ₗ[S] E)
+  (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + 0)) (hpre : ∀ (d : ℤ), ∀ ell ∈ ℰ d, ∃ x ∈ 𝒟 d, e x = ell) (k : ℤ) :
+  PresheafOfModules.IsLocallySurjective (Opens.grothendieckTopology ↑(ProjectiveSpectrum.top 𝓑))
+    (LinearStudy.nativeProjectiveModulePresheafMap 𝓑 𝒟 ℰ hD hE 0 e hh k)
+'LinearStudy.nativeProjectiveModulePresheafMap_isLocallySurjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.nativeProjectiveModuleSheafMap_epi.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S)
+  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d))
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ ℰ d, b • ell ∈ ℰ (↑n + d)) (e : D →ₗ[S] E)
+  (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + 0)) (hpre : ∀ (d : ℤ), ∀ ell ∈ ℰ d, ∃ x ∈ 𝒟 d, e x = ell) (k : ℤ) :
+  CategoryTheory.Epi (LinearStudy.nativeProjectiveModuleSheafMap 𝓑 𝒟 ℰ hD hE 0 e hh k)
+'LinearStudy.nativeProjectiveModuleSheafMap_epi' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.nativeProjectiveModuleSectionMap.{u} {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]
   [AddCommGroup D] [Module S D] [Module K D] [AddCommGroup E] [Module S E] [Module K E] (𝓑 : ℕ → Submodule K S)
   [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E)
@@ -5840,6 +5918,25 @@ LinearStudy.nativeHomogeneousLocalRingModuleEmbedding_mk.{u_1, u_2} {K : Type u_
       (HomogeneousLocalization.mk { deg := n, num := a, den := b, den_mem := hb }) =
     LocalizedModule.mk ↑a ⟨↑b, hb⟩
 'LinearStudy.nativeHomogeneousLocalRingModuleEmbedding_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeStructureModuleOverUnitIso.{u} {K S : Type u} [Field K] [CommRing S] [Algebra K S]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)) :
+  SheafOfModules.unit (CategoryTheory.Sheaf.over (AlgebraicGeometry.Proj 𝓑).ringCatSheaf U) ≅
+    (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf).over U
+'LinearStudy.nativeStructureModuleOverUnitIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativePositiveTwistChartUnitIso.{u} {K S : Type u} [Field K] [CommRing S] [Algebra K S]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) (m : ℕ)
+  (U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)) (hp : ∀ (p : ↥U), a ∉ (↑p).asHomogeneousIdeal) :
+  SheafOfModules.unit (CategoryTheory.Sheaf.over (AlgebraicGeometry.Proj 𝓑).ringCatSheaf U) ≅
+    SheafOfModules.over
+      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ ↑m) U
+'LinearStudy.nativePositiveTwistChartUnitIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativePositiveTwistChartFreeIso.{u} {K S : Type u} [Field K] [CommRing S] [Algebra K S]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) (m : ℕ)
+  (U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)) (hp : ∀ (p : ↥U), a ∉ (↑p).asHomogeneousIdeal) :
+  SheafOfModules.free PUnit ≅
+    SheafOfModules.over
+      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ ↑m) U
+'LinearStudy.nativePositiveTwistChartFreeIso' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.nativeProjectiveTwistFraction_forward.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S]
   [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) (m : ℕ) (k : ℤ)
   {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)} (hp : ∀ (p : ↥U), a ∉ (↑p).asHomogeneousIdeal)
@@ -5875,6 +5972,31 @@ LinearStudy.nativeProjectiveTwistLocalFraction_backward.{u_1, u_2} {K : Type u_1
   (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) k).pred fun p =>
     (LinearStudy.nativeProjectivePrimeTwistEquiv 𝓑 (↑p) a ⋯ m).symm (f p)
 'LinearStudy.nativeProjectiveTwistLocalFraction_backward' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativePositiveTwistLocalGeneratorsData.{u} {K S : Type u} [Field K] [CommRing S] [Algebra K S]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {ι : Type u} (a : ι → S) (ha : ∀ (i : ι), a i ∈ 𝓑 1) (m : ℕ)
+  (hcover : ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤) :
+  SheafOfModules.LocalGeneratorsData
+    (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ ↑m)
+'LinearStudy.nativePositiveTwistLocalGeneratorsData' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativePositiveTwistLocalGeneratorsData_isLocallyFreeData.{u} {K S : Type u} [Field K] [CommRing S]
+  [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {ι : Type u} (a : ι → S) (ha : ∀ (i : ι), a i ∈ 𝓑 1) (m : ℕ)
+  (hcover : ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤) :
+  (LinearStudy.nativePositiveTwistLocalGeneratorsData 𝓑 a ha m hcover).IsLocallyFreeData
+'LinearStudy.nativePositiveTwistLocalGeneratorsData_isLocallyFreeData' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.nativePositiveTwist_isLocallyFree.{u} {K S : Type u} [Field K] [CommRing S] [Algebra K S]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {ι : Type u} (a : ι → S) (ha : ∀ (i : ι), a i ∈ 𝓑 1)
+  (hgen : Algebra.adjoin K (Set.range a) = ⊤) (m : ℕ) :
+  SheafOfModules.IsLocallyFree
+    (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ ↑m)
+'LinearStudy.nativePositiveTwist_isLocallyFree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativePositiveTwist_isQuasicoherent.{u} {K S : Type u} [Field K] [CommRing S] [Algebra K S]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {ι : Type u} (a : ι → S) (ha : ∀ (i : ι), a i ∈ 𝓑 1)
+  (hgen : Algebra.adjoin K (Set.range a) = ⊤) (m : ℕ) :
+  SheafOfModules.IsQuasicoherent
+    (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ ↑m)
+'LinearStudy.nativePositiveTwist_isQuasicoherent' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.nativeProjectiveTwistSectionEquiv.{u} {K S : Type u} [Field K] [CommRing S] [Algebra K S]
   (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) (m : ℕ) (k : ℤ)
   (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
@@ -11016,6 +11138,18 @@ LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters {n : ℕ}
 'LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projectiveNativePositiveTwist_isLocallyFree {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (m : ℕ) :
+  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  SheafOfModules.IsLocallyFree
+    (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ ↑m)
+'LinearStudy.projectiveNativePositiveTwist_isLocallyFree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveNativePositiveTwist_isQuasicoherent {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (m : ℕ) :
+  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  SheafOfModules.IsQuasicoherent
+    (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ ↑m)
+'LinearStudy.projectiveNativePositiveTwist_isQuasicoherent' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.projectiveLinearNormalization_gradedSMul {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
   (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) :
   have A := MvPolynomial (Fin (r + 1)) ℂ;
@@ -11109,6 +11243,32 @@ LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_image {n r : �
                   (LinearStudy.gradedIntegerProjection (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) (d + ↑m))
                     ↑(e ell)
 'LinearStudy.projectiveLinearNormalization_exists_homogeneous_dual_image' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveLinearNormalization_exists_native_locallyFree_embedding {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) :
+  let A := MvPolynomial (Fin (r + 1)) ℂ;
+  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  let φ := LinearStudy.projectiveLinearNormalizationMap V L;
+  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  let D := (ModuleCat.coextendScalars (algebraMap A B)).obj ↧A;
+  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;
+  let ℰ := LinearStudy.nativeProjectiveRingIntegerPiece 𝓑;
+  have hD := ⋯;
+  have hE := ⋯;
+  ∃ m,
+    0 < m ∧
+      ∃ e,
+        Function.Injective ⇑e ∧
+          ∃ (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + ↑m)),
+            CategoryTheory.Mono (LinearStudy.nativeProjectiveModuleSheafMap 𝓑 𝒟 ℰ hD hE (↑m) e hh 0) ∧
+              SheafOfModules.IsLocallyFree (LinearStudy.nativeProjectiveModuleSheaf 𝓑 ℰ hE ↑m) ∧
+                SheafOfModules.IsQuasicoherent (LinearStudy.nativeProjectiveModuleSheaf 𝓑 ℰ hE ↑m)
+'LinearStudy.projectiveLinearNormalization_exists_native_locallyFree_embedding' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.projectiveLinearNormalization_exists_native_chart_embeddings {n r : ℕ}
@@ -13805,6 +13965,12 @@ LinearStudy.transcendental_of_scaling_orbit.{u_1, u_2} {k : Type u_1} {F : Type 
   (hfix : ∀ (N : ℕ), ∀ a ∈ E, (Φ N) a = a) (hscale : ∀ (N : ℕ), (Φ N) t = (algebraMap k F) ↑(N + 1) * t) :
   Transcendental (↥E) t
 'LinearStudy.transcendental_of_scaling_orbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.freeIsoGeneratingSections_isIso.{u, v₁, u₁} {C : Type u₁} [CategoryTheory.Category C]
+  {J : CategoryTheory.GrothendieckTopology C} {R : CategoryTheory.Sheaf J RingCat}
+  [CategoryTheory.HasWeakSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat] {M : SheafOfModules R}
+  {I : Type u} (e : SheafOfModules.free I ≅ M) :
+  CategoryTheory.IsIso ((SheafOfModules.free.generatingSections I).ofEpi e.hom).π
+'LinearStudy.freeIsoGeneratingSections_isIso' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.smooth_points_have_common_polynomial_coordinates.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}
   {ι : Type u_3} [Field K] [Infinite K] [Fintype σ] [DecidableEq σ] [Fintype ι] (I : Ideal (MvPolynomial σ K))
   (P : ι → Ideal (MvPolynomial σ K)) [∀ (a : ι), (P a).IsPrime] (x : ι → σ → K) (hIP : ∀ (a : ι), I ≤ P a)
