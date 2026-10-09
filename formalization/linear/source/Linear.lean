@@ -741,3 +741,9 @@ public import Linear.ProjectiveLinearSectionEquationFibers
 public import Linear.NativeProjectiveChart
 
 public import Linear.NativeProjectiveChartPullback
+
+public import Linear.QuotientClosedBaseChange
+public import Linear.NativeProjectiveChartClosedPullback
+public import Linear.ProjectiveAffineLinearSection
+public import Linear.ProjectiveAffineLinearSectionComparison
+public import Linear.NativeProjectiveChartSectionReduced
