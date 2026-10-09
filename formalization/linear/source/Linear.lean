@@ -874,3 +874,19 @@ public import Linear.NativeProjectiveModuleSheafEpi
 public import Linear.IntegerGradedSurjectionPreimage
 public import Linear.NativeProjectiveHomogeneousSurjection
 public import Linear.IntegerGradedModuleGenerators
+
+public import Linear.NativeProjectiveIntegerTwistChartFree
+public import Linear.NativeProjectiveIntegerTwistLocallyFree
+public import Linear.ProjectiveNativeIntegerTwist
+public import Linear.FiniteCoextensionUpperModule
+public import Linear.CoextensionHomogeneousGenerators
+public import Linear.ProjectiveDualHomogeneousGenerators
+public import Linear.IntegerGradedSubmoduleDecomposition
+public import Linear.IntegerGradedKernelGenerators
+public import Linear.IntegerShiftedFreePieces
+public import Linear.IntegerShiftedFreeDecomposition
+public import Linear.IntegerShiftedFreeGeneratorMap
+public import Linear.IntegerGradedFiniteFreeSurjection
+public import Linear.IntegerGradedFiniteRelations
+public import Linear.NativeProjectiveFiniteFreeEpi
+public import Linear.ProjectiveDualNativeFreeSheafEpi
