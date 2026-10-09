@@ -852,3 +852,12 @@ public import Linear.NativeProjectiveModuleSheafMap
 public import Linear.NativeProjectiveRingIntegerPieces
 public import Linear.CoextensionProjectiveGradeCompatibility
 public import Linear.ProjectiveNormalizationNativeSheafEmbedding
+
+public import Linear.NativeProjectiveRingModuleLocalization
+public import Linear.NativeStructureModuleFraction
+public import Linear.NativeStructureModuleSections
+public import Linear.NativeStructureModuleSheaf
+public import Linear.NativeProjectivePrimeTwistUnit
+public import Linear.NativeProjectiveTwistFraction
+public import Linear.NativeProjectiveTwistSectionEquiv
+public import Linear.NativeProjectiveTwistSheafOverIso
