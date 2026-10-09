@@ -1,5 +1,5 @@
-import {unlockVault,loadAsset,shanghaiDate} from './crypto.js?v=20261009-stream4';
-import {SegmentedVideo,playerControls} from './stream.js?v=20261009-stream4';
+import {unlockVault,loadAsset,shanghaiDate} from './crypto.js?v=20261009-stream5';
+import {SegmentedVideo,playerControls} from './stream.js?v=20261009-stream5';
 const $=id=>document.getElementById(id);
 let opened=null,controller=null,generation=0,urls=[],musicPromise=null,videoPromise=null,privateStream=null;
 function message(id,text,error=false){$(id).textContent=text;$(id).classList.toggle('error',error);}
@@ -50,7 +50,7 @@ $('public-play').addEventListener('click',async()=>{
   try {
     $('video').pause();$('audio').pause();
     if(!publicStream){
-      const r=await fetch('qin-stream.json?v=20261009-v5');if(!r.ok)throw new Error('视频加载失败，请重试。');
+      const r=await fetch('qin-stream.json?v=20261009-v6');if(!r.ok)throw new Error('视频加载失败，请重试。');
       publicStream=new SegmentedVideo($('public-video'),await r.json(),null,publicController.signal,(t,error)=>message('public-status',t,error));await publicStream.open();
     }
     $('public-play').hidden=true;$('public-controls').hidden=false;message('public-status','');await $('public-video').play();
