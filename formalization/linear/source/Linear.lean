@@ -797,3 +797,10 @@ public import Linear.TildePushforward
 public import Linear.TildeQuotientPushforward
 public import Linear.TildeKoszulStructureAugmentation
 public import Linear.ProjectiveCutAffineSheaf
+
+public import Linear.TildeKoszulPresentation
+public import Linear.FiniteCoextensionTorsionFree
+public import Linear.ProjectiveFiniteDualTorsionFree
+public import Linear.FiniteCoextensionModule
+public import Linear.FieldCoextensionRankOne
+public import Linear.ProjectiveFiniteDualFinite

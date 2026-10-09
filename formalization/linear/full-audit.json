@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1971,
-  "verifiedTheorems": 1480,
-  "definitions": 295,
+  "audited": 1982,
+  "verifiedTheorems": 1489,
+  "definitions": 297,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -5009,6 +5009,31 @@
       ]
     },
     {
+      "declaration": "LinearStudy.fieldCoextensionDual_exists_equiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FieldCoextensionRankOne.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fieldCoextensionDual_exists_equiv.{u} {K L : Type u} [Field K] [Field L] [Algebra K L] [Module.Finite K L] :\n  Nonempty (L ≃ₗ[L] ↑((ModuleCat.coextendScalars (algebraMap K L)).obj ↧K))",
+      "sha256": "0c7fa87eb4b337b72057166c191867672496384695ef3bfa642dc2a69ad9098f",
+      "lines": 32,
+      "moduleLineCount": 48,
+      "startLine": 15,
+      "endLine": 46,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.restrictedAlgebraModuleEquiv",
+        "LinearStudy.restrictedCoextensionDualEquiv",
+        "LinearStudy.restrictedCoextensionDual_finite"
+      ]
+    },
+    {
       "declaration": "LinearStudy.fieldEndomorphism_finrank_conjugate",
       "kind": "theorem",
       "origin": "project",
@@ -5330,6 +5355,71 @@
         "LinearStudy.affine_ideal_degree_bounded_representation",
         "LinearStudy.homogeneousComponent_mul_top"
       ]
+    },
+    {
+      "declaration": "LinearStudy.restrictedCoextensionDualEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/FiniteCoextensionModule.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.restrictedCoextensionDualEquiv.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] :\n  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[R]\n    ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ↧S) →ₗ[R] R",
+      "sha256": "8948b995ea92cb25bf34ef6cb873dcb4a0259c9382e474e0d314af6510d3e4ad",
+      "lines": 26,
+      "moduleLineCount": 50,
+      "startLine": 14,
+      "endLine": 39,
+      "lineCount": 26,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.restrictedCoextensionDual_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteCoextensionModule.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.restrictedCoextensionDual_finite.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  [IsNoetherianRing R] [Module.Finite R S] :\n  Module.Finite R\n    ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))",
+      "sha256": "8948b995ea92cb25bf34ef6cb873dcb4a0259c9382e474e0d314af6510d3e4ad",
+      "lines": 8,
+      "moduleLineCount": 50,
+      "startLine": 41,
+      "endLine": 48,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.restrictedAlgebraModuleEquiv",
+        "LinearStudy.restrictedCoextensionDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coextension_smul_eq_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteCoextensionTorsionFree.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coextension_smul_eq_zero.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S] [IsDomain S]\n  [Algebra R S] [Algebra.IsAlgebraic R S] (b : S) (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))\n  (h : b • ell = 0) : b = 0 ∨ ell = 0",
+      "sha256": "423d93f1a2f0f5eb521e3846b15c18bb9269b28c7ee3517da12f30ad37331006",
+      "lines": 30,
+      "moduleLineCount": 46,
+      "startLine": 15,
+      "endLine": 44,
+      "lineCount": 30,
+      "dependencies": []
     },
     {
       "declaration": "LinearStudy.artinian_polynomial_cut_prime_has_coordinates",
@@ -34106,6 +34196,95 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectiveLinearNormalization_finiteDual_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveFiniteDualFinite.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveLinearNormalization_finiteDual_finite {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) :\n  Module.Finite (MvPolynomial (Fin (r + 1)) ℂ)\n    ↑((ModuleCat.restrictScalars (LinearStudy.projectiveLinearNormalizationMap V L).toRingHom).obj\n        ((ModuleCat.coextendScalars (LinearStudy.projectiveLinearNormalizationMap V L).toRingHom).obj\n          ↧(MvPolynomial (Fin (r + 1)) ℂ)))",
+      "sha256": "846834c3b217a5bcd279ab20ca0ee36ea797b5241c687c1c2906010bec4542bd",
+      "lines": 16,
+      "moduleLineCount": 57,
+      "startLine": 14,
+      "endLine": 29,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.restrictedCoextensionDual_finite"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_exists_linear_normalization_with_finiteDual",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveFiniteDualFinite.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_linear_normalization_with_finiteDual {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ∃ r ≤ n,\n    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧\n      ∃ L,\n        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧\n          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧\n            (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧\n              Module.Finite (MvPolynomial (Fin (r + 1)) ℂ)\n                  ↑((ModuleCat.restrictScalars (LinearStudy.projectiveLinearNormalizationMap V L).toRingHom).obj\n                      ((ModuleCat.coextendScalars (LinearStudy.projectiveLinearNormalizationMap V L).toRingHom).obj\n                        ↧(MvPolynomial (Fin (r + 1)) ℂ))) ∧\n                ∀ (b : LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)\n                  (ell :\n                    ↑((ModuleCat.coextendScalars (LinearStudy.projectiveLinearNormalizationMap V L).toRingHom).obj\n                        ↧(MvPolynomial (Fin (r + 1)) ℂ))),\n                  b • ell = 0 → b = 0 ∨ ell = 0",
+      "sha256": "846834c3b217a5bcd279ab20ca0ee36ea797b5241c687c1c2906010bec4542bd",
+      "lines": 25,
+      "moduleLineCount": 57,
+      "startLine": 31,
+      "endLine": 55,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_finiteDual_finite",
+        "LinearStudy.projectiveLinearNormalization_finiteDual_smul_eq_zero",
+        "LinearStudy.projective_exists_linear_normalization_chart_dimension"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveLinearNormalization_finiteDual_smul_eq_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveFiniteDualTorsionFree.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveLinearNormalization_finiteDual_smul_eq_zero {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite)\n  (b : LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)\n  (ell :\n    ↑((ModuleCat.coextendScalars (LinearStudy.projectiveLinearNormalizationMap V L).toRingHom).obj\n        ↧(MvPolynomial (Fin (r + 1)) ℂ)))\n  (h : b • ell = 0) : b = 0 ∨ ell = 0",
+      "sha256": "44b991fcf1d556bc2eb11ede581e334428c9c436b886bb12e6dcdba87308d5e5",
+      "lines": 18,
+      "moduleLineCount": 33,
+      "startLine": 14,
+      "endLine": 31,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.coextension_smul_eq_zero",
+        "LinearStudy.projectiveLinearNormalizationMap"
+      ]
+    },
+    {
       "declaration": "LinearStudy.projective_exists_general_whole_fiber_generic_rank",
       "kind": "theorem",
       "origin": "project",
@@ -46754,6 +46933,110 @@
         "LinearStudy.functionKoszulAugmentation_quasiIso_of_exact",
         "LinearStudy.tilde_functor_preservesHomology",
         "koszulComplex"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tildeKoszulPresentation",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TildeKoszulPresentation.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tildeKoszulPresentation.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  CategoryTheory.ShortComplex (AlgebraicGeometry.Spec R).Modules",
+      "sha256": "160b2c3d18576d79c0db515879f866bf5f34816ae16ce0a432c6aab4af3c1a6a",
+      "lines": 30,
+      "moduleLineCount": 75,
+      "startLine": 12,
+      "endLine": 41,
+      "lineCount": 30,
+      "dependencies": [
+        "LinearStudy.functionKoszulAugmentation",
+        "LinearStudy.tildeQuotientPushforwardIso",
+        "koszulComplex.d"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tildeKoszulPresentation_exact",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeKoszulPresentation.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tildeKoszulPresentation_exact.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  (LinearStudy.tildeKoszulPresentation R H).Exact",
+      "sha256": "160b2c3d18576d79c0db515879f866bf5f34816ae16ce0a432c6aab4af3c1a6a",
+      "lines": 10,
+      "moduleLineCount": 75,
+      "startLine": 43,
+      "endLine": 52,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.functionKoszulAugmentation",
+        "LinearStudy.functionKoszulAugmentation_exact",
+        "LinearStudy.tildeKoszulPresentation",
+        "LinearStudy.tildeQuotientPushforwardIso",
+        "LinearStudy.tilde_functor_preservesHomology",
+        "koszulComplex",
+        "koszulComplex.d"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.functionKoszulAugmentation_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeKoszulPresentation.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.functionKoszulAugmentation_surjective.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  Function.Surjective ⇑(LinearStudy.functionKoszulAugmentation H)",
+      "sha256": "160b2c3d18576d79c0db515879f866bf5f34816ae16ce0a432c6aab4af3c1a6a",
+      "lines": 10,
+      "moduleLineCount": 75,
+      "startLine": 54,
+      "endLine": 63,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.functionKoszulAugmentation"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.tildeKoszulPresentation_epi",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TildeKoszulPresentation.lean",
+      "line": 66,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tildeKoszulPresentation_epi.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :\n  CategoryTheory.Epi (LinearStudy.tildeKoszulPresentation R H).g",
+      "sha256": "160b2c3d18576d79c0db515879f866bf5f34816ae16ce0a432c6aab4af3c1a6a",
+      "lines": 9,
+      "moduleLineCount": 75,
+      "startLine": 65,
+      "endLine": 73,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.functionKoszulAugmentation",
+        "LinearStudy.functionKoszulAugmentation_surjective",
+        "LinearStudy.tildeKoszulPresentation",
+        "LinearStudy.tildeQuotientPushforwardIso",
+        "LinearStudy.tilde_functor_preservesHomology"
       ]
     },
     {

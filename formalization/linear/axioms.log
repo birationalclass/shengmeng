@@ -1247,6 +1247,9 @@ LinearStudy.extendScalarsActualTensor_naturality.{u} {R S : Type u} [CommRing R]
     ⇑(LinearStudy.extendScalarsActualTensorAddEquiv N) ∘
       ⇑(CategoryTheory.ConcreteCategory.hom ((ModuleCat.extendScalars (algebraMap R S)).map f))
 'LinearStudy.extendScalarsActualTensor_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.fieldCoextensionDual_exists_equiv.{u} {K L : Type u} [Field K] [Field L] [Algebra K L] [Module.Finite K L] :
+  Nonempty (L ≃ₗ[L] ↑((ModuleCat.coextendScalars (algebraMap K L)).obj ↧K))
+'LinearStudy.fieldCoextensionDual_exists_equiv' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.fieldEndomorphism_finrank_conjugate.{u_1, u_2, u_3} {k : Type u_1} {L : Type u_2} {M : Type u_3} [Field k]
   [Field L] [Field M] [Algebra k L] [Algebra k M] (e : L ≃ₐ[k] M) (φ : L →ₐ[k] L) (ψ : M →ₐ[k] M)
   (hc : ∀ (x : L), e (φ x) = ψ (e x)) : Module.finrank (↥φ.fieldRange) L = Module.finrank (↥ψ.fieldRange) M
@@ -1315,6 +1318,19 @@ LinearStudy.affine_ideal_top_component_mem.{u_1, u_2} {K : Type u_1} {ι : Type 
   (MvPolynomial.homogeneousComponent N) f ∈
     Ideal.span (Set.range fun i => (MvPolynomial.homogeneousComponent (P i).totalDegree) (P i))
 'LinearStudy.affine_ideal_top_component_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.restrictedCoextensionDualEquiv.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] :
+  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[R]
+    ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ↧S) →ₗ[R] R
+'LinearStudy.restrictedCoextensionDualEquiv' depends on axioms: [propext, Quot.sound]
+LinearStudy.restrictedCoextensionDual_finite.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+  [IsNoetherianRing R] [Module.Finite R S] :
+  Module.Finite R
+    ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))
+'LinearStudy.restrictedCoextensionDual_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coextension_smul_eq_zero.{u} {R S : Type u} [CommRing R] [IsDomain R] [CommRing S] [IsDomain S]
+  [Algebra R S] [Algebra.IsAlgebraic R S] (b : S) (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))
+  (h : b • ell = 0) : b = 0 ∨ ell = 0
+'LinearStudy.coextension_smul_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.artinian_polynomial_cut_prime_has_coordinates.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]
   [IsAlgClosed K] [Finite ι] (I P : Ideal (MvPolynomial ι K)) [P.IsPrime] [IsArtinianRing (MvPolynomial ι K ⧸ I)]
   (hIP : I ≤ P) : ∃ x ∈ MvPolynomial.zeroLocus K I, P = RingHom.ker (MvPolynomial.aeval x).toRingHom
@@ -8720,6 +8736,46 @@ LinearStudy.projectiveCoordinateFiltration_generic_upper {n m : ℕ} (f : Linear
   Module.finrank ℂ ↥(LinearStudy.homogeneousQuotientFiltration V.ideal.toIdeal N) ≤
     m * Module.finrank ℂ ↥(LinearStudy.homogeneousQuotientFiltration V.ideal.toIdeal ((f.degree * R + N) / f.degree))
 'LinearStudy.projectiveCoordinateFiltration_generic_upper' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveLinearNormalization_finiteDual_finite {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) :
+  Module.Finite (MvPolynomial (Fin (r + 1)) ℂ)
+    ↑((ModuleCat.restrictScalars (LinearStudy.projectiveLinearNormalizationMap V L).toRingHom).obj
+        ((ModuleCat.coextendScalars (LinearStudy.projectiveLinearNormalizationMap V L).toRingHom).obj
+          ↧(MvPolynomial (Fin (r + 1)) ℂ)))
+'LinearStudy.projectiveLinearNormalization_finiteDual_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_exists_linear_normalization_with_finiteDual {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  ∃ r ≤ n,
+    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧
+      ∃ L,
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) ∧
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧
+              Module.Finite (MvPolynomial (Fin (r + 1)) ℂ)
+                  ↑((ModuleCat.restrictScalars (LinearStudy.projectiveLinearNormalizationMap V L).toRingHom).obj
+                      ((ModuleCat.coextendScalars (LinearStudy.projectiveLinearNormalizationMap V L).toRingHom).obj
+                        ↧(MvPolynomial (Fin (r + 1)) ℂ))) ∧
+                ∀ (b : LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+                  (ell :
+                    ↑((ModuleCat.coextendScalars (LinearStudy.projectiveLinearNormalizationMap V L).toRingHom).obj
+                        ↧(MvPolynomial (Fin (r + 1)) ℂ))),
+                  b • ell = 0 → b = 0 ∨ ell = 0
+'LinearStudy.projective_exists_linear_normalization_with_finiteDual' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveLinearNormalization_finiteDual_smul_eq_zero {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite)
+  (b : LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+  (ell :
+    ↑((ModuleCat.coextendScalars (LinearStudy.projectiveLinearNormalizationMap V L).toRingHom).obj
+        ↧(MvPolynomial (Fin (r + 1)) ℂ)))
+  (h : b • ell = 0) : b = 0 ∨ ell = 0
+'LinearStudy.projectiveLinearNormalization_finiteDual_smul_eq_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projective_exists_general_whole_fiber_generic_rank {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
   (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
   (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
@@ -13391,6 +13447,18 @@ LinearStudy.tilde_functionKoszul_augmentation_quasiIso.{u} (R : CommRingCat) {r 
     (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).map
       (LinearStudy.functionKoszulAugmentationMap H))
 'LinearStudy.tilde_functionKoszul_augmentation_quasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulPresentation.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :
+  CategoryTheory.ShortComplex (AlgebraicGeometry.Spec R).Modules
+'LinearStudy.tildeKoszulPresentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulPresentation_exact.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :
+  (LinearStudy.tildeKoszulPresentation R H).Exact
+'LinearStudy.tildeKoszulPresentation_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.functionKoszulAugmentation_surjective.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :
+  Function.Surjective ⇑(LinearStudy.functionKoszulAugmentation H)
+'LinearStudy.functionKoszulAugmentation_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulPresentation_epi.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :
+  CategoryTheory.Epi (LinearStudy.tildeKoszulPresentation R H).g
+'LinearStudy.tildeKoszulPresentation_epi' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.tildeKoszulStructureTargetIso.{u} (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) :
   LinearStudy.tildeFunctionKoszulQuotientComplex R H ≅
     (ChainComplex.single₀ (AlgebraicGeometry.Spec R).Modules).obj

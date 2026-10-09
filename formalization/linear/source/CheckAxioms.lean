@@ -405,6 +405,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.extendScalarsActualTensorAddEquiv
 #check LinearStudy.extendScalarsActualTensor_naturality
 #print axioms LinearStudy.extendScalarsActualTensor_naturality
+#check LinearStudy.fieldCoextensionDual_exists_equiv
+#print axioms LinearStudy.fieldCoextensionDual_exists_equiv
 #check LinearStudy.fieldEndomorphism_finrank_conjugate
 #print axioms LinearStudy.fieldEndomorphism_finrank_conjugate
 #check LinearStudy.fieldEndomorphism_finrank_comp
@@ -433,6 +435,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.affine_ideal_degree_bounded_representation
 #check LinearStudy.affine_ideal_top_component_mem
 #print axioms LinearStudy.affine_ideal_top_component_mem
+#check LinearStudy.restrictedCoextensionDualEquiv
+#print axioms LinearStudy.restrictedCoextensionDualEquiv
+#check LinearStudy.restrictedCoextensionDual_finite
+#print axioms LinearStudy.restrictedCoextensionDual_finite
+#check LinearStudy.coextension_smul_eq_zero
+#print axioms LinearStudy.coextension_smul_eq_zero
 #check LinearStudy.artinian_polynomial_cut_prime_has_coordinates
 #print axioms LinearStudy.artinian_polynomial_cut_prime_has_coordinates
 #check LinearStudy.finite_injective_algHom_fraction_comp_formallyUnramified
@@ -2617,6 +2625,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveCoordinateDomainMap_filtration_comap
 #check LinearStudy.projectiveCoordinateFiltration_generic_upper
 #print axioms LinearStudy.projectiveCoordinateFiltration_generic_upper
+#check LinearStudy.projectiveLinearNormalization_finiteDual_finite
+#print axioms LinearStudy.projectiveLinearNormalization_finiteDual_finite
+#check LinearStudy.projective_exists_linear_normalization_with_finiteDual
+#print axioms LinearStudy.projective_exists_linear_normalization_with_finiteDual
+#check LinearStudy.projectiveLinearNormalization_finiteDual_smul_eq_zero
+#print axioms LinearStudy.projectiveLinearNormalization_finiteDual_smul_eq_zero
 #check LinearStudy.projective_exists_general_whole_fiber_generic_rank
 #print axioms LinearStudy.projective_exists_general_whole_fiber_generic_rank
 #check LinearStudy.projective_exists_general_whole_reduced_fibers
@@ -3477,6 +3491,14 @@ set_option pp.proofs false
 #print axioms LinearStudy.tilde_functionKoszul_exactAt
 #check LinearStudy.tilde_functionKoszul_augmentation_quasiIso
 #print axioms LinearStudy.tilde_functionKoszul_augmentation_quasiIso
+#check LinearStudy.tildeKoszulPresentation
+#print axioms LinearStudy.tildeKoszulPresentation
+#check LinearStudy.tildeKoszulPresentation_exact
+#print axioms LinearStudy.tildeKoszulPresentation_exact
+#check LinearStudy.functionKoszulAugmentation_surjective
+#print axioms LinearStudy.functionKoszulAugmentation_surjective
+#check LinearStudy.tildeKoszulPresentation_epi
+#print axioms LinearStudy.tildeKoszulPresentation_epi
 #check LinearStudy.tildeKoszulStructureTargetIso
 #print axioms LinearStudy.tildeKoszulStructureTargetIso
 #check LinearStudy.tildeKoszulStructureAugmentation
