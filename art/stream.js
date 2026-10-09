@@ -1,4 +1,4 @@
-import {loadPart} from './crypto.js?v=20261009-stream3';
+import {loadPart} from './crypto.js?v=20261009-stream4';
 export class SegmentedVideo {
   constructor(video,asset,key,signal,onStatus=()=>{}) {
     Object.assign(this,{video,asset,key,signal,onStatus});this.loaded=new Set();this.destroyed=false;this.busy=false;this.again=false;
