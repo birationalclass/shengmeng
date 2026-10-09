@@ -938,3 +938,11 @@ public import Linear.NativeCoextensionUpperLocalizationProperty
 public import Linear.NativeLocalizedUpperAlgebra
 public import Linear.NativeCoextensionUpperLocalizationEquiv
 public import Linear.ProjectiveNativeDualCoordinateLocalization
+
+public import Linear.NativeDualLocalizationFractionValues
+public import Linear.NativeDualHomogeneousFractionValues
+public import Linear.NativeLocalizationScalarComparison
+public import Linear.NativeDualDegreeZeroSpanValues
+public import Linear.NativeDualHomogeneousEvaluationMap
+public import Linear.NativeDualDegreeZeroChartMap
+public import Linear.ProjectiveNativeDegreeZeroDualMap

@@ -4983,6 +4983,81 @@ LinearStudy.finiteNativeCoextensionUpperLocalizationMap_isLocalizedModule.{u} {R
 'LinearStudy.finiteNativeCoextensionUpperLocalizationMap_isLocalizedModule' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.finiteNativeDualDegreeZeroChartMap.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]
+  [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))) :
+  ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑)
+        a) →ₗ[HomogeneousLocalization.Away 𝒜 a]
+    ↥(LinearStudy.nativeNormalizationSourceAwayZero 𝒜 𝓑 a) →ₗ[HomogeneousLocalization.Away 𝒜 a]
+      HomogeneousLocalization.Away 𝒜 a
+'LinearStudy.finiteNativeDualDegreeZeroChartMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteNativeDualDegreeZeroChartMap_apply.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a))
+  (x : ↥(LinearStudy.nativeNormalizationSourceAwayZero 𝒜 𝓑 a)) :
+  HomogeneousLocalization.val (((LinearStudy.finiteNativeDualDegreeZeroChartMap 𝒜 𝓑 a ha hinj) ell) x) =
+    ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers a) hinj) ↑ell) ↑x
+'LinearStudy.finiteNativeDualDegreeZeroChartMap_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeCoextensionNormalizationBaseModule.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] :
+  Module R ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)
+'LinearStudy.nativeCoextensionNormalizationBaseModule' depends on axioms: [propext, Quot.sound]
+LinearStudy.nativeNormalizationSourceAwayZero.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]
+  [Algebra K S] [Algebra R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) (a : R) :
+  Submodule (HomogeneousLocalization.Away 𝒜 a) (LocalizedModule (Submonoid.powers a) S)
+'LinearStudy.nativeNormalizationSourceAwayZero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteNativeDual_degreeZero_span_value.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))) :
+  let D := (ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R);
+  ∀ ell ∈ LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a,
+    ∀ x ∈ LinearStudy.nativeNormalizationSourceAwayZero 𝒜 𝓑 a,
+      ∃ z,
+        HomogeneousLocalization.val z =
+          ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers a) hinj) ell) x
+'LinearStudy.finiteNativeDual_degreeZero_span_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteNativeDualHomogeneousEvaluationMap.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] [Module.Finite R S] (a : R)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))) :
+  have D := (ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R);
+  LocalizedModule (Submonoid.powers a) ↑D →ₗ[HomogeneousLocalization.Away 𝒜 a]
+    LocalizedModule (Submonoid.powers a) S →ₗ[HomogeneousLocalization.Away 𝒜 a] Localization.Away a
+'LinearStudy.finiteNativeDualHomogeneousEvaluationMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteNativeDualHomogeneousEvaluationMap_apply.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  [Module.Finite R S] (a : R) (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (ell :
+    LocalizedModule (Submonoid.powers a)
+      ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+  (x : LocalizedModule (Submonoid.powers a) S) :
+  ((LinearStudy.finiteNativeDualHomogeneousEvaluationMap 𝒜 a hinj) ell) x =
+    ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers a) hinj) ell) x
+'LinearStudy.finiteNativeDualHomogeneousEvaluationMap_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteNativeDual_degreeZero_fraction_value.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))) (k d : ℕ)
+  (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))
+  (hell : ell ∈ LinearStudy.coextensionGradedPiece 𝒜 𝓑 ↑k) (x : S) (hx : x ∈ 𝓑 d) :
+  ∃ z,
+    HomogeneousLocalization.val z =
+      ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers a) hinj)
+          (LocalizedModule.mk ell ⟨a ^ k, ⋯⟩))
+        (LocalizedModule.mk x ⟨a ^ d, ⋯⟩)
+'LinearStudy.finiteNativeDual_degreeZero_fraction_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteNativeCoextensionLocalizationEquiv_apply_fraction.{u} {R S Q : Type u} [CommRing R] [CommRing S]
+  [CommRing Q] [Algebra R S] [Algebra R Q] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]
+  (hinj : Function.Injective ⇑(algebraMap R Q))
+  (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+  (x : S) (s t : ↥P) :
+  ((LinearStudy.finiteNativeCoextensionLocalizationEquiv P hinj) (LocalizedModule.mk ell s)) (LocalizedModule.mk x t) =
+    IsLocalization.mk' Q ((LinearStudy.nativeCoextensionOriginalDualEquiv ell) x) (s * t)
+'LinearStudy.finiteNativeCoextensionLocalizationEquiv_apply_fraction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.nativeHomogeneousAwayModuleScalar.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]
   [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) :
   Module (HomogeneousLocalization.Away 𝓑 a) (LocalizedModule (Submonoid.powers a) D)
@@ -5061,6 +5136,12 @@ LinearStudy.nativeHomogeneousAwayTwist_fraction_mem.{u_1, u_2} {K : Type u_1} {S
   (hh : h ∈ 𝓑 (n + m)) :
   IsLocalization.mk' (Localization.Away a) h ⟨a ^ n, ⋯⟩ ∈ LinearStudy.nativeHomogeneousAwayTwistModule 𝓑 a m
 'LinearStudy.nativeHomogeneousAwayTwist_fraction_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeLocalizedModuleScalar.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [AddCommGroup M]
+  [Module R M] (P : Submonoid R) : Module (Localization P) (LocalizedModule P M)
+'LinearStudy.nativeLocalizedModuleScalar' depends on axioms: [propext, Quot.sound]
+LinearStudy.localizedModule_abstract_smul_eq_native.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R]
+  [AddCommGroup M] [Module R M] (P : Submonoid R) (c : Localization P) (x : LocalizedModule P M) : c • x = c • x
+'LinearStudy.localizedModule_abstract_smul_eq_native' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.nativeLocalizedUpperAlgebra.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] (P : Submonoid R) :
   Algebra S (LocalizedModule P S)
 'LinearStudy.nativeLocalizedUpperAlgebra' depends on axioms: [propext, Quot.sound]
@@ -11554,6 +11635,38 @@ LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters {n : ℕ}
           Algebra.IsSmoothAt ℂ (V.affinePoint y hy).asIdeal ∧
             LinearStudy.ProjectiveChartPolynomialParameterConclusion f V x hx hp0 hy
 'LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :
+  let A := MvPolynomial (Fin (r + 1)) ℂ;
+  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  let φ := LinearStudy.projectiveLinearNormalizationMap V L;
+  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+  have 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  have a := MvPolynomial.X i;
+  ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑)
+        a) →ₗ[HomogeneousLocalization.Away 𝒜 a]
+    ↥(LinearStudy.nativeNormalizationSourceAwayZero 𝒜 𝓑 a) →ₗ[HomogeneousLocalization.Away 𝒜 a]
+      HomogeneousLocalization.Away 𝒜 a
+'LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap_apply {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :
+  let A := MvPolynomial (Fin (r + 1)) ℂ;
+  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  let φ := LinearStudy.projectiveLinearNormalizationMap V L;
+  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  let a := MvPolynomial.X i;
+  ∀ (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a))
+    (x : ↥(LinearStudy.nativeNormalizationSourceAwayZero 𝒜 𝓑 a)),
+    HomogeneousLocalization.val
+        (((LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap V L hL hfinite i) ell) x) =
+      ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers a) ⋯) ↑ell) ↑x
+'LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap_apply' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv {n r : ℕ}
