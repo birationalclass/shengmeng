@@ -2,8 +2,16 @@ import {readFile,writeFile} from 'node:fs/promises';
 const root=new URL('./',import.meta.url);
 const d=JSON.parse(await readFile(new URL('note-content.json',root),'utf8'));
 const escape=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const references=new Map();let referenceSection=0;
+for(const block of d.blocks){
+ if(block.type==='section')referenceSection++;
+ for(const match of (block.content||'').matchAll(/\\label\{([^{}]+)\}/g)){
+  const target=block.number?`${block.type}-${block.number}`:`section-${referenceSection}`;
+  references.set(match[1],{target,number:block.number||String(referenceSection)});
+ }
+}
 function prose(s){
- s=s.replace(/\\(?:smallskip|noindent)\b/g,'').trim();
+ s=s.replace(/\\label\{[^{}]+\}/g,'').replace(/\\(?:smallskip|noindent)\b/g,'').replace(/~(?=\\ref\{)/g,' ').trim();
  // Protect math before converting prose typography and inline emphasis.
  const math=[];s=s.replace(/\$[^$]+\$|\\\[[\s\S]*?\\\]/g,x=>'@@MATH'+(math.push(x)-1)+'@@');
  const links=[];s=s.replace(/\\href\{(https:\/\/[^{}]+)\}\{((?:\\emph\{[^{}]*\}|[^{}])+)\}/g,(_,url,label)=>{
@@ -11,6 +19,11 @@ function prose(s){
   if(url!==approved)throw Error('Unapproved note hyperlink');
   const text=escape(label.replace(/\s+/g,' ')).replace(/\\emph\{([^{}]*)\}/g,'<em>$1</em>');
   links.push(`<a href="${escape(url)}" target="_blank" rel="noopener">${text}</a>`);
+  return '@@LINK'+(links.length-1)+'@@';
+ });
+ s=s.replace(/\\ref\{([^{}]+)\}/g,(_,label)=>{
+  const reference=references.get(label);if(!reference)throw Error(`Unknown internal reference: ${label}`);
+  links.push(`<a class="internal-reference" href="#${escape(reference.target)}">${escape(reference.number)}</a>`);
   return '@@LINK'+(links.length-1)+'@@';
  });
  s=s.replace(/\\'\{e\}/g,'é');

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-10T20:16:01.598000+08:00",
+  "updatedAt": "2026-10-10T21:07:00.686000+08:00",
   "series": [
     {
       "id": "F034",
@@ -2299,6 +2299,86 @@
       ],
       "en": [
         "Begin the proof simply with “We may assume \\(r\\ge0\\).” End with “The hypothesis says that \\(p(Z)\\) contains \\(S\\), and hence \\(p(Z)=X\\),” without repeating the conclusion."
+      ]
+    },
+    {
+      "id": "lemma12-use-cartier-h-q",
+      "role": "user",
+      "time": "2026-10-10T21:01:13.439000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "引理 1.2 不用单独引入 \\(k\\)：把 \\(kP\\) 作为整体记为 \\(H\\)，结论写成 \\(h^2\\le H^2\\)。"
+      ],
+      "en": [
+        "Lemma 1.2 need not introduce \\(k\\) separately: denote the Cartier divisor \\(kP\\) by \\(H\\), and write the conclusion as \\(h^2\\le H^2\\)."
+      ]
+    },
+    {
+      "id": "lemma12-nef-suffices-q",
+      "role": "user",
+      "time": "2026-10-10T21:02:01.751000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "引理 1.2 是否只需要 \\(H\\) nef，不需要 ample？"
+      ],
+      "en": [
+        "Does Lemma 1.2 require only that \\(H\\) be nef, rather than ample?"
+      ]
+    },
+    {
+      "id": "lemma12-nef-suffices-a",
+      "role": "assistant",
+      "time": "2026-10-10T21:02:11.051000+08:00",
+      "kind": "mathematics",
+      "highlight": true,
+      "proofStatus": "unverified",
+      "zh": [
+        "是。令 \\(F\\) 为有效固定部分，选 \\(E_1=E_1^{\\prime}+F\\) 和与 \\(E_1^{\\prime}\\) 无共同分量的一般成员 \\(E_2\\in\\Lambda\\)。孤立基点不在 \\(F\\) 上，所以局部交数给出 \\[h^2\\le i_x(E_1^{\\prime},E_2)\\le E_1^{\\prime}\\cdot H=H^2-H\\cdot F\\le H^2.\\]最后一步只用到 nef 性与 \\(F\\ge0\\)。因此条件可改为 nef Cartier 除子 \\(H\\)，结论为 \\(h^2\\le H^2\\)。"
+      ],
+      "en": [
+        "Yes. Let \\(F\\) be the effective fixed part. Choose \\(E_1=E_1^{\\prime}+F\\) and a general \\(E_2\\in\\Lambda\\) sharing no component with \\(E_1^{\\prime}\\). The isolated base point lies outside \\(F\\), so local intersection gives \\[h^2\\le i_x(E_1^{\\prime},E_2)\\le E_1^{\\prime}\\cdot H=H^2-H\\cdot F\\le H^2.\\]The final step uses only nefness and \\(F\\ge0\\). Thus the hypothesis can be a nef Cartier divisor \\(H\\), with conclusion \\(h^2\\le H^2\\)."
+      ]
+    },
+    {
+      "id": "lemma12-real-threshold-q",
+      "role": "user",
+      "time": "2026-10-10T21:05:33.683000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "引理 1.2 的重数阈值是否不必是正整数，可以像 1.3 一样改用实数 \\(r\\)？"
+      ],
+      "en": [
+        "Can the multiplicity threshold in Lemma 1.2 be a real number \\(r\\), as in 1.3, rather than a positive integer?"
+      ]
+    },
+    {
+      "id": "lemma12-real-threshold-a",
+      "role": "assistant",
+      "time": "2026-10-10T21:06:05.106000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true,
+      "zh": [
+        "整数条件不必要，非负实数 \\(r\\) 就够：由 \\(\\operatorname{mult}_x(E_i)\\ge r\\ge0\\) 得到相同的交数界 \\(r^2\\le H^2\\)。不能允许任意负数，因为结论含平方。例如 \\(\\mathbb P^2\\) 上经过固定点的直线束，\\(H^2=1\\)，取 \\(r=-2\\) 时重数条件成立，但 \\(r^2\\le H^2\\) 不成立。用户确认保留 \\(r\\ge0\\)。"
+      ],
+      "en": [
+        "Integrality is unnecessary: a nonnegative real \\(r\\) suffices. The inequalities \\(\\operatorname{mult}_x(E_i)\\ge r\\ge0\\) give the same intersection bound \\(r^2\\le H^2\\). Arbitrary negative values are inadmissible because the conclusion involves a square. For the pencil of lines through a fixed point in \\(\\mathbb P^2\\), \\(H^2=1\\); taking \\(r=-2\\) satisfies the multiplicity condition but not \\(r^2\\le H^2\\). The user confirmed retaining \\(r\\ge0\\)."
+      ]
+    },
+    {
+      "id": "lemma13-complete-conclusion-q",
+      "role": "user",
+      "time": "2026-10-10T21:07:00.686000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "把引理 1.3 的结论补完整：对每个 \\(x\\in X\\)，存在除子 \\(E_x\\in\\Lambda\\)，使得 \\(\\operatorname{mult}_x(E_x)>r\\)。"
+      ],
+      "en": [
+        "Complete the conclusion of Lemma 1.3: for every \\(x\\in X\\), there exists a divisor \\(E_x\\in\\Lambda\\) such that \\(\\operatorname{mult}_x(E_x)>r\\)."
       ]
     }
   ],
