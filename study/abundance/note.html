@@ -30,28 +30,29 @@
  \end{aligned}
 \]</p><span class="qed" aria-label="End of proof">□</span></div></details>
 <div class="note-prose"><p>In particular, if every member has multiplicity at least $h&gt;k\sqrt{P^2}$ at $y$, the nonempty system has a base curve through $y$.</p></div>
-<section class="statement" id="lemma-1.3" aria-labelledby="statement-title-1.3"><h3 id="statement-title-1.3">Lemma 1.3.</h3><p>Let $X$ be a smooth projective surface and $A$ an ample Cartier divisor. Suppose that for general $y\in X$ there is $E\in|A|$ with $\mult_y(E)&gt;4\sqrt{A^2}$. Then, through a general point of $X$, there is an integral curve $C$ such that \[
- 0&lt;A\cdot C\leq2\sqrt{A^2}.
-\]</p></section>
-<details class="proof"><summary id="proof-toggle-1.3" aria-controls="proof-body-1.3" aria-expanded="false"><span class="proof-heading">Proof <span class="proof-verification"><span aria-hidden="true">✓</span> verified by Sheng</span></span><span class="proof-icon" aria-hidden="true"></span></summary><div class="proof-body" id="proof-body-1.3" role="region" aria-labelledby="proof-toggle-1.3"><p>We first extend the high-multiplicity hypothesis to every point. For $y\in X$, consider \[
- \operatorname{ev}_y:H^0(X,\OO_X(A))\longrightarrow
- \OO_X(A)_y\otimes_{\OO_{X,y}}
- \bigl(\OO_{X,y}/\mathfrak m_y^{\lfloor4\sqrt{A^2}\rfloor+1}\bigr).
-\] Every $E\in|A|$ is $(s)_0$ for a nonzero section $s$, determined up to scalar, and \[
- \mult_y(E)&gt;4\sqrt{A^2}
- \iff \ord_y(s)\geq\lfloor4\sqrt{A^2}\rfloor+1
+<section class="statement" id="lemma-1.3" aria-labelledby="statement-title-1.3"><h3 id="statement-title-1.3">Lemma 1.3.</h3><p>Let $X$ be a smooth projective surface, $H$ a Cartier divisor, $\Lambda\subseteq|H|$ a fixed nonempty linear subsystem, and $c\in\mathbb R$. Suppose that for very general $y\in X$ there is $E_y\in\Lambda$ with $\mult_y(E_y)&gt;c$. Then for every $y\in X$ there is such a divisor $E_y$.</p></section>
+<details class="proof"><summary id="proof-toggle-1.3" aria-controls="proof-body-1.3" aria-expanded="false"><span class="proof-heading">Proof <span class="proof-verification"><span aria-hidden="true">✓</span> verified by Sheng</span></span><span class="proof-icon" aria-hidden="true"></span></summary><div class="proof-body" id="proof-body-1.3" role="region" aria-labelledby="proof-toggle-1.3"><p>We translate the multiplicity condition into a kernel condition. If $c&lt;0$, any member of $\Lambda$ works at every point, since effective divisors have nonnegative multiplicity. Assume $c\geq0$ and write $\Lambda=\mathbb P(V)$ for a fixed nonzero subspace $V\subseteq H^0(X,\OO_X(H))$. For $y\in X$, consider \[
+ \operatorname{ev}_y:V\longrightarrow
+ \OO_X(H)_y\otimes_{\OO_{X,y}}
+ \bigl(\OO_{X,y}/\mathfrak m_y^{\lfloor c\rfloor+1}\bigr).
+\] Every $E\in\Lambda$ is $(s)_0$ for a nonzero $s\in V$, determined up to scalar, and \[
+ \mult_y(E)&gt;c
+ \iff \ord_y(s)\geq\lfloor c\rfloor+1
  \iff \operatorname{ev}_y(s)=0.
 \] Consequently \[
  \begin{aligned}
- &amp;\{y\in X:\exists E\in|A|,\ \mult_y(E)&gt;4\sqrt{A^2}\}\\
+ &amp;\{y\in X:\exists E\in\Lambda,\ \mult_y(E)&gt;c\}\\
  &amp;\qquad=\{y\in X:\ker\operatorname{ev}_y\ne0\}\\
- &amp;\qquad=\{y\in X:\operatorname{rank}\operatorname{ev}_y
-       &lt;h^0(X,\OO_X(A))\}.
+ &amp;\qquad=\{y\in X:\operatorname{rank}\operatorname{ev}_y&lt;\dim V\}.
  \end{aligned}
-\] These maps are the fibres of the global jet evaluation \[
- H^0(X,\OO_X(A))\otimes\OO_X\longrightarrow
- J^{\lfloor4\sqrt{A^2}\rfloor}\OO_X(A).
-\] The jet bundle is locally free because $X$ is smooth. The rank-drop locus is therefore closed, being defined locally by minors. By the hypothesis it contains a dense open subset of $X$, so it equals $X$.</p>
+\]</p>
+<p>We show that this locus is closed and hence equals $X$. The maps above are the fibres of the restricted global jet evaluation \[
+ V\otimes\OO_X\longrightarrow J^{\lfloor c\rfloor}\OO_X(H).
+\] The jet bundle is locally free because $X$ is smooth. The rank-drop locus is therefore closed, being defined locally by minors. The very-general locus is Zariski dense over $\mathbb C$. By the hypothesis this closed locus contains that dense locus, so it equals $X$.</p><span class="qed" aria-label="End of proof">□</span></div></details>
+<section class="statement" id="lemma-1.4" aria-labelledby="statement-title-1.4"><h3 id="statement-title-1.4">Lemma 1.4.</h3><p>Let $X$ be a smooth projective surface and $A$ an ample Cartier divisor. Suppose that for very general $y\in X$ there is $E\in|A|$ with $\mult_y(E)&gt;4\sqrt{A^2}$. Then, through a general point of $X$, there is an integral curve $C$ such that \[
+ 0&lt;A\cdot C\leq2\sqrt{A^2}.
+\]</p></section>
+<details class="proof"><summary id="proof-toggle-1.4" aria-controls="proof-body-1.4" aria-expanded="false"><span class="proof-heading">Proof <span class="proof-verification"><span aria-hidden="true">✓</span> verified by Sheng</span></span><span class="proof-icon" aria-hidden="true"></span></summary><div class="proof-body" id="proof-body-1.4" role="region" aria-labelledby="proof-toggle-1.4"><p>By Lemma 1.3 with $H=A$, $\Lambda=|A|$ and $c=4\sqrt{A^2}$, the high-multiplicity hypothesis holds at every point.</p>
 <p>We next use Lemma 1.2 to force a base curve through the marked point. Choose a sufficiently large positive integer $k$ with $k\sqrt{A^2}\geq4$. Multiplying the divisors in the hypothesis by $k$ gives members of $|kA|$ of multiplicity strictly greater than $4k\sqrt{A^2}$. For $y\in X$, put \[
  \Lambda_i(y)=\{E\in|kA|:\mult_y(E)\geq
  \lceil(2i+3)k\sqrt{A^2}/2\rceil\}\quad(i=0,1,2).
@@ -88,10 +89,10 @@
 \] satisfies, simultaneously for every $n\geq N$, every positive integer $k$ with $kP_n$ Cartier, and every effective divisor $E\in|kP_n|$, \[
  \mult_x(E)\leq4k\sqrt{P_n^2}.
 \]</p></section>
-<details class="proof"><summary id="proof-toggle-2.1" aria-controls="proof-body-2.1" aria-expanded="false"><span class="proof-heading">Proof</span><span class="proof-icon" aria-hidden="true"></span></summary><div class="proof-body" id="proof-body-2.1" role="region" aria-labelledby="proof-toggle-2.1"><p>We use Lemma 1.3.</p>
+<details class="proof"><summary id="proof-toggle-2.1" aria-controls="proof-body-2.1" aria-expanded="false"><span class="proof-heading">Proof</span><span class="proof-icon" aria-hidden="true"></span></summary><div class="proof-body" id="proof-body-2.1" role="region" aria-labelledby="proof-toggle-2.1"><p>We use Lemma 1.4.</p>
 <p>Suppose that the asserted bound fails generically for arbitrarily large indices $n$. Fix such an index and write \[
  P=P_n,\qquad r=r_n,\qquad\rho=\sqrt{P^2}.
-\] The ranks of jet evaluation maps are algebraic rank conditions. Outside a countable union of proper closed subsets, a violation for some $k$ therefore gives a nonzero complete jet kernel at the general point. Apply Lemma 1.3 to the ample Cartier divisor $H=kP$. Its nonempty open locus meets the very-general nef-reduction locus. Choose an integral curve $C$ through a point in this intersection with \[
+\] The ranks of jet evaluation maps are algebraic rank conditions. Outside a countable union of proper closed subsets, a violation for some $k$ therefore gives a nonzero complete jet kernel at the general point. Apply Lemma 1.4 to the ample Cartier divisor $H=kP$. Its nonempty open locus meets the very-general nef-reduction locus. Choose an integral curve $C$ through a point in this intersection with \[
  0&lt;H\cdot C\leq2\sqrt{H^2}=2k\rho,
  \qquad 0&lt;P\cdot C\leq2\rho.
 \] Choose this point sufficiently very general for the nef reduction of $D$. Since $\nef(X,D)=2$ and $D$ is Cartier, $D\cdot C&gt;0$ implies $D\cdot C\geq1$. Moreover $P-rD=(r/n)A$ is nef. Hence \[

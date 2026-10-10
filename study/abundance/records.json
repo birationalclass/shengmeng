@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-10T17:58:12.537+08:00",
+  "updatedAt": "2026-10-10T18:03:02.386+08:00",
   "series": [
     {
       "id": "F034",
@@ -1812,6 +1812,116 @@
       ],
       "en": [
         "The seven paragraphs of Lemma 1.3 now state their goals: extend the high-multiplicity hypothesis, force a base curve, construct the family, compare parameter derivatives, obtain incidence multiplicity, bound the degree, and obtain the conclusion on an open set of general points. Full calculations are retained without reintroducing q or rho abbreviations."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "multiplicity-every-point-q",
+      "role": "user",
+      "time": "2026-10-10T18:00:37.767+08:00",
+      "zh": [
+        "这个高重数条件能推出对所有点成立吗？"
+      ],
+      "en": [
+        "Does this high-multiplicity condition hold at every point?"
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics"
+    },
+    {
+      "id": "multiplicity-every-point-a",
+      "role": "assistant",
+      "time": "2026-10-10T18:00:37.767+08:00",
+      "zh": [
+        "是。固定线性系与阈值后，满足条件的点集是喷射评价的闭秩降低集合。它包含很一般点的稠密集合，故等于整个曲面。量词是 \\(\\forall y\\in X,\\ \\exists E_y\\)：除子可以随点改变，并不是同一个除子对所有点都具有高重数。关于有界次数曲线的另一条结论仍只断言通过一般点。"
+      ],
+      "en": [
+        "Yes. For a fixed linear system and threshold, the locus is a closed rank-drop locus of jet evaluation. It contains a dense set of very general points, so it is the whole surface. The quantifiers are \\(\\forall y\\in X,\\ \\exists E_y\\): the divisor may vary with the point. This does not assert that one divisor has high multiplicity at all points. The separate bounded-degree curve conclusion is still only through a general point."
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics",
+      "highlight": true
+    },
+    {
+      "id": "separate-multiplicity-lemma-q",
+      "role": "user",
+      "time": "2026-10-10T18:01:06.813+08:00",
+      "zh": [
+        "把这个结论整理成单独的引理，放在原引理前；假设用 very general，结论为所有点。"
+      ],
+      "en": [
+        "Separate this result into a lemma before the moving-curve lemma, with a very-general hypothesis and an every-point conclusion."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "separate-multiplicity-lemma-a",
+      "role": "assistant",
+      "time": "2026-10-10T18:01:06.813+08:00",
+      "zh": [
+        "新引理编号为 1.3，原曲线引理顺延为 1.4；后者引用 1.3，主引理 2.1 的引用同步改为 1.4。各条完整证明保留。"
+      ],
+      "en": [
+        "The new lemma is 1.3 and the moving-curve lemma becomes 1.4. It invokes 1.3, and the reference in main Lemma 2.1 becomes 1.4. The complete proofs are retained."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "fixed-linear-system-real-threshold-q",
+      "role": "user",
+      "time": "2026-10-10T18:02:46.636+08:00",
+      "zh": [
+        "这一步需要 ample 或 \\(4\\sqrt{A^2}\\) 吗？能否改成一个线性系与实数阈值？"
+      ],
+      "en": [
+        "Does this step need ampleness or \\(4\\sqrt{A^2}\\)? Can it use a linear system and a real threshold?"
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics"
+    },
+    {
+      "id": "fixed-linear-system-real-threshold-a",
+      "role": "assistant",
+      "time": "2026-10-10T18:02:46.636+08:00",
+      "zh": [
+        "不需要正性。设 \\(H\\) 为 Cartier 除子，固定非空线性子系 \\(\\Lambda=\\mathbb P(V)\\subseteq|H|\\)，且 \\(c\\in\\mathbb R\\)。若很一般点 \\(y\\) 都存在 \\(E_y\\in\\Lambda\\) 满足 \\(\\operatorname{mult}_yE_y>c\\)，则每个点都存在这样的除子。固定同一个 \\(V\\) 与同一个 \\(c\\) 是关键。",
+        "若 \\(c<0\\)，有效除子的非负重数已给出结论。若 \\(c\\ge0\\)，限制喷射评价到 \\(V\\)：\\[\\operatorname{ev}_y:V\\longrightarrow\\mathcal O_X(H)_y\\otimes_{\\mathcal O_{X,y}}\\bigl(\\mathcal O_{X,y}/\\mathfrak m_y^{\\lfloor c\\rfloor+1}\\bigr).\\]重数大于 \\(c\\) 等价于非零核；秩小于 \\(\\dim V\\) 的集合局部由子式定义，因此闭。光滑性保证喷射丛局部自由；在 \\(\\mathbb C\\) 上很一般点集合稠密，故该闭集为 \\(X\\)。",
+        "这只取消喷射引理的 ample 假设与特定数值；曲线引理 1.4 仍需 ample 的 \\(A\\)，并取 \\(H=A\\)、\\(\\Lambda=|A|\\)、\\(c=4\\sqrt{A^2}\\) 来应用 1.3。"
+      ],
+      "en": [
+        "No positivity is needed. Let \\(H\\) be Cartier, fix a nonempty linear subsystem \\(\\Lambda=\\mathbb P(V)\\subseteq|H|\\), and let \\(c\\in\\mathbb R\\). If for very general \\(y\\) there is \\(E_y\\in\\Lambda\\) with \\(\\operatorname{mult}_yE_y>c\\), such a divisor exists at every point. Fixing the same \\(V\\) and the same \\(c\\) is essential.",
+        "For \\(c<0\\), nonnegative multiplicity of effective divisors proves the claim. For \\(c\\ge0\\), restrict jet evaluation to \\(V\\): \\[\\operatorname{ev}_y:V\\longrightarrow\\mathcal O_X(H)_y\\otimes_{\\mathcal O_{X,y}}\\bigl(\\mathcal O_{X,y}/\\mathfrak m_y^{\\lfloor c\\rfloor+1}\\bigr).\\]Multiplicity greater than \\(c\\) is equivalent to a nonzero kernel. The locus of rank less than \\(\\dim V\\) is locally defined by minors, hence closed. Smoothness makes the jet bundle locally free; very general points are dense over \\(\\mathbb C\\), so the closed locus is \\(X\\).",
+        "This removes ampleness and the special numerical threshold only from the jet lemma. The moving-curve Lemma 1.4 still needs ample \\(A\\) and applies 1.3 with \\(H=A\\), \\(\\Lambda=|A|\\), \\(c=4\\sqrt{A^2}\\)."
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics",
+      "highlight": true
+    },
+    {
+      "id": "generalize-jet-lemma-q",
+      "role": "user",
+      "time": "2026-10-10T18:03:02.386+08:00",
+      "zh": [
+        "新引理用固定线性系与任意实数 c；不要限定为四倍根号 A 平方。"
+      ],
+      "en": [
+        "State the new lemma for a fixed linear system and any real number c, without the special four-square-root threshold."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "generalize-jet-lemma-a",
+      "role": "assistant",
+      "time": "2026-10-10T18:03:02.386+08:00",
+      "zh": [
+        "引理 1.3 已按此一般形式表述，包含负阈值情形与完整喷射秩证明；1.4 保留其原有正性条件与次数界。"
+      ],
+      "en": [
+        "Lemma 1.3 now has this general formulation, including the negative-threshold case and the full jet-rank proof. Lemma 1.4 retains its original positivity hypothesis and degree bound."
       ],
       "proofStatus": "unverified",
       "kind": "revision"
