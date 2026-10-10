@@ -1639,6 +1639,20 @@ set_option pp.proofs false
 #print axioms LinearStudy.sourceModuleBaseCoordinateOverlap_refinement
 #check LinearStudy.moduleBaseSourceLocalizationEquiv_overlap_refinement
 #print axioms LinearStudy.moduleBaseSourceLocalizationEquiv_overlap_refinement
+#check LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_add
+#print axioms LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_add
+#check LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_smul
+#print axioms LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_smul
+#check LinearStudy.originalAffineHomBaseModule
+#print axioms LinearStudy.originalAffineHomBaseModule
+#check LinearStudy.nativeAffineInternalHomSectionsEquiv
+#print axioms LinearStudy.nativeAffineInternalHomSectionsEquiv
+#check LinearStudy.nativeAffineInternalHomSectionsEquiv_smul
+#print axioms LinearStudy.nativeAffineInternalHomSectionsEquiv_smul
+#check LinearStudy.nativeAffineInternalHomSectionsEquiv_add
+#print axioms LinearStudy.nativeAffineInternalHomSectionsEquiv_add
+#check LinearStudy.nativeAffineInternalHomSectionsLinearEquiv
+#print axioms LinearStudy.nativeAffineInternalHomSectionsLinearEquiv
 #check LinearStudy.nativeProjectiveZeroChartSectionMap
 #print axioms LinearStudy.nativeProjectiveZeroChartSectionMap
 #check LinearStudy.nativeBaseSourceChartSectionMap
@@ -2345,12 +2359,20 @@ set_option pp.proofs false
 #print axioms LinearStudy.oneVariable_closedFiber_jacobian
 #check LinearStudy.originalAwayOverlap_mk
 #print axioms LinearStudy.originalAwayOverlap_mk
+#check LinearStudy.originalGlobalModuleScalar
+#print axioms LinearStudy.originalGlobalModuleScalar
+#check LinearStudy.originalGlobalModuleScalar_app
+#print axioms LinearStudy.originalGlobalModuleScalar_app
 #check LinearStudy.original_local_ideal_firstOrder_normal_form
 #print axioms LinearStudy.original_local_ideal_firstOrder_normal_form
 #check LinearStudy.original_local_ideal_normal_polynomial_generators
 #print axioms LinearStudy.original_local_ideal_normal_polynomial_generators
 #check LinearStudy.smooth_point_original_ideal_normal_polynomial_generators
 #print axioms LinearStudy.smooth_point_original_ideal_normal_polynomial_generators
+#check LinearStudy.originalTildeScalar
+#print axioms LinearStudy.originalTildeScalar
+#check LinearStudy.originalTildeScalar_unit
+#print axioms LinearStudy.originalTildeScalar_unit
 #check LinearStudy.field_isCohenMacaulay
 #print axioms LinearStudy.field_isCohenMacaulay
 #check LinearStudy.polynomial_origin_height
@@ -4251,6 +4273,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.schemeModuleHomPresheaf_isSheaf
 #check LinearStudy.schemeModuleHomSheaf
 #print axioms LinearStudy.schemeModuleHomSheaf
+#check LinearStudy.schemeModuleHomTopSectionsEquiv_smul
+#print axioms LinearStudy.schemeModuleHomTopSectionsEquiv_smul
+#check LinearStudy.schemeModuleHomTopSectionsEquiv_add
+#print axioms LinearStudy.schemeModuleHomTopSectionsEquiv_add
 #check LinearStudy.originalPresheafTopSectionsEquiv
 #print axioms LinearStudy.originalPresheafTopSectionsEquiv
 #check LinearStudy.schemeModuleHomTopSectionsEquiv

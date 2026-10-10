@@ -749,15 +749,23 @@ Linear.SchemeModuleHomGlobal: cached compiled module (source and project depende
 Linear.SchemeModuleHomScalar: cached compiled module (source and project dependencies unchanged)
 Linear.SchemeModuleHomModuleSheaf: cached compiled module (source and project dependencies unchanged)
 Linear.SchemeModuleHomModuleSections: cached compiled module (source and project dependencies unchanged)
-Linear.SchemeModuleHomGluing: exit 0; source 3939b15c90ca9f368eb3dd6d8d8ca715e323c06f90a7052cdec52ae43655a7fb
+Linear.SchemeModuleHomGluing: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomPrecompose: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomTopSections: cached compiled module (source and project dependencies unchanged)
+Linear.ProjectiveNativeAffineInternalHomSections: cached compiled module (source and project dependencies unchanged)
+Linear.OriginalGlobalModuleScalar: exit 0; source 770d438a7faa8197f651f53412ecb7616504ba2b6165cb9915a4a9f63fb4e877
 
-Linear.SchemeModuleHomPrecompose: exit 0; source bac88e881cf848f3d2904dea1b1b2a101e7afe47400195415aeaf4dd31d4c78f
+Linear.OriginalTildeScalar: exit 0; source f29be9d8bdfffc0d663a1192c1961d0a3efad5893378937af2c5929f86ae3062
 
-Linear.SchemeModuleHomTopSections: exit 0; source da97957a35475160664f4f9052cef674a36f6490e75fb293e3c1c975b0055439
+Linear.SchemeModuleHomTopScalars: exit 0; source 0bb8c20cc8675dd9061103ffec6c6692b1ab0e57b4bf3dab3cb068be7f984899
 
-Linear.ProjectiveNativeAffineInternalHomSections: exit 0; source 2820e436fcc1ecedb5eee6460f6099f1a96e48e91fb04c087b84d36e2f7a4008
+Linear.NativeAffineDualScalar: exit 0; source c6b52bcc39bad91e09f01c4dfe145c411ddcc17d6fd766f63fb831204cda09ff
 
-Linear: exit 0; source d414e53eac19ccf8caf041bde2d833a04a4189929096a4d0fb16e5d2c60d7c26
+Linear.NativeAffineDualAdd: exit 0; source 6e2a18ab87c038030bc09b32588d2d9c2a80accced6a3e26e0ee994d6a54f4cb
+
+Linear.NativeAffineInternalHomLinear: exit 0; source a7dd8c82b2d3bfbf6759d6b12f372da5c726c0b6102b9ea3bb6cc90c9733ac13
+
+Linear: exit 0; source dc269bca2dce4e6103c4a551a04849d3602a9357f8841c793b71e892dee0bdb1
 
 Local audit: python audit.py
 LinearStudy.linear_reindexed_actual_source_point.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
@@ -5799,6 +5807,81 @@ LinearStudy.moduleBaseSourceLocalizationEquiv_overlap_refinement.{u} {R S M : Ty
 'LinearStudy.moduleBaseSourceLocalizationEquiv_overlap_refinement' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_add.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (ell k : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a)) :
+  (LinearStudy.nativeFullSourceAffinePushforwardDualEquiv 𝒜 𝓑 a ha hinj) (ell + k) =
+    (LinearStudy.nativeFullSourceAffinePushforwardDualEquiv 𝒜 𝓑 a ha hinj) ell +
+      (LinearStudy.nativeFullSourceAffinePushforwardDualEquiv 𝒜 𝓑 a ha hinj) k
+'LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_smul.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))) (c : HomogeneousLocalization.Away 𝒜 a)
+  (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a)) :
+  let A := HomogeneousLocalization.Away 𝒜 a;
+  have t := AlgebraicGeometry.tildeSelf;
+  (LinearStudy.nativeFullSourceAffinePushforwardDualEquiv 𝒜 𝓑 a ha hinj) (c • ell) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.nativeFullSourceAffinePushforwardDualEquiv 𝒜 𝓑 a ha hinj) ell)
+      (CategoryTheory.CategoryStruct.comp t.inv
+        (CategoryTheory.CategoryStruct.comp
+          ((AlgebraicGeometry.tilde.functor ↧A).map (ModuleCat.ofHom (c • LinearMap.id))) t.hom))
+'LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalAffineHomBaseModule.{u} (A : CommRingCat) (M N : (AlgebraicGeometry.Spec A).Modules) :
+  Module ↑A ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op ⊤))
+'LinearStudy.originalAffineHomBaseModule' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeAffineInternalHomSectionsEquiv.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]
+  [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))) :
+  let A := HomogeneousLocalization.Away 𝒜 a;
+  let B := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);
+  have g := AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B));
+  ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a) ≃
+    ↑((LinearStudy.schemeModuleHomModuleSheaf
+              ((AlgebraicGeometry.Scheme.Modules.pushforward g).obj
+                (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf))
+              (SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf)).presheaf.obj
+        (Opposite.op ⊤))
+'LinearStudy.nativeAffineInternalHomSectionsEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeAffineInternalHomSectionsEquiv_smul.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))) (c : HomogeneousLocalization.Away 𝒜 a)
+  (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a)) :
+  let A := HomogeneousLocalization.Away 𝒜 a;
+  let B := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);
+  let g := AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B));
+  let M :=
+    (AlgebraicGeometry.Scheme.Modules.pushforward g).obj (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf);
+  let N := SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf;
+  (LinearStudy.nativeAffineInternalHomSectionsEquiv 𝒜 𝓑 a ha hinj) (c • ell) =
+    c • (LinearStudy.nativeAffineInternalHomSectionsEquiv 𝒜 𝓑 a ha hinj) ell
+'LinearStudy.nativeAffineInternalHomSectionsEquiv_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeAffineInternalHomSectionsEquiv_add.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (ell k : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a)) :
+  (LinearStudy.nativeAffineInternalHomSectionsEquiv 𝒜 𝓑 a ha hinj) (ell + k) =
+    (LinearStudy.nativeAffineInternalHomSectionsEquiv 𝒜 𝓑 a ha hinj) ell +
+      (LinearStudy.nativeAffineInternalHomSectionsEquiv 𝒜 𝓑 a ha hinj) k
+'LinearStudy.nativeAffineInternalHomSectionsEquiv_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeAffineInternalHomSectionsLinearEquiv.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))) :
+  let A := HomogeneousLocalization.Away 𝒜 a;
+  let B := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);
+  have g := AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B));
+  have M :=
+    (AlgebraicGeometry.Scheme.Modules.pushforward g).obj (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf);
+  have N := SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf;
+  ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a) ≃ₗ[A]
+    ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op ⊤))
+'LinearStudy.nativeAffineInternalHomSectionsLinearEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.nativeProjectiveZeroChartSectionMap.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
   [AddCommGroup M] [Module K M] [Module S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
   (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (a : S) (ha : a ∈ 𝓑 1) :
@@ -8513,6 +8596,16 @@ LinearStudy.originalAwayOverlap_mk.{u_1} {R : Type u_1} [CommRing R] (a b z : R)
   (IsLocalization.Away.awayToAwayRight a b) (IsLocalization.mk' (Localization.Away a) z ⟨a ^ n, ⋯⟩) =
     IsLocalization.mk' (Localization.Away (a * b)) (b ^ n * z) ⟨(a * b) ^ n, ⋯⟩
 'LinearStudy.originalAwayOverlap_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalGlobalModuleScalar.{u} {X : AlgebraicGeometry.Scheme} (r : ↑(X.presheaf.obj (Opposite.op ⊤)))
+  (M : X.Modules) : M ⟶ M
+'LinearStudy.originalGlobalModuleScalar' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalGlobalModuleScalar_app.{u} {X : AlgebraicGeometry.Scheme} (r : ↑(X.presheaf.obj (Opposite.op ⊤)))
+  (M : X.Modules) (U : X.Opens) (x : ↑(M.presheaf.obj (Opposite.op U))) :
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.originalGlobalModuleScalar r M) U))
+      x =
+    (CategoryTheory.ConcreteCategory.hom (X.presheaf.map (TopologicalSpace.Opens.leTop U).op)) r • x
+'LinearStudy.originalGlobalModuleScalar_app' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.original_local_ideal_firstOrder_normal_form.{u_1, u_2, u_3} {K : Type u_1} {α : Type u_2} {β : Type u_3}
   [Field K] [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] [Nonempty β] (I : Ideal (MvPolynomial (α ⊕ β) K))
   (x : α ⊕ β → K) (G : β → MvPolynomial (α ⊕ β) K)
@@ -8590,6 +8683,20 @@ LinearStudy.smooth_point_original_ideal_normal_polynomial_generators.{u_1, u_2} 
 'LinearStudy.smooth_point_original_ideal_normal_polynomial_generators' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.originalTildeScalar.{u} {R : CommRingCat} (c : ↑R) (M : ModuleCat ↑R) :
+  (AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom (c • LinearMap.id)) =
+    LinearStudy.originalGlobalModuleScalar
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso R).inv) c) (AlgebraicGeometry.tilde M)
+'LinearStudy.originalTildeScalar' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalTildeScalar_unit.{u} {R : CommRingCat} (c : ↑R) :
+  have t := AlgebraicGeometry.tildeSelf;
+  CategoryTheory.CategoryStruct.comp t.inv
+      (CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom (c • LinearMap.id)))
+        t.hom) =
+    LinearStudy.originalGlobalModuleScalar
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso R).inv) c)
+      (SheafOfModules.unit (AlgebraicGeometry.Spec R).ringCatSheaf)
+'LinearStudy.originalTildeScalar_unit' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.field_isCohenMacaulay.{u_1} {K : Type u_1} [Field K] : IsCohenMacaulayRing K
 'LinearStudy.field_isCohenMacaulay' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_origin_height.{u_1} {K : Type u_1} [Field K] (n : ℕ) :
@@ -17133,6 +17240,18 @@ LinearStudy.schemeModuleHomPresheaf_isSheaf.{u} {X : AlgebraicGeometry.Scheme} (
 LinearStudy.schemeModuleHomSheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :
   TopCat.Sheaf (Type u) ↑X.toPresheafedSpace
 'LinearStudy.schemeModuleHomSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomTopSectionsEquiv_smul.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules)
+  (r : ↑(X.presheaf.obj (Opposite.op ⊤)))
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op ⊤))) :
+  (LinearStudy.schemeModuleHomTopSectionsEquiv M N) (r • h) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomTopSectionsEquiv M N) h)
+      (LinearStudy.originalGlobalModuleScalar r N)
+'LinearStudy.schemeModuleHomTopSectionsEquiv_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomTopSectionsEquiv_add.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules)
+  (h k : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op ⊤))) :
+  (LinearStudy.schemeModuleHomTopSectionsEquiv M N) (h + k) =
+    (LinearStudy.schemeModuleHomTopSectionsEquiv M N) h + (LinearStudy.schemeModuleHomTopSectionsEquiv M N) k
+'LinearStudy.schemeModuleHomTopSectionsEquiv_add' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.originalPresheafTopSectionsEquiv.{u} {X : AlgebraicGeometry.Scheme}
   (F : CategoryTheory.Functor X.Opensᵒᵖ (Type u)) : ↑F.sections ≃ F.obj (Opposite.op ⊤)
 'LinearStudy.originalPresheafTopSectionsEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]

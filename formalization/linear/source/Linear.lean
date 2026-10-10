@@ -1067,3 +1067,10 @@ public import Linear.SchemeModuleHomGluing
 public import Linear.SchemeModuleHomPrecompose
 public import Linear.SchemeModuleHomTopSections
 public import Linear.ProjectiveNativeAffineInternalHomSections
+
+public import Linear.OriginalGlobalModuleScalar
+public import Linear.OriginalTildeScalar
+public import Linear.SchemeModuleHomTopScalars
+public import Linear.NativeAffineDualScalar
+public import Linear.NativeAffineDualAdd
+public import Linear.NativeAffineInternalHomLinear
