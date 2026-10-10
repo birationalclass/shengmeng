@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-10T14:58:56+08:00",
+  "updatedAt": "2026-10-10T15:44:00+08:00",
   "series": [
     {
       "id": "F034",
@@ -490,6 +490,304 @@
         "For the finitely many initial terms, take \\(r_n=1\\). This preliminary lemma has been checked by the intersection calculation and rounding estimate above. Neither \\(K_X\\sim0\\) nor \\(n(X,D)=2\\) is required. The paper’s core jet estimates and Frobenius comparison remain unaudited."
       ],
       "time": "2026-10-10T14:58:56+08:00"
+    },
+    {
+      "id": "uniform-jet-quantifiers-q",
+      "role": "user",
+      "time": "2026-10-10T15:10:30+08:00",
+      "zh": [
+        "使 \\(kP_n\\) 为 Cartier 的 \\(k\\) 可以依赖 \\(n\\) 吗？阈值 \\(N\\) 和非常一般点 \\(x\\) 的选择是否统一？"
+      ],
+      "en": [
+        "Can the integer \\(k\\) making \\(kP_n\\) Cartier depend on \\(n\\)? Are the threshold \\(N\\) and the very general point \\(x\\) chosen uniformly?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "uniform-jet-quantifiers-a",
+      "role": "assistant",
+      "time": "2026-10-10T15:10:30+08:00",
+      "zh": [
+        "可以。\\(k=n\\) 总能清除 \\(P_n=r_n(D+A/n)\\) 的分母。阈值 \\(N\\) 只依赖固定数据 \\(X,D,A,\\varepsilon,(r_n)\\)，不依赖 \\(x,k,E\\)。",
+        "对可数多个 \\(n,k\\) 和整数喷射阶，将例外的真闭子集取可数并，可得到一个共同的非常一般点集合：其中每个 \\(x\\) 同时适用于所有 \\(n\\ge N\\)、所有使 \\(kP_n\\) 为 Cartier 的正整数 \\(k\\)，以及所有 \\(E\\in|kP_n|\\)。"
+      ],
+      "en": [
+        "Yes. The choice \\(k=n\\) always clears the denominators of \\(P_n=r_n(D+A/n)\\). The threshold \\(N\\) depends only on the fixed data \\(X,D,A,\\varepsilon,(r_n)\\), not on \\(x,k,E\\).",
+        "Taking the countable union of exceptional proper closed subsets for the countably many \\(n,k\\) and integral jet orders gives a common very general locus. Every \\(x\\) in that locus works simultaneously for all \\(n\\ge N\\), every positive integer \\(k\\) with \\(kP_n\\) Cartier, and every \\(E\\in|kP_n|\\)."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "divisor-multiplicity-clarification-q",
+      "role": "user",
+      "time": "2026-10-10T15:12:29+08:00",
+      "zh": [
+        "\\(\\operatorname{ord}_x(s)\\) 怎样定义？线丛截面怎样典范地看成函数？改用线性系中有效除子的重数是否更清楚？"
+      ],
+      "en": [
+        "How is \\(\\operatorname{ord}_x(s)\\) defined? Can a line-bundle section be viewed canonically as a function? Would the multiplicity of an effective divisor in a linear system be clearer?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "divisor-multiplicity-clarification-a",
+      "role": "assistant",
+      "time": "2026-10-10T15:12:29+08:00",
+      "zh": [
+        "采用除子表述：\\(E\\in|H|\\) 表示有效 Cartier 除子 \\(E\\sim H\\)。若 \\(g\\) 是 \\(E\\) 在 \\(x\\) 处的局部方程，则",
+        "\\[\\operatorname{mult}_x(E)=\\max\\{a\\ge0:g\\in\\mathfrak m_x^a\\}.\\]",
+        "将 \\(g\\) 乘以单位不改变这个数。若 \\(E=(s)_0\\) 是非零截面 \\(s\\) 的零除子，则 \\(\\operatorname{mult}_x(E)=\\operatorname{ord}_x(s)\\)。",
+        "固定 Cartier 除子 \\(H\\) 后，可将 \\(\\mathcal O_X(H)\\) 嵌入函数域，使用满足 \\(\\operatorname{div}(f)+H\\ge0\\) 的有理函数 \\(f\\)。若 \\(h\\) 是 \\(H\\) 的局部方程，则零除子的局部方程是 \\(fh\\)，不是单独的 \\(f\\)。所以截面阶一般不能直接写成有理函数 \\(f\\) 的阶。最终用 \\(E\\in|kP_n|\\) 与 \\(\\operatorname{mult}_x(E)\\) 即可，不必另加避开支集的条件。"
+      ],
+      "en": [
+        "Use divisors: \\(E\\in|H|\\) means an effective Cartier divisor with \\(E\\sim H\\). If \\(g\\) is a local equation of \\(E\\) at \\(x\\), then",
+        "\\[\\operatorname{mult}_x(E)=\\max\\{a\\ge0:g\\in\\mathfrak m_x^a\\}.\\]",
+        "Multiplying \\(g\\) by a unit does not change this number. If \\(E=(s)_0\\) is the zero divisor of a nonzero section \\(s\\), then \\(\\operatorname{mult}_x(E)=\\operatorname{ord}_x(s)\\).",
+        "After fixing a Cartier divisor \\(H\\), one may embed \\(\\mathcal O_X(H)\\) into the function field and use rational functions \\(f\\) satisfying \\(\\operatorname{div}(f)+H\\ge0\\). If \\(h\\) is a local equation of \\(H\\), the zero divisor has local equation \\(fh\\), not \\(f\\) alone. Thus the section order is not generally the order of the rational function \\(f\\). The final formulation with \\(E\\in|kP_n|\\) and \\(\\operatorname{mult}_x(E)\\) needs no support-avoidance condition."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "nakayama-sigma-distinction-q",
+      "role": "user",
+      "time": "2026-10-10T15:14:43+08:00",
+      "zh": [
+        "这与 Nakayama 的 \\(\\sigma\\)-分解中的重数相似吗？"
+      ],
+      "en": [
+        "Is this similar to the multiplicity in Nakayama’s \\(\\sigma\\)-decomposition?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "nakayama-sigma-distinction-a",
+      "role": "assistant",
+      "time": "2026-10-10T15:14:43+08:00",
+      "zh": [
+        "都涉及重数，但 \\(\\sigma\\) 沿素除子 \\(\\Gamma\\) 取有效代表的下确界。对 big 的 \\(\\mathbb R\\)-除子 \\(L\\)，",
+        "\\[\\sigma_\\Gamma(L)=\\inf\\{\\operatorname{mult}_\\Gamma\\Delta:\\Delta\\ge0,\\ \\Delta\\sim_{\\mathbb R}L\\}.\\]",
+        "对伪有效 \\(L\\)，先加 ample 扰动再取极限。我们的引理则是对点 \\(x\\) 处每个 \\(E\\in|kP_n|\\) 给出重数上界，不能混同。参见 Lazić–Xie (2025), Definition 2.12。"
+      ],
+      "en": [
+        "Both involve multiplicity, but \\(\\sigma\\) takes an infimum over effective representatives along a prime divisor \\(\\Gamma\\). For a big \\(\\mathbb R\\)-divisor \\(L\\),",
+        "\\[\\sigma_\\Gamma(L)=\\inf\\{\\operatorname{mult}_\\Gamma\\Delta:\\Delta\\ge0,\\ \\Delta\\sim_{\\mathbb R}L\\}.\\]",
+        "For pseudoeffective \\(L\\), add an ample perturbation and take the limit. Our lemma instead bounds the multiplicity at a point \\(x\\) of every \\(E\\in|kP_n|\\) from above. These notions must not be conflated. See Lazić–Xie (2025), Definition 2.12."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "surface-lemma-two-statement-q",
+      "role": "user",
+      "time": "2026-10-10T15:16:29+08:00",
+      "zh": [
+        "请完整陈述曲面情形的重数上界。"
+      ],
+      "en": [
+        "State the multiplicity bound completely in the surface case."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "surface-lemma-two-statement-a",
+      "role": "assistant",
+      "time": "2026-10-10T15:16:29+08:00",
+      "zh": [
+        "引理 3. 设 \\(X\\) 是特征零的光滑射影 K3 曲面，\\(D\\) 是 nef Cartier 除子，且",
+        "\\[D^2=0,\\qquad n(X,D)=2.\\]",
+        "固定 ample Cartier 除子 \\(A\\) 及正有理数 \\(\\varepsilon\\)，原文后续比较采用",
+        "\\[(14\\varepsilon)^2<\\tfrac14,\\qquad80\\varepsilon<\\tfrac34.\\]",
+        "选择正整数 \\(r_n\\to\\infty\\)，令",
+        "\\[P_n=r_n(D+A/n),\\qquad P_n^2\\longrightarrow\\varepsilon^2.\\]",
+        "则存在正整数 \\(N\\) 及真闭子集 \\(Z_i\\subsetneq X\\)、\\(i\\ge1\\)，使每个 \\(x\\in X\\setminus\\bigcup_iZ_i\\) 同时满足：对所有 \\(n\\ge N\\)、所有使 \\(kP_n\\) 为 Cartier 的正整数 \\(k\\)，以及所有有效除子 \\(E\\in|kP_n|\\)，",
+        "\\[\\operatorname{mult}_x(E)\\le4k\\sqrt{P_n^2}.\\]",
+        "\\(D^2=0\\) 是这里独立的假设，不能由 \\(n(X,D)=2\\) 推出。下面给出原文方法的曲面展开；这不意味着一般高维定理或剩余 Frobenius 比较已获验证。"
+      ],
+      "en": [
+        "Lemma 3. Let \\(X\\) be a smooth projective K3 surface in characteristic zero, and \\(D\\) a nef Cartier divisor with",
+        "\\[D^2=0,\\qquad n(X,D)=2.\\]",
+        "Fix an ample Cartier divisor \\(A\\) and a positive rational \\(\\varepsilon\\). The later comparison in the paper uses",
+        "\\[(14\\varepsilon)^2<\\tfrac14,\\qquad80\\varepsilon<\\tfrac34.\\]",
+        "Choose positive integers \\(r_n\\to\\infty\\) and set",
+        "\\[P_n=r_n(D+A/n),\\qquad P_n^2\\longrightarrow\\varepsilon^2.\\]",
+        "Then there exist a positive integer \\(N\\) and proper closed subsets \\(Z_i\\subsetneq X\\), \\(i\\ge1\\), such that every \\(x\\in X\\setminus\\bigcup_iZ_i\\) satisfies, simultaneously for every \\(n\\ge N\\), every positive integer \\(k\\) with \\(kP_n\\) Cartier, and every effective divisor \\(E\\in|kP_n|\\),",
+        "\\[\\operatorname{mult}_x(E)\\le4k\\sqrt{P_n^2}.\\]",
+        "The condition \\(D^2=0\\) is an independent hypothesis; it does not follow from \\(n(X,D)=2\\). The surface expansion of the original method follows below. This does not verify the general higher-dimensional theorem or the remaining Frobenius comparison."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "surface-lemma-constants-q",
+      "role": "user",
+      "time": "2026-10-10T15:17:56+08:00",
+      "zh": [
+        "这里的 \\(14\\)、\\(1/4\\)、\\(3/4\\) 和 \\(80\\) 重要吗？能把 \\(1/4\\) 换成 \\(1/8\\) 吗？"
+      ],
+      "en": [
+        "How important are \\(14\\), \\(1/4\\), \\(3/4\\), and \\(80\\)? Can \\(1/4\\) be replaced by \\(1/8\\)?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "surface-lemma-constants-a",
+      "role": "assistant",
+      "time": "2026-10-10T15:17:56+08:00",
+      "zh": [
+        "重数上界的曲面证明只需要固定的有限 \\(\\varepsilon>0\\)，因而 \\(\\sqrt{P_n^2}\\) 有界，而 \\(r_n\\to\\infty\\)。上述小常数条件服务于后续 Frobenius 行列式比较。",
+        "若矩阵大小为 \\(M\\)，秩小于 \\(M/4\\) 给出消失阶下界 \\(3M/4\\)，要与上界",
+        "\\[M\\bigl(80\\varepsilon+O(1/p)\\bigr)\\]",
+        "竞争；\\(80=40+40\\)。把 \\(1/4\\) 换成 \\(1/8\\) 是更强的充分约束。这里没有声称常数最优，也没有完整核查后续比较。"
+      ],
+      "en": [
+        "The surface proof of the multiplicity bound only needs a fixed finite \\(\\varepsilon>0\\): then \\(\\sqrt{P_n^2}\\) stays bounded while \\(r_n\\to\\infty\\). The small-constant conditions serve the later Frobenius determinant comparison.",
+        "For a matrix of size \\(M\\), rank less than \\(M/4\\) gives a vanishing-order lower bound \\(3M/4\\), competing with the upper bound",
+        "\\[M\\bigl(80\\varepsilon+O(1/p)\\bigr).\\]",
+        "Here \\(80=40+40\\). Replacing \\(1/4\\) by \\(1/8\\) is a stronger sufficient constraint. No optimality of these constants or full verification of the later comparison is claimed."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "surface-full-proof-q",
+      "role": "user",
+      "time": "2026-10-10T15:21:47+08:00",
+      "zh": [
+        "请把原文方法在曲面上的证明展开。"
+      ],
+      "en": [
+        "Expand the proof of the original method on surfaces."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "moving-curve-surface-proof-a",
+      "role": "assistant",
+      "time": "2026-10-10T15:21:47+08:00",
+      "zh": [
+        "先用孤立基点估计 \\(h^2\\le k^2P^2\\)；其线性系中的交数论证在后面说明。第二个输入来自完整喷射核。固定 \\(P,k\\)，取等距阈值 \\(\\tau_0<\\tau_1<\\tau_2\\)，间隔 \\(\\delta>0\\)，\\(k\\delta\\ge4\\)，并令",
+        "\\[\\mathcal H_i(y)=H^0(X,\\mathcal O_X(kP)\\otimes\\mathfrak m_y^{\\lceil k\\tau_i\\rceil}).\\]",
+        "假设三个核在非常一般的 \\(y\\) 非零，最低核的基点集有经过 \\(y\\) 的曲线。喷射映射的秩在稠密开集上恒定，核构成向量丛；其基点集满足 \\(B_0(y)\\subseteq B_1(y)\\subseteq B_2(y)\\)。",
+        "在曲面上，真闭集至多一维，所以 \\(B_0(y)\\) 的一个曲线分支仍是 \\(B_1(y)\\) 的分支。有限参数域扩张并缩小开集后，得到光滑参数曲面 \\(T\\)、支配的泛有限标记点映射 \\(y:T\\to X\\)，以及共同基曲线族 \\(C_t\\)。关联",
+        "\\[\\Gamma=\\{(t,z):z\\in C_t\\}\\subset T\\times X\\]",
+        "支配 \\(X\\)，因为 \\(y(t)\\in C_t\\)。设 \\(h=\\lceil k\\delta/2\\rceil\\)。较高核 \\(\\mathcal H_1\\) 的局部标架截面可写成",
+        "\\[s(t,z)=\\sum_\\alpha c_\\alpha(t)s_\\alpha(z).\\]",
+        "固定 \\(z\\) 作参数求导，仍得到全局截面；每次求导至多降低标记点处一阶消失。对 \\(a<h\\)，",
+        "\\[\\lceil k\\tau_1\\rceil-\\lceil k\\tau_0\\rceil\\ge k\\delta-1\\ge h-1\\ge a,\\]",
+        "故这些导数属于 \\(\\mathcal H_0(y(t))\\)，并在 \\(\\Gamma\\) 上消失。",
+        "特征零时，在 \\(\\Gamma\\) 的一般光滑点，\\(\\Gamma\\to X\\) 是浸没，参数方向张成法方向。取横截参数 \\(t_1\\)，形式局部坐标中可写 \\(u=t_1-F(t_2,z)\\)，且固定 \\(t_2,z\\) 时 \\(\\partial_{t_1}=\\partial_u\\)。低于 \\(h\\) 阶的导数消失，迫使 \\(u^a\\)、\\(a<h\\) 的系数全为零，故 \\(s\\in\\mathcal I_\\Gamma^h\\)。完备化的忠实平坦性将包含关系带回代数局部环。",
+        "限制到一般纤维，对整个 \\(\\mathcal H_1\\) 中的截面都有 \\(E\\ge hC_t\\)。因此",
+        "\\[0<P\\cdot C_t\\le(k/h)P^2\\le(2/\\delta)P^2.\\]",
+        "这就是所需的移动曲线估计，不调用特殊 K3 结果、独立 Riemann–Roch 证明或高维次伴随估计。"
+      ],
+      "en": [
+        "First use the isolated-base-point estimate \\(h^2\\le k^2P^2\\); its intersection argument inside the linear system is explained below. The second input uses the full jet kernels. Fix \\(P,k\\), take equally spaced levels \\(\\tau_0<\\tau_1<\\tau_2\\) with gap \\(\\delta>0\\), \\(k\\delta\\ge4\\), and set",
+        "\\[\\mathcal H_i(y)=H^0(X,\\mathcal O_X(kP)\\otimes\\mathfrak m_y^{\\lceil k\\tau_i\\rceil}).\\]",
+        "Assume all three kernels are nonzero for very general \\(y\\), and the lowest kernel has a base curve through \\(y\\). Jet evaluation has constant rank on a dense open, so its kernels are vector bundles, with nested base loci \\(B_0(y)\\subseteq B_1(y)\\subseteq B_2(y)\\).",
+        "A proper closed subset of a surface has dimension at most one, so a curve component of \\(B_0(y)\\) remains a component of \\(B_1(y)\\). After a finite parameter-field extension and shrinking, obtain a smooth parameter surface \\(T\\), a dominant generically finite marked-point map \\(y:T\\to X\\), and a family of common base curves \\(C_t\\). The incidence",
+        "\\[\\Gamma=\\{(t,z):z\\in C_t\\}\\subset T\\times X\\]",
+        "dominates \\(X\\), since \\(y(t)\\in C_t\\). Set \\(h=\\lceil k\\delta/2\\rceil\\). A local frame section of the higher kernel \\(\\mathcal H_1\\) has the form",
+        "\\[s(t,z)=\\sum_\\alpha c_\\alpha(t)s_\\alpha(z).\\]",
+        "Parameter differentiation with \\(z\\) fixed again gives global sections and lowers vanishing at the moving mark by at most one per derivative. For \\(a<h\\),",
+        "\\[\\lceil k\\tau_1\\rceil-\\lceil k\\tau_0\\rceil\\ge k\\delta-1\\ge h-1\\ge a.\\]",
+        "Thus these derivatives belong to \\(\\mathcal H_0(y(t))\\) and vanish along \\(\\Gamma\\).",
+        "In characteristic zero, \\(\\Gamma\\to X\\) is submersive at a general smooth point, so parameter directions span the normal direction. Choose a transverse parameter \\(t_1\\). In formal local coordinates, write \\(u=t_1-F(t_2,z)\\); with \\(t_2,z\\) fixed, \\(\\partial_{t_1}=\\partial_u\\). Vanishing of all derivatives below order \\(h\\) kills the coefficients of \\(u^a\\) for \\(a<h\\), giving \\(s\\in\\mathcal I_\\Gamma^h\\). Faithful flatness of completion brings this containment back to the algebraic local ring.",
+        "Restricting to a general fibre gives \\(E\\ge hC_t\\) for every section of the full \\(\\mathcal H_1\\). Consequently,",
+        "\\[0<P\\cdot C_t\\le(k/h)P^2\\le(2/\\delta)P^2.\\]",
+        "This is the required moving-curve estimate, without a special K3 result, a separate Riemann–Roch proof, or a higher-dimensional subadjunction estimate."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "surface-jet-bound-proof-a",
+      "role": "assistant",
+      "time": "2026-10-10T15:21:47+08:00",
+      "zh": [
+        "若所需上界在任意大的指标处泛性地失败，固定这样的 \\(n\\)，记 \\(P=P_n\\)、\\(r=r_n\\)、\\(\\rho=\\sqrt{P^2}\\)。喷射秩条件是代数条件；将违反上界的除子取倍数，可使 \\(k\\) 任意大且可除。取",
+        "\\[\\delta=\\rho,\\qquad\\tau_0=\\tfrac32\\rho,\\quad\\tau_1=\\tfrac52\\rho,\\quad\\tau_2=\\tfrac72\\rho.\\]",
+        "对充分大可除的 \\(k\\)，三个完整核非零且 \\(k\\delta\\ge4\\)。最低核若只有孤立基点，取 \\(h_0=\\lceil3k\\rho/2\\rceil\\)，孤立基点估计给出",
+        "\\[1\\le(k/h_0)^2P^2\\le\\tfrac49<1.\\]",
+        "因此标记点处有基曲线。移动曲线估计给出覆盖曲线族，满足 \\(0<P\\cdot C\\le2\\rho\\)。选择足够非常一般的标记点，\\(n(X,D)=2\\) 和 Cartier 性给出 \\(D\\cdot C\\ge1\\)，而 \\(P-rD=(r/n)A\\) nef。因此",
+        "\\[r\\le rD\\cdot C\\le P\\cdot C\\le2\\rho.\\]",
+        "这与 \\(r_n\\to\\infty\\)、\\(\\rho_n\\to\\varepsilon<\\infty\\) 矛盾。于是存在仅依赖固定数据与序列的统一 \\(N\\)；对可数多个指标、Cartier 倍数和喷射阶的例外秩集合取并，得到陈述中的共同非常一般点集合。",
+        "曲面的两个辅助输入已展开以上证明。一般高维输入和剩余 Frobenius 比较仍未审查；我们尚未证明目标 \\(D\\equiv E\\)、\\(E\\ge0\\)。"
+      ],
+      "en": [
+        "If the required bound fails generically at arbitrarily large indices, fix such an \\(n\\) and write \\(P=P_n\\), \\(r=r_n\\), \\(\\rho=\\sqrt{P^2}\\). Jet-rank conditions are algebraic. Taking multiples of a violating divisor makes \\(k\\) arbitrarily large and divisible. Choose",
+        "\\[\\delta=\\rho,\\qquad\\tau_0=\\tfrac32\\rho,\\quad\\tau_1=\\tfrac52\\rho,\\quad\\tau_2=\\tfrac72\\rho.\\]",
+        "For sufficiently large divisible \\(k\\), all three full kernels are nonzero and \\(k\\delta\\ge4\\). If the lowest kernel had an isolated base point, setting \\(h_0=\\lceil3k\\rho/2\\rceil\\) would give",
+        "\\[1\\le(k/h_0)^2P^2\\le\\tfrac49<1\\]",
+        "by the isolated-base-point estimate. Hence there is a base curve through the mark. The moving-curve estimate gives a covering family with \\(0<P\\cdot C\\le2\\rho\\). At a sufficiently very general mark, \\(n(X,D)=2\\) and the Cartier property imply \\(D\\cdot C\\ge1\\), while \\(P-rD=(r/n)A\\) is nef. Therefore",
+        "\\[r\\le rD\\cdot C\\le P\\cdot C\\le2\\rho.\\]",
+        "This contradicts \\(r_n\\to\\infty\\) and \\(\\rho_n\\to\\varepsilon<\\infty\\). Thus a uniform \\(N\\) depends only on the fixed data and sequence. Taking the union of exceptional rank loci for countably many indices, Cartier multiples, and jet orders gives the common very general locus in the statement.",
+        "The two surface auxiliary inputs have been expanded above. The general higher-dimensional inputs and the remaining Frobenius comparison are still unaudited; our target \\(D\\equiv E\\), \\(E\\ge0\\), has not yet been proved."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "linear-subsystem-isolated-base-point-q",
+      "role": "user",
+      "time": "2026-10-10T15:25:18+08:00",
+      "zh": [
+        "这里的线性系 \\(\\Lambda\\) 起什么作用？为什么不能在全线性系里任取两个除子？如果它的基点并不孤立呢？"
+      ],
+      "en": [
+        "What role does the linear system \\(\\Lambda\\) play? Why not choose two arbitrary divisors from the complete linear system? What if its base point is not isolated?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "linear-subsystem-isolated-base-point-a",
+      "role": "assistant",
+      "time": "2026-10-10T15:25:18+08:00",
+      "zh": [
+        "引理 2. 设 \\(X\\) 是光滑射影曲面，\\(P\\) 是 ample \\(\\mathbb Q\\)-Cartier 除子，\\(k,h\\) 是正整数，\\(kP\\) 为 Cartier。设 \\(\\Lambda\\subseteq|kP|\\) 是非空线性子系，\\(y\\) 是其孤立基点，且每个 \\(E\\in\\Lambda\\) 都满足 \\(\\operatorname{mult}_y(E)\\ge h\\)。则",
+        "\\[h^2\\le k^2P^2.\\]",
+        "证明：记 \\(F\\) 为 \\(\\Lambda\\) 的固定除子部分，取一般的 \\(E_1\\in\\Lambda\\)，写成 \\(E_1=E_1^{\\prime}+F\\)。则 \\(E_1^{\\prime}\\) 有效且不含 \\(F\\) 的分量。因 \\(y\\) 是孤立基点，\\(y\\notin\\operatorname{Supp}F\\)，故 \\(\\operatorname{mult}_y(E_1^{\\prime})=\\operatorname{mult}_y(E_1)\\ge h\\)。",
+        "剩余子系 \\(\\Lambda-F\\) 没有固定曲线。故一般的 \\(E_2\\in\\Lambda\\) 避开 \\(E_1^{\\prime}\\) 的所有分量，二者正常相交，且 \\(\\operatorname{mult}_y(E_2)\\ge h\\)。由局部交数不等式和 \\(P\\) 的 nef 性，",
+        "\\[\\begin{aligned}h^2&\\le\\operatorname{mult}_y(E_1^{\\prime})\\operatorname{mult}_y(E_2)\\le i_y(E_1^{\\prime},E_2)\\\\&\\le E_1^{\\prime}\\cdot E_2=kP\\cdot E_1^{\\prime}\\le kP\\cdot E_1=k^2P^2.\\end{aligned}\\]",
+        "\\(\\Lambda\\) 提供重数与基点条件；\\(E_i\\in|kP|\\) 提供线性等价类。这里不需要 K3 假设，也不需要 \\(K_X\\sim0\\)。若 \\(h>k\\sqrt{P^2}\\)，非空子系的基点 \\(y\\) 不可能孤立，因此有经过 \\(y\\) 的共同基曲线。",
+        "应用时，\\(\\Lambda_y\\) 是完整喷射核给出的非空高重数子系。记 \\(\\rho=\\sqrt{P^2}\\)，取 \\(h=\\lceil3k\\rho/2\\rceil\\)。若 \\(y\\) 孤立，则",
+        "\\[\\tfrac94k^2\\rho^2\\le h^2\\le k^2P^2=k^2\\rho^2,\\]",
+        "矛盾。故这里非孤立是结论，不是前提：标记点处有共同基曲线。随 \\(y\\) 变化构造曲线族并估计次数，是接下来的移动曲线步骤。"
+      ],
+      "en": [
+        "Lemma 2. Let \\(X\\) be a smooth projective surface, let \\(P\\) be an ample \\(\\mathbb Q\\)-Cartier divisor, and let \\(k,h\\) be positive integers with \\(kP\\) Cartier. Let \\(\\Lambda\\subseteq|kP|\\) be a nonempty linear subsystem. Suppose \\(y\\) is an isolated base point and every \\(E\\in\\Lambda\\) satisfies \\(\\operatorname{mult}_y(E)\\ge h\\). Then",
+        "\\[h^2\\le k^2P^2.\\]",
+        "Proof. Let \\(F\\) be the fixed divisorial part of \\(\\Lambda\\). Choose a general \\(E_1\\in\\Lambda\\) and write \\(E_1=E_1^{\\prime}+F\\). Then \\(E_1^{\\prime}\\) is effective and contains no component of \\(F\\). Since \\(y\\) is an isolated base point, \\(y\\notin\\operatorname{Supp}F\\), so \\(\\operatorname{mult}_y(E_1^{\\prime})=\\operatorname{mult}_y(E_1)\\ge h\\).",
+        "The residual subsystem \\(\\Lambda-F\\) has no fixed curves. A general \\(E_2\\in\\Lambda\\) therefore avoids every component of \\(E_1^{\\prime}\\). The two divisors meet properly, and \\(\\operatorname{mult}_y(E_2)\\ge h\\). The local intersection inequality and nefness of \\(P\\) give",
+        "\\[\\begin{aligned}h^2&\\le\\operatorname{mult}_y(E_1^{\\prime})\\operatorname{mult}_y(E_2)\\le i_y(E_1^{\\prime},E_2)\\\\&\\le E_1^{\\prime}\\cdot E_2=kP\\cdot E_1^{\\prime}\\le kP\\cdot E_1=k^2P^2.\\end{aligned}\\]",
+        "The subsystem \\(\\Lambda\\) supplies the multiplicity and base-locus conditions; membership in \\(|kP|\\) supplies the linear equivalence class. Neither the K3 hypothesis nor \\(K_X\\sim0\\) is needed here. If \\(h>k\\sqrt{P^2}\\), the base point \\(y\\) of the nonempty subsystem cannot be isolated, so a common base curve passes through \\(y\\).",
+        "In the application, \\(\\Lambda_y\\) is the nonempty high-multiplicity subsystem defined by the full jet kernel. Write \\(\\rho=\\sqrt{P^2}\\) and take \\(h=\\lceil3k\\rho/2\\rceil\\). If \\(y\\) were isolated, then",
+        "\\[\\tfrac94k^2\\rho^2\\le h^2\\le k^2P^2=k^2\\rho^2,\\]",
+        "a contradiction. Non-isolation is therefore the conclusion, not a premise: there is a common base curve through the mark. Varying \\(y\\) to construct a curve family and bound its degree is the next moving-curve step."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "local-intersection-notation-q",
+      "role": "user",
+      "time": "2026-10-10T15:44:00+08:00",
+      "zh": [
+        "\\(i_y(E_1,E_2)\\) 是在 \\(y\\) 处的局部交数吗？它与整体交数有什么关系？"
+      ],
+      "en": [
+        "Is \\(i_y(E_1,E_2)\\) the local intersection multiplicity at \\(y\\)? How does it relate to the global intersection number?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "local-intersection-notation-a",
+      "role": "assistant",
+      "time": "2026-10-10T15:44:00+08:00",
+      "zh": [
+        "是。若局部方程 \\(g_1,g_2\\) 没有经过 \\(y\\) 的公共曲线，则",
+        "\\[i_y(E_1,E_2)=\\operatorname{length}_{\\mathcal O_{X,y}}\\bigl(\\mathcal O_{X,y}/(g_1,g_2)\\bigr)\\ge\\operatorname{mult}_y(E_1)\\operatorname{mult}_y(E_2).\\]",
+        "这个长度有限。对没有公共分量的有效除子，整体交数是所有实际交点处的正局部交数之和；非交点处贡献为零。因此在上面的证明中 \\(i_y(E_1^{\\prime},E_2)\\le E_1^{\\prime}\\cdot E_2\\)。局部交数与整体交数不是同一个数。"
+      ],
+      "en": [
+        "Yes. If local equations \\(g_1,g_2\\) have no common curve through \\(y\\), then",
+        "\\[i_y(E_1,E_2)=\\operatorname{length}_{\\mathcal O_{X,y}}\\bigl(\\mathcal O_{X,y}/(g_1,g_2)\\bigr)\\ge\\operatorname{mult}_y(E_1)\\operatorname{mult}_y(E_2).\\]",
+        "This length is finite. For effective divisors with no common component, the global intersection is the sum of the positive local intersection multiplicities at the actual intersection points; nonintersection points contribute zero. Thus the proof above uses \\(i_y(E_1^{\\prime},E_2)\\le E_1^{\\prime}\\cdot E_2\\). The local and global intersection numbers are distinct."
+      ],
+      "proofStatus": "unverified"
     }
   ],
   "sourceTheorem": {
