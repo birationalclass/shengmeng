@@ -13,3 +13,5 @@ Preserve sourceTheorem.text exactly, and link sourceTheorem.url to the exact off
 Before publishing: build, validate both language versions, inspect the theorem crop and formula rendering, test latest-message positioning and language changes, compare modified files against current main, commit without force-pushing, then verify Pages and the real URL.
 
 For contradictory or repetitive speech, keep the final clarified technical intent rather than every false start. In particular, the current request is to follow the original general proof in the K3 case; it is not a ban on Riemann–Roch. Do not replace this with an independent classical proof. Moving-jets/Frobenius steps remain unverified until the source discussion actually checks them.
+
+The final current research target supersedes the earlier request for sections: use the paper’s general-proof method to obtain an effective divisor L with D numerically equivalent to L for a nef Cartier divisor D on a smooth projective K3 surface. Keep earlier mathematical replies as history, but do not describe the current target as constructing a section or proving semiampleness. Do not imply a completed proof.
