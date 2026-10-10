@@ -1,0 +1,9 @@
+# Checkpoint 161: genuine Hom restriction and exact original projective chart duality
+
+The full Linearity Theorem remains UNPROVED.
+
+Checkpoint161 constructs actual module coherence for GENUINE double open restriction using pinned mathlib overFunctorEquiv, overMapCompOverEquiv and overFunctorMap. It PROVES the SAME actual open internal-Hom section comparison commutes with GENUINE restriction and retains precomposition by the actual restricted source-module morphism. It constructs the actual pushforward/global-Hom chart linear comparison using explicit bijectivity of the actual source-dual section map, then CONSTRUCTS the exact original V chart equivalence Gamma(U,pi_*D-tilde) ~= Gamma(U,Hom_O(pi_*O_B,O_A)), DERIVING that bijectivity and base-localization injectivity from the ORIGINAL finite injective linear normalization and original integral projective V. The original-V construction has NO source-bijectivity/duality/compatibility certificate as an extra input. A smaller generic interface avoids the earlier direct-composition kernel normalization timeout; the failed older candidate is excluded. Two proofs and three compiled constructions added. This is an actual LOCAL chart equivalence, NOT yet a global duality theorem. Finite-dual overlap compatibility, source-algebra action on actual sheaf charts, global finite-dual gluing, canonical D-tilde=omega_V(r+1), original4.1/4.2, uniform Q, actual intersection and exact LinearityTheoremGoal remain UNPROVED. No canonical renaming, global compatibility certificate, free/CM assumption, sorry or project axiom.
+
+Full build and standard-axiom audit passed at 2026-10-11T06:59:46+08:00: 1886 proofs, 522 definitions, 2604 declarations, 799 Lean files.
+
+Actual entry: LinearStudy.projectiveNormalization_native_global_chart_duality_linearEquiv
