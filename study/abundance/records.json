@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-10T15:44:00+08:00",
+  "updatedAt": "2026-10-10T16:08:04.209+08:00",
   "series": [
     {
       "id": "F034",
@@ -786,6 +786,130 @@
         "Yes. If local equations \\(g_1,g_2\\) have no common curve through \\(y\\), then",
         "\\[i_y(E_1,E_2)=\\operatorname{length}_{\\mathcal O_{X,y}}\\bigl(\\mathcal O_{X,y}/(g_1,g_2)\\bigr)\\ge\\operatorname{mult}_y(E_1)\\operatorname{mult}_y(E_2).\\]",
         "This length is finite. For effective divisors with no common component, the global intersection is the sum of the positive local intersection multiplicities at the actual intersection points; nonintersection points contribute zero. Thus the proof above uses \\(i_y(E_1^{\\prime},E_2)\\le E_1^{\\prime}\\cdot E_2\\). The local and global intersection numbers are distinct."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "divisor-jet-subsystems-q",
+      "role": "user",
+      "time": "2026-10-10T15:53:06.478+08:00",
+      "zh": [
+        "喷射空间能否直接写成满足重数条件的线性子系？"
+      ],
+      "en": [
+        "Can the jet spaces be written directly as linear subsystems defined by multiplicity conditions?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "divisor-jet-subsystems-a",
+      "role": "assistant",
+      "time": "2026-10-10T15:53:06.478+08:00",
+      "zh": [
+        "可以。写成",
+        "\\[\\Lambda_i(y)=\\{E\\in|kP|:\\operatorname{mult}_y(E)\\ge\\lceil k\\tau_i\\rceil\\},\\qquad i=0,1,2.\\]",
+        "条件是弱不等式 \\(\\ge\\)，不是 \\(>\\)。这些子系是相应截面核的射影化，可能为空；引理的假设要求它们在非常一般点处非空。",
+        "除子及重数是主要表述，但参数求导仍须使用底层截面核向量丛 \\(V_i\\) 的截面代表，不能把除子本身当作可线性求导的函数。"
+      ],
+      "en": [
+        "Yes. Write",
+        "\\[\\Lambda_i(y)=\\{E\\in|kP|:\\operatorname{mult}_y(E)\\ge\\lceil k\\tau_i\\rceil\\},\\qquad i=0,1,2.\\]",
+        "The condition is the weak inequality \\(\\ge\\), not \\(>\\). These subsystems are the projectivizations of the corresponding section kernels and may be empty; the lemma assumes they are nonempty at very general points.",
+        "Divisors and multiplicities are the primary formulation, but parameter differentiation still uses section representatives from the underlying section-kernel vector bundles \\(V_i\\). Divisors themselves are not functions that can be linearly differentiated."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "real-equal-gap-thresholds-q",
+      "role": "user",
+      "time": "2026-10-10T16:00:53.619+08:00",
+      "zh": [
+        "等间隔的条件能否写成公式？\\(\\tau_i\\) 和 \\(\\delta\\) 是整数、有理数，还是实数？"
+      ],
+      "en": [
+        "Can the equal-gap condition be written as equations? Are \\(\\tau_i\\) and \\(\\delta\\) integers, rational numbers, or real numbers?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "real-equal-gap-thresholds-a",
+      "role": "assistant",
+      "time": "2026-10-10T16:00:53.619+08:00",
+      "zh": [
+        "它们是正实数，不必是整数或有理数。准确条件为",
+        "\\[\\tau_0,\\tau_1,\\tau_2,\\delta\\in\\mathbb R_{>0},\\qquad\\tau_0<\\tau_1<\\tau_2,\\]",
+        "\\[\\tau_1-\\tau_0=\\tau_2-\\tau_1=\\delta,\\qquad k\\delta\\ge4.\\]",
+        "例如后来取 \\(\\rho=\\sqrt{P^2}\\)、\\(\\delta=\\rho\\)，以及 \\(\\tau_0=3\\rho/2\\)、\\(\\tau_1=5\\rho/2\\)、\\(\\tau_2=7\\rho/2\\)，这些值可能无理。重数阈值 \\(\\lceil k\\tau_i\\rceil\\) 才是正整数。"
+      ],
+      "en": [
+        "They are positive real numbers, not necessarily integers or rational numbers. The precise conditions are",
+        "\\[\\tau_0,\\tau_1,\\tau_2,\\delta\\in\\mathbb R_{>0},\\qquad\\tau_0<\\tau_1<\\tau_2,\\]",
+        "\\[\\tau_1-\\tau_0=\\tau_2-\\tau_1=\\delta,\\qquad k\\delta\\ge4.\\]",
+        "For example, the later choices \\(\\rho=\\sqrt{P^2}\\), \\(\\delta=\\rho\\), \\(\\tau_0=3\\rho/2\\), \\(\\tau_1=5\\rho/2\\), and \\(\\tau_2=7\\rho/2\\) may be irrational. The multiplicity threshold \\(\\lceil k\\tau_i\\rceil\\) is the positive integer."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "independent-moving-curve-estimate-q",
+      "role": "user",
+      "time": "2026-10-10T16:03:00.202+08:00",
+      "zh": [
+        "前面的辅助论证究竟证明什么？能否作为独立的移动曲线估计来理解？"
+      ],
+      "en": [
+        "What does the auxiliary argument establish? Can it be understood as an independent moving-curve estimate?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "independent-moving-curve-estimate-a",
+      "role": "assistant",
+      "time": "2026-10-10T16:03:00.202+08:00",
+      "zh": [
+        "它证明移动曲线估计，即引理 1.3。设 \\(X\\) 为特征零的光滑射影曲面，\\(P\\) 为 ample \\(\\mathbb Q\\)-Cartier 除子，\\(k\\) 为正整数且 \\(kP\\) 为 Cartier。采用上述正实数等间隔阈值，并假设在非常一般的 \\(y\\) 处，三个 \\(\\Lambda_i(y)\\) 非空，且 \\(\\operatorname{Bs}\\Lambda_0(y)\\) 含有经过 \\(y\\) 的曲线。",
+        "经过标记点参数的泛有限扩张并缩小到稠密开集，可得光滑整参数曲面 \\(T\\)、支配的泛有限映射 \\(y:T\\to X\\)，以及经过 \\(y(t)\\) 的整曲线族 \\(C_t\\)，其关联支配 \\(X\\)。对一般的 \\(t\\)，每个 \\(E\\in\\Lambda_1(y(t))\\) 满足",
+        "\\[E\\ge hC_t,\\qquad h=\\lceil k\\delta/2\\rceil,\\qquad0<P\\cdot C_t\\le(k/h)P^2\\le2P^2/\\delta.\\]",
+        "追踪共同曲线分量并对截面代表作参数求导，给出沿 \\(C_t\\) 的重数；再与 ample 除子 \\(P\\) 相交，得到次数上界。这个辅助估计不要求 K3、\\(K_X\\sim0\\) 或 nef 维数假设；它仍是原有方案的曲面步骤，不能据此宣称数值有效性目标已经证明。"
+      ],
+      "en": [
+        "It proves the moving-curve estimate, Lemma 1.3. Let \\(X\\) be a smooth projective surface in characteristic zero, let \\(P\\) be an ample \\(\\mathbb Q\\)-Cartier divisor, and let \\(k\\) be a positive integer with \\(kP\\) Cartier. Use the positive real equal-gap thresholds above. Assume that at very general \\(y\\), all three \\(\\Lambda_i(y)\\) are nonempty and \\(\\operatorname{Bs}\\Lambda_0(y)\\) contains a curve through \\(y\\).",
+        "After a generically finite change of the marked-point parameter and restriction to dense opens, there are a smooth integral parameter surface \\(T\\), a dominant generically finite map \\(y:T\\to X\\), and integral curves \\(C_t\\) through \\(y(t)\\) whose incidence dominates \\(X\\). For general \\(t\\), every \\(E\\in\\Lambda_1(y(t))\\) satisfies",
+        "\\[E\\ge hC_t,\\qquad h=\\lceil k\\delta/2\\rceil,\\qquad0<P\\cdot C_t\\le(k/h)P^2\\le2P^2/\\delta.\\]",
+        "Tracking a common curve component and differentiating section representatives in the parameters gives the multiplicity along \\(C_t\\). Intersecting with the ample divisor \\(P\\) gives the degree bound. This auxiliary estimate needs no K3, \\(K_X\\sim0\\), or nef-dimension hypothesis. It remains a surface step of the original scheme and does not establish the numerical-effectivity target."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "nested-divisor-systems-base-loci-q",
+      "role": "user",
+      "time": "2026-10-10T16:08:04.209+08:00",
+      "zh": [
+        "是不是 \\(\\Lambda_0(y)\\) 包含 \\(\\Lambda_1(y)\\)，后者又包含 \\(\\Lambda_2(y)\\)？基点集的包含关系是什么？"
+      ],
+      "en": [
+        "Does \\(\\Lambda_0(y)\\) contain \\(\\Lambda_1(y)\\), which in turn contains \\(\\Lambda_2(y)\\)? What is the corresponding relation between their base loci?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "nested-divisor-systems-base-loci-a",
+      "role": "assistant",
+      "time": "2026-10-10T16:08:04.209+08:00",
+      "zh": [
+        "是，一般只能写非严格包含。因为",
+        "\\[\\lceil k\\tau_0\\rceil\\le\\lceil k\\tau_1\\rceil\\le\\lceil k\\tau_2\\rceil,\\qquad\\Lambda_0(y)\\supseteq\\Lambda_1(y)\\supseteq\\Lambda_2(y).\\]",
+        "在这些子系非空时，基点集是所有成员支集的交：",
+        "\\[\\operatorname{Bs}\\Lambda_i(y)=\\bigcap_{E\\in\\Lambda_i(y)}\\operatorname{Supp}(E).\\]",
+        "提高重数条件会减少允许的成员，因此共同基点集增大，包含关系反向：",
+        "\\[\\operatorname{Bs}\\Lambda_0(y)\\subseteq\\operatorname{Bs}\\Lambda_1(y)\\subseteq\\operatorname{Bs}\\Lambda_2(y).\\]"
+      ],
+      "en": [
+        "Yes; the inclusions are generally non-strict. Since",
+        "\\[\\lceil k\\tau_0\\rceil\\le\\lceil k\\tau_1\\rceil\\le\\lceil k\\tau_2\\rceil,\\qquad\\Lambda_0(y)\\supseteq\\Lambda_1(y)\\supseteq\\Lambda_2(y).\\]",
+        "For these nonempty subsystems, the base locus is the intersection of the supports of all members:",
+        "\\[\\operatorname{Bs}\\Lambda_i(y)=\\bigcap_{E\\in\\Lambda_i(y)}\\operatorname{Supp}(E).\\]",
+        "Increasing the multiplicity requirement removes permitted members, so their common base locus grows. The inclusions reverse:",
+        "\\[\\operatorname{Bs}\\Lambda_0(y)\\subseteq\\operatorname{Bs}\\Lambda_1(y)\\subseteq\\operatorname{Bs}\\Lambda_2(y).\\]"
       ],
       "proofStatus": "unverified"
     }
