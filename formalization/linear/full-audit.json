@@ -1,8 +1,8 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2548,
-  "verifiedTheorems": 1857,
+  "audited": 2551,
+  "verifiedTheorems": 1860,
   "definitions": 495,
   "mainTheoremVerified": false,
   "violations": [],
@@ -57657,6 +57657,56 @@
       ]
     },
     {
+      "declaration": "LinearStudy.schemeModuleHomOpenSectionsEquiv_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomOpenScalars.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomOpenSectionsEquiv_smul.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)\n  (r : ↑(X.presheaf.obj (Opposite.op U)))\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  (LinearStudy.schemeModuleHomOpenSectionsEquiv M N U) (r • h) =\n    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomOpenSectionsEquiv M N U) h)\n      (LinearStudy.originalGlobalModuleScalar ((CategoryTheory.ConcreteCategory.hom U.topIso.inv) r) (N.restrict U.ι))",
+      "sha256": "b08eb46df6f1013ce909f48fb2ee68aca19964db1bb08792b4835397a490cd85",
+      "lines": 28,
+      "moduleLineCount": 54,
+      "startLine": 16,
+      "endLine": 43,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.originalGlobalModuleScalar",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomOpenSectionsEquiv_add",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomOpenScalars.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomOpenSectionsEquiv_add.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)\n  (h k : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  (LinearStudy.schemeModuleHomOpenSectionsEquiv M N U) (h + k) =\n    (LinearStudy.schemeModuleHomOpenSectionsEquiv M N U) h + (LinearStudy.schemeModuleHomOpenSectionsEquiv M N U) k",
+      "sha256": "b08eb46df6f1013ce909f48fb2ee68aca19964db1bb08792b4835397a490cd85",
+      "lines": 8,
+      "moduleLineCount": 54,
+      "startLine": 45,
+      "endLine": 52,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv"
+      ]
+    },
+    {
       "declaration": "LinearStudy.schemeModuleHomPrecomposeSection",
       "kind": "def",
       "origin": "project",
@@ -58180,6 +58230,29 @@
       "endLine": 46,
       "lineCount": 32,
       "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.originalGlobalModuleScalar_restrict",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleScalarRestriction.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalGlobalModuleScalar_restrict.{u} {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y)\n  [AlgebraicGeometry.IsOpenImmersion j] (r : ↑(Y.presheaf.obj (Opposite.op ⊤))) (M : Y.Modules) :\n  (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map (LinearStudy.originalGlobalModuleScalar r M) =\n    LinearStudy.originalGlobalModuleScalar\n      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop j)) r) (M.restrict j)",
+      "sha256": "32ba0d42a3eb333d219cca3916abd9201a5d7dea571f4075c62f7bb14e7a0229",
+      "lines": 24,
+      "moduleLineCount": 40,
+      "startLine": 15,
+      "endLine": 38,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.originalGlobalModuleScalar"
+      ]
     },
     {
       "declaration": "LinearStudy.freeIsoGeneratingSections_isIso",

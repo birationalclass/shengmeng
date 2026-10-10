@@ -16532,6 +16532,18 @@ LinearStudy.schemeModuleHomModulePresheaf.{u} {X : AlgebraicGeometry.Scheme} (M 
 'LinearStudy.schemeModuleHomModulePresheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.schemeModuleHomModuleSheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) : X.Modules
 'LinearStudy.schemeModuleHomModuleSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomOpenSectionsEquiv_smul.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
+  (r : ↑(X.presheaf.obj (Opposite.op U)))
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  (LinearStudy.schemeModuleHomOpenSectionsEquiv M N U) (r • h) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomOpenSectionsEquiv M N U) h)
+      (LinearStudy.originalGlobalModuleScalar ((CategoryTheory.ConcreteCategory.hom U.topIso.inv) r) (N.restrict U.ι))
+'LinearStudy.schemeModuleHomOpenSectionsEquiv_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomOpenSectionsEquiv_add.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
+  (h k : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  (LinearStudy.schemeModuleHomOpenSectionsEquiv M N U) (h + k) =
+    (LinearStudy.schemeModuleHomOpenSectionsEquiv M N U) h + (LinearStudy.schemeModuleHomOpenSectionsEquiv M N U) k
+'LinearStudy.schemeModuleHomOpenSectionsEquiv_add' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.schemeModuleHomPrecomposeSection.{u} {X : AlgebraicGeometry.Scheme} {M' M N : X.Modules} (u : M' ⟶ M)
   (U : X.Opens) (f : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
   ↑((LinearStudy.schemeModuleHomModuleSheaf M' N).presheaf.obj (Opposite.op U))
@@ -16631,6 +16643,12 @@ LinearStudy.schemeModulePushforwardOpenRestrictionIso.{u} {X Y : AlgebraicGeomet
     (AlgebraicGeometry.Scheme.Modules.pushforward (f ∣_ U)).obj
       (M.restrict ((TopologicalSpace.Opens.map f.base).obj U).ι)
 'LinearStudy.schemeModulePushforwardOpenRestrictionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalGlobalModuleScalar_restrict.{u} {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y)
+  [AlgebraicGeometry.IsOpenImmersion j] (r : ↑(Y.presheaf.obj (Opposite.op ⊤))) (M : Y.Modules) :
+  (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map (LinearStudy.originalGlobalModuleScalar r M) =
+    LinearStudy.originalGlobalModuleScalar
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop j)) r) (M.restrict j)
+'LinearStudy.originalGlobalModuleScalar_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.freeIsoGeneratingSections_isIso.{u, v₁, u₁} {C : Type u₁} [CategoryTheory.Category C]
   {J : CategoryTheory.GrothendieckTopology C} {R : CategoryTheory.Sheaf J RingCat}
   [CategoryTheory.HasWeakSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat] {M : SheafOfModules R}

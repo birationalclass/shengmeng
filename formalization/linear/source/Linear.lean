@@ -1087,3 +1087,6 @@ public import Linear.NativeNormalizationPushforwardChartModules
 public import Linear.NativeNormalizationPushforwardStructureChart
 public import Linear.SchemeModuleHomAffineChartSections
 public import Linear.NativeNormalizationGlobalAffineHomSections
+
+public import Linear.SchemeModuleScalarRestriction
+public import Linear.SchemeModuleHomOpenScalars

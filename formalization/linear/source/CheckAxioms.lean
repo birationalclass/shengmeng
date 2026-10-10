@@ -4263,6 +4263,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.schemeModuleHomModulePresheaf
 #check LinearStudy.schemeModuleHomModuleSheaf
 #print axioms LinearStudy.schemeModuleHomModuleSheaf
+#check LinearStudy.schemeModuleHomOpenSectionsEquiv_smul
+#print axioms LinearStudy.schemeModuleHomOpenSectionsEquiv_smul
+#check LinearStudy.schemeModuleHomOpenSectionsEquiv_add
+#print axioms LinearStudy.schemeModuleHomOpenSectionsEquiv_add
 #check LinearStudy.schemeModuleHomPrecomposeSection
 #print axioms LinearStudy.schemeModuleHomPrecomposeSection
 #check LinearStudy.schemeModuleHomPrecompose
@@ -4307,6 +4311,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.schemeModuleIsoPushforwardRestriction
 #check LinearStudy.schemeModulePushforwardOpenRestrictionIso
 #print axioms LinearStudy.schemeModulePushforwardOpenRestrictionIso
+#check LinearStudy.originalGlobalModuleScalar_restrict
+#print axioms LinearStudy.originalGlobalModuleScalar_restrict
 #check LinearStudy.freeIsoGeneratingSections_isIso
 #print axioms LinearStudy.freeIsoGeneratingSections_isIso
 #check LinearStudy.sheafFreePresentationOfExact
