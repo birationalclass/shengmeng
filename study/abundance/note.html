@@ -1,0 +1,116 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f5f4ef"><title>Temporary study notes · Nef abundance</title><link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../visuals/catalog.css?v=20261001-gallery"><link rel="stylesheet" href="../spectral/vendor/katex.min.css"><link rel="stylesheet" href="note.css?v=1"></head><body><main class="study-note"><header class="note-header"><a href="./" class="back-link">← Nef abundance</a><h1>Temporary study notes</h1><p class="note-date">October 10, 2026</p></header><article class="note-content"><div class="note-prose"><p>Throughout, the characteristic is zero.</p>
+<p>For the jet statements, $X$ is a smooth projective surface with $K_X\sim0$, and $D$ is a nef Cartier divisor with $\nef(X,D)=2$. The case under study is $D^2=0$. These common hypotheses apply only to the jet statements; nef dimension two alone does not imply $D^2=0$.</p>
+<p>The aim is to find an effective $\Q$-divisor $E$ with $D\equiv E$. For an original nef $\Q$-divisor $D_0$, choose a positive integer $m$ with $D=mD_0$ Cartier; then $E\equiv D$ gives $E/m\equiv D_0$. The original paper&#39;s effective boundary is zero; its nef summand corresponds to the divisor under investigation.</p>
+<p>Lemma 3 and Proposition 4 specialize claims in OpenAI, <em>Numerical Semiampleness of Nef Adjoint Divisors</em> (October 3, 2026). The proof of Lemma 3 reproduces the source argument using the two surface auxiliary arguments given here. Proposition 4 is recorded as a paper claim; the higher-dimensional arguments and the remaining Frobenius comparison are not audited here.</p>
+<p>For a nef divisor $D$, its nef reduction is an almost holomorphic rational map $f:X\dashrightarrow Y$ with connected fibres such that $D$ is numerically trivial on the general compact fibre and $D\cdot C&gt;0$ for every curve through a very general point not contracted by $f$. Write $\nef(X,D)=\dim Y$. A very general point lies outside a countable union of proper closed subsets. For a Cartier divisor $H$, write $E\in|H|$ if $E$ is an effective Cartier divisor linearly equivalent to $H$. If $g$ is a local equation of $E$ at $x$, define \[
+ \mult_x(E)=\max\{a\geq0:g\in\mathfrak m_x^a\},
+\] where $\mathfrak m_x$ is the maximal ideal of $\OO_{X,x}$. This is independent of multiplication of $g$ by a unit. A nonzero section $s\in H^0(X,\OO_X(H))$ gives its zero divisor $E=(s)_0\in|H|$, and \[
+ \mult_x(E)=\ord_x(s).
+\] Conversely every $E\in|H|$ arises this way, with the section determined up to a nonzero scalar. Thus the divisor bound below is equivalent to the paper&#39;s section-order bound.</p>
+<p>The only lower-dimensional positivity input is elementary: on a projective curve, if $T$ is pseudo-effective, $N$ is nef, and $\deg(T+aN)&gt;0$ for some $a&gt;0$, then \[
+ \deg T\geq0,\quad \deg N\geq0,\quad
+ \deg(T+cN)&gt;0\quad(c&gt;0).
+\] Thus $T+cN$ is big for every positive rational $c$.</p></div>
+<h2 id="section-1"><span>1.</span> Preliminary lemmas</h2>
+<section class="statement" id="lemma-1" aria-labelledby="statement-title-1"><h3 id="statement-title-1">Lemma 1.</h3><p>Let $X$ be a smooth projective surface, let $D$ be a nef Cartier divisor with $D^2=0$, and let $A$ be an ample Cartier divisor. For every $\epsilon&gt;0$, there are positive integers $r_n\to\infty$ such that \[
+ P_n:=r_n(D+A/n),\qquad P_n^2\to\epsilon^2.
+\]</p></section>
+<details class="proof" open><summary id="proof-toggle-1" aria-controls="proof-body-1" aria-expanded="true"><span>Proof</span><span class="proof-icon" aria-hidden="true"></span></summary><div class="proof-body" id="proof-body-1" role="region" aria-labelledby="proof-toggle-1"><p>Put \[
+ u_n=\sqrt{(D+A/n)^2}
+     =\sqrt{2D\cdot A/n+A^2/n^2}&gt;0.
+\] Then $u_n\to0$. For sufficiently large $n$, choose $r_n$ to be the nearest integer to $\epsilon/u_n$. This integer is positive and \[
+ |r_nu_n-\epsilon|\leq u_n/2\to0,
+ \qquad r_n\to\infty.
+\] Set $r_n=1$ for the remaining finitely many indices. Hence $P_n^2=(r_nu_n)^2\to\epsilon^2$.</p><span class="qed" aria-label="End of proof">□</span></div></details>
+<section class="statement" id="lemma-2" aria-labelledby="statement-title-2"><h3 id="statement-title-2">Lemma 2.</h3><p>Let $X$ be a smooth projective surface and let $P$ be an ample $\Q$-Cartier divisor. Let $k,h$ be positive integers with $kP$ Cartier, and let $\Lambda\subseteq|kP|$ be a nonempty linear subsystem. Suppose $y$ is an isolated point of its base locus and $\mult_y(E)\geq h$ for every $E\in\Lambda$. Then \[
+ h^2\leq k^2P^2.
+\]</p></section>
+<details class="proof" open><summary id="proof-toggle-2" aria-controls="proof-body-2" aria-expanded="true"><span>Proof</span><span class="proof-icon" aria-hidden="true"></span></summary><div class="proof-body" id="proof-body-2" role="region" aria-labelledby="proof-toggle-2"><p>Let $F$ be the fixed divisorial part of $\Lambda$. Choose a general $E_1\in\Lambda$ and write $E_1=E&#39;_1+F$. Each coefficient along $F$ has its generic minimal value, so $E&#39;_1$ is effective and contains no component of $F$. Since $y$ is an isolated base point, $y\notin\operatorname{Supp}(F)$, and hence \[
+ \mult_y(E&#39;_1)=\mult_y(E_1)\geq h.
+\] The residual system $\Lambda-F$ has no fixed curves. Thus a general $E_2\in\Lambda$ has no component in common with $E&#39;_1$. Consequently $E&#39;_1,E_2$ meet properly and $\mult_y(E_2)\geq h$. The local intersection inequality and nefness of $P$ give \[
+ \begin{aligned}
+ h^2&amp;\leq\mult_y(E&#39;_1)\mult_y(E_2)
+       \leq i_y(E&#39;_1,E_2)\leq E&#39;_1\cdot E_2\\
+    &amp;=kP\cdot E&#39;_1\leq kP\cdot E_1=k^2P^2.
+ \end{aligned}
+\]</p><span class="qed" aria-label="End of proof">□</span></div></details>
+<div class="note-prose"><p>In particular, if every member has multiplicity at least $h&gt;k\sqrt{P^2}$ at $y$, the nonempty system has a base curve through $y$.</p></div>
+<h2 id="section-2"><span>2.</span> Jet estimates</h2>
+<section class="statement" id="lemma-3" aria-labelledby="statement-title-3"><h3 id="statement-title-3">Lemma 3.</h3><p>Let $X$ be a smooth projective K3 surface, and let $D$ be a nef Cartier divisor with $\nef(X,D)=2$. Fix an ample Cartier divisor $A$ and $\epsilon\in\Q_{&gt;0}$ with \[
+ (14\epsilon)^2&lt;\tfrac14,\qquad80\epsilon&lt;\tfrac34.
+\] Let the positive integer $n$ tend to infinity, and choose positive integers $r_n$ such that \[
+ P_n=r_n(D+A/n),\qquad r_n\to\infty,
+ \qquad P_n^2\to\epsilon^2.
+\] There exist a positive integer $N$ and proper closed subsets $Z_i\subsetneq X$ $(i\geq1)$ such that every point \[
+ x\in X\setminus\bigcup_{i\geq1}Z_i
+\] satisfies, simultaneously for every $n\geq N$, every positive integer $k$ with $kP_n$ Cartier, and every effective divisor $E\in|kP_n|$, \[
+ \mult_x(E)\leq4k\sqrt{P_n^2}.
+\]</p></section>
+<details class="proof" open><summary id="proof-toggle-3" aria-controls="proof-body-3" aria-expanded="true"><span>Proof</span><span class="proof-icon" aria-hidden="true"></span></summary><div class="proof-body" id="proof-body-3" role="region" aria-labelledby="proof-toggle-3"><p>We use Lemma 2 for the isolated-base-point estimate and prove the moving-curve estimate needed below.</p>
+<p>Fix $P,k$ and three positive levels $\tau_0&lt;\tau_1&lt;\tau_2$ of equal gap $\delta&gt;0$, with $k\delta\geq4$. Put \[
+ \Lambda_i(y)=\{E\in|kP|:\mult_y(E)\geq\lceil k\tau_i\rceil\},
+ \qquad B_i(y)=\operatorname{Bs}\Lambda_i(y)\quad(i=0,1,2).
+\] Assume all three linear subsystems are nonempty for very general $y$ and $B_0(y)$ has a curve through $y$. On a dense marked-point open, jet evaluation has constant rank. The systems $\Lambda_i(y)$ are projectivizations of the corresponding section-kernel vector bundles $V_i$. We have \[
+ \Lambda_2(y)\subseteq\Lambda_1(y)\subseteq\Lambda_0(y),
+ \qquad B_0(y)\subseteq B_1(y)\subseteq B_2(y).
+\] A curve component of $B_0(y)$ remains a component of $B_1(y)$, since a proper closed subset of a surface has dimension at most one. Track such a component over the generic marked point. Its finitely many possible components are defined after a finite parameter-field extension. Spreading out and shrinking gives a smooth integral parameter surface $T$, a dominant generically finite marked-point map $y:T\to X$, and a family of integral curves $C_t$ common to $B_0(y(t))$ and $B_1(y(t))$. Its incidence \[
+ \Gamma=\{(t,z):z\in C_t\}\subset T\times X
+\] dominates $X$, because $y(t)\in C_t$.</p>
+<p>Set $h=\lceil k\delta/2\rceil$. Choose local defining-section representatives from a frame of $V_1$, the section bundle underlying $\Lambda_1$. Each has the form \[
+ s(t,z)=\sum_\alpha c_\alpha(t)s_\alpha(z),
+\] with $s_\alpha$ fixed global sections of $kP$. Parameter derivatives with $z$ fixed are again global sections at each fixed parameter. In coordinates centered at the moving mark $y(t)$, $s$ starts in order $\lceil k\tau_1\rceil$. Each parameter derivative lowers this order by at most one. Thus every derivative of order $a&lt;h$ belongs to the section space $V_0(t)$ underlying $\Lambda_0(y(t))$, since \[
+ \lceil k\tau_1\rceil-\lceil k\tau_0\rceil
+ \geq k\delta-1\geq h-1\geq a.
+\] Every such derivative vanishes along $\Gamma$.</p>
+<p>We verify that this gives ordinary order $h$, not only first-order normal vanishing. At a general smooth point of $\Gamma$, the dominant map $\Gamma\to X$ is submersive in characteristic zero. Parameter directions therefore span its normal space in $T\times X$. Since $\Gamma$ has codimension one, choose a parameter coordinate $t_1$ transverse to it. In completed local coordinates the formal implicit-function theorem writes \[
+ \Gamma:\ t_1=F(t_2,z),\qquad u=t_1-F(t_2,z).
+\] Holding $t_2,z$ fixed gives $\partial/\partial t_1=\partial/\partial u$ to every order. Use a frame of $kP$ depending only on $z$. The vanishing of all parameter derivatives of order less than $h$ along $\Gamma$ forces all coefficients of $u^a$ with $a&lt;h$ to vanish. Hence $s\in\mathcal I_\Gamma^h$ in the completed local ring, and faithful flatness of completion gives the same containment in the algebraic local ring. Apply this to a finite frame and shrink to a dense algebraic open of $\Gamma$.</p>
+<p>For a general $t$, the fibre of the incidence is reduced and agrees locally with $C_t$. Restricting the containment shows that every defining section of $\Lambda_1(y(t))$ lies in $\mathcal I_{C_t}^h$ at the generic point of $C_t$. Thus every $E\in\Lambda_1(y(t))$ satisfies $E\geq hC_t$. Since $E\sim kP$ and $P$ is ample, \[
+ 0&lt;P\cdot C_t\leq(k/h)P^2\leq(2/\delta)P^2.
+\] This proves the moving-curve estimate needed here, with no canonical intersection or higher-dimensional subadjunction estimate.</p>
+<p>Suppose that the asserted bound fails generically for arbitrarily large indices $n$. Fix such an index and write \[
+ P=P_n,\qquad r=r_n,\qquad\rho=\sqrt{P^2}.
+\] The ranks of jet evaluation maps are algebraic rank conditions. Outside a countable union of proper closed subsets, a violation for some $k$ therefore gives a nonzero complete jet kernel at the general point. Multiplying a violating divisor, or raising its corresponding section to powers, makes $k$ arbitrarily large and divisible. Choose \[
+ \delta=\rho,\qquad
+ \tau_0=\tfrac32\rho,\quad
+ \tau_1=\tfrac52\rho,\quad
+ \tau_2=\tfrac72\rho.
+\] Since $\rho&lt;\tau_i&lt;4\rho$, for sufficiently large divisible $k$ all three systems $\Lambda_i(y)$ are nonempty for very general $y$ and $k\delta\geq4$. Their base loci are proper because these systems are nonempty. If $y$ were an isolated point of $B_0(y)$, every $E\in\Lambda_0(y)$ would satisfy $\mult_y(E)\geq h_0$, where $h_0=\lceil3k\rho/2\rceil$. Lemma 2 would give \[
+ 1\leq(k/h_0)^2P^2\leq\tfrac49&lt;1,
+\] a contradiction. Thus $B_0(y)$ has a curve through $y$.</p>
+<p>The moving-curve estimate gives a covering family of proper integral curves with \[
+ 0&lt;P\cdot C\leq(2/\rho)P^2=2\rho.
+\] Choose its marked point sufficiently very general for the nef reduction of $D$. Since $\nef(X,D)=2$ and $D$ is Cartier, $D\cdot C&gt;0$ implies $D\cdot C\geq1$. Moreover $P-rD=(r/n)A$ is nef. Hence \[
+ r\leq rD\cdot C\leq P\cdot C\leq2\rho.
+\] This is impossible for arbitrarily large $n$, because $r_n\to\infty$ and $\rho_n=\sqrt{P_n^2}\to\epsilon$. No higher-dimensional bounded-curve argument is needed: the proper positive-dimensional base component on a surface is already a curve.</p>
+<p>Consequently some $N$, depending only on the fixed data and the chosen sequence, works at the general point for every $n\geq N$. Take the union of the exceptional rank loci for the countably many indices, Cartier multiples and integral jet orders, together with the exceptional loci used for the nef reduction. This gives the single countable union in the statement.</p><span class="qed" aria-label="End of proof">□</span></div></details>
+<div class="note-prose"><p>Here $N$ depends on the fixed data $X,D,A,\epsilon$ and the chosen sequence $(r_n)$, independently of $x$. A single very general point works for every $n\geq N$: take the union of the exceptional countable unions for the countably many indices $n$.</p></div>
+<section class="statement" id="proposition-4" aria-labelledby="statement-title-4"><h3 id="statement-title-4">Proposition 4.</h3><p>Let $X,D$ satisfy the common hypotheses above. Fix an ample Cartier divisor $A$ and $\epsilon\in\Q_{&gt;0}$ with $(14\epsilon)^2&lt;1/4$ and $80\epsilon&lt;3/4$. Let $n\to\infty$ through positive integers and choose positive integers $r_n$ such that $P_n=r_n(D+A/n)$, $r_n\to\infty$, and $P_n^2\to\epsilon^2$. Let $p_i:X\times X\to X$ be the projections, and put \[
+ Z=\mathbb P(p_1^*\OO_X(D)\oplus p_2^*\OO_X(D))
+ \xrightarrow{\pi}X\times X,
+ \qquad \xi=c_1(\OO_Z(1)),
+\] using the convention $\pi_*\OO_Z(a)=\operatorname{Sym}^a(p_1^*\OO_X(D)\oplus p_2^*\OO_X(D))$ for $a\geq0$. Write $D_i=\pi^*p_i^*D$ and $P_{n,i}=\pi^*p_i^*P_n$. The two natural sections of $\pi$ are the axes, of classes $\xi-D_1$ and $\xi-D_2$. For a suitable fixed positive integer $q$ and all sufficiently large $n$, the ample rational divisor \[
+ R_n=P_{n,1}+P_{n,2}+q\xi
+\] has a smooth point $z\in Z$ outside both axes such that \[
+ \varepsilon(R_n;z):=
+ \inf_{C\ni z}\frac{R_n\cdot C}{\mult_z C}&gt;6,
+\] where $C$ ranges over integral curves through $z$. For any prescribed dense open subsets $U_1,U_2\subseteq X$, the point may be chosen with $\pi(z)\in U_1\times U_2$.</p></section>
+<div class="note-prose"><p>Here $\dim Z=5$. The order of choices is $\epsilon$, then a fixed $q$, then sufficiently large $n$.</p></div>
+<section class="statement" id="corollary-5" aria-labelledby="statement-title-5"><h3 id="statement-title-5">Corollary 5.</h3><p>Let $X,D$ satisfy the common hypotheses above. Fix an ample Cartier divisor $A$ and $\epsilon\in\Q_{&gt;0}$ with $(14\epsilon)^2&lt;1/4$ and $80\epsilon&lt;3/4$. Let $n\to\infty$ through positive integers and choose positive integers $r_n$ such that $P_n=r_n(D+A/n)$, $r_n\to\infty$, and $P_n^2\to\epsilon^2$. With $p_i:X\times X\to X$ the projections, set \[
+ Z=\mathbb P(p_1^*\OO_X(D)\oplus p_2^*\OO_X(D))
+ \xrightarrow{\pi}X\times X,
+ \qquad\xi=c_1(\OO_Z(1)),
+\] with the symmetric-power convention for $\OO_Z(1)$. Fix a suitable positive integer $q$ and a sufficiently large index $n$ for which \[
+ R_n=\pi^*(p_1^*P_n+p_2^*P_n)+q\xi
+ \quad\text{and}\quad\varepsilon(R_n;z)&gt;6
+\] at a smooth point $z\in Z$ outside the two natural sections of $\pi$. Here $\varepsilon(R_n;z)=\inf_{C\ni z}(R_n\cdot C)/\mult_z C$. Then, for sufficiently large divisible $k_0$ with $k_0R_n$ and $k_0P_n$ Cartier, the evaluation map \[
+ H^0(Z,\OO_Z(k_0R_n))\longrightarrow
+ \OO_Z(k_0R_n)_z\otimes_{\OO_{Z,z}}
+ \OO_{Z,z}/\mathfrak m_z^{6k_0+1}
+\] is surjective, where $\mathfrak m_z$ is the maximal ideal of $\OO_{Z,z}$. Thus the sections generate jets through order $6k_0$.</p></section>
+<details class="proof" open><summary id="proof-toggle-5" aria-controls="proof-body-5" aria-expanded="true"><span>Proof</span><span class="proof-icon" aria-hidden="true"></span></summary><div class="proof-body" id="proof-body-5" role="region" aria-labelledby="proof-toggle-5"><p>Choose $a\in\Q$ with $6&lt;a&lt;\varepsilon(R_n;z)$. On the blowup $b:\widetilde Z\to Z$ at $z$, with exceptional divisor $G$, the divisor $b^*R_n-aG$ is ample. For sufficiently large divisible $k_0$, Serre vanishing gives \[
+ H^1(\widetilde Z,
+ \OO_{\widetilde Z}(k_0b^*R_n-k_0aG))=0.
+\] The restriction sequence gives surjectivity onto the local quotient modulo $\mathfrak m_z^{k_0a}$. Taking $k_0$ also so that $k_0(a-6)\geq1$ yields $k_0a\geq6k_0+1$, and hence the stated map.</p><span class="qed" aria-label="End of proof">□</span></div></details>
+<div class="note-prose"><p>After a local trivialization and smooth coordinates $u_1,\ldots,u_5$ at $z$, every prescribed Taylor polynomial spanned by $u_1^{a_1}\cdots u_5^{a_5}$ with $\sum a_i\leq6k_0$ is realized. This is surjectivity for all prescribed Taylor data, rather than only existence of one section with large vanishing order. The surface arguments above supply the two auxiliary inputs for Lemma 3. The full higher-dimensional theorem and the remaining Frobenius comparison are outside the verification in this note.</p>
+<p><em>Source.</em> OpenAI, <em>Numerical Semiampleness of Nef Adjoint Divisors</em>, Sections 3–6, especially the two auxiliary estimates in Section 4 and the paragraph “The finite jet system” in Section 6. The local manuscript sources were checked directly, including the companion <em>Log abundance in characteristic zero</em>, Section 7, for the auxiliary arguments.</p></div></article></main><script src="../spectral/vendor/katex.min.js" defer></script><script src="note.js?v=1" defer></script></body></html>
