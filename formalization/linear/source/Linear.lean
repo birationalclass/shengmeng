@@ -1074,3 +1074,16 @@ public import Linear.SchemeModuleHomTopScalars
 public import Linear.NativeAffineDualScalar
 public import Linear.NativeAffineDualAdd
 public import Linear.NativeAffineInternalHomLinear
+
+public import Linear.NativeNormalizationChartRingActions
+public import Linear.NativeNormalizationPushforwardChartSections
+public import Linear.ProjectiveNativePushforwardChartLinear
+
+public import Linear.SchemeModulePushforwardOpenRestriction
+public import Linear.SchemeModuleIsoPushforwardRestriction
+public import Linear.SchemeModuleChartPushforwardRestriction
+public import Linear.NativeNormalizationPushforwardChartModules
+
+public import Linear.NativeNormalizationPushforwardStructureChart
+public import Linear.SchemeModuleHomAffineChartSections
+public import Linear.NativeNormalizationGlobalAffineHomSections

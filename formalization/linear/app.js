@@ -1,14 +1,14 @@
-import {installProofWorlds} from './proof-worlds.js?v=20261011-linear-84';
-import {installTheoremTarget} from './theorem-target.js?v=20261011-linear-84';
-import {createNodeEditor} from './node-editor.js?v=20261011-linear-84';
-import {installWorkspace} from './workspace.js?v=20261011-linear-84';
-import {installAtlasDock} from './atlas-dock.js?v=20261011-linear-84';
-import {installLeanLineCounts} from './line-counts.js?v=20261011-linear-84';
-import {english,installLanguage} from './i18n.js?v=20261011-linear-84';
-import {statementPanel,escapeHTML} from './theorem-statements.js?v=20261011-linear-84';
+import {installProofWorlds} from './proof-worlds.js?v=20261011-linear-85';
+import {installTheoremTarget} from './theorem-target.js?v=20261011-linear-85';
+import {createNodeEditor} from './node-editor.js?v=20261011-linear-85';
+import {installWorkspace} from './workspace.js?v=20261011-linear-85';
+import {installAtlasDock} from './atlas-dock.js?v=20261011-linear-85';
+import {installLeanLineCounts} from './line-counts.js?v=20261011-linear-85';
+import {english,installLanguage} from './i18n.js?v=20261011-linear-85';
+import {statementPanel,escapeHTML} from './theorem-statements.js?v=20261011-linear-85';
 
 
-const audit=await fetch('audit.json?v=20261011-linear-84').then(r=>{if(!r.ok)throw Error('Audit unavailable');return r.json();});
+const audit=await fetch('audit.json?v=20261011-linear-85').then(r=>{if(!r.ok)throw Error('Audit unavailable');return r.json();});
 const text=(zh,en)=>english?en:zh;
 if(audit.mainTheoremVerified!==false||audit.targetVerified!==false)throw Error('Unexpected target status');
 const raw=[audit.main,...audit.nodes];
@@ -20,7 +20,7 @@ function showSource(n){const el=document.querySelector('#sourcePanel');if(!n.dec
  el.innerHTML=`<div class="source-name">${escapeHTML(n.decl)}</div>${n.status==='pending'?`<p class="notice">${text('这是尚未证明的目标定义；编译该定义不等于证明定理。','This is an unproved target definition; compiling it does not prove the theorem.')}</p>`:''}<p>${n.lines} ${text('行源码，含注释与空行','source lines, including comments and blanks')}</p><div class="actions"><a class="button small" href="source/${n.file}" download>${text('下载完整源码','Download full source')}</a><a class="button small" href="https://github.com/birationalclass/shengmeng/blob/main/formalization/linear/source/${n.file}" target="_blank">GitHub ↗</a></div><pre class="source-code"><code>${escapeHTML(n.formalType)}</code></pre><p>SHA-256: <code>${escapeHTML(n.sha256)}</code></p>`;
  fetch('source/'+n.file).then(r=>r.text()).then(source=>{if(current===n.id)el.querySelector('code').textContent=source;});
 }
-function detail(){const n=byId.get(current);document.querySelector('#detailHeader').innerHTML=`<div class="detail-title"><span class="pill ${n.status}">${['done','conditional'].includes(n.status)?'✓':'○'} ${['done','conditional'].includes(n.status)?text('Lean 已验证 · 查看条件','Lean verified · inspect hypotheses'):text('尚未完成','Unfinished')}</span><h2>${escapeHTML(n.title)}</h2></div>`;
+function detail(){const n=byId.get(current);document.querySelector('#detailHeader').innerHTML=`<div class="detail-title"><span class="pill ${n.status}">${['done','conditional'].includes(n.status)?'✓':'○'} ${['done','conditional'].includes(n.status)?text('Lean 已验证 · 查看条件','Lean verified · inspect hypotheses'):n.status==='constructed'?text('构造已编译 · 查看类型','Compiled construction · inspect type'):text('尚未完成','Unfinished')}</span><h2>${escapeHTML(n.title)}</h2></div>`;
  document.querySelector('#overviewPanel').innerHTML=statementPanel(n,english);
  document.querySelector('#stepsPanel').innerHTML=n.id==='lemma'?`<p>${text('各引理可独立查看；最终目标仅使用它实际需要的证明步骤。','Inspect each lemma independently; the final goal uses only its actual supporting proof steps.')}</p>${audit.nodes.map(c=>`<button class="dep-link" data-select="${c.id}">${escapeHTML(c.titles[english?1:0])}<span>${['done','conditional'].includes(c.status)?'✓':'○'}</span></button>`).join('')}`:`<p>${escapeHTML(n.scope[english?1:0])}</p><p>${text('点击 Lean 源码查看实际证明；网页本身不执行 Lean。','Read the Lean source for the actual proof; this webpage does not run Lean.')}</p>`;
  showSource(n);document.querySelector('#back').disabled=!backstack.length;document.querySelector('#forward').disabled=!future.length;document.querySelector('#editorSelect').value=current;

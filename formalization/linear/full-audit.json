@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2535,
-  "verifiedTheorems": 1855,
-  "definitions": 484,
+  "audited": 2548,
+  "verifiedTheorems": 1857,
+  "definitions": 495,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -22929,6 +22929,58 @@
       ]
     },
     {
+      "declaration": "LinearStudy.nativeNormalizationProjectiveMap_chart_ring_square",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationChartRingActions.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationProjectiveMap_chart_ring_square.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1) :\n  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.awayToSection 𝒜 a)\n      (AlgebraicGeometry.Scheme.Hom.appLE (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)\n        (AlgebraicGeometry.Proj.basicOpen 𝒜 a) (AlgebraicGeometry.Proj.basicOpen 𝓑 ((algebraMap R S) a)) ⋯) =\n    CategoryTheory.CategoryStruct.comp\n      (CommRingCat.ofHom\n        (algebraMap (HomogeneousLocalization.Away 𝒜 a) (HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a))))\n      (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a))",
+      "sha256": "a76f9175aef91bb0ba28144daa534c46715119c1c4fd3f615c00356202f462b8",
+      "lines": 11,
+      "moduleLineCount": 51,
+      "startLine": 20,
+      "endLine": 30,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.finiteGradedNormalization_irrelevant_le_radical",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.radicalProjMap_awayToSection_appLE"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationProjectiveMap_pushforward_chart_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationChartRingActions.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationProjectiveMap_pushforward_chart_smul.{u} {K R S : Type u} [Field K] [CommRing R]\n  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (M : (AlgebraicGeometry.Proj 𝓑).Modules) (c : HomogeneousLocalization.Away 𝒜 a)\n  (x :\n    ↑(((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n              M).presheaf.obj\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a)))) :\n  (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝒜 a)) c • x =\n    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a)))\n        ((algebraMap (HomogeneousLocalization.Away 𝒜 a) (HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a))) c) •\n      have this := x;\n      this",
+      "sha256": "a76f9175aef91bb0ba28144daa534c46715119c1c4fd3f615c00356202f462b8",
+      "lines": 18,
+      "moduleLineCount": 51,
+      "startLine": 32,
+      "endLine": 49,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeNormalizationProjectiveMap_chart_ring_square",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra"
+      ]
+    },
+    {
       "declaration": "LinearStudy.nativeNormalizationFullChart_isLocalization",
       "kind": "theorem",
       "origin": "project",
@@ -23023,6 +23075,34 @@
         "LinearStudy.nativeLocalizedUpperAlgebra",
         "LinearStudy.nativeNormalizationFullChartEquiv",
         "LinearStudy.nativeNormalizationFullChart_isLocalization"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationGlobalAffineHomSectionsEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationGlobalAffineHomSections.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeNormalizationGlobalAffineHomSectionsEquiv.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1) :\n  let A := HomogeneousLocalization.Away 𝒜 a;\n  let B := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);\n  have g := AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B));\n  ↑((LinearStudy.schemeModuleHomModuleSheaf\n              ((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n                (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf))\n              (SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf)).presheaf.obj\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a))) ≃\n    ↑((LinearStudy.schemeModuleHomModuleSheaf\n              ((AlgebraicGeometry.Scheme.Modules.pushforward g).obj\n                (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf))\n              (SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf)).presheaf.obj\n        (Opposite.op ⊤))",
+      "sha256": "310746a6d2b28170e95f64eb5430c3506ab7ebba0f3b7c36c6e19759d391594f",
+      "lines": 21,
+      "moduleLineCount": 44,
+      "startLine": 22,
+      "endLine": 42,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeNormalizationPushforwardStructureChartModuleIso",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.schemeModuleHomAffineChartSectionsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomTopSectionsEquiv"
       ]
     },
     {
@@ -23175,6 +23255,113 @@
       "dependencies": [
         "LinearStudy.nativeNormalizationProjectiveMap",
         "LinearStudy.nativeNormalizationProjectiveMap_chart_isFinite"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationPushforwardChartModuleIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationPushforwardChartModules.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeNormalizationPushforwardChartModuleIso.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (M : (AlgebraicGeometry.Proj 𝓑).Modules) :\n  ((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj M).restrict\n      (AlgebraicGeometry.Proj.awayι 𝒜 a ha LinearStudy.nativeNormalizationPushforwardChartModuleIso._proof_1) ≅\n    (AlgebraicGeometry.Scheme.Modules.pushforward\n          (AlgebraicGeometry.Spec.map\n            (CommRingCat.ofHom\n              (algebraMap (HomogeneousLocalization.Away 𝒜 a)\n                (HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)))))).obj\n      (M.restrict\n        (AlgebraicGeometry.Proj.awayι 𝓑 ((algebraMap R S) a) ⋯\n          LinearStudy.nativeNormalizationPushforwardChartModuleIso._proof_1))",
+      "sha256": "4f232214caf4ca6b5218a13793b5a9135f4a8fd6ea063d91fde665550724d4a1",
+      "lines": 20,
+      "moduleLineCount": 42,
+      "startLine": 21,
+      "endLine": 40,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeNormalizationProjectiveMap_chart_restriction",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.schemeModuleChartPushforwardRestrictionIso"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationPushforwardChartModule",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationPushforwardChartSections.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeNormalizationPushforwardChartModule.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R)\n  (M : (AlgebraicGeometry.Proj 𝓑).Modules) :\n  Module (HomogeneousLocalization.Away 𝒜 a)\n    ↑(((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n              M).presheaf.obj\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a)))",
+      "sha256": "a48fc48e4ff26001ebbc08a3c51f202399ec747dba986d860fe2e13c1e3465b6",
+      "lines": 8,
+      "moduleLineCount": 59,
+      "startLine": 29,
+      "endLine": 36,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.nativeNormalizationProjectiveMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationPushforwardChartSectionMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationPushforwardChartSections.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeNormalizationPushforwardChartSectionMap.{u} {K R S D : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] [AddCommGroup D] [Module K D] [Module R D]\n  [Module S D] [IsScalarTower R S D] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (𝒟 : ℤ → Submodule K D)\n  (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (a : R) (ha : a ∈ 𝒜 1) :\n  have M := LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hS 0;\n  ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 𝒟 a) →ₗ[HomogeneousLocalization.Away 𝒜 a]\n    ↑(((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n              M).presheaf.obj\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a)))",
+      "sha256": "a48fc48e4ff26001ebbc08a3c51f202399ec747dba986d860fe2e13c1e3465b6",
+      "lines": 20,
+      "moduleLineCount": 59,
+      "startLine": 38,
+      "endLine": 57,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.nativeBaseSourceChartSectionMap",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeNormalizationPushforwardChartModule",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.nativeProjectiveModuleSheaf",
+        "LinearStudy.normalizationHomogeneousChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationPushforwardStructureChartModuleIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationPushforwardStructureChart.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeNormalizationPushforwardStructureChartModuleIso.{u} {K R S : Type u} [Field K] [CommRing R]\n  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1) :\n  ((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n          (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf)).restrict\n      (AlgebraicGeometry.Proj.awayι 𝒜 a ha LinearStudy.nativeNormalizationPushforwardStructureChartModuleIso._proof_1) ≅\n    (AlgebraicGeometry.Scheme.Modules.pushforward\n          (AlgebraicGeometry.Spec.map\n            (CommRingCat.ofHom\n              (algebraMap (HomogeneousLocalization.Away 𝒜 a)\n                (HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)))))).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a))).ringCatSheaf)",
+      "sha256": "c9dd956e48bfa10b5079b7499ff896d72eaf995c17dea069e367c670ade91785",
+      "lines": 19,
+      "moduleLineCount": 40,
+      "startLine": 20,
+      "endLine": 38,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeNormalizationPushforwardChartModuleIso",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra"
       ]
     },
     {
@@ -49522,6 +49709,52 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectiveNormalization_native_pushforward_chart_linearEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativePushforwardChartLinear.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNormalization_native_pushforward_chart_linearEquiv {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;\n  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;\n  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;\n  have hD := ⋯;\n  let M := LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0;\n  ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 𝒟 (MvPolynomial.X i)) ≃ₗ[HomogeneousLocalization.Away 𝒜 (MvPolynomial.X i)]\n    ↑(((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n              M).presheaf.obj\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 (MvPolynomial.X i))))",
+      "sha256": "6b002ab53ece242686fbda60ce2878716164d012a2de344f0f0ba942735376ef",
+      "lines": 53,
+      "moduleLineCount": 73,
+      "startLine": 19,
+      "endLine": 71,
+      "lineCount": 53,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeBaseSourceChartSectionMap",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeNormalizationPushforwardChartModule",
+        "LinearStudy.nativeNormalizationPushforwardChartSectionMap",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartDegreeZeroSectionMap",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.nativeProjectiveModuleSheaf",
+        "LinearStudy.normalizationHomogeneousChartMap",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul"
+      ]
+    },
+    {
       "declaration": "LinearStudy.projectiveNormalization_native_sections_affine_pushforward_duality",
       "kind": "theorem",
       "origin": "project",
@@ -57125,6 +57358,79 @@
       "dependencies": []
     },
     {
+      "declaration": "LinearStudy.schemeModuleChartPushforwardRestrictionIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleChartPushforwardRestriction.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleChartPushforwardRestrictionIso.{u} {X Y S T : AlgebraicGeometry.Scheme} (f : X ⟶ Y)\n  (U : Y.Opens) (a : ↑((TopologicalSpace.Opens.map f.base).obj U) ≅ S) (b : ↑U ≅ T) (g : S ⟶ T)\n  (hsquare : f ∣_ U = CategoryTheory.CategoryStruct.comp a.hom (CategoryTheory.CategoryStruct.comp g b.inv))\n  (M : X.Modules) :\n  ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj M).restrict (CategoryTheory.CategoryStruct.comp b.inv U.ι) ≅\n    (AlgebraicGeometry.Scheme.Modules.pushforward g).obj\n      (M.restrict (CategoryTheory.CategoryStruct.comp a.inv ((TopologicalSpace.Opens.map f.base).obj U).ι))",
+      "sha256": "03d3f9ef8c04aeaed2b67289c3fd9dbc344b541c4a2a7c886d2d3a8dfc265643",
+      "lines": 23,
+      "moduleLineCount": 40,
+      "startLine": 16,
+      "endLine": 38,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.schemeModuleIsoPushforwardRestriction",
+        "LinearStudy.schemeModulePushforwardOpenRestrictionIso"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomOpenSectionsEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomAffineChartSections.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomOpenSectionsEquiv.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens) :\n  ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)) ≃ (M.restrict U.ι ⟶ N.restrict U.ι)",
+      "sha256": "9f0d47b21ef98cca68b0f76692ae8ac8c39aa1e0757237d993fd50778e4a2165",
+      "lines": 9,
+      "moduleLineCount": 41,
+      "startLine": 17,
+      "endLine": 25,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSectionsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomAffineChartSectionsEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomAffineChartSections.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomAffineChartSectionsEquiv.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)\n  (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R) :\n  ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)) ≃\n    (M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ⟶\n      N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι))",
+      "sha256": "9f0d47b21ef98cca68b0f76692ae8ac8c39aa1e0757237d993fd50778e4a2165",
+      "lines": 13,
+      "moduleLineCount": 41,
+      "startLine": 27,
+      "endLine": 39,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv",
+        "LinearStudy.schemeModuleIsoPushforwardRestriction"
+      ]
+    },
+    {
       "declaration": "LinearStudy.schemeModuleHomGlobalEquiv",
       "kind": "def",
       "origin": "project",
@@ -57832,6 +58138,48 @@
         "LinearStudy.schemeModuleHomModuleSheaf",
         "LinearStudy.schemeModuleHomPresheaf"
       ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleIsoPushforwardRestriction",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleIsoPushforwardRestriction.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleIsoPushforwardRestriction.{u} {X Y : AlgebraicGeometry.Scheme} (e : X ≅ Y) :\n  AlgebraicGeometry.Scheme.Modules.pushforward e.hom ≅ AlgebraicGeometry.Scheme.Modules.restrictFunctor e.inv",
+      "sha256": "ae8ea37403a91b039ccb9a62c22ab06e057a8d2b7815c33992cb36c74adb515a",
+      "lines": 12,
+      "moduleLineCount": 28,
+      "startLine": 15,
+      "endLine": 26,
+      "lineCount": 12,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.schemeModulePushforwardOpenRestrictionIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModulePushforwardOpenRestriction.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModulePushforwardOpenRestrictionIso.{u} {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y) (U : Y.Opens)\n  (M : X.Modules) :\n  ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj M).restrict U.ι ≅\n    (AlgebraicGeometry.Scheme.Modules.pushforward (f ∣_ U)).obj\n      (M.restrict ((TopologicalSpace.Opens.map f.base).obj U).ι)",
+      "sha256": "d912082add22341a78c71f68e79df3162d6c99bda745f97070e2f2be281190ba",
+      "lines": 32,
+      "moduleLineCount": 48,
+      "startLine": 15,
+      "endLine": 46,
+      "lineCount": 32,
+      "dependencies": []
     },
     {
       "declaration": "LinearStudy.freeIsoGeneratingSections_isIso",

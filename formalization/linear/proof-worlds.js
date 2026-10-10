@@ -1,8 +1,8 @@
-import {paginateOverview} from './proof-overview-model.js?v=20261011-linear-84';
-import {drawOverviewWires} from './proof-overview-wires.js?v=20261011-linear-84';
-import {english} from './i18n.js?v=20261011-linear-84';
-import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261011-linear-84';
-import {createProofPackages} from './proof-package-model.js?v=20261011-linear-84';
+import {paginateOverview} from './proof-overview-model.js?v=20261011-linear-85';
+import {drawOverviewWires} from './proof-overview-wires.js?v=20261011-linear-85';
+import {english} from './i18n.js?v=20261011-linear-85';
+import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261011-linear-85';
+import {createProofPackages} from './proof-package-model.js?v=20261011-linear-85';
 
 export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarget}){
   const model=createProofPackages(nodes),panel=document.querySelector('.graph-panel'),viewport=document.querySelector('.graph-scroll');
@@ -123,7 +123,7 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
     const deps=model.children(n.id); const paperStatus=n.paperProofStatus==='complete'?text('原文引理 · 完整已证','Manuscript lemma · complete'):n.paperProofStatus==='core-proved'?text('原文引理 · 核心已证，接口待补','Manuscript lemma · core proved, interfaces open'):text('原文引理 · 待证','Manuscript lemma · open');shell.dataset.hasCards=String(!!deps.length&&!n.paperCard); if(n.paperIndex){shell.dataset.paperIndex=n.paperIndex;shell.dataset.paperProofStatus=n.paperProofStatus;}
     const card=document.createElement('button');card.type='button';card.className='node '+n.status;card.dataset.worldNode=n.id;card.setAttribute('aria-label',n.title+' · '+text('左击阅读信息，右击进入证明','Click to read; right-click to enter the proof'));
     card.setAttribute('aria-pressed',String(selected()===n.id));
-    card.innerHTML=`<b class="node-heading">${escapeHTML(n.title)}</b><div class="node-proposition">${graphStatement(n,english)}</div><span class="world-package-caption">${n.paperIndex?paperStatus:declarationKind(n)==='definition'?text('定义 / 构造','DEFINITION / CONSTRUCTION'):text('证明模块','PROOF MODULE')} · ${deps.length} ${text('步骤','steps')}</span><small class="${n.status}">${escapeHTML(n.status==='conditional'?text('✓ Lean · 辅助定理','✓ Lean · auxiliary theorem'):n.status==='done'?text('✓ Lean 已验证','✓ Verified by Lean'):text('待补证明','Open proof'))}</small><span class="node-input-socket" aria-hidden="true"></span><span class="node-output-socket" aria-hidden="true"></span>`;
+    card.innerHTML=`<b class="node-heading">${escapeHTML(n.title)}</b><div class="node-proposition">${graphStatement(n,english)}</div><span class="world-package-caption">${n.paperIndex?paperStatus:declarationKind(n)==='definition'?text('定义 / 构造','DEFINITION / CONSTRUCTION'):text('证明模块','PROOF MODULE')} · ${deps.length} ${text('步骤','steps')}</span><small class="${n.status}">${escapeHTML(n.status==='conditional'?text('✓ Lean · 辅助定理','✓ Lean · auxiliary theorem'):n.status==='done'?text('✓ Lean 已验证','✓ Verified by Lean'):n.status==='constructed'?text('Lean · 构造已编译','Lean · Compiled construction'):text('待补证明','Open proof'))}</small><span class="node-input-socket" aria-hidden="true"></span><span class="node-output-socket" aria-hidden="true"></span>`;
     card.onclick=()=>inspectNode(n.id);card.oncontextmenu=e=>{e.preventDefault();enter(n.id,null,card);};
     card.onkeydown=e=>{if(e.key==='ContextMenu'||(e.shiftKey&&e.key==='F10')){e.preventDefault();enter(n.id);}};
     shell.append(card);return shell;
@@ -177,7 +177,7 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
     const p=model.packFor(id);if(!p)return;
     detail.dataset.worldPack=id;packInfo.hidden=false;
     const chain=model.closure(state.target),used=p.cards.filter(n=>chain.has(n.id));
-    const list=cards=>cards.map(n=>`<button type="button" class="dep-link" data-inspect-node="${escapeHTML(n.id)}">${escapeHTML(n.title)}<span>${['done','conditional'].includes(n.status)?text('✓ Lean 已验证','✓ Lean verified'):text('待补证明','Open proof')}</span></button>`).join('');
+    const list=cards=>cards.map(n=>`<button type="button" class="dep-link" data-inspect-node="${escapeHTML(n.id)}">${escapeHTML(n.title)}<span>${['done','conditional'].includes(n.status)?text('✓ Lean 已验证','✓ Lean verified'):n.status==='constructed'?text('Lean · 构造已编译','Lean · Compiled construction'):text('待补证明','Open proof')}</span></button>`).join('');
     packInfo.innerHTML=`<p class="world-pack-kind">${text('参考卡包','REFERENCE PACK')}</p><h2>${escapeHTML(p.name[english?1:0])}</h2><p>${escapeHTML(p.reference[english?1:0])}</p><p>${p.cards.length} ${text('张定理与构造卡片','theorem and construction cards')}</p><h3>${text('当前证明引用','Used in the current proof')}</h3>${used.length?list(used):`<p>${text('此模块没有引用该包中的卡片。','This module uses no cards from this pack.')}</p>`}<h3>${text('包内全部卡片','All cards in this pack')}</h3>${list(p.cards)}`;
     packInfo.querySelectorAll('[data-inspect-node]').forEach(button=>button.onclick=()=>inspectNode(button.dataset.inspectNode));
   }
