@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2356,
-  "verifiedTheorems": 1733,
-  "definitions": 427,
+  "audited": 2378,
+  "verifiedTheorems": 1752,
+  "definitions": 430,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -6458,6 +6458,33 @@
       ]
     },
     {
+      "declaration": "LinearStudy.finiteNativeDual_refinement_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteNativeDualRefinementEvaluation.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeDual_refinement_evaluation.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  [Module.Finite R S] (P T : Submonoid R) (hPT : P ≤ T) (hP : Function.Injective ⇑(algebraMap R (Localization P)))\n  (hT : Function.Injective ⇑(algebraMap R (Localization T)))\n  (ell :\n    LocalizedModule P\n      ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))\n  (x : LocalizedModule P S) :\n  ((LinearStudy.finiteNativeCoextensionLocalizationEquiv T hT)\n        ((LinearStudy.originalLocalizedModuleRefinement P T hPT) ell))\n      ((LinearStudy.originalLocalizedModuleRefinement P T hPT) x) =\n    (IsLocalization.map (Localization T) (RingHom.id R) ⋯)\n      (((LinearStudy.finiteNativeCoextensionLocalizationEquiv P hP) ell) x)",
+      "sha256": "dbdf60543f50d551d9dc0ede6f4f80649bb8eb31652aa91d3eba2e5fde0b31b2",
+      "lines": 26,
+      "moduleLineCount": 44,
+      "startLine": 17,
+      "endLine": 42,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv_apply_fraction",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv",
+        "LinearStudy.originalLocalizedModuleRefinement",
+        "LinearStudy.originalLocalizedModuleRefinement_mk"
+      ]
+    },
+    {
       "declaration": "LinearStudy.finite_normalization_polynomial_filtered_bound",
       "kind": "theorem",
       "origin": "project",
@@ -11466,6 +11493,29 @@
       ]
     },
     {
+      "declaration": "LinearStudy.homogeneousChartOverlap_val",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousChartOverlapValue.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousChartOverlap_val.{u} {K R : Type u} [Field K] [CommRing R] [Algebra K R] (𝒜 : ℕ → Submodule K R)\n  [GradedAlgebra 𝒜] (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1) (z : HomogeneousLocalization.Away 𝒜 a) :\n  HomogeneousLocalization.val ((HomogeneousLocalization.awayMap 𝒜 hb ⋯) z) =\n    (IsLocalization.Away.awayToAwayRight a b) (HomogeneousLocalization.val z)",
+      "sha256": "10d4f8e013f1f90a1e954a4ceaf0a64440e7cc9228bebd49e5f611b040a74e6e",
+      "lines": 14,
+      "moduleLineCount": 30,
+      "startLine": 15,
+      "endLine": 28,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.originalAwayOverlap_mk"
+      ]
+    },
+    {
       "declaration": "LinearStudy.homogeneousQuotientComponent_eq_gradedProjection",
       "kind": "theorem",
       "origin": "project",
@@ -12986,6 +13036,27 @@
         "LinearStudy.gradedModuleProjection_on_piece",
         "LinearStudy.normalizationProjection_smul_source_homogeneous"
       ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneousLocalizationRefinement_val",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousLocalizationRefinementValue.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousLocalizationRefinement_val.{u} {K R : Type u} [Field K] [CommRing R] [Algebra K R]\n  (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (P T : Submonoid R) (hPT : P ≤ T) (z : HomogeneousLocalization 𝒜 P) :\n  ((HomogeneousLocalization.mapId 𝒜 hPT) z).val = (IsLocalization.map (Localization T) (RingHom.id R) ⋯) z.val",
+      "sha256": "c941ca998dad44917ea18f8ac712370748236b8130c17b8943307abf50efc390",
+      "lines": 13,
+      "moduleLineCount": 26,
+      "startLine": 13,
+      "endLine": 25,
+      "lineCount": 13,
+      "dependencies": []
     },
     {
       "declaration": "LinearStudy.homogeneous_polynomial_map_finite_of_origin_zeroLocus",
@@ -18318,6 +18389,314 @@
       ]
     },
     {
+      "declaration": "LinearStudy.originalLocalizedModuleAwayOverlap_unit",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleAwayOverlap.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalLocalizedModuleAwayOverlap_unit.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R]\n  [AddCommGroup M] [Module R M] (a b : R) (s : ↥(Submonoid.powers a)) :\n  IsUnit ((algebraMap R (Module.End R (LocalizedModule (Submonoid.powers (a * b)) M))) ↑s)",
+      "sha256": "8274f7e0810623df16e7112928dcc5c8a5ba96f9f0f1ffb8374036471cbceeab",
+      "lines": 16,
+      "moduleLineCount": 46,
+      "startLine": 14,
+      "endLine": 29,
+      "lineCount": 16,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.originalLocalizedModuleAwayOverlap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleAwayOverlap.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.originalLocalizedModuleAwayOverlap.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [AddCommGroup M]\n  [Module R M] (a b : R) : LocalizedModule (Submonoid.powers a) M →ₗ[R] LocalizedModule (Submonoid.powers (a * b)) M",
+      "sha256": "8274f7e0810623df16e7112928dcc5c8a5ba96f9f0f1ffb8374036471cbceeab",
+      "lines": 8,
+      "moduleLineCount": 46,
+      "startLine": 31,
+      "endLine": 38,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.originalLocalizedModuleAwayOverlap_unit"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.originalLocalizedModuleAwayOverlap_mk_one",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleAwayOverlap.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalLocalizedModuleAwayOverlap_mk_one.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R]\n  [AddCommGroup M] [Module R M] (a b : R) (m : M) :\n  (LinearStudy.originalLocalizedModuleAwayOverlap a b) (LocalizedModule.mk m 1) = LocalizedModule.mk m 1",
+      "sha256": "8274f7e0810623df16e7112928dcc5c8a5ba96f9f0f1ffb8374036471cbceeab",
+      "lines": 5,
+      "moduleLineCount": 46,
+      "startLine": 40,
+      "endLine": 44,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.originalLocalizedModuleAwayOverlap",
+        "LinearStudy.originalLocalizedModuleAwayOverlap_unit"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.originalLocalizedModuleAwayOverlap_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleAwayOverlapFraction.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalLocalizedModuleAwayOverlap_mk.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [AddCommGroup M]\n  [Module R M] (a b : R) (m : M) (n : ℕ) :\n  (LinearStudy.originalLocalizedModuleAwayOverlap a b) (LocalizedModule.mk m ⟨a ^ n, ⋯⟩) =\n    LocalizedModule.mk (b ^ n • m) ⟨(a * b) ^ n, ⋯⟩",
+      "sha256": "e2583f4eb9945b23e7454cdd7a7efa7ca832fb26461c5131ab7aa75c1b625a50",
+      "lines": 28,
+      "moduleLineCount": 42,
+      "startLine": 13,
+      "endLine": 40,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.originalLocalizedModuleAwayOverlap",
+        "LinearStudy.originalLocalizedModuleAwayOverlap_mk_one",
+        "LinearStudy.originalLocalizedModuleAwayOverlap_unit"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.originalAwayOverlap_powers_le",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleAwayOverlapRefinement.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalAwayOverlap_powers_le.{u_1} {R : Type u_1} [CommRing R] (a b : R) (T : Submonoid R)\n  (ha : Submonoid.powers a ≤ T) (hb : Submonoid.powers b ≤ T) : Submonoid.powers (a * b) ≤ T",
+      "sha256": "07adb17d1f8e1e50cd2e30c6b7b28bd5710fe222da14292436a9972ececb8f5d",
+      "lines": 7,
+      "moduleLineCount": 46,
+      "startLine": 12,
+      "endLine": 18,
+      "lineCount": 7,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.originalLocalizedModuleAwayOverlap_refinement",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleAwayOverlapRefinement.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalLocalizedModuleAwayOverlap_refinement.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R]\n  [AddCommGroup M] [Module R M] (a b : R) (T : Submonoid R) (ha : Submonoid.powers a ≤ T) (hb : Submonoid.powers b ≤ T)\n  (x : LocalizedModule (Submonoid.powers a) M) :\n  (LinearStudy.originalLocalizedModuleRefinement (Submonoid.powers (a * b)) T ⋯)\n      ((LinearStudy.originalLocalizedModuleAwayOverlap a b) x) =\n    (LinearStudy.originalLocalizedModuleRefinement (Submonoid.powers a) T ha) x",
+      "sha256": "07adb17d1f8e1e50cd2e30c6b7b28bd5710fe222da14292436a9972ececb8f5d",
+      "lines": 26,
+      "moduleLineCount": 46,
+      "startLine": 20,
+      "endLine": 45,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.originalAwayOverlap_powers_le",
+        "LinearStudy.originalLocalizedModuleAwayOverlap",
+        "LinearStudy.originalLocalizedModuleAwayOverlap_mk",
+        "LinearStudy.originalLocalizedModuleRefinement",
+        "LinearStudy.originalLocalizedModuleRefinement_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.originalLocalizedModuleAwayOverlap_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleAwayOverlapSemilinear.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalLocalizedModuleAwayOverlap_smul.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R]\n  [AddCommGroup M] [Module R M] (a b : R) (c : Localization.Away a) (x : LocalizedModule (Submonoid.powers a) M) :\n  (LinearStudy.originalLocalizedModuleAwayOverlap a b) (c • x) =\n    (IsLocalization.Away.awayToAwayRight a b) c • (LinearStudy.originalLocalizedModuleAwayOverlap a b) x",
+      "sha256": "8e820e0240ca92fa522c9940006520173694c24e6ba3b8ee7bc32fd0be123d2b",
+      "lines": 37,
+      "moduleLineCount": 63,
+      "startLine": 14,
+      "endLine": 50,
+      "lineCount": 37,
+      "dependencies": [
+        "LinearStudy.localizedModule_abstract_smul_eq_native",
+        "LinearStudy.nativeLocalizedModuleScalar",
+        "LinearStudy.originalAwayOverlap_mk",
+        "LinearStudy.originalLocalizedModuleAwayOverlap",
+        "LinearStudy.originalLocalizedModuleAwayOverlap_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.originalLocalizedModuleAwayOverlapSemilinear",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleAwayOverlapSemilinear.lean",
+      "line": 54,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.originalLocalizedModuleAwayOverlapSemilinear.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R]\n  [AddCommGroup M] [Module R M] (a b : R) :\n  LocalizedModule (Submonoid.powers a) M →ₛₗ[IsLocalization.Away.awayToAwayRight a b]\n    LocalizedModule (Submonoid.powers (a * b)) M",
+      "sha256": "8e820e0240ca92fa522c9940006520173694c24e6ba3b8ee7bc32fd0be123d2b",
+      "lines": 10,
+      "moduleLineCount": 63,
+      "startLine": 52,
+      "endLine": 61,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.originalLocalizedModuleAwayOverlap",
+        "LinearStudy.originalLocalizedModuleAwayOverlap_smul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.originalLocalizedModuleRefinement",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleRefinement.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.originalLocalizedModuleRefinement.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [AddCommGroup M]\n  [Module R M] (P T : Submonoid R) (hPT : P ≤ T) : LocalizedModule P M →ₗ[R] LocalizedModule T M",
+      "sha256": "841cd63d585a09a6de2b59a4228f4f8e19f06569f6db5c217af7a201d5714fee",
+      "lines": 7,
+      "moduleLineCount": 47,
+      "startLine": 11,
+      "endLine": 17,
+      "lineCount": 7,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.originalLocalizedModuleRefinement_mk_one",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleRefinement.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalLocalizedModuleRefinement_mk_one.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R]\n  [AddCommGroup M] [Module R M] (P T : Submonoid R) (hPT : P ≤ T) (m : M) :\n  (LinearStudy.originalLocalizedModuleRefinement P T hPT) (LocalizedModule.mk m 1) = LocalizedModule.mk m 1",
+      "sha256": "841cd63d585a09a6de2b59a4228f4f8e19f06569f6db5c217af7a201d5714fee",
+      "lines": 5,
+      "moduleLineCount": 47,
+      "startLine": 19,
+      "endLine": 23,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.originalLocalizedModuleRefinement"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.originalLocalizedModuleRefinement_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleRefinement.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalLocalizedModuleRefinement_mk.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [AddCommGroup M]\n  [Module R M] (P T : Submonoid R) (hPT : P ≤ T) (m : M) (s : ↥P) :\n  (LinearStudy.originalLocalizedModuleRefinement P T hPT) (LocalizedModule.mk m s) = LocalizedModule.mk m ⟨↑s, ⋯⟩",
+      "sha256": "841cd63d585a09a6de2b59a4228f4f8e19f06569f6db5c217af7a201d5714fee",
+      "lines": 22,
+      "moduleLineCount": 47,
+      "startLine": 25,
+      "endLine": 46,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.originalLocalizedModuleRefinement",
+        "LinearStudy.originalLocalizedModuleRefinement_mk_one"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.originalLocalizedModuleRefinement_refl",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleRefinementComposition.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalLocalizedModuleRefinement_refl.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R]\n  [AddCommGroup M] [Module R M] (P : Submonoid R) : LinearStudy.originalLocalizedModuleRefinement P P ⋯ = LinearMap.id",
+      "sha256": "7608c3673398308ab411ee31851ee94a68b7ba0be32ec3c24545b260aa77a419",
+      "lines": 9,
+      "moduleLineCount": 37,
+      "startLine": 11,
+      "endLine": 19,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.originalLocalizedModuleRefinement",
+        "LinearStudy.originalLocalizedModuleRefinement_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.originalLocalizedModuleRefinement_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedModuleRefinementComposition.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalLocalizedModuleRefinement_comp.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R]\n  [AddCommGroup M] [Module R M] (P T U : Submonoid R) (hPT : P ≤ T) (hTU : T ≤ U) :\n  LinearStudy.originalLocalizedModuleRefinement T U hTU ∘ₗ LinearStudy.originalLocalizedModuleRefinement P T hPT =\n    LinearStudy.originalLocalizedModuleRefinement P U ⋯",
+      "sha256": "7608c3673398308ab411ee31851ee94a68b7ba0be32ec3c24545b260aa77a419",
+      "lines": 15,
+      "moduleLineCount": 37,
+      "startLine": 21,
+      "endLine": 35,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.originalLocalizedModuleRefinement",
+        "LinearStudy.originalLocalizedModuleRefinement_mk"
+      ]
+    },
+    {
       "declaration": "LinearStudy.localizedPointQuotientEquiv",
       "kind": "def",
       "origin": "project",
@@ -19631,6 +20010,34 @@
       ]
     },
     {
+      "declaration": "LinearStudy.finiteNativeDual_awayOverlap_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeDualAwayOverlapEvaluation.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeDual_awayOverlap_evaluation.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  [Module.Finite R S] (a b : R) (ha : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (hab : Function.Injective ⇑(algebraMap R (Localization.Away (a * b))))\n  (ell :\n    LocalizedModule (Submonoid.powers a)\n      ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))\n  (x : LocalizedModule (Submonoid.powers a) S) :\n  ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers (a * b)) hab)\n        ((LinearStudy.originalLocalizedModuleAwayOverlap a b) ell))\n      ((LinearStudy.originalLocalizedModuleAwayOverlap a b) x) =\n    (IsLocalization.Away.awayToAwayRight a b)\n      (((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers a) ha) ell) x)",
+      "sha256": "59cd2d97c3ee88f0a2e6a1a7f52397fa185672263ef77f43852ba9c954c3f4c1",
+      "lines": 44,
+      "moduleLineCount": 62,
+      "startLine": 17,
+      "endLine": 60,
+      "lineCount": 44,
+      "dependencies": [
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv_apply_fraction",
+        "LinearStudy.nativeCoextensionOriginalDualEquiv",
+        "LinearStudy.originalAwayOverlap_mk",
+        "LinearStudy.originalLocalizedModuleAwayOverlap",
+        "LinearStudy.originalLocalizedModuleAwayOverlap_mk"
+      ]
+    },
+    {
       "declaration": "LinearStudy.finiteNativeDualDegreeZeroChartMap_injective",
       "kind": "theorem",
       "origin": "project",
@@ -20126,6 +20533,112 @@
         "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
         "LinearStudy.finiteNativeCoextensionLocalizationEquiv_apply_mk",
         "LinearStudy.nativeCoextensionOriginalDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeDualFullSourceChartMap_overlap_value",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeFullChartDualOverlap.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeDualFullSourceChartMap_overlap_value.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a b : R) (ha : a ∈ 𝒜 1)\n  (hb : b ∈ 𝒜 1) (hinja : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (hinjab : Function.Injective ⇑(algebraMap R (Localization.Away (a * b))))\n  (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a))\n  (y : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :\n  ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers (a * b)) hinjab)\n        ((LinearStudy.originalLocalizedModuleAwayOverlap a b) ↑ell))\n      ((LinearStudy.originalLocalizedModuleAwayOverlap a b)\n        ↑((LinearStudy.nativeNormalizationSourceChartEquiv 𝒜 𝓑 a ha).symm y)) =\n    HomogeneousLocalization.val\n      ((HomogeneousLocalization.awayMap 𝒜 hb ⋯)\n        (((LinearStudy.finiteNativeDualFullSourceChartMap 𝒜 𝓑 a ha hinja) ell) y))",
+      "sha256": "b91ced598afd419bf799642f1a2e54b8156259640c1f0cf78e16b1b88d8ef624",
+      "lines": 22,
+      "moduleLineCount": 45,
+      "startLine": 22,
+      "endLine": 43,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+        "LinearStudy.finiteNativeDualFullSourceChartMap",
+        "LinearStudy.finiteNativeDualFullSourceChartMap_apply_val",
+        "LinearStudy.finiteNativeDual_awayOverlap_evaluation",
+        "LinearStudy.homogeneousChartOverlap_val",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationSourceAwayZero",
+        "LinearStudy.nativeNormalizationSourceChartEquiv",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalLocalizedModuleAwayOverlap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeDualFullSourceChartMap_refinement_value",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeFullChartDualRefinement.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeDualFullSourceChartMap_refinement_value.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (T : Submonoid R) (hPT : Submonoid.powers a ≤ T) (hinja : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (hinjT : Function.Injective ⇑(algebraMap R (Localization T)))\n  (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a))\n  (y : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :\n  ((LinearStudy.finiteNativeCoextensionLocalizationEquiv T hinjT)\n        ((LinearStudy.originalLocalizedModuleRefinement (Submonoid.powers a) T hPT) ↑ell))\n      ((LinearStudy.originalLocalizedModuleRefinement (Submonoid.powers a) T hPT)\n        ↑((LinearStudy.nativeNormalizationSourceChartEquiv 𝒜 𝓑 a ha).symm y)) =\n    ((HomogeneousLocalization.mapId 𝒜 hPT)\n        (((LinearStudy.finiteNativeDualFullSourceChartMap 𝒜 𝓑 a ha hinja) ell) y)).val",
+      "sha256": "3aa8b73e07557ca20159cff4be1dc228c8d4df9624399f4aa28656bc126d6997",
+      "lines": 20,
+      "moduleLineCount": 75,
+      "startLine": 22,
+      "endLine": 41,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+        "LinearStudy.finiteNativeDualFullSourceChartMap",
+        "LinearStudy.finiteNativeDualFullSourceChartMap_apply_val",
+        "LinearStudy.finiteNativeDual_refinement_evaluation",
+        "LinearStudy.homogeneousLocalizationRefinement_val",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationSourceAwayZero",
+        "LinearStudy.nativeNormalizationSourceChartEquiv",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalLocalizedModuleRefinement"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteNativeDualFullSourceChartMap_common_value",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeFullChartDualRefinement.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteNativeDualFullSourceChartMap_common_value.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a b : R) (ha : a ∈ 𝒜 1)\n  (hb : b ∈ 𝒜 1) (T : Submonoid R) (hPa : Submonoid.powers a ≤ T) (hPb : Submonoid.powers b ≤ T)\n  (hinja : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (hinjb : Function.Injective ⇑(algebraMap R (Localization.Away b)))\n  (hinjT : Function.Injective ⇑(algebraMap R (Localization T)))\n  (ellA : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a))\n  (ellB : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) b))\n  (yA : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) (yB : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) b))\n  (hEll :\n    (LinearStudy.originalLocalizedModuleRefinement (Submonoid.powers a) T hPa) ↑ellA =\n      (LinearStudy.originalLocalizedModuleRefinement (Submonoid.powers b) T hPb) ↑ellB)\n  (hY :\n    (LinearStudy.originalLocalizedModuleRefinement (Submonoid.powers a) T hPa)\n        ↑((LinearStudy.nativeNormalizationSourceChartEquiv 𝒜 𝓑 a ha).symm yA) =\n      (LinearStudy.originalLocalizedModuleRefinement (Submonoid.powers b) T hPb)\n        ↑((LinearStudy.nativeNormalizationSourceChartEquiv 𝒜 𝓑 b hb).symm yB)) :\n  (HomogeneousLocalization.mapId 𝒜 hPa) (((LinearStudy.finiteNativeDualFullSourceChartMap 𝒜 𝓑 a ha hinja) ellA) yA) =\n    (HomogeneousLocalization.mapId 𝒜 hPb) (((LinearStudy.finiteNativeDualFullSourceChartMap 𝒜 𝓑 b hb hinjb) ellB) yB)",
+      "sha256": "3aa8b73e07557ca20159cff4be1dc228c8d4df9624399f4aa28656bc126d6997",
+      "lines": 32,
+      "moduleLineCount": 75,
+      "startLine": 43,
+      "endLine": 74,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+        "LinearStudy.finiteNativeDualFullSourceChartMap",
+        "LinearStudy.finiteNativeDualFullSourceChartMap_refinement_value",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationSourceAwayZero",
+        "LinearStudy.nativeNormalizationSourceChartEquiv",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalLocalizedModuleRefinement"
       ]
     },
     {
@@ -26788,6 +27301,27 @@
         "LinearStudy.thickeningMk",
         "LinearStudy.thickening_closedFiber_jacobian"
       ]
+    },
+    {
+      "declaration": "LinearStudy.originalAwayOverlap_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/OriginalAwayOverlapFraction.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalAwayOverlap_mk.{u_1} {R : Type u_1} [CommRing R] (a b z : R) (n : ℕ) :\n  (IsLocalization.Away.awayToAwayRight a b) (IsLocalization.mk' (Localization.Away a) z ⟨a ^ n, ⋯⟩) =\n    IsLocalization.mk' (Localization.Away (a * b)) (b ^ n * z) ⟨(a * b) ^ n, ⋯⟩",
+      "sha256": "2cd5c48e9e4ed5700d08a2b7813361a8c6c229624ddbd372265a25e2ed15f3da",
+      "lines": 22,
+      "moduleLineCount": 35,
+      "startLine": 12,
+      "endLine": 33,
+      "lineCount": 22,
+      "dependencies": []
     },
     {
       "declaration": "LinearStudy.original_local_ideal_firstOrder_normal_form",
@@ -45447,6 +45981,47 @@
         "LinearStudy.nativeLocalizedUpperAlgebra_isLocalization",
         "LinearStudy.projectiveLinearNormalizationMap",
         "LinearStudy.projectiveNormalizationNativeDualCoordinateLocalizationEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveNormalizationNativeFullSourceDualMap_overlap_value",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeFullChartDualOverlap.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNormalizationNativeFullSourceDualMap_overlap_value {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i j : Fin (r + 1)) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;\n  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;\n  let a := MvPolynomial.X i;\n  let b := MvPolynomial.X j;\n  ∀ (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a))\n    (y : HomogeneousLocalization.Away 𝓑 ((algebraMap A B) a)),\n    ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers (a * b)) ⋯)\n          ((LinearStudy.originalLocalizedModuleAwayOverlap a b) ↑ell))\n        ((LinearStudy.originalLocalizedModuleAwayOverlap a b)\n          ↑((LinearStudy.nativeNormalizationSourceChartEquiv 𝒜 𝓑 a ⋯).symm y)) =\n      HomogeneousLocalization.val\n        ((HomogeneousLocalization.awayMap 𝒜 ⋯ ⋯)\n          (((LinearStudy.projectiveNormalizationNativeFullSourceDualMap V L hL hfinite i) ell) y))",
+      "sha256": "4a69e1f360a8f68ab9b4423f0a342df3e6ca70e14a65306962d2dc7d6e10b99f",
+      "lines": 56,
+      "moduleLineCount": 72,
+      "startLine": 16,
+      "endLine": 71,
+      "lineCount": 56,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.finiteNativeCoextensionLocalizationEquiv",
+        "LinearStudy.finiteNativeDualFullSourceChartMap_overlap_value",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationSourceAwayZero",
+        "LinearStudy.nativeNormalizationSourceChartEquiv",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalLocalizedModuleAwayOverlap",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul",
+        "LinearStudy.projectiveNormalizationNativeFullSourceDualMap"
       ]
     },
     {

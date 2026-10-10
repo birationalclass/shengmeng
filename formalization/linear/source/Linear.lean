@@ -982,3 +982,18 @@ public import Linear.NativeDualFullSourceChartEquiv
 public import Linear.ProjectiveNativeFullSourceDualSurjective
 public import Linear.ProjectiveNativeFullSourceDualBijective
 public import Linear.ProjectiveNativeDualChartsConstructed
+
+public import Linear.LocalizedModuleRefinement
+public import Linear.FiniteNativeDualRefinementEvaluation
+public import Linear.LocalizedModuleAwayOverlap
+public import Linear.LocalizedModuleAwayOverlapFraction
+public import Linear.OriginalAwayOverlapFraction
+public import Linear.NativeDualAwayOverlapEvaluation
+public import Linear.HomogeneousChartOverlapValue
+public import Linear.NativeFullChartDualOverlap
+public import Linear.ProjectiveNativeFullChartDualOverlap
+public import Linear.LocalizedModuleAwayOverlapSemilinear
+public import Linear.LocalizedModuleRefinementComposition
+public import Linear.LocalizedModuleAwayOverlapRefinement
+public import Linear.HomogeneousLocalizationRefinementValue
+public import Linear.NativeFullChartDualRefinement
