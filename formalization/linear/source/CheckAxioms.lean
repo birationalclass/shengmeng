@@ -21,6 +21,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.smooth_actual_unramified_pullback_parameters
 #check LinearStudy.affineChartPolynomialMap_eq_dehomogenize
 #print axioms LinearStudy.affineChartPolynomialMap_eq_dehomogenize
+#check LinearStudy.affineCompositeHEq
+#print axioms LinearStudy.affineCompositeHEq
+#check LinearStudy.affineCompositeInstantiation
+#print axioms LinearStudy.affineCompositeInstantiation
 #check LinearStudy.polynomial_difference_matrix_right_zero
 #print axioms LinearStudy.polynomial_difference_matrix_right_zero
 #check LinearStudy.polynomial_difference_matrix_diagonal
@@ -49,6 +53,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.affine_filtered_functional_descends
 #check LinearStudy.affine_polynomial_low_degree_functional
 #print axioms LinearStudy.affine_polynomial_low_degree_functional
+#check LinearStudy.affineHomScalarEnd
+#print axioms LinearStudy.affineHomScalarEnd
+#check LinearStudy.affineHomScaledTransport
+#print axioms LinearStudy.affineHomScaledTransport
+#check LinearStudy.affineHomScalarHEq
+#print axioms LinearStudy.affineHomScalarHEq
 #check LinearStudy.polynomial_highest_parts_regular_of_zeroLocus
 #print axioms LinearStudy.polynomial_highest_parts_regular_of_zeroLocus
 #check LinearStudy.affine_origin_low_degree_trace_pairing
@@ -4261,6 +4271,16 @@ set_option pp.proofs false
 #print axioms LinearStudy.schemeModuleHomOpenSectionsEquiv
 #check LinearStudy.schemeModuleHomAffineChartSectionsEquiv
 #print axioms LinearStudy.schemeModuleHomAffineChartSectionsEquiv
+#check LinearStudy.schemeModulesRestrictFunctor_map_add
+#print axioms LinearStudy.schemeModulesRestrictFunctor_map_add
+#check LinearStudy.schemeModuleHomAffineChartSectionsEquiv_direct_add
+#print axioms LinearStudy.schemeModuleHomAffineChartSectionsEquiv_direct_add
+#check LinearStudy.schemeModuleHomCompositeRestriction
+#print axioms LinearStudy.schemeModuleHomCompositeRestriction
+#check LinearStudy.schemeModuleHomCompositeRestriction_smul
+#print axioms LinearStudy.schemeModuleHomCompositeRestriction_smul
+#check LinearStudy.schemeModuleHomCompositeRestriction_add
+#print axioms LinearStudy.schemeModuleHomCompositeRestriction_add
 #check LinearStudy.schemeModuleHomGlobalEquiv
 #print axioms LinearStudy.schemeModuleHomGlobalEquiv
 #check LinearStudy.schemeModuleHom_existsUnique_gluing

@@ -148,6 +148,17 @@ LinearStudy.smooth_actual_unramified_pullback_parameters.{u_1} {K : Type u_1} [F
 LinearStudy.affineChartPolynomialMap_eq_dehomogenize.{u_1} {K : Type u_1} [Field K] {n : ℕ}
   (H : MvPolynomial (Fin (n + 1)) K) : LinearStudy.affineChartPolynomialMap H = LinearStudy.affineDehomogenize H
 'LinearStudy.affineChartPolynomialMap_eq_dehomogenize' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineCompositeHEq.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens) (R : CommRingCat)
+  (e : ↑U ≅ AlgebraicGeometry.Spec R)
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  (LinearStudy.schemeModuleHomAffineChartSectionsEquiv M N U R e) h ≍
+    LinearStudy.affineCompositeInstantiation M N U R e h
+'LinearStudy.affineCompositeHEq' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineCompositeInstantiation.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
+  (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R)
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ⟶ N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι)
+'LinearStudy.affineCompositeInstantiation' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_difference_matrix_right_zero.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]
   (P : ι → MvPolynomial ι K) (D : Matrix ι ι (MvPolynomial (ι ⊕ ι) K))
   (hD :
@@ -297,6 +308,21 @@ LinearStudy.affine_polynomial_low_degree_functional.{u_1} {K : Type u_1} [Field 
       ∀ (f : MvPolynomial (Fin (n + 1)) K),
         f.totalDegree < ∑ i, ((P i).totalDegree - 1) → ell ((Ideal.Quotient.mk I) f) = 0
 'LinearStudy.affine_polynomial_low_degree_functional' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineHomScalarEnd.{u} {X : AlgebraicGeometry.Scheme} (N : X.Modules) (U : X.Opens) (R : CommRingCat)
+  (e : ↑U ≅ AlgebraicGeometry.Spec R) (r : ↑(X.presheaf.obj (Opposite.op U))) :
+  N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ⟶ N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι)
+'LinearStudy.affineHomScalarEnd' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineHomScaledTransport.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
+  (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R) (r : ↑(X.presheaf.obj (Opposite.op U)))
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ⟶ N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι)
+'LinearStudy.affineHomScaledTransport' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineHomScalarHEq.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens) (R : CommRingCat)
+  (e : ↑U ≅ AlgebraicGeometry.Spec R) (r : ↑(X.presheaf.obj (Opposite.op U)))
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  (LinearStudy.schemeModuleHomAffineChartSectionsEquiv M N U R e) (r • h) ≍
+    LinearStudy.affineHomScaledTransport M N U R e r h
+'LinearStudy.affineHomScalarHEq' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_highest_parts_regular_of_zeroLocus.{u_1} {K : Type u_1} [Field K] [IsAlgClosed K] {n : ℕ}
   (P : Fin n → MvPolynomial (Fin n) K)
   (hz :
@@ -16568,6 +16594,43 @@ LinearStudy.schemeModuleHomAffineChartSectionsEquiv.{u} {X : AlgebraicGeometry.S
     (M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ⟶
       N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι))
 'LinearStudy.schemeModuleHomAffineChartSectionsEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModulesRestrictFunctor_map_add.{u} {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  [AlgebraicGeometry.IsOpenImmersion f] {M N : Y.Modules} (h k : M ⟶ N) :
+  (AlgebraicGeometry.Scheme.Modules.restrictFunctor f).map (h + k) =
+    (AlgebraicGeometry.Scheme.Modules.restrictFunctor f).map h +
+      (AlgebraicGeometry.Scheme.Modules.restrictFunctor f).map k
+'LinearStudy.schemeModulesRestrictFunctor_map_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomAffineChartSectionsEquiv_direct_add.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules)
+  (U : X.Opens) (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R)
+  (h k : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  (LinearStudy.schemeModuleHomAffineChartSectionsEquiv M N U R e) (h + k) =
+    (LinearStudy.schemeModuleHomAffineChartSectionsEquiv M N U R e) h +
+      (LinearStudy.schemeModuleHomAffineChartSectionsEquiv M N U R e) k
+'LinearStudy.schemeModuleHomAffineChartSectionsEquiv_direct_add' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleHomCompositeRestriction.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
+  (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f]
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  M.restrict (CategoryTheory.CategoryStruct.comp f U.ι) ⟶ N.restrict (CategoryTheory.CategoryStruct.comp f U.ι)
+'LinearStudy.schemeModuleHomCompositeRestriction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomCompositeRestriction_smul.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules)
+  (U : X.Opens) (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f] (r : ↑(X.presheaf.obj (Opposite.op U)))
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  LinearStudy.schemeModuleHomCompositeRestriction M N U f (r • h) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomCompositeRestriction M N U f h)
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop f))
+          ((CategoryTheory.ConcreteCategory.hom U.topIso.inv) r))
+        (N.restrict (CategoryTheory.CategoryStruct.comp f U.ι)))
+'LinearStudy.schemeModuleHomCompositeRestriction_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomCompositeRestriction_add.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
+  (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f]
+  (h k : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  LinearStudy.schemeModuleHomCompositeRestriction M N U f (h + k) =
+    LinearStudy.schemeModuleHomCompositeRestriction M N U f h +
+      LinearStudy.schemeModuleHomCompositeRestriction M N U f k
+'LinearStudy.schemeModuleHomCompositeRestriction_add' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.schemeModuleHomGlobalEquiv.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :
   ↑(LinearStudy.schemeModuleHomPresheaf M N).sections ≃ (M ⟶ N)
 'LinearStudy.schemeModuleHomGlobalEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]

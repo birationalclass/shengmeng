@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2565,
-  "verifiedTheorems": 1867,
-  "definitions": 502,
+  "audited": 2575,
+  "verifiedTheorems": 1873,
+  "definitions": 506,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -259,6 +259,55 @@
       "dependencies": [
         "LinearStudy.affineChartPolynomialMap",
         "LinearStudy.affineDehomogenize"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineCompositeHEq",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AffineCompositeHEq.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineCompositeHEq.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens) (R : CommRingCat)\n  (e : ↑U ≅ AlgebraicGeometry.Spec R)\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  (LinearStudy.schemeModuleHomAffineChartSectionsEquiv M N U R e) h ≍\n    LinearStudy.affineCompositeInstantiation M N U R e h",
+      "sha256": "ab13943880be34fda974482064e28114a046cae43cf1588f8fdf9060d76fd4d2",
+      "lines": 5,
+      "moduleLineCount": 17,
+      "startLine": 12,
+      "endLine": 16,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.affineCompositeInstantiation",
+        "LinearStudy.schemeModuleHomAffineChartSectionsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineCompositeInstantiation",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/AffineCompositeInstantiation.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.affineCompositeInstantiation.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)\n  (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R)\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ⟶ N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι)",
+      "sha256": "e3b59ea9c4902cbdc20f62b9c78328bb4d0373ca48ecc160a59b12ae36f93f45",
+      "lines": 4,
+      "moduleLineCount": 20,
+      "startLine": 15,
+      "endLine": 18,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomCompositeRestriction",
+        "LinearStudy.schemeModuleHomModuleSheaf"
       ]
     },
     {
@@ -627,6 +676,84 @@
         "LinearStudy.affine_polynomial_bounded_normal_form",
         "LinearStudy.homogeneous_euler_coefficient_matrix",
         "LinearStudy.homogeneous_polynomial_low_degree_pairing"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineHomScalarEnd",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/AffineHomScalarHEq.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.affineHomScalarEnd.{u} {X : AlgebraicGeometry.Scheme} (N : X.Modules) (U : X.Opens) (R : CommRingCat)\n  (e : ↑U ≅ AlgebraicGeometry.Spec R) (r : ↑(X.presheaf.obj (Opposite.op U))) :\n  N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ⟶ N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι)",
+      "sha256": "ee8d8ab767c867768886386ecbdee614d9a9c22998d636a622b8302c40bb7631",
+      "lines": 5,
+      "moduleLineCount": 34,
+      "startLine": 14,
+      "endLine": 18,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.originalGlobalModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineHomScaledTransport",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/AffineHomScalarHEq.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.affineHomScaledTransport.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)\n  (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R) (r : ↑(X.presheaf.obj (Opposite.op U)))\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ⟶ N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι)",
+      "sha256": "ee8d8ab767c867768886386ecbdee614d9a9c22998d636a622b8302c40bb7631",
+      "lines": 3,
+      "moduleLineCount": 34,
+      "startLine": 20,
+      "endLine": 22,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.affineCompositeInstantiation",
+        "LinearStudy.affineHomScalarEnd",
+        "LinearStudy.schemeModuleHomModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineHomScalarHEq",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AffineHomScalarHEq.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineHomScalarHEq.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens) (R : CommRingCat)\n  (e : ↑U ≅ AlgebraicGeometry.Spec R) (r : ↑(X.presheaf.obj (Opposite.op U)))\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  (LinearStudy.schemeModuleHomAffineChartSectionsEquiv M N U R e) (r • h) ≍\n    LinearStudy.affineHomScaledTransport M N U R e r h",
+      "sha256": "ee8d8ab767c867768886386ecbdee614d9a9c22998d636a622b8302c40bb7631",
+      "lines": 9,
+      "moduleLineCount": 34,
+      "startLine": 24,
+      "endLine": 32,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.affineCompositeHEq",
+        "LinearStudy.affineCompositeInstantiation",
+        "LinearStudy.affineHomScaledTransport",
+        "LinearStudy.originalGlobalModuleScalar",
+        "LinearStudy.schemeModuleHomAffineChartSectionsEquiv",
+        "LinearStudy.schemeModuleHomCompositeRestriction",
+        "LinearStudy.schemeModuleHomCompositeRestriction_smul",
+        "LinearStudy.schemeModuleHomModuleSheaf"
       ]
     },
     {
@@ -57652,6 +57779,129 @@
         "LinearStudy.schemeModuleHomModuleSheaf",
         "LinearStudy.schemeModuleHomOpenSectionsEquiv",
         "LinearStudy.schemeModuleIsoPushforwardRestriction"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModulesRestrictFunctor_map_add",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomAffineDirectAdd.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModulesRestrictFunctor_map_add.{u} {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)\n  [AlgebraicGeometry.IsOpenImmersion f] {M N : Y.Modules} (h k : M ⟶ N) :\n  (AlgebraicGeometry.Scheme.Modules.restrictFunctor f).map (h + k) =\n    (AlgebraicGeometry.Scheme.Modules.restrictFunctor f).map h +\n      (AlgebraicGeometry.Scheme.Modules.restrictFunctor f).map k",
+      "sha256": "80ea6fd8768439777971f3bfc1694169250eb4cdc641f046fe4abcf8906b98c4",
+      "lines": 7,
+      "moduleLineCount": 35,
+      "startLine": 14,
+      "endLine": 20,
+      "lineCount": 7,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomAffineChartSectionsEquiv_direct_add",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomAffineDirectAdd.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomAffineChartSectionsEquiv_direct_add.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules)\n  (U : X.Opens) (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R)\n  (h k : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  (LinearStudy.schemeModuleHomAffineChartSectionsEquiv M N U R e) (h + k) =\n    (LinearStudy.schemeModuleHomAffineChartSectionsEquiv M N U R e) h +\n      (LinearStudy.schemeModuleHomAffineChartSectionsEquiv M N U R e) k",
+      "sha256": "80ea6fd8768439777971f3bfc1694169250eb4cdc641f046fe4abcf8906b98c4",
+      "lines": 11,
+      "moduleLineCount": 35,
+      "startLine": 23,
+      "endLine": 33,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAffineChartSectionsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv_add",
+        "LinearStudy.schemeModulesRestrictFunctor_map_add"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomCompositeRestriction",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomCompositeRestriction.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomCompositeRestriction.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)\n  (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f]\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  M.restrict (CategoryTheory.CategoryStruct.comp f U.ι) ⟶ N.restrict (CategoryTheory.CategoryStruct.comp f U.ι)",
+      "sha256": "5ccba3ae40b7707d2023c1c76ca54185ca64350fcf47bae1594d0809060df3a7",
+      "lines": 8,
+      "moduleLineCount": 44,
+      "startLine": 16,
+      "endLine": 23,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomCompositeRestriction_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomCompositeRestriction.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomCompositeRestriction_smul.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules)\n  (U : X.Opens) (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f] (r : ↑(X.presheaf.obj (Opposite.op U)))\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  LinearStudy.schemeModuleHomCompositeRestriction M N U f (r • h) =\n    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomCompositeRestriction M N U f h)\n      (LinearStudy.originalGlobalModuleScalar\n        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop f))\n          ((CategoryTheory.ConcreteCategory.hom U.topIso.inv) r))\n        (N.restrict (CategoryTheory.CategoryStruct.comp f U.ι)))",
+      "sha256": "5ccba3ae40b7707d2023c1c76ca54185ca64350fcf47bae1594d0809060df3a7",
+      "lines": 9,
+      "moduleLineCount": 44,
+      "startLine": 25,
+      "endLine": 33,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.originalGlobalModuleScalar",
+        "LinearStudy.schemeModuleHomCompositeRestriction",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomRestrictionTransport_smul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomCompositeRestriction_add",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomCompositeRestriction.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomCompositeRestriction_add.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)\n  (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f]\n  (h k : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  LinearStudy.schemeModuleHomCompositeRestriction M N U f (h + k) =\n    LinearStudy.schemeModuleHomCompositeRestriction M N U f h +\n      LinearStudy.schemeModuleHomCompositeRestriction M N U f k",
+      "sha256": "5ccba3ae40b7707d2023c1c76ca54185ca64350fcf47bae1594d0809060df3a7",
+      "lines": 8,
+      "moduleLineCount": 44,
+      "startLine": 35,
+      "endLine": 42,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomCompositeRestriction",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomRestrictionTransport_add"
       ]
     },
     {

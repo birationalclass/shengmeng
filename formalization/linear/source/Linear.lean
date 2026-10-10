@@ -1101,3 +1101,9 @@ public import Linear.SchemeModuleSpecChartSections
 public import Linear.NativeSourceSpecChartLinear
 public import Linear.NativeSourceSpecChartTilde
 public import Linear.ProjectiveNativeSourceDualChartTilde
+
+public import Linear.SchemeModuleHomCompositeRestriction
+public import Linear.AffineCompositeInstantiation
+public import Linear.AffineCompositeHEq
+public import Linear.SchemeModuleHomAffineDirectAdd
+public import Linear.AffineHomScalarHEq
