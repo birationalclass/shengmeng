@@ -11,3 +11,5 @@ Run `node study/abundance/build.mjs` from the repository root after changing the
 The source conversation coordinates approximately 30-minute updates when new learning content exists. This page does not poll private conversations, require credentials, or create a second scheduler.
 
 Display questions and replies as separate dialogue messages. Preserve sourceTheorem.text exactly from the requested source theorem (including math notation); never replace it with a paraphrase. Formula delimiters $...$, \[...\], and \(...\) render with the shared KaTeX assets. Source proof status remains explicit.
+
+Keep the public page minimal: the heading is Nef abundance, immediately followed by the exact public paper link, the full original theorem, and concise user/assistant dialogue. Do not restore slogans, reading instructions, catalogue grids, counts, filters, or decorative navigation. Keep dates and proof uncertainty compact; correct speech errors and remove repetition. Future approximately 30-minute updates follow the same minimal format and only publish new substantive discussion. Preserve the catalogue in records.json as editorial metadata, not visible UI.
