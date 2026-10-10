@@ -1095,3 +1095,9 @@ public import Linear.SchemeModuleScalarNaturality
 public import Linear.SchemeModuleHomRestrictionTransport
 public import Linear.SchemeModuleAffineRestrictionIso
 public import Linear.OriginalProjectiveChartScalarTransport
+
+public import Linear.OriginalProjectiveChartSectionRing
+public import Linear.SchemeModuleSpecChartSections
+public import Linear.NativeSourceSpecChartLinear
+public import Linear.NativeSourceSpecChartTilde
+public import Linear.ProjectiveNativeSourceDualChartTilde

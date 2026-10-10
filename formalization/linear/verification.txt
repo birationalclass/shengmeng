@@ -771,15 +771,41 @@ Linear.SchemeModuleHomAffineChartSections: cached compiled module (source and pr
 Linear.NativeNormalizationGlobalAffineHomSections: cached compiled module (source and project dependencies unchanged)
 Linear.SchemeModuleScalarRestriction: cached compiled module (source and project dependencies unchanged)
 Linear.SchemeModuleHomOpenScalars: cached compiled module (source and project dependencies unchanged)
-Linear.SchemeModuleScalarNaturality: exit 0; source 380aebafda376284397f36d9741361fc66bac5cedf7d8613a2304daa77db7cb5
+Linear.SchemeModuleScalarNaturality: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomRestrictionTransport: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleAffineRestrictionIso: cached compiled module (source and project dependencies unchanged)
+Linear.OriginalProjectiveChartScalarTransport: cached compiled module (source and project dependencies unchanged)
+Linear.OriginalProjectiveChartSectionRing: exit 0; source 2c42d75020c56163863f389df1477d666eee725aaee092b86ba5264df3d78593
+Linear\OriginalProjectiveChartSectionRing.lean:19:30: warning: This simp argument is unused:
+  Scheme.Hom.comp_preimage
 
-Linear.SchemeModuleHomRestrictionTransport: exit 0; source 3a6a5e18c1a50938bd5f36deb2771e7bb3c45ffc8ef48d7791bc9b65ae0a39f9
+Hint: Omit it from the simp argument list.
+  [apply] simp [Proj.awayι]
 
-Linear.SchemeModuleAffineRestrictionIso: exit 0; source aed84df95df96e9dbc8005847c9316ec067f68142463cc02a2fd69d7e6cca832
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Linear\OriginalProjectiveChartSectionRing.lean:27:28: warning: This simp argument is unused:
+  Scheme.Hom.comp_preimage
 
-Linear.OriginalProjectiveChartScalarTransport: exit 0; source 7adb3757615debdfdbba68c06cb15a635e3c08df84e039647e99acfb37402229
+Hint: Omit it from the simp argument list.
+  [apply] simp [Proj.awayι, U]
 
-Linear: exit 0; source 617d6ec1a7296ef9175e5c36e7269cf0c0ea84b10e235ad1edbc2211bb72fe3a
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+
+Linear.SchemeModuleSpecChartSections: exit 0; source 61507e132ca1497b5b0764ce29b8289fdd344b3883c316b1cc0ecee059cdc54d
+
+Linear.NativeSourceSpecChartLinear: exit 0; source 8667bad5284bcc777eedabc23859a303e712e4ba30c7f0f6473379e8c13995b1
+Linear\NativeSourceSpecChartLinear.lean:55:0: warning: automatically included section variable(s) unused in theorem `LinearStudy.nativeSourceSpecChartSectionLinearMap_bijective`:
+  [IsScalarTower K S M]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsScalarTower K S M] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+
+Linear.NativeSourceSpecChartTilde: exit 0; source 660d014a96b9b8825a29d66f02ec97bf7bfdbf4c6921a36588e56fc87a682328
+
+Linear.ProjectiveNativeSourceDualChartTilde: exit 0; source e433df06f26a9a330c158fca5883941aa77220756b124a3c02b645ee7a915664
+
+Linear: exit 0; source fb9fb7ef1b5a5dd5660922c709787c50aa5044a15252748689350af34c0465ba
 
 Local audit: python audit.py
 LinearStudy.linear_reindexed_actual_source_point.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
@@ -8210,6 +8236,39 @@ LinearStudy.nativeShiftedFreeChartDegreeZeroSectionMap_surjective.{u} {K S ι : 
 'LinearStudy.nativeShiftedFreeChartDegreeZeroSectionMap_surjective' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.nativeSourceSpecChartSectionsModule.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup M] [Module K M] [Module S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ x ∈ 𝒟 d, b • x ∈ 𝒟 (↑n + d)) (a : S) (ha : a ∈ 𝓑 1) :
+  Module (HomogeneousLocalization.Away 𝓑 a)
+    ↑(((LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0).restrict
+              (AlgebraicGeometry.Proj.awayι 𝓑 a ha
+                LinearStudy.nativeSourceSpecChartSectionsModule._proof_1)).presheaf.obj
+        (Opposite.op ⊤))
+'LinearStudy.nativeSourceSpecChartSectionsModule' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeSourceSpecChartSectionLinearMap.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup M] [Module K M] [Module S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ x ∈ 𝒟 d, b • x ∈ 𝒟 (↑n + d)) (a : S) (ha : a ∈ 𝓑 1) :
+  ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 𝒟 a) →ₗ[HomogeneousLocalization.Away 𝓑 a]
+    ↑(((LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0).restrict
+              (AlgebraicGeometry.Proj.awayι 𝓑 a ha
+                LinearStudy.nativeSourceSpecChartSectionsModule._proof_1)).presheaf.obj
+        (Opposite.op ⊤))
+'LinearStudy.nativeSourceSpecChartSectionLinearMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeSourceSpecChartSectionLinearMap_bijective.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
+  (𝒟 : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ x ∈ 𝒟 d, b • x ∈ 𝒟 (↑n + d)) (a : S) (ha : a ∈ 𝓑 1)
+  (h : Function.Bijective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 𝒟 hD 1 a ha)) :
+  Function.Bijective ⇑(LinearStudy.nativeSourceSpecChartSectionLinearMap 𝓑 𝒟 hD a ha)
+'LinearStudy.nativeSourceSpecChartSectionLinearMap_bijective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeSourceSpecChartTildeIso.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M]
+  [Module K M] [Module S M] [IsScalarTower K S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ x ∈ 𝒟 d, b • x ∈ 𝒟 (↑n + d)) (a : S) (ha : a ∈ 𝓑 1)
+  [SheafOfModules.IsQuasicoherent (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0)]
+  (h : Function.Bijective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 𝒟 hD 1 a ha)) :
+  AlgebraicGeometry.tilde ↧↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 𝒟 a) ≅
+    (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0).restrict
+      (AlgebraicGeometry.Proj.awayι 𝓑 a ha LinearStudy.nativeSourceSpecChartTildeIso._proof_1)
+'LinearStudy.nativeSourceSpecChartTildeIso' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.nativeStructureFraction_moduleFraction.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S]
   [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}
   {f : (p : ↥U) → HomogeneousLocalization.AtPrime 𝓑 (↑p).asHomogeneousIdeal.toIdeal}
@@ -8802,6 +8861,14 @@ LinearStudy.originalProjectiveChartScalarTransport.{u} {K S : Type u} [Field K] 
       (CategoryTheory.CategoryStruct.comp U.topIso.inv (AlgebraicGeometry.Scheme.Hom.appTop e.inv)) =
     (AlgebraicGeometry.Scheme.ΓSpecIso ↧(HomogeneousLocalization.Away 𝓑 a)).inv
 'LinearStudy.originalProjectiveChartScalarTransport' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalProjectiveChartScalar_appLE.{u} {K S : Type u} [Field K] [CommRing S] [Algebra K S]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) :
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.awayToSection 𝓑 a)
+      (AlgebraicGeometry.Scheme.Hom.appLE
+        (AlgebraicGeometry.Proj.awayι 𝓑 a ha LinearStudy.originalProjectiveChartScalar_appLE._proof_1)
+        (AlgebraicGeometry.Proj.basicOpen 𝓑 a) ⊤ ⋯) =
+    (AlgebraicGeometry.Scheme.ΓSpecIso ↧(HomogeneousLocalization.Away 𝓑 a)).inv
+'LinearStudy.originalProjectiveChartScalar_appLE' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.originalTildeScalar.{u} {R : CommRingCat} (c : ↑R) (M : ModuleCat ↑R) :
   (AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom (c • LinearMap.id)) =
     LinearStudy.originalGlobalModuleScalar
@@ -14254,6 +14321,27 @@ LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv_section {n
 'LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv_section' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projectiveNormalization_native_source_dual_chart_tildeIso {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :
+  let A := MvPolynomial (Fin (r + 1)) ℂ;
+  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  let φ := LinearStudy.projectiveLinearNormalizationMap V L;
+  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  have D := (ModuleCat.coextendScalars (algebraMap A B)).obj ↧A;
+  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;
+  have hD := ⋯;
+  (ha : φ (MvPolynomial.X i) ∈ 𝓑 1) →
+    AlgebraicGeometry.tilde ↧↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 𝒟 (φ (MvPolynomial.X i))) ≅
+      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0).restrict
+        (AlgebraicGeometry.Proj.awayι 𝓑 (φ (MvPolynomial.X i)) ha
+          LinearStudy.projectiveNormalization_native_source_dual_chart_tildeIso._proof_1)
+'LinearStudy.projectiveNormalization_native_source_dual_chart_tildeIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectiveLinearNormalization_gradedSMul {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
   (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) :
   have A := MvPolynomial (Fin (r + 1)) ℂ;
@@ -17474,6 +17562,22 @@ LinearStudy.originalGlobalModuleScalar_restrict.{u} {X Y : AlgebraicGeometry.Sch
     LinearStudy.originalGlobalModuleScalar
       ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop j)) r) (M.restrict j)
 'LinearStudy.originalGlobalModuleScalar_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleSpecChartSectionsEquiv.{u} {X : AlgebraicGeometry.Scheme} {R : CommRingCat} (M : X.Modules)
+  (f : AlgebraicGeometry.Spec R ⟶ X) [AlgebraicGeometry.IsOpenImmersion f] (U : X.Opens)
+  (himage : (AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj ⊤ = U) :
+  ↑(M.presheaf.obj (Opposite.op U)) ≃+ ↑((M.restrict f).presheaf.obj (Opposite.op ⊤))
+'LinearStudy.schemeModuleSpecChartSectionsEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleSpecChartSectionsEquiv_smul.{u} {X : AlgebraicGeometry.Scheme} {R : CommRingCat} (M : X.Modules)
+  (f : AlgebraicGeometry.Spec R ⟶ X) [AlgebraicGeometry.IsOpenImmersion f] (U : X.Opens)
+  (himage : (AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj ⊤ = U) (φ : R ⟶ X.presheaf.obj (Opposite.op U))
+  (hφ :
+    CategoryTheory.CategoryStruct.comp φ (AlgebraicGeometry.Scheme.Hom.appLE f U ⊤ ⋯) =
+      (AlgebraicGeometry.Scheme.ΓSpecIso R).inv)
+  (r : ↑R) (x : ↑(M.presheaf.obj (Opposite.op U))) :
+  (LinearStudy.schemeModuleSpecChartSectionsEquiv M f U himage) ((CategoryTheory.ConcreteCategory.hom φ) r • x) =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso R).inv) r •
+      (LinearStudy.schemeModuleSpecChartSectionsEquiv M f U himage) x
+'LinearStudy.schemeModuleSpecChartSectionsEquiv_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.freeIsoGeneratingSections_isIso.{u, v₁, u₁} {C : Type u₁} [CategoryTheory.Category C]
   {J : CategoryTheory.GrothendieckTopology C} {R : CategoryTheory.Sheaf J RingCat}
   [CategoryTheory.HasWeakSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat] {M : SheafOfModules R}

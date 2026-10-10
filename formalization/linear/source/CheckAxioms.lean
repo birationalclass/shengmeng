@@ -2223,6 +2223,14 @@ set_option pp.proofs false
 #print axioms LinearStudy.nativeSectionsAffinePushforwardDualEquiv_section
 #check LinearStudy.nativeShiftedFreeChartDegreeZeroSectionMap_surjective
 #print axioms LinearStudy.nativeShiftedFreeChartDegreeZeroSectionMap_surjective
+#check LinearStudy.nativeSourceSpecChartSectionsModule
+#print axioms LinearStudy.nativeSourceSpecChartSectionsModule
+#check LinearStudy.nativeSourceSpecChartSectionLinearMap
+#print axioms LinearStudy.nativeSourceSpecChartSectionLinearMap
+#check LinearStudy.nativeSourceSpecChartSectionLinearMap_bijective
+#print axioms LinearStudy.nativeSourceSpecChartSectionLinearMap_bijective
+#check LinearStudy.nativeSourceSpecChartTildeIso
+#print axioms LinearStudy.nativeSourceSpecChartTildeIso
 #check LinearStudy.nativeStructureFraction_moduleFraction
 #print axioms LinearStudy.nativeStructureFraction_moduleFraction
 #check LinearStudy.nativeStructureLocalFraction_moduleLocalFraction
@@ -2385,6 +2393,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.smooth_point_original_ideal_normal_polynomial_generators
 #check LinearStudy.originalProjectiveChartScalarTransport
 #print axioms LinearStudy.originalProjectiveChartScalarTransport
+#check LinearStudy.originalProjectiveChartScalar_appLE
+#print axioms LinearStudy.originalProjectiveChartScalar_appLE
 #check LinearStudy.originalTildeScalar
 #print axioms LinearStudy.originalTildeScalar
 #check LinearStudy.originalTildeScalar_unit
@@ -3751,6 +3761,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv
 #check LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv_section
 #print axioms LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv_section
+#check LinearStudy.projectiveNormalization_native_source_dual_chart_tildeIso
+#print axioms LinearStudy.projectiveNormalization_native_source_dual_chart_tildeIso
 #check LinearStudy.projectiveLinearNormalization_gradedSMul
 #print axioms LinearStudy.projectiveLinearNormalization_gradedSMul
 #check LinearStudy.projectiveLinearNormalization_exists_gradedDual
@@ -4325,6 +4337,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.originalGlobalModuleScalar_naturality
 #check LinearStudy.originalGlobalModuleScalar_restrict
 #print axioms LinearStudy.originalGlobalModuleScalar_restrict
+#check LinearStudy.schemeModuleSpecChartSectionsEquiv
+#print axioms LinearStudy.schemeModuleSpecChartSectionsEquiv
+#check LinearStudy.schemeModuleSpecChartSectionsEquiv_smul
+#print axioms LinearStudy.schemeModuleSpecChartSectionsEquiv_smul
 #check LinearStudy.freeIsoGeneratingSections_isIso
 #print axioms LinearStudy.freeIsoGeneratingSections_isIso
 #check LinearStudy.sheafFreePresentationOfExact

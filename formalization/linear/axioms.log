@@ -7426,6 +7426,39 @@ LinearStudy.nativeShiftedFreeChartDegreeZeroSectionMap_surjective.{u} {K S ι : 
 'LinearStudy.nativeShiftedFreeChartDegreeZeroSectionMap_surjective' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.nativeSourceSpecChartSectionsModule.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup M] [Module K M] [Module S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ x ∈ 𝒟 d, b • x ∈ 𝒟 (↑n + d)) (a : S) (ha : a ∈ 𝓑 1) :
+  Module (HomogeneousLocalization.Away 𝓑 a)
+    ↑(((LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0).restrict
+              (AlgebraicGeometry.Proj.awayι 𝓑 a ha
+                LinearStudy.nativeSourceSpecChartSectionsModule._proof_1)).presheaf.obj
+        (Opposite.op ⊤))
+'LinearStudy.nativeSourceSpecChartSectionsModule' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeSourceSpecChartSectionLinearMap.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup M] [Module K M] [Module S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ x ∈ 𝒟 d, b • x ∈ 𝒟 (↑n + d)) (a : S) (ha : a ∈ 𝓑 1) :
+  ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 𝒟 a) →ₗ[HomogeneousLocalization.Away 𝓑 a]
+    ↑(((LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0).restrict
+              (AlgebraicGeometry.Proj.awayι 𝓑 a ha
+                LinearStudy.nativeSourceSpecChartSectionsModule._proof_1)).presheaf.obj
+        (Opposite.op ⊤))
+'LinearStudy.nativeSourceSpecChartSectionLinearMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeSourceSpecChartSectionLinearMap_bijective.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
+  (𝒟 : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ x ∈ 𝒟 d, b • x ∈ 𝒟 (↑n + d)) (a : S) (ha : a ∈ 𝓑 1)
+  (h : Function.Bijective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 𝒟 hD 1 a ha)) :
+  Function.Bijective ⇑(LinearStudy.nativeSourceSpecChartSectionLinearMap 𝓑 𝒟 hD a ha)
+'LinearStudy.nativeSourceSpecChartSectionLinearMap_bijective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeSourceSpecChartTildeIso.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M]
+  [Module K M] [Module S M] [IsScalarTower K S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ x ∈ 𝒟 d, b • x ∈ 𝒟 (↑n + d)) (a : S) (ha : a ∈ 𝓑 1)
+  [SheafOfModules.IsQuasicoherent (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0)]
+  (h : Function.Bijective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 𝒟 hD 1 a ha)) :
+  AlgebraicGeometry.tilde ↧↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 𝒟 a) ≅
+    (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0).restrict
+      (AlgebraicGeometry.Proj.awayι 𝓑 a ha LinearStudy.nativeSourceSpecChartTildeIso._proof_1)
+'LinearStudy.nativeSourceSpecChartTildeIso' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.nativeStructureFraction_moduleFraction.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S]
   [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}
   {f : (p : ↥U) → HomogeneousLocalization.AtPrime 𝓑 (↑p).asHomogeneousIdeal.toIdeal}
@@ -8018,6 +8051,14 @@ LinearStudy.originalProjectiveChartScalarTransport.{u} {K S : Type u} [Field K] 
       (CategoryTheory.CategoryStruct.comp U.topIso.inv (AlgebraicGeometry.Scheme.Hom.appTop e.inv)) =
     (AlgebraicGeometry.Scheme.ΓSpecIso ↧(HomogeneousLocalization.Away 𝓑 a)).inv
 'LinearStudy.originalProjectiveChartScalarTransport' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalProjectiveChartScalar_appLE.{u} {K S : Type u} [Field K] [CommRing S] [Algebra K S]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) :
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.awayToSection 𝓑 a)
+      (AlgebraicGeometry.Scheme.Hom.appLE
+        (AlgebraicGeometry.Proj.awayι 𝓑 a ha LinearStudy.originalProjectiveChartScalar_appLE._proof_1)
+        (AlgebraicGeometry.Proj.basicOpen 𝓑 a) ⊤ ⋯) =
+    (AlgebraicGeometry.Scheme.ΓSpecIso ↧(HomogeneousLocalization.Away 𝓑 a)).inv
+'LinearStudy.originalProjectiveChartScalar_appLE' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.originalTildeScalar.{u} {R : CommRingCat} (c : ↑R) (M : ModuleCat ↑R) :
   (AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom (c • LinearMap.id)) =
     LinearStudy.originalGlobalModuleScalar
@@ -13470,6 +13511,27 @@ LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv_section {n
 'LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv_section' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projectiveNormalization_native_source_dual_chart_tildeIso {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :
+  let A := MvPolynomial (Fin (r + 1)) ℂ;
+  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  let φ := LinearStudy.projectiveLinearNormalizationMap V L;
+  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  have D := (ModuleCat.coextendScalars (algebraMap A B)).obj ↧A;
+  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;
+  have hD := ⋯;
+  (ha : φ (MvPolynomial.X i) ∈ 𝓑 1) →
+    AlgebraicGeometry.tilde ↧↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 𝒟 (φ (MvPolynomial.X i))) ≅
+      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0).restrict
+        (AlgebraicGeometry.Proj.awayι 𝓑 (φ (MvPolynomial.X i)) ha
+          LinearStudy.projectiveNormalization_native_source_dual_chart_tildeIso._proof_1)
+'LinearStudy.projectiveNormalization_native_source_dual_chart_tildeIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectiveLinearNormalization_gradedSMul {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
   (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) :
   have A := MvPolynomial (Fin (r + 1)) ℂ;
@@ -16690,6 +16752,22 @@ LinearStudy.originalGlobalModuleScalar_restrict.{u} {X Y : AlgebraicGeometry.Sch
     LinearStudy.originalGlobalModuleScalar
       ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop j)) r) (M.restrict j)
 'LinearStudy.originalGlobalModuleScalar_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleSpecChartSectionsEquiv.{u} {X : AlgebraicGeometry.Scheme} {R : CommRingCat} (M : X.Modules)
+  (f : AlgebraicGeometry.Spec R ⟶ X) [AlgebraicGeometry.IsOpenImmersion f] (U : X.Opens)
+  (himage : (AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj ⊤ = U) :
+  ↑(M.presheaf.obj (Opposite.op U)) ≃+ ↑((M.restrict f).presheaf.obj (Opposite.op ⊤))
+'LinearStudy.schemeModuleSpecChartSectionsEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleSpecChartSectionsEquiv_smul.{u} {X : AlgebraicGeometry.Scheme} {R : CommRingCat} (M : X.Modules)
+  (f : AlgebraicGeometry.Spec R ⟶ X) [AlgebraicGeometry.IsOpenImmersion f] (U : X.Opens)
+  (himage : (AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj ⊤ = U) (φ : R ⟶ X.presheaf.obj (Opposite.op U))
+  (hφ :
+    CategoryTheory.CategoryStruct.comp φ (AlgebraicGeometry.Scheme.Hom.appLE f U ⊤ ⋯) =
+      (AlgebraicGeometry.Scheme.ΓSpecIso R).inv)
+  (r : ↑R) (x : ↑(M.presheaf.obj (Opposite.op U))) :
+  (LinearStudy.schemeModuleSpecChartSectionsEquiv M f U himage) ((CategoryTheory.ConcreteCategory.hom φ) r • x) =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso R).inv) r •
+      (LinearStudy.schemeModuleSpecChartSectionsEquiv M f U himage) x
+'LinearStudy.schemeModuleSpecChartSectionsEquiv_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.freeIsoGeneratingSections_isIso.{u, v₁, u₁} {C : Type u₁} [CategoryTheory.Category C]
   {J : CategoryTheory.GrothendieckTopology C} {R : CategoryTheory.Sheaf J RingCat}
   [CategoryTheory.HasWeakSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat] {M : SheafOfModules R}
