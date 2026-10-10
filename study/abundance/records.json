@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-10T14:32:31+08:00",
+  "updatedAt": "2026-10-10T14:58:56+08:00",
   "series": [
     {
       "id": "F034",
@@ -185,6 +185,311 @@
         "Following the paper’s proof of its general result, explain the numerical effectivity of a nef Cartier divisor \\(D\\) on a smooth projective K3 surface: find an effective divisor \\(L\\) such that \\(D\\equiv L\\)."
       ],
       "proofStatus": "unverified"
+    },
+    {
+      "id": "k3-general-method-q",
+      "role": "user",
+      "time": "2026-10-10T14:36:25+08:00",
+      "zh": [
+        "请将原文证明一般结论的方法代入光滑射影 K3 曲面，不要换成独立的 Riemann–Roch 证明或专门的 K3 定理。目标是数值有效：对 nef Cartier 除子 \\(D\\)，找到有效 \\(\\mathbb Q\\)-除子 \\(E\\) 使 \\(D\\equiv E\\)。"
+      ],
+      "en": [
+        "Specialize the paper’s proof of the general result to a smooth projective K3 surface; do not replace it with a standalone Riemann–Roch proof or a special K3 theorem. The target is numerical effectivity: for a nef Cartier divisor \\(D\\), find an effective \\(\\mathbb Q\\)-divisor \\(E\\) with \\(D\\equiv E\\)."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "k3-general-method-a",
+      "role": "assistant",
+      "time": "2026-10-10T14:36:25+08:00",
+      "zh": [
+        "原文的有效边界取零，nef 部分对应这里的 \\(D\\)。我们考察的是光滑射影曲面 \\(X\\)、\\(K_X\\sim0\\) 时的一般证明，目标仍是 \\(D\\equiv E\\)。"
+      ],
+      "en": [
+        "The effective boundary in the paper is zero, and its nef summand corresponds to our \\(D\\). We are examining the general proof for a smooth projective surface \\(X\\) with \\(K_X\\sim0\\); the target remains \\(D\\equiv E\\)."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "nef-reduction-definition-q",
+      "role": "user",
+      "time": "2026-10-10T14:38:24+08:00",
+      "zh": [
+        "回顾一下 nef reduction 和 nef dimension 的定义。"
+      ],
+      "en": [
+        "Recall the definitions of nef reduction and nef dimension."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "nef-reduction-definition-a",
+      "role": "assistant",
+      "time": "2026-10-10T14:38:24+08:00",
+      "zh": [
+        "对 nef 除子 \\(D\\)，nef reduction 是支配的、几乎全纯的有理映射",
+        "\\[f_D:X\\dashrightarrow Y\\]",
+        "其纤维连通；在一般的、具有预期维数的紧纤维上，\\(D\\) 数值平凡。经过非常一般点、且不被收缩的整曲线 \\(C\\) 满足 \\(D\\cdot C>0\\)。",
+        "\\[n(X,D)=\\dim Y.\\]",
+        "曲面上 \\(n(X,D)=2\\) 并不按定义推出 \\(D^2>0\\)。"
+      ],
+      "en": [
+        "For a nef divisor \\(D\\), the nef reduction is a dominant, almost holomorphic rational map",
+        "\\[f_D:X\\dashrightarrow Y\\]",
+        "with connected fibres. The divisor \\(D\\) is numerically trivial on a general compact fibre of the expected dimension. Every integral curve \\(C\\) through a very general point that is not contracted satisfies \\(D\\cdot C>0\\).",
+        "\\[n(X,D)=\\dim Y.\\]",
+        "On a surface, \\(n(X,D)=2\\) does not imply \\(D^2>0\\) by definition."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "nef-dimension-zero-q",
+      "role": "user",
+      "time": "2026-10-10T14:39:11+08:00",
+      "zh": [
+        "为什么 nef dimension 不能是零？"
+      ],
+      "en": [
+        "Why can the nef dimension not be zero?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "nef-dimension-zero-a",
+      "role": "assistant",
+      "time": "2026-10-10T14:39:11+08:00",
+      "zh": [
+        "可以是零。\\(n(X,D)=0\\) 当且仅当 \\(D\\equiv0\\)，此时直接取 \\(E=0\\)。在处理完这个情形并假设 \\(D\\not\\equiv0\\) 后，才只剩 \\(n(X,D)=1\\) 或 \\(2\\)。",
+        "也不能用“曲线只有可数条”来推出 \\(n(X,D)=2\\)：K3 上的曲线不必形成可数集，椭圆纤维化就有一族纤维。"
+      ],
+      "en": [
+        "It can be zero. We have \\(n(X,D)=0\\) if and only if \\(D\\equiv0\\), in which case take \\(E=0\\). Only after treating this case and assuming \\(D\\not\\equiv0\\) do the possibilities reduce to \\(n(X,D)=1\\) or \\(2\\).",
+        "Nor can one infer \\(n(X,D)=2\\) by claiming that there are only countably many curves: curves on a K3 surface need not form a countable set; an elliptic fibration has a family of fibres."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "isotropic-nef-dimension-q",
+      "role": "user",
+      "time": "2026-10-10T14:39:39+08:00",
+      "zh": [
+        "在 \\(D^2=0\\) 的情形，怎样排除 \\(n(X,D)=2\\)？"
+      ],
+      "en": [
+        "When \\(D^2=0\\), how is \\(n(X,D)=2\\) excluded?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "isotropic-nef-dimension-a",
+      "role": "assistant",
+      "time": "2026-10-10T14:39:39+08:00",
+      "zh": [
+        "若 \\(n(X,D)=1\\)，在双有理模型 \\(p:\\widetilde X\\to X\\) 上，nef reduction 的下降给出到底曲线的映射 \\(f:\\widetilde X\\to C\\)，以及 \\(C\\) 上的除子 \\(A\\)，满足",
+        "\\[p^*D\\equiv f^*A,\\qquad \\deg A\\ge0.\\]",
+        "曲线上 \\(A\\equiv a[c]\\)、\\(a\\ge0\\)。将这一有效数值代表拉回再推前，得到 \\(D\\) 的有效数值代表。这一步使用下降引理，不只是 nef reduction 的定义。",
+        "若 \\(n(X,D)=2\\)，原文声称：\\(K_X\\sim0\\) 时满 nef dimension 的一般定理推出 \\(D\\) big，与 \\(D^2=0\\) 矛盾。它通过 Frobenius 比较喷射估计；两个核心几何估计尚未完整核查，所以这仍是论文声称的排除路径，不是已完成的验证。不能把它改写成不需要 \\(K_X\\sim0\\) 的独立小体积喷射论证。"
+      ],
+      "en": [
+        "If \\(n(X,D)=1\\), descent for the nef reduction on a birational model \\(p:\\widetilde X\\to X\\) gives a map \\(f:\\widetilde X\\to C\\) to a curve and a divisor \\(A\\) on \\(C\\) such that",
+        "\\[p^*D\\equiv f^*A,\\qquad \\deg A\\ge0.\\]",
+        "On the curve, \\(A\\equiv a[c]\\) with \\(a\\ge0\\). Pulling back this effective numerical representative and then pushing it forward gives an effective numerical representative of \\(D\\). This uses a descent lemma, not merely the definition of nef reduction.",
+        "If \\(n(X,D)=2\\), the paper claims that its general full-nef-dimension theorem for \\(K_X\\sim0\\) makes \\(D\\) big, contradicting \\(D^2=0\\). The proof compares jet estimates via Frobenius. The two core geometric estimates have not been fully audited, so this is the paper’s claimed exclusion route, not a completed verification. It is not a standalone small-volume jet argument that dispenses with \\(K_X\\sim0\\)."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "surface-jet-estimates-q",
+      "role": "user",
+      "time": "2026-10-10T14:41:26+08:00",
+      "zh": [
+        "这里的两个 jet 命题具体在说什么？"
+      ],
+      "en": [
+        "What exactly do the two jet statements say here?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "surface-jet-estimates-a",
+      "role": "assistant",
+      "time": "2026-10-10T14:41:26+08:00",
+      "zh": [
+        "在反例情形，\\(X\\) 是光滑射影曲面，\\(K_X\\sim0\\)，\\(D\\) 是 nef Cartier 除子，\\(n(X,D)=2\\)，\\(D^2=0\\)。取 ample Cartier 除子 \\(A\\)，以及正有理数 \\(\\varepsilon\\)，满足",
+        "\\[(14\\varepsilon)^2<\\tfrac14,\\qquad80\\varepsilon<\\tfrac34.\\]",
+        "直接选择正整数 \\(r_n\\to\\infty\\)，使",
+        "\\[P_n=r_n(D+A/n),\\qquad P_n^2\\longrightarrow\\varepsilon^2.\\]",
+        "例如，略去有限个初始项后，将 \\(\\varepsilon/\\sqrt{(D+A/n)^2}\\) 四舍五入到最近的正整数。",
+        "原文的第一个声明：对所有充分大的 \\(n\\)、非常一般的光滑点 \\(x\\in X\\)，对每个 \\(k>0\\) 使 \\(kP_n\\) 为 Cartier，以及每个非零截面 \\(s\\in H^0(X,\\mathcal O_X(kP_n))\\)，有",
+        "\\[\\operatorname{ord}_x(s)\\le4k\\sqrt{P_n^2}.\\]",
+        "这里的消失阶，是在局部平凡化下 \\(s_x\\in\\mathfrak m_x^a\\) 所允许的最大 \\(a\\)。这一核心估计尚未完整核查。"
+      ],
+      "en": [
+        "In the counterexample case, \\(X\\) is a smooth projective surface, \\(K_X\\sim0\\), \\(D\\) is nef Cartier, \\(n(X,D)=2\\), and \\(D^2=0\\). Choose an ample Cartier divisor \\(A\\) and a positive rational \\(\\varepsilon\\) satisfying",
+        "\\[(14\\varepsilon)^2<\\tfrac14,\\qquad80\\varepsilon<\\tfrac34.\\]",
+        "Directly choose positive integers \\(r_n\\to\\infty\\) such that",
+        "\\[P_n=r_n(D+A/n),\\qquad P_n^2\\longrightarrow\\varepsilon^2.\\]",
+        "For example, after discarding finitely many initial terms, round \\(\\varepsilon/\\sqrt{(D+A/n)^2}\\) to the nearest positive integer.",
+        "The first claim in the paper is that, for all sufficiently large \\(n\\), a very general smooth point \\(x\\in X\\), every \\(k>0\\) with \\(kP_n\\) Cartier, and every nonzero section \\(s\\in H^0(X,\\mathcal O_X(kP_n))\\),",
+        "\\[\\operatorname{ord}_x(s)\\le4k\\sqrt{P_n^2}.\\]",
+        "In a local trivialization, the order is the largest \\(a\\) such that \\(s_x\\in\\mathfrak m_x^a\\). This core estimate has not been fully audited."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "auxiliary-jet-estimate-a",
+      "role": "assistant",
+      "time": "2026-10-10T14:41:26+08:00",
+      "proofStatus": "unverified",
+      "zh": [
+        "第二个声明在辅助空间上。记 \\(p_1,p_2:X\\times X\\to X\\)，取",
+        "\\[\\pi:Z=\\mathbb P\\!\\left(p_1^*\\mathcal O_X(D)\\oplus p_2^*\\mathcal O_X(D)\\right)\\longrightarrow X\\times X.\\]",
+        "使用 \\(\\pi_*\\mathcal O_Z(a)=\\operatorname{Sym}^a(p_1^*\\mathcal O_X(D)\\oplus p_2^*\\mathcal O_X(D))\\)、\\(a\\ge0\\) 的约定。此时 \\(\\dim Z=5\\)。令",
+        "\\[\\xi=c_1\\mathcal O_Z(1),\\quad P_{n,i}=\\pi^*p_i^*P_n,\\quad R_n=P_{n,1}+P_{n,2}+q\\xi.\\]",
+        "原文声称：选定一个固定正整数 \\(q\\) 后，对所有充分大的 \\(n\\)，存在不在两个自然截面上的光滑点 \\(z\\)，使",
+        "\\[\\epsilon(R_n;z)=\\inf_{C\\ni z}\\frac{R_n\\cdot C}{\\operatorname{mult}_z C}>6.\\]",
+        "于是，对充分大且可除的 \\(k_0\\)，有满射",
+        "\\[H^0(Z,\\mathcal O_Z(k_0R_n))\\longrightarrow\\mathcal O_Z(k_0R_n)_z\\otimes_{\\mathcal O_{Z,z}}\\left(\\mathcal O_{Z,z}/\\mathfrak m_z^{6k_0+1}\\right).\\]",
+        "也就是说，五个局部坐标中任意总次数不超过 \\(6k_0\\) 的 Taylor 多项式，都可由一个全局截面实现。这比“存在一个高阶消失截面”更强。",
+        "这一满射推论通过在 \\(z\\) 处吹起 \\(b\\)、取有理数 \\(6<a<\\epsilon(R_n;z)\\)，利用 \\(b^*R_n-aG\\) 的 ample 性和 Serre 消失得到；\\(G\\) 是例外除子。第二个核心几何估计仍未完整核查。两种估计在不同空间上，必须经过原文的 Frobenius 比较，不能仅把它们并列就得出矛盾。"
+      ],
+      "en": [
+        "The second claim is on an auxiliary space. Write \\(p_1,p_2:X\\times X\\to X\\), and let",
+        "\\[\\pi:Z=\\mathbb P\\!\\left(p_1^*\\mathcal O_X(D)\\oplus p_2^*\\mathcal O_X(D)\\right)\\longrightarrow X\\times X.\\]",
+        "Use the convention \\(\\pi_*\\mathcal O_Z(a)=\\operatorname{Sym}^a(p_1^*\\mathcal O_X(D)\\oplus p_2^*\\mathcal O_X(D))\\) for \\(a\\ge0\\). Then \\(\\dim Z=5\\). Set",
+        "\\[\\xi=c_1\\mathcal O_Z(1),\\quad P_{n,i}=\\pi^*p_i^*P_n,\\quad R_n=P_{n,1}+P_{n,2}+q\\xi.\\]",
+        "The paper claims that, after choosing a fixed positive integer \\(q\\), for all sufficiently large \\(n\\) there is a smooth point \\(z\\) outside the two natural sections such that",
+        "\\[\\epsilon(R_n;z)=\\inf_{C\\ni z}\\frac{R_n\\cdot C}{\\operatorname{mult}_z C}>6.\\]",
+        "Consequently, for sufficiently large divisible \\(k_0\\), the following map is surjective:",
+        "\\[H^0(Z,\\mathcal O_Z(k_0R_n))\\longrightarrow\\mathcal O_Z(k_0R_n)_z\\otimes_{\\mathcal O_{Z,z}}\\left(\\mathcal O_{Z,z}/\\mathfrak m_z^{6k_0+1}\\right).\\]",
+        "Thus every prescribed Taylor polynomial of total degree at most \\(6k_0\\) in five local coordinates can be realized by a global section. This is stronger than the existence of one section with high vanishing order.",
+        "This surjectivity follows by blowing up \\(z\\), with blowup map \\(b\\) and exceptional divisor \\(G\\), choosing a rational \\(6<a<\\epsilon(R_n;z)\\), and using the ampleness of \\(b^*R_n-aG\\) and Serre vanishing. The second core geometric estimate has not been fully audited. The two estimates live on different spaces: the paper’s Frobenius comparison is needed, and simply juxtaposing them gives no contradiction."
+      ]
+    },
+    {
+      "id": "surface-induction-input-q",
+      "role": "user",
+      "time": "2026-10-10T14:47:13+08:00",
+      "zh": [
+        "直接专门化到曲面，不要留下抽象的低维断言作为额外假设。"
+      ],
+      "en": [
+        "Specialize directly to surfaces; do not leave an abstract lower-dimensional assertion as an extra assumption."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "surface-induction-input-a",
+      "role": "assistant",
+      "time": "2026-10-10T14:47:13+08:00",
+      "zh": [
+        "一维的正性输入由次数给出：",
+        "\\[\\deg T\\ge0,\\quad\\deg N\\ge0,\\quad\\deg(T+aN)>0\\ \\text{对某个 }a>0.\\]",
+        "则对每个 \\(c>0\\)，\\(\\deg(T+cN)>0\\)，所以 \\(T+cN\\) big。曲面讨论不再保留一个额外的抽象一维假设。",
+        "这里的不 big 来自已设定的 \\(D^2=0\\)；单独的 \\(n(X,D)=2\\) 并不意味着不 big。"
+      ],
+      "en": [
+        "The dimension-one positivity input follows from degrees:",
+        "\\[\\deg T\\ge0,\\quad\\deg N\\ge0,\\quad\\deg(T+aN)>0\\ \\text{for some }a>0.\\]",
+        "Then \\(\\deg(T+cN)>0\\) for every \\(c>0\\), so \\(T+cN\\) is big. No additional abstract dimension-one assumption remains in the surface discussion.",
+        "Here non-bigness comes from the stipulated \\(D^2=0\\); \\(n(X,D)=2\\) alone does not mean that \\(D\\) is not big."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "direct-sequence-pn-q",
+      "role": "user",
+      "time": "2026-10-10T14:53:18+08:00",
+      "zh": [
+        "能否直接用 \\(A/n\\) 定义 \\(P_n\\)，不另外引入小参数？"
+      ],
+      "en": [
+        "Can we define \\(P_n\\) directly using \\(A/n\\), without introducing an extra small parameter?"
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "direct-sequence-pn-a",
+      "role": "assistant",
+      "time": "2026-10-10T14:53:18+08:00",
+      "zh": [
+        "可以。直接定义",
+        "\\[P_n=r_n(D+A/n),\\qquad r_n\\longrightarrow\\infty,\\qquad P_n^2\\longrightarrow\\varepsilon^2.\\]",
+        "无需额外参数。相应的 \\(R_n\\) 和喷射估计仍要求 \\(n\\) 充分大；\\(n\\) 是序列下标，不是 nef dimension。核心喷射估计和 Frobenius 比较的证明仍未完整核查。"
+      ],
+      "en": [
+        "Yes. Define directly",
+        "\\[P_n=r_n(D+A/n),\\qquad r_n\\longrightarrow\\infty,\\qquad P_n^2\\longrightarrow\\varepsilon^2.\\]",
+        "No extra parameter is needed. The corresponding \\(R_n\\) and the jet estimates still require sufficiently large \\(n\\); \\(n\\) is the sequence index, not the nef dimension. The proofs of the core jet estimates and the Frobenius comparison remain unaudited."
+      ],
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "pn-convergence-notation-q",
+      "role": "user",
+      "zh": [
+        "\\(P_n^2\\to\\varepsilon^2\\) 是什么意思？这里选取的乘数和 \\(R_n\\) 有什么区别？"
+      ],
+      "en": [
+        "What does \\(P_n^2\\to\\varepsilon^2\\) mean? How does the chosen multiplier differ from \\(R_n\\)?"
+      ],
+      "time": "2026-10-10T14:58:56+08:00",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "pn-convergence-notation-a",
+      "role": "assistant",
+      "zh": [
+        "箭头表示数值自交数的收敛：\\(\\lim_{n\\to\\infty}P_n^2=\\varepsilon^2\\)，不是每个 \\(n\\) 都满足等式。小写 \\(r_n\\) 是定义 \\(P_n=r_n(D+A/n)\\) 的正整数乘数；大写 \\(R_n=P_{n,1}+P_{n,2}+q\\xi\\) 是辅助空间 \\(Z\\) 上的除子，二者不同。"
+      ],
+      "en": [
+        "The arrow means convergence of numerical self-intersection: \\(\\lim_{n\\to\\infty}P_n^2=\\varepsilon^2\\), not equality for each \\(n\\). The lowercase \\(r_n\\) is the positive integer multiplier in \\(P_n=r_n(D+A/n)\\); the uppercase \\(R_n=P_{n,1}+P_{n,2}+q\\xi\\) is a divisor on the auxiliary space \\(Z\\). They are different."
+      ],
+      "time": "2026-10-10T14:58:56+08:00",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "pn-normalization-lemma-q",
+      "role": "user",
+      "zh": [
+        "总能选择这样的 \\(r_n\\)，使 \\(P_n^2\\to\\varepsilon^2\\) 吗？请先把它写成一个初步引理。"
+      ],
+      "en": [
+        "Can we always choose such \\(r_n\\) so that \\(P_n^2\\to\\varepsilon^2\\)? State this first as a preliminary lemma."
+      ],
+      "time": "2026-10-10T14:58:56+08:00",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "pn-normalization-lemma-a",
+      "role": "assistant",
+      "proofStatus": "verified",
+      "verification": [
+        "直接展开自交数：D²=0，nef 性给出 D·A≥0，ample 性给出 A²>0；最近整数的误差至多 1/2，因 u_n→0 而消失。此核查只针对初步引理，不包括原文的 jet/Frobenius 估计。"
+      ],
+      "zh": [
+        "引理。设 \\(X\\) 是光滑射影曲面，\\(D\\) 是 nef Cartier 除子且 \\(D^2=0\\)，\\(A\\) 是 ample Cartier 除子。对每个 \\(\\varepsilon>0\\)，存在正整数 \\(r_n\\to\\infty\\)，使",
+        "\\[P_n:=r_n(D+A/n),\\qquad P_n^2\\longrightarrow\\varepsilon^2.\\]",
+        "证明。令",
+        "\\[u_n:=\\sqrt{(D+A/n)^2}=\\sqrt{\\frac{2D\\cdot A}{n}+\\frac{A^2}{n^2}}>0.\\]",
+        "由 \\(D\\cdot A\\ge0\\)、\\(A^2>0\\) 得到 \\(u_n\\to0\\)。对充分大的 \\(n\\)，取距离 \\(\\varepsilon/u_n\\) 最近的正整数 \\(r_n\\)，则",
+        "\\[|r_nu_n-\\varepsilon|\\le\\frac{u_n}{2}\\longrightarrow0,\\qquad r_n\\longrightarrow\\infty.\\]",
+        "所以",
+        "\\[P_n^2=(r_nu_n)^2\\longrightarrow\\varepsilon^2.\\]",
+        "有限个初始项可以取 \\(r_n=1\\)。这个初步引理已由上述交数与取整计算核查；不需要 \\(K_X\\sim0\\)，也不需要 \\(n(X,D)=2\\)。原文的核心喷射估计与 Frobenius 比较仍未完整核查。"
+      ],
+      "en": [
+        "Lemma. Let \\(X\\) be a smooth projective surface, \\(D\\) a nef Cartier divisor with \\(D^2=0\\), and \\(A\\) an ample Cartier divisor. For every \\(\\varepsilon>0\\), there exist positive integers \\(r_n\\to\\infty\\) such that",
+        "\\[P_n:=r_n(D+A/n),\\qquad P_n^2\\longrightarrow\\varepsilon^2.\\]",
+        "Proof. Set",
+        "\\[u_n:=\\sqrt{(D+A/n)^2}=\\sqrt{\\frac{2D\\cdot A}{n}+\\frac{A^2}{n^2}}>0.\\]",
+        "Since \\(D\\cdot A\\ge0\\) and \\(A^2>0\\), we have \\(u_n\\to0\\). For sufficiently large \\(n\\), choose \\(r_n\\) to be the nearest positive integer to \\(\\varepsilon/u_n\\). Then",
+        "\\[|r_nu_n-\\varepsilon|\\le\\frac{u_n}{2}\\longrightarrow0,\\qquad r_n\\longrightarrow\\infty.\\]",
+        "Hence",
+        "\\[P_n^2=(r_nu_n)^2\\longrightarrow\\varepsilon^2.\\]",
+        "For the finitely many initial terms, take \\(r_n=1\\). This preliminary lemma has been checked by the intersection calculation and rounding estimate above. Neither \\(K_X\\sim0\\) nor \\(n(X,D)=2\\) is required. The paper’s core jet estimates and Frobenius comparison remain unaudited."
+      ],
+      "time": "2026-10-10T14:58:56+08:00"
     }
   ],
   "sourceTheorem": {
