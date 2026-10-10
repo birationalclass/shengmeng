@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2612,
-  "verifiedTheorems": 1891,
-  "definitions": 525,
+  "audited": 2626,
+  "verifiedTheorems": 1900,
+  "definitions": 530,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -22432,6 +22432,137 @@
       ]
     },
     {
+      "declaration": "LinearStudy.nativeGradedDegreeOneOverlapBaseModule",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeGradedDegreeOneOverlapLocalization.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeGradedDegreeOneOverlapBaseModule.{u} {K R M : Type u} [Field K] [CommRing R] [Algebra K R]\n  [AddCommGroup M] [Module R M] [Module K M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M) (a b : R)\n  (hb : b ∈ 𝒜 1) :\n  Module (HomogeneousLocalization.Away 𝒜 a) ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 2 (a * b))",
+      "sha256": "f18bef4a2e84b81d86ecad9b3c0a3245357a2426a8c8b37f7c4405dd84107c58",
+      "lines": 6,
+      "moduleLineCount": 71,
+      "startLine": 17,
+      "endLine": 22,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedDegreeOneOverlapLinearMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeGradedDegreeOneOverlapLocalization.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeGradedDegreeOneOverlapLinearMap.{u} {K R M : Type u} [Field K] [CommRing R] [Algebra K R]\n  [AddCommGroup M] [Module R M] [Module K M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M)\n  (hgrade : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ 𝒜 n, ∀ m ∈ 𝒟 j, c • m ∈ 𝒟 (↑n + j)) (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1) :\n  ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 1 a) →ₗ[HomogeneousLocalization.Away 𝒜 a]\n    ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 2 (a * b))",
+      "sha256": "f18bef4a2e84b81d86ecad9b3c0a3245357a2426a8c8b37f7c4405dd84107c58",
+      "lines": 11,
+      "moduleLineCount": 71,
+      "startLine": 23,
+      "endLine": 33,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.nativeGradedDegreeOneOverlapBaseModule",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleWeightedOverlapMap",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedDegreeOneOverlap_isLocalizedModule",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedDegreeOneOverlapLocalization.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeGradedDegreeOneOverlap_isLocalizedModule.{u} {K R M : Type u} [Field K] [CommRing R] [Algebra K R]\n  [AddCommGroup M] [Module R M] [Module K M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M)\n  [IsDomain R] [Module.IsTorsionFree R M] (hgrade : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ 𝒜 n, ∀ m ∈ 𝒟 j, c • m ∈ 𝒟 (↑n + j))\n  (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1) (hab : a * b ≠ 0) :\n  IsLocalizedModule.Away (HomogeneousLocalization.Away.isLocalizationElem ha hb)\n    (LinearStudy.nativeGradedDegreeOneOverlapLinearMap 𝒜 𝒟 hgrade a b ha hb)",
+      "sha256": "f18bef4a2e84b81d86ecad9b3c0a3245357a2426a8c8b37f7c4405dd84107c58",
+      "lines": 37,
+      "moduleLineCount": 71,
+      "startLine": 34,
+      "endLine": 70,
+      "lineCount": 37,
+      "dependencies": [
+        "LinearStudy.nativeGradedDegreeOneOverlapBaseModule",
+        "LinearStudy.nativeGradedDegreeOneOverlapLinearMap",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleDegreeOneOverlap_surj",
+        "LinearStudy.nativeGradedModuleWeightedOverlapMap",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.originalLocalizedModuleAwayOverlap_injective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.originalLocalizedModuleAwayOverlap_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedDegreeOneOverlapSurjective.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalLocalizedModuleAwayOverlap_injective.{u} {R M : Type u} [CommRing R] [AddCommGroup M] [Module R M]\n  [IsDomain R] [Module.IsTorsionFree R M] (a b : R) (hab : a * b ≠ 0) :\n  Function.Injective ⇑(LinearStudy.originalLocalizedModuleAwayOverlap a b)",
+      "sha256": "e332140f284612e420bc2e589e69d7fd7d677146feb9dd6ea2b730c2100273b9",
+      "lines": 17,
+      "moduleLineCount": 69,
+      "startLine": 18,
+      "endLine": 34,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.originalLocalizedModuleAwayOverlap",
+        "LinearStudy.originalLocalizedModuleAwayOverlap_mk_one"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedModuleDegreeOneOverlap_surj",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedDegreeOneOverlapSurjective.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeGradedModuleDegreeOneOverlap_surj.{u} {K R M : Type u} [Field K] [CommRing R] [Algebra K R]\n  [AddCommGroup M] [Module R M] [Module K M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M)\n  (hgrade : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ 𝒜 n, ∀ m ∈ 𝒟 j, c • m ∈ 𝒟 (↑n + j)) (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1)\n  (x : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 2 (a * b))) :\n  ∃ n y,\n    (HomogeneousLocalization.awayMap 𝒜 hb ⋯) (HomogeneousLocalization.Away.isLocalizationElem ha hb) ^ n • x =\n      (LinearStudy.nativeGradedModuleWeightedOverlapMap 𝒜 𝒟 hgrade 1 1 a b ha hb) y",
+      "sha256": "e332140f284612e420bc2e589e69d7fd7d677146feb9dd6ea2b730c2100273b9",
+      "lines": 34,
+      "moduleLineCount": 69,
+      "startLine": 35,
+      "endLine": 68,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero_exists_fraction",
+        "LinearStudy.nativeGradedModuleWeightedOverlapMap",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.originalLocalizedModuleAwayOverlap",
+        "LinearStudy.originalLocalizedModuleAwayOverlap_mk"
+      ]
+    },
+    {
       "declaration": "LinearStudy.nativeHomogeneousAwayModuleScalar",
       "kind": "def",
       "origin": "project",
@@ -22922,6 +23053,30 @@
         "LinearStudy.nativeGradedModuleAwayDegreeZero",
         "LinearStudy.nativeHomogeneousAwayModuleScalar",
         "LinearStudy.originalLocalizedModuleAwayOverlap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedModuleAwayDegreeZero_exists_fraction",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedWeightedSingleFraction.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeGradedModuleAwayDegreeZero_exists_fraction.{u} {K R M : Type u} [Field K] [CommRing R] [Algebra K R]\n  [AddCommGroup M] [Module R M] [Module K M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M)\n  (hgrade : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ 𝒜 n, ∀ m ∈ 𝒟 j, c • m ∈ 𝒟 (↑n + j)) (d : ℕ) (a : R) (ha : a ∈ 𝒜 d)\n  (x : LocalizedModule (Submonoid.powers a) M) (hx : x ∈ LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a) :\n  ∃ n, ∃ m ∈ 𝒟 ↑(n * d), x = LocalizedModule.mk m ⟨a ^ n, ⋯⟩",
+      "sha256": "5e97bf6fe5cbccedea191ef9e0026e1fb602f26a6da78bad7f5dbdc4370d6931",
+      "lines": 47,
+      "moduleLineCount": 63,
+      "startLine": 16,
+      "endLine": 62,
+      "lineCount": 47,
+      "dependencies": [
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
       ]
     },
     {
@@ -24132,6 +24287,64 @@
         "LinearStudy.nativeNormalizationProjectiveMap",
         "LinearStudy.nativeNormalizationProjectiveMap_weighted_chart_square",
         "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeCoextensionNormalizationBase_isTorsionFree",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationWeightedOverlapDualEquiv.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeCoextensionNormalizationBase_isTorsionFree.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  [Module.Finite R S] : Module.IsTorsionFree R ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)",
+      "sha256": "031d440d8ab3feb652e321659717e6f70179e9d118a98ee4f332cd9f9e544fcc",
+      "lines": 17,
+      "moduleLineCount": 70,
+      "startLine": 24,
+      "endLine": 40,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.restrictedCoextensionDualEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationWeightedOverlapDualLinearEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationWeightedOverlapDualEquiv.lean",
+      "line": 44,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeNormalizationWeightedOverlapDualLinearEquiv.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] [IsDomain R] (a b : R)\n  (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1) (hab : a * b ≠ 0) (hinja : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (hinj : Function.Injective ⇑(HomogeneousLocalization.awayMap 𝒜 hb ⋯)) :\n  ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) 2\n        (a * b)) ≃ₗ[HomogeneousLocalization.Away 𝒜 (a * b)]\n    HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b)) →ₗ[HomogeneousLocalization.Away 𝒜 (a * b)]\n      HomogeneousLocalization.Away 𝒜 (a * b)",
+      "sha256": "031d440d8ab3feb652e321659717e6f70179e9d118a98ee4f332cd9f9e544fcc",
+      "lines": 29,
+      "moduleLineCount": 70,
+      "startLine": 41,
+      "endLine": 69,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionNormalizationBaseGradeCompatibility",
+        "LinearStudy.finiteNativeDualFullSourceChartEquiv",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedDegreeOneOverlapBaseModule",
+        "LinearStudy.nativeGradedDegreeOneOverlapLinearMap",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv",
         "LinearStudy.normalizationHomogeneousSourceChartAlgebra"
       ]
     },
@@ -30231,6 +30444,64 @@
       ]
     },
     {
+      "declaration": "LinearStudy.normalizationHomogeneousSourceOverlapLinearEquiv_apply_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NormalizationHomogeneousAffineDualOverlapValues.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.normalizationHomogeneousSourceOverlapLinearEquiv_apply_mk.{u} {K R S : Type u} [Field K] [CommRing R]\n  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1)\n  (x : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :\n  (LinearStudy.normalizationHomogeneousSourceOverlapLinearEquiv 𝒜 𝓑 a b ha hb) (LocalizedModule.mk x 1) =\n    (HomogeneousLocalization.awayMap 𝓑 ⋯ ⋯) x",
+      "sha256": "6da6c2e47b8e993d74b79e23030f93f333ab0b9b3295fbc3376f481a30ff493d",
+      "lines": 38,
+      "moduleLineCount": 109,
+      "startLine": 21,
+      "endLine": 58,
+      "lineCount": 38,
+      "dependencies": [
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousOverlapSourceBaseAlgebra",
+        "LinearStudy.normalizationHomogeneousOverlapSource_isLocalizedModule",
+        "LinearStudy.normalizationHomogeneousOverlapSource_scalarTower",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.normalizationHomogeneousSourceOverlapLinearEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv_apply_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NormalizationHomogeneousAffineDualOverlapValues.lean",
+      "line": 61,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv_apply_mk.{u} {K R S : Type u} [Field K] [CommRing R]\n  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a b : R) (ha : a ∈ 𝒜 1)\n  (hb : b ∈ 𝒜 1) (hinj : Function.Injective ⇑(HomogeneousLocalization.awayMap 𝒜 hb ⋯))\n  (ψ :\n    HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a) →ₗ[HomogeneousLocalization.Away 𝒜 a]\n      HomogeneousLocalization.Away 𝒜 a)\n  (x : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :\n  ((LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv 𝒜 𝓑 a b ha hb hinj) (LocalizedModule.mk ψ 1))\n      ((HomogeneousLocalization.awayMap 𝓑 ⋯ ⋯) x) =\n    (HomogeneousLocalization.awayMap 𝒜 hb ⋯) (ψ x)",
+      "sha256": "6da6c2e47b8e993d74b79e23030f93f333ab0b9b3295fbc3376f481a30ff493d",
+      "lines": 50,
+      "moduleLineCount": 109,
+      "startLine": 59,
+      "endLine": 108,
+      "lineCount": 50,
+      "dependencies": [
+        "LinearStudy.finiteFunctionalLocalizationEquiv",
+        "LinearStudy.finiteFunctionalLocalizationEquiv_apply_mk",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv",
+        "LinearStudy.normalizationHomogeneousChart_finite",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.normalizationHomogeneousSourceOverlapLinearEquiv",
+        "LinearStudy.normalizationHomogeneousSourceOverlapLinearEquiv_apply_mk"
+      ]
+    },
+    {
       "declaration": "LinearStudy.normalizationBaseGradedRingHom",
       "kind": "def",
       "origin": "project",
@@ -30417,6 +30688,50 @@
         "LinearStudy.gradedModuleProjection",
         "LinearStudy.gradedModuleProjection_on_piece",
         "LinearStudy.normalizationProjection_smul_source_homogeneous"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneousAwayOverlap_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NormalizationHomogeneousOverlapInjective.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneousAwayOverlap_injective.{u} {K R : Type u} [Field K] [CommRing R] [IsDomain R] [Algebra K R]\n  (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (e : ℕ) (a b : R) (hb : b ∈ 𝒜 e) (hab : a * b ≠ 0) :\n  Function.Injective ⇑(HomogeneousLocalization.awayMap 𝒜 hb ⋯)",
+      "sha256": "f07d907793d458c55959332c68267477fc86f7a8046935b756cc82c291317402",
+      "lines": 22,
+      "moduleLineCount": 49,
+      "startLine": 15,
+      "endLine": 36,
+      "lineCount": 22,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateHomogeneousOverlap_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NormalizationHomogeneousOverlapInjective.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateHomogeneousOverlap_injective (r : ℕ) (i j : Fin (r + 1)) :\n  Function.Injective ⇑(HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ) ⋯ ⋯)",
+      "sha256": "f07d907793d458c55959332c68267477fc86f7a8046935b756cc82c291317402",
+      "lines": 12,
+      "moduleLineCount": 49,
+      "startLine": 37,
+      "endLine": 48,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.homogeneousAwayOverlap_injective"
       ]
     },
     {
@@ -49910,6 +50225,38 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectiveNormalization_affine_dual_overlap_linearEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeAffineDualOverlap.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNormalization_affine_dual_overlap_linearEquiv {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i j : Fin (r + 1)) :\n  LocalizedModule (Submonoid.powers (HomogeneousLocalization.Away.isLocalizationElem ⋯ ⋯))\n      (HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n          ((algebraMap (MvPolynomial (Fin (r + 1)) ℂ) (MvPolynomial (Fin (n + 1)) ℂ ⧸ V.ideal.toIdeal))\n            (MvPolynomial.X\n              i)) →ₗ[HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n          (MvPolynomial.X i)]\n        HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n          (MvPolynomial.X\n            i)) ≃ₗ[HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n      (MvPolynomial.X i * MvPolynomial.X j)]\n    HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n        ((algebraMap (MvPolynomial (Fin (r + 1)) ℂ) (MvPolynomial (Fin (n + 1)) ℂ ⧸ V.ideal.toIdeal))\n          (MvPolynomial.X i *\n            MvPolynomial.X\n              j)) →ₗ[HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n        (MvPolynomial.X i * MvPolynomial.X j)]\n      HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n        (MvPolynomial.X i * MvPolynomial.X j)",
+      "sha256": "23cc1d7c2c9e097ecf75cad8d7abd511c14c5cc53a5ebfb6958bdae4a6d7422f",
+      "lines": 23,
+      "moduleLineCount": 39,
+      "startLine": 16,
+      "endLine": 38,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.projectiveCoordinateHomogeneousOverlap_injective",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul"
+      ]
+    },
+    {
       "declaration": "LinearStudy.projectiveNormalization_native_sections_affine_internalHom_equiv",
       "kind": "def",
       "origin": "project",
@@ -51021,6 +51368,43 @@
         "LinearStudy.projectiveLinearNormalizationMap",
         "LinearStudy.projectiveLinearNormalization_gradedSMul",
         "LinearStudy.projectiveNormalization_native_dual_chart_sections_bijective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveNormalization_native_weighted_dual_overlap_linearEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeWeightedDualOverlap.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNormalization_native_weighted_dual_overlap_linearEquiv {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i j : Fin (r + 1)) :\n  ↥(LinearStudy.nativeGradedModuleAwayDegreeZero (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n        (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n          (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))\n        2\n        (MvPolynomial.X i *\n          MvPolynomial.X\n            j)) ≃ₗ[HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n      (MvPolynomial.X i * MvPolynomial.X j)]\n    HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n        ((algebraMap (MvPolynomial (Fin (r + 1)) ℂ) (MvPolynomial (Fin (n + 1)) ℂ ⧸ V.ideal.toIdeal))\n          (MvPolynomial.X i *\n            MvPolynomial.X\n              j)) →ₗ[HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n        (MvPolynomial.X i * MvPolynomial.X j)]\n      HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n        (MvPolynomial.X i * MvPolynomial.X j)",
+      "sha256": "70fe52c3b6b9b7e8ebb0fe418a3348862456d95eac57c13cfc9962fbb1387ee6",
+      "lines": 26,
+      "moduleLineCount": 42,
+      "startLine": 16,
+      "endLine": 41,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationWeightedOverlapDualLinearEquiv",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.projectiveCoordinateHomogeneousOverlap_injective",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul"
       ]
     },
     {

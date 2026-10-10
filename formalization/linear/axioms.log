@@ -5779,6 +5779,36 @@ LinearStudy.nativeGradedChart_exists_singleFraction.{u} {K R M : Type u} [Field 
   (x : LocalizedModule (Submonoid.powers a) M) (hx : x ∈ LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a) :
   ∃ n, ∃ m ∈ 𝒟 ↑(n * d), x = LocalizedModule.mk m ⟨a ^ n, ⋯⟩
 'LinearStudy.nativeGradedChart_exists_singleFraction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeGradedDegreeOneOverlapBaseModule.{u} {K R M : Type u} [Field K] [CommRing R] [Algebra K R]
+  [AddCommGroup M] [Module R M] [Module K M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M) (a b : R)
+  (hb : b ∈ 𝒜 1) :
+  Module (HomogeneousLocalization.Away 𝒜 a) ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 2 (a * b))
+'LinearStudy.nativeGradedDegreeOneOverlapBaseModule' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeGradedDegreeOneOverlapLinearMap.{u} {K R M : Type u} [Field K] [CommRing R] [Algebra K R]
+  [AddCommGroup M] [Module R M] [Module K M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M)
+  (hgrade : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ 𝒜 n, ∀ m ∈ 𝒟 j, c • m ∈ 𝒟 (↑n + j)) (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1) :
+  ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 1 a) →ₗ[HomogeneousLocalization.Away 𝒜 a]
+    ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 2 (a * b))
+'LinearStudy.nativeGradedDegreeOneOverlapLinearMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeGradedDegreeOneOverlap_isLocalizedModule.{u} {K R M : Type u} [Field K] [CommRing R] [Algebra K R]
+  [AddCommGroup M] [Module R M] [Module K M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M)
+  [IsDomain R] [Module.IsTorsionFree R M] (hgrade : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ 𝒜 n, ∀ m ∈ 𝒟 j, c • m ∈ 𝒟 (↑n + j))
+  (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1) (hab : a * b ≠ 0) :
+  IsLocalizedModule.Away (HomogeneousLocalization.Away.isLocalizationElem ha hb)
+    (LinearStudy.nativeGradedDegreeOneOverlapLinearMap 𝒜 𝒟 hgrade a b ha hb)
+'LinearStudy.nativeGradedDegreeOneOverlap_isLocalizedModule' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalLocalizedModuleAwayOverlap_injective.{u} {R M : Type u} [CommRing R] [AddCommGroup M] [Module R M]
+  [IsDomain R] [Module.IsTorsionFree R M] (a b : R) (hab : a * b ≠ 0) :
+  Function.Injective ⇑(LinearStudy.originalLocalizedModuleAwayOverlap a b)
+'LinearStudy.originalLocalizedModuleAwayOverlap_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeGradedModuleDegreeOneOverlap_surj.{u} {K R M : Type u} [Field K] [CommRing R] [Algebra K R]
+  [AddCommGroup M] [Module R M] [Module K M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M)
+  (hgrade : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ 𝒜 n, ∀ m ∈ 𝒟 j, c • m ∈ 𝒟 (↑n + j)) (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1)
+  (x : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 2 (a * b))) :
+  ∃ n y,
+    (HomogeneousLocalization.awayMap 𝒜 hb ⋯) (HomogeneousLocalization.Away.isLocalizationElem ha hb) ^ n • x =
+      (LinearStudy.nativeGradedModuleWeightedOverlapMap 𝒜 𝒟 hgrade 1 1 a b ha hb) y
+'LinearStudy.nativeGradedModuleDegreeOneOverlap_surj' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.nativeHomogeneousAwayModuleScalar.{u_1, u_2, u_3} {K : Type u_1} {S : Type u_2} {D : Type u_3} [Field K]
   [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) :
   Module (HomogeneousLocalization.Away 𝓑 a) (LocalizedModule (Submonoid.powers a) D)
@@ -5901,6 +5931,14 @@ LinearStudy.nativeGradedModuleWeightedOverlapMap.{u} {K R M : Type u} [Field K] 
   ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a) →ₛₗ[HomogeneousLocalization.awayMap 𝒜 hb ⋯]
     ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 (d + e) (a * b))
 'LinearStudy.nativeGradedModuleWeightedOverlapMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeGradedModuleAwayDegreeZero_exists_fraction.{u} {K R M : Type u} [Field K] [CommRing R] [Algebra K R]
+  [AddCommGroup M] [Module R M] [Module K M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M)
+  (hgrade : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ 𝒜 n, ∀ m ∈ 𝒟 j, c • m ∈ 𝒟 (↑n + j)) (d : ℕ) (a : R) (ha : a ∈ 𝒜 d)
+  (x : LocalizedModule (Submonoid.powers a) M) (hx : x ∈ LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a) :
+  ∃ n, ∃ m ∈ 𝒟 ↑(n * d), x = LocalizedModule.mk m ⟨a ^ n, ⋯⟩
+'LinearStudy.nativeGradedModuleAwayDegreeZero_exists_fraction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.nativeHomogeneousAwayTwistMap.{u_1, u_2} {K : Type u_1} {S : Type u_2} [Field K] [CommRing S] [Algebra K S]
   (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (m : ℕ) :
   HomogeneousLocalization.Away 𝓑 a →ₗ[HomogeneousLocalization.Away 𝓑 a] Localization.Away a
@@ -6339,6 +6377,23 @@ LinearStudy.nativeNormalizationProjectiveMap_overlap_chart_square.{u} {K R S : T
       (AlgebraicGeometry.Proj.awayι 𝒜 (a * b) ⋯
         LinearStudy.nativeNormalizationProjectiveMap_overlap_chart_square._proof_1)
 'LinearStudy.nativeNormalizationProjectiveMap_overlap_chart_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.nativeCoextensionNormalizationBase_isTorsionFree.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+  [Module.Finite R S] : Module.IsTorsionFree R ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)
+'LinearStudy.nativeCoextensionNormalizationBase_isTorsionFree' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.nativeNormalizationWeightedOverlapDualLinearEquiv.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] [IsDomain R] (a b : R)
+  (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1) (hab : a * b ≠ 0) (hinja : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (hinj : Function.Injective ⇑(HomogeneousLocalization.awayMap 𝒜 hb ⋯)) :
+  ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) 2
+        (a * b)) ≃ₗ[HomogeneousLocalization.Away 𝒜 (a * b)]
+    HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b)) →ₗ[HomogeneousLocalization.Away 𝒜 (a * b)]
+      HomogeneousLocalization.Away 𝒜 (a * b)
+'LinearStudy.nativeNormalizationWeightedOverlapDualLinearEquiv' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.projectiveNativeChartFractionEmbedding {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
@@ -8013,6 +8068,29 @@ LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv.{u} {K R S : Ty
 'LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.normalizationHomogeneousSourceOverlapLinearEquiv_apply_mk.{u} {K R S : Type u} [Field K] [CommRing R]
+  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1)
+  (x : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :
+  (LinearStudy.normalizationHomogeneousSourceOverlapLinearEquiv 𝒜 𝓑 a b ha hb) (LocalizedModule.mk x 1) =
+    (HomogeneousLocalization.awayMap 𝓑 ⋯ ⋯) x
+'LinearStudy.normalizationHomogeneousSourceOverlapLinearEquiv_apply_mk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv_apply_mk.{u} {K R S : Type u} [Field K] [CommRing R]
+  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a b : R) (ha : a ∈ 𝒜 1)
+  (hb : b ∈ 𝒜 1) (hinj : Function.Injective ⇑(HomogeneousLocalization.awayMap 𝒜 hb ⋯))
+  (ψ :
+    HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a) →ₗ[HomogeneousLocalization.Away 𝒜 a]
+      HomogeneousLocalization.Away 𝒜 a)
+  (x : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :
+  ((LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv 𝒜 𝓑 a b ha hb hinj) (LocalizedModule.mk ψ 1))
+      ((HomogeneousLocalization.awayMap 𝓑 ⋯ ⋯) x) =
+    (HomogeneousLocalization.awayMap 𝒜 hb ⋯) (ψ x)
+'LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv_apply_mk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.normalizationBaseGradedRingHom.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]
   [Algebra K S] [Algebra R S] (𝒜 : ℕ → Submodule K R) (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
   [SetLike.GradedSMul 𝒜 𝓑] : 𝒜 →+*ᵍ 𝓑
@@ -8068,6 +8146,15 @@ LinearStudy.normalization_homogeneous_combination.{u_1, u_2, u_3, u_4} {K : Type
   (coefficient : ι → R) (hbound : ∀ (i : ι), degree i ≤ n) (hexpression : b = ∑ i, coefficient i • gen i) :
   b = ∑ i, (LinearStudy.gradedModuleProjection 𝒜 (n - degree i)) (coefficient i) • gen i
 'LinearStudy.normalization_homogeneous_combination' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneousAwayOverlap_injective.{u} {K R : Type u} [Field K] [CommRing R] [IsDomain R] [Algebra K R]
+  (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (e : ℕ) (a b : R) (hb : b ∈ 𝒜 e) (hab : a * b ≠ 0) :
+  Function.Injective ⇑(HomogeneousLocalization.awayMap 𝒜 hb ⋯)
+'LinearStudy.homogeneousAwayOverlap_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveCoordinateHomogeneousOverlap_injective (r : ℕ) (i j : Fin (r + 1)) :
+  Function.Injective ⇑(HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ) ⋯ ⋯)
+'LinearStudy.projectiveCoordinateHomogeneousOverlap_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.normalizationHomogeneousChartMap_overlap_square.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
   [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
   (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] (d e : ℕ) (a b : R) (ha : a ∈ 𝒜 d) (hb : b ∈ 𝒜 e) :
@@ -13398,6 +13485,32 @@ LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters {n : ℕ}
 'LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projectiveNormalization_affine_dual_overlap_linearEquiv {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i j : Fin (r + 1)) :
+  LocalizedModule (Submonoid.powers (HomogeneousLocalization.Away.isLocalizationElem ⋯ ⋯))
+      (HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+          ((algebraMap (MvPolynomial (Fin (r + 1)) ℂ) (MvPolynomial (Fin (n + 1)) ℂ ⧸ V.ideal.toIdeal))
+            (MvPolynomial.X
+              i)) →ₗ[HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+          (MvPolynomial.X i)]
+        HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+          (MvPolynomial.X
+            i)) ≃ₗ[HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+      (MvPolynomial.X i * MvPolynomial.X j)]
+    HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+        ((algebraMap (MvPolynomial (Fin (r + 1)) ℂ) (MvPolynomial (Fin (n + 1)) ℂ ⧸ V.ideal.toIdeal))
+          (MvPolynomial.X i *
+            MvPolynomial.X
+              j)) →ₗ[HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+        (MvPolynomial.X i * MvPolynomial.X j)]
+      HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+        (MvPolynomial.X i * MvPolynomial.X j)
+'LinearStudy.projectiveNormalization_affine_dual_overlap_linearEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectiveNormalization_native_sections_affine_internalHom_equiv {n r : ℕ}
   (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
   (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
@@ -13890,6 +14003,30 @@ LinearStudy.projectiveNormalization_native_source_dual_chart_tildeIso {n r : ℕ
         (AlgebraicGeometry.Proj.awayι 𝓑 (φ (MvPolynomial.X i)) ha
           LinearStudy.projectiveNormalization_native_source_dual_chart_tildeIso._proof_1)
 'LinearStudy.projectiveNormalization_native_source_dual_chart_tildeIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveNormalization_native_weighted_dual_overlap_linearEquiv {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i j : Fin (r + 1)) :
+  ↥(LinearStudy.nativeGradedModuleAwayDegreeZero (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+        (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+          (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+        2
+        (MvPolynomial.X i *
+          MvPolynomial.X
+            j)) ≃ₗ[HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+      (MvPolynomial.X i * MvPolynomial.X j)]
+    HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+        ((algebraMap (MvPolynomial (Fin (r + 1)) ℂ) (MvPolynomial (Fin (n + 1)) ℂ ⧸ V.ideal.toIdeal))
+          (MvPolynomial.X i *
+            MvPolynomial.X
+              j)) →ₗ[HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+        (MvPolynomial.X i * MvPolynomial.X j)]
+      HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+        (MvPolynomial.X i * MvPolynomial.X j)
+'LinearStudy.projectiveNormalization_native_weighted_dual_overlap_linearEquiv' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.projectiveLinearNormalization_gradedSMul {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
