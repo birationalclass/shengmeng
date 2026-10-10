@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-10T18:06:54.100+08:00",
+  "updatedAt": "2026-10-10T20:16:01.598000+08:00",
   "series": [
     {
       "id": "F034",
@@ -2008,6 +2008,298 @@
       ],
       "proofStatus": "unverified",
       "kind": "revision"
+    },
+    {
+      "id": "lemma13-universal-notation-q",
+      "role": "user",
+      "time": "2026-10-10T19:29:31.991000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "把引理 1.3 的通用有效 Cartier 除子记为花体 \\(\\mathcal H\\)，与线性系中的 \\(H\\) 对应。"
+      ],
+      "en": [
+        "Denote the universal effective Cartier divisor in Lemma 1.3 by \\(\\mathcal H\\), corresponding to \\(H\\) in the linear system."
+      ]
+    },
+    {
+      "id": "lemma13-universal-notation-a",
+      "role": "assistant",
+      "time": "2026-10-10T19:30:02.285000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "通用有效 Cartier 除子已记为 \\(\\mathcal H\\)。"
+      ],
+      "en": [
+        "The universal effective Cartier divisor is now denoted by \\(\\mathcal H\\)."
+      ]
+    },
+    {
+      "id": "lemma13-regular-parameters-q",
+      "role": "user",
+      "time": "2026-10-10T19:31:02.117000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "这里的局部坐标就是光滑点局部环的极大理想的最小生成元。它们是函数芽，正特征下也能选；是否不需要额外选取 étale 邻域？"
+      ],
+      "en": [
+        "Local coordinates here are minimal generators of the maximal ideal of the local ring at a smooth point. They are function germs and also exist in positive characteristic. Is an additional choice of an étale neighbourhood unnecessary?"
+      ]
+    },
+    {
+      "id": "lemma13-regular-parameters-a",
+      "role": "assistant",
+      "time": "2026-10-10T19:31:20.559000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "对。在光滑曲面的闭点 \\(y\\)，选正则参数 \\(\\mathfrak m_y=(u,v)\\) 即可。把函数芽延伸到开邻域并缩小后，坐标映射 \\((u,v)\\) 自动为 étale；这是光滑性的结果，不是额外选取条件。此前把二者说成不同选择的措辞不准确。",
+        "正特征下同样有正则参数。依赖特征零的是用普通偏导判定所有低次系数的步骤，例如特征 \\(p\\) 下 \\(u^p\\) 的正阶普通偏导全为零。"
+      ],
+      "en": [
+        "Yes. At a closed point \\(y\\) of a smooth surface, choose regular parameters \\(\\mathfrak m_y=(u,v)\\). Extend these function germs to an open neighbourhood and shrink it; the coordinate map \\((u,v)\\) is then automatically étale by smoothness. This is not an additional choice. The earlier wording incorrectly presented these as distinct choices.",
+        "Regular parameters also exist in positive characteristic. Characteristic zero is needed for the ordinary-derivative criterion for all low-degree coefficients: for example, in characteristic \\(p\\), all positive-order ordinary derivatives of \\(u^p\\) vanish."
+      ],
+      "highlight": true
+    },
+    {
+      "id": "lemma13-multiplicity-equivalence-q",
+      "role": "user",
+      "time": "2026-10-10T19:32:38.514000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "\\(f\\) 是除子的局部方程。为什么 \\(\\operatorname{mult}_y(E)>c\\) 当且仅当相应的低阶偏导值为零？"
+      ],
+      "en": [
+        "\\(f\\) is the local equation of the divisor. Why is \\(\\operatorname{mult}_y(E)>c\\) equivalent to vanishing of the corresponding low-order derivative values?"
+      ]
+    },
+    {
+      "id": "lemma13-multiplicity-equivalence-a",
+      "role": "assistant",
+      "time": "2026-10-10T19:32:56.605000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "在 \\(y\\) 处的中心参数中写 \\(f_E=\\sum\\lambda_{ab}u^av^b\\)。重数是最低非零项的总次数，因此 \\(\\operatorname{mult}_y(E)>c\\) 当且仅当 \\(a+b\\le\\lfloor c\\rfloor\\) 的系数全部为零。",
+        "特征零下，对应偏导在 \\(y\\) 的值是 \\(a!b!\\lambda_{ab}\\)，所以系数消失等价于偏导值消失。零阶条件就是 \\(f_E(y)=0\\)。"
+      ],
+      "en": [
+        "In parameters centred at \\(y\\), write \\(f_E=\\sum\\lambda_{ab}u^av^b\\). Multiplicity is the lowest total degree of a nonzero term. Thus \\(\\operatorname{mult}_y(E)>c\\) is equivalent to vanishing of all coefficients with \\(a+b\\le\\lfloor c\\rfloor\\).",
+        "In characteristic zero the corresponding derivative value at \\(y\\) is \\(a!b!\\lambda_{ab}\\), so coefficient vanishing is equivalent to derivative vanishing. The order-zero condition is \\(f_E(y)=0\\)."
+      ]
+    },
+    {
+      "id": "lemma13-use-coefficients-q",
+      "role": "user",
+      "time": "2026-10-10T19:33:29.718000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "把线性系的参数坐标写出来，直接用局部展开中低次项系数为零表达重数条件，不用偏导。"
+      ],
+      "en": [
+        "Write the parameter coordinates of the linear system and express the multiplicity condition directly by vanishing of low-degree coefficients in the local expansion, without derivatives."
+      ]
+    },
+    {
+      "id": "lemma13-use-coefficients-a",
+      "role": "assistant",
+      "time": "2026-10-10T19:35:04.495000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "引理 1.3 已改用通用局部方程和低次系数的消失来证明关联集合闭。"
+      ],
+      "en": [
+        "Lemma 1.3 now proves closedness of the incidence locus using the universal local equation and vanishing of low-degree coefficients."
+      ]
+    },
+    {
+      "id": "lemma13-linear-parameters-q",
+      "role": "user",
+      "time": "2026-10-10T19:36:11.677000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "因为是线性系，所以参数坐标只能以一次项出现，对吗？"
+      ],
+      "en": [
+        "Because this is a linear system, do the parameter coordinates occur only linearly?"
+      ]
+    },
+    {
+      "id": "lemma13-linear-parameters-a",
+      "role": "assistant",
+      "time": "2026-10-10T19:36:23.555000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "对。齐次参数下，所选通用方程是 \\(\\sum t_i f_i\\)，对参数齐次一次；仿射图上则是仿射线性。这只约束参数次数，曲面局部坐标的展开仍可有高次项，而且 \\(f_i\\) 一般是正则函数，并不一定是局部坐标的多项式。"
+      ],
+      "en": [
+        "Yes. In homogeneous parameters, the chosen universal equation is \\(\\sum t_i f_i\\), homogeneous of degree one in the parameters; on an affine chart it is affine linear. This constrains parameter degree only. The expansion in the surface coordinates may have higher-degree terms, and the \\(f_i\\) are generally regular functions, not necessarily polynomials in those coordinates."
+      ]
+    },
+    {
+      "id": "lemma13-lowest-degree-q",
+      "role": "user",
+      "time": "2026-10-10T19:36:53.569000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "固定 \\(y\\)，除子在 \\(y\\) 处的重数对应局部方程关于 \\(u,v\\) 的什么次数？"
+      ],
+      "en": [
+        "At a fixed point \\(y\\), which degree in \\(u,v\\) of the local equation gives the multiplicity of the divisor?"
+      ]
+    },
+    {
+      "id": "lemma13-lowest-degree-a",
+      "role": "assistant",
+      "time": "2026-10-10T19:37:05.389000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "是最低非零项的总次数，即消失阶。经过 \\(y\\) 意味着常数项为零；重数至少三意味着零次、一次和二次项的系数全部为零。重数恰好三还要求三次项的系数至少一个非零。"
+      ],
+      "en": [
+        "It is the lowest total degree of a nonzero term, namely the vanishing order. Passing through \\(y\\) means that the constant term vanishes. Multiplicity at least three means that all degree-zero, degree-one and degree-two coefficients vanish; multiplicity exactly three also requires at least one nonzero degree-three coefficient."
+      ]
+    },
+    {
+      "id": "lemma13-direct-equations-q",
+      "role": "user",
+      "time": "2026-10-10T19:39:21.891000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "写出 \\(f\\) 后直接给出 \\(Z\\) 的定义方程：总次数不超过 \\(\\lfloor c\\rfloor\\) 的系数全部为零。删去长解释。"
+      ],
+      "en": [
+        "After writing \\(f\\), give the defining equations of \\(Z\\) directly: all coefficients of total degree at most \\(\\lfloor c\\rfloor\\) vanish. Remove the long explanation."
+      ]
+    },
+    {
+      "id": "lemma13-direct-equations-a",
+      "role": "assistant",
+      "time": "2026-10-10T19:39:51.390000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "已用这些低次系数的消失直接写出局部方程。每个开图内都是闭集，因此 \\(Z\\) 在整个乘积中是闭的。"
+      ],
+      "en": [
+        "The local equations are now given directly by vanishing of these low-degree coefficients. The locus is closed on each open chart, hence \\(Z\\) is closed in the entire product."
+      ]
+    },
+    {
+      "id": "lemma13-centred-notation-q",
+      "role": "user",
+      "time": "2026-10-10T20:08:34.239000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "引理 1.3 的点改记为小 \\(x\\)。局部参数以该点为中心，不用再写坐标差；表述继续精简。"
+      ],
+      "en": [
+        "Denote the point in Lemma 1.3 by \\(x\\). Use local parameters centred at the point without writing coordinate differences, and keep the wording concise."
+      ]
+    },
+    {
+      "id": "lemma13-centred-notation-a",
+      "role": "assistant",
+      "time": "2026-10-10T20:09:32.671000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "点已记为 \\(x\\)，参数坐标用 \\(t_i\\)，局部展开使用以 \\(x\\) 为中心的参数。"
+      ],
+      "en": [
+        "The point is now denoted by \\(x\\), the parameter coordinates by \\(t_i\\), and the local expansion uses parameters centred at \\(x\\)."
+      ]
+    },
+    {
+      "id": "lemma13-homogeneous-equations-q",
+      "role": "user",
+      "time": "2026-10-10T20:10:50.646000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "\\(t_i\\) 取齐次坐标，方程直接写成 \\(\\sum t_i f_i\\)，不单列 \\(f_0\\)。"
+      ],
+      "en": [
+        "Take the \\(t_i\\) to be homogeneous coordinates and write the equation as \\(\\sum t_i f_i\\), without a separate \\(f_0\\) term."
+      ]
+    },
+    {
+      "id": "lemma13-homogeneous-equations-a",
+      "role": "assistant",
+      "time": "2026-10-10T20:10:57.856000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "通用方程及系数方程均已改成齐次求和形式。"
+      ],
+      "en": [
+        "Both the universal equation and the coefficient equations now use homogeneous sums."
+      ]
+    },
+    {
+      "id": "lemma13-final-coefficient-notation-q",
+      "role": "user",
+      "time": "2026-10-10T20:14:20.149000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "系数改记为 \\(c_{i,ab}\\)，下标保留；重数阈值改用实数 \\(r\\)。不用另引入 \\(B_{ab}\\)，直接写 \\(\\sum t_i c_{i,ab}(x)=0\\)。"
+      ],
+      "en": [
+        "Denote the coefficients by \\(c_{i,ab}\\), keeping the indices, and use a real number \\(r\\) for the multiplicity threshold. Do not introduce \\(B_{ab}\\); write \\(\\sum t_i c_{i,ab}(x)=0\\) directly."
+      ]
+    },
+    {
+      "id": "lemma13-dense-subset-q",
+      "role": "user",
+      "time": "2026-10-10T20:14:20.177000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "引理 1.3 不必假设对很一般点成立。改成存在 Zariski 稠密子集 \\(S\\subseteq X\\)，对每个 \\(x\\in S\\) 都有 \\(E_x\\in\\Lambda\\) 满足 \\(\\operatorname{mult}_x(E_x)>r\\)。"
+      ],
+      "en": [
+        "Lemma 1.3 need not assume the condition at very general points. Instead, assume that there is a Zariski dense subset \\(S\\subseteq X\\) such that every \\(x\\in S\\) admits \\(E_x\\in\\Lambda\\) with \\(\\operatorname{mult}_x(E_x)>r\\)."
+      ]
+    },
+    {
+      "id": "lemma13-dense-subset-a",
+      "role": "assistant",
+      "time": "2026-10-10T20:15:44.356000+08:00",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "这一条件足够。\\(Z\\) 的局部方程为 \\(\\sum_{i=0}^{m}t_i c_{i,ab}(x)=0\\)，其中 \\(a+b\\le\\lfloor r\\rfloor\\)，故 \\(Z\\) 闭。射影投影给出闭集 \\(p(Z)\\)，它包含稠密子集 \\(S\\)，因此 \\(p(Z)=X\\)。"
+      ],
+      "en": [
+        "This condition suffices. The local equations of \\(Z\\) are \\(\\sum_{i=0}^{m}t_i c_{i,ab}(x)=0\\) for \\(a+b\\le\\lfloor r\\rfloor\\), so \\(Z\\) is closed. Projective projection gives a closed set \\(p(Z)\\), which contains the dense subset \\(S\\); hence \\(p(Z)=X\\)."
+      ],
+      "highlight": true
+    },
+    {
+      "id": "lemma13-final-concision-q",
+      "role": "user",
+      "time": "2026-10-10T20:16:01.598000+08:00",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "证明开头只写“We may assume \\(r\\ge0\\)”。结尾在“假设说明 \\(p(Z)\\) 包含 \\(S\\)，故 \\(p(Z)=X\\)”处结束，不再重复结论。"
+      ],
+      "en": [
+        "Begin the proof simply with “We may assume \\(r\\ge0\\).” End with “The hypothesis says that \\(p(Z)\\) contains \\(S\\), and hence \\(p(Z)=X\\),” without repeating the conclusion."
+      ]
     }
   ],
   "sourceTheorem": {

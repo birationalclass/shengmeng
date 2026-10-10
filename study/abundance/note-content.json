@@ -36,12 +36,12 @@
     },
     {
       "type": "lemma",
-      "content": "Let $X$ be a smooth projective surface, $H$ a Cartier divisor,\n$\\Lambda\\subseteq|H|$ a fixed nonempty linear subsystem, and $c\\in\\mathbb R$.\nSuppose that for very general $y\\in X$ there is $E_y\\in\\Lambda$ with\n$\\mult_y(E_y)>c$. Then for every $y\\in X$ there is such a divisor $E_y$.",
+      "content": "Let $X$ be a smooth projective surface, $H$ a Cartier divisor,\n$\\Lambda\\subseteq|H|$ a fixed nonempty linear subsystem, and $r\\in\\mathbb R$.\nSuppose that there exists a Zariski dense subset $S\\subseteq X$ such\nthat for every $x\\in S$ there is $E_x\\in\\Lambda$ with $\\mult_x(E_x)>r$.\nThen for every $x\\in X$ there is such a divisor $E_x$.",
       "number": "1.3"
     },
     {
       "type": "proof",
-      "content": "We prove that the high-multiplicity incidence is closed.\nIf $c<0$, any member of $\\Lambda$ works at every point, since effective\ndivisors have nonnegative multiplicity. Assume $c\\geq0$ and regard\n$\\Lambda$ as the projective parameter space of its divisors. Put\n\\[\n Z=\\{(y,E)\\in X\\times\\Lambda:\\mult_y(E)>c\\}.\n\\]\nThe universal effective Cartier divisor on $X\\times\\Lambda$ has a\nregular local equation $f(u,v,E)$ on a parameter patch and an\n\\'{e}tale coordinate neighbourhood $(u,v)$ of the smooth surface $X$.\nIn characteristic zero, Taylor expansion in the completed local ring gives\n\\[\n \\mult_y(E)>c\n \\iff\n \\frac{\\partial^{a+b}f}{\\partial u^a\\partial v^b}(y,E)=0\n \\quad\\text{for all }a,b\\geq0,\\ a+b\\leq\\lfloor c\\rfloor.\n\\]\nThe coordinate derivations lift through the \\'{e}tale chart, so these\nfinitely many derivatives are regular functions of $(y,E)$. Thus the\ncondition is locally defined by finitely many algebraic equations.\nIt is independent of the local equation and coordinates: multiplication\nby a unit and a change of regular parameters preserve the order of\nvanishing. These local closed loci therefore glue to the closed subset $Z$.\n\nWe use the projective image to obtain a divisor at every point.\nSince $\\Lambda$ is projective, the projection\n$p:X\\times\\Lambda\\to X$ is projective, hence proper, so $p(Z)$ is closed.\nThe hypothesis says that $p(Z)$ contains a very-general locus, which is\nZariski dense over $\\mathbb C$. Hence $p(Z)=X$. For every $y\\in X$\nthere is therefore a divisor $E_y\\in\\Lambda$ with $\\mult_y(E_y)>c$.",
+      "content": "We may assume $r\\geq0$. Put\n\\[\n Z=\\{(x,E)\\in X\\times\\Lambda:\\mult_x(E)>r\\}.\n\\]\nPut $m=\\dim\\Lambda$. In local coordinates $u,v$ on $X$ and\nhomogeneous parameter coordinates $[t_0:\\cdots:t_m]$ on $\\Lambda$,\nthe universal effective Cartier divisor $\\mathcal H$ is given by\n\\[\n f(u,v,t)=\\sum_{i=0}^m t_i f_i(u,v)=0,\n\\]\nwhere the $f_i$ represent a basis of the defining section space.\nLet $c_{i,ab}(x)$ be the regular coefficient functions of $u^av^b$\nin the local expansion of $f_i$ in parameters centered at $x$.\nThen $Z$ is defined locally on $X$ by the homogeneous equations\n\\[\n \\sum_{i=0}^m t_i c_{i,ab}(x)=0\n \\qquad(a,b\\geq0,\\ a+b\\leq\\lfloor r\\rfloor),\n\\]\nsince $\\mult_x(E_t)>r$ exactly when all these low-degree\ncoefficients vanish. Hence $Z$ is closed in $X\\times\\Lambda$.\n\nSince $\\Lambda$ is projective, the projection $p:X\\times\\Lambda\\to X$\nis proper, so $p(Z)$ is closed. The hypothesis says that $p(Z)$\ncontains $S$, and hence $p(Z)=X$.",
       "number": "1.3"
     },
     {
@@ -94,6 +94,48 @@
     {
       "type": "text",
       "content": "After a local trivialization and smooth coordinates $u_1,\\ldots,u_5$\nat $z$, every prescribed Taylor polynomial spanned by\n$u_1^{a_1}\\cdots u_5^{a_5}$ with $\\sum a_i\\leq6k_0$ is realized.\nThis is surjectivity for all prescribed Taylor data, rather than only\nexistence of one section with large vanishing order.\nThe surface arguments above supply the two auxiliary inputs for\nLemma 2.1. The full higher-dimensional theorem and the remaining\nFrobenius comparison are outside the verification in this note.\n\n\\smallskip\n\\noindent\\textit{Source.} OpenAI, \\emph{Numerical Semiampleness of Nef\nAdjoint Divisors}, Sections 3--6, especially the two auxiliary estimates in Section 4\nand the paragraph\n``The finite jet system'' in Section 6. The local manuscript sources were checked directly, including the\ncompanion \\emph{Log abundance in characteristic zero}, Section 7,\nfor the auxiliary arguments."
+    },
+    {
+      "type": "section",
+      "title": "The finite jet system and its first Frobenius consequence"
+    },
+    {
+      "type": "text",
+      "content": "Fix $q,n,z$ as in Corollary 2.3, and put $P=P_n$ and\n$R=P_1+P_2+q\\xi$. Choose $k_0$ once and for all as in that corollary.\nSince $\\dim Z=5$, a local frame at $z$ identifies its jet target with\n\\[\n J_{6k_0}(z)=\\C[u_1,\\ldots,u_5]/(u_1,\\ldots,u_5)^{6k_0+1},\n \\qquad \\dim_{\\C}J_{6k_0}(z)=\\binom{6k_0+5}{5}.\n\\]\nThus a finite collection of sections suffices: choose preimages of a\nbasis of this quotient. All these sections, $q,n,z$ and $k_0$ are\nfixed over $\\C$ before any reduction to positive characteristic.\n\nThe projective-bundle convention and the K\\\"unneth formula give\n\\[\n\\begin{aligned}\n H^0(Z,\\OO_Z(k_0R))\\simeq\n \\bigoplus_{j=0}^{qk_0}\n &H^0(X,\\OO_X(k_0P+jD))\\\\[-2pt]\n &\\quad\\otimes H^0(X,\\OO_X(k_0P+(qk_0-j)D)).\n\\end{aligned}\n\\]\nLet $\\pi(z)=(x_1,x_2)$. Trivialize the two summands near this pair\nand choose the fibre coordinate $t$ so that the weight-$j$ monomial\nis $t^j$. Since $z$ lies off both axes, $t(z)=c\\ne0$.\nFor a tensor-product basis, a local section is\n$f_{j,a}(u_1,u_2)g_{j,b}(u_3,u_4)t^j$.\nThe column of its jet matrix consists of the coefficients\n\\[\n [u_1^{\\alpha_1}\\cdots u_4^{\\alpha_4}v^{\\alpha_5}]\n \\bigl(f_{j,a}g_{j,b}(c+v)^j\\bigr),\n \\qquad |\\alpha|\\le6k_0,\n\\]\nwhere $v=t-c$. Corollary 2.3 says precisely that this finite matrix\nhas row rank $\\binom{6k_0+5}{5}$. This is a simultaneous prescription\nof all Taylor coefficients, not merely a section with one high\nvanishing order.\n\nOnce a model carrying the chosen sections and jet frames has been\nspread over an integral finitely generated $\\mathbb Z$-algebra,\nthe full-rank condition is preserved by inverting one nonzero\nmaximal minor. This elementary rank statement only concerns the\nfixed finite system. It does not by itself supply the other\ngeometric or uniform estimates in the Frobenius argument."
+    },
+    {
+      "type": "lemma",
+      "content": "Let $Y$ be a smooth variety over an algebraically closed field, let\n$y\\in Y$, and let $L$ be a line bundle. Suppose a finite space of\nglobal sections generates jets through order $m$ at $y$.\nFor every positive integer $N$, the products of $N$ of these\nsections generate jets through order $Nm$ for $L^{\\otimes N}$.",
+      "number": "3.1"
+    },
+    {
+      "type": "proof",
+      "content": "Choose regular parameters $u_1,\\ldots,u_d$ and a local frame for $L$.\nFor each $\\alpha\\in\\mathbb Z_{\\ge0}^d$ with $|\\alpha|\\le m$, choose a\nsection whose expansion is $u^\\alpha$ modulo $\\mathfrak m_y^{m+1}$.\nFor any $\\beta$ with $|\\beta|\\le Nm$, distribute its $|\\beta|$\nindividual variable factors into $N$ groups of size at most $m$.\nThis writes $\\beta=\\alpha^{(1)}+\\cdots+\\alpha^{(N)}$ with\n$|\\alpha^{(i)}|\\le m$; empty groups are allowed.\nThe product of the corresponding sections has expansion\n\\[\n u^\\beta+\\text{terms of total degree greater than }|\\beta|.\n\\]\nOrder the monomial basis of the quotient by increasing total degree.\nThe selected products have a triangular coefficient matrix with\ndiagonal entries one. They therefore span the full quotient modulo\n$\\mathfrak m_y^{Nm+1}$. This proof uses Taylor coefficients and\ndoes not divide by factorials; it works in every characteristic.",
+      "number": "3.1"
+    },
+    {
+      "type": "lemma",
+      "content": "Let $Y$ be a smooth projective surface over an algebraically closed\nfield of characteristic $p$, let $D$ be Cartier, and let $P$ be\n$\\Q$-Cartier. Let $q,k_0>0$ be integers with $k_0P$ Cartier. On\n\\[\n Z_Y=\\mathbb P(\\OO_Y(D)_1\\oplus\\OO_Y(D)_2),\n \\qquad R=P_1+P_2+q\\xi,\n\\]\nsuppose a fixed finite system of sections of $k_0R$ generates jets\nthrough order $6k_0$ at a point $z$ off both axes.\nChoose a Cartier divisor $T$ so that every $T+aD$, for\n$0\\le a\\le(k_0-1)q$, has sections nonzero at both base coordinates\nof $z$. Put\n\\[\n N_p=\\lfloor p/k_0\\rfloor,\\qquad B_p=k_0N_pP+T.\n\\]\nIf $p\\ge6k_0$, sections of\n$pq\\xi+B_{p,1}+B_{p,2}$ surject onto the local quotient by the\n$p$-th powers of five regular parameters at $z$.",
+      "number": "3.2"
+    },
+    {
+      "type": "proof",
+      "content": "Lemma 3.1 gives jets through order $6k_0N_p$ for $N_pk_0R$.\nSet $d_p=(p-k_0N_p)q$, so $0\\le d_p\\le(k_0-1)q$.\nChoose sections of $T$ and $T+d_pD$ nonzero at the first and second\nbase coordinates, respectively. Their tensor product, in the\nweight-zero summand of the bundle formula, gives a section of\n$d_p\\xi+T_1+T_2$ nonzero at $z$: its fibre monomial is the\n$d_p$-th power of the second coordinate. Multiplication by this\nsection is invertible on every local jet quotient and changes\n$N_pk_0R$ into $pq\\xi+B_{p,1}+B_{p,2}$.\n\nMoreover,\n\\[\n 6k_0N_p\\ge6(p-k_0+1)\\ge5(p-1)\\qquad(p\\ge6k_0).\n\\]\nEvery monomial not in $(u_1^p,\\ldots,u_5^p)$ has total degree at\nmost $5(p-1)$. Hence\n\\[\n \\mathfrak m_z^{6k_0N_p+1}\\subseteq(u_1^p,\\ldots,u_5^p).\n\\]\nOrdinary jet surjectivity therefore implies the asserted\nsurjectivity onto the Frobenius quotient.",
+      "number": "3.2"
+    },
+    {
+      "type": "corollary",
+      "content": "Under Lemma 3.2, let $F:Y\\to Y'$ be relative Frobenius and let\n$D'$ be the twist of $D$. Put $\\mathcal E=F_*\\OO_Y(B_p)$.\nThen $\\operatorname{rk}\\mathcal E=p^2$, and the natural evaluation\nmap on $Y'\\times Y'$,\n\\[\n \\bigoplus_{a+b=q}\n H^0(Y,\\OO_Y(B_p+paD))\\otimes\n H^0(Y,\\OO_Y(B_p+pbD))\\otimes\n \\OO(-aD'_1-bD'_2)\n \\longrightarrow\\mathcal E\\boxtimes\\mathcal E,\n\\]\nhas generic rank $p^4$. Here $a,b$ are nonnegative integers.",
+      "number": "3.3"
+    },
+    {
+      "type": "proof",
+      "content": "Smoothness makes $F$ finite flat of degree $p^2$.\nLet $A_*$ be the tensor product of the two local Frobenius-fibre\nalgebras at the base coordinates of $z$. Each has dimension $p^2$,\nso $\\dim A_*=p^4$. With the above fibre coordinate and $c=t(z)\\ne0$,\nthe five-parameter Frobenius quotient is\n\\[\n A_*[t]/(t^p-c^p).\n\\]\nIt is free over the possibly nonreduced algebra $A_*$ with basis\n$1,t,\\ldots,t^{p-1}$. Project to the coefficient of $1$.\nFor $j=pa+b$ with $0\\le b<p$, reduction of $t^j$ gives\n$c^{pa}t^b$. Thus precisely the weights $j=pa$, $0\\le a\\le q$,\nsurvive. Their coefficients belong to\n\\[\n H^0(Y,B_p+paD)\\otimes H^0(Y,B_p+p(q-a)D).\n\\]\nThe projection formula identifies these with the values of the\ndisplayed evaluation map in local frames; each multiplier\n$c^{pa}$ is nonzero. Lemma 3.2 says the whole quotient is spanned,\nso its projection spans $A_*$. The evaluation has rank $p^4$ at\nthis base pair, hence has generic rank $p^4$.\nNo reducedness of $A_*$ is used.",
+      "number": "3.3"
+    },
+    {
+      "type": "text",
+      "content": "The preceding arguments explain the first rank calculation in\nSection 6 of the source paper. They are conditional on the fixed\njet system, whose construction here still uses the unaudited\nProposition 2.2. The remaining comparison needs a separately\nfixed cotangent-slope flag, a movable-curve witness on a point\nblowup, and estimates uniform in $p$ for diagonal ranks and\ndeterminant vanishing. These inputs are not proved in this note.\nIn particular, no proof that $D$ has an effective numerical\nrepresentative, or that the branch $D^2=0$, $\\nef(X,D)=2$ is\nimpossible, is asserted here.\n\n\\smallskip\n\\noindent\\textit{Disclosure.} This AI-assisted note is intended for\njoint learning, discussion, and checking. Its correctness has not\nbeen independently verified. No claim of novelty, priority, or\nauthorship credit is made; unproved inputs are identified above."
     }
   ]
 }
