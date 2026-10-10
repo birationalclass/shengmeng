@@ -1,0 +1,23 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export function validate(data){
+ if(data.schemaVersion!==1||!Array.isArray(data.records)||!Array.isArray(data.series)||!Number.isFinite(Date.parse(data.updatedAt)))throw Error('Invalid journal schema');
+ if(/\/Users\/|OneDrive|微信|threadId|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i.test(JSON.stringify(data)))throw Error('Private information must not be published');
+ const ids=new Set(),papers=new Set();for(const s of data.series){if(!s.id||!s.title||!Array.isArray(s.papers))throw Error('Invalid series');for(const p of s.papers){if(papers.has(p.id)||!p.title)throw Error('Invalid material ID');papers.add(p.id);}}
+ for(const r of data.records){if(!/^[a-z0-9-]+$/.test(r.id)||ids.has(r.id)||!r.title||!Number.isFinite(Date.parse(r.time)))throw Error('Invalid or repeated record');ids.add(r.id);if(!['open','checked','corrected'].includes(r.status)||!['verified','unverified'].includes(r.proofStatus))throw Error('Invalid verification state');for(const k of ['questions','reasoning','conclusions','unverified','materials','verification'])if(!Array.isArray(r[k])||r[k].some(x=>typeof x!=='string'||!x.trim()))throw Error('Invalid record field '+k);if(r.materials.some(id=>!papers.has(id)))throw Error('Unknown material');if(r.proofStatus==='verified'&&!r.verification.length)throw Error('Verified proofs require explicit verification evidence');}
+ return data;
+}
+export async function build(){
+ const root=new URL('./',import.meta.url),data=validate(JSON.parse(await readFile(new URL('records.json',root),'utf8')));
+ const format=t=>new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(t));
+ const part=(title,items,cls='')=>items.length?`<section class="record-part ${cls}"><h4>${title}</h4><ul>${items.map(s=>`<li>${escape(s)}</li>`).join('')}</ul></section>`:'';
+ const theorem = `<section class="source-theorem"><p class="mini-label">原文主定理 · 证明尚未核查</p><h3>${escape(data.sourceTheorem.title)}</h3><p class="theorem-body">${escape(data.sourceTheorem.text)}</p><p class="theorem-note">记号：原文 B 为有效边界，M 为 nef 除子。下方 K3 讨论中的 B 对应原文 M。英文陈述与公式保留原文。</p></section>`;
+ const status={open:'待核查',checked:'已整理',corrected:'已更正'};
+ const records=[...data.records].sort((a,b)=>Date.parse(b.time)-Date.parse(a.time)).map(r=>`<article class="journal-record" id="${escape(r.id)}" data-pending="${!!r.unverified.length}" data-verified="${r.proofStatus==='verified'}"><div class="record-time"><time datetime="${escape(r.time)}">${format(r.time)}</time><span class="record-status ${r.proofStatus==='verified'?'verified':''}">${r.proofStatus==='verified'?'论证已核查':status[r.status]}</span></div><div class="record-body"><h3>${escape(r.title)}</h3><div class="dialogue user-message"><span class="speaker">提问</span>${part('问题',r.questions)}</div><div class="dialogue assistant-message"><span class="speaker">回复 · 学习整理</span>${part('推导',r.reasoning)}${part('结论 / 进展',r.conclusions)}${part('待核实',r.unverified,'pending')}${part('核查依据',r.verification)}</div><div class="record-materials">${r.materials.map(id=>`<a href="#${escape(id)}">${escape(id)} ↗</a>`).join('')}</div></div></article>`).join('\n');
+ const series=data.series.map(s=>`<article class="series-card"><p class="mini-label">${escape(s.id)} / ${s.papers.length} PAPERS</p><h3>${escape(s.title)}</h3><details${s.id==='F034'?' open':''}><summary>查看 ${s.papers.length} 篇阅读材料</summary><ol>${s.papers.map(p=>`<li id="${escape(p.id)}">${escape(p.title)}<span>${escape(p.id)} · 目录已定位，证明待核查</span></li>`).join('')}</ol></details></article>`).join('');
+ const priorities=[...new Set(data.records.flatMap(r=>r.materials))],paperMap=new Map(data.series.flatMap(s=>s.papers).map(p=>[p.id,p.title]));
+ const priority=priorities.map(id=>`<a href="#${escape(id)}"><span>${escape(id)}</span>${escape(paperMap.get(id))} ↗</a>`).join('');
+ let html=await readFile(new URL('template.html',root),'utf8');const fields={UPDATED:escape(data.updatedAt),UPDATED_LABEL:format(data.updatedAt),COUNT:data.records.length,RECORDS:records,THEOREM:theorem,SERIES:series,PRIORITY:priority};html=html.replace(/\{\{([A-Z_]+)\}\}/g,(_,key)=>{if(!(key in fields))throw Error('Unknown template field');return fields[key];});await writeFile(new URL('index.html',root),html);console.log(`Built ${data.records.length} records and ${paperMap.size} material titles.`);
+}
+if(process.argv[1]===fileURLToPath(import.meta.url))await build();
