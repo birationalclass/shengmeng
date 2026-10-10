@@ -13,6 +13,7 @@ function prose(s){
   links.push(`<a href="${escape(url)}" target="_blank" rel="noopener">${text}</a>`);
   return '@@LINK'+(links.length-1)+'@@';
  });
+ s=s.replace(/\\'\{e\}/g,'é');
  s=escape(s.replace(/\s+/g,' ')).replace(/\\(?:emph|textit)\{([^{}]*)\}/g,'<em>$1</em>').replace(/``/g,'“').replace(/&#39;&#39;/g,'”').replace(/--/g,'–');
  s=s.replace(/@@MATH(\d+)@@/g,(_,i)=>escape(math[Number(i)]));
  s=s.replace(/@@LINK(\d+)@@/g,(_,i)=>links[Number(i)]);

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-10T18:03:02.386+08:00",
+  "updatedAt": "2026-10-10T18:06:54.100+08:00",
   "series": [
     {
       "id": "F034",
@@ -1922,6 +1922,89 @@
       ],
       "en": [
         "Lemma 1.3 now has this general formulation, including the negative-threshold case and the full jet-rank proof. Lemma 1.4 retains its original positivity hypothesis and degree bound."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "every-point-moving-hypothesis-q",
+      "role": "user",
+      "time": "2026-10-10T18:05:43.773+08:00",
+      "zh": [
+        "1.4 的条件改成每个点成立，这样 1.4 就不需要引用 1.3。"
+      ],
+      "en": [
+        "Assume the multiplicity condition at every point in 1.4, so its proof need not invoke 1.3."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "every-point-moving-hypothesis-a",
+      "role": "assistant",
+      "time": "2026-10-10T18:05:43.773+08:00",
+      "zh": [
+        "1.4 现直接假设每个点存在高重数除子；其证明不再调用 1.3。主引理 2.1 先用 1.3 把很一般点的条件推广到每个点，再用 1.4 得到曲线次数界。"
+      ],
+      "en": [
+        "Lemma 1.4 now directly assumes a high-multiplicity divisor at every point, and its proof no longer calls 1.3. Main Lemma 2.1 first uses 1.3 to extend the condition from very general points to every point, then applies 1.4 for the curve degree bound."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "direct-multiplicity-proof-q",
+      "role": "user",
+      "time": "2026-10-10T18:06:00.394+08:00",
+      "zh": [
+        "那个映射叫 jet evaluation 吗？1.3 能不用评价映射，直接用重数证明吗？"
+      ],
+      "en": [
+        "Is that map called jet evaluation? Can 1.3 be proved directly using multiplicity without evaluation maps?"
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics"
+    },
+    {
+      "id": "direct-multiplicity-proof-a",
+      "role": "assistant",
+      "time": "2026-10-10T18:06:00.394+08:00",
+      "zh": [
+        "是，先前的映射是 jet evaluation。\\(H^0\\) 在那里表示全局截面空间，并不是借助某个上同调消失定理。不过可以完全改用点与除子的关联闭集。",
+        "若 \\(c<0\\)，任意有效除子的非负重数给出结论。若 \\(c\\ge0\\)，令 \\[Z=\\{(y,E)\\in X\\times\\Lambda:\\operatorname{mult}_yE>c\\}.\\]局部写通用除子方程 \\(f(u,v,E)\\)，在光滑曲面的 étale 坐标中，特征零的 Taylor 展开给出 \\[\\operatorname{mult}_yE>c\\iff\\partial_u^a\\partial_v^bf(y,E)=0\\quad(a,b\\ge0,\\ a+b\\le\\lfloor c\\rfloor).\\]这些有限阶偏导是正则函数，因此给出局部闭条件。换方程乘以单位、换正则参数都保持消失阶，故这些闭集粘合为 \\(Z\\)。",
+        "固定线性系 \\(\\Lambda\\) 是射影参数空间，所以投影 \\(p:X\\times\\Lambda\\to X\\) proper，\\(p(Z)\\) 闭。它包含在 \\(\\mathbb C\\) 上稠密的很一般点集合，故 \\(p(Z)=X\\)。因此 \\(\\forall y\\in X,\\ \\exists E_y\\in\\Lambda\\) 满足重数条件，除子仍可以随点变化。"
+      ],
+      "en": [
+        "Yes, the earlier map is jet evaluation. There \\(H^0\\) denotes the space of global sections; the argument did not invoke a cohomological vanishing theorem. It can nevertheless be replaced entirely by an incidence locus of points and divisors.",
+        "For \\(c<0\\), nonnegative multiplicity of effective divisors proves the result. For \\(c\\ge0\\), set \\[Z=\\{(y,E)\\in X\\times\\Lambda:\\operatorname{mult}_yE>c\\}.\\]Locally write the universal divisor equation as \\(f(u,v,E)\\). In étale coordinates on the smooth surface, characteristic-zero Taylor expansion gives \\[\\operatorname{mult}_yE>c\\iff\\partial_u^a\\partial_v^bf(y,E)=0\\quad(a,b\\ge0,\\ a+b\\le\\lfloor c\\rfloor).\\]These finitely many derivatives are regular functions, hence define a local closed locus. Multiplication by a unit and changes of regular parameters preserve vanishing order, so the loci glue to \\(Z\\).",
+        "The fixed linear system \\(\\Lambda\\) is projective, so the projection \\(p:X\\times\\Lambda\\to X\\) is proper and \\(p(Z)\\) is closed. It contains a dense very-general locus over \\(\\mathbb C\\), hence \\(p(Z)=X\\). Thus \\(\\forall y\\in X,\\ \\exists E_y\\in\\Lambda\\) with the required multiplicity, and the divisor may still vary with the point."
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics",
+      "highlight": true
+    },
+    {
+      "id": "replace-evaluation-proof-q",
+      "role": "user",
+      "time": "2026-10-10T18:06:54.100+08:00",
+      "zh": [
+        "1.3 的证明不要用评价映射，直接证明。"
+      ],
+      "en": [
+        "Prove 1.3 directly, without evaluation maps."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "replace-evaluation-proof-a",
+      "role": "assistant",
+      "time": "2026-10-10T18:06:54.100+08:00",
+      "zh": [
+        "1.3 已改为局部方程与有限阶偏导证明关联集合闭，再由射影投影的闭像得到所有点；完整保留负阈值情形，不使用 H⁰、评价映射或喷射丛记号。"
+      ],
+      "en": [
+        "The proof of 1.3 now uses local equations and finitely many derivatives to show the incidence locus is closed, then uses the closed image of the projective projection to obtain every point. The negative-threshold case remains; H⁰, evaluation maps and jet-bundle notation are removed."
       ],
       "proofStatus": "unverified",
       "kind": "revision"
