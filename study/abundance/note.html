@@ -33,30 +33,50 @@
 <section class="statement" id="lemma-1.3" aria-labelledby="statement-title-1.3"><h3 id="statement-title-1.3">Lemma 1.3.</h3><p>Let $X$ be a smooth projective surface and $A$ an ample Cartier divisor. Suppose that for general $y\in X$ there is $E\in|A|$ with $\mult_y(E)&gt;4\sqrt{A^2}$. Then, through a general point of $X$, there is an integral curve $C$ such that \[
  0&lt;A\cdot C\leq2\sqrt{A^2}.
 \]</p></section>
-<details class="proof"><summary id="proof-toggle-1.3" aria-controls="proof-body-1.3" aria-expanded="false"><span class="proof-heading">Proof <span class="proof-verification"><span aria-hidden="true">✓</span> verified by Sheng</span></span><span class="proof-icon" aria-hidden="true"></span></summary><div class="proof-body" id="proof-body-1.3" role="region" aria-labelledby="proof-toggle-1.3"><p>The condition that $|A|$ contains a divisor of multiplicity greater than $4\sqrt{A^2}$ at $y$ is a closed rank-drop condition for jet evaluation, using vanishing order $\lfloor4\sqrt{A^2}\rfloor+1$. Since it holds for general $y$, it holds everywhere. Choose a sufficiently large positive integer $k$ with $k\sqrt{A^2}\geq4$. Multiplying the divisors in the hypothesis by $k$ gives members of $|kA|$ of multiplicity strictly greater than $4k\sqrt{A^2}$. For $y\in X$, put \[
+<details class="proof"><summary id="proof-toggle-1.3" aria-controls="proof-body-1.3" aria-expanded="false"><span class="proof-heading">Proof <span class="proof-verification"><span aria-hidden="true">✓</span> verified by Sheng</span></span><span class="proof-icon" aria-hidden="true"></span></summary><div class="proof-body" id="proof-body-1.3" role="region" aria-labelledby="proof-toggle-1.3"><p>We first extend the high-multiplicity hypothesis to every point. For $y\in X$, consider \[
+ \operatorname{ev}_y:H^0(X,\OO_X(A))\longrightarrow
+ \OO_X(A)_y\otimes_{\OO_{X,y}}
+ \bigl(\OO_{X,y}/\mathfrak m_y^{\lfloor4\sqrt{A^2}\rfloor+1}\bigr).
+\] Every $E\in|A|$ is $(s)_0$ for a nonzero section $s$, determined up to scalar, and \[
+ \mult_y(E)&gt;4\sqrt{A^2}
+ \iff \ord_y(s)\geq\lfloor4\sqrt{A^2}\rfloor+1
+ \iff \operatorname{ev}_y(s)=0.
+\] Consequently \[
+ \begin{aligned}
+ &amp;\{y\in X:\exists E\in|A|,\ \mult_y(E)&gt;4\sqrt{A^2}\}\\
+ &amp;\qquad=\{y\in X:\ker\operatorname{ev}_y\ne0\}\\
+ &amp;\qquad=\{y\in X:\operatorname{rank}\operatorname{ev}_y
+       &lt;h^0(X,\OO_X(A))\}.
+ \end{aligned}
+\] These maps are the fibres of the global jet evaluation \[
+ H^0(X,\OO_X(A))\otimes\OO_X\longrightarrow
+ J^{\lfloor4\sqrt{A^2}\rfloor}\OO_X(A).
+\] The jet bundle is locally free because $X$ is smooth. The rank-drop locus is therefore closed, being defined locally by minors. By the hypothesis it contains a dense open subset of $X$, so it equals $X$.</p>
+<p>We next use Lemma 1.2 to force a base curve through the marked point. Choose a sufficiently large positive integer $k$ with $k\sqrt{A^2}\geq4$. Multiplying the divisors in the hypothesis by $k$ gives members of $|kA|$ of multiplicity strictly greater than $4k\sqrt{A^2}$. For $y\in X$, put \[
  \Lambda_i(y)=\{E\in|kA|:\mult_y(E)\geq
  \lceil(2i+3)k\sqrt{A^2}/2\rceil\}\quad(i=0,1,2).
 \] All three systems are nonempty for very general $y$, by the hypothesis, and their base loci are proper. If $y$ were an isolated point of $\operatorname{Bs}\Lambda_0(y)$, Lemma 1.2 with $h_0=\lceil3k\sqrt{A^2}/2\rceil$ would give \[
  1\leq(k/h_0)^2A^2\leq\tfrac49&lt;1,
 \] a contradiction. Thus $\operatorname{Bs}\Lambda_0(y)$ contains a curve through $y$.</p>
-<p>On a dense marked-point open, jet evaluation has constant rank. The systems $\Lambda_i(y)$ are projectivizations of the corresponding section-kernel vector bundles $V_i$. We have \[
+<p>We construct a family of base curves with a dominant marked-point map. On a dense marked-point open, jet evaluation has constant rank. The systems $\Lambda_i(y)$ are projectivizations of the corresponding section-kernel vector bundles $V_i$. We have \[
  \Lambda_2(y)\subseteq\Lambda_1(y)\subseteq\Lambda_0(y),
  \qquad \operatorname{Bs}\Lambda_0(y)\subseteq \operatorname{Bs}\Lambda_1(y)\subseteq \operatorname{Bs}\Lambda_2(y).
 \] A curve component of $\operatorname{Bs}\Lambda_0(y)$ remains a component of $\operatorname{Bs}\Lambda_1(y)$, since a proper closed subset of a surface has dimension at most one. Track such a component over the generic marked point. Its finitely many possible components are defined after a finite parameter-field extension. Spreading out and shrinking gives a smooth integral parameter surface $T$, a dominant generically finite marked-point map $y:T\to X$, and a family of integral curves $C_t$ common to $\operatorname{Bs}\Lambda_0(y(t))$ and $\operatorname{Bs}\Lambda_1(y(t))$. Its incidence \[
  \Gamma=\{(t,z):z\in C_t\}\subset T\times X
 \] dominates $X$, because $y(t)\in C_t$.</p>
-<p>Set $h=\lceil k\sqrt{A^2}/2\rceil$. Choose local defining-section representatives from a frame of $V_1$, the section bundle underlying $\Lambda_1$. Each has the form \[
+<p>We compare parameter derivatives with the lower jet kernel. Set $h=\lceil k\sqrt{A^2}/2\rceil$. Choose local defining-section representatives from a frame of $V_1$, the section bundle underlying $\Lambda_1$. Each has the form \[
  s(t,z)=\sum_\alpha c_\alpha(t)s_\alpha(z),
 \] with $s_\alpha$ fixed global sections of $kA$. Parameter derivatives with $z$ fixed are again global sections at each fixed parameter. In coordinates centered at the moving mark $y(t)$, $s$ starts in order $\lceil5k\sqrt{A^2}/2\rceil$. Each parameter derivative lowers this order by at most one. Thus every derivative of order $a&lt;h$ belongs to the section space $V_0(t)$ underlying $\Lambda_0(y(t))$, since \[
  \lceil5k\sqrt{A^2}/2\rceil-\lceil3k\sqrt{A^2}/2\rceil
  \geq k\sqrt{A^2}-1\geq h-1\geq a.
 \] Every such derivative vanishes along $\Gamma$.</p>
-<p>We verify that this gives ordinary order $h$, not only first-order normal vanishing. At a general smooth point of $\Gamma$, the dominant map $\Gamma\to X$ is submersive in characteristic zero. Parameter directions therefore span its normal space in $T\times X$. Since $\Gamma$ has codimension one, choose a parameter coordinate $t_1$ transverse to it. In completed local coordinates the formal implicit-function theorem writes \[
+<p>We deduce multiplicity at least $h$ along the incidence. At a general smooth point of $\Gamma$, the dominant map $\Gamma\to X$ is submersive in characteristic zero. Parameter directions therefore span its normal space in $T\times X$. Since $\Gamma$ has codimension one, choose a parameter coordinate $t_1$ transverse to it. In completed local coordinates the formal implicit-function theorem writes \[
  \Gamma:\ t_1=F(t_2,z),\qquad u=t_1-F(t_2,z).
 \] Holding $t_2,z$ fixed gives $\partial/\partial t_1=\partial/\partial u$ to every order. Use a frame of $kA$ depending only on $z$. The vanishing of all parameter derivatives of order less than $h$ along $\Gamma$ forces all coefficients of $u^a$ with $a&lt;h$ to vanish. Hence $s\in\mathcal I_\Gamma^h$ in the completed local ring, and faithful flatness of completion gives the same containment in the algebraic local ring. Apply this to a finite frame and shrink to a dense algebraic open of $\Gamma$.</p>
-<p>For a general $t$, the fibre of the incidence is reduced and agrees locally with $C_t$. Restricting the containment shows that every defining section of $\Lambda_1(y(t))$ lies in $\mathcal I_{C_t}^h$ at the generic point of $C_t$. Thus every $E\in\Lambda_1(y(t))$ satisfies $E\geq hC_t$. Since $E\sim kA$ and $A$ is ample, \[
+<p>We restrict to the fibres and intersect with $A$ to obtain the degree bound. For a general $t$, the fibre of the incidence is reduced and agrees locally with $C_t$. Restricting the containment shows that every defining section of $\Lambda_1(y(t))$ lies in $\mathcal I_{C_t}^h$ at the generic point of $C_t$. Thus every $E\in\Lambda_1(y(t))$ satisfies $E\geq hC_t$. Since $E\sim kA$ and $A$ is ample, \[
  0&lt;A\cdot C_t\leq(k/h)A^2\leq2\sqrt{A^2}.
-\] Shrink $T$ to a nonempty open $T^\circ$ where the fibres are integral and the bound holds. By Chevalley&#39;s theorem, the image of the dominant map $y:T^\circ\to X$ contains a nonempty open subset $U\subset X$. Every $x\in U$ lies on such a curve $C_t$, since $y(t)\in C_t$. This proves the assertion for general points.</p><span class="qed" aria-label="End of proof">□</span></div></details>
+\]</p>
+<p>We obtain the assertion on a nonempty open subset of $X$. Shrink $T$ to a nonempty open $T^\circ$ where the fibres are integral and the bound holds. By Chevalley&#39;s theorem, the image of the dominant map $y:T^\circ\to X$ contains a nonempty open subset $U\subset X$. Every $x\in U$ lies on such a curve $C_t$, since $y(t)\in C_t$. This proves the assertion for general points.</p><span class="qed" aria-label="End of proof">□</span></div></details>
 <h2 id="section-2"><span>2.</span> Jet estimates</h2>
 <section class="statement" id="lemma-2.1" aria-labelledby="statement-title-2.1"><h3 id="statement-title-2.1">Lemma 2.1.</h3><p>Let $X$ be a smooth projective K3 surface, and let $D$ be a nef Cartier divisor with $\nef(X,D)=2$. Fix an ample Cartier divisor $A$ and $\epsilon\in\Q_{&gt;0}$ with \[
  (14\epsilon)^2&lt;\tfrac14,\qquad80\epsilon&lt;\tfrac34.

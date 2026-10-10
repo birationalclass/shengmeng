@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-10T17:53:30.780+08:00",
+  "updatedAt": "2026-10-10T17:58:12.537+08:00",
   "series": [
     {
       "id": "F034",
@@ -1755,6 +1755,63 @@
       ],
       "en": [
         "The proof already contains no \\(\\rho\\); the \\(q\\) abbreviation is now removed too. The jet rank-drop condition uses the integer threshold \\(\\lfloor4\\sqrt{A^2}\\rfloor+1\\) directly. The remaining argument and general-point conclusion are unchanged."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "explicit-jet-rank-condition-q",
+      "role": "user",
+      "time": "2026-10-10T17:57:59.883+08:00",
+      "zh": [
+        "引理 1.3 证明的第一句话请用严格的数学写清楚，为什么高重数条件是闭的秩降低条件？"
+      ],
+      "en": [
+        "Please make the first step of Lemma 1.3 mathematically explicit: why is the high-multiplicity condition a closed rank-drop condition?"
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics"
+    },
+    {
+      "id": "explicit-jet-rank-condition-a",
+      "role": "assistant",
+      "time": "2026-10-10T17:57:59.883+08:00",
+      "zh": [
+        "对每个 \\(y\\)，评价映射为 \\[\\operatorname{ev}_y:H^0(X,\\mathcal O_X(A))\\longrightarrow\\mathcal O_X(A)_y\\otimes_{\\mathcal O_{X,y}}\\bigl(\\mathcal O_{X,y}/\\mathfrak m_y^{\\lfloor4\\sqrt{A^2}\\rfloor+1}\\bigr).\\]",
+        "对非零截面 \\(s\\) 及 \\(E=(s)_0\\)，\\[\\operatorname{mult}_yE>4\\sqrt{A^2}\\iff\\operatorname{ord}_y(s)\\ge\\lfloor4\\sqrt{A^2}\\rfloor+1\\iff\\operatorname{ev}_y(s)=0.\\]因此，存在这样的 \\(E\\) 等价于 \\(\\ker\\operatorname{ev}_y\\ne0\\)，即 \\(\\operatorname{rank}\\operatorname{ev}_y<h^0(X,\\mathcal O_X(A))\\)。",
+        "这些映射是全局喷射评价 \\[H^0(X,\\mathcal O_X(A))\\otimes\\mathcal O_X\\longrightarrow J^{\\lfloor4\\sqrt{A^2}\\rfloor}\\mathcal O_X(A)\\] 的纤维映射。因 \\(X\\) 光滑，喷射丛局部自由，秩降低集合局部由矩阵子式定义，是闭集。假设使它包含稠密开集，故它等于 \\(X\\)。"
+      ],
+      "en": [
+        "For each \\(y\\), use the evaluation map \\[\\operatorname{ev}_y:H^0(X,\\mathcal O_X(A))\\longrightarrow\\mathcal O_X(A)_y\\otimes_{\\mathcal O_{X,y}}\\bigl(\\mathcal O_{X,y}/\\mathfrak m_y^{\\lfloor4\\sqrt{A^2}\\rfloor+1}\\bigr).\\]",
+        "For a nonzero section \\(s\\) with \\(E=(s)_0\\), \\[\\operatorname{mult}_yE>4\\sqrt{A^2}\\iff\\operatorname{ord}_y(s)\\ge\\lfloor4\\sqrt{A^2}\\rfloor+1\\iff\\operatorname{ev}_y(s)=0.\\]Thus existence of such \\(E\\) is equivalent to \\(\\ker\\operatorname{ev}_y\\ne0\\), or \\(\\operatorname{rank}\\operatorname{ev}_y<h^0(X,\\mathcal O_X(A))\\).",
+        "These maps are the fibres of global jet evaluation \\[H^0(X,\\mathcal O_X(A))\\otimes\\mathcal O_X\\longrightarrow J^{\\lfloor4\\sqrt{A^2}\\rfloor}\\mathcal O_X(A).\\]Smoothness of \\(X\\) makes the jet bundle locally free. The rank-drop locus is locally defined by matrix minors and is closed. The hypothesis makes it contain a dense open subset, hence it equals \\(X\\)."
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics",
+      "highlight": true
+    },
+    {
+      "id": "proof-paragraph-purpose-q",
+      "role": "user",
+      "time": "2026-10-10T17:58:12.537+08:00",
+      "zh": [
+        "证明每一段开头都简要说明这一段要做什么。"
+      ],
+      "en": [
+        "Begin each paragraph of the proof with a brief explanation of its purpose."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "proof-paragraph-purpose-a",
+      "role": "assistant",
+      "time": "2026-10-10T17:58:12.537+08:00",
+      "zh": [
+        "引理 1.3 的七段依次说明：扩张高重数假设、迫使出现基曲线、构造曲线族、比较参数导数、得到关联上的重数、推出次数界、得到一般点的开集结论。完整计算保留，不重新引入 q 或 ρ 缩写。"
+      ],
+      "en": [
+        "The seven paragraphs of Lemma 1.3 now state their goals: extend the high-multiplicity hypothesis, force a base curve, construct the family, compare parameter derivatives, obtain incidence multiplicity, bound the degree, and obtain the conclusion on an open set of general points. Full calculations are retained without reintroducing q or rho abbreviations."
       ],
       "proofStatus": "unverified",
       "kind": "revision"
