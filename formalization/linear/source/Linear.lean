@@ -1090,3 +1090,8 @@ public import Linear.NativeNormalizationGlobalAffineHomSections
 
 public import Linear.SchemeModuleScalarRestriction
 public import Linear.SchemeModuleHomOpenScalars
+
+public import Linear.SchemeModuleScalarNaturality
+public import Linear.SchemeModuleHomRestrictionTransport
+public import Linear.SchemeModuleAffineRestrictionIso
+public import Linear.OriginalProjectiveChartScalarTransport

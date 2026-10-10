@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2551,
-  "verifiedTheorems": 1860,
-  "definitions": 495,
+  "audited": 2557,
+  "verifiedTheorems": 1864,
+  "definitions": 497,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -30383,6 +30383,27 @@
       ]
     },
     {
+      "declaration": "LinearStudy.originalProjectiveChartScalarTransport",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/OriginalProjectiveChartScalarTransport.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalProjectiveChartScalarTransport.{u} {K S : Type u} [Field K] [CommRing S] [Algebra K S]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) :\n  let U := AlgebraicGeometry.Proj.basicOpen 𝓑 a;\n  have e := AlgebraicGeometry.Proj.basicOpenIsoSpec 𝓑 a ha LinearStudy.originalProjectiveChartScalarTransport._proof_1;\n  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.awayToSection 𝓑 a)\n      (CategoryTheory.CategoryStruct.comp U.topIso.inv (AlgebraicGeometry.Scheme.Hom.appTop e.inv)) =\n    (AlgebraicGeometry.Scheme.ΓSpecIso ↧(HomogeneousLocalization.Away 𝓑 a)).inv",
+      "sha256": "7adb3757615debdfdbba68c06cb15a635e3c08df84e039647e99acfb37402229",
+      "lines": 21,
+      "moduleLineCount": 38,
+      "startLine": 16,
+      "endLine": 36,
+      "lineCount": 21,
+      "dependencies": []
+    },
+    {
       "declaration": "LinearStudy.originalTildeScalar",
       "kind": "theorem",
       "origin": "project",
@@ -57358,6 +57379,27 @@
       "dependencies": []
     },
     {
+      "declaration": "LinearStudy.schemeModuleAffineRestrictionIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleAffineRestrictionIso.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleAffineRestrictionIso.{u} {X : AlgebraicGeometry.Scheme} (M : X.Modules) (U : X.Opens)\n  (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R) :\n  (M.restrict U.ι).restrict e.inv ≅ M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι)",
+      "sha256": "aed84df95df96e9dbc8005847c9316ec067f68142463cc02a2fd69d7e6cca832",
+      "lines": 6,
+      "moduleLineCount": 17,
+      "startLine": 11,
+      "endLine": 16,
+      "lineCount": 6,
+      "dependencies": []
+    },
+    {
       "declaration": "LinearStudy.schemeModuleChartPushforwardRestrictionIso",
       "kind": "def",
       "origin": "project",
@@ -57973,6 +58015,85 @@
       ]
     },
     {
+      "declaration": "LinearStudy.schemeModuleHomRestrictionTransport",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomRestrictionTransport.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomRestrictionTransport.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)\n  (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f] {P Q : Y.Modules} (α : (M.restrict U.ι).restrict f ≅ P)\n  (β : (N.restrict U.ι).restrict f ≅ Q)\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) : P ⟶ Q",
+      "sha256": "3a6a5e18c1a50938bd5f36deb2771e7bb3c45ffc8ef48d7791bc9b65ae0a39f9",
+      "lines": 8,
+      "moduleLineCount": 65,
+      "startLine": 19,
+      "endLine": 26,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomRestrictionTransport_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomRestrictionTransport.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomRestrictionTransport_smul.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules)\n  (U : X.Opens) (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f] {P Q : Y.Modules}\n  (α : (M.restrict U.ι).restrict f ≅ P) (β : (N.restrict U.ι).restrict f ≅ Q) (r : ↑(X.presheaf.obj (Opposite.op U)))\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  LinearStudy.schemeModuleHomRestrictionTransport M N U f α β (r • h) =\n    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomRestrictionTransport M N U f α β h)\n      (LinearStudy.originalGlobalModuleScalar\n        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop f))\n          ((CategoryTheory.ConcreteCategory.hom U.topIso.inv) r))\n        Q)",
+      "sha256": "3a6a5e18c1a50938bd5f36deb2771e7bb3c45ffc8ef48d7791bc9b65ae0a39f9",
+      "lines": 17,
+      "moduleLineCount": 65,
+      "startLine": 28,
+      "endLine": 44,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.originalGlobalModuleScalar",
+        "LinearStudy.originalGlobalModuleScalar_naturality",
+        "LinearStudy.originalGlobalModuleScalar_restrict",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv_smul",
+        "LinearStudy.schemeModuleHomRestrictionTransport"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomRestrictionTransport_add",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomRestrictionTransport.lean",
+      "line": 46,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomRestrictionTransport_add.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)\n  (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f] {P Q : Y.Modules} (α : (M.restrict U.ι).restrict f ≅ P)\n  (β : (N.restrict U.ι).restrict f ≅ Q)\n  (h k : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  LinearStudy.schemeModuleHomRestrictionTransport M N U f α β (h + k) =\n    LinearStudy.schemeModuleHomRestrictionTransport M N U f α β h +\n      LinearStudy.schemeModuleHomRestrictionTransport M N U f α β k",
+      "sha256": "3a6a5e18c1a50938bd5f36deb2771e7bb3c45ffc8ef48d7791bc9b65ae0a39f9",
+      "lines": 18,
+      "moduleLineCount": 65,
+      "startLine": 46,
+      "endLine": 63,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv_add",
+        "LinearStudy.schemeModuleHomRestrictionTransport"
+      ]
+    },
+    {
       "declaration": "LinearStudy.schemeModuleHomScalar",
       "kind": "def",
       "origin": "project",
@@ -58230,6 +58351,29 @@
       "endLine": 46,
       "lineCount": 32,
       "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.originalGlobalModuleScalar_naturality",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleScalarNaturality.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.originalGlobalModuleScalar_naturality.{u} {X : AlgebraicGeometry.Scheme}\n  (r : ↑(X.presheaf.obj (Opposite.op ⊤))) {M N : X.Modules} (f : M ⟶ N) :\n  CategoryTheory.CategoryStruct.comp (LinearStudy.originalGlobalModuleScalar r M) f =\n    CategoryTheory.CategoryStruct.comp f (LinearStudy.originalGlobalModuleScalar r N)",
+      "sha256": "380aebafda376284397f36d9741361fc66bac5cedf7d8613a2304daa77db7cb5",
+      "lines": 10,
+      "moduleLineCount": 26,
+      "startLine": 15,
+      "endLine": 24,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.originalGlobalModuleScalar"
+      ]
     },
     {
       "declaration": "LinearStudy.originalGlobalModuleScalar_restrict",

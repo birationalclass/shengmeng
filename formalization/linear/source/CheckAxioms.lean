@@ -2383,6 +2383,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.original_local_ideal_normal_polynomial_generators
 #check LinearStudy.smooth_point_original_ideal_normal_polynomial_generators
 #print axioms LinearStudy.smooth_point_original_ideal_normal_polynomial_generators
+#check LinearStudy.originalProjectiveChartScalarTransport
+#print axioms LinearStudy.originalProjectiveChartScalarTransport
 #check LinearStudy.originalTildeScalar
 #print axioms LinearStudy.originalTildeScalar
 #check LinearStudy.originalTildeScalar_unit
@@ -4239,6 +4241,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.transcendental_scaled_power
 #check LinearStudy.transcendental_of_scaling_orbit
 #print axioms LinearStudy.transcendental_of_scaling_orbit
+#check LinearStudy.schemeModuleAffineRestrictionIso
+#print axioms LinearStudy.schemeModuleAffineRestrictionIso
 #check LinearStudy.schemeModuleChartPushforwardRestrictionIso
 #print axioms LinearStudy.schemeModuleChartPushforwardRestrictionIso
 #check LinearStudy.schemeModuleHomOpenSectionsEquiv
@@ -4289,6 +4293,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.schemeModuleHomRestrict
 #check LinearStudy.schemeModuleHomOverEquiv_restrict
 #print axioms LinearStudy.schemeModuleHomOverEquiv_restrict
+#check LinearStudy.schemeModuleHomRestrictionTransport
+#print axioms LinearStudy.schemeModuleHomRestrictionTransport
+#check LinearStudy.schemeModuleHomRestrictionTransport_smul
+#print axioms LinearStudy.schemeModuleHomRestrictionTransport_smul
+#check LinearStudy.schemeModuleHomRestrictionTransport_add
+#print axioms LinearStudy.schemeModuleHomRestrictionTransport_add
 #check LinearStudy.schemeModuleHomScalar
 #print axioms LinearStudy.schemeModuleHomScalar
 #check LinearStudy.schemeModuleHom_smul_app
@@ -4311,6 +4321,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.schemeModuleIsoPushforwardRestriction
 #check LinearStudy.schemeModulePushforwardOpenRestrictionIso
 #print axioms LinearStudy.schemeModulePushforwardOpenRestrictionIso
+#check LinearStudy.originalGlobalModuleScalar_naturality
+#print axioms LinearStudy.originalGlobalModuleScalar_naturality
 #check LinearStudy.originalGlobalModuleScalar_restrict
 #print axioms LinearStudy.originalGlobalModuleScalar_restrict
 #check LinearStudy.freeIsoGeneratingSections_isIso

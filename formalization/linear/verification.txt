@@ -769,11 +769,17 @@ Linear.NativeNormalizationPushforwardChartModules: cached compiled module (sourc
 Linear.NativeNormalizationPushforwardStructureChart: cached compiled module (source and project dependencies unchanged)
 Linear.SchemeModuleHomAffineChartSections: cached compiled module (source and project dependencies unchanged)
 Linear.NativeNormalizationGlobalAffineHomSections: cached compiled module (source and project dependencies unchanged)
-Linear.SchemeModuleScalarRestriction: exit 0; source 32ba0d42a3eb333d219cca3916abd9201a5d7dea571f4075c62f7bb14e7a0229
+Linear.SchemeModuleScalarRestriction: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomOpenScalars: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleScalarNaturality: exit 0; source 380aebafda376284397f36d9741361fc66bac5cedf7d8613a2304daa77db7cb5
 
-Linear.SchemeModuleHomOpenScalars: exit 0; source b08eb46df6f1013ce909f48fb2ee68aca19964db1bb08792b4835397a490cd85
+Linear.SchemeModuleHomRestrictionTransport: exit 0; source 3a6a5e18c1a50938bd5f36deb2771e7bb3c45ffc8ef48d7791bc9b65ae0a39f9
 
-Linear: exit 0; source 882161324bf76fd0aa6c3f278877e0e8721a5714faacdb889603be6c37f8e62c
+Linear.SchemeModuleAffineRestrictionIso: exit 0; source aed84df95df96e9dbc8005847c9316ec067f68142463cc02a2fd69d7e6cca832
+
+Linear.OriginalProjectiveChartScalarTransport: exit 0; source 7adb3757615debdfdbba68c06cb15a635e3c08df84e039647e99acfb37402229
+
+Linear: exit 0; source 617d6ec1a7296ef9175e5c36e7269cf0c0ea84b10e235ad1edbc2211bb72fe3a
 
 Local audit: python audit.py
 LinearStudy.linear_reindexed_actual_source_point.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
@@ -8788,6 +8794,14 @@ LinearStudy.smooth_point_original_ideal_normal_polynomial_generators.{u_1, u_2} 
 'LinearStudy.smooth_point_original_ideal_normal_polynomial_generators' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.originalProjectiveChartScalarTransport.{u} {K S : Type u} [Field K] [CommRing S] [Algebra K S]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) :
+  let U := AlgebraicGeometry.Proj.basicOpen 𝓑 a;
+  have e := AlgebraicGeometry.Proj.basicOpenIsoSpec 𝓑 a ha LinearStudy.originalProjectiveChartScalarTransport._proof_1;
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.awayToSection 𝓑 a)
+      (CategoryTheory.CategoryStruct.comp U.topIso.inv (AlgebraicGeometry.Scheme.Hom.appTop e.inv)) =
+    (AlgebraicGeometry.Scheme.ΓSpecIso ↧(HomogeneousLocalization.Away 𝓑 a)).inv
+'LinearStudy.originalProjectiveChartScalarTransport' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.originalTildeScalar.{u} {R : CommRingCat} (c : ↑R) (M : ModuleCat ↑R) :
   (AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom (c • LinearMap.id)) =
     LinearStudy.originalGlobalModuleScalar
@@ -17255,6 +17269,10 @@ LinearStudy.transcendental_of_scaling_orbit.{u_1, u_2} {k : Type u_1} {F : Type 
   (hfix : ∀ (N : ℕ), ∀ a ∈ E, (Φ N) a = a) (hscale : ∀ (N : ℕ), (Φ N) t = (algebraMap k F) ↑(N + 1) * t) :
   Transcendental (↥E) t
 'LinearStudy.transcendental_of_scaling_orbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleAffineRestrictionIso.{u} {X : AlgebraicGeometry.Scheme} (M : X.Modules) (U : X.Opens)
+  (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R) :
+  (M.restrict U.ι).restrict e.inv ≅ M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι)
+'LinearStudy.schemeModuleAffineRestrictionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.schemeModuleChartPushforwardRestrictionIso.{u} {X Y S T : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
   (U : Y.Opens) (a : ↑((TopologicalSpace.Opens.map f.base).obj U) ≅ S) (b : ↑U ≅ T) (g : S ⟶ T)
   (hsquare : f ∣_ U = CategoryTheory.CategoryStruct.comp a.hom (CategoryTheory.CategoryStruct.comp g b.inv))
@@ -17373,6 +17391,30 @@ LinearStudy.schemeModuleHomOverEquiv_restrict.{u} {X : AlgebraicGeometry.Scheme}
     (CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomPresheaf M N).map i.op))
       ((LinearStudy.schemeModuleHomOverEquiv M N U) f)
 'LinearStudy.schemeModuleHomOverEquiv_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomRestrictionTransport.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
+  (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f] {P Q : Y.Modules} (α : (M.restrict U.ι).restrict f ≅ P)
+  (β : (N.restrict U.ι).restrict f ≅ Q)
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) : P ⟶ Q
+'LinearStudy.schemeModuleHomRestrictionTransport' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomRestrictionTransport_smul.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules)
+  (U : X.Opens) (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f] {P Q : Y.Modules}
+  (α : (M.restrict U.ι).restrict f ≅ P) (β : (N.restrict U.ι).restrict f ≅ Q) (r : ↑(X.presheaf.obj (Opposite.op U)))
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  LinearStudy.schemeModuleHomRestrictionTransport M N U f α β (r • h) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomRestrictionTransport M N U f α β h)
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop f))
+          ((CategoryTheory.ConcreteCategory.hom U.topIso.inv) r))
+        Q)
+'LinearStudy.schemeModuleHomRestrictionTransport_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomRestrictionTransport_add.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
+  (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f] {P Q : Y.Modules} (α : (M.restrict U.ι).restrict f ≅ P)
+  (β : (N.restrict U.ι).restrict f ≅ Q)
+  (h k : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  LinearStudy.schemeModuleHomRestrictionTransport M N U f α β (h + k) =
+    LinearStudy.schemeModuleHomRestrictionTransport M N U f α β h +
+      LinearStudy.schemeModuleHomRestrictionTransport M N U f α β k
+'LinearStudy.schemeModuleHomRestrictionTransport_add' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.schemeModuleHomScalar.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
   (r : ↑(X.presheaf.obj (Opposite.op U))) (f : (LinearStudy.schemeModuleHomPresheaf M N).obj (Opposite.op U)) :
   (LinearStudy.schemeModuleHomPresheaf M N).obj (Opposite.op U)
@@ -17421,6 +17463,11 @@ LinearStudy.schemeModulePushforwardOpenRestrictionIso.{u} {X Y : AlgebraicGeomet
     (AlgebraicGeometry.Scheme.Modules.pushforward (f ∣_ U)).obj
       (M.restrict ((TopologicalSpace.Opens.map f.base).obj U).ι)
 'LinearStudy.schemeModulePushforwardOpenRestrictionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalGlobalModuleScalar_naturality.{u} {X : AlgebraicGeometry.Scheme}
+  (r : ↑(X.presheaf.obj (Opposite.op ⊤))) {M N : X.Modules} (f : M ⟶ N) :
+  CategoryTheory.CategoryStruct.comp (LinearStudy.originalGlobalModuleScalar r M) f =
+    CategoryTheory.CategoryStruct.comp f (LinearStudy.originalGlobalModuleScalar r N)
+'LinearStudy.originalGlobalModuleScalar_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.originalGlobalModuleScalar_restrict.{u} {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y)
   [AlgebraicGeometry.IsOpenImmersion j] (r : ↑(Y.presheaf.obj (Opposite.op ⊤))) (M : Y.Modules) :
   (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map (LinearStudy.originalGlobalModuleScalar r M) =
