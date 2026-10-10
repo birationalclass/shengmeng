@@ -1036,3 +1036,24 @@ public import Linear.NativeShiftedFreeChartSectionsSurjective
 public import Linear.NativeChartSectionsModuleNaturality
 public import Linear.NativeFiniteGradedChartSectionsSurjective
 public import Linear.ProjectiveNativeDualChartSectionsBijective
+
+public import Linear.ModuleBaseSourceLocalization
+public import Linear.NativeGradedChartSingleFraction
+public import Linear.NativeGradedBaseSourceChart
+public import Linear.NativeGradedBaseSourceScalar
+public import Linear.NativeGradedBaseSourceMap
+public import Linear.NativeCoextensionBaseSourceCharts
+public import Linear.ProjectiveNativeBaseDualSections
+public import Linear.ProjectiveNativeSectionsAffineDuality
+
+public import Linear.ModuleBaseSourceOverlap
+public import Linear.NativeBaseSourceChartSections
+public import Linear.ModuleBaseSourceOverlapRefinement
+public import Linear.NativeBaseSourceSectionsOverlap
+public import Linear.NativeSectionsAffineDualComparison
+public import Linear.ProjectiveNativeSectionsDualComparison
+public import Linear.ProjectiveNativeBaseDualOverlap
+
+public import Linear.SchemeModuleHomPresheaf
+public import Linear.SchemeModuleHomRestriction
+public import Linear.SchemeModuleHomSheaf

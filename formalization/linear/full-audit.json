@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2457,
-  "verifiedTheorems": 1810,
-  "definitions": 451,
+  "audited": 2502,
+  "verifiedTheorems": 1838,
+  "definitions": 468,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -19809,6 +19809,500 @@
       ]
     },
     {
+      "declaration": "LinearStudy.moduleBaseSourceLocalizationEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ModuleBaseSourceLocalization.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.moduleBaseSourceLocalizationEquiv.{u} {R S M : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  [AddCommGroup M] [Module R M] [Module S M] [IsScalarTower R S M] (a : R) :\n  have Q := Submonoid.powers ((algebraMap R S) a);\n  let N := LocalizedModule Q M;\n  LocalizedModule (Submonoid.powers a) M ≃ₗ[R] N",
+      "sha256": "f411f1e6462ef77434463589db89ee9e325f9c9b228d84d3463c43bd6c6be22f",
+      "lines": 13,
+      "moduleLineCount": 68,
+      "startLine": 14,
+      "endLine": 26,
+      "lineCount": 13,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.moduleBaseSourceLocalizationEquiv_mk_one",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ModuleBaseSourceLocalization.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.moduleBaseSourceLocalizationEquiv_mk_one.{u} {R S M : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  [AddCommGroup M] [Module R M] [Module S M] [IsScalarTower R S M] (a : R) (m : M) :\n  (LinearStudy.moduleBaseSourceLocalizationEquiv a) (LocalizedModule.mk m 1) = LocalizedModule.mk m 1",
+      "sha256": "f411f1e6462ef77434463589db89ee9e325f9c9b228d84d3463c43bd6c6be22f",
+      "lines": 8,
+      "moduleLineCount": 68,
+      "startLine": 28,
+      "endLine": 35,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.moduleBaseSourceLocalizationEquiv_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ModuleBaseSourceLocalization.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.moduleBaseSourceLocalizationEquiv_mk.{u} {R S M : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  [AddCommGroup M] [Module R M] [Module S M] [IsScalarTower R S M] (a : R) (m : M) (b : ↥(Submonoid.powers a)) :\n  (LinearStudy.moduleBaseSourceLocalizationEquiv a) (LocalizedModule.mk m b) =\n    LocalizedModule.mk m ⟨(algebraMap R S) ↑b, ⋯⟩",
+      "sha256": "f411f1e6462ef77434463589db89ee9e325f9c9b228d84d3463c43bd6c6be22f",
+      "lines": 30,
+      "moduleLineCount": 68,
+      "startLine": 37,
+      "endLine": 66,
+      "lineCount": 30,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.moduleBaseSourceLocalizationEquiv_mk_one"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.moduleBaseSourceLocalizationEquiv_mk_pow",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ModuleBaseSourceOverlap.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.moduleBaseSourceLocalizationEquiv_mk_pow.{u} {R S M : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  [AddCommGroup M] [Module R M] [Module S M] [IsScalarTower R S M] (a : R) (m : M) (n : ℕ) :\n  (LinearStudy.moduleBaseSourceLocalizationEquiv a) (LocalizedModule.mk m ⟨a ^ n, ⋯⟩) =\n    LocalizedModule.mk m ⟨(algebraMap R S) a ^ n, ⋯⟩",
+      "sha256": "f3891a681ffa79588a7e600a32ba3e9a114e3a56609d7122e53d87f4c451c9c3",
+      "lines": 9,
+      "moduleLineCount": 88,
+      "startLine": 15,
+      "endLine": 23,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.moduleBaseSourceLocalizationEquiv_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.sourceModuleBaseCoordinateOverlap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ModuleBaseSourceOverlap.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.sourceModuleBaseCoordinateOverlap.{u} {R S M : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  [AddCommGroup M] [Module S M] (a b : R) :\n  LocalizedModule (Submonoid.powers ((algebraMap R S) a)) M →ₗ[S]\n    LocalizedModule (Submonoid.powers ((algebraMap R S) (a * b))) M",
+      "sha256": "f3891a681ffa79588a7e600a32ba3e9a114e3a56609d7122e53d87f4c451c9c3",
+      "lines": 10,
+      "moduleLineCount": 88,
+      "startLine": 25,
+      "endLine": 34,
+      "lineCount": 10,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.sourceModuleBaseCoordinateOverlap_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ModuleBaseSourceOverlap.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.sourceModuleBaseCoordinateOverlap_mk.{u} {R S M : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  [AddCommGroup M] [Module R M] [Module S M] [IsScalarTower R S M] (a b : R) (m : M) (n : ℕ) :\n  (LinearStudy.sourceModuleBaseCoordinateOverlap a b) (LocalizedModule.mk m ⟨(algebraMap R S) a ^ n, ⋯⟩) =\n    LocalizedModule.mk ((algebraMap R S) b ^ n • m) ⟨(algebraMap R S) (a * b) ^ n, ⋯⟩",
+      "sha256": "f3891a681ffa79588a7e600a32ba3e9a114e3a56609d7122e53d87f4c451c9c3",
+      "lines": 32,
+      "moduleLineCount": 88,
+      "startLine": 36,
+      "endLine": 67,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.originalLocalizedModuleAwayOverlap_unit",
+        "LinearStudy.sourceModuleBaseCoordinateOverlap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.moduleBaseSourceLocalizationEquiv_overlap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ModuleBaseSourceOverlap.lean",
+      "line": 72,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.moduleBaseSourceLocalizationEquiv_overlap.{u} {R S M : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  [AddCommGroup M] [Module R M] [Module S M] [IsScalarTower R S M] (a b : R)\n  (x : LocalizedModule (Submonoid.powers a) M) :\n  (LinearStudy.moduleBaseSourceLocalizationEquiv (a * b)) ((LinearStudy.originalLocalizedModuleAwayOverlap a b) x) =\n    (LinearStudy.sourceModuleBaseCoordinateOverlap a b) ((LinearStudy.moduleBaseSourceLocalizationEquiv a) x)",
+      "sha256": "f3891a681ffa79588a7e600a32ba3e9a114e3a56609d7122e53d87f4c451c9c3",
+      "lines": 19,
+      "moduleLineCount": 88,
+      "startLine": 69,
+      "endLine": 87,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.moduleBaseSourceLocalizationEquiv_mk_pow",
+        "LinearStudy.originalLocalizedModuleAwayOverlap",
+        "LinearStudy.originalLocalizedModuleAwayOverlap_mk",
+        "LinearStudy.sourceModuleBaseCoordinateOverlap",
+        "LinearStudy.sourceModuleBaseCoordinateOverlap_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.sourceBaseCoordinateOverlap_powers_le",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ModuleBaseSourceOverlapRefinement.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.sourceBaseCoordinateOverlap_powers_le.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] (a b : R)\n  (T : Submonoid S) (ha : Submonoid.powers ((algebraMap R S) a) ≤ T) (hb : Submonoid.powers ((algebraMap R S) b) ≤ T) :\n  Submonoid.powers ((algebraMap R S) (a * b)) ≤ T",
+      "sha256": "33fdccc57122464ec8af1b31fd83779d7a3fb810af2b2ec2979ef5354c8e1876",
+      "lines": 6,
+      "moduleLineCount": 65,
+      "startLine": 15,
+      "endLine": 20,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.originalAwayOverlap_powers_le"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.sourceModuleBaseCoordinateOverlap_refinement",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ModuleBaseSourceOverlapRefinement.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.sourceModuleBaseCoordinateOverlap_refinement.{u} {R S M : Type u} [CommRing R] [CommRing S] [Algebra R S]\n  [AddCommGroup M] [Module R M] [Module S M] [IsScalarTower R S M] (a b : R) (T : Submonoid S)\n  (ha : Submonoid.powers ((algebraMap R S) a) ≤ T) (hb : Submonoid.powers ((algebraMap R S) b) ≤ T)\n  (x : LocalizedModule (Submonoid.powers ((algebraMap R S) a)) M) :\n  (LinearStudy.originalLocalizedModuleRefinement (Submonoid.powers ((algebraMap R S) (a * b))) T ⋯)\n      ((LinearStudy.sourceModuleBaseCoordinateOverlap a b) x) =\n    (LinearStudy.originalLocalizedModuleRefinement (Submonoid.powers ((algebraMap R S) a)) T ha) x",
+      "sha256": "33fdccc57122464ec8af1b31fd83779d7a3fb810af2b2ec2979ef5354c8e1876",
+      "lines": 28,
+      "moduleLineCount": 65,
+      "startLine": 22,
+      "endLine": 49,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.originalLocalizedModuleRefinement",
+        "LinearStudy.originalLocalizedModuleRefinement_mk",
+        "LinearStudy.sourceBaseCoordinateOverlap_powers_le",
+        "LinearStudy.sourceModuleBaseCoordinateOverlap",
+        "LinearStudy.sourceModuleBaseCoordinateOverlap_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.moduleBaseSourceLocalizationEquiv_overlap_refinement",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ModuleBaseSourceOverlapRefinement.lean",
+      "line": 53,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.moduleBaseSourceLocalizationEquiv_overlap_refinement.{u} {R S M : Type u} [CommRing R] [CommRing S]\n  [Algebra R S] [AddCommGroup M] [Module R M] [Module S M] [IsScalarTower R S M] (a b : R) (T : Submonoid S)\n  (ha : Submonoid.powers ((algebraMap R S) a) ≤ T) (hb : Submonoid.powers ((algebraMap R S) b) ≤ T)\n  (x : LocalizedModule (Submonoid.powers a) M) :\n  (LinearStudy.originalLocalizedModuleRefinement (Submonoid.powers ((algebraMap R S) (a * b))) T ⋯)\n      ((LinearStudy.moduleBaseSourceLocalizationEquiv (a * b))\n        ((LinearStudy.originalLocalizedModuleAwayOverlap a b) x)) =\n    (LinearStudy.originalLocalizedModuleRefinement (Submonoid.powers ((algebraMap R S) a)) T ha)\n      ((LinearStudy.moduleBaseSourceLocalizationEquiv a) x)",
+      "sha256": "33fdccc57122464ec8af1b31fd83779d7a3fb810af2b2ec2979ef5354c8e1876",
+      "lines": 14,
+      "moduleLineCount": 65,
+      "startLine": 51,
+      "endLine": 64,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.moduleBaseSourceLocalizationEquiv_overlap",
+        "LinearStudy.originalLocalizedModuleAwayOverlap",
+        "LinearStudy.originalLocalizedModuleRefinement",
+        "LinearStudy.sourceBaseCoordinateOverlap_powers_le",
+        "LinearStudy.sourceModuleBaseCoordinateOverlap",
+        "LinearStudy.sourceModuleBaseCoordinateOverlap_refinement"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveZeroChartSectionMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeBaseSourceChartSections.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeProjectiveZeroChartSectionMap.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup M] [Module K M] [Module S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (a : S) (ha : a ∈ 𝓑 1) :\n  ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 𝒟 a) →ₛₗ[CommRingCat.Hom.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 a)]\n    ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hS 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝓑 a)))",
+      "sha256": "dbe03c83909e525c8b6ea7b3645287878e6e0e79dc989c5b257836368b9cb001",
+      "lines": 12,
+      "moduleLineCount": 76,
+      "startLine": 26,
+      "endLine": 37,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartDegreeZeroSectionMap",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeBaseSourceChartSectionMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeBaseSourceChartSections.lean",
+      "line": 42,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeBaseSourceChartSectionMap.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]\n  [Algebra K S] [Algebra R S] [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M]\n  [IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (a : R) (ha : a ∈ 𝒜 1) :\n  ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 𝒟\n        a) →ₛₗ[(CommRingCat.Hom.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a))).comp\n      (LinearStudy.normalizationHomogeneousChartMap 𝒜 𝓑 a)]\n    ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hS 0\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝓑 ((algebraMap R S) a))))",
+      "sha256": "dbe03c83909e525c8b6ea7b3645287878e6e0e79dc989c5b257836368b9cb001",
+      "lines": 15,
+      "moduleLineCount": 76,
+      "startLine": 39,
+      "endLine": 53,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.nativeGradedBaseSourceChartMap",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.nativeProjectiveZeroChartSectionMap",
+        "LinearStudy.normalizationHomogeneousChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeBaseSourceChartSectionMap_value",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeBaseSourceChartSections.lean",
+      "line": 55,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeBaseSourceChartSectionMap_value.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M]\n  [Module S M] [IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (a : R) (ha : a ∈ 𝒜 1)\n  (x : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 𝒟 a))\n  (p : ↥(AlgebraicGeometry.Proj.basicOpen 𝓑 ((algebraMap R S) a))) :\n  ↑((LinearStudy.nativeBaseSourceChartSectionMap 𝒜 𝓑 𝒟 hR hS a ha) x) p =\n    LinearStudy.nativeProjectiveChartRefinement 𝓑 ((algebraMap R S) a)\n      ((LinearStudy.moduleBaseSourceLocalizationEquiv a) ↑x) p",
+      "sha256": "dbe03c83909e525c8b6ea7b3645287878e6e0e79dc989c5b257836368b9cb001",
+      "lines": 6,
+      "moduleLineCount": 76,
+      "startLine": 55,
+      "endLine": 60,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.nativeBaseSourceChartSectionMap",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartRefinement",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.normalizationHomogeneousChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeProjectiveZeroChartSectionMap_bijective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeBaseSourceChartSections.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeProjectiveZeroChartSectionMap_bijective.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]\n  [AddCommGroup M] [Module K M] [Module S M] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (a : S) (ha : a ∈ 𝓑 1)\n  (h : Function.Bijective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 𝒟 hS 1 a ha)) :\n  Function.Bijective ⇑(LinearStudy.nativeProjectiveZeroChartSectionMap 𝓑 𝒟 hS a ha)",
+      "sha256": "dbe03c83909e525c8b6ea7b3645287878e6e0e79dc989c5b257836368b9cb001",
+      "lines": 7,
+      "moduleLineCount": 76,
+      "startLine": 62,
+      "endLine": 68,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero_one",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartDegreeZeroSectionMap",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.nativeProjectiveZeroChartSectionMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeBaseSourceChartSectionMap_bijective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeBaseSourceChartSections.lean",
+      "line": 70,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeBaseSourceChartSectionMap_bijective.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M]\n  [Module S M] [IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (a : R) (ha : a ∈ 𝒜 1)\n  (h : Function.Bijective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 𝒟 hS 1 ((algebraMap R S) a) ⋯)) :\n  Function.Bijective ⇑(LinearStudy.nativeBaseSourceChartSectionMap 𝒜 𝓑 𝒟 hR hS a ha)",
+      "sha256": "dbe03c83909e525c8b6ea7b3645287878e6e0e79dc989c5b257836368b9cb001",
+      "lines": 6,
+      "moduleLineCount": 76,
+      "startLine": 70,
+      "endLine": 75,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.nativeBaseSourceChartSectionMap",
+        "LinearStudy.nativeGradedBaseSourceChartMap",
+        "LinearStudy.nativeGradedBaseSourceChartMap_bijective",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartDegreeZeroSectionMap",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.nativeProjectiveZeroChartSectionMap",
+        "LinearStudy.nativeProjectiveZeroChartSectionMap_bijective",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeBaseSourceWeightedChartSection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeBaseSourceSectionsOverlap.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeBaseSourceWeightedChartSection.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M]\n  [IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (d : ℕ) (a : R) (ha : a ∈ 𝒜 d)\n  (x : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a)) :\n  ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hS 0\n      (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝓑 ((algebraMap R S) a))))",
+      "sha256": "fedbca0f887305eb0a26f9f1e31ef6a8e7117b541c5ce1518d69de3080da6228",
+      "lines": 9,
+      "moduleLineCount": 73,
+      "startLine": 27,
+      "endLine": 35,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.nativeGradedBaseSourceChartEquiv",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartDegreeZeroSectionMap",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeBaseSourceWeightedChartSection_value",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeBaseSourceSectionsOverlap.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeBaseSourceWeightedChartSection_value.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M]\n  [Module S M] [IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (d : ℕ) (a : R) (ha : a ∈ 𝒜 d)\n  (x : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a))\n  (p : ↥(AlgebraicGeometry.Proj.basicOpen 𝓑 ((algebraMap R S) a))) :\n  ↑(LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 hR hS d a ha x) p =\n    LinearStudy.nativeProjectiveChartRefinement 𝓑 ((algebraMap R S) a)\n      ((LinearStudy.moduleBaseSourceLocalizationEquiv a) ↑x) p",
+      "sha256": "fedbca0f887305eb0a26f9f1e31ef6a8e7117b541c5ce1518d69de3080da6228",
+      "lines": 6,
+      "moduleLineCount": 73,
+      "startLine": 37,
+      "endLine": 42,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.nativeBaseSourceWeightedChartSection",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartRefinement",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeBaseSourceWeightedChartSection_overlap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeBaseSourceSectionsOverlap.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeBaseSourceWeightedChartSection_overlap.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M]\n  [Module S M] [IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (d e : ℕ) (a b : R) (ha : a ∈ 𝒜 d) (hb : b ∈ 𝒜 e)\n  (x : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a)) :\n  (CategoryTheory.ConcreteCategory.hom\n        ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hS 0).map (CategoryTheory.homOfLE ⋯).op))\n      (LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 hR hS d a ha x) =\n    LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 hR hS (d + e) (a * b) ⋯\n      ((LinearStudy.nativeGradedModuleWeightedOverlapMap 𝒜 𝒟 hR d e a b ha hb) x)",
+      "sha256": "fedbca0f887305eb0a26f9f1e31ef6a8e7117b541c5ce1518d69de3080da6228",
+      "lines": 29,
+      "moduleLineCount": 73,
+      "startLine": 44,
+      "endLine": 72,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.moduleBaseSourceLocalizationEquiv_overlap_refinement",
+        "LinearStudy.nativeBaseSourceWeightedChartSection",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleWeightedOverlapMap",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleLocalPredicate",
+        "LinearStudy.nativeProjectiveModulePresheaf",
+        "LinearStudy.originalLocalizedModuleAwayOverlap",
+        "LinearStudy.originalLocalizedModuleRefinement",
+        "LinearStudy.sourceBaseCoordinateOverlap_powers_le"
+      ]
+    },
+    {
       "declaration": "LinearStudy.nativeProjectiveChartRefinement_moduleMap",
       "kind": "theorem",
       "origin": "project",
@@ -19857,6 +20351,125 @@
       "endLine": 61,
       "lineCount": 25,
       "dependencies": [
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeCoextensionBaseSourceChartEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionBaseSourceCharts.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeCoextensionBaseSourceChartEquiv.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]\n  [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)\n  [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] (a : R) (ha : a ∈ 𝒜 1) :\n  have D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;\n  ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) 1 a) ≃\n    ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) 1 ((algebraMap R S) a))",
+      "sha256": "a49fa16fbe23ba86370ff4c2b5185b841da827bf8aaa855df7c6edd959fe98d9",
+      "lines": 14,
+      "moduleLineCount": 64,
+      "startLine": 22,
+      "endLine": 35,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionNormalizationBaseGradeCompatibility",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedBaseSourceChartEquiv",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionBaseSourceCharts.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] (a : R) (ha : a ∈ 𝒜 1) :\n  ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a) ≃\n    ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ((algebraMap R S) a))",
+      "sha256": "a49fa16fbe23ba86370ff4c2b5185b841da827bf8aaa855df7c6edd959fe98d9",
+      "lines": 13,
+      "moduleLineCount": 64,
+      "startLine": 37,
+      "endLine": 49,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionNormalizationBaseGradeCompatibility",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedBaseSourceChartMap",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.normalizationHomogeneousChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv_apply",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionBaseSourceCharts.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv_apply.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (x : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a)) :\n  let D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;\n  ↑((LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha) x) =\n    (LinearStudy.moduleBaseSourceLocalizationEquiv a) ↑x",
+      "sha256": "a49fa16fbe23ba86370ff4c2b5185b841da827bf8aaa855df7c6edd959fe98d9",
+      "lines": 6,
+      "moduleLineCount": 64,
+      "startLine": 51,
+      "endLine": 56,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeCoextensionBaseSourceChartEquiv_apply",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeCoextensionBaseSourceCharts.lean",
+      "line": 58,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeCoextensionBaseSourceChartEquiv_apply.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (x : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) 1 a)) :\n  let D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;\n  ↑((LinearStudy.nativeCoextensionBaseSourceChartEquiv 𝒜 𝓑 a ha) x) =\n    (LinearStudy.moduleBaseSourceLocalizationEquiv a) ↑x",
+      "sha256": "a49fa16fbe23ba86370ff4c2b5185b841da827bf8aaa855df7c6edd959fe98d9",
+      "lines": 6,
+      "moduleLineCount": 64,
+      "startLine": 58,
+      "endLine": 63,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.nativeCoextensionBaseSourceChartEquiv",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
         "LinearStudy.nativeGradedModuleAwayDegreeZero",
         "LinearStudy.nativeHomogeneousAwayModuleScalar"
       ]
@@ -21045,6 +21658,222 @@
         "LinearStudy.nativeGradedModuleAwayZero",
         "LinearStudy.nativeHomogeneousAwayModuleScalar",
         "LinearStudy.normalizationHomogeneousSourceChartAlgebra"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedBaseSourceChart_mem_iff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedBaseSourceChart.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeGradedBaseSourceChart_mem_iff.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]\n  [Algebra K S] [Algebra R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]\n  (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)\n  (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (d : ℕ) (a : R) (ha : a ∈ 𝒜 d)\n  (haS : (algebraMap R S) a ∈ 𝓑 d) (x : LocalizedModule (Submonoid.powers a) M) :\n  (LinearStudy.moduleBaseSourceLocalizationEquiv a) x ∈\n      LinearStudy.nativeGradedModuleAwayDegreeZero 𝓑 𝒟 d ((algebraMap R S) a) ↔\n    x ∈ LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a",
+      "sha256": "ddea09e2d4b586c5917690ac4ccfdbd2ed11ff5af438500e148887e6a7539873",
+      "lines": 36,
+      "moduleLineCount": 80,
+      "startLine": 21,
+      "endLine": 56,
+      "lineCount": 36,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.moduleBaseSourceLocalizationEquiv_mk",
+        "LinearStudy.nativeGradedChart_exists_singleFraction",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedBaseSourceChartEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeGradedBaseSourceChart.lean",
+      "line": 60,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeGradedBaseSourceChartEquiv.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]\n  [Algebra K S] [Algebra R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]\n  (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)\n  (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (d : ℕ) (a : R) (ha : a ∈ 𝒜 d)\n  (haS : (algebraMap R S) a ∈ 𝓑 d) :\n  ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a) ≃\n    ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝓑 𝒟 d ((algebraMap R S) a))",
+      "sha256": "ddea09e2d4b586c5917690ac4ccfdbd2ed11ff5af438500e148887e6a7539873",
+      "lines": 12,
+      "moduleLineCount": 80,
+      "startLine": 58,
+      "endLine": 69,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedBaseSourceChartEquiv_apply",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedBaseSourceChart.lean",
+      "line": 71,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeGradedBaseSourceChartEquiv_apply.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M]\n  [IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (d : ℕ) (a : R) (ha : a ∈ 𝒜 d)\n  (haS : (algebraMap R S) a ∈ 𝓑 d) (x : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a)) :\n  ↑((LinearStudy.nativeGradedBaseSourceChartEquiv 𝒜 𝓑 𝒟 hR hS d a ha haS) x) =\n    (LinearStudy.moduleBaseSourceLocalizationEquiv a) ↑x",
+      "sha256": "ddea09e2d4b586c5917690ac4ccfdbd2ed11ff5af438500e148887e6a7539873",
+      "lines": 9,
+      "moduleLineCount": 80,
+      "startLine": 71,
+      "endLine": 79,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.nativeGradedBaseSourceChartEquiv",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedBaseSourceChartMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeGradedBaseSourceMap.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeGradedBaseSourceChartMap.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]\n  [Algebra K S] [Algebra R S] [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M]\n  [IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (a : R) (ha : a ∈ 𝒜 1) :\n  ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 𝒟 a) →ₛₗ[LinearStudy.normalizationHomogeneousChartMap 𝒜 𝓑 a]\n    ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 𝒟 ((algebraMap R S) a))",
+      "sha256": "3845f95981e625d351ee89b2b5dfb53635ca770e3f609197770f94e24f89b6a3",
+      "lines": 18,
+      "moduleLineCount": 74,
+      "startLine": 19,
+      "endLine": 36,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.normalizationHomogeneousChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedBaseSourceChartMap_bijective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedBaseSourceMap.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeGradedBaseSourceChartMap_bijective.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M]\n  [Module S M] [IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (a : R) (ha : a ∈ 𝒜 1) :\n  Function.Bijective ⇑(LinearStudy.nativeGradedBaseSourceChartMap 𝒜 𝓑 𝒟 hR hS a ha)",
+      "sha256": "3845f95981e625d351ee89b2b5dfb53635ca770e3f609197770f94e24f89b6a3",
+      "lines": 20,
+      "moduleLineCount": 74,
+      "startLine": 38,
+      "endLine": 57,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.nativeGradedBaseSourceChartMap",
+        "LinearStudy.nativeGradedBaseSourceChart_mem_iff",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero_one",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedBaseSourceChartMap_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedBaseSourceMap.lean",
+      "line": 59,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeGradedBaseSourceChartMap_mk.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]\n  [Algebra K S] [Algebra R S] [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M]\n  [IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))\n  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (a : R) (ha : a ∈ 𝒜 1) (n : ℕ) (m : M)\n  (hm : m ∈ 𝒟 ↑n) :\n  ↑((LinearStudy.nativeGradedBaseSourceChartMap 𝒜 𝓑 𝒟 hR hS a ha) ⟨LocalizedModule.mk m ⟨a ^ n, ⋯⟩, ⋯⟩) =\n    LocalizedModule.mk m ⟨(algebraMap R S) a ^ n, ⋯⟩",
+      "sha256": "3845f95981e625d351ee89b2b5dfb53635ca770e3f609197770f94e24f89b6a3",
+      "lines": 15,
+      "moduleLineCount": 74,
+      "startLine": 59,
+      "endLine": 73,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.moduleBaseSourceLocalizationEquiv_mk",
+        "LinearStudy.nativeGradedBaseSourceChartMap",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.normalizationHomogeneousChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.moduleBaseSourceLocalizationEquiv_chart_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedBaseSourceScalar.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.moduleBaseSourceLocalizationEquiv_chart_smul.{u} {K R S M : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M]\n  [Module S M] [IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]\n  [SetLike.GradedSMul 𝒜 𝓑] (a : R) (ha : a ∈ 𝒜 1) (c : HomogeneousLocalization.Away 𝒜 a)\n  (x : LocalizedModule (Submonoid.powers a) M) :\n  (LinearStudy.moduleBaseSourceLocalizationEquiv a) (c • x) =\n    (LinearStudy.normalizationHomogeneousChartMap 𝒜 𝓑 a) c • (LinearStudy.moduleBaseSourceLocalizationEquiv a) x",
+      "sha256": "7bdfe63e4ad1b55b2ca3d93c4ab33cfd0dc2e5c8d4f903018943abfb97fbeb43",
+      "lines": 26,
+      "moduleLineCount": 46,
+      "startLine": 20,
+      "endLine": 45,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.localizedModule_abstract_smul_eq_native",
+        "LinearStudy.moduleBaseSourceLocalizationEquiv",
+        "LinearStudy.moduleBaseSourceLocalizationEquiv_mk",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeLocalizedModuleScalar",
+        "LinearStudy.normalizationHomogeneousChartMap",
+        "LinearStudy.normalizationHomogeneousChartMap_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeGradedChart_exists_singleFraction",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGradedChartSingleFraction.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeGradedChart_exists_singleFraction.{u} {K R M : Type u} [Field K] [CommRing R] [Algebra K R]\n  [AddCommGroup M] [Module K M] [Module R M] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M)\n  (hD : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (d : ℕ) (a : R) (ha : a ∈ 𝒜 d)\n  (x : LocalizedModule (Submonoid.powers a) M) (hx : x ∈ LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a) :\n  ∃ n, ∃ m ∈ 𝒟 ↑(n * d), x = LocalizedModule.mk m ⟨a ^ n, ⋯⟩",
+      "sha256": "86934dd718c176e7575febd9e5319319c2c63b7b6c93057f90fdd0a0d227158c",
+      "lines": 44,
+      "moduleLineCount": 62,
+      "startLine": 17,
+      "endLine": 60,
+      "lineCount": 44,
+      "dependencies": [
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar"
       ]
     },
     {
@@ -26952,6 +27781,86 @@
         "LinearStudy.nativeProjectiveRingIntegerPiece",
         "LinearStudy.nativeProjectiveRingIntegerPiece_graded",
         "LinearStudy.nativeProjectiveTwistPresheafOverIso"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeSectionsAffinePushforwardDualEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeSectionsAffineDualComparison.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeSectionsAffinePushforwardDualEquiv.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (h :\n    Function.Bijective\n      ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 1\n          ((algebraMap R S) a) ⋯)) :\n  ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 0\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝓑 ((algebraMap R S) a)))) ≃\n    ((AlgebraicGeometry.Scheme.Modules.pushforward\n            (AlgebraicGeometry.Spec.map\n              (CommRingCat.ofHom\n                (algebraMap (HomogeneousLocalization.Away 𝒜 a)\n                  (HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)))))).obj\n        (SheafOfModules.unit\n          (AlgebraicGeometry.Spec ↧(HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a))).ringCatSheaf) ⟶\n      SheafOfModules.unit (AlgebraicGeometry.Spec ↧(HomogeneousLocalization.Away 𝒜 a)).ringCatSheaf)",
+      "sha256": "e00d9ed7d063c83615d296338e84d1f841d31d893537c86e3176845d06283af7",
+      "lines": 29,
+      "moduleLineCount": 82,
+      "startLine": 23,
+      "endLine": 51,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionNormalizationBaseGradeCompatibility",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.nativeBaseSourceChartSectionMap",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeFullSourceAffinePushforwardDualEquiv",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartDegreeZeroSectionMap",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousChartMap",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeSectionsAffinePushforwardDualEquiv_section",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeSectionsAffineDualComparison.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeSectionsAffinePushforwardDualEquiv_section.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (h :\n    Function.Bijective\n      ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 1\n          ((algebraMap R S) a) ⋯))\n  (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a)) :\n  let D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;\n  (LinearStudy.nativeSectionsAffinePushforwardDualEquiv 𝒜 𝓑 a ha hinj h)\n      ((LinearStudy.nativeBaseSourceChartSectionMap 𝒜 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ ⋯ a ha) ell) =\n    (LinearStudy.nativeFullSourceAffinePushforwardDualEquiv 𝒜 𝓑 a ha hinj) ell",
+      "sha256": "e00d9ed7d063c83615d296338e84d1f841d31d893537c86e3176845d06283af7",
+      "lines": 29,
+      "moduleLineCount": 82,
+      "startLine": 53,
+      "endLine": 81,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionNormalizationBaseGradeCompatibility",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.nativeBaseSourceChartSectionMap",
+        "LinearStudy.nativeBaseSourceChartSectionMap_bijective",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeFullSourceAffinePushforwardDualEquiv",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartDegreeZeroSectionMap",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.nativeSectionsAffinePushforwardDualEquiv",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousChartMap",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra"
       ]
     },
     {
@@ -47481,6 +48390,87 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectiveNormalization_native_base_dual_sections_overlap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeBaseDualOverlap.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNormalization_native_base_dual_sections_overlap {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i j : Fin (r + 1)) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;\n  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;\n  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;\n  have hD := ⋯;\n  let D := (ModuleCat.coextendScalars (algebraMap A B)).obj ↧A;\n  ∀ (ell : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 1 (MvPolynomial.X i))),\n    (CategoryTheory.ConcreteCategory.hom\n          ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hD 0).map (CategoryTheory.homOfLE ⋯).op))\n        (LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 ⋯ hD 1 (MvPolynomial.X i) ⋯ ell) =\n      LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 ⋯ hD (1 + 1) (MvPolynomial.X i * MvPolynomial.X j) ⋯\n        ((LinearStudy.nativeGradedModuleWeightedOverlapMap 𝒜 𝒟 ⋯ 1 1 (MvPolynomial.X i) (MvPolynomial.X j) ⋯ ⋯) ell)",
+      "sha256": "3bb7adefae62e61cd1e4fad59122e8d71889a0548ffd7b5439f9de7b837c034c",
+      "lines": 60,
+      "moduleLineCount": 78,
+      "startLine": 18,
+      "endLine": 77,
+      "lineCount": 60,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionNormalizationBaseGradeCompatibility",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeBaseSourceWeightedChartSection",
+        "LinearStudy.nativeBaseSourceWeightedChartSection_overlap",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleWeightedOverlapMap",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveModulePresheaf",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveNormalization_native_base_dual_chart_sections_bijective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeBaseDualSections.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNormalization_native_base_dual_chart_sections_bijective {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;\n  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;\n  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;\n  have hD := ⋯;\n  ∀ (ha : φ (MvPolynomial.X i) ∈ 𝓑 1),\n    Function.Bijective fun x =>\n      (LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 𝒟 hD 1 (φ (MvPolynomial.X i)) ha)\n        ((LinearStudy.nativeCoextensionBaseSourceChartEquiv 𝒜 𝓑 (MvPolynomial.X i) ⋯) x)",
+      "sha256": "ce29b0f83f98f41e9d8333521c116df4ec6491991a4207fc9069f020019e93eb",
+      "lines": 42,
+      "moduleLineCount": 58,
+      "startLine": 16,
+      "endLine": 57,
+      "lineCount": 42,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeCoextensionBaseSourceChartEquiv",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartDegreeZeroSectionMap",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul",
+        "LinearStudy.projectiveNormalization_native_dual_chart_sections_bijective"
+      ]
+    },
+    {
       "declaration": "LinearStudy.projectiveNormalizationNativeDegreeZeroDualMap_injective",
       "kind": "theorem",
       "origin": "project",
@@ -48176,6 +49166,138 @@
         "LinearStudy.nativeProjectiveRingIntegerPiece",
         "LinearStudy.nativeProjectiveRingIntegerPiece_graded",
         "LinearStudy.projectiveNativePositiveTwist_isLocallyFree"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveNormalization_native_sections_affine_pushforward_duality",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeSectionsAffineDuality.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNormalization_native_sections_affine_pushforward_duality {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;\n  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;\n  let Aᵢ := HomogeneousLocalization.Away 𝒜 (MvPolynomial.X i);\n  let Bᵢ := HomogeneousLocalization.Away 𝓑 ((algebraMap A B) (MvPolynomial.X i));\n  have g := AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap Aᵢ Bᵢ));\n  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;\n  have hD := ⋯;\n  AlgebraicGeometry.IsFinite g ∧\n    Nonempty\n      (↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD 0\n            (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝓑 (φ (MvPolynomial.X i))))) ≃\n        ((AlgebraicGeometry.Scheme.Modules.pushforward g).obj\n            (SheafOfModules.unit (AlgebraicGeometry.Spec ↧Bᵢ).ringCatSheaf) ⟶\n          SheafOfModules.unit (AlgebraicGeometry.Spec ↧Aᵢ).ringCatSheaf))",
+      "sha256": "882284c91f14cd28174352f9a48066c8d6a07f93dda0ae658da8943af191baaf",
+      "lines": 59,
+      "moduleLineCount": 76,
+      "startLine": 17,
+      "endLine": 75,
+      "lineCount": 59,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeFullSourceAffinePushforwardDualEquiv",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero_one",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationAffineChart_isFinite",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartDegreeZeroSectionMap",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul",
+        "LinearStudy.projectiveNormalization_native_dual_chart_sections_bijective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeSectionsDualComparison.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;\n  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;\n  let Aᵢ := HomogeneousLocalization.Away 𝒜 (MvPolynomial.X i);\n  let Bᵢ := HomogeneousLocalization.Away 𝓑 ((algebraMap A B) (MvPolynomial.X i));\n  have g := AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap Aᵢ Bᵢ));\n  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;\n  have hD := ⋯;\n  ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD 0\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝓑 (φ (MvPolynomial.X i))))) ≃\n    ((AlgebraicGeometry.Scheme.Modules.pushforward g).obj\n        (SheafOfModules.unit (AlgebraicGeometry.Spec ↧Bᵢ).ringCatSheaf) ⟶\n      SheafOfModules.unit (AlgebraicGeometry.Spec ↧Aᵢ).ringCatSheaf)",
+      "sha256": "b8b54bc257b68a5516a44e24b5bf72b57e5b3507937b406a5694fc9482696528",
+      "lines": 49,
+      "moduleLineCount": 124,
+      "startLine": 18,
+      "endLine": 66,
+      "lineCount": 49,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.nativeSectionsAffinePushforwardDualEquiv",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul",
+        "LinearStudy.projectiveNormalization_native_dual_chart_sections_bijective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv_section",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeSectionsDualComparison.lean",
+      "line": 70,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv_section {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;\n  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;\n  let Aᵢ := HomogeneousLocalization.Away 𝒜 (MvPolynomial.X i);\n  let Bᵢ := HomogeneousLocalization.Away 𝓑 ((algebraMap A B) (MvPolynomial.X i));\n  have g := AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap Aᵢ Bᵢ));\n  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;\n  have hD := ⋯;\n  let D := (ModuleCat.coextendScalars (algebraMap A B)).obj ↧A;\n  ∀ (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 𝒟 (MvPolynomial.X i))),\n    (LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv V L hL hinj hfinite i)\n        ((LinearStudy.nativeBaseSourceChartSectionMap 𝒜 𝓑 𝒟 ⋯ hD (MvPolynomial.X i) ⋯) ell) =\n      (LinearStudy.nativeFullSourceAffinePushforwardDualEquiv 𝒜 𝓑 (MvPolynomial.X i) ⋯ ⋯) ell",
+      "sha256": "b8b54bc257b68a5516a44e24b5bf72b57e5b3507937b406a5694fc9482696528",
+      "lines": 56,
+      "moduleLineCount": 124,
+      "startLine": 68,
+      "endLine": 123,
+      "lineCount": 56,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionNormalizationBaseGradeCompatibility",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeBaseSourceChartSectionMap",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeFullSourceAffinePushforwardDualEquiv",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.nativeSectionsAffinePushforwardDualEquiv_section",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousChartMap",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul",
+        "LinearStudy.projectiveNormalization_native_dual_chart_sections_bijective",
+        "LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv"
       ]
     },
     {
@@ -55648,6 +56770,193 @@
       "endLine": 46,
       "lineCount": 35,
       "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomOverLinear",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomPresheaf.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomOverLinear.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)\n  (f : (CategoryTheory.presheafHom M.presheaf N.presheaf).obj (Opposite.op U)) : Prop",
+      "sha256": "b1e52e00867a3ef2719b4556fb4a89d4ff778f2dd86449287cedc96a88e8e75a",
+      "lines": 6,
+      "moduleLineCount": 69,
+      "startLine": 15,
+      "endLine": 20,
+      "lineCount": 6,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomPresheaf",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomPresheaf.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomPresheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :\n  CategoryTheory.Functor X.Opensᵒᵖ (Type u)",
+      "sha256": "b1e52e00867a3ef2719b4556fb4a89d4ff778f2dd86449287cedc96a88e8e75a",
+      "lines": 18,
+      "moduleLineCount": 69,
+      "startLine": 22,
+      "endLine": 39,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomOverEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomPresheaf.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomOverEquiv.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens) :\n  (SheafOfModules.over M U ⟶ SheafOfModules.over N U) ≃ (LinearStudy.schemeModuleHomPresheaf M N).obj (Opposite.op U)",
+      "sha256": "b1e52e00867a3ef2719b4556fb4a89d4ff778f2dd86449287cedc96a88e8e75a",
+      "lines": 27,
+      "moduleLineCount": 69,
+      "startLine": 41,
+      "endLine": 67,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomRestrict",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomRestriction.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomRestrict.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) {U V : X.Opens} (i : V ⟶ U)\n  (f : SheafOfModules.over M U ⟶ SheafOfModules.over N U) : SheafOfModules.over M V ⟶ SheafOfModules.over N V",
+      "sha256": "8a75457d689c76bf7c573d62606b429524d5719499f4341737c5d4874b49004f",
+      "lines": 7,
+      "moduleLineCount": 33,
+      "startLine": 14,
+      "endLine": 20,
+      "lineCount": 7,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomOverEquiv_restrict",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomRestriction.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomOverEquiv_restrict.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) {U V : X.Opens}\n  (i : V ⟶ U) (f : SheafOfModules.over M U ⟶ SheafOfModules.over N U) :\n  (LinearStudy.schemeModuleHomOverEquiv M N V) (LinearStudy.schemeModuleHomRestrict M N i f) =\n    (CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomPresheaf M N).map i.op))\n      ((LinearStudy.schemeModuleHomOverEquiv M N U) f)",
+      "sha256": "8a75457d689c76bf7c573d62606b429524d5719499f4341737c5d4874b49004f",
+      "lines": 10,
+      "moduleLineCount": 33,
+      "startLine": 22,
+      "endLine": 31,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomRestrict"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomSubfunctor",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomSheaf.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomSubfunctor.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :\n  CategoryTheory.Subfunctor (CategoryTheory.presheafHom M.presheaf N.presheaf)",
+      "sha256": "5134148fa3d54a3af759d13d16dd576e549a8b6bb44172f6e278902f96efc497",
+      "lines": 5,
+      "moduleLineCount": 84,
+      "startLine": 15,
+      "endLine": 19,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomPresheaf_isSheaf",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomSheaf.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomPresheaf_isSheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :\n  CategoryTheory.Presheaf.IsSheaf (Opens.grothendieckTopology ↥X) (LinearStudy.schemeModuleHomPresheaf M N)",
+      "sha256": "5134148fa3d54a3af759d13d16dd576e549a8b6bb44172f6e278902f96efc497",
+      "lines": 54,
+      "moduleLineCount": 84,
+      "startLine": 21,
+      "endLine": 74,
+      "lineCount": 54,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomSubfunctor"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomSheaf",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomSheaf.lean",
+      "line": 80,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomSheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :\n  TopCat.Sheaf (Type u) ↑X.toPresheafedSpace",
+      "sha256": "5134148fa3d54a3af759d13d16dd576e549a8b6bb44172f6e278902f96efc497",
+      "lines": 7,
+      "moduleLineCount": 84,
+      "startLine": 76,
+      "endLine": 82,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomPresheaf_isSheaf"
+      ]
     },
     {
       "declaration": "LinearStudy.freeIsoGeneratingSections_isIso",
