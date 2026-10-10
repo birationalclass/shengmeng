@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2502,
-  "verifiedTheorems": 1838,
-  "definitions": 468,
+  "audited": 2522,
+  "verifiedTheorems": 1846,
+  "definitions": 480,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -48353,6 +48353,45 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectiveNormalization_native_sections_affine_internalHom_equiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeAffineInternalHomSections.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNormalization_native_sections_affine_internalHom_equiv {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :\n  let A := MvPolynomial (Fin (r + 1)) ℂ;\n  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;\n  let φ := LinearStudy.projectiveLinearNormalizationMap V L;\n  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;\n  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;\n  let Aᵢ := HomogeneousLocalization.Away 𝒜 (MvPolynomial.X i);\n  let Bᵢ := HomogeneousLocalization.Away 𝓑 ((algebraMap A B) (MvPolynomial.X i));\n  have g := AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap Aᵢ Bᵢ));\n  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;\n  have hD := ⋯;\n  ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD 0\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝓑 (φ (MvPolynomial.X i))))) ≃\n    ↑((LinearStudy.schemeModuleHomModuleSheaf\n              ((AlgebraicGeometry.Scheme.Modules.pushforward g).obj\n                (SheafOfModules.unit (AlgebraicGeometry.Spec ↧Bᵢ).ringCatSheaf))\n              (SheafOfModules.unit (AlgebraicGeometry.Spec ↧Aᵢ).ringCatSheaf)).presheaf.obj\n        (Opposite.op ⊤))",
+      "sha256": "2820e436fcc1ecedb5eee6460f6099f1a96e48e91fb04c087b84d36e2f7a4008",
+      "lines": 33,
+      "moduleLineCount": 51,
+      "startLine": 17,
+      "endLine": 49,
+      "lineCount": 33,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul",
+        "LinearStudy.projectiveNormalization_native_sections_affine_dual_equiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomTopSectionsEquiv"
+      ]
+    },
+    {
       "declaration": "LinearStudy.projectiveNormalization_native_affine_pushforward_duality",
       "kind": "theorem",
       "origin": "project",
@@ -56772,6 +56811,383 @@
       "dependencies": []
     },
     {
+      "declaration": "LinearStudy.schemeModuleHomGlobalEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomGlobal.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomGlobalEquiv.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :\n  ↑(LinearStudy.schemeModuleHomPresheaf M N).sections ≃ (M ⟶ N)",
+      "sha256": "014fe73ff83ce8b4a204d3f156f49d133cafdd2e0f36954aca3c6eace9fc3900",
+      "lines": 36,
+      "moduleLineCount": 52,
+      "startLine": 15,
+      "endLine": 50,
+      "lineCount": 36,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHom_existsUnique_gluing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomGluing.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHom_existsUnique_gluing.{u, u_1} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) {ι : Type u_1}\n  (U : ι → X.Opens) (V : X.Opens) (iUV : (i : ι) → U i ⟶ V) (hcover : V ≤ iSup U)\n  (f : (i : ι) → SheafOfModules.over M (U i) ⟶ SheafOfModules.over N (U i))\n  (h :\n    ∀ (i j : ι),\n      LinearStudy.schemeModuleHomRestrict M N (TopologicalSpace.Opens.infLELeft (U i) (U j)) (f i) =\n        LinearStudy.schemeModuleHomRestrict M N (TopologicalSpace.Opens.infLERight (U i) (U j)) (f j)) :\n  ∃! g, ∀ (i : ι), LinearStudy.schemeModuleHomRestrict M N (iUV i) g = f i",
+      "sha256": "3939b15c90ca9f368eb3dd6d8d8ca715e323c06f90a7052cdec52ae43655a7fb",
+      "lines": 31,
+      "moduleLineCount": 47,
+      "startLine": 15,
+      "endLine": 45,
+      "lineCount": 31,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomOverEquiv_restrict",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomRestrict",
+        "LinearStudy.schemeModuleHomSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomModuleSectionsEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomModuleSections.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomModuleSectionsEquiv.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens) :\n  ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)) ≃\n    (SheafOfModules.over M U ⟶ SheafOfModules.over N U)",
+      "sha256": "f7c11db79ca976453551c2670468b8e28e0b74fbf8ff3c1b434e2958b4c54dff",
+      "lines": 5,
+      "moduleLineCount": 44,
+      "startLine": 15,
+      "endLine": 19,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomModuleSectionsEquiv_restrict",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomModuleSections.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomModuleSectionsEquiv_restrict.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules)\n  {U V : X.Opens} (i : V ⟶ U) (f : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  (LinearStudy.schemeModuleHomModuleSectionsEquiv M N V)\n      ((CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.map i.op)) f) =\n    LinearStudy.schemeModuleHomRestrict M N i ((LinearStudy.schemeModuleHomModuleSectionsEquiv M N U) f)",
+      "sha256": "f7c11db79ca976453551c2670468b8e28e0b74fbf8ff3c1b434e2958b4c54dff",
+      "lines": 16,
+      "moduleLineCount": 44,
+      "startLine": 21,
+      "endLine": 36,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSectionsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomOverEquiv_restrict",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomRestrict"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomModuleGlobalEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomModuleSections.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomModuleGlobalEquiv.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :\n  (LinearStudy.schemeModuleHomModuleSheaf M N).val.sections ≃ (M ⟶ N)",
+      "sha256": "f7c11db79ca976453551c2670468b8e28e0b74fbf8ff3c1b434e2958b4c54dff",
+      "lines": 5,
+      "moduleLineCount": 44,
+      "startLine": 38,
+      "endLine": 42,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomGlobalEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHom_map_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomModuleSheaf.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHom_map_smul.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) {U V : X.Opensᵒᵖ} (i : U ⟶ V)\n  (r : ↑(X.presheaf.obj (Opposite.op (Opposite.unop U)))) (f : (LinearStudy.schemeModuleHomPresheaf M N).obj U) :\n  (CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomPresheaf M N).map i)) (r • f) =\n    (CategoryTheory.ConcreteCategory.hom (X.presheaf.map i)) r •\n      (CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomPresheaf M N).map i)) f",
+      "sha256": "dc9e56af0752a4f4669481d24185f5669067da42f22cda8f84e893d08c881c41",
+      "lines": 18,
+      "moduleLineCount": 81,
+      "startLine": 22,
+      "endLine": 39,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomObjAddCommGroup",
+        "LinearStudy.schemeModuleHomObjModule",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomAbPresheaf",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomModuleSheaf.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomAbPresheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :\n  CategoryTheory.Functor X.Opensᵒᵖ Ab",
+      "sha256": "dc9e56af0752a4f4669481d24185f5669067da42f22cda8f84e893d08c881c41",
+      "lines": 22,
+      "moduleLineCount": 81,
+      "startLine": 41,
+      "endLine": 62,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomObjAddCommGroup",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomModulePresheaf",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomModuleSheaf.lean",
+      "line": 69,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomModulePresheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) : X.PresheafOfModules",
+      "sha256": "dc9e56af0752a4f4669481d24185f5669067da42f22cda8f84e893d08c881c41",
+      "lines": 4,
+      "moduleLineCount": 81,
+      "startLine": 68,
+      "endLine": 71,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAbModule",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHom_map_smul"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomModuleSheaf",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomModuleSheaf.lean",
+      "line": 75,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomModuleSheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) : X.Modules",
+      "sha256": "dc9e56af0752a4f4669481d24185f5669067da42f22cda8f84e893d08c881c41",
+      "lines": 7,
+      "moduleLineCount": 81,
+      "startLine": 73,
+      "endLine": 79,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModulePresheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomPrecomposeSection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomPrecompose.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomPrecomposeSection.{u} {X : AlgebraicGeometry.Scheme} {M' M N : X.Modules} (u : M' ⟶ M)\n  (U : X.Opens) (f : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :\n  ↑((LinearStudy.schemeModuleHomModuleSheaf M' N).presheaf.obj (Opposite.op U))",
+      "sha256": "bac88e881cf848f3d2904dea1b1b2a101e7afe47400195415aeaf4dd31d4c78f",
+      "lines": 9,
+      "moduleLineCount": 94,
+      "startLine": 14,
+      "endLine": 22,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomPrecompose",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomPrecompose.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomPrecompose.{u} {X : AlgebraicGeometry.Scheme} {M' M N : X.Modules} (u : M' ⟶ M) :\n  LinearStudy.schemeModuleHomModuleSheaf M N ⟶ LinearStudy.schemeModuleHomModuleSheaf M' N",
+      "sha256": "bac88e881cf848f3d2904dea1b1b2a101e7afe47400195415aeaf4dd31d4c78f",
+      "lines": 25,
+      "moduleLineCount": 94,
+      "startLine": 24,
+      "endLine": 48,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAbModule",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecomposeSection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomPrecompose_app",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomPrecompose.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomPrecompose_app.{u} {X : AlgebraicGeometry.Scheme} {M' M N : X.Modules} (u : M' ⟶ M)\n  (U : X.Opens) (f : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)))\n  (W : (CategoryTheory.Over U)ᵒᵖ) (x : ↑(M'.presheaf.obj (Opposite.op (Opposite.unop W).left))) :\n  (CategoryTheory.ConcreteCategory.hom\n        ((↑((CategoryTheory.ConcreteCategory.hom\n                  (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleHomPrecompose u) U))\n                f)).app\n          W))\n      x =\n    (CategoryTheory.ConcreteCategory.hom ((↑f).app W))\n      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app u (Opposite.unop W).left)) x)",
+      "sha256": "bac88e881cf848f3d2904dea1b1b2a101e7afe47400195415aeaf4dd31d4c78f",
+      "lines": 7,
+      "moduleLineCount": 94,
+      "startLine": 50,
+      "endLine": 56,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPrecompose"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomPrecompose_id",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomPrecompose.lean",
+      "line": 58,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomPrecompose_id.{u} {X : AlgebraicGeometry.Scheme} {M N : X.Modules} :\n  LinearStudy.schemeModuleHomPrecompose (CategoryTheory.CategoryStruct.id M) =\n    CategoryTheory.CategoryStruct.id (LinearStudy.schemeModuleHomModuleSheaf M N)",
+      "sha256": "bac88e881cf848f3d2904dea1b1b2a101e7afe47400195415aeaf4dd31d4c78f",
+      "lines": 10,
+      "moduleLineCount": 94,
+      "startLine": 58,
+      "endLine": 67,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPrecompose"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomPrecompose_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomPrecompose.lean",
+      "line": 69,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomPrecompose_comp.{u} {X : AlgebraicGeometry.Scheme} {M' M N M'' : X.Modules} (u : M'' ⟶ M')\n  (v : M' ⟶ M) :\n  LinearStudy.schemeModuleHomPrecompose (CategoryTheory.CategoryStruct.comp u v) =\n    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPrecompose v)\n      (LinearStudy.schemeModuleHomPrecompose u)",
+      "sha256": "bac88e881cf848f3d2904dea1b1b2a101e7afe47400195415aeaf4dd31d4c78f",
+      "lines": 11,
+      "moduleLineCount": 94,
+      "startLine": 69,
+      "endLine": 79,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPrecompose"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomPrecompose_add",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomPrecompose.lean",
+      "line": 81,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomPrecompose_add.{u} {X : AlgebraicGeometry.Scheme} {M' M N : X.Modules} (u v : M' ⟶ M) :\n  LinearStudy.schemeModuleHomPrecompose (u + v) =\n    LinearStudy.schemeModuleHomPrecompose u + LinearStudy.schemeModuleHomPrecompose v",
+      "sha256": "bac88e881cf848f3d2904dea1b1b2a101e7afe47400195415aeaf4dd31d4c78f",
+      "lines": 12,
+      "moduleLineCount": 94,
+      "startLine": 81,
+      "endLine": 92,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPrecompose"
+      ]
+    },
+    {
       "declaration": "LinearStudy.schemeModuleHomOverLinear",
       "kind": "def",
       "origin": "project",
@@ -56887,6 +57303,55 @@
       ]
     },
     {
+      "declaration": "LinearStudy.schemeModuleHomScalar",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomScalar.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomScalar.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)\n  (r : ↑(X.presheaf.obj (Opposite.op U))) (f : (LinearStudy.schemeModuleHomPresheaf M N).obj (Opposite.op U)) :\n  (LinearStudy.schemeModuleHomPresheaf M N).obj (Opposite.op U)",
+      "sha256": "be075246712de9cf5203727e19d54478c7baffda34c6ef1a053d9051f626ab2c",
+      "lines": 27,
+      "moduleLineCount": 110,
+      "startLine": 23,
+      "endLine": 49,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHom_smul_app",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomScalar.lean",
+      "line": 55,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHom_smul_app.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)\n  (r : ↑(X.presheaf.obj (Opposite.op U))) (f : (LinearStudy.schemeModuleHomPresheaf M N).obj (Opposite.op U))\n  (W : (CategoryTheory.Over U)ᵒᵖ) (x : ↑(M.presheaf.obj (Opposite.op (Opposite.unop W).left))) :\n  (CategoryTheory.ConcreteCategory.hom ((↑(r • f)).app W)) x =\n    (CategoryTheory.ConcreteCategory.hom (X.presheaf.map (Opposite.unop W).hom.op)) r •\n      have this := (CategoryTheory.ConcreteCategory.hom ((↑f).app W)) x;\n      this",
+      "sha256": "be075246712de9cf5203727e19d54478c7baffda34c6ef1a053d9051f626ab2c",
+      "lines": 5,
+      "moduleLineCount": 110,
+      "startLine": 55,
+      "endLine": 59,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomSMul"
+      ]
+    },
+    {
       "declaration": "LinearStudy.schemeModuleHomSubfunctor",
       "kind": "def",
       "origin": "project",
@@ -56956,6 +57421,53 @@
       "dependencies": [
         "LinearStudy.schemeModuleHomPresheaf",
         "LinearStudy.schemeModuleHomPresheaf_isSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.originalPresheafTopSectionsEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomTopSections.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.originalPresheafTopSectionsEquiv.{u} {X : AlgebraicGeometry.Scheme}\n  (F : CategoryTheory.Functor X.Opensᵒᵖ (Type u)) : ↑F.sections ≃ F.obj (Opposite.op ⊤)",
+      "sha256": "da97957a35475160664f4f9052cef674a36f6490e75fb293e3c1c975b0055439",
+      "lines": 18,
+      "moduleLineCount": 40,
+      "startLine": 14,
+      "endLine": 31,
+      "lineCount": 18,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomTopSectionsEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomTopSections.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomTopSectionsEquiv.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :\n  ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op ⊤)) ≃ (M ⟶ N)",
+      "sha256": "da97957a35475160664f4f9052cef674a36f6490e75fb293e3c1c975b0055439",
+      "lines": 6,
+      "moduleLineCount": 40,
+      "startLine": 33,
+      "endLine": 38,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.originalPresheafTopSectionsEquiv",
+        "LinearStudy.schemeModuleHomGlobalEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPresheaf"
       ]
     },
     {

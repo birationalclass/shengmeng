@@ -1057,3 +1057,13 @@ public import Linear.ProjectiveNativeBaseDualOverlap
 public import Linear.SchemeModuleHomPresheaf
 public import Linear.SchemeModuleHomRestriction
 public import Linear.SchemeModuleHomSheaf
+
+public import Linear.SchemeModuleHomGlobal
+public import Linear.SchemeModuleHomScalar
+public import Linear.SchemeModuleHomModuleSheaf
+public import Linear.SchemeModuleHomModuleSections
+
+public import Linear.SchemeModuleHomGluing
+public import Linear.SchemeModuleHomPrecompose
+public import Linear.SchemeModuleHomTopSections
+public import Linear.ProjectiveNativeAffineInternalHomSections

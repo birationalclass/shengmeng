@@ -742,19 +742,22 @@ Linear.NativeBaseSourceSectionsOverlap: cached compiled module (source and proje
 Linear.NativeSectionsAffineDualComparison: cached compiled module (source and project dependencies unchanged)
 Linear.ProjectiveNativeSectionsDualComparison: cached compiled module (source and project dependencies unchanged)
 Linear.ProjectiveNativeBaseDualOverlap: cached compiled module (source and project dependencies unchanged)
-Linear.SchemeModuleHomPresheaf: exit 0; source b1e52e00867a3ef2719b4556fb4a89d4ff778f2dd86449287cedc96a88e8e75a
+Linear.SchemeModuleHomPresheaf: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomRestriction: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomSheaf: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomGlobal: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomScalar: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomModuleSheaf: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomModuleSections: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomGluing: exit 0; source 3939b15c90ca9f368eb3dd6d8d8ca715e323c06f90a7052cdec52ae43655a7fb
 
-Linear.SchemeModuleHomRestriction: exit 0; source 8a75457d689c76bf7c573d62606b429524d5719499f4341737c5d4874b49004f
+Linear.SchemeModuleHomPrecompose: exit 0; source bac88e881cf848f3d2904dea1b1b2a101e7afe47400195415aeaf4dd31d4c78f
 
-Linear.SchemeModuleHomSheaf: exit 0; source 5134148fa3d54a3af759d13d16dd576e549a8b6bb44172f6e278902f96efc497
-Linear\SchemeModuleHomSheaf.lean:19:8: warning: Variable name `f` is not explicitly referenced.
+Linear.SchemeModuleHomTopSections: exit 0; source da97957a35475160664f4f9052cef674a36f6490e75fb293e3c1c975b0055439
 
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _f
+Linear.ProjectiveNativeAffineInternalHomSections: exit 0; source 2820e436fcc1ecedb5eee6460f6099f1a96e48e91fb04c087b84d36e2f7a4008
 
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-
-Linear: exit 0; source 55e78fc32ed2cd8387efdd9e6ecfd956ffc0df0174b0cbc8dbe4a40513b8885e
+Linear: exit 0; source d414e53eac19ccf8caf041bde2d833a04a4189929096a4d0fb16e5d2c60d7c26
 
 Local audit: python audit.py
 LinearStudy.linear_reindexed_actual_source_point.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
@@ -13579,6 +13582,31 @@ LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters {n : ℕ}
 'LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.projectiveNormalization_native_sections_affine_internalHom_equiv {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :
+  let A := MvPolynomial (Fin (r + 1)) ℂ;
+  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  let φ := LinearStudy.projectiveLinearNormalizationMap V L;
+  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  let Aᵢ := HomogeneousLocalization.Away 𝒜 (MvPolynomial.X i);
+  let Bᵢ := HomogeneousLocalization.Away 𝓑 ((algebraMap A B) (MvPolynomial.X i));
+  have g := AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap Aᵢ Bᵢ));
+  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;
+  have hD := ⋯;
+  ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD 0
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝓑 (φ (MvPolynomial.X i))))) ≃
+    ↑((LinearStudy.schemeModuleHomModuleSheaf
+              ((AlgebraicGeometry.Scheme.Modules.pushforward g).obj
+                (SheafOfModules.unit (AlgebraicGeometry.Spec ↧Bᵢ).ringCatSheaf))
+              (SheafOfModules.unit (AlgebraicGeometry.Spec ↧Aᵢ).ringCatSheaf)).presheaf.obj
+        (Opposite.op ⊤))
+'LinearStudy.projectiveNormalization_native_sections_affine_internalHom_equiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.projectiveNormalization_native_affine_pushforward_duality {n r : ℕ}
   (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
   (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
@@ -16995,6 +17023,77 @@ LinearStudy.transcendental_of_scaling_orbit.{u_1, u_2} {k : Type u_1} {F : Type 
   (hfix : ∀ (N : ℕ), ∀ a ∈ E, (Φ N) a = a) (hscale : ∀ (N : ℕ), (Φ N) t = (algebraMap k F) ↑(N + 1) * t) :
   Transcendental (↥E) t
 'LinearStudy.transcendental_of_scaling_orbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomGlobalEquiv.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :
+  ↑(LinearStudy.schemeModuleHomPresheaf M N).sections ≃ (M ⟶ N)
+'LinearStudy.schemeModuleHomGlobalEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHom_existsUnique_gluing.{u, u_1} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) {ι : Type u_1}
+  (U : ι → X.Opens) (V : X.Opens) (iUV : (i : ι) → U i ⟶ V) (hcover : V ≤ iSup U)
+  (f : (i : ι) → SheafOfModules.over M (U i) ⟶ SheafOfModules.over N (U i))
+  (h :
+    ∀ (i j : ι),
+      LinearStudy.schemeModuleHomRestrict M N (TopologicalSpace.Opens.infLELeft (U i) (U j)) (f i) =
+        LinearStudy.schemeModuleHomRestrict M N (TopologicalSpace.Opens.infLERight (U i) (U j)) (f j)) :
+  ∃! g, ∀ (i : ι), LinearStudy.schemeModuleHomRestrict M N (iUV i) g = f i
+'LinearStudy.schemeModuleHom_existsUnique_gluing' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomModuleSectionsEquiv.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens) :
+  ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)) ≃
+    (SheafOfModules.over M U ⟶ SheafOfModules.over N U)
+'LinearStudy.schemeModuleHomModuleSectionsEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomModuleSectionsEquiv_restrict.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules)
+  {U V : X.Opens} (i : V ⟶ U) (f : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  (LinearStudy.schemeModuleHomModuleSectionsEquiv M N V)
+      ((CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.map i.op)) f) =
+    LinearStudy.schemeModuleHomRestrict M N i ((LinearStudy.schemeModuleHomModuleSectionsEquiv M N U) f)
+'LinearStudy.schemeModuleHomModuleSectionsEquiv_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomModuleGlobalEquiv.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :
+  (LinearStudy.schemeModuleHomModuleSheaf M N).val.sections ≃ (M ⟶ N)
+'LinearStudy.schemeModuleHomModuleGlobalEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHom_map_smul.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) {U V : X.Opensᵒᵖ} (i : U ⟶ V)
+  (r : ↑(X.presheaf.obj (Opposite.op (Opposite.unop U)))) (f : (LinearStudy.schemeModuleHomPresheaf M N).obj U) :
+  (CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomPresheaf M N).map i)) (r • f) =
+    (CategoryTheory.ConcreteCategory.hom (X.presheaf.map i)) r •
+      (CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomPresheaf M N).map i)) f
+'LinearStudy.schemeModuleHom_map_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomAbPresheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :
+  CategoryTheory.Functor X.Opensᵒᵖ Ab
+'LinearStudy.schemeModuleHomAbPresheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomModulePresheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) : X.PresheafOfModules
+'LinearStudy.schemeModuleHomModulePresheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomModuleSheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) : X.Modules
+'LinearStudy.schemeModuleHomModuleSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomPrecomposeSection.{u} {X : AlgebraicGeometry.Scheme} {M' M N : X.Modules} (u : M' ⟶ M)
+  (U : X.Opens) (f : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  ↑((LinearStudy.schemeModuleHomModuleSheaf M' N).presheaf.obj (Opposite.op U))
+'LinearStudy.schemeModuleHomPrecomposeSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomPrecompose.{u} {X : AlgebraicGeometry.Scheme} {M' M N : X.Modules} (u : M' ⟶ M) :
+  LinearStudy.schemeModuleHomModuleSheaf M N ⟶ LinearStudy.schemeModuleHomModuleSheaf M' N
+'LinearStudy.schemeModuleHomPrecompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomPrecompose_app.{u} {X : AlgebraicGeometry.Scheme} {M' M N : X.Modules} (u : M' ⟶ M)
+  (U : X.Opens) (f : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)))
+  (W : (CategoryTheory.Over U)ᵒᵖ) (x : ↑(M'.presheaf.obj (Opposite.op (Opposite.unop W).left))) :
+  (CategoryTheory.ConcreteCategory.hom
+        ((↑((CategoryTheory.ConcreteCategory.hom
+                  (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleHomPrecompose u) U))
+                f)).app
+          W))
+      x =
+    (CategoryTheory.ConcreteCategory.hom ((↑f).app W))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app u (Opposite.unop W).left)) x)
+'LinearStudy.schemeModuleHomPrecompose_app' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomPrecompose_id.{u} {X : AlgebraicGeometry.Scheme} {M N : X.Modules} :
+  LinearStudy.schemeModuleHomPrecompose (CategoryTheory.CategoryStruct.id M) =
+    CategoryTheory.CategoryStruct.id (LinearStudy.schemeModuleHomModuleSheaf M N)
+'LinearStudy.schemeModuleHomPrecompose_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomPrecompose_comp.{u} {X : AlgebraicGeometry.Scheme} {M' M N M'' : X.Modules} (u : M'' ⟶ M')
+  (v : M' ⟶ M) :
+  LinearStudy.schemeModuleHomPrecompose (CategoryTheory.CategoryStruct.comp u v) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPrecompose v)
+      (LinearStudy.schemeModuleHomPrecompose u)
+'LinearStudy.schemeModuleHomPrecompose_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomPrecompose_add.{u} {X : AlgebraicGeometry.Scheme} {M' M N : X.Modules} (u v : M' ⟶ M) :
+  LinearStudy.schemeModuleHomPrecompose (u + v) =
+    LinearStudy.schemeModuleHomPrecompose u + LinearStudy.schemeModuleHomPrecompose v
+'LinearStudy.schemeModuleHomPrecompose_add' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.schemeModuleHomOverLinear.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
   (f : (CategoryTheory.presheafHom M.presheaf N.presheaf).obj (Opposite.op U)) : Prop
 'LinearStudy.schemeModuleHomOverLinear' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -17013,6 +17112,18 @@ LinearStudy.schemeModuleHomOverEquiv_restrict.{u} {X : AlgebraicGeometry.Scheme}
     (CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomPresheaf M N).map i.op))
       ((LinearStudy.schemeModuleHomOverEquiv M N U) f)
 'LinearStudy.schemeModuleHomOverEquiv_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomScalar.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
+  (r : ↑(X.presheaf.obj (Opposite.op U))) (f : (LinearStudy.schemeModuleHomPresheaf M N).obj (Opposite.op U)) :
+  (LinearStudy.schemeModuleHomPresheaf M N).obj (Opposite.op U)
+'LinearStudy.schemeModuleHomScalar' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHom_smul_app.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
+  (r : ↑(X.presheaf.obj (Opposite.op U))) (f : (LinearStudy.schemeModuleHomPresheaf M N).obj (Opposite.op U))
+  (W : (CategoryTheory.Over U)ᵒᵖ) (x : ↑(M.presheaf.obj (Opposite.op (Opposite.unop W).left))) :
+  (CategoryTheory.ConcreteCategory.hom ((↑(r • f)).app W)) x =
+    (CategoryTheory.ConcreteCategory.hom (X.presheaf.map (Opposite.unop W).hom.op)) r •
+      have this := (CategoryTheory.ConcreteCategory.hom ((↑f).app W)) x;
+      this
+'LinearStudy.schemeModuleHom_smul_app' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.schemeModuleHomSubfunctor.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :
   CategoryTheory.Subfunctor (CategoryTheory.presheafHom M.presheaf N.presheaf)
 'LinearStudy.schemeModuleHomSubfunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -17022,6 +17133,12 @@ LinearStudy.schemeModuleHomPresheaf_isSheaf.{u} {X : AlgebraicGeometry.Scheme} (
 LinearStudy.schemeModuleHomSheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :
   TopCat.Sheaf (Type u) ↑X.toPresheafedSpace
 'LinearStudy.schemeModuleHomSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalPresheafTopSectionsEquiv.{u} {X : AlgebraicGeometry.Scheme}
+  (F : CategoryTheory.Functor X.Opensᵒᵖ (Type u)) : ↑F.sections ≃ F.obj (Opposite.op ⊤)
+'LinearStudy.originalPresheafTopSectionsEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomTopSectionsEquiv.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) :
+  ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op ⊤)) ≃ (M ⟶ N)
+'LinearStudy.schemeModuleHomTopSectionsEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.freeIsoGeneratingSections_isIso.{u, v₁, u₁} {C : Type u₁} [CategoryTheory.Category C]
   {J : CategoryTheory.GrothendieckTopology C} {R : CategoryTheory.Sheaf J RingCat}
   [CategoryTheory.HasWeakSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat] {M : SheafOfModules R}

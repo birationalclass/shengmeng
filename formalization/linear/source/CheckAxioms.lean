@@ -3659,6 +3659,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.ProjectiveChartPolynomialParameterConclusion
 #check LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters
 #print axioms LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters
+#check LinearStudy.projectiveNormalization_native_sections_affine_internalHom_equiv
+#print axioms LinearStudy.projectiveNormalization_native_sections_affine_internalHom_equiv
 #check LinearStudy.projectiveNormalization_native_affine_pushforward_duality
 #print axioms LinearStudy.projectiveNormalization_native_affine_pushforward_duality
 #check LinearStudy.projectiveNormalization_native_base_dual_sections_overlap
@@ -4199,6 +4201,36 @@ set_option pp.proofs false
 #print axioms LinearStudy.transcendental_scaled_power
 #check LinearStudy.transcendental_of_scaling_orbit
 #print axioms LinearStudy.transcendental_of_scaling_orbit
+#check LinearStudy.schemeModuleHomGlobalEquiv
+#print axioms LinearStudy.schemeModuleHomGlobalEquiv
+#check LinearStudy.schemeModuleHom_existsUnique_gluing
+#print axioms LinearStudy.schemeModuleHom_existsUnique_gluing
+#check LinearStudy.schemeModuleHomModuleSectionsEquiv
+#print axioms LinearStudy.schemeModuleHomModuleSectionsEquiv
+#check LinearStudy.schemeModuleHomModuleSectionsEquiv_restrict
+#print axioms LinearStudy.schemeModuleHomModuleSectionsEquiv_restrict
+#check LinearStudy.schemeModuleHomModuleGlobalEquiv
+#print axioms LinearStudy.schemeModuleHomModuleGlobalEquiv
+#check LinearStudy.schemeModuleHom_map_smul
+#print axioms LinearStudy.schemeModuleHom_map_smul
+#check LinearStudy.schemeModuleHomAbPresheaf
+#print axioms LinearStudy.schemeModuleHomAbPresheaf
+#check LinearStudy.schemeModuleHomModulePresheaf
+#print axioms LinearStudy.schemeModuleHomModulePresheaf
+#check LinearStudy.schemeModuleHomModuleSheaf
+#print axioms LinearStudy.schemeModuleHomModuleSheaf
+#check LinearStudy.schemeModuleHomPrecomposeSection
+#print axioms LinearStudy.schemeModuleHomPrecomposeSection
+#check LinearStudy.schemeModuleHomPrecompose
+#print axioms LinearStudy.schemeModuleHomPrecompose
+#check LinearStudy.schemeModuleHomPrecompose_app
+#print axioms LinearStudy.schemeModuleHomPrecompose_app
+#check LinearStudy.schemeModuleHomPrecompose_id
+#print axioms LinearStudy.schemeModuleHomPrecompose_id
+#check LinearStudy.schemeModuleHomPrecompose_comp
+#print axioms LinearStudy.schemeModuleHomPrecompose_comp
+#check LinearStudy.schemeModuleHomPrecompose_add
+#print axioms LinearStudy.schemeModuleHomPrecompose_add
 #check LinearStudy.schemeModuleHomOverLinear
 #print axioms LinearStudy.schemeModuleHomOverLinear
 #check LinearStudy.schemeModuleHomPresheaf
@@ -4209,12 +4241,20 @@ set_option pp.proofs false
 #print axioms LinearStudy.schemeModuleHomRestrict
 #check LinearStudy.schemeModuleHomOverEquiv_restrict
 #print axioms LinearStudy.schemeModuleHomOverEquiv_restrict
+#check LinearStudy.schemeModuleHomScalar
+#print axioms LinearStudy.schemeModuleHomScalar
+#check LinearStudy.schemeModuleHom_smul_app
+#print axioms LinearStudy.schemeModuleHom_smul_app
 #check LinearStudy.schemeModuleHomSubfunctor
 #print axioms LinearStudy.schemeModuleHomSubfunctor
 #check LinearStudy.schemeModuleHomPresheaf_isSheaf
 #print axioms LinearStudy.schemeModuleHomPresheaf_isSheaf
 #check LinearStudy.schemeModuleHomSheaf
 #print axioms LinearStudy.schemeModuleHomSheaf
+#check LinearStudy.originalPresheafTopSectionsEquiv
+#print axioms LinearStudy.originalPresheafTopSectionsEquiv
+#check LinearStudy.schemeModuleHomTopSectionsEquiv
+#print axioms LinearStudy.schemeModuleHomTopSectionsEquiv
 #check LinearStudy.freeIsoGeneratingSections_isIso
 #print axioms LinearStudy.freeIsoGeneratingSections_isIso
 #check LinearStudy.sheafFreePresentationOfExact
