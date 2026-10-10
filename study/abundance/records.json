@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-10T21:07:00.686000+08:00",
+  "updatedAt": "2026-10-10T21:38:58.826000+08:00",
   "series": [
     {
       "id": "F034",
@@ -2380,6 +2380,204 @@
       "en": [
         "Complete the conclusion of Lemma 1.3: for every \\(x\\in X\\), there exists a divisor \\(E_x\\in\\Lambda\\) such that \\(\\operatorname{mult}_x(E_x)>r\\)."
       ]
+    },
+    {
+      "id": "lemma14-real-threshold-q",
+      "role": "user",
+      "time": "2026-10-10T21:09:37.765000+08:00",
+      "zh": [
+        "能否把引理 1.4 的重数阈值 \\(4\\sqrt{A^2}\\) 改成任意实数 \\(r\\)，同时把曲线交数界改成 \\(A\\cdot C\\le2r\\)？"
+      ],
+      "en": [
+        "Can Lemma 1.4 use an arbitrary real multiplicity threshold \\(r\\) instead of \\(4\\sqrt{A^2}\\), with curve-degree bound \\(A\\cdot C\\le2r\\)?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "lemma14-literature-q",
+      "role": "user",
+      "time": "2026-10-10T21:10:23.321000+08:00",
+      "zh": [
+        "前人是否研究过引理 1.4 这种从高重数推出低交数曲线的问题？"
+      ],
+      "en": [
+        "Has earlier work studied the passage from high multiplicity to curves of bounded degree appearing in Lemma 1.4?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "lemma14-literature-tools-a",
+      "role": "assistant",
+      "time": "2026-10-10T21:15:45.741000+08:00",
+      "zh": [
+        "最初找到的是 EKL 的 Proposition 2.3 和 Nakamaye 2004 的 Lemma 1.3。它们提供参数微分与消失阶估计，尚未直接比较曲线存在的最终结论。后面的讨论进一步修正了这个文献比较。"
+      ],
+      "en": [
+        "The initial references were EKL Proposition 2.3 and Nakamaye 2004 Lemma 1.3. They provide parameter differentiation and vanishing-order estimates; the final curve-existence conclusion had not yet been compared. The subsequent discussion refines this comparison."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "lemma14-literature-statements-q",
+      "role": "user",
+      "time": "2026-10-10T21:16:18.723000+08:00",
+      "zh": [
+        "这些文献的具体命题如何表述？"
+      ],
+      "en": [
+        "What are the precise statements in these references?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "lemma14-literature-statements-a",
+      "role": "assistant",
+      "time": "2026-10-10T21:17:32.341000+08:00",
+      "zh": [
+        "EKL 的 Proposition 2.3 对覆盖族 \\(Z\\subseteq V\\subseteq X\\times T\\) 构造同一线性系中的新除子，去掉 \\(V\\) 并保留至少 \\(\\operatorname{mult}_Z(E)-\\operatorname{mult}_V(E)\\) 的重数。Nakamaye 的 Lemma 1.3 将其写成沿基子簇的消失阶下界。这些首先是工具性命题。"
+      ],
+      "en": [
+        "EKL Proposition 2.3 constructs a divisor in the same linear series avoiding \\(V\\) while retaining multiplicity at least \\(\\operatorname{mult}_Z(E)-\\operatorname{mult}_V(E)\\), for a covering incidence \\(Z\\subseteq V\\subseteq X\\times T\\). Nakamaye Lemma 1.3 expresses this as a lower bound for vanishing along a base subvariety. These are primarily technical inputs."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "lemma14-order-versus-curve-q",
+      "role": "user",
+      "time": "2026-10-10T21:18:43.882000+08:00",
+      "zh": [
+        "这些命题分析的是消失阶之间的关系；我们的 1.4 则断言存在一条交数有上界的曲线。结论层面并不一样。"
+      ],
+      "en": [
+        "These statements compare vanishing orders, whereas our Lemma 1.4 asserts existence of a curve with bounded intersection number. The conclusions are different."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "lemma14-originality-q",
+      "role": "user",
+      "time": "2026-10-10T21:19:00.706000+08:00",
+      "zh": [
+        "是否可以据此说 1.4 的结论前人没有证明过？"
+      ],
+      "en": [
+        "Can we therefore say that the conclusion of Lemma 1.4 has not been proved before?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "lemma14-nakamaye-correction-a",
+      "role": "assistant",
+      "time": "2026-10-10T21:20:28.946000+08:00",
+      "zh": [
+        "不能。进一步核对 Nakamaye 2003 的 Theorem 2 证明：令 \\(\\varepsilon=\\varepsilon(A,\\eta)\\)，选有理数 \\(q\\) 满足 \\(\\varepsilon<q<\\operatorname{mult}_\\eta(E)/2\\)，则 \\(A/q\\) 的 Seshadri 常数小于一，且有效数值代表 \\(E/q\\) 的重数大于二。该证明构造在 \\(\\eta\\) 光滑的 Seshadri exceptional 曲线，从而 \\(A\\cdot C=\\varepsilon\\le\\sqrt{A^2}\\)。这是从其证明得到的曲面推论，比 1.4 的交数界更强；它不替代我们随后要求的高维证明路线。"
+      ],
+      "en": [
+        "No. The proof of Nakamaye 2003 Theorem 2 applies after choosing rational \\(q\\) with \\(\\varepsilon(A,\\eta)<q<\\operatorname{mult}_\\eta(E)/2\\). Then \\(A/q\\) has Seshadri constant below one and effective numerical representative \\(E/q\\) has multiplicity above two. That proof constructs a Seshadri-exceptional curve smooth at \\(\\eta\\), giving \\(A\\cdot C=\\varepsilon(A,\\eta)\\le\\sqrt{A^2}\\). This surface consequence of the proof is stronger than Lemma 1.4, but does not replace the subsequently prescribed higher-dimensional route."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "lemma14-coefficient-two-q",
+      "role": "user",
+      "time": "2026-10-10T21:21:14.192000+08:00",
+      "zh": [
+        "1.4 中取系数二，是否是为了高维推广？"
+      ],
+      "en": [
+        "Was the coefficient two in Lemma 1.4 chosen for a higher-dimensional extension?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "lemma14-coefficient-two-a",
+      "role": "assistant",
+      "time": "2026-10-10T21:21:32.139000+08:00",
+      "zh": [
+        "当前曲面稿中的二来自取 \\(h=\\lceil k\\sqrt{A^2}/2\\rceil\\)，再由 \\(E\\ge hC\\) 得 \\(A\\cdot C\\le(k/h)A^2\\le2\\sqrt{A^2}\\)。它是这一重数估计中的宽松常数，并非已经建立的高维结论。"
+      ],
+      "en": [
+        "The current surface coefficient comes from \\(h=\\lceil k\\sqrt{A^2}/2\\rceil\\): the inequality \\(E\\ge hC\\) yields \\(A\\cdot C\\le(k/h)A^2\\le2\\sqrt{A^2}\\). It is a conservative constant in this multiplicity estimate, not an already established higher-dimensional conclusion."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "higher-dimensional-route-required-q",
+      "role": "user",
+      "time": "2026-10-10T21:21:45.408000+08:00",
+      "zh": [
+        "必须保留原始高维证明路线，二维只是展示它在曲面上的表现。所用的每个引理都应有可用的高维版本。"
+      ],
+      "en": [
+        "Keep the original higher-dimensional proof route, using dimension two only to display its surface behavior. Every lemma used must have an applicable higher-dimensional version."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "higher-dimensional-route-gap-a",
+      "role": "assistant",
+      "time": "2026-10-10T21:22:12.730000+08:00",
+      "zh": [
+        "曲面上基曲线是除子，可以用它在有效除子中的系数控制交数；高维基 locus 可能有更高余维，需要以普通理想幂和局部交重数重建这一步。EKL 的参数微分适用于高维，后续交数接口仍须补齐。"
+      ],
+      "en": [
+        "On a surface a base curve is a divisor, so its coefficient in an effective divisor controls its degree. A higher-dimensional base locus can have larger codimension; the corresponding step must use ordinary ideal powers and local intersection multiplicities. EKL parameter differentiation applies in higher dimension, but the intersection interface must be supplied."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "higher-dimensional-tools-revision-q",
+      "role": "user",
+      "time": "2026-10-10T21:22:26.540000+08:00",
+      "zh": [
+        "请补上这些高维对应步骤。"
+      ],
+      "en": [
+        "Supply these higher-dimensional counterparts."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "threefold-cy-irregularity-zero-q",
+      "role": "user",
+      "time": "2026-10-10T21:25:59.400000+08:00",
+      "zh": [
+        "三维部分在复数域上聚焦于光滑射影 Calabi–Yau 三维簇，满足 \\(K_X\\sim0\\) 和 \\(q(X)=0\\)，并展示原始高维证明在此情形中的具体形式。"
+      ],
+      "en": [
+        "Focus the threefold study over the complex numbers on smooth projective Calabi–Yau threefolds with \\(K_X\\sim0\\) and \\(q(X)=0\\), displaying the original higher-dimensional argument in this setting."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "nonvanishing-only-target-q",
+      "role": "user",
+      "time": "2026-10-10T21:38:58.826000+08:00",
+      "zh": [
+        "只需要证明 non-vanishing，即某个正整数倍 \\(mD\\) 有非零截面。不必要的后续技术不在这里展开。"
+      ],
+      "en": [
+        "The only target is nonvanishing: some positive multiple \\(mD\\) has a nonzero section. Do not expand techniques needed only for stronger subsequent conclusions."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
     }
   ],
   "sourceTheorem": {
