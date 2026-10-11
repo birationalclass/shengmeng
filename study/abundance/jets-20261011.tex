@@ -33,6 +33,11 @@ Let $\Lambda=\mathbb P(V)\subseteq|D|$ be a fixed nonempty linear
 subsystem, where $V\subseteq H^0(X,\mathcal L)$ is a nonzero linear
 subspace. For $x\in X$ and an integer $s\ge0$, the space of $s$-jets of $\mathcal L$
 at $x$ is $\mathcal L_x/\mathfrak m_x^{s+1}\mathcal L_x$.
+Its dimension is
+\[
+ \dim_{\C}(\mathcal L_x/\mathfrak m_x^{s+1}\mathcal L_x)
+ =\binom{n+s}{n}.
+\]
 We say that $\Lambda$ generates, or separates, $s$-jets at $x$ if the restriction
 \[
  V\longrightarrow
@@ -124,16 +129,18 @@ Existence of a high-multiplicity member concerns a nonzero kernel;
 jet generation concerns surjectivity and does not follow from that existence.
 
 \section{One-jets and very ampleness}
+The base locus is $\operatorname{Bs}\Lambda=
+\bigcap_{E\in\Lambda}\operatorname{Supp}(E)$.
 \begin{proposition}
-The system $\Lambda$ generates one-jets at $x$ if and only if it is base-point
-free at $x$ and the sections vanishing at $x$ span
+The system $\Lambda$ generates one-jets at $x$ if and only if  $x\notin\operatorname{Bs}\Lambda$ and the sections vanishing at $x$ span
 $\mathfrak m_x\mathcal L_x/\mathfrak m_x^2\mathcal L_x$.
-Equivalently, in addition to base-point freeness, every nonzero tangent
+Equivalently, in addition to $x\notin\operatorname{Bs}\Lambda$, every nonzero tangent
 vector $v\in T_xX$ admits a section vanishing at $x$ whose derivative
 along $v$ is nonzero.
 \end{proposition}
 \begin{proof}
-The first assertion is the preceding lemma for $j=0,1$.
+The first assertion is the preceding lemma for $j=0,1$: the $j=0$
+condition is precisely $x\notin\operatorname{Bs}\Lambda$.
 After trivializing the fibre, the linear terms form a subspace of
 $T_x^*X$. This subspace is all of $T_x^*X$ precisely when its annihilator
 in $T_xX$ is zero, which is the asserted tangent-vector condition.
