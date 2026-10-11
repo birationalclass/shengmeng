@@ -1,8 +1,8 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2701,
-  "verifiedTheorems": 1961,
+  "audited": 2708,
+  "verifiedTheorems": 1968,
   "definitions": 544,
   "mainTheoremVerified": false,
   "violations": [],
@@ -496,6 +496,29 @@
         "LinearStudy.localized_annihilator_generator_at_equal_primes",
         "LinearStudy.polynomial_quotient_coordinate_actual_zero",
         "LinearStudy.polynomial_quotient_hom_eq_of_coordinates"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.actualProjectiveChartOverlapPullback",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ActualProjectiveChartOverlapPullback.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.actualProjectiveChartOverlapPullback.{u} {K R : Type u} [Field K] [CommRing R] [Algebra K R]\n  (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1)\n  (r : ↑((AlgebraicGeometry.Proj 𝒜).presheaf.obj (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a)))) :\n  let Ua := AlgebraicGeometry.Proj.basicOpen 𝒜 a;\n  let Uab := AlgebraicGeometry.Proj.basicOpen 𝒜 (a * b);\n  have ea := AlgebraicGeometry.Proj.basicOpenIsoSpec 𝒜 a ha LinearStudy.actualProjectiveChartOverlapPullback._proof_1;\n  have eab :=\n    AlgebraicGeometry.Proj.basicOpenIsoSpec 𝒜 (a * b) ⋯ LinearStudy.actualProjectiveChartOverlapPullback._proof_2;\n  have φ := HomogeneousLocalization.awayMap 𝒜 hb ⋯;\n  (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop eab.inv))\n      ((CategoryTheory.ConcreteCategory.hom Uab.topIso.inv)\n        ((CategoryTheory.ConcreteCategory.hom ((AlgebraicGeometry.Proj 𝒜).presheaf.map (CategoryTheory.homOfLE ⋯).op))\n          r)) =\n    (CategoryTheory.ConcreteCategory.hom\n        (AlgebraicGeometry.Scheme.Hom.appTop (AlgebraicGeometry.Spec.map (CommRingCat.ofHom φ))))\n      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop ea.inv))\n        ((CategoryTheory.ConcreteCategory.hom Ua.topIso.inv) r))",
+      "sha256": "328c0b20250702fe77b2f6a121a70f30ae22d3ab4391bb808425b969544e30d5",
+      "lines": 35,
+      "moduleLineCount": 49,
+      "startLine": 14,
+      "endLine": 48,
+      "lineCount": 35,
+      "dependencies": [
+        "LinearStudy.originalProjectiveWeightedChartScalarTransport"
       ]
     },
     {
@@ -20638,6 +20661,39 @@
       ]
     },
     {
+      "declaration": "LinearStudy.nativeActualAffineOverlapHom_original_elements_ext",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeActualAffineOverlapHomOriginalElementsExt.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeActualAffineOverlapHom_original_elements_ext.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1)\n  (h k :\n    ↑((LinearStudy.schemeModuleHomModuleSheaf\n              ((AlgebraicGeometry.Scheme.Modules.pushforward\n                    (AlgebraicGeometry.Spec.map\n                      (CommRingCat.ofHom\n                        (algebraMap (HomogeneousLocalization.Away 𝒜 (a * b))\n                          (HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b))))))).obj\n                (SheafOfModules.unit\n                  (AlgebraicGeometry.Spec ↧(HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b)))).ringCatSheaf))\n              (SheafOfModules.unit\n                (AlgebraicGeometry.Spec ↧(HomogeneousLocalization.Away 𝒜 (a * b))).ringCatSheaf)).presheaf.obj\n        (Opposite.op ⊤)))\n  (H :\n    ∀ (x : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)),\n      let Aij := HomogeneousLocalization.Away 𝒜 (a * b);\n      let Bij := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b));\n      have γ := HomogeneousLocalization.awayMap 𝓑 ⋯ ⋯;\n      (LinearStudy.schemeModuleHomSectionEvaluation\n            ((AlgebraicGeometry.Scheme.Modules.pushforward\n                  (AlgebraicGeometry.Spec.map\n                    (CommRingCat.ofHom\n                      (algebraMap (HomogeneousLocalization.Away 𝒜 (a * b))\n                        (HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b))))))).obj\n              (SheafOfModules.unit\n                (AlgebraicGeometry.Spec ↧(HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b)))).ringCatSheaf))\n            (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(HomogeneousLocalization.Away 𝒜 (a * b))).ringCatSheaf) ⊤ h)\n          ((CategoryTheory.ConcreteCategory.hom\n              (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))\n            ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧Bij ⊤)) (γ x))) =\n        (LinearStudy.schemeModuleHomSectionEvaluation\n            ((AlgebraicGeometry.Scheme.Modules.pushforward\n                  (AlgebraicGeometry.Spec.map\n                    (CommRingCat.ofHom\n                      (algebraMap (HomogeneousLocalization.Away 𝒜 (a * b))\n                        (HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b))))))).obj\n              (SheafOfModules.unit\n                (AlgebraicGeometry.Spec ↧(HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b)))).ringCatSheaf))\n            (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(HomogeneousLocalization.Away 𝒜 (a * b))).ringCatSheaf) ⊤ k)\n          ((CategoryTheory.ConcreteCategory.hom\n              (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))\n            ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧Bij ⊤)) (γ x)))) :\n  h = k",
+      "sha256": "f564aadb8b4c90a92d19db578b7ad8e93e7ffd7b72fb5876791e8eb6e7d920f9",
+      "lines": 55,
+      "moduleLineCount": 77,
+      "startLine": 22,
+      "endLine": 76,
+      "lineCount": 55,
+      "dependencies": [
+        "LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv",
+        "LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv_spec_value",
+        "LinearStudy.actualAffineAlgebraStructurePushforwardIso",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousOverlapSourceBaseAlgebra",
+        "LinearStudy.normalizationHomogeneousOverlapSource_isLocalizedModule",
+        "LinearStudy.normalizationHomogeneousOverlapSource_scalarTower",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalAffineHomBaseModule",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation"
+      ]
+    },
+    {
       "declaration": "LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_add",
       "kind": "theorem",
       "origin": "project",
@@ -22303,6 +22359,59 @@
       ]
     },
     {
+      "declaration": "LinearStudy.nativeDualGlobalHom_original_weighted_overlap_restriction",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeDualGlobalHomOriginalWeightedOverlapRestriction.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeDualGlobalHom_original_weighted_overlap_restriction.{u} {K R S : Type u} [Field K] [CommRing R]\n  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] [IsDomain R] (a b : R)\n  (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1) (hab : a * b ≠ 0) (hinja : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (hinj : Function.Injective ⇑(HomogeneousLocalization.awayMap 𝒜 hb ⋯))\n  (ell : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) 1 a)) :\n  let Ai := HomogeneousLocalization.Away 𝒜 a;\n  let Aij := HomogeneousLocalization.Away 𝒜 (a * b);\n  have D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;\n  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;\n  have N := LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 2 (a * b);\n  have t := HomogeneousLocalization.Away.isLocalizationElem ha hb;\n  have powers := Submonoid.powers t;\n  have rhoD := LinearStudy.nativeGradedDegreeOneOverlapLinearMap 𝒜 𝒟 ⋯ a b ha hb;\n  have E1 :=\n    LinearEquiv.ofEq (LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 1 a)\n        (LinearStudy.nativeGradedModuleAwayZero 𝒜 𝒟 a) ⋯ ≪≫ₗ\n      LinearStudy.finiteNativeDualFullSourceChartEquiv 𝒜 𝓑 a ha hinja;\n  let Bi := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);\n  let Bij := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b));\n  have phi := HomogeneousLocalization.awayMap 𝒜 hb ⋯;\n  have gamma := HomogeneousLocalization.awayMap 𝓑 ⋯ ⋯;\n  have fi := E1 ell;\n  have fij :=\n    (LinearStudy.nativeNormalizationWeightedOverlapDualLinearEquiv 𝒜 𝓑 a b ha hb hab hinja hinj)\n      ((LinearStudy.nativeGradedModuleWeightedOverlapMap 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 1 1 a b ha hb)\n        ell);\n  let PA :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward\n          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap Ai Bi)))).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧Bi).ringCatSheaf);\n  have QA := SheafOfModules.unit (AlgebraicGeometry.Spec ↧Ai).ringCatSheaf;\n  let PT :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward\n          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap Aij Bij)))).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧Bij).ringCatSheaf);\n  have QT := SheafOfModules.unit (AlgebraicGeometry.Spec ↧Aij).ringCatSheaf;\n  have eA := LinearStudy.actualAffineAlgebraStructurePushforwardIso;\n  have eT := LinearStudy.actualAffineAlgebraStructurePushforwardIso;\n  let M :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf);\n  let Q := SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf;\n  have h :=\n    (LinearStudy.nativeDualGlobalHomChartLinearEquiv 𝒜 𝓑 a ha hinja)\n      ((LinearEquiv.ofEq (LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 1 a)\n          (LinearStudy.nativeGradedModuleAwayZero 𝒜 𝒟 a) ⋯)\n        ell);\n  (CategoryTheory.ConcreteCategory.hom\n        ((LinearStudy.schemeModuleHomModuleSheaf M Q).presheaf.map (CategoryTheory.homOfLE ⋯).op))\n      h =\n    (LinearStudy.nativeDualGlobalHomWeightedOverlapLinearEquiv 𝒜 𝓑 a b ha hb hab hinja hinj)\n      ((LinearStudy.nativeGradedModuleWeightedOverlapMap 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 1 1 a b ha hb)\n        ell)",
+      "sha256": "2815ae6946ef02f137de8ebcc36a8027bf628575d0ea5cacc753965ed7964f4e",
+      "lines": 115,
+      "moduleLineCount": 146,
+      "startLine": 31,
+      "endLine": 145,
+      "lineCount": 115,
+      "dependencies": [
+        "LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv",
+        "LinearStudy.actualAffineAlgebraStructurePushforwardIso",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionNormalizationBaseGradeCompatibility",
+        "LinearStudy.finiteNativeDualFullSourceChartEquiv",
+        "LinearStudy.nativeActualAffineOverlapHom_original_elements_ext",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeDualGlobalHomChartLinearEquiv",
+        "LinearStudy.nativeDualGlobalHomChartLinearEquiv_affine_section_value",
+        "LinearStudy.nativeDualGlobalHomWeightedOverlapLinearEquiv",
+        "LinearStudy.nativeDualGlobalHomWeightedOverlapLinearEquiv_affine_section_value",
+        "LinearStudy.nativeGradedDegreeOneOverlapBaseModule",
+        "LinearStudy.nativeGradedDegreeOneOverlapLinearMap",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero_one",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeGradedModuleWeightedOverlapMap",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationGlobalHomChartModule",
+        "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv",
+        "LinearStudy.nativeNormalizationGlobalWeightedHomChartModule",
+        "LinearStudy.nativeNormalizationGlobalWeightedHom_original_overlap_values",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeNormalizationWeightedOverlapDualLinearEquiv",
+        "LinearStudy.nativeWeightedAffineInternalHomValueNaturality",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalAffineHomBaseModule",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation"
+      ]
+    },
+    {
       "declaration": "LinearStudy.nativeDualGlobalHomWeightedOverlapLinearEquiv",
       "kind": "def",
       "origin": "project",
@@ -22880,6 +22989,67 @@
         "LinearStudy.nativeGradedModuleAwayZero",
         "LinearStudy.nativeHomogeneousAwayModuleScalar",
         "LinearStudy.normalizationHomogeneousSourceChartAlgebra"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationGlobalHom_weighted_overlap_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGlobalHomWeightedOverlapEvaluation.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationGlobalHom_weighted_overlap_evaluation.{u} {K R S : Type u} [Field K] [CommRing R]\n  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a b : R) (ha : a ∈ 𝒜 1)\n  (hb : b ∈ 𝒜 1)\n  (h :\n    ↑((LinearStudy.schemeModuleHomModuleSheaf\n              ((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n                (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf))\n              (SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf)).presheaf.obj\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a))))\n  (x : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :\n  let M :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf);\n  let N := SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf;\n  have i := CategoryTheory.homOfLE ⋯;\n  have γ := HomogeneousLocalization.awayMap 𝓑 ⋯ ⋯;\n  (LinearStudy.schemeModuleHomSectionEvaluation M N (AlgebraicGeometry.Proj.basicOpen 𝒜 (a * b))\n        ((CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.map i.op)) h))\n      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) (a * b))))\n        (γ x)) =\n    (CategoryTheory.ConcreteCategory.hom (N.presheaf.map i.op))\n      ((LinearStudy.schemeModuleHomSectionEvaluation M N (AlgebraicGeometry.Proj.basicOpen 𝒜 a) h)\n        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a))) x))",
+      "sha256": "450a53c920c0a2af8347ff978701bf8a832ccc1e0a4b71ca5d2791631613ce71",
+      "lines": 36,
+      "moduleLineCount": 120,
+      "startLine": 26,
+      "endLine": 61,
+      "lineCount": 36,
+      "dependencies": [
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation",
+        "LinearStudy.schemeModuleHomSectionEvaluation_restrict"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationGlobalWeightedHom_original_overlap_values",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGlobalHomWeightedOverlapEvaluation.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationGlobalWeightedHom_original_overlap_values.{u} {K R S : Type u} [Field K] [CommRing R]\n  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a b : R) (ha : a ∈ 𝒜 1)\n  (hb : b ∈ 𝒜 1)\n  (h :\n    ↑((LinearStudy.schemeModuleHomModuleSheaf\n              ((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n                (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf))\n              (SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf)).presheaf.obj\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a))))\n  (x : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :\n  let M :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf);\n  let N := SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf;\n  have i := CategoryTheory.homOfLE ⋯;\n  have φ := HomogeneousLocalization.awayMap 𝒜 hb ⋯;\n  have γ := HomogeneousLocalization.awayMap 𝓑 ⋯ ⋯;\n  let Ai := HomogeneousLocalization.Away 𝒜 a;\n  let Aij := HomogeneousLocalization.Away 𝒜 (a * b);\n  let Bi := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);\n  let Bij := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b));\n  let PA :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward\n          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap Ai Bi)))).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧Bi).ringCatSheaf);\n  let QA := SheafOfModules.unit (AlgebraicGeometry.Spec ↧Ai).ringCatSheaf;\n  let PT :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward\n          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap Aij Bij)))).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧Bij).ringCatSheaf);\n  let QT := SheafOfModules.unit (AlgebraicGeometry.Spec ↧Aij).ringCatSheaf;\n  have eA := LinearStudy.actualAffineAlgebraStructurePushforwardIso;\n  have eT := LinearStudy.actualAffineAlgebraStructurePushforwardIso;\n  (LinearStudy.schemeModuleHomSectionEvaluation PT QT ⊤\n        ((LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv 𝒜 𝓑 2\n            LinearStudy.nativeNormalizationGlobalWeightedHom_original_overlap_values._proof_1 (a * b) ⋯)\n          ((CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.map i.op)) h)))\n      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app eT.hom ⊤))\n        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧Bij ⊤)) (γ x))) =\n    (CategoryTheory.ConcreteCategory.hom\n        (AlgebraicGeometry.Scheme.Hom.appTop (AlgebraicGeometry.Spec.map (CommRingCat.ofHom φ))))\n      ((LinearStudy.schemeModuleHomSectionEvaluation PA QA ⊤\n          ((LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv 𝒜 𝓑 1\n              LinearStudy.nativeNormalizationGlobalWeightedHom_original_overlap_values._proof_2 a ha)\n            h))\n        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app eA.hom ⊤))\n          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧Bi ⊤)) x)))",
+      "sha256": "450a53c920c0a2af8347ff978701bf8a832ccc1e0a4b71ca5d2791631613ce71",
+      "lines": 58,
+      "moduleLineCount": 120,
+      "startLine": 62,
+      "endLine": 119,
+      "lineCount": 58,
+      "dependencies": [
+        "LinearStudy.actualAffineAlgebraStructurePushforwardIso",
+        "LinearStudy.actualProjectiveChartOverlapPullback",
+        "LinearStudy.nativeNormalizationGlobalHom_weighted_overlap_evaluation",
+        "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv",
+        "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSections_original_section_chart_pullback",
+        "LinearStudy.nativeNormalizationGlobalWeightedHomChartModule",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalAffineHomBaseModule",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation"
       ]
     },
     {
@@ -31160,6 +31330,77 @@
         "LinearStudy.originalAffineHomBaseModule",
         "LinearStudy.schemeModuleHomModuleSheaf",
         "LinearStudy.schemeModuleHomSectionEvaluation"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationGlobalWeightedHom_degree_one_value",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeWeightedHomDegreeOneValues.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationGlobalWeightedHom_degree_one_value.{u} {K R S : Type u} [Field K] [CommRing R]\n  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (h :\n    ↑((LinearStudy.schemeModuleHomModuleSheaf\n              ((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n                (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf))\n              (SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf)).presheaf.obj\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a)))) :\n  (LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv 𝒜 𝓑 1\n        LinearStudy.nativeNormalizationGlobalWeightedHom_degree_one_value._proof_1 a ha)\n      h =\n    (LinearStudy.nativeNormalizationGlobalAffineHomSectionsLinearEquiv 𝒜 𝓑 a ha) h",
+      "sha256": "fd5dec229428a1592ff1e727e0d17587ec904c96d01144074c56fe6a18a7381a",
+      "lines": 9,
+      "moduleLineCount": 54,
+      "startLine": 29,
+      "endLine": 37,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.nativeNormalizationGlobalAffineHomSectionsLinearEquiv",
+        "LinearStudy.nativeNormalizationGlobalHomChartModule",
+        "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv",
+        "LinearStudy.nativeNormalizationGlobalWeightedHomChartModule",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalAffineHomBaseModule",
+        "LinearStudy.schemeModuleHomModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeDualGlobalHomChartLinearEquiv_affine_section_value",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeWeightedHomDegreeOneValues.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeDualGlobalHomChartLinearEquiv_affine_section_value.{u} {K R S : Type u} [Field K] [CommRing R]\n  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a)) :\n  (LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv 𝒜 𝓑 1\n        LinearStudy.nativeNormalizationGlobalWeightedHom_degree_one_value._proof_1 a ha)\n      ((LinearStudy.nativeDualGlobalHomChartLinearEquiv 𝒜 𝓑 a ha hinj) ell) =\n    LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv\n      ((LinearStudy.finiteNativeDualFullSourceChartEquiv 𝒜 𝓑 a ha hinj) ell)",
+      "sha256": "fd5dec229428a1592ff1e727e0d17587ec904c96d01144074c56fe6a18a7381a",
+      "lines": 15,
+      "moduleLineCount": 54,
+      "startLine": 39,
+      "endLine": 53,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv",
+        "LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv_eq_native",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.finiteNativeDualFullSourceChartEquiv",
+        "LinearStudy.nativeAffineInternalHomSectionsLinearEquiv",
+        "LinearStudy.nativeCoextensionNormalizationBaseModule",
+        "LinearStudy.nativeDualGlobalHomChartLinearEquiv",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationGlobalAffineHomSectionsLinearEquiv",
+        "LinearStudy.nativeNormalizationGlobalHomChartModule",
+        "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv",
+        "LinearStudy.nativeNormalizationGlobalWeightedHomChartModule",
+        "LinearStudy.nativeNormalizationGlobalWeightedHom_degree_one_value",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalAffineHomBaseModule",
+        "LinearStudy.schemeModuleHomModuleSheaf"
       ]
     },
     {
