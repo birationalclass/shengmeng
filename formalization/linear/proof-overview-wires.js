@@ -1,4 +1,4 @@
-import {visibleOverviewEdges} from './proof-overview-model.js?v=20261011-linear-92';
+import {visibleOverviewEdges} from './proof-overview-model.js?v=20261011-linear-93';
 
 export function drawOverviewWires({scene,wires,deck,target,model,scale,english,escapeHTML}){
   const screen=scene.getBoundingClientRect(),cards=new Map();
