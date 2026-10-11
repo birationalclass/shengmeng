@@ -1671,6 +1671,16 @@ set_option pp.proofs false
 #print axioms LinearStudy.sourceModuleBaseCoordinateOverlap_refinement
 #check LinearStudy.moduleBaseSourceLocalizationEquiv_overlap_refinement
 #print axioms LinearStudy.moduleBaseSourceLocalizationEquiv_overlap_refinement
+#check LinearStudy.schemeModulePushforwardOpenRestrictionIso_hom_app
+#print axioms LinearStudy.schemeModulePushforwardOpenRestrictionIso_hom_app
+#check LinearStudy.schemeModuleRestrictFunctorAdjCounitIso_hom_app
+#print axioms LinearStudy.schemeModuleRestrictFunctorAdjCounitIso_hom_app
+#check LinearStudy.schemeModuleRestrictFunctorAdjCounitIso_inv_app
+#print axioms LinearStudy.schemeModuleRestrictFunctorAdjCounitIso_inv_app
+#check LinearStudy.schemeModuleRestrictMap_app
+#print axioms LinearStudy.schemeModuleRestrictMap_app
+#check LinearStudy.schemeModuleIsoPushforwardRestriction_hom_app
+#print axioms LinearStudy.schemeModuleIsoPushforwardRestriction_hom_app
 #check LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_add
 #print axioms LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_add
 #check LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_smul
@@ -2003,6 +2013,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.nativeNormalizationProjectiveMap_weighted_chart_restriction
 #check LinearStudy.nativeNormalizationProjectiveMap_overlap_chart_square
 #print axioms LinearStudy.nativeNormalizationProjectiveMap_overlap_chart_square
+#check LinearStudy.nativeNormalizationPushforwardWeightedStructureChartIso_top_value
+#print axioms LinearStudy.nativeNormalizationPushforwardWeightedStructureChartIso_top_value
 #check LinearStudy.nativeCoextensionNormalizationBase_isTorsionFree
 #print axioms LinearStudy.nativeCoextensionNormalizationBase_isTorsionFree
 #check LinearStudy.nativeNormalizationWeightedOverlapDualLinearEquiv
@@ -4431,6 +4443,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.transcendental_scaled_power
 #check LinearStudy.transcendental_of_scaling_orbit
 #print axioms LinearStudy.transcendental_of_scaling_orbit
+#check LinearStudy.schemeIsoAppIsoTopHom
+#print axioms LinearStudy.schemeIsoAppIsoTopHom
 #check LinearStudy.schemeModuleAffineRestrictionIso
 #print axioms LinearStudy.schemeModuleAffineRestrictionIso
 #check LinearStudy.schemeModuleChartPushforwardRestrictionIso
@@ -4757,6 +4771,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.stableField_image_finrank_and_finite
 #check LinearStudy.structureModuleCompositeChartValue
 #print axioms LinearStudy.structureModuleCompositeChartValue
+#check LinearStudy.structurePushforwardChartIso
+#print axioms LinearStudy.structurePushforwardChartIso
+#check LinearStudy.structurePushforwardChartTopValueDirect
+#print axioms LinearStudy.structurePushforwardChartTopValueDirect
+#check LinearStudy.schemeModuleRestrictUnitIso_value
+#print axioms LinearStudy.schemeModuleRestrictUnitIso_value
 #check LinearStudy.equationIdeal
 #print axioms LinearStudy.equationIdeal
 #check LinearStudy.relativeJacobian

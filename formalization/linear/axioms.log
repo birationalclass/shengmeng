@@ -5222,6 +5222,35 @@ LinearStudy.moduleBaseSourceLocalizationEquiv_overlap_refinement.{u} {R S M : Ty
 'LinearStudy.moduleBaseSourceLocalizationEquiv_overlap_refinement' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.schemeModulePushforwardOpenRestrictionIso_hom_app.{u} {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  (U : Y.Opens) (M : X.Modules) (W : (↑U).Opens) :
+  AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModulePushforwardOpenRestrictionIso f U M).hom W =
+    M.presheaf.map (CategoryTheory.eqToHom ⋯).op
+'LinearStudy.schemeModulePushforwardOpenRestrictionIso_hom_app' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleRestrictFunctorAdjCounitIso_hom_app.{u} {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  [AlgebraicGeometry.IsOpenImmersion f] (M : X.Modules) (W : X.Opens) :
+  AlgebraicGeometry.Scheme.Modules.Hom.app ((AlgebraicGeometry.Scheme.Modules.restrictFunctorAdjCounitIso f).hom.app M)
+      W =
+    M.presheaf.map (CategoryTheory.eqToHom ⋯).op
+'LinearStudy.schemeModuleRestrictFunctorAdjCounitIso_hom_app' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleRestrictFunctorAdjCounitIso_inv_app.{u} {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  [AlgebraicGeometry.IsOpenImmersion f] (M : X.Modules) (W : X.Opens) :
+  AlgebraicGeometry.Scheme.Modules.Hom.app ((AlgebraicGeometry.Scheme.Modules.restrictFunctorAdjCounitIso f).inv.app M)
+      W =
+    M.presheaf.map (CategoryTheory.eqToHom ⋯).op
+'LinearStudy.schemeModuleRestrictFunctorAdjCounitIso_inv_app' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleRestrictMap_app.{u} {A B : AlgebraicGeometry.Scheme} (q : A ⟶ B)
+  [AlgebraicGeometry.IsOpenImmersion q] {M N : B.Modules} (k : M ⟶ N) (W : A.Opens) :
+  AlgebraicGeometry.Scheme.Modules.Hom.app ((AlgebraicGeometry.Scheme.Modules.restrictFunctor q).map k) W =
+    AlgebraicGeometry.Scheme.Modules.Hom.app k ((AlgebraicGeometry.Scheme.Hom.opensFunctor q).obj W)
+'LinearStudy.schemeModuleRestrictMap_app' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleIsoPushforwardRestriction_hom_app.{u} {X Y : AlgebraicGeometry.Scheme} (e : X ≅ Y)
+  (M : X.Modules) (W : Y.Opens) :
+  AlgebraicGeometry.Scheme.Modules.Hom.app ((LinearStudy.schemeModuleIsoPushforwardRestriction e).hom.app M) W =
+    M.presheaf.map (CategoryTheory.eqToHom ⋯).op
+'LinearStudy.schemeModuleIsoPushforwardRestriction_hom_app' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.nativeFullSourceAffinePushforwardDualEquiv_add.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
   [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
   (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
@@ -6757,6 +6786,28 @@ LinearStudy.nativeNormalizationProjectiveMap_overlap_chart_square.{u} {K R S : T
       (AlgebraicGeometry.Proj.awayι 𝒜 (a * b) ⋯
         LinearStudy.nativeNormalizationProjectiveMap_overlap_chart_square._proof_1)
 'LinearStudy.nativeNormalizationProjectiveMap_overlap_chart_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.nativeNormalizationPushforwardWeightedStructureChartIso_top_value.{u} {K R S : Type u} [Field K]
+  [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R)
+  [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (d : ℕ)
+  (hd : 0 < d) (a : R) (ha : a ∈ 𝒜 d)
+  (r :
+    ↑(((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj
+              (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf)).presheaf.obj
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a)))) :
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app
+          (LinearStudy.nativeNormalizationPushforwardWeightedStructureChartIso 𝒜 𝓑 d hd a ha).hom ⊤))
+      ((CategoryTheory.ConcreteCategory.hom
+          (((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj
+                  (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf)).presheaf.map
+            (CategoryTheory.eqToHom ⋯).op))
+        r) ≍
+    (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Hom.appTop (AlgebraicGeometry.Proj.basicOpenIsoSpec 𝓑 ((algebraMap R S) a) ⋯ hd).inv))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.basicOpen 𝓑 ((algebraMap R S) a)).topIso.inv) r)
+'LinearStudy.nativeNormalizationPushforwardWeightedStructureChartIso_top_value' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.nativeCoextensionNormalizationBase_isTorsionFree.{u} {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
@@ -17723,6 +17774,11 @@ LinearStudy.transcendental_of_scaling_orbit.{u_1, u_2} {k : Type u_1} {F : Type 
   (hfix : ∀ (N : ℕ), ∀ a ∈ E, (Φ N) a = a) (hscale : ∀ (N : ℕ), (Φ N) t = (algebraMap k F) ↑(N + 1) * t) :
   Transcendental (↥E) t
 'LinearStudy.transcendental_of_scaling_orbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeIsoAppIsoTopHom.{u} {X Y : AlgebraicGeometry.Scheme} (e : X ≅ Y) :
+  (AlgebraicGeometry.Scheme.Hom.appIso e.hom ⊤).hom =
+    CategoryTheory.CategoryStruct.comp (Y.presheaf.map (CategoryTheory.eqToHom ⋯).op)
+      (AlgebraicGeometry.Scheme.Hom.appTop e.hom)
+'LinearStudy.schemeIsoAppIsoTopHom' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.schemeModuleAffineRestrictionIso.{u} {X : AlgebraicGeometry.Scheme} (M : X.Modules) (U : X.Opens)
   (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R) :
   (M.restrict U.ι).restrict e.inv ≅ M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι)
@@ -19197,6 +19253,38 @@ LinearStudy.structureModuleCompositeChartValue.{u} {X Y Z : AlgebraicGeometry.Sc
           (AlgebraicGeometry.Scheme.Hom.appIso g ((AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj W)).hom)
         r)
 'LinearStudy.structureModuleCompositeChartValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.structurePushforwardChartIso.{u} {X Y S T : AlgebraicGeometry.Scheme} (f : X ⟶ Y) (U : Y.Opens)
+  (a : ↑((TopologicalSpace.Opens.map f.base).obj U) ≅ S) (b : ↑U ≅ T) (g : S ⟶ T)
+  (hsquare : f ∣_ U = CategoryTheory.CategoryStruct.comp a.hom (CategoryTheory.CategoryStruct.comp g b.inv)) :
+  ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf)).restrict
+      (CategoryTheory.CategoryStruct.comp b.inv U.ι) ≅
+    (AlgebraicGeometry.Scheme.Modules.pushforward g).obj (SheafOfModules.unit S.ringCatSheaf)
+'LinearStudy.structurePushforwardChartIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.structurePushforwardChartTopValueDirect.{u} {X Y S T : AlgebraicGeometry.Scheme} (f : X ⟶ Y) (U : Y.Opens)
+  (a : ↑((TopologicalSpace.Opens.map f.base).obj U) ≅ S) (b : ↑U ≅ T) (g : S ⟶ T)
+  (hsquare : f ∣_ U = CategoryTheory.CategoryStruct.comp a.hom (CategoryTheory.CategoryStruct.comp g b.inv))
+  (r :
+    ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf)).presheaf.obj
+        (Opposite.op U))) :
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.structurePushforwardChartIso f U a b g hsquare).hom ⊤))
+      ((CategoryTheory.ConcreteCategory.hom
+          (((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf)).presheaf.map
+            (CategoryTheory.eqToHom ⋯).op))
+        r) ≍
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop a.inv))
+      ((CategoryTheory.ConcreteCategory.hom ((TopologicalSpace.Opens.map f.base).obj U).topIso.inv)
+        (have this := r;
+        this))
+'LinearStudy.structurePushforwardChartTopValueDirect' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleRestrictUnitIso_value.{u} {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  [AlgebraicGeometry.IsOpenImmersion f] (W : X.Opens)
+  (r : ↑(Y.presheaf.obj (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj W)))) :
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (AlgebraicGeometry.Scheme.Modules.restrictUnitIso f).hom W))
+      r =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appIso f W).hom) r
+'LinearStudy.schemeModuleRestrictUnitIso_value' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.equationIdeal {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) : Ideal (LinearStudy.AmbientRing r c)
 'LinearStudy.equationIdeal' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.relativeJacobian {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) : LinearStudy.CompleteIntersection H

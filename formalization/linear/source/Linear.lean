@@ -1171,3 +1171,9 @@ public import Linear.SchemeModuleHomCompositeEvaluation
 public import Linear.SchemeModuleHomAffineTransportEvaluation
 public import Linear.ActualAffineAlgebraDualEvaluationExt
 public import Linear.StructureModuleCompositeChartValue
+public import Linear.StructurePushforwardChartIso
+public import Linear.ModuleChartTransportComponents
+public import Linear.StructureUnitMapValue
+public import Linear.SchemeIsoTopPullback
+public import Linear.StructurePushforwardChartTopValueDirect
+public import Linear.NativeNormalizationWeightedChartTopValue
