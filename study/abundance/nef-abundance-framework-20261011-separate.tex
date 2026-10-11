@@ -98,30 +98,175 @@ integer $k>0$ with $kR_{n,s}$ Cartier.
 
 \medskip
 \noindent\textbf{Proof outline for Lemma~\ref{lem:full-jets}.}
-The proof has five steps.
+Write $P=P_n$ and $R=R_{n,s}$. A fourfold slice is
+$Z_{\rm sl}=\mathbb P(\OO_X\oplus\OO_X(D))$, with
+$R_{\rm sl}=P+s\xi$. The proof has five steps.
 \begin{enumerate}
-\item Apply the projective-bundle calculation in
-Lemma~\ref{lem:bundle-volume} to bound $R_{n,s}^7$ and the
-fourfold slice volumes.
-\item Suppose no point of $U$ has Seshadri constant greater than $8$.
-The moving-kernel construction produces base components $V$ with
-high multiplicity. Lemma~\ref{lem:hd-base-degree} bounds their degrees;
-finite subadjunction and Lemma~\ref{lem:canonical-centre} bound their
-canonical intersections. These are assembled in
-Lemma~\ref{lem:sevenfold-centres}, including the corresponding slice bounds.
-\item Apply the lower-dimensional induction consequence
-(Lemma~\ref{lem:lower-dimensional}) and the curve bound
-(Lemma~\ref{lem:bounded-curves}) to exclude positive-dimensional
-projection fibres. The remaining components are threefold
-correspondences, generically finite over both factors of $X\times X$
-(Lemma~\ref{lem:finite-correspondences}).
-\item Exclude moving branch divisors and obtain finitely many Stein
-covers. The graph argument reduces the remaining family to an abelian
-model. Lemma~\ref{lem:bounded-correspondence-exclusion} then bounds
-$r_n$ independently of $n$, contradicting $r_n\to\infty$.
-\item Hence $\varepsilon(R_{n,s};z)>8$ for some $z\in U$.
-Serre vanishing on the blowup at $z$ gives separation of $8k$-jets
-for sufficiently divisible $k$.
+\item \emph{Volumes.} Lemma~\ref{lem:bundle-volume} gives
+\[
+ \begin{split}
+ R^7&=140\int_0^s(P+aD)^3(P+(s-a)D)^3\,da
+       \longrightarrow140s\epsilon^6,\\
+ R_{\rm sl}^4&=4\int_0^s(P+aD)^3\,da
+       \longrightarrow4s\epsilon^3.
+ \end{split}
+\]
+Fix $\delta=8\epsilon$ and $\tau_i=9+i\delta$ for $0\le i\le7$.
+Choose an integer $s>0$ with $\tau_7^7<70s\epsilon^6$. For $n\gg0$,
+\[
+ \tau_7^7<R^7<280s\epsilon^6,\qquad
+ R_{\rm sl}^4<8s\epsilon^3.
+\]
+The constants below are independent of $n$.
+
+\item \emph{Base components.} Suppose
+$\varepsilon(R;z)\le8$ for every $z\in U$. Since $R^7>\tau_7^7$,
+asymptotic Riemann--Roch gives, for sufficiently divisible $k$,
+\[
+ H^0(Z,\OO_Z(kR)\otimes\mathfrak m_z^{\lceil k\tau_i\rceil})
+ \ne0\qquad(0\le i\le7).
+\]
+Lemma~\ref{lem:full-kernels} produces a covering family of proper
+base components $V\subset Z$, of dimension $f$, with
+\[
+ \mathfrak b\subset I_V^h,\qquad
+ h=\lceil k\delta/2\rceil,\qquad k/h\le2/\delta.
+\]
+The base-locus inequality and finite subadjunction give
+\[
+ \begin{split}
+ h^{7-f}(kR)^f\cdot V&\le(kR)^7,\\
+ 0<R^f\cdot V&\le(2/\delta)^{7-f}R^7,\\
+ K_{V^*}\cdot R^{f-1}
+   &\le\frac{2(7-f)}{\delta}R^f\cdot V.
+ \end{split}
+\]
+Here $V^*$ is a smooth resolution; the last inequality uses
+$K_Z\sim-S_1-S_2$ and $V\cap U\ne\varnothing$.
+For a general fibre component $F$ of either projection, put
+$d_F=\dim F$. When $1\le d_F\le3$, the restricted system gives
+\[
+ \begin{split}
+ 0<R_{\rm sl}^{d_F}\cdot F
+   &\le(2/\delta)^{4-d_F}R_{\rm sl}^4,\\
+ K_{F^*}\cdot R_{\rm sl}^{d_F-1}
+   &\le(K_{Z_{\rm sl}}+c_{d_F}R_{\rm sl})|_F
+                   \cdot R_{\rm sl}^{d_F-1},\\
+ 0<c_{d_F}&\le2(4-d_F)/\delta.
+ \end{split}
+\]
+These are precisely Lemma~\ref{lem:sevenfold-centres}.
+
+\item \emph{Exclude projection fibres.} For a smooth $Y$ of dimension
+$1\le f\le3$, nef rational Cartier $P$, nef Cartier $L$ with
+$\nef(Y,L)=f$, and a reduced simple-normal-crossing divisor $B_0$
+(possibly zero), Lemma~\ref{lem:bounded-curves} gives
+\[
+ \left.
+ \begin{gathered}
+ 0<P^f\le C_0,\quad P-rL\text{ nef},\quad
+ K_Y+B_0+L\text{ big},\\
+ (K_Y+B_0+L)\cdot P^{f-1}\le C_1P^f
+ \end{gathered}
+ \right\}
+ \quad\Longrightarrow\quad
+ r\le(m_fC_1)^{f-1}C_0.
+\]
+For fibres generically finite over a subvariety of dimension less
+than $3$, Lemma~\ref{lem:lower-dimensional} supplies the bigness
+needed here. For $f=\dim F=1,2$ and $r_n\ge1$, the slice inequalities give
+\[
+ r_n\le\left[m_f\left(\frac{2(4-f)}\delta+1\right)\right]^{f-1}
+       (2/\delta)^{4-f}\,8s\epsilon^3.
+\]
+For a saturated projective-line fibre, the zero-dimensional base gives
+\[
+ s\le(2/\delta)^3R_{\rm sl}^4
+       <(2/\delta)^3\,8s\epsilon^3=s/8.
+\]
+For a saturated slice over $W_0$ of dimension $w=1,2$, one has
+\[
+ \begin{split}
+ (w+1)sP^w\cdot W_0
+   &\le R_{\rm sl}^{w+1}\cdot F\le7sP^w\cdot W_0,\\
+ K_{W_0^*}\cdot P^{w-1}
+   &\le\frac{7c_{w+1}}w P^w\cdot W_0.
+ \end{split}
+\]
+Together with the slice degree bound, this gives, for $w=1,2$,
+\[
+ r_n\le\left[m_w\left(\frac{14(3-w)}{w\delta}+1\right)\right]^{w-1}
+       \frac{(2/\delta)^{3-w}\,8\epsilon^3}{w+1}.
+\]
+For a multisection over $X$, its axis divisor $G$ satisfies
+\[
+ G\cdot P^2\le\frac2s R_{\rm sl}^3\cdot F
+                 <32\epsilon^3/\delta,
+ \qquad D\cdot P^2\le P^3/r_n.
+\]
+On the boundary model of Lemma~\ref{lem:multisection-slices},
+$K_Y+B_0+a^*D$ is big and, for $r_n\ge1$,
+\[
+ (K_Y+B_0+a^*D)\cdot(a^*P)^2
+ \le(64/\delta+1)P^3,
+ \qquad
+ r_n\le m_3^2(64/\delta+1)^2\,2\epsilon^3.
+\]
+All these bounds contradict $r_n\to\infty$.
+Lemma~\ref{lem:finite-correspondences} therefore leaves only
+threefold correspondences. With $g_i:Y\to X$, $P_Y=\rho^*(R|_V)$,
+and $C_0=(2/\delta)^4\,280s\epsilon^6$, their bounds are
+\[
+ \begin{gathered}
+ 0<P_Y^3\le C_0,\qquad
+ K_Y\cdot P_Y^2\le(8/\delta)P_Y^3,\\
+ P_Y-r_ng_i^*D\text{ nef},\qquad
+ \deg g_i\le2C_0/\epsilon^3\quad(i=1,2).
+ \end{gathered}
+\]
+
+\item \emph{Exclude correspondences.} A moving branch image
+$J\subset X$ would satisfy
+\[
+ \begin{split}
+ 0<d_J:=P^2\cdot J&\le(8/\delta)C_0,\\
+ K_{J^*}\cdot P&\le J^2\cdot P
+       \le\frac{d_J^2}{P^3}
+       \le\frac{16C_0}{\delta\epsilon^3}d_J.
+ \end{split}
+\]
+The two-dimensional induction consequence and the curve bound
+exclude such moving branch images. Thus the Stein covers are
+\'etale over a fixed open subset and have bounded degree, so
+Lemma~\ref{lem:finite-stein-covers} gives finite lists.
+The graph argument of Lemma~\ref{lem:bounded-correspondence-exclusion}
+then gives an abelian model and $K_Y+g_1^*D$ big. Since
+\[
+ (K_Y+g_1^*D)\cdot P_Y^2
+       \le(8/\delta+1/r_n)P_Y^3,
+\]
+that lemma yields the final uniform bound
+\[
+ r_n\le\max\{1,m_3^2(8/\delta+1)^2C_0\},
+\]
+contradicting $r_n\to\infty$.
+
+\item \emph{Separate jets.} Hence some $z\in U$ satisfies
+$\varepsilon(R;z)>8$. Choose rational $8<a<\varepsilon(R;z)$.
+For the blowup $b:\widetilde Z\to Z$ at $z$, with exceptional
+divisor $E_z$, the divisor $b^*R-aE_z$ is ample. For large
+divisible $k$, with $ka\in\mathbb Z$ and $ka\ge8k+1$, Serre vanishing gives
+\[
+ H^1(\widetilde Z,\OO_{\widetilde Z}(kb^*R-kaE_z))
+ =H^1(Z,\OO_Z(kR)\otimes\mathfrak m_z^{ka})=0.
+\]
+The ideal-sheaf exact sequence therefore gives
+\[
+ \forall u\in\OO_{Z,z}(kR)\quad
+ \exists\sigma\in H^0(Z,\OO_Z(kR)):\quad
+ \sigma_z-u\in\mathfrak m_z^{8k+1}\OO_{Z,z}(kR).
+\]
+This is the required separation of $8k$-jets.
 \end{enumerate}
 
 \medskip
