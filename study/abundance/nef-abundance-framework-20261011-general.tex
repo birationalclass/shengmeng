@@ -1,0 +1,269 @@
+\documentclass[12pt,a4paper,psamsfonts]{amsart}
+\usepackage{amssymb,mathtools}
+\usepackage{calc}
+\setlength{\topmargin}{0cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+\setlength{\marginparwidth}{0cm}
+\setlength{\marginparsep}{0cm}
+\setlength{\textheight}{\paperheight - 2in - 35pt}
+\setlength{\textwidth}{\paperwidth - 2in}
+\setlength{\headheight}{12.5pt}
+\setlength{\headsep}{25pt}
+\setlength{\footskip}{30pt}
+\renewcommand{\baselinestretch}{1.3}
+\pagestyle{headings}
+\raggedbottom
+\setlength{\emergencystretch}{2em}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
+\newtheorem*{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem*{setup}{Setup}
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}[lemma]{Proposition}
+\newtheorem{corollary}[lemma]{Corollary}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\C}{\mathbb C}
+\newcommand{\OO}{\mathcal O}
+\newcommand{\mult}{\operatorname{mult}}
+\newcommand{\nef}{\operatorname{n}}
+
+\usepackage{tikz-cd}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\PP}{\mathbb P}
+\DeclareMathOperator{\Pic}{Pic}
+\DeclareMathOperator{\Supp}{Supp}
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\vol}{vol}
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\Bir}{Bir}
+\DeclareMathOperator{\codim}{codim}
+\def\UrlBreaks{\do\/\do-\do.}
+\title{Nef Adjoint Divisors: Framework -- General Dimension}
+\date{Temporary draft -- October 11, 2026}
+\begin{document}
+\maketitle
+
+
+\section{Theorem and proof}
+
+Fix an integer $d\ge2$. We use the following source inputs,
+denoted collectively by $(\mathsf I_d)$.
+\begin{itemize}
+\setlength{\itemsep}{2pt}
+\setlength{\parsep}{0pt}
+\item For every projective klt $\Q$-pair $(Y,B)$ of dimension
+$j<d$ and every nef rational Cartier divisor $M$, if $K_Y+B$ is
+pseudo-effective and, for some $a\in\Q_{>0}$,
+\[
+ (K_Y+B+aM)\cdot C>0
+\]
+for every integral curve through a sufficiently very general point,
+then $K_Y+B+cM$ is big for every $c\in\Q_{>0}$.
+\item Every projective log canonical $\Q$-pair of dimension at most
+$d$ with nef adjoint has semiample adjoint.
+\item Every projective $\Q$-factorial generalized klt $\Q$-pair of
+dimension at most $d$, with fixed nef rational Cartier b-divisor
+data and pseudo-effective adjoint, admits a terminating choice of
+minimal-model program with a nef endpoint. The program extracts no
+divisors, preserves $\Q$-factorial generalized klt models, and on a
+common resolution the initial adjoint equals the final adjoint plus
+an effective divisor exceptional over the final model.
+\end{itemize}
+The first input is $(P_j)$ of \cite[Section~3.1]{NS}. The last two
+are the companion inputs used in \cite[Section~2]{NS}.
+
+\begin{theorem}
+Assume $(\mathsf I_d)$. Let $X$ be a projective klt variety over
+$\C$ of dimension $d$, with $K_X$ pseudo-effective. Let $D$ be a
+nef $\Q$-Cartier divisor such that
+\[
+ L:=K_X+D\quad\text{is nef},\qquad \nef(X,L)=d.
+\]
+Then $L$ is big.
+\end{theorem}
+
+\begin{proof}
+Suppose that $L$ is not big. Since $L$ is nef, $L^d=0$.
+After a small projective $\Q$-factorialization, we may assume
+that $X$ is $\Q$-factorial. The pullbacks of $K_X,D,L$ retain
+the stated properties. Every integral curve through a very
+general point of $X$ has positive $L$-degree.
+
+\medskip
+\noindent\emph{Adjoint reduction.}
+The minimal-model and abundance inputs give $\kappa(K_X)\ge0$.
+If $\kappa(K_X)>0$, the positive-Iitaka-dimension reduction in
+\cite[Section~3.3]{NS}, using $(P_j)$ for $j<d$, makes $L$ big,
+a contradiction. Thus $\kappa(K_X)=0$.
+
+The two-nef-model lemma of \cite[Section~3.2]{NS} gives a
+birational contraction $X\dashrightarrow Y$ and $s_0\in\Q_{>0}$
+such that $Y$ is projective, $\Q$-factorial and klt,
+\[
+ K_Y\sim_{\Q}0,\qquad
+ N\text{ is nef},\qquad \nef(Y,N)=d,
+\]
+where $N$ is the transform of $D$. On a common smooth resolution
+$X\xleftarrow{p}V\xrightarrow{q}Y$, there is an effective
+$q$-exceptional $\Q$-divisor $F$ such that
+\[
+ p^*(K_X+s_0D)=q^*(K_Y+s_0N)+F.
+\]
+The divisor $N$ is not big. Indeed, if it were big, this equality
+would make $K_X+s_0D$ big. For a rational number
+$0<\lambda<\min\{1,1/s_0\}$, the identity
+\[
+ L=\lambda(K_X+s_0D)+(1-\lambda)K_X+(1-\lambda s_0)D
+\]
+would then make $L$ big, since the last two summands are
+pseudo-effective.
+
+Take the global index-one cover $\nu:Y^{\mathrm{ind}}\to Y$ and
+a crepant $\Q$-factorial terminalization
+$h:W\to Y^{\mathrm{ind}}$, as in \cite[Section~7]{NS}. Choose an
+integer $b>0$ such that $M:=b(\nu\circ h)^*N$ is Cartier. Then
+\[
+ \begin{gathered}
+ W\text{ is projective, $\Q$-factorial and terminal},\qquad
+ K_W\sim0,\\
+ M\text{ is nef and Cartier},\qquad
+ \nef(W,M)=d,\qquad M^d=0.
+ \end{gathered}
+\]
+Full nef dimension is preserved on the common very general
+locus. Bigness is detected by the generically finite pullback
+$\nu\circ h$, so $M$ is not big. It remains to exclude this
+terminal counterexample.
+
+\begin{setup}
+\leavevmode
+\begin{itemize}
+\setlength{\itemsep}{2pt}
+\setlength{\parsep}{0pt}
+\item Fix an ample Cartier divisor $A$ on $W$.
+\item Fix $\epsilon\in\Q_{>0}$ sufficiently small. For $n\ge1$, put
+\[
+ a_n=((M+A/n)^d)^{1/d},\qquad
+ r_n=\max\{1,\lfloor\epsilon/a_n+1/2\rfloor\},\qquad
+ P_n=r_n(M+A/n).
+\]
+Then $P_n$ is ample and rational Cartier, $r_n\to\infty$, and
+$P_n^d\to\epsilon^d$, since $M^d=0$. The index $n$ is independent
+of the dimension $d$.
+\item Let $p_i:W\times W\to W$ be the projections. Put
+\[
+ Z=\PP_{W\times W}
+       \bigl(p_1^*\OO_W(M)\oplus p_2^*\OO_W(M)\bigr),
+ \qquad \pi:Z\to W\times W.
+\]
+Let $S_1,S_2$ be the two summand sections, and set
+\[
+ U=\pi^{-1}(W_{\mathrm{reg}}\times W_{\mathrm{reg}})
+       \setminus(S_1\cup S_2).
+\]
+Thus $U$ is smooth and $\dim Z=2d+1$.
+\item Set $\xi=c_1(\OO_Z(1))$. For an integer $s>0$, put
+\[
+ R_{n,s}=(p_1\circ\pi)^*P_n+(p_2\circ\pi)^*P_n+s\xi.
+\]
+We use the convention
+$\pi_*\OO_Z(a)=\Sym^a(p_1^*\OO_W(M)\oplus p_2^*\OO_W(M))$
+for $a\ge0$. Whenever $|kR_{n,s}|$ is used, $k>0$ is an integer
+with $kP_n$ Cartier.
+\item Choose $\epsilon$ sufficiently small that
+\[
+ (14\epsilon)^d<\tfrac14,\qquad80\epsilon<\tfrac34.
+\]
+The integer $s$ is chosen after $\epsilon$ and before $n$ tends
+to infinity. The multiple $k$ is chosen after $n$.
+\end{itemize}
+\end{setup}
+
+\medskip
+\noindent\textbf{Jet separation.}
+Let $V$ be a variety, let $B$ be a Cartier divisor, and let
+$z\in V_{\mathrm{reg}}$. For $j\ge0$, $|B|$ separates $j$-jets
+at $z$ if
+\[
+ \forall u\in\OO_{V,z}(B)\quad
+ \exists\sigma\in H^0(V,\OO_V(B))\quad
+ \sigma_z-u\in\mathfrak m_z^{j+1}\OO_{V,z}(B).
+\]
+
+For the terminal counterexample above, we use the following two
+lemmas.
+
+\begin{lemma}\label{lem:general-jets}
+Assume $(\mathsf I_d)$. Let $W,M$ and $R_{n,s}$ be as in Setup.
+There exists an integer $s>0$ such that, for every $n\gg0$,
+$|kR_{n,s}|$ separates $(2d+2)k$-jets at a very general point
+$z\in U$, for all sufficiently divisible positive integers $k$.
+\end{lemma}
+
+This is the large-Seshadri-constant construction of
+\cite[Section~5]{NS}, followed by the jet conversion in
+\cite[Section~6.7]{NS}.
+
+\begin{lemma}\label{lem:general-nojets}
+Assume $(\mathsf I_d)$. Let $W,M$ and $R_{n,s}$ be as in Setup.
+For every integer $s>0$ and every $n\gg0$, $|kR_{n,s}|$ does not
+separate $(2d+2)k$-jets at a very general point $z\in U$, for any
+positive integer $k$ with $kP_n$ Cartier.
+\end{lemma}
+
+The terminal application in \cite[Section~6.7]{NS} proves this
+obstruction on a smooth resolution $w:\overline W\to W$.
+Here $K_{\overline W}\sim E$ for an effective $w$-exceptional
+divisor $E$, and an ample perturbation of $w^*P_n$ supplies the
+complete-intersection flag. The jet system transfers on the
+isomorphism locus. The Frobenius determinant has rank
+$p^{2d}$ and its vanishing order satisfies the incompatible bounds
+\[
+ \frac34p^{2d}\le\ord(\sigma)
+ \le\bigl(80\epsilon+O(p^{-1})\bigr)p^{2d}
+\]
+for arbitrarily large residual characteristics $p$. All complex
+data are fixed before reduction.
+
+Fix $s$ supplied by Lemma~\ref{lem:general-jets}, and choose
+$n$ sufficiently large for both lemmas. For a sufficiently
+divisible $k$, Lemma~\ref{lem:general-jets} gives separation at a
+very general point of $U$, whereas
+Lemma~\ref{lem:general-nojets} forbids it. This excludes the
+terminal counterexample and completes the adjoint reduction.
+Hence $L$ is big.
+\end{proof}
+
+\medskip
+\noindent\textit{Remark.}
+The original variety $X$ need not be smooth or have trivial
+canonical divisor; no irregularity assumption is imposed.
+The condition $K_X$ pseudo-effective is retained from the source.
+The trivial-canonical condition occurs only on the auxiliary
+terminal model $W$. The two jet lemmas are unchanged in mechanism;
+the adjoint reduction precedes their application. No hypothesis
+$\kappa(D)=-\infty$ is needed. The full-nef-dimension target is
+bigness of $K_X+D$; this does not assert nonvanishing for an
+arbitrary nef adjoint of smaller nef dimension.
+
+\medskip
+\noindent\textbf{Draft status.}
+This is a conditional framework following \cite[Sections~3--7]{NS}.
+The source inputs $(\mathsf I_d)$ and the inherited geometric and
+Frobenius arguments have not been independently verified here.
+The two jet lemmas record the source proof obligations; they are
+not independent proofs supplied by this framework.
+
+\begin{thebibliography}{99}
+\bibitem{NS}
+\emph{Numerical Semiampleness of Nef Adjoint Divisors},
+OpenAI mathematics collection, October 3, 2026,
+Sections~3--7.
+\href{https://github.com/openai/math/blob/main/preprints/Numerical-Semiampleness-of-Nef-Adjoint-Divisors-October-3-2026/paper.pdf}{Source manuscript}.
+\end{thebibliography}
+
+\end{document}

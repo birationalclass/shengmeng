@@ -1,0 +1,88 @@
+\documentclass[12pt,a4paper,psamsfonts]{amsart}
+\usepackage{amssymb,mathtools,calc}
+\setlength{\topmargin}{0cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+\setlength{\textheight}{\paperheight - 2in - 35pt}
+\setlength{\textwidth}{\paperwidth - 2in}
+\setlength{\headheight}{12.5pt}
+\setlength{\headsep}{25pt}
+\setlength{\footskip}{30pt}
+\renewcommand{\baselinestretch}{1.3}
+\pagestyle{headings}
+\raggedbottom
+\setlength{\emergencystretch}{2em}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}[lemma]{Corollary}
+\DeclareMathOperator{\mult}{mult}
+\DeclareMathOperator{\codim}{codim}
+\title{Inequality on nef base locus}
+\date{}
+\begin{document}
+\maketitle
+
+For an effective Cartier divisor $F$ on a smooth variety and an
+integral subvariety $V$, write $\mult_V(F)$ for the multiplicity
+of $F$ at a general point of $V$. Equivalently, if $f$ is a local
+equation of $F$ at the generic point $\eta_V$, then
+\[
+ \mult_V(F)=\max\{j\ge0:f\in\mathfrak m_{\eta_V}^{,j}\},
+\]
+where $\mathfrak m_{\eta_V}$ is the maximal ideal of
+$\mathcal O_{X,\eta_V}$.
+
+\begin{lemma}\label{lem:base-degree}
+Let $X$ be a smooth projective variety of dimension $n$, and let
+$D$ be a nef Cartier divisor. Let $\Lambda\subseteq|D|$ be a
+nonempty linear system and $V$ an integral component of its base
+locus, of codimension $c$. If, for an integer $h>0$,
+\[
+ \mult_V(F)\ge h\qquad\text{for every }F\in\Lambda,
+\]
+then
+\[
+ h^cD^{n-c}\cdot V\le D^n.
+\]
+\end{lemma}
+\begin{proof}
+Intersect successively with $c$ general members of $\Lambda$,
+discarding the components contained in the base locus before
+each further cut. The remaining components meet the next member
+properly. Since $D$ is nef, discarding effective components does
+not increase the degree measured by the remaining powers of $D$.
+The resulting codimension-$c$ cycle therefore has $D$-degree at
+most $D^n$.
+
+At $\eta_V$, the base ideal is primary for the maximal ideal:
+this uses that $V$ is a component of the base locus. No discarded
+component contains $\eta_V$. The $c$ general local equations
+$f_1,\ldots,f_c$ form a parameter ideal $I$ in the regular local
+ring $R=\mathcal O_{X,\eta_V}$ of dimension $c$. Its local
+intersection multiplicity is $\operatorname{length}(R/I)$.
+The hypothesis gives $I\subseteq\mathfrak m^h$, so monotonicity
+of Hilbert--Samuel multiplicity yields
+\[
+ \operatorname{length}(R/I)=e(I,R)
+ \ge e(\mathfrak m^h,R)=h^c.
+\]
+Thus the coefficient of $V$ is at least $h^c$. Taking $D$-degree
+and using nefness for all remaining effective components proves
+the inequality.
+\end{proof}
+
+\begin{corollary}\label{cor:isolated-point}
+Let $X,D,\Lambda$ be as in Lemma~\ref{lem:base-degree}, and let
+$x$ be an isolated point of the base locus of $\Lambda$.
+If $\mult_x(F)\ge r$ for every $F\in\Lambda$, where $r\ge0$, then
+\[
+ r^n\le D^n.
+\]
+\end{corollary}
+\begin{proof}
+For $r>0$, apply Lemma~\ref{lem:base-degree} with
+$V=\{x\}$, $c=n$, and $h=\lceil r\rceil$.
+For $r=0$, the assertion follows from nefness of $D$.
+\end{proof}
+
+\end{document}

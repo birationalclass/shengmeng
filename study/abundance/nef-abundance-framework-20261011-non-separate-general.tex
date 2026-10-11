@@ -1,0 +1,1351 @@
+\documentclass[12pt,a4paper,psamsfonts]{amsart}
+\usepackage{amssymb,mathtools}
+\usepackage{calc}
+\setlength{\topmargin}{0cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+\setlength{\marginparwidth}{0cm}
+\setlength{\marginparsep}{0cm}
+\setlength{\textheight}{\paperheight - 2in - 35pt}
+\setlength{\textwidth}{\paperwidth - 2in}
+\setlength{\headheight}{12.5pt}
+\setlength{\headsep}{25pt}
+\setlength{\footskip}{30pt}
+\renewcommand{\baselinestretch}{1.3}
+\pagestyle{headings}
+\raggedbottom
+\setlength{\emergencystretch}{2em}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
+\newtheorem*{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem*{setup}{Setup}
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}[lemma]{Proposition}
+\newtheorem{corollary}[lemma]{Corollary}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\C}{\mathbb C}
+\newcommand{\OO}{\mathcal O}
+\newcommand{\mult}{\operatorname{mult}}
+\newcommand{\nef}{\operatorname{n}}
+
+\usepackage{tikz-cd}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\PP}{\mathbb P}
+\DeclareMathOperator{\Pic}{Pic}
+\DeclareMathOperator{\Supp}{Supp}
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\vol}{vol}
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\Bir}{Bir}
+\DeclareMathOperator{\codim}{codim}
+\def\UrlBreaks{\do\/\do-\do.}
+\title{Nef Abundance: Framework -- Failure of Jet Separation in General Dimension}
+\date{Temporary draft -- October 11, 2026}
+\begin{document}
+\maketitle
+
+\section{Failure of jet separation}
+
+Fix an integer $d\ge2$. We use the following source inputs,
+denoted collectively by $(\mathsf I_d)$.
+\begin{itemize}
+\setlength{\itemsep}{2pt}
+\setlength{\parsep}{0pt}
+\item For every projective klt $\Q$-pair $(Y,B)$ of dimension
+$j<d$ and every nef rational Cartier divisor $M$, if $K_Y+B$ is
+pseudo-effective and, for some $a\in\Q_{>0}$,
+\[
+ (K_Y+B+aM)\cdot C>0
+\]
+for every integral curve through a sufficiently very general point,
+then $K_Y+B+cM$ is big for every $c\in\Q_{>0}$.
+\item Every projective log canonical $\Q$-pair of dimension at most
+$d$ with nef adjoint has semiample adjoint.
+\item Every projective $\Q$-factorial generalized klt $\Q$-pair of
+dimension at most $d$, with fixed nef rational Cartier b-divisor
+data and pseudo-effective adjoint, admits a terminating choice of
+minimal-model program with a nef endpoint. The program extracts no
+divisors, preserves $\Q$-factorial generalized klt models, and on a
+common resolution the initial adjoint equals the final adjoint plus
+an effective divisor exceptional over the final model.
+\end{itemize}
+The first input is the lower-dimensional assertion $(P_j)$ of
+\cite[Section~3.1]{NS}. The last two are the companion inputs
+used in \cite[Section~2]{NS}; here they are assumptions, not
+independently established higher-dimensional theorems.
+
+Let $X$ be a smooth projective variety over $\C$ of dimension $d$,
+with $K_X\sim0$ and $q(X)=0$. Let $D$ be a nef Cartier divisor
+such that $\nef(X,D)=d$ and $D^d=0$. Assume $(\mathsf I_d)$.
+
+Assume in addition that $\kappa(D)=-\infty$.
+
+\begin{setup}
+\leavevmode
+\begin{itemize}
+\setlength{\itemsep}{2pt}
+\setlength{\parsep}{0pt}
+\item Fix an ample Cartier divisor $A$.
+\item Fix $\epsilon\in\Q_{>0}$ sufficiently small. For integers
+$n\ge1$, put
+\[
+ a_n=((D+A/n)^d)^{1/d},\qquad
+ r_n=\max\{1,\lfloor\epsilon/a_n+1/2\rfloor\},\qquad
+ P_n=r_n(D+A/n).
+\]
+Then $P_n$ is ample and rational Cartier, $r_n\to\infty$, and
+$P_n^d\to\epsilon^d$. Indeed, $a_n\to0$ and
+$|r_na_n-\epsilon|\le a_n/2$ for all sufficiently large $n$.
+The symbol $n$ indexes the sequence; the dimension is $d$.
+\item Let $p_i:X\times X\to X$ be the projections. Put
+\[
+ Z=\PP_{X\times X}
+       \bigl(p_1^*\OO_X(D)\oplus p_2^*\OO_X(D)\bigr),
+ \qquad \pi:Z\to X\times X.
+\]
+Let $S_1,S_2$ be the two summand sections and set
+$U=Z\setminus(S_1\cup S_2)$. Thus $\dim Z=2d+1$.
+\item Set $\xi=c_1(\OO_Z(1))$. For an integer $s>0$, put
+\[
+ R_{n,s}=(p_1\circ\pi)^*P_n+(p_2\circ\pi)^*P_n+s\xi.
+\]
+We use $\pi_*\OO_Z(a)=\operatorname{Sym}^a
+(p_1^*\OO_X(D)\oplus p_2^*\OO_X(D))$ for $a\ge0$.
+Whenever $|kR_{n,s}|$ is used, $k>0$ is an integer with
+$kP_n$ Cartier.
+\item Choose $\epsilon$ sufficiently small that
+\[
+ (14\epsilon)^d<\tfrac14,\qquad40\epsilon<\tfrac38.
+\]
+The integer $s$ is chosen after $\epsilon$ and before $n$ tends
+to infinity. Any jet-separating multiple is chosen after $n$.
+\end{itemize}
+\end{setup}
+
+\medskip
+\noindent\textbf{Jet separation.}
+Let $W$ be smooth, let $L$ be a Cartier divisor, and let $z\in W$.
+For $j\ge0$, $|L|$ separates $j$-jets at $z$ if
+\[
+ \forall u\in\OO_{W,z}(L)\quad
+ \exists\sigma\in H^0(W,\OO_W(L))\quad
+ \sigma_z-u\in\mathfrak m_z^{j+1}\OO_{W,z}(L).
+\]
+\setcounter{lemma}{1}
+
+\begin{lemma}\label{lem:general-nojets}
+For every positive integer $s$ and every $n\gg0$,
+$|kR_{n,s}|$ does not separate $(2d+2)k$-jets at any $z\in U$,
+for any positive integer $k$ with $kP_n$ Cartier.
+\end{lemma}
+
+\medskip
+\noindent\textbf{Draft status.}
+This is a conditional, source-based proof framework following
+\cite[Sections~4--6]{NS}. The source inputs $(\mathsf I_d)$ and
+the inherited moving-centre and Frobenius arguments have not been
+independently verified here. No unconditional higher-dimensional
+nonvanishing or abundance theorem is asserted.
+\section{Auxiliary estimates}
+\label{sec:jet-tools}
+
+The geometric argument will produce subvarieties with bounded degree and
+bounded canonical intersection.  We first explain how these bounds
+contradict a growing lower bound for the degrees of curves.  We then
+record the moving-center results from \cite{LA} that supply the required
+subvarieties.  All varieties in this section are over $\C$.
+
+\subsection{The bounded-degree obstruction}
+
+\begin{lemma}
+\label{lemma:bounded-curves}
+For every integer $f\geq1$ there is an integer $m_f>0$ with the
+following property.  Let $Y$ be a smooth integral projective variety
+of dimension $f$, let $D_0$ be a reduced simple normal crossing divisor
+or the zero divisor, and let $L_0$ be a nef integral Cartier divisor
+of full nef dimension on $Y$.  Suppose that $P_0$ is a nef rational
+Cartier divisor and that $r,C_0,C_1$ are positive real numbers satisfying
+\[
+ 0<P_0^f\leq C_0,\qquad P_0-rL_0\text{ is nef}.
+\]
+If $A_0=K_Y+D_0+L_0$ is big and
+\begin{equation}
+\label{j:adjoint-ratio}
+ A_0\cdot P_0^{f-1}\leq C_1P_0^f,
+\end{equation}
+then
+\begin{equation}
+\label{j:bounded-curve-obstruction}
+ r\leq(m_fC_1)^{f-1}C_0.
+\end{equation}
+The integer $m_f$ depends only on $f$, and not on the variety or
+the divisors.  For dimensions $1\leq f\leq d$, one may replace all
+$m_f$ by a single integer $m$ depending only on $d$.
+\end{lemma}
+
+\begin{proof}
+The pair $(Y,D_0)$ is log canonical, its boundary coefficients belong
+to $\{0,1\}$, and its nef polarizing divisor $L_0$ has Cartier index
+one.  By \cite[Theorem~1.3]{BZ}, an integer $m_f$ depending only on
+these data makes $|m_fA_0|$ birational.  Here $A_0$ is integral
+Cartier, so no rounding or additional denominator is involved.
+
+Resolve the base ideal by a projective birational morphism
+$\mu:\widetilde Y\to Y$, with $\widetilde Y$ smooth, and write
+\[
+ \mu^*(m_fA_0)=H+F,
+\]
+where $H$ is the basepoint-free moving part and $F$ is effective.
+The morphism defined by $H$ is birational onto its image; in
+particular $H$ is nef and big.  In the rest of this proof, $P_0$
+and $L_0$ denote their pullbacks to $\widetilde Y$.  Effectivity
+of $F$ and nefness of $P_0$ give
+\begin{equation}
+\label{j:moving-adjoint-degree}
+ H\cdot P_0^{f-1}\leq m_fC_1P_0^f.
+\end{equation}
+
+For $f\geq2$, put $s_i=P_0^{f-i}\cdot H^i$ for $0\leq i\leq f$.
+Both divisors are nef and big, so the $s_i$ are positive.  The
+Khovanskii--Teissier inequalities
+\cite[Corollary~1.6.3(i) and Example~1.6.4]{LazarsfeldPAGI}
+$s_i^2\geq s_{i-1}s_{i+1}$ show
+that the ratios $s_i/s_{i-1}$ decrease.  Hence
+\begin{equation}
+\label{j:mixed-degree}
+ P_0\cdot H^{f-1}
+ \leq P_0^f\left(\frac{H\cdot P_0^{f-1}}{P_0^f}\right)^{f-1}
+ \leq(m_fC_1)^{f-1}C_0.
+\end{equation}
+Choose a very general point $y\in\widetilde Y$ over the
+isomorphism opens of both $\mu$ and the morphism defined by $H$.
+We also choose $\mu(y)$ in the very general locus
+that tests full nef dimension of $L_0$.  Pull back $f-1$ general
+hyperplanes through the image of $y$ under the morphism defined
+by $H$.  This subsystem has only the base point $y$, so the
+general members meet properly and define an effective curve cycle
+of class $H^{f-1}$; the component $C$ through $y$ is a curve
+because their local equations are independent at $y$.
+Nefness gives
+\[
+ P_0\cdot C\leq P_0\cdot H^{f-1}.
+\]
+The curve $C$ is not contracted by $\mu$, and its image passes
+through the chosen very general point.  Full nef dimension and
+integrality therefore give $L_0\cdot C\geq1$.  Since
+$P_0-rL_0$ is nef, we obtain $P_0\cdot C\geq r$, which proves
+\eqref{j:bounded-curve-obstruction}.
+
+If $f=1$, take $C=Y$ directly.  Then
+$P_0\cdot Y\geq rL_0\cdot Y\geq r$, and the required bound is
+$r\leq C_0$.  Finally, \cite[Theorem~1.3]{BZ} applies to every
+multiple of its prescribed integer.  A common multiple of the
+finitely many integers $m_1,\ldots,m_d$ therefore gives the last
+assertion.
+\end{proof}
+
+In particular, the hypotheses of Lemma~\ref{lemma:bounded-curves}
+cannot hold along a sequence with $r\to\infty$ and with $C_0,C_1$
+bounded, even if the varieties and divisors vary.  The following
+observation explains how full nef dimension and pseudo-effectivity
+of the canonical divisor pass to the moving subvarieties used below.
+
+\begin{lemma}
+\label{j:very-general-images}
+Let $X$ be a normal integral projective variety that is not uniruled,
+and let $L$ be a nef Cartier divisor of full nef dimension on $X$.
+There is a complement $X^\circ$ of a countable union of proper
+closed subsets of $X$ with the following property.  If $Y$ is a
+smooth integral projective variety and $g:Y\to X$ is generically
+finite onto a positive-dimensional image meeting $X^\circ$, then
+$g^*L$ has full nef dimension, $Y$ is not uniruled, and $K_Y$ is
+pseudo-effective.
+\end{lemma}
+
+\begin{proof}
+Choose $X^\circ$ so that every curve through any of its points has
+positive $L$-degree and no rational curve meets $X^\circ$.  The first
+condition is the very general characterization of full nef
+dimension.  For the second, rational curves are parametrized by
+countably many algebraic families; the closure of the evaluation
+image of each such family is proper because $X$ is not uniruled.
+
+Since $g(Y)$ meets $X^\circ$, it is contained in none of the closed
+sets excluded in its definition.  A very general point of $Y$ thus
+maps into $X^\circ$ and lies in the quasi-finite locus of $g$.
+Every curve through such a point has a curve as its image, so its
+$g^*L$-degree is positive.  This proves full nef dimension.  A
+covering family of rational curves on $Y$ would similarly give a
+nonconstant rational curve meeting $X^\circ$, a contradiction.
+The pseudo-effectivity of $K_Y$ now follows from \cite{BDPP}.
+\end{proof}
+
+\subsection{Subadjunction and high-multiplicity components}
+
+We use the following five results from the section
+\emph{Tools for moving base components} of \cite{LA}.  Their
+hypotheses distinguish generic information along a center from
+global information about the ambient variety.  Intersections on
+an integral subvariety are computed after pullback to its
+normalization and a smooth projective resolution.  A base ideal
+is \emph{isolated at the generic point} of a subvariety when its
+localization there is primary for the maximal ideal.
+
+\begin{lemma}
+\label{j:subadjunction}
+Let $Z$ be a projective $\Q$-factorial klt variety, let
+$\Theta\geq0$ be a rational divisor, and let $V\subset Z$ be
+integral of dimension $f>0$.  Suppose that $(Z,\Theta)$ is log
+canonical at the generic point of $V$ and has a divisor of log
+discrepancy zero with center $V$.  If $P$ is a nef rational Cartier
+divisor on $V$ and $\rho:V^*\to V$ is a smooth projective resolution
+factoring through its normalization, then
+\[
+ K_{V^*}\cdot(\rho^*P)^{f-1}
+ \leq (K_Z+\Theta)|_V\cdot P^{f-1}.
+\]
+\end{lemma}
+
+Only generic log canonicity is required.  The proof in \cite{LA}
+uses the dlt modification of \cite[Theorem~2.10]{FH}, whose
+truncated boundary leaves an effective surplus supported over
+the non-lc locus.  On a minimal stratum over $V$, adjunction
+gives a pair that is klt over the generic point of its
+connected-fiber base.  This suffices for the klt-trivial
+canonical bundle formula and its b-nef moduli divisor
+\cite[Definition~3.1 and Theorem~3.5]{FG}.  The effective
+discriminant, the moduli divisor, and finite ramification have
+nonnegative intersections with the pulled-back nef class.
+The comparison uses canonical Weil cycles, so it requires no
+$\Q$-Gorenstein assumption on the normalization of $V$.
+
+\begin{lemma}
+\label{j:base-component}
+Let $Z$ be a projective $\Q$-factorial klt variety of dimension
+$e$, let $R$ be a nef rational Cartier divisor, and let $k>0$
+be an integer such that $kR$ is Cartier.  Let
+$0\ne\mathcal H\subset H^0(Z,\OO_Z(kR))$ be a linear subspace
+with proper base locus and base ideal $\mathfrak b$.  Suppose that
+$V$ is an integral base-locus component of dimension $f<e$,
+isolated at its generic point $\eta_V$, and that
+$\eta_V\in Z_{\mathrm{sm}}$.  Let
+$\mathfrak m$ be the maximal ideal of $\OO_{Z,\eta_V}$.
+If $\mathfrak b\OO_{Z,\eta_V}\subset\mathfrak m^h$ for an
+integer $h>0$, there are a rational number $0<c\leq(e-f)k/h$ and an
+effective rational divisor $\Theta\sim_{\Q}cR$ such that
+$(Z,\Theta)$ is log canonical at $\eta_V$ and has a log canonical
+place centered on $V$.  The degree and canonical bounds are
+\begin{equation}
+\label{j:base-bounds}
+ \begin{split}
+ R^f\cdot V&\leq(k/h)^{e-f}R^e,\\
+ K_{V^*}\cdot R^{f-1}
+   &\leq(K_Z+cR)|_V\cdot R^{f-1}\qquad(f>0),
+ \end{split}
+\end{equation}
+where $V^*$ is a smooth projective resolution.  The degree bound
+also holds for $f=0$.
+\end{lemma}
+
+The degree estimate is the local multiplicity bound $h^{e-f}$
+combined with successive general cuts by the given linear series.
+The boundary is obtained by averaging general members with total
+coefficient equal to the generic log canonical threshold of
+$\mathfrak b$.  Thus it is an actual divisor to which
+Lemma~\ref{j:subadjunction} applies.
+
+\subsection{Full jet kernels and restriction to a fiber}
+
+\begin{lemma}
+\label{j:moving-kernel}
+Let $Z$ be an integral projective variety of dimension $e$, let
+$R$ be a nef, big, semiample rational Cartier divisor, and fix
+an integer $k>0$ such that $kR$ is Cartier.  Choose positive real
+numbers $\tau_0<\cdots<\tau_e$ with consecutive gap $\delta>0$.
+For $x\in Z_{\mathrm{sm}}$, put
+\[
+ \mathcal H_i(x)=H^0\bigl(Z,\OO_Z(kR)
+                  \otimes\mathfrak m_x^{\lceil k\tau_i\rceil}\bigr).
+\]
+Suppose that for very general $x$ all these spaces are nonzero and
+the base locus of $\mathcal H_0(x)$ has a positive-dimensional
+component through $x$.  If $k\delta\geq4$, then, after an
+algebraic parameter extension and restriction to nonempty opens,
+there are an integral parameter variety $T$ with a dominant
+marked-point map $x:T\to Z_{\mathrm{sm}}$, a fixed index
+$i\in\{0,\ldots,e-1\}$, and a family of integral subvarieties
+$V_t$ containing $x(t)$ and common to the base loci of
+$\mathcal H_i(x(t))$ and $\mathcal H_{i+1}(x(t))$.  In particular,
+the incidence
+\[
+ \Gamma=\{(t,z):z\in V_t\}\subset T\times Z
+\]
+dominates $Z$.
+
+For general $t$, the dimension $f$ of $V_t$ lies in $[1,e-1]$,
+$V_t$ is an isolated component of the higher base locus at its
+generic point, and the entire higher-kernel base ideal is
+contained there in the ordinary power $\mathcal I_{V_t}^h$, where
+\[
+ h=\lceil k\delta/2\rceil,\qquad k/h\leq2/\delta.
+\]
+The incidence base ideal is likewise contained in
+$\mathcal I_\Gamma^h$ on a dense open of $\Gamma$.
+These containments are taken in the smooth ambient open.
+If $Z$ is also $\Q$-factorial and klt, then
+\begin{equation}
+\label{j:moving-bounds}
+ \begin{split}
+ R^f\cdot V_t&\leq(2/\delta)^{e-f}R^e,\\
+ K_{V_t^*}\cdot R^{f-1}
+   &\leq(K_Z+cR)|_{V_t}\cdot R^{f-1},
+       \qquad 0<c\leq2(e-f)/\delta.
+ \end{split}
+\end{equation}
+The top intersection on $V_t$ is positive when $V_t$ meets the
+open on which the big semiample contraction is an isomorphism.
+\end{lemma}
+
+The use of the full kernels matters: differentiation in the
+parameter lowers vanishing at the moving mark and still gives a
+global section in the lower kernel.  Incidence dominance makes
+these parameter directions span the normal directions.  The
+vanishing of all derivatives of order less than $h$ then gives
+the ordinary-power containment, which can be restricted to
+general fibers as follows.
+
+\begin{lemma}
+\label{j:fiber-restriction}
+In the setting of Lemma~\ref{j:moving-kernel}, let $g:Z\to B$ be
+a morphism.  There is a dense open of the incidence with the
+following property.  Choose $(t,z)$ in this open, put $b=g(z)$,
+and suppose that $V_t$ is smooth over a smooth open of its actual
+image at $z$.  Let $F$ be the reduced component through $z$ of
+the scheme fiber of $V_t\to g(V_t)$.  Near $z$ in $Z_b$, the
+restricted higher-kernel base ideal has support exactly $F$ and
+is contained in the ordinary power $\mathcal I_F^h$.
+
+If $F$ is proper in an integral ambient fiber component containing
+it, the restricted series is nonzero there and $F$ is an isolated
+base component at its generic point.  Applying
+Lemma~\ref{j:base-component} on that ambient component additionally
+requires its projectivity, $\Q$-factoriality, klt singularities,
+and smoothness at the generic point of $F$.
+\end{lemma}
+
+Here the fiber is chosen through a general incidence point.  The
+statement does not assert the same conclusion for an arbitrary
+special fiber.  Smoothness over the actual image identifies the
+restricted ideal of $V_t$ with the reduced ideal of $F$ locally;
+this is what preserves ordinary powers.
+
+The $\Q$-factoriality needed for the base-component estimates can
+also be supplied by a small projective $\Q$-factorialization
+$\sigma:Z'\to Z$ of a klt ambient variety.  This passage is made
+only for components that meet the isomorphism open of $\sigma$.
+Their strict transforms retain the generic base-ideal and
+multiplicity conditions for the pulled-back series, and the
+testing class $\sigma^*R$ is nef.  Since
+$K_{Z'}=\sigma^*K_Z$, projection formula gives the same degree
+and canonical-intersection bounds on a common resolution.
+The pullback testing class need not be ample; nefness is the
+property used in these estimates.  Passing to higher resolutions
+does not change the canonical intersections, because their
+additional exceptional divisors have zero intersection with
+the pulled-back testing class to the required power.
+
+\subsection{Finite covers with a fixed branch complement}
+
+A bound on the degree of a branched cover does not make the
+possible covers finite.  The final companion input supplies the
+needed fixed branch complement from a family whose branch
+divisors do not sweep the base.
+
+\begin{lemma}
+\label{j:finite-covers}
+Let $Y$ be a normal integral projective variety, let
+$\mathcal V\to T$ be a smooth projective family with integral
+fibers over an integral parameter variety, and let
+$g:\mathcal V\to Y$ be a morphism.  Suppose that the general
+fiber maps $g_t:V_t\to Y$ are dominant and generically finite of
+degree at most a fixed integer $e$.
+
+After a finite parameter extension and shrinking, spread the
+geometric generic components of the zero divisor of the relative
+Jacobian over $Y_{\mathrm{sm}}$ to divisors
+$\mathcal R_1,\ldots,\mathcal R_N$ in $\mathcal V$.
+Retain this notation after the base change.  Let $I$ consist of
+the indices $j$ for which
+$\overline{g_t((\mathcal R_j)_t)}$ is a divisor in $Y$ for general
+$t$.  Assume that
+\[
+ \overline{g(\mathcal R_j)}\ne Y\qquad(j\in I).
+\]
+After shrinking again, there is a smooth nonempty open
+$Y^\circ\subset Y$ over which every general finite normal Stein
+cover of $g_t$ is finite \'etale.  Only finitely many such normal
+covers of $Y$ occur, up to isomorphism over $Y$.
+The conclusion holds simultaneously for finitely many
+projections; the open and the finite lists may depend on all
+fixed parameters of the family.
+\end{lemma}
+
+To see the role of the hypothesis, remove $Y_{\mathrm{sing}}$
+and the finitely many proper image closures
+$\overline{g(\mathcal R_j)}$ for $j\in I$.  Every branch prime
+of a general Stein cover is accounted for by one of these
+relative Jacobian components.  Purity therefore makes the
+restricted covers \'etale.  The fundamental group of the
+resulting smooth complex variety is finitely generated, so it
+has only finitely many covers of degree at most $e$.  Finally,
+a finite normal cover of $Y$ is determined by its function
+field, hence by its restriction to this fixed open.
+
+\section{Geometric estimates}\label{sec:geometry}
+In the technical arguments below, put $L=D$, $t=1/n$, $r=r_n$,
+$P=P_n$, and $q=s$. The letter $L$ keeps the source notation for
+the fixed nef Cartier divisor; $q$ is the bundle parameter.
+\begin{equation}\label{eq:scaling}
+ P=r(L+tA),\qquad r\to\infty,\qquad P^d\to\epsilon^d.
+\end{equation}
+For each fixed $q$, discard finitely many terms so that
+\begin{equation}\label{j:volume-window}
+ \epsilon^d/2\le P^d\le2\epsilon^d,\qquad r>q+1.
+\end{equation}
+Every curve through a very general point of $X$ has positive integral
+$L$-degree, hence $P$-degree at least $r$. Thus a covering family of
+curves of bounded $P$-degree will give a contradiction.
+
+We specify how the same obstruction applies to subvarieties and
+covers. A resolution $W\to X$ has an effective canonical divisor:
+pull back a nowhere-zero canonical form on the smooth locus of $X$
+and use terminality. Hence $W$, and therefore $X$, is not uniruled
+\cite{BDPP}. By Lemma~\ref{j:very-general-images}, if a smooth
+projective variety $Y$ maps generically finitely to a
+positive-dimensional subvariety containing a sufficiently very general
+point of $X$, then $Y$ is not uniruled and the pulled-back Cartier
+divisor $L_Y$ has full nef dimension. In particular, $K_Y$ is
+pseudo-effective. If $f=\dim Y<d$, the induction hypothesis $(P_f)$
+applied to $(Y,0)$ gives
+\begin{equation}\label{j:lower-big}
+                         K_Y+L_Y\ \text{big}.
+\end{equation}
+All occurrences of ``very general'' below include the fixed
+conditions of Lemma~\ref{j:very-general-images}.
+
+Consequently, for $f<d$ it suffices to find on such a $Y$ a nef
+testing divisor $P_Y$ with
+\[
+ 0<P_Y^f\le C_0,\qquad P_Y-rL_Y\ \text{nef},\qquad
+ K_YP_Y^{f-1}\le C P_Y^f,
+\]
+where $C_0,C$ are independent of $t$. Indeed
+$L_YP_Y^{f-1}\le P_Y^f/r$, so Lemma~\ref{lemma:bounded-curves}
+applies. We will also use that lemma in dimension $d$, after proving
+the required bigness separately. For the rest of this section, a
+bound is called uniform if it is independent of $t$; it may depend
+on parameters fixed before $t$ tends to zero. Since the dimensions
+lie in a finite range, Lemma~\ref{lemma:bounded-curves} excludes all
+such configurations once $r$ is sufficiently large.
+
+\subsection{The scalar jet estimate}
+
+Put $\rho=(P^d)^{1/d}$. The first estimate bounds the vanishing order
+of every section at a very general point; it is stronger than a
+bound on a single fixed linear system.
+
+\begin{lemma}\label{lemma:scalar-bound}
+In the setting of \eqref{eq:scaling}, for all sufficiently small $t$
+and at a very general point $x\in X$, every nonzero section of $kP$,
+where $k$ is a positive integer and $kP$ is Cartier, satisfies
+\begin{equation}\label{j:scalar-order}
+                         \ord_x(s)\le4k\rho.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Suppose that violations occur for arbitrarily small $t$. Fix such a
+$t$. At a very general point a violation for some $k$ implies that
+the corresponding complete jet kernel is nonzero at the general
+point. Indeed the kernel ranks are algebraic rank conditions on the
+smooth locus, and there are only countably many choices of $k$ and
+of the required integral order. Raising the violating section to
+powers allows $k$ to be arbitrarily large and divisible.
+
+Choose $d+1$ levels
+\[
+ \tau_i=\frac32\rho+i\delta\quad(0\le i\le d),
+ \qquad \delta=\frac{2\rho}{d}.
+\]
+They all lie strictly between $\rho$ and $4\rho$. For a sufficiently
+large divisible $k$, their full jet kernels are nonzero and
+$k\delta\ge4$. The lowest kernel has a positive-dimensional base
+component through its marked point. Otherwise that point would be
+an isolated base component of multiplicity at least
+$h_0=\lceil k\tau_0\rceil$. The zero-dimensional case of
+Lemma~\ref{j:base-component} would give
+\[
+                1\le (k/h_0)^nP^d<1,
+\]
+a contradiction.
+
+Lemma~\ref{j:moving-kernel} now supplies a moving family of proper
+base components $V$, with dominant incidence and dimension
+$1\le f<d$. On a resolution $V^*$, write $P_V,L_V$ for the
+restrictions followed by pullback. The lemma gives
+\[
+ 0<P_V^f\le(2/\delta)^{d-f}P^d,
+ \qquad K_{V^*}P_V^{f-1}\le cP_V^f,
+ \qquad 0<c\le\frac{2(d-f)}{\delta}.
+\]
+Here the canonical term of the ambient variety vanishes because
+$K_X\sim0$. The volume window \eqref{j:volume-window} bounds
+$\delta$ above and away from zero, so these are uniform estimates.
+The incidence point may be chosen over a very general point of $X$.
+Thus \eqref{j:lower-big} gives bigness of $K_{V^*}+L_V$, and
+$P_V-rL_V$ is nef. Lemma~\ref{lemma:bounded-curves} contradicts
+$r\to\infty$.
+\end{proof}
+
+
+\section{The fixed witness}
+\begin{lemma}\label{lem:general-witness}
+For every fixed $s>0$ and every $n\gg0$, there is a very general
+point $x\in X$ such that, on its blowup
+$\beta:\widetilde X\to X$ with exceptional divisor $E$, there
+are a birational morphism $f:V\to\widetilde X$ from a smooth
+projective variety and ample Cartier divisors $H_1,\ldots,H_{d-1}$
+on $V$ satisfying
+\[
+ f^*\beta^*(P_n+sD)\cdot H_1\cdots H_{d-1}
+ <40\epsilon\, f^*E\cdot H_1\cdots H_{d-1}.
+\]
+\end{lemma}
+\begin{proof}
+Put $\rho_n=(P_n^d)^{1/d}$ and choose $n$ sufficiently large that
+Lemma~\ref{lemma:scalar-bound} applies, $r_n>s$, and $\rho_n<2\epsilon$.
+Every nonzero section of $2kP_n$ then has order at most
+$8k\rho_n<16k\epsilon$ at a very general point $x$.
+The divisor
+\[
+ \beta^*(2P_n)-40\epsilon E
+\]
+is not pseudo-effective. Otherwise its convex combination with
+the big divisor $\beta^*(2P_n)$ would make
+$\beta^*(2P_n)-cE$ big for some rational
+$16\epsilon<c<40\epsilon$. A sufficiently divisible multiple
+would have a section of order at least $kc$, a contradiction.
+
+By pseudo-effective/strongly-movable duality \cite{BDPP}, choose
+one actual generating complete intersection on a smooth birational
+model whose pairing with this divisor is negative. Approximate
+the ample real classes by rational ones and clear denominators
+to obtain $f,H_1,\ldots,H_{d-1}$ with
+\[
+ f^*\beta^*(2P_n)\cdot H_1\cdots H_{d-1}
+ <40\epsilon\,f^*E\cdot H_1\cdots H_{d-1}.
+\]
+Since $P_n-sD$ is nef, the required inequality follows.
+The denominator is positive because $f^*E$ is nonzero effective
+and all the $H_i$ are ample. Fix this model and these divisors
+before reduction.
+\end{proof}
+
+\begin{lemma}\label{lem:general-flag}
+For every ample rational Cartier divisor $P$ on $X$, there are
+positive integers $l_1,\ldots,l_{d-1}$ and a smooth integral
+complete-intersection flag of successive classes $l_iP$,
+ending in a curve $C$, such that
+\[
+ \mu_{\min}(\Omega_X^1|_C)\ge0.
+\]
+\end{lemma}
+\begin{proof}
+Since $K_X\sim0$, $X$ is not uniruled. Generic semipositivity of
+$\Omega_X^1$ \cite[Theorem~2.1]{CP} and restriction of its
+Harder--Narasimhan filtration to sufficiently general complete
+intersections \cite[Theorem~6.1]{MR} give the asserted slope
+bound. Choose the $l_i$ sufficiently large and divisible that
+$l_iP$ is very ample; Bertini gives the smooth integral flag.
+\end{proof}
+
+\section{The Frobenius obstruction}\label{sec:frobenius}
+The finite-data statement below is \cite[Theorem~6.1]{NS},
+specializing the companion Frobenius comparison. Its divisor $G$
+is a rational polarization and is distinct from the fixed nef
+Cartier divisor $D$ in the Setup. All models, sections, the flag,
+and the complete-intersection witness are fixed before reduction.
+\subsection{The finite-data statement}
+
+For a vector bundle on a smooth projective curve, its slope is
+degree divided by rank. The least and greatest Harder--Narasimhan
+slopes are denoted by $\mu_{\min}$ and $\mu_{\max}$.
+For a line bundle on a smooth variety, to generate jets through
+order $a$ at a point means surjectivity to its stalk modulo
+the $(a+1)$-st power of the maximal ideal.
+
+\begin{proposition}
+\label{thm:finite-data}
+Let $W$ be a smooth connected projective complex variety of
+dimension $d\ge2$. Let $G,H$ be rational Cartier divisors, with
+$H$ ample, let $S$ be an integral Cartier divisor, and fix an
+integer $q>0$ and real numbers $r>1$, $\epsilon>0$. Suppose
+\begin{equation}\label{fr:intersection-bounds}
+ \begin{gathered}
+ H^d\le(2\epsilon)^d,\qquad
+ K_WH^{d-1}\le2H^d/r,\qquad
+ (2G+qS)H^{d-1}\le4H^d,\\
+ (14\epsilon)^d<\tfrac14,\qquad 80\epsilon<\tfrac34.
+ \end{gathered}
+\end{equation}
+Assume that the following fixed data exist.
+\begin{enumerate}
+\renewcommand{\labelenumi}{\textup{(\roman{enumi})}}
+\item A smooth integral complete-intersection flag from $W$ to
+a curve $C$, whose successive divisor classes are $h_i=l_iH$
+for fixed positive integers $l_i$ for which $l_iH$ is Cartier, with
+$\mu_{\min}(\Omega_W^1|_C)\ge0$.
+\item On the projective bundle
+\[
+ Z=\PP\bigl(\mathcal O_W(S)_1\oplus
+                         \mathcal O_W(S)_2\bigr)\longrightarrow W\times W,
+ \qquad \xi=c_1(\mathcal O_Z(1)),\qquad M=G_1+G_2+q\xi,
+\]
+use the convention that the direct image of $\mathcal O_Z(a\xi)$
+is the $a$-th symmetric power of the displayed sum for $a\ge0$;
+subscripts indicate pullback from the corresponding factor of
+$W\times W$. The two axes are the sections defined by the two
+summands. A smooth point $z_*$ in their complement and finitely many
+sections of $k_0M$, for some integer $k_0>0$ with $k_0G$ Cartier,
+generate jets through order $(2d+2)k_0$ at $z_*$.
+\item A point $x\in W$, its blowup
+$\pi_x:\widehat W\to W$ with exceptional divisor $J$, and a
+curve class
+\[
+ \gamma=f_*(A_1\cdots A_{d-1}),
+\]
+where $f:V\to\widehat W$ is one fixed birational morphism,
+$V$ is smooth integral projective, and the $A_i$ are ample
+integral Cartier divisors, such that $J\cdot\gamma>0$ and
+\begin{equation}\label{fr:movable-input}
+ \pi_x^*(G+K_W/2+\lambda S)\cdot\gamma
+ \le40\epsilon J\cdot\gamma\qquad(0\le\lambda\le q).
+\end{equation}
+It suffices to check the two endpoints in this affine inequality.
+\end{enumerate}
+These data cannot coexist.
+\end{proposition}
+
+The point $x$ is independent of the two base coordinates of $z_*$.
+No nefness is required of $G,S$, or $K_W$, and the theorem does not
+assume that $K_W$ is pseudo-effective. Its hypotheses specify the
+flag and the movable curve class themselves. All these data will
+be fixed before the residual characteristic tends to infinity.
+
+\subsection{Reduction and Frobenius jets}
+\label{fr:reduction}
+
+We begin the proof of Proposition~\ref{thm:finite-data} by spreading
+its hypotheses and converting the fixed ordinary jets
+into jets of order proportional to the residual characteristic.
+Put
+$\Lambda=\prod_{i=1}^{d-1}l_i$. The flag satisfies
+\begin{equation}\label{fr:flag-degrees}
+ [C]=\Lambda H^{d-1},\qquad h_i\cdot C=l_i\Lambda H^d.
+\end{equation}
+Choose one sufficiently ample integral Cartier divisor $T_0$ so
+that every $T_0+aS$, for integers $0\le a\le(k_0-1)q$, has a section
+nonvanishing at each of the two base coordinates of $z_*$.
+Fix these finitely many sections. All models, morphisms, divisors,
+points, the flag, the complete-intersection witness for $\gamma$,
+and the jet and filler sections spread over an integral finitely
+generated $\Z$-algebra of characteristic zero. Shrink its
+spectrum so that the fibers and flag are smooth projective and
+geometrically integral, the birational morphisms remain birational,
+the fixed ample bundles remain ample, and the finite jet
+surjection and nonvanishings persist. Birationality is preserved
+by spreading an isomorphism between dense opens. All displayed
+intersection numbers are constant.
+
+We also preserve $\mu_{\min}(\Omega_W^1|_C)\ge0$.
+One way is to spread its characteristic-zero Harder--Narasimhan
+filtration, make all its factors locally free, and use openness
+of their semistability on curves; their degrees and ranks are
+fixed. Equivalently, a single relative ample twist globally
+generates the curve bundle. Every quotient of rank $a$ then has
+degree bounded below by $-ad$ for a fixed integer $e$.
+A negative-degree quotient therefore has one of finitely many ranks
+and degrees. The proper relative Quot schemes for those Hilbert
+polynomials have images missing the generic point: after removal
+of torsion, a negative-degree coherent quotient there would
+give a negative-degree vector-bundle quotient. Removing those
+finitely many images proves the same openness assertion directly.
+
+This base has closed points in arbitrarily large characteristics.
+Take algebraic closures of their residue fields and exclude
+denominator primes. Retain the notation for the reductions.
+The curve $\gamma$ continues to pair nonnegatively with every
+effective divisor: pull that divisor back under the fixed
+birational morphism and intersect with its fixed ample divisors.
+This tests effective divisors on the reduction itself. No
+specialization of a characteristic-zero effective cone is used.
+
+\begin{lemma}\label{fr:positive-characteristic-jets}
+For a sufficiently large residual characteristic $p$, set
+\[
+ N_p=\lfloor p/k_0\rfloor,\qquad B_p=k_0N_pD+T_0.
+\]
+The sections of $pq\xi+B_{p,1}+B_{p,2}$ generate jets through order
+$(2d+2)k_0N_p$ at $z_*$.  In particular, they surject onto the quotient
+of its local ring by the $p$-th powers of all regular parameters.
+\end{lemma}
+
+\begin{proof}
+Multiply $N_p$ copies of the fixed jet system.  Every monomial of
+total degree at most $(2d+2)k_0N_p$ is a product of $N_p$ monomials
+of degree at most $(2d+2)k_0$.  Taking sections with those leading
+monomials gives a triangular system, ordered by total degree.
+Starting at degree zero and removing the error in each successive
+degree proves the required jet surjection. This argument takes
+place in the local ring and never divides by factorials.
+
+Put $e_p=(p-k_0N_p)q$, so $0\le e_p\le(k_0-1)q$.
+Among the sections fixed before reduction, choose
+\[
+ u_0\in H^0(W,\OO_W(T_0)),\qquad
+ v_{e_p}\in H^0(W,\OO_W(T_0+e_pS))
+\]
+nonzero at the first and second base coordinates of $z_*$,
+respectively. Their tensor product belongs to the summand of
+first-slot weight zero in the projective-bundle formula; its
+fiber monomial is the $e_p$-th power of the second coordinate.
+It defines a section of
+$e_p\xi+T_{0,1}+T_{0,2}$ nonzero at $z_*$, since $z_*$ lies
+off both axes. Multiplying the product jet system by this section
+changes its divisor from $N_pk_0M$ to
+$pq\xi+B_{p,1}+B_{p,2}$. Multiplication is invertible on the
+local jet algebra. Only the finitely many previously fixed
+values of $e_p$ occur.
+
+Since $\dim Z=2d+1$, the
+quotient by the $p$-th powers of regular parameters has top total
+degree $(2d+1)(p-1)$.  For large $p$ this is at most
+$(2d+2)k_0N_p$. The underlying ordinary/Frobenius ideal comparison is
+also recorded in \cite[proof of Proposition~2.12, Equation~(2.8)]{MustataSchwede}.
+\end{proof}
+
+\subsection{Full rank from the two-slot jets}
+\label{fr:full-rank}
+
+Let $F:W\to W'$ be relative Frobenius to the base-field twist.
+It is finite flat because $W$ is smooth.  Write $S'$ for the twist
+of $S$, so $F^*S'=pS$, and define
+\[
+ \mathcal E=F_*\OO_W(B_p),\qquad s=\rk\mathcal E=p^d,
+ \qquad R=s^2.
+\]
+For integers $0\le a\le q$, put
+$U_a=H^0(W,\OO_W(B_p+paS))$.
+Projection formula gives an evaluation map on $W'\times W'$:
+\begin{equation}\label{fr:two-slot-evaluation}
+ \bigoplus_{\substack{a+b=q\\a,b\ge0}}
+ U_a\otimes U_b\otimes
+ \OO(-aS'_1-bS'_2)
+ \longrightarrow \mathcal E\boxtimes\mathcal E.
+\end{equation}
+
+\begin{lemma}\label{fr:generic-rank}
+The map in \eqref{fr:two-slot-evaluation} has generic rank $R$.
+\end{lemma}
+
+\begin{proof}
+Trivialize the two summands defining $Z$ near the selected base
+points.  Let $z$ be the torus coordinate, whose value at $z_*$ is
+$z_0\ne0$.  By the projective-bundle formula, the sections in
+Lemma~\ref{fr:positive-characteristic-jets} are weight polynomials in $z$
+with weight-$j$ coefficients in
+\[
+ H^0(W,B_p+jS)\otimes
+ H^0(W,B_p+(pq-j)S),\qquad 0\le j\le pq.
+\]
+Let $A_*$ be the tensor product of the local algebras of the two
+base Frobenius fibers.  The local quotient in
+Lemma~\ref{fr:positive-characteristic-jets} is
+\[
+ A_*[z]/(z^p-z_0^p),
+\]
+free over $A_*$ with basis $1,z,\ldots,z^{p-1}$.  Project to the
+coefficient of $1$ in this basis.  Exactly the weights $j=pa$
+survive, with multipliers $z_0^{pa}$.  Their coefficients are the
+values of the corresponding summands of
+\eqref{fr:two-slot-evaluation}, in the chosen frames and the induced
+twisted frames.  As the full jet map is surjective, these coefficients
+span $A_*$, of dimension $p^{2d}=R$.  Thus the evaluation has full
+rank at this pair of base points, and hence generically.  The
+calculation uses a basis over the possibly nonreduced algebra $A_*$,
+so reducedness of the Frobenius fibers is unnecessary.
+\end{proof}
+
+The jet calculation at $z_*$ proves generic full rank; the diagonal
+estimate below will be tested at $(x',x')$, obtained from the
+separately fixed point $x$.
+
+\subsection{Sections on the Frobenius diagonal}
+\label{fr:filtration}
+
+The Frobenius fiber product has the cartesian square
+\begin{equation}\label{fr:frobenius-square}
+\begin{tikzcd}
+ \Delta_F=W\times_{W'}W \arrow[r,"\mathrm{pr}_2"] \arrow[d,"\mathrm{pr}_1"'] & W \arrow[d,"F"]\\
+ W \arrow[r,"F"'] & W'.
+\end{tikzcd}
+\end{equation}
+Its reduced subscheme is the diagonal $W$.  Put
+\[
+ \mathcal L_p=
+ \OO_{\Delta_F}(B_{p,1}+B_{p,2}+pqS_1).
+\]
+Write $h=F\circ\mathrm{pr}_1=F\circ\mathrm{pr}_2:
+\Delta_F\to W'$. On this fiber product,
+\[
+ \OO(pS_1)\simeq h^*\OO_{W'}(S')\simeq\OO(pS_2).
+\]
+Consequently every pair of weights $a+b=q$ gives the same line bundle:
+\[
+ \OO_{\Delta_F}(B_{p,1}+B_{p,2}+paS_1+pbS_2)
+ \simeq\mathcal L_p.
+\]
+On the diagonal of $W'\times W'$, every source twist of
+\eqref{fr:two-slot-evaluation} becomes $-qS'$.
+Finite base change and projection formula identify the twisted target as
+\[
+ (\mathcal E\otimes\mathcal E)(qS')\simeq h_*\mathcal L_p.
+\]
+The product sections defining the columns restrict to global sections
+of this one bundle $\mathcal L_p$. Their values at a diagonal point
+therefore lie in the image of $H^0(\Delta_F,\mathcal L_p)$ in the
+corresponding fiber of $h_*\mathcal L_p$. This proves that the rank
+at every diagonal point is at most
+\begin{equation}\label{fr:diagonal-rank-upper}
+ h^0(\Delta_F,\mathcal L_p).
+\end{equation}
+
+For a rank-$d$ bundle $V$ in characteristic $p$, denote by $A_j(V)$
+the degree-$j$ part of its symmetric algebra modulo the $p$-th powers
+of local generators.  This construction is independent of frame:
+the $p$-th power of a linear combination is the sum of the $p$-th
+powers in characteristic $p$.  Each $A_j(V)$ is locally free and a
+quotient of $V^{\otimes j}$.  Set
+\[
+ u=d(p-1),\qquad e_j=\rk A_j(V),\qquad
+ \sum_{j=0}^u e_j=p^d.
+\]
+Filtering $\mathcal L_p$ by powers of the ideal of the reduced
+diagonal in $\Delta_F$ gives the graded bundles
+\begin{equation}\label{fr:diagonal-graded}
+ \mathcal G_j=\OO_W(2B_p+pqS)\otimes A_j(\Omega_W^1),
+ \qquad 0\le j\le u.
+\end{equation}
+Indeed, in smooth local coordinates the algebra is generated by
+parameter differences with their $p$-th powers zero, and its
+degree-one conormal is $\Omega_W^1$.  This coordinate calculation
+can be made étale locally or in completions and identifies the
+global associated graded.  This is the diagonal-ideal form of the canonical Frobenius filtration
+\cite[Corollary~3.5]{KS}. The same calculation, using
+only the bundle from the second factor, filters $F^*\mathcal E$ with pieces
+\cite[Theorem~3.7]{Sun}
+\begin{equation}\label{fr:Frob-pullback-graded}
+ \OO_W(B_p)\otimes A_j(\Omega_W^1).
+\end{equation}
+
+Complementary multiplication is a perfect pairing, giving
+\begin{equation}\label{fr:socle-pairing}
+ A_{u-j}(V)\simeq A_j(V)^\vee\otimes(\det V)^{p-1}.
+\end{equation}
+On monomials, each exponent vector pairs with its complement to
+$(p-1,\ldots,p-1)$.  The top line transforms by the character
+$(\det V)^{p-1}$: this is immediate on diagonal matrices and hence
+ identifies the character of $\mathrm{GL}_d$ on that line.
+
+\subsection{A uniform bound for the diagonal rank}
+\label{fr:rank-bound}
+
+We bound the sections of every graded bundle in
+\eqref{fr:diagonal-graded} by its rank times the same scalar
+polynomial in $p$. This uniformity lets us sum the ranks of the
+graded pieces without an additional factor for their number.
+We begin with a slope bound on the fixed curve; here slope means
+ordinary degree divided by rank.
+
+\begin{lemma}\label{fr:truncated-slope}
+There is a constant $c\ge0$, independent of the sufficiently large
+residual characteristic $p$ and of $j$, such that for
+$V=\Omega_W^1|_C$ one has
+\[
+ \mu_{\max}(A_j(V))\le(p-1)K_W\cdot C+nc.
+\]
+\end{lemma}
+
+\begin{proof}
+Write $F_C$ for absolute Frobenius of $C$.  Langer's instability
+estimate \cite[Corollary~2.5]{Langer} gives
+\begin{equation}\label{fr:Langer-min}
+ L_{\min}(V):=
+ \lim_{e\to\infty}p^{-e}\mu_{\min}(F_C^{e*}V)
+ \ge-\frac{c}{p-1}.
+\end{equation}
+To make the uniformity explicit, let $g$ be the fixed genus of $C$.
+One can choose a nef line bundle $A_C$ of degree at most
+$e_g=\max\{4g-2,0\}$ such that $T_C\otimes A_C$ is globally
+generated; for $g\le1$, take $A_C=\OO_C$. Langer's bound is
+\[
+ \mu_{\min}(V)-L_{\min}(V)
+ \le\frac{(\rk V-1)\deg A_C}{p-1}.
+\]
+Since $\rk V=d$ and $\mu_{\min}(V)\ge0$, we may take
+$c=(d-1)e_g$, independently of the reduction.
+
+We also need, for every integer $i\ge0$,
+\begin{equation}\label{fr:tensor-min}
+ \mu_{\min}(V^{\otimes i})\ge iL_{\min}(V).
+\end{equation}
+Fix $p$ and $i$.  Choose a line bundle $A_e$ of degree
+$-\mu_{\min}(F_C^{e*}V)+O(1)$, rounded up with a fixed
+genus-dependent additive constant, so that
+$F_C^{e*}V\otimes A_e$ is globally generated.  This follows from
+Serre duality: after subtracting any point, its minimum slope can
+be made greater than $2g(C)-2$, which annihilates $H^1$ and makes
+evaluation at that point surjective.  For every vector-bundle
+quotient $Q$ of $V^{\otimes i}$, the bundle
+$F_C^{e*}Q\otimes A_e^{\otimes i}$ is then globally generated.
+Consequently
+\[
+ p^e\mu(Q)+i\deg A_e\ge0.
+\]
+Divide by $p^e$ and let $e\to\infty$ to prove
+\eqref{fr:tensor-min}.  This limit is taken for each fixed $p,i$;
+there is no interchange of Frobenius-iteration and characteristic
+limits.
+
+Since $A_{u-j}(V)$ is a quotient of $V^{\otimes(u-j)}$, the perfect
+pairing \eqref{fr:socle-pairing} yields
+\begin{align*}
+ \mu_{\max}(A_j(V))
+ &= (p-1)\deg\det V-\mu_{\min}(A_{u-j}(V))\\
+ &\le(p-1)K_W\cdot C+\frac{(u-j)c}{p-1}\\
+ &\le(p-1)K_W\cdot C+nc.
+\end{align*}
+\end{proof}
+
+The divisors $B_p-pD=T_0-(p-k_0N_p)G$ range over a fixed finite
+list. Combining~\eqref{fr:intersection-bounds},
+\eqref{fr:flag-degrees}, and Lemma~\ref{fr:truncated-slope}
+therefore gives, uniformly for $0\le j\le u$,
+\begin{align}
+ \mu_{\max}(\mathcal G_j|_C)
+ &\le p(4+2/r)\Lambda H^d+O(1)\notag\\
+ &\le M_p:=7p\Lambda H^d+c_0,\label{fr:common-slope-bound}
+\end{align}
+where $c_0\ge0$ is fixed.  The coefficient $7$ provides harmless
+room in this common bound.
+
+\begin{lemma}\label{fr:diagonal-sections}
+For all sufficiently large $p$,
+\[
+ h^0(\Delta_F,\mathcal L_p)
+ \le R\bigl(7^nH^d+O(1/p)\bigr)<R/4.
+\]
+The error constant is independent of the filtration index $j$.
+\end{lemma}
+
+\begin{proof}
+Write the fixed flag as
+\[
+ W=W_d\supset W_{d-1}\supset\cdots\supset W_1=C,
+ \qquad W_{d-k}\in|h_k|_{W_{d-k+1}}
+ \quad(1\le k\le d-1).
+\]
+At step $k$, fix the preceding nonnegative integers
+$b_1,\ldots,b_{k-1}$ and put
+\[
+ \mathcal F_k=
+ \mathcal G_j|_{W_{d-k+1}}
+ \Bigl(-\sum_{i<k}b_i h_i\Bigr).
+\]
+For each $b_k\ge0$, the divisor restriction sequence is
+\[
+ 0\longrightarrow\mathcal F_k(-(b_k+1)h_k)
+ \longrightarrow\mathcal F_k(-b_kh_k)
+ \longrightarrow
+ \mathcal F_k(-b_kh_k)|_{W_{d-k}}
+ \longrightarrow0.
+\]
+Iterating it for $b_k=0,1,\ldots$ and then proceeding to the next
+member of the flag bounds the section space by
+\begin{equation}\label{fr:flag-lattice-sum}
+ h^0(W,\mathcal G_j)\le
+ \sum_{b_1,\ldots,b_{d-1}\ge0}
+ h^0\left(C,\mathcal G_j|_C\Bigl(-\sum_i b_i h_i|_C\Bigr)\right).
+\end{equation}
+At each stage the remainder is zero after sufficiently negative
+ample twisting.  Its stopping index need not be uniform in $j,p$
+or in the preceding twists: enlarging the nonnegative finite sums
+to the displayed lattice sum preserves the inequality.
+
+A summand in \eqref{fr:flag-lattice-sum} vanishes when
+$\sum_i b_i(h_i\cdot C)>M_p$, because then its maximum slope is
+negative.  Each nonzero summand has at most $e_j(M_p+1)$ sections.
+Indeed, evaluation at $\lfloor M_p\rfloor+1$ distinct points is injective;
+the kernel has negative maximum slope after subtracting those
+points.  By \eqref{fr:flag-degrees} it follows that
+\begin{align}
+ h^0(W,\mathcal G_j)
+ &\le e_j(M_p+1)
+       \prod_{i=1}^{d-1}
+       \left(1+\frac{M_p}{l_i\Lambda H^d}\right)\notag\\
+ &=e_jp^d\bigl(7^nH^d+O(1/p)\bigr).
+ \label{fr:common-flag-polynomial}
+\end{align}
+The leading coefficient follows from
+$\Lambda=\prod_i l_i$.  More importantly, the whole scalar
+polynomial on the first line is the same for every $j$.
+
+Sum over the filtration in \eqref{fr:diagonal-graded}.  The ranks
+satisfy $\sum_j e_j=p^d$, so \eqref{fr:common-flag-polynomial} gives
+the asserted bound with $R=p^{2d}$.  There is no extra factor for
+the number of graded pieces.  Finally
+\[
+ 7^nH^d\le(14\epsilon)^d<1/4
+\]
+by \eqref{fr:intersection-bounds}, proving the strict inequality
+for all large $p$.
+\end{proof}
+
+\subsection{The two orders of the determinant}
+\label{fr:determinant}
+
+Choose $R$ generically independent columns of
+\eqref{fr:two-slot-evaluation} from bases of its source vector spaces.
+Their determinant is a nonzero section
+\[
+ 0\ne\sigma\in H^0(W'\times W',\mathcal Q_1\boxtimes\mathcal Q_2)
+\]
+of an actual external-product line bundle. To specify its factors,
+let $m_i$ be the sum of the weights of the $R$ chosen columns in
+slot $i$. The target determinant is
+$(\det\mathcal E)^s\boxtimes(\det\mathcal E)^s$, and the
+chosen source determinant is
+$\OO(-m_1S')\boxtimes\OO(-m_2S')$. Thus
+\[
+ \mathcal Q_i=(\det\mathcal E)^{\otimes s}
+                 \otimes\OO_{W'}(m_iS'),\qquad
+ \lambda_i=m_i/R.
+\]
+Every column weight lies between $0$ and $q$, so
+$0\le\lambda_i\le q$ independently of the columns chosen.
+
+Under the numerical identification with the base-field twist,
+\begin{equation}\label{fr:slot-determinant-class}
+ \frac{c_1(\mathcal Q_i)}R
+ =\frac{c_1(\mathcal E)}s+\lambda_iS
+ =\frac{B_p}p+\frac{p-1}{2p}K_W+\lambda_iS,
+ \qquad 0\le\lambda_i\le q.
+\end{equation}
+The Frobenius first-Chern-class identity is also
+\cite[Lemma~4.2]{Sun}; it is an identity of rational divisor classes.  For the second equality, use
+\eqref{fr:Frob-pullback-graded}.  Complementary degrees in
+\eqref{fr:socle-pairing} have total first Chern class
+$e_j(p-1)K_W$.  Summing gives
+\[
+ \sum_jc_1(A_j(\Omega_W^1))=\frac{s(p-1)}2K_W.
+\]
+Thus $c_1(F^*\mathcal E)=sB_p+s(p-1)K_W/2$, and Frobenius pullback of
+twisted divisor classes multiplies by $p$, as required.
+
+For $0\le\lambda\le q$, the fixed movable inequality gives
+\[
+ (G+K_W/2+\lambda S)\cdot\gamma\le40\epsilon J\cdot\gamma,
+\]
+where pullback by $\pi_x$ is understood. This concerns only
+intersections of fixed divisors and the fixed complete-intersection
+witness, so it remains true on the reduction. The class in
+\eqref{fr:slot-determinant-class} differs from its
+left-hand divisor at $\lambda=\lambda_i$ by
+\[
+ \frac1p\bigl(B_p-pD-K_W/2\bigr).
+\]
+Its numerator belongs to the fixed finite list
+$T_0-aD-K_W/2$, $a\in\{0,\ldots,k_0-1\}$. The resulting error after
+intersection with $\gamma$ is therefore $O(p^{-1})$, uniformly
+over the selected determinant columns.
+
+Let $x'$ be the twisted point and let $0\ne\tau_i\in
+H^0(W',\mathcal Q_i)$.  The strict transform of its effective divisor on
+the blowup at $x'$ pairs nonnegatively with the twist of $\gamma$.
+Since $J\cdot\gamma>0$, it follows that
+\begin{equation}\label{fr:slot-order}
+ \frac{\ord_{x'}(\tau_i)}R\le40\epsilon+O(1/p).
+\end{equation}
+The constant is uniform in the columns and in $\tau_i$.  This
+argument tests sections on the reduction itself; it does not
+require them to lift to characteristic zero.
+
+K\"unneth identifies the space containing $\sigma$ with
+$H^0(W',\mathcal Q_1)\otimes H^0(W',\mathcal Q_2)$.  Choose bases adapted to the
+orders of vanishing at $x'$ in each factor.  In each degree their
+leading terms are linearly independent.  Tensor products of these
+leading terms remain independent in each bidegree of the two
+disjoint sets of parameters; terms of different bidegrees cannot
+cancel.  Every nonzero tensor consequently has order at most the
+sum of the two maximum basis orders.  Applying
+\eqref{fr:slot-order}, we obtain
+\begin{equation}\label{fr:determinant-order-upper}
+ \ord_{(x',x')}\sigma\le R\bigl(80\epsilon+O(1/p)\bigr).
+\end{equation}
+
+On the other hand, \eqref{fr:diagonal-rank-upper} and
+Lemma~\ref{fr:diagonal-sections} bound the matrix rank at $(x',x')$
+by a number strictly smaller
+than $R/4$.  Trivialize its line bundles near that point.  Invertible
+constant row operations make more than $3R/4$ rows vanish at the
+point.  Each entry of those rows belongs to the maximal ideal, so
+every term of the determinant has order at least $3R/4$.  Therefore
+\begin{equation}\label{fr:determinant-order-lower}
+ \ord_{(x',x')}\sigma\ge3R/4.
+\end{equation}
+Equations \eqref{fr:determinant-order-upper} and
+\eqref{fr:determinant-order-lower} contradict
+$80\epsilon<3/4$ for sufficiently large $p$.
+
+
+This contradiction proves Proposition~\ref{thm:finite-data}.
+The full-rank calculation used $z_*$, while the diagonal estimate
+holds at every point and was tested at the separately chosen $x$.
+The errors were controlled by one fixed finite list of divisor
+classes and one fixed flag polynomial. Thus their constants do
+not depend on $p$, the filtration index, or the chosen columns.
+
+
+\section{Proof of Lemma~\ref{lem:general-nojets}}
+\begin{proof}
+Fix $s>0$. Choose $n$ sufficiently large that
+Lemma~\ref{lem:general-witness} applies, $r_n>s+1$, and
+$P_n^d<(2\epsilon)^d$. Since $P_n-r_nD$ is nef,
+\[
+ (2P_n+sD)\cdot P_n^{d-1}
+ \le(2+s/r_n)P_n^d<4P_n^d.
+\]
+Fix $x,\beta,E,f,H_1,\ldots,H_{d-1}$ supplied by that lemma.
+For every $0\le\lambda\le s$, nefness of $D$ gives
+\[
+ f^*\beta^*(P_n+\lambda D)\cdot H_1\cdots H_{d-1}
+ <40\epsilon\,f^*E\cdot H_1\cdots H_{d-1}.
+\]
+Choose the flag in Lemma~\ref{lem:general-flag} with $P=P_n$.
+
+If $|kR_{n,s}|$ separated $(2d+2)k$-jets at any $z\in U$,
+these fixed data would satisfy all hypotheses of
+Proposition~\ref{thm:finite-data}, with
+\[
+ W=X,\qquad G=H=P_n,\qquad S=D,\qquad q=s,\qquad r=r_n.
+\]
+Here $K_X\sim0$, so the canonical-intersection condition is
+automatic. This is impossible. Hence no such $k,z$ exist.
+\end{proof}
+
+\medskip
+\noindent\textit{Remark.}
+This obstruction uses $(\mathsf I_d)$ and $D^d=0$, but does not
+use $\kappa(D)=-\infty$. That extra assumption retains the
+nonvanishing proof format of the threefold framework. Under
+the source inputs, the two jet lemmas actually exclude the
+entire full-nef-dimension, non-big case.
+
+\begin{thebibliography}{99}
+\bibitem{NS}
+\emph{Numerical Semiampleness of Nef Adjoint Divisors},
+OpenAI mathematics collection, October 3, 2026,
+Sections~2--6, especially Proposition~5.3 and Theorem~6.1.
+\href{https://github.com/openai/math/blob/main/preprints/Numerical-Semiampleness-of-Nef-Adjoint-Divisors-October-3-2026/paper.pdf}{Source manuscript}.
+
+\bibitem{BZ}
+C.~Birkar and D.-Q.~Zhang,
+\emph{Effectivity of Iitaka fibrations and pluricanonical systems of polarized pairs},
+Publ. Math. Inst. Hautes \'Etudes Sci. \textbf{123} (2016), 283--331.
+\href{https://doi.org/10.1007/s10240-016-0080-x}{DOI}.
+
+\bibitem{BDPP}
+S.~Boucksom, J.-P.~Demailly, M.~P\u{a}un, and Th.~Peternell,
+\emph{The pseudo-effective cone of a compact K\"ahler manifold and varieties of negative Kodaira dimension},
+J.~Algebraic Geom. \textbf{22} (2013), no.~2, 201--248.
+\href{https://doi.org/10.1090/S1056-3911-2012-00574-8}{DOI}.
+
+\bibitem{CP}
+F.~Campana and M.~P\u{a}un,
+\emph{Orbifold generic semi-positivity: an application to families of canonically polarized manifolds},
+Ann.~Inst.~Fourier (Grenoble) \textbf{65} (2015), no.~2, 835--861.
+\href{https://doi.org/10.5802/aif.2945}{DOI}.
+
+\bibitem{FG}
+O.~Fujino and Y.~Gongyo,
+\emph{On the moduli $b$-divisors of lc-trivial fibrations},
+Ann. Inst. Fourier (Grenoble) \textbf{64} (2014), no.~4, 1721--1735.
+\href{https://doi.org/10.5802/aif.2894}{DOI}.
+
+\bibitem{FH}
+O.~Fujino and K.~Hashizume,
+\emph{Existence of log canonical modifications and its applications},
+Eur. J. Math. \textbf{9} (2023), no.~1, Paper No.~13, 32~pp.
+\href{https://doi.org/10.1007/s40879-023-00598-0}{DOI}.
+
+\bibitem{KS}
+Y.~Kitadai and H.~Sumihiro,
+\emph{Canonical filtrations and stability of direct images by Frobenius morphisms},
+Tohoku Math. J. (2) \textbf{60} (2008), no.~2, 287--301.
+\href{https://doi.org/10.2748/tmj/1215442876}{DOI}.
+
+\bibitem{Langer}
+A.~Langer,
+\emph{Semistable sheaves in positive characteristic},
+Ann. of Math. (2) \textbf{159} (2004), no.~1, 251--276.
+\href{https://doi.org/10.4007/annals.2004.159.251}{DOI}.
+
+\bibitem{LazarsfeldPAGI}
+R.~Lazarsfeld,
+\emph{Positivity in Algebraic Geometry I: Classical Setting: Line Bundles and Linear Series},
+Ergebnisse der Mathematik und ihrer Grenzgebiete, vol.~48,
+Springer-Verlag, 2004.
+\href{https://www.math.stonybrook.edu/~roblaz/Reprints/Laz.PAG.Chapt1.pdf}{Author-hosted Chapter~1}.
+
+\bibitem{MR}
+V.~B.~Mehta and A.~Ramanathan,
+\emph{Semistable sheaves on projective varieties and their restriction to curves},
+Math.~Ann. \textbf{258} (1982), no.~3, 213--224.
+\href{https://doi.org/10.1007/BF01450677}{DOI}.
+
+\bibitem{MustataSchwede}
+M.~Musta\c{t}\u{a} and K.~Schwede,
+\emph{A Frobenius variant of Seshadri constants},
+Math. Ann. \textbf{358} (2014), nos.~3--4, 861--878.
+\href{https://doi.org/10.1007/s00208-013-0976-4}{DOI}.
+Numbering follows arXiv:1203.1081v1.
+
+\bibitem{LA}
+OpenAI,
+\emph{Log abundance in characteristic zero},
+OpenAI Math Release preprint
+\href{https://github.com/openai/math/blob/main/preprints/Log-abundance-in-characteristic-zero-September-24-2026/paper.pdf}{OAI:Log-abundance-in-characteristic-zero-September-24-2026},
+2026.
+
+\bibitem{Sun}
+X.~Sun,
+\emph{Direct images of bundles under Frobenius morphism},
+Invent. Math. \textbf{173} (2008), no.~2, 427--447.
+\href{https://doi.org/10.1007/s00222-008-0125-y}{DOI}.
+Numbering follows arXiv:math/0611360v2.
+\end{thebibliography}
+
+\end{document}

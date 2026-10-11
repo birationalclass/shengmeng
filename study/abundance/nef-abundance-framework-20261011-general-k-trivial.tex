@@ -1,0 +1,230 @@
+\documentclass[12pt,a4paper,psamsfonts]{amsart}
+\usepackage{amssymb,mathtools}
+\usepackage{calc}
+\setlength{\topmargin}{0cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+\setlength{\marginparwidth}{0cm}
+\setlength{\marginparsep}{0cm}
+\setlength{\textheight}{\paperheight - 2in - 35pt}
+\setlength{\textwidth}{\paperwidth - 2in}
+\setlength{\headheight}{12.5pt}
+\setlength{\headsep}{25pt}
+\setlength{\footskip}{30pt}
+\renewcommand{\baselinestretch}{1.3}
+\pagestyle{headings}
+\raggedbottom
+\setlength{\emergencystretch}{2em}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
+\newtheorem*{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem*{setup}{Setup}
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}[lemma]{Proposition}
+\newtheorem{corollary}[lemma]{Corollary}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\C}{\mathbb C}
+\newcommand{\OO}{\mathcal O}
+\newcommand{\mult}{\operatorname{mult}}
+\newcommand{\nef}{\operatorname{n}}
+
+\usepackage{tikz-cd}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\PP}{\mathbb P}
+\DeclareMathOperator{\Pic}{Pic}
+\DeclareMathOperator{\Supp}{Supp}
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\vol}{vol}
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\Bir}{Bir}
+\DeclareMathOperator{\codim}{codim}
+\def\UrlBreaks{\do\/\do-\do.}
+\title{Nef Abundance: Framework -- K-Trivial, General Dimension}
+\date{Temporary draft -- October 11, 2026}
+\begin{document}
+\maketitle
+
+
+\section{Theorem and proof}
+
+Fix an integer $d\ge2$. We use the following source inputs,
+denoted collectively by $(\mathsf I_d)$.
+\begin{itemize}
+\setlength{\itemsep}{2pt}
+\setlength{\parsep}{0pt}
+\item For every projective klt $\Q$-pair $(Y,B)$ of dimension
+$j<d$ and every nef rational Cartier divisor $M$, if $K_Y+B$ is
+pseudo-effective and, for some $a\in\Q_{>0}$,
+\[
+ (K_Y+B+aM)\cdot C>0
+\]
+for every integral curve through a sufficiently very general point,
+then $K_Y+B+cM$ is big for every $c\in\Q_{>0}$.
+\item Every projective log canonical $\Q$-pair of dimension at most
+$d$ with nef adjoint has semiample adjoint.
+\item Every projective $\Q$-factorial generalized klt $\Q$-pair of
+dimension at most $d$, with fixed nef rational Cartier b-divisor
+data and pseudo-effective adjoint, admits a terminating choice of
+minimal-model program with a nef endpoint. The program extracts no
+divisors, preserves $\Q$-factorial generalized klt models, and on a
+common resolution the initial adjoint equals the final adjoint plus
+an effective divisor exceptional over the final model.
+\end{itemize}
+The first input is $(P_j)$ of \cite[Section~3.1]{NS}. The last two
+are the companion inputs used in \cite[Section~2]{NS}.
+
+\begin{theorem}
+Assume $(\mathsf I_d)$. Let $X$ be a projective $\Q$-factorial
+terminal variety over $\C$ of dimension $d$, with $K_X\sim0$.
+Let $D$ be a nef Cartier divisor with $\nef(X,D)=d$. Then $D$
+is big. In particular,
+\[
+ H^0(X,\OO_X(mD))\ne0
+ \qquad\text{for some integer }m>0.
+\]
+\end{theorem}
+
+\begin{proof}
+Suppose for contradiction that $D$ is not big. Since $D$ is
+nef, $D^d=0$.
+
+\begin{setup}
+\leavevmode
+\begin{itemize}
+\setlength{\itemsep}{2pt}
+\setlength{\parsep}{0pt}
+\item Fix an ample Cartier divisor $A$ on $X$.
+\item Fix $\epsilon\in\Q_{>0}$ sufficiently small. For $n\ge1$, put
+\[
+ a_n=((D+A/n)^d)^{1/d},\qquad
+ r_n=\max\{1,\lfloor\epsilon/a_n+1/2\rfloor\},\qquad
+ P_n=r_n(D+A/n).
+\]
+Then $P_n$ is ample and rational Cartier, $r_n\to\infty$, and
+$P_n^d\to\epsilon^d$. Indeed, $a_n\to0$ and
+$|r_na_n-\epsilon|\le a_n/2$ for all sufficiently large $n$.
+The sequence index $n$ is independent of the dimension $d$.
+\item Let $p_i:X\times X\to X$ be the projections. Put
+\[
+ Z=\PP_{X\times X}
+       \bigl(p_1^*\OO_X(D)\oplus p_2^*\OO_X(D)\bigr),
+ \qquad \pi:Z\to X\times X.
+\]
+Let $S_1,S_2$ be the two summand sections, and set
+\[
+ U=\pi^{-1}(X_{\mathrm{reg}}\times X_{\mathrm{reg}})
+       \setminus(S_1\cup S_2).
+\]
+Thus $U$ is smooth and $\dim Z=2d+1$.
+\item Set $\xi=c_1(\OO_Z(1))$. For an integer $s>0$, put
+\[
+ R_{n,s}=(p_1\circ\pi)^*P_n+(p_2\circ\pi)^*P_n+s\xi.
+\]
+We use the convention
+$\pi_*\OO_Z(a)=\Sym^a(p_1^*\OO_X(D)\oplus p_2^*\OO_X(D))$
+for $a\ge0$. Whenever $|kR_{n,s}|$ is used, $k>0$ is an integer
+with $kP_n$ Cartier.
+\item Choose $\epsilon$ sufficiently small that
+\[
+ (14\epsilon)^d<\tfrac14,\qquad80\epsilon<\tfrac34.
+\]
+The integer $s$ is chosen after $\epsilon$ and before $n$ tends
+to infinity. The multiple $k$ is chosen after $n$.
+\end{itemize}
+\end{setup}
+
+\medskip
+\noindent\textbf{Jet separation.}
+Let $V$ be a variety, let $B$ be a Cartier divisor, and let
+$z\in V_{\mathrm{reg}}$. For $j\ge0$, $|B|$ separates $j$-jets
+at $z$ if
+\[
+ \forall u\in\OO_{V,z}(B)\quad
+ \exists\sigma\in H^0(V,\OO_V(B))\quad
+ \sigma_z-u\in\mathfrak m_z^{j+1}\OO_{V,z}(B).
+\]
+
+Under the above assumptions, we use the following two lemmas.
+
+\begin{lemma}\label{lem:general-jets}
+Assume $(\mathsf I_d)$. Let $X,D$ and $R_{n,s}$ be as in Setup.
+There exists an integer $s>0$ such that, for every $n\gg0$,
+$|kR_{n,s}|$ separates $(2d+2)k$-jets at a very general point
+$z\in U$, for all sufficiently divisible positive integers $k$.
+\end{lemma}
+
+This is the large-Seshadri-constant construction of
+\cite[Section~5]{NS}, followed by the jet conversion in
+\cite[Section~6.7]{NS}.
+
+\begin{lemma}\label{lem:general-nojets}
+Assume $(\mathsf I_d)$. Let $X,D$ and $R_{n,s}$ be as in Setup.
+For every integer $s>0$ and every $n\gg0$, $|kR_{n,s}|$ does not
+separate $(2d+2)k$-jets at a very general point $z\in U$, for any
+positive integer $k$ with $kP_n$ Cartier.
+\end{lemma}
+
+The terminal application in \cite[Section~6.7]{NS} establishes
+the obstruction on a smooth resolution $w:\overline X\to X$.
+There $K_{\overline X}\sim E$ for an effective $w$-exceptional
+divisor $E$. An ample perturbation of $w^*P_n$ supplies the
+complete-intersection flag, and the jets transfer on the
+isomorphism locus. For one fixed collection of complex data,
+the Frobenius determinant satisfies
+\[
+ \frac34p^{2d}\le\ord(\sigma)
+ \le\bigl(80\epsilon+O(p^{-1})\bigr)p^{2d},
+\]
+which is impossible for arbitrarily large residual
+characteristics $p$.
+
+Fix $s$ supplied by Lemma~\ref{lem:general-jets}, and choose
+$n$ sufficiently large for both lemmas. For a sufficiently
+divisible $k$, Lemma~\ref{lem:general-jets} gives separation at a
+very general point of $U$, whereas
+Lemma~\ref{lem:general-nojets} forbids it. This contradiction
+proves that $D$ is big.
+\end{proof}
+
+\medskip
+\noindent\textit{Remark.}
+The condition $K_X\sim0$ is imposed at the outset. No adjoint
+reduction, index-one cover or terminalization is needed before
+Setup, and no irregularity assumption is imposed. Smooth
+projective varieties with $K_X\sim0$ are included.
+\medskip
+\noindent\textit{From nonvanishing to bigness.}
+If nonvanishing is already known, bigness also follows from
+the log-abundance input in $(\mathsf I_d)$. Choose an effective
+$\Q$-divisor $G\sim_{\Q}D$ and a sufficiently small rational
+$\tau>0$ such that $(X,\tau G)$ is klt. Then
+\[
+ K_X+\tau G\sim_{\Q}\tau D\quad\text{is nef}.
+\]
+Log abundance makes $D$ semiample. A morphism defined by a
+free multiple of $D$ has zero-dimensional general fibre:
+otherwise a curve in a fibre through a very general point
+would have $D$-degree zero, contrary to $\nef(X,D)=d$.
+Thus the morphism is generically finite onto its image, and
+$D$ is big.
+
+\medskip
+\noindent\textbf{Draft status.}
+This is a conditional framework following \cite[Sections~5--6]{NS}.
+The source inputs $(\mathsf I_d)$ and the inherited geometric and
+Frobenius arguments have not been independently verified here.
+The two jet lemmas record the source proof obligations; their
+complete proofs are not supplied by this framework.
+
+\begin{thebibliography}{99}
+\bibitem{NS}
+\emph{Numerical Semiampleness of Nef Adjoint Divisors},
+OpenAI mathematics collection, October 3, 2026,
+Sections~3--6.
+\href{https://github.com/openai/math/blob/main/preprints/Numerical-Semiampleness-of-Nef-Adjoint-Divisors-October-3-2026/paper.pdf}{Source manuscript}.
+\end{thebibliography}
+
+\end{document}

@@ -34,3 +34,32 @@ html{scroll-behavior:auto;scroll-padding-top:24px}body{background:var(--paper);c
 @media(min-width:1280px){.chat-view-tools{right:max(20px,calc((100vw - 960px)/2 - 116px));width:90px}.reading-guide{width:72px}}
 @media(max-width:1279px){.conversation{padding-right:58px}.chat-view-tools{right:12px;top:100px}.reading-guide-label{display:none}}
 @media(max-width:600px){.chat-view-tools{right:8px;top:auto;bottom:24px}.conversation{padding-right:50px}.reading-guide{width:40px;padding-top:10px;gap:3px}.reading-guide-name{font-size:11px}}
+
+/* A fixed reading shell; only the message pane owns vertical scrolling. */
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+main.learning-page{height:calc(100dvh - 64px);margin-top:64px;padding:12px 0 16px;box-sizing:border-box;display:flex;flex-direction:column;min-height:0}
+.learning-title,.source-theorem,.note-entry{flex:none}
+.learning-title h1{font-size:36px;margin:4px 0 6px}
+.paper-link{font-size:15px}
+.source-theorem{margin:12px 0 14px;padding-bottom:10px}
+.source-theorem img{width:100%;max-height:15dvh;object-fit:contain;object-position:left center}
+.source-theorem figcaption{margin-top:5px}
+.note-entry{margin:0 0 12px;gap:6px 16px;font-size:12px;position:relative;z-index:13}
+.conversation{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;direction:rtl;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:#b7c4af transparent;overscroll-behavior:contain;padding:0 12px 24px;scroll-behavior:auto;overflow-anchor:none}
+.conversation>*{direction:ltr;text-align:left}
+.conversation::-webkit-scrollbar{width:7px}
+.conversation::-webkit-scrollbar-thumb{background:#b7c4af;border-radius:8px;border:2px solid var(--paper)}
+.conversation::-webkit-scrollbar-track{background:transparent}
+.conversation .chat-message,.conversation .day-separator{scroll-margin-top:12px}
+.date-navigation{overflow:hidden}
+.materials-guide summary{cursor:pointer;color:var(--green);list-style:none;text-decoration:underline;text-underline-offset:4px}
+.materials-guide summary::marker{content:''}
+.materials-guide summary:focus-visible{outline:2px solid var(--green);outline-offset:4px}
+.materials-list{position:absolute;top:26px;right:0;width:min(760px,100%);box-sizing:border-box;display:grid;grid-template-columns:1fr 1fr;gap:0 22px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 16px;box-shadow:0 8px 24px #202d2015}
+.material-row{display:flex;gap:8px;align-items:center;min-width:0;padding:7px 0;border-bottom:1px solid var(--line)}
+.material-row:last-child{border-bottom:0}
+.material-title{flex:1;min-width:0;line-height:1.5}
+.material-row a{font-size:11px;white-space:nowrap}
+.material-label{font-size:10px;color:var(--muted);font-weight:400;white-space:nowrap}
+@media(max-width:1100px){.conversation{padding-right:58px}}
+@media(max-width:600px){main.learning-page{padding-top:8px;padding-bottom:10px}.learning-title h1{font-size:28px}.paper-link{font-size:12px;line-height:1.4}.source-theorem{margin:8px 0 10px;padding-bottom:7px}.source-theorem img{max-height:11dvh}.source-theorem figcaption{font-size:10px}.note-entry{gap:5px 12px;margin-bottom:7px;font-size:11px}.conversation{padding-left:6px;padding-right:48px}.materials-list{grid-template-columns:1fr;width:100%;gap:0;padding:8px 12px}.material-row{padding:5px 0}.chat-message{margin-top:12px}}
