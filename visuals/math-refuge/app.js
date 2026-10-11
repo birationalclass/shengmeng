@@ -1,3 +1,4 @@
+import {mountReportSettings} from './report-settings.js?v=report-settings-13';
 import {preparePanelShell,bindPanelDismissals} from './panel-shell.js?v=smart-voice-9';
 import {capturePhoto,downloadPhoto} from './photo.js?v=photo-151';
 import {regionAnchor,distanceLabel} from './region-distance.js';
@@ -46,8 +47,8 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat,createArrivalEnvironment} from './scene.js?v=hall-first-12';
-import {createLecture} from './lecture.js?v=board-audio-12';
-import {reportVoicePresentation} from './report-voice.js?v=board-audio-12';
+import {createLecture} from './lecture.js?v=report-settings-13';
+import {reportVoicePresentation} from './report-voice.js?v=report-settings-13';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v=inline-root-1';
@@ -168,6 +169,7 @@ const curves=SHOTS.map(s=>({
 const totalDuration=SHOTS.reduce((a,s)=>a+s.duration,0);
 const motionVelocity=new THREE.Vector3(),motionAcceleration=new THREE.Vector3(),previousPosition=new THREE.Vector3(),previousVelocity=new THREE.Vector3();
 const shotPosition=new THREE.Vector3(),shotTarget=new THREE.Vector3(),viewDirection=new THREE.Vector3(),lookMatrix=new THREE.Matrix4(),viewUp=new THREE.Vector3(0,1,0);
+let reportSettings=null;
 const rooms=[],roomLecterns=[],roomViews=[],campusLightTarget=new THREE.Vector3(12*BUILDING_SCALE,3*BUILDING_SCALE,0);
 const roomFrustum=new THREE.Frustum(),roomProjection=new THREE.Matrix4();let visibilityAt=-Infinity;
 function updateRoomVisibility(stamp){
@@ -756,7 +758,7 @@ function populateReport(){
     const option=document.createElement('option'),copy=lecture.copy(i);option.value=String(i);option.textContent=`${copy.source} · ${copy.title}`;$('lecturePage').append(option);
   }
   $('reportSelect').replaceChildren(...lecture.reports.map(report=>{const option=document.createElement('option');option.value=report.id;option.textContent=report.speaker+' · '+report.topic;return option;}));
-  $('reportSelect').value=lecture.report.id;populateVoiceOptions();
+  $('reportSelect').value=lecture.report.id;populateVoiceOptions();reportSettings?.refresh();lecture.setVoiceRate(reportSettings?.settings.rate||1);
   $('lectureHeading').textContent=lecture.report.speaker+' · '+lecture.report.topic;
   for(const id of ['lectureSource','readerSource']){$(id).href=lecture.report.url;$(id).textContent=lecture.report.sourceLabel+' ↗';}
   $('world').dataset.report=lecture.report.id;controlLabel($('reportButton'),lecture.navigation?.sections?'选择本次小节':'选择报告人和主题');
@@ -1059,3 +1061,5 @@ $('photoButton').addEventListener('click',async()=>{
  catch(error){console.error('[Photo]',error);$('photoStatus').textContent='拍摄失败，请重试';}
  finally{photoBusy=false;$('photoButton').disabled=false;setTimeout(()=>{$('photoStatus').hidden=true;},3500);}
 });
+
+reportSettings=mountReportSettings(document,{getLecture:()=>lecture,onRate:rate=>rooms.forEach(room=>room.setVoiceRate(rate))});

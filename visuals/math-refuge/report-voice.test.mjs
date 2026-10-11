@@ -125,3 +125,5 @@ test('moving to the next blackboard releases the previous audio and keeps only c
  h.audios[0].dispatchEvent(new Event('ended'));await tick();assert.equal(h.voice.state.chapter,1);assert.equal(h.revoked.length,1);
  await h.voice.seek(2);assert.equal(h.voice.state.chapter,0);assert.equal(h.calls.filter(url=>url.endsWith('/a.mp3')).length,2,'backtracking reloads released audio');h.voice.dispose();
 });
+
+test('playback rate preserves pitch, actual clock and selection/seek/next-board speed',async()=>{const h=harness();h.voice.setRate(.85);await h.voice.select(report);assert.equal(h.audios[0].playbackRate,.85);assert.equal(h.audios[0].preservesPitch,true);h.audios[0].currentTime=2;h.voice.update();assert.equal(h.voice.state.time,2);h.voice.setRate(1.15);assert.equal(h.audios[0].playbackRate,1.15);await h.voice.seek(12);assert.equal(h.audios.at(-1).playbackRate,1.15);await h.voice.select(report);await h.voice.toggle();h.audios.at(-1).dispatchEvent(new Event('ended'));await tick();assert.equal(h.audios.at(-1).playbackRate,1.15);assert.equal(h.voice.setRate(100),1.3);assert.equal(h.voice.setRate(NaN),1);h.voice.dispose();});

@@ -1,7 +1,7 @@
 // On-demand narration: no network or audio allocation until a report is selected.
 export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),onChange=()=>{},baseURL=new URL('.',import.meta.url).href}={}){
- let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,contextActive=true,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0;
- const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',started:false,chapter:0,temporaryPause:false};
+ let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,contextActive=true,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0,playbackRate=1;
+ const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',started:false,chapter:0,temporaryPause:false,rate:1};
  const emit=()=>onChange({...state});
  const sync=()=>{if(audio&&manifest)state.time=Math.min(state.duration,manifest.chapters[index].start+audio.currentTime);return state.time;};
  function pause(){desired=false;state.temporaryPause=false;playToken++;sync();audio?.pause();if(['playing','buffering','preparing','away'].includes(state.phase)){state.phase='paused';emit();}}
@@ -28,7 +28,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   state.chapter=i;state.time=manifest.chapters[i].start+at;
   if(!cache.has(i)){state.phase='loading';state.progress=null;emit();}
   const url=await load(i);if(!url||mine!==epoch||attachment!==attachToken)return false;trim();
-  const target=makeAudio();audio=target;target.preload='auto';target.src=url;
+  const target=makeAudio();audio=target;target.preload='auto';target.preservesPitch=true;target.playbackRate=playbackRate;target.src=url;
   const valid=()=>mine===epoch&&audio===target;
   const position=()=>{if(valid()&&at){target.currentTime=at;}};
   target.addEventListener('loadedmetadata',position,{once:true});try{position();}catch{}
@@ -79,13 +79,14 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   return false;
  }
  return{state,select,toggle,pause,seek,setContextActive,
+  setRate(value){const n=Number(value);playbackRate=Number.isFinite(n)?Math.max(.75,Math.min(1.3,n)):1;state.rate=playbackRate;if(audio){audio.preservesPitch=true;audio.playbackRate=playbackRate;}emit();return playbackRate;},
   async suspendUntil(job){
    if(!desired||state.phase==='preparing')return;
    const mine=epoch,token=++playToken;sync();audio?.pause();state.phase='preparing';state.progress=null;emit();
    try{await job;if(mine===epoch&&token===playToken&&desired)await play();}
    catch{if(mine===epoch&&token===playToken&&desired){pause();state.phase='error';state.error='板书尚未就绪 · 点击重试';emit();}}
   },get manifest(){return manifest;},
-  update(){sync();if(manifest&&desired&&contextActive&&audio&&index+1<manifest.chapters.length&&manifest.chapters[index].duration-audio.currentTime<20){void load(index+1,false).catch(()=>{});}return state;},
+  update(){sync();if(manifest&&desired&&contextActive&&audio&&index+1<manifest.chapters.length&&manifest.chapters[index].duration-audio.currentTime<20*playbackRate){void load(index+1,false).catch(()=>{});}return state;},
   dispose(){++epoch;release();manifest=null;state.phase='idle';emit();}};
 }
 // Use the same measured stroke costs as chalkPosition and inkReveal, so a

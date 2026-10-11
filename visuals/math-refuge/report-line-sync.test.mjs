@@ -51,3 +51,5 @@ for(const voice of ['ye','ye-young'])test(voice+': every blackboard has one comp
  }
  assert(Math.abs(end-m.duration)<.002);
 });
+
+for(const tone of ['ye','ye-young'])test(tone+': title board contains only greeting and completed title, no premature proof',async()=>{const m=JSON.parse(await fs.readFile(new URL(`./assets/audio/reports/${tone}/narration.json`,import.meta.url))),p=m.paragraphs.filter(x=>x.page===0);assert.equal(p.length,2);assert.equal(p[1].role,'title');assert(m.chapters[0].duration>=20&&m.chapters[0].duration<=25);assert(p[1].start>m.boards[0].writeEnd);assert(m.openingPolicy.titleOnly);assert(m.duration>54*60&&m.duration<56*60);assert(!p.some(x=>/集中|熵估计|傅里叶|Fourier/.test(x.text)));});
