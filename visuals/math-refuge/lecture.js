@@ -1,7 +1,7 @@
 import {narrationHighlights,measuredHighlight,highlightFrame,createBoardHighlight} from './board-highlight.js?v=smart-voice-9';
 import {createBoardCameraControl} from './board-camera-control.js?v=smart-voice-9';
 import {boardContentJump,advanceBoardQueue} from './board-transition.js';
-import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock} from './report-voice.js?v=report-settings-13';
+import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock} from './report-voice.js?v=ye2-report-14';
 import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v=smart-voice-9';
@@ -16,7 +16,7 @@ import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
 
 import {chalkCopy,composeChalkPage} from './chalk-language.js?v=report-line-sync-6';
 
-import {REPORTS} from './report-catalog.js?v=smart-voice-9';
+import {REPORTS} from './report-catalog.js?v=ye2-report-14';
 import {createReportLoader} from './report-loader.js?v=report-line-sync-6';
 
 import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=43-tight-boards';
@@ -167,11 +167,12 @@ export async function createLecture(scene,renderer,options={}){
   }
   const reportHeader=glassLabel(4.6,.55,reportX,4.45,'Smart glass report heading');
   addTextSheen(THREE,reportHeader.mesh,reportHeader.texture,4.6,.55);
+  const reportStep=reports.length>4?.88:1.05,reportHeight=reports.length>4?.75:.9;
   for(const [index,report] of (navigation?.sections?[]:reports).entries()){
-    const label=glassLabel(4.6,.9,reportX,3.55-index*1.05,`Smart glass report ${report.id}`);
-    const button=new THREE.Mesh(new THREE.PlaneGeometry(4.7,1.02),new THREE.MeshBasicMaterial({transparent:true,opacity:0,colorWrite:false,depthWrite:false,toneMapped:false}));
-    button.position.set(reportX,3.55-index*1.05,-11.34);button.name=`Report selection ${report.speaker}`;
-    scene.remove(label.mesh);label.mesh.position.set(0,0,.008);label.mesh.userData.screenLabel=true;button.add(label.mesh);addTextSheen(THREE,button,label.texture,4.6,.9);scene.add(button);
+    const label=glassLabel(4.6,reportHeight,reportX,3.55-index*reportStep,`Smart glass report ${report.id}`);
+    const button=new THREE.Mesh(new THREE.PlaneGeometry(4.7,reportHeight+.12),new THREE.MeshBasicMaterial({transparent:true,opacity:0,colorWrite:false,depthWrite:false,toneMapped:false}));
+    button.position.set(reportX,3.55-index*reportStep,-11.34);button.name=`Report selection ${report.speaker}`;
+    scene.remove(label.mesh);label.mesh.position.set(0,0,.008);label.mesh.userData.screenLabel=true;button.add(label.mesh);addTextSheen(THREE,button,label.texture,4.6,reportHeight);scene.add(button);
     Object.assign(button.userData,{action:`report:${report.id}`,reportId:report.id,smartGlass:true,pressed:false,canvas:label.canvas,texture:label.texture});reportButtons.push(button);
   }
   function setReportState(){
@@ -183,7 +184,7 @@ export async function createLecture(scene,renderer,options={}){
       c.clearRect(0,0,1024,240);c.textAlign='right';c.shadowBlur=0;c.fillStyle=silverInk(c);
       const font=language==='zh'?SCREEN_FONT:'Baskerville, "Iowan Old Style", Georgia, serif';
       c.font='400 78px '+font;
-      const name=language==='zh'?report.speaker:report.speakerEn;c.fillText(name,996,91);
+      const name=report.label||(language==='zh'?report.speaker:report.speakerEn);c.fillText(name,996,91);
       if(selected){const px=996-c.measureText(name).width-38;c.font='400 55px Georgia, serif';c.fillStyle='#e4cf9c';c.fillText('▸',px,88);}
       c.font='400 40px '+font;c.fillStyle=silverInk(c);
       const topic=waiting?(language==='zh'?'正在准备报告…':'Preparing report…'):(language==='zh'?report.topic:report.topicEn),words=language==='zh'?[...topic]:topic.split(/(?<= )/);let line='',y=159;

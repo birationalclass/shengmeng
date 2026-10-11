@@ -7,6 +7,9 @@ export const REPORTS=[
   {id:'ye',speaker:'叶东',speakerEn:'Dong Ye',topic:'格点上的 Hardy–Rellich 不等式',topicEn:'Hardy–Rellich inequalities on lattices',
     narration:{manifest:'./assets/audio/reports/ye/narration.json',language:'zh',synthetic:true,voices:[{id:'young',label:'年轻明亮男声 · 完整报告',manifest:'./assets/audio/reports/ye-young/narration.json'}]},
     manifest:'./assets/chalk/ye/pages.json',url:'https://arxiv.org/abs/2607.23057',sourceLabel:'论文原文 · arXiv:2607.23057',authors:['Xia Huang','Dong Ye']},
+  {id:'ye2',speaker:'叶东',speakerEn:'Dong Ye',label:'YE dong 报告2',basedOn:'ye',topic:'Hardy–Rellich · 例子切入版',topicEn:'Hardy–Rellich · example-first',
+    narration:{manifest:'./assets/audio/reports/ye2/narration.json',label:'年轻明亮男声 · 报告2',language:'zh',synthetic:true},
+    manifest:'./assets/chalk/ye2/pages.json',url:'https://arxiv.org/abs/2607.23057',sourceLabel:'论文原文 · arXiv:2607.23057 · 重编报告2',authors:['Xia Huang','Dong Ye'],productionPlan:'./assets/audio/reports/ye2/production-plan.json'},
   {id:'meng',speaker:'孟晟',speakerEn:'Sheng Meng',topic:'谱序列',topicEn:'Spectral sequences',
     manifest:'./assets/chalk/pages.json',url:'../../study/spectral/',sourceLabel:'原始谱序列讲义与完整证明'}
 ];

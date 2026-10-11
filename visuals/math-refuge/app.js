@@ -1,4 +1,4 @@
-import {mountReportSettings} from './report-settings.js?v=report-settings-13';
+import {mountReportSettings} from './report-settings.js?v=ye2-report-14';
 import {preparePanelShell,bindPanelDismissals} from './panel-shell.js?v=smart-voice-9';
 import {capturePhoto,downloadPhoto} from './photo.js?v=photo-151';
 import {regionAnchor,distanceLabel} from './region-distance.js';
@@ -47,8 +47,8 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat,createArrivalEnvironment} from './scene.js?v=hall-first-12';
-import {createLecture} from './lecture.js?v=report-settings-13';
-import {reportVoicePresentation} from './report-voice.js?v=report-settings-13';
+import {createLecture} from './lecture.js?v=ye2-report-14';
+import {reportVoicePresentation} from './report-voice.js?v=ye2-report-14';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v=inline-root-1';
@@ -757,16 +757,17 @@ function populateReport(){
   for(let i=lecture.clock.startAt;i<=lecture.clock.stopAt;i++){
     const option=document.createElement('option'),copy=lecture.copy(i);option.value=String(i);option.textContent=`${copy.source} · ${copy.title}`;$('lecturePage').append(option);
   }
-  $('reportSelect').replaceChildren(...lecture.reports.map(report=>{const option=document.createElement('option');option.value=report.id;option.textContent=report.speaker+' · '+report.topic;return option;}));
+  $('reportSelect').replaceChildren(...lecture.reports.map(report=>{const option=document.createElement('option');option.value=report.id;option.textContent=(report.label||report.speaker)+' · '+report.topic;return option;}));
   $('reportSelect').value=lecture.report.id;populateVoiceOptions();reportSettings?.refresh();lecture.setVoiceRate(reportSettings?.settings.rate||1);
-  $('lectureHeading').textContent=lecture.report.speaker+' · '+lecture.report.topic;
+  $('reportVersionLink').hidden=lecture.report.id!=='ye2';
+  $('lectureHeading').textContent=(lecture.report.label||lecture.report.speaker)+' · '+lecture.report.topic;
   for(const id of ['lectureSource','readerSource']){$(id).href=lecture.report.url;$(id).textContent=lecture.report.sourceLabel+' ↗';}
   $('world').dataset.report=lecture.report.id;controlLabel($('reportButton'),lecture.navigation?.sections?'选择本次小节':'选择报告人和主题');
   $('lectureProgress').max=String(lecture.progress.total);$('lectureProgress').value=String(lecture.progress.page+1);
 }
 function populateVoiceOptions(){
  const selector=$('reportVoiceTone'),variants=lecture.report.narration?.voices||[];
- const choices=lecture.report.narration?[{id:'original',label:'沈腾参考音色 · 完整报告'},...variants.filter(v=>v.id!=='original'),{id:'off',label:'关闭语音 · 仅板书'}]:[{id:'off',label:'此报告暂无语音'}];
+ const choices=lecture.report.narration?[{id:'original',label:lecture.report.narration.label||'沈腾参考音色 · 完整报告'},...variants.filter(v=>v.id!=='original'),{id:'off',label:'关闭语音 · 仅板书'}]:[{id:'off',label:'此报告暂无语音'}];
  selector.replaceChildren(...choices.map(item=>{const option=document.createElement('option');option.value=item.id;option.textContent=item.label;return option;}));selector.value=lecture.report.narration?lecture.voiceTone:'off';selector.disabled=!lecture.report.narration;updateVoicePreferences();
 }
 function updateVoicePreferences(){
