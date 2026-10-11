@@ -119,15 +119,16 @@ Choose an integer $s>0$ with $\tau_7^7<70s\epsilon^6$. For $n\gg0$,
 \]
 The constants below are independent of $n$.
 
-\item \emph{Base components.} Suppose
-$\varepsilon(R;z)\le8$ for every $z\in U$. Since $R^7>\tau_7^7$,
-asymptotic Riemann--Roch gives, for sufficiently divisible $k$,
+\item \emph{Base components.} For fixed $\epsilon$ and $s$, the following bounds are uniform in $n$; the displayed constants are one admissible choice, subject to the slice smallness $(2/\delta)^3\,8\epsilon^3=1/8<1$.
+Suppose
+$\varepsilon(R;z)\le8$ for every $z\in U$. The lower bound
+$R^7>\tau_7^7$ \emph{(uses Step~1)} and asymptotic Riemann--Roch give, for sufficiently divisible $k$,
 \[
  H^0(Z,\OO_Z(kR)\otimes\mathfrak m_z^{\lceil k\tau_i\rceil})
  \ne0\qquad(0\le i\le7).
 \]
 Lemma~\ref{lem:full-kernels} produces a covering family of proper
-base components $V\subset Z$, of dimension $f$, with
+base components $V\subset Z$ with
 \[
  \mathfrak b\subset I_V^h,\qquad
  h=\lceil k\delta/2\rceil,\qquad k/h\le2/\delta.
@@ -135,49 +136,53 @@ base components $V\subset Z$, of dimension $f$, with
 The base-locus inequality and finite subadjunction give
 \[
  \begin{split}
- h^{7-f}(kR)^f\cdot V&\le(kR)^7,\\
- 0<R^f\cdot V&\le(2/\delta)^{7-f}R^7,\\
- K_{V^*}\cdot R^{f-1}
-   &\le\frac{2(7-f)}{\delta}R^f\cdot V.
+ h^{7-\dim V}(kR)^{\dim V}\cdot V&\le(kR)^7,\\
+ 0<R^{\dim V}\cdot V&\le(2/\delta)^{7-\dim V}R^7\\
+   &<(2/\delta)^{7-\dim V}\,280s\epsilon^6
+                         \quad\text{(uses Step 1)}\\
+   &=\frac{280s}{4^{7-\dim V}}\epsilon^{\dim V-1},\\
+ K_{V^*}\cdot R^{\dim V-1}
+   &\le\frac{2(7-\dim V)}{\delta}R^{\dim V}\cdot V.
  \end{split}
 \]
 Here $V^*$ is a smooth resolution; the last inequality uses
 $K_Z\sim-S_1-S_2$ and $V\cap U\ne\varnothing$.
-For a general fibre component $F$ of either projection, put
-$d_F=\dim F$. When $1\le d_F\le3$, the restricted system gives
+For a general fibre component $F$ of either projection, when $1\le\dim F\le3$, the restricted system gives
 \[
  \begin{split}
- 0<R_{\rm sl}^{d_F}\cdot F
-   &\le(2/\delta)^{4-d_F}R_{\rm sl}^4,\\
- K_{F^*}\cdot R_{\rm sl}^{d_F-1}
-   &\le(K_{Z_{\rm sl}}+c_{d_F}R_{\rm sl})|_F
-                   \cdot R_{\rm sl}^{d_F-1},\\
- 0<c_{d_F}&\le2(4-d_F)/\delta.
+ 0<R_{\rm sl}^{\dim F}\cdot F
+   &\le(2/\delta)^{4-\dim F}R_{\rm sl}^4\\
+   &<\frac{8s}{4^{4-\dim F}}\epsilon^{\dim F-1}
+                         \quad\text{(uses Step 1)},\\
+ K_{F^*}\cdot R_{\rm sl}^{\dim F-1}
+   &\le(K_{Z_{\rm sl}}+c_{\dim F}R_{\rm sl})|_F
+                   \cdot R_{\rm sl}^{\dim F-1},\\
+ 0<c_{\dim F}&\le2(4-\dim F)/\delta.
  \end{split}
 \]
 These are precisely Lemma~\ref{lem:sevenfold-centres}.
 
-\item \emph{Exclude projection fibres.} For a smooth $Y$ of dimension
-$1\le f\le3$, nef rational Cartier $P$, nef Cartier $L$ with
-$\nef(Y,L)=f$, and a reduced simple-normal-crossing divisor $B_0$
+\item \emph{Exclude projection fibres.} For a smooth $Y$ with
+$1\le \dim Y\le3$, nef rational Cartier $P$, nef Cartier $L$ with
+$\nef(Y,L)=\dim Y$, and a reduced simple-normal-crossing divisor $B_0$
 (possibly zero), Lemma~\ref{lem:bounded-curves} gives
 \[
  \left.
  \begin{gathered}
- 0<P^f\le C_0,\quad P-rL\text{ nef},\quad
+ 0<P^{\dim Y}\le C_0,\quad P-rL\text{ nef},\quad
  K_Y+B_0+L\text{ big},\\
- (K_Y+B_0+L)\cdot P^{f-1}\le C_1P^f
+ (K_Y+B_0+L)\cdot P^{\dim Y-1}\le C_1P^{\dim Y}
  \end{gathered}
  \right\}
  \quad\Longrightarrow\quad
- r\le(m_fC_1)^{f-1}C_0.
+ r\le(m_{\dim Y}C_1)^{\dim Y-1}C_0.
 \]
 For fibres generically finite over a subvariety of dimension less
 than $3$, Lemma~\ref{lem:lower-dimensional} supplies the bigness
-needed here. For $f=\dim F=1,2$ and $r_n\ge1$, the slice inequalities give
+needed here. For $\dim F=1,2$ and $r_n\ge1$, the slice inequalities give
 \[
- r_n\le\left[m_f\left(\frac{2(4-f)}\delta+1\right)\right]^{f-1}
-       (2/\delta)^{4-f}\,8s\epsilon^3.
+ r_n\le\left[m_{\dim F}\left(\frac{2(4-\dim F)}\delta+1\right)\right]^{\dim F-1}
+       (2/\delta)^{4-\dim F}\,8s\epsilon^3.
 \]
 For a saturated projective-line fibre, the zero-dimensional base gives
 \[
@@ -215,7 +220,8 @@ $K_Y+B_0+a^*D$ is big and, for $r_n\ge1$,
 All these bounds contradict $r_n\to\infty$.
 Lemma~\ref{lem:finite-correspondences} therefore leaves only
 threefold correspondences. With $g_i:Y\to X$, $P_Y=\rho^*(R|_V)$,
-and $C_0=(2/\delta)^4\,280s\epsilon^6$, their bounds are
+and $C_0=(2/\delta)^4\,280s\epsilon^6$ \emph{(uses Step~1)},
+their bounds are
 \[
  \begin{gathered}
  0<P_Y^3\le C_0,\qquad
@@ -427,18 +433,18 @@ required for this use of the formula.
 
 \begin{lemma}\label{lem:generic-subadjunction}
 Let $W$ be smooth projective, $\Theta\ge0$ a rational divisor,
-and $V\subset W$ an integral subvariety of dimension $f>0$.
+and $V\subset W$ an integral subvariety of positive dimension.
 Suppose $(W,\Theta)$ is lc at $\eta_V$ and has an lc place centred on $V$.
 For every nef rational Cartier divisor $P$ on $V$ and resolution
 $\rho:Y\to V$,
 \[
- K_Y\cdot(\rho^*P)^{f-1}
- \le (K_W+\Theta)|_V\cdot P^{f-1}.
+ K_Y\cdot(\rho^*P)^{\dim V-1}
+ \le (K_W+\Theta)|_V\cdot P^{\dim V-1}.
 \]
 \end{lemma}
 \begin{proof}
 Apply Lemma~\ref{lem:finite-subadjunction-model} and intersect with
-$f-1$ copies of the pulled-back $P$. The effective discriminant
+$\dim V-1$ copies of the pulled-back $P$. The effective discriminant
 and the moduli trace have nonnegative intersection; for the latter,
 push down from a higher base where the moduli divisor is nef.
 For compatible canonical Weil cycles,
@@ -545,7 +551,7 @@ all full spaces
 are nonzero, and the lowest base locus has a positive-dimensional
 component through $z$. Then there is an algebraic covering family
 of proper integral components $V_t$, common to two adjacent base
-loci, with $1\le f=\dim V_t<d$. At a general incidence point the
+loci, with $1\le\dim V_t<d$. At a general incidence point the
 entire higher-kernel base ideal satisfies
 \[
  \mathfrak b_t\subset I_{V_t}^h,\qquad
@@ -554,9 +560,9 @@ entire higher-kernel base ideal satisfies
 Consequently, on a resolution $V_t^*$,
 \begin{equation}\label{eq:full-kernel-bounds}
  \begin{split}
- 0<P^f\cdot V_t&\le(2/\delta)^{d-f}P^d,\\
- K_{V_t^*}\cdot P^{f-1}&\le(K_W+cP)|_{V_t}\cdot P^{f-1},
- \qquad 0<c\le2(d-f)/\delta.
+ 0<P^{\dim V_t}\cdot V_t&\le(2/\delta)^{d-\dim V_t}P^d,\\
+ K_{V_t^*}\cdot P^{\dim V_t-1}&\le(K_W+cP)|_{V_t}\cdot P^{\dim V_t-1},
+ \qquad 0<c\le2(d-\dim V_t)/\delta.
  \end{split}
 \end{equation}
 \end{lemma}
@@ -580,44 +586,43 @@ for the degree and canonical bounds. The construction follows
 \end{proof}
 
 \begin{lemma}\label{lem:bounded-curves}
-For each $f\in\{1,2,3\}$, there is an integer $m_f>0$ depending
-only on $f$ with the following property. Let $Y$ be smooth projective
-of dimension $f$. Let $B_0$ be a reduced simple normal crossing
+There are integers $m_1,m_2,m_3>0$ with the following property.
+Let $Y$ be smooth projective with $1\le\dim Y\le3$. Let $B_0$ be a reduced simple normal crossing
 divisor or zero, $L$ a nef Cartier divisor of full nef dimension,
 and $P$ a nef rational Cartier divisor. Let $r,C_0,C_1>0$. If
 \[
- 0<P^f\le C_0,\quad P-rL\text{ is nef},\quad
+ 0<P^{\dim Y}\le C_0,\quad P-rL\text{ is nef},\quad
  K_Y+B_0+L\text{ is big},
 \]
 and
 \[
- (K_Y+B_0+L)\cdot P^{f-1}\le C_1P^f,
+ (K_Y+B_0+L)\cdot P^{\dim Y-1}\le C_1P^{\dim Y},
 \]
 then
 \[
- r\le(m_fC_1)^{f-1}C_0,
+ r\le(m_{\dim Y}C_1)^{\dim Y-1}C_0,
 \]
-where $m_f$ depends only on $f$.
+Here $m_{\dim Y}$ depends only on $\dim Y$.
 \end{lemma}
 \begin{proof}
 Birkar--Zhang \cite[Theorem~1.3]{BZ}, with boundary coefficients
 in $\{0,1\}$ and Cartier index one for $L$, makes
-$|m_f(K_Y+B_0+L)|$ birational. Resolve its base ideal and let
+$|m_{\dim Y}(K_Y+B_0+L)|$ birational. Resolve its base ideal and let
 $H$ be the free moving part. Then $H$ is nef and big and
 \[
- H\cdot P^{f-1}\le m_fC_1P^f.
+ H\cdot P^{\dim Y-1}\le m_{\dim Y}C_1P^{\dim Y}.
 \]
 Khovanskii--Teissier gives
 \[
- P\cdot H^{f-1}\le P^f
- \left(\frac{H\cdot P^{f-1}}{P^f}\right)^{f-1}
- \le(m_fC_1)^{f-1}C_0.
+ P\cdot H^{\dim Y-1}\le P^{\dim Y}
+ \left(\frac{H\cdot P^{\dim Y-1}}{P^{\dim Y}}\right)^{\dim Y-1}
+ \le(m_{\dim Y}C_1)^{\dim Y-1}C_0.
 \]
 General hyperplanes through the image of a very general point
 under the birational morphism defined by $H$ cut an effective
 curve cycle containing a curve $C$ through that point.
 Full nef dimension and integrality give $L\cdot C\ge1$.
-Thus $r\le P\cdot C\le P\cdot H^{f-1}$. For $f=1$ take $C=Y$.
+Thus $r\le P\cdot C\le P\cdot H^{\dim Y-1}$. For $\dim Y=1$ take $C=Y$.
 This is \cite[Lemma~4.1]{NS}; the constants depend only on the dimension.
 \end{proof}
 
@@ -872,20 +877,20 @@ $C_0=(2/\delta)^4\,280s\epsilon^6$.
 \begin{lemma}\label{lem:sevenfold-centres}
 For all sufficiently large $n$, if $\varepsilon(R;z)\le8$ at every
 point of the torus open, there is a covering family of proper
-integral $V\subset Z$, with $f=\dim V$, such that
+integral $V\subset Z$ such that
 \begin{equation}\label{eq:sevenfold-centres}
- 0<R^f\cdot V\le(2/\delta)^{7-f}R^7,\qquad
- K_{V^*}\cdot R^{f-1}\le\frac{2(7-f)}{\delta}R^f\cdot V.
+ 0<R^{\dim V}\cdot V\le(2/\delta)^{7-\dim V}R^7,\qquad
+ K_{V^*}\cdot R^{\dim V-1}\le\frac{2(7-\dim V)}{\delta}R^{\dim V}\cdot V.
 \end{equation}
 For $i=1,2$, set $\pi_i=p_i\circ\pi$. For a general reduced fibre
 component $F$ of $V\to\pi_i(V)$, viewed in the opposite fourfold slice, if
-$1\le d_F=\dim F\le3$, the actual restricted system gives
+$1\le \dim F=\dim F\le3$, the actual restricted system gives
 \begin{equation}\label{eq:slice-centres}
  \begin{split}
- 0<R_{\rm sl}^{d_F}\cdot F&\le(2/\delta)^{4-d_F}R_{\rm sl}^4,\\
- K_{F^*}\cdot R_{\rm sl}^{d_F-1}
- &\le(K_{Z_{\rm sl}}+c_{d_F}R_{\rm sl})|_F \cdot R_{\rm sl}^{d_F-1},
- \quad 0<c_{d_F}\le2(4-d_F)/\delta.
+ 0<R_{\rm sl}^{\dim F}\cdot F&\le(2/\delta)^{4-\dim F}R_{\rm sl}^4,\\
+ K_{F^*}\cdot R_{\rm sl}^{\dim F-1}
+ &\le(K_{Z_{\rm sl}}+c_{\dim F}R_{\rm sl})|_F \cdot R_{\rm sl}^{\dim F-1},
+ \quad 0<c_{\dim F}\le2(4-\dim F)/\delta.
  \end{split}
 \end{equation}
 Both images of a general marked incidence point are very general on $X$.
@@ -932,7 +937,7 @@ the above conditions cannot be the full projective-line bundle over $W_0$ with $
 \end{lemma}
 \begin{proof}
 If $F\to W_0$ has one-dimensional fibres, $F$ is the entire
-projective-line bundle over $W_0$. Put $w=\dim W_0=d_F-1$.
+projective-line bundle over $W_0$. Put $w=\dim W_0=\dim F-1$.
 For $w=0$, \eqref{eq:slice-centres} gives
 \[
  s=R_{\rm sl}\cdot F\le(2/\delta)^3R_{\rm sl}^4<s.
@@ -942,7 +947,7 @@ $p_0:F^*\to W_0^*$. Cancelling the relative canonical term
 $-2\xi+p_0^*D$, which equals the ambient canonical restriction,
 gives
 \[
- p_0^*K_{W_0^*}\cdot R_{\rm sl}^w\le c_{d_F}R_{\rm sl}^{w+1}\cdot F.
+ p_0^*K_{W_0^*}\cdot R_{\rm sl}^w\le c_{\dim F}R_{\rm sl}^{w+1}\cdot F.
 \]
 Its term linear in $\xi$ is $wsK_{W_0^*}\cdot P^{w-1}$; all other
 terms are nonnegative because $K_{W_0^*}$ is pseudo-effective
@@ -950,7 +955,7 @@ and $P,D$ are nef. For $r_n\ge s$, expansion gives
 \begin{equation}\label{eq:saturated-estimate}
  \begin{split}
  (w+1)sP^w\cdot W_0&\le R_{\rm sl}^{w+1}\cdot F\le7sP^w\cdot W_0,\\
- K_{W_0^*}\cdot P^{w-1}&\le(7c_{d_F}/w)P^w\cdot W_0.
+ K_{W_0^*}\cdot P^{w-1}&\le(7c_{\dim F}/w)P^w\cdot W_0.
  \end{split}
 \end{equation}
 The first lower bound and \eqref{eq:slice-centres} bound $P^w\cdot W_0$
@@ -998,10 +1003,10 @@ and \ref{lem:multisection-slices} exclude fibre dimensions one,
 two, and three. A four-dimensional fibre makes $V$ the full
 inverse image of a proper $W_0\subset X$, with $\dim W_0\le2$;
 the other projection then has fibre dimension $\dim W_0+1$, already
-excluded. Thus both projections are generically finite and $f\le3$.
-For $f<3$, \eqref{eq:sevenfold-centres} and
+excluded. Thus both projections are generically finite and $\dim V\le3$.
+For $\dim V<3$, \eqref{eq:sevenfold-centres} and
 Lemmas~\ref{lem:lower-dimensional} and \ref{lem:bounded-curves}
-give a uniform bound on $r_n$, a contradiction. Hence $f=3$.
+give a uniform bound on $r_n$, a contradiction. Hence $\dim V=3$.
 The displayed estimates follow from \eqref{eq:sevenfold-centres}
 and nefness of $R-r_nD_i$.
 Since $R-P_i$ is nef, $\deg g_i\,P^3\le P_Y^3\le C_0$.

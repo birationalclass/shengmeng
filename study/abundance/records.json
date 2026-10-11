@@ -7164,6 +7164,112 @@
         "Step 4 excludes moving branch surfaces using their canonical intersection bounds. Finite Stein covers and the graph argument give $r_n\\le\\max\\{1,m_3^2(8/\\delta+1)^2C_0\\}$, where $C_0=(2/\\delta)^4\\,280s\\epsilon^6$, contradicting $r_n\\to\\infty$.",
         "Step 5 chooses $8<a<\\varepsilon(R;z)$ once a point with Seshadri constant greater than $8$ exists. Serre vanishing on the point blowup gives $H^1(Z,\\mathcal O_Z(kR)\\otimes\\mathfrak m_z^{ka})=0$, with $ka\\ge8k+1$. Every local germ $u$ consequently admits a global section $\\sigma$ with $\\sigma_z-u\\in\\mathfrak m_z^{8k+1}\\mathcal O_{Z,z}(kR)$. These remain proof dependencies of the source draft; rewriting and compilation are not independent proof verification."
       ]
+    },
+    {
+      "id": "jets-outline-step-one-dependency-q",
+      "role": "user",
+      "time": "2026-10-11T16:38:05.867Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "第一步的体积控制在后面起什么作用？第二步用了第一步吗？为什么第二步看不到 epsilon？"
+      ],
+      "en": [
+        "What role do the volume estimates in Step 1 play later? Does Step 2 use Step 1, and why does epsilon not appear explicitly there?"
+      ]
+    },
+    {
+      "id": "jets-outline-step-one-dependency-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:38:20.858Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "第一步的下界 $R^7>\\tau_7^7$ 与渐近 Riemann–Roch 保证八个完整核非零；上界给出 $0<R^{\\dim V}\\cdot V\\le(2/\\delta)^{7-\\dim V}R^7<280s\\epsilon^{\\dim V-1}/4^{7-\\dim V}$，其中 $\\delta=8\\epsilon$。切片同样满足 $0<R_{\\mathrm{sl}}^{\\dim F}\\cdot F<8s\\epsilon^{\\dim F-1}/4^{4-\\dim F}$。这些都是与 $n$ 无关的上界，供后面的曲线估计使用。"
+      ],
+      "en": [
+        "The lower bound $R^7>\\tau_7^7$, together with asymptotic Riemann–Roch, makes the eight full kernels nonzero. The upper bound gives $0<R^{\\dim V}\\cdot V\\le(2/\\delta)^{7-\\dim V}R^7<280s\\epsilon^{\\dim V-1}/4^{7-\\dim V}$, with $\\delta=8\\epsilon$. Likewise, $0<R_{\\mathrm{sl}}^{\\dim F}\\cdot F<8s\\epsilon^{\\dim F-1}/4^{4-\\dim F}$. These bounds are independent of $n$ and feed into the subsequent curve estimates."
+      ],
+      "highlight": true
+    },
+    {
+      "id": "jets-outline-direct-dimensions-q",
+      "role": "user",
+      "time": "2026-10-11T16:39:20.766Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "把第二步中用第一步的地方写清楚并标记。维数不要用小写 f，也不要再定义 d_F；直接写 dim V、dim F。"
+      ],
+      "en": [
+        "Make and mark the uses of Step 1 in Step 2 explicit. Do not use lowercase f for dimension or introduce d_F; write dim V and dim F directly."
+      ]
+    },
+    {
+      "id": "jets-outline-direct-dimensions-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:41:35.140Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "第二步已代入 $R^7$ 和四维切片体积的 epsilon 上界，并在非零核、分支次数、切片次数处标注 uses Step 1；对应的 $C_0$ 定义也注明这一依赖。当前 separate 稿中的维数简称 $f$、$d_F$ 改为 $\\dim V$、$\\dim F$、$\\dim Y$，曲线常数写作 $m_{\\dim Y}$。所有引理标签保留；这次修改不改变证明状态。"
+      ],
+      "en": [
+        "Step 2 substitutes the epsilon bounds for $R^7$ and the fourfold slice volume. The nonzero-kernel, component-degree and slice-degree estimates are marked uses Step 1, as is the corresponding definition of $C_0$. Dimension aliases f and d_F in the current separate note are replaced by $\\dim V$, $\\dim F$ and $\\dim Y$, with curve constants written $m_{\\dim Y}$. All lemma labels are retained; the revision does not change proof status."
+      ]
+    },
+    {
+      "id": "jets-outline-uniform-bound-q",
+      "role": "user",
+      "time": "2026-10-11T16:43:17.962Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "第二步开头注明这些具体数值的作用：需要的是统一上界，具体系数是否重要？"
+      ],
+      "en": [
+        "State at the start of Step 2 what the numerical constants do: is the uniform bound what matters, rather than their precise coefficients?"
+      ]
+    },
+    {
+      "id": "jets-outline-uniform-bound-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:43:30.859Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "第二步开头已注明：固定 $\\epsilon,s$ 后，估计与 $n$ 无关；显示的系数给出一组可用的统一界，同时仍须满足切片小量条件 $(2/\\delta)^3\\,8\\epsilon^3=1/8<1$。因此可以换用其他有效常数，但不能把所需的小量不等式只替换为有界性。"
+      ],
+      "en": [
+        "The opening of Step 2 states that, with $\\epsilon,s$ fixed, the estimates are independent of $n$. The displayed coefficients give one admissible set of uniform bounds, subject to the slice smallness $(2/\\delta)^3\\,8\\epsilon^3=1/8<1$. Other valid constants can be used, but mere boundedness cannot replace the required smallness inequality."
+      ]
+    },
+    {
+      "id": "jets-slice-volume-ratio-q",
+      "role": "user",
+      "time": "2026-10-11T16:44:03.729Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "$R_{\\mathrm{sl}}$ 依赖哪些参数？是否只要 $R_{\\mathrm{sl}}^4/s$ 一致有界就足够？"
+      ],
+      "en": [
+        "Which parameters does $R_{\\mathrm{sl}}$ depend on? Is a uniform bound on $R_{\\mathrm{sl}}^4/s$ sufficient?"
+      ]
+    },
+    {
+      "id": "jets-slice-volume-ratio-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:44:20.888Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "sl 表示 slice（切片），不是参数。$R_{\\mathrm{sl}}=P_n+s\\xi$ 依赖 $n,s$。先固定 $\\epsilon$ 并选定 $s$，再令 $n\\to\\infty$，得到 $R_{\\mathrm{sl}}^4/s\\to4\\epsilon^3$；门槛可以依赖 $\\epsilon,s$。取 $\\delta=8\\epsilon$ 后，充分大的 $n$ 满足 $(2/\\delta)^3R_{\\mathrm{sl}}^4/s<1/8<1$，这与饱和点纤维给出的 $s\\le(2/\\delta)^3R_{\\mathrm{sl}}^4$ 矛盾。仅仅存在某个有限上界并不足够；需要这一归一化比值严格小于 $1$。"
+      ],
+      "en": [
+        "The subscript sl means slice, not a parameter. The divisor $R_{\\mathrm{sl}}=P_n+s\\xi$ depends on $n,s$. Fix epsilon, choose s and then let n tend to infinity: $R_{\\mathrm{sl}}^4/s\\to4\\epsilon^3$, with the threshold allowed to depend on epsilon and s. Taking $\\delta=8\\epsilon$, sufficiently large n satisfy $(2/\\delta)^3R_{\\mathrm{sl}}^4/s<1/8<1$, contradicting the saturated point-fibre estimate $s\\le(2/\\delta)^3R_{\\mathrm{sl}}^4$. A finite upper bound alone is insufficient; this normalized ratio must be strictly less than one."
+      ],
+      "highlight": true
     }
   ],
   "sourceTheorem": {
