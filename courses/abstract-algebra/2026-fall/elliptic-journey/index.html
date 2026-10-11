@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从一条线到椭圆曲线 · 结构之美</title>
-<link href="assets/fonts/fonts.css" rel="stylesheet">
+<link href="assets/fonts/fonts.css?v=20261012-corrected-v2" rel="stylesheet">
 <style>
   :root { --bg: #000; --fg: #f3ead8; --gold: #e2bd6b; --dim: rgba(255,255,255,.55); }
   :root:not([data-theme="light"]) { --bg: #000; }
@@ -35,7 +35,6 @@
   #fill::after { content: ''; position: absolute; right: -7px; top: 50%; width: 14px; height: 14px; transform: translateY(-50%); border-radius: 50%; background: var(--gold); }
   #bar:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
   #tm, #dur { flex: 0 0 4.5ch; text-align: center; font-variant-numeric: tabular-nums; }
-
   #course-return { position:fixed;z-index:60;top:18px;left:18px;padding:9px 13px;border:1px solid #e2bd6b44;border-radius:6px;background:#050b10a6;color:#e2bd6b;text-decoration:none;font:14px/1.4 system-ui,sans-serif;backdrop-filter:blur(8px); }
   #course-return:hover { border-color:#e2bd6b;background:#111811e0; }
   #course-return:focus-visible { outline:2px solid #e2bd6b;outline-offset:3px; }
@@ -58,6 +57,9 @@
 const W = 1920, H = 1080, BPM = 90, BEAT = 60 / BPM, BAR = BEAT * 4, NBARS = 83, TOTAL = NBARS * BAR + 4;
 const EXPORT = /[?&]export=1/.test(location.search);
 const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const RW = EXPORT ? W : Math.round(Math.min(1440, Math.max(960, Math.min(innerWidth, innerHeight * 16 / 9) * Math.min(devicePixelRatio || 1, 1.5))) / 16) * 16;
+const RH = RW * 9 / 16, RENDER_SCALE = RW / W;
+cv.width = RW; cv.height = RH;
 const PI = Math.PI, TAU = PI * 2;
 const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -101,7 +103,7 @@ function glowDot(x, y, r, col, a = 1) {
 function hexA(hex) { const n = parseInt(hex.slice(1), 16); return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},A)`; }
 
 // ======================================================================== WebGL: backdrops + film post-processing
-const glc = document.createElement('canvas'); glc.width = W; glc.height = H;
+const glc = document.createElement('canvas'); glc.width = RW; glc.height = RH;
 const gl = glc.getContext('webgl2', { preserveDrawingBuffer: true, antialias: false, alpha: false, premultipliedAlpha: false });
 gl.getExtension('EXT_color_buffer_float'); gl.getExtension('OES_texture_float_linear');
 const VS = `#version 300 es
@@ -275,27 +277,27 @@ function makeTex(w, h, float) {
   return t;
 }
 function makeFbo(w, h) { const t = makeTex(w, h, true), f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0); return { t, f, w, h }; }
-const SCENE_TEX = makeTex(W, H, false), MASK_TEX = makeTex(W, H, false);
-const ACC = makeFbo(W, H), MIPS = [1, 2, 3, 4, 5].map(k => makeFbo(Math.ceil(W / 2 ** k), Math.ceil(H / 2 ** k)));
+const SCENE_TEX = makeTex(RW, RH, false), MASK_TEX = makeTex(RW, RH, false);
+const ACC = makeFbo(RW, RH), MIPS = [1, 2, 3, 4, 5].map(k => makeFbo(Math.ceil(RW / 2 ** k), Math.ceil(RH / 2 ** k)));
 function tri(target, w, h) { gl.bindFramebuffer(gl.FRAMEBUFFER, target); gl.viewport(0, 0, w, h); gl.drawArrays(gl.TRIANGLES, 0, 3); }
 function bindTex(unit, t) { gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t); }
 function glDraw(mode, u = {}, alpha = 1) {
   const P = P_BG; gl.useProgram(P.pr); gl.disable(gl.BLEND);
-  gl.uniform2f(P.u.uRes, W, H); gl.uniform1f(P.u.uTime, u.time ?? 0); gl.uniform1i(P.u.uMode, mode);
+  gl.uniform2f(P.u.uRes, RW, RH); gl.uniform1f(P.u.uTime, u.time ?? 0); gl.uniform1i(P.u.uMode, mode);
   const t = u.tint || [.2, .3, .7]; gl.uniform3f(P.u.uTint, t[0], t[1], t[2]); gl.uniform1f(P.u.uAmp, u.amp ?? 1);
   gl.uniform1i(P.u.uKA, u.ka ?? 0); gl.uniform1i(P.u.uKB, u.kb ?? 0); gl.uniform1f(P.u.uKMix, u.kmix ?? 0);
   gl.uniform1f(P.u.uKZoom, u.kzoom ?? 2); gl.uniform1f(P.u.uKRot, u.krot ?? 0);
   gl.uniform1f(P.u.uP, u.p ?? 7); gl.uniform1f(P.u.uQ, u.q ?? 3); const a = u.a || [0, 0]; gl.uniform2f(P.u.uA, a[0], a[1]);
   gl.uniform1f(P.u.uHRot, u.hrot ?? 0); gl.uniform1f(P.u.uHRad, u.hrad ?? .92); gl.uniform1f(P.u.uHue, u.hue ?? .55);
   gl.uniform1f(P.u.uReveal, u.reveal ?? 0); bindTex(1, MASK_TEX); gl.uniform1i(P.u.uTex, 1); bindTex(0, null);
-  tri(null, W, H);
-  ctx.save(); ctx.globalAlpha = alpha; ctx.drawImage(glc, 0, 0); ctx.restore();
+  tri(null, RW, RH);
+  ctx.save(); ctx.globalAlpha = alpha; ctx.drawImage(glc, 0, 0, W, H); ctx.restore();
 }
 function accumulate(k, K) {
   bindTex(0, SCENE_TEX); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, cv);
   gl.useProgram(P_ACC.pr); gl.uniform1i(P_ACC.u.uT, 0); gl.uniform1f(P_ACC.u.uW, 1 / K);
   if (k === 0) gl.disable(gl.BLEND); else { gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE); }
-  tri(ACC.f, W, H); gl.disable(gl.BLEND);
+  tri(ACC.f, RW, RH); gl.disable(gl.BLEND);
 }
 const GRADE = { bloom: .85, ca: .0022, vig: .55, grain: .045, sat: 1.04, split: .55, tintS: [.9, .97, 1.1], tintH: [1.07, 1.0, .9] };
 function post(T, g) {
@@ -306,11 +308,11 @@ function post(T, g) {
   for (let i = MIPS.length - 1; i > 0; i--) { const s = MIPS[i], d = MIPS[i - 1]; bindTex(0, s.t); gl.uniform2f(P_UP.u.uTexel, 1 / s.w, 1 / s.h); tri(d.f, d.w, d.h); }
   gl.disable(gl.BLEND);
   const P = P_FIN; gl.useProgram(P.pr); bindTex(0, ACC.t); bindTex(1, MIPS[0].t);
-  gl.uniform1i(P.u.uScene, 0); gl.uniform1i(P.u.uBloom, 1); gl.uniform2f(P.u.uRes, W, H);
+  gl.uniform1i(P.u.uScene, 0); gl.uniform1i(P.u.uBloom, 1); gl.uniform2f(P.u.uRes, RW, RH);
   gl.uniform1f(P.u.uBloomAmt, g.bloom); gl.uniform1f(P.u.uCA, g.ca); gl.uniform1f(P.u.uVig, g.vig); gl.uniform1f(P.u.uGrain, g.grain);
   gl.uniform1f(P.u.uSeed, Math.floor(T * 30) % 97); gl.uniform1f(P.u.uSat, g.sat); gl.uniform1f(P.u.uSplit, g.split);
   gl.uniform3fv(P.u.uTintS, g.tintS); gl.uniform3fv(P.u.uTintH, g.tintH);
-  tri(null, W, H); bindTex(1, null); bindTex(0, null);
+  tri(null, RW, RH); bindTex(1, null); bindTex(0, null);
 }
 
 // ======================================================================== shared assets
@@ -488,8 +490,8 @@ scene({ start: 61, len: 8, fo: 0, mb: 3, ch: ['Ⅶ', '椭圆曲线', 'ELLIPTIC C
       if (aS > 0) { const a = toS(Sm), b = toS(R); ctx.save(); ctx.globalAlpha = aS; ctx.setLineDash([12, 10]); ctx.strokeStyle = '#ff7eb6'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); ctx.restore(); }
       const dot = (p, col, a, lab, dx = 30, dy = -34) => { if (a <= 0) return; const q = toS(p); ctx.save(); ctx.globalCompositeOperation = 'lighter'; glowDot(q[0], q[1], 46, col, a); ctx.restore(); text(lab, q[0] + dx, q[1] + dy, { font: F_MATH, style: 'italic', size: 42, color: '#fff', alpha: a }); };
       dot(P, 'rgba(255,209,102,A)', aPQ, 'P'); dot(Q, 'rgba(255,209,102,A)', aPQ, 'Q');
-      dot(Sm, 'rgba(255,255,255,A)', aR * (1 - aS * .5), '−(P+Q)', 50, -30);
-      dot(R, 'rgba(255,126,182,A)', aS, 'P + Q', 60, 34);
+      dot(R, 'rgba(255,255,255,A)', aR * (1 - aS * .5), '−(P+Q)', 50, -30);
+      dot(Sm, 'rgba(255,126,182,A)', aS, 'P + Q', 60, 34);
     } else {
       const k = lt - 10.67;
       bgGrad('#07101c', '#010204'); starfield(lt, .3, 3);
@@ -649,11 +651,11 @@ register(0, 8, '一条线上的群', 'THE ADDITIVE REAL LINE', lt => {
   bead(at(0), C_BLUE, '0', -25, -45, sstep(1.5, 2.4, lt));
   const ap = sstep(3.5, 5, lt), aq = sstep(7, 8.5, lt), move = eio(clamp((lt - 10) / 3));
   arrow([at(0)[0], 430], [lerp(at(0)[0], at(p)[0], ap), 430], C_GOLD, ap);
-  bead(at(p), C_GOLD, 'P', 0, -45, ap); small('0.62', at(p / 2)[0], 385, '#f6d99d', 32, ap);
+  bead(at(p), C_GOLD, 'P', -42, -62, ap); small('0.62', at(p / 2)[0], 385, '#f6d99d', 32, ap);
   const a = at(move * p), b = at(q + move * p);
   arrow([a[0], 680], [lerp(a[0], b[0], aq), 680], C_TEAL, aq);
   small('平移 0.71', (a[0] + b[0]) / 2, 724, '#acffe5', 30, aq);
-  bead(b, move > .9 ? C_PINK : C_TEAL, move > .9 ? 'P + Q' : 'Q', 28, -45, aq);
+  bead(b, move > .9 ? C_PINK : C_TEAL, move > .9 ? 'P + Q' : 'Q', 58, 52, aq);
   equation('0.62 + 0.71 = 1.33', 830, 50, sstep(13, 14, lt));
 }, [[.5, 5.5, '先把实数想成一条发光的绳子。', 'Begin with the real numbers: one luminous thread.'],
   [6, 10, '加法，就是沿着它平移。', 'Addition is translation along the line.'],
@@ -672,22 +674,22 @@ register(8, 6, '整数成为子群', 'THE INTEGER SUBGROUP', lt => {
   [[.6, 'tick'], [1.2, 'tick'], [1.8, 'tick'], [2.4, 'tick'], [3, 'tick'], [5, 'shimmer']]);
 
 function bendCircle(u, k) {
-  const R = 250, cx = 960, cy = 545;
+  const R = 225, cx = 960, cy = 560;
   if (k < 1e-5) return [cx + TAU * R * (u - .5), cy];
   const th = TAU * k * (u - .5);
   return [cx + R / k * Math.sin(th), cy + R / k * (Math.cos(th) - Math.cos(PI * k)) - R * k];
 }
-const circleAt = u => [960 + 250 * Math.sin(TAU * u), 545 - 250 * Math.cos(TAU * u)];
+const circleAt = u => [960 + 225 * Math.sin(TAU * u), 560 - 225 * Math.cos(TAU * u)];
 register(14, 8, '商群卷成一个圆', 'THE QUOTIENT CIRCLE', lt => {
   cosmos(lt, [.11, .23, .42]); const k = eio(clamp((lt - 3.5) / 8.2));
   equation('ℝ / ℤ ≅ S¹', 208, 82);
   ink(Array.from({ length: 260 }, (_, i) => bendCircle(i / 259, k)), C_TEAL, 1, 3.2);
   const a = bendCircle(0, k), b = bendCircle(1, k);
   bead(a, C_GOLD, '0', -38, -35); bead(b, C_GOLD, k < .98 ? '1' : '', 35, -35);
-  bead(bendCircle(.22, k), C_PINK, '[0.22]', 65, 0, sstep(1, 2, lt));
+  bead(bendCircle(.22, k), C_PINK, '[0.22]', -84, 22, sstep(1, 2, lt));
   if (k > .94) flare(a[0], a[1], Math.exp(-Math.max(0, lt - 11.7) * 1.8) * sstep(11.2, 11.8, lt), 550);
   equation('[t] ↦ exp(2πit)', 846, 52, sstep(12, 13, lt));
-  small('0 与 1 相接；所有整数落在同一点。', 960, 910, '#d4e7e5', 29, sstep(13, 14, lt));
+  small('0 与 1 相接；所有整数落在同一点。', 960, 895, '#d4e7e5', 29, sstep(13, 14, lt));
 }, [[.5, 4.8, '每个等价类，都在一个单位区间里找到代表。', 'Every class has a representative in one unit interval.'],
   [5.1, 11.5, '把相差一个整数的两端，轻轻接起来。', 'Join the endpoints that differ by one integer.'],
   [12, 20.4, '实数模整数，成为圆周群。', 'The real line modulo integers becomes the circle group.']],
@@ -702,7 +704,7 @@ register(22, 8, '圆上的加法', 'ADDITION ON THE CIRCLE', lt => {
   ink(arc, C_PINK, sstep(5, 6, lt), 4);
   bead(circleAt(0), C_BLUE, 'O', 0, -35);
   bead(circleAt(p), C_GOLD, 'P', -30, 40, sstep(1, 2, lt));
-  bead(circleAt(q), C_TEAL, 'Q', 30, 40, sstep(2.5, 3.5, lt));
+  bead(circleAt(q), C_TEAL, 'Q', 48, -22, sstep(2.5, 3.5, lt));
   bead(circleAt(p + q * f), C_PINK, f > .98 ? 'P + Q' : '', 55, -10, sstep(6, 7, lt), 43);
   if (lt > 9 && lt < 10.5) flare(circleAt(0)[0], circleAt(0)[1], Math.sin((lt - 9) / 1.5 * PI) * .25, 250);
   equation('0.72 + 0.46 = 1.18 ≡ 0.18  (mod 1)', 843, 43, sstep(12, 13, lt));
@@ -712,15 +714,27 @@ register(22, 8, '圆上的加法', 'ADDITION ON THE CIRCLE', lt => {
   [[1.8, 'blip', { midi: 79 }], [3.2, 'blip', { midi: 84 }], [6, 'whoop'], [9.7, 'ding', { midi: 86 }], [12.1, 'success']]);
 
 function surface(u, v, cylinder = 1, torus = 1) {
-  const th = TAU * u, ph = TAU * v, R = 2.08, r = .67;
-  const flat = [(u - .5) * 9, (v - .5) * 4.2, 0];
-  const cyl = [R * Math.sin(th), (v - .5) * 4.2, R * Math.cos(th)];
-  const tor = [(R + r * Math.cos(ph)) * Math.sin(th), r * Math.sin(ph), (R + r * Math.cos(ph)) * Math.cos(th)];
-  return flat.map((x, i) => lerp(x, lerp(cyl[i], tor[i], torus), cylinder));
+  const R = 2.08, r = .67, ph = TAU * cylinder * (v - .5);
+  // First roll just the short direction of the sheet into a tube.
+  const y = cylinder < 1e-5 ? TAU * r * (v - .5) : r / cylinder * Math.sin(ph);
+  const z = cylinder < 1e-5 ? 0 : r / cylinder * (Math.cos(ph) - 1) + r * cylinder;
+  if (torus < 1e-5) return [TAU * R * (u - .5), y, z];
+  // Then bend that tube's long axis until its two ends meet.
+  const th = TAU * torus * (u - .5);
+  return [(R / torus + z) * Math.sin(th), y, R / torus * (Math.cos(th) - 1) + R * torus + z * Math.cos(th)];
 }
-function torusView(lt, cx = 960, cy = 545, F = 1280, cylinder = 1, torus = 1, alpha = 1) {
-  const yaw = .16 + lt * .022, pitch = .40 + .055 * Math.sin(lt * .12);
-  const at = (u, v) => proj(surface(u, v, cylinder, torus), yaw, pitch, cx, cy, F, 7);
+function torusView(lt, cx = 960, cy = 545, F = 1280, cylinder = 1, torus = 1, alpha = 1, bounds = null) {
+  const yaw = bounds ? .20 : .16 + lt * .022, pitch = bounds ? .43 : .40 + .055 * Math.sin(lt * .12);
+  const raw = (u, v) => proj(surface(u, v, cylinder, torus), yaw, pitch, cx, cy, F, 7);
+  let fit = 1, mx = cx, my = cy;
+  if (bounds) {
+    const pts = Array.from({length: 29 * 15}, (_, i) => raw(Math.floor(i / 15) / 28, (i % 15) / 14));
+    const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    fit = Math.min(1, (bounds[2] - bounds[0] - 20) / (x1 - x0), (bounds[3] - bounds[1] - 20) / (y1 - y0));
+    mx = (x0 + x1) / 2; my = (y0 + y1) / 2;
+  }
+  const at = (u, v) => { const p = raw(u, v); return bounds ? [(bounds[0] + bounds[2]) / 2 + (p[0] - mx) * fit, (bounds[1] + bounds[3]) / 2 + (p[1] - my) * fit, p[2]] : p; };
   const quads = [];
   for (let u = 0; u < 28; u++) for (let v = 0; v < 14; v++) {
     const pts = [[u / 28, v / 14], [(u + 1) / 28, v / 14], [(u + 1) / 28, (v + 1) / 14], [u / 28, (v + 1) / 14]].map(p => at(...p));
@@ -743,8 +757,8 @@ function torusView(lt, cx = 960, cy = 545, F = 1280, cylinder = 1, torus = 1, al
 register(30, 10, '两个周期，成为环面', 'TWO PERIODS FORM A TORUS', lt => {
   cosmos(lt, [.1, .22, .36]); equation('ℝ² / ℤ² ≅ S¹ × S¹', 218, 69);
   const a = eio(clamp((lt - 4) / 7)), b = eio(clamp((lt - 13) / 7));
-  torusView(lt, 960, 545, 1110, a, b);
-  small(lt < 11 ? '先接合一对边' : lt < 20 ? '再接合另一对边' : '两条独立的周期', 960, 839, '#e8d5b0', 37);
+  torusView(lt, 960, 545, 1110, a, b, 1, [350, 305, 1570, 785]);
+  small(lt < 12 ? '先接合上、下两边，卷成圆柱' : lt < 20 ? '再弯圆柱，把两端接成环' : '两条独立的周期', 960, 839, '#e8d5b0', 35);
 }, [[.5, 4, '把一条绳子，展开成二维实平面。', 'Open the thread into a two-dimensional real plane.'],
   [4.5, 11.5, '平面模整数格点，留下一个基本正方形。', 'Modulo the integer lattice, a fundamental square remains.'],
   [12, 19.5, '两对相对边分别接合，圆柱再闭合成环面。', 'Identify both pairs of opposite edges: a cylinder closes into a torus.'],
@@ -780,17 +794,19 @@ register(40, 9, '环面上的加法', 'ADDITION ON THE TORUS', lt => {
   [13, 23.2, '两个坐标分别相加，再分别模一。', 'Add each coordinate, then reduce each modulo one.']],
   [[1.8, 'blip', { midi: 79 }], [2.4, 'blip', { midi: 84 }], [6, 'whoop'], [10.6, 'ding'], [13.2, 'success']]);
 
-function lattice(lt, beta = 1, cx = 960, cy = 545, unit = 190, alpha = 1) {
-  const at = z => [cx + unit * z[0], cy - unit * z[1]], a = at([0, 0]), b = at([1, 0]), c = at([1, beta]), d = at([0, beta]);
+function lattice(lt, beta = 1, cx = 960, cy = 545, unit = 190, alpha = 1, theta = 0) {
+  const at = z => [cx + unit * (z[0] * Math.cos(theta) - z[1] * Math.sin(theta)), cy - unit * (z[0] * Math.sin(theta) + z[1] * Math.cos(theta))], a = at([0, 0]), b = at([1, 0]), c = at([1, beta]), d = at([0, beta]);
   ctx.save(); ctx.fillStyle = `rgba(80,220,205,${.08 * alpha})`; ctx.beginPath(); [a, b, c, d].forEach((p, i) => ctx[i ? 'lineTo' : 'moveTo'](...p)); ctx.closePath(); ctx.fill(); ctx.restore();
   for (let m = -3; m <= 3; m++) for (let n = -2; n <= 2; n++) {
     const p = at([m, n * beta]); if (p[0] < 80 || p[0] > 1840 || p[1] < 275 || p[1] > 860) continue;
     bead(p, m === 0 && n === 0 ? C_GOLD : C_BLUE, '', 0, 0, alpha * .65, 21);
   }
+  for (let m = -3; m <= 3; m++) ink([at([m, -2 * beta]), at([m, 2 * beta])], C_BLUE, .10 * alpha, .8);
+  for (let n = -2; n <= 2; n++) ink([at([-3, n * beta]), at([3, n * beta])], C_BLUE, .10 * alpha, .8);
   ink([[cx - 550, cy], [cx + 550, cy]], C_TEAL, alpha * .23, 1.2); ink([[cx, cy - 270], [cx, cy + 300]], C_TEAL, alpha * .23, 1.2);
   arrow(a, b, C_GOLD, alpha); arrow(a, d, C_PINK, alpha);
-  text('1', b[0] + 20, b[1] + 34, { font: F_MATH, size: 32, color: '#ffe1a3', alpha });
-  text(beta === 1 ? 'i' : 'iβ', d[0] - 32, d[1] - 18, { font: F_MATH, style: 'italic', size: 32, color: '#ffb3d2', alpha });
+  text(theta ? 'exp(iθ)' : '1', b[0] + 45, b[1] + 34, { font: F_MATH, size: 30, color: '#ffe1a3', alpha });
+  text(theta ? 'iβexp(iθ)' : beta === 1 ? 'i' : 'iβ', d[0] - 62, d[1] - 18, { font: F_MATH, style: 'italic', size: 30, color: '#ffb3d2', alpha });
   return at;
 }
 register(49, 7, '实平面拥有复结构', 'THE PLANE BECOMES COMPLEX', lt => {
@@ -814,45 +830,57 @@ function invariants(beta) {
   const g2 = 4 * PI ** 4 / 3 * E4, g3 = 8 * PI ** 6 / 27 * E6;
   return { g2, g3: Math.abs(g3) < 1e-9 ? 0 : g3, delta: g2 ** 3 - 27 * g3 ** 2, E4, E6 };
 }
-function cubicPlot(A, B, cx, cy, sx, sy, reveal = 1) {
-  const at = p => [cx + sx * p[0], cy - sy * p[1]];
-  ctx.save(); ctx.beginPath(); ctx.rect(cx - sx * 1.6, cy - 300, sx * 3.4, 610); ctx.clip();
-  for (const sign of [-1, 1]) {
-    let line = [];
-    for (let i = 0; i <= 1000 * reveal; i++) {
-      const x = -1.5 + 3.3 * i / 1000, y2 = 4 * x ** 3 - A * x - B;
-      if (y2 >= 0) line.push(at([x, sign * Math.sqrt(y2)]));
-      else if (line.length) { ink(line, C_TEAL, .9, 2.4); line = []; }
-    }
-    ink(line, C_TEAL, .9, 2.4);
-  }
+function complexPhase(value, angle) { return [value * Math.cos(angle), value * Math.sin(angle)]; }
+function rotatedInvariants(beta, theta) { const inv = invariants(beta); return {...inv, G2: complexPhase(inv.g2, -4 * theta), G3: complexPhase(inv.g3, -6 * theta)}; }
+function complexNumber(z) { return `${z[0].toFixed(2)} ${z[1] < 0 ? '−' : '+'} ${Math.abs(z[1]).toFixed(2)}i`; }
+function latticeState(lt) { return {beta: 1.4 - .68 * sstep(2, 12, lt) + .28 * sstep(22, 28, lt), theta: .48 * sstep(13, 24, lt)}; }
+function cubicBranches(A, B) {
+  const radius = 2 * Math.sqrt(A / 12), angle = Math.acos(clamp((3 * B / (2 * A)) * Math.sqrt(12 / A), -1, 1)) / 3;
+  const roots = [0, 1, 2].map(k => radius * Math.cos(angle - TAU * k / 3)).sort((a,b) => a-b);
+  const [r1,r2,r3] = roots, middle = (r1+r2)/2, half = (r2-r1)/2;
+  const oval = Array.from({length:481},(_,i)=>{const t=TAU*i/480,x=i===240?r1:(i===0||i===480)?r2:middle+half*Math.cos(t),y=(i===0||i===240||i===480)?0:Math.sqrt(Math.max(0,4*(x-r1)*(x-r2)*(x-r3)));return[x,Math.sin(t)<0?-y:y];});
+  const end = Math.sqrt(Math.max(0,2.5-r3));
+  const open = Array.from({length:601},(_,i)=>{const t=end*(2*i/600-1),x=r3+t*t;return[x,2*t*Math.sqrt(Math.max(0,(x-r1)*(x-r2)))];});
+  return {roots,oval,open};
+}
+// Fixed linear projection of the rotated real-locus slice in C^2, not a real-coefficient cubic.
+function cubicPlot(A, B, cx, cy, sx, sy, reveal = 1, theta = 0) {
+  const at = p => { const X = complexPhase(p[0], -2 * theta), Y = complexPhase(p[1], -3 * theta); return [cx + sx * (X[0] - .35 * Y[1]), cy - sy * (Y[0] + .35 * X[1])]; };
+  ctx.save(); ctx.beginPath(); ctx.rect(1040, 465, 790, 325); ctx.clip();
+  const {oval,open} = cubicBranches(A,B);
+  ink(oval.slice(0,Math.max(2,Math.round(oval.length*reveal))).map(at),C_TEAL,.9,2.4,reveal===1);
+  ink(open.slice(0,Math.max(2,Math.round(open.length*reveal))).map(at),C_TEAL,.9,2.4);
   ctx.restore(); return at;
 }
 register(56, 11, '格点写成代数方程', 'A LATTICE WRITES AN EQUATION', lt => {
-  cosmos(lt); const beta = 1.4 - .68 * sstep(2, 12, lt) + .28 * sstep(14, 23, lt), inv = invariants(beta);
-  equation('Λβ = ℤ + iβℤ      β > 0', 215, 61);
-  const at = lattice(lt, beta, 515, 565, 163);
-  small(`β = ${beta.toFixed(3)}`, 515, 808, '#f4dca4', 38);
-  const cx = 1430, cy = 550;
-  ink([[1040, cy], [1820, cy]], C_TEAL, .25, 1); ink([[cx, 300], [cx, 850]], C_TEAL, .25, 1);
-  cubicPlot(inv.g2 / PI ** 4, inv.g3 / PI ** 6, cx, cy, 220, 95);
-  equation('y² = 4x³ − g₂x − g₃', 312, 48, 1, 1420);
-  small(`g₂ = ${inv.g2.toFixed(3)}    g₃ = ${inv.g3.toFixed(3)}`, 1420, 375, '#d0e7e4', 28);
-  small('实点截面 · 横轴 x / π²，纵轴 y / π³', 1420, 828, '#abc6c6', 26);
+  cosmos(lt); const {beta,theta}=latticeState(lt), inv = rotatedInvariants(beta, theta);
+  const shown = latticeState((window.__displayTime ?? (lt + 56 * BAR)) - 56 * BAR), shownInv = rotatedInvariants(shown.beta,shown.theta);
+  equation('Λ = exp(iθ) (ℤ + iβℤ)', 215, 58);
+  ctx.save(); ctx.beginPath(); ctx.rect(90, 295, 780, 470); ctx.clip();
+  const at = lattice(lt, beta, 495, 560, 150, 1, theta); ctx.restore();
+  small(`β = ${shown.beta.toFixed(3)}    θ = ${(shown.theta * 180 / PI).toFixed(1)}°`, 495, 812, '#f4dca4', 34);
+  const cx = 1370, cy = 625;
+  ink([[1040, cy], [1820, cy]], C_TEAL, .25, 1); ink([[cx, 465], [cx, 790]], C_TEAL, .25, 1);
+  cubicPlot(inv.g2 / PI ** 4, inv.g3 / PI ** 6, cx, cy, 180, 68, 1, theta);
+  equation('y² = 4x³ − g₂(θ)x − g₃(θ)', 312, 43, 1, 1420);
+  small(`g₂(θ) = ${complexNumber(shownInv.G2)}`, 1420, 373, '#d0e7e4', 28);
+  small(`g₃(θ) = ${complexNumber(shownInv.G3)}`, 1420, 417, '#d0e7e4', 28);
+  small(theta > .01 ? '旋转前实点截面的复坐标投影' : '实点截面 · x / π²，y / π³', 1420, 829, '#abc6c6', 25);
+  small('g₂(θ) = exp(−4iθ)g₂(0)    g₃(θ) = exp(−6iθ)g₃(0)', 960, 883, '#e6cf9e', 29, sstep(13, 15, lt));
   arrow([870, 545], [1020, 545], C_GOLD, sstep(.5, 2, lt));
   for (let i = 0; i < 15; i++) {
     const t = fract(lt * .15 + i / 15); bead([lerp(870, 1020, t), 545 + 20 * Math.sin(PI * t)], C_GOLD, '', 0, 0, .4, 11);
   }
-  equation('[z] ↦ (℘Λ(z), ℘′Λ(z))      [0] ↦ O', 898, 43, sstep(20, 21, lt));
+  equation('[z] ↦ (℘Λ(z), ℘′Λ(z))      [0] ↦ O', 880, 38, sstep(10.5, 11.5, lt) * (1 - sstep(12.5, 13.5, lt)));
   bead(at([.64, 0]), C_GOLD, 'z', 25, -30, sstep(23, 24, lt));
 }, [[.5, 5.5, '两条实线性无关的复周期，决定一张格点网。', 'Two real-linearly independent complex periods determine a lattice.'],
   [6, 11.5, '周期改变，格点改变，方程的系数也随之改变。', 'Change the periods, and both the lattice and the equation change.'],
-  [12, 18.5, 'Weierstrass 函数，把复环面映到光滑的三次曲线。', 'The Weierstrass function maps the complex torus to a smooth cubic.'],
-  [19, 24.5, '这里画出实点截面；完整复曲线仍是二维实环面。', 'This is its real locus; the full complex curve is still a real two-dimensional torus.'],
+  [12, 18.5, '格点开始旋转，方程系数也在复平面中旋转。', 'The lattice rotates, and the coefficients rotate in the complex plane.'],
+  [19, 24.5, '旋转改变方程坐标；椭圆曲线的同构类型保持不变。', 'Rotation changes the equation coordinates and preserves the isomorphism class.'],
   [25, 28.9, '下一幕换一个格点，看原影片中的群运算。', 'Next, choose another lattice for the original group-law animation.']],
   [[2, 'glide', { dur: 10 }], [12, 'shimmer'], [14, 'glide', { dur: 9 }], [23, 'glass', { midi: 86 }]]);
 
-// Preserve the upstream curve, camera, point paths and event times verbatim.
+// Preserve the upstream style and event times, with corrected chord/reflection placement.
 scene({ ...ORIGINAL_EC, start: 67, ch: ['09', ...ORIGINAL_EC.ch.slice(1)] });
 scene({ ...ORIGINAL_QR, start: 75, ch: ['10', ...ORIGINAL_QR.ch.slice(1)] });
 
@@ -876,7 +904,7 @@ window.__mathAudit = () => {
     for (const p of [P, Q, R, S]) maxCurveResidual = Math.max(maxCurveResidual, Math.abs(p[1] ** 2 - ecf(p[0])));
     maxGroupResidual = Math.max(maxGroupResidual, Math.abs(R[1] - P[1] - l * (R[0] - P[0])), Math.abs(R[0] - S[0]), Math.abs(R[1] + S[1]));
   }
-  return { coeff, curve: 'y² = x³ − x + 1', originalDrawReused: true, maxCurveResidual, maxGroupResidual, maxImaginary: 0, finitePrime: FF.p, finitePoints: FF.pts.length, finiteResiduals: FF.pts.filter(([x, y]) => (y*y - x*x*x - 7) % FF.p !== 0).length };
+  return { coeff, curve: 'y² = x³ − x + 1', originalDrawReused: false, correctedGroupPlacement: true, maxCurveResidual, maxGroupResidual, maxImaginary: 0, finitePrime: FF.p, finitePoints: FF.pts.length, finiteResiduals: FF.pts.filter(([x, y]) => (y*y - x*x*x - 7) % FF.p !== 0).length };
 };
 
 // ======================================================================== timeline + frame pipeline
@@ -887,7 +915,7 @@ const sceneAt = t => { let sc = SC[0]; for (const s of SC) if (t >= s.t0) sc = s
 function drawLayer(t, jx, jy) {
   t = clamp(t, 0, TOTAL - 1e-3);
   const sc = sceneAt(t), lt = t - sc.t0;
-  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none';
+  ctx.setTransform(RENDER_SCALE, 0, 0, RENDER_SCALE, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none';
   ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
   let shake = 0;
   for (const [th, k] of HITS) if (t >= th && t < th + 1.5) shake += 16 * k * Math.exp(-(t - th) * 6);
@@ -928,6 +956,7 @@ function overlays(T) {
 }
 const SHUTTER = .5, JIT = [[.5, .5], [.25, .75], [.75, .25], [.125, .625], [.625, .125], [.375, .375], [.875, .875], [.0625, .5625]];
 function frame(T, fps = 30, samples = 1) {
+  window.__displayTime = T;
   T = clamp(T, 0, TOTAL - 1e-3);
   const sc = sceneAt(T), K = samples > 1 ? Math.max(1, sc.mb ?? 3) : 1;
   for (let k = 0; k < K; k++) {
@@ -937,7 +966,7 @@ function frame(T, fps = 30, samples = 1) {
     accumulate(k, K);
   }
   post(T, { ...GRADE, ...(sc.bloom ? { bloom: GRADE.bloom * sc.bloom } : {}), ...(sc.grade || {}) });
-  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'copy'; ctx.drawImage(glc, 0, 0); ctx.globalCompositeOperation = 'source-over';
+  ctx.setTransform(RENDER_SCALE, 0, 0, RENDER_SCALE, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'copy'; ctx.drawImage(glc, 0, 0, W, H); ctx.globalCompositeOperation = 'source-over';
   overlays(T);
 }
 
@@ -965,14 +994,19 @@ else {
   const ui = document.getElementById('ui'), pp = document.getElementById('pp'), fill = document.getElementById('fill'), tm = document.getElementById('tm');
   document.getElementById('dur').textContent = `${Math.floor(TOTAL / 60)}:${String(Math.round(TOTAL % 60)).padStart(2, '0')}`;
   const now = () => useAudio ? au.currentTime : (performance.now() - clock0) / 1000;
-  function loop() {
+  let loopId = 0, lastPaint = -Infinity;
+  function loop(stamp) {
+    loopId = 0;
+    if (!playing) return;
+    if (stamp - lastPaint < 1000 / 30 - 1) { loopId = requestAnimationFrame(loop); return; }
+    lastPaint = stamp;
     const T = now(); frame(T);
     fill.style.width = (T / TOTAL * 100) + '%'; bar.setAttribute('aria-valuenow', String(T)); tm.textContent = `${Math.floor(T / 60)}:${String(Math.floor(T % 60)).padStart(2, '0')}`;
     if (T >= TOTAL - .05) { playing = false; pp.textContent = '▶'; }
-    if (playing) requestAnimationFrame(loop);
+    if (playing) loopId = requestAnimationFrame(loop);
   }
-  function play() { playing = true; pp.textContent = '❚❚'; au.play().catch(() => { useAudio = false; clock0 = performance.now() - au.currentTime * 1000; }); requestAnimationFrame(loop); }
-  function pause() { playing = false; pp.textContent = '▶'; au.pause(); }
+  function play() { if (playing) return; playing = true; lastPaint = -Infinity; pp.textContent = '❚❚'; au.play().catch(() => { useAudio = false; clock0 = performance.now() - au.currentTime * 1000; }); loopId = requestAnimationFrame(loop); }
+  function pause() { playing = false; cancelAnimationFrame(loopId); loopId = 0; pp.textContent = '▶'; au.pause(); }
   document.getElementById('go').onclick = () => { document.getElementById('start').remove(); if (au.currentTime >= TOTAL - .1) au.currentTime = 0; play(); poke(); };
   pp.onclick = () => playing ? pause() : play();
   const bar = document.getElementById('bar');
