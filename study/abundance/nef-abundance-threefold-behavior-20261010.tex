@@ -82,27 +82,18 @@ $R_n=R(P_n,N)$.
 Let $\mathbb T\subset Z$ be the complement of the two summand sections.
 \end{itemize}
 Whenever $|kR(P,N)|$ is used, $k>0$ is an integer with $kP$ Cartier.
-A strongly movable curve class on a smooth projective threefold $W$
-means $f_*(H_1\cdot H_2)$, where $f:V\to W$ is a birational morphism,
-$V$ is smooth projective, and $H_1,H_2$ are ample Cartier divisors.
-For an integral curve $C$ through $x$, its multiplicity is
-the Hilbert--Samuel multiplicity
-\[
- \mult_x(C)=\lim_{\ell\to\infty}
- \frac{\operatorname{length}_{\OO_{C,x}}
- (\OO_{C,x}/\mathfrak m_{C,x}^{\ell+1})}{\ell+1},
-\]
-where $\mathfrak m_{C,x}$ is the maximal ideal of $\OO_{C,x}$.
 For a Cartier divisor $L$ on a smooth projective variety $W$,
 a point $z\in W$, and an integer $s\ge0$, the complete linear system
-$|L|$ \emph{separates $s$-jets at $z$} if every class in
+$|L|$ \emph{separates $s$-jets at $z$} if
 \[
- \OO_{W,z}(L)/\mathfrak m_z^{s+1}\OO_{W,z}(L)
+ \begin{gathered}
+ \forall f\in\OO_{W,z}(L),\quad
+ \exists\sigma\in H^0(W,\OO_W(L)):\\
+ \sigma_z-f\in\mathfrak m_z^{s+1}\OO_{W,z}(L).
+ \end{gathered}
 \]
-is represented modulo $\mathfrak m_z^{s+1}$ by a section
-of $\OO_W(L)$. Here $\mathfrak m_z$ is the maximal ideal of $\OO_{W,z}$.
-Equivalently, after a local trivialization, every Taylor polynomial
-of total degree at most $s$ is realized by a global section.
+Here $\sigma_z$ is the germ of $\sigma$ at $z$, and $\mathfrak m_z$
+is the maximal ideal of $\OO_{W,z}$.
 We take $\epsilon$ sufficiently small that
 \[
  343\epsilon^3<\tfrac14,\qquad40\epsilon<\tfrac38.
@@ -113,14 +104,15 @@ We use the following lemmas, proved in
 Sections~\ref{sec:geometric-inputs}--\ref{sec:frobenius}, respectively.
 
 \noindent\textbf{Lemma~\ref{lem:full-scalar}.}
-For every integer $N>0$ and all $n\gg0$, a very general point
-$x\in X$ admits a covering family of integral curves $C_t$ through $x$
-whose general member satisfies
+For every integer $N>0$ and all $n\gg0$, let $\pi:\widehat X\to X$
+be the blowup at a very general point $x$, with exceptional divisor $J$.
+There are a birational morphism $f:V\to\widehat X$ from a smooth
+projective threefold and ample Cartier divisors $H_1,H_2$ on $V$ such that
 \[
- (P_n+ND)\cdot C_t\le40\epsilon\mult_x(C_t).
+ f^*J\cdot H_1\cdot H_2>0,\qquad
+ f^*\pi^*(P_n+ND)\cdot H_1\cdot H_2
+ <40\epsilon\,f^*J\cdot H_1\cdot H_2.
 \]
-The family comes from two very ample systems on a smooth projective
-model $f:V\to X$ with $\mathcal I_x\OO_V$ invertible.
 
 \noindent\textbf{Lemma~\ref{lem:full-jets}.}
 There exists an integer $N>0$ such
@@ -135,12 +127,14 @@ such that
 \[
  343P^3<\tfrac14,\qquad (2P+ND)\cdot P^2<4P^3.
 \]
-If the blowup $\pi:\widehat X\to X$ at some point $x$, with
-exceptional divisor $J$, admits a strongly movable curve class
-$\gamma$ satisfying
+Let $\pi:\widehat X\to X$ be the blowup at a point $x$, with
+exceptional divisor $J$. If there are a birational morphism
+$f:V\to\widehat X$ from a smooth projective threefold and ample
+Cartier divisors $H_1,H_2$ on $V$ such that
 \[
- J\cdot \gamma>0,\qquad
- \pi^*(P+ND)\cdot \gamma<\tfrac38J\cdot \gamma,
+ f^*J\cdot H_1\cdot H_2>0,\qquad
+ f^*\pi^*(P+ND)\cdot H_1\cdot H_2
+ <\tfrac38 f^*J\cdot H_1\cdot H_2,
 \]
 then $|kR(P,N)|$ does not separate $8k$-jets at any point of
 $\mathbb T$, for any integer $k>0$ with $kP$ Cartier.
@@ -154,15 +148,12 @@ Since $P-r_nD$ is nef,
 \[
  (2P+ND)\cdot P^2\le(2+N/r_n)P^3<4P^3.
 \]
-Take the model $f:V\to X$ and systems supplied by
-Lemma~\ref{lem:full-scalar}. Since $\mathcal I_x\OO_V$ is invertible,
-$f$ factors through the blowup $\pi:\widehat X\to X$ as $f=\pi\circ g$.
-For its exceptional divisor $J$, the class
-$\gamma=g_*(H_1\cdot H_2)$ is strongly movable and satisfies
-$J\cdot\gamma=\mult_x(C_t)>0$ for a general member by
-Lemma~\ref{lem:curve-multiplicity-blowup}. Thus
+Take $\pi:\widehat X\to X$, $f:V\to\widehat X$, and $H_1,H_2$
+from Lemma~\ref{lem:full-scalar}. Since $40\epsilon<3/8$, they satisfy
 \[
- \pi^*(P+ND)\cdot \gamma\le40\epsilon J\cdot \gamma<\tfrac38J\cdot \gamma.
+ f^*\pi^*(P+ND)\cdot H_1\cdot H_2
+ <40\epsilon\,f^*J\cdot H_1\cdot H_2
+ <\tfrac38 f^*J\cdot H_1\cdot H_2.
 \]
 This contradicts Lemmas~\ref{lem:full-contradiction} and
 \ref{lem:full-jets}. Hence $H^0(X,\OO_X(mD))\ne0$ for some integer $m>0$.\qedhere
@@ -178,41 +169,16 @@ Fix an ample Cartier divisor $A$ and $\epsilon\in\Q_{>0}$ such that
 $343\epsilon^3<1/4$ and $40\epsilon<3/8$.
 For $n\ge1$, let $r_n$ be the nearest positive integer to
 $\epsilon/((D+A/n)^3)^{1/3}$ and set $P_n=r_n(D+A/n)$.
-For every integer $N>0$ and all $n\gg0$, a very general point
-$x\in X$ admits a covering family of integral curves $C_t$ through $x$
-whose general member satisfies
+For every integer $N>0$ and all $n\gg0$, let $\pi:\widehat X\to X$
+be the blowup at a very general point $x$, with exceptional divisor $J$.
+There are a birational morphism $f:V\to\widehat X$ from a smooth
+projective threefold and ample Cartier divisors $H_1,H_2$ on $V$ such that
 \[
- (P_n+ND)\cdot C_t\le40\epsilon\mult_x(C_t).
-\]
-More precisely, there are a smooth projective threefold $V$, a
-birational morphism $f:V\to X$ with $\mathcal I_x\OO_V$ invertible,
-and very ample Cartier divisors $H_1,H_2$ such that $C_t$ are the
-images of general intersections of members of $|H_1|$ and $|H_2|$.
-Here $\mathcal I_x$ is the ideal sheaf of $x$.
-\end{lemma}
-
-\begin{lemma}\label{lem:curve-multiplicity-blowup}
-Let $C\subset X$ be an integral curve through $x$, and let
-$\pi:\widehat X=\operatorname{Bl}_xX\to X$ have exceptional divisor $J$.
-For the strict transform $\widehat C$,
-\[
- \mult_x(C)=J\cdot\widehat C.
+ f^*J\cdot H_1\cdot H_2>0,\qquad
+ f^*\pi^*(P_n+ND)\cdot H_1\cdot H_2
+ <40\epsilon\,f^*J\cdot H_1\cdot H_2.
 \]
 \end{lemma}
-\begin{proof}
-Let $\nu:\overline C\to C$ be the normalization. For each $y$ over $x$,
-write $\mathfrak m_{C,x}\OO_{\overline C,y}=(t_y^{a_y})$.
-The normalization lifts to $\widehat C$, and the pullback of $J$
-is $\sum_{y\mapsto x}a_y[y]$. Hence $J\cdot\widehat C=\sum_y a_y$.
-On the other hand, $\OO_{C,x}$ and its finite normalization have
-the same Hilbert--Samuel leading coefficient. Indeed, their quotient
-has finite length, and the Artin--Rees lemma bounds the induced
-filtration discrepancy independently of its index. In the normalized
-local rings the colength of $\mathfrak m_{C,x}^{\ell+1}$ is
-$(\ell+1)\sum_y a_y$. Thus $\mult_x(C)=\sum_y a_y$. All residue fields
-are $\C$.
-\end{proof}
-
 
 Write $\nu(D)=\max\{j:D^j\cdot A^{3-j}>0\}\in\{1,2\}$.
 We obtain the curve bound from a multiplicity estimate and duality.
@@ -696,15 +662,16 @@ very general locus handles all the stated section spaces.
 \begin{proposition}\label{prop:movable-from-scalar}
 Assume the scalar bound at a very general point $x$, and fix
 large $n$ with $\rho_n<2\epsilon$ and $r_n>N$.
-On the blowup $\pi:\widehat X\to X$ at $x$ there is an actual
-strongly movable class $\gamma=f_*(A_1\cdot A_2)$ such that
+Let $\pi:\widehat X\to X$ be the blowup at $x$, with exceptional
+divisor $J$. There are a birational morphism $f:V\to\widehat X$
+from a smooth projective threefold and ample Cartier divisors
+$H_1,H_2$ on $V$ such that
 \[
- J\cdot \gamma>0,\qquad
- \pi^*(P+\lambda D)\cdot \gamma<40\epsilon J\cdot \gamma
+ f^*J\cdot H_1\cdot H_2>0,\qquad
+ f^*\pi^*(P+\lambda D)\cdot H_1\cdot H_2
+ <40\epsilon\,f^*J\cdot H_1\cdot H_2
  \quad(0\le\lambda\le N).
 \]
-Here $J$ is exceptional, $f$ is one smooth birational model,
-and the $A_i$ are ample integral Cartier divisors.
 \end{proposition}
 \begin{proof}
 The class $2\pi^*P-40\epsilon J$ is not pseudo-effective.
@@ -714,13 +681,16 @@ $8\rho_n<c<40\epsilon$. An effective divisor in a divisible
 multiple of this class would push down to a member of $|2kP|$
 with multiplicity exceeding the bound in
 Proposition~\ref{prop:scalar-bound}.
-Movable-curve duality \cite{BDPP} gives a generating class
-$\gamma=f_*(A_1\cdot A_2)$ with
+Movable-curve duality \cite{BDPP} gives a smooth projective
+birational model $f:V\to\widehat X$ and ample real divisor classes
+$H_1,H_2$ such that
 \[
- 2\pi^*P\cdot \gamma<40\epsilon J\cdot \gamma.
+ 2f^*\pi^*P\cdot H_1\cdot H_2
+ <40\epsilon\,f^*J\cdot H_1\cdot H_2.
 \]
-Strict negativity permits rational approximation of the ample
-classes and clearing denominators. Nefness gives $J\cdot \gamma>0$.
+Strict negativity permits rational approximation and clearing
+denominators, so the $H_i$ may be taken ample Cartier.
+Nefness gives $f^*J\cdot H_1\cdot H_2>0$.
 For $0\le\lambda\le N$ the divisor
 \[
  2P-(P+\lambda D)=(r_n-\lambda)D+r_nA/n
@@ -734,22 +704,8 @@ reducing characteristic.
 \begin{proof}[Proof of Lemma~\ref{lem:full-scalar}]
 Fix $N$ and take $n$ sufficiently large that
 Proposition~\ref{prop:scalar-bound} applies, $\rho_n<2\epsilon$,
-and $r_n>N$. Proposition~\ref{prop:movable-from-scalar}
-gives a strongly movable class $\gamma=g_*(H_1\cdot H_2)$ on
-the point blowup $\pi:\widehat X\to X$, with exceptional divisor $J$,
-where $g:V\to\widehat X$ is a smooth projective birational model.
-Replacing the ample $H_i$ by sufficiently divisible multiples
-preserves the ratio in the inequality and makes them very ample.
-Put $f=\pi\circ g$; then $\mathcal I_x\OO_V=\OO_V(-g^*J)$.
-General complete-intersection curves $B_t$ are smooth integral,
-cover $V$, and map birationally to integral curves $C_t=f(B_t)$.
-Their images cover $X$. The normalization of $C_t$ is $B_t$, so
-\[
- \mult_x(C_t)=g^*J\cdot B_t>0,\qquad
- (P_n+ND)\cdot C_t=f^*(P_n+ND)\cdot B_t
- \le40\epsilon\,g^*J\cdot B_t.
-\]
-The first equality follows from Lemma~\ref{lem:curve-multiplicity-blowup}.
+and $r_n>N$. Apply Proposition~\ref{prop:movable-from-scalar}
+with $P=P_n$ and $\lambda=N$.
 \end{proof}
 
 \section{Proof of Lemma~\ref{lem:full-jets}}\label{sec:large-jets}
@@ -1272,11 +1228,13 @@ divisor and $N>0$ an integer such that
  343P^3<\tfrac14,\qquad (2P+ND)\cdot P^2<4P^3.
 \]
 Let $\pi:\widehat X\to X$ be the blowup at a point $x$, with
-exceptional divisor $J$. Suppose that a strongly movable curve
-class $\gamma$ on $\widehat X$ satisfies
+exceptional divisor $J$. Suppose that there are a birational morphism
+$f:V\to\widehat X$ from a smooth projective threefold and ample
+Cartier divisors $H_1,H_2$ on $V$ such that
 \[
- J\cdot\gamma>0,\qquad
- \pi^*(P+ND)\cdot\gamma<\tfrac38J\cdot\gamma.
+ f^*J\cdot H_1\cdot H_2>0,\qquad
+ f^*\pi^*(P+ND)\cdot H_1\cdot H_2
+ <\tfrac38 f^*J\cdot H_1\cdot H_2.
 \]
 Let $D_i,P_i$ denote pullbacks from the $i$-th factor of $X\times X$
 and then to
@@ -1291,13 +1249,17 @@ Cartier, $|kR(P,N)|$ does not separate $8k$-jets at any point
 of $\mathbb T$.
 \end{lemma}
 
-Throughout this section, $X,D,P,N,x,\pi,J,\gamma$ satisfy the
-hypotheses of Lemma~\ref{lem:full-contradiction}. Put
+Throughout this section, $X,D,P,N,x,\pi,J,f,V,H_1,H_2$ satisfy
+the hypotheses of Lemma~\ref{lem:full-contradiction}. Put
 \[
- b=\frac{\pi^*(P+ND)\cdot \gamma}{J\cdot \gamma}<\tfrac38.
+ b=\frac{f^*\pi^*(P+ND)\cdot H_1\cdot H_2}
+ {f^*J\cdot H_1\cdot H_2}<\tfrac38.
 \]
-Since $D$ is nef and $\gamma$ is strongly movable,
-$\pi^*(P+\lambda D)\cdot \gamma\le bJ\cdot \gamma$ for $0\le\lambda\le N$.
+Nefness of $D$ gives, for $0\le\lambda\le N$,
+\[
+ f^*\pi^*(P+\lambda D)\cdot H_1\cdot H_2
+ \le b\,f^*J\cdot H_1\cdot H_2.
+\]
 Suppose for contradiction that $|k_0R(P,N)|$ separates $8k_0$-jets
 at some $z\in\mathbb T$, for an integer $k_0>0$ with $k_0P$ Cartier.
 All these data are fixed over $\C$ before reduction. The following
@@ -1309,8 +1271,8 @@ only on smooth positive-characteristic fibres.
 \begin{lemma}\label{lem:cotangent-flag}
 For the fixed ample rational Cartier divisor $P$, there exist
 positive integers $l_1,l_2$, with $l_iP$ Cartier, and divisors
-$S\in|l_1P|$, $H_2\in|l_2P|$ such that
-$X\supset S\supset C=S\cap H_2$ is a smooth integral complete
+$S\in|l_1P|$, $S_2\in|l_2P|$ such that
+$X\supset S\supset C=S\cap S_2$ is a smooth integral complete
 intersection flag and $\Omega_X^1|_C$ is semistable of degree zero.
 In particular, $\mu_{\min}(\Omega_X^1|_C)=0$.
 \end{lemma}
@@ -1331,9 +1293,9 @@ Thus $\Omega_X^1$ is $H$-semistable of slope zero.
 
 Mehta--Ramanathan restriction \cite[Theorem~6.1]{MR} provides
 sufficiently large integers $m_1,m_2$ and general divisors
-$S\in|m_1H|$, $H_2\in|m_2H|$ for which
-$\Omega_X^1|_{S\cap H_2}$ is semistable. Bertini ensures that
-$S$ and $C=S\cap H_2$ are smooth and integral. Set $l_i=am_i$.
+$S\in|m_1H|$, $S_2\in|m_2H|$ for which
+$\Omega_X^1|_{S\cap S_2}$ is semistable. Bertini ensures that
+$S$ and $C=S\cap S_2$ are smooth and integral. Set $l_i=am_i$.
 Finally,
 \[
  \deg(\Omega_X^1|_C)=K_X\cdot C=0,
@@ -1417,8 +1379,8 @@ of $\Omega_Y^1|_C$ of slope zero.
 Choose the padding divisor $T$ and the finitely many nonvanishing
 padding sections as in Proposition~\ref{prop:frob-rank-hd}.
 Spread out the flag, canonical trivialization, jet sections,
-blowup, and the actual complete intersection witness for
-$\gamma$. Shrinking the model preserves smoothness, ampleness,
+blowup, birational model $f:V\to\widehat X$, and ample divisors
+$H_1,H_2$. Shrinking the model preserves smoothness, ampleness,
 the finite jet surjection, and all intersection numbers.
 Since $\deg(\Omega_X^1|_C)=K_X\cdot C=0$, the least-slope condition
 makes this curve bundle semistable of slope zero. Openness of
@@ -1611,8 +1573,8 @@ The largest possible nonzero initial degree is at most $a_1+a_2$.
 
 \begin{lemma}\label{lem:determinant-upper-bound}
 Let $E_\sigma$ be the determinant divisor in
-Lemma~\ref{lem:determinant-line-bundles}. The fixed curve class
-$\gamma$, specialized as in Lemma~\ref{lem:fixed-data-reduction}, gives
+Lemma~\ref{lem:determinant-line-bundles}. The data $f,H_1,H_2$,
+specialized as in Lemma~\ref{lem:fixed-data-reduction}, give
 \begin{equation}\label{eq:det-upper}
  \mult_{(x',x')}(E_\sigma)
  \le R_p\bigl(2b+O(p^{-1})\bigr).
@@ -1621,8 +1583,8 @@ $\gamma$, specialized as in Lemma~\ref{lem:fixed-data-reduction}, gives
 \begin{proof}
 Twist the specialized blowup and its fixed movable witness as well.
 For every member $E_i\in|\mathcal Q_i|$, its proper transform
-is effective. Intersecting it with the specialized class $\gamma$
-gives
+is effective. Pulling it back to the specialized model $V$ and
+intersecting with $H_1\cdot H_2$ gives
 \[
  \frac{\mult_{x'}(E_i)}{R_p}\le b+O(p^{-1}).
 \]
