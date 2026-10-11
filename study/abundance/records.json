@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-11T15:25+08:00",
+  "updatedAt": "2026-10-11T15:34+08:00",
   "series": [
     {
       "id": "F034",
@@ -4988,6 +4988,139 @@
       ],
       "en": [
         "Under the common geometric hypotheses, assume temporarily that $\\kappa(D)=-\\infty$. One route uses 1.1 to obtain a small $\\Phi$, satisfying the extra condition of 1.2 and prohibiting jets. The other uses 1.3 to generate jets. Choose N from 1.3 and then the same sufficiently large n for all three inputs; both routes concern the same $|kR_n|$ on Z. If all three geometric inputs hold, they exclude $\\kappa(D)=-\\infty$. This does not assert two opposite unconditional conclusions simultaneously, and the logical structure does not verify the proofs of those inputs."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-very-ample-first-jets-q",
+      "role": "user",
+      "time": "2026-10-11T15:25+08:00",
+      "zh": [
+        "Very ample 能推出每点分离 one jet 吗？我现在只想理解 jets 的基本含义。"
+      ],
+      "en": [
+        "Does very ampleness imply separation of one jet at every point? I only want to understand the basic meaning of jets."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-very-ample-first-jets-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:25+08:00",
+      "zh": [
+        "能。无基点保证取值，一阶切向量分离保证一次项，两者合起来就是每点分离 1-jets：在局部平凡化下，截面的常数项和全部一次项可以独立指定。Very ample 还要求分离不同点；只谈切向量而省略取值或点分离，不是完整的判据。Hartshorne II, Proposition 7.3(2) 用在该点消失的截面生成 $\\mathfrak m_pL_p/\\mathfrak m_p^2L_p$ 来表述切向量分离。原文参考：https://djvu.online/file/nBitrL383m1P0 。"
+      ],
+      "en": [
+        "Yes. Base-point freedom controls the value, while tangent-vector separation controls the linear terms; together they give 1-jet separation at every point. After local trivialization, the constant and all linear terms can be prescribed independently. Very ampleness also requires separation of distinct points. Hartshorne II, Proposition 7.3(2) expresses tangent-vector separation by generation of $\\mathfrak m_pL_p/\\mathfrak m_p^2L_p$ by sections vanishing at p. Source: https://djvu.online/file/nBitrL383m1P0 ."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-xi-nef-rn-ample-q",
+      "role": "user",
+      "time": "2026-10-11T15:26+08:00",
+      "zh": [
+        "Setup 中 $\\xi$ 是 nef class 吗？那么 $R_n$ 是 ample 吗？"
+      ],
+      "en": [
+        "Is $\\xi$ in Setup nef? Is $R_n$ then ample?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-xi-nef-rn-ample-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:26+08:00",
+      "zh": [
+        "这里 $\\xi=c_1(\\mathcal O_Z(1))$。按当前射影丛约定，$\\xi$ 是 nef，且在射影丛纤维上为正；加上来自底空间的 ample 类 $P_{n,1}+P_{n,2}$，$R_n$ 确为 ample。适当的充分大整数倍可以 very ample，但这本身不保证随 k 增长的 $8k$-jets 分离。"
+      ],
+      "en": [
+        "Here $\\xi=c_1(\\mathcal O_Z(1))$. With the present projective-bundle convention, it is nef and positive on the fibers. Adding the ample class $P_{n,1}+P_{n,2}$ pulled back from the base makes $R_n$ ample. Suitable sufficiently large integral multiples can be very ample, but this alone does not guarantee separation of $8k$-jets growing with k."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-surface-two-tangent-directions-q",
+      "role": "user",
+      "time": "2026-10-11T15:33+08:00",
+      "zh": [
+        "分离点可以找除子经过 P 而不经过 Q。曲面上分离两个切方向怎么类比？"
+      ],
+      "en": [
+        "To separate points, a divisor can pass through P but not Q. What is the analogous statement for two tangent directions on a surface?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-surface-two-tangent-directions-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:33+08:00",
+      "zh": [
+        "在光滑曲面上，设线性系 $\\Lambda$ 无基点并在 p 分离切向量。给定不同切方向 $\\ell_1\\ne\\ell_2\\subset T_pX$，可取 $E\\in\\Lambda$，使 E 在 p 光滑且 $T_pE=\\ell_1$，因此其切线不包含 $\\ell_2$。对给定方向也可取横着经过 p 的 E。例子是 $\\mathbb P^2$ 上的直线系：经过 p 的直线可以有任意指定斜率。这是曲面上的切线表述；高维除子的切空间是超平面，不能说它只有一个切方向。"
+      ],
+      "en": [
+        "On a smooth surface, suppose a base-point-free system $\\Lambda$ separates tangent vectors at p. For distinct tangent lines $\\ell_1\\ne\\ell_2\\subset T_pX$, one can choose $E\\in\\Lambda$ smooth at p with $T_pE=\\ell_1$, so its tangent line does not contain $\\ell_2$. One can also choose E transverse to a specified direction. For example, lines through p in $\\mathbb P^2$ can have any prescribed slope. This is a surface statement: the tangent space of a smooth divisor in higher dimension is a hyperplane, not a single direction."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-graded-jets-definition-q",
+      "role": "user",
+      "time": "2026-10-11T15:34+08:00",
+      "zh": [
+        "用 Hartshorne 的生成、满射方式写 jets 定义，原稿仍保留一般 s。"
+      ],
+      "en": [
+        "Write the jet definition using generation or surjectivity in the style of Hartshorne, retaining general s."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-graded-jets-definition-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:34+08:00",
+      "zh": [
+        "已将定义写为：对所有 $j=0,\\ldots,s$，在 z 消失至少 j 阶的全局截面之 germ 类满射到 $\\mathfrak m_z^jL_z/\\mathfrak m_z^{j+1}L_z$。必须包括全部 j：j=0 控制取值，j=1 控制一次项，更高 j 控制对应阶次。各层依次提升，与原先模 $\\mathfrak m_z^{s+1}L_z$ 任意指定 germ 的定义等价。原书 II, Proposition 7.3(2) 只给出一阶切向量判据，不把一般 s 的写法归为原书原定义。其余引理、条件与常数未变。"
+      ],
+      "en": [
+        "The definition now requires, for every $j=0,\\ldots,s$, that germ classes of global sections vanishing to order at least j at z surject onto $\\mathfrak m_z^jL_z/\\mathfrak m_z^{j+1}L_z$. All layers are required: j=0 controls values, j=1 linear terms, and higher j the corresponding degrees. Successive lifting through these layers is equivalent to prescribing any germ modulo $\\mathfrak m_z^{s+1}L_z$. Hartshorne II, Proposition 7.3(2) concerns only first-order tangent-vector separation; the general-s formulation is not attributed to that proposition as its original definition. The other lemmas, hypotheses and constants are unchanged."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-very-ample-higher-jets-not-guaranteed-q",
+      "role": "user",
+      "time": "2026-10-11T15:34+08:00",
+      "zh": [
+        "即使 very ample，一般也无法分离 s-jets 吗？它可以理解成分离点并分离每点的 one jet 吗？"
+      ],
+      "en": [
+        "Even if a divisor is very ample, can it generally not separate s-jets? Does very ampleness mean separating points and one jet at each point?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-very-ample-higher-jets-not-guaranteed-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:34+08:00",
+      "zh": [
+        "最后这个理解正确。对 $s\\ge2$，准确说法是 very ample 不保证分离 s-jets，而非必定不能。例如在 $\\mathbb P^2$ 上，$\\mathcal O(1)$ 很充足，但在仿射坐标 u,v 下截面只有 $a+bu+cv$，不能模 $(u,v)^3$ 实现 $u^2$，所以不分离 2-jets。更强的线丛可以分离高阶 jets；例如 $\\mathcal O_{\\mathbb P^2}(d)$ 在每点可实现次数不超过 d 的全部局部多项式。"
+      ],
+      "en": [
+        "The latter understanding is correct. For $s\\ge2$, very ampleness does not guarantee s-jet separation, rather than making it impossible. For example, $\\mathcal O(1)$ on $\\mathbb P^2$ is very ample, but in affine coordinates u, v its sections have the form $a+bu+cv$, so they cannot realize $u^2$ modulo $(u,v)^3$; it does not separate 2-jets. Stronger line bundles can separate higher jets: $\\mathcal O_{\\mathbb P^2}(d)$ realizes every local polynomial of degree at most d at each point."
       ],
       "kind": "mathematics",
       "proofStatus": "unverified",
