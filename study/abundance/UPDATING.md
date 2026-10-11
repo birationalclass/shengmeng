@@ -43,3 +43,5 @@ existing threefold note. The framework retains three geometric inputs
 without their proofs, and the chosen model and point-ideal identity
 must accompany its pushed-forward numerical class. Do not label it
 as an independently verified proof or replace the full note with it.
+
+The current Framework statements and assembly use explicit model data f:V→X, the point-ideal pullback identity, B_x and two ample Cartier divisors H_1,H_2, with all intersections on V. Do not reintroduce marked-class, gamma or ell abbreviations into that current manuscript. Historical dialogue keeps these terms with the model-dependence and scaling corrections. Lemma 1.2 is unchanged; the three geometric inputs remain independently unverified. Regenerate its existing PDF from the matching current TeX and inspect it before publishing. Do not alter the full surface or threefold documents when updating this framework.
