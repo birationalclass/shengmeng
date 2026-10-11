@@ -74,19 +74,19 @@ Let $S_1,S_2\subset Z$ be the two summand sections and set
 \[
  \mathbb T=Z\setminus(S_1\cup S_2).
 \]
-\item For a divisor $P$ on $X$, let $D_i,P_i,P_{n,i}$ denote
-the pullbacks of $D,P,P_n$ by $p_i$, and also their pullbacks to $Z$.
+\item Let $D_i,P_{n,i}$ denote the pullbacks of $D,P_n$ by $p_i$,
+and also their pullbacks to $Z$.
 Set $\xi=c_1(\OO_Z(1))$. For an integer $N>0$, put
 \[
- R(P,N)=P_1+P_2+N\xi,\qquad R_n=R(P_n,N).
+ R_n=P_{n,1}+P_{n,2}+N\xi.
 \]
-Whenever $|kR(P,N)|$ is used, $k>0$ is an integer with $kP$ Cartier.
+Whenever $|kR_n|$ is used, $k>0$ is an integer with $kP_n$ Cartier.
 \end{itemize}
 
 For $x\in X$, let $\mathcal I_x$ be the ideal sheaf of the point $x$.
-An \emph{exceptional functional supported at $x$} is a linear functional
-$\Phi:N^1(X)_{\mathbb R}\to\mathbb R$ supplied with a presentation
-$(\pi:V\to X,H_1,H_2)$, where $V$ is a smooth projective threefold,
+An \emph{exceptional functional} is a linear functional
+$\Phi:N^1(X)_{\mathbb R}\to\mathbb R$ supplied with data
+$(x,\pi:V\to X,H_1,H_2)$, where $V$ is a smooth projective threefold,
 $\pi$ is birational, the extended ideal
 \[
  \mathcal I_x\OO_V:=\operatorname{Im}(\pi^*\mathcal I_x\to\OO_V)
@@ -98,7 +98,7 @@ Cartier divisors on $V$. Define
  \Phi(L)=\frac{\pi^*L\cdot H_1\cdot H_2}{E_V\cdot H_1\cdot H_2}.
 \]
 All intersections are on $V$, and the denominator is positive since
-$E_V\ne0$. The point $x$ and the presentation are part of the data.
+$E_V\ne0$. 
 For every effective Cartier divisor $F$ on $X$, $\mult_x(F)\le\Phi(F)$:
 a local equation of $F$ is a section of $\mathcal I_x^{\mult_x(F)}$
 near $x$, so $\pi^*F\ge\mult_x(F)E_V$; intersect with $H_1,H_2$
@@ -124,15 +124,35 @@ We use the following three lemmas under the above setting.
 Their proofs are not included in this temporary framework.
 
 \begin{lemma}\label{lem:framework-witness}
-For every integer $N>0$, there exist an integer
-$n_0=n_0(\epsilon,N)\ge1$ and countably many proper closed subsets
-$Z_j=Z_j(\epsilon,N)\subsetneq X$ such that, for every integer $n\ge n_0$ and every
-point $x\in X\setminus\bigcup_j Z_j$, there exists an exceptional
-functional $\Phi$ supported at $x$ such that $\Phi(P_n+ND)<40\epsilon$.
-The functional and its presentation may depend on $x,n,N$; the threshold
+Let $X$ be a smooth projective threefold over $\C$ with $K_X\sim0$
+and $q(X)=0$. Let $D$ be a nef Cartier divisor with $\nef(X,D)=3$,
+$D^3=0$ and $\kappa(D)=-\infty$, and let $A$ be an ample Cartier
+ divisor. Fix $\epsilon\in\Q_{>0}$ with $343\epsilon^3<1/4$ and
+$40\epsilon<3/8$. Let $P_n=r_n(D+A/n)$ be the sequence defined in Setup.
+For every integer $N>0$, there exists an integer
+$n_0=n_0(\epsilon,N)\ge1$ such that, for every integer $n\ge n_0$,
+there exists an exceptional functional $\Phi$ with
+$\Phi(P_n+ND)<40\epsilon$.
+The functional and its presentation may depend on $n,N$;
 $n_0$ is independent of these subsequent choices.
 \end{lemma}
 
+\begin{lemma}\label{lem:framework-obstruction}
+For every integer $N>0$, there exists an integer
+$n_1=n_1(\epsilon,N)\ge1$ such that, for every integer $n\ge n_1$,
+if there exists an exceptional functional $\Phi$ with
+$\Phi(P_n+ND)<\tfrac38$, then $|kR_n|$ does not
+separate $8k$-jets at any $z\in\mathbb T$, for any integer $k>0$
+with $kP_n$ Cartier.
+\end{lemma}
+For fixed $N$, take $n_1$ so that $343P_n^3<1/4$ and $r_n>N$ for
+all $n\ge n_1$, using $P_n^3\to\epsilon^3$, $343\epsilon^3<1/4$
+and $r_n\to\infty$. Since $P_n-r_nD$ is nef,
+\[
+ (2P_n+ND)\cdot P_n^2\le(2+N/r_n)P_n^3<4P_n^3.
+\]
+These are the numerical conditions for the geometric input in
+Lemma~\ref{lem:framework-obstruction}; its proof is still not included.
 
 \begin{lemma}\label{lem:framework-jets}
 There exists an integer $N>0$ such that, for every $n\gg0$,
@@ -140,32 +160,24 @@ $|kR_n|$ separates $8k$-jets at some $z\in\mathbb T$ for some
 integer $k>0$ with $kP_n$ Cartier.
 \end{lemma}
 
-\begin{lemma}\label{lem:framework-obstruction}
-Let $P$ be ample and rational Cartier, and $N>0$ an integer such that
-\[
- 343P^3<\tfrac14,\qquad (2P+ND)\cdot P^2<4P^3.
-\]
-Suppose there is an exceptional functional $\Phi$ supported at some
-$x\in X$ such that $\Phi(P+ND)<\tfrac38$.
-Then $|kR(P,N)|$ does not separate $8k$-jets at any
-$z\in\mathbb T$, for any integer $k>0$ with $kP$ Cartier.
-\end{lemma}
-
 \newpage
-We now complete the proof, assuming these lemmas.
-Choose $N$ by Lemma~\ref{lem:framework-jets} and take $n$ sufficiently
-large for Lemmas~\ref{lem:framework-witness} and
-\ref{lem:framework-jets}, $r_n>N$, and $343P_n^3<1/4$.
-Since $P_n-r_nD$ is nef,
-\[
- (2P_n+ND)\cdot P_n^2\le(2+N/r_n)P_n^3<4P_n^3.
-\]
-Take $x,\Phi$ from Lemma~\ref{lem:framework-witness}. Then
+We now complete the proof under the standing assumption
+$\kappa(D)=-\infty$. Lemmas~\ref{lem:framework-witness} and
+\ref{lem:framework-obstruction} give an obstruction to jet separation,
+whereas Lemma~\ref{lem:framework-jets} supplies jet generation as a
+separate geometric input.
+Choose $N$ by Lemma~\ref{lem:framework-jets}. For this fixed $N$, take
+$n\ge\max\{n_0(\epsilon,N),n_1(\epsilon,N)\}$ also large enough for
+Lemma~\ref{lem:framework-jets}. By Lemma~\ref{lem:framework-witness},
+there exists $\Phi$ such that
 \[
  \Phi(P_n+ND)<40\epsilon<\tfrac38.
 \]
-Applying Lemma~\ref{lem:framework-obstruction} with $P=P_n$
-contradicts Lemma~\ref{lem:framework-jets}. Hence
+Lemma~\ref{lem:framework-obstruction} then says that $|kR_n|$ does not
+separate $8k$-jets at any $z\in\mathbb T$ for any integer $k>0$ with
+$kP_n$ Cartier. But Lemma~\ref{lem:framework-jets}, for the same $N,n$,
+provides such an integer $k$ and a point $z\in\mathbb T$ at which
+$|kR_n|$ separates $8k$-jets. This is a contradiction. Hence
 $H^0(X,\OO_X(mD))\ne0$ for some integer $m>0$.\qedhere
 \end{proof}
 

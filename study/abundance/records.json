@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-11T14:52+08:00",
+  "updatedAt": "2026-10-11T15:11+08:00",
   "series": [
     {
       "id": "F034",
@@ -4666,6 +4666,252 @@
       "kind": "mathematics",
       "proofStatus": "unverified",
       "highlight": true
+    },
+    {
+      "id": "framework-one-jets-and-very-ampleness-q",
+      "role": "user",
+      "time": "2026-10-11T15:03+08:00",
+      "zh": [
+        "Very ample 的判别是否等价于分离 one-jets？"
+      ],
+      "en": [
+        "Is very ampleness equivalent to separating one-jets?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-one-jets-and-very-ampleness-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:03+08:00",
+      "zh": [
+        "在光滑点 x，分离 1-jets 等价于该点无基点并分离每个非零切向量 v：存在截面 $\\sigma$ 满足 $\\sigma(x)=0$ 且 $d\\sigma_x(v)\\ne0$（用局部标架表示导数）。",
+        "Very ample 还需要分离不同点；单点或逐点的 jet 分离不自动给出不同点分离。在 proper 情形，将分离不同点与切向量合起来才得到闭嵌入。参考 Stacks 0E8R：https://stacks.math.columbia.edu/tag/0E8R。"
+      ],
+      "en": [
+        "At a smooth point x, separation of 1-jets is equivalent to no base point at x together with separation of every nonzero tangent vector v: a section $\\sigma$ vanishes at x with $d\\sigma_x(v)\\ne0$, computed in a local frame.",
+        "Very ampleness also requires separation of distinct points; pointwise jet separation does not automatically supply it. For a proper scheme, separation of points and tangent vectors together gives a closed immersion. See Stacks 0E8R: https://stacks.math.columbia.edu/tag/0E8R."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-pn-specialization-sufficient-q",
+      "role": "user",
+      "time": "2026-10-11T15:04+08:00",
+      "zh": [
+        "1.3 是否不用这么强，只针对 $P_n$ 做就好？"
+      ],
+      "en": [
+        "Can 1.3 be stated only for $P_n$ rather than arbitrary P?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-pn-specialization-sufficient-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:04+08:00",
+      "zh": [
+        "可以，主证明只使用 $P=P_n$。任意 P 的版本可专门化为序列版本，Setup 只需 $R_n=P_{n,1}+P_{n,2}+N\\xi$。",
+        "固定 N 后，由 $P_n^3\\to\\epsilon^3$、$343\\epsilon^3<1/4$ 与 $r_n\\to\\infty$，可将两个数值条件吸收到 $n_1(\\epsilon,N)$ 中。因为 $P_n-r_nD$ nef，$(2P_n+ND)\\cdot P_n^2\\le(2+N/r_n)P_n^3<4P_n^3$。这没有验证三个几何输入，只简化其在框架中的表述。"
+      ],
+      "en": [
+        "Yes: the main proof uses only $P=P_n$. The arbitrary-P input can be specialized to the sequence, and Setup needs only $R_n=P_{n,1}+P_{n,2}+N\\xi$.",
+        "For fixed N, $P_n^3\\to\\epsilon^3$, $343\\epsilon^3<1/4$ and $r_n\\to\\infty$ allow the two numerical conditions to be absorbed into $n_1(\\epsilon,N)$. Since $P_n-r_nD$ is nef, $(2P_n+ND)\\cdot P_n^2\\le(2+N/r_n)P_n^3<4P_n^3$. This simplifies the framework statements; it does not verify the three geometric inputs."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-pn-obstruction-revision-q",
+      "role": "user",
+      "time": "2026-10-11T15:04+08:00",
+      "zh": [
+        "将 1.3 专门写成 $P_n$ 版本，删除任意 P 和 $R(P,N)$ 缩写。"
+      ],
+      "en": [
+        "Specialize 1.3 to $P_n$ and remove arbitrary P and the abbreviation $R(P,N)$."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-pn-obstruction-revision-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:04+08:00",
+      "zh": [
+        "1.3 现在对每个 N 给出 $n_1(\\epsilon,N)$；对所有 $n\\ge n_1$，若存在 supported-at-x 的 $\\Phi$ 满足 $\\Phi(P_n+ND)<3/8$，则所有允许的 k、z 都不能使 $|kR_n|$ 分离 8k-jets。数值条件在其后检查一次；主证明直接调用。1.1、1.2 与 $40\\epsilon$ 保持。"
+      ],
+      "en": [
+        "For each N, 1.3 now gives $n_1(\\epsilon,N)$: for every $n\\ge n_1$, existence of a functional supported at x with $\\Phi(P_n+ND)<3/8$ prevents $|kR_n|$ from separating 8k-jets for every admissible k, z. The numerical conditions are checked once afterward, and the main proof invokes the input directly. Lemmas 1.1, 1.2 and $40\\epsilon$ are retained."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-same-variety-jet-contradiction-q",
+      "role": "user",
+      "time": "2026-10-11T15:06+08:00",
+      "zh": [
+        "$P_n$ 与 $R_n$ 不在同一个 variety 上，为什么 1.3 与 1.2 矛盾？"
+      ],
+      "en": [
+        "$P_n$ and $R_n$ are on different varieties, so why do 1.3 and 1.2 contradict each other?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-same-variety-jet-contradiction-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:06+08:00",
+      "zh": [
+        "$P_n$ 在 X 上，而 Z 上的 $R_n=q^*p_1^*P_n+q^*p_2^*P_n+N\\xi$，其中 $q:Z\\to X\\times X$。1.3 的条件使用 X 上的 $P_n$，但结论仍是关于 Z 上的 $|kR_n|$，不是关于 $|kP_n|$。",
+        "对同一个 N、n，1.2 给出存在允许的 k、$z\\in\\mathbb T$ 能分离 8k-jets，1.3 却禁止任何允许的 k、z 分离。因此它们讨论的是同一空间上同一个线性系，构成矛盾。"
+      ],
+      "en": [
+        "$P_n$ is on X, while $R_n=q^*p_1^*P_n+q^*p_2^*P_n+N\\xi$ is on Z, with $q:Z\\to X\\times X$. The hypothesis of 1.3 uses $P_n$ on X, but its conclusion is about $|kR_n|$ on Z, not $|kP_n|$.",
+        "For the same N, n, 1.2 supplies an admissible k and $z\\in\\mathbb T$ separating 8k-jets; 1.3 forbids separation for every admissible k, z. Both conclusions concern the same linear system on the same space."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-conditional-obstruction-uses-witness-q",
+      "role": "user",
+      "time": "2026-10-11T15:07+08:00",
+      "zh": [
+        "1.3 需要 1.1 是不是？"
+      ],
+      "en": [
+        "Does 1.3 require 1.1?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-conditional-obstruction-uses-witness-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:07+08:00",
+      "zh": [
+        "1.3 是条件式引理，陈述本身不引用 1.1。主证明应用它时，用 1.1 提供满足 $\\Phi(P_n+ND)<40\\epsilon<3/8$ 的泛函；然后 1.3 的禁止分离结论与 1.2 的存在性矛盾。这只是三个输入之间的逻辑关系，不是它们证明已被独立核验。"
+      ],
+      "en": [
+        "Lemma 1.3 is conditional and does not cite 1.1 in its statement. The main proof uses 1.1 to provide a functional with $\\Phi(P_n+ND)<40\\epsilon<3/8$, then contradicts the existence in 1.2 by the prohibition in 1.3. This explains the logical relation among the inputs, not independent verification of their proofs."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-independent-jets-input-q",
+      "role": "user",
+      "time": "2026-10-11T15:08+08:00",
+      "zh": [
+        "生成 jets 的结论由哪条得到？这样的矛盾是不是文字游戏？"
+      ],
+      "en": [
+        "Where does jet generation come from? Is the contradiction just a word game?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-independent-jets-input-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:08+08:00",
+      "zh": [
+        "生成 jets 是第三个独立几何输入，不由小泛函条件推出，现编号 1.3。禁止 jets 是满足泛函条件后的新 1.2。在共同反证假设下，三个输入若都成立则产生矛盾；这不能替代其几何证明，本 Framework 尚未独立验证三个输入。"
+      ],
+      "en": [
+        "Jet generation is the third independent geometric input, not a consequence of the small-functional condition, and is now 1.3. Prohibition is the conditional input, now 1.2. Under the common contradiction hypothesis, the three inputs would yield a contradiction if all hold; this cannot replace their geometric proofs, which the Framework has not independently verified."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-pair-inputs-remove-support-q",
+      "role": "user",
+      "time": "2026-10-11T15:09+08:00",
+      "zh": [
+        "让 1.1 和禁止 jets 的引理配对，生成 jets 放最后；1.1 只需存在一点，并删去 support 术语。"
+      ],
+      "en": [
+        "Pair 1.1 with the obstruction, put generation last, weaken 1.1 to one-point existence and remove support terminology."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-pair-inputs-remove-support-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:09+08:00",
+      "zh": [
+        "最终顺序为 1.1 存在 exceptional functional；1.2 在相应条件下禁止所有允许的 k、z 分离 jets；1.3 提供某组 k、z 分离 jets。点不再另写在两条陈述中，而是包含在泛函的构造数据 $(x,\\pi:V\\to X,H_1,H_2)$。定义不再使用 support/supported-at-x。1.1 删除 very general 与 $Z_j$ 要求，保留原参数及未独立核验状态。"
+      ],
+      "en": [
+        "The final order is: 1.1 supplies an exceptional functional; 1.2 conditionally forbids jet separation for all admissible k, z; 1.3 supplies a pair with separation. The point is implicit in the construction data $(x,\\pi:V\\to X,H_1,H_2)$, rather than separately stated in the first two inputs. The definition no longer uses support/supported-at-x. The very-general and $Z_j$ requirements are removed from 1.1; original parameters and unverified status remain."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-one-point-suffices-q",
+      "role": "user",
+      "time": "2026-10-11T15:09+08:00",
+      "zh": [
+        "只用一个点，1.1 可以弱化为存在一点吧？"
+      ],
+      "en": [
+        "Since only one point is used, can 1.1 be weakened to one-point existence?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-one-point-suffices-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:09+08:00",
+      "zh": [
+        "可以。禁止 jets 的输入只要求存在一个构造所得的 $\\Phi$ 使 $\\Phi(P_n+ND)<3/8$，点隐含在其数据中。因此每个相关 n 只需找到一个点及泛函使取值小于 $40\\epsilon$；无需在这里要求很一般点或统一可数例外集。"
+      ],
+      "en": [
+        "Yes. The obstruction requires one constructed functional with $\\Phi(P_n+ND)<3/8$, with its point implicit in the data. For each relevant n, one point and functional with value below $40\\epsilon$ suffice; a very-general assertion or uniform countable exceptional set is unnecessary here."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-full-initial-hypotheses-q",
+      "role": "user",
+      "time": "2026-10-11T15:11+08:00",
+      "zh": [
+        "把 1.1 所需的全部初始假设补齐。"
+      ],
+      "en": [
+        "Include all initial hypotheses used by 1.1."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-full-initial-hypotheses-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:11+08:00",
+      "zh": [
+        "1.1 现列明 X 是复数域上的光滑射影三维，$K_X\\sim0$、$q(X)=0$；D nef Cartier，$\\operatorname{n}(X,D)=3$、$D^3=0$、$\\kappa(D)=-\\infty$；A ample Cartier；$\\epsilon\\in\\mathbb Q_{>0}$ 满足 $343\\epsilon^3<1/4$ 与 $40\\epsilon<3/8$，并使用 Setup 的归一化 $P_n$ 序列。主证明在共同反证假设下先由 1.3 选 N，再取同一个充分大 n，由 1.1 和 1.2 与 1.3 矛盾。这没有验证三个输入或声称这些是假设的最弱形式。"
+      ],
+      "en": [
+        "Lemma 1.1 now lists a smooth projective threefold X over the complex numbers, $K_X\\sim0$, $q(X)=0$; nef Cartier D with $\\operatorname{n}(X,D)=3$, $D^3=0$, $\\kappa(D)=-\\infty$; ample Cartier A; and $\\epsilon\\in\\mathbb Q_{>0}$ with $343\\epsilon^3<1/4$, $40\\epsilon<3/8$, using the normalized $P_n$ sequence from Setup. Under the common contradiction hypothesis, the main proof chooses N by 1.3 and one sufficiently large n, then contradicts 1.3 using 1.1 and 1.2. This neither verifies the three inputs nor asserts minimal hypotheses."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
     }
   ],
   "sourceTheorem": {
