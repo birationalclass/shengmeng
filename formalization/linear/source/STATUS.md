@@ -4,7 +4,7 @@
 
 ## 本地核验
 
-最近内核审计：2026-10-11T18:59:30+08:00。1973 条 theorem/lemma 证明、548 个定义；876 个 Lean 源文件，共审核 2717 个声明。仅使用 propext、Classical.choice、Quot.sound，没有 sorryAx 或项目新公理。Checkpoint 178 全项目编译、公理审计通过。
+最近内核审计：2026-10-11T21:17:01+08:00。1987 条 theorem/lemma 证明、560 个定义；893 个 Lean 源文件，共审核 2743 个声明。仅使用 propext、Classical.choice、Quot.sound，没有 sorryAx 或项目新公理。Checkpoint 179 全项目编译、公理审计通过。
 
 ## 与当前论文的对应
 

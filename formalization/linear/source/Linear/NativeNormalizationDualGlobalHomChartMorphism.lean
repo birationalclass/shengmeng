@@ -2,6 +2,8 @@ module
 public import Linear.NativeNormalizationPushforwardSourceChartTilde
 public import Linear.AffineQuasicoherentSourceMorphisms
 public import Linear.SchemeModuleSpecChartSectionsLinear
+public import Linear.SchemeModuleSpecChartMorphism
+import all Linear.SchemeModuleSpecChartMorphism
 public import Linear.NativeNormalizationPushforwardGlobalHomChartLinear
 @[expose] public section
 noncomputable section
@@ -65,23 +67,10 @@ def nativeNormalizationDualGlobalHomChartMorphism
   let e := nativeNormalizationPushforwardSourceChartTildeIso 𝒜 𝓑 𝒟 hD a ha hs
   letI : (F.restrict j).IsQuasicoherent :=
     (SheafOfModules.isQuasicoherent (Spec Ai).ringCatSheaf).prop_of_iso e inferInstance
-  let EF := schemeModuleSpecChartSectionsLinearEquiv F j U hi
-    (Proj.awayToSection 𝒜 a) (originalProjectiveChartScalar_appLE 𝒜 a ha)
-  let EH := schemeModuleSpecChartSectionsLinearEquiv H j U hi
-    (Proj.awayToSection 𝒜 a) (originalProjectiveChartScalar_appLE 𝒜 a ha)
   letI := nativeNormalizationPushforwardChartModule 𝒜 𝓑 a M
   letI := nativeNormalizationGlobalHomChartModule 𝒜 𝓑 a ha
   let C := nativeNormalizationPushforwardGlobalHomChartLinearEquiv 𝒜 𝓑 a ha hinj hs
-  letI : Module Ai Γ(F.restrict j,⊤) :=
-    inferInstanceAs <| Module Ai ((moduleSpecΓFunctor (R := Ai)).obj (F.restrict j))
-  letI : Module Ai Γ(H.restrict j,⊤) :=
-    inferInstanceAs <| Module Ai ((moduleSpecΓFunctor (R := Ai)).obj (H.restrict j))
-  let f : ((moduleSpecΓFunctor (R := Ai)).obj (F.restrict j)) →ₗ[Ai]
-      ((moduleSpecΓFunctor (R := Ai)).obj (H.restrict j)) :=
-    ((EF.symm.trans C).trans EH).toLinearMap
-  exact (affineQuasicoherentSourceMorphismsEquiv (R := Ai)
-    (F.restrict j) (H.restrict j)).symm
-    ((ModuleCat.homEquiv
-      (M := (moduleSpecΓFunctor (R := Ai)).obj (F.restrict j))
-      (N := (moduleSpecΓFunctor (R := Ai)).obj (H.restrict j))).symm f)
+  exact schemeModuleSpecChartMorphism F H j U hi
+    (Proj.awayToSection 𝒜 a) (originalProjectiveChartScalar_appLE 𝒜 a ha) C
+
 end LinearStudy

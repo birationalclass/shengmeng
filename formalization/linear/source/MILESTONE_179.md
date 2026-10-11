@@ -1,0 +1,9 @@
+# Checkpoint 179: actual chart section map, internal Hom restriction and quasicoherence
+
+The full Linearity Theorem remains UNPROVED.
+
+Checkpoint179 proves the SAME entire-chart native finite-projection dual/Hom morphism has exactly the original chart linear map on every actual section; its original-V specialization derives source quasicoherence and section bijectivity from the original finite injective linear projection. The real tilde adjunction gives actual affine and open Hom-section linear equivalences, with original evaluation and restriction proved. Finite-presentation codomain localization proves quasicoherence of the actual internal Hom on Spec R, including the zero open. The actual restriction of the GLOBAL internal Hom along any open immersion is constructed as an entire O-module sheaf isomorphism from the original image functor and proved slice equivalence; this derives quasicoherence of that SAME global Hom on affine charts with finitely presented source. A whole Spec-chart comparison with both original sheaves quasicoherent is proved an isomorphism from its derived actual section map. These general results retain explicit source hypotheses; specialization of target Hom quasicoherence to original finite-projection charts and entire native comparison inverses/gluing/source algebra action remain separate obligations. The previous native comparison declaration is refactored through the actually checked generic chart construction, retaining its exact statement. 14 proofs and 12 definitions in 17 new modules. Normalized dualizing-complex canonical identification and original4.1/4.2/uniformQ/intersections/main remain UNPROVED. Release100 is deployed but Lean CI canceled on three attempts; verified public99 is separate.
+
+Full build and standard-axiom audit passed at 2026-10-11T21:17:01+08:00: 1987 proofs, 560 definitions, 2743 declarations, 893 Lean files.
+
+Actual entry: LinearStudy.schemeModuleHomAffineRestriction_isQuasicoherent

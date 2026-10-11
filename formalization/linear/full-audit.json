@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2717,
-  "verifiedTheorems": 1973,
-  "definitions": 548,
+  "audited": 2743,
+  "verifiedTheorems": 1987,
+  "definitions": 560,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -998,6 +998,32 @@
       ]
     },
     {
+      "declaration": "LinearStudy.affineFinitePresentationInternalHom_isQuasicoherent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AffineFinitePresentationInternalHomQuasicoherent.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineFinitePresentationInternalHom_isQuasicoherent.{u} {R : CommRingCat}\n  (M N : (AlgebraicGeometry.Spec R).Modules) [SheafOfModules.IsQuasicoherent M] [SheafOfModules.IsQuasicoherent N]\n  [Module.FinitePresentation ↑R ↑(AlgebraicGeometry.moduleSpecΓFunctor.obj M)] :\n  SheafOfModules.IsQuasicoherent (LinearStudy.schemeModuleHomModuleSheaf M N)",
+      "sha256": "b08eaf0aa1e88cd0efb15169d688ba70fccb303d734594c08c2b3e7e1849c0b4",
+      "lines": 29,
+      "moduleLineCount": 46,
+      "startLine": 17,
+      "endLine": 45,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv",
+        "LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv_restrict",
+        "LinearStudy.finitePresentationHom_codomain_isLocalizedModule",
+        "LinearStudy.schemeModuleHomModuleSheaf"
+      ]
+    },
+    {
       "declaration": "LinearStudy.affine_filtered_functional_descends",
       "kind": "theorem",
       "origin": "project",
@@ -1262,6 +1288,263 @@
       ]
     },
     {
+      "declaration": "LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AffineQuasicoherentHomActualOpenEvaluation.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv_evaluation.{u} {R : CommRingCat}\n  (M N : (AlgebraicGeometry.Spec R).Modules) [SheafOfModules.IsQuasicoherent M] (U : (AlgebraicGeometry.Spec R).Opens)\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)))\n  (x : ↑(M.presheaf.obj (Opposite.op ⊤))) :\n  ((LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv N M U) h) x =\n    (LinearStudy.schemeModuleHomSectionEvaluation M N U h)\n      ((CategoryTheory.ConcreteCategory.hom (M.presheaf.map (TopologicalSpace.Opens.leTop U).op)) x)",
+      "sha256": "308c550152cd46be1d07479e47a3e55f7a3bb213fae4d6f13ad9735fe424d357",
+      "lines": 35,
+      "moduleLineCount": 70,
+      "startLine": 16,
+      "endLine": 50,
+      "lineCount": 35,
+      "dependencies": [
+        "LinearStudy.affineOpenPushforwardSectionsLinearEquiv",
+        "LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv",
+        "LinearStudy.affineQuasicoherentHomOpenSectionsEquiv",
+        "LinearStudy.affineQuasicoherentHomOpenSectionsEquiv_evaluation",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv_evaluation",
+        "LinearStudy.schemeModuleHomSectionEvaluation",
+        "LinearStudy.schemeModuleHomSectionEvaluation_restrict"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv_restrict",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AffineQuasicoherentHomActualOpenEvaluation.lean",
+      "line": 54,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv_restrict.{u} {R : CommRingCat}\n  (M N : (AlgebraicGeometry.Spec R).Modules) [SheafOfModules.IsQuasicoherent M] {U V : (AlgebraicGeometry.Spec R).Opens}\n  (i : V ⟶ U) (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)))\n  (x : ↑(M.presheaf.obj (Opposite.op ⊤))) :\n  ((LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv N M V)\n        ((CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.map i.op)) h))\n      x =\n    (CategoryTheory.ConcreteCategory.hom (N.presheaf.map i.op))\n      (((LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv N M U) h) x)",
+      "sha256": "308c550152cd46be1d07479e47a3e55f7a3bb213fae4d6f13ad9735fe424d357",
+      "lines": 18,
+      "moduleLineCount": 70,
+      "startLine": 52,
+      "endLine": 69,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv",
+        "LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv_evaluation",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation",
+        "LinearStudy.schemeModuleHomSectionEvaluation_restrict"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineOpenPushforwardSectionsLinearEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/AffineQuasicoherentHomActualOpenSections.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.affineOpenPushforwardSectionsLinearEquiv.{u} {R : CommRingCat} (N : (AlgebraicGeometry.Spec R).Modules)\n  (U : (AlgebraicGeometry.Spec R).Opens) :\n  ↑(AlgebraicGeometry.moduleSpecΓFunctor.obj\n        ((AlgebraicGeometry.Scheme.Modules.pushforward U.ι).obj (N.restrict U.ι))) ≃ₗ[↑R]\n    ↑(N.presheaf.obj (Opposite.op U))",
+      "sha256": "ce6b32615caf354f768d34d676d1123e1f2d478c8ea99421f78cff8da48325fc",
+      "lines": 30,
+      "moduleLineCount": 56,
+      "startLine": 16,
+      "endLine": 45,
+      "lineCount": 30,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/AffineQuasicoherentHomActualOpenSections.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv.{u} {R : CommRingCat}\n  (N M : (AlgebraicGeometry.Spec R).Modules) [SheafOfModules.IsQuasicoherent M] (U : (AlgebraicGeometry.Spec R).Opens) :\n  ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)) ≃ₗ[↑R]\n    ↑(AlgebraicGeometry.moduleSpecΓFunctor.obj M) →ₗ[↑R] ↑(N.presheaf.obj (Opposite.op U))",
+      "sha256": "ce6b32615caf354f768d34d676d1123e1f2d478c8ea99421f78cff8da48325fc",
+      "lines": 8,
+      "moduleLineCount": 56,
+      "startLine": 48,
+      "endLine": 55,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.affineOpenPushforwardSectionsLinearEquiv",
+        "LinearStudy.affineQuasicoherentHomOpenSectionsLinearEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineQuasicoherentHomGlobalSectionsEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/AffineQuasicoherentHomGlobalSections.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.affineQuasicoherentHomGlobalSectionsEquiv.{u} {R : CommRingCat} (M N : (AlgebraicGeometry.Spec R).Modules)\n  [SheafOfModules.IsQuasicoherent M] :\n  ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op ⊤)) ≃\n    (↑(AlgebraicGeometry.moduleSpecΓFunctor.obj M) →ₗ[↑R] ↑(AlgebraicGeometry.moduleSpecΓFunctor.obj N))",
+      "sha256": "ccac6d5163c05a1befaae79c729b1eb54d7b68183d06b94b6d5943beeab9b1c2",
+      "lines": 12,
+      "moduleLineCount": 59,
+      "startLine": 18,
+      "endLine": 29,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.affineQuasicoherentSourceMorphismsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomTopSectionsEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineQuasicoherentHomGlobalSectionsEquiv_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AffineQuasicoherentHomGlobalSections.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineQuasicoherentHomGlobalSectionsEquiv_evaluation.{u} {R : CommRingCat}\n  (M N : (AlgebraicGeometry.Spec R).Modules) [SheafOfModules.IsQuasicoherent M]\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op ⊤)))\n  (x : ↑(M.presheaf.obj (Opposite.op ⊤))) :\n  ((LinearStudy.affineQuasicoherentHomGlobalSectionsEquiv M N) h) x =\n    (LinearStudy.schemeModuleHomSectionEvaluation M N ⊤ h) x",
+      "sha256": "ccac6d5163c05a1befaae79c729b1eb54d7b68183d06b94b6d5943beeab9b1c2",
+      "lines": 9,
+      "moduleLineCount": 59,
+      "startLine": 31,
+      "endLine": 39,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.affineQuasicoherentHomGlobalSectionsEquiv",
+        "LinearStudy.affineQuasicoherentSourceMorphismsEquiv",
+        "LinearStudy.affineQuasicoherentSourceMorphismsEquiv_apply",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation",
+        "LinearStudy.schemeModuleHomTopSectionsEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineQuasicoherentHomGlobalSectionsLinearEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/AffineQuasicoherentHomGlobalSections.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.affineQuasicoherentHomGlobalSectionsLinearEquiv.{u} {R : CommRingCat}\n  (M N : (AlgebraicGeometry.Spec R).Modules) [SheafOfModules.IsQuasicoherent M] :\n  ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op ⊤)) ≃ₗ[↑R]\n    ↑(AlgebraicGeometry.moduleSpecΓFunctor.obj M) →ₗ[↑R] ↑(AlgebraicGeometry.moduleSpecΓFunctor.obj N)",
+      "sha256": "ccac6d5163c05a1befaae79c729b1eb54d7b68183d06b94b6d5943beeab9b1c2",
+      "lines": 18,
+      "moduleLineCount": 59,
+      "startLine": 41,
+      "endLine": 58,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.affineQuasicoherentHomGlobalSectionsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineQuasicoherentHomOpenSectionsEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/AffineQuasicoherentHomOpenSections.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.affineQuasicoherentHomOpenSectionsEquiv.{u} {R : CommRingCat} (M N : (AlgebraicGeometry.Spec R).Modules)\n  [SheafOfModules.IsQuasicoherent M] (U : (AlgebraicGeometry.Spec R).Opens) :\n  ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)) ≃\n    (↑(AlgebraicGeometry.moduleSpecΓFunctor.obj M) →ₗ[↑R]\n      ↑(AlgebraicGeometry.moduleSpecΓFunctor.obj\n          ((AlgebraicGeometry.Scheme.Modules.pushforward U.ι).obj (N.restrict U.ι))))",
+      "sha256": "a6e53bccaaa2b6a71fa010951954ba7d083db9ededf0c04e71bba055e15d14f7",
+      "lines": 18,
+      "moduleLineCount": 76,
+      "startLine": 18,
+      "endLine": 35,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.affineQuasicoherentSourceMorphismsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineQuasicoherentHomOpenSectionsEquiv_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AffineQuasicoherentHomOpenSections.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineQuasicoherentHomOpenSectionsEquiv_evaluation.{u} {R : CommRingCat}\n  (M N : (AlgebraicGeometry.Spec R).Modules) [SheafOfModules.IsQuasicoherent M] (U : (AlgebraicGeometry.Spec R).Opens)\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)))\n  (x : ↑(M.presheaf.obj (Opposite.op ⊤))) :\n  ((LinearStudy.affineQuasicoherentHomOpenSectionsEquiv M N U) h) x =\n    (CategoryTheory.ConcreteCategory.hom\n        (AlgebraicGeometry.Scheme.Modules.Hom.app\n          ((AlgebraicGeometry.Scheme.Modules.pushforward U.ι).map\n            ((LinearStudy.schemeModuleHomOpenSectionsEquiv M N U) h))\n          ⊤))\n      ((CategoryTheory.ConcreteCategory.hom\n          (AlgebraicGeometry.Scheme.Modules.Hom.app\n            ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction U.ι).unit.app M) ⊤))\n        x)",
+      "sha256": "a6e53bccaaa2b6a71fa010951954ba7d083db9ededf0c04e71bba055e15d14f7",
+      "lines": 14,
+      "moduleLineCount": 76,
+      "startLine": 37,
+      "endLine": 50,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.affineQuasicoherentHomOpenSectionsEquiv",
+        "LinearStudy.affineQuasicoherentSourceMorphismsEquiv",
+        "LinearStudy.affineQuasicoherentSourceMorphismsEquiv_apply",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenSectionsEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineQuasicoherentHomOpenSectionsLinearEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/AffineQuasicoherentHomOpenSections.lean",
+      "line": 54,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.affineQuasicoherentHomOpenSectionsLinearEquiv.{u} {R : CommRingCat}\n  (M N : (AlgebraicGeometry.Spec R).Modules) [SheafOfModules.IsQuasicoherent M] (U : (AlgebraicGeometry.Spec R).Opens) :\n  ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)) ≃ₗ[↑R]\n    ↑(AlgebraicGeometry.moduleSpecΓFunctor.obj M) →ₗ[↑R]\n      ↑(AlgebraicGeometry.moduleSpecΓFunctor.obj\n          ((AlgebraicGeometry.Scheme.Modules.pushforward U.ι).obj (N.restrict U.ι)))",
+      "sha256": "a6e53bccaaa2b6a71fa010951954ba7d083db9ededf0c04e71bba055e15d14f7",
+      "lines": 23,
+      "moduleLineCount": 76,
+      "startLine": 52,
+      "endLine": 74,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.affineQuasicoherentHomOpenSectionsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf"
+      ]
+    },
+    {
       "declaration": "LinearStudy.affineQuasicoherent_globalSections_surjective",
       "kind": "theorem",
       "origin": "project",
@@ -1324,6 +1607,30 @@
       "lineCount": 12,
       "dependencies": [
         "LinearStudy.affineQuasicoherentSourceMorphismsEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineQuasicoherentSourceMorphismsEquiv_symm_map",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AffineQuasicoherentSourceMorphismsSections.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineQuasicoherentSourceMorphismsEquiv_symm_map.{u} {R : CommRingCat}\n  (M N : (AlgebraicGeometry.Spec R).Modules) [SheafOfModules.IsQuasicoherent M]\n  (f : AlgebraicGeometry.moduleSpecΓFunctor.obj M ⟶ AlgebraicGeometry.moduleSpecΓFunctor.obj N) :\n  AlgebraicGeometry.moduleSpecΓFunctor.map ((LinearStudy.affineQuasicoherentSourceMorphismsEquiv M N).symm f) = f",
+      "sha256": "8cef26be9ad2d1c248abc808394c4b330ed13b57dc9245bc065c996b089f5ce2",
+      "lines": 9,
+      "moduleLineCount": 23,
+      "startLine": 14,
+      "endLine": 22,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.affineQuasicoherentSourceMorphismsEquiv",
+        "LinearStudy.affineQuasicoherentSourceMorphismsEquiv_apply"
       ]
     },
     {
@@ -7124,6 +7431,27 @@
         "LinearStudy.boundedPolynomialSpan_mul_of_matrix",
         "LinearStudy.polynomial_image_mem_filtration"
       ]
+    },
+    {
+      "declaration": "LinearStudy.finitePresentationHom_codomain_isLocalizedModule",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FinitePresentationHomCodomainLocalization.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finitePresentationHom_codomain_isLocalizedModule.{u} {R M N N' : Type u} [CommRing R] [AddCommGroup M]\n  [Module R M] [AddCommGroup N] [Module R N] [AddCommGroup N'] [Module R N'] [Module.FinitePresentation R M]\n  (S : Submonoid R) (g : N →ₗ[R] N') [IsLocalizedModule S g] : IsLocalizedModule S (LinearMap.compRight R g)",
+      "sha256": "e238048e7059d35a641b63f6494fc12acce3c2e26e670f4004b0a8d12acab343",
+      "lines": 25,
+      "moduleLineCount": 39,
+      "startLine": 14,
+      "endLine": 38,
+      "lineCount": 25,
+      "dependencies": []
     },
     {
       "declaration": "LinearStudy.finite_projection_tensor_fiber_isReduced",
@@ -24563,10 +24891,10 @@
       ]
     },
     {
-      "declaration": "LinearStudy.nativeNormalizationDualGlobalHomChartMorphism",
+      "declaration": "LinearStudy.nativeNormalizationDualChartHomSection",
       "kind": "def",
       "origin": "project",
-      "file": "Linear/NativeNormalizationDualGlobalHomChartMorphism.lean",
+      "file": "Linear/NativeNormalizationDualChartHomSection.lean",
       "line": 32,
       "axioms": [
         "propext",
@@ -24574,15 +24902,96 @@
         "Quot.sound"
       ],
       "verified": false,
-      "formalType": "LinearStudy.nativeNormalizationDualGlobalHomChartMorphism.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (hs :\n    Function.Bijective\n      ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 1\n          ((algebraMap R S) a) ⋯))\n  (hq :\n    SheafOfModules.IsQuasicoherent\n      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 0)) :\n  have M := LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 0;\n  have F := (AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj M;\n  have P :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf);\n  have Q := SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf;\n  F.restrict (AlgebraicGeometry.Proj.awayι 𝒜 a ha LinearStudy.nativeNormalizationDualGlobalHomChartMorphism._proof_1) ⟶\n    (LinearStudy.schemeModuleHomModuleSheaf P Q).restrict\n      (AlgebraicGeometry.Proj.awayι 𝒜 a ha LinearStudy.nativeNormalizationDualGlobalHomChartMorphism._proof_1)",
-      "sha256": "86d4eb7f622f962ceb4cd3f12ddf98c0c4be3a6868a92c463a73724e9642cbea",
-      "lines": 60,
-      "moduleLineCount": 87,
-      "startLine": 27,
-      "endLine": 86,
-      "lineCount": 60,
+      "formalType": "LinearStudy.nativeNormalizationDualChartHomSection.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (hs :\n    Function.Bijective\n      ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 1\n          ((algebraMap R S) a) ⋯))\n  (hq :\n    SheafOfModules.IsQuasicoherent\n      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 0)) :\n  ↑((LinearStudy.schemeModuleHomModuleSheaf\n            ((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n              (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 0))\n            (LinearStudy.schemeModuleHomModuleSheaf\n              ((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n                (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf))\n              (SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf))).presheaf.obj\n      (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a)))",
+      "sha256": "0837277190606b4bc7d2168bbc1c291ac8ae970c5649af7fa3b479dd213b5eb2",
+      "lines": 23,
+      "moduleLineCount": 52,
+      "startLine": 29,
+      "endLine": 51,
+      "lineCount": 23,
       "dependencies": [
-        "LinearStudy.affineQuasicoherentSourceMorphismsEquiv",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationDualGlobalHomChartMorphism",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartDegreeZeroSectionMap",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.nativeProjectiveModuleSheaf",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.schemeModuleHomAffineChartSectionsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationDualGlobalHomChartMorphism_sections",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationDualChartMorphismSections.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationDualGlobalHomChartMorphism_sections.{u} {K R S : Type u} [Field K] [CommRing R]\n  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (hs :\n    Function.Bijective\n      ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 1\n          ((algebraMap R S) a) ⋯))\n  (hq :\n    SheafOfModules.IsQuasicoherent\n      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 0)) :\n  let M := LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 0;\n  let F := (AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj M;\n  let P :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf);\n  let Q := SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf;\n  let H := LinearStudy.schemeModuleHomModuleSheaf P Q;\n  let Ai := ↧(HomogeneousLocalization.Away 𝒜 a);\n  let j :=\n    AlgebraicGeometry.Proj.awayι 𝒜 a ha LinearStudy.nativeNormalizationDualGlobalHomChartMorphism_sections._proof_1;\n  let U := AlgebraicGeometry.Proj.basicOpen 𝒜 a;\n  have hi := ⋯;\n  have EF := LinearStudy.schemeModuleSpecChartSectionsLinearEquiv F j U hi (AlgebraicGeometry.Proj.awayToSection 𝒜 a) ⋯;\n  have EH := LinearStudy.schemeModuleSpecChartSectionsLinearEquiv H j U hi (AlgebraicGeometry.Proj.awayToSection 𝒜 a) ⋯;\n  have C := LinearStudy.nativeNormalizationPushforwardGlobalHomChartLinearEquiv 𝒜 𝓑 a ha hinj hs;\n  ∀ (v : ↑(F.presheaf.obj (Opposite.op U))),\n    (ModuleCat.Hom.hom\n          (AlgebraicGeometry.moduleSpecΓFunctor.map\n            (LinearStudy.nativeNormalizationDualGlobalHomChartMorphism 𝒜 𝓑 a ha hinj hs hq)))\n        (EF v) =\n      EH (C v)",
+      "sha256": "6634e19da55ee596f9731484b44f5e38930174daf778931229b9b5d4fc202fd8",
+      "lines": 69,
+      "moduleLineCount": 100,
+      "startLine": 30,
+      "endLine": 98,
+      "lineCount": 69,
+      "dependencies": [
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeGradedModuleAwayZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationDualGlobalHomChartMorphism",
+        "LinearStudy.nativeNormalizationGlobalHomChartModule",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeNormalizationPushforwardChartModule",
+        "LinearStudy.nativeNormalizationPushforwardGlobalHomChartLinearEquiv",
+        "LinearStudy.nativeNormalizationPushforwardSourceChartTildeIso",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartDegreeZeroSectionMap",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.nativeProjectiveModuleSheaf",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalProjectiveChartScalar_appLE",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleSpecChartMorphism_sections",
+        "LinearStudy.schemeModuleSpecChartSectionsLinearEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationDualGlobalHomChartMorphism",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationDualGlobalHomChartMorphism.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nativeNormalizationDualGlobalHomChartMorphism.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]\n  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)\n  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))\n  (hs :\n    Function.Bijective\n      ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 1\n          ((algebraMap R S) a) ⋯))\n  (hq :\n    SheafOfModules.IsQuasicoherent\n      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 0)) :\n  have M := LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 0;\n  have F := (AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj M;\n  have P :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf);\n  have Q := SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf;\n  F.restrict (AlgebraicGeometry.Proj.awayι 𝒜 a ha LinearStudy.nativeNormalizationDualGlobalHomChartMorphism._proof_1) ⟶\n    (LinearStudy.schemeModuleHomModuleSheaf P Q).restrict\n      (AlgebraicGeometry.Proj.awayι 𝒜 a ha LinearStudy.nativeNormalizationDualGlobalHomChartMorphism._proof_1)",
+      "sha256": "912d9ffc0cbfe4ece7fae7e44bf7abb9f8f3a74ea9f9d8104729251b685b7f0c",
+      "lines": 46,
+      "moduleLineCount": 76,
+      "startLine": 29,
+      "endLine": 74,
+      "lineCount": 46,
+      "dependencies": [
         "LinearStudy.coextensionGradedBaseModule",
         "LinearStudy.coextensionGradedPiece",
         "LinearStudy.coextensionProjectiveGradeCompatibility",
@@ -24603,7 +25012,7 @@
         "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
         "LinearStudy.originalProjectiveChartScalar_appLE",
         "LinearStudy.schemeModuleHomModuleSheaf",
-        "LinearStudy.schemeModuleSpecChartSectionsLinearEquiv"
+        "LinearStudy.schemeModuleSpecChartMorphism"
       ]
     },
     {
@@ -52678,6 +53087,49 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectiveNormalization_native_dual_hom_chart_morphism",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveNativeDualHomChartMorphism.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveNormalization_native_dual_hom_chart_morphism {n r : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)\n  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)\n  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))\n  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (i : Fin (r + 1)) :\n  have M :=\n    LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)\n      (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n        (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))\n      ⋯ 0;\n  have F :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward\n          (LinearStudy.nativeNormalizationProjectiveMap (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n            (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))).obj\n      M;\n  have P :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward\n          (LinearStudy.nativeNormalizationProjectiveMap (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)\n            (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))).obj\n      (SheafOfModules.unit\n        (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).ringCatSheaf);\n  have Q :=\n    SheafOfModules.unit (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)).ringCatSheaf;\n  F.restrict\n      (AlgebraicGeometry.Proj.awayι (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ) (MvPolynomial.X i) ⋯\n        LinearStudy.nativeNormalizationDualGlobalHomChartMorphism._proof_1) ⟶\n    (LinearStudy.schemeModuleHomModuleSheaf P Q).restrict\n      (AlgebraicGeometry.Proj.awayι (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ) (MvPolynomial.X i) ⋯\n        LinearStudy.nativeNormalizationDualGlobalHomChartMorphism._proof_1)",
+      "sha256": "cff9ecbcf3b5db21e266c31066255e65a5a1b98eb7d376c43b7a00b05ffa755e",
+      "lines": 28,
+      "moduleLineCount": 47,
+      "startLine": 19,
+      "endLine": 46,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.coextensionGradedBaseModule",
+        "LinearStudy.coextensionGradedPiece",
+        "LinearStudy.coextensionProjectiveGradeCompatibility",
+        "LinearStudy.homogeneousQuotientGrading",
+        "LinearStudy.homogeneousQuotientPiece",
+        "LinearStudy.nativeGradedModuleAwayDegreeZero",
+        "LinearStudy.nativeHomogeneousAwayModuleScalar",
+        "LinearStudy.nativeNormalizationDualGlobalHomChartMorphism",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeProjectiveAmbientSectionModule",
+        "LinearStudy.nativeProjectiveChartDegreeZeroSectionMap",
+        "LinearStudy.nativeProjectiveModuleAtPrime",
+        "LinearStudy.nativeProjectiveModuleSections",
+        "LinearStudy.nativeProjectiveModuleSheaf",
+        "LinearStudy.projectiveLinearNormalizationMap",
+        "LinearStudy.projectiveLinearNormalization_gradedSMul",
+        "LinearStudy.projectiveLinearNormalization_native_dual_isFinitePresentation",
+        "LinearStudy.schemeModuleHomModuleSheaf"
+      ]
+    },
+    {
       "declaration": "LinearStudy.projectiveNormalization_native_original_dual_hom_overlap_restriction",
       "kind": "theorem",
       "origin": "project",
@@ -61313,6 +61765,31 @@
       ]
     },
     {
+      "declaration": "LinearStudy.schemeModuleHomAffineRestriction_isQuasicoherent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomAffineRestrictionQuasicoherent.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomAffineRestriction_isQuasicoherent.{u} {X : AlgebraicGeometry.Scheme} {R : CommRingCat}\n  (M N : X.Modules) (j : AlgebraicGeometry.Spec R ⟶ X) [AlgebraicGeometry.IsOpenImmersion j]\n  [SheafOfModules.IsQuasicoherent (M.restrict j)] [SheafOfModules.IsQuasicoherent (N.restrict j)]\n  [Module.FinitePresentation ↑R ↑(AlgebraicGeometry.moduleSpecΓFunctor.obj (M.restrict j))] :\n  SheafOfModules.IsQuasicoherent ((LinearStudy.schemeModuleHomModuleSheaf M N).restrict j)",
+      "sha256": "1b73dc50bc9042c54d20245edc6f50619dc5b4c39544753affa4ec2d516404c4",
+      "lines": 11,
+      "moduleLineCount": 28,
+      "startLine": 17,
+      "endLine": 27,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.affineFinitePresentationInternalHom_isQuasicoherent",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenImmersionIso"
+      ]
+    },
+    {
       "declaration": "LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_morphism_value",
       "kind": "theorem",
       "origin": "project",
@@ -61907,6 +62384,150 @@
         "LinearStudy.schemeModuleHomOpenSectionsEquiv",
         "LinearStudy.schemeModuleHomOverLinear",
         "LinearStudy.schemeModuleHomSectionEvaluation"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomOpenImmersionRestrictSection_bijective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomOpenImmersionBijective.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomOpenImmersionRestrictSection_bijective.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules)\n  (j : Y ⟶ X) [AlgebraicGeometry.IsOpenImmersion j] (W : Y.Opens) :\n  Function.Bijective (LinearStudy.schemeModuleHomOpenImmersionRestrictSection M N j W)",
+      "sha256": "1cee6d272b318054ab3377ae78b650066f6f20f34a06d3700493d4a174127957",
+      "lines": 45,
+      "moduleLineCount": 61,
+      "startLine": 16,
+      "endLine": 60,
+      "lineCount": 45,
+      "dependencies": [
+        "LinearStudy.openImmersionOverPost_isEquivalence",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenImmersionRestrictSection",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomOpenImmersionIso",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomOpenImmersionIso.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomOpenImmersionIso.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (j : Y ⟶ X)\n  [AlgebraicGeometry.IsOpenImmersion j] :\n  (LinearStudy.schemeModuleHomModuleSheaf M N).restrict j ≅\n    LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j)",
+      "sha256": "b96d2609982959a4083826ca73026d7b033b145e2f7d3fbbe2242fc7ec20fcb5",
+      "lines": 11,
+      "moduleLineCount": 28,
+      "startLine": 17,
+      "endLine": 27,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenImmersionMorphism"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomOpenImmersionMorphism",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomOpenImmersionMorphism.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomOpenImmersionMorphism.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (j : Y ⟶ X)\n  [AlgebraicGeometry.IsOpenImmersion j] :\n  (LinearStudy.schemeModuleHomModuleSheaf M N).restrict j ⟶\n    LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j)",
+      "sha256": "16d99f49676978ad2c49958f572cb1d66cc6ff0532b1ea7b6ec5bd02a3677ac9",
+      "lines": 40,
+      "moduleLineCount": 56,
+      "startLine": 16,
+      "endLine": 55,
+      "lineCount": 40,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenImmersionRestrictSection"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.openImmersionOverPost_isEquivalence",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomOpenImmersionRestriction.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.openImmersionOverPost_isEquivalence.{u} {X Y : AlgebraicGeometry.Scheme} (j : Y ⟶ X)\n  [AlgebraicGeometry.IsOpenImmersion j] (W : Y.Opens) :\n  (CategoryTheory.Over.post (AlgebraicGeometry.Scheme.Hom.opensFunctor j)).IsEquivalence",
+      "sha256": "3becf1d0f2a04c096988996487d5d2af7aedc90b78083ab52ede5e1d107b1870",
+      "lines": 16,
+      "moduleLineCount": 50,
+      "startLine": 17,
+      "endLine": 32,
+      "lineCount": 16,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomOpenImmersionRestrictSection",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomOpenImmersionRestriction.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleHomOpenImmersionRestrictSection.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules)\n  (j : Y ⟶ X) [AlgebraicGeometry.IsOpenImmersion j] (W : Y.Opens)\n  (h :\n    ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj\n        (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W)))) :\n  ↑((LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j)).presheaf.obj (Opposite.op W))",
+      "sha256": "3becf1d0f2a04c096988996487d5d2af7aedc90b78083ab52ede5e1d107b1870",
+      "lines": 8,
+      "moduleLineCount": 50,
+      "startLine": 34,
+      "endLine": 41,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomOpenImmersionRestrictSection_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomOpenImmersionRestriction.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomOpenImmersionRestrictSection_evaluation.{u} {X Y : AlgebraicGeometry.Scheme}\n  (M N : X.Modules) (j : Y ⟶ X) [AlgebraicGeometry.IsOpenImmersion j] (W : Y.Opens)\n  (h :\n    ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj\n        (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W))))\n  (Z : (CategoryTheory.Over W)ᵒᵖ) (x : ↑((M.restrict j).presheaf.obj (Opposite.op (Opposite.unop Z).left))) :\n  (CategoryTheory.ConcreteCategory.hom ((↑(LinearStudy.schemeModuleHomOpenImmersionRestrictSection M N j W h)).app Z))\n      x =\n    (CategoryTheory.ConcreteCategory.hom\n        ((↑h).app ((CategoryTheory.Over.post (AlgebraicGeometry.Scheme.Hom.opensFunctor j)).op.obj Z)))\n      x",
+      "sha256": "3becf1d0f2a04c096988996487d5d2af7aedc90b78083ab52ede5e1d107b1870",
+      "lines": 7,
+      "moduleLineCount": 50,
+      "startLine": 43,
+      "endLine": 49,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOpenImmersionRestrictSection",
+        "LinearStudy.schemeModuleHomOverLinear"
       ]
     },
     {
@@ -62738,6 +63359,81 @@
       "lineCount": 24,
       "dependencies": [
         "LinearStudy.originalGlobalModuleScalar"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleSpecChartMorphism_isIso",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleSpecChartIso.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleSpecChartMorphism_isIso.{u} {X : AlgebraicGeometry.Scheme} {R : CommRingCat} (M N : X.Modules)\n  (j : AlgebraicGeometry.Spec R ⟶ X) [AlgebraicGeometry.IsOpenImmersion j] (U : X.Opens)\n  (hi : (AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj ⊤ = U) (φ : R ⟶ X.presheaf.obj (Opposite.op U))\n  (hφ :\n    CategoryTheory.CategoryStruct.comp φ (AlgebraicGeometry.Scheme.Hom.appLE j U ⊤ ⋯) =\n      (AlgebraicGeometry.Scheme.ΓSpecIso R).inv)\n  [SheafOfModules.IsQuasicoherent (M.restrict j)] [SheafOfModules.IsQuasicoherent (N.restrict j)]\n  (C : ↑(M.presheaf.obj (Opposite.op U)) ≃ₗ[↑R] ↑(N.presheaf.obj (Opposite.op U))) :\n  CategoryTheory.IsIso (LinearStudy.schemeModuleSpecChartMorphism M N j U hi φ hφ C)",
+      "sha256": "ecfb6bbccf984301b5586ea03dceaabe277090fd2dbc867b72555b3823155511",
+      "lines": 28,
+      "moduleLineCount": 48,
+      "startLine": 20,
+      "endLine": 47,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.schemeModuleSpecChartMorphism",
+        "LinearStudy.schemeModuleSpecChartMorphism_sections",
+        "LinearStudy.schemeModuleSpecChartSectionsLinearEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleSpecChartMorphism",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SchemeModuleSpecChartMorphism.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.schemeModuleSpecChartMorphism.{u} {X : AlgebraicGeometry.Scheme} {R : CommRingCat} (M N : X.Modules)\n  (j : AlgebraicGeometry.Spec R ⟶ X) [AlgebraicGeometry.IsOpenImmersion j] (U : X.Opens)\n  (hi : (AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj ⊤ = U) (φ : R ⟶ X.presheaf.obj (Opposite.op U))\n  (hφ :\n    CategoryTheory.CategoryStruct.comp φ (AlgebraicGeometry.Scheme.Hom.appLE j U ⊤ ⋯) =\n      (AlgebraicGeometry.Scheme.ΓSpecIso R).inv)\n  [SheafOfModules.IsQuasicoherent (M.restrict j)]\n  (C : ↑(M.presheaf.obj (Opposite.op U)) ≃ₗ[↑R] ↑(N.presheaf.obj (Opposite.op U))) : M.restrict j ⟶ N.restrict j",
+      "sha256": "de37c279f49d0b6572c462fba5fa7f7c3c55f42dea4c2d05a974bfee254f6ba7",
+      "lines": 17,
+      "moduleLineCount": 53,
+      "startLine": 20,
+      "endLine": 36,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.affineQuasicoherentSourceMorphismsEquiv",
+        "LinearStudy.schemeModuleSpecChartSectionsLinearEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleSpecChartMorphism_sections",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleSpecChartMorphism.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleSpecChartMorphism_sections.{u} {X : AlgebraicGeometry.Scheme} {R : CommRingCat}\n  (M N : X.Modules) (j : AlgebraicGeometry.Spec R ⟶ X) [AlgebraicGeometry.IsOpenImmersion j] (U : X.Opens)\n  (hi : (AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj ⊤ = U) (φ : R ⟶ X.presheaf.obj (Opposite.op U))\n  (hφ :\n    CategoryTheory.CategoryStruct.comp φ (AlgebraicGeometry.Scheme.Hom.appLE j U ⊤ ⋯) =\n      (AlgebraicGeometry.Scheme.ΓSpecIso R).inv)\n  [SheafOfModules.IsQuasicoherent (M.restrict j)]\n  (C : ↑(M.presheaf.obj (Opposite.op U)) ≃ₗ[↑R] ↑(N.presheaf.obj (Opposite.op U)))\n  (v : ↑(M.presheaf.obj (Opposite.op U))) :\n  (ModuleCat.Hom.hom\n        (AlgebraicGeometry.moduleSpecΓFunctor.map (LinearStudy.schemeModuleSpecChartMorphism M N j U hi φ hφ C)))\n      ((LinearStudy.schemeModuleSpecChartSectionsLinearEquiv M j U hi φ hφ) v) =\n    (LinearStudy.schemeModuleSpecChartSectionsLinearEquiv N j U hi φ hφ) (C v)",
+      "sha256": "de37c279f49d0b6572c462fba5fa7f7c3c55f42dea4c2d05a974bfee254f6ba7",
+      "lines": 15,
+      "moduleLineCount": 53,
+      "startLine": 38,
+      "endLine": 52,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.affineQuasicoherentSourceMorphismsEquiv",
+        "LinearStudy.affineQuasicoherentSourceMorphismsEquiv_symm_map",
+        "LinearStudy.schemeModuleSpecChartMorphism",
+        "LinearStudy.schemeModuleSpecChartSectionsLinearEquiv"
       ]
     },
     {
