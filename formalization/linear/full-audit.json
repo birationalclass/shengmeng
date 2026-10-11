@@ -1,8 +1,8 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 2689,
-  "verifiedTheorems": 1949,
+  "audited": 2701,
+  "verifiedTheorems": 1961,
   "definitions": 544,
   "mainTheoremVerified": false,
   "violations": [],
@@ -304,6 +304,54 @@
         "LinearStudy.originalAffineHomBaseModule",
         "LinearStudy.schemeModuleHomModuleSheaf",
         "LinearStudy.schemeModuleHomSectionEvaluation"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.actualModuleFromTildeTopValue",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ActualAffineStructureElementValue.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.actualModuleFromTildeTopValue.{u} (R : CommRingCat) (P : (AlgebraicGeometry.Spec R).Modules)\n  (x : ↑((AlgebraicGeometry.modulesSpecToSheaf.obj P).presheaf.obj (Opposite.op ⊤))) :\n  (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app P.fromTildeΓ ⊤))\n      ((CategoryTheory.ConcreteCategory.hom\n          (AlgebraicGeometry.tilde.toOpen ((AlgebraicGeometry.modulesSpecToSheaf.obj P).presheaf.obj (Opposite.op ⊤))\n            ⊤))\n        x) =\n    x",
+      "sha256": "dccd9a1784f7aa03c93bd198e4407ecd54d7849afe52962615ede45047671e7d",
+      "lines": 10,
+      "moduleLineCount": 63,
+      "startLine": 12,
+      "endLine": 21,
+      "lineCount": 10,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.actualAffineAlgebraStructurePushforwardIso_element_value",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ActualAffineStructureElementValue.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.actualAffineAlgebraStructurePushforwardIso_element_value.{u} {A B : Type u} [CommRing A] [CommRing B]\n  [Algebra A B] (b : B) :\n  (CategoryTheory.ConcreteCategory.hom\n        (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))\n      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) b) ≍\n    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧B).inv) b",
+      "sha256": "dccd9a1784f7aa03c93bd198e4407ecd54d7849afe52962615ede45047671e7d",
+      "lines": 38,
+      "moduleLineCount": 63,
+      "startLine": 24,
+      "endLine": 61,
+      "lineCount": 38,
+      "dependencies": [
+        "LinearStudy.actualAffineAlgebraStructurePushforwardIso",
+        "LinearStudy.actualModuleFromTildeTopValue",
+        "LinearStudy.restrictedAlgebraModuleEquiv",
+        "LinearStudy.tildePushforwardGlobalIso",
+        "LinearStudy.tildePushforwardIso"
       ]
     },
     {
@@ -22835,6 +22883,105 @@
       ]
     },
     {
+      "declaration": "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSections_original_section_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGlobalWeightedHomEvaluation.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSections_original_section_evaluation.{u} {K R S : Type u}\n  [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]\n  (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑]\n  [Module.Finite R S] (d : ℕ) (hd : 0 < d) (a : R) (ha : a ∈ 𝒜 d)\n  (h :\n    ↑((LinearStudy.schemeModuleHomModuleSheaf\n              ((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n                (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf))\n              (SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf)).presheaf.obj\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a))))\n  (x : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :\n  let A := HomogeneousLocalization.Away 𝒜 a;\n  let B := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);\n  let U := AlgebraicGeometry.Proj.basicOpen 𝒜 a;\n  have e := AlgebraicGeometry.Proj.basicOpenIsoSpec 𝒜 a ha hd;\n  let M :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf);\n  let N := SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf;\n  let P :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf);\n  let Q := SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf;\n  have β := AlgebraicGeometry.Scheme.Modules.restrictUnitIso (AlgebraicGeometry.Proj.awayι 𝒜 a ha hd);\n  have y :=\n    (CategoryTheory.ConcreteCategory.hom (M.presheaf.map (CategoryTheory.eqToHom ⋯).op))\n      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a))) x);\n  (LinearStudy.schemeModuleHomSectionEvaluation P Q ⊤\n        ((LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv 𝒜 𝓑 d hd a ha) h))\n      ((CategoryTheory.ConcreteCategory.hom\n          (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))\n        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) x)) =\n    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app β.hom ⊤))\n      ((CategoryTheory.ConcreteCategory.hom (N.presheaf.map (CategoryTheory.eqToHom ⋯).op))\n        ((LinearStudy.schemeModuleHomSectionEvaluation M N U h)\n          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a))) x)))",
+      "sha256": "3e8be6732d8589f66027a6cc1d84dd91fd251ac029450bfc91bceabb33807ccf",
+      "lines": 44,
+      "moduleLineCount": 109,
+      "startLine": 27,
+      "endLine": 70,
+      "lineCount": 44,
+      "dependencies": [
+        "LinearStudy.actualAffineAlgebraStructurePushforwardIso",
+        "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv",
+        "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSections_original_element_evaluation",
+        "LinearStudy.nativeNormalizationGlobalWeightedHomChartModule",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalAffineHomBaseModule",
+        "LinearStudy.schemeModuleHomCompositeRestriction",
+        "LinearStudy.schemeModuleHomCompositeRestriction_top_evaluation",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSections_original_section_chart_pullback",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGlobalWeightedHomEvaluation.lean",
+      "line": 71,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSections_original_section_chart_pullback.{u} {K R S : Type u}\n  [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]\n  (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑]\n  [Module.Finite R S] (d : ℕ) (hd : 0 < d) (a : R) (ha : a ∈ 𝒜 d)\n  (h :\n    ↑((LinearStudy.schemeModuleHomModuleSheaf\n              ((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n                (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf))\n              (SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf)).presheaf.obj\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a))))\n  (x : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :\n  let A := HomogeneousLocalization.Away 𝒜 a;\n  let B := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);\n  let U := AlgebraicGeometry.Proj.basicOpen 𝒜 a;\n  have e := AlgebraicGeometry.Proj.basicOpenIsoSpec 𝒜 a ha hd;\n  let M :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf);\n  let N := SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf;\n  let P :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf);\n  let Q := SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf;\n  have β := AlgebraicGeometry.Scheme.Modules.restrictUnitIso (AlgebraicGeometry.Proj.awayι 𝒜 a ha hd);\n  have y :=\n    (CategoryTheory.ConcreteCategory.hom (M.presheaf.map (CategoryTheory.eqToHom ⋯).op))\n      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a))) x);\n  (LinearStudy.schemeModuleHomSectionEvaluation P Q ⊤\n        ((LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv 𝒜 𝓑 d hd a ha) h))\n      ((CategoryTheory.ConcreteCategory.hom\n          (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))\n        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) x)) =\n    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop e.inv))\n      ((CategoryTheory.ConcreteCategory.hom U.topIso.inv)\n        ((LinearStudy.schemeModuleHomSectionEvaluation M N U h)\n          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a))) x)))",
+      "sha256": "3e8be6732d8589f66027a6cc1d84dd91fd251ac029450bfc91bceabb33807ccf",
+      "lines": 38,
+      "moduleLineCount": 109,
+      "startLine": 71,
+      "endLine": 108,
+      "lineCount": 38,
+      "dependencies": [
+        "LinearStudy.actualAffineAlgebraStructurePushforwardIso",
+        "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv",
+        "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSections_original_section_evaluation",
+        "LinearStudy.nativeNormalizationGlobalWeightedHomChartModule",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalAffineHomBaseModule",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation",
+        "LinearStudy.structureUnitChartTopValue"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSections_original_element_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeGlobalWeightedHomOriginalElementEvaluation.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSections_original_element_evaluation.{u} {K R S : Type u}\n  [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]\n  (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑]\n  [Module.Finite R S] (d : ℕ) (hd : 0 < d) (a : R) (ha : a ∈ 𝒜 d)\n  (h :\n    ↑((LinearStudy.schemeModuleHomModuleSheaf\n              ((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n                (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf))\n              (SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf)).presheaf.obj\n        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a))))\n  (x : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :\n  let A := HomogeneousLocalization.Away 𝒜 a;\n  let B := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);\n  let U := AlgebraicGeometry.Proj.basicOpen 𝒜 a;\n  let e := AlgebraicGeometry.Proj.basicOpenIsoSpec 𝒜 a ha hd;\n  let M :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf);\n  let N := SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf;\n  let P :=\n    (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))).obj\n      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf);\n  let Q := SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf;\n  have β := AlgebraicGeometry.Scheme.Modules.restrictUnitIso (AlgebraicGeometry.Proj.awayι 𝒜 a ha hd);\n  have y :=\n    (CategoryTheory.ConcreteCategory.hom (M.presheaf.map (CategoryTheory.eqToHom ⋯).op))\n      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a))) x);\n  (LinearStudy.schemeModuleHomSectionEvaluation P Q ⊤\n        ((LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv 𝒜 𝓑 d hd a ha) h))\n      ((CategoryTheory.ConcreteCategory.hom\n          (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))\n        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) x)) =\n    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app β.hom ⊤))\n      ((CategoryTheory.ConcreteCategory.hom\n          (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleHomCompositeRestriction M N U e.inv h) ⊤))\n        y)",
+      "sha256": "8959999bc7357ec22613d036c7327a877d852b621a8c40494563bb0f1c70ede1",
+      "lines": 39,
+      "moduleLineCount": 63,
+      "startLine": 24,
+      "endLine": 62,
+      "lineCount": 39,
+      "dependencies": [
+        "LinearStudy.actualAffineAlgebraStructurePushforwardIso",
+        "LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv",
+        "LinearStudy.nativeNormalizationGlobalWeightedHomChartModule",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeNormalizationPushforwardWeightedStructureChartIso",
+        "LinearStudy.nativeNormalizationWeightedSourceChart_affine_element",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalAffineHomBaseModule",
+        "LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_top_transported_evaluation",
+        "LinearStudy.schemeModuleHomCompositeRestriction",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation"
+      ]
+    },
+    {
       "declaration": "LinearStudy.nativeGradedBaseSourceChart_mem_iff",
       "kind": "theorem",
       "origin": "project",
@@ -25347,6 +25494,62 @@
         "LinearStudy.normalizationBaseGradedRingHom",
         "LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv",
         "LinearStudy.normalizationHomogeneousAffineDualOverlapLinearEquiv_apply_mk",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationWeightedSourceChart_element_value",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationWeightedSourceElementValue.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationWeightedSourceChart_element_value.{u} {K R S : Type u} [Field K] [CommRing R]\n  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (d : ℕ) (hd : 0 < d) (a : R)\n  (ha : a ∈ 𝒜 d) (x : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :\n  (CategoryTheory.ConcreteCategory.hom\n        (AlgebraicGeometry.Scheme.Modules.Hom.app\n          (LinearStudy.nativeNormalizationPushforwardWeightedStructureChartIso 𝒜 𝓑 d hd a ha).hom ⊤))\n      ((CategoryTheory.ConcreteCategory.hom\n          (((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n                  (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf)).presheaf.map\n            (CategoryTheory.eqToHom ⋯).op))\n        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a))) x)) ≍\n    (CategoryTheory.ConcreteCategory.hom\n        (AlgebraicGeometry.Scheme.ΓSpecIso ↧(HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a))).inv)\n      x",
+      "sha256": "c28fc50ee641ddbfe98b4ab76cb1a04f50680f0d84d02c26740a49e080cf0033",
+      "lines": 17,
+      "moduleLineCount": 60,
+      "startLine": 22,
+      "endLine": 38,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeNormalizationPushforwardWeightedStructureChartIso",
+        "LinearStudy.nativeNormalizationPushforwardWeightedStructureChartIso_top_value",
+        "LinearStudy.normalizationBaseGradedRingHom",
+        "LinearStudy.normalizationHomogeneousSourceChartAlgebra",
+        "LinearStudy.originalProjectiveWeightedChartScalarTransport"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nativeNormalizationWeightedSourceChart_affine_element",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NativeNormalizationWeightedSourceElementValue.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nativeNormalizationWeightedSourceChart_affine_element.{u} {K R S : Type u} [Field K] [CommRing R]\n  [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]\n  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (d : ℕ) (hd : 0 < d) (a : R)\n  (ha : a ∈ 𝒜 d) (x : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :\n  (CategoryTheory.ConcreteCategory.hom\n        (AlgebraicGeometry.Scheme.Modules.Hom.app\n          (LinearStudy.nativeNormalizationPushforwardWeightedStructureChartIso 𝒜 𝓑 d hd a ha).hom ⊤))\n      ((CategoryTheory.ConcreteCategory.hom\n          (((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj\n                  (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf)).presheaf.map\n            (CategoryTheory.eqToHom ⋯).op))\n        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a))) x)) =\n    (CategoryTheory.ConcreteCategory.hom\n        (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))\n      ((CategoryTheory.ConcreteCategory.hom\n          (AlgebraicGeometry.tilde.toOpen ↧(HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) ⊤))\n        x)",
+      "sha256": "c28fc50ee641ddbfe98b4ab76cb1a04f50680f0d84d02c26740a49e080cf0033",
+      "lines": 21,
+      "moduleLineCount": 60,
+      "startLine": 39,
+      "endLine": 59,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.actualAffineAlgebraStructurePushforwardIso",
+        "LinearStudy.actualAffineAlgebraStructurePushforwardIso_element_value",
+        "LinearStudy.nativeNormalizationProjectiveMap",
+        "LinearStudy.nativeNormalizationPushforwardWeightedStructureChartIso",
+        "LinearStudy.nativeNormalizationWeightedSourceChart_element_value",
         "LinearStudy.normalizationHomogeneousSourceChartAlgebra"
       ]
     },
@@ -60429,6 +60632,55 @@
       ]
     },
     {
+      "declaration": "LinearStudy.schemeModuleCompositeSectionsTransport_value",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleCompositeTopEvaluation.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleCompositeSectionsTransport_value.{u} {X Y : AlgebraicGeometry.Scheme} (M : X.Modules)\n  (U : X.Opens) (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f] (W : Y.Opens)\n  (x :\n    ↑(M.presheaf.obj\n        (Opposite.op\n          ((AlgebraicGeometry.Scheme.Hom.opensFunctor U.ι).obj\n            ((AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj W))))) :\n  (CategoryTheory.ConcreteCategory.hom\n        (AlgebraicGeometry.Scheme.Modules.Hom.app\n          ((AlgebraicGeometry.Scheme.Modules.restrictFunctorComp f U.ι).symm.app M).hom W))\n      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.restrictAppIso f (M.restrict U.ι) W).inv)\n        ((CategoryTheory.ConcreteCategory.hom\n            (AlgebraicGeometry.Scheme.Modules.restrictAppIso U.ι M\n                ((AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj W)).inv)\n          x)) =\n    (CategoryTheory.ConcreteCategory.hom (M.presheaf.map (CategoryTheory.eqToHom ⋯).op)) x",
+      "sha256": "486e9d528a33f38b76037b1beac5e83df3f9cf1c58907f4f5cc1160a4d8468a5",
+      "lines": 8,
+      "moduleLineCount": 65,
+      "startLine": 14,
+      "endLine": 21,
+      "lineCount": 8,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomCompositeRestriction_top_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleCompositeTopEvaluation.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomCompositeRestriction_top_evaluation.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules)\n  (U : X.Opens) (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f] [CategoryTheory.IsIso f]\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)))\n  (r : ↑(M.presheaf.obj (Opposite.op U))) :\n  (CategoryTheory.ConcreteCategory.hom\n        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleHomCompositeRestriction M N U f h) ⊤))\n      ((CategoryTheory.ConcreteCategory.hom (M.presheaf.map (CategoryTheory.eqToHom ⋯).op)) r) =\n    (CategoryTheory.ConcreteCategory.hom (N.presheaf.map (CategoryTheory.eqToHom ⋯).op))\n      ((LinearStudy.schemeModuleHomSectionEvaluation M N U h) r)",
+      "sha256": "486e9d528a33f38b76037b1beac5e83df3f9cf1c58907f4f5cc1160a4d8468a5",
+      "lines": 41,
+      "moduleLineCount": 65,
+      "startLine": 24,
+      "endLine": 64,
+      "lineCount": 41,
+      "dependencies": [
+        "LinearStudy.schemeModuleCompositeSectionsTransport_value",
+        "LinearStudy.schemeModuleHomCompositeRestriction",
+        "LinearStudy.schemeModuleHomCompositeRestriction_evaluation",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation",
+        "LinearStudy.schemeModuleHomSectionEvaluation_restrict"
+      ]
+    },
+    {
       "declaration": "LinearStudy.schemeModuleHomOpenSectionsEquiv",
       "kind": "def",
       "origin": "project",
@@ -61807,6 +62059,62 @@
         "LinearStudy.schemeModuleHomGlobalEquiv",
         "LinearStudy.schemeModuleHomModuleSheaf",
         "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_transported_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomTransportedEvaluation.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_transported_evaluation.{u} {X : AlgebraicGeometry.Scheme}\n  (M N : X.Modules) (U : X.Opens) (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R)\n  {P Q : (AlgebraicGeometry.Spec R).Modules} (α : M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ≅ P)\n  (β : N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ≅ Q)\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)))\n  (W : (AlgebraicGeometry.Spec R).Opens)\n  (x : ↑((M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι)).presheaf.obj (Opposite.op W))) :\n  (LinearStudy.schemeModuleHomSectionEvaluation P Q W\n        ((CategoryTheory.ConcreteCategory.hom\n            ((LinearStudy.schemeModuleHomModuleSheaf P Q).presheaf.map (CategoryTheory.homOfLE ⋯).op))\n          ((LinearStudy.schemeModuleHomAffineTransportSectionsEquiv M N U R e α β) h)))\n      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app α.hom W)) x) =\n    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app β.hom W))\n      ((CategoryTheory.ConcreteCategory.hom\n          (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleHomCompositeRestriction M N U e.inv h) W))\n        x)",
+      "sha256": "3e3eebd551e03d49e8921f952b8325159949b7e772fdc45df9c2348905c1403e",
+      "lines": 17,
+      "moduleLineCount": 48,
+      "startLine": 15,
+      "endLine": 31,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAffineTransportSectionsEquiv",
+        "LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_morphism_value",
+        "LinearStudy.schemeModuleHomCompositeRestriction",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation",
+        "LinearStudy.schemeModuleHomTopSectionsEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_top_transported_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SchemeModuleHomTransportedEvaluation.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_top_transported_evaluation.{u} {X : AlgebraicGeometry.Scheme}\n  (M N : X.Modules) (U : X.Opens) (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R)\n  {P Q : (AlgebraicGeometry.Spec R).Modules} (α : M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ≅ P)\n  (β : N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ≅ Q)\n  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)))\n  (x : ↑((M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι)).presheaf.obj (Opposite.op ⊤))) :\n  (LinearStudy.schemeModuleHomSectionEvaluation P Q ⊤\n        ((LinearStudy.schemeModuleHomAffineTransportSectionsEquiv M N U R e α β) h))\n      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app α.hom ⊤)) x) =\n    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app β.hom ⊤))\n      ((CategoryTheory.ConcreteCategory.hom\n          (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleHomCompositeRestriction M N U e.inv h) ⊤))\n        x)",
+      "sha256": "3e3eebd551e03d49e8921f952b8325159949b7e772fdc45df9c2348905c1403e",
+      "lines": 16,
+      "moduleLineCount": 48,
+      "startLine": 32,
+      "endLine": 47,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAffineTransportSectionsEquiv",
+        "LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_morphism_value",
+        "LinearStudy.schemeModuleHomCompositeRestriction",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation",
+        "LinearStudy.schemeModuleHomTopSectionsEquiv"
       ]
     },
     {
@@ -64490,6 +64798,29 @@
         "LinearStudy.schemeModuleRestrictFunctorAdjCounitIso_hom_app",
         "LinearStudy.schemeModuleRestrictMap_app",
         "LinearStudy.structurePushforwardChartIso"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.structureUnitChartTopValue",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/StructureUnitChartTopValue.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.structureUnitChartTopValue.{u} {X T : AlgebraicGeometry.Scheme} (U : X.Opens) (e : ↑U ≅ T)\n  (r : ↑(X.presheaf.obj (Opposite.op U))) :\n  (CategoryTheory.ConcreteCategory.hom\n        (AlgebraicGeometry.Scheme.Modules.Hom.app\n          (AlgebraicGeometry.Scheme.Modules.restrictUnitIso (CategoryTheory.CategoryStruct.comp e.inv U.ι)).hom ⊤))\n      ((CategoryTheory.ConcreteCategory.hom (X.presheaf.map (CategoryTheory.eqToHom ⋯).op)) r) ≍\n    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop e.inv))\n      ((CategoryTheory.ConcreteCategory.hom U.topIso.inv) r)",
+      "sha256": "69dec73e5a3dd2ed514c5d4e7233685a540127599178e3b9fa644e3f98202ba8",
+      "lines": 18,
+      "moduleLineCount": 31,
+      "startLine": 13,
+      "endLine": 30,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.schemeIsoAppIsoTopHom"
       ]
     },
     {

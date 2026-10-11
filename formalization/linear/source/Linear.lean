@@ -1177,3 +1177,10 @@ public import Linear.StructureUnitMapValue
 public import Linear.SchemeIsoTopPullback
 public import Linear.StructurePushforwardChartTopValueDirect
 public import Linear.NativeNormalizationWeightedChartTopValue
+public import Linear.ActualAffineStructureElementValue
+public import Linear.NativeNormalizationWeightedSourceElementValue
+public import Linear.SchemeModuleHomTransportedEvaluation
+public import Linear.NativeGlobalWeightedHomOriginalElementEvaluation
+public import Linear.SchemeModuleCompositeTopEvaluation
+public import Linear.StructureUnitChartTopValue
+public import Linear.NativeGlobalWeightedHomEvaluation
