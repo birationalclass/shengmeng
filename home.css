@@ -1,56 +1,63 @@
-/* Homepage uses the Visual Lab palette, typography and dark/light rhythm. */
+/* Match the current Visual Lab catalog.css: warm paper, quiet type and cards. */
 html[lang] .home {
-  --ink: #071513;
-  --ink-2: #0b201c;
-  --panel: #102923;
-  --paper: #e8f2ed;
-  --muted: #8ca49b;
-  --mint: #82f0cf;
-  --cyan: #53cfdb;
-  --gold: #e7b95c;
-  --line: rgba(175,220,202,.15);
+  --ink: #f5f4ef;
+  --ink-2: #edeee7;
+  --panel: #fafaf6;
+  --paper: #242d28;
+  --muted: #7b8179;
+  --mint: #49634e;
+  --cyan: #49634e;
+  --gold: #49634e;
+  --line: #dadfd5;
   --serif: Georgia, "Times New Roman", "Noto Serif SC", serif;
-  --sans: Inter, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
   background: var(--ink);
   color: var(--paper);
-  font: 15px/1.8 var(--sans);
+  font: 14px/1.7 var(--sans);
 }
-html[lang] .home .section-shell { width: min(1180px, calc(100% - 44px)); }
-html[lang] .home .page-grid { opacity: 1; }
-html[lang] .home .site-header { min-height: 76px; height: auto; padding: 14px max(22px,calc((100vw - 1180px)/2)); background: rgba(7,21,19,.88); border-bottom: 1px solid var(--line); gap: 22px; }
-html[lang] .home .brand-word { font: 700 11px/1.3 var(--sans); letter-spacing: .17em; text-transform: uppercase; white-space: nowrap; }
-html[lang] .home .brand-word::before { content: "Σ"; flex: 0 0 36px; width: 36px; height: 36px; display: grid; place-items: center; margin: 0 5px; border: 1px solid rgba(130,240,207,.44); color: var(--mint); font: 20px/1 var(--serif); transform: rotate(45deg); }
+html[lang] .home .section-shell { width: min(1248px, calc(100% - 96px)); }
+html[lang] .home .page-grid { display: none; }
+html[lang] .home .site-header { min-height: 92px; height: auto; padding: 14px max(48px,calc((100vw - 1248px)/2)); background: rgba(245,244,239,.96); border-bottom: 1px solid var(--line); gap: 22px; backdrop-filter: blur(10px); }
+html[lang] .home .brand-word { font: 600 10px/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+html[lang] .home .brand-word::before { content: "M."; flex: 0 0 36px; width: 36px; height: 36px; display: grid; place-items: center; margin: 0 5px 0 0; color: var(--paper); font: 32px/1 Georgia,serif; letter-spacing: -.08em; }
+html[lang] .home .brand-word::after { content: none; }
 html[lang] .home .site-header nav { gap: 16px; }
-html[lang] .home .site-header nav a { font-size: 10px; letter-spacing: .07em; color: #9eb1aa; white-space: nowrap; }
+html[lang] .home .site-header nav a { font-size: 10px; letter-spacing: .07em; color: #6a7369; white-space: nowrap; }
 html[lang] .home .site-header nav a:hover, html[lang] .home .site-header nav a.active { color: var(--mint); }
-html[lang] .home .language-button, html[lang] .home .menu-button { min-height: 40px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 2px; color: #c5d4ce; font-size: 10px; letter-spacing: .08em; background: transparent; white-space: nowrap; }
+html[lang] .home .language-button, html[lang] .home .menu-button { min-height: 40px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 4px; color: #6a7369; font-size: 10px; letter-spacing: .08em; background: transparent; white-space: nowrap; }
 html[lang] .home .hero { background: var(--ink); }
-html[lang] .home .hero::after { background: linear-gradient(90deg,rgba(7,21,19,.96),rgba(7,21,19,.78) 52%,rgba(7,21,19,.15)); }
-html[lang] .home .hero-layout { min-height: max(720px,calc(100svh - 76px)); padding-block: 64px; }
+html[lang] .home .hero::after { background: linear-gradient(90deg,rgba(245,244,239,.98),rgba(245,244,239,.62) 46%,rgba(245,244,239,.06)); }
+html[lang] .home .hero { min-height: 0; }
+html[lang] .home .hero-layout { min-height: 680px; padding-block: 48px; }
+html[lang] .home .hero-copy { text-shadow: none; }
+html[lang] .home .pascal-hero-background { filter: brightness(.38) saturate(.5); opacity: .9; }
+html[lang] .home .hero-quote .quote-opening { --ink-color: #242d28; color: var(--ink-color); }
+html[lang] .home .hero-quote .quote-answer { --ink-color: #49634e; color: var(--ink-color); }
+html[lang] .home .hero-quote .glyph-ink { text-shadow: none; }
+html[lang] .home .stroke-spark { fill: rgba(73,99,78,.12); stroke: rgba(73,99,78,.32); filter: none; }
+html[lang] .home .stroke-spark-core { fill: #49634e; }
 html[lang] .home .hero-copy { width: min(900px,100%); grid-template-columns: minmax(0,560px) 196px; gap: 30px 58px; }
 html[lang] .home .hero-support { max-width: 550px; }
 html[lang] .home .kicker { font-size: 10px; letter-spacing: .18em; color: var(--gold); line-height: 1.7; }
-html[lang] .home .hero-intro { font-size: 16px; line-height: 1.9; color: #9db0a8; max-width: 520px; }
+html[lang] .home .hero-intro { font-size: 15px; line-height: 1.9; color: #6a7369; max-width: 520px; }
 html[lang] .home .hero-actions { gap: 10px; flex-wrap: wrap; }
 html[lang] .home .hero-fields { gap: 10px 18px; flex-wrap: wrap; }
 html[lang] .home .hero-fields span { font-size: 13px; color: var(--muted); }
-html[lang] .home .button { min-height: 48px; padding: 10px 18px; border-radius: 0; font: 700 11px/1.45 var(--sans); letter-spacing: .05em; gap: 28px; }
-html[lang] .home .button.primary { background: #82f0cf; color: #071513; border: 1px solid #64bba1; }
+html[lang] .home .button { min-height: 44px; padding: 10px 18px; border-radius: 4px; font: 500 12px/1.45 var(--sans); letter-spacing: .02em; gap: 24px; }
+html[lang] .home .button.primary { background: #242d28; color: #f5f4ef; border: 1px solid #242d28; }
 html[lang] .home .button.ghost { color: var(--paper); border: 1px solid var(--line); background: transparent; }
-html[lang] .home .button:hover { border-color: #82f0cf; filter: brightness(1.07); }
+html[lang] .home .button:hover { border-color: #83957b; filter: none; }
 html[lang] .home a:focus-visible, html[lang] .home button:focus-visible { outline: 2px solid var(--mint); outline-offset: 5px; }
 html[lang] .home section[id] { scroll-margin-top: 100px; }
-html[lang] .home .signal-strip { width: min(1180px,calc(100% - 44px)); background: rgba(255,255,255,.012); border-block: 1px solid var(--line); padding: 0; }
+html[lang] .home .signal-strip { width: min(1248px,calc(100% - 96px)); background: transparent; border-block: 1px solid var(--line); padding: 0; }
 html[lang] .home .signal-strip b { font: 28px/1.3 var(--serif); color: var(--gold); }
 html[lang] .home .signal-strip span { font-size: 14px; line-height: 1.6; color: var(--muted); }
-html[lang] .home .publications-section, html[lang] .home .ai-section, html[lang] .home .visual-lab-section, html[lang] .home .tools-section, html[lang] .home .contact-section { padding: 120px 0; background: var(--ink); color: var(--paper); border-bottom: 1px solid var(--line); }
-html[lang] .home :is(.publications-section,.visual-lab-section,.tools-section) { --ink: #e8eee9; --panel: rgba(255,255,255,.35); --paper: #12231f; --muted: #60716a; --mint: #1d6656; --gold: #84703f; --line: rgba(18,35,31,.15); background: var(--ink); }
-html[lang] .home .ai-section { background: #0b201c; }
-html[lang] .home .games-section, html[lang] .home .journey-section { padding-block: 120px; }
+html[lang] .home .publications-section, html[lang] .home .ai-section, html[lang] .home .visual-lab-section, html[lang] .home .tools-section, html[lang] .home .contact-section { padding: 76px 0; background: var(--ink); color: var(--paper); border-bottom: 1px solid var(--line); }
+html[lang] .home .games-section, html[lang] .home .journey-section { padding-block: 76px; }
 html[lang] .home .section-heading { grid-template-columns: 170px minmax(0,1fr); gap: 18px 32px; margin-bottom: 42px; }
 html[lang] .home .section-index { color: var(--gold); font: 10px/1.7 var(--sans); letter-spacing: .18em; }
-html[lang] .home .section-heading h2, html[lang] .home .ai-title h2, html[lang] .home .contact-section h2 { font: clamp(38px,5vw,62px)/1.05 var(--serif); letter-spacing: -.035em; color: var(--paper); max-width: 850px; }
-html[lang] .home .section-heading > p:not(.section-index), html[lang] .home .ai-title > p:not(.section-index), html[lang] .home .contact-layout > div > p:not(.section-index) { font-size: 17px; line-height: 1.85; color: var(--muted); max-width: 780px; }
+html[lang] .home .section-heading h2, html[lang] .home .ai-title h2, html[lang] .home .contact-section h2 { font: clamp(30px,3.5vw,46px)/1.15 var(--serif); letter-spacing: -.035em; color: var(--paper); max-width: 850px; }
+html[lang] .home .section-heading > p:not(.section-index), html[lang] .home .ai-title > p:not(.section-index), html[lang] .home .contact-layout > div > p:not(.section-index) { font-size: 14px; line-height: 1.85; color: var(--muted); max-width: 780px; }
 html[lang] .home .explore-badge { border: 0; padding: 0; color: var(--muted); font-size: 13px; letter-spacing: .04em; }
 html[lang] .home .complete-paper-list { padding: 0; margin: 0; list-style: none; border-top: 1px solid var(--line); }
 html[lang] .home .complete-paper-list .publication-row { display: grid; grid-template-columns: 70px minmax(0,1fr) 65px; align-items: start; gap: 28px; padding: 28px 0; border-bottom: 1px solid var(--line); color: var(--paper); }
@@ -70,14 +77,15 @@ html[lang] .home .ai-module { border-color: var(--line); padding-block: 25px; }
 html[lang] .home .ai-module h3, html[lang] .home .visual-project-card h3, html[lang] .home .timeline h3 { font: 25px/1.35 var(--serif); color: var(--paper); }
 html[lang] .home .ai-module p, html[lang] .home .visual-project-card > span, html[lang] .home .game-copy > p:not(.project-type), html[lang] .home .games-themes p, html[lang] .home .tool-description, html[lang] .home .timeline p { color: var(--muted); font-size: 16px; line-height: 1.8; }
 html[lang] .home .ai-module > b { font-size: 13px; color: var(--mint); }
-html[lang] .home .visual-project-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 22px; }
-html[lang] .home .visual-project-card, html[lang] .home .tool-card { background: var(--panel); border: 1px solid var(--line); border-radius: 0; padding: 30px; transition: transform .25s,box-shadow .25s,background .25s; }
-html[lang] .home .visual-project-card:hover, html[lang] .home .tool-card:hover { transform: translateY(-5px); background: #fff; box-shadow: 0 24px 60px rgba(7,21,19,.13); }
-html[lang] .home .visual-project-card h3 { margin: 30px 0 15px; font: clamp(30px,3.4vw,46px)/1.05 var(--serif); letter-spacing: -.03em; }
+html[lang] .home .visual-project-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 22px; }
+html[lang] .home .visual-project-card, html[lang] .home .tool-card { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 20px; transition: transform .2s,border-color .2s; }
+html[lang] .home .visual-project-card:hover, html[lang] .home .tool-card:hover { transform: translateY(-3px); background: var(--panel); border-color: #83957b; box-shadow: none; }
+html[lang] .home .visual-project-card h3 { margin: 12px 0 9px; font: 500 17px/1.5 var(--sans); letter-spacing: .02em; }
+html[lang] .home .visual-project-card > span { font-size: 12px; }
 html[lang] .home .visual-project-card > p, html[lang] .home .project-type { font-size: 12px; line-height: 1.7; letter-spacing: .06em; color: var(--muted); }
-html[lang] .home .visual-project-card strong { font-size: 14px; color: var(--mint); }
+html[lang] .home .visual-project-card strong { font-size: 11px; color: var(--mint); }
 html[lang] .home .visual-card-art { height: 190px; }
-html[lang] .home .game-feature { border: 1px solid var(--line); border-radius: 0; overflow: hidden; background: var(--panel); }
+html[lang] .home .game-feature { border: 1px solid var(--line); border-radius: 4px; overflow: hidden; background: var(--panel); }
 html[lang] .home .game-copy { padding: 36px; }
 html[lang] .home .game-copy h3, html[lang] .home .tool-card h3 { font: 34px/1.3 var(--serif); }
 html[lang] .home .game-copy ul, html[lang] .home .tool-points { color: var(--muted); font-size: 15px; line-height: 1.8; }
@@ -85,13 +93,15 @@ html[lang] .home .games-themes b { color: var(--paper); font: 21px/1.4 var(--ser
 html[lang] .home .tool-release span, html[lang] .home .tool-actions > span, html[lang] .home .tool-checksum { font-size: 12px; color: var(--muted); }
 html[lang] .home .timeline article { border-color: var(--line); }
 html[lang] .home .timeline article > span { font-size: 13px; color: var(--mint); }
-html[lang] .home .contact-card { border: 1px solid var(--line); border-radius: 0; background: var(--panel); }
+html[lang] .home .contact-card { border: 1px solid var(--line); border-radius: 4px; background: var(--panel); }
 html[lang] .home .contact-card span { font-size: 13px; color: var(--muted); }
 html[lang] .home .contact-card b { font-size: 15px; line-height: 1.7; color: var(--paper); }
 html[lang] .home .email-link { font-size: clamp(19px,2.3vw,29px); color: var(--mint); overflow-wrap: anywhere; }
-html[lang] .home .site-footer { color: #60766d; font-size: 10px; letter-spacing: .08em; background: var(--ink); gap: 20px; border-color: var(--line); }
-html[lang] .home .formal-home { background: #0b201c; border-color: var(--line); }
-html[lang] .home .formal-home-project { border-color: var(--line); border-radius: 0; background: var(--panel); }
+html[lang] .home .site-footer { color: #8a9283; font-size: 10px; letter-spacing: .03em; background: var(--ink); gap: 20px; border-color: var(--line); }
+html[lang] .home .formal-home { background: var(--ink); border-color: var(--line); }
+html[lang] .home .formal-home-project { border-color: var(--line); border-radius: 4px; background: var(--panel); }
+html[lang] .home .formal-home-legend .checked { color: #49634e; }
+html[lang] .home .formal-home-legend .assumed { color: #976a23; }
 html[lang] .home .formal-home-project :is(small,strong) { color: var(--mint); }
 html[lang] .home .formal-home p { color: var(--muted); }
 @media (max-width: 1100px) {
@@ -110,10 +120,11 @@ html[lang] .home .formal-home p { color: var(--muted); }
   html[lang] .home .section-heading > * { grid-column: 1; }
   html[lang] .home .ai-layout { gap: 36px; }
   html[lang] .home .signal-strip { padding-inline: 24px; }
+  html[lang] .home .visual-project-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
 @media (max-width: 600px) {
-  html[lang] .home .section-shell { width: calc(100% - 28px); }
-  html[lang] .home .site-header { min-height: 66px; padding-inline: 14px; gap: 10px; }
+  html[lang] .home .section-shell { width: calc(100% - 40px); }
+  html[lang] .home .site-header { min-height: 70px; padding-inline: 20px; gap: 10px; }
   html[lang] .home .brand-word { font-size: 10px; letter-spacing: .12em; }
   html[lang] .home .brand-word::before { width: 30px; height: 30px; flex-basis: 30px; margin-inline: 3px; }
   html[lang] .home .site-header nav { left: 14px; right: 14px; }
@@ -126,12 +137,12 @@ html[lang] .home .formal-home p { color: var(--muted); }
   html[lang] .home .hero-actions { flex-direction: column; align-items: stretch; }
   html[lang] .home .hero-actions .button { flex: auto; font-size: 14px; }
   html[lang] .home .hero-fields span { font-size: 12px; }
-  html[lang] .home .signal-strip { width: calc(100% - 28px); padding: 0; gap: 0; }
+  html[lang] .home .signal-strip { width: calc(100% - 40px); padding: 0; gap: 0; }
   html[lang] .home .signal-strip div { padding: 16px 12px; }
   html[lang] .home .signal-strip span { font-size: 13px; }
   html[lang] .home .publications-section, html[lang] .home .ai-section, html[lang] .home .visual-lab-section, html[lang] .home .tools-section, html[lang] .home .contact-section { padding-block: 56px; }
   html[lang] .home .games-section, html[lang] .home .journey-section { padding-block: 56px; }
-  html[lang] .home .section-heading h2, html[lang] .home .ai-title h2, html[lang] .home .contact-section h2 { font-size: 40px; }
+  html[lang] .home .section-heading h2, html[lang] .home .ai-title h2, html[lang] .home .contact-section h2 { font-size: 32px; }
   html[lang] .home .section-heading > p:not(.section-index) { font-size: 16px; }
   html[lang] .home .complete-paper-list .publication-row { grid-template-columns: minmax(0,1fr) 60px; gap: 8px 12px; padding-block: 24px; }
   html[lang] .home .paper-year { grid-column: 1; grid-row: 1; }
