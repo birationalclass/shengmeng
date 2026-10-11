@@ -39,8 +39,7 @@
 \begin{theorem}\label{thm:full-nef-nonvanishing}
 Let $X$ be a smooth projective threefold over $\C$ such that
 $K_X\sim0$ and $q(X)=0$. Let $D$ be a nef Cartier divisor on $X$
-such that $\nef(X,D)=3$ and $D^3=0$.
-Then
+such that $\nef(X,D)=3$ and $D^3=0$. Then
 \[
  H^0(X,\OO_X(mD))\ne0
  \qquad\text{for some integer }m>0.
@@ -48,118 +47,566 @@ Then
 \end{theorem}
 
 \begin{proof}
-Suppose for contradiction that $\kappa(D)=-\infty$, equivalently
-$H^0(X,\OO_X(mD))=0$ for every integer $m>0$.
-
 \begin{setup}
 \leavevmode
 \begin{itemize}
 \setlength{\itemsep}{2pt}
 \setlength{\parsep}{0pt}
-\item Fix an ample Cartier divisor $A$.
-\item For integers $n\ge1$, put
+\item Fix $\epsilon\in\Q_{>0}$ sufficiently small such that
 \[
+ 343\epsilon^3<\tfrac14,\qquad40\epsilon<\tfrac38.
+\]
+\item Fix an ample Cartier divisor $A$.
+For integers $n\ge1$, put
+\[
+ a_n=((D+A/n)^3)^{1/3},\qquad
+ r_n=\max\{1,\lfloor\epsilon/a_n+1/2\rfloor\},\qquad
  P_n=r_n(D+A/n).
 \]
-Fix $\epsilon\in\Q_{>0}$. Choose the positive integers $r_n$
-as in Lemma~\ref{lem:hd-normalization}, so that
-$r_n\to\infty$ and $P_n^3\to\epsilon^3$.
-Each $P_n$ is ample and rational Cartier.
+Then $P_n$ is ample and rational Cartier, $r_n\to\infty$, and
+$P_n^3\to\epsilon^3$. Indeed, $a_n\to0$ and
+$|r_na_n-\epsilon|\le a_n/2$ for all sufficiently large $n$.
 \item Let $p_i:X\times X\to X$ be the projections, for $i=1,2$.
 Put
 \[
  Z=\mathbb P_{X\times X}
        \bigl(p_1^*\OO_X(D)\oplus p_2^*\OO_X(D)\bigr).
 \]
+Let $\pi:Z\to X\times X$ be the projection.
 Let $S_1,S_2\subset Z$ be the two summand sections and set
 \[
- \mathbb T=Z\setminus(S_1\cup S_2).
+ U=Z\setminus(S_1\cup S_2).
 \]
-\item For a divisor $P$ on $X$, let $D_i,P_i,P_{n,i}$ denote the
-pullbacks of $D,P,P_n$ by $p_i$, and use the same notation for their
-pullbacks to $Z$. Set $\xi=c_1(\OO_Z(1))$. For an integer $N>0$, put
+\item Set $\xi=c_1(\OO_Z(1))$. For a positive integer $s$, put
 \[
- R(P,N)=P_1+P_2+N\xi,\qquad
- R_n=R(P_n,N).
+ R_{n,s}=(p_1\circ\pi)^*P_n+(p_2\circ\pi)^*P_n+s\xi.
 \]
+Whenever $|kR_{n,s}|$ is used, $k>0$ is an integer with
+$kR_{n,s}$ Cartier, equivalently $kP_n$ Cartier.
 \end{itemize}
-Whenever $|kR(P,N)|$ is used, $k>0$ is an integer with $kP$ Cartier.
-For a Cartier divisor $L$ on a smooth projective variety $W$,
-a point $z\in W$, and an integer $s\ge0$, the complete linear system
-$|L|$ \emph{separates $s$-jets at $z$} if
-\[
- \begin{gathered}
- \forall f\in\OO_{W,z}(L),\quad
- \exists\sigma\in H^0(W,\OO_W(L)):\\
- \sigma_z-f\in\mathfrak m_z^{s+1}\OO_{W,z}(L).
- \end{gathered}
-\]
-Here $\sigma_z$ is the germ of $\sigma$ at $z$, and $\mathfrak m_z$
-is the maximal ideal of $\OO_{W,z}$.
-We take $\epsilon$ sufficiently small that
-\[
- 343\epsilon^3<\tfrac14,\qquad40\epsilon<\tfrac38.
-\]
+
 \end{setup}
 
-We use the following lemmas, proved in
-Sections~\ref{sec:geometric-inputs}--\ref{sec:frobenius}, respectively.
+First, we show the following result.
 
-\noindent\textbf{Lemma~\ref{lem:full-scalar}.}
-For every integer $N>0$ and all $n\gg0$, let $\pi:\widetilde X\to X$
-be the blowup at a very general point $x$, with exceptional divisor $E$.
-There are a birational morphism $f:V\to\widetilde X$ from a smooth
-projective threefold and ample Cartier divisors $H_1,H_2$ on $V$ such that
-\[
- f^*\pi^*(P_n+ND)\cdot H_1\cdot H_2
- <40\epsilon\,f^*E\cdot H_1\cdot H_2.
-\]
+\begin{lemma}\label{lem:full-jets}
+There exists a positive integer $s$ such that, for every $n\gg0$,
+$|kR_{n,s}|$ separates $8k$-jets at some $z\in U$ for some
+integer $k>0$ with $kR_{n,s}$ Cartier.
+\end{lemma}
 
-\noindent\textbf{Lemma~\ref{lem:full-jets}.}
-There exists an integer $N>0$ such
-that, for every $n\gg0$, the system $|kR_n|$ separates
-$8k$-jets at some $z\in\mathbb T$ for some integer $k>0$
-with $kP_n$ Cartier.
+Suppose for contradiction that $\kappa(D)=-\infty$.
+We show that the global sections of $kR_{n,s}$ do not generate all
+$8k$-jets, as shown in the next lemma.
 
+\begin{lemma}\label{lem:full-nojets}
+For every positive integer $s$ there exists
+an integer $n_0=n_0(\epsilon,s)\ge1$ such that, for every integer
+$n\ge n_0$, $|kR_{n,s}|$ does not separate $8k$-jets at any $z\in U$,
+for any positive integer $k$ with $kR_{n,s}$ Cartier.
+\end{lemma}
 
-\noindent\textbf{Lemma~\ref{lem:full-contradiction}.}
-Let $P$ be ample and rational Cartier, and let $N>0$ be an integer
-such that
-\[
- 343P^3<\tfrac14,\qquad (2P+ND)\cdot P^2<4P^3.
-\]
-Let $\pi:\widetilde X\to X$ be the blowup at a point $x$, with
-exceptional divisor $E$. If there are a birational morphism
-$f:V\to\widetilde X$ from a smooth projective threefold and ample
-Cartier divisors $H_1,H_2$ on $V$ such that
-\[
- f^*\pi^*(P+ND)\cdot H_1\cdot H_2
- <\tfrac38 f^*E\cdot H_1\cdot H_2,
-\]
-then $|kR(P,N)|$ does not separate $8k$-jets at any point of
-$\mathbb T$, for any integer $k>0$ with $kP$ Cartier.
-
-
-We now complete the proof. Choose $N$ by Lemma~\ref{lem:full-jets}.
-Fix $N$ and take $n$ sufficiently large for
-Lemmas~\ref{lem:full-scalar} and \ref{lem:full-jets},
-$r_n>N$, and $343P_n^3<1/4$.
-Since $P_n-r_nD$ is nef,
-\[
- (2P_n+ND)\cdot P_n^2\le(2+N/r_n)P_n^3<4P_n^3.
-\]
-Take $\pi:\widetilde X\to X$, $f:V\to\widetilde X$, and $H_1,H_2$
-from Lemma~\ref{lem:full-scalar}. Since $40\epsilon<3/8$, they satisfy
-\[
- f^*\pi^*(P_n+ND)\cdot H_1\cdot H_2
- <40\epsilon\,f^*E\cdot H_1\cdot H_2
- <\tfrac38 f^*E\cdot H_1\cdot H_2.
-\]
-Applying Lemma~\ref{lem:full-contradiction} with $P=P_n$ contradicts
-Lemma~\ref{lem:full-jets}. Hence $H^0(X,\OO_X(mD))\ne0$ for some integer $m>0$.\qedhere
+Together, Lemmas~\ref{lem:full-jets} and~\ref{lem:full-nojets}
+give a contradiction for the same $s$ and sufficiently large $n$.\qedhere
 \end{proof}
 
-\section{Proof of Lemma~\ref{lem:full-scalar}}\label{sec:geometric-inputs}
+\noindent\textit{Remark.} For the definitions and examples of jet separation,
+see \href{https://birationalclass.github.io/shengmeng/study/abundance/jets.html}{Jets}.
+
+\section{Proof of Lemma~\ref{lem:full-jets}}\label{sec:large-jets}
+
+
+
+\subsection{The projective bundle and adjoint bigness}
+
+In this section, write $D_i=(p_i\circ\pi)^*D$ and
+$P_i=(p_i\circ\pi)^*P$ for the technical intersection calculations.
+For $P=P_n$ and $s>0$, write $R=R_{n,s}$. On a slice over one fixed
+base coordinate, put
+\[
+ Z_{\rm sl}=\mathbb P(\OO_X\oplus\OO_X(D)),\qquad
+ R_{\rm sl}=P+s\xi.
+\]
+We use $\pi_*\OO_Z(a)=\operatorname{Sym}^a
+(\OO_X(D)_1\oplus\OO_X(D)_2)$; thus $\dim Z=7$ and
+$\dim Z_{\rm sl}=4$.
+
+\begin{lemma}\label{lem:bundle-volume}
+With $P_a=P+aD$, the projective-bundle formulas give
+\[
+ R^7=140\int_0^s P_a^3P_{s-a}^3\,da,\qquad
+ R_{\rm sl}^4=4\int_0^s P_a^3\,da.
+\]
+For fixed $s$, these tend to $140s\epsilon^6$ and
+$4s\epsilon^3$, respectively, as $n\to\infty$. Also
+\[
+ K_Z\sim D_1+D_2-2\xi,\qquad K_{Z_{\rm sl}}\sim D-2\xi.
+\]
+\end{lemma}
+\begin{proof}
+For a split rank-two bundle,
+$\pi_*(\xi^j)=\sum_{a+b=j-1}D_1^a\cdot D_2^b$ for $j\ge1$.
+Expand $R^7$ and integrate the binomial terms to obtain the first
+identity; its coefficient is $7!/(3!3!)=140$.
+The analogous one-factor expansion gives the second identity.
+Since $D^3=0$, $P^3\to\epsilon^3$, and $r_n\to\infty$,
+$(P+aD)^3/P^3\to1$ uniformly for $0\le a\le s$.
+The two limits follow. The canonical formulas are the rank-two
+projective-bundle formula with $K_X\sim0$.
+\end{proof}
+
+\begin{lemma}\label{lem:semiample-trivial-rays}
+Let $U,M'$ be rational Cartier divisors on a normal projective
+variety, with $U$ semiample and $dU$ Cartier and free for an
+integer $d>0$. Let $0<t_0<t$ satisfy
+\[
+ (1-t_0/t)/d>12t_0/t.
+\]
+If $C$ generates a $(U+t_0M')$-negative extremal ray and
+$(U+tM')\cdot C\ge-12$, then $U\cdot C=0$. A contraction or flip of such
+a ray preserves the semiampleness of $U$.
+\end{lemma}
+\begin{proof}
+If $U\cdot C>0$, integrality gives $U\cdot C\ge1/d$, and
+\[
+ (U+t_0M')\cdot C=(1-t_0/t)U\cdot C+(t_0/t)(U+tM')\cdot C
+ \ge(1-t_0/t)/d-12t_0/t>0,
+\]
+a contradiction. Thus $U\cdot C=0$ on every contracted ray.
+The free line bundle $dU$ descends through a contraction and
+pulls back through a flip, preserving semiampleness.
+\end{proof}
+
+\begin{lemma}\label{lem:positive-boundary-model}
+Let $G\ge0$ be rational with $(X,G)$ klt and $\kappa(G)>0$.
+There exist $t_0>0$ rational, a normal projective model $Y$, and
+a common resolution $p:W\to X$, $q:W\to Y$, with
+$U=K_Y+G_Y$ semiample, $Q_0=U+t_0M'$ nef, and
+\begin{equation}\label{eq:positive-boundary-comparison}
+ p^*G=q^*U+E_0,\qquad
+ p^*(G+t_0D)=q^*Q_0+E_1,
+ \qquad E_0,E_1\ge0\text{ $q$-exceptional}.
+\end{equation}
+Moreover, $\kappa(U)=\kappa(G)$, $\nef(Y,Q_0)=3$, and $M'$
+is the trace of the nef b-divisor determined by $D$.
+\end{lemma}
+\begin{proof}
+We spell out \cite[Proposition~3.3]{NS} in the only threefold
+instance required below. Run the ordinary $G$-MMP to a good
+model; ordinary threefold abundance is \cite{KollarEtAl}.
+Its adjoint $U=K_{Y_0}+G_{Y_0}$ is semiample. Let $M'_0$ be the
+trace of the fixed nef b-divisor determined by $D$ on $X$.
+For small $t>0$, this finite first program is also negative for
+$G+tD$, and $(Y_0,G_{Y_0}+t\mathbf D)$ is generalized klt.
+
+
+Choose $dU$ free and $t_0$ as in
+Lemma~\ref{lem:semiample-trivial-rays}. Run a generalized
+$(U+t_0M'_0)$-program. The nef data are rational and NQC;
+ordinary klt approximation gives its steps, and
+\cite[Theorem~1.2]{ChenTsakanikas} gives termination.
+The generalized length bound is $12$ in this threefold setting
+\cite[Lemma~3.1]{NS}. Lemma~\ref{lem:semiample-trivial-rays}
+makes every step $U$-trivial.
+On the final model $Y$, $U$ remains
+semiample, $Q_0=U+t_0M'$ is nef, and a common resolution gives the two displayed comparisons.
+
+Moreover $Q_0$ has full nef dimension. Otherwise a very general
+compact nef-reduction fibre has a curve through its very general
+point avoiding $q(\operatorname{Exc}q)$, which has codimension
+at least two. Nefness of $U$, pseudo-effectivity of $M'$, and
+generic nonnegativity of pseudo-effective degrees give $U\cdot C=M'\cdot C=0$.
+Lifting this curve in both comparisons gives $D$-degree zero
+through a very general point of $X$, a contradiction.
+\end{proof}
+
+\begin{lemma}\label{lem:positive-boundary}
+If $G\ge0$ is rational, $(X,G)$ is klt, and $\kappa(G)>0$,
+then $G+cD$ is big for every rational $c>0$.
+\end{lemma}
+\begin{proof}
+Use the model in Lemma~\ref{lem:positive-boundary-model}.
+The contraction $h:Y\to S$ defined by $U$ has
+$\dim S=\kappa(G)>0$ and $U\sim_\Q h^*A_S$ with $A_S$ ample.
+On a very general positive-dimensional fibre $F$,
+\[
+ K_F+G_Y|_F\sim_\Q0,
+ \qquad Q_0|_F=t_0M'|_F\text{ is nef of full nef dimension}.
+\]
+Its dimension is at most two, so Lemma~\ref{lem:lower-dimensional}
+makes $Q_0|_F$ big. For zero-dimensional fibres relative bigness
+is automatic. Relative bigness follows on the generic fibre: for a fixed ample
+$H$, one of the countably many closed section loci for
+$(\ell Q_0-H)|_{F_t}$ contains a very general point, hence is the
+whole shrunken flat base. Adding a sufficiently large multiple
+$bU$ now makes $Q_0+bU$ big globally. The comparisons imply
+that $(1+b)G+t_0D$ is big. Finally, for
+$0<\lambda<\min\{1/(1+b),c/t_0\}$,
+\[
+ G+cD=\lambda((1+b)G+t_0D)
+ +(1-\lambda(1+b))G+(c-\lambda t_0)D
+\]
+is big.
+\end{proof}
+
+\begin{lemma}\label{lem:multisection-axes}
+Assume $\nef(X,D)=3$. Let $F\subset
+\mathbb P(\OO_X\oplus\OO_X(D))$ be an integral multisection
+of degree $e>0$ meeting the torus open. Its two axis intersections
+push down to effective integral divisors $G_1,G_2$ on $X$ satisfying
+\begin{equation}\label{eq:axis-divisors}
+ G_1-G_2\sim\pm eD,\qquad
+ sG_i\cdot P^2\le R_{\rm sl}^3\cdot F.
+\end{equation}
+For $G=G_1+G_2$ and every sufficiently small rational $b>0$,
+$(X,bG)$ is klt, $\kappa(bG)>0$, and $bG+D$ is big.
+\end{lemma}
+\begin{proof}
+The norm of the ratio of the two fibre coordinates gives the
+linear equivalence. If $S$ is either axis, $R_{\rm sl}-sS$
+and $R_{\rm sl}-P$ are nef. Intersecting these classes against
+the effective cycle $S\cdot F$ gives the degree inequalities.
+
+If $\kappa(bG)=0$, ordinary threefold abundance gives a good
+$(K_X+bG)$-model $Y$ with $K_Y+bG_Y\sim_\Q0$.
+The transform of $K_X$ is linearly trivial, so $G_Y=0$:
+every component of $G$ has been contracted. On a common
+resolution $a:U\to X$, $c:U\to Y$, the signed relation in
+\eqref{eq:axis-divisors} expresses $a^*D\sim_\Q E$, with
+$E$ $c$-exceptional. Divisors exceptional over $X$ are also
+exceptional over $Y$, since this MMP extracts none.
+Since $a^*D$ is nef, negativity gives $E\le0$.
+Its class is pseudo-effective, so intersection with an ample
+square forces $E=0$. This contradicts full nef dimension.
+Thus $\kappa(bG)>0$, and Lemma~\ref{lem:positive-boundary}
+gives bigness. The axis construction and negativity argument
+are dimension-independent; only the ordinary good-model input
+is being specialized to threefolds.
+\end{proof}
+
+\begin{lemma}\label{lem:fixed-graphs}
+Let $T_1,T_2$ be fixed non-uniruled integral projective varieties
+over $\C$ of the same dimension. If an integral algebraic family
+of graphs of birational maps $T_1\dashrightarrow T_2$ dominates
+$T_1\times T_2$, both varieties are birational to an abelian variety.
+\end{lemma}
+\begin{proof}
+Identify the two varieties by one map in the family.
+Hanamura's theorem, in the form
+\cite[Theorem~3.8]{Blanc}, supplies a smooth projective birational
+model $Y$ with $\operatorname{Bir}(Y)_{\rm red}$ a group scheme
+locally of finite type. Its identity component is
+$\operatorname{Aut}^0(Y)$, an abelian variety acting regularly.
+
+Conjugate the family to $Y$, take the closure of its relative
+graphs, and shrink the integral parameter space so that these
+graphs are flat and geometrically integral, with both projections
+birational. This shrinking is necessary: graph flatness is not
+preserved automatically by birational conjugation
+\cite[Remark~3.6]{Blanc}. The flat-graph representability theorem
+\cite[Proposition~3.7]{Blanc} then gives a morphism from the
+reduced parameter variety to $\operatorname{Bir}(Y)_{\rm red}$.
+Its connected image lies in one translate of the identity component.
+After translating by a fixed member, product dominance implies
+that a general point has a dense orbit under that abelian group.
+Such an orbit is the quotient by its closed stabilizer, hence an
+abelian variety. It is therefore a birational model of $Y$.
+No canonical nonvanishing theorem on $T_i$ is used.
+\end{proof}
+
+\begin{lemma}\label{lem:abelian-adjoint}
+Let $p:Y\to A_0$ be a birational morphism from a smooth projective
+variety to an abelian variety. If $L$ is nef Cartier of full nef
+dimension on $Y$, then $K_Y+L$ is big.
+\end{lemma}
+\begin{proof}
+The numerical pushforward $M'=p_*L$ is pseudo-effective on $A_0$,
+thus nef. If it were not big, the kernel of the semipositive
+Hermitian form of its integral class would define a
+positive-dimensional abelian subvariety on whose translates $M'$
+is numerically trivial. The image of the exceptional locus of $p$
+has codimension at least two. A general translate meets that image
+in codimension at least two; complete-intersection curves in the
+translate can be chosen through a very general point avoiding it.
+Their strict lifts have $L$-degree zero, a contradiction. Thus $M'$
+is big.
+
+Negativity gives $p^*M'-L=E_0\ge0$, with $E_0$ exceptional.
+Since $A_0$ is smooth and $K_{A_0}\sim0$, $K_Y\sim E_K\ge0$,
+with positive coefficient along every $p$-exceptional divisor.
+Choose $0<u<1$ rational with $E_K-uE_0\ge0$. Then
+\[
+ K_Y+uL\sim_\Q up^*M'+(E_K-uE_0)
+\]
+is big. Adding $(1-u)L$ proves the assertion. This lemma has no
+dimension restriction.
+\end{proof}
+
+\subsection{Base components and slice exclusions}
+
+Fix $\delta=8\epsilon$, $\tau_i=9+i\delta$ for $0\le i\le7$,
+and choose $s$ so that $\tau_7^7<70s\epsilon^6$.
+For all sufficiently large $n$, Lemma~\ref{lem:bundle-volume} gives
+\[
+ \epsilon^3/2<P^3<2\epsilon^3,\qquad
+ \tau_7^7<R^7<280s\epsilon^6,\qquad R_{\rm sl}^4<8s\epsilon^3.
+\]
+In particular $(2/\delta)^3\,8\epsilon^3=1/8<1$.
+For the following lemmas, these choices remain fixed, and
+$C_0=(2/\delta)^4\,280s\epsilon^6$.
+
+\begin{lemma}\label{lem:sevenfold-centres}
+For all sufficiently large $n$, if $\varepsilon(R;z)\le8$ at every
+point of the torus open, there is a covering family of proper
+integral $V\subset Z$, with $f=\dim V$, such that
+\begin{equation}\label{eq:sevenfold-centres}
+ 0<R^f\cdot V\le(2/\delta)^{7-f}R^7,\qquad
+ K_{V^*}\cdot R^{f-1}\le\frac{2(7-f)}{\delta}R^f\cdot V.
+\end{equation}
+For a general fibre component $F$ of either projection, if
+$1\le d_F=\dim F\le3$, the actual restricted system gives
+\begin{equation}\label{eq:slice-centres}
+ \begin{split}
+ 0<R_{\rm sl}^{d_F}\cdot F&\le(2/\delta)^{4-d_F}R_{\rm sl}^4,\\
+ K_{F^*}\cdot R_{\rm sl}^{d_F-1}
+ &\le(K_{Z_{\rm sl}}+c_{d_F}R_{\rm sl})|_F \cdot R_{\rm sl}^{d_F-1},
+ \quad c_{d_F}\le2(4-d_F)/\delta.
+ \end{split}
+\end{equation}
+Both images of a general marked incidence point are very general on $X$.
+\end{lemma}
+\begin{proof}
+Asymptotic Riemann--Roch and $\tau_7^7<R^7$ make the eight full
+kernels nonzero for large divisible $k$. A curve through a very
+general $z$ with $R$-degree divided by multiplicity less than
+$\tau_0$ is contained in the lowest base locus, by the intersection
+multiplicity inequality. Hence that base locus is positive-dimensional.
+Lemma~\ref{lem:full-kernels} gives the covering family and the first
+bounds. Since $K_Z$ is minus the axes and $V$ meets their complement,
+the ambient canonical contribution is nonpositive.
+Apply Lemma~\ref{lem:restricted-components} to either projection
+over its actual image, and then apply
+Lemmas~\ref{lem:hd-base-degree} and \ref{lem:canonical-centre}
+in the smooth fourfold slice. This gives the fibre bounds.
+\end{proof}
+
+\begin{lemma}\label{lem:slice-small-image}
+For all sufficiently large $n$, a fibre $F$ as in
+\eqref{eq:slice-centres} cannot be generically finite onto an
+image $W_0\subset X$ of dimension less than three.
+\end{lemma}
+\begin{proof}
+If $F\to W_0$ is generically finite and $\dim W_0<3$, the
+pullback $L$ of $D$ is nef Cartier of full nef dimension on $F^*$,
+and $K_{F^*}$ is pseudo-effective by the very-general-images
+argument. Lemma~\ref{lem:lower-dimensional} gives $K_{F^*}+L$
+big. The testing class $P_Y=R_{\rm sl}|_{F^*}$ satisfies
+$P_Y-r_nL$ nef, and \eqref{eq:slice-centres} gives uniform volume
+and canonical ratios. Lemma~\ref{lem:bounded-curves} bounds $r_n$,
+a contradiction.
+\end{proof}
+
+\begin{lemma}\label{lem:saturated-slices}
+For all sufficiently large $n$, a fibre $F$ as in
+\eqref{eq:slice-centres} cannot be the full projective-line bundle
+over its image $W_0\subset X$, with $\dim W_0\le2$.
+\end{lemma}
+\begin{proof}
+If $F\to W_0$ has one-dimensional fibres, $F$ is the entire
+projective-line bundle over $W_0$. Put $w=\dim W_0=d_F-1$.
+For $w=0$, \eqref{eq:slice-centres} gives
+\[
+ s=R_{\rm sl}\cdot F\le(2/\delta)^3R_{\rm sl}^4<s.
+\]
+For $w=1,2$, resolve $W_0$ and take its induced bundle
+$p_0:F^*\to W_0^*$. Cancelling the relative canonical term
+$-2\xi+p_0^*D$, which equals the ambient canonical restriction,
+gives
+\[
+ p_0^*K_{W_0^*}\cdot R_{\rm sl}^w\le c_{d_F}R_{\rm sl}^{w+1}\cdot F.
+\]
+Its term linear in $\xi$ is $wsK_{W_0^*}\cdot P^{w-1}$; all other
+terms are nonnegative because $K_{W_0^*}$ is pseudo-effective
+and $P,D$ are nef. For $r_n\ge s$, expansion gives
+\begin{equation}\label{eq:saturated-estimate}
+ \begin{split}
+ (w+1)sP^w\cdot W_0&\le R_{\rm sl}^{w+1}\cdot F\le7sP^w\cdot W_0,\\
+ K_{W_0^*}\cdot P^{w-1}&\le(7c_{d_F}/w)P^w\cdot W_0.
+ \end{split}
+\end{equation}
+The first lower bound and \eqref{eq:slice-centres} bound $P^w\cdot W_0$
+uniformly. Applying Lemmas~\ref{lem:lower-dimensional} and
+\ref{lem:bounded-curves} on $W_0^*$ is again contradictory.
+\end{proof}
+
+\begin{lemma}\label{lem:multisection-slices}
+For all sufficiently large $n$, a fibre $F$ as in
+\eqref{eq:slice-centres} cannot be a multisection over $X$.
+\end{lemma}
+\begin{proof}
+Lemma~\ref{lem:multisection-axes} gives $G=G_1+G_2$, $bG+D$ big,
+and $G\cdot P^2\le2R_{\rm sl}^3\cdot F/s$. On a log resolution $a:Y\to X$,
+let $B_0$ be the reduced strict support of $G$ together with every
+exceptional divisor. Decrease $b$ so that
+\[
+ K_Y+B_0+a^*D\sim_\Q a^*(bG+D)+E_b,\qquad E_b\ge0.
+\]
+This adjoint is big. Testing with $P_Y=a^*P$, all exceptional
+divisors contribute zero, and
+\[
+ (K_Y+B_0+a^*D)\cdot P_Y^2\le G\cdot P^2+D\cdot P^2\le C,
+ \qquad D\cdot P^2\le P^3/r_n.
+\]
+The positive lower bound on $P^3$ gives a uniform adjoint ratio.
+Lemma~\ref{lem:bounded-curves}, with this reduced boundary,
+excludes the case.
+\end{proof}
+
+\begin{lemma}\label{lem:finite-correspondences}
+For all sufficiently large $n$, both projections of a general
+$V$ in Lemma~\ref{lem:sevenfold-centres} are generically finite
+and dominant. On a simultaneous resolution $Y$, with projections
+$g_i:Y\to X$ and $P_Y=R|_Y$,
+\begin{equation}\label{eq:correspondence-estimates}
+ 0<P_Y^3\le C_0,\qquad K_Y\cdot P_Y^2\le(8/\delta)P_Y^3,
+ \qquad P_Y-r_ng_i^*D\text{ is nef}.
+\end{equation}
+Moreover, $\deg g_i\le2C_0/\epsilon^3$.
+\end{lemma}
+\begin{proof}
+Lemmas~\ref{lem:slice-small-image}, \ref{lem:saturated-slices},
+and \ref{lem:multisection-slices} exclude fibre dimensions one,
+two, and three. A four-dimensional fibre makes $V$ the full
+inverse image of a proper $W_0\subset X$, with $\dim W_0\le2$;
+the other projection then has fibre dimension $\dim W_0+1$, already
+excluded. Thus both projections are generically finite and $f\le3$.
+For $f<3$, \eqref{eq:sevenfold-centres} and
+Lemmas~\ref{lem:lower-dimensional} and \ref{lem:bounded-curves}
+give a uniform bound on $r_n$, a contradiction. Hence $f=3$.
+The displayed estimates follow from \eqref{eq:sevenfold-centres}
+and nefness of $R-r_nD_i$.
+Since $R-P_i$ is nef, $\deg g_i\,P^3\le P_Y^3\le C_0$.
+\end{proof}
+
+
+\subsection{Finite covers and the final exclusion}
+
+\begin{lemma}\label{lem:branch-surfaces}
+For all sufficiently large $n$, no relative Jacobian component
+in the family of Lemma~\ref{lem:finite-correspondences} whose
+general image is a divisor has images sweeping $X$.
+\end{lemma}
+\begin{proof}
+Suppose that the images of one branch-divisor component sweep
+$X$, and let $J\subset X$ be a general such image. Pulling back
+a nowhere-vanishing three-form from $X$ gives an effective
+canonical divisor on $Y$, containing a ramification divisor
+over $J$ with positive integral coefficient. Thus
+\[
+ 0<d_J:=P^2\cdot J\le K_Y\cdot P_Y^2\le(8/\delta)C_0.
+\]
+Generic numerical subadjunction for $(X,J)$ and Hodge index give
+on a resolution $J^*$
+\begin{equation}\label{eq:branch-surface}
+ K_{J^*}\cdot P\le J^2\cdot P
+ \le\frac{(J\cdot P^2)^2}{P^3}\le C_2d_J,
+ \qquad C_2=16C_0/(\delta\epsilon^3).
+\end{equation}
+Here $(X,J)$ is lc at $\eta_J$; global lc is unnecessary.
+Hodge index applies to $J$ without assuming $J$ nef.
+Since the images sweep, $J^*$ is non-uniruled and the pulled-back
+$D$ has full nef dimension. The testing volume is $d_J$, bounded
+above, its canonical ratio is bounded by $C_2$, and $P-r_nD$ is
+nef. Lemmas~\ref{lem:lower-dimensional} and
+\ref{lem:bounded-curves} give a uniform bound for $r_n$.
+Hence sweeping branch divisors are impossible for large $n$.
+\end{proof}
+
+\begin{lemma}\label{lem:finite-stein-covers}
+Fix sufficiently large $n$ and a smooth integral parameter family
+as in Lemma~\ref{lem:finite-correspondences}. The normal Stein
+covers of either projection belong to a finite list.
+\end{lemma}
+\begin{proof}
+For this fixed $n$, retain the relative Jacobian components whose
+general fibre images are divisors on $X$. Remove their finitely
+many proper image closures, obtaining a fixed smooth open $U$. Every finite normal Stein cover of a
+general $g_i$ is unramified at the codimension-one points of $U$;
+purity makes it finite \'etale over $U$. The fundamental group of
+$U$ is finitely generated, so it has finitely many subgroups of
+the bounded indices in question. Normal covers of $X$ are
+determined by their function fields. There are consequently only
+finitely many possible Stein covers in each slot, as in
+\cite[Lemma~7.5]{LA}. Degree bounds alone would not imply this.
+\end{proof}
+
+\begin{lemma}\label{lem:bounded-correspondence-exclusion}
+A family as in Lemma~\ref{lem:finite-correspondences}, with
+finitely many Stein covers in each slot, bounds $r_n$ by a constant
+depending only on $\epsilon,s,\delta$. Consequently such families
+cannot occur for arbitrarily large $n$.
+\end{lemma}
+\begin{proof}
+Each $Y$ is birational to both of its Stein covers. Fix a pair
+$T_1,T_2$ occurring among the original members satisfying
+\eqref{eq:correspondence-estimates}. The projected incidence
+dominates $X\times X$. The possible graph families for the
+finitely many pairs belong to countably many Hilbert schemes;
+stratify for flat integral fibres and birational projections.
+Uncountability of $\C$ implies that one such integral graph
+family has evaluation dominant over $X\times X$. Its evaluation
+is also dominant on $T_1\times T_2$: this product is integral,
+finite over $X\times X$, and of the same dimension.
+
+The covers are non-uniruled, since they are finite over $X$.
+Lemma~\ref{lem:fixed-graphs} makes them birational to an abelian
+variety $A_0$. Return to an \emph{original} correspondence for
+this pair and resolve further to get a birational morphism
+$p:Y\to A_0$. This preserves the numerical bounds
+\eqref{eq:correspondence-estimates}; additional exceptional
+canonical divisors have zero intersection with the pulled-back
+testing square. The divisor $L=g_1^*D$ remains nef Cartier of
+full nef dimension. Lemma~\ref{lem:abelian-adjoint} gives
+$K_Y+L$ big, while
+\[
+ (K_Y+L)\cdot P_Y^2\le(8/\delta+1/r_n)P_Y^3.
+\]
+Lemma~\ref{lem:bounded-curves} now excludes this final case.
+The cover lists and graph families may depend on $n$; their
+sizes enter none of the uniform numerical bounds. Failures
+therefore cannot persist along $n\to\infty$.
+\end{proof}
+
+
+\begin{proposition}\label{prop:sevenfold-jets}
+There is a fixed integer $s>0$ such that, for all sufficiently
+large $n$, some point $z$ in the torus open satisfies
+$\varepsilon(R;z)>8$.
+\end{proposition}
+\begin{proof}
+Use the fixed choices above. If the assertion failed for arbitrarily
+large $n$, Lemmas~\ref{lem:sevenfold-centres} and
+\ref{lem:finite-correspondences} would produce bounded threefold
+correspondences. Resolve and shrink the family, and spread out
+the finitely many generic Jacobian components after a finite
+parameter extension. Lemmas~\ref{lem:branch-surfaces} and
+\ref{lem:finite-stein-covers} give finite lists of Stein covers.
+Lemma~\ref{lem:bounded-correspondence-exclusion} contradicts
+$r_n\to\infty$.
+\end{proof}
+
+
+\begin{proof}[Proof of Lemma~\ref{lem:full-jets}]
+Choose $z$ as in Proposition~\ref{prop:sevenfold-jets}, and rational
+$8<a<\varepsilon(R;z)$. On the blowup $b:\widetilde Z\to Z$,
+$b^*R-aJ_z$ is ample. For large divisible $k_0$, Serre vanishing
+makes restriction surjective modulo $\mathfrak m_z^{k_0a}$,
+with $k_0a\ge8k_0+1$. Thus $|k_0R_{n,s}|$ separates $8k_0$-jets at $z$.
+\end{proof}
+
+\section{Proof of Lemma~\ref{lem:full-nojets}}
+
+\subsection{The scalar input}\label{sec:geometric-inputs}
 
 \begin{lemma}\label{lem:full-scalar}
 Let $X$ be a smooth projective threefold over $\C$ with
@@ -169,12 +616,12 @@ Fix an ample Cartier divisor $A$ and $\epsilon\in\Q_{>0}$ such that
 $343\epsilon^3<1/4$ and $40\epsilon<3/8$.
 For $n\ge1$, let $r_n$ be the nearest positive integer to
 $\epsilon/((D+A/n)^3)^{1/3}$ and set $P_n=r_n(D+A/n)$.
-For every integer $N>0$ and all $n\gg0$, let $\pi:\widetilde X\to X$
+For every integer $s>0$ and all $n\gg0$, let $\beta:\widetilde X\to X$
 be the blowup at a very general point $x$, with exceptional divisor $E$.
 There are a birational morphism $f:V\to\widetilde X$ from a smooth
 projective threefold and ample Cartier divisors $H_1,H_2$ on $V$ such that
 \[
- f^*\pi^*(P_n+ND)\cdot H_1\cdot H_2
+ f^*\beta^*(P_n+sD)\cdot H_1\cdot H_2
  <40\epsilon\,f^*E\cdot H_1\cdot H_2.
 \]
 \end{lemma}
@@ -184,7 +631,7 @@ We obtain the curve bound from a multiplicity estimate and duality.
 The base-component estimates also apply in Section~\ref{sec:large-jets}.
 All auxiliary varieties in these sections are over $\C$.
 
-\subsection{Normalization and numerical inputs}\label{sec:lower-dimensional-inputs}
+\subsubsection{Normalization and numerical inputs}\label{sec:lower-dimensional-inputs}
 
 \begin{lemma}\label{lem:hd-normalization}
 For every $\epsilon>0$ and
@@ -226,20 +673,20 @@ $M'=g_*M$ is nef. Negativity gives
 \]
 where $E_T,E_M\ge0$ are exceptional; $E_T$ has positive
 coefficient on every contracted divisor. Thus, for small rational
-$s>0$, $E_T-sE_M\ge0$.
+$t>0$, $E_T-tE_M\ge0$.
 
-By \cite[Corollary~C]{LP}, $U+sM'$ is numerically equivalent
+By \cite[Corollary~C]{LP}, $U+tM'$ is numerically equivalent
 to a semiample rational divisor. If it were not big, the resulting
 morphism would have positive-dimensional fibres. A general fibre,
 or a general curve in such a fibre when the image is a point,
 avoids the finitely many points $g(\operatorname{Exc}g)$.
 Since $U$ and $M'$ are nef, this curve has both $U$- and $M'$-degree
 zero. Its inverse image contradicts the stated full positivity of
-$T+aM$. Consequently $U+sM'$, and hence
-$T+sM=g^*(U+sM')+E_T-sE_M$, is big.
-For $c>0$, choose $0<\lambda<\min\{1,c/s\}$ and write
+$T+aM$. Consequently $U+tM'$, and hence
+$T+tM=g^*(U+tM')+E_T-tE_M$, is big.
+For $c>0$, choose $0<\lambda<\min\{1,c/t\}$ and write
 \[
- T+cM=\lambda(T+sM)+(1-\lambda)T+(c-\lambda s)M.
+ T+cM=\lambda(T+tM)+(1-\lambda)T+(c-\lambda t)M.
 \]
 The last two summands are pseudo-effective, so the sum is big.
 This proves exactly the dimension-one and dimension-two inputs
@@ -247,7 +694,7 @@ used in \cite[Sections~3--5]{NS}, without assuming threefold
 nef nonvanishing.
 \end{proof}
 
-\subsection{Moving base components}
+\subsubsection{Moving base components}
 
 \begin{lemma}\label{lem:hd-base-degree}
 Let $W$ be smooth projective of dimension $d$, let $H$ be a nef
@@ -573,7 +1020,7 @@ Since $k/h\le3/\rho$, this is \eqref{eq:moving-canonical}.
 Ampleness gives positivity, and the incidence is dominant.
 \end{proof}
 
-\subsection{The scalar bound and the movable class}\label{sec:scalar}
+\subsubsection{The scalar bound and the movable class}\label{sec:scalar}
 
 \begin{lemma}\label{lem:bounded-curves}
 Let $Y$ be an auxiliary smooth projective variety of dimension
@@ -660,21 +1107,21 @@ very general locus handles all the stated section spaces.
 
 \begin{proposition}\label{prop:movable-from-scalar}
 Assume the scalar bound at a very general point $x$, and fix
-large $n$ with $\rho_n<2\epsilon$ and $r_n>N$.
-Let $\pi:\widetilde X\to X$ be the blowup at $x$, with exceptional
+large $n$ with $\rho_n<2\epsilon$ and $r_n>s$.
+Let $\beta:\widetilde X\to X$ be the blowup at $x$, with exceptional
 divisor $E$. There are a birational morphism $f:V\to\widetilde X$
 from a smooth projective threefold and ample Cartier divisors
 $H_1,H_2$ on $V$ such that
 \[
- f^*\pi^*(P+\lambda D)\cdot H_1\cdot H_2
+ f^*\beta^*(P+\lambda D)\cdot H_1\cdot H_2
  <40\epsilon\,f^*E\cdot H_1\cdot H_2
- \quad(0\le\lambda\le N).
+ \quad(0\le\lambda\le s).
 \]
 \end{proposition}
 \begin{proof}
-The class $2\pi^*P-40\epsilon E$ is not pseudo-effective.
-Otherwise its convex combination with the big class $2\pi^*P$
-would make $2\pi^*P-cJ$ big for rational
+The class $2\beta^*P-40\epsilon E$ is not pseudo-effective.
+Otherwise its convex combination with the big class $2\beta^*P$
+would make $2\beta^*P-cJ$ big for rational
 $8\rho_n<c<40\epsilon$. An effective divisor in a divisible
 multiple of this class would push down to a member of $|2kP|$
 with multiplicity exceeding the bound in
@@ -683,12 +1130,12 @@ Movable-curve duality \cite{BDPP} gives a smooth projective
 birational model $f:V\to\widetilde X$ and ample real divisor classes
 $H_1,H_2$ such that
 \[
- 2f^*\pi^*P\cdot H_1\cdot H_2
+ 2f^*\beta^*P\cdot H_1\cdot H_2
  <40\epsilon\,f^*E\cdot H_1\cdot H_2.
 \]
 Strict negativity permits rational approximation and clearing
 denominators, so the $H_i$ may be taken ample Cartier.
-For $0\le\lambda\le N$ the divisor
+For $0\le\lambda\le s$ the divisor
 \[
  2P-(P+\lambda D)=(r_n-\lambda)D+r_nA/n
 \]
@@ -699,537 +1146,28 @@ reducing characteristic.
 
 
 \begin{proof}[Proof of Lemma~\ref{lem:full-scalar}]
-Fix $N$ and take $n$ sufficiently large that
+Fix $s$ and take $n$ sufficiently large that
 Proposition~\ref{prop:scalar-bound} applies, $\rho_n<2\epsilon$,
-and $r_n>N$. Apply Proposition~\ref{prop:movable-from-scalar}
-with $P=P_n$ and $\lambda=N$.
+and $r_n>s$. Apply Proposition~\ref{prop:movable-from-scalar}
+with $P=P_n$ and $\lambda=s$.
 \end{proof}
 
-\section{Proof of Lemma~\ref{lem:full-jets}}\label{sec:large-jets}
-
-\begin{lemma}\label{lem:full-jets}
-Let $X$ be a smooth projective threefold over $\C$ with
-$K_X\sim0$ and $q(X)=0$. Let $D$ be a nef Cartier divisor with
-$\nef(X,D)=3$, $D^3=0$, and $\kappa(D)=-\infty$.
-Fix an ample Cartier divisor $A$ and $\epsilon\in\Q_{>0}$ such that
-$343\epsilon^3<1/4$ and $40\epsilon<3/8$.
-For $n\ge1$, let $r_n$ be the nearest positive integer to
-$\epsilon/((D+A/n)^3)^{1/3}$ and set $P_n=r_n(D+A/n)$.
-On $X\times X$, let $D_i$ and $P_{n,i}$ be the pullbacks from
-the $i$-th factor, and use the same notation for their pullbacks to
-\[
- Z=\mathbb P_{X\times X}
-   \bigl(\OO_{X\times X}(D_1)\oplus\OO_{X\times X}(D_2)\bigr),
- \qquad \xi=c_1(\OO_Z(1)).
-\]
-Let $\mathbb T$ be the complement of the two summand sections.
-Then there exists an integer $N>0$ such that, for every $n\gg0$,
-the system $|kR_n|$, where $R_n=P_{n,1}+P_{n,2}+N\xi$, separates
-$8k$-jets at some $z\in\mathbb T$ for some integer $k>0$
-with $kP_n$ Cartier.
-\end{lemma}
-
-\subsection{The projective bundle and adjoint bigness}
-
-For $P=P_n$ and $N>0$, write $R=R_n$. On a slice over one fixed
-base coordinate, put
-\[
- Z_{\rm sl}=\mathbb P(\OO_X\oplus\OO_X(D)),\qquad
- R_{\rm sl}=P+N\xi.
-\]
-We use $\pi_*\OO_Z(a)=\operatorname{Sym}^a
-(\OO_X(D)_1\oplus\OO_X(D)_2)$; thus $\dim Z=7$ and
-$\dim Z_{\rm sl}=4$.
-
-\begin{lemma}\label{lem:bundle-volume}
-With $P_a=P+aD$, the projective-bundle formulas give
-\[
- R^7=140\int_0^N P_a^3P_{N-a}^3\,da,\qquad
- R_{\rm sl}^4=4\int_0^N P_a^3\,da.
-\]
-For fixed $N$, these tend to $140N\epsilon^6$ and
-$4N\epsilon^3$, respectively, as $n\to\infty$. Also
-\[
- K_Z\sim D_1+D_2-2\xi,\qquad K_{Z_{\rm sl}}\sim D-2\xi.
-\]
-\end{lemma}
-\begin{proof}
-For a split rank-two bundle,
-$\pi_*(\xi^j)=\sum_{a+b=j-1}D_1^a\cdot D_2^b$ for $j\ge1$.
-Expand $R^7$ and integrate the binomial terms to obtain the first
-identity; its coefficient is $7!/(3!3!)=140$.
-The analogous one-factor expansion gives the second identity.
-Since $D^3=0$, $P^3\to\epsilon^3$, and $r_n\to\infty$,
-$(P+aD)^3/P^3\to1$ uniformly for $0\le a\le N$.
-The two limits follow. The canonical formulas are the rank-two
-projective-bundle formula with $K_X\sim0$.
-\end{proof}
-
-\begin{lemma}\label{lem:semiample-trivial-rays}
-Let $U,M'$ be rational Cartier divisors on a normal projective
-variety, with $U$ semiample and $dU$ Cartier and free for an
-integer $d>0$. Let $0<s_0<s$ satisfy
-\[
- (1-s_0/s)/d>12s_0/s.
-\]
-If $C$ generates a $(U+s_0M')$-negative extremal ray and
-$(U+sM')\cdot C\ge-12$, then $U\cdot C=0$. A contraction or flip of such
-a ray preserves the semiampleness of $U$.
-\end{lemma}
-\begin{proof}
-If $U\cdot C>0$, integrality gives $U\cdot C\ge1/d$, and
-\[
- (U+s_0M')\cdot C=(1-s_0/s)U\cdot C+(s_0/s)(U+sM')\cdot C
- \ge(1-s_0/s)/d-12s_0/s>0,
-\]
-a contradiction. Thus $U\cdot C=0$ on every contracted ray.
-The free line bundle $dU$ descends through a contraction and
-pulls back through a flip, preserving semiampleness.
-\end{proof}
-
-\begin{lemma}\label{lem:positive-boundary-model}
-Let $G\ge0$ be rational with $(X,G)$ klt and $\kappa(G)>0$.
-There exist $s_0>0$ rational, a normal projective model $Y$, and
-a common resolution $p:W\to X$, $q:W\to Y$, with
-$U=K_Y+G_Y$ semiample, $Q_0=U+s_0M'$ nef, and
-\begin{equation}\label{eq:positive-boundary-comparison}
- p^*G=q^*U+E_0,\qquad
- p^*(G+s_0D)=q^*Q_0+E_1,
- \qquad E_0,E_1\ge0\text{ $q$-exceptional}.
-\end{equation}
-Moreover, $\kappa(U)=\kappa(G)$, $\nef(Y,Q_0)=3$, and $M'$
-is the trace of the nef b-divisor determined by $D$.
-\end{lemma}
-\begin{proof}
-We spell out \cite[Proposition~3.3]{NS} in the only threefold
-instance required below. Run the ordinary $G$-MMP to a good
-model; ordinary threefold abundance is \cite{KollarEtAl}.
-Its adjoint $U=K_{Y_0}+G_{Y_0}$ is semiample. Let $M'_0$ be the
-trace of the fixed nef b-divisor determined by $D$ on $X$.
-For small $s>0$, this finite first program is also negative for
-$G+sD$, and $(Y_0,G_{Y_0}+s\mathbf D)$ is generalized klt.
-
-
-Choose $dU$ free and $s_0$ as in
-Lemma~\ref{lem:semiample-trivial-rays}. Run a generalized
-$(U+s_0M'_0)$-program. The nef data are rational and NQC;
-ordinary klt approximation gives its steps, and
-\cite[Theorem~1.2]{ChenTsakanikas} gives termination.
-The generalized length bound is $12$ in this threefold setting
-\cite[Lemma~3.1]{NS}. Lemma~\ref{lem:semiample-trivial-rays}
-makes every step $U$-trivial.
-On the final model $Y$, $U$ remains
-semiample, $Q_0=U+s_0M'$ is nef, and a common resolution gives the two displayed comparisons.
-
-Moreover $Q_0$ has full nef dimension. Otherwise a very general
-compact nef-reduction fibre has a curve through its very general
-point avoiding $q(\operatorname{Exc}q)$, which has codimension
-at least two. Nefness of $U$, pseudo-effectivity of $M'$, and
-generic nonnegativity of pseudo-effective degrees give $U\cdot C=M'\cdot C=0$.
-Lifting this curve in both comparisons gives $D$-degree zero
-through a very general point of $X$, a contradiction.
-\end{proof}
-
-\begin{lemma}\label{lem:positive-boundary}
-If $G\ge0$ is rational, $(X,G)$ is klt, and $\kappa(G)>0$,
-then $G+cD$ is big for every rational $c>0$.
-\end{lemma}
-\begin{proof}
-Use the model in Lemma~\ref{lem:positive-boundary-model}.
-The contraction $h:Y\to S$ defined by $U$ has
-$\dim S=\kappa(G)>0$ and $U\sim_\Q h^*A_S$ with $A_S$ ample.
-On a very general positive-dimensional fibre $F$,
-\[
- K_F+G_Y|_F\sim_\Q0,
- \qquad Q_0|_F=s_0M'|_F\text{ is nef of full nef dimension}.
-\]
-Its dimension is at most two, so Lemma~\ref{lem:lower-dimensional}
-makes $Q_0|_F$ big. For zero-dimensional fibres relative bigness
-is automatic. Relative bigness follows on the generic fibre: for a fixed ample
-$H$, one of the countably many closed section loci for
-$(\ell Q_0-H)|_{F_s}$ contains a very general point, hence is the
-whole shrunken flat base. Adding a sufficiently large multiple
-$bU$ now makes $Q_0+bU$ big globally. The comparisons imply
-that $(1+b)G+s_0D$ is big. Finally, for
-$0<\lambda<\min\{1/(1+b),c/s_0\}$,
-\[
- G+cD=\lambda((1+b)G+s_0D)
- +(1-\lambda(1+b))G+(c-\lambda s_0)D
-\]
-is big.
-\end{proof}
-
-\begin{lemma}\label{lem:multisection-axes}
-Assume $\nef(X,D)=3$. Let $F\subset
-\mathbb P(\OO_X\oplus\OO_X(D))$ be an integral multisection
-of degree $e>0$ meeting the torus open. Its two axis intersections
-push down to effective integral divisors $G_1,G_2$ on $X$ satisfying
-\begin{equation}\label{eq:axis-divisors}
- G_1-G_2\sim\pm eD,\qquad
- NG_i\cdot P^2\le R_{\rm sl}^3\cdot F.
-\end{equation}
-For $G=G_1+G_2$ and every sufficiently small rational $b>0$,
-$(X,bG)$ is klt, $\kappa(bG)>0$, and $bG+D$ is big.
-\end{lemma}
-\begin{proof}
-The norm of the ratio of the two fibre coordinates gives the
-linear equivalence. If $S$ is either axis, $R_{\rm sl}-NS$
-and $R_{\rm sl}-P$ are nef. Intersecting these classes against
-the effective cycle $S\cdot F$ gives the degree inequalities.
-
-If $\kappa(bG)=0$, ordinary threefold abundance gives a good
-$(K_X+bG)$-model $Y$ with $K_Y+bG_Y\sim_\Q0$.
-The transform of $K_X$ is linearly trivial, so $G_Y=0$:
-every component of $G$ has been contracted. On a common
-resolution $a:U\to X$, $c:U\to Y$, the signed relation in
-\eqref{eq:axis-divisors} expresses $a^*D\sim_\Q E$, with
-$E$ $c$-exceptional. Divisors exceptional over $X$ are also
-exceptional over $Y$, since this MMP extracts none.
-Since $a^*D$ is nef, negativity gives $E\le0$.
-Its class is pseudo-effective, so intersection with an ample
-square forces $E=0$. This contradicts full nef dimension.
-Thus $\kappa(bG)>0$, and Lemma~\ref{lem:positive-boundary}
-gives bigness. The axis construction and negativity argument
-are dimension-independent; only the ordinary good-model input
-is being specialized to threefolds.
-\end{proof}
-
-\begin{lemma}\label{lem:fixed-graphs}
-Let $T_1,T_2$ be fixed non-uniruled integral projective varieties
-over $\C$ of the same dimension. If an integral algebraic family
-of graphs of birational maps $T_1\dashrightarrow T_2$ dominates
-$T_1\times T_2$, both varieties are birational to an abelian variety.
-\end{lemma}
-\begin{proof}
-Identify the two varieties by one map in the family.
-Hanamura's theorem, in the form
-\cite[Theorem~3.8]{Blanc}, supplies a smooth projective birational
-model $Y$ with $\operatorname{Bir}(Y)_{\rm red}$ a group scheme
-locally of finite type. Its identity component is
-$\operatorname{Aut}^0(Y)$, an abelian variety acting regularly.
-
-Conjugate the family to $Y$, take the closure of its relative
-graphs, and shrink the integral parameter space so that these
-graphs are flat and geometrically integral, with both projections
-birational. This shrinking is necessary: graph flatness is not
-preserved automatically by birational conjugation
-\cite[Remark~3.6]{Blanc}. The flat-graph representability theorem
-\cite[Proposition~3.7]{Blanc} then gives a morphism from the
-reduced parameter variety to $\operatorname{Bir}(Y)_{\rm red}$.
-Its connected image lies in one translate of the identity component.
-After translating by a fixed member, product dominance implies
-that a general point has a dense orbit under that abelian group.
-Such an orbit is the quotient by its closed stabilizer, hence an
-abelian variety. It is therefore a birational model of $Y$.
-No canonical nonvanishing theorem on $T_i$ is used.
-\end{proof}
-
-\begin{lemma}\label{lem:abelian-adjoint}
-Let $p:Y\to A_0$ be a birational morphism from a smooth projective
-variety to an abelian variety. If $L$ is nef Cartier of full nef
-dimension on $Y$, then $K_Y+L$ is big.
-\end{lemma}
-\begin{proof}
-The numerical pushforward $M'=p_*L$ is pseudo-effective on $A_0$,
-thus nef. If it were not big, the kernel of the semipositive
-Hermitian form of its integral class would define a
-positive-dimensional abelian subvariety on whose translates $M'$
-is numerically trivial. The image of the exceptional locus of $p$
-has codimension at least two. A general translate meets that image
-in codimension at least two; complete-intersection curves in the
-translate can be chosen through a very general point avoiding it.
-Their strict lifts have $L$-degree zero, a contradiction. Thus $M'$
-is big.
-
-Negativity gives $p^*M'-L=E_0\ge0$, with $E_0$ exceptional.
-Since $A_0$ is smooth and $K_{A_0}\sim0$, $K_Y\sim E_K\ge0$,
-with positive coefficient along every $p$-exceptional divisor.
-Choose $0<u<1$ rational with $E_K-uE_0\ge0$. Then
-\[
- K_Y+uL\sim_\Q up^*M'+(E_K-uE_0)
-\]
-is big. Adding $(1-u)L$ proves the assertion. This lemma has no
-dimension restriction.
-\end{proof}
-
-\subsection{Base components and slice exclusions}
-
-Fix $\delta=8\epsilon$, $\tau_i=9+i\delta$ for $0\le i\le7$,
-and choose $N$ so that $\tau_7^7<70N\epsilon^6$.
-For all sufficiently large $n$, Lemma~\ref{lem:bundle-volume} gives
-\[
- \epsilon^3/2<P^3<2\epsilon^3,\qquad
- \tau_7^7<R^7<280N\epsilon^6,\qquad R_{\rm sl}^4<8N\epsilon^3.
-\]
-In particular $(2/\delta)^3\,8\epsilon^3=1/8<1$.
-For the following lemmas, these choices remain fixed, and
-$C_0=(2/\delta)^4\,280N\epsilon^6$.
-
-\begin{lemma}\label{lem:sevenfold-centres}
-For all sufficiently large $n$, if $\varepsilon(R;z)\le8$ at every
-point of the torus open, there is a covering family of proper
-integral $V\subset Z$, with $f=\dim V$, such that
-\begin{equation}\label{eq:sevenfold-centres}
- 0<R^f\cdot V\le(2/\delta)^{7-f}R^7,\qquad
- K_{V^*}\cdot R^{f-1}\le\frac{2(7-f)}{\delta}R^f\cdot V.
-\end{equation}
-For a general fibre component $F$ of either projection, if
-$1\le s=\dim F\le3$, the actual restricted system gives
-\begin{equation}\label{eq:slice-centres}
- \begin{split}
- 0<R_{\rm sl}^s\cdot F&\le(2/\delta)^{4-s}R_{\rm sl}^4,\\
- K_{F^*}\cdot R_{\rm sl}^{s-1}
- &\le(K_{Z_{\rm sl}}+c_sR_{\rm sl})|_F \cdot R_{\rm sl}^{s-1},
- \quad c_s\le2(4-s)/\delta.
- \end{split}
-\end{equation}
-Both images of a general marked incidence point are very general on $X$.
-\end{lemma}
-\begin{proof}
-Asymptotic Riemann--Roch and $\tau_7^7<R^7$ make the eight full
-kernels nonzero for large divisible $k$. A curve through a very
-general $z$ with $R$-degree divided by multiplicity less than
-$\tau_0$ is contained in the lowest base locus, by the intersection
-multiplicity inequality. Hence that base locus is positive-dimensional.
-Lemma~\ref{lem:full-kernels} gives the covering family and the first
-bounds. Since $K_Z$ is minus the axes and $V$ meets their complement,
-the ambient canonical contribution is nonpositive.
-Apply Lemma~\ref{lem:restricted-components} to either projection
-over its actual image, and then apply
-Lemmas~\ref{lem:hd-base-degree} and \ref{lem:canonical-centre}
-in the smooth fourfold slice. This gives the fibre bounds.
-\end{proof}
-
-\begin{lemma}\label{lem:slice-small-image}
-For all sufficiently large $n$, a fibre $F$ as in
-\eqref{eq:slice-centres} cannot be generically finite onto an
-image $W_0\subset X$ of dimension less than three.
-\end{lemma}
-\begin{proof}
-If $F\to W_0$ is generically finite and $\dim W_0<3$, the
-pullback $L$ of $D$ is nef Cartier of full nef dimension on $F^*$,
-and $K_{F^*}$ is pseudo-effective by the very-general-images
-argument. Lemma~\ref{lem:lower-dimensional} gives $K_{F^*}+L$
-big. The testing class $P_Y=R_{\rm sl}|_{F^*}$ satisfies
-$P_Y-r_nL$ nef, and \eqref{eq:slice-centres} gives uniform volume
-and canonical ratios. Lemma~\ref{lem:bounded-curves} bounds $r_n$,
-a contradiction.
-\end{proof}
-
-\begin{lemma}\label{lem:saturated-slices}
-For all sufficiently large $n$, a fibre $F$ as in
-\eqref{eq:slice-centres} cannot be the full projective-line bundle
-over its image $W_0\subset X$, with $\dim W_0\le2$.
-\end{lemma}
-\begin{proof}
-If $F\to W_0$ has one-dimensional fibres, $F$ is the entire
-projective-line bundle over $W_0$. Put $w=\dim W_0=s-1$.
-For $w=0$, \eqref{eq:slice-centres} gives
-\[
- N=R_{\rm sl}\cdot F\le(2/\delta)^3R_{\rm sl}^4<N.
-\]
-For $w=1,2$, resolve $W_0$ and take its induced bundle
-$p_0:F^*\to W_0^*$. Cancelling the relative canonical term
-$-2\xi+p_0^*D$, which equals the ambient canonical restriction,
-gives
-\[
- p_0^*K_{W_0^*}\cdot R_{\rm sl}^w\le c_sR_{\rm sl}^{w+1}\cdot F.
-\]
-Its term linear in $\xi$ is $wNK_{W_0^*}\cdot P^{w-1}$; all other
-terms are nonnegative because $K_{W_0^*}$ is pseudo-effective
-and $P,D$ are nef. For $r_n\ge N$, expansion gives
-\begin{equation}\label{eq:saturated-estimate}
- \begin{split}
- (w+1)NP^w\cdot W_0&\le R_{\rm sl}^{w+1}\cdot F\le7NP^w\cdot W_0,\\
- K_{W_0^*}\cdot P^{w-1}&\le(7c_s/w)P^w\cdot W_0.
- \end{split}
-\end{equation}
-The first lower bound and \eqref{eq:slice-centres} bound $P^w\cdot W_0$
-uniformly. Applying Lemmas~\ref{lem:lower-dimensional} and
-\ref{lem:bounded-curves} on $W_0^*$ is again contradictory.
-\end{proof}
-
-\begin{lemma}\label{lem:multisection-slices}
-For all sufficiently large $n$, a fibre $F$ as in
-\eqref{eq:slice-centres} cannot be a multisection over $X$.
-\end{lemma}
-\begin{proof}
-Lemma~\ref{lem:multisection-axes} gives $G=G_1+G_2$, $bG+D$ big,
-and $G\cdot P^2\le2R_{\rm sl}^3\cdot F/N$. On a log resolution $a:Y\to X$,
-let $B_0$ be the reduced strict support of $G$ together with every
-exceptional divisor. Decrease $b$ so that
-\[
- K_Y+B_0+a^*D\sim_\Q a^*(bG+D)+E_b,\qquad E_b\ge0.
-\]
-This adjoint is big. Testing with $P_Y=a^*P$, all exceptional
-divisors contribute zero, and
-\[
- (K_Y+B_0+a^*D)\cdot P_Y^2\le G\cdot P^2+D\cdot P^2\le C,
- \qquad D\cdot P^2\le P^3/r_n.
-\]
-The positive lower bound on $P^3$ gives a uniform adjoint ratio.
-Lemma~\ref{lem:bounded-curves}, with this reduced boundary,
-excludes the case.
-\end{proof}
-
-\begin{lemma}\label{lem:finite-correspondences}
-For all sufficiently large $n$, both projections of a general
-$V$ in Lemma~\ref{lem:sevenfold-centres} are generically finite
-and dominant. On a simultaneous resolution $Y$, with projections
-$g_i:Y\to X$ and $P_Y=R|_Y$,
-\begin{equation}\label{eq:correspondence-estimates}
- 0<P_Y^3\le C_0,\qquad K_Y\cdot P_Y^2\le(8/\delta)P_Y^3,
- \qquad P_Y-r_ng_i^*D\text{ is nef}.
-\end{equation}
-Moreover, $\deg g_i\le2C_0/\epsilon^3$.
-\end{lemma}
-\begin{proof}
-Lemmas~\ref{lem:slice-small-image}, \ref{lem:saturated-slices},
-and \ref{lem:multisection-slices} exclude fibre dimensions one,
-two, and three. A four-dimensional fibre makes $V$ the full
-inverse image of a proper $W_0\subset X$, with $\dim W_0\le2$;
-the other projection then has fibre dimension $\dim W_0+1$, already
-excluded. Thus both projections are generically finite and $f\le3$.
-For $f<3$, \eqref{eq:sevenfold-centres} and
-Lemmas~\ref{lem:lower-dimensional} and \ref{lem:bounded-curves}
-give a uniform bound on $r_n$, a contradiction. Hence $f=3$.
-The displayed estimates follow from \eqref{eq:sevenfold-centres}
-and nefness of $R-r_nD_i$.
-Since $R-P_i$ is nef, $\deg g_i\,P^3\le P_Y^3\le C_0$.
-\end{proof}
-
-
-\subsection{Finite covers and the final exclusion}
-
-\begin{lemma}\label{lem:branch-surfaces}
-For all sufficiently large $n$, no relative Jacobian component
-in the family of Lemma~\ref{lem:finite-correspondences} whose
-general image is a divisor has images sweeping $X$.
-\end{lemma}
-\begin{proof}
-Suppose that the images of one branch-divisor component sweep
-$X$, and let $J\subset X$ be a general such image. Pulling back
-a nowhere-vanishing three-form from $X$ gives an effective
-canonical divisor on $Y$, containing a ramification divisor
-over $J$ with positive integral coefficient. Thus
-\[
- 0<d_J:=P^2\cdot J\le K_Y\cdot P_Y^2\le(8/\delta)C_0.
-\]
-Generic numerical subadjunction for $(X,J)$ and Hodge index give
-on a resolution $J^*$
-\begin{equation}\label{eq:branch-surface}
- K_{J^*}\cdot P\le J^2\cdot P
- \le\frac{(J\cdot P^2)^2}{P^3}\le C_2d_J,
- \qquad C_2=16C_0/(\delta\epsilon^3).
-\end{equation}
-Here $(X,J)$ is lc at $\eta_J$; global lc is unnecessary.
-Hodge index applies to $J$ without assuming $J$ nef.
-Since the images sweep, $J^*$ is non-uniruled and the pulled-back
-$D$ has full nef dimension. The testing volume is $d_J$, bounded
-above, its canonical ratio is bounded by $C_2$, and $P-r_nD$ is
-nef. Lemmas~\ref{lem:lower-dimensional} and
-\ref{lem:bounded-curves} give a uniform bound for $r_n$.
-Hence sweeping branch divisors are impossible for large $n$.
-\end{proof}
-
-\begin{lemma}\label{lem:finite-stein-covers}
-Fix sufficiently large $n$ and a smooth integral parameter family
-as in Lemma~\ref{lem:finite-correspondences}. The normal Stein
-covers of either projection belong to a finite list.
-\end{lemma}
-\begin{proof}
-For this fixed $n$, retain the relative Jacobian components whose
-general fibre images are divisors on $X$. Remove their finitely
-many proper image closures, obtaining a fixed smooth open $U$. Every finite normal Stein cover of a
-general $g_i$ is unramified at the codimension-one points of $U$;
-purity makes it finite \'etale over $U$. The fundamental group of
-$U$ is finitely generated, so it has finitely many subgroups of
-the bounded indices in question. Normal covers of $X$ are
-determined by their function fields. There are consequently only
-finitely many possible Stein covers in each slot, as in
-\cite[Lemma~7.5]{LA}. Degree bounds alone would not imply this.
-\end{proof}
-
-\begin{lemma}\label{lem:bounded-correspondence-exclusion}
-A family as in Lemma~\ref{lem:finite-correspondences}, with
-finitely many Stein covers in each slot, bounds $r_n$ by a constant
-depending only on $\epsilon,N,\delta$. Consequently such families
-cannot occur for arbitrarily large $n$.
-\end{lemma}
-\begin{proof}
-Each $Y$ is birational to both of its Stein covers. Fix a pair
-$T_1,T_2$ occurring among the original members satisfying
-\eqref{eq:correspondence-estimates}. The projected incidence
-dominates $X\times X$. The possible graph families for the
-finitely many pairs belong to countably many Hilbert schemes;
-stratify for flat integral fibres and birational projections.
-Uncountability of $\C$ implies that one such integral graph
-family has evaluation dominant over $X\times X$. Its evaluation
-is also dominant on $T_1\times T_2$: this product is integral,
-finite over $X\times X$, and of the same dimension.
-
-The covers are non-uniruled, since they are finite over $X$.
-Lemma~\ref{lem:fixed-graphs} makes them birational to an abelian
-variety $A_0$. Return to an \emph{original} correspondence for
-this pair and resolve further to get a birational morphism
-$p:Y\to A_0$. This preserves the numerical bounds
-\eqref{eq:correspondence-estimates}; additional exceptional
-canonical divisors have zero intersection with the pulled-back
-testing square. The divisor $L=g_1^*D$ remains nef Cartier of
-full nef dimension. Lemma~\ref{lem:abelian-adjoint} gives
-$K_Y+L$ big, while
-\[
- (K_Y+L)\cdot P_Y^2\le(8/\delta+1/r_n)P_Y^3.
-\]
-Lemma~\ref{lem:bounded-curves} now excludes this final case.
-The cover lists and graph families may depend on $n$; their
-sizes enter none of the uniform numerical bounds. Failures
-therefore cannot persist along $n\to\infty$.
-\end{proof}
-
-
-\begin{proposition}\label{prop:sevenfold-jets}
-There is a fixed integer $N>0$ such that, for all sufficiently
-large $n$, some point $z$ in the torus open satisfies
-$\varepsilon(R;z)>8$.
-\end{proposition}
-\begin{proof}
-Use the fixed choices above. If the assertion failed for arbitrarily
-large $n$, Lemmas~\ref{lem:sevenfold-centres} and
-\ref{lem:finite-correspondences} would produce bounded threefold
-correspondences. Resolve and shrink the family, and spread out
-the finitely many generic Jacobian components after a finite
-parameter extension. Lemmas~\ref{lem:branch-surfaces} and
-\ref{lem:finite-stein-covers} give finite lists of Stein covers.
-Lemma~\ref{lem:bounded-correspondence-exclusion} contradicts
-$r_n\to\infty$.
-\end{proof}
-
-
-\begin{proof}[Proof of Lemma~\ref{lem:full-jets}]
-Choose $z$ as in Proposition~\ref{prop:sevenfold-jets}, and rational
-$8<a<\varepsilon(R;z)$. On the blowup $b:\widetilde Z\to Z$,
-$b^*R-aJ_z$ is ample. For large divisible $k_0$, Serre vanishing
-makes restriction surjective modulo $\mathfrak m_z^{k_0a}$,
-with $k_0a\ge8k_0+1$. Thus $|k_0R_n|$ separates $8k_0$-jets at $z$.
-\end{proof}
-
-\section{Proof of Lemma~\ref{lem:full-contradiction}}\label{sec:frobenius}
+\subsection{The Frobenius input}\label{sec:frobenius}
 
 \begin{lemma}\label{lem:full-contradiction}
 Let $X$ be a smooth projective threefold over $\C$ with
 $K_X\sim0$ and $q(X)=0$. Let $D$ be a nef Cartier divisor with
 $\nef(X,D)=3$ and $D^3=0$. Let $P$ be an ample rational Cartier
-divisor and $N>0$ an integer such that
+divisor and $s>0$ an integer such that
 \[
- 343P^3<\tfrac14,\qquad (2P+ND)\cdot P^2<4P^3.
+ 343P^3<\tfrac14,\qquad (2P+sD)\cdot P^2<4P^3.
 \]
-Let $\pi:\widetilde X\to X$ be the blowup at a point $x$, with
+Let $\beta:\widetilde X\to X$ be the blowup at a point $x$, with
 exceptional divisor $E$. Suppose that there are a birational morphism
 $f:V\to\widetilde X$ from a smooth projective threefold and ample
 Cartier divisors $H_1,H_2$ on $V$ such that
 \[
- f^*\pi^*(P+ND)\cdot H_1\cdot H_2
+ f^*\beta^*(P+sD)\cdot H_1\cdot H_2
  <\tfrac38 f^*E\cdot H_1\cdot H_2.
 \]
 Let $D_i,P_i$ denote pullbacks from the $i$-th factor of $X\times X$
@@ -1239,32 +1177,34 @@ and then to
    \bigl(\OO_{X\times X}(D_1)\oplus\OO_{X\times X}(D_2)\bigr),
  \qquad \xi=c_1(\OO_Z(1)).
 \]
-Put $R(P,N)=P_1+P_2+N\xi$, and let $\mathbb T$ be the complement
+Let $\pi:Z\to X\times X$ be the bundle projection, and write
+$D_i=(p_i\circ\pi)^*D$, $P_i=(p_i\circ\pi)^*P$ on $Z$.
+Put $R(P,s)=P_1+P_2+s\xi$, and let $U$ be the complement
 of the two summand sections. For every integer $k>0$ with $kP$
-Cartier, $|kR(P,N)|$ does not separate $8k$-jets at any point
-of $\mathbb T$.
+Cartier, $|kR(P,s)|$ does not separate $8k$-jets at any point
+of $U$.
 \end{lemma}
 
-Throughout this section, $X,D,P,N,x,\pi,E,f,V,H_1,H_2$ satisfy
+Throughout this subsection, $X,D,P,s,x,\beta,E,f,V,H_1,H_2$ satisfy
 the hypotheses of Lemma~\ref{lem:full-contradiction}. Since $f^*E$
 is nonzero and effective and $H_1,H_2$ are ample,
 $f^*E\cdot H_1\cdot H_2>0$. Put
 \[
- b=\frac{f^*\pi^*(P+ND)\cdot H_1\cdot H_2}
+ b=\frac{f^*\beta^*(P+sD)\cdot H_1\cdot H_2}
  {f^*E\cdot H_1\cdot H_2}<\tfrac38.
 \]
-Nefness of $D$ gives, for $0\le\lambda\le N$,
+Nefness of $D$ gives, for $0\le\lambda\le s$,
 \[
- f^*\pi^*(P+\lambda D)\cdot H_1\cdot H_2
+ f^*\beta^*(P+\lambda D)\cdot H_1\cdot H_2
  \le b\,f^*E\cdot H_1\cdot H_2.
 \]
-Suppose for contradiction that $|k_0R(P,N)|$ separates $8k_0$-jets
-at some $z\in\mathbb T$, for an integer $k_0>0$ with $k_0P$ Cartier.
+Suppose for contradiction that $|k_0R(P,s)|$ separates $8k_0$-jets
+at some $z\in U$, for an integer $k_0>0$ with $k_0P$ Cartier.
 All these data are fixed over $\C$ before reduction. The following
 estimates specialize \cite[Theorem~6.1]{NS}; Frobenius is used
 only on smooth positive-characteristic fibres.
 
-\subsection{Fixed data and generic rank}
+\subsubsection{Fixed data and generic rank}
 
 \begin{lemma}\label{lem:cotangent-flag}
 For the fixed ample rational Cartier divisor $P$, there exist
@@ -1322,17 +1262,17 @@ quotient, hence surjectivity.
 Let $Y$ be a smooth positive-characteristic fibre of a model of
 $X$, and use the same notation for the specialized divisor data, over an algebraically closed field of characteristic $p$.
 On $\mathbb P(\OO_Y(D)_1\oplus\OO_Y(D)_2)$, suppose a fixed
-finite system of sections of $k_0(P_1+P_2+N\xi)$ generates jets
+finite system of sections of $k_0(P_1+P_2+s\xi)$ generates jets
 through order $8k_0$ at a point $z$ off the axes, where
 $k_0P$ is Cartier. Choose $T$ so that all $T+aD$ for
-$0\le a\le(k_0-1)N$ have sections nonzero at the two base points.
+$0\le a\le(k_0-1)s$ have sections nonzero at the two base points.
 Put $\ell_p=\lfloor p/k_0\rfloor$, $B_p=k_0\ell_pP+T$.
 For $p\ge8k_0$, the two-slot evaluation map has generic rank
 $p^6$.
 \end{proposition}
 \begin{proof}
 Lemma~\ref{lem:jet-products-hd} gives order
-$8k_0\ell_p$ for $\ell_pk_0R$. Put $d_p=(p-k_0\ell_p)N$.
+$8k_0\ell_p$ for $\ell_pk_0R$. Put $d_p=(p-k_0\ell_p)s$.
 A weight-zero section of $d_p\xi+T_1+T_2$ nonzero at $z$ pads this
 system to $pN\xi+B_{p,1}+B_{p,2}$. Its multiplication is invertible
 on the local jet quotients. Moreover
@@ -1350,11 +1290,11 @@ The tensor product $A_*$ of the two local Frobenius-fibre algebras
 has dimension $p^6$. If $t$ is the fibre coordinate and $t(z)=c\ne0$,
 the full quotient is $A_*[t]/(t^p-c^p)$, free over $A_*$ with
 basis $1,t,\ldots,t^{p-1}$. Projection to the coefficient of $1$
-keeps exactly weights $j=pa$, with $0\le a\le N$.
+keeps exactly weights $j=pa$, with $0\le a\le s$.
 Consequently the natural map
 \[
  \begin{split}
- \bigoplus_{a+b=N}&H^0(Y,B_p+paD)\otimes H^0(Y,B_p+pbD)\\
+ \bigoplus_{a+b=s}&H^0(Y,B_p+paD)\otimes H^0(Y,B_p+pbD)\\
  &\quad\otimes\OO_{Y'\times Y'}(-aD'_1-bD'_2)
  \longrightarrow\mathcal E\boxtimes\mathcal E
  \end{split}
@@ -1395,7 +1335,7 @@ For the following lemmas put
 \]
 All constants in $O(p^{-1})$ depend only on the fixed data.
 
-\subsection{The diagonal rank}
+\subsubsection{The diagonal rank}
 
 \begin{lemma}\label{lem:truncated-slope-bound}
 Let $V$ be a semistable vector bundle of rank three and degree
@@ -1447,14 +1387,14 @@ have no sections.
 \begin{lemma}\label{lem:diagonal-rank-bound}
 On a smooth fibre of Lemma~\ref{lem:fixed-data-reduction}, put
 $B_p=k_0\lfloor p/k_0\rfloor P+T$ and $R_p=p^6$.
-If $(2P+ND)\cdot P^2<4P^3$ and $343P^3<1/4$, the weighted evaluation
+If $(2P+sD)\cdot P^2<4P^3$ and $343P^3<1/4$, the weighted evaluation
 map has rank less than $R_p/4$ on the diagonal of $Y'\times Y'$.
 \end{lemma}
 \begin{proof}
 Let $\Delta_F=Y\times_{Y'}Y$, and put
 \[
  \mathcal L_p=
- \OO_{\Delta_F}(B_{p,1}+B_{p,2}+pND_1).
+ \OO_{\Delta_F}(B_{p,1}+B_{p,2}+psD_1).
 \]
 On $\Delta_F$, the weighted section products all take values
 in this same line bundle, because $pD_1=pD_2$ there.
@@ -1464,7 +1404,7 @@ The canonical Frobenius filtration
 \cite[Corollary~3.5]{KS} has graded pieces
 \[
  \mathcal G_j=
- \OO_Y(2B_p+pND)\otimes\mathcal A_j(\Omega_Y^1),
+ \OO_Y(2B_p+psD)\otimes\mathcal A_j(\Omega_Y^1),
  \quad0\le j\le3(p-1),\qquad
  e_j=\operatorname{rk}\mathcal A_j,\quad \sum_j e_j=p^3,
 \]
@@ -1507,7 +1447,7 @@ their total rank is exactly $p^3$.
 \end{proof}
 
 
-\subsection{Determinant multiplicities}
+\subsubsection{Determinant multiplicities}
 
 \begin{lemma}\label{lem:determinant-line-bundles}
 For the evaluation map in Proposition~\ref{prop:frob-rank-hd},
@@ -1515,26 +1455,26 @@ put $s_p=p^3$, $R_p=p^6$, and $\mathcal E_p=F_*\OO_Y(B_p)$.
 There exist line bundles
 \[
  \mathcal Q_i=(\det\mathcal E_p)^{s_p}\otimes\OO_{Y'}(m_iD'),
- \qquad m_i\in\mathbb Z_{\ge0},\quad m_1+m_2=NR_p,
+ \qquad m_i\in\mathbb Z_{\ge0},\quad m_1+m_2=sR_p,
 \]
 and a nonzero determinant section of $\mathcal Q_1\boxtimes\mathcal Q_2$.
 Under the numerical identification with $Y'$, for $\lambda_i=m_i/R_p$,
 \[
  \frac{c_1(\mathcal Q_i)}{R_p}=P+\lambda_iD+O(p^{-1}),
- \qquad0\le\lambda_i\le N.
+ \qquad0\le\lambda_i\le s.
 \]
 \end{lemma}
 \begin{proof}
 Proposition~\ref{prop:frob-rank-hd} gives generic evaluation
 rank $R_p$. Choose $R_p$ generically independent evaluation
-columns of weights $(a,b)$, $a+b=N$. Their determinant is
+columns of weights $(a,b)$, $a+b=s$. Their determinant is
 a nonzero section
 \[
  \sigma\in H^0(Y'\times Y',\mathcal Q_1\boxtimes\mathcal Q_2),
  \qquad
  \mathcal Q_i=(\det\mathcal E_p)^{s_p}\otimes\OO_{Y'}(m_iD'),
 \]
-where $m_i\ge0$ and $m_1+m_2=NR_p$. Let $E_\sigma$ be the
+where $m_i\ge0$ and $m_1+m_2=sR_p$. Let $E_\sigma$ be the
 effective divisor of $\sigma$, so
 \[
  E_\sigma\in|\mathcal Q_1\boxtimes\mathcal Q_2|.
@@ -1548,7 +1488,7 @@ identification with the twisted fibre,
  \frac{c_1(\mathcal Q_i)}{R_p}
  =\frac{B_p}{p}+\frac{p-1}{2p}K_Y+\lambda_iD
  =P+\lambda_iD+O(p^{-1}),\qquad
- \lambda_i=m_i/R_p\in[0,N].
+ \lambda_i=m_i/R_p\in[0,s].
 \]
 \end{proof}
 
@@ -1626,6 +1566,26 @@ and Lemma~\ref{lem:determinant-upper-bound} give
 \end{equation}
 Divide by $R_p$ and let $p\to\infty$. Then
 $3/4\le2b<3/4$, a contradiction.
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref{lem:full-nojets}]
+Fix $s>0$ and assume $\kappa(D)=-\infty$. Take $n$ sufficiently large
+for Lemma~\ref{lem:full-scalar}, $r_n>s$ and $343P_n^3<1/4$.
+Since $P_n-r_nD$ is nef,
+\[
+ (2P_n+sD)\cdot P_n^2\le(2+s/r_n)P_n^3<4P_n^3.
+\]
+Lemma~\ref{lem:full-scalar} supplies a point $x$, its blowup
+$\beta:\widetilde X\to X$ with exceptional divisor $E$, and
+$f:V\to\widetilde X$, $H_1,H_2$ such that
+\[
+ f^*\beta^*(P_n+sD)\cdot H_1\cdot H_2
+ <40\epsilon f^*E\cdot H_1\cdot H_2
+ <\tfrac38 f^*E\cdot H_1\cdot H_2.
+\]
+Apply Lemma~\ref{lem:full-contradiction} with $P=P_n$.
+Since $R(P_n,s)=R_{n,s}$, no $|kR_{n,s}|$ with $kR_{n,s}$ Cartier
+separates $8k$-jets at any $z\in U$.
 \end{proof}
 
 \noindent\textit{Disclosure.} This AI-assisted report is intended for

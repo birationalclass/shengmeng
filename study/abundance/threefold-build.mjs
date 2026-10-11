@@ -9,7 +9,7 @@ const refs=new Map(),bib=new Map(),equations=new Map();let equation=0,currentHea
 function index(blocks){
  for(const b of blocks){
   b.id=b.type==='theorem'?'theorem-main':b.type==='setup'?'setup-framework':b.type==='thebibliography'?'references':b.number?`${b.type}-${b.number}`:null;
-  if(b.type==='section'||b.type==='subsection')currentHeading=b;
+  if(b.type==='section'||b.type==='subsection'||b.type==='subsubsection')currentHeading=b;
   if(b.type==='thebibliography'){
    b.items=[...b.content.matchAll(/\\bibitem\{([^{}]+)\}([\s\S]*?)(?=\\bibitem\{|$)/g)].map((m,i)=>({key:m[1],number:i+1,content:m[2].trim()}));
    b.items.forEach(item=>bib.set(item.key,item));
@@ -85,6 +85,7 @@ const inlineContent=raw=>content(raw).replace(/^<p>|<\/p>$/g,'');
 function render(b){
  if(b.type==='section')return `<h2 id="${b.id}"><span>${b.number}.</span> ${inlineContent(b.title)}</h2>`;
  if(b.type==='subsection')return `<h3 class="note-subsection" id="${b.id}">${b.number}. ${inlineContent(b.title)}</h3>`;
+ if(b.type==='subsubsection')return `<h4 class="note-subsection" id="${b.id}">${b.number}. ${inlineContent(b.title)}</h4>`;
  if(b.type==='text')return `<div class="note-prose">${content(b.content)}</div>`;
  if(b.type==='thebibliography')return `<section class="note-references" id="references"><h2>References</h2><ol>${b.items.map(item=>`<li id="bib-${escape(item.key)}">${content(item.content)}</li>`).join('')}</ol></section>`;
  if(b.type==='proof'){

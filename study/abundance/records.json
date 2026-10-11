@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-11T16:13+08:00",
+  "updatedAt": "2026-10-11T17:10+08:00",
   "series": [
     {
       "id": "F034",
@@ -5359,6 +5359,712 @@
       ],
       "en": [
         "Section 2 first defines $\\operatorname{Bs}\\Lambda=\\bigcap_{E\\in\\Lambda}\\operatorname{Supp}(E)$. Both equivalent formulations in Proposition 2.1 now use $x\\notin\\operatorname{Bs}\\Lambda$; the proof identifies this with value generation at j=0. The tangent-vector condition and its proof are unchanged."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-witness-inherits-setup-q",
+      "role": "user",
+      "time": "2026-10-11T16:21+08:00",
+      "zh": [
+        "引理 1.1 删除与 Setup 重复的条件，$P_n$ 也沿用 Setup 里的定义。"
+      ],
+      "en": [
+        "Remove the hypotheses repeated from Setup in Lemma 1.1, and use the sequence $P_n$ already defined there."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-witness-inherits-setup-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:21+08:00",
+      "zh": [
+        "引理现在直接从“对每个 $N>0$ 存在 $n_0(\\epsilon,N)$”开始；假设由共同设定继承，量词和泛函结论不变。"
+      ],
+      "en": [
+        "The statement now starts with “for every $N>0$ there exists $n_0(\\epsilon,N)$”; it inherits the standing setting and retains its quantifiers and functional conclusion."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-generation-kappa-dependency-correction-q",
+      "role": "user",
+      "time": "2026-10-11T16:21+08:00",
+      "zh": [
+        "引理 1.3 中 $|kR_n|$ 分离 $8k$-jets 的证明真的用到了 $\\kappa(D)=-\\infty$ 吗？请核对三维完整稿和对应原论文。"
+      ],
+      "en": [
+        "Does the proof that $|kR_n|$ separates $8k$-jets actually use $\\kappa(D)=-\\infty$? Check the full threefold draft and its source argument."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-generation-kappa-dependency-correction-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:21+08:00",
+      "zh": [
+        "当前三维稿的生成 jets 证明链没有实际调用 $\\kappa(D)=-\\infty$。对应原论文 geometry 节在 nef 且非 big 的反设下用 $L^d=0$ 归一化，再证明射影丛上的 Seshadri 常数大于 $2d+2$；$d=3$ 时是 8。frobenius 节“finite jet system”再由爆破和 Serre 消失得到 $8k$-jets。那里出现 $\\kappa(K_X+bG)>0$，属于辅助边界 G，不是 $\\kappa(D)$。此前将生成 jets 说成依赖 $\\kappa(D)=-\\infty$ 的解释已修正。这是明确依赖的核对，不是全部几何引理已独立认证。"
+      ],
+      "en": [
+        "The jet-generation proof chain in the current threefold draft does not invoke $\\kappa(D)=-\\infty$. The source geometry section assumes a nef non-big L, normalizes using $L^d=0$, and obtains a Seshadri constant greater than $2d+2$ on the projective bundle, hence greater than 8 for $d=3$. The “finite jet system” paragraph in the Frobenius section then uses a blowup and Serre vanishing to obtain $8k$-jets. Its positive Iitaka-dimension condition $\\kappa(K_X+bG)>0$ concerns an auxiliary boundary G, not D. The earlier claim that jet generation required $\\kappa(D)=-\\infty$ is corrected. This checks the stated dependency, not the independent validity of all geometric inputs."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-remove-kappa-from-generation-q",
+      "role": "user",
+      "time": "2026-10-11T16:27+08:00",
+      "zh": [
+        "删去生成 jets 引理中的 $\\kappa(D)=-\\infty$，并同步纠正主证明说明。"
+      ],
+      "en": [
+        "Remove $\\kappa(D)=-\\infty$ from the jet-generation lemma and correct the corresponding explanation in the main proof."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-remove-kappa-from-generation-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:27+08:00",
+      "zh": [
+        "Framework 1.3 与三维稿对应引理已删除这一条件；主反证假设保留。"
+      ],
+      "en": [
+        "The condition is removed from Framework Lemma 1.3 and the corresponding threefold lemma; the main contradiction assumption is retained."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-generation-ground-field-wording-q",
+      "role": "user",
+      "time": "2026-10-11T16:28+08:00",
+      "zh": [
+        "引理 1.3 省去重复的 over C；$K_X\\sim0$、$q(X)=0$、D 及其他参数条件暂时保留。"
+      ],
+      "en": [
+        "Omit the repeated “over C” in Lemma 1.3; retain $K_X\\sim0$, $q(X)=0$ and the divisor and parameter conditions."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-generation-ground-field-wording-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:28+08:00",
+      "zh": [
+        "只省去重复的基域措辞，仍在前文约定的复数域上讨论。"
+      ],
+      "en": [
+        "Only the repeated ground-field wording is omitted; the preceding complex-field convention still applies."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-nef-dimension-input-q",
+      "role": "user",
+      "time": "2026-10-11T16:35+08:00",
+      "zh": [
+        "生成 jets 的结论实际用到 nef dimension 等条件吗？"
+      ],
+      "en": [
+        "Does the jet-generation argument use nef dimension and the other hypotheses?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-nef-dimension-input-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:35+08:00",
+      "zh": [
+        "当前证明用 $n(X,D)=3$ 排除经过很一般点的低次数曲线族：这些曲线上 $D\\cdot C>0$，Cartier 性给 $D\\cdot C\\ge1$。nef 性控制交数，$D^3=0$ 给归一化极限；$K_X\\sim0$ 用于典范估计。当前生成路线未见调用 $q(X)=0$；小 $\\epsilon$ 的两条限制主要服务后面的矛盾。这里只核对当前证明的输入，不宣称条件最弱或证明已独立认证。"
+      ],
+      "en": [
+        "The current proof uses $n(X,D)=3$ to exclude families of low-degree curves through a very general point: $D\\cdot C>0$, hence $D\\cdot C\\ge1$ by Cartier integrality. Nefness controls intersections; $D^3=0$ supplies the normalization limit; $K_X\\sim0$ enters canonical estimates. The generation route does not visibly use $q(X)=0$; the two small-$\\epsilon$ restrictions mainly serve the later contradiction. This audits dependencies, without claiming minimal hypotheses or independent verification."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-local-positivity-q",
+      "role": "user",
+      "time": "2026-10-11T16:35+08:00",
+      "zh": [
+        "越接近 ample 或 big，是否越容易分离 jets？"
+      ],
+      "en": [
+        "Does becoming more ample or big make jet separation easier?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-local-positivity-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:35+08:00",
+      "zh": [
+        "直接局部量是 $\\varepsilon(R;z)=\\inf_{C\\ni z}R\\cdot C/\\operatorname{mult}_zC$。若它大于 8，充分大且整除的 $k$ 可分离 $8k$-jets。big 本身不保证每点分离：爆破平面上直线的拉回在例外曲线上不能分离切向量。这一例子只涉及那些点。"
+      ],
+      "en": [
+        "The direct local invariant is $\\varepsilon(R;z)=\\inf_{C\\ni z}R\\cdot C/\\operatorname{mult}_zC$. If it exceeds 8, sufficiently large divisible $k$ gives $8k$-jet separation. Bigness alone does not guarantee separation at every point: the pullback of a line to the blown-up plane fails to separate tangent vectors on the exceptional curve. This example concerns those points only."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-existential-point-correction-q",
+      "role": "user",
+      "time": "2026-10-11T16:36+08:00",
+      "zh": [
+        "但结论只需要在某个点分离，不是每点。"
+      ],
+      "en": [
+        "But the conclusion requires separation at some point, not at every point."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-existential-point-correction-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:36+08:00",
+      "zh": [
+        "这个更正成立：例外曲线上的失败不能反驳存在点的结论。当前路线反设对所有 $z\\in U$ 都有 $\\varepsilon(R_{n,s};z)\\le8$，推出覆盖的低次数几何族，再用 $n(X,D)=3$ 排除它们，得到某点常数大于 8。这说明 full nef dimension 在当前证明中被用到，尚未证明它不可弱化。"
+      ],
+      "en": [
+        "That correction is valid: failure along the exceptional curve does not disprove existence of a separating point. The current route assumes $\\varepsilon(R_{n,s};z)\\le8$ for every $z\\in U$, obtains covering families of low degree, and excludes them using $n(X,D)=3$. It then obtains a point with constant greater than 8. This shows where full nef dimension is used, not that it is the weakest possible hypothesis."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-zero-divisor-counterexample-q",
+      "role": "user",
+      "time": "2026-10-11T16:38+08:00",
+      "zh": [
+        "若去掉 nef dimension，取 $D=0$，似乎怎样增大参数都不能分离 $8k$-jets。"
+      ],
+      "en": [
+        "Without the nef-dimension assumption, taking $D=0$ seems to prevent $8k$-jet separation regardless of the bundle parameter."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-zero-divisor-counterexample-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:38+08:00",
+      "zh": [
+        "在当前小体积归一化下，$Z=X\\times X\\times\\mathbb P^1$，$R_{n,s}=p_1^*P_n+p_2^*P_n+s\\xi$。若它在 $(x,y,t)$ 分离 $8k$-jets，限制至 $X\\times\\{y\\}\\times\\{t\\}$ 得 $|kP_n|$ 分离这些 jets；增加 $s$ 不改善这个因子方向。截面乘积给 $h^0(X,\\mathcal O_X(\\ell kP_n))\\ge\\binom{8\\ell k+3}{3}$。比较最高次项得 $k^3P_n^3/6\\ge(8k)^3/6$，即 $P_n^3\\ge512$，与 $P_n^3\\to\\epsilon^3$ 矛盾。因此完全删除该假设后的命题失效；这仍不是 full nef dimension 最弱性的证明。"
+      ],
+      "en": [
+        "Under the present small-volume normalization, $Z=X\\times X\\times\\mathbb P^1$ and $R_{n,s}=p_1^*P_n+p_2^*P_n+s\\xi$. Separation at $(x,y,t)$ restricts to separation by $|kP_n|$ on $X\\times\\{y\\}\\times\\{t\\}$; increasing $s$ does not improve this factor direction. Products of sections give $h^0(X,\\mathcal O_X(\\ell kP_n))\\ge\\binom{8\\ell k+3}{3}$. Leading terms imply $k^3P_n^3/6\\ge(8k)^3/6$, hence $P_n^3\\ge512$, contrary to $P_n^3\\to\\epsilon^3$. Thus deleting the hypothesis entirely invalidates the statement; this still does not prove minimality."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "framework-canonical-triviality-input-q",
+      "role": "user",
+      "time": "2026-10-11T16:39+08:00",
+      "zh": [
+        "我不是要求最弱条件；当前证明用了 nef dimension。那么 $K_X\\sim0$ 用到了吗？"
+      ],
+      "en": [
+        "I am not asking for minimal hypotheses. The current proof uses nef dimension; does it also use $K_X\\sim0$?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-canonical-triviality-input-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:39+08:00",
+      "zh": [
+        "用了：$K_Z\\sim\\pi^*(p_1^*K_X+p_2^*K_X)-S_1-S_2\\sim-S_1-S_2$，控制不在两轴内的移动分量的典范交数。非单线性与分支估计也用到：将处处非零三形式拉回，获得控制分歧分量的有效典范除子。正边界的辅助模型中亦有相应用途。这些是假设在当前路线中的位置。"
+      ],
+      "en": [
+        "Yes: $K_Z\\sim\\pi^*(p_1^*K_X+p_2^*K_X)-S_1-S_2\\sim-S_1-S_2$ controls canonical intersections of moving components outside the two axes. Non-uniruledness and the branch estimates also use it: pulling back a nowhere-vanishing three-form yields an effective canonical divisor controlling ramification components. It likewise enters the auxiliary positive-boundary models. These are dependencies of the current route."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-generation-first-q",
+      "role": "user",
+      "time": "2026-10-11T16:40+08:00",
+      "zh": [
+        "把生成 jets 的引理放最前，真正用到 $\\kappa(D)=-\\infty$ 时才提出反证假设；重复的几何条件由 Setup 继承。"
+      ],
+      "en": [
+        "Put jet generation first, introduce $\\kappa(D)=-\\infty$ only where used, and inherit repeated geometric assumptions from Setup."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-generation-first-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:40+08:00",
+      "zh": [
+        "生成输入前不加该反设，陈述只保留结论与量词；反设移到后面的阻碍输入之前。"
+      ],
+      "en": [
+        "The generation input precedes the contradiction assumption and retains only its conclusion and quantifiers. The assumption moves before the obstruction input."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-epsilon-setup-q",
+      "role": "user",
+      "time": "2026-10-11T16:44+08:00",
+      "zh": [
+        "在 $\\epsilon$ 首次出现处写出小量条件；Setup 首项只选 $\\epsilon$，第二项再介绍除子。"
+      ],
+      "en": [
+        "Write the smallness conditions where $\\epsilon$ first occurs: choose it in the first Setup item, then introduce divisors in the second."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-epsilon-setup-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:44+08:00",
+      "zh": [
+        "Setup 首项为 $343\\epsilon^3<1/4$、$40\\epsilon<3/8$；第二项固定 A 并定义 $P_n$，后续不重复这些条件。"
+      ],
+      "en": [
+        "The first Setup item states $343\\epsilon^3<1/4$ and $40\\epsilon<3/8$; the second fixes A and defines $P_n$. Later statements inherit them."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-open-locus-u-q",
+      "role": "user",
+      "time": "2026-10-11T16:44+08:00",
+      "zh": [
+        "把 $Z\\setminus(S_1\\cup S_2)$ 记成大写 U。"
+      ],
+      "en": [
+        "Denote $Z\\setminus(S_1\\cup S_2)$ by U."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-open-locus-u-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:44+08:00",
+      "zh": [
+        "统一使用 $U=Z\\setminus(S_1\\cup S_2)$，取代原来的 $\\mathbb T$。"
+      ],
+      "en": [
+        "Use $U=Z\\setminus(S_1\\cup S_2)$ throughout, replacing $\\mathbb T$."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-abstract-obstruction-q",
+      "role": "user",
+      "time": "2026-10-11T16:46+08:00",
+      "zh": [
+        "小 exceptional functional 导致不能分离 jets，能否抽象成一般结论？"
+      ],
+      "en": [
+        "Can the implication from a small exceptional functional to failure of jet separation be stated abstractly?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-abstract-obstruction-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:46+08:00",
+      "zh": [
+        "完整三维稿已有任意 ample $\\mathbb Q$-除子 P 的技术版本，但还需 $343P^3<1/4$ 和 $(2P+sD)\\cdot P^2<4P^3$，以及模型和可逆点理想数据。不能只留下 $\\Phi(P+sD)<3/8$；这里没有声称证明了更一般的新结论。"
+      ],
+      "en": [
+        "The full threefold draft has a technical version for an arbitrary ample $\\mathbb Q$-divisor P, but also requires $343P^3<1/4$ and $(2P+sD)\\cdot P^2<4P^3$, together with the model and invertible point-ideal data. The condition $\\Phi(P+sD)<3/8$ alone does not suffice. No new general theorem is claimed."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-bundle-parameter-role-q",
+      "role": "user",
+      "time": "2026-10-11T16:47+08:00",
+      "zh": [
+        "生成引理里的 N 用在哪里，为什么先固定它？"
+      ],
+      "en": [
+        "Where is N used in the generation lemma, and why is it fixed first?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-bundle-parameter-role-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:47+08:00",
+      "zh": [
+        "它出现在 $R_n=P_{n,1}+P_{n,2}+N\\xi$。固定 N 时 $R_n^7\\to140N\\epsilon^6$，先选 N 使 $\\tau_7^7<70N\\epsilon^6$，再取 n 充分大得到 $\\tau_7^7<R_n^7$，从而保证高重数线性系非空，构造移动分量。后续输入使用同一个 N；现统一记作 s。"
+      ],
+      "en": [
+        "It occurs in $R_n=P_{n,1}+P_{n,2}+N\\xi$. For fixed N, $R_n^7\\to140N\\epsilon^6$. First choose N with $\\tau_7^7<70N\\epsilon^6$, then take n large enough for $\\tau_7^7<R_n^7$. This ensures nonemptiness of the high-multiplicity system used to construct moving components. The later inputs use the same N, now denoted s."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-explicit-s-parameter-q",
+      "role": "user",
+      "time": "2026-10-11T16:48+08:00",
+      "zh": [
+        "把整数 N 改成 s，并明确写 $R_{n,s}$；引理说存在 s，对充分大 n 成立。"
+      ],
+      "en": [
+        "Rename N as s and write $R_{n,s}$ explicitly; state existence of s followed by sufficiently large n."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-explicit-s-parameter-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:48+08:00",
+      "zh": [
+        "Setup 写 $s\\in\\mathbb Z_{>0}$ 与 $R_{n,s}$，生成引理保留 $\\exists s\\,\\forall n\\gg0\\,\\exists k,z$ 的顺序。"
+      ],
+      "en": [
+        "Setup specifies $s\\in\\mathbb Z_{>0}$ and $R_{n,s}$; the generation lemma retains the order $\\exists s\\,\\forall n\\gg0\\,\\exists k,z$."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-growing-jet-order-q",
+      "role": "user",
+      "time": "2026-10-11T16:49+08:00",
+      "zh": [
+        "k 充分大时，要求的 $8k$ 也跟着增大，对吧？"
+      ],
+      "en": [
+        "As k becomes large, the required order $8k$ also grows, correct?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-growing-jet-order-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:49+08:00",
+      "zh": [
+        "是。先在适当的 n、s 下选到 $\\varepsilon(R_{n,s};z)>8$ 的点，再对充分大且满足固定整除条件的 k 得到 $8k$-jets。主引理仍写存在某个 k，没有未经核对地加强量词。"
+      ],
+      "en": [
+        "Yes. For suitable n and s, first obtain a point with $\\varepsilon(R_{n,s};z)>8$; sufficiently large k satisfying the fixed divisibility condition then realizes $8k$-jets. The main statement still asserts existence of some k; its quantifier has not been strengthened without checking."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-cartier-equivalence-q",
+      "role": "user",
+      "time": "2026-10-11T16:50+08:00",
+      "zh": [
+        "$kR_{n,s}$ Cartier 是否等价于 $kP_n$ Cartier？陈述用前者更好。"
+      ],
+      "en": [
+        "Is $kR_{n,s}$ Cartier equivalent to $kP_n$ Cartier? Prefer the former in the statement."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-cartier-equivalence-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:50+08:00",
+      "zh": [
+        "当前定义下等价：s 为整数，$ks\\xi$ 是 Cartier，两个因子拉回的分数系数位于不同素除子，不能相互抵消。Setup 保留等价说明，陈述统一写 $kR_{n,s}$ Cartier。"
+      ],
+      "en": [
+        "Under the current definition they are equivalent: s is integral, $ks\\xi$ is Cartier, and fractional coefficients pulled back from the two factors lie on different prime divisors and cannot cancel. Setup keeps this equivalence; the statement uses $kR_{n,s}$ Cartier."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-obstruction-statement-short-q",
+      "role": "user",
+      "time": "2026-10-11T16:54+08:00",
+      "zh": [
+        "阻碍引理不要重复 $\\epsilon$ 与几何条件，只写必要前提和结论，并展示精简陈述。"
+      ],
+      "en": [
+        "Avoid repeating the $\\epsilon$ and geometric conditions in the obstruction lemma; show its necessary premise and concise conclusion."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-obstruction-statement-short-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:54+08:00",
+      "zh": [
+        "当时的中间版本为：对每个 s，存在 $n_1(\\epsilon,s)$，对 $n\\ge n_1$，若有 $\\Phi(P_n+sD)<3/8$，则任意允许的 k 和 $z\\in U$ 都不能分离 $8k$-jets。小泛函前提没有删去；后来的两引理框架把它移入证明，此陈述保留为历史步骤。"
+      ],
+      "en": [
+        "The intermediate version says: for every s there is $n_1(\\epsilon,s)$ such that, for $n\\ge n_1$, existence of $\\Phi(P_n+sD)<3/8$ prevents $8k$-jet separation for every allowed k and $z\\in U$. The small-functional premise was retained. The later two-lemma framework moves it into the proof; this remains a historical step."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-explicit-projections-q",
+      "role": "user",
+      "time": "2026-10-11T16:57+08:00",
+      "zh": [
+        "去掉 $P_{n,i}$ 简称，写清 $Z\\to X\\times X$ 和两个复合拉回映射。"
+      ],
+      "en": [
+        "Remove the abbreviations $P_{n,i}$ and specify the map from Z to $X\\times X$ and the composite pullbacks."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-explicit-projections-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:57+08:00",
+      "zh": [
+        "主 Setup 明确 $\\pi:Z\\to X\\times X$，并写 $R_{n,s}=(p_1\\circ\\pi)^*P_n+(p_2\\circ\\pi)^*P_n+s\\xi$。"
+      ],
+      "en": [
+        "The main Setup specifies $\\pi:Z\\to X\\times X$ and writes $R_{n,s}=(p_1\\circ\\pi)^*P_n+(p_2\\circ\\pi)^*P_n+s\\xi$."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-model-map-distinction-q",
+      "role": "user",
+      "time": "2026-10-11T16:57+08:00",
+      "zh": [
+        "射影丛投影用 $\\pi$；高模型一度改为 $\\sigma:\\widetilde X\\to X$，避免同名。"
+      ],
+      "en": [
+        "Use $\\pi$ for the bundle projection; distinguish the higher-model map, temporarily denoted $\\sigma:\\widetilde X\\to X$."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-model-map-distinction-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:57+08:00",
+      "zh": [
+        "这个中间记号修改后来随主框架删去技术定义而退出 Setup。完整三维稿中 $\\pi$ 指射影丛投影，点爆破用 $\\beta$；模型数据仍在技术论证中定义。"
+      ],
+      "en": [
+        "This intermediate notation leaves Setup when the technical definitions are removed from the main framework. In the full threefold draft, $\\pi$ denotes the bundle projection and $\\beta$ the point blowup; model data remain defined locally in the technical arguments."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-no-main-di-abbreviations-q",
+      "role": "user",
+      "time": "2026-10-11T16:58+08:00",
+      "zh": [
+        "主 Setup 也不要引入 $D_i$，直接用拉回写。"
+      ],
+      "en": [
+        "Do not introduce $D_i$ in the main Setup either; use direct pullbacks."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-no-main-di-abbreviations-a",
+      "role": "assistant",
+      "time": "2026-10-11T16:58+08:00",
+      "zh": [
+        "主 Setup 不再定义 $D_i$、$P_{n,i}$。完整稿的技术交数计算可在局部清楚引入 $D_i$、$P_i$，不与主设置混写。"
+      ],
+      "en": [
+        "The main Setup no longer defines $D_i$ or $P_{n,i}$. Technical intersection calculations in the full draft may introduce $D_i$ and $P_i$ locally with explicit definitions."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-two-input-framework-q",
+      "role": "user",
+      "time": "2026-10-11T17:00+08:00",
+      "zh": [
+        "主框架只留两个引理：生成 jets 不需要 $\\kappa(D)=-\\infty$；反设下不能生成 jets。小泛函放到后一引理证明中。"
+      ],
+      "en": [
+        "Keep only two main lemmas: generation without $\\kappa(D)=-\\infty$, and failure of generation under that assumption. Move the small-functional input into the latter proof."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-two-input-framework-a",
+      "role": "assistant",
+      "time": "2026-10-11T17:00+08:00",
+      "zh": [
+        "主引理重编号为 1.1、1.2，小泛函不再作为第三条主输入。1.1 为 $\\exists s\\,\\forall n\\gg0\\,\\exists k,z$；1.2 在反设下为 $\\forall s\\,\\exists n_0(\\epsilon,s)\\,\\forall n\\ge n_0\\,\\forall k,z$ 不分离。取相同 s 与充分大 n 得矛盾；这不是新增的独立认证。"
+      ],
+      "en": [
+        "The main lemmas become 1.1 and 1.2; the small-functional input is no longer a third main lemma. Lemma 1.1 has $\\exists s\\,\\forall n\\gg0\\,\\exists k,z$. Under the contradiction assumption, Lemma 1.2 asserts failure for $\\forall s\\,\\exists n_0(\\epsilon,s)\\,\\forall n\\ge n_0\\,\\forall k,z$. The same s and sufficiently large n yield a contradiction. This is not a new independent verification."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-remove-front-technical-definitions-q",
+      "role": "user",
+      "time": "2026-10-11T17:01+08:00",
+      "zh": [
+        "Setup 后直接接两个引理和矛盾；前面的 jets、exceptional functional 定义都去掉。"
+      ],
+      "en": [
+        "After Setup, proceed directly to the two lemmas and contradiction; remove the preceding jets and exceptional-functional definitions."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-remove-front-technical-definitions-a",
+      "role": "assistant",
+      "time": "2026-10-11T17:01+08:00",
+      "zh": [
+        "Framework 只保留第一节的主论证。技术定义与小泛函论证归入完整三维稿的后一证明节，不在主框架展开。"
+      ],
+      "en": [
+        "Framework retains only the main first-section argument. The technical definitions and small-functional argument belong to the later proof section of the full threefold draft."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-concise-linking-sentences-q",
+      "role": "user",
+      "time": "2026-10-11T17:03+08:00",
+      "zh": [
+        "连接语按顺序写：First, we show the following result；引理 1.1 后反设；引理 1.2 后 Together 得矛盾。"
+      ],
+      "en": [
+        "Use the sequence: “First, we show the following result”; after Lemma 1.1 introduce the contradiction assumption; after Lemma 1.2 conclude with “Together”."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-concise-linking-sentences-a",
+      "role": "assistant",
+      "time": "2026-10-11T17:03+08:00",
+      "zh": [
+        "两个引理量词不变，最后一句明确对同一个 s 和充分大的 n 得到矛盾。"
+      ],
+      "en": [
+        "The two lemmas retain their quantifiers; the final sentence specifies the same s and sufficiently large n."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-jet-data-not-dimension-q",
+      "role": "user",
+      "time": "2026-10-11T17:05+08:00",
+      "zh": [
+        "反设后加一句，说明截面不足导致不能分离 $8k$-jets，末尾用 as shown in the next lemma。"
+      ],
+      "en": [
+        "After the assumption, explain that the sections cannot separate $8k$-jets, ending with “as shown in the next lemma”."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-jet-data-not-dimension-a",
+      "role": "assistant",
+      "time": "2026-10-11T17:05+08:00",
+      "zh": [
+        "准确写为全局截面不能生成全部 $8k$-jet 数据；不额外声称 $h^0$ 维数不足或截面为零。"
+      ],
+      "en": [
+        "The precise wording is that global sections do not generate all $8k$-jet data; it does not additionally assert insufficient $h^0$ dimension or absence of sections."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-threefold-two-proof-sections-q",
+      "role": "user",
+      "time": "2026-10-11T17:06+08:00",
+      "zh": [
+        "完整三维稿第一节严格对齐 Framework，后续只分两节，分别证明现在的 1.1、1.2。"
+      ],
+      "en": [
+        "Align the full threefold first section strictly with Framework; retain two later sections proving the current Lemmas 1.1 and 1.2."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-threefold-two-proof-sections-a",
+      "role": "assistant",
+      "time": "2026-10-11T17:06+08:00",
+      "zh": [
+        "现共三节：主框架、生成 jets 的证明、小泛函与 Frobenius 合并的阻碍证明。原辅助证明、63 个旧标签、19 条参考文献、12 个编号公式环境保留，新增主阻碍标签和组合证明。组合中取 $r_n>s$，用 $(2P_n+sD)\\cdot P_n^2\\le(2+s/r_n)P_n^3<4P_n^3$ 及 $40\\epsilon<3/8$ 应用技术引理；仍属未独立认证的草稿。"
+      ],
+      "en": [
+        "There are now three sections: the main framework, the generation proof, and the obstruction proof combining the scalar and Frobenius inputs. The auxiliary proofs, 63 old labels, 19 bibliography entries and 12 numbered equation environments remain; a main obstruction label and assembly proof are added. Taking $r_n>s$, the assembly uses $(2P_n+sD)\\cdot P_n^2\\le(2+s/r_n)P_n^3<4P_n^3$ and $40\\epsilon<3/8$ to apply the technical lemma. This remains an independently unverified draft."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-jets-reading-remark-q",
+      "role": "user",
+      "time": "2026-10-11T17:10+08:00",
+      "zh": [
+        "第一节证明末尾加一个 Remark，链接关于 jets 的说明文档。"
+      ],
+      "en": [
+        "Add a remark after the first-section proof linking the explanatory Jets document."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "framework-jets-reading-remark-a",
+      "role": "assistant",
+      "time": "2026-10-11T17:10+08:00",
+      "zh": [
+        "第一节后的 Remark 指向 Jets 的定义和例子；不额外加入数学结论。"
+      ],
+      "en": [
+        "The remark after Section 1 points to Jets for definitions and examples; it adds no mathematical claim."
       ],
       "kind": "revision",
       "proofStatus": "unverified"

@@ -12,10 +12,10 @@ raw = (ROOT / (stem + '.tex')).read_bytes()
 text = raw.decode('utf-8').replace('\r\n', '\n')
 body = text.split(r'\maketitle', 1)[1].rsplit(r'\end{document}', 1)[0]
 kinds = 'theorem|setup|lemma|proposition|corollary|proof|thebibliography'
-token = re.compile(r'\\(?P<heading>section|subsection)\{' +
+token = re.compile(r'\\(?P<heading>section|subsection|subsubsection)\{' +
                    r'|\\begin\{(?P<kind>' + kinds + r')\}')
 environment = re.compile(r'\\(?P<edge>begin|end)\{(?P<kind>[^{}]+)\}')
-section = number = subsection = proof = 0
+section = number = subsection = subsubsection = proof = 0
 
 
 def argument(value, start):
@@ -34,7 +34,7 @@ def argument(value, start):
 
 
 def extract(value):
-    global section, number, subsection, proof
+    global section, number, subsection, subsubsection, proof
     blocks, pieces = [], []
     offset = 0
     while match := token.search(value, offset):
@@ -47,11 +47,15 @@ def extract(value):
             title, end = argument(value, match.end() - 1)
             if heading == 'section':
                 section += 1
-                number = subsection = 0
+                number = subsection = subsubsection = 0
                 num = str(section)
-            else:
+            elif heading == 'subsection':
                 subsection += 1
+                subsubsection = 0
                 num = f'{section}.{subsection}'
+            else:
+                subsubsection += 1
+                num = f'{section}.{subsection}.{subsubsection}'
             blocks.append({'type': heading, 'title': title, 'number': num})
         else:
             stack = [kind]
@@ -89,13 +93,15 @@ def extract(value):
                 children = extract(inside)
                 assert children[-1]['type'] == 'text'
                 final_text = children[-1]['content']
-                prefix, marker, completion = final_text.partition('We now complete the proof.')
-                assert marker, 'Missing theorem assembly'
+                marker = 'Together, Lemmas~'
+                prefix, found, completion = final_text.partition(marker)
+                assert found, 'Missing theorem assembly'
+                completion = marker + completion
                 block['introduction'] = children[:-1]
                 if prefix.strip():
                     block['introduction'].append({'type': 'text', 'content': prefix.strip()})
                 block['content'] = completion.strip()
-                block['completionHeading'] = 'We now complete the proof.'
+                block['completionHeading'] = 'Conclusion of the theorem proof.'
             blocks.append(block)
         pieces.append(value[match.start():end])
         offset = end
@@ -117,7 +123,7 @@ blocks = extract(body)
 counts = Counter(block['type'] for block in walk(blocks))
 for kind in kinds.split('|'):
     assert counts[kind] == len(re.findall(r'\\begin\{' + kind + r'\}', body)), kind
-for heading in ('section', 'subsection'):
+for heading in ('section', 'subsection', 'subsubsection'):
     assert counts[heading] == len(re.findall(r'\\' + heading + r'\{', body)), heading
 structure = dict(counts)
 structure['equations'] = len(re.findall(r'\\begin\{equation\}', body))
