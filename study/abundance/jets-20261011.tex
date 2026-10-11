@@ -28,19 +28,39 @@ and $D$ is a Cartier divisor.
 
 \section{Jets and multiplicity}
 \begin{definition}
+Put $\mathcal L=\OO_X(D)$.
 Let $\Lambda=\mathbb P(V)\subseteq|D|$ be a fixed nonempty linear
-subsystem, where $V\subseteq H^0(X,\OO_X(D))$ is a nonzero linear
-subspace. For $x\in X$ and an integer $s\ge0$, the space of $s$-jets of $\OO_X(D)$
-at $x$ is $\OO_X(D)_x/\mathfrak m_x^{s+1}\OO_X(D)_x$.
+subsystem, where $V\subseteq H^0(X,\mathcal L)$ is a nonzero linear
+subspace. For $x\in X$ and an integer $s\ge0$, the space of $s$-jets of $\mathcal L$
+at $x$ is $\mathcal L_x/\mathfrak m_x^{s+1}\mathcal L_x$.
 We say that $\Lambda$ generates, or separates, $s$-jets at $x$ if the restriction
 \[
  V\longrightarrow
- \OO_X(D)_x/\mathfrak m_x^{s+1}\OO_X(D)_x
+ \mathcal L_x/\mathfrak m_x^{s+1}\mathcal L_x
 \]
 is surjective.
 \end{definition}
-Here $\OO_X(D)_x$ is the stalk, a free rank-one $\OO_{X,x}$-module;
-its fibre is only $\OO_X(D)_x/\mathfrak m_x\OO_X(D)_x$.
+On a smooth surface, the space of first-order terms has dimension two,
+and its image from sections vanishing at a point can have dimension
+zero, one or two. For a concrete one-dimensional image, take
+$X=\mathbb P^2$, $D=2H$, $V=\langle Z^2,XZ,Y^2\rangle$ and
+$\Lambda=\mathbb P(V)$ at $x=[0:0:1]$. In the coordinates
+$u=X/Z$, $v=Y/Z$, its sections have local forms
+\[
+ a+bu+cv^2.
+\]
+The full one-jet image is $\langle1,u\rangle$, whereas the linear terms
+of sections vanishing at $x$ span only $\langle u\rangle$.
+The members $u+\lambda v^2=0$ are smooth at $x$ and share the tangent
+line $u=0$. For $w=a\partial_u+b\partial_v$, their derivative along
+$w$ equals $a$. Thus $\partial_u$ is separated but $\partial_v$ is not,
+and $\Lambda$ fails to generate one-jets. This concerns the subsystem:
+the complete system $|2H|$ does generate one-jets. The full one-jet
+space on a surface has dimension three, including the constant term.
+
+
+Here $\mathcal L_x$ is the stalk, a free rank-one $\OO_{X,x}$-module;
+its fibre is only $\mathcal L_x/\mathfrak m_x\mathcal L_x$.
 The exponent $s+1$ retains terms of total degree at most $s$, including
  the constant term. Equivalently, every section on the infinitesimal
 neighbourhood $\operatorname{Spec}(\OO_{X,x}/\mathfrak m_x^{s+1})$
@@ -53,9 +73,9 @@ The space of $s$-jets has dimension $\binom{n+s}{n}$.
 Moreover, $\Lambda$ generates $s$-jets at $x$ if and only if, for every
 $0\le j\le s$, the natural map
 \[
- \{\sigma\in V:\sigma_x\in\mathfrak m_x^j\OO_X(D)_x\}
+ \{\sigma\in V:\sigma_x\in\mathfrak m_x^j\mathcal L_x\}
  \longrightarrow
- \mathfrak m_x^j\OO_X(D)_x/\mathfrak m_x^{j+1}\OO_X(D)_x
+ \mathfrak m_x^j\mathcal L_x/\mathfrak m_x^{j+1}\mathcal L_x
 \]
 is surjective.
 \end{lemma}
@@ -69,8 +89,8 @@ We compare full jets with their successive homogeneous terms.
 Full jet generation lifts any homogeneous term of degree $j$ with all
 lower terms zero, proving the stated surjectivity. Conversely, given a
 local germ, first correct its constant term by a section in $V$. If its
-remaining error lies in $\mathfrak m_x^j\OO_X(D)_x$, the degree-$j$
-surjectivity corrects that error modulo $\mathfrak m_x^{j+1}\OO_X(D)_x$
+remaining error lies in $\mathfrak m_x^j\mathcal L_x$, the degree-$j$
+surjectivity corrects that error modulo $\mathfrak m_x^{j+1}\mathcal L_x$
 without changing lower terms. Induction through $j=s$ lifts the full jet.
 \end{proof}
 For $j=1$, the graded condition is the tangent-vector condition in
@@ -78,7 +98,7 @@ Hartshorne, II, Proposition 7.3(2); the general-$s$ equivalence above
 also requires $j=0$ and every intermediate degree.
 
 For a section $\sigma$, define $\operatorname{ord}_x(\sigma)$ as the
-largest $a$ with $\sigma_x\in\mathfrak m_x^a\OO_X(D)_x$, and set
+largest $a$ with $\sigma_x\in\mathfrak m_x^a\mathcal L_x$, and set
 $\operatorname{ord}_x(0)=\infty$. This is independent of the local frame.
 
 \begin{proposition}
@@ -107,7 +127,7 @@ jet generation concerns surjectivity and does not follow from that existence.
 \begin{proposition}
 The system $\Lambda$ generates one-jets at $x$ if and only if it is base-point
 free at $x$ and the sections vanishing at $x$ span
-$\mathfrak m_x\OO_X(D)_x/\mathfrak m_x^2\OO_X(D)_x$.
+$\mathfrak m_x\mathcal L_x/\mathfrak m_x^2\mathcal L_x$.
 Equivalently, in addition to base-point freeness, every nonzero tangent
 vector $v\in T_xX$ admits a section vanishing at $x$ whose derivative
 along $v$ is nonzero.

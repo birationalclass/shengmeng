@@ -25,4 +25,12 @@ html{scroll-behavior:auto;scroll-padding-top:24px}body{background:var(--paper);c
 
 @media(max-width:600px){.chat-tool-tip{display:none}}
 
-.suggested-reading{margin:0 0 24px;font-size:13px}.suggested-reading a{color:var(--green);text-decoration:underline;text-underline-offset:4px}
+
+.chat-view-tools{align-items:center}
+.reading-guide{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--green);text-decoration:none;padding:13px 3px 9px;border-top:1px solid var(--line);width:42px}
+.reading-guide-label{font:11px/1.3 system-ui,sans-serif;white-space:nowrap}
+.reading-guide-name{font:13px/1.2 Georgia,serif}
+.reading-guide:hover{color:#284f34}.reading-guide:hover .chat-tool-tip,.reading-guide:focus-visible .chat-tool-tip{visibility:visible;opacity:1}
+@media(min-width:1280px){.chat-view-tools{right:max(20px,calc((100vw - 960px)/2 - 116px));width:90px}.reading-guide{width:72px}}
+@media(max-width:1279px){.conversation{padding-right:58px}.chat-view-tools{right:12px;top:100px}.reading-guide-label{display:none}}
+@media(max-width:600px){.chat-view-tools{right:8px;top:auto;bottom:24px}.conversation{padding-right:50px}.reading-guide{width:40px;padding-top:10px;gap:3px}.reading-guide-name{font-size:11px}}

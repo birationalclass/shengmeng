@@ -14,7 +14,10 @@ const viewButtons=[...viewTools.querySelectorAll('[data-chat-view]')];
 const visibleMessages=()=>messages.filter(message=>!message.hidden);
 function updateToolLabels(){
  const english=document.documentElement.lang==='en';
- viewTools.setAttribute('aria-label',english?'Chat visibility':'聊天显示');
+ viewTools.setAttribute('aria-label',english?'Chat visibility and reading guide':'聊天显示与阅读指引');
+ const guide=viewTools.querySelector('.reading-guide');
+ const guideLabel=english?'Reading guide · Jets':'阅读指引 · Jets';
+ guide.setAttribute('aria-label',guideLabel);guide.title=guideLabel;
  for(const button of viewButtons){
   const label=button.dataset.chatView==='all'?(english?'All messages':'完整聊天'):(english?'Important messages':'重要聊天');
   button.setAttribute('aria-label',label);button.title=label;
