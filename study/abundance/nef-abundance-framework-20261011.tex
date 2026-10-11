@@ -1,0 +1,186 @@
+\documentclass[12pt,a4paper,psamsfonts]{amsart}
+\usepackage{amssymb,mathtools}
+\usepackage{calc}
+\setlength{\topmargin}{0cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+\setlength{\marginparwidth}{0cm}
+\setlength{\marginparsep}{0cm}
+\setlength{\textheight}{\paperheight - 2in - 35pt}
+\setlength{\textwidth}{\paperwidth - 2in}
+\setlength{\headheight}{12.5pt}
+\setlength{\headsep}{25pt}
+\setlength{\footskip}{30pt}
+\renewcommand{\baselinestretch}{1.3}
+\pagestyle{headings}
+\raggedbottom
+\setlength{\emergencystretch}{2em}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
+\newtheorem*{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem*{setup}{Setup}
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}[lemma]{Proposition}
+\newtheorem{corollary}[lemma]{Corollary}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\C}{\mathbb C}
+\newcommand{\OO}{\mathcal O}
+\newcommand{\mult}{\operatorname{mult}}
+\newcommand{\nef}{\operatorname{n}}
+\title{Nef Abundance: Framework}
+\date{Temporary draft -- October 11, 2026}
+\begin{document}
+\maketitle
+
+\section{Theorem and proof}
+
+\begin{theorem}
+Let $X$ be a smooth projective threefold over $\C$ such that
+$K_X\sim0$ and $q(X)=0$. Let $D$ be a nef Cartier divisor on $X$
+such that $\nef(X,D)=3$ and $D^3=0$. Then
+\[
+ H^0(X,\OO_X(mD))\ne0
+ \qquad\text{for some integer }m>0.
+\]
+\end{theorem}
+
+\begin{proof}
+Suppose for contradiction that $\kappa(D)=-\infty$, equivalently
+$H^0(X,\OO_X(mD))=0$ for every integer $m>0$.
+
+\begin{setup}
+\leavevmode
+\begin{itemize}
+\setlength{\itemsep}{2pt}
+\setlength{\parsep}{0pt}
+\item Fix an ample Cartier divisor $A$ and $\epsilon\in\Q_{>0}$.
+For integers $n\ge1$, put
+\[
+ a_n=((D+A/n)^3)^{1/3},\qquad
+ r_n=\max\{1,\lfloor\epsilon/a_n+1/2\rfloor\},\qquad
+ P_n=r_n(D+A/n).
+\]
+Then $P_n$ is ample and rational Cartier, $r_n\to\infty$, and
+$P_n^3\to\epsilon^3$. Indeed, $a_n\to0$ and
+$|r_na_n-\epsilon|\le a_n/2$ for all sufficiently large $n$.
+\item Let $p_i:X\times X\to X$ be the projections, for $i=1,2$.
+Put
+\[
+ Z=\mathbb P_{X\times X}
+       \bigl(p_1^*\OO_X(D)\oplus p_2^*\OO_X(D)\bigr).
+\]
+Let $S_1,S_2\subset Z$ be the two summand sections and set
+\[
+ \mathbb T=Z\setminus(S_1\cup S_2).
+\]
+\item For a divisor $P$ on $X$, let $D_i,P_i,P_{n,i}$ denote
+the pullbacks of $D,P,P_n$ by $p_i$, and also their pullbacks to $Z$.
+Set $\xi=c_1(\OO_Z(1))$. For an integer $N>0$, put
+\[
+ R(P,N)=P_1+P_2+N\xi,\qquad R_n=R(P_n,N).
+\]
+Whenever $|kR(P,N)|$ is used, $k>0$ is an integer with $kP$ Cartier.
+\end{itemize}
+
+An \emph{$x$-marked class} consists of a birational morphism
+$f:V\to X$ from a smooth projective threefold and ample Cartier
+divisors $H_1,H_2$ on $V$ such that the point ideal $\mathcal I_x$
+satisfies
+\[
+ \mathcal I_x\OO_V=\OO_V(-B_x)
+\]
+for an effective Cartier divisor $B_x$. Put
+\[
+ \gamma=f_*(H_1\cdot H_2)\in N_1(X)_{\mathbb R},\qquad
+ \ell_x(\gamma)=B_x\cdot H_1\cdot H_2>0.
+\]
+The notation $\ell_x(\gamma)$ retains the chosen witness
+$(f,H_1,H_2)$; it is not a function of the numerical class alone.
+Since $B_x\ne0$, its intersection with $H_1,H_2$ is positive.
+For every effective Cartier divisor $F$ on $X$,
+\[
+ \mult_x(F)\,\ell_x(\gamma)\le F\cdot\gamma.
+\]
+Indeed, a local equation of $F$ belongs to
+$\mathfrak m_x^{\mult_x(F)}$, so
+$f^*F\ge\mult_x(F)B_x$; intersect with $H_1\cdot H_2$ and apply
+the projection formula.
+
+For a Cartier divisor $L$ on a smooth projective variety $W$,
+$|L|$ \emph{separates $s$-jets at $z$} if
+\[
+ \begin{gathered}
+ \forall u\in\OO_{W,z}(L),\quad
+ \exists\sigma\in H^0(W,\OO_W(L)):\\
+ \sigma_z-u\in\mathfrak m_z^{s+1}\OO_{W,z}(L),
+ \end{gathered}
+\]
+where $s\ge0$ is an integer and $\sigma_z$ denotes the germ at $z$.
+We take $\epsilon$ sufficiently small that
+\[
+ 343\epsilon^3<\tfrac14,\qquad40\epsilon<\tfrac38.
+\]
+\end{setup}
+
+We use the following three lemmas under the above setting.
+Their proofs are not included in this temporary framework.
+
+\begin{lemma}\label{lem:framework-witness}
+For every integer $N>0$ and all $n\gg0$, a very general point
+$x\in X$ admits an $x$-marked class $\gamma$ such that
+\[
+ (P_n+ND)\cdot\gamma<40\epsilon\,\ell_x(\gamma).
+\]
+\end{lemma}
+
+\begin{lemma}\label{lem:framework-jets}
+There exists an integer $N>0$ such that, for every $n\gg0$,
+$|kR_n|$ separates $8k$-jets at some $z\in\mathbb T$ for some
+integer $k>0$ with $kP_n$ Cartier.
+\end{lemma}
+
+\begin{lemma}\label{lem:framework-obstruction}
+Let $P$ be ample and rational Cartier, and $N>0$ an integer such that
+\[
+ 343P^3<\tfrac14,\qquad (2P+ND)\cdot P^2<4P^3.
+\]
+If some $x\in X$ admits an $x$-marked class $\gamma$ with
+\[
+ (P+ND)\cdot\gamma<\tfrac38\ell_x(\gamma),
+\]
+then $|kR(P,N)|$ does not separate $8k$-jets at any
+$z\in\mathbb T$, for any integer $k>0$ with $kP$ Cartier.
+\end{lemma}
+
+\newpage
+We now complete the proof, assuming these lemmas.
+Choose $N$ by Lemma~\ref{lem:framework-jets} and take $n$ sufficiently
+large for Lemmas~\ref{lem:framework-witness} and
+\ref{lem:framework-jets}, $r_n>N$, and $343P_n^3<1/4$.
+Since $P_n-r_nD$ is nef,
+\[
+ (2P_n+ND)\cdot P_n^2\le(2+N/r_n)P_n^3<4P_n^3.
+\]
+Take an $x$-marked class $\gamma$ from
+Lemma~\ref{lem:framework-witness}. Then
+\[
+ (P_n+ND)\cdot\gamma
+ <40\epsilon\,\ell_x(\gamma)<\tfrac38\ell_x(\gamma).
+\]
+Applying Lemma~\ref{lem:framework-obstruction} with $P=P_n$
+contradicts Lemma~\ref{lem:framework-jets}. Hence
+$H^0(X,\OO_X(mD))\ne0$ for some integer $m>0$.\qedhere
+\end{proof}
+
+\medskip
+\noindent\textbf{Draft status.}
+This is a reformulation of the first-section argument with its three
+geometric inputs retained, rather than an independent verification
+of those inputs. The witness $(f,H_1,H_2)$ and the point-ideal identity
+must be fixed before reduction of characteristic; the numerical
+class alone does not provide this information. This AI-assisted
+draft is for discussion and checking. No claim of novelty,
+priority, or authorship credit is made.
+
+\end{document}

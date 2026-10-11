@@ -35,3 +35,11 @@ The threefold reading page follows the surface note layout with native details/s
 The current core statements are Lemmas 2.1, 3.1, and 4.1 at the starts of Sections 2, 3, and 4. Section 1 has linked contextual summaries of these same statements, without separate theorem counters or duplicate labels. The extractor splits the final theorem assembly from the preceding summary text. Derive all statement and proof counts from the current source; historical counts above may be superseded. The integer bundle parameter is N, and mixed intersection products are explicit. The chat journal remains separate from the mathematical PDF.
 
 The user now requests a right-side icon toolbar: All messages shows the complete published journal; Important messages shows only kind=mathematics entries with highlight=true. This filter is a reading preference and does not change proof status. Keep language controls, date navigation, and reading position working in both modes. Empty date separators and date links are hidden. Reserve room for the toolbar on narrow screens. Website-tool discussions remain excluded from the journal.
+
+The temporary Nef Abundance: Framework draft contains only Section 1.
+Its PDF and editable TeX use the stem nef-abundance-framework-20261011
+and are linked as separate materials from the chat page. Preserve the
+existing threefold note. The framework retains three geometric inputs
+without their proofs, and the chosen model and point-ideal identity
+must accompany its pushed-forward numerical class. Do not label it
+as an independently verified proof or replace the full note with it.
