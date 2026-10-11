@@ -1,0 +1,202 @@
+@LinearStudy.nativeCoextensionFunctor_additive : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  (f : R →+* S), (ModuleCat.coextendScalars f).Additive
+'LinearStudy.nativeCoextensionFunctor_additive' depends on axioms: [propext, Quot.sound]
+@LinearStudy.nativeCoextensionFunctor_preservesInjectiveObjects : ∀ {R S : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] (f : R →+* S), (ModuleCat.coextendScalars f).PreservesInjectiveObjects
+'LinearStudy.nativeCoextensionFunctor_preservesInjectiveObjects' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextendedInjectiveResolution_term_injective : ∀ {R S : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] (f : R →+* S) (M : ModuleCat R) (I : CategoryTheory.InjectiveResolution M) (n : ℕ),
+  CategoryTheory.Injective
+    ((((ModuleCat.coextendScalars f).mapHomologicalComplex (ComplexShape.up ℕ)).obj I.cocomplex).X n)
+'LinearStudy.nativeCoextendedInjectiveResolution_term_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionRightDerivedZeroIso : {R S : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      (f : R →+* S) →
+        (M : ModuleCat R) → ((ModuleCat.coextendScalars f).rightDerived 0).obj M ≅ (ModuleCat.coextendScalars f).obj M
+'LinearStudy.nativeCoextensionRightDerivedZeroIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeCoextendedInjectiveResolutionHomologyZeroIso : {R S : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      (f : R →+* S) →
+        (M : ModuleCat R) →
+          (I : CategoryTheory.InjectiveResolution M) →
+            (HomologicalComplex.homologyFunctor (ModuleCat S) (ComplexShape.up ℕ) 0).obj
+                (((ModuleCat.coextendScalars f).mapHomologicalComplex (ComplexShape.up ℕ)).obj I.cocomplex) ≅
+              (ModuleCat.coextendScalars f).obj M
+'LinearStudy.nativeCoextendedInjectiveResolutionHomologyZeroIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextendedInjectiveResolutionHomotopyEquiv : {R S : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      (f : R →+* S) →
+        (M : ModuleCat R) →
+          (I J : CategoryTheory.InjectiveResolution M) →
+            HomotopyEquiv (((ModuleCat.coextendScalars f).mapHomologicalComplex (ComplexShape.up ℕ)).obj I.cocomplex)
+              (((ModuleCat.coextendScalars f).mapHomologicalComplex (ComplexShape.up ℕ)).obj J.cocomplex)
+'LinearStudy.nativeCoextendedInjectiveResolutionHomotopyEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectiveNormalization_native_actual_coextended_homology_zero_iso : {n r : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+      let A := MvPolynomial (Fin (r + 1)) ℂ;
+      let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+      have φ := LinearStudy.projectiveLinearNormalizationMap V L;
+      let G := ModuleCat.coextendScalars (algebraMap A B);
+      (I : CategoryTheory.InjectiveResolution ↧A) →
+        (HomologicalComplex.homologyFunctor (ModuleCat B) (ComplexShape.up ℕ) 0).obj
+            ((G.mapHomologicalComplex (ComplexShape.up ℕ)).obj I.cocomplex) ≅
+          G.obj ↧A
+'LinearStudy.projectiveNormalization_native_actual_coextended_homology_zero_iso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectiveNormalization_actual_coextended_homology_zero_exists_injection : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+  (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+    Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+      (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+        let A := MvPolynomial (Fin (r + 1)) ℂ;
+        let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+        have φ := LinearStudy.projectiveLinearNormalizationMap V L;
+        let G := ModuleCat.coextendScalars (algebraMap A B);
+        ∀ (I : CategoryTheory.InjectiveResolution ↧A), ∃ e, Function.Injective ⇑e
+'LinearStudy.projectiveNormalization_actual_coextended_homology_zero_exists_injection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemePushforwardHomSourceActionSection : {X Y : AlgebraicGeometry.Scheme} →
+  (f : X ⟶ Y) →
+    (N : Y.Modules) →
+      (U : Y.Opens) →
+        ↑(X.presheaf.obj (Opposite.op ((TopologicalSpace.Opens.map f.base).obj U))) →
+          ↑((LinearStudy.schemeModuleHomModuleSheaf
+                      ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf))
+                      N).presheaf.obj
+                (Opposite.op U)) →
+            ↑((LinearStudy.schemeModuleHomModuleSheaf
+                      ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf))
+                      N).presheaf.obj
+                (Opposite.op U))
+'LinearStudy.schemePushforwardHomSourceActionSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemePushforwardHomSourceActionSection_evaluation : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  (N : Y.Modules) (U : Y.Opens) (b : ↑(X.presheaf.obj (Opposite.op ((TopologicalSpace.Opens.map f.base).obj U))))
+  (h :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf
+              ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf))
+              N).presheaf.obj
+        (Opposite.op U)))
+  (W : (CategoryTheory.Over U)ᵒᵖ)
+  (x : ↑(X.presheaf.obj (Opposite.op ((TopologicalSpace.Opens.map f.base).obj (Opposite.unop W).left)))),
+  (CategoryTheory.ConcreteCategory.hom ((↑(LinearStudy.schemePushforwardHomSourceActionSection f N U b h)).app W)) x =
+    (CategoryTheory.ConcreteCategory.hom ((↑h).app W))
+      ((CategoryTheory.ConcreteCategory.hom
+            (X.presheaf.map ((TopologicalSpace.Opens.map f.base).map (Opposite.unop W).hom).op))
+          b *
+        x)
+'LinearStudy.schemePushforwardHomSourceActionSection_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemePushforwardHomSourceActionSection_one : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  (N : Y.Modules) (U : Y.Opens)
+  (h :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf
+              ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf))
+              N).presheaf.obj
+        (Opposite.op U))),
+  LinearStudy.schemePushforwardHomSourceActionSection f N U 1 h = h
+'LinearStudy.schemePushforwardHomSourceActionSection_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemePushforwardHomSourceActionSection_mul : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  (N : Y.Modules) (U : Y.Opens) (b c : ↑(X.presheaf.obj (Opposite.op ((TopologicalSpace.Opens.map f.base).obj U))))
+  (h :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf
+              ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf))
+              N).presheaf.obj
+        (Opposite.op U))),
+  LinearStudy.schemePushforwardHomSourceActionSection f N U (b * c) h =
+    LinearStudy.schemePushforwardHomSourceActionSection f N U b
+      (LinearStudy.schemePushforwardHomSourceActionSection f N U c h)
+'LinearStudy.schemePushforwardHomSourceActionSection_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemePushforwardHomSourceActionSection_add : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  (N : Y.Modules) (U : Y.Opens) (b c : ↑(X.presheaf.obj (Opposite.op ((TopologicalSpace.Opens.map f.base).obj U))))
+  (h :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf
+              ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf))
+              N).presheaf.obj
+        (Opposite.op U))),
+  LinearStudy.schemePushforwardHomSourceActionSection f N U (b + c) h =
+    LinearStudy.schemePushforwardHomSourceActionSection f N U b h +
+      LinearStudy.schemePushforwardHomSourceActionSection f N U c h
+'LinearStudy.schemePushforwardHomSourceActionSection_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemePushforwardHomSourceActionSection_map_add : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  (N : Y.Modules) (U : Y.Opens) (b : ↑(X.presheaf.obj (Opposite.op ((TopologicalSpace.Opens.map f.base).obj U))))
+  (h k :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf
+              ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf))
+              N).presheaf.obj
+        (Opposite.op U))),
+  LinearStudy.schemePushforwardHomSourceActionSection f N U b (h + k) =
+    LinearStudy.schemePushforwardHomSourceActionSection f N U b h +
+      LinearStudy.schemePushforwardHomSourceActionSection f N U b k
+'LinearStudy.schemePushforwardHomSourceActionSection_map_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemePushforwardHomSourceActionSection_zero : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  (N : Y.Modules) (U : Y.Opens)
+  (h :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf
+              ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf))
+              N).presheaf.obj
+        (Opposite.op U))),
+  LinearStudy.schemePushforwardHomSourceActionSection f N U 0 h = 0
+'LinearStudy.schemePushforwardHomSourceActionSection_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemePushforwardHomSourceActionSection_map_zero : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  (N : Y.Modules) (U : Y.Opens) (b : ↑(X.presheaf.obj (Opposite.op ((TopologicalSpace.Opens.map f.base).obj U)))),
+  LinearStudy.schemePushforwardHomSourceActionSection f N U b 0 = 0
+'LinearStudy.schemePushforwardHomSourceActionSection_map_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemePushforwardHomSourceModule : {X Y : AlgebraicGeometry.Scheme} →
+  (f : X ⟶ Y) →
+    (N : Y.Modules) →
+      (U : Y.Opens) →
+        Module ↑(X.presheaf.obj (Opposite.op ((TopologicalSpace.Opens.map f.base).obj U)))
+          ↑((LinearStudy.schemeModuleHomModuleSheaf
+                    ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf))
+                    N).presheaf.obj
+              (Opposite.op U))
+'LinearStudy.schemePushforwardHomSourceModule' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemePushforwardHomSourceActionSection_base_smul : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  (N : Y.Modules) (U : Y.Opens) (r : ↑(Y.presheaf.obj (Opposite.op U)))
+  (h :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf
+              ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf))
+              N).presheaf.obj
+        (Opposite.op U))),
+  LinearStudy.schemePushforwardHomSourceActionSection f N U
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.app f U)) r) h =
+    r • h
+'LinearStudy.schemePushforwardHomSourceActionSection_base_smul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemePushforwardHomSourceActionSection_restrict : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  (N : Y.Modules) {U V : Y.Opens} (i : V ⟶ U)
+  (b : ↑(X.presheaf.obj (Opposite.op ((TopologicalSpace.Opens.map f.base).obj U))))
+  (h :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf
+              ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf))
+              N).presheaf.obj
+        (Opposite.op U))),
+  let H :=
+    LinearStudy.schemeModuleHomModuleSheaf
+      ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf)) N;
+  (CategoryTheory.ConcreteCategory.hom (H.presheaf.map i.op))
+      (LinearStudy.schemePushforwardHomSourceActionSection f N U b h) =
+    LinearStudy.schemePushforwardHomSourceActionSection f N V
+      ((CategoryTheory.ConcreteCategory.hom (X.presheaf.map ((TopologicalSpace.Opens.map f.base).map i).op)) b)
+      ((CategoryTheory.ConcreteCategory.hom (H.presheaf.map i.op)) h)
+'LinearStudy.schemePushforwardHomSourceActionSection_restrict' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
