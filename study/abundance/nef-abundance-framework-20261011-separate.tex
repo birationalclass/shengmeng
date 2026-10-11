@@ -100,9 +100,9 @@ integer $k>0$ with $kR_{n,s}$ Cartier.
 \noindent\textbf{Proof outline for Lemma~\ref{lem:full-jets}.}
 The proof has five steps.
 \begin{enumerate}
-\item Normalize $P_n$ so that $r_n\to\infty$ while $P_n^3$ stays
-bounded and bounded away from zero. The projective-bundle calculation
-in Lemma~\ref{lem:bundle-volume} then controls $R_{n,s}^7$.
+\item Apply the projective-bundle calculation in
+Lemma~\ref{lem:bundle-volume} to bound $R_{n,s}^7$ and the
+fourfold slice volumes.
 \item Suppose no point of $U$ has Seshadri constant greater than $8$.
 The moving-kernel construction produces base components $V$ with
 high multiplicity. Lemma~\ref{lem:hd-base-degree} bounds their degrees;
@@ -133,9 +133,9 @@ and checking.
 
 \section{Lower-dimensional induction hypotheses}
 
-All varieties are over $\C$. In dimensions strictly less than three,
-we assume the following two abundance statements for projective klt
-$\Q$-pairs $(Y,B)$ and nef rational Cartier divisors $M$:
+All varieties are over $\C$. For $1\le\dim Y<3$, assume the
+following whenever $Y$ is normal projective and $B\ge0$ is a
+rational divisor with $(Y,B)$ klt, and $M$ is nef and rational Cartier:
 \begin{itemize}
 \item If $K_Y+B$ is nef, then it is semiample.
 \item If $K_Y+B$ is pseudo-effective and $K_Y+B+M$ is nef,
@@ -149,7 +149,8 @@ They are model inputs, separate from the two abundance hypotheses.
 
 
 \begin{lemma}\label{lem:lower-dimensional}
-Let $(Y,B)$ be a projective klt $\Q$-pair with $1\le\dim Y<3$.
+Let $Y$ be normal projective with $1\le\dim Y<3$, and let
+$B\ge0$ be a rational divisor with $(Y,B)$ klt.
 Let $T=K_Y+B$ be pseudo-effective and $M$ a nef rational Cartier divisor.
 Assume the two lower-dimensional abundance hypotheses above.
 If, for some $a\in\Q_{>0}$,
@@ -162,9 +163,9 @@ then $T+cM$ is big for every $c\in\Q_{>0}$.
 \begin{proof}
 Use the $M$-trivial adjoint reduction of
 \cite[Section~8.2]{NS}, after clearing the Cartier index of $M$.
-It gives a birational contraction to a klt pair $(Y',B')$ with
-$T'=K_{Y'}+B'$ pseudo-effective, $M'$ nef, and
-$A=T'+bM'$ nef for some rational $b>0$. On a common resolution,
+It gives a birational contraction $Y\dashrightarrow Y'$ with
+$(Y',B')$ klt, $T'=K_{Y'}+B'$ pseudo-effective, and $M'$ and
+$T'+bM'$ nef for some rational $b>0$. Put $A=T'+bM'$. On a common resolution,
 \[
  p^*T=q^*T'+E,\qquad p^*M=q^*M',\qquad E\ge0
  \quad\text{$q$-exceptional}.
@@ -234,12 +235,11 @@ the inequality.
 Let $W$ be smooth projective, $\Theta$ an effective rational divisor,
 and $V\subset W$ an integral subvariety of positive dimension.
 Suppose $(W,\Theta)$ is lc at $\eta_V$ and has an lc place centred on $V$.
-Let $V^\nu\to V$ be the normalization and put
-$L=(K_W+\Theta)|_{V^\nu}$. There are a finite surjective morphism
+Let $V^\nu\to V$ be the normalization. There are a finite surjective morphism
 $\eta:V'\to V^\nu$, with $V'$ normal, an effective rational divisor
 $B_{V'}$, and the trace $M_{V'}$ of a b-nef rational b-divisor such that
 \[
- \eta^*L\sim_\Q K_{V'}+B_{V'}+M_{V'}.
+ \eta^*((K_W+\Theta)|_{V^\nu})\sim_\Q K_{V'}+B_{V'}+M_{V'}.
 \]
 \end{lemma}
 \begin{proof}
@@ -284,16 +284,16 @@ required for this use of the formula.
 Let $W$ be smooth projective, $\Theta\ge0$ a rational divisor,
 and $V\subset W$ an integral subvariety of dimension $f>0$.
 Suppose $(W,\Theta)$ is lc at $\eta_V$ and has an lc place centred on $V$.
-For every nef rational Cartier divisor $P_V$ on $V$ and resolution
+For every nef rational Cartier divisor $P$ on $V$ and resolution
 $\rho:Y\to V$,
 \[
- K_Y\cdot(\rho^*P_V)^{f-1}
- \le (K_W+\Theta)|_V\cdot P_V^{f-1}.
+ K_Y\cdot(\rho^*P)^{f-1}
+ \le (K_W+\Theta)|_V\cdot P^{f-1}.
 \]
 \end{lemma}
 \begin{proof}
 Apply Lemma~\ref{lem:finite-subadjunction-model} and intersect with
-$f-1$ copies of the pulled-back $P_V$. The effective discriminant
+$f-1$ copies of the pulled-back $P$. The effective discriminant
 and the moduli trace have nonnegative intersection; for the latter,
 push down from a higher base where the moduli divisor is nef.
 For compatible canonical Weil cycles,
@@ -308,16 +308,16 @@ $K_{V^\nu}$ is needed.
 \end{proof}
 
 \begin{lemma}\label{lem:canonical-centre}
-Let $W$ be smooth projective, $P_W$ a nef rational Cartier divisor,
-and $k>0$ an integer with $kP_W$ Cartier. Let
-$\Lambda\subseteq|kP_W|$ be a nonempty linear system and $V$ an
+Let $W$ be smooth projective, $P$ a nef rational Cartier divisor,
+and $k>0$ an integer with $kP$ Cartier. Let
+$\Lambda\subseteq|kP|$ be a nonempty linear system and $V$ an
 integral base-locus component of positive dimension and codimension $a$.
 If $\mult_V(F)\ge h$ for every $F\in\Lambda$, where $h>0$ is an integer,
 then there exists $c\in\Q_{>0}$ with $c\le ak/h$ such that, on a
 resolution $\rho:Y\to V$,
 \[
- K_Y\cdot(\rho^*(P_W|_V))^{\dim V-1}
- \le (K_W+cP_W)|_V\cdot(P_W|_V)^{\dim V-1}.
+ K_Y\cdot(\rho^*(P|_V))^{\dim V-1}
+ \le (K_W+cP)|_V\cdot(P|_V)^{\dim V-1}.
 \]
 \end{lemma}
 \begin{proof}
@@ -326,12 +326,11 @@ $\lambda\le a/h$, as seen by blowing up the smooth generic
 centre. On a log resolution, average sufficiently many general
 members of the subseries with total coefficient $\lambda$.
 This gives an actual effective boundary
-$\Theta\sim_{\Q}k\lambda P_W$ which is lc at the generic
+$\Theta\sim_{\Q}k\lambda P$ which is lc at the generic
 point of $V$ and has an lc place centred on $V$.
 Lemma~\ref{lem:generic-subadjunction} gives the inequality with
 $c=k\lambda$. The construction uses actual general members of
 the given subseries, and requires lc only at $\eta_V$.
-Both the threshold bound and subadjunction are dimension-independent.
 \end{proof}
 
 \begin{lemma}\label{lem:jet-normal-containment}
@@ -360,8 +359,7 @@ parameters $t'$ and write $\Gamma$ locally as
 $u=t'-F(t'',w)=0$. Differentiation in $t'$ with $t'',w$ fixed
 is differentiation in $u$. Thus all terms of degree less than $h$
 in the normal parameters vanish, giving $s\in I_\Gamma^h$.
-Characteristic zero and faithful flatness of the analytic local
-ring give the algebraic containment. Restricting the finite frame
+Faithful flatness of the analytic local ring gives the algebraic containment. Restricting the finite frame
 to a general parameter fibre proves the assertion, as in
 \cite[Lemma~7.3]{LA}.
 \end{proof}
@@ -392,12 +390,12 @@ This is the actual-image restriction in \cite[Lemma~7.4]{LA}.
 
 \begin{lemma}\label{lem:full-kernels}
 Let $W$ be a smooth projective variety of dimension $d$, and let
-$P_W$ be ample and rational Cartier. Fix an integer $k>0$ with $kP_W$ Cartier and levels
+$P$ be ample and rational Cartier. Fix an integer $k>0$ with $kP$ Cartier and levels
 $0\le\tau_0<\cdots<\tau_d$ with common gap $\delta>0$ and
 $k\delta\ge4$. Suppose that, at a very general marked point $z$,
 all full spaces
 \[
- \mathcal H_i(z)=H^0(W,\OO_W(kP_W)\otimes\mathfrak m_z^{\lceil k\tau_i\rceil})
+ \mathcal H_i(z)=H^0(W,\OO_W(kP)\otimes\mathfrak m_z^{\lceil k\tau_i\rceil})
 \]
 are nonzero, and the lowest base locus has a positive-dimensional
 component through $z$. Then there is an algebraic covering family
@@ -411,8 +409,8 @@ entire higher-kernel base ideal satisfies
 Consequently, on a resolution $V_t^*$,
 \begin{equation}\label{eq:full-kernel-bounds}
  \begin{split}
- 0<P_W^f\cdot V_t&\le(2/\delta)^{d-f}P_W^d,\\
- K_{V_t^*}\cdot P_W^{f-1}&\le(K_W+cP_W)|_{V_t}\cdot P_W^{f-1},
+ 0<P^f\cdot V_t&\le(2/\delta)^{d-f}P^d,\\
+ K_{V_t^*}\cdot P^{f-1}&\le(K_W+cP)|_{V_t}\cdot P^{f-1},
  \qquad 0<c\le2(d-f)/\delta.
  \end{split}
 \end{equation}
@@ -441,14 +439,14 @@ For each $f\in\{1,2,3\}$, there is an integer $m_f>0$ depending
 only on $f$ with the following property. Let $Y$ be smooth projective
 of dimension $f$. Let $B_0$ be a reduced simple normal crossing
 divisor or zero, $L$ a nef Cartier divisor of full nef dimension,
-and $P_Y$ a nef rational Cartier divisor. Let $r,C_0,C_1>0$. If
+and $P$ a nef rational Cartier divisor. Let $r,C_0,C_1>0$. If
 \[
- 0<P_Y^f\le C_0,\quad P_Y-rL\text{ is nef},\quad
+ 0<P^f\le C_0,\quad P-rL\text{ is nef},\quad
  K_Y+B_0+L\text{ is big},
 \]
 and
 \[
- (K_Y+B_0+L)\cdot P_Y^{f-1}\le C_1P_Y^f,
+ (K_Y+B_0+L)\cdot P^{f-1}\le C_1P^f,
 \]
 then
 \[
@@ -462,19 +460,19 @@ in $\{0,1\}$ and Cartier index one for $L$, makes
 $|m_f(K_Y+B_0+L)|$ birational. Resolve its base ideal and let
 $H$ be the free moving part. Then $H$ is nef and big and
 \[
- H\cdot P_Y^{f-1}\le m_fC_1P_Y^f.
+ H\cdot P^{f-1}\le m_fC_1P^f.
 \]
 Khovanskii--Teissier gives
 \[
- P_Y\cdot H^{f-1}\le P_Y^f
- \left(\frac{H\cdot P_Y^{f-1}}{P_Y^f}\right)^{f-1}
+ P\cdot H^{f-1}\le P^f
+ \left(\frac{H\cdot P^{f-1}}{P^f}\right)^{f-1}
  \le(m_fC_1)^{f-1}C_0.
 \]
 General hyperplanes through the image of a very general point
 under the birational morphism defined by $H$ cut an effective
 curve cycle containing a curve $C$ through that point.
 Full nef dimension and integrality give $L\cdot C\ge1$.
-Thus $r\le P_Y\cdot C\le P_Y\cdot H^{f-1}$. For $f=1$ take $C=Y$.
+Thus $r\le P\cdot C\le P\cdot H^{f-1}$. For $f=1$ take $C=Y$.
 This is \cite[Lemma~4.1]{NS}; the constants depend only on the dimension.
 \end{proof}
 
@@ -942,11 +940,10 @@ then
 where $m_3$ is the integer in Lemma~\ref{lem:bounded-curves}.
 \end{lemma}
 \begin{proof}
-Each $Y$ is birational to both of its Stein covers. Fix a pair
-$T_1,T_2$ occurring among the original members satisfying
-the displayed bounds. The projected incidence
-dominates $X\times X$. The possible graph families for the
-finitely many pairs belong to countably many Hilbert schemes;
+Each member is birational to both of its Stein covers. Fix $T_1,T_2$
+occurring together in an original member with the displayed bounds. The projected incidence
+dominates $X\times X$. The possible graph families for these finitely many choices
+belong to countably many Hilbert schemes;
 stratify for flat integral fibres and birational projections.
 Uncountability of $\C$ implies that one such integral graph
 family has evaluation dominant over $X\times X$. Its evaluation
@@ -955,15 +952,15 @@ finite over $X\times X$, and of the same dimension.
 
 The covers are non-uniruled, since they are finite over $X$.
 Lemma~\ref{lem:fixed-graphs} makes them birational to an abelian
-variety $A_0$. Return to an \emph{original} correspondence for
-this pair and resolve further to get a birational morphism
-$p:Y\to A_0$. This preserves the displayed bounds; additional exceptional
+variety $A_0$. Return to an original member with these covers and resolve further
+to obtain $p:Y\to A_0$. The bounds are preserved, since exceptional
 canonical divisors have zero intersection with the pulled-back
-testing square. The divisor $L=g_1^*D$ remains nef Cartier of
+testing square. Write $P$ for the pulled-back testing divisor.
+The divisor $L=g_1^*D$ remains nef Cartier of
 full nef dimension. Lemma~\ref{lem:abelian-adjoint} gives
 $K_Y+L$ big, while
 \[
- (K_Y+L)\cdot P_Y^2\le(C_1+1/r)P_Y^3.
+ (K_Y+L)\cdot P^2\le(C_1+1/r)P^3.
 \]
 If $r<1$, the asserted bound is immediate. Otherwise
 Lemma~\ref{lem:bounded-curves}, with $C_1+1/r\le C_1+1$, gives
