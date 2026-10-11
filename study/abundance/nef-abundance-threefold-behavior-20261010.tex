@@ -1,6 +1,20 @@
-\documentclass[12pt,a4paper]{amsart}
+\documentclass[12pt,a4paper,psamsfonts]{amsart}
 \usepackage{amssymb,mathtools}
-\usepackage[margin=1in]{geometry}
+\usepackage{calc}
+\setlength{\topmargin}{0cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+\setlength{\marginparwidth}{0cm}
+\setlength{\marginparsep}{0cm}
+\setlength{\textheight}{\paperheight - 2in - 35pt}
+\setlength{\textwidth}{\paperwidth - 2in}
+\setlength{\headheight}{12.5pt}
+\setlength{\headsep}{25pt}
+\setlength{\footskip}{30pt}
+\renewcommand{\baselinestretch}{1.3}
+\pagestyle{headings}
+\raggedbottom
+\setlength{\emergencystretch}{2em}
 \usepackage[colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
 \newtheorem*{theorem}{Theorem}
 \theoremstyle{definition}
@@ -62,8 +76,8 @@ For an integer $N>0$, put
 \[
  R_n=P_{n,1}+P_{n,2}+N\xi.
 \]
-For any divisor $P$ on $X$, let $P_i$ denote its pullback by the
-same convention and write $R(P,N)=P_1+P_2+N\xi$; thus
+For a divisor $P$ on $X$, denote its pullbacks by $P_i$ and set
+$R(P,N)=P_1+P_2+N\xi$; thus
 $R_n=R(P_n,N)$.
 Let $\mathbb T\subset Z$ be the complement of the two summand sections.
 \end{itemize}
@@ -85,7 +99,7 @@ $|L|$ \emph{separates $s$-jets at $z$} if every class in
 \[
  \OO_{W,z}(L)/\mathfrak m_z^{s+1}\OO_{W,z}(L)
 \]
-is the germ modulo $\mathfrak m_z^{s+1}$ of a global section
+is represented modulo $\mathfrak m_z^{s+1}$ by a section
 of $\OO_W(L)$. Here $\mathfrak m_z$ is the maximal ideal of $\OO_{W,z}$.
 Equivalently, after a local trivialization, every Taylor polynomial
 of total degree at most $s$ is realized by a global section.
@@ -95,11 +109,8 @@ We take $\epsilon$ sufficiently small that
 \]
 \end{setup}
 
-Under the preceding setup and contradiction assumption, we use the
-following three lemmas, stated with full hypotheses at the beginning
-of Sections~\ref{sec:geometric-inputs}--\ref{sec:frobenius}.
-The first two supply a curve class and a jet system; the third excludes
-their coexistence.
+We use the following lemmas, proved in
+Sections~\ref{sec:geometric-inputs}--\ref{sec:frobenius}, respectively.
 
 \noindent\textbf{Lemma~\ref{lem:full-scalar}.}
 For every integer $N>0$ and all $n\gg0$, a very general point
@@ -136,8 +147,8 @@ $\mathbb T$, for any integer $k>0$ with $kP$ Cartier.
 
 
 We now complete the proof. Choose $N$ by Lemma~\ref{lem:full-jets}.
-For this fixed $N$, take $n$ sufficiently large that both
-Lemmas~\ref{lem:full-scalar} and \ref{lem:full-jets} apply,
+Fix $N$ and take $n$ sufficiently large for
+Lemmas~\ref{lem:full-scalar} and \ref{lem:full-jets},
 $r_n>N$, and $343P_n^3<1/4$. Put $P=P_n$.
 Since $P-r_nD$ is nef,
 \[
@@ -153,9 +164,8 @@ Lemma~\ref{lem:curve-multiplicity-blowup}. Thus
 \[
  \pi^*(P+ND)\cdot \gamma\le40\epsilon J\cdot \gamma<\tfrac38J\cdot \gamma.
 \]
-Lemma~\ref{lem:full-contradiction} therefore forbids the jet
-separation supplied by Lemma~\ref{lem:full-jets}. This contradiction
-proves $H^0(X,\OO_X(mD))\ne0$ for some integer $m>0$.\qedhere
+This contradicts Lemmas~\ref{lem:full-contradiction} and
+\ref{lem:full-jets}. Hence $H^0(X,\OO_X(mD))\ne0$ for some integer $m>0$.\qedhere
 \end{proof}
 
 \section{Proof of Lemma~\ref{lem:full-scalar}}\label{sec:geometric-inputs}
@@ -205,10 +215,9 @@ are $\C$.
 
 
 Write $\nu(D)=\max\{j:D^j\cdot A^{3-j}>0\}\in\{1,2\}$.
-We first bound multiplicities and then obtain the required movable
-class by duality. The same base-component estimates are used in
-Section~\ref{sec:large-jets}.
-All auxiliary varieties in these two sections are over $\C$.
+We obtain the curve bound from a multiplicity estimate and duality.
+The base-component estimates also apply in Section~\ref{sec:large-jets}.
+All auxiliary varieties in these sections are over $\C$.
 
 \subsection{Normalization and numerical inputs}\label{sec:lower-dimensional-inputs}
 
@@ -740,7 +749,7 @@ Their images cover $X$. The normalization of $C_t$ is $B_t$, so
  (P_n+ND)\cdot C_t=f^*(P_n+ND)\cdot B_t
  \le40\epsilon\,g^*J\cdot B_t.
 \]
-The first equality follows from Lemma~\ref{lem:curve-multiplicity-blowup}. This proves the assertion.
+The first equality follows from Lemma~\ref{lem:curve-multiplicity-blowup}.
 \end{proof}
 
 \section{Proof of Lemma~\ref{lem:full-jets}}\label{sec:large-jets}
@@ -1655,7 +1664,7 @@ and Lemma~\ref{lem:determinant-upper-bound} give
  \tfrac34R_p<\mult_{(x',x')}(E_\sigma)
  \le R_p\bigl(2b+O(p^{-1})\bigr).
 \end{equation}
-Dividing by $R_p$ and letting $p\to\infty$ gives
+Divide by $R_p$ and let $p\to\infty$. Then
 $3/4\le2b<3/4$, a contradiction.
 \end{proof}
 
