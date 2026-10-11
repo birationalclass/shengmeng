@@ -831,40 +831,49 @@ Linear.NativeBaseSourceWeightedSectionsLinear: cached compiled module (source an
 Linear.NativeNormalizationWeightedChartRingActions: cached compiled module (source and project dependencies unchanged)
 Linear.NativeNormalizationPushforwardWeightedSections: cached compiled module (source and project dependencies unchanged)
 Linear.ProjectiveNativeWeightedPushforwardSectionsBijective: cached compiled module (source and project dependencies unchanged)
-Linear.ActualAffineAlgebraDualInternalHomLinear: exit 0; source 2c63dfc227a16b3be3f47f017c04e1bd7661180d7f3cb5782eab1933a148b871
-Linear\ActualAffineAlgebraDualInternalHomLinear.lean:80:49: warning: This simp argument is unused:
-  Iso.hom_inv_id_assoc
+Linear.ActualAffineAlgebraDualInternalHomLinear: cached compiled module (source and project dependencies unchanged)
+Linear.ActualAffineAlgebraDualInternalHomValues: cached compiled module (source and project dependencies unchanged)
+Linear.NativeDualGlobalHomWeightedOverlapLinear: cached compiled module (source and project dependencies unchanged)
+Linear.NativeNormalizationPushforwardGlobalHomWeightedLinear: cached compiled module (source and project dependencies unchanged)
+Linear.ProjectiveNativeGlobalWeightedOverlapDuality: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomEvaluationRestriction: cached compiled module (source and project dependencies unchanged)
+Linear.ActualAffineAlgebraDualEvaluation: cached compiled module (source and project dependencies unchanged)
+Linear.NativeNormalizationPushforwardGlobalHomWeightedSourceValues: cached compiled module (source and project dependencies unchanged)
+Linear.ActualAffineAlgebraDualElementEvaluation: cached compiled module (source and project dependencies unchanged)
+Linear.ActualAffineAlgebraDualSpecValue: cached compiled module (source and project dependencies unchanged)
+Linear.ActualAffineAlgebraDualValueNaturality: cached compiled module (source and project dependencies unchanged)
+Linear.NativeWeightedAffineInternalHomValueNaturality: cached compiled module (source and project dependencies unchanged)
+Linear.NativeDualGlobalHomWeightedOverlapValues: cached compiled module (source and project dependencies unchanged)
+Linear.SchemeModuleHomOpenEvaluation: exit 0; source 2b0c0dfafa76147b88529bb551bd076b5413aa809c81d384ceab45a92ec00ee3
 
-Hint: Omit it from the simp argument list.
-  [apply] simp only [Category.assoc]
+Linear.SchemeModuleHomCompositeEvaluation: exit 0; source e9efd0544b6060005857819931c6a377646fa6d8a0a9b7f0a36034eaf5207eb0
 
-Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Linear.SchemeModuleHomAffineTransportEvaluation: exit 0; source f80bdd7aead4c24bb0a853da1e8c727c617e0d112413426e562f2ea52363c8af
 
-Linear.ActualAffineAlgebraDualInternalHomValues: exit 0; source 4f81593a1b3e43a4a4428987e6b9f623811bb0cd24043fef82c4c24a92852b34
+Linear.ActualAffineAlgebraDualEvaluationExt: exit 0; source 08fec3de1b801f7b589e106cc522abec1b7ecc055e820a7acb54831166a2ebc7
 
-Linear.NativeDualGlobalHomWeightedOverlapLinear: exit 0; source 4ae3eb5ca47729a3667ad46aa5164e2310f71722670f4fbaee4e5f641c7cfeed
+Linear.StructureModuleCompositeChartValue: exit 0; source f002dd0242435141fdb894e93d283f6a02c9304b25c75d038a0a01e2eac29d65
 
-Linear.NativeNormalizationPushforwardGlobalHomWeightedLinear: exit 0; source b4f7598e92b3d9be306148f8187b396fda6573dc6deffe0fec7365c72c7fe356
-
-Linear.ProjectiveNativeGlobalWeightedOverlapDuality: exit 0; source e2056aa0ea2bfc608f7903e8770a676909edd0818441b5da87855996ee7deafb
-
-Linear.SchemeModuleHomEvaluationRestriction: exit 0; source e6b78c05f0007adbf71fe91692f44df178401b53c85869ead835b0bd8884943c
-
-Linear.ActualAffineAlgebraDualEvaluation: exit 0; source c1fe47ad5a2a6fa5b28237f81b354dcd861229b8d972e861bcfffcbf2e3dfb0c
-
-Linear.NativeNormalizationPushforwardGlobalHomWeightedSourceValues: exit 0; source 316347b1ec47d2180e6f1d0c417778214bfc02a797ecfbf145cf446923d368a1
-Linear\NativeNormalizationPushforwardGlobalHomWeightedSourceValues.lean:43:2: warning: Try this: 
-  letI̵
-
-The goal is a proposition, so `let` is preferred over `letI`.
-The difference between `let` and `letI` is that `letI` inlines the value.
-But this is not relevant for proofs because of proof irrelevance.
-
-Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-
-Linear: exit 0; source db10504d29cf0d0bcd56428bec9bf0ef2113ecbd55707e0ebb1e00e4819feb5f
+Linear: exit 0; source 5b6e27437005468e14fe6ac219c62ae09b15f004d9a7366057e4ec8b7db1a6aa
 
 Local audit: python audit.py
+LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv_element_evaluation.{u} {A B : Type u} [CommRing A]
+  [CommRing B] [Algebra A B] (f : B →ₗ[A] A) (b : B) :
+  let P :=
+    (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))).obj
+      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf);
+  let Q := SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf;
+  have e := LinearStudy.actualAffineAlgebraStructurePushforwardIso;
+  have t := AlgebraicGeometry.tildeSelf;
+  (LinearStudy.schemeModuleHomSectionEvaluation P Q ⊤
+        (LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv f))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app e.hom ⊤))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) b)) =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app t.hom ⊤))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧A ⊤)) (f b))
+'LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv_element_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.schemeModuleHomSectionEvaluation_top_value.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules)
   (f : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op ⊤)))
   (x : ↑(M.presheaf.obj (Opposite.op ⊤))) :
@@ -889,6 +898,37 @@ LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv_evaluation.{u}
           (AlgebraicGeometry.Scheme.Modules.Hom.app ((AlgebraicGeometry.tilde.functor ↧A).map (ModuleCat.ofHom f)) ⊤))
         x)
 'LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.actualAffineAlgebraDualInternalHomSections_evaluation_ext.{u} {A B : Type u} [CommRing A] [CommRing B]
+  [Algebra A B]
+  (h k :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf
+              ((AlgebraicGeometry.Scheme.Modules.pushforward
+                    (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))).obj
+                (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf))
+              (SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf)).presheaf.obj
+        (Opposite.op ⊤)))
+  (H :
+    ∀ (b : B),
+      (LinearStudy.schemeModuleHomSectionEvaluation
+            ((AlgebraicGeometry.Scheme.Modules.pushforward
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))).obj
+              (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf))
+            (SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf) ⊤ h)
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))
+            ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) b)) =
+        (LinearStudy.schemeModuleHomSectionEvaluation
+            ((AlgebraicGeometry.Scheme.Modules.pushforward
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))).obj
+              (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf))
+            (SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf) ⊤ k)
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))
+            ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) b))) :
+  h = k
+'LinearStudy.actualAffineAlgebraDualInternalHomSections_evaluation_ext' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.actualAffineAlgebraStructurePushforwardIso.{u} {A B : Type u} [CommRing A] [CommRing B] [Algebra A B] :
@@ -928,6 +968,52 @@ LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv_eq_native.{u} 
       LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv =
     LinearStudy.nativeAffineInternalHomSectionsLinearEquiv 𝒜 𝓑 a ha hinj
 'LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv_eq_native' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.actualTildeSelf_toOpen_top_value.{u} (A : Type u) [CommRing A] (a : A) :
+  (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app AlgebraicGeometry.tildeSelf.hom ⊤))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧A ⊤)) a) =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧A).inv) a
+'LinearStudy.actualTildeSelf_toOpen_top_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv_spec_value.{u} {A B : Type u} [CommRing A]
+  [CommRing B] [Algebra A B] (f : B →ₗ[A] A) (b : B) :
+  let P :=
+    (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))).obj
+      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf);
+  let Q := SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf;
+  have e := LinearStudy.actualAffineAlgebraStructurePushforwardIso;
+  (LinearStudy.schemeModuleHomSectionEvaluation P Q ⊤
+        (LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv f))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app e.hom ⊤))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) b)) =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧A).inv) (f b)
+'LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv_spec_value' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv_value_naturality.{u} {A B T C : Type u} [CommRing A]
+  [CommRing B] [CommRing T] [CommRing C] [Algebra A B] [Algebra T C] (φ : A →+* T) (γ : B →+* C) (f : B →ₗ[A] A)
+  (g : C →ₗ[T] T) (hf : ∀ (b : B), g (γ b) = φ (f b)) (b : B) :
+  let PA :=
+    (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))).obj
+      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf);
+  let QA := SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf;
+  let PT :=
+    (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap T C)))).obj
+      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧C).ringCatSheaf);
+  let QT := SheafOfModules.unit (AlgebraicGeometry.Spec ↧T).ringCatSheaf;
+  have eA := LinearStudy.actualAffineAlgebraStructurePushforwardIso;
+  have eT := LinearStudy.actualAffineAlgebraStructurePushforwardIso;
+  (LinearStudy.schemeModuleHomSectionEvaluation PT QT ⊤
+        (LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv g))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app eT.hom ⊤))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧C ⊤)) (γ b))) =
+    (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Hom.appTop (AlgebraicGeometry.Spec.map (CommRingCat.ofHom φ))))
+      ((LinearStudy.schemeModuleHomSectionEvaluation PA QA ⊤
+          (LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv f))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app eA.hom ⊤))
+          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) b)))
+'LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv_value_naturality' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 LinearStudy.linear_reindexed_actual_source_point.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
@@ -6510,6 +6596,24 @@ LinearStudy.nativeDualGlobalHomWeightedOverlapLinearEquiv.{u} {K R S : Type u} [
     ↑((LinearStudy.schemeModuleHomModuleSheaf P Q).presheaf.obj
         (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 (a * b))))
 'LinearStudy.nativeDualGlobalHomWeightedOverlapLinearEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeDualGlobalHomWeightedOverlapLinearEquiv_affine_section_value.{u} {K R S : Type u} [Field K]
+  [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R)
+  [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] [IsDomain R]
+  (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1) (hab : a * b ≠ 0)
+  (hinja : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (hinj : Function.Injective ⇑(HomogeneousLocalization.awayMap 𝒜 hb ⋯))
+  (ell : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) 2 (a * b))) :
+  let Aij := HomogeneousLocalization.Away 𝒜 (a * b);
+  let Bij := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b));
+  have F := LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv;
+  have G :=
+    LinearStudy.nativeNormalizationGlobalWeightedAffineHomSectionsLinearEquiv 𝒜 𝓑 2
+      LinearStudy.nativeDualGlobalHomWeightedOverlapLinearEquiv_affine_section_value._proof_1 (a * b) ⋯;
+  G ((LinearStudy.nativeDualGlobalHomWeightedOverlapLinearEquiv 𝒜 𝓑 a b ha hb hab hinja hinj) ell) =
+    F ((LinearStudy.nativeNormalizationWeightedOverlapDualLinearEquiv 𝒜 𝓑 a b ha hb hab hinja hinj) ell)
+'LinearStudy.nativeDualGlobalHomWeightedOverlapLinearEquiv_affine_section_value' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.nativeNormalizationDualOverlapMap.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R]
   [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
   [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] (a b : R) (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1) :
@@ -9120,6 +9224,57 @@ LinearStudy.nativeStructureRingZeroModuleSheafIso.{u} {K S : Type u} [Field K] [
   SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf ≅
     LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ 0
 'LinearStudy.nativeStructureRingZeroModuleSheafIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nativeWeightedAffineInternalHomValueNaturality.{u} {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+  [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] [IsDomain R] (a b : R)
+  (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1) (hab : a * b ≠ 0) (hinja : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (hinj : Function.Injective ⇑(HomogeneousLocalization.awayMap 𝒜 hb ⋯))
+  (ell : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) 1 a))
+  (y : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)) :
+  let Ai := HomogeneousLocalization.Away 𝒜 a;
+  let Aij := HomogeneousLocalization.Away 𝒜 (a * b);
+  have D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;
+  have N := LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 2 (a * b);
+  have t := HomogeneousLocalization.Away.isLocalizationElem ha hb;
+  have powers := Submonoid.powers t;
+  have rhoD := LinearStudy.nativeGradedDegreeOneOverlapLinearMap 𝒜 𝒟 ⋯ a b ha hb;
+  have E1 :=
+    LinearEquiv.ofEq (LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 1 a)
+        (LinearStudy.nativeGradedModuleAwayZero 𝒜 𝒟 a) ⋯ ≪≫ₗ
+      LinearStudy.finiteNativeDualFullSourceChartEquiv 𝒜 𝓑 a ha hinja;
+  let Bi := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);
+  let Bij := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) (a * b));
+  have phi := HomogeneousLocalization.awayMap 𝒜 hb ⋯;
+  have gamma := HomogeneousLocalization.awayMap 𝓑 ⋯ ⋯;
+  have fi := E1 ell;
+  have fij :=
+    (LinearStudy.nativeNormalizationWeightedOverlapDualLinearEquiv 𝒜 𝓑 a b ha hb hab hinja hinj)
+      ((LinearStudy.nativeGradedModuleWeightedOverlapMap 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 1 1 a b ha hb)
+        ell);
+  let PA :=
+    (AlgebraicGeometry.Scheme.Modules.pushforward
+          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap Ai Bi)))).obj
+      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧Bi).ringCatSheaf);
+  let QA := SheafOfModules.unit (AlgebraicGeometry.Spec ↧Ai).ringCatSheaf;
+  let PT :=
+    (AlgebraicGeometry.Scheme.Modules.pushforward
+          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap Aij Bij)))).obj
+      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧Bij).ringCatSheaf);
+  let QT := SheafOfModules.unit (AlgebraicGeometry.Spec ↧Aij).ringCatSheaf;
+  have eA := LinearStudy.actualAffineAlgebraStructurePushforwardIso;
+  have eT := LinearStudy.actualAffineAlgebraStructurePushforwardIso;
+  (LinearStudy.schemeModuleHomSectionEvaluation PT QT ⊤
+        (LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv fij))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app eT.hom ⊤))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧Bij ⊤)) (gamma y))) =
+    (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Hom.appTop (AlgebraicGeometry.Spec.map (CommRingCat.ofHom phi))))
+      ((LinearStudy.schemeModuleHomSectionEvaluation PA QA ⊤
+          (LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv fi))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app eA.hom ⊤))
+          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧Bi ⊤)) y)))
+'LinearStudy.nativeWeightedAffineInternalHomValueNaturality' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.powerSeries_hasEval_of_nilpotent.{u_2} {S : Type u_2} [CommRing S] {n : ℕ} [TopologicalSpace S]
   (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) : MvPowerSeries.HasEval a
 'LinearStudy.powerSeries_hasEval_of_nilpotent' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -18463,6 +18618,61 @@ LinearStudy.schemeModuleHomAffineChartSectionsEquiv_direct_add.{u} {X : Algebrai
 'LinearStudy.schemeModuleHomAffineChartSectionsEquiv_direct_add' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_morphism_value.{u} {X : AlgebraicGeometry.Scheme}
+  (M N : X.Modules) (U : X.Opens) (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R)
+  {P Q : (AlgebraicGeometry.Spec R).Modules} (α : M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ≅ P)
+  (β : N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ≅ Q)
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
+  (LinearStudy.schemeModuleHomTopSectionsEquiv P Q)
+      ((LinearStudy.schemeModuleHomAffineTransportSectionsEquiv M N U R e α β) h) =
+    CategoryTheory.CategoryStruct.comp α.inv
+      (CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomCompositeRestriction M N U e.inv h) β.hom)
+'LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_morphism_value' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_evaluation.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules)
+  (U : X.Opens) (R : CommRingCat) (e : ↑U ≅ AlgebraicGeometry.Spec R) {P Q : (AlgebraicGeometry.Spec R).Modules}
+  (α : M.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ≅ P)
+  (β : N.restrict (CategoryTheory.CategoryStruct.comp e.inv U.ι) ≅ Q)
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U)))
+  (W : (AlgebraicGeometry.Spec R).Opens)
+  (x :
+    ↑(M.presheaf.obj
+        (Opposite.op
+          ((AlgebraicGeometry.Scheme.Hom.opensFunctor U.ι).obj
+            ((AlgebraicGeometry.Scheme.Hom.opensFunctor e.inv).obj W))))) :
+  have i := CategoryTheory.homOfLE ⋯;
+  have A := (AlgebraicGeometry.Scheme.Modules.restrictFunctorComp e.inv U.ι).symm.app M;
+  have B := (AlgebraicGeometry.Scheme.Modules.restrictFunctorComp e.inv U.ι).symm.app N;
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app
+          ((LinearStudy.schemeModuleHomTopSectionsEquiv P Q)
+            ((LinearStudy.schemeModuleHomAffineTransportSectionsEquiv M N U R e α β) h))
+          W))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app α.hom W))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app A.hom W))
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Modules.restrictAppIso e.inv (M.restrict U.ι) W).inv)
+            ((CategoryTheory.ConcreteCategory.hom
+                (AlgebraicGeometry.Scheme.Modules.restrictAppIso U.ι M
+                    ((AlgebraicGeometry.Scheme.Hom.opensFunctor e.inv).obj W)).inv)
+              x)))) =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app β.hom W))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app B.hom W))
+        ((CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.restrictAppIso e.inv (N.restrict U.ι) W).inv)
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Modules.restrictAppIso U.ι N
+                  ((AlgebraicGeometry.Scheme.Hom.opensFunctor e.inv).obj W)).inv)
+            ((LinearStudy.schemeModuleHomSectionEvaluation M N
+                ((AlgebraicGeometry.Scheme.Hom.opensFunctor U.ι).obj
+                  ((AlgebraicGeometry.Scheme.Hom.opensFunctor e.inv).obj W))
+                ((CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.map i.op))
+                  h))
+              x))))
+'LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.schemeModuleHomChartBaseModule.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
   (R : CommRingCat) (φ : ↑R →+* ↑(X.presheaf.obj (Opposite.op U))) :
   Module ↑R ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))
@@ -18510,6 +18720,38 @@ LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_add.{u} {X : AlgebraicGe
     (LinearStudy.schemeModuleHomAffineTransportSectionsEquiv M N U R e α β) h +
       (LinearStudy.schemeModuleHomAffineTransportSectionsEquiv M N U R e α β) k
 'LinearStudy.schemeModuleHomAffineTransportSectionsEquiv_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomCompositeRestriction_evaluation.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules)
+  (U : X.Opens) (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f]
+  (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) (W : Y.Opens)
+  (x :
+    ↑(M.presheaf.obj
+        (Opposite.op
+          ((AlgebraicGeometry.Scheme.Hom.opensFunctor U.ι).obj
+            ((AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj W))))) :
+  have i := CategoryTheory.homOfLE ⋯;
+  have A := (AlgebraicGeometry.Scheme.Modules.restrictFunctorComp f U.ι).symm.app M;
+  have B := (AlgebraicGeometry.Scheme.Modules.restrictFunctorComp f U.ι).symm.app N;
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleHomCompositeRestriction M N U f h) W))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app A.hom W))
+        ((CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.restrictAppIso f (M.restrict U.ι) W).inv)
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Modules.restrictAppIso U.ι M
+                  ((AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj W)).inv)
+            x))) =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app B.hom W))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.restrictAppIso f (N.restrict U.ι) W).inv)
+        ((CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.restrictAppIso U.ι N
+                ((AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj W)).inv)
+          ((LinearStudy.schemeModuleHomSectionEvaluation M N
+              ((AlgebraicGeometry.Scheme.Hom.opensFunctor U.ι).obj
+                ((AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj W))
+              ((CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.map i.op))
+                h))
+            x)))
+'LinearStudy.schemeModuleHomCompositeRestriction_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.schemeModuleHomCompositeRestriction.{u} {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (U : X.Opens)
   (f : Y ⟶ ↑U) [AlgebraicGeometry.IsOpenImmersion f]
   (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) :
@@ -18583,6 +18825,18 @@ LinearStudy.schemeModuleHomModulePresheaf.{u} {X : AlgebraicGeometry.Scheme} (M 
 'LinearStudy.schemeModuleHomModulePresheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.schemeModuleHomModuleSheaf.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules) : X.Modules
 'LinearStudy.schemeModuleHomModuleSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleHomOpenSectionsEquiv_evaluation.{u} {X : AlgebraicGeometry.Scheme} (M N : X.Modules)
+  (U : X.Opens) (h : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op U))) (W : (↑U).Opens)
+  (x : ↑(M.presheaf.obj (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor U.ι).obj W)))) :
+  have i := CategoryTheory.homOfLE ⋯;
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app ((LinearStudy.schemeModuleHomOpenSectionsEquiv M N U) h) W))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.restrictAppIso U.ι M W).inv) x) =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.restrictAppIso U.ι N W).inv)
+      ((LinearStudy.schemeModuleHomSectionEvaluation M N ((AlgebraicGeometry.Scheme.Hom.opensFunctor U.ι).obj W)
+          ((CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.map i.op)) h))
+        x)
+'LinearStudy.schemeModuleHomOpenSectionsEquiv_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.schemeModuleHomOpenRestrictionIso.{u} {X : AlgebraicGeometry.Scheme} (M : X.Modules) {U V : X.Opens}
   (i : V ⟶ U) : (M.restrict U.ι).restrict (X.homOfLE ⋯) ≅ M.restrict V.ι
 'LinearStudy.schemeModuleHomOpenRestrictionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -19779,6 +20033,29 @@ LinearStudy.stableField_image_finrank_and_finite.{u_1, u_2} {k : Type u_1} {F : 
   Module.finrank ↥(IntermediateField.map φ E) ↥E = Module.finrank ↥σ.fieldRange ↥E ∧
     Module.Finite ↥(IntermediateField.map φ E) ↥E
 'LinearStudy.stableField_image_finrank_and_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.structureModuleCompositeChartValue.{u} {X Y Z : AlgebraicGeometry.Scheme} (f : X ⟶ Y) (g : Y ⟶ Z)
+  [AlgebraicGeometry.IsOpenImmersion f] [AlgebraicGeometry.IsOpenImmersion g] (W : X.Opens)
+  (r :
+    ↑(Z.presheaf.obj
+        (Opposite.op
+          ((AlgebraicGeometry.Scheme.Hom.opensFunctor g).obj ((AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj W))))) :
+  let N := SheafOfModules.unit Z.ringCatSheaf;
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app
+          (AlgebraicGeometry.Scheme.Modules.restrictUnitIso (CategoryTheory.CategoryStruct.comp f g)).hom W))
+      ((CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.Scheme.Modules.Hom.app
+            ((AlgebraicGeometry.Scheme.Modules.restrictFunctorComp f g).symm.app N).hom W))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.restrictAppIso f (N.restrict g) W).inv)
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Modules.restrictAppIso g N
+                  ((AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj W)).inv)
+            r))) =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appIso f W).hom)
+      ((CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.Scheme.Hom.appIso g ((AlgebraicGeometry.Scheme.Hom.opensFunctor f).obj W)).hom)
+        r)
+'LinearStudy.structureModuleCompositeChartValue' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.equationIdeal {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) : Ideal (LinearStudy.AmbientRing r c)
 'LinearStudy.equationIdeal' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.relativeJacobian {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) : LinearStudy.CompleteIntersection H
