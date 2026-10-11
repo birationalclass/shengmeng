@@ -88,10 +88,13 @@ def extract(value):
                 # Keep these visible; only its final assembly becomes a proof control.
                 children = extract(inside)
                 assert children[-1]['type'] == 'text'
-                completion = children[-1]['content']
-                assert completion.startswith('We now complete the proof.')
+                final_text = children[-1]['content']
+                prefix, marker, completion = final_text.partition('We now complete the proof.')
+                assert marker, 'Missing theorem assembly'
                 block['introduction'] = children[:-1]
-                block['content'] = completion[len('We now complete the proof.'):].strip()
+                if prefix.strip():
+                    block['introduction'].append({'type': 'text', 'content': prefix.strip()})
+                block['content'] = completion.strip()
                 block['completionHeading'] = 'We now complete the proof.'
             blocks.append(block)
         pieces.append(value[match.start():end])
