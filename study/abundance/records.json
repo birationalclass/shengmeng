@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-11T13:26+08:00",
+  "updatedAt": "2026-10-11T14:12+08:00",
   "series": [
     {
       "id": "F034",
@@ -4011,6 +4011,251 @@
       "en": [
         "The draft now explicitly records $f:V\\to X$, $\\mathcal I_x\\mathcal O_V=\\mathcal O_V(-B_x)$, and ample Cartier divisors $H_1,H_2$ on V, without marked-class, $\\gamma$ or $\\ell$ abbreviations. Lemma 1.1 requires not only a higher model, but two ample divisors on it satisfying $f^*(P_n+ND)\\cdot H_1\\cdot H_2<40\\epsilon B_x\\cdot H_1\\cdot H_2$.",
         "Lemma 1.2 is mathematically unchanged. The corresponding bound in 1.3 is $f^*(P+ND)\\cdot H_1\\cdot H_2<\\frac38 B_x\\cdot H_1\\cdot H_2$. Setup and the main assembly are updated consistently, with the remaining conditions retained. The three geometric inputs are still not independently verified in this temporary framework."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "framework-point-ideal-use-q",
+      "role": "user",
+      "time": "2026-10-11T14:01+08:00",
+      "zh": [
+        "引理 1.1 中的 $\\mathcal I_x$ 用在哪里？最后的交数界没有看到它。"
+      ],
+      "en": [
+        "Where is $\\mathcal I_x$ used in Lemma 1.1? It does not appear in the final intersection bound."
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics"
+    },
+    {
+      "id": "framework-point-ideal-use-a",
+      "role": "assistant",
+      "time": "2026-10-11T14:01+08:00",
+      "zh": [
+        "点理想通过 $\\mathcal I_x\\mathcal O_V=\\mathcal O_V(-E_x)$ 确定 $E_x$。若有效 Cartier 除子 F 在 x 的重数为 m，局部方程属于 $\\mathfrak m_x^m$，故 $f^*F\\ge mE_x$。",
+        "与 $H_1,H_2$ 相交得到 $\\operatorname{mult}_x(F)E_x\\cdot H_1\\cdot H_2\\le f^*F\\cdot H_1\\cdot H_2$。点理想虽未写在最终交数界中，却使 $E_x$ 与 x 处的重数绑定。"
+      ],
+      "en": [
+        "The point ideal determines $E_x$ through $\\mathcal I_x\\mathcal O_V=\\mathcal O_V(-E_x)$. If an effective Cartier divisor F has multiplicity m at x, its local equation belongs to $\\mathfrak m_x^m$, so $f^*F\\ge mE_x$.",
+        "Intersecting with $H_1,H_2$ gives $\\operatorname{mult}_x(F)E_x\\cdot H_1\\cdot H_2\\le f^*F\\cdot H_1\\cdot H_2$. Although the point ideal is absent from the final numerical bound, it binds $E_x$ to multiplicity at x."
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics",
+      "highlight": true
+    },
+    {
+      "id": "framework-local-ideal-vs-sheaf-q",
+      "role": "user",
+      "time": "2026-10-11T14:03+08:00",
+      "zh": [
+        "$\\mathcal I_x$ 是极大理想吗？为什么不用专业的 $\\mathfrak m_x$ 记号？"
+      ],
+      "en": [
+        "Is $\\mathcal I_x$ a maximal ideal? Why not use the standard notation $\\mathfrak m_x$?"
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics"
+    },
+    {
+      "id": "framework-local-ideal-vs-sheaf-a",
+      "role": "assistant",
+      "time": "2026-10-11T14:03+08:00",
+      "zh": [
+        "应区分局部环的极大理想 $\\mathfrak m_x\\subset\\mathcal O_{X,x}$ 与整个 X 上的点理想层 $\\mathcal I_x$；两者由 $(\\mathcal I_x)_x=\\mathfrak m_x$ 联系。模型上的等式用理想层，局部方程的重数论证可用极大理想。先前口头将两者混称为极大理想不够精确。"
+      ],
+      "en": [
+        "Distinguish the maximal ideal $\\mathfrak m_x\\subset\\mathcal O_{X,x}$ from the ideal sheaf $\\mathcal I_x$ of the point on X. They are related by $(\\mathcal I_x)_x=\\mathfrak m_x$. The model identity uses an ideal sheaf, whereas the local multiplicity argument may use the maximal ideal. The earlier oral use of “maximal ideal” for both was imprecise."
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics",
+      "highlight": true
+    },
+    {
+      "id": "framework-rename-exceptional-divisor-q",
+      "role": "user",
+      "time": "2026-10-11T14:04+08:00",
+      "zh": [
+        "把 $B_x$ 换成 $E_x$ 是不是更好？"
+      ],
+      "en": [
+        "Would $E_x$ be better notation than $B_x$?"
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "framework-rename-exceptional-divisor-a",
+      "role": "assistant",
+      "time": "2026-10-11T14:04+08:00",
+      "zh": [
+        "已全文统一为 $E_x$，以提示它是例外除子，同时保留扩张理想的定义。在高模型上它可能带重数，不必是约化除子。"
+      ],
+      "en": [
+        "The notation is now $E_x$ throughout, suggesting an exceptional divisor while retaining its definition by the extended ideal. On a higher model it may have multiplicities and need not be reduced."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "framework-total-transform-term-q",
+      "role": "user",
+      "time": "2026-10-11T14:05+08:00",
+      "zh": [
+        "这种不一定来自一次 blow-up 的例外除子，有专业术语吗？"
+      ],
+      "en": [
+        "Is there standard terminology for this exceptional divisor when it need not come from a single blowup?"
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics"
+    },
+    {
+      "id": "framework-total-transform-term-a",
+      "role": "assistant",
+      "time": "2026-10-11T14:05+08:00",
+      "zh": [
+        "可以准确解释为点的 blow-up 的例外除子的全变换。设 $b:\\operatorname{Bl}_xX\\to X$，E 为其例外除子。由于扩张理想可逆，blow-up 的泛性质给出 $f=b\\circ g$，而 $E_x=g^*E$。",
+        "这是解释用的分解，不插入当前 Framework 正文。参考 Stacks 的 blow-up 泛性质与例外除子： https://stacks.math.columbia.edu/tag/0806 和 https://stacks.math.columbia.edu/tag/02OS。"
+      ],
+      "en": [
+        "It can be described precisely as the total transform of the exceptional divisor of the blowup of x. Let $b:\\operatorname{Bl}_xX\\to X$ with exceptional divisor E. Invertibility of the extended ideal gives $f=b\\circ g$ by the universal property of the blowup, and $E_x=g^*E$.",
+        "This factorization is explanatory and is not inserted into the current Framework text. See the Stacks universal property and exceptional divisor results: https://stacks.math.columbia.edu/tag/0806 and https://stacks.math.columbia.edu/tag/02OS."
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics"
+    },
+    {
+      "id": "framework-pushforward-definition-weaker-q",
+      "role": "user",
+      "time": "2026-10-11T14:06+08:00",
+      "zh": [
+        "能否只用 $f_*\\mathcal O_V(-E)=\\mathcal I_x$ 定义 E？这样是否唯一？"
+      ],
+      "en": [
+        "Can E be defined only by $f_*\\mathcal O_V(-E)=\\mathcal I_x$? Is it then unique?"
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics"
+    },
+    {
+      "id": "framework-pushforward-definition-weaker-a",
+      "role": "assistant",
+      "time": "2026-10-11T14:06+08:00",
+      "zh": [
+        "仅要求推前等式比要求 $\\mathcal I_x\\mathcal O_V=\\mathcal O_V(-E)$ 弱，通常不能唯一确定 E。推前条件也能给出 $\\mathcal I_x\\mathcal O_V\\subseteq\\mathcal O_V(-E)$，所以不能说它完全无法得到重数下界；这里的关键是唯一性与保持原有条件。"
+      ],
+      "en": [
+        "The pushforward identity alone is weaker than $\\mathcal I_x\\mathcal O_V=\\mathcal O_V(-E)$ and generally does not uniquely determine E. It still gives $\\mathcal I_x\\mathcal O_V\\subseteq\\mathcal O_V(-E)$, so it should not be said to give no multiplicity lower bound at all. The issue here is uniqueness and retaining the original condition."
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics",
+      "highlight": true
+    },
+    {
+      "id": "framework-two-divisors-same-pushforward-q",
+      "role": "user",
+      "time": "2026-10-11T14:07+08:00",
+      "zh": [
+        "真的能有两个有效例外除子，它们负号对应的层推前相同吗？"
+      ],
+      "en": [
+        "Can two effective exceptional divisors really have the same pushforward of their negative divisor sheaves?"
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics"
+    },
+    {
+      "id": "framework-two-divisors-same-pushforward-a",
+      "role": "assistant",
+      "time": "2026-10-11T14:07+08:00",
+      "zh": [
+        "能。在光滑三维 X 上，先取 $b:Y=\\operatorname{Bl}_xX\\to X$，E 为例外除子；再取 $g:V=\\operatorname{Bl}_pY\\to Y$，其中 $p\\in E$。记 E′ 为 E 的严格变换，F 为第二个例外除子，$f=b\\circ g$。则 $g^*E=E^{\\prime}+F$，且 $f_*\\mathcal O_V(-E^{\\prime})=f_*\\mathcal O_V(-E^{\\prime}-F)=\\mathcal I_x$。",
+        "函数在 x 消失等价于沿 E′ 至少消失一次，此时沿 F 也自动消失一次，所以额外 F 条件是冗余的。推前不能区分这两个除子，但扩张理想精确给出 $\\mathcal I_x\\mathcal O_V=\\mathcal O_V(-E^{\\prime}-F)$。这是直接几何计算的例子，不是在验证 Framework 的三个输入。"
+      ],
+      "en": [
+        "Yes. For a smooth threefold X, first take $b:Y=\\operatorname{Bl}_xX\\to X$ with exceptional divisor E, then $g:V=\\operatorname{Bl}_pY\\to Y$ with $p\\in E$. Let E′ be the strict transform and F the second exceptional divisor, with $f=b\\circ g$. Then $g^*E=E^{\\prime}+F$ and $f_*\\mathcal O_V(-E^{\\prime})=f_*\\mathcal O_V(-E^{\\prime}-F)=\\mathcal I_x$.",
+        "A function vanishes at x exactly when it vanishes along E′ at least once; it then automatically vanishes along F at least once. The extra F condition is redundant. Pushforward cannot distinguish the two divisors, but the extended ideal gives precisely $\\mathcal I_x\\mathcal O_V=\\mathcal O_V(-E^{\\prime}-F)$. This is a direct geometric calculation, not verification of the three Framework inputs."
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics",
+      "highlight": true
+    },
+    {
+      "id": "framework-extended-ideal-image-q",
+      "role": "user",
+      "time": "2026-10-11T14:08+08:00",
+      "zh": [
+        "这不是抽象拉回，而是理想拉回的像吧？"
+      ],
+      "en": [
+        "Is this the image of the pulled-back ideal rather than the abstract pullback?"
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics"
+    },
+    {
+      "id": "framework-extended-ideal-image-a",
+      "role": "assistant",
+      "time": "2026-10-11T14:08+08:00",
+      "zh": [
+        "正确。$\\mathcal I_x\\mathcal O_V=\\operatorname{Im}(f^*\\mathcal I_x\\to\\mathcal O_V)$，称为扩张理想。自然映射未必单射，不能直接写 $f^*\\mathcal I_x\\cong\\mathcal O_V(-E_x)$。先前口头简称“拉回”不够精确，现明确写为映射的像。"
+      ],
+      "en": [
+        "Correct: $\\mathcal I_x\\mathcal O_V=\\operatorname{Im}(f^*\\mathcal I_x\\to\\mathcal O_V)$ is the extended ideal. The natural map need not be injective, so one cannot simply write $f^*\\mathcal I_x\\cong\\mathcal O_V(-E_x)$. The earlier oral abbreviation “pullback” was imprecise; it is now explicitly the image of the map."
+      ],
+      "proofStatus": "unverified",
+      "kind": "mathematics",
+      "highlight": true
+    },
+    {
+      "id": "framework-invertible-model-revision-q",
+      "role": "user",
+      "time": "2026-10-11T14:10+08:00",
+      "zh": [
+        "明确定义点理想与扩张理想；直接选使扩张理想可逆的模型，不写 blow-up 分解。全部顺一下。"
+      ],
+      "en": [
+        "Define the point ideal and extended ideal explicitly, and choose a model on which the extended ideal is invertible. Omit the blowup factorization and align the whole text."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "framework-invertible-model-revision-a",
+      "role": "assistant",
+      "time": "2026-10-11T14:10+08:00",
+      "zh": [
+        "Setup、1.1、1.3、主证明及草稿说明已对齐：选光滑射影双有理模型使扩张理想可逆，写作 $\\mathcal I_x\\mathcal O_V=\\mathcal O_V(-E_x)$，在固定模型上唯一确定有效 Cartier 除子 $E_x$；所有交数仍在 V 上计算。正文未增加分解，1.2、常数、量词与未经独立验证的状态保持。"
+      ],
+      "en": [
+        "Setup, 1.1, 1.3, the main assembly and draft disclosure are aligned: choose a smooth projective birational model with invertible extended ideal, written as $\\mathcal I_x\\mathcal O_V=\\mathcal O_V(-E_x)$, which uniquely determines the effective Cartier divisor $E_x$ on the fixed model. All intersections remain on V. No factorization is added to the manuscript; 1.2, the constants, quantifiers and independently unverified status are retained."
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "framework-remove-stalk-notation-q",
+      "role": "user",
+      "time": "2026-10-11T14:12+08:00",
+      "zh": [
+        "不用写 $(\\mathcal I_x)_x=\\mathfrak m_x$；$\\mathfrak m_x$ 后面有用到吗？"
+      ],
+      "en": [
+        "Omit $(\\mathcal I_x)_x=\\mathfrak m_x$. Is $\\mathfrak m_x$ used later?"
+      ],
+      "proofStatus": "unverified",
+      "kind": "revision"
+    },
+    {
+      "id": "framework-remove-stalk-notation-a",
+      "role": "assistant",
+      "time": "2026-10-11T14:12+08:00",
+      "zh": [
+        "原稿只在局部重数论证用过一次；现在将它改为 F 的局部方程是 $\\mathcal I_x^{\\operatorname{mult}_x(F)}$ 的局部截面，删去额外的 $\\mathfrak m_x$ 记号。仍保留点理想层和扩张理想的定义。"
+      ],
+      "en": [
+        "The earlier draft used it only once in the local multiplicity argument. This now says that a local equation of F is a local section of $\\mathcal I_x^{\\operatorname{mult}_x(F)}$, removing the extra $\\mathfrak m_x$ notation while retaining the definitions of the point ideal sheaf and extended ideal."
       ],
       "proofStatus": "unverified",
       "kind": "revision"

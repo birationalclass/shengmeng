@@ -83,19 +83,25 @@ Set $\xi=c_1(\OO_Z(1))$. For an integer $N>0$, put
 Whenever $|kR(P,N)|$ is used, $k>0$ is an integer with $kP$ Cartier.
 \end{itemize}
 
-For a point $x\in X$, consider a birational morphism $f:V\to X$
-from a smooth projective threefold, an effective Cartier divisor $B_x$
-with $\mathcal I_x\OO_V=\OO_V(-B_x)$, and ample Cartier divisors
-$H_1,H_2$ on $V$. All intersections involving these data are computed
-on $V$. Since $B_x\ne0$, we have $B_x\cdot H_1\cdot H_2>0$.
+For $x\in X$, let $\mathcal I_x$ be the ideal sheaf of the point $x$. Choose a
+birational morphism $f:V\to X$ from a smooth projective threefold
+such that the extended ideal
+\[
+ \mathcal I_x\OO_V:=\operatorname{Im}(f^*\mathcal I_x\to\OO_V)
+\]
+is invertible, and write $\mathcal I_x\OO_V=\OO_V(-E_x)$.
+On this fixed model, the extended ideal uniquely determines the
+effective Cartier divisor $E_x$. Let $H_1,H_2$ be ample Cartier
+divisors on $V$. All intersections involving these data are computed
+on $V$, and $E_x\cdot H_1\cdot H_2>0$ since $E_x\ne0$.
 For every effective Cartier divisor $F$ on $X$,
 \[
- \mult_x(F)\,B_x\cdot H_1\cdot H_2
+ \mult_x(F)\,E_x\cdot H_1\cdot H_2
  \le f^*F\cdot H_1\cdot H_2.
 \]
-Indeed, a local equation of $F$ belongs to
-$\mathfrak m_x^{\mult_x(F)}$, so
-$f^*F\ge\mult_x(F)B_x$. The difference is effective, hence has
+Indeed, a local equation of $F$ is a local section of
+$\mathcal I_x^{\mult_x(F)}$ near $x$, so
+$f^*F\ge\mult_x(F)E_x$. The difference is effective, hence has
 nonnegative intersection with the ample divisors $H_1,H_2$.
 
 For a Cartier divisor $L$ on a smooth projective variety $W$,
@@ -120,12 +126,12 @@ Their proofs are not included in this temporary framework.
 \begin{lemma}\label{lem:framework-witness}
 For every integer $N>0$ and all $n\gg0$, a very general point
 $x\in X$ admits a smooth projective threefold $V$, a birational
-morphism $f:V\to X$, an effective Cartier divisor $B_x$ with
-$\mathcal I_x\OO_V=\OO_V(-B_x)$, and ample Cartier divisors $H_1,H_2$
-on $V$ such that
+morphism $f:V\to X$ for which the extended ideal $\mathcal I_x\OO_V$
+is invertible, and ample Cartier divisors $H_1,H_2$ on $V$ such that,
+writing $\mathcal I_x\OO_V=\OO_V(-E_x)$ as in Setup,
 \[
  f^*(P_n+ND)\cdot H_1\cdot H_2
- <40\epsilon\,B_x\cdot H_1\cdot H_2.
+ <40\epsilon\,E_x\cdot H_1\cdot H_2.
 \]
 \end{lemma}
 
@@ -141,12 +147,12 @@ Let $P$ be ample and rational Cartier, and $N>0$ an integer such that
  343P^3<\tfrac14,\qquad (2P+ND)\cdot P^2<4P^3.
 \]
 Suppose that some $x\in X$ admits a smooth projective threefold $V$,
-a birational morphism $f:V\to X$, an effective Cartier divisor $B_x$
-with $\mathcal I_x\OO_V=\OO_V(-B_x)$, and ample Cartier divisors
-$H_1,H_2$ on $V$ with
+a birational morphism $f:V\to X$ for which the extended ideal
+$\mathcal I_x\OO_V$ is invertible, and ample Cartier divisors $H_1,H_2$
+on $V$. Write $\mathcal I_x\OO_V=\OO_V(-E_x)$ as in Setup and assume
 \[
  f^*(P+ND)\cdot H_1\cdot H_2
- <\tfrac38 B_x\cdot H_1\cdot H_2.
+ <\tfrac38 E_x\cdot H_1\cdot H_2.
 \]
 Then $|kR(P,N)|$ does not separate $8k$-jets at any
 $z\in\mathbb T$, for any integer $k>0$ with $kP$ Cartier.
@@ -161,12 +167,12 @@ Since $P_n-r_nD$ is nef,
 \[
  (2P_n+ND)\cdot P_n^2\le(2+N/r_n)P_n^3<4P_n^3.
 \]
-Take $x,V,f,B_x,H_1,H_2$ from Lemma~\ref{lem:framework-witness}.
+Take $x,V,f,E_x,H_1,H_2$ from Lemma~\ref{lem:framework-witness}.
 Then, on $V$,
 \[
  f^*(P_n+ND)\cdot H_1\cdot H_2
- <40\epsilon\,B_x\cdot H_1\cdot H_2
- <\tfrac38 B_x\cdot H_1\cdot H_2.
+ <40\epsilon\,E_x\cdot H_1\cdot H_2
+ <\tfrac38 E_x\cdot H_1\cdot H_2.
 \]
 Applying Lemma~\ref{lem:framework-obstruction} with $P=P_n$
 contradicts Lemma~\ref{lem:framework-jets}. Hence
@@ -177,8 +183,8 @@ $H^0(X,\OO_X(mD))\ne0$ for some integer $m>0$.\qedhere
 \noindent\textbf{Draft status.}
 This is a reformulation of the first-section argument with its three
 geometric inputs retained, rather than an independent verification
-of those inputs. The model $f:V\to X$, the divisors $B_x,H_1,H_2$, and the identity
-$\mathcal I_x\OO_V=\OO_V(-B_x)$ must be fixed before reduction of
+of those inputs. The model $f:V\to X$, the divisors $E_x,H_1,H_2$, and the extended-ideal identity
+$\mathcal I_x\OO_V=\OO_V(-E_x)$ must be fixed before reduction of
 characteristic. This AI-assisted
 draft is for discussion and checking. No claim of novelty,
 priority, or authorship credit is made.
