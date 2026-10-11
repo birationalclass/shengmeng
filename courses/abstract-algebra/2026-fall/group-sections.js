@@ -362,6 +362,11 @@ window.GroupSections={
         "check",
         "自测与书面练习",
         "Self-check and written exercise"
+      ],
+      [
+        "direct-product-uniqueness",
+        "直积分解唯一性与消去律",
+        "Uniqueness and cancellation"
       ]
     ]
   },
