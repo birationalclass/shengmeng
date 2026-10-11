@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-10-11T15:34+08:00",
+  "updatedAt": "2026-10-11T15:49+08:00",
   "series": [
     {
       "id": "F034",
@@ -5125,6 +5125,138 @@
       "kind": "mathematics",
       "proofStatus": "unverified",
       "highlight": true
+    },
+    {
+      "id": "jets-independent-note-q",
+      "role": "user",
+      "time": "2026-10-11T15:39+08:00",
+      "zh": [
+        "单独整理名为 Jets 的笔记：写清 jets 和分离 jets 的定义、几种等价理解、分离性的几何表现，以及 very ample 的判据、反例和充分大倍数的情形。"
+      ],
+      "en": [
+        "Prepare a separate note titled Jets, with definitions and equivalent interpretations, geometric separation, the very-ampleness criterion, counterexamples, and sufficiently large powers."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "jets-independent-note-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:39+08:00",
+      "zh": [
+        "笔记从 stalk 与 fibre 的区别、局部 Taylor 多项式及逐阶生成开始，证明全 jets 与全部分次层满射的等价性，以及高重数截面子空间的余维判据。随后说明一阶 jets、切向量和不同点的分离，给出完整线性系的曲线及曲面反例，最后证明 very ample 除子的倍数生成固定阶 jets。"
+      ],
+      "en": [
+        "The note begins with stalks versus fibres, local Taylor polynomials and graded generation, proving the equivalence with full jet generation and the codimension criterion for high-order vanishing sections. It then treats first jets, tangent vectors and distinct points, gives curve and surface counterexamples using complete linear systems, and proves fixed-order jet generation for powers of a very ample divisor."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "jets-complete-system-counterexample-q",
+      "role": "user",
+      "time": "2026-10-11T15:39+08:00",
+      "zh": [
+        "能给出完整线性系在每点分离 one jet，却不是 very ample 的例子吗？"
+      ],
+      "en": [
+        "Can a complete linear system separate one jet at every point without being very ample?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "jets-complete-system-counterexample-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:39+08:00",
+      "zh": [
+        "可以。取平面四次曲线 $X_0^4+X_1^4+(X_1^2-X_0^2)X_2^2=0$ 的正规化 C。该曲线只有一个普通节点；故 $g(C)=2$，拉回直线丛 L 的次数为 4，Riemann–Roch 给出 $h^0(C,L)=3$。三个坐标截面就是完整线性系，所得映射处处 immersive，却将节点的两个原像识别，因此在每点生成 1-jets 但不 very ample。取 $C\\times\\mathbb P^1$ 上的外积 $L\\boxtimes\\mathcal O(1)$，得到同样性质的 ample 曲面线丛。这里没有用投影子线性系代替完整线性系。"
+      ],
+      "en": [
+        "Yes. Normalize the plane quartic $X_0^4+X_1^4+(X_1^2-X_0^2)X_2^2=0$. Its only singularity is an ordinary node, so the normalization C has genus 2. The pulled-back line bundle L has degree 4 and $h^0(C,L)=3$ by Riemann–Roch. Its three coordinate sections give the complete linear system. The morphism is immersive everywhere but identifies the two preimages of the node; thus it generates 1-jets at every point without being very ample. The external product $L\\boxtimes\\mathcal O(1)$ on $C\\times\\mathbb P^1$ gives an ample surface example. These are complete systems, not projected subsystems."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "jets-powers-generate-fixed-jets-q",
+      "role": "user",
+      "time": "2026-10-11T15:39+08:00",
+      "zh": [
+        "任何 very ample 除子的充分大倍数都能分离固定的 s-jets 吗？"
+      ],
+      "en": [
+        "Do sufficiently large multiples of any very ample divisor separate fixed s-jets?"
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "jets-powers-generate-fixed-jets-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:39+08:00",
+      "zh": [
+        "是。若 A very ample，则 $mA$ 在每点生成 s-jets，只需 $m\\ge s\\ge1$。用 A 嵌入射影空间，取不在该点消失的 $X_0$，并使其余坐标在该点为零。对 $|\\alpha|\\le s$，齐次多项式 $X_0^{m-|\\alpha|}\\prod X_i^{\\alpha_i}$ 给出局部单项式 $u^\\alpha$，这些单项式生成模 $\\mathfrak m_x^{s+1}$ 的全部类。不需要假定 projective normality。这里 s 固定；没有说固定倍数能生成任意高阶 jets。"
+      ],
+      "en": [
+        "Yes. If A is very ample, $mA$ generates s-jets at every point for $m\\ge s\\ge1$. Embed by A, choose a coordinate $X_0$ nonvanishing at the point and the remaining coordinates vanishing there. For $|\\alpha|\\le s$, the homogeneous polynomial $X_0^{m-|\\alpha|}\\prod X_i^{\\alpha_i}$ gives the local monomial $u^\\alpha$. These monomials span all classes modulo $\\mathfrak m_x^{s+1}$. Projective normality is not required. The order s is fixed; a fixed multiple is not asserted to generate arbitrarily high jets."
+      ],
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "highlight": true
+    },
+    {
+      "id": "jets-notation-q",
+      "role": "user",
+      "time": "2026-10-11T15:49+08:00",
+      "zh": [
+        "维数用 n，初始 Cartier 除子用 D，不需要花体 L，直接写 O_X(D)。"
+      ],
+      "en": [
+        "Use n for the dimension and D for the initial Cartier divisor; remove the calligraphic L alias and write O_X(D) explicitly."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "jets-notation-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:49+08:00",
+      "zh": [
+        "已统一为 $\\dim X=n$、Cartier 除子 D，并在定义、满射条件、stalk、余维命题及例子中显式使用 $\\mathcal O_X(D)$。原有数学内容保留。"
+      ],
+      "en": [
+        "The note now uses $\\dim X=n$, the Cartier divisor D, and explicit $\\mathcal O_X(D)$ in the definitions, surjectivity conditions, stalks, codimension criterion and examples. The mathematical content is retained."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "jets-subsystem-q",
+      "role": "user",
+      "time": "2026-10-11T15:49+08:00",
+      "zh": [
+        "对线性系来定义更好：$\\Lambda\\subseteq|D|$。"
+      ],
+      "en": [
+        "It is better to formulate the definition for a linear system $\\Lambda\\subseteq|D|$."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
+    },
+    {
+      "id": "jets-subsystem-a",
+      "role": "assistant",
+      "time": "2026-10-11T15:49+08:00",
+      "zh": [
+        "现固定非空子系 $\\Lambda=\\mathbb P(V)\\subseteq|D|$，其中 $V\\subseteq H^0(X,\\mathcal O_X(D))$ 是非零线性子空间。jets 生成、全部分次层满射、余维等价条件及 one-jets 判据均对这个 V 和子系陈述。两种反例仍明确采用完整线性系，倍数定理仍针对 $|mA|$。"
+      ],
+      "en": [
+        "We now fix a nonempty subsystem $\\Lambda=\\mathbb P(V)\\subseteq|D|$, where $V\\subseteq H^0(X,\\mathcal O_X(D))$ is a nonzero linear subspace. Jet generation, surjectivity on all graded layers, the codimension equivalence and the one-jet criterion are stated for this V and subsystem. Both counterexamples still explicitly use complete linear systems, and the power theorem concerns $|mA|$."
+      ],
+      "kind": "revision",
+      "proofStatus": "unverified"
     }
   ],
   "sourceTheorem": {

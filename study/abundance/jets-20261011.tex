@@ -1,0 +1,272 @@
+\documentclass[12pt,a4paper,psamsfonts]{amsart}
+\usepackage{amssymb,mathtools,calc}
+\setlength{\topmargin}{0cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+\setlength{\textheight}{\paperheight-2in-35pt}
+\setlength{\textwidth}{\paperwidth-2in}
+\renewcommand{\baselinestretch}{1.3}
+\pagestyle{headings}
+\raggedbottom
+\setlength{\emergencystretch}{2em}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=blue]{hyperref}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}[lemma]{Proposition}
+\newtheorem{theorem}[lemma]{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}[lemma]{Definition}
+\newtheorem{example}[lemma]{Example}
+\newenvironment{explanation}{\par\noindent\emph{Explanation.}\ }{\par}
+\newcommand{\OO}{\mathcal O}
+\newcommand{\C}{\mathbb C}
+\title{Jets}
+\date{October 11, 2026}
+\begin{document}
+\maketitle
+Throughout, $X$ is a smooth projective variety over $\C$ of dimension $n$,
+and $D$ is a Cartier divisor.
+
+\section{Jets and multiplicity}
+\begin{definition}
+Let $\Lambda=\mathbb P(V)\subseteq|D|$ be a fixed nonempty linear
+subsystem, where $V\subseteq H^0(X,\OO_X(D))$ is a nonzero linear
+subspace. For $x\in X$ and an integer $s\ge0$, the space of $s$-jets of $\OO_X(D)$
+at $x$ is $\OO_X(D)_x/\mathfrak m_x^{s+1}\OO_X(D)_x$.
+We say that $\Lambda$ generates, or separates, $s$-jets at $x$ if the restriction
+\[
+ V\longrightarrow
+ \OO_X(D)_x/\mathfrak m_x^{s+1}\OO_X(D)_x
+\]
+is surjective.
+\end{definition}
+Here $\OO_X(D)_x$ is the stalk, a free rank-one $\OO_{X,x}$-module;
+its fibre is only $\OO_X(D)_x/\mathfrak m_x\OO_X(D)_x$.
+The exponent $s+1$ retains terms of total degree at most $s$, including
+ the constant term. Equivalently, every section on the infinitesimal
+neighbourhood $\operatorname{Spec}(\OO_{X,x}/\mathfrak m_x^{s+1})$
+is the restriction of a section in $V$. After a local trivialization
+and a choice of regular parameters, this means prescribing an arbitrary
+Taylor polynomial of total degree at most $s$.
+
+\begin{lemma}
+The space of $s$-jets has dimension $\binom{n+s}{n}$.
+Moreover, $\Lambda$ generates $s$-jets at $x$ if and only if, for every
+$0\le j\le s$, the natural map
+\[
+ \{\sigma\in V:\sigma_x\in\mathfrak m_x^j\OO_X(D)_x\}
+ \longrightarrow
+ \mathfrak m_x^j\OO_X(D)_x/\mathfrak m_x^{j+1}\OO_X(D)_x
+\]
+is surjective.
+\end{lemma}
+\begin{proof}
+We count monomials in regular parameters. Smoothness gives
+$\widehat{\OO}_{X,x}\simeq\C[[u_1,\ldots,u_n]]$, so the quotient has a
+basis consisting of monomials of total degree at most $s$, whose number
+is $\binom{n+s}{n}$.
+
+We compare full jets with their successive homogeneous terms.
+Full jet generation lifts any homogeneous term of degree $j$ with all
+lower terms zero, proving the stated surjectivity. Conversely, given a
+local germ, first correct its constant term by a section in $V$. If its
+remaining error lies in $\mathfrak m_x^j\OO_X(D)_x$, the degree-$j$
+surjectivity corrects that error modulo $\mathfrak m_x^{j+1}\OO_X(D)_x$
+without changing lower terms. Induction through $j=s$ lifts the full jet.
+\end{proof}
+For $j=1$, the graded condition is the tangent-vector condition in
+Hartshorne, II, Proposition 7.3(2); the general-$s$ equivalence above
+also requires $j=0$ and every intermediate degree.
+
+For a section $\sigma$, define $\operatorname{ord}_x(\sigma)$ as the
+largest $a$ with $\sigma_x\in\mathfrak m_x^a\OO_X(D)_x$, and set
+$\operatorname{ord}_x(0)=\infty$. This is independent of the local frame.
+
+\begin{proposition}
+The system $\Lambda$ generates $s$-jets at $x$ if and only if the subspace
+\[
+ \{\sigma\in V:\operatorname{ord}_x(\sigma)\ge s+1\}
+\]
+has codimension $\binom{n+s}{n}$. In this case, its projectivization is the subsystem
+of divisors $E\in\Lambda$ with $\operatorname{mult}_x(E)\ge s+1$, of dimension
+$\dim\Lambda-\binom{n+s}{n}$.
+\end{proposition}
+\begin{proof}
+The displayed subspace is the kernel of restriction to $s$-jets.
+Rank--nullity identifies its codimension with the rank of restriction.
+Since the target has dimension $\binom{n+s}{n}$, this codimension
+equals the target dimension exactly when restriction is surjective.
+The projective dimension follows.
+A nonzero section gives its zero divisor, and its local order equals
+the divisor multiplicity. If the kernel is zero, its projectivization
+is empty, with dimension $-1$ by convention.
+\end{proof}
+Existence of a high-multiplicity member concerns a nonzero kernel;
+jet generation concerns surjectivity and does not follow from that existence.
+
+\section{One-jets and very ampleness}
+\begin{proposition}
+The system $\Lambda$ generates one-jets at $x$ if and only if it is base-point
+free at $x$ and the sections vanishing at $x$ span
+$\mathfrak m_x\OO_X(D)_x/\mathfrak m_x^2\OO_X(D)_x$.
+Equivalently, in addition to base-point freeness, every nonzero tangent
+vector $v\in T_xX$ admits a section vanishing at $x$ whose derivative
+along $v$ is nonzero.
+\end{proposition}
+\begin{proof}
+The first assertion is the preceding lemma for $j=0,1$.
+After trivializing the fibre, the linear terms form a subspace of
+$T_x^*X$. This subspace is all of $T_x^*X$ precisely when its annihilator
+in $T_xX$ is zero, which is the asserted tangent-vector condition.
+The derivative of a section vanishing at $x$ is independent of the
+trivialization up to multiplication by a nonzero scalar.
+\end{proof}
+On a surface, a nonzero prescribed linear term defines a smooth local
+member with its prescribed tangent line at $x$. This is a local condition;
+it does not separate two distinct points. For distinct tangent lines
+$\ell_1,\ell_2\subset T_xX$, choose a member smooth at $x$ with
+tangent line $\ell_1$; then $\ell_2$ is not contained in its tangent space.
+Globally, a very ample system separates distinct points $p,q$ by a
+member containing $p$ and not $q$.
+For the complete linear system, $D$ is very ample if and only if it
+separates distinct points and generates one-jets at every point
+(Hartshorne, II, Proposition 7.3). Here separation of distinct points
+means surjectivity onto the two fibres, and hence includes base-point
+freeness. For a base-point-free subsystem $\Lambda$, the associated morphism
+is a closed immersion if and only if $\Lambda$ separates distinct
+points and generates one-jets everywhere.
+
+\begin{example}
+Lines in $\mathbb P^2$ prescribe values and tangent lines at a point.
+\end{example}
+\begin{explanation}
+At $x=[1:0:0]$, write $u=X_1/X_0$, $v=X_2/X_0$.
+The sections of $\OO_{\mathbb P^2}(1)$ have local forms $a+bu+cv$.
+Their one-jets span $1,u,v$. Given a tangent line $bu+cv=0$ with
+$(b,c)\ne(0,0)$, the corresponding line is smooth at $x$ and has that
+ tangent line.
+\end{explanation}
+
+\begin{example}
+Very ampleness does not guarantee two-jet generation.
+\end{example}
+\begin{explanation}
+The bundle $\OO_{\mathbb P^2}(1)$ is very ample, but its three sections
+cannot surject onto the six-dimensional two-jet space; in the above
+coordinates they cannot realize the term $u^2$.
+In contrast, $\OO_{\mathbb P^2}(2)$ has local sections spanning
+$1,u,v,u^2,uv,v^2$, and generates two-jets at every point.
+Thus higher jet generation is not guaranteed by very ampleness alone,
+but can hold for stronger bundles.
+\end{explanation}
+
+\begin{example}
+A complete linear system can generate one-jets everywhere without
+separating distinct points.
+\end{example}
+\begin{explanation}
+Consider the plane quartic
+\[
+ \Gamma:\ X_0^4+X_1^4+(X_1^2-X_0^2)X_2^2=0.
+\]
+We verify that its only singularity is an ordinary node at $[0:0:1]$.
+On $X_2\ne0$, its equation is $f=u^4+v^4+v^2-u^2$ and
+\[
+ f_u=2u(2u^2-1),\qquad f_v=2v(2v^2+1).
+\]
+A singular point must have $u^2\in\{0,1/2\}$ and
+$v^2\in\{0,-1/2\}$; among these possibilities $f=0$ only at $(0,0)$.
+The quadratic term $v^2-u^2$ gives two smooth transverse branches.
+At infinity, the derivatives $4X_0^3,4X_1^3$ cannot both vanish.
+Thus the singularity is unique. The curve is reduced, since a repeated
+component would give a positive-dimensional singular locus. If it were
+reducible, distinct components could meet only at the node, with local
+intersection one. There are at most two components, since the node has
+only two branches; their degrees would be $1,3$ or $2,2$, contradicting
+B\'ezout's intersection number $3$ or $4$. Thus $\Gamma$ is integral.
+Let $\nu:C\to\Gamma$ be its normalization.
+The genus formula gives $g(C)=3-1=2$. Let $D$ be the pullback of a hyperplane divisor, so
+$\OO_C(D)=\nu^*\OO_\Gamma(1)$.
+Then $\deg D=4$, and
+\[
+ h^1(C,\OO_C(D))=h^0(C,K_C-D)=0,\qquad h^0(C,\OO_C(D))=4+1-2=3.
+\]
+The three coordinate sections are independent, since $\Gamma$ lies in
+no line, so they give the complete linear system $|D|$.
+Its morphism is the normalization map followed by the plane embedding.
+At smooth points of $\Gamma$ it is immersive; at the two points above
+the node, each branch is smooth with nonzero tangent. Thus it is
+immersive everywhere and $|D|$ generates one-jets everywhere.
+It identifies the two preimages of the node, so $D$ is not very ample.
+The use of a quartic is essential to this dimension calculation:
+normalizing a nodal cubic introduces additional sections.
+\end{explanation}
+
+\begin{example}
+The preceding failure of point separation also occurs for an ample
+bundle on a smooth surface.
+\end{example}
+\begin{explanation}
+Let $X=C\times\mathbb P^1$ and
+$B=\operatorname{pr}_1^*D+\operatorname{pr}_2^*H$, where $H$ is a
+point divisor on $\mathbb P^1$.
+Both factors have positive degree, so their external product is ample.
+The equality
+\[
+ H^0(X,\OO_X(B))=H^0(C,\OO_C(D))\otimes H^0(\mathbb P^1,\OO(1))
+\]
+shows that the complete morphism is $\operatorname{Segre}\circ(\nu,\mathrm{id})$.
+At any point choose local parameters $u,v$ on the factors. Tensoring
+sections with nonzero value and sections with prescribed linear term
+produces local one-jets spanning $1,u,v$. Thus $|B|$ generates one-jets
+at every point. Nevertheless, the two preimages of the node paired
+with the same point of $\mathbb P^1$ have the same image, so $B$ is
+not very ample.
+\end{explanation}
+
+\section{Powers of a very ample divisor}
+\begin{theorem}
+If $A$ is very ample, then $|mA|$ generates $s$-jets at every point
+whenever $m\ge s\ge1$.
+\end{theorem}
+\begin{proof}
+We realize local monomials by homogeneous polynomials.
+Embed $X\hookrightarrow\mathbb P^r$ by $|A|$ and fix $x\in X$.
+Choose homogeneous coordinates with $X_0(x)\ne0$ and $X_i(x)=0$
+for $i>0$. The restricted affine coordinates $u_i=X_i/X_0$ generate
+$\mathfrak m_x$. Hence their monomials of total degree at most $s$
+span $\OO_{X,x}/\mathfrak m_x^{s+1}$: successive powers of the maximal
+ideal are generated by the corresponding monomials, and their
+coefficients can be reduced to constants degree by degree.
+For a multi-index $\alpha$ with $|\alpha|\le s$, the homogeneous
+polynomial
+\[
+ X_0^{m-|\alpha|}\prod_{i=1}^r X_i^{\alpha_i}
+\]
+restricts to a global section of $mA$ whose local expression in the
+frame $X_0^m$ is $u^\alpha$. These sections span all $s$-jets at $x$.
+No surjectivity from ambient polynomials onto all global sections,
+and hence no projective normality, is required.
+\end{proof}
+For fixed $s$, sufficiently large powers therefore generate $s$-jets
+uniformly in $x$. This does not assert that a fixed power generates
+jets of arbitrarily growing order.
+
+\begin{example}
+On projective space, the bound on the jet order is exact.
+\end{example}
+\begin{explanation}
+For $n\ge1$ and $m\ge0$, $\OO_{\mathbb P^n}(m)$ generates $s$-jets
+at every point exactly when $s\le m$. In an affine chart its sections
+are polynomials of degree at most $m$, which span all monomials through
+degree $s$ if $s\le m$. If $s>m$, they cannot realize $u_1^{m+1}$.
+\end{explanation}
+
+\section*{Sources}
+Hartshorne, \emph{Algebraic Geometry}, II, Proposition 7.3, for point
+and tangent-vector separation:
+\href{https://djvu.online/file/nBitrL383m1P0}{online text}.
+For the very-ampleness criterion, see also the
+\href{https://stacks.math.columbia.edu/tag/0E8R}{Stacks Project, Tag 0E8R}.
+The higher-order statements above are proved here rather than attributed
+to the first-order criterion.
+\end{document}
