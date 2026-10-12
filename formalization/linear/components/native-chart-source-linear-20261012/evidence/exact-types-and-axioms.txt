@@ -1,0 +1,254 @@
+@LinearStudy.moduleBaseSourceLocalizationEquiv_upper_action : ∀ {R S M : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : Algebra R S] [inst_3 : AddCommGroup M] [inst_4 : Module R M] [inst_5 : Module S M]
+  [inst_6 : IsScalarTower R S M] (a : R) (s : S) (x : LocalizedModule (Submonoid.powers a) M),
+  (LinearStudy.moduleBaseSourceLocalizationEquiv a)
+      (((IsLocalizedModule.map (Submonoid.powers a) (LocalizedModule.mkLinearMap (Submonoid.powers a) M)
+            (LocalizedModule.mkLinearMap (Submonoid.powers a) M))
+          (DistribSMul.toLinearMap R M s))
+        x) =
+    s • (LinearStudy.moduleBaseSourceLocalizationEquiv a) x
+'LinearStudy.moduleBaseSourceLocalizationEquiv_upper_action' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleBaseSourceLocalizationEquiv_source_fraction_action : ∀ {R S M : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : Algebra R S] [inst_3 : AddCommGroup M] [inst_4 : Module R M] [inst_5 : Module S M]
+  [inst_6 : IsScalarTower R S M] (a : R) (s : S) (p : ↥(Submonoid.powers a)),
+  let P' := Submonoid.powers ((algebraMap R S) a);
+  have p' := ⟨(algebraMap R S) ↑p, ⋯⟩;
+  ∀ (x : LocalizedModule (Submonoid.powers a) M),
+    (LinearStudy.moduleBaseSourceLocalizationEquiv a)
+        (Localization.mk 1 p •
+          ((IsLocalizedModule.map (Submonoid.powers a) (LocalizedModule.mkLinearMap (Submonoid.powers a) M)
+                (LocalizedModule.mkLinearMap (Submonoid.powers a) M))
+              (DistribSMul.toLinearMap R M s))
+            x) =
+      Localization.mk s p' • (LinearStudy.moduleBaseSourceLocalizationEquiv a) x
+'LinearStudy.moduleBaseSourceLocalizationEquiv_source_fraction_action' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.actualRestrictedNativeDualSourceModule : {R S : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] → [inst_2 : Algebra R S] → Module S ↑LinearStudy.actualRestrictedNativeDual
+'LinearStudy.actualRestrictedNativeDualSourceModule' depends on axioms: [propext, Quot.sound]
+@LinearStudy.actualRestrictedNativeDualBaseSourceTower : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S], IsScalarTower R S ↑LinearStudy.actualRestrictedNativeDual
+'LinearStudy.actualRestrictedNativeDualBaseSourceTower' depends on axioms: [propext, Quot.sound]
+@LinearStudy.nativeDualSourceChangedUpperAction_eval : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] [inst_3 : Module.Finite R S] (a : R)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))) (s : S)
+  (ell : LocalizedModule (Submonoid.powers a) ↑LinearStudy.actualRestrictedNativeDual)
+  (x : LocalizedModule (Submonoid.powers a) S),
+  ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers a) hinj)
+        ((LinearEquiv.symm (LinearStudy.moduleBaseSourceLocalizationEquiv a))
+          (s • (LinearStudy.moduleBaseSourceLocalizationEquiv a) ell)))
+      x =
+    ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers a) hinj) ell) (x * LocalizedModule.mk s 1)
+'LinearStudy.nativeDualSourceChangedUpperAction_eval' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeDualSourceChangedFractionAction_eval : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] [inst_3 : Module.Finite R S] (a : R)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))) (s : S) (p : ↥(Submonoid.powers a)),
+  let P' := Submonoid.powers ((algebraMap R S) a);
+  have p' := ⟨(algebraMap R S) ↑p, ⋯⟩;
+  ∀ (ell : LocalizedModule (Submonoid.powers a) ↑LinearStudy.actualRestrictedNativeDual)
+    (x : LocalizedModule (Submonoid.powers a) S),
+    ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers a) hinj)
+          ((LinearEquiv.symm (LinearStudy.moduleBaseSourceLocalizationEquiv a))
+            (Localization.mk s p' • (LinearStudy.moduleBaseSourceLocalizationEquiv a) ell)))
+        x =
+      ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers a) hinj) ell)
+        (x * LocalizedModule.mk s p)
+'LinearStudy.nativeDualSourceChangedFractionAction_eval' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeDualSourceChangedAction_eval_all : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] [inst_3 : Module.Finite R S] (a : R)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a))),
+  have P' := Submonoid.powers ((algebraMap R S) a);
+  ∀ (b : Localization.Away ((algebraMap R S) a))
+    (ell : LocalizedModule (Submonoid.powers a) ↑LinearStudy.actualRestrictedNativeDual)
+    (x : LocalizedModule (Submonoid.powers a) S),
+    ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers a) hinj)
+          ((LinearEquiv.symm (LinearStudy.moduleBaseSourceLocalizationEquiv a))
+            (b • (LinearStudy.moduleBaseSourceLocalizationEquiv a) ell)))
+        x =
+      ((LinearStudy.finiteNativeCoextensionLocalizationEquiv (Submonoid.powers a) hinj) ell)
+        (x * (LinearStudy.nativeNormalizationFullChartEquiv a).symm b)
+'LinearStudy.nativeDualSourceChangedAction_eval_all' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeNormalizationSourceChartEquiv_symm_val : ∀ {K R S : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] (a : R) (ha : a ∈ 𝒜 1)
+  (y : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)),
+  ↑((LinearStudy.nativeNormalizationSourceChartEquiv 𝒜 𝓑 a ha).symm y) =
+    (LinearStudy.nativeNormalizationFullChartEquiv a).symm (HomogeneousLocalization.val y)
+'LinearStudy.nativeNormalizationSourceChartEquiv_symm_val' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeNormalizationSourceChartEquiv_symm_mul_val : ∀ {K R S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] (a : R) (ha : a ∈ 𝒜 1)
+  (y b : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)),
+  ↑((LinearStudy.nativeNormalizationSourceChartEquiv 𝒜 𝓑 a ha).symm (y * b)) =
+    ↑((LinearStudy.nativeNormalizationSourceChartEquiv 𝒜 𝓑 a ha).symm y) *
+      (LinearStudy.nativeNormalizationFullChartEquiv a).symm (HomogeneousLocalization.val b)
+'LinearStudy.nativeNormalizationSourceChartEquiv_symm_mul_val' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv_symm_val : ∀ {K R S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (y : ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ((algebraMap R S) a))),
+  let D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+  ↑((LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm y) =
+    (LinearEquiv.symm (LinearStudy.moduleBaseSourceLocalizationEquiv a)) ↑y
+'LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv_symm_val' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv_symm_source_smul_val : ∀ {K R S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (b : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a))
+  (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a)),
+  let D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+  ↑((LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm
+        (b • (LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha) ell)) =
+    (LinearEquiv.symm (LinearStudy.moduleBaseSourceLocalizationEquiv a))
+      (HomogeneousLocalization.val b • (LinearStudy.moduleBaseSourceLocalizationEquiv a) ↑ell)
+'LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv_symm_source_smul_val' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.finiteNativeDualFullSourceChartMap_original_source_action : ∀ {K R S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [inst_10 : Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (b : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a))
+  (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a))
+  (y : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a)),
+  ((LinearStudy.finiteNativeDualFullSourceChartMap 𝒜 𝓑 a ha hinj)
+        ((LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm
+          (b • (LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha) ell)))
+      y =
+    ((LinearStudy.finiteNativeDualFullSourceChartMap 𝒜 𝓑 a ha hinj) ell) (y * b)
+'LinearStudy.finiteNativeDualFullSourceChartMap_original_source_action' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeAffineInternalHomSectionsEquiv_original_chart_functional : ∀ {K R S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [inst_10 : Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a)),
+  (LinearStudy.nativeAffineInternalHomSectionsEquiv 𝒜 𝓑 a ha hinj) ell =
+    LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv
+      ((LinearStudy.finiteNativeDualFullSourceChartMap 𝒜 𝓑 a ha hinj) ell)
+'LinearStudy.nativeAffineInternalHomSectionsEquiv_original_chart_functional' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeAffineInternalHomSectionsEquiv_original_source_action : ∀ {K R S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [inst_10 : Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (b : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a))
+  (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a)),
+  let A := HomogeneousLocalization.Away 𝒜 a;
+  let B := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);
+  let g := AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B));
+  (LinearStudy.nativeAffineInternalHomSectionsEquiv 𝒜 𝓑 a ha hinj)
+      ((LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm
+        (b • (LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha) ell)) =
+    LinearStudy.schemePushforwardHomSourceActionSection g (SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf)
+      ⊤
+      (have this :=
+        (CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))
+          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) b);
+      this)
+      ((LinearStudy.nativeAffineInternalHomSectionsEquiv 𝒜 𝓑 a ha hinj) ell)
+'LinearStudy.nativeAffineInternalHomSectionsEquiv_original_source_action' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv_add : ∀ {K R S : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (ell k : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a)),
+  (LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha) (ell + k) =
+    (LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha) ell +
+      (LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha) k
+'LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv_symm_add : ∀ {K R S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (d e : ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ((algebraMap R S) a))),
+  (LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm (d + e) =
+    (LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm d +
+      (LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm e
+'LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv_symm_add' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeAffineInternalHomSectionsEquiv_native_source_action : ∀ {K R S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [inst_10 : Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (b : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a))
+  (d : ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ((algebraMap R S) a))),
+  let A := HomogeneousLocalization.Away 𝒜 a;
+  let B := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);
+  let g := AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B));
+  (LinearStudy.nativeAffineInternalHomSectionsEquiv 𝒜 𝓑 a ha hinj)
+      ((LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm (b • d)) =
+    LinearStudy.schemePushforwardHomSourceActionSection g (SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf)
+      ⊤
+      (have this :=
+        (CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))
+          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) b);
+      this)
+      ((LinearStudy.nativeAffineInternalHomSectionsEquiv 𝒜 𝓑 a ha hinj)
+        ((LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm d))
+'LinearStudy.nativeAffineInternalHomSectionsEquiv_native_source_action' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeAffineOriginalSourceChartHomLinearEquiv : {K R S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [inst_6 : IsScalarTower K R S] →
+                (𝒜 : ℕ → Submodule K R) →
+                  [inst_7 : GradedAlgebra 𝒜] →
+                    (𝓑 : ℕ → Submodule K S) →
+                      [inst_8 : GradedAlgebra 𝓑] →
+                        [inst_9 : SetLike.GradedSMul 𝒜 𝓑] →
+                          [Module.Finite R S] →
+                            (a : R) →
+                              a ∈ 𝒜 1 →
+                                Function.Injective ⇑(algebraMap R (Localization.Away a)) →
+                                  let A := HomogeneousLocalization.Away 𝒜 a;
+                                  let B := HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a);
+                                  let g := AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B));
+                                  let H :=
+                                    (LinearStudy.schemeModuleHomModuleSheaf
+                                            ((AlgebraicGeometry.Scheme.Modules.pushforward g).obj
+                                              (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf))
+                                            (SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf)).presheaf.obj
+                                      (Opposite.op ⊤);
+                                  ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑)
+                                        ((algebraMap R S) a)) ≃ₗ[B]
+                                    ↑H
+'LinearStudy.nativeAffineOriginalSourceChartHomLinearEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeAffineOriginalSourceChartHomLinearEquiv_apply : ∀ {K R S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [inst_10 : Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (d : ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ((algebraMap R S) a))),
+  (LinearStudy.nativeAffineOriginalSourceChartHomLinearEquiv 𝒜 𝓑 a ha hinj) d =
+    (LinearStudy.nativeAffineInternalHomSectionsEquiv 𝒜 𝓑 a ha hinj)
+      ((LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm d)
+'LinearStudy.nativeAffineOriginalSourceChartHomLinearEquiv_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
