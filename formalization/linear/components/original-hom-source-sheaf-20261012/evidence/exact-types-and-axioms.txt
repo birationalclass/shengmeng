@@ -1,0 +1,64 @@
+@LinearStudy.originalSheafWithSourceAction : {C : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      {R S : CategoryTheory.Sheaf J RingCat} →
+        (H : SheafOfModules R) →
+          [inst_1 : (U : Cᵒᵖ) → Module ↑(S.obj.obj U) ↑(H.val.presheaf.obj U)] →
+            (∀ ⦃U V : Cᵒᵖ⦄ (i : U ⟶ V) (b : ↑(S.obj.obj U)) (x : ↑(H.val.presheaf.obj U)),
+                (CategoryTheory.ConcreteCategory.hom (H.val.presheaf.map i)) (b • x) =
+                  (CategoryTheory.ConcreteCategory.hom (S.obj.map i)) b •
+                    (CategoryTheory.ConcreteCategory.hom (H.val.presheaf.map i)) x) →
+              SheafOfModules S
+'LinearStudy.originalSheafWithSourceAction' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalSheafWithSourceAction_restrictIso : {C : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      {R S : CategoryTheory.Sheaf J RingCat} →
+        (H : SheafOfModules R) →
+          [inst_1 : (U : Cᵒᵖ) → Module ↑(S.obj.obj U) ↑(H.val.presheaf.obj U)] →
+            (hres :
+                ∀ ⦃U V : Cᵒᵖ⦄ (i : U ⟶ V) (b : ↑(S.obj.obj U)) (x : ↑(H.val.presheaf.obj U)),
+                  (CategoryTheory.ConcreteCategory.hom (H.val.presheaf.map i)) (b • x) =
+                    (CategoryTheory.ConcreteCategory.hom (S.obj.map i)) b •
+                      (CategoryTheory.ConcreteCategory.hom (H.val.presheaf.map i)) x) →
+              (α : R ⟶ S) →
+                (∀ (U : Cᵒᵖ) (r : ↑(R.obj.obj U)) (x : ↑(H.val.presheaf.obj U)),
+                    (CategoryTheory.ConcreteCategory.hom (α.hom.app U)) r • x = r • x) →
+                  ((SheafOfModules.restrictScalars α).obj (LinearStudy.originalSheafWithSourceAction H hres) ≅ H)
+'LinearStudy.originalSheafWithSourceAction_restrictIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemePushforwardHomSourceModuleSheaf : {X Y : AlgebraicGeometry.Scheme} →
+  (f : X ⟶ Y) → Y.Modules → SheafOfModules ((TopCat.Sheaf.pushforward RingCat f.base).obj X.ringCatSheaf)
+'LinearStudy.schemePushforwardHomSourceModuleSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemePushforwardHomSourceModuleSheaf_original_presheaf : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  (N : Y.Modules),
+  (LinearStudy.schemePushforwardHomSourceModuleSheaf f N).val.presheaf =
+    (LinearStudy.schemeModuleHomModuleSheaf
+        ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf)) N).presheaf
+'LinearStudy.schemePushforwardHomSourceModuleSheaf_original_presheaf' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemePushforwardHomSourceModuleSheaf_scalarRecoveryIso : {X Y : AlgebraicGeometry.Scheme} →
+  (f : X ⟶ Y) →
+    (N : Y.Modules) →
+      (SheafOfModules.restrictScalars (AlgebraicGeometry.Scheme.Hom.toRingCatSheafHom f)).obj
+          (LinearStudy.schemePushforwardHomSourceModuleSheaf f N) ≅
+        LinearStudy.schemeModuleHomModuleSheaf
+          ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf)) N
+'LinearStudy.schemePushforwardHomSourceModuleSheaf_scalarRecoveryIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemePushforwardHomSourceModuleSheaf_scalarRecoveryIso_hom_apply : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (f : X ⟶ Y) (N : Y.Modules) (U : Y.Opens)
+  (h :
+    ↑((AlgebraicGeometry.Scheme.Modules.presheaf
+            ((SheafOfModules.restrictScalars (AlgebraicGeometry.Scheme.Hom.toRingCatSheafHom f)).obj
+              (LinearStudy.schemePushforwardHomSourceModuleSheaf f N))).obj
+        (Opposite.op U))),
+  (CategoryTheory.ConcreteCategory.hom
+        ((LinearStudy.schemePushforwardHomSourceModuleSheaf_scalarRecoveryIso f N).hom.val.app (Opposite.op U)))
+      h =
+    have this := h;
+    this
+'LinearStudy.schemePushforwardHomSourceModuleSheaf_scalarRecoveryIso_hom_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
