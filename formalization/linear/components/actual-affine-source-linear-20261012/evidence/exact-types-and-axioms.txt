@@ -1,0 +1,101 @@
+@LinearStudy.schemePushforwardHomSourceActionSection_original_evaluation : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (f : X ⟶ Y) (N : Y.Modules) (U : Y.Opens)
+  (b x : ↑(X.presheaf.obj (Opposite.op ((TopologicalSpace.Opens.map f.base).obj U))))
+  (h :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf
+              ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf))
+              N).presheaf.obj
+        (Opposite.op U))),
+  (LinearStudy.schemeModuleHomSectionEvaluation
+        ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf)) N U
+        (LinearStudy.schemePushforwardHomSourceActionSection f N U b h))
+      x =
+    (LinearStudy.schemeModuleHomSectionEvaluation
+        ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj (SheafOfModules.unit X.ringCatSheaf)) N U h)
+      (b * x)
+'LinearStudy.schemePushforwardHomSourceActionSection_original_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.actualAffineAlgebraStructurePushforwardIso_element_mul : ∀ {A B : Type u_1} [inst : CommRing A]
+  [inst_1 : CommRing B] [inst_2 : Algebra A B] (b x : B),
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) (b * x)) =
+    (have this :=
+        (CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))
+          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) b);
+      this) *
+      have this :=
+        (CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))
+          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) x);
+      this
+'LinearStudy.actualAffineAlgebraStructurePushforwardIso_element_mul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.actualAffineNativeDualInternalHom_original_source_action : ∀ {A B : Type u_1} [inst : CommRing A]
+  [inst_1 : CommRing B] [inst_2 : Algebra A B]
+  (ell : ↑((ModuleCat.restrictScalars (algebraMap A B)).obj ((ModuleCat.coextendScalars (algebraMap A B)).obj ↧A)))
+  (b : B),
+  LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv
+      (LinearStudy.nativeCoextensionOriginalDualEquiv (b • ell)) =
+    LinearStudy.schemePushforwardHomSourceActionSection
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))
+      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf) ⊤
+      (have this :=
+        (CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.Hom.app LinearStudy.actualAffineAlgebraStructurePushforwardIso.hom ⊤))
+          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.toOpen ↧B ⊤)) b);
+      this)
+      (LinearStudy.actualAffineAlgebraDualInternalHomSectionsLinearEquiv
+        (LinearStudy.nativeCoextensionOriginalDualEquiv ell))
+'LinearStudy.actualAffineNativeDualInternalHom_original_source_action' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.actualAffineOriginalHomSourceModule : {A B : Type u_1} →
+  [inst : CommRing A] →
+    [inst_1 : CommRing B] →
+      [inst_2 : Algebra A B] →
+        Module B
+          ↑((LinearStudy.schemeModuleHomModuleSheaf
+                    ((AlgebraicGeometry.Scheme.Modules.pushforward
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))).obj
+                      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf))
+                    (SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf)).presheaf.obj
+              (Opposite.op ⊤))
+'LinearStudy.actualAffineOriginalHomSourceModule' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.actualAffineNativeDualOriginalHomSourceLinearEquiv : {A B : Type u_1} →
+  [inst : CommRing A] →
+    [inst_1 : CommRing B] →
+      [inst_2 : Algebra A B] →
+        let H :=
+          (LinearStudy.schemeModuleHomModuleSheaf
+                  ((AlgebraicGeometry.Scheme.Modules.pushforward
+                        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))).obj
+                    (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf))
+                  (SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf)).presheaf.obj
+            (Opposite.op ⊤);
+        ↑((ModuleCat.coextendScalars (algebraMap A B)).obj ↧A) ≃ₗ[B] ↑H
+'LinearStudy.actualAffineNativeDualOriginalHomSourceLinearEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.actualAffineCoextendedInjectiveResolutionOriginalHomZeroIso : {A B : Type u_1} →
+  [inst : CommRing A] →
+    [inst_1 : CommRing B] →
+      [inst_2 : Algebra A B] →
+        (I : CategoryTheory.InjectiveResolution ↧A) →
+          let H :=
+            (LinearStudy.schemeModuleHomModuleSheaf
+                    ((AlgebraicGeometry.Scheme.Modules.pushforward
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap A B)))).obj
+                      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧B).ringCatSheaf))
+                    (SheafOfModules.unit (AlgebraicGeometry.Spec ↧A).ringCatSheaf)).presheaf.obj
+              (Opposite.op ⊤);
+          (HomologicalComplex.homologyFunctor (ModuleCat B) (ComplexShape.up ℕ) 0).obj
+              (((ModuleCat.coextendScalars (algebraMap A B)).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+                I.cocomplex) ≅
+            ↧↑H
+'LinearStudy.actualAffineCoextendedInjectiveResolutionOriginalHomZeroIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
