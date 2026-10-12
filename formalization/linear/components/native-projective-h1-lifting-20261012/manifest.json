@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "id": "native-projective-h1-lifting-20261012",
+  "createdAt": "2026-10-12T23:27:38.668345+08:00",
+  "leanVersion": "v4.35.0-rc3",
+  "mathlibRevision": "2a885768dae569d938bb9ff3474da6a8753bb90a",
+  "rootModules": [
+    "Linear.SchemeModuleAdditiveSheafColimits",
+    "Linear.SchemeModuleHOneSectionLift",
+    "Linear.SchemeModuleKernelHOneSectionLift",
+    "Linear.NativeProjectiveHOneSectionLift"
+  ],
+  "closedSourceModules": 21,
+  "newModules": 4,
+  "newProofs": 9,
+  "newDefinitions": 1,
+  "auditedDeclarations": 10,
+  "unchangedCheckpoint180Dependencies": 16,
+  "unchangedPriorComponentDependencies": 1,
+  "eventualSerreVanishingVerified": false,
+  "polynomialLiftingExistenceVerified": false,
+  "baseVerifiedLocalCheckpoint": 180,
+  "originalLemma4_1Verified": false,
+  "originalLemma4_2Verified": false,
+  "mainTheoremVerified": false,
+  "canonicalDualizingIdentificationVerified": false,
+  "concreteOriginalProjEmbeddingTransportVerified": false,
+  "userAuthorizedConditionalContinuation": true,
+  "verificationScope": "# Original Lemma4.2: actual native projective H1-to-section lifting\n\nOriginal Lemma4.1/4.2 and the Linearity Theorem remain OPEN. The genuine\ncanonical identification remains UNVERIFIED. Original hypotheses, numbering\nand one fixed m before all iterates are preserved.\n\nLet X be an actual scheme. Its actual underlying-additive-sheaf functor\npreserves finite limits, colimits and zero maps; actual short exact sequences\nare proved preserved. This minimally adapts CBirkbeck/AINTLIB SchemeModuleSheaf\nat ab1451487da02cd4483d0e2cdb2cc9e44bbbac17, Apache2.0, using Linear's fixed\nmathlib2a885768dae569d938bb9ff3474da6a8753bb90a. No foreign whole-library\nimport or exactness-comparison certificate is assumed.\n\nLet 0 -> A -> B -> C -> 0 be an ACTUAL short exact sequence of O_X-modules.\nAssume genuine mathlib H1 of the underlying additive A is zero.\nThen B(X) -> C(X) is surjective. For an actual module-sheaf epimorphism f,\nthe kernel short exact sequence is constructed. Thus H1(ker f)=0 implies\nsection surjectivity without assuming a section-lifting certificate.\n\nLet e:D -> E be an ACTUAL surjective homogeneous graded-module map and fix\nan integer k. Homogeneous surjectivity derives an epimorphism of ACTUAL\nnative local-fraction sheaves on the SAME Proj in the SAME degree k.\nIf H1 of the ACTUAL kernel of that sheaf map vanishes, EVERY actual global\nsection of its target lifts. Graded-to-sheaf and kernel exactness are derived.\n\nH1 vanishing is an EXPLICIT PREMISE, not proved eventual Serre vanishing.\nThe actual I_V(m), native-twist/Serre-line-bundle comparison, eventual\nvanishing in ONE degree independent of q, ambient polynomial/global-section\ncomparison and Koszul/proper-duality nonzero-section production remain OPEN.\nDo not use this conditional implication to claim the original lemma proved.\n\nFour new canonical LF modules:9 proofs,1 definition,10 exact type/axiom\naudits. The21-module source closure has16 byte-identical checkpoint180\ndependencies and1 byte-identical dependency from the preceding verified\ncomponent.199 new physical lines include comments and blanks. All compiler,\nresource and exact type/axiom logs are included. Only propext,Classical.choice\nand Quot.sound occur. One compiler,8GiB hard Windows Job,two threads,CPU25%,\nbelow normal,20-minute timeout. Largest accepted root compile4.11GiB;\naccepted audit4.09GiB. No resource-interrupted or partial job counted.\nLinear.lean is a reproducibility import entry, not separately compiled.\nThis is an independent local component, not a full-project checkpoint or CI.\nThe latest complete local checkpoint remains180.\n",
+  "remainingObligations": [
+    "Genuine canonical/normalized-dualizing identification",
+    "Original-Proj specialization of the generic transport (large-type draft not accepted)",
+    "Koszul/proper-duality production of the nonzero section",
+    "Surjectivity of homogeneous-polynomial extension in one fixed sufficiently large twist"
+  ],
+  "resourceLimits": {
+    "concurrentCompilers": 1,
+    "hardJobMemoryMiB": 8192,
+    "leanThreads": 2,
+    "cpuPercent": 25,
+    "timeoutSeconds": 1200
+  },
+  "sources": [
+    {
+      "module": "Linear.GradedIntegerProjection",
+      "path": "source/Linear/GradedIntegerProjection.lean",
+      "sha256": "52892ad4e5bf6091a82d60f482e115ab760c8483261a5e73abd3ccbe9cf4fa19",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.GradedIntegerProjector",
+      "path": "source/Linear/GradedIntegerProjector.lean",
+      "sha256": "3c146b5ea3ccae9a3566b6fc1ec19fb3474c1426b42aed3d12b3e83fcf150e7f",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.GradedModuleProjection",
+      "path": "source/Linear/GradedModuleProjection.lean",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.IntegerGradedModuleProjection",
+      "path": "source/Linear/IntegerGradedModuleProjection.lean",
+      "sha256": "12dc84575739244cf64391a7577b13bd35b6b21e1ddf53d2cbdd8a413cf977eb",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.IntegerGradedSurjectionPreimage",
+      "path": "source/Linear/IntegerGradedSurjectionPreimage.lean",
+      "sha256": "7cc92f566e10c0e9a0b9683481e879c9cdfcfe8bb6dc1b5e9394427d2a6006f7",
+      "physicalLines": 45
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeZeroEpi",
+      "path": "source/Linear/NativeProjectiveDegreeZeroEpi.lean",
+      "sha256": "516d0cdb7abfd8564fd2ccaf71596c500d531253716c6ddf0bb8068989bc05d3",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeZeroMap",
+      "path": "source/Linear/NativeProjectiveDegreeZeroMap.lean",
+      "sha256": "98c0d8578034e766970a67187a8a991938b776bedf482da077e22a104099ad12",
+      "physicalLines": 88
+    },
+    {
+      "module": "Linear.NativeProjectiveHOneSectionLift",
+      "path": "source/Linear/NativeProjectiveHOneSectionLift.lean",
+      "sha256": "4d12faa8afe1ef463b47d00742804f066e7aa9e73eb4e35e940762c2e0cdd1c4",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleFractionLift",
+      "path": "source/Linear/NativeProjectiveModuleFractionLift.lean",
+      "sha256": "a3de4ba746f376a7570f0ab8acffdb5b2541d57873e7a40d8b4b631fed1c67c7",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalAdd",
+      "path": "source/Linear/NativeProjectiveModuleLocalAdd.lean",
+      "sha256": "57a228b3302c5b94f2711f717cf6d08b53937bf3288fe60a0466d91435668e5a",
+      "physicalLines": 84
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalMap",
+      "path": "source/Linear/NativeProjectiveModuleLocalMap.lean",
+      "sha256": "4efe6440880dd3c95ef5d5c2bbf6d06a24d29ac94265603222222a44f1696f8b",
+      "physicalLines": 80
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalPredicate",
+      "path": "source/Linear/NativeProjectiveModuleLocalPredicate.lean",
+      "sha256": "e2115c92d44050cc2877e9bca10ead5657be45b49de9526fae7af55e3d7f48e0",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalSMul",
+      "path": "source/Linear/NativeProjectiveModuleLocalSMul.lean",
+      "sha256": "a56eef16375a14c18d7b612579a93b2cda12b8bba38801c3f6676d069750c26f",
+      "physicalLines": 95
+    },
+    {
+      "module": "Linear.NativeProjectiveModulePresheaf",
+      "path": "source/Linear/NativeProjectiveModulePresheaf.lean",
+      "sha256": "32a57fb96bba0b23e7b7eca54c1bd0a68374c102bd1c0f247c56739ffbfff867",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSections",
+      "path": "source/Linear/NativeProjectiveModuleSections.lean",
+      "sha256": "1ada8ff22c27caf3391a2e3080fddae3d2d30fb01140838b56cb11ccae289d2d",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSheaf",
+      "path": "source/Linear/NativeProjectiveModuleSheaf.lean",
+      "sha256": "f1d285c41b1325dfeb3d8fa8ff3e3d508af7b7c1307f70d34058192052a29201",
+      "physicalLines": 37
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSheafMap",
+      "path": "source/Linear/NativeProjectiveModuleSheafMap.lean",
+      "sha256": "d349cd4c673e7e8805c983666a310b579e0738f424ab24f397968cc65331b074",
+      "physicalLines": 89
+    },
+    {
+      "module": "Linear.SchemeModuleAdditiveSheafColimits",
+      "path": "source/Linear/SchemeModuleAdditiveSheafColimits.lean",
+      "sha256": "ff19d24ca93f59e8e5ddd1dcfa5d13200450737209903460cee03e2df0c13b8c",
+      "physicalLines": 95
+    },
+    {
+      "module": "Linear.SchemeModuleHOneSectionLift",
+      "path": "source/Linear/SchemeModuleHOneSectionLift.lean",
+      "sha256": "fd95386b1f3081bff42b8e0152caa76580d049ebac4a5c68c29c19addcf3486e",
+      "physicalLines": 36
+    },
+    {
+      "module": "Linear.SchemeModuleKernelHOneSectionLift",
+      "path": "source/Linear/SchemeModuleKernelHOneSectionLift.lean",
+      "sha256": "836910641852279212a38e2abdb18e7056461dfa6cd75de31138fc7565af7507",
+      "physicalLines": 25
+    },
+    {
+      "module": "Linear.SheafCohomologySectionSurjectivity",
+      "path": "source/Linear/SheafCohomologySectionSurjectivity.lean",
+      "sha256": "c292a9d940f9356ef79c9d75070e6f77e22d3d33cacca168e13e915201488c04",
+      "physicalLines": 29
+    },
+    {
+      "path": "source/Linear.lean",
+      "sha256": "1552faa8d316af3bc7a4a1b48f40a188e88692d630666d30858d86922abbfaea",
+      "physicalLines": 5
+    },
+    {
+      "path": "source/CheckAxioms.lean",
+      "sha256": "fbda041e2671f2fc3f12e875f12b19bf77926fa1805da3184f3d758654ab4fdd",
+      "physicalLines": 25
+    },
+    {
+      "path": "source/lean-toolchain",
+      "sha256": "bc84812c94489d1e3e191baa1dc10d5eb684382d7fe9d2a5ab085e72c1c67e47",
+      "physicalLines": 1
+    },
+    {
+      "path": "source/lakefile.toml",
+      "sha256": "12e6d3039c6ed00731bcf1c8f8e9c116e81771e6a74cad289b920b767f94d9ee",
+      "physicalLines": 11
+    },
+    {
+      "path": "source/lake-manifest.json",
+      "sha256": "ef71ef5fb13fd129bbf52a72216543bfd4c8e2b752dd3234d0f18b9964b104da",
+      "physicalLines": 96
+    }
+  ],
+  "compiledModules": [
+    {
+      "module": "Linear.SchemeModuleAdditiveSheafColimits",
+      "sourceSha256": "ff19d24ca93f59e8e5ddd1dcfa5d13200450737209903460cee03e2df0c13b8c",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.SchemeModuleAdditiveSheafColimits.compiler.log",
+      "compilerLogSha256": "2d68b98b80ae83b1042c642ff92d36c262527152a8125cc34941fb5b2dd109e7",
+      "resourceLog": "evidence/Linear.SchemeModuleAdditiveSheafColimits.resource.json"
+    },
+    {
+      "module": "Linear.SchemeModuleHOneSectionLift",
+      "sourceSha256": "fd95386b1f3081bff42b8e0152caa76580d049ebac4a5c68c29c19addcf3486e",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.SchemeModuleHOneSectionLift.compiler.log",
+      "compilerLogSha256": "4af44c817f6c9493f05f238870fad38009abb5fbbaacb30b3e461003c1c81761",
+      "resourceLog": "evidence/Linear.SchemeModuleHOneSectionLift.resource.json"
+    },
+    {
+      "module": "Linear.SchemeModuleKernelHOneSectionLift",
+      "sourceSha256": "836910641852279212a38e2abdb18e7056461dfa6cd75de31138fc7565af7507",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.SchemeModuleKernelHOneSectionLift.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.SchemeModuleKernelHOneSectionLift.resource.json"
+    },
+    {
+      "module": "Linear.NativeProjectiveHOneSectionLift",
+      "sourceSha256": "4d12faa8afe1ef463b47d00742804f066e7aa9e73eb4e35e940762c2e0cdd1c4",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.NativeProjectiveHOneSectionLift.compiler.log",
+      "compilerLogSha256": "edd084e21ab428ce3c15ef6dc95865867f9e052c19eda48fb631bbd8b785fb72",
+      "resourceLog": "evidence/Linear.NativeProjectiveHOneSectionLift.resource.json"
+    }
+  ],
+  "declarations": [
+    {
+      "name": "LinearStudy.schemeModuleToAdditiveSheaf",
+      "kind": "def",
+      "module": "Linear.SchemeModuleAdditiveSheafColimits",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.schemeModuleToAdditiveSheaf_preservesFiniteLimits",
+      "kind": "theorem",
+      "module": "Linear.SchemeModuleAdditiveSheafColimits",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.moduleAdditiveSheaf_preservesColimitsOfShape_of_reflector_comp",
+      "kind": "theorem",
+      "module": "Linear.SchemeModuleAdditiveSheafColimits",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.moduleAdditiveSheaf_preservesColimitsOfSize_of_reflector_comp",
+      "kind": "theorem",
+      "module": "Linear.SchemeModuleAdditiveSheafColimits",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.schemeModuleAdditiveSheaf_preservesColimitsOfSize",
+      "kind": "theorem",
+      "module": "Linear.SchemeModuleAdditiveSheafColimits",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.schemeModuleAdditiveSheaf_preservesZeroMorphisms",
+      "kind": "theorem",
+      "module": "Linear.SchemeModuleAdditiveSheafColimits",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.schemeModuleShortExact_underlyingAdditiveSheaf",
+      "kind": "theorem",
+      "module": "Linear.SchemeModuleAdditiveSheafColimits",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.schemeModuleShortExact_sections_surjective_of_H1_vanish",
+      "kind": "theorem",
+      "module": "Linear.SchemeModuleHOneSectionLift",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.schemeModuleEpi_sections_surjective_of_kernel_H1_vanish",
+      "kind": "theorem",
+      "module": "Linear.SchemeModuleKernelHOneSectionLift",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveDegreeZeroSheafMap_sections_surjective_of_kernel_H1_vanish",
+      "kind": "theorem",
+      "module": "Linear.NativeProjectiveHOneSectionLift",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    }
+  ],
+  "audit": {
+    "sourceSha256": "fbda041e2671f2fc3f12e875f12b19bf77926fa1805da3184f3d758654ab4fdd",
+    "log": "evidence/exact-types-and-axioms.txt",
+    "logSha256": "f756d14c317c0616f0fb99fd763ea803a8ea985696634a114f8fbb49edcb2f29",
+    "returnCode": 0,
+    "permittedAxioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "archive": "source.zip",
+  "archiveSha256": "f24c273b27cd77bafe706a1bbd28a2245e7d1c3b04c14dd73803e2a41f0839db",
+  "published": false,
+  "gitHubLeanCI": "Fresh local canonical compilation and exact-type/axiom audit only; full-project CI/source unchanged."
+}

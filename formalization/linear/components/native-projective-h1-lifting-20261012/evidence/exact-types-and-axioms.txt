@@ -1,0 +1,83 @@
+LinearStudy.schemeModuleToAdditiveSheaf : (X : AlgebraicGeometry.Scheme) →
+  CategoryTheory.Functor X.Modules (CategoryTheory.Sheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat)
+'LinearStudy.schemeModuleToAdditiveSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleToAdditiveSheaf_preservesFiniteLimits : ∀ (X : AlgebraicGeometry.Scheme),
+  CategoryTheory.Limits.PreservesFiniteLimits (LinearStudy.schemeModuleToAdditiveSheaf X)
+'LinearStudy.schemeModuleToAdditiveSheaf_preservesFiniteLimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.moduleAdditiveSheaf_preservesColimitsOfShape_of_reflector_comp : ∀ {C : Type u_3}
+  [inst : CategoryTheory.Category.{u_6, u_3} C] {D : Type u_4} [inst_1 : CategoryTheory.Category.{u_7, u_4} D]
+  {E : Type u_5} [inst_2 : CategoryTheory.Category.{u_8, u_5} E] (R : CategoryTheory.Functor C D)
+  [inst_3 : CategoryTheory.Reflective R] {J : Type u_1} [inst_4 : CategoryTheory.Category.{u_2, u_1} J]
+  (F : CategoryTheory.Functor C E)
+  [CategoryTheory.Limits.PreservesColimitsOfShape J ((CategoryTheory.reflector R).comp F)]
+  [CategoryTheory.Limits.HasColimitsOfShape J D], CategoryTheory.Limits.PreservesColimitsOfShape J F
+'LinearStudy.moduleAdditiveSheaf_preservesColimitsOfShape_of_reflector_comp' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.moduleAdditiveSheaf_preservesColimitsOfSize_of_reflector_comp : ∀ {C : Type u_3}
+  [inst : CategoryTheory.Category.{u_6, u_3} C] {D : Type u_4} [inst_1 : CategoryTheory.Category.{u_7, u_4} D]
+  {E : Type u_5} [inst_2 : CategoryTheory.Category.{u_8, u_5} E] (R : CategoryTheory.Functor C D)
+  [inst_3 : CategoryTheory.Reflective R] (F : CategoryTheory.Functor C E)
+  [CategoryTheory.Limits.PreservesColimitsOfSize.{u_2, u_1, u_7, u_8, u_4, u_5} ((CategoryTheory.reflector R).comp F)]
+  [CategoryTheory.Limits.HasColimitsOfSize.{u_2, u_1, u_7, u_4} D],
+  CategoryTheory.Limits.PreservesColimitsOfSize.{u_2, u_1, u_6, u_8, u_3, u_5} F
+'LinearStudy.moduleAdditiveSheaf_preservesColimitsOfSize_of_reflector_comp' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleAdditiveSheaf_preservesColimitsOfSize : ∀ (X : AlgebraicGeometry.Scheme),
+  CategoryTheory.Limits.PreservesColimitsOfSize.{u_2, u_1, u_1, u_1, u_1 + 1, u_1 + 1}
+    (LinearStudy.schemeModuleToAdditiveSheaf X)
+'LinearStudy.schemeModuleAdditiveSheaf_preservesColimitsOfSize' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleAdditiveSheaf_preservesZeroMorphisms : ∀ (X : AlgebraicGeometry.Scheme),
+  (LinearStudy.schemeModuleToAdditiveSheaf X).PreservesZeroMorphisms
+'LinearStudy.schemeModuleAdditiveSheaf_preservesZeroMorphisms' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleShortExact_underlyingAdditiveSheaf : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules),
+  S.ShortExact → (S.map (LinearStudy.schemeModuleToAdditiveSheaf X)).ShortExact
+'LinearStudy.schemeModuleShortExact_underlyingAdditiveSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleShortExact_sections_surjective_of_H1_vanish : ∀ {X : AlgebraicGeometry.Scheme}
+  [inst : CategoryTheory.HasExt (CategoryTheory.Sheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat)]
+  (S : CategoryTheory.ShortComplex X.Modules),
+  S.ShortExact →
+    ∀ [Subsingleton (((LinearStudy.schemeModuleToAdditiveSheaf X).obj S.X₁).H 1)],
+      Function.Surjective ⇑(CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app S.g ⊤))
+'LinearStudy.schemeModuleShortExact_sections_surjective_of_H1_vanish' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleEpi_sections_surjective_of_kernel_H1_vanish : ∀ {X : AlgebraicGeometry.Scheme}
+  [inst : CategoryTheory.HasExt (CategoryTheory.Sheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat)] {M N : X.Modules}
+  (f : M ⟶ N) [CategoryTheory.Epi f]
+  [Subsingleton (((LinearStudy.schemeModuleToAdditiveSheaf X).obj (CategoryTheory.Limits.kernel f)).H 1)],
+  Function.Surjective ⇑(CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app f ⊤))
+'LinearStudy.schemeModuleEpi_sections_surjective_of_kernel_H1_vanish' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveDegreeZeroSheafMap_sections_surjective_of_kernel_H1_vanish : ∀ {K S D E : Type u_1}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D]
+  [inst_5 : Module K D] [inst_6 : AddCommGroup E] [inst_7 : Module S E] [inst_8 : Module K E] (𝓑 : ℕ → Submodule K S)
+  [inst_9 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E) [DirectSum.Decomposition 𝒟]
+  [DirectSum.Decomposition ℰ] (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ x ∈ 𝒟 d, b • x ∈ 𝒟 (↑n + d))
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ x ∈ ℰ d, b • x ∈ ℰ (↑n + d)) (e : D →ₗ[S] E)
+  (hh : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, e x ∈ ℰ d),
+  Function.Surjective ⇑e →
+    ∀ (k : ℤ)
+      [inst_12 :
+        CategoryTheory.HasExt
+          (CategoryTheory.Sheaf (Opens.grothendieckTopology ↥(AlgebraicGeometry.Proj 𝓑)) AddCommGrpCat)]
+      [Subsingleton
+          (((LinearStudy.schemeModuleToAdditiveSheaf (AlgebraicGeometry.Proj 𝓑)).obj
+                (CategoryTheory.Limits.kernel (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 𝒟 ℰ hD hE e hh k))).H
+            1)],
+      Function.Surjective
+        ⇑(CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.Hom.app
+              (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 𝒟 ℰ hD hE e hh k) ⊤))
+'LinearStudy.nativeProjectiveDegreeZeroSheafMap_sections_surjective_of_kernel_H1_vanish' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
