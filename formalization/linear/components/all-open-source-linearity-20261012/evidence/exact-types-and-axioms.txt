@@ -1,0 +1,343 @@
+@LinearStudy.schemeModuleHomAffineOriginalSubopen_evaluation_ext : ∀ {X : AlgebraicGeometry.Scheme} {R : CommRingCat}
+  (M N : X.Modules) (j : AlgebraicGeometry.Spec R ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j]
+  [SheafOfModules.IsQuasicoherent (M.restrict j)] (U : X.Opens),
+  (AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj ⊤ = U →
+    ∀ (V : X.Opens) (hle : V ≤ U) (h k : ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op V))),
+      (∀ (x : ↑(M.presheaf.obj (Opposite.op U))),
+          (LinearStudy.schemeModuleHomSectionEvaluation M N V h)
+              ((CategoryTheory.ConcreteCategory.hom (M.presheaf.map (CategoryTheory.homOfLE hle).op)) x) =
+            (LinearStudy.schemeModuleHomSectionEvaluation M N V k)
+              ((CategoryTheory.ConcreteCategory.hom (M.presheaf.map (CategoryTheory.homOfLE hle).op)) x)) →
+        h = k
+'LinearStudy.schemeModuleHomAffineOriginalSubopen_evaluation_ext' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.sourceGlobalSectionMultiplication : {Y : AlgebraicGeometry.Scheme} →
+  (S : TopCat.Sheaf RingCat ↑Y.toPresheafedSpace) →
+    (α : Y.ringCatSheaf ⟶ S) →
+      (M : SheafOfModules S) →
+        [∀ (W : Y.Opensᵒᵖ), SMulCommClass ↑(S.obj.obj W) ↑(S.obj.obj W) ↑(M.val.obj W)] →
+          ↑(S.obj.obj (Opposite.op ⊤)) →
+            have B := (SheafOfModules.restrictScalars α).obj M;
+            B ⟶ B
+'LinearStudy.sourceGlobalSectionMultiplication' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.sourceGlobalSectionMultiplication_app : ∀ {Y : AlgebraicGeometry.Scheme}
+  (S : TopCat.Sheaf RingCat ↑Y.toPresheafedSpace) (α : Y.ringCatSheaf ⟶ S) (M : SheafOfModules S)
+  [inst : ∀ (W : Y.Opensᵒᵖ), SMulCommClass ↑(S.obj.obj W) ↑(S.obj.obj W) ↑(M.val.obj W)]
+  (b : ↑(S.obj.obj (Opposite.op ⊤))) (W : Y.Opens)
+  (x :
+    ↑((have this := (SheafOfModules.restrictScalars α).obj M;
+            this).presheaf.obj
+        (Opposite.op W))),
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.sourceGlobalSectionMultiplication S α M b) W))
+      x =
+    (CategoryTheory.ConcreteCategory.hom (S.obj.map (TopologicalSpace.Opens.leTop W).op)) b •
+      have this := x;
+      this
+'LinearStudy.sourceGlobalSectionMultiplication_app' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.affineOriginalSourceAction_on_all_subopens : ∀ {R : CommRingCat}
+  (S : TopCat.Sheaf RingCat ↑(AlgebraicGeometry.Spec R).toPresheafedSpace)
+  (α : (AlgebraicGeometry.Spec R).ringCatSheaf ⟶ S) (M N : SheafOfModules S)
+  [∀ (W : (AlgebraicGeometry.Spec R).Opensᵒᵖ), SMulCommClass ↑(S.obj.obj W) ↑(S.obj.obj W) ↑(M.val.obj W)]
+  [∀ (W : (AlgebraicGeometry.Spec R).Opensᵒᵖ), SMulCommClass ↑(S.obj.obj W) ↑(S.obj.obj W) ↑(N.val.obj W)]
+  [((SheafOfModules.restrictScalars α).obj M).IsQuasicoherent]
+  (C :
+    (have this := (SheafOfModules.restrictScalars α).obj M;
+      this) ⟶
+      have this := (SheafOfModules.restrictScalars α).obj N;
+      this),
+  (∀ (b : ↑(S.obj.obj (Opposite.op ⊤)))
+      (x :
+        ↑((have this := (SheafOfModules.restrictScalars α).obj M;
+                this).presheaf.obj
+            (Opposite.op ⊤))),
+      (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C ⊤))
+          (b •
+            have this := x;
+            this) =
+        b •
+          have this := (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C ⊤)) x;
+          this) →
+    ∀ (b : ↑(S.obj.obj (Opposite.op ⊤))) (W : (AlgebraicGeometry.Spec R).Opens)
+      (x :
+        ↑((have this := (SheafOfModules.restrictScalars α).obj M;
+                this).presheaf.obj
+            (Opposite.op W))),
+      (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C W))
+          ((CategoryTheory.ConcreteCategory.hom (S.obj.map (TopologicalSpace.Opens.leTop W).op)) b •
+            have this := x;
+            this) =
+        (CategoryTheory.ConcreteCategory.hom (S.obj.map (TopologicalSpace.Opens.leTop W).op)) b •
+          have this := (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C W)) x;
+          this
+'LinearStudy.affineOriginalSourceAction_on_all_subopens' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.sourceRingSectionHom : {Y : AlgebraicGeometry.Scheme} →
+  (S : TopCat.Sheaf RingCat ↑Y.toPresheafedSpace) →
+    (α : Y.ringCatSheaf ⟶ S) →
+      (M : SheafOfModules S) →
+        (U : Y.Opens) →
+          ↑((have this := (SheafOfModules.restrictScalars α).obj M;
+                    this).presheaf.obj
+                (Opposite.op U)) →
+            have P := (SheafOfModules.restrictScalars α).obj (SheafOfModules.unit S);
+            have A := (SheafOfModules.restrictScalars α).obj M;
+            ↑((LinearStudy.schemeModuleHomModuleSheaf P A).presheaf.obj (Opposite.op U))
+'LinearStudy.sourceRingSectionHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.sourceRingSectionHom_evaluation : ∀ {Y : AlgebraicGeometry.Scheme}
+  (S : TopCat.Sheaf RingCat ↑Y.toPresheafedSpace) (α : Y.ringCatSheaf ⟶ S) (M : SheafOfModules S) (U : Y.Opens)
+  (x :
+    ↑((have this := (SheafOfModules.restrictScalars α).obj M;
+            this).presheaf.obj
+        (Opposite.op U)))
+  (b : ↑(S.obj.obj (Opposite.op U))),
+  let P := (SheafOfModules.restrictScalars α).obj (SheafOfModules.unit S);
+  let A := (SheafOfModules.restrictScalars α).obj M;
+  (LinearStudy.schemeModuleHomSectionEvaluation P A U (LinearStudy.sourceRingSectionHom S α M U x))
+      (have this := b;
+      this) =
+    b •
+      have this := x;
+      this
+'LinearStudy.sourceRingSectionHom_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomPostcomposeSection : {Y : AlgebraicGeometry.Scheme} →
+  (P M N : Y.Modules) →
+    (M ⟶ N) →
+      (U : Y.Opens) →
+        ↑((LinearStudy.schemeModuleHomModuleSheaf P M).presheaf.obj (Opposite.op U)) →
+          ↑((LinearStudy.schemeModuleHomModuleSheaf P N).presheaf.obj (Opposite.op U))
+'LinearStudy.schemeModuleHomPostcomposeSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomPostcomposeSection_evaluation : ∀ {Y : AlgebraicGeometry.Scheme} (P M N : Y.Modules)
+  (C : M ⟶ N) (U : Y.Opens) (h : ↑((LinearStudy.schemeModuleHomModuleSheaf P M).presheaf.obj (Opposite.op U)))
+  (b : ↑(P.presheaf.obj (Opposite.op U))),
+  (LinearStudy.schemeModuleHomSectionEvaluation P N U (LinearStudy.schemeModuleHomPostcomposeSection P M N C U h)) b =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C U))
+      ((LinearStudy.schemeModuleHomSectionEvaluation P M U h) b)
+'LinearStudy.schemeModuleHomPostcomposeSection_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.affineOriginalSourceLinear_on_every_open : ∀ {R : CommRingCat}
+  (S : TopCat.Sheaf RingCat ↑(AlgebraicGeometry.Spec R).toPresheafedSpace)
+  (α : (AlgebraicGeometry.Spec R).ringCatSheaf ⟶ S) (M N : SheafOfModules S)
+  [∀ (W : (AlgebraicGeometry.Spec R).Opensᵒᵖ), SMulCommClass ↑(S.obj.obj W) ↑(S.obj.obj W) ↑(M.val.obj W)]
+  [∀ (W : (AlgebraicGeometry.Spec R).Opensᵒᵖ), SMulCommClass ↑(S.obj.obj W) ↑(S.obj.obj W) ↑(N.val.obj W)]
+  [((SheafOfModules.restrictScalars α).obj M).IsQuasicoherent]
+  [((SheafOfModules.restrictScalars α).obj (SheafOfModules.unit S)).IsQuasicoherent]
+  (C :
+    (have this := (SheafOfModules.restrictScalars α).obj M;
+      this) ⟶
+      have this := (SheafOfModules.restrictScalars α).obj N;
+      this),
+  (∀ (b : ↑(S.obj.obj (Opposite.op ⊤)))
+      (x :
+        ↑((have this := (SheafOfModules.restrictScalars α).obj M;
+                this).presheaf.obj
+            (Opposite.op ⊤))),
+      (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C ⊤))
+          (b •
+            have this := x;
+            this) =
+        b •
+          have this := (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C ⊤)) x;
+          this) →
+    ∀ (W : (AlgebraicGeometry.Spec R).Opens) (b : ↑(S.obj.obj (Opposite.op W)))
+      (x :
+        ↑((have this := (SheafOfModules.restrictScalars α).obj M;
+                this).presheaf.obj
+            (Opposite.op W))),
+      (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C W))
+          (b •
+            have this := x;
+            this) =
+        b •
+          have this := (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C W)) x;
+          this
+'LinearStudy.affineOriginalSourceLinear_on_every_open' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeNormalizationPushforwardGlobalHomChartLinearEquiv_all_source_functions : ∀ {K R S : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [inst_10 : Module.Finite R S]
+  (a : R) (ha : a ∈ 𝒜 1) (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (hs :
+    Function.Bijective
+      ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 1
+          ((algebraMap R S) a) ⋯))
+  (sb :
+    ↑((AlgebraicGeometry.Proj 𝓑).presheaf.obj
+        (Opposite.op
+          ((TopologicalSpace.Opens.map (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑).base).obj
+            (AlgebraicGeometry.Proj.basicOpen 𝒜 a)))))
+  (t :
+    ↑(((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 0)).presheaf.obj
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a)))),
+  let M := LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 0;
+  let f := LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑;
+  let U := AlgebraicGeometry.Proj.basicOpen 𝒜 a;
+  let N := SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf;
+  (LinearStudy.nativeNormalizationPushforwardGlobalHomChartLinearEquiv 𝒜 𝓑 a ha hinj hs)
+      (LinearStudy.schemePushforwardOriginalSourceActionSection f M U sb t) =
+    LinearStudy.schemePushforwardHomSourceActionSection f N U sb
+      ((LinearStudy.nativeNormalizationPushforwardGlobalHomChartLinearEquiv 𝒜 𝓑 a ha hinj hs) t)
+'LinearStudy.nativeNormalizationPushforwardGlobalHomChartLinearEquiv_all_source_functions' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeSourceRingChartRestriction : {X Y : AlgebraicGeometry.Scheme} →
+  TopCat.Sheaf RingCat ↑Y.toPresheafedSpace →
+    (j : X ⟶ Y) → [AlgebraicGeometry.IsOpenImmersion j] → TopCat.Sheaf RingCat ↑X.toPresheafedSpace
+'LinearStudy.schemeSourceRingChartRestriction' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeSourceRingChartRestrictionBaseMap : {X Y : AlgebraicGeometry.Scheme} →
+  (S : TopCat.Sheaf RingCat ↑Y.toPresheafedSpace) →
+    (Y.ringCatSheaf ⟶ S) →
+      (j : X ⟶ Y) →
+        [inst : AlgebraicGeometry.IsOpenImmersion j] → X.ringCatSheaf ⟶ LinearStudy.schemeSourceRingChartRestriction S j
+'LinearStudy.schemeSourceRingChartRestrictionBaseMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeSourceModuleChartRestriction : {X Y : AlgebraicGeometry.Scheme} →
+  (S : TopCat.Sheaf RingCat ↑Y.toPresheafedSpace) →
+    (j : X ⟶ Y) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        SheafOfModules S → SheafOfModules (LinearStudy.schemeSourceRingChartRestriction S j)
+'LinearStudy.schemeSourceModuleChartRestriction' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeSourceModuleChartRestriction_scalarRecoveryIso : {X Y : AlgebraicGeometry.Scheme} →
+  (S : TopCat.Sheaf RingCat ↑Y.toPresheafedSpace) →
+    (α : Y.ringCatSheaf ⟶ S) →
+      (j : X ⟶ Y) →
+        [inst : AlgebraicGeometry.IsOpenImmersion j] →
+          (M : SheafOfModules S) →
+            (SheafOfModules.restrictScalars (LinearStudy.schemeSourceRingChartRestrictionBaseMap S α j)).obj
+                (LinearStudy.schemeSourceModuleChartRestriction S j M) ≅
+              (have this := (SheafOfModules.restrictScalars α).obj M;
+                  this).restrict
+                j
+'LinearStudy.schemeSourceModuleChartRestriction_scalarRecoveryIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeSourceModuleChartRestriction_scalarRecoveryIso_hom_apply : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (S : TopCat.Sheaf RingCat ↑Y.toPresheafedSpace) (α : Y.ringCatSheaf ⟶ S) (j : X ⟶ Y)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (M : SheafOfModules S) (W : X.Opens)
+  (x :
+    ↑((have this :=
+              (SheafOfModules.restrictScalars (LinearStudy.schemeSourceRingChartRestrictionBaseMap S α j)).obj
+                (LinearStudy.schemeSourceModuleChartRestriction S j M);
+            this).presheaf.obj
+        (Opposite.op W))),
+  (CategoryTheory.ConcreteCategory.hom
+        ((LinearStudy.schemeSourceModuleChartRestriction_scalarRecoveryIso S α j M).hom.val.app (Opposite.op W)))
+      x =
+    have this := x;
+    this
+'LinearStudy.schemeSourceModuleChartRestriction_scalarRecoveryIso_hom_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeAffineOriginalSourceLinear_on_every_open : ∀ {Y : AlgebraicGeometry.Scheme} {R : CommRingCat}
+  (S : TopCat.Sheaf RingCat ↑Y.toPresheafedSpace) (α : Y.ringCatSheaf ⟶ S) (M N : SheafOfModules S)
+  (j : AlgebraicGeometry.Spec R ⟶ Y) [inst : AlgebraicGeometry.IsOpenImmersion j]
+  [∀ (W : Y.Opensᵒᵖ), SMulCommClass ↑(S.obj.obj W) ↑(S.obj.obj W) ↑(M.val.obj W)]
+  [∀ (W : Y.Opensᵒᵖ), SMulCommClass ↑(S.obj.obj W) ↑(S.obj.obj W) ↑(N.val.obj W)]
+  [SheafOfModules.IsQuasicoherent
+      ((have this := (SheafOfModules.restrictScalars α).obj M;
+          this).restrict
+        j)]
+  [SheafOfModules.IsQuasicoherent
+      ((have this := (SheafOfModules.restrictScalars α).obj (SheafOfModules.unit S);
+          this).restrict
+        j)]
+  (C :
+    (have this := (SheafOfModules.restrictScalars α).obj M;
+          this).restrict
+        j ⟶
+      (have this := (SheafOfModules.restrictScalars α).obj N;
+          this).restrict
+        j),
+  (∀ (b : ↑(S.obj.obj (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj ⊤))))
+      (x :
+        ↑((have this := (SheafOfModules.restrictScalars α).obj M;
+                this).presheaf.obj
+            (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj ⊤)))),
+      (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C ⊤))
+          (b •
+            have this := x;
+            this) =
+        b •
+          have this := (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C ⊤)) x;
+          this) →
+    ∀ (W : (AlgebraicGeometry.Spec R).Opens)
+      (b : ↑(S.obj.obj (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W))))
+      (x :
+        ↑((have this := (SheafOfModules.restrictScalars α).obj M;
+                this).presheaf.obj
+            (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W)))),
+      (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C W))
+          (b •
+            have this := x;
+            this) =
+        b •
+          have this := (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C W)) x;
+          this
+'LinearStudy.schemeAffineOriginalSourceLinear_on_every_open' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.sourceModuleSpecChartSectionsEquiv_smul : ∀ {Y : AlgebraicGeometry.Scheme} {R : CommRingCat}
+  (S : TopCat.Sheaf RingCat ↑Y.toPresheafedSpace) (α : Y.ringCatSheaf ⟶ S) (M : SheafOfModules S)
+  (j : AlgebraicGeometry.Spec R ⟶ Y) [inst : AlgebraicGeometry.IsOpenImmersion j] (U : Y.Opens)
+  (hi : (AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj ⊤ = U) (b : ↑(S.obj.obj (Opposite.op U)))
+  (x :
+    ↑((have this := (SheafOfModules.restrictScalars α).obj M;
+            this).presheaf.obj
+        (Opposite.op U))),
+  let A := (SheafOfModules.restrictScalars α).obj M;
+  (LinearStudy.schemeModuleSpecChartSectionsEquiv A j U hi)
+      (b •
+        have this := x;
+        this) =
+    (CategoryTheory.ConcreteCategory.hom (S.obj.map (CategoryTheory.eqToIso hi).op.hom)) b •
+      have this := (LinearStudy.schemeModuleSpecChartSectionsEquiv A j U hi) x;
+      this
+'LinearStudy.sourceModuleSpecChartSectionsEquiv_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.sourceModuleSpecChartMorphism_all_source_smul : ∀ {Y : AlgebraicGeometry.Scheme} {R : CommRingCat}
+  (S : TopCat.Sheaf RingCat ↑Y.toPresheafedSpace) (α : Y.ringCatSheaf ⟶ S) (M N : SheafOfModules S)
+  (j : AlgebraicGeometry.Spec R ⟶ Y) [inst : AlgebraicGeometry.IsOpenImmersion j]
+  [∀ (W : Y.Opensᵒᵖ), SMulCommClass ↑(S.obj.obj W) ↑(S.obj.obj W) ↑(M.val.obj W)]
+  [∀ (W : Y.Opensᵒᵖ), SMulCommClass ↑(S.obj.obj W) ↑(S.obj.obj W) ↑(N.val.obj W)]
+  [inst_3 :
+    SheafOfModules.IsQuasicoherent
+      ((have this := (SheafOfModules.restrictScalars α).obj M;
+          this).restrict
+        j)]
+  [SheafOfModules.IsQuasicoherent
+      ((have this := (SheafOfModules.restrictScalars α).obj (SheafOfModules.unit S);
+          this).restrict
+        j)]
+  (U : Y.Opens) (hi : (AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj ⊤ = U) (φ : R ⟶ Y.presheaf.obj (Opposite.op U))
+  (hφ :
+    CategoryTheory.CategoryStruct.comp φ (AlgebraicGeometry.Scheme.Hom.appLE j U ⊤ ⋯) =
+      (AlgebraicGeometry.Scheme.ΓSpecIso R).inv)
+  (Φ :
+    have A := (SheafOfModules.restrictScalars α).obj M;
+    have B := (SheafOfModules.restrictScalars α).obj N;
+    ↑(A.presheaf.obj (Opposite.op U)) ≃ₗ[↑R] ↑(B.presheaf.obj (Opposite.op U))),
+  (∀ (b : ↑(S.obj.obj (Opposite.op U)))
+      (x :
+        ↑((have this := (SheafOfModules.restrictScalars α).obj M;
+                this).presheaf.obj
+            (Opposite.op U))),
+      Φ
+          (b •
+            have this := x;
+            this) =
+        b •
+          have this := Φ x;
+          this) →
+    ∀ (W : (AlgebraicGeometry.Spec R).Opens)
+      (b : ↑(S.obj.obj (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W))))
+      (x :
+        ↑((have this := (SheafOfModules.restrictScalars α).obj M;
+                this).presheaf.obj
+            (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W)))),
+      let A := (SheafOfModules.restrictScalars α).obj M;
+      let B := (SheafOfModules.restrictScalars α).obj N;
+      have C := LinearStudy.schemeModuleSpecChartMorphism A B j U hi φ hφ Φ;
+      (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C W))
+          (b •
+            have this := x;
+            this) =
+        b •
+          have this := (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C W)) x;
+          this
+'LinearStudy.sourceModuleSpecChartMorphism_all_source_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
