@@ -7399,6 +7399,799 @@
         "Section 4 of Jets now contains Lemma 4.1: if $A$ is an ample rational Cartier divisor, $s\\ge1$ is an integer and $\\varepsilon(A;x)>s$, then the complete system $|kA|$ separates $ks$-jets at $x$ for every sufficiently large divisible $k$.",
         "The proof applies Serre vanishing to the fixed sheaf $\\mathcal O(-E)$ on the point blowup, then uses the projection formula, Leray and the ideal-sheaf exact sequence to obtain $H^1(X,\\mathcal O_X(kA)\\otimes\\mathfrak m_x^{ks+1})=0$. It specifies the divisibility quantifiers and the case $s=8$; the criterion does not assert jet separation for arbitrary subsystems."
       ]
+    },
+    {
+      "id": "jets-learning-lower-bound-location-q",
+      "role": "user",
+      "time": "2026-10-12T14:52:11.824Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "哪条引理建立了 Seshadri 常数的下界？"
+      ],
+      "en": [
+        "Which result establishes the Seshadri lower bound?"
+      ]
+    },
+    {
+      "id": "jets-learning-lower-bound-location-a",
+      "role": "assistant",
+      "time": "2026-10-12T14:52:42.733Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "separate 稿的命题 4.16 汇总得到 $\\varepsilon(R_{n,s};z)>8$。引理 4.8 将所有点处常数不超过 8 的反设转化为移动基点分支及交数上界；后续排除引理最终使 $r_n$ 一致有界，与 $r_n\\to\\infty$ 矛盾。Jets 引理 4.1 负责随后从该下界推出 jet 分离。"
+      ],
+      "en": [
+        "Proposition 4.16 in the separate note assembles the bound $\\varepsilon(R_{n,s};z)>8$. Lemma 4.8 turns the contrary assumption at every point into moving base components and intersection bounds. The subsequent exclusions bound $r_n$ uniformly, contradicting $r_n\\to\\infty$. Jets Lemma 4.1 then converts the lower bound into jet separation."
+      ],
+      "highlight": true
+    },
+    {
+      "id": "jets-learning-multiplicity-q",
+      "role": "user",
+      "time": "2026-10-12T14:57:52.257Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "Seshadri 常数和经过该点的除子的重数有关吗？"
+      ],
+      "en": [
+        "How is a Seshadri constant related to the multiplicity of a divisor at the point?"
+      ]
+    },
+    {
+      "id": "jets-learning-multiplicity-a",
+      "role": "assistant",
+      "time": "2026-10-12T14:58:44.775Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "定义中出现的是曲线重数：$\\varepsilon(A;x)=\\inf_{C\\ni x} A\\cdot C/\\operatorname{mult}_x C$。若有效除子 $B\\in|kA|$ 不包含 $C$，则 $kA\\cdot C=B\\cdot C\\ge\\operatorname{mult}_x B\\operatorname{mult}_x C$。",
+        "因此当 $A\\cdot C/\\operatorname{mult}_x C<\\operatorname{mult}_x B/k$ 时，$C$ 必须包含在 $B$ 中。单独找到一个高重数除子不能直接推出 Seshadri 常数大，因为还要处理它包含的曲线。"
+      ],
+      "en": [
+        "The definition uses curve multiplicity: $\\varepsilon(A;x)=\\inf_{C\\ni x} A\\cdot C/\\operatorname{mult}_x C$. If an effective $B\\in|kA|$ does not contain $C$, then $kA\\cdot C=B\\cdot C\\ge\\operatorname{mult}_x B\\operatorname{mult}_x C$.",
+        "Thus $A\\cdot C/\\operatorname{mult}_x C<\\operatorname{mult}_x B/k$ forces $C\\subset B$. A single high-multiplicity divisor does not by itself give a large Seshadri constant: curves contained in it must still be handled."
+      ],
+      "highlight": true
+    },
+    {
+      "id": "jets-learning-existing-separation-q",
+      "role": "user",
+      "time": "2026-10-12T14:59:08.372Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "如果尚未写入，请补上 Seshadri 常数推出 jet 分离的判别。"
+      ],
+      "en": [
+        "Add the Seshadri criterion for jet separation if it is not already present."
+      ]
+    },
+    {
+      "id": "jets-learning-existing-separation-a",
+      "role": "assistant",
+      "time": "2026-10-12T14:59:39.638Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "Jets 引理 4.1 已陈述并证明：$A$ 充足且 $\\varepsilon(A;x)>s$ 时，完整系统 $|kA|$ 对所有充分大且可除的 $k$ 分离 $ks$-jets。无需重复加入。"
+      ],
+      "en": [
+        "Jets Lemma 4.1 already states and proves that, for ample $A$, $\\varepsilon(A;x)>s$ implies that the complete system $|kA|$ separates $ks$-jets for every sufficiently large divisible $k$. No duplicate is needed."
+      ]
+    },
+    {
+      "id": "jets-learning-curve-definition-q",
+      "role": "user",
+      "time": "2026-10-12T14:59:40.379Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "把曲线重数的等价定义放到 Jets 的合适位置。"
+      ],
+      "en": [
+        "Place the equivalent curve-multiplicity definition appropriately in Jets."
+      ]
+    },
+    {
+      "id": "jets-learning-curve-definition-a",
+      "role": "assistant",
+      "time": "2026-10-12T15:01:25.476Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "第四节加入 $\\varepsilon(A;x)=\\inf_{C\\ni x} A\\cdot C/\\operatorname{mult}_x C$、Hilbert–Samuel 重数定义及 $E\\cdot\\widetilde C=\\operatorname{mult}_x C$，并说明它们与 blowup 定义的对应关系。"
+      ],
+      "en": [
+        "Section 4 now includes the curve formula for $\\varepsilon(A;x)$, the Hilbert–Samuel definition of multiplicity and $E\\cdot\\widetilde C=\\operatorname{mult}_x C$, with the relation to the blowup definition."
+      ]
+    },
+    {
+      "id": "jets-learning-reverse-bound-q",
+      "role": "user",
+      "time": "2026-10-12T15:15:10.816Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "引理 1.1 如何给出 Seshadri 常数的不等式？"
+      ],
+      "en": [
+        "How does Lemma 1.1 give a Seshadri inequality?"
+      ]
+    },
+    {
+      "id": "jets-learning-reverse-bound-a",
+      "role": "assistant",
+      "time": "2026-10-12T15:16:02.202Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "分离 $j$-jets 的完整系统 $|kA|$ 满足 $\\varepsilon(A;x)\\ge j/k$。对每条 $C\\ni x$，选择在其切线方向上不消失的 $j$ 次齐次项，用 jet 分离提升为截面，得到 $B\\in|kA|$、$\\operatorname{mult}_x B=j$ 且 $C\\not\\subset B$。于是 $kA\\cdot C\\ge j\\operatorname{mult}_x C$，取下确界即得。",
+        "但当前稿的证明顺序相反：先由反证得到 $\\varepsilon(R_{n,s};z)>8$，再推出 $8k$-jet 分离。不能把尚待证明的引理 1.1 用来证明此前的 Seshadri 下界。"
+      ],
+      "en": [
+        "If the complete system $|kA|$ separates $j$-jets, then $\\varepsilon(A;x)\\ge j/k$. For each $C\\ni x$, choose a degree-$j$ homogeneous term nonvanishing on its tangent directions, and lift it to a section. Its divisor $B$ has multiplicity $j$ and does not contain $C$, so $kA\\cdot C\\ge j\\operatorname{mult}_x C$. Taking the infimum gives the bound.",
+        "The manuscript proceeds in the opposite direction: a contradiction establishes $\\varepsilon(R_{n,s};z)>8$ before yielding $8k$-jet separation. Lemma 1.1 cannot be used circularly to prove this earlier bound."
+      ]
+    },
+    {
+      "id": "jets-learning-actual-bound-q",
+      "role": "user",
+      "time": "2026-10-12T15:16:29.928Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "我问的是证明中如何建立不小于 8 的下界。"
+      ],
+      "en": [
+        "I mean how the proof establishes the lower bound of 8."
+      ]
+    },
+    {
+      "id": "jets-learning-actual-bound-a",
+      "role": "assistant",
+      "time": "2026-10-12T15:17:37.616Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "反设所有点满足 $\\varepsilon(R_{n,s};z)\\le8$，可取 $C_z\\ni z$ 且 $R_{n,s}\\cdot C_z<9\\operatorname{mult}_z C_z$。每个重数至少为 $9k$ 的 $B\\in|kR_{n,s}|$ 都包含 $C_z$。体积保证系统非空，再由引理 4.8 构造移动基点分支。",
+        "后续排除纤维和有限覆盖，得到有界三维对应。引理 4.15 给出 $r_n\\le\\max\\{1,(35/32)m_3^2s(1+\\epsilon)^2\\}$，与 $r_n\\to\\infty$ 矛盾。该链条在文稿的全部输入下推出严格下界 $\\varepsilon(R_{n,s};z)>8$，然后才推出 jet 分离。"
+      ],
+      "en": [
+        "Assuming $\\varepsilon(R_{n,s};z)\\le8$ everywhere gives $C_z\\ni z$ with $R_{n,s}\\cdot C_z<9\\operatorname{mult}_z C_z$. Every member of $|kR_{n,s}|$ with multiplicity at least $9k$ contains $C_z$. The volume guarantees nonemptiness, and Lemma 4.8 constructs moving base components.",
+        "The subsequent fibre and finite-cover exclusions produce bounded threefold correspondences. Lemma 4.15 gives $r_n\\le\\max\\{1,(35/32)m_3^2s(1+\\epsilon)^2\\}$, contradicting $r_n\\to\\infty$. Under all the manuscript inputs, this establishes the strict bound $\\varepsilon(R_{n,s};z)>8$ before jet separation."
+      ],
+      "highlight": true
+    },
+    {
+      "id": "jets-learning-general-two-steps-q",
+      "role": "user",
+      "time": "2026-10-12T15:19:40.441Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "前两步需要三维 Setup 吗？若是一般结论，请独立写入 Jets。"
+      ],
+      "en": [
+        "Do the first two steps need the threefold Setup? If general, state them independently in Jets."
+      ]
+    },
+    {
+      "id": "jets-learning-general-two-steps-a",
+      "role": "assistant",
+      "time": "2026-10-12T15:22:35.134Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "Jets 引理 4.2 在任意维数下成立：$A$ 为 nef $\\mathbb Q$-Cartier 除子，$t>\\varepsilon(A;x)$，则存在 $C\\ni x$ 且 $A\\cdot C<t\\operatorname{mult}_x C$。每个 $B\\in|kA|$ 满足 $\\operatorname{mult}_x B\\ge kt$ 都包含 $C$。要把它用于正维基点集，还须先保证该高重数系统非空；移动族及统一交数界需要后续假设。"
+      ],
+      "en": [
+        "Jets Lemma 4.2 is dimension-independent: for nef $\\mathbb Q$-Cartier $A$ and $t>\\varepsilon(A;x)$, there is $C\\ni x$ with $A\\cdot C<t\\operatorname{mult}_x C$. Every $B\\in|kA|$ with $\\operatorname{mult}_x B\\ge kt$ contains $C$. Nonemptiness is additionally needed to use this as a positive-dimensional base locus; moving families and uniform bounds need later hypotheses."
+      ],
+      "highlight": true
+    },
+    {
+      "id": "jets-learning-let-t-q",
+      "role": "user",
+      "time": "2026-10-12T15:25:11.926Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "把 “For every real t” 改成 “Let t”。"
+      ],
+      "en": [
+        "Replace “For every real t” by “Let t”."
+      ]
+    },
+    {
+      "id": "jets-learning-let-t-a",
+      "role": "assistant",
+      "time": "2026-10-12T15:25:51.404Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "引理 4.2 改为 “Let $t>\\varepsilon(A;x)$ be a real number.”。"
+      ],
+      "en": [
+        "Lemma 4.2 now reads “Let $t>\\varepsilon(A;x)$ be a real number.”"
+      ]
+    },
+    {
+      "id": "jets-learning-node-cusp-q",
+      "role": "user",
+      "time": "2026-10-12T15:26:16.065Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "在曲线重数定义后举 node 和 cusp 的例子。"
+      ],
+      "en": [
+        "Give node and cusp examples after the curve-multiplicity definition."
+      ]
+    },
+    {
+      "id": "jets-learning-node-cusp-a",
+      "role": "assistant",
+      "time": "2026-10-12T15:27:29.202Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "普通 node 的完备局部环为 $\\mathbb C[[u,v]]/(uv)$，普通 cusp 为 $\\mathbb C[[u,v]]/(v^2-u^3)$。两者都有 $\\dim_{\\mathbb C}(\\mathcal O_{C,x}/\\mathfrak m_{C,x}^{q+1})=2q+1$，故重数均为 2。node 有两个分支，cusp 只有一个；重数不是分支数。"
+      ],
+      "en": [
+        "An ordinary node has completed local ring $\\mathbb C[[u,v]]/(uv)$, and an ordinary cusp has $\\mathbb C[[u,v]]/(v^2-u^3)$. Both have $\\dim_{\\mathbb C}(\\mathcal O_{C,x}/\\mathfrak m_{C,x}^{q+1})=2q+1$, hence multiplicity 2. The node has two branches and the cusp one: multiplicity is not the branch count."
+      ]
+    },
+    {
+      "id": "jets-learning-containment-hypotheses",
+      "role": "assistant",
+      "time": "2026-10-12T15:31:32.223Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "“所有高重数除子都包含 $C$”须保留 $A\\cdot C<t\\operatorname{mult}_x C$、$kA$ Cartier、$B$ 有效及 $\\operatorname{mult}_x B\\ge kt$。不需要额外的三维条件；不要求系统非空也能陈述这条全称结论，但正维基点集的实际应用需要非空性。"
+      ],
+      "en": [
+        "The assertion that all high-multiplicity divisors contain $C$ retains the conditions $A\\cdot C<t\\operatorname{mult}_x C$, $kA$ Cartier, $B$ effective and $\\operatorname{mult}_x B\\ge kt$. No additional threefold assumption is needed. The universal containment assertion itself does not require nonemptiness, but the base-locus application does."
+      ],
+      "highlight": true
+    },
+    {
+      "id": "jets-learning-supplement-q",
+      "role": "user",
+      "time": "2026-10-12T15:31:44.035Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "把包含曲线所需的条件补进 Jets。"
+      ],
+      "en": [
+        "Add the hypotheses needed for curve containment to Jets."
+      ]
+    },
+    {
+      "id": "jets-learning-supplement-a",
+      "role": "assistant",
+      "time": "2026-10-12T15:32:56.674Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "已补明曲线的交数条件、除子重数条件及非空性在基点集推论中的作用。"
+      ],
+      "en": [
+        "The curve-intersection and divisor-multiplicity hypotheses and the role of nonemptiness in the base-locus conclusion have been added."
+      ]
+    },
+    {
+      "id": "jets-learning-standalone-containment-q",
+      "role": "user",
+      "time": "2026-10-12T15:33:43.496Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "把这段封装成独立引理。"
+      ],
+      "en": [
+        "Package this as a standalone lemma."
+      ]
+    },
+    {
+      "id": "jets-learning-standalone-containment-a",
+      "role": "assistant",
+      "time": "2026-10-12T15:35:31.858Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "Jets 引理 4.3 独立列出曲线包含结论和证明，不要求 A 为 nef；引理 4.2 直接引用它。"
+      ],
+      "en": [
+        "Jets Lemma 4.3 states and proves the containment assertion independently, without assuming A nef. Lemma 4.2 cites it."
+      ]
+    },
+    {
+      "id": "jets-learning-if-purpose-q",
+      "role": "user",
+      "time": "2026-10-12T15:50:15.293Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "4.3 中 If 后面的结论有什么作用？"
+      ],
+      "en": [
+        "What is the purpose of the conclusion after If in Lemma 4.3?"
+      ]
+    },
+    {
+      "id": "jets-learning-if-purpose-a",
+      "role": "assistant",
+      "time": "2026-10-12T15:50:38.040Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "它确认高重数系统非空时，所有成员都包含 $C$ 意味着 $C\\subseteq\\operatorname{Bs}$，提供正维基点分支。非空性不可省略；移动族还需要完整核引理的条件。"
+      ],
+      "en": [
+        "It observes that, when the high-multiplicity system is nonempty, containment of $C$ in every member means $C\\subseteq\\operatorname{Bs}$, giving a positive-dimensional base component. Nonemptiness is necessary for this application; a moving family still needs the full-kernel lemma."
+      ]
+    },
+    {
+      "id": "jets-learning-redundant-if-q",
+      "role": "user",
+      "time": "2026-10-12T15:53:43.224Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "这是不是只是前一句的翻译？"
+      ],
+      "en": [
+        "Is this merely a reformulation of the preceding sentence?"
+      ]
+    },
+    {
+      "id": "jets-learning-redundant-if-a",
+      "role": "assistant",
+      "time": "2026-10-12T15:53:53.084Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "是。系统非空时，“所有成员包含 $C$”按定义就是“基点集包含 $C$”，没有额外数学内容，可以移到简短 Remark。"
+      ],
+      "en": [
+        "Yes. For a nonempty system, all members containing $C$ means by definition that its base locus contains $C$. This adds no mathematical content and can be a brief Remark."
+      ]
+    },
+    {
+      "id": "jets-learning-remove-if-q",
+      "role": "user",
+      "time": "2026-10-12T15:54:10.014Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "删去 If 部分，最多在后面保留 Remark。"
+      ],
+      "en": [
+        "Remove the If part and retain at most a subsequent Remark."
+      ]
+    },
+    {
+      "id": "jets-learning-remove-if-a",
+      "role": "assistant",
+      "time": "2026-10-12T15:55:19.180Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "引理 4.3 的重复结论已删去，后面仅保留：系统非空时，其基点集包含 $C$。"
+      ],
+      "en": [
+        "The repeated assertion has been removed from Lemma 4.3; only a subsequent Remark notes that a nonempty system has base locus containing $C$."
+      ]
+    },
+    {
+      "id": "jets-learning-lemma48-purpose-q",
+      "role": "user",
+      "time": "2026-10-12T16:11:32.530Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "引理 4.8 的作用是什么？"
+      ],
+      "en": [
+        "What is the role of Lemma 4.8?"
+      ]
+    },
+    {
+      "id": "jets-learning-lemma48-purpose-a",
+      "role": "assistant",
+      "time": "2026-10-12T16:12:13.205Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "它将小 Seshadri 常数转成覆盖 $Z$ 的移动基点分支 $V$，并给出 $0<R^{\\dim V}\\cdot V\\le R^7/(4\\epsilon)^{7-\\dim V}$ 和 $K_{V^*}\\cdot R^{\\dim V-1}\\le(7-\\dim V)R^{\\dim V}\\cdot V/(4\\epsilon)$，以及投影纤维的估计。高重数系统非空、曲线包含、移动族构造和交数界是不同环节；后面的排除论证需要最后两项。"
+      ],
+      "en": [
+        "It turns small Seshadri constants into moving base components $V$ covering $Z$, with $0<R^{\\dim V}\\cdot V\\le R^7/(4\\epsilon)^{7-\\dim V}$ and $K_{V^*}\\cdot R^{\\dim V-1}\\le(7-\\dim V)R^{\\dim V}\\cdot V/(4\\epsilon)$, and projection-fibre estimates. Nonemptiness, curve containment, construction of a moving family and intersection bounds are distinct steps; the later exclusions need the latter two."
+      ],
+      "highlight": true
+    },
+    {
+      "id": "jets-learning-dependence-on-curve-q",
+      "role": "user",
+      "time": "2026-10-12T16:12:43.436Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "这与此前 C 包含在基点集中的结论是独立的吗？"
+      ],
+      "en": [
+        "Is this independent of the earlier containment of C in the base locus?"
+      ]
+    },
+    {
+      "id": "jets-learning-dependence-on-curve-a",
+      "role": "assistant",
+      "time": "2026-10-12T16:12:58.735Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "不是。高重数系统非空与 $C\\subset\\operatorname{Bs}$ 一起给出标记点处的正维基点分支，再调用引理 3.7 得到移动族和上界。仅凭曲线包含不能自动得到后两项。"
+      ],
+      "en": [
+        "No. Nonemptiness together with $C\\subset\\operatorname{Bs}$ gives a positive-dimensional base component at the marked point. Lemma 3.7 then produces a moving family and bounds. Curve containment alone does not supply these latter conclusions."
+      ]
+    },
+    {
+      "id": "jets-learning-curve-derived-q",
+      "role": "user",
+      "time": "2026-10-12T16:13:19.741Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "4.8 的条件中为什么没有关于 C 的假设？"
+      ],
+      "en": [
+        "Why does Lemma 4.8 have no hypothesis concerning C?"
+      ]
+    },
+    {
+      "id": "jets-learning-curve-derived-a",
+      "role": "assistant",
+      "time": "2026-10-12T16:13:35.786Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "$C_z$ 是由 $\\varepsilon(R;z)\\le8$ 推出的中间对象：$C_z\\ni z$ 且 $R\\cdot C_z<9\\operatorname{mult}_z C_z$。它不是额外假设。再用重数不等式、非空性和引理 3.7 完成构造。"
+      ],
+      "en": [
+        "$C_z$ is derived from $\\varepsilon(R;z)\\le8$: it passes through $z$ and satisfies $R\\cdot C_z<9\\operatorname{mult}_z C_z$. It is not an additional hypothesis. The multiplicity inequality, nonemptiness and Lemma 3.7 complete the construction."
+      ]
+    },
+    {
+      "id": "jets-learning-unnamed-curve-q",
+      "role": "user",
+      "time": "2026-10-12T16:14:21.916Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "证明中没出现 C，是调用引理时省略了吗？"
+      ],
+      "en": [
+        "Was C omitted from the proof because of the cited lemmas?"
+      ]
+    },
+    {
+      "id": "jets-learning-unnamed-curve-a",
+      "role": "assistant",
+      "time": "2026-10-12T16:14:42.751Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "旧证明的 “A curve through a very general z” 就是这条曲线，只是没有命名。曲线产生和包含论证在 4.8 内完成，之后才引用引理 3.7 产生移动族。"
+      ],
+      "en": [
+        "The former phrase “A curve through a very general z” referred to this curve without naming it. Its construction and containment occur within Lemma 4.8; Lemma 3.7 is then used for the moving family."
+      ]
+    },
+    {
+      "id": "jets-learning-expand-proof-q",
+      "role": "user",
+      "time": "2026-10-12T16:15:14.347Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "展开 4.8 的证明并补全引用。"
+      ],
+      "en": [
+        "Expand the proof of Lemma 4.8 and supply the references."
+      ]
+    },
+    {
+      "id": "jets-learning-expand-proof-a",
+      "role": "assistant",
+      "time": "2026-10-12T16:18:39.864Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "证明已显式写出体积产生非零核、构造 $C_z$、交数矛盾推出 $C_z\\subset\\operatorname{Bs}$，并逐项检查引理 3.7 及切片引理的假设；曲线步骤引用 Jets 4.2–4.3。"
+      ],
+      "en": [
+        "The proof now explicitly derives nonzero kernels from volume, constructs $C_z$, proves $C_z\\subset\\operatorname{Bs}$ by the intersection contradiction, and checks the hypotheses of Lemma 3.7 and the slice lemmas. The curve steps cite Jets 4.2–4.3."
+      ]
+    },
+    {
+      "id": "jets-learning-full-kernel-q",
+      "role": "user",
+      "time": "2026-10-12T16:39:02.718Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "为什么叫 full kernel？"
+      ],
+      "en": [
+        "Why is it called the full kernel?"
+      ]
+    },
+    {
+      "id": "jets-learning-full-kernel-a",
+      "role": "assistant",
+      "time": "2026-10-12T16:39:55.707Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "它包含全部满足指定消失阶的全局截面，是 jet 限制映射的整个核。参数微分后的截面只要仍达到较低门槛，就属于较低阶的完整核；若任意选择较小子空间，仅凭消失阶不能保证这种归属。这是引理 3.5、3.7 中使用完整核的原因。"
+      ],
+      "en": [
+        "It consists of all global sections with the prescribed vanishing order, the entire kernel of jet restriction. After parameter differentiation, meeting the lower threshold guarantees membership in the lower full kernel. Vanishing order alone would not ensure membership in an arbitrarily chosen smaller subspace. This is why Lemmas 3.5 and 3.7 use full kernels."
+      ]
+    },
+    {
+      "id": "jets-learning-volume-section-q",
+      "role": "user",
+      "time": "2026-10-12T16:45:12.572Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "渐近 Riemann–Roch 与 jet 维数的非空判别可以作为 Jets 的独立一节吗？"
+      ],
+      "en": [
+        "Can the nonemptiness criterion from asymptotic Riemann–Roch and jet dimensions be an independent section of Jets?"
+      ]
+    },
+    {
+      "id": "jets-learning-volume-section-a",
+      "role": "assistant",
+      "time": "2026-10-12T16:47:17.115Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "已封装为第五节引理 5.1：光滑射影 $X$ 维数为 $n$，$A$ 充足且 $A^n>t^n$ 时，对所有充分大且可除的 $k$ 和所有 $x$，$H^0(X,\\mathcal O_X(kA)\\otimes\\mathfrak m_x^{\\lceil kt\\rceil})\\ne0$。证明比较截面数与 $\\binom{n+\\lceil kt\\rceil-1}{n}$。这是非空性，不是 jet 分离；七维应用固定原来的 $n,s$ 后让 $k\\to\\infty$。"
+      ],
+      "en": [
+        "Section 5, Lemma 5.1, packages the criterion: if smooth projective $X$ has dimension $n$, $A$ is ample and $A^n>t^n$, then $H^0(X,\\mathcal O_X(kA)\\otimes\\mathfrak m_x^{\\lceil kt\\rceil})\\ne0$ for every sufficiently large divisible $k$ and every $x$. The proof compares section dimensions with $\\binom{n+\\lceil kt\\rceil-1}{n}$. This proves nonemptiness, not jet separation. In the sevenfold application, the original $n,s$ remain fixed as $k\\to\\infty$."
+      ]
+    },
+    {
+      "id": "jets-learning-write-restriction-map",
+      "role": "assistant",
+      "time": "2026-10-12T16:48:41.905Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "Jets 和 4.8 已明确写出 $\\rho_{k,q,x}:H^0(X,\\mathcal O_X(kA))\\to\\mathcal O_{X,x}(kA)/\\mathfrak m_x^q\\mathcal O_{X,x}(kA)$，$\\sigma\\mapsto[\\sigma_x]$，以及核等式。指数 $q$ 对应 $(q-1)$-jets。"
+      ],
+      "en": [
+        "Jets and Lemma 4.8 now display $\\rho_{k,q,x}:H^0(X,\\mathcal O_X(kA))\\to\\mathcal O_{X,x}(kA)/\\mathfrak m_x^q\\mathcal O_{X,x}(kA)$, $\\sigma\\mapsto[\\sigma_x]$, and the kernel identity. Exponent $q$ corresponds to $(q-1)$-jets."
+      ]
+    },
+    {
+      "id": "jets-learning-remove-full-prose-q",
+      "role": "user",
+      "time": "2026-10-12T16:49:52.613Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "删除 full 表示整个核的重复解释。"
+      ],
+      "en": [
+        "Delete the repeated explanation of full as the entire kernel."
+      ]
+    },
+    {
+      "id": "jets-learning-remove-full-prose-a",
+      "role": "assistant",
+      "time": "2026-10-12T16:50:52.537Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "已删去解释句，保留限制映射和核的公式。"
+      ],
+      "en": [
+        "The explanatory sentence has been deleted; the restriction map and kernel formulas remain."
+      ]
+    },
+    {
+      "id": "jets-learning-q-cartier-q",
+      "role": "user",
+      "time": "2026-10-12T16:56:19.027Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "把文稿中的 rational Cartier 统一改成 $\\mathbb Q$-Cartier。"
+      ],
+      "en": [
+        "Normalize rational Cartier to $\\mathbb Q$-Cartier throughout the manuscripts."
+      ]
+    },
+    {
+      "id": "jets-learning-q-cartier-a",
+      "role": "assistant",
+      "time": "2026-10-12T17:00:36.771Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "相关文稿的用语已统一为 $\\mathbb Q$-Cartier。"
+      ],
+      "en": [
+        "The relevant manuscript terminology is now consistently $\\mathbb Q$-Cartier."
+      ]
+    },
+    {
+      "id": "jets-learning-quantitative-needed-q",
+      "role": "user",
+      "time": "2026-10-12T17:01:42.930Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "5.1 的 More precisely 在三维证明中需要吗？"
+      ],
+      "en": [
+        "Is the More precisely part of Lemma 5.1 needed in the threefold proof?"
+      ]
+    },
+    {
+      "id": "jets-learning-quantitative-needed-a",
+      "role": "assistant",
+      "time": "2026-10-12T17:01:54.310Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "不需要。4.8 只用八个系统非空，不用核维数的定量下界。估计保留在证明中即可；应用的空间是七维的 $Z$。"
+      ],
+      "en": [
+        "No. Lemma 4.8 uses only nonemptiness of the eight systems, not the quantitative kernel-dimension bound. The estimate can remain in the proof. The application takes place on the seven-dimensional $Z$."
+      ]
+    },
+    {
+      "id": "jets-learning-remove-more-precisely-q",
+      "role": "user",
+      "time": "2026-10-12T17:01:59.765Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "去掉 More precisely。"
+      ],
+      "en": [
+        "Remove More precisely."
+      ]
+    },
+    {
+      "id": "jets-learning-remove-more-precisely-a",
+      "role": "assistant",
+      "time": "2026-10-12T17:03:00.620Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "5.1 陈述中的定量部分已删去，维数估计保留在证明中。"
+      ],
+      "en": [
+        "The quantitative part has been removed from the statement of Lemma 5.1 and retained in its proof."
+      ]
+    },
+    {
+      "id": "jets-learning-tau-levels-q",
+      "role": "user",
+      "time": "2026-10-12T17:04:09.709Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "4.8 中的 $\\tau_i$ 是什么？"
+      ],
+      "en": [
+        "What are the $\\tau_i$ in Lemma 4.8?"
+      ]
+    },
+    {
+      "id": "jets-learning-tau-levels-a",
+      "role": "assistant",
+      "time": "2026-10-12T17:04:35.381Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "旧记号为 $\\tau_i=9+8i\\epsilon$，$0\\le i\\le7$，是八个消失阶系数。核要求消失阶至少为 $\\lceil k\\tau_i\\rceil$，形成递降链；相邻间隔 $8\\epsilon$ 用于完整核构造，体积超过最高阈值的七次方保证所有系统非空。"
+      ],
+      "en": [
+        "The former notation was $\\tau_i=9+8i\\epsilon$ for $0\\le i\\le7$, the eight vanishing coefficients. The kernels impose order at least $\\lceil k\\tau_i\\rceil$ and form a descending chain. Their gap $8\\epsilon$ is used in the full-kernel construction, while volume exceeding the seventh power of the largest threshold ensures all systems are nonempty."
+      ]
+    },
+    {
+      "id": "jets-learning-expand-tau-q",
+      "role": "user",
+      "time": "2026-10-12T17:06:11.347Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "不要在这里引入 $\\tau_i$。"
+      ],
+      "en": [
+        "Do not introduce $\\tau_i$ here."
+      ]
+    },
+    {
+      "id": "jets-learning-expand-tau-a",
+      "role": "assistant",
+      "time": "2026-10-12T17:08:14.341Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "4.8 及其前的局部设定直接写 $9+8i\\epsilon$，最高阈值写为 $9+56\\epsilon$，不再引入该简称。"
+      ],
+      "en": [
+        "Lemma 4.8 and its local setup now write $9+8i\\epsilon$ directly and use $9+56\\epsilon$ for the largest threshold, without this abbreviation."
+      ]
+    },
+    {
+      "id": "jets-learning-projective-kernel-q",
+      "role": "user",
+      "time": "2026-10-12T17:08:48.618Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "可以引入 $|kA|_{x,q}$ 表示 kernel 吗？"
+      ],
+      "en": [
+        "Can $|kA|_{x,q}$ denote the kernel?"
+      ]
+    },
+    {
+      "id": "jets-learning-projective-kernel-a",
+      "role": "assistant",
+      "time": "2026-10-12T17:09:12.254Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "这个线性系统记号表示核的射影化：$|kA|_{x,q}:=\\mathbb P H^0(X,\\mathcal O_X(kA)\\otimes\\mathfrak m_x^q)=\\{B\\in|kA|:\\operatorname{mult}_x B\\ge q\\}$。计算向量空间维数时仍用核本身。"
+      ],
+      "en": [
+        "This linear-system notation denotes the projectivized kernel: $|kA|_{x,q}:=\\mathbb P H^0(X,\\mathcal O_X(kA)\\otimes\\mathfrak m_x^q)=\\{B\\in|kA|:\\operatorname{mult}_x B\\ge q\\}$. Vector-space dimensions still refer to the kernel itself."
+      ],
+      "highlight": true
+    },
+    {
+      "id": "jets-learning-system-nonempty-q",
+      "role": "user",
+      "time": "2026-10-12T17:09:30.963Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "用这个记号，5.1 只说它非空即可？"
+      ],
+      "en": [
+        "Using this notation, can Lemma 5.1 simply assert nonemptiness?"
+      ]
+    },
+    {
+      "id": "jets-learning-system-nonempty-a",
+      "role": "assistant",
+      "time": "2026-10-12T17:11:19.218Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "可以。定义记号后，5.1 结论写为 $|kA|_{x,\\lceil kt\\rceil}\\ne\\varnothing$，保留充分大且可除的 $k$ 及所有 $x$ 的量词。4.8 中的最低层系统相应写为 $|kR|_{z,9k}$。"
+      ],
+      "en": [
+        "Yes. With the notation defined, Lemma 5.1 concludes $|kA|_{x,\\lceil kt\\rceil}\\ne\\varnothing$, retaining the quantifiers for every sufficiently large divisible $k$ and every $x$. The lowest system in Lemma 4.8 is correspondingly $|kR|_{z,9k}$."
+      ]
     }
   ],
   "sourceTheorem": {

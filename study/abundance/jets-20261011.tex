@@ -289,7 +289,7 @@ degree $s$ if $s\le m$. If $s>m$, they cannot realize $u_1^{m+1}$.
 \end{explanation}
 
 \section{Seshadri constants and asymptotic jets}
-Let $A$ be an ample rational Cartier divisor on $X$, with $n\ge1$,
+Let $A$ be an ample $\mathbb{Q}$-Cartier divisor on $X$, with $n\ge1$,
 and let $x\in X$. Let $b:\widetilde X\to X$ be the blowup at $x$,
 and define $E$ by
 $\mathfrak m_x\OO_{\widetilde X}=\OO_{\widetilde X}(-E)$.
@@ -298,10 +298,59 @@ The Seshadri constant is
 \[
  \varepsilon(A;x)=\sup\{t\ge0:b^*A-tE\text{ is nef}\}.
 \]
+Equivalently,
+\[
+ \varepsilon(A;x)
+ =\inf_{\substack{C\subset X\text{ integral curve}\\x\in C}}
+       \frac{A\cdot C}{\operatorname{mult}_x C}.
+\]
+Here $\operatorname{mult}_x C$ is the Hilbert--Samuel multiplicity
+of the one-dimensional local ring $\OO_{C,x}$:
+\[
+ \operatorname{mult}_x C
+ =\lim_{q\to\infty}
+   \frac{\dim_{\C}(\OO_{C,x}/\mathfrak m_{C,x}^{q+1})}{q},
+ \qquad \mathfrak m_{C,x}=\mathfrak m_x\OO_{C,x}.
+\]
+For example, an ordinary node and an ordinary cusp have completed
+local rings
+\[
+ \widehat{\OO}_{C,x}\simeq
+ \begin{cases}
+  \C[[u,v]]/(uv) & \text{at an ordinary node},\\
+  \C[[u,v]]/(v^2-u^3) & \text{at an ordinary cusp}.
+ \end{cases}
+\]
+Their initial forms are $uv$ and $v^2$, respectively. In either
+case the associated graded ring has dimension two in every
+positive degree. Completion preserves the lengths above, so
+\[
+ \dim_{\C}(\OO_{C,x}/\mathfrak m_{C,x}^{q+1})=2q+1
+ \quad(q\ge0),\qquad \operatorname{mult}_x C=2.
+\]
+The node has two smooth local branches with distinct tangent lines;
+the cusp has one branch and a doubled tangent line. Thus curve
+multiplicity is not the number of local branches.
+
+If $\widetilde C$ is the strict transform of $C$, then
+\[
+ E\cdot\widetilde C=\operatorname{mult}_x C,
+ \qquad
+ (b^*A-tE)\cdot\widetilde C
+ =A\cdot C-t\operatorname{mult}_x C.
+\]
+The first equality computes the multiplicity as the degree of the
+exceptional divisor on the blown-up curve. The second follows by
+the projection formula. Curves avoiding $E$ have positive intersection
+with $b^*A$; for $n\ge2$, $-E|_E=\OO_{\mathbb P^{n-1}}(1)$.
+Thus nefness is equivalent to
+$t\le A\cdot C/\operatorname{mult}_x C$ for every integral curve
+$C$ through $x$, proving the curve formula.
+
 For $0<t<\varepsilon(A;x)$, the divisor $b^*A-tE$ is ample.
 
 \begin{lemma}\label{lem:seshadri-jet-separation}
-Let $A$ be an ample rational Cartier divisor, $x\in X$, and
+Let $A$ be an ample $\mathbb{Q}$-Cartier divisor, $x\in X$, and
 $s\ge1$ an integer. If $\varepsilon(A;x)>s$, then
 $|kA|$ separates $ks$-jets at $x$ for every sufficiently large
 divisible integer $k$.
@@ -343,12 +392,183 @@ In that application, take $A=R_{n,s}$ and $x=z$; the integer $s$
 in the lemma is taken to be $8$, independently of the bundle
 parameter in $R_{n,s}$.
 
+\begin{lemma}\label{lem:small-seshadri-base-curve}
+Let $X$ be a smooth projective variety of positive dimension,
+$A$ a nef $\mathbb{Q}$-Cartier divisor, and $x\in X$.
+Let $t>\varepsilon(A;x)$ be a real number. There is an integral curve
+$C\subset X$ through $x$ such that
+\[
+ \frac{A\cdot C}{\operatorname{mult}_x C}<t.
+\]
+For every integer $k>0$ with $kA$ Cartier, every divisor
+$B\in|kA|$ satisfying $\operatorname{mult}_x B\ge kt$ contains $C$.
+In particular, if
+\[
+ H^0\bigl(X,\OO_X(kA)\otimes
+                \mathfrak m_x^{\lceil kt\rceil}\bigr)\ne0,
+\]
+then
+\[
+ C\subseteq\operatorname{Bs}\mathbb P H^0\bigl(
+ X,\OO_X(kA)\otimes\mathfrak m_x^{\lceil kt\rceil}\bigr).
+\]
+\end{lemma}
+\begin{proof}
+The curve formula for $\varepsilon(A;x)$ holds also for nef
+$\mathbb{Q}$-Cartier divisors. Since $t>\varepsilon(A;x)$, its
+infimum gives the required curve $C$.
+Apply Lemma~\ref{lem:multiplicity-forces-containment} to this
+curve for each allowed $k$.
+\end{proof}
+For an effective Cartier divisor $B$ with local equation $f$ at
+$x$, put $\operatorname{mult}_x B=\max\{a:f\in\mathfrak m_x^a\}$.
+
+\begin{lemma}\label{lem:multiplicity-forces-containment}
+Let $X$ be a smooth projective variety, $A$ a $\mathbb{Q}$-Cartier
+divisor, and $C\subset X$ an integral curve through $x$.
+Let $t>0$ be a real number and $k>0$ an integer with $kA$ Cartier.
+Assume
+\[
+ A\cdot C<t\operatorname{mult}_x C.
+\]
+Then every effective divisor $B\in|kA|$ with
+$\operatorname{mult}_x B\ge kt$ contains $C$.
+\end{lemma}
+\begin{proof}
+If $C\not\subset B$, the local intersection multiplicity gives
+\[
+ kA\cdot C=B\cdot C
+ \ge\operatorname{mult}_x B\,\operatorname{mult}_x C
+ \ge kt\operatorname{mult}_x C,
+\]
+contrary to the hypothesis. Thus every such divisor contains $C$.
+\end{proof}
+
+\noindent\emph{Remark.} If the system of these high-multiplicity
+divisors is nonempty, its base locus contains $C$ by definition.
+
+Taking $A=R_{n,s}$ and $t=9$, the assumption
+$\varepsilon(R_{n,s};z)\le8$ gives a curve $C\ni z$ with
+$R_{n,s}\cdot C<9\operatorname{mult}_z C$.
+Every divisor in $|kR_{n,s}|$ of multiplicity at least $9k$ at
+$z$ contains this same $C$. These two steps use no
+dimension-specific Setup. In the threefold argument, the
+volume estimates supply the required nonvanishing; the moving
+family of base components and their uniform intersection bounds
+require the further hypotheses used later.
+
+
+\section{Nonempty high-order vanishing systems}
+For an integer $q\ge1$ and $kA$ Cartier, restriction to
+$(q-1)$-jets is the linear map
+\[
+ \begin{aligned}
+ \rho_{k,q,x}:H^0(X,\OO_X(kA))
+ &\longrightarrow
+ \frac{\OO_{X,x}(kA)}{\mathfrak m_x^q\OO_{X,x}(kA)},\\
+ \sigma&\longmapsto[\sigma_x].
+ \end{aligned}
+\]
+Its full kernel is
+\[
+ \begin{aligned}
+ \ker\rho_{k,q,x}
+ &=H^0(X,\OO_X(kA)\otimes\mathfrak m_x^q)\\
+ &=\{\sigma\in H^0(X,\OO_X(kA)):
+                 \operatorname{ord}_x\sigma\ge q\}.
+ \end{aligned}
+\]
+Write
+\[
+ \begin{aligned}
+ |kA|_{x,q}&:=\mathbb P\ker\rho_{k,q,x}\\
+ &=\mathbb P H^0(X,\OO_X(kA)\otimes\mathfrak m_x^q)\\
+ &=\{B\in|kA|:\operatorname{mult}_x B\ge q\}.
+ \end{aligned}
+\]
+
+\begin{lemma}\label{lem:volume-high-order-sections}
+Let $X$ be a smooth projective variety of dimension $n\ge1$,
+$A$ an ample $\mathbb{Q}$-Cartier divisor, and $t>0$ a real number.
+If $A^n>t^n$, then, for every sufficiently large divisible integer
+$k$ and every $x\in X$,
+\[
+ |kA|_{x,\lceil kt\rceil}\ne\varnothing.
+\]
+\end{lemma}
+\begin{proof}
+Put $q=\lceil kt\rceil$. The exact sequence
+\[
+ 0\longrightarrow\OO_X(kA)\otimes\mathfrak m_x^q
+ \longrightarrow\OO_X(kA)
+ \longrightarrow\OO_X(kA)\otimes(\OO_X/\mathfrak m_x^q)
+ \longrightarrow0
+\]
+and the jet dimension formula give
+\[
+ h^0(X,\OO_X(kA)\otimes\mathfrak m_x^q)
+ \ge h^0(X,\OO_X(kA))-\binom{n+q-1}{n}.
+\]
+Asymptotic Riemann--Roch for the ample divisor $A$ gives
+\[
+ h^0(X,\OO_X(kA))=\frac{A^n}{n!}k^n+O(k^{n-1}).
+\]
+Since $q=kt+O(1)$,
+\[
+ \binom{n+q-1}{n}=\frac{t^n}{n!}k^n+O(k^{n-1}).
+\]
+Both error terms are independent of $x$. Hence, for a constant
+$C>0$ independent of $x$ and $k$,
+\[
+ h^0(X,\OO_X(kA)\otimes\mathfrak m_x^q)
+ \ge\frac{k^n}{n!}(A^n-t^n)-Ck^{n-1}>0
+ \quad(k\gg0),
+\]
+since $A^n-t^n>0$.
+\end{proof}
+
+\noindent\emph{Remark.} This proves that the kernel is nonzero;
+it does not assert that restriction to jets is surjective.
+No Seshadri bound or hypothesis on $K_X$ is needed.
+
+In the threefold argument, $Z$ has dimension seven. Fix $n$ and
+the bundle parameter $s$, and suppose
+\[
+ R_{n,s}^{\,7}>\tau_7^7,\qquad
+ 0<\tau_i\le\tau_7\quad(0\le i\le7).
+\]
+For $kR_{n,s}$ Cartier, set
+\[
+ \mathcal H_i(z)=H^0\bigl(Z,\OO_Z(kR_{n,s})\otimes
+                  \mathfrak m_z^{\lceil k\tau_i\rceil}\bigr).
+\]
+For every sufficiently large divisible $k$, simultaneously for
+all $z\in Z$ and $0\le i\le7$,
+\[
+ \begin{aligned}
+ \dim\mathcal H_i(z)
+ &\ge h^0(Z,\OO_Z(kR_{n,s}))
+             -\binom{\lceil k\tau_i\rceil+6}{7}\\
+ &=\frac{k^7}{7!}(R_{n,s}^{\,7}-\tau_i^7)+O(k^6)>0.
+ \end{aligned}
+\]
+Here $n$ and $s$ are fixed while $k\to\infty$; the threshold for
+$k$ may depend on them. The positivity is uniform in $z$ and $i$,
+since $R_{n,s}^{\,7}-\tau_i^7\ge R_{n,s}^{\,7}-\tau_7^7>0$.
+
 \section*{Sources}
 Hartshorne, \emph{Algebraic Geometry}, II, Proposition 7.3, for point
 and tangent-vector separation:
 \href{https://djvu.online/file/nBitrL383m1P0}{online text}.
 For the very-ampleness criterion, see also the
 \href{https://stacks.math.columbia.edu/tag/0E8R}{Stacks Project, Tag 0E8R}.
+For Seshadri constants and the curve-multiplicity formula, see
+R.~Lazarsfeld, \emph{Lectures on Linear Series}, Section~5,
+Definition~5.3 and Lemma~5.4:
+\href{https://www.math.stonybrook.edu/~roblaz/Reprints/Lazarsfeld.LLS.pdf}{author's text}.
+For asymptotic Riemann--Roch used in
+Lemma~\ref{lem:volume-high-order-sections}, see the
+\href{https://stacks.math.columbia.edu/tag/0BJ8}{Stacks Project, Tag 0BJ8}.
 The higher-order statements above are proved here rather than attributed
 to the first-order criterion.
 \end{document}
