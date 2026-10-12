@@ -1,0 +1,146 @@
+@LinearStudy.moduleSheafMono_sections_injective : ∀ {X : AlgebraicGeometry.Scheme} {M N : X.Modules} (j : M ⟶ N)
+  [CategoryTheory.Mono j] (U : X.Opens),
+  Function.Injective ⇑(CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j U))
+'LinearStudy.moduleSheafMono_sections_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafMono_section_eq_zero_iff : ∀ {X : AlgebraicGeometry.Scheme} {M N : X.Modules} (j : M ⟶ N)
+  [CategoryTheory.Mono j] (U : X.Opens) (s : ↑(M.presheaf.obj (Opposite.op U))),
+  (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j U)) s = 0 ↔ s = 0
+'LinearStudy.moduleSheafMono_section_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafMono_section_ne_zero_iff : ∀ {X : AlgebraicGeometry.Scheme} {M N : X.Modules} (j : M ⟶ N)
+  [CategoryTheory.Mono j] (U : X.Opens) (s : ↑(M.presheaf.obj (Opposite.op U))),
+  (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j U)) s ≠ 0 ↔ s ≠ 0
+'LinearStudy.moduleSheafMono_section_ne_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafMap_restriction_apply : ∀ {X : AlgebraicGeometry.Scheme} {M N : X.Modules} (j : M ⟶ N)
+  {U W : X.Opens} (h : W ≤ U) (s : ↑(M.presheaf.obj (Opposite.op U))),
+  (CategoryTheory.ConcreteCategory.hom (N.presheaf.map (CategoryTheory.homOfLE h).op))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j U)) s) =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j W))
+      ((CategoryTheory.ConcreteCategory.hom (M.presheaf.map (CategoryTheory.homOfLE h).op)) s)
+'LinearStudy.moduleSheafMap_restriction_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafMono_restriction_eq_zero_iff : ∀ {X : AlgebraicGeometry.Scheme} {M N : X.Modules} (j : M ⟶ N)
+  [CategoryTheory.Mono j] {U W : X.Opens} (h : W ≤ U) (s : ↑(M.presheaf.obj (Opposite.op U))),
+  (CategoryTheory.ConcreteCategory.hom (N.presheaf.map (CategoryTheory.homOfLE h).op))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j U)) s) =
+      0 ↔
+    (CategoryTheory.ConcreteCategory.hom (M.presheaf.map (CategoryTheory.homOfLE h).op)) s = 0
+'LinearStudy.moduleSheafMono_restriction_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafMono_postcompose_ne_zero : ∀ {X : AlgebraicGeometry.Scheme} {M N G : X.Modules} (j : M ⟶ N)
+  [CategoryTheory.Mono j] (s : G ⟶ M), s ≠ 0 → CategoryTheory.CategoryStruct.comp s j ≠ 0
+'LinearStudy.moduleSheafMono_postcompose_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafMap_pullback_vanishing : ∀ {X Z : AlgebraicGeometry.Scheme} {M N G : X.Modules} (i : Z ⟶ X)
+  (j : M ⟶ N) (s : G ⟶ M),
+  (AlgebraicGeometry.Scheme.Modules.pullback i).map s = 0 →
+    (AlgebraicGeometry.Scheme.Modules.pullback i).map (CategoryTheory.CategoryStruct.comp s j) = 0
+'LinearStudy.moduleSheafMap_pullback_vanishing' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheaf_exists_fixed_positive_twist_mono_under_identification : ∀ {X : AlgebraicGeometry.Scheme}
+  (D : X.Modules) (T : ℕ → X.Modules),
+  (∃ m,
+      0 < m ∧ ∃ j, CategoryTheory.Mono j ∧ SheafOfModules.IsLocallyFree (T m) ∧ SheafOfModules.IsQuasicoherent (T m)) →
+    ∃ m,
+      0 < m ∧
+        ∀ (F : X.Modules) (canonicalIdentification : F ≅ D),
+          ∃ j, CategoryTheory.Mono j ∧ SheafOfModules.IsLocallyFree (T m) ∧ SheafOfModules.IsQuasicoherent (T m)
+'LinearStudy.moduleSheaf_exists_fixed_positive_twist_mono_under_identification' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.moduleSheafMono_nonzero_section_with_pullback_vanishing : ∀ {X : AlgebraicGeometry.Scheme}
+  {F T G : X.Modules} (j : F ⟶ T) [CategoryTheory.Mono j] (s : G ⟶ F),
+  s ≠ 0 →
+    ∀ {I : Type u_1} (Z : I → AlgebraicGeometry.Scheme) (i : (a : I) → Z a ⟶ X),
+      (∀ (a : I), (AlgebraicGeometry.Scheme.Modules.pullback (i a)).map s = 0) →
+        ∃ t,
+          t = CategoryTheory.CategoryStruct.comp s j ∧
+            t ≠ 0 ∧ ∀ (a : I), (AlgebraicGeometry.Scheme.Modules.pullback (i a)).map t = 0
+'LinearStudy.moduleSheafMono_nonzero_section_with_pullback_vanishing' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection : {K S D : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup D] →
+          [inst_4 : Module S D] →
+            [inst_5 : Module K D] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K D) →
+                    (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      (k : ℤ) →
+                        ↥(𝒟 k) → ↑((LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k).presheaf.obj (Opposite.op ⊤))
+'LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection_apply : ∀ {K S D : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D] [inst_5 : Module K D]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+  (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ) (ell : ↥(𝒟 k)) (p : ↥⊤),
+  ↑(LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝓑 𝒟 hgrade k ell) p = LocalizedModule.mk (↑ell) 1
+'LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection_zero : ∀ {K S D : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D] [inst_5 : Module K D]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+  (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ),
+  LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝓑 𝒟 hgrade k 0 = 0
+'LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection_element_ne_zero : ∀ {K S D : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D] [inst_5 : Module K D]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+  (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ) (ell : ↥(𝒟 k)),
+  LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝓑 𝒟 hgrade k ell ≠ 0 → ↑ell ≠ 0
+'LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection_element_ne_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection_eq_zero_iff_of_point : ∀ {K S D : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D] [inst_5 : Module K D]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+  (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) [NoZeroSMulDivisors S D] (k : ℤ)
+  (ell : ↥(𝒟 k)) (p : ProjectiveSpectrum 𝓑),
+  LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝓑 𝒟 hgrade k ell = 0 ↔ ↑ell = 0
+'LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection_eq_zero_iff_of_point' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalProjectivePolynomialSection : {n : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (m : ℕ) →
+      (Q : LinearStudy.CoordinateRing n) →
+        MvPolynomial.IsHomogeneous Q m →
+          let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+          ↑((LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯
+                    ↑m).presheaf.obj
+              (Opposite.op ⊤))
+'LinearStudy.originalProjectivePolynomialSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalProjectivePolynomialSection_nonzero_not_mem : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (m : ℕ) (Q : LinearStudy.CoordinateRing n)
+  (hQ : MvPolynomial.IsHomogeneous Q m),
+  LinearStudy.originalProjectivePolynomialSection V m Q hQ ≠ 0 → Q ∉ V.ideal.toIdeal
+'LinearStudy.originalProjectivePolynomialSection_nonzero_not_mem' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalProjectivePolynomial_lift_after_mono_not_mem : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (m : ℕ) (Q : LinearStudy.CoordinateRing n)
+  (hQ : MvPolynomial.IsHomogeneous Q m),
+  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  let T := LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ ↑m;
+  ∀ (F : (AlgebraicGeometry.Proj 𝓑).Modules) (j : F ⟶ T),
+    CategoryTheory.Mono j →
+      ∀ (a : ↑(F.presheaf.obj (Opposite.op ⊤))),
+        a ≠ 0 →
+          LinearStudy.originalProjectivePolynomialSection V m Q hQ =
+              (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j ⊤)) a →
+            Q ∉ V.ideal.toIdeal
+'LinearStudy.originalProjectivePolynomial_lift_after_mono_not_mem' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.sheafShortExact_sections_surjective_of_H1_vanish : ∀ {C : Type u_4}
+  [inst : CategoryTheory.Category.{u_3, u_4} C] {J : CategoryTheory.GrothendieckTopology C}
+  [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat]
+  [inst_2 : CategoryTheory.HasExt (CategoryTheory.Sheaf J AddCommGrpCat)]
+  (S : CategoryTheory.ShortComplex (CategoryTheory.Sheaf J AddCommGrpCat)),
+  S.ShortExact →
+    ∀ {T : C} (hT : CategoryTheory.Limits.IsTerminal T) [Subsingleton (S.X₁.H 1)],
+      Function.Surjective ⇑(CategoryTheory.ConcreteCategory.hom (S.g.hom.app (Opposite.op T)))
+'LinearStudy.sheafShortExact_sections_surjective_of_H1_vanish' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
