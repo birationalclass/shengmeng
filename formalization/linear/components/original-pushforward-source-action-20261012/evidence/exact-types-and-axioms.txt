@@ -1,0 +1,141 @@
+@LinearStudy.schemePushforwardOriginalSourceActionSection : {X Y : AlgebraicGeometry.Scheme} →
+  (f : X ⟶ Y) →
+    (M : X.Modules) →
+      (U : Y.Opens) →
+        ↑(X.presheaf.obj (Opposite.op ((TopologicalSpace.Opens.map f.base).obj U))) →
+          ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj M).presheaf.obj (Opposite.op U)) →
+            ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj M).presheaf.obj (Opposite.op U))
+'LinearStudy.schemePushforwardOriginalSourceActionSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemePushforwardOriginalSourceActionSection_from_source_module : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (f : X ⟶ Y) (M : X.Modules) (U : Y.Opens)
+  (b : ↑(X.presheaf.obj (Opposite.op ((TopologicalSpace.Opens.map f.base).obj U))))
+  (x : ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj M).presheaf.obj (Opposite.op U))),
+  LinearStudy.schemePushforwardOriginalSourceActionSection f M U b x =
+    have this :=
+      (have this := b;
+        this) •
+        have this := x;
+        this;
+    this
+'LinearStudy.schemePushforwardOriginalSourceActionSection_from_source_module' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeNormalizationPushforwardChartSectionMap_original_source_value : ∀ {K R S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [inst_10 : Module.Finite R S] (a : R) (ha : a ∈ 𝒜 1)
+  (ell : ↥(LinearStudy.nativeGradedModuleAwayZero 𝒜 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) a)),
+  let D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;
+  have hD := ⋯;
+  let M := LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0;
+  (LinearStudy.nativeNormalizationPushforwardChartSectionMap 𝒜 𝓑 𝒟 ⋯ hD a ha) ell =
+    have this :=
+      (LinearStudy.nativeProjectiveZeroChartSectionMap 𝓑 𝒟 hD ((algebraMap R S) a) ⋯)
+        ((LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha) ell);
+    this
+'LinearStudy.nativeNormalizationPushforwardChartSectionMap_original_source_value' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeNormalizationPushforwardChartSectionMap_original_source_inverse_value : ∀ {K R S : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [inst_10 : Module.Finite R S]
+  (a : R) (ha : a ∈ 𝒜 1)
+  (d : ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ((algebraMap R S) a))),
+  let D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;
+  have hD := ⋯;
+  let M := LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0;
+  (LinearStudy.nativeNormalizationPushforwardChartSectionMap 𝒜 𝓑 𝒟 ⋯ hD a ha)
+      ((LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm d) =
+    have this := (LinearStudy.nativeProjectiveZeroChartSectionMap 𝓑 𝒟 hD ((algebraMap R S) a) ⋯) d;
+    this
+'LinearStudy.nativeNormalizationPushforwardChartSectionMap_original_source_inverse_value' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeNormalizationPushforwardChartSectionMap_original_source_action : ∀ {K R S : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [inst_10 : Module.Finite R S]
+  (a : R) (ha : a ∈ 𝒜 1) (b : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a))
+  (d : ↥(LinearStudy.nativeGradedModuleAwayZero 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ((algebraMap R S) a))),
+  let D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;
+  have hD := ⋯;
+  let M := LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD 0;
+  let f := LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑;
+  let U := AlgebraicGeometry.Proj.basicOpen 𝒜 a;
+  have θ := LinearStudy.nativeNormalizationPushforwardChartSectionMap 𝒜 𝓑 𝒟 ⋯ hD a ha;
+  LinearStudy.schemePushforwardOriginalSourceActionSection f M U
+      (have this :=
+        (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a))) b;
+      this)
+      (θ ((LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm d)) =
+    θ ((LinearStudy.nativeCoextensionBaseSourceZeroChartEquiv 𝒜 𝓑 a ha).symm (b • d))
+'LinearStudy.nativeNormalizationPushforwardChartSectionMap_original_source_action' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeNormalizationPushforwardGlobalHomChartLinearEquiv_original_source_action : ∀ {K R S : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] (𝒜 : ℕ → Submodule K R) [inst_7 : GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [inst_8 : GradedAlgebra 𝓑] [inst_9 : SetLike.GradedSMul 𝒜 𝓑] [inst_10 : Module.Finite R S]
+  (a : R) (ha : a ∈ 𝒜 1) (hinj : Function.Injective ⇑(algebraMap R (Localization.Away a)))
+  (hs :
+    Function.Bijective
+      ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 1
+          ((algebraMap R S) a) ⋯))
+  (b : HomogeneousLocalization.Away 𝓑 ((algebraMap R S) a))
+  (t :
+    ↑(((AlgebraicGeometry.Scheme.Modules.pushforward (LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.coextensionGradedPiece 𝒜 𝓑) ⋯ 0)).presheaf.obj
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen 𝒜 a)))),
+  have D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;
+  let M := LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 ⋯ 0;
+  let f := LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑;
+  let U := AlgebraicGeometry.Proj.basicOpen 𝒜 a;
+  let N := SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf;
+  have sb :=
+    have this := (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap R S) a))) b;
+    this;
+  (LinearStudy.nativeNormalizationPushforwardGlobalHomChartLinearEquiv 𝒜 𝓑 a ha hinj hs)
+      (LinearStudy.schemePushforwardOriginalSourceActionSection f M U sb t) =
+    LinearStudy.schemePushforwardHomSourceActionSection f N U sb
+      ((LinearStudy.nativeNormalizationPushforwardGlobalHomChartLinearEquiv 𝒜 𝓑 a ha hinj hs) t)
+'LinearStudy.nativeNormalizationPushforwardGlobalHomChartLinearEquiv_original_source_action' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectiveNormalization_original_pushforward_global_hom_source_action : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+  (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite),
+  let A := MvPolynomial (Fin (r + 1)) ℂ;
+  let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  let φ := LinearStudy.projectiveLinearNormalizationMap V L;
+  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+  let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;
+  let M := LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 ⋯ 0;
+  let f := LinearStudy.nativeNormalizationProjectiveMap 𝒜 𝓑;
+  let N := SheafOfModules.unit (AlgebraicGeometry.Proj 𝒜).ringCatSheaf;
+  ∀ (i : Fin (r + 1)),
+    let a := MvPolynomial.X i;
+    have ha := ⋯;
+    have hi := ⋯;
+    have hs := ⋯;
+    let U := AlgebraicGeometry.Proj.basicOpen 𝒜 a;
+    ∀ (b : HomogeneousLocalization.Away 𝓑 ((algebraMap A B) a))
+      (t : ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj M).presheaf.obj (Opposite.op U))),
+      have sb :=
+        id
+          (⋯.mpr
+            ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Proj.awayToSection 𝓑 ((algebraMap A B) a))) b));
+      (LinearStudy.nativeNormalizationPushforwardGlobalHomChartLinearEquiv 𝒜 𝓑 a ha hi hs)
+          (LinearStudy.schemePushforwardOriginalSourceActionSection f M U sb t) =
+        LinearStudy.schemePushforwardHomSourceActionSection f N U sb
+          ((LinearStudy.nativeNormalizationPushforwardGlobalHomChartLinearEquiv 𝒜 𝓑 a ha hi hs) t)
+'LinearStudy.projectiveNormalization_original_pushforward_global_hom_source_action' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
