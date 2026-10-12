@@ -1,0 +1,518 @@
+@LinearStudy.nativeProjectiveHomogeneousSMul_homogeneous : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M] (𝓑 : ℕ → Submodule K S)
+  [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M),
+  (∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+    ∀ (a : S) (n : ℕ), a ∈ 𝓑 n → ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, ((LinearMap.lsmul S M) a) ell ∈ 𝒟 (d + ↑n)
+'LinearStudy.nativeProjectiveHomogeneousSMul_homogeneous' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveHomogeneousSMul_prime_value : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (a : S) (p : ProjectiveSpectrum 𝓑) (x : LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p),
+  (LinearStudy.nativeProjectiveModuleAtPrimeMap 𝓑 ((LinearMap.lsmul S M) a) p) x = a • x
+'LinearStudy.nativeProjectiveHomogeneousSMul_prime_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveHomogeneousSMul : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            [inst_5 : Module K M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      (a : S) →
+                        (n : ℕ) →
+                          a ∈ 𝓑 n →
+                            (k : ℤ) →
+                              LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD k ⟶
+                                LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD (k + ↑n)
+'LinearStudy.nativeProjectiveHomogeneousSMul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveHomogeneousSMul_section_value : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (a : S) (n : ℕ) (ha : a ∈ 𝓑 n) (k : ℤ)
+  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+  (s : ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD k U)) (p : ↥(Opposite.unop U)),
+  ↑((CategoryTheory.ConcreteCategory.hom ((LinearStudy.nativeProjectiveHomogeneousSMul 𝓑 𝒟 hD a n ha k).val.app U)) s)
+      p =
+    a • ↑s p
+'LinearStudy.nativeProjectiveHomogeneousSMul_section_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModulePrimeTwistEquiv : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            (𝓑 : ℕ → Submodule K S) →
+              [inst_5 : GradedAlgebra 𝓑] →
+                (p : ProjectiveSpectrum 𝓑) →
+                  (a : S) →
+                    a ∉ p.asHomogeneousIdeal →
+                      ℕ →
+                        LinearStudy.nativeProjectiveModuleAtPrime 𝓑
+                            p ≃ₗ[HomogeneousLocalization.AtPrime 𝓑 p.asHomogeneousIdeal.toIdeal]
+                          LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p
+'LinearStudy.nativeProjectiveModulePrimeTwistEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModulePrimeTwistEquiv_mk : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (p : ProjectiveSpectrum 𝓑) (a : S) (ha : a ∉ p.asHomogeneousIdeal) (m : ℕ) (ell : M)
+  (b : ↥p.asHomogeneousIdeal.toIdeal.primeCompl),
+  (LinearStudy.nativeProjectiveModulePrimeTwistEquiv 𝓑 p a ha m) (LocalizedModule.mk ell b) =
+    LocalizedModule.mk (a ^ m • ell) b
+'LinearStudy.nativeProjectiveModulePrimeTwistEquiv_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModulePrimeTwistEquiv_symm_mk : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (p : ProjectiveSpectrum 𝓑) (a : S) (ha : a ∉ p.asHomogeneousIdeal) (m : ℕ) (ell : M)
+  (b : ↥p.asHomogeneousIdeal.toIdeal.primeCompl),
+  (LinearStudy.nativeProjectiveModulePrimeTwistEquiv 𝓑 p a ha m).symm (LocalizedModule.mk ell b) =
+    LocalizedModule.mk ell (b * ⟨a, ha⟩ ^ m)
+'LinearStudy.nativeProjectiveModulePrimeTwistEquiv_symm_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistFraction_forward : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M),
+  (∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+    ∀ a ∈ 𝓑 1,
+      ∀ (m : ℕ) (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}
+        (hp : ∀ (p : ↥U), a ∉ (↑p).asHomogeneousIdeal) {f : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p},
+        LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 k f →
+          LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 (k + ↑m) fun p =>
+            (LinearStudy.nativeProjectiveModulePrimeTwistEquiv 𝓑 (↑p) a ⋯ m) (f p)
+'LinearStudy.nativeProjectiveModuleTwistFraction_forward' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistFraction_backward : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M),
+  (∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+    ∀ a ∈ 𝓑 1,
+      ∀ (m : ℕ) (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}
+        (hp : ∀ (p : ↥U), a ∉ (↑p).asHomogeneousIdeal) {f : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p},
+        LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 (k + ↑m) f →
+          LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 k fun p =>
+            (LinearStudy.nativeProjectiveModulePrimeTwistEquiv 𝓑 (↑p) a ⋯ m).symm (f p)
+'LinearStudy.nativeProjectiveModuleTwistFraction_backward' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistLocalFraction_forward : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M),
+  (∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+    ∀ a ∈ 𝓑 1,
+      ∀ (m : ℕ) (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}
+        (hp : ∀ (p : ↥U), a ∉ (↑p).asHomogeneousIdeal) {f : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p},
+        (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred f →
+          (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 (k + ↑m)).pred fun p =>
+            (LinearStudy.nativeProjectiveModulePrimeTwistEquiv 𝓑 (↑p) a ⋯ m) (f p)
+'LinearStudy.nativeProjectiveModuleTwistLocalFraction_forward' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistLocalFraction_backward : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M),
+  (∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+    ∀ a ∈ 𝓑 1,
+      ∀ (m : ℕ) (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}
+        (hp : ∀ (p : ↥U), a ∉ (↑p).asHomogeneousIdeal) {f : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p},
+        (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 (k + ↑m)).pred f →
+          (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred fun p =>
+            (LinearStudy.nativeProjectiveModulePrimeTwistEquiv 𝓑 (↑p) a ⋯ m).symm (f p)
+'LinearStudy.nativeProjectiveModuleTwistLocalFraction_backward' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistSectionEquiv : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            [inst_5 : Module K M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      (a : S) →
+                        a ∈ 𝓑 1 →
+                          (m : ℕ) →
+                            (k : ℤ) →
+                              (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) →
+                                (∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal) →
+                                  ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD k
+                                        U) ≃ₗ[↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)]
+                                    ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD (k + ↑m) U)
+'LinearStudy.nativeProjectiveModuleTwistSectionEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistSectionEquiv_restrict : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (a : S) (ha : a ∈ 𝓑 1) (m : ℕ) (k : ℤ)
+  {U V : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ} (i : U ⟶ V)
+  (hp : ∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal)
+  (f : ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD k U)),
+  (CategoryTheory.ConcreteCategory.hom ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hD (k + ↑m)).map i))
+      ((LinearStudy.nativeProjectiveModuleTwistSectionEquiv 𝓑 𝒟 hD a ha m k U hp) f) =
+    (LinearStudy.nativeProjectiveModuleTwistSectionEquiv 𝓑 𝒟 hD a ha m k V ⋯)
+      ((CategoryTheory.ConcreteCategory.hom ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hD k).map i)) f)
+'LinearStudy.nativeProjectiveModuleTwistSectionEquiv_restrict' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistPresheafOverIso : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            [inst_5 : Module K M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      (a : S) →
+                        a ∈ 𝓑 1 →
+                          (m : ℕ) →
+                            (k : ℤ) →
+                              (U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)) →
+                                (∀ (p : ↥U), a ∉ (↑p).asHomogeneousIdeal) →
+                                  ((SheafOfModules.over (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD k) U).val ≅
+                                    (SheafOfModules.over (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD (k + ↑m))
+                                        U).val)
+'LinearStudy.nativeProjectiveModuleTwistPresheafOverIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistSheafOverIso : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            [inst_5 : Module K M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      (a : S) →
+                        a ∈ 𝓑 1 →
+                          (m : ℕ) →
+                            (k : ℤ) →
+                              (U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)) →
+                                (∀ (p : ↥U), a ∉ (↑p).asHomogeneousIdeal) →
+                                  (SheafOfModules.over (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD k) U ≅
+                                    SheafOfModules.over (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD (k + ↑m)) U)
+'LinearStudy.nativeProjectiveModuleTwistSheafOverIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistPairing_prime_mk : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (p : ProjectiveSpectrum 𝓑) (r : S) (ell : M)
+  (b c : ↥p.asHomogeneousIdeal.toIdeal.primeCompl),
+  (LinearStudy.nativeProjectiveRingModuleLocalizationEquiv 𝓑 p) (LocalizedModule.mk r b) • LocalizedModule.mk ell c =
+    LocalizedModule.mk (r • ell) (b * c)
+'LinearStudy.nativeProjectiveModuleTwistPairing_prime_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistPairing_fraction : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M),
+  (∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+    ∀ (m : ℕ) (k : ℤ) {U V : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}
+      {r : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p}
+      {ell : (p : ↥V) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p},
+      LinearStudy.nativeProjectiveModuleIsFraction 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) (↑m) r →
+        LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 k ell →
+          LinearStudy.nativeProjectiveModuleIsFraction 𝓑 𝒟 (k + ↑m) fun p =>
+            (LinearStudy.nativeProjectiveRingModuleLocalizationEquiv 𝓑 ↑p) (r ⟨↑p, ⋯⟩) • ell ⟨↑p, ⋯⟩
+'LinearStudy.nativeProjectiveModuleTwistPairing_fraction' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistPairing_local : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M),
+  (∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+    ∀ (m : ℕ) (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}
+      {r : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p}
+      {ell : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p},
+      (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ↑m).pred r →
+        (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred ell →
+          (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 (k + ↑m)).pred fun p =>
+            (LinearStudy.nativeProjectiveRingModuleLocalizationEquiv 𝓑 ↑p) (r p) • ell p
+'LinearStudy.nativeProjectiveModuleTwistPairing_local' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistPairing : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            [inst_5 : Module K M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      (m : ℕ) →
+                        (k : ℤ) →
+                          (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) →
+                            ↥(LinearStudy.nativeProjectiveModuleSections 𝓑
+                                  (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (↑m)
+                                  U) →ₗ[↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)]
+                              ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD k
+                                    U) →ₗ[↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)]
+                                ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD (k + ↑m) U)
+'LinearStudy.nativeProjectiveModuleTwistPairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistPairing_value : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (m : ℕ) (k : ℤ)
+  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+  (r : ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (↑m) U))
+  (ell : ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD k U)) (p : ↥(Opposite.unop U)),
+  ↑(((LinearStudy.nativeProjectiveModuleTwistPairing 𝓑 𝒟 hD m k U) r) ell) p =
+    (LinearStudy.nativeProjectiveRingModuleLocalizationEquiv 𝓑 ↑p) (↑r p) • ↑ell p
+'LinearStudy.nativeProjectiveModuleTwistPairing_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistPairing_restrict : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (m : ℕ) (k : ℤ)
+  {U V : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ} (i : U ⟶ V)
+  (r : ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (↑m) U))
+  (ell : ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD k U)),
+  (CategoryTheory.ConcreteCategory.hom ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hD (k + ↑m)).map i))
+      (((LinearStudy.nativeProjectiveModuleTwistPairing 𝓑 𝒟 hD m k U) r) ell) =
+    ((LinearStudy.nativeProjectiveModuleTwistPairing 𝓑 𝒟 hD m k V)
+        ((CategoryTheory.ConcreteCategory.hom
+            ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ ↑m).map
+              i))
+          r))
+      ((CategoryTheory.ConcreteCategory.hom ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hD k).map i)) ell)
+'LinearStudy.nativeProjectiveModuleTwistPairing_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistTensorPresheaf : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            [inst_5 : Module K M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      ℕ → ℤ → PresheafOfModules (AlgebraicGeometry.Proj 𝓑).ringCatSheaf.obj
+'LinearStudy.nativeProjectiveModuleTwistTensorPresheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistTensorPresheafMap : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            [inst_5 : Module K M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      (m : ℕ) →
+                        (k : ℤ) →
+                          LinearStudy.nativeProjectiveModuleTwistTensorPresheaf 𝓑 𝒟 hD m k ⟶
+                            LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hD (k + ↑m)
+'LinearStudy.nativeProjectiveModuleTwistTensorPresheafMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistTensorSheaf : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            [inst_5 : Module K M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      ℕ → ℤ → (AlgebraicGeometry.Proj 𝓑).Modules
+'LinearStudy.nativeProjectiveModuleTwistTensorSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModulePrimeTwistEquiv_value : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (p : ProjectiveSpectrum 𝓑) (a : S) (ha : a ∉ p.asHomogeneousIdeal) (m : ℕ)
+  (x : LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p),
+  (LinearStudy.nativeProjectiveModulePrimeTwistEquiv 𝓑 p a ha m) x = a ^ m • x
+'LinearStudy.nativeProjectiveModulePrimeTwistEquiv_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleRingTwistEquiv_value : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (p : ProjectiveSpectrum 𝓑) (a : S)
+  (ha : a ∉ p.asHomogeneousIdeal) (m : ℕ) (x : LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p),
+  (LinearStudy.nativeProjectiveRingModuleLocalizationEquiv 𝓑 p)
+      ((LinearStudy.nativeProjectiveModulePrimeTwistEquiv 𝓑 p a ha m) x) =
+    (algebraMap S (Localization p.asHomogeneousIdeal.toIdeal.primeCompl)) (a ^ m) *
+      (LinearStudy.nativeProjectiveRingModuleLocalizationEquiv 𝓑 p) x
+'LinearStudy.nativeProjectiveModuleRingTwistEquiv_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveTwistStructureValue : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (p : ProjectiveSpectrum 𝓑)
+  (z : HomogeneousLocalization.AtPrime 𝓑 p.asHomogeneousIdeal.toIdeal),
+  (LinearStudy.nativeProjectiveRingModuleLocalizationEquiv 𝓑 p)
+      ((LinearStudy.nativeHomogeneousLocalRingModuleEmbedding 𝓑 p) z) =
+    HomogeneousLocalization.val z
+'LinearStudy.nativeProjectiveTwistStructureValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistRingFrameEquiv : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (a : S) →
+              a ∈ 𝓑 1 →
+                (m : ℕ) →
+                  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) →
+                    (∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal) →
+                      ↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj
+                            U) ≃ₗ[↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)]
+                        ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑)
+                            ⋯ (↑m) U)
+'LinearStudy.nativeProjectiveModuleTwistRingFrameEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistPairing_frame : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (a : S) (ha : a ∈ 𝓑 1) (m : ℕ) (k : ℤ)
+  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+  (hp : ∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal)
+  (c : ↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U))
+  (ell : ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD k U)),
+  ((LinearStudy.nativeProjectiveModuleTwistPairing 𝓑 𝒟 hD m k U)
+        ((LinearStudy.nativeProjectiveModuleTwistRingFrameEquiv 𝓑 a ha m U hp) c))
+      ell =
+    (LinearStudy.nativeProjectiveModuleTwistSectionEquiv 𝓑 𝒟 hD a ha m k U hp) (c • ell)
+'LinearStudy.nativeProjectiveModuleTwistPairing_frame' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistTensorChartEquiv : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            [inst_5 : Module K M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      (a : S) →
+                        a ∈ 𝓑 1 →
+                          (m : ℕ) →
+                            (k : ℤ) →
+                              (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) →
+                                (∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal) →
+                                  TensorProduct
+                                      ↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)
+                                      ↥(LinearStudy.nativeProjectiveModuleSections 𝓑
+                                          (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (↑m) U)
+                                      ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD k
+                                          U) ≃ₗ[↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj
+                                        U)]
+                                    ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD (k + ↑m) U)
+'LinearStudy.nativeProjectiveModuleTwistTensorChartEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistTensorChartEquiv_eq_pairing : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (a : S) (ha : a ∈ 𝓑 1) (m : ℕ) (k : ℤ)
+  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+  (hp : ∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal),
+  ↑(LinearStudy.nativeProjectiveModuleTwistTensorChartEquiv 𝓑 𝒟 hD a ha m k U hp) =
+    TensorProduct.lift (LinearStudy.nativeProjectiveModuleTwistPairing 𝓑 𝒟 hD m k U)
+'LinearStudy.nativeProjectiveModuleTwistTensorChartEquiv_eq_pairing' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistTensorPresheafMap_chart_bijective : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)),
+  ∀ a ∈ 𝓑 1,
+    ∀ (m : ℕ) (k : ℤ) (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ),
+      (∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal) →
+        Function.Bijective
+          ⇑(CategoryTheory.ConcreteCategory.hom
+              ((LinearStudy.nativeProjectiveModuleTwistTensorPresheafMap 𝓑 𝒟 hD m k).app U))
+'LinearStudy.nativeProjectiveModuleTwistTensorPresheafMap_chart_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistTensorPresheafMap_locallySurjective : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) {ι : Type u_1} (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ →
+      ∀ (m : ℕ) (k : ℤ),
+        PresheafOfModules.IsLocallySurjective (Opens.grothendieckTopology ↑(ProjectiveSpectrum.top 𝓑))
+          (LinearStudy.nativeProjectiveModuleTwistTensorPresheafMap 𝓑 𝒟 hD m k)
+'LinearStudy.nativeProjectiveModuleTwistTensorPresheafMap_locallySurjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistTensorPresheafMap_locallyInjective : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) {ι : Type u_1} (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ →
+      ∀ (m : ℕ) (k : ℤ),
+        PresheafOfModules.IsLocallyInjective (Opens.grothendieckTopology ↑(ProjectiveSpectrum.top 𝓑))
+          (LinearStudy.nativeProjectiveModuleTwistTensorPresheafMap 𝓑 𝒟 hD m k)
+'LinearStudy.nativeProjectiveModuleTwistTensorPresheafMap_locallyInjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.moduleSheafification_isIso_iff_locallyBijective : ∀ {C : Type u_4}
+  [inst : CategoryTheory.Category.{u_2, u_4} C] {J : CategoryTheory.GrothendieckTopology C}
+  {R₀ : CategoryTheory.Functor Cᵒᵖ RingCat} {R : CategoryTheory.Sheaf J RingCat} (α : R₀ ⟶ R.obj)
+  [inst_1 : CategoryTheory.Presheaf.IsLocallyInjective J α] [inst_2 : CategoryTheory.Presheaf.IsLocallySurjective J α]
+  [inst_3 : J.WEqualsLocallyBijective AddCommGrpCat] [inst_4 : CategoryTheory.HasWeakSheafify J AddCommGrpCat]
+  {M N : PresheafOfModules R₀} (f : M ⟶ N),
+  CategoryTheory.IsIso ((PresheafOfModules.sheafification α).map f) ↔
+    CategoryTheory.Presheaf.IsLocallyInjective J ((PresheafOfModules.toPresheaf R₀).map f) ∧
+      CategoryTheory.Presheaf.IsLocallySurjective J ((PresheafOfModules.toPresheaf R₀).map f)
+'LinearStudy.moduleSheafification_isIso_iff_locallyBijective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafificationHomEquiv_symm_eq : ∀ {C : Type u_4} [inst : CategoryTheory.Category.{u_2, u_4} C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat)
+  [inst_1 : J.WEqualsLocallyBijective AddCommGrpCat] [inst_2 : CategoryTheory.HasWeakSheafify J AddCommGrpCat]
+  {P : PresheafOfModules R.obj} {F : SheafOfModules R} (f : P ⟶ F.val),
+  (PresheafOfModules.sheafificationHomEquiv (CategoryTheory.CategoryStruct.id R.obj)).symm f =
+    CategoryTheory.CategoryStruct.comp
+      ((PresheafOfModules.sheafification (CategoryTheory.CategoryStruct.id R.obj)).map f)
+      ((PresheafOfModules.sheafificationAdjunction (CategoryTheory.CategoryStruct.id R.obj)).counit.app F)
+'LinearStudy.moduleSheafificationHomEquiv_symm_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafificationHomEquiv_symm_isIso : ∀ {C : Type u_4} [inst : CategoryTheory.Category.{u_2, u_4} C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat)
+  [inst_1 : J.WEqualsLocallyBijective AddCommGrpCat] [inst_2 : CategoryTheory.HasWeakSheafify J AddCommGrpCat]
+  {P : PresheafOfModules R.obj} {F : SheafOfModules R} (f : P ⟶ F.val)
+  [CategoryTheory.IsIso ((PresheafOfModules.sheafification (CategoryTheory.CategoryStruct.id R.obj)).map f)],
+  CategoryTheory.IsIso ((PresheafOfModules.sheafificationHomEquiv (CategoryTheory.CategoryStruct.id R.obj)).symm f)
+'LinearStudy.moduleSheafificationHomEquiv_symm_isIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistTensorSheafMap : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            [inst_5 : Module K M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      (m : ℕ) →
+                        (k : ℤ) →
+                          LinearStudy.nativeProjectiveModuleTwistTensorSheaf 𝓑 𝒟 hD m k ⟶
+                            LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD (k + ↑m)
+'LinearStudy.nativeProjectiveModuleTwistTensorSheafMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistTensorSheafMap_pairing : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (m : ℕ) (k : ℤ),
+  (PresheafOfModules.sheafificationHomEquiv
+        (CategoryTheory.CategoryStruct.id (AlgebraicGeometry.Proj 𝓑).ringCatSheaf.obj))
+      (LinearStudy.nativeProjectiveModuleTwistTensorSheafMap 𝓑 𝒟 hD m k) =
+    LinearStudy.nativeProjectiveModuleTwistTensorPresheafMap 𝓑 𝒟 hD m k
+'LinearStudy.nativeProjectiveModuleTwistTensorSheafMap_pairing' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistTensorSheafMap_isIso : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) {ι : Type u_1} (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ →
+      ∀ (m : ℕ) (k : ℤ), CategoryTheory.IsIso (LinearStudy.nativeProjectiveModuleTwistTensorSheafMap 𝓑 𝒟 hD m k)
+'LinearStudy.nativeProjectiveModuleTwistTensorSheafMap_isIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveModuleTwistTensorSheafIso : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            [inst_5 : Module K M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      {ι : Type u_1} →
+                        (a : ι → S) →
+                          (∀ (i : ι), a i ∈ 𝓑 1) →
+                            Algebra.adjoin K (Set.range a) = ⊤ →
+                              (m : ℕ) →
+                                (k : ℤ) →
+                                  LinearStudy.nativeProjectiveModuleTwistTensorSheaf 𝓑 𝒟 hD m k ≅
+                                    LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD (k + ↑m)
+'LinearStudy.nativeProjectiveModuleTwistTensorSheafIso' depends on axioms: [propext, Classical.choice, Quot.sound]
