@@ -7296,6 +7296,109 @@
       "en": [
         "The five-step outline directly uses $P_n$, $R_{n,s}$ and $P_n+s\\xi$ on a slice. It removes delta, the tau levels, C_0, C_1, the dimension-dependent curve constants and the case-by-case fibre constants. It retains the needed volume and slice-smallness bounds, base-component degree and canonical bounds, correspondence volume and canonical ratios, and the final cohomology vanishing. Where only a uniform bound is needed, it writes $r_n=O_{\\epsilon,s}(1)$ and specifies independence of n with the remaining Setup data fixed. Uses of Step 1 remain marked."
       ]
+    },
+    {
+      "id": "jets-proof-reading-start-q",
+      "role": "user",
+      "time": "2026-10-12T10:27:07.014Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "如果要学习引理 1.1 的证明，最先该看哪个引理？"
+      ],
+      "en": [
+        "Which lemma should I read first to learn the proof of Lemma 1.1?"
+      ]
+    },
+    {
+      "id": "jets-proof-reading-start-a",
+      "role": "assistant",
+      "time": "2026-10-12T10:27:33.700Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "在当前 separate 证明稿中，先看引理 4.1 的射影丛体积公式：$R_{n,s}^{7}/s\\to140\\epsilon^{6}$，切片上 $(P_n+s\\xi)^4/s\\to4\\epsilon^3$。前者给出统一交数上界，后者给出排除饱和纤维所需的小量条件。",
+        "再看引理 3.1 的基点分支次数估计，理解体积界如何传给基点分支；随后看引理 3.7 的完整核构造，它产生 jet 分离反证中需要的移动基点分支。"
+      ],
+      "en": [
+        "In the current separate proof note, start with the projective-bundle volume formulas in Lemma 4.1: $R_{n,s}^{7}/s\\to140\\epsilon^{6}$ and $(P_n+s\\xi)^4/s\\to4\\epsilon^3$ on a slice. The former gives uniform intersection bounds; the latter gives the smallness needed to exclude saturated fibres.",
+        "Next read the base-component degree estimate in Lemma 3.1, then the full-kernel construction in Lemma 3.7, which produces moving base components for the contradiction argument."
+      ]
+    },
+    {
+      "id": "jets-separation-criterion-q",
+      "role": "user",
+      "time": "2026-10-12T13:34:39.139Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "这里如何判断一个除子是否分离 jets？哪个引理或判别法处理这一步？"
+      ],
+      "en": [
+        "How do we decide whether a divisor separates jets? Which lemma or criterion handles this step?"
+      ]
+    },
+    {
+      "id": "jets-separation-criterion-a",
+      "role": "assistant",
+      "time": "2026-10-12T13:36:05.105Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "设 $W$ 光滑射影，$L$ 是 Cartier 除子。完整线性系 $|L|$ 在 $z$ 分离 $j$-jets 的充要条件是 $h^0(W,\\mathcal O_W(L))-h^0(W,\\mathcal O_W(L)\\otimes\\mathfrak m_z^{j+1})=\\binom{\\dim W+j}{\\dim W}$；左边是可实现的 jet 空间维数。",
+        "上同调消失 $H^1(W,\\mathcal O_W(L)\\otimes\\mathfrak m_z^{j+1})=0$ 是充分条件，不是一般的必要条件。当前证明由命题 4.16 得到 $\\varepsilon(R_{n,s};z)>8$，再在点 blowup $b:\\widetilde Z\\to Z$ 上使用 $b^*R_{n,s}-8E$ 充足及 Serre 消失，得到 $H^1(Z,\\mathcal O_Z(kR_{n,s})\\otimes\\mathfrak m_z^{8k+1})=0$，因而分离 $8k$-jets；$k$ 须充分大且可除。",
+        "这一步原来写在文末引理 1.1 的短证明中，尚未独立编号；前面的引理负责证明所需的 Seshadri 常数下界。"
+      ],
+      "en": [
+        "Let $W$ be smooth projective and $L$ Cartier. The complete system $|L|$ separates $j$-jets at $z$ exactly when $h^0(W,\\mathcal O_W(L))-h^0(W,\\mathcal O_W(L)\\otimes\\mathfrak m_z^{j+1})=\\binom{\\dim W+j}{\\dim W}$. The left side is the dimension of the realizable jet space.",
+        "The vanishing $H^1(W,\\mathcal O_W(L)\\otimes\\mathfrak m_z^{j+1})=0$ is sufficient, not necessary in general. Proposition 4.16 gives $\\varepsilon(R_{n,s};z)>8$. On the point blowup $b:\\widetilde Z\\to Z$, ampleness of $b^*R_{n,s}-8E$ and Serre vanishing yield $H^1(Z,\\mathcal O_Z(kR_{n,s})\\otimes\\mathfrak m_z^{8k+1})=0$, hence separation of $8k$-jets for sufficiently large divisible $k$.",
+        "This conversion originally appeared in the final short proof of Lemma 1.1 without a separate number; the preceding lemmas establish the Seshadri lower bound."
+      ],
+      "highlight": true
+    },
+    {
+      "id": "jets-taylor-rank-clarification-a",
+      "role": "assistant",
+      "time": "2026-10-12T14:14:56.024Z",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "直接的有限阶判别是 Taylor 系数矩阵满秩：在 $z$ 附近取坐标并平凡化 $\\mathcal O_W(L)$，把全局截面展开到 $j$ 阶，则 $|L|$ 分离 $j$-jets 当且仅当系数矩阵的秩为 $\\binom{\\dim W+j}{\\dim W}$。分离 1-jets 即可独立指定值和各方向的一阶导数。",
+        "当前证明没有直接计算这个矩阵，而是以 Seshadri 常数下界和上同调消失保证满秩。"
+      ],
+      "en": [
+        "The direct finite-order test is full rank of the Taylor coefficient matrix. Choose local coordinates and a trivialization of $\\mathcal O_W(L)$ near $z$, and expand global sections through order $j$. The system separates $j$-jets exactly when the coefficient matrix has rank $\\binom{\\dim W+j}{\\dim W}$. Separating one-jets allows independent prescription of the value and all first derivatives.",
+        "The current proof does not compute this matrix; it obtains full rank from a Seshadri lower bound and cohomology vanishing."
+      ],
+      "highlight": true
+    },
+    {
+      "id": "jets-seshadri-extraction-q",
+      "role": "user",
+      "time": "2026-10-12T14:23:24.119Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "把这个 Seshadri 常数与 jet 分离的判别法抽离出来，写入 Jets 文稿。"
+      ],
+      "en": [
+        "Extract the Seshadri criterion for jet separation into the Jets manuscript."
+      ]
+    },
+    {
+      "id": "jets-seshadri-extraction-a",
+      "role": "assistant",
+      "time": "2026-10-12T14:28:25.270Z",
+      "kind": "revision",
+      "proofStatus": "unverified",
+      "zh": [
+        "Jets 第四节已加入独立引理 4.1：若 $A$ 是充足有理 Cartier 除子，$s\\ge1$ 为整数且 $\\varepsilon(A;x)>s$，则对所有充分大且可除的 $k$，完整线性系 $|kA|$ 在 $x$ 分离 $ks$-jets。",
+        "证明在点 blowup 上对固定层 $\\mathcal O(-E)$ 使用 Serre 消失，再由投影公式、Leray 和理想层正合列得到 $H^1(X,\\mathcal O_X(kA)\\otimes\\mathfrak m_x^{ks+1})=0$。引理后明确可除性的量词，并给出 $s=8$ 的应用；该条件不保证任意子系统分离 jets。"
+      ],
+      "en": [
+        "Section 4 of Jets now contains Lemma 4.1: if $A$ is an ample rational Cartier divisor, $s\\ge1$ is an integer and $\\varepsilon(A;x)>s$, then the complete system $|kA|$ separates $ks$-jets at $x$ for every sufficiently large divisible $k$.",
+        "The proof applies Serre vanishing to the fixed sheaf $\\mathcal O(-E)$ on the point blowup, then uses the projection formula, Leray and the ideal-sheaf exact sequence to obtain $H^1(X,\\mathcal O_X(kA)\\otimes\\mathfrak m_x^{ks+1})=0$. It specifies the divisibility quantifiers and the case $s=8$; the criterion does not assert jet separation for arbitrary subsystems."
+      ]
     }
   ],
   "sourceTheorem": {

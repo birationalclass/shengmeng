@@ -2,20 +2,20 @@
   "title": "Jets",
   "date": "October 11, 2026",
   "source": "jets-20261011.tex",
-  "sourceSha256": "5282bccfda16417a2c36a59495180980d44706328db3fc9e96a34da762b54c52",
+  "sourceSha256": "a9ac873ac1a09d4247d1da252c69bb182e4f37612a428b65159c1ca0c7ab619e",
   "proofStatus": "unverified",
   "structure": {
-    "text": 8,
-    "section": 4,
+    "text": 10,
+    "section": 5,
     "definition": 1,
-    "lemma": 1,
-    "proof": 4,
+    "lemma": 2,
+    "proof": 5,
     "proposition": 2,
     "example": 5,
     "explanation": 5,
     "theorem": 1,
     "equations": 0,
-    "labels": 0,
+    "labels": 1,
     "bibliography": 0
   },
   "blocks": [
@@ -175,6 +175,31 @@
       "content": "For $n\\ge1$ and $m\\ge0$, $\\OO_{\\mathbb P^n}(m)$ generates $s$-jets\nat every point exactly when $s\\le m$. In an affine chart its sections\nare polynomials of degree at most $m$, which span all monomials through\ndegree $s$ if $s\\le m$. If $s>m$, they cannot realize $u_1^{m+1}$.",
       "number": "3.2",
       "title": ""
+    },
+    {
+      "type": "section",
+      "title": "Seshadri constants and asymptotic jets",
+      "number": "4"
+    },
+    {
+      "type": "text",
+      "content": "Let $A$ be an ample rational Cartier divisor on $X$, with $n\\ge1$,\nand let $x\\in X$. Let $b:\\widetilde X\\to X$ be the blowup at $x$,\nand define $E$ by\n$\\mathfrak m_x\\OO_{\\widetilde X}=\\OO_{\\widetilde X}(-E)$.\nFor $n=1$, $b$ is the identity and $E=x$.\nThe Seshadri constant is\n\\[\n \\varepsilon(A;x)=\\sup\\{t\\ge0:b^*A-tE\\text{ is nef}\\}.\n\\]\nFor $0<t<\\varepsilon(A;x)$, the divisor $b^*A-tE$ is ample."
+    },
+    {
+      "type": "lemma",
+      "content": "\\label{lem:seshadri-jet-separation}\nLet $A$ be an ample rational Cartier divisor, $x\\in X$, and\n$s\\ge1$ an integer. If $\\varepsilon(A;x)>s$, then\n$|kA|$ separates $ks$-jets at $x$ for every sufficiently large\ndivisible integer $k$.",
+      "number": "4.1",
+      "title": ""
+    },
+    {
+      "type": "proof",
+      "content": "The rational divisor $b^*A-sE$ is ample. Choose an integer $m>0$\nwith $mA$ Cartier. For $m\\mid k$ and $k\\gg0$, Serre vanishing,\napplied to the fixed sheaf $\\OO_{\\widetilde X}(-E)$, gives\n\\[\n H^1\\bigl(\\widetilde X,\n       \\OO_{\\widetilde X}(kb^*A-(ks+1)E)\\bigr)=0.\n\\]\nFor $r\\ge0$, the point blowup satisfies\n\\[\n b_*\\OO_{\\widetilde X}(-rE)=\\mathfrak m_x^r,\n \\qquad R^ib_*\\OO_{\\widetilde X}(-rE)=0\\quad(i>0).\n\\]\nProjection formula and Leray therefore give\n\\[\n H^1\\bigl(X,\\OO_X(kA)\\otimes\\mathfrak m_x^{ks+1}\\bigr)=0.\n\\]\nThe ideal-sheaf exact sequence makes restriction to $ks$-jets\nsurjective, which proves the assertion.",
+      "number": "5",
+      "title": ""
+    },
+    {
+      "type": "text",
+      "content": "Here ``sufficiently large divisible'' means that there are integers\n$m,k_0>0$ such that the conclusion holds whenever $m\\mid k$ and\n$k\\ge k_0$; in particular, $kA$ is Cartier.\nThis is a sufficient criterion for the complete systems $|kA|$,\nnot for an arbitrary subsystem of $|kA|$.\n\nTaking $s=8$ gives the criterion used in the threefold proof:\n\\[\n \\varepsilon(A;x)>8\n \\quad\\Longrightarrow\\quad\n |kA|\\text{ separates }8k\\text{-jets at }x\n \\quad(k\\text{ sufficiently large divisible}).\n\\]\nIn that application, take $A=R_{n,s}$ and $x=z$; the integer $s$\nin the lemma is taken to be $8$, independently of the bundle\nparameter in $R_{n,s}$."
     },
     {
       "type": "section",
