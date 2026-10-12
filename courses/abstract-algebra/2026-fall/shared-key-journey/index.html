@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="data:,">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>不传钥匙，共享秘密 · 结构之美</title>
+<link href="assets/fonts/fonts.css?v=20261012-shared-key-v1" rel="stylesheet">
+<style>
+  :root { --bg: #000; --fg: #f3ead8; --gold: #e2bd6b; --dim: rgba(255,255,255,.55); }
+  :root:not([data-theme="light"]) { --bg: #000; }
+  :root[data-theme="dark"] { --bg: #000; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); overflow: hidden; }
+  body { font-family: "Noto Serif SC", serif; }
+  #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+  canvas { width: 100vw; height: 56.25vw; max-height: 100vh; max-width: 177.78vh; background: #000; display: block; }
+  #start { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+    background: radial-gradient(ellipse at center, #1a1408 0%, #000 70%); cursor: pointer; z-index: 5; text-align: center; padding: 16px; }
+  #start h1 { font-weight: 900; font-size: clamp(28px, 6vw, 96px); margin: 0; letter-spacing: .12em;
+    background: linear-gradient(120deg, #7a5520, #f3d88f 45%, #fff4d2 50%, #d9b25c 55%, #7a5520); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #start p { margin: 0; font-family: "Cinzel", serif; letter-spacing: .3em; color: #cdb88e; font-size: clamp(12px, 2vw, 20px); }
+  #start button { margin-top: 18px; font: 700 18px "Noto Serif SC", serif; color: #1a1206; background: var(--gold); border: 0; border-radius: 999px;
+    padding: 14px 34px; cursor: pointer; letter-spacing: .15em; }
+  #start small { color: var(--dim); font-size: 13px; letter-spacing: .1em; }
+  #ui { position: fixed; left: 0; right: 0; bottom: 0; padding: 14px 16px 16px; display: flex; gap: 14px; align-items: center;
+    background: linear-gradient(transparent, rgba(0,0,0,.75)); transition: opacity .4s; z-index: 4; font: 13px "Cinzel", serif; color: #ddd; }
+  #ui.hide { opacity: 0; }
+  #ui button { background: none; border: 0; color: #fff; font-size: 18px; cursor: pointer; width: 32px; }
+  #bar { flex: 1; height: 5px; background: rgba(255,255,255,.2); border-radius: 3px; cursor: pointer; position: relative; }
+  #fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--gold); border-radius: 3px; width: 0; }
+
+  #tools {position:fixed;top:14px;right:16px;z-index:6;display:flex;gap:8px;font:14px "Noto Serif SC",serif;}
+  #tools a,#tools button {color:#e6d5b3;background:rgba(12,15,20,.78);border:1px solid #746443;border-radius:20px;padding:9px 15px;text-decoration:none;cursor:pointer;font:inherit;}
+  #tools button:hover,#tools a:hover {border-color:#dfbd73;color:#fff0c9;}
+  #tools a:focus-visible,#tools button:focus-visible {outline:2px solid #dfbd73;outline-offset:3px;}
+  #notes {position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:7;overflow:auto;padding:6vh 8vw;box-sizing:border-box;}
+  #notes[hidden] {display:none;} #notes article {max-width:760px;margin:auto;background:#111923;border:1px solid #8c7243;border-radius:20px;padding:30px;line-height:1.8;}
+  #notes h2 {color:#f1d795;margin-top:0;} #notes button {font:inherit;color:#f1d795;background:#202735;border:1px solid #8c7243;border-radius:10px;cursor:pointer;padding:8px 13px;margin:4px;}
+  #notes table {border-collapse:collapse;width:100%;} #notes th,#notes td {text-align:left;padding:10px;border-bottom:1px solid #343a40;}
+  #notes a {color:#a4ddff;} #diagnostic {position:fixed;bottom:56px;left:12px;z-index:10;color:#ffd5a5;background:#221b16;padding:8px;font:13px sans-serif;display:none;}
+  @media(max-width:600px){#tools{top:9px;right:9px;gap:5px;}#tools a,#tools button{font-size:12px;padding:8px 10px;}#notes{padding:22px 12px;}#notes article{padding:20px;}#ui{gap:7px;padding:8px;}#notes td{font-size:13px;}}
+
+  #bar { height: 28px; background: transparent; touch-action: none; user-select: none; }
+  #bar::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 5px; transform: translateY(-50%); background: rgba(255,255,255,.2); border-radius: 3px; }
+  #fill { top: 50%; bottom: auto; height: 5px; transform: translateY(-50%); pointer-events: none; }
+  #fill::after { content: ''; position: absolute; right: -7px; top: 50%; width: 14px; height: 14px; transform: translateY(-50%); border-radius: 50%; background: var(--gold); }
+  #bar:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  #tm, #dur { flex: 0 0 4.5ch; text-align: center; font-variant-numeric: tabular-nums; }
+  #course-return { position:fixed;z-index:60;top:18px;left:18px;padding:9px 13px;border:1px solid #e2bd6b44;border-radius:6px;background:#050b10a6;color:#e2bd6b;text-decoration:none;font:14px/1.4 system-ui,sans-serif;backdrop-filter:blur(8px); }
+  #course-return:hover { border-color:#e2bd6b;background:#111811e0; }
+  #course-return:focus-visible { outline:2px solid #e2bd6b;outline-offset:3px; }
+  @media(max-width:600px) { #course-return { top:10px;left:10px;font-size:12px;padding:7px 10px; } }
+</style>
+</head>
+<body>
+<a id="course-return" href="../?view=course#main">← 返回课程</a>
+<div id="stage"><canvas id="c" width="1920" height="1080"></canvas></div>
+<div id="start">
+  <h1>不传钥匙，共享秘密</h1>
+  <p>A SHARED SECRET</p>
+  <button id="go" disabled>▶ 播放密钥篇</button>
+  <small id="load">准备画面与计算中…</small>
+</div>
+<div id="ui" class="hide"><button id="pp">❚❚</button><span id="tm">0:00</span><div id="bar"><div id="fill"></div></div><span id="dur">4:23</span><button id="fs">⛶</button></div>
+<audio id="au" preload="auto"></audio>
+
+<nav id="tools" aria-label="播放工具"><a href="video.html?v=20261012-shared-key-v1">观看视频</a><button id="chaptersBtn" disabled>章节 / 符号</button><button id="muteBtn" aria-label="切换声音">声音：开</button></nav>
+<section id="notes" role="dialog" aria-modal="true" aria-labelledby="notesTitle" hidden><article>
+  <button id="closeNotes" style="float:right" aria-label="关闭说明">关闭 ×</button><h2 id="notesTitle">不传钥匙，共享秘密</h2>
+  <p>你是接收者，小明是发送者。先约定曲线；你发送 Q、G。双方分别算出同一个共享点 S，再把它转换成相同的二进制串，仍记作 S。左右两侧随步骤更新双方的“已知 / 不知道”；右上角展示黑客截获的信息。黑客是被动截获通信的旁观者。</p>
+  <div id="chapterList" aria-label="跳转章节"></div>
+  <table><thead><tr><th>符号</th><th>含义</th><th>谁知道 / 是否发送</th></tr></thead><tbody>
+  <tr><td>G、Q</td><td>两个群里的点：基点、公钥</td><td>一起发给小明，可以公开；Q 在你这里由 kG 算出</td></tr>
+  <tr><td>k</td><td>整数：你的私钥</td><td>你保管，小明不知道，不发送</td></tr>
+  <tr><td>r</td><td>整数：小明的临时秘密随机数</td><td>小明保管，你不知道，不发送</td></tr><tr><td>R</td><td>群里的点：临时公钥</td><td>随密文发给你，可以公开；由小明计算 rG</td></tr>
+  <tr><td>S</td><td>先是共享点 rQ=kR；转换后指代二进制串</td><td>双方各自得到，不发送，黑客未直接获得</td></tr>
+  <tr><td>m / c</td><td>原消息 / 密文（二进制数据）</td><td>加密后发送 c，你解密后才读到 m</td></tr><tr><td>N</td><td>本次消息的编号</td><td>随密文发送</td></tr>
+  <tr><td>tag</td><td>校验标签：一串二进制数据，本片为 16 字节；不是群里的点</td><td>随密文公开发送，用来检查数据是否被改动</td></tr></tbody></table>
+  <p>二进制串 m、S、c 属于直积群 (ℤ/2ℤ)ⁿ，本片 n=192，画面展示前 8 位。在每个分量中：0+0=0，0+1=1，1+0=1，1+1=0，不进位。加密 c=m+S；解密 c+S=m，因为 S+S=0。</p>
+  <p>黑客先截获 Q、G，再截获 R、N、c、tag；通信不会直接交给他 k、r、S、m。实际使用合适的大群时，从 G、Q 反求随机私钥很难。本片小群及 k=7 可以轻易穷举，不具有这种安全性。</p>
+  <p>实战示例：选择阶 q≈2²⁵⁶ 的合适大素数阶子群，均匀随机取 k∈{1,…,q−1}。正向计算 kG 只需几百次点运算；反向寻找随机 k 的通用经典攻击约需 2¹²⁸ 次点运算。若 k=200，从小数开始试到 200 就能找到；小整数不能体现这种安全性。这里 q 是基点的阶，与二进制串长度 n 不同。</p>
+  <p>画面用 F₂₅₁ 上的小群和固定数值展示计算，方便核对；消息字节、HKDF 和 AES-GCM 加解密由浏览器真实计算。小群不提供通信安全，本片是概念演示，并非完整 HPKE 协议实现。秘密数值仅向教学观众展示。</p>
+  <p>实际方案还需确认公钥确属接收者，并使用合适的群参数、密钥派生上下文和唯一 nonce。每次发送需新选 r。</p>
+  <p>参考：<a href="https://www.rfc-editor.org/rfc/rfc9180.html#section-4.1" target="_blank" rel="noreferrer">ECDH 与混合加密</a> · <a href="https://www.rfc-editor.org/rfc/rfc5869.html" target="_blank" rel="noreferrer">HKDF</a> · <a href="https://csrc.nist.gov/pubs/sp/800/38/d/final" target="_blank" rel="noreferrer">AES-GCM</a></p>
+  <p>拖动进度条定位；空格播放/暂停；← → 前后 5 秒；F 全屏。关闭说明后恢复之前的播放状态。</p>
+</article></section><div id="diagnostic" role="status"></div>
+<script>addEventListener('error',e=>{const d=document.getElementById('diagnostic');d.style.display='block';d.textContent='运行错误：'+e.message;});addEventListener('unhandledrejection',e=>{const d=document.getElementById('diagnostic');d.style.display='block';d.textContent='计算或资源准备失败：'+String(e.reason);});</script>
+<script>
+'use strict';
+const W = 1920, H = 1080, BPM = 90, BEAT = 60 / BPM, BAR = BEAT * 4, NBARS = 48, TOTAL = NBARS * BAR + 4;
+const EXPORT = /[?&]export=1/.test(location.search);
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const RW = EXPORT ? W : Math.round(Math.min(1440, Math.max(960, Math.min(innerWidth, innerHeight * 16 / 9) * Math.min(devicePixelRatio || 1, 1.5))) / 16) * 16;
+const RH = RW * 9 / 16, RENDER_SCALE = RW / W;
+cv.width = RW; cv.height = RH;
+const PI = Math.PI, TAU = PI * 2;
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const lerp = (a, b, t) => a + (b - a) * t;
+const sstep = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+const eio = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eout = t => 1 - Math.pow(1 - t, 3);
+const eexpo = t => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
+const win = (t, a, b, fi = .5, fo = .5) => sstep(a, a + fi, t) * (1 - sstep(b - fo, b, t));
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const hash1 = n => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const F_ZH = '"Noto Serif SC", "Source Han Serif SC", "SimSun", serif';
+const F_EN = '"Cinzel", "Times New Roman", serif';
+const F_IT = '"Cormorant Garamond", "Times New Roman", serif';
+const F_MATH = '"STIX Two Text", "Cambria Math", "Times New Roman", serif';
+const F_SCRIPT = '"Great Vibes", cursive';
+const F_MONO = '"Consolas", "Menlo", monospace';
+
+function text(s, x, y, o = {}) {
+  ctx.save();
+  ctx.font = `${o.style || ''} ${o.weight || 400} ${o.size || 40}px ${o.font || F_ZH}`;
+  ctx.textAlign = o.align || 'center'; ctx.textBaseline = o.base || 'middle';
+  if (o.ls) { ctx.letterSpacing = o.ls + 'px'; if ((o.align || 'center') === 'center') x += o.ls / 2; }
+  ctx.globalAlpha = o.alpha ?? 1;
+  if (o.glow) { ctx.shadowColor = o.glow; ctx.shadowBlur = o.blur || 24; }
+  ctx.fillStyle = o.color || '#fff';
+  ctx.fillText(s, x, y);
+  ctx.restore();
+}
+function goldGrad(x0, y0, x1, y1, s) {
+  const g = ctx.createLinearGradient(x0, y0, x1, y1);
+  g.addColorStop(0, '#6e4b1b'); g.addColorStop(.35, '#d9b25c');
+  if (s > .05 && s < .95) { g.addColorStop(s - .05, '#e7c574'); g.addColorStop(s, '#fff6dc'); g.addColorStop(s + .05, '#e7c574'); }
+  g.addColorStop(.7, '#c99a45'); g.addColorStop(1, '#7a5520');
+  return g;
+}
+function glowDot(x, y, r, col, a = 1) {
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, `rgba(255,255,255,${a})`); g.addColorStop(.18, col.replace('A', a * .9)); g.addColorStop(1, col.replace('A', 0));
+  ctx.fillStyle = g; ctx.fillRect(x - r, y - r, 2 * r, 2 * r);
+}
+function hexA(hex) { const n = parseInt(hex.slice(1), 16); return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},A)`; }
+
+// ======================================================================== WebGL: backdrops + film post-processing
+const glc = document.createElement('canvas'); glc.width = RW; glc.height = RH;
+const gl = glc.getContext('webgl2', { preserveDrawingBuffer: true, antialias: false, alpha: false, premultipliedAlpha: false });
+gl.getExtension('EXT_color_buffer_float'); gl.getExtension('OES_texture_float_linear');
+const VS = `#version 300 es
+in vec2 p; out vec2 vUv; void main() { vUv = p * .5 + .5; gl_Position = vec4(p, 0., 1.); }`;
+const HEAD = `#version 300 es
+precision highp float;
+in vec2 vUv; out vec4 o;
+uniform vec2 uRes;
+#define PI 3.14159265359
+float hash(vec2 p){ uvec2 q=uvec2(ivec2(floor(p))+ivec2(4096))*uvec2(1597334673u,3812015801u); uint n=(q.x^q.y)*1597334673u; n^=n>>16; n*=2246822519u; n^=n>>13; return float(n)*(1./4294967295.); }
+`;
+const FS_BG = HEAD + `
+uniform float uTime; uniform int uMode; uniform vec3 uTint; uniform float uAmp;
+uniform int uKA; uniform int uKB; uniform float uKMix; uniform float uKZoom; uniform float uKRot;
+uniform float uP; uniform float uQ; uniform vec2 uA; uniform float uHRot; uniform float uHRad; uniform float uHue;
+uniform sampler2D uTex; uniform float uReveal;
+float noise(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f);
+  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x), f.y); }
+float fbm(vec2 p){ float s=0., a=.5; for(int i=0;i<6;i++){ s+=a*noise(p); p=p*2.03+vec2(1.7,9.2); a*=.5; } return s; }
+vec3 hsv(float h,float s,float v){ vec3 k=clamp(abs(mod(h*6.+vec3(0,4,2),6.)-3.)-1.,0.,1.); return v*mix(vec3(1),k,s); }
+vec3 nebula(vec2 uv){
+  float t=uTime*.02; vec2 p=uv*1.25;
+  vec2 q=vec2(fbm(p+t), fbm(p+vec2(5.2,1.3)-t));
+  float n=fbm(p+2.2*q+vec2(t*2.,0.));
+  vec3 c=vec3(.008,.01,.025);
+  c+=uTint*smoothstep(.35,1.05,n)*1.3;
+  c+=uTint.zxy*.45*pow(clamp(q.y-.2,0.,1.),3.);
+  float h=hash(floor(gl_FragCoord.xy/2.));
+  c+=vec3(.9,.95,1.)*step(.9975,h)*(.55+.45*sin(uTime*2.+h*500.));
+  return c;
+}
+// ---- Islamic star patterns: Hankin rays from the edge midpoint of a square or hexagonal cell, folded by p4m / p6m
+vec2 kfold(vec2 p, int m){
+  vec2 g; float n;
+  if(m%2==0){ g=fract(p)-.5; n=4.; }
+  else { vec2 s=vec2(1.,1.7320508); vec2 a=mod(p,s)-s*.5; vec2 b=mod(p-s*.5,s)-s*.5; g=dot(a,a)<dot(b,b)?a:b; n=6.; }
+  float ang=atan(g.y,g.x), r=length(g), sec=2.*PI/n;
+  ang=mod(ang,sec); if(ang>sec*.5) ang=sec-ang;
+  return r*vec2(cos(ang),sin(ang));
+}
+float lineSD(vec2 q, vec2 m, float th){ return dot(q-m, vec2(-cos(th),-sin(th))); }
+vec3 pal(float i){
+  i=mod(i,6.);
+  return i<1.?vec3(.05,.12,.30):i<2.?vec3(.04,.24,.27):i<3.?vec3(.40,.24,.09):i<4.?vec3(.30,.26,.20):i<5.?vec3(.34,.09,.08):vec3(.05,.05,.08);
+}
+vec3 girih(vec2 q, int m, float t){
+  float th1, th2, rr;
+  if(m==0){ th1=radians(67.5+5.*sin(t*.35)); th2=radians(112.5); rr=.17; }
+  else if(m==1){ th1=radians(70.+6.*sin(t*.3)); th2=radians(125.); rr=.2; }
+  else if(m==2){ th1=radians(52.+7.*sin(t*.4)); th2=radians(97.5); rr=.13; }
+  else { th1=radians(80.+5.*sin(t*.33)); th2=radians(140.); rr=.25; }
+  vec2 M=vec2(.5,0.);
+  float s1=lineSD(q,M,th1), s2=lineSD(q,vec2(0.),th2), s3=length(q)-rr;
+  float band=min(min(abs(s1),abs(s2)),abs(s3));
+  float id=step(0.,s1)+2.*step(0.,s2)+3.*step(0.,s3);
+  vec3 tile=pal(id+float(m))*(.72+.28*smoothstep(0.,.22,band));
+  float w=.03, aa=.0045;
+  float inB=smoothstep(w,w-aa,band);
+  float outl=smoothstep(w+.013,w+.013-aa,band)-inB;
+  vec3 gold=vec3(.96,.76,.38)*(.82+.3*sin(t*1.4+(q.x-q.y)*9.));
+  vec3 col=mix(tile,vec3(.025,.02,.015),clamp(outl,0.,1.));
+  return mix(col,gold,inB);
+}
+vec3 kaleido(vec2 uv){
+  vec2 p=uv*uKZoom; float c=cos(uKRot), s=sin(uKRot); p=mat2(c,-s,s,c)*p;
+  vec3 col=mix(girih(kfold(p,uKA),uKA,uTime), girih(kfold(p,uKB),uKB,uTime), uKMix);
+  return col*(.92+.12*sin(length(uv)*2.5-uTime*.8));
+}
+// ---- hyperbolic {p,q} tilings in the Poincare disk
+vec2 cmul(vec2 a, vec2 b){ return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x); }
+vec2 cdiv(vec2 a, vec2 b){ return vec2(a.x*b.x+a.y*b.y, a.y*b.x-a.x*b.y)/dot(b,b); }
+vec3 hyper(vec2 uv){
+  vec2 z=uv/uHRad; float r2=dot(z,z);
+  if(r2>=1.){ float rim=exp(-(sqrt(r2)-1.)*30.); return vec3(.45,.6,1.)*rim*.7+nebula(uv)*.5; }
+  z=cdiv(z+uA, vec2(1.,0.)+cmul(vec2(uA.x,-uA.y),z));
+  float c0=cos(uHRot), s0=sin(uHRot); z=mat2(c0,-s0,s0,c0)*z;
+  float sp=sin(PI/uP), cp=cos(PI/uP), cq=cos(PI/uQ);
+  float rr=sp/sqrt(cq*cq-sp*sp), cc=sqrt(1.+rr*rr);
+  vec2 n=vec2(-sp,cp);
+  float flips=0., inv=0.;
+  for(int i=0;i<90;i++){
+    bool ch=false;
+    if(z.y<0.){ z.y=-z.y; flips+=1.; ch=true; }
+    float d=dot(z,n); if(d>0.){ z-=2.*d*n; flips+=1.; ch=true; }
+    vec2 w=z-vec2(cc,0.); float l2=dot(w,w);
+    if(l2<rr*rr){ z=vec2(cc,0.)+w*(rr*rr/l2); flips+=1.; inv+=1.; ch=true; }
+    if(!ch) break;
+  }
+  float px=(2./uRes.y/uHRad)*(1.-dot(z,z))/max(1.-r2,1e-5);
+  float dE=abs(length(z-vec2(cc,0.))-rr);
+  float dM=min(z.y, abs(dot(z,n)));
+  float lineE=1.-smoothstep(.006, .006+px*1.5, dE);
+  float lineM=1.-smoothstep(.0015, .0015+px*1.5, dM);
+  float par=mod(flips,2.);
+  vec3 base=hsv(uHue+inv*.045, .7, .42+.22*par);
+  float shade=1.-.65*smoothstep(0.,1.,length(z)/(cc-rr));
+  vec3 col=base*(.35+.65*shade);
+  col=mix(col, vec3(1.,.9,.65), lineE*.95);
+  col+=vec3(.55,.75,1.)*lineM*.22;
+  col=mix(col, vec3(.35,.45,.8), smoothstep(.93,1.,sqrt(r2))*.7);
+  return col;
+}
+// ---- carved stone: the text mask in uTex is cut into a bump-mapped rock surface up to uReveal
+float sH(vec2 p){ return fbm(p*2.2)*.6+fbm(p*7.+4.)*.22-pow(1.-abs(noise(p*5.3)*2.-1.),28.)*.05; }
+float mk(vec2 uv){ return texture(uTex,uv).r*smoothstep(uReveal+.003,uReveal-.003,uv.x); }
+vec3 stone(vec2 uv, vec2 p){
+  float px=2./uRes.y;
+  float h=sH(p)-.34*mk(uv);
+  float hx=sH(p+vec2(px*1.5,0.))-.34*mk(uv+vec2(1.5/uRes.x,0.));
+  float hy=sH(p+vec2(0.,px*1.5))-.34*mk(uv+vec2(0.,1.5/uRes.y));
+  vec3 n=normalize(vec3((h-hx)*42.,(h-hy)*42.,1.));
+  vec3 L=normalize(vec3(-.55,.62,.56));
+  float dif=max(dot(n,L),0.);
+  float spec=pow(max(dot(reflect(-L,n),vec3(0.,0.,1.)),0.),26.)*.22;
+  float m=mk(uv);
+  vec3 alb=mix(vec3(.34,.33,.315),vec3(.50,.485,.45),fbm(p*5.+9.));
+  alb*=1.-.42*m;
+  vec3 col=alb*(.2+1.05*dif)*vec3(1.05,1.,.93)+spec;
+  col+=vec3(1.,.55,.2)*exp(-abs(uv.x-uReveal)*140.)*m*.8;
+  return col;
+}
+void main(){
+  vec2 uv=(gl_FragCoord.xy-.5*uRes)/(.5*uRes.y);
+  vec3 c = uMode==0 ? nebula(uv) : uMode==1 ? kaleido(uv) : uMode==2 ? hyper(uv) : stone(gl_FragCoord.xy/uRes, uv);
+  o=vec4(c*uAmp,1.);
+}`;
+const FS_ACC = HEAD + `uniform sampler2D uT; uniform float uW; void main(){ o = vec4(texture(uT, vUv).rgb * uW, 1.); }`;
+const FS_DOWN = HEAD + `uniform sampler2D uT; uniform vec2 uTexel; uniform float uThresh;
+vec3 pre(vec3 c){ if(uThresh<=0.) return c; float l=max(c.r,max(c.g,c.b)); float k=clamp(l-uThresh+.12,0.,.24); k=k*k/.48; return c*max(k,l-uThresh)/max(l,1e-4); }
+void main(){ vec2 h=uTexel*.5;
+  vec3 s=pre(texture(uT,vUv).rgb)*4.+pre(texture(uT,vUv-h).rgb)+pre(texture(uT,vUv+h).rgb)+pre(texture(uT,vUv+vec2(h.x,-h.y)).rgb)+pre(texture(uT,vUv-vec2(h.x,-h.y)).rgb);
+  o=vec4(s/8.,1.); }`;
+const FS_UP = HEAD + `uniform sampler2D uT; uniform vec2 uTexel;
+void main(){ vec2 h=uTexel*.5; vec3 s=vec3(0.);
+  s+=texture(uT,vUv+vec2(-h.x*2.,0.)).rgb; s+=texture(uT,vUv+vec2(-h.x,h.y)).rgb*2.; s+=texture(uT,vUv+vec2(0.,h.y*2.)).rgb; s+=texture(uT,vUv+vec2(h.x,h.y)).rgb*2.;
+  s+=texture(uT,vUv+vec2(h.x*2.,0.)).rgb; s+=texture(uT,vUv+vec2(h.x,-h.y)).rgb*2.; s+=texture(uT,vUv+vec2(0.,-h.y*2.)).rgb; s+=texture(uT,vUv+vec2(-h.x,-h.y)).rgb*2.;
+  o=vec4(s/12.,1.); }`;
+const FS_FINAL = HEAD + `uniform sampler2D uScene; uniform sampler2D uBloom; uniform float uBloomAmt; uniform float uCA; uniform float uVig; uniform float uGrain;
+uniform float uSeed; uniform float uSat; uniform float uSplit; uniform vec3 uTintS; uniform vec3 uTintH;
+void main(){
+  vec2 d=vUv-.5;
+  vec3 c=vec3(texture(uScene,vUv-d*uCA).r, texture(uScene,vUv).g, texture(uScene,vUv+d*uCA).b);
+  c+=texture(uBloom,vUv).rgb*uBloomAmt;
+  vec3 k=max(c-.8,0.); c=min(c,.8)+k/(1.+k*5.);
+  float l=dot(c,vec3(.2126,.7152,.0722));
+  c=mix(c, c*mix(uTintS,uTintH,smoothstep(.04,.62,l)), uSplit);
+  c=mix(vec3(l),c,uSat);
+  c*=1.-uVig*smoothstep(.3,1.05,length(d*vec2(1.,.62))*1.5);
+  c+=(hash(gl_FragCoord.xy+vec2(uSeed*37.,uSeed*17.))-.5)*uGrain*(.55+.45*(1.-l));
+  o=vec4(c,1.);
+}`;
+function compile(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s; }
+function program(fs, names) {
+  const pr = gl.createProgram(); gl.attachShader(pr, compile(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, compile(gl.FRAGMENT_SHADER, fs));
+  gl.bindAttribLocation(pr, 0, 'p'); gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(pr));
+  const u = {}; for (const n of ['uRes', ...names]) u[n] = gl.getUniformLocation(pr, n); return { pr, u };
+}
+const P_BG = program(FS_BG, ['uTime', 'uMode', 'uTint', 'uAmp', 'uKA', 'uKB', 'uKMix', 'uKZoom', 'uKRot', 'uP', 'uQ', 'uA', 'uHRot', 'uHRad', 'uHue', 'uTex', 'uReveal']);
+const P_ACC = program(FS_ACC, ['uT', 'uW']);
+const P_DOWN = program(FS_DOWN, ['uT', 'uTexel', 'uThresh']);
+const P_UP = program(FS_UP, ['uT', 'uTexel']);
+const P_FIN = program(FS_FINAL, ['uScene', 'uBloom', 'uBloomAmt', 'uCA', 'uVig', 'uGrain', 'uSeed', 'uSat', 'uSplit', 'uTintS', 'uTintH']);
+const VAO = gl.createVertexArray(); gl.bindVertexArray(VAO);
+gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+function makeTex(w, h, float) {
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texImage2D(gl.TEXTURE_2D, 0, float ? gl.RGBA16F : gl.RGBA8, w, h, 0, gl.RGBA, float ? gl.HALF_FLOAT : gl.UNSIGNED_BYTE, null);
+  for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+  return t;
+}
+function makeFbo(w, h) { const t = makeTex(w, h, true), f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0); return { t, f, w, h }; }
+const SCENE_TEX = makeTex(RW, RH, false), MASK_TEX = makeTex(RW, RH, false);
+const ACC = makeFbo(RW, RH), MIPS = [1, 2, 3, 4, 5].map(k => makeFbo(Math.ceil(RW / 2 ** k), Math.ceil(RH / 2 ** k)));
+function tri(target, w, h) { gl.bindFramebuffer(gl.FRAMEBUFFER, target); gl.viewport(0, 0, w, h); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+function bindTex(unit, t) { gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t); }
+function glDraw(mode, u = {}, alpha = 1) {
+  const P = P_BG; gl.useProgram(P.pr); gl.disable(gl.BLEND);
+  gl.uniform2f(P.u.uRes, RW, RH); gl.uniform1f(P.u.uTime, u.time ?? 0); gl.uniform1i(P.u.uMode, mode);
+  const t = u.tint || [.2, .3, .7]; gl.uniform3f(P.u.uTint, t[0], t[1], t[2]); gl.uniform1f(P.u.uAmp, u.amp ?? 1);
+  gl.uniform1i(P.u.uKA, u.ka ?? 0); gl.uniform1i(P.u.uKB, u.kb ?? 0); gl.uniform1f(P.u.uKMix, u.kmix ?? 0);
+  gl.uniform1f(P.u.uKZoom, u.kzoom ?? 2); gl.uniform1f(P.u.uKRot, u.krot ?? 0);
+  gl.uniform1f(P.u.uP, u.p ?? 7); gl.uniform1f(P.u.uQ, u.q ?? 3); const a = u.a || [0, 0]; gl.uniform2f(P.u.uA, a[0], a[1]);
+  gl.uniform1f(P.u.uHRot, u.hrot ?? 0); gl.uniform1f(P.u.uHRad, u.hrad ?? .92); gl.uniform1f(P.u.uHue, u.hue ?? .55);
+  gl.uniform1f(P.u.uReveal, u.reveal ?? 0); bindTex(1, MASK_TEX); gl.uniform1i(P.u.uTex, 1); bindTex(0, null);
+  tri(null, RW, RH);
+  ctx.save(); ctx.globalAlpha = alpha; ctx.drawImage(glc, 0, 0, W, H); ctx.restore();
+}
+function accumulate(k, K) {
+  bindTex(0, SCENE_TEX); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, cv);
+  gl.useProgram(P_ACC.pr); gl.uniform1i(P_ACC.u.uT, 0); gl.uniform1f(P_ACC.u.uW, 1 / K);
+  if (k === 0) gl.disable(gl.BLEND); else { gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE); }
+  tri(ACC.f, RW, RH); gl.disable(gl.BLEND);
+}
+const GRADE = { bloom: .85, ca: .0022, vig: .55, grain: .045, sat: 1.04, split: .55, tintS: [.9, .97, 1.1], tintH: [1.07, 1.0, .9] };
+function post(T, g) {
+  let src = ACC;
+  gl.useProgram(P_DOWN.pr); gl.uniform1i(P_DOWN.u.uT, 0);
+  MIPS.forEach((dst, i) => { bindTex(0, src.t); gl.uniform2f(P_DOWN.u.uTexel, 1 / src.w, 1 / src.h); gl.uniform1f(P_DOWN.u.uThresh, i ? 0 : .5); tri(dst.f, dst.w, dst.h); src = dst; });
+  gl.useProgram(P_UP.pr); gl.uniform1i(P_UP.u.uT, 0); gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+  for (let i = MIPS.length - 1; i > 0; i--) { const s = MIPS[i], d = MIPS[i - 1]; bindTex(0, s.t); gl.uniform2f(P_UP.u.uTexel, 1 / s.w, 1 / s.h); tri(d.f, d.w, d.h); }
+  gl.disable(gl.BLEND);
+  const P = P_FIN; gl.useProgram(P.pr); bindTex(0, ACC.t); bindTex(1, MIPS[0].t);
+  gl.uniform1i(P.u.uScene, 0); gl.uniform1i(P.u.uBloom, 1); gl.uniform2f(P.u.uRes, RW, RH);
+  gl.uniform1f(P.u.uBloomAmt, g.bloom); gl.uniform1f(P.u.uCA, g.ca); gl.uniform1f(P.u.uVig, g.vig); gl.uniform1f(P.u.uGrain, g.grain);
+  gl.uniform1f(P.u.uSeed, Math.floor(T * 30) % 97); gl.uniform1f(P.u.uSat, g.sat); gl.uniform1f(P.u.uSplit, g.split);
+  gl.uniform3fv(P.u.uTintS, g.tintS); gl.uniform3fv(P.u.uTintH, g.tintH);
+  tri(null, RW, RH); bindTex(1, null); bindTex(0, null);
+}
+
+// ======================================================================== shared assets
+const rnd = mulberry(20260925);
+const STARS = Array.from({ length: 500 }, () => ({ x: rnd() * W, y: rnd() * H, z: .2 + rnd() * .8, p: rnd() * TAU }));
+function starfield(t, a = 1, vx = 8, vy = 0) {
+  ctx.save(); ctx.fillStyle = '#fff';
+  for (const s of STARS) {
+    const x = ((s.x + t * vx * s.z) % W + W) % W, y = ((s.y + t * vy * s.z) % H + H) % H;
+    ctx.globalAlpha = a * s.z * (.55 + .45 * Math.sin(t * 2 + s.p));
+    const r = s.z * 2.2; ctx.fillRect(x, y, r, r);
+  }
+  ctx.restore();
+}
+function bgGrad(c0, c1, cx = W / 2, cy = H / 2) {
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 1200);
+  g.addColorStop(0, c0); g.addColorStop(1, c1); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+function proj(v, yaw, pitch, cx, cy, F, D = 7) {
+  const c1 = Math.cos(yaw), s1 = Math.sin(yaw), c2 = Math.cos(pitch), s2 = Math.sin(pitch);
+  const x = v[0] * c1 + v[2] * s1, z = -v[0] * s1 + v[2] * c1, y = v[1];
+  const y2 = y * c2 - z * s2, z2 = y * s2 + z * c2, d = D - z2;
+  return [cx + F * x / d, cy - F * y2 / d, z2];
+}
+// snowflake: a recursive D6-symmetric branch set, in unit coordinates
+const SNOW = (() => {
+  const segs = [];
+  function branch(x, y, ang, len, depth) {
+    const x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len; segs.push([x, y, x2, y2]);
+    if (!depth) return;
+    for (const f of [.3, .5, .68, .84]) {
+      const bx = x + Math.cos(ang) * len * f, by = y + Math.sin(ang) * len * f, bl = len * (depth === 2 ? .36 * (1.12 - f) : .45 * (1.1 - f));
+      for (const s of [1, -1]) branch(bx, by, ang + s * PI / 3, bl, depth - 1);
+    }
+  }
+  for (let k = 0; k < 6; k++) branch(0, 0, k * PI / 3 - PI / 2, 1, 2);
+  for (let k = 0; k < 6; k++) { const a1 = k * PI / 3 - PI / 2, a2 = a1 + PI / 3; segs.push([.2 * Math.cos(a1), .2 * Math.sin(a1), .2 * Math.cos(a2), .2 * Math.sin(a2)]); }
+  for (let k = 0; k < 6; k++) { const a1 = k * PI / 3 - PI / 3, a2 = a1 + PI / 3; segs.push([.34 * Math.cos(a1), .34 * Math.sin(a1), .34 * Math.cos(a2), .34 * Math.sin(a2)]); }
+  return segs;
+})();
+const SNOWPTS = (() => {
+  const lens = SNOW.map(s => Math.hypot(s[2] - s[0], s[3] - s[1])); const L = lens.reduce((a, b) => a + b, 0);
+  const pts = []; const n = 2600; let acc = 0, si = 0;
+  for (let i = 0; i < n; i++) {
+    const d = (i + .5) / n * L; while (acc + lens[si] < d) { acc += lens[si]; si++; }
+    const f = (d - acc) / lens[si], s = SNOW[si]; pts.push([lerp(s[0], s[2], f), lerp(s[1], s[3], f)]);
+  }
+  return pts.map(p => { const a = rnd() * TAU, d = 1.6 + rnd() * 2.2; return { tx: p[0], ty: p[1], sx: Math.cos(a) * d, sy: Math.sin(a) * d * .7,
+    delay: rnd(), ea: rnd() * TAU, ed: .4 + rnd() * 2.4, sz: .8 + rnd() * 1.8 }; });
+})();
+function drawSnow(cx, cy, R, rot, a = 1, sx = 1, col = '170,220,255') {
+  if (a <= 0) return;
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(sx, 1); ctx.rotate(rot); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
+  for (const [w, al] of [[10, .08], [5, .18], [2.2, .9]]) {
+    ctx.beginPath(); for (const s of SNOW) { ctx.moveTo(s[0] * R, s[1] * R); ctx.lineTo(s[2] * R, s[3] * R); }
+    ctx.strokeStyle = `rgba(${col},${al * a})`; ctx.lineWidth = w; ctx.stroke();
+  }
+  ctx.restore();
+}
+function sunburst(cx, cy, lt, a, n = 24, col = '255,200,120') {
+  if (a <= 0) return;
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(lt * .05); ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 1100); g.addColorStop(0, `rgba(${col},${.16 * a})`); g.addColorStop(1, `rgba(${col},0)`);
+  ctx.fillStyle = g;
+  for (let i = 0; i < n; i++) { const a0 = i * TAU / n; ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, 1200, a0, a0 + TAU / n * .45); ctx.fill(); }
+  ctx.restore();
+}
+function flare(x, y, a, len = 900) {         // anamorphic lens streak
+  if (a <= 0) return;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createLinearGradient(x - len, 0, x + len, 0);
+  g.addColorStop(0, 'rgba(120,170,255,0)'); g.addColorStop(.5, `rgba(255,236,200,${.9 * a})`); g.addColorStop(1, 'rgba(120,170,255,0)');
+  ctx.fillStyle = g; ctx.fillRect(x - len, y - 2, len * 2, 4);
+  ctx.globalAlpha = .35 * a; ctx.fillRect(x - len * .6, y - 9, len * 1.2, 18);
+  ctx.restore();
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.translate(x, y); ctx.scale(4, 1); glowDot(0, 0, 60, 'rgba(255,220,170,A)', a); ctx.restore();
+}
+function titleLayout(str, cx, size, ls) {
+  ctx.save(); ctx.font = `900 ${size}px ${F_ZH}`; const ws = [...str].map(c => ctx.measureText(c).width); ctx.restore();
+  const total = ws.reduce((a, b) => a + b, 0) + ls * (ws.length - 1); let x = cx - total / 2;
+  return ws.map(w => { const r = { x: x + w / 2, w, total }; x += w + ls; return r; });
+}
+function titleWord(str, cx, cy, size, lt, t0, stagger, ls, a = 1, grow = .6) {
+  const L = titleLayout(str, cx, size, ls), total = L[0].total, sheenX = cx - total / 2 + (((lt * .32) % 1.8) - .3) * total;
+  ctx.save(); ctx.font = `900 ${size}px ${F_ZH}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  [...str].forEach((ch, i) => {
+    const { x, w } = L[i], k = clamp((lt - t0 - i * stagger) / 1.0);
+    if (k <= 0) return;
+    const e = eexpo(k), sc = 1 + grow * (1 - e);
+    ctx.save(); ctx.translate(x, cy); ctx.scale(sc, sc); ctx.globalAlpha = clamp(k * 2.5) * a;
+    ctx.shadowColor = 'rgba(255,180,80,.55)'; ctx.shadowBlur = 50;
+    ctx.fillStyle = goldGrad(-w / 2, -size / 2, w / 2, size / 2, (sheenX - (x - w / 2)) / w); ctx.fillText(ch, 0, 0);
+    ctx.restore();
+  });
+  ctx.restore();
+}
+function glitchText(s, x, y, size, a, font = F_EN, seed = 0) {
+  if (a <= 0) return;
+  const j = (hash1(seed * 7.1) - .5) * 14;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  text(s, x - 5 + j, y, { font, size, color: 'rgba(255,60,80,1)', alpha: a * .55 });
+  text(s, x + 5 - j, y, { font, size, color: 'rgba(60,220,255,1)', alpha: a * .55 });
+  ctx.restore();
+  text(s, x, y, { font, size, color: '#fff', alpha: a, glow: 'rgba(255,255,255,.6)', blur: 20 });
+}
+
+// ======================================================================== scene library
+const SC = [];
+function scene(o) { SC.push(o); return o; }
+const camPush = (amt = .045) => (lt, d) => ({ z: 1 + amt * lt / d, x: 10 * Math.sin(lt * .21), y: 6 * Math.sin(lt * .17 + 1) });
+const camArc = (amt = .04) => (lt, d) => ({ z: 1 + amt * Math.sin(PI * clamp(lt / d)) });
+
+
+function rollNumber(str, lt, t0, dur, seed = 0) {
+  const n = str.length; let out = '';
+  for (let i = 0; i < n; i++) {
+    const ch = str[i]; if (ch < '0' || ch > '9') { out += ch; continue; }
+    const lock = t0 + dur * i / n; out += lt >= lock ? ch : String(Math.floor(hash1(Math.floor(lt * 30) * 13 + i * 7 + seed) * 10));
+  }
+  return out;
+}
+
+
+
+// Educational ECDH + HKDF + AES-GCM. The small group and fixed scalars are
+// deliberately inspectable teaching data, NOT cryptographic security parameters.
+const CryptoLesson = (() => {
+  const p = 251, mod = n => ((n % p) + p) % p;
+  const inv = n => { let a=mod(n), e=p-2, v=1; while(e){if(e&1)v=mod(v*a);a=mod(a*a);e>>=1;}return v; };
+  function add(P,Q) {
+    if(!P)return Q && [...Q]; if(!Q)return [...P];
+    if(P[0]===Q[0] && mod(P[1]+Q[1])===0)return null;
+    const l=P[0]===Q[0] ? mod(3*P[0]*P[0]*inv(2*P[1])) : mod((Q[1]-P[1])*inv(Q[0]-P[0]));
+    const x=mod(l*l-P[0]-Q[0]);return [x,mod(l*(P[0]-x)-P[1])];
+  }
+  function mul(n,P){let out=null,q=P;while(n){if(n&1)out=add(out,q);q=add(q,q);n=Math.floor(n/2);}return out;}
+  const points=[];for(let x=0;x<p;x++)for(let y=0;y<p;y++)if(mod(y*y-x*x*x-7)===0)points.push([x,y]);
+  let G=null,order=0;
+  for(const P of points.slice(0,40)){let q=P,n=1;while(q&&n<400){q=add(q,P);n++;}if(!q&&n>order){G=P;order=n;}}
+  const k=7,r=13,Q=mul(k,G),R=mul(r,G),senderS=mul(r,Q),receiverS=mul(k,R);
+  const hex=b=>Array.from(b,x=>x.toString(16).padStart(2,'0')).join('');
+  const bits=b=>b.toString(2).padStart(8,'0');
+  const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  const message='明天下午三点见。';
+  const data={p,points,G,order,k,r,Q,R,senderS,receiverS,message,add,mul,bits,hex};
+  async function prepare(){
+    if(!equal(senderS,receiverS))throw Error('ECDH shared point mismatch');
+    const utf=new TextEncoder(),salt=utf.encode('Shared key lesson / fixed teaching salt');
+    // Public context is identical at both ends; this is an explanatory construction,
+    // not a claim to implement the exact HPKE protocol/key schedule.
+    const info=utf.encode('ECDH lesson / Q='+Q.join(',')+' / R='+R.join(','));
+    async function derive(S){
+      const ikm=await crypto.subtle.importKey('raw',new Uint8Array([S[0]]),'HKDF',false,['deriveBits']);
+      return new Uint8Array(await crypto.subtle.deriveBits({name:'HKDF',hash:'SHA-256',salt,info},ikm,256));
+    }
+    const [senderK,receiverK]=await Promise.all([derive(senderS),derive(receiverS)]);
+    const nonce=new Uint8Array([0x10,0x20,0x30,0x40,0x50,0x60,0x70,0x80,0x90,0xa0,0xb0,0xc0]);
+    const plaintext=utf.encode(message),aad=utf.encode('Xiaoming -> you / lesson 1');
+    const keyA=await crypto.subtle.importKey('raw',senderK,'AES-GCM',false,['encrypt']);
+    const keyB=await crypto.subtle.importKey('raw',receiverK,'AES-GCM',false,['decrypt']);
+    const params={name:'AES-GCM',iv:nonce,additionalData:aad,tagLength:128};
+    const sealed=new Uint8Array(await crypto.subtle.encrypt(params,keyA,plaintext));
+    const ciphertext=sealed.slice(0,-16),tag=sealed.slice(-16);
+    const recovered=new Uint8Array(await crypto.subtle.decrypt(params,keyB,sealed));
+    const changed=new Uint8Array(sealed);changed[0]^=1;
+    let rejectsTamper=false;try{await crypto.subtle.decrypt(params,keyB,changed);}catch{rejectsTamper=true;}
+    // GCM encrypts using a counter-mode keystream: c XOR m recovers that stream
+    // for this teaching transcript, so the animated byte is an actual AES-GCM byte.
+    const stream=plaintext.map((b,i)=>b^ciphertext[i]);
+    Object.assign(data,{senderK,receiverK,nonce,plaintext,ciphertext,tag,sealed,recovered,stream,rejectsTamper,
+      keyText:hex(senderK).slice(0,16),cipherText:hex(ciphertext),nonceText:hex(nonce),tagText:hex(tag)});
+    return data;
+  }
+  function audit(){
+    let cases=0;for(let a=1;a<=24;a++)for(let b=1;b<=24;b++){
+      if(!equal(mul(a,mul(b,G)),mul(b,mul(a,G))))throw Error('Scalar commutation failure');cases++;
+    }
+    return {curve:'y²=x³+7 over F_251',groupSize:points.length+1,basePoint:G,order,k,r,Q,R,
+      senderS,receiverS,sharedPointEqual:equal(senderS,receiverS),scalarCases:cases,
+      derivedKeysEqual:equal(Array.from(data.senderK),Array.from(data.receiverK)),
+      decryptionMatches:equal(Array.from(data.plaintext),Array.from(data.recovered)),
+      rejectsTamper:data.rejectsTamper,plaintext:message,cipherHex:data.cipherText,
+      packetFields:['R','nonce','ciphertext','tag','public authenticated context'],
+      privateFieldsNeverSent:['k','r','S','K','keystream'],
+      limitation:'Small finite group and fixed scalars/nonce for a single teaching transcript; not secure messaging or an exact HPKE implementation.'};
+  }
+  return {...data,data,prepare,audit};
+})();
+let DEMO=null;
+const DEMO_READY=CryptoLesson.prepare().then(x=>{DEMO=x;return x;});
+
+// The visual vocabulary is inherited from the existing algebra promo.
+const C_GOLD='255,209,102',C_TEAL='90,255,220',C_PINK='255,126,182',C_BLUE='140,200,255';
+const COL={gold:'#ffda88',teal:'#a2ffe4',pink:'#ffb5d4',blue:'#b4daff',dim:'#b8c5ca'};
+function ink(points,color=C_TEAL,alpha=1,width=2.4,closed=false){
+  if(points.length<2||alpha<=0)return;
+  ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineCap='round';ctx.lineJoin='round';
+  for(const [w,a]of[[width*6,.055],[width*2.5,.18],[width,.9]]){
+    ctx.beginPath();points.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](p[0],p[1]));if(closed)ctx.closePath();
+    ctx.strokeStyle=`rgba(${color},${a*alpha})`;ctx.lineWidth=w;ctx.stroke();
+  }ctx.restore();
+}
+function bead(p,color=C_TEAL,alpha=1,radius=30){ctx.save();ctx.globalCompositeOperation='lighter';glowDot(p[0],p[1],radius,`rgba(${color},A)`,alpha);ctx.restore();}
+function small(s,x,y,color=COL.dim,size=30,alpha=1,font=F_ZH){text(s,x,y,{size,color,alpha,font});}
+function eq(s,y=225,size=60,alpha=1,x=960,color=COL.teal){text(s,x,y,{font:F_MATH,size,color,alpha,glow:'rgba(90,255,220,.3)',blur:22});}
+function cosmos(t,tint=[.08,.25,.31]){glDraw(0,{time:t+70,tint,amp:.45});starfield(t,.12,3);}
+function arrow(a,b,color=C_TEAL,alpha=1){ink([a,b],color,alpha,2.3);const d=Math.atan2(b[1]-a[1],b[0]-a[0]);ink([[b[0]-14*Math.cos(d-.4),b[1]-14*Math.sin(d-.4)],b,[b[0]-14*Math.cos(d+.4),b[1]-14*Math.sin(d+.4)]],color,alpha,2.3);}
+function lineBox(x,y,w,h,color=C_BLUE,alpha=1){
+  ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle='rgba(0,8,14,.56)';ctx.beginPath();ctx.roundRect(x-w/2,y-h/2,w,h,18);ctx.fill();ctx.strokeStyle=`rgba(${color},.35)`;ctx.lineWidth=1.5;ctx.stroke();ctx.restore();
+}
+function lock(x,y,color=C_GOLD,a=1,size=1){
+  ctx.save();ctx.translate(x,y);ctx.scale(size,size);
+  const arc=Array.from({length:35},(_,i)=>[30*Math.cos(PI+PI*i/34),-20+36*Math.sin(PI+PI*i/34)]);ink(arc,color,a,2.3);
+  lineBox(0,13,85,68,color,a);bead([0,6],color,a,12);ink([[0,10],[0,29]],color,a,3);ctx.restore();
+}
+function roles(a=1){
+  small('你 · 接收者',330,320,COL.gold,38,a);small('小明 · 发送者',1590,320,COL.teal,38,a);
+  ink([[160,357],[500,357]],C_GOLD,a*.45,1.3);ink([[1420,357],[1760,357]],C_TEAL,a*.45,1.3);
+}
+function secret(label,x,y,color=C_GOLD,a=1){lock(x,y-45,color,a,.8);small(label,x,y+35,color===C_GOLD?COL.gold:COL.pink,38,a,F_MATH);small('留在本地',x,y+90,COL.dim,27,a);}
+function pointText(P){return P?'('+P.join(', ')+')':'O';}
+function pointCloud(t,{x=960,y=570,size=520,marks=[],alpha=.55}={}){
+  const at=P=>[x+(P[0]/250-.5)*size,y-(P[1]/250-.5)*size*.72];
+  ink([[x-size/2,y+size*.36],[x+size/2,y+size*.36]],C_BLUE,.18,1);
+  ink([[x-size/2,y-size*.36],[x-size/2,y+size*.36]],C_BLUE,.18,1);
+  for(let i=0;i<DEMO.points.length;i++){
+    const p=at(DEMO.points[i]);ctx.fillStyle=`rgba(160,208,255,${alpha*(.4+.18*Math.sin(t*.5+i))})`;ctx.fillRect(p[0]-1.6,p[1]-1.6,3.2,3.2);
+  }
+  for(const m of marks){const p=at(m.P);bead(p,m.color||C_TEAL,m.a??1,32);small(m.name,p[0]+(m.dx??30),p[1]+(m.dy??-32),m.col||COL.teal,31,m.a??1,F_MATH);}
+  small('y² = x³ + 7  (mod 251)',x,y+size*.36+36,COL.blue,25,alpha,F_MATH);
+  small('教学小群 · 不用于安全通信',x,y+size*.36+75,COL.dim,23,alpha);
+  return at;
+}
+function travel(t,start,end,a,b,label,color=C_TEAL){
+  const f=eio(clamp((t-start)/(end-start))),p=[lerp(a[0],b[0],f),lerp(a[1],b[1],f)];
+  arrow(a,b,color,.23);bead(p,color,win(t,start-.5,end+1,.5,.5),38);
+  if(label)small(label,p[0],p[1]-48,color===C_GOLD?COL.gold:COL.teal,37,win(t,start-.5,end+1,.5,.5),F_MATH);
+}
+function sharedStamp(x,y,alpha=1){lineBox(x,y,410,115,C_TEAL,alpha);eq('S',y-12,54,alpha,x);small(Array.from(DEMO.stream.slice(0,2),CryptoLesson.bits).join(' ')+'…',x,y+32,COL.teal,21,alpha,F_MONO);}
+function pointToBits(lt,x=960,y=405,start=.7,end=3){
+  const f=sstep(start,end,lt),str=Array.from(DEMO.stream.slice(0,2),CryptoLesson.bits).join('');
+  bead([x,y],C_GOLD,.6*(1-f),70);eq('S',y-12,64,1-f,x,COL.gold);
+  for(let i=0;i<16;i++){
+    const dx=x-285+i*38,from=[x+14*Math.cos(i*TAU/16),y+14*Math.sin(i*TAU/16)];
+    const p=[lerp(from[0],dx,eio(f)),lerp(from[1],y,eio(f))];
+    bead(p,C_TEAL,.45*Math.sin(PI*f),18);
+    small(str[i],dx,y,COL.teal,31,sstep(.45,1,f),F_MONO);
+  }
+  small(f>.95?'S：二进制串（仍用同一个符号）':'S：群里的点',x,y+52,COL.blue,26);
+}
+function binarySum(lt,{decrypt=false,start=5.4,end=12,y=550}={}){
+  const a=decrypt?DEMO.ciphertext[0]:DEMO.plaintext[0],b=DEMO.stream[0],out=a^b;
+  const A=CryptoLesson.bits(a),B=CryptoLesson.bits(b),O=CryptoLesson.bits(out);
+  const f=clamp((lt-start)/(end-start))*8,active=Math.min(7,Math.floor(f));
+  bitRow(decrypt?'密文 c':'消息 m',a,y,decrypt?COL.pink:COL.gold,sstep(start-2,start-1,lt));
+  bitRow('二进制串 S',b,y+95,COL.teal,sstep(start-1.7,start-.5,lt));
+  small(decrypt?'恢复 m = c + S':'密文 c = m + S',380,y+190,COL.pink,31,sstep(start-.3,start,lt));
+  for(let i=0;i<8;i++){
+    const x=740+i*65,done=lt>=start+(i+.72)/8*(end-start);
+    lineBox(x,y+190,52,58,decrypt?C_GOLD:C_PINK,sstep(start-.3,start,lt));
+    small(done?O[i]:'·',x,y+190,done?(decrypt?COL.gold:COL.pink):COL.dim,35,sstep(start-.3,start,lt),F_MONO);
+    small('+',x,y+48,COL.teal,23,sstep(start-.4,start,lt),F_MATH);
+    small('=',x,y+143,COL.teal,23,sstep(start-.4,start,lt),F_MATH);
+    if(!decrypt)small('ℤ/2ℤ',x,852,COL.blue,19,sstep(start+.3,start+1,lt),F_MATH);
+    if(lt>=start&&lt<end&&i===active){
+      ctx.save();ctx.strokeStyle='rgba(255,218,135,.85)';ctx.fillStyle='rgba(255,218,135,.07)';ctx.lineWidth=2;
+      ctx.beginPath();ctx.roundRect(x-30,y-36,60,260,12);ctx.fill();ctx.stroke();ctx.restore();
+    }
+  }
+  if(lt>=start){
+    const formula=lt<end?A[active]+' + '+B[active]+' = '+O[active]+'  (mod 2)':(decrypt?'S + S = 0':'逐位相加，不进位');
+    eq(formula,decrypt?665:802,decrypt?32:38,1,decrypt?1550:960);
+  }
+}
+function bitRow(label,byte,y,color,reveal=1){
+  small(label,380,y,color,30,reveal);const str=CryptoLesson.bits(byte);
+  for(let i=0;i<8;i++){const a=sstep(i*.09,i*.09+.25,reveal);lineBox(740+i*65,y,52,58,color===COL.gold?C_GOLD:color===COL.pink?C_PINK:C_TEAL,a);small(str[i],740+i*65,y,color,35,a,F_MONO);}
+}
+function reg(start,len,zh,en,draw,subs,sfx=[]){scene({start,len,ch:[String(SC.length+1).padStart(2,'0'),zh,en],fi:.45,fo:.45,mb:2,cam:()=>({z:1}),draw,subs,sfx});}
+
+// What each participant has actually received or computed at this point.
+// Curves are agreed first; the first packet explicitly supplies BOTH Q and G.
+const LEARN={q:5*BAR+9.8,interceptPublic:11*BAR+3.5,publicPoints:11*BAR+7,r:15*BAR+1.8,R:15*BAR+5,S:15*BAR+9.5,
+  senderBits:21*BAR+3,nonce:21*BAR+4.5,cipher:21*BAR+12,tag:21*BAR+12.2,
+  interceptCipher:27*BAR+3.5,packet:27*BAR+8,receiverS:32*BAR+9.5,receiverBits:38*BAR+2,message:38*BAR+10.2};
+function knowledgeAt(t){
+  const you=['k','G'],xiaoming=['m'],hacker=[];
+  if(t>=LEARN.interceptPublic)hacker.push('G','Q');
+  if(t>=LEARN.interceptCipher)hacker.push('R','N','c','tag');
+  if(t>=LEARN.q)you.push('Q');
+  if(t>=LEARN.publicPoints)xiaoming.push('G','Q');
+  if(t>=LEARN.r)xiaoming.push('r');
+  if(t>=LEARN.R)xiaoming.push('R');
+  if(t>=LEARN.S)xiaoming.push('S');
+  if(t>=LEARN.nonce)xiaoming.push('N');
+  if(t>=LEARN.cipher)xiaoming.push('c');
+  if(t>=LEARN.tag)xiaoming.push('tag');
+  if(t>=LEARN.packet)you.push('R','N','c','tag');
+  if(t>=LEARN.receiverS)you.push('S');
+  if(t>=LEARN.message)you.push('m');
+  return {you:{known:you,unknown:['r','S','m'].filter(x=>!you.includes(x)),sForm:t>=LEARN.receiverBits?'binary':'point'},
+    xiaoming:{known:xiaoming,unknown:['k','G','Q','S'].filter(x=>!xiaoming.includes(x)),rNotChosen:t<LEARN.r,sForm:t>=LEARN.senderBits?'binary':'point'},
+    hacker:{known:hacker,unknown:['k','r','S','m'],passive:true},
+    publicPointPacket:['Q','G'],pointElements:['G','Q','R','S'],integerScalars:['k','r'],binaryData:['S (after conversion)','c','tag']};
+}
+function knowledge(T){
+  if(T<1)return;
+  const state=knowledgeAt(T),alpha=win(T,1,TOTAL-.3,.7,.5);
+  const decoding=T>=38*BAR&&T<44*BAR,y=decoding?280:386;
+  for(const [x,label,s,color]of[[330,'你',state.you,COL.gold],[1590,'小明',state.xiaoming,COL.teal]]){
+    small(label+'已知：'+s.known.join('、'),x,y,color,25,alpha);
+    small('不知道：'+s.unknown.join('、'),x,y+(decoding?31:37),COL.dim,23,alpha);
+  }
+  small('黑客 · 旁观者',1660,65,COL.pink,25,alpha);
+  small('截获：'+(state.hacker.known.join('、')||'尚无数据'),1660,96,COL.pink,22,alpha);
+  small('不知道：k、r、S、m',1660,125,COL.dim,22,alpha);
+}
+function interception(lt,start,end,packet,y=650){
+  const a=win(lt,start,end,.5,.5);if(a<=0)return;
+  const f=clamp((lt-start)/(end-start));
+  ink([[960,y-95],[960,y-37]],C_PINK,a*.35,1.7);
+  bead([960,y-95+58*f],C_PINK,a,19);
+  lineBox(960,y,570,85,C_PINK,a);
+  small('黑客同时截获：'+packet,960,y,COL.pink,29,a);
+}
+
+reg(0,5,'一个秘密，两个陌生人','ONE SECRET, TWO PEOPLE',lt=>{
+  cosmos(lt);titleWord('不传钥匙，共享秘密',960,252,72,lt,.5,.08,7,1,.18);roles(sstep(1.8,2.8,lt));
+  lock(330,515,C_GOLD,sstep(3,4,lt),1.2);small('私钥 k',330,640,COL.gold,42,sstep(3,4,lt),F_MATH);
+  lineBox(1510,520,530,170,C_TEAL,sstep(3.5,4.5,lt));small('明天下午三点见。',1510,505,COL.teal,39,sstep(3.5,4.5,lt));eq('消息 m',575,33,sstep(3.5,4.5,lt),1510);
+  eq('目标：双方算出同一个共享秘密 S',800,46,sstep(7,8,lt));
+},[[.6,4.4,'你保管私钥，小明要给你发一条秘密消息。','You keep the private key. Xiaoming wants to send you a secret.'],[4.6,8,'消息是 m；私钥 k 不是消息。','The message is m. Your private key k is not the message.'],[8.2,12.9,'重点：双方算出同一个 S，却不发送 S。','Both compute the same S without sending S itself.']],[[.8,'swell',{dur:2}],[3.3,'ding',{midi:74}],[7.6,'shimmer']]);
+
+reg(5,6,'你生成自己的公钥','YOUR PUBLIC KEY',lt=>{
+  if(lt>=9.5){
+    cosmos(lt);const a=sstep(9.5,10,lt);
+    eq('实战：随机取 k ∈ {1, 2, …, q − 1}',242,58,a);
+    small('q = ord(G)：大素数阶子群的阶',960,360,COL.blue,35,a,F_MATH);
+    eq('q ≈ 2²⁵⁶',425,58,a);
+    lineBox(510,600,720,230,C_GOLD,a);lineBox(1410,600,720,230,C_PINK,a);
+    small('已知 G、k，正向计算',510,520,COL.gold,34,a);eq('Q = kG',590,53,a,510,COL.gold);small('几百次点运算',510,675,COL.gold,36,a);
+    small('已知 G、Q，反求私钥',1410,520,COL.pink,34,a);eq('寻找 k：kG = Q',590,48,a,1410,COL.pink);small('约 2¹²⁸ 次点运算',1410,675,COL.pink,36,a);
+    small('适当选群、均匀随机私钥 · 经典计算机的通用攻击量级',960,790,COL.blue,28,a);
+    small('k = 200 或本片的小群，可以轻易搜索；它们只是教学示例。',960,860,COL.dim,29,a);return;
+  }
+  cosmos(lt);eq('你在本地计算：Q = kG',242,65);roles();secret('k = 7',330,585,C_GOLD);small('私钥：只有你持有',330,765,COL.gold,29);
+  const f=eio(clamp((lt-3)/6)),idx=Math.min(DEMO.k,Math.floor(f*DEMO.k));
+  const marks=[{P:DEMO.G,name:'G',color:C_BLUE,col:COL.blue,dx:35,dy:28},{P:DEMO.Q,name:'Q',color:C_TEAL}];
+  const at=pointCloud(lt,{marks});const P=CryptoLesson.mul(Math.max(1,idx),DEMO.G);bead(at(P),C_GOLD,win(lt,3,10,.3,.3),30);
+  small('小明尚未收到 Q、G',1570,485,COL.dim,33);small('他只知道自己要发的消息 m',1570,560,COL.teal,27);
+  small('G、Q：群里的点',1570,655,COL.blue,31);small('k：整数',1570,715,COL.gold,31);
+},[[.6,4.5,'曲线已约定，G 是你选用的公开基点。','The curve is agreed. G is the public base point you use.'],[4.8,9.2,'你用私钥 k，在本地计算点 Q = kG。','Use your private scalar k to compute Q = kG locally.'],[9.5,12.2,'实战在巨大范围中随机取 k；不会只选 200 这样的小数。','In practice k is random over a huge range, not a tiny number like 200.'],[12.5,15.5,'正向计算快，反求 k 难。接下来只发送 Q、G。','Forward computation is fast; finding k is hard. Send only Q and G.']],[[2,'blip',{midi:74}],[3.3,'glide',{dur:5}],[9.6,'ding',{midi:81}]]);
+
+reg(11,4,'发送两个公开的点','SEND TWO PUBLIC POINTS',lt=>{
+  cosmos(lt);eq('你 → 小明：发送 Q、G',242,62);roles();secret('私钥 k · 不发送',330,690,C_GOLD);
+  arrow([470,495],[1450,495],C_TEAL,.25);
+  const f=eio(clamp((lt-2)/5)),x=lerp(430,1490,f),a=win(lt,1.5,7.8,.4,.4);
+  lineBox(x,485,320,130,C_TEAL,a);eq('Q、G',475,50,a,x);small('两个群里的点',x,520,COL.blue,23,a);
+  eq('收到 Q、G',480,40,sstep(7,7.6,lt),1590);small('仍然不知道 k',1590,675,COL.teal,37,sstep(7,7.8,lt));
+  interception(lt,3.5,10.2,'Q、G');
+  small('发送的是两个点；没有发送私钥或计算等式。',960,805,COL.blue,32,sstep(7,8,lt));
+},[[.6,4,'你发送两个点 Q、G，私钥 k 留在本地。','Send the two points Q and G. Keep k private.'],[4.3,10.1,'收到后，小明知道 Q、G，仍不知道 k。','After receiving them, Xiaoming knows Q and G, but not k.']],[[2,'whoosh',{dur:4.8}],[7.1,'chime',{midi:81}]]);
+
+reg(15,6,'小明准备一个临时秘密','XIAOMING CHOOSES AN EPHEMERAL SECRET',lt=>{
+  cosmos(lt);roles();eq('小明在本地算：R = rG，S = rQ',242,56);secret('r = 13',1590,690,C_PINK,sstep(1,2,lt));
+  small('你保管 k',330,520,COL.gold,36);small('暂时还不知道 S',330,600,COL.dim,30);
+  pointCloud(lt,{marks:[{P:DEMO.G,name:'G',color:C_BLUE,col:COL.blue,dy:28},{P:DEMO.Q,name:'Q',color:C_TEAL},
+    {P:DEMO.R,name:'R',color:C_PINK,col:COL.pink,a:sstep(3.5,5,lt),dx:-38,dy:34},
+    {P:DEMO.senderS,name:'S',color:C_GOLD,col:COL.gold,a:sstep(8,9.5,lt),dx:35,dy:32}]});
+  eq('R = '+pointText(DEMO.R),490,34,sstep(4,5,lt),1590,COL.pink);eq('S = '+pointText(DEMO.senderS),550,34,sstep(9,10,lt),1590,COL.gold);
+},[[.6,4.6,'小明秘密选一个新的随机整数 r。','Xiaoming privately chooses a fresh random scalar r.'],[4.9,8.1,'他算出 R = rG，准备把这个点发给你。','He computes R = rG, a point to send to you.'],[8.4,15.4,'再用你的公钥，算出共享点 S = rQ。','Using your public key, he computes the shared point S = rQ.']],[[1.7,'blip',{midi:76}],[4.7,'pop',{midi:81}],[9,'ding',{midi:86}]]);
+
+reg(21,6,'点变成串，在直积群中相加','FROM A POINT TO ADDITION IN A PRODUCT GROUP',lt=>{
+  cosmos(lt,[.12,.19,.29]);eq('S 变成二进制串，然后 c = m + S',242,55);
+  pointToBits(lt);small('同一个符号 S，随动画由点变成串',960,335,COL.blue,28);
+  binarySum(lt);
+  small('1 + 1 = 0',1510,590,COL.gold,40,sstep(5.4,6.5,lt),F_MATH);
+  small('每一位都在 ℤ/2ℤ 中相加',1510,645,COL.blue,27,sstep(5.4,6.5,lt));
+  small('不向相邻一位进位',1510,705,COL.dim,26,sstep(6,7,lt));
+  eq('m、S、c ∈ (ℤ/2ℤ)ⁿ，n = '+String(DEMO.plaintext.length*8)+'  ·  展示前 8 位',899,30,sstep(3.5,4.5,lt));
+},[[.6,3.9,'把群里的点 S 转换成二进制串，仍记作 S。','Convert the shared point into a binary string, still called S.'],[4.2,7.1,'消息 m 和 S，都在多个 ℤ/2ℤ 的直积群里。','Both m and S belong to a product of copies of Z/2Z.'],[7.4,11.9,'逐位做模二加法：1 + 1 = 0，不进位。','Add modulo two in each coordinate: 1 + 1 = 0, with no carry.'],[12.2,15.5,'得到密文 c = m + S，发出 c，不发出 S。','The ciphertext is c = m + S. Send c, keep S secret.']],[[2.6,'crystal'],[5.4,'data',{dur:6.6}],...Array.from({length:8},(_,i)=>[5.4+i*.825,'tick',{gain:.55}]),[12,'ding',{midi:84}]]);
+
+reg(27,5,'真正穿过通道的是什么','WHAT ACTUALLY CROSSES THE CHANNEL',lt=>{
+  cosmos(lt);eq('小明 → 你：R、编号 N、密文 c、校验标签 tag',242,51);roles();secret('你的私钥 k',330,655,C_GOLD);secret('小明的随机数 r',1590,655,C_PINK);
+  const f=eio(clamp((lt-2)/6)),x=lerp(1490,430,f);arrow([1400,470],[520,470],C_BLUE,.35);
+  lineBox(x,470,400,140,C_TEAL,win(lt,1.5,10,.5,.5));eq('R   N   c   tag',445,36,win(lt,1.5,10,.5,.5),x);
+  small(DEMO.cipherText.slice(0,24)+'…',x,505,COL.pink,22,win(lt,1.5,10,.5,.5),F_MONO);
+  interception(lt,3.5,12.8,'R、N、c、tag',605);
+  small('R：群里的点     c、tag：二进制数据',960,790,COL.blue,32,sstep(5.2,6.2,lt));
+  small('收到 R 后，你仍需自己计算 S。',960,850,COL.gold,34,sstep(8.8,9.6,lt));
+},[[.6,4.9,'小明把 R、编号、密文和校验标签发给你。','Xiaoming sends R, the nonce, ciphertext, and authentication tag.'],[5.2,8.8,'R 是群里的点；c 和 tag 是二进制数据。','R is a group point. The ciphertext and tag are binary data.'],[9.1,12.8,'你收到这些数据，但还没有算出共享秘密 S。','You have received the packet, but have not yet computed S.']],[[2,'whoosh',{dur:5.8}],[8,'chime',{midi:81}],[9.4,'shimmer']]);
+
+reg(32,6,'两条路径，同一个共享点','TWO PATHS, THE SAME SHARED POINT',lt=>{
+  cosmos(lt);roles();eq('你：kR       小明：rQ',242,63);
+  secret('k',330,560,C_GOLD);secret('r',1590,560,C_PINK);
+  eq('kR = k(rG)',710,47,sstep(2,3,lt),420,COL.gold);eq('rQ = r(kG)',710,47,sstep(2,3,lt),1500,COL.teal);
+  const f=eio(clamp((lt-4)/5));travel(lt,4,9,[550,555],[905,555],'kR',C_GOLD);travel(lt,4,9,[1370,555],[1015,555],'rQ',C_TEAL);
+  bead([960,555],C_TEAL,.45*sstep(8.5,9.5,lt),60);eq('S',555,75,sstep(9,10,lt));
+  eq('k(rG) = (kr)G = r(kG)',780,59,sstep(8,9,lt));small('相同的共享点 S = '+pointText(DEMO.senderS),960,850,COL.teal,32,sstep(10,11,lt));small('本地计算，不发送 S',960,889,COL.dim,22,sstep(10.5,11.5,lt));
+},[[.6,4.5,'你收到 R，用自己的私钥计算 kR。','You receive R and multiply it by your private scalar k.'],[4.8,9,'小明算 rQ；你算 kR。两条路径在同一点相遇。','Xiaoming computes rQ. You compute kR. Both reach the same point.'],[9.3,15.5,'因为 k(rG) = r(kG)，你们得到同一个 S。','Since k(rG) = r(kG), both of you obtain the same S.']],[[4,'glide',{dur:5}],[9.1,'ring',{dur:3}],[10.2,'success']]);
+
+reg(38,6,'再加一次 S，读回原消息','ADD S AGAIN TO RECOVER THE MESSAGE',lt=>{
+  cosmos(lt);eq('c + S = (m + S) + S = m',242,61);
+  if(lt<2.2)pointToBits(lt,460,390,.3,2);else sharedStamp(460,390);
+  sharedStamp(1460,390);eq('=',390,72,sstep(1.7,2.2,lt));small('你算出的 S',460,490,COL.gold,32);small('小明算出的 S',1460,490,COL.teal,32);
+  binarySum(lt,{decrypt:true,start:5,end:9.5,y:565});
+  small('在 (ℤ/2ℤ)ⁿ 中，S + S = 0',1540,715,COL.teal,27,sstep(7,8,lt),F_MATH);
+  lineBox(960,848,860,76,C_GOLD,sstep(10,11,lt));small('明天下午三点见。',960,848,COL.gold,40,sstep(10,11,lt));
+},[[.6,4.5,'相同的共享点，转换成相同的二进制串 S。','The same shared point yields the same binary string S.'],[4.8,9.2,'再逐位加一次 S；每一位的 1 + 1 都等于 0。','Add S once more. In each coordinate, 1 + 1 equals zero.'],[9.5,15.5,'因为 S + S = 0，所以 c + S = m，读回原消息。','Since S + S = 0, c + S = m recovers the message.']],[[1.5,'chime',{midi:86}],[4.6,'data',{dur:4.9}],[10.2,'success']]);
+
+reg(44,5.5,'秘密没有被传送','A SHARED KEY THAT WAS NEVER SENT',lt=>{
+  cosmos(lt,[.15,.20,.31]);titleWord('不传私钥，共享秘密',960,252,72,lt,.5,.08,6,1,.12);
+  roles();lock(330,535,C_GOLD,1,1.1);lock(1590,535,C_PINK,1,1.1);eq('k',635,55,1,330,COL.gold);eq('r',635,55,1,1590,COL.pink);
+  sharedStamp(960,560,sstep(1,2,lt));ink([[420,490],[755,535]],C_GOLD,.35,2);ink([[1500,490],[1165,535]],C_TEAL,.35,2);
+  eq('加密：c = m + S     解密：m = c + S',735,49,sstep(2,3,lt));small('二进制串的加法，就是多个 ℤ/2ℤ 的直积群运算。',960,825,COL.teal,33,sstep(3,4,lt));
+  small('黑客有 G、Q、R、c；缺少 k、r，不能直接算出 S。',960,882,COL.pink,27,sstep(4,5,lt));
+},[[.6,4.8,'小明不知道你的 k，你也不知道小明的 r。','Xiaoming never learns k. You never learn r.'],[5.1,9,'黑客截获公开数据，却没有你们的私钥和 S。','The observer sees public data, but not the private scalars or S.'],[9.3,13.9,'双方得到同一个 S，私钥始终保密。','Both obtain the same S. The private scalars stay secret.']],[[1.5,'swell',{dur:2}],[3,'ring',{dur:3}]]);
+
+window.__modelAudit=()=>CryptoLesson.audit();
+window.__knowledgeAt=knowledgeAt;
+window.__learningTimes=()=>LEARN;
+window.__binaryAudit=()=>({dimension:DEMO.plaintext.length*8,
+  truthTable:[[0,0,0],[0,1,1],[1,0,1],[1,1,0]],
+  additionWorks:DEMO.plaintext.every((m,i)=>(m^DEMO.stream[i])===DEMO.ciphertext[i]),
+  cancellationWorks:DEMO.ciphertext.every((c,i)=>(c^DEMO.stream[i])===DEMO.plaintext[i]),
+  selfAdditionZero:DEMO.stream.every(x=>(x^x)===0),sameNotationAfterConversion:'S',
+  firstByte:{m:CryptoLesson.bits(DEMO.plaintext[0]),S:CryptoLesson.bits(DEMO.stream[0]),c:CryptoLesson.bits(DEMO.ciphertext[0])}});
+window.__chapters=()=>SC.map(s=>({start:s.start*BAR,duration:s.len*BAR,title:s.ch[1],english:s.ch[2],subtitles:s.subs}));
+
+// ======================================================================== timeline + frame pipeline
+SC.forEach(s => { s.t0 = s.start * BAR; s.d = s.len * BAR; });
+const SUBS = SC.flatMap(s => s.subs.map(([a, b, zh, en]) => ({ a: s.t0 + a, b: s.t0 + b, zh, en })));
+const HITS = [[21, .08], [36, .12], [44, .12]].map(([b, k]) => [b * BAR, k]);
+const sceneAt = t => { let sc = SC[0]; for (const s of SC) if (t >= s.t0) sc = s; return sc; };
+function drawLayer(t, jx, jy) {
+  t = clamp(t, 0, TOTAL - 1e-3);
+  const sc = sceneAt(t), lt = t - sc.t0;
+  ctx.setTransform(RENDER_SCALE, 0, 0, RENDER_SCALE, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none';
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  let shake = 0;
+  for (const [th, k] of HITS) if (t >= th && t < th + 1.5) shake += 16 * k * Math.exp(-(t - th) * 6);
+  const cam = sc.cam ? sc.cam(lt, sc.d) : camPush()(lt, sc.d);
+  ctx.save();
+  ctx.translate(W / 2 + jx + (cam.x || 0) + (shake > .3 ? Math.sin(t * 91) * shake : 0), H / 2 + jy + (cam.y || 0) + (shake > .3 ? Math.cos(t * 73) * shake : 0));
+  ctx.scale(cam.z, cam.z); ctx.translate(-W / 2, -H / 2);
+  sc.draw(lt, sc.d, t);
+  ctx.restore();
+  const fade = 1 - win(lt, 0, sc.d, sc.fi ?? .35, sc.fo ?? .35);
+  if (fade > 0) { ctx.fillStyle = `rgba(0,0,0,${fade})`; ctx.fillRect(0, 0, W, H); }
+}
+function chapter(sc, lt) {
+  if (!sc.ch) return; const a = win(lt, .5, 5, .6, .8); if (a <= 0) return;
+  const [n, zh, en] = sc.ch, x = 90, y = 92, slide = (1 - eout(clamp((lt - .5) / .8))) * -30;
+  ctx.font = `700 46px ${F_EN}`; const nw = ctx.measureText(n).width;
+  text(n, x + slide, y, { font: F_EN, weight: 700, size: 46, color: '#e2bd6b', alpha: a, align: 'left' });
+  ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = '#e2bd6b'; ctx.fillRect(x + nw + 20 + slide, y - 26, 2, 52); ctx.restore();
+  text(zh, x + nw + 42 + slide, y - 8, { size: 36, weight: 700, color: '#fff', alpha: a, align: 'left' });
+  text(en, x + nw + 44 + slide, y + 30, { font: F_EN, size: 16, ls: 5, color: '#cdb88e', alpha: a, align: 'left' });
+}
+function subtitles(T) {
+  for (const s of SUBS) {
+    if (T < s.a - .3 || T > s.b + .3) continue;
+    const a = win(T, s.a, s.b, .25, .3); if (a <= 0) continue;
+    ctx.save(); const g = ctx.createLinearGradient(0, 880, 0, H); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${.55 * a})`); ctx.fillStyle = g; ctx.fillRect(0, 880, W, 200); ctx.restore();
+    text(s.zh, W / 2, 970, { size: 38, weight: 700, color: '#fff', alpha: a, glow: 'rgba(0,0,0,.9)', blur: 12, ls: 1 });
+    text(s.en, W / 2, 1026, { font: F_IT, style: 'italic', size: 27, color: '#ddd5c4', alpha: a * .9, glow: 'rgba(0,0,0,.9)', blur: 8 });
+  }
+}
+function overlays(T) {
+  const lb = 110 * (1 - sstep(1, 3, T)) + 110 * sstep(TOTAL - 6, TOTAL - 3, T);
+  if (lb > .5) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, lb); ctx.fillRect(0, H - lb, W, lb); }
+  const sc = sceneAt(T); chapter(sc, T - sc.t0);
+  knowledge(T);
+  subtitles(T);
+  let flash = 0; for (const [th, k] of HITS) if (T >= th && T < th + 1.5) flash += .75 * k * Math.exp(-(T - th) * 5);
+  if (flash > .01) { ctx.fillStyle = `rgba(255,248,235,${Math.min(.9, flash)})`; ctx.fillRect(0, 0, W, H); }
+}
+const SHUTTER = .5, JIT = [[.5, .5], [.25, .75], [.75, .25], [.125, .625], [.625, .125], [.375, .375], [.875, .875], [.0625, .5625]];
+function frame(T, fps = 30, samples = 1) {
+  window.__displayTime = T;
+  T = clamp(T, 0, TOTAL - 1e-3);
+  const sc = sceneAt(T), K = samples > 1 ? Math.max(1, sc.mb ?? 3) : 1;
+  for (let k = 0; k < K; k++) {
+    let tk = K > 1 ? Math.max(0, T + ((k + .5) / K - .5) * SHUTTER / fps) : T;
+    if (sceneAt(tk) !== sc || (sc.shot && sc.shot(tk - sc.t0) !== sc.shot(T - sc.t0))) tk = T;
+    drawLayer(tk, K > 1 ? JIT[k][0] - .5 : 0, K > 1 ? JIT[k][1] - .5 : 0);
+    accumulate(k, K);
+  }
+  post(T, { ...GRADE, ...(sc.bloom ? { bloom: GRADE.bloom * sc.bloom } : {}), ...(sc.grade || {}) });
+  ctx.setTransform(RENDER_SCALE, 0, 0, RENDER_SCALE, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'copy'; ctx.drawImage(glc, 0, 0, W, H); ctx.globalCompositeOperation = 'source-over';
+  overlays(T);
+}
+
+// ======================================================================== fonts, playback, export hooks
+let fontsReady = false;
+const SRC = document.scripts[document.scripts.length - 1].textContent;
+const CHARS = [...new Set(SRC.replace(/[\x00-\x7f]/g, ''))].join('') + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+Promise.all([
+  DEMO_READY,
+  ...['400', '700', '900'].map(w => document.fonts.load(`${w} 40px "Noto Serif SC"`, CHARS)),
+  document.fonts.load('400 40px "Cinzel"'), document.fonts.load('700 40px "Cinzel"'), document.fonts.load('italic 500 40px "Cormorant Garamond"'), document.fonts.load('500 40px "Cormorant Garamond"'),
+  document.fonts.load('40px "Great Vibes"', "Il y a quelque chose à compléter Je n'ai pas le temps"), document.fonts.load('400 40px "STIX Two Text"', CHARS), document.fonts.load('italic 400 40px "STIX Two Text"', CHARS),
+]).then(() => document.fonts.ready).then(() => { fontsReady = true; for (const id of ['go', 'chaptersBtn']) { const b = document.getElementById(id); if (b) b.disabled = false; } const l = document.getElementById('load'); if (l) l.textContent = '字体已就绪 · 建议全屏观看（F）'; frame(0); });
+setTimeout(() => { if (DEMO) fontsReady = true; }, 15000);
+
+window.__ready = () => fontsReady && !!DEMO;
+window.__frame = (t, fps = 30) => { frame(t, fps, 3); return cv.toDataURL('image/jpeg', .93); };
+window.__duration = TOTAL;
+window.__cues = () => SC.flatMap(s => (s.sfx || []).map(([t, name, o]) => ({ t: +(s.t0 + t).toFixed(4), name, ...(o || {}) }))).sort((a, b) => a.t - b.t);
+
+const au = document.getElementById('au');
+au.src = (window.EMBED && window.EMBED.audio) ? 'data:audio/mpeg;base64,' + window.EMBED.audio : 'music.mp3?v=20261012-shared-key-v1';
+if (EXPORT) { document.getElementById('start').remove(); document.getElementById('ui').remove(); }
+else {
+  let playing = false, clock0 = 0, useAudio = true, hideT = 0, heldTime = 0;
+  const ui = document.getElementById('ui'), pp = document.getElementById('pp'), fill = document.getElementById('fill'), tm = document.getElementById('tm');
+  document.getElementById('dur').textContent = `${Math.floor(TOTAL / 60)}:${String(Math.round(TOTAL % 60)).padStart(2, '0')}`;
+  const now = () => useAudio ? au.currentTime : (playing ? (performance.now() - clock0) / 1000 : heldTime);
+  let loopId = 0, lastPaint = -Infinity;
+  function loop(stamp) {
+    loopId = 0;
+    if (!playing) return;
+    if (stamp - lastPaint < 1000 / 30 - 1) { loopId = requestAnimationFrame(loop); return; }
+    lastPaint = stamp;
+    const T = now(); frame(T);
+    fill.style.width = (T / TOTAL * 100) + '%'; bar.setAttribute('aria-valuenow', String(T)); tm.textContent = `${Math.floor(T / 60)}:${String(Math.floor(T % 60)).padStart(2, '0')}`;
+    if (T >= TOTAL - .05) { playing = false; pp.textContent = '▶'; }
+    if (playing) loopId = requestAnimationFrame(loop);
+  }
+  function play() { if (playing) return; if (!useAudio) clock0 = performance.now() - heldTime * 1000; playing = true; lastPaint = -Infinity; pp.textContent = '❚❚'; au.play().catch(() => { useAudio = false; clock0 = performance.now() - au.currentTime * 1000; }); loopId = requestAnimationFrame(loop); }
+  function pause() { heldTime = now(); playing = false; cancelAnimationFrame(loopId); loopId = 0; pp.textContent = '▶'; au.pause(); }
+  document.getElementById('go').onclick = () => { document.getElementById('start').remove(); if (au.currentTime >= TOTAL - .1) au.currentTime = 0; play(); poke(); };
+  pp.onclick = () => playing ? pause() : play();
+  const bar = document.getElementById('bar');
+  let dragging = false, resumeAfterDrag = false, scrubRender = 0, scrubTime = 0;
+  bar.setAttribute('role', 'slider');
+  bar.setAttribute('aria-label', '播放进度');
+  bar.setAttribute('aria-valuemin', '0');
+  bar.setAttribute('aria-valuemax', String(TOTAL));
+  bar.setAttribute('aria-valuenow', '0');
+  bar.tabIndex = 0;
+  function seekTo(t) {
+    scrubTime = clamp(t, 0, TOTAL);
+    heldTime = scrubTime;
+    au.currentTime = scrubTime;
+    if (!useAudio) clock0 = performance.now() - scrubTime * 1000;
+    fill.style.width = (scrubTime / TOTAL * 100) + '%';
+    tm.textContent = `${Math.floor(scrubTime / 60)}:${String(Math.floor(scrubTime % 60)).padStart(2, '0')}`;
+    bar.setAttribute('aria-valuenow', String(scrubTime));
+    if (!playing && !scrubRender) scrubRender = requestAnimationFrame(() => {
+      scrubRender = 0;
+      frame(scrubTime);
+    });
+  }
+  function seekPointer(e) {
+    const r = bar.getBoundingClientRect();
+    seekTo(clamp((e.clientX - r.left) / r.width) * TOTAL);
+  }
+  bar.addEventListener('pointerdown', e => {
+    if (!e.isPrimary || e.button !== 0 || dragging) return;
+    e.preventDefault();
+    dragging = true;
+    resumeAfterDrag = playing;
+    if (playing) pause();
+    bar.setPointerCapture(e.pointerId);
+    poke();
+    clearTimeout(hideT);
+    seekPointer(e);
+  });
+  bar.addEventListener('pointermove', e => {
+    if (dragging && bar.hasPointerCapture(e.pointerId)) seekPointer(e);
+  });
+  function finishDrag(e, seekFinal) {
+    if (!dragging) return;
+    if (seekFinal) seekPointer(e);
+    dragging = false;
+    if (bar.hasPointerCapture(e.pointerId)) bar.releasePointerCapture(e.pointerId);
+    if (resumeAfterDrag && scrubTime < TOTAL - .05) play();
+    resumeAfterDrag = false;
+    poke();
+  }
+  bar.addEventListener('pointerup', e => finishDrag(e, true));
+  bar.addEventListener('pointercancel', e => finishDrag(e, false));
+  bar.addEventListener('lostpointercapture', e => finishDrag(e, false));
+  bar.addEventListener('keydown', e => {
+    if (e.code === 'Home' || e.code === 'End') {
+      e.preventDefault();
+      seekTo(e.code === 'Home' ? 0 : TOTAL);
+      poke();
+    }
+  });
+  document.getElementById('fs').onclick = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  window.__seek = t => { seekTo(t); poke(); };
+  window.__pause = pause;
+  window.__play = play;
+  window.__playing = () => playing;
+  function poke() { ui.classList.remove('hide'); clearTimeout(hideT); hideT = setTimeout(() => { if (!dragging) ui.classList.add('hide'); }, 2200); }
+  addEventListener('mousemove', poke);
+  addEventListener('keydown', e => {
+    if (document.getElementById('start')) return;
+    if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); }
+    if (e.code === 'KeyF') document.getElementById('fs').click();
+    if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') { e.preventDefault(); seekTo(now() + (e.code === 'ArrowRight' ? 5 : -5)); }
+    poke();
+  });
+}
+
+
+if (!EXPORT) {
+  const panel=document.getElementById('notes'),btn=document.getElementById('chaptersBtn');let resume=false;
+  function close(){panel.hidden=true;if(resume)window.__play();resume=false;btn.focus();}
+  btn.onclick=()=>{resume=window.__playing();window.__pause();panel.hidden=false;document.getElementById('closeNotes').focus();};
+  document.getElementById('closeNotes').onclick=close;
+  window.addEventListener('keydown',e=>{if(!panel.hidden){if(e.code==='Escape')close();if(['Space','ArrowRight','ArrowLeft','KeyF'].includes(e.code))e.stopImmediatePropagation();}},true);
+  window.addEventListener('keydown',e=>{if(panel.hidden)return;if(e.code==='Tab'){const all=[...panel.querySelectorAll('button,a')],first=all[0],last=all[all.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
+  for(const s of SC){const b=document.createElement('button');b.textContent=s.ch[0]+' '+s.ch[1];b.onclick=()=>{if(document.getElementById('start'))document.getElementById('start').remove();window.__seek(s.t0+.7);resume=false;close();};document.getElementById('chapterList').append(b);}
+  document.getElementById('muteBtn').onclick=e=>{au.muted=!au.muted;e.currentTarget.textContent=au.muted?'声音：关':'声音：开';};
+} else document.getElementById('tools').remove();
+</script>
+</body>
+</html>
