@@ -1,0 +1,117 @@
+@LinearStudy.moduleSheafIsFiniteType_of_epi : ∀ {C : Type u_1} [inst : CategoryTheory.Category.{u_1, u_1} C]
+  [CategoryTheory.Limits.HasBinaryProducts C] {J : CategoryTheory.GrothendieckTopology C}
+  {R : CategoryTheory.Sheaf J RingCat} [inst_2 : ∀ (X : C), CategoryTheory.HasWeakSheafify (J.over X) AddCommGrpCat]
+  [inst_3 : ∀ (X : C), (J.over X).WEqualsLocallyBijective AddCommGrpCat] {M N : SheafOfModules R} (p : M ⟶ N)
+  [CategoryTheory.Epi p] [M.IsFiniteType], N.IsFiniteType
+'LinearStudy.moduleSheafIsFiniteType_of_epi' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKernel_isFinitePresentation_of_cover : ∀ {K S E F : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup E] [inst_4 : Module K E] [inst_5 : Module S E]
+  [IsScalarTower K S E] [inst_7 : AddCommGroup F] [inst_8 : Module K F] [inst_9 : Module S F] (𝓑 : ℕ → Submodule K S)
+  [inst_10 : GradedAlgebra 𝓑] (ℰ : ℤ → Submodule K E) (ℱ : ℤ → Submodule K F) [DirectSum.Decomposition ℰ]
+  [DirectSum.Decomposition ℱ] (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d))
+  (hF : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℱ d, c • x ∈ ℱ (↑n + d)) (b : E →ₗ[S] F)
+  (hh : ∀ (d : ℤ), ∀ x ∈ ℰ d, b x ∈ ℱ d) [IsNoetherianRing S] [Module.Finite S E] {ι : Type u_1} (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤ →
+      SheafOfModules.IsFinitePresentation
+        (CategoryTheory.Limits.kernel (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 ℰ ℱ hE hF b hh 0))
+'LinearStudy.nativeProjectiveKernel_isFinitePresentation_of_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerGradingShift : {K : Type u_1} →
+  {M : Type u_2} →
+    [inst : Field K] → [inst_1 : AddCommGroup M] → [inst_2 : Module K M] → (ℤ → Submodule K M) → ℤ → ℤ → Submodule K M
+'LinearStudy.integerGradingShift' depends on axioms: [propext, Quot.sound]
+@LinearStudy.integerGradingShift_smul_homogeneous : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M),
+  (∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d)) →
+    ∀ (k : ℤ) (n : ℕ) (d : ℤ),
+      ∀ c ∈ 𝓑 n, ∀ x ∈ LinearStudy.integerGradingShift 𝒟 k d, c • x ∈ LinearStudy.integerGradingShift 𝒟 k (↑n + d)
+'LinearStudy.integerGradingShift_smul_homogeneous' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerGradingShift_isInternal : ∀ {K : Type u_1} {M : Type u_2} [inst : Field K] [inst_1 : AddCommGroup M]
+  [inst_2 : Module K M] (𝒟 : ℤ → Submodule K M) [DirectSum.Decomposition 𝒟] (k : ℤ),
+  DirectSum.IsInternal (LinearStudy.integerGradingShift 𝒟 k)
+'LinearStudy.integerGradingShift_isInternal' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerGradingShiftDecomposition : {K : Type u_1} →
+  {M : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : AddCommGroup M] →
+        [inst_2 : Module K M] →
+          (𝒟 : ℤ → Submodule K M) →
+            [DirectSum.Decomposition 𝒟] → (k : ℤ) → DirectSum.Decomposition (LinearStudy.integerGradingShift 𝒟 k)
+'LinearStudy.integerGradingShiftDecomposition' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveTwistRegrading_predicate_iff : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M) (k : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)}
+  (f : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p),
+  (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 (LinearStudy.integerGradingShift 𝒟 k) 0).pred f ↔
+    (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 𝒟 k).pred f
+'LinearStudy.nativeProjectiveTwistRegrading_predicate_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveTwistRegradingSectionEquiv : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d)) →
+                      (k : ℤ) →
+                        (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) →
+                          ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 (LinearStudy.integerGradingShift 𝒟 k) ⋯ 0
+                                U) ≃ₗ[↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)]
+                            ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 𝒟 hD k U)
+'LinearStudy.nativeProjectiveTwistRegradingSectionEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveTwistRegradingSectionEquiv_value : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d)) (k : ℤ)
+  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+  (x : ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 (LinearStudy.integerGradingShift 𝒟 k) ⋯ 0 U)),
+  ↑((LinearStudy.nativeProjectiveTwistRegradingSectionEquiv 𝓑 𝒟 hD k U) x) = ↑x
+'LinearStudy.nativeProjectiveTwistRegradingSectionEquiv_value' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveTwistRegradingIso : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d)) →
+                      (k : ℤ) →
+                        LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.integerGradingShift 𝒟 k) ⋯ 0 ≅
+                          LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD k
+'LinearStudy.nativeProjectiveTwistRegradingIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeFiniteGradedTwist_isFinitePresentation_of_cover : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  [IsScalarTower K S M] (𝓑 : ℕ → Submodule K S) [inst_7 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  [DirectSum.Decomposition 𝒟] (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d)) [IsNoetherianRing S]
+  [Module.Finite S M] (k : ℤ) {ι : Type u_1} (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤ →
+      SheafOfModules.IsFinitePresentation (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD k)
+'LinearStudy.nativeFiniteGradedTwist_isFinitePresentation_of_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveKernelTwist_isFinitePresentation_of_cover : ∀ {K S E F : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup E] [inst_4 : Module K E] [inst_5 : Module S E]
+  [IsScalarTower K S E] [inst_7 : AddCommGroup F] [inst_8 : Module K F] [inst_9 : Module S F] (𝓑 : ℕ → Submodule K S)
+  [inst_10 : GradedAlgebra 𝓑] (ℰ : ℤ → Submodule K E) (ℱ : ℤ → Submodule K F) [DirectSum.Decomposition ℰ]
+  [DirectSum.Decomposition ℱ] (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d))
+  (hF : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℱ d, c • x ∈ ℱ (↑n + d)) (b : E →ₗ[S] F)
+  (hh : ∀ (d : ℤ), ∀ x ∈ ℰ d, b x ∈ ℱ d) [IsNoetherianRing S] [Module.Finite S E] (k : ℤ) {ι : Type u_1} (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤ →
+      SheafOfModules.IsFinitePresentation
+        (CategoryTheory.Limits.kernel (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 ℰ ℱ hE hF b hh k))
+'LinearStudy.nativeProjectiveKernelTwist_isFinitePresentation_of_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
