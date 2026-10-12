@@ -1,0 +1,3445 @@
+{
+  "schemaVersion": 1,
+  "id": "original-chart-local-source-linear-20261012",
+  "createdAt": "2026-10-12T20:31:58.397870+08:00",
+  "leanVersion": "v4.35.0-rc3",
+  "mathlibRevision": "2a885768dae569d938bb9ff3474da6a8753bb90a",
+  "rootModules": [
+    "Linear.OriginalBaseMorphismSourceLift",
+    "Linear.AffineOriginalSourceMorphismLift",
+    "Linear.OriginalSourceScalarRecoveryInverse",
+    "Linear.PushforwardHomSourceScalarRecoveryInverse",
+    "Linear.SchemePushforwardOriginalChartSourceAdapter",
+    "Linear.OriginalPushforwardSourceChartQuasicoherent",
+    "Linear.OriginalChartSourceAdapterScalars",
+    "Linear.SchemePushforwardOriginalChartAllSourceScalars",
+    "Linear.SchemePushforwardSpecChartSectionAction",
+    "Linear.SchemeOriginalPushforwardChartMorphismAllScalars",
+    "Linear.OriginalPushforwardChartLinearityFromSections",
+    "Linear.NativeNormalizationSourceChartsQuasicoherent",
+    "Linear.NativeNormalizationOriginalChartSectionFormula",
+    "Linear.NativeNormalizationDualChartMorphismAllSourceScalars",
+    "Linear.ProjectiveOriginalDualChartAllSourceScalars"
+  ],
+  "closedSourceModules": 488,
+  "newModules": 15,
+  "newProofs": 22,
+  "newDefinitions": 4,
+  "revalidatedSupportingModules": 0,
+  "revalidatedSupportingProofs": 0,
+  "auditedDeclarations": 26,
+  "verificationScope": "Fifteen new canonical LF modules freshly compiled serially, with all twenty-six exact declaration types and axioms audited using canonical-only LEAN_PATH. Dependencies match checkpoint180 or seven independently audited published components. The SAME ORIGINAL native-dual/Hom affine-chart morphism preserves EVERY ACTUAL local source function on EVERY open of the original chart. Source-algebra and source-module QC are derived, and top-section compatibility is derived from the SAME original native comparison and the already proved sections formula for the SAME chart morphism. For the ORIGINAL integral projective V and SAME finite injective homogeneous linear projection, localization injectivity, native-dual QC and the actual chart-section bijection are ALL DERIVED on EVERY coordinate chart; no local compatibility/QC certificate is added. No target QC is needed for local source linearity. The actual source-module lift of an original base morphism retains every component and recovers the SAME original morphism after scalar restriction. This is local original chart source linearity and a forward source-module lift, not an entire global source-linear sheaf isomorphism or the genuine normalized-dualizing H^-r/canonical-twist identification. Original Lemmas4.1/4.2 and the main theorem remain OPEN; no whole-project checkpoint or whole-project CI claim.",
+  "baseVerifiedLocalCheckpoint": 180,
+  "priorAuditedComponents": [
+    "source-action-derived-20261012",
+    "actual-affine-source-linear-20261012",
+    "original-hom-source-sheaf-20261012",
+    "native-chart-source-linear-20261012",
+    "original-global-source-action-20261012",
+    "original-pushforward-source-action-20261012",
+    "all-open-source-linearity-20261012"
+  ],
+  "originalLemma4_1Verified": false,
+  "originalLemma4_2Verified": false,
+  "mainTheoremVerified": false,
+  "canonicalDualizingIdentificationVerified": false,
+  "entireGlobalSourceLinearSheafIsoVerified": false,
+  "affineAllLocalSourceFunctionsVerified": true,
+  "originalAffineQCExtensionAllLocalSourceFunctionsVerified": true,
+  "nativeWholeChartAllActualSourceFunctionsVerified": true,
+  "nativeChartAllSubopensSourceLinearityApplied": true,
+  "originalVarietyEveryCoordinateChartLocalSourceLinearityVerified": true,
+  "originalSourceModuleForwardLiftVerified": true,
+  "remainingObligations": [
+    "Verify the source-module inverse and retain the SAME original local chart morphisms.",
+    "Construct and verify the entire global source-linear sheaf isomorphism.",
+    "Identify genuine normalized-dualizing H^-r and the canonical twist; finish the original Lemma4.1 proof."
+  ],
+  "resourceLimits": {
+    "concurrentCompilers": 1,
+    "hardJobMemoryMiB": 8192,
+    "leanThreads": 2,
+    "cpuPercent": 25,
+    "timeoutSeconds": 1200
+  },
+  "sources": [
+    {
+      "module": "Linear.ActualAffineAlgebraDualElementEvaluation",
+      "path": "source/Linear/ActualAffineAlgebraDualElementEvaluation.lean",
+      "sha256": "03ed4ada697535848f557f894d58b68e1fe76d8250d7d484db996d721ecac8b1",
+      "physicalLines": 34
+    },
+    {
+      "module": "Linear.ActualAffineAlgebraDualEvaluation",
+      "path": "source/Linear/ActualAffineAlgebraDualEvaluation.lean",
+      "sha256": "c1fe47ad5a2a6fa5b28237f81b354dcd861229b8d972e861bcfffcbf2e3dfb0c",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.ActualAffineAlgebraDualEvaluationExt",
+      "path": "source/Linear/ActualAffineAlgebraDualEvaluationExt.lean",
+      "sha256": "08fec3de1b801f7b589e106cc522abec1b7ecc055e820a7acb54831166a2ebc7",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.ActualAffineAlgebraDualInternalHomLinear",
+      "path": "source/Linear/ActualAffineAlgebraDualInternalHomLinear.lean",
+      "sha256": "2c63dfc227a16b3be3f47f017c04e1bd7661180d7f3cb5782eab1933a148b871",
+      "physicalLines": 83
+    },
+    {
+      "module": "Linear.ActualAffineAlgebraDualInternalHomValues",
+      "path": "source/Linear/ActualAffineAlgebraDualInternalHomValues.lean",
+      "sha256": "4f81593a1b3e43a4a4428987e6b9f623811bb0cd24043fef82c4c24a92852b34",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.ActualAffineAlgebraDualSpecValue",
+      "path": "source/Linear/ActualAffineAlgebraDualSpecValue.lean",
+      "sha256": "41c3654400c016661d91bc5204be8104c7b0f192f849f14b04ed28d278e16678",
+      "physicalLines": 38
+    },
+    {
+      "module": "Linear.ActualAffineHomSourceAction",
+      "path": "source/Linear/ActualAffineHomSourceAction.lean",
+      "sha256": "87bb2e12e03f09e01f86f1ffae31ebed588bf90402b469c9d3112211479b5ee9",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.ActualAffineNativeDualSourceCompatibility",
+      "path": "source/Linear/ActualAffineNativeDualSourceCompatibility.lean",
+      "sha256": "2b74df4bf4cd391a017695cf30eb811b6e779f6d472760f2ac829d984ee931c7",
+      "physicalLines": 40
+    },
+    {
+      "module": "Linear.ActualAffineNativeDualSourceLinear",
+      "path": "source/Linear/ActualAffineNativeDualSourceLinear.lean",
+      "sha256": "5ef789d148f99294374b78440fced3ea5afae333f93f0da2a1d00a052ce92b35",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.ActualAffineStructureElementValue",
+      "path": "source/Linear/ActualAffineStructureElementValue.lean",
+      "sha256": "dccd9a1784f7aa03c93bd198e4407ecd54d7849afe52962615ede45047671e7d",
+      "physicalLines": 63
+    },
+    {
+      "module": "Linear.AffineCompositeHEq",
+      "path": "source/Linear/AffineCompositeHEq.lean",
+      "sha256": "ab13943880be34fda974482064e28114a046cae43cf1588f8fdf9060d76fd4d2",
+      "physicalLines": 17
+    },
+    {
+      "module": "Linear.AffineCompositeInstantiation",
+      "path": "source/Linear/AffineCompositeInstantiation.lean",
+      "sha256": "e3b59ea9c4902cbdc20f62b9c78328bb4d0373ca48ecc160a59b12ae36f93f45",
+      "physicalLines": 20
+    },
+    {
+      "module": "Linear.AffineDiagonal",
+      "path": "source/Linear/AffineDiagonal.lean",
+      "sha256": "a157d0b2ba3660ddbe38e3c09329c4d325a1c3df089a919aa92db4b917bd94b3",
+      "physicalLines": 180
+    },
+    {
+      "module": "Linear.AffineFiltered",
+      "path": "source/Linear/AffineFiltered.lean",
+      "sha256": "d118cc1b4d3c968c1c325966f3eaa7a07c63f34a3d834c2c663dbf78c86e7379",
+      "physicalLines": 228
+    },
+    {
+      "module": "Linear.AffineFunctional",
+      "path": "source/Linear/AffineFunctional.lean",
+      "sha256": "0797c3001876e24d25bf6d00675d2aa1edb53c0bb3352024ba4019eaff185949",
+      "physicalLines": 97
+    },
+    {
+      "module": "Linear.AffineHomScalarHEq",
+      "path": "source/Linear/AffineHomScalarHEq.lean",
+      "sha256": "ee8d8ab767c867768886386ecbdee614d9a9c22998d636a622b8302c40bb7631",
+      "physicalLines": 34
+    },
+    {
+      "module": "Linear.AffineOriginalSourceActionSubopens",
+      "path": "source/Linear/AffineOriginalSourceActionSubopens.lean",
+      "sha256": "ccc0aea84a1e6ea724c6fecbbb63e485cd62096f23d4a5a27a5b41a0bfe47b7a",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.AffineOriginalSourceLinearAllOpens",
+      "path": "source/Linear/AffineOriginalSourceLinearAllOpens.lean",
+      "sha256": "2e15a529eb57b046c426a1e9754294656e580c88b9b8590b3127ccb25cea55f7",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.AffineOriginalSourceMorphismLift",
+      "path": "source/Linear/AffineOriginalSourceMorphismLift.lean",
+      "sha256": "f150fcf4827a83ba91aed8fc0c64b30c00bd40060e545867dc82cd0dd5378cf7",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.AffineQuasicoherentHomActualOpenEvaluation",
+      "path": "source/Linear/AffineQuasicoherentHomActualOpenEvaluation.lean",
+      "sha256": "308c550152cd46be1d07479e47a3e55f7a3bb213fae4d6f13ad9735fe424d357",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.AffineQuasicoherentHomActualOpenSections",
+      "path": "source/Linear/AffineQuasicoherentHomActualOpenSections.lean",
+      "sha256": "ce6b32615caf354f768d34d676d1123e1f2d478c8ea99421f78cff8da48325fc",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.AffineQuasicoherentHomOpenSections",
+      "path": "source/Linear/AffineQuasicoherentHomOpenSections.lean",
+      "sha256": "a6e53bccaaa2b6a71fa010951954ba7d083db9ededf0c04e71bba055e15d14f7",
+      "physicalLines": 76
+    },
+    {
+      "module": "Linear.AffineQuasicoherentSectionsSurjective",
+      "path": "source/Linear/AffineQuasicoherentSectionsSurjective.lean",
+      "sha256": "89ffcee8e5ca6e07cf28503a85e7ba26c1a3e651ad086e6f8be4d936952585ba",
+      "physicalLines": 32
+    },
+    {
+      "module": "Linear.AffineQuasicoherentSourceMorphisms",
+      "path": "source/Linear/AffineQuasicoherentSourceMorphisms.lean",
+      "sha256": "5e9b5bba59b3981172f59ca82c09a58980635dfb868663027bee08b167e171af",
+      "physicalLines": 36
+    },
+    {
+      "module": "Linear.AffineQuasicoherentSourceMorphismsSections",
+      "path": "source/Linear/AffineQuasicoherentSourceMorphismsSections.lean",
+      "sha256": "8cef26be9ad2d1c248abc808394c4b330ed13b57dc9245bc065c996b089f5ce2",
+      "physicalLines": 23
+    },
+    {
+      "module": "Linear.ArbitraryParameterJacobian",
+      "path": "source/Linear/ArbitraryParameterJacobian.lean",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "physicalLines": 115
+    },
+    {
+      "module": "Linear.ArbitraryParameterSocle",
+      "path": "source/Linear/ArbitraryParameterSocle.lean",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "physicalLines": 197
+    },
+    {
+      "module": "Linear.ArtinianCompletion",
+      "path": "source/Linear/ArtinianCompletion.lean",
+      "sha256": "e9487f5e807d6ae31b2dd376a47db3ae7454709bd637bc1de55ef78b8de3f1f6",
+      "physicalLines": 86
+    },
+    {
+      "module": "Linear.ArtinianDiagonal",
+      "path": "source/Linear/ArtinianDiagonal.lean",
+      "sha256": "8db1dc43dde887efb38a60ea3eb90c69bdd2d418819875fd87bc70863bd81c6a",
+      "physicalLines": 132
+    },
+    {
+      "module": "Linear.ArtinianGlobalPairing",
+      "path": "source/Linear/ArtinianGlobalPairing.lean",
+      "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
+      "physicalLines": 133
+    },
+    {
+      "module": "Linear.AwayFractionEmbedding",
+      "path": "source/Linear/AwayFractionEmbedding.lean",
+      "sha256": "8899855d926ac5c219e2188c11ee3c18172b6426eaab5c14f86522f6e7fc5257",
+      "physicalLines": 42
+    },
+    {
+      "module": "Linear.BoundedPolynomialCombination",
+      "path": "source/Linear/BoundedPolynomialCombination.lean",
+      "sha256": "085fd32d496c7a20c4427dfb2e442c474c4c00876a5e07ce425b4567e2eb1457",
+      "physicalLines": 51
+    },
+    {
+      "module": "Linear.CenteredRelativeJacobian",
+      "path": "source/Linear/CenteredRelativeJacobian.lean",
+      "sha256": "e148aa48c54d723e24919baf7620cc0bf93af46047df930de0349be26a48b4d6",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.CoextensionBaseGradeCompatibility",
+      "path": "source/Linear/CoextensionBaseGradeCompatibility.lean",
+      "sha256": "83e8e4a868b8404cc747801e006ca2553c4f71a3ffcabf8255f697f18f95066b",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.CoextensionFractionEmbedding",
+      "path": "source/Linear/CoextensionFractionEmbedding.lean",
+      "sha256": "4b7028ae0e1d3515ad0293bc523d480930ba301c7dcb1a1e45ea2726de16f453",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.CoextensionFractionFunctional",
+      "path": "source/Linear/CoextensionFractionFunctional.lean",
+      "sha256": "3b9893c8c5b50778e28f3dc657c9da9a43ca5134d54534c080f16d5d955cc75c",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.CoextensionFractionNaturality",
+      "path": "source/Linear/CoextensionFractionNaturality.lean",
+      "sha256": "ef5fe4dd900266337bc467cee9459a70e27f1d61aede94260975f910d39cf247",
+      "physicalLines": 83
+    },
+    {
+      "module": "Linear.CoextensionGradedBaseEquiv",
+      "path": "source/Linear/CoextensionGradedBaseEquiv.lean",
+      "sha256": "e7e2728f3a477f857a65703b3d87492332fb7e216e99bb42fcb5c533f1a9205f",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.CoextensionGradedEmbedding",
+      "path": "source/Linear/CoextensionGradedEmbedding.lean",
+      "sha256": "ffc1d4074fd35bef060cfea7bbde12bc67fcfa0c116d18b22492ec8aaf2a98bf",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.CoextensionGradedModule",
+      "path": "source/Linear/CoextensionGradedModule.lean",
+      "sha256": "bfb0d210d8d39789b51f36470022c65eab26f3903fa5a7b0f1fa272e0cd60c41",
+      "physicalLines": 54
+    },
+    {
+      "module": "Linear.CoextensionHomInjective",
+      "path": "source/Linear/CoextensionHomInjective.lean",
+      "sha256": "a9c4f164f4952c4fcbf05001f10deb52bc4c67620ded1f812b308480f830c599",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.CoextensionHomogeneousGenerators",
+      "path": "source/Linear/CoextensionHomogeneousGenerators.lean",
+      "sha256": "22995e6f4ad5113f9bdc3f8b956025e9e29afed7cbc06f3daea0d3dc1ed5c109",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.CoextensionIntegralEmbedding",
+      "path": "source/Linear/CoextensionIntegralEmbedding.lean",
+      "sha256": "808decde385ab4a637c7e4261b44811ba8d2ef20df588e798e0709155497e44a",
+      "physicalLines": 65
+    },
+    {
+      "module": "Linear.CoextensionProjectiveGradeCompatibility",
+      "path": "source/Linear/CoextensionProjectiveGradeCompatibility.lean",
+      "sha256": "db93cd8405138def3d94580f5637c5ab492a312ee751b7351dfde55ce278e569",
+      "physicalLines": 30
+    },
+    {
+      "module": "Linear.CompleteIntersectionChange",
+      "path": "source/Linear/CompleteIntersectionChange.lean",
+      "sha256": "baf17fddcfc62d1f354f5bc15ec423dfe5903b26067b7b252646ca868a490df9",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.CompletionCongr",
+      "path": "source/Linear/CompletionCongr.lean",
+      "sha256": "be974b10d026f6f8a0f2ed0dcc032a7a104e44e6e18213370c6e6a66a6c68824",
+      "physicalLines": 116
+    },
+    {
+      "module": "Linear.CompletionLocalization",
+      "path": "source/Linear/CompletionLocalization.lean",
+      "sha256": "83d6c12e2ed7a704356414130ca3c9176f3295b5cef7465a3afb90f2e2794d23",
+      "physicalLines": 138
+    },
+    {
+      "module": "Linear.CompletionQuotient",
+      "path": "source/Linear/CompletionQuotient.lean",
+      "sha256": "e4ec081952520ed48a390f20c4de2f98dfa9a028993cf19f97b9fb08c6a77be5",
+      "physicalLines": 127
+    },
+    {
+      "module": "Linear.ContractionPairing",
+      "path": "source/Linear/ContractionPairing.lean",
+      "sha256": "67c6bfcf287c31af7b4a852f6b0bfa049f8f8195dcdb990326ae004b3c887840",
+      "physicalLines": 76
+    },
+    {
+      "module": "Linear.CoordinateRatioField",
+      "path": "source/Linear/CoordinateRatioField.lean",
+      "sha256": "1a6c5230498ef01f75020d83cf584cdcae28981651e696a6b94ccc2a31504855",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.DeterminantAnnihilator",
+      "path": "source/Linear/DeterminantAnnihilator.lean",
+      "sha256": "8a7ebfa5bd2b642ca93d1e463a2031c1b36eb037baf35a4d11f29d9632703c0f",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.DiagonalNonzero",
+      "path": "source/Linear/DiagonalNonzero.lean",
+      "sha256": "48a9c1a36db8b5f60ea30f901d81940a071160919182f2d9c39a461c1c16655c",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.DiagonalNormalization",
+      "path": "source/Linear/DiagonalNormalization.lean",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "physicalLines": 113
+    },
+    {
+      "module": "Linear.DiagonalTrace",
+      "path": "source/Linear/DiagonalTrace.lean",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "physicalLines": 177
+    },
+    {
+      "module": "Linear.DoublePoint",
+      "path": "source/Linear/DoublePoint.lean",
+      "sha256": "a7017ec416d7ac1e16f04e31df7e4f51920677b4d4da88cda1647bbd6813dd7d",
+      "physicalLines": 119
+    },
+    {
+      "module": "Linear.Duality",
+      "path": "source/Linear/Duality.lean",
+      "sha256": "00105abf68fc434f67069718ef64e3b8e06d4dc1b5ea23be2854f36890e1327a",
+      "physicalLines": 114
+    },
+    {
+      "module": "Linear.ExtendScalarsActualTensor",
+      "path": "source/Linear/ExtendScalarsActualTensor.lean",
+      "sha256": "a12701517f2c056bc5b8fd2caf0756005abfa3c9987686208f3fe23d1c1bfe70",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.FieldCoextensionRankOne",
+      "path": "source/Linear/FieldCoextensionRankOne.lean",
+      "sha256": "0c7fa87eb4b337b72057166c191867672496384695ef3bfa642dc2a69ad9098f",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.FieldEndomorphismMap",
+      "path": "source/Linear/FieldEndomorphismMap.lean",
+      "sha256": "f8aefb1c9461a233d398b3562b4403708217397255b3ba0bc0c19f6dc00ebee6",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.FilteredIdeal",
+      "path": "source/Linear/FilteredIdeal.lean",
+      "sha256": "cff1df34f8085e8ba8b540f65d407506dc9fbf8d454c225a8966b8640f598312",
+      "physicalLines": 221
+    },
+    {
+      "module": "Linear.FiniteCoextensionModule",
+      "path": "source/Linear/FiniteCoextensionModule.lean",
+      "sha256": "8948b995ea92cb25bf34ef6cb873dcb4a0259c9382e474e0d314af6510d3e4ad",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.FiniteCoextensionTorsionFree",
+      "path": "source/Linear/FiniteCoextensionTorsionFree.lean",
+      "sha256": "423d93f1a2f0f5eb521e3846b15c18bb9269b28c7ee3517da12f30ad37331006",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.FiniteCoextensionUpper",
+      "path": "source/Linear/FiniteCoextensionUpper.lean",
+      "sha256": "aa8f0839a9e8d4cd0dee341e4046f28c3a24c137877687218a9ddc0dd6de3a31",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.FiniteCoextensionUpperModule",
+      "path": "source/Linear/FiniteCoextensionUpperModule.lean",
+      "sha256": "eba473edc558dd0faa613c8f602c127d410343c43517019d60f5bdcfd1611609",
+      "physicalLines": 25
+    },
+    {
+      "module": "Linear.FiniteFunctionalLocalization",
+      "path": "source/Linear/FiniteFunctionalLocalization.lean",
+      "sha256": "3fa926d21ecc3f7c073fbb6572d09457bd056ab08fb336c78ed5273531c12f96",
+      "physicalLines": 61
+    },
+    {
+      "module": "Linear.FiniteFunctionalLocalizationEquiv",
+      "path": "source/Linear/FiniteFunctionalLocalizationEquiv.lean",
+      "sha256": "35f0a3990423a9db8e0763fa5f1ea60bdff4308fb51e14c8157155d2f8adec39",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.FiniteGradedNormalizationIrrelevantRadical",
+      "path": "source/Linear/FiniteGradedNormalizationIrrelevantRadical.lean",
+      "sha256": "46f44af89e7b599c11c95f11a736c7558ea53ee265d3d0352904de46c61a7e36",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.FiniteNativeCoextensionLocalization",
+      "path": "source/Linear/FiniteNativeCoextensionLocalization.lean",
+      "sha256": "1bf7535400dbbe701b0167302ac8164277d97d6e5a6fe5201f89c4e64aa48410",
+      "physicalLines": 76
+    },
+    {
+      "module": "Linear.FiniteNormalizationFilteredBound",
+      "path": "source/Linear/FiniteNormalizationFilteredBound.lean",
+      "sha256": "b027f1f3f2e933170b227a0c9982be9ef0aef48b72b36f6237ba85810b7166ca",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.FiniteSpecialization",
+      "path": "source/Linear/FiniteSpecialization.lean",
+      "sha256": "5966c5143536cb2e72fb00e09defff6d0c8ddb1beff10ad6727ea39d0c312162",
+      "physicalLines": 97
+    },
+    {
+      "module": "Linear.FiniteTypeFieldEndomorphism",
+      "path": "source/Linear/FiniteTypeFieldEndomorphism.lean",
+      "sha256": "c9d798e472144f6d34e7773bcb159fdf5d54a8562362fdac265f784044ae1f7e",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.FirstJet",
+      "path": "source/Linear/FirstJet.lean",
+      "sha256": "699167928d2f69bd07dc55c7ce6c1b204dc30ed01f3b8f84921b5aab0fabba28",
+      "physicalLines": 158
+    },
+    {
+      "module": "Linear.FirstSyzygy",
+      "path": "source/Linear/FirstSyzygy.lean",
+      "sha256": "69f4ede704cefa8a963b6e9b1e6e929e07183fd4be59daf40068b409e6d83e27",
+      "physicalLines": 143
+    },
+    {
+      "module": "Linear.FractionFieldTranscendence",
+      "path": "source/Linear/FractionFieldTranscendence.lean",
+      "sha256": "51b79b6c73bce7a8f9320b13a5c3cd4a1ca19b07af234017c0eaddc6905db500",
+      "physicalLines": 35
+    },
+    {
+      "module": "Linear.FunctionalSourceLocalization",
+      "path": "source/Linear/FunctionalSourceLocalization.lean",
+      "sha256": "635f759d98b0a53e3ec73c4a118b0141e92920abf5ba3141e7d369e1301f4ae9",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.GenericUnramifiedOpen",
+      "path": "source/Linear/GenericUnramifiedOpen.lean",
+      "sha256": "f8861cca5848db15435201ed1255582ff9e82069d65d169e2a6b7aeaf88c7f44",
+      "physicalLines": 51
+    },
+    {
+      "module": "Linear.GlobalDiagonalNormalization",
+      "path": "source/Linear/GlobalDiagonalNormalization.lean",
+      "sha256": "deb4c5debe04dce44c3925d5b473eb7459bf8747aff5c4710fdfa60e75e23f69",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.GradedDecompositionTransport",
+      "path": "source/Linear/GradedDecompositionTransport.lean",
+      "sha256": "d38f1a34efdb6be2486648e08fed365a994a7834fa368a6127fe2a67bf90fdc2",
+      "physicalLines": 34
+    },
+    {
+      "module": "Linear.GradedHilbertDegree",
+      "path": "source/Linear/GradedHilbertDegree.lean",
+      "sha256": "84adda1345db89171e9b358d5c0e531edc412d6b82bcdb98c4689319ad7fb5ea",
+      "physicalLines": 63
+    },
+    {
+      "module": "Linear.GradedHilbertSeriesRecurrence",
+      "path": "source/Linear/GradedHilbertSeriesRecurrence.lean",
+      "sha256": "22450c4943c11777ecd21ecd0573fc8d0b07d9f3f8944f770f0d1c1748c41bfa",
+      "physicalLines": 81
+    },
+    {
+      "module": "Linear.GradedHilbertSerre",
+      "path": "source/Linear/GradedHilbertSerre.lean",
+      "sha256": "355b736fdb2fa9f4c05d25889e2ff7d6b08b7e82e5f544ec6a31a5f2ca80eaec",
+      "physicalLines": 122
+    },
+    {
+      "module": "Linear.GradedHomComponent",
+      "path": "source/Linear/GradedHomComponent.lean",
+      "sha256": "a1cb07276d7950e24b7cbb5b7a128650fdfa963f1d8f346403d524e90991c9af",
+      "physicalLines": 72
+    },
+    {
+      "module": "Linear.GradedHomComponentNonzero",
+      "path": "source/Linear/GradedHomComponentNonzero.lean",
+      "sha256": "47ec26bf1823d86131d970ba5a46a68c0ece4872693b561d348657a09aab2d98",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.GradedHomDecomposition",
+      "path": "source/Linear/GradedHomDecomposition.lean",
+      "sha256": "66eda7a2e06fae8234a31fcdb3ae5d2bba0f1180f146fa8b55966098969eca39",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.GradedHomFiniteSupport",
+      "path": "source/Linear/GradedHomFiniteSupport.lean",
+      "sha256": "de8c775c82ad2521c53034610ccfbe7d269e0527d15519c103319a96e4441829",
+      "physicalLines": 55
+    },
+    {
+      "module": "Linear.GradedHomPiece",
+      "path": "source/Linear/GradedHomPiece.lean",
+      "sha256": "26025bcbb334d5786225aab6f6978eab94bcc74d06d8305a74f47c44bfeecea2",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.GradedHomProjection",
+      "path": "source/Linear/GradedHomProjection.lean",
+      "sha256": "1e45acad4397d605d89d819b8dafabaa31c939069408607be5ddf1cc3346f0aa",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.GradedIntegerProjection",
+      "path": "source/Linear/GradedIntegerProjection.lean",
+      "sha256": "52892ad4e5bf6091a82d60f482e115ab760c8483261a5e73abd3ccbe9cf4fa19",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.GradedIntegerProjector",
+      "path": "source/Linear/GradedIntegerProjector.lean",
+      "sha256": "3c146b5ea3ccae9a3566b6fc1ec19fb3474c1426b42aed3d12b3e83fcf150e7f",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.GradedModuleFiniteSupport",
+      "path": "source/Linear/GradedModuleFiniteSupport.lean",
+      "sha256": "a0638ff3a59a8e2f1456c904c8ff4aadd3d5f14ddf3ca00ebd489303e18699c8",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.GradedModuleHomogeneousGenerators",
+      "path": "source/Linear/GradedModuleHomogeneousGenerators.lean",
+      "sha256": "9a0e6999b537a412096144f1ff4b77cd3f9d2b1716a078127fc5865f6a47417f",
+      "physicalLines": 38
+    },
+    {
+      "module": "Linear.GradedModuleProjection",
+      "path": "source/Linear/GradedModuleProjection.lean",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.GradedQuotientDecomposition",
+      "path": "source/Linear/GradedQuotientDecomposition.lean",
+      "sha256": "c54b9fa829ab603533567e53509fe85eea13340e335838542181f2bd5e8b7c20",
+      "physicalLines": 95
+    },
+    {
+      "module": "Linear.GradedScalarExactSequence",
+      "path": "source/Linear/GradedScalarExactSequence.lean",
+      "sha256": "7a74d1150c59108f8ee9a1546b1cba061dd4bdf90f6317be4967c0c52df1e290",
+      "physicalLines": 115
+    },
+    {
+      "module": "Linear.GradedScalarInductionModules",
+      "path": "source/Linear/GradedScalarInductionModules.lean",
+      "sha256": "240dbf980db2f594cd7f8f057e765efd5d93cd73184dd193e4bba943538d4a38",
+      "physicalLines": 79
+    },
+    {
+      "module": "Linear.GradedSubalgebraDecomposition",
+      "path": "source/Linear/GradedSubalgebraDecomposition.lean",
+      "sha256": "0b2dbecf77fe528a79743a1d4c8b0b83f9402ff973d168232d585bef8131c933",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.GradedSubmoduleDecomposition",
+      "path": "source/Linear/GradedSubmoduleDecomposition.lean",
+      "sha256": "48534d164690eb440166cd7924bdd98e3387178d625d55a8f08a243741210375",
+      "physicalLines": 92
+    },
+    {
+      "module": "Linear.HilbertFiniteInstances",
+      "path": "source/Linear/HilbertFiniteInstances.lean",
+      "sha256": "735f7bcb7d7e642a820091c4f9551d333b2ab36cea67f081bc8f22db92191373",
+      "physicalLines": 71
+    },
+    {
+      "module": "Linear.HomogeneousAdjoinGenerators",
+      "path": "source/Linear/HomogeneousAdjoinGenerators.lean",
+      "sha256": "2ae3f4e39b948b70950368783f080001d5d966322d24144dcfe0950ac3031552",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.HomogeneousChartOverlapValue",
+      "path": "source/Linear/HomogeneousChartOverlapValue.lean",
+      "sha256": "10d4f8e013f1f90a1e954a4ceaf0a64440e7cc9228bebd49e5f611b040a74e6e",
+      "physicalLines": 30
+    },
+    {
+      "module": "Linear.HomogeneousCoordinateComponentProduct",
+      "path": "source/Linear/HomogeneousCoordinateComponentProduct.lean",
+      "sha256": "67099c1fa86077c0ab50953937a39a0fdff8c6dabb4666143cceaeb14942c819",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.HomogeneousCoordinateFiltration",
+      "path": "source/Linear/HomogeneousCoordinateFiltration.lean",
+      "sha256": "69053629587c70e6d3020f582d33ceb4c8dfb9c9f46f51b8a2c0ed2835355a71",
+      "physicalLines": 109
+    },
+    {
+      "module": "Linear.HomogeneousCoordinateGrading",
+      "path": "source/Linear/HomogeneousCoordinateGrading.lean",
+      "sha256": "51027580a417a916c5d14b47257422ec0fd6060b6bb820ac573eb30af1562540",
+      "physicalLines": 55
+    },
+    {
+      "module": "Linear.HomogeneousCoordinateHilbertPolynomial",
+      "path": "source/Linear/HomogeneousCoordinateHilbertPolynomial.lean",
+      "sha256": "9397aaf85ba24315f8772f783908e1612691f4deb5ef8e670d1a676a77840622",
+      "physicalLines": 55
+    },
+    {
+      "module": "Linear.HomogeneousCoordinateHilbertPositive",
+      "path": "source/Linear/HomogeneousCoordinateHilbertPositive.lean",
+      "sha256": "81e4306252a1b20d19f0d9f527205d22791e44e4097b18faeffad0ab31446cd4",
+      "physicalLines": 72
+    },
+    {
+      "module": "Linear.HomogeneousCoordinateHilbertSeries",
+      "path": "source/Linear/HomogeneousCoordinateHilbertSeries.lean",
+      "sha256": "cf89b2c83ba69a190118bff42756c3e0fccdaabaec06cb697423adeee88978e0",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.HomogeneousCoordinatePieces",
+      "path": "source/Linear/HomogeneousCoordinatePieces.lean",
+      "sha256": "95a349c6d14f13c94c8ab81a19ac9e055451117db00bbfccbb9ba7aa9a1ccaaf",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.HomogeneousCumulativeHilbert",
+      "path": "source/Linear/HomogeneousCumulativeHilbert.lean",
+      "sha256": "868ee8a41a798f2bf43e4af542230b78c2fb32cd1fe00f2032e8c8f6255b0bd5",
+      "physicalLines": 101
+    },
+    {
+      "module": "Linear.HomogeneousLinearElimination",
+      "path": "source/Linear/HomogeneousLinearElimination.lean",
+      "sha256": "c655fb3edb0f3415b00b6f01175aaf4402babff42368dab95ed9fda3cc728989",
+      "physicalLines": 129
+    },
+    {
+      "module": "Linear.HomogeneousLinearMonic",
+      "path": "source/Linear/HomogeneousLinearMonic.lean",
+      "sha256": "bcd87ba68a42becd989f6926919d85a7d2c512150b3796f6d59f46a07a09e53d",
+      "physicalLines": 139
+    },
+    {
+      "module": "Linear.HomogeneousLinearNormalization",
+      "path": "source/Linear/HomogeneousLinearNormalization.lean",
+      "sha256": "4d1ef9328693e90095888380c6017342fb25ad3b0544f214bcd94417f50c6dc5",
+      "physicalLines": 143
+    },
+    {
+      "module": "Linear.HomogeneousLocalizationIntegralValue",
+      "path": "source/Linear/HomogeneousLocalizationIntegralValue.lean",
+      "sha256": "0427960c828ade15d36be7223787815293dc64f78d55ee8701b6d234416fff6f",
+      "physicalLines": 61
+    },
+    {
+      "module": "Linear.HomogeneousLocalizationRefinementValue",
+      "path": "source/Linear/HomogeneousLocalizationRefinementValue.lean",
+      "sha256": "c941ca998dad44917ea18f8ac712370748236b8130c17b8943307abf50efc390",
+      "physicalLines": 26
+    },
+    {
+      "module": "Linear.HomogeneousMapFinite",
+      "path": "source/Linear/HomogeneousMapFinite.lean",
+      "sha256": "a2abfe9d041ec5e5f5598b49c22d845ccef319e39e900902fef59aacbc28e2e1",
+      "physicalLines": 86
+    },
+    {
+      "module": "Linear.HomogeneousPositiveEmbeddingShift",
+      "path": "source/Linear/HomogeneousPositiveEmbeddingShift.lean",
+      "sha256": "05dddd6ef1251f4cffee28c6bd0446071fff1d71cd877e87586ee938ad233634",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.HomogeneousPullbackComponents",
+      "path": "source/Linear/HomogeneousPullbackComponents.lean",
+      "sha256": "b913e29799ad2210e3d320630a4d2f3bcd3a0621f3adb96484d8a2277091f16a",
+      "physicalLines": 37
+    },
+    {
+      "module": "Linear.HomogeneousQuotient",
+      "path": "source/Linear/HomogeneousQuotient.lean",
+      "sha256": "815b79ba26f16335119f3544ec59cad7b6c25e4f190a9cb41911f22ceffad9b2",
+      "physicalLines": 234
+    },
+    {
+      "module": "Linear.HomogeneousRatioFieldMap",
+      "path": "source/Linear/HomogeneousRatioFieldMap.lean",
+      "sha256": "a43dcfe462da7fedc1ca25fe25192d1dec4b71d2a37e85ebb3d4ee27b06e7bb5",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.HomogeneousRationalIdeal",
+      "path": "source/Linear/HomogeneousRationalIdeal.lean",
+      "sha256": "542b5dd4b0dafbb1f427b299aca588aa56947cdacdd31408c886e7d9b63f7148",
+      "physicalLines": 76
+    },
+    {
+      "module": "Linear.HomogeneousRationalPullback",
+      "path": "source/Linear/HomogeneousRationalPullback.lean",
+      "sha256": "3b32e212be427b9d788776621333f9a64539c6cbe75e2ab7d87327c95f35cc65",
+      "physicalLines": 67
+    },
+    {
+      "module": "Linear.IntegerDomainHomComponent",
+      "path": "source/Linear/IntegerDomainHomComponent.lean",
+      "sha256": "00957668a6d932230a0f051fabcf632aed82e14da36f0b5e117a39fb1e19a81e",
+      "physicalLines": 72
+    },
+    {
+      "module": "Linear.IntegerDomainHomComponentNonzero",
+      "path": "source/Linear/IntegerDomainHomComponentNonzero.lean",
+      "sha256": "9192c9313862eea32f83a20fba3bf7fd08ab8c932331fefbed75498475015d21",
+      "physicalLines": 60
+    },
+    {
+      "module": "Linear.IntegerGradedFiniteFreeSurjection",
+      "path": "source/Linear/IntegerGradedFiniteFreeSurjection.lean",
+      "sha256": "c3ec94c67f728cb8912e2c5276c91f6b2aeebbf275e290b289622f38ac5fdce6",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.IntegerGradedFinitePresentation",
+      "path": "source/Linear/IntegerGradedFinitePresentation.lean",
+      "sha256": "7c89c5716843acdffe0324ca20d00ba59e12cc7b336b079cf99f97e6556df6ac",
+      "physicalLines": 68
+    },
+    {
+      "module": "Linear.IntegerGradedFiniteRelations",
+      "path": "source/Linear/IntegerGradedFiniteRelations.lean",
+      "sha256": "68874f2ce89ebef7353f0f1559d7423471fb9521adbd5a753bcf08f581361185",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.IntegerGradedHomogeneousAnnihilator",
+      "path": "source/Linear/IntegerGradedHomogeneousAnnihilator.lean",
+      "sha256": "aeb95e5226264d08acbf6d407405b7e3866611cd7fb3f4cf5992785eca7b384b",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.IntegerGradedKernelGenerators",
+      "path": "source/Linear/IntegerGradedKernelGenerators.lean",
+      "sha256": "d353a14c1ac61d6bfd8795573d6e1105de846d290a6256e9db85d5002a51591f",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.IntegerGradedModuleGenerators",
+      "path": "source/Linear/IntegerGradedModuleGenerators.lean",
+      "sha256": "68bd621aa09129ef7d7e50bd7ba9d5989c78b507e3965c2d098440ab32d24238",
+      "physicalLines": 38
+    },
+    {
+      "module": "Linear.IntegerGradedModuleProjection",
+      "path": "source/Linear/IntegerGradedModuleProjection.lean",
+      "sha256": "12dc84575739244cf64391a7577b13bd35b6b21e1ddf53d2cbdd8a413cf977eb",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.IntegerGradedSubmoduleDecomposition",
+      "path": "source/Linear/IntegerGradedSubmoduleDecomposition.lean",
+      "sha256": "5d8bb37ebae456c71efaa2128e096f44c70343a0bbf5252f7c3a5f5ec816e2d8",
+      "physicalLines": 85
+    },
+    {
+      "module": "Linear.IntegerGradedSurjectionPreimage",
+      "path": "source/Linear/IntegerGradedSurjectionPreimage.lean",
+      "sha256": "7cc92f566e10c0e9a0b9683481e879c9cdfcfe8bb6dc1b5e9394427d2a6006f7",
+      "physicalLines": 45
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeDecomposition",
+      "path": "source/Linear/IntegerShiftedFreeDecomposition.lean",
+      "sha256": "1ca324da7899372542b6542fc7b39f2a95c9d7abcbe1477aa1137e79f4258a40",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeGeneratorMap",
+      "path": "source/Linear/IntegerShiftedFreeGeneratorMap.lean",
+      "sha256": "cfdd79803fc1cbf4a1b9a72fed48e9cba1340674ab03548bef605cb4b02d305e",
+      "physicalLines": 61
+    },
+    {
+      "module": "Linear.IntegerShiftedFreePieces",
+      "path": "source/Linear/IntegerShiftedFreePieces.lean",
+      "sha256": "5c934b9a1958f01ac5614596702bbafc30e4c5e610ab33a830f3a05bca978833",
+      "physicalLines": 78
+    },
+    {
+      "module": "Linear.IntegralKrullDimension",
+      "path": "source/Linear/IntegralKrullDimension.lean",
+      "sha256": "d681b25882bf796f4ad924060297d43e5ec5c8fc19ffecf410192ceca1e65d88",
+      "physicalLines": 32
+    },
+    {
+      "module": "Linear.Iteration",
+      "path": "source/Linear/Iteration.lean",
+      "sha256": "26a45a0a1e4750003bc6f5dc66968f4888d1cf7e100e8fb0de31ed63120ab0fb",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.JacobianNonzero",
+      "path": "source/Linear/JacobianNonzero.lean",
+      "sha256": "20ed4e44d0b9fa4287a5c50209d30429dbd9b5ca8ce293957c78e1c4405e52ff",
+      "physicalLines": 180
+    },
+    {
+      "module": "Linear.JacobianSpecialization",
+      "path": "source/Linear/JacobianSpecialization.lean",
+      "sha256": "c9c03f9379d2459aa6656047cd06177ff663a0082dd724b1c00e8b33ecd5f028",
+      "physicalLines": 119
+    },
+    {
+      "module": "Linear.JacobianTrace",
+      "path": "source/Linear/JacobianTrace.lean",
+      "sha256": "82069953a58ad8596eb1ee01b72e6975761b590b433a22ff54447c3fab00feca",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.KoszulComparison",
+      "path": "source/Linear/KoszulComparison.lean",
+      "sha256": "80b12745a16e3dfee452d3d3a9ed1256fee52ae447d1f0304339de2287f337f1",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.KoszulExactResolution",
+      "path": "source/Linear/KoszulExactResolution.lean",
+      "sha256": "a083703ad1c48042cc1e51b91d1777bccc2a812b73a48d4a6baef4c7387dddb1",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.KoszulFunctionResolution",
+      "path": "source/Linear/KoszulFunctionResolution.lean",
+      "sha256": "1704b393bc83f91ed6e7fe36f2977231a4e8d4fada95d60ffdb1cdfbee65090a",
+      "physicalLines": 107
+    },
+    {
+      "module": "Linear.KoszulHomotopyTop",
+      "path": "source/Linear/KoszulHomotopyTop.lean",
+      "sha256": "76b6e0c66c51ce5cdf82da9a5a405ee3ce61b8569e8a4db688a394f24dd10479",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.KoszulLocalGlobalExact",
+      "path": "source/Linear/KoszulLocalGlobalExact.lean",
+      "sha256": "2f95dc2e9243e09b3d2320e861c8221fb64e0f6d7320f4c9a8e89da5e448715b",
+      "physicalLines": 36
+    },
+    {
+      "module": "Linear.KoszulResolution",
+      "path": "source/Linear/KoszulResolution.lean",
+      "sha256": "ce9ac141b89a8081c15fe06317a4c55b0a04d922d0286b9c9948d2419814268d",
+      "physicalLines": 95
+    },
+    {
+      "module": "Linear.KoszulSocleDeterminant",
+      "path": "source/Linear/KoszulSocleDeterminant.lean",
+      "sha256": "06945275d214ac136ee4df4624ef6792ddab57d7b3d8df7b46b40c091cdb7612",
+      "physicalLines": 171
+    },
+    {
+      "module": "Linear.KoszulSocleMap",
+      "path": "source/Linear/KoszulSocleMap.lean",
+      "sha256": "a9f334337f7503bf2efe0b6bc4980c54c5a1ac66eb948798f57ef9bf623e42d2",
+      "physicalLines": 32
+    },
+    {
+      "module": "Linear.KoszulTop",
+      "path": "source/Linear/KoszulTop.lean",
+      "sha256": "fcc60344a344fe3dd497f1f262099d8f6351e03c3b7c4b257432b8e8ce3ce7c7",
+      "physicalLines": 79
+    },
+    {
+      "module": "Linear.LiftedParameterCoordinates",
+      "path": "source/Linear/LiftedParameterCoordinates.lean",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "physicalLines": 157
+    },
+    {
+      "module": "Linear.LiftedParameterMaps",
+      "path": "source/Linear/LiftedParameterMaps.lean",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "physicalLines": 253
+    },
+    {
+      "module": "Linear.LiftedParameterPresentation",
+      "path": "source/Linear/LiftedParameterPresentation.lean",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "physicalLines": 137
+    },
+    {
+      "module": "Linear.LiftedParametersRegular",
+      "path": "source/Linear/LiftedParametersRegular.lean",
+      "sha256": "76e7a5d5b67de8f986aca4a87f40879f2442ee4d01487437cd922450d0bcd873",
+      "physicalLines": 85
+    },
+    {
+      "module": "Linear.LinearNormalizationBasePoint",
+      "path": "source/Linear/LinearNormalizationBasePoint.lean",
+      "sha256": "c1413d43fe4f620f0bfe0fb7f12fe4af1c5841298cc79c5d3ccbef9b3f4976df",
+      "physicalLines": 79
+    },
+    {
+      "module": "Linear.LocalComplexExactReflection",
+      "path": "source/Linear/LocalComplexExactReflection.lean",
+      "sha256": "473279d90a673a08dfa05a5c3094ea93f6474e591b8b73e08c9f0c425839440a",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.LocalExactReflection",
+      "path": "source/Linear/LocalExactReflection.lean",
+      "sha256": "29ec75a7c7081bd8418132982514f53df7add90864b179f4b9739bc169e3d337",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.LocalFiber",
+      "path": "source/Linear/LocalFiber.lean",
+      "sha256": "8d9fe65ec084873397eceb884f6348ce570a7e8b28694679f698f7a2d00c8b48",
+      "physicalLines": 75
+    },
+    {
+      "module": "Linear.LocalResidueEvaluation",
+      "path": "source/Linear/LocalResidueEvaluation.lean",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "physicalLines": 233
+    },
+    {
+      "module": "Linear.LocalizedAnnihilator",
+      "path": "source/Linear/LocalizedAnnihilator.lean",
+      "sha256": "cb6d5a772f83ee39a97196f4f9ed5099672cb3b084a60b63381e4b311dd891c4",
+      "physicalLines": 71
+    },
+    {
+      "module": "Linear.LocalizedModuleAwayOverlap",
+      "path": "source/Linear/LocalizedModuleAwayOverlap.lean",
+      "sha256": "8274f7e0810623df16e7112928dcc5c8a5ba96f9f0f1ffb8374036471cbceeab",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.LocalizedModuleAwayOverlapFraction",
+      "path": "source/Linear/LocalizedModuleAwayOverlapFraction.lean",
+      "sha256": "e2583f4eb9945b23e7454cdd7a7efa7ca832fb26461c5131ab7aa75c1b625a50",
+      "physicalLines": 42
+    },
+    {
+      "module": "Linear.LocalizedModuleAwayOverlapSemilinear",
+      "path": "source/Linear/LocalizedModuleAwayOverlapSemilinear.lean",
+      "sha256": "8e820e0240ca92fa522c9940006520173694c24e6ba3b8ee7bc32fd0be123d2b",
+      "physicalLines": 63
+    },
+    {
+      "module": "Linear.LocalizedModuleRefinement",
+      "path": "source/Linear/LocalizedModuleRefinement.lean",
+      "sha256": "841cd63d585a09a6de2b59a4228f4f8e19f06569f6db5c217af7a201d5714fee",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.LocalizedModuleRefinementSemilinear",
+      "path": "source/Linear/LocalizedModuleRefinementSemilinear.lean",
+      "sha256": "3141a9884357ce32186072b652dfcaf27dd7cc2e4a8a582401e0de71f0420ea2",
+      "physicalLines": 35
+    },
+    {
+      "module": "Linear.MatrixControlledPolynomialSpan",
+      "path": "source/Linear/MatrixControlledPolynomialSpan.lean",
+      "sha256": "26610c035b595805cb05e15a0256ac527a5e0b81ebe1b07f38a96da8e90a16d2",
+      "physicalLines": 45
+    },
+    {
+      "module": "Linear.ModuleBaseSourceFractionAction",
+      "path": "source/Linear/ModuleBaseSourceFractionAction.lean",
+      "sha256": "83575b1f181d5c1bc0d4d06d1313526afdaa04749c25c19744002236612dce7b",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.ModuleBaseSourceLocalization",
+      "path": "source/Linear/ModuleBaseSourceLocalization.lean",
+      "sha256": "f411f1e6462ef77434463589db89ee9e325f9c9b228d84d3463c43bd6c6be22f",
+      "physicalLines": 68
+    },
+    {
+      "module": "Linear.ModuleBaseSourceUpperAction",
+      "path": "source/Linear/ModuleBaseSourceUpperAction.lean",
+      "sha256": "f720fc4a4706dfcadb0438df0a350cc84f1a8f7de6be9396fb08ac3ddc0fcf9b",
+      "physicalLines": 31
+    },
+    {
+      "module": "Linear.ModuleChartTransportComponents",
+      "path": "source/Linear/ModuleChartTransportComponents.lean",
+      "sha256": "d21b62c8d162f32072da96779c95fbee3814e030352a6dde26a28386ceb86bfc",
+      "physicalLines": 54
+    },
+    {
+      "module": "Linear.NativeAffineDualAdd",
+      "path": "source/Linear/NativeAffineDualAdd.lean",
+      "sha256": "6e2a18ab87c038030bc09b32588d2d9c2a80accced6a3e26e0ee994d6a54f4cb",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.NativeAffineDualScalar",
+      "path": "source/Linear/NativeAffineDualScalar.lean",
+      "sha256": "c6b52bcc39bad91e09f01c4dfe145c411ddcc17d6fd766f63fb831204cda09ff",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.NativeAffineHomOriginalSourceAction",
+      "path": "source/Linear/NativeAffineHomOriginalSourceAction.lean",
+      "sha256": "bfd5383f4b62299d33493d855fddc2cff94030ec665af26a5eee9b16f71f1baf",
+      "physicalLines": 68
+    },
+    {
+      "module": "Linear.NativeAffineInternalHomLinear",
+      "path": "source/Linear/NativeAffineInternalHomLinear.lean",
+      "sha256": "a7dd8c82b2d3bfbf6759d6b12f372da5c726c0b6102b9ea3bb6cc90c9733ac13",
+      "physicalLines": 143
+    },
+    {
+      "module": "Linear.NativeAffineSourceChartHomLinear",
+      "path": "source/Linear/NativeAffineSourceChartHomLinear.lean",
+      "sha256": "91bb0561fb5fbe79dcd655682629922387ce1a02368bb8098e424d89b9c1c85a",
+      "physicalLines": 132
+    },
+    {
+      "module": "Linear.NativeBaseSourceChartSections",
+      "path": "source/Linear/NativeBaseSourceChartSections.lean",
+      "sha256": "dbe03c83909e525c8b6ea7b3645287878e6e0e79dc989c5b257836368b9cb001",
+      "physicalLines": 76
+    },
+    {
+      "module": "Linear.NativeChartSectionsModuleNaturality",
+      "path": "source/Linear/NativeChartSectionsModuleNaturality.lean",
+      "sha256": "a12cb9c4acbf9b9289f9182626db13a9a477d73debada2a9706ddd144070b74c",
+      "physicalLines": 63
+    },
+    {
+      "module": "Linear.NativeCoextensionBaseSourceCharts",
+      "path": "source/Linear/NativeCoextensionBaseSourceCharts.lean",
+      "sha256": "a49fa16fbe23ba86370ff4c2b5185b841da827bf8aaa855df7c6edd959fe98d9",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.NativeCoextensionLocalizationSourceAction",
+      "path": "source/Linear/NativeCoextensionLocalizationSourceAction.lean",
+      "sha256": "f0e300b3a8b21967a74f727fee39554b1d7d96fcbdbfe7175c5823e43015b328",
+      "physicalLines": 91
+    },
+    {
+      "module": "Linear.NativeCoextensionLocalizationUpper",
+      "path": "source/Linear/NativeCoextensionLocalizationUpper.lean",
+      "sha256": "ea80d0dd451826bc61a71e8dde666f0c0d45867817f931870f4d54a1ba15de61",
+      "physicalLines": 89
+    },
+    {
+      "module": "Linear.NativeCoextensionLocalizedTarget",
+      "path": "source/Linear/NativeCoextensionLocalizedTarget.lean",
+      "sha256": "76770797d672d17b6a404faf853e2ee3a420cc84ddcbd8e08544d6646b5bcce4",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.NativeDegreeZeroSourceActionValues",
+      "path": "source/Linear/NativeDegreeZeroSourceActionValues.lean",
+      "sha256": "70d48eadec414bcf0dcc51022b661cbab4bd058c55ef5261072199f2a6e4ee80",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.NativeDegreeZeroSourceInverseValues",
+      "path": "source/Linear/NativeDegreeZeroSourceInverseValues.lean",
+      "sha256": "5cb5dfcc6b73b5277a2095c040da2512c8617d34a9bd7a62bf5b512c9aa0352a",
+      "physicalLines": 83
+    },
+    {
+      "module": "Linear.NativeDualDegreeZeroChartInjective",
+      "path": "source/Linear/NativeDualDegreeZeroChartInjective.lean",
+      "sha256": "859d899afc1cf23135f3abb7c380136def41ace9690b4200e612cd5f9241435d",
+      "physicalLines": 72
+    },
+    {
+      "module": "Linear.NativeDualDegreeZeroChartMap",
+      "path": "source/Linear/NativeDualDegreeZeroChartMap.lean",
+      "sha256": "4a1af8f6acaf1143599a6782035f9bdc86c3b36568330ee027dc97d769e52656",
+      "physicalLines": 67
+    },
+    {
+      "module": "Linear.NativeDualDegreeZeroSpanValues",
+      "path": "source/Linear/NativeDualDegreeZeroSpanValues.lean",
+      "sha256": "b6568f148ea68c15c605449b8bc8dfcba5cb64062285f4aee4b32f1bc9e5598e",
+      "physicalLines": 110
+    },
+    {
+      "module": "Linear.NativeDualFullSourceChartComparison",
+      "path": "source/Linear/NativeDualFullSourceChartComparison.lean",
+      "sha256": "789917ffcc3363a68f94eeff1be520562d6d44be4bd8d8dfe5fd8c59d7f66c20",
+      "physicalLines": 74
+    },
+    {
+      "module": "Linear.NativeDualFullSourceChartEquiv",
+      "path": "source/Linear/NativeDualFullSourceChartEquiv.lean",
+      "sha256": "a92101ffc87439ffd7dc297ff32222346b6cbecdf54ef7a741d8eb4dca702b4e",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.NativeDualFullSourceChartSurjective",
+      "path": "source/Linear/NativeDualFullSourceChartSurjective.lean",
+      "sha256": "6b2d83f6fbd6b1a1bd994b9699717570d8c4e005c718358400fa9d3b03a54acd",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.NativeDualGlobalHomChartLinear",
+      "path": "source/Linear/NativeDualGlobalHomChartLinear.lean",
+      "sha256": "ac4e620559ada429dc63fcbcad7df7e8e2aee84ab7ee13aed9b0c90f52076c82",
+      "physicalLines": 36
+    },
+    {
+      "module": "Linear.NativeDualHomogeneousEvaluationMap",
+      "path": "source/Linear/NativeDualHomogeneousEvaluationMap.lean",
+      "sha256": "12a8007100cd424b976b08b2f7d3f8ed3c0d64c1b46e87d091edcc2f3ca82d09",
+      "physicalLines": 69
+    },
+    {
+      "module": "Linear.NativeDualHomogeneousFractionValues",
+      "path": "source/Linear/NativeDualHomogeneousFractionValues.lean",
+      "sha256": "2f1af0da620901bdf901c679076c939577972ddeda388e9a3c502867d0452e26",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.NativeDualLocalizationFractionValues",
+      "path": "source/Linear/NativeDualLocalizationFractionValues.lean",
+      "sha256": "d3ef353ce7f697bda9e58279660d350e979fe0f7d58282bfa9725749635f3144",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.NativeDualSourceChangedAction",
+      "path": "source/Linear/NativeDualSourceChangedAction.lean",
+      "sha256": "2af9f8c5c0aa100bfe95ebfca3aed81603fb24987f4d3e77bb988a1a81a2a90c",
+      "physicalLines": 150
+    },
+    {
+      "module": "Linear.NativeFiniteGradedChartSectionsSurjective",
+      "path": "source/Linear/NativeFiniteGradedChartSectionsSurjective.lean",
+      "sha256": "d338bba9f7dfb78cdf09ed0f92204e2d6e288b284acaffc16db96def93fec190",
+      "physicalLines": 76
+    },
+    {
+      "module": "Linear.NativeFullChartOriginalSourceAction",
+      "path": "source/Linear/NativeFullChartOriginalSourceAction.lean",
+      "sha256": "9bd06a67605a17e1ae8d33a1fcb7824c7c569b3d0cf3926244f7814a22909f9e",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.NativeFullSourceAffinePushforwardDual",
+      "path": "source/Linear/NativeFullSourceAffinePushforwardDual.lean",
+      "sha256": "cdf656929362570ebdf89f72a1f3d387540ee6c0c85cbfafa7b21eec6d4e3746",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.NativeFullSourceAffineSheafDual",
+      "path": "source/Linear/NativeFullSourceAffineSheafDual.lean",
+      "sha256": "6ff0f5582ad7f4b1474639a9618c054906e7795f99ebfb88b11544c86049b213",
+      "physicalLines": 68
+    },
+    {
+      "module": "Linear.NativeGlobalHomOriginalAffineRoundtrip",
+      "path": "source/Linear/NativeGlobalHomOriginalAffineRoundtrip.lean",
+      "sha256": "f24aa7c905532afbc04e4a19dd5393ae4452c42930736fa7d68393da663da9f5",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.NativeGlobalHomOriginalElementEvaluation",
+      "path": "source/Linear/NativeGlobalHomOriginalElementEvaluation.lean",
+      "sha256": "7bb27947ba9a17e46634fb04a69c9a0dba1f9a1be428199909a9cabd5db1a855",
+      "physicalLines": 63
+    },
+    {
+      "module": "Linear.NativeGlobalHomOriginalSectionEvaluation",
+      "path": "source/Linear/NativeGlobalHomOriginalSectionEvaluation.lean",
+      "sha256": "4e8c965df284f94648045b9a6191db2fb1b59ace786b54dda10ea332521615f6",
+      "physicalLines": 109
+    },
+    {
+      "module": "Linear.NativeGlobalHomOriginalSourceAction",
+      "path": "source/Linear/NativeGlobalHomOriginalSourceAction.lean",
+      "sha256": "7df51ea8119a63b441fb33086e0350a48dcd119e263c0dd72f6799299041a691",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.NativeGradedBaseSourceChart",
+      "path": "source/Linear/NativeGradedBaseSourceChart.lean",
+      "sha256": "ddea09e2d4b586c5917690ac4ccfdbd2ed11ff5af438500e148887e6a7539873",
+      "physicalLines": 80
+    },
+    {
+      "module": "Linear.NativeGradedBaseSourceMap",
+      "path": "source/Linear/NativeGradedBaseSourceMap.lean",
+      "sha256": "3845f95981e625d351ee89b2b5dfb53635ca770e3f609197770f94e24f89b6a3",
+      "physicalLines": 74
+    },
+    {
+      "module": "Linear.NativeGradedBaseSourceScalar",
+      "path": "source/Linear/NativeGradedBaseSourceScalar.lean",
+      "sha256": "7bdfe63e4ad1b55b2ca3d93c4ab33cfd0dc2e5c8d4f903018943abfb97fbeb43",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.NativeGradedChartSingleFraction",
+      "path": "source/Linear/NativeGradedChartSingleFraction.lean",
+      "sha256": "86934dd718c176e7575febd9e5319319c2c63b7b6c93057f90fdd0a0d227158c",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.NativeGradedModuleAway",
+      "path": "source/Linear/NativeGradedModuleAway.lean",
+      "sha256": "6b5c1087bd05665d6ca558b7701dcd9b7f2359ab11732ccc9a98994113525f9b",
+      "physicalLines": 115
+    },
+    {
+      "module": "Linear.NativeGradedModuleOverlapDegree",
+      "path": "source/Linear/NativeGradedModuleOverlapDegree.lean",
+      "sha256": "4283eb79ef390bf092a900a324ecc71a76e949734e6410a6e17881a509be7879",
+      "physicalLines": 78
+    },
+    {
+      "module": "Linear.NativeHomogeneousAwayTwist",
+      "path": "source/Linear/NativeHomogeneousAwayTwist.lean",
+      "sha256": "de142e593999aa2294ef534b3aa3522aeb955c190b9635d2c0fc23f89691c571",
+      "physicalLines": 51
+    },
+    {
+      "module": "Linear.NativeHomogeneousAwayTwistFraction",
+      "path": "source/Linear/NativeHomogeneousAwayTwistFraction.lean",
+      "sha256": "7105a3db6f7ebe801595d4f3d51fbafb5e269173c2e75ed176af45c94695dc38",
+      "physicalLines": 55
+    },
+    {
+      "module": "Linear.NativeIntegerTwistChartSingleFraction",
+      "path": "source/Linear/NativeIntegerTwistChartSingleFraction.lean",
+      "sha256": "723cd4b1b18301acd9aed56d7a991534b94c79f9f6d15b20e186c5d595c7088a",
+      "physicalLines": 111
+    },
+    {
+      "module": "Linear.NativeLocalizationScalarComparison",
+      "path": "source/Linear/NativeLocalizationScalarComparison.lean",
+      "sha256": "c4f09e896f5deb5160d590783a80dc1ba05d0befa2bfeb306cbe84542984ffa3",
+      "physicalLines": 42
+    },
+    {
+      "module": "Linear.NativeLocalizedUpperAlgebra",
+      "path": "source/Linear/NativeLocalizedUpperAlgebra.lean",
+      "sha256": "3d2c44703228ebbab9e73e1a9e2b704ff4037719467b3c042aee8f55e2df810c",
+      "physicalLines": 36
+    },
+    {
+      "module": "Linear.NativeNormalizationAffineFinite",
+      "path": "source/Linear/NativeNormalizationAffineFinite.lean",
+      "sha256": "ef0d20db297acf696efb0fc2d8717695464ac20d997fb7970cc70c3182b522ff",
+      "physicalLines": 28
+    },
+    {
+      "module": "Linear.NativeNormalizationChartRingActions",
+      "path": "source/Linear/NativeNormalizationChartRingActions.lean",
+      "sha256": "a76f9175aef91bb0ba28144daa534c46715119c1c4fd3f615c00356202f462b8",
+      "physicalLines": 51
+    },
+    {
+      "module": "Linear.NativeNormalizationDualChartMorphismAllSourceScalars",
+      "path": "source/Linear/NativeNormalizationDualChartMorphismAllSourceScalars.lean",
+      "sha256": "5a95f26eb2eb7274e7b4fd065a9d595c7b63935ef64240bb80a4cdf36e85676a",
+      "physicalLines": 90
+    },
+    {
+      "module": "Linear.NativeNormalizationDualChartMorphismSections",
+      "path": "source/Linear/NativeNormalizationDualChartMorphismSections.lean",
+      "sha256": "6634e19da55ee596f9731484b44f5e38930174daf778931229b9b5d4fc202fd8",
+      "physicalLines": 100
+    },
+    {
+      "module": "Linear.NativeNormalizationDualGlobalHomChartMorphism",
+      "path": "source/Linear/NativeNormalizationDualGlobalHomChartMorphism.lean",
+      "sha256": "912d9ffc0cbfe4ece7fae7e44bf7abb9f8f3a74ea9f9d8104729251b685b7f0c",
+      "physicalLines": 76
+    },
+    {
+      "module": "Linear.NativeNormalizationFullChartComparison",
+      "path": "source/Linear/NativeNormalizationFullChartComparison.lean",
+      "sha256": "7242a62525a256bb5d774984a5ea5f304c7686377320bd82aeeb0671c6190de4",
+      "physicalLines": 71
+    },
+    {
+      "module": "Linear.NativeNormalizationGlobalAffineHomLinear",
+      "path": "source/Linear/NativeNormalizationGlobalAffineHomLinear.lean",
+      "sha256": "117b1fa96ebf90538f712e66b9f5ea19032e62ebc49c058a97b10bda72946416",
+      "physicalLines": 60
+    },
+    {
+      "module": "Linear.NativeNormalizationGlobalAffineHomSections",
+      "path": "source/Linear/NativeNormalizationGlobalAffineHomSections.lean",
+      "sha256": "310746a6d2b28170e95f64eb5430c3506ab7ebba0f3b7c36c6e19759d391594f",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.NativeNormalizationOriginalChartSectionFormula",
+      "path": "source/Linear/NativeNormalizationOriginalChartSectionFormula.lean",
+      "sha256": "18dc710777f749eec12f795b707607f89ff3ea66c39df1c599079632d362caf7",
+      "physicalLines": 60
+    },
+    {
+      "module": "Linear.NativeNormalizationOriginalChartTopValue",
+      "path": "source/Linear/NativeNormalizationOriginalChartTopValue.lean",
+      "sha256": "0ff46b44d4224cdcbb0d950daa06ac85c83237a6d09e4ffaecae275eb84bc40d",
+      "physicalLines": 39
+    },
+    {
+      "module": "Linear.NativeNormalizationOriginalSourceElementValue",
+      "path": "source/Linear/NativeNormalizationOriginalSourceElementValue.lean",
+      "sha256": "3b9d67c46d36db2daa28bca556df82b04e0a870d7a3a9398cd2e0a35fafb36fc",
+      "physicalLines": 60
+    },
+    {
+      "module": "Linear.NativeNormalizationProjectiveMap",
+      "path": "source/Linear/NativeNormalizationProjectiveMap.lean",
+      "sha256": "507a15300b79bda6fc7234522267be23d78c80a69cf45fa93e6dd11fc0e3b3bb",
+      "physicalLines": 79
+    },
+    {
+      "module": "Linear.NativeNormalizationPushforwardChartModules",
+      "path": "source/Linear/NativeNormalizationPushforwardChartModules.lean",
+      "sha256": "4f232214caf4ca6b5218a13793b5a9135f4a8fd6ea063d91fde665550724d4a1",
+      "physicalLines": 42
+    },
+    {
+      "module": "Linear.NativeNormalizationPushforwardChartSections",
+      "path": "source/Linear/NativeNormalizationPushforwardChartSections.lean",
+      "sha256": "a48fc48e4ff26001ebbc08a3c51f202399ec747dba986d860fe2e13c1e3465b6",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.NativeNormalizationPushforwardGlobalHomChartLinear",
+      "path": "source/Linear/NativeNormalizationPushforwardGlobalHomChartLinear.lean",
+      "sha256": "d76e7e754d546cf5ba4d55a39219ac7579f539cea249ae096c91c3860427c577",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.NativeNormalizationPushforwardGlobalHomSourceValues",
+      "path": "source/Linear/NativeNormalizationPushforwardGlobalHomSourceValues.lean",
+      "sha256": "2bd7565e718a347d7dc8cc53e3d818bbf534ee88761bd79d3435efc0df49613c",
+      "physicalLines": 54
+    },
+    {
+      "module": "Linear.NativeNormalizationPushforwardSourceChartTilde",
+      "path": "source/Linear/NativeNormalizationPushforwardSourceChartTilde.lean",
+      "sha256": "81be44c90e87ce4dcee9042a35c7cb08bf46306f4e083546d92f37b9f763bd54",
+      "physicalLines": 54
+    },
+    {
+      "module": "Linear.NativeNormalizationPushforwardStructureChart",
+      "path": "source/Linear/NativeNormalizationPushforwardStructureChart.lean",
+      "sha256": "c9dd956e48bfa10b5079b7499ff896d72eaf995c17dea069e367c670ade91785",
+      "physicalLines": 40
+    },
+    {
+      "module": "Linear.NativeNormalizationSourceChartsQuasicoherent",
+      "path": "source/Linear/NativeNormalizationSourceChartsQuasicoherent.lean",
+      "sha256": "e3a19e69351c4c9fbc2408642a38d56d6d60caf94c9c2d46f980808e8ea0440d",
+      "physicalLines": 60
+    },
+    {
+      "module": "Linear.NativeOriginalGlobalAffineHomSourceAction",
+      "path": "source/Linear/NativeOriginalGlobalAffineHomSourceAction.lean",
+      "sha256": "fedac88279330840421d7d928fff25012a20a3d9704c76936a049e8f7ad74fca",
+      "physicalLines": 87
+    },
+    {
+      "module": "Linear.NativeProjectiveChart",
+      "path": "source/Linear/NativeProjectiveChart.lean",
+      "sha256": "752cff015427a10afa2dd2cbe6da541e904bbe525bc674a3ce6cd4eebd7e6a5f",
+      "physicalLines": 310
+    },
+    {
+      "module": "Linear.NativeProjectiveChartRefinement",
+      "path": "source/Linear/NativeProjectiveChartRefinement.lean",
+      "sha256": "4876100bed69965ced36c4972a0d78bdae1c445370fe32fee5c3fa3e34c17fc8",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.NativeProjectiveChartSections",
+      "path": "source/Linear/NativeProjectiveChartSections.lean",
+      "sha256": "e50fdcbd7af05957c3217583da7f91a33dd8aa118a4a8a7875108ed9919503a5",
+      "physicalLines": 91
+    },
+    {
+      "module": "Linear.NativeProjectiveChartSectionsInjective",
+      "path": "source/Linear/NativeProjectiveChartSectionsInjective.lean",
+      "sha256": "2c27c69b6c6ee1fd980ead8548622672a681041cc15f85713de299b0128daff7",
+      "physicalLines": 74
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeOneCover",
+      "path": "source/Linear/NativeProjectiveDegreeOneCover.lean",
+      "sha256": "accd01c4d8e818b4ca4cc6d33e680e4d189d011abf5fd2bbddf0c2d534058f1d",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeZeroComposition",
+      "path": "source/Linear/NativeProjectiveDegreeZeroComposition.lean",
+      "sha256": "5f032dd04c5d82558bb338c47607f9683042974e8d506c3b5e7deaec9ae04424",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeZeroEpi",
+      "path": "source/Linear/NativeProjectiveDegreeZeroEpi.lean",
+      "sha256": "516d0cdb7abfd8564fd2ccaf71596c500d531253716c6ddf0bb8068989bc05d3",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeZeroMap",
+      "path": "source/Linear/NativeProjectiveDegreeZeroMap.lean",
+      "sha256": "98c0d8578034e766970a67187a8a991938b776bedf482da077e22a104099ad12",
+      "physicalLines": 88
+    },
+    {
+      "module": "Linear.NativeProjectiveExactFinitePresentation",
+      "path": "source/Linear/NativeProjectiveExactFinitePresentation.lean",
+      "sha256": "1311912ae48a6221950c648b823a206107c0a01734da322b6afbf593bceff2fa",
+      "physicalLines": 67
+    },
+    {
+      "module": "Linear.NativeProjectiveFiniteFreeEpi",
+      "path": "source/Linear/NativeProjectiveFiniteFreeEpi.lean",
+      "sha256": "1a15cfd867329ae297ea9ea0e437ba7c219a6b3830136da7b2ce1ce463bca38f",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.NativeProjectiveFiniteGradedChartPresentation",
+      "path": "source/Linear/NativeProjectiveFiniteGradedChartPresentation.lean",
+      "sha256": "789d2cd6306de380c5b076aff72542b976bdc62f8d438a384cc0bbd80cb89a31",
+      "physicalLines": 67
+    },
+    {
+      "module": "Linear.NativeProjectiveFiniteGradedFiniteChart",
+      "path": "source/Linear/NativeProjectiveFiniteGradedFiniteChart.lean",
+      "sha256": "62239cfb62ded9746c2c864c405b3534b0baf479ba20196c8757eee92403b00b",
+      "physicalLines": 76
+    },
+    {
+      "module": "Linear.NativeProjectiveFiniteGradedFinitePresentation",
+      "path": "source/Linear/NativeProjectiveFiniteGradedFinitePresentation.lean",
+      "sha256": "10a330256ecd9a646edb7c11deb6b2fb207c54cb5b04add577036640e65d744d",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.NativeProjectiveFiniteGradedQuasicoherent",
+      "path": "source/Linear/NativeProjectiveFiniteGradedQuasicoherent.lean",
+      "sha256": "23ca55d62e93fd0c780061215e95248395c71ccf605523a637511f1050352cac",
+      "physicalLines": 42
+    },
+    {
+      "module": "Linear.NativeProjectiveHomogeneousSurjection",
+      "path": "source/Linear/NativeProjectiveHomogeneousSurjection.lean",
+      "sha256": "c9d8b8a8abf18e4a88b88020bb13431b08a5f8d5e8adef99b85be52df2d141fd",
+      "physicalLines": 37
+    },
+    {
+      "module": "Linear.NativeProjectiveIntegerTwistChartFree",
+      "path": "source/Linear/NativeProjectiveIntegerTwistChartFree.lean",
+      "sha256": "9479919e80bdbe800a8a64c1585bad861858c183523ef6c6c7a0d9f36a7e6601",
+      "physicalLines": 45
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelFraction",
+      "path": "source/Linear/NativeProjectiveKernelFraction.lean",
+      "sha256": "a8e68a04b852fab510d37384e3c985107978b5d8fc2834ac2008ed73da9c11e9",
+      "physicalLines": 75
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelGrading",
+      "path": "source/Linear/NativeProjectiveKernelGrading.lean",
+      "sha256": "1d3e15492afed282beeeebe67e4b1164fd3e9c2783596a1c43a22bb30e537f4e",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelLocalLift",
+      "path": "source/Linear/NativeProjectiveKernelLocalLift.lean",
+      "sha256": "0947cc8e5e575c707aa8da9c18e46d9dddad06e81edbff35c5aa71b8a0b787f1",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelSectionExact",
+      "path": "source/Linear/NativeProjectiveKernelSectionExact.lean",
+      "sha256": "665bc140bcfdbfc2b8a76b7a83d02fbaf4d7bca8089bedf2530c5e10d26049a8",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelSheaf",
+      "path": "source/Linear/NativeProjectiveKernelSheaf.lean",
+      "sha256": "35b88f671ea03037fc9e9e87432eacbca214b58ec23f2115e70c2bedc9155e50",
+      "physicalLines": 75
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleFractionLift",
+      "path": "source/Linear/NativeProjectiveModuleFractionLift.lean",
+      "sha256": "a3de4ba746f376a7570f0ab8acffdb5b2541d57873e7a40d8b4b631fed1c67c7",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalAdd",
+      "path": "source/Linear/NativeProjectiveModuleLocalAdd.lean",
+      "sha256": "57a228b3302c5b94f2711f717cf6d08b53937bf3288fe60a0466d91435668e5a",
+      "physicalLines": 84
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalMap",
+      "path": "source/Linear/NativeProjectiveModuleLocalMap.lean",
+      "sha256": "4efe6440880dd3c95ef5d5c2bbf6d06a24d29ac94265603222222a44f1696f8b",
+      "physicalLines": 80
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalPredicate",
+      "path": "source/Linear/NativeProjectiveModuleLocalPredicate.lean",
+      "sha256": "e2115c92d44050cc2877e9bca10ead5657be45b49de9526fae7af55e3d7f48e0",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalSMul",
+      "path": "source/Linear/NativeProjectiveModuleLocalSMul.lean",
+      "sha256": "a56eef16375a14c18d7b612579a93b2cda12b8bba38801c3f6676d069750c26f",
+      "physicalLines": 95
+    },
+    {
+      "module": "Linear.NativeProjectiveModulePresheaf",
+      "path": "source/Linear/NativeProjectiveModulePresheaf.lean",
+      "sha256": "32a57fb96bba0b23e7b7eca54c1bd0a68374c102bd1c0f247c56739ffbfff867",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSections",
+      "path": "source/Linear/NativeProjectiveModuleSections.lean",
+      "sha256": "1ada8ff22c27caf3391a2e3080fddae3d2d30fb01140838b56cb11ccae289d2d",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSheaf",
+      "path": "source/Linear/NativeProjectiveModuleSheaf.lean",
+      "sha256": "f1d285c41b1325dfeb3d8fa8ff3e3d508af7b7c1307f70d34058192052a29201",
+      "physicalLines": 37
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSheafEpi",
+      "path": "source/Linear/NativeProjectiveModuleSheafEpi.lean",
+      "sha256": "7fd740502e375dd4970499c989b7c93ee7b3bdeae763c7eb2d0c8b725d374d5a",
+      "physicalLines": 61
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSheafMap",
+      "path": "source/Linear/NativeProjectiveModuleSheafMap.lean",
+      "sha256": "d349cd4c673e7e8805c983666a310b579e0738f424ab24f397968cc65331b074",
+      "physicalLines": 89
+    },
+    {
+      "module": "Linear.NativeProjectiveOverCokernel",
+      "path": "source/Linear/NativeProjectiveOverCokernel.lean",
+      "sha256": "fb4c392f6e102bbf3f43299a24c933c2d561d74fe81c9321843a0abf2bf114a4",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.NativeProjectivePrimeMapExact",
+      "path": "source/Linear/NativeProjectivePrimeMapExact.lean",
+      "sha256": "b51f29882ba032227b59e3433026c8afa1cc51aa47d8485ff6953461d779a0c0",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.NativeProjectivePrimeTwistUnit",
+      "path": "source/Linear/NativeProjectivePrimeTwistUnit.lean",
+      "sha256": "2fdcddebb7bcfd76e4feef9e7ef3c6ca8dde0991e1f2e8b9470dd15f0f2cfffb",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.NativeProjectiveRingIntegerPieces",
+      "path": "source/Linear/NativeProjectiveRingIntegerPieces.lean",
+      "sha256": "4017d431d5faf02665d8c5d299aaf3adc2747ed9f426d0dcbdffb3835f8e1dfb",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.NativeProjectiveRingModuleLocalization",
+      "path": "source/Linear/NativeProjectiveRingModuleLocalization.lean",
+      "sha256": "13d48996b79724616983b634cde070ea8def5b4e97a213c7f2d855d966461750",
+      "physicalLines": 72
+    },
+    {
+      "module": "Linear.NativeProjectiveSheafExact",
+      "path": "source/Linear/NativeProjectiveSheafExact.lean",
+      "sha256": "1554ce5c5978feb2041e8548ef6822f218d990b4b6d80bd7d03272bc141fc9e9",
+      "physicalLines": 103
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeBiproduct",
+      "path": "source/Linear/NativeProjectiveShiftedFreeBiproduct.lean",
+      "sha256": "3dfafd781ee564293826ee8f020d3fcdc3b611a253b7d4eaabce21d5e4c30f01",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeChart",
+      "path": "source/Linear/NativeProjectiveShiftedFreeChart.lean",
+      "sha256": "a8b99d0e5b0f3b8e582b7e0e2f46f52b5081dd3267c1a88ebb7d9cfd7baeed90",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeCoordinateMaps",
+      "path": "source/Linear/NativeProjectiveShiftedFreeCoordinateMaps.lean",
+      "sha256": "8de84a0c4b1451da4cb50618c9406291118f22463dd557aff890e107f4252e6b",
+      "physicalLines": 101
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreePrimeIdentities",
+      "path": "source/Linear/NativeProjectiveShiftedFreePrimeIdentities.lean",
+      "sha256": "35372197f9e3b80cd781802864ece41586f650ad56339eb0dc5747aafed36703",
+      "physicalLines": 55
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeSheafIdentities",
+      "path": "source/Linear/NativeProjectiveShiftedFreeSheafIdentities.lean",
+      "sha256": "bda1e5a81027a2edb1524d923968ea12bc42ac15d944fbd0e31050a99c953a3b",
+      "physicalLines": 96
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeSheafMaps",
+      "path": "source/Linear/NativeProjectiveShiftedFreeSheafMaps.lean",
+      "sha256": "27881ea9ca4ff43689f13eaf12d1ab4ed2a5053c9382d4c18e3edc26bdd110eb",
+      "physicalLines": 74
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistChartFree",
+      "path": "source/Linear/NativeProjectiveTwistChartFree.lean",
+      "sha256": "b6ccfba8f8abaf04dd7eb40555b23b06af28cfb71f35ae700d0c942d04b7b251",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistFraction",
+      "path": "source/Linear/NativeProjectiveTwistFraction.lean",
+      "sha256": "a5ae39d7ff084d4e673a65a019aa2ab18e60df97a7bc8346220eef877297d4bb",
+      "physicalLines": 85
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistSectionEquiv",
+      "path": "source/Linear/NativeProjectiveTwistSectionEquiv.lean",
+      "sha256": "0aa852ed6dd392689f64d63aa2e72922c50ed6d18d2b625996e24107eab57a51",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistSheafOverIso",
+      "path": "source/Linear/NativeProjectiveTwistSheafOverIso.lean",
+      "sha256": "a23bad63d87d551b02c02645a12bd7cbc4f6c6eed6941fb124433773a62a998e",
+      "physicalLines": 54
+    },
+    {
+      "module": "Linear.NativePushforwardGlobalHomAllSourceFunctions",
+      "path": "source/Linear/NativePushforwardGlobalHomAllSourceFunctions.lean",
+      "sha256": "2a5b77388ced7930014986b053a34dbcad1e3138fa38a8ca57e8c9cfcc05bdf5",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.NativePushforwardGlobalHomOriginalSourceAction",
+      "path": "source/Linear/NativePushforwardGlobalHomOriginalSourceAction.lean",
+      "sha256": "35c937ffe8f6a065b94b140817d573ea35d495113b286f94a72be099a8530c50",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.NativePushforwardOriginalSourceChartAction",
+      "path": "source/Linear/NativePushforwardOriginalSourceChartAction.lean",
+      "sha256": "f300bd4c57910b1b34e26848bfab12130ff03d2fb29c00fcb667436b4f26454a",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.NativePushforwardOriginalSourceChartValues",
+      "path": "source/Linear/NativePushforwardOriginalSourceChartValues.lean",
+      "sha256": "86b34f0d5026188fceb9f74213f29f6e31ca2464997b840a15acf88cf6311f06",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.NativeShiftedFreeChartSectionsSurjective",
+      "path": "source/Linear/NativeShiftedFreeChartSectionsSurjective.lean",
+      "sha256": "8445a6bdeaf5766d6779d44010b9227ad40afef87121c0ab050f4fc311aa6a98",
+      "physicalLines": 71
+    },
+    {
+      "module": "Linear.NativeSourceSpecChartLinear",
+      "path": "source/Linear/NativeSourceSpecChartLinear.lean",
+      "sha256": "8667bad5284bcc777eedabc23859a303e712e4ba30c7f0f6473379e8c13995b1",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.NativeSourceSpecChartTilde",
+      "path": "source/Linear/NativeSourceSpecChartTilde.lean",
+      "sha256": "660d014a96b9b8825a29d66f02ec97bf7bfdbf4c6921a36588e56fc87a682328",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.NativeStructureModuleFraction",
+      "path": "source/Linear/NativeStructureModuleFraction.lean",
+      "sha256": "d680e9e569b17f4604591f1eddecd1a9b9fbc1b08e7e0cc5928023ba72594b09",
+      "physicalLines": 61
+    },
+    {
+      "module": "Linear.NativeStructureModuleSections",
+      "path": "source/Linear/NativeStructureModuleSections.lean",
+      "sha256": "4e7fd6269baae74fb097b15fe0f9e9ee80c9e85cb5ffe4284a7e3e1e436d1d16",
+      "physicalLines": 103
+    },
+    {
+      "module": "Linear.NativeStructureModuleSheaf",
+      "path": "source/Linear/NativeStructureModuleSheaf.lean",
+      "sha256": "e32a4e6e7c54ea04b4fb2795008ab5c652d071ca42d3dba3cfb77134a642fdf7",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.NilpotentEvaluation",
+      "path": "source/Linear/NilpotentEvaluation.lean",
+      "sha256": "ba548ae54a09805d18c0a67616600842020082a08df4c8092ae67b4c42bdc871",
+      "physicalLines": 74
+    },
+    {
+      "module": "Linear.NilpotentEvaluationUnique",
+      "path": "source/Linear/NilpotentEvaluationUnique.lean",
+      "sha256": "c9ba1a17ade996700f2b2e0ced2d6e9a7428c9c4867388809828d9651fe1e431",
+      "physicalLines": 149
+    },
+    {
+      "module": "Linear.NilpotentRegular",
+      "path": "source/Linear/NilpotentRegular.lean",
+      "sha256": "f15652633da27496fc641422562ceefcdadda0dd70a36c79b6776357033018c9",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.NoetherNormalizationKrull",
+      "path": "source/Linear/NoetherNormalizationKrull.lean",
+      "sha256": "a24227f25eaf095723dee05331e2b96800fc204ff3ba3f9f016a689bc19e719f",
+      "physicalLines": 29
+    },
+    {
+      "module": "Linear.NoetherNormalizationTranscendence",
+      "path": "source/Linear/NoetherNormalizationTranscendence.lean",
+      "sha256": "d6f58ed7e987f4b635e041b66404b63ba0635b645da0b5b894770c7d53f6b1a5",
+      "physicalLines": 39
+    },
+    {
+      "module": "Linear.NormalizationChartFunctionalDenominator",
+      "path": "source/Linear/NormalizationChartFunctionalDenominator.lean",
+      "sha256": "57f4b7e61fdb6f33ededb313b4d0b1721a3e003fe884553de31ba553d2496674",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.NormalizationChartFunctionalHomogenization",
+      "path": "source/Linear/NormalizationChartFunctionalHomogenization.lean",
+      "sha256": "d669fc90d8b75aacd614f9ce01e20a493150561c804581cca49633911fd28897",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.NormalizationChartFunctionalLinearMap",
+      "path": "source/Linear/NormalizationChartFunctionalLinearMap.lean",
+      "sha256": "b86edf8f969833022f6a614288be9be95dd0a38751cb696793386b4002f287d2",
+      "physicalLines": 76
+    },
+    {
+      "module": "Linear.NormalizationChartHomogeneousAddMap",
+      "path": "source/Linear/NormalizationChartHomogeneousAddMap.lean",
+      "sha256": "f95bb207ff7236b592766d168a742e26243733fc88c357060acd28e41805a249",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.NormalizationChartNativeDualFraction",
+      "path": "source/Linear/NormalizationChartNativeDualFraction.lean",
+      "sha256": "662eb45ce76ae4ab2f8d1a119fdcbb72058e0313f3ffd024fe2d628c1d2408b2",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.NormalizationChartScalarComparison",
+      "path": "source/Linear/NormalizationChartScalarComparison.lean",
+      "sha256": "68963a2527b0c81d1da754008323c96b772fe0e0af073a58f9ebae2d95d74eaa",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.NormalizationHomogeneousChartMap",
+      "path": "source/Linear/NormalizationHomogeneousChartMap.lean",
+      "sha256": "02296633c459c4fa7fec055725f0f62e1a738ae578baf339b73a75e7fafec524",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.NormalizationHomogeneousChartProduct",
+      "path": "source/Linear/NormalizationHomogeneousChartProduct.lean",
+      "sha256": "ae1f2236472296e1c879177b8b3a29bd44eda7ce53f6034c5b1aa7add2fc5879",
+      "physicalLines": 38
+    },
+    {
+      "module": "Linear.NormalizationHomogeneousChartShift",
+      "path": "source/Linear/NormalizationHomogeneousChartShift.lean",
+      "sha256": "c10ae35aa086304c4ca38ef0216f7a49da35da96c72feca4e85c447c6d16bed4",
+      "physicalLines": 38
+    },
+    {
+      "module": "Linear.NormalizationHomogeneousChartSum",
+      "path": "source/Linear/NormalizationHomogeneousChartSum.lean",
+      "sha256": "2882124b78996a33e1e78a79cee7f8137261711163307d135ec68f9576c2d635",
+      "physicalLines": 51
+    },
+    {
+      "module": "Linear.NormalizationHomogeneousCoefficientProjection",
+      "path": "source/Linear/NormalizationHomogeneousCoefficientProjection.lean",
+      "sha256": "f92de2c54c1e5fcaea6425d76b0f66e140fb1496ec99b3f4cf2415bfa44ca13d",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.NormalizationHomogeneousCombination",
+      "path": "source/Linear/NormalizationHomogeneousCombination.lean",
+      "sha256": "e8ba76f272862855820ed7ebe48502d80b4faacc1e7fc4801917d024ff312aeb",
+      "physicalLines": 31
+    },
+    {
+      "module": "Linear.NormalizationSourceChartEquiv",
+      "path": "source/Linear/NormalizationSourceChartEquiv.lean",
+      "sha256": "efc10a17af4a3cab2e00e6f65450054413b5654b44031471245dd1641e4aaac0",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.NormalizationSourceChartFinite",
+      "path": "source/Linear/NormalizationSourceChartFinite.lean",
+      "sha256": "0e54b68cab1f59458a3fdf4c99c15114abe53efb3929235a5fc8d9de38bb5259",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.NormalizationSourceChartHomogeneousFraction",
+      "path": "source/Linear/NormalizationSourceChartHomogeneousFraction.lean",
+      "sha256": "0b13a0246dea01c4949aa54660196c578b3210fcb39cd675da08bf61c171c806",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.NormalizationSourceChartLinearMap",
+      "path": "source/Linear/NormalizationSourceChartLinearMap.lean",
+      "sha256": "31fc4fbdaf6078e1c4dd721e8bafadcc7c4aea1cb48d78c15f8197f6f9108b23",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.NormalizationSourceChartMembership",
+      "path": "source/Linear/NormalizationSourceChartMembership.lean",
+      "sha256": "37f131d7a9499ecc2eb7dbfc160448710b0d6daebe9d9f63d927abeffe2f8972",
+      "physicalLines": 55
+    },
+    {
+      "module": "Linear.NormalizationSourceChartSpan",
+      "path": "source/Linear/NormalizationSourceChartSpan.lean",
+      "sha256": "f4cf6035b288ea03ef553b979e9978737991269f56b676f5ab9461434b1627f5",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.NormalizationSourceChartSurjective",
+      "path": "source/Linear/NormalizationSourceChartSurjective.lean",
+      "sha256": "602a0a15f7a7d34be8d20506a33f09f23a02a08e329bfe8644425bebe38f9939",
+      "physicalLines": 40
+    },
+    {
+      "module": "Linear.OriginalAwayOverlapFraction",
+      "path": "source/Linear/OriginalAwayOverlapFraction.lean",
+      "sha256": "2cd5c48e9e4ed5700d08a2b7813361a8c6c229624ddbd372265a25e2ed15f3da",
+      "physicalLines": 35
+    },
+    {
+      "module": "Linear.OriginalBaseMorphismSourceLift",
+      "path": "source/Linear/OriginalBaseMorphismSourceLift.lean",
+      "sha256": "251075a944a7c035b6cec30696e8c3ae6e43af346d23c3531498929bf2d2227a",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.OriginalChartSourceAdapterScalars",
+      "path": "source/Linear/OriginalChartSourceAdapterScalars.lean",
+      "sha256": "46bab9d1b7b1630519440b4d5dbea59137ebb89c5b305e5e6775880de4aecded",
+      "physicalLines": 39
+    },
+    {
+      "module": "Linear.OriginalGlobalModuleScalar",
+      "path": "source/Linear/OriginalGlobalModuleScalar.lean",
+      "sha256": "770d438a7faa8197f651f53412ecb7616504ba2b6165cb9915a4a9f63fb4e877",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.OriginalProjectiveChartScalarTransport",
+      "path": "source/Linear/OriginalProjectiveChartScalarTransport.lean",
+      "sha256": "7adb3757615debdfdbba68c06cb15a635e3c08df84e039647e99acfb37402229",
+      "physicalLines": 38
+    },
+    {
+      "module": "Linear.OriginalProjectiveChartSectionRing",
+      "path": "source/Linear/OriginalProjectiveChartSectionRing.lean",
+      "sha256": "2c42d75020c56163863f389df1477d666eee725aaee092b86ba5264df3d78593",
+      "physicalLines": 34
+    },
+    {
+      "module": "Linear.OriginalPushforwardChartLinearityFromSections",
+      "path": "source/Linear/OriginalPushforwardChartLinearityFromSections.lean",
+      "sha256": "dd032ec898c0d40110cb72f18b162d1902b8f522c461404d99fe4c9b98c1986e",
+      "physicalLines": 96
+    },
+    {
+      "module": "Linear.OriginalPushforwardSourceChartQuasicoherent",
+      "path": "source/Linear/OriginalPushforwardSourceChartQuasicoherent.lean",
+      "sha256": "bf3b638a1e6f602e4c614a64846d25916083b7721886d61931b8dc0b9de9e574",
+      "physicalLines": 42
+    },
+    {
+      "module": "Linear.OriginalSheafSourceRestriction",
+      "path": "source/Linear/OriginalSheafSourceRestriction.lean",
+      "sha256": "be16cecdbe59d65ce6ceb86590d4c5b4a696b689acaa193247838bb452c573ae",
+      "physicalLines": 51
+    },
+    {
+      "module": "Linear.OriginalSourceScalarRecoveryInverse",
+      "path": "source/Linear/OriginalSourceScalarRecoveryInverse.lean",
+      "sha256": "4efdc7f5c3944cede4a48674f7575eaff7f4d69ec2d87889843d8d16b9652527",
+      "physicalLines": 38
+    },
+    {
+      "module": "Linear.OriginalTildeScalar",
+      "path": "source/Linear/OriginalTildeScalar.lean",
+      "sha256": "f29be9d8bdfffc0d663a1192c1961d0a3efad5893378937af2c5929f86ae3062",
+      "physicalLines": 60
+    },
+    {
+      "module": "Linear.PairingMatrix",
+      "path": "source/Linear/PairingMatrix.lean",
+      "sha256": "aa15aafe057d5bdf3881e401f8a27e479f3ffb77c68dfbe93cf06d08ff16ecde",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.ParameterLinearPart",
+      "path": "source/Linear/ParameterLinearPart.lean",
+      "sha256": "5755d08c8063724334df12890bba97078501a34de8c9799d7cab0da2013ae449",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.ParameterPairingChange",
+      "path": "source/Linear/ParameterPairingChange.lean",
+      "sha256": "9aa8bc7a50113102c944d46a1e5f8e2496d131c39efee02ad31d20dba7691f08",
+      "physicalLines": 88
+    },
+    {
+      "module": "Linear.ParameterQuotient",
+      "path": "source/Linear/ParameterQuotient.lean",
+      "sha256": "ecedb6ff69cfb3bb3a9fa97eeefb40335a86ffe31fb49f8cd00398fc525e9b53",
+      "physicalLines": 114
+    },
+    {
+      "module": "Linear.ParameterSubstitution",
+      "path": "source/Linear/ParameterSubstitution.lean",
+      "sha256": "c253665adb7aabd4f639d1ec12446ee9f70af874dfdcae6186ef62e74fe8ec6e",
+      "physicalLines": 124
+    },
+    {
+      "module": "Linear.PointDecomposition",
+      "path": "source/Linear/PointDecomposition.lean",
+      "sha256": "ed0d01acd48f298d491210fe97029d219bfcc54a1b786b11f98572a8f5beb97a",
+      "physicalLines": 131
+    },
+    {
+      "module": "Linear.PolynomialApproximation",
+      "path": "source/Linear/PolynomialApproximation.lean",
+      "sha256": "113efcfc5c5beaf7150cff35b3fda3d1853fa9c19897a1e128b9158d1887a187",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.PolynomialContraction",
+      "path": "source/Linear/PolynomialContraction.lean",
+      "sha256": "6b2a579e5f516c3ea459338ad7ff617f3c5996fd4d2ad61e5cfc6421206b506c",
+      "physicalLines": 119
+    },
+    {
+      "module": "Linear.PolynomialDiagonal",
+      "path": "source/Linear/PolynomialDiagonal.lean",
+      "sha256": "769caeb6e040f1c016a4070b56b73bdda07e6dc5be294cc4dbe8b06d42e5feeb",
+      "physicalLines": 69
+    },
+    {
+      "module": "Linear.PolynomialDifferenceDegree",
+      "path": "source/Linear/PolynomialDifferenceDegree.lean",
+      "sha256": "c609f683d1d1fb50a718c5cbac5d79e3364b5fd4c589ca15d88667bec597d16d",
+      "physicalLines": 134
+    },
+    {
+      "module": "Linear.PolynomialDoubleFiber",
+      "path": "source/Linear/PolynomialDoubleFiber.lean",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "physicalLines": 276
+    },
+    {
+      "module": "Linear.PolynomialFiberDiagonal",
+      "path": "source/Linear/PolynomialFiberDiagonal.lean",
+      "sha256": "349ca2d5c9a4255e6c283beb8cfb55cdbf1613137febf41a8c6b228ae51ae4d3",
+      "physicalLines": 110
+    },
+    {
+      "module": "Linear.PolynomialFilteredImage",
+      "path": "source/Linear/PolynomialFilteredImage.lean",
+      "sha256": "4bad9265e7c1f35869923686e6d7c08e1573ed0713e76c3a48059a2d8ba45809",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.PolynomialFormalCompletion",
+      "path": "source/Linear/PolynomialFormalCompletion.lean",
+      "sha256": "45eb6c3eb604c0d736054a1c9bd2b0da27dff9a8c4a321dec2d3a3eec556b2db",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.PolynomialFormalDerivative",
+      "path": "source/Linear/PolynomialFormalDerivative.lean",
+      "sha256": "260f350eee1cc2bb55393a3056197bc5c89961b6c655438105f44a266dee64a1",
+      "physicalLines": 90
+    },
+    {
+      "module": "Linear.PolynomialFormalFiber",
+      "path": "source/Linear/PolynomialFormalFiber.lean",
+      "sha256": "eff69d654c1df13c0cf52a72ddd58393677d342dffa746c28135cb2b2127d0bf",
+      "physicalLines": 109
+    },
+    {
+      "module": "Linear.PolynomialGlobalResidue",
+      "path": "source/Linear/PolynomialGlobalResidue.lean",
+      "sha256": "e83282756eaff7e570e912c38dc0508a23376d44b587142f595ac56db142ac7e",
+      "physicalLines": 157
+    },
+    {
+      "module": "Linear.PolynomialGrowthDegreeComparison",
+      "path": "source/Linear/PolynomialGrowthDegreeComparison.lean",
+      "sha256": "50c55fd649c009d07d8ad62d61a9517c39c9939cc5d1864a73f39801e1bbfde9",
+      "physicalLines": 40
+    },
+    {
+      "module": "Linear.PolynomialGrowthLimits",
+      "path": "source/Linear/PolynomialGrowthLimits.lean",
+      "sha256": "7e0312c31cf718ef055a3b52f13a99f646228a54a5d4698552ff5e63fe32e183",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.PolynomialLinearChange",
+      "path": "source/Linear/PolynomialLinearChange.lean",
+      "sha256": "1221dfe88b5ac439e384742170b3982bf2f7c013638dc5608a76fce8681d1c93",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.PolynomialLinearGrading",
+      "path": "source/Linear/PolynomialLinearGrading.lean",
+      "sha256": "9f397c470fed1a27c52549aa0022e03fb15cd43acc956f4098ea0662be767d12",
+      "physicalLines": 63
+    },
+    {
+      "module": "Linear.PolynomialLinearHighestComponents",
+      "path": "source/Linear/PolynomialLinearHighestComponents.lean",
+      "sha256": "fbdad7021a92316c6aed0401bca5a14680d521772a4a7004d054501340df227d",
+      "physicalLines": 68
+    },
+    {
+      "module": "Linear.PolynomialOriginFinite",
+      "path": "source/Linear/PolynomialOriginFinite.lean",
+      "sha256": "bb1e9cdb388c3b98e5527f5aa6c8d0d6876ca272a84c2d4af6cb441fd03dad1a",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.PolynomialPointCompletion",
+      "path": "source/Linear/PolynomialPointCompletion.lean",
+      "sha256": "6983e0adfe6cc110e54707103f5409df43fafc885b4a99bff1f637a798806f15",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.PolynomialRecentering",
+      "path": "source/Linear/PolynomialRecentering.lean",
+      "sha256": "663435009fbfa8f9724286f30641ed18a0c4a1f9b91255580382be605576934e",
+      "physicalLines": 63
+    },
+    {
+      "module": "Linear.PolynomialRectangleDimension",
+      "path": "source/Linear/PolynomialRectangleDimension.lean",
+      "sha256": "09eb2cd446f0c3ada072b34af72a40dbee8a7da8b80c404856a8da5c1d12b1be",
+      "physicalLines": 51
+    },
+    {
+      "module": "Linear.PolynomialRegular",
+      "path": "source/Linear/PolynomialRegular.lean",
+      "sha256": "789096a78f53b3d00a04ee811c67437f0f0c25c86bb7425375248bf74ea9e5ac",
+      "physicalLines": 91
+    },
+    {
+      "module": "Linear.PolynomialSocle",
+      "path": "source/Linear/PolynomialSocle.lean",
+      "sha256": "e92e113f68dcdd4ad84f9d09d24714624d02c496b2517585816b3d235209c5b5",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.PowerSeriesAugmentation",
+      "path": "source/Linear/PowerSeriesAugmentation.lean",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "physicalLines": 142
+    },
+    {
+      "module": "Linear.PowerSeriesCentering",
+      "path": "source/Linear/PowerSeriesCentering.lean",
+      "sha256": "5dcb5c506616c29da2c93ec573fbcee0c9e29fccb0cac8602dde00bc7237669c",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.PowerSeriesCoefficients",
+      "path": "source/Linear/PowerSeriesCoefficients.lean",
+      "sha256": "4916a65bd995b9bc121f7a8b3d0eae0efa38013d1446bc3f451bcc14e9213e38",
+      "physicalLines": 145
+    },
+    {
+      "module": "Linear.PowerSeriesCoordinateChart",
+      "path": "source/Linear/PowerSeriesCoordinateChart.lean",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "physicalLines": 131
+    },
+    {
+      "module": "Linear.PowerSeriesDerivative",
+      "path": "source/Linear/PowerSeriesDerivative.lean",
+      "sha256": "21a450c5ef7b483d8e916e87bd72368fce15f5f177b5840a849a353829531e45",
+      "physicalLines": 83
+    },
+    {
+      "module": "Linear.PowerSeriesDiagonal",
+      "path": "source/Linear/PowerSeriesDiagonal.lean",
+      "sha256": "9059d808ee26c0dbdd829d1b4d9f0e59bd3c05f472ea91030f8ac98ae7cc1f77",
+      "physicalLines": 90
+    },
+    {
+      "module": "Linear.PowerSeriesFlatten",
+      "path": "source/Linear/PowerSeriesFlatten.lean",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "physicalLines": 161
+    },
+    {
+      "module": "Linear.PowerSeriesFlattenDerivative",
+      "path": "source/Linear/PowerSeriesFlattenDerivative.lean",
+      "sha256": "02a513347606616034771f40c5184a002620d6088e4db07d1ecf2847a06a72cd",
+      "physicalLines": 96
+    },
+    {
+      "module": "Linear.PowerSeriesRegular",
+      "path": "source/Linear/PowerSeriesRegular.lean",
+      "sha256": "62267496ce860a5ded36ceea1c8e2cc74543873cc661e5e49aa8f97de17db065",
+      "physicalLines": 60
+    },
+    {
+      "module": "Linear.PowerSeriesSocle",
+      "path": "source/Linear/PowerSeriesSocle.lean",
+      "sha256": "30a412a1f2f54182789566179aa0194d06f3a742232c64016f6b7899dfecb8bb",
+      "physicalLines": 141
+    },
+    {
+      "module": "Linear.PowerSeriesSpecialization",
+      "path": "source/Linear/PowerSeriesSpecialization.lean",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "physicalLines": 145
+    },
+    {
+      "module": "Linear.PowerSeriesTranslation",
+      "path": "source/Linear/PowerSeriesTranslation.lean",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "physicalLines": 134
+    },
+    {
+      "module": "Linear.Primitive",
+      "path": "source/Linear/Primitive.lean",
+      "sha256": "020420375e55a6ccb702d732c2bba4eb7bff3c327c2ba74612b4b8e7baff1027",
+      "physicalLines": 80
+    },
+    {
+      "module": "Linear.Projective",
+      "path": "source/Linear/Projective.lean",
+      "sha256": "5cbf99f5d4b2c88bf2aa70adb8c376d59a3779b5eba94386dcf273c45ec52057",
+      "physicalLines": 216
+    },
+    {
+      "module": "Linear.ProjectiveAffinePoint",
+      "path": "source/Linear/ProjectiveAffinePoint.lean",
+      "sha256": "859c578e31bbb2205d8a7b1155954614e877100df0698c53eb1e54959d57febb",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.ProjectiveAffinePrime",
+      "path": "source/Linear/ProjectiveAffinePrime.lean",
+      "sha256": "46bc9595be810cff4ed1fc93bf35e55f98ee814199dba0fe51256b9cc78869ab",
+      "physicalLines": 142
+    },
+    {
+      "module": "Linear.ProjectiveAffineVariety",
+      "path": "source/Linear/ProjectiveAffineVariety.lean",
+      "sha256": "d12b1270e9ecbe4972172824d06729edda7009af51dfa05528b8075bbcbe1fe9",
+      "physicalLines": 85
+    },
+    {
+      "module": "Linear.ProjectiveChart",
+      "path": "source/Linear/ProjectiveChart.lean",
+      "sha256": "fa7d41c7cd5548b2bfd6bf67b1275f7778858eae2d2780125f585ea8c7fbfda3",
+      "physicalLines": 203
+    },
+    {
+      "module": "Linear.ProjectiveChartFractionField",
+      "path": "source/Linear/ProjectiveChartFractionField.lean",
+      "sha256": "be51125f86595679455cfb4b8ef8b89dff50abe2486f1e4ccaf94c68cbf24068",
+      "physicalLines": 98
+    },
+    {
+      "module": "Linear.ProjectiveChartHilbertKrullDimension",
+      "path": "source/Linear/ProjectiveChartHilbertKrullDimension.lean",
+      "sha256": "83f62ccaa5c81c1c0677a37af1fc1c6b7940986f7415898b125351b88013cba9",
+      "physicalLines": 69
+    },
+    {
+      "module": "Linear.ProjectiveConeCoordinateTranscendental",
+      "path": "source/Linear/ProjectiveConeCoordinateTranscendental.lean",
+      "sha256": "bf66dd191e27b2f0c5a15d8457f2c71d0b179191889c5ab3f5902ee1d0ff93a0",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.ProjectiveConeFinite",
+      "path": "source/Linear/ProjectiveConeFinite.lean",
+      "sha256": "1a2d3f20db8000bc7bb1664ad7db34e5354d4feaea7826200f7f83710558ea88",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.ProjectiveConeHilbertKrullDimension",
+      "path": "source/Linear/ProjectiveConeHilbertKrullDimension.lean",
+      "sha256": "011443a30b5ec0780994b66f87d35f2d2ffb7f79af18c05d8f0b77bf3cae4b9e",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.ProjectiveConeRatioRatFunc",
+      "path": "source/Linear/ProjectiveConeRatioRatFunc.lean",
+      "sha256": "d6128861987461efecde5358cca93e436b3ed927edc2344be0d1438181e0f226",
+      "physicalLines": 84
+    },
+    {
+      "module": "Linear.ProjectiveConeSurjectivity",
+      "path": "source/Linear/ProjectiveConeSurjectivity.lean",
+      "sha256": "0be405fe0c3aba2e9f98a56b0feefa31f148d9212f3b8e4544b948825a649c3b",
+      "physicalLines": 74
+    },
+    {
+      "module": "Linear.ProjectiveCoordinateDomainMap",
+      "path": "source/Linear/ProjectiveCoordinateDomainMap.lean",
+      "sha256": "983169b1be86648f543652eb6840e653f14b789ac365a92f41a80f7dd761dc81",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.ProjectiveCoordinateFractionMap",
+      "path": "source/Linear/ProjectiveCoordinateFractionMap.lean",
+      "sha256": "4cc7094ac6329f7ba6aed243e8f4753bed7eb27946f2f3aa056a5eea43d8761b",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.ProjectiveCoordinateHilbertGrowth",
+      "path": "source/Linear/ProjectiveCoordinateHilbertGrowth.lean",
+      "sha256": "3b0ec74948b0be182b28f0ad542f9ce57e49f2d6cd73f0ef69e5d4362b28200a",
+      "physicalLines": 80
+    },
+    {
+      "module": "Linear.ProjectiveCoordinateRatioMap",
+      "path": "source/Linear/ProjectiveCoordinateRatioMap.lean",
+      "sha256": "f2a5ee6acbf15eb1d901ff03a871f9edc55f83b667ef54daefab0c3cba8ac6e2",
+      "physicalLines": 115
+    },
+    {
+      "module": "Linear.ProjectiveDualExactNativePresentation",
+      "path": "source/Linear/ProjectiveDualExactNativePresentation.lean",
+      "sha256": "cbda517e9f2eece6452bda5526456b51e934bdb28b69f246adc5a812b4926d6e",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.ProjectiveDualNativeFinitePresentation",
+      "path": "source/Linear/ProjectiveDualNativeFinitePresentation.lean",
+      "sha256": "adef2d58b8e2cc7a5166f980fd27222eee46aac6d5199336f3dd9a6d9225c05d",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.ProjectiveDualNativeFreeSheafEpi",
+      "path": "source/Linear/ProjectiveDualNativeFreeSheafEpi.lean",
+      "sha256": "ea27f21399f9f3fd3a22deb8becf80b319685d4ca32c4e4e2962c6e1f67d8e56",
+      "physicalLines": 60
+    },
+    {
+      "module": "Linear.ProjectiveDualNativeQuasicoherent",
+      "path": "source/Linear/ProjectiveDualNativeQuasicoherent.lean",
+      "sha256": "b48003f7c1745482fef177168963f0880ddfe3227fc3b517972d4724d9987cc6",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.ProjectiveFilteredPullback",
+      "path": "source/Linear/ProjectiveFilteredPullback.lean",
+      "sha256": "fa6418922324f15f93bdb1f7713ceb8c7548fdf67d9bcd3610b2f8f4048a742c",
+      "physicalLines": 80
+    },
+    {
+      "module": "Linear.ProjectiveFiniteDualFinite",
+      "path": "source/Linear/ProjectiveFiniteDualFinite.lean",
+      "sha256": "846834c3b217a5bcd279ab20ca0ee36ea797b5241c687c1c2906010bec4542bd",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.ProjectiveFiniteDualTorsionFree",
+      "path": "source/Linear/ProjectiveFiniteDualTorsionFree.lean",
+      "sha256": "44b991fcf1d556bc2eb11ede581e334428c9c436b886bb12e6dcdba87308d5e5",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.ProjectiveGradedPullback",
+      "path": "source/Linear/ProjectiveGradedPullback.lean",
+      "sha256": "09117d14c2fb0de5100390499bb309b72c3477a48a8fd96b0dd2a8bcb4d26e7f",
+      "physicalLines": 74
+    },
+    {
+      "module": "Linear.ProjectiveIdealInvariance",
+      "path": "source/Linear/ProjectiveIdealInvariance.lean",
+      "sha256": "e2bd7d4a0a5f18eb9b02fd8501bb27e26e3128626ba43bddf751b6f2000e0b66",
+      "physicalLines": 111
+    },
+    {
+      "module": "Linear.ProjectiveLinearNormalization",
+      "path": "source/Linear/ProjectiveLinearNormalization.lean",
+      "sha256": "58ffa926ce85e66e84eda558dd0ca64d96e255c222ee8ca12fa47e4c49db1039",
+      "physicalLines": 83
+    },
+    {
+      "module": "Linear.ProjectiveNativeDualChartSectionsBijective",
+      "path": "source/Linear/ProjectiveNativeDualChartSectionsBijective.lean",
+      "sha256": "00e7c1fee78171bd3c7ee483fe963661c9ffe1afe93f5cf51e0cb1230e424b05",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.ProjectiveNativeDualChartSectionsInjective",
+      "path": "source/Linear/ProjectiveNativeDualChartSectionsInjective.lean",
+      "sha256": "002841150e800db4986644abab5b1698a4fc25e48108eda30cea007cc2023784",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.ProjectiveNormalizationGradedDual",
+      "path": "source/Linear/ProjectiveNormalizationGradedDual.lean",
+      "sha256": "4fef4effbdfa400d5c50896b460cb54cec9fc8c8d053e564046f9a5a5e7de48f",
+      "physicalLines": 67
+    },
+    {
+      "module": "Linear.ProjectiveNormalizationHomogeneousEmbedding",
+      "path": "source/Linear/ProjectiveNormalizationHomogeneousEmbedding.lean",
+      "sha256": "641ddf5f7959234b0bbc1ec07c05724b118e500fa50de97433ce9b5419413e00",
+      "physicalLines": 95
+    },
+    {
+      "module": "Linear.ProjectiveOriginalDualChartAllSourceScalars",
+      "path": "source/Linear/ProjectiveOriginalDualChartAllSourceScalars.lean",
+      "sha256": "d29225236c037cd37110765d7019a41f9cf1ec9a43fd16b9afc40310b6c24203",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.ProjectiveRatioChartKernel",
+      "path": "source/Linear/ProjectiveRatioChartKernel.lean",
+      "sha256": "9fdd453b33623fc4c5ba6c4d5a9aabe01b176194770bf8724917932efe9112db",
+      "physicalLines": 90
+    },
+    {
+      "module": "Linear.ProjectiveRationalChart",
+      "path": "source/Linear/ProjectiveRationalChart.lean",
+      "sha256": "a0f3979f378ff6f5a9d4a7f84ee9355c8feb1877875bc2df83f1d15da7d603e9",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.ProjectiveRationalInvariance",
+      "path": "source/Linear/ProjectiveRationalInvariance.lean",
+      "sha256": "5fc43125d010dec18d10fd86c31efa7191a84d5b9cb01a0648e11bc14f17a30c",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.ProjectiveScalingFixedRatios",
+      "path": "source/Linear/ProjectiveScalingFixedRatios.lean",
+      "sha256": "2e6b6d7c646c24590d378d42c05e5c43b0865506aeabd81516f8896713fb921c",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.ProjectiveScalingMap",
+      "path": "source/Linear/ProjectiveScalingMap.lean",
+      "sha256": "19ef5cb0705a2dba4258099de94f85083698eb81b303bdd505c23a7ab07334cb",
+      "physicalLines": 67
+    },
+    {
+      "module": "Linear.PushforwardHomSourceAction",
+      "path": "source/Linear/PushforwardHomSourceAction.lean",
+      "sha256": "7909b2ac8d8500051fa3f37bd9613be6f2753cea948142d61db82aecf9042b36",
+      "physicalLines": 151
+    },
+    {
+      "module": "Linear.PushforwardHomSourceActionModule",
+      "path": "source/Linear/PushforwardHomSourceActionModule.lean",
+      "sha256": "bbe23978c1ea30424099697f23b3c97c107e43c8357d1d10c3a20d4091e6e6bc",
+      "physicalLines": 106
+    },
+    {
+      "module": "Linear.PushforwardHomSourceModuleSheaf",
+      "path": "source/Linear/PushforwardHomSourceModuleSheaf.lean",
+      "sha256": "7045e503aa4d8d82e071927c553f7562afb3c7fd894e8a48ecc9d04d2ae906b7",
+      "physicalLines": 40
+    },
+    {
+      "module": "Linear.PushforwardHomSourceScalarRecovery",
+      "path": "source/Linear/PushforwardHomSourceScalarRecovery.lean",
+      "sha256": "f42b4546ef92a009bc742b706175783f3aff678ee3d2d400fa9789f8547925c4",
+      "physicalLines": 51
+    },
+    {
+      "module": "Linear.PushforwardHomSourceScalarRecoveryInverse",
+      "path": "source/Linear/PushforwardHomSourceScalarRecoveryInverse.lean",
+      "sha256": "3068f3408628e6878e55e486867fe35e20ee129a9de26177ea1734fe6ab453d6",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.QuasicoherentAffineOpenSections",
+      "path": "source/Linear/QuasicoherentAffineOpenSections.lean",
+      "sha256": "9b400b4c38fa8e9296ef1e5300eb6c160a8e95db6a8c1d7d1a85f4a388f64c72",
+      "physicalLines": 42
+    },
+    {
+      "module": "Linear.QuotientHilbertKrullDimension",
+      "path": "source/Linear/QuotientHilbertKrullDimension.lean",
+      "sha256": "01519fc0126c79863f1181816eab5ba1e052d402017727129053da5edb403476",
+      "physicalLines": 121
+    },
+    {
+      "module": "Linear.QuotientNormalizationFilteredLower",
+      "path": "source/Linear/QuotientNormalizationFilteredLower.lean",
+      "sha256": "6302854bf9f4a87c90b5c93d32630de0865532f164321a7440505e4b519649a5",
+      "physicalLines": 68
+    },
+    {
+      "module": "Linear.QuotientNormalizationFilteredUpper",
+      "path": "source/Linear/QuotientNormalizationFilteredUpper.lean",
+      "sha256": "9f2f119f2c37a44495aa7af4e48478ed20280a97509dd6431b941a580b958eba",
+      "physicalLines": 32
+    },
+    {
+      "module": "Linear.RadicalProjMap",
+      "path": "source/Linear/RadicalProjMap.lean",
+      "sha256": "fc204d16a581b3a1b52336db76a48153647f3eb48051c7e6350793c85f80e4ed",
+      "physicalLines": 206
+    },
+    {
+      "module": "Linear.Reduction",
+      "path": "source/Linear/Reduction.lean",
+      "sha256": "d427deebc1b6b2a831c6c05a257c3520f65cd06eac89ee061a23019e68c0f9e9",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.RegularGeneratorsFree",
+      "path": "source/Linear/RegularGeneratorsFree.lean",
+      "sha256": "cf14c5753928d0ff01b7d49e8a5c4a99d4a4dce0658ef9d3c9c72941f9c68b03",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.RegularSpecialization",
+      "path": "source/Linear/RegularSpecialization.lean",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "physicalLines": 168
+    },
+    {
+      "module": "Linear.RelativeJacobian",
+      "path": "source/Linear/RelativeJacobian.lean",
+      "sha256": "a542fad749ca0a74c1f94851fe3a45c8598e95f4c17f48450f4aaa9b41aea7fe",
+      "physicalLines": 106
+    },
+    {
+      "module": "Linear.RelativeJacobianTrace",
+      "path": "source/Linear/RelativeJacobianTrace.lean",
+      "sha256": "ae8347033ae5324f5fdfcd88ee2d92530f01b2b0efd6eea4a4d4ab8a14b34760",
+      "physicalLines": 112
+    },
+    {
+      "module": "Linear.ResiduePairing",
+      "path": "source/Linear/ResiduePairing.lean",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "physicalLines": 145
+    },
+    {
+      "module": "Linear.ScalingOrbitTranscendental",
+      "path": "source/Linear/ScalingOrbitTranscendental.lean",
+      "sha256": "7f7984fb68ead4f41e807da4be77d365a95117c4771d9a0443e5b3d0d8a7548a",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.SchemeAffineOriginalSourceLinearAllOpens",
+      "path": "source/Linear/SchemeAffineOriginalSourceLinearAllOpens.lean",
+      "sha256": "7b58be465f2a13cdc0a70e5660612a1a9305825d07f7550bc30d737607353794",
+      "physicalLines": 63
+    },
+    {
+      "module": "Linear.SchemeIsoTopPullback",
+      "path": "source/Linear/SchemeIsoTopPullback.lean",
+      "sha256": "ca557b533a35b4912b54c291e2b6062c2772e601383c4f469c39c96554dcae1f",
+      "physicalLines": 20
+    },
+    {
+      "module": "Linear.SchemeModuleChartPushforwardRestriction",
+      "path": "source/Linear/SchemeModuleChartPushforwardRestriction.lean",
+      "sha256": "03d3f9ef8c04aeaed2b67289c3fd9dbc344b541c4a2a7c886d2d3a8dfc265643",
+      "physicalLines": 40
+    },
+    {
+      "module": "Linear.SchemeModuleCompositeTopEvaluation",
+      "path": "source/Linear/SchemeModuleCompositeTopEvaluation.lean",
+      "sha256": "486e9d528a33f38b76037b1beac5e83df3f9cf1c58907f4f5cc1160a4d8468a5",
+      "physicalLines": 65
+    },
+    {
+      "module": "Linear.SchemeModuleHomAffineChartSections",
+      "path": "source/Linear/SchemeModuleHomAffineChartSections.lean",
+      "sha256": "9f0d47b21ef98cca68b0f76692ae8ac8c39aa1e0757237d993fd50778e4a2165",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.SchemeModuleHomAffineDirectAdd",
+      "path": "source/Linear/SchemeModuleHomAffineDirectAdd.lean",
+      "sha256": "80ea6fd8768439777971f3bfc1694169250eb4cdc641f046fe4abcf8906b98c4",
+      "physicalLines": 35
+    },
+    {
+      "module": "Linear.SchemeModuleHomAffineOpenEvaluationExt",
+      "path": "source/Linear/SchemeModuleHomAffineOpenEvaluationExt.lean",
+      "sha256": "b34b91caacb5b5a10641306fb5b7a084395d3b6a88bd73c6938ae4447b748be9",
+      "physicalLines": 42
+    },
+    {
+      "module": "Linear.SchemeModuleHomAffineOriginalSubopenExt",
+      "path": "source/Linear/SchemeModuleHomAffineOriginalSubopenExt.lean",
+      "sha256": "ad407c72ded0c265b3bf62098ddbebd3820a18a4bb0f5eebee8205f50ed97fec",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.SchemeModuleHomAffineTransportEvaluation",
+      "path": "source/Linear/SchemeModuleHomAffineTransportEvaluation.lean",
+      "sha256": "f80bdd7aead4c24bb0a853da1e8c727c617e0d112413426e562f2ea52363c8af",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.SchemeModuleHomAffineTransportLinear",
+      "path": "source/Linear/SchemeModuleHomAffineTransportLinear.lean",
+      "sha256": "9c984aa43a46743db3d57212fc884e45b07e38405f8d32202398ac7c556cfa33",
+      "physicalLines": 37
+    },
+    {
+      "module": "Linear.SchemeModuleHomAffineTransportSections",
+      "path": "source/Linear/SchemeModuleHomAffineTransportSections.lean",
+      "sha256": "d70df35a9cc6cf9f6b03c339b1b831b99a8225222c5916843a9d37417e96e691",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.SchemeModuleHomCompositeEvaluation",
+      "path": "source/Linear/SchemeModuleHomCompositeEvaluation.lean",
+      "sha256": "e9efd0544b6060005857819931c6a377646fa6d8a0a9b7f0a36034eaf5207eb0",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.SchemeModuleHomCompositeRestriction",
+      "path": "source/Linear/SchemeModuleHomCompositeRestriction.lean",
+      "sha256": "5ccba3ae40b7707d2023c1c76ca54185ca64350fcf47bae1594d0809060df3a7",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.SchemeModuleHomEvaluationRestriction",
+      "path": "source/Linear/SchemeModuleHomEvaluationRestriction.lean",
+      "sha256": "e6b78c05f0007adbf71fe91692f44df178401b53c85869ead835b0bd8884943c",
+      "physicalLines": 40
+    },
+    {
+      "module": "Linear.SchemeModuleHomGlobal",
+      "path": "source/Linear/SchemeModuleHomGlobal.lean",
+      "sha256": "014fe73ff83ce8b4a204d3f156f49d133cafdd2e0f36954aca3c6eace9fc3900",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.SchemeModuleHomModuleSections",
+      "path": "source/Linear/SchemeModuleHomModuleSections.lean",
+      "sha256": "f7c11db79ca976453551c2670468b8e28e0b74fbf8ff3c1b434e2958b4c54dff",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "path": "source/Linear/SchemeModuleHomModuleSheaf.lean",
+      "sha256": "dc9e56af0752a4f4669481d24185f5669067da42f22cda8f84e893d08c881c41",
+      "physicalLines": 81
+    },
+    {
+      "module": "Linear.SchemeModuleHomOpenEvaluation",
+      "path": "source/Linear/SchemeModuleHomOpenEvaluation.lean",
+      "sha256": "2b0c0dfafa76147b88529bb551bd076b5413aa809c81d384ceab45a92ec00ee3",
+      "physicalLines": 39
+    },
+    {
+      "module": "Linear.SchemeModuleHomOpenImmersionBijective",
+      "path": "source/Linear/SchemeModuleHomOpenImmersionBijective.lean",
+      "sha256": "1cee6d272b318054ab3377ae78b650066f6f20f34a06d3700493d4a174127957",
+      "physicalLines": 61
+    },
+    {
+      "module": "Linear.SchemeModuleHomOpenImmersionRestriction",
+      "path": "source/Linear/SchemeModuleHomOpenImmersionRestriction.lean",
+      "sha256": "3becf1d0f2a04c096988996487d5d2af7aedc90b78083ab52ede5e1d107b1870",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.SchemeModuleHomOpenScalars",
+      "path": "source/Linear/SchemeModuleHomOpenScalars.lean",
+      "sha256": "b08eb46df6f1013ce909f48fb2ee68aca19964db1bb08792b4835397a490cd85",
+      "physicalLines": 54
+    },
+    {
+      "module": "Linear.SchemeModuleHomPostcomposeSection",
+      "path": "source/Linear/SchemeModuleHomPostcomposeSection.lean",
+      "sha256": "0c5c9cfc5a2d7b2ebf3cb9a8c60f34d0115e05c9d7c9e73a35836113084702a9",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "path": "source/Linear/SchemeModuleHomPrecompose.lean",
+      "sha256": "bac88e881cf848f3d2904dea1b1b2a101e7afe47400195415aeaf4dd31d4c78f",
+      "physicalLines": 94
+    },
+    {
+      "module": "Linear.SchemeModuleHomPrecomposeComparison",
+      "path": "source/Linear/SchemeModuleHomPrecomposeComparison.lean",
+      "sha256": "234d0b4f501c7ba83f1eb54752f208d75bebd65b6b32854f4dee6cda80d85938",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "path": "source/Linear/SchemeModuleHomPresheaf.lean",
+      "sha256": "b1e52e00867a3ef2719b4556fb4a89d4ff778f2dd86449287cedc96a88e8e75a",
+      "physicalLines": 69
+    },
+    {
+      "module": "Linear.SchemeModuleHomRestriction",
+      "path": "source/Linear/SchemeModuleHomRestriction.lean",
+      "sha256": "8a75457d689c76bf7c573d62606b429524d5719499f4341737c5d4874b49004f",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.SchemeModuleHomRestrictionTransport",
+      "path": "source/Linear/SchemeModuleHomRestrictionTransport.lean",
+      "sha256": "3a6a5e18c1a50938bd5f36deb2771e7bb3c45ffc8ef48d7791bc9b65ae0a39f9",
+      "physicalLines": 65
+    },
+    {
+      "module": "Linear.SchemeModuleHomScalar",
+      "path": "source/Linear/SchemeModuleHomScalar.lean",
+      "sha256": "be075246712de9cf5203727e19d54478c7baffda34c6ef1a053d9051f626ab2c",
+      "physicalLines": 110
+    },
+    {
+      "module": "Linear.SchemeModuleHomSheaf",
+      "path": "source/Linear/SchemeModuleHomSheaf.lean",
+      "sha256": "5134148fa3d54a3af759d13d16dd576e549a8b6bb44172f6e278902f96efc497",
+      "physicalLines": 84
+    },
+    {
+      "module": "Linear.SchemeModuleHomTopScalars",
+      "path": "source/Linear/SchemeModuleHomTopScalars.lean",
+      "sha256": "0bb8c20cc8675dd9061103ffec6c6692b1ab0e57b4bf3dab3cb068be7f984899",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.SchemeModuleHomTopSections",
+      "path": "source/Linear/SchemeModuleHomTopSections.lean",
+      "sha256": "da97957a35475160664f4f9052cef674a36f6490e75fb293e3c1c975b0055439",
+      "physicalLines": 40
+    },
+    {
+      "module": "Linear.SchemeModuleHomTransportedEvaluation",
+      "path": "source/Linear/SchemeModuleHomTransportedEvaluation.lean",
+      "sha256": "3e3eebd551e03d49e8921f952b8325159949b7e772fdc45df9c2348905c1403e",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.SchemeModuleIsoPushforwardRestriction",
+      "path": "source/Linear/SchemeModuleIsoPushforwardRestriction.lean",
+      "sha256": "ae8ea37403a91b039ccb9a62c22ab06e057a8d2b7815c33992cb36c74adb515a",
+      "physicalLines": 28
+    },
+    {
+      "module": "Linear.SchemeModulePushforwardOpenRestriction",
+      "path": "source/Linear/SchemeModulePushforwardOpenRestriction.lean",
+      "sha256": "d912082add22341a78c71f68e79df3162d6c99bda745f97070e2f2be281190ba",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.SchemeModuleScalarNaturality",
+      "path": "source/Linear/SchemeModuleScalarNaturality.lean",
+      "sha256": "380aebafda376284397f36d9741361fc66bac5cedf7d8613a2304daa77db7cb5",
+      "physicalLines": 26
+    },
+    {
+      "module": "Linear.SchemeModuleScalarRestriction",
+      "path": "source/Linear/SchemeModuleScalarRestriction.lean",
+      "sha256": "32ba0d42a3eb333d219cca3916abd9201a5d7dea571f4075c62f7bb14e7a0229",
+      "physicalLines": 40
+    },
+    {
+      "module": "Linear.SchemeModuleSpecChartMorphism",
+      "path": "source/Linear/SchemeModuleSpecChartMorphism.lean",
+      "sha256": "de37c279f49d0b6572c462fba5fa7f7c3c55f42dea4c2d05a974bfee254f6ba7",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.SchemeModuleSpecChartSections",
+      "path": "source/Linear/SchemeModuleSpecChartSections.lean",
+      "sha256": "61507e132ca1497b5b0764ce29b8289fdd344b3883c316b1cc0ecee059cdc54d",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.SchemeModuleSpecChartSectionsLinear",
+      "path": "source/Linear/SchemeModuleSpecChartSectionsLinear.lean",
+      "sha256": "11d83070b35f22eec2618c873588351034ded5d8f4a3b90bc6abaabd0e661f1f",
+      "physicalLines": 31
+    },
+    {
+      "module": "Linear.SchemeOriginalPushforwardChartMorphismAllScalars",
+      "path": "source/Linear/SchemeOriginalPushforwardChartMorphismAllScalars.lean",
+      "sha256": "8658afc43630ff1bb3408d680175cf658af9f10d1153852752556e33e36f57a7",
+      "physicalLines": 103
+    },
+    {
+      "module": "Linear.SchemePushforwardOriginalChartAllSourceScalars",
+      "path": "source/Linear/SchemePushforwardOriginalChartAllSourceScalars.lean",
+      "sha256": "4a23767d7fcd07808bb0002cb04daed0caac5026b5a346bd8ceeb84346ea816c",
+      "physicalLines": 72
+    },
+    {
+      "module": "Linear.SchemePushforwardOriginalChartSourceAdapter",
+      "path": "source/Linear/SchemePushforwardOriginalChartSourceAdapter.lean",
+      "sha256": "34621c18c8c1aef865accb289505be30fbb9805e8e166c28b7731e8c150bc700",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.SchemePushforwardOriginalSourceAction",
+      "path": "source/Linear/SchemePushforwardOriginalSourceAction.lean",
+      "sha256": "333c564fa72e402cc670c35f22e387e10b6925c352b58163e86d34c7510dde3d",
+      "physicalLines": 30
+    },
+    {
+      "module": "Linear.SchemePushforwardSourceModuleSheaf",
+      "path": "source/Linear/SchemePushforwardSourceModuleSheaf.lean",
+      "sha256": "67c6c33ce2e0e47eb6951f4e9c2186add02ef6dad1a4ccb2c8f60bc70a4fc9aa",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.SchemePushforwardSpecChartSectionAction",
+      "path": "source/Linear/SchemePushforwardSpecChartSectionAction.lean",
+      "sha256": "ce1743ff87cb259ff7a273329ca2e7b98aeed09c5003269318c0b494d2a32785",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.SheafFreePresentationOfExact",
+      "path": "source/Linear/SheafFreePresentationOfExact.lean",
+      "sha256": "b236df68a16b6f3bc356f3b2a20227fe2fe3424bb2d6928bf103256603ee2ccf",
+      "physicalLines": 35
+    },
+    {
+      "module": "Linear.SheafFreePresentationOfExactFinite",
+      "path": "source/Linear/SheafFreePresentationOfExactFinite.lean",
+      "sha256": "2fddbb75d6d2e056416721620d75672b4f057a4becd2c5659e0db0ea27b0c927",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.SoclePairing",
+      "path": "source/Linear/SoclePairing.lean",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "physicalLines": 125
+    },
+    {
+      "module": "Linear.SocleTransport",
+      "path": "source/Linear/SocleTransport.lean",
+      "sha256": "b35c088a3aaa192b97975fd7ef6cd1d239bee98653cfd8ee1a6c62ca9af7dab7",
+      "physicalLines": 45
+    },
+    {
+      "module": "Linear.SourceGlobalSectionMultiplication",
+      "path": "source/Linear/SourceGlobalSectionMultiplication.lean",
+      "sha256": "30dda92ee3660cfa72731a23230ed1f29576e63af8ed43b1377b80ec9b773458",
+      "physicalLines": 54
+    },
+    {
+      "module": "Linear.SourceModuleSpecChartSectionAction",
+      "path": "source/Linear/SourceModuleSpecChartSectionAction.lean",
+      "sha256": "d66a0fff0a50db911ce3de4add0a25f31d5c82cf979acd62b9f9ac2997ad4e03",
+      "physicalLines": 32
+    },
+    {
+      "module": "Linear.SourceRingModuleChartRestriction",
+      "path": "source/Linear/SourceRingModuleChartRestriction.lean",
+      "sha256": "4ef74b8a8be553111ee930813a17ed845d33d5a8bbcd30db2e8a2e9cedaee847",
+      "physicalLines": 55
+    },
+    {
+      "module": "Linear.SourceRingSectionHom",
+      "path": "source/Linear/SourceRingSectionHom.lean",
+      "sha256": "b189fa0c5ef219f8cf5b9691236f359b012ab17c902df4d377639bbed32d9d27",
+      "physicalLines": 79
+    },
+    {
+      "module": "Linear.StructureModuleCompositeChartValue",
+      "path": "source/Linear/StructureModuleCompositeChartValue.lean",
+      "sha256": "f002dd0242435141fdb894e93d283f6a02c9304b25c75d038a0a01e2eac29d65",
+      "physicalLines": 37
+    },
+    {
+      "module": "Linear.StructurePushforwardChartIso",
+      "path": "source/Linear/StructurePushforwardChartIso.lean",
+      "sha256": "4270b457348cc1a9fb63b1efa2270971708a72a0dd66c981d3690f7fa59062d9",
+      "physicalLines": 25
+    },
+    {
+      "module": "Linear.StructurePushforwardChartTopValueDirect",
+      "path": "source/Linear/StructurePushforwardChartTopValueDirect.lean",
+      "sha256": "ca92fe3790fe647ae3a2b9e49563f2795c8f5b739bb93bb09812f11355e954ce",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.StructureUnitChartTopValue",
+      "path": "source/Linear/StructureUnitChartTopValue.lean",
+      "sha256": "69dec73e5a3dd2ed514c5d4e7233685a540127599178e3b9fa644e3f98202ba8",
+      "physicalLines": 31
+    },
+    {
+      "module": "Linear.StructureUnitMapValue",
+      "path": "source/Linear/StructureUnitMapValue.lean",
+      "sha256": "057d46a947e5d9bf100be9e7438f071fdb82e9120df0c426b2e3c374a63968fb",
+      "physicalLines": 18
+    },
+    {
+      "module": "Linear.Target",
+      "path": "source/Linear/Target.lean",
+      "sha256": "c52f521b90d60866bacee0354da36530c36190ea0d5527d713d4f0127a6ef1ef",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.TensorDifference",
+      "path": "source/Linear/TensorDifference.lean",
+      "sha256": "0973518273c958d80299be1f4d0ac3324f953334583dd5f1cd638f958be72206",
+      "physicalLines": 93
+    },
+    {
+      "module": "Linear.TensorSpecialization",
+      "path": "source/Linear/TensorSpecialization.lean",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "physicalLines": 194
+    },
+    {
+      "module": "Linear.TildeBasicOpenMono",
+      "path": "source/Linear/TildeBasicOpenMono.lean",
+      "sha256": "c92b4035b60b5f587e29437afe8c9fd0a0b63e0caae6cb356b5fef71a836c566",
+      "physicalLines": 36
+    },
+    {
+      "module": "Linear.TildeComplexExact",
+      "path": "source/Linear/TildeComplexExact.lean",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.TildePreservesMono",
+      "path": "source/Linear/TildePreservesMono.lean",
+      "sha256": "e1cbb671327b88e257d8fdb170901f2c53d68fba01b711a4745500f0759edbc2",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.TildePushforward",
+      "path": "source/Linear/TildePushforward.lean",
+      "sha256": "6f8cc19c5a145aafa3fd567cda601b5d6219a7ecd96bcd1357427b619864aacb",
+      "physicalLines": 34
+    },
+    {
+      "module": "Linear.TopDeterminant",
+      "path": "source/Linear/TopDeterminant.lean",
+      "sha256": "f5a953036500ed76a920918807de7a9df2eb3ee8410a33d1109ac50ea630086d",
+      "physicalLines": 65
+    },
+    {
+      "module": "Linear.TraceElement",
+      "path": "source/Linear/TraceElement.lean",
+      "sha256": "b9cf6e1f101c59eaa1ea8599410efcf618a9450b966841cfe816972f74c8ed3b",
+      "physicalLines": 120
+    },
+    {
+      "module": "Linear.UniversalDifference",
+      "path": "source/Linear/UniversalDifference.lean",
+      "sha256": "0475614d273bcc3cd4870e90280454633b4996b0e2b5cb4e7ccac0474ec92766",
+      "physicalLines": 89
+    },
+    {
+      "module": "Linear.Vendor.ExteriorBaseChange",
+      "path": "source/Linear/Vendor/ExteriorBaseChange.lean",
+      "sha256": "45617eb40c0e0f9fce4e66de6ea34defcfd9e48344cd21966085d7025d476a4b",
+      "physicalLines": 238
+    },
+    {
+      "module": "Linear.Vendor.ExteriorProduct",
+      "path": "source/Linear/Vendor/ExteriorProduct.lean",
+      "sha256": "57bef70d222f202e7d48f05838b243e776a818c7fb68c0dd4c79e2f96e3ea22a",
+      "physicalLines": 280
+    },
+    {
+      "module": "Linear.Vendor.KoszulComplex",
+      "path": "source/Linear/Vendor/KoszulComplex.lean",
+      "sha256": "eeec48b0830a1ecf31160f5818c61a00a8f9ecca5d3a0a8004ce8f6fe578618a",
+      "physicalLines": 702
+    },
+    {
+      "path": "source/Linear.lean",
+      "sha256": "c322f3a387d1708e956a75534d03f4ccb5506257abeed318d9adc8a13f61ffc7",
+      "physicalLines": 16
+    },
+    {
+      "path": "source/CheckAxioms.lean",
+      "sha256": "ff2e11fbe19a1c05597530e8c6b02a49c848cd5141c9b4db269702a1fc621ae7",
+      "physicalLines": 68
+    },
+    {
+      "path": "source/lean-toolchain",
+      "sha256": "bc84812c94489d1e3e191baa1dc10d5eb684382d7fe9d2a5ab085e72c1c67e47",
+      "physicalLines": 1
+    },
+    {
+      "path": "source/lakefile.toml",
+      "sha256": "12e6d3039c6ed00731bcf1c8f8e9c116e81771e6a74cad289b920b767f94d9ee",
+      "physicalLines": 11
+    },
+    {
+      "path": "source/lake-manifest.json",
+      "sha256": "ef71ef5fb13fd129bbf52a72216543bfd4c8e2b752dd3234d0f18b9964b104da",
+      "physicalLines": 96
+    }
+  ],
+  "compiledModules": [
+    {
+      "module": "Linear.OriginalBaseMorphismSourceLift",
+      "sourceSha256": "251075a944a7c035b6cec30696e8c3ae6e43af346d23c3531498929bf2d2227a",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.OriginalBaseMorphismSourceLift.compiler.log",
+      "compilerLogSha256": "3b84a931980bfacbdac547205ae0fcf87980712f7cbccb83d16dcf35d37a0ed2",
+      "resourceLog": "evidence/Linear.OriginalBaseMorphismSourceLift.resource.json"
+    },
+    {
+      "module": "Linear.AffineOriginalSourceMorphismLift",
+      "sourceSha256": "f150fcf4827a83ba91aed8fc0c64b30c00bd40060e545867dc82cd0dd5378cf7",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.AffineOriginalSourceMorphismLift.compiler.log",
+      "compilerLogSha256": "63b16f12c7000ea39221b84fd60a494a0b19cd64276ade4ccf59f0b482956450",
+      "resourceLog": "evidence/Linear.AffineOriginalSourceMorphismLift.resource.json"
+    },
+    {
+      "module": "Linear.OriginalSourceScalarRecoveryInverse",
+      "sourceSha256": "4efdc7f5c3944cede4a48674f7575eaff7f4d69ec2d87889843d8d16b9652527",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.OriginalSourceScalarRecoveryInverse.compiler.log",
+      "compilerLogSha256": "39e82e46ec0384638660222da95b496726e4a839a242e1582acd79982286d14b",
+      "resourceLog": "evidence/Linear.OriginalSourceScalarRecoveryInverse.resource.json"
+    },
+    {
+      "module": "Linear.PushforwardHomSourceScalarRecoveryInverse",
+      "sourceSha256": "3068f3408628e6878e55e486867fe35e20ee129a9de26177ea1734fe6ab453d6",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.PushforwardHomSourceScalarRecoveryInverse.compiler.log",
+      "compilerLogSha256": "bf457d2352362853c546e82b477fe03235a07fee0d23b71c34af6b06d2053997",
+      "resourceLog": "evidence/Linear.PushforwardHomSourceScalarRecoveryInverse.resource.json"
+    },
+    {
+      "module": "Linear.SchemePushforwardOriginalChartSourceAdapter",
+      "sourceSha256": "34621c18c8c1aef865accb289505be30fbb9805e8e166c28b7731e8c150bc700",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.SchemePushforwardOriginalChartSourceAdapter.compiler.log",
+      "compilerLogSha256": "e1bea0dad5072f310decb88986060ce5de96eefaf9b31c3871996ce91b1f4a63",
+      "resourceLog": "evidence/Linear.SchemePushforwardOriginalChartSourceAdapter.resource.json"
+    },
+    {
+      "module": "Linear.OriginalPushforwardSourceChartQuasicoherent",
+      "sourceSha256": "bf3b638a1e6f602e4c614a64846d25916083b7721886d61931b8dc0b9de9e574",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.OriginalPushforwardSourceChartQuasicoherent.compiler.log",
+      "compilerLogSha256": "07aa334e7ddf391c6123bc98185b9016cac392ed886a237c24239d30393c018a",
+      "resourceLog": "evidence/Linear.OriginalPushforwardSourceChartQuasicoherent.resource.json"
+    },
+    {
+      "module": "Linear.OriginalChartSourceAdapterScalars",
+      "sourceSha256": "46bab9d1b7b1630519440b4d5dbea59137ebb89c5b305e5e6775880de4aecded",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.OriginalChartSourceAdapterScalars.compiler.log",
+      "compilerLogSha256": "63dd2a3bbfe375f4266a2e76d6683aa44f5142fb7764c9b937ac6c4fdc6340a0",
+      "resourceLog": "evidence/Linear.OriginalChartSourceAdapterScalars.resource.json"
+    },
+    {
+      "module": "Linear.SchemePushforwardOriginalChartAllSourceScalars",
+      "sourceSha256": "4a23767d7fcd07808bb0002cb04daed0caac5026b5a346bd8ceeb84346ea816c",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.SchemePushforwardOriginalChartAllSourceScalars.compiler.log",
+      "compilerLogSha256": "ce3f73a6fef91eb1a344a16611d44feac246265b3506cdf67ca3d39b57f775c0",
+      "resourceLog": "evidence/Linear.SchemePushforwardOriginalChartAllSourceScalars.resource.json"
+    },
+    {
+      "module": "Linear.SchemePushforwardSpecChartSectionAction",
+      "sourceSha256": "ce1743ff87cb259ff7a273329ca2e7b98aeed09c5003269318c0b494d2a32785",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.SchemePushforwardSpecChartSectionAction.compiler.log",
+      "compilerLogSha256": "e3fcbc4180f7d9a1f667f54c99941c85ed2a7a71204d60fdcd21dfc566a8fe29",
+      "resourceLog": "evidence/Linear.SchemePushforwardSpecChartSectionAction.resource.json"
+    },
+    {
+      "module": "Linear.SchemeOriginalPushforwardChartMorphismAllScalars",
+      "sourceSha256": "8658afc43630ff1bb3408d680175cf658af9f10d1153852752556e33e36f57a7",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.SchemeOriginalPushforwardChartMorphismAllScalars.compiler.log",
+      "compilerLogSha256": "4896af7843f6a81538d1c453a95446e75365e2514b8b7186a034ebe8897a3a94",
+      "resourceLog": "evidence/Linear.SchemeOriginalPushforwardChartMorphismAllScalars.resource.json"
+    },
+    {
+      "module": "Linear.OriginalPushforwardChartLinearityFromSections",
+      "sourceSha256": "dd032ec898c0d40110cb72f18b162d1902b8f522c461404d99fe4c9b98c1986e",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.OriginalPushforwardChartLinearityFromSections.compiler.log",
+      "compilerLogSha256": "55d9033382cd04559c4f11508a3e4827ae42962f4fb63921dc07ea8d359a71f4",
+      "resourceLog": "evidence/Linear.OriginalPushforwardChartLinearityFromSections.resource.json"
+    },
+    {
+      "module": "Linear.NativeNormalizationSourceChartsQuasicoherent",
+      "sourceSha256": "e3a19e69351c4c9fbc2408642a38d56d6d60caf94c9c2d46f980808e8ea0440d",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.NativeNormalizationSourceChartsQuasicoherent.compiler.log",
+      "compilerLogSha256": "7b8485c3e08de0548a930004ff21eed7b79b5d815893fc946cde233efc6f4aed",
+      "resourceLog": "evidence/Linear.NativeNormalizationSourceChartsQuasicoherent.resource.json"
+    },
+    {
+      "module": "Linear.NativeNormalizationOriginalChartSectionFormula",
+      "sourceSha256": "18dc710777f749eec12f795b707607f89ff3ea66c39df1c599079632d362caf7",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.NativeNormalizationOriginalChartSectionFormula.compiler.log",
+      "compilerLogSha256": "219c5ccbaaa52986dfc3444b0f9ac713b60bb079c11261e257cff840f5079259",
+      "resourceLog": "evidence/Linear.NativeNormalizationOriginalChartSectionFormula.resource.json"
+    },
+    {
+      "module": "Linear.NativeNormalizationDualChartMorphismAllSourceScalars",
+      "sourceSha256": "5a95f26eb2eb7274e7b4fd065a9d595c7b63935ef64240bb80a4cdf36e85676a",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.NativeNormalizationDualChartMorphismAllSourceScalars.compiler.log",
+      "compilerLogSha256": "2b3560818a534f1ebe8a3669b9956dd44eb09fde7c1f69a88cd6c22f0781ef9b",
+      "resourceLog": "evidence/Linear.NativeNormalizationDualChartMorphismAllSourceScalars.resource.json"
+    },
+    {
+      "module": "Linear.ProjectiveOriginalDualChartAllSourceScalars",
+      "sourceSha256": "d29225236c037cd37110765d7019a41f9cf1ec9a43fd16b9afc40310b6c24203",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.ProjectiveOriginalDualChartAllSourceScalars.compiler.log",
+      "compilerLogSha256": "f7b00d8897a8535ee1efa07be8aca3dde0de58f2516f38d1253ef6e5c383d667",
+      "resourceLog": "evidence/Linear.ProjectiveOriginalDualChartAllSourceScalars.resource.json"
+    }
+  ],
+  "declarations": [
+    {
+      "name": "LinearStudy.originalBaseMorphismSourceLift",
+      "kind": "def",
+      "module": "Linear.OriginalBaseMorphismSourceLift",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.originalBaseMorphismSourceLift_app",
+      "kind": "theorem",
+      "module": "Linear.OriginalBaseMorphismSourceLift",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.originalBaseMorphismSourceLift_scalar_recovery",
+      "kind": "theorem",
+      "module": "Linear.OriginalBaseMorphismSourceLift",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.affineOriginalSourceMorphismLift",
+      "kind": "def",
+      "module": "Linear.AffineOriginalSourceMorphismLift",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.affineOriginalSourceMorphismLift_scalar_recovery",
+      "kind": "theorem",
+      "module": "Linear.AffineOriginalSourceMorphismLift",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.originalSheafWithSourceAction_restrictIso_hom_apply",
+      "kind": "theorem",
+      "module": "Linear.OriginalSourceScalarRecoveryInverse",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.originalSheafWithSourceAction_restrictIso_inv_apply",
+      "kind": "theorem",
+      "module": "Linear.OriginalSourceScalarRecoveryInverse",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemePushforwardHomSourceModuleSheaf_scalarRecoveryIso_inv_apply",
+      "kind": "theorem",
+      "module": "Linear.PushforwardHomSourceScalarRecoveryInverse",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemePushforwardOriginalChartSourceBaseMorphism",
+      "kind": "def",
+      "module": "Linear.SchemePushforwardOriginalChartSourceAdapter",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemePushforwardOriginalChartSourceBaseMorphism_app",
+      "kind": "theorem",
+      "module": "Linear.SchemePushforwardOriginalChartSourceAdapter",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemePushforwardStructureSourceUnitIso",
+      "kind": "def",
+      "module": "Linear.OriginalPushforwardSourceChartQuasicoherent",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemePushforwardSourceModuleChart_isQuasicoherent",
+      "kind": "theorem",
+      "module": "Linear.OriginalPushforwardSourceChartQuasicoherent",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemePushforwardSourceUnitChart_isQuasicoherent",
+      "kind": "theorem",
+      "module": "Linear.OriginalPushforwardSourceChartQuasicoherent",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemePushforwardOriginalChartSourceBaseMorphism_source_scalars_iff",
+      "kind": "theorem",
+      "module": "Linear.OriginalChartSourceAdapterScalars",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemePushforwardOriginalChartMorphism_all_source_scalars",
+      "kind": "theorem",
+      "module": "Linear.SchemePushforwardOriginalChartAllSourceScalars",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemePushforwardSpecChartSectionsEquiv_original_source_smul",
+      "kind": "theorem",
+      "module": "Linear.SchemePushforwardSpecChartSectionAction",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemePushforwardHomSpecChartSectionsEquiv_original_source_smul",
+      "kind": "theorem",
+      "module": "Linear.SchemePushforwardSpecChartSectionAction",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemeOriginalPushforwardChartMorphism_top_source_scalars",
+      "kind": "theorem",
+      "module": "Linear.SchemeOriginalPushforwardChartMorphismAllScalars",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemeOriginalPushforwardChartMorphism_all_source_scalars",
+      "kind": "theorem",
+      "module": "Linear.SchemeOriginalPushforwardChartMorphismAllScalars",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemeOriginalPushforwardChartMorphism_top_source_scalars_from_sections",
+      "kind": "theorem",
+      "module": "Linear.OriginalPushforwardChartLinearityFromSections",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.schemeOriginalPushforwardChartMorphism_all_source_scalars_from_sections",
+      "kind": "theorem",
+      "module": "Linear.OriginalPushforwardChartLinearityFromSections",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.nativeNormalizationDualPushforwardSourceChart_isQuasicoherent",
+      "kind": "theorem",
+      "module": "Linear.NativeNormalizationSourceChartsQuasicoherent",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.nativeNormalizationStructureSourceChart_isQuasicoherent",
+      "kind": "theorem",
+      "module": "Linear.NativeNormalizationSourceChartsQuasicoherent",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.nativeNormalizationDualGlobalHomChartMorphism_additive_sections",
+      "kind": "theorem",
+      "module": "Linear.NativeNormalizationOriginalChartSectionFormula",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.nativeNormalizationDualGlobalHomChartMorphism_all_source_scalars",
+      "kind": "theorem",
+      "module": "Linear.NativeNormalizationDualChartMorphismAllSourceScalars",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LinearStudy.projectiveNormalization_original_dual_chart_all_source_scalars",
+      "kind": "theorem",
+      "module": "Linear.ProjectiveOriginalDualChartAllSourceScalars",
+      "exactTypePrinted": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    }
+  ],
+  "audit": {
+    "sourceSha256": "ff2e11fbe19a1c05597530e8c6b02a49c848cd5141c9b4db269702a1fc621ae7",
+    "log": "evidence/exact-types-and-axioms.txt",
+    "logSha256": "e16eef5c4258604eb749ad9aad0147a2500dc42ba97fa6aae3abb164b8d6691d",
+    "returnCode": 0,
+    "permittedAxioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "archive": "source.zip",
+  "archiveSha256": "1ea73b87983c1b6b178451d0481df82ed274db79f7ab2cebc4364913ec31b2ff",
+  "published": false,
+  "gitHubLeanCI": "Independent local canonical compile/type/axiom evidence only; full-project source and CI unchanged."
+}
