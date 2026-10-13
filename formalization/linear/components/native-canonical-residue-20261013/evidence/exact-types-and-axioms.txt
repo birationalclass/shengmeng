@@ -1,0 +1,285 @@
+@MvPolynomial.HomogeneousLaurentExponent.canonical_degree_all_negative_eq_neg_one : ∀ {σ : Type} [inst : Fintype σ]
+  (e : MvPolynomial.HomogeneousLaurentExponent σ (-↑(Fintype.card σ))), (∀ (i : σ), ↑e i < 0) → ∀ (i : σ), ↑e i = -1
+'MvPolynomial.HomogeneousLaurentExponent.canonical_degree_all_negative_eq_neg_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+MvPolynomial.HomogeneousLaurentExponent.canonicalNegative : (σ : Type) →
+  [inst : Fintype σ] → MvPolynomial.HomogeneousLaurentExponent σ (-↑(Fintype.card σ))
+'MvPolynomial.HomogeneousLaurentExponent.canonicalNegative' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.canonicalNegative_apply : ∀ {σ : Type} [inst : Fintype σ] (i : σ),
+  ↑(MvPolynomial.HomogeneousLaurentExponent.canonicalNegative σ) i = -1
+'MvPolynomial.HomogeneousLaurentExponent.canonicalNegative_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.eq_canonicalNegative_of_all_negative : ∀ {σ : Type} [inst : Fintype σ]
+  (e : MvPolynomial.HomogeneousLaurentExponent σ (-↑(Fintype.card σ))),
+  (∀ (i : σ), ↑e i < 0) → e = MvPolynomial.HomogeneousLaurentExponent.canonicalNegative σ
+'MvPolynomial.HomogeneousLaurentExponent.eq_canonicalNegative_of_all_negative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.canonicalNegative_lifted_support : ∀ {σ : Type} [inst : Fintype σ],
+  (MvPolynomial.HomogeneousLaurentExponent.canonicalNegative σ).liftedNegativeSupport = Set.univ
+'MvPolynomial.HomogeneousLaurentExponent.canonicalNegative_lifted_support' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.exists_outside_support_of_ne_canonical : ∀ {σ : Type} [inst : Fintype σ]
+  (e : MvPolynomial.HomogeneousLaurentExponent σ (-↑(Fintype.card σ))),
+  e ≠ MvPolynomial.HomogeneousLaurentExponent.canonicalNegative σ → ∃ i, i ∉ e.liftedNegativeSupport
+'MvPolynomial.HomogeneousLaurentExponent.exists_outside_support_of_ne_canonical' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedCechFullIndex : {ι : Type u_1} →
+  [inst : Fintype ι] →
+    [inst_1 : LinearOrder ι] → (n : ℕ) → Fintype.card ι = n + 1 → AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι n
+'LinearStudy.orderedCechFullIndex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedCechIndex_eq_full : ∀ {ι : Type u_1} [inst : Fintype ι] [inst_1 : LinearOrder ι] (n : ℕ)
+  (h : Fintype.card ι = n + 1) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι n),
+  a = LinearStudy.orderedCechFullIndex n h
+'LinearStudy.orderedCechIndex_eq_full' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedCechFullIndex_range : ∀ {ι : Type u_1} [inst : Fintype ι] [inst_1 : LinearOrder ι] (n : ℕ)
+  (h : Fintype.card ι = n + 1), Set.range ↑(LinearStudy.orderedCechFullIndex n h) = Set.univ
+'LinearStudy.orderedCechFullIndex_range' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedCechFullSupport_eq_zero : ∀ {ι : Type u_2} [inst : Fintype ι] [inst_1 : LinearOrder ι]
+  (R : Type u_1) [inst_2 : CommRing R] (n : ℕ),
+  n + 1 < Fintype.card ι → ∀ (s : ↥(LinearStudy.OrderedCechSupportCochain R Set.univ n)), s = 0
+'LinearStudy.orderedCechFullSupport_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedCechSupport_eq_zero_of_full_support : ∀ {ι : Type u_2} [inst : Fintype ι] [inst_1 : LinearOrder ι]
+  (R : Type u_1) [inst_2 : CommRing R] (N : Set ι),
+  N = Set.univ → ∀ (n : ℕ), n + 1 < Fintype.card ι → ∀ (s : ↥(LinearStudy.OrderedCechSupportCochain R N n)), s = 0
+'LinearStudy.orderedCechSupport_eq_zero_of_full_support' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedCechSupport_top_eval_eq_zero_iff : ∀ {ι : Type u_2} [inst : Fintype ι] [inst_1 : LinearOrder ι]
+  (R : Type u_1) [inst_2 : CommRing R] (N : Set ι) (n : ℕ) (h : Fintype.card ι = n + 1)
+  (s : ↥(LinearStudy.OrderedCechSupportCochain R N n)), ↑s (LinearStudy.orderedCechFullIndex n h) = 0 ↔ s = 0
+'LinearStudy.orderedCechSupport_top_eval_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedCechFullSupportEquiv : {ι : Type u_2} →
+  [inst : Fintype ι] →
+    [inst_1 : LinearOrder ι] →
+      (R : Type u_1) →
+        [inst_2 : CommRing R] →
+          (n : ℕ) → Fintype.card ι = n + 1 → ↥(LinearStudy.OrderedCechSupportCochain R Set.univ n) ≃ₗ[R] R
+'LinearStudy.orderedCechFullSupportEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.coordinateCanonicalBaseRing : (R : Type u_1) → [CommRing R] → CommRingCat
+'MvPolynomial.coordinateCanonicalBaseRing' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateCanonicalResidue : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (n : ℕ) →
+            Fintype.card σ = n + 1 →
+              ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(Fintype.card σ))
+                    n) →ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing R)]
+                ↑(MvPolynomial.coordinateCanonicalBaseRing R)
+'MvPolynomial.coordinateCanonicalResidue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateCanonicalTopCochain : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (n : ℕ) →
+            Fintype.card σ = n + 1 →
+              ↑(MvPolynomial.coordinateCanonicalBaseRing R) →ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing R)]
+                ↥(LinearStudy.OrderedCechSupportCochain (↑(MvPolynomial.coordinateCanonicalBaseRing R))
+                    (MvPolynomial.HomogeneousLaurentExponent.canonicalNegative σ).liftedNegativeSupport n)
+'MvPolynomial.coordinateCanonicalTopCochain' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateCanonicalResidueSection : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (n : ℕ) →
+            Fintype.card σ = n + 1 →
+              ↑(MvPolynomial.coordinateCanonicalBaseRing R) →ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing R)]
+                ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(Fintype.card σ)) n)
+'MvPolynomial.coordinateCanonicalResidueSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateCanonicalResidue_section : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R] [inst_1 : Fintype σ]
+  [inst_2 : LinearOrder σ] (n : ℕ) (hc : Fintype.card σ = n + 1) (r : ↑(MvPolynomial.coordinateCanonicalBaseRing R)),
+  (MvPolynomial.coordinateCanonicalResidue n hc) ((MvPolynomial.coordinateCanonicalResidueSection n hc) r) = r
+'MvPolynomial.coordinateCanonicalResidue_section' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateCanonicalResidue_surjective : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (n : ℕ) (hc : Fintype.card σ = n + 1),
+  Function.Surjective ⇑(MvPolynomial.coordinateCanonicalResidue n hc)
+'MvPolynomial.coordinateCanonicalResidue_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateCanonicalResidue_boundary : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R] [inst_1 : Fintype σ]
+  [inst_2 : LinearOrder σ] (n : ℕ) (hc : Fintype.card σ = n + 2)
+  (t : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(Fintype.card σ)) n)),
+  (MvPolynomial.coordinateCanonicalResidue (n + 1) hc)
+      ((ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential (-↑(Fintype.card σ)) n))
+        t) =
+    0
+'MvPolynomial.coordinateCanonicalResidue_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentOrderedCech_eq_zero_of_card_le : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (d : ℤ) (n : ℕ),
+  Fintype.card σ ≤ n → ∀ (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n)), s = 0
+'MvPolynomial.coordinateHomogeneousLaurentOrderedCech_eq_zero_of_card_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurent_top_is_cycle : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (d : ℤ) (n : ℕ),
+  Fintype.card σ = n + 1 →
+    ∀ (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n)),
+      (ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d n)) s = 0
+'MvPolynomial.coordinateHomogeneousLaurent_top_is_cycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateCanonicalResidue_component_eq_zero : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (n : ℕ) (hc : Fintype.card σ = n + 1)
+  (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(Fintype.card σ)) n)),
+  (MvPolynomial.coordinateCanonicalResidue n hc) s = 0 →
+    (MvPolynomial.coordinateHomogeneousLaurentWeightComponent (-↑(Fintype.card σ))
+          (MvPolynomial.HomogeneousLaurentExponent.canonicalNegative σ) n)
+        s =
+      0
+'MvPolynomial.coordinateCanonicalResidue_component_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.exists_preimage_coordinateCanonicalResidue_zero : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (n : ℕ) (hc : Fintype.card σ = n + 2)
+  (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(Fintype.card σ)) (n + 1))),
+  (MvPolynomial.coordinateCanonicalResidue (n + 1) hc) s = 0 →
+    ∃ t,
+      (ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential (-↑(Fintype.card σ)) n)) t =
+        s
+'MvPolynomial.exists_preimage_coordinateCanonicalResidue_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateCanonicalResidue_ker_eq_range : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (n : ℕ) (hc : Fintype.card σ = n + 2),
+  (MvPolynomial.coordinateCanonicalResidue (n + 1) hc).ker =
+    (ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential (-↑(Fintype.card σ)) n)).range
+'MvPolynomial.coordinateCanonicalResidue_ker_eq_range' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateCanonicalCokernelEquiv : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (n : ℕ) →
+            Fintype.card σ = n + 2 →
+              (↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(Fintype.card σ)) (n + 1)) ⧸
+                  (ModuleCat.Hom.hom
+                      (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential (-↑(Fintype.card σ))
+                        n)).range) ≃ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing R)]
+                ↑(MvPolynomial.coordinateCanonicalBaseRing R)
+'MvPolynomial.coordinateCanonicalCokernelEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateCanonicalCokernelEquiv_apply_mk : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (n : ℕ) (hc : Fintype.card σ = n + 2)
+  (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(Fintype.card σ)) (n + 1))),
+  (MvPolynomial.coordinateCanonicalCokernelEquiv n hc) (Submodule.Quotient.mk s) =
+    (MvPolynomial.coordinateCanonicalResidue (n + 1) hc) s
+'MvPolynomial.coordinateCanonicalCokernelEquiv_apply_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalCechTerm : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [Fintype σ] → [LinearOrder σ] → ℕ → ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))
+'MvPolynomial.coordinateNativeCanonicalCechTerm' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalCechDifferential : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (n : ℕ) →
+            AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist (-↑(Fintype.card σ))) MvPolynomial.coordinateOpenCover n ⟶
+              AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist (-↑(Fintype.card σ))) MvPolynomial.coordinateOpenCover
+                (n + 1)
+'MvPolynomial.coordinateNativeCanonicalCechDifferential' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalResidue : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (n : ℕ) →
+            Fintype.card σ = n + 1 →
+              ↑(MvPolynomial.coordinateNativeCanonicalCechTerm n) →ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing K)]
+                ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+'MvPolynomial.coordinateNativeCanonicalResidue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalLaurentDifferential_apply : ∀ {K : Type u_1} {σ : Type} [inst : Field K]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (n : ℕ) (t : ↑(MvPolynomial.coordinateNativeCanonicalCechTerm n)),
+  (ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential (-↑(Fintype.card σ)) n))
+      ((ModuleCat.Hom.hom (MvPolynomial.coordinateNativeLaurentOrderedCechObjectIso (-↑(Fintype.card σ)) n).hom) t) =
+    (ModuleCat.Hom.hom (MvPolynomial.coordinateNativeLaurentOrderedCechObjectIso (-↑(Fintype.card σ)) (n + 1)).hom)
+      ((ModuleCat.Hom.hom (MvPolynomial.coordinateNativeCanonicalCechDifferential n)) t)
+'MvPolynomial.coordinateNativeCanonicalLaurentDifferential_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalResidue_surjective : ∀ {K : Type u_1} {σ : Type} [inst : Field K]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (n : ℕ) (hc : Fintype.card σ = n + 1),
+  Function.Surjective ⇑(MvPolynomial.coordinateNativeCanonicalResidue n hc)
+'MvPolynomial.coordinateNativeCanonicalResidue_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalResidue_boundary : ∀ {K : Type u_1} {σ : Type} [inst : Field K]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (n : ℕ) (hc : Fintype.card σ = n + 2)
+  (t : ↑(MvPolynomial.coordinateNativeCanonicalCechTerm n)),
+  (MvPolynomial.coordinateNativeCanonicalResidue (n + 1) hc)
+      ((ModuleCat.Hom.hom (MvPolynomial.coordinateNativeCanonicalCechDifferential n)) t) =
+    0
+'MvPolynomial.coordinateNativeCanonicalResidue_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalResidue_ker_eq_range : ∀ {K : Type u_1} {σ : Type} [inst : Field K]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (n : ℕ) (hc : Fintype.card σ = n + 2),
+  (MvPolynomial.coordinateNativeCanonicalResidue (n + 1) hc).ker =
+    (ModuleCat.Hom.hom (MvPolynomial.coordinateNativeCanonicalCechDifferential n)).range
+'MvPolynomial.coordinateNativeCanonicalResidue_ker_eq_range' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalCokernelEquiv : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (n : ℕ) →
+            Fintype.card σ = n + 2 →
+              (↑(MvPolynomial.coordinateNativeCanonicalCechTerm (n + 1)) ⧸
+                  (ModuleCat.Hom.hom
+                      (MvPolynomial.coordinateNativeCanonicalCechDifferential
+                        n)).range) ≃ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing K)]
+                ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+'MvPolynomial.coordinateNativeCanonicalCokernelEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalCokernelEquiv_apply_mk : ∀ {K : Type u_1} {σ : Type} [inst : Field K]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (n : ℕ) (hc : Fintype.card σ = n + 2)
+  (s : ↑(MvPolynomial.coordinateNativeCanonicalCechTerm (n + 1))),
+  (MvPolynomial.coordinateNativeCanonicalCokernelEquiv n hc) (Submodule.Quotient.mk s) =
+    (MvPolynomial.coordinateNativeCanonicalResidue (n + 1) hc) s
+'MvPolynomial.coordinateNativeCanonicalCokernelEquiv_apply_mk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalCechDifferential_top_eq_zero : ∀ {K : Type u_1} {σ : Type} [inst : Field K]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (n : ℕ),
+  Fintype.card σ = n + 2 → MvPolynomial.coordinateNativeCanonicalCechDifferential (n + 1) = 0
+'MvPolynomial.coordinateNativeCanonicalCechDifferential_top_eq_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalShortComplex : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [Fintype σ] →
+        [LinearOrder σ] → ℕ → CategoryTheory.ShortComplex (ModuleCat ↑(MvPolynomial.coordinateCanonicalBaseRing K))
+'MvPolynomial.coordinateNativeCanonicalShortComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalHomologyIso : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (n : ℕ) →
+            Fintype.card σ = n + 2 →
+              ((MvPolynomial.coordinateNativeCanonicalShortComplex n).homology ≅
+                ↧↑(MvPolynomial.coordinateCanonicalBaseRing K))
+'MvPolynomial.coordinateNativeCanonicalHomologyIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalComplex : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [Fintype σ] →
+        [LinearOrder σ] → CochainComplex (ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) ℕ
+'MvPolynomial.coordinateNativeCanonicalComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalShortComplexIso : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (n : ℕ) →
+            HomologicalComplex.sc' MvPolynomial.coordinateNativeCanonicalComplex n (n + 1) (n + 2) ≅
+              MvPolynomial.coordinateNativeCanonicalShortComplex n
+'MvPolynomial.coordinateNativeCanonicalShortComplexIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCanonicalComplexHomologyIso : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (n : ℕ) →
+            Fintype.card σ = n + 2 →
+              (HomologicalComplex.homology MvPolynomial.coordinateNativeCanonicalComplex (n + 1) ≅
+                ↧↑(MvPolynomial.coordinateCanonicalBaseRing K))
+'MvPolynomial.coordinateNativeCanonicalComplexHomologyIso' depends on axioms: [propext, Classical.choice, Quot.sound]
