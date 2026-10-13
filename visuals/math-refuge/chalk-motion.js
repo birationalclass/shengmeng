@@ -27,7 +27,7 @@ function sample(plan,progress){
   const t=clamp(progress)*plan.total;let lo=0,hi=plan.segments.length-1;
   while(lo<hi){const mid=(lo+hi)>>1;if(plan.segments[mid].end<t)lo=mid+1;else hi=mid;}
   const s=plan.segments[lo],linear=clamp((t-s.start)/s.cost),f=s.curve===undefined?linear:linear*linear*(3-2*linear);
-  return {x:s.a[0]+(s.b[0]-s.a[0])*f,y:Math.max(s.minY??-Infinity,Math.min(s.maxY??Infinity,s.a[1]+(s.b[1]-s.a[1])*f+(s.curve||0)*4*f*(1-f))),sway:0,contact:s.contact,lift:s.contact?0:.08*Math.sin(Math.PI*f),row:s.row,entering:s.entering,strokePoint:s.strokePoint};
+  return {x:s.a[0]+(s.b[0]-s.a[0])*f,y:Math.max(s.minY??-Infinity,Math.min(s.maxY??Infinity,s.a[1]+(s.b[1]-s.a[1])*f+(s.curve||0)*4*f*(1-f))),sway:0,contact:s.contact,lift:s.contact?0:.08*Math.sin(Math.PI*f),row:s.row,entering:s.entering,strokePoint:s.strokePoint,strokeProgress:s.strokeFrom===undefined?undefined:s.strokeFrom+(s.strokeTo-s.strokeFrom)*f};
 }
 export function writingPlan(rows,guides){
   const key=guides||rows;if(cache.has(key))return cache.get(key);
@@ -36,8 +36,10 @@ export function writingPlan(rows,guides){
     const path=rows[row].strokePath;
     if(path){
       const first=path[0];
-      segments.push({a:previous||first,b:first,cost:previous?Math.max(10,Math.hypot(first[0]-previous[0],first[1]-previous[1])/6):12,contact:false,row,entering:true});
-      for(let i=0;i<path.length-1;i++)segments.push({a:path[i],b:path[i+1],cost:Math.max(1,Math.hypot(path[i+1][0]-path[i][0],path[i+1][1]-path[i][1])),contact:true,row,strokePoint:i});
+      const seconds=rows[row].strokeSeconds;
+      segments.push({a:previous||first,b:first,cost:seconds?230*.012:previous?Math.max(10,Math.hypot(first[0]-previous[0],first[1]-previous[1])/6):12,contact:false,row,entering:true});
+      const lengths=path.slice(1).map((b,i)=>Math.hypot(b[0]-path[i][0],b[1]-path[i][1])),length=lengths.reduce((a,b)=>a+b,0);let arc=0;
+      for(let i=0;i<path.length-1;i++){const from=length?arc/length:i/(path.length-1);arc+=lengths[i];const to=length?arc/length:(i+1)/(path.length-1);segments.push({a:path[i],b:path[i+1],cost:seconds?Math.max(1e-8,230*seconds*(to-from)):Math.max(1,lengths[i]),contact:true,row,strokePoint:i,strokeFrom:seconds?from:undefined,strokeTo:seconds?to:undefined});}
       previous=path.at(-1);return;
     }
     const g=guides?.[row],columns=g?(g.inkColumns||g.map((v,i)=>v===null?-1:i).filter(i=>i>=0)):Array.from({length:Math.ceil(w/5)+1},(_,i)=>i);
@@ -53,7 +55,7 @@ export function writingPlan(rows,guides){
     previous=point(columns.at(-1));
   });
   for(const s of segments)s.mainLine=rows[s.row].mainLine;
-  const result=plan(segments,230);cache.set(key,result);return result;
+  const result=plan(segments,230);result.chineseStrokeTiming=rows.some(r=>r.strokeRaster);result.unitsPerSecond=230;cache.set(key,result);return result;
 }
 export const writingPose=(rows,progress,guides)=>sample(writingPlan(rows,guides),progress);
 export function inkReveal(rows,progress,row,guides){
@@ -68,6 +70,10 @@ export function strokeReveal(rows,progress,row,guides){
   const p=writingPose(rows,progress,guides);
   if(row<p.row)return path;if(row>p.row||p.entering)return [];
   return [...path.slice(0,p.strokePoint+1),[p.x,p.y]];
+}
+export function rasterStrokeReveal(rows,progress,row,guides){
+ if(progress>=1)return 1;const p=writingPose(rows,progress,guides);
+ if(row<p.row)return 1;if(row>p.row||p.entering)return 0;return p.strokeProgress??0;
 }
 // Group nearby ink into regions, then wipe in broad overlapping arm sweeps.
 export function erasingPlan(imageData,rows=[]){

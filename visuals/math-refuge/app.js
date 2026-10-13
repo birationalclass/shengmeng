@@ -564,7 +564,7 @@ function prepareMainRoom(){
  mainRoomJob=(async()=>{
   await waitForEntered($('world'));
   $('world').dataset.hallPreparation='loading';$('world').dataset.startupPhase='hall';$('mode').textContent='正在准备报告厅';
-  const [lectureModule,readerModule,voiceModule,settingsModule]=await Promise.all([import('./lecture.js?v=chalk-caps-1'),import('./chalk-reader.js?v=inline-root-1'),import('./report-voice.js?v=ye2-report-14'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]);
+  const [lectureModule,readerModule,voiceModule,settingsModule]=await Promise.all([import('./lecture.js?v=chinese36-1'),import('./chalk-reader.js?v=inline-root-1'),import('./report-voice.js?v=ye2-report-14'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]);
   createLecture=lectureModule.createLecture;createChalkReader=readerModule.createChalkReader;reportVoicePresentation=voiceModule.reportVoicePresentation;
   await idleTurn();
   const root=new THREE.Group();root.name='East-facing compact auditorium blackboards';configureLectureRoot(root);root.position.add(buildingOffset('01B'));scene.add(root);

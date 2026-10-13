@@ -92,6 +92,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
 // Use the same measured stroke costs as chalkPosition and inkReveal, so a
 // long formula is never treated as one equal-sized slice of a whole board.
 const lineCostBounds=new WeakMap();
+function cueWriteDuration(cue,plan,bounds){const available=cue.writeEnd-cue.writeStart;return plan?.chineseStrokeTiming&&bounds?Math.min(available,(bounds.end-bounds.start)/plan.unitsPerSecond):available;}
 export function rowNarrationProgress(cues,time,plan){
  if(!cues?.length||!plan?.total)return null;
  let bounds=lineCostBounds.get(plan);if(!bounds){bounds=new Map();
@@ -101,7 +102,7 @@ export function rowNarrationProgress(cues,time,plan){
  for(const cue of cues){
   const b=bounds.get(cue.row);if(!b)throw Error('Narration row has no visible ink: '+cue.row);
   if(time<cue.writeStart)return completed/plan.total;
-  if(time<cue.writeEnd){const p=Math.max(0,Math.min(1,(time-cue.writeStart)/(cue.writeEnd-cue.writeStart)));return (b.start+p*(b.end-b.start))/plan.total;}
+  if(time<cue.writeEnd){const p=Math.max(0,Math.min(1,(time-cue.writeStart)/Math.max(.001,cueWriteDuration(cue,plan,b))));return (b.start+p*(b.end-b.start))/plan.total;}
   completed=b.end;
  }
  return 1;
@@ -115,8 +116,9 @@ export function narrationFrame(manifest,time,writingPlan){
  else if(t<b.writeStart){phase='erase';start=b.eraseStart+1.8;end=b.writeStart;}
  else if(t<b.writeEnd){phase='write';start=b.writeStart;end=b.writeEnd;}
  const linear=Math.max(0,Math.min(1,(t-start)/Math.max(.001,end-start)));
- const progress=phase==='write'?(rowNarrationProgress(b.lineCues,t,writingPlan)??linear):linear;
- const writing=phase==='write'&&(!b.lineCues?.length||b.lineCues.some(c=>t>=c.writeStart&&t<c.writeEnd));
+ const natural=writingPlan?.chineseStrokeTiming?Math.min(end-start,writingPlan.total/writingPlan.unitsPerSecond):end-start;
+ const progress=phase==='write'?(rowNarrationProgress(b.lineCues,t,writingPlan)??Math.max(0,Math.min(1,(t-start)/Math.max(.001,natural)))):linear;
+ const writing=phase==='write'&&(!b.lineCues?.length?t<start+natural:b.lineCues.some(c=>t>=c.writeStart&&t<c.writeStart+cueWriteDuration(c,writingPlan,lineCostBounds.get(writingPlan)?.get(c.row))));
  return{page:b.page,phase,progress,writing,ended:t>=manifest.duration,duration:Math.max(.001,end-start)};
 }
 export function syncNarrationClock(clock,frame,slotFor){

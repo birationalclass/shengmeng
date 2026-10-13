@@ -1,17 +1,18 @@
 import {narrationHighlights,measuredHighlight,highlightFrame,createBoardHighlight} from './board-highlight.js?v=smart-voice-9';
 import {createBoardCameraControl} from './board-camera-control.js?v=smart-voice-9';
 import {boardContentJump,advanceBoardQueue} from './board-transition.js';
-import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock} from './report-voice.js?v=ye2-report-14';
+import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock} from './report-voice.js?v=chinese36-1';
 import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v=smart-voice-9';
 import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
-import {authoredContext,authoredFormula} from './authored-chalk.js?v=chalk-caps-1';
+import {authoredContext,authoredFormula} from './authored-chalk.js?v=chinese36-1';
+import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=chinese36-1';
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
 import {createSeminarScreen} from './seminar-screen.js?v=report-line-sync-6';
 import * as THREE from 'three';
 import {LectureClock,boardSlot,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v=report-line-sync-6';
-import {inkGuides,inkReveal,strokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=report-line-sync-6';
+import {inkGuides,inkReveal,strokeReveal,rasterStrokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=chinese36-1';
 import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
 
 import {chalkCopy,composeChalkPage} from './chalk-language.js?v=report-line-sync-6';
@@ -44,6 +45,7 @@ export async function createLecture(scene,renderer,options={}){
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='en',generation=0;
   let fontsReady=0;
   if(document.fonts&&!disabled)await withDeadline(Promise.all(['42px RefugeChinese','42px RefugeLatin','42px RefugeMath'].map(font=>document.fonts.load(font).then(result=>{reportProgress(.25+(++fontsReady)/3*.45);return result;}))),15000,'板书字体加载');
+  let chineseChalk=null;
   function clearPageCache(){for(const c of cache.values()){c.width=1;c.height=1;}cache.clear();}
   function load(index,preparedImage){
     if(index<0)return Promise.resolve(null);
@@ -51,10 +53,12 @@ export async function createLecture(scene,renderer,options={}){
     if(pending.has(index))return pending.get(index);
     const epoch=generation,lang=language,style=writingStyle;
     const job=new Promise((resolve,reject)=>{
-      let image=preparedImage||new Image();const ready=()=>{try{
+      let image=preparedImage||new Image();const ready=async()=>{try{
         if(epoch!==generation){resolve(null);return;}
         const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
-        const recorder=style==='refined'&&canAuthor?authoredContext(sampleCtx):null;let rows=composeChalkPage(recorder?.ctx||sampleCtx,pages[index],index,lang,image,{deferStrokes:true,hideHeading:options.hideBoardHeadings,authored:Boolean(recorder)});if(recorder)rows=recorder.rows(rows);pageRows.set(index,rows);
+        let chinese=null;
+        if(lang==='zh'&&canAuthor){if(!chineseChalk)chineseChalk=withDeadline(createChineseChalk(),15000,'中文板书字形索引');chinese=await (await chineseChalk).prepare(JSON.stringify(pages[index]));if(epoch!==generation){resolve(null);return;}}
+        const recorder=(style==='refined'||chinese)&&canAuthor?authoredContext(sampleCtx,chinese,{latin:style==='refined'}):null;let rows=composeChalkPage(recorder?.ctx||sampleCtx,pages[index],index,lang,image,{deferStrokes:true,hideHeading:options.hideBoardHeadings,authored:Boolean(recorder)});if(recorder)rows=recorder.rows(rows);pageRows.set(index,rows);
         cache.set(index,sample);pending.delete(index);version++;
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
         if(pixels)guides.set(index,inkGuides(pixels,rows));
@@ -265,11 +269,12 @@ export async function createLecture(scene,renderer,options={}){
       // Reveal each complete mathematical row left to right, preserving exact
       // SVG fractions/superscripts. The grain is deterministic, never flickering.
       rows.forEach(([x,y,w,h],row)=>{
+        if(rows[row].strokeRaster){paintChineseGroup(ctx,rows,row,i=>rasterStrokeReveal(rows,slot.progress,i,guides.get(slot.page)));return;}
         if(rows[row].strokePath){paintChalkStroke(ctx,strokeReveal(rows,slot.progress,row,guides.get(slot.page)),rows[row].chalkColor,rows[row].strokeWidth);return;}
         const width=inkReveal(rows,slot.progress,row,guides.get(slot.page));
         if(width>0){ctx.save();ctx.beginPath();ctx.rect(x,y,width,h);ctx.clip();ctx.drawImage(image,0,0);ctx.restore();}
       });
-      ctx.drawImage(dust,0,0,W,H);
+      if(language!=='zh')ctx.drawImage(dust,0,0,W,H);
       if(erasing){
         const end=Math.floor(clock.progress*700);
         for(let i=wipeSamples;i<=end;i++){
@@ -433,10 +438,10 @@ export async function createLecture(scene,renderer,options={}){
       if(previousTip&&pose.contact)wear+=Math.min(.07,tip.distanceTo(previousTip))*.007;
       const length=chalkLength(wear),propScale=1/(scene.scale.y||1);chalk.scale.set(propScale,length/.17*propScale,propScale);chalk.position.addScaledVector(chalkAxis,length*propScale/2);chalk.userData.length=length;chalk.userData.contact=pose.contact;previousTip=tip;
       dustAccumulator+=dt;
-      if(pose.contact&&dustAccumulator>.09){dustAccumulator=0;const i=particleCursor++%particleCount;particles[i]={life:1.1,vx:(random()-.5)*.025,vy:-.015};particlePositions.set([tip.x,tip.y,tip.z+.016],i*3);}
+      if(language!=='zh'&&pose.contact&&dustAccumulator>.09){dustAccumulator=0;const i=particleCursor++%particleCount;particles[i]={life:1.1,vx:(random()-.5)*.025,vy:-.015};particlePositions.set([tip.x,tip.y,tip.z+.016],i*3);}
     }else previousTip=null;
     if(erasing&&!eraserPickup){const p=eraserPose(clock.progress,W,H,boards[clock.active].wet?.plan);positionTool(eraser,p.x,p.y);eraser.position.z+=.052+p.lift;eraser.rotation.set(.03,0,-p.angle);}
-    fallingDust.visible=!reduced;
+    fallingDust.visible=!reduced&&language!=='zh';
     if(playing&&!reduced)for(let i=0;i<particleCount;i++){
       const p=particles[i];if(p.life<=0)continue;p.life-=dt;p.vy-=dt*.11;
       particlePositions[i*3]+=p.vx*dt;particlePositions[i*3+1]+=p.vy*dt;
