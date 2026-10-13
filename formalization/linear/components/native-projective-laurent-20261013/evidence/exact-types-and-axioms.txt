@@ -1,0 +1,1950 @@
+@AddMonoidAlgebra.isLocalizationAway_of_isLocalizationMap : ∀ {R : Type u_1} [inst : CommSemiring R] {A : Type u_2}
+  [inst_1 : AddCommMonoid A] {B : Type u_3} [inst_2 : AddCommMonoid B] {x : A}
+  (F : AddSubmonoid.LocalizationMap.AwayMap x B),
+  IsLocalization.Away (AddMonoidAlgebra.single x 1) (AddMonoidAlgebra R B)
+'AddMonoidAlgebra.isLocalizationAway_of_isLocalizationMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.laurentExponentSubmonoid : {σ : Type u_1} → (σ →₀ ℕ) → AddSubmonoid (σ →₀ ℤ)
+'MvPolynomial.laurentExponentSubmonoid' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.laurentExponentAwayMap : {σ : Type u_1} →
+  (m : σ →₀ ℕ) → AddSubmonoid.LocalizationMap.AwayMap m ↥(MvPolynomial.laurentExponentSubmonoid m)
+'MvPolynomial.laurentExponentAwayMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.laurentExponentAwayMap_apply : ∀ {σ : Type u_1} (m a : σ →₀ ℕ) (i : σ),
+  ↑((MvPolynomial.laurentExponentAwayMap m) a) i = ↑(a i)
+'MvPolynomial.laurentExponentAwayMap_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.laurentMonomialRingEquiv : (R : Type u_1) →
+  [inst : CommSemiring R] →
+    {σ : Type u_2} →
+      (m : σ →₀ ℕ) →
+        Localization.Away ((MvPolynomial.monomial m) 1) ≃+*
+          AddMonoidAlgebra R ↥(MvPolynomial.laurentExponentSubmonoid m)
+'MvPolynomial.laurentMonomialRingEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.laurentMonomialRingEquiv_algebraMap : ∀ (R : Type u_1) [inst : CommSemiring R] {σ : Type u_2} (m : σ →₀ ℕ)
+  (p : MvPolynomial σ R),
+  (MvPolynomial.laurentMonomialRingEquiv R m)
+      ((algebraMap (MvPolynomial σ R) (Localization.Away ((MvPolynomial.monomial m) 1))) p) =
+    AddMonoidAlgebra.mapDomain (⇑(AddSubmonoid.LocalizationMap.toAddMonoidHom (MvPolynomial.laurentExponentAwayMap m)))
+      p
+'MvPolynomial.laurentMonomialRingEquiv_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.laurentMonomialRingEquiv_algebraMap_coeff : ∀ (R : Type u_1) [inst : CommSemiring R] {σ : Type u_2}
+  (m : σ →₀ ℕ) (r : R),
+  (MvPolynomial.laurentMonomialRingEquiv R m) ((algebraMap R (Localization.Away ((MvPolynomial.monomial m) 1))) r) =
+    (algebraMap R (AddMonoidAlgebra R ↥(MvPolynomial.laurentExponentSubmonoid m))) r
+'MvPolynomial.laurentMonomialRingEquiv_algebraMap_coeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.laurentMonomialLinearEquiv : (R : Type u_1) →
+  [inst : CommSemiring R] →
+    {σ : Type u_2} →
+      (m : σ →₀ ℕ) →
+        Localization.Away ((MvPolynomial.monomial m) 1) ≃ₗ[R]
+          AddMonoidAlgebra R ↥(MvPolynomial.laurentExponentSubmonoid m)
+'MvPolynomial.laurentMonomialLinearEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.laurentMonomialBasis : (R : Type u_1) →
+  [inst : CommSemiring R] →
+    {σ : Type u_2} →
+      (m : σ →₀ ℕ) →
+        Module.Basis (↥(MvPolynomial.laurentExponentSubmonoid m)) R (Localization.Away ((MvPolynomial.monomial m) 1))
+'MvPolynomial.laurentMonomialBasis' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.laurentMonomialRingEquiv_basis_apply : ∀ (R : Type u_1) [inst : CommSemiring R] {σ : Type u_2} (m : σ →₀ ℕ)
+  (e : ↥(MvPolynomial.laurentExponentSubmonoid m)),
+  (MvPolynomial.laurentMonomialRingEquiv R m) ((MvPolynomial.laurentMonomialBasis R m) e) = AddMonoidAlgebra.single e 1
+'MvPolynomial.laurentMonomialRingEquiv_basis_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.awayCongr : {ι : Type u_1} →
+  {R : Type u_2} →
+    {A : Type u_3} →
+      [inst : AddCommMonoid ι] →
+        [inst_1 : DecidableEq ι] →
+          [inst_2 : CommRing R] →
+            [inst_3 : CommRing A] →
+              [inst_4 : Algebra R A] →
+                {𝒜 : ι → Submodule R A} →
+                  [inst_5 : GradedAlgebra 𝒜] →
+                    {s t : A} → s = t → HomogeneousLocalization.Away 𝒜 s ≃+* HomogeneousLocalization.Away 𝒜 t
+'LinearStudy.awayCongr' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.awayCongr_rfl : ∀ {ι : Type u_1} {R : Type u_2} {A : Type u_3} [inst : AddCommMonoid ι]
+  [inst_1 : DecidableEq ι] [inst_2 : CommRing R] [inst_3 : CommRing A] [inst_4 : Algebra R A] {𝒜 : ι → Submodule R A}
+  [inst_5 : GradedAlgebra 𝒜] {s : A}, LinearStudy.awayCongr ⋯ = RingEquiv.refl (HomogeneousLocalization.Away 𝒜 s)
+'LinearStudy.awayCongr_rfl' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.awayCongr_mk : ∀ {ι : Type u_1} {R : Type u_2} {A : Type u_3} [inst : AddCommMonoid ι]
+  [inst_1 : DecidableEq ι] [inst_2 : CommRing R] [inst_3 : CommRing A] [inst_4 : Algebra R A] {𝒜 : ι → Submodule R A}
+  [inst_5 : GradedAlgebra 𝒜] {s t : A} (h : s = t) {i : ι} (hs : s ∈ 𝒜 i) (n : ℕ) (a : A) (ha : a ∈ 𝒜 (n • i)),
+  (LinearStudy.awayCongr h) (HomogeneousLocalization.Away.mk 𝒜 hs n a ha) = HomogeneousLocalization.Away.mk 𝒜 ⋯ n a ha
+'LinearStudy.awayCongr_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.awayCongr_map : ∀ {ι : Type u_1} {R : Type u_2} {A : Type u_3} [inst : AddCommMonoid ι]
+  [inst_1 : DecidableEq ι] [inst_2 : CommRing R] [inst_3 : CommRing A] [inst_4 : Algebra R A] {𝒜 : ι → Submodule R A}
+  [inst_5 : GradedAlgebra 𝒜] {B : Type u_4} {S : Type u_5} [inst_6 : CommRing S] [inst_7 : CommRing B]
+  [inst_8 : Algebra S B] {ℬ : ι → Submodule S B} [inst_9 : GradedAlgebra ℬ] {s t : A} (h : s = t) (g : 𝒜 →+*ᵍ ℬ)
+  (x : HomogeneousLocalization.Away 𝒜 s),
+  (HomogeneousLocalization.Away.map g t) ((LinearStudy.awayCongr h) x) =
+    (LinearStudy.awayCongr ⋯) ((HomogeneousLocalization.Away.map g s) x)
+'LinearStudy.awayCongr_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.awayCongr_trans : ∀ {ι : Type u_1} {R : Type u_2} {A : Type u_3} [inst : AddCommMonoid ι]
+  [inst_1 : DecidableEq ι] [inst_2 : CommRing R] [inst_3 : CommRing A] [inst_4 : Algebra R A] {𝒜 : ι → Submodule R A}
+  [inst_5 : GradedAlgebra 𝒜] {s t u : A} (h₁ : s = t) (h₂ : t = u) (x : HomogeneousLocalization.Away 𝒜 s),
+  (LinearStudy.awayCongr h₂) ((LinearStudy.awayCongr h₁) x) = (LinearStudy.awayCongr ⋯) x
+'LinearStudy.awayCongr_trans' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.awayCongr_self : ∀ {ι : Type u_1} {R : Type u_2} {A : Type u_3} [inst : AddCommMonoid ι]
+  [inst_1 : DecidableEq ι] [inst_2 : CommRing R] [inst_3 : CommRing A] [inst_4 : Algebra R A] {𝒜 : ι → Submodule R A}
+  [inst_5 : GradedAlgebra 𝒜] {s : A} (h : s = s) (x : HomogeneousLocalization.Away 𝒜 s), (LinearStudy.awayCongr h) x = x
+'LinearStudy.awayCongr_self' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.awayMap_congr : ∀ {ι : Type u_1} {R : Type u_2} {A : Type u_3} [inst : AddCommMonoid ι]
+  [inst_1 : DecidableEq ι] [inst_2 : CommRing R] [inst_3 : CommRing A] [inst_4 : Algebra R A] {𝒜 : ι → Submodule R A}
+  [inst_5 : GradedAlgebra 𝒜] {B : Type u_4} {S : Type u_5} [inst_6 : CommRing S] [inst_7 : CommRing B]
+  [inst_8 : Algebra S B] {ℬ : ι → Submodule S B} [inst_9 : GradedAlgebra ℬ] {g₁ g₂ : 𝒜 →+*ᵍ ℬ} (h : g₁ = g₂) (s : A)
+  (x : HomogeneousLocalization.Away 𝒜 s),
+  (HomogeneousLocalization.Away.map g₂ s) x = (LinearStudy.awayCongr ⋯) ((HomogeneousLocalization.Away.map g₁ s) x)
+'LinearStudy.awayMap_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.awayMap_fromZeroRingHom : ∀ {ι : Type u_1} {R : Type u_2} {A : Type u_3} [inst : AddCommMonoid ι]
+  [inst_1 : DecidableEq ι] [inst_2 : CommRing R] [inst_3 : CommRing A] [inst_4 : Algebra R A] {𝒜 : ι → Submodule R A}
+  [inst_5 : GradedAlgebra 𝒜] {B : Type u_4} {S : Type u_5} [inst_6 : CommRing S] [inst_7 : CommRing B]
+  [inst_8 : Algebra S B] {ℬ : ι → Submodule S B} [inst_9 : GradedAlgebra ℬ] (g : 𝒜 →+*ᵍ ℬ) (s : A) (a : ↥(𝒜 0)),
+  (HomogeneousLocalization.Away.map g s) ((HomogeneousLocalization.fromZeroRingHom 𝒜 (Submonoid.powers s)) a) =
+    (HomogeneousLocalization.fromZeroRingHom ℬ (Submonoid.powers (g s))) ⟨g ↑a, ⋯⟩
+'LinearStudy.awayMap_fromZeroRingHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.awayMap_map : ∀ {ι : Type u_1} {R : Type u_2} {A : Type u_3} [inst : AddCommMonoid ι]
+  [inst_1 : DecidableEq ι] [inst_2 : CommRing R] [inst_3 : CommRing A] [inst_4 : Algebra R A] {𝒜 : ι → Submodule R A}
+  [inst_5 : GradedAlgebra 𝒜] {B : Type u_4} {S : Type u_5} [inst_6 : CommRing S] [inst_7 : CommRing B]
+  [inst_8 : Algebra S B] {ℬ : ι → Submodule S B} [inst_9 : GradedAlgebra ℬ] {C : Type u_6} {T : Type u_7}
+  [inst_10 : CommRing T] [inst_11 : CommRing C] [inst_12 : Algebra T C] {𝒞 : ι → Submodule T C}
+  [inst_13 : GradedAlgebra 𝒞] (f : 𝒜 →+*ᵍ ℬ) (g : ℬ →+*ᵍ 𝒞) (s : A) (x : HomogeneousLocalization.Away 𝒜 s),
+  (HomogeneousLocalization.Away.map g (f s)) ((HomogeneousLocalization.Away.map f s) x) =
+    (HomogeneousLocalization.Away.map (g.comp f) s) x
+'LinearStudy.awayMap_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.awayMap_square : ∀ {ι : Type u_1} {R : Type u_2} {A : Type u_3} [inst : AddCommMonoid ι]
+  [inst_1 : DecidableEq ι] [inst_2 : CommRing R] [inst_3 : CommRing A] [inst_4 : Algebra R A] {𝒜 : ι → Submodule R A}
+  [inst_5 : GradedAlgebra 𝒜] {B : Type u_4} {S : Type u_5} [inst_6 : CommRing S] [inst_7 : CommRing B]
+  [inst_8 : Algebra S B] {ℬ : ι → Submodule S B} [inst_9 : GradedAlgebra ℬ] {C : Type u_6} {T : Type u_7}
+  [inst_10 : CommRing T] [inst_11 : CommRing C] [inst_12 : Algebra T C] {𝒞 : ι → Submodule T C}
+  [inst_13 : GradedAlgebra 𝒞] {S' : Type u_8} {B' : Type u_9} [inst_14 : CommRing S'] [inst_15 : CommRing B']
+  [inst_16 : Algebra S' B'] {ℬ' : ι → Submodule S' B'} [inst_17 : GradedAlgebra ℬ'] {f₁ : 𝒜 →+*ᵍ ℬ} {g₁ : ℬ →+*ᵍ 𝒞}
+  {f₂ : 𝒜 →+*ᵍ ℬ'} {g₂ : ℬ' →+*ᵍ 𝒞},
+  g₁.comp f₁ = g₂.comp f₂ →
+    ∀ (s : A) (x : HomogeneousLocalization.Away 𝒜 s) {t : C} (h₁ : g₁ (f₁ s) = t) (h₂ : g₂ (f₂ s) = t),
+      (LinearStudy.awayCongr h₁)
+          ((HomogeneousLocalization.Away.map g₁ (f₁ s)) ((HomogeneousLocalization.Away.map f₁ s) x)) =
+        (LinearStudy.awayCongr h₂)
+          ((HomogeneousLocalization.Away.map g₂ (f₂ s)) ((HomogeneousLocalization.Away.map f₂ s) x))
+'LinearStudy.awayMap_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+@HomogeneousLocalization.valRingHom : {ι : Type u_1} →
+  {R : Type u_2} →
+    {A : Type u_3} →
+      [inst : AddCommMonoid ι] →
+        [inst_1 : DecidableEq ι] →
+          [inst_2 : CommRing R] →
+            [inst_3 : CommRing A] →
+              [inst_4 : Algebra R A] →
+                {𝒜 : ι → Submodule R A} →
+                  [inst_5 : GradedAlgebra 𝒜] → (x : Submonoid A) → HomogeneousLocalization 𝒜 x →+* Localization x
+'HomogeneousLocalization.valRingHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@HomogeneousLocalization.valRingHom_apply : ∀ {ι : Type u_1} {R : Type u_2} {A : Type u_3} [inst : AddCommMonoid ι]
+  [inst_1 : DecidableEq ι] [inst_2 : CommRing R] [inst_3 : CommRing A] [inst_4 : Algebra R A] {𝒜 : ι → Submodule R A}
+  [inst_5 : GradedAlgebra 𝒜] (x : Submonoid A) (y : HomogeneousLocalization 𝒜 x),
+  (HomogeneousLocalization.valRingHom x) y = y.val
+'HomogeneousLocalization.valRingHom_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.X_mem_homogeneousSubmodule_one : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] (i : σ),
+  MvPolynomial.X i ∈ MvPolynomial.homogeneousSubmodule σ R 1
+'MvPolynomial.X_mem_homogeneousSubmodule_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.X_mem_nonzeroDivisors : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] (i : σ),
+  MvPolynomial.X i ∈ nonZeroDivisors (MvPolynomial σ R)
+'MvPolynomial.X_mem_nonzeroDivisors' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.dehomogenizeAux : (R : Type u_1) →
+  {σ : Type u_2} → [inst : CommRing R] → [DecidableEq σ] → (i : σ) → MvPolynomial σ R →+* MvPolynomial { j // j ≠ i } R
+'MvPolynomial.dehomogenizeAux' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.dehomogenizeAux_C : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] [inst_1 : DecidableEq σ] (i : σ)
+  (r : R), (MvPolynomial.dehomogenizeAux R i) (MvPolynomial.C r) = MvPolynomial.C r
+'MvPolynomial.dehomogenizeAux_C' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.dehomogenizeAux_X_self : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] [inst_1 : DecidableEq σ]
+  (i : σ), (MvPolynomial.dehomogenizeAux R i) (MvPolynomial.X i) = 1
+'MvPolynomial.dehomogenizeAux_X_self' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.dehomogenizeAux_X_ne : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] [inst_1 : DecidableEq σ] (i : σ)
+  {j : σ} (h : j ≠ i), (MvPolynomial.dehomogenizeAux R i) (MvPolynomial.X j) = MvPolynomial.X ⟨j, h⟩
+'MvPolynomial.dehomogenizeAux_X_ne' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.dehomogenizeAux_map : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] [inst_1 : DecidableEq σ]
+  {S : Type u_3} [inst_2 : CommRing S] (g : R →+* S) (i : σ) (p : MvPolynomial σ R),
+  (MvPolynomial.dehomogenizeAux S i) ((MvPolynomial.map g) p) =
+    (MvPolynomial.map g) ((MvPolynomial.dehomogenizeAux R i) p)
+'MvPolynomial.dehomogenizeAux_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.dehomogenizeAt : (R : Type u_1) →
+  {σ : Type u_2} →
+    [inst : CommRing R] →
+      [DecidableEq σ] →
+        (i : σ) →
+          HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X i) →+*
+            MvPolynomial { j // j ≠ i } R
+'MvPolynomial.dehomogenizeAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.awayConst : (R : Type u_1) →
+  {σ : Type u_2} →
+    [inst : CommRing R] →
+      (i : σ) → R → HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X i)
+'MvPolynomial.awayConst' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.val_awayConst' : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] (i : σ) (r : R),
+  HomogeneousLocalization.val (MvPolynomial.awayConst R i r) =
+    Localization.mk (MvPolynomial.C r) ⟨MvPolynomial.X i ^ 0, ⋯⟩
+'MvPolynomial.val_awayConst'' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.val_awayConst : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] (i : σ) (r : R),
+  HomogeneousLocalization.val (MvPolynomial.awayConst R i r) = Localization.mk (MvPolynomial.C r) 1
+'MvPolynomial.val_awayConst' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.awayVar : (R : Type u_1) →
+  {σ : Type u_2} →
+    [inst : CommRing R] →
+      (i : σ) → { j // j ≠ i } → HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X i)
+'MvPolynomial.awayVar' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.val_awayVar' : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] (i : σ) (j : { j // j ≠ i }),
+  HomogeneousLocalization.val (MvPolynomial.awayVar R i j) =
+    Localization.mk (MvPolynomial.X ↑j) ⟨MvPolynomial.X i ^ 1, ⋯⟩
+'MvPolynomial.val_awayVar'' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.awayConstHom : (R : Type u_1) →
+  {σ : Type u_2} →
+    [inst : CommRing R] →
+      (i : σ) → R →+* HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X i)
+'MvPolynomial.awayConstHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.homogenizeAt : (R : Type u_1) →
+  {σ : Type u_2} →
+    [inst : CommRing R] →
+      (i : σ) →
+        MvPolynomial { j // j ≠ i } R →+*
+          HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X i)
+'MvPolynomial.homogenizeAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.homogenizeAt_map : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] [DecidableEq σ] {S : Type u_3}
+  [inst_2 : CommRing S] (g : R →+* S) (i : σ) (p : MvPolynomial { j // j ≠ i } R),
+  (MvPolynomial.homogenizeAt S i) ((MvPolynomial.map g) p) =
+    (LinearStudy.awayCongr ⋯)
+      ((HomogeneousLocalization.Away.map { toRingHom := MvPolynomial.map g, map_mem := ⋯ } (MvPolynomial.X i))
+        ((MvPolynomial.homogenizeAt R i) p))
+'MvPolynomial.homogenizeAt_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.dehomogenizeAt_comp_homogenizeAt : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R]
+  [inst_1 : DecidableEq σ] (i : σ),
+  (MvPolynomial.dehomogenizeAt R i).comp (MvPolynomial.homogenizeAt R i) = RingHom.id (MvPolynomial { j // j ≠ i } R)
+'MvPolynomial.dehomogenizeAt_comp_homogenizeAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.dehomogenizeAt_mk : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] [inst_1 : DecidableEq σ] (i : σ)
+  {n : ℕ} {p : MvPolynomial σ R} (hp : p ∈ MvPolynomial.homogeneousSubmodule σ R (n • 1)),
+  (MvPolynomial.dehomogenizeAt R i) (HomogeneousLocalization.Away.mk (MvPolynomial.homogeneousSubmodule σ R) ⋯ n p hp) =
+    (MvPolynomial.dehomogenizeAux R i) p
+'MvPolynomial.dehomogenizeAt_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.homogenizeAt_comp_dehomogenizeAt : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R]
+  [inst_1 : DecidableEq σ] (i : σ),
+  (MvPolynomial.homogenizeAt R i).comp (MvPolynomial.dehomogenizeAt R i) =
+    RingHom.id (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X i))
+'MvPolynomial.homogenizeAt_comp_dehomogenizeAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.chartRingEquiv : (R : Type u_1) →
+  {σ : Type u_2} →
+    [inst : CommRing R] →
+      [DecidableEq σ] →
+        (i : σ) →
+          HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X i) ≃+*
+            MvPolynomial { j // j ≠ i } R
+'MvPolynomial.chartRingEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.chartRingEquiv_apply_awayVar : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] [inst_1 : DecidableEq σ]
+  (i : σ) (j : { j // j ≠ i }), (MvPolynomial.chartRingEquiv R i) (MvPolynomial.awayVar R i j) = MvPolynomial.X j
+'MvPolynomial.chartRingEquiv_apply_awayVar' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.awayVar_mem_nonZeroDivisors : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] [DecidableEq σ] (i : σ)
+  (j : { j // j ≠ i }),
+  MvPolynomial.awayVar R i j ∈
+    nonZeroDivisors (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X i))
+'MvPolynomial.awayVar_mem_nonZeroDivisors' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.homogenizeAt_dehomogenizeAux : ∀ (R : Type u_1) {σ : Type u_2} [inst : CommRing R] [inst_1 : DecidableEq σ]
+  (i : σ) {p : MvPolynomial σ R} {n : ℕ} (hmem : p ∈ MvPolynomial.homogeneousSubmodule σ R (n • 1)),
+  (MvPolynomial.homogenizeAt R i) ((MvPolynomial.dehomogenizeAux R i) p) =
+    HomogeneousLocalization.Away.mk (MvPolynomial.homogeneousSubmodule σ R) ⋯ n p hmem
+'MvPolynomial.homogenizeAt_dehomogenizeAux' depends on axioms: [propext, Classical.choice, Quot.sound]
+@HomogeneousLocalization.awayMap_comp : ∀ {ι : Type u_1} {A : Type u_2} {σ : Type u_3} [inst : CommRing A]
+  [inst_1 : SetLike σ A] [inst_2 : AddSubgroupClass σ A] [inst_3 : AddCommMonoid ι] [inst_4 : DecidableEq ι] (𝒜 : ι → σ)
+  [inst_5 : GradedRing 𝒜] {d e l : ι} {f g h x y : A},
+  f ∈ 𝒜 d →
+    ∀ (hg : g ∈ 𝒜 e) (hh : h ∈ 𝒜 l) (hx : x = f * g) (hy : y = x * h) (hy' : y = f * (g * h)),
+      (HomogeneousLocalization.awayMap 𝒜 hh hy).comp (HomogeneousLocalization.awayMap 𝒜 hg hx) =
+        HomogeneousLocalization.awayMap 𝒜 ⋯ hy'
+'HomogeneousLocalization.awayMap_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousAwayCoeffHom : {R : Type u_1} →
+  [inst : CommRing R] →
+    {σ : Type u_2} →
+      (f : MvPolynomial σ R) → R →+* HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) f
+'MvPolynomial.homogeneousAwayCoeffHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousAwayAlgebra : {R : Type u_1} →
+  [inst : CommRing R] →
+    {σ : Type u_2} →
+      (f : MvPolynomial σ R) → Algebra R (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) f)
+'MvPolynomial.homogeneousAwayAlgebra' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.val_algebraMap_homogeneousAway : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2}
+  (f : MvPolynomial σ R) (r : R),
+  HomogeneousLocalization.val
+      ((algebraMap R (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) f)) r) =
+    Localization.mk (MvPolynomial.C r) 1
+'MvPolynomial.val_algebraMap_homogeneousAway' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.algebraMap_homogeneousAway_X_eq_awayConst : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2} (i : σ)
+  (r : R),
+  (algebraMap R (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X i))) r =
+    MvPolynomial.awayConst R i r
+'MvPolynomial.algebraMap_homogeneousAway_X_eq_awayConst' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.chartRingEquiv_algebraMap : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2} (i : σ) (r : R),
+  (MvPolynomial.chartRingEquiv R i)
+      ((algebraMap R (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X i))) r) =
+    MvPolynomial.C r
+'MvPolynomial.chartRingEquiv_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateTailPolynomial : {R : Type u_1} →
+  [inst : CommRing R] → {σ : Type u_2} → {n : ℕ} → (Fin (n + 1) → σ) → MvPolynomial σ R
+'MvPolynomial.coordinateTailPolynomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateTailExponent : {σ : Type u_1} → {n : ℕ} → (a : Fin (n + 1) → σ) → { j // j ≠ a 0 } →₀ ℕ
+'MvPolynomial.coordinateTailExponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateTailExponent_ne_zero_iff : ∀ {σ : Type u_1} {n : ℕ} (a : Fin (n + 1) → σ)
+  (j : { j // j ≠ a 0 }), (MvPolynomial.coordinateTailExponent a) j ≠ 0 ↔ ↑j ∈ Set.range a
+'MvPolynomial.coordinateTailExponent_ne_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateTailPolynomial_mem : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2} {n : ℕ}
+  (a : Fin (n + 1) → σ), MvPolynomial.coordinateTailPolynomial a ∈ MvPolynomial.homogeneousSubmodule σ R n
+'MvPolynomial.coordinateTailPolynomial_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.dehomogenizeAux_coordinateTailPolynomial : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2} {n : ℕ}
+  (a : Fin (n + 1) → σ),
+  (MvPolynomial.dehomogenizeAux R (a 0)) (MvPolynomial.coordinateTailPolynomial a) =
+    (MvPolynomial.monomial (MvPolynomial.coordinateTailExponent a)) 1
+'MvPolynomial.dehomogenizeAux_coordinateTailPolynomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductPolynomial : {R : Type u_1} →
+  [inst : CommRing R] → {σ : Type u_2} → {n : ℕ} → (Fin (n + 1) → σ) → MvPolynomial σ R
+'MvPolynomial.coordinateProductPolynomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductPolynomial_mem : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2} {n : ℕ}
+  (a : Fin (n + 1) → σ), MvPolynomial.coordinateProductPolynomial a ∈ MvPolynomial.homogeneousSubmodule σ R (n + 1)
+'MvPolynomial.coordinateProductPolynomial_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateTailLocalizationElement : {R : Type u_1} →
+  [inst : CommRing R] →
+    {σ : Type u_2} →
+      {n : ℕ} →
+        (a : Fin (n + 1) → σ) →
+          HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (a 0))
+'MvPolynomial.coordinateTailLocalizationElement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.chartRingEquiv_coordinateTailLocalizationElement : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2}
+  {n : ℕ} (a : Fin (n + 1) → σ),
+  (MvPolynomial.chartRingEquiv R (a 0)) (MvPolynomial.coordinateTailLocalizationElement a) =
+    (MvPolynomial.monomial (MvPolynomial.coordinateTailExponent a)) 1
+'MvPolynomial.chartRingEquiv_coordinateTailLocalizationElement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateTailAwayMap_algebraMap : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2} {n : ℕ}
+  (a : Fin (n + 1) → σ) (r : R),
+  (HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯)
+      ((algebraMap R (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (a 0)))) r) =
+    (algebraMap R
+        (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R)
+          (MvPolynomial.coordinateProductPolynomial a)))
+      r
+'MvPolynomial.coordinateTailAwayMap_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductAwayRingEquiv : {R : Type u_1} →
+  [inst : CommRing R] →
+    {σ : Type u_2} →
+      {n : ℕ} →
+        (a : Fin (n + 1) → σ) →
+          HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R)
+              (MvPolynomial.coordinateProductPolynomial a) ≃+*
+            Localization.Away ((MvPolynomial.monomial (MvPolynomial.coordinateTailExponent a)) 1)
+'MvPolynomial.coordinateProductAwayRingEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductAwayRingEquiv_awayMap : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2} {n : ℕ}
+  (a : Fin (n + 1) → σ)
+  (q : HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (a 0))),
+  (MvPolynomial.coordinateProductAwayRingEquiv a)
+      ((HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯) q) =
+    (algebraMap (MvPolynomial { j // j ≠ a 0 } R)
+        (Localization.Away ((MvPolynomial.monomial (MvPolynomial.coordinateTailExponent a)) 1)))
+      ((MvPolynomial.chartRingEquiv R (a 0)) q)
+'MvPolynomial.coordinateProductAwayRingEquiv_awayMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductAwayLaurentRingEquiv_awayMap : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2}
+  {n : ℕ} (a : Fin (n + 1) → σ)
+  (q : HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (a 0))),
+  (MvPolynomial.laurentMonomialRingEquiv R (MvPolynomial.coordinateTailExponent a))
+      ((MvPolynomial.coordinateProductAwayRingEquiv a)
+        ((HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯) q)) =
+    AddMonoidAlgebra.mapDomain
+      (⇑(AddSubmonoid.LocalizationMap.toAddMonoidHom
+          (MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent a))))
+      ((MvPolynomial.chartRingEquiv R (a 0)) q)
+'MvPolynomial.coordinateProductAwayLaurentRingEquiv_awayMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductAwayLaurentRingEquiv_awayMap_comp : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2}
+  {n : ℕ} (a : Fin (n + 1) → σ),
+  (MvPolynomial.laurentMonomialRingEquiv R (MvPolynomial.coordinateTailExponent a)).toRingHom.comp
+      ((MvPolynomial.coordinateProductAwayRingEquiv a).toRingHom.comp
+        (HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯)) =
+    (AddMonoidAlgebra.mapDomainRingHom R
+          (AddSubmonoid.LocalizationMap.toAddMonoidHom
+            (MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent a)))).comp
+      (MvPolynomial.chartRingEquiv R (a 0)).toRingHom
+'MvPolynomial.coordinateProductAwayLaurentRingEquiv_awayMap_comp' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateProductAwayLaurentRingEquiv_awayMap_comp_left : ∀ {R : Type u_1} [inst : CommRing R]
+  {σ : Type u_2} {S : Type u_3} [inst_1 : Semiring S] {n : ℕ} (a : Fin (n + 1) → σ)
+  (F : AddMonoidAlgebra R ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent a)) →+* S),
+  F.comp
+      ((MvPolynomial.laurentMonomialRingEquiv R (MvPolynomial.coordinateTailExponent a)).toRingHom.comp
+        ((MvPolynomial.coordinateProductAwayRingEquiv a).toRingHom.comp
+          (HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯))) =
+    F.comp
+      ((AddMonoidAlgebra.mapDomainRingHom R
+            (AddSubmonoid.LocalizationMap.toAddMonoidHom
+              (MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent a)))).comp
+        (MvPolynomial.chartRingEquiv R (a 0)).toRingHom)
+'MvPolynomial.coordinateProductAwayLaurentRingEquiv_awayMap_comp_left' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateProductAwayLaurentRingEquiv_awayMap_comp_left_apply : ∀ {R : Type u_1} [inst : CommRing R]
+  {σ : Type u_2} {S : Type u_3} [inst_1 : Semiring S] {n : ℕ} (a : Fin (n + 1) → σ)
+  (F : AddMonoidAlgebra R ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent a)) →+* S)
+  (q : HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (a 0))),
+  F
+      ((MvPolynomial.laurentMonomialRingEquiv R (MvPolynomial.coordinateTailExponent a))
+        ((MvPolynomial.coordinateProductAwayRingEquiv a)
+          ((HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯) q))) =
+    F
+      (AddMonoidAlgebra.mapDomain
+        (⇑(AddSubmonoid.LocalizationMap.toAddMonoidHom
+            (MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent a))))
+        ((MvPolynomial.chartRingEquiv R (a 0)) q))
+'MvPolynomial.coordinateProductAwayLaurentRingEquiv_awayMap_comp_left_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateProductAwayRingEquiv_algebraMap : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2} {n : ℕ}
+  (a : Fin (n + 1) → σ) (r : R),
+  (MvPolynomial.coordinateProductAwayRingEquiv a)
+      ((algebraMap R
+          (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R)
+            (MvPolynomial.coordinateProductPolynomial a)))
+        r) =
+    (algebraMap R (Localization.Away ((MvPolynomial.monomial (MvPolynomial.coordinateTailExponent a)) 1))) r
+'MvPolynomial.coordinateProductAwayRingEquiv_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductAwayLinearEquiv : {R : Type u_1} →
+  [inst : CommRing R] →
+    {σ : Type u_2} →
+      {n : ℕ} →
+        (a : Fin (n + 1) → σ) →
+          HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R)
+              (MvPolynomial.coordinateProductPolynomial a) ≃ₗ[R]
+            Localization.Away ((MvPolynomial.monomial (MvPolynomial.coordinateTailExponent a)) 1)
+'MvPolynomial.coordinateProductAwayLinearEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductAwayBasis : {R : Type u_1} →
+  [inst : CommRing R] →
+    {σ : Type u_2} →
+      {n : ℕ} →
+        (a : Fin (n + 1) → σ) →
+          Module.Basis (↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent a))) R
+            (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R)
+              (MvPolynomial.coordinateProductPolynomial a))
+'MvPolynomial.coordinateProductAwayBasis' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductAwayRingEquiv_basis_apply : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2} {n : ℕ}
+  (a : Fin (n + 1) → σ) (e : ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent a))),
+  (MvPolynomial.coordinateProductAwayRingEquiv a) ((MvPolynomial.coordinateProductAwayBasis a) e) =
+    (MvPolynomial.laurentMonomialBasis R (MvPolynomial.coordinateTailExponent a)) e
+'MvPolynomial.coordinateProductAwayRingEquiv_basis_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductAwayBasis_toLaurentMonomial : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type u_2} {n : ℕ}
+  (a : Fin (n + 1) → σ) (e : ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent a))),
+  (MvPolynomial.laurentMonomialRingEquiv R (MvPolynomial.coordinateTailExponent a))
+      ((MvPolynomial.coordinateProductAwayRingEquiv a) ((MvPolynomial.coordinateProductAwayBasis a) e)) =
+    AddMonoidAlgebra.single e 1
+'MvPolynomial.coordinateProductAwayBasis_toLaurentMonomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.HomogeneousLaurentExponent : Type u_1 → ℤ → Type u_1
+'MvPolynomial.HomogeneousLaurentExponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.negativeSupport : {σ : Type u_1} →
+  {d : ℤ} → MvPolynomial.HomogeneousLaurentExponent σ d → Set σ
+'MvPolynomial.HomogeneousLaurentExponent.negativeSupport' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.IsAllowedOn : {σ : Type u_1} →
+  {d : ℤ} → MvPolynomial.HomogeneousLaurentExponent σ d → {n : ℕ} → (Fin (n + 1) → σ) → Prop
+'MvPolynomial.HomogeneousLaurentExponent.IsAllowedOn' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentExponentEquiv : {σ : Type u_1} →
+  {n : ℕ} →
+    (a : Fin (n + 1) → σ) →
+      (d : ℤ) →
+        ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent a)) ≃ { e // e.IsAllowedOn a }
+'MvPolynomial.coordinateLaurentExponentEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentExponentEquiv_apply_of_ne : ∀ {σ : Type u_1} {n : ℕ} (a : Fin (n + 1) → σ) (d : ℤ)
+  (e : ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent a))) (i : σ) (hi : i ≠ a 0),
+  ↑↑((MvPolynomial.coordinateLaurentExponentEquiv a d) e) i = ↑e ⟨i, hi⟩
+'MvPolynomial.coordinateLaurentExponentEquiv_apply_of_ne' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentExponentEquiv_apply_anchor : ∀ {σ : Type u_1} {n : ℕ} (a : Fin (n + 1) → σ) (d : ℤ)
+  (e : ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent a))),
+  ↑↑((MvPolynomial.coordinateLaurentExponentEquiv a d) e) (a 0) = d - Finsupp.degree ↑e
+'MvPolynomial.coordinateLaurentExponentEquiv_apply_anchor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentExponentEquiv_symm_apply : ∀ {σ : Type u_1} {n : ℕ} (a : Fin (n + 1) → σ) (d : ℤ)
+  (e : { e // e.IsAllowedOn a }) (j : { j // j ≠ a 0 }),
+  ↑((MvPolynomial.coordinateLaurentExponentEquiv a d).symm e) j = ↑↑e ↑j
+'MvPolynomial.coordinateLaurentExponentEquiv_symm_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.Proj_awayι_appTop_ΓSpecIso : ∀ {R A : Type u_1} [inst : CommRing R] [inst_1 : CommRing A]
+  [inst_2 : Algebra R A] (𝒜 : ℕ → Submodule R A) [inst_3 : GradedAlgebra 𝒜] {m : ℕ} (f : A) (f_deg : f ∈ 𝒜 m)
+  (hm : 0 < m),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Hom.appTop (AlgebraicGeometry.Proj.awayι 𝒜 f f_deg hm))
+      (AlgebraicGeometry.Scheme.ΓSpecIso ↧(HomogeneousLocalization.Away 𝒜 f)).hom =
+    CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.Proj 𝒜).presheaf.map (CategoryTheory.homOfLE ⋯).op)
+      (AlgebraicGeometry.Proj.basicOpenIsoAway 𝒜 f f_deg hm).inv
+'LinearStudy.Proj_awayι_appTop_ΓSpecIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.Proj_structure_section_square : ∀ {R A S : Type u_1} [inst : CommRing R] [inst_1 : CommRing A]
+  [inst_2 : Algebra R A] [inst_3 : CommRing S] (𝒜 : ℕ → Submodule R A) [inst_4 : GradedAlgebra 𝒜] (c : S →+* ↥(𝒜 0))
+  {m : ℕ} (f : A) (f_deg : f ∈ 𝒜 m) (hm : 0 < m),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.ΓSpecIso ↧S).inv
+      (CategoryTheory.CategoryStruct.comp
+        (AlgebraicGeometry.Scheme.Hom.appTop
+          (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero 𝒜)
+            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom c))))
+        (CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.Proj 𝒜).presheaf.map (CategoryTheory.homOfLE ⋯).op)
+          (AlgebraicGeometry.Proj.basicOpenIsoAway 𝒜 f f_deg hm).inv)) =
+    CommRingCat.ofHom ((HomogeneousLocalization.fromZeroRingHom 𝒜 (Submonoid.powers f)).comp c)
+'LinearStudy.Proj_structure_section_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousProjπ : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] → AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R) ⟶ AlgebraicGeometry.Spec ↧R
+'MvPolynomial.homogeneousProjπ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.irrelevant_toIdeal_le_span_range_X : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R],
+  (HomogeneousIdeal.irrelevant (MvPolynomial.homogeneousSubmodule σ R)).toIdeal ≤ Ideal.span (Set.range MvPolynomial.X)
+'MvPolynomial.irrelevant_toIdeal_le_span_range_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpen : {R : Type u_1} →
+  {σ : Type} → [inst : CommRing R] → σ → (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).Opens
+'MvPolynomial.coordinateOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpen_isAffineOpen : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R] (i : σ),
+  AlgebraicGeometry.IsAffineOpen (MvPolynomial.coordinateOpen i)
+'MvPolynomial.coordinateOpen_isAffineOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.iSup_coordinateOpen_eq_top : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R],
+  ⨆ i, MvPolynomial.coordinateOpen i = ⊤
+'MvPolynomial.iSup_coordinateOpen_eq_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCover : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] → ULift.{u_1, 0} σ → (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).Opens
+'MvPolynomial.coordinateOpenCover' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCover_isAffineOpen : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R] (i : ULift.{u_1, 0} σ),
+  AlgebraicGeometry.IsAffineOpen (MvPolynomial.coordinateOpenCover i)
+'MvPolynomial.coordinateOpenCover_isAffineOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.iSup_coordinateOpenCover_eq_top : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R],
+  ⨆ i, MvPolynomial.coordinateOpenCover i = ⊤
+'MvPolynomial.iSup_coordinateOpenCover_eq_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersection : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      {n : ℕ} →
+        (Fin (n + 1) → ULift.{u_1, 0} σ) → (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).Opens
+'MvPolynomial.coordinateOpenCechIntersection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersection_le : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R] {n : ℕ}
+  (a : Fin (n + 1) → ULift.{u_1, 0} σ) (k : Fin (n + 1)),
+  MvPolynomial.coordinateOpenCechIntersection a ≤ MvPolynomial.coordinateOpenCover (a k)
+'MvPolynomial.coordinateOpenCechIntersection_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductPolynomial_eq_delete_mul : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (k : Fin (n + 2)),
+  (MvPolynomial.coordinateProductPolynomial fun l => (↑a l).down) =
+    (MvPolynomial.coordinateProductPolynomial fun l => (↑(a.delete k) l).down) * MvPolynomial.X (↑a k).down
+'MvPolynomial.coordinateProductPolynomial_eq_delete_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateTailPolynomial_eq_delete_succ_mul : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (k : Fin (n + 1)),
+  (MvPolynomial.coordinateTailPolynomial fun l => (↑a l).down) =
+    (MvPolynomial.coordinateTailPolynomial fun l => (↑(a.delete k.succ) l).down) * MvPolynomial.X (↑a k.succ).down
+'MvPolynomial.coordinateTailPolynomial_eq_delete_succ_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateTailAwayMap_comp_delete_succ : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (k : Fin (n + 1))
+  (q : HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (↑a 0).down)),
+  (HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯)
+      ((HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯) q) =
+    (HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯) q
+'MvPolynomial.coordinateTailAwayMap_comp_delete_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersection_eq_basicOpen : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R] {n : ℕ}
+  (a : Fin (n + 1) → ULift.{u_1, 0} σ),
+  MvPolynomial.coordinateOpenCechIntersection a =
+    AlgebraicGeometry.Proj.basicOpen (MvPolynomial.homogeneousSubmodule σ R)
+      (MvPolynomial.coordinateProductPolynomial fun k => (a k).down)
+'MvPolynomial.coordinateOpenCechIntersection_eq_basicOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersection_isAffineOpen : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R] {n : ℕ}
+  (a : Fin (n + 1) → ULift.{u_1, 0} σ), AlgebraicGeometry.IsAffineOpen (MvPolynomial.coordinateOpenCechIntersection a)
+'MvPolynomial.coordinateOpenCechIntersection_isAffineOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionAwayIso : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      {n : ℕ} →
+        (a : Fin (n + 1) → ULift.{u_1, 0} σ) →
+          ↧(HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R)
+                (MvPolynomial.coordinateProductPolynomial fun k => (a k).down)) ≅
+            (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.obj
+              (Opposite.op (MvPolynomial.coordinateOpenCechIntersection a))
+'MvPolynomial.coordinateOpenCechIntersectionAwayIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      {n : ℕ} →
+        (a : Fin (n + 1) → ULift.{u_1, 0} σ) →
+          ↑((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.obj
+                (Opposite.op (MvPolynomial.coordinateOpenCechIntersection a))) ≃+*
+            AddMonoidAlgebra R
+              ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun k => (a k).down))
+'MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionBaseLaurentRingEquiv : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      {n : ℕ} →
+        (a : Fin (n + 1) → ULift.{u_1, 0} σ) →
+          ↑((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.obj
+                (Opposite.op (MvPolynomial.coordinateOpenCechIntersection a))) ≃+*
+            AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+              ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun k => (a k).down))
+'MvPolynomial.coordinateOpenCechIntersectionBaseLaurentRingEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersection_structure_section_square : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  {n : ℕ} (a : Fin (n + 1) → ULift.{u_1, 0} σ),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.ΓSpecIso ↧R).inv
+      (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Hom.appTop MvPolynomial.homogeneousProjπ)
+        (CategoryTheory.CategoryStruct.comp
+          ((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.map (CategoryTheory.homOfLE ⋯).op)
+          (MvPolynomial.coordinateOpenCechIntersectionAwayIso a).inv)) =
+    CommRingCat.ofHom (MvPolynomial.coordinateProductPolynomial fun k => (a k).down).homogeneousAwayCoeffHom
+'MvPolynomial.coordinateOpenCechIntersection_structure_section_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersection_baseScalarHom : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R] {n : ℕ}
+  (a : Fin (n + 1) → ULift.{u_1, 0} σ),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Hom.appTop MvPolynomial.homogeneousProjπ)
+      (CategoryTheory.CategoryStruct.comp
+        ((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.map (CategoryTheory.homOfLE ⋯).op)
+        (MvPolynomial.coordinateOpenCechIntersectionAwayIso a).inv) =
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.ΓSpecIso ↧R).hom
+      (CommRingCat.ofHom (MvPolynomial.coordinateProductPolynomial fun k => (a k).down).homogeneousAwayCoeffHom)
+'MvPolynomial.coordinateOpenCechIntersection_baseScalarHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv_baseScalar : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] {n : ℕ} (a : Fin (n + 1) → ULift.{u_1, 0} σ)
+  (r : ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))),
+  (MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv a)
+      ((CommRingCat.Hom.hom
+          ((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.map (CategoryTheory.homOfLE ⋯).op))
+        ((CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.Hom.appTop MvPolynomial.homogeneousProjπ)) r)) =
+    AddMonoidAlgebra.single 0 ((CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧R).hom) r)
+'MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv_baseScalar' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionBaseLaurentRingEquiv_baseScalar : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] {n : ℕ} (a : Fin (n + 1) → ULift.{u_1, 0} σ)
+  (r : ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))),
+  (MvPolynomial.coordinateOpenCechIntersectionBaseLaurentRingEquiv a)
+      ((CommRingCat.Hom.hom
+          ((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.map (CategoryTheory.homOfLE ⋯).op))
+        ((CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.Hom.appTop MvPolynomial.homogeneousProjπ)) r)) =
+    (algebraMap (↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤)))
+        (AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+          ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun k => (a k).down))))
+      r
+'MvPolynomial.coordinateOpenCechIntersectionBaseLaurentRingEquiv_baseScalar' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionBaseLaurentLinearEquiv : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      {n : ℕ} →
+        (a : Fin (n + 1) → ULift.{u_1, 0} σ) →
+          ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+                (SheafOfModules.unit (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).ringCatSheaf)
+                MvPolynomial.coordinateOpenCover n a) ≃ₗ[↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))]
+            AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+              ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun k => (a k).down))
+'MvPolynomial.coordinateOpenCechIntersectionBaseLaurentLinearEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      {n : ℕ} →
+        (a : Fin (n + 1) → ULift.{u_1, 0} σ) →
+          (d : ℤ) →
+            ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+                  (SheafOfModules.unit (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).ringCatSheaf)
+                  MvPolynomial.coordinateOpenCover n a) ≃ₗ[↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))]
+              AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+                { e // e.IsAllowedOn fun k => (a k).down }
+'MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv_basis_apply : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] {n : ℕ} (a : Fin (n + 1) → ULift.{u_1, 0} σ) (d : ℤ)
+  (e : ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun k => (a k).down)))
+  (r : ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))),
+  (MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv a d)
+      ((MvPolynomial.coordinateOpenCechIntersectionBaseLaurentLinearEquiv a).symm (AddMonoidAlgebra.single e r)) =
+    AddMonoidAlgebra.single ((MvPolynomial.coordinateLaurentExponentEquiv (fun k => (a k).down) d) e) r
+'MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv_basis_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateLaurentExponentDeleteEmbedding : {σ : Type} →
+  [inst : LinearOrder σ] →
+    {n : ℕ} →
+      (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) →
+        (k : Fin (n + 2)) →
+          (d : ℤ) → { e // e.IsAllowedOn fun l => (↑(a.delete k) l).down } ↪ { e // e.IsAllowedOn fun l => (↑a l).down }
+'MvPolynomial.coordinateLaurentExponentDeleteEmbedding' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder σ] →
+        {n : ℕ} →
+          (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) →
+            (k : Fin (n + 2)) →
+              (d : ℤ) →
+                AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+                    { e //
+                      e.IsAllowedOn fun l =>
+                        (↑(a.delete k) l).down } →ₗ[↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))]
+                  AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+                    { e // e.IsAllowedOn fun l => (↑a l).down }
+'MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap_single : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (k : Fin (n + 2)) (d : ℤ) (e : { e // e.IsAllowedOn fun l => (↑(a.delete k) l).down })
+  (r : ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))),
+  (MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap a k d) (AddMonoidAlgebra.single e r) =
+    AddMonoidAlgebra.single ((MvPolynomial.coordinateLaurentExponentDeleteEmbedding a k d) e) r
+'MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap_single' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateLaurentExponentDeleteAddMonoidHom : {σ : Type} →
+  [inst : LinearOrder σ] →
+    {n : ℕ} →
+      (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) →
+        (k : Fin (n + 1)) →
+          ↥(MvPolynomial.laurentExponentSubmonoid
+                (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete k.succ) l).down)) →+
+            ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun l => (↑a l).down))
+'MvPolynomial.coordinateLaurentExponentDeleteAddMonoidHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentExponentDeleteAddMonoidHom_awayMap : ∀ {σ : Type} [inst : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (k : Fin (n + 1))
+  (e : { j // j ≠ (↑a 0).down } →₀ ℕ),
+  (MvPolynomial.coordinateLaurentExponentDeleteAddMonoidHom a k)
+      ((MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete k.succ) l).down))
+        e) =
+    (MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑a l).down)) e
+'MvPolynomial.coordinateLaurentExponentDeleteAddMonoidHom_awayMap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateLaurentExponentEquiv_delete_succ : ∀ {σ : Type} [inst : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (k : Fin (n + 1)) (d : ℤ)
+  (e :
+    ↥(MvPolynomial.laurentExponentSubmonoid
+        (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete k.succ) l).down))),
+  (MvPolynomial.coordinateLaurentExponentEquiv (fun l => (↑a l).down) d)
+      ((MvPolynomial.coordinateLaurentExponentDeleteAddMonoidHom a k) e) =
+    (MvPolynomial.coordinateLaurentExponentDeleteEmbedding a k.succ d)
+      ((MvPolynomial.coordinateLaurentExponentEquiv (fun l => (↑(a.delete k.succ) l).down) d) e)
+'MvPolynomial.coordinateLaurentExponentEquiv_delete_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductAwayLaurentRingEquiv_naturality_delete_succ : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] [inst_1 : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (k : Fin (n + 1)),
+  (MvPolynomial.laurentMonomialRingEquiv R (MvPolynomial.coordinateTailExponent fun l => (↑a l).down)).toRingHom.comp
+      ((MvPolynomial.coordinateProductAwayRingEquiv fun l => (↑a l).down).toRingHom.comp
+        (HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯)) =
+    (AddMonoidAlgebra.mapDomainRingHom R (MvPolynomial.coordinateLaurentExponentDeleteAddMonoidHom a k)).comp
+      ((MvPolynomial.laurentMonomialRingEquiv R
+              (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete k.succ) l).down)).toRingHom.comp
+        (MvPolynomial.coordinateProductAwayRingEquiv fun l => (↑(a.delete k.succ) l).down).toRingHom)
+'MvPolynomial.coordinateProductAwayLaurentRingEquiv_naturality_delete_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechDelete : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder σ] →
+        {n : ℕ} →
+          (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) →
+            (k : Fin (n + 2)) →
+              MvPolynomial.coordinateOpenCechIntersection ↑a ⟶ MvPolynomial.coordinateOpenCechIntersection ↑(a.delete k)
+'MvPolynomial.coordinateOpenCechDelete' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionAwayIso_naturality_delete : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (k : Fin (n + 2)),
+  CategoryTheory.CategoryStruct.comp
+      (CommRingCat.ofHom (HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯))
+      (MvPolynomial.coordinateOpenCechIntersectionAwayIso ↑a).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateOpenCechIntersectionAwayIso ↑(a.delete k)).hom
+      ((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.map
+        (MvPolynomial.coordinateOpenCechDelete a k).op)
+'MvPolynomial.coordinateOpenCechIntersectionAwayIso_naturality_delete' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionAwayIso_naturality_firstChart : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] {n : ℕ} (a : Fin (n + 1) → ULift.{u_1, 0} σ),
+  CategoryTheory.CategoryStruct.comp
+      (CommRingCat.ofHom (HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯))
+      (MvPolynomial.coordinateOpenCechIntersectionAwayIso a).hom =
+    CategoryTheory.CategoryStruct.comp
+      (AlgebraicGeometry.Proj.basicOpenIsoAway (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (a 0).down) ⋯
+          ⋯).hom
+      ((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.map (CategoryTheory.homOfLE ⋯).op)
+'MvPolynomial.coordinateOpenCechIntersectionAwayIso_naturality_firstChart' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv_naturality_delete_succ : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] [inst_1 : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (k : Fin (n + 1))
+  (x :
+    ↑((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.obj
+        (Opposite.op (MvPolynomial.coordinateOpenCechIntersection ↑(a.delete k.succ))))),
+  (MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv ↑a)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.map
+            (MvPolynomial.coordinateOpenCechDelete a k.succ).op))
+        x) =
+    AddMonoidAlgebra.mapDomain (⇑(MvPolynomial.coordinateLaurentExponentDeleteAddMonoidHom a k))
+      ((MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv ↑(a.delete k.succ)) x)
+'MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv_naturality_delete_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionBaseLaurentLinearEquiv_naturality_delete_succ : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] [inst_1 : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (k : Fin (n + 1))
+  (x :
+    ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+        (SheafOfModules.unit (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).ringCatSheaf)
+        MvPolynomial.coordinateOpenCover n ↑(a.delete k.succ))),
+  (MvPolynomial.coordinateOpenCechIntersectionBaseLaurentLinearEquiv ↑a)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+                (SheafOfModules.unit (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).ringCatSheaf)).map
+            (MvPolynomial.coordinateOpenCechDelete a k.succ).op))
+        x) =
+    AddMonoidAlgebra.mapDomain (⇑(MvPolynomial.coordinateLaurentExponentDeleteAddMonoidHom a k))
+      ((MvPolynomial.coordinateOpenCechIntersectionBaseLaurentLinearEquiv ↑(a.delete k.succ)) x)
+'MvPolynomial.coordinateOpenCechIntersectionBaseLaurentLinearEquiv_naturality_delete_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv_naturality_delete_succ : ∀ {R : Type u_1}
+  {σ : Type} [inst : CommRing R] [inst_1 : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (k : Fin (n + 1)) (d : ℤ)
+  (x :
+    ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+        (SheafOfModules.unit (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).ringCatSheaf)
+        MvPolynomial.coordinateOpenCover n ↑(a.delete k.succ))),
+  (MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv (↑a) d)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+                (SheafOfModules.unit (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).ringCatSheaf)).map
+            (MvPolynomial.coordinateOpenCechDelete a k.succ).op))
+        x) =
+    (MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap a k.succ d)
+      ((MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv (↑(a.delete k.succ)) d) x)
+'MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv_naturality_delete_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv_basis_naturality_delete_succ : ∀
+  {R : Type u_1} {σ : Type} [inst : CommRing R] [inst_1 : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (k : Fin (n + 1)) (d : ℤ)
+  (e :
+    ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete k.succ) l).down)))
+  (r : ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))),
+  (MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv (↑a) d)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+                (SheafOfModules.unit (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).ringCatSheaf)).map
+            (MvPolynomial.coordinateOpenCechDelete a k.succ).op))
+        ((MvPolynomial.coordinateOpenCechIntersectionBaseLaurentLinearEquiv ↑(a.delete k.succ)).symm
+          (AddMonoidAlgebra.single e r))) =
+    AddMonoidAlgebra.single
+      ((MvPolynomial.coordinateLaurentExponentDeleteEmbedding a k.succ d)
+        ((MvPolynomial.coordinateLaurentExponentEquiv (fun l => (↑(a.delete k.succ) l).down) d) e))
+      r
+'MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv_basis_naturality_delete_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativePrimeCoordinateUnit : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (𝓑 : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra 𝓑] →
+              (p : ProjectiveSpectrum 𝓑) →
+                (a : S) → a ∉ p.asHomogeneousIdeal → (Localization p.asHomogeneousIdeal.toIdeal.primeCompl)ˣ
+'LinearStudy.nativePrimeCoordinateUnit' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativePrimeIntegerTwistEquiv : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (𝓑 : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra 𝓑] →
+              (p : ProjectiveSpectrum 𝓑) →
+                (a : S) →
+                  a ∉ p.asHomogeneousIdeal →
+                    ℤ →
+                      LinearStudy.nativeProjectiveModuleAtPrime 𝓑
+                          p ≃ₗ[HomogeneousLocalization.AtPrime 𝓑 p.asHomogeneousIdeal.toIdeal]
+                        LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p
+'LinearStudy.nativePrimeIntegerTwistEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativePrimeIntegerTwistEquiv_ofNat : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (p : ProjectiveSpectrum 𝓑) (a : S)
+  (hp : a ∉ p.asHomogeneousIdeal) (n : ℕ),
+  LinearStudy.nativePrimeIntegerTwistEquiv 𝓑 p a hp ↑n = LinearStudy.nativeProjectivePrimeTwistEquiv 𝓑 p a hp n
+'LinearStudy.nativePrimeIntegerTwistEquiv_ofNat' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativePrimeIntegerTwistEquiv_negSucc : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  (p : ProjectiveSpectrum 𝓑) (a : S) (hp : a ∉ p.asHomogeneousIdeal) (n : ℕ),
+  LinearStudy.nativePrimeIntegerTwistEquiv 𝓑 p a hp (Int.negSucc n) =
+    (LinearStudy.nativeProjectivePrimeTwistEquiv 𝓑 p a hp (n + 1)).symm
+'LinearStudy.nativePrimeIntegerTwistEquiv_negSucc' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativePrimeIntegerTwistEquiv_localizedValue : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  (p : ProjectiveSpectrum 𝓑) (a : S) (hp : a ∉ p.asHomogeneousIdeal) (m : ℤ)
+  (f : LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p),
+  (LinearStudy.nativeProjectiveRingModuleLocalizationEquiv 𝓑 p)
+      ((LinearStudy.nativePrimeIntegerTwistEquiv 𝓑 p a hp m) f) =
+    ↑(LinearStudy.nativePrimeCoordinateUnit 𝓑 p a hp ^ m) *
+      (LinearStudy.nativeProjectiveRingModuleLocalizationEquiv 𝓑 p) f
+'LinearStudy.nativePrimeIntegerTwistEquiv_localizedValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativePrimeIntegerTwistEquiv_neg_apply : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  (p : ProjectiveSpectrum 𝓑) (a : S) (hp : a ∉ p.asHomogeneousIdeal) (m : ℤ)
+  (f : LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p),
+  (LinearStudy.nativePrimeIntegerTwistEquiv 𝓑 p a hp (-m)) ((LinearStudy.nativePrimeIntegerTwistEquiv 𝓑 p a hp m) f) = f
+'LinearStudy.nativePrimeIntegerTwistEquiv_neg_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIntegerTwistLocalFraction_forward : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑],
+  ∀ a ∈ 𝓑 1,
+    ∀ (m l : ℤ) {U : TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑)} (hp : ∀ (p : ↥U), a ∉ (↑p).asHomogeneousIdeal)
+      {f : (p : ↥U) → LinearStudy.nativeProjectiveModuleAtPrime 𝓑 ↑p},
+      (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) l).pred f →
+        (LinearStudy.nativeProjectiveModuleLocalPredicate 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑)
+              (l + m)).pred
+          fun p => (LinearStudy.nativePrimeIntegerTwistEquiv 𝓑 (↑p) a ⋯ m) (f p)
+'LinearStudy.nativeIntegerTwistLocalFraction_forward' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIntegerTwistSectionMap : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (a : S) →
+              a ∈ 𝓑 1 →
+                (k : ℤ) →
+                  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) →
+                    (∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal) →
+                      ↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj
+                            U) →ₗ[↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)]
+                        ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑)
+                            ⋯ k U)
+'LinearStudy.nativeIntegerTwistSectionMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIntegerTwistSectionToZero : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (a : S) →
+              a ∈ 𝓑 1 →
+                (k : ℤ) →
+                  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) →
+                    (∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal) →
+                      ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯
+                            k U) →ₗ[↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)]
+                        ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑)
+                            ⋯ 0 U)
+'LinearStudy.nativeIntegerTwistSectionToZero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIntegerTwistSectionFrame : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (a : S) →
+              a ∈ 𝓑 1 →
+                (k : ℤ) →
+                  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) →
+                    (∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal) →
+                      ↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj
+                            U) ≃ₗ[↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)]
+                        ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑)
+                            ⋯ k U)
+'LinearStudy.nativeIntegerTwistSectionFrame' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIntegerTwistSectionFrame_restrict : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) (k : ℤ)
+  {U V : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ} (i : U ⟶ V)
+  (hp : ∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal)
+  (r : ↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)),
+  (CategoryTheory.ConcreteCategory.hom
+        ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ k).map i))
+      ((LinearStudy.nativeIntegerTwistSectionFrame 𝓑 a ha k U hp) r) =
+    (LinearStudy.nativeIntegerTwistSectionFrame 𝓑 a ha k V ⋯)
+      ((CategoryTheory.ConcreteCategory.hom ((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.map i)) r)
+'LinearStudy.nativeIntegerTwistSectionFrame_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIntegerTwistSectionFrame_localizedValue : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) (k : ℤ)
+  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+  (hp : ∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal)
+  (r : ↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)) (p : ↥(Opposite.unop U)),
+  (LinearStudy.nativeProjectiveRingModuleLocalizationEquiv 𝓑 ↑p)
+      (↑((LinearStudy.nativeIntegerTwistSectionFrame 𝓑 a ha k U hp) r) p) =
+    ↑(LinearStudy.nativePrimeCoordinateUnit 𝓑 (↑p) a ⋯ ^ k) * HomogeneousLocalization.val (↑r p)
+'LinearStudy.nativeIntegerTwistSectionFrame_localizedValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeCoordinateRatioSection : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (𝓑 : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra 𝓑] →
+              (a : S) →
+                a ∈ 𝓑 1 →
+                  (b : S) →
+                    b ∈ 𝓑 1 →
+                      (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) →
+                        (∀ (p : ↥(Opposite.unop U)), b ∉ (↑p).asHomogeneousIdeal) →
+                          ↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)
+'LinearStudy.nativeCoordinateRatioSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeCoordinateRatioSection_localizedValue : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1)
+  (b : S) (hb : b ∈ 𝓑 1) (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+  (hpa : ∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal)
+  (hpb : ∀ (p : ↥(Opposite.unop U)), b ∉ (↑p).asHomogeneousIdeal) (p : ↥(Opposite.unop U)),
+  HomogeneousLocalization.val (↑(LinearStudy.nativeCoordinateRatioSection 𝓑 a ha b hb U hpb) p) =
+    ↑(LinearStudy.nativePrimeCoordinateUnit 𝓑 (↑p) a ⋯ * (LinearStudy.nativePrimeCoordinateUnit 𝓑 (↑p) b ⋯)⁻¹)
+'LinearStudy.nativeCoordinateRatioSection_localizedValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeCoordinateRatioSection_mul_reciprocal : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1)
+  (b : S) (hb : b ∈ 𝓑 1) (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+  (hpa : ∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal)
+  (hpb : ∀ (p : ↥(Opposite.unop U)), b ∉ (↑p).asHomogeneousIdeal),
+  LinearStudy.nativeCoordinateRatioSection 𝓑 a ha b hb U hpb *
+      LinearStudy.nativeCoordinateRatioSection 𝓑 b hb a ha U hpa =
+    1
+'LinearStudy.nativeCoordinateRatioSection_mul_reciprocal' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeCoordinateRatioUnit : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (𝓑 : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra 𝓑] →
+              (a : S) →
+                a ∈ 𝓑 1 →
+                  (b : S) →
+                    b ∈ 𝓑 1 →
+                      (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) →
+                        (∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal) →
+                          (∀ (p : ↥(Opposite.unop U)), b ∉ (↑p).asHomogeneousIdeal) →
+                            (↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U))ˣ
+'LinearStudy.nativeCoordinateRatioUnit' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeStructureSectionPointRingHom : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (𝓑 : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra 𝓑] →
+              (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) →
+                (p : ↥(Opposite.unop U)) →
+                  ↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U) →+*
+                    Localization (↑p).asHomogeneousIdeal.toIdeal.primeCompl
+'LinearStudy.nativeStructureSectionPointRingHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeCoordinateRatioUnit_pointMap : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) (b : S)
+  (hb : b ∈ 𝓑 1) (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+  (hpa : ∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal)
+  (hpb : ∀ (p : ↥(Opposite.unop U)), b ∉ (↑p).asHomogeneousIdeal) (p : ↥(Opposite.unop U)),
+  (Units.map ↑(LinearStudy.nativeStructureSectionPointRingHom 𝓑 U p))
+      (LinearStudy.nativeCoordinateRatioUnit 𝓑 a ha b hb U hpa hpb) =
+    LinearStudy.nativePrimeCoordinateUnit 𝓑 (↑p) a ⋯ * (LinearStudy.nativePrimeCoordinateUnit 𝓑 (↑p) b ⋯)⁻¹
+'LinearStudy.nativeCoordinateRatioUnit_pointMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeCoordinateRatioUnit_zpow_pointValue : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1)
+  (b : S) (hb : b ∈ 𝓑 1) (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+  (hpa : ∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal)
+  (hpb : ∀ (p : ↥(Opposite.unop U)), b ∉ (↑p).asHomogeneousIdeal) (p : ↥(Opposite.unop U)) (k : ℤ),
+  (LinearStudy.nativeStructureSectionPointRingHom 𝓑 U p)
+      ↑(LinearStudy.nativeCoordinateRatioUnit 𝓑 a ha b hb U hpa hpb ^ k) =
+    ↑((LinearStudy.nativePrimeCoordinateUnit 𝓑 (↑p) a ⋯ * (LinearStudy.nativePrimeCoordinateUnit 𝓑 (↑p) b ⋯)⁻¹) ^ k)
+'LinearStudy.nativeCoordinateRatioUnit_zpow_pointValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIntegerTwistSectionFrame_transition : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1) (b : S)
+  (hb : b ∈ 𝓑 1) (k : ℤ) (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+  (hpa : ∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal)
+  (hpb : ∀ (p : ↥(Opposite.unop U)), b ∉ (↑p).asHomogeneousIdeal)
+  (r : ↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj U)),
+  (LinearStudy.nativeIntegerTwistSectionFrame 𝓑 b hb k U hpb) r =
+    (LinearStudy.nativeIntegerTwistSectionFrame 𝓑 a ha k U hpa)
+      (↑(LinearStudy.nativeCoordinateRatioUnit 𝓑 b hb a ha U hpb hpa ^ k) * r)
+'LinearStudy.nativeIntegerTwistSectionFrame_transition' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIntegerTwistBaseSectionEquiv : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {Y : AlgebraicGeometry.Scheme} →
+              (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) →
+                (a : S) →
+                  a ∈ 𝓑 1 →
+                    (k : ℤ) →
+                      (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ) →
+                        (∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal) →
+                          ↑((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π
+                                    (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf)).obj
+                                U) ≃ₗ[↑(Y.presheaf.obj (Opposite.op ⊤))]
+                            ↑((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π
+                                    (LinearStudy.nativeProjectiveModuleSheaf 𝓑
+                                      (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ k)).obj
+                                U)
+'LinearStudy.nativeIntegerTwistBaseSectionEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIntegerTwistBaseSectionEquiv_restrict : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {Y : AlgebraicGeometry.Scheme}
+  (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) (a : S) (ha : a ∈ 𝓑 1) (k : ℤ)
+  {U V : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ} (i : U ⟶ V)
+  (hp : ∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal)
+  (r :
+    ↑((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π
+            (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf)).obj
+        U)),
+  (CategoryTheory.ConcreteCategory.hom
+        ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π
+              (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ k)).map
+          i))
+      ((LinearStudy.nativeIntegerTwistBaseSectionEquiv 𝓑 π a ha k U hp) r) =
+    (LinearStudy.nativeIntegerTwistBaseSectionEquiv 𝓑 π a ha k V ⋯)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π
+                (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf)).map
+            i))
+        r)
+'LinearStudy.nativeIntegerTwistBaseSectionEquiv_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeIntegerTwist : {K : Type u_1} →
+  [inst : Field K] → {σ : Type} → ℤ → (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).Modules
+'MvPolynomial.coordinateNativeIntegerTwist' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersection_coordinate_notMem : ∀ {K : Type u_1} [inst : Field K] {σ : Type} {n : ℕ}
+  (a : Fin (n + 1) → ULift.{u_1, 0} σ) (j : Fin (n + 1)) (p : ↥(MvPolynomial.coordinateOpenCechIntersection a)),
+  MvPolynomial.X (a j).down ∉ (↑p).asHomogeneousIdeal
+'MvPolynomial.coordinateOpenCechIntersection_coordinate_notMem' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeIntegerTwistCechFactorFrame : {K : Type u_1} →
+  [inst : Field K] →
+    {σ : Type} →
+      {n : ℕ} →
+        (a : Fin (n + 1) → ULift.{u_1, 0} σ) →
+          (k : ℤ) →
+            ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+                  (SheafOfModules.unit (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).ringCatSheaf)
+                  MvPolynomial.coordinateOpenCover n a) ≃ₗ[↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))]
+              ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+                  (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n a)
+'MvPolynomial.coordinateNativeIntegerTwistCechFactorFrame' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv : {K : Type u_1} →
+  [inst : Field K] →
+    {σ : Type} →
+      {n : ℕ} →
+        (a : Fin (n + 1) → ULift.{u_1, 0} σ) →
+          (k : ℤ) →
+            ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+                  (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n
+                  a) ≃ₗ[↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))]
+              AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))
+                { e // e.IsAllowedOn fun j => (a j).down }
+'MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechFirstSecond_ne : ∀ {σ : Type} [inst : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)), (↑a 1).down ≠ (↑a 0).down
+'MvPolynomial.coordinateOpenCechFirstSecond_ne' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOpenCechFirstTransitionExponent : {σ : Type} →
+  [inst : LinearOrder σ] →
+    {n : ℕ} →
+      (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) →
+        ℤ →+ ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun k => (↑a k).down))
+'MvPolynomial.coordinateOpenCechFirstTransitionExponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom : {σ : Type} →
+  [inst : LinearOrder σ] →
+    {n : ℕ} →
+      (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) →
+        ↥(MvPolynomial.laurentExponentSubmonoid
+              (MvPolynomial.coordinateTailExponent fun k => (↑(a.delete 0) k).down)) →+
+          ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun k => (↑a k).down))
+'MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom_apply : ∀ {σ : Type} [inst : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (e : ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun k => (↑(a.delete 0) k).down)))
+  (j : { j // j ≠ (↑a 0).down }),
+  ↑((MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom a) e) j =
+    ↑↑((MvPolynomial.coordinateLaurentExponentEquiv (fun k => (↑(a.delete 0) k).down) 0) e) ↑j
+'MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateLaurentExponentEquiv_delete_zero_add_transition : ∀ {σ : Type} [inst : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (d : ℤ)
+  (e : ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun k => (↑(a.delete 0) k).down))),
+  (MvPolynomial.coordinateLaurentExponentEquiv (fun k => (↑a k).down) d)
+      ((MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom a) e +
+        (MvPolynomial.coordinateOpenCechFirstTransitionExponent a) d) =
+    (MvPolynomial.coordinateLaurentExponentDeleteEmbedding a 0 d)
+      ((MvPolynomial.coordinateLaurentExponentEquiv (fun k => (↑(a.delete 0) k).down) d) e)
+'MvPolynomial.coordinateLaurentExponentEquiv_delete_zero_add_transition' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateProductPolynomial_first_anchor_factor : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)),
+  (MvPolynomial.coordinateProductPolynomial fun l => (↑a l).down) =
+    MvPolynomial.X (↑a 1).down *
+      ((MvPolynomial.coordinateTailPolynomial fun l => (↑(a.delete 0) l).down) * MvPolynomial.X (↑a 0).down)
+'MvPolynomial.coordinateProductPolynomial_first_anchor_factor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateTailPolynomial_eq_first_mul_delete_zero : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)),
+  (MvPolynomial.coordinateTailPolynomial fun l => (↑a l).down) =
+    MvPolynomial.X (↑a 1).down * MvPolynomial.coordinateTailPolynomial fun l => (↑(a.delete 0) l).down
+'MvPolynomial.coordinateTailPolynomial_eq_first_mul_delete_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateFirstDirectAwayMap : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder σ] →
+        {n : ℕ} →
+          (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) →
+            HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (↑a 1).down) →+*
+              HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R)
+                (MvPolynomial.coordinateProductPolynomial fun l => (↑a l).down)
+'MvPolynomial.coordinateFirstDirectAwayMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateTargetTailAwayMap : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder σ] →
+        {n : ℕ} →
+          (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) →
+            HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (↑a 0).down) →+*
+              HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R)
+                (MvPolynomial.coordinateProductPolynomial fun l => (↑a l).down)
+'MvPolynomial.coordinateTargetTailAwayMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstDirectAwayMap_awayVar_val : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (j : { j // j ≠ (↑a 1).down }),
+  HomogeneousLocalization.val ((MvPolynomial.coordinateFirstDirectAwayMap a) (MvPolynomial.awayVar R (↑a 1).down j)) =
+    Localization.mk
+      (MvPolynomial.X ↑j *
+        ((MvPolynomial.coordinateTailPolynomial fun l => (↑(a.delete 0) l).down) * MvPolynomial.X (↑a 0).down) ^ 1)
+      ⟨(MvPolynomial.coordinateProductPolynomial fun l => (↑a l).down) ^ 1, ⋯⟩
+'MvPolynomial.coordinateFirstDirectAwayMap_awayVar_val' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateTargetTailAwayMap_awayVar_val : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (j : { j // j ≠ (↑a 0).down }),
+  HomogeneousLocalization.val ((MvPolynomial.coordinateTargetTailAwayMap a) (MvPolynomial.awayVar R (↑a 0).down j)) =
+    Localization.mk (MvPolynomial.X ↑j * (MvPolynomial.coordinateTailPolynomial fun l => (↑a l).down) ^ 1)
+      ⟨(MvPolynomial.coordinateProductPolynomial fun l => (↑a l).down) ^ 1, ⋯⟩
+'MvPolynomial.coordinateTargetTailAwayMap_awayVar_val' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstAwayVar_anchor_mul_transition : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)),
+  (MvPolynomial.coordinateFirstDirectAwayMap a) (MvPolynomial.awayVar R (↑a 1).down ⟨(↑a 0).down, ⋯⟩) *
+      (MvPolynomial.coordinateTargetTailAwayMap a) (MvPolynomial.awayVar R (↑a 0).down ⟨(↑a 1).down, ⋯⟩) =
+    1
+'MvPolynomial.coordinateFirstAwayVar_anchor_mul_transition' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstAwayVar_mul_transition : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (j : { j // j ≠ (↑a 1).down }) (hj0 : ↑j ≠ (↑a 0).down),
+  (MvPolynomial.coordinateFirstDirectAwayMap a) (MvPolynomial.awayVar R (↑a 1).down j) *
+      (MvPolynomial.coordinateTargetTailAwayMap a) (MvPolynomial.awayVar R (↑a 0).down ⟨(↑a 1).down, ⋯⟩) =
+    (MvPolynomial.coordinateTargetTailAwayMap a) (MvPolynomial.awayVar R (↑a 0).down ⟨↑j, hj0⟩)
+'MvPolynomial.coordinateFirstAwayVar_mul_transition' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateTargetTailAwayMap_awayVar_laurent : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (j : { j // j ≠ (↑a 0).down }),
+  (MvPolynomial.laurentMonomialRingEquiv R (MvPolynomial.coordinateTailExponent fun l => (↑a l).down))
+      ((MvPolynomial.coordinateProductAwayRingEquiv fun l => (↑a l).down)
+        ((MvPolynomial.coordinateTargetTailAwayMap a) (MvPolynomial.awayVar R (↑a 0).down j))) =
+    AddMonoidAlgebra.single
+      ((MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑a l).down))
+        (Finsupp.single j 1))
+      1
+'MvPolynomial.coordinateTargetTailAwayMap_awayVar_laurent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.laurentExponentAwayMap_single_one_degree : ∀ {τ : Type} (m : τ →₀ ℕ) (j : τ),
+  Finsupp.degree ↑((MvPolynomial.laurentExponentAwayMap m) (Finsupp.single j 1)) = 1
+'MvPolynomial.laurentExponentAwayMap_single_one_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstAnchorGenerator_global : ∀ {σ : Type} [inst : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)),
+  (MvPolynomial.coordinateLaurentExponentDeleteEmbedding a 0 1)
+      ((MvPolynomial.coordinateLaurentExponentEquiv (fun l => (↑(a.delete 0) l).down) 1)
+        ((MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete 0) l).down))
+          (Finsupp.single ⟨(↑a 0).down, ⋯⟩ 1))) =
+    (MvPolynomial.coordinateLaurentExponentEquiv (fun l => (↑a l).down) 1) 0
+'MvPolynomial.coordinateFirstAnchorGenerator_global' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstGenerator_global : ∀ {σ : Type} [inst : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (j : { j // j ≠ (↑a 1).down })
+  (hj0 : ↑j ≠ (↑a 0).down),
+  (MvPolynomial.coordinateLaurentExponentDeleteEmbedding a 0 1)
+      ((MvPolynomial.coordinateLaurentExponentEquiv (fun l => (↑(a.delete 0) l).down) 1)
+        ((MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete 0) l).down))
+          (Finsupp.single j 1))) =
+    (MvPolynomial.coordinateLaurentExponentEquiv (fun l => (↑a l).down) 1)
+      ((MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑a l).down))
+        (Finsupp.single ⟨↑j, hj0⟩ 1))
+'MvPolynomial.coordinateFirstGenerator_global' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstAnchorExponent_add_transition : ∀ {σ : Type} [inst : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)),
+  (MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom a)
+        ((MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete 0) l).down))
+          (Finsupp.single ⟨(↑a 0).down, ⋯⟩ 1)) +
+      (MvPolynomial.coordinateOpenCechFirstTransitionExponent a) 1 =
+    0
+'MvPolynomial.coordinateFirstAnchorExponent_add_transition' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstExponent_add_transition : ∀ {σ : Type} [inst : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (j : { j // j ≠ (↑a 1).down })
+  (hj0 : ↑j ≠ (↑a 0).down),
+  (MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom a)
+        ((MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete 0) l).down))
+          (Finsupp.single j 1)) +
+      (MvPolynomial.coordinateOpenCechFirstTransitionExponent a) 1 =
+    (MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑a l).down))
+      (Finsupp.single ⟨↑j, hj0⟩ 1)
+'MvPolynomial.coordinateFirstExponent_add_transition' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstTransitionExponent_one : ∀ {σ : Type} [inst : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)),
+  (MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑a l).down))
+      (Finsupp.single ⟨(↑a 1).down, ⋯⟩ 1) =
+    (MvPolynomial.coordinateOpenCechFirstTransitionExponent a) 1
+'MvPolynomial.coordinateFirstTransitionExponent_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstDirectAwayMap_awayVar_laurent : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (j : { j // j ≠ (↑a 1).down }),
+  (MvPolynomial.laurentMonomialRingEquiv R (MvPolynomial.coordinateTailExponent fun l => (↑a l).down))
+      ((MvPolynomial.coordinateProductAwayRingEquiv fun l => (↑a l).down)
+        ((MvPolynomial.coordinateFirstDirectAwayMap a) (MvPolynomial.awayVar R (↑a 1).down j))) =
+    AddMonoidAlgebra.single
+      ((MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom a)
+        ((MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete 0) l).down))
+          (Finsupp.single j 1)))
+      1
+'MvPolynomial.coordinateFirstDirectAwayMap_awayVar_laurent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.chartRingEquiv_symm_X : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R] (i : σ) (j : { j // j ≠ i }),
+  (MvPolynomial.chartRingEquiv R i).symm (MvPolynomial.X j) = MvPolynomial.awayVar R i j
+'MvPolynomial.chartRingEquiv_symm_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.chartRingEquiv_symm_C : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R] (i : σ) (r : R),
+  (MvPolynomial.chartRingEquiv R i).symm (MvPolynomial.C r) =
+    (algebraMap R (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X i))) r
+'MvPolynomial.chartRingEquiv_symm_C' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstDirectAwayMap_algebraMap : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (r : R),
+  (MvPolynomial.coordinateFirstDirectAwayMap a)
+      ((algebraMap R
+          (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (↑a 1).down)))
+        r) =
+    (algebraMap R
+        (HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R)
+          (MvPolynomial.coordinateProductPolynomial fun l => (↑a l).down)))
+      r
+'MvPolynomial.coordinateFirstDirectAwayMap_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstDirectLaurentRingHom : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder σ] →
+        {n : ℕ} →
+          (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) →
+            HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (↑a 1).down) →+*
+              AddMonoidAlgebra R
+                ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun l => (↑a l).down))
+'MvPolynomial.coordinateFirstDirectLaurentRingHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstTargetLaurentRingHom : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder σ] →
+        {n : ℕ} →
+          (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) →
+            HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (↑a 1).down) →+*
+              AddMonoidAlgebra R
+                ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun k => (↑a k).down))
+'MvPolynomial.coordinateFirstTargetLaurentRingHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstDirectAwayMap_laurent_C_left : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (r : R),
+  (MvPolynomial.coordinateFirstDirectLaurentRingHom a)
+      ((MvPolynomial.chartRingEquiv R (↑a 1).down).symm (MvPolynomial.C r)) =
+    AddMonoidAlgebra.single 0 r
+'MvPolynomial.coordinateFirstDirectAwayMap_laurent_C_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstDirectAwayMap_laurent_C_right : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (r : R),
+  (MvPolynomial.coordinateFirstTargetLaurentRingHom a)
+      ((MvPolynomial.chartRingEquiv R (↑a 1).down).symm (MvPolynomial.C r)) =
+    AddMonoidAlgebra.single 0 r
+'MvPolynomial.coordinateFirstDirectAwayMap_laurent_C_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstDirectAwayMap_laurent_C : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (r : R),
+  (MvPolynomial.coordinateFirstDirectLaurentRingHom a)
+      ((MvPolynomial.chartRingEquiv R (↑a 1).down).symm (MvPolynomial.C r)) =
+    (MvPolynomial.coordinateFirstTargetLaurentRingHom a)
+      ((MvPolynomial.chartRingEquiv R (↑a 1).down).symm (MvPolynomial.C r))
+'MvPolynomial.coordinateFirstDirectAwayMap_laurent_C' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstDirectAwayMap_laurent_X_left : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (j : { j // j ≠ (↑a 1).down }),
+  (MvPolynomial.coordinateFirstDirectLaurentRingHom a)
+      ((MvPolynomial.chartRingEquiv R (↑a 1).down).symm (MvPolynomial.X j)) =
+    AddMonoidAlgebra.single
+      ((MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom a)
+        ((MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete 0) l).down))
+          (Finsupp.single j 1)))
+      1
+'MvPolynomial.coordinateFirstDirectAwayMap_laurent_X_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstDirectAwayMap_laurent_X_right : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (j : { j // j ≠ (↑a 1).down }),
+  (MvPolynomial.coordinateFirstTargetLaurentRingHom a)
+      ((MvPolynomial.chartRingEquiv R (↑a 1).down).symm (MvPolynomial.X j)) =
+    AddMonoidAlgebra.single
+      ((MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom a)
+        ((MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete 0) l).down))
+          (Finsupp.single j 1)))
+      1
+'MvPolynomial.coordinateFirstDirectAwayMap_laurent_X_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstDirectAwayMap_laurent_X : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (j : { j // j ≠ (↑a 1).down }),
+  (MvPolynomial.coordinateFirstDirectLaurentRingHom a)
+      ((MvPolynomial.chartRingEquiv R (↑a 1).down).symm (MvPolynomial.X j)) =
+    (MvPolynomial.coordinateFirstTargetLaurentRingHom a)
+      ((MvPolynomial.chartRingEquiv R (↑a 1).down).symm (MvPolynomial.X j))
+'MvPolynomial.coordinateFirstDirectAwayMap_laurent_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstDirectAwayMap_laurent_chart : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)),
+  (MvPolynomial.coordinateFirstDirectLaurentRingHom a).comp (MvPolynomial.chartRingEquiv R (↑a 1).down).symm.toRingHom =
+    (MvPolynomial.coordinateFirstTargetLaurentRingHom a).comp (MvPolynomial.chartRingEquiv R (↑a 1).down).symm.toRingHom
+'MvPolynomial.coordinateFirstDirectAwayMap_laurent_chart' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateFirstDirectAwayMap_laurent_apply : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (q : HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule σ R) (MvPolynomial.X (↑a 1).down)),
+  (MvPolynomial.coordinateFirstDirectLaurentRingHom a) q = (MvPolynomial.coordinateFirstTargetLaurentRingHom a) q
+'MvPolynomial.coordinateFirstDirectAwayMap_laurent_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductAwayMap_comp_delete_zero : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)),
+  (HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯).comp
+      (HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯) =
+    MvPolynomial.coordinateFirstDirectAwayMap a
+'MvPolynomial.coordinateProductAwayMap_comp_delete_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateProductAwayLaurentRingEquiv_naturality_delete_zero : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] [inst_1 : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)),
+  (MvPolynomial.laurentMonomialRingEquiv R (MvPolynomial.coordinateTailExponent fun l => (↑a l).down)).toRingHom.comp
+      ((MvPolynomial.coordinateProductAwayRingEquiv fun l => (↑a l).down).toRingHom.comp
+        (HomogeneousLocalization.awayMap (MvPolynomial.homogeneousSubmodule σ R) ⋯ ⋯)) =
+    (AddMonoidAlgebra.mapDomainRingHom R (MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom a)).comp
+      ((MvPolynomial.laurentMonomialRingEquiv R
+              (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete 0) l).down)).toRingHom.comp
+        (MvPolynomial.coordinateProductAwayRingEquiv fun l => (↑(a.delete 0) l).down).toRingHom)
+'MvPolynomial.coordinateProductAwayLaurentRingEquiv_naturality_delete_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv_naturality_delete_zero : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] [inst_1 : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (x :
+    ↑((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.obj
+        (Opposite.op (MvPolynomial.coordinateOpenCechIntersection ↑(a.delete 0))))),
+  (MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv ↑a)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.map
+            (MvPolynomial.coordinateOpenCechDelete a 0).op))
+        x) =
+    AddMonoidAlgebra.mapDomain (⇑(MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom a))
+      ((MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv ↑(a.delete 0)) x)
+'MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv_naturality_delete_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOpenCechIntersectionBaseLaurentLinearEquiv_naturality_delete_zero : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] [inst_1 : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (x :
+    ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+        (SheafOfModules.unit (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).ringCatSheaf)
+        MvPolynomial.coordinateOpenCover n ↑(a.delete 0))),
+  (MvPolynomial.coordinateOpenCechIntersectionBaseLaurentLinearEquiv ↑a)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+                (SheafOfModules.unit (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).ringCatSheaf)).map
+            (MvPolynomial.coordinateOpenCechDelete a 0).op))
+        x) =
+    AddMonoidAlgebra.mapDomain (⇑(MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom a))
+      ((MvPolynomial.coordinateOpenCechIntersectionBaseLaurentLinearEquiv ↑(a.delete 0)) x)
+'MvPolynomial.coordinateOpenCechIntersectionBaseLaurentLinearEquiv_naturality_delete_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIntegerTwistBaseSectionEquiv_symm_restrict : ∀ {K S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  {Y : AlgebraicGeometry.Scheme} (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) (a : S) (ha : a ∈ 𝓑 1) (k : ℤ)
+  {U V : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ} (i : U ⟶ V)
+  (hp : ∀ (p : ↥(Opposite.unop U)), a ∉ (↑p).asHomogeneousIdeal)
+  (s :
+    ↑((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π
+            (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ k)).obj
+        U)),
+  (LinearStudy.nativeIntegerTwistBaseSectionEquiv 𝓑 π a ha k V ⋯).symm
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π
+                (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ k)).map
+            i))
+        s) =
+    (CategoryTheory.ConcreteCategory.hom
+        ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π
+              (SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf)).map
+          i))
+      ((LinearStudy.nativeIntegerTwistBaseSectionEquiv 𝓑 π a ha k U hp).symm s)
+'LinearStudy.nativeIntegerTwistBaseSectionEquiv_symm_restrict' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeIntegerTwistCechFactorFrame_symm_delete_succ : ∀ {K : Type u_1} [inst : Field K]
+  {σ : Type} [inst_1 : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (j : Fin (n + 1)) (k : ℤ)
+  (s :
+    ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+        (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n ↑(a.delete j.succ))),
+  (MvPolynomial.coordinateNativeIntegerTwistCechFactorFrame (↑a) k).symm
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist k)).map
+            (MvPolynomial.coordinateOpenCechDelete a j.succ).op))
+        s) =
+    (CategoryTheory.ConcreteCategory.hom
+        ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+              (SheafOfModules.unit (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).ringCatSheaf)).map
+          (MvPolynomial.coordinateOpenCechDelete a j.succ).op))
+      ((MvPolynomial.coordinateNativeIntegerTwistCechFactorFrame (↑(a.delete j.succ)) k).symm s)
+'MvPolynomial.coordinateNativeIntegerTwistCechFactorFrame_symm_delete_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv_delete_succ : ∀ {K : Type u_1} [inst : Field K]
+  {σ : Type} [inst_1 : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (j : Fin (n + 1)) (k : ℤ)
+  (s :
+    ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+        (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n ↑(a.delete j.succ))),
+  (MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv (↑a) k)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist k)).map
+            (MvPolynomial.coordinateOpenCechDelete a j.succ).op))
+        s) =
+    (MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap a j.succ k)
+      ((MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv (↑(a.delete j.succ)) k) s)
+'MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv_delete_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeRatioSection_eq_awayVar : ∀ {K : Type u_1} [inst : Field K] {σ : Type} (i : σ)
+  (j : { j // j ≠ i }) (U : (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).Opens)
+  (hU : U ≤ AlgebraicGeometry.Proj.basicOpen (MvPolynomial.homogeneousSubmodule σ K) (MvPolynomial.X i)),
+  LinearStudy.nativeCoordinateRatioSection (MvPolynomial.homogeneousSubmodule σ K) (MvPolynomial.X ↑j) ⋯
+      (MvPolynomial.X i) ⋯ (Opposite.op U) ⋯ =
+    (CategoryTheory.ConcreteCategory.hom
+        ((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).presheaf.map (CategoryTheory.homOfLE hU).op))
+      ((CommRingCat.Hom.hom
+          (AlgebraicGeometry.Proj.basicOpenIsoAway (MvPolynomial.homogeneousSubmodule σ K) (MvPolynomial.X i) ⋯ ⋯).hom)
+        (MvPolynomial.awayVar K i j))
+'MvPolynomial.coordinateNativeRatioSection_eq_awayVar' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeFirstRatio_laurent : ∀ {K : Type u_1} [inst : Field K] {σ : Type} [inst_1 : LinearOrder σ]
+  {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)),
+  (MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv ↑a)
+      (LinearStudy.nativeCoordinateRatioSection (MvPolynomial.homogeneousSubmodule σ K) (MvPolynomial.X (↑a 1).down) ⋯
+        (MvPolynomial.X (↑a 0).down) ⋯ (Opposite.op (MvPolynomial.coordinateOpenCechIntersection ↑a)) ⋯) =
+    AddMonoidAlgebra.single ((MvPolynomial.coordinateOpenCechFirstTransitionExponent a) 1) 1
+'MvPolynomial.coordinateNativeFirstRatio_laurent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeFirstLaurentUnit : {K : Type u_1} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : LinearOrder σ] →
+        {n : ℕ} →
+          (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) →
+            (AddMonoidAlgebra K
+                ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun l => (↑a l).down)))ˣ
+'MvPolynomial.coordinateNativeFirstLaurentUnit' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeFirstLaurentUnit_zpow : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (k : ℤ),
+  ↑(MvPolynomial.coordinateNativeFirstLaurentUnit a ^ k) =
+    AddMonoidAlgebra.single ((MvPolynomial.coordinateOpenCechFirstTransitionExponent a) k) 1
+'MvPolynomial.coordinateNativeFirstLaurentUnit_zpow' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeFirstRatio_zpow_laurent : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (k : ℤ),
+  (MvPolynomial.coordinateOpenCechIntersectionLaurentRingEquiv ↑a)
+      ↑(LinearStudy.nativeCoordinateRatioUnit (MvPolynomial.homogeneousSubmodule σ K) (MvPolynomial.X (↑a 1).down) ⋯
+            (MvPolynomial.X (↑a 0).down) ⋯ (Opposite.op (MvPolynomial.coordinateOpenCechIntersection ↑a)) ⋯ ⋯ ^
+          k) =
+    AddMonoidAlgebra.single ((MvPolynomial.coordinateOpenCechFirstTransitionExponent a) k) 1
+'MvPolynomial.coordinateNativeFirstRatio_zpow_laurent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeIntegerTwistCechFactorFrame_symm_delete_zero : ∀ {K : Type u_1} [inst : Field K]
+  {σ : Type} [inst_1 : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (k : ℤ)
+  (s :
+    ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+        (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n ↑(a.delete 0))),
+  (MvPolynomial.coordinateNativeIntegerTwistCechFactorFrame (↑a) k).symm
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist k)).map
+            (MvPolynomial.coordinateOpenCechDelete a 0).op))
+        s) =
+    (have this :=
+        ↑(LinearStudy.nativeCoordinateRatioUnit (MvPolynomial.homogeneousSubmodule σ K) (MvPolynomial.X (↑a 1).down) ⋯
+              (MvPolynomial.X (↑a 0).down) ⋯ (Opposite.op (MvPolynomial.coordinateOpenCechIntersection ↑a)) ⋯ ⋯ ^
+            k);
+      this) *
+      have this :=
+        (CategoryTheory.ConcreteCategory.hom
+            ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+                  (SheafOfModules.unit
+                    (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).ringCatSheaf)).map
+              (MvPolynomial.coordinateOpenCechDelete a 0).op))
+          ((MvPolynomial.coordinateNativeIntegerTwistCechFactorFrame (↑(a.delete 0)) k).symm s);
+      this
+'MvPolynomial.coordinateNativeIntegerTwistCechFactorFrame_symm_delete_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeFirstLaurentWeight_reindex : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (k : ℤ)
+  (y :
+    AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))
+      ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun l => (↑(a.delete 0) l).down))),
+  (AddMonoidAlgebra.mapDomainLinearEquiv (↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+        (↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+        (MvPolynomial.coordinateLaurentExponentEquiv (fun l => (↑a l).down) k))
+      (AddMonoidAlgebra.single ((MvPolynomial.coordinateOpenCechFirstTransitionExponent a) k) 1 *
+        AddMonoidAlgebra.mapDomain (⇑(MvPolynomial.coordinateLaurentExponentDeleteZeroAddMonoidHom a)) y) =
+    (MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap a 0 k)
+      ((AddMonoidAlgebra.mapDomainLinearEquiv (↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+          (↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+          (MvPolynomial.coordinateLaurentExponentEquiv (fun l => (↑(a.delete 0) l).down) k))
+        y)
+'MvPolynomial.coordinateNativeFirstLaurentWeight_reindex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv_delete_zero : ∀ {K : Type u_1} [inst : Field K]
+  {σ : Type} [inst_1 : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (k : ℤ)
+  (s :
+    ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+        (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n ↑(a.delete 0))),
+  (MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv (↑a) k)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist k)).map
+            (MvPolynomial.coordinateOpenCechDelete a 0).op))
+        s) =
+    (MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap a 0 k)
+      ((MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv (↑(a.delete 0)) k) s)
+'MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv_delete_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv_delete : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (j : Fin (n + 2)) (k : ℤ)
+  (s :
+    ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+        (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n ↑(a.delete j))),
+  (MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv (↑a) k)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist k)).map
+            (MvPolynomial.coordinateOpenCechDelete a j).op))
+        s) =
+    (MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap a j k)
+      ((MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv (↑(a.delete j)) k) s)
+'MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv_delete' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [LinearOrder σ] → ℤ → ℕ → ModuleCat ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+'MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentOrderedCechCoface : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder σ] →
+        (d : ℤ) →
+          (n : ℕ) →
+            Fin (n + 2) →
+              (MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n ⟶
+                MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d (n + 1))
+'MvPolynomial.coordinateHomogeneousLaurentOrderedCechCoface' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentOrderedCechCoface_comp_π : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] (d : ℤ) (n : ℕ) (k : Fin (n + 2))
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateHomogeneousLaurentOrderedCechCoface d n k)
+      (CategoryTheory.Limits.Pi.π
+        (fun b =>
+          ↧(AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+              { e // e.IsAllowedOn fun l => (↑b l).down }))
+        a) =
+    CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.Pi.π
+        (fun b =>
+          ↧(AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+              { e // e.IsAllowedOn fun l => (↑b l).down }))
+        (a.delete k))
+      (ModuleCat.ofHom (MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap a k d))
+'MvPolynomial.coordinateHomogeneousLaurentOrderedCechCoface_comp_π' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder σ] →
+        (d : ℤ) →
+          (n : ℕ) →
+            MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n ⟶
+              MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d (n + 1)
+'MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeLaurentOrderedCechObjectIso : {K : Type u_1} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : LinearOrder σ] →
+        (k : ℤ) →
+          (n : ℕ) →
+            AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n ≅
+              MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject k n
+'MvPolynomial.coordinateNativeLaurentOrderedCechObjectIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeLaurentOrderedCechCoface_naturality : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : LinearOrder σ] (k : ℤ) (n : ℕ) (j : Fin (n + 2)),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeLaurentOrderedCechObjectIso k n).hom
+      (MvPolynomial.coordinateHomogeneousLaurentOrderedCechCoface k n j) =
+    CategoryTheory.CategoryStruct.comp
+      (AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface MvPolynomial.homogeneousProjπ
+        (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n j)
+      (MvPolynomial.coordinateNativeLaurentOrderedCechObjectIso k (n + 1)).hom
+'MvPolynomial.coordinateNativeLaurentOrderedCechCoface_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeLaurentOrderedCechDifferential_naturality : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : LinearOrder σ] (k : ℤ) (n : ℕ),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeLaurentOrderedCechObjectIso k n).hom
+      (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential k n) =
+    CategoryTheory.CategoryStruct.comp
+      (AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential MvPolynomial.homogeneousProjπ
+        (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n)
+      (MvPolynomial.coordinateNativeLaurentOrderedCechObjectIso k (n + 1)).hom
+'MvPolynomial.coordinateNativeLaurentOrderedCechDifferential_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeLaurentOrderedCechDifferential_comp : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : LinearOrder σ] (k : ℤ) (n : ℕ),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential k n)
+      (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential k (n + 1)) =
+    0
+'MvPolynomial.coordinateNativeLaurentOrderedCechDifferential_comp' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeLaurentOrderedCechComplex : {K : Type u_1} →
+  [inst : Field K] →
+    {σ : Type} →
+      [LinearOrder σ] → ℤ → CochainComplex (ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) ℕ
+'MvPolynomial.coordinateNativeLaurentOrderedCechComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeLaurentOrderedCechComplex_X : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : LinearOrder σ] (k : ℤ) (n : ℕ),
+  (MvPolynomial.coordinateNativeLaurentOrderedCechComplex k).X n =
+    MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject k n
+'MvPolynomial.coordinateNativeLaurentOrderedCechComplex_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeLaurentOrderedCechComplex_d : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : LinearOrder σ] (k : ℤ) (n : ℕ),
+  (MvPolynomial.coordinateNativeLaurentOrderedCechComplex k).d n (n + 1) =
+    MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential k n
+'MvPolynomial.coordinateNativeLaurentOrderedCechComplex_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso : {K : Type u_1} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : LinearOrder σ] →
+        (k : ℤ) →
+          AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+              (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover ≅
+            MvPolynomial.coordinateNativeLaurentOrderedCechComplex k
+'MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.liftedNegativeSupport : {σ : Type} →
+  {d : ℤ} → MvPolynomial.HomogeneousLaurentExponent σ d → Set (ULift.{u_1, 0} σ)
+'MvPolynomial.HomogeneousLaurentExponent.liftedNegativeSupport' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.isAllowedOn_iff_liftedNegativeSupport_subset : ∀ {σ : Type}
+  [inst : LinearOrder σ] {d : ℤ} (e : MvPolynomial.HomogeneousLaurentExponent σ d) {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) n),
+  (e.IsAllowedOn fun k => (↑a k).down) ↔ e.liftedNegativeSupport ⊆ Set.range ↑a
+'MvPolynomial.HomogeneousLaurentExponent.isAllowedOn_iff_liftedNegativeSupport_subset' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap_coeff : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (k : Fin (n + 2)) (d : ℤ) (e : { e // e.IsAllowedOn fun l => (↑(a.delete k) l).down })
+  (x :
+    AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+      { e // e.IsAllowedOn fun l => (↑(a.delete k) l).down }),
+  ((MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap a k d) x).coeff
+      ((MvPolynomial.coordinateLaurentExponentDeleteEmbedding a k d) e) =
+    x.coeff e
+'MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap_coeff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentWeightComponent : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder σ] →
+        (d : ℤ) →
+          (e : MvPolynomial.HomogeneousLaurentExponent σ d) →
+            (n : ℕ) →
+              ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d
+                    n) →ₗ[↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))]
+                ↥(LinearStudy.OrderedCechSupportCochain (↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤)))
+                    e.liftedNegativeSupport n)
+'MvPolynomial.coordinateHomogeneousLaurentWeightComponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentWeightComponent_apply_of_allowed : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] [inst_1 : LinearOrder σ] (d : ℤ) (e : MvPolynomial.HomogeneousLaurentExponent σ d) {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) n) (h : e.IsAllowedOn fun k => (↑a k).down)
+  (x : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n)),
+  ↑((MvPolynomial.coordinateHomogeneousLaurentWeightComponent d e n) x) a =
+    ((ModuleCat.Hom.hom
+            (CategoryTheory.Limits.Pi.π
+              (fun b =>
+                ↧(AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+                    { e // e.IsAllowedOn fun k => (↑b k).down }))
+              a))
+          x).coeff
+      ⟨e, h⟩
+'MvPolynomial.coordinateHomogeneousLaurentWeightComponent_apply_of_allowed' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentWeightComponent_apply_of_not_allowed : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] [inst_1 : LinearOrder σ] (d : ℤ) (e : MvPolynomial.HomogeneousLaurentExponent σ d) {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) n),
+  (¬e.IsAllowedOn fun k => (↑a k).down) →
+    ∀ (x : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n)),
+      ↑((MvPolynomial.coordinateHomogeneousLaurentWeightComponent d e n) x) a = 0
+'MvPolynomial.coordinateHomogeneousLaurentWeightComponent_apply_of_not_allowed' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentWeightInclusion : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder σ] →
+        (d : ℤ) →
+          (e : MvPolynomial.HomogeneousLaurentExponent σ d) →
+            (n : ℕ) →
+              ↥(LinearStudy.OrderedCechSupportCochain (↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤)))
+                    e.liftedNegativeSupport n) →ₗ[↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))]
+                ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n)
+'MvPolynomial.coordinateHomogeneousLaurentWeightInclusion' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentWeightComponent_inclusion : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] (d : ℤ) (e : MvPolynomial.HomogeneousLaurentExponent σ d) (n : ℕ)
+  (s :
+    ↥(LinearStudy.OrderedCechSupportCochain (↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤)))
+        e.liftedNegativeSupport n)),
+  (MvPolynomial.coordinateHomogeneousLaurentWeightComponent d e n)
+      ((MvPolynomial.coordinateHomogeneousLaurentWeightInclusion d e n) s) =
+    s
+'MvPolynomial.coordinateHomogeneousLaurentWeightComponent_inclusion' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentWeightComponent_inclusion_ne : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] (d : ℤ) (e f : MvPolynomial.HomogeneousLaurentExponent σ d),
+  f ≠ e →
+    ∀ (n : ℕ)
+      (s :
+        ↥(LinearStudy.OrderedCechSupportCochain (↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤)))
+            e.liftedNegativeSupport n)),
+      (MvPolynomial.coordinateHomogeneousLaurentWeightComponent d f n)
+          ((MvPolynomial.coordinateHomogeneousLaurentWeightInclusion d e n) s) =
+        0
+'MvPolynomial.coordinateHomogeneousLaurentWeightComponent_inclusion_ne' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentWeightComponent_differential : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] (d : ℤ) (e : MvPolynomial.HomogeneousLaurentExponent σ d) (n : ℕ)
+  (x : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n)),
+  (MvPolynomial.coordinateHomogeneousLaurentWeightComponent d e (n + 1))
+      ((ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d n)) x) =
+    (LinearStudy.orderedCechSupportDifferential (↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤)))
+        e.liftedNegativeSupport n)
+      ((MvPolynomial.coordinateHomogeneousLaurentWeightComponent d e n) x)
+'MvPolynomial.coordinateHomogeneousLaurentWeightComponent_differential' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentWeightInclusion_differential : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : LinearOrder σ] (d : ℤ) (e : MvPolynomial.HomogeneousLaurentExponent σ d) (n : ℕ)
+  (s :
+    ↥(LinearStudy.OrderedCechSupportCochain (↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤)))
+        e.liftedNegativeSupport n)),
+  (ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d n))
+      ((MvPolynomial.coordinateHomogeneousLaurentWeightInclusion d e n) s) =
+    (MvPolynomial.coordinateHomogeneousLaurentWeightInclusion d e (n + 1))
+      ((LinearStudy.orderedCechSupportDifferential (↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤)))
+          e.liftedNegativeSupport n)
+        s)
+'MvPolynomial.coordinateHomogeneousLaurentWeightInclusion_differential' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.exists_not_mem_liftedNegativeSupport_of_nonneg : ∀ {σ : Type} {d : ℤ}
+  (e : MvPolynomial.HomogeneousLaurentExponent σ d) (j : σ), 0 ≤ d → ∃ i, i ∉ e.liftedNegativeSupport
+'MvPolynomial.HomogeneousLaurentExponent.exists_not_mem_liftedNegativeSupport_of_nonneg' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentActiveWeights : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (d : ℤ) →
+            (n : ℕ) →
+              ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n) →
+                Finset (MvPolynomial.HomogeneousLaurentExponent σ d)
+'MvPolynomial.coordinateHomogeneousLaurentActiveWeights' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.mem_coordinateHomogeneousLaurentActiveWeights_iff : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (d : ℤ) (n : ℕ)
+  (x : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n))
+  (e : MvPolynomial.HomogeneousLaurentExponent σ d),
+  e ∈ MvPolynomial.coordinateHomogeneousLaurentActiveWeights d n x ↔
+    ∃ a,
+      ∃ (h : e.IsAllowedOn fun k => (↑a k).down),
+        ((ModuleCat.Hom.hom
+                  (CategoryTheory.Limits.Pi.π
+                    (fun b =>
+                      ↧(AddMonoidAlgebra ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+                          { e // e.IsAllowedOn fun k => (↑b k).down }))
+                    a))
+                x).coeff
+            ⟨e, h⟩ ≠
+          0
+'MvPolynomial.mem_coordinateHomogeneousLaurentActiveWeights_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentActiveWeights_reconstruct : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (d : ℤ) (n : ℕ)
+  (x : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n)),
+  ∑ e ∈ MvPolynomial.coordinateHomogeneousLaurentActiveWeights d n x,
+      (MvPolynomial.coordinateHomogeneousLaurentWeightInclusion d e n)
+        ((MvPolynomial.coordinateHomogeneousLaurentWeightComponent d e n) x) =
+    x
+'MvPolynomial.coordinateHomogeneousLaurentActiveWeights_reconstruct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.exists_preimage_coordinateHomogeneousLaurentOrderedCechDifferential : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] [Fintype σ] [inst_2 : LinearOrder σ] (j : σ) (d : ℤ),
+  0 ≤ d →
+    ∀ (n : ℕ) (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d (n + 1))),
+      (ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d (n + 1))) s = 0 →
+        ∃ t, (ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d n)) t = s
+'MvPolynomial.exists_preimage_coordinateHomogeneousLaurentOrderedCechDifferential' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeLaurentOrderedCechComplex_exactAt_succ : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [Fintype σ] [inst_2 : LinearOrder σ] (j : σ) (k : ℤ),
+  0 ≤ k → ∀ (n : ℕ), HomologicalComplex.ExactAt (MvPolynomial.coordinateNativeLaurentOrderedCechComplex k) (n + 1)
+'MvPolynomial.coordinateNativeLaurentOrderedCechComplex_exactAt_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeIntegerTwist_orderedBaseCechComplex_exactAt_succ : ∀ {K : Type u_1} [inst : Field K]
+  {σ : Type} [Fintype σ] [inst_2 : LinearOrder σ] (j : σ) (k : ℤ),
+  0 ≤ k →
+    ∀ (n : ℕ),
+      HomologicalComplex.ExactAt
+        (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+          (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover)
+        (n + 1)
+'MvPolynomial.coordinateNativeIntegerTwist_orderedBaseCechComplex_exactAt_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeProjectiveSpaceTwist_exactAt_succ : ∀ {K : Type u_1} [inst : Field K] (r : ℕ) (k : ℤ),
+  0 ≤ k →
+    ∀ (n : ℕ),
+      HomologicalComplex.ExactAt
+        (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+          (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover)
+        (n + 1)
+'MvPolynomial.coordinateNativeProjectiveSpaceTwist_exactAt_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

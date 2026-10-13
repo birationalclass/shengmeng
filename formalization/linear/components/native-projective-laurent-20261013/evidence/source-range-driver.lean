@@ -1,0 +1,78 @@
+module
+import all Linear.AddMonoidAlgebraLocalization
+import all Linear.AwayCongr
+import all Linear.CechSupportContraction
+import all Linear.CechTuplePermutations
+import all Linear.GradedIntegerProjection
+import all Linear.GradedModuleProjection
+import all Linear.LaurentExponentLocalization
+import all Linear.LaurentMonomialBasis
+import all Linear.ModuleBaseCechBasic
+import all Linear.ModuleBaseCechFactors
+import all Linear.ModuleFormalCoproductAdditive
+import all Linear.ModuleOrderedBaseCech
+import all Linear.NativeCoordinateRatio
+import all Linear.NativeIntegerPrimeTwist
+import all Linear.NativeIntegerTwistBaseSections
+import all Linear.NativeIntegerTwistFrameTransition
+import all Linear.NativeIntegerTwistSectionFrames
+import all Linear.NativeProjectiveIntegerTwistChartFree
+import all Linear.NativeProjectiveLaurentComplex
+import all Linear.NativeProjectiveLaurentFactors
+import all Linear.NativeProjectiveLaurentInitial
+import all Linear.NativeProjectiveLaurentNoninitial
+import all Linear.NativeProjectiveLaurentTransition
+import all Linear.NativeProjectiveModuleLocalAdd
+import all Linear.NativeProjectiveModuleLocalMap
+import all Linear.NativeProjectiveModuleLocalPredicate
+import all Linear.NativeProjectiveModuleLocalSMul
+import all Linear.NativeProjectiveModulePresheaf
+import all Linear.NativeProjectiveModuleSections
+import all Linear.NativeProjectiveModuleSheaf
+import all Linear.NativeProjectiveModuleSheafMap
+import all Linear.NativeProjectivePrimeTwistUnit
+import all Linear.NativeProjectiveRingIntegerPieces
+import all Linear.NativeProjectiveRingModuleLocalization
+import all Linear.NativeProjectiveTwistCechVanishing
+import all Linear.NativeProjectiveTwistChartFree
+import all Linear.NativeProjectiveTwistFraction
+import all Linear.NativeProjectiveTwistSectionEquiv
+import all Linear.NativeProjectiveTwistSheafOverIso
+import all Linear.NativeStructureModuleFraction
+import all Linear.NativeStructureModuleSections
+import all Linear.NativeStructureModuleSheaf
+import all Linear.OrderedCechSupportAlternating
+import all Linear.OrderedCechSupportContraction
+import all Linear.ProjStructureSectionSquare
+import all Linear.ProjectiveCechLaurentRestriction
+import all Linear.ProjectiveCechLaurentSections
+import all Linear.ProjectiveCoordinateOpens
+import all Linear.ProjectiveLaurentCechWeights
+import all Linear.ProjectiveLaurentInitialChartMap
+import all Linear.ProjectiveLaurentInitialExponent
+import all Linear.ProjectiveLaurentInitialGenerators
+import all Linear.ProjectiveLaurentInitialRestriction
+import all Linear.ProjectiveLaurentNoninitialRestriction
+import all Linear.ProjectiveLaurentPositiveBoundary
+import all Linear.ProjectiveLaurentWeight
+import all Linear.ProjectiveLaurentWeightAssembly
+import all Linear.ProjectiveLaurentWeightComponents
+import all Linear.ProjectiveSpaceChart
+import all Linear.ProjectiveStandardIntersectionRing
+import Lean.DeclarationRange
+import Lean.Util.FoldConsts
+run_cmd do
+  let env ← Lean.getEnv
+  let mut count : Nat := 0
+  for (name, info) in env.constants.toList do
+    let some idx := env.getModuleIdxFor? name | continue
+    let modName := env.header.moduleNames[idx]!
+    if !modName.toString.startsWith "Linear." && modName != `Linear then continue
+    let deps := String.intercalate "," (info.getUsedConstantsAsSet.toArray.toList.map toString)
+    Lean.logInfo m!"SOURCE_DEPENDENCIES|{name}|{modName}|{deps}"
+    let some ranges ← Lean.findDeclarationRanges? name | continue
+    let r := ranges.range
+    Lean.logInfo m!"SOURCE_RANGE|{name}|{modName}|{r.pos.line}|{r.pos.column}|{r.endPos.line}|{r.endPos.column}|{deps}"
+    count := count + 1
+  if count <= 227 then throwError "Transitive project declaration ranges are missing"
+  Lean.logInfo m!"SOURCE_RANGE_COUNT|{count}"
