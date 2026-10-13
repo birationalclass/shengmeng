@@ -1,0 +1,193 @@
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_coproduct_exactAt : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (π : X ⟶ Y) {ι I : Type u_1} [inst : LinearOrder ι] [inst_1 : Fintype I] (U : ι → X.Opens) (M : I → X.Modules)
+  (q : ℕ),
+  (∀ (i : I), HomologicalComplex.ExactAt (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π (M i) U) q) →
+    HomologicalComplex.ExactAt (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π (∐ M) U) q
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_coproduct_exactAt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeShiftedTwistHasFiniteBiproducts : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑],
+  CategoryTheory.Limits.HasFiniteBiproducts (AlgebraicGeometry.Proj 𝓑).Modules
+'LinearStudy.nativeShiftedTwistHasFiniteBiproducts' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeShiftedFreeSheaf_grading_congr : ∀ {K S ι : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] [DecidableEq ι] [Fintype ι]
+  {D₁ D₂ : ℤ → Submodule K (ι → S)} (h₁ : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ D₁ d, c • x ∈ D₁ (↑n + d))
+  (h₂ : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ D₂ d, c • x ∈ D₂ (↑n + d)),
+  D₁ = D₂ → LinearStudy.nativeProjectiveModuleSheaf 𝓑 D₁ h₁ 0 = LinearStudy.nativeProjectiveModuleSheaf 𝓑 D₂ h₂ 0
+'LinearStudy.nativeShiftedFreeSheaf_grading_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerGradingShift_shiftedFreePiece : ∀ {K S ι : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [DecidableEq ι] [Fintype ι] (w : ι → ℤ) (k : ℤ),
+  LinearStudy.integerGradingShift (LinearStudy.integerShiftedFreePiece 𝓑 w) k =
+    LinearStudy.integerShiftedFreePiece 𝓑 fun i => w i - k
+'LinearStudy.integerGradingShift_shiftedFreePiece' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeShiftedFreeIntegerTwistBiproductIso : {K S ι : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [DecidableEq ι] →
+              [inst_5 : Fintype ι] →
+                (w : ι → ℤ) →
+                  (k : ℤ) →
+                    LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.integerShiftedFreePiece 𝓑 w) ⋯ k ≅
+                      ⨁ fun i =>
+                        LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯
+                          (k - w i)
+'LinearStudy.nativeShiftedFreeIntegerTwistBiproductIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeShiftedFree_orderedCech_exactAt_succ : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [Fintype σ] [inst_2 : LinearOrder σ] {ι : Type u_1} [Fintype ι] [DecidableEq ι] (j : σ) (w : ι → ℤ) (k : ℤ),
+  (∀ (i : ι), w i ≤ k) →
+    ∀ (q : ℕ),
+      HomologicalComplex.ExactAt
+        (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+          (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K)
+            (LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K) w) ⋯ k)
+          MvPolynomial.coordinateOpenCover)
+        (q + 1)
+'MvPolynomial.coordinateNativeShiftedFree_orderedCech_exactAt_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeShiftedFree_eventually_orderedCech_exactAt_succ : ∀ {K : Type u_1} [inst : Field K]
+  {σ : Type} [Fintype σ] [inst_2 : LinearOrder σ] {ι : Type u_1} [Fintype ι] [DecidableEq ι] (j : σ) (w : ι → ℤ),
+  ∃ b,
+    ∀ (N : ℕ),
+      b ≤ N →
+        ∀ (q : ℕ),
+          HomologicalComplex.ExactAt
+            (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+              (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K)
+                (LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K) w) ⋯ ↑N)
+              MvPolynomial.coordinateOpenCover)
+            (q + 1)
+'MvPolynomial.coordinateNativeShiftedFree_eventually_orderedCech_exactAt_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeFiniteGraded_eventually_orderedCech_exactAt_succ : ∀ {K : Type u_1} [inst : Field K]
+  {σ : Type} [Fintype σ] [inst_2 : LinearOrder σ] {M : Type u_1} [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module (MvPolynomial σ K) M] [IsScalarTower K (MvPolynomial σ K) M] (D : ℤ → Submodule K M)
+  [DirectSum.Decomposition D]
+  (hD : ∀ (a : ℕ) (d : ℤ), ∀ c ∈ MvPolynomial.homogeneousSubmodule σ K a, ∀ x ∈ D d, c • x ∈ D (↑a + d))
+  [Module.Finite (MvPolynomial σ K) M] (j : σ) (q : ℕ),
+  ∃ b,
+    ∀ (N : ℕ),
+      b ≤ N →
+        HomologicalComplex.ExactAt
+          (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+            (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K) D hD ↑N)
+            MvPolynomial.coordinateOpenCover)
+          (q + 1)
+'MvPolynomial.coordinateNativeFiniteGraded_eventually_orderedCech_exactAt_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeFiniteGraded_eventually_allPositive_orderedCech_exactAt : ∀ {K : Type u_1}
+  [inst : Field K] {σ : Type} [Fintype σ] [inst_2 : LinearOrder σ] {M : Type u_1} [inst_3 : AddCommGroup M]
+  [inst_4 : Module K M] [inst_5 : Module (MvPolynomial σ K) M] [IsScalarTower K (MvPolynomial σ K) M]
+  (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+  (hD : ∀ (a : ℕ) (d : ℤ), ∀ c ∈ MvPolynomial.homogeneousSubmodule σ K a, ∀ x ∈ D d, c • x ∈ D (↑a + d))
+  [Module.Finite (MvPolynomial σ K) M] (j : σ),
+  ∃ b,
+    ∀ (N : ℕ),
+      b ≤ N →
+        ∀ (q : ℕ),
+          HomologicalComplex.ExactAt
+            (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+              (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K) D hD ↑N)
+              MvPolynomial.coordinateOpenCover)
+            (q + 1)
+'MvPolynomial.coordinateNativeFiniteGraded_eventually_allPositive_orderedCech_exactAt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedCechSingleton : {ι : Type u_1} →
+  [inst : LinearOrder ι] → ι → AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι 0
+'AlgebraicGeometry.Scheme.Modules.orderedCechSingleton' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation : {X Y : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ Y) →
+    (M : X.Modules) →
+      {ι : Type u_1} →
+        [inst : LinearOrder ι] →
+          (U : ι → X.Opens) →
+            (AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M).obj (Opposite.op ⊤) ⟶
+              AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U 0
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation_comp_π : ∀ {X Y : AlgebraicGeometry.Scheme} (π : X ⟶ Y)
+  (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens)
+  (i : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι 0),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation π M U)
+      (CategoryTheory.Limits.Pi.π (fun j => AlgebraicGeometry.Scheme.Modules.baseCechFactor π M U 0 ↑j) i) =
+    (AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M).map (CategoryTheory.homOfLE ⋯).op
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation_comp_π' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation_comp_d : ∀ {X Y : AlgebraicGeometry.Scheme} (π : X ⟶ Y)
+  (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation π M U)
+      (AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential π M U 0) =
+    0
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation_comp_d' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation_surjective_cycles : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (π : X ⟶ Y) (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  ⊤ ≤ iSup U →
+    ∀ (c : ↑(AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U 0)),
+      (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential π M U 0)) c =
+          0 →
+        ∃ s,
+          (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation π M U)) s =
+            c
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation_surjective_cycles' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation_injective : ∀ {X Y : AlgebraicGeometry.Scheme} (π : X ⟶ Y)
+  (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  ⊤ ≤ iSup U →
+    Function.Injective
+      ⇑(CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation π M U))
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation_naturality : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (π : X ⟶ Y) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) {M N : X.Modules} (f : M ⟶ N),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation π M U)
+      (((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U).map f).f 0) =
+    CategoryTheory.CategoryStruct.comp
+      (((AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor π).map f).app (Opposite.op ⊤))
+      (AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation π N U)
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedCechShortExact_sections_surjective : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (π : X ⟶ Y) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (T : CategoryTheory.ShortComplex X.Modules),
+  ⊤ ≤ iSup U →
+    (T.map (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U)).ShortExact →
+      HomologicalComplex.ExactAt (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π T.X₁ U) 1 →
+        Function.Surjective ⇑(CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app T.g ⊤))
+'AlgebraicGeometry.Scheme.Modules.orderedCechShortExact_sections_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeFiniteGraded_eventually_sections_surjective : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [Fintype σ] [LinearOrder σ] {E F : Type u_1} [inst_3 : AddCommGroup E] [inst_4 : Module K E]
+  [inst_5 : Module (MvPolynomial σ K) E] [IsScalarTower K (MvPolynomial σ K) E] [inst_7 : AddCommGroup F]
+  [inst_8 : Module K F] [inst_9 : Module (MvPolynomial σ K) F] [IsScalarTower K (MvPolynomial σ K) F]
+  (D : ℤ → Submodule K E) (G : ℤ → Submodule K F) [DirectSum.Decomposition D] [DirectSum.Decomposition G]
+  (hD : ∀ (a : ℕ) (d : ℤ), ∀ c ∈ MvPolynomial.homogeneousSubmodule σ K a, ∀ x ∈ D d, c • x ∈ D (↑a + d))
+  (hG : ∀ (a : ℕ) (d : ℤ), ∀ c ∈ MvPolynomial.homogeneousSubmodule σ K a, ∀ x ∈ G d, c • x ∈ G (↑a + d))
+  [Module.Finite (MvPolynomial σ K) E] (b : E →ₗ[MvPolynomial σ K] F) (hh : ∀ (d : ℤ), ∀ x ∈ D d, b x ∈ G d),
+  Function.Surjective ⇑b →
+    ∀ (j : σ),
+      ∃ n₀,
+        ∀ (N : ℕ),
+          n₀ ≤ N →
+            Function.Surjective
+              ⇑(CategoryTheory.ConcreteCategory.hom
+                  (AlgebraicGeometry.Scheme.Modules.Hom.app
+                    (LinearStudy.nativeProjectiveDegreeZeroSheafMap (MvPolynomial.homogeneousSubmodule σ K) D G hD hG b
+                      hh ↑N)
+                    ⊤))
+'MvPolynomial.coordinateNativeFiniteGraded_eventually_sections_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
