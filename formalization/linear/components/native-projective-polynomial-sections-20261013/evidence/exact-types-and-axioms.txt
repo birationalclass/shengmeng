@@ -1,0 +1,305 @@
+@LinearStudy.orderedCechSupport_zeroCycle_constant : ∀ {R : Type u_1} [inst : CommRing R] {ι : Type u_2}
+  [inst_1 : LinearOrder ι] (N : Set ι) (j : ι) (s : ↥(LinearStudy.OrderedCechSupportCochain R N 0)),
+  (LinearStudy.orderedCechSupportDifferential R N 0) s = 0 →
+    ∀ (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι 0),
+      ↑s a = ↑s (AlgebraicGeometry.Scheme.Modules.orderedCechSingleton j)
+'LinearStudy.orderedCechSupport_zeroCycle_constant' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedCechSupport_zeroCycle_eq_zero : ∀ {R : Type u_1} [inst : CommRing R] {ι : Type u_2}
+  [inst_1 : LinearOrder ι] (N : Set ι),
+  N.Nonempty →
+    ∀ j ∉ N,
+      ∀ (s : ↥(LinearStudy.OrderedCechSupportCochain R N 0)),
+        (LinearStudy.orderedCechSupportDifferential R N 0) s = 0 → s = 0
+'LinearStudy.orderedCechSupport_zeroCycle_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentZeroCycle_component_constant : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type}
+  [inst_1 : LinearOrder σ] (d : ℤ) (e : MvPolynomial.HomogeneousLaurentExponent σ d) (j : σ)
+  (x : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d 0)),
+  (ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d 0)) x = 0 →
+    ∀ (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) 0),
+      ↑((MvPolynomial.coordinateHomogeneousLaurentWeightComponent d e 0) x) a =
+        ↑((MvPolynomial.coordinateHomogeneousLaurentWeightComponent d e 0) x)
+          (AlgebraicGeometry.Scheme.Modules.orderedCechSingleton { down := j })
+'MvPolynomial.coordinateHomogeneousLaurentZeroCycle_component_constant' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurentZeroCycle_active_nonnegative : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type}
+  [inst_1 : LinearOrder σ] [inst_2 : Fintype σ] (d : ℤ),
+  0 ≤ d →
+    ∀ (j : σ) (x : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d 0)),
+      (ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d 0)) x = 0 →
+        ∀ e ∈ MvPolynomial.coordinateHomogeneousLaurentActiveWeights d 0 x, ∀ (i : σ), 0 ≤ ↑e i
+'MvPolynomial.coordinateHomogeneousLaurentZeroCycle_active_nonnegative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativePositiveHomogeneousGlobalSection : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (m : ℕ) →
+              ↥(𝓑 m) →
+                ↑((LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯
+                          ↑m).presheaf.obj
+                    (Opposite.op ⊤))
+'LinearStudy.nativePositiveHomogeneousGlobalSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativePositiveHomogeneousGlobalSection_frame : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (m : ℕ) (ell : ↥(𝓑 m)) (a : S)
+  (ha : a ∈ 𝓑 1) (U : (AlgebraicGeometry.Proj 𝓑).Opens) (hU : U ≤ AlgebraicGeometry.Proj.basicOpen 𝓑 a),
+  (LinearStudy.nativeIntegerTwistSectionFrame 𝓑 a ha (↑m) (Opposite.op U) ⋯)
+      ((CommRingCat.Hom.hom ((AlgebraicGeometry.Proj 𝓑).presheaf.map (CategoryTheory.homOfLE hU).op))
+        ((CommRingCat.Hom.hom (AlgebraicGeometry.Proj.basicOpenIsoAway 𝓑 a ha ⋯).hom)
+          (HomogeneousLocalization.Away.mk 𝓑 ha m ↑ell ⋯))) =
+    (CategoryTheory.ConcreteCategory.hom
+        ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ ↑m).map
+          (CategoryTheory.homOfLE ⋯).op))
+      (LinearStudy.nativePositiveHomogeneousGlobalSection 𝓑 m ell)
+'LinearStudy.nativePositiveHomogeneousGlobalSection_frame' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativePositiveHomogeneousGlobalSection_add : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (m : ℕ) (ell t : ↥(𝓑 m)),
+  LinearStudy.nativePositiveHomogeneousGlobalSection 𝓑 m (ell + t) =
+    LinearStudy.nativePositiveHomogeneousGlobalSection 𝓑 m ell +
+      LinearStudy.nativePositiveHomogeneousGlobalSection 𝓑 m t
+'LinearStudy.nativePositiveHomogeneousGlobalSection_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.natExponent : {σ : Type} →
+  {d : ℤ} → MvPolynomial.HomogeneousLaurentExponent σ d → σ →₀ ℕ
+'MvPolynomial.HomogeneousLaurentExponent.natExponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.natExponent_cast_apply : ∀ {σ : Type} [Fintype σ] {d : ℤ}
+  (e : MvPolynomial.HomogeneousLaurentExponent σ d), (∀ (i : σ), 0 ≤ ↑e i) → ∀ (i : σ), ↑(e.natExponent i) = ↑e i
+'MvPolynomial.HomogeneousLaurentExponent.natExponent_cast_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.natExponent_degree : ∀ {σ : Type} [Fintype σ] (m : ℕ)
+  (e : MvPolynomial.HomogeneousLaurentExponent σ ↑m), (∀ (i : σ), 0 ≤ ↑e i) → Finsupp.degree e.natExponent = m
+'MvPolynomial.HomogeneousLaurentExponent.natExponent_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.natExponent_monomial_homogeneous : ∀ {σ : Type} [Fintype σ] {R : Type u_1}
+  [inst : CommRing R] (m : ℕ) (e : MvPolynomial.HomogeneousLaurentExponent σ ↑m),
+  (∀ (i : σ), 0 ≤ ↑e i) → ∀ (c : R), ((MvPolynomial.monomial e.natExponent) c).IsHomogeneous m
+'MvPolynomial.HomogeneousLaurentExponent.natExponent_monomial_homogeneous' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.nativeMonomialLaurentDecidableEq : {σ : Type} → DecidableEq σ
+'MvPolynomial.nativeMonomialLaurentDecidableEq' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.dehomogenizeAux_monomial_chart : ∀ {σ : Type} [Fintype σ] {R : Type u_1} [inst : CommRing R] (i : σ)
+  (α : σ →₀ ℕ) (c : R),
+  (MvPolynomial.dehomogenizeAux R i) ((MvPolynomial.monomial α) c) =
+    (MvPolynomial.monomial (Finsupp.subtypeDomain (fun j => j ≠ i) α)) c
+'MvPolynomial.dehomogenizeAux_monomial_chart' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.HomogeneousLaurentExponent.isAllowedOn_of_nonnegative : ∀ {σ : Type} [Fintype σ] {d : ℤ}
+  (e : MvPolynomial.HomogeneousLaurentExponent σ d),
+  (∀ (i : σ), 0 ≤ ↑e i) → ∀ {n : ℕ} (a : Fin (n + 1) → σ), e.IsAllowedOn a
+'MvPolynomial.HomogeneousLaurentExponent.isAllowedOn_of_nonnegative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateLaurentExponentEquiv_natChart : ∀ {σ : Type} [inst : Fintype σ] {n : ℕ} (a : Fin (n + 1) → σ)
+  (m : ℕ) (e : MvPolynomial.HomogeneousLaurentExponent σ ↑m) (he : ∀ (i : σ), 0 ≤ ↑e i),
+  (MvPolynomial.coordinateLaurentExponentEquiv a ↑m)
+      ((MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent a))
+        (Finsupp.subtypeDomain (fun j => j ≠ a 0) e.natExponent)) =
+    ⟨e, ⋯⟩
+'MvPolynomial.coordinateLaurentExponentEquiv_natChart' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.nativeHomogeneousSectionDecidableEq : {σ : Type} → DecidableEq σ
+'MvPolynomial.nativeHomogeneousSectionDecidableEq' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeHomogeneousGlobalSection_laurent : ∀ {K : Type u_1} [inst : Field K] {σ : Type} {n : ℕ}
+  (a : Fin (n + 1) → ULift.{u_1, 0} σ) (m : ℕ) (ell : ↥(MvPolynomial.homogeneousSubmodule σ K m)),
+  (MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv a ↑m)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist ↑m)).map
+            (CategoryTheory.homOfLE ⋯).op))
+        (LinearStudy.nativePositiveHomogeneousGlobalSection (MvPolynomial.homogeneousSubmodule σ K) m ell)) =
+    AddMonoidAlgebra.mapDomain (⇑(MvPolynomial.coordinateLaurentExponentEquiv (fun j => (a j).down) ↑m))
+      ((AddMonoidAlgebra.mapRingEquiv
+          (↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent fun j => (a j).down)))
+          (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).commRingCatIsoToRingEquiv.symm)
+        (AddMonoidAlgebra.mapDomain
+          (⇑(AddSubmonoid.LocalizationMap.toAddMonoidHom
+              (MvPolynomial.laurentExponentAwayMap (MvPolynomial.coordinateTailExponent fun j => (a j).down))))
+          ((MvPolynomial.dehomogenizeAux K (a 0).down) ↑ell)))
+'MvPolynomial.coordinateNativeHomogeneousGlobalSection_laurent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.nativeSectionMonomialDecidableEq : {σ : Type} → DecidableEq σ
+'MvPolynomial.nativeSectionMonomialDecidableEq' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeHomogeneousMonomial_laurent : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] {n : ℕ} (a : Fin (n + 1) → ULift.{u_1, 0} σ) (m : ℕ)
+  (e : MvPolynomial.HomogeneousLaurentExponent σ ↑m) (he : ∀ (i : σ), 0 ≤ ↑e i) (c : K),
+  (MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv a ↑m)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist ↑m)).map
+            (CategoryTheory.homOfLE ⋯).op))
+        (LinearStudy.nativePositiveHomogeneousGlobalSection (MvPolynomial.homogeneousSubmodule σ K) m
+          ⟨(MvPolynomial.monomial e.natExponent) c, ⋯⟩)) =
+    AddMonoidAlgebra.single ⟨e, ⋯⟩ ((AlgebraicGeometry.Scheme.ΓSpecIso ↧K).commRingCatIsoToRingEquiv.symm c)
+'MvPolynomial.coordinateNativeHomogeneousMonomial_laurent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativePositiveHomogeneousGlobalSectionAddHom : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (m : ℕ) →
+              ↥(𝓑 m) →+
+                ↑((LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯
+                          ↑m).presheaf.obj
+                    (Opposite.op ⊤))
+'LinearStudy.nativePositiveHomogeneousGlobalSectionAddHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeLaurentZeroCycle_monomial_component : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (m : ℕ) (j : σ)
+  (x : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (↑m) 0)),
+  (ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential (↑m) 0)) x = 0 →
+    ∀ (e : MvPolynomial.HomogeneousLaurentExponent σ ↑m) (he : ∀ (i : σ), 0 ≤ ↑e i),
+      (CategoryTheory.ConcreteCategory.hom (MvPolynomial.coordinateNativeLaurentOrderedCechObjectIso (↑m) 0).hom)
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Modules.orderedBaseCechAugmentation MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist ↑m) MvPolynomial.coordinateOpenCover))
+            (LinearStudy.nativePositiveHomogeneousGlobalSection (MvPolynomial.homogeneousSubmodule σ K) m
+              ⟨(MvPolynomial.monomial e.natExponent)
+                  ((AlgebraicGeometry.Scheme.ΓSpecIso ↧K).commRingCatIsoToRingEquiv
+                    (↑((MvPolynomial.coordinateHomogeneousLaurentWeightComponent (↑m) e 0) x)
+                      (AlgebraicGeometry.Scheme.Modules.orderedCechSingleton { down := j }))),
+                ⋯⟩)) =
+        (MvPolynomial.coordinateHomogeneousLaurentWeightInclusion (↑m) e 0)
+          ((MvPolynomial.coordinateHomogeneousLaurentWeightComponent (↑m) e 0) x)
+'MvPolynomial.coordinateNativeLaurentZeroCycle_monomial_component' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativePositiveTwist_polynomial_sections_surjective : ∀ {K : Type u_1} [inst : Field K]
+  {σ : Type} [Fintype σ] [LinearOrder σ] (j : σ) (m : ℕ),
+  Function.Surjective (LinearStudy.nativePositiveHomogeneousGlobalSection (MvPolynomial.homogeneousSubmodule σ K) m)
+'MvPolynomial.coordinateNativePositiveTwist_polynomial_sections_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveRingIntegerProjection_on_piece : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (d e : ℤ),
+  ∀ x ∈ LinearStudy.nativeProjectiveRingIntegerPiece 𝓑 e,
+    (LinearStudy.gradedIntegerProjection 𝓑 d) x = if d = e then x else 0
+'LinearStudy.nativeProjectiveRingIntegerProjection_on_piece' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveRingIntegerPiece_independent : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑],
+  iSupIndep (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑)
+'LinearStudy.nativeProjectiveRingIntegerPiece_independent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveRingIntegerPiece_total : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑],
+  ⨆ d, LinearStudy.nativeProjectiveRingIntegerPiece 𝓑 d = ⊤
+'LinearStudy.nativeProjectiveRingIntegerPiece_total' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveRingIntegerDecomposition : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (𝓑 : ℕ → Submodule K S) →
+            [GradedAlgebra 𝓑] → DirectSum.Decomposition (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑)
+'LinearStudy.nativeProjectiveRingIntegerDecomposition' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeGradedQuotient_eventually_polynomial_lift : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [Fintype σ] [LinearOrder σ] {F : Type u_1} [inst_3 : AddCommGroup F] [inst_4 : Module K F]
+  [inst_5 : Module (MvPolynomial σ K) F] [IsScalarTower K (MvPolynomial σ K) F] (G : ℤ → Submodule K F)
+  [DirectSum.Decomposition G]
+  (hG : ∀ (a : ℕ) (d : ℤ), ∀ c ∈ MvPolynomial.homogeneousSubmodule σ K a, ∀ x ∈ G d, c • x ∈ G (↑a + d))
+  (b : MvPolynomial σ K →ₗ[MvPolynomial σ K] F)
+  (hh :
+    ∀ (d : ℤ), ∀ x ∈ LinearStudy.nativeProjectiveRingIntegerPiece (MvPolynomial.homogeneousSubmodule σ K) d, b x ∈ G d),
+  Function.Surjective ⇑b →
+    ∀ (j : σ),
+      ∃ n₀,
+        ∀ (N : ℕ),
+          n₀ ≤ N →
+            ∀
+              (s :
+                ↑((LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K) G hG ↑N).presheaf.obj
+                    (Opposite.op ⊤))),
+              ∃ Q,
+                (CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Modules.Hom.app
+                        (LinearStudy.nativeProjectiveDegreeZeroSheafMap (MvPolynomial.homogeneousSubmodule σ K)
+                          (LinearStudy.nativeProjectiveRingIntegerPiece (MvPolynomial.homogeneousSubmodule σ K)) G ⋯ hG
+                          b hh ↑N)
+                        ⊤))
+                    (LinearStudy.nativePositiveHomogeneousGlobalSection (MvPolynomial.homogeneousSubmodule σ K) N Q) =
+                  s
+'MvPolynomial.coordinateNativeGradedQuotient_eventually_polynomial_lift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.homogeneousQuotientMap_integer_degree : ∀ {K : Type u_1} [inst : Field K] {σ : Type} [Fintype σ]
+  [LinearOrder σ] (I : Ideal (MvPolynomial σ K)) (d : ℤ),
+  ∀ x ∈ LinearStudy.nativeProjectiveRingIntegerPiece (MvPolynomial.homogeneousSubmodule σ K) d,
+    (Ideal.Quotient.mk I) x ∈ LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece I) d
+'LinearStudy.homogeneousQuotientMap_integer_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousQuotientIntegerDegreeCompatibility : ∀ {K : Type u_1} [inst : Field K] {σ : Type} [Fintype σ]
+  [LinearOrder σ] (I : Ideal (MvPolynomial σ K)),
+  Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I →
+    ∀ (a : ℕ) (d : ℤ),
+      ∀ c ∈ MvPolynomial.homogeneousSubmodule σ K a,
+        ∀ x ∈ LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece I) d,
+          c • x ∈ LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece I) (↑a + d)
+'LinearStudy.homogeneousQuotientIntegerDegreeCompatibility' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousQuotient_eventually_actual_polynomial_lift : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (I : Ideal (MvPolynomial σ K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (j : σ),
+  let G := LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece I);
+  have hG := ⋯;
+  let b := Algebra.linearMap (MvPolynomial σ K) (MvPolynomial σ K ⧸ I);
+  have hh := ⋯;
+  ∃ n₀,
+    ∀ (N : ℕ),
+      n₀ ≤ N →
+        ∀
+          (s :
+            ↑((LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K) G hG ↑N).presheaf.obj
+                (Opposite.op ⊤))),
+          ∃ Q,
+            (CategoryTheory.ConcreteCategory.hom
+                  (AlgebraicGeometry.Scheme.Modules.Hom.app
+                    (LinearStudy.nativeProjectiveDegreeZeroSheafMap (MvPolynomial.homogeneousSubmodule σ K)
+                      (LinearStudy.nativeProjectiveRingIntegerPiece (MvPolynomial.homogeneousSubmodule σ K)) G ⋯ hG b hh
+                      ↑N)
+                    ⊤))
+                (LinearStudy.nativePositiveHomogeneousGlobalSection (MvPolynomial.homogeneousSubmodule σ K) N Q) =
+              s
+'LinearStudy.homogeneousQuotient_eventually_actual_polynomial_lift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeHomogeneousGlobalSection_degreeZeroMap : ∀ {K S D E : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module K D] [inst_5 : Module S D]
+  [inst_6 : AddCommGroup E] [inst_7 : Module K E] [inst_8 : Module S E] (𝓑 : ℕ → Submodule K S)
+  [inst_9 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ x ∈ 𝒟 d, b • x ∈ 𝒟 (↑n + d))
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ x ∈ ℰ d, b • x ∈ ℰ (↑n + d)) (b : D →ₗ[S] E)
+  (hh : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, b x ∈ ℰ d) (k : ℤ) (ell : ↥(𝒟 k)),
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 𝒟 ℰ hD hE b hh k)
+          ⊤))
+      (LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝓑 𝒟 hD k ell) =
+    LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝓑 ℰ hE k ⟨b ↑ell, ⋯⟩
+'LinearStudy.nativeHomogeneousGlobalSection_degreeZeroMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.ambientHomogeneousQuotientPolynomialSection : {K : Type u_1} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (I : Ideal (MvPolynomial σ K)) →
+            (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) →
+              (m : ℕ) →
+                ↥(MvPolynomial.homogeneousSubmodule σ K m) →
+                  ↑((LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K)
+                            (LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece I)) ⋯
+                            ↑m).presheaf.obj
+                      (Opposite.op ⊤))
+'LinearStudy.ambientHomogeneousQuotientPolynomialSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.ambientHomogeneousQuotientPolynomialSection_apply : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (I : Ideal (MvPolynomial σ K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (m : ℕ)
+  (Q : ↥(MvPolynomial.homogeneousSubmodule σ K m)) (p : ↥⊤),
+  ↑(LinearStudy.ambientHomogeneousQuotientPolynomialSection I hI m Q) p =
+    LocalizedModule.mk ((Ideal.Quotient.mk I) ↑Q) 1
+'LinearStudy.ambientHomogeneousQuotientPolynomialSection_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.homogeneousQuotient_eventually_fraction_polynomial_sections : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (I : Ideal (MvPolynomial σ K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (j : σ),
+  ∃ n₀, ∀ (N : ℕ), n₀ ≤ N → Function.Surjective (LinearStudy.ambientHomogeneousQuotientPolynomialSection I hI N)
+'LinearStudy.homogeneousQuotient_eventually_fraction_polynomial_sections' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
