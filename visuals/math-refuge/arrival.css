@@ -108,9 +108,8 @@ body.awaiting-scene #loading{pointer-events:auto}
 #loading[data-ready=true] .arrival-meter{opacity:0;transform:translateY(4px);pointer-events:none}
 
 
-/* The same live canvas is revealed from the centre; no poster-to-scene swap. */
-@property --arrival-radius{syntax:'<percentage>';inherits:false;initial-value:0%}
-#arrivalVeil{--arrival-radius:0%;opacity:1!important;background:radial-gradient(ellipse farthest-corner at 50% 50%,transparent max(0%,calc(var(--arrival-radius) - 12%)),#071c20 var(--arrival-radius));transition:--arrival-radius 1.4s cubic-bezier(.22,.61,.36,1);pointer-events:none!important}
+/* A neutral backdrop ends at the first real frame, without a reveal animation. */
+#arrivalVeil{opacity:1!important;background:#071c20;transition:none;pointer-events:none!important}
 body:not(.live-preview) #arrivalVeil{background:#071c20}
 body:not(.arriving) #arrivalVeil{display:none}
 #loading #loadProgress{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
@@ -133,3 +132,10 @@ body:not(.arriving) #arrivalVeil{display:none}
 #loading .arrival-kicker{font-family:Baskerville,Georgia,serif;letter-spacing:.3em;color:#b0c2b9}
 #loading[data-auth=anonymous] .arrival-copy{opacity:1}
 #loading .arrival-bottom{min-height:174px}
+
+/* Transfer readout stays independent of the central entry and scene progress. */
+#loading #loadTransfer{position:absolute;right:max(26px,env(safe-area-inset-right));bottom:max(22px,env(safe-area-inset-bottom));max-width:calc(100% - 44px);margin:0;text-align:right;font:400 10px/1.6 ui-monospace,"Microsoft YaHei",monospace;font-variant-numeric:tabular-nums;letter-spacing:.015em;color:#b2c4be;opacity:.8;pointer-events:none}
+@media(max-width:600px){#loading #loadTransfer{right:max(18px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));font-size:9px}}
+
+#postEntryLoad{position:fixed;right:max(26px,env(safe-area-inset-right));bottom:max(58px,env(safe-area-inset-bottom));z-index:5;font:10px/1.6 ui-monospace,"Microsoft YaHei",monospace;color:#c1d0ca;text-shadow:0 1px 5px #071c20;pointer-events:none}
+#postEntryLoad[hidden]{display:none}

@@ -56,7 +56,12 @@ function showEntryLogin(){
 }
 window.addEventListener('refuge-preview-ready',showEntryLogin);
 window.addEventListener('refuge-login',()=>{entryLoginPending=true;showEntryLogin();});
-request('session').then(data=>{setUser(data.user);window.refugeBoot?.auth(data.user?'authenticated':'anonymous');if(!data.user){entryLoginPending=true;showEntryLogin();}}).catch(error=>{window.refugeBoot?.auth('anonymous');entryLoginPending=true;if(error.status!==401)entryLoginError='自动登录暂不可用，可手动登录或入侵。';showEntryLogin();});
+let entryAuthTouched=false;
+$('socialName').addEventListener('input',()=>entryAuthTouched=true);
+$('socialAuthForm').addEventListener('submit',()=>entryAuthTouched=true,{capture:true});
+$('socialGuest').addEventListener('click',()=>entryAuthTouched=true,{capture:true});
+entryLoginPending=true;showEntryLogin();$('socialAuthStatus').textContent='正在检查登录状态…';$('loading').dataset.loginReady='true';$('loading').dataset.loginReadyMs=String(performance.now());window.refugeBoot?.auth('pending');
+request('session').then(data=>{if(entryAuthTouched||$('world').dataset.entered==='true')return;setUser(data.user);window.refugeBoot?.auth(data.user?'authenticated':'anonymous');if(data.user){entryLoginError='';if($('socialDialog').open)closeAccount();}else{entryLoginPending=true;showEntryLogin();$('socialAuthStatus').textContent='';}}).catch(error=>{if(entryAuthTouched||$('world').dataset.entered==='true')return;window.refugeBoot?.auth('anonymous');entryLoginPending=true;if(error.status!==401)entryLoginError='自动登录暂不可用，可手动登录或入侵。';showEntryLogin();});
 
 // Pointer capture keeps dragging stable across the scene canvas and touch screens.
 const chat=$('socialChat'),handle=$('socialDragHandle');let drag=null;

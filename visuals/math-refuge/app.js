@@ -1,10 +1,10 @@
-import {mountReportSettings} from './report-settings.js?v=ye2-report-14';
+import {waitForEntered,idleTurn,loadMathRuntime} from './staged-startup.js?v=stages-1';
 import {preparePanelShell,bindPanelDismissals} from './panel-shell.js?v=smart-voice-9';
 import {capturePhoto,downloadPhoto} from './photo.js?v=photo-151';
 import {regionAnchor,distanceLabel} from './region-distance.js';
 import {twilightCloudFactor} from './twilight-clouds.js?v=cloud-rate-142';
 import {hallOrbit} from './hall-orbit.js';
-import {startDeferredTextures} from './deferred-textures.js?v=hall-first-12';
+import {startDeferredTextures} from './deferred-textures.js?v=stages-2';
 import {acceptsStartupQuality} from './startup-probe.js';
 import {RenderChangeGate} from './render-change-gate.js';
 import {renderRoomAction} from './room-actions.js?v=skill-arc-85';
@@ -46,12 +46,11 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat,createArrivalEnvironment} from './scene.js?v=hall-first-12';
-import {createLecture} from './lecture.js?v=chalk-caps-1';
-import {reportVoicePresentation} from './report-voice.js?v=ye2-report-14';
+import {createRetreat,createArrivalEnvironment} from './scene.js?v=stages-2';
+let createLecture,reportVoicePresentation;
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
-import {createChalkReader} from './chalk-reader.js?v=inline-root-1';
+let createChalkReader;
 import {displayProfile,boardFraming} from './display-profile.js?v84-display';
 import {configureCameraInput} from './camera-input.js?v=mouse-soft-110';
 import {bindCameraIntent} from './camera-intent.js?v=smart-voice-9';
@@ -127,6 +126,7 @@ async function enterScene(){
   if(entered||entryTransition||$('world').dataset.ready!=='true'||!window.refugeBoot?.authorized||!window.refugeBoot?.previewReady)return;
   entryTransition=true;await window.refugeBoot?.exitCoast?.();
   entered=true;entryTransition=false;window.refugeBoot?.entered();lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
+  window.dispatchEvent(new Event('refuge-entered'));
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
   replayOpening(true).catch(fail);
   $('world').focus({preventScroll:true});
@@ -137,6 +137,7 @@ async function replayOpening(preserveInitialView=false){
   screenWebview.close();if(activeRoom!==0)activateRoom(0,false);
   openingPreparing=true;
   try{
+    await prepareMainRoom();
     motionVelocity.set(0,0,0);motionAcceleration.set(0,0,0);motionSample=false;
     controls.enableDamping=false;controls.update();
     if(!preserveInitialView){camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=openingFrameFov(camera.aspect);camera.updateProjectionMatrix();}
@@ -353,7 +354,7 @@ function updateRenderBudget(stamp){
   const protectReading=$('boardClarity').value==='crisp';
   const pixelRatio=readingPixelRatio(profile.pixelRatio,{enabled:protectReading&&$('adaptiveQuality').value==='auto',mobile:device.mobile,width:innerWidth,height:innerHeight,dpr:devicePixelRatio,maxTextureSize:renderer.capabilities.maxTextureSize});
   const settings=frameQuality.settings({reading:protectReading||reading,clarity:$('boardClarity').value,pixelRatio,cloud:$('cloudQuality').value,shadow:Number($('shadowQuality').value)});
-  if(activeCloudQuality!==settings.cloud&&(renderChangeGate.ready||['off','low','medium','high'].indexOf(settings.cloud)<['off','low','medium','high'].indexOf(activeCloudQuality))){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
+  if(entered&&$('world').dataset.hallPreparation==='ready'&&activeCloudQuality!==settings.cloud&&(renderChangeGate.ready||['off','low','medium','high'].indexOf(settings.cloud)<['off','low','medium','high'].indexOf(activeCloudQuality))){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
   const shadows=settings.shadow>0;
   if(renderer.shadowMap.enabled!==shadows&&(!shadows||renderChangeGate.ready)){renderer.shadowMap.enabled=shadows;renderer.shadowMap.needsUpdate=true;}
   if(shadows&&retreat.sun.shadow.mapSize.x!==settings.shadow&&(renderChangeGate.ready||settings.shadow<retreat.sun.shadow.mapSize.x)){retreat.sun.shadow.mapSize.set(settings.shadow,settings.shadow);retreat.sun.shadow.map?.dispose();retreat.sun.shadow.map=null;renderer.shadowMap.needsUpdate=true;}
@@ -382,7 +383,7 @@ function setQuality(){
   frameQuality.reset();resize();if(!retreat)return;
   oceanBudget.configure($('oceanModel').value,Number($('targetFPS').value));
   applyOceanQuality();
-  activeCloudQuality=$('cloudQuality').value;retreat.sky.userData.setCloudQuality(activeCloudQuality);
+  activeCloudQuality=entered&&$('world').dataset.hallPreparation==='ready'?$('cloudQuality').value:'off';retreat.sky.userData.setCloudQuality(activeCloudQuality);
   retreat.sky.userData.solarSize=$('sunSize').value;
   retreat.sky.material.uniforms.nightStyle.value=$('nightStyle').value==='vivid'?1:0;retreat.sky.material.uniforms.meteorEnabled.value=$('meteorEffects').value==='on'?1:0;
   retreat.sky.material.uniforms.starsEnabled.value=$('starEffects').value==='on'?1:0;
@@ -514,7 +515,7 @@ function tick(stamp){
     $('world').dataset.shot=String(shot);
     updateSceneTime();
   }
-  screenWebview.update(camera,rooms[0],scene);retreat.setMediaOpen(screenWebview.isOpen);const sunset=eventHours().sunset;retreat.campus.swivelChairs.setSunsetDirection(geographicDirectionToCampus(solarState(sunset,sceneTime.date).direction),visualHour>=sunset-2&&visualHour<=sunset+.5);retreat.campus.swivelChairs.update(dt);retreat.campus.lecternLift?.update(dt);if(retreat.campus.lecternLift?.moving)renderer.shadowMap.needsUpdate=true;$('lecternButton').disabled=activeRoom===0&&Boolean(retreat.campus.lecternLift?.lowered);
+  if(rooms[0])screenWebview.update(camera,rooms[0],scene);retreat.setMediaOpen(screenWebview.isOpen);const sunset=eventHours().sunset;retreat.campus.swivelChairs.setSunsetDirection(geographicDirectionToCampus(solarState(sunset,sceneTime.date).direction),visualHour>=sunset-2&&visualHour<=sunset+.5);retreat.campus.swivelChairs.update(dt);retreat.campus.lecternLift?.update(dt);if(retreat.campus.lecternLift?.moving)renderer.shadowMap.needsUpdate=true;$('lecternButton').disabled=activeRoom===0&&Boolean(retreat.campus.lecternLift?.lowered);
   retreat.residence.update(camera,retreat.sky.material.uniforms.day.value);
   const nearResidence=camera.position.distanceTo(retreat.residence.root.position)<180;
   const hallCenter=new THREE.Vector3(39*BUILDING_SCALE,3,0).add(buildingOffset('01B')),nearHall=camera.position.distanceTo(hallCenter)<65;
@@ -557,6 +558,36 @@ async function paintStartup(percent,label){
 }
 
 function reportSceneProgress(value,label){window.refugeBoot?.stage(value<20?value:24+(value-20)*.68,label);}
+let mainRoomJob=null;
+function prepareMainRoom(){
+ if(mainRoomJob)return mainRoomJob;
+ mainRoomJob=(async()=>{
+  await waitForEntered($('world'));
+  $('world').dataset.hallPreparation='loading';$('world').dataset.startupPhase='hall';$('mode').textContent='正在准备报告厅';
+  const [lectureModule,readerModule,voiceModule,settingsModule]=await Promise.all([import('./lecture.js?v=chalk-caps-1'),import('./chalk-reader.js?v=inline-root-1'),import('./report-voice.js?v=ye2-report-14'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]);
+  createLecture=lectureModule.createLecture;createChalkReader=readerModule.createChalkReader;reportVoicePresentation=voiceModule.reportVoicePresentation;
+  await idleTurn();
+  const root=new THREE.Group();root.name='East-facing compact auditorium blackboards';configureLectureRoot(root);root.position.add(buildingOffset('01B'));scene.add(root);
+  lecture=await withDeadline(createLecture(root,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'ye',boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(root);
+  rooms.push(lecture);roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);registerRoomView(lecture,0);
+  reader=createChalkReader(new Proxy({}, {get:(_,key)=>lecture[key]}));buildSeminarNavigation();installPhysicalControls();populateReport();
+  reportSettings=settingsModule.mountReportSettings(document,{getLecture:()=>lecture,onRate:rate=>rooms.forEach(room=>room.setVoiceRate(rate))});
+  await withDeadline(lecture.prepareOpening(),30000,'开场板书加载');openingPrepared=true;
+  if(reduced.matches){lecture.playing=false;lecture.staticPage();}
+  $('world').dataset.hallPreparation='ready';$('world').dataset.startupPhase='interactive';visibilityAt=-Infinity;updateLabels();
+  return lecture;
+ })().catch(error=>{mainRoomJob=null;$('world').dataset.hallPreparation='error';throw error;});return mainRoomJob;
+}
+async function prepareAfterEntryEffects(){
+ await waitForEntered($('world'));await prepareMainRoom();
+ $('world').dataset.backgroundPreparation='loading';
+ await idleTurn();await startDeferredTextures(()=>{},{phase:'hall',concurrency:1});
+ await idleTurn();retreat.sky.userData.setCloudQuality($('cloudQuality').value);await retreat.sky.userData.prepareClouds();
+ await idleTurn();await retreat.prepareRendering(()=>{});
+ frameQuality.resetSamples();oceanBudget.resetSamples();
+ $('world').dataset.backgroundPreparation='ready';
+}
+
 const weatherService=createShanghaiWeather({onChange(value,state){weatherReading=value;weatherStatus=state;weatherLabel();updateSunEvents();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
 
 try{
@@ -583,7 +614,7 @@ try{
   resize();
   const environment=await createArrivalEnvironment(renderer,scene,value=>reportSceneProgress(value,'准备海面'),device,{hour:sceneTime.hour,date:sceneTime.date,weather:weatherReading});
   environment.study.update(camera,0);renderer.render(scene,camera);window.refugeBoot?.preview();
-  window.refugeBoot?.stage(18,'天气数据');await weatherService.ready;
+  window.refugeBoot?.stage(18,'基础海面就绪');
   const startupWeather=weatherReading?{...weatherReading}:{cloud:.14,rain:0,fog:0,wind:8,windDirection:225};
   // Resolve the actual sky before architecture; no input gesture is required.
   const skyUniforms=environment.sky.material.uniforms,waterUniforms=environment.ocean.material.uniforms;
@@ -596,90 +627,26 @@ try{
     for(const [key,source] of Object.entries({skyMap:'atmosphereMap',skyPrevious:'atmosphereMapPrevious',skyBlend:'atmosphereBlend',skyPhysical:'useAtmosphere',skyCloudMap:'cloudMap',skyCloudPrevious:'cloudMapPrevious',skyCloudBlend:'cloudBlend',skyCloudEnabled:'useVolumeClouds'}))waterUniforms[key].value=skyUniforms[source].value;
     environment.study.update(camera,dt);renderer.render(scene,camera);window.refugeBoot?.preview();
   }
-  environment.sky.userData.setCloudQuality($('cloudQuality').value);
-  await environment.sky.userData.prepareClouds(value=>{window.refugeBoot?.stage(18+value*6,'天空与海面倒影');paintEnvironment();});
+  environment.sky.userData.setCloudQuality('off');
 
   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
   await window.refugeBoot?.waitForEntryUI?.();
   retreat=await withDeadline(createRetreat(renderer,scene,value=>{if(typeof value==='number')reportSceneProgress(value,'构建空间');paintEnvironment();},device,{hour:sceneTime.hour,date:sceneTime.date,weather:startupWeather,environment}),45000,'空间材质加载');
   retreat.setWeather(startupWeather,true);setQuality();
-  await paintStartup(66,'准备报告厅');
-  const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
-  lecture=await withDeadline(createLecture(lectureRoot,renderer,{onProgress:value=>reportSceneProgress(66+value*5,'准备报告厅'),floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'ye',boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
-  await withDeadline(lecture.prepareOpening(value=>reportSceneProgress(71+value*3,'准备板书')),30000,'开场板书加载');openingPrepared=true;
-  rooms.push(lecture);
-  roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
-  // Teaching-room boards and manifests are created only when their room is entered.
-  await paintStartup(88,'整理空间');
-  finishCampusLayout(scene,retreat,rooms);
-  rooms.forEach(registerRoomView);
-  reader=createChalkReader(new Proxy({}, {get:(_,key)=>lecture[key]}));
-  buildSeminarNavigation();
-  installPhysicalControls();
-  populateReport();
-  if(reduced.matches){lecture.playing=false;lecture.staticPage();}
-  if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
-  bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
-  window.refugeBoot?.stage(70.3,'材质纹理');await startDeferredTextures(value=>window.refugeBoot?.stage(70.3+value*5.7,'报告厅与海面贴图'),{criticalOnly:true});window.refugeBoot?.stage(78,'材质就绪');
-  retreat.setWeather(startupWeather,true);setQuality();updateSceneTime();retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
-  // Hold the already rendered live frame while calibration reallocates GPU buffers.
-  renderer.render(scene,camera);
-  const arrivalHold=document.createElement('canvas');arrivalHold.id='arrivalRenderHold';
-  arrivalHold.width=renderer.domElement.width;arrivalHold.height=renderer.domElement.height;
-  arrivalHold.setAttribute('aria-hidden','true');arrivalHold.getContext('2d').drawImage(renderer.domElement,0,0);
-  document.body.append(arrivalHold);
-  await retreat.prepareRendering((value,label)=>window.refugeBoot?.stage(78+value*10,label));
-  window.refugeBoot?.stage(88,'场景材质');
-  await new Promise(resolve=>setTimeout(resolve,0));
-  // Compile materials before camera motion, rather than at a cached-video handoff.
-  if(renderer.compileAsync){
-    const compiling=renderer.compileAsync(scene,camera);
-    const progressTimer=setInterval(()=>{const programs=renderer.info.programs||[];if(programs.length)window.refugeBoot?.stage(88+2*programs.filter(p=>p.isReady()).length/programs.length,'场景材质');},80);
-    try{await compiling;}finally{clearInterval(progressTimer);}
-  }
-  window.refugeBoot?.stage(92,'天气与反射就绪');
-  window.refugeBoot?.stage(94,'云层与水面倒影');
-  // Cloud panorama was prepared once with the selected quality.
-
-  retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);
-  window.refugeBoot?.stage(96,'阴影与反射');renderer.shadowMap.needsUpdate=true;
-  await renderer.compileAsync?.(scene,camera);
-  for(let i=0;i<3;i++){
-    retreat.ocean.userData.study.update(camera,0);
-    if(profile.direct)renderer.render(scene,camera);else composer.render();
-    await new Promise(resolve=>setTimeout(resolve,16));
-  }
-  // Warm both sides of the hall before motion, with the same readable framebuffer.
-  const savedCamera={position:camera.position.clone(),rotation:camera.quaternion.clone(),fov:camera.fov};
-  const hallOffset=buildingOffset('01B'),focus=lecture.reportFocus();
-  const hallEye=new THREE.Vector3(SEAT_ROWS[1].x*BUILDING_SCALE+hallOffset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,hallOffset.z);
-  const warmViews=[{eye:hallEye,target:focus},{eye:new THREE.Vector3(HALL.east*BUILDING_SCALE+hallOffset.x+25,hallEye.y,hallOffset.z),target:hallEye}];
-  try{
-    for(let i=0;i<warmViews.length;i++){
-      camera.position.copy(warmViews[i].eye);camera.lookAt(warmViews[i].target);camera.updateMatrixWorld();
-      retreat.ocean.userData.study.update(camera,0);await renderer.compileAsync?.(scene,camera);
-      for(let frame=0;frame<2;frame++){if(profile.direct)renderer.render(scene,camera);else composer.render();await new Promise(resolve=>setTimeout(resolve,16));}
-      window.refugeBoot?.stage(96.5+(i+1)*.25,'报告厅视角预热');
-    }
-  }finally{camera.position.copy(savedCamera.position);camera.quaternion.copy(savedCamera.rotation);camera.fov=savedCamera.fov;camera.updateProjectionMatrix();camera.updateMatrixWorld();retreat.ocean.userData.study.update(camera,0);}
-  window.refugeBoot?.stage(98,'首帧就绪');
-  // Preserve prepared effects and the opening camera; never clear and replay them.
-  retreat.sky.material.uniforms.cloudOrigin.value.copy(camera.position).multiplyScalar(.001);
-  retreat.sky.material.uniforms.cloudOrigin.value.y=Math.max(.001,retreat.sky.material.uniforms.cloudOrigin.value.y);
-  retreat.setTime(sceneTime.hour,false,1/60,1,sceneTime.date);
-  retreat.ocean.userData.study.update(camera,0);
-  if(profile.direct)renderer.render(scene,camera);else composer.render();
-  arrivalHold.remove();
-  startupAutomatic=false;frameQuality.resetSamples();oceanBudget.resetSamples();
-  $('world').dataset.graphicsMode='smart';$('recommendStatus').textContent=device.safe?'低负载模式 · 保留板书清晰度':'智能推荐已默认应用 · 60 帧预算、文字保护、运行中自动调整环境效果';
-  // Keep normal frustum culling: never allocate/render the entire campus at startup.
+  // The entry gate depends on visible geometry and the current view, not rooms or weather.
+  await paintStartup(68,'首屏建筑');
+  finishCampusLayout(scene,retreat,[]);
+  if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
+  await startDeferredTextures(value=>window.refugeBoot?.stage(70+value*8,'首屏海面贴图'),{phase:'entry'});
+  retreat.setWeather(startupWeather,true);setQuality();updateSceneTime();retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);updateLabels();
+  camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
+  window.refugeBoot?.stage(88,'首屏材质');
+  retreat.ocean.userData.study.update(camera,0);if(profile.direct)renderer.render(scene,camera);else composer.render();window.refugeBoot?.preview();
   if(failed||renderer.getContext().isContextLost())throw new Error('WebGL context lost');
-  if(renderActivity.foreground){if(profile.direct)renderer.render(scene,camera);else composer.render();window.refugeBoot?.preview();}
-  if(failed)throw new Error('场景效果未能加载，请尝试低负载模式。');
-  clearTimeout(window.refugeLoadingTimer);$('error').hidden=true;$('world').dataset.ready='true';$('world').dataset.entered='false';
-  window.refugeBoot?.ready();$('world').dataset.startupTier=String(startupQuality.level);renderActivity.setEnabled(!failed);
+  $('world').dataset.ready='true';$('world').dataset.entered='false';$('world').dataset.hallPreparation='pending';$('world').dataset.startupPhase='entry-ready';
+  window.refugeBoot?.ready();renderActivity.setEnabled(!failed);
   if($('loading').dataset.entryRequested==='true')enterScene();
-  // Fetch only manifests and covers in the background, without delaying entry.
+  void prepareAfterEntryEffects().catch(error=>{console.error('[Refuge background]',error);$('world').dataset.backgroundPreparation='error';});
 
 }catch(error){document.getElementById('arrivalRenderHold')?.remove();fail(error);}
 
@@ -1063,4 +1030,4 @@ $('photoButton').addEventListener('click',async()=>{
  finally{photoBusy=false;$('photoButton').disabled=false;setTimeout(()=>{$('photoStatus').hidden=true;},3500);}
 });
 
-reportSettings=mountReportSettings(document,{getLecture:()=>lecture,onRate:rate=>rooms.forEach(room=>room.setVoiceRate(rate))});
+// Report settings are mounted when the main room becomes available, after entry.

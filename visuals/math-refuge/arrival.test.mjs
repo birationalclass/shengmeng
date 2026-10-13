@@ -28,8 +28,8 @@ console.log('Arrival: backoff, offline/hidden/pause, recovery, entry and safe re
 
 {
  const b=boot();let requests=0,logins=0;b.events['refuge-entry']=()=>requests++;b.events['refuge-login']=()=>logins++;
- b.context.refugeBoot.ready();b.click('enterButton');assert.equal(requests,0,'pending auth must not enter');
- b.context.refugeBoot.auth('anonymous');b.click('enterButton');assert.equal(logins,1);assert.equal(requests,0);
+ b.context.refugeBoot.ready();b.click('enterButton');assert.equal(requests,0,'pending auth must not enter');assert.equal(logins,1,'pending auth can still open login');
+ b.context.refugeBoot.auth('anonymous');b.click('enterButton');assert.equal(logins,2);assert.equal(requests,0);
  b.context.refugeBoot.auth('authenticated');assert.equal(requests,0,'auto login waits for a click');assert.equal(b.get('enterButton').textContent,'点击继续');
  b.click('enterButton');assert.equal(requests,1);assert.equal(b.get('loading').dataset.entryRequested,'true');
  b.context.refugeBoot.entered();b.context.refugeBoot.requestEntry();assert.equal(requests,1,'entry cannot run twice');
@@ -84,13 +84,13 @@ for(const type of ['click','keydown']){
 
 {
  const b=boot();b.context.refugeBoot.stage(18,'');
- assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'0%','never reveal an unrendered canvas');
- b.context.refugeBoot.preview();assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'40%');
+ assert.equal(b.get('arrivalVeil').hidden,false,'never reveal an unrendered canvas');
+ b.context.refugeBoot.preview();assert.equal(b.get('arrivalVeil').hidden,true,'the first real frame appears without a circular mask');
  assert(b.context.document.body.classList.contains('live-preview'));
- b.context.refugeBoot.stage(59,'');assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'80%');
- b.context.refugeBoot.stage(50,'');assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'80%','late callbacks cannot shrink the reveal');
+ b.context.refugeBoot.stage(59,'');assert.equal(b.get('arrivalVeil').hidden,true);
+ b.context.refugeBoot.stage(50,'');assert.equal(b.get('arrivalVeil').hidden,true,'late callbacks cannot cover the live frame again');
  b.context.refugeBoot.ready();b.context.refugeBoot.preview();
- assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'120%');
+ assert.equal(b.get('arrivalVeil').hidden,true);
  assert.equal(b.context.refugeBoot.previewReady,true,'ready live scene needs no additional timer');b.tick(1.5);
  assert.equal(b.context.refugeBoot.previewReady,true);
  assert.equal(b.get('arrivalVeil').hidden,true,'completed reveal removes the covering layer');
@@ -108,6 +108,11 @@ for(const auth of ['pending','anonymous']){
 }
 
 const app=readFileSync(new URL('./app.js',import.meta.url),'utf8');
+{
+ const b=boot();let opened=0;b.events['refuge-login']=()=>opened++;b.get('loading').dataset.loginReady='true';b.context.refugeBoot.auth('pending');
+ assert.equal(b.get('enterButton').hidden,false,'the login action remains available while checking the stored session');
+ b.get('enterButton').handlers.click();assert.equal(opened,1);assert.equal(b.context.refugeBoot.authorized,false,'opening login never grants entry');
+}
 assert(!app.includes('ready();window.refugeBoot?.preview()'),'readiness alone cannot certify a rendered frame');
 
 assert(app.indexOf('await createArrivalEnvironment')<app.indexOf('retreat=await withDeadline(createRetreat'),'sea renders before architecture construction');
