@@ -1,0 +1,206 @@
+@MvPolynomial.exists_preimage_coordinateLaurent_top_of_full_support_zero : ∀ {R : Type u_1} {σ : Type}
+  [inst : CommRing R] [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (d : ℤ) (n : ℕ),
+  Fintype.card σ = n + 2 →
+    ∀ (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d (n + 1))),
+      (∀ (e : MvPolynomial.HomogeneousLaurentExponent σ d),
+          e.liftedNegativeSupport = Set.univ →
+            (MvPolynomial.coordinateHomogeneousLaurentWeightComponent d e (n + 1)) s = 0) →
+        ∃ t, (ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d n)) t = s
+'MvPolynomial.exists_preimage_coordinateLaurent_top_of_full_support_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateLaurent_boundary_full_support_eq_zero : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (d : ℤ) (n : ℕ),
+  Fintype.card σ = n + 2 →
+    ∀ (t : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n))
+      (e : MvPolynomial.HomogeneousLaurentExponent σ d),
+      e.liftedNegativeSupport = Set.univ →
+        (MvPolynomial.coordinateHomogeneousLaurentWeightComponent d e (n + 1))
+            ((ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d n)) t) =
+          0
+'MvPolynomial.coordinateLaurent_boundary_full_support_eq_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateLaurent_top_boundary_iff_full_support_zero : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (d : ℤ) (n : ℕ),
+  Fintype.card σ = n + 2 →
+    ∀ (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d (n + 1))),
+      (∃ t, (ModuleCat.Hom.hom (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d n)) t = s) ↔
+        ∀ (e : MvPolynomial.HomogeneousLaurentExponent σ d),
+          e.liftedNegativeSupport = Set.univ →
+            (MvPolynomial.coordinateHomogeneousLaurentWeightComponent d e (n + 1)) s = 0
+'MvPolynomial.coordinateLaurent_top_boundary_iff_full_support_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+MvPolynomial.ProjectiveMonomialIndex : Type → ℕ → Type
+'MvPolynomial.ProjectiveMonomialIndex' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.ProjectiveNegativeWeight : (σ : Type) → [Fintype σ] → ℕ → Type
+'MvPolynomial.ProjectiveNegativeWeight' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveMonomialNegativeWeight : {σ : Type} →
+  [inst : Fintype σ] → (m : ℕ) → MvPolynomial.ProjectiveMonomialIndex σ m → MvPolynomial.ProjectiveNegativeWeight σ m
+'MvPolynomial.projectiveMonomialNegativeWeight' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveMonomialNegativeWeight_apply : ∀ {σ : Type} [inst : Fintype σ] (m : ℕ)
+  (a : MvPolynomial.ProjectiveMonomialIndex σ m) (i : σ),
+  ↑↑(MvPolynomial.projectiveMonomialNegativeWeight m a) i = -↑(↑a i) - 1
+'MvPolynomial.projectiveMonomialNegativeWeight_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveNegativeWeightMonomial : {σ : Type} →
+  [inst : Fintype σ] → (m : ℕ) → MvPolynomial.ProjectiveNegativeWeight σ m → MvPolynomial.ProjectiveMonomialIndex σ m
+'MvPolynomial.projectiveNegativeWeightMonomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveNegativeWeightEquivMonomial : {σ : Type} →
+  [inst : Fintype σ] → (m : ℕ) → MvPolynomial.ProjectiveNegativeWeight σ m ≃ MvPolynomial.ProjectiveMonomialIndex σ m
+'MvPolynomial.projectiveNegativeWeightEquivMonomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveMonomialIndexFinite : ∀ {σ : Type} [Fintype σ] (m : ℕ),
+  Finite (MvPolynomial.ProjectiveMonomialIndex σ m)
+'MvPolynomial.projectiveMonomialIndexFinite' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveNegativeWeightFinite : ∀ {σ : Type} [inst : Fintype σ] (m : ℕ),
+  Finite (MvPolynomial.ProjectiveNegativeWeight σ m)
+'MvPolynomial.projectiveNegativeWeightFinite' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralResidue : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (m n : ℕ) →
+            Fintype.card σ = n + 1 →
+              ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑m - ↑(Fintype.card σ))
+                    n) →ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing R)]
+                MvPolynomial.ProjectiveNegativeWeight σ m → ↑(MvPolynomial.coordinateCanonicalBaseRing R)
+'MvPolynomial.coordinateGeneralResidue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveNegativeWeight_liftedSupport : ∀ {σ : Type} [inst : Fintype σ] [LinearOrder σ] (m : ℕ)
+  (e : MvPolynomial.ProjectiveNegativeWeight σ m), (↑e).liftedNegativeSupport = Set.univ
+'MvPolynomial.projectiveNegativeWeight_liftedSupport' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralResidue_ker_eq_range : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (m n : ℕ) (hc : Fintype.card σ = n + 2),
+  (MvPolynomial.coordinateGeneralResidue m (n + 1) hc).ker =
+    (ModuleCat.Hom.hom
+        (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential (-↑m - ↑(Fintype.card σ)) n)).range
+'MvPolynomial.coordinateGeneralResidue_ker_eq_range' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralTopWeightCochain : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (m n : ℕ) →
+            Fintype.card σ = n + 1 →
+              (e : MvPolynomial.ProjectiveNegativeWeight σ m) →
+                ↑(MvPolynomial.coordinateCanonicalBaseRing R) →
+                  ↥(LinearStudy.OrderedCechSupportCochain (↑(MvPolynomial.coordinateCanonicalBaseRing R))
+                      (↑e).liftedNegativeSupport n)
+'MvPolynomial.coordinateGeneralTopWeightCochain' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralResidueSingle : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (m n : ℕ) →
+            Fintype.card σ = n + 1 →
+              MvPolynomial.ProjectiveNegativeWeight σ m →
+                ↑(MvPolynomial.coordinateCanonicalBaseRing R) →
+                  ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑m - ↑(Fintype.card σ)) n)
+'MvPolynomial.coordinateGeneralResidueSingle' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralResidue_single_same : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (m n : ℕ) (hc : Fintype.card σ = n + 1)
+  (e : MvPolynomial.ProjectiveNegativeWeight σ m) (r : ↑(MvPolynomial.coordinateCanonicalBaseRing R)),
+  (MvPolynomial.coordinateGeneralResidue m n hc) (MvPolynomial.coordinateGeneralResidueSingle m n hc e r) e = r
+'MvPolynomial.coordinateGeneralResidue_single_same' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralResidue_single_ne : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R] [inst_1 : Fintype σ]
+  [inst_2 : LinearOrder σ] (m n : ℕ) (hc : Fintype.card σ = n + 1) (e f : MvPolynomial.ProjectiveNegativeWeight σ m),
+  f ≠ e →
+    ∀ (r : ↑(MvPolynomial.coordinateCanonicalBaseRing R)),
+      (MvPolynomial.coordinateGeneralResidue m n hc) (MvPolynomial.coordinateGeneralResidueSingle m n hc e r) f = 0
+'MvPolynomial.coordinateGeneralResidue_single_ne' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralResidue_surjective : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R] [inst_1 : Fintype σ]
+  [inst_2 : LinearOrder σ] (m n : ℕ) (hc : Fintype.card σ = n + 1),
+  Function.Surjective ⇑(MvPolynomial.coordinateGeneralResidue m n hc)
+'MvPolynomial.coordinateGeneralResidue_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralTopQuotientEquiv : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (m n : ℕ) →
+            Fintype.card σ = n + 2 →
+              (↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑m - ↑(Fintype.card σ)) (n + 1)) ⧸
+                  (ModuleCat.Hom.hom
+                      (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential (-↑m - ↑(Fintype.card σ))
+                        n)).range) ≃ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing R)]
+                MvPolynomial.ProjectiveNegativeWeight σ m → ↑(MvPolynomial.coordinateCanonicalBaseRing R)
+'MvPolynomial.coordinateGeneralTopQuotientEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousMonomialBasis : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      (m : ℕ) → Module.Basis (MvPolynomial.ProjectiveMonomialIndex σ m) R ↥(MvPolynomial.homogeneousSubmodule σ R m)
+'MvPolynomial.projectiveHomogeneousMonomialBasis' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveNegativeCoordinatesDualEquiv : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : Fintype σ] →
+        (m : ℕ) →
+          (MvPolynomial.ProjectiveNegativeWeight σ m → R) ≃ₗ[R] Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R m)
+'MvPolynomial.projectiveNegativeCoordinatesDualEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralTopQuotientDualEquiv : {R : Type u_1} →
+  {σ : Type} →
+    [inst : CommRing R] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (m n : ℕ) →
+            Fintype.card σ = n + 2 →
+              (↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑m - ↑(Fintype.card σ)) (n + 1)) ⧸
+                  (ModuleCat.Hom.hom
+                      (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential (-↑m - ↑(Fintype.card σ))
+                        n)).range) ≃ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing R)]
+                Module.Dual ↑(MvPolynomial.coordinateCanonicalBaseRing R)
+                  ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing R)) m)
+'MvPolynomial.coordinateGeneralTopQuotientDualEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveNegativeCoordinatesDualEquiv_apply_basis : ∀ {R : Type u_1} {σ : Type} [inst : CommRing R]
+  [inst_1 : Fintype σ] [LinearOrder σ] (m : ℕ) (v : MvPolynomial.ProjectiveNegativeWeight σ m → R)
+  (a : MvPolynomial.ProjectiveMonomialIndex σ m),
+  ((MvPolynomial.projectiveNegativeCoordinatesDualEquiv m) v) ((MvPolynomial.projectiveHomogeneousMonomialBasis m) a) =
+    v (MvPolynomial.projectiveMonomialNegativeWeight m a)
+'MvPolynomial.projectiveNegativeCoordinatesDualEquiv_apply_basis' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateLaurentGeneralShortComplex : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [LinearOrder σ] → ℤ → ℕ → CategoryTheory.ShortComplex (ModuleCat ↑(MvPolynomial.coordinateCanonicalBaseRing K))
+'MvPolynomial.coordinateLaurentGeneralShortComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentGeneralShortComplex_g_eq_zero : ∀ {K : Type u_1} {σ : Type} [inst : Field K]
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (d : ℤ) (n : ℕ),
+  Fintype.card σ = n + 2 → (MvPolynomial.coordinateLaurentGeneralShortComplex d n).g = 0
+'MvPolynomial.coordinateLaurentGeneralShortComplex_g_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentGeneralHomologyDualIso : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (m n : ℕ) →
+            Fintype.card σ = n + 2 →
+              ((MvPolynomial.coordinateLaurentGeneralShortComplex (-↑m - ↑(Fintype.card σ)) n).homology ≅
+                ↧(Module.Dual ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+                    ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K)) m)))
+'MvPolynomial.coordinateLaurentGeneralHomologyDualIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentGeneralShortComplexIso : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [inst_1 : LinearOrder σ] →
+        (d : ℤ) →
+          (n : ℕ) →
+            HomologicalComplex.sc' (MvPolynomial.coordinateNativeLaurentOrderedCechComplex d) n (n + 1) (n + 2) ≅
+              MvPolynomial.coordinateLaurentGeneralShortComplex d n
+'MvPolynomial.coordinateLaurentGeneralShortComplexIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeGeneralTopHomologyDualIso : {K : Type u_1} →
+  {σ : Type} →
+    [inst : Field K] →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (m n : ℕ) →
+            Fintype.card σ = n + 2 →
+              (HomologicalComplex.homology
+                  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+                    (MvPolynomial.coordinateNativeIntegerTwist (-↑m - ↑(Fintype.card σ)))
+                    MvPolynomial.coordinateOpenCover)
+                  (n + 1) ≅
+                ↧(Module.Dual ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+                    ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K)) m)))
+'MvPolynomial.coordinateNativeGeneralTopHomologyDualIso' depends on axioms: [propext, Classical.choice, Quot.sound]
