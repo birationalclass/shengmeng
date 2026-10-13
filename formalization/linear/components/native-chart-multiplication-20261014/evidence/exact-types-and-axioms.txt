@@ -1,0 +1,264 @@
+@MvPolynomial.projective_complement_multiplication_iff : ∀ {σ : Type} [inst : Fintype σ] (m l : ℕ)
+  (a : MvPolynomial.ProjectiveMonomialIndex σ (m + l)) (b : MvPolynomial.ProjectiveMonomialIndex σ l)
+  (c : MvPolynomial.ProjectiveMonomialIndex σ m),
+  (∀ (i : σ),
+      ↑↑(MvPolynomial.projectiveMonomialNegativeWeight (m + l) a) i + ↑(↑b i) =
+        ↑↑(MvPolynomial.projectiveMonomialNegativeWeight m c) i) ↔
+    ↑a = ↑b + ↑c
+'MvPolynomial.projective_complement_multiplication_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projective_negative_weight_residue_iff : ∀ {σ : Type} [inst : Fintype σ] (m : ℕ)
+  (e : MvPolynomial.ProjectiveNegativeWeight σ m) (a : MvPolynomial.ProjectiveMonomialIndex σ m),
+  (∀ (i : σ), ↑↑e i + ↑(↑a i) = -1) ↔ e = MvPolynomial.projectiveMonomialNegativeWeight m a
+'MvPolynomial.projective_negative_weight_residue_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousMultiply : {R σ : Type} →
+  [inst : CommRing R] →
+    (l m : ℕ) →
+      ↥(MvPolynomial.homogeneousSubmodule σ R l) →
+        ↥(MvPolynomial.homogeneousSubmodule σ R m) →ₗ[R] ↥(MvPolynomial.homogeneousSubmodule σ R (l + m))
+'MvPolynomial.projectiveHomogeneousMultiply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousMultiply_coe : ∀ {R σ : Type} [inst : CommRing R] (l m : ℕ)
+  (p : ↥(MvPolynomial.homogeneousSubmodule σ R l)) (q : ↥(MvPolynomial.homogeneousSubmodule σ R m)),
+  ↑((MvPolynomial.projectiveHomogeneousMultiply l m p) q) = ↑p * ↑q
+'MvPolynomial.projectiveHomogeneousMultiply_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousMultiplyDual : {R σ : Type} →
+  [inst : CommRing R] →
+    (l m : ℕ) →
+      ↥(MvPolynomial.homogeneousSubmodule σ R l) →
+        Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R (l + m)) →ₗ[R]
+          Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R m)
+'MvPolynomial.projectiveHomogeneousMultiplyDual' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousMultiplyDual_apply : ∀ {R σ : Type} [inst : CommRing R] (l m : ℕ)
+  (p : ↥(MvPolynomial.homogeneousSubmodule σ R l)) (v : Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R (l + m)))
+  (q : ↥(MvPolynomial.homogeneousSubmodule σ R m)),
+  ((MvPolynomial.projectiveHomogeneousMultiplyDual l m p) v) q =
+    v ((MvPolynomial.projectiveHomogeneousMultiply l m p) q)
+'MvPolynomial.projectiveHomogeneousMultiplyDual_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.laurent_actual_polynomial_multiplication : ∀ (R : Type) [inst : CommRing R] {σ : Type} (m : σ →₀ ℕ)
+  (p : MvPolynomial σ R) (x : Localization.Away ((MvPolynomial.monomial m) 1)),
+  (MvPolynomial.laurentMonomialRingEquiv R m)
+      ((algebraMap (MvPolynomial σ R) (Localization.Away ((MvPolynomial.monomial m) 1))) p * x) =
+    AddMonoidAlgebra.mapDomain (⇑(AddSubmonoid.LocalizationMap.toAddMonoidHom (MvPolynomial.laurentExponentAwayMap m)))
+        p *
+      (MvPolynomial.laurentMonomialRingEquiv R m) x
+'MvPolynomial.laurent_actual_polynomial_multiplication' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.laurent_actual_monomial_basis_multiplication : ∀ (R : Type) [inst : CommRing R] {σ : Type} (m b : σ →₀ ℕ)
+  (e : ↥(MvPolynomial.laurentExponentSubmonoid m)),
+  (algebraMap (MvPolynomial σ R) (Localization.Away ((MvPolynomial.monomial m) 1))) ((MvPolynomial.monomial b) 1) *
+      (MvPolynomial.laurentMonomialBasis R m) e =
+    (MvPolynomial.laurentMonomialBasis R m) ((MvPolynomial.laurentExponentAwayMap m) b + e)
+'MvPolynomial.laurent_actual_monomial_basis_multiplication' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousLaurentAllowedShift : {σ : Type} →
+  {d l : ℤ} →
+    {n : ℕ} →
+      (a : Fin (n + 1) → σ) →
+        (b : MvPolynomial.HomogeneousLaurentExponent σ l) →
+          (∀ (i : σ), 0 ≤ ↑b i) → { e // e.IsAllowedOn a } → { e // e.IsAllowedOn a }
+'MvPolynomial.homogeneousLaurentAllowedShift' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousLaurentAllowedShift_delete : ∀ {σ : Type} {d l : ℤ} [inst : LinearOrder σ] {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1)) (k : Fin (n + 2))
+  (b : MvPolynomial.HomogeneousLaurentExponent σ l) (hb : ∀ (i : σ), 0 ≤ ↑b i)
+  (e : { e // e.IsAllowedOn fun j => (↑(a.delete k) j).down }),
+  (MvPolynomial.coordinateLaurentExponentDeleteEmbedding a k (d + l))
+      (MvPolynomial.homogeneousLaurentAllowedShift (fun l => (↑(a.delete k) l).down) b hb e) =
+    MvPolynomial.homogeneousLaurentAllowedShift (fun l => (↑a l).down) b hb
+      ((MvPolynomial.coordinateLaurentExponentDeleteEmbedding a k d) e)
+'MvPolynomial.homogeneousLaurentAllowedShift_delete' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousLaurentShiftLinear : {R : Type u_1} →
+  [inst : CommRing R] →
+    {σ : Type} →
+      {d l : ℤ} →
+        {n : ℕ} →
+          (a : Fin (n + 1) → σ) →
+            (b : MvPolynomial.HomogeneousLaurentExponent σ l) →
+              (∀ (i : σ), 0 ≤ ↑b i) →
+                AddMonoidAlgebra R { e // e.IsAllowedOn a } →ₗ[R] AddMonoidAlgebra R { e // e.IsAllowedOn a }
+'MvPolynomial.homogeneousLaurentShiftLinear' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousLaurentShiftLinear_delete : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type} {d l : ℤ}
+  [inst_1 : LinearOrder σ] {n : ℕ} (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) (n + 1))
+  (k : Fin (n + 2)) (b : MvPolynomial.HomogeneousLaurentExponent σ l) (hb : ∀ (i : σ), 0 ≤ ↑b i),
+  MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap a k (d + l) ∘ₗ
+      MvPolynomial.homogeneousLaurentShiftLinear (fun l => (↑(a.delete k) l).down) b hb =
+    MvPolynomial.homogeneousLaurentShiftLinear (fun l => (↑a l).down) b hb ∘ₗ
+      MvPolynomial.coordinateHomogeneousLaurentDeleteLinearMap a k d
+'MvPolynomial.homogeneousLaurentShiftLinear_delete' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentCechShift : {R : Type u_1} →
+  [inst : CommRing R] →
+    {σ : Type} →
+      [inst_1 : LinearOrder σ] →
+        {d l : ℤ} →
+          (b : MvPolynomial.HomogeneousLaurentExponent σ l) →
+            (∀ (i : σ), 0 ≤ ↑b i) →
+              (n : ℕ) →
+                MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n ⟶
+                  MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (d + l) n
+'MvPolynomial.coordinateLaurentCechShift' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentCechShift_coface : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type}
+  [inst_1 : LinearOrder σ] {d l : ℤ} (b : MvPolynomial.HomogeneousLaurentExponent σ l) (hb : ∀ (i : σ), 0 ≤ ↑b i)
+  (n : ℕ) (k : Fin (n + 2)),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateLaurentCechShift b hb n)
+      (MvPolynomial.coordinateHomogeneousLaurentOrderedCechCoface (d + l) n k) =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateHomogeneousLaurentOrderedCechCoface d n k)
+      (MvPolynomial.coordinateLaurentCechShift b hb (n + 1))
+'MvPolynomial.coordinateLaurentCechShift_coface' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentCechShift_differential : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type}
+  [inst_1 : LinearOrder σ] {d l : ℤ} (b : MvPolynomial.HomogeneousLaurentExponent σ l) (hb : ∀ (i : σ), 0 ≤ ↑b i)
+  (n : ℕ),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateLaurentCechShift b hb n)
+      (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential (d + l) n) =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d n)
+      (MvPolynomial.coordinateLaurentCechShift b hb (n + 1))
+'MvPolynomial.coordinateLaurentCechShift_differential' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentShiftComplex : {K : Type u_1} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : LinearOrder σ] →
+        {d l : ℤ} →
+          (b : MvPolynomial.HomogeneousLaurentExponent σ l) →
+            (∀ (i : σ), 0 ≤ ↑b i) →
+              (MvPolynomial.coordinateNativeLaurentOrderedCechComplex d ⟶
+                MvPolynomial.coordinateNativeLaurentOrderedCechComplex (d + l))
+'MvPolynomial.coordinateLaurentShiftComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentShiftHomology : {K : Type u_1} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : LinearOrder σ] →
+        {d l : ℤ} →
+          (b : MvPolynomial.HomogeneousLaurentExponent σ l) →
+            (∀ (i : σ), 0 ≤ ↑b i) →
+              (n : ℕ) →
+                HomologicalComplex.homology (MvPolynomial.coordinateNativeLaurentOrderedCechComplex d) n ⟶
+                  HomologicalComplex.homology (MvPolynomial.coordinateNativeLaurentOrderedCechComplex (d + l)) n
+'MvPolynomial.coordinateLaurentShiftHomology' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativePolynomialMultiplication : {K : Type u_1} →
+  [inst : Field K] →
+    {σ : Type} →
+      (m : ℕ) →
+        ↥(MvPolynomial.homogeneousSubmodule σ K m) →
+          (k : ℤ) → MvPolynomial.coordinateNativeIntegerTwist k ⟶ MvPolynomial.coordinateNativeIntegerTwist (k + ↑m)
+'MvPolynomial.coordinateNativePolynomialMultiplication' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativePolynomialMultiplication_value : ∀ {K : Type u_1} [inst : Field K] {σ : Type} (m : ℕ)
+  (p : ↥(MvPolynomial.homogeneousSubmodule σ K m)) (k : ℤ)
+  (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top (MvPolynomial.homogeneousSubmodule σ K)))ᵒᵖ)
+  (s :
+    ↥(LinearStudy.nativeProjectiveModuleSections (MvPolynomial.homogeneousSubmodule σ K)
+        (LinearStudy.nativeProjectiveRingIntegerPiece (MvPolynomial.homogeneousSubmodule σ K)) ⋯ k U))
+  (x : ↥(Opposite.unop U)),
+  ↑((CategoryTheory.ConcreteCategory.hom ((MvPolynomial.coordinateNativePolynomialMultiplication m p k).val.app U)) s)
+      x =
+    ↑p • ↑s x
+'MvPolynomial.coordinateNativePolynomialMultiplication_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeRingLocalization_original_smul : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  (p : ProjectiveSpectrum 𝓑) (a : S) (x : LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p),
+  (LinearStudy.nativeProjectiveRingModuleLocalizationEquiv 𝓑 p) (a • x) =
+    (algebraMap S (Localization p.asHomogeneousIdeal.toIdeal.primeCompl)) a *
+      (LinearStudy.nativeProjectiveRingModuleLocalizationEquiv 𝓑 p) x
+'LinearStudy.nativeRingLocalization_original_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativePrimeIntegerTwistEquiv_original_smul : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  (p : ProjectiveSpectrum 𝓑) (a : S) (ha : a ∉ p.asHomogeneousIdeal) (k : ℤ) (c : S)
+  (x : LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p),
+  (LinearStudy.nativePrimeIntegerTwistEquiv 𝓑 p a ha k) (c • x) =
+    c • (LinearStudy.nativePrimeIntegerTwistEquiv 𝓑 p a ha k) x
+'LinearStudy.nativePrimeIntegerTwistEquiv_original_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeHomogeneousChartCoefficient : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (m : ℕ) →
+              ↥(𝓑 m) →
+                (a : S) →
+                  a ∈ 𝓑 1 →
+                    (U : (AlgebraicGeometry.Proj 𝓑).Opens) →
+                      U ≤ AlgebraicGeometry.Proj.basicOpen 𝓑 a →
+                        ↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj (Opposite.op U))
+'LinearStudy.nativeHomogeneousChartCoefficient' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeHomogeneousChartCoefficient_localizedValue : ∀ {K S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (m : ℕ) (ell : ↥(𝓑 m))
+  (a : S) (ha : a ∈ 𝓑 1) (U : (AlgebraicGeometry.Proj 𝓑).Opens) (hU : U ≤ AlgebraicGeometry.Proj.basicOpen 𝓑 a)
+  (x : ↥U),
+  ↑(LinearStudy.nativePrimeCoordinateUnit 𝓑 (↑x) a ⋯ ^ ↑m) *
+      HomogeneousLocalization.val (↑(LinearStudy.nativeHomogeneousChartCoefficient 𝓑 m ell a ha U hU) x) =
+    (algebraMap S (Localization (↑x).asHomogeneousIdeal.toIdeal.primeCompl)) ↑ell
+'LinearStudy.nativeHomogeneousChartCoefficient_localizedValue' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeHomogeneousMultiplication_frame : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (m : ℕ) (ell : ↥(𝓑 m)) (a : S)
+  (ha : a ∈ 𝓑 1) (U : (AlgebraicGeometry.Proj 𝓑).Opens) (hU : U ≤ AlgebraicGeometry.Proj.basicOpen 𝓑 a) (k : ℤ)
+  (r : ↑((AlgebraicGeometry.ProjectiveSpectrum.Proj.structureSheaf 𝓑).obj.obj (Opposite.op U))),
+  (CategoryTheory.ConcreteCategory.hom
+        ((LinearStudy.nativeProjectiveHomogeneousSMul 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (↑ell) m ⋯
+                k).val.app
+          (Opposite.op U)))
+      ((LinearStudy.nativeIntegerTwistSectionFrame 𝓑 a ha k (Opposite.op U) ⋯) r) =
+    (LinearStudy.nativeIntegerTwistSectionFrame 𝓑 a ha (k + ↑m) (Opposite.op U) ⋯)
+      (LinearStudy.nativeHomogeneousChartCoefficient 𝓑 m ell a ha U hU * r)
+'LinearStudy.nativeHomogeneousMultiplication_frame' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentExponentEquiv_add : ∀ {σ : Type} {d l : ℤ} {n : ℕ} (a : Fin (n + 1) → σ)
+  (e f : ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent a))),
+  ↑↑((MvPolynomial.coordinateLaurentExponentEquiv a (d + l)) (e + f)) =
+    ↑↑((MvPolynomial.coordinateLaurentExponentEquiv a d) e) + ↑↑((MvPolynomial.coordinateLaurentExponentEquiv a l) f)
+'MvPolynomial.coordinateLaurentExponentEquiv_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousLaurentShiftLocalExponent : {σ : Type} →
+  {l : ℤ} →
+    {n : ℕ} →
+      (a : Fin (n + 1) → σ) →
+        (b : MvPolynomial.HomogeneousLaurentExponent σ l) →
+          (∀ (i : σ), 0 ≤ ↑b i) → ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent a))
+'MvPolynomial.homogeneousLaurentShiftLocalExponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentExponentEquiv_shift : ∀ {σ : Type} {d l : ℤ} {n : ℕ} (a : Fin (n + 1) → σ)
+  (b : MvPolynomial.HomogeneousLaurentExponent σ l) (hb : ∀ (i : σ), 0 ≤ ↑b i)
+  (e : ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent a))),
+  (MvPolynomial.coordinateLaurentExponentEquiv a (d + l))
+      (e + MvPolynomial.homogeneousLaurentShiftLocalExponent a b hb) =
+    MvPolynomial.homogeneousLaurentAllowedShift a b hb ((MvPolynomial.coordinateLaurentExponentEquiv a d) e)
+'MvPolynomial.coordinateLaurentExponentEquiv_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousLaurentShiftLinear_product : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type} {d l : ℤ} {n : ℕ}
+  (a : Fin (n + 1) → σ) (b : MvPolynomial.HomogeneousLaurentExponent σ l) (hb : ∀ (i : σ), 0 ≤ ↑b i)
+  (x : AddMonoidAlgebra R ↥(MvPolynomial.laurentExponentSubmonoid (MvPolynomial.coordinateTailExponent a))),
+  (MvPolynomial.homogeneousLaurentShiftLinear a b hb)
+      ((AddMonoidAlgebra.mapDomainLinearEquiv R R (MvPolynomial.coordinateLaurentExponentEquiv a d)) x) =
+    (AddMonoidAlgebra.mapDomainLinearEquiv R R (MvPolynomial.coordinateLaurentExponentEquiv a (d + l)))
+      (AddMonoidAlgebra.single (MvPolynomial.homogeneousLaurentShiftLocalExponent a b hb) 1 * x)
+'MvPolynomial.homogeneousLaurentShiftLinear_product' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateHomogeneousLaurent_section_multiply : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type} {d l : ℤ}
+  {n : ℕ} (a : Fin (n + 1) → ULift.{u_1, 0} σ) (b : MvPolynomial.HomogeneousLaurentExponent σ l)
+  (hb : ∀ (i : σ), 0 ≤ ↑b i)
+  (c r :
+    ↑((AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ R)).presheaf.obj
+        (Opposite.op (MvPolynomial.coordinateOpenCechIntersection a)))),
+  (MvPolynomial.coordinateOpenCechIntersectionBaseLaurentRingEquiv a) c =
+      AddMonoidAlgebra.single (MvPolynomial.homogeneousLaurentShiftLocalExponent (fun j => (a j).down) b hb) 1 →
+    (MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv a (d + l)) (c * r) =
+      (MvPolynomial.homogeneousLaurentShiftLinear (fun k => (a k).down) b hb)
+        ((MvPolynomial.coordinateOpenCechIntersectionBaseHomogeneousLaurentLinearEquiv a d) r)
+'MvPolynomial.coordinateHomogeneousLaurent_section_multiply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeMonomialChartCoefficient_laurent : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] {n : ℕ} (a : Fin (n + 1) → ULift.{u_1, 0} σ) (m : ℕ)
+  (b : MvPolynomial.HomogeneousLaurentExponent σ ↑m) (hb : ∀ (i : σ), 0 ≤ ↑b i),
+  (MvPolynomial.coordinateOpenCechIntersectionBaseLaurentRingEquiv a)
+      (LinearStudy.nativeHomogeneousChartCoefficient (MvPolynomial.homogeneousSubmodule σ K) m
+        ⟨(MvPolynomial.monomial b.natExponent) 1, ⋯⟩ (MvPolynomial.X (a 0).down) ⋯
+        (MvPolynomial.coordinateOpenCechIntersection a) ⋯) =
+    AddMonoidAlgebra.single (MvPolynomial.homogeneousLaurentShiftLocalExponent (fun j => (a j).down) b hb) 1
+'MvPolynomial.coordinateNativeMonomialChartCoefficient_laurent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeMonomialMultiplication_laurent : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] {n : ℕ} (a : Fin (n + 1) → ULift.{u_1, 0} σ) (m : ℕ)
+  (b : MvPolynomial.HomogeneousLaurentExponent σ ↑m) (hb : ∀ (i : σ), 0 ≤ ↑b i) (k : ℤ)
+  (s :
+    ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+        (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n a)),
+  (MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv a (k + ↑m))
+      ((CategoryTheory.ConcreteCategory.hom
+          ((MvPolynomial.coordinateNativePolynomialMultiplication m ⟨(MvPolynomial.monomial b.natExponent) 1, ⋯⟩
+                  k).val.app
+            (Opposite.op (MvPolynomial.coordinateOpenCechIntersection a))))
+        s) =
+    (MvPolynomial.homogeneousLaurentShiftLinear (fun j => (a j).down) b hb)
+      ((MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv a k) s)
+'MvPolynomial.coordinateNativeMonomialMultiplication_laurent' depends on axioms: [propext, Classical.choice, Quot.sound]
