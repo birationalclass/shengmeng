@@ -1,0 +1,242 @@
+@LinearStudy.homogeneous_embedding_exists_shift_above : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3} [inst : Field K]
+  [inst_1 : CommRing S] [IsDomain S] [inst_3 : Algebra K S] [inst_4 : AddCommGroup M] [inst_5 : Module K M]
+  [inst_6 : Module S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B] (D : ℤ → Submodule K M) (k : ℤ)
+  (e : M →ₗ[S] S),
+  Function.Injective ⇑e →
+    (∀ (d : ℤ), ∀ x ∈ D d, e x = (LinearStudy.gradedIntegerProjection B (d + k)) (e x)) →
+      ∀ b ∈ B 1,
+        b ≠ 0 →
+          ∀ (lower : ℕ),
+            ∃ m,
+              lower ≤ m ∧
+                0 < m ∧
+                  ∃ g,
+                    Function.Injective ⇑g ∧
+                      ∀ (d : ℤ), ∀ x ∈ D d, g x = (LinearStudy.gradedIntegerProjection B (d + ↑m)) (g x)
+'LinearStudy.homogeneous_embedding_exists_shift_above' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectiveLinearNormalization_exists_native_embedding_above : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+  Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+    (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+      ∀ (lower : ℕ),
+        let A := MvPolynomial (Fin (r + 1)) ℂ;
+        let B := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+        let φ := LinearStudy.projectiveLinearNormalizationMap V L;
+        let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+        let 𝓑 := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+        let D := (ModuleCat.coextendScalars (algebraMap A B)).obj ↧A;
+        let 𝒟 := LinearStudy.coextensionGradedPiece 𝒜 𝓑;
+        let ℰ := LinearStudy.nativeProjectiveRingIntegerPiece 𝓑;
+        have hD := ⋯;
+        have hE := ⋯;
+        ∃ m,
+          lower ≤ m ∧
+            0 < m ∧
+              ∃ e,
+                Function.Injective ⇑e ∧
+                  ∃ (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + ↑m)),
+                    CategoryTheory.Mono (LinearStudy.nativeProjectiveModuleSheafMap 𝓑 𝒟 ℰ hD hE (↑m) e hh 0) ∧
+                      SheafOfModules.IsLocallyFree (LinearStudy.nativeProjectiveModuleSheaf 𝓑 ℰ hE ↑m) ∧
+                        SheafOfModules.IsQuasicoherent (LinearStudy.nativeProjectiveModuleSheaf 𝓑 ℰ hE ↑m)
+'LinearStudy.projectiveLinearNormalization_exists_native_embedding_above' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalProjectiveNativeTwist : {n : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    ℕ → (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules
+'LinearStudy.originalProjectiveNativeTwist' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalNormalizationNativeDualSheaf : {n r : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+      (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+        (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules
+'LinearStudy.originalNormalizationNativeDualSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveHomogeneousInjection_exists_zero_degree_mono : ∀ {K S D E : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D] [inst_5 : Module K D]
+  [inst_6 : AddCommGroup E] [inst_7 : Module S E] [inst_8 : Module K E] (B : ℕ → Submodule K S)
+  [inst_9 : GradedAlgebra B] (DG : ℤ → Submodule K D) (EG : ℤ → Submodule K E)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ B n, ∀ ell ∈ DG d, b • ell ∈ DG (↑n + d))
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ B n, ∀ ell ∈ EG d, b • ell ∈ EG (↑n + d)) (delta : ℤ) (e : D →ₗ[S] E),
+  (∀ (d : ℤ), ∀ ell ∈ DG d, e ell ∈ EG (d + delta)) → Function.Injective ⇑e → ∃ j, CategoryTheory.Mono j
+'LinearStudy.nativeProjectiveHomogeneousInjection_exists_zero_degree_mono' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalNormalizationNativeDual_exists_embedding_above : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+  Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+    (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+      ∀ (lower : ℕ),
+        ∃ m,
+          lower ≤ m ∧
+            0 < m ∧
+              ∃ j,
+                CategoryTheory.Mono j ∧
+                  SheafOfModules.IsLocallyFree (LinearStudy.originalProjectiveNativeTwist V m) ∧
+                    SheafOfModules.IsQuasicoherent (LinearStudy.originalProjectiveNativeTwist V m)
+'LinearStudy.originalNormalizationNativeDual_exists_embedding_above' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalNormalizationDual_exists_fixed_degree_nonzero_extension : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+  Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+    (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+      let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+      ∃ m,
+        0 < m ∧
+          ∀ (F : (AlgebraicGeometry.Proj B).Modules)
+            (canonicalIdentification : F ≅ LinearStudy.originalNormalizationNativeDualSheaf V L hL),
+            ∃ j,
+              CategoryTheory.Mono j ∧
+                SheafOfModules.IsLocallyFree (LinearStudy.originalProjectiveNativeTwist V m) ∧
+                  SheafOfModules.IsQuasicoherent (LinearStudy.originalProjectiveNativeTwist V m) ∧
+                    ∀ (s : ↑(F.presheaf.obj (Opposite.op ⊤))),
+                      s ≠ 0 →
+                        ∃ Q,
+                          ∃ (hQ : MvPolynomial.IsHomogeneous Q m),
+                            LinearStudy.originalProjectivePolynomialSection V m Q hQ =
+                                (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j ⊤)) s ∧
+                              Q ∉ V.ideal.toIdeal
+'LinearStudy.originalNormalizationDual_exists_fixed_degree_nonzero_extension' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.moduleSheafGlobalSectionFamily : {X : AlgebraicGeometry.Scheme} →
+  (F : X.Modules) → ↑(F.presheaf.obj (Opposite.op ⊤)) → SheafOfModules.sections F
+'LinearStudy.moduleSheafGlobalSectionFamily' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafGlobalSectionMorphism : {X : AlgebraicGeometry.Scheme} →
+  (F : X.Modules) → ↑(F.presheaf.obj (Opposite.op ⊤)) → (SheafOfModules.unit X.ringCatSheaf ⟶ F)
+'LinearStudy.moduleSheafGlobalSectionMorphism' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafGlobalSectionMorphism_app_top_one : ∀ {X : AlgebraicGeometry.Scheme} (F : X.Modules)
+  (s : ↑(F.presheaf.obj (Opposite.op ⊤))),
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.moduleSheafGlobalSectionMorphism F s) ⊤))
+      1 =
+    s
+'LinearStudy.moduleSheafGlobalSectionMorphism_app_top_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafGlobalSectionMorphism_ne_zero : ∀ {X : AlgebraicGeometry.Scheme} (F : X.Modules)
+  (s : ↑(F.presheaf.obj (Opposite.op ⊤))), s ≠ 0 → LinearStudy.moduleSheafGlobalSectionMorphism F s ≠ 0
+'LinearStudy.moduleSheafGlobalSectionMorphism_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafGlobalSectionMorphism_postcompose : ∀ {X : AlgebraicGeometry.Scheme} (F : X.Modules)
+  {G : X.Modules} (j : F ⟶ G) (s : ↑(F.presheaf.obj (Opposite.op ⊤))),
+  LinearStudy.moduleSheafGlobalSectionMorphism G
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j ⊤)) s) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.moduleSheafGlobalSectionMorphism F s) j
+'LinearStudy.moduleSheafGlobalSectionMorphism_postcompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafGlobalSection_pullback_vanishing_after_map : ∀ {X Z : AlgebraicGeometry.Scheme}
+  {F G : X.Modules} (i : Z ⟶ X) (j : F ⟶ G) (s : ↑(F.presheaf.obj (Opposite.op ⊤))),
+  (AlgebraicGeometry.Scheme.Modules.pullback i).map (LinearStudy.moduleSheafGlobalSectionMorphism F s) = 0 →
+    (AlgebraicGeometry.Scheme.Modules.pullback i).map
+        (LinearStudy.moduleSheafGlobalSectionMorphism G
+          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j ⊤)) s)) =
+      0
+'LinearStudy.moduleSheafGlobalSection_pullback_vanishing_after_map' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalProjectivePolynomial_eventually_nonzero_closed_vanishing : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n),
+  let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  ∃ lower,
+    ∀ (N : ℕ),
+      lower ≤ N →
+        ∀ (F : (AlgebraicGeometry.Proj B).Modules) (j : F ⟶ LinearStudy.originalProjectiveNativeTwist V N),
+          CategoryTheory.Mono j →
+            ∀ (s : ↑(F.presheaf.obj (Opposite.op ⊤))),
+              s ≠ 0 →
+                ∀ (ι : Type u_1) (Z : ι → AlgebraicGeometry.Scheme) (i : (a : ι) → Z a ⟶ AlgebraicGeometry.Proj B),
+                  (∀ (a : ι),
+                      (AlgebraicGeometry.Scheme.Modules.pullback (i a)).map
+                          (LinearStudy.moduleSheafGlobalSectionMorphism F s) =
+                        0) →
+                    ∃ Q,
+                      ∃ (hQ : MvPolynomial.IsHomogeneous Q N),
+                        LinearStudy.originalProjectivePolynomialSection V N Q hQ =
+                            (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j ⊤)) s ∧
+                          Q ∉ V.ideal.toIdeal ∧
+                            ∀ (a : ι),
+                              (AlgebraicGeometry.Scheme.Modules.pullback (i a)).map
+                                  (LinearStudy.moduleSheafGlobalSectionMorphism
+                                    (LinearStudy.originalProjectiveNativeTwist V N)
+                                    (LinearStudy.originalProjectivePolynomialSection V N Q hQ)) =
+                                0
+'LinearStudy.originalProjectivePolynomial_eventually_nonzero_closed_vanishing' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalNormalizationDual_exists_fixed_degree_closed_extension : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+  Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+    (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+      let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+      ∃ m,
+        0 < m ∧
+          ∀ (F : (AlgebraicGeometry.Proj B).Modules)
+            (canonicalIdentification : F ≅ LinearStudy.originalNormalizationNativeDualSheaf V L hL),
+            ∃ j,
+              CategoryTheory.Mono j ∧
+                SheafOfModules.IsLocallyFree (LinearStudy.originalProjectiveNativeTwist V m) ∧
+                  SheafOfModules.IsQuasicoherent (LinearStudy.originalProjectiveNativeTwist V m) ∧
+                    ∀ (s : ↑(F.presheaf.obj (Opposite.op ⊤))),
+                      s ≠ 0 →
+                        ∀ (ι : Type u_1) (Z : ι → AlgebraicGeometry.Scheme)
+                          (i : (a : ι) → Z a ⟶ AlgebraicGeometry.Proj B),
+                          (∀ (a : ι),
+                              (AlgebraicGeometry.Scheme.Modules.pullback (i a)).map
+                                  (LinearStudy.moduleSheafGlobalSectionMorphism F s) =
+                                0) →
+                            ∃ Q,
+                              ∃ (hQ : MvPolynomial.IsHomogeneous Q m),
+                                LinearStudy.originalProjectivePolynomialSection V m Q hQ =
+                                    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j ⊤))
+                                      s ∧
+                                  Q ∉ V.ideal.toIdeal ∧
+                                    ∀ (a : ι),
+                                      (AlgebraicGeometry.Scheme.Modules.pullback (i a)).map
+                                          (LinearStudy.moduleSheafGlobalSectionMorphism
+                                            (LinearStudy.originalProjectiveNativeTwist V m)
+                                            (LinearStudy.originalProjectivePolynomialSection V m Q hQ)) =
+                                        0
+'LinearStudy.originalNormalizationDual_exists_fixed_degree_closed_extension' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalVariety_exists_fixed_degree_nonzero_closed_extension : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n),
+  let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  ∃ r ≤ n,
+    ∃ L,
+      ∃ (hL : ∀ (a : Fin (r + 1)), MvPolynomial.IsHomogeneous (L a) 1),
+        Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) ∧
+          (LinearStudy.projectiveLinearNormalizationMap V L).Finite ∧
+            ∃ m,
+              0 < m ∧
+                ∀ (F : (AlgebraicGeometry.Proj B).Modules)
+                  (canonicalIdentification : F ≅ LinearStudy.originalNormalizationNativeDualSheaf V L hL),
+                  ∃ j,
+                    CategoryTheory.Mono j ∧
+                      SheafOfModules.IsLocallyFree (LinearStudy.originalProjectiveNativeTwist V m) ∧
+                        SheafOfModules.IsQuasicoherent (LinearStudy.originalProjectiveNativeTwist V m) ∧
+                          ∀ (s : ↑(F.presheaf.obj (Opposite.op ⊤))),
+                            s ≠ 0 →
+                              ∀ (ι : Type u_1) (Z : ι → AlgebraicGeometry.Scheme)
+                                (i : (a : ι) → Z a ⟶ AlgebraicGeometry.Proj B),
+                                (∀ (a : ι),
+                                    (AlgebraicGeometry.Scheme.Modules.pullback (i a)).map
+                                        (LinearStudy.moduleSheafGlobalSectionMorphism F s) =
+                                      0) →
+                                  ∃ Q,
+                                    ∃ (hQ : MvPolynomial.IsHomogeneous Q m),
+                                      LinearStudy.originalProjectivePolynomialSection V m Q hQ =
+                                          (CategoryTheory.ConcreteCategory.hom
+                                              (AlgebraicGeometry.Scheme.Modules.Hom.app j ⊤))
+                                            s ∧
+                                        Q ∉ V.ideal.toIdeal ∧
+                                          ∀ (a : ι),
+                                            (AlgebraicGeometry.Scheme.Modules.pullback (i a)).map
+                                                (LinearStudy.moduleSheafGlobalSectionMorphism
+                                                  (LinearStudy.originalProjectiveNativeTwist V m)
+                                                  (LinearStudy.originalProjectivePolynomialSection V m Q hQ)) =
+                                              0
+'LinearStudy.originalVariety_exists_fixed_degree_nonzero_closed_extension' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
