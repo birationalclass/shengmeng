@@ -1,0 +1,574 @@
+@MvPolynomial.coordinateNativePolynomialCechFactorMap : {K : Type u_1} →
+  [inst : Field K] →
+    {σ : Type} →
+      {n : ℕ} →
+        (a : Fin (n + 1) → ULift.{u_1, 0} σ) →
+          (m : ℕ) →
+            ↥(MvPolynomial.homogeneousSubmodule σ K m) →
+              (k : ℤ) →
+                AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+                    (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n a ⟶
+                  AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+                    (MvPolynomial.coordinateNativeIntegerTwist (k + ↑m)) MvPolynomial.coordinateOpenCover n a
+'MvPolynomial.coordinateNativePolynomialCechFactorMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativePolynomialCechFactorMap_apply : ∀ {K : Type u_1} [inst : Field K] {σ : Type} {n : ℕ}
+  (a : Fin (n + 1) → ULift.{u_1, 0} σ) (m : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ K m)) (k : ℤ)
+  (s :
+    ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor MvPolynomial.homogeneousProjπ
+        (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover n a)),
+  (CategoryTheory.ConcreteCategory.hom (MvPolynomial.coordinateNativePolynomialCechFactorMap a m p k)) s =
+    (CategoryTheory.ConcreteCategory.hom
+        ((MvPolynomial.coordinateNativePolynomialMultiplication m p k).val.app
+          (Opposite.op (MvPolynomial.coordinateOpenCechIntersection a))))
+      s
+'MvPolynomial.coordinateNativePolynomialCechFactorMap_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeMonomialCechFactor_naturality : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [LinearOrder σ] {n : ℕ} (a : Fin (n + 1) → ULift.{u_1, 0} σ) (m : ℕ)
+  (b : MvPolynomial.HomogeneousLaurentExponent σ ↑m) (hb : ∀ (i : σ), 0 ≤ ↑b i) (k : ℤ),
+  CategoryTheory.CategoryStruct.comp
+      (MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv a k).toModuleIso.hom
+      (ModuleCat.ofHom (MvPolynomial.homogeneousLaurentShiftLinear (fun j => (a j).down) b hb)) =
+    CategoryTheory.CategoryStruct.comp
+      (MvPolynomial.coordinateNativePolynomialCechFactorMap a m ⟨(MvPolynomial.monomial b.natExponent) 1, ⋯⟩ k)
+      (MvPolynomial.coordinateNativeIntegerTwistCechFactorLaurentEquiv a (k + ↑m)).toModuleIso.hom
+'MvPolynomial.coordinateNativeMonomialCechFactor_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeMonomialCechComplex_naturality : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (m : ℕ) (b : MvPolynomial.HomogeneousLaurentExponent σ ↑m)
+  (hb : ∀ (i : σ), 0 ≤ ↑b i) (k : ℤ),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso k).hom
+      (MvPolynomial.coordinateLaurentShiftComplex b hb) =
+    CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor MvPolynomial.homogeneousProjπ
+            MvPolynomial.coordinateOpenCover).map
+        (MvPolynomial.coordinateNativePolynomialMultiplication m ⟨(MvPolynomial.monomial b.natExponent) 1, ⋯⟩ k))
+      (MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso (k + ↑m)).hom
+'MvPolynomial.coordinateNativeMonomialCechComplex_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeMonomialCechHomology_naturality : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (m : ℕ) (b : MvPolynomial.HomogeneousLaurentExponent σ ↑m)
+  (hb : ∀ (i : σ), 0 ≤ ↑b i) (k : ℤ) (n : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap (MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso k).hom n)
+      (MvPolynomial.coordinateLaurentShiftHomology b hb n) =
+    CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap
+        ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor MvPolynomial.homogeneousProjπ
+              MvPolynomial.coordinateOpenCover).map
+          (MvPolynomial.coordinateNativePolynomialMultiplication m ⟨(MvPolynomial.monomial b.natExponent) 1, ⋯⟩ k))
+        n)
+      (HomologicalComplex.homologyMap (MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso (k + ↑m)).hom n)
+'MvPolynomial.coordinateNativeMonomialCechHomology_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveHomogeneousMonomialBasis_coe : ∀ {R : Type} [inst : CommRing R] {σ : Type} [Fintype σ]
+  [LinearOrder σ] (m : ℕ) (a : MvPolynomial.ProjectiveMonomialIndex σ m),
+  ↑((MvPolynomial.projectiveHomogeneousMonomialBasis m) a) = (MvPolynomial.monomial ↑a) 1
+'MvPolynomial.projectiveHomogeneousMonomialBasis_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveMonomialIndexAdd : {σ : Type} →
+  (l m : ℕ) →
+    MvPolynomial.ProjectiveMonomialIndex σ l →
+      MvPolynomial.ProjectiveMonomialIndex σ m → MvPolynomial.ProjectiveMonomialIndex σ (l + m)
+'MvPolynomial.projectiveMonomialIndexAdd' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousMultiply_basis : ∀ {R : Type} [inst : CommRing R] {σ : Type} [Fintype σ]
+  [LinearOrder σ] (l m : ℕ) (b : MvPolynomial.ProjectiveMonomialIndex σ l)
+  (c : MvPolynomial.ProjectiveMonomialIndex σ m),
+  (MvPolynomial.projectiveHomogeneousMultiply l m ((MvPolynomial.projectiveHomogeneousMonomialBasis l) b))
+      ((MvPolynomial.projectiveHomogeneousMonomialBasis m) c) =
+    (MvPolynomial.projectiveHomogeneousMonomialBasis (l + m)) (MvPolynomial.projectiveMonomialIndexAdd l m b c)
+'MvPolynomial.projectiveHomogeneousMultiply_basis' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveNegativeCoordinatesMonomialShift : {R σ : Type} →
+  [inst : Fintype σ] →
+    (l m : ℕ) →
+      MvPolynomial.ProjectiveMonomialIndex σ l →
+        (MvPolynomial.ProjectiveNegativeWeight σ (l + m) → R) → MvPolynomial.ProjectiveNegativeWeight σ m → R
+'MvPolynomial.projectiveNegativeCoordinatesMonomialShift' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveMonomialMultiplyDual_apply_basis : ∀ {R : Type} [inst : CommRing R] {σ : Type}
+  [inst_1 : Fintype σ] [LinearOrder σ] (l m : ℕ) (b : MvPolynomial.ProjectiveMonomialIndex σ l)
+  (c : MvPolynomial.ProjectiveMonomialIndex σ m) (v : MvPolynomial.ProjectiveNegativeWeight σ (l + m) → R),
+  ((MvPolynomial.projectiveHomogeneousMultiplyDual l m ((MvPolynomial.projectiveHomogeneousMonomialBasis l) b))
+        ((MvPolynomial.projectiveNegativeCoordinatesDualEquiv (l + m)) v))
+      ((MvPolynomial.projectiveHomogeneousMonomialBasis m) c) =
+    v (MvPolynomial.projectiveMonomialNegativeWeight (l + m) (MvPolynomial.projectiveMonomialIndexAdd l m b c))
+'MvPolynomial.projectiveMonomialMultiplyDual_apply_basis' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveMonomialMultiplyDual_coordinate_naturality : ∀ {R : Type} [inst : CommRing R] {σ : Type}
+  [inst_1 : Fintype σ] [LinearOrder σ] (l m : ℕ) (b : MvPolynomial.ProjectiveMonomialIndex σ l)
+  (v : MvPolynomial.ProjectiveNegativeWeight σ (l + m) → R),
+  (MvPolynomial.projectiveNegativeCoordinatesDualEquiv m)
+      (MvPolynomial.projectiveNegativeCoordinatesMonomialShift l m b v) =
+    (MvPolynomial.projectiveHomogeneousMultiplyDual l m ((MvPolynomial.projectiveHomogeneousMonomialBasis l) b))
+      ((MvPolynomial.projectiveNegativeCoordinatesDualEquiv (l + m)) v)
+'MvPolynomial.projectiveMonomialMultiplyDual_coordinate_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.homogeneousLaurentAllowedShift_injective : ∀ {σ : Type} {d l : ℤ} {n : ℕ} (a : Fin (n + 1) → σ)
+  (b : MvPolynomial.HomogeneousLaurentExponent σ l) (hb : ∀ (i : σ), 0 ≤ ↑b i),
+  Function.Injective (MvPolynomial.homogeneousLaurentAllowedShift a b hb)
+'MvPolynomial.homogeneousLaurentAllowedShift_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousLaurentShiftLinear_coeff : ∀ {σ : Type} {d l : ℤ} {R : Type u_1} [inst : CommRing R] {n : ℕ}
+  (a : Fin (n + 1) → σ) (b : MvPolynomial.HomogeneousLaurentExponent σ l) (hb : ∀ (i : σ), 0 ≤ ↑b i)
+  (e : { e // e.IsAllowedOn a }) (x : AddMonoidAlgebra R { e // e.IsAllowedOn a }),
+  ((MvPolynomial.homogeneousLaurentShiftLinear a b hb) x).coeff (MvPolynomial.homogeneousLaurentAllowedShift a b hb e) =
+    x.coeff e
+'MvPolynomial.homogeneousLaurentShiftLinear_coeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentTupleFactor : {R : Type u_1} →
+  [inst : CommRing R] →
+    {σ : Type} →
+      [inst_1 : LinearOrder σ] →
+        ℤ →
+          {n : ℕ} →
+            AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) n →
+              ModuleCat ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+'MvPolynomial.coordinateLaurentTupleFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentTupleProjection : {R : Type u_1} →
+  [inst : CommRing R] →
+    {σ : Type} →
+      [inst_1 : LinearOrder σ] →
+        (d : ℤ) →
+          {n : ℕ} →
+            (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) n) →
+              MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n ⟶
+                MvPolynomial.coordinateLaurentTupleFactor d a
+'MvPolynomial.coordinateLaurentTupleProjection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentTupleProjection_shift : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type}
+  [inst_1 : LinearOrder σ] {d l : ℤ} {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) n)
+  (b : MvPolynomial.HomogeneousLaurentExponent σ l) (hb : ∀ (i : σ), 0 ≤ ↑b i),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateLaurentCechShift b hb n)
+      (MvPolynomial.coordinateLaurentTupleProjection (d + l) a) =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateLaurentTupleProjection d a)
+      (ModuleCat.ofHom (MvPolynomial.homogeneousLaurentShiftLinear (fun j => (↑a j).down) b hb))
+'MvPolynomial.coordinateLaurentTupleProjection_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentCechShift_weightComponent : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type}
+  [inst_1 : LinearOrder σ] {d l : ℤ} {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) n)
+  (b : MvPolynomial.HomogeneousLaurentExponent σ l) (hb : ∀ (i : σ), 0 ≤ ↑b i)
+  (e : { e // e.IsAllowedOn fun j => (↑a j).down })
+  (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n)),
+  ↑((MvPolynomial.coordinateHomogeneousLaurentWeightComponent (d + l)
+            (↑(MvPolynomial.homogeneousLaurentAllowedShift (fun j => (↑a j).down) b hb e)) n)
+          ((ModuleCat.Hom.hom (MvPolynomial.coordinateLaurentCechShift b hb n)) s))
+      a =
+    ↑((MvPolynomial.coordinateHomogeneousLaurentWeightComponent d (↑e) n) s) a
+'MvPolynomial.coordinateLaurentCechShift_weightComponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveMonomialPositiveWeight : {σ : Type} →
+  [Fintype σ] → (l : ℕ) → MvPolynomial.ProjectiveMonomialIndex σ l → MvPolynomial.HomogeneousLaurentExponent σ ↑l
+'MvPolynomial.projectiveMonomialPositiveWeight' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveMonomialPositiveWeight_apply : ∀ {σ : Type} [inst : Fintype σ] (l : ℕ)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l) (i : σ),
+  ↑(MvPolynomial.projectiveMonomialPositiveWeight l b) i = ↑(↑b i)
+'MvPolynomial.projectiveMonomialPositiveWeight_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveMonomialPositiveWeight_nonnegative : ∀ {σ : Type} [inst : Fintype σ] (l : ℕ)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l) (i : σ), 0 ≤ ↑(MvPolynomial.projectiveMonomialPositiveWeight l b) i
+'MvPolynomial.projectiveMonomialPositiveWeight_nonnegative' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveMonomialPositiveWeight_natExponent : ∀ {σ : Type} [inst : Fintype σ] (l : ℕ)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l), (MvPolynomial.projectiveMonomialPositiveWeight l b).natExponent = ↑b
+'MvPolynomial.projectiveMonomialPositiveWeight_natExponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousLaurentWeightDegreeCast : {σ : Type} →
+  {d d' : ℤ} → d = d' → MvPolynomial.HomogeneousLaurentExponent σ d → MvPolynomial.HomogeneousLaurentExponent σ d'
+'MvPolynomial.homogeneousLaurentWeightDegreeCast' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousLaurentWeightDegreeCast_val : ∀ {σ : Type} [LinearOrder σ] {d d' : ℤ} (h : d = d')
+  (e : MvPolynomial.HomogeneousLaurentExponent σ d), ↑(MvPolynomial.homogeneousLaurentWeightDegreeCast h e) = ↑e
+'MvPolynomial.homogeneousLaurentWeightDegreeCast_val' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentCechDegreeCast : {R : Type u_1} →
+  [inst : CommRing R] →
+    {σ : Type} →
+      [inst_1 : LinearOrder σ] →
+        {d d' : ℤ} →
+          d = d' →
+            (n : ℕ) →
+              ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d
+                    n) →ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing R)]
+                ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d' n)
+'MvPolynomial.coordinateLaurentCechDegreeCast' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentCechDegreeCast_weightComponent : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type}
+  [inst_1 : LinearOrder σ] {d d' : ℤ} (h : d = d') (e : MvPolynomial.HomogeneousLaurentExponent σ d) {n : ℕ}
+  (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex (ULift.{u_1, 0} σ) n)
+  (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject d n)),
+  ↑((MvPolynomial.coordinateHomogeneousLaurentWeightComponent d' (MvPolynomial.homogeneousLaurentWeightDegreeCast h e)
+            n)
+          ((MvPolynomial.coordinateLaurentCechDegreeCast h n) s))
+      a =
+    ↑((MvPolynomial.coordinateHomogeneousLaurentWeightComponent d e n) s) a
+'MvPolynomial.coordinateLaurentCechDegreeCast_weightComponent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveComplementaryShiftDegree : ∀ {σ : Type} [inst : Fintype σ] [LinearOrder σ] (l m : ℕ),
+  -↑(l + m) - ↑(Fintype.card σ) + ↑l = -↑m - ↑(Fintype.card σ)
+'MvPolynomial.projectiveComplementaryShiftDegree' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateComplementaryMonomialCechShift : {R : Type u_1} →
+  [inst : CommRing R] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (l m : ℕ) →
+            MvPolynomial.ProjectiveMonomialIndex σ l →
+              (n : ℕ) →
+                ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(l + m) - ↑(Fintype.card σ))
+                      n) →ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing R)]
+                  ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑m - ↑(Fintype.card σ)) n)
+'MvPolynomial.coordinateComplementaryMonomialCechShift' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveComplementaryShiftWeight : ∀ {σ : Type} [inst : Fintype σ] [inst_1 : LinearOrder σ] (l m : ℕ)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l) (c : MvPolynomial.ProjectiveMonomialIndex σ m) {n : ℕ}
+  (a : Fin (n + 1) → σ)
+  (hs :
+    (↑(MvPolynomial.projectiveMonomialNegativeWeight (l + m)
+            (MvPolynomial.projectiveMonomialIndexAdd l m b c))).IsAllowedOn
+      a),
+  MvPolynomial.homogeneousLaurentWeightDegreeCast ⋯
+      ↑(MvPolynomial.homogeneousLaurentAllowedShift a (MvPolynomial.projectiveMonomialPositiveWeight l b) ⋯
+          ⟨↑(MvPolynomial.projectiveMonomialNegativeWeight (l + m) (MvPolynomial.projectiveMonomialIndexAdd l m b c)),
+            hs⟩) =
+    ↑(MvPolynomial.projectiveMonomialNegativeWeight m c)
+'MvPolynomial.projectiveComplementaryShiftWeight' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.homogeneousLaurentWeight_allowed_full : ∀ {σ : Type} [inst : Fintype σ] [inst_1 : LinearOrder σ] {d : ℤ}
+  (e : MvPolynomial.HomogeneousLaurentExponent σ d) (n : ℕ) (hc : Fintype.card σ = n + 1),
+  e.IsAllowedOn fun j => (↑(LinearStudy.orderedCechFullIndex n ⋯) j).down
+'MvPolynomial.homogeneousLaurentWeight_allowed_full' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralResidue_monomial_shift : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (hc : Fintype.card σ = n + 1)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l)
+  (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(l + m) - ↑(Fintype.card σ)) n))
+  (e : MvPolynomial.ProjectiveNegativeWeight σ m),
+  (MvPolynomial.coordinateGeneralResidue m n hc) ((MvPolynomial.coordinateComplementaryMonomialCechShift l m b n) s) e =
+    (MvPolynomial.coordinateGeneralResidue (l + m) n hc) s
+      (MvPolynomial.projectiveMonomialNegativeWeight (l + m)
+        (MvPolynomial.projectiveMonomialIndexAdd l m b ((MvPolynomial.projectiveNegativeWeightEquivMonomial m) e)))
+'MvPolynomial.coordinateGeneralResidue_monomial_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralResiduePairing : {R : Type} →
+  [inst : CommRing R] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (m n : ℕ) →
+            Fintype.card σ = n + 1 →
+              ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑m - ↑(Fintype.card σ))
+                    n) →ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing R)]
+                Module.Dual ↑(MvPolynomial.coordinateCanonicalBaseRing R)
+                  ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing R)) m)
+'MvPolynomial.coordinateGeneralResiduePairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralResidue_monomial_naturality : ∀ {R : Type} [inst : CommRing R] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (hc : Fintype.card σ = n + 1)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l)
+  (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(l + m) - ↑(Fintype.card σ)) n)),
+  (MvPolynomial.coordinateGeneralResidue m n hc) ((MvPolynomial.coordinateComplementaryMonomialCechShift l m b n) s) =
+    MvPolynomial.projectiveNegativeCoordinatesMonomialShift l m b
+      ((MvPolynomial.coordinateGeneralResidue (l + m) n hc) s)
+'MvPolynomial.coordinateGeneralResidue_monomial_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralResiduePairing_monomial_naturality : ∀ {R : Type} [inst : CommRing R] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (hc : Fintype.card σ = n + 1)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l)
+  (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(l + m) - ↑(Fintype.card σ)) n)),
+  (MvPolynomial.coordinateGeneralResiduePairing m n hc)
+      ((MvPolynomial.coordinateComplementaryMonomialCechShift l m b n) s) =
+    (MvPolynomial.projectiveHomogeneousMultiplyDual l m ((MvPolynomial.projectiveHomogeneousMonomialBasis l) b))
+      ((MvPolynomial.coordinateGeneralResiduePairing (l + m) n hc) s)
+'MvPolynomial.coordinateGeneralResiduePairing_monomial_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateGeneralTopBoundaries : {R : Type} →
+  [inst : CommRing R] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (m n : ℕ) →
+            Submodule ↑((AlgebraicGeometry.Spec ↧R).presheaf.obj (Opposite.op ⊤))
+              ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑m - ↑(Fintype.card σ)) (n + 1))
+'MvPolynomial.coordinateGeneralTopBoundaries' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateComplementaryMonomialCechShift_preserves_boundaries : ∀ {R : Type} [inst : CommRing R]
+  {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ),
+  Fintype.card σ = n + 2 →
+    ∀ (b : MvPolynomial.ProjectiveMonomialIndex σ l),
+      MvPolynomial.coordinateGeneralTopBoundaries (l + m) n ≤
+        Submodule.comap (MvPolynomial.coordinateComplementaryMonomialCechShift l m b (n + 1))
+          (MvPolynomial.coordinateGeneralTopBoundaries m n)
+'MvPolynomial.coordinateComplementaryMonomialCechShift_preserves_boundaries' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateComplementaryMonomialTopQuotientMap : {R : Type} →
+  [inst : CommRing R] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (l m n : ℕ) →
+            Fintype.card σ = n + 2 →
+              MvPolynomial.ProjectiveMonomialIndex σ l →
+                ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(l + m) - ↑(Fintype.card σ)) (n + 1)) ⧸
+                    MvPolynomial.coordinateGeneralTopBoundaries (l + m)
+                      n →ₗ[↑(MvPolynomial.coordinateCanonicalBaseRing R)]
+                  ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑m - ↑(Fintype.card σ)) (n + 1)) ⧸
+                    MvPolynomial.coordinateGeneralTopBoundaries m n
+'MvPolynomial.coordinateComplementaryMonomialTopQuotientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateComplementaryMonomialTopQuotientMap_mk : ∀ {R : Type} [inst : CommRing R] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (hc : Fintype.card σ = n + 2)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l)
+  (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(l + m) - ↑(Fintype.card σ)) (n + 1))),
+  (MvPolynomial.coordinateComplementaryMonomialTopQuotientMap l m n hc b) (Submodule.Quotient.mk s) =
+    Submodule.Quotient.mk ((MvPolynomial.coordinateComplementaryMonomialCechShift l m b (n + 1)) s)
+'MvPolynomial.coordinateComplementaryMonomialTopQuotientMap_mk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateGeneralTopQuotientDualEquiv_mk : ∀ {R : Type} [inst : CommRing R] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (m n : ℕ) (hc : Fintype.card σ = n + 2)
+  (s : ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑m - ↑(Fintype.card σ)) (n + 1))),
+  (MvPolynomial.coordinateGeneralTopQuotientDualEquiv m n hc) (Submodule.Quotient.mk s) =
+    (MvPolynomial.coordinateGeneralResiduePairing m (n + 1) hc) s
+'MvPolynomial.coordinateGeneralTopQuotientDualEquiv_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateGeneralTopQuotientDualEquiv_monomial_naturality : ∀ {R : Type} [inst : CommRing R] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (hc : Fintype.card σ = n + 2)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l)
+  (s :
+    ↑(MvPolynomial.coordinateHomogeneousLaurentOrderedCechObject (-↑(l + m) - ↑(Fintype.card σ)) (n + 1)) ⧸
+      MvPolynomial.coordinateGeneralTopBoundaries (l + m) n),
+  (MvPolynomial.coordinateGeneralTopQuotientDualEquiv m n hc)
+      ((MvPolynomial.coordinateComplementaryMonomialTopQuotientMap l m n hc b) s) =
+    (MvPolynomial.projectiveHomogeneousMultiplyDual l m ((MvPolynomial.projectiveHomogeneousMonomialBasis l) b))
+      ((MvPolynomial.coordinateGeneralTopQuotientDualEquiv (l + m) n hc) s)
+'MvPolynomial.coordinateGeneralTopQuotientDualEquiv_monomial_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@CategoryTheory.ShortComplex.moduleCatMorphism_preserves_boundaries : ∀ {R : Type u_1} [inst : Ring R]
+  {S T : CategoryTheory.ShortComplex (ModuleCat R)} (φ : S ⟶ T),
+  (ModuleCat.Hom.hom S.f).range ≤ Submodule.comap (ModuleCat.Hom.hom φ.τ₂) (ModuleCat.Hom.hom T.f).range
+'CategoryTheory.ShortComplex.moduleCatMorphism_preserves_boundaries' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@CategoryTheory.ShortComplex.moduleCatBoundaryQuotientMap : {R : Type u_1} →
+  [inst : Ring R] →
+    {S T : CategoryTheory.ShortComplex (ModuleCat R)} →
+      (S ⟶ T) → ↑S.X₂ ⧸ (ModuleCat.Hom.hom S.f).range →ₗ[R] ↑T.X₂ ⧸ (ModuleCat.Hom.hom T.f).range
+'CategoryTheory.ShortComplex.moduleCatBoundaryQuotientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.ShortComplex.moduleCatOpcyclesIso_naturality : ∀ {R : Type u_1} [inst : Ring R]
+  {S T : CategoryTheory.ShortComplex (ModuleCat R)} (φ : S ⟶ T),
+  CategoryTheory.CategoryStruct.comp (CategoryTheory.ShortComplex.opcyclesMap φ) T.moduleCatOpcyclesIso.hom =
+    CategoryTheory.CategoryStruct.comp S.moduleCatOpcyclesIso.hom
+      (ModuleCat.ofHom (CategoryTheory.ShortComplex.moduleCatBoundaryQuotientMap φ))
+'CategoryTheory.ShortComplex.moduleCatOpcyclesIso_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.ShortComplex.moduleCatTopHomologyQuotient_naturality : ∀ {R : Type u_1} [inst : Ring R]
+  {S T : CategoryTheory.ShortComplex (ModuleCat R)} (φ : S ⟶ T) (hs : S.g = 0) (ht : T.g = 0),
+  CategoryTheory.CategoryStruct.comp (CategoryTheory.ShortComplex.homologyMap φ)
+      (T.asIsoHomologyι ht ≪≫ T.moduleCatOpcyclesIso).hom =
+    CategoryTheory.CategoryStruct.comp (S.asIsoHomologyι hs ≪≫ S.moduleCatOpcyclesIso).hom
+      (ModuleCat.ofHom (CategoryTheory.ShortComplex.moduleCatBoundaryQuotientMap φ))
+'CategoryTheory.ShortComplex.moduleCatTopHomologyQuotient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateLaurentCechDegreeCast_differential : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type} [Fintype σ]
+  [inst_2 : LinearOrder σ] {d d' : ℤ} (h : d = d') (n : ℕ),
+  CategoryTheory.CategoryStruct.comp (ModuleCat.ofHom (MvPolynomial.coordinateLaurentCechDegreeCast h n))
+      (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d' n) =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential d n)
+      (ModuleCat.ofHom (MvPolynomial.coordinateLaurentCechDegreeCast h (n + 1)))
+'MvPolynomial.coordinateLaurentCechDegreeCast_differential' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateComplementaryMonomialCechShift_differential : ∀ {R : Type u_1} [inst : CommRing R] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (b : MvPolynomial.ProjectiveMonomialIndex σ l),
+  CategoryTheory.CategoryStruct.comp (ModuleCat.ofHom (MvPolynomial.coordinateComplementaryMonomialCechShift l m b n))
+      (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential (-↑m - ↑(Fintype.card σ)) n) =
+    CategoryTheory.CategoryStruct.comp
+      (MvPolynomial.coordinateHomogeneousLaurentOrderedCechDifferential (-↑(l + m) - ↑(Fintype.card σ)) n)
+      (ModuleCat.ofHom (MvPolynomial.coordinateComplementaryMonomialCechShift l m b (n + 1)))
+'MvPolynomial.coordinateComplementaryMonomialCechShift_differential' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateComplementaryMonomialShortComplexMap : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (l m n : ℕ) →
+            MvPolynomial.ProjectiveMonomialIndex σ l →
+              (MvPolynomial.coordinateLaurentGeneralShortComplex (-↑(l + m) - ↑(Fintype.card σ)) n ⟶
+                MvPolynomial.coordinateLaurentGeneralShortComplex (-↑m - ↑(Fintype.card σ)) n)
+'MvPolynomial.coordinateComplementaryMonomialShortComplexMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateComplementaryMonomialShortComplexMap_quotient : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (hc : Fintype.card σ = n + 2)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l),
+  CategoryTheory.ShortComplex.moduleCatBoundaryQuotientMap
+      (MvPolynomial.coordinateComplementaryMonomialShortComplexMap l m n b) =
+    MvPolynomial.coordinateComplementaryMonomialTopQuotientMap l m n hc b
+'MvPolynomial.coordinateComplementaryMonomialShortComplexMap_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateGeneralTopQuotientDualIso_monomial_naturality : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (hc : Fintype.card σ = n + 2)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l),
+  CategoryTheory.CategoryStruct.comp
+      (ModuleCat.ofHom (MvPolynomial.coordinateComplementaryMonomialTopQuotientMap l m n hc b))
+      (MvPolynomial.coordinateGeneralTopQuotientDualEquiv m n hc).toModuleIso.hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateGeneralTopQuotientDualEquiv (l + m) n hc).toModuleIso.hom
+      (ModuleCat.ofHom
+        (MvPolynomial.projectiveHomogeneousMultiplyDual l m ((MvPolynomial.projectiveHomogeneousMonomialBasis l) b)))
+'MvPolynomial.coordinateGeneralTopQuotientDualIso_monomial_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateLaurentGeneralHomologyDualIso_monomial_naturality : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (hc : Fintype.card σ = n + 2)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.ShortComplex.homologyMap (MvPolynomial.coordinateComplementaryMonomialShortComplexMap l m n b))
+      (MvPolynomial.coordinateLaurentGeneralHomologyDualIso m n hc).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateLaurentGeneralHomologyDualIso (l + m) n hc).hom
+      (ModuleCat.ofHom
+        (MvPolynomial.projectiveHomogeneousMultiplyDual l m ((MvPolynomial.projectiveHomogeneousMonomialBasis l) b)))
+'MvPolynomial.coordinateLaurentGeneralHomologyDualIso_monomial_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@HomologicalComplex.moduleCatHomologyIsoSc'_naturality : ∀ {R : Type u_1} [inst : Ring R] {ι : Type}
+  {c : ComplexShape ι} {A B : HomologicalComplex (ModuleCat R) c} (φ : A ⟶ B) (i j k : ι) (hi : c.prev j = i)
+  (hk : c.next j = k),
+  CategoryTheory.CategoryStruct.comp (HomologicalComplex.homologyMap φ j) (B.homologyIsoSc' i j k hi hk).hom =
+    CategoryTheory.CategoryStruct.comp (A.homologyIsoSc' i j k hi hk).hom
+      (CategoryTheory.ShortComplex.homologyMap ((HomologicalComplex.shortComplexFunctor' (ModuleCat R) c i j k).map φ))
+'HomologicalComplex.moduleCatHomologyIsoSc'_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateComplementaryMonomialComplexMap : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (l m : ℕ) →
+            MvPolynomial.ProjectiveMonomialIndex σ l →
+              (MvPolynomial.coordinateNativeLaurentOrderedCechComplex (-↑(l + m) - ↑(Fintype.card σ)) ⟶
+                MvPolynomial.coordinateNativeLaurentOrderedCechComplex (-↑m - ↑(Fintype.card σ)))
+'MvPolynomial.coordinateComplementaryMonomialComplexMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateComplementaryMonomialComplexMap_sc : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (b : MvPolynomial.ProjectiveMonomialIndex σ l),
+  CategoryTheory.CategoryStruct.comp
+      ((HomologicalComplex.shortComplexFunctor' (ModuleCat ↑(MvPolynomial.coordinateCanonicalBaseRing K))
+            (ComplexShape.up ℕ) n (n + 1) (n + 2)).map
+        (MvPolynomial.coordinateComplementaryMonomialComplexMap l m b))
+      (MvPolynomial.coordinateLaurentGeneralShortComplexIso (-↑m - ↑(Fintype.card σ)) n).hom =
+    CategoryTheory.CategoryStruct.comp
+      (MvPolynomial.coordinateLaurentGeneralShortComplexIso (-↑(l + m) - ↑(Fintype.card σ)) n).hom
+      (MvPolynomial.coordinateComplementaryMonomialShortComplexMap l m n b)
+'MvPolynomial.coordinateComplementaryMonomialComplexMap_sc' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentFullTopHomologyDualIso : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (m n : ℕ) →
+            Fintype.card σ = n + 2 →
+              (HomologicalComplex.homology
+                  (MvPolynomial.coordinateNativeLaurentOrderedCechComplex (-↑m - ↑(Fintype.card σ))) (n + 1) ≅
+                ↧(Module.Dual ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+                    ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K)) m)))
+'MvPolynomial.coordinateLaurentFullTopHomologyDualIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentFullTopHomologyDualIso_monomial_naturality : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (hc : Fintype.card σ = n + 2)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap (MvPolynomial.coordinateComplementaryMonomialComplexMap l m b) (n + 1))
+      (MvPolynomial.coordinateLaurentFullTopHomologyDualIso m n hc).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateLaurentFullTopHomologyDualIso (l + m) n hc).hom
+      (ModuleCat.ofHom
+        (MvPolynomial.projectiveHomogeneousMultiplyDual l m ((MvPolynomial.projectiveHomogeneousMonomialBasis l) b)))
+'MvPolynomial.coordinateLaurentFullTopHomologyDualIso_monomial_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateLaurentComplexDegreeCast : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : LinearOrder σ] →
+        {d d' : ℤ} →
+          d = d' →
+            (MvPolynomial.coordinateNativeLaurentOrderedCechComplex d ⟶
+              MvPolynomial.coordinateNativeLaurentOrderedCechComplex d')
+'MvPolynomial.coordinateLaurentComplexDegreeCast' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeComplexDegreeCast : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : LinearOrder σ] →
+        {d d' : ℤ} →
+          d = d' →
+            (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist d) MvPolynomial.coordinateOpenCover ⟶
+              AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+                (MvPolynomial.coordinateNativeIntegerTwist d') MvPolynomial.coordinateOpenCover)
+'MvPolynomial.coordinateNativeComplexDegreeCast' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateLaurentComplexDegreeCast_f : ∀ {K : Type} [inst : Field K] {σ : Type} [inst_1 : LinearOrder σ]
+  {d d' : ℤ} (h : d = d') (n : ℕ),
+  (MvPolynomial.coordinateLaurentComplexDegreeCast h).f n =
+    ModuleCat.ofHom (MvPolynomial.coordinateLaurentCechDegreeCast h n)
+'MvPolynomial.coordinateLaurentComplexDegreeCast_f' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeLaurentComplexDegreeCast_naturality : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : LinearOrder σ] {d d' : ℤ} (h : d = d'),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso d).hom
+      (MvPolynomial.coordinateLaurentComplexDegreeCast h) =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeComplexDegreeCast h)
+      (MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso d').hom
+'MvPolynomial.coordinateNativeLaurentComplexDegreeCast_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateComplementaryMonomialComplexMap_eq_shift : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m : ℕ) (b : MvPolynomial.ProjectiveMonomialIndex σ l),
+  MvPolynomial.coordinateComplementaryMonomialComplexMap l m b =
+    CategoryTheory.CategoryStruct.comp
+      (MvPolynomial.coordinateLaurentShiftComplex (MvPolynomial.projectiveMonomialPositiveWeight l b) ⋯)
+      (MvPolynomial.coordinateLaurentComplexDegreeCast ⋯)
+'MvPolynomial.coordinateComplementaryMonomialComplexMap_eq_shift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeComplementaryMonomialComplexMap : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          (l m : ℕ) →
+            MvPolynomial.ProjectiveMonomialIndex σ l →
+              (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+                  (MvPolynomial.coordinateNativeIntegerTwist (-↑(l + m) - ↑(Fintype.card σ)))
+                  MvPolynomial.coordinateOpenCover ⟶
+                AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+                  (MvPolynomial.coordinateNativeIntegerTwist (-↑m - ↑(Fintype.card σ)))
+                  MvPolynomial.coordinateOpenCover)
+'MvPolynomial.coordinateNativeComplementaryMonomialComplexMap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeComplementaryMonomialComplex_naturality : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m : ℕ) (b : MvPolynomial.ProjectiveMonomialIndex σ l),
+  CategoryTheory.CategoryStruct.comp
+      (MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso (-↑(l + m) - ↑(Fintype.card σ))).hom
+      (MvPolynomial.coordinateComplementaryMonomialComplexMap l m b) =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeComplementaryMonomialComplexMap l m b)
+      (MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso (-↑m - ↑(Fintype.card σ))).hom
+'MvPolynomial.coordinateNativeComplementaryMonomialComplex_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeComplementaryMonomialHomology_naturality : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (b : MvPolynomial.ProjectiveMonomialIndex σ l),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap
+        (MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso (-↑(l + m) - ↑(Fintype.card σ))).hom n)
+      (HomologicalComplex.homologyMap (MvPolynomial.coordinateComplementaryMonomialComplexMap l m b) n) =
+    CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap (MvPolynomial.coordinateNativeComplementaryMonomialComplexMap l m b) n)
+      (HomologicalComplex.homologyMap
+        (MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso (-↑m - ↑(Fintype.card σ))).hom n)
+'MvPolynomial.coordinateNativeComplementaryMonomialHomology_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinatePositiveMonomialPolynomial_eq_basis : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [LinearOrder σ] (l : ℕ) (b : MvPolynomial.ProjectiveMonomialIndex σ l),
+  ⟨(MvPolynomial.monomial (MvPolynomial.projectiveMonomialPositiveWeight l b).natExponent) 1, ⋯⟩ =
+    (MvPolynomial.projectiveHomogeneousMonomialBasis l) b
+'MvPolynomial.coordinatePositiveMonomialPolynomial_eq_basis' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeGeneralTopHomologyDualIso_eq_comparison : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (m n : ℕ) (hc : Fintype.card σ = n + 2),
+  (MvPolynomial.coordinateNativeGeneralTopHomologyDualIso m n hc).hom =
+    CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap
+        (MvPolynomial.coordinateNativeLaurentOrderedCechComplexIso (-↑m - ↑(Fintype.card σ))).hom (n + 1))
+      (MvPolynomial.coordinateLaurentFullTopHomologyDualIso m n hc).hom
+'MvPolynomial.coordinateNativeGeneralTopHomologyDualIso_eq_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeGeneralTopHomologyDualIso_monomial_naturality : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (hc : Fintype.card σ = n + 2)
+  (b : MvPolynomial.ProjectiveMonomialIndex σ l),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap (MvPolynomial.coordinateNativeComplementaryMonomialComplexMap l m b) (n + 1))
+      (MvPolynomial.coordinateNativeGeneralTopHomologyDualIso m n hc).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeGeneralTopHomologyDualIso (l + m) n hc).hom
+      (ModuleCat.ofHom
+        (MvPolynomial.projectiveHomogeneousMultiplyDual l m ((MvPolynomial.projectiveHomogeneousMonomialBasis l) b)))
+'MvPolynomial.coordinateNativeGeneralTopHomologyDualIso_monomial_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
