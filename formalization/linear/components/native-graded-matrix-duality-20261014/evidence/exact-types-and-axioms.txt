@@ -1,0 +1,271 @@
+@LinearStudy.biproductMatrixComponentNaturality : ∀ {C : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} C]
+  [inst_1 : CategoryTheory.Preadditive C] [inst_2 : CategoryTheory.Limits.HasFiniteBiproducts C] {I J : Type}
+  [inst_3 : Finite I] [inst_4 : Finite J] {a a' : I → C} {b b' : J → C} (u : (i : I) → (j : J) → a i ⟶ b j)
+  (v : (i : I) → (j : J) → a' i ⟶ b' j) (ea : (i : I) → a i ⟶ a' i) (eb : (j : J) → b j ⟶ b' j),
+  (∀ (i : I) (j : J),
+      CategoryTheory.CategoryStruct.comp (u i j) (eb j) = CategoryTheory.CategoryStruct.comp (ea i) (v i j)) →
+    CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.biproduct.matrix u)
+        (CategoryTheory.Limits.biproduct.map eb) =
+      CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.biproduct.map ea)
+        (CategoryTheory.Limits.biproduct.matrix v)
+'LinearStudy.biproductMatrixComponentNaturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.additiveFunctorBiproductMatrixNaturality : ∀ {C : Type u_2} {D : Type u_4}
+  [inst : CategoryTheory.Category.{u_1, u_2} C] [inst_1 : CategoryTheory.Category.{u_3, u_4} D]
+  [inst_2 : CategoryTheory.Preadditive C] [inst_3 : CategoryTheory.Preadditive D]
+  [inst_4 : CategoryTheory.Limits.HasFiniteBiproducts C] [inst_5 : CategoryTheory.Limits.HasFiniteBiproducts D]
+  {I J : Type} [inst_6 : Finite I] [inst_7 : Finite J] (F : CategoryTheory.Functor C D) [inst_8 : F.Additive]
+  {a : I → C} {b : J → C} (u : (i : I) → (j : J) → a i ⟶ b j),
+  CategoryTheory.CategoryStruct.comp (F.map (CategoryTheory.Limits.biproduct.matrix u)) (F.mapBiproduct b).hom =
+    CategoryTheory.CategoryStruct.comp (F.mapBiproduct a).hom
+      (CategoryTheory.Limits.biproduct.matrix fun i j => F.map (u i j))
+'LinearStudy.additiveFunctorBiproductMatrixNaturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCechHomologyFunctor : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [LinearOrder σ] →
+        ℕ →
+          CategoryTheory.Functor (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).Modules
+            (ModuleCat ↑(MvPolynomial.coordinateCanonicalBaseRing K))
+'MvPolynomial.coordinateNativeCechHomologyFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCechHomologyFunctor_additive : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : LinearOrder σ] (n : ℕ), (MvPolynomial.coordinateNativeCechHomologyFunctor n).Additive
+'MvPolynomial.coordinateNativeCechHomologyFunctor_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCechHomologyFunctor_obj : ∀ {K : Type} [inst : Field K] {σ : Type} [Fintype σ]
+  [inst_2 : LinearOrder σ] (n : ℕ) (k : ℤ),
+  (MvPolynomial.coordinateNativeCechHomologyFunctor n).obj (MvPolynomial.coordinateNativeIntegerTwist k) =
+    HomologicalComplex.homology
+      (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+        (MvPolynomial.coordinateNativeIntegerTwist k) MvPolynomial.coordinateOpenCover)
+      (n + 1)
+'MvPolynomial.coordinateNativeCechHomologyFunctor_obj' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeCechHomologyFunctor_matrix : ∀ {K : Type} [inst : Field K] {σ : Type} [Fintype σ]
+  [inst_2 : LinearOrder σ] {I J : Type} [inst_3 : Finite I] [inst_4 : Finite J] (n : ℕ)
+  {a : I → (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).Modules}
+  {b : J → (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).Modules}
+  (u : (i : I) → (j : J) → a i ⟶ b j),
+  CategoryTheory.CategoryStruct.comp
+      ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map (CategoryTheory.Limits.biproduct.matrix u))
+      ((MvPolynomial.coordinateNativeCechHomologyFunctor n).mapBiproduct b).hom =
+    CategoryTheory.CategoryStruct.comp ((MvPolynomial.coordinateNativeCechHomologyFunctor n).mapBiproduct a).hom
+      (CategoryTheory.Limits.biproduct.matrix fun i j =>
+        (MvPolynomial.coordinateNativeCechHomologyFunctor n).map (u i j))
+'MvPolynomial.coordinateNativeCechHomologyFunctor_matrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeFiniteTwistTopHomologyDualIso : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          {I : Type} →
+            [inst_3 : Finite I] →
+              (m : I → ℕ) →
+                (n : ℕ) →
+                  Fintype.card σ = n + 2 →
+                    ((MvPolynomial.coordinateNativeCechHomologyFunctor n).obj
+                        (⨁ fun i => MvPolynomial.coordinateNativeIntegerTwist (-↑(m i) - ↑(Fintype.card σ))) ≅
+                      ⨁ fun i =>
+                        ↧(Module.Dual ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+                            ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K))
+                                (m i))))
+'MvPolynomial.coordinateNativeFiniteTwistTopHomologyDualIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeSheafDegreeCast : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      {d d' : ℤ} → d = d' → (MvPolynomial.coordinateNativeIntegerTwist d ⟶ MvPolynomial.coordinateNativeIntegerTwist d')
+'MvPolynomial.coordinateNativeSheafDegreeCast' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeSheafDegreeCast_cech : ∀ {K : Type} [inst : Field K] {σ : Type} [Fintype σ]
+  [inst_2 : LinearOrder σ] {d d' : ℤ} (h : d = d'),
+  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor MvPolynomial.homogeneousProjπ
+          MvPolynomial.coordinateOpenCover).map
+      (MvPolynomial.coordinateNativeSheafDegreeCast h) =
+    MvPolynomial.coordinateNativeComplexDegreeCast h
+'MvPolynomial.coordinateNativeSheafDegreeCast_cech' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeComplementaryPolynomialSheafMap : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          (l m : ℕ) →
+            ↥(MvPolynomial.homogeneousSubmodule σ K l) →
+              (MvPolynomial.coordinateNativeIntegerTwist (-↑(l + m) - ↑(Fintype.card σ)) ⟶
+                MvPolynomial.coordinateNativeIntegerTwist (-↑m - ↑(Fintype.card σ)))
+'MvPolynomial.coordinateNativeComplementaryPolynomialSheafMap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeComplementaryPolynomialSheafMap_cech : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ K l)),
+  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor MvPolynomial.homogeneousProjπ
+          MvPolynomial.coordinateOpenCover).map
+      (MvPolynomial.coordinateNativeComplementaryPolynomialSheafMap l m p) =
+    MvPolynomial.coordinateNativeComplementaryPolynomialComplexMap l m p
+'MvPolynomial.coordinateNativeComplementaryPolynomialSheafMap_cech' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeComplementaryPolynomialSheafMap_top_duality : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (l m n : ℕ) (hc : Fintype.card σ = n + 2)
+  (p : ↥(MvPolynomial.homogeneousSubmodule σ K l)),
+  CategoryTheory.CategoryStruct.comp
+      ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+        (MvPolynomial.coordinateNativeComplementaryPolynomialSheafMap l m p))
+      (MvPolynomial.coordinateNativeGeneralTopHomologyDualIso m n hc).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeGeneralTopHomologyDualIso (l + m) n hc).hom
+      (ModuleCat.ofHom
+        (MvPolynomial.projectiveHomogeneousMultiplyDual l m
+          ((MvPolynomial.projectiveHomogeneousCoefficientMap
+              (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).commRingCatIsoToRingEquiv.symm.toRingHom l)
+            p)))
+'MvPolynomial.coordinateNativeComplementaryPolynomialSheafMap_top_duality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeDegreePolynomialSheafMap : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          (a b l : ℕ) →
+            a = l + b →
+              ↥(MvPolynomial.homogeneousSubmodule σ K l) →
+                (MvPolynomial.coordinateNativeIntegerTwist (-↑a - ↑(Fintype.card σ)) ⟶
+                  MvPolynomial.coordinateNativeIntegerTwist (-↑b - ↑(Fintype.card σ)))
+'MvPolynomial.coordinateNativeDegreePolynomialSheafMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousDegreeMultiplyDual : {σ B : Type} →
+  [inst : CommRing B] →
+    (a b l : ℕ) →
+      a = l + b →
+        ↥(MvPolynomial.homogeneousSubmodule σ B l) →
+          (↧(Module.Dual B ↥(MvPolynomial.homogeneousSubmodule σ B a)) ⟶
+            ↧(Module.Dual B ↥(MvPolynomial.homogeneousSubmodule σ B b)))
+'MvPolynomial.projectiveHomogeneousDegreeMultiplyDual' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeDegreePolynomialSheafMap_top_duality : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (a b l n : ℕ) (hc : Fintype.card σ = n + 2) (h : a = l + b)
+  (p : ↥(MvPolynomial.homogeneousSubmodule σ K l)),
+  CategoryTheory.CategoryStruct.comp
+      ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+        (MvPolynomial.coordinateNativeDegreePolynomialSheafMap a b l h p))
+      (MvPolynomial.coordinateNativeGeneralTopHomologyDualIso b n hc).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeGeneralTopHomologyDualIso a n hc).hom
+      (MvPolynomial.projectiveHomogeneousDegreeMultiplyDual a b l h
+        ((MvPolynomial.projectiveHomogeneousCoefficientMap
+            (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).commRingCatIsoToRingEquiv.symm.toRingHom l)
+          p))
+'MvPolynomial.coordinateNativeDegreePolynomialSheafMap_top_duality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeGradedPolynomialEntry : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          (a b : ℕ) →
+            ↥(MvPolynomial.homogeneousSubmodule σ K (a - b)) →
+              (MvPolynomial.coordinateNativeIntegerTwist (-↑a - ↑(Fintype.card σ)) ⟶
+                MvPolynomial.coordinateNativeIntegerTwist (-↑b - ↑(Fintype.card σ)))
+'MvPolynomial.coordinateNativeGradedPolynomialEntry' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry : {σ B : Type} →
+  [inst : CommRing B] →
+    (a b : ℕ) →
+      ↥(MvPolynomial.homogeneousSubmodule σ B (a - b)) →
+        (↧(Module.Dual B ↥(MvPolynomial.homogeneousSubmodule σ B a)) ⟶
+          ↧(Module.Dual B ↥(MvPolynomial.homogeneousSubmodule σ B b)))
+'MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeGradedPolynomialEntry_of_lt : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (a b : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ K (a - b))),
+  a < b → MvPolynomial.coordinateNativeGradedPolynomialEntry a b p = 0
+'MvPolynomial.coordinateNativeGradedPolynomialEntry_of_lt' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry_of_lt : ∀ {σ B : Type} [inst : CommRing B] (a b : ℕ)
+  (p : ↥(MvPolynomial.homogeneousSubmodule σ B (a - b))),
+  a < b → MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry a b p = 0
+'MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry_of_lt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeGradedPolynomialEntry_top_duality : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] (a b n : ℕ) (hc : Fintype.card σ = n + 2)
+  (p : ↥(MvPolynomial.homogeneousSubmodule σ K (a - b))),
+  CategoryTheory.CategoryStruct.comp
+      ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+        (MvPolynomial.coordinateNativeGradedPolynomialEntry a b p))
+      (MvPolynomial.coordinateNativeGeneralTopHomologyDualIso b n hc).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeGeneralTopHomologyDualIso a n hc).hom
+      (MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry a b
+        ((MvPolynomial.projectiveHomogeneousCoefficientMap
+            (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).commRingCatIsoToRingEquiv.symm.toRingHom (a - b))
+          p))
+'MvPolynomial.coordinateNativeGradedPolynomialEntry_top_duality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeGradedPolynomialMatrix : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          {I J : Type} →
+            [inst_3 : Finite I] →
+              [inst_4 : Finite J] →
+                (a : I → ℕ) →
+                  (b : J → ℕ) →
+                    ((i : I) → (j : J) → ↥(MvPolynomial.homogeneousSubmodule σ K (a i - b j))) →
+                      ((⨁ fun i => MvPolynomial.coordinateNativeIntegerTwist (-↑(a i) - ↑(Fintype.card σ))) ⟶
+                        ⨁ fun j => MvPolynomial.coordinateNativeIntegerTwist (-↑(b j) - ↑(Fintype.card σ)))
+'MvPolynomial.coordinateNativeGradedPolynomialMatrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateCanonicalGradedPolynomialDualMatrix : {K : Type} →
+  [inst : Field K] →
+    {σ I J : Type} →
+      [inst_1 : Finite I] →
+        [inst_2 : Finite J] →
+          (a : I → ℕ) →
+            (b : J → ℕ) →
+              ((i : I) → (j : J) → ↥(MvPolynomial.homogeneousSubmodule σ K (a i - b j))) →
+                ((⨁ fun i =>
+                    ↧(Module.Dual ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+                        ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K)) (a i)))) ⟶
+                  ⨁ fun j =>
+                    ↧(Module.Dual ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+                        ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K)) (b j))))
+'MvPolynomial.coordinateCanonicalGradedPolynomialDualMatrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeGradedPolynomialMatrix_top_duality : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] {I J : Type} [inst_3 : Finite I] [inst_4 : Finite J] (a : I → ℕ)
+  (b : J → ℕ) (n : ℕ) (hc : Fintype.card σ = n + 2)
+  (p : (i : I) → (j : J) → ↥(MvPolynomial.homogeneousSubmodule σ K (a i - b j))),
+  CategoryTheory.CategoryStruct.comp
+      ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+        (MvPolynomial.coordinateNativeGradedPolynomialMatrix a b p))
+      (MvPolynomial.coordinateNativeFiniteTwistTopHomologyDualIso b n hc).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeFiniteTwistTopHomologyDualIso a n hc).hom
+      (MvPolynomial.coordinateCanonicalGradedPolynomialDualMatrix a b p)
+'MvPolynomial.coordinateNativeGradedPolynomialMatrix_top_duality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativePolynomialMatrixCokernelDualIso : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          {I J : Type} →
+            [inst_3 : Finite I] →
+              [inst_4 : Finite J] →
+                (a : I → ℕ) →
+                  (b : J → ℕ) →
+                    (n : ℕ) →
+                      Fintype.card σ = n + 2 →
+                        (p : (i : I) → (j : J) → ↥(MvPolynomial.homogeneousSubmodule σ K (a i - b j))) →
+                          CategoryTheory.Limits.cokernel
+                              ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+                                (MvPolynomial.coordinateNativeGradedPolynomialMatrix a b p)) ≅
+                            CategoryTheory.Limits.cokernel
+                              (MvPolynomial.coordinateCanonicalGradedPolynomialDualMatrix a b p)
+'MvPolynomial.coordinateNativePolynomialMatrixCokernelDualIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativePolynomialMatrixCokernelDualIso_quotient : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] {I J : Type} [inst_3 : Finite I] [inst_4 : Finite J] (a : I → ℕ)
+  (b : J → ℕ) (n : ℕ) (hc : Fintype.card σ = n + 2)
+  (p : (i : I) → (j : J) → ↥(MvPolynomial.homogeneousSubmodule σ K (a i - b j))),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π
+        ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+          (MvPolynomial.coordinateNativeGradedPolynomialMatrix a b p)))
+      (MvPolynomial.coordinateNativePolynomialMatrixCokernelDualIso a b n hc p).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeFiniteTwistTopHomologyDualIso b n hc).hom
+      (CategoryTheory.Limits.cokernel.π (MvPolynomial.coordinateCanonicalGradedPolynomialDualMatrix a b p))
+'MvPolynomial.coordinateNativePolynomialMatrixCokernelDualIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
