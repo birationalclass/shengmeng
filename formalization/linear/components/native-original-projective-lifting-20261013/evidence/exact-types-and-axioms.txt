@@ -1,0 +1,330 @@
+@LinearStudy.nativeProjectiveZeroChartSectionMap_injective : ∀ {K R M : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : Algebra K R] [inst_3 : AddCommGroup M] [inst_4 : Module R M] [inst_5 : Module K M] (𝒜 : ℕ → Submodule K R)
+  [inst_6 : GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (j : ℤ), ∀ a ∈ 𝒜 n, ∀ m ∈ 𝒟 j, a • m ∈ 𝒟 (↑n + j))
+  (d : ℕ) (ha : 0 ∈ 𝒜 d), Function.Injective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝒜 𝒟 hD d 0 ha)
+'LinearStudy.nativeProjectiveZeroChartSectionMap_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveChartDegreeZeroSectionMap_injective_all : ∀ {K R M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : Algebra K R] [inst_3 : AddCommGroup M] [inst_4 : Module R M] [inst_5 : Module K M]
+  (𝒜 : ℕ → Submodule K R) [inst_6 : GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (j : ℤ), ∀ a ∈ 𝒜 n, ∀ m ∈ 𝒟 j, a • m ∈ 𝒟 (↑n + j)) [IsDomain R] [Module.IsTorsionFree R M] (d : ℕ),
+  0 < d →
+    ∀ (a : R) (ha : a ∈ 𝒜 d), Function.Injective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝒜 𝒟 hD d a ha)
+'LinearStudy.nativeProjectiveChartDegreeZeroSectionMap_injective_all' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeBaseSourceWeightedChartSection_injective : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M] [inst_10 : Module S M]
+  [inst_11 : IsScalarTower R S M] [IsScalarTower K S M] (𝒜 : ℕ → Submodule K R) [inst_13 : GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [inst_14 : GradedAlgebra 𝓑] [inst_15 : SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) [IsDomain S] [Module.IsTorsionFree S M] (d : ℕ),
+  0 < d →
+    ∀ (a : R) (ha : a ∈ 𝒜 d), Function.Injective (LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 hR hS d a ha)
+'LinearStudy.nativeBaseSourceWeightedChartSection_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeBaseSourceWeightedChartSection_bijective : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M] [inst_10 : Module S M]
+  [inst_11 : IsScalarTower R S M] [IsScalarTower K S M] (𝒜 : ℕ → Submodule K R) [inst_13 : GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [inst_14 : GradedAlgebra 𝓑] [inst_15 : SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) [IsDomain S] [Module.IsTorsionFree S M]
+  [DirectSum.Decomposition 𝒟] [IsNoetherianRing S] [Module.Finite S M] {ι : Type u_1} (coords : ι → S),
+  (∀ (i : ι), coords i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range coords) = ⊤ →
+      ∀ (a : R) (ha : a ∈ 𝒜 1), Function.Bijective (LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 hR hS 1 a ha)
+'LinearStudy.nativeBaseSourceWeightedChartSection_bijective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeGradedModuleWeightedOverlapTo : {K R M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : Algebra K R] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module R M] →
+              (𝒜 : ℕ → Submodule K R) →
+                [inst_6 : GradedAlgebra 𝒜] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) →
+                      (d e : ℕ) →
+                        (a b c : R) →
+                          a ∈ 𝒜 d →
+                            b ∈ 𝒜 e →
+                              c = a * b →
+                                ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a) →
+                                  ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 (d + e) c)
+'LinearStudy.nativeGradedModuleWeightedOverlapTo' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveChartDegreeZeroSectionMap_overlap_to : ∀ {K R M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : Algebra K R] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module R M]
+  (𝒜 : ℕ → Submodule K R) [inst_6 : GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (d e : ℕ) (a b c : R) (ha : a ∈ 𝒜 d) (hb : b ∈ 𝒜 e)
+  (hc : c = a * b) (x : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a)),
+  (CategoryTheory.ConcreteCategory.hom
+        ((LinearStudy.nativeProjectiveModulePresheaf 𝒜 𝒟 hR 0).map (CategoryTheory.homOfLE ⋯).op))
+      ((LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝒜 𝒟 hR d a ha) x) =
+    (LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝒜 𝒟 hR (d + e) c ⋯)
+      (LinearStudy.nativeGradedModuleWeightedOverlapTo 𝒜 𝒟 hR d e a b c ha hb hc x)
+'LinearStudy.nativeProjectiveChartDegreeZeroSectionMap_overlap_to' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeBaseSourceWeightedChartSection_overlap_to : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M] [inst_10 : Module S M]
+  [inst_11 : IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [inst_12 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_13 : GradedAlgebra 𝓑] [inst_14 : SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (d e : ℕ) (a b c : R) (ha : a ∈ 𝒜 d) (hb : b ∈ 𝒜 e)
+  (hc : c = a * b) (x : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a)),
+  (CategoryTheory.ConcreteCategory.hom
+        ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hS 0).map (CategoryTheory.homOfLE ⋯).op))
+      (LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 hR hS d a ha x) =
+    LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 hR hS (d + e) c ⋯
+      (LinearStudy.nativeGradedModuleWeightedOverlapTo 𝒜 𝒟 hR d e a b c ha hb hc x)
+'LinearStudy.nativeBaseSourceWeightedChartSection_overlap_to' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeBaseSourceChartSection_overlap_agrees : ∀ {K R S M : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S] [IsScalarTower K R S]
+  [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M] [inst_10 : Module S M]
+  [inst_11 : IsScalarTower R S M] [IsScalarTower K S M] (𝒜 : ℕ → Submodule K R) [inst_13 : GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [inst_14 : GradedAlgebra 𝓑] [inst_15 : SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) [IsDomain S] [Module.IsTorsionFree S M] (a b : R)
+  (ha : a ∈ 𝒜 1) (hb : b ∈ 𝒜 1) (x : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 1 a))
+  (y : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 1 b))
+  (s : ↑((LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hS 0).presheaf.obj (Opposite.op ⊤))),
+  LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 hR hS 1 a ha x =
+      (CategoryTheory.ConcreteCategory.hom
+          ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hS 0).map (CategoryTheory.homOfLE ⋯).op))
+        s →
+    LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 hR hS 1 b hb y =
+        (CategoryTheory.ConcreteCategory.hom
+            ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hS 0).map (CategoryTheory.homOfLE ⋯).op))
+          s →
+      (CategoryTheory.ConcreteCategory.hom
+            ((LinearStudy.nativeProjectiveModulePresheaf 𝒜 𝒟 hR 0).map (CategoryTheory.homOfLE ⋯).op))
+          ((LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝒜 𝒟 hR 1 a ha) x) =
+        (CategoryTheory.ConcreteCategory.hom
+            ((LinearStudy.nativeProjectiveModulePresheaf 𝒜 𝒟 hR 0).map (CategoryTheory.homOfLE ⋯).op))
+          ((LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝒜 𝒟 hR 1 b hb) y)
+'LinearStudy.nativeBaseSourceChartSection_overlap_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeBaseSourceGlobalSection_exists_lift : ∀ {K R S M : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S] [IsScalarTower K R S]
+  [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M] [inst_10 : Module S M]
+  [inst_11 : IsScalarTower R S M] [IsScalarTower K S M] (𝒜 : ℕ → Submodule K R) [inst_13 : GradedAlgebra 𝒜]
+  (𝓑 : ℕ → Submodule K S) [inst_14 : GradedAlgebra 𝓑] [inst_15 : SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M)
+  [DirectSum.Decomposition 𝒟] (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) [IsDomain S] [Module.IsTorsionFree S M]
+  [IsNoetherianRing S] [Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ 𝒜 1),
+  ⊤ ≤ ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝒜 (a i) →
+    Algebra.adjoin K (Set.range fun i => (algebraMap R S) (a i)) = ⊤ →
+      ∀ (s : ↑((LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hS 0).presheaf.obj (Opposite.op ⊤))),
+        ∃ x t,
+          ∀ (i : ι),
+            (CategoryTheory.ConcreteCategory.hom
+                    ((LinearStudy.nativeProjectiveModulePresheaf 𝒜 𝒟 hR 0).map (CategoryTheory.homOfLE ⋯).op))
+                  t =
+                (LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝒜 𝒟 hR 1 (a i) ⋯) (x i) ∧
+              LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 hR hS 1 (a i) ⋯ (x i) =
+                (CategoryTheory.ConcreteCategory.hom
+                    ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hS 0).map (CategoryTheory.homOfLE ⋯).op))
+                  s
+'LinearStudy.nativeBaseSourceGlobalSection_exists_lift' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalLocalizedModuleRefinement_injective_source_torsionFree : ∀ {R S M : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : Algebra R S] [inst_3 : AddCommGroup M] [inst_4 : Module R M] [inst_5 : Module S M]
+  [IsScalarTower R S M] [IsDomain S] [Module.IsTorsionFree S M] (P T : Submonoid R) (hPT : P ≤ T),
+  (∀ t ∈ T, (algebraMap R S) t ≠ 0) → Function.Injective ⇑(LinearStudy.originalLocalizedModuleRefinement P T hPT)
+'LinearStudy.originalLocalizedModuleRefinement_injective_source_torsionFree' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.baseSourceAway_subsingleton_of_image_zero : ∀ {R S M : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] [inst_3 : AddCommGroup M] [inst_4 : Module R M] [inst_5 : Module S M] [IsScalarTower R S M]
+  (a : R), (algebraMap R S) a = 0 → Subsingleton (LocalizedModule (Submonoid.powers a) M)
+'LinearStudy.baseSourceAway_subsingleton_of_image_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeBaseSourceGenericBaseChartPoint : {K R S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              (𝒜 : ℕ → Submodule K R) →
+                [inst_6 : GradedAlgebra 𝒜] →
+                  (𝓑 : ℕ → Submodule K S) →
+                    [GradedAlgebra 𝓑] →
+                      [SetLike.GradedSMul 𝒜 𝓑] →
+                        [IsDomain S] →
+                          (d : ℕ) →
+                            0 < d → (a : R) → a ∈ 𝒜 d → (algebraMap R S) a ≠ 0 → ↥(ProjectiveSpectrum.basicOpen 𝒜 a)
+'LinearStudy.nativeBaseSourceGenericBaseChartPoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeBaseSourceBaseChartDegreeZeroSectionMap_injective : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M] [inst_10 : Module S M]
+  [IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [inst_12 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
+  [SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))
+  [IsDomain S] [Module.IsTorsionFree S M] (d : ℕ),
+  0 < d →
+    ∀ (a : R) (ha : a ∈ 𝒜 d), Function.Injective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝒜 𝒟 hR d a ha)
+'LinearStudy.nativeBaseSourceBaseChartDegreeZeroSectionMap_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeHomogeneousZeroChartElement : {K R M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : Algebra K R] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module R M] →
+              (𝒜 : ℕ → Submodule K R) →
+                [inst_6 : GradedAlgebra 𝒜] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (d : ℕ) → (a : R) → ↥(𝒟 0) → ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 d a)
+'LinearStudy.nativeHomogeneousZeroChartElement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeHomogeneousZeroChartElement_section : ∀ {K R M : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : Algebra K R] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module R M] (𝒜 : ℕ → Submodule K R)
+  [inst_6 : GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))
+  (d : ℕ) (a : R) (ha : a ∈ 𝒜 d) (ell : ↥(𝒟 0)),
+  (LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝒜 𝒟 hR d a ha)
+      (LinearStudy.nativeHomogeneousZeroChartElement 𝒜 𝒟 d a ell) =
+    (CategoryTheory.ConcreteCategory.hom
+        ((LinearStudy.nativeProjectiveModulePresheaf 𝒜 𝒟 hR 0).map (CategoryTheory.homOfLE ⋯).op))
+      (LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝒜 𝒟 hR 0 ell)
+'LinearStudy.nativeHomogeneousZeroChartElement_section' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeHomogeneousZeroChartElement_source_section : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M] [inst_10 : Module S M]
+  [inst_11 : IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [inst_12 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_13 : GradedAlgebra 𝓑] [inst_14 : SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) (d : ℕ) (a : R) (ha : a ∈ 𝒜 d) (ell : ↥(𝒟 0)),
+  LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 hR hS d a ha
+      (LinearStudy.nativeHomogeneousZeroChartElement 𝒜 𝒟 d a ell) =
+    (CategoryTheory.ConcreteCategory.hom
+        ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hS 0).map (CategoryTheory.homOfLE ⋯).op))
+      (LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝓑 𝒟 hS 0 ell)
+'LinearStudy.nativeHomogeneousZeroChartElement_source_section' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeHomogeneousGlobalSection_regrading : ∀ {K R M : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : Algebra K R] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module R M] (𝒜 : ℕ → Submodule K R)
+  [inst_6 : GradedAlgebra 𝒜] (𝒟 : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))
+  (k : ℤ) (ell : ↥(LinearStudy.integerGradingShift 𝒟 k 0)),
+  (LinearStudy.nativeProjectiveTwistRegradingSectionEquiv 𝒜 𝒟 hR k (Opposite.op ⊤))
+      (LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝒜 (LinearStudy.integerGradingShift 𝒟 k) ⋯ 0 ell) =
+    LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝒜 𝒟 hR k ⟨↑ell, ⋯⟩
+'LinearStudy.nativeHomogeneousGlobalSection_regrading' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeBaseSourceGlobalSection_homogeneous_fraction : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M] [inst_10 : Module S M]
+  [inst_11 : IsScalarTower R S M] (𝒜 : ℕ → Submodule K R) [inst_12 : GradedAlgebra 𝒜] (𝓑 : ℕ → Submodule K S)
+  [inst_13 : GradedAlgebra 𝓑] [inst_14 : SetLike.GradedSMul 𝒜 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝒜 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ b ∈ 𝓑 n, ∀ m ∈ 𝒟 j, b • m ∈ 𝒟 (↑n + j)) [IsDomain S] [Module.IsTorsionFree S M]
+  {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ 𝒜 1),
+  Algebra.adjoin K (Set.range fun i => (algebraMap R S) (a i)) = ⊤ →
+    ∀ (x : (i : ι) → ↥(LinearStudy.nativeGradedModuleAwayDegreeZero 𝒜 𝒟 1 (a i)))
+      (t : ↑((LinearStudy.nativeProjectiveModuleSheaf 𝒜 𝒟 hR 0).presheaf.obj (Opposite.op ⊤)))
+      (s : ↑((LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hS 0).presheaf.obj (Opposite.op ⊤))),
+      (∀ (i : ι),
+          (CategoryTheory.ConcreteCategory.hom
+                  ((LinearStudy.nativeProjectiveModulePresheaf 𝒜 𝒟 hR 0).map (CategoryTheory.homOfLE ⋯).op))
+                t =
+              (LinearStudy.nativeProjectiveChartDegreeZeroSectionMap 𝒜 𝒟 hR 1 (a i) ⋯) (x i) ∧
+            LinearStudy.nativeBaseSourceWeightedChartSection 𝒜 𝓑 𝒟 hR hS 1 (a i) ⋯ (x i) =
+              (CategoryTheory.ConcreteCategory.hom
+                  ((LinearStudy.nativeProjectiveModulePresheaf 𝓑 𝒟 hS 0).map (CategoryTheory.homOfLE ⋯).op))
+                s) →
+        ∀ (ell : ↥(𝒟 0)),
+          t = LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝒜 𝒟 hR 0 ell →
+            s = LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝓑 𝒟 hS 0 ell
+'LinearStudy.nativeBaseSourceGlobalSection_homogeneous_fraction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.homogeneousQuotientBaseGradedSMul : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  (I : Ideal (MvPolynomial σ K)),
+  SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) (LinearStudy.homogeneousQuotientPiece I)
+'LinearStudy.homogeneousQuotientBaseGradedSMul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousQuotient_coordinate_adjoin_eq_top : ∀ {K : Type u_1} [inst : Field K] {σ : Type}
+  (I : Ideal (MvPolynomial σ K)),
+  Algebra.adjoin K (Set.range fun i => (Ideal.Quotient.mk I) (MvPolynomial.X i.down)) = ⊤
+'LinearStudy.homogeneousQuotient_coordinate_adjoin_eq_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.quotientProjHomogeneousPolynomialSection : {K : Type u_1} →
+  [inst : Field K] →
+    {σ : Type} →
+      (I : Ideal (MvPolynomial σ K)) →
+        (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) →
+          (N : ℕ) →
+            ↥(MvPolynomial.homogeneousSubmodule σ K N) →
+              ↑((LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece I)
+                        (LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece I)) ⋯
+                        ↑N).presheaf.obj
+                  (Opposite.op ⊤))
+'LinearStudy.quotientProjHomogeneousPolynomialSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousPrimeQuotient_eventually_actual_polynomial_sections : ∀ {K : Type u_1} [inst : Field K]
+  {σ : Type} [Fintype σ] [LinearOrder σ] (I : Ideal (MvPolynomial σ K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) [I.IsPrime] (j : σ),
+  ∃ n₀, ∀ (N : ℕ), n₀ ≤ N → Function.Surjective (LinearStudy.quotientProjHomogeneousPolynomialSection I hI N)
+'LinearStudy.homogeneousPrimeQuotient_eventually_actual_polynomial_sections' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalProjectivePolynomial_eventually_sections_lift : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n),
+  let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  ∃ n₀,
+    ∀ (N : ℕ),
+      n₀ ≤ N →
+        ∀
+          (s :
+            ↑((LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+                      ↑N).presheaf.obj
+                (Opposite.op ⊤))),
+          ∃ Q, ∃ (hQ : MvPolynomial.IsHomogeneous Q N), LinearStudy.originalProjectivePolynomialSection V N Q hQ = s
+'LinearStudy.originalProjectivePolynomial_eventually_sections_lift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalProjectivePolynomial_eventually_nonzero_after_mono : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n),
+  let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  let T := fun N => LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯ ↑N;
+  ∃ n₀,
+    ∀ (N : ℕ),
+      n₀ ≤ N →
+        ∀ (F : (AlgebraicGeometry.Proj B).Modules) (j : F ⟶ T N),
+          CategoryTheory.Mono j →
+            ∀ (s : ↑(F.presheaf.obj (Opposite.op ⊤))),
+              s ≠ 0 →
+                ∃ Q,
+                  ∃ (hQ : MvPolynomial.IsHomogeneous Q N),
+                    LinearStudy.originalProjectivePolynomialSection V N Q hQ =
+                        (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j ⊤)) s ∧
+                      Q ∉ V.ideal.toIdeal
+'LinearStudy.originalProjectivePolynomial_eventually_nonzero_after_mono' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleHomSections_existsUnique_gluing : ∀ {X : AlgebraicGeometry.Scheme} (M N : X.Modules)
+  {ι : Type u_2} (U : ι → X.Opens) (V : X.Opens) (iUV : (i : ι) → U i ⟶ V),
+  V ≤ iSup U →
+    ∀ (sigma : (i : ι) → ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj (Opposite.op (U i)))),
+      (∀ (i j : ι),
+          (CategoryTheory.ConcreteCategory.hom
+                ((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.map
+                  (TopologicalSpace.Opens.infLELeft (U i) (U j)).op))
+              (sigma i) =
+            (CategoryTheory.ConcreteCategory.hom
+                ((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.map
+                  (TopologicalSpace.Opens.infLERight (U i) (U j)).op))
+              (sigma j)) →
+        ∃! s,
+          ∀ (i : ι),
+            (CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.map (iUV i).op))
+                s =
+              sigma i
+'LinearStudy.schemeModuleHomSections_existsUnique_gluing' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSections_infRestrictionEq_of_originalEqualOpen : ∀ {X : AlgebraicGeometry.Scheme}
+  (G : X.Modules) (U V W : X.Opens),
+  W = U ⊓ V →
+    ∀ (hl : W ≤ U) (hr : W ≤ V) (s : ↑(G.presheaf.obj (Opposite.op U))) (t : ↑(G.presheaf.obj (Opposite.op V))),
+      (CategoryTheory.ConcreteCategory.hom (G.presheaf.map (CategoryTheory.homOfLE hl).op)) s =
+          (CategoryTheory.ConcreteCategory.hom (G.presheaf.map (CategoryTheory.homOfLE hr).op)) t →
+        (CategoryTheory.ConcreteCategory.hom (G.presheaf.map (TopologicalSpace.Opens.infLELeft U V).op)) s =
+          (CategoryTheory.ConcreteCategory.hom (G.presheaf.map (TopologicalSpace.Opens.infLERight U V).op)) t
+'LinearStudy.schemeModuleSections_infRestrictionEq_of_originalEqualOpen' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
