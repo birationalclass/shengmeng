@@ -1,0 +1,754 @@
+@CategoryTheory.Limits.FormalCoproduct.evalOp_additive : ∀ {C : Type u_4} [inst : CategoryTheory.Category.{u_1, u_4} C]
+  {A : Type u_5} [inst_1 : CategoryTheory.Category.{u_3, u_5} A] [inst_2 : CategoryTheory.Preadditive A]
+  [inst_3 : CategoryTheory.Limits.HasProducts A], (CategoryTheory.Limits.FormalCoproduct.evalOp C A).Additive
+'CategoryTheory.Limits.FormalCoproduct.evalOp_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Hom.preimage_cechIntersection : ∀ {X Y : AlgebraicGeometry.Scheme} (g : Y ⟶ X) {ι : Type u_1}
+  (U : ι → X.Opens) (n : ℕ) (i : Fin (n + 1) → ι),
+  (TopologicalSpace.Opens.map g.base).obj (∏ᶜ fun k => U (i k)) =
+    ∏ᶜ fun k => (TopologicalSpace.Opens.map g.base).obj (U (i k))
+'AlgebraicGeometry.Scheme.Hom.preimage_cechIntersection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseModulePresheaf : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) → X.Modules → CategoryTheory.Functor X.Opensᵒᵖ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤)))
+'AlgebraicGeometry.Scheme.Modules.baseModulePresheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_obj_coe : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) (V : X.Opensᵒᵖ),
+  ↑((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M).obj V) = ↑(M.presheaf.obj V)
+'AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_obj_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_map_apply : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) {V W : X.Opensᵒᵖ} (f : V ⟶ W) (x : ↑(M.presheaf.obj V)),
+  (ModuleCat.Hom.hom ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M).map f)) x =
+    (CategoryTheory.ConcreteCategory.hom (M.presheaf.map f)) x
+'AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_map_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_isSheaf : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules),
+  CategoryTheory.Presheaf.IsSheaf (Opens.grothendieckTopology ↥X)
+    (AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M)
+'AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_isSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseModuleSheaf : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) →
+    X.Modules → CategoryTheory.Sheaf (Opens.grothendieckTopology ↥X) (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤)))
+'AlgebraicGeometry.Scheme.Modules.baseModuleSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseModuleSheaf_obj_coe : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) (V : X.Opensᵒᵖ),
+  ↑((AlgebraicGeometry.Scheme.Modules.baseModuleSheaf π M).obj.obj V) = ↑(M.presheaf.obj V)
+'AlgebraicGeometry.Scheme.Modules.baseModuleSheaf_obj_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseModuleSheaf_map_apply : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) {V W : X.Opensᵒᵖ} (f : V ⟶ W) (x : ↑(M.presheaf.obj V)),
+  (ModuleCat.Hom.hom ((AlgebraicGeometry.Scheme.Modules.baseModuleSheaf π M).obj.map f)) x =
+    (CategoryTheory.ConcreteCategory.hom (M.presheaf.map f)) x
+'AlgebraicGeometry.Scheme.Modules.baseModuleSheaf_map_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) →
+    CategoryTheory.Functor X.Modules (CategoryTheory.Functor X.Opensᵒᵖ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))))
+'AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_obj : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules),
+  (AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor π).obj M =
+    AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M
+'AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_obj' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_preservesZeroMorphisms : ∀ {X S : AlgebraicGeometry.Scheme}
+  (π : X ⟶ S), (AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor π).PreservesZeroMorphisms
+'AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_preservesZeroMorphisms' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_additive : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S),
+  (AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor π).Additive
+'AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_additive' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseCechComplex : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) → X.Modules → {ι : Type u_1} → (ι → X.Opens) → CochainComplex (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) ℕ
+'AlgebraicGeometry.Scheme.Modules.baseCechComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) →
+    {ι : Type u_1} →
+      (ι → X.Opens) → CategoryTheory.Functor X.Modules (CochainComplex (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) ℕ)
+'AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor_obj : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  {ι : Type u_1} (U : ι → X.Opens) (M : X.Modules),
+  (AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor π U).obj M =
+    AlgebraicGeometry.Scheme.Modules.baseCechComplex π M U
+'AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor_obj' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.moduleCatCechComplexFunctor_preservesZeroMorphisms : ∀ {X : AlgebraicGeometry.Scheme}
+  {R : Type u_1} [inst : CommRing R] {ι : Type u_1} (U : ι → X.Opens),
+  (CategoryTheory.cechComplexFunctor U).PreservesZeroMorphisms
+'AlgebraicGeometry.Scheme.Modules.moduleCatCechComplexFunctor_preservesZeroMorphisms' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor_preservesZeroMorphisms : ∀ {X S : AlgebraicGeometry.Scheme}
+  (π : X ⟶ S) {ι : Type u_1} (U : ι → X.Opens),
+  (AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor π U).PreservesZeroMorphisms
+'AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor_preservesZeroMorphisms' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseCechFactor : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) →
+    X.Modules →
+      {ι : Type u_1} → (ι → X.Opens) → (n : ℕ) → (Fin (n + 1) → ι) → ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))
+'AlgebraicGeometry.Scheme.Modules.baseCechFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.baseCechXIsoPi : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    (M : X.Modules) →
+      {ι : Type u_1} →
+        (U : ι → X.Opens) →
+          (n : ℕ) →
+            (AlgebraicGeometry.Scheme.Modules.baseCechComplex π M U).X n ≅
+              ↧((i : Fin (n + 1) → ι) → ↑(AlgebraicGeometry.Scheme.Modules.baseCechFactor π M U n i))
+'AlgebraicGeometry.Scheme.Modules.baseCechXIsoPi' depends on axioms: [propext, Classical.choice, Quot.sound]
+AlgebraicGeometry.Scheme.Modules.OrderedCechIndex : (ι : Type u_1) → [Preorder ι] → ℕ → Type u_1
+'AlgebraicGeometry.Scheme.Modules.OrderedCechIndex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.OrderedCechIndex.delete : {ι : Type u_1} →
+  [inst : Preorder ι] →
+    {n : ℕ} →
+      AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι (n + 1) →
+        Fin (n + 2) → AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι n
+'AlgebraicGeometry.Scheme.Modules.OrderedCechIndex.delete' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.OrderedCechIndex.delete_delete : ∀ {ι : Type u_1} [inst : Preorder ι] {n : ℕ}
+  (k : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι (n + 1 + 1)) {i j : Fin (n + 2)},
+  i ≤ j → (k.delete j.succ).delete i = (k.delete i.castSucc).delete j
+'AlgebraicGeometry.Scheme.Modules.OrderedCechIndex.delete_delete' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+AlgebraicGeometry.Scheme.Modules.isEmpty_orderedCechIndex_of_card_le : ∀ (ι : Type u_1) [inst : Fintype ι]
+  [inst_1 : Preorder ι] (n : ℕ), Fintype.card ι ≤ n → IsEmpty (AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι n)
+'AlgebraicGeometry.Scheme.Modules.isEmpty_orderedCechIndex_of_card_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedCechFormalObject : {X : AlgebraicGeometry.Scheme} →
+  {ι : Type u_1} → [LinearOrder ι] → (ι → X.Opens) → ℕ → CategoryTheory.Limits.FormalCoproduct X.Opens
+'AlgebraicGeometry.Scheme.Modules.orderedCechFormalObject' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedCechFace : {X : AlgebraicGeometry.Scheme} →
+  {ι : Type u_1} →
+    [inst : LinearOrder ι] →
+      (U : ι → X.Opens) →
+        (n : ℕ) →
+          Fin (n + 2) →
+            (AlgebraicGeometry.Scheme.Modules.orderedCechFormalObject U (n + 1) ⟶
+              AlgebraicGeometry.Scheme.Modules.orderedCechFormalObject U n)
+'AlgebraicGeometry.Scheme.Modules.orderedCechFace' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedCechFace_comp : ∀ {X : AlgebraicGeometry.Scheme} {ι : Type u_1}
+  [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ) {i j : Fin (n + 2)},
+  i ≤ j →
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedCechFace U (n + 1) j.succ)
+        (AlgebraicGeometry.Scheme.Modules.orderedCechFace U n i) =
+      CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedCechFace U (n + 1) i.castSucc)
+        (AlgebraicGeometry.Scheme.Modules.orderedCechFace U n j)
+'AlgebraicGeometry.Scheme.Modules.orderedCechFace_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechTerm : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) → X.Modules → {ι : Type u_1} → [LinearOrder ι] → (ι → X.Opens) → ℕ → Type u_1
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechTerm' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) →
+    X.Modules → {ι : Type u_1} → [LinearOrder ι] → (ι → X.Opens) → ℕ → ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectIsoPi : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    (M : X.Modules) →
+      {ι : Type u_1} →
+        [inst : LinearOrder ι] →
+          (U : ι → X.Opens) →
+            (n : ℕ) →
+              AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U n ≅
+                ↧(AlgebraicGeometry.Scheme.Modules.orderedBaseCechTerm π M U n)
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectIsoPi' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    (M : X.Modules) →
+      {ι : Type u_1} →
+        [inst : LinearOrder ι] →
+          (U : ι → X.Opens) →
+            (n : ℕ) →
+              Fin (n + 2) →
+                (AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U n ⟶
+                  AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U (n + 1))
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp_π : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ) (k : Fin (n + 2))
+  (i : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι (n + 1)),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface π M U n k)
+      (CategoryTheory.Limits.Pi.π (fun j => AlgebraicGeometry.Scheme.Modules.baseCechFactor π M U (n + 1) ↑j) i) =
+    CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.Pi.π (fun j => AlgebraicGeometry.Scheme.Modules.baseCechFactor π M U n ↑j) (i.delete k))
+      ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M).map
+        (({ I := ι, obj := U }.mapPower (SimplexCategory.Hom.toOrderHom (SimplexCategory.δ k)).toFun).φ ↑i).op)
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp_π' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ) {i j : Fin (n + 2)},
+  i ≤ j →
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface π M U n i)
+        (AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface π M U (n + 1) j.succ) =
+      CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface π M U n j)
+        (AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface π M U (n + 1) i.castSucc)
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp' : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ) {i : Fin (n + 3)} {j : Fin (n + 2)}
+  (hij : i ≤ j.castSucc),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface π M U n (i.castLT ⋯))
+      (AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface π M U (n + 1) j.succ) =
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface π M U n j)
+      (AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface π M U (n + 1) i)
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp'' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    (M : X.Modules) →
+      {ι : Type u_1} →
+        [inst : LinearOrder ι] →
+          (U : ι → X.Opens) →
+            (n : ℕ) →
+              AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U n ⟶
+                AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U (n + 1)
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_comp_π : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ)
+  (i : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι (n + 1)),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential π M U n)
+      (CategoryTheory.Limits.Pi.π (fun j => AlgebraicGeometry.Scheme.Modules.baseCechFactor π M U (n + 1) ↑j) i) =
+    ∑ k,
+      (-1) ^ ↑k •
+        CategoryTheory.CategoryStruct.comp
+          (CategoryTheory.Limits.Pi.π (fun j => AlgebraicGeometry.Scheme.Modules.baseCechFactor π M U n ↑j)
+            (i.delete k))
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M).map
+            (({ I := ι, obj := U }.mapPower (SimplexCategory.Hom.toOrderHom (SimplexCategory.δ k)).toFun).φ ↑i).op)
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_comp_π' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_zero_comp_π_sub : ∀ {X S : AlgebraicGeometry.Scheme}
+  (π : X ⟶ S) (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens)
+  (i : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι 1),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential π M U 0)
+      (CategoryTheory.Limits.Pi.π (fun j => AlgebraicGeometry.Scheme.Modules.baseCechFactor π M U 1 ↑j) i) =
+    CategoryTheory.CategoryStruct.comp
+        (CategoryTheory.Limits.Pi.π (fun j => AlgebraicGeometry.Scheme.Modules.baseCechFactor π M U 0 ↑j) (i.delete 0))
+        ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M).map
+          (({ I := ι, obj := U }.mapPower (SimplexCategory.Hom.toOrderHom (SimplexCategory.δ 0)).toFun).φ ↑i).op) -
+      CategoryTheory.CategoryStruct.comp
+        (CategoryTheory.Limits.Pi.π (fun j => AlgebraicGeometry.Scheme.Modules.baseCechFactor π M U 0 ↑j) (i.delete 1))
+        ((AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M).map
+          (({ I := ι, obj := U }.mapPower (SimplexCategory.Hom.toOrderHom (SimplexCategory.δ 1)).toFun).φ ↑i).op)
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_zero_comp_π_sub' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_comp : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential π M U n)
+      (AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential π M U (n + 1)) =
+    0
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_comp' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) →
+    X.Modules →
+      {ι : Type u_1} → [LinearOrder ι] → (ι → X.Opens) → CochainComplex (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) ℕ
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_X : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ),
+  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U).X n =
+    AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U n
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_d : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ),
+  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U).d n (n + 1) =
+    AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential π M U n
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechLinearDifferential : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    (M : X.Modules) →
+      {ι : Type u_1} →
+        [inst : LinearOrder ι] →
+          (U : ι → X.Opens) →
+            (n : ℕ) →
+              ↑(AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U n) →ₗ[↑(S.presheaf.obj (Opposite.op ⊤))]
+                ↑(AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U (n + 1))
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechLinearDifferential' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechLinearDifferential_comp : ∀ {X S : AlgebraicGeometry.Scheme}
+  (π : X ⟶ S) (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ),
+  AlgebraicGeometry.Scheme.Modules.orderedBaseCechLinearDifferential π M U (n + 1) ∘ₗ
+      AlgebraicGeometry.Scheme.Modules.orderedBaseCechLinearDifferential π M U n =
+    0
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechLinearDifferential_comp' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechTerm_subsingleton_of_card_le : ∀ {X S : AlgebraicGeometry.Scheme}
+  (π : X ⟶ S) (M : X.Modules) {ι : Type u_1} [inst : Fintype ι] [inst_1 : LinearOrder ι] (U : ι → X.Opens) (n : ℕ),
+  Fintype.card ι ≤ n → Subsingleton (AlgebraicGeometry.Scheme.Modules.orderedBaseCechTerm π M U n)
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechTerm_subsingleton_of_card_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject_isZero_of_card_le : ∀ {X S : AlgebraicGeometry.Scheme}
+  (π : X ⟶ S) (M : X.Modules) {ι : Type u_1} [inst : Fintype ι] [inst_1 : LinearOrder ι] (U : ι → X.Opens) (n : ℕ),
+  Fintype.card ι ≤ n → CategoryTheory.Limits.IsZero (AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U n)
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject_isZero_of_card_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_exactAt_of_card_le : ∀ {X S : AlgebraicGeometry.Scheme}
+  (π : X ⟶ S) (M : X.Modules) {ι : Type u_1} [inst : Fintype ι] [inst_1 : LinearOrder ι] (U : ι → X.Opens) (n : ℕ),
+  Fintype.card ι ≤ n → HomologicalComplex.ExactAt (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U) n
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_exactAt_of_card_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject_subsingleton_of_card_le : ∀ {X S : AlgebraicGeometry.Scheme}
+  (π : X ⟶ S) (M : X.Modules) {ι : Type u_1} [inst : Fintype ι] [inst_1 : LinearOrder ι] (U : ι → X.Opens) (n : ℕ),
+  Fintype.card ι ≤ n → Subsingleton ↑(AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U n)
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject_subsingleton_of_card_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.quasicoherent_sections_surjective_on_isAffineOpen : ∀ {X : AlgebraicGeometry.Scheme} (U : X.Opens),
+  AlgebraicGeometry.IsAffineOpen U →
+    ∀ {M N : X.Modules} [SheafOfModules.IsQuasicoherent M] [SheafOfModules.IsQuasicoherent N] (f : M ⟶ N)
+      [CategoryTheory.Epi f],
+      Function.Surjective ⇑(CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app f U))
+'LinearStudy.quasicoherent_sections_surjective_on_isAffineOpen' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.IsAffineOpen.cechIntersection : ∀ {X : AlgebraicGeometry.Scheme} [X.IsSeparated] {ι : Type u_1}
+  (U : ι → X.Opens),
+  (∀ (i : ι), AlgebraicGeometry.IsAffineOpen (U i)) →
+    ∀ (n : ℕ) (i : Fin (n + 1) → ι), AlgebraicGeometry.IsAffineOpen (∏ᶜ fun k => U (i k))
+'AlgebraicGeometry.IsAffineOpen.cechIntersection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.ShortComplex.ShortExact.map_baseModulePresheafFunctor_eval_of_isAffineOpen : ∀
+  {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S) {T : CategoryTheory.ShortComplex X.Modules},
+  T.ShortExact →
+    ∀ [SheafOfModules.IsQuasicoherent T.X₁] [SheafOfModules.IsQuasicoherent T.X₂] [SheafOfModules.IsQuasicoherent T.X₃]
+      (U : X.Opens),
+      AlgebraicGeometry.IsAffineOpen U →
+        (T.map
+            ((AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor π).comp
+              ((CategoryTheory.evaluation X.Opensᵒᵖ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤)))).obj
+                (Opposite.op U)))).ShortExact
+'CategoryTheory.ShortComplex.ShortExact.map_baseModulePresheafFunctor_eval_of_isAffineOpen' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) →
+    {ι : Type u_1} →
+      [LinearOrder ι] →
+        (ι → X.Opens) → ℕ → CategoryTheory.Functor X.Modules (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤)))
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor_obj : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ) (M : X.Modules),
+  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor π U n).obj M =
+    AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject π M U n
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor_obj' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor_additive : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ),
+  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor π U n).Additive
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor_additive' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) →
+    {ι : Type u_1} →
+      [LinearOrder ι] →
+        (ι → X.Opens) →
+          CategoryTheory.Functor X.Modules (CochainComplex (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) ℕ)
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_obj : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (M : X.Modules),
+  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U).obj M =
+    AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_obj' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_additive : ∀ {X S : AlgebraicGeometry.Scheme}
+  (π : X ⟶ S) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U).Additive
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_additive' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_preservesZeroMorphisms : ∀
+  {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U).PreservesZeroMorphisms
+'AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_preservesZeroMorphisms' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@CategoryTheory.ShortComplex.ShortExact.map_orderedBaseCechComplexFunctor_of_affine_intersections : ∀
+  {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  (∀ (n : ℕ) (i : Fin (n + 1) → ι), AlgebraicGeometry.IsAffineOpen (∏ᶜ fun k => U (i k))) →
+    ∀ {T : CategoryTheory.ShortComplex X.Modules},
+      T.ShortExact →
+        ∀ [SheafOfModules.IsQuasicoherent T.X₁] [SheafOfModules.IsQuasicoherent T.X₂]
+          [SheafOfModules.IsQuasicoherent T.X₃],
+          (T.map (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U)).ShortExact
+'CategoryTheory.ShortComplex.ShortExact.map_orderedBaseCechComplexFunctor_of_affine_intersections' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@CategoryTheory.ShortComplex.ShortExact.map_orderedBaseCechComplexFunctor_of_affine_openCover : ∀
+  {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S) [X.IsSeparated] {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  (∀ (i : ι), AlgebraicGeometry.IsAffineOpen (U i)) →
+    ∀ {T : CategoryTheory.ShortComplex X.Modules},
+      T.ShortExact →
+        ∀ [SheafOfModules.IsQuasicoherent T.X₁] [SheafOfModules.IsQuasicoherent T.X₂]
+          [SheafOfModules.IsQuasicoherent T.X₃],
+          (T.map (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U)).ShortExact
+'CategoryTheory.ShortComplex.ShortExact.map_orderedBaseCechComplexFunctor_of_affine_openCover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveTensorTwistOrderedCechIso : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module S M] →
+            [inst_5 : Module K M] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K M) →
+                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      {ι : Type u_1} →
+                        [inst_7 : LinearOrder ι] →
+                          (a : ι → S) →
+                            (∀ (i : ι), a i ∈ 𝓑 1) →
+                              Algebra.adjoin K (Set.range a) = ⊤ →
+                                {Y : AlgebraicGeometry.Scheme} →
+                                  (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) →
+                                    (m : ℕ) →
+                                      (k : ℤ) →
+                                        (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π
+                                            (LinearStudy.nativeProjectiveModuleTwistTensorSheaf 𝓑 𝒟 hD m k) fun i =>
+                                            AlgebraicGeometry.Proj.basicOpen 𝓑 (a i)) ≅
+                                          AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π
+                                            (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD (k + ↑m)) fun i =>
+                                            AlgebraicGeometry.Proj.basicOpen 𝓑 (a i)
+'LinearStudy.nativeProjectiveTensorTwistOrderedCechIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveTensorTwistOrderedCech_exactAt_iff : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) {ι : Type u_1} [inst_7 : LinearOrder ι]
+  (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ →
+      ∀ {Y : AlgebraicGeometry.Scheme} (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) (m : ℕ) (k : ℤ) (q : ℕ),
+        HomologicalComplex.ExactAt
+            (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π
+              (LinearStudy.nativeProjectiveModuleTwistTensorSheaf 𝓑 𝒟 hD m k) fun i =>
+              AlgebraicGeometry.Proj.basicOpen 𝓑 (a i))
+            q ↔
+          HomologicalComplex.ExactAt
+            (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π
+              (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD (k + ↑m)) fun i =>
+              AlgebraicGeometry.Proj.basicOpen 𝓑 (a i))
+            q
+'LinearStudy.nativeProjectiveTensorTwistOrderedCech_exactAt_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveIntegerTwistOrderedCech_exactAt_of_card_le : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module S M] [inst_5 : Module K M]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) {ι : Type u_1} [inst_7 : LinearOrder ι]
+  (a : ι → S) {Y : AlgebraicGeometry.Scheme} (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) [inst_8 : Fintype ι] (k : ℤ) (q : ℕ),
+  Fintype.card ι ≤ q →
+    HomologicalComplex.ExactAt
+      (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD k)
+        fun i => AlgebraicGeometry.Proj.basicOpen 𝓑 (a i))
+      q
+'LinearStudy.nativeProjectiveIntegerTwistOrderedCech_exactAt_of_card_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjective_basicOpen_finset_prod : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {τ : Type u_2} (s : Finset τ) (f : τ → S),
+  AlgebraicGeometry.Proj.basicOpen 𝓑 (∏ k ∈ s, f k) = ⨅ k ∈ s, AlgebraicGeometry.Proj.basicOpen 𝓑 (f k)
+'LinearStudy.nativeProjective_basicOpen_finset_prod' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjective_cechIntersection_eq_basicOpen : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {ι : Type u_1} (a : ι → S) (n : ℕ)
+  (i : Fin (n + 1) → ι),
+  (∏ᶜ fun k => AlgebraicGeometry.Proj.basicOpen 𝓑 (a (i k))) = AlgebraicGeometry.Proj.basicOpen 𝓑 (∏ k, a (i k))
+'LinearStudy.nativeProjective_cechIntersection_eq_basicOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjective_cechProduct_mem_degree : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {ι : Type u_1} (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) → ∀ (n : ℕ) (i : Fin (n + 1) → ι), ∏ k, a (i k) ∈ 𝓑 (n + 1)
+'LinearStudy.nativeProjective_cechProduct_mem_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjective_cechIntersection_isAffine : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {ι : Type u_1} (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    ∀ (n : ℕ) (i : Fin (n + 1) → ι),
+      AlgebraicGeometry.IsAffineOpen (∏ᶜ fun k => AlgebraicGeometry.Proj.basicOpen 𝓑 (a (i k)))
+'LinearStudy.nativeProjective_cechIntersection_isAffine' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveOrderedCech_shortExact : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {ι : Type u_1} [inst_4 : LinearOrder ι]
+  (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    ∀ {Y : AlgebraicGeometry.Scheme} (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y)
+      {T : CategoryTheory.ShortComplex (AlgebraicGeometry.Proj 𝓑).Modules},
+      T.ShortExact →
+        ∀ [SheafOfModules.IsQuasicoherent T.X₁] [SheafOfModules.IsQuasicoherent T.X₂]
+          [SheafOfModules.IsQuasicoherent T.X₃],
+          (T.map
+              (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π fun i =>
+                AlgebraicGeometry.Proj.basicOpen 𝓑 (a i))).ShortExact
+'LinearStudy.nativeProjectiveOrderedCech_shortExact' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveOrderedCech_exactAt_quotient : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {ι : Type u_1} [inst_4 : LinearOrder ι]
+  (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    ∀ {Y : AlgebraicGeometry.Scheme} (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y)
+      {T : CategoryTheory.ShortComplex (AlgebraicGeometry.Proj 𝓑).Modules},
+      T.ShortExact →
+        ∀ [SheafOfModules.IsQuasicoherent T.X₁] [SheafOfModules.IsQuasicoherent T.X₂]
+          [SheafOfModules.IsQuasicoherent T.X₃] (q : ℕ),
+          HomologicalComplex.ExactAt
+              (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π T.X₂ fun i =>
+                AlgebraicGeometry.Proj.basicOpen 𝓑 (a i))
+              q →
+            HomologicalComplex.ExactAt
+                (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π T.X₁ fun i =>
+                  AlgebraicGeometry.Proj.basicOpen 𝓑 (a i))
+                (q + 1) →
+              HomologicalComplex.ExactAt
+                (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π T.X₃ fun i =>
+                  AlgebraicGeometry.Proj.basicOpen 𝓑 (a i))
+                q
+'LinearStudy.nativeProjectiveOrderedCech_exactAt_quotient' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveGradedKernelSheaves_shortExact : ∀ {K S E F : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup E] [inst_4 : Module K E] [inst_5 : Module S E]
+  [inst_6 : IsScalarTower K S E] [inst_7 : AddCommGroup F] [inst_8 : Module K F] [inst_9 : Module S F]
+  (𝓑 : ℕ → Submodule K S) [inst_10 : GradedAlgebra 𝓑] (ℰ : ℤ → Submodule K E) (ℱ : ℤ → Submodule K F)
+  [DirectSum.Decomposition ℰ] [inst_12 : DirectSum.Decomposition ℱ]
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d))
+  (hF : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℱ d, c • x ∈ ℱ (↑n + d)) (b : E →ₗ[S] F)
+  (hh : ∀ (d : ℤ), ∀ x ∈ ℰ d, b x ∈ ℱ d),
+  Function.Surjective ⇑b →
+    ∀ (k : ℤ),
+      { X₁ := LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveKernelPiece ℰ b) ⋯ k,
+          X₂ := LinearStudy.nativeProjectiveModuleSheaf 𝓑 ℰ hE k,
+          X₃ := LinearStudy.nativeProjectiveModuleSheaf 𝓑 ℱ hF k,
+          f := LinearStudy.nativeProjectiveKernelSheafInclusion 𝓑 ℰ hE b k,
+          g := LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 ℰ ℱ hE hF b hh k, zero := ⋯ }.ShortExact
+'LinearStudy.nativeProjectiveGradedKernelSheaves_shortExact' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveGradedKernelOrderedCech_shortExact : ∀ {K S E F : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup E] [inst_4 : Module K E] [inst_5 : Module S E]
+  [inst_6 : IsScalarTower K S E] [inst_7 : AddCommGroup F] [inst_8 : Module K F] [inst_9 : Module S F]
+  [IsScalarTower K S F] (𝓑 : ℕ → Submodule K S) [inst_11 : GradedAlgebra 𝓑] (ℰ : ℤ → Submodule K E)
+  (ℱ : ℤ → Submodule K F) [DirectSum.Decomposition ℰ] [inst_13 : DirectSum.Decomposition ℱ]
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d))
+  (hF : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℱ d, c • x ∈ ℱ (↑n + d)) (b : E →ₗ[S] F)
+  (hh : ∀ (d : ℤ), ∀ x ∈ ℰ d, b x ∈ ℱ d) {ι : Type u_1} [inst_14 : LinearOrder ι] (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤ →
+      ∀ {Y : AlgebraicGeometry.Scheme} (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) [IsNoetherianRing S] [Module.Finite S E],
+        Function.Surjective ⇑b →
+          ∀ (k : ℤ),
+            ({ X₁ := LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveKernelPiece ℰ b) ⋯ k,
+                    X₂ := LinearStudy.nativeProjectiveModuleSheaf 𝓑 ℰ hE k,
+                    X₃ := LinearStudy.nativeProjectiveModuleSheaf 𝓑 ℱ hF k,
+                    f := LinearStudy.nativeProjectiveKernelSheafInclusion 𝓑 ℰ hE b k,
+                    g := LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 ℰ ℱ hE hF b hh k, zero := ⋯ }.map
+                (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π fun i =>
+                  AlgebraicGeometry.Proj.basicOpen 𝓑 (a i))).ShortExact
+'LinearStudy.nativeProjectiveGradedKernelOrderedCech_shortExact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.CechSupportCochain : (R : Type u_1) →
+  {ι : Type u_2} → [inst : CommRing R] → Set ι → (n : ℕ) → Submodule R ((Fin (n + 1) → ι) → R)
+'LinearStudy.CechSupportCochain' depends on axioms: [propext, Quot.sound]
+LinearStudy.cechSupportDifferential : (R : Type u_1) →
+  {ι : Type u_2} →
+    [inst : CommRing R] →
+      (N : Set ι) →
+        (n : ℕ) → ↥(LinearStudy.CechSupportCochain R N n) →ₗ[R] ↥(LinearStudy.CechSupportCochain R N (n + 1))
+'LinearStudy.cechSupportDifferential' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.cechSupportContraction : (R : Type u_1) →
+  {ι : Type u_2} →
+    [inst : CommRing R] →
+      (N : Set ι) →
+        (i₀ : ι) →
+          i₀ ∉ N → (n : ℕ) → ↥(LinearStudy.CechSupportCochain R N (n + 1)) →ₗ[R] ↥(LinearStudy.CechSupportCochain R N n)
+'LinearStudy.cechSupportContraction' depends on axioms: [propext, Quot.sound]
+LinearStudy.cechSupportContraction_homotopy : ∀ (R : Type u_1) {ι : Type u_2} [inst : CommRing R] (N : Set ι) (i₀ : ι)
+  (hi₀ : i₀ ∉ N) (n : ℕ) (s : ↥(LinearStudy.CechSupportCochain R N (n + 1))),
+  (LinearStudy.cechSupportDifferential R N n) ((LinearStudy.cechSupportContraction R N i₀ hi₀ n) s) +
+      (LinearStudy.cechSupportContraction R N i₀ hi₀ (n + 1)) ((LinearStudy.cechSupportDifferential R N (n + 1)) s) =
+    s
+'LinearStudy.cechSupportContraction_homotopy' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.exists_preimage_cechSupportDifferential : ∀ (R : Type u_1) {ι : Type u_2} [inst : CommRing R] (N : Set ι),
+  ∀ i₀ ∉ N,
+    ∀ (n : ℕ) (s : ↥(LinearStudy.CechSupportCochain R N (n + 1))),
+      (LinearStudy.cechSupportDifferential R N (n + 1)) s = 0 → ∃ t, (LinearStudy.cechSupportDifferential R N n) t = s
+'LinearStudy.exists_preimage_cechSupportDifferential' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.OrderedCechSupportCochain : (R : Type u_1) →
+  {ι : Type u_2} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder ι] →
+        Set ι → (n : ℕ) → Submodule R (AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι n → R)
+'LinearStudy.OrderedCechSupportCochain' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.OrderedCechSupportCochain.module_finite : ∀ (R : Type u_1) {ι : Type u_2} [inst : CommRing R]
+  [inst_1 : LinearOrder ι] [IsNoetherianRing R] [Finite ι] (N : Set ι) (n : ℕ),
+  Module.Finite R ↥(LinearStudy.OrderedCechSupportCochain R N n)
+'LinearStudy.OrderedCechSupportCochain.module_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.orderedCechSupportDifferential : (R : Type u_1) →
+  {ι : Type u_2} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder ι] →
+        (N : Set ι) →
+          (n : ℕ) →
+            ↥(LinearStudy.OrderedCechSupportCochain R N n) →ₗ[R] ↥(LinearStudy.OrderedCechSupportCochain R N (n + 1))
+'LinearStudy.orderedCechSupportDifferential' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.orderedCechSupportDifferential_zero_injective : ∀ (R : Type u_1) {ι : Type u_2} [inst : CommRing R]
+  [inst_1 : LinearOrder ι] (N : Set ι),
+  N.Nonempty → ∀ i₀ ∉ N, Function.Injective ⇑(LinearStudy.orderedCechSupportDifferential R N 0)
+'LinearStudy.orderedCechSupportDifferential_zero_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.orderedCechSupportDifferential_zero_injective_of_nonempty : ∀ (R : Type u_1) {ι : Type u_2}
+  [inst : CommRing R] [inst_1 : LinearOrder ι] [Nontrivial ι] (N : Set ι),
+  N.Nonempty → Function.Injective ⇑(LinearStudy.orderedCechSupportDifferential R N 0)
+'LinearStudy.orderedCechSupportDifferential_zero_injective_of_nonempty' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.exists_preimage_orderedCechSupportDifferential_zero : ∀ (R : Type u_1) {ι : Type u_2} [inst : CommRing R]
+  [inst_1 : LinearOrder ι] (N : Set ι),
+  ∀ i₀ ∉ N,
+    ∀ (s : ↥(LinearStudy.OrderedCechSupportCochain R N 1)),
+      (LinearStudy.orderedCechSupportDifferential R N 1) s = 0 →
+        ∃ t, (LinearStudy.orderedCechSupportDifferential R N 0) t = s
+'LinearStudy.exists_preimage_orderedCechSupportDifferential_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm : {n : ℕ} →
+  Fin (n + 2) → Fin (n + 2) → Equiv.Perm (Fin (n + 2))
+'AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm : {n : ℕ} → Fin (n + 2) → Fin (n + 2) → Equiv.Perm (Fin (n + 1))
+'AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_apply_zero : ∀ {n : ℕ} (k l : Fin (n + 2)),
+  (AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm k l) 0 = 0
+'AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_apply_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_eq_decomposeFin : ∀ {n : ℕ} (k l : Fin (n + 2)),
+  AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm k l =
+    Equiv.Perm.decomposeFin.symm (0, AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm k l)
+'AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_eq_decomposeFin' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_apply_succ : ∀ {n : ℕ} (k l : Fin (n + 2)) (x : Fin (n + 1)),
+  (AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm k l) x.succ =
+    ((AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm k l) x).succ
+'AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_apply_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.succAbove_cechDeleteSwapPerm : ∀ {n : ℕ} (k l : Fin (n + 2)) (x : Fin (n + 1)),
+  l.succAbove ((AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm k l) x) = (Equiv.swap k l) (k.succAbove x)
+'AlgebraicGeometry.Scheme.Modules.succAbove_cechDeleteSwapPerm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.comp_succAbove_cechDeleteSwapPerm_of_eq : ∀ {n : ℕ} {ι : Type u_1}
+  (i : Fin (n + 2) → ι) (k l : Fin (n + 2)),
+  i k = i l → (i ∘ l.succAbove) ∘ ⇑(AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm k l) = i ∘ k.succAbove
+'AlgebraicGeometry.Scheme.Modules.comp_succAbove_cechDeleteSwapPerm_of_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm_sign : ∀ {n : ℕ} (k l : Fin (n + 2)),
+  k ≠ l → ↑(Equiv.Perm.sign (AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm k l)) = -((-1) ^ ↑k * (-1) ^ ↑l)
+'AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm_sign' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull : {n : ℕ} →
+  Equiv.Perm (Fin (n + 2)) → Fin (n + 2) → Equiv.Perm (Fin (n + 2))
+'AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechPermDelete : {n : ℕ} →
+  Equiv.Perm (Fin (n + 2)) → Fin (n + 2) → Equiv.Perm (Fin (n + 1))
+'AlgebraicGeometry.Scheme.Modules.cechPermDelete' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_apply_zero : ∀ {n : ℕ} (σ : Equiv.Perm (Fin (n + 2)))
+  (r : Fin (n + 2)), (AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull σ r) 0 = 0
+'AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_apply_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_eq_decomposeFin : ∀ {n : ℕ} (σ : Equiv.Perm (Fin (n + 2)))
+  (r : Fin (n + 2)),
+  AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull σ r =
+    Equiv.Perm.decomposeFin.symm (0, AlgebraicGeometry.Scheme.Modules.cechPermDelete σ r)
+'AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_eq_decomposeFin' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_apply_succ : ∀ {n : ℕ} (σ : Equiv.Perm (Fin (n + 2)))
+  (r : Fin (n + 2)) (x : Fin (n + 1)),
+  (AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull σ r) x.succ =
+    ((AlgebraicGeometry.Scheme.Modules.cechPermDelete σ r) x).succ
+'AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_apply_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.succAbove_cechPermDelete : ∀ {n : ℕ} (σ : Equiv.Perm (Fin (n + 2))) (r : Fin (n + 2))
+  (x : Fin (n + 1)), (σ r).succAbove ((AlgebraicGeometry.Scheme.Modules.cechPermDelete σ r) x) = σ (r.succAbove x)
+'AlgebraicGeometry.Scheme.Modules.succAbove_cechPermDelete' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechPermDelete_sign : ∀ {n : ℕ} (σ : Equiv.Perm (Fin (n + 2))) (r : Fin (n + 2)),
+  ↑(Equiv.Perm.sign (AlgebraicGeometry.Scheme.Modules.cechPermDelete σ r)) =
+    (-1) ^ ↑r * ↑(Equiv.Perm.sign σ) * (-1) ^ ↑(σ r)
+'AlgebraicGeometry.Scheme.Modules.cechPermDelete_sign' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.cechPermDelete_signed_coefficient : ∀ {n : ℕ} (σ : Equiv.Perm (Fin (n + 2)))
+  (r : Fin (n + 2)),
+  (-1) ^ ↑r * ↑(Equiv.Perm.sign (AlgebraicGeometry.Scheme.Modules.cechPermDelete σ r)) =
+    ↑(Equiv.Perm.sign σ) * (-1) ^ ↑(σ r)
+'AlgebraicGeometry.Scheme.Modules.cechPermDelete_signed_coefficient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.exists_eq_ne_of_not_injective : ∀ {α : Type u_1} {β : Type u_2} (f : α → β),
+  ¬Function.Injective f → ∃ a b, f a = f b ∧ a ≠ b
+'AlgebraicGeometry.Scheme.Modules.exists_eq_ne_of_not_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.exists_partner_of_delete_injective : ∀ {n : ℕ} {ι : Type u_1} (i : Fin (n + 2) → ι),
+  ¬Function.Injective i → ∀ (k : Fin (n + 2)), Function.Injective (i ∘ k.succAbove) → ∃ l, l ≠ k ∧ i l = i k
+'AlgebraicGeometry.Scheme.Modules.exists_partner_of_delete_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.eq_partner_of_delete_injective : ∀ {n : ℕ} {ι : Type u_1} (i : Fin (n + 2) → ι)
+  (k l x : Fin (n + 2)), Function.Injective (i ∘ k.succAbove) → l ≠ k → x ≠ k → i l = i k → i x = i k → x = l
+'AlgebraicGeometry.Scheme.Modules.eq_partner_of_delete_injective' depends on axioms: [propext]
+@AlgebraicGeometry.Scheme.Modules.delete_partner_injective : ∀ {n : ℕ} {ι : Type u_1} (i : Fin (n + 2) → ι)
+  (k l : Fin (n + 2)), Function.Injective (i ∘ k.succAbove) → l ≠ k → i l = i k → Function.Injective (i ∘ l.succAbove)
+'AlgebraicGeometry.Scheme.Modules.delete_partner_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@AlgebraicGeometry.Scheme.Modules.delete_not_injective_of_ne : ∀ {n : ℕ} {ι : Type u_1} (i : Fin (n + 2) → ι)
+  (k l m : Fin (n + 2)), k ≠ l → k ≠ m → l ≠ m → i l = i k → ¬Function.Injective (i ∘ m.succAbove)
+'AlgebraicGeometry.Scheme.Modules.delete_not_injective_of_ne' depends on axioms: [propext]
+LinearStudy.orderedCechSupportRestrict : (R : Type u_1) →
+  {ι : Type u_2} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder ι] →
+        (N : Set ι) →
+          (n : ℕ) → ↥(LinearStudy.CechSupportCochain R N n) →ₗ[R] ↥(LinearStudy.OrderedCechSupportCochain R N n)
+'LinearStudy.orderedCechSupportRestrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.orderedCechSupportAlternatingExtend : (R : Type u_1) →
+  {ι : Type u_2} →
+    [inst : CommRing R] →
+      [inst_1 : LinearOrder ι] →
+        (N : Set ι) →
+          (n : ℕ) → ↥(LinearStudy.OrderedCechSupportCochain R N n) →ₗ[R] ↥(LinearStudy.CechSupportCochain R N n)
+'LinearStudy.orderedCechSupportAlternatingExtend' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.orderedCechSupportAlternatingExtend_restrict : ∀ (R : Type u_1) {ι : Type u_2} [inst : CommRing R]
+  [inst_1 : LinearOrder ι] (N : Set ι) (n : ℕ) (s : ↥(LinearStudy.OrderedCechSupportCochain R N n)),
+  (LinearStudy.orderedCechSupportRestrict R N n) ((LinearStudy.orderedCechSupportAlternatingExtend R N n) s) = s
+'LinearStudy.orderedCechSupportAlternatingExtend_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.orderedCechSupportRestrict_differential : ∀ (R : Type u_1) {ι : Type u_2} [inst : CommRing R]
+  [inst_1 : LinearOrder ι] (N : Set ι) (n : ℕ) (s : ↥(LinearStudy.CechSupportCochain R N n)),
+  (LinearStudy.orderedCechSupportRestrict R N (n + 1)) ((LinearStudy.cechSupportDifferential R N n) s) =
+    (LinearStudy.orderedCechSupportDifferential R N n) ((LinearStudy.orderedCechSupportRestrict R N n) s)
+'LinearStudy.orderedCechSupportRestrict_differential' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.orderedCechSupportAlternatingExtend_differential : ∀ (R : Type u_1) {ι : Type u_2} [inst : CommRing R]
+  [inst_1 : LinearOrder ι] (N : Set ι) (n : ℕ) (s : ↥(LinearStudy.OrderedCechSupportCochain R N n)),
+  (LinearStudy.cechSupportDifferential R N n) ((LinearStudy.orderedCechSupportAlternatingExtend R N n) s) =
+    (LinearStudy.orderedCechSupportAlternatingExtend R N (n + 1)) ((LinearStudy.orderedCechSupportDifferential R N n) s)
+'LinearStudy.orderedCechSupportAlternatingExtend_differential' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.exists_preimage_orderedCechSupportDifferential : ∀ (R : Type u_1) {ι : Type u_2} [inst : CommRing R]
+  [inst_1 : LinearOrder ι] (N : Set ι),
+  ∀ i₀ ∉ N,
+    ∀ (n : ℕ) (s : ↥(LinearStudy.OrderedCechSupportCochain R N (n + 1))),
+      (LinearStudy.orderedCechSupportDifferential R N (n + 1)) s = 0 →
+        ∃ t, (LinearStudy.orderedCechSupportDifferential R N n) t = s
+'LinearStudy.exists_preimage_orderedCechSupportDifferential' depends on axioms: [propext, Classical.choice, Quot.sound]

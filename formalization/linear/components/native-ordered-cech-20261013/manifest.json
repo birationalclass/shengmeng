@@ -1,0 +1,2511 @@
+{
+  "schemaVersion": 1,
+  "id": "native-ordered-cech-20261013",
+  "createdAt": "2026-10-13T10:08:57.755144+08:00",
+  "leanVersion": "v4.35.0-rc3",
+  "mathlibRevision": "2a885768dae569d938bb9ff3474da6a8753bb90a",
+  "rootModules": [
+    "Linear.ModuleFormalCoproductAdditive",
+    "Linear.ModuleBaseCechBasic",
+    "Linear.ModuleBaseCechFactors",
+    "Linear.ModuleOrderedBaseCech",
+    "Linear.ModuleAffineSectionsExact",
+    "Linear.ModuleOrderedBaseCechFunctor",
+    "Linear.ModuleOrderedBaseCechExact",
+    "Linear.NativeProjectiveTensorTwistOrderedCech",
+    "Linear.NativeProjectiveCechAffineIntersections",
+    "Linear.NativeProjectiveOrderedCechExact",
+    "Linear.NativeProjectiveGradedKernelCech",
+    "Linear.CechSupportContraction",
+    "Linear.OrderedCechSupportContraction",
+    "Linear.CechTuplePermutations",
+    "Linear.OrderedCechSupportAlternating"
+  ],
+  "closedSourceModules": 174,
+  "newModules": 15,
+  "newProofs": 76,
+  "newDefinitions": 32,
+  "auditedDeclarations": 108,
+  "newPhysicalSourceLines": 2620,
+  "unchangedEarlierFrozenDependencies": 159,
+  "priorFrozenEvidence": [
+    {
+      "archive": "Linear-local-20261011-m180-source.zip",
+      "sha256": "a71cda4581491c72042686fada4545865584cfbf2ded6ade6b99ecbd7987b5d3"
+    },
+    {
+      "archive": "ActualAffineSourceLinearComponent-20261012-LF-source.zip",
+      "sha256": "71649e88efb4760d37e527ef7b3c78e553972cd8799f69a9ffea61b1394f6aed"
+    },
+    {
+      "archive": "AllOpenSourceLinearityComponent-20261012-LF-source.zip",
+      "sha256": "310408d5a7248ad6d57cfb36d55aa4de96256ba7aaade6a47741c04c8fc3d010"
+    },
+    {
+      "archive": "ConditionalCanonicalContinuation-20261012-LF-source.zip",
+      "sha256": "7c800a8c4f799fd3b9a5430204f9e1679fc57eb6c197f3508fee7e864bb4895d"
+    },
+    {
+      "archive": "NativeChartSourceLinearComponent-20261012-LF-source.zip",
+      "sha256": "429ea05f3004eceef2be521194ef4315e94310dc951a85399a514f38c95c4ffd"
+    },
+    {
+      "archive": "NativeProjectiveHOneLifting-20261012-LF-source.zip",
+      "sha256": "f24c273b27cd77bafe706a1bbd28a2245e7d1c3b04c14dd73803e2a41f0839db"
+    },
+    {
+      "archive": "NativeProjectiveTensorTwist-20261013-LF-source.zip",
+      "sha256": "45f67b941a9bd349c6da4ef95cae4df3af679955e3a147f446da73a297b9d841"
+    },
+    {
+      "archive": "NativeProjectiveTwistPresentation-20261013-LF-source.zip",
+      "sha256": "30f4c8663f138e8e84fab1e3191a00298fa412aea7ad11642128ee0638ada25b"
+    },
+    {
+      "archive": "OriginalChartLocalSourceLinearComponent-20261012-LF-source.zip",
+      "sha256": "1ea73b87983c1b6b178451d0481df82ed274db79f7ab2cebc4364913ec31b2ff"
+    },
+    {
+      "archive": "OriginalGlobalSourceActionComponent-20261012-LF-source.zip",
+      "sha256": "f748e453306083d9b88d7e32b7e16aee6c99ca7a126acb1a29ba73e57bafdc7c"
+    },
+    {
+      "archive": "OriginalHomSourceSheafComponent-20261012-LF-source.zip",
+      "sha256": "263687f81bf4b2e850e65b736192ba46eb3fc9037e5bb7b1136d93c2a2d0a133"
+    },
+    {
+      "archive": "OriginalPushforwardSourceActionComponent-20261012-LF-source.zip",
+      "sha256": "f544d8c61d0aa3c66ee42079842033f83d49fc9803d30612401b474163b7d853"
+    },
+    {
+      "archive": "SourceActionDerivedComponent-20261012-LF-source.zip",
+      "sha256": "9ad384dd639a2c81e22570a0f9cbff083b27e94581e4c4be12ed984b52c74333"
+    }
+  ],
+  "actualNativeCechComplexesVerified": true,
+  "actualNativeKernelCechShortExactVerified": true,
+  "orderedSupportContractionVerified": true,
+  "nativeToLaurentWeightComparisonVerified": false,
+  "eventualSerreVanishingVerified": false,
+  "serreTensorTwistComparisonVerified": false,
+  "originalLemma4_1Verified": false,
+  "originalLemma4_2Verified": false,
+  "mainTheoremVerified": false,
+  "canonicalDualizingIdentificationVerified": false,
+  "baseVerifiedLocalCheckpoint": 180,
+  "verificationScope": "# Original Lemma4.2: actual native ordered Cech foundation\n\nOriginal Lemmas4.1/4.2 and the main Linearity Theorem remain OPEN.\nThe canonical/normalized-dualizing identification remains UNVERIFIED.\nOne fixed bound before all original iterates has not been proved.\n\nThis component constructs actual base-linear section presheaves and actual\nordered Cech complexes. The differential is the alternating sum of original\nopen restrictions, and d squared equals zero. Maps of actual module sheaves\ninduce natural maps of these actual complexes.\n\nLet K be a field, S a graded commutative K-algebra, X=Proj(S), and a_i in S_1.\nThen each actual finite Cech intersection of D_+(a_i) equals the actual basic\nopen for their product, which is homogeneous of positive degree. Thus it is\naffine, without a separatedness or affine-intersection certificate.\n\nFor any actual X->Y, an actual short exact sequence of quasicoherent X-modules\ngives a short exact sequence of the actual base-linear ordered Cech complexes.\nIn particular, if 0->A->B->C->0 is such a sequence, ExactAt(q) for B and\nExactAt(q+1) for A imply ExactAt(q) for C by the actual homology exact sequence.\n\nFor the actual homogeneous graded module surjection E->F, let E be finite over\na Noetherian S, with compatible K-linear integer decompositions and scalar\ntowers. Assume the degree-one opens cover X. The actual module kernel and\nassociated sheaf map form a short exact sequence for every integer k. Actual\nfinite presentation of each sheaf yields their quasicoherence, so the actual\nordered Cech sequence is short exact. F is finite by the surjection; it is\nnot an extra finite-generation hypothesis.\n\nThe previous actual native tensor comparison induces an actual isomorphism\nbetween the ordered Cech complexes for T_m(S) tensor T_k(M) and T_(k+m)(M).\nFor a finite index set, exactness above its cardinality is the induction base.\nNeither result proves eventual H1 vanishing.\n\nMinimal AINTLIB reuse also proves the support-restricted combinatorial\ncontraction from Stacks Tag01XT: for any commutative R, support N and i notin N,\nthe explicit prepend homotopy satisfies dh+hd=1. Alternating extension and\nrestriction prove every ordered positive-degree support cocycle is a boundary.\nThese are actual specified support complexes; their comparison with the native\ngeometric Laurent-weight Cech complex remains OPEN.\n\n15 new LF modules, 2620 physical source lines,108 exact declarations,\n76 proofs (including named instances),32 definitions. Closed source contains\n174 modules; all 159 earlier dependencies match\nprior frozen archives byte-for-byte. All exact types and transitive axioms\npass: only propext,Classical.choice,Quot.sound. Logs and source hashes included.\nResource controls: one compiler,8GiB Windows Job,2threads,CPU25%,20min timeout.\nWhole-project checkpoint180 and full-project CI remain unchanged.\n\nStill OPEN: actual native twist Cech to Laurent-weight comparison, positive\ntwist acyclicity, the uniform H1 bound, original ideal-sheaf identification,\nambient homogeneous polynomial lifting, genuine canonical identification and\nthe original nonzero section needed by Lemma4.1. No incomplete step is promoted.\n\nReproduce with the pinned lean-toolchain and lake-manifest, compiling the\nincluded Linear modules in dependency order, then CheckAxioms.lean. Linear.lean\nis a convenience import entry, not a separately accepted full-project build.\n",
+  "remainingObligations": [
+    "Actual native twist Cech to Laurent weight comparison",
+    "Positive-twist actual H1 vanishing uniform in the original embedding parameter",
+    "Original ideal-sheaf identification and ambient homogeneous polynomial lifting",
+    "Genuine canonical/normalized-dualizing identification"
+  ],
+  "resourceLimits": {
+    "concurrentCompilers": 1,
+    "hardJobMemoryMiB": 8192,
+    "leanThreads": 2,
+    "cpuPercent": 25,
+    "timeoutSeconds": 1200
+  },
+  "sources": [
+    {
+      "module": "Linear.AffineFiltered",
+      "path": "source/Linear/AffineFiltered.lean",
+      "sha256": "d118cc1b4d3c968c1c325966f3eaa7a07c63f34a3d834c2c663dbf78c86e7379",
+      "physicalLines": 228
+    },
+    {
+      "module": "Linear.AffineQuasicoherentSectionsSurjective",
+      "path": "source/Linear/AffineQuasicoherentSectionsSurjective.lean",
+      "sha256": "89ffcee8e5ca6e07cf28503a85e7ba26c1a3e651ad086e6f8be4d936952585ba",
+      "physicalLines": 32
+    },
+    {
+      "module": "Linear.ArbitraryParameterJacobian",
+      "path": "source/Linear/ArbitraryParameterJacobian.lean",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "physicalLines": 115
+    },
+    {
+      "module": "Linear.ArbitraryParameterSocle",
+      "path": "source/Linear/ArbitraryParameterSocle.lean",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "physicalLines": 197
+    },
+    {
+      "module": "Linear.ArtinianDiagonal",
+      "path": "source/Linear/ArtinianDiagonal.lean",
+      "sha256": "8db1dc43dde887efb38a60ea3eb90c69bdd2d418819875fd87bc70863bd81c6a",
+      "physicalLines": 132
+    },
+    {
+      "module": "Linear.ArtinianGlobalPairing",
+      "path": "source/Linear/ArtinianGlobalPairing.lean",
+      "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
+      "physicalLines": 133
+    },
+    {
+      "module": "Linear.CechSupportContraction",
+      "path": "source/Linear/CechSupportContraction.lean",
+      "sha256": "1320d65475e33bc977896e9405aa3fe5fb303d09969f927871e56eb7d9f2221b",
+      "physicalLines": 180
+    },
+    {
+      "module": "Linear.CechTuplePermutations",
+      "path": "source/Linear/CechTuplePermutations.lean",
+      "sha256": "8295149bb602cde042e02f73244545fa904283a755e13fe084293ad7dd505f72",
+      "physicalLines": 237
+    },
+    {
+      "module": "Linear.CenteredRelativeJacobian",
+      "path": "source/Linear/CenteredRelativeJacobian.lean",
+      "sha256": "e148aa48c54d723e24919baf7620cc0bf93af46047df930de0349be26a48b4d6",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.CompleteIntersectionChange",
+      "path": "source/Linear/CompleteIntersectionChange.lean",
+      "sha256": "baf17fddcfc62d1f354f5bc15ec423dfe5903b26067b7b252646ca868a490df9",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.DeterminantAnnihilator",
+      "path": "source/Linear/DeterminantAnnihilator.lean",
+      "sha256": "8a7ebfa5bd2b642ca93d1e463a2031c1b36eb037baf35a4d11f29d9632703c0f",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.DiagonalNonzero",
+      "path": "source/Linear/DiagonalNonzero.lean",
+      "sha256": "48a9c1a36db8b5f60ea30f901d81940a071160919182f2d9c39a461c1c16655c",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.DiagonalNormalization",
+      "path": "source/Linear/DiagonalNormalization.lean",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "physicalLines": 113
+    },
+    {
+      "module": "Linear.DiagonalTrace",
+      "path": "source/Linear/DiagonalTrace.lean",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "physicalLines": 177
+    },
+    {
+      "module": "Linear.DoublePoint",
+      "path": "source/Linear/DoublePoint.lean",
+      "sha256": "a7017ec416d7ac1e16f04e31df7e4f51920677b4d4da88cda1647bbd6813dd7d",
+      "physicalLines": 119
+    },
+    {
+      "module": "Linear.Duality",
+      "path": "source/Linear/Duality.lean",
+      "sha256": "00105abf68fc434f67069718ef64e3b8e06d4dc1b5ea23be2854f36890e1327a",
+      "physicalLines": 114
+    },
+    {
+      "module": "Linear.FiniteSpecialization",
+      "path": "source/Linear/FiniteSpecialization.lean",
+      "sha256": "5966c5143536cb2e72fb00e09defff6d0c8ddb1beff10ad6727ea39d0c312162",
+      "physicalLines": 97
+    },
+    {
+      "module": "Linear.FirstJet",
+      "path": "source/Linear/FirstJet.lean",
+      "sha256": "699167928d2f69bd07dc55c7ce6c1b204dc30ed01f3b8f84921b5aab0fabba28",
+      "physicalLines": 158
+    },
+    {
+      "module": "Linear.GlobalDiagonalNormalization",
+      "path": "source/Linear/GlobalDiagonalNormalization.lean",
+      "sha256": "deb4c5debe04dce44c3925d5b473eb7459bf8747aff5c4710fdfa60e75e23f69",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.GradedIntegerProjection",
+      "path": "source/Linear/GradedIntegerProjection.lean",
+      "sha256": "52892ad4e5bf6091a82d60f482e115ab760c8483261a5e73abd3ccbe9cf4fa19",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.GradedIntegerProjector",
+      "path": "source/Linear/GradedIntegerProjector.lean",
+      "sha256": "3c146b5ea3ccae9a3566b6fc1ec19fb3474c1426b42aed3d12b3e83fcf150e7f",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.GradedModuleProjection",
+      "path": "source/Linear/GradedModuleProjection.lean",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.HomogeneousCoordinateGrading",
+      "path": "source/Linear/HomogeneousCoordinateGrading.lean",
+      "sha256": "51027580a417a916c5d14b47257422ec0fd6060b6bb820ac573eb30af1562540",
+      "physicalLines": 55
+    },
+    {
+      "module": "Linear.HomogeneousCoordinatePieces",
+      "path": "source/Linear/HomogeneousCoordinatePieces.lean",
+      "sha256": "95a349c6d14f13c94c8ab81a19ac9e055451117db00bbfccbb9ba7aa9a1ccaaf",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.HomogeneousPullbackComponents",
+      "path": "source/Linear/HomogeneousPullbackComponents.lean",
+      "sha256": "b913e29799ad2210e3d320630a4d2f3bcd3a0621f3adb96484d8a2277091f16a",
+      "physicalLines": 37
+    },
+    {
+      "module": "Linear.HomogeneousQuotient",
+      "path": "source/Linear/HomogeneousQuotient.lean",
+      "sha256": "815b79ba26f16335119f3544ec59cad7b6c25e4f190a9cb41911f22ceffad9b2",
+      "physicalLines": 234
+    },
+    {
+      "module": "Linear.IntegerGradedFiniteFreeSurjection",
+      "path": "source/Linear/IntegerGradedFiniteFreeSurjection.lean",
+      "sha256": "c3ec94c67f728cb8912e2c5276c91f6b2aeebbf275e290b289622f38ac5fdce6",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.IntegerGradedFinitePresentation",
+      "path": "source/Linear/IntegerGradedFinitePresentation.lean",
+      "sha256": "7c89c5716843acdffe0324ca20d00ba59e12cc7b336b079cf99f97e6556df6ac",
+      "physicalLines": 68
+    },
+    {
+      "module": "Linear.IntegerGradedFiniteRelations",
+      "path": "source/Linear/IntegerGradedFiniteRelations.lean",
+      "sha256": "68874f2ce89ebef7353f0f1559d7423471fb9521adbd5a753bcf08f581361185",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.IntegerGradedHomogeneousAnnihilator",
+      "path": "source/Linear/IntegerGradedHomogeneousAnnihilator.lean",
+      "sha256": "aeb95e5226264d08acbf6d407405b7e3866611cd7fb3f4cf5992785eca7b384b",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.IntegerGradedKernelGenerators",
+      "path": "source/Linear/IntegerGradedKernelGenerators.lean",
+      "sha256": "d353a14c1ac61d6bfd8795573d6e1105de846d290a6256e9db85d5002a51591f",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.IntegerGradedModuleGenerators",
+      "path": "source/Linear/IntegerGradedModuleGenerators.lean",
+      "sha256": "68bd621aa09129ef7d7e50bd7ba9d5989c78b507e3965c2d098440ab32d24238",
+      "physicalLines": 38
+    },
+    {
+      "module": "Linear.IntegerGradedModuleProjection",
+      "path": "source/Linear/IntegerGradedModuleProjection.lean",
+      "sha256": "12dc84575739244cf64391a7577b13bd35b6b21e1ddf53d2cbdd8a413cf977eb",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.IntegerGradedSubmoduleDecomposition",
+      "path": "source/Linear/IntegerGradedSubmoduleDecomposition.lean",
+      "sha256": "5d8bb37ebae456c71efaa2128e096f44c70343a0bbf5252f7c3a5f5ec816e2d8",
+      "physicalLines": 85
+    },
+    {
+      "module": "Linear.IntegerGradedSurjectionPreimage",
+      "path": "source/Linear/IntegerGradedSurjectionPreimage.lean",
+      "sha256": "7cc92f566e10c0e9a0b9683481e879c9cdfcfe8bb6dc1b5e9394427d2a6006f7",
+      "physicalLines": 45
+    },
+    {
+      "module": "Linear.IntegerGradingShift",
+      "path": "source/Linear/IntegerGradingShift.lean",
+      "sha256": "592514150de910ae02bc080e333c71ad6fe815e93d9e0cb426ad7854493e0a46",
+      "physicalLines": 39
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeDecomposition",
+      "path": "source/Linear/IntegerShiftedFreeDecomposition.lean",
+      "sha256": "1ca324da7899372542b6542fc7b39f2a95c9d7abcbe1477aa1137e79f4258a40",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeGeneratorMap",
+      "path": "source/Linear/IntegerShiftedFreeGeneratorMap.lean",
+      "sha256": "cfdd79803fc1cbf4a1b9a72fed48e9cba1340674ab03548bef605cb4b02d305e",
+      "physicalLines": 61
+    },
+    {
+      "module": "Linear.IntegerShiftedFreePieces",
+      "path": "source/Linear/IntegerShiftedFreePieces.lean",
+      "sha256": "5c934b9a1958f01ac5614596702bbafc30e4c5e610ab33a830f3a05bca978833",
+      "physicalLines": 78
+    },
+    {
+      "module": "Linear.JacobianNonzero",
+      "path": "source/Linear/JacobianNonzero.lean",
+      "sha256": "20ed4e44d0b9fa4287a5c50209d30429dbd9b5ca8ce293957c78e1c4405e52ff",
+      "physicalLines": 180
+    },
+    {
+      "module": "Linear.JacobianSpecialization",
+      "path": "source/Linear/JacobianSpecialization.lean",
+      "sha256": "c9c03f9379d2459aa6656047cd06177ff663a0082dd724b1c00e8b33ecd5f028",
+      "physicalLines": 119
+    },
+    {
+      "module": "Linear.JacobianTrace",
+      "path": "source/Linear/JacobianTrace.lean",
+      "sha256": "82069953a58ad8596eb1ee01b72e6975761b590b433a22ff54447c3fab00feca",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.KoszulComparison",
+      "path": "source/Linear/KoszulComparison.lean",
+      "sha256": "80b12745a16e3dfee452d3d3a9ed1256fee52ae447d1f0304339de2287f337f1",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.KoszulFunctionResolution",
+      "path": "source/Linear/KoszulFunctionResolution.lean",
+      "sha256": "1704b393bc83f91ed6e7fe36f2977231a4e8d4fada95d60ffdb1cdfbee65090a",
+      "physicalLines": 107
+    },
+    {
+      "module": "Linear.KoszulHomotopyTop",
+      "path": "source/Linear/KoszulHomotopyTop.lean",
+      "sha256": "76b6e0c66c51ce5cdf82da9a5a405ee3ce61b8569e8a4db688a394f24dd10479",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.KoszulResolution",
+      "path": "source/Linear/KoszulResolution.lean",
+      "sha256": "ce9ac141b89a8081c15fe06317a4c55b0a04d922d0286b9c9948d2419814268d",
+      "physicalLines": 95
+    },
+    {
+      "module": "Linear.KoszulSocleDeterminant",
+      "path": "source/Linear/KoszulSocleDeterminant.lean",
+      "sha256": "06945275d214ac136ee4df4624ef6792ddab57d7b3d8df7b46b40c091cdb7612",
+      "physicalLines": 171
+    },
+    {
+      "module": "Linear.KoszulSocleMap",
+      "path": "source/Linear/KoszulSocleMap.lean",
+      "sha256": "a9f334337f7503bf2efe0b6bc4980c54c5a1ac66eb948798f57ef9bf623e42d2",
+      "physicalLines": 32
+    },
+    {
+      "module": "Linear.KoszulTop",
+      "path": "source/Linear/KoszulTop.lean",
+      "sha256": "fcc60344a344fe3dd497f1f262099d8f6351e03c3b7c4b257432b8e8ce3ce7c7",
+      "physicalLines": 79
+    },
+    {
+      "module": "Linear.LiftedParameterCoordinates",
+      "path": "source/Linear/LiftedParameterCoordinates.lean",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "physicalLines": 157
+    },
+    {
+      "module": "Linear.LiftedParameterMaps",
+      "path": "source/Linear/LiftedParameterMaps.lean",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "physicalLines": 253
+    },
+    {
+      "module": "Linear.LiftedParameterPresentation",
+      "path": "source/Linear/LiftedParameterPresentation.lean",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "physicalLines": 137
+    },
+    {
+      "module": "Linear.LiftedParametersRegular",
+      "path": "source/Linear/LiftedParametersRegular.lean",
+      "sha256": "76e7a5d5b67de8f986aca4a87f40879f2442ee4d01487437cd922450d0bcd873",
+      "physicalLines": 85
+    },
+    {
+      "module": "Linear.LocalResidueEvaluation",
+      "path": "source/Linear/LocalResidueEvaluation.lean",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "physicalLines": 233
+    },
+    {
+      "module": "Linear.ModuleAffineSectionsExact",
+      "path": "source/Linear/ModuleAffineSectionsExact.lean",
+      "sha256": "300c329bec3d4ba7a4bcc655122a80832df2edddf1ae45bc3d59f832e9b2501c",
+      "physicalLines": 101
+    },
+    {
+      "module": "Linear.ModuleBaseCechBasic",
+      "path": "source/Linear/ModuleBaseCechBasic.lean",
+      "sha256": "8a3510c04795a7f6ecf7845d5c08634b824632e2e7f2efcb054a278a6577eab3",
+      "physicalLines": 186
+    },
+    {
+      "module": "Linear.ModuleBaseCechFactors",
+      "path": "source/Linear/ModuleBaseCechFactors.lean",
+      "sha256": "88bec042876122e5e0243aba154f62dcda8c5e9907634ae4735b2f3610d04607",
+      "physicalLines": 38
+    },
+    {
+      "module": "Linear.ModuleFormalCoproductAdditive",
+      "path": "source/Linear/ModuleFormalCoproductAdditive.lean",
+      "sha256": "391b0423015713632adc49ad4b619c7f35eabf2e6c7b9544d6530d47ce6c0540",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.ModuleOrderedBaseCech",
+      "path": "source/Linear/ModuleOrderedBaseCech.lean",
+      "sha256": "66eeaf08f7e051eb895ea19bddb5317b9ac3f3b764d64dbb441ee7cb4168e70e",
+      "physicalLines": 406
+    },
+    {
+      "module": "Linear.ModuleOrderedBaseCechExact",
+      "path": "source/Linear/ModuleOrderedBaseCechExact.lean",
+      "sha256": "0cae5e8ce5581041a1b20b52fbdfd5e446000f3ccdb61472c7468f6b7fe2af32",
+      "physicalLines": 173
+    },
+    {
+      "module": "Linear.ModuleOrderedBaseCechFunctor",
+      "path": "source/Linear/ModuleOrderedBaseCechFunctor.lean",
+      "sha256": "486dbfccabf903cbd44550dea74e74f511ed6aa97e7c653b470a4eb4c39eb64c",
+      "physicalLines": 185
+    },
+    {
+      "module": "Linear.ModuleSheafificationAdjunctionMaps",
+      "path": "source/Linear/ModuleSheafificationAdjunctionMaps.lean",
+      "sha256": "d63081bf5bd484d125349af41d6abbbc0176e73ba003f8a5fbbfdd291c14dae1",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.ModuleSheafificationLocalCriterion",
+      "path": "source/Linear/ModuleSheafificationLocalCriterion.lean",
+      "sha256": "4811ab267f8f4ba56b9a42333e0dee8b14e3ac4f52bdfa0f95d38a973dfed9bd",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.NativeProjectiveCechAffineIntersections",
+      "path": "source/Linear/NativeProjectiveCechAffineIntersections.lean",
+      "sha256": "e4c767179cb64fe05738b708c6ac6b1a27631df7674a8240e04e98289dd3d7cf",
+      "physicalLines": 60
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeOneCover",
+      "path": "source/Linear/NativeProjectiveDegreeOneCover.lean",
+      "sha256": "accd01c4d8e818b4ca4cc6d33e680e4d189d011abf5fd2bbddf0c2d534058f1d",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeZeroComposition",
+      "path": "source/Linear/NativeProjectiveDegreeZeroComposition.lean",
+      "sha256": "5f032dd04c5d82558bb338c47607f9683042974e8d506c3b5e7deaec9ae04424",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeZeroEpi",
+      "path": "source/Linear/NativeProjectiveDegreeZeroEpi.lean",
+      "sha256": "516d0cdb7abfd8564fd2ccaf71596c500d531253716c6ddf0bb8068989bc05d3",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeZeroMap",
+      "path": "source/Linear/NativeProjectiveDegreeZeroMap.lean",
+      "sha256": "98c0d8578034e766970a67187a8a991938b776bedf482da077e22a104099ad12",
+      "physicalLines": 88
+    },
+    {
+      "module": "Linear.NativeProjectiveExactFinitePresentation",
+      "path": "source/Linear/NativeProjectiveExactFinitePresentation.lean",
+      "sha256": "1311912ae48a6221950c648b823a206107c0a01734da322b6afbf593bceff2fa",
+      "physicalLines": 67
+    },
+    {
+      "module": "Linear.NativeProjectiveFiniteGradedFiniteChart",
+      "path": "source/Linear/NativeProjectiveFiniteGradedFiniteChart.lean",
+      "sha256": "62239cfb62ded9746c2c864c405b3534b0baf479ba20196c8757eee92403b00b",
+      "physicalLines": 76
+    },
+    {
+      "module": "Linear.NativeProjectiveFiniteGradedFinitePresentation",
+      "path": "source/Linear/NativeProjectiveFiniteGradedFinitePresentation.lean",
+      "sha256": "10a330256ecd9a646edb7c11deb6b2fb207c54cb5b04add577036640e65d744d",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.NativeProjectiveGradedKernelCech",
+      "path": "source/Linear/NativeProjectiveGradedKernelCech.lean",
+      "sha256": "94731fcd30b82c99c0118af016304b771203e66026c5e2358327a76ae5de5ef6",
+      "physicalLines": 91
+    },
+    {
+      "module": "Linear.NativeProjectiveHomogeneousSMul",
+      "path": "source/Linear/NativeProjectiveHomogeneousSMul.lean",
+      "sha256": "85f987b26327c5629a29f78779e095ee7411be8c08735a1075b3dff28f8fe112",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.NativeProjectiveIntegerTwistChartFree",
+      "path": "source/Linear/NativeProjectiveIntegerTwistChartFree.lean",
+      "sha256": "9479919e80bdbe800a8a64c1585bad861858c183523ef6c6c7a0d9f36a7e6601",
+      "physicalLines": 45
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelFraction",
+      "path": "source/Linear/NativeProjectiveKernelFraction.lean",
+      "sha256": "a8e68a04b852fab510d37384e3c985107978b5d8fc2834ac2008ed73da9c11e9",
+      "physicalLines": 75
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelGrading",
+      "path": "source/Linear/NativeProjectiveKernelGrading.lean",
+      "sha256": "1d3e15492afed282beeeebe67e4b1164fd3e9c2783596a1c43a22bb30e537f4e",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelLocalLift",
+      "path": "source/Linear/NativeProjectiveKernelLocalLift.lean",
+      "sha256": "0947cc8e5e575c707aa8da9c18e46d9dddad06e81edbff35c5aa71b8a0b787f1",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelSectionExact",
+      "path": "source/Linear/NativeProjectiveKernelSectionExact.lean",
+      "sha256": "665bc140bcfdbfc2b8a76b7a83d02fbaf4d7bca8089bedf2530c5e10d26049a8",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelSheaf",
+      "path": "source/Linear/NativeProjectiveKernelSheaf.lean",
+      "sha256": "35b88f671ea03037fc9e9e87432eacbca214b58ec23f2115e70c2bedc9155e50",
+      "physicalLines": 75
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelTwistFinitePresentation",
+      "path": "source/Linear/NativeProjectiveKernelTwistFinitePresentation.lean",
+      "sha256": "aa269111ed5d8f9392bfd2ef52369c8be0f5c28a489dbcd2b7cb583989e2fca2",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleFractionLift",
+      "path": "source/Linear/NativeProjectiveModuleFractionLift.lean",
+      "sha256": "a3de4ba746f376a7570f0ab8acffdb5b2541d57873e7a40d8b4b631fed1c67c7",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalAdd",
+      "path": "source/Linear/NativeProjectiveModuleLocalAdd.lean",
+      "sha256": "57a228b3302c5b94f2711f717cf6d08b53937bf3288fe60a0466d91435668e5a",
+      "physicalLines": 84
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalMap",
+      "path": "source/Linear/NativeProjectiveModuleLocalMap.lean",
+      "sha256": "4efe6440880dd3c95ef5d5c2bbf6d06a24d29ac94265603222222a44f1696f8b",
+      "physicalLines": 80
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalPredicate",
+      "path": "source/Linear/NativeProjectiveModuleLocalPredicate.lean",
+      "sha256": "e2115c92d44050cc2877e9bca10ead5657be45b49de9526fae7af55e3d7f48e0",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalSMul",
+      "path": "source/Linear/NativeProjectiveModuleLocalSMul.lean",
+      "sha256": "a56eef16375a14c18d7b612579a93b2cda12b8bba38801c3f6676d069750c26f",
+      "physicalLines": 95
+    },
+    {
+      "module": "Linear.NativeProjectiveModulePresheaf",
+      "path": "source/Linear/NativeProjectiveModulePresheaf.lean",
+      "sha256": "32a57fb96bba0b23e7b7eca54c1bd0a68374c102bd1c0f247c56739ffbfff867",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSections",
+      "path": "source/Linear/NativeProjectiveModuleSections.lean",
+      "sha256": "1ada8ff22c27caf3391a2e3080fddae3d2d30fb01140838b56cb11ccae289d2d",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSheaf",
+      "path": "source/Linear/NativeProjectiveModuleSheaf.lean",
+      "sha256": "f1d285c41b1325dfeb3d8fa8ff3e3d508af7b7c1307f70d34058192052a29201",
+      "physicalLines": 37
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSheafMap",
+      "path": "source/Linear/NativeProjectiveModuleSheafMap.lean",
+      "sha256": "d349cd4c673e7e8805c983666a310b579e0738f424ab24f397968cc65331b074",
+      "physicalLines": 89
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleTwistFraction",
+      "path": "source/Linear/NativeProjectiveModuleTwistFraction.lean",
+      "sha256": "5cf558c409694cfbc8cfb29eab4e1e699b1c43c2b7eb46d403d97a885045f1e9",
+      "physicalLines": 90
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleTwistPairing",
+      "path": "source/Linear/NativeProjectiveModuleTwistPairing.lean",
+      "sha256": "646ea517909e3ddb9c8e88eee8632d2c3379b064d32f4881260d5c8446f4d909",
+      "physicalLines": 91
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleTwistPairingFraction",
+      "path": "source/Linear/NativeProjectiveModuleTwistPairingFraction.lean",
+      "sha256": "703d8022a69b82c2725572767b66fda7173b3333fd0434757ca9618f2721a1d8",
+      "physicalLines": 84
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleTwistSectionEquiv",
+      "path": "source/Linear/NativeProjectiveModuleTwistSectionEquiv.lean",
+      "sha256": "74be431e1b1f1971c76898c2dc088f48b7c95b0fa1eddd504f28dad192435f58",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleTwistSheafOverIso",
+      "path": "source/Linear/NativeProjectiveModuleTwistSheafOverIso.lean",
+      "sha256": "a29e9439fd79201d3723a4feca63d0efd1383b1cc3c2dcd12e8d0e990d10a0f6",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleTwistTensorChart",
+      "path": "source/Linear/NativeProjectiveModuleTwistTensorChart.lean",
+      "sha256": "cd3e102b48e271e1ecfd73e32e155cd62a06bfeba7f8e8d688e69cfc2c99a3f2",
+      "physicalLines": 189
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleTwistTensorLocality",
+      "path": "source/Linear/NativeProjectiveModuleTwistTensorLocality.lean",
+      "sha256": "c621128610c722aa23c69481be31e67fa03f7cc244e337eed2d57e9a9c33e7f8",
+      "physicalLines": 79
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleTwistTensorMap",
+      "path": "source/Linear/NativeProjectiveModuleTwistTensorMap.lean",
+      "sha256": "4b4f5a38d0e6012e0382cdb6616b04eaf7cca77e0e9a084b7eb5fc3c6065187f",
+      "physicalLines": 61
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleTwistTensorSheafIso",
+      "path": "source/Linear/NativeProjectiveModuleTwistTensorSheafIso.lean",
+      "sha256": "71783c744810f2d71dfcaee1e961eabcf21964318e8d25240f1376a7e66730e6",
+      "physicalLines": 55
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleTwistTensorSheafMap",
+      "path": "source/Linear/NativeProjectiveModuleTwistTensorSheafMap.lean",
+      "sha256": "e855e4d7be2285d8a4845ce17275cbb1e847a7a0f0ec8249c4c935019cb17542",
+      "physicalLines": 39
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleTwistUnit",
+      "path": "source/Linear/NativeProjectiveModuleTwistUnit.lean",
+      "sha256": "92a106f741deff05e89527b1a42ca1be3d49b2fc13fef7d8f0d981bd506efac7",
+      "physicalLines": 68
+    },
+    {
+      "module": "Linear.NativeProjectiveOrderedCechExact",
+      "path": "source/Linear/NativeProjectiveOrderedCechExact.lean",
+      "sha256": "74792786b44ba20cbf7d03b5a8f7950a2d6a79e660f467d4fd66880a0b25b775",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.NativeProjectiveOverCokernel",
+      "path": "source/Linear/NativeProjectiveOverCokernel.lean",
+      "sha256": "fb4c392f6e102bbf3f43299a24c933c2d561d74fe81c9321843a0abf2bf114a4",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.NativeProjectivePrimeMapExact",
+      "path": "source/Linear/NativeProjectivePrimeMapExact.lean",
+      "sha256": "b51f29882ba032227b59e3433026c8afa1cc51aa47d8485ff6953461d779a0c0",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.NativeProjectivePrimeTwistUnit",
+      "path": "source/Linear/NativeProjectivePrimeTwistUnit.lean",
+      "sha256": "2fdcddebb7bcfd76e4feef9e7ef3c6ca8dde0991e1f2e8b9470dd15f0f2cfffb",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.NativeProjectiveRingIntegerPieces",
+      "path": "source/Linear/NativeProjectiveRingIntegerPieces.lean",
+      "sha256": "4017d431d5faf02665d8c5d299aaf3adc2747ed9f426d0dcbdffb3835f8e1dfb",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.NativeProjectiveRingModuleLocalization",
+      "path": "source/Linear/NativeProjectiveRingModuleLocalization.lean",
+      "sha256": "13d48996b79724616983b634cde070ea8def5b4e97a213c7f2d855d966461750",
+      "physicalLines": 72
+    },
+    {
+      "module": "Linear.NativeProjectiveSheafExact",
+      "path": "source/Linear/NativeProjectiveSheafExact.lean",
+      "sha256": "1554ce5c5978feb2041e8548ef6822f218d990b4b6d80bd7d03272bc141fc9e9",
+      "physicalLines": 103
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeBiproduct",
+      "path": "source/Linear/NativeProjectiveShiftedFreeBiproduct.lean",
+      "sha256": "3dfafd781ee564293826ee8f020d3fcdc3b611a253b7d4eaabce21d5e4c30f01",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeChart",
+      "path": "source/Linear/NativeProjectiveShiftedFreeChart.lean",
+      "sha256": "a8b99d0e5b0f3b8e582b7e0e2f46f52b5081dd3267c1a88ebb7d9cfd7baeed90",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeCoordinateMaps",
+      "path": "source/Linear/NativeProjectiveShiftedFreeCoordinateMaps.lean",
+      "sha256": "8de84a0c4b1451da4cb50618c9406291118f22463dd557aff890e107f4252e6b",
+      "physicalLines": 101
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreePrimeIdentities",
+      "path": "source/Linear/NativeProjectiveShiftedFreePrimeIdentities.lean",
+      "sha256": "35372197f9e3b80cd781802864ece41586f650ad56339eb0dc5747aafed36703",
+      "physicalLines": 55
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeSheafIdentities",
+      "path": "source/Linear/NativeProjectiveShiftedFreeSheafIdentities.lean",
+      "sha256": "bda1e5a81027a2edb1524d923968ea12bc42ac15d944fbd0e31050a99c953a3b",
+      "physicalLines": 96
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeSheafMaps",
+      "path": "source/Linear/NativeProjectiveShiftedFreeSheafMaps.lean",
+      "sha256": "27881ea9ca4ff43689f13eaf12d1ab4ed2a5053c9382d4c18e3edc26bdd110eb",
+      "physicalLines": 74
+    },
+    {
+      "module": "Linear.NativeProjectiveTensorTwistOrderedCech",
+      "path": "source/Linear/NativeProjectiveTensorTwistOrderedCech.lean",
+      "sha256": "6bd68e7174e260f00f246f1bd48013ef0703f44169d2a1ec9fd6142223573e68",
+      "physicalLines": 63
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistChartFree",
+      "path": "source/Linear/NativeProjectiveTwistChartFree.lean",
+      "sha256": "b6ccfba8f8abaf04dd7eb40555b23b06af28cfb71f35ae700d0c942d04b7b251",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistFinitePresentation",
+      "path": "source/Linear/NativeProjectiveTwistFinitePresentation.lean",
+      "sha256": "65f671c651e3665800db7cbf9bf01aeeb2c661dbfcad81d5d07c1edd01a084b9",
+      "physicalLines": 35
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistFraction",
+      "path": "source/Linear/NativeProjectiveTwistFraction.lean",
+      "sha256": "a5ae39d7ff084d4e673a65a019aa2ab18e60df97a7bc8346220eef877297d4bb",
+      "physicalLines": 85
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistRegrading",
+      "path": "source/Linear/NativeProjectiveTwistRegrading.lean",
+      "sha256": "8e3e8c0d90c51b89d408bdad169d6227ff24d2aea9bd6e36836e73552b261fa6",
+      "physicalLines": 94
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistSectionEquiv",
+      "path": "source/Linear/NativeProjectiveTwistSectionEquiv.lean",
+      "sha256": "0aa852ed6dd392689f64d63aa2e72922c50ed6d18d2b625996e24107eab57a51",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistSheafOverIso",
+      "path": "source/Linear/NativeProjectiveTwistSheafOverIso.lean",
+      "sha256": "a23bad63d87d551b02c02645a12bd7cbc4f6c6eed6941fb124433773a62a998e",
+      "physicalLines": 54
+    },
+    {
+      "module": "Linear.NativeStructureModuleFraction",
+      "path": "source/Linear/NativeStructureModuleFraction.lean",
+      "sha256": "d680e9e569b17f4604591f1eddecd1a9b9fbc1b08e7e0cc5928023ba72594b09",
+      "physicalLines": 61
+    },
+    {
+      "module": "Linear.NativeStructureModuleSections",
+      "path": "source/Linear/NativeStructureModuleSections.lean",
+      "sha256": "4e7fd6269baae74fb097b15fe0f9e9ee80c9e85cb5ffe4284a7e3e1e436d1d16",
+      "physicalLines": 103
+    },
+    {
+      "module": "Linear.NativeStructureModuleSheaf",
+      "path": "source/Linear/NativeStructureModuleSheaf.lean",
+      "sha256": "e32a4e6e7c54ea04b4fb2795008ab5c652d071ca42d3dba3cfb77134a642fdf7",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.NilpotentEvaluation",
+      "path": "source/Linear/NilpotentEvaluation.lean",
+      "sha256": "ba548ae54a09805d18c0a67616600842020082a08df4c8092ae67b4c42bdc871",
+      "physicalLines": 74
+    },
+    {
+      "module": "Linear.NilpotentEvaluationUnique",
+      "path": "source/Linear/NilpotentEvaluationUnique.lean",
+      "sha256": "c9ba1a17ade996700f2b2e0ced2d6e9a7428c9c4867388809828d9651fe1e431",
+      "physicalLines": 149
+    },
+    {
+      "module": "Linear.NilpotentRegular",
+      "path": "source/Linear/NilpotentRegular.lean",
+      "sha256": "f15652633da27496fc641422562ceefcdadda0dd70a36c79b6776357033018c9",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.OrderedCechSupportAlternating",
+      "path": "source/Linear/OrderedCechSupportAlternating.lean",
+      "sha256": "a062152c1f16ce9ef3e91c2726047eabe031c80a5f0129147cb5f85650f25f04",
+      "physicalLines": 390
+    },
+    {
+      "module": "Linear.OrderedCechSupportContraction",
+      "path": "source/Linear/OrderedCechSupportContraction.lean",
+      "sha256": "ce34e008333be524fd128d4b109f12631ff323c6d915c03126de7652c74156a0",
+      "physicalLines": 400
+    },
+    {
+      "module": "Linear.PairingMatrix",
+      "path": "source/Linear/PairingMatrix.lean",
+      "sha256": "aa15aafe057d5bdf3881e401f8a27e479f3ffb77c68dfbe93cf06d08ff16ecde",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.ParameterLinearPart",
+      "path": "source/Linear/ParameterLinearPart.lean",
+      "sha256": "5755d08c8063724334df12890bba97078501a34de8c9799d7cab0da2013ae449",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.ParameterPairingChange",
+      "path": "source/Linear/ParameterPairingChange.lean",
+      "sha256": "9aa8bc7a50113102c944d46a1e5f8e2496d131c39efee02ad31d20dba7691f08",
+      "physicalLines": 88
+    },
+    {
+      "module": "Linear.ParameterQuotient",
+      "path": "source/Linear/ParameterQuotient.lean",
+      "sha256": "ecedb6ff69cfb3bb3a9fa97eeefb40335a86ffe31fb49f8cd00398fc525e9b53",
+      "physicalLines": 114
+    },
+    {
+      "module": "Linear.ParameterSubstitution",
+      "path": "source/Linear/ParameterSubstitution.lean",
+      "sha256": "c253665adb7aabd4f639d1ec12446ee9f70af874dfdcae6186ef62e74fe8ec6e",
+      "physicalLines": 124
+    },
+    {
+      "module": "Linear.PolynomialApproximation",
+      "path": "source/Linear/PolynomialApproximation.lean",
+      "sha256": "113efcfc5c5beaf7150cff35b3fda3d1853fa9c19897a1e128b9158d1887a187",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.PolynomialDiagonal",
+      "path": "source/Linear/PolynomialDiagonal.lean",
+      "sha256": "769caeb6e040f1c016a4070b56b73bdda07e6dc5be294cc4dbe8b06d42e5feeb",
+      "physicalLines": 69
+    },
+    {
+      "module": "Linear.PolynomialDoubleFiber",
+      "path": "source/Linear/PolynomialDoubleFiber.lean",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "physicalLines": 276
+    },
+    {
+      "module": "Linear.PolynomialFiberDiagonal",
+      "path": "source/Linear/PolynomialFiberDiagonal.lean",
+      "sha256": "349ca2d5c9a4255e6c283beb8cfb55cdbf1613137febf41a8c6b228ae51ae4d3",
+      "physicalLines": 110
+    },
+    {
+      "module": "Linear.PolynomialGlobalResidue",
+      "path": "source/Linear/PolynomialGlobalResidue.lean",
+      "sha256": "e83282756eaff7e570e912c38dc0508a23376d44b587142f595ac56db142ac7e",
+      "physicalLines": 157
+    },
+    {
+      "module": "Linear.PolynomialOriginFinite",
+      "path": "source/Linear/PolynomialOriginFinite.lean",
+      "sha256": "bb1e9cdb388c3b98e5527f5aa6c8d0d6876ca272a84c2d4af6cb441fd03dad1a",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.PolynomialRegular",
+      "path": "source/Linear/PolynomialRegular.lean",
+      "sha256": "789096a78f53b3d00a04ee811c67437f0f0c25c86bb7425375248bf74ea9e5ac",
+      "physicalLines": 91
+    },
+    {
+      "module": "Linear.PolynomialSocle",
+      "path": "source/Linear/PolynomialSocle.lean",
+      "sha256": "e92e113f68dcdd4ad84f9d09d24714624d02c496b2517585816b3d235209c5b5",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.PowerSeriesAugmentation",
+      "path": "source/Linear/PowerSeriesAugmentation.lean",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "physicalLines": 142
+    },
+    {
+      "module": "Linear.PowerSeriesCentering",
+      "path": "source/Linear/PowerSeriesCentering.lean",
+      "sha256": "5dcb5c506616c29da2c93ec573fbcee0c9e29fccb0cac8602dde00bc7237669c",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.PowerSeriesCoefficients",
+      "path": "source/Linear/PowerSeriesCoefficients.lean",
+      "sha256": "4916a65bd995b9bc121f7a8b3d0eae0efa38013d1446bc3f451bcc14e9213e38",
+      "physicalLines": 145
+    },
+    {
+      "module": "Linear.PowerSeriesCoordinateChart",
+      "path": "source/Linear/PowerSeriesCoordinateChart.lean",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "physicalLines": 131
+    },
+    {
+      "module": "Linear.PowerSeriesDerivative",
+      "path": "source/Linear/PowerSeriesDerivative.lean",
+      "sha256": "21a450c5ef7b483d8e916e87bd72368fce15f5f177b5840a849a353829531e45",
+      "physicalLines": 83
+    },
+    {
+      "module": "Linear.PowerSeriesDiagonal",
+      "path": "source/Linear/PowerSeriesDiagonal.lean",
+      "sha256": "9059d808ee26c0dbdd829d1b4d9f0e59bd3c05f472ea91030f8ac98ae7cc1f77",
+      "physicalLines": 90
+    },
+    {
+      "module": "Linear.PowerSeriesFlatten",
+      "path": "source/Linear/PowerSeriesFlatten.lean",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "physicalLines": 161
+    },
+    {
+      "module": "Linear.PowerSeriesFlattenDerivative",
+      "path": "source/Linear/PowerSeriesFlattenDerivative.lean",
+      "sha256": "02a513347606616034771f40c5184a002620d6088e4db07d1ecf2847a06a72cd",
+      "physicalLines": 96
+    },
+    {
+      "module": "Linear.PowerSeriesRegular",
+      "path": "source/Linear/PowerSeriesRegular.lean",
+      "sha256": "62267496ce860a5ded36ceea1c8e2cc74543873cc661e5e49aa8f97de17db065",
+      "physicalLines": 60
+    },
+    {
+      "module": "Linear.PowerSeriesSocle",
+      "path": "source/Linear/PowerSeriesSocle.lean",
+      "sha256": "30a412a1f2f54182789566179aa0194d06f3a742232c64016f6b7899dfecb8bb",
+      "physicalLines": 141
+    },
+    {
+      "module": "Linear.PowerSeriesSpecialization",
+      "path": "source/Linear/PowerSeriesSpecialization.lean",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "physicalLines": 145
+    },
+    {
+      "module": "Linear.PowerSeriesTranslation",
+      "path": "source/Linear/PowerSeriesTranslation.lean",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "physicalLines": 134
+    },
+    {
+      "module": "Linear.Primitive",
+      "path": "source/Linear/Primitive.lean",
+      "sha256": "020420375e55a6ccb702d732c2bba4eb7bff3c327c2ba74612b4b8e7baff1027",
+      "physicalLines": 80
+    },
+    {
+      "module": "Linear.QuasicoherentAffineOpenSections",
+      "path": "source/Linear/QuasicoherentAffineOpenSections.lean",
+      "sha256": "9b400b4c38fa8e9296ef1e5300eb6c160a8e95db6a8c1d7d1a85f4a388f64c72",
+      "physicalLines": 42
+    },
+    {
+      "module": "Linear.Reduction",
+      "path": "source/Linear/Reduction.lean",
+      "sha256": "d427deebc1b6b2a831c6c05a257c3520f65cd06eac89ee061a23019e68c0f9e9",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.RegularGeneratorsFree",
+      "path": "source/Linear/RegularGeneratorsFree.lean",
+      "sha256": "cf14c5753928d0ff01b7d49e8a5c4a99d4a4dce0658ef9d3c9c72941f9c68b03",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.RegularSpecialization",
+      "path": "source/Linear/RegularSpecialization.lean",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "physicalLines": 168
+    },
+    {
+      "module": "Linear.RelativeJacobian",
+      "path": "source/Linear/RelativeJacobian.lean",
+      "sha256": "a542fad749ca0a74c1f94851fe3a45c8598e95f4c17f48450f4aaa9b41aea7fe",
+      "physicalLines": 106
+    },
+    {
+      "module": "Linear.RelativeJacobianTrace",
+      "path": "source/Linear/RelativeJacobianTrace.lean",
+      "sha256": "ae8347033ae5324f5fdfcd88ee2d92530f01b2b0efd6eea4a4d4ab8a14b34760",
+      "physicalLines": 112
+    },
+    {
+      "module": "Linear.ResiduePairing",
+      "path": "source/Linear/ResiduePairing.lean",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "physicalLines": 145
+    },
+    {
+      "module": "Linear.SchemeModuleAdditiveSheafColimits",
+      "path": "source/Linear/SchemeModuleAdditiveSheafColimits.lean",
+      "sha256": "ff19d24ca93f59e8e5ddd1dcfa5d13200450737209903460cee03e2df0c13b8c",
+      "physicalLines": 95
+    },
+    {
+      "module": "Linear.SheafFreePresentationOfExact",
+      "path": "source/Linear/SheafFreePresentationOfExact.lean",
+      "sha256": "b236df68a16b6f3bc356f3b2a20227fe2fe3424bb2d6928bf103256603ee2ccf",
+      "physicalLines": 35
+    },
+    {
+      "module": "Linear.SheafFreePresentationOfExactFinite",
+      "path": "source/Linear/SheafFreePresentationOfExactFinite.lean",
+      "sha256": "2fddbb75d6d2e056416721620d75672b4f057a4becd2c5659e0db0ea27b0c927",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.SoclePairing",
+      "path": "source/Linear/SoclePairing.lean",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "physicalLines": 125
+    },
+    {
+      "module": "Linear.SocleTransport",
+      "path": "source/Linear/SocleTransport.lean",
+      "sha256": "b35c088a3aaa192b97975fd7ef6cd1d239bee98653cfd8ee1a6c62ca9af7dab7",
+      "physicalLines": 45
+    },
+    {
+      "module": "Linear.Target",
+      "path": "source/Linear/Target.lean",
+      "sha256": "c52f521b90d60866bacee0354da36530c36190ea0d5527d713d4f0127a6ef1ef",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.TensorDifference",
+      "path": "source/Linear/TensorDifference.lean",
+      "sha256": "0973518273c958d80299be1f4d0ac3324f953334583dd5f1cd638f958be72206",
+      "physicalLines": 93
+    },
+    {
+      "module": "Linear.TensorSpecialization",
+      "path": "source/Linear/TensorSpecialization.lean",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "physicalLines": 194
+    },
+    {
+      "module": "Linear.TraceElement",
+      "path": "source/Linear/TraceElement.lean",
+      "sha256": "b9cf6e1f101c59eaa1ea8599410efcf618a9450b966841cfe816972f74c8ed3b",
+      "physicalLines": 120
+    },
+    {
+      "module": "Linear.UniversalDifference",
+      "path": "source/Linear/UniversalDifference.lean",
+      "sha256": "0475614d273bcc3cd4870e90280454633b4996b0e2b5cb4e7ccac0474ec92766",
+      "physicalLines": 89
+    },
+    {
+      "module": "Linear.Vendor.ExteriorBaseChange",
+      "path": "source/Linear/Vendor/ExteriorBaseChange.lean",
+      "sha256": "45617eb40c0e0f9fce4e66de6ea34defcfd9e48344cd21966085d7025d476a4b",
+      "physicalLines": 238
+    },
+    {
+      "module": "Linear.Vendor.ExteriorProduct",
+      "path": "source/Linear/Vendor/ExteriorProduct.lean",
+      "sha256": "57bef70d222f202e7d48f05838b243e776a818c7fb68c0dd4c79e2f96e3ea22a",
+      "physicalLines": 280
+    },
+    {
+      "module": "Linear.Vendor.KoszulComplex",
+      "path": "source/Linear/Vendor/KoszulComplex.lean",
+      "sha256": "eeec48b0830a1ecf31160f5818c61a00a8f9ecca5d3a0a8004ce8f6fe578618a",
+      "physicalLines": 702
+    },
+    {
+      "path": "source/Linear.lean",
+      "sha256": "36e612fe308dd27bad6b517a12d78b2f8f7b15ee92d0d99d3b223f77f8bf7b5a",
+      "physicalLines": 16
+    },
+    {
+      "path": "source/CheckAxioms.lean",
+      "sha256": "d4b8caa02006acc7672296809461acfddb21c8f9e75b69e9aa906bec3efb08d1",
+      "physicalLines": 232
+    },
+    {
+      "path": "source/lean-toolchain",
+      "sha256": "bc84812c94489d1e3e191baa1dc10d5eb684382d7fe9d2a5ab085e72c1c67e47",
+      "physicalLines": 1
+    },
+    {
+      "path": "source/lakefile.toml",
+      "sha256": "12e6d3039c6ed00731bcf1c8f8e9c116e81771e6a74cad289b920b767f94d9ee",
+      "physicalLines": 11
+    },
+    {
+      "path": "source/lake-manifest.json",
+      "sha256": "ef71ef5fb13fd129bbf52a72216543bfd4c8e2b752dd3234d0f18b9964b104da",
+      "physicalLines": 96
+    }
+  ],
+  "compiledModules": [
+    {
+      "module": "Linear.ModuleFormalCoproductAdditive",
+      "sourceSha256": "391b0423015713632adc49ad4b619c7f35eabf2e6c7b9544d6530d47ce6c0540",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.ModuleFormalCoproductAdditive.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.ModuleFormalCoproductAdditive.resource.json"
+    },
+    {
+      "module": "Linear.ModuleBaseCechBasic",
+      "sourceSha256": "8a3510c04795a7f6ecf7845d5c08634b824632e2e7f2efcb054a278a6577eab3",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.ModuleBaseCechBasic.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.ModuleBaseCechBasic.resource.json"
+    },
+    {
+      "module": "Linear.ModuleBaseCechFactors",
+      "sourceSha256": "88bec042876122e5e0243aba154f62dcda8c5e9907634ae4735b2f3610d04607",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.ModuleBaseCechFactors.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.ModuleBaseCechFactors.resource.json"
+    },
+    {
+      "module": "Linear.ModuleOrderedBaseCech",
+      "sourceSha256": "66eeaf08f7e051eb895ea19bddb5317b9ac3f3b764d64dbb441ee7cb4168e70e",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.ModuleOrderedBaseCech.compiler.log",
+      "compilerLogSha256": "5a2033964713ce912c093caed4dceee8351965ba8fabb27b274ebcca883c9c75",
+      "resourceLog": "evidence/Linear.ModuleOrderedBaseCech.resource.json"
+    },
+    {
+      "module": "Linear.ModuleAffineSectionsExact",
+      "sourceSha256": "300c329bec3d4ba7a4bcc655122a80832df2edddf1ae45bc3d59f832e9b2501c",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.ModuleAffineSectionsExact.compiler.log",
+      "compilerLogSha256": "e3377fbac888af51ff8d79df8c387a864d0e90aa86ae62c5e17b5f88d5d43e3b",
+      "resourceLog": "evidence/Linear.ModuleAffineSectionsExact.resource.json"
+    },
+    {
+      "module": "Linear.ModuleOrderedBaseCechFunctor",
+      "sourceSha256": "486dbfccabf903cbd44550dea74e74f511ed6aa97e7c653b470a4eb4c39eb64c",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.ModuleOrderedBaseCechFunctor.compiler.log",
+      "compilerLogSha256": "799e11df1861ed5e8262fc0c518d9fc791946055663fa9e2095b63d25e29c6d9",
+      "resourceLog": "evidence/Linear.ModuleOrderedBaseCechFunctor.resource.json"
+    },
+    {
+      "module": "Linear.ModuleOrderedBaseCechExact",
+      "sourceSha256": "0cae5e8ce5581041a1b20b52fbdfd5e446000f3ccdb61472c7468f6b7fe2af32",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.ModuleOrderedBaseCechExact.compiler.log",
+      "compilerLogSha256": "7144cecf05b6b1447c2bbd0046d245e53c7451bd5c9a546a1bc9093156376560",
+      "resourceLog": "evidence/Linear.ModuleOrderedBaseCechExact.resource.json"
+    },
+    {
+      "module": "Linear.NativeProjectiveTensorTwistOrderedCech",
+      "sourceSha256": "6bd68e7174e260f00f246f1bd48013ef0703f44169d2a1ec9fd6142223573e68",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.NativeProjectiveTensorTwistOrderedCech.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.NativeProjectiveTensorTwistOrderedCech.resource.json"
+    },
+    {
+      "module": "Linear.NativeProjectiveCechAffineIntersections",
+      "sourceSha256": "e4c767179cb64fe05738b708c6ac6b1a27631df7674a8240e04e98289dd3d7cf",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.NativeProjectiveCechAffineIntersections.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.NativeProjectiveCechAffineIntersections.resource.json"
+    },
+    {
+      "module": "Linear.NativeProjectiveOrderedCechExact",
+      "sourceSha256": "74792786b44ba20cbf7d03b5a8f7950a2d6a79e660f467d4fd66880a0b25b775",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.NativeProjectiveOrderedCechExact.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.NativeProjectiveOrderedCechExact.resource.json"
+    },
+    {
+      "module": "Linear.NativeProjectiveGradedKernelCech",
+      "sourceSha256": "94731fcd30b82c99c0118af016304b771203e66026c5e2358327a76ae5de5ef6",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.NativeProjectiveGradedKernelCech.compiler.log",
+      "compilerLogSha256": "6f5a605a7c2367ab325a2681cdda5cf288412c95bf250ddc6d0435d4346fa638",
+      "resourceLog": "evidence/Linear.NativeProjectiveGradedKernelCech.resource.json"
+    },
+    {
+      "module": "Linear.CechSupportContraction",
+      "sourceSha256": "1320d65475e33bc977896e9405aa3fe5fb303d09969f927871e56eb7d9f2221b",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.CechSupportContraction.compiler.log",
+      "compilerLogSha256": "92114092a17cd824fc0efa4e14f33bd180c3addd5986de60d1687b591055e451",
+      "resourceLog": "evidence/Linear.CechSupportContraction.resource.json"
+    },
+    {
+      "module": "Linear.OrderedCechSupportContraction",
+      "sourceSha256": "ce34e008333be524fd128d4b109f12631ff323c6d915c03126de7652c74156a0",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.OrderedCechSupportContraction.compiler.log",
+      "compilerLogSha256": "cda501b8860ac193f478df530c5cb3e24f7331c0d538a46ceb277ea372a68c0b",
+      "resourceLog": "evidence/Linear.OrderedCechSupportContraction.resource.json"
+    },
+    {
+      "module": "Linear.CechTuplePermutations",
+      "sourceSha256": "8295149bb602cde042e02f73244545fa904283a755e13fe084293ad7dd505f72",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.CechTuplePermutations.compiler.log",
+      "compilerLogSha256": "57d0f14c2da7644ba2da4d9f5179ffa1b78a51dc2ab5c7bad2354a53b17ea1e6",
+      "resourceLog": "evidence/Linear.CechTuplePermutations.resource.json"
+    },
+    {
+      "module": "Linear.OrderedCechSupportAlternating",
+      "sourceSha256": "a062152c1f16ce9ef3e91c2726047eabe031c80a5f0129147cb5f85650f25f04",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.OrderedCechSupportAlternating.compiler.log",
+      "compilerLogSha256": "bbf34aa4590165c020642da78d2c16c5e6a8ae788a2944fa66df0960c63ac082",
+      "resourceLog": "evidence/Linear.OrderedCechSupportAlternating.resource.json"
+    }
+  ],
+  "declarations": [
+    {
+      "name": "CategoryTheory.Limits.FormalCoproduct.evalOp_additive",
+      "kind": "instance",
+      "module": "Linear.ModuleFormalCoproductAdditive",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Hom.preimage_cechIntersection",
+      "kind": "theorem",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseModulePresheaf",
+      "kind": "def",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_obj_coe",
+      "kind": "theorem",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_map_apply",
+      "kind": "theorem",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_isSheaf",
+      "kind": "theorem",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseModuleSheaf",
+      "kind": "def",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseModuleSheaf_obj_coe",
+      "kind": "theorem",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseModuleSheaf_map_apply",
+      "kind": "theorem",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor",
+      "kind": "def",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_obj",
+      "kind": "theorem",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_preservesZeroMorphisms",
+      "kind": "instance",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_additive",
+      "kind": "instance",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseCechComplex",
+      "kind": "def",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor",
+      "kind": "def",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor_obj",
+      "kind": "theorem",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.moduleCatCechComplexFunctor_preservesZeroMorphisms",
+      "kind": "instance",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor_preservesZeroMorphisms",
+      "kind": "instance",
+      "module": "Linear.ModuleBaseCechBasic",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseCechFactor",
+      "kind": "abbrev",
+      "module": "Linear.ModuleBaseCechFactors",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.baseCechXIsoPi",
+      "kind": "def",
+      "module": "Linear.ModuleBaseCechFactors",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.OrderedCechIndex",
+      "kind": "def",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.OrderedCechIndex.delete",
+      "kind": "def",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.OrderedCechIndex.delete_delete",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.isEmpty_orderedCechIndex_of_card_le",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedCechFormalObject",
+      "kind": "def",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedCechFace",
+      "kind": "def",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedCechFace_comp",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechTerm",
+      "kind": "abbrev",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject",
+      "kind": "def",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectIsoPi",
+      "kind": "def",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface",
+      "kind": "def",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp_π",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp'",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential",
+      "kind": "def",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_comp_π",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_zero_comp_π_sub",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_comp",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex",
+      "kind": "def",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_X",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_d",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechLinearDifferential",
+      "kind": "abbrev",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechLinearDifferential_comp",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechTerm_subsingleton_of_card_le",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject_isZero_of_card_le",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_exactAt_of_card_le",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject_subsingleton_of_card_le",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.quasicoherent_sections_surjective_on_isAffineOpen",
+      "kind": "theorem",
+      "module": "Linear.ModuleAffineSectionsExact",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.IsAffineOpen.cechIntersection",
+      "kind": "theorem",
+      "module": "Linear.ModuleAffineSectionsExact",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "CategoryTheory.ShortComplex.ShortExact.map_baseModulePresheafFunctor_eval_of_isAffineOpen",
+      "kind": "theorem",
+      "module": "Linear.ModuleAffineSectionsExact",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor",
+      "kind": "def",
+      "module": "Linear.ModuleOrderedBaseCechFunctor",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor_obj",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCechFunctor",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor_additive",
+      "kind": "instance",
+      "module": "Linear.ModuleOrderedBaseCechFunctor",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor",
+      "kind": "def",
+      "module": "Linear.ModuleOrderedBaseCechFunctor",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_obj",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCechFunctor",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_additive",
+      "kind": "instance",
+      "module": "Linear.ModuleOrderedBaseCechFunctor",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_preservesZeroMorphisms",
+      "kind": "instance",
+      "module": "Linear.ModuleOrderedBaseCechFunctor",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "CategoryTheory.ShortComplex.ShortExact.map_orderedBaseCechComplexFunctor_of_affine_intersections",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCechExact",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "CategoryTheory.ShortComplex.ShortExact.map_orderedBaseCechComplexFunctor_of_affine_openCover",
+      "kind": "theorem",
+      "module": "Linear.ModuleOrderedBaseCechExact",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveTensorTwistOrderedCechIso",
+      "kind": "def",
+      "module": "Linear.NativeProjectiveTensorTwistOrderedCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveTensorTwistOrderedCech_exactAt_iff",
+      "kind": "theorem",
+      "module": "Linear.NativeProjectiveTensorTwistOrderedCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveIntegerTwistOrderedCech_exactAt_of_card_le",
+      "kind": "theorem",
+      "module": "Linear.NativeProjectiveTensorTwistOrderedCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjective_basicOpen_finset_prod",
+      "kind": "theorem",
+      "module": "Linear.NativeProjectiveCechAffineIntersections",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjective_cechIntersection_eq_basicOpen",
+      "kind": "theorem",
+      "module": "Linear.NativeProjectiveCechAffineIntersections",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjective_cechProduct_mem_degree",
+      "kind": "theorem",
+      "module": "Linear.NativeProjectiveCechAffineIntersections",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjective_cechIntersection_isAffine",
+      "kind": "theorem",
+      "module": "Linear.NativeProjectiveCechAffineIntersections",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveOrderedCech_shortExact",
+      "kind": "theorem",
+      "module": "Linear.NativeProjectiveOrderedCechExact",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveOrderedCech_exactAt_quotient",
+      "kind": "theorem",
+      "module": "Linear.NativeProjectiveOrderedCechExact",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveGradedKernelSheaves_shortExact",
+      "kind": "theorem",
+      "module": "Linear.NativeProjectiveGradedKernelCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveGradedKernelOrderedCech_shortExact",
+      "kind": "theorem",
+      "module": "Linear.NativeProjectiveGradedKernelCech",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.CechSupportCochain",
+      "kind": "def",
+      "module": "Linear.CechSupportContraction",
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.cechSupportDifferential",
+      "kind": "def",
+      "module": "Linear.CechSupportContraction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.cechSupportContraction",
+      "kind": "def",
+      "module": "Linear.CechSupportContraction",
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.cechSupportContraction_homotopy",
+      "kind": "theorem",
+      "module": "Linear.CechSupportContraction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.exists_preimage_cechSupportDifferential",
+      "kind": "theorem",
+      "module": "Linear.CechSupportContraction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.OrderedCechSupportCochain",
+      "kind": "def",
+      "module": "Linear.OrderedCechSupportContraction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.OrderedCechSupportCochain.module_finite",
+      "kind": "theorem",
+      "module": "Linear.OrderedCechSupportContraction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.orderedCechSupportDifferential",
+      "kind": "def",
+      "module": "Linear.OrderedCechSupportContraction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.orderedCechSupportDifferential_zero_injective",
+      "kind": "theorem",
+      "module": "Linear.OrderedCechSupportContraction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.orderedCechSupportDifferential_zero_injective_of_nonempty",
+      "kind": "theorem",
+      "module": "Linear.OrderedCechSupportContraction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.exists_preimage_orderedCechSupportDifferential_zero",
+      "kind": "theorem",
+      "module": "Linear.OrderedCechSupportContraction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm",
+      "kind": "def",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm",
+      "kind": "def",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_apply_zero",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_eq_decomposeFin",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_apply_succ",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.succAbove_cechDeleteSwapPerm",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.comp_succAbove_cechDeleteSwapPerm_of_eq",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm_sign",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull",
+      "kind": "def",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechPermDelete",
+      "kind": "def",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_apply_zero",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_eq_decomposeFin",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_apply_succ",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.succAbove_cechPermDelete",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechPermDelete_sign",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.cechPermDelete_signed_coefficient",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.exists_eq_ne_of_not_injective",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.exists_partner_of_delete_injective",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.eq_partner_of_delete_injective",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.delete_partner_injective",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "AlgebraicGeometry.Scheme.Modules.delete_not_injective_of_ne",
+      "kind": "theorem",
+      "module": "Linear.CechTuplePermutations",
+      "axioms": [
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.orderedCechSupportRestrict",
+      "kind": "def",
+      "module": "Linear.OrderedCechSupportAlternating",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.orderedCechSupportAlternatingExtend",
+      "kind": "def",
+      "module": "Linear.OrderedCechSupportAlternating",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.orderedCechSupportAlternatingExtend_restrict",
+      "kind": "theorem",
+      "module": "Linear.OrderedCechSupportAlternating",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.orderedCechSupportRestrict_differential",
+      "kind": "theorem",
+      "module": "Linear.OrderedCechSupportAlternating",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.orderedCechSupportAlternatingExtend_differential",
+      "kind": "theorem",
+      "module": "Linear.OrderedCechSupportAlternating",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.exists_preimage_orderedCechSupportDifferential",
+      "kind": "theorem",
+      "module": "Linear.OrderedCechSupportAlternating",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    }
+  ],
+  "audit": {
+    "sourceSha256": "d4b8caa02006acc7672296809461acfddb21c8f9e75b69e9aa906bec3efb08d1",
+    "log": "evidence/exact-types-and-axioms.txt",
+    "logSha256": "bb47241365b6288bb1537342bfc9e93ed00f2d626c144c5a2ecd99142f5be885",
+    "returnCode": 0,
+    "permittedAxioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "archive": "source.zip",
+  "archiveSha256": "d8f6917e8d9a077f35933511b759461ea474989b1b67943228e0d5ac6034dd1a",
+  "published": false,
+  "gitHubLeanCI": "Actual local controlled compilation and exact-type/axiom audit; no new whole-project Lean CI claim.",
+  "publicationEvidenceOutsideFrozenArchive": {
+    "evidence/source-range-driver.lean": "3fb74919fe18406ea142cfec83337ff08ab54270682ac995b837e6a214128a83",
+    "evidence/source-range-compiler.log": "dc20ab51391c293d7e6ad8e417596dc512ae4a602bea823601b16289c2c90919",
+    "evidence/source-range-resource.json": "3dde11a8d50e579aa4ef7cc902be9e342260a37059fab1725e427f111ba8943b",
+    "evidence/source-range-verification.json": "21273ac8a21c46604326123eed4afc776c35b56bf7682528b9fafa53ed754f2a",
+    "source-line-counts.json": "55ae792eb3211ecb8de67a74a107f8b8ef3f820e35dd816dfcd386a17eb60001"
+  },
+  "sourceLineCounts": "source-line-counts.json",
+  "sourceLineMetadataVerified": true
+}

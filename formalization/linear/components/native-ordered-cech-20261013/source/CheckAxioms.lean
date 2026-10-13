@@ -1,0 +1,232 @@
+module
+import all Linear.ModuleFormalCoproductAdditive
+import all Linear.ModuleBaseCechBasic
+import all Linear.ModuleBaseCechFactors
+import all Linear.ModuleOrderedBaseCech
+import all Linear.ModuleAffineSectionsExact
+import all Linear.ModuleOrderedBaseCechFunctor
+import all Linear.ModuleOrderedBaseCechExact
+import all Linear.NativeProjectiveTensorTwistOrderedCech
+import all Linear.NativeProjectiveCechAffineIntersections
+import all Linear.NativeProjectiveOrderedCechExact
+import all Linear.NativeProjectiveGradedKernelCech
+import all Linear.CechSupportContraction
+import all Linear.OrderedCechSupportContraction
+import all Linear.CechTuplePermutations
+import all Linear.OrderedCechSupportAlternating
+#check @CategoryTheory.Limits.FormalCoproduct.evalOp_additive
+#print axioms CategoryTheory.Limits.FormalCoproduct.evalOp_additive
+#check @AlgebraicGeometry.Scheme.Hom.preimage_cechIntersection
+#print axioms AlgebraicGeometry.Scheme.Hom.preimage_cechIntersection
+#check @AlgebraicGeometry.Scheme.Modules.baseModulePresheaf
+#print axioms AlgebraicGeometry.Scheme.Modules.baseModulePresheaf
+#check @AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_obj_coe
+#print axioms AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_obj_coe
+#check @AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_map_apply
+#print axioms AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_map_apply
+#check @AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_isSheaf
+#print axioms AlgebraicGeometry.Scheme.Modules.baseModulePresheaf_isSheaf
+#check @AlgebraicGeometry.Scheme.Modules.baseModuleSheaf
+#print axioms AlgebraicGeometry.Scheme.Modules.baseModuleSheaf
+#check @AlgebraicGeometry.Scheme.Modules.baseModuleSheaf_obj_coe
+#print axioms AlgebraicGeometry.Scheme.Modules.baseModuleSheaf_obj_coe
+#check @AlgebraicGeometry.Scheme.Modules.baseModuleSheaf_map_apply
+#print axioms AlgebraicGeometry.Scheme.Modules.baseModuleSheaf_map_apply
+#check @AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor
+#print axioms AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor
+#check @AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_obj
+#print axioms AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_obj
+#check @AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_preservesZeroMorphisms
+#print axioms AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_preservesZeroMorphisms
+#check @AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_additive
+#print axioms AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor_additive
+#check @AlgebraicGeometry.Scheme.Modules.baseCechComplex
+#print axioms AlgebraicGeometry.Scheme.Modules.baseCechComplex
+#check @AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor
+#print axioms AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor
+#check @AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor_obj
+#print axioms AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor_obj
+#check @AlgebraicGeometry.Scheme.Modules.moduleCatCechComplexFunctor_preservesZeroMorphisms
+#print axioms AlgebraicGeometry.Scheme.Modules.moduleCatCechComplexFunctor_preservesZeroMorphisms
+#check @AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor_preservesZeroMorphisms
+#print axioms AlgebraicGeometry.Scheme.Modules.baseCechComplexFunctor_preservesZeroMorphisms
+#check @AlgebraicGeometry.Scheme.Modules.baseCechFactor
+#print axioms AlgebraicGeometry.Scheme.Modules.baseCechFactor
+#check @AlgebraicGeometry.Scheme.Modules.baseCechXIsoPi
+#print axioms AlgebraicGeometry.Scheme.Modules.baseCechXIsoPi
+#check @AlgebraicGeometry.Scheme.Modules.OrderedCechIndex
+#print axioms AlgebraicGeometry.Scheme.Modules.OrderedCechIndex
+#check @AlgebraicGeometry.Scheme.Modules.OrderedCechIndex.delete
+#print axioms AlgebraicGeometry.Scheme.Modules.OrderedCechIndex.delete
+#check @AlgebraicGeometry.Scheme.Modules.OrderedCechIndex.delete_delete
+#print axioms AlgebraicGeometry.Scheme.Modules.OrderedCechIndex.delete_delete
+#check @AlgebraicGeometry.Scheme.Modules.isEmpty_orderedCechIndex_of_card_le
+#print axioms AlgebraicGeometry.Scheme.Modules.isEmpty_orderedCechIndex_of_card_le
+#check @AlgebraicGeometry.Scheme.Modules.orderedCechFormalObject
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedCechFormalObject
+#check @AlgebraicGeometry.Scheme.Modules.orderedCechFace
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedCechFace
+#check @AlgebraicGeometry.Scheme.Modules.orderedCechFace_comp
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedCechFace_comp
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechTerm
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechTerm
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectIsoPi
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectIsoPi
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp_π
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp_π
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp'
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechCoface_comp'
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_comp_π
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_comp_π
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_zero_comp_π_sub
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_zero_comp_π_sub
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_comp
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechDifferential_comp
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_X
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_X
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_d
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_d
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechLinearDifferential
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechLinearDifferential
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechLinearDifferential_comp
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechLinearDifferential_comp
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechTerm_subsingleton_of_card_le
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechTerm_subsingleton_of_card_le
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject_isZero_of_card_le
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject_isZero_of_card_le
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_exactAt_of_card_le
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex_exactAt_of_card_le
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject_subsingleton_of_card_le
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechObject_subsingleton_of_card_le
+#check @LinearStudy.quasicoherent_sections_surjective_on_isAffineOpen
+#print axioms LinearStudy.quasicoherent_sections_surjective_on_isAffineOpen
+#check @AlgebraicGeometry.IsAffineOpen.cechIntersection
+#print axioms AlgebraicGeometry.IsAffineOpen.cechIntersection
+#check @CategoryTheory.ShortComplex.ShortExact.map_baseModulePresheafFunctor_eval_of_isAffineOpen
+#print axioms CategoryTheory.ShortComplex.ShortExact.map_baseModulePresheafFunctor_eval_of_isAffineOpen
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor_obj
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor_obj
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor_additive
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechObjectFunctor_additive
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_obj
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_obj
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_additive
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_additive
+#check @AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_preservesZeroMorphisms
+#print axioms AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor_preservesZeroMorphisms
+#check @CategoryTheory.ShortComplex.ShortExact.map_orderedBaseCechComplexFunctor_of_affine_intersections
+#print axioms CategoryTheory.ShortComplex.ShortExact.map_orderedBaseCechComplexFunctor_of_affine_intersections
+#check @CategoryTheory.ShortComplex.ShortExact.map_orderedBaseCechComplexFunctor_of_affine_openCover
+#print axioms CategoryTheory.ShortComplex.ShortExact.map_orderedBaseCechComplexFunctor_of_affine_openCover
+#check @LinearStudy.nativeProjectiveTensorTwistOrderedCechIso
+#print axioms LinearStudy.nativeProjectiveTensorTwistOrderedCechIso
+#check @LinearStudy.nativeProjectiveTensorTwistOrderedCech_exactAt_iff
+#print axioms LinearStudy.nativeProjectiveTensorTwistOrderedCech_exactAt_iff
+#check @LinearStudy.nativeProjectiveIntegerTwistOrderedCech_exactAt_of_card_le
+#print axioms LinearStudy.nativeProjectiveIntegerTwistOrderedCech_exactAt_of_card_le
+#check @LinearStudy.nativeProjective_basicOpen_finset_prod
+#print axioms LinearStudy.nativeProjective_basicOpen_finset_prod
+#check @LinearStudy.nativeProjective_cechIntersection_eq_basicOpen
+#print axioms LinearStudy.nativeProjective_cechIntersection_eq_basicOpen
+#check @LinearStudy.nativeProjective_cechProduct_mem_degree
+#print axioms LinearStudy.nativeProjective_cechProduct_mem_degree
+#check @LinearStudy.nativeProjective_cechIntersection_isAffine
+#print axioms LinearStudy.nativeProjective_cechIntersection_isAffine
+#check @LinearStudy.nativeProjectiveOrderedCech_shortExact
+#print axioms LinearStudy.nativeProjectiveOrderedCech_shortExact
+#check @LinearStudy.nativeProjectiveOrderedCech_exactAt_quotient
+#print axioms LinearStudy.nativeProjectiveOrderedCech_exactAt_quotient
+#check @LinearStudy.nativeProjectiveGradedKernelSheaves_shortExact
+#print axioms LinearStudy.nativeProjectiveGradedKernelSheaves_shortExact
+#check @LinearStudy.nativeProjectiveGradedKernelOrderedCech_shortExact
+#print axioms LinearStudy.nativeProjectiveGradedKernelOrderedCech_shortExact
+#check @LinearStudy.CechSupportCochain
+#print axioms LinearStudy.CechSupportCochain
+#check @LinearStudy.cechSupportDifferential
+#print axioms LinearStudy.cechSupportDifferential
+#check @LinearStudy.cechSupportContraction
+#print axioms LinearStudy.cechSupportContraction
+#check @LinearStudy.cechSupportContraction_homotopy
+#print axioms LinearStudy.cechSupportContraction_homotopy
+#check @LinearStudy.exists_preimage_cechSupportDifferential
+#print axioms LinearStudy.exists_preimage_cechSupportDifferential
+#check @LinearStudy.OrderedCechSupportCochain
+#print axioms LinearStudy.OrderedCechSupportCochain
+#check @LinearStudy.OrderedCechSupportCochain.module_finite
+#print axioms LinearStudy.OrderedCechSupportCochain.module_finite
+#check @LinearStudy.orderedCechSupportDifferential
+#print axioms LinearStudy.orderedCechSupportDifferential
+#check @LinearStudy.orderedCechSupportDifferential_zero_injective
+#print axioms LinearStudy.orderedCechSupportDifferential_zero_injective
+#check @LinearStudy.orderedCechSupportDifferential_zero_injective_of_nonempty
+#print axioms LinearStudy.orderedCechSupportDifferential_zero_injective_of_nonempty
+#check @LinearStudy.exists_preimage_orderedCechSupportDifferential_zero
+#print axioms LinearStudy.exists_preimage_orderedCechSupportDifferential_zero
+#check @AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm
+#print axioms AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm
+#check @AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm
+#print axioms AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm
+#check @AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_apply_zero
+#print axioms AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_apply_zero
+#check @AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_eq_decomposeFin
+#print axioms AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_eq_decomposeFin
+#check @AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_apply_succ
+#print axioms AlgebraicGeometry.Scheme.Modules.cechDeleteSwapFullPerm_apply_succ
+#check @AlgebraicGeometry.Scheme.Modules.succAbove_cechDeleteSwapPerm
+#print axioms AlgebraicGeometry.Scheme.Modules.succAbove_cechDeleteSwapPerm
+#check @AlgebraicGeometry.Scheme.Modules.comp_succAbove_cechDeleteSwapPerm_of_eq
+#print axioms AlgebraicGeometry.Scheme.Modules.comp_succAbove_cechDeleteSwapPerm_of_eq
+#check @AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm_sign
+#print axioms AlgebraicGeometry.Scheme.Modules.cechDeleteSwapPerm_sign
+#check @AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull
+#print axioms AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull
+#check @AlgebraicGeometry.Scheme.Modules.cechPermDelete
+#print axioms AlgebraicGeometry.Scheme.Modules.cechPermDelete
+#check @AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_apply_zero
+#print axioms AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_apply_zero
+#check @AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_eq_decomposeFin
+#print axioms AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_eq_decomposeFin
+#check @AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_apply_succ
+#print axioms AlgebraicGeometry.Scheme.Modules.cechPermDeleteFull_apply_succ
+#check @AlgebraicGeometry.Scheme.Modules.succAbove_cechPermDelete
+#print axioms AlgebraicGeometry.Scheme.Modules.succAbove_cechPermDelete
+#check @AlgebraicGeometry.Scheme.Modules.cechPermDelete_sign
+#print axioms AlgebraicGeometry.Scheme.Modules.cechPermDelete_sign
+#check @AlgebraicGeometry.Scheme.Modules.cechPermDelete_signed_coefficient
+#print axioms AlgebraicGeometry.Scheme.Modules.cechPermDelete_signed_coefficient
+#check @AlgebraicGeometry.Scheme.Modules.exists_eq_ne_of_not_injective
+#print axioms AlgebraicGeometry.Scheme.Modules.exists_eq_ne_of_not_injective
+#check @AlgebraicGeometry.Scheme.Modules.exists_partner_of_delete_injective
+#print axioms AlgebraicGeometry.Scheme.Modules.exists_partner_of_delete_injective
+#check @AlgebraicGeometry.Scheme.Modules.eq_partner_of_delete_injective
+#print axioms AlgebraicGeometry.Scheme.Modules.eq_partner_of_delete_injective
+#check @AlgebraicGeometry.Scheme.Modules.delete_partner_injective
+#print axioms AlgebraicGeometry.Scheme.Modules.delete_partner_injective
+#check @AlgebraicGeometry.Scheme.Modules.delete_not_injective_of_ne
+#print axioms AlgebraicGeometry.Scheme.Modules.delete_not_injective_of_ne
+#check @LinearStudy.orderedCechSupportRestrict
+#print axioms LinearStudy.orderedCechSupportRestrict
+#check @LinearStudy.orderedCechSupportAlternatingExtend
+#print axioms LinearStudy.orderedCechSupportAlternatingExtend
+#check @LinearStudy.orderedCechSupportAlternatingExtend_restrict
+#print axioms LinearStudy.orderedCechSupportAlternatingExtend_restrict
+#check @LinearStudy.orderedCechSupportRestrict_differential
+#print axioms LinearStudy.orderedCechSupportRestrict_differential
+#check @LinearStudy.orderedCechSupportAlternatingExtend_differential
+#print axioms LinearStudy.orderedCechSupportAlternatingExtend_differential
+#check @LinearStudy.exists_preimage_orderedCechSupportDifferential
+#print axioms LinearStudy.exists_preimage_orderedCechSupportDifferential
