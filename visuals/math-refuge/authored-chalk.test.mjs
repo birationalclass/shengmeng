@@ -1,4 +1,13 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {clipPolyline,clipRect,authoredContext} from './authored-chalk.js';
+import {formulaGlyphBox,FORMULA_PEN_WIDTH} from './authored-chalk.js';
+test('formula fitting contains round pen caps for punctuation and degenerate short strokes',()=>{
+ for(const box of [[13,67,1,1],[0,0,30,0],[0,0,0,30],[0,0,0,0],[4,8,50,70]]){
+  const [x,y,w,h]=formulaGlyphBox({box}),sx=5/w,sy=5/h;
+  assert(w>0&&h>0);assert(Number.isFinite(sx)&&Number.isFinite(sy));
+  assert.equal(x+FORMULA_PEN_WIDTH/2,box[0]);assert.equal(y+FORMULA_PEN_WIDTH/2,box[1]);
+  assert(FORMULA_PEN_WIDTH*sx<=5&&FORMULA_PEN_WIDTH*sy<=5,'Pen width must fit the target ink box');
+ }
+});
 test('cropped SVG strokes remain inside the viewport without connecting separate pen contacts',()=>{const parts=clipPolyline([[-10,5],[5,5],[20,5],[20,20],[5,8]], [0,0,10,10]);assert.equal(parts.length,2);for(const part of parts)for(const [x,y] of part){assert(x>=0&&x<=10&&y>=0&&y<=10);}assert.deepEqual(parts[0],[[0,5],[5,5],[10,5]]);assert.deepEqual(clipPolyline([[-5,-5],[-1,-1]],[0,0,10,10]),[]);assert.deepEqual(clipRect([-100,2,200,4],[0,0,10,10]),[0,2,10,4]);});
 
 test('recorded glyph operations retain their semantic narration row',()=>{

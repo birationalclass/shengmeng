@@ -6,6 +6,10 @@ export function authoredGlyph(char){
  const result={paths,box:pointBox(paths.flat()),advance:advance[char]||60};samples.set(char,result);return result;
 }
 export function pointBox(points,pad=0){const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);return [Math.min(...xs)-pad,Math.min(...ys)-pad,Math.max(...xs)-Math.min(...xs)+2*pad,Math.max(...ys)-Math.min(...ys)+2*pad];}
+// Fit the painted glyph, including round caps, rather than its centre-line.
+// A period has only a 1x1 centre-line: fitting that alone magnifies its pen width.
+export const FORMULA_PEN_WIDTH=2.8;
+export function formulaGlyphBox(glyph){const [x,y,w,h]=glyph.box,pad=FORMULA_PEN_WIDTH/2;return [x-pad,y-pad,w+2*pad,h+2*pad];}
 export function clipRect(a,b){const x=Math.max(a[0],b[0]),y=Math.max(a[1],b[1]),r=Math.min(a[0]+a[2],b[0]+b[2]),bottom=Math.min(a[1]+a[3],b[1]+b[3]);return r>x&&bottom>y?[x,y,r-x,bottom-y]:null;}
 export function clipPolyline(points,rect){const out=[];let current=[];for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],dx=b[0]-a[0],dy=b[1]-a[1],p=[-dx,dx,-dy,dy],q=[a[0]-rect[0],rect[0]+rect[2]-a[0],a[1]-rect[1],rect[1]+rect[3]-a[1]];let lo=0,hi=1,valid=true;for(let j=0;j<4;j++){if(p[j]===0){if(q[j]<0)valid=false;}else{const t=q[j]/p[j];if(p[j]<0)lo=Math.max(lo,t);else hi=Math.min(hi,t);}}if(!valid||lo>hi){if(current.length)out.push(current);current=[];continue;}const start=[a[0]+lo*dx,a[1]+lo*dy],end=[a[0]+hi*dx,a[1]+hi*dy];if(current.length&&Math.hypot(current.at(-1)[0]-start[0],current.at(-1)[1]-start[1])>.01){out.push(current);current=[];}if(!current.length)current.push(start);current.push(end);if(hi<1){out.push(current);current=[];}}if(current.length)out.push(current);return out;}
 function stroke(ctx,points,width,color){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.restore();}
@@ -38,12 +42,12 @@ export async function authoredFormula(url){
   const glyph=compatible&&char?authoredGlyph(char):null;
   const fraction=element.localName==='rect'&&element.parentElement?.getAttribute('data-mml-node')==='mfrac';
   if(glyph&&box.width&&box.height){
-   const [gx,gy,gw,gh]=glyph.box,sx=box.width/gw,sy=box.height/gh;
+   const [gx,gy,gw,gh]=formulaGlyphBox(glyph),sx=box.width/gw,sy=box.height/gh;
    const group=document.createElementNS(NS,'g');if(element.hasAttribute('transform'))group.setAttribute('transform',element.getAttribute('transform'));
    for(let i=0;i<glyph.paths.length;i++){
-    const points=glyph.paths[i].map(([x,y])=>map([box.x+(x-gx)*sx,box.y+box.height-(y-gy)*sy]));const width=Math.max(.9,2.8*Math.sqrt(Math.abs((m.a*m.d-m.b*m.c)*sx*sy)));
+    const points=glyph.paths[i].map(([x,y])=>map([box.x+(x-gx)*sx,box.y+box.height-(y-gy)*sy]));const width=Math.max(.9,FORMULA_PEN_WIDTH*Math.sqrt(Math.abs((m.a*m.d-m.b*m.c)*sx*sy)));
     record(points,width);
-    const path=document.createElementNS(NS,'path');path.setAttribute('d',glyphs[char][i]);path.setAttribute('transform',`matrix(${sx} 0 0 ${-sy} ${box.x-gx*sx} ${box.y+box.height+gy*sy})`);path.setAttribute('fill','none');path.setAttribute('stroke','#eee9d5');path.setAttribute('stroke-width','2.8');path.setAttribute('stroke-linecap','round');path.setAttribute('stroke-linejoin','round');group.append(path);
+    const path=document.createElementNS(NS,'path');path.setAttribute('d',glyphs[char][i]);path.setAttribute('transform',`matrix(${sx} 0 0 ${-sy} ${box.x-gx*sx} ${box.y+box.height+gy*sy})`);path.setAttribute('fill','none');path.setAttribute('stroke','#eee9d5');path.setAttribute('stroke-width',String(FORMULA_PEN_WIDTH));path.setAttribute('stroke-linecap','round');path.setAttribute('stroke-linejoin','round');group.append(path);
    }element.replaceWith(group);
   }else if(fraction){
    const n=Math.max(4,Math.ceil(box.width/50)),local=Array.from({length:n+1},(_,i)=>[box.x+box.width*i/n,box.y+box.height*(.5+.16*Math.sin(i/n*Math.PI*2))]),mapped=local.map(map),width=Math.max(.9,box.height*Math.hypot(m.c,m.d)*.72);
