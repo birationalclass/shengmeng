@@ -1,0 +1,418 @@
+@LinearStudy.koszulExteriorCoordinates : {S : Type u_1} →
+  [inst : CommRing S] → (r p : ℕ) → ↥(⋀[S]^p (Fin r → S)) ≃ₗ[S] ↑(Set.powersetCard (Fin r) p) → S
+'LinearStudy.koszulExteriorCoordinates' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulExteriorCoordinates_wedge_mem_zero : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (r p : ℕ) (v : Fin p → Fin r)
+  (t : ↑(Set.powersetCard (Fin r) p)),
+  (LinearStudy.koszulExteriorCoordinates r p) ((exteriorPower.ιMulti S p) (⇑(Pi.basisFun S (Fin r)) ∘ v)) t ∈ 𝓑 0
+'LinearStudy.koszulExteriorCoordinates_wedge_mem_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousKoszulCoordinateDifferential : {S : Type u_1} →
+  [inst : CommRing S] →
+    {r : ℕ} → (Fin r → S) → (p : ℕ) → (↑(Set.powersetCard (Fin r) (p + 1)) → S) →ₗ[S] ↑(Set.powersetCard (Fin r) p) → S
+'LinearStudy.homogeneousKoszulCoordinateDifferential' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousKoszulCoordinateDifferential_entry_mem : ∀ {K S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {r q : ℕ} (H : Fin r → S),
+  (∀ (i : Fin r), H i ∈ 𝓑 q) →
+    ∀ (p : ℕ) (s : ↑(Set.powersetCard (Fin r) (p + 1))) (t : ↑(Set.powersetCard (Fin r) p)),
+      LinearStudy.integerShiftedFreeMapEntry (LinearStudy.homogeneousKoszulCoordinateDifferential H p) s t ∈ 𝓑 q
+'LinearStudy.homogeneousKoszulCoordinateDifferential_entry_mem' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.homogeneousKoszulCoordinateDifferential_homogeneous : ∀ {K S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {r q : ℕ} (H : Fin r → S),
+  (∀ (i : Fin r), H i ∈ 𝓑 q) →
+    ∀ (p : ℕ) (d : ℤ),
+      ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 (fun (x : ↑(Set.powersetCard (Fin r) (p + 1))) => ↑(p + 1) * ↑q) d,
+        (LinearStudy.homogeneousKoszulCoordinateDifferential H p) x ∈
+          LinearStudy.integerShiftedFreePiece 𝓑 (fun (x : ↑(Set.powersetCard (Fin r) p)) => ↑p * ↑q) d
+'LinearStudy.homogeneousKoszulCoordinateDifferential_homogeneous' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.homogeneousKoszulCoordinateDifferential_comp : ∀ {S : Type u_1} [inst : CommRing S] {r : ℕ} (H : Fin r → S)
+  (p : ℕ),
+  LinearStudy.homogeneousKoszulCoordinateDifferential H p ∘ₗ
+      LinearStudy.homogeneousKoszulCoordinateDifferential H (p + 1) =
+    0
+'LinearStudy.homogeneousKoszulCoordinateDifferential_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousKoszulCoordinateComplex : {S : Type u_1} →
+  [inst : CommRing S] → {r : ℕ} → (Fin r → S) → ChainComplex (ModuleCat S) ℕ
+'LinearStudy.homogeneousKoszulCoordinateComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousKoszulCoordinateComplexIso : {S : Type u_1} →
+  [inst : CommRing S] →
+    {r : ℕ} →
+      (H : Fin r → S) → koszulComplex (Fintype.linearCombination S H) ≅ LinearStudy.homogeneousKoszulCoordinateComplex H
+'LinearStudy.homogeneousKoszulCoordinateComplexIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousKoszulCoordinateComplexIso_hom : ∀ {S : Type u_1} [inst : CommRing S] {r : ℕ} (H : Fin r → S)
+  (p : ℕ),
+  (LinearStudy.homogeneousKoszulCoordinateComplexIso H).hom.f p =
+    ModuleCat.ofHom ↑(LinearStudy.koszulExteriorCoordinates r p)
+'LinearStudy.homogeneousKoszulCoordinateComplexIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveDegreeZeroSheafMap_zero : ∀ {K S D E : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module K D] [inst_5 : Module S D] [inst_6 : AddCommGroup E]
+  [inst_7 : Module K E] [inst_8 : Module S E] (𝓑 : ℕ → Submodule K S) [inst_9 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+  (ℰ : ℤ → Submodule K E) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d))
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d)) (k : ℤ),
+  LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 𝒟 ℰ hD hE 0 ⋯ k = 0
+'LinearStudy.nativeProjectiveDegreeZeroSheafMap_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveDegreeZeroSheafMap_id : ∀ {K S D : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module K D] [inst_5 : Module S D] (𝓑 : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d))
+  (k : ℤ),
+  LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 𝒟 𝒟 hD hD LinearMap.id ⋯ k =
+    CategoryTheory.CategoryStruct.id (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD k)
+'LinearStudy.nativeProjectiveDegreeZeroSheafMap_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveDegreeZeroEquivIso : {K S D E : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup D] →
+          [inst_4 : Module K D] →
+            [inst_5 : Module S D] →
+              [inst_6 : AddCommGroup E] →
+                [inst_7 : Module K E] →
+                  [inst_8 : Module S E] →
+                    (𝓑 : ℕ → Submodule K S) →
+                      [inst_9 : GradedAlgebra 𝓑] →
+                        (𝒟 : ℤ → Submodule K D) →
+                          (ℰ : ℤ → Submodule K E) →
+                            (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d)) →
+                              (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d)) →
+                                (e : D ≃ₗ[S] E) →
+                                  (∀ (d : ℤ) (x : D), x ∈ 𝒟 d ↔ e x ∈ ℰ d) →
+                                    (k : ℤ) →
+                                      LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD k ≅
+                                        LinearStudy.nativeProjectiveModuleSheaf 𝓑 ℰ hE k
+'LinearStudy.nativeProjectiveDegreeZeroEquivIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveDegreeZeroSheafMap_comp_eq_zero : ∀ {K S D E : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module K D] [inst_5 : Module S D]
+  [inst_6 : AddCommGroup E] [inst_7 : Module K E] [inst_8 : Module S E] (𝓑 : ℕ → Submodule K S)
+  [inst_9 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d))
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d)) {F : Type u_1} [inst_10 : AddCommGroup F]
+  [inst_11 : Module K F] [inst_12 : Module S F] (ℱ : ℤ → Submodule K F)
+  (hF : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℱ d, c • x ∈ ℱ (↑n + d)) (a : D →ₗ[S] E) (b : E →ₗ[S] F)
+  (ha : ∀ (d : ℤ), ∀ x ∈ 𝒟 d, a x ∈ ℰ d) (hb : ∀ (d : ℤ), ∀ x ∈ ℰ d, b x ∈ ℱ d),
+  b ∘ₗ a = 0 →
+    ∀ (k : ℤ),
+      CategoryTheory.CategoryStruct.comp (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 𝒟 ℰ hD hE a ha k)
+          (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 ℰ ℱ hE hF b hb k) =
+        0
+'LinearStudy.nativeProjectiveDegreeZeroSheafMap_comp_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulTerm : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) → [inst_3 : GradedAlgebra 𝓑] → ℕ → ℕ → ℕ → ℤ → (AlgebraicGeometry.Proj 𝓑).Modules
+'LinearStudy.nativeProjectiveKoszulTerm' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulDifferential : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r q : ℕ} →
+              (H : Fin r → S) →
+                (∀ (i : Fin r), H i ∈ 𝓑 q) →
+                  (p : ℕ) →
+                    (k : ℤ) →
+                      LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q (p + 1) k ⟶
+                        LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q p k
+'LinearStudy.nativeProjectiveKoszulDifferential' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulDifferential_comp_zero : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (p : ℕ) (k : ℤ),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.nativeProjectiveKoszulDifferential 𝓑 H hH (p + 1) k)
+      (LinearStudy.nativeProjectiveKoszulDifferential 𝓑 H hH p k) =
+    0
+'LinearStudy.nativeProjectiveKoszulDifferential_comp_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulComplex : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r q : ℕ} →
+              (H : Fin r → S) → (∀ (i : Fin r), H i ∈ 𝓑 q) → ℤ → ChainComplex (AlgebraicGeometry.Proj 𝓑).Modules ℕ
+'LinearStudy.nativeProjectiveKoszulComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulComplex_X : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (p : ℕ),
+  (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).X p = LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q p k
+'LinearStudy.nativeProjectiveKoszulComplex_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulComplex_d : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (p : ℕ),
+  (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d (p + 1) p =
+    LinearStudy.nativeProjectiveKoszulDifferential 𝓑 H hH p k
+'LinearStudy.nativeProjectiveKoszulComplex_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulTermTwistIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (r q p : ℕ) →
+              (k : ℤ) →
+                LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q p k ≅
+                  ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) =>
+                    LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯
+                      (k - ↑p * ↑q)
+'LinearStudy.nativeProjectiveKoszulTermTwistIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulInternalHomCochain : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r q : ℕ} →
+              (H : Fin r → S) →
+                (∀ (i : Fin r), H i ∈ 𝓑 q) →
+                  ℤ → (AlgebraicGeometry.Proj 𝓑).Modules → CochainComplex (AlgebraicGeometry.Proj 𝓑).Modules ℕ
+'LinearStudy.nativeProjectiveKoszulInternalHomCochain' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulInternalHomCochain_X : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (N : (AlgebraicGeometry.Proj 𝓑).Modules) (p : ℕ),
+  (LinearStudy.nativeProjectiveKoszulInternalHomCochain 𝓑 H hH k N).X p =
+    LinearStudy.schemeModuleHomModuleSheaf (LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q p k) N
+'LinearStudy.nativeProjectiveKoszulInternalHomCochain_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulInternalHomCochain_d : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (N : (AlgebraicGeometry.Proj 𝓑).Modules) (p : ℕ),
+  (LinearStudy.nativeProjectiveKoszulInternalHomCochain 𝓑 H hH k N).d p (p + 1) =
+    LinearStudy.schemeModuleHomPrecompose (LinearStudy.nativeProjectiveKoszulDifferential 𝓑 H hH p k)
+'LinearStudy.nativeProjectiveKoszulInternalHomCochain_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOpenRestriction_toPresheafIso : {X Y : AlgebraicGeometry.Scheme} →
+  (f : X ⟶ Y) →
+    [inst : AlgebraicGeometry.IsOpenImmersion f] →
+      (AlgebraicGeometry.Scheme.Modules.restrictFunctor f).comp (AlgebraicGeometry.Scheme.Modules.toPresheaf X) ≅
+        (AlgebraicGeometry.Scheme.Modules.toPresheaf Y).comp
+          ((CategoryTheory.Functor.whiskeringLeft X.Opensᵒᵖ Y.Opensᵒᵖ AddCommGrpCat).obj
+            (AlgebraicGeometry.Scheme.Hom.opensFunctor f).op)
+'LinearStudy.schemeModuleOpenRestriction_toPresheafIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOpenRestriction_preservesFiniteLimits : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  [inst : AlgebraicGeometry.IsOpenImmersion f],
+  CategoryTheory.Limits.PreservesFiniteLimits (AlgebraicGeometry.Scheme.Modules.restrictFunctor f)
+'LinearStudy.schemeModuleOpenRestriction_preservesFiniteLimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOpenRestriction_additive : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  [inst : AlgebraicGeometry.IsOpenImmersion f], (AlgebraicGeometry.Scheme.Modules.restrictFunctor f).Additive
+'LinearStudy.schemeModuleOpenRestriction_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOpenRestriction_preservesHomology : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  [inst : AlgebraicGeometry.IsOpenImmersion f], (AlgebraicGeometry.Scheme.Modules.restrictFunctor f).PreservesHomology
+'LinearStudy.schemeModuleOpenRestriction_preservesHomology' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOpenRestriction_homologyIso : {X Y : AlgebraicGeometry.Scheme} →
+  (f : X ⟶ Y) →
+    [inst : AlgebraicGeometry.IsOpenImmersion f] →
+      {ι : Type u_2} →
+        (c : ComplexShape ι) →
+          (K : HomologicalComplex Y.Modules c) →
+            (j : ι) →
+              (((AlgebraicGeometry.Scheme.Modules.restrictFunctor f).mapHomologicalComplex c).obj K).homology j ≅
+                (AlgebraicGeometry.Scheme.Modules.restrictFunctor f).obj (K.homology j)
+'LinearStudy.schemeModuleOpenRestriction_homologyIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledLinearKoszulForms : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (Fin (r + 1) → ℂ) → Fin r → LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal
+'LinearStudy.projectivePulledLinearKoszulForms' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledLinearKoszulForms_homogeneous : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+  (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+    ∀ (w : Fin (r + 1) → ℂ) (i : Fin r),
+      LinearStudy.projectivePulledLinearKoszulForms f V L w i ∈
+        LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal f.degree
+'LinearStudy.projectivePulledLinearKoszulForms_homogeneous' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledLinearKoszulComplex : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (Fin (r + 1) → ℂ) →
+            ℤ → ChainComplex (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules ℕ
+'LinearStudy.projectivePulledLinearKoszulComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledLinearKoszulInternalHom : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (Fin (r + 1) → ℂ) →
+            ℤ →
+              (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules →
+                CochainComplex (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules ℕ
+'LinearStudy.projectivePulledLinearKoszulInternalHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.koszulExteriorCoordinates.{u} : {S : Type u} →
+  [inst : CommRing S] → (r p : ℕ) → ↥(⋀[S]^p (Fin r → S)) ≃ₗ[S] ↑(Set.powersetCard (Fin r) p) → S :=
+fun {S : Type u} [CommRing S] (r p : ℕ) => (Module.Basis.exteriorPower p (Pi.basisFun S (Fin r))).equivFun
+def LinearStudy.homogeneousKoszulCoordinateDifferential.{u} : {S : Type u} →
+  [inst : CommRing S] →
+    {r : ℕ} →
+      (Fin r → S) → (p : ℕ) → (↑(Set.powersetCard (Fin r) (p + 1)) → S) →ₗ[S] ↑(Set.powersetCard (Fin r) p) → S :=
+fun {S : Type u} [CommRing S] {r : ℕ} (H : Fin r → S) (p : ℕ) =>
+  ↑(LinearStudy.koszulExteriorCoordinates r p) ∘ₗ
+    koszulComplex.d (Fintype.linearCombination S H) p ∘ₗ ↑(LinearStudy.koszulExteriorCoordinates r (p + 1)).symm
+def LinearStudy.homogeneousKoszulCoordinateComplex.{u} : {S : Type u} →
+  [inst : CommRing S] → {r : ℕ} → (Fin r → S) → ChainComplex (ModuleCat S) ℕ :=
+fun {S : Type u} [CommRing S] {r : ℕ} (H : Fin r → S) =>
+  ChainComplex.of (fun (p : ℕ) => ↧(↑(Set.powersetCard (Fin r) p) → S))
+    (fun (p : ℕ) => ModuleCat.ofHom (LinearStudy.homogeneousKoszulCoordinateDifferential H p)) ⋯
+def LinearStudy.homogeneousKoszulCoordinateComplexIso.{u} : {S : Type u} →
+  [inst : CommRing S] →
+    {r : ℕ} →
+      (H : Fin r → S) →
+        koszulComplex (Fintype.linearCombination S H) ≅ LinearStudy.homogeneousKoszulCoordinateComplex H :=
+fun {S : Type u} [CommRing S] {r : ℕ} (H : Fin r → S) =>
+  HomologicalComplex.Hom.isoOfComponents (fun (p : ℕ) => (LinearStudy.koszulExteriorCoordinates r p).toModuleIso) ⋯
+def LinearStudy.nativeProjectiveDegreeZeroEquivIso.{u} : {K S D E : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup D] →
+          [inst_4 : Module K D] →
+            [inst_5 : Module S D] →
+              [inst_6 : AddCommGroup E] →
+                [inst_7 : Module K E] →
+                  [inst_8 : Module S E] →
+                    (𝓑 : ℕ → Submodule K S) →
+                      [inst_9 : GradedAlgebra 𝓑] →
+                        (𝒟 : ℤ → Submodule K D) →
+                          (ℰ : ℤ → Submodule K E) →
+                            (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d)) →
+                              (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d)) →
+                                (e : D ≃ₗ[S] E) →
+                                  (∀ (d : ℤ) (x : D), x ∈ 𝒟 d ↔ e x ∈ ℰ d) →
+                                    (k : ℤ) →
+                                      LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hD k ≅
+                                        LinearStudy.nativeProjectiveModuleSheaf 𝓑 ℰ hE k :=
+fun {K S D E : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module K D] [Module S D] [AddCommGroup E]
+    [Module K E] [Module S E] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d))
+    (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d)) (e : D ≃ₗ[S] E)
+    (he : ∀ (d : ℤ) (x : D), x ∈ 𝒟 d ↔ e x ∈ ℰ d) (k : ℤ) =>
+  { hom := LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 𝒟 ℰ hD hE ↑e ⋯ k,
+    inv := LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 ℰ 𝒟 hE hD ↑e.symm ⋯ k, hom_inv_id := ⋯, inv_hom_id := ⋯ }
+def LinearStudy.nativeProjectiveKoszulTerm : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) → [inst_3 : GradedAlgebra 𝓑] → ℕ → ℕ → ℕ → ℤ → (AlgebraicGeometry.Proj 𝓑).Modules :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (r q p : ℕ) (k : ℤ) =>
+  LinearStudy.nativeProjectiveModuleSheaf 𝓑
+    (LinearStudy.integerShiftedFreePiece 𝓑 fun (x : ↑(Set.powersetCard (Fin r) p)) => ↑p * ↑q) ⋯ k
+def LinearStudy.nativeProjectiveKoszulDifferential : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r q : ℕ} →
+              (H : Fin r → S) →
+                (∀ (i : Fin r), H i ∈ 𝓑 q) →
+                  (p : ℕ) →
+                    (k : ℤ) →
+                      LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q (p + 1) k ⟶
+                        LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q p k :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (p : ℕ) (k : ℤ) =>
+  LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑
+    (LinearStudy.integerShiftedFreePiece 𝓑 fun (x : ↑(Set.powersetCard (Fin r) (p + 1))) => ↑(p + 1) * ↑q)
+    (LinearStudy.integerShiftedFreePiece 𝓑 fun (x : ↑(Set.powersetCard (Fin r) p)) => ↑p * ↑q) ⋯ ⋯
+    (LinearStudy.homogeneousKoszulCoordinateDifferential H p) ⋯ k
+def LinearStudy.nativeProjectiveKoszulComplex : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r q : ℕ} →
+              (H : Fin r → S) → (∀ (i : Fin r), H i ∈ 𝓑 q) → ℤ → ChainComplex (AlgebraicGeometry.Proj 𝓑).Modules ℕ :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) =>
+  ChainComplex.of (fun (p : ℕ) => LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q p k)
+    (fun (p : ℕ) => LinearStudy.nativeProjectiveKoszulDifferential 𝓑 H hH p k) ⋯
+def LinearStudy.nativeProjectiveKoszulTermTwistIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (r q p : ℕ) →
+              (k : ℤ) →
+                LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q p k ≅
+                  ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) =>
+                    LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯
+                      (k - ↑p * ↑q) :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (r q p : ℕ) (k : ℤ) =>
+  id (LinearStudy.nativeShiftedFreeIntegerTwistBiproductIso 𝓑 (fun (x : ↑(Set.powersetCard (Fin r) p)) => ↑p * ↑q) k)
+def LinearStudy.nativeProjectiveKoszulInternalHomCochain : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r q : ℕ} →
+              (H : Fin r → S) →
+                (∀ (i : Fin r), H i ∈ 𝓑 q) →
+                  ℤ → (AlgebraicGeometry.Proj 𝓑).Modules → CochainComplex (AlgebraicGeometry.Proj 𝓑).Modules ℕ :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (N : (AlgebraicGeometry.Proj 𝓑).Modules) =>
+  LinearStudy.schemeModuleInternalHomCochainComplex N (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k)
+def LinearStudy.schemeModuleOpenRestriction_toPresheafIso.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  (f : X ⟶ Y) →
+    [inst : AlgebraicGeometry.IsOpenImmersion f] →
+      (AlgebraicGeometry.Scheme.Modules.restrictFunctor f).comp (AlgebraicGeometry.Scheme.Modules.toPresheaf X) ≅
+        (AlgebraicGeometry.Scheme.Modules.toPresheaf Y).comp
+          ((CategoryTheory.Functor.whiskeringLeft X.Opensᵒᵖ Y.Opensᵒᵖ AddCommGrpCat).obj
+            (AlgebraicGeometry.Scheme.Hom.opensFunctor f).op) :=
+fun {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y) [AlgebraicGeometry.IsOpenImmersion f] =>
+  CategoryTheory.Iso.refl
+    ((AlgebraicGeometry.Scheme.Modules.restrictFunctor f).comp (AlgebraicGeometry.Scheme.Modules.toPresheaf X))
+def LinearStudy.schemeModuleOpenRestriction_homologyIso.{u, v} : {X Y : AlgebraicGeometry.Scheme} →
+  (f : X ⟶ Y) →
+    [inst : AlgebraicGeometry.IsOpenImmersion f] →
+      {ι : Type v} →
+        (c : ComplexShape ι) →
+          (K : HomologicalComplex Y.Modules c) →
+            (j : ι) →
+              (((AlgebraicGeometry.Scheme.Modules.restrictFunctor f).mapHomologicalComplex c).obj K).homology j ≅
+                (AlgebraicGeometry.Scheme.Modules.restrictFunctor f).obj (K.homology j) :=
+fun {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y) [AlgebraicGeometry.IsOpenImmersion f] {ι : Type v} (c : ComplexShape ι)
+    (K : HomologicalComplex Y.Modules c) (j : ι) =>
+  id ((K.sc j).mapHomologyIso (AlgebraicGeometry.Scheme.Modules.restrictFunctor f))
+def LinearStudy.projectivePulledLinearKoszulForms : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (Fin (r + 1) → ℂ) → Fin r → LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ) (i : Fin r) =>
+  (Ideal.Quotient.mk V.ideal.toIdeal) ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))
+def LinearStudy.projectivePulledLinearKoszulComplex : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (Fin (r + 1) → ℂ) →
+            ℤ →
+              ChainComplex (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules ℕ :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) =>
+  LinearStudy.nativeProjectiveKoszulComplex (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+    (LinearStudy.projectivePulledLinearKoszulForms f V L w) ⋯ k
+def LinearStudy.projectivePulledLinearKoszulInternalHom : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (Fin (r + 1) → ℂ) →
+            ℤ →
+              (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules →
+                CochainComplex (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules
+                  ℕ :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ)
+    (N : (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules) =>
+  LinearStudy.schemeModuleInternalHomCochainComplex N (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
