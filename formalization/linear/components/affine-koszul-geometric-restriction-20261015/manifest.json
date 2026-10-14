@@ -1,0 +1,978 @@
+{
+  "schemaVersion": 1,
+  "id": "affine-koszul-geometric-restriction-20261015",
+  "createdAt": "2026-10-15T02:27:27.790649+08:00",
+  "leanVersion": "v4.35.0-rc3",
+  "mathlibRevision": "2a885768dae569d938bb9ff3474da6a8753bb90a",
+  "rootModules": [
+    "Linear.AffinePushforwardGlobalSectionsNaturality",
+    "Linear.AffineTildePullbackExtendScalars",
+    "Linear.AffineTildeTensorPullback",
+    "Linear.TildeCoefficientQuotientGeometricPullback",
+    "Linear.AffineTildePullbackUnit",
+    "Linear.AffineTildePullbackUnitValues",
+    "Linear.AffineTildeTensorPullbackUnit",
+    "Linear.TildePushforwardUnitValues",
+    "Linear.TildeCoefficientQuotientUnitValues",
+    "Linear.TildeCoefficientQuotientGeometricUnit",
+    "Linear.AffineKoszulGeometricRestriction"
+  ],
+  "closedSourceModules": 62,
+  "newModules": 11,
+  "newProofs": 11,
+  "newDefinitions": 7,
+  "auditedDeclarations": 18,
+  "newPhysicalSourceLines": 615,
+  "unchangedEarlierFrozenDependencies": 51,
+  "priorFrozenEvidence": [
+    {
+      "archive": "Linear-local-20261011-m180-source.zip",
+      "sha256": "a71cda4581491c72042686fada4545865584cfbf2ded6ade6b99ecbd7987b5d3"
+    },
+    {
+      "archive": "ActualAffineSourceLinearComponent-20261012-LF-source.zip",
+      "sha256": "71649e88efb4760d37e527ef7b3c78e553972cd8799f69a9ffea61b1394f6aed"
+    },
+    {
+      "archive": "AffineClosedCutGeometricPullback-20261015-LF-source.zip",
+      "sha256": "92e77c193d6914da3b803320ed77b5bf355a08e89236ddf545127a28ca513eac"
+    },
+    {
+      "archive": "AffineKoszulInternalDualHom-20261014-LF-source.zip",
+      "sha256": "198c7b7f9eb773ff4153102f41a94a2baca0ca38262b0d1a510d86f7a38b69d3"
+    },
+    {
+      "archive": "AffineKoszulInternalHomRestriction-20261015-LF-source.zip",
+      "sha256": "576919043afced6d17170fa58390447be9644b7a9daf346e465300dd45098c8b"
+    },
+    {
+      "archive": "AllOpenSourceLinearityComponent-20261012-LF-source.zip",
+      "sha256": "310408d5a7248ad6d57cfb36d55aa4de96256ba7aaade6a47741c04c8fc3d010"
+    },
+    {
+      "archive": "CanonicalGradedCoefficientCokernel-20261014-LF-source.zip",
+      "sha256": "1140bea656318dca425fdf8d8733f7c7dcb763167ed6e856a8898c8fe8227885"
+    },
+    {
+      "archive": "ConditionalCanonicalContinuation-20261012-LF-source.zip",
+      "sha256": "7c800a8c4f799fd3b9a5430204f9e1679fc57eb6c197f3508fee7e864bb4895d"
+    },
+    {
+      "archive": "FiniteCanonicalCoefficientAlignment-20261014-LF-source.zip",
+      "sha256": "548eb4d7b6e7ee0074ab28ceeb6dc8a2554948b70b382f410c52fb11968002bf"
+    },
+    {
+      "archive": "KoszulArbitraryCoefficientAffineRestriction-20261015-LF-source.zip",
+      "sha256": "196a2dbef6a52948ed1359a27bbf0ee343594891178330e3efa2a56cdefe0bc0"
+    },
+    {
+      "archive": "KoszulArbitraryCoefficientCokernel-20261015-LF-source.zip",
+      "sha256": "c81e3638b68972e4a9572dd4f1e881d2dca5b56ec48ec8842c57512576704a0d"
+    },
+    {
+      "archive": "KoszulLocalExtRestriction-20261014-LF-source.zip",
+      "sha256": "338587bcff6a35730917ad1702337b26b3f9212e9ca89e37774cc1ef6da342bb"
+    },
+    {
+      "archive": "NativeCanonicalResidue-20261013-LF-source.zip",
+      "sha256": "8ebef272873946ac88dc8a081ecfcc038277d0619b11a88c512a9a8b9efe3d1a"
+    },
+    {
+      "archive": "NativeChartMultiplication-20261014-LF-source.zip",
+      "sha256": "73c349bbdb81a96c97913dc49efb28d906c223fa68cd81f3c2e91d01774169fe"
+    },
+    {
+      "archive": "NativeChartSourceLinearComponent-20261012-LF-source.zip",
+      "sha256": "429ea05f3004eceef2be521194ef4315e94310dc951a85399a514f38c95c4ffd"
+    },
+    {
+      "archive": "NativeFiniteGradedLifting-20261013-LF-source.zip",
+      "sha256": "97d3268ec6916f7be65046d50397d5ed661e819002b0d2eef94fb5e390167743"
+    },
+    {
+      "archive": "NativeFixedDegreeExtension-20261013-LF-source.zip",
+      "sha256": "b4232e9f3e7e4221b6bde52a09f3d6f714bdf67467175eaa55efa32e0f1016a8"
+    },
+    {
+      "archive": "NativeGeneralTopDuality-20261013-LF-source.zip",
+      "sha256": "38a4c1db124cbae1813f1acafc1c798c6a5c92c767e54fc7127900522d8ffc51"
+    },
+    {
+      "archive": "NativeGradedMatrixDuality-20261014-LF-source.zip",
+      "sha256": "4fee8fb69d816df69da0754fe604d335bbb58ede9e8f6b2f9969a94b9ee8ba22"
+    },
+    {
+      "archive": "NativeGradedPresentationDescent-20261014-LF-source.zip",
+      "sha256": "b71093d07567ce64aa7272e71c0d61ad6fb39bcfa319700706b362ee012b7b1f"
+    },
+    {
+      "archive": "NativeIntegerFreeRelationDuality-20261014-LF-source.zip",
+      "sha256": "de7ea8df27fdbfc9824d8e44b5b6b77ea204575b5323fb2cc9e95675adebc127"
+    },
+    {
+      "archive": "NativeIntegerHomogeneousMapDuality-20261014-LF-source.zip",
+      "sha256": "30cd771cc3f8cef48683f2b33e9c08fcb4427cc8d9f632a25d257b406a310393"
+    },
+    {
+      "archive": "NativeIntegerTwistedModuleMapDuality-20261014-LF-source.zip",
+      "sha256": "1259bed8935b769376333ed63215e5aa4ccb5da46ef172ca0e838f281e5bd679"
+    },
+    {
+      "archive": "NativeIntegerTwistedPresentationMaps-20261014-LF-source.zip",
+      "sha256": "e7d2f444b6ab76d80c7856249ca8d7b96159761b3a0768325dd8cc757eea8d77"
+    },
+    {
+      "archive": "NativeIntegerTwistedQuotientLift-20261014-LF-source.zip",
+      "sha256": "6afd46c61baa44ef37a0c0519a8f09ed90d92247cf8cbe45b36788d2e0287332"
+    },
+    {
+      "archive": "NativeMonomialTopTranspose-20261014-LF-source.zip",
+      "sha256": "40d032707f44af9678a3034a4efa810449fe7505e3ab3f03e10c7d588a8b0aee"
+    },
+    {
+      "archive": "NativeOrderedCech-20261013-LF-source.zip",
+      "sha256": "d8f6917e8d9a077f35933511b759461ea474989b1b67943228e0d5ac6034dd1a"
+    },
+    {
+      "archive": "NativeOriginalPresentationCechHomDuality-20261014-LF-source.zip",
+      "sha256": "2257c077d7fb26280c96595a264318efb16820d412137819ed662611c1c65838"
+    },
+    {
+      "archive": "NativeOriginalPresentationMatrixHom-20261014-LF-source.zip",
+      "sha256": "a1308bc44a0ad9006309f45c12f7991e1c9e0e14f701f00f569144a032869d41"
+    },
+    {
+      "archive": "NativeOriginalProjectiveLifting-20261013-LF-source.zip",
+      "sha256": "6affc9cd4ab1268b94640f3dcbc83d5de0fdb7d6448379e12312df61b27b7313"
+    },
+    {
+      "archive": "NativePolynomialTopTranspose-20261014-LF-source.zip",
+      "sha256": "6e39b03bf07a570208a0722e82aeabe72c16721effbc9012e65b3cdce909d4af"
+    },
+    {
+      "archive": "NativePresentationCechHomPrefixes-20261014-LF-source.zip",
+      "sha256": "fb0226a7cbaa28e4a7c5150c7136ecb5e8492d6e960ad64e87bec0c2493996b8"
+    },
+    {
+      "archive": "NativeProjectiveHOneLifting-20261012-LF-source.zip",
+      "sha256": "f24c273b27cd77bafe706a1bbd28a2245e7d1c3b04c14dd73803e2a41f0839db"
+    },
+    {
+      "archive": "NativeProjectiveLaurent-20261013-LF-source.zip",
+      "sha256": "0c06a4ac128367ccdbd8db3dec8869bc629ed1f88acacd6a7ec5fd2f6b242530"
+    },
+    {
+      "archive": "NativeProjectivePolynomialSections-20261013-LF-source.zip",
+      "sha256": "d6b476bf5aaca6f31c28c08d4ea5bff8fcd5ea88e5d70e038ed5285687b16ef9"
+    },
+    {
+      "archive": "NativeProjectiveTensorTwist-20261013-LF-source.zip",
+      "sha256": "45f67b941a9bd349c6da4ef95cae4df3af679955e3a147f446da73a297b9d841"
+    },
+    {
+      "archive": "NativeProjectiveTwistPresentation-20261013-LF-source.zip",
+      "sha256": "30f4c8663f138e8e84fab1e3191a00298fa412aea7ad11642128ee0638ada25b"
+    },
+    {
+      "archive": "OriginalChartLocalSourceLinearComponent-20261012-LF-source.zip",
+      "sha256": "1ea73b87983c1b6b178451d0481df82ed274db79f7ab2cebc4364913ec31b2ff"
+    },
+    {
+      "archive": "OriginalGlobalSourceActionComponent-20261012-LF-source.zip",
+      "sha256": "f748e453306083d9b88d7e32b7e16aee6c99ca7a126acb1a29ba73e57bafdc7c"
+    },
+    {
+      "archive": "OriginalHomSourceSheafComponent-20261012-LF-source.zip",
+      "sha256": "263687f81bf4b2e850e65b736192ba46eb3fc9037e5bb7b1136d93c2a2d0a133"
+    },
+    {
+      "archive": "OriginalPushforwardSourceActionComponent-20261012-LF-source.zip",
+      "sha256": "f544d8c61d0aa3c66ee42079842033f83d49fc9803d30612401b474163b7d853"
+    },
+    {
+      "archive": "SourceActionDerivedComponent-20261012-LF-source.zip",
+      "sha256": "9ad384dd639a2c81e22570a0f9cbff083b27e94581e4c4be12ed984b52c74333"
+    }
+  ],
+  "actualOriginalAffinePushforwardGlobalSectionsNaturalityVerified": true,
+  "actualOriginalGeometricPullbackExtendScalarsNatIsoVerified": true,
+  "actualOriginalExtendScalarsNativeTensorSLinearEquivVerified": true,
+  "actualOriginalExtendScalarsPureTensorValueVerified": true,
+  "actualOriginalGeometricPullbackNativeTensorIsoVerified": true,
+  "actualOriginalClosedCutCoefficientGeometricPullbackObjectIsoVerified": true,
+  "actualOriginalGeometricPullbackUnitValueSquareVerified": true,
+  "originalKoszulGeometricCutRestrictionDiagramVerified": true,
+  "actualOriginalAffineGeometricKoszulRestrictionExactVerified": true,
+  "actualOriginalAffineGeometricKoszulRestrictionEpiVerified": true,
+  "actualOriginalAffineGeometricKoszulRestrictionUnitMorphismVerified": true,
+  "originalKoszulRestrictionCompatibilityVerified": false,
+  "originalGlobalKoszulExtensionClassVerified": false,
+  "originalUniformFixedMSectionProductionVerified": false,
+  "sheafCohomologyComparisonVerified": false,
+  "originalLemma4_1Verified": false,
+  "originalLemma4_2Verified": false,
+  "mainTheoremVerified": false,
+  "canonicalDualizingIdentificationVerified": false,
+  "baseVerifiedLocalCheckpoint": 180,
+  "coefficientTarget": "any original R-module N",
+  "verificationScope": "# Original affine Koszul restriction on the actual geometric cut\n\nLet R,S be commutative rings, phi:R->S the original homomorphism, and\nN any original R-module. Construct actual affine pushforward/global-section\nand geometric pullback/extension-of-scalars natural isomorphisms from\nexisting native mathlib adjunctions. Under the SAME native tensor comparison,\nthe ACTUAL geometric unit sends original n to 1 tensor n.\nLet J be an original ideal and i:Spec(R/J)->Spec R the original quotient cut.\nThen construct tilde(N/JN) ~= i_*i^*tilde N and PROVE that the original quotient\nmorphism tilde(N)->tilde(N/JN), followed by this same iso, equals the ACTUAL\ngeometric pullback/pushforward UNIT.\nLet r=n+1>=1,H=(H_1,...,H_r),I=(H),K_j=exterior^j R^r,v_r the ORIGINAL ordered\ntop generator,and d the ORIGINAL Koszul differential. Then the SAME actual\ninternal-Hom sequence into tilde N ends in ACTUAL i_*i^*tilde N and is exact/epi.\nUnder the SAME original Hom-term iso, the last MORPHISM is precisely tilde of\nL->L(v_r), followed by the ACTUAL original geometric restriction unit.\nNo FP/flat/free/invertibility/CM of N, H regularity, Noetherianity, field or desired\ncomparison/exactness/unit/restriction compatibility certificate is an input.\nSource exterior FP is proved in the reused original module.\n\nLet R,S be commutative rings,phi:R->S the original homomorphism,and N any original R-module. Construct the actual affine pushforward/global-section natural isomorphism and actual geometric pullback/extension-of-scalars natural isomorphism from the existing native adjunctions. For an original algebra R->S the actual geometric unit sends n to 1 tensor n under the SAME constructed geometric-pullback/native-tensor isomorphism. This original UNIT/value square is now proved,using pinned Adjunction.unit_leftAdjointUniq_hom_app and original tensor values,not a compatibility certificate. For an original ideal J and SAME quotient cut i:Spec(R/J)->SpecR,construct tilde(N/JN) ~= i_*i^*tilde N and PROVE the original quotient morphism tilde(N)->tilde(N/JN) followed by this SAME iso equals the ACTUAL geometric pullback/pushforward UNIT. Let r=n+1>=1,H be the original ordered r equations,I=(H),K_j their original exterior Koszul terms,and v_r the original ordered top generator. The SAME original actual internal-Hom top sequence into tilde N with endpoint i_*i^*tilde N is constructed and proved exact/epi. Under the SAME actual Hom-term isomorphism its last MORPHISM is precisely tilde of L->L(v_r),followed by the ACTUAL original geometric restriction unit. No FP/flat/free/invertibility/CM of N,H regularity,Noetherianity,field or desired pullback/quotient/exactness/naturality/unit/restriction compatibility certificate is an input. Source exterior FP is proved in the reused original module. This completes the original AFFINE geometric cut restriction diagram,not GLOBAL line-bundle gluing,global epsilon/connecting or derived SHEAF/proper duality. Normalized theta UNVERIFIED;original4.1/4.2/main OPEN,checkpoint180. All guards and old resource holds remain intact.\n\nOPEN: Actual derived MODULE Ext with arbitrary original coefficient N and a:R->N; preserve a(1) mod IN using the actual original all-prime regular-or-unit Koszul projective resolution.\nGlue original line-bundle frames and twists; identify original GLOBAL epsilon and connecting class.\nActual Cech-to-derived SHEAF/proper-duality and original nonzero fixed-m section production.\nNormalized dualizing theta UNVERIFIED; original4.1/4.2/main OPEN,checkpoint180.\nOriginal4.1/4.2/main OPEN; normalized theta UNVERIFIED; checkpoint180.\nThis is an AFFINE geometric restriction computation; GLOBAL original line-bundle\nframes/twists, GLOBAL epsilon/connecting, derived SHEAF/proper duality and the\noriginal nonzero fixed-m section production remain open. No whole-project\ncheckpoint or new remote Lean CI claim. Immutable previous components keep\n their own historical scope flags unchanged.\n\n11 root modules,615 physical source lines,18 exact declarations\n(11 proofs,7 definitions);62 closed\nmodules,51 byte-identical older frozen dependencies.\nAll18 exact types manually read; only standard Lean axioms propext,\nClassical.choice and Quot.sound. Single compiler,8GiB,2threads,CPU25%,20min;\nall old holds retained. Lean4.35.0-rc3; mathlib2a885768dae569d938bb9ff3474da6a8753bb90a.\n",
+  "remainingObligations": [
+    "Actual derived MODULE Ext with arbitrary original coefficient N and a:R->N; preserve a(1) mod IN using the actual original all-prime regular-or-unit Koszul projective resolution.",
+    "Glue original line-bundle frames and twists; identify original GLOBAL epsilon and connecting class.",
+    "Actual Cech-to-derived SHEAF/proper-duality and original nonzero fixed-m section production.",
+    "Normalized dualizing theta UNVERIFIED; original4.1/4.2/main OPEN,checkpoint180."
+  ],
+  "resourceLimits": {
+    "concurrentCompilers": 1,
+    "hardJobMemoryMiB": 8192,
+    "leanThreads": 2,
+    "cpuPercent": 25,
+    "timeoutSeconds": 1200
+  },
+  "sources": [
+    {
+      "module": "Linear.AffineFinitePresentationInternalHomQuasicoherent",
+      "path": "source/Linear/AffineFinitePresentationInternalHomQuasicoherent.lean",
+      "sha256": "b08eaf0aa1e88cd0efb15169d688ba70fccb303d734594c08c2b3e7e1849c0b4",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.AffineKoszulGeometricRestriction",
+      "path": "source/Linear/AffineKoszulGeometricRestriction.lean",
+      "sha256": "ffbb52faf5f701a91102790c2479dc733e2776f50547f4ca1c3a97f30a459cf8",
+      "physicalLines": 107
+    },
+    {
+      "module": "Linear.AffineKoszulHomCoefficientRestriction",
+      "path": "source/Linear/AffineKoszulHomCoefficientRestriction.lean",
+      "sha256": "aed8d33e86ef707030ce5781edd00729b7bd0610bca54c54ef19aea5a0161603",
+      "physicalLines": 115
+    },
+    {
+      "module": "Linear.AffineKoszulTermInternalDualHom",
+      "path": "source/Linear/AffineKoszulTermInternalDualHom.lean",
+      "sha256": "d1c1ead569d0825d1190a87363e0e441f783b6bee34e144f3ae4ca6644f02cc5",
+      "physicalLines": 35
+    },
+    {
+      "module": "Linear.AffinePushforwardGlobalSectionsNaturality",
+      "path": "source/Linear/AffinePushforwardGlobalSectionsNaturality.lean",
+      "sha256": "e8eed33f8b0fe233daa7b4a728de1c70b91628f5baa1e31060431dbebeb77c02",
+      "physicalLines": 25
+    },
+    {
+      "module": "Linear.AffineQuasicoherentHomActualOpenEvaluation",
+      "path": "source/Linear/AffineQuasicoherentHomActualOpenEvaluation.lean",
+      "sha256": "308c550152cd46be1d07479e47a3e55f7a3bb213fae4d6f13ad9735fe424d357",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.AffineQuasicoherentHomActualOpenSections",
+      "path": "source/Linear/AffineQuasicoherentHomActualOpenSections.lean",
+      "sha256": "ce6b32615caf354f768d34d676d1123e1f2d478c8ea99421f78cff8da48325fc",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.AffineQuasicoherentHomOpenSections",
+      "path": "source/Linear/AffineQuasicoherentHomOpenSections.lean",
+      "sha256": "a6e53bccaaa2b6a71fa010951954ba7d083db9ededf0c04e71bba055e15d14f7",
+      "physicalLines": 76
+    },
+    {
+      "module": "Linear.AffineQuasicoherentSourceMorphisms",
+      "path": "source/Linear/AffineQuasicoherentSourceMorphisms.lean",
+      "sha256": "5e9b5bba59b3981172f59ca82c09a58980635dfb868663027bee08b167e171af",
+      "physicalLines": 36
+    },
+    {
+      "module": "Linear.AffineTildeFinitePresentationHomIso",
+      "path": "source/Linear/AffineTildeFinitePresentationHomIso.lean",
+      "sha256": "453cae15c74317a6654273c4cd88973f48d0fd47fdad4666d4ec616b65b3ce71",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.AffineTildeFinitePresentationInternalHom",
+      "path": "source/Linear/AffineTildeFinitePresentationInternalHom.lean",
+      "sha256": "4e96a24ca354cd3e99c6790a004c9641d00cd7ab7d398f1b26d589f634968003",
+      "physicalLines": 25
+    },
+    {
+      "module": "Linear.AffineTildeHomPrecompositionValues",
+      "path": "source/Linear/AffineTildeHomPrecompositionValues.lean",
+      "sha256": "1c1bc7539496633d6f63f80806c03fea22e0223dac00c3ae1c11ab2f51659b35",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.AffineTildeHomTargetNaturality",
+      "path": "source/Linear/AffineTildeHomTargetNaturality.lean",
+      "sha256": "ebd73053470e5ede6460504aea7d9d6ac64868f2edfa530b0ef1583c4c6b65fb",
+      "physicalLines": 68
+    },
+    {
+      "module": "Linear.AffineTildePullbackExtendScalars",
+      "path": "source/Linear/AffineTildePullbackExtendScalars.lean",
+      "sha256": "97b6689cf5ce0e3761bb21159864cf79e42fdc6fe56137c332b6f73813e923c8",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.AffineTildePullbackUnit",
+      "path": "source/Linear/AffineTildePullbackUnit.lean",
+      "sha256": "1c177c8032fc61e2801e578e45fb28a3a877bf538df8ffabedc091c8bbf37463",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.AffineTildePullbackUnitValues",
+      "path": "source/Linear/AffineTildePullbackUnitValues.lean",
+      "sha256": "304bed84edc6638c2560acf55401abebcf856cad063cd1b5bd8fa39c38be1834",
+      "physicalLines": 76
+    },
+    {
+      "module": "Linear.AffineTildeTensorPullback",
+      "path": "source/Linear/AffineTildeTensorPullback.lean",
+      "sha256": "a19de436c75dad9a04a0dc72defd30d4be6cb0ce64401969828556d2e8cda22b",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.AffineTildeTensorPullbackUnit",
+      "path": "source/Linear/AffineTildeTensorPullbackUnit.lean",
+      "sha256": "27a1166f9c631dbd9b170c0e7235df37e7114e85e52c32139f78a6a62b474dac",
+      "physicalLines": 68
+    },
+    {
+      "module": "Linear.ExtendScalarsActualTensor",
+      "path": "source/Linear/ExtendScalarsActualTensor.lean",
+      "sha256": "a12701517f2c056bc5b8fd2caf0756005abfa3c9987686208f3fe23d1c1bfe70",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.FinitePresentationHomCodomainLocalization",
+      "path": "source/Linear/FinitePresentationHomCodomainLocalization.lean",
+      "sha256": "e238048e7059d35a641b63f6494fc12acce3c2e26e670f4004b0a8d12acab343",
+      "physicalLines": 39
+    },
+    {
+      "module": "Linear.KoszulExactResolution",
+      "path": "source/Linear/KoszulExactResolution.lean",
+      "sha256": "a083703ad1c48042cc1e51b91d1777bccc2a812b73a48d4a6baef4c7387dddb1",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.KoszulFunctionResolution",
+      "path": "source/Linear/KoszulFunctionResolution.lean",
+      "sha256": "1704b393bc83f91ed6e7fe36f2977231a4e8d4fada95d60ffdb1cdfbee65090a",
+      "physicalLines": 107
+    },
+    {
+      "module": "Linear.KoszulHomotopyTop",
+      "path": "source/Linear/KoszulHomotopyTop.lean",
+      "sha256": "76b6e0c66c51ce5cdf82da9a5a405ee3ce61b8569e8a4db688a394f24dd10479",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.KoszulLocalGlobalExact",
+      "path": "source/Linear/KoszulLocalGlobalExact.lean",
+      "sha256": "2f95dc2e9243e09b3d2320e861c8221fb64e0f6d7320f4c9a8e89da5e448715b",
+      "physicalLines": 36
+    },
+    {
+      "module": "Linear.KoszulResolution",
+      "path": "source/Linear/KoszulResolution.lean",
+      "sha256": "ce9ac141b89a8081c15fe06317a4c55b0a04d922d0286b9c9948d2419814268d",
+      "physicalLines": 95
+    },
+    {
+      "module": "Linear.KoszulTop",
+      "path": "source/Linear/KoszulTop.lean",
+      "sha256": "fcc60344a344fe3dd497f1f262099d8f6351e03c3b7c4b257432b8e8ce3ce7c7",
+      "physicalLines": 79
+    },
+    {
+      "module": "Linear.KoszulTopComplementFunctional",
+      "path": "source/Linear/KoszulTopComplementFunctional.lean",
+      "sha256": "6c8d2081e5c3c711c60a879ac27f7ce5c32194992b08a9f7cb049ea00b26631f",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.KoszulTopHomCoefficientRestriction",
+      "path": "source/Linear/KoszulTopHomCoefficientRestriction.lean",
+      "sha256": "4462e05e411daf446ce7f003b3c5affca35ab0ed5d81883ba03321a2bdeaf912",
+      "physicalLines": 124
+    },
+    {
+      "module": "Linear.LocalComplexExactReflection",
+      "path": "source/Linear/LocalComplexExactReflection.lean",
+      "sha256": "473279d90a673a08dfa05a5c3094ea93f6474e591b8b73e08c9f0c425839440a",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.LocalExactReflection",
+      "path": "source/Linear/LocalExactReflection.lean",
+      "sha256": "29ec75a7c7081bd8418132982514f53df7add90864b179f4b9739bc169e3d337",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.OriginalGlobalModuleScalar",
+      "path": "source/Linear/OriginalGlobalModuleScalar.lean",
+      "sha256": "770d438a7faa8197f651f53412ecb7616504ba2b6165cb9915a4a9f63fb4e877",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.SchemeModuleHomAffineChartSections",
+      "path": "source/Linear/SchemeModuleHomAffineChartSections.lean",
+      "sha256": "9f0d47b21ef98cca68b0f76692ae8ac8c39aa1e0757237d993fd50778e4a2165",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.SchemeModuleHomEvaluationRestriction",
+      "path": "source/Linear/SchemeModuleHomEvaluationRestriction.lean",
+      "sha256": "e6b78c05f0007adbf71fe91692f44df178401b53c85869ead835b0bd8884943c",
+      "physicalLines": 40
+    },
+    {
+      "module": "Linear.SchemeModuleHomGlobal",
+      "path": "source/Linear/SchemeModuleHomGlobal.lean",
+      "sha256": "014fe73ff83ce8b4a204d3f156f49d133cafdd2e0f36954aca3c6eace9fc3900",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.SchemeModuleHomModuleSections",
+      "path": "source/Linear/SchemeModuleHomModuleSections.lean",
+      "sha256": "f7c11db79ca976453551c2670468b8e28e0b74fbf8ff3c1b434e2958b4c54dff",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "path": "source/Linear/SchemeModuleHomModuleSheaf.lean",
+      "sha256": "dc9e56af0752a4f4669481d24185f5669067da42f22cda8f84e893d08c881c41",
+      "physicalLines": 81
+    },
+    {
+      "module": "Linear.SchemeModuleHomOpenEvaluation",
+      "path": "source/Linear/SchemeModuleHomOpenEvaluation.lean",
+      "sha256": "2b0c0dfafa76147b88529bb551bd076b5413aa809c81d384ceab45a92ec00ee3",
+      "physicalLines": 39
+    },
+    {
+      "module": "Linear.SchemeModuleHomOpenScalars",
+      "path": "source/Linear/SchemeModuleHomOpenScalars.lean",
+      "sha256": "b08eb46df6f1013ce909f48fb2ee68aca19964db1bb08792b4835397a490cd85",
+      "physicalLines": 54
+    },
+    {
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "path": "source/Linear/SchemeModuleHomPrecompose.lean",
+      "sha256": "bac88e881cf848f3d2904dea1b1b2a101e7afe47400195415aeaf4dd31d4c78f",
+      "physicalLines": 94
+    },
+    {
+      "module": "Linear.SchemeModuleHomPrecomposeComparison",
+      "path": "source/Linear/SchemeModuleHomPrecomposeComparison.lean",
+      "sha256": "234d0b4f501c7ba83f1eb54752f208d75bebd65b6b32854f4dee6cda80d85938",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "path": "source/Linear/SchemeModuleHomPresheaf.lean",
+      "sha256": "b1e52e00867a3ef2719b4556fb4a89d4ff778f2dd86449287cedc96a88e8e75a",
+      "physicalLines": 69
+    },
+    {
+      "module": "Linear.SchemeModuleHomRestriction",
+      "path": "source/Linear/SchemeModuleHomRestriction.lean",
+      "sha256": "8a75457d689c76bf7c573d62606b429524d5719499f4341737c5d4874b49004f",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.SchemeModuleHomScalar",
+      "path": "source/Linear/SchemeModuleHomScalar.lean",
+      "sha256": "be075246712de9cf5203727e19d54478c7baffda34c6ef1a053d9051f626ab2c",
+      "physicalLines": 110
+    },
+    {
+      "module": "Linear.SchemeModuleHomSheaf",
+      "path": "source/Linear/SchemeModuleHomSheaf.lean",
+      "sha256": "5134148fa3d54a3af759d13d16dd576e549a8b6bb44172f6e278902f96efc497",
+      "physicalLines": 84
+    },
+    {
+      "module": "Linear.SchemeModuleHomTopSections",
+      "path": "source/Linear/SchemeModuleHomTopSections.lean",
+      "sha256": "da97957a35475160664f4f9052cef674a36f6490e75fb293e3c1c975b0055439",
+      "physicalLines": 40
+    },
+    {
+      "module": "Linear.SchemeModuleIsoPushforwardRestriction",
+      "path": "source/Linear/SchemeModuleIsoPushforwardRestriction.lean",
+      "sha256": "ae8ea37403a91b039ccb9a62c22ab06e057a8d2b7815c33992cb36c74adb515a",
+      "physicalLines": 28
+    },
+    {
+      "module": "Linear.TildeBasicOpenMono",
+      "path": "source/Linear/TildeBasicOpenMono.lean",
+      "sha256": "c92b4035b60b5f587e29437afe8c9fd0a0b63e0caae6cb356b5fef71a836c566",
+      "physicalLines": 36
+    },
+    {
+      "module": "Linear.TildeCoefficientQuotientGeometricPullback",
+      "path": "source/Linear/TildeCoefficientQuotientGeometricPullback.lean",
+      "sha256": "f38be8971c01eb81abc8048e2e09beefedbdd9fcab97ef51bec4a749a0ea65bf",
+      "physicalLines": 31
+    },
+    {
+      "module": "Linear.TildeCoefficientQuotientGeometricUnit",
+      "path": "source/Linear/TildeCoefficientQuotientGeometricUnit.lean",
+      "sha256": "035ad00a69dad7ac47e286495d6cc03a863b8b4a09eb67013298a0bb34af5494",
+      "physicalLines": 68
+    },
+    {
+      "module": "Linear.TildeCoefficientQuotientPushforward",
+      "path": "source/Linear/TildeCoefficientQuotientPushforward.lean",
+      "sha256": "c3c6409c99832493e4c95830c72a620f26f0f9c1b84d7bcf32a9593c590f3e98",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.TildeCoefficientQuotientUnitValues",
+      "path": "source/Linear/TildeCoefficientQuotientUnitValues.lean",
+      "sha256": "ea1befb7760b09226b6c35beadd9eedd6f905c8d273b2133d201ebf8c0d5c166",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.TildeComplexExact",
+      "path": "source/Linear/TildeComplexExact.lean",
+      "sha256": "4f565e651c3639340f3fa381c636796097149a17d10df0f7e46dd0e59169fcec",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.TildeKoszulHomCoefficientRestriction",
+      "path": "source/Linear/TildeKoszulHomCoefficientRestriction.lean",
+      "sha256": "697759d4c53b396664e741bcb4cf6af9f5b0d9971e839307cd920df57c90bf24",
+      "physicalLines": 107
+    },
+    {
+      "module": "Linear.TildeKoszulPresentation",
+      "path": "source/Linear/TildeKoszulPresentation.lean",
+      "sha256": "160b2c3d18576d79c0db515879f866bf5f34816ae16ce0a432c6aab4af3c1a6a",
+      "physicalLines": 75
+    },
+    {
+      "module": "Linear.TildeKoszulStructureAugmentation",
+      "path": "source/Linear/TildeKoszulStructureAugmentation.lean",
+      "sha256": "a739be823687caa4b33d5e570a71a4eacdc8c435fcca3e2b456e6495aad29771",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.TildePreservesMono",
+      "path": "source/Linear/TildePreservesMono.lean",
+      "sha256": "e1cbb671327b88e257d8fdb170901f2c53d68fba01b711a4745500f0759edbc2",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.TildePushforward",
+      "path": "source/Linear/TildePushforward.lean",
+      "sha256": "6f8cc19c5a145aafa3fd567cda601b5d6219a7ecd96bcd1357427b619864aacb",
+      "physicalLines": 34
+    },
+    {
+      "module": "Linear.TildePushforwardUnitValues",
+      "path": "source/Linear/TildePushforwardUnitValues.lean",
+      "sha256": "50ee4adbcc18ee0c47e9266504c7ee2855830b630e8c465a28515e437ef9ac94",
+      "physicalLines": 42
+    },
+    {
+      "module": "Linear.TildeQuotientPushforward",
+      "path": "source/Linear/TildeQuotientPushforward.lean",
+      "sha256": "15ccc51b87d643fb9ba540c2bdabd1ebd7b7f464a009a4375179a1ae8fe07166",
+      "physicalLines": 28
+    },
+    {
+      "module": "Linear.Vendor.ExteriorBaseChange",
+      "path": "source/Linear/Vendor/ExteriorBaseChange.lean",
+      "sha256": "45617eb40c0e0f9fce4e66de6ea34defcfd9e48344cd21966085d7025d476a4b",
+      "physicalLines": 238
+    },
+    {
+      "module": "Linear.Vendor.ExteriorProduct",
+      "path": "source/Linear/Vendor/ExteriorProduct.lean",
+      "sha256": "57bef70d222f202e7d48f05838b243e776a818c7fb68c0dd4c79e2f96e3ea22a",
+      "physicalLines": 280
+    },
+    {
+      "module": "Linear.Vendor.KoszulComplex",
+      "path": "source/Linear/Vendor/KoszulComplex.lean",
+      "sha256": "eeec48b0830a1ecf31160f5818c61a00a8f9ecca5d3a0a8004ce8f6fe578618a",
+      "physicalLines": 702
+    },
+    {
+      "path": "source/Linear.lean",
+      "sha256": "fce9b6af84f11f49f9b027458a60cbde665c86c5004c93c03d6b47c32379668b",
+      "physicalLines": 12
+    },
+    {
+      "path": "source/CheckAxioms.lean",
+      "sha256": "e94de386b473314fda140095761aff15045889179d49b26561d7af1a272027ed",
+      "physicalLines": 49
+    },
+    {
+      "path": "source/lean-toolchain",
+      "sha256": "bc84812c94489d1e3e191baa1dc10d5eb684382d7fe9d2a5ab085e72c1c67e47",
+      "physicalLines": 1
+    },
+    {
+      "path": "source/lakefile.toml",
+      "sha256": "12e6d3039c6ed00731bcf1c8f8e9c116e81771e6a74cad289b920b767f94d9ee",
+      "physicalLines": 11
+    },
+    {
+      "path": "source/lake-manifest.json",
+      "sha256": "ef71ef5fb13fd129bbf52a72216543bfd4c8e2b752dd3234d0f18b9964b104da",
+      "physicalLines": 96
+    }
+  ],
+  "compiledModules": [
+    {
+      "module": "Linear.AffinePushforwardGlobalSectionsNaturality",
+      "sourceSha256": "e8eed33f8b0fe233daa7b4a728de1c70b91628f5baa1e31060431dbebeb77c02",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.AffinePushforwardGlobalSectionsNaturality.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.AffinePushforwardGlobalSectionsNaturality.resource.json"
+    },
+    {
+      "module": "Linear.AffineTildePullbackExtendScalars",
+      "sourceSha256": "97b6689cf5ce0e3761bb21159864cf79e42fdc6fe56137c332b6f73813e923c8",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.AffineTildePullbackExtendScalars.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.AffineTildePullbackExtendScalars.resource.json"
+    },
+    {
+      "module": "Linear.AffineTildeTensorPullback",
+      "sourceSha256": "a19de436c75dad9a04a0dc72defd30d4be6cb0ce64401969828556d2e8cda22b",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.AffineTildeTensorPullback.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.AffineTildeTensorPullback.resource.json"
+    },
+    {
+      "module": "Linear.TildeCoefficientQuotientGeometricPullback",
+      "sourceSha256": "f38be8971c01eb81abc8048e2e09beefedbdd9fcab97ef51bec4a749a0ea65bf",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.TildeCoefficientQuotientGeometricPullback.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.TildeCoefficientQuotientGeometricPullback.resource.json"
+    },
+    {
+      "module": "Linear.AffineTildePullbackUnit",
+      "sourceSha256": "1c177c8032fc61e2801e578e45fb28a3a877bf538df8ffabedc091c8bbf37463",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.AffineTildePullbackUnit.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.AffineTildePullbackUnit.resource.json"
+    },
+    {
+      "module": "Linear.AffineTildePullbackUnitValues",
+      "sourceSha256": "304bed84edc6638c2560acf55401abebcf856cad063cd1b5bd8fa39c38be1834",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.AffineTildePullbackUnitValues.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.AffineTildePullbackUnitValues.resource.json"
+    },
+    {
+      "module": "Linear.AffineTildeTensorPullbackUnit",
+      "sourceSha256": "27a1166f9c631dbd9b170c0e7235df37e7114e85e52c32139f78a6a62b474dac",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.AffineTildeTensorPullbackUnit.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.AffineTildeTensorPullbackUnit.resource.json"
+    },
+    {
+      "module": "Linear.TildePushforwardUnitValues",
+      "sourceSha256": "50ee4adbcc18ee0c47e9266504c7ee2855830b630e8c465a28515e437ef9ac94",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.TildePushforwardUnitValues.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.TildePushforwardUnitValues.resource.json"
+    },
+    {
+      "module": "Linear.TildeCoefficientQuotientUnitValues",
+      "sourceSha256": "ea1befb7760b09226b6c35beadd9eedd6f905c8d273b2133d201ebf8c0d5c166",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.TildeCoefficientQuotientUnitValues.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.TildeCoefficientQuotientUnitValues.resource.json"
+    },
+    {
+      "module": "Linear.TildeCoefficientQuotientGeometricUnit",
+      "sourceSha256": "035ad00a69dad7ac47e286495d6cc03a863b8b4a09eb67013298a0bb34af5494",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.TildeCoefficientQuotientGeometricUnit.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.TildeCoefficientQuotientGeometricUnit.resource.json"
+    },
+    {
+      "module": "Linear.AffineKoszulGeometricRestriction",
+      "sourceSha256": "ffbb52faf5f701a91102790c2479dc733e2776f50547f4ca1c3a97f30a459cf8",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.AffineKoszulGeometricRestriction.compiler.log",
+      "compilerLogSha256": "cc086ca0143dde8bf4e25896291e760bc0927735a17f1a12d861fae0a5e01cbf",
+      "resourceLog": "evidence/Linear.AffineKoszulGeometricRestriction.resource.json"
+    }
+  ],
+  "declarations": [
+    {
+      "name": "LinearStudy.affinePushforwardGlobalSectionsNatIso",
+      "kind": "def",
+      "module": "Linear.AffinePushforwardGlobalSectionsNaturality",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineTildePullbackExtendScalarsNatIso",
+      "kind": "def",
+      "module": "Linear.AffineTildePullbackExtendScalars",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.extendScalarsActualTensorLinearEquiv",
+      "kind": "def",
+      "module": "Linear.AffineTildeTensorPullback",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.extendScalarsActualTensorLinearEquiv_tmul",
+      "kind": "theorem",
+      "module": "Linear.AffineTildeTensorPullback",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineTildeTensorPullbackIso",
+      "kind": "def",
+      "module": "Linear.AffineTildeTensorPullback",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.tildeCoefficientQuotientGeometricPullbackPushforwardIso",
+      "kind": "def",
+      "module": "Linear.TildeCoefficientQuotientGeometricPullback",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineTildePullbackUnit_square",
+      "kind": "theorem",
+      "module": "Linear.AffineTildePullbackUnit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineTildePullbackUnit_globalValue",
+      "kind": "theorem",
+      "module": "Linear.AffineTildePullbackUnitValues",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.tildePushforwardGlobalIso_naturality_value",
+      "kind": "theorem",
+      "module": "Linear.AffineTildePullbackUnitValues",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineTildeTensorPullbackUnit_globalValue",
+      "kind": "theorem",
+      "module": "Linear.AffineTildeTensorPullbackUnit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.tildePushforwardIso_globalValue",
+      "kind": "theorem",
+      "module": "Linear.TildePushforwardUnitValues",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.tildeCoefficientQuotientPushforwardIso_globalValue",
+      "kind": "theorem",
+      "module": "Linear.TildeCoefficientQuotientUnitValues",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.tildeCoefficientQuotientGeometricPullbackPushforwardIso_unit",
+      "kind": "theorem",
+      "module": "Linear.TildeCoefficientQuotientGeometricUnit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineKoszulHomGeometricRestrictionPresentation",
+      "kind": "def",
+      "module": "Linear.AffineKoszulGeometricRestriction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineKoszulHomGeometricRestrictionPresentationIso",
+      "kind": "def",
+      "module": "Linear.AffineKoszulGeometricRestriction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineKoszulHomGeometricRestrictionPresentation_exact",
+      "kind": "theorem",
+      "module": "Linear.AffineKoszulGeometricRestriction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineKoszulHomGeometricRestrictionPresentation_epi",
+      "kind": "theorem",
+      "module": "Linear.AffineKoszulGeometricRestriction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineKoszulHomGeometricRestrictionPresentation_restriction",
+      "kind": "theorem",
+      "module": "Linear.AffineKoszulGeometricRestriction",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    }
+  ],
+  "reusedSourceProvenance": [
+    {
+      "path": "evidence/AffineKoszulGeometricRestriction.provenance.json",
+      "sha256": "2f5ef525339b2fe7b707e28589bff1d3c7e864f113288bf00e42545810be8682"
+    },
+    {
+      "path": "evidence/AffineTildePullbackUnit.provenance.json",
+      "sha256": "baaeb06a5531cc59218eb7b2f21039cc6ce8bb9be3bb1e878f2800f22f2a608f"
+    },
+    {
+      "path": "evidence/AffineTildePullbackUnitValues.provenance.json",
+      "sha256": "47bc3455539c6ee73c36af7ab9e4b548c70d05579f0af432c71987d5e82d1b1b"
+    },
+    {
+      "path": "evidence/AffineTildeTensorPullbackUnit.provenance.json",
+      "sha256": "8703f5911e88e5bcdd65eadd7d95df243b69aecec3f5ffc302ad3ff0eba4242e"
+    },
+    {
+      "path": "evidence/TildeCoefficientQuotientGeometricUnit.provenance.json",
+      "sha256": "9dad989f93d36ffe9d9ee3f95d356cee040c926fffb8099a07c807d7f4ebba6b"
+    },
+    {
+      "path": "evidence/TildeCoefficientQuotientUnitValues.provenance.json",
+      "sha256": "275948b63df2dc0af5ebfc73a80de1a323eca31ce84957b90a5ee2f685241630"
+    },
+    {
+      "path": "evidence/TildePushforwardUnitValues.provenance.json",
+      "sha256": "aa95d88d868a809cea2edcbbeff71058c8bc2952a13664e2efdd720fcb10f796"
+    }
+  ],
+  "audit": {
+    "sourceSha256": "e94de386b473314fda140095761aff15045889179d49b26561d7af1a272027ed",
+    "log": "evidence/exact-types-and-axioms.txt",
+    "logSha256": "32616efe3ca97dd9da83e7f7ad6fc9b44b5a4056a0b94316498c91aa9e1bc4fa",
+    "returnCode": 0,
+    "permittedAxioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "archive": "source.zip",
+  "archiveSha256": "be38239cf6f7d2b76e06affff9dbe6e66da03d71aa36ac5556f6980e0a67d494",
+  "published": false,
+  "gitHubLeanCI": "Actual local controlled compilation and exact-type/axiom audit; no new whole-project Lean CI claim.",
+  "internalHomNaturalityCoefficientTarget": "any original R-module N",
+  "originalKoszulRestrictionCoefficientTarget": "any original R-module N",
+  "originalCanonicalCoefficientModuleKoszulRestrictionVerified": false,
+  "publicationEvidenceOutsideFrozenArchive": {
+    "evidence/source-range-driver.lean": "cfc324269d2f145665d9a9a6bbb659dc038b2a3f5d98bf6e9d1a23622665e24d",
+    "evidence/source-range-compiler.log": "26bc7580ef5d7333b407049bd61edfd6b727496f0291fbe8558307ecda0c2ee5",
+    "evidence/source-range-resource.json": "3b1d4de2e2c66e649d6fd297f109ed35ae485ee6b9a359c9992bb2ba635fac5e",
+    "evidence/source-range-verification.json": "5b3e4596dbfa1c8cf3243c4222c7d4b656551f46d92af7c007b5225412e7b972",
+    "source-line-counts.json": "48262d87ae4a6397db399903424c5971f942a335ce64366a0e2b93347858a9b7"
+  },
+  "sourceLineCounts": "source-line-counts.json",
+  "sourceLineMetadataVerified": true
+}

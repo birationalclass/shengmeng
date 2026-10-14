@@ -1,0 +1,168 @@
+@LinearStudy.affinePushforwardGlobalSectionsNatIso : {R S : CommRingCat} →
+  (phi : R ⟶ S) →
+    (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).comp
+        AlgebraicGeometry.moduleSpecΓFunctor ≅
+      AlgebraicGeometry.moduleSpecΓFunctor.comp (ModuleCat.restrictScalars (CommRingCat.Hom.hom phi))
+'LinearStudy.affinePushforwardGlobalSectionsNatIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.affineTildePullbackExtendScalarsNatIso : {R S : CommRingCat} →
+  (phi : R ⟶ S) →
+    (AlgebraicGeometry.tilde.functor R).comp
+        (AlgebraicGeometry.Scheme.Modules.pullback (AlgebraicGeometry.Spec.map phi)) ≅
+      (ModuleCat.extendScalars (CommRingCat.Hom.hom phi)).comp (AlgebraicGeometry.tilde.functor S)
+'LinearStudy.affineTildePullbackExtendScalarsNatIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.extendScalarsActualTensorLinearEquiv : {R S : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra R S] →
+        (M : ModuleCat R) → ↑((ModuleCat.extendScalars (algebraMap R S)).obj M) ≃ₗ[S] TensorProduct R S ↑M
+'LinearStudy.extendScalarsActualTensorLinearEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.extendScalarsActualTensorLinearEquiv_tmul : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] (M : ModuleCat R) (s : S) (m : ↑M),
+  (LinearStudy.extendScalarsActualTensorLinearEquiv M) (s ⊗ₜ[R] m) = s ⊗ₜ[R] m
+'LinearStudy.extendScalarsActualTensorLinearEquiv_tmul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineTildeTensorPullbackIso : (R S : CommRingCat) →
+  [inst : Algebra ↑R ↑S] →
+    (N : ModuleCat ↑R) →
+      (AlgebraicGeometry.Scheme.Modules.pullback
+              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap ↑R ↑S)))).obj
+          (AlgebraicGeometry.tilde N) ≅
+        AlgebraicGeometry.tilde ↧(TensorProduct ↑R ↑S ↑N)
+'LinearStudy.affineTildeTensorPullbackIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeCoefficientQuotientGeometricPullbackPushforwardIso : (R : CommRingCat) →
+  (J : Ideal ↑R) →
+    (N : ModuleCat ↑R) →
+      AlgebraicGeometry.tilde ↧(↑N ⧸ J • ⊤) ≅
+        (AlgebraicGeometry.Scheme.Modules.pushforward
+              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk J)))).obj
+          ((AlgebraicGeometry.Scheme.Modules.pullback
+                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk J)))).obj
+            (AlgebraicGeometry.tilde N))
+'LinearStudy.tildeCoefficientQuotientGeometricPullbackPushforwardIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.affineTildePullbackUnit_square : ∀ {R S : CommRingCat} (phi : R ⟶ S) (N : ModuleCat ↑R),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.tilde.adjunction.unit.app N)
+      (CategoryTheory.CategoryStruct.comp
+        (AlgebraicGeometry.moduleSpecΓFunctor.map
+          (CategoryTheory.CategoryStruct.comp
+            ((AlgebraicGeometry.Scheme.Modules.pullbackPushforwardAdjunction (AlgebraicGeometry.Spec.map phi)).unit.app
+              (AlgebraicGeometry.tilde N))
+            ((AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).map
+              ((LinearStudy.affineTildePullbackExtendScalarsNatIso phi).app N).hom)))
+        ((LinearStudy.affinePushforwardGlobalSectionsNatIso phi).hom.app
+          (AlgebraicGeometry.tilde ((ModuleCat.extendScalars (CommRingCat.Hom.hom phi)).obj N)))) =
+    CategoryTheory.CategoryStruct.comp ((ModuleCat.extendRestrictScalarsAdj (CommRingCat.Hom.hom phi)).unit.app N)
+      ((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).map
+        (AlgebraicGeometry.tilde.adjunction.unit.app ((ModuleCat.extendScalars (CommRingCat.Hom.hom phi)).obj N)))
+'LinearStudy.affineTildePullbackUnit_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.affineTildePullbackUnit_globalValue : ∀ {R S : CommRingCat} (phi : R ⟶ S) (N : ModuleCat ↑R) (n : ↑N),
+  (CategoryTheory.ConcreteCategory.hom
+        (LinearStudy.tildePushforwardGlobalIso phi ((ModuleCat.extendScalars (CommRingCat.Hom.hom phi)).obj N)).hom)
+      ((CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.moduleSpecΓFunctor.map
+            (CategoryTheory.CategoryStruct.comp
+              ((AlgebraicGeometry.Scheme.Modules.pullbackPushforwardAdjunction
+                      (AlgebraicGeometry.Spec.map phi)).unit.app
+                (AlgebraicGeometry.tilde N))
+              ((AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).map
+                ((LinearStudy.affineTildePullbackExtendScalarsNatIso phi).app N).hom))))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.adjunction.unit.app N)) n)) =
+    (CategoryTheory.ConcreteCategory.hom ((ModuleCat.extendRestrictScalarsAdj (CommRingCat.Hom.hom phi)).unit.app N)) n
+'LinearStudy.affineTildePullbackUnit_globalValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildePushforwardGlobalIso_naturality_value : ∀ {R S : CommRingCat} (phi : R ⟶ S) (M N : ModuleCat ↑S)
+  (f : M ⟶ N)
+  (x :
+    ↑(AlgebraicGeometry.moduleSpecΓFunctor.obj
+        ((AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).obj
+          (AlgebraicGeometry.tilde M)))),
+  (CategoryTheory.ConcreteCategory.hom (LinearStudy.tildePushforwardGlobalIso phi N).hom)
+      ((CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.moduleSpecΓFunctor.map
+            ((AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).map
+              ((AlgebraicGeometry.tilde.functor S).map f))))
+        x) =
+    (CategoryTheory.ConcreteCategory.hom f)
+      ((CategoryTheory.ConcreteCategory.hom (LinearStudy.tildePushforwardGlobalIso phi M).hom) x)
+'LinearStudy.tildePushforwardGlobalIso_naturality_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineTildeTensorPullbackUnit_globalValue : ∀ (R S : CommRingCat) [inst : Algebra ↑R ↑S] (N : ModuleCat ↑R)
+  (n : ↑N),
+  (CategoryTheory.ConcreteCategory.hom
+        (LinearStudy.tildePushforwardGlobalIso (CommRingCat.ofHom (algebraMap ↑R ↑S)) ↧(TensorProduct ↑R ↑S ↑N)).hom)
+      ((CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.moduleSpecΓFunctor.map
+            (CategoryTheory.CategoryStruct.comp
+              ((AlgebraicGeometry.Scheme.Modules.pullbackPushforwardAdjunction
+                      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap ↑R ↑S)))).unit.app
+                (AlgebraicGeometry.tilde N))
+              ((AlgebraicGeometry.Scheme.Modules.pushforward
+                    (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap ↑R ↑S)))).map
+                (LinearStudy.affineTildeTensorPullbackIso R S N).hom))))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.adjunction.unit.app N)) n)) =
+    1 ⊗ₜ[↑R] n
+'LinearStudy.affineTildeTensorPullbackUnit_globalValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildePushforwardIso_globalValue : ∀ {R S : CommRingCat} (phi : R ⟶ S) (M : ModuleCat ↑S) (m : ↑M),
+  (CategoryTheory.ConcreteCategory.hom (LinearStudy.tildePushforwardGlobalIso phi M).hom)
+      ((CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.moduleSpecΓFunctor.map (LinearStudy.tildePushforwardIso phi M).hom))
+        ((CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.tilde.adjunction.unit.app ((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M)))
+          m)) =
+    m
+'LinearStudy.tildePushforwardIso_globalValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeCoefficientQuotientPushforwardIso_globalValue : ∀ (R : CommRingCat) (J : Ideal ↑R) (N : ModuleCat ↑R)
+  (n : ↑N),
+  (CategoryTheory.ConcreteCategory.hom
+        (LinearStudy.tildePushforwardGlobalIso (CommRingCat.ofHom (Ideal.Quotient.mk J))
+            ↧(TensorProduct (↑R) (↑R ⧸ J) ↑N)).hom)
+      ((CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.moduleSpecΓFunctor.map (LinearStudy.tildeCoefficientQuotientPushforwardIso R J N).hom))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.adjunction.unit.app ↧(↑N ⧸ J • ⊤)))
+          (Submodule.Quotient.mk n))) =
+    1 ⊗ₜ[↑R] n
+'LinearStudy.tildeCoefficientQuotientPushforwardIso_globalValue' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.tildeCoefficientQuotientGeometricPullbackPushforwardIso_unit : ∀ (R : CommRingCat) (J : Ideal ↑R)
+  (N : ModuleCat ↑R),
+  CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom (J • ⊤).mkQ))
+      (LinearStudy.tildeCoefficientQuotientGeometricPullbackPushforwardIso R J N).hom =
+    (AlgebraicGeometry.Scheme.Modules.pullbackPushforwardAdjunction
+            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk J)))).unit.app
+      (AlgebraicGeometry.tilde N)
+'LinearStudy.tildeCoefficientQuotientGeometricPullbackPushforwardIso_unit' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulHomGeometricRestrictionPresentation : (R : CommRingCat) →
+  ModuleCat ↑R → (n : ℕ) → (Fin (n + 1) → ↑R) → CategoryTheory.ShortComplex (AlgebraicGeometry.Spec R).Modules
+'LinearStudy.affineKoszulHomGeometricRestrictionPresentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulHomGeometricRestrictionPresentationIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        LinearStudy.affineKoszulHomCoefficientRestrictionPresentation R N n H ≅
+          LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N n H
+'LinearStudy.affineKoszulHomGeometricRestrictionPresentationIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulHomGeometricRestrictionPresentation_exact : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R), (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N n H).Exact
+'LinearStudy.affineKoszulHomGeometricRestrictionPresentation_exact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulHomGeometricRestrictionPresentation_epi : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R), CategoryTheory.Epi (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N n H).g
+'LinearStudy.affineKoszulHomGeometricRestrictionPresentation_epi' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulHomGeometricRestrictionPresentation_restriction : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulTermHomCoefficientIso R N (n + 1) (n + 1)).hom
+      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N n H).g =
+    CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom ↑(LinearStudy.koszulTopHomCoefficientEquiv n)))
+      ((AlgebraicGeometry.Scheme.Modules.pullbackPushforwardAdjunction
+              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).unit.app
+        (AlgebraicGeometry.tilde N))
+'LinearStudy.affineKoszulHomGeometricRestrictionPresentation_restriction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

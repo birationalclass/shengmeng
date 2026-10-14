@@ -1,0 +1,12 @@
+module
+public import Linear.AffinePushforwardGlobalSectionsNaturality
+public import Linear.AffineTildePullbackExtendScalars
+public import Linear.AffineTildeTensorPullback
+public import Linear.TildeCoefficientQuotientGeometricPullback
+public import Linear.AffineTildePullbackUnit
+public import Linear.AffineTildePullbackUnitValues
+public import Linear.AffineTildeTensorPullbackUnit
+public import Linear.TildePushforwardUnitValues
+public import Linear.TildeCoefficientQuotientUnitValues
+public import Linear.TildeCoefficientQuotientGeometricUnit
+public import Linear.AffineKoszulGeometricRestriction
