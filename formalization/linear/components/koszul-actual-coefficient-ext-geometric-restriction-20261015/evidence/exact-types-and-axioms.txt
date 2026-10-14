@@ -1,0 +1,193 @@
+@LinearStudy.koszulExactTopCoefficient_isCocycle : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ) (H : Fin (n + 1) → R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j)
+  (N : ModuleCat R) (L : ↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →ₗ[R] ↑N),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.functionKoszulResolutionOfExact H he).complex.d (n + 2) (n + 1))
+      (ModuleCat.ofHom L) =
+    0
+'LinearStudy.koszulExactTopCoefficient_isCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulExactTopExtCoefficientRepresentative : {R : Type u_1} →
+  [inst : CommRing R] →
+    (n : ℕ) →
+      (H : Fin (n + 1) → R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j) →
+          (N : ModuleCat R) →
+            (↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →ₗ[R] ↑N) →
+              CategoryTheory.Abelian.Ext (↧(R ⧸ Ideal.span (Set.range H))) N (n + 1)
+'LinearStudy.koszulExactTopExtCoefficientRepresentative' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulExactTopExtCoefficientRepresentative_eq_zero_iff : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j)
+  (N : ModuleCat R) (L : ↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →ₗ[R] ↑N),
+  LinearStudy.koszulExactTopExtCoefficientRepresentative n H he N L = 0 ↔
+    (LinearStudy.koszulTopHomCoefficientRestriction n H) L = 0
+'LinearStudy.koszulExactTopExtCoefficientRepresentative_eq_zero_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.koszulExactTopExtCoefficientRepresentative_surjective : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j)
+  (N : ModuleCat R), Function.Surjective (LinearStudy.koszulExactTopExtCoefficientRepresentative n H he N)
+'LinearStudy.koszulExactTopExtCoefficientRepresentative_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.koszulExactTopExtCoefficientRepresentative_push : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j)
+  (N Nprime : ModuleCat R) (L : ↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →ₗ[R] ↑N) (a : ↑N →ₗ[R] ↑Nprime),
+  (LinearStudy.koszulExactTopExtCoefficientRepresentative n H he N L).comp
+      (CategoryTheory.Abelian.Ext.mk₀ (ModuleCat.ofHom a)) ⋯ =
+    LinearStudy.koszulExactTopExtCoefficientRepresentative n H he Nprime (a ∘ₗ L)
+'LinearStudy.koszulExactTopExtCoefficientRepresentative_push' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulExactTopExtCoefficientRepresentativeLinearMap : {R : Type u_1} →
+  [inst : CommRing R] →
+    (n : ℕ) →
+      (H : Fin (n + 1) → R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j) →
+          (N : ModuleCat R) →
+            (↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →ₗ[R] ↑N) →ₗ[R]
+              CategoryTheory.Abelian.Ext (↧(R ⧸ Ideal.span (Set.range H))) N (n + 1)
+'LinearStudy.koszulExactTopExtCoefficientRepresentativeLinearMap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.koszulExactTopExtCoefficientRepresentativeLinearMap_kernel : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j)
+  (N : ModuleCat R),
+  (LinearStudy.koszulExactTopExtCoefficientRepresentativeLinearMap n H he N).ker =
+    (LinearStudy.koszulTopHomCoefficientRestriction n H).ker
+'LinearStudy.koszulExactTopExtCoefficientRepresentativeLinearMap_kernel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.koszulExactTopExtCoefficientRestrictionEquiv : {R : Type u_1} →
+  [inst : CommRing R] →
+    (n : ℕ) →
+      (H : Fin (n + 1) → R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j) →
+          (N : ModuleCat R) →
+            CategoryTheory.Abelian.Ext (↧(R ⧸ Ideal.span (Set.range H))) N (n + 1) ≃ₗ[R]
+              ↑N ⧸ Ideal.span (Set.range H) • ⊤
+'LinearStudy.koszulExactTopExtCoefficientRestrictionEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulExactTopExtCoefficientRestrictionEquiv_representative : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j)
+  (N : ModuleCat R) (L : ↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →ₗ[R] ↑N),
+  (LinearStudy.koszulExactTopExtCoefficientRestrictionEquiv n H he N)
+      (LinearStudy.koszulExactTopExtCoefficientRepresentative n H he N L) =
+    Submodule.Quotient.mk (L (LinearStudy.topKoszulGenerator (n + 1)))
+'LinearStudy.koszulExactTopExtCoefficientRestrictionEquiv_representative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.koszulExactTopExtCoefficientRestrictionEquiv_pushGenerator : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j)
+  (N : ModuleCat R) (a : R →ₗ[R] ↑N),
+  (LinearStudy.koszulExactTopExtCoefficientRestrictionEquiv n H he N)
+      ((LinearStudy.koszulExactTopExtCoefficientRepresentative n H he (↧R)
+            (LinearStudy.topKoszulCoordinate (n + 1))).comp
+        (CategoryTheory.Abelian.Ext.mk₀ (ModuleCat.ofHom a)) ⋯) =
+    Submodule.Quotient.mk (a 1)
+'LinearStudy.koszulExactTopExtCoefficientRestrictionEquiv_pushGenerator' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearSection_exists_actual_affineKoszul_coefficientExt : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  V.ideal.toIdeal ≠ ⊥ →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 2) → LinearStudy.CoordinateRing n)
+            (hL : ∀ (i : Fin (r + 2)), MvPolynomial.IsHomogeneous (L i) 1),
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑(r + 1) →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (r + 2)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (r + 2) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (r + 2) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                have I :=
+                                  Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                                    (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+                                let C := MvPolynomial (Fin n) ℂ ⧸ I;
+                                let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+                                have H := fun (i : Fin (r + 1)) =>
+                                  (Ideal.Quotient.mk V.affineIdeal)
+                                    (LinearStudy.affineChartPolynomialMap
+                                      ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+                                w 0 ≠ 0 ∧
+                                  IsReduced C ∧
+                                    Module.Finite ℂ C ∧
+                                      Nonempty
+                                          (LinearStudy.projectivePulledLinearSectionScheme f V L hL w ≅
+                                            AlgebraicGeometry.Spec ↧C) ∧
+                                        AlgebraicGeometry.IsReduced
+                                            (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) ∧
+                                          ∃ (he :
+                                            ∀ (j : ℕ),
+                                              0 < j →
+                                                HomologicalComplex.ExactAt
+                                                  (koszulComplex (Fintype.linearCombination B H)) j),
+                                            ∀ (N : ModuleCat B),
+                                              ∃ (e :
+                                                CategoryTheory.Abelian.Ext (↧(B ⧸ Ideal.span (Set.range H))) N
+                                                    (r + 1) ≃ₗ[B]
+                                                  ↑N ⧸ Ideal.span (Set.range H) • ⊤),
+                                                ∀ (a : B →ₗ[B] ↑N),
+                                                  e
+                                                      ((LinearStudy.koszulExactTopExtCoefficientRepresentative r H he
+                                                            (↧B) (LinearStudy.topKoszulCoordinate (r + 1))).comp
+                                                        (CategoryTheory.Abelian.Ext.mk₀ (ModuleCat.ofHom a)) ⋯) =
+                                                    Submodule.Quotient.mk (a 1)
+'LinearStudy.projectivePulledLinearSection_exists_actual_affineKoszul_coefficientExt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.koszulExactTopExtCoefficientRepresentative_restriction_square : ∀ (R : CommRingCat) (N : ModuleCat ↑R)
+  (n : ℕ) (H : Fin (n + 1) → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j),
+  ↑(LinearStudy.koszulExactTopExtCoefficientRestrictionEquiv n H he N) ∘ₗ
+      LinearStudy.koszulExactTopExtCoefficientRepresentativeLinearMap n H he N =
+    LinearStudy.koszulTopHomCoefficientRestriction n H
+'LinearStudy.koszulExactTopExtCoefficientRepresentative_restriction_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulDerivedModuleExtGeometricIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+          (AlgebraicGeometry.tilde ↧(CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N (n + 1)) ≅
+            (AlgebraicGeometry.Scheme.Modules.pushforward
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+              ((AlgebraicGeometry.Scheme.Modules.pullback
+                    (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+                (AlgebraicGeometry.tilde N)))
+'LinearStudy.affineKoszulDerivedModuleExtGeometricIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulDerivedModuleExtGeometricIso_representative : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j),
+  CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.tilde.functor R).map
+        (ModuleCat.ofHom (LinearStudy.koszulExactTopExtCoefficientRepresentativeLinearMap n H he N)))
+      (LinearStudy.affineKoszulDerivedModuleExtGeometricIso R N n H he).hom =
+    CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom ↑(LinearStudy.koszulTopHomCoefficientEquiv n)))
+      ((AlgebraicGeometry.Scheme.Modules.pullbackPushforwardAdjunction
+              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).unit.app
+        (AlgebraicGeometry.tilde N))
+'LinearStudy.affineKoszulDerivedModuleExtGeometricIso_representative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulDerivedModuleExtGeometricIso_internalHom_restriction : ∀ (R : CommRingCat) (N : ModuleCat ↑R)
+  (n : ℕ) (H : Fin (n + 1) → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulTermHomCoefficientIso R N (n + 1) (n + 1)).inv
+      (CategoryTheory.CategoryStruct.comp
+        ((AlgebraicGeometry.tilde.functor R).map
+          (ModuleCat.ofHom (LinearStudy.koszulExactTopExtCoefficientRepresentativeLinearMap n H he N)))
+        (LinearStudy.affineKoszulDerivedModuleExtGeometricIso R N n H he).hom) =
+    (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N n H).g
+'LinearStudy.affineKoszulDerivedModuleExtGeometricIso_internalHom_restriction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
