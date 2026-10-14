@@ -273,7 +273,7 @@ export function createCampus(scene,{section=()=>{},deferInterior=(_key,_label,fn
   room('Upper seminar lounge',loungeX,0,7,13,2.8,hallUpper,['west','south'],false,true);
 
   const upperLounges=[];
-  for(const id of ['01B','01C'])deferInterior(id+':2',id==='01B'?'报告厅二楼客厅':'备份报告厅二楼',function*(){
+  deferInterior('01B:2','报告厅二楼客厅',function*(){
     let module;yield async()=>{module=await import('./upper-lounge.js?v=demand-1');};
     const steps=module.createUpperLoungeSteps(THREE,{seatCloth,seatShell:shell,seatMetal:brass});let item;
     for(;;){const step=steps.next();if(step.done){item=step.value;break;}yield;}

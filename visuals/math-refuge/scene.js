@@ -549,14 +549,7 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
     }
   }
   for(const object of architectureObjects){object.scale.multiplyScalar(BUILDING_SCALE);object.position.multiplyScalar(BUILDING_SCALE);object.userData.architectureScale=BUILDING_SCALE;}
-  function deferBackup(object,id){
-    if(id!=='01C')return false;
-    const tagged=object.userData.campusParts?.some(part=>part==='hall-interior-1');
-    if(!tagged&&!/carpet|chair|lectern|pendant|acoustic ceiling|blackout/i.test(object.name))return false;
-    const bounds=new THREE.Box3().setFromObject(object),floor=bounds.getCenter(new THREE.Vector3()).y>6?2:1;
-    deferInterior(id+':'+floor,'备份报告厅 '+floor+' 楼内部',()=>({published:object}));return true;
-  }
-  relocateArchitecture(scene,architectureObjects,false,{deferNode:deferBackup});
+  relocateArchitecture(scene,architectureObjects,false);
   relocateArchitecture(scene,campusPlants,true);
   const movedLOD=[];for(const item of lodBatches)for(const mesh of scene.children)if(mesh.isInstancedMesh&&mesh.visible&&mesh.geometry===item.high&&mesh.userData.layoutId)movedLOD.push({...item,mesh});lodBatches.splice(0,lodBatches.length,...movedLOD);
   for(const item of lodBatches){item.mesh.updateMatrixWorld();item.bounds=item.mesh.boundingBox.clone().applyMatrix4(item.mesh.matrixWorld);}

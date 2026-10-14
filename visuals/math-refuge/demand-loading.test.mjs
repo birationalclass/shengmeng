@@ -41,13 +41,13 @@ test('failed and concurrent requests retain separate names and do not invent a t
  const m=new RuntimeTransfers('https://refuge.test/'),a=m.begin('/a.json',null,0),b=m.begin('/b.png',500,0);m.progress(b,100,10);m.end(a,true);
  const value=m.snapshot(20);assert.equal(value.active.length,1);assert.equal(value.active[0].received,100);assert.equal(value.last.error,true);assert.equal(value.total,0);
 });
-test('late interiors use the migrated building coordinates for main hall, backup and classroom',async()=>{
+test('late interiors use the migrated building coordinates for main hall and classroom',async()=>{
  const threeURL=new URL('../3d/vendor/three.module.js',import.meta.url).href,siteURL=new URL('./site-layout.js',import.meta.url).href;
  const plan=readFileSync(new URL('./campus-plan.js',import.meta.url),'utf8').match(/export const bridgePlan=(.*);/)[1];
  const source=readFileSync(new URL('./campus-layout.js',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'');
  const module=await import('data:text/javascript;base64,'+Buffer.from(`import * as T from '${threeURL}';import {BUILDING_SCALE as S,HALL,LECTERN_SHAFT_PLAN} from '${siteURL}';const bridgePlan=${plan};\n`+source).toString('base64'));
  const T=await import(threeURL),S=Math.SQRT2;
- for(const [id,x,z] of [['01B',39,0],['01C',39,0],['07',-84,8]]){
+ for(const [id,x,z] of [['01B',39,0],['07',-84,8]]){
   const scene=new T.Scene(),node=new T.Mesh(new T.BoxGeometry(1,1,1),new T.MeshBasicMaterial());node.position.set(x*S,3,z*S);scene.add(node);
   module.relocateArchitecture(scene,new Set([node]),false,{onlyId:id});const placed=scene.children.find(o=>o.visible&&o.userData.layoutId===id);assert.ok(placed);
   const expected=module.buildingOffset(id);assert.ok(Math.abs(placed.position.x-(x*S+expected.x))<1e-6);assert.ok(Math.abs(placed.position.z-(z*S+expected.z))<1e-6);

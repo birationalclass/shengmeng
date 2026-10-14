@@ -7,7 +7,7 @@ import * as T from 'three';
 import {BUILDING_SCALE as S,HALL,LECTERN_SHAFT_PLAN} from './site-layout.js';
 import {subtractRect} from './board-storage.js?v124';
 import {createLecternLift} from './lectern-lift.js';
-import {bridgePlan} from './campus-plan.js?v=isolated-backup-47';
+import {bridgePlan} from './campus-plan.js?v=single-hall-1';
 import {routeBridge} from './campus-routing.js?v=anchors-49';
 
 const anchor=39*S;
@@ -25,7 +25,6 @@ export const layout=[
  ['R1','休息室一组',-56,-28,-103,95,26,20],
  ['R3','休息室三组',-47,-38,-122,-110,26,20],
  ['G','海上花园',-43,0,-250,320,55,80],
- ['01C','报告厅固定备份',39,0,-103,225,30*S,33*S],
  ['06','访客小院',-56,-28,-186,355,36,28],
  ['R2','休息室二组',-47,-38,-175,235,26,20]
 ];
@@ -47,7 +46,7 @@ const relocation=b=>{
  const sx=b[0]==='G'?.7:1,sz=b[0]==='G'?.55:1;
  return new T.Matrix4().makeTranslation(anchor+b[4],0,-b[5]).multiply(new T.Matrix4().makeScale(sx,1,sz)).multiply(new T.Matrix4().makeTranslation(-b[2]*S,0,-b[3]*S));
 };
-const destinations=b=>[b,...(b[0]==='01B'?[byId('01C')]:b[0]==='R1'?[byId('06')]:b[0]==='R3'?[byId('R2')]:[])];
+const destinations=b=>[b,...(b[0]==='R1'?[byId('06')]:b[0]==='R3'?[byId('R2')]:[])];
 export function relocateArchitecture(scene,objects,worldInstances=false,{onlyId=null,deferNode=null}={}){
  const wanted=b=>onlyId?destinations(b).filter(d=>d[0]===onlyId):destinations(b);
  const currentPosition=(object,id)=>{if(!onlyId)return;const a=byId(id),b=campusLayout.find(row=>row[0]===id);object.position.x+=b[4]-a[4];object.position.z-=b[5]-a[5];};
@@ -68,12 +67,6 @@ export function relocateArchitecture(scene,objects,worldInstances=false,{onlyId=
    }
    geom.computeBoundingBox();geom.computeBoundingSphere();obj.geometry=geom;
    for(const [id,list] of indices)sharedVertices.push({id,geometry:geom,indices:list,scale:S});
-   // Upper-floor and roof slabs for the exact hall duplicate.
-   const src=obj.geometry.attributes.position,uv=obj.geometry.attributes.uv,verts=[],uvs=[];
-   for(let i=0;i<src.count;i+=3){const x=(src.getX(i)+src.getX(i+1)+src.getX(i+2))/3,z=(src.getZ(i)+src.getZ(i+1)+src.getZ(i+2))/3;
-    if(Math.abs(x*S-(anchor-62))<24&&Math.abs(z*S)<25)for(let j=0;j<3;j++){verts.push(src.getX(i+j)-41/S,src.getY(i+j),src.getZ(i+j)-225/S);if(uv)uvs.push(uv.getX(i+j),uv.getY(i+j));}
-   }
-   if(verts.length){const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(verts,3));if(uvs.length)g.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));g.computeVertexNormals();const m=new T.Mesh(g,obj.material);m.scale.copy(obj.scale);m.castShadow=m.receiveShadow=true;if(!onlyId||onlyId==='01C')publish(m,'01C');}
    continue;
   }
   if(obj.isInstancedMesh){
@@ -133,7 +126,6 @@ export function finishCampusLayout(scene,retreat,rooms){
   }
  }
  if(retreat.campus?.lectern)retreat.campus.lecternLift=createLecternLift(scene,retreat.campus.lectern,retreat.campus.carpetMaterial,buildingOffset('01B'));
- if(retreat.campus){const [a,b,c,d]=LECTERN_SHAFT_PLAN,delta=buildingOffset('01C'),cap=new T.Mesh(new T.BoxGeometry((b-a)*S,.024*S,(d-c)*S),retreat.campus.carpetMaterial);cap.position.set((a+b)/2*S+delta.x,(.28+.016)*S,(c+d)/2*S+delta.z);cap.receiveShadow=true;cap.name='Backup hall fixed lectern floor';scene.add(cap);}
  const bridges=new T.Group();bridges.name='September 26 campus bridges';scene.add(bridges);
  function deck(x,y,w,d,rotation=0){const m=new T.Mesh(new T.BoxGeometry(w,.28,d),retreat.materials.hallPaving||retreat.materials.terraceFloor||retreat.materials.stone);m.position.set(anchor+x,top-.14,-y);m.rotation.y=rotation;m.receiveShadow=true;bridges.add(m);}
  const g=campusLayout.find(b=>b[0]==='G'),x=g[4],y=g[5],w=g[6],d=g[7];for(const a of [[x-w/2,y,3,d+3],[x+w/2,y,3,d+3],[x,y-d/2,w,3],[x,y+d/2,w,3],[x,y,3,d],[x,y,w,3]])deck(...a);
@@ -154,7 +146,7 @@ export function finishCampusLayout(scene,retreat,rooms){
 export function relocateShots(shots){
  const hall=buildingOffset('01B'),west=HALL.west*S+hall.x,south=HALL.south*S+hall.z,p=[west-14,10,south+10],t=[west-3,3,south-2];shots.push({name:'旋转楼梯',title:'南侧起步，绕西侧上楼。',description:'原有木踏步、金属扶手与踏步灯 · 弧形旋转楼梯',duration:25,fov:58,positions:[p,p.slice()],targets:[t,t.slice()]});
 
- for(const [name,id] of [['报告厅备份','01C'],['访客小院','06'],['休息室二组','R2']]){const b=campusLayout.find(r=>r[0]===id),p=[anchor+b[4]-35,18,-b[5]+32],t=[anchor+b[4],2,-b[5]];shots.push({name,title:name,description:'新布局 · 海上栈桥连接',duration:25,fov:58,positions:[p,p.slice()],targets:[t,t.slice()]});}
+ for(const [name,id] of [['访客小院','06'],['休息室二组','R2']]){const b=campusLayout.find(r=>r[0]===id),p=[anchor+b[4]-35,18,-b[5]+32],t=[anchor+b[4],2,-b[5]];shots.push({name,title:name,description:'新布局 · 海上栈桥连接',duration:25,fov:58,positions:[p,p.slice()],targets:[t,t.slice()]});}
 
  const ids={'报告厅':'01B','板书':'01B','二楼客厅':'01B','海景露台':'01B','教学楼':'07','书室':'02','学术客厅':'03','楼上书房':'03','讨论楼':'04','楼上讨论室':'04','咖啡屋':'05N','茶室':'05S','客舍一':'R1','客舍二':'R3','海上花园':'G','庭院':'03'};
  for(const shot of shots){const id=ids[shot.name];if(id){const v=buildingOffset(id);for(const key of ['positions','targets'])shot[key]=shot[key].map(p=>[p[0]+v.x,p[1],p[2]+v.z]);}if(shot.name==='远眺'){shot.positions=[[anchor-340,240,280],[anchor-340,240,280]];shot.targets=[[anchor-70,0,-30],[anchor-70,0,-30]];}}

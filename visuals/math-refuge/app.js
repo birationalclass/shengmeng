@@ -103,7 +103,7 @@ installCoastWalks(SHOTS);
 for(const [label,event] of [['看日出','sunrise'],['看日落','sunset']]){const shift=buildingOffset('01B'),x=(event==='sunrise'?SEAT_ROWS[2].x-3.3:SEAT_ROWS[0].x+3.3)*BUILDING_SCALE+shift.x,p=[x,(DECK_Y+.028)*BUILDING_SCALE+(event==='sunrise'?SEAT_ROWS[2].rise:SEAT_ROWS[0].rise)+2.65,shift.z],t=[x+(event==='sunrise'?100:-100),p[1],p[2]];SHOTS.push({name:'报告厅'+label,title:label,description:event==='sunset'?'后排座椅前景 · 海平面日落':'第一排座椅前景 · 海平面日出',duration:30,fov:55,positions:[p,p.slice()],targets:[t,t.slice()]});BUILDINGS[0].rooms.push({name:label,sunEvent:event});}
 BUILDINGS[0].rooms.push({name:'降下讲台',lecternLift:true});
 
-OUTDOOR_AREAS.push('远眺','报告厅备份','访客小院','休息室二组');
+OUTDOOR_AREAS.push('远眺','访客小院','休息室二组');
 for(const [i,n] of [[3,'共研工坊'],[4,'数学实验室'],[5,'北食阁'],[6,'南食阁'],[7,'休息室一组'],[8,'休息室三组']])BUILDINGS[i].name=n;
 let panelBuilding=BUILDINGS[0];
 for(const item of [...BUILDINGS,...OUTDOOR_AREAS.filter(name=>!['曲线海岸总览','左环漫滩','主楼沙滩'].includes(name)).map(name=>({name,shot:name}))]){
@@ -650,13 +650,13 @@ function requestEnvironment(){
 }
 function requestInterior(key){
  if(!retreat?.interiors.jobs.has(key))return Promise.resolve();
- const names={'01B':'报告厅','01C':'备份报告厅','07':'教学楼','02':'图书馆','03':'共研工坊','04':'数学实验室','05N':'北食阁','05S':'南食阁','R1':'休息室一组','R3':'休息室三组','06':'访客小院','R2':'休息室二组'},[id,floor]=key.split(':');
+ const names={'01B':'报告厅','07':'教学楼','02':'图书馆','03':'共研工坊','04':'数学实验室','05N':'北食阁','05S':'南食阁','R1':'休息室一组','R3':'休息室三组','06':'访客小院','R2':'休息室二组'},[id,floor]=key.split(':');
  return resources.enqueue('interior:'+key,(names[id]||id)+' '+floor+' 楼内部',()=>retreat.interiors.load(key),{priority:2}).then(()=>{$('world').dataset.loadedInteriors=[...retreat.interiors.done].join(',');});
 }
 function requestShotInterior(s){
  if(!s)return;
  const building=buildingForShot(s.name),ids=['01B','07','02','03','04','05N','05S','R1','R3','10'];
- const id=s.name==='报告厅备份'?'01C':ids[(building?.number||0)-1];
+ const id=ids[(building?.number||0)-1];
  if(id&&id!=='10')void requestInterior(id+':'+(/二楼|楼上/.test(s.name)?2:s.lecture&&activeRoom>0?activeRoom:1)).catch(error=>console.error('[Refuge interior]',error));
  if(!s.lecture&&!s.hallOrbit&&s.name!=='二楼客厅')requestEnvironment();
 }
@@ -664,9 +664,9 @@ let nearbyAt=0;
 function requestNearbyInteriors(stamp){
  if(stamp-nearbyAt<500||resources.snapshot().protected)return;nearbyAt=stamp;
  for(const key of retreat.interiors.jobs.keys()){
-  if(retreat.interiors.done.has(key))continue;const [id,floor]=key.split(':'),o=buildingOffset(id),centers={'01B':[39,0],'01C':[39,0],'07':[-84,8],'02':[-37,-16],'03':[-6,-4],'04':[11.5,-4],'05N':[39,-22],'05S':[-36.5,19],'R1':[-56,-28],'R3':[-47,-38],'06':[-56,-28],'R2':[-47,-38]};
+  if(retreat.interiors.done.has(key))continue;const [id,floor]=key.split(':'),o=buildingOffset(id),centers={'01B':[39,0],'07':[-84,8],'02':[-37,-16],'03':[-6,-4],'04':[11.5,-4],'05N':[39,-22],'05S':[-36.5,19],'R1':[-56,-28],'R3':[-47,-38],'06':[-56,-28],'R2':[-47,-38]};
   const center=centers[id];if(!center)continue;const dx=camera.position.x-(center[0]*BUILDING_SCALE+o.x),dz=camera.position.z-(center[1]*BUILDING_SCALE+o.z);
-  const upper=id==='01B'||id==='01C'?(2*DECK_Y+HALL.clearHeight/BUILDING_SCALE+.20)*BUILDING_SCALE:id==='07'?seminarFloor(Number(floor)-1)*BUILDING_SCALE:4.9;
+  const upper=id==='01B'?(2*DECK_Y+HALL.clearHeight/BUILDING_SCALE+.20)*BUILDING_SCALE:id==='07'?seminarFloor(Number(floor)-1)*BUILDING_SCALE:4.9;
   if(Math.hypot(dx,dz)<24&&(id==='07'?Math.abs(camera.position.y-upper-1.65)<3:Number(floor)===2?camera.position.y>upper-1:camera.position.y<upper+4))void requestInterior(key).catch(error=>console.error('[Refuge interior]',error));
  }
 }
