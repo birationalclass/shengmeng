@@ -109,6 +109,12 @@ for(const auth of ['pending','anonymous']){
 
 const app=readFileSync(new URL('./app.js',import.meta.url),'utf8');
 {
+ const b=boot();b.context.refugeBoot.auth('pending');b.get('loading').dataset.loginReady='true';b.context.refugeBoot.stage(75,'首屏建筑');b.context.refugeBoot.ready();b.context.refugeBoot.preview();
+ assert.equal(b.get('loading').dataset.ready,'true','pending account requests cannot block scene readiness');
+ assert.equal(b.context.refugeBoot.previewReady,true);assert.equal(b.context.refugeBoot.authorized,false,'a prepared scene cannot grant account access');
+ b.context.refugeBoot.auth('anonymous');assert.equal(b.get('enterButton').hidden,false,'manual login remains available after the session probe ends');
+}
+{
  const b=boot();let opened=0;b.events['refuge-login']=()=>opened++;b.get('loading').dataset.loginReady='true';b.context.refugeBoot.auth('pending');
  assert.equal(b.get('enterButton').hidden,false,'the login action remains available while checking the stored session');
  b.get('enterButton').handlers.click();assert.equal(opened,1);assert.equal(b.context.refugeBoot.authorized,false,'opening login never grants entry');

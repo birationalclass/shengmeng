@@ -1,4 +1,4 @@
-import {STARTUP_RESOURCES} from './startup-resources.js?v=demand-1';
+import {STARTUP_RESOURCES} from './startup-resources.js?v=session-2';
 // Observe existing requests; never fetch, preload, or change the scene's loaders.
 export class LoadingTransfer {
  constructor(resources,base){
@@ -40,7 +40,7 @@ if(typeof document!=='undefined'){
  }
  const output=document.getElementById('loadTransfer'),loading=document.getElementById('loading');
  if(output&&loading){
-  const meter=new LoadingTransfer(STARTUP_RESOURCES,new URL('./',import.meta.url).href),clock=()=>performance.now(),stages=[];let observer,timer,stageObserver,stageAt=0,stageLabel='连接空间';
+  const meter=new LoadingTransfer(STARTUP_RESOURCES,new URL('./',import.meta.url).href),clock=()=>performance.now(),stages=[];let observer,timer,stageObserver,stageAt=0,stageLabel=document.getElementById('loadMessage')?.textContent||'下载与初始化场景程序';
   const recordStage=()=>{const next=loading.dataset.ready==='true'?'加载完成':document.getElementById('loadMessage')?.textContent||stageLabel;if(next!==stageLabel){const end=clock();stages.push({stage:stageLabel,startMs:stageAt,durationMs:end-stageAt});stageAt=end;stageLabel=next;output.dataset.stageTimings=JSON.stringify(stages);}};
   const paint=()=>{const value=meter.snapshot(clock());output.textContent=`加载速度 ${value.measured?Math.round(value.bytesPerSecond/1000):'—'} KB/s · ${formatBytes(value.loaded)} / ${formatBytes(value.total)}`;output.dataset.loadedBytes=String(value.loaded);output.dataset.totalBytes=String(value.total);output.dataset.bytesPerSecond=String(value.bytesPerSecond);};
   const collect=()=>{for(const entry of [...performance.getEntriesByType('navigation'),...performance.getEntriesByType('resource')])meter.observe(entry,clock());};

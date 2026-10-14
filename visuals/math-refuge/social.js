@@ -4,9 +4,18 @@ const API=testMode==='local'?'http://127.0.0.1:8783':'https://birationalclass-d3
 const $=id=>document.getElementById(id);
 let generation=0,user=null,mode='identify',busy=false,chatOpen=false,pollTimer,fadeTimer,latest=0;
 const seen=new Set();
-async function request(path,data){
- const response=await fetch(API+'/api/'+path,{method:data?'POST':'GET',credentials:'include',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined,signal:AbortSignal.timeout(path==='ai/start'?55000:12000)});
+async function request(path,data,{signal}={}){
+ const response=await fetch(API+'/api/'+path,{method:data?'POST':'GET',credentials:'include',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined,signal:signal||AbortSignal.timeout(path==='ai/start'?55000:12000)});
  const result=await response.json();if(!response.ok){const error=new Error(result.error||'连接暂不可用');error.status=response.status;throw error;}return result;
+}
+// The automatic session probe has its own wall-clock deadline. Neither a stalled
+// server nor a late reply owns the scene loader or a user's manual login flow.
+async function checkEntrySession(fetchSession,{controller=new AbortController(),timeoutMs=2500,api=globalThis}={}){
+ if(controller.signal.aborted)throw controller.signal.reason;
+ let timer,onAbort;
+ const deadline=new Promise((_,reject)=>{onAbort=()=>reject(controller.signal.reason||new Error('登录检查已取消'));controller.signal.addEventListener('abort',onAbort,{once:true});timer=api.setTimeout(()=>{const error=new Error('后台登录检查超时');error.name='TimeoutError';controller.abort(error);},timeoutMs);});
+ try{return await Promise.race([Promise.resolve().then(()=>fetchSession(controller.signal)),deadline]);}
+ finally{api.clearTimeout(timer);controller.signal.removeEventListener('abort',onAbort);}
 }
 function message(error){return error.name==='TimeoutError'||error instanceof TypeError?'连接暂不可用，请重试':error.message;}
 function setUser(value){generation++;user=value;const entryAccount=$('loading').querySelector('.arrival-account');entryAccount.hidden=!value;if(value)$('loading').querySelector('.arrival-entry').prepend(entryAccount);else $('loading').append(entryAccount);document.querySelectorAll('[data-account-open]').forEach(el=>{if(el.id!=='socialAccountToggle')el.textContent=value?value.name:'登录 / 注册';});$('socialAccountName').textContent=value?.name||'';$('socialAdminOpen').hidden=value?.role!=='admin';$('socialAISettings').hidden=value?.role!=='admin';$('socialAdminPanel').hidden=true;$('socialAdminRows').replaceChildren();$('socialAuthForm').hidden=!!value;$('socialAccountView').hidden=!value;for(const t of aiTimers.values())clearTimeout(t);aiTimers.clear();aiRows.clear();aiHistoryLoadedFor=null;if(!value){seen.clear();$('socialMessages').replaceChildren();latest=0;}clearTimeout(pollTimer);if(value){poll();loadAIHistory();}}
@@ -56,12 +65,13 @@ function showEntryLogin(){
 }
 window.addEventListener('refuge-preview-ready',showEntryLogin);
 window.addEventListener('refuge-login',()=>{entryLoginPending=true;showEntryLogin();});
-let entryAuthTouched=false;
-$('socialName').addEventListener('input',()=>entryAuthTouched=true);
-$('socialAuthForm').addEventListener('submit',()=>entryAuthTouched=true,{capture:true});
-$('socialGuest').addEventListener('click',()=>entryAuthTouched=true,{capture:true});
-entryLoginPending=true;showEntryLogin();$('socialAuthStatus').textContent='正在检查登录状态…';$('loading').dataset.loginReady='true';$('loading').dataset.loginReadyMs=String(performance.now());window.refugeBoot?.auth('pending');
-request('session').then(data=>{if(entryAuthTouched||$('world').dataset.entered==='true')return;setUser(data.user);window.refugeBoot?.auth(data.user?'authenticated':'anonymous');if(data.user){entryLoginError='';if($('socialDialog').open)closeAccount();}else{entryLoginPending=true;showEntryLogin();$('socialAuthStatus').textContent='';}}).catch(error=>{if(entryAuthTouched||$('world').dataset.entered==='true')return;window.refugeBoot?.auth('anonymous');entryLoginPending=true;if(error.status!==401)entryLoginError='自动登录暂不可用，可手动登录或入侵。';showEntryLogin();});
+let entryAuthTouched=false;const entrySessionController=new AbortController();
+function touchEntryAuth(){entryAuthTouched=true;entrySessionController.abort();$('loading').dataset.sessionCheck='manual';$('socialAuthStatus').textContent='';if($('world').dataset.entered!=='true')window.refugeBoot?.auth('anonymous');}
+$('socialName').addEventListener('input',touchEntryAuth);
+$('socialAuthForm').addEventListener('submit',touchEntryAuth,{capture:true});
+$('socialGuest').addEventListener('click',touchEntryAuth,{capture:true});
+entryLoginPending=true;showEntryLogin();$('socialAuthStatus').textContent='后台检查登录，可直接手动登录或入侵。';$('loading').dataset.loginReady='true';$('loading').dataset.loginReadyMs=String(performance.now());$('loading').dataset.sessionCheck='pending';$('loading').dataset.sessionStartedMs=String(performance.now());window.refugeBoot?.auth('pending');
+checkEntrySession(signal=>request('session',undefined,{signal}),{controller:entrySessionController}).then(data=>{if(entryAuthTouched||$('world').dataset.entered==='true')return;$('loading').dataset.sessionCheck='complete';setUser(data.user);window.refugeBoot?.auth(data.user?'authenticated':'anonymous');if(data.user){entryLoginError='';if($('socialDialog').open)closeAccount();}else{entryLoginPending=true;showEntryLogin();$('socialAuthStatus').textContent='';}}).catch(error=>{if(entryAuthTouched||$('world').dataset.entered==='true')return;$('loading').dataset.sessionCheck=error.name==='TimeoutError'?'timeout':'unavailable';window.refugeBoot?.auth('anonymous');entryLoginPending=true;entryLoginError=error.status===401?'':error.name==='TimeoutError'?'后台登录检查已超时，可手动登录或入侵。':'自动登录暂不可用，可手动登录或入侵。';showEntryLogin();}).finally(()=>{$('loading').dataset.sessionFinishedMs=String(performance.now());});
 
 // Pointer capture keeps dragging stable across the scene canvas and touch screens.
 const chat=$('socialChat'),handle=$('socialDragHandle');let drag=null;
