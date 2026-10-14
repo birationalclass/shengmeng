@@ -1,0 +1,316 @@
+@MvPolynomial.projectiveHomogeneousDualCoefficientEquiv : {R S : Type} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      {σ : Type} →
+        (e : R ≃+* S) →
+          (m : ℕ) →
+            Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R m) ≃ₛₗ[e.toRingHom]
+              Module.Dual S ↥(MvPolynomial.homogeneousSubmodule σ S m)
+'MvPolynomial.projectiveHomogeneousDualCoefficientEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousDualCoefficientEquiv_apply : ∀ {R S : Type} [inst : CommRing R] [inst_1 : CommRing S]
+  {σ : Type} (e : R ≃+* S) (m : ℕ) (φ : Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R m))
+  (q : ↥(MvPolynomial.homogeneousSubmodule σ S m)),
+  ((MvPolynomial.projectiveHomogeneousDualCoefficientEquiv e m) φ) q =
+    e (φ ((MvPolynomial.projectiveHomogeneousCoefficientEquiv e m).symm q))
+'MvPolynomial.projectiveHomogeneousDualCoefficientEquiv_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveHomogeneousDualCoefficientEquiv_multiply : ∀ {R S : Type} [inst : CommRing R]
+  [inst_1 : CommRing S] {σ : Type} (e : R ≃+* S) (l m : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ R l))
+  (φ : Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R (l + m))),
+  (MvPolynomial.projectiveHomogeneousDualCoefficientEquiv e m)
+      ((MvPolynomial.projectiveHomogeneousMultiplyDual l m p) φ) =
+    (MvPolynomial.projectiveHomogeneousMultiplyDual l m ((MvPolynomial.projectiveHomogeneousCoefficientEquiv e l) p))
+      ((MvPolynomial.projectiveHomogeneousDualCoefficientEquiv e (l + m)) φ)
+'MvPolynomial.projectiveHomogeneousDualCoefficientEquiv_multiply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv : (K : Type) →
+  [inst : CommRing K] →
+    {σ : Type} →
+      (m : ℕ) →
+        Module.Dual K
+            ↥(MvPolynomial.homogeneousSubmodule σ K
+                m) ≃ₛₗ[(MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom]
+          Module.Dual ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+            ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K)) m)
+'MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv_apply : ∀ (K : Type) [inst : CommRing K] {σ : Type}
+  (m : ℕ) (φ : Module.Dual K ↥(MvPolynomial.homogeneousSubmodule σ K m))
+  (q : ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K)) m)),
+  ((MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv K m) φ) q =
+    (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K)
+      (φ ((MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv K m).symm q))
+'MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv_multiply : ∀ (K : Type) [inst : CommRing K] {σ : Type}
+  (l m : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ K l))
+  (φ : Module.Dual K ↥(MvPolynomial.homogeneousSubmodule σ K (l + m))),
+  (MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv K m)
+      ((MvPolynomial.projectiveHomogeneousMultiplyDual l m p) φ) =
+    (MvPolynomial.projectiveHomogeneousMultiplyDual l m
+        ((MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv K l) p))
+      ((MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv K (l + m)) φ)
+'MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv_multiply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveHomogeneousDualCoefficientEquiv_degreeMultiply : ∀ {R S : Type} [inst : CommRing R]
+  [inst_1 : CommRing S] {σ : Type} (e : R ≃+* S) (a b l : ℕ) (h : a = l + b)
+  (p : ↥(MvPolynomial.homogeneousSubmodule σ R l)) (φ : Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R a)),
+  (MvPolynomial.projectiveHomogeneousDualCoefficientEquiv e b)
+      ((CategoryTheory.ConcreteCategory.hom (MvPolynomial.projectiveHomogeneousDegreeMultiplyDual a b l h p)) φ) =
+    (CategoryTheory.ConcreteCategory.hom
+        (MvPolynomial.projectiveHomogeneousDegreeMultiplyDual a b l h
+          ((MvPolynomial.projectiveHomogeneousCoefficientEquiv e l) p)))
+      ((MvPolynomial.projectiveHomogeneousDualCoefficientEquiv e a) φ)
+'MvPolynomial.projectiveHomogeneousDualCoefficientEquiv_degreeMultiply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveHomogeneousDualCoefficientEquiv_gradedEntry : ∀ {R S : Type} [inst : CommRing R]
+  [inst_1 : CommRing S] {σ : Type} (e : R ≃+* S) (a b : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ R (a - b)))
+  (φ : Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R a)),
+  (MvPolynomial.projectiveHomogeneousDualCoefficientEquiv e b)
+      ((CategoryTheory.ConcreteCategory.hom (MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry a b p)) φ) =
+    (CategoryTheory.ConcreteCategory.hom
+        (MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry a b
+          ((MvPolynomial.projectiveHomogeneousCoefficientEquiv e (a - b)) p)))
+      ((MvPolynomial.projectiveHomogeneousDualCoefficientEquiv e a) φ)
+'MvPolynomial.projectiveHomogeneousDualCoefficientEquiv_gradedEntry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv_gradedEntry : ∀ {σ : Type} (K : Type)
+  [inst : CommRing K] (a b : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ K (a - b)))
+  (φ : Module.Dual K ↥(MvPolynomial.homogeneousSubmodule σ K a)),
+  (MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv K b)
+      ((CategoryTheory.ConcreteCategory.hom (MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry a b p)) φ) =
+    (CategoryTheory.ConcreteCategory.hom
+        (MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry a b
+          ((MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv K (a - b)) p)))
+      ((MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv K a) φ)
+'MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientEquiv_gradedEntry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.submodulePiUnivLinearEquiv : {R : Type u_1} →
+  {M : Type u_2} →
+    {J : Type u_3} →
+      [inst : Semiring R] →
+        [inst_1 : AddCommMonoid M] →
+          [inst_2 : Module R M] → (p : J → Submodule R M) → ↥(Submodule.pi Set.univ p) ≃ₗ[R] (j : J) → ↥(p j)
+'LinearStudy.submodulePiUnivLinearEquiv' depends on axioms: [propext, Quot.sound]
+@LinearStudy.submodulePiUnivLinearEquiv_apply : ∀ {R : Type u_1} {M : Type u_2} {J : Type u_3} [inst : Semiring R]
+  [inst_1 : AddCommMonoid M] [inst_2 : Module R M] (p : J → Submodule R M) (x : ↥(Submodule.pi Set.univ p)) (j : J),
+  ↑((LinearStudy.submodulePiUnivLinearEquiv p) x j) = ↑x j
+'LinearStudy.submodulePiUnivLinearEquiv_apply' depends on axioms: [propext, Quot.sound]
+@LinearStudy.submodulePiUnivLinearEquiv_symm_apply : ∀ {R : Type u_1} {M : Type u_2} {J : Type u_3} [inst : Semiring R]
+  [inst_1 : AddCommMonoid M] [inst_2 : Module R M] (p : J → Submodule R M) (x : (j : J) → ↥(p j)) (j : J),
+  ↑((LinearStudy.submodulePiUnivLinearEquiv p).symm x) j = ↑(x j)
+'LinearStudy.submodulePiUnivLinearEquiv_symm_apply' depends on axioms: [propext, Quot.sound]
+@LinearStudy.integerShiftedFreeDualCoordinatePiEquiv : {K : Type u_1} →
+  {S : Type u_2} →
+    {J : Type u_3} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] →
+          [inst_2 : Algebra K S] →
+            (𝓑 : ℕ → Submodule K S) →
+              (w : J → ℤ) →
+                (d : ℤ) →
+                  ↥(LinearStudy.integerShiftedFreeDualCoordinatePiece 𝓑 w d) ≃ₗ[K]
+                    (j : J) → ↥(LinearStudy.nativeProjectiveRingIntegerPiece 𝓑 (w j + d))
+'LinearStudy.integerShiftedFreeDualCoordinatePiEquiv' depends on axioms: [propext, Quot.sound]
+@LinearStudy.integerShiftedFreeHomNaturalCoordinatesEquiv : {K : Type u_1} →
+  {S : Type u_2} →
+    {J : Type u_3} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] →
+          [inst_2 : Algebra K S] →
+            (𝓑 : ℕ → Submodule K S) →
+              [GradedAlgebra 𝓑] →
+                [Fintype J] →
+                  [DecidableEq J] →
+                    (N : ℕ) →
+                      (a : J → ℕ) →
+                        ↥(LinearStudy.integerGradedHomPiece 𝓑
+                              (LinearStudy.integerShiftedFreePiece 𝓑 fun j => ↑(a j) + ↑N) (-↑N)) ≃ₗ[K]
+                          (j : J) → ↥(𝓑 (a j))
+'LinearStudy.integerShiftedFreeHomNaturalCoordinatesEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeHomNaturalCoordinatesEquiv_apply : ∀ {K : Type u_1} {S : Type u_2} {J : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  [inst_4 : Fintype J] [inst_5 : DecidableEq J] (N : ℕ) (a : J → ℕ)
+  (φ : ↥(LinearStudy.integerGradedHomPiece 𝓑 (LinearStudy.integerShiftedFreePiece 𝓑 fun j => ↑(a j) + ↑N) (-↑N)))
+  (j : J), ↑((LinearStudy.integerShiftedFreeHomNaturalCoordinatesEquiv 𝓑 N a) φ j) = ↑φ (Pi.single j 1)
+'LinearStudy.integerShiftedFreeHomNaturalCoordinatesEquiv_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveHomogeneousDualCoefficientIso : {R S : Type} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      {σ : Type} →
+        (e : R ≃+* S) →
+          (m : ℕ) →
+            ↧(Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R m)) ≅
+              (ModuleCat.restrictScalars e.toRingHom).obj ↧(Module.Dual S ↥(MvPolynomial.homogeneousSubmodule σ S m))
+'MvPolynomial.projectiveHomogeneousDualCoefficientIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousDualCoefficientIso_hom_apply : ∀ {R S : Type} [inst : CommRing R]
+  [inst_1 : CommRing S] {σ : Type} (e : R ≃+* S) (m : ℕ) (φ : Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R m)),
+  (CategoryTheory.ConcreteCategory.hom (MvPolynomial.projectiveHomogeneousDualCoefficientIso e m).hom) φ =
+    (MvPolynomial.projectiveHomogeneousDualCoefficientEquiv e m) φ
+'MvPolynomial.projectiveHomogeneousDualCoefficientIso_hom_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveHomogeneousDualCoefficientIso_gradedEntry : ∀ {R S : Type} [inst : CommRing R]
+  [inst_1 : CommRing S] {σ : Type} (e : R ≃+* S) (a b : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ R (a - b))),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry a b p)
+      (MvPolynomial.projectiveHomogeneousDualCoefficientIso e b).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.projectiveHomogeneousDualCoefficientIso e a).hom
+      ((ModuleCat.restrictScalars e.toRingHom).map
+        (MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry a b
+          ((MvPolynomial.projectiveHomogeneousCoefficientEquiv e (a - b)) p)))
+'MvPolynomial.projectiveHomogeneousDualCoefficientIso_gradedEntry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientIso : {σ : Type} →
+  (K : Type) →
+    [inst : CommRing K] →
+      (m : ℕ) →
+        ↧(Module.Dual K ↥(MvPolynomial.homogeneousSubmodule σ K m)) ≅
+          (ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).obj
+            ↧(Module.Dual ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+                ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K)) m))
+'MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientIso_gradedEntry : ∀ {σ : Type} (K : Type) [inst : CommRing K]
+  (a b : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ K (a - b))),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry a b p)
+      (MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientIso K b).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientIso K a).hom
+      ((ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).map
+        (MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry a b
+          ((MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv K (a - b)) p)))
+'MvPolynomial.coordinateCanonicalHomogeneousDualCoefficientIso_gradedEntry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix : {R : Type} →
+  [inst : CommRing R] →
+    {σ I J : Type} →
+      [inst_1 : Finite I] →
+        [inst_2 : Finite J] →
+          (a : I → ℕ) →
+            (b : J → ℕ) →
+              ((i : I) → (j : J) → ↥(MvPolynomial.homogeneousSubmodule σ R (a i - b j))) →
+                ((⨁ fun i => ↧(Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R (a i)))) ⟶
+                  ⨁ fun j => ↧(Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R (b j))))
+'MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveFiniteHomogeneousDualCoefficientIso : {R S : Type} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      {σ I : Type} →
+        [inst_2 : Finite I] →
+          (e : R ≃+* S) →
+            (a : I → ℕ) →
+              (⨁ fun i => ↧(Module.Dual R ↥(MvPolynomial.homogeneousSubmodule σ R (a i)))) ≅
+                (ModuleCat.restrictScalars e.toRingHom).obj
+                  (⨁ fun i => ↧(Module.Dual S ↥(MvPolynomial.homogeneousSubmodule σ S (a i))))
+'MvPolynomial.projectiveFiniteHomogeneousDualCoefficientIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveFiniteHomogeneousDualCoefficientIso_matrix : ∀ {R S : Type} [inst : CommRing R]
+  [inst_1 : CommRing S] {σ I J : Type} [inst_2 : Finite I] [inst_3 : Finite J] (e : R ≃+* S) (a : I → ℕ) (b : J → ℕ)
+  (p : (i : I) → (j : J) → ↥(MvPolynomial.homogeneousSubmodule σ R (a i - b j))),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b p)
+      (MvPolynomial.projectiveFiniteHomogeneousDualCoefficientIso e b).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.projectiveFiniteHomogeneousDualCoefficientIso e a).hom
+      ((ModuleCat.restrictScalars e.toRingHom).map
+        (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b fun i j =>
+          (MvPolynomial.projectiveHomogeneousCoefficientEquiv e (a i - b j)) (p i j)))
+'MvPolynomial.projectiveFiniteHomogeneousDualCoefficientIso_matrix' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateCanonicalFiniteHomogeneousDualCoefficientIso : {σ I : Type} →
+  [inst : Finite I] →
+    (K : Type) →
+      [inst_1 : CommRing K] →
+        (a : I → ℕ) →
+          (⨁ fun i => ↧(Module.Dual K ↥(MvPolynomial.homogeneousSubmodule σ K (a i)))) ≅
+            (ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).obj
+              (⨁ fun i =>
+                ↧(Module.Dual ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+                    ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K)) (a i))))
+'MvPolynomial.coordinateCanonicalFiniteHomogeneousDualCoefficientIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateCanonicalFiniteHomogeneousDualCoefficientIso_matrix : ∀ {σ I J : Type} [inst : Finite I]
+  [inst_1 : Finite J] (K : Type) [inst_2 : Field K] [Fintype σ] [LinearOrder σ] (a : I → ℕ) (b : J → ℕ)
+  (p : (i : I) → (j : J) → ↥(MvPolynomial.homogeneousSubmodule σ K (a i - b j))),
+  CategoryTheory.CategoryStruct.comp (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b p)
+      (MvPolynomial.coordinateCanonicalFiniteHomogeneousDualCoefficientIso K b).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateCanonicalFiniteHomogeneousDualCoefficientIso K a).hom
+      ((ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).map
+        (MvPolynomial.coordinateCanonicalGradedPolynomialDualMatrix a b p))
+'MvPolynomial.coordinateCanonicalFiniteHomogeneousDualCoefficientIso_matrix' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveGradedDualCoefficientCokernelIso : {R S : Type} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      {σ I J : Type} →
+        [inst_2 : Finite I] →
+          [inst_3 : Finite J] →
+            (e : R ≃+* S) →
+              (a : I → ℕ) →
+                (b : J → ℕ) →
+                  (p : (i : I) → (j : J) → ↥(MvPolynomial.homogeneousSubmodule σ R (a i - b j))) →
+                    CategoryTheory.Limits.cokernel
+                        (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b p) ≅
+                      (ModuleCat.restrictScalars e.toRingHom).obj
+                        (CategoryTheory.Limits.cokernel
+                          (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b fun i j =>
+                            (MvPolynomial.projectiveHomogeneousCoefficientEquiv e (a i - b j)) (p i j)))
+'MvPolynomial.projectiveGradedDualCoefficientCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveGradedDualCoefficientCokernelIso_quotient : ∀ {R S : Type} [inst : CommRing R]
+  [inst_1 : CommRing S] {σ I J : Type} [inst_2 : Finite I] [inst_3 : Finite J] (e : R ≃+* S) (a : I → ℕ) (b : J → ℕ)
+  (p : (i : I) → (j : J) → ↥(MvPolynomial.homogeneousSubmodule σ R (a i - b j))),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b p))
+      (MvPolynomial.projectiveGradedDualCoefficientCokernelIso e a b p).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.projectiveFiniteHomogeneousDualCoefficientIso e b).hom
+      ((ModuleCat.restrictScalars e.toRingHom).map
+        (CategoryTheory.Limits.cokernel.π
+          (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b fun i j =>
+            (MvPolynomial.projectiveHomogeneousCoefficientEquiv e (a i - b j)) (p i j))))
+'MvPolynomial.projectiveGradedDualCoefficientCokernelIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateCanonicalGradedDualCoefficientCokernelIso : {σ I J : Type} →
+  [inst : Finite I] →
+    [inst_1 : Finite J] →
+      (K : Type) →
+        [inst_2 : Field K] →
+          [Fintype σ] →
+            [LinearOrder σ] →
+              (a : I → ℕ) →
+                (b : J → ℕ) →
+                  (p : (i : I) → (j : J) → ↥(MvPolynomial.homogeneousSubmodule σ K (a i - b j))) →
+                    CategoryTheory.Limits.cokernel
+                        (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b p) ≅
+                      (ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).obj
+                        (CategoryTheory.Limits.cokernel
+                          (MvPolynomial.coordinateCanonicalGradedPolynomialDualMatrix a b p))
+'MvPolynomial.coordinateCanonicalGradedDualCoefficientCokernelIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateCanonicalGradedDualCoefficientCokernelIso_quotient : ∀ {σ I J : Type} [inst : Finite I]
+  [inst_1 : Finite J] (K : Type) [inst_2 : Field K] [inst_3 : Fintype σ] [inst_4 : LinearOrder σ] (a : I → ℕ)
+  (b : J → ℕ) (p : (i : I) → (j : J) → ↥(MvPolynomial.homogeneousSubmodule σ K (a i - b j))),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b p))
+      (MvPolynomial.coordinateCanonicalGradedDualCoefficientCokernelIso K a b p).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateCanonicalFiniteHomogeneousDualCoefficientIso K b).hom
+      ((ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).map
+        (CategoryTheory.Limits.cokernel.π (MvPolynomial.coordinateCanonicalGradedPolynomialDualMatrix a b p)))
+'MvPolynomial.coordinateCanonicalGradedDualCoefficientCokernelIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

@@ -1,0 +1,8 @@
+module
+public import Linear.ProjectiveHomogeneousDualCoefficientEquiv
+public import Linear.ProjectiveCanonicalDualCoefficientEquiv
+public import Linear.ProjectiveGradedDualCoefficientEquiv
+public import Linear.IntegerShiftedFreeHomPiCoordinates
+public import Linear.ProjectiveDualCoefficientRestriction
+public import Linear.ProjectiveGradedDualCoefficientMatrix
+public import Linear.ProjectiveGradedDualCoefficientCokernel
