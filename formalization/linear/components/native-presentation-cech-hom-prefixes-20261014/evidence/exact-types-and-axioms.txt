@@ -1,0 +1,645 @@
+@LinearStudy.nativeProjectiveRingIntegerPiece_mul_mem : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {d e : ℤ} {x y : S},
+  x ∈ LinearStudy.nativeProjectiveRingIntegerPiece 𝓑 d →
+    y ∈ LinearStudy.nativeProjectiveRingIntegerPiece 𝓑 e →
+      x * y ∈ LinearStudy.nativeProjectiveRingIntegerPiece 𝓑 (d + e)
+'LinearStudy.nativeProjectiveRingIntegerPiece_mul_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFree_single_one_mem : ∀ {K : Type u_1} {S : Type u_2} {J : Type u_3} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [inst_4 : DecidableEq J]
+  (w : J → ℤ) (j : J), Pi.single j 1 ∈ LinearStudy.integerShiftedFreePiece 𝓑 w (w j)
+'LinearStudy.integerShiftedFree_single_one_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeDualCoordinates : {K : Type u_1} →
+  {S : Type u_2} →
+    {J : Type u_3} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] → [inst_2 : Algebra K S] → [Fintype J] → Module.Dual S (J → S) ≃ₗ[K] J → S
+'LinearStudy.integerShiftedFreeDualCoordinates' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeDualCoordinates_apply : ∀ {K : Type u_1} {S : Type u_2} {J : Type u_3} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : Fintype J] [inst_4 : DecidableEq J] (φ : Module.Dual S (J → S))
+  (j : J), LinearStudy.integerShiftedFreeDualCoordinates φ j = φ (Pi.single j 1)
+'LinearStudy.integerShiftedFreeDualCoordinates_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeDualCoordinatePiece : {K : Type u_1} →
+  {S : Type u_2} →
+    {J : Type u_3} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] → [inst_2 : Algebra K S] → (ℕ → Submodule K S) → (J → ℤ) → ℤ → Submodule K (J → S)
+'LinearStudy.integerShiftedFreeDualCoordinatePiece' depends on axioms: [propext, Quot.sound]
+@LinearStudy.integerShiftedFreeHomPiece_iff_coordinates : ∀ {K : Type u_1} {S : Type u_2} {J : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
+  [inst_4 : Fintype J] [DecidableEq J] (w : J → ℤ) (d : ℤ) (φ : Module.Dual S (J → S)),
+  φ ∈ LinearStudy.integerGradedHomPiece 𝓑 (LinearStudy.integerShiftedFreePiece 𝓑 w) d ↔
+    LinearStudy.integerShiftedFreeDualCoordinates φ ∈ LinearStudy.integerShiftedFreeDualCoordinatePiece 𝓑 w d
+'LinearStudy.integerShiftedFreeHomPiece_iff_coordinates' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeHomCoordinatesEquiv : {K : Type u_1} →
+  {S : Type u_2} →
+    {J : Type u_3} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] →
+          [inst_2 : Algebra K S] →
+            (𝓑 : ℕ → Submodule K S) →
+              [GradedAlgebra 𝓑] →
+                [Fintype J] →
+                  [DecidableEq J] →
+                    (w : J → ℤ) →
+                      (d : ℤ) →
+                        ↥(LinearStudy.integerGradedHomPiece 𝓑 (LinearStudy.integerShiftedFreePiece 𝓑 w) d) ≃ₗ[K]
+                          ↥(LinearStudy.integerShiftedFreeDualCoordinatePiece 𝓑 w d)
+'LinearStudy.integerShiftedFreeHomCoordinatesEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeHomCoordinatesEquiv_apply : ∀ {K : Type u_1} {S : Type u_2} {J : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  [inst_4 : Fintype J] [inst_5 : DecidableEq J] (w : J → ℤ) (d : ℤ)
+  (φ : ↥(LinearStudy.integerGradedHomPiece 𝓑 (LinearStudy.integerShiftedFreePiece 𝓑 w) d)) (j : J),
+  ↑((LinearStudy.integerShiftedFreeHomCoordinatesEquiv 𝓑 w d) φ) j = ↑φ (Pi.single j 1)
+'LinearStudy.integerShiftedFreeHomCoordinatesEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeDual_relation_coordinates : ∀ {K : Type u_1} {S : Type u_2} {I : Type u_3} {J : Type u_4}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : Fintype I] [inst_4 : DecidableEq I]
+  [inst_5 : Fintype J] [DecidableEq J] (c : (I → S) →ₗ[S] J → S) (φ : Module.Dual S (J → S)) (i : I),
+  LinearStudy.integerShiftedFreeDualCoordinates (φ ∘ₗ c) i =
+    ∑ j, LinearStudy.integerShiftedFreeMapEntry c i j * LinearStudy.integerShiftedFreeDualCoordinates φ j
+'LinearStudy.integerShiftedFreeDual_relation_coordinates' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeDual_kernel_iff_relations : ∀ {K : Type u_1} {S : Type u_2} {I : Type u_3} {J : Type u_4}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [Fintype I] [inst_4 : DecidableEq I]
+  [inst_5 : Fintype J] [DecidableEq J] (c : (I → S) →ₗ[S] J → S) (φ : Module.Dual S (J → S)),
+  φ ∈ c.dualMap.ker ↔
+    ∀ (i : I), ∑ j, LinearStudy.integerShiftedFreeMapEntry c i j * LinearStudy.integerShiftedFreeDualCoordinates φ j = 0
+'LinearStudy.integerShiftedFreeDual_kernel_iff_relations' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeDualRelationMatrix : {K : Type u_1} →
+  {S : Type u_2} →
+    {I : Type u_3} →
+      {J : Type u_4} →
+        [inst : Field K] →
+          [inst_1 : CommRing S] →
+            [inst_2 : Algebra K S] → [DecidableEq I] → [Fintype J] → ((I → S) →ₗ[S] J → S) → (J → S) →ₗ[K] I → S
+'LinearStudy.integerShiftedFreeDualRelationMatrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeDualRelationMatrix_apply : ∀ {K : Type u_1} {S : Type u_2} {I : Type u_3} {J : Type u_4}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : DecidableEq I] [inst_4 : Fintype J]
+  (c : (I → S) →ₗ[S] J → S) (x : J → S) (i : I),
+  (LinearStudy.integerShiftedFreeDualRelationMatrix c) x i = ∑ j, LinearStudy.integerShiftedFreeMapEntry c i j * x j
+'LinearStudy.integerShiftedFreeDualRelationMatrix_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeDualRelationMatrix_mapsPiece : ∀ {K : Type u_1} {S : Type u_2} {I : Type u_3}
+  {J : Type u_4} [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : DecidableEq I]
+  [inst_4 : Fintype J] (c : (I → S) →ₗ[S] J → S) (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (z : I → ℤ) (w : J → ℤ),
+  (∀ (t : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t, c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t) →
+    ∀ (d : ℤ),
+      ∀ x ∈ LinearStudy.integerShiftedFreeDualCoordinatePiece 𝓑 w d,
+        (LinearStudy.integerShiftedFreeDualRelationMatrix c) x ∈ LinearStudy.integerShiftedFreeDualCoordinatePiece 𝓑 z d
+'LinearStudy.integerShiftedFreeDualRelationMatrix_mapsPiece' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeDualDegreeRelationMatrix : {K : Type u_1} →
+  {S : Type u_2} →
+    {I : Type u_3} →
+      {J : Type u_4} →
+        [inst : Field K] →
+          [inst_1 : CommRing S] →
+            [inst_2 : Algebra K S] →
+              [DecidableEq I] →
+                [Fintype J] →
+                  (c : (I → S) →ₗ[S] J → S) →
+                    (𝓑 : ℕ → Submodule K S) →
+                      [GradedAlgebra 𝓑] →
+                        (z : I → ℤ) →
+                          (w : J → ℤ) →
+                            (∀ (t : ℤ),
+                                ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t,
+                                  c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t) →
+                              (d : ℤ) →
+                                ↥(LinearStudy.integerShiftedFreeDualCoordinatePiece 𝓑 w d) →ₗ[K]
+                                  ↥(LinearStudy.integerShiftedFreeDualCoordinatePiece 𝓑 z d)
+'LinearStudy.integerShiftedFreeDualDegreeRelationMatrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeDualDegreeRelationMatrix_apply : ∀ {K : Type u_1} {S : Type u_2} {I : Type u_3}
+  {J : Type u_4} [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : DecidableEq I]
+  [inst_4 : Fintype J] (c : (I → S) →ₗ[S] J → S) (𝓑 : ℕ → Submodule K S) [inst_5 : GradedAlgebra 𝓑] (z : I → ℤ)
+  (w : J → ℤ)
+  (hh : ∀ (t : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t, c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t)
+  (d : ℤ) (x : ↥(LinearStudy.integerShiftedFreeDualCoordinatePiece 𝓑 w d)) (i : I),
+  ↑((LinearStudy.integerShiftedFreeDualDegreeRelationMatrix c 𝓑 z w hh d) x) i =
+    ∑ j, LinearStudy.integerShiftedFreeMapEntry c i j * ↑x j
+'LinearStudy.integerShiftedFreeDualDegreeRelationMatrix_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerShiftedFreeGradedDualRelation : {K : Type u_1} →
+  {S : Type u_2} →
+    {I : Type u_3} →
+      {J : Type u_4} →
+        [inst : Field K] →
+          [inst_1 : CommRing S] →
+            [inst_2 : Algebra K S] →
+              (c : (I → S) →ₗ[S] J → S) →
+                (𝓑 : ℕ → Submodule K S) →
+                  (z : I → ℤ) →
+                    (w : J → ℤ) →
+                      (∀ (t : ℤ),
+                          ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t,
+                            c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t) →
+                        (d : ℤ) →
+                          ↥(LinearStudy.integerGradedHomPiece 𝓑 (LinearStudy.integerShiftedFreePiece 𝓑 w) d) →ₗ[K]
+                            ↥(LinearStudy.integerGradedHomPiece 𝓑 (LinearStudy.integerShiftedFreePiece 𝓑 z) d)
+'LinearStudy.integerShiftedFreeGradedDualRelation' depends on axioms: [propext, Quot.sound]
+@LinearStudy.integerShiftedFreeGradedDualRelation_coordinates : ∀ {K : Type u_1} {S : Type u_2} {I : Type u_3}
+  {J : Type u_4} [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : Fintype I]
+  [inst_4 : DecidableEq I] [inst_5 : Fintype J] [inst_6 : DecidableEq J] (c : (I → S) →ₗ[S] J → S)
+  (𝓑 : ℕ → Submodule K S) [inst_7 : GradedAlgebra 𝓑] (z : I → ℤ) (w : J → ℤ)
+  (hh : ∀ (t : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t, c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t)
+  (d : ℤ) (φ : ↥(LinearStudy.integerGradedHomPiece 𝓑 (LinearStudy.integerShiftedFreePiece 𝓑 w) d)),
+  (LinearStudy.integerShiftedFreeHomCoordinatesEquiv 𝓑 z d)
+      ((LinearStudy.integerShiftedFreeGradedDualRelation c 𝓑 z w hh d) φ) =
+    (LinearStudy.integerShiftedFreeDualDegreeRelationMatrix c 𝓑 z w hh d)
+      ((LinearStudy.integerShiftedFreeHomCoordinatesEquiv 𝓑 w d) φ)
+'LinearStudy.integerShiftedFreeGradedDualRelation_coordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerShiftedFreeGradedDualKernelSwap : {K : Type u_1} →
+  {S : Type u_2} →
+    {I : Type u_3} →
+      {J : Type u_4} →
+        [inst : Field K] →
+          [inst_1 : CommRing S] →
+            [inst_2 : Algebra K S] →
+              (c : (I → S) →ₗ[S] J → S) →
+                (𝓑 : ℕ → Submodule K S) →
+                  (z : I → ℤ) →
+                    (w : J → ℤ) →
+                      (hh :
+                          ∀ (t : ℤ),
+                            ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t,
+                              c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t) →
+                        (d : ℤ) →
+                          ↥(LinearStudy.actualPresentationGradedDualKernelPiece 𝓑
+                                (LinearStudy.integerShiftedFreePiece 𝓑 w) c d) ≃ₗ[K]
+                            ↥(LinearStudy.integerShiftedFreeGradedDualRelation c 𝓑 z w hh d).ker
+'LinearStudy.integerShiftedFreeGradedDualKernelSwap' depends on axioms: [propext, Quot.sound]
+@LinearStudy.integerShiftedFreeHomRelationKernelCoordinatesEquiv : {K : Type u_1} →
+  {S : Type u_2} →
+    {I : Type u_3} →
+      {J : Type u_4} →
+        [inst : Field K] →
+          [inst_1 : CommRing S] →
+            [inst_2 : Algebra K S] →
+              [Fintype I] →
+                [inst_4 : DecidableEq I] →
+                  [inst_5 : Fintype J] →
+                    [DecidableEq J] →
+                      (c : (I → S) →ₗ[S] J → S) →
+                        (𝓑 : ℕ → Submodule K S) →
+                          [inst_7 : GradedAlgebra 𝓑] →
+                            (z : I → ℤ) →
+                              (w : J → ℤ) →
+                                (hh :
+                                    ∀ (t : ℤ),
+                                      ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t,
+                                        c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t) →
+                                  (d : ℤ) →
+                                    ↥(LinearStudy.integerShiftedFreeGradedDualRelation c 𝓑 z w hh d).ker ≃ₗ[K]
+                                      ↥(LinearStudy.integerShiftedFreeDualDegreeRelationMatrix c 𝓑 z w hh d).ker
+'LinearStudy.integerShiftedFreeHomRelationKernelCoordinatesEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerShiftedFreeGradedDualKernelCoordinatesEquiv : {K : Type u_1} →
+  {S : Type u_2} →
+    {I : Type u_3} →
+      {J : Type u_4} →
+        [inst : Field K] →
+          [inst_1 : CommRing S] →
+            [inst_2 : Algebra K S] →
+              [Fintype I] →
+                [inst_4 : DecidableEq I] →
+                  [inst_5 : Fintype J] →
+                    [DecidableEq J] →
+                      (c : (I → S) →ₗ[S] J → S) →
+                        (𝓑 : ℕ → Submodule K S) →
+                          [inst_7 : GradedAlgebra 𝓑] →
+                            (z : I → ℤ) →
+                              (w : J → ℤ) →
+                                (hh :
+                                    ∀ (t : ℤ),
+                                      ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t,
+                                        c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t) →
+                                  (d : ℤ) →
+                                    ↥(LinearStudy.actualPresentationGradedDualKernelPiece 𝓑
+                                          (LinearStudy.integerShiftedFreePiece 𝓑 w) c d) ≃ₗ[K]
+                                      ↥(LinearStudy.integerShiftedFreeDualDegreeRelationMatrix c 𝓑 z w hh d).ker
+'LinearStudy.integerShiftedFreeGradedDualKernelCoordinatesEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerShiftedFreePresentationHomPolynomialKernelEquiv : {K : Type u_1} →
+  {S : Type u_2} →
+    {I : Type u_3} →
+      {J : Type u_4} →
+        [inst : Field K] →
+          [inst_1 : CommRing S] →
+            [inst_2 : Algebra K S] →
+              [Fintype I] →
+                [inst_4 : DecidableEq I] →
+                  [inst_5 : Fintype J] →
+                    [DecidableEq J] →
+                      (c : (I → S) →ₗ[S] J → S) →
+                        (𝓑 : ℕ → Submodule K S) →
+                          [inst_7 : GradedAlgebra 𝓑] →
+                            (z : I → ℤ) →
+                              (w : J → ℤ) →
+                                (hh :
+                                    ∀ (t : ℤ),
+                                      ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t,
+                                        c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t) →
+                                  {M : Type u_5} →
+                                    [inst_8 : AddCommGroup M] →
+                                      [inst_9 : Module K M] →
+                                        [inst_10 : Module S M] →
+                                          (ℳ : ℤ → Submodule K M) →
+                                            [DirectSum.Decomposition ℳ] →
+                                              (b : (J → S) →ₗ[S] M) →
+                                                (∀ (t : ℤ),
+                                                    ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t, b x ∈ ℳ t) →
+                                                  Function.Surjective ⇑b →
+                                                    c.range = b.ker →
+                                                      (d : ℤ) →
+                                                        ↥(LinearStudy.integerGradedHomPiece 𝓑 ℳ d) ≃ₗ[K]
+                                                          ↥(LinearStudy.integerShiftedFreeDualDegreeRelationMatrix c 𝓑 z
+                                                                w hh d).ker
+'LinearStudy.integerShiftedFreePresentationHomPolynomialKernelEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerShiftedFreePresentationHomPolynomialKernelEquiv_apply : ∀ {K : Type u_1} {S : Type u_2}
+  {I : Type u_3} {J : Type u_4} [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : Fintype I]
+  [inst_4 : DecidableEq I] [inst_5 : Fintype J] [inst_6 : DecidableEq J] (c : (I → S) →ₗ[S] J → S)
+  (𝓑 : ℕ → Submodule K S) [inst_7 : GradedAlgebra 𝓑] (z : I → ℤ) (w : J → ℤ)
+  (hh : ∀ (t : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t, c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t)
+  {M : Type u_5} [inst_8 : AddCommGroup M] [inst_9 : Module K M] [inst_10 : Module S M] (ℳ : ℤ → Submodule K M)
+  [inst_11 : DirectSum.Decomposition ℳ] (b : (J → S) →ₗ[S] M)
+  (bhh : ∀ (t : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t, b x ∈ ℳ t) (hb : Function.Surjective ⇑b)
+  (hrel : c.range = b.ker) (d : ℤ) (φ : ↥(LinearStudy.integerGradedHomPiece 𝓑 ℳ d)) (j : J),
+  ↑↑((LinearStudy.integerShiftedFreePresentationHomPolynomialKernelEquiv c 𝓑 z w hh ℳ b bhh hb hrel d) φ) j =
+    ↑φ (b (Pi.single j 1))
+'LinearStudy.integerShiftedFreePresentationHomPolynomialKernelEquiv_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.vectorDualCokernelKernelEquiv : {K A B : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : AddCommGroup A] →
+      [inst_2 : Module K A] →
+        [inst_3 : AddCommGroup B] →
+          [inst_4 : Module K B] → (δ : B →ₗ[K] A) → (Module.Dual K B ⧸ δ.dualMap.range) ≃ₗ[K] Module.Dual K ↥δ.ker
+'LinearStudy.vectorDualCokernelKernelEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.vectorDualCokernelKernelEquiv_apply : ∀ {K A B : Type u_1} [inst : Field K] [inst_1 : AddCommGroup A]
+  [inst_2 : Module K A] [inst_3 : AddCommGroup B] [inst_4 : Module K B] (δ : B →ₗ[K] A) (φ : Module.Dual K B)
+  (x : ↥δ.ker), ((LinearStudy.vectorDualCokernelKernelEquiv δ) (Submodule.Quotient.mk φ)) x = φ ↑x
+'LinearStudy.vectorDualCokernelKernelEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.vectorDualCokernelKernelIso : {K A B : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : AddCommGroup A] →
+      [inst_2 : Module K A] →
+        [inst_3 : AddCommGroup B] →
+          [inst_4 : Module K B] →
+            (δ : B →ₗ[K] A) → CategoryTheory.Limits.cokernel (ModuleCat.ofHom δ.dualMap) ≅ ↧(Module.Dual K ↥δ.ker)
+'LinearStudy.vectorDualCokernelKernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.vectorDualCokernelKernelIso_quotient : ∀ {K A B : Type u_1} [inst : Field K] [inst_1 : AddCommGroup A]
+  [inst_2 : Module K A] [inst_3 : AddCommGroup B] [inst_4 : Module K B] (δ : B →ₗ[K] A),
+  CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (ModuleCat.ofHom δ.dualMap))
+      (LinearStudy.vectorDualCokernelKernelIso δ).hom =
+    ModuleCat.ofHom δ.ker.dualRestrict
+'LinearStudy.vectorDualCokernelKernelIso_quotient' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreePresentationHomCoefficientMap : {K S I J M : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [Fintype I] →
+          [DecidableEq I] →
+            [Fintype J] →
+              [DecidableEq J] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module S M] →
+                      (c : (I → S) →ₗ[S] J → S) →
+                        (𝓑 : ℕ → Submodule K S) →
+                          [GradedAlgebra 𝓑] →
+                            (z : I → ℤ) →
+                              (w : J → ℤ) →
+                                (∀ (t : ℤ),
+                                    ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t,
+                                      c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t) →
+                                  (ℳ : ℤ → Submodule K M) →
+                                    [DirectSum.Decomposition ℳ] →
+                                      (b : (J → S) →ₗ[S] M) →
+                                        (∀ (t : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t, b x ∈ ℳ t) →
+                                          Function.Surjective ⇑b →
+                                            c.range = b.ker →
+                                              (d : ℤ) →
+                                                ↥(LinearStudy.integerGradedHomPiece 𝓑 ℳ d) →ₗ[K]
+                                                  ↥(LinearStudy.integerShiftedFreeDualCoordinatePiece 𝓑 w d)
+'LinearStudy.integerShiftedFreePresentationHomCoefficientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreePresentationHomCoefficientMap_apply : ∀ {K S I J M : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : Fintype I] [inst_4 : DecidableEq I] [inst_5 : Fintype J]
+  [inst_6 : DecidableEq J] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module S M]
+  (c : (I → S) →ₗ[S] J → S) (𝓑 : ℕ → Submodule K S) [inst_10 : GradedAlgebra 𝓑] (z : I → ℤ) (w : J → ℤ)
+  (hh : ∀ (t : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t, c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t)
+  (ℳ : ℤ → Submodule K M) [inst_11 : DirectSum.Decomposition ℳ] (b : (J → S) →ₗ[S] M)
+  (bhh : ∀ (t : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t, b x ∈ ℳ t) (hb : Function.Surjective ⇑b)
+  (hrel : c.range = b.ker) (d : ℤ) (φ : ↥(LinearStudy.integerGradedHomPiece 𝓑 ℳ d)) (j : J),
+  ↑((LinearStudy.integerShiftedFreePresentationHomCoefficientMap c 𝓑 z w hh ℳ b bhh hb hrel d) φ) j =
+    ↑φ (b (Pi.single j 1))
+'LinearStudy.integerShiftedFreePresentationHomCoefficientMap_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerShiftedFreePresentationDualCokernelHomIso : {K S I J M : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [Fintype I] →
+          [inst_4 : DecidableEq I] →
+            [inst_5 : Fintype J] →
+              [DecidableEq J] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module S M] →
+                      (c : (I → S) →ₗ[S] J → S) →
+                        (𝓑 : ℕ → Submodule K S) →
+                          [inst_10 : GradedAlgebra 𝓑] →
+                            (z : I → ℤ) →
+                              (w : J → ℤ) →
+                                (hh :
+                                    ∀ (t : ℤ),
+                                      ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t,
+                                        c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t) →
+                                  (ℳ : ℤ → Submodule K M) →
+                                    [DirectSum.Decomposition ℳ] →
+                                      (b : (J → S) →ₗ[S] M) →
+                                        (∀ (t : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t, b x ∈ ℳ t) →
+                                          Function.Surjective ⇑b →
+                                            c.range = b.ker →
+                                              (d : ℤ) →
+                                                CategoryTheory.Limits.cokernel
+                                                    (ModuleCat.ofHom
+                                                      (LinearStudy.integerShiftedFreeDualDegreeRelationMatrix c 𝓑 z w hh
+                                                          d).dualMap) ≅
+                                                  ↧(Module.Dual K ↥(LinearStudy.integerGradedHomPiece 𝓑 ℳ d))
+'LinearStudy.integerShiftedFreePresentationDualCokernelHomIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerShiftedFreePresentationDualCokernelHomIso_quotient : ∀ {K S I J M : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : Fintype I] [inst_4 : DecidableEq I] [inst_5 : Fintype J]
+  [inst_6 : DecidableEq J] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module S M]
+  (c : (I → S) →ₗ[S] J → S) (𝓑 : ℕ → Submodule K S) [inst_10 : GradedAlgebra 𝓑] (z : I → ℤ) (w : J → ℤ)
+  (hh : ∀ (t : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z t, c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t)
+  (ℳ : ℤ → Submodule K M) [inst_11 : DirectSum.Decomposition ℳ] (b : (J → S) →ₗ[S] M)
+  (bhh : ∀ (t : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w t, b x ∈ ℳ t) (hb : Function.Surjective ⇑b)
+  (hrel : c.range = b.ker) (d : ℤ),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π
+        (ModuleCat.ofHom (LinearStudy.integerShiftedFreeDualDegreeRelationMatrix c 𝓑 z w hh d).dualMap))
+      (LinearStudy.integerShiftedFreePresentationDualCokernelHomIso c 𝓑 z w hh ℳ b bhh hb hrel d).hom =
+    ModuleCat.ofHom (LinearStudy.integerShiftedFreePresentationHomCoefficientMap c 𝓑 z w hh ℳ b bhh hb hrel d).dualMap
+'LinearStudy.integerShiftedFreePresentationDualCokernelHomIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeOriginalFreeTopHomologyDualIso : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          {L : Type} →
+            [inst_3 : Fintype L] →
+              [DecidableEq L] →
+                (a : L → ℕ) →
+                  (n : ℕ) →
+                    Fintype.card σ = n + 2 →
+                      ((MvPolynomial.coordinateNativeCechHomologyFunctor n).obj
+                          (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K)
+                            (LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K) fun i =>
+                              MvPolynomial.coordinatePresentationWeight (a i))
+                            ⋯ 0) ≅
+                        ⨁ fun i =>
+                          ↧(Module.Dual ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+                              ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K))
+                                  (a i))))
+'MvPolynomial.coordinateNativeOriginalFreeTopHomologyDualIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeOriginalFreeRelation_top_duality : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] {I J : Type} [inst_3 : Fintype I] [inst_4 : DecidableEq I]
+  [inst_5 : Fintype J] [inst_6 : DecidableEq J] (a : I → ℕ) (b : J → ℕ)
+  (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K)
+  (hh :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+        c x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d)
+  (n : ℕ) (hc : Fintype.card σ = n + 2),
+  CategoryTheory.CategoryStruct.comp
+      ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+        (LinearStudy.nativeProjectiveDegreeZeroSheafMap (MvPolynomial.homogeneousSubmodule σ K)
+          (LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K) fun i =>
+            MvPolynomial.coordinatePresentationWeight (a i))
+          (LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K) fun j =>
+            MvPolynomial.coordinatePresentationWeight (b j))
+          ⋯ ⋯ c hh 0))
+      (MvPolynomial.coordinateNativeOriginalFreeTopHomologyDualIso b n hc).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeOriginalFreeTopHomologyDualIso a n hc).hom
+      (MvPolynomial.coordinateCanonicalGradedPolynomialDualMatrix a b
+        (MvPolynomial.coordinatePresentationPolynomialEntry a b c hh))
+'MvPolynomial.coordinateNativeOriginalFreeRelation_top_duality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeOriginalPresentationTopCokernelIso : {K M : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          [inst_3 : AddCommGroup M] →
+            [inst_4 : Module K M] →
+              [inst_5 : Module (MvPolynomial σ K) M] →
+                [IsScalarTower K (MvPolynomial σ K) M] →
+                  {I J : Type} →
+                    [Fintype I] →
+                      [DecidableEq I] →
+                        [Fintype J] →
+                          [DecidableEq J] →
+                            (a : I → ℕ) →
+                              (b : J → ℕ) →
+                                (D : ℤ → Submodule K M) →
+                                  [DirectSum.Decomposition D] →
+                                    (hD :
+                                        ∀ (t : ℕ) (d : ℤ),
+                                          ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t,
+                                            ∀ x ∈ D d, p • x ∈ D (↑t + d)) →
+                                      (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K) →
+                                        (β : (J → MvPolynomial σ K) →ₗ[MvPolynomial σ K] M) →
+                                          (hc :
+                                              ∀ (d : ℤ),
+                                                ∀
+                                                  x ∈
+                                                    LinearStudy.integerShiftedFreePiece
+                                                      (MvPolynomial.homogeneousSubmodule σ K)
+                                                      (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+                                                  c x ∈
+                                                    LinearStudy.integerShiftedFreePiece
+                                                      (MvPolynomial.homogeneousSubmodule σ K)
+                                                      (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d) →
+                                            (∀ (d : ℤ),
+                                                ∀
+                                                  x ∈
+                                                    LinearStudy.integerShiftedFreePiece
+                                                      (MvPolynomial.homogeneousSubmodule σ K)
+                                                      (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d,
+                                                  β x ∈ D d) →
+                                              Function.Surjective ⇑β →
+                                                c.range = β.ker →
+                                                  (n : ℕ) →
+                                                    Fintype.card σ = n + 2 →
+                                                      (CategoryTheory.Limits.cokernel
+                                                          ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+                                                            (LinearStudy.nativeProjectiveDegreeZeroSheafMap
+                                                              (MvPolynomial.homogeneousSubmodule σ K)
+                                                              (LinearStudy.integerShiftedFreePiece
+                                                                (MvPolynomial.homogeneousSubmodule σ K) fun i =>
+                                                                MvPolynomial.coordinatePresentationWeight (a i))
+                                                              (LinearStudy.integerShiftedFreePiece
+                                                                (MvPolynomial.homogeneousSubmodule σ K) fun j =>
+                                                                MvPolynomial.coordinatePresentationWeight (b j))
+                                                              ⋯ ⋯ c hc 0)) ≅
+                                                        (MvPolynomial.coordinateNativeCechHomologyFunctor n).obj
+                                                          (LinearStudy.nativeProjectiveModuleSheaf
+                                                            (MvPolynomial.homogeneousSubmodule σ K) D hD 0))
+'MvPolynomial.coordinateNativeOriginalPresentationTopCokernelIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeOriginalPresentationTopCokernelIso_quotient : ∀ {K M : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module (MvPolynomial σ K) M] [inst_6 : IsScalarTower K (MvPolynomial σ K) M] {I J : Type}
+  [inst_7 : Fintype I] [inst_8 : DecidableEq I] [inst_9 : Fintype J] [inst_10 : DecidableEq J] (a : I → ℕ) (b : J → ℕ)
+  (D : ℤ → Submodule K M) [inst_11 : DirectSum.Decomposition D]
+  (hD : ∀ (t : ℕ) (d : ℤ), ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d))
+  (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K)
+  (β : (J → MvPolynomial σ K) →ₗ[MvPolynomial σ K] M)
+  (hc :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+        c x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d)
+  (hβ :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d,
+        β x ∈ D d)
+  (honto : Function.Surjective ⇑β) (hex : c.range = β.ker) (n : ℕ) (hcard : Fintype.card σ = n + 2),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π
+        ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+          (LinearStudy.nativeProjectiveDegreeZeroSheafMap (MvPolynomial.homogeneousSubmodule σ K)
+            (LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K) fun i =>
+              MvPolynomial.coordinatePresentationWeight (a i))
+            (LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K) fun j =>
+              MvPolynomial.coordinatePresentationWeight (b j))
+            ⋯ ⋯ c hc 0)))
+      (MvPolynomial.coordinateNativeOriginalPresentationTopCokernelIso a b D hD c β hc hβ honto hex n hcard).hom =
+    (MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+      (LinearStudy.nativeProjectiveDegreeZeroSheafMap (MvPolynomial.homogeneousSubmodule σ K)
+        (LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K) fun j =>
+          MvPolynomial.coordinatePresentationWeight (b j))
+        D ⋯ hD β hβ 0)
+'MvPolynomial.coordinateNativeOriginalPresentationTopCokernelIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeOriginalPresentationPolynomialTopCokernelIso : {K M : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          [inst_3 : AddCommGroup M] →
+            [inst_4 : Module K M] →
+              [inst_5 : Module (MvPolynomial σ K) M] →
+                [IsScalarTower K (MvPolynomial σ K) M] →
+                  {I J : Type} →
+                    [inst_7 : Fintype I] →
+                      [inst_8 : DecidableEq I] →
+                        [inst_9 : Fintype J] →
+                          [DecidableEq J] →
+                            (a : I → ℕ) →
+                              (b : J → ℕ) →
+                                (D : ℤ → Submodule K M) →
+                                  [DirectSum.Decomposition D] →
+                                    (hD :
+                                        ∀ (t : ℕ) (d : ℤ),
+                                          ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t,
+                                            ∀ x ∈ D d, p • x ∈ D (↑t + d)) →
+                                      (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K) →
+                                        (β : (J → MvPolynomial σ K) →ₗ[MvPolynomial σ K] M) →
+                                          (hc :
+                                              ∀ (d : ℤ),
+                                                ∀
+                                                  x ∈
+                                                    LinearStudy.integerShiftedFreePiece
+                                                      (MvPolynomial.homogeneousSubmodule σ K)
+                                                      (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+                                                  c x ∈
+                                                    LinearStudy.integerShiftedFreePiece
+                                                      (MvPolynomial.homogeneousSubmodule σ K)
+                                                      (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d) →
+                                            (∀ (d : ℤ),
+                                                ∀
+                                                  x ∈
+                                                    LinearStudy.integerShiftedFreePiece
+                                                      (MvPolynomial.homogeneousSubmodule σ K)
+                                                      (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d,
+                                                  β x ∈ D d) →
+                                              Function.Surjective ⇑β →
+                                                c.range = β.ker →
+                                                  (n : ℕ) →
+                                                    Fintype.card σ = n + 2 →
+                                                      ((MvPolynomial.coordinateNativeCechHomologyFunctor n).obj
+                                                          (LinearStudy.nativeProjectiveModuleSheaf
+                                                            (MvPolynomial.homogeneousSubmodule σ K) D hD 0) ≅
+                                                        CategoryTheory.Limits.cokernel
+                                                          (MvPolynomial.coordinateCanonicalGradedPolynomialDualMatrix a
+                                                            b
+                                                            (MvPolynomial.coordinatePresentationPolynomialEntry a b c
+                                                              hc)))
+'MvPolynomial.coordinateNativeOriginalPresentationPolynomialTopCokernelIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeOriginalPresentationPolynomialTopCokernelIso_quotient : ∀ {K M : Type} [inst : Field K]
+  {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module (MvPolynomial σ K) M] [inst_6 : IsScalarTower K (MvPolynomial σ K) M] {I J : Type}
+  [inst_7 : Fintype I] [inst_8 : DecidableEq I] [inst_9 : Fintype J] [inst_10 : DecidableEq J] (a : I → ℕ) (b : J → ℕ)
+  (D : ℤ → Submodule K M) [inst_11 : DirectSum.Decomposition D]
+  (hD : ∀ (t : ℕ) (d : ℤ), ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d))
+  (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K)
+  (β : (J → MvPolynomial σ K) →ₗ[MvPolynomial σ K] M)
+  (hc :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+        c x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d)
+  (hβ :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d,
+        β x ∈ D d)
+  (honto : Function.Surjective ⇑β) (hex : c.range = β.ker) (n : ℕ) (hcard : Fintype.card σ = n + 2),
+  CategoryTheory.CategoryStruct.comp
+      ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+        (LinearStudy.nativeProjectiveDegreeZeroSheafMap (MvPolynomial.homogeneousSubmodule σ K)
+          (LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K) fun j =>
+            MvPolynomial.coordinatePresentationWeight (b j))
+          D ⋯ hD β hβ 0))
+      (MvPolynomial.coordinateNativeOriginalPresentationPolynomialTopCokernelIso a b D hD c β hc hβ honto hex n
+          hcard).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeOriginalFreeTopHomologyDualIso b n hcard).hom
+      (CategoryTheory.Limits.cokernel.π
+        (MvPolynomial.coordinateCanonicalGradedPolynomialDualMatrix a b
+          (MvPolynomial.coordinatePresentationPolynomialEntry a b c hc)))
+'MvPolynomial.coordinateNativeOriginalPresentationPolynomialTopCokernelIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
