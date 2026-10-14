@@ -1,0 +1,225 @@
+LinearStudy.schemeModuleInternalHomFunctor : (X : AlgebraicGeometry.Scheme) →
+  X.Modules → CategoryTheory.Functor X.Modulesᵒᵖ X.Modules
+'LinearStudy.schemeModuleInternalHomFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInternalHomFunctor_additive : ∀ (X : AlgebraicGeometry.Scheme) (N : X.Modules),
+  (LinearStudy.schemeModuleInternalHomFunctor X N).Additive
+'LinearStudy.schemeModuleInternalHomFunctor_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalHomCochainComplex : {X : AlgebraicGeometry.Scheme} →
+  X.Modules → ChainComplex X.Modules ℕ → CochainComplex X.Modules ℕ
+'LinearStudy.schemeModuleInternalHomCochainComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalHomCochainComplex_X : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules)
+  (K : ChainComplex X.Modules ℕ) (j : ℕ),
+  (LinearStudy.schemeModuleInternalHomCochainComplex N K).X j = LinearStudy.schemeModuleHomModuleSheaf (K.X j) N
+'LinearStudy.schemeModuleInternalHomCochainComplex_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalHomCochainComplex_d : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules)
+  (K : ChainComplex X.Modules ℕ) (i j : ℕ),
+  (LinearStudy.schemeModuleInternalHomCochainComplex N K).d i j = LinearStudy.schemeModuleHomPrecompose (K.d j i)
+'LinearStudy.schemeModuleInternalHomCochainComplex_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulInternalHomCochainComplex : (R : CommRingCat) →
+  ModuleCat ↑R → (r : ℕ) → (Fin r → ↑R) → CochainComplex (AlgebraicGeometry.Spec R).Modules ℕ
+'LinearStudy.affineKoszulInternalHomCochainComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulInternalHomCochainComplex_X : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r j : ℕ) (H : Fin r → ↑R),
+  (LinearStudy.affineKoszulInternalHomCochainComplex R N r H).X j =
+    LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^j (Fin r → ↑R)))
+      (AlgebraicGeometry.tilde N)
+'LinearStudy.affineKoszulInternalHomCochainComplex_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulInternalHomCochainComplex_d : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ) (H : Fin r → ↑R)
+  (i j : ℕ),
+  (LinearStudy.affineKoszulInternalHomCochainComplex R N r H).d i j =
+    LinearStudy.schemeModuleHomPrecompose
+      ((AlgebraicGeometry.tilde.functor R).map ((koszulComplex (Fintype.linearCombination (↑R) H)).d j i))
+'LinearStudy.affineKoszulInternalHomCochainComplex_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulNativeHomCochainComplex : (R : CommRingCat) →
+  ModuleCat ↑R → (r : ℕ) → (Fin r → ↑R) → CochainComplex (ModuleCat ↑R) ℕ
+'LinearStudy.affineKoszulNativeHomCochainComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulNativeHomCochainTermIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (r j : ℕ) →
+      (H : Fin r → ↑R) →
+        (LinearStudy.affineKoszulNativeHomCochainComplex R N r H).X j ≅ ↧(↥(⋀[↑R]^j (Fin r → ↑R)) →ₗ[↑R] ↑N)
+'LinearStudy.affineKoszulNativeHomCochainTermIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulNativeHomCochainTermIso_d : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ) (H : Fin r → ↑R)
+  (i j : ℕ),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.affineKoszulNativeHomCochainComplex R N r H).d i j)
+      (LinearStudy.affineKoszulNativeHomCochainTermIso R N r j H).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulNativeHomCochainTermIso R N r i H).hom
+      (ModuleCat.ofHom
+        (LinearMap.lcomp (↑R) (↑N) (ModuleCat.Hom.hom ((koszulComplex (Fintype.linearCombination (↑R) H)).d j i))))
+'LinearStudy.affineKoszulNativeHomCochainTermIso_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulInternalHomCochainComplex_d_next : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ)
+  (H : Fin r → ↑R) (j : ℕ),
+  (LinearStudy.affineKoszulInternalHomCochainComplex R N r H).d j (j + 1) =
+    LinearStudy.schemeModuleHomPrecompose
+      ((AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) j)))
+'LinearStudy.affineKoszulInternalHomCochainComplex_d_next' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulInternalHomCochainTermIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (r j : ℕ) →
+      (H : Fin r → ↑R) →
+        (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+                (LinearStudy.affineKoszulNativeHomCochainComplex R N r H)).X
+            j ≅
+          (LinearStudy.affineKoszulInternalHomCochainComplex R N r H).X j
+'LinearStudy.affineKoszulInternalHomCochainTermIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulInternalHomCochainTermIso_d : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ) (H : Fin r → ↑R)
+  (j : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      ((((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+            (LinearStudy.affineKoszulNativeHomCochainComplex R N r H)).d
+        j (j + 1))
+      (LinearStudy.affineKoszulInternalHomCochainTermIso R N r (j + 1) H).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulInternalHomCochainTermIso R N r j H).hom
+      ((LinearStudy.affineKoszulInternalHomCochainComplex R N r H).d j (j + 1))
+'LinearStudy.affineKoszulInternalHomCochainTermIso_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulInternalHomCochainComplexIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (r : ℕ) →
+      (H : Fin r → ↑R) →
+        ((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+            (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) ≅
+          LinearStudy.affineKoszulInternalHomCochainComplex R N r H
+'LinearStudy.affineKoszulInternalHomCochainComplexIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulNativeHomTopRestrictionMorphism : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        (LinearStudy.affineKoszulNativeHomCochainComplex R N (n + 1) H).X (n + 1) ⟶ ↧(↑N ⧸ Ideal.span (Set.range H) • ⊤)
+'LinearStudy.koszulNativeHomTopRestrictionMorphism' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulNativeHomTopRestrictionMorphism_comp : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.affineKoszulNativeHomCochainComplex R N (n + 1) H).d n (n + 1))
+      (LinearStudy.koszulNativeHomTopRestrictionMorphism R N n H) =
+    0
+'LinearStudy.koszulNativeHomTopRestrictionMorphism_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulNativeHomTopRestrictionPresentation : (R : CommRingCat) →
+  ModuleCat ↑R → (n : ℕ) → (Fin (n + 1) → ↑R) → CategoryTheory.ShortComplex (ModuleCat ↑R)
+'LinearStudy.koszulNativeHomTopRestrictionPresentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulNativeHomTopRestrictionPresentationIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        LinearStudy.koszulNativeHomTopRestrictionPresentation R N n H ≅
+          LinearStudy.koszulHomCoefficientRestrictionModulePresentation R N n H
+'LinearStudy.koszulNativeHomTopRestrictionPresentationIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulNativeHomTopRestrictionPresentation_exact : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R), (LinearStudy.koszulNativeHomTopRestrictionPresentation R N n H).Exact
+'LinearStudy.koszulNativeHomTopRestrictionPresentation_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulNativeHomTopRestrictionPresentation_epi : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R), CategoryTheory.Epi (LinearStudy.koszulNativeHomTopRestrictionPresentation R N n H).g
+'LinearStudy.koszulNativeHomTopRestrictionPresentation_epi' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulNativeHomCochain_next_isZero : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ) (H : Fin (n + 1) → ↑R),
+  CategoryTheory.Limits.IsZero ((LinearStudy.affineKoszulNativeHomCochainComplex R N (n + 1) H).X (n + 2))
+'LinearStudy.koszulNativeHomCochain_next_isZero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulNativeHomCochain_top_d_zero : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ) (H : Fin (n + 1) → ↑R),
+  (LinearStudy.affineKoszulNativeHomCochainComplex R N (n + 1) H).d (n + 1) (n + 2) = 0
+'LinearStudy.koszulNativeHomCochain_top_d_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulNativeHomTopRestrictionIsCokernel : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        CategoryTheory.Limits.IsColimit
+          (CategoryTheory.Limits.CokernelCofork.ofπ (LinearStudy.koszulNativeHomTopRestrictionPresentation R N n H).g ⋯)
+'LinearStudy.koszulNativeHomTopRestrictionIsCokernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulNativeHomTopHomologyData : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        (HomologicalComplex.sc' (LinearStudy.affineKoszulNativeHomCochainComplex R N (n + 1) H) n (n + 1)
+            (n + 2)).HomologyData
+'LinearStudy.koszulNativeHomTopHomologyData' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulNativeHomTopCohomologyIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        HomologicalComplex.homology (LinearStudy.affineKoszulNativeHomCochainComplex R N (n + 1) H) (n + 1) ≅
+          ↧(↑N ⧸ Ideal.span (Set.range H) • ⊤)
+'LinearStudy.koszulNativeHomTopCohomologyIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulNativeHomTopCohomologyIso_restriction : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyπ (LinearStudy.affineKoszulNativeHomCochainComplex R N (n + 1) H) (n + 1))
+      (LinearStudy.koszulNativeHomTopCohomologyIso R N n H).hom =
+    CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.iCycles (LinearStudy.affineKoszulNativeHomCochainComplex R N (n + 1) H) (n + 1))
+      (LinearStudy.koszulNativeHomTopRestrictionMorphism R N n H)
+'LinearStudy.koszulNativeHomTopCohomologyIso_restriction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulNativeHomTopHomologyData : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        ((HomologicalComplex.sc' (LinearStudy.affineKoszulNativeHomCochainComplex R N (n + 1) H) n (n + 1) (n + 2)).map
+            (AlgebraicGeometry.tilde.functor R)).LeftHomologyData
+'LinearStudy.tildeKoszulNativeHomTopHomologyData' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulNativeHomTopCohomologyIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+                (LinearStudy.affineKoszulNativeHomCochainComplex R N (n + 1) H)).homology
+            (n + 1) ≅
+          AlgebraicGeometry.tilde ↧(↑N ⧸ Ideal.span (Set.range H) • ⊤)
+'LinearStudy.tildeKoszulNativeHomTopCohomologyIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulNativeHomTopCohomologyIso_restriction : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R),
+  CategoryTheory.CategoryStruct.comp
+      ((((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+            (LinearStudy.affineKoszulNativeHomCochainComplex R N (n + 1) H)).homologyπ
+        (n + 1))
+      (LinearStudy.tildeKoszulNativeHomTopCohomologyIso R N n H).hom =
+    CategoryTheory.CategoryStruct.comp
+      ((((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+            (LinearStudy.affineKoszulNativeHomCochainComplex R N (n + 1) H)).iCycles
+        (n + 1))
+      ((AlgebraicGeometry.tilde.functor R).map (LinearStudy.koszulNativeHomTopRestrictionMorphism R N n H))
+'LinearStudy.tildeKoszulNativeHomTopCohomologyIso_restriction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomCochainComplexIso_inv_f : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r j : ℕ)
+  (H : Fin r → ↑R),
+  (LinearStudy.affineKoszulInternalHomCochainComplexIso R N r H).inv.f j =
+    (LinearStudy.affineKoszulInternalHomCochainTermIso R N r j H).inv
+'LinearStudy.affineKoszulInternalHomCochainComplexIso_inv_f' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulInternalHomCochainTermIso_geometricRestriction : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulInternalHomCochainTermIso R N (n + 1) (n + 1) H).hom
+      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N n H).g =
+    CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.tilde.functor R).map (LinearStudy.koszulNativeHomTopRestrictionMorphism R N n H))
+      (LinearStudy.tildeCoefficientQuotientGeometricPullbackPushforwardIso R (Ideal.span (Set.range H)) N).hom
+'LinearStudy.affineKoszulInternalHomCochainTermIso_geometricRestriction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomCochainTermIso_inv_geometricRestriction : ∀ (R : CommRingCat) (N : ModuleCat ↑R)
+  (n : ℕ) (H : Fin (n + 1) → ↑R),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulInternalHomCochainTermIso R N (n + 1) (n + 1) H).inv
+      (CategoryTheory.CategoryStruct.comp
+        ((AlgebraicGeometry.tilde.functor R).map (LinearStudy.koszulNativeHomTopRestrictionMorphism R N n H))
+        (LinearStudy.tildeCoefficientQuotientGeometricPullbackPushforwardIso R (Ideal.span (Set.range H)) N).hom) =
+    (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N n H).g
+'LinearStudy.affineKoszulInternalHomCochainTermIso_inv_geometricRestriction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomTopCohomologyGeometricIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N (n + 1) H) (n + 1) ≅
+          (AlgebraicGeometry.Scheme.Modules.pushforward
+                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+            ((AlgebraicGeometry.Scheme.Modules.pullback
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+              (AlgebraicGeometry.tilde N))
+'LinearStudy.affineKoszulInternalHomTopCohomologyGeometricIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomTopCohomologyGeometricIso_restriction : ∀ (R : CommRingCat) (N : ModuleCat ↑R)
+  (n : ℕ) (H : Fin (n + 1) → ↑R),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyπ (LinearStudy.affineKoszulInternalHomCochainComplex R N (n + 1) H) (n + 1))
+      (LinearStudy.affineKoszulInternalHomTopCohomologyGeometricIso R N n H).hom =
+    CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.iCycles (LinearStudy.affineKoszulInternalHomCochainComplex R N (n + 1) H) (n + 1))
+      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N n H).g
+'LinearStudy.affineKoszulInternalHomTopCohomologyGeometricIso_restriction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
