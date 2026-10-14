@@ -1,0 +1,173 @@
+LinearStudy.affineTildeHomTopPrecomposeSquare : ∀ (R : CommRingCat) (M' M N : ModuleCat ↑R) (f : M' ⟶ M),
+  have H := LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde M) (AlgebraicGeometry.tilde N);
+  have H' := LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde M') (AlgebraicGeometry.tilde N);
+  CategoryTheory.CategoryStruct.comp (ModuleCat.ofHom (LinearMap.lcomp (↑R) (↑N) (ModuleCat.Hom.hom f)))
+      (LinearStudy.affineTildeHomTopLinearEquiv R M' N).symm.toModuleIso.hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.affineTildeHomTopLinearEquiv R M N).symm.toModuleIso.hom
+      (AlgebraicGeometry.moduleSpecΓFunctor.map
+        (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.tilde.functor R).map f)))
+'LinearStudy.affineTildeHomTopPrecomposeSquare' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineTildeFinitePresentationHomIso_precompose : ∀ (R : CommRingCat) (M' M N : ModuleCat ↑R)
+  [inst : Module.FinitePresentation ↑R ↑M'] [inst_1 : Module.FinitePresentation ↑R ↑M] (f : M' ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom (LinearMap.lcomp (↑R) (↑N) (ModuleCat.Hom.hom f))))
+      (LinearStudy.affineTildeFinitePresentationHomIso R M' N).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.affineTildeFinitePresentationHomIso R M N).hom
+      (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.tilde.functor R).map f))
+'LinearStudy.affineTildeFinitePresentationHomIso_precompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopHomCoefficientEquiv : {R : Type u_1} →
+  [inst : CommRing R] →
+    {N : Type u_2} →
+      [inst_1 : AddCommGroup N] → [inst_2 : Module R N] → (n : ℕ) → (↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →ₗ[R] N) ≃ₗ[R] N
+'LinearStudy.koszulTopHomCoefficientEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopHomDifferentialCoordinate : {R : Type u_1} →
+  [inst : CommRing R] →
+    {N : Type u_2} →
+      [inst_1 : AddCommGroup N] →
+        [inst_2 : Module R N] → (n : ℕ) → (Fin (n + 1) → R) → (↥(⋀[R]^n (Fin (n + 1) → R)) →ₗ[R] N) →ₗ[R] N
+'LinearStudy.koszulTopHomDifferentialCoordinate' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopHomDifferentialCoordinate_range : ∀ {R : Type u_1} [inst : CommRing R] {N : Type u_2}
+  [inst_1 : AddCommGroup N] [inst_2 : Module R N] (n : ℕ) (H : Fin (n + 1) → R),
+  (LinearStudy.koszulTopHomDifferentialCoordinate n H).range = Ideal.span (Set.range H) • ⊤
+'LinearStudy.koszulTopHomDifferentialCoordinate_range' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopHomCoefficientRestriction : {R : Type u_1} →
+  [inst : CommRing R] →
+    {N : Type u_2} →
+      [inst_1 : AddCommGroup N] →
+        [inst_2 : Module R N] →
+          (n : ℕ) →
+            (H : Fin (n + 1) → R) → (↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →ₗ[R] N) →ₗ[R] N ⧸ Ideal.span (Set.range H) • ⊤
+'LinearStudy.koszulTopHomCoefficientRestriction' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopHomCoefficientRestriction_kernel : ∀ {R : Type u_1} [inst : CommRing R] {N : Type u_2}
+  [inst_1 : AddCommGroup N] [inst_2 : Module R N] (n : ℕ) (H : Fin (n + 1) → R),
+  (LinearStudy.koszulTopHomCoefficientRestriction n H).ker =
+    (LinearMap.lcomp R N (koszulComplex.d (Fintype.linearCombination R H) n)).range
+'LinearStudy.koszulTopHomCoefficientRestriction_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopHomCoefficientRestriction_surjective : ∀ {R : Type u_1} [inst : CommRing R] {N : Type u_2}
+  [inst_1 : AddCommGroup N] [inst_2 : Module R N] (n : ℕ) (H : Fin (n + 1) → R),
+  Function.Surjective ⇑(LinearStudy.koszulTopHomCoefficientRestriction n H)
+'LinearStudy.koszulTopHomCoefficientRestriction_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopHomCokernelCoefficientEquiv : {R : Type u_1} →
+  [inst : CommRing R] →
+    {N : Type u_2} →
+      [inst_1 : AddCommGroup N] →
+        [inst_2 : Module R N] →
+          (n : ℕ) →
+            (H : Fin (n + 1) → R) →
+              ((↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →ₗ[R] N) ⧸
+                  (LinearMap.lcomp R N (koszulComplex.d (Fintype.linearCombination R H) n)).range) ≃ₗ[R]
+                N ⧸ Ideal.span (Set.range H) • ⊤
+'LinearStudy.koszulTopHomCokernelCoefficientEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopHomCokernelCoefficientEquiv_class : ∀ {R : Type u_1} [inst : CommRing R] {N : Type u_2}
+  [inst_1 : AddCommGroup N] [inst_2 : Module R N] (n : ℕ) (H : Fin (n + 1) → R)
+  (L : ↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →ₗ[R] N),
+  (LinearStudy.koszulTopHomCokernelCoefficientEquiv n H) (Submodule.Quotient.mk L) =
+    Submodule.Quotient.mk (L (LinearStudy.topKoszulGenerator (n + 1)))
+'LinearStudy.koszulTopHomCokernelCoefficientEquiv_class' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.restrictedScalarTowerModuleEquiv : {R S : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra R S] →
+        (M : ModuleCat S) →
+          [inst_3 : Module R ↑M] →
+            [IsScalarTower R S ↑M] → ↑((ModuleCat.restrictScalars (algebraMap R S)).obj M) ≃ₗ[R] ↑M
+'LinearStudy.restrictedScalarTowerModuleEquiv' depends on axioms: [propext, Quot.sound]
+LinearStudy.tildeCoefficientQuotientPushforwardIso : (R : CommRingCat) →
+  (J : Ideal ↑R) →
+    (N : ModuleCat ↑R) →
+      AlgebraicGeometry.tilde ↧(↑N ⧸ J • ⊤) ≅
+        (AlgebraicGeometry.Scheme.Modules.pushforward
+              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk J)))).obj
+          (AlgebraicGeometry.tilde ↧(TensorProduct (↑R) (↑R ⧸ J) ↑N))
+'LinearStudy.tildeCoefficientQuotientPushforwardIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulTopHomCoefficientRestriction_comp : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R),
+  LinearStudy.koszulTopHomCoefficientRestriction n H ∘ₗ
+      LinearMap.lcomp (↑R) (↑N) (koszulComplex.d (Fintype.linearCombination (↑R) H) n) =
+    0
+'LinearStudy.koszulTopHomCoefficientRestriction_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulHomCoefficientRestrictionModulePresentation : (R : CommRingCat) →
+  ModuleCat ↑R → (n : ℕ) → (Fin (n + 1) → ↑R) → CategoryTheory.ShortComplex (ModuleCat ↑R)
+'LinearStudy.koszulHomCoefficientRestrictionModulePresentation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.koszulHomCoefficientRestrictionModulePresentation_exact : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R), (LinearStudy.koszulHomCoefficientRestrictionModulePresentation R N n H).Exact
+'LinearStudy.koszulHomCoefficientRestrictionModulePresentation_exact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.tildeKoszulHomCoefficientRestrictionPresentation : (R : CommRingCat) →
+  ModuleCat ↑R → (n : ℕ) → (Fin (n + 1) → ↑R) → CategoryTheory.ShortComplex (AlgebraicGeometry.Spec R).Modules
+'LinearStudy.tildeKoszulHomCoefficientRestrictionPresentation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.tildeKoszulHomCoefficientRestrictionPresentationIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        (LinearStudy.koszulHomCoefficientRestrictionModulePresentation R N n H).map
+            (AlgebraicGeometry.tilde.functor R) ≅
+          LinearStudy.tildeKoszulHomCoefficientRestrictionPresentation R N n H
+'LinearStudy.tildeKoszulHomCoefficientRestrictionPresentationIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.tildeKoszulHomCoefficientRestrictionPresentation_exact : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R), (LinearStudy.tildeKoszulHomCoefficientRestrictionPresentation R N n H).Exact
+'LinearStudy.tildeKoszulHomCoefficientRestrictionPresentation_exact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.tildeKoszulHomCoefficientRestrictionPresentation_epi : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R), CategoryTheory.Epi (LinearStudy.tildeKoszulHomCoefficientRestrictionPresentation R N n H).g
+'LinearStudy.tildeKoszulHomCoefficientRestrictionPresentation_epi' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulTermHomCoefficientIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (r j : ℕ) →
+      AlgebraicGeometry.tilde ↧(↥(⋀[↑R]^j (Fin r → ↑R)) →ₗ[↑R] ↑N) ≅
+        LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^j (Fin r → ↑R)))
+          (AlgebraicGeometry.tilde N)
+'LinearStudy.affineKoszulTermHomCoefficientIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulTermHomCoefficientIso_differential : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r j : ℕ)
+  (H : Fin r → ↑R),
+  CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.tilde.functor R).map
+        (ModuleCat.ofHom (LinearMap.lcomp (↑R) (↑N) (koszulComplex.d (Fintype.linearCombination (↑R) H) j))))
+      (LinearStudy.affineKoszulTermHomCoefficientIso R N r (j + 1)).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulTermHomCoefficientIso R N r j).hom
+      (LinearStudy.schemeModuleHomPrecompose
+        ((AlgebraicGeometry.tilde.functor R).map
+          (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) j))))
+'LinearStudy.affineKoszulTermHomCoefficientIso_differential' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulHomCoefficientRestrictionPresentation : (R : CommRingCat) →
+  ModuleCat ↑R → (n : ℕ) → (Fin (n + 1) → ↑R) → CategoryTheory.ShortComplex (AlgebraicGeometry.Spec R).Modules
+'LinearStudy.affineKoszulHomCoefficientRestrictionPresentation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulHomCoefficientRestrictionPresentationIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        LinearStudy.tildeKoszulHomCoefficientRestrictionPresentation R N n H ≅
+          LinearStudy.affineKoszulHomCoefficientRestrictionPresentation R N n H
+'LinearStudy.affineKoszulHomCoefficientRestrictionPresentationIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulHomCoefficientRestrictionPresentation_exact : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R), (LinearStudy.affineKoszulHomCoefficientRestrictionPresentation R N n H).Exact
+'LinearStudy.affineKoszulHomCoefficientRestrictionPresentation_exact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulHomCoefficientRestrictionPresentation_epi : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R), CategoryTheory.Epi (LinearStudy.affineKoszulHomCoefficientRestrictionPresentation R N n H).g
+'LinearStudy.affineKoszulHomCoefficientRestrictionPresentation_epi' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulHomCoefficientRestrictionPresentation_restriction : ∀ (R : CommRingCat) (N : ModuleCat ↑R)
+  (n : ℕ) (H : Fin (n + 1) → ↑R),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulTermHomCoefficientIso R N (n + 1) (n + 1)).hom
+      (LinearStudy.affineKoszulHomCoefficientRestrictionPresentation R N n H).g =
+    (LinearStudy.tildeKoszulHomCoefficientRestrictionPresentation R N n H).g
+'LinearStudy.affineKoszulHomCoefficientRestrictionPresentation_restriction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
