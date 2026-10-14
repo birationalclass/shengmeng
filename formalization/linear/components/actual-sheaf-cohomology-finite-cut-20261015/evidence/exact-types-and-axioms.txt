@@ -1,0 +1,226 @@
+@LinearStudy.abelianSheaf_sections_subsingleton_of_eq_empty : ∀ {X : TopCat} (F : TopCat.Sheaf AddCommGrpCat X)
+  {U : TopologicalSpace.Opens ↑X}, U = ⊥ → Subsingleton ↑(F.obj.obj (Opposite.op U))
+'LinearStudy.abelianSheaf_sections_subsingleton_of_eq_empty' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteAbelianSheaf_restriction_surjective : ∀ {X : TopCat} [DiscreteTopology ↑X]
+  (F : TopCat.Sheaf AddCommGrpCat X) {U V : TopologicalSpace.Opens ↑X} (i : V ⟶ U),
+  Function.Surjective ⇑(CategoryTheory.ConcreteCategory.hom (F.obj.map i.op))
+'LinearStudy.discreteAbelianSheaf_restriction_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteAbelianSheaf_isFlasque : ∀ {X : TopCat} [DiscreteTopology ↑X] (F : TopCat.Sheaf AddCommGrpCat X),
+  F.IsFlasque
+'LinearStudy.discreteAbelianSheaf_isFlasque' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteAbelianSheaf_sections_epi : ∀ {X : TopCat} [DiscreteTopology ↑X]
+  {F G : TopCat.Sheaf AddCommGrpCat X} (g : F ⟶ G) [CategoryTheory.Epi g] (U : TopologicalSpace.Opens ↑X),
+  CategoryTheory.Epi (g.hom.app (Opposite.op U))
+'LinearStudy.discreteAbelianSheaf_sections_epi' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.discreteAbelianSheaf_sectionFunctor_preservesEpimorphisms : ∀ (X : TopCat) [DiscreteTopology ↑X]
+  (U : TopologicalSpace.Opens ↑X),
+  ((CategoryTheory.sheafSections (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj
+      (Opposite.op U)).PreservesEpimorphisms
+'LinearStudy.discreteAbelianSheaf_sectionFunctor_preservesEpimorphisms' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.actualUliftIntegerAbelianGroup_projective : CategoryTheory.Projective ↧(ULift.{u_1, 0} ℤ)
+'LinearStudy.actualUliftIntegerAbelianGroup_projective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.discreteAbelianSheaf_constantInteger_projective : ∀ (X : TopCat) [DiscreteTopology ↑X],
+  CategoryTheory.Projective
+    ((CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj ↧(ULift.{u_1, 0} ℤ))
+'LinearStudy.discreteAbelianSheaf_constantInteger_projective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteAbelianSheaf_higherCohomology_vanish : ∀ {X : TopCat} [DiscreteTopology ↑X]
+  (F : TopCat.Sheaf AddCommGrpCat X) (j : ℕ), Subsingleton (CategoryTheory.Sheaf.H F (j + 1))
+'LinearStudy.discreteAbelianSheaf_higherCohomology_vanish' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteFieldAlgebra_spec_isArtinian : ∀ (k : Type u_2) [inst : Field k] (R : CommRingCat)
+  [inst_1 : Algebra k ↑R] [Module.Finite k ↑R], AlgebraicGeometry.IsArtinianScheme (AlgebraicGeometry.Spec R)
+'LinearStudy.finiteFieldAlgebra_spec_isArtinian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteFieldAlgebra_scheme_isArtinian_of_iso : ∀ (k : Type u_2) [inst : Field k] (R : CommRingCat)
+  [inst_1 : Algebra k ↑R] [Module.Finite k ↑R] (X : AlgebraicGeometry.Scheme) (e : X ≅ AlgebraicGeometry.Spec R),
+  AlgebraicGeometry.IsArtinianScheme X
+'LinearStudy.finiteFieldAlgebra_scheme_isArtinian_of_iso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteFieldAlgebra_scheme_finite_discrete_of_iso : ∀ (k : Type u_2) [inst : Field k] (R : CommRingCat)
+  [inst_1 : Algebra k ↑R] [Module.Finite k ↑R] (X : AlgebraicGeometry.Scheme) (e : X ≅ AlgebraicGeometry.Spec R),
+  Finite ↥X ∧ DiscreteTopology ↥X
+'LinearStudy.finiteFieldAlgebra_scheme_finite_discrete_of_iso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.actualAbelianSheaf_pullback_preservesFiniteLimits : ∀ {X Y : TopCat} (f : X ⟶ Y),
+  CategoryTheory.Limits.PreservesFiniteLimits (TopCat.Sheaf.pullback AddCommGrpCat f)
+'LinearStudy.actualAbelianSheaf_pullback_preservesFiniteLimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.actualAbelianSheaf_pullback_additive : ∀ {X Y : TopCat} (f : X ⟶ Y),
+  (TopCat.Sheaf.pullback AddCommGrpCat f).Additive
+'LinearStudy.actualAbelianSheaf_pullback_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.actualAbelianSheaf_pushforward_additive : ∀ {X Y : TopCat} (f : X ⟶ Y),
+  (TopCat.Sheaf.pushforward AddCommGrpCat f).Additive
+'LinearStudy.actualAbelianSheaf_pushforward_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteAbelianSheaf_pushforward_preservesEpimorphisms : ∀ {X Y : TopCat} [DiscreteTopology ↑X]
+  (f : X ⟶ Y), (TopCat.Sheaf.pushforward AddCommGrpCat f).PreservesEpimorphisms
+'LinearStudy.discreteAbelianSheaf_pushforward_preservesEpimorphisms' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.discreteAbelianSheaf_pushforward_preservesFiniteColimits : ∀ {X Y : TopCat} [DiscreteTopology ↑X]
+  (f : X ⟶ Y), CategoryTheory.Limits.PreservesFiniteColimits (TopCat.Sheaf.pushforward AddCommGrpCat f)
+'LinearStudy.discreteAbelianSheaf_pushforward_preservesFiniteColimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.actualAbelianSheaf_pushforwardGlobalSectionsIso : {X Y : TopCat} →
+  (f : X ⟶ Y) →
+    (TopCat.Sheaf.pushforward AddCommGrpCat f).comp
+        ((CategoryTheory.sheafSections (Opens.grothendieckTopology ↑Y) AddCommGrpCat).obj (Opposite.op ⊤)) ≅
+      (CategoryTheory.sheafSections (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj (Opposite.op ⊤)
+'LinearStudy.actualAbelianSheaf_pushforwardGlobalSectionsIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.actualAbelianSheaf_pullbackConstantIso : {X Y : TopCat} →
+  (f : X ⟶ Y) →
+    (CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑Y) AddCommGrpCat).comp
+        (TopCat.Sheaf.pullback AddCommGrpCat f) ≅
+      CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat
+'LinearStudy.actualAbelianSheaf_pullbackConstantIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteAbelianSheaf_pushforwardCohomologyEquiv : {X Y : TopCat} →
+  [DiscreteTopology ↑X] →
+    (f : X ⟶ Y) →
+      (F : TopCat.Sheaf AddCommGrpCat X) →
+        (j : ℕ) →
+          CategoryTheory.Sheaf.H F j ≃+ CategoryTheory.Sheaf.H ((TopCat.Sheaf.pushforward AddCommGrpCat f).obj F) j
+'LinearStudy.discreteAbelianSheaf_pushforwardCohomologyEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteAbelianSheaf_pushforwardHigherCohomology_vanish : ∀ {X Y : TopCat} [DiscreteTopology ↑X]
+  (f : X ⟶ Y) (F : TopCat.Sheaf AddCommGrpCat X) (j : ℕ),
+  Subsingleton (CategoryTheory.Sheaf.H ((TopCat.Sheaf.pushforward AddCommGrpCat f).obj F) (j + 1))
+'LinearStudy.discreteAbelianSheaf_pushforwardHigherCohomology_vanish' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleToActualAbelianSheaf : (X : AlgebraicGeometry.Scheme) →
+  CategoryTheory.Functor X.Modules (TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace)
+'LinearStudy.schemeModuleToActualAbelianSheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleActualCohomology : (X : AlgebraicGeometry.Scheme) → X.Modules → ℕ → Type u_1
+'LinearStudy.schemeModuleActualCohomology' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModulePushforwardActualAbelianIso : {X Y : AlgebraicGeometry.Scheme} →
+  (f : X ⟶ Y) →
+    (AlgebraicGeometry.Scheme.Modules.pushforward f).comp (LinearStudy.schemeModuleToActualAbelianSheaf Y) ≅
+      (LinearStudy.schemeModuleToActualAbelianSheaf X).comp (TopCat.Sheaf.pushforward AddCommGrpCat f.base)
+'LinearStudy.schemeModulePushforwardActualAbelianIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.artinianSchemeModule_actualPushforwardHigherCohomology_vanish : ∀ {X Y : AlgebraicGeometry.Scheme}
+  [AlgebraicGeometry.IsArtinianScheme X] (f : X ⟶ Y) (M : X.Modules) (j : ℕ),
+  Subsingleton
+    (LinearStudy.schemeModuleActualCohomology Y ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj M) (j + 1))
+'LinearStudy.artinianSchemeModule_actualPushforwardHigherCohomology_vanish' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModule_actualHigherCohomology_vanish_of_artinianSupportIso : ∀ {X Y : AlgebraicGeometry.Scheme}
+  [AlgebraicGeometry.IsArtinianScheme X] (f : X ⟶ Y) (M : Y.Modules) (N : X.Modules)
+  (e : M ≅ (AlgebraicGeometry.Scheme.Modules.pushforward f).obj N) (j : ℕ),
+  Subsingleton (LinearStudy.schemeModuleActualCohomology Y M (j + 1))
+'LinearStudy.schemeModule_actualHigherCohomology_vanish_of_artinianSupportIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHom_actualHigherSheafCohomology_vanish : ∀ (k : Type u_2) [inst : Field k]
+  (R : CommRingCat) [inst_1 : Algebra k ↑R] (N : ModuleCat ↑R) (r : ℕ) (H : Fin r → ↑R),
+  (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+    Module.Finite k (↑R ⧸ Ideal.span (Set.range H)) →
+      ∀ (j p : ℕ),
+        Subsingleton
+          (LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Spec R)
+            (HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) j) (p + 1))
+'LinearStudy.affineKoszulInternalHom_actualHigherSheafCohomology_vanish' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulActualHigherSheafCohomologyConclusions : (R : CommRingCat) → (r : ℕ) → (Fin r → ↑R) → Prop
+'LinearStudy.affineKoszulActualHigherSheafCohomologyConclusions' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulActualHigherSheafCohomologyConclusions_of_exact_fieldFinite : ∀ (k : Type u_2) [inst : Field k]
+  (R : CommRingCat) [inst_1 : Algebra k ↑R] (r : ℕ) (H : Fin r → ↑R),
+  (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+    Module.Finite k (↑R ⧸ Ideal.span (Set.range H)) →
+      LinearStudy.affineKoszulActualHigherSheafCohomologyConclusions R r H
+'LinearStudy.affineKoszulActualHigherSheafCohomologyConclusions_of_exact_fieldFinite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearSection_exists_actual_higherSheafCohomology_vanish : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  V.ideal.toIdeal ≠ ⊥ →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+            (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (r + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                have I :=
+                                  Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                                    (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+                                let C := MvPolynomial (Fin n) ℂ ⧸ I;
+                                let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+                                have H := fun (i : Fin r) =>
+                                  (Ideal.Quotient.mk V.affineIdeal)
+                                    (LinearStudy.affineChartPolynomialMap
+                                      ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+                                w 0 ≠ 0 ∧
+                                  IsReduced C ∧
+                                    Module.Finite ℂ C ∧
+                                      Nonempty
+                                          (LinearStudy.projectivePulledLinearSectionScheme f V L hL w ≅
+                                            AlgebraicGeometry.Spec ↧C) ∧
+                                        AlgebraicGeometry.IsReduced
+                                            (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) ∧
+                                          ∃ (_ :
+                                            ∀ (j : ℕ),
+                                              0 < j →
+                                                HomologicalComplex.ExactAt
+                                                  (koszulComplex (Fintype.linearCombination B H)) j),
+                                            LinearStudy.affineKoszulAllCohomologyConclusions (↧B) r H ∧
+                                              LinearStudy.affineKoszulActualHigherSheafCohomologyConclusions (↧B) r H
+'LinearStudy.projectivePulledLinearSection_exists_actual_higherSheafCohomology_vanish' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleToActualAbelianSheaf.{u} : (X : AlgebraicGeometry.Scheme) →
+  CategoryTheory.Functor X.Modules (TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace) :=
+fun (X : AlgebraicGeometry.Scheme) => SheafOfModules.toSheaf X.ringCatSheaf
+@[reducible] def LinearStudy.schemeModuleActualCohomology.{u} : (X : AlgebraicGeometry.Scheme) →
+  X.Modules → ℕ → Type u :=
+fun (X : AlgebraicGeometry.Scheme) (M : X.Modules) (j : ℕ) =>
+  CategoryTheory.Sheaf.H ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M) j
+def LinearStudy.affineKoszulActualHigherSheafCohomologyConclusions.{u} : (R : CommRingCat) →
+  (r : ℕ) → (Fin r → ↑R) → Prop :=
+fun (R : CommRingCat) (r : ℕ) (H : Fin r → ↑R) =>
+  ∀ (N : ModuleCat ↑R) (j p : ℕ),
+    Subsingleton
+      (LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Spec R)
+        (HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) j) (p + 1))
+def LinearStudy.discreteAbelianSheaf_pushforwardCohomologyEquiv.{u} : {X Y : TopCat} →
+  [DiscreteTopology ↑X] →
+    (f : X ⟶ Y) →
+      (F : TopCat.Sheaf AddCommGrpCat X) →
+        (j : ℕ) →
+          CategoryTheory.Sheaf.H F j ≃+ CategoryTheory.Sheaf.H ((TopCat.Sheaf.pushforward AddCommGrpCat f).obj F) j :=
+fun {X Y : TopCat} [DiscreteTopology ↑X] (f : X ⟶ Y) (F : TopCat.Sheaf AddCommGrpCat X) (j : ℕ) =>
+  have e := (LinearStudy.actualAbelianSheaf_pullbackConstantIso f).app ↧(ULift.{u, 0} ℤ);
+  (((CategoryTheory.Abelian.extFunctor j).mapIso e.op).app F).addCommGroupIsoToAddEquiv.trans
+    (TopCat.Sheaf.pullbackPushforwardAdjunction AddCommGrpCat f).extEquiv
+def LinearStudy.actualAbelianSheaf_pullbackConstantIso.{u} : {X Y : TopCat} →
+  (f : X ⟶ Y) →
+    (CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑Y) AddCommGrpCat).comp
+        (TopCat.Sheaf.pullback AddCommGrpCat f) ≅
+      CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat :=
+fun {X Y : TopCat} (f : X ⟶ Y) =>
+  (((CategoryTheory.constantSheafAdj (Opens.grothendieckTopology ↑Y) AddCommGrpCat
+                CategoryTheory.Limits.isTerminalTop).comp
+            (TopCat.Sheaf.pullbackPushforwardAdjunction AddCommGrpCat f)).ofNatIsoRight
+        (LinearStudy.actualAbelianSheaf_pushforwardGlobalSectionsIso f)).leftAdjointUniq
+    (CategoryTheory.constantSheafAdj (Opens.grothendieckTopology ↑X) AddCommGrpCat CategoryTheory.Limits.isTerminalTop)
+@[reducible] def CategoryTheory.Sheaf.H.{w', w, v, u} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      CategoryTheory.Sheaf J AddCommGrpCat →
+        [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] →
+          [CategoryTheory.HasExt (CategoryTheory.Sheaf J AddCommGrpCat)] → ℕ → Type w' :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {J : CategoryTheory.GrothendieckTopology C}
+    (F : CategoryTheory.Sheaf J AddCommGrpCat) [CategoryTheory.HasSheafify J AddCommGrpCat]
+    [CategoryTheory.HasExt (CategoryTheory.Sheaf J AddCommGrpCat)] (n : ℕ) =>
+  CategoryTheory.Abelian.Ext ((CategoryTheory.constantSheaf J AddCommGrpCat).obj ↧(ULift.{w, 0} ℤ)) F n
