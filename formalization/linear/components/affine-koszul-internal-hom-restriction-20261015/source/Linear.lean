@@ -1,0 +1,8 @@
+module
+public import Linear.AffineTildeFinitePresentationInternalHom
+public import Linear.AffineTildeFinitePresentationHomIso
+public import Linear.AffineKoszulTermInternalDualHom
+public import Linear.AffineTildeHomPrecompositionValues
+public import Linear.AffineTildeDualHomNaturality
+public import Linear.AffineKoszulInternalDualHomDifferential
+public import Linear.AffineKoszulInternalHomTopRestriction

@@ -1,0 +1,143 @@
+LinearStudy.affineTildeFinitePresentationInternalHom_isQuasicoherent : ∀ (R : CommRingCat) (M N : ModuleCat ↑R)
+  [Module.FinitePresentation ↑R ↑M],
+  SheafOfModules.IsQuasicoherent
+    (LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde M) (AlgebraicGeometry.tilde N))
+'LinearStudy.affineTildeFinitePresentationInternalHom_isQuasicoherent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineTildeHomTopLinearEquiv : (R : CommRingCat) →
+  (M N : ModuleCat ↑R) →
+    ↑((LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde M) (AlgebraicGeometry.tilde N)).presheaf.obj
+          (Opposite.op ⊤)) ≃ₗ[↑R]
+      ↑M →ₗ[↑R] ↑N
+'LinearStudy.affineTildeHomTopLinearEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineTildeFinitePresentationHomIso : (R : CommRingCat) →
+  (M N : ModuleCat ↑R) →
+    [Module.FinitePresentation ↑R ↑M] →
+      AlgebraicGeometry.tilde ↧(↑M →ₗ[↑R] ↑N) ≅
+        LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde M) (AlgebraicGeometry.tilde N)
+'LinearStudy.affineTildeFinitePresentationHomIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineTildeFinitePresentationHomIso_sections : ∀ (R : CommRingCat) (M N : ModuleCat ↑R)
+  [inst : Module.FinitePresentation ↑R ↑M],
+  have H := LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde M) (AlgebraicGeometry.tilde N);
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.tilde.isoTop ↧(↑M →ₗ[↑R] ↑N)).hom
+      (AlgebraicGeometry.moduleSpecΓFunctor.map (LinearStudy.affineTildeFinitePresentationHomIso R M N).hom) =
+    (LinearStudy.affineTildeHomTopLinearEquiv R M N).symm.toModuleIso.hom
+'LinearStudy.affineTildeFinitePresentationHomIso_sections' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulTerm_finitePresentation : ∀ (R : CommRingCat) (r j : ℕ),
+  Module.FinitePresentation ↑R ↥(⋀[↑R]^j (Fin r → ↑R))
+'LinearStudy.affineKoszulTerm_finitePresentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulTermInternalDualHomIso : (R : CommRingCat) →
+  (r j : ℕ) →
+    AlgebraicGeometry.tilde ↧(Module.Dual ↑R ↥(⋀[↑R]^j (Fin r → ↑R))) ≅
+      LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^j (Fin r → ↑R)))
+        (SheafOfModules.unit (AlgebraicGeometry.Spec R).ringCatSheaf)
+'LinearStudy.affineKoszulTermInternalDualHomIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineTildeHomTopSection_precompose_evaluation : ∀ (R : CommRingCat) (M' M N : ModuleCat ↑R) (f : M' ⟶ M)
+  (h :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde M) (AlgebraicGeometry.tilde N)).presheaf.obj
+        (Opposite.op ⊤)))
+  (x : ↑((AlgebraicGeometry.tilde M').presheaf.obj (Opposite.op ⊤))),
+  ((LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv (AlgebraicGeometry.tilde N)
+          (AlgebraicGeometry.tilde M') ⊤)
+        ((CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.Hom.app
+              (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.tilde.functor R).map f)) ⊤))
+          h))
+      x =
+    ((LinearStudy.affineQuasicoherentHomActualOpenSectionsLinearEquiv (AlgebraicGeometry.tilde N)
+          (AlgebraicGeometry.tilde M) ⊤)
+        h)
+      ((CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.Scheme.Modules.Hom.app ((AlgebraicGeometry.tilde.functor R).map f) ⊤))
+        x)
+'LinearStudy.affineTildeHomTopSection_precompose_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineTildeHomTopLinearEquiv_precompose : ∀ (R : CommRingCat) (M' M N : ModuleCat ↑R) (f : M' ⟶ M)
+  (h :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde M) (AlgebraicGeometry.tilde N)).presheaf.obj
+        (Opposite.op ⊤))),
+  (LinearStudy.affineTildeHomTopLinearEquiv R M' N)
+      ((CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.Scheme.Modules.Hom.app
+            (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.tilde.functor R).map f)) ⊤))
+        h) =
+    (LinearStudy.affineTildeHomTopLinearEquiv R M N) h ∘ₗ ModuleCat.Hom.hom f
+'LinearStudy.affineTildeHomTopLinearEquiv_precompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineTildeDualHomTopPrecomposeSquare : ∀ (R : CommRingCat) (M' M : ModuleCat ↑R) (f : M' ⟶ M),
+  have H := LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde M) (AlgebraicGeometry.tilde ↧↑R);
+  have H' := LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde M') (AlgebraicGeometry.tilde ↧↑R);
+  CategoryTheory.CategoryStruct.comp (ModuleCat.ofHom (ModuleCat.Hom.hom f).dualMap)
+      (LinearStudy.affineTildeHomTopLinearEquiv R M' ↧↑R).symm.toModuleIso.hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.affineTildeHomTopLinearEquiv R M ↧↑R).symm.toModuleIso.hom
+      (AlgebraicGeometry.moduleSpecΓFunctor.map
+        (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.tilde.functor R).map f)))
+'LinearStudy.affineTildeDualHomTopPrecomposeSquare' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineTildeFinitePresentationDualHomIso_precompose : ∀ (R : CommRingCat) (M' M : ModuleCat ↑R)
+  [inst : Module.FinitePresentation ↑R ↑M'] [inst_1 : Module.FinitePresentation ↑R ↑M] (f : M' ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom (ModuleCat.Hom.hom f).dualMap))
+      (LinearStudy.affineTildeFinitePresentationHomIso R M' ↧↑R).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.affineTildeFinitePresentationHomIso R M ↧↑R).hom
+      (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.tilde.functor R).map f))
+'LinearStudy.affineTildeFinitePresentationDualHomIso_precompose' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulTermTildeInternalDualHomIso : (R : CommRingCat) →
+  (r j : ℕ) →
+    AlgebraicGeometry.tilde ↧(Module.Dual ↑R ↥(⋀[↑R]^j (Fin r → ↑R))) ≅
+      LinearStudy.schemeModuleHomModuleSheaf (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^j (Fin r → ↑R)))
+        (AlgebraicGeometry.tilde ↧↑R)
+'LinearStudy.affineKoszulTermTildeInternalDualHomIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulTermInternalDualHomIso_differential : ∀ (R : CommRingCat) (r j : ℕ) (H : Fin r → ↑R),
+  CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.tilde.functor R).map
+        (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) j).dualMap))
+      (LinearStudy.affineKoszulTermTildeInternalDualHomIso R r (j + 1)).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulTermTildeInternalDualHomIso R r j).hom
+      (LinearStudy.schemeModuleHomPrecompose
+        ((AlgebraicGeometry.tilde.functor R).map
+          (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) j))))
+'LinearStudy.affineKoszulTermInternalDualHomIso_differential' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulTermInternalDualHomIso_actualComplex_differential : ∀ (R : CommRingCat) (r j : ℕ)
+  (H : Fin r → ↑R),
+  CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.tilde.functor R).map
+        (ModuleCat.ofHom (ModuleCat.Hom.hom ((koszulComplex (Fintype.linearCombination (↑R) H)).d (j + 1) j)).dualMap))
+      (LinearStudy.affineKoszulTermTildeInternalDualHomIso R r (j + 1)).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulTermTildeInternalDualHomIso R r j).hom
+      (LinearStudy.schemeModuleHomPrecompose
+        ((AlgebraicGeometry.tilde.functor R).map ((koszulComplex (Fintype.linearCombination (↑R) H)).d (j + 1) j)))
+'LinearStudy.affineKoszulTermInternalDualHomIso_actualComplex_differential' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomTopRestrictionPresentation : (R : CommRingCat) →
+  (n : ℕ) → (Fin (n + 1) → ↑R) → CategoryTheory.ShortComplex (AlgebraicGeometry.Spec R).Modules
+'LinearStudy.affineKoszulInternalHomTopRestrictionPresentation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomTopRestrictionPresentationIso : (R : CommRingCat) →
+  (n : ℕ) →
+    (H : Fin (n + 1) → ↑R) →
+      LinearStudy.tildeKoszulDualTopRestrictionPresentation R n H ≅
+        LinearStudy.affineKoszulInternalHomTopRestrictionPresentation R n H
+'LinearStudy.affineKoszulInternalHomTopRestrictionPresentationIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomTopRestrictionPresentation_exact : ∀ (R : CommRingCat) (n : ℕ)
+  (H : Fin (n + 1) → ↑R), (LinearStudy.affineKoszulInternalHomTopRestrictionPresentation R n H).Exact
+'LinearStudy.affineKoszulInternalHomTopRestrictionPresentation_exact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomTopRestrictionPresentation_epi : ∀ (R : CommRingCat) (n : ℕ) (H : Fin (n + 1) → ↑R),
+  CategoryTheory.Epi (LinearStudy.affineKoszulInternalHomTopRestrictionPresentation R n H).g
+'LinearStudy.affineKoszulInternalHomTopRestrictionPresentation_epi' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomTopRestrictionPresentation_restriction : ∀ (R : CommRingCat) (n : ℕ)
+  (H : Fin (n + 1) → ↑R),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulTermTildeInternalDualHomIso R (n + 1) (n + 1)).hom
+      (LinearStudy.affineKoszulInternalHomTopRestrictionPresentation R n H).g =
+    (LinearStudy.tildeKoszulDualTopRestrictionPresentation R n H).g
+'LinearStudy.affineKoszulInternalHomTopRestrictionPresentation_restriction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
