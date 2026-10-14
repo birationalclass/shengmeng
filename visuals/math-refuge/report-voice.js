@@ -1,11 +1,13 @@
+import {writingSchedule,scheduledWriting} from './board-work.js?v=continuous-classroom-1';
+import {SCREEN_COLORS,CONTROL_VISUAL_SCALE} from './smart-screen-style.js?v=unframed-controls-1';
 // On-demand narration: no network or audio allocation until a report is selected.
 export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),onChange=()=>{},baseURL=new URL('.',import.meta.url).href,now=()=>performance.now()/1000}={}){
  let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,contextActive=true,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0,playbackRate=1,boardHold=null;
  let activity=null,segmentEnding=false,navigationIntent=false;
  const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',started:false,chapter:0,temporaryPause:false,rate:1,activity:null};
- const emit=()=>onChange({...state});
+ const emit=()=>{state.transportPlaying=desired&&contextActive;onChange({...state});};
  const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index];state.time=Math.min(state.duration,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=manifest.chapters[index].start+activity.at;state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}return state.time;};
- function pause(){sync();if(activity)activity.running=false;desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio?.pause();if(['playing','buffering','preparing','away'].includes(state.phase)){state.phase='paused';emit();}}
+ function pause(){sync();if(activity)activity.running=false;desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio?.pause();if(['loading','playing','buffering','preparing','away'].includes(state.phase))state.phase='paused';emit();}
  function release(){pause();boardHold=null;audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();}
  async function bytes(src,mine,show,sizeHint=0){
   const controller=new AbortController();controllers.add(controller);
@@ -30,7 +32,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   const mine=epoch,attachment=++attachToken;index=i;offset=at;audio?.pause();audio=null;activity=null;segmentEnding=false;state.activity=null;
   state.chapter=i;state.time=manifest.chapters[i].start+at;
   if(manifest.chapters[i].kind==='activity'){activity={at,stamp:now(),duration:manifest.chapters[i].duration,running:false,advancing:false};state.progress=1;state.temporaryPause=desired&&!contextActive;state.phase=state.temporaryPause?'away':state.started?'paused':'ready';sync();trim();emit();return true;}
-  if(!cache.has(i)){state.phase='loading';state.progress=null;emit();}
+  if(!cache.has(i)){if(desired||state.phase!=='paused')state.phase='loading';state.progress=null;emit();}
   const url=await load(i);if(!url||mine!==epoch||attachment!==attachToken)return false;trim();
   const target=makeAudio();audio=target;target.preload='auto';target.preservesPitch=true;target.playbackRate=playbackRate;target.src=url;
   const valid=()=>mine===epoch&&audio===target;
@@ -38,13 +40,13 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   target.addEventListener('loadedmetadata',position,{once:true});try{position();}catch{}
   target.addEventListener('timeupdate',()=>{if(valid()){sync();emit();}});
   target.addEventListener('waiting',()=>{if(valid()&&desired){state.phase='buffering';emit();}});
-  target.addEventListener('playing',()=>{if(valid()&&desired){state.phase='playing';emit();}});
+  target.addEventListener('playing',()=>{if(valid()&&desired){state.phase=boardHold?'preparing':'playing';emit();}});
   target.addEventListener('error',()=>{if(valid()){desired=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();}});
   target.addEventListener('ended',()=>{if(!valid()||segmentEnding||boardHold)return;segmentEnding=true;state.time=manifest.chapters[i].start+manifest.chapters[i].duration;if(i+1<manifest.chapters.length){void advance(i+1);}else{desired=false;state.phase='ended';state.time=state.duration;emit();}});
   state.progress=1;state.temporaryPause=desired&&!contextActive;state.phase=state.temporaryPause?'away':state.started?'paused':'ready';state.error='';emit();return true;
  }
  async function play(){
-  if(!audio&&!activity)return false;const mine=epoch,token=++playToken,target=audio;desired=true;
+  if(!audio&&!activity){if(state.phase==='paused'&&(controllers.size||jobs.size)){desired=true;state.phase='loading';emit();}return false;}const mine=epoch,token=++playToken,target=audio;desired=true;
   if(!contextActive){state.temporaryPause=true;state.phase='away';emit();return false;}state.temporaryPause=false;state.started=true;
   if(boardHold){state.phase='preparing';emit();return false;}
   if(activity){activity.stamp=now();activity.running=true;state.phase='playing';state.error='';sync();emit();return true;}
@@ -72,6 +74,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   catch{if(mine===epoch&&intent===playToken){navigationIntent=false;state.phase='error';state.error='语音定位失败 · 点击重试';emit();}return false;}
  }
  async function toggle(){
+  if(state.phase==='loading'&&desired){pause();return true;}
   if(['playing','buffering','preparing','away'].includes(state.phase)){pause();return true;}
   if(state.phase==='loading')return false;
   if(state.phase==='error'){if(!manifest)return select(report);try{return await attach(index,offset)&&await play();}catch{return false;}}
@@ -85,6 +88,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   return false;
  }
  return{state,select,toggle,pause,seek,setContextActive,
+  get transportPlaying(){return desired&&contextActive;},
   get boardHeld(){return Boolean(boardHold);},
   async holdForBoard(job,at){
    if(boardHold||!desired||!audio||!manifest)return false;
@@ -112,6 +116,7 @@ const lineCostBounds=new WeakMap();
 function cueWriteDuration(cue,plan,bounds){const available=cue.writeEnd-cue.writeStart;return (plan?.physicalTiming||plan?.chineseStrokeTiming)&&bounds?(bounds.end-bounds.start)/plan.unitsPerSecond:available;}
 export function rowNarrationProgress(cues,time,plan){
  if(!cues?.length||!plan?.total)return null;
+ if(plan.physicalTiming)return scheduledWriting(writingSchedule({writeStart:cues[0].writeStart,lineCues:cues},plan),time).progress;
  let bounds=lineCostBounds.get(plan);if(!bounds){bounds=new Map();
  for(const s of plan.segments){if(!Number.isInteger(s.mainLine))continue;const b=bounds.get(s.mainLine);if(b)b.end=s.end;else bounds.set(s.mainLine,{start:s.start,end:s.end});}
  lineCostBounds.set(plan,bounds);}
@@ -128,6 +133,8 @@ export function narrationFrame(manifest,time,writingPlan,erasePlan){
  if(!manifest?.boards?.length)return null;
  const t=Math.max(0,Math.min(manifest.duration,time)),events=manifest.boards;
  const i=Math.max(0,events.findLastIndex(b=>b.start<=t)),b=events[i];
+ const schedule=writingSchedule(b,writingPlan);
+ if(schedule&&t>=b.writeStart){const ink=scheduledWriting(schedule,t);return{page:b.page,phase:ink.progress<1?'write':'hold',...ink,ended:t>=manifest.duration,duration:Math.max(.001,schedule.end-b.writeStart)};}
  let phase='hold',start=b.writeEnd,end=b.end;
  if(t<b.eraseStart){phase='lift';start=b.start;end=b.eraseStart;}
  else if(t<b.writeStart){phase='erase';start=b.eraseStart+1.8;end=b.writeStart;}
@@ -164,7 +171,7 @@ export function reportControlLayout(column=0,withVoice=true){
  return{center,previous:{x:center-.94,y:-.16,z:-11.302,width:.6},next:{x:center+.94,y:-.16,z:-11.302,width:.6},language:{x:center-1.94,y:-.16,z:-11.34,width:1.1},voice:{x:center,y:-.16,z:-11.302,width:.6},camera:{x:center+1.94,y:-.16,z:-11.302,width:.6}};
 }
 export function reportVoiceIconPosition(column=0){return reportControlLayout(column).voice;}
-const iconBusy=s=>['loading','buffering','preparing'].includes(s.phase)||s.phase==='away'&&!s.started;
+const iconBusy=s=>(['loading','buffering','preparing'].includes(s.phase)&&!(s.transportPlaying&&s.started))||s.phase==='away'&&!s.started;
 const ease=t=>t*t*(3-2*t);
 // Measured progress remains independent of shape animation; no fabricated completion.
 export class VoiceIconMotion{
@@ -172,7 +179,7 @@ export class VoiceIconMotion{
  reset(){this.loading=false;this.finish=2;this.progress=0;this.spin=0;this.pause=0;this.chapter=-1;}
  update(state,dt){
   dt=Math.max(0,Math.min(.1,dt));this.spin+=dt;
-  const busy=iconBusy(state),active=state.phase==='playing';
+  const busy=iconBusy(state),active=state.transportPlaying??state.phase==='playing';
   if(state.phase==='idle'){this.reset();return{kind:'play',ring:0,progress:0,pause:0,spin:0};}
   if(busy){if(!this.loading||state.chapter!==this.chapter)this.progress=0;this.loading=true;this.finish=0;this.chapter=state.chapter;
    if(state.progress!==null&&Number.isFinite(state.progress))this.progress+=(Math.max(this.progress,state.progress)-this.progress)*(1-Math.exp(-dt*16));this.pause=0;
@@ -194,10 +201,10 @@ export function createBoardVoicePanel(T,parent){
  function setColumn(value){column=value;const p=reportVoiceIconPosition(column);mesh.position.set(p.x,p.y,p.z);mesh.updateMatrix();}
  setColumn(0);
  return{mesh,setColumn,update(state,dt,visible=true){
-  const frame=motion.update(state,dt),busy=iconBusy(state);mesh.visible=visible&&state.phase!=='idle';mesh.userData.action=busy?null:'voice:toggle';mesh.userData.icon=frame.kind;mesh.userData.loadProgress=state.progress;
+  const frame=motion.update(state,dt),busy=iconBusy(state);mesh.visible=visible&&state.phase!=='idle';mesh.userData.action=busy&&!state.transportPlaying?null:'voice:toggle';mesh.userData.icon=frame.kind;mesh.userData.loadProgress=state.progress;
   mesh.userData.label=state.synthetic===false?(state.phase==='playing'?'暂停板书':'继续板书'):(reportVoicePresentation(state).buttonLabel||'聆听报告')+' · AI 合成';
   const key=[frame.kind,frame.ring.toFixed(3),frame.progress.toFixed(3),frame.pause.toFixed(3),frame.indeterminate?frame.spin.toFixed(2):''].join(':');
-  if(key===last||!mesh.visible)return;last=key;ctx.clearRect(0,0,128,128);ctx.save();ctx.translate(64,64);ctx.scale(.72,.72);ctx.translate(-64,-64);ctx.strokeStyle='#f0e4ca';ctx.fillStyle='#f0e4ca';ctx.lineWidth=5;ctx.lineJoin='round';ctx.lineCap='round';
+  if(key===last||!mesh.visible)return;last=key;ctx.clearRect(0,0,128,128);ctx.save();ctx.translate(64,64);ctx.scale(.72*CONTROL_VISUAL_SCALE,.72*CONTROL_VISUAL_SCALE);ctx.translate(-64,-64);ctx.strokeStyle=SCREEN_COLORS.text;ctx.fillStyle=SCREEN_COLORS.text;ctx.lineWidth=4;ctx.lineJoin='miter';ctx.lineCap='square';
   ctx.globalAlpha=1-frame.pause;
   if(busy||frame.ring>.999){ctx.globalAlpha=.18;ctx.beginPath();ctx.arc(64,64,35,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;ctx.beginPath();const start=frame.indeterminate?frame.spin*2-Math.PI/2:-Math.PI/2,length=frame.indeterminate?Math.PI*.55:Math.PI*2*frame.progress;ctx.arc(64,64,35,start,start+Math.max(.02,length));ctx.stroke();}
   else{ctx.beginPath();for(let i=0;i<=count;i++){const a=circle[i],b=triangle[i],x=b[0]+(a[0]-b[0])*frame.ring,y=b[1]+(a[1]-b[1])*frame.ring;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.stroke();}

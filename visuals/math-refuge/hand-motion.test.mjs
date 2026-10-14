@@ -13,10 +13,11 @@ test('Chinese lift has continuous board contact and a visible eased transfer wit
 test('small English letter strokes share a readable character budget at every font size',()=>{
  for(const scale of [1,5]){const letterGroup={};const p=writingPlan([stroke([[0,0],[2*scale,0]],{letterGroup,letterSeconds:.125}),stroke([[2*scale,0],[3*scale,scale]],{letterGroup,letterSeconds:.125})]);assert(p.letterTiming);assert(Math.abs(p.segments.filter(s=>s.contact).reduce((n,s)=>n+s.cost,0)/p.unitsPerSecond-.25)<1e-9);}
 });
-test('short narration windows pause at a line boundary instead of revealing a long English word instantly',()=>{
+test('short narration windows borrow explanation time without a row pause or an instant reveal',()=>{
  const p=writingPlan([stroke([[0,0],[10,0]],{letterSeconds:2})]),m={duration:20,boards:[{page:0,start:0,eraseStart:0,writeStart:0,writeEnd:10,end:20,lineCues:[{row:0,writeStart:2,writeEnd:2.5}]}]};
- assert(rowNarrationProgress(m.boards[0].lineCues,2.25,p)<.2);const w=narrationWork(m,2.51,2.49,p,null,new Set());assert(w);assert.equal(w.kind,'write');assert(boardWorkFrame(w).progress<.3);w.elapsed=w.duration;assert.equal(boardWorkFrame(w).progress,1);assert.equal(narrationWork(m,2.51,2.49,p,null,new Set([w.key])),null);assert.equal(narrationWork(m,10,2,p,null,new Set()),null);
+ assert(rowNarrationProgress(m.boards[0].lineCues,2.25,p)<.2);assert.equal(narrationWork(m,2.51,2.49,p,null,new Set()),null);const f=narrationFrame(m,2.51,p);assert(f.progress<.3);assert(f.writing);assert.equal(narrationFrame(m,5,p).progress,1);
 });
+
 test('a compressed narrated erase uses its measured sweep speed, retains the old board and completes before new ink',()=>{
  const erase=erasingPlan(null,[[0,0,1000,200]]);assert.equal(ERASER_SPEED,260);assert(erase.duration>=6);
  const m={duration:160,boards:[{page:6,start:120,eraseStart:122,writeStart:125,writeEnd:140,end:160}]},clock=new LectureClock(8);

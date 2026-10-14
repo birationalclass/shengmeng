@@ -1,8 +1,9 @@
 import {inlineInk,drawInlineInk} from './chalk-inline-math.js?v=inline-root-1';
 import {chalkInlineRuns,mathFont} from './chalk-typography.js?v=inline-root-1';
 import {drawChalkAnnotation} from './chalk-annotations.js?v=report-line-sync-6';
-import {explainedFlow} from './flow-explanation.js?v=report-line-sync-6';
+import {explainedFlow} from './flow-explanation.js?v=textbook-problems-1';
 import {wrapBoardText} from './chalk-wrap.js?v62-chalk-ink';
+import {classroomHeading,CHALK_SEMANTIC_COLORS,drawReferenceIcon} from './classroom-metadata.js?v=textbook-problems-1';
 export function chalkCopy(page,language='zh',{board=false}={}){
   return language==='en'?{...page.en,text:!board&&page.en.readingText||page.en.text}:{title:page.title,text:!board&&page.readingText||page.text,source:page.source,author:page.author};
 }
@@ -50,7 +51,7 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
     copy.text.split('\n').forEach((line,i)=>center(line,430+i*52,36));
     return rows;
   }
-  if(!page.hideHeading&&!options.hideHeading){textRow(copy.source+'  '+copy.title,84,76,44,'#e4cf9c',true);rows.at(-1).mainLine=0;}
+  if(!page.hideHeading&&!options.hideHeading){const icon=page.statementOnly;textRow(page.classroom?classroomHeading(page,language,copy.title):copy.source+'  '+copy.title,icon?136:84,76,44,'#e4cf9c',true);rows.at(-1).mainLine=0;if(icon){drawReferenceIcon(ctx,'textbook',84,38,36);const r=rows.at(-1),end=r[0]+r[2];r[0]=80;r[2]=end-80;}}
   if(!page.diagram&&(page.layout==='flow'||!page.annotation)){
     const items=explainedFlow(page,language,measure,options.hideHeading);
     const formulaRects=items.filter(i=>i.source).map(i=>Object.assign([...i.rect],{formulaRow:i.index}));
@@ -66,7 +67,7 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
         rows.push(Object.assign([...item.rect],{formulaRow:item.index,mainLine:item.mainLine}));
         if(item.index===cues.afterRow)rows.push(...cues.map(c=>Object.assign(c,{mainLine:item.mainLine})));
       }else{
-        textRow(item.text,item.x,item.y,item.size,'#eee9d5');
+        textRow(item.text,item.x,item.y,item.size,CHALK_SEMANTIC_COLORS[page.emphasis?.[item.mainLine]?.tone]||'#eee9d5');
         rows.at(-1).prose=item.role;rows.at(-1).mainLine=item.mainLine;
       }
     }

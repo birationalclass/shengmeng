@@ -35,8 +35,8 @@ export async function authoredFormula(url){
   const map=([x,y])=>[m.a*x+m.c*y+m.e,m.b*x+m.d*y+m.f];
   let clip=[0,0,Number(root.getAttribute('width')),Number(root.getAttribute('height'))];for(let parent=element.parentElement;parent&&parent!==root;parent=parent.parentElement){if(parent.localName==='svg'){const b=parent.getBoundingClientRect(),a=new DOMPoint(b.left,b.top).matrixTransform(rootMatrix),z=new DOMPoint(b.right,b.bottom).matrixTransform(rootMatrix);clip=clipRect(clip,[a.x,a.y,z.x-a.x,z.y-a.y]);if(!clip)break;}}if(!clip)continue;
   const symbolCode=parseInt(element.getAttribute('data-c')||'',16),symbol=Number.isFinite(symbolCode)?String.fromCodePoint(symbolCode).normalize('NFKD'):null;let topLevel=true;for(let p=element.parentElement;p&&p.getAttribute('data-mml-node')!=='math';p=p.parentElement){if(/^(mfrac|msub|msup|msubsup|munder|mover|munderover|msqrt|mroot)$/.test(p.getAttribute('data-mml-node')||''))topLevel=false;}const symbolRect=clipRect(pointBox([[box.x,box.y],[box.x+box.width,box.y],[box.x,box.y+box.height],[box.x+box.width,box.y+box.height]].map(map)),clip);
-  const semantic={symbol,topLevel,symbolRect};
-  const record=(points,width)=>{for(const part of clipPolyline(points,clip))operations.push({...semantic,rect:clipRect(pointBox(part,width/2+1),clip),strokePath:part,strokeWidth:width,chalkColor:'#eee9d5'});};
+  const inkColor=getComputedStyle(element).fill||'#eee9d5',semantic={symbol,topLevel,symbolRect,chalkColor:inkColor};
+  const record=(points,width)=>{for(const part of clipPolyline(points,clip))operations.push({...semantic,rect:clipRect(pointBox(part,width/2+1),clip),strokePath:part,strokeWidth:width,chalkColor:inkColor});};
   const code=parseInt(element.getAttribute('data-c')||'',16),char=Number.isFinite(code)?String.fromCodePoint(code).normalize('NFKD'):null;
   const compatible=code<128||(code>=0x1d434&&code<=0x1d467)||[0x210e,0x2212,0x2264,0x2265,0x21d2,0x21d4].includes(code);
   const glyph=compatible&&char?authoredGlyph(char):null;
@@ -46,7 +46,7 @@ export async function authoredFormula(url){
    // Their narrow filled outlines otherwise have no reliable scan columns.
    const local=[[box.x+box.width*.5,box.y+box.height],[box.x+box.width*.54,box.y+box.height*.5],[box.x+box.width*.5,box.y]],width=box.width*.86;
    record(local.map(map),Math.max(.8,width*Math.hypot(m.a,m.b)));
-   const path=document.createElementNS(NS,'path');path.setAttribute('d',local.map(([x,y],i)=>(i?'L':'M')+x+' '+y).join(' '));path.setAttribute('fill','none');path.setAttribute('stroke','#eee9d5');path.setAttribute('stroke-width',String(width));path.setAttribute('stroke-linecap','round');if(element.hasAttribute('transform'))path.setAttribute('transform',element.getAttribute('transform'));element.replaceWith(path);
+   const path=document.createElementNS(NS,'path');path.setAttribute('d',local.map(([x,y],i)=>(i?'L':'M')+x+' '+y).join(' '));path.setAttribute('fill','none');path.setAttribute('stroke',inkColor);path.setAttribute('stroke-width',String(width));path.setAttribute('stroke-linecap','round');if(element.hasAttribute('transform'))path.setAttribute('transform',element.getAttribute('transform'));element.replaceWith(path);
   }else if(glyph&&box.width&&box.height){
    // Words inside a formula (e.g. "even" and "odd") are still handwriting,
    // rather than mathematical symbols whose tiny bounds set their speed.
@@ -56,12 +56,12 @@ export async function authoredFormula(url){
    for(let i=0;i<glyph.paths.length;i++){
     const points=glyph.paths[i].map(([x,y])=>map([box.x+(x-gx)*sx,box.y+box.height-(y-gy)*sy]));const width=Math.max(.9,FORMULA_PEN_WIDTH*Math.sqrt(Math.abs((m.a*m.d-m.b*m.c)*sx*sy)));
     record(points,width);
-    const path=document.createElementNS(NS,'path');path.setAttribute('d',glyphs[char][i]);path.setAttribute('transform',`matrix(${sx} 0 0 ${-sy} ${box.x-gx*sx} ${box.y+box.height+gy*sy})`);path.setAttribute('fill','none');path.setAttribute('stroke','#eee9d5');path.setAttribute('stroke-width',String(FORMULA_PEN_WIDTH));path.setAttribute('stroke-linecap','round');path.setAttribute('stroke-linejoin','round');group.append(path);
+    const path=document.createElementNS(NS,'path');path.setAttribute('d',glyphs[char][i]);path.setAttribute('transform',`matrix(${sx} 0 0 ${-sy} ${box.x-gx*sx} ${box.y+box.height+gy*sy})`);path.setAttribute('fill','none');path.setAttribute('stroke',inkColor);path.setAttribute('stroke-width',String(FORMULA_PEN_WIDTH));path.setAttribute('stroke-linecap','round');path.setAttribute('stroke-linejoin','round');group.append(path);
    }element.replaceWith(group);
   }else if(fraction){
    const n=Math.max(4,Math.ceil(box.width/50)),local=Array.from({length:n+1},(_,i)=>[box.x+box.width*i/n,box.y+box.height*(.5+.16*Math.sin(i/n*Math.PI*2))]),mapped=local.map(map),width=Math.max(.9,box.height*Math.hypot(m.c,m.d)*.72);
    record(mapped,width);
-   const path=document.createElementNS(NS,'path');path.setAttribute('d',local.map(([x,y],i)=>(i?'L':'M')+x+' '+y).join(' '));path.setAttribute('fill','none');path.setAttribute('stroke','#eee9d5');path.setAttribute('stroke-width',String(box.height*.72));path.setAttribute('stroke-linecap','round');element.replaceWith(path);
+   const path=document.createElementNS(NS,'path');path.setAttribute('d',local.map(([x,y],i)=>(i?'L':'M')+x+' '+y).join(' '));path.setAttribute('fill','none');path.setAttribute('stroke',inkColor);path.setAttribute('stroke-width',String(box.height*.72));path.setAttribute('stroke-linecap','round');element.replaceWith(path);
   }else{
    const rect=clipRect(pointBox([[box.x,box.y],[box.x+box.width,box.y],[box.x,box.y+box.height],[box.x+box.width,box.y+box.height]].map(map),1),clip);if(rect)operations.push({...semantic,rect});
   }

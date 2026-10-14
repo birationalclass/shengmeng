@@ -1,14 +1,17 @@
 import {narrationHighlights,measuredHighlight,highlightFrame,createBoardHighlight} from './board-highlight.js?v=smart-voice-9';
-import {createBoardPageControls} from './board-page-control.js?v=board-controls-3';
-import {drawClassroomActivity} from './classroom-board.js?v=board-controls-3';
-import {createBoardCameraControl} from './board-camera-control.js?v=board-controls-3';
+import {createBoardPageControls} from './board-page-control.js?v=unframed-controls-1';
+import {drawClassroomActivity} from './classroom-board.js?v=unframed-controls-1';
+import {createBoardCameraControl} from './board-camera-control.js?v=unframed-controls-1';
 import {boardContentJump,advanceBoardQueue} from './board-transition.js';
-import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock,bindVoiceFocusPause} from './report-voice.js?v=hand-motion-2';
+import {drawClassroomMetadata} from './classroom-metadata.js?v=unframed-controls-1';
+import {createBoardTimePanel} from './board-time.js?v=unframed-controls-1';
+import {SCREEN_FONT,SCREEN_MONO,SCREEN_COLORS,CONTROL_VISUAL_SCALE} from './smart-screen-style.js?v=unframed-controls-1';
+import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock,bindVoiceFocusPause} from './report-voice.js?v=unframed-controls-1';
 import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v=smart-voice-9';
 import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
-import {authoredContext,authoredFormula} from './authored-chalk.js?v=hand-motion-2';
+import {authoredContext,authoredFormula} from './authored-chalk.js?v=unframed-controls-1';
 import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=board-controls-2';
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
 import {createSeminarScreen} from './seminar-screen.js?v=report-line-sync-6';
@@ -16,17 +19,17 @@ import * as THREE from 'three';
 import {LectureClock,boardSlot,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v=report-line-sync-6';
 import {inkGuides,inkReveal,strokeReveal,rasterStrokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=hand-motion-2';
 import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
-import {narrationWork,boardWorkFrame} from './board-work.js?v=hand-motion-2';
+import {narrationWork,boardWorkFrame,writingSchedule,settledBoardFrame} from './board-work.js?v=unframed-controls-1';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v=report-line-sync-6';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v=unframed-controls-1';
 
 import {REPORTS} from './report-catalog.js?v=ye2-report-14';
 import {CLASSROOM_PROGRAMS} from './classroom-catalog.js';
-import {createHallProgramScreen} from './hall-program-screen.js';
+import {createHallProgramScreen} from './hall-program-screen.js?v=unframed-controls-1';
 import {createReportLoader} from './report-loader.js?v=report-line-sync-6';
 
 import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=43-tight-boards';
-import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=smart-voice-9';
+import {silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=smart-voice-9';
 
 const W=1536,H=640,BOARD_W=BOARD_LAYOUT.width,BOARD_H=BOARD_LAYOUT.height;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
@@ -146,6 +149,7 @@ export async function createLecture(scene,renderer,options={}){
   function voiceReport(report){const variant=report.narration?.voices?.find(v=>v.id===voiceTone);return variant?{...report,narration:{...report.narration,manifest:variant.manifest}}:report;}
   const highlighter=createBoardHighlight(THREE,{width:BOARD_W,height:BOARD_H});
   const voice=createReportVoice(),unbindVoiceFocus=bindVoiceFocusPause(voice);const voicePanels=Array.from({length:3},(_,column)=>{const panel=createBoardVoicePanel(THREE,scene);panel.setColumn(column);return panel;});
+  const timePanels=Array.from({length:3},(_,column)=>createBoardTimePanel(THREE,scene,column));
   // Three synchronized controls, centered exactly beneath their board columns.
   const consoleButtons=[],consoleTextures=[];
   const touchCanvas=document.createElement('canvas');touchCanvas.width=704;touchCanvas.height=384;
@@ -159,12 +163,12 @@ export async function createLecture(scene,renderer,options={}){
   }
   function setConsoleState(){
     if(consoleButtons.every(button=>button.userData.lastLabel===language))return;
-    const targetLanguage=language==='zh'?'en':'zh',label=targetLanguage==='zh'?'中':'Eng';
+    const targetLanguage=language==='zh'?'en':'zh',label=targetLanguage==='zh'?'中':'EN';
     for(const button of consoleButtons){button.userData.lastLabel=language;button.userData.visibleLabel=label;button.userData.targetLanguage=targetLanguage;}
     const c=touchCanvas.getContext('2d');c.clearRect(0,0,704,384);
     c.textAlign='center';c.shadowBlur=0;
-    c.font=targetLanguage==='zh'?'400 184px SimSun, "Noto Serif SC", serif':'400 176px Baskerville, "Iowan Old Style", Georgia, serif';
-    c.fillStyle='#f0e4ca';c.fillText(label,352,250);
+    c.font='500 '+(148*CONTROL_VISUAL_SCALE)+'px '+SCREEN_FONT;
+    c.fillStyle=SCREEN_COLORS.text;c.fillText(label,352,250);
     touchTexture.needsUpdate=true;
   }
   const reportButtons=[],reportTextures=[];
@@ -177,13 +181,14 @@ export async function createLecture(scene,renderer,options={}){
     mesh.position.set(x,y,-11.332);mesh.name=name;scene.add(mesh);return {mesh,canvas,texture};
   }
   const reportHeader=glassLabel(4.6,.34,reportX,3.93,'Smart glass report heading');
+  reportHeader.canvas.height=76;
   addTextSheen(THREE,reportHeader.mesh,reportHeader.texture,4.6,.34);
   const programScreen=!disabled&&!navigation?.sections?createHallProgramScreen(THREE,scene,{reports,x:reportX}):null;
   if(programScreen)reportButtons.push(...programScreen.targets);
   function setReportState(){
     dateLabel=seminarDate();
-    const header=reportHeader.canvas.getContext('2d');header.clearRect(0,0,1024,240);header.textAlign='right';header.fillStyle=silverInk(header);header.font='400 78px Baskerville, "Iowan Old Style", Georgia, serif';
-    header.fillText(dateLabel,996,154);reportHeader.mesh.userData.date=dateLabel;reportHeader.texture.needsUpdate=true;
+    const header=reportHeader.canvas.getContext('2d');header.clearRect(0,0,1024,76);header.textAlign='right';header.fillStyle=SCREEN_COLORS.muted;header.font='400 32px '+SCREEN_MONO;
+    header.fillText(dateLabel,996,52);reportHeader.mesh.userData.date=dateLabel;reportHeader.texture.needsUpdate=true;
     programScreen?.setState(hasSelection?activeReport:null,pendingReport,language,stored);
   }
   const seminarScreen=navigation?.sections?createSeminarScreen(THREE,scene,navigation):null;
@@ -282,6 +287,7 @@ export async function createLecture(scene,renderer,options={}){
         wipeSamples=end+1;ctx.drawImage(wipeCanvas,0,0,W,H);
       }
     }
+    if(image)drawClassroomMetadata(ctx,pages[slot.page],slot.page,language,{exercise:Boolean(activity),total:pages.length});
     const r=board.roughCtx,roughChanged=board.roughKey!==wetKey;
     if(roughChanged){r.fillStyle='white';r.fillRect(0,0,W/4,H/4);}
     if(wetKey)for(let i=0;i<=Math.floor(wet.progress*420);i++){
@@ -317,7 +323,7 @@ export async function createLecture(scene,renderer,options={}){
       parkedErasers.forEach(e=>e.visible=true);chalk.visible=false;previousTip=null;
       particles.forEach(p=>p.life=0);particlePositions.fill(-10000);dustGeometry.attributes.position.needsUpdate=true;
       boards.forEach(b=>{b.wet=null;b.last='';});resetWipe();
-      boards.forEach((_,i)=>draw(i));version++;
+      boards.forEach((_,i)=>draw(i,true));version++;
       return true;
     }catch(error){if(request===seekRequest)loadingError=error;throw error;}
     finally{if(request===seekRequest){seeking=false;seekPinned.clear();}}
@@ -336,8 +342,9 @@ export async function createLecture(scene,renderer,options={}){
     // Move the same small control with the active physical board.
     const controlState=(pendingReport||activeReport).narration&&voiceEnabled&&!openingDemo?voice.state:{...voice.state,phase:hasSelection?(playing?'playing':'paused'):'idle',synthetic:false};
     for(const panel of voicePanels)panel.update(controlState,dt,renderActive&&!stored&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'));
+    timePanels.forEach(panel=>panel.update(voiceEnabled&&voice.manifest?voice.state:null,clock,renderActive&&hasSelection&&!stored&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report')));
     // Only the head of the queue advances: one board completes before the next starts.
-    if(reduced||renderActive&&!hydrating)advanceBoardQueue(contentFadeQueue,dt,reduced);
+    if(reduced||renderActive&&!hydrating&&(!voice.state.started||voice.transportPlaying))advanceBoardQueue(contentFadeQueue,dt,reduced);
     screenHub?.update(dt,storageProgress,reduced);
     const withVoice=hasSelection||Boolean(pendingReport);
     for(const button of consoleButtons){const position=reportControlLayout(button.userData.column,withVoice).language;button.position.set(position.x,position.y,position.z);button.updateMatrix();button.visible=renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');}
@@ -367,19 +374,19 @@ export async function createLecture(scene,renderer,options={}){
       const priorPage=previousNarrationTime===null?frame.page:voice.manifest.boards.findLast(b=>b.start<=previousNarrationTime)?.page??frame.page;
       const needed=[frame.page,frame.page>=6?frame.page-6:-1,priorPage,priorPage>=6?priorPage-6:-1].filter(i=>i>=0);
       if(needed.every(i=>cache.has(i))&&!seeking){
-        frame=narrationFrame(voice.manifest,voice.state.time,writingPlan(pageRows.get(frame.page),guides.get(frame.page)),erasePlans.get(frame.page-6));
+        frame=settledBoardFrame(narrationFrame(voice.manifest,voice.state.time,writingPlan(pageRows.get(frame.page),guides.get(frame.page)),erasePlans.get(frame.page-6)),completedWork);
         if(!boardWork&&voice.state.phase==='playing'&&!reduced){
           const work=narrationWork(voice.manifest,voice.state.time,previousNarrationTime,writingPlan(pageRows.get(priorPage),guides.get(priorPage)),erasePlans.get(priorPage-6),completedWork);
           if(work){const job=new Promise(resolve=>boardWork={...work,resolve});void voice.holdForBoard(job,work.at);}
         }
         if(boardWork){
-          if(voice.state.phase==='preparing'&&(boardWork.kind==='write'||eraser.userData.state==='erasing'))boardWork.elapsed+=dt*writingSpeed;
+          if(voice.transportPlaying&&(boardWork.kind==='write'||eraser.userData.state==='erasing'))boardWork.elapsed+=dt*writingSpeed;
           frame=boardWorkFrame(boardWork);
           if(boardWork.elapsed>=boardWork.duration&&(boardWork.kind==='write'||eraser.userData.state==='resting')){completedWork.add(boardWork.key);boardWork.resolve();boardWork=null;}
         }
         if(voice.state.phase==='playing'||voice.boardHeld)previousNarrationTime=voice.state.time;
         narrationWriting=frame.writing;syncNarrationClock(clock,frame,boardSlot);targets[Math.floor(clock.active/2)]=clock.active%2;
-        playing=voice.state.phase==='playing'||voice.state.phase==='preparing'&&voice.boardHeld;
+        playing=voice.transportPlaying;
         load(Math.min(frame.page+1,pages.length-1)).catch(error=>{loadingError=error;});
       }else{
         playing=false;
@@ -403,7 +410,7 @@ export async function createLecture(scene,renderer,options={}){
     }else if(oldPhase==='erase'&&boards[oldActive].wet)boards[oldActive].wet.progress=1;
     if(reduced)for(const board of boards)board.wet=null;
     for(let pair=0;pair<3;pair++){
-      mix[pair]=reduced?targets[pair]:THREE.MathUtils.damp(mix[pair],targets[pair],3,dt);
+      if(!narrated||voice.transportPlaying||seeking)mix[pair]=reduced?targets[pair]:THREE.MathUtils.damp(mix[pair],targets[pair],3,dt);
       boardHeights(mix[pair]).forEach((height,side)=>boards[pair*2+side].group.position.y=height);
     }
     chalk.visible=present&&playing&&!reduced&&ready&&clock.phase==='write'&&!eraserReturn&&(!narrated||narrationWriting);
@@ -588,7 +595,7 @@ export async function createLecture(scene,renderer,options={}){
         hydrating=false;loadingError=null;update(0,openingDemo?.phase!=='writing');
       }catch(error){if(epoch===renderEpoch){loadingError=error;hydrating=false;}}
     },
-    get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,get hoverTargets(){return disabled?[]:[...touchButtons.filter(b=>!screenHub||!reportButtons.includes(b)||(screenHub.state.power&&screenHub.state.mode==='report')),...voicePanels.filter(panel=>panel.mesh.visible).map(panel=>panel.mesh),...(screenHub?.targets||[])];},setConsoleState,
+    get timeReadout(){return timePanels[0].text;},get toolState(){return {chalk:chalk.position.toArray(),eraser:eraser.position.toArray(),pickup:eraserPickup?.elapsed??null,returning:eraserReturn?.elapsed??null,workElapsed:boardWork?.elapsed??null,lifts:[...mix],transportPlaying:voice.transportPlaying};},get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,get hoverTargets(){return disabled?[]:[...touchButtons.filter(b=>!screenHub||!reportButtons.includes(b)||(screenHub.state.power&&screenHub.state.mode==='report')),...voicePanels.filter(panel=>panel.mesh.visible).map(panel=>panel.mesh),...(screenHub?.targets||[])];},setConsoleState,
     get highlightEnabled(){return highlightEnabled;},setHighlight(value){highlightEnabled=Boolean(value);if(!highlightEnabled){highlighter.hide();highlightState=null;}},get highlightTargets(){return measuredHighlights.get(clock.page)?.cues.map(c=>({id:c.id,row:c.row,side:c.side,begin:c.begin,duration:c.duration,rect:c.rect,visibleAt:c.visibleAt}))||[];},get highlightState(){return highlightState&&{page:highlightState.page,row:highlightState.row,side:highlightState.side,alpha:highlightState.alpha,age:highlightState.age};},
     setVoiceRate(value){return voice.setRate(value);},get voiceRate(){return voice.state.rate;},get voiceState(){return {...voice.state};},get voiceTone(){return voiceTone;},get voiceEnabled(){return voiceEnabled;},get voiceManifest(){return voice.manifest;},async voiceSeek(time){voice.pause();cancelBoardWork();highlighter.hide();highlightState=null;return voice.seek(time);},skipClassroomActivity:()=>voice.skipActivity(),async toggleVoice(){if(!activeReport.narration||!voiceEnabled){playing=hasSelection&&!playing;return true;}return voice.toggle();},
     async setVoiceTone(tone){
@@ -643,12 +650,12 @@ export async function createLecture(scene,renderer,options={}){
       const c=b?.lineCues?.find(c=>t>=c.audioStart&&t<c.audioEnd);
       return c?{row:c.row,total:b.lineCues.length,text:c.text}:null;
     },
-    get playing(){return present&&hasSelection&&(activeReport.narration&&voiceEnabled&&!openingDemo?(voice.state.phase==='playing'||voice.boardHeld&&voice.state.phase==='preparing'):playing)&&!clock.ended;},set playing(value){if(activeReport.narration&&voiceEnabled&&!openingDemo){if(!value)voice.pause();else if(voice.state.phase!=='playing')void voice.toggle();}else playing=hasSelection&&value;},
-    async completePage(page=clock.page){if(!await seek(page))return false;const b=voice.manifest?.boards.find(b=>b.page===clock.page);if(b)await voice.seek(b.writeEnd);else staticPage();return true;},
+    get playing(){return present&&hasSelection&&(activeReport.narration&&voiceEnabled&&!openingDemo?voice.transportPlaying:playing)&&!clock.ended;},set playing(value){if(activeReport.narration&&voiceEnabled&&!openingDemo){if(!value)voice.pause();else if(voice.state.phase!=='playing')void voice.toggle();}else playing=hasSelection&&value;},
+    async completePage(page=clock.page){if(!await seek(page))return false;const b=voice.manifest?.boards.find(b=>b.page===clock.page);if(b){const schedule=writingSchedule(b,writingPlan(pageRows.get(b.page),guides.get(b.page)));await voice.seek(schedule?Math.min(schedule.end,b.end-.25):b.writeEnd);workManifest=voice.manifest;completedWork.add('write:'+b.page+':end');}else staticPage();return true;},
     select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:(BOARD_LAYOUT.low+BOARD_LAYOUT.high)/2,-10.4+BOARD_MOUNT_OFFSET)),
-    dispose(){unbindVoiceFocus();voice.dispose();cancelBoardWork();pageControls.forEach(panel=>panel.dispose());highlighter.dispose();voicePanels.forEach(panel=>panel.dispose());cameraPanels.forEach(panel=>panel.dispose());storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();programScreen?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...(programScreen?[]:reportButtons)].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.previousCanvas){board.previousInk.value.dispose();board.previousCanvas.width=1;board.previousCanvas.height=1;}if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
+    dispose(){unbindVoiceFocus();voice.dispose();cancelBoardWork();pageControls.forEach(panel=>panel.dispose());highlighter.dispose();voicePanels.forEach(panel=>panel.dispose());timePanels.forEach(panel=>panel.dispose());cameraPanels.forEach(panel=>panel.dispose());storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();programScreen?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...(programScreen?[]:reportButtons)].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.previousCanvas){board.previousInk.value.dispose();board.previousCanvas.width=1;board.previousCanvas.height=1;}if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
   };
 }
 import {drawPulley} from './pulley-icon.js?v=1';

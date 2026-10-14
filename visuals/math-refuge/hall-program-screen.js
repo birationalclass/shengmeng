@@ -1,3 +1,4 @@
+import {SCREEN_FONT,SCREEN_COLORS} from './smart-screen-style.js?v=unframed-controls-1';
 // A small on-glass library. Building this menu never fetches lesson/audio assets.
 export function createHallProgramScreen(T,scene,{reports,x=16.35}){
  const group=new T.Group();group.name='Hall classroom and report library';scene.add(group);
@@ -10,9 +11,9 @@ export function createHallProgramScreen(T,scene,{reports,x=16.35}){
  const classroom=item('program:classroom',4.52,{left:x-1.16,width:2.24,height:.51}),reportTab=item('program:reports',4.52,{left:x+1.16,width:2.24,height:.51});
  const reportRows=reports.filter(r=>!isCourse(r)).map((report,i)=>({report,mesh:item('report:'+report.id,3.30-i*.76)}));
  const courseRows=[item('program:course',3.30,{height:.76}),item('course:catalog',2.50),item('course:period:1',1.68),item('course:period:2',.92),item('course:manuscript',.16)];
- function label(mesh,title,subtitle='',selected=false,icon=null){const c=mesh.userData.canvas.getContext('2d');c.clearRect(0,0,1024,200);c.textAlign='right';c.textBaseline='middle';c.fillStyle=selected?'#ffe2a6':'#e5e0d3';c.strokeStyle=c.fillStyle;c.lineWidth=5;c.lineCap='round';
+ function label(mesh,title,subtitle='',selected=false,icon=null){const c=mesh.userData.canvas.getContext('2d');c.clearRect(0,0,1024,200);c.textAlign='right';c.textBaseline='middle';c.fillStyle=selected?SCREEN_COLORS.active:SCREEN_COLORS.text;c.strokeStyle=c.fillStyle;c.lineWidth=4;c.lineCap='square';
   if(icon){c.save();c.translate(100,30);if(icon==='classroom'){c.strokeRect(0,0,112,78);c.beginPath();c.moveTo(25,110);c.lineTo(85,110);c.moveTo(56,78);c.lineTo(56,110);c.moveTo(22,26);c.lineTo(90,26);c.moveTo(22,50);c.lineTo(67,50);c.stroke();}else{c.beginPath();c.moveTo(0,10);c.quadraticCurveTo(25,-5,56,10);c.quadraticCurveTo(85,-5,112,10);c.lineTo(112,100);c.quadraticCurveTo(85,85,56,100);c.quadraticCurveTo(25,85,0,100);c.closePath();c.moveTo(56,10);c.lineTo(56,100);c.stroke();}c.restore();}
-  const font=language==='zh'?'RefugeChinese,"Microsoft YaHei",serif':'Baskerville,Georgia,serif';c.font='400 '+(icon?104:63)+'px '+font;c.fillText(title,990,subtitle?65:98);if(subtitle){c.font='400 35px '+font;c.fillStyle='#b8c7be';c.fillText(subtitle,990,141);}if(selected){c.fillStyle='#e1c88f';c.fillRect(icon?260:750,185,icon?730:240,3);}mesh.userData.visibleLabel=title+(subtitle?' · '+subtitle:'');mesh.userData.selected=selected;mesh.userData.texture.needsUpdate=true;
+  const font=SCREEN_FONT;c.font='500 '+(icon?104:63)+'px '+font;c.fillText(title,990,subtitle?65:98);if(subtitle){c.font='400 35px '+font;c.fillStyle=SCREEN_COLORS.muted;c.fillText(subtitle,990,141);}if(selected){c.fillStyle=SCREEN_COLORS.active;c.fillRect(icon?260:750,185,icon?730:240,2);}mesh.userData.visibleLabel=title+(subtitle?' · '+subtitle:'');mesh.userData.fontFamily=font;mesh.userData.selected=selected;mesh.userData.texture.needsUpdate=true;
  }
  function paint(){const zh=language==='zh';label(classroom,zh?'课堂':'Classroom','',tab==='classroom','classroom');label(reportTab,zh?'报告':'Reports','',tab==='reports','reports');
   for(const {report,mesh}of reportRows){mesh.visible=tab==='reports';const chosen=(!stored&&active?.id===report.id)||pending?.id===report.id;label(mesh,report.label||(zh?report.speaker:report.speakerEn),pending?.id===report.id?(zh?'正在准备…':'Preparing…'):(zh?report.topic:report.topicEn),chosen);}

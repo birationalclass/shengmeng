@@ -1,9 +1,10 @@
 import {REPORTS} from './report-catalog.js';
 import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=chinese36-1';
-import {authoredContext,authoredFormula} from './authored-chalk.js?v=hand-motion-2';
-import {composeChalkPage} from './chalk-language.js?v=report-line-sync-6';
+import {authoredContext,authoredFormula} from './authored-chalk.js?v=unframed-controls-1';
+import {composeChalkPage} from './chalk-language.js?v=unframed-controls-1';
 import {inkGuides,writingPlan,strokeReveal,rasterStrokeReveal,inkReveal} from './chalk-motion.js?v=hand-motion-2';
 import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
+import {drawClassroomMetadata} from './classroom-metadata.js?v=unframed-controls-1';
 const $=id=>document.getElementById(id),canvas=$('board'),ctx=canvas.getContext('2d'),reports=[...REPORTS,{id:'km',speaker:'讨论班',topic:'极小模型纲领',manifest:'./assets/chalk/km/pages.json'}];
 let library,pages=[],pageIndex=0,language='zh',full,rows=[],guides,plan,progress=1,playing=false,last=0;
 async function image(url){const im=new Image();im.src=url;await im.decode();return im;}
@@ -13,7 +14,7 @@ async function preparePage(p,i,lang,authored=true){
  const original=composeChalkPage(recorder.ctx,p,i,lang,pic,{deferStrokes:true,authored:true});const rows=recorder.rows(original),guides=inkGuides(cx.getImageData(0,0,1536,640),rows),plan=writingPlan(rows,guides);
  return {canvas:c,rows,guides,plan,original};
 }
-function render(){ctx.fillStyle='#193d33';ctx.fillRect(0,0,1536,640);if(!full)return;rows.forEach((r,i)=>{if(r.strokeRaster)paintChineseGroup(ctx,rows,i,j=>rasterStrokeReveal(rows,progress,j,guides));else if(r.strokePath)paintChalkStroke(ctx,strokeReveal(rows,progress,i,guides),r.chalkColor,r.strokeWidth);else{const w=inkReveal(rows,progress,i,guides);if(w>0){ctx.save();ctx.beginPath();ctx.rect(r[0],r[1],w,r[3]);ctx.clip();ctx.drawImage(full,0,0);ctx.restore();}}});$('seek').value=Math.round(progress*10000);$('play').textContent=playing?'暂停':'播放';$('status').textContent=(language==='zh'?'中文 · 36 鸿雷行书':'English')+' · '+Math.round(progress*100)+'% · '+(plan?.duration||0).toFixed(1)+' 秒';}
+function render(){ctx.fillStyle='#193d33';ctx.fillRect(0,0,1536,640);if(!full)return;rows.forEach((r,i)=>{if(r.strokeRaster)paintChineseGroup(ctx,rows,i,j=>rasterStrokeReveal(rows,progress,j,guides));else if(r.strokePath)paintChalkStroke(ctx,strokeReveal(rows,progress,i,guides),r.chalkColor,r.strokeWidth);else{const w=inkReveal(rows,progress,i,guides);if(w>0){ctx.save();ctx.beginPath();ctx.rect(r[0],r[1],w,r[3]);ctx.clip();ctx.drawImage(full,0,0);ctx.restore();}}});drawClassroomMetadata(ctx,pages[pageIndex],pageIndex,language,{total:pages.length});$('seek').value=Math.round(progress*10000);$('play').textContent=playing?'暂停':'播放';$('status').textContent=(language==='zh'?'中文 · 36 鸿雷行书':'English')+' · '+Math.round(progress*100)+'% · '+(plan?.duration||0).toFixed(1)+' 秒';}
 async function selectPage(i){playing=false;last=0;pageIndex=Math.max(0,Math.min(pages.length-1,i));$('status').textContent='正在准备本页字形…';const prepared=await preparePage(pages[pageIndex],pageIndex,language);full=prepared.canvas;rows=prepared.rows;guides=prepared.guides;plan=prepared.plan;progress=1;$('page').value=pageIndex;render();}
 async function selectReport(id){const r=reports.find(r=>r.id===id);pages=(await fetch(r.manifest).then(r=>r.json())).pages;$('page').replaceChildren(...pages.map((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+' · '+p.title;return o}));$('report').value=id;await selectPage(0);}
 try{

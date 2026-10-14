@@ -36,7 +36,7 @@ export function explainedFlow(page,language,measure,hideHeading=false){
       const ink=items.reduce((sum,i)=>sum+i.height,0),count=items.length;
       if(ink+Math.max(0,count-1)*(page.annotation?16:6)>available)continue;
       const totalLines=count+(page.hideHeading||hideHeading?0:1)+(page.extraMathLines||0);
-      if(page.strictLineCount&&(totalLines<5||totalLines>6))continue;
+      if(page.strictLineCount&&(totalLines<(page.statementOnly?2:5)||totalLines>6))continue;
       const linePenalty=totalLines<5?(5-totalLines)*150:totalLines>6?(totalLines-6)*100:0;
       const shortTails=items.filter(i=>i.text&&i.role==='explanation'&&measure(i.text,size)<size*5).length;
       const score=linePenalty+shortTails*240+Math.abs(size-40)*2+(1328-width)/65+Math.abs(requestedScale-1.15)*12;

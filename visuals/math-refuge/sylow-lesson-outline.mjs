@@ -1,3 +1,4 @@
+import {applyClassroomRules,insertTextbookProblems} from './classroom-content-rules.mjs';
 // Original classroom exposition based on the public Algebra I §2.6 course.
 // The three Sylow theorems are stated as inputs, as in the course syllabus.
 const t=(text,enText,speech)=>({text,enText,speech});
@@ -50,23 +51,23 @@ f(String.raw`n_p=|\operatorname{Syl}_p(G)|`,'P 下标的恩表示西罗 P 子群
 t('今天把“阶、子群、个数”分开使用','Keep orders, subgroups and counts distinct.','以后每次计算，先问自己正在求子群的阶，还是正在求这种子群有几个。把这两件事情分开，许多错误就可以提前避免。')],
 '写出 |G|=72 时 p=2 与 p=3 对应的 pᵃ 和 m。','p=2：pᵃ=8，m=9；p=3：pᵃ=9，m=8。'),
 b('什么是西罗 p 子群','What is a Sylow p-subgroup?',[
-t('p 子群：其阶是 p 的幂','A p-subgroup has prime-power order.','先复习 P 子群的定义：它是群的一个子群，而且它的阶是 P 的非负整数次幂。单位子群也属于 P 子群。'),
-f(String.raw`H\le G,\quad |H|=p^r,\quad 0\le r\le a`,'子群的阶写成板书中的素数幂。它的指数是小写字母 r，而群阶中对应的指数记作小写字母 a。拉格朗日定理说明，前者不会超过后者。'),
-t('西罗 p 子群：阶达到 pᵃ','A Sylow p-subgroup has order pᵃ.','西罗 P 子群要求达到这个最大允许的 P 幂，而不是任取一个 P 子群。这个定义先规定目标，存在性还需要定理保证。'),
+t('定义 2.6.1：p 群的阶是 pᵏ，k≥1','Definition 2.6.1: a p-group has order pᵏ, k≥1.','教材定义二点六点一规定，P 群的阶是 P 的正整数次幂。因此本课按教材约定不把单位群称为 P 群。一个子群本身是 P 群时，就叫 P 子群。'),
+f(String.raw`H\le G,\quad |H|=p^r,\quad 1\le r\le a`,'子群的阶写成板书中的素数幂。它的指数是小写字母 r，而群阶中对应的指数记作小写字母 a。拉格朗日定理说明，前者不会超过后者。'),
+t('定义 2.6.2：西罗 p 子群的阶达到 pᵃ','Definition 2.6.2: a Sylow p-subgroup has order pᵃ.','教材定义二点六点二要求，西罗 P 子群达到群阶中最大允许的 P 幂；等价地，更高一阶的 P 幂不能整除群阶。存在性还需要定理保证。'),
 f(String.raw`P\in\operatorname{Syl}_p(G)\iff P\le G,\ |P|=p^a`,'这个等价式就是今天采用的定义。判断一个具体子群是不是西罗子群，既要确认它确实是子群，也要核对它的阶。'),
 t('例：24 阶群的西罗 2 子群为 8 阶','For |G|=24, Sylow 2-subgroups have order 8.','二十四等于二的三次方乘以三，所以目标阶数是八。二阶或四阶子群虽然是二子群，却还不是西罗二子群。')],
 '判断：24 阶群中的四阶子群是 2 子群吗？是西罗 2 子群吗？','是 2 子群；不是西罗 2 子群，因为目标阶数是 8。'),
 b('存在性与包含性','Existence and containment',[
-t('输入：西罗存在定理','Input: the Sylow existence theorem.','现在把存在定理作为工具引入。本课程重点是正确使用结论，完整的存在性证明不列为本次课堂要求，我们也不把说明误当成证明。'),
-f(String.raw`\operatorname{Syl}_p(G)\ne\varnothing`,'只要 P 整除群的阶，就一定存在一个阶为最大 P 幂的子群。注意，拉格朗日定理本身并不能反过来保证每个约数阶的子群都存在。'),
-t('每个 p 子群包含在某个西罗子群中','Every p-subgroup lies in a Sylow p-subgroup.','包含性还告诉我们，一个已经找到的 P 子群总能够放进某个西罗 P 子群中。这里说的是存在某个，并没有保证这个西罗子群唯一。'),
-f(String.raw`H\le G,\ |H|=p^r\Longrightarrow\exists P:\ H\le P,\ |P|=p^a`,'请沿着箭头检查量词：先给定任意 P 子群，然后可以选择一个包含它的西罗子群。选择可能依赖于最初的子群。'),
+t('定理 2.6.1：G 有每个 pᵏ 阶子群，1≤k≤a','Theorem 2.6.1: subgroups of order pᵏ for 1≤k≤a.','教材定理二点六点一说明，对于一到诶之间的每个正整数 k，群都有 P 的 k 次方阶的子群。今天把定理作为输入，重点练习正确使用结论。'),
+f(String.raw`\operatorname{Syl}_p(G)\ne\varnothing`,'取 k 等于群阶中 P 的最高指数，就得到教材推论一：西罗 P 子群存在。注意，拉格朗日定理本身不能反过来保证每个约数阶的子群都存在。'),
+t('定理 2.6.2：p 子群落在西罗子群的某个共轭中','Theorem 2.6.2: containment in a Sylow conjugate.','教材定理二点六点二说，任给 P 子群 H 和一个西罗 P 子群 P，总存在群元素，把 H 包含在 P 的相应共轭子群中。'),
+f(String.raw`H\le G,\ |H|=p^r,\ P\in\operatorname{Syl}_p(G)\Longrightarrow\exists g:\ H\le gPg^{-1}`,'请检查量词：先任意给定 H 和 P，再选择实现包含关系的群元素。这个元素可以依赖于前面给定的两个子群。'),
 t('存在 ≠ 唯一；包含 ≠ 正规','Existence is neither uniqueness nor normality.','存在定理没有自动给出正规性。后面我们会专门证明，西罗子群的唯一性才是判断正规性的一把关键钥匙。')],
 '在 S₃ 中，一个由换位生成的二阶子群能否包含在不同的西罗 2 子群中？','不能；它自己已是西罗 2 子群，同阶包含只能相等。'),
 b('共轭性说的是什么','The content of conjugacy',[
 t('共轭不改变子群的阶','Conjugation preserves subgroup order.','给一个子群中的每个元素同时做共轭，得到的仍是子群。这个对应是双射，所以共轭前后的阶数完全相同。'),
 f(String.raw`gPg^{-1}=\{gxg^{-1}:x\in P\}`,'右边明确写出了共轭子群的元素。这里的吉是群中的一个固定元素，而艾克斯遍历原子群；不要把两种变化混在一起。'),
-t('输入：全部西罗 p 子群彼此共轭','Input: all Sylow p-subgroups are conjugate.','西罗共轭定理说，所有西罗 P 子群都能通过这种方式互相得到。它们的嵌入位置可以不同，但抽象群结构相同。'),
+t('推论 2：全部西罗 p 子群彼此共轭','Corollary 2: all Sylow p-subgroups are conjugate.','教材推论二说，所有西罗 P 子群彼此共轭。它们的嵌入位置可以不同，但抽象群结构相同。'),
 f(String.raw`P,Q\in\operatorname{Syl}_p(G)\Longrightarrow\exists g:\ Q=gPg^{-1}`,'从任意两个西罗 P 子群出发，总能找到一个实现共轭的群元素。定理只保证某个吉存在，并不说每个吉都可以。'),
 t('彼此共轭不表示它们彼此相等','Conjugate subgroups need not be equal.','这一点要特别记住：同构、共轭、相等是不同层次的关系。只有每次共轭都回到原子群，才是这个子群正规。')],
 '为什么“所有西罗子群彼此同构”不足以推出它们只有一个？','同构只比较抽象结构，不能区分它们在 G 中是否为同一个子集。'),
@@ -78,7 +79,7 @@ t('两个三循环属于同一个三阶子群','The two 3-cycles lie in the same
 f(String.raw`n_2=3,\qquad n_3=1`,'现在可以直接数出两个答案。西罗二子群不唯一，而西罗三子群唯一。接下来用定理解释这组数字。')],
 '列出 ⟨(123)⟩ 的全部元素，并说明为什么 (132) 不会再给出一个新的三阶子群。','{e,(123),(132)}；(132) 是 (123) 的逆元，生成同一个子群。'),
 b('两条计数条件要同时用','Use both counting constraints',[
-t('输入：西罗子群的计数定理','Input: the Sylow counting theorem.','第三个工具控制子群的个数。我们已经固定群阶的分解，接下来每一步都使用同一个素数和对应的互素因子。'),
+t('定理 2.6.3 与推论 3：计数约束','Theorem 2.6.3 and Corollary 3: counting constraints.','第三个工具控制子群的个数。我们已经固定群阶的分解，接下来每一步都使用同一个素数和对应的互素因子。'),
 f(String.raw`n_p\mid m`,'第一条说，西罗 P 子群的个数整除艾姆。它比只说整除群阶更强，因为最大 P 幂已经从群阶中除去了。'),
 t('再在候选约数里筛选同余类','Then filter the divisors by congruence.','先把艾姆的所有正约数列出来；再对这些约数做第二次筛选。不能把整除条件和同余条件分别得到的集合取并集。'),
 f(String.raw`n_p\equiv1\pmod p`,'第二条说，个数除以 P 的余数必须是一。这里是一模 P，而不是一模艾姆，也不是说个数本身必须等于一。'),
@@ -172,11 +173,11 @@ t('出口题：15 阶群的 n₃、n₅ 分别是多少？','Exit task: compute 
 
 export const secondLesson=[
 b('15 阶群：从两组计数开始','Order 15: two Sylow counts',[
-f(String.raw`|G|=15=3\cdot5`,'第二课时先回到刚才的出口题。我们的目标是证明任何十五阶群都循环；这比只找到正规子群强，所以还需要后续推理。'),
-t('先处理西罗 5 子群','Start with Sylow 5-subgroups.','素数五对应的互素因子是三。三的正约数是一和三，其中只有一模五余一。'),
-f(String.raw`n_5\mid3,\ n_5\equiv1\pmod5\Longrightarrow n_5=1`,'于是存在唯一的五阶子群，它正规。这里的存在性来自西罗定理，唯一性来自计数筛选，正规性来自共轭性。'),
-t('再处理西罗 3 子群','Then count Sylow 3-subgroups.','素数三对应的互素因子是五。五的正约数是一和五，但五模三余二，因此也只能留下一。'),
-f(String.raw`n_3\mid5,\ n_3\equiv1\pmod3\Longrightarrow n_3=1`,'所以三阶和五阶子群都唯一且正规。到这里还没有证明整个群循环，下一板要说明这两个子群怎样彼此交换。')],
+t('引理：15 阶群的 Sylow 3、5 子群唯一且正规','Lemma: both Sylow subgroups are unique and normal.','先陈述本板要证明的引理：十五阶群的西罗三子群和西罗五子群，都唯一且正规。下面分别计数，再用唯一性判断正规性。'),
+f(String.raw`|G|=15=3\cdot5,\quad P\in\operatorname{Syl}_3(G),\ Q\in\operatorname{Syl}_5(G)`,'设群的阶为十五。由西罗存在性，选择三阶西罗子群 P 和五阶西罗子群 Q。后面的计算要证明它们分别唯一。'),
+f(String.raw`n_5\mid3,\quad n_5\equiv1\pmod5\Longrightarrow n_5=1`,'五子群的个数整除三，所以候选是一、三；其中只有一模五余一。于是西罗五子群唯一。'),
+f(String.raw`n_3\mid5,\quad n_3\equiv1\pmod3\Longrightarrow n_3=1`,'三子群的个数整除五，所以候选是一、五；其中只有一模三余一。于是西罗三子群也唯一。'),
+f(String.raw`n_3=n_5=1\Longrightarrow P\trianglelefteq G,\ Q\trianglelefteq G`,'对西罗子群，唯一与正规等价。因此 P 和 Q 都是正规子群，本板引理已经证明。这个结论还没有直接证明整个群循环。')],
 '把每个“存在、唯一、正规”的依据分别标注出来。','存在：西罗存在性；唯一：整除与同余；正规：唯一性与正规性等价。'),
 b('15 阶群：为什么两个子群交换','Order 15: why the subgroups commute',[
 t('设 P、Q 分别为正规三阶、五阶子群','Let P,Q be the normal subgroups of orders 3,5.','现在把两个子群固定下来。要构造直积同构，必须先证明一个子群中的元素和另一个子群中的元素彼此交换。'),
@@ -299,3 +300,6 @@ f(String.raw`\text{order}\;\ne\;\text{count},\qquad\text{normal}\;\ne\;\text{abe
 '整理一页“定理条件—可用结论—反例提醒”，并完成未做完的自测题。','保留完整假设；每条结构结论注明定理来源；用 S₃、A₄、21 阶仿射群检验过强断言。')
 ];
 export const sylowPlan={id:'algebra-sylow',course:'代数学 I',section:'2.6',lesson:10,date:'2026-10-26',duration:5700,periods:[{id:1,start:0,end:2700},{id:'break',start:2700,end:3000},{id:2,start:3000,end:5700}],style:'teaching',voiceReference:'ye-original',theorems:'存在性、包含性、共轭性和计数结论作为课程输入；证明正规性推论及所列应用。',sources:[{label:'GitHub 代数学 I · 2026 秋 · 第10次课 §2.6',url:'https://birationalclass.github.io/shengmeng/courses/abstract-algebra/2026-fall/?view=lesson&section=2.6'},{label:'独立核对：Keith Conrad, Consequences of the Sylow Theorems',url:'https://kconrad.math.uconn.edu/blurbs/grouptheory/sylowapp.pdf'}]};
+
+applyClassroomRules([...firstLesson,...secondLesson]);
+insertTextbookProblems(firstLesson,secondLesson);
