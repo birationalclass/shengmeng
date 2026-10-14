@@ -17,5 +17,5 @@ export function capturePhoto(renderer,scene,camera){
 }
 export function downloadPhoto(blob){
  const url=URL.createObjectURL(blob),link=document.createElement('a');
- link.href=url;link.download='数学难民营-'+new Date().toISOString().replace(/[:.]/g,'-')+'.png';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+ link.href=url;link.download='数学庇护所-'+new Date().toISOString().replace(/[:.]/g,'-')+'.png';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
 }

@@ -15,6 +15,19 @@ export function inkGuides(imageData,rows){
       }
       samples.push(best);if(best!==null)previous=best;
     }
+    // A padded 3px delimiter can lie entirely between the 5px samples.
+    // Recover its actual ink instead of omitting it from the writing clock.
+    if(samples.every(v=>v===null)){
+      samples.length=0;samples.xs=[];
+      for(let px=Math.max(0,Math.ceil(x));px<Math.min(imageData.width,x+w);px++){
+        let best=null,cost=Infinity;
+        for(let py=Math.max(0,Math.floor(y));py<Math.min(imageData.height,y+h);py++){
+          if(imageData.data[(py*imageData.width+px)*4+3]<96)continue;
+          const d=Math.abs(py-y-h*.55);if(d<cost){cost=d;best=py;}
+        }
+        samples.push(best);samples.xs.push(px-x);
+      }
+    }
     samples.inkColumns=samples.map((v,i)=>v===null?-1:i).filter(i=>i>=0);return samples;
   });
 }
@@ -44,7 +57,7 @@ export function writingPlan(rows,guides){
     }
     const g=guides?.[row],columns=g?(g.inkColumns||g.map((v,i)=>v===null?-1:i).filter(i=>i>=0)):Array.from({length:Math.ceil(w/5)+1},(_,i)=>i);
     if(!columns.length)return;
-    const point=c=>[x+Math.min(w,c*5),g?g[c]:y+h*.55],first=point(columns[0]);
+    const point=c=>[x+(g?.xs?.[c]??Math.min(w,c*5)),g?g[c]:y+h*.55],first=point(columns[0]);
     segments.push({a:previous||first,b:first,cost:previous?Math.max(10,Math.hypot(first[0]-previous[0],first[1]-previous[1])/6):12,contact:false,row,entering:true});
     for(let i=0;i<columns.length;i++){
       const a=point(columns[i]),b=point(columns[Math.min(i+1,columns.length-1)]),gap=i+1<columns.length&&columns[i+1]-columns[i]>1;

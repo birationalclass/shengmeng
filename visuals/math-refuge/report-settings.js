@@ -27,7 +27,7 @@ export function recommendReportOpening(settings,facts={}){
 }
 export function buildReportPlan(raw,report={}){
  const s=normalizeReportSettings(raw),opening=recommendReportOpening(s,reportFacts(report)),style=REPORT_STYLES.find(v=>v.id===s.style);
- const titleScript=(report.id==='ye'||report.basedOn==='ye')?'大家好，很荣幸受到数学难民营的邀请。我是叶东，这是我和黄侠合作的一项工作。今天报告的题目是：格点上的渐近最优 Hardy–Rellich 不等式。':'大家好，很荣幸有机会与各位交流。先介绍今天的题目与合作者。';
+ const titleScript=(report.id==='ye'||report.basedOn==='ye')?'大家好，很荣幸受到数学庇护所的邀请。我是叶东，这是我和黄侠合作的一项工作。今天报告的题目是：格点上的渐近最优 Hardy–Rellich 不等式。':'大家好，很荣幸有机会与各位交流。先介绍今天的题目与合作者。';
  return {version:1,report:{id:report.id||null,speaker:report.speaker||'',topic:report.topic||'',source:report.url||''},settings:s,recommendation:opening,titleBoard:{targetSeconds:s.titleSeconds,script:titleScript,allowed:['问候','必要合作说明','报告题目'],forbidden:['未定义记号','后续证明工具清单','主定理细节'],titleNarrationAfterWriting:true},firstContentBoard:{route:opening.route,example:opening.route==='example'?reportFacts(report).example:null},style:{...style,humor:s.humor,fillers:s.fillers},boardRules:{mainRows:[5,6],sideNotesExcluded:true,interleaveExplanation:true,lineSpeechCoverageRequired:true,oneAudioFilePerBoard:true},production:{requiresNewAudioAndBoardAudit:true,preserveActualTiming:true,doNotRelabelExistingRecording:true},outline:[`标题板 · ${s.titleSeconds} 秒目标`,`${opening.label} · 第二块起，逐步定义对象`,'主要结论 · 假设明确后再给出','证明主线 · 每块一个小目标','结束 · 贡献、限制与讨论'],notice:'风格、性别和切入方式用于制作新版本；现有录音不会因保存方案而变换内容。'};
 }
 export function reportPlanPrompt(plan){

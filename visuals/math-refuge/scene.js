@@ -495,7 +495,7 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   sign('Garden tea sign',[-35,2.2,-26.45],2,'竹庭茶亭','GARDEN TEA PAVILION');
   litStrip([-6,2.5,5.17],[3.65,.025,.025]);
   floor(0,5,3,-68,10);
-  box([-68,1.25,10],[4.35,1.95,.4],edge);sign('Entrance wayfinding sign',[-68,1.48,10.21],4,'数学难民营','MATHEMATICAL REFUGE');
+  box([-68,1.25,10],[4.35,1.95,.4],edge);sign('Entrance wayfinding sign',[-68,1.48,10.21],4,'数学庇护所','MATHEMATICAL REFUGE');
   litStrip([-68,2.25,10.14],[4.12,.025,.045]);
   // A coherent family of large mathematical door sculptures, offset from
   // entrances and sea-access stairs. Shared knot geometry bounds draw cost.

@@ -1,18 +1,20 @@
 import {narrationHighlights,measuredHighlight,highlightFrame,createBoardHighlight} from './board-highlight.js?v=smart-voice-9';
-import {createBoardCameraControl} from './board-camera-control.js?v=smart-voice-9';
+import {createBoardPageControls} from './board-page-control.js';
+import {drawClassroomActivity} from './classroom-board.js';
+import {createBoardCameraControl} from './board-camera-control.js?v=board-controls-2';
 import {boardContentJump,advanceBoardQueue} from './board-transition.js';
-import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock} from './report-voice.js?v=sylow-classroom-1';
+import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock,bindVoiceFocusPause} from './report-voice.js?v=board-controls-2';
 import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v=smart-voice-9';
 import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
-import {authoredContext,authoredFormula} from './authored-chalk.js?v=chinese36-1';
-import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=sylow-classroom-1';
+import {authoredContext,authoredFormula} from './authored-chalk.js?v=thin-ink-2';
+import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=board-controls-2';
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
 import {createSeminarScreen} from './seminar-screen.js?v=report-line-sync-6';
 import * as THREE from 'three';
 import {LectureClock,boardSlot,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v=report-line-sync-6';
-import {inkGuides,inkReveal,strokeReveal,rasterStrokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=chinese36-1';
+import {inkGuides,inkReveal,strokeReveal,rasterStrokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=thin-ink-2';
 import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
 
 import {chalkCopy,composeChalkPage} from './chalk-language.js?v=report-line-sync-6';
@@ -140,7 +142,7 @@ export async function createLecture(scene,renderer,options={}){
   }
   function voiceReport(report){const variant=report.narration?.voices?.find(v=>v.id===voiceTone);return variant?{...report,narration:{...report.narration,manifest:variant.manifest}}:report;}
   const highlighter=createBoardHighlight(THREE,{width:BOARD_W,height:BOARD_H});
-  const voice=createReportVoice(),onVoiceVisibility=()=>{if(document.hidden)voice.pause();};document.addEventListener('visibilitychange',onVoiceVisibility);const voicePanels=Array.from({length:3},(_,column)=>{const panel=createBoardVoicePanel(THREE,scene);panel.setColumn(column);return panel;});
+  const voice=createReportVoice(),unbindVoiceFocus=bindVoiceFocusPause(voice);const voicePanels=Array.from({length:3},(_,column)=>{const panel=createBoardVoicePanel(THREE,scene);panel.setColumn(column);return panel;});
   // Three synchronized controls, centered exactly beneath their board columns.
   const consoleButtons=[],consoleTextures=[];
   const touchCanvas=document.createElement('canvas');touchCanvas.width=704;touchCanvas.height=384;
@@ -184,7 +186,8 @@ export async function createLecture(scene,renderer,options={}){
   const seminarScreen=navigation?.sections?createSeminarScreen(THREE,scene,navigation):null;
   if(seminarScreen){reportHeader.mesh.visible=false;seminarScreen.setLanguage(language);}
   let autoCamera=true;const cameraPanels=Array.from({length:3},(_,column)=>createBoardCameraControl(THREE,scene,column));
-  const touchButtons=[...cameraPanels.map(panel=>panel.mesh),...consoleButtons,...reportButtons,...(seminarScreen?.targets||[])];
+  const pageControls=Array.from({length:3},(_,column)=>createBoardPageControls(THREE,scene,column));
+  const touchButtons=[...pageControls.flatMap(panel=>panel.meshes),...cameraPanels.map(panel=>panel.mesh),...consoleButtons,...reportButtons,...(seminarScreen?.targets||[])];
   setConsoleState();setReportState();
   if(disabled){reportHeader.mesh.visible=false;touchButtons.forEach(b=>b.visible=false);}
   const chalk=new THREE.Mesh(new THREE.CylinderGeometry(.017,.014,.17,8),new THREE.MeshStandardMaterial({color:'#f3edda',roughness:1,metalness:0,emissive:'#e3dcc8',emissiveIntensity:.32,envMapIntensity:.15}));
@@ -249,11 +252,14 @@ export async function createLecture(scene,renderer,options={}){
     const erasing=index===clock.active&&clock.phase==='erase'&&clock.progress>0;
     const wet=board.wet,wetAge=wet?effectTime-wet.started:Infinity;
     const wetKey=wet&&wet.progress>0&&wetAge<wet.duration+DRY_SECONDS?(Math.floor(effectTime*12)+':'+wet.progress.toFixed(3)):'';
-    const key=`${slot.page}:${slot.progress.toFixed(3)}:${erasing?clock.progress.toFixed(3):''}:${cache.has(slot.page)}:${wetKey}`;
+    const activity=activeReport.kind==='classroom'&&voice.state.activity?.page===slot.page&&index===clock.active?voice.state.activity:null;
+    const activityKey=activity?activity.start+':'+Math.ceil(activity.remaining)+':'+voice.state.phase:'';
+    const key=`${activityKey}:${slot.page}:${slot.progress.toFixed(3)}:${erasing?clock.progress.toFixed(3):''}:${cache.has(slot.page)}:${wetKey}`;
     if(!preparing&&(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0))return;
     if(board.last===key)return;board.last=key;
     ctx.drawImage(grain,0,0,W,H);const image=cache.get(slot.page);
-    if(image){
+    if(activity)drawClassroomActivity(ctx,activity,{paused:voice.state.phase==='paused',language});
+    else if(image){
       const rows=pageRows.get(slot.page)||pages[slot.page].rows;
       // Reveal each complete mathematical row left to right, preserving exact
       // SVG fractions/superscripts. The grain is deterministic, never flickering.
@@ -332,6 +338,7 @@ export async function createLecture(scene,renderer,options={}){
     screenHub?.update(dt,storageProgress,reduced);
     const withVoice=hasSelection||Boolean(pendingReport);
     for(const button of consoleButtons){const position=reportControlLayout(button.userData.column,withVoice).language;button.position.set(position.x,position.y,position.z);button.updateMatrix();button.visible=renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');}
+    pageControls.forEach(panel=>panel.update({previousEnabled:hasSelection&&clock.page>clock.startAt,nextEnabled:hasSelection&&clock.page<clock.stopAt,activity:voice.state.activity,visible:renderActive&&!hydrating&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report')}));
     cameraPanels.forEach(panel=>panel.update(autoCamera,renderActive&&!hydrating&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'),withVoice));
     voicePanels.forEach(panel=>updateTextSheen(THREE,panel.mesh,dt,reduced));
     if(storageRig){
@@ -625,7 +632,7 @@ export async function createLecture(scene,renderer,options={}){
     select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:(BOARD_LAYOUT.low+BOARD_LAYOUT.high)/2,-10.4+BOARD_MOUNT_OFFSET)),
-    dispose(){document.removeEventListener('visibilitychange',onVoiceVisibility);voice.dispose();highlighter.dispose();voicePanels.forEach(panel=>panel.dispose());cameraPanels.forEach(panel=>panel.dispose());storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();programScreen?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...(programScreen?[]:reportButtons)].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.previousCanvas){board.previousInk.value.dispose();board.previousCanvas.width=1;board.previousCanvas.height=1;}if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
+    dispose(){unbindVoiceFocus();voice.dispose();pageControls.forEach(panel=>panel.dispose());highlighter.dispose();voicePanels.forEach(panel=>panel.dispose());cameraPanels.forEach(panel=>panel.dispose());storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();programScreen?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...(programScreen?[]:reportButtons)].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.previousCanvas){board.previousInk.value.dispose();board.previousCanvas.width=1;board.previousCanvas.height=1;}if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
   };
 }
 import {drawPulley} from './pulley-icon.js?v=1';

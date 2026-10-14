@@ -858,10 +858,6 @@ async function openProgramLibrary(tab='classroom'){
  programLibrary.open(tab);
 }
 $('reportButton').addEventListener('click',()=>{if(!lecture||!cameraIntent.canActivate())return;$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');lecture.screenAction('screen:report');selectShot(0,true);reader?.close();void openProgramLibrary(lecture.programTab);});
-const classroomActivity=document.createElement('aside');classroomActivity.className='classroom-activity';classroomActivity.hidden=true;classroomActivity.setAttribute('aria-label','课堂任务与课间');classroomActivity.innerHTML='<strong></strong><p></p><footer><span></span><div><button type="button" data-activity-pause>暂停计时</button><button type="button" data-activity-skip>完成任务，继续</button></div></footer>';document.body.append(classroomActivity);classroomActivity.querySelector('[data-activity-skip]').onclick=()=>{void lecture?.skipClassroomActivity();};classroomActivity.querySelector('[data-activity-pause]').onclick=()=>{void lecture?.toggleVoice();};
-let classroomActivityKey='';
-function updateClassroomActivity(){const state=lecture?.voiceState,a=state?.activity,show=Boolean(lecture?.report.kind==='classroom'&&a&&physicalRoom===activeRoom&&lecture.present);classroomActivity.hidden=!show;if(!show)return;const key=a.start+':'+a.title;if(key!==classroomActivityKey){classroomActivityKey=key;classroomActivity.querySelector('strong').textContent=a.title;classroomActivity.querySelector('p').textContent=a.task||'';classroomActivity.querySelector('[data-activity-skip]').textContent=a.activityType==='break'?'结束课间，继续':'完成任务，听讲评';}classroomActivity.querySelector('[data-activity-pause]').textContent=state.phase==='paused'?'继续计时':'暂停计时';const remaining=Math.ceil(a.remaining||0);classroomActivity.querySelector('span').textContent=(state.phase==='paused'?'已暂停 · ':'')+Math.floor(remaining/60)+':'+String(remaining%60).padStart(2,'0')+' · 可暂停或提前继续';}
-setInterval(updateClassroomActivity,250);
 const requestedCourse=new URLSearchParams(location.search);
 if(requestedCourse.get('course')==='algebra-sylow')window.addEventListener('refuge-entered',()=>{const launch=()=>{if(!entered||openingPreparing||blend?.openingArrival||blend?.settling||cameraLocked()){setTimeout(launch,250);return;}void selectClassroom(Number(requestedCourse.get('period'))===2?2:1);};setTimeout(launch,500);},{once:true});
 $('reportSelect').addEventListener('change',event=>switchReport(event.target.value));
@@ -902,6 +898,9 @@ function installPhysicalControls(){
     else if(action.startsWith('page:seek:'))seekLecture(Number(action.split(':')[2]));
     else if(action.startsWith('seminar:section:'))selectSeminarPart(lecture.navigation.sections.find(s=>s.id===action.split(':')[2]));
     else if(action.startsWith('seminar:'))lecture.screenAction(action);
+    else if(action==='board:previous')$('lecturePrevious').click();
+    else if(action==='board:next')$('lectureNext').click();
+    else if(action==='activity:skip')void lecture.skipClassroomActivity();
     else if(action==='voice:toggle')$('lecturePlay').click();
     else if(action==='camera:toggle'){lecture.autoCamera=!lecture.autoCamera;if(lecture.autoCamera){boardFollow.reset();focusLecture();}else stopTour();updateLectureUI();}
     else if(action==='language')switchChalkLanguage();

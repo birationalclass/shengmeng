@@ -1,8 +1,8 @@
 import {REPORTS} from './report-catalog.js';
 import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=chinese36-1';
-import {authoredContext,authoredFormula} from './authored-chalk.js?v=chinese36-1';
+import {authoredContext,authoredFormula} from './authored-chalk.js?v=thin-ink-2';
 import {composeChalkPage} from './chalk-language.js?v=report-line-sync-6';
-import {inkGuides,writingPlan,strokeReveal,rasterStrokeReveal,inkReveal} from './chalk-motion.js?v=chinese36-1';
+import {inkGuides,writingPlan,strokeReveal,rasterStrokeReveal,inkReveal} from './chalk-motion.js?v=thin-ink-2';
 import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
 const $=id=>document.getElementById(id),canvas=$('board'),ctx=canvas.getContext('2d'),reports=[...REPORTS,{id:'km',speaker:'讨论班',topic:'极小模型纲领',manifest:'./assets/chalk/km/pages.json'}];
 let library,pages=[],pageIndex=0,language='zh',full,rows=[],guides,plan,progress=1,playing=false,last=0;

@@ -150,7 +150,7 @@ export function narrationResourceBytes(manifest){return [...new Map((manifest?.c
 // Language, playback and automatic camera share the board centre with separate hit targets.
 export function reportControlLayout(column=0,withVoice=true){
  const center=22.4+5.6*Math.max(0,Math.min(2,column));
- return{center,language:{x:center-(withVoice?1.05:.55),y:-.16,z:-11.34,width:1.1},voice:{x:center,y:-.16,z:-11.302,width:.6},camera:{x:center+(withVoice?1.05:.55),y:-.16,z:-11.302,width:.6}};
+ return{center,previous:{x:center-.94,y:-.16,z:-11.302,width:.6},next:{x:center+.94,y:-.16,z:-11.302,width:.6},language:{x:center-1.94,y:-.16,z:-11.34,width:1.1},voice:{x:center,y:-.16,z:-11.302,width:.6},camera:{x:center+1.94,y:-.16,z:-11.302,width:.6}};
 }
 export function reportVoiceIconPosition(column=0){return reportControlLayout(column).voice;}
 const iconBusy=s=>['loading','buffering','preparing'].includes(s.phase)||s.phase==='away'&&!s.started;
@@ -202,4 +202,11 @@ export function mapNarrationPosition(previous,next,time){
  if(cue)return cue.start+Math.max(0,Math.min(1,(time-old.start)/Math.max(.001,old.end-old.start)))*(cue.end-cue.start);
  const board=old&&next?.boards?.find(b=>b.page===old.page);if(board)return board.writeStart;
  return Math.max(0,Math.min(next?.duration||0,time/Math.max(1,previous?.duration||next?.duration||1)*(next?.duration||0)));
+}
+
+// Losing foreground focus is an explicit pause; focusing never resumes playback.
+export function bindVoiceFocusPause(voice,{documentTarget=globalThis.document,windowTarget=globalThis.window}={}){
+ const blur=()=>voice.pause(),hidden=()=>{if(documentTarget.hidden)voice.pause();};
+ windowTarget.addEventListener('blur',blur);documentTarget.addEventListener('visibilitychange',hidden);
+ return()=>{windowTarget.removeEventListener('blur',blur);documentTarget.removeEventListener('visibilitychange',hidden);};
 }

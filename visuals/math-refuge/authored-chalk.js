@@ -41,7 +41,13 @@ export async function authoredFormula(url){
   const compatible=code<128||(code>=0x1d434&&code<=0x1d467)||[0x210e,0x2212,0x2264,0x2265,0x21d2,0x21d4].includes(code);
   const glyph=compatible&&char?authoredGlyph(char):null;
   const fraction=element.localName==='rect'&&element.parentElement?.getAttribute('data-mml-node')==='mfrac';
-  if(glyph&&box.width&&box.height){
+  if(['|','∣'].includes(symbol)&&box.height>box.width*4){
+   // Write cardinality/absolute-value bars from top to bottom as one contact.
+   // Their narrow filled outlines otherwise have no reliable scan columns.
+   const local=[[box.x+box.width*.5,box.y+box.height],[box.x+box.width*.54,box.y+box.height*.5],[box.x+box.width*.5,box.y]],width=box.width*.86;
+   record(local.map(map),Math.max(.8,width*Math.hypot(m.a,m.b)));
+   const path=document.createElementNS(NS,'path');path.setAttribute('d',local.map(([x,y],i)=>(i?'L':'M')+x+' '+y).join(' '));path.setAttribute('fill','none');path.setAttribute('stroke','#eee9d5');path.setAttribute('stroke-width',String(width));path.setAttribute('stroke-linecap','round');if(element.hasAttribute('transform'))path.setAttribute('transform',element.getAttribute('transform'));element.replaceWith(path);
+  }else if(glyph&&box.width&&box.height){
    const [gx,gy,gw,gh]=formulaGlyphBox(glyph),sx=box.width/gw,sy=box.height/gh;
    const group=document.createElementNS(NS,'g');if(element.hasAttribute('transform'))group.setAttribute('transform',element.getAttribute('transform'));
    for(let i=0;i<glyph.paths.length;i++){

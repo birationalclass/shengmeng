@@ -44,14 +44,14 @@ function b(title,enTitle,lines,activity,answer,intro){return {title,enTitle,line
 export const firstLesson=[
 b('先区分三个不同的数','Three different quantities',[
 t('始终设 G 是有限群，p 是素数','Let G be finite and p prime.','我们始终讨论有限群，并且先选定一个素数。有限性保证拉格朗日定理和后面的元素计数都能使用；素数这个条件也不能漏掉。'),
-f(String.raw`|G|=p^a m,\qquad p\nmid m,\quad a\ge1`,'把群的阶写成皮的阿次方乘以艾姆，其中艾姆不被皮整除。也就是说，我们已经把群阶里所有的皮因子完整地取出来了。'),
-t('p：素数；pᵃ：子群的阶','p: prime; pᵃ: subgroup order.','皮本身是选定的素数，皮的阿次方才是我们要寻找的子群的阶。不要把西罗皮子群误认为一定只有皮阶。'),
+f(String.raw`|G|=p^a m,\qquad p\nmid m,\quad a\ge1`,'把群的阶写成皮的 a 次方乘以艾姆。这里的指数是英文字母 A 的小写形式。其中艾姆不被皮整除，也就是说，群阶里所有的皮因子都完整地取出来了。'),
+t('p：素数；pᵃ：子群的阶','p: prime; pᵃ: subgroup order.','皮本身是选定的素数。板书中，皮的 a 次方才是我们要寻找的子群的阶。不要把西罗皮子群误认为一定只有皮阶。'),
 f(String.raw`n_p=|\operatorname{Syl}_p(G)|`,'皮下标的恩表示西罗皮子群的个数。它统计的是不同的子群，不是子群中的元素，也不是所有皮幂阶元素。'),
 t('今天把“阶、子群、个数”分开使用','Keep orders, subgroups and counts distinct.','以后每次计算，先问自己正在求子群的阶，还是正在求这种子群有几个。把这两件事情分开，许多错误就可以提前避免。')],
 '写出 |G|=72 时 p=2 与 p=3 对应的 pᵃ 和 m。','p=2：pᵃ=8，m=9；p=3：pᵃ=9，m=8。'),
 b('什么是西罗 p 子群','What is a Sylow p-subgroup?',[
 t('p 子群：其阶是 p 的幂','A p-subgroup has prime-power order.','先复习皮子群的定义：它是群的一个子群，而且它的阶是皮的非负整数次幂。单位子群也属于皮子群。'),
-f(String.raw`H\le G,\quad |H|=p^r,\quad 0\le r\le a`,'如果子群的阶是皮的尔次方，拉格朗日定理告诉我们，尔不会超过群阶中皮的指数阿。这里的上界来自整除关系。'),
+f(String.raw`H\le G,\quad |H|=p^r,\quad 0\le r\le a`,'子群的阶写成板书中的素数幂。它的指数是小写字母 r，而群阶中对应的指数记作小写字母 a。拉格朗日定理说明，前者不会超过后者。'),
 t('西罗 p 子群：阶达到 pᵃ','A Sylow p-subgroup has order pᵃ.','西罗皮子群要求达到这个最大允许的皮幂，而不是任取一个皮子群。这个定义先规定目标，存在性还需要定理保证。'),
 f(String.raw`P\in\operatorname{Syl}_p(G)\iff P\le G,\ |P|=p^a`,'这个等价式就是今天采用的定义。判断一个具体子群是不是西罗子群，既要确认它确实是子群，也要核对它的阶。'),
 t('例：24 阶群的西罗 2 子群为 8 阶','For |G|=24, Sylow 2-subgroups have order 8.','二十四等于二的三次方乘以三，所以目标阶数是八。二阶或四阶子群虽然是二子群，却还不是西罗二子群。')],
@@ -207,10 +207,10 @@ f(String.raw`T_{i,j}T_{k,\ell}=T_{i+2^j k,\,j+\ell}`,'右边仍属于同一个�
 t('二十一个互不相同的可逆变换组成群','These 21 distinct invertible maps form a group.','不同系数和平移项给出不同函数，所以群的阶确实是二十一。这样就完成了对象的构造，下一板再检查它不交换。')],
 '计算 T₂,₁T₃,₂ 与 T₃,₂T₂,₁，所有下标按模 7、模 3 约化。','前者 T₁,₀，后者 T₄,₀；顺序不同。'),
 b('21 阶反例：验证不交换','Verifying the order-21 example is nonabelian',[
-t('记 a 为加一，b 为乘二','Let a add 1 and b multiply by 2.','为了让计算更清楚，我们把加一记成阿，把乘二记成比。乘二的逆变换是乘四，因为二乘四模七等于一。'),
+t('记 a 为加一，b 为乘二','Let a add 1 and b multiply by 2.','为了让计算更清楚，我们把加一记成大写字母 A，把乘二记成大写字母 B。乘二的逆变换是乘四，因为二乘四模七等于一。'),
 f(String.raw`a(x)=x+1,\quad b(x)=2x,\quad b^{-1}(x)=4x`,'现在从最右边开始，逐步把一个输入送过三个变换。置换和函数复合的顺序一定要先约定好，不能凭肉眼调换。'),
 t('先乘四，再加一，最后乘二','Multiply by 4, add 1, then multiply by 2.','输入先变成四倍，再加一，最后乘二，结果是八倍输入加二。模七化简后，就是原来的输入加二。'),
-f(String.raw`bab^{-1}(x)=2(4x+1)=x+2=a^2(x)`,'这条公式说，比把阿共轭成阿的平方。阿的阶为七，所以阿的平方和阿不是同一个变换。'),
+f(String.raw`bab^{-1}(x)=2(4x+1)=x+2=a^2(x)`,'这条公式说，B 把 A 共轭成 A 的平方。A 的阶为七，所以 A 的平方和 A 不是同一个变换。'),
 f(String.raw`bab^{-1}=a^2\ne a\Longrightarrow ab\ne ba`,'因此这个二十一阶群不交换。与此同时，加一生成的七阶子群仍然正规，正好说明单个正规西罗子群不足以推出整个群交换。')],
 '证明 ⟨a⟩ 正规，并求本例的 n₃。','⟨a⟩ 是平移群，为唯一西罗 7 子群；若 n₃=1 则两个西罗子群都正规并交换，与计算矛盾，故 n₃=7。'),
 b('21 阶例子：七个三阶子群','Seven order-3 subgroups in the example',[

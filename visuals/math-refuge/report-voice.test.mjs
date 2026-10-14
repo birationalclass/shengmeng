@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {createReportVoice,narrationFrame,syncNarrationClock,rowNarrationProgress,reportVoicePresentation,reportVoiceIconPosition,reportControlLayout,VoiceIconMotion,mapNarrationPosition} from './report-voice.js';
+import {bindVoiceFocusPause,createReportVoice,narrationFrame,syncNarrationClock,rowNarrationProgress,reportVoicePresentation,reportVoiceIconPosition,reportControlLayout,VoiceIconMotion,mapNarrationPosition} from './report-voice.js';
 import {LectureClock,boardSlot} from './lecture-state.js';
 class FakeAudio extends EventTarget{
  currentTime=0;paused=true;
@@ -127,3 +127,5 @@ test('moving to the next blackboard releases the previous audio and keeps only c
 });
 
 test('playback rate preserves pitch, actual clock and selection/seek/next-board speed',async()=>{const h=harness();h.voice.setRate(.85);await h.voice.select(report);assert.equal(h.audios[0].playbackRate,.85);assert.equal(h.audios[0].preservesPitch,true);h.audios[0].currentTime=2;h.voice.update();assert.equal(h.voice.state.time,2);h.voice.setRate(1.15);assert.equal(h.audios[0].playbackRate,1.15);await h.voice.seek(12);assert.equal(h.audios.at(-1).playbackRate,1.15);await h.voice.select(report);await h.voice.toggle();h.audios.at(-1).dispatchEvent(new Event('ended'));await tick();assert.equal(h.audios.at(-1).playbackRate,1.15);assert.equal(h.voice.setRate(100),1.3);assert.equal(h.voice.setRate(NaN),1);h.voice.dispose();});
+
+test('blur cancels temporary auto-resume and requires an explicit play action',async()=>{const h=harness(),doc=new EventTarget(),win=new EventTarget();doc.hidden=false;const unbind=bindVoiceFocusPause(h.voice,{documentTarget:doc,windowTarget:win});await h.voice.select(report);await h.voice.toggle();h.audios[0].currentTime=4.25;await h.voice.setContextActive(false);assert.equal(h.voice.state.phase,'away');win.dispatchEvent(new Event('blur'));assert.equal(h.voice.state.phase,'paused');await h.voice.setContextActive(true);win.dispatchEvent(new Event('focus'));assert(h.audios[0].paused);assert.equal(h.voice.state.time,4.25);await h.voice.toggle();assert(!h.audios[0].paused);unbind();h.voice.dispose();});

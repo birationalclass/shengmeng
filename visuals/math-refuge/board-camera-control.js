@@ -1,4 +1,4 @@
-import {reportControlLayout} from './report-voice.js?v=smart-voice-9';
+import {reportControlLayout} from './report-voice.js?v=board-controls-2';
 export function createBoardCameraControl(T,parent,column){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=128;
  const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;

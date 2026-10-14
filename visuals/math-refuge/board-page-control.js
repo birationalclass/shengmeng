@@ -1,0 +1,8 @@
+import {reportControlLayout} from './report-voice.js?v=board-controls-2';
+export function createBoardPageControls(T,parent,column){
+ const controls=['previous','next'].map((direction,index)=>{
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=128;const c=canvas.getContext('2d');c.strokeStyle='#f0e4ca';c.lineWidth=6;c.lineCap='round';c.lineJoin='round';c.beginPath();if(index){c.moveTo(46,32);c.lineTo(82,64);c.lineTo(46,96);}else{c.moveTo(82,32);c.lineTo(46,64);c.lineTo(82,96);}c.stroke();
+  const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;const material=new T.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,toneMapped:false}),mesh=new T.Mesh(new T.PlaneGeometry(.6,.6),material);mesh.name='Smart glass '+direction+' board';mesh.userData={column,smartGlass:true};parent.add(mesh);mesh.visible=false;return{mesh,texture,direction};
+ });
+ return{meshes:controls.map(c=>c.mesh),update({previousEnabled,nextEnabled,activity,visible}){for(const c of controls){const p=reportControlLayout(column)[c.direction];c.mesh.position.set(p.x,p.y,p.z);c.mesh.updateMatrix();c.mesh.visible=visible;const previous=c.direction==='previous',enabled=previous?previousEnabled:nextEnabled||!!activity;c.mesh.material.opacity=enabled?1:.25;c.mesh.userData.action=enabled?(previous?'board:previous':activity?'activity:skip':'board:next'):null;c.mesh.userData.label=previous?'上一板书':activity?(activity.activityType==='break'?'结束课间，继续':'完成练习，听讲评'):'下一板书';}},dispose(){for(const c of controls){c.mesh.removeFromParent();c.mesh.geometry.dispose();c.mesh.material.dispose();c.texture.dispose();}}};
+}
