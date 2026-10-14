@@ -1,0 +1,365 @@
+LinearStudy.quotientDerivedModuleExt_ideal_annihilator : ∀ (R : CommRingCat) (I : Ideal ↑R) (N : ModuleCat ↑R) (j : ℕ),
+  I ≤ Module.annihilator (↑R) (CategoryTheory.Abelian.Ext (↧(↑R ⧸ I)) N j)
+'LinearStudy.quotientDerivedModuleExt_ideal_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.quotientDerivedModuleExt_support_subset : ∀ (R : CommRingCat) (I : Ideal ↑R) (N : ModuleCat ↑R) (j : ℕ),
+  Module.support (↑R) (CategoryTheory.Abelian.Ext (↧(↑R ⧸ I)) N j) ⊆ PrimeSpectrum.zeroLocus ↑I
+'LinearStudy.quotientDerivedModuleExt_support_subset' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.quotientDerivedModuleExt_support_finite : ∀ (R : CommRingCat) (I : Ideal ↑R) (N : ModuleCat ↑R) (j : ℕ),
+  (PrimeSpectrum.zeroLocus ↑I).Finite → (Module.support (↑R) (CategoryTheory.Abelian.Ext (↧(↑R ⧸ I)) N j)).Finite
+'LinearStudy.quotientDerivedModuleExt_support_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectiveResolutionNativeHomCycle_isCocycle : ∀ {R : Type u_1} [inst : CommRing R] {X : ModuleCat R}
+  (P : CategoryTheory.ProjectiveResolution X) (N : ModuleCat R) (j : ℕ)
+  (z : ↥(ModuleCat.Hom.hom ((P.complex.linearYonedaObj R N).d j (j + 1))).ker),
+  CategoryTheory.CategoryStruct.comp (P.complex.d (j + 1) j) ↑z = 0
+'LinearStudy.projectiveResolutionNativeHomCycle_isCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectiveResolutionNativeHomCycleExtLinearMap : {R : Type u_1} →
+  [inst : CommRing R] →
+    {X : ModuleCat R} →
+      (P : CategoryTheory.ProjectiveResolution X) →
+        (N : ModuleCat R) →
+          (j : ℕ) →
+            ↥(ModuleCat.Hom.hom ((P.complex.linearYonedaObj R N).d j (j + 1))).ker →ₗ[R]
+              CategoryTheory.Abelian.Ext X N j
+'LinearStudy.projectiveResolutionNativeHomCycleExtLinearMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectiveResolutionNativeHomCycleExtLinearMap_surjective : ∀ {R : Type u_1} [inst : CommRing R]
+  {X : ModuleCat R} (P : CategoryTheory.ProjectiveResolution X) (N : ModuleCat R) (j : ℕ),
+  Function.Surjective ⇑(LinearStudy.projectiveResolutionNativeHomCycleExtLinearMap P N j)
+'LinearStudy.projectiveResolutionNativeHomCycleExtLinearMap_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectiveResolutionNativeHomCycleExtLinearMap_kernel : ∀ {R : Type u_1} [inst : CommRing R]
+  {X : ModuleCat R} (P : CategoryTheory.ProjectiveResolution X) (N : ModuleCat R) (n : ℕ),
+  (LinearStudy.projectiveResolutionNativeHomCycleExtLinearMap P N (n + 1)).ker =
+    (HomologicalComplex.sc' (P.complex.linearYonedaObj R N) n (n + 1) (n + 2)).moduleCatToCycles.range
+'LinearStudy.projectiveResolutionNativeHomCycleExtLinearMap_kernel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectiveResolutionNativeHomPositiveCohomologyQuotientEquiv : {R : Type u_1} →
+  [inst : CommRing R] →
+    {X : ModuleCat R} →
+      (P : CategoryTheory.ProjectiveResolution X) →
+        (N : ModuleCat R) →
+          (n : ℕ) →
+            ↑(HomologicalComplex.sc' (P.complex.linearYonedaObj R N) n (n + 1)
+                      (n + 2)).moduleCatLeftHomologyData.H ≃ₗ[R]
+              CategoryTheory.Abelian.Ext X N (n + 1)
+'LinearStudy.projectiveResolutionNativeHomPositiveCohomologyQuotientEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectiveResolutionNativeHomPositiveCohomologyIso : {R : Type u_1} →
+  [inst : CommRing R] →
+    {X : ModuleCat R} →
+      (P : CategoryTheory.ProjectiveResolution X) →
+        (N : ModuleCat R) →
+          (n : ℕ) →
+            HomologicalComplex.homology (P.complex.linearYonedaObj R N) (n + 1) ≅
+              ↧(CategoryTheory.Abelian.Ext X N (n + 1))
+'LinearStudy.projectiveResolutionNativeHomPositiveCohomologyIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectiveResolutionNativeHomPositiveCohomologyIso_classMap : ∀ {R : Type u_1} [inst : CommRing R]
+  {X : ModuleCat R} (P : CategoryTheory.ProjectiveResolution X) (N : ModuleCat R) (n : ℕ),
+  CategoryTheory.CategoryStruct.comp (HomologicalComplex.homologyπ (P.complex.linearYonedaObj R N) (n + 1))
+      (LinearStudy.projectiveResolutionNativeHomPositiveCohomologyIso P N n).hom =
+    CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.cyclesIsoSc' (P.complex.linearYonedaObj R N) n (n + 1) (n + 2) ⋯ ⋯).hom
+      (CategoryTheory.CategoryStruct.comp
+        (HomologicalComplex.sc' (P.complex.linearYonedaObj R N) n (n + 1) (n + 2)).moduleCatCyclesIso.hom
+        (ModuleCat.ofHom (LinearStudy.projectiveResolutionNativeHomCycleExtLinearMap P N (n + 1))))
+'LinearStudy.projectiveResolutionNativeHomPositiveCohomologyIso_classMap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulNativePositiveCohomologyExtIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (r : ℕ) →
+      (H : Fin r → ↑R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+          (j : ℕ) →
+            HomologicalComplex.homology (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) (j + 1) ≅
+              ↧(CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N (j + 1))
+'LinearStudy.affineKoszulNativePositiveCohomologyExtIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulNativePositiveCohomologyExtIso_classMap : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ)
+  (H : Fin r → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) (j : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyπ (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) (j + 1))
+      (LinearStudy.affineKoszulNativePositiveCohomologyExtIso R N r H he j).hom =
+    CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.cyclesIsoSc' (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) j (j + 1) (j + 2) ⋯
+          ⋯).hom
+      (CategoryTheory.CategoryStruct.comp
+        (HomologicalComplex.sc' (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) j (j + 1)
+              (j + 2)).moduleCatCyclesIso.hom
+        (ModuleCat.ofHom
+          (LinearStudy.projectiveResolutionNativeHomCycleExtLinearMap (LinearStudy.functionKoszulResolutionOfExact H he)
+            N (j + 1))))
+'LinearStudy.affineKoszulNativePositiveCohomologyExtIso_classMap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulNativePositiveCohomology_ideal_annihilator : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ)
+  (H : Fin r → ↑R),
+  (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+    ∀ (j : ℕ),
+      Ideal.span (Set.range H) ≤
+        Module.annihilator ↑R
+          ↑(HomologicalComplex.homology (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) (j + 1))
+'LinearStudy.affineKoszulNativePositiveCohomology_ideal_annihilator' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulNativePositiveCohomology_support_subset : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ)
+  (H : Fin r → ↑R),
+  (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+    ∀ (j : ℕ),
+      Module.support ↑R
+          ↑(HomologicalComplex.homology (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) (j + 1)) ⊆
+        PrimeSpectrum.zeroLocus ↑(Ideal.span (Set.range H))
+'LinearStudy.affineKoszulNativePositiveCohomology_support_subset' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulNativePositiveCohomology_support_finite : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ)
+  (H : Fin r → ↑R),
+  (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+    ∀ (j : ℕ),
+      (PrimeSpectrum.zeroLocus ↑(Ideal.span (Set.range H))).Finite →
+        (Module.support ↑R
+            ↑(HomologicalComplex.homology (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) (j + 1))).Finite
+'LinearStudy.affineKoszulNativePositiveCohomology_support_finite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomPositiveCohomologyExtIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (r : ℕ) →
+      (H : Fin r → ↑R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+          (j : ℕ) →
+            HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) (j + 1) ≅
+              AlgebraicGeometry.tilde ↧(CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N (j + 1))
+'LinearStudy.affineKoszulInternalHomPositiveCohomologyExtIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectiveResolutionNativeHomZeroCycle_annihilator : ∀ {R : Type u_1} [inst : CommRing R] {X : ModuleCat R}
+  (P : CategoryTheory.ProjectiveResolution X) (N : ModuleCat R),
+  Module.annihilator R ↑X ≤ Module.annihilator R ↥(ModuleCat.Hom.hom ((P.complex.linearYonedaObj R N).d 0 1)).ker
+'LinearStudy.projectiveResolutionNativeHomZeroCycle_annihilator' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectiveResolutionNativeHomZeroCohomology_annihilator : ∀ {R : Type u_1} [inst : CommRing R]
+  {X : ModuleCat R} (P : CategoryTheory.ProjectiveResolution X) (N : ModuleCat R),
+  Module.annihilator R ↑X ≤ Module.annihilator R ↑(HomologicalComplex.homology (P.complex.linearYonedaObj R N) 0)
+'LinearStudy.projectiveResolutionNativeHomZeroCohomology_annihilator' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomCohomologyNativeIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (r : ℕ) →
+      (H : Fin r → ↑R) →
+        (j : ℕ) →
+          HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) j ≅
+            AlgebraicGeometry.tilde
+              (HomologicalComplex.homology (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) j)
+'LinearStudy.affineKoszulInternalHomCohomologyNativeIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulNativeCohomology_ideal_annihilator : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ)
+  (H : Fin r → ↑R),
+  (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+    ∀ (j : ℕ),
+      Ideal.span (Set.range H) ≤
+        Module.annihilator ↑R ↑(HomologicalComplex.homology (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) j)
+'LinearStudy.affineKoszulNativeCohomology_ideal_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulNativeCohomology_support_subset : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ)
+  (H : Fin r → ↑R),
+  (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+    ∀ (j : ℕ),
+      Module.support ↑R ↑(HomologicalComplex.homology (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) j) ⊆
+        PrimeSpectrum.zeroLocus ↑(Ideal.span (Set.range H))
+'LinearStudy.affineKoszulNativeCohomology_support_subset' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulNativeCohomology_support_finite : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ)
+  (H : Fin r → ↑R),
+  (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+    ∀ (j : ℕ),
+      (PrimeSpectrum.zeroLocus ↑(Ideal.span (Set.range H))).Finite →
+        (Module.support ↑R
+            ↑(HomologicalComplex.homology (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) j)).Finite
+'LinearStudy.affineKoszulNativeCohomology_support_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineClosedCut_zeroLocus_finite_of_fieldFinite : ∀ (k : Type u_2) [inst : Field k] (R : Type u_1)
+  [inst_1 : CommRing R] [inst_2 : Algebra k R] (I : Ideal R) [Module.Finite k (R ⧸ I)],
+  (PrimeSpectrum.zeroLocus ↑I).Finite
+'LinearStudy.affineClosedCut_zeroLocus_finite_of_fieldFinite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalIdeal_smul_top_eq_bot_of_annihilator : ∀ (R : CommRingCat) (I : Ideal ↑R) (N : ModuleCat ↑R),
+  I ≤ Module.annihilator ↑R ↑N → I • ⊤ = ⊥
+'LinearStudy.originalIdeal_smul_top_eq_bot_of_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeClosedCutAnnihilatorUnitIso : (R : CommRingCat) →
+  (I : Ideal ↑R) →
+    (N : ModuleCat ↑R) →
+      I ≤ Module.annihilator ↑R ↑N →
+        (AlgebraicGeometry.tilde N ≅
+          (AlgebraicGeometry.Scheme.Modules.pushforward
+                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk I)))).obj
+            ((AlgebraicGeometry.Scheme.Modules.pullback
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk I)))).obj
+              (AlgebraicGeometry.tilde N)))
+'LinearStudy.tildeClosedCutAnnihilatorUnitIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeClosedCutAnnihilatorUnitIso_unit : ∀ (R : CommRingCat) (I : Ideal ↑R) (N : ModuleCat ↑R)
+  (hAnn : I ≤ Module.annihilator ↑R ↑N),
+  (LinearStudy.tildeClosedCutAnnihilatorUnitIso R I N hAnn).hom =
+    (AlgebraicGeometry.Scheme.Modules.pullbackPushforwardAdjunction
+            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk I)))).unit.app
+      (AlgebraicGeometry.tilde N)
+'LinearStudy.tildeClosedCutAnnihilatorUnitIso_unit' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulInternalHomCohomologyClosedCutUnitIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (r : ℕ) →
+      (H : Fin r → ↑R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+          (j : ℕ) →
+            HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) j ≅
+              (AlgebraicGeometry.Scheme.Modules.pushforward
+                    (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+                ((AlgebraicGeometry.Scheme.Modules.pullback
+                      (AlgebraicGeometry.Spec.map
+                        (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+                  (HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) j))
+'LinearStudy.affineKoszulInternalHomCohomologyClosedCutUnitIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomCohomologyClosedCutUnitIso_unit : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ)
+  (H : Fin r → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) (j : ℕ),
+  (LinearStudy.affineKoszulInternalHomCohomologyClosedCutUnitIso R N r H he j).hom =
+    (AlgebraicGeometry.Scheme.Modules.pullbackPushforwardAdjunction
+            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).unit.app
+      (HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) j)
+'LinearStudy.affineKoszulInternalHomCohomologyClosedCutUnitIso_unit' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulInternalHomCohomologyClosedCutUnit : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (r : ℕ) →
+      (H : Fin r → ↑R) →
+        (j : ℕ) →
+          HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) j ⟶
+            (AlgebraicGeometry.Scheme.Modules.pushforward
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+              ((AlgebraicGeometry.Scheme.Modules.pullback
+                    (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+                (HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) j))
+'LinearStudy.affineKoszulInternalHomCohomologyClosedCutUnit' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulInternalHomCohomologyClosedCutUnit_isIso : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ)
+  (H : Fin r → ↑R),
+  (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+    ∀ (j : ℕ), CategoryTheory.IsIso (LinearStudy.affineKoszulInternalHomCohomologyClosedCutUnit R N r H j)
+'LinearStudy.affineKoszulInternalHomCohomologyClosedCutUnit_isIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearSection_exists_actual_allCohomology_support : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  V.ideal.toIdeal ≠ ⊥ →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+            (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (r + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                have I :=
+                                  Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                                    (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+                                let C := MvPolynomial (Fin n) ℂ ⧸ I;
+                                let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+                                have H := fun (i : Fin r) =>
+                                  (Ideal.Quotient.mk V.affineIdeal)
+                                    (LinearStudy.affineChartPolynomialMap
+                                      ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+                                w 0 ≠ 0 ∧
+                                  IsReduced C ∧
+                                    Module.Finite ℂ C ∧
+                                      Nonempty
+                                          (LinearStudy.projectivePulledLinearSectionScheme f V L hL w ≅
+                                            AlgebraicGeometry.Spec ↧C) ∧
+                                        AlgebraicGeometry.IsReduced
+                                            (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) ∧
+                                          ∃ (_ :
+                                            ∀ (j : ℕ),
+                                              0 < j →
+                                                HomologicalComplex.ExactAt
+                                                  (koszulComplex (Fintype.linearCombination B H)) j),
+                                            LinearStudy.affineKoszulAllCohomologyConclusions (↧B) r H
+'LinearStudy.projectivePulledLinearSection_exists_actual_allCohomology_support' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearSection_koszulQuotient_moduleFinite : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ),
+  Module.Finite ℂ
+      (MvPolynomial (Fin n) ℂ ⧸
+        Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+          (LinearStudy.projectivePulledLinearSectionIdeal f V L w)) →
+    Module.Finite ℂ
+      ((MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) ⧸
+        Ideal.span
+          (Set.range fun (i : Fin r) =>
+            (Ideal.Quotient.mk V.affineIdeal)
+              (LinearStudy.affineChartPolynomialMap
+                ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)))))
+'LinearStudy.projectivePulledLinearSection_koszulQuotient_moduleFinite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearSection_koszulCut_zeroLocus_finite : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ),
+  Module.Finite ℂ
+      (MvPolynomial (Fin n) ℂ ⧸
+        Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+          (LinearStudy.projectivePulledLinearSectionIdeal f V L w)) →
+    (PrimeSpectrum.zeroLocus
+        ↑(Ideal.span
+            (Set.range fun (i : Fin r) =>
+              (Ideal.Quotient.mk V.affineIdeal)
+                (LinearStudy.affineChartPolynomialMap
+                  ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)))))).Finite
+'LinearStudy.projectivePulledLinearSection_koszulCut_zeroLocus_finite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulAllCohomologyConclusions : (R : CommRingCat) → (r : ℕ) → (Fin r → ↑R) → Prop
+'LinearStudy.affineKoszulAllCohomologyConclusions' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulAllCohomologyConclusions_of_exact_finite : ∀ (R : CommRingCat) (r : ℕ) (H : Fin r → ↑R),
+  (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+    (PrimeSpectrum.zeroLocus ↑(Ideal.span (Set.range H))).Finite →
+      LinearStudy.affineKoszulAllCohomologyConclusions R r H
+'LinearStudy.affineKoszulAllCohomologyConclusions_of_exact_finite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.affineKoszulAllCohomologyConclusions.{u} : (R : CommRingCat) → (r : ℕ) → (Fin r → ↑R) → Prop :=
+fun (R : CommRingCat) (r : ℕ) (H : Fin r → ↑R) =>
+  (PrimeSpectrum.zeroLocus ↑(Ideal.span (Set.range H))).Finite ∧
+    ∀ (N : ModuleCat ↑R) (j : ℕ),
+      (Module.support ↑R
+            ↑(HomologicalComplex.homology (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) j)).Finite ∧
+        Nonempty
+            (HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) j ≅
+              AlgebraicGeometry.tilde
+                (HomologicalComplex.homology (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) j)) ∧
+          Nonempty
+              (HomologicalComplex.homology (LinearStudy.affineKoszulNativeHomCochainComplex R N r H) (j + 1) ≅
+                ↧(CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N (j + 1))) ∧
+            CategoryTheory.IsIso (LinearStudy.affineKoszulInternalHomCohomologyClosedCutUnit R N r H j)
+def LinearStudy.affineKoszulInternalHomCohomologyClosedCutUnit.{u} : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (r : ℕ) →
+      (H : Fin r → ↑R) →
+        (j : ℕ) →
+          HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) j ⟶
+            (AlgebraicGeometry.Scheme.Modules.pushforward
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+              ((AlgebraicGeometry.Scheme.Modules.pullback
+                    (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+                (HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) j)) :=
+fun (R : CommRingCat) (N : ModuleCat ↑R) (r : ℕ) (H : Fin r → ↑R) (j : ℕ) =>
+  (AlgebraicGeometry.Scheme.Modules.pullbackPushforwardAdjunction
+          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).unit.app
+    (HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N r H) j)
