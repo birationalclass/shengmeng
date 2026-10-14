@@ -20,7 +20,7 @@ export class ResourceScheduler {
         if(typeof next.value==='function'){await this.turn(job);start=this.now();const value=next.value();this.cpuMs=this.now()-start;await value;}else await next.value;
         this.report(this.snapshot());
         // A slow frame or an expensive indivisible step reduces the loading duty cycle.
-        const target=1000/(this.policy().targetFPS||60);if(this.frameMs>target*1.2||this.cpuMs>2)await new Promise(r=>this.api.setTimeout(r,100));
+        const target=1000/(this.policy().targetFPS||60);if(job.priority>=2&&(this.frameMs>target*1.2||this.cpuMs>2))await new Promise(r=>this.api.setTimeout(r,100));
       }
     }else await result;
     job.resolve();

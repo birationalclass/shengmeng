@@ -250,9 +250,9 @@ export async function createLecture(scene,renderer,options={}){
     board.previousCanvas.getContext('2d').drawImage(board.canvas,0,0);
     board.previousInk.value.needsUpdate=true;board.fadeAge=0;board.inkBlend.value=0;
   }
-  function draw(index){
+  function draw(index,preparing=false){
     const board=boards[index],slot=clock.slots[index];
-    if(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0)return;
+    if(!preparing&&(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0))return;
     const content={page:slot.page,progress:slot.progress,available:cache.has(slot.page)};
     if(boardContentJump(board.content,content))beginContentFade(board);board.content=content;
     if(slot.page<0){if(board.last==='blank')return;board.last='blank';if(board.canvas){board.ctx.fillStyle='#193d33';board.ctx.fillRect(0,0,W,H);board.texture.needsUpdate=true;board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture.needsUpdate=true;board.roughKey='';}return;}
@@ -261,7 +261,7 @@ export async function createLecture(scene,renderer,options={}){
     const wet=board.wet,wetAge=wet?effectTime-wet.started:Infinity;
     const wetKey=wet&&wet.progress>0&&wetAge<wet.duration+DRY_SECONDS?(Math.floor(effectTime*12)+':'+wet.progress.toFixed(3)):'';
     const key=`${slot.page}:${slot.progress.toFixed(3)}:${erasing?clock.progress.toFixed(3):''}:${cache.has(slot.page)}:${wetKey}`;
-    if(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0)return;
+    if(!preparing&&(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0))return;
     if(board.last===key)return;board.last=key;
     ctx.drawImage(grain,0,0,W,H);const image=cache.get(slot.page);
     if(image){
@@ -525,7 +525,7 @@ export async function createLecture(scene,renderer,options={}){
       // clean board used by the opening writing demonstration.
       for(let i=0;i<boards.length;i++){
         const canvasAt=performance.now();
-        ensureInk(boards[i]);draw(i);
+        ensureInk(boards[i]);draw(i,true);
         const uploadAt=performance.now();
         renderer.initTexture?.(boards[i].texture);renderer.initTexture?.(boards[i].roughTexture);
         const uploadedAt=performance.now();
@@ -534,7 +534,7 @@ export async function createLecture(scene,renderer,options={}){
         preparation.push({stage:'黑板 '+(i+1),canvasMs:Math.round(uploadAt-canvasAt),uploadCallMs:Math.round(uploadedAt-uploadAt),yieldMs:Math.round(performance.now()-uploadedAt),width:boards[i].canvas.width,height:boards[i].canvas.height});
       }
       options.onPreparation?.({totalMs:Math.round(performance.now()-prepareAt),stages:preparation});
-      openingSurfacesReady=renderActive&&!hydrating&&options.isActive?.()!==false;
+      openingSurfacesReady=true;
       playing=false;version++;return true;
     },
     get openingNarrated(){return openingDemo?.phase==='waiting'&&openingDemo.narrated===true;},

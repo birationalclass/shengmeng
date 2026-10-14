@@ -1,6 +1,7 @@
+import {OpeningPerformance} from './opening-performance.js';
 import {ResourceScheduler} from './resource-scheduler.js?v=demand-1';
 import {loadingContent,connectLoadingScheduler} from './runtime-loading.js?v=demand-1';
-import {waitForEntered,idleTurn,loadMathRuntime} from './staged-startup.js?v=stages-1';
+import {waitForEntered,loadMathRuntime} from './staged-startup.js?v=stages-1';
 import {preparePanelShell,bindPanelDismissals} from './panel-shell.js?v=smart-voice-9';
 import {capturePhoto,downloadPhoto} from './photo.js?v=photo-151';
 import {regionAnchor,distanceLabel} from './region-distance.js';
@@ -119,7 +120,12 @@ const screenWebview=createScreenWebview(THREE);
 let entered=false,openingPreparing=false,openingPrepared=false;
 const resources=new ResourceScheduler({policy:()=>({entered,opening:openingPreparing||Boolean(blend?.openingArrival||blend?.settling)||openingCameraLock.locked(performance.now()),moving:Boolean(blend||touring||keys.size||motionVelocity.length()>.2),foreground:!document.hidden&&renderActivity.foreground,targetFPS:Math.min(60,Number($('targetFPS').value)||60)})});
 connectLoadingScheduler(resources);
-setDeferredExecutor(item=>resources.enqueue('texture:'+item.id,(item.phase==='entry'?'P0 海面贴图':item.phase==='hall'?'P0 一楼材质':'按需环境贴图'),item.job,{priority:item.phase==='entry'||item.phase==='hall'?0:3}));
+setDeferredExecutor(async item=>{
+ const required=item.phase==='entry'||item.phase==='hall';
+ if(required&&item.prepare)await item.prepare();
+ const job=!required&&item.prepare?async function*(){yield item.prepare;yield* item.job();}:item.job;
+ return resources.enqueue('texture:'+item.id,(item.phase==='entry'?'P0 海面贴图':item.phase==='hall'?'P0 一楼材质':'按需环境贴图'),job,{priority:required?0:3});
+},map=>renderer?.initTexture(map));
 
 const openingCameraLock=new OpeningCameraLock();
 const cameraLocked=()=>openingPreparing||openingCameraLock.locked(performance.now());
@@ -155,7 +161,7 @@ async function replayOpening(preserveInitialView=false){
     if(!sunriseIntro.waiting)sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);
     visualHour=lastShadowHour=sceneTime.hour;$('timeRate').value='1';
     openingCameraLock.start(performance.now());keys.clear();controls.enabled=false;
-    frameSamples.length=0;cpuSamples.length=0;lastTime=0;
+    flightPerformance.start(performance.now());frameSamples.length=0;cpuSamples.length=0;lastTime=0;
     selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
     const offset=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+offset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,offset.z];
     blend.openingPath=openingArrival(camera.position.toArray(),HALL.west*BUILDING_SCALE+offset.x,offset.z,end,{x:retreat.campus.seaPavilion.position.x,bridgeX:retreat.campus.seaPavilion.root.position.x});blend.duration=blend.openingPath.duration;blend.route=null;blend.endPosition.fromArray(end);blend.endRotation.setFromRotationMatrix(lookMatrix.lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),viewUp));loadingContent(null);
@@ -282,7 +288,7 @@ function enterSpeakerView(){
   opening=null;choosingReport=false;speakerView=true;touring=false;free=true;keys.clear();
   reader?.close();beginTransition();updateLabels();
 }
-function applyShot(dt){
+function applyShot(dt,realDelta=dt){
   const s=speakerView?roomLecterns[activeRoom].speakerPose(camera.aspect):SHOTS[shot];shotPose();const position=shotPosition,target=shotTarget;
   if(s.lecture&&lecture){
     // A steady board-height teaching camera follows the active pair, not a room orbit.
@@ -290,7 +296,7 @@ function applyShot(dt){
   }
   const priorFov=camera.fov;
   if(blend){
-    blend.elapsed+=dt;const t=Math.min(1,blend.elapsed/blend.duration),k=smoothProgress(t);
+    blend.elapsed+=blend.openingArrival?realDelta:dt;const t=Math.min(1,blend.elapsed/blend.duration),k=smoothProgress(t);
     for(const axis of ['x','y','z'])camera.position[axis]=motionCoordinate(blend.position[axis],blend.endPosition[axis],blend.velocity[axis],blend.acceleration[axis],blend.duration,t);
     if(blend.openingPath){
       camera.position.fromArray(blend.openingPath.sample(blend.elapsed));
@@ -304,7 +310,7 @@ function applyShot(dt){
     controls.target.copy(camera.position).addScaledVector(viewDirection,THREE.MathUtils.lerp(blend.distance,blend.endDistance,k));
     camera.fov=THREE.MathUtils.lerp(blend.fov,s.fov,k);$('transition').style.opacity=0;
     if(k===1){
-      const arrival=blend.openingArrival;blend=null;
+      const arrival=blend.openingArrival;if(arrival)$('world').dataset.openingPerformance=JSON.stringify(flightPerformance.finish(performance.now()));blend=null;
       if(arrival){
         sunriseIntro.arrive();retreat.fleet.startSunrisePass();
         if(rooms[0].openingNarrated){
@@ -358,6 +364,8 @@ function updateQualityReadout(){
 }
 function updateRenderBudget(stamp){
   const ms=gpuTimer?.poll(stamp);if(ms!=null){renderBudget.sample(ms,stamp);performanceMonitor.gpu(ms,stamp);}
+  // Do not allocate new shader, shadow or resolution variants mid-flight.
+  if(blend?.openingArrival||blend?.settling)return;
   const reading=rooms.some((room,i)=>roomViews[i]?.visible&&room.hasSelection&&(!room.stored||room.storageProgress<1)&&!room.disabled);
   const protectReading=$('boardClarity').value==='crisp';
   const pixelRatio=readingPixelRatio(profile.pixelRatio,{enabled:protectReading&&$('adaptiveQuality').value==='auto',mobile:device.mobile,width:innerWidth,height:innerHeight,dpr:devicePixelRatio,maxTextureSize:renderer.capabilities.maxTextureSize});
@@ -429,7 +437,7 @@ function applyOceanQuality(){
  if(oceanBudget.stats)$('world').dataset.oceanPerformance=JSON.stringify(oceanBudget.stats);
 }
 const renderBudget=new RenderBudget();let gpuTimer=null,weatherTimer=null,renderScale=1,weatherGpuMs=null,weatherGpuSamples=[],weatherCpuMs=0,weatherProbeFrame=false,weatherProbeCounter=0;
-const frameSamples=[],cpuSamples=[];let metricsAt=0;
+const flightPerformance=new OpeningPerformance();const frameSamples=[],cpuSamples=[];let metricsAt=0;
 const renderActivity=bindRenderActivity({allowUnfocused:()=>!entered,setLoop:callback=>renderer?.setAnimationLoop(callback),frame:tick,
  onPause(){
   keys.clear();gpuTimer?.dispose();weatherTimer?.dispose();
@@ -487,7 +495,7 @@ function tick(stamp){
     if(!blend){const state=advanceShot(shot,time,dt,Number($('speed').value));time=state.time;if(shot!==state.index){shot=state.index;beginTransition();updateLabels();}}
     applyShot(dt);
   }else if(blend){
-    applyShot(dt);
+    applyShot(dt,frameMs/1000);
   }else if(SHOTS[shot].hallOrbit&&!free&&!speakerView&&!reduced.matches){
     time=(time+dt)%100;applyShot(dt);
   }else if(SHOTS[shot].walk&&!free){
@@ -547,7 +555,7 @@ function tick(stamp){
   retreat.ocean.userData.study.update(camera,dt);
   $('coastReadout').textContent='曲线坐标 ('+$('world').dataset.coastCoordinates+') km · 当前潮位 '+$('world').dataset.coastTide+' m';surfAudio.update(camera.position,retreat.ocean.material.uniforms.time.value,dt);
   try{if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
-  resources.frame(frameMs,performance.now()-cpuStart,stamp);
+  flightPerformance.sample(frameMs,performance.now()-cpuStart);resources.frame(frameMs,performance.now()-cpuStart,stamp);
   performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:renderer.getPixelRatio(),rooms:rooms.filter(room=>room.renderActive).length,adaptive:$('adaptiveReadout').textContent});
   if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
   if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;if(!$('settings').hidden){$('weatherCost').textContent='云 / 大气预计算 GPU '+(weatherGpuMs==null?'待采样':weatherGpuMs.toFixed(2)+' ms')+' · CPU '+weatherCpuMs.toFixed(2)+' ms · 云 '+({low:'标准',medium:'精细',high:'超精细',off:'关闭'}[activeCloudQuality])+'（不含主画面的天空、水面和雨滴）';$('world').dataset.weatherCost=JSON.stringify({prepassGPU:weatherGpuMs,prepassCPU:weatherCpuMs,cloud:activeCloudQuality});}const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported,adaptiveLevel:frameQuality.level,adaptiveFPS:frameQuality.stats?.fps});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
@@ -575,9 +583,9 @@ function prepareMainRoom(){
   await waitForEntered($('world'));
   loadingContent('P1 报告厅一楼 · 首屏板书与字体');
   $('world').dataset.hallPreparation='loading';$('world').dataset.startupPhase='hall';$('mode').textContent='正在准备报告厅';
+  const hallTextures=measureCritical('P0 一楼六张材质贴图',()=>startDeferredTextures(()=>{},{phase:'hall',concurrency:2}));
   const [lectureModule,readerModule,voiceModule,settingsModule]=await measureCritical('P1 功能模块与数学排版',()=>Promise.all([import('./lecture.js?v=chinese36-1'),import('./chalk-reader.js?v=inline-root-1'),import('./report-voice.js?v=ye2-report-14'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]));
   createLecture=lectureModule.createLecture;createChalkReader=readerModule.createChalkReader;reportVoicePresentation=voiceModule.reportVoicePresentation;
-  await measureCritical('P1 等待构建空闲回调',()=>idleTurn());
   const root=new THREE.Group();root.name='East-facing compact auditorium blackboards';configureLectureRoot(root);root.position.add(buildingOffset('01B'));scene.add(root);
   lecture=await measureCritical('P1 板书组件与字体初始化',()=>withDeadline(createLecture(root,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'ye',boardScale:device.boardScale,writingStyle:boardWritingStyle,onPreparation:value=>{$('world').dataset.boardPreparation=JSON.stringify(value);}}),30000,'报告板书加载'));retreat.roomFill.apply(root);
   rooms.push(lecture);roomLecterns[0]=retreat.campus.lectern;registerRoomView(lecture,0);
@@ -585,7 +593,7 @@ function prepareMainRoom(){
   reportSettings=settingsModule.mountReportSettings(document,{getLecture:()=>lecture,onRate:rate=>rooms.forEach(room=>room.setVoiceRate(rate))});
   await measureCritical('P1 首屏字形与黑板纹理上传',()=>withDeadline(lecture.prepareOpening(),30000,'开场板书加载'));openingPrepared=true;
   loadingContent('P0 报告厅一楼 · 材质');
-  await measureCritical('P0 一楼六张材质贴图',()=>startDeferredTextures(()=>{},{phase:'hall',concurrency:1}));
+  await hallTextures;
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   $('world').dataset.hallPreparation='ready';$('world').dataset.startupPhase='interactive';visibilityAt=-Infinity;updateLabels();
   return lecture;
@@ -595,11 +603,24 @@ let openingGPUReady=false;
 async function prepareOpeningGPU(){
  if(openingGPUReady)return;loadingContent('P0/P1 运镜材质与显卡准备');
  const warmCamera=camera.clone(),o=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+o.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,o.z];
- await measureCritical('P0/P1 着色器编译',()=>renderer.compileAsync?renderer.compileAsync(scene,warmCamera):renderer.compile(scene,warmCamera));
- const previous=renderer.getRenderTarget(),target=new THREE.WebGLRenderTarget(256,144);
- try{await measureCritical('P0/P1 运镜三视点显卡预热',async()=>{for(const position of [OPENING_POSE.position,[HALL.west*BUILDING_SCALE+o.x-3,end[1],o.z],end]){
-   await new Promise(resolve=>requestAnimationFrame(resolve));warmCamera.position.fromArray(position);warmCamera.lookAt(new THREE.Vector3(end[0]+20,end[1],o.z));warmCamera.updateMatrixWorld();renderer.setRenderTarget(target);renderer.render(scene,warmCamera);renderer.setRenderTarget(previous);
- }});}finally{renderer.setRenderTarget(previous);target.dispose();}
+ const compileTarget=renderer.getRenderTarget();
+ try{if(!profile.direct)renderer.setRenderTarget(composer.readBuffer);await measureCritical('P0/P1 着色器编译',()=>renderer.compileAsync?renderer.compileAsync(scene,warmCamera):renderer.compile(scene,warmCamera));}
+ finally{renderer.setRenderTarget(compileTarget);}
+ // Warm the screen shader variants. Ordinary offscreen targets disable ACES and
+ // use linear output, which used to compile a second, unused set of programs.
+ const viewport=renderer.getViewport(new THREE.Vector4());
+ await measureCritical('P0/P1 屏幕着色器与纹理预热',async()=>{
+  for(const position of [OPENING_POSE.position,[HALL.west*BUILDING_SCALE+o.x-3,end[1],o.z],end]){
+   await new Promise(resolve=>requestAnimationFrame(resolve));
+   warmCamera.position.fromArray(position);warmCamera.lookAt(new THREE.Vector3(end[0]+20,end[1],o.z));warmCamera.updateMatrixWorld();
+   if(profile.direct){
+    try{renderer.setViewport(0,0,256,144);renderer.render(scene,warmCamera);}
+    finally{renderer.setViewport(viewport);renderer.render(scene,camera);}
+   }else{const pass=composer.passes.find(p=>p instanceof RenderPass),previousCamera=pass.camera;
+    try{pass.camera=warmCamera;composer.render();}finally{pass.camera=previousCamera;composer.render();}
+   }
+  }
+ });
  $('world').dataset.criticalTransfers=JSON.stringify(performance.getEntriesByType('resource').filter(e=>e.startTime>=criticalStart).map(e=>({file:decodeURIComponent(new URL(e.name).pathname.split('/').slice(-2).join('/')),startMs:Math.round(e.startTime-criticalStart),durationMs:Math.round(e.duration),waitMs:Math.round(Math.max(0,e.responseStart-e.requestStart)),receiveMs:Math.round(Math.max(0,e.responseEnd-e.responseStart)),bytes:e.decodedBodySize,wireBytes:e.transferSize,cached:e.transferSize===0})).sort((a,b)=>b.durationMs-a.durationMs).slice(0,50));
  openingGPUReady=true;$('world').dataset.openingGPU='ready';loadingContent('P0/P1 已就绪');
 }

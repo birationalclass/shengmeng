@@ -20,7 +20,7 @@ function resolve(spec,parent){
 function module(url){
  if(visited.has(url.href))return;visited.add(url.href);add(url);
  const source=readFileSync(disk(url),'utf8');
- for(const match of source.matchAll(/(?:^|[;\r\n])\s*(?:import|export)\s+(?:(?:[^;'"\r\n]*?)\s+from\s*)?['"]([^'"]+)['"]/g))module(resolve(match[1],url));
+ for(const match of source.matchAll(/(?:^|[;\r\n])\s*(?:import|export)\s*(?:(?:[^;'"\r\n]*?)\bfrom\s*)?['"]([^'"]+)['"]/g))module(resolve(match[1],url));
 }
 add(new URL('index.html',base));
 for(const match of html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"/g))add(new URL(match[1],base));

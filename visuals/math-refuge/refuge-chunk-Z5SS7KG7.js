@@ -1,0 +1,1 @@
+import{a,b,c,d,e,f,g,h,i,j}from"./refuge-chunk-XRZELAFC.js";import"./refuge-chunk-B5HG2U2R.js";export{h as VoiceIconMotion,i as createBoardVoicePanel,a as createReportVoice,j as mapNarrationPosition,c as narrationFrame,f as reportControlLayout,g as reportVoiceIconPosition,e as reportVoicePresentation,b as rowNarrationProgress,d as syncNarrationClock};
