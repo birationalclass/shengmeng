@@ -1,9 +1,9 @@
 import {narrationHighlights,measuredHighlight,highlightFrame,createBoardHighlight} from './board-highlight.js?v=smart-voice-9';
-import {createBoardPageControls} from './board-page-control.js';
-import {drawClassroomActivity} from './classroom-board.js';
-import {createBoardCameraControl} from './board-camera-control.js?v=board-controls-2';
+import {createBoardPageControls} from './board-page-control.js?v=board-controls-3';
+import {drawClassroomActivity} from './classroom-board.js?v=board-controls-3';
+import {createBoardCameraControl} from './board-camera-control.js?v=board-controls-3';
 import {boardContentJump,advanceBoardQueue} from './board-transition.js';
-import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock,bindVoiceFocusPause} from './report-voice.js?v=board-controls-2';
+import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock,bindVoiceFocusPause} from './report-voice.js?v=board-controls-3';
 import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v=smart-voice-9';
@@ -252,7 +252,7 @@ export async function createLecture(scene,renderer,options={}){
     const erasing=index===clock.active&&clock.phase==='erase'&&clock.progress>0;
     const wet=board.wet,wetAge=wet?effectTime-wet.started:Infinity;
     const wetKey=wet&&wet.progress>0&&wetAge<wet.duration+DRY_SECONDS?(Math.floor(effectTime*12)+':'+wet.progress.toFixed(3)):'';
-    const activity=activeReport.kind==='classroom'&&voice.state.activity?.page===slot.page&&index===clock.active?voice.state.activity:null;
+    const activity=activeReport.kind==='classroom'&&['exercise','break'].includes(voice.state.activity?.activityType)&&voice.state.activity?.page===slot.page&&index===clock.active?voice.state.activity:null;
     const activityKey=activity?activity.start+':'+Math.ceil(activity.remaining)+':'+voice.state.phase:'';
     const key=`${activityKey}:${slot.page}:${slot.progress.toFixed(3)}:${erasing?clock.progress.toFixed(3):''}:${cache.has(slot.page)}:${wetKey}`;
     if(!preparing&&(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0))return;
@@ -293,16 +293,15 @@ export async function createLecture(scene,renderer,options={}){
     tool.position.set(board.position.x+(x/W-.5)*BOARD_W,board.position.y+(.5-y/H)*BOARD_H,board.position.z+.014);
   }
   function select(page){if(disabled)return;voice.pause();if(voice.manifest){void seek(page);return;}openingDemo=null;clock.select(page);targets[Math.floor(clock.active/2)]=clock.active%2;version++;load(clock.page).catch(error=>{loadingError=error;});}
-  async function seek(page){
+  async function seek(page,{preservePlayback=false}={}){
     if(disabled)return false;
-    voice.pause();
-    if(voice.manifest){const b=voice.manifest.boards.find(b=>b.page===page);if(b)await voice.seek(b.writeStart);}
     openingDemo=null;
     const request=++seekRequest,epoch=generation;
     const target=Math.max(clock.startAt,Math.min(clock.stopAt,Math.trunc(page)||0));
     seeking=true;seekPinned=new Set(Array.from({length:target-Math.max(clock.startAt,target-(voice.manifest?6:5))+1},(_,i)=>Math.max(clock.startAt,target-(voice.manifest?6:5))+i));
     try{
-      await Promise.all(Array.from({length:target-Math.max(clock.startAt,target-(voice.manifest?6:5))+1},(_,i)=>load(Math.max(clock.startAt,target-(voice.manifest?6:5))+i)));
+      const preparation=Promise.all(Array.from({length:target-Math.max(clock.startAt,target-(voice.manifest?6:5))+1},(_,i)=>load(Math.max(clock.startAt,target-(voice.manifest?6:5))+i)));
+      const board=voice.manifest?.boards.find(b=>b.page===target);if(board)await voice.seek(board.writeStart,{preservePlayback,ready:preparation});else{voice.pause();await preparation;}
       if(request!==seekRequest||epoch!==generation)return false;
       clock.seek(target);
       for(let pair=0;pair<3;pair++){

@@ -1,11 +1,11 @@
 // On-demand narration: no network or audio allocation until a report is selected.
 export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),onChange=()=>{},baseURL=new URL('.',import.meta.url).href,now=()=>performance.now()/1000}={}){
  let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,contextActive=true,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0,playbackRate=1;
- let activity=null,segmentEnding=false;
+ let activity=null,segmentEnding=false,navigationIntent=false;
  const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',started:false,chapter:0,temporaryPause:false,rate:1,activity:null};
  const emit=()=>onChange({...state});
  const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index];state.time=Math.min(state.duration,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=manifest.chapters[index].start+activity.at;state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}return state.time;};
- function pause(){sync();if(activity)activity.running=false;desired=false;state.temporaryPause=false;playToken++;audio?.pause();if(['playing','buffering','preparing','away'].includes(state.phase)){state.phase='paused';emit();}}
+ function pause(){sync();if(activity)activity.running=false;desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio?.pause();if(['playing','buffering','preparing','away'].includes(state.phase)){state.phase='paused';emit();}}
  function release(){pause();audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();}
  async function bytes(src,mine,show,sizeHint=0){
   const controller=new AbortController();controllers.add(controller);
@@ -64,11 +64,11 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
    const ready=await attach(0);if(ready&&desired)await play();return ready;
   }catch(error){if(mine!==epoch||error.name==='AbortError')return false;desired=false;state.temporaryPause=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();return false;}
  }
- async function seek(time){
-  if(!manifest)return false;pause();const mine=epoch,target=Math.max(0,Math.min(manifest.duration,Number(time)||0));state.started=true;
+ async function seek(time,{preservePlayback=false,ready=null}={}){
+  if(!manifest)return false;const resume=preservePlayback&&(desired||navigationIntent);pause();navigationIntent=resume;const mine=epoch,intent=playToken,target=Math.max(0,Math.min(manifest.duration,Number(time)||0));state.started=true;
   const i=Math.max(0,manifest.chapters.findLastIndex(c=>c.start<=target)),at=Math.min(manifest.chapters[i].duration-.025,target-manifest.chapters[i].start);
-  try{if(activity&&i===index){activity.at=Math.max(0,at);activity.stamp=now();state.time=target;state.phase='paused';sync();emit();return true;}if(audio&&i===index){audio.currentTime=(manifest.chapters[i].mediaStart||0)+Math.max(0,at);state.time=target;state.phase='paused';emit();return true;}return await attach(i,Math.max(0,at));}
-  catch{if(mine===epoch){state.phase='error';state.error='语音定位失败 · 点击重试';emit();}return false;}
+  try{let attached=true;if(activity&&i===index){activity.at=Math.max(0,at);activity.stamp=now();state.time=target;state.phase='paused';sync();emit();}else if(audio&&i===index){audio.currentTime=(manifest.chapters[i].mediaStart||0)+Math.max(0,at);state.time=target;state.phase='paused';emit();}else attached=await attach(i,Math.max(0,at));await ready;if(mine===epoch&&intent===playToken){navigationIntent=false;if(attached&&resume)await play();}return attached;}
+  catch{if(mine===epoch&&intent===playToken){navigationIntent=false;state.phase='error';state.error='语音定位失败 · 点击重试';emit();}return false;}
  }
  async function toggle(){
   if(['playing','buffering','preparing','away'].includes(state.phase)){pause();return true;}

@@ -27,6 +27,6 @@ test('ordinary visible seeks retain their content fade with a green previous sur
 });
 
 test('exercise countdown repaints the current opaque board and clears on feedback',()=>{
- const {api,boards,context}=fixture();context.renderActive=true;context.activeReport.kind='classroom';context.clock.active=0;context.clock.phase='hold';context.clock.slots[0].progress=1;context.voice.state.activity={page:0,start:10,remaining:9.5};
+ const {api,boards,context}=fixture();context.renderActive=true;context.activeReport.kind='classroom';context.clock.active=0;context.clock.phase='hold';context.clock.slots[0].progress=1;context.voice.state.activity={page:0,start:10,remaining:9.5,activityType:'exercise'};
  api.draw(0);assert.equal(boards[0].canvas.color,'exercise:10');context.voice.state.activity.remaining=8.9;api.draw(0);assert.equal(boards[0].canvas.color,'exercise:9');context.voice.state.activity=null;api.draw(0);assert.equal(boards[0].canvas.color,'#193d33');
 });
