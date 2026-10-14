@@ -1,0 +1,454 @@
+@MvPolynomial.coordinateNativeTopCech_shortExact_gIsCokernel : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          {T : CategoryTheory.ShortComplex (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).Modules} →
+            T.ShortExact →
+              [SheafOfModules.IsQuasicoherent T.X₁] →
+                [SheafOfModules.IsQuasicoherent T.X₂] →
+                  [SheafOfModules.IsQuasicoherent T.X₃] →
+                    (n : ℕ) →
+                      Fintype.card σ = n + 2 →
+                        CategoryTheory.Limits.IsColimit
+                          (CategoryTheory.Limits.CokernelCofork.ofπ
+                            (T.map (MvPolynomial.coordinateNativeCechHomologyFunctor n)).g ⋯)
+'MvPolynomial.coordinateNativeTopCech_shortExact_gIsCokernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeTopCech_shortExact_cokernelIso : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          {T : CategoryTheory.ShortComplex (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).Modules} →
+            T.ShortExact →
+              [SheafOfModules.IsQuasicoherent T.X₁] →
+                [SheafOfModules.IsQuasicoherent T.X₂] →
+                  [SheafOfModules.IsQuasicoherent T.X₃] →
+                    (n : ℕ) →
+                      Fintype.card σ = n + 2 →
+                        (CategoryTheory.Limits.cokernel (T.map (MvPolynomial.coordinateNativeCechHomologyFunctor n)).f ≅
+                          (MvPolynomial.coordinateNativeCechHomologyFunctor n).obj T.X₃)
+'MvPolynomial.coordinateNativeTopCech_shortExact_cokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeTopCech_shortExact_cokernelIso_quotient : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ]
+  {T : CategoryTheory.ShortComplex (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).Modules}
+  (hT : T.ShortExact) [inst_3 : SheafOfModules.IsQuasicoherent T.X₁] [inst_4 : SheafOfModules.IsQuasicoherent T.X₂]
+  [inst_5 : SheafOfModules.IsQuasicoherent T.X₃] (n : ℕ) (hc : Fintype.card σ = n + 2),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π (T.map (MvPolynomial.coordinateNativeCechHomologyFunctor n)).f)
+      (MvPolynomial.coordinateNativeTopCech_shortExact_cokernelIso hT n hc).hom =
+    (MvPolynomial.coordinateNativeCechHomologyFunctor n).map T.g
+'MvPolynomial.coordinateNativeTopCech_shortExact_cokernelIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@CategoryTheory.ShortComplex.ShortExact.homology_gIsCokernel_of_next_exact : {C : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} C] →
+    [inst_1 : CategoryTheory.Abelian C] →
+      {ι : Type u_3} →
+        {c : ComplexShape ι} →
+          {S : CategoryTheory.ShortComplex (HomologicalComplex C c)} →
+            S.ShortExact →
+              (i j : ι) →
+                c.Rel i j →
+                  S.X₁.ExactAt j →
+                    CategoryTheory.Limits.IsColimit
+                      (CategoryTheory.Limits.CokernelCofork.ofπ (S.map (HomologicalComplex.homologyFunctor C c i)).g ⋯)
+'CategoryTheory.ShortComplex.ShortExact.homology_gIsCokernel_of_next_exact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeGradedKernelOrderedCech_topCokernelData : {K S E F : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup E] →
+          [inst_4 : Module K E] →
+            [inst_5 : Module S E] →
+              [inst_6 : IsScalarTower K S E] →
+                [inst_7 : AddCommGroup F] →
+                  [inst_8 : Module K F] →
+                    [inst_9 : Module S F] →
+                      [IsScalarTower K S F] →
+                        (𝓑 : ℕ → Submodule K S) →
+                          [inst_11 : GradedAlgebra 𝓑] →
+                            (ℰ : ℤ → Submodule K E) →
+                              (ℱ : ℤ → Submodule K F) →
+                                [DirectSum.Decomposition ℰ] →
+                                  [inst_13 : DirectSum.Decomposition ℱ] →
+                                    (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d)) →
+                                      (hF : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℱ d, c • x ∈ ℱ (↑n + d)) →
+                                        (b : E →ₗ[S] F) →
+                                          (hh : ∀ (d : ℤ), ∀ x ∈ ℰ d, b x ∈ ℱ d) →
+                                            {ι : Type u_1} →
+                                              [inst_14 : Fintype ι] →
+                                                [inst_15 : LinearOrder ι] →
+                                                  (a : ι → S) →
+                                                    (∀ (i : ι), a i ∈ 𝓑 1) →
+                                                      ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤ →
+                                                        {Y : AlgebraicGeometry.Scheme} →
+                                                          (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) →
+                                                            [IsNoetherianRing S] →
+                                                              [Module.Finite S E] →
+                                                                Function.Surjective ⇑b →
+                                                                  (k : ℤ) →
+                                                                    (q : ℕ) →
+                                                                      Fintype.card ι = q + 1 →
+                                                                        have T :=
+                                                                          {
+                                                                            X₁ :=
+                                                                              LinearStudy.nativeProjectiveModuleSheaf 𝓑
+                                                                                (LinearStudy.nativeProjectiveKernelPiece
+                                                                                  ℰ b)
+                                                                                ⋯ k,
+                                                                            X₂ :=
+                                                                              LinearStudy.nativeProjectiveModuleSheaf 𝓑
+                                                                                ℰ hE k,
+                                                                            X₃ :=
+                                                                              LinearStudy.nativeProjectiveModuleSheaf 𝓑
+                                                                                ℱ hF k,
+                                                                            f :=
+                                                                              LinearStudy.nativeProjectiveKernelSheafInclusion
+                                                                                𝓑 ℰ hE b k,
+                                                                            g :=
+                                                                              LinearStudy.nativeProjectiveDegreeZeroSheafMap
+                                                                                𝓑 ℰ ℱ hE hF b hh k,
+                                                                            zero := ⋯ };
+                                                                        let G :=
+                                                                          AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor
+                                                                            π fun i =>
+                                                                            AlgebraicGeometry.Proj.basicOpen 𝓑 (a i);
+                                                                        CategoryTheory.Limits.IsColimit
+                                                                          (CategoryTheory.Limits.CokernelCofork.ofπ
+                                                                            ((T.map G).map
+                                                                                (HomologicalComplex.homologyFunctor
+                                                                                  (ModuleCat
+                                                                                    ↑(Y.presheaf.obj (Opposite.op ⊤)))
+                                                                                  (ComplexShape.up ℕ) q)).g
+                                                                            ⋯)
+'LinearStudy.nativeGradedKernelOrderedCech_topCokernelData' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeGradedKernelOrderedCech_topCokernelIso : {K S E F : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup E] →
+          [inst_4 : Module K E] →
+            [inst_5 : Module S E] →
+              [inst_6 : IsScalarTower K S E] →
+                [inst_7 : AddCommGroup F] →
+                  [inst_8 : Module K F] →
+                    [inst_9 : Module S F] →
+                      [IsScalarTower K S F] →
+                        (𝓑 : ℕ → Submodule K S) →
+                          [inst_11 : GradedAlgebra 𝓑] →
+                            (ℰ : ℤ → Submodule K E) →
+                              (ℱ : ℤ → Submodule K F) →
+                                [DirectSum.Decomposition ℰ] →
+                                  [DirectSum.Decomposition ℱ] →
+                                    (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d)) →
+                                      (hF : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℱ d, c • x ∈ ℱ (↑n + d)) →
+                                        (b : E →ₗ[S] F) →
+                                          (∀ (d : ℤ), ∀ x ∈ ℰ d, b x ∈ ℱ d) →
+                                            {ι : Type u_1} →
+                                              [inst_14 : Fintype ι] →
+                                                [inst_15 : LinearOrder ι] →
+                                                  (a : ι → S) →
+                                                    (∀ (i : ι), a i ∈ 𝓑 1) →
+                                                      ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤ →
+                                                        {Y : AlgebraicGeometry.Scheme} →
+                                                          (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) →
+                                                            [IsNoetherianRing S] →
+                                                              [Module.Finite S E] →
+                                                                Function.Surjective ⇑b →
+                                                                  (k : ℤ) →
+                                                                    (q : ℕ) →
+                                                                      Fintype.card ι = q + 1 →
+                                                                        (CategoryTheory.Limits.cokernel
+                                                                            (HomologicalComplex.homologyMap
+                                                                              ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor
+                                                                                    π fun i =>
+                                                                                    AlgebraicGeometry.Proj.basicOpen 𝓑
+                                                                                      (a i)).map
+                                                                                (LinearStudy.nativeProjectiveKernelSheafInclusion
+                                                                                  𝓑 ℰ hE b k))
+                                                                              q) ≅
+                                                                          HomologicalComplex.homology
+                                                                            (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex
+                                                                              π
+                                                                              (LinearStudy.nativeProjectiveModuleSheaf 𝓑
+                                                                                ℱ hF k)
+                                                                              fun i =>
+                                                                              AlgebraicGeometry.Proj.basicOpen 𝓑 (a i))
+                                                                            q)
+'LinearStudy.nativeGradedKernelOrderedCech_topCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeGradedKernelOrderedCech_topCokernelIso_quotient : ∀ {K S E F : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup E] [inst_4 : Module K E] [inst_5 : Module S E]
+  [inst_6 : IsScalarTower K S E] [inst_7 : AddCommGroup F] [inst_8 : Module K F] [inst_9 : Module S F]
+  [inst_10 : IsScalarTower K S F] (𝓑 : ℕ → Submodule K S) [inst_11 : GradedAlgebra 𝓑] (ℰ : ℤ → Submodule K E)
+  (ℱ : ℤ → Submodule K F) [inst_12 : DirectSum.Decomposition ℰ] [inst_13 : DirectSum.Decomposition ℱ]
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d))
+  (hF : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℱ d, c • x ∈ ℱ (↑n + d)) (b : E →ₗ[S] F)
+  (hh : ∀ (d : ℤ), ∀ x ∈ ℰ d, b x ∈ ℱ d) {ι : Type u_1} [inst_14 : Fintype ι] [inst_15 : LinearOrder ι] (a : ι → S)
+  (ha : ∀ (i : ι), a i ∈ 𝓑 1) (hcover : ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤)
+  {Y : AlgebraicGeometry.Scheme} (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) [inst_16 : IsNoetherianRing S]
+  [inst_17 : Module.Finite S E] (hb : Function.Surjective ⇑b) (k : ℤ) (q : ℕ) (hq : Fintype.card ι = q + 1),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π
+        (HomologicalComplex.homologyMap
+          ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π fun i =>
+                AlgebraicGeometry.Proj.basicOpen 𝓑 (a i)).map
+            (LinearStudy.nativeProjectiveKernelSheafInclusion 𝓑 ℰ hE b k))
+          q))
+      (LinearStudy.nativeGradedKernelOrderedCech_topCokernelIso 𝓑 ℰ ℱ hE hF b hh a ha hcover π hb k q hq).hom =
+    HomologicalComplex.homologyMap
+      ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π fun i =>
+            AlgebraicGeometry.Proj.basicOpen 𝓑 (a i)).map
+        (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 ℰ ℱ hE hF b hh k))
+      q
+'LinearStudy.nativeGradedKernelOrderedCech_topCokernelIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeGradedPresentationOrderedCech_topCokernelIso : {K S R E M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup R] →
+          [inst_4 : Module K R] →
+            [inst_5 : Module S R] →
+              [IsScalarTower K S R] →
+                [inst_7 : AddCommGroup E] →
+                  [inst_8 : Module K E] →
+                    [inst_9 : Module S E] →
+                      [IsScalarTower K S E] →
+                        [inst_11 : AddCommGroup M] →
+                          [inst_12 : Module K M] →
+                            [inst_13 : Module S M] →
+                              [IsScalarTower K S M] →
+                                (𝓑 : ℕ → Submodule K S) →
+                                  [inst_15 : GradedAlgebra 𝓑] →
+                                    (ℛ : ℤ → Submodule K R) →
+                                      (ℰ : ℤ → Submodule K E) →
+                                        (𝒟 : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition ℛ] →
+                                            [DirectSum.Decomposition ℰ] →
+                                              [DirectSum.Decomposition 𝒟] →
+                                                (hR : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℛ d, c • x ∈ ℛ (↑n + d)) →
+                                                  (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d)) →
+                                                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d)) →
+                                                      (c : R →ₗ[S] E) →
+                                                        (b : E →ₗ[S] M) →
+                                                          (hrel : ∀ (d : ℤ), ∀ x ∈ ℛ d, c x ∈ ℰ d) →
+                                                            (∀ (d : ℤ), ∀ x ∈ ℰ d, b x ∈ 𝒟 d) →
+                                                              {ι : Type u_1} →
+                                                                [inst_19 : Fintype ι] →
+                                                                  [inst_20 : LinearOrder ι] →
+                                                                    (a : ι → S) →
+                                                                      (∀ (i : ι), a i ∈ 𝓑 1) →
+                                                                        ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) =
+                                                                            ⊤ →
+                                                                          {Y : AlgebraicGeometry.Scheme} →
+                                                                            (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) →
+                                                                              [IsNoetherianRing S] →
+                                                                                [Module.Finite S R] →
+                                                                                  [Module.Finite S E] →
+                                                                                    Function.Surjective ⇑b →
+                                                                                      c.range = b.ker →
+                                                                                        (k : ℤ) →
+                                                                                          (q : ℕ) →
+                                                                                            Fintype.card ι = q + 1 →
+                                                                                              (CategoryTheory.Limits.cokernel
+                                                                                                  (HomologicalComplex.homologyMap
+                                                                                                    ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor
+                                                                                                          π fun i =>
+                                                                                                          AlgebraicGeometry.Proj.basicOpen
+                                                                                                            𝓑 (a i)).map
+                                                                                                      (LinearStudy.nativeProjectiveDegreeZeroSheafMap
+                                                                                                        𝓑 ℛ ℰ hR hE c
+                                                                                                        hrel k))
+                                                                                                    q) ≅
+                                                                                                HomologicalComplex.homology
+                                                                                                  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex
+                                                                                                    π
+                                                                                                    (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                                      𝓑 𝒟 hD k)
+                                                                                                    fun i =>
+                                                                                                    AlgebraicGeometry.Proj.basicOpen
+                                                                                                      𝓑 (a i))
+                                                                                                  q)
+'LinearStudy.nativeGradedPresentationOrderedCech_topCokernelIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeGradedPresentationOrderedCech_topCokernelIso_quotient : ∀ {K S R E M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup R] [inst_4 : Module K R] [inst_5 : Module S R]
+  [inst_6 : IsScalarTower K S R] [inst_7 : AddCommGroup E] [inst_8 : Module K E] [inst_9 : Module S E]
+  [inst_10 : IsScalarTower K S E] [inst_11 : AddCommGroup M] [inst_12 : Module K M] [inst_13 : Module S M]
+  [inst_14 : IsScalarTower K S M] (𝓑 : ℕ → Submodule K S) [inst_15 : GradedAlgebra 𝓑] (ℛ : ℤ → Submodule K R)
+  (ℰ : ℤ → Submodule K E) (𝒟 : ℤ → Submodule K M) [inst_16 : DirectSum.Decomposition ℛ]
+  [inst_17 : DirectSum.Decomposition ℰ] [inst_18 : DirectSum.Decomposition 𝒟]
+  (hR : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℛ d, c • x ∈ ℛ (↑n + d))
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ ℰ d, c • x ∈ ℰ (↑n + d))
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ 𝓑 n, ∀ x ∈ 𝒟 d, c • x ∈ 𝒟 (↑n + d)) (c : R →ₗ[S] E) (b : E →ₗ[S] M)
+  (hrel : ∀ (d : ℤ), ∀ x ∈ ℛ d, c x ∈ ℰ d) (hquot : ∀ (d : ℤ), ∀ x ∈ ℰ d, b x ∈ 𝒟 d) {ι : Type u_1}
+  [inst_19 : Fintype ι] [inst_20 : LinearOrder ι] (a : ι → S) (ha : ∀ (i : ι), a i ∈ 𝓑 1)
+  (hcover : ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤) {Y : AlgebraicGeometry.Scheme}
+  (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite S R]
+  [inst_23 : Module.Finite S E] (hb : Function.Surjective ⇑b) (hex : c.range = b.ker) (k : ℤ) (q : ℕ)
+  (hq : Fintype.card ι = q + 1),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π
+        (HomologicalComplex.homologyMap
+          ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π fun i =>
+                AlgebraicGeometry.Proj.basicOpen 𝓑 (a i)).map
+            (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 ℛ ℰ hR hE c hrel k))
+          q))
+      (LinearStudy.nativeGradedPresentationOrderedCech_topCokernelIso 𝓑 ℛ ℰ 𝒟 hR hE hD c b hrel hquot a ha hcover π hb
+          hex k q hq).hom =
+    HomologicalComplex.homologyMap
+      ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π fun i =>
+            AlgebraicGeometry.Proj.basicOpen 𝓑 (a i)).map
+        (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 ℰ 𝒟 hE hD b hquot k))
+      q
+'LinearStudy.nativeGradedPresentationOrderedCech_topCokernelIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerShiftedFreeMapEntry : {S : Type u_1} →
+  {I : Type u_2} → {J : Type u_3} → [inst : CommRing S] → [DecidableEq I] → ((I → S) →ₗ[S] J → S) → I → J → S
+'LinearStudy.integerShiftedFreeMapEntry' depends on axioms: [Quot.sound]
+@LinearStudy.integerShiftedFreeMapEntry_mem : ∀ {K : Type u_1} {S : Type u_2} {I : Type u_3} {J : Type u_4}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
+  [inst_4 : DecidableEq I] (z : I → ℤ) (w : J → ℤ) (c : (I → S) →ₗ[S] J → S),
+  (∀ (d : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z d, c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w d) →
+    ∀ (i : I) (j : J),
+      LinearStudy.integerShiftedFreeMapEntry c i j ∈ LinearStudy.nativeProjectiveRingIntegerPiece 𝓑 (z i - w j)
+'LinearStudy.integerShiftedFreeMapEntry_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeMapEntry_eq_zero : ∀ {K : Type u_1} {S : Type u_2} {I : Type u_3} {J : Type u_4}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
+  [inst_4 : DecidableEq I] (z : I → ℤ) (w : J → ℤ) (c : (I → S) →ₗ[S] J → S),
+  (∀ (d : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z d, c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w d) →
+    ∀ (i : I) (j : J), z i < w j → LinearStudy.integerShiftedFreeMapEntry c i j = 0
+'LinearStudy.integerShiftedFreeMapEntry_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeMap_apply : ∀ {S : Type u_1} {I : Type u_2} {J : Type u_3} [inst : CommRing S]
+  [inst_1 : DecidableEq I] (c : (I → S) →ₗ[S] J → S) [inst_2 : Fintype I] (x : I → S) (j : J),
+  c x j = ∑ i, x i * LinearStudy.integerShiftedFreeMapEntry c i j
+'LinearStudy.integerShiftedFreeMap_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeShiftedFreePresentationOrderedCech_topCokernelIso : {K S M I J ι : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              [IsScalarTower K S M] →
+                [Fintype I] →
+                  [DecidableEq I] →
+                    [Fintype J] →
+                      [DecidableEq J] →
+                        (𝓑 : ℕ → Submodule K S) →
+                          [inst_11 : GradedAlgebra 𝓑] →
+                            (z : I → ℤ) →
+                              (w : J → ℤ) →
+                                (𝒟 : ℤ → Submodule K M) →
+                                  [DirectSum.Decomposition 𝒟] →
+                                    (hD : ∀ (n : ℕ) (d : ℤ), ∀ a ∈ 𝓑 n, ∀ x ∈ 𝒟 d, a • x ∈ 𝒟 (↑n + d)) →
+                                      (c : (I → S) →ₗ[S] J → S) →
+                                        (b : (J → S) →ₗ[S] M) →
+                                          (hrel :
+                                              ∀ (d : ℤ),
+                                                ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z d,
+                                                  c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w d) →
+                                            (∀ (d : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w d, b x ∈ 𝒟 d) →
+                                              [inst_13 : Fintype ι] →
+                                                [inst_14 : LinearOrder ι] →
+                                                  (a : ι → S) →
+                                                    (∀ (i : ι), a i ∈ 𝓑 1) →
+                                                      ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤ →
+                                                        {Y : AlgebraicGeometry.Scheme} →
+                                                          (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) →
+                                                            [IsNoetherianRing S] →
+                                                              Function.Surjective ⇑b →
+                                                                c.range = b.ker →
+                                                                  (k : ℤ) →
+                                                                    (q : ℕ) →
+                                                                      Fintype.card ι = q + 1 →
+                                                                        (CategoryTheory.Limits.cokernel
+                                                                            (HomologicalComplex.homologyMap
+                                                                              ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor
+                                                                                    π fun i =>
+                                                                                    AlgebraicGeometry.Proj.basicOpen 𝓑
+                                                                                      (a i)).map
+                                                                                (LinearStudy.nativeProjectiveDegreeZeroSheafMap
+                                                                                  𝓑
+                                                                                  (LinearStudy.integerShiftedFreePiece 𝓑
+                                                                                    z)
+                                                                                  (LinearStudy.integerShiftedFreePiece 𝓑
+                                                                                    w)
+                                                                                  ⋯ ⋯ c hrel k))
+                                                                              q) ≅
+                                                                          HomologicalComplex.homology
+                                                                            (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex
+                                                                              π
+                                                                              (LinearStudy.nativeProjectiveModuleSheaf 𝓑
+                                                                                𝒟 hD k)
+                                                                              fun i =>
+                                                                              AlgebraicGeometry.Proj.basicOpen 𝓑 (a i))
+                                                                            q)
+'LinearStudy.nativeShiftedFreePresentationOrderedCech_topCokernelIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeShiftedFreePresentationOrderedCech_topCokernelIso_quotient : ∀ {K S M I J ι : Type u_1}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] [inst_6 : IsScalarTower K S M] [inst_7 : Fintype I] [inst_8 : DecidableEq I]
+  [inst_9 : Fintype J] [inst_10 : DecidableEq J] (𝓑 : ℕ → Submodule K S) [inst_11 : GradedAlgebra 𝓑] (z : I → ℤ)
+  (w : J → ℤ) (𝒟 : ℤ → Submodule K M) [inst_12 : DirectSum.Decomposition 𝒟]
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ a ∈ 𝓑 n, ∀ x ∈ 𝒟 d, a • x ∈ 𝒟 (↑n + d)) (c : (I → S) →ₗ[S] J → S) (b : (J → S) →ₗ[S] M)
+  (hrel : ∀ (d : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z d, c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w d)
+  (hquot : ∀ (d : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w d, b x ∈ 𝒟 d) [inst_13 : Fintype ι]
+  [inst_14 : LinearOrder ι] (a : ι → S) (ha : ∀ (i : ι), a i ∈ 𝓑 1)
+  (hcover : ⨆ i, AlgebraicGeometry.Proj.basicOpen 𝓑 (a i) = ⊤) {Y : AlgebraicGeometry.Scheme}
+  (π : AlgebraicGeometry.Proj 𝓑 ⟶ Y) [inst_15 : IsNoetherianRing S] (hb : Function.Surjective ⇑b)
+  (hex : c.range = b.ker) (k : ℤ) (q : ℕ) (hq : Fintype.card ι = q + 1),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π
+        (HomologicalComplex.homologyMap
+          ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π fun i =>
+                AlgebraicGeometry.Proj.basicOpen 𝓑 (a i)).map
+            (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 (LinearStudy.integerShiftedFreePiece 𝓑 z)
+              (LinearStudy.integerShiftedFreePiece 𝓑 w) ⋯ ⋯ c hrel k))
+          q))
+      (LinearStudy.nativeShiftedFreePresentationOrderedCech_topCokernelIso 𝓑 z w 𝒟 hD c b hrel hquot a ha hcover π hb
+          hex k q hq).hom =
+    HomologicalComplex.homologyMap
+      ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π fun i =>
+            AlgebraicGeometry.Proj.basicOpen 𝓑 (a i)).map
+        (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 (LinearStudy.integerShiftedFreePiece 𝓑 w) 𝒟 ⋯ hD b hquot k))
+      q
+'LinearStudy.nativeShiftedFreePresentationOrderedCech_topCokernelIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeShiftedFreePrime_matrixEntry : ∀ {K S I J : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] [inst_4 : DecidableEq I]
+  (c : (I → S) →ₗ[S] J → S) (i : I) (j : J) (p : ProjectiveSpectrum 𝓑)
+  (x : LinearStudy.nativeProjectiveModuleAtPrime 𝓑 p),
+  (LinearStudy.nativeProjectiveModuleAtPrimeMap 𝓑 (LinearMap.proj j) p)
+      ((LinearStudy.nativeProjectiveModuleAtPrimeMap 𝓑 c p)
+        ((LinearStudy.nativeProjectiveModuleAtPrimeMap 𝓑 (LinearMap.single S (fun x => S) i) p) x)) =
+    (LinearStudy.nativeProjectiveModuleAtPrimeMap 𝓑
+        ((LinearMap.lsmul S S) (LinearStudy.integerShiftedFreeMapEntry c i j)) p)
+      x
+'LinearStudy.nativeShiftedFreePrime_matrixEntry' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeShiftedFreeSheaf_matrixEntry_value : ∀ {K S I J : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] [inst_4 : DecidableEq I]
+  (c : (I → S) →ₗ[S] J → S) [inst_5 : DecidableEq J] (z : I → ℤ) (w : J → ℤ)
+  (hh : ∀ (d : ℤ), ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 z d, c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 w d)
+  (i : I) (j : J) (U : (TopologicalSpace.Opens ↑(ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+  (s : ↥(LinearStudy.nativeProjectiveModuleSections 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (-z i) U))
+  (p : ↥(Opposite.unop U)),
+  ↑((CategoryTheory.ConcreteCategory.hom
+            ((CategoryTheory.CategoryStruct.comp (LinearStudy.nativeShiftedFreeCoordinateSheafInclusion 𝓑 z i)
+                    (CategoryTheory.CategoryStruct.comp
+                      (LinearStudy.nativeProjectiveDegreeZeroSheafMap 𝓑 (LinearStudy.integerShiftedFreePiece 𝓑 z)
+                        (LinearStudy.integerShiftedFreePiece 𝓑 w) ⋯ ⋯ c hh 0)
+                      (LinearStudy.nativeShiftedFreeCoordinateSheafProjection 𝓑 w j))).val.app
+              U))
+          s)
+      p =
+    LinearStudy.integerShiftedFreeMapEntry c i j • ↑s p
+'LinearStudy.nativeShiftedFreeSheaf_matrixEntry_value' depends on axioms: [propext, Classical.choice, Quot.sound]
