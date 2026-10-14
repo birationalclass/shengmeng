@@ -3,6 +3,12 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {OpeningPerformance} from './opening-performance.js';
 import {ResourceScheduler} from './resource-scheduler.js';
+import {loadBoardFonts} from './staged-startup.js';
+test('all required board fonts start together before report content is available',async()=>{
+ const started=[],finish=[];const job=loadBoardFonts({fonts:{load(font){started.push(font);return new Promise(r=>finish.push(r));}}});
+ assert.equal(started.length,3);let done=false;job.then(()=>done=true);finish[0]();await Promise.resolve();assert.equal(done,false);finish.slice(1).forEach(r=>r());await job;assert.equal(done,true);
+ await loadBoardFonts({});
+});
 test('whole-flight metrics retain rare stalls outside a rolling sample window',()=>{
  const m=new OpeningPerformance();m.start(1000);m.sample(180,4);for(let i=0;i<1000;i++)m.sample(16,3);
  const r=m.finish(17000);assert.equal(r.maxFrameMs,180);assert.equal(r.over100ms,1);assert.equal(r.frameP95,16);assert.equal(r.durationMs,16000);

@@ -36,5 +36,5 @@ function critical(path){if(staticFiles.has(path))return;staticFiles.add(path);co
 critical('refuge-app.js');critical('refuge-social.js');critical('refuge-meter.js');
 html=html.replace(/\n?\s*<link\b[^>]*data-refuge-bundle[^>]*>/g,'');
 html=html.replace('</head>',[...staticFiles].filter(p=>p.startsWith('refuge-chunk-')).map(p=>`  <link rel="modulepreload" data-refuge-bundle href="${p}">`).join('\n')+'\n</head>');
-writeFileSync(resolve(root,'index.html'),html);
+writeFileSync(resolve(root,'index.html'),html.replace(/[ \t]+$/gm,''));
 console.log(JSON.stringify({outputs:outputs.length,bytes:outputs.reduce((a,b)=>a+b.bytes,0)}));
