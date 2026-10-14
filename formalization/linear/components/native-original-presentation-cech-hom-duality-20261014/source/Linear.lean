@@ -1,0 +1,8 @@
+module
+public import Linear.NativeOriginalPresentationCanonicalScalarCokernel
+public import Linear.ProjectiveOriginalGradedPolynomialMultiply
+public import Linear.IntegerShiftedFreeNaturalRelationCoordinates
+public import Linear.NativeOriginalRelationNaturalComponents
+public import Linear.NativeOriginalDegreeRelationDualCokernel
+public import Linear.NativeOriginalPolynomialCokernelHomDual
+public import Linear.NativeOriginalPresentationCechHomDuality

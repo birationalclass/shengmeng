@@ -1,0 +1,626 @@
+@MvPolynomial.coordinateNativeOriginalPresentationKPolynomialTopCokernelIso : {K M : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          [inst_3 : AddCommGroup M] →
+            [inst_4 : Module K M] →
+              [inst_5 : Module (MvPolynomial σ K) M] →
+                [IsScalarTower K (MvPolynomial σ K) M] →
+                  {I J : Type} →
+                    [inst_7 : Fintype I] →
+                      [inst_8 : DecidableEq I] →
+                        [inst_9 : Fintype J] →
+                          [DecidableEq J] →
+                            (a : I → ℕ) →
+                              (b : J → ℕ) →
+                                (D : ℤ → Submodule K M) →
+                                  [DirectSum.Decomposition D] →
+                                    (hD :
+                                        ∀ (t : ℕ) (d : ℤ),
+                                          ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t,
+                                            ∀ x ∈ D d, p • x ∈ D (↑t + d)) →
+                                      (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K) →
+                                        (β : (J → MvPolynomial σ K) →ₗ[MvPolynomial σ K] M) →
+                                          (hc :
+                                              ∀ (d : ℤ),
+                                                ∀
+                                                  x ∈
+                                                    LinearStudy.integerShiftedFreePiece
+                                                      (MvPolynomial.homogeneousSubmodule σ K)
+                                                      (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+                                                  c x ∈
+                                                    LinearStudy.integerShiftedFreePiece
+                                                      (MvPolynomial.homogeneousSubmodule σ K)
+                                                      (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d) →
+                                            (∀ (d : ℤ),
+                                                ∀
+                                                  x ∈
+                                                    LinearStudy.integerShiftedFreePiece
+                                                      (MvPolynomial.homogeneousSubmodule σ K)
+                                                      (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d,
+                                                  β x ∈ D d) →
+                                              Function.Surjective ⇑β →
+                                                c.range = β.ker →
+                                                  (n : ℕ) →
+                                                    Fintype.card σ = n + 2 →
+                                                      ((ModuleCat.restrictScalars
+                                                              (MvPolynomial.coordinateCanonicalCoefficientRingEquiv
+                                                                  K).toRingHom).obj
+                                                          ((MvPolynomial.coordinateNativeCechHomologyFunctor n).obj
+                                                            (LinearStudy.nativeProjectiveModuleSheaf
+                                                              (MvPolynomial.homogeneousSubmodule σ K) D hD 0)) ≅
+                                                        CategoryTheory.Limits.cokernel
+                                                          (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix
+                                                            a b
+                                                            (MvPolynomial.coordinatePresentationPolynomialEntry a b c
+                                                              hc)))
+'MvPolynomial.coordinateNativeOriginalPresentationKPolynomialTopCokernelIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeOriginalPresentationKPolynomialTopCokernelIso_quotient : ∀ {K M : Type} [inst : Field K]
+  {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module (MvPolynomial σ K) M] [inst_6 : IsScalarTower K (MvPolynomial σ K) M] {I J : Type}
+  [inst_7 : Fintype I] [inst_8 : DecidableEq I] [inst_9 : Fintype J] [inst_10 : DecidableEq J] (a : I → ℕ) (b : J → ℕ)
+  (D : ℤ → Submodule K M) [inst_11 : DirectSum.Decomposition D]
+  (hD : ∀ (t : ℕ) (d : ℤ), ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d))
+  (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K)
+  (β : (J → MvPolynomial σ K) →ₗ[MvPolynomial σ K] M)
+  (hc :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+        c x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d)
+  (hβ :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d,
+        β x ∈ D d)
+  (honto : Function.Surjective ⇑β) (hex : c.range = β.ker) (n : ℕ) (hcard : Fintype.card σ = n + 2),
+  CategoryTheory.CategoryStruct.comp
+      ((ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).map
+        ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+          (LinearStudy.nativeProjectiveDegreeZeroSheafMap (MvPolynomial.homogeneousSubmodule σ K)
+            (LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K) fun j =>
+              MvPolynomial.coordinatePresentationWeight (b j))
+            D ⋯ hD β hβ 0)))
+      (MvPolynomial.coordinateNativeOriginalPresentationKPolynomialTopCokernelIso a b D hD c β hc hβ honto hex n
+          hcard).hom =
+    CategoryTheory.CategoryStruct.comp
+      ((ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).map
+        (MvPolynomial.coordinateNativeOriginalFreeTopHomologyDualIso b n hcard).hom)
+      (CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateCanonicalFiniteHomogeneousDualCoefficientIso K b).inv
+        (CategoryTheory.Limits.cokernel.π
+          (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b
+            (MvPolynomial.coordinatePresentationPolynomialEntry a b c hc))))
+'MvPolynomial.coordinateNativeOriginalPresentationKPolynomialTopCokernelIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveHomogeneousDegreeMultiply : {R : Type} →
+  [inst : CommRing R] →
+    {σ : Type} →
+      (a b l : ℕ) →
+        a = l + b →
+          ↥(MvPolynomial.homogeneousSubmodule σ R l) →
+            (↧↥(MvPolynomial.homogeneousSubmodule σ R b) ⟶ ↧↥(MvPolynomial.homogeneousSubmodule σ R a))
+'MvPolynomial.projectiveHomogeneousDegreeMultiply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousDegreeMultiply_dual : ∀ {R : Type} [inst : CommRing R] {σ : Type} (a b l : ℕ)
+  (h : a = l + b) (p : ↥(MvPolynomial.homogeneousSubmodule σ R l)),
+  ModuleCat.ofHom (ModuleCat.Hom.hom (MvPolynomial.projectiveHomogeneousDegreeMultiply a b l h p)).dualMap =
+    MvPolynomial.projectiveHomogeneousDegreeMultiplyDual a b l h p
+'MvPolynomial.projectiveHomogeneousDegreeMultiply_dual' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousDegreeMultiply_coe : ∀ {R : Type} [inst : CommRing R] {σ : Type} (a b l : ℕ)
+  (h : a = l + b) (p : ↥(MvPolynomial.homogeneousSubmodule σ R l)) (q : ↥(MvPolynomial.homogeneousSubmodule σ R b)),
+  ↑((CategoryTheory.ConcreteCategory.hom (MvPolynomial.projectiveHomogeneousDegreeMultiply a b l h p)) q) = ↑p * ↑q
+'MvPolynomial.projectiveHomogeneousDegreeMultiply_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousGradedPolynomialMultiplyEntry : {R : Type} →
+  [inst : CommRing R] →
+    {σ : Type} →
+      (a b : ℕ) →
+        ↥(MvPolynomial.homogeneousSubmodule σ R (a - b)) →
+          (↧↥(MvPolynomial.homogeneousSubmodule σ R b) ⟶ ↧↥(MvPolynomial.homogeneousSubmodule σ R a))
+'MvPolynomial.projectiveHomogeneousGradedPolynomialMultiplyEntry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveHomogeneousGradedPolynomialMultiplyEntry_coe : ∀ {R : Type} [inst : CommRing R] {σ : Type}
+  (a b : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ R (a - b))) (q : ↥(MvPolynomial.homogeneousSubmodule σ R b)),
+  b ≤ a →
+    ↑((CategoryTheory.ConcreteCategory.hom (MvPolynomial.projectiveHomogeneousGradedPolynomialMultiplyEntry a b p)) q) =
+      ↑p * ↑q
+'MvPolynomial.projectiveHomogeneousGradedPolynomialMultiplyEntry_coe' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveHomogeneousGradedPolynomialMultiplyEntry_of_lt : ∀ {R : Type} [inst : CommRing R] {σ : Type}
+  (a b : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ R (a - b))),
+  a < b → MvPolynomial.projectiveHomogeneousGradedPolynomialMultiplyEntry a b p = 0
+'MvPolynomial.projectiveHomogeneousGradedPolynomialMultiplyEntry_of_lt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveHomogeneousGradedPolynomialMultiplyEntry_dual : ∀ {R : Type} [inst : CommRing R] {σ : Type}
+  (a b : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ R (a - b))),
+  ModuleCat.ofHom (ModuleCat.Hom.hom (MvPolynomial.projectiveHomogeneousGradedPolynomialMultiplyEntry a b p)).dualMap =
+    MvPolynomial.projectiveHomogeneousGradedPolynomialDualEntry a b p
+'MvPolynomial.projectiveHomogeneousGradedPolynomialMultiplyEntry_dual' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerShiftedFreeDualNaturalCoordinatePiEquiv : {K S J : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          (N : ℕ) →
+            (a : J → ℕ) →
+              ↥(LinearStudy.integerShiftedFreeDualCoordinatePiece 𝓑 (fun j => ↑(a j) + ↑N) (-↑N)) ≃ₗ[K]
+                (j : J) → ↥(𝓑 (a j))
+'LinearStudy.integerShiftedFreeDualNaturalCoordinatePiEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeDualNaturalCoordinatePiEquiv_apply : ∀ {K S J : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) (N : ℕ) (a : J → ℕ)
+  (x : ↥(LinearStudy.integerShiftedFreeDualCoordinatePiece 𝓑 (fun j => ↑(a j) + ↑N) (-↑N))) (j : J),
+  ↑((LinearStudy.integerShiftedFreeDualNaturalCoordinatePiEquiv 𝓑 N a) x j) = ↑x j
+'LinearStudy.integerShiftedFreeDualNaturalCoordinatePiEquiv_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerShiftedFreeDualNaturalCoordinatePiEquiv_symm_apply : ∀ {K S J : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) (N : ℕ) (a : J → ℕ) (x : (j : J) → ↥(𝓑 (a j)))
+  (j : J), ↑((LinearStudy.integerShiftedFreeDualNaturalCoordinatePiEquiv 𝓑 N a).symm x) j = ↑(x j)
+'LinearStudy.integerShiftedFreeDualNaturalCoordinatePiEquiv_symm_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerShiftedFreeNaturalDualRelationMatrix : {K S I J : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [GradedAlgebra 𝓑] →
+            [DecidableEq I] →
+              [Fintype J] →
+                (N : ℕ) →
+                  (a : I → ℕ) →
+                    (b : J → ℕ) →
+                      (c : (I → S) →ₗ[S] J → S) →
+                        (∀ (d : ℤ),
+                            ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 (fun i => ↑(a i) + ↑N) d,
+                              c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 (fun j => ↑(b j) + ↑N) d) →
+                          ((j : J) → ↥(𝓑 (b j))) →ₗ[K] (i : I) → ↥(𝓑 (a i))
+'LinearStudy.integerShiftedFreeNaturalDualRelationMatrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerShiftedFreeNaturalDualRelationMatrix_apply : ∀ {K S I J : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  [inst_4 : DecidableEq I] [inst_5 : Fintype J] (N : ℕ) (a : I → ℕ) (b : J → ℕ) (c : (I → S) →ₗ[S] J → S)
+  (hc :
+    ∀ (d : ℤ),
+      ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 (fun i => ↑(a i) + ↑N) d,
+        c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 (fun j => ↑(b j) + ↑N) d)
+  (x : (j : J) → ↥(𝓑 (b j))) (i : I),
+  ↑((LinearStudy.integerShiftedFreeNaturalDualRelationMatrix 𝓑 N a b c hc) x i) =
+    ∑ j, LinearStudy.integerShiftedFreeMapEntry c i j * ↑(x j)
+'LinearStudy.integerShiftedFreeNaturalDualRelationMatrix_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerShiftedFreeNaturalDualRelationMatrix_single : ∀ {K S I J : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] [Fintype I]
+  [inst_5 : DecidableEq I] [inst_6 : Fintype J] [inst_7 : DecidableEq J] (N : ℕ) (a : I → ℕ) (b : J → ℕ)
+  (c : (I → S) →ₗ[S] J → S)
+  (hc :
+    ∀ (d : ℤ),
+      ∀ x ∈ LinearStudy.integerShiftedFreePiece 𝓑 (fun i => ↑(a i) + ↑N) d,
+        c x ∈ LinearStudy.integerShiftedFreePiece 𝓑 (fun j => ↑(b j) + ↑N) d)
+  (j : J) (i : I) (q : ↥(𝓑 (b j))),
+  ↑((LinearStudy.integerShiftedFreeNaturalDualRelationMatrix 𝓑 N a b c hc) (Pi.single j q) i) =
+    LinearStudy.integerShiftedFreeMapEntry c i j * ↑q
+'LinearStudy.integerShiftedFreeNaturalDualRelationMatrix_single' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOriginalNaturalRelationMap : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        {I J : Type} →
+          [DecidableEq I] →
+            [Fintype J] →
+              (a : I → ℕ) →
+                (b : J → ℕ) →
+                  (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K) →
+                    (∀ (d : ℤ),
+                        ∀
+                          x ∈
+                            LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+                              (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+                          c x ∈
+                            LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+                              (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d) →
+                      ((j : J) → ↥(MvPolynomial.homogeneousSubmodule σ K (b j))) →ₗ[K]
+                        (i : I) → ↥(MvPolynomial.homogeneousSubmodule σ K (a i))
+'MvPolynomial.coordinateOriginalNaturalRelationMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOriginalNaturalRelationBiproduct : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        {I J : Type} →
+          [inst_2 : Fintype I] →
+            [DecidableEq I] →
+              [inst_4 : Fintype J] →
+                (a : I → ℕ) →
+                  (b : J → ℕ) →
+                    (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K) →
+                      (∀ (d : ℤ),
+                          ∀
+                            x ∈
+                              LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+                                (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+                            c x ∈
+                              LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+                                (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d) →
+                        ((⨁ fun j => ↧↥(MvPolynomial.homogeneousSubmodule σ K (b j))) ⟶
+                          ⨁ fun i => ↧↥(MvPolynomial.homogeneousSubmodule σ K (a i)))
+'MvPolynomial.coordinateOriginalNaturalRelationBiproduct' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOriginalNaturalRelationBiproduct_coordinates : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] {I J : Type} [inst_2 : Fintype I] [inst_3 : DecidableEq I] [inst_4 : Fintype J] [DecidableEq J]
+  (a : I → ℕ) (b : J → ℕ) (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K)
+  (hc :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+        c x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d),
+  LinearStudy.finiteBiproductMapCoordinates (fun j => ↧↥(MvPolynomial.homogeneousSubmodule σ K (b j)))
+      (fun i => ↧↥(MvPolynomial.homogeneousSubmodule σ K (a i)))
+      (MvPolynomial.coordinateOriginalNaturalRelationBiproduct a b c hc) =
+    MvPolynomial.coordinateOriginalNaturalRelationMap a b c hc
+'MvPolynomial.coordinateOriginalNaturalRelationBiproduct_coordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOriginalNaturalRelationBiproduct_component : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] {I J : Type} [inst_2 : Fintype I] [inst_3 : DecidableEq I] [inst_4 : Fintype J] [DecidableEq J]
+  (a : I → ℕ) (b : J → ℕ) (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K)
+  (hc :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+        c x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d)
+  (i : I) (j : J),
+  CategoryTheory.Limits.biproduct.components (MvPolynomial.coordinateOriginalNaturalRelationBiproduct a b c hc) j i =
+    MvPolynomial.projectiveHomogeneousGradedPolynomialMultiplyEntry (a i) (b j)
+      (MvPolynomial.coordinatePresentationPolynomialEntry a b c hc i j)
+'MvPolynomial.coordinateOriginalNaturalRelationBiproduct_component' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOriginalNaturalRelationBiproduct_dual_matrix : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] {I J : Type} [inst_2 : Fintype I] [inst_3 : DecidableEq I] [inst_4 : Fintype J]
+  [inst_5 : DecidableEq J] (a : I → ℕ) (b : J → ℕ)
+  (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K)
+  (hc :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+        c x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d),
+  CategoryTheory.CategoryStruct.comp
+      (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b
+        (MvPolynomial.coordinatePresentationPolynomialEntry a b c hc))
+      (LinearStudy.finiteBiproductDualIso fun j => ↧↥(MvPolynomial.homogeneousSubmodule σ K (b j))).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.finiteBiproductDualIso fun i => ↧↥(MvPolynomial.homogeneousSubmodule σ K (a i))).hom
+      (ModuleCat.ofHom (MvPolynomial.coordinateOriginalNaturalRelationMap a b c hc).dualMap)
+'MvPolynomial.coordinateOriginalNaturalRelationBiproduct_dual_matrix' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOriginalDegreeCoefficientDualIso : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        {L : Type} →
+          [inst_2 : Fintype L] →
+            [DecidableEq L] →
+              (a : L → ℕ) →
+                (⨁ fun i => ↧(Module.Dual K ↥(MvPolynomial.homogeneousSubmodule σ K (a i)))) ≅
+                  ↧(Module.Dual K
+                      ↥(LinearStudy.integerShiftedFreeDualCoordinatePiece (MvPolynomial.homogeneousSubmodule σ K)
+                          (fun i => MvPolynomial.coordinatePresentationWeight (a i)) (-↑(Fintype.card σ))))
+'MvPolynomial.coordinateOriginalDegreeCoefficientDualIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOriginalDegreeRelationDual_matrix : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] {I J : Type} [inst_2 : Fintype I] [inst_3 : DecidableEq I] [inst_4 : Fintype J]
+  [inst_5 : DecidableEq J] (a : I → ℕ) (b : J → ℕ)
+  (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K)
+  (hc :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+        c x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d),
+  CategoryTheory.CategoryStruct.comp
+      (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b
+        (MvPolynomial.coordinatePresentationPolynomialEntry a b c hc))
+      (MvPolynomial.coordinateOriginalDegreeCoefficientDualIso b).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateOriginalDegreeCoefficientDualIso a).hom
+      (ModuleCat.ofHom
+        (LinearStudy.integerShiftedFreeDualDegreeRelationMatrix c (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i))
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) hc (-↑(Fintype.card σ))).dualMap)
+'MvPolynomial.coordinateOriginalDegreeRelationDual_matrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateOriginalDegreeRelationDualCokernelIso : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        {I J : Type} →
+          [inst_2 : Fintype I] →
+            [inst_3 : DecidableEq I] →
+              [inst_4 : Fintype J] →
+                [DecidableEq J] →
+                  (a : I → ℕ) →
+                    (b : J → ℕ) →
+                      (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K) →
+                        (hc :
+                            ∀ (d : ℤ),
+                              ∀
+                                x ∈
+                                  LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+                                    (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+                                c x ∈
+                                  LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+                                    (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d) →
+                          CategoryTheory.Limits.cokernel
+                              (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b
+                                (MvPolynomial.coordinatePresentationPolynomialEntry a b c hc)) ≅
+                            CategoryTheory.Limits.cokernel
+                              (ModuleCat.ofHom
+                                (LinearStudy.integerShiftedFreeDualDegreeRelationMatrix c
+                                    (MvPolynomial.homogeneousSubmodule σ K)
+                                    (fun i => MvPolynomial.coordinatePresentationWeight (a i))
+                                    (fun j => MvPolynomial.coordinatePresentationWeight (b j)) hc
+                                    (-↑(Fintype.card σ))).dualMap)
+'MvPolynomial.coordinateOriginalDegreeRelationDualCokernelIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOriginalDegreeRelationDualCokernelIso_quotient : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] {I J : Type} [inst_2 : Fintype I] [inst_3 : DecidableEq I] [inst_4 : Fintype J]
+  [inst_5 : DecidableEq J] (a : I → ℕ) (b : J → ℕ)
+  (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K)
+  (hc :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+        c x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π
+        (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b
+          (MvPolynomial.coordinatePresentationPolynomialEntry a b c hc)))
+      (MvPolynomial.coordinateOriginalDegreeRelationDualCokernelIso a b c hc).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateOriginalDegreeCoefficientDualIso b).hom
+      (CategoryTheory.Limits.cokernel.π
+        (ModuleCat.ofHom
+          (LinearStudy.integerShiftedFreeDualDegreeRelationMatrix c (MvPolynomial.homogeneousSubmodule σ K)
+              (fun i => MvPolynomial.coordinatePresentationWeight (a i))
+              (fun j => MvPolynomial.coordinatePresentationWeight (b j)) hc (-↑(Fintype.card σ))).dualMap))
+'MvPolynomial.coordinateOriginalDegreeRelationDualCokernelIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOriginalPresentationPolynomialDualHomIso : {K M : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : AddCommGroup M] →
+          [inst_3 : Module K M] →
+            [inst_4 : Module (MvPolynomial σ K) M] →
+              {I J : Type} →
+                [inst_5 : Fintype I] →
+                  [inst_6 : DecidableEq I] →
+                    [inst_7 : Fintype J] →
+                      [DecidableEq J] →
+                        (a : I → ℕ) →
+                          (b : J → ℕ) →
+                            (D : ℤ → Submodule K M) →
+                              [DirectSum.Decomposition D] →
+                                (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K) →
+                                  (β : (J → MvPolynomial σ K) →ₗ[MvPolynomial σ K] M) →
+                                    (hc :
+                                        ∀ (d : ℤ),
+                                          ∀
+                                            x ∈
+                                              LinearStudy.integerShiftedFreePiece
+                                                (MvPolynomial.homogeneousSubmodule σ K)
+                                                (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+                                            c x ∈
+                                              LinearStudy.integerShiftedFreePiece
+                                                (MvPolynomial.homogeneousSubmodule σ K)
+                                                (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d) →
+                                      (∀ (d : ℤ),
+                                          ∀
+                                            x ∈
+                                              LinearStudy.integerShiftedFreePiece
+                                                (MvPolynomial.homogeneousSubmodule σ K)
+                                                (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d,
+                                            β x ∈ D d) →
+                                        Function.Surjective ⇑β →
+                                          c.range = β.ker →
+                                            (CategoryTheory.Limits.cokernel
+                                                (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b
+                                                  (MvPolynomial.coordinatePresentationPolynomialEntry a b c hc)) ≅
+                                              ↧(Module.Dual K
+                                                  ↥(LinearStudy.integerGradedHomPiece
+                                                      (MvPolynomial.homogeneousSubmodule σ K) D (-↑(Fintype.card σ)))))
+'MvPolynomial.coordinateOriginalPresentationPolynomialDualHomIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateOriginalPresentationPolynomialDualHomIso_quotient : ∀ {K M : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : AddCommGroup M] [inst_3 : Module K M] [inst_4 : Module (MvPolynomial σ K) M]
+  {I J : Type} [inst_5 : Fintype I] [inst_6 : DecidableEq I] [inst_7 : Fintype J] [inst_8 : DecidableEq J] (a : I → ℕ)
+  (b : J → ℕ) (D : ℤ → Submodule K M) [inst_9 : DirectSum.Decomposition D]
+  (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K)
+  (β : (J → MvPolynomial σ K) →ₗ[MvPolynomial σ K] M)
+  (hc :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+        c x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d)
+  (hβ :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d,
+        β x ∈ D d)
+  (honto : Function.Surjective ⇑β) (hex : c.range = β.ker),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π
+        (MvPolynomial.projectiveHomogeneousGradedPolynomialDualMatrix a b
+          (MvPolynomial.coordinatePresentationPolynomialEntry a b c hc)))
+      (MvPolynomial.coordinateOriginalPresentationPolynomialDualHomIso a b D c β hc hβ honto hex).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateOriginalDegreeCoefficientDualIso b).hom
+      (ModuleCat.ofHom
+        (LinearStudy.integerShiftedFreePresentationHomCoefficientMap c (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i))
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) hc D β hβ honto hex
+            (-↑(Fintype.card σ))).dualMap)
+'MvPolynomial.coordinateOriginalPresentationPolynomialDualHomIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeOriginalFreeCoefficientDualIso : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          {L : Type} →
+            [Fintype L] →
+              [DecidableEq L] →
+                (a : L → ℕ) →
+                  (n : ℕ) →
+                    Fintype.card σ = n + 2 →
+                      ((ModuleCat.restrictScalars
+                              (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).obj
+                          ((MvPolynomial.coordinateNativeCechHomologyFunctor n).obj
+                            (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K)
+                              (LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K) fun i =>
+                                MvPolynomial.coordinatePresentationWeight (a i))
+                              ⋯ 0)) ≅
+                        ↧(Module.Dual K
+                            ↥(LinearStudy.integerShiftedFreeDualCoordinatePiece (MvPolynomial.homogeneousSubmodule σ K)
+                                (fun i => MvPolynomial.coordinatePresentationWeight (a i)) (-↑(Fintype.card σ)))))
+'MvPolynomial.coordinateNativeOriginalFreeCoefficientDualIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeOriginalPresentationGradedHomDualIso : {K : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          {M : Type} →
+            [inst_3 : AddCommGroup M] →
+              [inst_4 : Module K M] →
+                [inst_5 : Module (MvPolynomial σ K) M] →
+                  [IsScalarTower K (MvPolynomial σ K) M] →
+                    {I J : Type} →
+                      [Fintype I] →
+                        [DecidableEq I] →
+                          [Fintype J] →
+                            [DecidableEq J] →
+                              (a : I → ℕ) →
+                                (b : J → ℕ) →
+                                  (D : ℤ → Submodule K M) →
+                                    [DirectSum.Decomposition D] →
+                                      (hD :
+                                          ∀ (t : ℕ) (d : ℤ),
+                                            ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t,
+                                              ∀ x ∈ D d, p • x ∈ D (↑t + d)) →
+                                        (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K) →
+                                          (β : (J → MvPolynomial σ K) →ₗ[MvPolynomial σ K] M) →
+                                            (∀ (d : ℤ),
+                                                ∀
+                                                  x ∈
+                                                    LinearStudy.integerShiftedFreePiece
+                                                      (MvPolynomial.homogeneousSubmodule σ K)
+                                                      (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+                                                  c x ∈
+                                                    LinearStudy.integerShiftedFreePiece
+                                                      (MvPolynomial.homogeneousSubmodule σ K)
+                                                      (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d) →
+                                              (∀ (d : ℤ),
+                                                  ∀
+                                                    x ∈
+                                                      LinearStudy.integerShiftedFreePiece
+                                                        (MvPolynomial.homogeneousSubmodule σ K)
+                                                        (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d,
+                                                    β x ∈ D d) →
+                                                Function.Surjective ⇑β →
+                                                  c.range = β.ker →
+                                                    (n : ℕ) →
+                                                      Fintype.card σ = n + 2 →
+                                                        ((ModuleCat.restrictScalars
+                                                                (MvPolynomial.coordinateCanonicalCoefficientRingEquiv
+                                                                    K).toRingHom).obj
+                                                            ((MvPolynomial.coordinateNativeCechHomologyFunctor n).obj
+                                                              (LinearStudy.nativeProjectiveModuleSheaf
+                                                                (MvPolynomial.homogeneousSubmodule σ K) D hD 0)) ≅
+                                                          ↧(Module.Dual K
+                                                              ↥(LinearStudy.integerGradedHomPiece
+                                                                  (MvPolynomial.homogeneousSubmodule σ K) D
+                                                                  (-↑(Fintype.card σ)))))
+'MvPolynomial.coordinateNativeOriginalPresentationGradedHomDualIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeOriginalPresentationGradedHomDualIso_quotient : ∀ {K : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] {M : Type} [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module (MvPolynomial σ K) M] [inst_6 : IsScalarTower K (MvPolynomial σ K) M] {I J : Type}
+  [inst_7 : Fintype I] [inst_8 : DecidableEq I] [inst_9 : Fintype J] [inst_10 : DecidableEq J] (a : I → ℕ) (b : J → ℕ)
+  (D : ℤ → Submodule K M) [inst_11 : DirectSum.Decomposition D]
+  (hD : ∀ (t : ℕ) (d : ℤ), ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d))
+  (c : (I → MvPolynomial σ K) →ₗ[MvPolynomial σ K] J → MvPolynomial σ K)
+  (β : (J → MvPolynomial σ K) →ₗ[MvPolynomial σ K] M)
+  (hc :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i)) d,
+        c x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d)
+  (hβ :
+    ∀ (d : ℤ),
+      ∀
+        x ∈
+          LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K)
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) d,
+        β x ∈ D d)
+  (honto : Function.Surjective ⇑β) (hex : c.range = β.ker) (n : ℕ) (hcard : Fintype.card σ = n + 2),
+  CategoryTheory.CategoryStruct.comp
+      ((ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).map
+        ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+          (LinearStudy.nativeProjectiveDegreeZeroSheafMap (MvPolynomial.homogeneousSubmodule σ K)
+            (LinearStudy.integerShiftedFreePiece (MvPolynomial.homogeneousSubmodule σ K) fun j =>
+              MvPolynomial.coordinatePresentationWeight (b j))
+            D ⋯ hD β hβ 0)))
+      (MvPolynomial.coordinateNativeOriginalPresentationGradedHomDualIso a b D hD c β hc hβ honto hex n hcard).hom =
+    CategoryTheory.CategoryStruct.comp (MvPolynomial.coordinateNativeOriginalFreeCoefficientDualIso b n hcard).hom
+      (ModuleCat.ofHom
+        (LinearStudy.integerShiftedFreePresentationHomCoefficientMap c (MvPolynomial.homogeneousSubmodule σ K)
+            (fun i => MvPolynomial.coordinatePresentationWeight (a i))
+            (fun j => MvPolynomial.coordinatePresentationWeight (b j)) hc D β hβ honto hex
+            (-↑(Fintype.card σ))).dualMap)
+'MvPolynomial.coordinateNativeOriginalPresentationGradedHomDualIso_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
