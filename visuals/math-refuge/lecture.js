@@ -238,9 +238,13 @@ export async function createLecture(scene,renderer,options={}){
       [dust,d]=inkCanvas();d.fillStyle='#193d3328';for(let i=0;i<6000;i++)d.fillRect(random()*W,random()*H,.5+random(),.6);
     }
     if(board.canvas)return;
-    [board.canvas,board.ctx]=inkCanvas();board.texture=new THREE.CanvasTexture(board.canvas);board.texture.colorSpace=THREE.SRGBColorSpace;
+    [board.canvas,board.ctx]=inkCanvas();
+    // A new canvas is transparent black. Seed it before binding or capturing
+    // a previous frame, including when the room is still outside the camera.
+    board.ctx.fillStyle='#193d33';board.ctx.fillRect(0,0,W,H);
+    board.texture=new THREE.CanvasTexture(board.canvas);board.texture.colorSpace=THREE.SRGBColorSpace;
     board.texture.anisotropy=Math.min(pixelScale<1?4:16,renderer.capabilities.getMaxAnisotropy());board.texture.generateMipmaps=true;board.texture.minFilter=THREE.LinearMipmapLinearFilter;
-    const roughCanvas=document.createElement('canvas');roughCanvas.width=W/4;roughCanvas.height=H/4;board.roughCtx=roughCanvas.getContext('2d');board.roughTexture=new THREE.CanvasTexture(roughCanvas);
+    const roughCanvas=document.createElement('canvas');roughCanvas.width=W/4;roughCanvas.height=H/4;board.roughCtx=roughCanvas.getContext('2d');board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture=new THREE.CanvasTexture(roughCanvas);
     const material=board.group.children[0].material;material.map=board.texture;material.roughnessMap=board.roughTexture;material.needsUpdate=true;
   }
   function beginContentFade(board){
@@ -254,7 +258,7 @@ export async function createLecture(scene,renderer,options={}){
     const board=boards[index],slot=clock.slots[index];
     if(!preparing&&(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0))return;
     const content={page:slot.page,progress:slot.progress,available:cache.has(slot.page)};
-    if(boardContentJump(board.content,content))beginContentFade(board);board.content=content;
+    if(preparing){board.fadeAge=1;board.inkBlend.value=1;}else if(boardContentJump(board.content,content))beginContentFade(board);board.content=content;
     if(slot.page<0){if(board.last==='blank')return;board.last='blank';if(board.canvas){board.ctx.fillStyle='#193d33';board.ctx.fillRect(0,0,W,H);board.texture.needsUpdate=true;board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture.needsUpdate=true;board.roughKey='';}return;}
     ensureInk(board);const ctx=board.ctx;
     const erasing=index===clock.active&&clock.phase==='erase'&&clock.progress>0;
@@ -520,7 +524,7 @@ export async function createLecture(scene,renderer,options={}){
       stored=false;storageMotion.reset();storageProgress=0;storageRig.position.y=0;storageRig.visible=true;
       storageLids.forEach(lid=>lid.visible=false);if(storageCap)storageCap.visible=true;
       screenHub?.report();screenHub?.update(0,0);updateStorageLabel();setReportState();
-      boards.forEach(b=>b.last='');
+      advanceBoardQueue(contentFadeQueue,0,true);boards.forEach(b=>b.last='');
       // Allocate and upload every board before camera movement, including the
       // clean board used by the opening writing demonstration.
       for(let i=0;i<boards.length;i++){
