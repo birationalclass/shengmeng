@@ -1,0 +1,131 @@
+@LinearStudy.koszulTopComplementFunctional : {R : Type u_1} →
+  [inst : CommRing R] → (n : ℕ) → Fin (n + 1) → ↥(⋀[R]^n (Fin (n + 1) → R)) →ₗ[R] R
+'LinearStudy.koszulTopComplementFunctional' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopComplementFunctional_basis : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ) (i j : Fin (n + 1)),
+  (LinearStudy.koszulTopComplementFunctional n i)
+      ((exteriorPower.ιMulti R n) (j.removeNth ⇑(Pi.basisFun R (Fin (n + 1))))) =
+    if i = j then (-1) ^ ↑j else 0
+'LinearStudy.koszulTopComplementFunctional_basis' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopComplementFunctional_differential : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R) (i : Fin (n + 1)),
+  (LinearStudy.koszulTopComplementFunctional n i)
+      ((koszulComplex.d (Fintype.linearCombination R H) n) (LinearStudy.topKoszulGenerator (n + 1))) =
+    H i
+'LinearStudy.koszulTopComplementFunctional_differential' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopDualDifferentialCoordinate : {R : Type u_1} →
+  [inst : CommRing R] → (n : ℕ) → (Fin (n + 1) → R) → Module.Dual R ↥(⋀[R]^n (Fin (n + 1) → R)) →ₗ[R] R
+'LinearStudy.koszulTopDualDifferentialCoordinate' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopDualDifferentialCoordinate_range : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R), (LinearStudy.koszulTopDualDifferentialCoordinate n H).range = Ideal.span (Set.range H)
+'LinearStudy.koszulTopDualDifferentialCoordinate_range' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopFunctionalEquiv : {R : Type u_1} →
+  [inst : CommRing R] → (n : ℕ) → Module.Dual R ↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) ≃ₗ[R] R
+'LinearStudy.koszulTopFunctionalEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopFunctionalRestriction : {R : Type u_1} →
+  [inst : CommRing R] →
+    (n : ℕ) → (H : Fin (n + 1) → R) → Module.Dual R ↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →ₗ[R] R ⧸ Ideal.span (Set.range H)
+'LinearStudy.koszulTopFunctionalRestriction' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopFunctionalRestriction_kernel : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ) (H : Fin (n + 1) → R),
+  (LinearStudy.koszulTopFunctionalRestriction n H).ker =
+    (koszulComplex.d (Fintype.linearCombination R H) n).dualMap.range
+'LinearStudy.koszulTopFunctionalRestriction_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopFunctionalRestriction_surjective : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R), Function.Surjective ⇑(LinearStudy.koszulTopFunctionalRestriction n H)
+'LinearStudy.koszulTopFunctionalRestriction_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopDualCokernelEquiv : {R : Type u_1} →
+  [inst : CommRing R] →
+    (n : ℕ) →
+      (H : Fin (n + 1) → R) →
+        (Module.Dual R ↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) ⧸
+            (koszulComplex.d (Fintype.linearCombination R H) n).dualMap.range) ≃ₗ[R]
+          R ⧸ Ideal.span (Set.range H)
+'LinearStudy.koszulTopDualCokernelEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopDualCokernelEquiv_class : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ) (H : Fin (n + 1) → R)
+  (L : Module.Dual R ↥(⋀[R]^(n + 1) (Fin (n + 1) → R))),
+  (LinearStudy.koszulTopDualCokernelEquiv n H) (Submodule.Quotient.mk L) =
+    (Ideal.Quotient.mk (Ideal.span (Set.range H))) (L (LinearStudy.topKoszulGenerator (n + 1)))
+'LinearStudy.koszulTopDualCokernelEquiv_class' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopFunctional_isCocycle : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ) (H : Fin (n + 1) → R)
+  (hreg : RingTheory.Sequence.IsRegular R (List.ofFn H)) (L : Module.Dual R ↥(⋀[R]^(n + 1) (Fin (n + 1) → R))),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.functionKoszulResolution H hreg).complex.d (n + 2) (n + 1))
+      (ModuleCat.ofHom L) =
+    0
+'LinearStudy.koszulTopFunctional_isCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopExtRepresentative : {R : Type u_1} →
+  [inst : CommRing R] →
+    (n : ℕ) →
+      (H : Fin (n + 1) → R) →
+        RingTheory.Sequence.IsRegular R (List.ofFn H) →
+          Module.Dual R ↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →
+            CategoryTheory.Abelian.Ext (↧(R ⧸ Ideal.span (Set.range H))) (↧R) (n + 1)
+'LinearStudy.koszulTopExtRepresentative' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopExtRepresentative_eq_zero_iff : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ) (H : Fin (n + 1) → R)
+  (hreg : RingTheory.Sequence.IsRegular R (List.ofFn H)) (L : Module.Dual R ↥(⋀[R]^(n + 1) (Fin (n + 1) → R))),
+  LinearStudy.koszulTopExtRepresentative n H hreg L = 0 ↔
+    L (LinearStudy.topKoszulGenerator (n + 1)) ∈ Ideal.span (Set.range H)
+'LinearStudy.koszulTopExtRepresentative_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopExtRepresentative_surjective : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ) (H : Fin (n + 1) → R)
+  (hreg : RingTheory.Sequence.IsRegular R (List.ofFn H)),
+  Function.Surjective (LinearStudy.koszulTopExtRepresentative n H hreg)
+'LinearStudy.koszulTopExtRepresentative_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopExtRepresentative_push : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ) (H : Fin (n + 1) → R)
+  (hreg : RingTheory.Sequence.IsRegular R (List.ofFn H)) (L : Module.Dual R ↥(⋀[R]^(n + 1) (Fin (n + 1) → R)))
+  (a : R →ₗ[R] R),
+  (LinearStudy.koszulTopExtRepresentative n H hreg L).comp (CategoryTheory.Abelian.Ext.mk₀ (ModuleCat.ofHom a)) ⋯ =
+    LinearStudy.koszulTopExtRepresentative n H hreg (a ∘ₗ L)
+'LinearStudy.koszulTopExtRepresentative_push' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopExtRepresentativeLinearMap : {R : Type u_1} →
+  [inst : CommRing R] →
+    (n : ℕ) →
+      (H : Fin (n + 1) → R) →
+        RingTheory.Sequence.IsRegular R (List.ofFn H) →
+          Module.Dual R ↥(⋀[R]^(n + 1) (Fin (n + 1) → R)) →ₗ[R]
+            CategoryTheory.Abelian.Ext (↧(R ⧸ Ideal.span (Set.range H))) (↧R) (n + 1)
+'LinearStudy.koszulTopExtRepresentativeLinearMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopExtRepresentativeLinearMap_kernel : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R) (hreg : RingTheory.Sequence.IsRegular R (List.ofFn H)),
+  (LinearStudy.koszulTopExtRepresentativeLinearMap n H hreg).ker = (LinearStudy.koszulTopFunctionalRestriction n H).ker
+'LinearStudy.koszulTopExtRepresentativeLinearMap_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopExtRestrictionEquiv : {R : Type u_1} →
+  [inst : CommRing R] →
+    (n : ℕ) →
+      (H : Fin (n + 1) → R) →
+        RingTheory.Sequence.IsRegular R (List.ofFn H) →
+          CategoryTheory.Abelian.Ext (↧(R ⧸ Ideal.span (Set.range H))) (↧R) (n + 1) ≃ₗ[R] R ⧸ Ideal.span (Set.range H)
+'LinearStudy.koszulTopExtRestrictionEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopExtRestrictionEquiv_representative : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R) (hreg : RingTheory.Sequence.IsRegular R (List.ofFn H))
+  (L : Module.Dual R ↥(⋀[R]^(n + 1) (Fin (n + 1) → R))),
+  (LinearStudy.koszulTopExtRestrictionEquiv n H hreg) (LinearStudy.koszulTopExtRepresentative n H hreg L) =
+    (Ideal.Quotient.mk (Ideal.span (Set.range H))) (L (LinearStudy.topKoszulGenerator (n + 1)))
+'LinearStudy.koszulTopExtRestrictionEquiv_representative' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopExtRestrictionEquiv_pushGenerator : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R) (hreg : RingTheory.Sequence.IsRegular R (List.ofFn H)) (a : R →ₗ[R] R),
+  (LinearStudy.koszulTopExtRestrictionEquiv n H hreg)
+      ((LinearStudy.koszulTopExtRepresentative n H hreg (LinearStudy.topKoszulCoordinate (n + 1))).comp
+        (CategoryTheory.Abelian.Ext.mk₀ (ModuleCat.ofHom a)) ⋯) =
+    (Ideal.Quotient.mk (Ideal.span (Set.range H))) (a 1)
+'LinearStudy.koszulTopExtRestrictionEquiv_pushGenerator' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulTopFunctionalRestriction_comp_dualDifferential : ∀ {R : Type u_1} [inst : CommRing R] (n : ℕ)
+  (H : Fin (n + 1) → R),
+  LinearStudy.koszulTopFunctionalRestriction n H ∘ₗ (koszulComplex.d (Fintype.linearCombination R H) n).dualMap = 0
+'LinearStudy.koszulTopFunctionalRestriction_comp_dualDifferential' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.koszulDualTopRestrictionModulePresentation : (R : CommRingCat) →
+  (n : ℕ) → (Fin (n + 1) → ↑R) → CategoryTheory.ShortComplex (ModuleCat ↑R)
+'LinearStudy.koszulDualTopRestrictionModulePresentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulDualTopRestrictionModulePresentation_exact : ∀ (R : CommRingCat) (n : ℕ) (H : Fin (n + 1) → ↑R),
+  (LinearStudy.koszulDualTopRestrictionModulePresentation R n H).Exact
+'LinearStudy.koszulDualTopRestrictionModulePresentation_exact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.tildeKoszulDualTopRestrictionPresentation : (R : CommRingCat) →
+  (n : ℕ) → (Fin (n + 1) → ↑R) → CategoryTheory.ShortComplex (AlgebraicGeometry.Spec R).Modules
+'LinearStudy.tildeKoszulDualTopRestrictionPresentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulDualTopRestrictionPresentation_exact : ∀ (R : CommRingCat) (n : ℕ) (H : Fin (n + 1) → ↑R),
+  (LinearStudy.tildeKoszulDualTopRestrictionPresentation R n H).Exact
+'LinearStudy.tildeKoszulDualTopRestrictionPresentation_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulDualTopRestrictionPresentation_epi : ∀ (R : CommRingCat) (n : ℕ) (H : Fin (n + 1) → ↑R),
+  CategoryTheory.Epi (LinearStudy.tildeKoszulDualTopRestrictionPresentation R n H).g
+'LinearStudy.tildeKoszulDualTopRestrictionPresentation_epi' depends on axioms: [propext, Classical.choice, Quot.sound]

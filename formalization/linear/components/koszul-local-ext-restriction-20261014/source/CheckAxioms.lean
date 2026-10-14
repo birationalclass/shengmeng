@@ -1,0 +1,61 @@
+module
+import all Linear.KoszulTopComplementFunctional
+import all Linear.KoszulTopDualCokernelRestriction
+import all Linear.KoszulTopExtRepresentatives
+import all Linear.KoszulTopExtRestrictionEquiv
+import all Linear.TildeKoszulDualTopRestriction
+set_option pp.deepTerms true
+#check @LinearStudy.koszulTopComplementFunctional
+#print axioms LinearStudy.koszulTopComplementFunctional
+#check @LinearStudy.koszulTopComplementFunctional_basis
+#print axioms LinearStudy.koszulTopComplementFunctional_basis
+#check @LinearStudy.koszulTopComplementFunctional_differential
+#print axioms LinearStudy.koszulTopComplementFunctional_differential
+#check @LinearStudy.koszulTopDualDifferentialCoordinate
+#print axioms LinearStudy.koszulTopDualDifferentialCoordinate
+#check @LinearStudy.koszulTopDualDifferentialCoordinate_range
+#print axioms LinearStudy.koszulTopDualDifferentialCoordinate_range
+#check @LinearStudy.koszulTopFunctionalEquiv
+#print axioms LinearStudy.koszulTopFunctionalEquiv
+#check @LinearStudy.koszulTopFunctionalRestriction
+#print axioms LinearStudy.koszulTopFunctionalRestriction
+#check @LinearStudy.koszulTopFunctionalRestriction_kernel
+#print axioms LinearStudy.koszulTopFunctionalRestriction_kernel
+#check @LinearStudy.koszulTopFunctionalRestriction_surjective
+#print axioms LinearStudy.koszulTopFunctionalRestriction_surjective
+#check @LinearStudy.koszulTopDualCokernelEquiv
+#print axioms LinearStudy.koszulTopDualCokernelEquiv
+#check @LinearStudy.koszulTopDualCokernelEquiv_class
+#print axioms LinearStudy.koszulTopDualCokernelEquiv_class
+#check @LinearStudy.koszulTopFunctional_isCocycle
+#print axioms LinearStudy.koszulTopFunctional_isCocycle
+#check @LinearStudy.koszulTopExtRepresentative
+#print axioms LinearStudy.koszulTopExtRepresentative
+#check @LinearStudy.koszulTopExtRepresentative_eq_zero_iff
+#print axioms LinearStudy.koszulTopExtRepresentative_eq_zero_iff
+#check @LinearStudy.koszulTopExtRepresentative_surjective
+#print axioms LinearStudy.koszulTopExtRepresentative_surjective
+#check @LinearStudy.koszulTopExtRepresentative_push
+#print axioms LinearStudy.koszulTopExtRepresentative_push
+#check @LinearStudy.koszulTopExtRepresentativeLinearMap
+#print axioms LinearStudy.koszulTopExtRepresentativeLinearMap
+#check @LinearStudy.koszulTopExtRepresentativeLinearMap_kernel
+#print axioms LinearStudy.koszulTopExtRepresentativeLinearMap_kernel
+#check @LinearStudy.koszulTopExtRestrictionEquiv
+#print axioms LinearStudy.koszulTopExtRestrictionEquiv
+#check @LinearStudy.koszulTopExtRestrictionEquiv_representative
+#print axioms LinearStudy.koszulTopExtRestrictionEquiv_representative
+#check @LinearStudy.koszulTopExtRestrictionEquiv_pushGenerator
+#print axioms LinearStudy.koszulTopExtRestrictionEquiv_pushGenerator
+#check @LinearStudy.koszulTopFunctionalRestriction_comp_dualDifferential
+#print axioms LinearStudy.koszulTopFunctionalRestriction_comp_dualDifferential
+#check @LinearStudy.koszulDualTopRestrictionModulePresentation
+#print axioms LinearStudy.koszulDualTopRestrictionModulePresentation
+#check @LinearStudy.koszulDualTopRestrictionModulePresentation_exact
+#print axioms LinearStudy.koszulDualTopRestrictionModulePresentation_exact
+#check @LinearStudy.tildeKoszulDualTopRestrictionPresentation
+#print axioms LinearStudy.tildeKoszulDualTopRestrictionPresentation
+#check @LinearStudy.tildeKoszulDualTopRestrictionPresentation_exact
+#print axioms LinearStudy.tildeKoszulDualTopRestrictionPresentation_exact
+#check @LinearStudy.tildeKoszulDualTopRestrictionPresentation_epi
+#print axioms LinearStudy.tildeKoszulDualTopRestrictionPresentation_epi
