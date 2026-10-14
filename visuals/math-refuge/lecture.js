@@ -1,13 +1,13 @@
 import {narrationHighlights,measuredHighlight,highlightFrame,createBoardHighlight} from './board-highlight.js?v=smart-voice-9';
 import {createBoardCameraControl} from './board-camera-control.js?v=smart-voice-9';
 import {boardContentJump,advanceBoardQueue} from './board-transition.js';
-import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock} from './report-voice.js?v=chinese36-1';
+import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock} from './report-voice.js?v=sylow-classroom-1';
 import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v=smart-voice-9';
 import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
 import {authoredContext,authoredFormula} from './authored-chalk.js?v=chinese36-1';
-import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=chinese36-1';
+import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=sylow-classroom-1';
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
 import {createSeminarScreen} from './seminar-screen.js?v=report-line-sync-6';
 import * as THREE from 'three';
@@ -18,6 +18,8 @@ import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
 import {chalkCopy,composeChalkPage} from './chalk-language.js?v=report-line-sync-6';
 
 import {REPORTS} from './report-catalog.js?v=ye2-report-14';
+import {CLASSROOM_PROGRAMS} from './classroom-catalog.js';
+import {createHallProgramScreen} from './hall-program-screen.js';
 import {createReportLoader} from './report-loader.js?v=report-line-sync-6';
 
 import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=43-tight-boards';
@@ -29,7 +31,7 @@ export async function createLecture(scene,renderer,options={}){
   const reportProgress=options.onProgress||(()=>{});
   const pixelScale=options.boardScale===.5?.5:1;
   const disabled=Boolean(options.disabled),canAuthor=typeof document.createElementNS==='function'&&typeof window!=='undefined';let writingStyle=options.writingStyle==='marck'?'marck':'refined';const boardMipBias={value:-.45};
-  const reports=disabled?[{id:'unavailable',speaker:'',speakerEn:'',topic:'',topicEn:'',url:'',sourceLabel:''}]:options.reports||REPORTS;
+  const reports=disabled?[{id:'unavailable',speaker:'',speakerEn:'',topic:'',topicEn:'',url:'',sourceLabel:''}]:options.reports||[...REPORTS,...CLASSROOM_PROGRAMS];
   let activeReport=reports.find(report=>report.id===(options.defaultReport||'hu'))||reports[0];
   const prepareReport=createReportLoader(),openingReport=disabled?{pages:[{kind:'closing',title:'',source:'',text:'',en:{title:'',source:'',text:''},rows:[]}]}:await prepareReport(activeReport);
   reportProgress(.25);
@@ -169,32 +171,15 @@ export async function createLecture(scene,renderer,options={}){
     const mesh=new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,toneMapped:false}));
     mesh.position.set(x,y,-11.332);mesh.name=name;scene.add(mesh);return {mesh,canvas,texture};
   }
-  const reportHeader=glassLabel(4.6,.55,reportX,4.45,'Smart glass report heading');
-  addTextSheen(THREE,reportHeader.mesh,reportHeader.texture,4.6,.55);
-  const reportStep=reports.length>4?.88:1.05,reportHeight=reports.length>4?.75:.9;
-  for(const [index,report] of (navigation?.sections?[]:reports).entries()){
-    const label=glassLabel(4.6,reportHeight,reportX,3.55-index*reportStep,`Smart glass report ${report.id}`);
-    const button=new THREE.Mesh(new THREE.PlaneGeometry(4.7,reportHeight+.12),new THREE.MeshBasicMaterial({transparent:true,opacity:0,colorWrite:false,depthWrite:false,toneMapped:false}));
-    button.position.set(reportX,3.55-index*reportStep,-11.34);button.name=`Report selection ${report.speaker}`;
-    scene.remove(label.mesh);label.mesh.position.set(0,0,.008);label.mesh.userData.screenLabel=true;button.add(label.mesh);addTextSheen(THREE,button,label.texture,4.6,reportHeight);scene.add(button);
-    Object.assign(button.userData,{action:`report:${report.id}`,reportId:report.id,smartGlass:true,pressed:false,canvas:label.canvas,texture:label.texture});reportButtons.push(button);
-  }
+  const reportHeader=glassLabel(4.6,.34,reportX,3.93,'Smart glass report heading');
+  addTextSheen(THREE,reportHeader.mesh,reportHeader.texture,4.6,.34);
+  const programScreen=!disabled&&!navigation?.sections?createHallProgramScreen(THREE,scene,{reports,x:reportX}):null;
+  if(programScreen)reportButtons.push(...programScreen.targets);
   function setReportState(){
     dateLabel=seminarDate();
     const header=reportHeader.canvas.getContext('2d');header.clearRect(0,0,1024,240);header.textAlign='right';header.fillStyle=silverInk(header);header.font='400 78px Baskerville, "Iowan Old Style", Georgia, serif';
     header.fillText(dateLabel,996,154);reportHeader.mesh.userData.date=dateLabel;reportHeader.texture.needsUpdate=true;
-    for(const [index,button] of reportButtons.entries()){
-      const report=reports[index],waiting=report.id===pendingReport?.id,selected=!stored&&(hasSelection||Boolean(pendingReport))&&report.id===(pendingReport||activeReport).id,c=button.userData.canvas.getContext('2d');
-      c.clearRect(0,0,1024,240);c.textAlign='right';c.shadowBlur=0;c.fillStyle=silverInk(c);
-      const font=language==='zh'?SCREEN_FONT:'Baskerville, "Iowan Old Style", Georgia, serif';
-      c.font='400 78px '+font;
-      const name=report.label||(language==='zh'?report.speaker:report.speakerEn);c.fillText(name,996,91);
-      if(selected){const px=996-c.measureText(name).width-38;c.font='400 55px Georgia, serif';c.fillStyle='#e4cf9c';c.fillText('▸',px,88);}
-      c.font='400 40px '+font;c.fillStyle=silverInk(c);
-      const topic=waiting?(language==='zh'?'正在准备报告…':'Preparing report…'):(language==='zh'?report.topic:report.topicEn),words=language==='zh'?[...topic]:topic.split(/(?<= )/);let line='',y=159;
-      for(const word of words){if(c.measureText(line+word).width>960){c.fillText(line,996,y);line=word;y+=47;}else line+=word;}c.fillText(line,996,y);
-      button.userData.texture.needsUpdate=true;button.userData.selected=selected;button.userData.selectionPointer=selected;
-    }
+    programScreen?.setState(hasSelection?activeReport:null,pendingReport,language,stored);
   }
   const seminarScreen=navigation?.sections?createSeminarScreen(THREE,scene,navigation):null;
   if(seminarScreen){reportHeader.mesh.visible=false;seminarScreen.setLanguage(language);}
@@ -489,7 +474,7 @@ export async function createLecture(scene,renderer,options={}){
     storageLabel.canvas.width=storageLabel.canvas.height=256;storageLabel.mesh.userData.action='lectern:stow';storageLabel.mesh.userData.smartGlass=true;touchButtons.push(storageLabel.mesh);updateStorageLabel();
   }
   if(storageRig&&stored){storageRig.position.y=-7.2;storageRig.visible=false;consoleButtons.forEach(b=>b.visible=false);chalk.visible=false;eraser.visible=false;fallingDust.visible=false;}
-  if(options.retractable)screenHub=createSmartGlassHub(THREE,scene,{reports:[reportHeader.mesh,...reportButtons],storage:storageLabel?.mesh,onStore:()=>{
+  if(options.retractable)screenHub=createSmartGlassHub(THREE,scene,{reports:[reportHeader.mesh,...(programScreen?[programScreen.group]:reportButtons)],storage:storageLabel?.mesh,onStore:()=>{
     voice.pause();stored=true;playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;consoleButtons.forEach(b=>b.visible=false);updateStorageLabel();setReportState();
   }});
   const movingNodes=new Set([scene,storageRig,...storageLids,...boards.map(b=>b.group),chalk,eraser]);
@@ -554,7 +539,8 @@ export async function createLecture(scene,renderer,options={}){
     setPresence(value){present=Boolean(value);if(!present)void voice.setContextActive(false);},get present(){return present;},
     update,seek,disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0;},get hasSelection(){return hasSelection;},
     get progress(){return {page:clock.page-clock.startAt,total:clock.stopAt-clock.startAt+1};},
-    screenAction:action=>{voice.pause();openingDemo=null;return screenHub?.action(action)||seminarScreen?.action(action);},
+    screenAction:action=>{if(programScreen?.action(action)){screenHub?.report();return true;}voice.pause();openingDemo=null;return screenHub?.action(action)||seminarScreen?.action(action);},
+    get programTab(){return programScreen?.tab||'reports';},
     screenWake:()=>screenHub?.wake(),get screenMode(){return screenHub?.state;},
     async setRenderActive(value){
       if(value===renderActive)return;renderActive=value;const epoch=++renderEpoch;
@@ -581,7 +567,7 @@ export async function createLecture(scene,renderer,options={}){
     },
     get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,get hoverTargets(){return disabled?[]:[...touchButtons.filter(b=>!screenHub||!reportButtons.includes(b)||(screenHub.state.power&&screenHub.state.mode==='report')),...voicePanels.filter(panel=>panel.mesh.visible).map(panel=>panel.mesh),...(screenHub?.targets||[])];},setConsoleState,
     get highlightEnabled(){return highlightEnabled;},setHighlight(value){highlightEnabled=Boolean(value);if(!highlightEnabled){highlighter.hide();highlightState=null;}},get highlightTargets(){return measuredHighlights.get(clock.page)?.cues.map(c=>({id:c.id,row:c.row,side:c.side,begin:c.begin,duration:c.duration,rect:c.rect,visibleAt:c.visibleAt}))||[];},get highlightState(){return highlightState&&{page:highlightState.page,row:highlightState.row,side:highlightState.side,alpha:highlightState.alpha,age:highlightState.age};},
-    setVoiceRate(value){return voice.setRate(value);},get voiceRate(){return voice.state.rate;},get voiceState(){return {...voice.state};},get voiceTone(){return voiceTone;},get voiceEnabled(){return voiceEnabled;},get voiceManifest(){return voice.manifest;},async voiceSeek(time){highlighter.hide();highlightState=null;return voice.seek(time);},async toggleVoice(){if(!activeReport.narration||!voiceEnabled){playing=hasSelection&&!playing;return true;}return voice.toggle();},
+    setVoiceRate(value){return voice.setRate(value);},get voiceRate(){return voice.state.rate;},get voiceState(){return {...voice.state};},get voiceTone(){return voiceTone;},get voiceEnabled(){return voiceEnabled;},get voiceManifest(){return voice.manifest;},async voiceSeek(time){highlighter.hide();highlightState=null;return voice.seek(time);},skipClassroomActivity:()=>voice.skipActivity(),async toggleVoice(){if(!activeReport.narration||!voiceEnabled){playing=hasSelection&&!playing;return true;}return voice.toggle();},
     async setVoiceTone(tone){
       const variants=activeReport.narration?.voices||[];if(tone!=='off'&&tone!=='original'&&!variants.some(v=>v.id===tone))throw Error('此报告尚无该音色');
       const bookmark=!voiceEnabled&&voiceBookmark?.report===activeReport.id?voiceBookmark:null,previous=bookmark?.manifest||voice.manifest,time=bookmark?.time??voice.state.time,started=bookmark?.started??voice.state.started,resume=!bookmark&&['playing','away','buffering','preparing'].includes(voice.state.phase);if(tone==='off')voiceBookmark={report:activeReport.id,manifest:previous,time,started,page:clock.page,progress:clock.progress};voiceTone=tone;voiceEnabled=tone!=='off';playing=false;
@@ -591,7 +577,7 @@ export async function createLecture(scene,renderer,options={}){
       if(resume)await voice.toggle();return true;
     },
     get pendingReport(){return pendingReport;},
-    preloadReports:()=>disabled?Promise.resolve([]):Promise.allSettled(reports.map(prepareReport)),
+    preloadReports:()=>disabled?Promise.resolve([]):Promise.allSettled(reports.filter(r=>r.kind!=='classroom').map(prepareReport)),
     reportFocus:()=>scene.localToWorld(new THREE.Vector3(reportX+1.1,2.45,-11.34)),
     async setReport(id,{autoplay=false,loadVoice=true}={}){
       if(disabled)return false;
@@ -599,15 +585,15 @@ export async function createLecture(scene,renderer,options={}){
       const next=reports.find(r=>r.id===id);if(!next)throw new Error('未知报告');if(voiceTone!=='off'&&voiceTone!=='original'&&!next.narration?.voices?.some(v=>v.id===voiceTone))voiceTone='original';screenHub?.report();
       voice.setContextActive(false);
       if(storageRig){stored=false;storageRig.visible=true;updateStorageLabel();}
-      seekRequest++;seeking=false;const request=++reportRequest;pendingReport=next;setReportState();void voice.select(voiceEnabled&&loadVoice?voiceReport(next):null,{autoplay});
+      seekRequest++;seeking=false;const request=++reportRequest;pendingReport=next;setReportState();const voicePreparation=voice.select(voiceEnabled&&loadVoice?voiceReport(next):null,{autoplay});
       try{
         const manifest=await prepareReport(next);if(request!==reportRequest)return false;
         // Keep the current talk intact until its replacement cover is available.
-        generation++;navigation=manifest.navigation;pages=manifest.pages;activeReport=next;clock=new LectureClock(pages.length);estimateDurations();hasSelection=true;if(navigation?.sections)clock.stopAt=navigation.sections[0].end;loadingError=null;
+        generation++;navigation=manifest.navigation;pages=manifest.pages;activeReport=next;programScreen?.select(next);clock=new LectureClock(pages.length);estimateDurations();hasSelection=true;if(navigation?.sections)clock.stopAt=navigation.sections[0].end;loadingError=null;
         clearPageCache();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();resetWipe();
         boards.forEach(b=>{b.last='';b.wet=null;});targets.fill(0);eraserReturn=null;eraserPickup=null;eraser.visible=false;eraser.userData.state='parked';
         parkedErasers.forEach(e=>e.visible=true);chalk.visible=false;previousTip=null;lastWritePage=-1;wear=0;particles.forEach(p=>p.life=0);particlePositions.fill(-10000);dustGeometry.attributes.position.needsUpdate=true;
-        playing=!next.narration||!voiceEnabled;version++;await load(0,manifest.cover);
+        playing=!next.narration||!voiceEnabled;version++;await load(0,manifest.cover);if(next.kind==='classroom'&&loadVoice&&voiceEnabled){await voicePreparation;if(voice.state.phase==='error')throw Error(voice.state.error);}
         if(request!==reportRequest)return false;
         // A new report starts on a clean board; there is no previous page to lift or erase.
         clock.startWrite();boards.forEach((_,i)=>draw(i));return true;
@@ -639,7 +625,7 @@ export async function createLecture(scene,renderer,options={}){
     select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:(BOARD_LAYOUT.low+BOARD_LAYOUT.high)/2,-10.4+BOARD_MOUNT_OFFSET)),
-    dispose(){document.removeEventListener('visibilitychange',onVoiceVisibility);voice.dispose();highlighter.dispose();voicePanels.forEach(panel=>panel.dispose());cameraPanels.forEach(panel=>panel.dispose());storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.previousCanvas){board.previousInk.value.dispose();board.previousCanvas.width=1;board.previousCanvas.height=1;}if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
+    dispose(){document.removeEventListener('visibilitychange',onVoiceVisibility);voice.dispose();highlighter.dispose();voicePanels.forEach(panel=>panel.dispose());cameraPanels.forEach(panel=>panel.dispose());storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();programScreen?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...(programScreen?[]:reportButtons)].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.previousCanvas){board.previousInk.value.dispose();board.previousCanvas.width=1;board.previousCanvas.height=1;}if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
   };
 }
 import {drawPulley} from './pulley-icon.js?v=1';
