@@ -4,6 +4,7 @@ import {createRequire} from 'node:module';
 import {readFileSync,writeFileSync,existsSync} from 'node:fs';
 import {dirname,resolve,relative,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
 const require=createRequire(import.meta.url),esbuild=require(process.argv[2]||'esbuild');
 const root=dirname(fileURLToPath(import.meta.url));
 const oldManifest=existsSync(resolve(root,'opening-bundles.json'))?JSON.parse(readFileSync(resolve(root,'opening-bundles.json'),'utf8')):{};
@@ -30,7 +31,8 @@ const styleSources=styles.length>1?styles.map(m=>m[1]):oldManifest.styleSources|
 writeFileSync(resolve(root,'refuge-style.css'),styleSources.map(name=>readFileSync(resolve(root,name),'utf8')).join('\n'));
 writeFileSync(resolve(root,'opening-bundles.json'),JSON.stringify({outputs,styleSources},null,2)+'\n');
 let first=true;html=html.replace(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"?]+)(?:\?[^\"]*)?"[^>]*>/g,()=>first?(first=false,'<link rel="stylesheet" href="refuge-style.css?v=opening-fast-1">'):'');
-html=html.replace(/(?<!refuge-)app\.js\?v=[\w-]+/g,'refuge-app.js?v=opening-fast-1').replace(/src="social\.js\?v=[\w-]+"/,'src="refuge-social.js?v=opening-fast-1"').replace(/src="loading-transfer\.js\?v=[\w-]+"/,'src="refuge-meter.js?v=opening-fast-1"');
+const fingerprint=name=>createHash('sha256').update(readFileSync(resolve(root,name))).digest('hex').slice(0,12);
+html=html.replace(/(?<![\w-])(?:refuge-)?app\.js\?v=[\w-]+/g,'refuge-app.js?v='+fingerprint('refuge-app.js')).replace(/src="(?:refuge-)?social\.js\?v=[\w-]+"/,'src="refuge-social.js?v='+fingerprint('refuge-social.js')+'"').replace(/src="(?:loading-transfer|refuge-meter)\.js\?v=[\w-]+"/,'src="refuge-meter.js?v='+fingerprint('refuge-meter.js')+'"').replace(/refuge-style\.css\?v=[\w-]+/g,'refuge-style.css?v='+fingerprint('refuge-style.css'));
 const staticFiles=new Set();
 function critical(path){if(staticFiles.has(path))return;staticFiles.add(path);const output=result.metafile.outputs[path];for(const item of output?.imports||[])if(item.kind==='import-statement'&&!item.external)critical(item.path);}
 critical('refuge-app.js');critical('refuge-social.js');critical('refuge-meter.js');
