@@ -1,0 +1,7 @@
+module
+public import Linear.FiniteBiproductDualCoordinates
+public import Linear.FiniteBiproductMatrixDuality
+public import Linear.FinitePiDualEquiv
+public import Linear.FinitePiDualNaturality
+public import Linear.ProjectiveCanonicalCoefficientEquiv
+public import Linear.ProjectiveHomogeneousCoefficientEquiv

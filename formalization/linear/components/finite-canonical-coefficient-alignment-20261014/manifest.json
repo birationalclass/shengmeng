@@ -1,0 +1,687 @@
+{
+  "schemaVersion": 1,
+  "id": "finite-canonical-coefficient-alignment-20261014",
+  "createdAt": "2026-10-14T14:16:13.489773+08:00",
+  "leanVersion": "v4.35.0-rc3",
+  "mathlibRevision": "2a885768dae569d938bb9ff3474da6a8753bb90a",
+  "rootModules": [
+    "Linear.FinitePiDualEquiv",
+    "Linear.FinitePiDualNaturality",
+    "Linear.FiniteBiproductDualCoordinates",
+    "Linear.FiniteBiproductMatrixDuality",
+    "Linear.ProjectiveHomogeneousCoefficientEquiv",
+    "Linear.ProjectiveCanonicalCoefficientEquiv"
+  ],
+  "closedSourceModules": 46,
+  "newModules": 6,
+  "newProofs": 16,
+  "newDefinitions": 11,
+  "auditedDeclarations": 27,
+  "newPhysicalSourceLines": 353,
+  "unchangedEarlierFrozenDependencies": 40,
+  "priorFrozenEvidence": {
+    "component": "native-presentation-cech-hom-prefixes-20261014",
+    "archiveSha256": "fb0226a7cbaa28e4a7c5150c7136ecb5e8492d6e960ad64e87bec0c2493996b8"
+  },
+  "actualFiniteBiproductOriginalDualMatrixSquareVerified": true,
+  "canonicalHomogeneousCoefficientEquivalenceVerified": true,
+  "canonicalHomogeneousCoefficientMultiplicationCompatibilityVerified": true,
+  "includesFourDerivedInversePairInstances": true,
+  "originalFullCanonicalScalarDualCokernelSquareVerified": false,
+  "cechHomPrefixesUnified": false,
+  "originalKoszulRestrictionCompatibilityVerified": false,
+  "originalUniformFixedMSectionProductionVerified": false,
+  "sheafCohomologyComparisonVerified": false,
+  "canonicalDualizingIdentificationVerified": false,
+  "originalLemma4_1Verified": false,
+  "originalLemma4_2Verified": false,
+  "mainTheoremVerified": false,
+  "baseVerifiedLocalCheckpoint": 180,
+  "verificationScope": "For a commutative ring R,a finite family of arbitrary R-modules P_i,the canonical assembly of component functionals is a linear equivalence from the product of component duals to the dual of the product. Its restriction to the original Pi.single coordinate is the original component functional,and its evaluation is the finite sum of original component pairings. Uses mathlib's original DFinsupp universal linear equivalence and finite function equivalence. No dimension hypothesis or independently supplied dual comparison. The actual original tuple dual map is proved to have the transposes of the original proj_j T single_i entries. The ACTUAL categorical ModuleCat biproduct coordinates preserve original inclusions and projections. For an ARBITRARY actual categorical map u between finite biproducts,the matrix of the duals of its actual original categorical entries is proved to commute with its original tuple dual under canonical dual assembly. In addition,the original homogeneous coefficient map of any actual coefficient ring equivalence is proved invertible and compatible with original homogeneous multiplication. It is specialized to the ACTUAL canonical Scheme.GammaSpecIso K<->Gamma(Spec K,O):no coefficient ring equivalence is an input to that specialization. Its forward coefficient map is proved identical to the original coefficient map used in the published native top-Cech matrix,and its inverse is the original reverse affine comparison. The four named local inverse-pair instances are STRUCTURAL DEFINITIONS derived from existing proved RingEquiv inverse data,not assumptions. This twenty-seven-declaration continuation is OUTSIDE immutable36. Geometric native Cech/algebraic Hom dual alignment,base-ring coefficient comparison,arbitrary integer regrading,Koszul restriction,fixed-m sections,canonical dualizing identification and original4.1/4.2/main remain OPEN or UNVERIFIED.",
+  "remainingObligations": [
+    "Specialize the proved actual finite-biproduct/dual coordinate matrix square to original graded coefficient pieces and relation entries",
+    "Extend the proved actual canonical homogeneous coefficient equivalences to dual functionals and original graded matrix entries;assemble the whole K versus Gamma(Spec K,O) dual/cokernel square",
+    "Arbitrary original integer-twist regrading,Koszul compatibility,fixed-m sections and dualizing identification remain OPEN",
+    "Original4.1,original4.2 and main remain OPEN;no whole-project checkpoint promoted"
+  ],
+  "resourceLimits": {
+    "schema_version": 1,
+    "max_concurrent_compilers": 1,
+    "lean_memory_mb": 8192,
+    "job_memory_mib": 8192,
+    "lean_threads": 2,
+    "cpu_percent": 25,
+    "timeout_seconds": 1200,
+    "minimum_free_physical_mib": 16384,
+    "stop_free_physical_mib": 12288,
+    "maximum_commit_percent": 75,
+    "stop_commit_percent": 80,
+    "minimum_commit_headroom_mib": 12288,
+    "minimum_disk_free_mib": 5120,
+    "maximum_output_mib": 32,
+    "poll_seconds": 1.0,
+    "automatic_retry_after_resource_failure": false
+  },
+  "sources": [
+    {
+      "path": "source/CheckAxioms.lean",
+      "sha256": "8f676fcda842f1fbdfdfef8eba7839503739080822d17a585c184f7962cb03e0",
+      "physicalLines": 62
+    },
+    {
+      "path": "source/lake-manifest.json",
+      "sha256": "7a67384c94e083c7ecb54e06bd556fdfe03fba7929800161be2267cf4d241b4c",
+      "physicalLines": 96
+    },
+    {
+      "path": "source/lakefile.toml",
+      "sha256": "bcf6457b88c02d130516e985e7ac9193e1e50ff241c1fa16fba65a1ef0958945",
+      "physicalLines": 11
+    },
+    {
+      "path": "source/lean-toolchain",
+      "sha256": "ceb521c34ccf509ffab8850a94e147aefbc9b406506832eb83caae98c64e0116",
+      "physicalLines": 1
+    },
+    {
+      "path": "source/Linear/AddMonoidAlgebraLocalization.lean",
+      "sha256": "3c396f4bdf9e07d6f7c4fedec3f656025fb00012c76ecead4af3069dc3540494",
+      "physicalLines": 176,
+      "module": "Linear.AddMonoidAlgebraLocalization"
+    },
+    {
+      "path": "source/Linear/AwayCongr.lean",
+      "sha256": "b996012afe56cd32225d938e8f721dc478c91980c0b301e919d73c22cba8bd3d",
+      "physicalLines": 127,
+      "module": "Linear.AwayCongr"
+    },
+    {
+      "path": "source/Linear/CechSupportContraction.lean",
+      "sha256": "1320d65475e33bc977896e9405aa3fe5fb303d09969f927871e56eb7d9f2221b",
+      "physicalLines": 180,
+      "module": "Linear.CechSupportContraction"
+    },
+    {
+      "path": "source/Linear/CechTuplePermutations.lean",
+      "sha256": "8295149bb602cde042e02f73244545fa904283a755e13fe084293ad7dd505f72",
+      "physicalLines": 237,
+      "module": "Linear.CechTuplePermutations"
+    },
+    {
+      "path": "source/Linear/FiniteBiproductDualCoordinates.lean",
+      "sha256": "ccfc251dc5216f611d262be7b03bb30a1f0cb0023a5fae85b8dafe8028a58c3f",
+      "physicalLines": 64,
+      "module": "Linear.FiniteBiproductDualCoordinates"
+    },
+    {
+      "path": "source/Linear/FiniteBiproductMatrixDuality.lean",
+      "sha256": "6c23a3aacbe7dd1542de1a88c50b9a2c82088dead9f90be90ccaea0d2f2e708b",
+      "physicalLines": 72,
+      "module": "Linear.FiniteBiproductMatrixDuality"
+    },
+    {
+      "path": "source/Linear/FinitePiDualEquiv.lean",
+      "sha256": "6651be93f441186073f69aa03899f51ff0504798808d1a7e58a6816e9738e199",
+      "physicalLines": 40,
+      "module": "Linear.FinitePiDualEquiv"
+    },
+    {
+      "path": "source/Linear/FinitePiDualNaturality.lean",
+      "sha256": "ad747f800ac93f104d585830a20a2d673ad9c4e5b528482159226c33c5bcad4f",
+      "physicalLines": 59,
+      "module": "Linear.FinitePiDualNaturality"
+    },
+    {
+      "path": "source/Linear/LaurentExponentLocalization.lean",
+      "sha256": "82d167e056797ba7ffe1bf0ed6bc241fe86fbd73e490b7139ac78b50a646fc9f",
+      "physicalLines": 135,
+      "module": "Linear.LaurentExponentLocalization"
+    },
+    {
+      "path": "source/Linear/LaurentMonomialBasis.lean",
+      "sha256": "a1d8f043c32d7aa72447012c4ac8bf35086cc3703f23cabbb18f3f174117440b",
+      "physicalLines": 111,
+      "module": "Linear.LaurentMonomialBasis"
+    },
+    {
+      "path": "source/Linear/ModuleBaseCechBasic.lean",
+      "sha256": "8a3510c04795a7f6ecf7845d5c08634b824632e2e7f2efcb054a278a6577eab3",
+      "physicalLines": 186,
+      "module": "Linear.ModuleBaseCechBasic"
+    },
+    {
+      "path": "source/Linear/ModuleBaseCechFactors.lean",
+      "sha256": "88bec042876122e5e0243aba154f62dcda8c5e9907634ae4735b2f3610d04607",
+      "physicalLines": 38,
+      "module": "Linear.ModuleBaseCechFactors"
+    },
+    {
+      "path": "source/Linear/ModuleFormalCoproductAdditive.lean",
+      "sha256": "391b0423015713632adc49ad4b619c7f35eabf2e6c7b9544d6530d47ce6c0540",
+      "physicalLines": 58,
+      "module": "Linear.ModuleFormalCoproductAdditive"
+    },
+    {
+      "path": "source/Linear/ModuleOrderedBaseCech.lean",
+      "sha256": "66eeaf08f7e051eb895ea19bddb5317b9ac3f3b764d64dbb441ee7cb4168e70e",
+      "physicalLines": 406,
+      "module": "Linear.ModuleOrderedBaseCech"
+    },
+    {
+      "path": "source/Linear/OrderedCechFullSupport.lean",
+      "sha256": "4c0e3d6cd0ed04438cbe721e8ccfbcb5121350af0d78693a6672351c46390ae8",
+      "physicalLines": 83,
+      "module": "Linear.OrderedCechFullSupport"
+    },
+    {
+      "path": "source/Linear/OrderedCechSupportAlternating.lean",
+      "sha256": "a062152c1f16ce9ef3e91c2726047eabe031c80a5f0129147cb5f85650f25f04",
+      "physicalLines": 390,
+      "module": "Linear.OrderedCechSupportAlternating"
+    },
+    {
+      "path": "source/Linear/OrderedCechSupportContraction.lean",
+      "sha256": "ce34e008333be524fd128d4b109f12631ff323c6d915c03126de7652c74156a0",
+      "physicalLines": 400,
+      "module": "Linear.OrderedCechSupportContraction"
+    },
+    {
+      "path": "source/Linear/ProjectiveCanonicalCoefficientEquiv.lean",
+      "sha256": "660178a1db422b008bf289ac5cca2d38d54c18edda09e05fae8003017ac0bccc",
+      "physicalLines": 60,
+      "module": "Linear.ProjectiveCanonicalCoefficientEquiv"
+    },
+    {
+      "path": "source/Linear/ProjectiveCanonicalResidue.lean",
+      "sha256": "7c8fd09a1efed20f48de6bb71d0e92eef2c82f6a0927c4644e0abcbd7ef32400",
+      "physicalLines": 87,
+      "module": "Linear.ProjectiveCanonicalResidue"
+    },
+    {
+      "path": "source/Linear/ProjectiveCanonicalResidueKernel.lean",
+      "sha256": "1fde27f8b0a58859036c9265b69c14e6f052f9853a17a2e5419bd72c42e96416",
+      "physicalLines": 86,
+      "module": "Linear.ProjectiveCanonicalResidueKernel"
+    },
+    {
+      "path": "source/Linear/ProjectiveCechLaurentRestriction.lean",
+      "sha256": "389a19998ca420d5b6fb411ee65dbe4b2d923474b6d6276492037f0fcbc8ba6a",
+      "physicalLines": 263,
+      "module": "Linear.ProjectiveCechLaurentRestriction"
+    },
+    {
+      "path": "source/Linear/ProjectiveCechLaurentSections.lean",
+      "sha256": "91525f936cd93ee16f6af207cf04050aaf1462d07317fc35952fda9954415357",
+      "physicalLines": 420,
+      "module": "Linear.ProjectiveCechLaurentSections"
+    },
+    {
+      "path": "source/Linear/ProjectiveCoordinateOpens.lean",
+      "sha256": "e6a0e25a979f83195900d0035e558553e5ed7fbdc5ea4ecedb827739b8e257c1",
+      "physicalLines": 57,
+      "module": "Linear.ProjectiveCoordinateOpens"
+    },
+    {
+      "path": "source/Linear/ProjectiveGeneralResidueCoordinates.lean",
+      "sha256": "271a18b98afe5dc86fe12531bfcd7b01fa2fa5c04197e0b2b9e8a02a2574a427",
+      "physicalLines": 57,
+      "module": "Linear.ProjectiveGeneralResidueCoordinates"
+    },
+    {
+      "path": "source/Linear/ProjectiveGeneralResidueDuality.lean",
+      "sha256": "968053b10ec54d086298079d432f9bd2b0bec26f810789c72543eb5a76d3c4ba",
+      "physicalLines": 51,
+      "module": "Linear.ProjectiveGeneralResidueDuality"
+    },
+    {
+      "path": "source/Linear/ProjectiveGeneralResidueSurjective.lean",
+      "sha256": "353b553e4c9798ffd931a3b37fe491d91ee0c9e9e7990b43e185be265731e9fd",
+      "physicalLines": 73,
+      "module": "Linear.ProjectiveGeneralResidueSurjective"
+    },
+    {
+      "path": "source/Linear/ProjectiveHomogeneousBasisProduct.lean",
+      "sha256": "519d6b0e5e6fc550749af577c25e068a4ca01544439c4737437343c737b35da1",
+      "physicalLines": 34,
+      "module": "Linear.ProjectiveHomogeneousBasisProduct"
+    },
+    {
+      "path": "source/Linear/ProjectiveHomogeneousCoefficientEquiv.lean",
+      "sha256": "0f3bbdc2c22148d8aa7ffe599e052a00fffbd017a03a0e1feec0e71f32048eed",
+      "physicalLines": 58,
+      "module": "Linear.ProjectiveHomogeneousCoefficientEquiv"
+    },
+    {
+      "path": "source/Linear/ProjectiveHomogeneousCoefficientTransport.lean",
+      "sha256": "0841514d299857a62e203152b89e4b3cdb9daebb2e004d6e2f221d6a13fdf1cc",
+      "physicalLines": 45,
+      "module": "Linear.ProjectiveHomogeneousCoefficientTransport"
+    },
+    {
+      "path": "source/Linear/ProjectiveHomogeneousMultiplication.lean",
+      "sha256": "5c52834381e03121c1f8823926611d7cb142d64c6c1d452d1d6bad85326973ed",
+      "physicalLines": 38,
+      "module": "Linear.ProjectiveHomogeneousMultiplication"
+    },
+    {
+      "path": "source/Linear/ProjectiveLaurentCardinality.lean",
+      "sha256": "c3997205a7c46063529abe53fbc5fdf537abf52c25ef1429e3241c11508b093b",
+      "physicalLines": 38,
+      "module": "Linear.ProjectiveLaurentCardinality"
+    },
+    {
+      "path": "source/Linear/ProjectiveLaurentCechWeights.lean",
+      "sha256": "63033898d6b13afc52a8faf6588c3e48ff6f62e9f10ad60b24d9d6d4a5ec02df",
+      "physicalLines": 84,
+      "module": "Linear.ProjectiveLaurentCechWeights"
+    },
+    {
+      "path": "source/Linear/ProjectiveLaurentGeneralTopBoundary.lean",
+      "sha256": "d2f78bb3f52498a275fa4b31fd788cb74459a81232260fe5ddfca635b8c02474",
+      "physicalLines": 101,
+      "module": "Linear.ProjectiveLaurentGeneralTopBoundary"
+    },
+    {
+      "path": "source/Linear/ProjectiveLaurentInitialChartMap.lean",
+      "sha256": "9559a72c378f15d481dcb3656d80e851c642541f0812a6ed34c89ad1e6a8bbb3",
+      "physicalLines": 331,
+      "module": "Linear.ProjectiveLaurentInitialChartMap"
+    },
+    {
+      "path": "source/Linear/ProjectiveLaurentInitialExponent.lean",
+      "sha256": "99461f67a780278346b87bd367eb331ea30673d1f6a2e5a7473569a89f787bb9",
+      "physicalLines": 255,
+      "module": "Linear.ProjectiveLaurentInitialExponent"
+    },
+    {
+      "path": "source/Linear/ProjectiveLaurentInitialGenerators.lean",
+      "sha256": "33562d0dd692ab7ea71feb7fc2601881f7bbeb1e0be485b6e6ce1b06a5a671b2",
+      "physicalLines": 482,
+      "module": "Linear.ProjectiveLaurentInitialGenerators"
+    },
+    {
+      "path": "source/Linear/ProjectiveLaurentInitialRestriction.lean",
+      "sha256": "82e38cf3bbb642a8809d59d261e8081467c2798d03608d5348262011e6b37e2a",
+      "physicalLines": 237,
+      "module": "Linear.ProjectiveLaurentInitialRestriction"
+    },
+    {
+      "path": "source/Linear/ProjectiveLaurentNoninitialRestriction.lean",
+      "sha256": "3b0a8ac1d7abb37ce5540bb6fe8ce292f6b9cd8439282697032385dc03feda39",
+      "physicalLines": 274,
+      "module": "Linear.ProjectiveLaurentNoninitialRestriction"
+    },
+    {
+      "path": "source/Linear/ProjectiveLaurentTopWeight.lean",
+      "sha256": "9f0836adb3f6b10deb519763202e66ddedb34d6a68fed7a1dc3434a5bbc8b0b4",
+      "physicalLines": 71,
+      "module": "Linear.ProjectiveLaurentTopWeight"
+    },
+    {
+      "path": "source/Linear/ProjectiveLaurentWeight.lean",
+      "sha256": "6ac42f8ada1a9df2cc21a6af9cf24ee4e54fac0d2929c01d1cb54f99168581ea",
+      "physicalLines": 221,
+      "module": "Linear.ProjectiveLaurentWeight"
+    },
+    {
+      "path": "source/Linear/ProjectiveLaurentWeightAssembly.lean",
+      "sha256": "7b29668591d4b293dabd1342b941715835a7c7966f27e79633539fd06c15dbd5",
+      "physicalLines": 204,
+      "module": "Linear.ProjectiveLaurentWeightAssembly"
+    },
+    {
+      "path": "source/Linear/ProjectiveLaurentWeightComponents.lean",
+      "sha256": "78cf53089d7189a9efeeae45cc0dbd752c8315ae5a232f9c2017e02f1e58035e",
+      "physicalLines": 560,
+      "module": "Linear.ProjectiveLaurentWeightComponents"
+    },
+    {
+      "path": "source/Linear/ProjectiveNegativeWeightComplement.lean",
+      "sha256": "36e9d5b2e3c7127d24b39b60610b832c4c09d24b76bbc542f0932832b2f15812",
+      "physicalLines": 84,
+      "module": "Linear.ProjectiveNegativeWeightComplement"
+    },
+    {
+      "path": "source/Linear/ProjectiveSpaceChart.lean",
+      "sha256": "59adadb7e06e870cee928db7bd1d9134367ba263f36f4a4a18c9b43e32a479ff",
+      "physicalLines": 428,
+      "module": "Linear.ProjectiveSpaceChart"
+    },
+    {
+      "path": "source/Linear/ProjectiveStandardIntersectionRing.lean",
+      "sha256": "7e9a85af4713a3e4b2430bf8657411745b0443d256caf5c928e4cc07f5271ff9",
+      "physicalLines": 511,
+      "module": "Linear.ProjectiveStandardIntersectionRing"
+    },
+    {
+      "path": "source/Linear/ProjStructureSectionSquare.lean",
+      "sha256": "d57ea13d05d4f37dbf53a1a26bd848946d92d6dd99f65dfff32bc11b5fcacf2f",
+      "physicalLines": 96,
+      "module": "Linear.ProjStructureSectionSquare"
+    },
+    {
+      "path": "source/Linear.lean",
+      "sha256": "d451abc49d5b5785a161b6f927711dd711c71725d6df487b61575e0797ed7f44",
+      "physicalLines": 7
+    }
+  ],
+  "declarations": [
+    {
+      "name": "LinearStudy.finitePiDualEquiv",
+      "kind": "def",
+      "module": "Linear.FinitePiDualEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finitePiDualEquiv_single",
+      "kind": "theorem",
+      "module": "Linear.FinitePiDualEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finitePiDualEquiv_apply",
+      "kind": "theorem",
+      "module": "Linear.FinitePiDualEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finitePiDualComponentMap",
+      "kind": "def",
+      "module": "Linear.FinitePiDualNaturality",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finitePiDualComponentMap_apply",
+      "kind": "theorem",
+      "module": "Linear.FinitePiDualNaturality",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finitePiDualComponentMap_entries",
+      "kind": "theorem",
+      "module": "Linear.FinitePiDualNaturality",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finitePiDualComponentMap_square",
+      "kind": "theorem",
+      "module": "Linear.FinitePiDualNaturality",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finiteBiproductCoordinate_apply",
+      "kind": "theorem",
+      "module": "Linear.FiniteBiproductDualCoordinates",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finiteBiproductCoordinate_ι",
+      "kind": "theorem",
+      "module": "Linear.FiniteBiproductDualCoordinates",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finiteBiproductDualIso",
+      "kind": "def",
+      "module": "Linear.FiniteBiproductDualCoordinates",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finiteBiproductDualIso_ι_apply",
+      "kind": "theorem",
+      "module": "Linear.FiniteBiproductDualCoordinates",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finiteBiproductMapCoordinates",
+      "kind": "def",
+      "module": "Linear.FiniteBiproductMatrixDuality",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finiteBiproductMapCoordinates_single",
+      "kind": "theorem",
+      "module": "Linear.FiniteBiproductMatrixDuality",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.finiteBiproductActualMap_dual_matrix",
+      "kind": "theorem",
+      "module": "Linear.FiniteBiproductMatrixDuality",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.projectiveCoefficientInverseForward",
+      "kind": "instance",
+      "module": "Linear.ProjectiveHomogeneousCoefficientEquiv",
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.projectiveCoefficientInverseBackward",
+      "kind": "instance",
+      "module": "Linear.ProjectiveHomogeneousCoefficientEquiv",
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.projectiveHomogeneousCoefficientEquiv",
+      "kind": "def",
+      "module": "Linear.ProjectiveHomogeneousCoefficientEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.projectiveHomogeneousCoefficientEquiv_apply",
+      "kind": "theorem",
+      "module": "Linear.ProjectiveHomogeneousCoefficientEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.projectiveHomogeneousCoefficientEquiv_symm_apply",
+      "kind": "theorem",
+      "module": "Linear.ProjectiveHomogeneousCoefficientEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.projectiveHomogeneousCoefficientEquiv_multiply",
+      "kind": "theorem",
+      "module": "Linear.ProjectiveHomogeneousCoefficientEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.coordinateCanonicalCoefficientRingEquiv",
+      "kind": "abbrev",
+      "module": "Linear.ProjectiveCanonicalCoefficientEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.coordinateCanonicalCoefficientInverseForward",
+      "kind": "instance",
+      "module": "Linear.ProjectiveCanonicalCoefficientEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.coordinateCanonicalCoefficientInverseBackward",
+      "kind": "instance",
+      "module": "Linear.ProjectiveCanonicalCoefficientEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv",
+      "kind": "def",
+      "module": "Linear.ProjectiveCanonicalCoefficientEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_apply",
+      "kind": "theorem",
+      "module": "Linear.ProjectiveCanonicalCoefficientEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_symm_apply",
+      "kind": "theorem",
+      "module": "Linear.ProjectiveCanonicalCoefficientEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_multiply",
+      "kind": "theorem",
+      "module": "Linear.ProjectiveCanonicalCoefficientEquiv",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    }
+  ],
+  "audit": {
+    "rootSource": "D:\\codex\\Math\\formalization\\linear\\research\\CheckFiniteCanonicalCoefficientAlignmentc07fd0c8f299.lean",
+    "sha256": "8f676fcda842f1fbdfdfef8eba7839503739080822d17a585c184f7962cb03e0",
+    "log": "evidence/exact-types-and-axioms.txt",
+    "peakJobMiB": 4157.3,
+    "accepted": true
+  },
+  "archive": "FiniteCanonicalCoefficientAlignment-20261014-LF-source.zip",
+  "archiveSha256": "548eb4d7b6e7ee0074ab28ceeb6dc8a2554948b70b382f410c52fb11968002bf",
+  "published": false,
+  "gitHubLeanCI": {
+    "wholeProjectClaimed": false
+  },
+  "publicationEvidenceOutsideFrozenArchive": {
+    "evidence/source-range-driver.lean": "660da9a88ac316edb1c6e33be69ce9aaee3eb6f5510277ccdf55cee38d04915c",
+    "evidence/source-range-compiler.log": "5a120503b397c8a18c597a7a1c4f8e90f93c9174593d87f48dde31411c3e5b80",
+    "evidence/source-range-resource.json": "7be2e5ade576e5840d6dcd4ca945c8c6ab0f361bd4c4ea5fdd089677128a9c05",
+    "evidence/source-range-verification.json": "913ed806a451463352df539d10afa1daf8b90d29b43abe805041503828f35cf9",
+    "source-line-counts.json": "91b6f36c85675c13c017eee947566deba6b481c3aede0d75b7f7bf9f53f1bbe8"
+  },
+  "sourceLineCounts": "source-line-counts.json",
+  "sourceLineMetadataVerified": true
+}

@@ -1,0 +1,188 @@
+@LinearStudy.finitePiDualEquiv : {R : Type u_1} →
+  {I : Type u_2} →
+    [inst : CommRing R] →
+      [Fintype I] →
+        [DecidableEq I] →
+          (P : I → Type u_3) →
+            [inst_3 : (i : I) → AddCommGroup (P i)] →
+              [inst_4 : (i : I) → Module R (P i)] → ((i : I) → Module.Dual R (P i)) ≃ₗ[R] Module.Dual R ((i : I) → P i)
+'LinearStudy.finitePiDualEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finitePiDualEquiv_single : ∀ {R : Type u_1} {I : Type u_2} [inst : CommRing R] [inst_1 : Fintype I]
+  [inst_2 : DecidableEq I] (P : I → Type u_3) [inst_3 : (i : I) → AddCommGroup (P i)]
+  [inst_4 : (i : I) → Module R (P i)] (φ : (i : I) → Module.Dual R (P i)) (i : I) (x : P i),
+  ((LinearStudy.finitePiDualEquiv P) φ) (Pi.single i x) = (φ i) x
+'LinearStudy.finitePiDualEquiv_single' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finitePiDualEquiv_apply : ∀ {R : Type u_1} {I : Type u_2} [inst : CommRing R] [inst_1 : Fintype I]
+  [inst_2 : DecidableEq I] (P : I → Type u_3) [inst_3 : (i : I) → AddCommGroup (P i)]
+  [inst_4 : (i : I) → Module R (P i)] (φ : (i : I) → Module.Dual R (P i)) (x : (i : I) → P i),
+  ((LinearStudy.finitePiDualEquiv P) φ) x = ∑ i, (φ i) (x i)
+'LinearStudy.finitePiDualEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finitePiDualComponentMap : {R : Type u_1} →
+  {I : Type u_2} →
+    {J : Type u_3} →
+      [inst : CommRing R] →
+        [Fintype I] →
+          [DecidableEq I] →
+            [Fintype J] →
+              [DecidableEq J] →
+                (P : I → Type u_4) →
+                  (Q : J → Type u_5) →
+                    [inst_5 : (i : I) → AddCommGroup (P i)] →
+                      [inst_6 : (i : I) → Module R (P i)] →
+                        [inst_7 : (j : J) → AddCommGroup (Q j)] →
+                          [inst_8 : (j : J) → Module R (Q j)] →
+                            (((i : I) → P i) →ₗ[R] (j : J) → Q j) →
+                              ((j : J) → Module.Dual R (Q j)) →ₗ[R] (i : I) → Module.Dual R (P i)
+'LinearStudy.finitePiDualComponentMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finitePiDualComponentMap_apply : ∀ {R : Type u_1} {I : Type u_2} {J : Type u_3} [inst : CommRing R]
+  [inst_1 : Fintype I] [inst_2 : DecidableEq I] [inst_3 : Fintype J] [inst_4 : DecidableEq J] (P : I → Type u_4)
+  (Q : J → Type u_5) [inst_5 : (i : I) → AddCommGroup (P i)] [inst_6 : (i : I) → Module R (P i)]
+  [inst_7 : (j : J) → AddCommGroup (Q j)] [inst_8 : (j : J) → Module R (Q j)] (T : ((i : I) → P i) →ₗ[R] (j : J) → Q j)
+  (φ : (j : J) → Module.Dual R (Q j)) (i : I) (x : P i),
+  ((LinearStudy.finitePiDualComponentMap P Q T) φ i) x = ∑ j, (φ j) (T (Pi.single i x) j)
+'LinearStudy.finitePiDualComponentMap_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finitePiDualComponentMap_entries : ∀ {R : Type u_1} {I : Type u_2} {J : Type u_3} [inst : CommRing R]
+  [inst_1 : Fintype I] [inst_2 : DecidableEq I] [inst_3 : Fintype J] [inst_4 : DecidableEq J] (P : I → Type u_4)
+  (Q : J → Type u_5) [inst_5 : (i : I) → AddCommGroup (P i)] [inst_6 : (i : I) → Module R (P i)]
+  [inst_7 : (j : J) → AddCommGroup (Q j)] [inst_8 : (j : J) → Module R (Q j)] (T : ((i : I) → P i) →ₗ[R] (j : J) → Q j)
+  (φ : (j : J) → Module.Dual R (Q j)) (i : I),
+  (LinearStudy.finitePiDualComponentMap P Q T) φ i =
+    ∑ j, (LinearMap.proj j ∘ₗ T ∘ₗ LinearMap.single R P i).dualMap (φ j)
+'LinearStudy.finitePiDualComponentMap_entries' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finitePiDualComponentMap_square : ∀ {R : Type u_1} {I : Type u_2} {J : Type u_3} [inst : CommRing R]
+  [inst_1 : Fintype I] [inst_2 : DecidableEq I] [inst_3 : Fintype J] [inst_4 : DecidableEq J] (P : I → Type u_4)
+  (Q : J → Type u_5) [inst_5 : (i : I) → AddCommGroup (P i)] [inst_6 : (i : I) → Module R (P i)]
+  [inst_7 : (j : J) → AddCommGroup (Q j)] [inst_8 : (j : J) → Module R (Q j)] (T : ((i : I) → P i) →ₗ[R] (j : J) → Q j),
+  ↑(LinearStudy.finitePiDualEquiv P) ∘ₗ LinearStudy.finitePiDualComponentMap P Q T =
+    T.dualMap ∘ₗ ↑(LinearStudy.finitePiDualEquiv Q)
+'LinearStudy.finitePiDualComponentMap_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finiteBiproductCoordinate_apply : ∀ {R : Type u_1} [inst : CommRing R] {I : Type} [inst_1 : Fintype I]
+  (f : I → ModuleCat R) (x : ↑(⨁ f)) (i : I),
+  (CategoryTheory.ConcreteCategory.hom (ModuleCat.biproductIsoPi f).hom) x i =
+    (CategoryTheory.ConcreteCategory.hom (CategoryTheory.Limits.biproduct.π f i)) x
+'LinearStudy.finiteBiproductCoordinate_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finiteBiproductCoordinate_ι : ∀ {R : Type u_1} [inst : CommRing R] {I : Type} [inst_1 : Fintype I]
+  [inst_2 : DecidableEq I] (f : I → ModuleCat R) (i : I) (x : ↑(f i)),
+  (CategoryTheory.ConcreteCategory.hom (ModuleCat.biproductIsoPi f).hom)
+      ((CategoryTheory.ConcreteCategory.hom (CategoryTheory.Limits.biproduct.ι f i)) x) =
+    Pi.single i x
+'LinearStudy.finiteBiproductCoordinate_ι' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finiteBiproductDualIso : {R : Type u_1} →
+  [inst : CommRing R] →
+    {I : Type} →
+      [inst_1 : Fintype I] →
+        [DecidableEq I] →
+          (f : I → ModuleCat R) → (⨁ fun i => ↧(Module.Dual R ↑(f i))) ≅ ↧(Module.Dual R ((i : I) → ↑(f i)))
+'LinearStudy.finiteBiproductDualIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finiteBiproductDualIso_ι_apply : ∀ {R : Type u_1} [inst : CommRing R] {I : Type} [inst_1 : Fintype I]
+  [inst_2 : DecidableEq I] (f : I → ModuleCat R) (i : I) (φ : Module.Dual R ↑(f i)) (x : (i : I) → ↑(f i)),
+  ((CategoryTheory.ConcreteCategory.hom (LinearStudy.finiteBiproductDualIso f).hom)
+        ((CategoryTheory.ConcreteCategory.hom (CategoryTheory.Limits.biproduct.ι (fun i => ↧(Module.Dual R ↑(f i))) i))
+          φ))
+      x =
+    φ (x i)
+'LinearStudy.finiteBiproductDualIso_ι_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finiteBiproductMapCoordinates : {R : Type u_1} →
+  [inst : CommRing R] →
+    {I J : Type} →
+      [inst_1 : Fintype I] →
+        [inst_2 : Fintype J] →
+          (f : I → ModuleCat R) → (g : J → ModuleCat R) → (⨁ f ⟶ ⨁ g) → ((i : I) → ↑(f i)) →ₗ[R] (j : J) → ↑(g j)
+'LinearStudy.finiteBiproductMapCoordinates' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finiteBiproductMapCoordinates_single : ∀ {R : Type u_1} [inst : CommRing R] {I J : Type}
+  [inst_1 : Fintype I] [inst_2 : Fintype J] (f : I → ModuleCat R) (g : J → ModuleCat R) [inst_3 : DecidableEq I]
+  (u : ⨁ f ⟶ ⨁ g) (i : I) (j : J) (x : ↑(f i)),
+  (LinearStudy.finiteBiproductMapCoordinates f g u) (Pi.single i x) j =
+    (CategoryTheory.ConcreteCategory.hom (CategoryTheory.Limits.biproduct.components u i j)) x
+'LinearStudy.finiteBiproductMapCoordinates_single' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finiteBiproductActualMap_dual_matrix : ∀ {R : Type u_1} [inst : CommRing R] {I J : Type}
+  [inst_1 : Fintype I] [inst_2 : Fintype J] (f : I → ModuleCat R) (g : J → ModuleCat R) [inst_3 : DecidableEq I]
+  [inst_4 : DecidableEq J] (u : ⨁ f ⟶ ⨁ g),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.biproduct.matrix fun j i =>
+        ModuleCat.ofHom (ModuleCat.Hom.hom (CategoryTheory.Limits.biproduct.components u i j)).dualMap)
+      (LinearStudy.finiteBiproductDualIso f).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.finiteBiproductDualIso g).hom
+      (ModuleCat.ofHom (LinearStudy.finiteBiproductMapCoordinates f g u).dualMap)
+'LinearStudy.finiteBiproductActualMap_dual_matrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveCoefficientInverseForward : ∀ {R S : Type} [inst : CommRing R] [inst_1 : CommRing S]
+  (e : R ≃+* S), RingHomInvPair e.toRingHom e.symm.toRingHom
+'MvPolynomial.projectiveCoefficientInverseForward' depends on axioms: [propext, Quot.sound]
+@MvPolynomial.projectiveCoefficientInverseBackward : ∀ {R S : Type} [inst : CommRing R] [inst_1 : CommRing S]
+  (e : R ≃+* S), RingHomInvPair e.symm.toRingHom e.toRingHom
+'MvPolynomial.projectiveCoefficientInverseBackward' depends on axioms: [propext, Quot.sound]
+@MvPolynomial.projectiveHomogeneousCoefficientEquiv : {R S : Type} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      {σ : Type} →
+        (e : R ≃+* S) →
+          (m : ℕ) →
+            ↥(MvPolynomial.homogeneousSubmodule σ R m) ≃ₛₗ[e.toRingHom] ↥(MvPolynomial.homogeneousSubmodule σ S m)
+'MvPolynomial.projectiveHomogeneousCoefficientEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousCoefficientEquiv_apply : ∀ {R S : Type} [inst : CommRing R] [inst_1 : CommRing S]
+  {σ : Type} (e : R ≃+* S) (m : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ R m)),
+  (MvPolynomial.projectiveHomogeneousCoefficientEquiv e m) p =
+    (MvPolynomial.projectiveHomogeneousCoefficientMap e.toRingHom m) p
+'MvPolynomial.projectiveHomogeneousCoefficientEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.projectiveHomogeneousCoefficientEquiv_symm_apply : ∀ {R S : Type} [inst : CommRing R]
+  [inst_1 : CommRing S] {σ : Type} (e : R ≃+* S) (m : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ S m)),
+  (MvPolynomial.projectiveHomogeneousCoefficientEquiv e m).symm p =
+    (MvPolynomial.projectiveHomogeneousCoefficientMap e.symm.toRingHom m) p
+'MvPolynomial.projectiveHomogeneousCoefficientEquiv_symm_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.projectiveHomogeneousCoefficientEquiv_multiply : ∀ {R S : Type} [inst : CommRing R] [inst_1 : CommRing S]
+  {σ : Type} (e : R ≃+* S) (l m : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ R l))
+  (q : ↥(MvPolynomial.homogeneousSubmodule σ R m)),
+  (MvPolynomial.projectiveHomogeneousCoefficientEquiv e (l + m))
+      ((MvPolynomial.projectiveHomogeneousMultiply l m p) q) =
+    (MvPolynomial.projectiveHomogeneousMultiply l m ((MvPolynomial.projectiveHomogeneousCoefficientEquiv e l) p))
+      ((MvPolynomial.projectiveHomogeneousCoefficientEquiv e m) q)
+'MvPolynomial.projectiveHomogeneousCoefficientEquiv_multiply' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.coordinateCanonicalCoefficientRingEquiv : (K : Type) →
+  [inst : CommRing K] → K ≃+* ↑(MvPolynomial.coordinateCanonicalBaseRing K)
+'MvPolynomial.coordinateCanonicalCoefficientRingEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.coordinateCanonicalCoefficientInverseForward : ∀ (K : Type) [inst : CommRing K],
+  RingHomInvPair (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom
+    (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).symm.toRingHom
+'MvPolynomial.coordinateCanonicalCoefficientInverseForward' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.coordinateCanonicalCoefficientInverseBackward : ∀ (K : Type) [inst : CommRing K],
+  RingHomInvPair (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).symm.toRingHom
+    (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom
+'MvPolynomial.coordinateCanonicalCoefficientInverseBackward' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv : (K : Type) →
+  [inst : CommRing K] →
+    {σ : Type} →
+      (m : ℕ) →
+        ↥(MvPolynomial.homogeneousSubmodule σ K
+              m) ≃ₛₗ[(MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom]
+          ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K)) m)
+'MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_apply : ∀ (K : Type) [inst : CommRing K] {σ : Type} (m : ℕ)
+  (p : ↥(MvPolynomial.homogeneousSubmodule σ K m)),
+  (MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv K m) p =
+    (MvPolynomial.projectiveHomogeneousCoefficientMap
+        (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).commRingCatIsoToRingEquiv.symm.toRingHom m)
+      p
+'MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_symm_apply : ∀ (K : Type) [inst : CommRing K] {σ : Type}
+  (m : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ (↑(MvPolynomial.coordinateCanonicalBaseRing K)) m)),
+  (MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv K m).symm p =
+    (MvPolynomial.projectiveHomogeneousCoefficientMap
+        (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).commRingCatIsoToRingEquiv.toRingHom m)
+      p
+'MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_symm_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_multiply : ∀ (K : Type) [inst : CommRing K] {σ : Type}
+  (l m : ℕ) (p : ↥(MvPolynomial.homogeneousSubmodule σ K l)) (q : ↥(MvPolynomial.homogeneousSubmodule σ K m)),
+  (MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv K (l + m))
+      ((MvPolynomial.projectiveHomogeneousMultiply l m p) q) =
+    (MvPolynomial.projectiveHomogeneousMultiply l m
+        ((MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv K l) p))
+      ((MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv K m) q)
+'MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_multiply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

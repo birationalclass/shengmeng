@@ -1,0 +1,62 @@
+module
+import all Linear.FinitePiDualEquiv
+import all Linear.FinitePiDualNaturality
+import all Linear.FiniteBiproductDualCoordinates
+import all Linear.FiniteBiproductMatrixDuality
+import all Linear.ProjectiveHomogeneousCoefficientEquiv
+import all Linear.ProjectiveCanonicalCoefficientEquiv
+set_option pp.deepTerms true
+#check @LinearStudy.finitePiDualEquiv
+#print axioms LinearStudy.finitePiDualEquiv
+#check @LinearStudy.finitePiDualEquiv_single
+#print axioms LinearStudy.finitePiDualEquiv_single
+#check @LinearStudy.finitePiDualEquiv_apply
+#print axioms LinearStudy.finitePiDualEquiv_apply
+#check @LinearStudy.finitePiDualComponentMap
+#print axioms LinearStudy.finitePiDualComponentMap
+#check @LinearStudy.finitePiDualComponentMap_apply
+#print axioms LinearStudy.finitePiDualComponentMap_apply
+#check @LinearStudy.finitePiDualComponentMap_entries
+#print axioms LinearStudy.finitePiDualComponentMap_entries
+#check @LinearStudy.finitePiDualComponentMap_square
+#print axioms LinearStudy.finitePiDualComponentMap_square
+#check @LinearStudy.finiteBiproductCoordinate_apply
+#print axioms LinearStudy.finiteBiproductCoordinate_apply
+#check @LinearStudy.finiteBiproductCoordinate_ι
+#print axioms LinearStudy.finiteBiproductCoordinate_ι
+#check @LinearStudy.finiteBiproductDualIso
+#print axioms LinearStudy.finiteBiproductDualIso
+#check @LinearStudy.finiteBiproductDualIso_ι_apply
+#print axioms LinearStudy.finiteBiproductDualIso_ι_apply
+#check @LinearStudy.finiteBiproductMapCoordinates
+#print axioms LinearStudy.finiteBiproductMapCoordinates
+#check @LinearStudy.finiteBiproductMapCoordinates_single
+#print axioms LinearStudy.finiteBiproductMapCoordinates_single
+#check @LinearStudy.finiteBiproductActualMap_dual_matrix
+#print axioms LinearStudy.finiteBiproductActualMap_dual_matrix
+#check @MvPolynomial.projectiveCoefficientInverseForward
+#print axioms MvPolynomial.projectiveCoefficientInverseForward
+#check @MvPolynomial.projectiveCoefficientInverseBackward
+#print axioms MvPolynomial.projectiveCoefficientInverseBackward
+#check @MvPolynomial.projectiveHomogeneousCoefficientEquiv
+#print axioms MvPolynomial.projectiveHomogeneousCoefficientEquiv
+#check @MvPolynomial.projectiveHomogeneousCoefficientEquiv_apply
+#print axioms MvPolynomial.projectiveHomogeneousCoefficientEquiv_apply
+#check @MvPolynomial.projectiveHomogeneousCoefficientEquiv_symm_apply
+#print axioms MvPolynomial.projectiveHomogeneousCoefficientEquiv_symm_apply
+#check @MvPolynomial.projectiveHomogeneousCoefficientEquiv_multiply
+#print axioms MvPolynomial.projectiveHomogeneousCoefficientEquiv_multiply
+#check @MvPolynomial.coordinateCanonicalCoefficientRingEquiv
+#print axioms MvPolynomial.coordinateCanonicalCoefficientRingEquiv
+#check @MvPolynomial.coordinateCanonicalCoefficientInverseForward
+#print axioms MvPolynomial.coordinateCanonicalCoefficientInverseForward
+#check @MvPolynomial.coordinateCanonicalCoefficientInverseBackward
+#print axioms MvPolynomial.coordinateCanonicalCoefficientInverseBackward
+#check @MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv
+#print axioms MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv
+#check @MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_apply
+#print axioms MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_apply
+#check @MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_symm_apply
+#print axioms MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_symm_apply
+#check @MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_multiply
+#print axioms MvPolynomial.coordinateCanonicalHomogeneousCoefficientEquiv_multiply
