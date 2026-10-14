@@ -1,7 +1,7 @@
 export const ERASE_PASSES=14,DRY_SECONDS=12,ERASER_HALF_WIDTH=47,ERASER_HALF_HEIGHT=28;
 const clamp=x=>Math.max(0,Math.min(1,x));
 const cache=new WeakMap();
-export const LETTER_SECONDS=.25,ERASER_SPEED=260;
+export const LETTER_SECONDS=.25,ERASER_SPEED=360,ERASER_TRANSFER_SPEED=720;
 export function rowReveal(progress,row,count){return clamp(progress*count-row);}
 // Sample the displayed ink, not a reconstructed handwriting stroke order.
 export function inkGuides(imageData,rows){
@@ -92,38 +92,34 @@ export function rasterStrokeReveal(rows,progress,row,guides){
  if(progress>=1)return 1;const p=writingPose(rows,progress,guides);
  if(row<p.row)return 1;if(row>p.row||p.entering)return 0;return p.strokeProgress??0;
 }
-// Group nearby ink into regions, then wipe in broad overlapping arm sweeps.
+// Follow actual horizontal ink bands; never merge different text lines into
+// one full-board rectangle. A real raster takes precedence over stroke boxes.
 export function erasingPlan(imageData,rows=[]){
- const width=imageData?.width||1536,height=imageData?.height||640,cols=Math.ceil(width/32),bands=Math.ceil(height/28),occupied=new Set(),segments=[];
- for(let j=0;j<bands;j++)for(let i=0;i<cols;i++){
-  const x=i*32,y=j*28;let ink=false;
-  if(imageData){for(let py=y;py<Math.min(height,y+28)&&!ink;py++)for(let px=x;px<Math.min(width,x+32);px++)if(imageData.data[(py*width+px)*4+3]>=96){ink=true;break;}}
-  if(!imageData||!ink)ink=rows.some(r=>(!imageData||r.strokePath)&&x<r[0]+r[2]&&x+32>r[0]&&y<r[1]+r[3]&&y+28>r[1]);
-  if(ink)occupied.add(j*cols+i);
+ const width=imageData?.width||1536,height=imageData?.height||640,segments=[],occupiedRows=new Uint8Array(height),angle=-.08;
+ const inkAt=(x,y)=>imageData?imageData.data[(y*width+x)*4+3]>=16:rows.some(r=>x>=r[0]&&x<r[0]+r[2]&&y>=r[1]&&y<r[1]+r[3]);
+ for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(inkAt(x,y)){occupiedRows[y]=1;break;}
+ // Inscribed felt rectangle guarantees full coverage even with its small tilt.
+ const safeY=Math.floor((ERASER_HALF_HEIGHT-ERASER_HALF_WIDTH*Math.abs(Math.sin(angle)))/Math.cos(angle))-3;
+ const safeX=Math.floor((ERASER_HALF_WIDTH-safeY*Math.abs(Math.sin(angle)))/Math.cos(angle))-4;
+ let previous=null,row=0;
+ for(let top=0;top<height;){
+  while(top<height&&!occupiedRows[top])top++;if(top>=height)break;
+  const bottom=Math.min(height-1,top+safeY*2),columns=new Uint8Array(width),center=top+safeY;
+  for(let y=top;y<=bottom;y++)for(let x=0;x<width;x++)if(inkAt(x,y))columns[x]=1;
+  const runs=[];let left=-1,last=-1;
+  for(let x=0;x<width;x++)if(columns[x]){if(left<0)left=x;else if(x-last>ERASER_HALF_WIDTH*2){runs.push([left,last]);left=x;}last=x;}
+  if(left>=0)runs.push([left,last]);if(row%2)runs.reverse();
+  for(const [left,right]of runs){const narrow=right-left<safeX*2,start=narrow?(left+right)/2:left+safeX,end=narrow?start:right-safeX;
+   const a=[row%2?end:start,center],b=[row%2?start:end,center];
+   if(previous)segments.push({a:previous,b:a,cost:Math.max(ERASER_SPEED*.08,Math.hypot(a[0]-previous[0],a[1]-previous[1])*ERASER_SPEED/ERASER_TRANSFER_SPEED),contact:false,row});
+   segments.push({a,b,cost:Math.max(ERASER_SPEED*.22,Math.abs(end-start)),contact:true,row});previous=b;
+  }row++;top=bottom+1;
  }
- const regions=[];
- while(occupied.size){const first=occupied.values().next().value,queue=[first];occupied.delete(first);let left=cols,right=0,top=bands,bottom=0;
-  for(let k=0;k<queue.length;k++){const i=queue[k]%cols,j=Math.floor(queue[k]/cols);left=Math.min(left,i);right=Math.max(right,i);top=Math.min(top,j);bottom=Math.max(bottom,j);
-   for(let dy=-2;dy<=2;dy++)for(let dx=-3;dx<=3;dx++){const x=i+dx,y=j+dy,key=y*cols+x;if(x>=0&&x<cols&&y>=0&&y<bands&&occupied.has(key)){occupied.delete(key);queue.push(key);}}
-  }regions.push({left,right,top,bottom});
- }
- regions.sort((a,b)=>a.top-b.top||a.left-b.left);let previous=null,row=0;
- for(const r of regions){const left=r.left*32+10,right=Math.min(width-10,r.right*32+22),span=right-left;
-  const bow=span>=240?Math.min(24,span*.06):0;
-  // The felt is 56 px tall: 44 px steps overlap by 12 px without repeatedly
-  // scrubbing the same band. Include the exact bottom sweep to leave no ink.
-  const top=Math.min(height-14,r.top*28+14),bottom=Math.min(height-14,r.bottom*28+14+bow),sweeps=Math.ceil((bottom-top)/44);
-  for(let sweep=0;sweep<=sweeps;sweep++){const y=Math.min(bottom,top+sweep*44);
-   const a=[row%2?right:left,y],b=[row%2?left:right,y];
-   if(previous)segments.push({a:previous,b:a,cost:Math.max(10,Math.hypot(a[0]-previous[0],a[1]-previous[1])/2),curve:0,contact:false,row});
-   segments.push({a,b,cost:Math.max(24,Math.hypot(span,bow*2)),curve:-bow,contact:true,row,minY:14,maxY:height-14});previous=b;row++;
-  }
- }
- const result=plan(segments,ERASER_SPEED);result.duration=Math.max(6,result.duration);return result;
+ const result=plan(segments,ERASER_SPEED);result.duration=segments.length?Math.max(6,result.duration):.2;result.angle=angle;result.speed=ERASER_SPEED;return result;
 }
 export function eraserPose(progress,width=1536,height=640,path){
  const p=sample(path||erasingPlan(null,[[32,18,width-64,height-36]]),progress);
- return {...p,angle:-.19};
+ return {...p,angle:path?.angle??-.08};
 }
 export function wetOpacity(age){return .16*Math.pow(clamp(1-age/DRY_SECONDS),1.4);}
 export function chalkLength(wear){return Math.max(.045,.17-Math.max(0,wear));}

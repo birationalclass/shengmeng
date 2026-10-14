@@ -65,10 +65,10 @@ export function applyClassroomRules(boards){
   if(i+1===20)b.subtitle=['两个子群的交换性','Commutativity of the two subgroups'];
   if(i+1===21)b.subtitle=['建立直积同构','Constructing the direct-product isomorphism'];
   if(i+1===19)b.emphasis={3:{fragment:String.raw`n_5=1`,tone:'conclusion'},4:{fragment:String.raw`n_3=1`,tone:'conclusion'},5:{fragment:String.raw`P\trianglelefteq G,\ Q\trianglelefteq G`,tone:'conclusion'}};
-  const cautions={3:[5],12:[4],13:[1],14:[5],15:[5],17:[1,3],33:[5]};
-  if(cautions[i+1])b.emphasis=Object.fromEntries(cautions[i+1].map(row=>[row,{tone:'caution'}]));
-  const conclusions={10:[5],20:[5],21:[5],28:[1,2],32:[5]};
-  if(conclusions[i+1])b.emphasis=Object.fromEntries(conclusions[i+1].map(row=>[row,{tone:'conclusion'}]));
+  // Reviewed semantic targets, independent of page position and formula width.
+  const conclusions={3:{2:null},4:{4:null},5:{5:null},7:{5:null},8:{5:null},9:{5:String.raw`n_p\equiv1\pmod p`},10:{4:null},11:{3:String.raw`n_3\in\{1,4\}`,5:String.raw`n_2\in\{1,3\}`},12:{3:String.raw`n_5=1`,5:String.raw`n_2\in\{1,5\}`},13:{5:null},14:{2:String.raw`n_3=1`,4:String.raw`n_3=8/2=4`},15:{2:String.raw`P\cap Q=\{e\}`,4:String.raw`n_p(p-1)`},16:{3:null},18:{4:null},20:{2:String.raw`P\cap Q=\{e\}`,5:String.raw`xy=yx`},21:{4:null,5:String.raw`G\cong C_{15}`},22:{3:String.raw`n_7=1`,5:String.raw`n_3\in\{1,7\}`},23:{5:null},24:{5:String.raw`ab\ne ba`},25:{5:null},26:{3:null},27:{5:null},28:{2:null,4:null,5:null},29:{4:String.raw`\ker\rho=\{e\}`},30:{5:null},31:{2:String.raw`n_q=1`,4:String.raw`n_p=1`,5:String.raw`G\cong C_{pq}`},32:{3:null,5:null},33:{3:null,5:null},34:{2:String.raw`P\trianglelefteq G`},36:{2:null}};
+  const cautions={3:[5],4:[5],6:[5],10:[5],12:[4],13:[1,3],14:[5],15:[5],17:[1,3],22:[4],33:[4],34:[3,4],35:[5],36:[5]};
+  b.emphasis={...b.emphasis,...Object.fromEntries(Object.entries(conclusions[i+1]||{}).map(([row,fragment])=>[row,{tone:'conclusion',...(fragment?{fragment}:{})}])),...Object.fromEntries((cautions[i+1]||[]).map(row=>[row,{tone:'caution'}]))};
   if(ref)b.intro=ref[3]+b.intro;
  }
 }

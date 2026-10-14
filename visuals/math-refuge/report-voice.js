@@ -143,7 +143,7 @@ export function narrationFrame(manifest,time,writingPlan,erasePlan){
  const natural=(writingPlan?.physicalTiming||writingPlan?.chineseStrokeTiming)?writingPlan.total/writingPlan.unitsPerSecond:end-start;
  const progress=phase==='write'?(rowNarrationProgress(b.lineCues,t,writingPlan)??Math.max(0,Math.min(1,(t-start)/Math.max(.001,natural)))):linear;
  const writing=phase==='write'&&(!b.lineCues?.length?t<start+natural:b.lineCues.some(c=>t>=c.writeStart&&t<c.writeStart+cueWriteDuration(c,writingPlan,lineCostBounds.get(writingPlan)?.get(c.row))));
- return{page:b.page,phase,progress:phase==='erase'&&erasePlan?Math.max(0,Math.min(1,(t-start)/erasePlan.duration)):progress,writing,ended:t>=manifest.duration,duration:Math.max(.001,end-start)};
+ return{page:b.page,phase,progress:phase==='erase'&&erasePlan?Math.max(0,Math.min(1,(t-start)/erasePlan.duration)):progress,writing,ended:t>=manifest.duration,duration:phase==='erase'&&erasePlan?erasePlan.duration:Math.max(.001,end-start)};
 }
 export function syncNarrationClock(clock,frame,slotFor){
  clock.page=frame.page;clock.active=slotFor(frame.page);clock.phase=frame.phase;clock.ended=frame.ended;

@@ -19,9 +19,10 @@ test('short narration windows borrow explanation time without a row pause or an 
 });
 
 test('a compressed narrated erase uses its measured sweep speed, retains the old board and completes before new ink',()=>{
- const erase=erasingPlan(null,[[0,0,1000,200]]);assert.equal(ERASER_SPEED,260);assert(erase.duration>=6);
+ const erase=erasingPlan(null,[[0,0,1000,200]]);assert(erase.duration>=6);assert(erase.duration<30);
  const m={duration:160,boards:[{page:6,start:120,eraseStart:122,writeStart:125,writeEnd:140,end:160}]},clock=new LectureClock(8);
  const w=narrationWork(m,125.01,124.99,null,erase,new Set());assert.equal(w.kind,'erase');assert.equal(w.elapsed,1.2);const f=boardWorkFrame(w);syncNarrationClock(clock,f,boardSlot);assert.equal(clock.slots[boardSlot(6)].page,0);assert(clock.slots.every(s=>s.page<6));assert(narrationFrame(m,124,null,erase).progress<.1);
+ const before=narrationFrame(m,124,null,erase);syncNarrationClock(clock,before,boardSlot);assert.equal(clock.duration,erase.duration,'a short narration gap must never overwrite the measured erase duration');
 });
 
 
