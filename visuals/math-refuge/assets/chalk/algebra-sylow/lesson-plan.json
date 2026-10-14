@@ -38,8 +38,9 @@
   "boards": [
     {
       "page": 0,
+      "optionalProof": false,
       "clipPrefix": "b00",
-      "title": "西罗定理与应用 · 第一课时",
+      "title": "西罗定理的应用 · 第一课时",
       "kind": "cover",
       "statementOnly": false,
       "period": 1,
@@ -58,118 +59,29 @@
             "text": "问候与安排"
           },
           "sourceSha256": "7dbb887b337a15214ead52edc2f5a3fb2b69932c09b49814c1f0158a5f2832b4",
-          "text": "同学们好。今天我们继续有限群的学习。这节课请把笔记分成定义、定理和例题三部分，计算时保留每一步的条件。"
+          "text": "同学们好。今天我们学习《近世代数》第2.6节的内容。"
         },
         {
           "row": 1,
           "source": {
-            "text": "西罗定理与应用 · 第一课时"
+            "text": "西罗定理的应用 · 第一课时"
           },
-          "sourceSha256": "2a5c27f13f6b8be7a833bbbc104d5fc2194afbd017c871c9e4ceb67ff196defa",
-          "text": "今天的题目是，西罗定理与应用。我们先用四十五分钟建立工具，休息五分钟以后，再用四十五分钟完整分析几个小阶群。"
+          "sourceSha256": "66ede0824ea934988baee3646fff5224b5cb184f5b35ce093fc3442310f96705",
+          "text": "这一课的主题是西罗定理的应用。"
         }
       ]
     },
     {
       "page": 1,
-      "clipPrefix": "b01",
-      "title": "先区分三个不同的数",
+      "originalIndex": 2,
+      "optionalProof": false,
+      "clipPrefix": "b02",
+      "title": "p 子群与西罗 p 子群",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
       "targetStart": 30.0,
-      "targetDuration": 140.51318,
-      "activity": "写出 |G|=72 时 p=2 与 p=3 对应的 pᵃ 和 m。",
-      "answer": "p=2：pᵃ=8，m=9；p=3：pᵃ=9，m=8。",
-      "exercise": {
-        "given": "G 为有限群，|G|=72。",
-        "goal": "对 p=2、3 分别求 |G|=pᵃm 中的 pᵃ、m。",
-        "prompt": "写出 |G|=72 时 p=2 与 p=3 对应的 pᵃ 和 m。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "reference": {
-        "kind": "extension",
-        "label": [
-          "扩展",
-          "Extension"
-        ]
-      },
-      "topic": null,
-      "objective": [
-        "对 p=2、3 分别求 |G|=pᵃm 中的 pᵃ、m。",
-        "Three different quantities"
-      ],
-      "rows": [
-        {
-          "row": 0,
-          "source": {
-            "title": "先区分三个不同的数",
-            "enTitle": "Three different quantities"
-          },
-          "sourceSha256": "adb31b32ad8fb5f7642931f572c744a2665078bccedcc7814aaab622ced9cf26",
-          "text": "先用这一板分清素数、子群的阶与子群的个数，后面每次计算都要用到这一区别。"
-        },
-        {
-          "row": 1,
-          "source": {
-            "text": "始终设 G 是有限群，p 是素数",
-            "enText": "Let G be finite and p prime."
-          },
-          "sourceSha256": "e6b3fcdd0cb330db2ecc6f65a5a03704b9db3fea5c099a5b02e640a637d10847",
-          "text": "我们始终讨论有限群，并且先选定一个素数。有限性保证拉格朗日定理和后面的元素计数都能使用；素数这个条件也不能漏掉。"
-        },
-        {
-          "row": 2,
-          "source": {
-            "tex": "|G|=p^a m,\\qquad p\\nmid m,\\quad a\\ge1"
-          },
-          "sourceSha256": "db1b0dd1403095947b5113f5e9f05a63abf18603d637704beffb7eb84d1bb1bc",
-          "text": "把群的阶写成 P 的 a 次方乘以艾姆。这里的指数是英文字母 A 的小写形式。其中艾姆不被 P 整除，也就是说，群阶里所有的 P 因子都完整地取出来了。"
-        },
-        {
-          "row": 3,
-          "source": {
-            "text": "p：素数；pᵃ：子群的阶",
-            "enText": "p: prime; pᵃ: subgroup order."
-          },
-          "sourceSha256": "40e39b271be4913a88727ebfa7dc1db2dc2a0891fd8582ae8ac685402da35a27",
-          "text": "P 本身是选定的素数。板书中，P 的 a 次方才是我们要寻找的子群的阶。不要把西罗 P 子群误认为一定只有 P 阶。"
-        },
-        {
-          "row": 4,
-          "source": {
-            "tex": "n_p=|\\operatorname{Syl}_p(G)|"
-          },
-          "sourceSha256": "03914f0c466178fc9ea2c422c468963358b4c56ea216085228ae0a552883c46d",
-          "text": "P 下标的恩表示西罗 P 子群的个数。它统计的是不同的子群，不是子群中的元素，也不是所有 P 幂阶元素。"
-        },
-        {
-          "row": 5,
-          "source": {
-            "text": "今天把“阶、子群、个数”分开使用",
-            "enText": "Keep orders, subgroups and counts distinct."
-          },
-          "sourceSha256": "c8fa406212ca02820e10203ed8a0f9fa5688a0667d79c2766e541630a9fe1160",
-          "text": "以后每次计算，先问自己正在求子群的阶，还是正在求这种子群有几个。把这两件事情分开，许多错误就可以提前避免。"
-        }
-      ],
-      "originalPlannedDuration": 133.97849
-    },
-    {
-      "page": 2,
-      "clipPrefix": "b02",
-      "title": "什么是西罗 p 子群",
-      "kind": "body",
-      "statementOnly": false,
-      "period": 1,
-      "targetStart": 170.51318,
-      "targetDuration": 137.75172,
+      "targetDuration": 119.96979,
       "activity": "判断：24 阶群中的四阶子群是 2 子群吗？是西罗 2 子群吗？",
       "answer": "是 2 子群；不是西罗 2 子群，因为目标阶数是 8。",
       "exercise": {
@@ -198,73 +110,166 @@
       "topic": null,
       "objective": [
         "判断 H 是不是 2 子群、Sylow 2 子群。",
-        "What is a Sylow p-subgroup?"
+        "p-subgroups and Sylow p-subgroups"
       ],
       "rows": [
         {
           "row": 0,
           "source": {
-            "title": "什么是西罗 p 子群",
-            "enTitle": "What is a Sylow p-subgroup?"
+            "title": "p 子群与西罗 p 子群",
+            "enTitle": "p-subgroups and Sylow p-subgroups"
           },
-          "sourceSha256": "b2a733129710679abc2095bd0e6599c3f4c673f07905946ce4c7b79448efd168",
-          "text": "教材定义二点六点一和二点六点二分别规定 P 群与西罗 P 子群。有了群阶的分解，现在说明什么是西罗 P 子群，以及它和一般 P 子群的差别。"
+          "sourceSha256": "8fdee6ea042f16a03a2403526891cb5fe85a4626ec71b185575a636ee425b614",
+          "text": "教材定义二点六点一和二点六点二分别规定 P 群与西罗 P 子群。先给出群阶的分解，再定义 P 子群和西罗 P 子群。"
         },
         {
           "row": 1,
+          "source": {
+            "tex": "G\\text{ finite},\\quad p\\text{ prime},\\quad |G|=p^a m,\\quad p\\nmid m,\\ a\\ge1"
+          },
+          "sourceSha256": "4f72d814d32782b39be9cde9975862955654965d1960891ede40782dfa7c0eab",
+          "text": "设 G 为有限群，P 为整除群阶的素数。把群的阶写成 P 的 a 次方乘以艾姆，艾姆不被 P 整除，因此 a 是群阶中 P 的最高指数。"
+        },
+        {
+          "row": 2,
           "source": {
             "text": "定义 2.6.1：p 群的阶是 pᵏ，k≥1",
             "enText": "Definition 2.6.1: a p-group has order pᵏ, k≥1."
           },
           "sourceSha256": "5086080828be40df3e3bdb55f42fe45b522d62ffb2151039e2b3ac3579b6d9c0",
-          "text": "教材定义二点六点一规定，P 群的阶是 P 的正整数次幂。因此本课按教材约定不把单位群称为 P 群。一个子群本身是 P 群时，就叫 P 子群。"
+          "text": "教材定义二点六点一规定，P 群的阶是 P 的正整数次幂。G 的一个子群自身是 P 群时，就称为 P 子群；按教材约定，单位群不包括在这里。"
         },
         {
-          "row": 2,
+          "row": 3,
           "source": {
             "tex": "H\\le G,\\quad |H|=p^r,\\quad 1\\le r\\le a"
           },
           "sourceSha256": "0b8f353414a8a0b71cd6f9cbf427c3626a06747f7dd73956cfb50aa50a8fca7b",
-          "text": "子群的阶写成板书中的素数幂。它的指数是小写字母 r，而群阶中对应的指数记作小写字母 a。拉格朗日定理说明，前者不会超过后者。"
+          "text": "这就是 G 的 P 子群的形式。由拉格朗日定理，子群的阶整除群阶，因此 r 不超过 a。"
         },
         {
-          "row": 3,
+          "row": 4,
           "source": {
             "text": "定义 2.6.2：西罗 p 子群的阶达到 pᵃ",
             "enText": "Definition 2.6.2: a Sylow p-subgroup has order pᵃ."
           },
           "sourceSha256": "00e00430296f37c062293c36b76b4ab6e45f0ecbd23dd96adc66320631af2042",
-          "text": "教材定义二点六点二要求，西罗 P 子群达到群阶中最大允许的 P 幂；等价地，更高一阶的 P 幂不能整除群阶。存在性还需要定理保证。"
-        },
-        {
-          "row": 4,
-          "source": {
-            "tex": "P\\in\\operatorname{Syl}_p(G)\\iff P\\le G,\\ |P|=p^a"
-          },
-          "sourceSha256": "1b99540a62a3e7b0fa7bd9ae6ab1cc544e0a824b604b5170f1f141cbffc15b83",
-          "text": "这个等价式就是今天采用的定义。判断一个具体子群是不是西罗子群，既要确认它确实是子群，也要核对它的阶。"
+          "text": "在这些 P 子群中，阶达到群阶中最大 P 幂的，称为西罗 P 子群。这是教材定义二点六点二。"
         },
         {
           "row": 5,
           "source": {
-            "text": "例：24 阶群的西罗 2 子群为 8 阶",
-            "enText": "For |G|=24, Sylow 2-subgroups have order 8."
+            "tex": "P\\le G,\\qquad |P|=p^a"
           },
-          "sourceSha256": "ce553295bb0b2238e41ad5ee9ddc5e632f1c5cea0487f30bf093336dfc4322ce",
-          "text": "二十四等于二的三次方乘以三，所以目标阶数是八。二阶或四阶子群虽然是二子群，却还不是西罗二子群。"
+          "sourceSha256": "84860054bb9bee2698e85fbbddfd088134db9a6a7bb1b1a952ab213785eba081",
+          "text": "西罗 P 子群须同时满足这两个条件：它是 G 的子群，并且阶是 P 的 a 次方。定义说明什么样的子群合格，存在性随后由定理保证。"
+        }
+      ],
+      "originalPlannedDuration": 133.97849
+    },
+    {
+      "page": 2,
+      "originalIndex": 1,
+      "optionalProof": false,
+      "clipPrefix": "b01",
+      "title": "西罗子群的集合与个数",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 1,
+      "targetStart": 149.96979,
+      "targetDuration": 111.74871,
+      "activity": "写出 |G|=72 时 p=2 与 p=3 对应的 pᵃ 和 m。",
+      "answer": "p=2：pᵃ=8，m=9；p=3：pᵃ=9，m=8。",
+      "exercise": {
+        "given": "G 为有限群，|G|=72。",
+        "goal": "对 p=2、3 分别求 |G|=pᵃm 中的 pᵃ、m。",
+        "prompt": "写出 |G|=72 时 p=2 与 p=3 对应的 pᵃ 和 m。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "extension",
+        "label": [
+          "扩展",
+          "Extension"
+        ]
+      },
+      "topic": null,
+      "objective": [
+        "对 p=2、3 分别求 |G|=pᵃm 中的 pᵃ、m。",
+        "The set and number of Sylow subgroups"
+      ],
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "西罗子群的集合与个数",
+            "enTitle": "The set and number of Sylow subgroups"
+          },
+          "sourceSha256": "7773a7342d49445ad76a2bced250509aecef0be2f988936f3f340ad0ec259bf9",
+          "text": "有了 P 子群和西罗 P 子群的定义，接下来引入集合与计数的记号。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "tex": "|G|=p^a m,\\qquad p\\nmid m,\\quad a\\ge1"
+          },
+          "sourceSha256": "db1b0dd1403095947b5113f5e9f05a63abf18603d637704beffb7eb84d1bb1bc",
+          "text": "仍设 G 为有限群，P 为素数，并沿用群阶的分解。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "text": "记 Sylₚ(G) 为全部西罗 p 子群组成的集合",
+            "enText": "Let Sylₚ(G) be the set of all Sylow p-subgroups."
+          },
+          "sourceSha256": "e7d721b355a3912f278828b35921d172e3d254e7b31ee4a2e5a8d6ba40ec3f05",
+          "text": "西罗 P 子群已经定义。现在把 G 中所有这样的子群收集起来，记为 Syl P 的 G。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "tex": "\\operatorname{Syl}_p(G)=\\{P\\le G:|P|=p^a\\}"
+          },
+          "sourceSha256": "f9b810f2356e20e8dba98eb02b62318e855a7b9b70b81b2fa8f7f9b2118bf501",
+          "text": "这个集合的每个元素都是 G 的一个子群，并且阶恰好是 P 的 a 次方。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "tex": "n_p=|\\operatorname{Syl}_p(G)|"
+          },
+          "sourceSha256": "03914f0c466178fc9ea2c422c468963358b4c56ea216085228ae0a552883c46d",
+          "text": "把这个集合的元素个数记为 n 下标 P。它数的是不同的西罗 P 子群。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "text": "pᵃ 是每个子群的阶，nₚ 是子群的个数",
+            "enText": "pᵃ is each subgroup order; nₚ counts the subgroups."
+          },
+          "sourceSha256": "aaf9a94de3a43cd93064121af10345c212757f794f95690950377858329d47c7",
+          "text": "子群的阶和子群的个数是两个不同的量。每个西罗 P 子群有 P 的 a 次方个元素，而这样的子群共有 n 下标 P 个。"
         }
       ],
       "originalPlannedDuration": 133.97849
     },
     {
       "page": 3,
+      "originalIndex": 3,
+      "optionalProof": false,
       "clipPrefix": "b03",
       "title": "存在性与包含性",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 308.26491,
-      "targetDuration": 138.18306,
+      "targetStart": 261.71851,
+      "targetDuration": 133.23142,
       "activity": "在 S₃ 中，一个由换位生成的二阶子群能否包含在不同的西罗 2 子群中？",
       "answer": "不能；它自己已是西罗 2 子群，同阶包含只能相等。",
       "exercise": {
@@ -338,7 +343,7 @@
             "tex": "H\\le G,\\ |H|=p^r,\\ P\\in\\operatorname{Syl}_p(G)\\Longrightarrow\\exists g:\\ H\\le gPg^{-1}"
           },
           "sourceSha256": "ded008f3919be87a39fb2c841ba88295de110b49bdfe413f36d6497111787aa1",
-          "text": "请检查量词：先任意给定 H 和 P，再选择实现包含关系的群元素。这个元素可以依赖于前面给定的两个子群。"
+          "text": "这里的量词顺序是：先任意给定 H 和 P，再选择实现包含关系的群元素。这个元素可以依赖于前面给定的两个子群。"
         },
         {
           "row": 5,
@@ -354,13 +359,15 @@
     },
     {
       "page": 4,
+      "originalIndex": 4,
+      "optionalProof": false,
       "clipPrefix": "b04",
       "title": "共轭性说的是什么",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 446.44797,
-      "targetDuration": 125.16793,
+      "targetStart": 394.94993,
+      "targetDuration": 114.97284,
       "activity": "为什么“所有西罗子群彼此同构”不足以推出它们只有一个？",
       "answer": "同构只比较抽象结构，不能区分它们在 G 中是否为同一个子集。",
       "exercise": {
@@ -449,13 +456,15 @@
     },
     {
       "page": 5,
+      "originalIndex": 5,
+      "optionalProof": false,
       "clipPrefix": "b05",
       "title": "S₃ 中把结论看具体",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 571.6159,
-      "targetDuration": 128.85552,
+      "targetStart": 509.92276,
+      "targetDuration": 116.82921,
       "activity": "列出 ⟨(123)⟩ 的全部元素，并说明为什么 (132) 不会再给出一个新的三阶子群。",
       "answer": "{e,(123),(132)}；(132) 是 (123) 的逆元，生成同一个子群。",
       "exercise": {
@@ -539,13 +548,15 @@
     },
     {
       "page": 6,
+      "originalIndex": 6,
+      "optionalProof": false,
       "clipPrefix": "b06",
       "title": "两条计数条件要同时用",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 700.47141,
-      "targetDuration": 135.07464,
+      "targetStart": 626.75197,
+      "targetDuration": 139.33667,
       "activity": "|G|=24 时，用两条条件分别筛出 n₂ 和 n₃ 的候选值。",
       "answer": "n₂∈{1,3}；n₃∈{1,4}。",
       "exercise": {
@@ -635,13 +646,15 @@
     },
     {
       "page": 7,
+      "originalIndex": 7,
+      "optionalProof": false,
       "clipPrefix": "b07",
       "title": "为什么个数整除 m",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 835.54606,
-      "targetDuration": 140.82077,
+      "targetStart": 766.08864,
+      "targetDuration": 150.68838,
       "activity": "写出指数乘法 [G:P]=[G:N_G(P)][N_G(P):P]，解释 P≤N_G(P)。",
       "answer": "P 的元素通过内共轭保持 P；因此指数乘法适用。",
       "exercise": {
@@ -730,13 +743,15 @@
     },
     {
       "page": 8,
+      "originalIndex": 8,
+      "optionalProof": false,
       "clipPrefix": "b08",
       "title": "正规化子不是中心化子",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 976.36682,
-      "targetDuration": 130.03122,
+      "targetStart": 916.77702,
+      "targetDuration": 137.79025,
       "activity": "若 P=G 且 G 非交换，N_G(P) 与 C_G(P) 分别是什么？",
       "answer": "N_G(G)=G；C_G(G)=Z(G)，后者可能是真子群。",
       "exercise": {
@@ -821,13 +836,15 @@
     },
     {
       "page": 9,
+      "originalIndex": 9,
+      "optionalProof": false,
       "clipPrefix": "b09",
       "title": "同余条件的群作用解释",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 1106.39805,
-      "targetDuration": 146.30302,
+      "targetStart": 1054.56727,
+      "targetDuration": 155.8915,
       "activity": "说明为何“P 正规化 Q”保证 PQ 是子群，并复述唯一固定点的理由。",
       "answer": "Q 在 PQ 中正规；乘积闭合且逆封闭。PQ 为 p 群且含西罗 Q，故等于 Q；于是 P=Q。",
       "exercise": {
@@ -915,13 +932,14 @@
     },
     {
       "page": 10,
+      "optionalProof": false,
       "clipPrefix": "q2-6-1",
       "title": "习题2-6 第1题",
       "kind": "body",
       "statementOnly": true,
       "period": 1,
-      "targetStart": 1252.70106,
-      "targetDuration": 74.23987,
+      "targetStart": 1210.45878,
+      "targetDuration": 92.42236,
       "activity": "独立读题：写下原题已知条件和要证明的结论。",
       "answer": "证明：有限群 G 有唯一的 Sylow p 子群 P 的充分必要条件是 P 是 G 的正规子群。",
       "exercise": {
@@ -987,13 +1005,15 @@
     },
     {
       "page": 11,
+      "originalIndex": 10,
+      "optionalProof": false,
       "clipPrefix": "b10",
       "title": "唯一性与正规性",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 1326.94093,
-      "targetDuration": 132.99372,
+      "targetStart": 1302.88114,
+      "targetDuration": 134.82575,
       "activity": "解释为什么 S₃ 的三阶子群正规，而它的二阶子群不正规。",
       "answer": "n₃=1，而 n₂=3；对西罗子群使用唯一性与正规性的等价。",
       "exercise": {
@@ -1082,13 +1102,15 @@
     },
     {
       "page": 12,
+      "originalIndex": 11,
+      "optionalProof": false,
       "clipPrefix": "b11",
       "title": "12 阶群：先保留两个分支",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 1459.93466,
-      "targetDuration": 131.59056,
+      "targetStart": 1437.70689,
+      "targetDuration": 134.26559,
       "activity": "分别写出 n₃=1 与 n₃=4 时已经得到、尚未得到的结论。",
       "answer": "前者给出正规三阶子群；后者不能据此判断四阶子群是否正规。",
       "exercise": {
@@ -1172,13 +1194,15 @@
     },
     {
       "page": 13,
+      "originalIndex": 12,
+      "optionalProof": false,
       "clipPrefix": "b12",
       "title": "20 阶群：能确定什么",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 1591.52521,
-      "targetDuration": 128.0466,
+      "targetStart": 1571.97248,
+      "targetDuration": 133.90638,
       "activity": "“20 阶群存在正规 5 阶子群，所以它必循环。”错误发生在哪一步？",
       "answer": "将子群的循环性和正规性错误地推广成整个群循环。",
       "exercise": {
@@ -1247,7 +1271,7 @@
             "enText": "A normal subgroup does not force G abelian."
           },
           "sourceSha256": "23e7971f4172dbc879c2158669f390980867ae62ba44005a1b04209b29db361b",
-          "text": "请注意最后一句的范围：循环的是这个五阶子群，不是整个二十阶群。要判断整个群是否交换，还要分析其它元素怎样与它相互作用。"
+          "text": "最后一句的范围是：循环的是这个五阶子群，不是整个二十阶群。要判断整个群是否交换，还要分析其它元素怎样与它相互作用。"
         },
         {
           "row": 5,
@@ -1262,13 +1286,15 @@
     },
     {
       "page": 14,
+      "originalIndex": 13,
+      "optionalProof": false,
       "clipPrefix": "b13",
       "title": "不能倒用拉格朗日定理",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 1719.57181,
-      "targetDuration": 144.89231,
+      "targetStart": 1705.87886,
+      "targetDuration": 152.91854,
       "activity": "说明 (12)(34)=(132)(134)（置换从右向左作用），从而双对换也由三循环生成。",
       "answer": "依次计算 1↦2、2↦1、3↦4、4↦3；A₄ 的元素类型为单位元、三循环和双对换。",
       "exercise": {
@@ -1353,13 +1379,15 @@
     },
     {
       "page": 15,
+      "originalIndex": 14,
+      "optionalProof": false,
       "clipPrefix": "b14",
       "title": "同余是约束，不是构造",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 1864.46412,
-      "targetDuration": 120.76781,
+      "targetStart": 1858.7974,
+      "targetDuration": 133.88892,
       "activity": "为什么八个三循环应除以二，而不是除以三？",
       "answer": "单位元不是三循环；每个三阶子群只有两个被计数的非单位元。",
       "exercise": {
@@ -1444,13 +1472,15 @@
     },
     {
       "page": 16,
+      "originalIndex": 15,
+      "optionalProof": false,
       "clipPrefix": "b15",
       "title": "数元素时为什么能相加",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 1985.23193,
-      "targetDuration": 131.22177,
+      "targetStart": 1992.68632,
+      "targetDuration": 130.19804,
       "activity": "为什么不能用 n₂(8−1) 计算 24 阶群中所有非单位的 2 幂阶元素？",
       "answer": "不同八阶西罗子群可能重叠，且内部元素阶可能为 2、4 或 8。",
       "exercise": {
@@ -1535,13 +1565,15 @@
     },
     {
       "page": 17,
+      "originalIndex": 16,
+      "optionalProof": false,
       "clipPrefix": "b16",
       "title": "随堂练习：18 阶与 45 阶",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 2116.4537,
-      "targetDuration": 163.00219,
+      "targetStart": 2122.88436,
+      "targetDuration": 157.63461,
       "activity": "独立完成两题，并进一步求 45 阶群的 n₃。",
       "answer": "18 阶：n₃=1；45 阶：n₅=1，n₃|5 且 n₃≡1 mod3，故 n₃=1。",
       "exercise": {
@@ -1585,7 +1617,7 @@
             "enText": "Factor the order and choose a prime."
           },
           "sourceSha256": "a1b832652804132b1ed5f2a8daa58061bf257a203d4a7b226623cfc842a05199",
-          "text": "这一板请先自己做。目标不是猜测整个群的结构，而是从两条数值条件中找出一定存在的正规子群。"
+          "text": "这道练习的目标不是猜测整个群的结构，而是从两条数值条件中找出一定存在的正规子群。"
         },
         {
           "row": 2,
@@ -1593,7 +1625,7 @@
             "tex": "|G|=18=2\\cdot3^2:\\quad n_3\\mid2,\\ n_3\\equiv1\\pmod3"
           },
           "sourceSha256": "dc02f9327c00d5702c12ffb28d22abeed7a93ce41a9493a240b3edfdb9493bdf",
-          "text": "十八阶时，西罗三子群是九阶，不是三阶。它的个数整除二且模三余一，请把满足条件的数写出来。"
+          "text": "十八阶时，西罗三子群是九阶，不是三阶。它的个数整除二且模三余一，这两个条件共同筛选子群的个数。"
         },
         {
           "row": 3,
@@ -1626,13 +1658,15 @@
     },
     {
       "page": 18,
+      "originalIndex": 17,
+      "optionalProof": false,
       "clipPrefix": "b17",
       "title": "随堂练习：把错误补完整",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 2279.45589,
-      "targetDuration": 166.58136,
+      "targetStart": 2280.51897,
+      "targetDuration": 168.48748,
       "activity": "亲手验证这条共轭公式，并用“集合不变 / 逐点不变”解释错误。",
       "answer": "共轭把循环中每个字母按 (12) 重标记，得到 (213)=(132)。",
       "exercise": {
@@ -1676,7 +1710,7 @@
             "enText": "False: a normal subgroup forces commutativity."
           },
           "sourceSha256": "e2ea514dc4d20a30040d9f471af906f2cfea9c63740c3bf716b88bc6c31b3ad1",
-          "text": "请把这句话当成一道改错题。我们需要的不是只写一个反例名称，而是指出证明缺少了哪个步骤，并算出反例中的相关信息。"
+          "text": "这道改错题不只需要一个反例名称，还需要说明推理缺少哪个步骤，并算出反例中的相关信息。"
         },
         {
           "row": 2,
@@ -1717,13 +1751,15 @@
     },
     {
       "page": 19,
+      "originalIndex": 18,
+      "optionalProof": false,
       "clipPrefix": "b18",
       "title": "第一课时回顾与出口题",
       "kind": "body",
       "statementOnly": false,
       "period": 1,
-      "targetStart": 2446.03725,
-      "targetDuration": 189.30001,
+      "targetStart": 2449.00645,
+      "targetDuration": 176.95681,
       "activity": "写下 15 阶群两个西罗子群的阶、个数与正规性，再整理本节笔记。",
       "answer": "三阶与五阶西罗子群都唯一且正规；下一课时证明整个群循环。",
       "exercise": {
@@ -1801,20 +1837,21 @@
             "enText": "Exit task: compute n₃ and n₅ for order 15."
           },
           "sourceSha256": "1eb309c466c17eed6f8c38989aec65fe1da1d7f4bf8f6c93654088990927010c",
-          "text": "请独立算出十五阶群的两个子群个数，并暂时只写到正规性。下一课时我们会补齐从这些信息到整个群结构的证明。"
+          "text": "十五阶群的计算可以先做到两个西罗子群的唯一性与正规性。下一课时我们会补齐从这些信息到整个群结构的证明。"
         }
       ],
       "originalPlannedDuration": 200.96774
     },
     {
       "page": 20,
+      "optionalProof": false,
       "clipPrefix": "q2-6-8",
       "title": "习题2-6 第8题",
       "kind": "body",
       "statementOnly": true,
       "period": 1,
-      "targetStart": 2635.33726,
-      "targetDuration": 64.66274,
+      "targetStart": 2625.96326,
+      "targetDuration": 74.03674,
       "activity": "独立读题：写下原题已知条件和要证明的结论。",
       "answer": "证明：阶为15的群一定是循环群。",
       "exercise": {
@@ -1871,6 +1908,7 @@
     },
     {
       "page": 21,
+      "optionalProof": false,
       "clipPrefix": "b19",
       "title": "课间休息 · 五分钟",
       "kind": "cover",
@@ -1891,19 +1929,20 @@
             "text": "问候与安排"
           },
           "sourceSha256": "7dbb887b337a15214ead52edc2f5a3fb2b69932c09b49814c1f0158a5f2832b4",
-          "text": "第一课时到这里。现在休息五分钟，可以起身活动一下，放松眼睛。休息之后，我们从十五阶群的结构证明继续。"
+          "text": "第一课时到这里。"
         }
       ]
     },
     {
       "page": 22,
+      "optionalProof": false,
       "clipPrefix": "b20",
-      "title": "西罗定理与应用 · 第二课时",
+      "title": "西罗定理的应用 · 第二课时",
       "kind": "cover",
       "statementOnly": false,
       "period": 2,
       "targetStart": 3000.0,
-      "targetDuration": 30,
+      "targetDuration": 54.1347,
       "activity": "",
       "answer": "",
       "exercise": null,
@@ -1917,27 +1956,29 @@
             "text": "问候与安排"
           },
           "sourceSha256": "7dbb887b337a15214ead52edc2f5a3fb2b69932c09b49814c1f0158a5f2832b4",
-          "text": "欢迎回来。第二课时请把重点放在证明链上。找到正规子群之后，还要说明我们究竟能够得到多强的结构结论。"
+          "text": "欢迎回来。"
         },
         {
           "row": 1,
           "source": {
-            "text": "西罗定理与应用 · 第二课时"
+            "text": "西罗定理的应用 · 第二课时"
           },
-          "sourceSha256": "8f84b95e3d886e3acb0fef059ef646d426fe2ee418ea74dd3410ba7b813cbfbc",
-          "text": "现在开始，西罗定理与应用的第二课时。先回到十五阶群，把刚才留下的两组计数连接成一个完整证明。"
+          "sourceSha256": "a56c8ebc93f38c935e431d90816fd7ed7cb43a847fad0dc1138e628840ddc601",
+          "text": "我们继续讨论西罗定理的应用，从十五阶群的结构开始。"
         }
       ]
     },
     {
       "page": 23,
+      "originalIndex": 19,
+      "optionalProof": false,
       "clipPrefix": "b21",
       "title": "15 阶群：从两组计数开始",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 3030.0,
-      "targetDuration": 126.68919,
+      "targetStart": 3054.1347,
+      "targetDuration": 134.04774,
       "activity": "把每个“存在、唯一、正规”的依据分别标注出来。",
       "answer": "存在：西罗存在性；唯一：整除与同余；正规：唯一性与正规性等价。",
       "exercise": {
@@ -2027,13 +2068,15 @@
     },
     {
       "page": 24,
+      "originalIndex": 20,
+      "optionalProof": false,
       "clipPrefix": "b22",
       "title": "15 阶群：为什么两个子群交换",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 3156.68919,
-      "targetDuration": 144.71786,
+      "targetStart": 3188.18245,
+      "targetDuration": 145.62154,
       "activity": "分别把 xyx⁻¹y⁻¹ 分组，写出它属于 P 和 Q 的两个理由。",
       "answer": "(xyx⁻¹)y⁻¹∈Q；x(yx⁻¹y⁻¹)∈P；都使用相应子群正规。",
       "exercise": {
@@ -2124,13 +2167,15 @@
     },
     {
       "page": 25,
+      "originalIndex": 21,
+      "optionalProof": false,
       "clipPrefix": "b23",
       "title": "15 阶群：把直积同构写出来",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 3301.40705,
-      "targetDuration": 134.25215,
+      "targetStart": 3333.80398,
+      "targetDuration": 136.31749,
       "activity": "不用“互素循环群直积仍循环”这句话，直接证明生成元对的阶为 15。",
       "answer": "(x,y)ᵏ=(e,e) 当且仅当 3|k 且 5|k，最小正整数为 15。",
       "exercise": {
@@ -2221,13 +2266,15 @@
     },
     {
       "page": 26,
+      "originalIndex": 22,
+      "optionalProof": false,
       "clipPrefix": "b24",
       "title": "21 阶群：相似计算，不同结论",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 3435.6592,
-      "targetDuration": 130.49502,
+      "targetStart": 3470.12148,
+      "targetDuration": 123.12299,
       "activity": "逐项比较 15 阶与 21 阶计算，找出结论开始不同的那一步。",
       "answer": "5≢1 mod3，而 7≡1 mod3；因此 n₃ 在第二题保留了 7。",
       "exercise": {
@@ -2314,13 +2361,15 @@
     },
     {
       "page": 27,
+      "originalIndex": 23,
+      "optionalProof": false,
       "clipPrefix": "b25",
       "title": "21 阶反例：用有限域上的变换",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 3566.15422,
-      "targetDuration": 136.67236,
+      "targetStart": 3593.24447,
+      "targetDuration": 133.7702,
       "activity": "计算 T₂,₁T₃,₂ 与 T₃,₂T₂,₁，所有下标按模 7、模 3 约化。",
       "answer": "前者 T₁,₀，后者 T₄,₀；顺序不同。",
       "exercise": {
@@ -2408,13 +2457,15 @@
     },
     {
       "page": 28,
+      "originalIndex": 24,
+      "optionalProof": false,
       "clipPrefix": "b26",
       "title": "21 阶反例：验证不交换",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 3702.82658,
-      "targetDuration": 134.41015,
+      "targetStart": 3727.01467,
+      "targetDuration": 132.0627,
       "activity": "证明 ⟨a⟩ 正规，并求本例的 n₃。",
       "answer": "⟨a⟩ 是平移群，为唯一西罗 7 子群；若 n₃=1 则两个西罗子群都正规并交换，与计算矛盾，故 n₃=7。",
       "exercise": {
@@ -2461,7 +2512,7 @@
             "enText": "Let a add 1 and b multiply by 2."
           },
           "sourceSha256": "f25f3851728c611e25613028cbe590e52cc07de0d57d74ae63fe38ec61262a83",
-          "text": "为了让计算更清楚，我们把加一记成大写字母 A，把乘二记成大写字母 B。乘二的逆变换是乘四，因为二乘四模七等于一。"
+          "text": "记 a 为加一的平移，b 为乘二的变换。乘二的逆变换是乘四，因为二乘四模七等于一。"
         },
         {
           "row": 2,
@@ -2501,13 +2552,15 @@
     },
     {
       "page": 29,
+      "originalIndex": 25,
+      "optionalProof": false,
       "clipPrefix": "b27",
       "title": "21 阶例子：七个三阶子群",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 3837.23673,
-      "targetDuration": 138.66748,
+      "targetStart": 3859.07738,
+      "targetDuration": 148.59237,
       "activity": "写出 H₀、H₁ 的三个元素，检查它们除单位变换外没有重合。",
       "answer": "H₀={x,2x,4x}；H₁={x,2x−1,4x−3}，系数和常数项均按模 7 计算。",
       "exercise": {
@@ -2594,13 +2647,15 @@
     },
     {
       "page": 30,
+      "originalIndex": 26,
+      "optionalProof": false,
       "clipPrefix": "b28",
       "title": "30 阶群：单独计数还不够",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 3975.90421,
-      "targetDuration": 130.51861,
+      "targetStart": 4007.66975,
+      "targetDuration": 134.78854,
       "activity": "若 n₅=1，为什么本题目标已经完成？写出子群非平凡且真包含的理由。",
       "answer": "它为 5 阶正规子群，1<5<30。",
       "exercise": {
@@ -2672,7 +2727,7 @@
             "enText": "Assume neither subgroup is unique."
           },
           "sourceSha256": "0f23c97950c3bd332a48a1577bbfb59d5817dfa7b96c068acc006eef0ab1ec81",
-          "text": "请注意这个反设的逻辑：我们不是断言两个数字本来就最大，而是假设两类西罗子群都不正规，再由唯一性等价得到非一。"
+          "text": "这个反设的逻辑是：我们不是断言两个数字本来就最大，而是假设两类西罗子群都不正规，再由唯一性等价得到非一。"
         },
         {
           "row": 5,
@@ -2687,13 +2742,15 @@
     },
     {
       "page": 31,
+      "originalIndex": 27,
+      "optionalProof": false,
       "clipPrefix": "b29",
       "title": "30 阶群：把不相交的元素数出来",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 4106.42282,
-      "targetDuration": 134.4089,
+      "targetStart": 4142.45828,
+      "targetDuration": 137.73424,
       "activity": "明确列出三组互不相交的集合，并说明为什么只需要“至少 45 个”。",
       "answer": "单位元、五阶元素、三阶元素三组不相交；其并已超过群阶，毋须分析二阶或其它阶。",
       "exercise": {
@@ -2780,13 +2837,15 @@
     },
     {
       "page": 32,
+      "originalIndex": 28,
+      "optionalProof": false,
       "clipPrefix": "b30",
       "title": "30 阶群：写出准确结论",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 4240.83172,
-      "targetDuration": 126.83544,
+      "targetStart": 4280.19253,
+      "targetDuration": 133.18324,
       "activity": "概括此证明中使用了西罗定理的哪些部分，以及哪里使用了拉格朗日定理。",
       "answer": "西罗计数筛选、唯一与正规；交集阶数借助拉格朗日，从而允许无重复计数。",
       "exercise": {
@@ -2874,13 +2933,15 @@
     },
     {
       "page": 33,
+      "originalIndex": 29,
+      "optionalProof": false,
       "clipPrefix": "b31",
       "title": "12 阶群：让群作用回到场上",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 4367.66716,
-      "targetDuration": 124.90215,
+      "targetStart": 4413.37577,
+      "targetDuration": 127.80283,
       "activity": "为什么仅凭“作用在四个点上”不能直接断定作用忠实？",
       "answer": "作用可能有非平凡核；本题还使用了单性与作用非平凡。",
       "exercise": {
@@ -2968,13 +3029,15 @@
     },
     {
       "page": 34,
+      "originalIndex": 30,
+      "optionalProof": false,
       "clipPrefix": "b32",
       "title": "12 阶群：符号同态完成矛盾",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 4492.56931,
-      "targetDuration": 138.80123,
+      "targetStart": 4541.1786,
+      "targetDuration": 145.98958,
       "activity": "验证 V 的封闭性、逆元与共轭不变性，并说明其阶为 4。",
       "answer": "各非单位元平方为 e，两个不同双对换的乘积为第三个；共轭仅重标记字母。",
       "exercise": {
@@ -3061,13 +3124,14 @@
     },
     {
       "page": 35,
+      "optionalProof": false,
       "clipPrefix": "q2-6-18",
       "title": "习题2-6 第18题",
       "kind": "body",
       "statementOnly": true,
       "period": 2,
-      "targetStart": 4631.37054,
-      "targetDuration": 79.19943,
+      "targetStart": 4687.16818,
+      "targetDuration": 86.61973,
       "activity": "独立读题：写下原题已知条件和要证明的结论。",
       "answer": "设 G 是 pq 阶群，其中 p、q 是素数，p<q 且 p∤q−1。证明：G 是循环群。",
       "exercise": {
@@ -3133,13 +3197,15 @@
     },
     {
       "page": 36,
+      "originalIndex": 31,
+      "optionalProof": false,
       "clipPrefix": "b33",
       "title": "把 15 阶结论推广到 pq 阶",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 4710.56997,
-      "targetDuration": 132.97373,
+      "targetStart": 4773.78791,
+      "targetDuration": 135.64691,
       "activity": "用这个条件判断 35 阶群，再解释它为何不能直接处理 21 阶群。",
       "answer": "5 不整除 7−1，故 35 阶群循环；3 整除 7−1，条件不满足，不能得出同一结论。",
       "exercise": {
@@ -3230,13 +3296,14 @@
     },
     {
       "page": 37,
+      "optionalProof": false,
       "clipPrefix": "q2-6-example1",
       "title": "例1",
       "kind": "body",
       "statementOnly": true,
       "period": 2,
-      "targetStart": 4843.54371,
-      "targetDuration": 63.67122,
+      "targetStart": 4909.43482,
+      "targetDuration": 71.55977,
       "activity": "独立读题：写下原题已知条件和要证明的结论。",
       "answer": "设有限群 G 的阶为35。证明：G 是循环群。",
       "exercise": {
@@ -3293,13 +3360,15 @@
     },
     {
       "page": 38,
+      "originalIndex": 32,
+      "optionalProof": false,
       "clipPrefix": "b34",
       "title": "练习：35 阶群的完整证明",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 4907.21493,
-      "targetDuration": 129.02473,
+      "targetStart": 4980.99459,
+      "targetDuration": 131.30174,
       "activity": "独立写出不超过十行的完整证明，标明“同态、单射、满射、循环”的依据。",
       "answer": "使用两个正规子群交换、交平凡、阶数相同、互素生成元对阶数为 35。",
       "exercise": {
@@ -3341,7 +3410,7 @@
             "enTitle": "Practice: prove the order-35 result"
           },
           "sourceSha256": "cce9a2ded6d7a203149990f230479bc4a7eebb54c162750dda38d200e0792f09",
-          "text": "三十五阶群的题目是本节教材例一。请把同一套方法迁移到三十五阶群，这次自己补齐同态、单射与生成元的理由。"
+          "text": "三十五阶群的题目是本节教材例一。同一套方法适用于三十五阶群，关键仍是同态、单射与生成元的理由。"
         },
         {
           "row": 1,
@@ -3349,7 +3418,7 @@
             "tex": "|G|=35=5\\cdot7"
           },
           "sourceSha256": "41131398e6fa6768c892d773584086dcf1996ce2a2dfd9509e940b0decd3a25f",
-          "text": "这次请把方法完整迁移到新数字，而不是直接引用上一板的最终结论。先写出两个计数条件，再解释结构。"
+          "text": "三十五阶群的结论也需要由计数条件与同态得到，不能只引用上一板的结论。先写出两个计数条件，再解释结构。"
         },
         {
           "row": 2,
@@ -3383,20 +3452,22 @@
             "tex": "G\\cong C_5\\times C_7\\cong C_{35}"
           },
           "sourceSha256": "c9d82001ff1f6ebfd239f814f10008a94c7628b2d8d7f5225dfec6dd45b6fc5a",
-          "text": "请检查自己的证明是否还缺少同态性这一步。仅写两边有相同元素个数，并不能自动说明任意给出的集合映射就是群同构。"
+          "text": "这个证明还需要同态性这一步。仅写两边有相同元素个数，并不能自动说明任意给出的集合映射就是群同构。"
         }
       ],
       "originalPlannedDuration": 133.93502
     },
     {
       "page": 39,
+      "originalIndex": 33,
+      "optionalProof": false,
       "clipPrefix": "b35",
       "title": "练习：42 阶群能推出多少",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 5036.23966,
-      "targetDuration": 136.29607,
+      "targetStart": 5112.29633,
+      "targetDuration": 138.63016,
       "activity": "指出“将各 nₚ 取最大，元素总数恰好为 42，所以必须都取最大”的错误。",
       "answer": "部分元素数的上界恰为群阶，不能推出实际达到上界；复合阶元素尚未计入。",
       "exercise": {
@@ -3480,13 +3551,15 @@
     },
     {
       "page": 40,
+      "originalIndex": 34,
+      "optionalProof": false,
       "clipPrefix": "b36",
       "title": "课堂自测：辨别结论强弱",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 5172.53573,
-      "targetDuration": 164.40202,
+      "targetStart": 5250.9265,
+      "targetDuration": 146.86644,
       "activity": "先完成自测中的第 1、3、6、7 题；每道错题写出缺失的条件或错误箭头。",
       "answer": "自测答案与解释在提交后显示；重点复查对象、候选与实际、正规与交换的区别。",
       "exercise": {
@@ -3530,7 +3603,7 @@
             "enText": "Question 1: uniqueness implies normality."
           },
           "sourceSha256": "ed434d63f066a9925f20574ad9b64d109759f42a4a28d2a1e28fe8c744cdd38c",
-          "text": "请判断这句话并给出一句理由。任意共轭仍是同阶的西罗子群，而唯一性使它只能回到原来的子群。"
+          "text": "这条结论的理由是：任意共轭仍是同阶的西罗子群，而唯一性使它只能回到原来的子群。"
         },
         {
           "row": 2,
@@ -3571,13 +3644,15 @@
     },
     {
       "page": 41,
+      "originalIndex": 35,
+      "optionalProof": false,
       "clipPrefix": "b37",
       "title": "两课时的证明路线",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 5336.93775,
-      "targetDuration": 167.93352,
+      "targetStart": 5397.79293,
+      "targetDuration": 135.57131,
       "activity": "不看答案，口头复述 15、21、30、12 阶四题各自的关键一步。",
       "answer": "15：双正规得直积；21：保留非交换仿射例子；30：素数阶元素计数；12：四点共轭作用与符号。",
       "exercise": {
@@ -3662,13 +3737,15 @@
     },
     {
       "page": 42,
+      "originalIndex": 36,
+      "optionalProof": false,
       "clipPrefix": "b38",
       "title": "课后任务与最后核对",
       "kind": "body",
       "statementOnly": false,
       "period": 2,
-      "targetStart": 5504.87128,
-      "targetDuration": 175.12872,
+      "targetStart": 5533.36424,
+      "targetDuration": 146.63576,
       "activity": "整理一页“定理条件—可用结论—反例提醒”，并完成未做完的自测题。",
       "answer": "保留完整假设；每条结构结论注明定理来源；用 S₃、A₄、21 阶仿射群检验过强断言。",
       "exercise": {
@@ -3738,7 +3815,7 @@
             "enText": "Challenge: explain the order-21 example and order-12 action."
           },
           "sourceSha256": "2cb644c8b6d0638346610ea990d37d33389fe0eb0d5b5e1aa04b78770a323eca",
-          "text": "挑战题请从定义验证仿射变换组成群，再复述十二阶群作用的核如何受到单性限制。这里练的是把熟悉工具串成推理。"
+          "text": "仿射变换的封闭性与逆元需要验证；十二阶群的作用同态中，单性限制了核。"
         },
         {
           "row": 5,
@@ -3753,6 +3830,7 @@
     },
     {
       "page": 43,
+      "optionalProof": false,
       "clipPrefix": "b39",
       "title": "两课时结束",
       "kind": "closing",
@@ -3773,7 +3851,7 @@
             "text": "问候与安排"
           },
           "sourceSha256": "7dbb887b337a15214ead52edc2f5a3fb2b69932c09b49814c1f0158a5f2832b4",
-          "text": "今天的两课时到这里。课后请按板书整理定理条件与证明路线，并完成留下的练习。有疑问的步骤，请把具体使用的条件标出来。"
+          "text": "今天的讨论到这里。我们用西罗子群的计数、共轭作用与同态，分析了几个小阶群的结构。"
         }
       ]
     }
@@ -3783,6 +3861,6 @@
     "notice": "AI 合成，非叶东或沈腾本人录音。沿用叶东原版报告的同一参考声线；授课文本与课堂思考时段单独编排。",
     "reference": "沈腾/公开模型/ref_audios/shenteng_reference.wav"
   },
-  "scope": "三条西罗定理作为输入；证明正规性推论、计数条件的作用解释及全部应用。",
+  "scope": "前置课讲授西罗三大定理；本课回顾所需结论，证明正规性推论、计数条件的作用解释及所列应用。",
   "activityPolicy": "课时总长含明确的板书整理、独立练习与讲评；无长静音音频补时长。所有等待都是可见且可跳过的课堂任务。"
 }

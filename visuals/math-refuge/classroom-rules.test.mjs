@@ -4,7 +4,7 @@ import {classroomHeading,drawClassroomMetadata} from './classroom-metadata.js';i
 const boards=[...firstLesson,...secondLesson],read=p=>JSON.parse(fs.readFileSync(new URL(p,import.meta.url),'utf8'));
 const original=i=>boards.find(b=>b.originalIndex===i);
 test('the textbook numbering and conventions are preserved; invented examples receive no textbook number',()=>{
- assert.match(boards[1].reference.label[0],/定义 2\.6\.1/);assert.match(boards[1].lines[1].tex,/1\\le r/);assert(!boards[1].lines[0].speech.includes('单位子群也属于'));
+ assert.match(original(2).reference.label[0],/定义 2\.6\.1/);assert(original(2).lines.some(l=>l.tex?.includes(String.raw`1\le r`)));assert(!original(2).lines[0].speech.includes('单位子群也属于'));
  assert.equal(boards[3].reference.label[0],'推论 2');assert.equal(original(32).reference.label[0],'例 1');assert.equal(original(31).reference.label[0],'习题 2-6 · 第 18 题');
  for(const i of [26,27,28,29,30])assert.equal(original(i).reference.kind,'extension');for(const b of boards.filter(b=>b.reference.kind==='textbook'))assert.equal(b.reference.sha256,TEXTBOOK_SHA256);
 });
@@ -23,7 +23,7 @@ test('original textbook questions have dedicated numbered boards before their pr
  const pages=read('./assets/chalk/algebra-sylow/pages.json').pages,questions=pages.filter(p=>p.statementOnly);assert.equal(questions.length,4);
  const q=questions.find(p=>p.clipPrefix==='q2-6-8');assert.equal(q.title,'习题2-6 第8题');assert.equal(q.boardLines.map(l=>l.text).join(''),'证明：阶为15的群一定是循环群。');assert.equal(q.mainLineCount,2);assert(pages.indexOf(q)<pages.findIndex(p=>p.originalIndex===19));assert.equal(original(18).reference.kind,'extension');
  for(const p of questions){assert(p.mainLineCount<=6);assert.equal(p.reference.kind,'textbook');assert.equal(p.title,p.reference.label[0]);assert(p.exercise.original[0]);}
- const painted=[],ctx=new Proxy({save(){},restore(){},translate(){},scale(){},beginPath(){},moveTo(){},lineTo(){},rect(){},stroke(){},measureText:t=>({width:t.length*20}),fillText:(t,x,y)=>painted.push({t,x,y})},{get:(t,k)=>k in t?t[k]:()=>{}});drawClassroomMetadata(ctx,pages.find(p=>p.originalIndex===19),23,'zh',{total:pages.length});assert(!painted.some(p=>p.t.startsWith('目标：')&&p.y<600),'persistent goal must not add a seventh body line');
+ const painted=[],ctx=new Proxy({save(){},restore(){},translate(){},scale(){},beginPath(){},moveTo(){},lineTo(){},rect(){},stroke(){},measureText:t=>({width:t.length*20}),fillText:(t,x,y)=>painted.push({t,x,y})},{get:(t,k)=>k in t?t[k]:()=>{}});drawClassroomMetadata(ctx,pages.find(p=>p.originalIndex===19),23,'zh',{total:pages.length});assert(!painted.some(p=>p.t.startsWith('目标：')),'goal must be readable in title/body, never a tiny footer');
 });
 test('the smart-screen time uses absolute speech/task time and sits below the pause button',()=>{
  assert.equal(boardTimeLabel({time:65,duration:5700}),'01:05 / 1:35:00');assert.equal(boardTimeLabel({time:65,duration:5700,phase:'paused'}),'01:05 / 1:35:00');assert(boardTimePosition(0).y+.16<-.46);

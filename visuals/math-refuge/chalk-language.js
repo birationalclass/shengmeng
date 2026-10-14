@@ -3,7 +3,7 @@ import {chalkInlineRuns,mathFont} from './chalk-typography.js?v=inline-root-1';
 import {drawChalkAnnotation} from './chalk-annotations.js?v=report-line-sync-6';
 import {explainedFlow} from './flow-explanation.js?v=textbook-problems-1';
 import {wrapBoardText} from './chalk-wrap.js?v62-chalk-ink';
-import {classroomHeading,CHALK_SEMANTIC_COLORS,drawReferenceIcon} from './classroom-metadata.js?v=semantic-chalk-2';
+import {classroomHeading,CHALK_SEMANTIC_COLORS,drawReferenceIcon} from './classroom-metadata.js?v=sylow-two-lessons-20261015';
 export function chalkCopy(page,language='zh',{board=false}={}){
   return language==='en'?{...page.en,text:!board&&page.en.readingText||page.en.text}:{title:page.title,text:!board&&page.readingText||page.text,source:page.source,author:page.author};
 }
@@ -41,7 +41,7 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
     const ink=bounds(text,size,heading);
     rows.push(Object.assign([x+ink.left-4,y-ink.ascent-4,ink.right-ink.left+8,ink.ascent+ink.descent+8],{chineseSpans,chalkColor:color}));
   }
-  if(page.kind==='closing'){textRow(copy.title,(1536-measure(copy.title,124))/2,360,124,'#e4cf9c');return rows;}
+  if(page.kind==='closing'){let size=124;while(measure(copy.title,size)>1368&&size>24)size--;textRow(copy.title,(1536-measure(copy.title,size))/2,360,size,'#e4cf9c');return rows;}
   if(page.kind==='cover'){
     const center=(text,y,size,color='#eee9d5')=>{while(measure(text,size)>1368&&size>24)size--;textRow(text,(1536-measure(text,size))/2,y,size,color);};
     let titleSize=106;while(measure(copy.title,titleSize)>1368&&titleSize>64)titleSize--;

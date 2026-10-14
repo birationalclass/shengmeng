@@ -586,7 +586,7 @@ function prepareMainRoom(){
   $('world').dataset.hallPreparation='loading';$('world').dataset.startupPhase='hall';$('mode').textContent='正在准备报告厅';
   const hallTextures=measureCritical('P0 一楼六张材质贴图',()=>startDeferredTextures(()=>{},{phase:'hall',concurrency:2}));
   const boardFonts=measureCritical('P1 板书字体并行下载',()=>withDeadline(loadBoardFonts(),15000,'板书字体加载'));boardFonts.catch(()=>{});
-  const [lectureModule,readerModule,voiceModule,settingsModule]=await measureCritical('P1 功能模块与数学排版',()=>Promise.all([import('./lecture.js?v=semantic-chalk-2'),import('./chalk-reader.js?v=inline-root-1'),import('./report-voice.js?v=semantic-chalk-2'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]));
+  const [lectureModule,readerModule,voiceModule,settingsModule]=await measureCritical('P1 功能模块与数学排版',()=>Promise.all([import('./lecture.js?v=sylow-two-lessons-20261015'),import('./chalk-reader.js?v=inline-root-1'),import('./report-voice.js?v=semantic-chalk-2'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]));
   createLecture=lectureModule.createLecture;createChalkReader=readerModule.createChalkReader;reportVoicePresentation=voiceModule.reportVoicePresentation;narrationResourceBytes=voiceModule.narrationResourceBytes;
   const root=new THREE.Group();root.name='East-facing compact auditorium blackboards';configureLectureRoot(root);root.position.add(buildingOffset('01B'));scene.add(root);
   lecture=await measureCritical('P1 板书组件与报告内容',()=>withDeadline(createLecture(root,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'ye',boardScale:device.boardScale,writingStyle:boardWritingStyle,onPreparation:value=>{$('world').dataset.boardPreparation=JSON.stringify(value);}}),30000,'报告板书加载'));await boardFonts;retreat.roomFill.apply(root);
@@ -814,6 +814,7 @@ function populateReport(){
   $('reportSelect').value=lecture.report.id;populateVoiceOptions();reportSettings?.refresh();lecture.setVoiceRate(reportSettings?.settings.rate||1);
   $('reportVersionLink').hidden=lecture.report.id!=='ye2';
   $('reportSettings').hidden=lecture.report.kind==='classroom';
+  let skipThird=$('classroomSkipThird');if(!skipThird){skipThird=document.createElement('button');skipThird.id='classroomSkipThird';skipThird.type='button';skipThird.textContent='略过第三定理证明';skipThird.onclick=async()=>{await lecture.skipOptionalProof();updateLectureUI();};$('reportSettings').before(skipThird);}skipThird.hidden=lecture.report.id!=='sylow-theorems';
   let coursePace=$('classroomPaceInfo');if(!coursePace){coursePace=document.createElement('p');coursePace.id='classroomPaceInfo';coursePace.className='lecture-note';$('reportSettings').before(coursePace);}coursePace.hidden=lecture.report.kind!=='classroom';coursePace.textContent='课堂授课 · 1× 时为 45 分钟 + 5 分钟课间 + 45 分钟。练习与课间可暂停或提前继续。';
   $('lectureHeading').textContent=(lecture.report.label||lecture.report.speaker)+' · '+lecture.report.topic;
   for(const id of ['lectureSource','readerSource']){$(id).href=lecture.report.url;$(id).textContent=lecture.report.sourceLabel+' ↗';}
@@ -849,17 +850,17 @@ async function switchReport(id,{autoplay=false}={}){
   finally{if(request===reportRequest){changingReport=false;reportProgress='';$('reportSelect').setAttribute('aria-busy','false');}}
 }
 let programLibrary=null;
-async function selectClassroom(period=1,{autoplay=true}={}){
- if(!await switchReport('algebra-sylow',{autoplay:false}))return false;
+async function selectClassroom(period=1,{autoplay=true,id=lecture?.report.kind==='classroom'?lecture.report.id:'algebra-sylow'}={}){
+ if(!await switchReport(id,{autoplay:false}))return false;
  await lecture.setLanguage('zh');populateReport();lecture.setVoiceRate(1);await lecture.voiceSeek(period===2?3000:0);if(autoplay)await lecture.toggleVoice();updateLectureUI();return true;
 }
 async function openProgramLibrary(tab='classroom'){
- if(!programLibrary){const {createCourseLibrary}=await import('./course-library.js');programLibrary=createCourseLibrary({getLecture:()=>lecture,onSelect:(id,{period,autoplay})=>id==='algebra-sylow'?selectClassroom(period,{autoplay}):switchReport(id,{autoplay})});}
+ if(!programLibrary){const {createCourseLibrary}=await import('./course-library.js?v=sylow-two-lessons-20261015');programLibrary=createCourseLibrary({getLecture:()=>lecture,onSelect:(id,{period,autoplay})=>['algebra-sylow','sylow-theorems'].includes(id)?selectClassroom(period,{autoplay,id}):switchReport(id,{autoplay})});}
  programLibrary.open(tab);
 }
 $('reportButton').addEventListener('click',()=>{if(!lecture||!cameraIntent.canActivate())return;$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');lecture.screenAction('screen:report');selectShot(0,true);reader?.close();void openProgramLibrary(lecture.programTab);});
 const requestedCourse=new URLSearchParams(location.search);
-if(requestedCourse.get('course')==='algebra-sylow')window.addEventListener('refuge-entered',()=>{const launch=()=>{if(!entered||openingPreparing||blend?.openingArrival||blend?.settling||cameraLocked()){setTimeout(launch,250);return;}void selectClassroom(Number(requestedCourse.get('period'))===2?2:1);};setTimeout(launch,500);},{once:true});
+if(['algebra-sylow','sylow-theorems'].includes(requestedCourse.get('course')))window.addEventListener('refuge-entered',()=>{const launch=()=>{if(!entered||openingPreparing||blend?.openingArrival||blend?.settling||cameraLocked()){setTimeout(launch,250);return;}void selectClassroom(Number(requestedCourse.get('period'))===2?2:1,{id:requestedCourse.get('course')});};setTimeout(launch,500);},{once:true});
 $('reportSelect').addEventListener('change',event=>switchReport(event.target.value));
 async function switchChalkLanguage(){
   if(!lecture||changingLanguage||changingReport)return;changingLanguage=true;
@@ -906,7 +907,7 @@ function installPhysicalControls(){
     else if(action==='language')switchChalkLanguage();
     else if(action.startsWith('program:')){lecture.screenAction(action);updateLectureUI();}
     else if(action==='course:catalog')void openProgramLibrary('classroom');
-    else if(action==='course:manuscript')window.open('./sylow-classroom.html','_blank','noopener');
+    else if(action==='course:manuscript')window.open(lecture.report.kind==='classroom'?lecture.report.url:'./sylow-classroom.html','_blank','noopener');
     else if(action.startsWith('course:period:'))void selectClassroom(Number(action.split(':')[2]));
     else if(action.startsWith('report:'))switchReport(action.slice(7),{autoplay:true});
   });

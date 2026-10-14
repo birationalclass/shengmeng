@@ -1,0 +1,1474 @@
+{
+  "id": "sylow-theorems",
+  "title": "西罗三大定理",
+  "course": "代数学 I",
+  "section": "2.6",
+  "duration": 5700,
+  "periods": [
+    {
+      "id": 1,
+      "start": 0,
+      "end": 2700
+    },
+    {
+      "id": "break",
+      "start": 2700,
+      "end": 3000
+    },
+    {
+      "id": 2,
+      "start": 3000,
+      "end": 5700
+    }
+  ],
+  "scope": "按原教材证明第一、第二定理和共轭推论；第三定理证明为可跳过模块，完整陈述及推论3始终保留。",
+  "optionalProofOriginalIndices": [
+    12,
+    13,
+    14
+  ],
+  "sources": [
+    {
+      "label": "韩士安、林磊、杜荣《近世代数》第三版 §2.6，印刷页113—116",
+      "pdfPages": [
+        125,
+        126,
+        127,
+        128
+      ],
+      "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+    }
+  ],
+  "boards": [
+    {
+      "page": 0,
+      "optionalProof": false,
+      "clipPrefix": "b00",
+      "title": "西罗三大定理 · 第一课时",
+      "kind": "cover",
+      "statementOnly": false,
+      "period": 1,
+      "targetStart": 0.0,
+      "targetDuration": 30,
+      "activity": "",
+      "answer": "",
+      "exercise": null,
+      "reference": null,
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "text": "问候与安排"
+          },
+          "sourceSha256": "7dbb887b337a15214ead52edc2f5a3fb2b69932c09b49814c1f0158a5f2832b4",
+          "text": "同学们好。今天我们学习《近世代数》第2.6节的内容。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "西罗三大定理 · 第一课时"
+          },
+          "sourceSha256": "a262352646a5a7abee0838f65e630107a49bc831f6cb3885d05ddab3e8a9c6a1",
+          "text": "这一课讨论西罗三大定理。"
+        }
+      ]
+    },
+    {
+      "page": 1,
+      "originalIndex": 1,
+      "optionalProof": false,
+      "clipPrefix": "th01",
+      "title": "p 子群与西罗 p 子群",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 1,
+      "targetStart": 30.0,
+      "targetDuration": 570,
+      "activity": "判断 H 是不是2子群、是不是西罗2子群；说明两者的区别。",
+      "answer": "四是二的平方，所以 H 是二子群。二十四等于二的三次方乘以三，西罗二子群的阶须为八，因此 H 不是西罗二子群。",
+      "exercise": {
+        "given": "G 为24阶有限群，H≤G，|H|=4。",
+        "goal": "判断 H 是不是2子群、是不是西罗2子群；说明两者的区别。",
+        "prompt": "判断 H 是不是2子群、是不是西罗2子群；说明两者的区别。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "定义2.6.1—2.6.2",
+          "Definitions 2.6.1–2.6.2"
+        ],
+        "pdfPages": [
+          125
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "p 子群与西罗 p 子群",
+            "enTitle": "p-subgroups and Sylow p-subgroups"
+          },
+          "sourceSha256": "8fdee6ea042f16a03a2403526891cb5fe85a4626ec71b185575a636ee425b614",
+          "text": "今天从有限群的阶开始，讨论哪些素数幂阶子群一定存在。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "tex": "|G|=p^a m,\\quad p\\nmid m,\\quad a\\ge1"
+          },
+          "sourceSha256": "af9e52eb0ba4880c0aa1f0e287fe67c7a080f7ccc3be63b63b8dcbf7a8eb9c72",
+          "text": "设 G 为有限群，P 为整除群阶的素数。把所有的 P 因子取出来，群阶就写成 P 的 a 次方乘以艾姆，剩下的艾姆不再被 P 整除。这里 a 的含义是群阶中 P 的最高指数。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "text": "定义2.6.1：p 群的阶为 pᵏ，k≥1",
+            "enText": "Definition 2.6.1: a p-group has order pᵏ, k≥1."
+          },
+          "sourceSha256": "6b8e68e3d6bd1917fdca743a799b7cc1d9712a26dc50cdbdda2d76ad175c4fcd",
+          "text": "教材定义二点六点一把阶为素数的正整数次幂的有限群称为 P 群。G 的一个子群自身是 P 群，就叫 P 子群。按照这本教材的约定，单位群不包括在这里。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "tex": "H\\le G,\\quad |H|=p^r,\\quad1\\le r\\le a"
+          },
+          "sourceSha256": "e56bd28ee1a1318ac349a19413a157f977c948529698e86e075f3ffd8f948ff2",
+          "text": "因此一个 P 子群 H 的阶是 P 的 r 次方。拉格朗日定理给出子群阶整除群阶，所以 r 不会超过 a。这个整除条件是必要条件，还没有证明所有允许的阶数都有子群。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "text": "定义2.6.2：西罗 p 子群达到最高 p 幂",
+            "enText": "Definition 2.6.2: Sylow subgroups attain the maximal p-power."
+          },
+          "sourceSha256": "385c87848a041cb7c3ebca53451b67378e4f293b7aee289ec07a84138f67b933",
+          "text": "教材定义二点六点二规定，若 P 的阶是 P 的 r 次方，而更高一阶的 P 幂不整除群阶，就称它为西罗 P 子群。在当前分解中，这恰好要求阶达到 P 的 a 次方。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "tex": "P\\le G,\\quad |P|=p^a\\quad\\text{(Sylow }p\\text{-subgroup)}"
+          },
+          "sourceSha256": "19ebc30d6ea10e087301758b2bce185465b9ba6ed856b4031883d79543cd9bc0",
+          "text": "定义说明什么样的子群合格，但定义本身并不保证这个对象存在。拉格朗日定理也不能直接反过来使用。接下来的第一西罗定理解决存在性，而且会同时给出所有较小的素数幂阶子群。"
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "originalIndex": 2,
+      "optionalProof": false,
+      "clipPrefix": "th02",
+      "title": "定理2.6.1 — 归纳框架",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 1,
+      "targetStart": 600.0,
+      "targetDuration": 420,
+      "activity": "说明归纳参数是什么，两个分支分别准备转到哪类较小群。",
+      "answer": "归纳参数是群的阶。中心阶被 P 整除时转到商群；否则转到一个非中心元素的真中心化子。不是对 k 直接归纳。",
+      "exercise": {
+        "given": "|G|=pᵃm，p∤m，1≤k≤a；对|G|归纳。",
+        "goal": "说明归纳参数是什么，两个分支分别准备转到哪类较小群。",
+        "prompt": "说明归纳参数是什么，两个分支分别准备转到哪类较小群。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "定理2.6.1 · 证明",
+          "Theorem 2.6.1 · Proof"
+        ],
+        "pdfPages": [
+          125,
+          126
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "定理2.6.1 — 归纳框架",
+            "enTitle": "Theorem 2.6.1 — induction"
+          },
+          "sourceSha256": "de1ca6c77461cba43a2531b3228ee6eeb8138728b7034289d6ea30bd9a58c508",
+          "text": "第一定理用群阶归纳，关键是找到保留所需素数幂的较小群。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "每个允许的 pᵏ 阶都存在子群",
+            "enText": "Every allowed pᵏ occurs as a subgroup order."
+          },
+          "sourceSha256": "22eee25a976ab0769484fc7f1f5d80f8a2cca1a7834521035e32a3eefb4a81f4",
+          "text": "第一西罗定理的结论比只存在最高素数幂阶子群更强：从一到 a 的每个正整数 k，都有对应的子群。证明需要覆盖所有这些阶数，而不是只处理最大的一项。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "1\\le k\\le a\\Longrightarrow\\exists H\\le G:\\ |H|=p^k"
+          },
+          "sourceSha256": "740f5a5e5e8ad9d68c41d61acd767129da4d4e38b5f9c311dcc07d62140fef7a",
+          "text": "这里固定一个 k，并对群的阶作归纳。归纳假设可以用于任何阶更小的有限群，只要它的阶包含所需的素数幂。我们稍后会根据中心的情况，找到这样的较小群。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "text": "对 |G| 归纳；|G|=p 时显然",
+            "enText": "Induct on |G|; the case |G|=p is immediate."
+          },
+          "sourceSha256": "d53a8094f864ef58433c9b537f050b4fed37b5ae54187eb4b0a47850e4367584",
+          "text": "群的阶等于 P 时，唯一需要的阶数就是 P，整个群本身就是所求子群。归纳步骤从类方程开始：中心元素的共轭类为单点，其他元素按非平凡共轭类收集。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "tex": "|G|=|Z(G)|+\\sum_i[G:C_G(x_i)]"
+          },
+          "sourceSha256": "322246de37d81b735448a1a4b469ae0d880fdefa8de1935854cd267e0d5aed39",
+          "text": "艾克斯下标 i 遍历非中心共轭类的代表。每个共轭类的大小是群到相应中心化子的指数。为了把归纳用到更小的群，中心分支会转到商群，非中心分支会转到真中心化子。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "text": "分支：p∣|Z(G)|，或 p∤|Z(G)|",
+            "enText": "Split according to whether p divides |Z(G)|."
+          },
+          "sourceSha256": "a63b415f9cecd47e4c2c6a93dd33a50ac61aa07a430d94543989742394c21950",
+          "text": "这两个分支穷尽所有情形。第一种情形利用中心里的素数阶元素，第二种情形利用类方程中的一项。两个分支最终都要构造出阶恰好为 P 的 k 次方的子群。"
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "originalIndex": 3,
+      "optionalProof": false,
+      "clipPrefix": "th03",
+      "title": "第一定理 — 中心分支的商群",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 1,
+      "targetStart": 1020.0,
+      "targetDuration": 420,
+      "activity": "证明 H 正规，并解释为什么 k=1 要单独处理。",
+      "answer": "H 包含于中心，所以任意共轭保持 H。k 等于一时 H 就是所求子群，不需要在商群里寻找非平凡 P 子群。",
+      "exercise": {
+        "given": "p∣|Z(G)|，z∈Z(G)，|z|=p，H=⟨z⟩。",
+        "goal": "证明 H 正规，并解释为什么 k=1 要单独处理。",
+        "prompt": "证明 H 正规，并解释为什么 k=1 要单独处理。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "定理2.6.1 · 证明",
+          "Theorem 2.6.1 · Proof"
+        ],
+        "pdfPages": [
+          125,
+          126
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "第一定理 — 中心分支的商群",
+            "enTitle": "First theorem — a central quotient"
+          },
+          "sourceSha256": "fbec562c28487d98be1b07ce960c2a32945770896a77f6ea74bd52d6f83f058c",
+          "text": "先处理中心的阶被 P 整除的情形。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "设 p∣|Z(G)|，由已学结论取 p 阶元素",
+            "enText": "Assume p divides |Z(G)|; choose an element of order p."
+          },
+          "sourceSha256": "bc37a8f12f9a196e7abf868cf7d83d0862ae935099fadb7510ac5ff761891822",
+          "text": "中心是有限交换群。教材第二点二节例十二已经给出所需的素数阶元素结论，所以可以在中心中取 P 阶元素 z。这一步使用的是前面学过的结果，不能引用尚未证明的西罗定理。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "z\\in Z(G),\\quad |z|=p,\\quad H=\\langle z\\rangle"
+          },
+          "sourceSha256": "2030d9664327c209f2b3b6a8735004a98b87fcd25d36e42b4dfe839dc9459c15",
+          "text": "由 z 生成的循环子群 H 有 P 个元素。H 包含在中心里，每个群元素都保持它的每个元素不变，因此 H 是正规子群。这样才能形成后面的商群。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "tex": "H\\trianglelefteq G,\\qquad |H|=p"
+          },
+          "sourceSha256": "cc6cee4ef99d916b0f054f2bf2f4f319bd5a782daf32e940767edfc88640fb3e",
+          "text": "这里的正规性来自中心，而不是来自子群阶是素数。一般的素数阶子群并不自动正规；本步的特殊条件正是 H 位于中心。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "text": "k=1 时 H 已满足要求；k≥2 时取商群",
+            "enText": "For k=1 use H; for k≥2 pass to the quotient."
+          },
+          "sourceSha256": "6bdd3588df7072283451278c3b23ae530583aa8acadf9b2d6d2bc884258e549c",
+          "text": "若 k 等于一，H 本身就完成构造。这个边界情形单独处理，避免把单位群误叫 P 群。若 k 至少为二，商群的阶仍然有足够大的 P 幂，可以应用归纳。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "tex": "|G/H|=p^{a-1}m<|G|"
+          },
+          "sourceSha256": "83b205ed9ebb5623e5dcec8ecd79d7696de9026d552a5edac6cfdc931adbe67c",
+          "text": "商群的阶等于群阶除以 H 的阶，因此最高 P 指数恰好减少一。它的阶严格小于 G，而 k 减一介于一和 a 减一之间，所以归纳假设给出商群中 P 的 k 减一次方阶子群。"
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "originalIndex": 4,
+      "optionalProof": false,
+      "clipPrefix": "th04",
+      "title": "第一定理 — 把商群子群提升回来",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 1,
+      "targetStart": 1440.0,
+      "targetDuration": 300,
+      "activity": "对 π 的原像 P 证明子群性，并计算它的阶。",
+      "answer": "子群的同态原像是子群。投影从 P 到 Q 的核是 H，故 P 的阶等于 H 的阶乘以 Q 的阶，也就是 P 的 k 次方。",
+      "exercise": {
+        "given": "H正规且|H|=p；Q≤G/H且|Q|=pᵏ⁻¹。",
+        "goal": "对 π 的原像 P 证明子群性，并计算它的阶。",
+        "prompt": "对 π 的原像 P 证明子群性，并计算它的阶。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "定理2.6.1 · 证明",
+          "Theorem 2.6.1 · Proof"
+        ],
+        "pdfPages": [
+          125,
+          126
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "第一定理 — 把商群子群提升回来",
+            "enTitle": "First theorem — lifting a subgroup"
+          },
+          "sourceSha256": "5301e156ceb15eb836b18d3ed24ce5967b682a1bb7b64daf1d8e6e0a75efdc19",
+          "text": "商群里找到子群后，原像把它带回原群。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "k≥2；由归纳得到商群子群 Q",
+            "enText": "For k≥2, induction gives a subgroup Q in G/H."
+          },
+          "sourceSha256": "6e5070757589729579bd834bced78b64d19cde906b8d98f8baa8ccb72b317ca2",
+          "text": "现在 k 至少为二。归纳只给出商群中的子群 Q，还不是原群中的子群；要完成存在性证明，必须把它提升回来，并核对阶数。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "Q\\le G/H,\\qquad |Q|=p^{k-1}"
+          },
+          "sourceSha256": "e76ad70ba20e5c68e09a2e1812b6d1913ea18ec20e182eed7d1b744c4aac648c",
+          "text": "Q 的每个元素是一个 H 的陪集。自然投影把 G 的元素送到对应陪集，因此可以把投影落在 Q 里的全部元素组成一个集合。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "tex": "\\pi:G\\to G/H,\\qquad P=\\pi^{-1}(Q)"
+          },
+          "sourceSha256": "2c242358d716e0d43320abc1f9832299f4141ec8b88dc30d989f15c20741c69a",
+          "text": "同态的子群原像仍然是子群，所以 P 确实是 G 的子群。P 还包含 H，并且限制投影从 P 到 Q 是满射，核就是 H。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "text": "P≤G，H≤P，且 P/H≅Q",
+            "enText": "P≤G, H≤P, and P/H≅Q."
+          },
+          "sourceSha256": "6bd815231711fe1a465e73df56a84d1e1dd78a9f329834f2a1834c563d88a903",
+          "text": "这里使用商群与子群的对应定理。不能把商群的元素当作 G 的元素随意挑代表来形成子群；取完整原像保证封闭性，也保证核保持不变。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "tex": "|P|=|H||Q|=p\\cdot p^{k-1}=p^k"
+          },
+          "sourceSha256": "18f9a158d40cf167df6aabd93ecf3ea0ab024f7c60ba96befab5438d5b212e58",
+          "text": "每个落在 Q 中的陪集有 P 个元素，而 Q 中有 P 的 k 减一次方个陪集。因此原像的阶正好是 P 的 k 次方，中心分支的构造完成。"
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "originalIndex": 5,
+      "optionalProof": false,
+      "clipPrefix": "th05",
+      "title": "第一定理 — 非中心分支",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 1,
+      "targetStart": 1740.0,
+      "targetDuration": 600,
+      "activity": "解释“有一项不被p整除”和“中心化子保留pᵃ”两个推理，并说明何处用归纳。",
+      "answer": "若所有非中心类大小都被 P 整除，类方程模 P 的右侧就等于非零的中心项，矛盾。选中不被 P 整除的指数后，最高 P 幂留在中心化子里；它是阶更小的真子群，因此能用归纳。",
+      "exercise": {
+        "given": "p∤|Z(G)|，|G|=pᵃm；xᵢ取非中心共轭类代表。",
+        "goal": "解释“有一项不被p整除”和“中心化子保留pᵃ”两个推理，并说明何处用归纳。",
+        "prompt": "解释“有一项不被p整除”和“中心化子保留pᵃ”两个推理，并说明何处用归纳。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "定理2.6.1 · 证明",
+          "Theorem 2.6.1 · Proof"
+        ],
+        "pdfPages": [
+          125,
+          126
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "第一定理 — 非中心分支",
+            "enTitle": "First theorem — the noncentral case"
+          },
+          "sourceSha256": "c0ba504e90dc3b4e9a3a3f004ff7e659da3c6c510e9cf7eee81dcf36137af5a7",
+          "text": "类方程会找到一个保留全部 P 因子的真中心化子。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "设 p∤|Z(G)|，而 p∣|G|",
+            "enText": "Assume p does not divide |Z(G)|, but divides |G|."
+          },
+          "sourceSha256": "8ec2621f36dd883fbdde9cfba9bc9f29fc8b1a24403d521e0ce6a5a49ec595ae",
+          "text": "这一分支无法从中心中取出 P 阶元素。类方程提供另一条路线：左侧被 P 整除，而中心项不被 P 整除，所以其他项不可能全部被 P 整除。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "\\exists i:\\ p\\nmid[G:C_G(x_i)]"
+          },
+          "sourceSha256": "5cb239ff4da19c1cceaef76fe4d947a4fd791fe60463085b7032160429018ce1",
+          "text": "因此有一个非中心共轭类，其大小不被 P 整除。这个条件意味着从 G 的阶分解中除去该指数时，所有 P 因子都会保留在中心化子的阶里面。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "tex": "|G|=[G:C_G(x_i)]\\,|C_G(x_i)|"
+          },
+          "sourceSha256": "ff321f24730c26f902e1ec6af284d50816132263c2afe52c14ddf2bd3e16e2ae",
+          "text": "指数乘法公式把这个直觉写成等式。由于前一个因子与 P 互素，后一个因子的最高 P 幂与 G 完全相同，而不仅仅是还能被 P 整除一次。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "text": "xᵢ 非中心，所以 C_G(xᵢ) 是真子群",
+            "enText": "Since xᵢ is noncentral, its centralizer is proper."
+          },
+          "sourceSha256": "854d95b3d6a2fa4b4b0cd82117da2f76653096773b176e84512fbc291fc161fa",
+          "text": "艾克斯下标 i 不是中心元素，因此总有群元素不与它交换，中心化子不等于 G。它的阶严格变小，正好满足归纳参数的要求。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "tex": "p^a\\mid|C_G(x_i)|\\Longrightarrow\\exists P\\le C_G(x_i):|P|=p^k"
+          },
+          "sourceSha256": "e2d040c903c6a8ccd7d5f0a20b0975765283634ecac2a5e2430d6fa662cd8850",
+          "text": "中心化子是阶更小的有限群，并保留 P 的 a 次方作为阶的因子。归纳给出其中 P 的 k 次方阶子群。子群包含关系可以继续到 G，所以它也是原群的子群。"
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "originalIndex": 6,
+      "optionalProof": false,
+      "clipPrefix": "th06",
+      "title": "推论1 — 西罗子群的存在性",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 1,
+      "targetStart": 2340.0,
+      "targetDuration": 360,
+      "activity": "列出第一定理保证的2幂阶、3幂阶子群，并说明尚不能判断什么。",
+      "answer": "第一定理保证二、四、八阶子群以及三、九阶子群存在。西罗二子群为八阶，西罗三子群为九阶；唯一性和正规性还没有从第一定理得到。",
+      "exercise": {
+        "given": "|G|=72=2³·3²。",
+        "goal": "列出第一定理保证的2幂阶、3幂阶子群，并说明尚不能判断什么。",
+        "prompt": "列出第一定理保证的2幂阶、3幂阶子群，并说明尚不能判断什么。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "推论1",
+          "Corollary 1"
+        ],
+        "pdfPages": [
+          126
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "推论1 — 西罗子群的存在性",
+            "enTitle": "Corollary 1 — existence of Sylow subgroups"
+          },
+          "sourceSha256": "7633f5201c8d4cd10086a20fe8bdcc10ef46c03e4473fc052cbe8bbfd5589b37",
+          "text": "第一定理已经完成，取最大指数得到存在性推论。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "两个分支都得到 pᵏ 阶子群",
+            "enText": "Both branches produce a subgroup of order pᵏ."
+          },
+          "sourceSha256": "e386354dca86b1406830359c2b30225eb8f7c3167f990c016389a7054fbeed62",
+          "text": "中心分支通过商群归纳再取原像，非中心分支通过真中心化子归纳。构造方式不同，得到的阶数相同，因此固定 k 的存在性已经证明。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "1\\le k\\le a\\Longrightarrow\\exists H\\le G:\\ |H|=p^k"
+          },
+          "sourceSha256": "740f5a5e5e8ad9d68c41d61acd767129da4d4e38b5f9c311dcc07d62140fef7a",
+          "text": "因为 k 是从一到 a 之间任意选的，每个允许的素数幂阶都出现。这个范围包含最大指数 a，也包含比 a 小的各个指数。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "text": "取 k=a，得到教材推论1",
+            "enText": "Take k=a to obtain Corollary 1."
+          },
+          "sourceSha256": "8f2128d5309b2d74479339587431dd10ced086e30791cf0de07599fe25478482",
+          "text": "把 k 取为 a，第一定理就给出阶为 P 的 a 次方的子群。它满足西罗 P 子群的定义，所以这个集合中至少有一个对象。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "tex": "\\exists P\\le G:\\ |P|=p^a"
+          },
+          "sourceSha256": "623776973b928313e8fb791ac33d97baa18e0f9fd19d807fd040b23039af5ff7",
+          "text": "这就是西罗子群存在性。现在可以固定一个西罗子群继续研究，但还没有证明任意的 P 子群被它的某个共轭包含，这将由第二定理解决。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "text": "存在性不推出唯一性，也不自动推出正规性",
+            "enText": "Existence alone gives neither uniqueness nor normality."
+          },
+          "sourceSha256": "819540fb0e2e9ec8952f54f699b052d4c6552b3c1ed03a6194c9908e88a9c767",
+          "text": "同一个阶数可能对应多个子群。第一定理只解决是否存在，不解决它们相互之间的关系。之后的共轭性和计数结论，才会把这些对象联系起来。"
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "optionalProof": false,
+      "clipPrefix": "b19",
+      "title": "课间休息 · 五分钟",
+      "kind": "cover",
+      "statementOnly": false,
+      "period": "break",
+      "targetStart": 2700.0,
+      "targetDuration": 300,
+      "activity": "",
+      "answer": "",
+      "exercise": null,
+      "reference": null,
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "text": "问候与安排"
+          },
+          "sourceSha256": "7dbb887b337a15214ead52edc2f5a3fb2b69932c09b49814c1f0158a5f2832b4",
+          "text": "第一课时到这里。"
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "optionalProof": false,
+      "clipPrefix": "b20",
+      "title": "西罗三大定理 · 第二课时",
+      "kind": "cover",
+      "statementOnly": false,
+      "period": 2,
+      "targetStart": 3000.0,
+      "targetDuration": 49.38514,
+      "activity": "",
+      "answer": "",
+      "exercise": null,
+      "reference": null,
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "text": "问候与安排"
+          },
+          "sourceSha256": "7dbb887b337a15214ead52edc2f5a3fb2b69932c09b49814c1f0158a5f2832b4",
+          "text": "欢迎回来。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "西罗三大定理 · 第二课时"
+          },
+          "sourceSha256": "f8ff93c7dc4732737d6731b452540148f4bce9b990b5f09351cb4d04bf565b5f",
+          "text": "我们继续讨论西罗定理，先从不动元素引理开始。"
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "originalIndex": 7,
+      "optionalProof": false,
+      "clipPrefix": "th07",
+      "title": "引理1 — p 群作用的不动元素",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 2,
+      "targetStart": 3049.38514,
+      "targetDuration": 550.61486,
+      "activity": "证明 X 有不动点，并说明结论为何不是“不动点唯一”。",
+      "answer": "所有非单点轨道都被 P 整除。集合的总大小不被 P 整除，所以必须有单点轨道。这样的轨道可能不止一个，引理只保证至少一个。",
+      "exercise": {
+        "given": "H为p群，作用于有限集合X，p∤|X|。",
+        "goal": "证明 X 有不动点，并说明结论为何不是“不动点唯一”。",
+        "prompt": "证明 X 有不动点，并说明结论为何不是“不动点唯一”。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "引理1",
+          "Lemma 1"
+        ],
+        "pdfPages": [
+          126
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "引理1 — p 群作用的不动元素",
+            "enTitle": "Lemma 1 — a fixed point for a p-group action"
+          },
+          "sourceSha256": "2b925e2cf2c31e339748646770402256aec711787a0d1fc6b22a2ed682e925f8",
+          "text": "第二定理的证明从这个不动元素引理开始。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "设 p 群 H 作用于有限集合 X",
+            "enText": "Let a p-group H act on a finite set X."
+          },
+          "sourceSha256": "c087aa450ccca29b558522474332aa5dd9f58bd0cc0652cdffb6b09bd6380e2a",
+          "text": "引理把 P 群的阶数性质转成轨道性质。这里 H 是作用群，X 只是有限集合，不要求它有群结构。我们关心是否有被 H 的每个元素同时固定的点。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "|H\\cdot x|=[H:H_x]=p^{r_x}"
+          },
+          "sourceSha256": "1a2620bf69446b1801bfbef7cd885f0679c03d39217478cb42543d8f31d3ed1c",
+          "text": "轨道稳定子定理说明，每个轨道的大小整除 H 的阶，因此都是 P 的幂。指数可以为零，此时轨道只有一个点；这个点被整个 H 固定。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "text": "非单点轨道的大小被 p 整除",
+            "enText": "Every nonsingleton orbit has size divisible by p."
+          },
+          "sourceSha256": "a3d507e48a5e2ff9b73d1a8fc1c1b7b4a007506481af878fd98c703acd6a9be3",
+          "text": "若轨道不是单点，其大小至少是 P，于是一定被 P 整除。这一观察允许我们把全部轨道大小相加，再对 P 取模。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "tex": "|X|\\equiv|X^H|\\pmod p"
+          },
+          "sourceSha256": "bebef037eba4e52f68fda918d3f9c5378631255d9cc54271b5cec10545aa867f",
+          "text": "X 上标 H 表示被 H 的所有元素固定的点的集合。非单点轨道在模 P 求和时消失，剩下的正是单点轨道，也就是不动点。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "tex": "p\\nmid|X|\\Longrightarrow X^H\\ne\\varnothing"
+          },
+          "sourceSha256": "a3a76f56b52a7aed313160f43fb825120850415cd9fc4b640909d1634fd838b7",
+          "text": "若集合的大小不被 P 整除，不动点数就不能为零。这证明教材引理一。它并不保证不动点唯一；第二定理只需要存在一个不动陪集。"
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "originalIndex": 8,
+      "optionalProof": false,
+      "clipPrefix": "th08",
+      "title": "定理2.6.2 — 左陪集上的作用",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 2,
+      "targetStart": 3600.0,
+      "targetDuration": 360,
+      "activity": "核对左乘作用良定义，并说明为什么 X 的大小与p互素。",
+      "answer": "相同左陪集左乘同一个 h 后仍相同，因此作用不依赖代表。P 的阶是群阶中的最高 P 幂，所以左陪集个数等于互素因子艾姆。",
+      "exercise": {
+        "given": "H为G的p子群，P为任一西罗p子群。",
+        "goal": "核对左乘作用良定义，并说明为什么 X 的大小与p互素。",
+        "prompt": "核对左乘作用良定义，并说明为什么 X 的大小与p互素。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "定理2.6.2 · 证明",
+          "Theorem 2.6.2 · Proof"
+        ],
+        "pdfPages": [
+          126,
+          127
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "定理2.6.2 — 左陪集上的作用",
+            "enTitle": "Theorem 2.6.2 — an action on left cosets"
+          },
+          "sourceSha256": "8396da9238672acf9d9e4a53d7e0ad2ce2e3706e71b3b8c96d33e53c428073d6",
+          "text": "用 H 的左乘作用，把子群包含关系转成不动陪集。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "H 为 p 子群，P 为任一西罗 p 子群",
+            "enText": "H is a p-subgroup and P is any Sylow p-subgroup."
+          },
+          "sourceSha256": "ea70f7c885240643e395ea1e6deadb5b33c1b0714a41ba2552745dfb3af6d877",
+          "text": "第一定理已保证西罗子群存在。现在固定任意一个 P，并给定一个 P 子群 H。目标是找到群元素 g，使 H 落在 P 的这个共轭子群中。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "\\exists g\\in G:\\ H\\le gPg^{-1}"
+          },
+          "sourceSha256": "f1e2e9d4185bbdbe926dc113ec299816d80bb6a044ada7ed6902e9dac06f2ebe",
+          "text": "第二定理保留了这个量词顺序：先给 H 和任意的西罗子群 P，再寻找适合它们的 g。不是说 H 包含于 P 本身，也不是说所有 g 都能实现包含。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "text": "令 X 为 P 的全部左陪集组成的集合",
+            "enText": "Let X be the set of all left cosets of P."
+          },
+          "sourceSha256": "a81fa12afcc901401819512218232abf432c3f29b09d633b26da24ffaba3ef66",
+          "text": "这里不要求 P 正规。左陪集组成一个集合，足够让 H 作用；没有必要，也不能在未证明正规时把它当作商群使用。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "tex": "X=G/P,\\qquad |X|=[G:P]=m"
+          },
+          "sourceSha256": "ccd83800d1c108b5ca165c5b17f285f7611b8c7dde5e6b8d1f4f2416ebf19684",
+          "text": "集合的大小是陪集个数。P 的阶达到最高 P 幂，所以指数是剩下的互素因子艾姆，恰好不被 P 整除。引理一现在有了可用的大小条件。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "tex": "h\\cdot(gP)=hgP\\qquad(h\\in H)"
+          },
+          "sourceSha256": "b6340c8da52d9d5a986d6e6e6106d972a9c74093d7d607fd996ed5076b447b4a",
+          "text": "用左乘定义 H 在 X 上的作用。若两个代表给出同一陪集，左乘 h 后仍然给出同一陪集，所以作用良定义。单位元和乘法相容性也都来自 G 的乘法。"
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "originalIndex": 9,
+      "optionalProof": false,
+      "clipPrefix": "th09",
+      "title": "第二定理 — 从不动陪集得到包含",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 2,
+      "targetStart": 3960.0,
+      "targetDuration": 360,
+      "activity": "推出 H≤gPg⁻¹，并说明为什么不能只验证某个h。",
+      "answer": "固定条件对每个 h 成立，因此每个 h 都属于相应共轭子群，得到 H 的整体包含。只验证某个元素不能推出整个子群包含。",
+      "exercise": {
+        "given": "对所有h∈H都有hgP=gP。",
+        "goal": "推出 H≤gPg⁻¹，并说明为什么不能只验证某个h。",
+        "prompt": "推出 H≤gPg⁻¹，并说明为什么不能只验证某个h。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "定理2.6.2 · 证明",
+          "Theorem 2.6.2 · Proof"
+        ],
+        "pdfPages": [
+          126,
+          127
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "第二定理 — 从不动陪集得到包含",
+            "enTitle": "Second theorem — fixed cosets give containment"
+          },
+          "sourceSha256": "6a866cf4c9df470864b5e7793a8e8d2470fc3439e958a08b113a360dcd22a03b",
+          "text": "不动陪集已经找到，剩下的是把条件准确翻译回子群。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "由引理1，存在不动陪集 gP",
+            "enText": "Lemma 1 supplies a fixed coset gP."
+          },
+          "sourceSha256": "7e0e63a389a5eecb75c7775ed207e0d1826c02cf698f0b31b08121624d90e488",
+          "text": "H 是 P 群，陪集集合的大小是与 P 互素的艾姆，因此引理一保证一个不动点。不动点在这里是整个陪集 gP，而不是 G 的某个元素。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "hgP=gP\\qquad\\forall h\\in H"
+          },
+          "sourceSha256": "3253ec2c02f0743918027e64cbc6b360d3e8b46c6f9cfa4f978049cbdf6d04a9",
+          "text": "这个陪集被 H 中每一个元素固定。这是全称条件，接下来对任意 h 作同样的变形，才能得到整个子群的包含关系。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "tex": "g^{-1}hg\\in P\\qquad\\forall h\\in H"
+          },
+          "sourceSha256": "a86e670ea65874c316b0185aa72972aea183d1557385b7984975252cb5037180",
+          "text": "两个左陪集相等的判据，把固定条件改写为 g 的逆、h、g 这个乘积属于 P。这个等价使用的是陪集判据，不需要 P 正规。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "text": "于是 H 的每个元素都属于 gPg⁻¹",
+            "enText": "Thus every element of H belongs to gPg⁻¹."
+          },
+          "sourceSha256": "3268349c8d8f7a30bc66cf67bb372573391f349b286b2efe8e0f3ea80834d02b",
+          "text": "把包含的元素写成共轭形式，就得到 h 属于 g P g 的逆。由于 h 遍历 H，得到的是整个 H 的包含，而不是一个元素偶然落入。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "tex": "H\\le gPg^{-1}"
+          },
+          "sourceSha256": "7a9df1a037d2c4444e0a264b1c6c1774d9e8031c42a6ea65e03f4de4d93392e1",
+          "text": "第二西罗定理证明完成。任意给定的 P 子群都包含在一个西罗子群中，而且可以把这个西罗子群选为任意固定 P 的某个共轭。"
+        }
+      ]
+    },
+    {
+      "page": 12,
+      "originalIndex": 10,
+      "optionalProof": false,
+      "clipPrefix": "th10",
+      "title": "推论2 — 西罗子群的共轭性",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 2,
+      "targetStart": 4320.0,
+      "targetDuration": 240,
+      "activity": "说明如何由包含得到共轭，以及为何不能由此断言唯一。",
+      "answer": "两边的阶相等，所以包含成为相等。这个相等把 H 写成 P 的一个共轭，并没有说所有共轭都等于 P 本身，因此还不能断言唯一。",
+      "exercise": {
+        "given": "H、P均为G的西罗p子群，且H≤gPg⁻¹。",
+        "goal": "说明如何由包含得到共轭，以及为何不能由此断言唯一。",
+        "prompt": "说明如何由包含得到共轭，以及为何不能由此断言唯一。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "推论2",
+          "Corollary 2"
+        ],
+        "pdfPages": [
+          127
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "推论2 — 西罗子群的共轭性",
+            "enTitle": "Corollary 2 — conjugacy"
+          },
+          "sourceSha256": "c518667d6fb8fc7ce898c767fbd51fc4507b1156ac6f9af0e01544a9f0b62b25",
+          "text": "同阶使第二定理的包含加强为相等。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "取 H、P 为两个西罗 p 子群",
+            "enText": "Take two Sylow p-subgroups H and P."
+          },
+          "sourceSha256": "e0702efa5afec9e6c111c11781c1ec5e1f498db06e2671f2f6913dab9d3b4ab6",
+          "text": "第二定理适用于所有 P 子群，因此也适用于另一个西罗子群 H。不同之处是这时 H 和 P 的阶相同，都达到最高 P 幂。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "H\\le gPg^{-1}"
+          },
+          "sourceSha256": "7a9df1a037d2c4444e0a264b1c6c1774d9e8031c42a6ea65e03f4de4d93392e1",
+          "text": "先由第二定理得到包含。共轭不会改变子群的阶，所以右边的阶仍等于 P 的阶。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "tex": "|H|=|gPg^{-1}|=p^a"
+          },
+          "sourceSha256": "1c911f45539a2a2b7bcc113e2e9d299ce7c72113348d14006e74581c63431ecf",
+          "text": "包含的两边是同样大小的有限集合，因此包含必须成为相等。这一步既用了有限性，也用了两个子群都是西罗子群。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "tex": "H=gPg^{-1}"
+          },
+          "sourceSha256": "8fde774d9f89eda963eb7c09e44b6127c58036e8d37c4c1779dfa60b67bcdbd9",
+          "text": "这就是教材推论二：任意两个西罗 P 子群互相共轭。它说明这些子群在 G 内的相对位置可以通过内共轭联系。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "text": "互相共轭不表示作为子集相等",
+            "enText": "Conjugate subgroups need not be equal as subsets."
+          },
+          "sourceSha256": "617345225d796350328590901ca82ae73b903f26d191bf23b54181cbe02f9e69",
+          "text": "抽象同构、在 G 内共轭和作为子集相等，是不同强度的关系。共轭性本身不意味着西罗子群只有一个，下一步需要研究它们的个数。"
+        }
+      ]
+    },
+    {
+      "page": 13,
+      "originalIndex": 11,
+      "optionalProof": false,
+      "clipPrefix": "th11",
+      "title": "定理2.6.3与推论3 — 计数结论",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 2,
+      "targetStart": 4560.0,
+      "targetDuration": 180,
+      "activity": "同时使用推论3与第三定理，列出n₃的候选值。",
+      "answer": "个数整除四，所以先有一、二、四。模三余一的只保留一和四。这里只得到候选值，尚未判断某个具体群取哪一个。",
+      "exercise": {
+        "given": "|G|=12=3·4，p=3。",
+        "goal": "同时使用推论3与第三定理，列出n₃的候选值。",
+        "prompt": "同时使用推论3与第三定理，列出n₃的候选值。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "定理2.6.3；推论3",
+          "Theorem 2.6.3; Corollary 3"
+        ],
+        "pdfPages": [
+          127,
+          128
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "定理2.6.3与推论3 — 计数结论",
+            "enTitle": "Theorem 2.6.3 and Corollary 3 — counts"
+          },
+          "sourceSha256": "6f6ba5712563035b146dca9d3c58fb06c9b291c8fae15682d2e61a58f3327ae6",
+          "text": "集合与个数的记号明确之后，陈述第三定理和计数推论。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "记 Sylₚ(G) 为全部西罗 p 子群的集合",
+            "enText": "Let Sylₚ(G) denote the set of Sylow p-subgroups."
+          },
+          "sourceSha256": "a9dd67992695a5bfaf9823df3cbd69c86a3efdb6889c232efd8cba031c6bdce8",
+          "text": "P 子群和西罗子群已经定义，存在性与共轭性也已经证明。现在把 G 中全部西罗 P 子群组成一个有限集合，才引入计数记号。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "n_p=|\\operatorname{Syl}_p(G)|"
+          },
+          "sourceSha256": "03914f0c466178fc9ea2c422c468963358b4c56ea216085228ae0a552883c46d",
+          "text": "记这个集合的元素个数为 n 下标 P。这里的每个元素是一个子群；n 下标 P 不是子群的阶，也不是某类群元素的总数。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "text": "定理2.6.3：nₚ 整除 |G|，且模 p 余1",
+            "enText": "Theorem 2.6.3: nₚ divides |G| and is 1 modulo p."
+          },
+          "sourceSha256": "4b770e4d4d5c760d09a279c8816e2b4b7938672db8267ae76380848bd0b36cc1",
+          "text": "第三西罗定理在这本教材中的原始陈述，是个数整除群阶，并且模 P 余一。之后还会从正规化子的指数式得到更强的整除条件。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "tex": "n_p\\mid|G|,\\qquad n_p\\equiv1\\pmod p"
+          },
+          "sourceSha256": "49541db67cf74eda2e98457956ab200b7ede0b6b95faabd33e209e902d2e4767",
+          "text": "存在性已经说明个数至少为一，第三定理进一步限制它可以是哪几个数。这些条件是限制，不是凭空构造出具有任意候选个数的群。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "text": "推论3：在 |G|=pᵃm 下，nₚ∣m",
+            "enText": "Corollary 3: if |G|=pᵃm, then nₚ divides m."
+          },
+          "sourceSha256": "80273cd401afb26dba6d739e49dd74c595e31d1ac87f26ba8c861d65eed03e7d",
+          "text": "教材把个数整除互素因子艾姆单列为推论三。实际解题时常把它与模 P 余一一起使用，但教材原始编号仍需区分。"
+        }
+      ]
+    },
+    {
+      "page": 14,
+      "originalIndex": 12,
+      "optionalProof": true,
+      "clipPrefix": "th12",
+      "title": "第三定理 — 正规化子与整除",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 2,
+      "targetStart": 4740.0,
+      "targetDuration": 360,
+      "activity": "证明P≤N_G(P)，并推导nₚ整除m。",
+      "answer": "P 的内共轭保持它自己，所以 P 是正规化子的子群。共轭性给出 n 下标 P 等于 G 到正规化子的指数；指数乘法再给出它整除艾姆。",
+      "exercise": {
+        "given": "P为G的西罗p子群，|G|=pᵃm。",
+        "goal": "证明P≤N_G(P)，并推导nₚ整除m。",
+        "prompt": "证明P≤N_G(P)，并推导nₚ整除m。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "定理2.6.3 · 证明",
+          "Theorem 2.6.3 · Proof"
+        ],
+        "pdfPages": [
+          127,
+          128
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "第三定理 — 正规化子与整除",
+            "enTitle": "Third theorem — normalizers and divisibility"
+          },
+          "sourceSha256": "0085eaa3dea89700a689df59b5f7780d10f83e20e1b1a11c52be4d738b1cd30b",
+          "text": "计数的整除部分来自共轭作用的一个轨道。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "G 通过共轭作用于 X=Sylₚ(G)",
+            "enText": "G acts on its Sylow subgroups by conjugation."
+          },
+          "sourceSha256": "4a5934184f00ea4c29405c216192fb9582cd5a5953df6403aabe4192caab2cb9",
+          "text": "根据推论二，所有西罗子群彼此共轭，因此这个作用是传递的。固定一个西罗子群 P，它的轨道就是整个集合 X。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "g\\cdot P=gPg^{-1},\\qquad X=G\\cdot P"
+          },
+          "sourceSha256": "3117f9af2508ed9eb67ae55a2714a61d27312363e543b843c4b0bd484120aa75",
+          "text": "共轭像还是相同阶数的子群，所以仍然是西罗子群，作用确实落在 X 内。作用的稳定子由哪些 g 满足共轭后仍等于 P 来确定。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "tex": "G_P=N_G(P)=\\{g:gPg^{-1}=P\\}"
+          },
+          "sourceSha256": "9c632182babb1ba192a174e3a9c361603dc45ba120818505088d2b97e982efe1",
+          "text": "这个稳定子就是正规化子。它保持整个子群作为集合，并不要求逐个固定 P 中的每个元素，所以通常不同于中心化子。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "tex": "n_p=[G:N_G(P)],\\qquad P\\le N_G(P)"
+          },
+          "sourceSha256": "aceba36cd7892f8fba181241a72535fceabf35d5a09f9abb3b6faf43cdd975b0",
+          "text": "轨道稳定子定理给出个数的指数公式，因此个数首先整除 G 的阶。P 的每个元素作内共轭都保持 P，所以 P 包含在自己的正规化子里。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "tex": "m=[G:P]=n_p[N_G(P):P]\\Longrightarrow n_p\\mid m"
+          },
+          "sourceSha256": "d9147fd49b64eacf1b157685912904eb9efef6ca22b5b3dbe23379eb49dc3313",
+          "text": "再使用指数乘法公式，群到 P 的指数等于群到正规化子的指数，乘以正规化子到 P 的指数。前者总指数是艾姆，所以得到推论三。"
+        }
+      ]
+    },
+    {
+      "page": 15,
+      "originalIndex": 13,
+      "optionalProof": true,
+      "clipPrefix": "th13",
+      "title": "第三定理 — 唯一不动点",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 2,
+      "targetStart": 5100.0,
+      "targetDuration": 300,
+      "activity": "说明为何它们也是正规化子的西罗子群，再证明P=P₀。",
+      "answer": "二者已有最高 P 幂阶，而正规化子包含于 G，不可能有更高的 P 幂阶子群。共轭推论在正规化子内给出 P 零是 P 的一个内共轭，而所有这些内共轭仍是 P，所以二者相等。",
+      "exercise": {
+        "given": "P₀、P均为G的西罗p子群，P₀≤N_G(P)。",
+        "goal": "说明为何它们也是正规化子的西罗子群，再证明P=P₀。",
+        "prompt": "说明为何它们也是正规化子的西罗子群，再证明P=P₀。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "定理2.6.3 · 证明",
+          "Theorem 2.6.3 · Proof"
+        ],
+        "pdfPages": [
+          127,
+          128
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "第三定理 — 唯一不动点",
+            "enTitle": "Third theorem — the unique fixed point"
+          },
+          "sourceSha256": "28bc9906ff23a561dbd87bb7c545b7a2e202cc361e852c13a804ae1cba89a090",
+          "text": "要得到模 P 余一，需要把不动点数确定为一。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "固定 P₀∈Sylₚ(G)，让 P₀ 共轭作用于 X",
+            "enText": "Fix P₀ and let it act on X by conjugation."
+          },
+          "sourceSha256": "5dfe61cbe9cf01f7b0559188dd2ee44bc67711da72d81fc4828ef0dbed616640",
+          "text": "现在把作用群缩小为固定的西罗子群 P 零。P 零本身当然是不动点；同余部分的关键是证明没有其他不动点。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "P\\in X^{P_0}\\Longrightarrow P_0\\le N_G(P)"
+          },
+          "sourceSha256": "98ca971276486e9cee69a318503a7944a87aa0ac63231fcdfb94dbbba7883428",
+          "text": "如果 P 是不动点，P 零中每个元素都通过共轭保持 P。因此 P 零包含在 P 的正规化子中。这个条件说的是正规化，不是逐元素交换。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "text": "P、P₀ 都是 N_G(P) 的西罗 p 子群",
+            "enText": "P and P₀ are Sylow subgroups of N_G(P)."
+          },
+          "sourceSha256": "b2023f991ed693118de164b4c399572389f92d9dd869ac7e3f8dc66dfeb2a0e8",
+          "text": "正规化子中包含 P 和 P 零，二者阶都是 P 的 a 次方。正规化子是 G 的子群，它的阶不可能含有更高的 P 幂，所以这两者在正规化子中也都是西罗子群。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "tex": "\\exists x\\in N_G(P):P_0=xPx^{-1}=P"
+          },
+          "sourceSha256": "c68786f0f5538235e15aedb2feeac2957108d70227d66b4c845e4de470a5e677",
+          "text": "将已经证明的共轭推论用于正规化子，得到其中的某个 x 把 P 共轭成 P 零。由于 x 自身在正规化子里，它的共轭又必须保持 P，因此 P 零与 P 相等。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "tex": "X^{P_0}=\\{P_0\\}"
+          },
+          "sourceSha256": "8f600abbc35bb60ab753d6eae28b9c1a756ab70e2136c1ef907368fd31836571",
+          "text": "不动点因此恰好是 P 零一个。这里没有假定正规化子是真子群，也没有使用第三定理自身。证明只依赖第二定理和有限群的阶数限制。"
+        }
+      ]
+    },
+    {
+      "page": 16,
+      "originalIndex": 14,
+      "optionalProof": true,
+      "clipPrefix": "th14",
+      "title": "第三定理 — 轨道求和得到同余",
+      "kind": "body",
+      "statementOnly": false,
+      "period": 2,
+      "targetStart": 5400.0,
+      "targetDuration": 274.77392,
+      "activity": "由两条计数条件求 n₅，并说明本课已经得到什么。",
+      "answer": "个数整除四，又模五余一，只能等于一。计数结论说明五阶西罗子群唯一；应用课会进一步解释唯一性与正规性等价，以及哪些结构结论还需要额外论证。",
+      "exercise": {
+        "given": "|G|=20=5·4，p=5。",
+        "goal": "由两条计数条件求 n₅，并说明本课已经得到什么。",
+        "prompt": "由两条计数条件求 n₅，并说明本课已经得到什么。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
+      "reference": {
+        "kind": "textbook",
+        "label": [
+          "定理2.6.3 · 证明",
+          "Theorem 2.6.3 · Proof"
+        ],
+        "pdfPages": [
+          127,
+          128
+        ],
+        "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "title": "第三定理 — 轨道求和得到同余",
+            "enTitle": "Third theorem — the congruence from orbits"
+          },
+          "sourceSha256": "ad4e203216073eec6b3cc9609b87ae65e852bc63dbc7e40bae820e771ccfdad4",
+          "text": "唯一不动点已经确定，同余式由轨道求和落下。"
+        },
+        {
+          "row": 1,
+          "source": {
+            "text": "P₀ 的非单点轨道大小被 p 整除",
+            "enText": "Nonsingleton P₀-orbits have size divisible by p."
+          },
+          "sourceSha256": "22d00669cf4085ab85b91855be69e0dc044331c240bc6635a292af7fbe276841",
+          "text": "P 零是 P 群，所以它在 X 上的每个轨道大小都是 P 的幂。除单点轨道外，所有轨道大小都被 P 整除。这与引理一所用的机制相同。"
+        },
+        {
+          "row": 2,
+          "source": {
+            "tex": "|X|\\equiv|X^{P_0}|\\pmod p"
+          },
+          "sourceSha256": "88d599a0b4438b7456bf4f85ff0ec83e2072e6b4772b37aac0374fc234419864",
+          "text": "对轨道大小求和，再模 P 约去非单点轨道。X 的大小就是西罗子群的个数，而上一板已经证明固定点集合只有一个元素。"
+        },
+        {
+          "row": 3,
+          "source": {
+            "tex": "n_p\\equiv1\\pmod p"
+          },
+          "sourceSha256": "1f52890125409fa152ffac033ea4a34d59668718ee84471e5e3d3fb35586fe35",
+          "text": "这就完成第三西罗定理的同余部分。与整除部分合起来，第三定理已证；与更强的整除式合起来，就是应用课将要使用的两条计数条件。"
+        },
+        {
+          "row": 4,
+          "source": {
+            "tex": "n_p\\mid m,\\qquad n_p\\equiv1\\pmod p"
+          },
+          "sourceSha256": "62595077210246d730ec4c90e917b140fde739f38dbe2fa0c59d28dcbe133e4a",
+          "text": "解题时先列出艾姆的正约数，再筛出模 P 余一的数。筛选结果仍是候选集合，而不是断言每个数一定在某个指定群里实现。"
+        },
+        {
+          "row": 5,
+          "source": {
+            "text": "存在、共轭、计数：应用课的三类输入",
+            "enText": "Existence, conjugacy and counts are the inputs for applications."
+          },
+          "sourceSha256": "28b0c1ba1e0ffa8952d083fd589d8fbdd6f0442de2e60cddad85f49fd39ba6a7",
+          "text": "第一定理保证对象存在，第二定理与共轭推论把对象联系起来，第三定理与推论三限制对象个数。下一次课用这些信息研究正规子群及小阶群的结构。"
+        }
+      ]
+    },
+    {
+      "page": 17,
+      "optionalProof": false,
+      "clipPrefix": "b39",
+      "title": "两课时结束",
+      "kind": "closing",
+      "statementOnly": false,
+      "period": 2,
+      "targetStart": 5674.77392,
+      "targetDuration": 25.22608,
+      "activity": "",
+      "answer": "",
+      "exercise": null,
+      "reference": null,
+      "topic": null,
+      "objective": null,
+      "rows": [
+        {
+          "row": 0,
+          "source": {
+            "text": "问候与安排"
+          },
+          "sourceSha256": "7dbb887b337a15214ead52edc2f5a3fb2b69932c09b49814c1f0158a5f2832b4",
+          "text": "西罗三大定理的讨论到这里。下一次课讨论它们在有限群结构问题中的应用。"
+        }
+      ]
+    }
+  ],
+  "voice": {
+    "name": "沈腾参考音色 · 授课",
+    "notice": "AI 合成，非叶东或沈腾本人录音。沿用叶东原版报告的同一参考声线；授课文本与课堂思考时段单独编排。",
+    "reference": "沈腾/公开模型/ref_audios/shenteng_reference.wav"
+  },
+  "activityPolicy": "课时总长含明确的板书整理、独立练习与讲评；无长静音音频补时长。所有等待都是可见且可跳过的课堂任务。"
+}

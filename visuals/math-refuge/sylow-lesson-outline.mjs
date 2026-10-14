@@ -35,7 +35,7 @@ const TRANSITIONS={
  '12 阶群：让群作用回到场上':'十二阶群留下的四个西罗子群，正好可以成为共轭作用的四个点。',
  '12 阶群：符号同态完成矛盾':'沿着刚才的作用同态继续，用符号同态把像放进交错群，完成非单性的矛盾。',
  '把 15 阶结论推广到 pq 阶':'从十五阶的证明提炼一个一般结论时，必须把保证循环性的额外条件保留下来。',
- '练习：35 阶群的完整证明':'请把同一套方法迁移到三十五阶群，这次自己补齐同态、单射与生成元的理由。',
+ '练习：35 阶群的完整证明':'同一套方法适用于三十五阶群，关键仍是同态、单射与生成元的理由。',
  '练习：42 阶群能推出多少':'四十二阶的练习用来检查结论的边界，尤其注意素数阶元素可能只占群的一部分。',
  '课堂自测：辨别结论强弱':'用三条判断回顾本课最容易混淆的概念，并在自测里写下每个结论需要的条件。',
  '两课时的证明路线':'最后把计数、正规子群与群作用连成一条路线，说明四道主要例题各自借助了什么工具。',
@@ -43,25 +43,25 @@ const TRANSITIONS={
 };
 function b(title,enTitle,lines,activity,answer,intro){return {title,enTitle,lines,activity,answer,intro:intro||TRANSITIONS[title]};}
 export const firstLesson=[
-b('先区分三个不同的数','Three different quantities',[
-t('始终设 G 是有限群，p 是素数','Let G be finite and p prime.','我们始终讨论有限群，并且先选定一个素数。有限性保证拉格朗日定理和后面的元素计数都能使用；素数这个条件也不能漏掉。'),
-f(String.raw`|G|=p^a m,\qquad p\nmid m,\quad a\ge1`,'把群的阶写成 P 的 a 次方乘以艾姆。这里的指数是英文字母 A 的小写形式。其中艾姆不被 P 整除，也就是说，群阶里所有的 P 因子都完整地取出来了。'),
-t('p：素数；pᵃ：子群的阶','p: prime; pᵃ: subgroup order.','P 本身是选定的素数。板书中，P 的 a 次方才是我们要寻找的子群的阶。不要把西罗 P 子群误认为一定只有 P 阶。'),
-f(String.raw`n_p=|\operatorname{Syl}_p(G)|`,'P 下标的恩表示西罗 P 子群的个数。它统计的是不同的子群，不是子群中的元素，也不是所有 P 幂阶元素。'),
-t('今天把“阶、子群、个数”分开使用','Keep orders, subgroups and counts distinct.','以后每次计算，先问自己正在求子群的阶，还是正在求这种子群有几个。把这两件事情分开，许多错误就可以提前避免。')],
-'写出 |G|=72 时 p=2 与 p=3 对应的 pᵃ 和 m。','p=2：pᵃ=8，m=9；p=3：pᵃ=9，m=8。'),
-b('什么是西罗 p 子群','What is a Sylow p-subgroup?',[
-t('定义 2.6.1：p 群的阶是 pᵏ，k≥1','Definition 2.6.1: a p-group has order pᵏ, k≥1.','教材定义二点六点一规定，P 群的阶是 P 的正整数次幂。因此本课按教材约定不把单位群称为 P 群。一个子群本身是 P 群时，就叫 P 子群。'),
-f(String.raw`H\le G,\quad |H|=p^r,\quad 1\le r\le a`,'子群的阶写成板书中的素数幂。它的指数是小写字母 r，而群阶中对应的指数记作小写字母 a。拉格朗日定理说明，前者不会超过后者。'),
-t('定义 2.6.2：西罗 p 子群的阶达到 pᵃ','Definition 2.6.2: a Sylow p-subgroup has order pᵃ.','教材定义二点六点二要求，西罗 P 子群达到群阶中最大允许的 P 幂；等价地，更高一阶的 P 幂不能整除群阶。存在性还需要定理保证。'),
-f(String.raw`P\in\operatorname{Syl}_p(G)\iff P\le G,\ |P|=p^a`,'这个等价式就是今天采用的定义。判断一个具体子群是不是西罗子群，既要确认它确实是子群，也要核对它的阶。'),
-t('例：24 阶群的西罗 2 子群为 8 阶','For |G|=24, Sylow 2-subgroups have order 8.','二十四等于二的三次方乘以三，所以目标阶数是八。二阶或四阶子群虽然是二子群，却还不是西罗二子群。')],
-'判断：24 阶群中的四阶子群是 2 子群吗？是西罗 2 子群吗？','是 2 子群；不是西罗 2 子群，因为目标阶数是 8。'),
+b('西罗子群的集合与个数','The set and number of Sylow subgroups',[
+f(String.raw`|G|=p^a m,\qquad p\nmid m,\quad a\ge1`,'仍设 G 为有限群，P 为素数，并沿用群阶的分解。'),
+t('记 Sylₚ(G) 为全部西罗 p 子群组成的集合','Let Sylₚ(G) be the set of all Sylow p-subgroups.','西罗 P 子群已经定义。现在把 G 中所有这样的子群收集起来，记为 Syl P 的 G。'),
+f(String.raw`\operatorname{Syl}_p(G)=\{P\le G:|P|=p^a\}`,'这个集合的每个元素都是 G 的一个子群，并且阶恰好是 P 的 a 次方。'),
+f(String.raw`n_p=|\operatorname{Syl}_p(G)|`,'把这个集合的元素个数记为 n 下标 P。它数的是不同的西罗 P 子群。'),
+t('pᵃ 是每个子群的阶，nₚ 是子群的个数','pᵃ is each subgroup order; nₚ counts the subgroups.','子群的阶和子群的个数是两个不同的量。每个西罗 P 子群有 P 的 a 次方个元素，而这样的子群共有 n 下标 P 个。')],
+'写出 |G|=72 时 p=2 与 p=3 对应的 pᵃ 和 m。','p=2：pᵃ=8，m=9；p=3：pᵃ=9，m=8。','有了 P 子群和西罗 P 子群的定义，接下来引入集合与计数的记号。'),
+b('p 子群与西罗 p 子群','p-subgroups and Sylow p-subgroups',[
+f(String.raw`G\text{ finite},\quad p\text{ prime},\quad |G|=p^a m,\quad p\nmid m,\ a\ge1`,'设 G 为有限群，P 为整除群阶的素数。把群的阶写成 P 的 a 次方乘以艾姆，艾姆不被 P 整除，因此 a 是群阶中 P 的最高指数。'),
+t('定义 2.6.1：p 群的阶是 pᵏ，k≥1','Definition 2.6.1: a p-group has order pᵏ, k≥1.','教材定义二点六点一规定，P 群的阶是 P 的正整数次幂。G 的一个子群自身是 P 群时，就称为 P 子群；按教材约定，单位群不包括在这里。'),
+f(String.raw`H\le G,\quad |H|=p^r,\quad 1\le r\le a`,'这就是 G 的 P 子群的形式。由拉格朗日定理，子群的阶整除群阶，因此 r 不超过 a。'),
+t('定义 2.6.2：西罗 p 子群的阶达到 pᵃ','Definition 2.6.2: a Sylow p-subgroup has order pᵃ.','在这些 P 子群中，阶达到群阶中最大 P 幂的，称为西罗 P 子群。这是教材定义二点六点二。'),
+f(String.raw`P\le G,\qquad |P|=p^a`,'西罗 P 子群须同时满足这两个条件：它是 G 的子群，并且阶是 P 的 a 次方。定义说明什么样的子群合格，存在性随后由定理保证。')],
+'判断：24 阶群中的四阶子群是 2 子群吗？是西罗 2 子群吗？','是 2 子群；不是西罗 2 子群，因为目标阶数是 8。','先给出群阶的分解，再定义 P 子群和西罗 P 子群。'),
 b('存在性与包含性','Existence and containment',[
 t('定理 2.6.1：G 有每个 pᵏ 阶子群，1≤k≤a','Theorem 2.6.1: subgroups of order pᵏ for 1≤k≤a.','教材定理二点六点一说明，对于一到诶之间的每个正整数 k，群都有 P 的 k 次方阶的子群。今天把定理作为输入，重点练习正确使用结论。'),
 f(String.raw`\operatorname{Syl}_p(G)\ne\varnothing`,'取 k 等于群阶中 P 的最高指数，就得到教材推论一：西罗 P 子群存在。注意，拉格朗日定理本身不能反过来保证每个约数阶的子群都存在。'),
 t('定理 2.6.2：p 子群落在西罗子群的某个共轭中','Theorem 2.6.2: containment in a Sylow conjugate.','教材定理二点六点二说，任给 P 子群 H 和一个西罗 P 子群 P，总存在群元素，把 H 包含在 P 的相应共轭子群中。'),
-f(String.raw`H\le G,\ |H|=p^r,\ P\in\operatorname{Syl}_p(G)\Longrightarrow\exists g:\ H\le gPg^{-1}`,'请检查量词：先任意给定 H 和 P，再选择实现包含关系的群元素。这个元素可以依赖于前面给定的两个子群。'),
+f(String.raw`H\le G,\ |H|=p^r,\ P\in\operatorname{Syl}_p(G)\Longrightarrow\exists g:\ H\le gPg^{-1}`,'这里的量词顺序是：先任意给定 H 和 P，再选择实现包含关系的群元素。这个元素可以依赖于前面给定的两个子群。'),
 t('存在 ≠ 唯一；包含 ≠ 正规','Existence is neither uniqueness nor normality.','存在定理没有自动给出正规性。后面我们会专门证明，西罗子群的唯一性才是判断正规性的一把关键钥匙。')],
 '在 S₃ 中，一个由换位生成的二阶子群能否包含在不同的西罗 2 子群中？','不能；它自己已是西罗 2 子群，同阶包含只能相等。'),
 b('共轭性说的是什么','The content of conjugacy',[
@@ -124,7 +124,7 @@ b('20 阶群：能确定什么','Order 20: what is forced?',[
 f(String.raw`|G|=20=2^2\cdot5`,'二十阶群提供一个很清楚的唯一性例子。我们先处理素数五，再回头看素数二，比较哪一组条件更有力量。'),
 t('5 不整除 m=4','For p=5, the coprime factor is 4.','西罗五子群的阶是五，互素因子是四。这里所有允许的约数都不大于四，而模五余一的正数中最小的两个是一和六。'),
 f(String.raw`n_5\mid4,\quad n_5\equiv1\pmod5\Longrightarrow n_5=1`,'所以唯一可能值是一。由刚才证明的等价关系，得到一个正规的五阶子群，而且它作为素数阶群还是循环群。'),
-t('正规五阶子群不保证整个群交换','A normal subgroup does not force G abelian.','请注意最后一句的范围：循环的是这个五阶子群，不是整个二十阶群。要判断整个群是否交换，还要分析其它元素怎样与它相互作用。'),
+t('正规五阶子群不保证整个群交换','A normal subgroup does not force G abelian.','最后一句的范围是：循环的是这个五阶子群，不是整个二十阶群。要判断整个群是否交换，还要分析其它元素怎样与它相互作用。'),
 f(String.raw`n_2\mid5,\quad n_2\equiv1\pmod2\Longrightarrow n_2\in\{1,5\}`,'西罗二子群的个数仍有一和五两个候选。只找到一个正规西罗子群，一般不能直接套用两个正规子群的直积结论。')],
 '“20 阶群存在正规 5 阶子群，所以它必循环。”错误发生在哪一步？','将子群的循环性和正规性错误地推广成整个群循环。'),
 b('不能倒用拉格朗日定理','Do not reverse Lagrange',[
@@ -149,14 +149,14 @@ f(String.raw`p^a=p\Longrightarrow\#\{x:|x|=p\}=n_p(p-1)`,'这个公式在西罗�
 t('高阶 p 子群可能有非平凡交集','Larger p-subgroups may overlap nontrivially.','高阶 P 子群之间可能共享非单位元，而且子群里也未必所有非单位元都有相同阶。计数之前先检查这两个障碍。')],
 '为什么不能用 n₂(8−1) 计算 24 阶群中所有非单位的 2 幂阶元素？','不同八阶西罗子群可能重叠，且内部元素阶可能为 2、4 或 8。'),
 b('随堂练习：18 阶与 45 阶','Practice: orders 18 and 45',[
-t('先独立分解群阶，再选素数','Factor the order and choose a prime.','这一板请先自己做。目标不是猜测整个群的结构，而是从两条数值条件中找出一定存在的正规子群。'),
-f(String.raw`|G|=18=2\cdot3^2:\quad n_3\mid2,\ n_3\equiv1\pmod3`,'十八阶时，西罗三子群是九阶，不是三阶。它的个数整除二且模三余一，请把满足条件的数写出来。'),
+t('先独立分解群阶，再选素数','Factor the order and choose a prime.','这道练习的目标不是猜测整个群的结构，而是从两条数值条件中找出一定存在的正规子群。'),
+f(String.raw`|G|=18=2\cdot3^2:\quad n_3\mid2,\ n_3\equiv1\pmod3`,'十八阶时，西罗三子群是九阶，不是三阶。它的个数整除二且模三余一，这两个条件共同筛选子群的个数。'),
 t('唯一的九阶子群正规','The unique order-9 Sylow subgroup is normal.','二的约数是一和二，二不满足同余，因此个数只能是一。于是得到了正规的九阶子群；它的内部结构是下一层问题。'),
 f(String.raw`|G|=45=3^2\cdot5:\quad n_5\mid9,\ n_5\equiv1\pmod5`,'再看四十五阶。九的约数是一、三、九，其中只有一模五余一。因此西罗五子群同样唯一且正规。'),
 t('写清目标阶数，再写唯一与正规','State the subgroup order, uniqueness and normality.','最后把解答组织成完整句子。只写一个数字一，读者并不知道你在数哪一种子群，更看不出正规性的逻辑来源。')],
 '独立完成两题，并进一步求 45 阶群的 n₃。','18 阶：n₃=1；45 阶：n₅=1，n₃|5 且 n₃≡1 mod3，故 n₃=1。'),
 b('随堂练习：把错误补完整','Practice: repair a flawed argument',[
-t('错误推理：有正规子群，所以群交换','False: a normal subgroup forces commutativity.','请把这句话当成一道改错题。我们需要的不是只写一个反例名称，而是指出证明缺少了哪个步骤，并算出反例中的相关信息。'),
+t('错误推理：有正规子群，所以群交换','False: a normal subgroup forces commutativity.','这道改错题不只需要一个反例名称，还需要说明推理缺少哪个步骤，并算出反例中的相关信息。'),
 f(String.raw`S_3:\quad P=\langle(123)\rangle\trianglelefteq S_3`,'三次对称群的三阶子群唯一，因此正规。这个群里还有换位，而换位怎样共轭三循环，决定了它们是否交换。'),
 t('正规只保证共轭后仍留在子群内','Normality gives invariance, not pointwise fixing.','正规性允许共轭把子群中的一个非单位元换成另一个非单位元。要得到交换性，需要共轭逐点不动，这是更强的条件。'),
 f(String.raw`(12)(123)(12)^{-1}=(132)\ne(123)`,'直接算这条共轭公式，可以看到三循环被送到了它的逆元，而不是保持原样。因此三次对称群并不交换。'),
@@ -167,7 +167,7 @@ t('先提取最大 p 幂，再计算 nₚ','Extract the full p-part before count
 f(String.raw`|G|=p^a m\longrightarrow n_p\mid m,\quad n_p\equiv1\pmod p`,'接下来列互素因子的正约数，并筛选模 P 余一的值。两个条件必须同时成立，结果也可能不唯一。'),
 t('唯一 ⇒ 正规；多个候选 ⇒ 保留分支','Unique implies normal; otherwise retain branches.','候选只剩一时，说明西罗子群唯一，进而正规。候选不止一个时，要继续借助元素计数、具体例子或群作用。'),
 f(String.raw`n_p=[G:N_G(P)],\qquad P\trianglelefteq G\iff n_p=1`,'这两条公式把数值条件和群作用连接起来。正规化子是集合稳定子，唯一性与正规性之间还使用了西罗共轭定理。'),
-t('出口题：15 阶群的 n₃、n₅ 分别是多少？','Exit task: compute n₃ and n₅ for order 15.','请独立算出十五阶群的两个子群个数，并暂时只写到正规性。下一课时我们会补齐从这些信息到整个群结构的证明。')],
+t('出口题：15 阶群的 n₃、n₅ 分别是多少？','Exit task: compute n₃ and n₅ for order 15.','十五阶群的计算可以先做到两个西罗子群的唯一性与正规性。下一课时我们会补齐从这些信息到整个群结构的证明。')],
 '写下 15 阶群两个西罗子群的阶、个数与正规性，再整理本节笔记。','三阶与五阶西罗子群都唯一且正规；下一课时证明整个群循环。')
 ];
 
@@ -208,7 +208,7 @@ f(String.raw`T_{i,j}T_{k,\ell}=T_{i+2^j k,\,j+\ell}`,'右边仍属于同一个�
 t('二十一个互不相同的可逆变换组成群','These 21 distinct invertible maps form a group.','不同系数和平移项给出不同函数，所以群的阶确实是二十一。这样就完成了对象的构造，下一板再检查它不交换。')],
 '计算 T₂,₁T₃,₂ 与 T₃,₂T₂,₁，所有下标按模 7、模 3 约化。','前者 T₁,₀，后者 T₄,₀；顺序不同。'),
 b('21 阶反例：验证不交换','Verifying the order-21 example is nonabelian',[
-t('记 a 为加一，b 为乘二','Let a add 1 and b multiply by 2.','为了让计算更清楚，我们把加一记成大写字母 A，把乘二记成大写字母 B。乘二的逆变换是乘四，因为二乘四模七等于一。'),
+t('记 a 为加一，b 为乘二','Let a add 1 and b multiply by 2.','记 a 为加一的平移，b 为乘二的变换。乘二的逆变换是乘四，因为二乘四模七等于一。'),
 f(String.raw`a(x)=x+1,\quad b(x)=2x,\quad b^{-1}(x)=4x`,'现在从最右边开始，逐步把一个输入送过三个变换。置换和函数复合的顺序一定要先约定好，不能凭肉眼调换。'),
 t('先乘四，再加一，最后乘二','Multiply by 4, add 1, then multiply by 2.','输入先变成四倍，再加一，最后乘二，结果是八倍输入加二。模七化简后，就是原来的输入加二。'),
 f(String.raw`bab^{-1}(x)=2(4x+1)=x+2=a^2(x)`,'这条公式说，B 把 A 共轭成 A 的平方。A 的阶为七，所以 A 的平方和 A 不是同一个变换。'),
@@ -225,7 +225,7 @@ b('30 阶群：单独计数还不够','Order 30: individual constraints are insu
 f(String.raw`|G|=30=2\cdot3\cdot5`,'接下来学习把两组计数放在一起。我们的目标是证明三十阶群一定有非平凡的真正规子群，不是要把所有三十阶群完全分类。'),
 t('先列出两种奇素数对应的候选','List candidates for the two odd primes.','五对应的互素因子是六，三对应的互素因子是十。各自筛选以后，两边都还剩下两个可能值。'),
 f(String.raw`n_5\in\{1,6\},\qquad n_3\in\{1,10\}`,'一旦任何一个等于一，就已经有正规子群。所以真正需要排除的是，两边同时取那个较大的候选值。'),
-t('反设两者都不唯一','Assume neither subgroup is unique.','请注意这个反设的逻辑：我们不是断言两个数字本来就最大，而是假设两类西罗子群都不正规，再由唯一性等价得到非一。'),
+t('反设两者都不唯一','Assume neither subgroup is unique.','这个反设的逻辑是：我们不是断言两个数字本来就最大，而是假设两类西罗子群都不正规，再由唯一性等价得到非一。'),
 f(String.raw`n_5=6,\qquad n_3=10`,'接下来利用素数阶子群的非单位部分互不重合，看看这两个数字会要求群中至少有多少个元素。')],
 '若 n₅=1，为什么本题目标已经完成？写出子群非平凡且真包含的理由。','它为 5 阶正规子群，1<5<30。'),
 b('30 阶群：把不相交的元素数出来','Order 30: count disjoint elements',[
@@ -264,11 +264,11 @@ f(String.raw`p\nmid(q-1)\Longrightarrow n_p\ne q\Longrightarrow n_p=1`,'如果 P
 f(String.raw`p\nmid(q-1)\Longrightarrow G\cong C_{pq}`,'重复十五阶群的交换子与直积证明，就得到整个群循环。这是一个充分条件，不能不加讨论把它当成任意情形的分类定理。')],
 '用这个条件判断 35 阶群，再解释它为何不能直接处理 21 阶群。','5 不整除 7−1，故 35 阶群循环；3 整除 7−1，条件不满足，不能得出同一结论。'),
 b('练习：35 阶群的完整证明','Practice: prove the order-35 result',[
-f(String.raw`|G|=35=5\cdot7`,'这次请把方法完整迁移到新数字，而不是直接引用上一板的最终结论。先写出两个计数条件，再解释结构。'),
+f(String.raw`|G|=35=5\cdot7`,'三十五阶群的结论也需要由计数条件与同态得到，不能只引用上一板的结论。先写出两个计数条件，再解释结构。'),
 t('分别确定五阶与七阶子群的唯一性','Establish uniqueness for orders 5 and 7.','七阶子群的个数整除五，五阶子群的个数整除七。把一和另一个素数分别代入同余，就都只剩下一。'),
 f(String.raw`n_7=1,\qquad n_5=1`,'两个西罗子群都正规，而且交集平凡。用交换子落在交集中的理由，可以证明这两个子群逐元素交换。'),
 t('写出乘法同态并计算一个生成元的阶','Write the product map and find a generator.','随后写出从两个子群直积到原群的乘法映射，检查单射，再用群阶相同得到满射。两个生成元组成的有序对阶为三十五。'),
-f(String.raw`G\cong C_5\times C_7\cong C_{35}`,'请检查自己的证明是否还缺少同态性这一步。仅写两边有相同元素个数，并不能自动说明任意给出的集合映射就是群同构。')],
+f(String.raw`G\cong C_5\times C_7\cong C_{35}`,'这个证明还需要同态性这一步。仅写两边有相同元素个数，并不能自动说明任意给出的集合映射就是群同构。')],
 '独立写出不超过十行的完整证明，标明“同态、单射、满射、循环”的依据。','使用两个正规子群交换、交平凡、阶数相同、互素生成元对阶数为 35。'),
 b('练习：42 阶群能推出多少','Practice: what follows for order 42?',[
 f(String.raw`|G|=42=2\cdot3\cdot7`,'这道题训练克制地使用结论。四十二阶群里，大素数七很容易给出正规子群，但其余个数仍有多种可能。'),
@@ -278,7 +278,7 @@ t('不同素数阶元素计数通常只给出部分元素','Prime-order counts m
 f(String.raw`G=C_{42}\Longrightarrow n_2=n_3=n_7=1`,'四十二阶循环群就是直接的检验。它的每个素数阶子群唯一，但还有其它复合阶元素，所以低阶元素计数远不等于全部群阶。')],
 '指出“将各 nₚ 取最大，元素总数恰好为 42，所以必须都取最大”的错误。','部分元素数的上界恰为群阶，不能推出实际达到上界；复合阶元素尚未计入。'),
 b('课堂自测：辨别结论强弱','Self-check: distinguish strengths of conclusions',[
-t('第一题：唯一的西罗子群一定正规','Question 1: uniqueness implies normality.','请判断这句话并给出一句理由。任意共轭仍是同阶的西罗子群，而唯一性使它只能回到原来的子群。'),
+t('第一题：唯一的西罗子群一定正规','Question 1: uniqueness implies normality.','这条结论的理由是：任意共轭仍是同阶的西罗子群，而唯一性使它只能回到原来的子群。'),
 f(String.raw`P\in\operatorname{Syl}_p(G),\ n_p=1\Longrightarrow P\trianglelefteq G`,'这个判断正确，但不要省掉西罗这个对象条件。如果唯一指的是别的某类子群，需要重新检查共轭是否仍属于那一类。'),
 t('第二题：有正规西罗子群就一定循环？','Question 2: does one normal Sylow force cyclicity?', '第二句话不正确。三次对称群和我们构造的二十一阶群都有正规西罗子群，却不是交换群，更不可能循环。'),
 f(String.raw`S_3:\quad n_3=1,\quad S_3\not\cong C_6`,'一个反例要同时满足题目前提并违背结论。这里三阶西罗子群唯一满足前提，而两个不交换的置换否定循环性。'),
@@ -295,11 +295,13 @@ b('课后任务与最后核对','Homework and final checks',[
 t('基础：18、20、45 阶群的正规子群','Basics: normal subgroups for orders 18,20,45.','课后先重做三道基础题，分别说明你找到的子群阶数、个数和正规性。每道题都把两条计数条件完整写出来。'),
 f(String.raw`18:\ n_3=1;\qquad20:\ n_5=1;\qquad45:\ n_3=n_5=1`,'这几个答案可用于核对方向，但不能替代推理。四十五阶题目还可以继续结合九阶群的性质研究结构，那属于进一步练习。'),
 t('进阶：完整写出 15 阶与 30 阶的证明','Intermediate: full proofs for orders 15 and 30.','两道进阶题各自检查一种能力：十五阶要求把同构链补齐，三十阶要求说明计数集合为何不相交，并准确写出或的结论。'),
-t('挑战：解释 21 阶反例与 12 阶作用','Challenge: explain the order-21 example and order-12 action.','挑战题请从定义验证仿射变换组成群，再复述十二阶群作用的核如何受到单性限制。这里练的是把熟悉工具串成推理。'),
+t('挑战：解释 21 阶反例与 12 阶作用','Challenge: explain the order-21 example and order-12 action.','仿射变换的封闭性与逆元需要验证；十二阶群的作用同态中，单性限制了核。'),
 f(String.raw`\text{order}\;\ne\;\text{count},\qquad\text{normal}\;\ne\;\text{abelian}`,'最后再核对两组最容易混淆的概念：子群的阶不等于子群个数，正规也不等于交换。如果这两点始终清楚，今天的主要方法就有了可靠起点。')],
 '整理一页“定理条件—可用结论—反例提醒”，并完成未做完的自测题。','保留完整假设；每条结构结论注明定理来源；用 S₃、A₄、21 阶仿射群检验过强断言。')
 ];
 export const sylowPlan={id:'algebra-sylow',course:'代数学 I',section:'2.6',lesson:10,date:'2026-10-26',duration:5700,periods:[{id:1,start:0,end:2700},{id:'break',start:2700,end:3000},{id:2,start:3000,end:5700}],style:'teaching',voiceReference:'ye-original',theorems:'存在性、包含性、共轭性和计数结论作为课程输入；证明正规性推论及所列应用。',sources:[{label:'GitHub 代数学 I · 2026 秋 · 第10次课 §2.6',url:'https://birationalclass.github.io/shengmeng/courses/abstract-algebra/2026-fall/?view=lesson&section=2.6'},{label:'独立核对：Keith Conrad, Consequences of the Sylow Theorems',url:'https://kconrad.math.uconn.edu/blurbs/grouptheory/sylowapp.pdf'}]};
 
 applyClassroomRules([...firstLesson,...secondLesson]);
+// Preserve stable original IDs, source references and clip identities while teaching definitions first.
+[firstLesson[0],firstLesson[1]]=[firstLesson[1],firstLesson[0]];
 insertTextbookProblems(firstLesson,secondLesson);
