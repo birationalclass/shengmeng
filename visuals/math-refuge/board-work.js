@@ -6,7 +6,7 @@ export function writingSchedule(board,writing){
  let cursor=board.writeStart;const entries=[];
  const cues=board.lineCues?.length?board.lineCues:[{row:null,writeStart:board.writeStart}];
  for(const cue of cues){const segments=cue.row===null?writing.segments:writing.segments.filter(s=>s.mainLine===cue.row);if(!segments.length)throw Error('Narration row has no visible ink: '+cue.row);
-  const from=segments[0].start,to=segments.at(-1).end,start=Math.max(cursor,cue.writeStart),end=start+(to-from)/writing.unitsPerSecond;
+  const from=segments[0].start,to=segments.at(-1).end,start=cursor,end=start+(to-from)/writing.unitsPerSecond;
   entries.push({row:cue.row,start,end,from,to});cursor=end;
  }
  const value={entries,end:cursor,total:writing.total};schedules.set(writing,{board,value});return value;

@@ -9,7 +9,7 @@ export function chalkCopy(page,language='zh',{board=false}={}){
 }
 export function chalkPageText(page,language='zh'){
  const copy=chalkCopy(page,language,{board:true}),pick=value=>Array.isArray(value)?value[language==='en'?1:0]:value;
- return [copy.source,copy.title,copy.author,copy.text,pick(page.topic),pick(page.subtitle),...(page.boardLines||[]).map(l=>l.tex||(language==='en'?l.enText:l.text)),...(page.flowLabels||[]).map(l=>language==='en'?l.enText:l.text),JSON.stringify(page.annotation||{}),JSON.stringify(page.diagram||{})].filter(Boolean).join('\n');
+ return [copy.source,copy.title,copy.author,page.presenter,page.assistant,page.assistantEn,copy.text,pick(page.topic),pick(page.subtitle),...(page.boardLines||[]).map(l=>l.tex||(language==='en'?l.enText:l.text)),...(page.flowLabels||[]).map(l=>language==='en'?l.enText:l.text),JSON.stringify(page.annotation||{}),JSON.stringify(page.diagram||{})].filter(Boolean).join('\n');
 }
 
 export function wrapChalkText(ctx,text,width){
@@ -44,6 +44,7 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
   if(page.kind==='closing'){let size=124;while(measure(copy.title,size)>1368&&size>24)size--;textRow(copy.title,(1536-measure(copy.title,size))/2,360,size,'#e4cf9c');return rows;}
   if(page.kind==='cover'){
     const center=(text,y,size,color='#eee9d5')=>{while(measure(text,size)>1368&&size>24)size--;textRow(text,(1536-measure(text,size))/2,y,size,color);};
+    if(page.coverType==='section'){center(copy.title,190,106,'#e4cf9c');center(language==='en'?page.presenterEn:page.presenter,320,48);center(language==='en'?page.assistantEn:page.assistant,405,48);center(copy.text,535,38,'#e4cf9c');return rows;}
     let titleSize=106;while(measure(copy.title,titleSize)>1368&&titleSize>64)titleSize--;
     let lines=wrapChalkText({measureText:t=>({width:measure(t,titleSize)})},copy.title,1368);
     if(options.authored){

@@ -9,6 +9,11 @@ test('natural handwriting continues through short cue boundaries without a pause
  for(let t=.1;t<10;t+=.1){const frame=narrationFrame(manifest,t,plan);assert(frame.progress>=previous);assert(frame.progress-previous<.011);assert.equal(frame.phase,'write');assert(frame.writing);assert.equal(narrationWork(manifest,t,t-.1,plan,null,new Set()),null);previous=frame.progress;}
  assert.equal(narrationFrame(manifest,11,plan).progress,1);
 });
+test('a distant next speech cue cannot interrupt the pen between rows',()=>{
+ const remote={...board,lineCues:[board.lineCues[0],{row:1,writeStart:100,writeEnd:105}]};
+ const schedule=writingSchedule(remote,plan);assert.equal(schedule.entries[1].start,schedule.entries[0].end);
+ assert.equal(scheduledWriting(schedule,7).writing,true);assert.equal(scheduledWriting(schedule,11).progress,1);
+});
 test('only a whole-board overrun holds once, retaining the exact unfinished ink',()=>{
  const b={...board,end:6},m={duration:10,boards:[b]};assert.equal(narrationWork(m,2.01,1.99,plan,null,new Set()),null);
  const work=narrationWork(m,5.76,5.74,plan,null,new Set());assert(work);assert.equal(work.at,5.75);assert.equal(boardWorkFrame(work).progress,scheduledWriting(writingSchedule(b,plan),5.75).progress);

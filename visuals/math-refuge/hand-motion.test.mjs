@@ -15,7 +15,7 @@ test('small English letter strokes share a readable character budget at every fo
 });
 test('short narration windows borrow explanation time without a row pause or an instant reveal',()=>{
  const p=writingPlan([stroke([[0,0],[10,0]],{letterSeconds:2})]),m={duration:20,boards:[{page:0,start:0,eraseStart:0,writeStart:0,writeEnd:10,end:20,lineCues:[{row:0,writeStart:2,writeEnd:2.5}]}]};
- assert(rowNarrationProgress(m.boards[0].lineCues,2.25,p)<.2);assert.equal(narrationWork(m,2.51,2.49,p,null,new Set()),null);const f=narrationFrame(m,2.51,p);assert(f.progress<.3);assert(f.writing);assert.equal(narrationFrame(m,5,p).progress,1);
+ assert.equal(narrationWork(m,2.51,2.49,p,null,new Set()),null);const f=narrationFrame(m,.25,p);assert(f.progress>0&&f.progress<.3);assert(f.writing);assert.equal(narrationFrame(m,2.51,p).progress,1);assert.equal(narrationFrame(m,5,p).progress,1);
 });
 
 test('a compressed narrated erase uses its measured sweep speed, retains the old board and completes before new ink',()=>{

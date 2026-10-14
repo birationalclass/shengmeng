@@ -815,7 +815,7 @@ function populateReport(){
   $('reportVersionLink').hidden=lecture.report.id!=='ye2';
   $('reportSettings').hidden=lecture.report.kind==='classroom';
   let skipThird=$('classroomSkipThird');if(!skipThird){skipThird=document.createElement('button');skipThird.id='classroomSkipThird';skipThird.type='button';skipThird.textContent='略过第三定理证明';skipThird.onclick=async()=>{await lecture.skipOptionalProof();updateLectureUI();};$('reportSettings').before(skipThird);}skipThird.hidden=lecture.report.id!=='sylow-theorems';
-  let coursePace=$('classroomPaceInfo');if(!coursePace){coursePace=document.createElement('p');coursePace.id='classroomPaceInfo';coursePace.className='lecture-note';$('reportSettings').before(coursePace);}coursePace.hidden=lecture.report.kind!=='classroom';coursePace.textContent='课堂授课 · 1× 时为 45 分钟 + 5 分钟课间 + 45 分钟。练习与课间可暂停或提前继续。';
+  let coursePace=$('classroomPaceInfo');if(!coursePace){coursePace=document.createElement('p');coursePace.id='classroomPaceInfo';coursePace.className='lecture-note';$('reportSettings').before(coursePace);}coursePace.hidden=lecture.report.kind!=='classroom';coursePace.textContent='按小节授课 · 练习与休息可暂停或提前继续。';
   $('lectureHeading').textContent=(lecture.report.label||lecture.report.speaker)+' · '+lecture.report.topic;
   for(const id of ['lectureSource','readerSource']){$(id).href=lecture.report.url;$(id).textContent=lecture.report.sourceLabel+' ↗';}
   $('world').dataset.report=lecture.report.id;controlLabel($('reportButton'),lecture.navigation?.sections?'选择本次小节':'课堂与报告');
@@ -907,6 +907,9 @@ function installPhysicalControls(){
     else if(action==='language')switchChalkLanguage();
     else if(action.startsWith('program:')){lecture.screenAction(action);updateLectureUI();}
     else if(action==='course:catalog')void openProgramLibrary('classroom');
+    else if(action.startsWith('course:navigate:')||action==='course:back'||action.startsWith('course:page:')){lecture.screenAction(action);updateLectureUI();}
+    else if(action.startsWith('course:section:'))void selectClassroom(1,{id:action.slice(15)});
+    else if(action.startsWith('course:external:'))window.open('https://birationalclass.github.io/shengmeng/courses/abstract-algebra/2026-fall/?view=lesson&section='+action.slice(16),'_blank','noopener');
     else if(action==='course:manuscript')window.open(lecture.report.kind==='classroom'?lecture.report.url:'./sylow-classroom.html','_blank','noopener');
     else if(action.startsWith('course:period:'))void selectClassroom(Number(action.split(':')[2]));
     else if(action.startsWith('report:'))switchReport(action.slice(7),{autoplay:true});
@@ -975,7 +978,7 @@ $('lectureShade').addEventListener('click',()=>{
   $('lectureShade').setAttribute('aria-pressed',String(teachingShade));controlLabel($('lectureShade'),teachingShade?'收起遮光帘':'放下海景遮光帘');renderer.shadowMap.needsUpdate=true;
 });
 $('lecturePlay').addEventListener('click',()=>{if(!lecture)return;lecture.playing=!lecture.playing;if(reduced.matches)lecture.staticPage();});
-for(const [id,delta] of [['lecturePrevious',-1],['lectureNext',1]])$(id).addEventListener('click',()=>{if(!lecture)return;seekLecture(lecture.clock.page+delta);});
+for(const [id,delta] of [['lecturePrevious',-1],['lectureNext',1]])$(id).addEventListener('click',()=>{if(!lecture)return;if(!lecture.stepExercise(delta))seekLecture(lecture.clock.page+delta);});
 $('lectureRewrite').addEventListener('click',()=>{if(!lecture)return;lecture.rewrite();if(reduced.matches)lecture.staticPage();else lecture.playing=true;});
 $('lecturePage').addEventListener('change',event=>{if(!lecture)return;seekLecture(Number(event.target.value));});
 for(let pair=0;pair<3;pair++){
