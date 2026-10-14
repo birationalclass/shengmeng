@@ -47,6 +47,18 @@ test('missing board assets suspend the speech clock and resume only after readin
  assert(h.audios[0].paused);assert.equal(h.voice.state.phase,'preparing');assert.equal(h.voice.state.time,3);
  ready();await waiting;assert.equal(h.voice.state.phase,'playing');assert.equal(h.audios[0].currentTime,3);h.voice.dispose();
 });
+
+test('physical board work blocks audio, respects manual pause/resume, then continues at the same cue',async()=>{
+ const h=harness();await h.voice.select(report);await h.voice.toggle();h.audios[0].currentTime=3;let done;
+ const work=h.voice.holdForBoard(new Promise(r=>done=r),2.5);assert(h.voice.boardHeld);assert.equal(h.voice.state.time,2.5);assert(h.audios[0].paused);
+ h.voice.pause();await h.voice.toggle();assert.equal(h.voice.state.phase,'preparing');assert(h.audios[0].paused,'resume cannot skip unfinished handwriting');
+ done();await work;assert.equal(h.voice.state.phase,'playing');assert.equal(h.audios[0].currentTime,2.5);assert(!h.voice.boardHeld);h.voice.dispose();
+});
+
+test('seek, report replacement and a manual pause prevent stale board work from restarting audio',async()=>{
+ for(const action of ['seek','report','pause']){const h=harness();await h.voice.select(report);await h.voice.toggle();let done;const work=h.voice.holdForBoard(new Promise(r=>done=r),2);
+  if(action==='seek')await h.voice.seek(4);else if(action==='report')await h.voice.select({id:'hu'});else h.voice.pause();done();await work;assert.notEqual(h.voice.state.phase,'playing');assert(h.audios[0].paused);h.voice.dispose();}
+});
 test('pausing while a board loads prevents both automatic resume and a stale load error',async()=>{
  for(const fails of [false,true]){
   const h=harness();await h.voice.select(report);await h.voice.toggle();let resolve,reject;
@@ -139,3 +151,13 @@ test('moving to the next blackboard releases the previous audio and keeps only c
 test('playback rate preserves pitch, actual clock and selection/seek/next-board speed',async()=>{const h=harness();h.voice.setRate(.85);await h.voice.select(report);assert.equal(h.audios[0].playbackRate,.85);assert.equal(h.audios[0].preservesPitch,true);h.audios[0].currentTime=2;h.voice.update();assert.equal(h.voice.state.time,2);h.voice.setRate(1.15);assert.equal(h.audios[0].playbackRate,1.15);await h.voice.seek(12);assert.equal(h.audios.at(-1).playbackRate,1.15);await h.voice.select(report);await h.voice.toggle();h.audios.at(-1).dispatchEvent(new Event('ended'));await tick();assert.equal(h.audios.at(-1).playbackRate,1.15);assert.equal(h.voice.setRate(100),1.3);assert.equal(h.voice.setRate(NaN),1);h.voice.dispose();});
 
 test('blur cancels temporary auto-resume and requires an explicit play action',async()=>{const h=harness(),doc=new EventTarget(),win=new EventTarget();doc.hidden=false;const unbind=bindVoiceFocusPause(h.voice,{documentTarget:doc,windowTarget:win});await h.voice.select(report);await h.voice.toggle();h.audios[0].currentTime=4.25;await h.voice.setContextActive(false);assert.equal(h.voice.state.phase,'away');win.dispatchEvent(new Event('blur'));assert.equal(h.voice.state.phase,'paused');await h.voice.setContextActive(true);win.dispatchEvent(new Event('focus'));assert(h.audios[0].paused);assert.equal(h.voice.state.time,4.25);await h.voice.toggle();assert(!h.audios[0].paused);unbind();h.voice.dispose();});
+
+test('board holds retain shared-file mediaStart and advance once at a chapter boundary',async()=>{
+ const m={duration:20,chapters:[{src:'shared.mp3',start:0,duration:10,mediaStart:0,bytes:4},{src:'shared.mp3',start:10,duration:10,mediaStart:25,bytes:4}],boards:manifest.boards};
+ const h=harness({fetcher:async src=>src.endsWith('.json')?Response.json(m):new Response(new Uint8Array([1,2,3,4]))});
+ await h.voice.select(report);await h.voice.seek(12);await h.voice.toggle();let done;let work=h.voice.holdForBoard(new Promise(r=>done=r),12.5);
+ assert.equal(h.audios.at(-1).currentTime,27.5);done();await work;assert.equal(h.voice.state.time,12.5);assert.equal(h.voice.state.phase,'playing');
+ h.audios.at(-1).currentTime=35;work=h.voice.holdForBoard(Promise.resolve(),20);await work;assert.equal(h.voice.state.phase,'ended');assert.equal(h.voice.state.time,20);h.voice.dispose();
+ const next=harness({fetcher:async src=>src.endsWith('.json')?Response.json(m):new Response(new Uint8Array([1,2,3,4]))});
+ await next.voice.select(report);await next.voice.toggle();next.audios[0].currentTime=10;await next.voice.holdForBoard(Promise.resolve(),10);assert.equal(next.voice.state.chapter,1);assert.equal(next.audios.at(-1).currentTime,25);assert.equal(next.voice.state.phase,'playing');next.voice.dispose();
+});

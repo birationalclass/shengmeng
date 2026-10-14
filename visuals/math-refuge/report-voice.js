@@ -1,12 +1,12 @@
 // On-demand narration: no network or audio allocation until a report is selected.
 export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),onChange=()=>{},baseURL=new URL('.',import.meta.url).href,now=()=>performance.now()/1000}={}){
- let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,contextActive=true,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0,playbackRate=1;
+ let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,contextActive=true,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0,playbackRate=1,boardHold=null;
  let activity=null,segmentEnding=false,navigationIntent=false;
  const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',started:false,chapter:0,temporaryPause:false,rate:1,activity:null};
  const emit=()=>onChange({...state});
  const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index];state.time=Math.min(state.duration,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=manifest.chapters[index].start+activity.at;state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}return state.time;};
  function pause(){sync();if(activity)activity.running=false;desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio?.pause();if(['playing','buffering','preparing','away'].includes(state.phase)){state.phase='paused';emit();}}
- function release(){pause();audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();}
+ function release(){pause();boardHold=null;audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();}
  async function bytes(src,mine,show,sizeHint=0){
   const controller=new AbortController();controllers.add(controller);
   try{
@@ -40,12 +40,13 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   target.addEventListener('waiting',()=>{if(valid()&&desired){state.phase='buffering';emit();}});
   target.addEventListener('playing',()=>{if(valid()&&desired){state.phase='playing';emit();}});
   target.addEventListener('error',()=>{if(valid()){desired=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();}});
-  target.addEventListener('ended',()=>{if(!valid()||segmentEnding)return;segmentEnding=true;state.time=manifest.chapters[i].start+manifest.chapters[i].duration;if(i+1<manifest.chapters.length){void advance(i+1);}else{desired=false;state.phase='ended';state.time=state.duration;emit();}});
+  target.addEventListener('ended',()=>{if(!valid()||segmentEnding||boardHold)return;segmentEnding=true;state.time=manifest.chapters[i].start+manifest.chapters[i].duration;if(i+1<manifest.chapters.length){void advance(i+1);}else{desired=false;state.phase='ended';state.time=state.duration;emit();}});
   state.progress=1;state.temporaryPause=desired&&!contextActive;state.phase=state.temporaryPause?'away':state.started?'paused':'ready';state.error='';emit();return true;
  }
  async function play(){
   if(!audio&&!activity)return false;const mine=epoch,token=++playToken,target=audio;desired=true;
   if(!contextActive){state.temporaryPause=true;state.phase='away';emit();return false;}state.temporaryPause=false;state.started=true;
+  if(boardHold){state.phase='preparing';emit();return false;}
   if(activity){activity.stamp=now();activity.running=true;state.phase='playing';state.error='';sync();emit();return true;}
   try{await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){if(audio!==target||!desired||!contextActive)target.pause();return false;}state.phase='playing';state.error='';emit();return true;}
   catch{if(mine!==epoch||token!==playToken)return false;desired=false;state.phase='paused';state.error='点击黑板播放语音';emit();return false;}
@@ -65,7 +66,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   }catch(error){if(mine!==epoch||error.name==='AbortError')return false;desired=false;state.temporaryPause=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();return false;}
  }
  async function seek(time,{preservePlayback=false,ready=null}={}){
-  if(!manifest)return false;const resume=preservePlayback&&(desired||navigationIntent);pause();navigationIntent=resume;const mine=epoch,intent=playToken,target=Math.max(0,Math.min(manifest.duration,Number(time)||0));state.started=true;
+  if(!manifest)return false;const resume=preservePlayback&&(desired||navigationIntent);pause();boardHold=null;navigationIntent=resume;const mine=epoch,intent=playToken,target=Math.max(0,Math.min(manifest.duration,Number(time)||0));state.started=true;
   const i=Math.max(0,manifest.chapters.findLastIndex(c=>c.start<=target)),at=Math.min(manifest.chapters[i].duration-.025,target-manifest.chapters[i].start);
   try{let attached=true;if(activity&&i===index){activity.at=Math.max(0,at);activity.stamp=now();state.time=target;state.phase='paused';sync();emit();}else if(audio&&i===index){audio.currentTime=(manifest.chapters[i].mediaStart||0)+Math.max(0,at);state.time=target;state.phase='paused';emit();}else attached=await attach(i,Math.max(0,at));await ready;if(mine===epoch&&intent===playToken){navigationIntent=false;if(attached&&resume)await play();}return attached;}
   catch{if(mine===epoch&&intent===playToken){navigationIntent=false;state.phase='error';state.error='语音定位失败 · 点击重试';emit();}return false;}
@@ -84,6 +85,16 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   return false;
  }
  return{state,select,toggle,pause,seek,setContextActive,
+  get boardHeld(){return Boolean(boardHold);},
+  async holdForBoard(job,at){
+   if(boardHold||!desired||!audio||!manifest)return false;
+   const mine=epoch,hold={};boardHold=hold;playToken++;sync();audio.pause();
+   const start=manifest.chapters[index].start;
+   if(Number.isFinite(at)&&at>=start&&at-start<manifest.chapters[index].duration){audio.currentTime=(manifest.chapters[index].mediaStart||0)+at-start;state.time=at;}
+   state.phase='preparing';state.temporaryPause=false;emit();
+   try{await job;}finally{if(boardHold===hold){boardHold=null;if(mine===epoch&&desired&&contextActive){const c=manifest.chapters[index];if(audio.currentTime-(c.mediaStart||0)>=c.duration-.015){if(index+1<manifest.chapters.length)await advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}else await play();}}}
+   return true;
+  },
   async skipActivity(){if(!activity||!manifest)return false;if(index+1<manifest.chapters.length){await advance(index+1);return true;}pause();state.phase='ended';state.time=state.duration;emit();return true;},
   setRate(value){sync();const n=Number(value);playbackRate=Number.isFinite(n)?Math.max(.75,Math.min(1.3,n)):1;state.rate=playbackRate;if(audio){audio.preservesPitch=true;audio.playbackRate=playbackRate;}emit();return playbackRate;},
   async suspendUntil(job){
@@ -92,13 +103,13 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
    try{await job;if(mine===epoch&&token===playToken&&desired)await play();}
    catch{if(mine===epoch&&token===playToken&&desired){pause();state.phase='error';state.error='板书尚未就绪 · 点击重试';emit();}}
   },get manifest(){return manifest;},
-  update(){sync();if(audio&&desired&&!segmentEnding&&manifest.chapters[index].mediaStart!==undefined&&audio.currentTime-(manifest.chapters[index].mediaStart||0)>=manifest.chapters[index].duration-.015){segmentEnding=true;audio.pause();if(index+1<manifest.chapters.length)void advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}if(activity&&activity.running&&!activity.advancing&&activity.at>=activity.duration){activity.advancing=true;activity.running=false;if(index+1<manifest.chapters.length)void advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}if(manifest&&desired&&contextActive&&(audio||activity)&&index+1<manifest.chapters.length){const c=manifest.chapters[index],remaining=activity?activity.duration-activity.at:c.duration-(audio.currentTime-(c.mediaStart||0));if(remaining<20*playbackRate)void load(index+1,false).catch(()=>{});}return state;},
+  update(){sync();if(audio&&desired&&!boardHold&&!segmentEnding&&manifest.chapters[index].mediaStart!==undefined&&audio.currentTime-(manifest.chapters[index].mediaStart||0)>=manifest.chapters[index].duration-.015){segmentEnding=true;audio.pause();if(index+1<manifest.chapters.length)void advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}if(activity&&activity.running&&!activity.advancing&&activity.at>=activity.duration){activity.advancing=true;activity.running=false;if(index+1<manifest.chapters.length)void advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}if(manifest&&desired&&contextActive&&(audio||activity)&&index+1<manifest.chapters.length){const c=manifest.chapters[index],remaining=activity?activity.duration-activity.at:c.duration-(audio.currentTime-(c.mediaStart||0));if(remaining<20*playbackRate)void load(index+1,false).catch(()=>{});}return state;},
   dispose(){++epoch;release();manifest=null;state.phase='idle';emit();}};
 }
 // Use the same measured stroke costs as chalkPosition and inkReveal, so a
 // long formula is never treated as one equal-sized slice of a whole board.
 const lineCostBounds=new WeakMap();
-function cueWriteDuration(cue,plan,bounds){const available=cue.writeEnd-cue.writeStart;return plan?.chineseStrokeTiming&&bounds?Math.min(available,(bounds.end-bounds.start)/plan.unitsPerSecond):available;}
+function cueWriteDuration(cue,plan,bounds){const available=cue.writeEnd-cue.writeStart;return (plan?.physicalTiming||plan?.chineseStrokeTiming)&&bounds?(bounds.end-bounds.start)/plan.unitsPerSecond:available;}
 export function rowNarrationProgress(cues,time,plan){
  if(!cues?.length||!plan?.total)return null;
  let bounds=lineCostBounds.get(plan);if(!bounds){bounds=new Map();
@@ -113,7 +124,7 @@ export function rowNarrationProgress(cues,time,plan){
  }
  return 1;
 }
-export function narrationFrame(manifest,time,writingPlan){
+export function narrationFrame(manifest,time,writingPlan,erasePlan){
  if(!manifest?.boards?.length)return null;
  const t=Math.max(0,Math.min(manifest.duration,time)),events=manifest.boards;
  const i=Math.max(0,events.findLastIndex(b=>b.start<=t)),b=events[i];
@@ -122,10 +133,10 @@ export function narrationFrame(manifest,time,writingPlan){
  else if(t<b.writeStart){phase='erase';start=b.eraseStart+1.8;end=b.writeStart;}
  else if(t<b.writeEnd){phase='write';start=b.writeStart;end=b.writeEnd;}
  const linear=Math.max(0,Math.min(1,(t-start)/Math.max(.001,end-start)));
- const natural=writingPlan?.chineseStrokeTiming?Math.min(end-start,writingPlan.total/writingPlan.unitsPerSecond):end-start;
+ const natural=(writingPlan?.physicalTiming||writingPlan?.chineseStrokeTiming)?writingPlan.total/writingPlan.unitsPerSecond:end-start;
  const progress=phase==='write'?(rowNarrationProgress(b.lineCues,t,writingPlan)??Math.max(0,Math.min(1,(t-start)/Math.max(.001,natural)))):linear;
  const writing=phase==='write'&&(!b.lineCues?.length?t<start+natural:b.lineCues.some(c=>t>=c.writeStart&&t<c.writeStart+cueWriteDuration(c,writingPlan,lineCostBounds.get(writingPlan)?.get(c.row))));
- return{page:b.page,phase,progress,writing,ended:t>=manifest.duration,duration:Math.max(.001,end-start)};
+ return{page:b.page,phase,progress:phase==='erase'&&erasePlan?Math.max(0,Math.min(1,(t-start)/erasePlan.duration)):progress,writing,ended:t>=manifest.duration,duration:Math.max(.001,end-start)};
 }
 export function syncNarrationClock(clock,frame,slotFor){
  clock.page=frame.page;clock.active=slotFor(frame.page);clock.phase=frame.phase;clock.ended=frame.ended;
