@@ -1,7 +1,7 @@
 import {OpeningPerformance} from './opening-performance.js';
 import {ResourceScheduler} from './resource-scheduler.js?v=demand-1';
 import {loadingContent,connectLoadingScheduler} from './runtime-loading.js?v=demand-1';
-import {waitForEntered,loadMathRuntime,loadBoardFonts} from './staged-startup.js?v=stages-1';
+import {createOpeningPreparation,loadMathRuntime,loadBoardFonts} from './staged-startup.js?v=stages-1';
 import {preparePanelShell,bindPanelDismissals} from './panel-shell.js?v=smart-voice-9';
 import {capturePhoto,downloadPhoto} from './photo.js?v=photo-151';
 import {regionAnchor,distanceLabel} from './region-distance.js';
@@ -118,7 +118,7 @@ const openingButton=document.createElement('button');openingButton.id='replayOpe
 const backgroundMusic=createBackgroundMusic({audio:$('backgroundMusic'),button:$('musicButton'),volume:$('musicVolume'),readout:$('musicVolumeValue')});
 const screenWebview=createScreenWebview(THREE);
 let entered=false,openingPreparing=false,openingPrepared=false;
-const resources=new ResourceScheduler({policy:()=>({entered,opening:openingPreparing||Boolean(blend?.openingArrival||blend?.settling)||openingCameraLock.locked(performance.now()),moving:Boolean(blend||touring||keys.size||motionVelocity.length()>.2),foreground:!document.hidden&&renderActivity.foreground,targetFPS:Math.min(60,Number($('targetFPS').value)||60)})});
+const resources=new ResourceScheduler({policy:()=>({opening:openingPreparing||Boolean(blend?.openingArrival||blend?.settling)||openingCameraLock.locked(performance.now()),moving:Boolean(blend||touring||keys.size||motionVelocity.length()>.2),foreground:!document.hidden,targetFPS:Math.min(60,Number($('targetFPS').value)||60)})});
 connectLoadingScheduler(resources);
 setDeferredExecutor(async item=>{
  const required=item.phase==='entry'||item.phase==='hall';
@@ -149,8 +149,7 @@ async function replayOpening(preserveInitialView=false){
   screenWebview.close();if(activeRoom!==0)activateRoom(0,false);
   openingPreparing=true;
   try{
-    await prepareMainRoom();
-    await prepareOpeningGPU();
+    await prepareOpeningResources();
     motionVelocity.set(0,0,0);motionAcceleration.set(0,0,0);motionSample=false;
     controls.enableDamping=false;controls.update();
     if(!preserveInitialView){camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=openingFrameFov(camera.aspect);camera.updateProjectionMatrix();}
@@ -267,7 +266,7 @@ function beginTransition(){
 function selectShot(index,reportView=false,openingArrival=false){
   if(cameraLocked()&&!openingArrival)return;
   if(pendingRoom!==-1){++roomActivation;pendingRoom=-1;delete $('world').dataset.pendingRoom;}
-  if(entered&&!openingArrival)requestShotInterior(SHOTS[index]);
+  if(!openingArrival)requestShotInterior(SHOTS[index]);
   if(sunriseIntro.waiting&&!openingArrival){sunriseIntro.cancel();sceneTime.setRate(1);sceneTime.sync();$('timeRate').value='1';}
   speakerView=false;
   choosingReport=reportView;opening=null;shot=index;time=SHOTS[index].walk||SHOTS[index].hallOrbit?0:.85;boardFollow.reset();touring=false;
@@ -370,7 +369,7 @@ function updateRenderBudget(stamp){
   const protectReading=$('boardClarity').value==='crisp';
   const pixelRatio=readingPixelRatio(profile.pixelRatio,{enabled:protectReading&&$('adaptiveQuality').value==='auto',mobile:device.mobile,width:innerWidth,height:innerHeight,dpr:devicePixelRatio,maxTextureSize:renderer.capabilities.maxTextureSize});
   const settings=frameQuality.settings({reading:protectReading||reading,clarity:$('boardClarity').value,pixelRatio,cloud:$('cloudQuality').value,shadow:Number($('shadowQuality').value)});
-  if(entered&&$('world').dataset.backgroundPreparation==='ready'&&!resources.snapshot().protected&&activeCloudQuality!==settings.cloud&&(renderChangeGate.ready||['off','low','medium','high'].indexOf(settings.cloud)<['off','low','medium','high'].indexOf(activeCloudQuality))){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
+  if($('world').dataset.cloudPreparation==='ready'&&!resources.snapshot().protected&&activeCloudQuality!==settings.cloud&&(renderChangeGate.ready||['off','low','medium','high'].indexOf(settings.cloud)<['off','low','medium','high'].indexOf(activeCloudQuality))){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
   const shadows=settings.shadow>0;
   if(renderer.shadowMap.enabled!==shadows&&(!shadows||renderChangeGate.ready)){renderer.shadowMap.enabled=shadows;renderer.shadowMap.needsUpdate=true;}
   if(shadows&&retreat.sun.shadow.mapSize.x!==settings.shadow&&(renderChangeGate.ready||settings.shadow<retreat.sun.shadow.mapSize.x)){retreat.sun.shadow.mapSize.set(settings.shadow,settings.shadow);retreat.sun.shadow.map?.dispose();retreat.sun.shadow.map=null;renderer.shadowMap.needsUpdate=true;}
@@ -390,6 +389,8 @@ function updateRenderBudget(stamp){
   const text=$('adaptiveQuality').value!=='auto'?'固定画质':(frameQuality.level===0?'自动 · 按实际帧率监测':`自动降级 ${frameQuality.level}/5 · 云${settings.cloud==='off'?'关闭':settings.cloud==='low'?'标准':'精细'} · 阴影${shadows?'标准':'关闭'} · 渲染 ${Math.round(scale*100)}%`)+(protectReading?' · 板书清晰保护':'');
   if($('adaptiveReadout').textContent!==text)$('adaptiveReadout').textContent=text;
   if($('world').dataset.adaptiveLevel!==String(frameQuality.level))$('world').dataset.adaptiveLevel=String(frameQuality.level);
+  $('world').dataset.cloudQuality=activeCloudQuality;$('world').dataset.cloudVisibility=retreat.sky.material.uniforms.useVolumeClouds.value.toFixed(3);
+  const cloudCoverage=retreat.sky.material.uniforms.cloud.value;$('world').dataset.cloudCoverage=cloudCoverage.toFixed(4);$('world').dataset.cloudReason=activeCloudQuality==='off'?($('cloudQuality').value==='off'?'设置关闭':'帧预算保护'):cloudCoverage<.0001?'当前天气无云':'已启用';
 
 }
 const graphicsKeys=['oceanModel','quality','resolutionScale','shadowQuality','cloudQuality','textureFiltering','waterDetail','targetFPS','adaptiveQuality','rainEffects','starEffects','geometryDetail','windWaves','waveStrength','waterReflection','sunReflection','nightStyle','meteorEffects','sunSize'];
@@ -399,7 +400,7 @@ function setQuality(){
   frameQuality.reset();resize();if(!retreat)return;
   oceanBudget.configure($('oceanModel').value,Number($('targetFPS').value));
   applyOceanQuality();
-  activeCloudQuality=entered&&$('world').dataset.backgroundPreparation==='ready'&&!resources.snapshot().protected?$('cloudQuality').value:'off';retreat.sky.userData.setCloudQuality(activeCloudQuality);
+  activeCloudQuality=$('world').dataset.cloudPreparation==='ready'&&!resources.snapshot().protected?$('cloudQuality').value:'off';retreat.sky.userData.setCloudQuality(activeCloudQuality);
   retreat.sky.userData.solarSize=$('sunSize').value;
   retreat.sky.material.uniforms.nightStyle.value=$('nightStyle').value==='vivid'?1:0;retreat.sky.material.uniforms.meteorEnabled.value=$('meteorEffects').value==='on'?1:0;
   retreat.sky.material.uniforms.starsEnabled.value=$('starEffects').value==='on'?1:0;
@@ -460,9 +461,9 @@ function tick(stamp){
   const dt=Math.min(.05,frameMs/1000);lastTime=stamp;
   if(!renderActivity.running||!renderActivity.foreground)return;
   if(entered&&document.getElementById('socialDialog')?.open)return;
-  renderChangeGate.sample(camera.position.toArray(),camera.quaternion.toArray(),dt,!entered||Boolean(blend)||touring||keys.size>0);
+  renderChangeGate.sample(camera.position.toArray(),camera.quaternion.toArray(),dt,Boolean(blend)||touring||keys.size>0);
   if(!renderChangeGate.ready)startupQuality.resetSamples();
-  if(startupAutomatic&&renderChangeGate.ready&&entered&&!entryTransition&&!openingPreparing&&!blend&&!touring&&keys.size===0&&motionVelocity.length()<.15&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
+  if(startupAutomatic&&renderChangeGate.ready&&$('world').dataset.openingPreparation==='ready'&&!entryTransition&&!openingPreparing&&!blend&&!touring&&keys.size===0&&motionVelocity.length()<.15&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
     startupQuality.level=device.safe?0:2;device.startup=device.safe;
  const values=startupQuality.settings(desiredGraphics);for(const [id,value] of Object.entries(values))if(graphicsKeys.includes(id))$(id).value=value;
     device.startup=startupQuality.level===0;setQuality();$('world').dataset.startupTier=String(startupQuality.level);
@@ -470,6 +471,7 @@ function tick(stamp){
     if(startupQuality.level===2)startupAutomatic=false;
   }
   frameQuality.sample(frameMs,stamp,{enabled:$('adaptiveQuality').value==='auto',targetFPS:Number($('targetFPS').value)});
+  retreat.sky.userData.setResourceWorkAllowed(!resources.snapshot().protected);
   if(!entered){
     // Preview uses the actual opening camera; no room/board/physics updates before entry.
     updateRenderBudget(stamp);gpuTimer?.begin(stamp);
@@ -580,7 +582,6 @@ async function measureCritical(stage,work){const start=performance.now();if(!cri
 function prepareMainRoom(){
  if(mainRoomJob)return mainRoomJob;
  mainRoomJob=(async()=>{
-  await waitForEntered($('world'));
   loadingContent('P1 报告厅一楼 · 首屏板书与字体');
   $('world').dataset.hallPreparation='loading';$('world').dataset.startupPhase='hall';$('mode').textContent='正在准备报告厅';
   const hallTextures=measureCritical('P0 一楼六张材质贴图',()=>startDeferredTextures(()=>{},{phase:'hall',concurrency:2}));
@@ -596,7 +597,7 @@ function prepareMainRoom(){
   loadingContent('P0 报告厅一楼 · 材质');
   await hallTextures;
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
-  $('world').dataset.hallPreparation='ready';$('world').dataset.startupPhase='interactive';visibilityAt=-Infinity;updateLabels();
+  $('world').dataset.hallPreparation='ready';$('world').dataset.startupPhase=entered?'interactive':'entry-preparing';visibilityAt=-Infinity;updateLabels();
   return lecture;
  })().catch(error=>{mainRoomJob=null;$('world').dataset.hallPreparation='error';throw error;});return mainRoomJob;
 }
@@ -625,16 +626,27 @@ async function prepareOpeningGPU(){
  $('world').dataset.criticalTransfers=JSON.stringify(performance.getEntriesByType('resource').filter(e=>e.startTime>=criticalStart).map(e=>({file:decodeURIComponent(new URL(e.name).pathname.split('/').slice(-2).join('/')),startMs:Math.round(e.startTime-criticalStart),durationMs:Math.round(e.duration),waitMs:Math.round(Math.max(0,e.responseStart-e.requestStart)),receiveMs:Math.round(Math.max(0,e.responseEnd-e.responseStart)),bytes:e.decodedBodySize,wireBytes:e.transferSize,cached:e.transferSize===0})).sort((a,b)=>b.durationMs-a.durationMs).slice(0,50));
  openingGPUReady=true;$('world').dataset.openingGPU='ready';loadingContent('P0/P1 已就绪');
 }
+const prepareOpeningResources=createOpeningPreparation({node:$('world'),prepareRoom:prepareMainRoom,prepareGPU:prepareOpeningGPU});
 let environmentJob=null;
 function requestEnvironment(){
  if(!retreat)return;
  if(environmentJob)return environmentJob;
- environmentJob=startDeferredTextures(()=>{},{phase:'background',concurrency:1}).then(()=>resources.enqueue('environment','按需环境 · 云与反射',async function*(){
-   $('world').dataset.backgroundPreparation='loading';
-   yield ()=>retreat.sky.userData.prepareClouds();
-   yield ()=>retreat.prepareRendering(()=>{});
-   yield ()=>{$('world').dataset.backgroundPreparation='ready';activeCloudQuality=$('cloudQuality').value;retreat.sky.userData.setCloudQuality(activeCloudQuality);frameQuality.resetSamples();oceanBudget.resetSamples();};
- },{priority:3})).catch(error=>{environmentJob=null;$('world').dataset.backgroundPreparation='error';console.error('[Refuge environment]',error);});return environmentJob;
+ $('world').dataset.backgroundPreparation='queued';$('world').dataset.cloudPreparation='queued';$('world').dataset.reflectionPreparation='queued';
+ const turn=()=>resources.turn({priority:3});
+ // Clouds do not wait behind unrelated landscape or galaxy downloads.
+ const clouds=resources.enqueue('environment:clouds','环境 · 云层',async function*(){
+   yield ()=>{$('world').dataset.backgroundPreparation='loading';$('world').dataset.cloudPreparation='loading';};
+   yield ()=>retreat.sky.userData.prepareClouds(value=>{$('world').dataset.cloudProgress=String(Math.round(value*100));},turn,$('cloudQuality').value);
+   yield ()=>{$('world').dataset.cloudPreparation='ready';frameQuality.resetSamples();};
+ },{priority:2});
+ const textures=startDeferredTextures(()=>{},{phase:'background',concurrency:1});
+ const reflections=resources.enqueue('environment:reflections','环境 · 海面与反射',async function*(){
+   yield ()=>{$('world').dataset.reflectionPreparation='loading';};
+   yield ()=>retreat.prepareRendering(()=>{},turn);
+   yield async()=>{await turn();if(renderer.compileAsync)await renderer.compileAsync(scene,camera);};
+   yield ()=>{$('world').dataset.reflectionPreparation='ready';oceanBudget.resetSamples();};
+ },{priority:3});
+ environmentJob=Promise.all([clouds,textures,reflections]).then(()=>{$('world').dataset.backgroundPreparation='ready';loadingContent(null);}).catch(error=>{environmentJob=null;$('world').dataset.backgroundPreparation='error';console.error('[Refuge environment]',error);});return environmentJob;
 }
 function requestInterior(key){
  if(!retreat?.interiors.jobs.has(key))return Promise.resolve();
@@ -650,7 +662,7 @@ function requestShotInterior(s){
 }
 let nearbyAt=0;
 function requestNearbyInteriors(stamp){
- if(stamp-nearbyAt<500||resources.snapshot().protected||!entered)return;nearbyAt=stamp;
+ if(stamp-nearbyAt<500||resources.snapshot().protected)return;nearbyAt=stamp;
  for(const key of retreat.interiors.jobs.keys()){
   if(retreat.interiors.done.has(key))continue;const [id,floor]=key.split(':'),o=buildingOffset(id),centers={'01B':[39,0],'01C':[39,0],'07':[-84,8],'02':[-37,-16],'03':[-6,-4],'04':[11.5,-4],'05N':[39,-22],'05S':[-36.5,19],'R1':[-56,-28],'R3':[-47,-38],'06':[-56,-28],'R2':[-47,-38]};
   const center=centers[id];if(!center)continue;const dx=camera.position.x-(center[0]*BUILDING_SCALE+o.x),dz=camera.position.z-(center[1]*BUILDING_SCALE+o.z);
@@ -716,6 +728,9 @@ try{
   if(failed||renderer.getContext().isContextLost())throw new Error('WebGL context lost');
   $('world').dataset.ready='true';$('world').dataset.entered='false';$('world').dataset.hallPreparation='pending';$('world').dataset.startupPhase='entry-ready';
   window.refugeBoot?.ready();renderActivity.setEnabled(!failed);
+  // Keep preparing while the entry/login screen is visible. Entering reuses this
+  // same promise; it only starts the camera/audio, never the required downloads.
+  void prepareOpeningResources().then(()=>requestEnvironment()).catch(error=>console.error('[Refuge opening preparation]',error));
   if($('loading').dataset.entryRequested==='true')enterScene();
   $('world').dataset.backgroundPreparation='on-demand';
 
@@ -732,7 +747,7 @@ document.querySelectorAll('#chapters button[data-shot]').forEach(button=>button.
   selectShot(index);
 }));
 function showSettings(open){
- if(open){closeTime();if(entered)requestEnvironment();}
+ if(open){closeTime();requestEnvironment();}
  $('settings').hidden=!open;$('settingsButton').setAttribute('aria-expanded',String(open));
 }
 $('settingsButton').addEventListener('click',()=>showSettings($('settings').hidden));

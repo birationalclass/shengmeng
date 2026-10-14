@@ -9,6 +9,12 @@ test('optional work never starts during opening, even after many timer turns',as
  const job=s.enqueue('upper','二楼',()=>ran=true);for(let i=0;i<25;i++)await h.step();assert.equal(ran,false);
  p.opening=false;for(let i=0;i<5;i++)await h.step();await job;assert.equal(ran,true);
 });
+test('entering is irrelevant to required and optional resource eligibility',async()=>{
+ const h=turns(),p={entered:false,foreground:true,opening:false,moving:false},s=new ResourceScheduler({policy:()=>p,api:h.api});let built=0;
+ const first=s.enqueue('clouds','云',()=>built++);for(let i=0;i<8;i++)await h.step();await first;assert.equal(built,1);
+ p.entered=true;assert.equal(s.allowed({priority:3}),true);p.entered=false;assert.equal(s.allowed({priority:3}),true);
+ p.moving=true;assert.equal(s.allowed({priority:3}),false);assert.equal(s.blockedBy({priority:3}),'镜头正在移动');p.moving=false;p.opening=true;assert.equal(s.blockedBy({priority:3}),'开场运镜保护');p.opening=false;p.foreground=false;assert.equal(s.blockedBy({priority:3}),'页面不可见');
+});
 test('movement and tab inactivity pause between individual interior batches',async()=>{
  const h=turns(),p={entered:true,opening:false,foreground:true},s=new ResourceScheduler({policy:()=>p,api:h.api}),built=[];
  const job=s.enqueue('classroom','教室',function*(){yield ()=>{built.push(1);p.moving=true;};yield ()=>built.push(2);});

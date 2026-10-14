@@ -113,11 +113,12 @@ export function createWeatherSky({panorama=true,renderer,device={},probe=false}=
  }
  material.addEventListener('dispose',()=>{disposed=true;atmosphere?.dispose();volumeClouds?.dispose();fallback.dispose();panoramaTexture?.dispose();});
  const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,48,24),material);mesh.onBeforeRender=(_r,_s,camera)=>{uniforms.cloudOrigin.value.copy(camera.position).multiplyScalar(.001);uniforms.cloudOrigin.value.y=Math.max(.001,uniforms.cloudOrigin.value.y);uniforms.twinkleTime.value=performance.now()/1000;if(loadedAt)uniforms.galaxyMix.value=1-Math.exp(-(performance.now()-loadedAt)/1200);};let cloudsEnabled=!device.startup,cloudVisibility=0;
- mesh.userData.prepareClouds=async(report=()=>{})=>{
-  await volumeClouds?.prepare();
-  if(!cloudsEnabled||!volumeClouds){report(1);return;}
+ let resourceWorkAllowed=true;mesh.userData.setResourceWorkAllowed=value=>{resourceWorkAllowed=Boolean(value);};
+ mesh.userData.prepareClouds=async(report=()=>{},turn=()=>Promise.resolve(),level='low')=>{
+  if(!volumeClouds||level==='off'){report(1);return;}
+  await volumeClouds.prepare(turn);volumeClouds.setQuality(level);
   // Complete the initial low-cost panorama before entry, independently of promotion.
-  for(let i=0;i<volumeClouds.tileCount;i++){volumeClouds.update(uniforms);report((i+1)/volumeClouds.tileCount);await new Promise(resolve=>setTimeout(resolve,16));}
+  for(let i=0;i<volumeClouds.tileCount;i++){await turn();volumeClouds.update(uniforms);report((i+1)/volumeClouds.tileCount);await new Promise(resolve=>setTimeout(resolve,16));}
   uniforms.useVolumeClouds.value=cloudVisibility;
  };
  mesh.userData.beginArrivalFade=()=>{cloudVisibility=0;uniforms.useVolumeClouds.value=0;};
@@ -125,10 +126,10 @@ export function createWeatherSky({panorama=true,renderer,device={},probe=false}=
  mesh.userData.updateAtmosphere=(dt=0)=>{
   if(device.isRenderActive?.()===false)return;
   // The first computation uses the scene's actual solar position, never the constructor's noon defaults.
-  atmosphere?.update(uniforms.sunPosition.value,uniforms.cloud.value);
+  if(resourceWorkAllowed)atmosphere?.update(uniforms.sunPosition.value,uniforms.cloud.value);
   if(atmosphere){uniforms.atmosphereMap.value=atmosphere.texture;uniforms.atmosphereMapPrevious.value=atmosphere.previousTexture;uniforms.atmosphereBlend.value=atmosphere.blend;}
   uniforms.useAtmosphere.value=fadeToward(uniforms.useAtmosphere.value,atmosphere?1:0,dt);
-  if(cloudsEnabled)volumeClouds?.update(uniforms);
+  if(cloudsEnabled&&resourceWorkAllowed)volumeClouds?.update(uniforms);
   cloudVisibility=fadeToward(cloudVisibility,cloudsEnabled&&volumeClouds&&uniforms.cloud.value>=.0001?1:0,dt);
   uniforms.useVolumeClouds.value=cloudVisibility;
  };

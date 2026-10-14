@@ -115,10 +115,11 @@ vec4 c=mix(texture2D(studyCloudPrevious,cloudUV),texture2D(studyCloud,cloudUV),s
  scene.add(root);onProgress(1);
  const settings={tide:2.55,tidal:true,grid:false,paused:false},empty=new THREE.DataTexture(new Uint8Array(4),1,1);empty.needsUpdate=true;
  let time=7.1,quality=2,lastWind=-1,targetWaves=null,previousEye=null;
- return {async prepare(report=()=>{}){
+ return {async prepare(report=()=>{},turn=()=>Promise.resolve()){
    // Compile all near/far variants before crossing a room boundary can select one.
    const warmScene=new THREE.Scene();let completed=0;
    for(const pair of qualityMaterials)for(const material of pair){
+    await turn();
     const mesh=new THREE.Mesh(layer.water.geometry,material);warmScene.add(mesh);
     await renderer.compileAsync?.(warmScene,layer.camera);warmScene.remove(mesh);report(++completed/(qualityMaterials.length*2));
     await new Promise(resolve=>setTimeout(resolve,0));

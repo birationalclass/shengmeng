@@ -3,8 +3,9 @@ export class ResourceScheduler {
  constructor({policy=()=>({}),report=()=>{},api=globalThis}={}){this.policy=policy;this.report=report;this.api=api;this.jobs=new Map();this.queue=[];this.active=null;this.cpuMs=0;this.frameMs=0;this.renderMs=0;this.lastFrame=0;this.running=false;}
  frame(frameMs,renderMs,now=this.now()){if(frameMs>0&&frameMs<250)this.frameMs=this.frameMs?this.frameMs*.9+frameMs*.1:frameMs;this.renderMs=this.renderMs?this.renderMs*.9+renderMs*.1:renderMs;this.lastFrame=now;}
  now(){return this.api.performance?.now()??Date.now();}
- snapshot(){const p=this.policy(),target=1000/(p.targetFPS||60);return {active:Boolean(this.active),content:this.active?.label||'空闲 · 按需准备',pending:this.queue.length,cpuMs:this.active?this.cpuMs:0,frameMs:this.frameMs,renderMs:this.renderMs,frameBudget:target,protected:Boolean(p.opening),paused:Boolean(this.active&&!this.allowed(this.active)),error:this.error||''};}
- allowed(job){const p=this.policy();if(job.priority<2)return true;return Boolean(p.entered&&p.foreground!==false&&!p.opening&&!p.moving);}
+ snapshot(){const p=this.policy(),target=1000/(p.targetFPS||60),pauseReason=this.active?this.blockedBy(this.active):'';return {active:Boolean(this.active),content:this.active?.label||'空闲 · 按需准备',pending:this.queue.length,cpuMs:this.active?this.cpuMs:0,frameMs:this.frameMs,renderMs:this.renderMs,frameBudget:target,protected:Boolean(p.opening),paused:Boolean(pauseReason),pauseReason,error:this.error||''};}
+ blockedBy(job){const p=this.policy();if(job.priority<2)return '';return p.foreground===false?'页面不可见':p.opening?'开场运镜保护':p.moving?'镜头正在移动':'';}
+ allowed(job){return !this.blockedBy(job);}
  enqueue(key,label,factory,{priority=2}={}){if(this.jobs.has(key))return this.jobs.get(key);let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b;});this.jobs.set(key,promise);this.queue.push({key,label,factory,priority,resolve,reject});this.queue.sort((a,b)=>a.priority-b.priority);void this.pump();return promise;}
  async turn(job){for(;;){if(!this.allowed(job)){this.report(this.snapshot());await new Promise(r=>this.api.setTimeout(r,100));continue;}
    // Required work must not wait for idle time: a busy render loop may never offer it.

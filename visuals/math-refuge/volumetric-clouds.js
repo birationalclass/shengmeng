@@ -76,10 +76,12 @@ export function createVolumetricClouds(renderer,device={}){
   u.cloudMap.value=targets[front].texture;u.cloudMapPrevious.value=targets[first?front:prior].texture;u.cloudBlend.value=first?1:0;
  }
  let preparation;
- return {tileCount,prepare(){return preparation??=(async()=>{
+ return {tileCount,prepare(turn=()=>Promise.resolve()){return preparation??=(async()=>{
+  await turn();
   renderer.initTexture(noise);
+  await turn();
   await renderer.compileAsync?.(scene,camera);
-  for(const target of targets){renderer.initRenderTarget(target);await new Promise(resolve=>setTimeout(resolve,0));}
+  for(const target of targets){await turn();renderer.initRenderTarget(target);await new Promise(resolve=>setTimeout(resolve,0));}
  })();},setQuality(level){const q=CLOUD_LEVELS[level]||CLOUD_LEVELS.medium;if(size===q.size&&steps===q.steps)return;size=q.size;steps=q.steps;interval=q.interval;uniforms.marchSteps.value=steps;key='';pending=null;},get texture(){return targets[front].texture;},update(u,now=performance.now()){
   if(u.cloud.value<.0001){pending=null;key='';u.useVolumeClouds.value=0;return;}u.useVolumeClouds.value=1;
   u.cloudBlend.value=Math.min(1,(now-last)/blendInterval);

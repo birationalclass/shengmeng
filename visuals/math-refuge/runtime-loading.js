@@ -19,6 +19,9 @@ export const runtimeTransfers=typeof location==='undefined'?null:new RuntimeTran
 let scheduler=null,manual=null;
 export function loadingContent(label){manual=label;}
 export function connectLoadingScheduler(value){scheduler=value;}
+export function loadingState(now=performance.now()){
+ const s=scheduler?.snapshot();return {...runtimeTransfers?.snapshot(now),pauseReason:s?.pauseReason||'',content:s?.active?s.content:manual||s?.error||s?.content||'开场资源准备中'};
+}
 // One streaming pass, without cloning/buffering a second response. Modules/images/audio
 // loaded by the browser are reported by ResourceTiming when their requests complete.
 if(typeof window!=='undefined'){
@@ -33,10 +36,10 @@ if(typeof window!=='undefined'){
  try{performance.setResourceTimingBufferSize?.(2000);new PerformanceObserver(list=>{for(const entry of list.getEntries())runtimeTransfers.observe(entry,now());}).observe({type:'resource',buffered:true});}catch{}
  const paint=()=>{const out=document.getElementById('runtimeLoad'),world=document.getElementById('world');if(!out)return;const t=runtimeTransfers.snapshot(now()),s=scheduler?.snapshot(),item=t.active[0]||t.last,entered=world?.dataset.entered==='true';out.hidden=!entered;
    const navigation=document.getElementById('chapters')?.getBoundingClientRect();out.style.bottom=Math.max(16,navigation?.height?innerHeight-navigation.top+8:16)+'px';
-   const content=s?.active?s.content:manual||s?.error||s?.content||'空闲 · 按需准备';
+   const content=(s?.active?s.content:manual||s?.error||s?.content||'空闲 · 按需准备')+(s?.pauseReason?'（等待：'+s.pauseReason+'）':'');
    const load=s?.frameMs?`帧 ${s.frameMs.toFixed(1)} / ${s.frameBudget.toFixed(1)} ms · 加载 ${s.cpuMs.toFixed(1)} ms/批`:'负荷采样中';
    const download=item?`${item.name}${item.complete?'（'+(item.cached?'缓存':'完成')+'）':item.error?'（失败）':'（下载中）'} ${bytesText(item.received)}${item.total!=null&&!item.complete?' / '+bytesText(item.total):''}`:'无下载';
-   out.textContent=`加载：${s?.protected?(world?.dataset.openingGPU==='ready'?'开场保护 · '+(s.pending?'按需任务等待':'P0/P1 已就绪'):'开场准备 · '+content):content} · 负荷：${load}\n下载：${download}${t.active.length>1?' · 另 '+(t.active.length-1)+' 项':''} · ${Math.round(t.speed/1000)} KB/s · 已接收 ${bytesText(t.total)}`;
-   out.dataset.content=content;out.dataset.pending=String(s?.pending||0);out.dataset.protected=String(s?.protected||false);out.dataset.frameMs=String(s?.frameMs||0);out.dataset.loadingCpuMs=String(s?.cpuMs||0);out.dataset.activeDownloads=String(t.active.length);out.dataset.receivedBytes=String(t.total);out.dataset.speed=String(t.speed);
+   out.textContent=`加载：${s?.protected?(world?.dataset.openingGPU==='ready'?'开场保护 · '+(s.pending?'按需任务等待':'P0/P1 已就绪'):'开场准备 · '+content):content} · 负荷：${load}\n下载：${download}${t.active.length>1?' · 另 '+(t.active.length-1)+' 项':''} · ${Math.round(t.speed/1000)} KB/s · 已接收 ${bytesText(t.total)}${world?.dataset.cloudPreparation==='ready'?' · 云：'+world.dataset.cloudReason:''}`;
+   out.dataset.content=content;out.dataset.pauseReason=s?.pauseReason||'';out.dataset.pending=String(s?.pending||0);out.dataset.protected=String(s?.protected||false);out.dataset.frameMs=String(s?.frameMs||0);out.dataset.loadingCpuMs=String(s?.cpuMs||0);out.dataset.activeDownloads=String(t.active.length);out.dataset.receivedBytes=String(t.total);out.dataset.speed=String(t.speed);
  };setInterval(paint,500);
 }

@@ -1,4 +1,5 @@
 import {STARTUP_RESOURCES} from './startup-resources.js?v=session-2';
+import {loadingState} from './runtime-loading.js';
 // Observe existing requests; never fetch, preload, or change the scene's loaders.
 export class LoadingTransfer {
  constructor(resources,base){
@@ -32,6 +33,7 @@ export class LoadingTransfer {
  finish(){this.finished=true;this.samples=[];}
 }
 export function formatBytes(bytes){return bytes>=1e6?(bytes/1e6).toFixed(2)+' MB':(bytes/1000).toFixed(1)+' KB';}
+export function openingPreparationPending(data={}){return data.entered!=='true'&&!['ready','error'].includes(data.openingPreparation);}
 if(typeof document!=='undefined'){
  const world=document.getElementById('world'),background=document.getElementById('postEntryLoad');
  if(world&&background&&typeof MutationObserver!=='undefined'){
@@ -41,13 +43,26 @@ if(typeof document!=='undefined'){
  const output=document.getElementById('loadTransfer'),loading=document.getElementById('loading');
  if(output&&loading){
   const meter=new LoadingTransfer(STARTUP_RESOURCES,new URL('./',import.meta.url).href),clock=()=>performance.now(),stages=[];let observer,timer,stageObserver,stageAt=0,stageLabel=document.getElementById('loadMessage')?.textContent||'下载与初始化场景程序';
-  const recordStage=()=>{const next=loading.dataset.ready==='true'?'加载完成':document.getElementById('loadMessage')?.textContent||stageLabel;if(next!==stageLabel){const end=clock();stages.push({stage:stageLabel,startMs:stageAt,durationMs:end-stageAt});stageAt=end;stageLabel=next;output.dataset.stageTimings=JSON.stringify(stages);}};
-  const paint=()=>{const value=meter.snapshot(clock());output.textContent=`加载速度 ${value.measured?Math.round(value.bytesPerSecond/1000):'—'} KB/s · ${formatBytes(value.loaded)} / ${formatBytes(value.total)}`;output.dataset.loadedBytes=String(value.loaded);output.dataset.totalBytes=String(value.total);output.dataset.bytesPerSecond=String(value.bytesPerSecond);};
+  const recordStage=()=>{const next=loading.dataset.ready==='true'?(openingPreparationPending(world?.dataset)?'首屏就绪，继续准备开场':'开场资源已就绪'):document.getElementById('loadMessage')?.textContent||stageLabel;if(next!==stageLabel){const end=clock();stages.push({stage:stageLabel,startMs:stageAt,durationMs:end-stageAt});stageAt=end;stageLabel=next;output.dataset.stageTimings=JSON.stringify(stages);}};
+  const paint=()=>{
+   const stamp=clock(),value=meter.snapshot(stamp);let speed=value.bytesPerSecond;
+   output.textContent=`加载速度 ${value.measured?Math.round(speed/1000):'—'} KB/s · ${formatBytes(value.loaded)} / ${formatBytes(value.total)}`;
+   if(loading.dataset.ready==='true'){
+    output.dataset.entryReadyMs??=String(stamp);const state=loadingState(stamp),pending=openingPreparationPending(world?.dataset),phase=world?.dataset.openingPreparation;
+    const item=state.active?.[0];speed=state.speed||0;
+    const environment=world?.dataset.backgroundPreparation,busy=pending||['queued','loading'].includes(environment);
+    output.textContent=`首屏 ${formatBytes(value.loaded)} / ${formatBytes(value.total)} · 开场：${phase==='error'?'准备失败，可进入后重试':pending?state.content:'资源已就绪'}${!pending&&environment?' · 环境：'+(environment==='ready'?'资源已就绪':environment==='error'?'准备失败':state.content):''}${state.pauseReason?'（等待：'+state.pauseReason+'）':''}${busy?' · '+Math.round(speed/1000)+' KB/s · 已接收 '+formatBytes(state.total||0)+(item?' · '+item.name:''):''}`;
+    if(phase==='ready')output.dataset.preparationReadyMs??=String(stamp);
+    if(world?.dataset.cloudPreparation==='ready')output.textContent+=' · 云：'+(world.dataset.cloudReason||'已准备');
+    output.dataset.preparation=phase||'pending';output.dataset.preparationReceivedBytes=String(state.total||0);
+   }
+   output.dataset.loadedBytes=String(value.loaded);output.dataset.totalBytes=String(value.total);output.dataset.bytesPerSecond=String(speed);
+  };
   const collect=()=>{for(const entry of [...performance.getEntriesByType('navigation'),...performance.getEntriesByType('resource')])meter.observe(entry,clock());};
   const stop=()=>{if(meter.finished)return;collect();recordStage();meter.finish();observer?.disconnect();stageObserver?.disconnect();clearInterval(timer);paint();output.dataset.loadingMs=String(clock());output.dataset.pendingFiles=JSON.stringify([...meter.resources].filter(([,item])=>!item.complete).map(([url])=>url));output.dataset.slowestResources=JSON.stringify([...meter.requests].sort((a,b)=>b.durationMs-a.durationMs).slice(0,12));};
   window.refugeTransfer={progress:(url,bytes)=>{meter.progress(url,bytes,clock());paint();},finish:stop};
   try{performance.setResourceTimingBufferSize?.(1000);collect();if(typeof PerformanceObserver!=='undefined'){observer=new PerformanceObserver(list=>{for(const entry of list.getEntries())meter.observe(entry,clock());paint();});observer.observe({type:'resource',buffered:true});}}catch{/* Keep the loading screen available on older browsers. */}
   if(typeof MutationObserver!=='undefined'){stageObserver=new MutationObserver(recordStage);stageObserver.observe(document.getElementById('loadMessage'),{childList:true,characterData:true,subtree:true});stageObserver.observe(loading,{attributes:true,attributeFilter:['data-ready']});}
-  paint();timer=setInterval(()=>{collect();paint();if(loading.dataset.ready==='true'||loading.hidden)stop();},250);
+  paint();timer=setInterval(()=>{collect();recordStage();paint();if(loading.hidden)stop();},250);
  }
 }

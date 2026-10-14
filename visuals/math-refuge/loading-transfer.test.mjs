@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {LoadingTransfer} from './loading-transfer.js';
+import {LoadingTransfer,openingPreparationPending} from './loading-transfer.js';
+test('entry-ready does not finish the resource meter while required preparation continues',()=>{
+ for(const openingPreparation of ['pending','loading',undefined])assert.equal(openingPreparationPending({ready:'true',entered:'false',openingPreparation}),true);
+ for(const openingPreparation of ['ready','error'])assert.equal(openingPreparationPending({entered:'false',openingPreparation}),false);
+ assert.equal(openingPreparationPending({entered:'true',openingPreparation:'loading'}),false);
+});
 const base='https://example.test/visuals/math-refuge/';
 const fixture=()=>new LoadingTransfer([{url:'app.js',bytes:1000},{url:'assets/field.png',bytes:4000}],base);
 test('completed, compressed and cached resources count once; caching produces no download speed',()=>{

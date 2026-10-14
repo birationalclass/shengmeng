@@ -1,4 +1,16 @@
 // The interactive world and its optional rooms have separate readiness gates.
+// Required resource preparation has no authentication or click-to-enter gate.
+export function createOpeningPreparation({node,prepareRoom,prepareGPU,now=()=>performance.now()}){
+ let job=null;node.dataset.openingPreparation='pending';
+ return function prepare(){
+  if(job)return job;
+  node.dataset.openingPreparation='loading';node.dataset.preparationStartedMs=String(now());
+  job=Promise.resolve().then(prepareRoom).then(prepareGPU).then(()=>{
+   node.dataset.openingPreparation='ready';node.dataset.openingPreparedMs=String(now());node.dataset.preparedBeforeEntry=String(node.dataset.entered!=='true');delete node.dataset.preparationError;
+  }).catch(error=>{job=null;node.dataset.openingPreparation='error';node.dataset.preparationError=error.message;throw error;});
+  return job;
+ };
+}
 export function waitForEntered(node,target=window){
  if(node.dataset.entered==='true')return Promise.resolve();
  return new Promise(resolve=>{const check=()=>{if(node.dataset.entered!=='true')return;target.removeEventListener('refuge-entered',check);resolve();};target.addEventListener('refuge-entered',check);check();});
