@@ -496,6 +496,7 @@ export async function createLecture(scene,renderer,options={}){
     get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},
     async prepareOpening(onProgress=()=>{}){
       if(disabled||!storageRig)return false;
+      const preparation=[],prepareAt=performance.now();
       playing=false;
       const openingDefault=reports.find(report=>report.id===(options.defaultReport||'ye'))||reports[0];
       if(activeReport.id!==openingDefault.id&&!await this.setReport(openingDefault.id,{loadVoice:false}))return false;
@@ -506,7 +507,7 @@ export async function createLecture(scene,renderer,options={}){
       const narrated=Boolean(activeReport.narration&&voiceEnabled);
       const page=narrated?0:Math.min(7,pages.length-1);
       if(narrated){
-        await load(0);clock.slots=Array.from({length:6},()=>({page:-1,progress:0}));
+        const loadAt=performance.now();await load(0);preparation.push({stage:'首屏字形与内容',durationMs:Math.round(performance.now()-loadAt)});clock.slots=Array.from({length:6},()=>({page:-1,progress:0}));
         clock.select(0);clock.startWrite();targets.fill(0);mix.fill(0);onProgress(.9);
       }else{
         // Reports without audio retain the short writing demonstration.
@@ -523,11 +524,16 @@ export async function createLecture(scene,renderer,options={}){
       // Allocate and upload every board before camera movement, including the
       // clean board used by the opening writing demonstration.
       for(let i=0;i<boards.length;i++){
+        const canvasAt=performance.now();
         ensureInk(boards[i]);draw(i);
+        const uploadAt=performance.now();
         renderer.initTexture?.(boards[i].texture);renderer.initTexture?.(boards[i].roughTexture);
+        const uploadedAt=performance.now();
         onProgress(.9+.1*(i+1)/boards.length);
         await new Promise(resolve=>setTimeout(resolve,16));
+        preparation.push({stage:'黑板 '+(i+1),canvasMs:Math.round(uploadAt-canvasAt),uploadCallMs:Math.round(uploadedAt-uploadAt),yieldMs:Math.round(performance.now()-uploadedAt),width:boards[i].canvas.width,height:boards[i].canvas.height});
       }
+      options.onPreparation?.({totalMs:Math.round(performance.now()-prepareAt),stages:preparation});
       openingSurfacesReady=renderActive&&!hydrating&&options.isActive?.()!==false;
       playing=false;version++;return true;
     },

@@ -5,7 +5,7 @@ import {BUILDING_SCALE as S,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {SEMINAR as B,seminarFloor} from './seminar-layout.js?v53-section-sessions';
 import {curvedSeatBack} from './auditorium-furniture.js?v=15-fixed-hall';
 
-export function createSeminarBuilding(scene,{box,soft,beam,floor,glazing,instance,materials,automaticDoors}){
+export function createSeminarBuilding(scene,{box,soft,beam,floor,glazing,instance,materials,automaticDoors,deferInterior=(_key,_label,fn)=>fn()}){
   const {steel,stone,brass,timber,pale,light}=materials;
   const cloth=new THREE.MeshStandardMaterial({color:'#847b66',roughness:1});
   const carpet=new THREE.MeshStandardMaterial({color:'#aaa18c',roughness:1});
@@ -56,8 +56,10 @@ export function createSeminarBuilding(scene,{box,soft,beam,floor,glazing,instanc
     soft([B.boardX-.7,ceiling-.13,8],[.16,.08,8.4],brass);
     box([B.boardX-.65,ceiling-.176,8],[.06,.012,8.1],light);
     zones.push({name:'Discussion classroom '+(level+1),position:[-83.5,ceiling-.35,8],target:[B.boardX,y+1.2,8],gain:1,color:'#fff0da',power:220,range:12,angle:Math.PI*.44,task:'seminar-classroom'});
+    deferInterior('07:'+(level+1),'教学楼 '+(level+1)+' 楼内部',function*(){
     const positions=[];
     for(const x of [-86.5,-84.8])for(const dz of [-3,-2,-1,1,2,3]){
+      yield;
       const z=8+dz,angle=Math.PI/2;
       const p=(a,b,c)=>[x+c/S,y+b/S,z-a/S];
       soft(p(0,.43,0),[.78/S,.12/S,.94/S],shell);
@@ -71,11 +73,13 @@ export function createSeminarBuilding(scene,{box,soft,beam,floor,glazing,instanc
       soft(p(0,.78,.73),[.35/S,.04/S,.9/S],timber);
       beam(p(.4,.05,.7),p(.4,.77,.7),.022/S,steel);positions.push([x,y,z]);
     }
-    seats.push(meta('Discussion classroom seats '+(level+1),{rows:2,seats:12,positions,facing:[1,0,0]}));
-    const lectern=createLectern(THREE);lectern.group.position.set(-81.9,y+.028,12.8);lectern.group.scale.setScalar(1/S);lectern.group.rotation.y=Math.PI/2;scene.add(lectern.group);lecterns.push(lectern);
-    automaticDoors.add(scene,{x:B.west,y,z:8,width:1.6,height:B.clearHeight/S,axis:'z',name:'discussion-'+(level+1)});
+    seats[level]=meta('Discussion classroom seats '+(level+1),{rows:2,seats:12,positions,facing:[1,0,0]});
+    const lectern=createLectern(THREE);lectern.group.position.set(-81.9,y+.028,12.8);lectern.group.scale.setScalar(1/S);lectern.group.rotation.y=Math.PI/2;scene.add(lectern.group);lecterns[level]=lectern;
+
     const blind=new THREE.Mesh(new THREE.BoxGeometry(.035,B.clearHeight/S,11.8),new THREE.MeshStandardMaterial({color:'#34463d',roughness:1}));
-    blind.name='Discussion classroom shade '+(level+1);blind.position.set(-80.14,y+B.clearHeight/(2*S),8);blind.visible=false;scene.add(blind);blinds.push(blind);
+    blind.name='Discussion classroom shade '+(level+1);blind.position.set(-80.14,y+B.clearHeight/(2*S),8);blind.visible=false;scene.add(blind);blinds[level]=blind;
+    });
+    automaticDoors.add(scene,{x:B.west,y,z:8,width:1.6,height:B.clearHeight/S,axis:'z',name:'discussion-'+(level+1)});
     meta('Discussion classroom '+(level+1),{level,bounds:[B.west,B.east,B.north,B.south],floorY:y,clearHeight:B.clearHeight,rows:2,smartGlassPanels:1});
     // West landing opens directly into the classroom; switchback flights have real bearings.
     floor(base,2.4,13.4,-89,8);

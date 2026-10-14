@@ -1,10 +1,12 @@
+import {ResourceScheduler} from './resource-scheduler.js?v=demand-1';
+import {loadingContent,connectLoadingScheduler} from './runtime-loading.js?v=demand-1';
 import {waitForEntered,idleTurn,loadMathRuntime} from './staged-startup.js?v=stages-1';
 import {preparePanelShell,bindPanelDismissals} from './panel-shell.js?v=smart-voice-9';
 import {capturePhoto,downloadPhoto} from './photo.js?v=photo-151';
 import {regionAnchor,distanceLabel} from './region-distance.js';
 import {twilightCloudFactor} from './twilight-clouds.js?v=cloud-rate-142';
 import {hallOrbit} from './hall-orbit.js';
-import {startDeferredTextures} from './deferred-textures.js?v=stages-2';
+import {startDeferredTextures,setDeferredExecutor} from './deferred-textures.js?v=demand-1';
 import {acceptsStartupQuality} from './startup-probe.js';
 import {RenderChangeGate} from './render-change-gate.js';
 import {renderRoomAction} from './room-actions.js?v=skill-arc-85';
@@ -15,7 +17,7 @@ import {openingArrival} from './opening-arrival.js?v=opening-boards-73';
 import {KeyboardMotion} from './keyboard-motion.js?v=altitude-speed-109';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
 import {hallSunStart,sunViewRate} from './hall-sun-view.js';
-import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.js';
+import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.js?v=demand-1';
 import {createScreenWebview} from './screen-webview.js?v126';
 import {VIDEO_SITES} from './smart-glass-hub.js?v109';
 import {OPENING_POSE,OpeningCameraLock,openingFrameFov} from './opening-camera.js?v=handoff-105';
@@ -46,7 +48,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat,createArrivalEnvironment} from './scene.js?v=stages-2';
+import {createRetreat,createArrivalEnvironment} from './scene.js?v=demand-1';
 let createLecture,reportVoicePresentation;
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -115,6 +117,10 @@ const openingButton=document.createElement('button');openingButton.id='replayOpe
 const backgroundMusic=createBackgroundMusic({audio:$('backgroundMusic'),button:$('musicButton'),volume:$('musicVolume'),readout:$('musicVolumeValue')});
 const screenWebview=createScreenWebview(THREE);
 let entered=false,openingPreparing=false,openingPrepared=false;
+const resources=new ResourceScheduler({policy:()=>({entered,opening:openingPreparing||Boolean(blend?.openingArrival||blend?.settling)||openingCameraLock.locked(performance.now()),moving:Boolean(blend||touring||keys.size||motionVelocity.length()>.2),foreground:!document.hidden&&renderActivity.foreground,targetFPS:Math.min(60,Number($('targetFPS').value)||60)})});
+connectLoadingScheduler(resources);
+setDeferredExecutor(item=>resources.enqueue('texture:'+item.id,(item.phase==='entry'?'P0 海面贴图':item.phase==='hall'?'P0 一楼材质':'按需环境贴图'),item.job,{priority:item.phase==='entry'||item.phase==='hall'?0:3}));
+
 const openingCameraLock=new OpeningCameraLock();
 const cameraLocked=()=>openingPreparing||openingCameraLock.locked(performance.now());
 // Capture before OrbitControls and scene hit targets, while other settings remain usable.
@@ -138,6 +144,7 @@ async function replayOpening(preserveInitialView=false){
   openingPreparing=true;
   try{
     await prepareMainRoom();
+    await prepareOpeningGPU();
     motionVelocity.set(0,0,0);motionAcceleration.set(0,0,0);motionSample=false;
     controls.enableDamping=false;controls.update();
     if(!preserveInitialView){camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=openingFrameFov(camera.aspect);camera.updateProjectionMatrix();}
@@ -148,9 +155,10 @@ async function replayOpening(preserveInitialView=false){
     if(!sunriseIntro.waiting)sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);
     visualHour=lastShadowHour=sceneTime.hour;$('timeRate').value='1';
     openingCameraLock.start(performance.now());keys.clear();controls.enabled=false;
+    frameSamples.length=0;cpuSamples.length=0;lastTime=0;
     selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
     const offset=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+offset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,offset.z];
-    blend.openingPath=openingArrival(camera.position.toArray(),HALL.west*BUILDING_SCALE+offset.x,offset.z,end,{x:retreat.campus.seaPavilion.position.x,bridgeX:retreat.campus.seaPavilion.root.position.x});blend.duration=blend.openingPath.duration;blend.route=null;blend.endPosition.fromArray(end);blend.endRotation.setFromRotationMatrix(lookMatrix.lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),viewUp));
+    blend.openingPath=openingArrival(camera.position.toArray(),HALL.west*BUILDING_SCALE+offset.x,offset.z,end,{x:retreat.campus.seaPavilion.position.x,bridgeX:retreat.campus.seaPavilion.root.position.x});blend.duration=blend.openingPath.duration;blend.route=null;blend.endPosition.fromArray(end);blend.endRotation.setFromRotationMatrix(lookMatrix.lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),viewUp));loadingContent(null);
     $('world').focus({preventScroll:true});
     renderActivity.setEnabled(!failed);
   }finally{openingPreparing=false;}
@@ -253,7 +261,7 @@ function beginTransition(){
 function selectShot(index,reportView=false,openingArrival=false){
   if(cameraLocked()&&!openingArrival)return;
   if(pendingRoom!==-1){++roomActivation;pendingRoom=-1;delete $('world').dataset.pendingRoom;}
-  if(entered&&!openingArrival)startCampusTextures();
+  if(entered&&!openingArrival)requestShotInterior(SHOTS[index]);
   if(sunriseIntro.waiting&&!openingArrival){sunriseIntro.cancel();sceneTime.setRate(1);sceneTime.sync();$('timeRate').value='1';}
   speakerView=false;
   choosingReport=reportView;opening=null;shot=index;time=SHOTS[index].walk||SHOTS[index].hallOrbit?0:.85;boardFollow.reset();touring=false;
@@ -298,7 +306,7 @@ function applyShot(dt){
     if(k===1){
       const arrival=blend.openingArrival;blend=null;
       if(arrival){
-        sunriseIntro.arrive();retreat.fleet.startSunrisePass();startCampusTextures();
+        sunriseIntro.arrive();retreat.fleet.startSunrisePass();
         if(rooms[0].openingNarrated){
           const openingLecture=rooms[0];
           void Promise.resolve(openingLecture.beginOpening(reduced.matches)).then(started=>{
@@ -354,7 +362,7 @@ function updateRenderBudget(stamp){
   const protectReading=$('boardClarity').value==='crisp';
   const pixelRatio=readingPixelRatio(profile.pixelRatio,{enabled:protectReading&&$('adaptiveQuality').value==='auto',mobile:device.mobile,width:innerWidth,height:innerHeight,dpr:devicePixelRatio,maxTextureSize:renderer.capabilities.maxTextureSize});
   const settings=frameQuality.settings({reading:protectReading||reading,clarity:$('boardClarity').value,pixelRatio,cloud:$('cloudQuality').value,shadow:Number($('shadowQuality').value)});
-  if(entered&&$('world').dataset.hallPreparation==='ready'&&activeCloudQuality!==settings.cloud&&(renderChangeGate.ready||['off','low','medium','high'].indexOf(settings.cloud)<['off','low','medium','high'].indexOf(activeCloudQuality))){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
+  if(entered&&$('world').dataset.backgroundPreparation==='ready'&&!resources.snapshot().protected&&activeCloudQuality!==settings.cloud&&(renderChangeGate.ready||['off','low','medium','high'].indexOf(settings.cloud)<['off','low','medium','high'].indexOf(activeCloudQuality))){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
   const shadows=settings.shadow>0;
   if(renderer.shadowMap.enabled!==shadows&&(!shadows||renderChangeGate.ready)){renderer.shadowMap.enabled=shadows;renderer.shadowMap.needsUpdate=true;}
   if(shadows&&retreat.sun.shadow.mapSize.x!==settings.shadow&&(renderChangeGate.ready||settings.shadow<retreat.sun.shadow.mapSize.x)){retreat.sun.shadow.mapSize.set(settings.shadow,settings.shadow);retreat.sun.shadow.map?.dispose();retreat.sun.shadow.map=null;renderer.shadowMap.needsUpdate=true;}
@@ -383,7 +391,7 @@ function setQuality(){
   frameQuality.reset();resize();if(!retreat)return;
   oceanBudget.configure($('oceanModel').value,Number($('targetFPS').value));
   applyOceanQuality();
-  activeCloudQuality=entered&&$('world').dataset.hallPreparation==='ready'?$('cloudQuality').value:'off';retreat.sky.userData.setCloudQuality(activeCloudQuality);
+  activeCloudQuality=entered&&$('world').dataset.backgroundPreparation==='ready'&&!resources.snapshot().protected?$('cloudQuality').value:'off';retreat.sky.userData.setCloudQuality(activeCloudQuality);
   retreat.sky.userData.solarSize=$('sunSize').value;
   retreat.sky.material.uniforms.nightStyle.value=$('nightStyle').value==='vivid'?1:0;retreat.sky.material.uniforms.meteorEnabled.value=$('meteorEffects').value==='on'?1:0;
   retreat.sky.material.uniforms.starsEnabled.value=$('starEffects').value==='on'?1:0;
@@ -463,7 +471,7 @@ function tick(stamp){
     // Keep entry and opening on one renderer; avoid video decode-to-WebGL handoff.
     return;
   }
-  updateRoomVisibility(stamp);updateRenderBudget(stamp);
+  updateRoomVisibility(stamp);updateRenderBudget(stamp);requestNearbyInteriors(stamp);
   // Include cloud/atmosphere targets as well as the final scene in GPU timing.
   weatherProbeFrame=!$('settings').hidden&&++weatherProbeCounter%3===0;
   const weatherSample=weatherTimer?.poll(stamp);if(weatherSample!=null){weatherGpuSamples.push(weatherSample);if(weatherGpuSamples.length>40)weatherGpuSamples.shift();weatherGpuMs=weatherGpuSamples.reduce((a,b)=>a+b,0)/weatherGpuSamples.length;}
@@ -539,6 +547,7 @@ function tick(stamp){
   retreat.ocean.userData.study.update(camera,dt);
   $('coastReadout').textContent='曲线坐标 ('+$('world').dataset.coastCoordinates+') km · 当前潮位 '+$('world').dataset.coastTide+' m';surfAudio.update(camera.position,retreat.ocean.material.uniforms.time.value,dt);
   try{if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
+  resources.frame(frameMs,performance.now()-cpuStart,stamp);
   performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:renderer.getPixelRatio(),rooms:rooms.filter(room=>room.renderActive).length,adaptive:$('adaptiveReadout').textContent});
   if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
   if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;if(!$('settings').hidden){$('weatherCost').textContent='云 / 大气预计算 GPU '+(weatherGpuMs==null?'待采样':weatherGpuMs.toFixed(2)+' ms')+' · CPU '+weatherCpuMs.toFixed(2)+' ms · 云 '+({low:'标准',medium:'精细',high:'超精细',off:'关闭'}[activeCloudQuality])+'（不含主画面的天空、水面和雨滴）';$('world').dataset.weatherCost=JSON.stringify({prepassGPU:weatherGpuMs,prepassCPU:weatherCpuMs,cloud:activeCloudQuality});}const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported,adaptiveLevel:frameQuality.level,adaptiveFPS:frameQuality.stats?.fps});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
@@ -558,34 +567,74 @@ async function paintStartup(percent,label){
 }
 
 function reportSceneProgress(value,label){window.refugeBoot?.stage(value<20?value:24+(value-20)*.68,label);}
-let mainRoomJob=null;
+let mainRoomJob=null;const criticalTimings=[];let criticalStart=0;
+async function measureCritical(stage,work){const start=performance.now();if(!criticalStart)criticalStart=start;loadingContent(stage);try{return await work();}finally{criticalTimings.push({stage,startMs:Math.round(start-criticalStart),durationMs:Math.round(performance.now()-start)});$('world').dataset.criticalTimings=JSON.stringify(criticalTimings);$('world').dataset.criticalElapsedMs=String(Math.round(performance.now()-criticalStart));}}
 function prepareMainRoom(){
  if(mainRoomJob)return mainRoomJob;
  mainRoomJob=(async()=>{
   await waitForEntered($('world'));
+  loadingContent('P1 报告厅一楼 · 首屏板书与字体');
   $('world').dataset.hallPreparation='loading';$('world').dataset.startupPhase='hall';$('mode').textContent='正在准备报告厅';
-  const [lectureModule,readerModule,voiceModule,settingsModule]=await Promise.all([import('./lecture.js?v=chinese36-1'),import('./chalk-reader.js?v=inline-root-1'),import('./report-voice.js?v=ye2-report-14'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]);
+  const [lectureModule,readerModule,voiceModule,settingsModule]=await measureCritical('P1 功能模块与数学排版',()=>Promise.all([import('./lecture.js?v=chinese36-1'),import('./chalk-reader.js?v=inline-root-1'),import('./report-voice.js?v=ye2-report-14'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]));
   createLecture=lectureModule.createLecture;createChalkReader=readerModule.createChalkReader;reportVoicePresentation=voiceModule.reportVoicePresentation;
-  await idleTurn();
+  await measureCritical('P1 等待构建空闲回调',()=>idleTurn());
   const root=new THREE.Group();root.name='East-facing compact auditorium blackboards';configureLectureRoot(root);root.position.add(buildingOffset('01B'));scene.add(root);
-  lecture=await withDeadline(createLecture(root,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'ye',boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(root);
-  rooms.push(lecture);roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);registerRoomView(lecture,0);
+  lecture=await measureCritical('P1 板书组件与字体初始化',()=>withDeadline(createLecture(root,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'ye',boardScale:device.boardScale,writingStyle:boardWritingStyle,onPreparation:value=>{$('world').dataset.boardPreparation=JSON.stringify(value);}}),30000,'报告板书加载'));retreat.roomFill.apply(root);
+  rooms.push(lecture);roomLecterns[0]=retreat.campus.lectern;registerRoomView(lecture,0);
   reader=createChalkReader(new Proxy({}, {get:(_,key)=>lecture[key]}));buildSeminarNavigation();installPhysicalControls();populateReport();
   reportSettings=settingsModule.mountReportSettings(document,{getLecture:()=>lecture,onRate:rate=>rooms.forEach(room=>room.setVoiceRate(rate))});
-  await withDeadline(lecture.prepareOpening(),30000,'开场板书加载');openingPrepared=true;
+  await measureCritical('P1 首屏字形与黑板纹理上传',()=>withDeadline(lecture.prepareOpening(),30000,'开场板书加载'));openingPrepared=true;
+  loadingContent('P0 报告厅一楼 · 材质');
+  await measureCritical('P0 一楼六张材质贴图',()=>startDeferredTextures(()=>{},{phase:'hall',concurrency:1}));
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   $('world').dataset.hallPreparation='ready';$('world').dataset.startupPhase='interactive';visibilityAt=-Infinity;updateLabels();
   return lecture;
  })().catch(error=>{mainRoomJob=null;$('world').dataset.hallPreparation='error';throw error;});return mainRoomJob;
 }
-async function prepareAfterEntryEffects(){
- await waitForEntered($('world'));await prepareMainRoom();
- $('world').dataset.backgroundPreparation='loading';
- await idleTurn();await startDeferredTextures(()=>{},{phase:'hall',concurrency:1});
- await idleTurn();retreat.sky.userData.setCloudQuality($('cloudQuality').value);await retreat.sky.userData.prepareClouds();
- await idleTurn();await retreat.prepareRendering(()=>{});
- frameQuality.resetSamples();oceanBudget.resetSamples();
- $('world').dataset.backgroundPreparation='ready';
+let openingGPUReady=false;
+async function prepareOpeningGPU(){
+ if(openingGPUReady)return;loadingContent('P0/P1 运镜材质与显卡准备');
+ const warmCamera=camera.clone(),o=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+o.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,o.z];
+ await measureCritical('P0/P1 着色器编译',()=>renderer.compileAsync?renderer.compileAsync(scene,warmCamera):renderer.compile(scene,warmCamera));
+ const previous=renderer.getRenderTarget(),target=new THREE.WebGLRenderTarget(256,144);
+ try{await measureCritical('P0/P1 运镜三视点显卡预热',async()=>{for(const position of [OPENING_POSE.position,[HALL.west*BUILDING_SCALE+o.x-3,end[1],o.z],end]){
+   await new Promise(resolve=>requestAnimationFrame(resolve));warmCamera.position.fromArray(position);warmCamera.lookAt(new THREE.Vector3(end[0]+20,end[1],o.z));warmCamera.updateMatrixWorld();renderer.setRenderTarget(target);renderer.render(scene,warmCamera);renderer.setRenderTarget(previous);
+ }});}finally{renderer.setRenderTarget(previous);target.dispose();}
+ $('world').dataset.criticalTransfers=JSON.stringify(performance.getEntriesByType('resource').filter(e=>e.startTime>=criticalStart).map(e=>({file:decodeURIComponent(new URL(e.name).pathname.split('/').slice(-2).join('/')),startMs:Math.round(e.startTime-criticalStart),durationMs:Math.round(e.duration),waitMs:Math.round(Math.max(0,e.responseStart-e.requestStart)),receiveMs:Math.round(Math.max(0,e.responseEnd-e.responseStart)),bytes:e.decodedBodySize,wireBytes:e.transferSize,cached:e.transferSize===0})).sort((a,b)=>b.durationMs-a.durationMs).slice(0,50));
+ openingGPUReady=true;$('world').dataset.openingGPU='ready';loadingContent('P0/P1 已就绪');
+}
+let environmentJob=null;
+function requestEnvironment(){
+ if(!retreat)return;
+ if(environmentJob)return environmentJob;
+ environmentJob=startDeferredTextures(()=>{},{phase:'background',concurrency:1}).then(()=>resources.enqueue('environment','按需环境 · 云与反射',async function*(){
+   $('world').dataset.backgroundPreparation='loading';
+   yield ()=>retreat.sky.userData.prepareClouds();
+   yield ()=>retreat.prepareRendering(()=>{});
+   yield ()=>{$('world').dataset.backgroundPreparation='ready';activeCloudQuality=$('cloudQuality').value;retreat.sky.userData.setCloudQuality(activeCloudQuality);frameQuality.resetSamples();oceanBudget.resetSamples();};
+ },{priority:3})).catch(error=>{environmentJob=null;$('world').dataset.backgroundPreparation='error';console.error('[Refuge environment]',error);});return environmentJob;
+}
+function requestInterior(key){
+ if(!retreat?.interiors.jobs.has(key))return Promise.resolve();
+ const names={'01B':'报告厅','01C':'备份报告厅','07':'教学楼','02':'图书馆','03':'共研工坊','04':'数学实验室','05N':'北食阁','05S':'南食阁','R1':'休息室一组','R3':'休息室三组','06':'访客小院','R2':'休息室二组'},[id,floor]=key.split(':');
+ return resources.enqueue('interior:'+key,(names[id]||id)+' '+floor+' 楼内部',()=>retreat.interiors.load(key),{priority:2}).then(()=>{$('world').dataset.loadedInteriors=[...retreat.interiors.done].join(',');});
+}
+function requestShotInterior(s){
+ if(!s)return;
+ const building=buildingForShot(s.name),ids=['01B','07','02','03','04','05N','05S','R1','R3','10'];
+ const id=s.name==='报告厅备份'?'01C':ids[(building?.number||0)-1];
+ if(id&&id!=='10')void requestInterior(id+':'+(/二楼|楼上/.test(s.name)?2:s.lecture&&activeRoom>0?activeRoom:1)).catch(error=>console.error('[Refuge interior]',error));
+ if(!s.lecture&&!s.hallOrbit&&s.name!=='二楼客厅')requestEnvironment();
+}
+let nearbyAt=0;
+function requestNearbyInteriors(stamp){
+ if(stamp-nearbyAt<500||resources.snapshot().protected||!entered)return;nearbyAt=stamp;
+ for(const key of retreat.interiors.jobs.keys()){
+  if(retreat.interiors.done.has(key))continue;const [id,floor]=key.split(':'),o=buildingOffset(id),centers={'01B':[39,0],'01C':[39,0],'07':[-84,8],'02':[-37,-16],'03':[-6,-4],'04':[11.5,-4],'05N':[39,-22],'05S':[-36.5,19],'R1':[-56,-28],'R3':[-47,-38],'06':[-56,-28],'R2':[-47,-38]};
+  const center=centers[id];if(!center)continue;const dx=camera.position.x-(center[0]*BUILDING_SCALE+o.x),dz=camera.position.z-(center[1]*BUILDING_SCALE+o.z);
+  const upper=id==='01B'||id==='01C'?(2*DECK_Y+HALL.clearHeight/BUILDING_SCALE+.20)*BUILDING_SCALE:id==='07'?seminarFloor(Number(floor)-1)*BUILDING_SCALE:4.9;
+  if(Math.hypot(dx,dz)<24&&(id==='07'?Math.abs(camera.position.y-upper-1.65)<3:Number(floor)===2?camera.position.y>upper-1:camera.position.y<upper+4))void requestInterior(key).catch(error=>console.error('[Refuge interior]',error));
+ }
 }
 
 const weatherService=createShanghaiWeather({onChange(value,state){weatherReading=value;weatherStatus=state;weatherLabel();updateSunEvents();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
@@ -646,7 +695,7 @@ try{
   $('world').dataset.ready='true';$('world').dataset.entered='false';$('world').dataset.hallPreparation='pending';$('world').dataset.startupPhase='entry-ready';
   window.refugeBoot?.ready();renderActivity.setEnabled(!failed);
   if($('loading').dataset.entryRequested==='true')enterScene();
-  void prepareAfterEntryEffects().catch(error=>{console.error('[Refuge background]',error);$('world').dataset.backgroundPreparation='error';});
+  $('world').dataset.backgroundPreparation='on-demand';
 
 }catch(error){document.getElementById('arrivalRenderHold')?.remove();fail(error);}
 
@@ -661,7 +710,7 @@ document.querySelectorAll('#chapters button[data-shot]').forEach(button=>button.
   selectShot(index);
 }));
 function showSettings(open){
- if(open)closeTime();
+ if(open){closeTime();if(entered)requestEnvironment();}
  $('settings').hidden=!open;$('settingsButton').setAttribute('aria-expanded',String(open));
 }
 $('settingsButton').addEventListener('click',()=>showSettings($('settings').hidden));
@@ -887,12 +936,8 @@ async function seekLecture(page){
 }
 $('lectureProgress').addEventListener('input',event=>seekLecture(lecture.clock.startAt+Number(event.target.value)-1));
 $('lecternButton').addEventListener('click',()=>{if(lecture&&physicalRoom===activeRoom&&!(activeRoom===0&&retreat.campus.lecternLift?.lowered))enterSpeakerView();});
-const roomJobs=new Map();let roomActivation=0,pendingRoom=-1,campusTexturesStarted=false;
-function startCampusTextures(){
- if(campusTexturesStarted)return;campusTexturesStarted=true;
- $('world').dataset.campusAssets='loading';
- void startDeferredTextures(()=>{},{concurrency:1}).then(()=>{$('world').dataset.campusAssets='ready';});
-}
+const roomJobs=new Map();let roomActivation=0,pendingRoom=-1;
+
 function registerRoomView(room,i){
  room.root.updateWorldMatrix(true,true);
  const bounds=new THREE.Box3(new THREE.Vector3(13.8,-.6,-11.5),new THREE.Vector3(36.6,5.3,-9.6)).applyMatrix4(room.root.matrixWorld);
@@ -901,6 +946,7 @@ function registerRoomView(room,i){
 }
 async function loadTeachingRoom(index){
  if(rooms[index])return rooms[index];if(roomJobs.has(index))return roomJobs.get(index);
+ roomLecterns[index]=retreat.campus.discussion.lecterns[index-1];
  const root=new THREE.Group(),level=index-1;root.name='Discussion classroom blackboards '+index;configureSeminarRoot(root,level);
  root.position.add(buildingOffset('07'));scene.add(root);
  const job=(async()=>{
@@ -916,8 +962,8 @@ function activateRoom(index,moveCamera=true){
   if(index<1||index>3)return false;
   if(pendingRoom===index)return roomJobs.get(index)?.then(()=>rooms[index]===lecture);
   const request=++roomActivation;pendingRoom=index;$('world').dataset.pendingRoom=String(index);$('mode').textContent='正在准备教学楼 '+index+' 层板书…';
-  startCampusTextures();
-  return loadTeachingRoom(index).then(()=>{
+
+  return requestInterior('07:'+index).then(()=>resources.enqueue('classroom:'+index,'教学楼 '+index+' 楼板书',()=>loadTeachingRoom(index),{priority:2})).then(()=>{
    if(request!==roomActivation)return false;pendingRoom=-1;delete $('world').dataset.pendingRoom;return activateRoom(index,moveCamera);
   }).catch(error=>{if(request===roomActivation){pendingRoom=-1;delete $('world').dataset.pendingRoom;$('mode').textContent='教室加载失败，可重新选择：'+error.message;}return false;});
  }

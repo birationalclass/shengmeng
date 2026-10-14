@@ -30,7 +30,7 @@ export const layout=[
  ['R2','休息室二组',-47,-38,-175,235,26,20]
 ];
 const byId=id=>layout.find(b=>b[0]===id);
-function owner(x,z){
+export function layoutOwner(x,z){
  if(x>23&&z>=-16.6&&z<=16.6)return byId('01B');
  if(x>30&&z< -16.6)return byId('05N');
  if(x< -75)return byId('07');
@@ -48,7 +48,10 @@ const relocation=b=>{
  return new T.Matrix4().makeTranslation(anchor+b[4],0,-b[5]).multiply(new T.Matrix4().makeScale(sx,1,sz)).multiply(new T.Matrix4().makeTranslation(-b[2]*S,0,-b[3]*S));
 };
 const destinations=b=>[b,...(b[0]==='01B'?[byId('01C')]:b[0]==='R1'?[byId('06')]:b[0]==='R3'?[byId('R2')]:[])];
-export function relocateArchitecture(scene,objects,worldInstances=false){
+export function relocateArchitecture(scene,objects,worldInstances=false,{onlyId=null,deferNode=null}={}){
+ const wanted=b=>onlyId?destinations(b).filter(d=>d[0]===onlyId):destinations(b);
+ const currentPosition=(object,id)=>{if(!onlyId)return;const a=byId(id),b=campusLayout.find(row=>row[0]===id);object.position.x+=b[4]-a[4];object.position.z-=b[5]-a[5];};
+ const publish=(object,id)=>{currentPosition(object,id);track(object,id);if(deferNode&&deferNode(object,id))return object;scene.add(object);return object;};
  scene.updateMatrixWorld(true);
  const scratch=new T.Matrix4(),point=new T.Vector3();
  for(const obj of [...objects]){
@@ -59,7 +62,7 @@ export function relocateArchitecture(scene,objects,worldInstances=false){
    const indices=new Map();
    for(let i=0;i<pos.count;i+=3){
     point.set(0,0,0);for(let j=0;j<3;j++)point.add(new T.Vector3().fromBufferAttribute(pos,i+j));point.divideScalar(3);
-    const b=owner(point.x,point.z),delta=offset(b).divideScalar(S);
+    const b=layoutOwner(point.x,point.z),delta=offset(b).divideScalar(S);
     if(!indices.has(b[0]))indices.set(b[0],[]);indices.get(b[0]).push(i,i+1,i+2);
     for(let j=0;j<3;j++)pos.setXYZ(i+j,pos.getX(i+j)+delta.x,pos.getY(i+j),pos.getZ(i+j)+delta.z);
    }
@@ -70,7 +73,7 @@ export function relocateArchitecture(scene,objects,worldInstances=false){
    for(let i=0;i<src.count;i+=3){const x=(src.getX(i)+src.getX(i+1)+src.getX(i+2))/3,z=(src.getZ(i)+src.getZ(i+1)+src.getZ(i+2))/3;
     if(Math.abs(x*S-(anchor-62))<24&&Math.abs(z*S)<25)for(let j=0;j<3;j++){verts.push(src.getX(i+j)-41/S,src.getY(i+j),src.getZ(i+j)-225/S);if(uv)uvs.push(uv.getX(i+j),uv.getY(i+j));}
    }
-   if(verts.length){const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(verts,3));if(uvs.length)g.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));g.computeVertexNormals();const m=new T.Mesh(g,obj.material);m.scale.copy(obj.scale);m.castShadow=m.receiveShadow=true;scene.add(track(m,'01C'));}
+   if(verts.length){const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(verts,3));if(uvs.length)g.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));g.computeVertexNormals();const m=new T.Mesh(g,obj.material);m.scale.copy(obj.scale);m.castShadow=m.receiveShadow=true;if(!onlyId||onlyId==='01C')publish(m,'01C');}
    continue;
   }
   if(obj.isInstancedMesh){
@@ -79,19 +82,20 @@ export function relocateArchitecture(scene,objects,worldInstances=false){
     obj.getMatrixAt(i,scratch);point.setFromMatrixPosition(scratch);
     // Old garden perimeter strips belong to the retired ground footprint.
     if(obj.material?.userData?.stripSource&&point.y/(worldInstances?S:1)<.2)continue;
-    const b=owner(point.x/(worldInstances?S:1),point.z/(worldInstances?S:1));
-    for(const dest of destinations(b)){if(dest[0]==='01B'&&['replaced-hall-terrace-furniture','original-hall-stair','hall-upper-edge-strip','removed-hall-west-canopy','removed-hall-entrance-bridge'].includes(obj.userData.campusParts?.[i]))continue;const unit=worldInstances?1:S;const transform=new T.Matrix4().makeScale(1/unit,1/unit,1/unit).multiply(relocation(dest)).multiply(new T.Matrix4().makeScale(unit,unit,unit));const matrix=scratch.clone().premultiply(transform);if(!chunks.has(dest[0]))chunks.set(dest[0],[]);matrix.designGroup=obj.userData.designGroups?.[i]||'';chunks.get(dest[0]).push(matrix);}
+    const b=layoutOwner(point.x/(worldInstances?S:1),point.z/(worldInstances?S:1));
+    for(const dest of wanted(b)){if(dest[0]==='01B'&&['replaced-hall-terrace-furniture','original-hall-stair','hall-upper-edge-strip','removed-hall-west-canopy','removed-hall-entrance-bridge'].includes(obj.userData.campusParts?.[i]))continue;const unit=worldInstances?1:S;const transform=new T.Matrix4().makeScale(1/unit,1/unit,1/unit).multiply(relocation(dest)).multiply(new T.Matrix4().makeScale(unit,unit,unit));const matrix=scratch.clone().premultiply(transform);if(!chunks.has(dest[0]))chunks.set(dest[0],[]);matrix.designGroup=obj.userData.designGroups?.[i]||'';matrix.campusPart=obj.userData.campusParts?.[i]||'';chunks.get(dest[0]).push(matrix);}
    }
    obj.visible=false;
-   for(const [id,matrices] of chunks){const m=new T.InstancedMesh(obj.geometry,obj.material,matrices.length);m.name='Layout '+id+' '+obj.name;m.userData.designGroups=matrices.map(a=>a.designGroup);m.scale.copy(obj.scale);m.position.copy(obj.position);matrices.forEach((a,i)=>m.setMatrixAt(i,a));m.castShadow=obj.castShadow;m.receiveShadow=obj.receiveShadow;m.computeBoundingSphere();m.computeBoundingBox();scene.add(track(m,id));}
+   for(const [id,matrices] of chunks){const m=new T.InstancedMesh(obj.geometry,obj.material,matrices.length);m.name='Layout '+id+' '+obj.name;m.userData.designGroups=matrices.map(a=>a.designGroup);m.userData.campusParts=matrices.map(a=>a.campusPart);m.scale.copy(obj.scale);m.position.copy(obj.position);matrices.forEach((a,i)=>m.setMatrixAt(i,a));m.castShadow=obj.castShadow;m.receiveShadow=obj.receiveShadow;m.computeBoundingSphere();m.computeBoundingBox();publish(m,id);}
    continue;
   }
   if(/roof.*number/i.test(obj.name)){obj.visible=false;continue;}
   const bounds=new T.Box3().setFromObject(obj);
   if(bounds.isEmpty())continue;
-  bounds.getCenter(point).divideScalar(S);const b=owner(point.x,point.z);
-  for(const dest of destinations(b).slice(1)){const copy=obj.clone(true);copy.position.add(offset(dest));copy.name='Layout '+dest[0]+' '+obj.name;scene.add(track(copy,dest[0]));}
-  obj.applyMatrix4(relocation(b));track(obj,b[0]);
+  bounds.getCenter(point).divideScalar(S);const b=layoutOwner(point.x,point.z);
+  for(const dest of wanted(b).filter(d=>d[0]!==b[0])){const copy=obj.clone(true);copy.position.add(offset(dest));copy.name='Layout '+dest[0]+' '+obj.name;publish(copy,dest[0]);}
+  if(onlyId&&onlyId!==b[0]){obj.visible=false;continue;}
+  obj.applyMatrix4(relocation(b));currentPosition(obj,b[0]);track(obj,b[0]);if(deferNode&&deferNode(obj,b[0]))scene.remove(obj);
   if(b[0]==='01B'&&obj.name.startsWith('Lantern soft ground pool'))obj.visible=false;
  }
  scene.updateMatrixWorld(true);
@@ -104,7 +108,7 @@ export function finishCampusLayout(scene,retreat,rooms){
  for(const part of sharedVertices){const a=byId(part.id),b=campusLayout.find(b=>b[0]===part.id),p=part.geometry.attributes.position;for(const i of part.indices)p.setXYZ(i,p.getX(i)+(b[4]-a[4])/part.scale,p.getY(i),p.getZ(i)-(b[5]-a[5])/part.scale);p.needsUpdate=true;part.geometry.computeBoundingBox();part.geometry.computeBoundingSphere();}
  rooms.forEach((r,i)=>r.root.position.add(buildingOffset(i?'07':'01B')));
 
- for(const lamp of scene.children.filter(o=>o.isPointLight||o.isSpotLight)){const b=owner(lamp.position.x/S,lamp.position.z/S);lamp.position.add(buildingOffset(b[0]));if(lamp.target)lamp.target.position.add(buildingOffset(b[0]));}
+ for(const lamp of scene.children.filter(o=>o.isPointLight||o.isSpotLight)){const b=layoutOwner(lamp.position.x/S,lamp.position.z/S);lamp.position.add(buildingOffset(b[0]));if(lamp.target)lamp.target.position.add(buildingOffset(b[0]));}
 
  const top=.275*S,bottom=retreat.site.seaLevel-1;
  for(const b of campusLayout)if(b[0]!=='G'){

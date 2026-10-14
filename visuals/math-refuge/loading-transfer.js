@@ -1,4 +1,4 @@
-import {STARTUP_RESOURCES} from './startup-resources.js?v=stages-3';
+import {STARTUP_RESOURCES} from './startup-resources.js?v=demand-1';
 // Observe existing requests; never fetch, preload, or change the scene's loaders.
 export class LoadingTransfer {
  constructor(resources,base){
@@ -35,7 +35,7 @@ export function formatBytes(bytes){return bytes>=1e6?(bytes/1e6).toFixed(2)+' MB
 if(typeof document!=='undefined'){
  const world=document.getElementById('world'),background=document.getElementById('postEntryLoad');
  if(world&&background&&typeof MutationObserver!=='undefined'){
-  const report=()=>{const entered=world.dataset.entered==='true',hall=world.dataset.hallPreparation,environment=world.dataset.backgroundPreparation;background.hidden=!entered||(hall==='ready'&&environment==='ready');background.textContent=hall==='error'?'报告厅暂未就绪':hall!=='ready'?'正在准备报告厅…':environment==='error'?'环境资源暂未完整加载':'正在完善环境…';};
+  const report=()=>{const entered=world.dataset.entered==='true',hall=world.dataset.hallPreparation,environment=world.dataset.backgroundPreparation;background.hidden=!entered||hall==='ready';background.textContent=hall==='error'?'报告厅暂未就绪':hall!=='ready'?'正在准备报告厅…':environment==='error'?'环境资源暂未完整加载':'正在完善环境…';};
   new MutationObserver(report).observe(world,{attributes:true,attributeFilter:['data-entered','data-hall-preparation','data-background-preparation']});report();
  }
  const output=document.getElementById('loadTransfer'),loading=document.getElementById('loading');

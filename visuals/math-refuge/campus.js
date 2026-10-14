@@ -1,13 +1,12 @@
 import {createSwivelChairs} from './swivel-chairs.js?v126';
 import {subtractRect} from './board-storage.js?v124';
 import {BOARD_SHAFT_PLAN,LECTERN_SHAFT_PLAN} from './site-layout.js?v124';
-import {createSeminarBuilding} from './seminar-building.js?v62-chalk-ink';
+import {createSeminarBuilding} from './seminar-building.js?v=demand-1';
 import * as THREE from 'three';
 import {BUILDINGS} from './building-catalog.js?v=true-north-coast-1';
 import {createRoofNumber} from './roof-number.js?v62-chalk-ink';
 import {terracePaving} from './terrace-paving.js';
 import {createLectern} from './lectern.js?v=103-pulley';
-import {createUpperLounge} from './upper-lounge.js?v=concert-52';
 import {perimeterRails} from './upper-guards.js?v=36-board-detail';
 import {createAutomaticDoors} from './automatic-doors.js?v44-hall-clearance';
 import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
@@ -16,7 +15,7 @@ import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=15-fix
 
 // Architectural geometry for dry offshore decks, rooms and supported inter-storey stairs.
 // No swimming basin or exposed support piles are constructed.
-export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials}){
+export function createCampus(scene,{section=()=>{},deferInterior=(_key,_label,fn)=>fn(),box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials}){
   const {steel,stone,edge,brass,timber,pale,darkFabric,soil,glass,light,blackboard}=materials;
   const doorFrame=new THREE.MeshPhysicalMaterial({color:0x414c50,roughness:.48,metalness:.55,envMapIntensity:.22,clearcoat:.08,clearcoatRoughness:.4});
   const roofNumbers=[];
@@ -128,13 +127,18 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
     // Every occupied room receives actual illumination, including upstairs.
     lightingZones.push({name,position:[x,pendant-.22,z],target:[x,y+.45,z],gain,color,power:name.startsWith('Quiet')?130:240});
   }
-  function books(cx,y,z,w){
+  function booksNow(cx,y,z,w){
     box([cx,y+1.08,z],[w,2.16,.32],timber);
     for(let row=0;row<4;row++){
       box([cx,y+.12+row*.52,z+.12],[w,.045,.38],brass);
       for(let i=0;i<Math.floor(w/.19);i++)box([cx-w/2+.14+i*.19,y+.32+row*.52,z+.13],[.12,.26+(i%3)*.06,.25],i%3?blackboard:pale);
     }
   }
+  function books(cx,y,z,w){const id=cx===-37?'02:1':'03:1';deferInterior(id,id==='02:1'?'图书馆书架':'共研工坊书架',function*(){
+    // One shelf row per turn, rather than creating hundreds of books at once.
+    yield ()=>box([cx,y+1.08,z],[w,2.16,.32],timber);
+    for(let row=0;row<4;row++)yield ()=>{box([cx,y+.12+row*.52,z+.12],[w,.045,.38],brass);for(let i=0;i<Math.floor(w/.19);i++)box([cx-w/2+.14+i*.19,y+.32+row*.52,z+.13],[.12,.26+(i%3)*.06,.25],i%3?blackboard:pale);};
+  });}
   function room(name,cx,cz,w,d,clear=3.2,base=0,doors=['south'],ownFloor=true,ownRoof=true){
     const y=base+DECK_Y,h=clear/S,roof=base+DECK_Y+h+.20;
     if(ownFloor)floor(base,w,d,cx,cz);if(ownRoof)floor(roof,w+.55,d+.55,cx,cz);
@@ -187,11 +191,11 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   for(const x of [-41,-37,-33]){table(x,DECK_Y,-16,1.7,.8);sofa(x,DECK_Y,-18);}
   for(const [i,x,z] of [[1,-56,-28],[2,-47,-38]]){
     room('Quiet residential villa '+i,x,z,8,7,2.8,0,['east','west']);
-    soft([x-1,DECK_Y+.28,z],[2.0/S,.45/S,2.1/S],pale);sofa(x+1.5,DECK_Y,z-1);
+    deferInterior(i===1?'R1:1':'R3:1','客舍卧室',()=>soft([x-1,DECK_Y+.28,z],[2.0/S,.45/S,2.1/S],pale));sofa(x+1.5,DECK_Y,z-1);
     floor(0,3,7,x+5.5,z);railing(x+7,DECK_Y,z,7,'z');
   }
   room('Service and tea kitchen',-36.5,19,11,8,2.8,0,['west','east']);
-  box([-39,DECK_Y+.45,18],[2,.9,5],stone);box([-35,DECK_Y+1,19],[.12,2,7],timber);
+  deferInterior('05S:1','南食阁厨房',()=>{box([-39,DECK_Y+.45,18],[2,.9,5],stone);box([-35,DECK_Y+1,19],[.12,2,7],timber);});
   // Dry entry paths connect the rooms and continuous dry courtyard.
   floor(0,47,2.6,-46.5,8);floor(0,2.6,23,-46,-4.8);floor(0,2.5,2.6,-44.75,-16);
   floor(0,2.6,48,-63,-16);floor(0,3,2.6,-61.5,-28);floor(0,12,2.6,-57,-38);
@@ -268,8 +272,13 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   const loungeX=39;
   room('Upper seminar lounge',loungeX,0,7,13,2.8,hallUpper,['west','south'],false,true);
 
-  const upperLounge=createUpperLounge(THREE,{seatCloth,seatShell:shell,seatMetal:brass});
-  upperLounge.group.position.set(loungeX,hallUpper+DECK_Y,0);upperLounge.group.scale.setScalar(1/S);scene.add(upperLounge.group);
+  const upperLounges=[];
+  for(const id of ['01B','01C'])deferInterior(id+':2',id==='01B'?'报告厅二楼客厅':'备份报告厅二楼',function*(){
+    let module;yield async()=>{module=await import('./upper-lounge.js?v=demand-1');};
+    const steps=module.createUpperLoungeSteps(THREE,{seatCloth,seatShell:shell,seatMetal:brass});let item;
+    for(;;){const step=steps.next();if(step.done){item=step.value;break;}yield;}
+    item.group.position.set(loungeX,hallUpper+DECK_Y,0);item.group.scale.setScalar(1/S);scene.add(item.group);upperLounges.push(item);
+  });
   const ceiling=new THREE.Mesh(new THREE.BoxGeometry(HALL.east-HALL.west-.3,.04,hallDepth-.6),acousticCeiling);
   ceiling.position.set(cx,DECK_Y+HALL.clearHeight/S,0);ceiling.receiveShadow=true;ceiling.name='Fixed seminar acoustic ceiling';scene.add(ceiling);
   // Selected concept A: one low suspended oval, clear of the task lighting.
@@ -342,6 +351,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   // Both sides remain transparent. Acoustic absorption is on the carpet and
   // ceiling, not an opaque north wall blocking the left-hand sea view.
   meta('Transparent seminar side elevations',{northOpaqueWall:false,southOpaqueWall:false});
+  section('hall-interior-1');
   const seating=meta('Mathematics auditorium seating',{seats:SEAT_ROWS.length*SEAT_COLUMNS.length,seatsPerRow:SEAT_COLUMNS.length,rows:3,centralAisle:1.6,facing:[1,0,0],seatPositions:[],rowRises:SEAT_ROWS.map(r=>r.rise),clearHeight:HALL.clearHeight,offshore:true});
   const carpetTop=DECK_Y+.028;
   // Two low carpeted seating tiers; the front row stays on the main floor.
@@ -374,11 +384,11 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   section('');
   // Sea access has been removed; the continuous platform fascia and edge lights
   // follow the same complete perimeter without stair projections.
-  const discussion=createSeminarBuilding(scene,{box,soft,beam,floor,glazing,instance,materials,automaticDoors});
+  const discussion=createSeminarBuilding(scene,{box,soft,beam,floor,glazing,instance,materials,automaticDoors,deferInterior});
   lightingZones.push(...discussion.lightingZones);
   return {swivelChairs,boardLampMaterial,carpetMaterial,blind,seating,lightingZones,automaticDoors,lectern,discussion,
     roofNumbers,
     setTeachingShade(closed){blind.visible=Boolean(closed);},
-    dispose(){doorFrame.dispose();swivelChairs.dispose();boardLampMaterial.dispose();roofNumbers.forEach(n=>n.dispose());discussion.dispose();lectern.dispose();upperLounge.dispose();ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.children.forEach(m=>m.geometry.dispose());carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
+    dispose(){doorFrame.dispose();swivelChairs.dispose();boardLampMaterial.dispose();roofNumbers.forEach(n=>n.dispose());discussion.dispose();lectern.dispose();upperLounges.forEach(item=>item.dispose());ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.children.forEach(m=>m.geometry.dispose());carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
   };
 }

@@ -16,7 +16,7 @@ test('background jobs yield a turn with a bounded idle timeout',async()=>{
  let delay;await idleTurn({setTimeout(resolve,ms){delay=ms;resolve();}});assert.equal(delay,32);
 });
 test('entry textures cannot accidentally start hall or background texture jobs',async()=>{
- const source=readFileSync(new URL('./deferred-textures.js',import.meta.url),'utf8').replace("import * as THREE from 'three';",'const THREE={};');
+ const source=readFileSync(new URL('./deferred-textures.js',import.meta.url),'utf8').replace("import * as THREE from 'three';",'const THREE={};').replace("import {fetchProgressBlob} from './resource-progress.js';",'const fetchProgressBlob=()=>{};');
  const {deferAsset,startDeferredTextures}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));const loaded=[];
  deferAsset(()=>loaded.push('hall'),{critical:true,phase:'hall'});deferAsset(()=>loaded.push('background'),{phase:'background'});deferAsset(()=>loaded.push('entry'),{critical:true,phase:'entry'});
  await startDeferredTextures(()=>{},{phase:'entry',concurrency:1});assert.deepEqual(loaded,['entry']);

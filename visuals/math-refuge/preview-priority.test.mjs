@@ -16,7 +16,7 @@ test('crisp priority keeps readable pixels at every fallback tier before and dur
  }
 });
 test('deferred assets wait for completion, recover from a failure and report final progress',async()=>{
- const source=(await readFile(new URL('./deferred-textures.js',import.meta.url),'utf8')).replace("import * as THREE from 'three';",'const THREE={};');
+ const source=(await readFile(new URL('./deferred-textures.js',import.meta.url),'utf8')).replace("import * as THREE from 'three';",'const THREE={};').replace("import {fetchProgressBlob} from './resource-progress.js';",'const fetchProgressBlob=()=>{};');
  const queue=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
  const events=[],progress=[];
  queue.deferAsset(async()=>{await new Promise(r=>setTimeout(r,10));events.push('first');});
@@ -29,7 +29,7 @@ test('deferred assets wait for completion, recover from a failure and report fin
 });
 
 async function textureQueue(){
- const source=(await readFile(new URL('./deferred-textures.js',import.meta.url),'utf8')).replace("import * as THREE from 'three';",'const THREE={};');
+ const source=(await readFile(new URL('./deferred-textures.js',import.meta.url),'utf8')).replace("import * as THREE from 'three';",'const THREE={};').replace("import {fetchProgressBlob} from './resource-progress.js';",'const fetchProgressBlob=()=>{};');
  return import('data:text/javascript;base64,'+Buffer.from(source+'\n// '+Math.random()).toString('base64'));
 }
 test('hall readiness never starts or waits for unrelated landscape images',async()=>{

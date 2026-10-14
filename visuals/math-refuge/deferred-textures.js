@@ -1,4 +1,7 @@
+import {fetchProgressBlob} from './resource-progress.js';
 import * as THREE from 'three';
+let executor=null;export function setDeferredExecutor(value){executor=value;}
+async function run(job){const result=job();if(result?.next){for(;;){const step=await result.next();if(step.done)return;await (typeof step.value==='function'?step.value():step.value);}}else await result;}
 const pending=[],startedPhases=new Set(),phaseCounts=new Map();let criticalStarted=false,allStarted=false,running=0,limit=3,completed=0,total=0,criticalCompleted=0,criticalTotal=0;const observers=new Set();
 function notify(){
  for(const item of [...observers]){
@@ -14,7 +17,7 @@ function pump(){
   if(index<0)index=pending.findIndex(item=>available(item)&&item.critical);
   if(index<0)index=pending.findIndex(available);if(index<0)break;
   const item=pending.splice(index,1)[0];running++;
-  Promise.resolve().then(item.job).catch(()=>{}).finally(()=>{running--;completed++;phaseCounts.get(item.phase).done++;if(item.critical)criticalCompleted++;notify();setTimeout(pump,0);});
+  Promise.resolve().then(()=>executor?executor(item):run(item.job)).catch(()=>{}).finally(()=>{running--;completed++;phaseCounts.get(item.phase).done++;if(item.critical)criticalCompleted++;notify();setTimeout(pump,0);});
  }
  notify();
 }
@@ -22,10 +25,14 @@ export function startDeferredTextures(report=()=>{},{criticalOnly=false,concurre
  if(phase)startedPhases.add(phase);else{criticalStarted=true;if(!criticalOnly)allStarted=true;}limit=Math.max(1,Math.min(3,concurrency));
  return new Promise(resolve=>{observers.add({report,resolve,criticalOnly,phase});pump();});
 }
-export function deferAsset(job,{critical=false,phase=critical?'hall':'background'}={}){total++;if(critical)criticalTotal++;if(!phaseCounts.has(phase))phaseCounts.set(phase,{done:0,total:0});phaseCounts.get(phase).total++;pending.push({job,critical,phase});pump();}
+export function deferAsset(job,{critical=false,phase=critical?'hall':'background'}={}){total++;if(critical)criticalTotal++;if(!phaseCounts.has(phase))phaseCounts.set(phase,{done:0,total:0});phaseCounts.get(phase).total++;pending.push({job,critical,phase,id:total});pump();}
 export function deferredTexture(url,{critical=false,phase=critical?'hall':'background'}={}){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1;
  const ctx=canvas.getContext('2d');ctx.fillStyle=/normal|waternormals/.test(url)?'rgb(128,128,255)':'white';ctx.fillRect(0,0,1,1);
  const map=new THREE.CanvasTexture(canvas);
- deferAsset(async()=>{try{const loaded=await new THREE.TextureLoader().loadAsync(url);map.image=loaded.image;map.needsUpdate=true;loaded.dispose();}catch{/* Retain the neutral material if offline. */}},{critical,phase});return map;
+ deferAsset(async function*(){let image;
+  // Download/decode and GPU publication occupy separate scheduled turns.
+  yield async()=>{try{const blob=await fetchProgressBlob(url);if(globalThis.createImageBitmap)image=await createImageBitmap(blob,{imageOrientation:'flipY',premultiplyAlpha:'none',colorSpaceConversion:'none'});else{const src=URL.createObjectURL(blob);try{const loaded=await new THREE.TextureLoader().loadAsync(src);image=loaded.image;loaded.dispose();}finally{URL.revokeObjectURL(src);}}}catch{}};
+  yield ()=>{if(image){map.image=image;map.needsUpdate=true;}};
+ },{critical,phase});return map;
 }

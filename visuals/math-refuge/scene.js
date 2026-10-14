@@ -1,10 +1,10 @@
 import {createCloudLayout} from './cloud-layout.js';
 import {twilightCloudFactor} from './twilight-clouds.js?v=cloud-rate-142';
 import {fadeToward} from './effect-fade.js?v=arrival-light-74';
-import {relocateArchitecture} from './campus-layout.js';
+import {relocateArchitecture,layoutOwner,buildingOffset} from './campus-layout.js?v=demand-1';
 import {subtractRect} from './board-storage.js?v124';
 import {BOARD_SHAFT_PLAN} from './site-layout.js?v124';
-import {deferredTexture} from './deferred-textures.js?v=stages-2';
+import {deferredTexture} from './deferred-textures.js?v=demand-1';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
 import {createCampusOcean} from './ocean-study.js?v=cloud-sun-143';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
@@ -20,14 +20,14 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v=flush-sill-81';
 import {createPathLighting} from './path-lighting.js?v=terrace-b-50';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v=stages-2';
+import {createWeatherSky} from './weather-sky.js?v=demand-1';
 import {solarState,solarEvents,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
 import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v=true-north-coast-1';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v=stages-2';
+import {createLandscape} from './landscape.js?v=demand-1';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
 import {createDistantIslands} from './distant-islands.js?v44-hall-clearance';
-import {createCampus} from './campus.js?v=spiral-20260926';
+import {createCampus} from './campus.js?v=demand-1';
 import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour';
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
@@ -304,7 +304,9 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   const rubber=mat('#0e1b18',.97);
   let campusPart='';
   const section=name=>{campusPart=name;};
-  const batches=new Map(),dummy=new THREE.Object3D(),layoutFloors=[];
+  const interiorJobs=new Map(),interiorDone=new Set();let lateMode=false;
+  function deferInterior(key,label,fn){const [id,floor]=key.split(':'),copy=id==='R1'?'06':id==='R3'?'R2':null;for(const target of [key,...(copy?[copy+':'+floor]:[])]){if(!interiorJobs.has(target))interiorJobs.set(target,{label,builders:[]});interiorJobs.get(target).builders.push(fn);}}
+  const batches=new Map();let activeBatches=batches;const dummy=new THREE.Object3D(),layoutFloors=[];
   function instance(geo,material,p,s,r=[0,0,0]){
     // A campus-wide material batch defeats frustum culling: seeing one chair
     // used to submit the chairs and fittings in every building and storey.
@@ -312,9 +314,9 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
 
     const region=p[0]<-76?'seminar:'+Math.floor(p[1]/3):p[0]>30?'hall:'+Math.floor(p[1]/3):'campus';
     const key=geo.uuid+material.uuid+region;
-    if(!batches.has(key))batches.set(key,{geo,material,matrices:[],parts:[],region});
+    if(!activeBatches.has(key))activeBatches.set(key,{geo,material,matrices:[],parts:[],region});
     dummy.position.fromArray(p);dummy.scale.fromArray(s);dummy.rotation.set(...r);dummy.updateMatrix();
-    batches.get(key).matrices.push(dummy.matrix.clone());batches.get(key).parts.push(campusPart);
+    activeBatches.get(key).matrices.push(dummy.matrix.clone());activeBatches.get(key).parts.push(campusPart);
   }
   const box=(p,s,m=stone,r)=>instance(boxes,m,p,s,r);
   const soft=(p,s,m=pale,r)=>{
@@ -394,7 +396,9 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   function tree(x,y,z,scale=1){
     landscape.tree(x,y,z,scale*BUILDING_SCALE);
   }
-  function sofa(x,y,z,angle=0){
+  function furnitureKey(x,y,z){const id=layoutOwner(x,z)[0],level=y>3?2:1;return id==='01B'||id==='G'?null:id+':'+level;}
+  function sofa(x,y,z,angle=0){const key=furnitureKey(x,y,z);if(key&&!lateMode)return deferInterior(key,'内部座椅',()=>sofaNow(x,y,z,angle));return sofaNow(x,y,z,angle);}
+  function sofaNow(x,y,z,angle=0){
     const group=new THREE.Group();group.position.set(x,y,z);group.rotation.y=angle;
     // Transform upholstered modules into the common instancing batches.
     const part=(p,s,m)=>{const v=new THREE.Vector3(...p).divideScalar(BUILDING_SCALE).applyAxisAngle(new THREE.Vector3(0,1,0),angle).add(group.position);soft(v.toArray(),s.map(d=>d/BUILDING_SCALE),m,[0,angle,0]);};
@@ -406,7 +410,8 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
     part([-1.52,.52,0],[.22,.55,1.1],darkFabric);part([1.52,.52,0],[.22,.55,1.1],darkFabric);
     for(const px of [-1.2,1.2])for(const pz of [-.35,.35])part([px,.06,pz],[.09,.15,.09],brass);
   }
-  function table(x,y,z,w=2,d=1){
+  function table(x,y,z,w=2,d=1){const key=furnitureKey(x,y,z);if(key&&!lateMode)return deferInterior(key,'内部桌椅',()=>tableNow(x,y,z,w,d));return tableNow(x,y,z,w,d);}
+  function tableNow(x,y,z,w=2,d=1){
     const p=(a,b,c)=>[x+a/BUILDING_SCALE,y+b/BUILDING_SCALE,z+c/BUILDING_SCALE],s=a=>a.map(v=>v/BUILDING_SCALE);
     soft(p(0,.57,0),s([w,.12,d]),timber);
     for(const dx of [-w*.36,w*.36])for(const dz of [-d*.33,d*.33])box(p(dx,.28,dz),s([.075,.55,.075]),brass);
@@ -415,7 +420,7 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
     instance(cylinder,ceramic,p(.4,.72,0),s([.13,.19,.13]));
   }
   report('正在搭建海上长露台与报告厅…');await new Promise(resolve=>setTimeout(resolve,16));
-  const campus=createCampus(scene,{section,box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials});
+  const campus=createCampus(scene,{section,deferInterior,box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials});
   await checkpoint(38);
   const pathLighting=createPathLighting(scene,{box,beam,materials,section});
   materials.terraceStrip=pathLighting.material;
@@ -544,7 +549,14 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
     }
   }
   for(const object of architectureObjects){object.scale.multiplyScalar(BUILDING_SCALE);object.position.multiplyScalar(BUILDING_SCALE);object.userData.architectureScale=BUILDING_SCALE;}
-  relocateArchitecture(scene,architectureObjects);
+  function deferBackup(object,id){
+    if(id!=='01C')return false;
+    const tagged=object.userData.campusParts?.some(part=>part==='hall-interior-1');
+    if(!tagged&&!/carpet|chair|lectern|pendant|acoustic ceiling|blackout/i.test(object.name))return false;
+    const bounds=new THREE.Box3().setFromObject(object),floor=bounds.getCenter(new THREE.Vector3()).y>6?2:1;
+    deferInterior(id+':'+floor,'备份报告厅 '+floor+' 楼内部',()=>({published:object}));return true;
+  }
+  relocateArchitecture(scene,architectureObjects,false,{deferNode:deferBackup});
   relocateArchitecture(scene,campusPlants,true);
   const movedLOD=[];for(const item of lodBatches)for(const mesh of scene.children)if(mesh.isInstancedMesh&&mesh.visible&&mesh.geometry===item.high&&mesh.userData.layoutId)movedLOD.push({...item,mesh});lodBatches.splice(0,lodBatches.length,...movedLOD);
   for(const item of lodBatches){item.mesh.updateMatrixWorld();item.bounds=item.mesh.boundingBox.clone().applyMatrix4(item.mesh.matrixWorld);}
@@ -560,6 +572,25 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   await checkpoint(60);
   const residence=createResidence(scene,materials);
   const roomFill=createRoomFill();roomFill.apply(scene);
+  function* buildInterior(key){
+    if(interiorDone.has(key))return;const entry=interiorJobs.get(key);if(!entry)return;
+    const target=key.split(':')[0],localBatches=new Map(),objects=new Set(),alreadyPlaced=[];
+    function capture(build){const before=new Set(scene.children);activeBatches=localBatches;lateMode=true;let result;
+      try{result=build();}finally{activeBatches=batches;lateMode=false;for(const node of scene.children.filter(n=>!before.has(n))){objects.add(node);scene.remove(node);}}
+      if(result?.published)alreadyPlaced.push(result.published);return result;
+    }
+    for(const builder of entry.builders){
+      let result;yield ()=>{result=capture(builder);};
+      if(result&&typeof result.next==='function')for(;;){let step;yield ()=>{step=capture(()=>result.next());};if(step.done)break;if(typeof step.value==='function')yield ()=>capture(step.value);else if(step.value)yield step.value;}
+    }
+    for(const {geo,material,matrices,parts,region} of localBatches.values())yield ()=>{const mesh=new THREE.InstancedMesh(geo,material,matrices.length);matrices.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));mesh.userData.campusParts=parts;mesh.userData.spatialRegion=region;mesh.castShadow=material!==glass&&material!==smartGlass&&material!==light;mesh.receiveShadow=true;mesh.computeBoundingSphere();mesh.computeBoundingBox();objects.add(mesh);};
+    // Relocate in a detached scene; publish one batch at a time to bound GPU uploads.
+    const staging=new THREE.Scene();for(const node of objects){node.scale.multiplyScalar(BUILDING_SCALE);node.position.multiplyScalar(BUILDING_SCALE);staging.add(node);}
+    yield ()=>relocateArchitecture(staging,objects,false,{onlyId:target});
+    for(const node of [...staging.children.filter(n=>n.userData.layoutId===target),...alreadyPlaced])yield ()=>{roomFill.apply(node);scene.add(node);};
+    interiorDone.add(key);
+  }
+  const interiors={jobs:interiorJobs,done:interiorDone,load:key=>buildInterior(key)};
   const fleet=createBoats(scene);
   islands.group.visible=false;
   const rain=createRain(scene);
@@ -585,10 +616,10 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   scene.fog=new THREE.FogExp2('#8dbbdf',.00028);
   // One neutral diffuse reflection probe; never swap discrete half-hour snapshots.
   // Directional light, sky, water highlights and probe strength evolve continuously.
-  const pmrem=new THREE.PMREMGenerator(renderer);let environment;
+  const pmrem=new THREE.PMREMGenerator(renderer);let environment,environmentAllowed=false;
   const envScene=new THREE.Scene(),probe=createWeatherSky({panorama:false,renderer,device,probe:true});probe.material.uniforms.showSun.value=0;probe.material.uniforms.cloud.value=.18;envScene.add(probe);
   function ensureEnvironment(force=false){
-    if(environment||(!force&&(device.startup||device.isRenderActive?.()===false)))return;
+    if(environment||(!force&&(!environmentAllowed||(device.startup||device.isRenderActive?.()===false))))return;
     environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;probe.geometry.dispose();probe.material.dispose();
   }
   const weather={cloud:.14,rain:0,fog:0,wind:8,windDirection:225},weatherTarget={...weather};let skySeconds=0;const cloudWind={velocity:windVelocity(8,225),offset:{x:0,z:0}},waterWind={velocity:windVelocity(8,225),offset:{x:0,z:0}};
@@ -624,5 +655,5 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   function lighting(value){setTime(6+Math.max(0,Math.min(100,value))/100*6);}
   setWeather(initialTime.weather,true);
   setTime(initialTime.hour??shanghaiHour(),true,0,1,initialTime.date??new Date());
-  return {beginArrivalFade(){environmentBlend=0;sky.userData.beginArrivalFade();},async prepareRendering(report=()=>{}){report(0,'海面材质');await study.prepare(value=>report(value*.25,'海面材质'));report(.75,'环境反射');await new Promise(resolve=>setTimeout(resolve,0));pmrem.compileCubemapShader();ensureEnvironment(true);environmentBlend=1;report(1,'环境反射');},setMediaOpen,residence,rain,weather,get cloudMotion(){const multiplier=cloudWind.timeMultiplier??1;return {speed:Math.hypot(cloudWind.velocity.x,cloudWind.velocity.z)*3600*multiplier,multiplier};},updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,setCloudCoverage(value){weatherTarget.cloud=Math.max(0,Math.min(1,Number(value)||0));},roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>study.ground(x,z),coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){study.dispose();residence.dispose();rain.dispose();lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();if(!environment){probe.geometry.dispose();probe.material.dispose();}pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  return {interiors,beginArrivalFade(){environmentBlend=0;sky.userData.beginArrivalFade();},async prepareRendering(report=()=>{}){report(0,'海面材质');await study.prepare(value=>report(value*.25,'海面材质'));report(.75,'环境反射');await new Promise(resolve=>setTimeout(resolve,0));pmrem.compileCubemapShader();environmentAllowed=true;ensureEnvironment(true);environmentBlend=1;report(1,'环境反射');},setMediaOpen,residence,rain,weather,get cloudMotion(){const multiplier=cloudWind.timeMultiplier??1;return {speed:Math.hypot(cloudWind.velocity.x,cloudWind.velocity.z)*3600*multiplier,multiplier};},updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,setCloudCoverage(value){weatherTarget.cloud=Math.max(0,Math.min(1,Number(value)||0));},roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>study.ground(x,z),coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){study.dispose();residence.dispose();rain.dispose();lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();if(!environment){probe.geometry.dispose();probe.material.dispose();}pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }

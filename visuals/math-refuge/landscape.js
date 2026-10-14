@@ -1,4 +1,4 @@
-import {deferredTexture} from './deferred-textures.js?v=stages-2';
+import {deferredTexture} from './deferred-textures.js?v=demand-1';
 import * as THREE from 'three';
 import {seaLevel,coastline,elevation,gardenElevation,canGardenPlant,slope,canPlant,shoreline,fractal,noise,seededRandom} from './landscape-shape.js?v44-hall-clearance';
 import {BUILDING_SCALE,GIANT_TREES,ORNAMENTAL_TREES,BAMBOO_GROVES,LAWNS,lawnWeight,watercourse,riverPoint,inPool,inBuilding} from './site-layout.js?v44-hall-clearance';

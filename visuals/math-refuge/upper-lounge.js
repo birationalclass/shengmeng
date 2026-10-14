@@ -1,7 +1,7 @@
 import {createGrandPiano} from './grand-piano.js?v=concert-52';
 // Selected sketch A: west workstations, east conversation bays, north bar.
 // Physical metres, with a continuous clear arrival aisle at the west door.
-export function createUpperLounge(T,{seatCloth,seatShell,seatMetal}){
+export function* createUpperLoungeSteps(T,{seatCloth,seatShell,seatMetal}){
   const group=new T.Group();group.name='Upper sea-view academic lounge A';
   const mats=[],geos=[],textures=[],batches=new Map(),dummy=new T.Object3D();
   const material=(color,roughness=.8,metalness=0)=>{const m=new T.MeshStandardMaterial({color,roughness,metalness,envMapIntensity:.18});mats.push(m);return m;};
@@ -49,7 +49,9 @@ export function createUpperLounge(T,{seatCloth,seatShell,seatMetal}){
   const chassis=roundedPanel(.547,.381,.0115,.009),frontFrame=roundedPanel(.541,.327,.0012,.007),chin=roundedPanel(.541,.047,.0012,.005);
   const foot=roundedPanel(.130,.147,.004,.009),neck=roundedPanel(.075,.235,.008,.005);
   const stations=[];
+  yield;
   for(const [i,z] of [-6.6,-4.55,-2.5,2.5,4.55,6.6].entries()){
+    yield;
     const x=-4.07,f=frame(x,0,z,Math.PI/2),m=paint[i],pale=fronts[i];stations.push({x,z,color:colors[i],deskColor:desktop.color.getHexString(),chairColor:workChair.color.getHexString(),width:1.4,depth:.72,computerWidth:.547,computerHeight:.461,bodyDepth:.0115,screen:[0,1.058,-.167],screenSize:[.521,.2930625]});
     box([0,.735,0],[1.4,.055,.72],desktop,f);
     for(const px of [-.60,.60])for(const pz of [-.27,.27])box([px,.36,pz],[.035,.70,.035],bronze,f);
@@ -84,6 +86,7 @@ export function createUpperLounge(T,{seatCloth,seatShell,seatMetal}){
   sofaBase.name='Lounge dark seat shell';sofaBack.name='Lounge warm upholstered back';cushion.name='Lounge warm seat cushions';
   const discussions=[];
   for(const [i,z] of [-4.75,5.6].entries()){
+    yield;
     const x=2.62,m=seatCloth;discussions.push({x,z,radius:1.81,opening:'west',tableRadius:.64,visitorChair:false,tablePlant:false,upholsteryColor:m.color.getHexString(),shellColor:seatShell.color.getHexString()});
     part(cyl,rug,[x,.039,z],[1.92,.018,1.92]);
     part(sofaBase,seatShell,[x,.15,z]);part(sofaBack,m,[x,.37,z]);
@@ -94,7 +97,9 @@ export function createUpperLounge(T,{seatCloth,seatShell,seatMetal}){
     box([x-.18,.635,z+.10],[.31,.04,.23],dark,null,[0,.2,0]);box([x-.12,.669,z+.08],[.27,.025,.20],paint[i],null,[0,-.1,0]);
   }
   meta('Two sea-facing discussion circles',{discussions,groups:2});
+  yield;
   const piano=createGrandPiano();piano.root.position.set(2.62,.04,1.3);group.add(piano.root);
+  yield;
   // North hospitality wall: worktop, backbar, display shelves and varied stock.
   box([.15,.50,-8.16],[7.5,1,.70],wood);box([.15,1.02,-8.05],[7.62,.06,.92],ceramic);
   for(let i=0;i<38;i++)box([-3.5+i*.195,.49,-7.799],[.027,.89,.018],oak);
@@ -103,6 +108,7 @@ export function createUpperLounge(T,{seatCloth,seatShell,seatMetal}){
   const bottleGeo=geom(new T.LatheGeometry([new T.Vector2(.043,0),new T.Vector2(.050,.018),new T.Vector2(.05,.19),new T.Vector2(.022,.235),new T.Vector2(.018,.30),new T.Vector2(.020,.31)],12));
   const bottles=['#476f56','#946137','#4c7a88','#a56462','#bf9d57','#667963'].map(color=>material(color,.4,.15));
   for(let row=0;row<2;row++)for(let i=0;i<30;i++){
+    if(i%10===0)yield;
     const x=-3.38+i*.242,y=row?1.872:1.212,z=-8.35,h=.85+(i%4)*.09;
     part(bottleGeo,bottles[(i+row*2)%bottles.length],[x,y,z],[1,h,1]);part(cyl,bronze,[x,y+.31*h,z],[.022,.026,.022]);
     box([x,y+.12*h,z+.051],[.067,.075,.004],i%2?ceramic:dark);
@@ -122,7 +128,11 @@ export function createUpperLounge(T,{seatCloth,seatShell,seatMetal}){
   meta('Floor-standing lounge plants',{plants:plantPositions});
   meta('Upper lounge clear circulation',{westEntry:[-4.95,0],clearWidthMetres:1.2,centralAisleX:[-2.55,-.8],style:'A'});
   for(const {g,m,matrices} of batches.values()){
+    yield;
     const mesh=new T.InstancedMesh(g,m,matrices.length);mesh.name='Lounge furniture batch';matrices.forEach((v,i)=>mesh.setMatrixAt(i,v));mesh.castShadow=true;mesh.receiveShadow=true;mesh.computeBoundingSphere();group.add(mesh);
   }
   return {group,dispose(){piano.dispose();geos.forEach(g=>g.dispose());mats.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}};
 }
+
+// Retain the synchronous authoring API used by geometry checks.
+export function createUpperLounge(T,options){const steps=createUpperLoungeSteps(T,options);for(;;){const step=steps.next();if(step.done)return step.value;}}
