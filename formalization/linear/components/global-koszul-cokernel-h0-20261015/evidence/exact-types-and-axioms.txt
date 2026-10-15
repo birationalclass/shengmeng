@@ -1,0 +1,293 @@
+@LinearStudy.originalChainCokernelAugmentation : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) → C ⟶ (ChainComplex.single₀ A).obj (CategoryTheory.Limits.cokernel (C.d 1 0))
+'LinearStudy.originalChainCokernelAugmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainCokernelAugmentation_f_zero : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ),
+  (LinearStudy.originalChainCokernelAugmentation C).f 0 = CategoryTheory.Limits.cokernel.π (C.d 1 0)
+'LinearStudy.originalChainCokernelAugmentation_f_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainCokernelAugmentation_quasiIso : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ),
+  (∀ (p : ℕ), 0 < p → HomologicalComplex.ExactAt C p) → QuasiIso (LinearStudy.originalChainCokernelAugmentation C)
+'LinearStudy.originalChainCokernelAugmentation_quasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledLinearSection_exists_globalCokernelAugmentation_quasiIso : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  V.ideal.toIdeal ≠ ⊥ →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+            (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (r + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                ∀ (k : ℤ),
+                                  QuasiIso
+                                    (LinearStudy.originalChainCokernelAugmentation
+                                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k))
+'LinearStudy.projectivePulledLinearSection_exists_globalCokernelAugmentation_quasiIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.functionKoszul_unit_exactAt_zero : ∀ {R : Type u_1} [inst : CommRing R] {r : ℕ} (H : Fin r → R)
+  (i : Fin r), IsUnit (H i) → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) 0
+'LinearStudy.functionKoszul_unit_exactAt_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.functionKoszul_unit_exactAt_all : ∀ {R : Type u_1} [inst : CommRing R] {r : ℕ} (H : Fin r → R) (i : Fin r),
+  IsUnit (H i) → ∀ (p : ℕ), HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) p
+'LinearStudy.functionKoszul_unit_exactAt_all' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszul_sections_exactAt_offCut_all : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (i : Fin r) (k : ℤ),
+  ∀ a ∈ 𝓑 1,
+    ∀ U ≤ AlgebraicGeometry.Proj.basicOpen 𝓑 a,
+      U ≤ AlgebraicGeometry.Proj.basicOpen 𝓑 (H i) →
+        ∀ (p : ℕ),
+          ((((SheafOfModules.forget (AlgebraicGeometry.Proj 𝓑).ringCatSheaf).comp
+                        (PresheafOfModules.evaluation (AlgebraicGeometry.Proj 𝓑).ringCatSheaf.obj
+                          (Opposite.op U))).mapHomologicalComplex
+                    (ComplexShape.down ℕ)).obj
+                (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k)).ExactAt
+            p
+'LinearStudy.nativeProjectiveKoszul_sections_exactAt_offCut_all' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveKoszul_actualStalk_exactAt_offCut_all : ∀ {K S : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ}
+  (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (i : Fin r) (k : ℤ),
+  ∀ a ∈ 𝓑 1,
+    ∀ x ∈ AlgebraicGeometry.Proj.basicOpen 𝓑 a,
+      x ∈ AlgebraicGeometry.Proj.basicOpen 𝓑 (H i) →
+        ∀ (p : ℕ),
+          ((((AlgebraicGeometry.Scheme.Modules.toPresheaf (AlgebraicGeometry.Proj 𝓑)).comp
+                        (TopCat.Presheaf.stalkFunctor AddCommGrpCat x)).mapHomologicalComplex
+                    (ComplexShape.down ℕ)).obj
+                (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k)).ExactAt
+            p
+'LinearStudy.nativeProjectiveKoszul_actualStalk_exactAt_offCut_all' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.tildeKoszulHomologyZeroOriginalCutIso : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      HomologicalComplex.homology (LinearStudy.tildeFunctionKoszulComplex R H) 0 ≅
+        (AlgebraicGeometry.Scheme.Modules.pushforward
+              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+          (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ Ideal.span (Set.range H))).ringCatSheaf)
+'LinearStudy.tildeKoszulHomologyZeroOriginalCutIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulNamedTildeAffineIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                (ha : a ∈ 𝓑 1) →
+                                  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+                                  let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+                                  have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+                                  LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k ≅
+                                    LinearStudy.tildeFunctionKoszulComplex R h
+'LinearStudy.nativeProjectiveKoszulNamedTildeAffineIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleRestrictionComplexHomologyIso : {X Y : AlgebraicGeometry.Scheme} →
+  (j : X ⟶ Y) →
+    [inst : AlgebraicGeometry.IsOpenImmersion j] →
+      {ι : Type u_2} →
+        (c : ComplexShape ι) →
+          (C : HomologicalComplex Y.Modules c) →
+            (D : HomologicalComplex X.Modules c) →
+              (((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex c).obj C ≅ D) →
+                (i : ι) → (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj (C.homology i) ≅ D.homology i
+'LinearStudy.schemeModuleRestrictionComplexHomologyIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulActualRestrictionHomologyIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (R : CommRingCat) →
+              (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) →
+                [inst_4 : AlgebraicGeometry.IsOpenImmersion j] →
+                  {r q : ℕ} →
+                    (H : Fin r → S) →
+                      (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                        (k : ℤ) →
+                          (p : ℕ) →
+                            (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+                                (HomologicalComplex.homology (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k) p) ≅
+                              HomologicalComplex.homology (LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k) p
+'LinearStudy.nativeProjectiveKoszulActualRestrictionHomologyIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveKoszulStandardAffineHomologyIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                (ha : a ∈ 𝓑 1) →
+                                  (p : ℕ) →
+                                    let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+                                    let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+                                    have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+                                    (HomologicalComplex.homologyFunctor (AlgebraicGeometry.Spec R).Modules
+                                            (ComplexShape.down ℕ) p).obj
+                                        (LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k) ≅
+                                      (HomologicalComplex.homologyFunctor (AlgebraicGeometry.Spec R).Modules
+                                            (ComplexShape.down ℕ) p).obj
+                                        (LinearStudy.tildeFunctionKoszulComplex R h)
+'LinearStudy.nativeProjectiveKoszulStandardAffineHomologyIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulHomologyZeroPresentationIso : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      (HomologicalComplex.homologyFunctor (AlgebraicGeometry.Spec R).Modules (ComplexShape.down ℕ) 0).obj
+          (LinearStudy.tildeFunctionKoszulComplex R H) ≅
+        (LinearStudy.tildeKoszulPresentation R H).X₃
+'LinearStudy.tildeKoszulHomologyZeroPresentationIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.originalChainCokernelAugmentation.{v_1, u_1} : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{v_1, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) → C ⟶ (ChainComplex.single₀ A).obj (CategoryTheory.Limits.cokernel (C.d 1 0)) :=
+fun {A : Type u_1} [CategoryTheory.Category.{v_1, u_1} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) =>
+  (C.toSingle₀Equiv (CategoryTheory.Limits.cokernel (C.d 1 0))).symm ⟨CategoryTheory.Limits.cokernel.π (C.d 1 0), ⋯⟩
+def LinearStudy.tildeKoszulHomologyZeroOriginalCutIso.{u} : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      HomologicalComplex.homology (LinearStudy.tildeFunctionKoszulComplex R H) 0 ≅
+        (AlgebraicGeometry.Scheme.Modules.pushforward
+              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+          (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ Ideal.span (Set.range H))).ringCatSheaf) :=
+fun (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) =>
+  let C := LinearStudy.tildeFunctionKoszulComplex R H;
+  C.isoHomologyι₀ ≪≫
+    (HomologicalComplex.opcyclesIsCokernel C 1 0
+          LinearStudy.tildeKoszulHomologyZeroOriginalCutIso._proof_1).coconePointUniqueUpToIso
+      ⋯.gIsCokernel
+def LinearStudy.nativeProjectiveKoszulNamedTildeAffineIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                (ha : a ∈ 𝓑 1) →
+                                  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+                                  let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+                                  have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+                                  LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k ≅
+                                    LinearStudy.tildeFunctionKoszulComplex R h :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [IsNoetherianRing S]
+    {J : Type} (b : J → S) (hb : ∀ (i : J), b i ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1) =>
+  have R := ↧(HomogeneousLocalization.Away 𝓑 a);
+  LinearStudy.nativeProjectiveKoszulStandardAffineIso 𝓑 b hb hgen H hH k a ha
+def LinearStudy.schemeModuleRestrictionComplexHomologyIso.{u, v} : {X Y : AlgebraicGeometry.Scheme} →
+  (j : X ⟶ Y) →
+    [inst : AlgebraicGeometry.IsOpenImmersion j] →
+      {ι : Type v} →
+        (c : ComplexShape ι) →
+          (C : HomologicalComplex Y.Modules c) →
+            (D : HomologicalComplex X.Modules c) →
+              (((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex c).obj C ≅ D) →
+                (i : ι) → (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj (C.homology i) ≅ D.homology i :=
+fun {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y) [AlgebraicGeometry.IsOpenImmersion j] {ι : Type v} (c : ComplexShape ι)
+    (C : HomologicalComplex Y.Modules c) (D : HomologicalComplex X.Modules c)
+    (e : ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex c).obj C ≅ D) (i : ι) =>
+  (LinearStudy.schemeModuleOpenRestriction_homologyIso j c C i).symm ≪≫
+    (HomologicalComplex.homologyFunctor X.Modules c i).mapIso e
+def LinearStudy.nativeProjectiveKoszulActualRestrictionHomologyIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (R : CommRingCat) →
+              (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) →
+                [inst_4 : AlgebraicGeometry.IsOpenImmersion j] →
+                  {r q : ℕ} →
+                    (H : Fin r → S) →
+                      (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                        (k : ℤ) →
+                          (p : ℕ) →
+                            (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+                                (HomologicalComplex.homology (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k) p) ≅
+                              HomologicalComplex.homology (LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k) p :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (R : CommRingCat)
+    (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) [AlgebraicGeometry.IsOpenImmersion j] {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (p : ℕ) =>
+  (LinearStudy.schemeModuleOpenRestriction_homologyIso j (ComplexShape.down ℕ)
+      (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k) p).symm
+def LinearStudy.nativeProjectiveKoszulStandardAffineHomologyIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                (ha : a ∈ 𝓑 1) →
+                                  (p : ℕ) →
+                                    let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+                                    let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+                                    have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+                                    (HomologicalComplex.homologyFunctor (AlgebraicGeometry.Spec R).Modules
+                                            (ComplexShape.down ℕ) p).obj
+                                        (LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k) ≅
+                                      (HomologicalComplex.homologyFunctor (AlgebraicGeometry.Spec R).Modules
+                                            (ComplexShape.down ℕ) p).obj
+                                        (LinearStudy.tildeFunctionKoszulComplex R h) :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [IsNoetherianRing S]
+    {J : Type} (b : J → S) (hb : ∀ (i : J), b i ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1) (p : ℕ) =>
+  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+  (HomologicalComplex.homologyFunctor (AlgebraicGeometry.Spec R).Modules (ComplexShape.down ℕ) p).mapIso
+    (LinearStudy.nativeProjectiveKoszulNamedTildeAffineIso 𝓑 b hb hgen H hH k a ha)
+def LinearStudy.tildeKoszulHomologyZeroPresentationIso.{u} : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      (HomologicalComplex.homologyFunctor (AlgebraicGeometry.Spec R).Modules (ComplexShape.down ℕ) 0).obj
+          (LinearStudy.tildeFunctionKoszulComplex R H) ≅
+        (LinearStudy.tildeKoszulPresentation R H).X₃ :=
+fun (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) => LinearStudy.tildeKoszulHomologyZeroOriginalCutIso R H
