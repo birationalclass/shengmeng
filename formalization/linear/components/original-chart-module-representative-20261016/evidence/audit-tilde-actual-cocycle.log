@@ -1,0 +1,73 @@
+LinearStudy.tildeActualFunctionalPreimage : (R : CommRingCat) →
+  {M N : ModuleCat ↑R} →
+    ((AlgebraicGeometry.tilde.functor R).obj M ⟶ (AlgebraicGeometry.tilde.functor R).obj N) → (M ⟶ N)
+'LinearStudy.tildeActualFunctionalPreimage' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeActualFunctionalPreimage_map : ∀ (R : CommRingCat) {M N : ModuleCat ↑R}
+  (a : (AlgebraicGeometry.tilde.functor R).obj M ⟶ (AlgebraicGeometry.tilde.functor R).obj N),
+  (AlgebraicGeometry.tilde.functor R).map (LinearStudy.tildeActualFunctionalPreimage R a) = a
+'LinearStudy.tildeActualFunctionalPreimage_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeActualFunctionalPreimage_isCocycle : ∀ (R : CommRingCat) (C : ChainComplex (ModuleCat ↑R) ℕ) (r : ℕ)
+  (N : ModuleCat ↑R) (a : (AlgebraicGeometry.tilde.functor R).obj (C.X r) ⟶ (AlgebraicGeometry.tilde.functor R).obj N),
+  CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.tilde.functor R).map (C.d (r + 1) r)) a = 0 →
+    CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) (LinearStudy.tildeActualFunctionalPreimage R a) = 0
+'LinearStudy.tildeActualFunctionalPreimage_isCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeActualCocycleModuleExt : (R : CommRingCat) →
+  {E N : ModuleCat ↑R} →
+    (P : CategoryTheory.ProjectiveResolution E) →
+      (r : ℕ) →
+        (a : (AlgebraicGeometry.tilde.functor R).obj (P.complex.X r) ⟶ (AlgebraicGeometry.tilde.functor R).obj N) →
+          CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.tilde.functor R).map (P.complex.d (r + 1) r)) a = 0 →
+            CategoryTheory.Abelian.Ext E N r
+'LinearStudy.tildeActualCocycleModuleExt' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeActualCocycleModuleExtLaw : (R : CommRingCat) →
+  {E N : ModuleCat ↑R} →
+    (P : CategoryTheory.ProjectiveResolution E) →
+      (r : ℕ) →
+        (a : (AlgebraicGeometry.tilde.functor R).obj (P.complex.X r) ⟶ (AlgebraicGeometry.tilde.functor R).obj N) →
+          CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.tilde.functor R).map (P.complex.d (r + 1) r)) a = 0 →
+            Prop
+'LinearStudy.tildeActualCocycleModuleExtLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeActualCocycleModuleExtLaw_proof : ∀ (R : CommRingCat) {E N : ModuleCat ↑R}
+  (P : CategoryTheory.ProjectiveResolution E) (r : ℕ)
+  (a : (AlgebraicGeometry.tilde.functor R).obj (P.complex.X r) ⟶ (AlgebraicGeometry.tilde.functor R).obj N)
+  (ha : CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.tilde.functor R).map (P.complex.d (r + 1) r)) a = 0),
+  LinearStudy.tildeActualCocycleModuleExtLaw R P r a ha
+'LinearStudy.tildeActualCocycleModuleExtLaw_proof' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.tildeActualFunctionalPreimage.{u} : (R : CommRingCat) →
+  {M N : ModuleCat ↑R} →
+    ((AlgebraicGeometry.tilde.functor R).obj M ⟶ (AlgebraicGeometry.tilde.functor R).obj N) → (M ⟶ N) :=
+fun (R : CommRingCat) {M N : ModuleCat ↑R}
+    (a : (AlgebraicGeometry.tilde.functor R).obj M ⟶ (AlgebraicGeometry.tilde.functor R).obj N) =>
+  (AlgebraicGeometry.tilde.functor R).preimage a
+def LinearStudy.tildeActualCocycleModuleExt.{u} : (R : CommRingCat) →
+  {E N : ModuleCat ↑R} →
+    (P : CategoryTheory.ProjectiveResolution E) →
+      (r : ℕ) →
+        (a : (AlgebraicGeometry.tilde.functor R).obj (P.complex.X r) ⟶ (AlgebraicGeometry.tilde.functor R).obj N) →
+          CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.tilde.functor R).map (P.complex.d (r + 1) r)) a = 0 →
+            CategoryTheory.Abelian.Ext E N r :=
+fun (R : CommRingCat) {E N : ModuleCat ↑R} (P : CategoryTheory.ProjectiveResolution E) (r : ℕ)
+    (a : (AlgebraicGeometry.tilde.functor R).obj (P.complex.X r) ⟶ (AlgebraicGeometry.tilde.functor R).obj N)
+    (ha : CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.tilde.functor R).map (P.complex.d (r + 1) r)) a = 0) =>
+  P.extMk (LinearStudy.tildeActualFunctionalPreimage R a) (r + 1) ⋯ ⋯
+def LinearStudy.tildeActualCocycleModuleExtLaw.{u} : (R : CommRingCat) →
+  {E N : ModuleCat ↑R} →
+    (P : CategoryTheory.ProjectiveResolution E) →
+      (r : ℕ) →
+        (a : (AlgebraicGeometry.tilde.functor R).obj (P.complex.X r) ⟶ (AlgebraicGeometry.tilde.functor R).obj N) →
+          CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.tilde.functor R).map (P.complex.d (r + 1) r)) a = 0 →
+            Prop :=
+fun (R : CommRingCat) {E N : ModuleCat ↑R} (P : CategoryTheory.ProjectiveResolution E) (r : ℕ)
+    (a : (AlgebraicGeometry.tilde.functor R).obj (P.complex.X r) ⟶ (AlgebraicGeometry.tilde.functor R).obj N)
+    (ha : CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.tilde.functor R).map (P.complex.d (r + 1) r)) a = 0) =>
+  CategoryTheory.Abelian.Ext.mapExactFunctor (AlgebraicGeometry.tilde.functor R)
+      (LinearStudy.tildeActualCocycleModuleExt R P r a ha) =
+    LinearStudy.originalChainTopExtClass
+      (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).obj P.complex) r
+      (LinearStudy.mappedOriginalChainAugmentation (AlgebraicGeometry.tilde.functor R) P.complex P.π) a ⋯
+ROLECHECK:LinearStudy.tildeActualFunctionalPreimage:false
+ROLECHECK:LinearStudy.tildeActualFunctionalPreimage_map:true
+ROLECHECK:LinearStudy.tildeActualFunctionalPreimage_isCocycle:true
+ROLECHECK:LinearStudy.tildeActualCocycleModuleExt:false
+ROLECHECK:LinearStudy.tildeActualCocycleModuleExtLaw:false
+ROLECHECK:LinearStudy.tildeActualCocycleModuleExtLaw_proof:true

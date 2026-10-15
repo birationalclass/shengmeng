@@ -1,0 +1,31 @@
+LinearStudy.tildeActualCocycleModuleExt_topRestriction : ∀ (R : CommRingCat) (n : ℕ) (H : Fin (n + 1) → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j)
+  (N : ModuleCat ↑R)
+  (a :
+    (AlgebraicGeometry.tilde.functor R).obj ((LinearStudy.functionKoszulResolutionOfExact H he).complex.X (n + 1)) ⟶
+      (AlgebraicGeometry.tilde.functor R).obj N)
+  (ha :
+    CategoryTheory.CategoryStruct.comp
+        ((AlgebraicGeometry.tilde.functor R).map
+          ((LinearStudy.functionKoszulResolutionOfExact H he).complex.d (n + 2) (n + 1)))
+        a =
+      0),
+  (LinearStudy.koszulExactTopExtCoefficientRestrictionEquiv n H he N)
+      (LinearStudy.tildeActualCocycleModuleExt R (LinearStudy.functionKoszulResolutionOfExact H he) (n + 1) a ha) =
+    Submodule.Quotient.mk
+      ((ModuleCat.Hom.hom (LinearStudy.tildeActualFunctionalPreimage R a)) (LinearStudy.topKoszulGenerator (n + 1)))
+'LinearStudy.tildeActualCocycleModuleExt_topRestriction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulIsoCocycleModuleExt_topRestriction : ∀ (R : CommRingCat) (n : ℕ) (H : Fin (n + 1) → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j)
+  {M : (AlgebraicGeometry.Spec R).Modules} (N : ModuleCat ↑R) (lambda : M ≅ (AlgebraicGeometry.tilde.functor R).obj N)
+  (a : (LinearStudy.tildeFunctionKoszulComplex R H).X (n + 1) ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp ((LinearStudy.tildeFunctionKoszulComplex R H).d (n + 2) (n + 1)) a = 0),
+  (LinearStudy.koszulExactTopExtCoefficientRestrictionEquiv n H he N)
+      (LinearStudy.tildeKoszulIsoCocycleModuleExt R H he (n + 1) N lambda a ha) =
+    Submodule.Quotient.mk
+      ((ModuleCat.Hom.hom
+          (LinearStudy.tildeActualFunctionalPreimage R (LinearStudy.tildeKoszulIsoCocycle R H (n + 1) N lambda a)))
+        (LinearStudy.topKoszulGenerator (n + 1)))
+'LinearStudy.tildeKoszulIsoCocycleModuleExt_topRestriction' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.tildeActualCocycleModuleExt_topRestriction:true
+ROLECHECK:LinearStudy.tildeKoszulIsoCocycleModuleExt_topRestriction:true

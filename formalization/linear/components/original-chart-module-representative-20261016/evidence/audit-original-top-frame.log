@@ -1,0 +1,80 @@
+@LinearStudy.projectivePulledOriginalTopChartModuleFrame : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              let R :=
+                ↧(HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                    ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)));
+              let j :=
+                AlgebraicGeometry.Proj.awayι (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                  ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)) ⋯ ⋯;
+              have h := fun (i : Fin r) =>
+                HomogeneousLocalization.Away.mk (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) ⋯ f.degree
+                  (LinearStudy.projectivePulledLinearKoszulForms f V L w i) ⋯;
+              (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                    (LinearStudy.nativeProjectiveRingIntegerPiece
+                      (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                    ⋯ (k - ↑r * ↑f.degree)) ≅
+                (AlgebraicGeometry.tilde.functor R).obj ((koszulComplex (Fintype.linearCombination (↑R) h)).X r)
+'LinearStudy.projectivePulledOriginalTopChartModuleFrame' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledOriginalTopChartModuleFrameLaw : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) → (Fin (r + 1) → ℂ) → ℤ → Prop
+'LinearStudy.projectivePulledOriginalTopChartModuleFrameLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledOriginalTopChartModuleFrameLaw_proof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ) (k : ℤ), LinearStudy.projectivePulledOriginalTopChartModuleFrameLaw f V L hL w k
+'LinearStudy.projectivePulledOriginalTopChartModuleFrameLaw_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.projectivePulledOriginalTopChartModuleFrame : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              let R :=
+                ↧(HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                    ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)));
+              let j :=
+                AlgebraicGeometry.Proj.awayι (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                  ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)) ⋯ ⋯;
+              have h := fun (i : Fin r) =>
+                HomogeneousLocalization.Away.mk (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) ⋯ f.degree
+                  (LinearStudy.projectivePulledLinearKoszulForms f V L w i) ⋯;
+              (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                    (LinearStudy.nativeProjectiveRingIntegerPiece
+                      (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                    ⋯ (k - ↑r * ↑f.degree)) ≅
+                (AlgebraicGeometry.tilde.functor R).obj ((koszulComplex (Fintype.linearCombination (↑R) h)).X r) :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) =>
+  LinearStudy.nativeProjectiveKoszulTopChartModuleFrame (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+    (fun (t : Fin (n + 1)) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X t)) ⋯ ⋯
+    (LinearStudy.projectivePulledLinearKoszulForms f V L w) ⋯ k ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))
+    ⋯
+def LinearStudy.projectivePulledOriginalTopChartModuleFrameLaw : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) → (Fin (r + 1) → ℂ) → ℤ → Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) =>
+  LinearStudy.nativeProjectiveKoszulTopChartModuleFrameLaw (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+    (fun (t : Fin (n + 1)) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X t)) ⋯ ⋯
+    (LinearStudy.projectivePulledLinearKoszulForms f V L w) ⋯ k ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))
+    ⋯
+ROLECHECK:LinearStudy.projectivePulledOriginalTopChartModuleFrame:false
+ROLECHECK:LinearStudy.projectivePulledOriginalTopChartModuleFrameLaw:false
+ROLECHECK:LinearStudy.projectivePulledOriginalTopChartModuleFrameLaw_proof:true

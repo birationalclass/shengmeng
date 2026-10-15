@@ -1,0 +1,98 @@
+@LinearStudy.tildeKoszulMappedOriginalPresentation : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (R : CommRingCat) →
+        {r : ℕ} →
+          (H : Fin r → ↑R) →
+            (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) →
+              [inst_2 : F.Additive] →
+                (C : ChainComplex A ℕ) →
+                  ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) →
+                    (C0 : ChainComplex A ℕ) ×
+                      (D : ChainComplex (AlgebraicGeometry.Spec R).Modules ℕ) ×
+                        (_ : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C0 ≅ D) ×
+                          (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) × CategoryTheory.Limits.IsColimit Q
+'LinearStudy.tildeKoszulMappedOriginalPresentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildeKoszulMappedOriginalModuleExtLaw : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (R : CommRingCat) →
+        {r : ℕ} →
+          (H : Fin r → ↑R) →
+            (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) →
+              [inst_2 : F.Additive] →
+                [F.PreservesHomology] →
+                  (C : ChainComplex A ℕ) →
+                    ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅
+                        LinearStudy.tildeFunctionKoszulComplex R H) →
+                      (T : A) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) → Prop
+'LinearStudy.tildeKoszulMappedOriginalModuleExtLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildeKoszulMappedOriginalModuleExtLaw_proof : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (R : CommRingCat) {r : ℕ}
+  (H : Fin r → ↑R) (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) [inst_2 : F.Additive]
+  [inst_3 : F.PreservesHomology] (C : ChainComplex A ℕ)
+  (gamma : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) (T : A)
+  (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T),
+  LinearStudy.tildeKoszulMappedOriginalModuleExtLaw R H F C gamma T e
+'LinearStudy.tildeKoszulMappedOriginalModuleExtLaw_proof' depends on axioms: [propext, Classical.choice, Quot.sound]
+@[reducible] def LinearStudy.tildeKoszulMappedOriginalPresentation.{v, u, s} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (R : CommRingCat) →
+        {r : ℕ} →
+          (H : Fin r → ↑R) →
+            (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) →
+              [inst_2 : F.Additive] →
+                (C : ChainComplex A ℕ) →
+                  ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) →
+                    (C0 : ChainComplex A ℕ) ×
+                      (D : ChainComplex (AlgebraicGeometry.Spec R).Modules ℕ) ×
+                        (_ : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C0 ≅ D) ×
+                          (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) × CategoryTheory.Limits.IsColimit Q :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (R : CommRingCat) {r : ℕ}
+    (H : Fin r → ↑R) (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) [F.Additive]
+    (C : ChainComplex A ℕ)
+    (gamma : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) =>
+  ⟨C,
+    ⟨LinearStudy.tildeFunctionKoszulComplex R H,
+      ⟨gamma,
+        ⟨LinearStudy.tildeKoszulOriginalCutCokernelCofork R H,
+          LinearStudy.tildeKoszulOriginalCutCokernelCoforkIsColimit R H⟩⟩⟩⟩
+def LinearStudy.tildeKoszulMappedOriginalModuleExtLaw.{v, u, s} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (R : CommRingCat) →
+        {r : ℕ} →
+          (H : Fin r → ↑R) →
+            (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) →
+              [inst_2 : F.Additive] →
+                [F.PreservesHomology] →
+                  (C : ChainComplex A ℕ) →
+                    ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅
+                        LinearStudy.tildeFunctionKoszulComplex R H) →
+                      (T : A) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) → Prop :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (R : CommRingCat) {r : ℕ}
+    (H : Fin r → ↑R) (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) [F.Additive]
+    [F.PreservesHomology] (C : ChainComplex A ℕ)
+    (gamma : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) (T : A)
+    (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) =>
+  let p := LinearStudy.tildeKoszulMappedOriginalPresentation R H F C gamma;
+  ∀ (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation C T e)),
+    have heK := ⋯;
+    have theta := LinearStudy.mappedChainPresentationAugmentationTargetIso F p T e;
+    have rho := LinearStudy.tildeQuotientPushforwardIso R (Ideal.span (Set.range H));
+    ∀ {M : A} (ell : ℕ) (N : ModuleCat ↑R) (lambda : F.obj M ≅ (AlgebraicGeometry.tilde.functor R).obj N)
+      (a : C.X ell ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (C.d (ell + 1) ell) a = 0),
+      let b := LinearStudy.mappedChainPresentationOriginalTopFunctional F p ell a;
+      have hb := ⋯;
+      have eta := LinearStudy.tildeKoszulIsoCocycleModuleExt R H heK ell N lambda b hb;
+      (CategoryTheory.Abelian.Ext.mk₀ (CategoryTheory.CategoryStruct.comp rho.hom theta.inv)).comp
+          ((CategoryTheory.Abelian.Ext.mapExactFunctor F
+                (LinearStudy.originalChainTopExtClass C ell (LinearStudy.originalChainCokernelTargetAugmentation C T e)
+                  a ha)).comp
+            (CategoryTheory.Abelian.Ext.mk₀ lambda.hom) ⋯)
+          ⋯ =
+        CategoryTheory.Abelian.Ext.mapExactFunctor (AlgebraicGeometry.tilde.functor R) eta
+ROLECHECK:LinearStudy.tildeKoszulMappedOriginalPresentation:false
+ROLECHECK:LinearStudy.tildeKoszulMappedOriginalModuleExtLaw:false
+ROLECHECK:LinearStudy.tildeKoszulMappedOriginalModuleExtLaw_proof:true

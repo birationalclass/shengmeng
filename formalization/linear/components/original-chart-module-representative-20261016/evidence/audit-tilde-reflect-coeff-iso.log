@@ -1,0 +1,127 @@
+LinearStudy.tilde_chainComplex_exactAt_iff : ∀ (R : CommRingCat) (C : ChainComplex (ModuleCat ↑R) ℕ) (j : ℕ),
+  (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).obj C).ExactAt j ↔
+    HomologicalComplex.ExactAt C j
+'LinearStudy.tilde_chainComplex_exactAt_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszul_moduleExact_of_coforkQuasiIso : ∀ (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)
+  [QuasiIso
+      (LinearStudy.originalChainCoforkAugmentation (LinearStudy.tildeFunctionKoszulComplex R H)
+        (LinearStudy.tildeKoszulOriginalCutCokernelCofork R H))]
+  (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j
+'LinearStudy.tildeKoszul_moduleExact_of_coforkQuasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulIsoCocycle : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      (ell : ℕ) →
+        {M : (AlgebraicGeometry.Spec R).Modules} →
+          (N : ModuleCat ↑R) →
+            (M ≅ (AlgebraicGeometry.tilde.functor R).obj N) →
+              ((LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ M) →
+                ((LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ (AlgebraicGeometry.tilde.functor R).obj N)
+'LinearStudy.tildeKoszulIsoCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulIsoCocycle_isCocycle : ∀ (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) (ell : ℕ)
+  {M : (AlgebraicGeometry.Spec R).Modules} (N : ModuleCat ↑R) (lambda : M ≅ (AlgebraicGeometry.tilde.functor R).obj N)
+  (a : (LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ M),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.tildeFunctionKoszulComplex R H).d (ell + 1) ell) a = 0 →
+    CategoryTheory.CategoryStruct.comp
+        ((AlgebraicGeometry.tilde.functor R).map ((koszulComplex (Fintype.linearCombination (↑R) H)).d (ell + 1) ell))
+        (LinearStudy.tildeKoszulIsoCocycle R H ell N lambda a) =
+      0
+'LinearStudy.tildeKoszulIsoCocycle_isCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulIsoCocycleModuleExt : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+        (ell : ℕ) →
+          {M : (AlgebraicGeometry.Spec R).Modules} →
+            (N : ModuleCat ↑R) →
+              (M ≅ (AlgebraicGeometry.tilde.functor R).obj N) →
+                (a : (LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ M) →
+                  CategoryTheory.CategoryStruct.comp ((LinearStudy.tildeFunctionKoszulComplex R H).d (ell + 1) ell) a =
+                      0 →
+                    CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N ell
+'LinearStudy.tildeKoszulIsoCocycleModuleExt' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulCoforkModuleExtIsoLaw : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+        (ell : ℕ) →
+          {M : (AlgebraicGeometry.Spec R).Modules} →
+            (N : ModuleCat ↑R) →
+              (M ≅ (AlgebraicGeometry.tilde.functor R).obj N) →
+                (a : (LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ M) →
+                  CategoryTheory.CategoryStruct.comp ((LinearStudy.tildeFunctionKoszulComplex R H).d (ell + 1) ell) a =
+                      0 →
+                    Prop
+'LinearStudy.tildeKoszulCoforkModuleExtIsoLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulCoforkModuleExtIsoLaw_proof : ∀ (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) (ell : ℕ)
+  {M : (AlgebraicGeometry.Spec R).Modules} (N : ModuleCat ↑R) (lambda : M ≅ (AlgebraicGeometry.tilde.functor R).obj N)
+  (a : (LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp ((LinearStudy.tildeFunctionKoszulComplex R H).d (ell + 1) ell) a = 0),
+  LinearStudy.tildeKoszulCoforkModuleExtIsoLaw R H he ell N lambda a ha
+'LinearStudy.tildeKoszulCoforkModuleExtIsoLaw_proof' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.tildeKoszulIsoCocycle.{u} : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      (ell : ℕ) →
+        {M : (AlgebraicGeometry.Spec R).Modules} →
+          (N : ModuleCat ↑R) →
+            (M ≅ (AlgebraicGeometry.tilde.functor R).obj N) →
+              ((LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ M) →
+                ((LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ (AlgebraicGeometry.tilde.functor R).obj N) :=
+fun (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) (ell : ℕ) {M : (AlgebraicGeometry.Spec R).Modules} (N : ModuleCat ↑R)
+    (lambda : M ≅ (AlgebraicGeometry.tilde.functor R).obj N)
+    (a : (LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ M) =>
+  CategoryTheory.CategoryStruct.comp a lambda.hom
+def LinearStudy.tildeKoszulIsoCocycleModuleExt.{u} : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+        (ell : ℕ) →
+          {M : (AlgebraicGeometry.Spec R).Modules} →
+            (N : ModuleCat ↑R) →
+              (M ≅ (AlgebraicGeometry.tilde.functor R).obj N) →
+                (a : (LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ M) →
+                  CategoryTheory.CategoryStruct.comp ((LinearStudy.tildeFunctionKoszulComplex R H).d (ell + 1) ell) a =
+                      0 →
+                    CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N ell :=
+fun (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)
+    (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) (ell : ℕ)
+    {M : (AlgebraicGeometry.Spec R).Modules} (N : ModuleCat ↑R) (lambda : M ≅ (AlgebraicGeometry.tilde.functor R).obj N)
+    (a : (LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ M)
+    (ha : CategoryTheory.CategoryStruct.comp ((LinearStudy.tildeFunctionKoszulComplex R H).d (ell + 1) ell) a = 0) =>
+  LinearStudy.tildeActualCocycleModuleExt R (LinearStudy.functionKoszulResolutionOfExact H he) ell
+    (LinearStudy.tildeKoszulIsoCocycle R H ell N lambda a) ⋯
+def LinearStudy.tildeKoszulCoforkModuleExtIsoLaw.{u} : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+        (ell : ℕ) →
+          {M : (AlgebraicGeometry.Spec R).Modules} →
+            (N : ModuleCat ↑R) →
+              (M ≅ (AlgebraicGeometry.tilde.functor R).obj N) →
+                (a : (LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ M) →
+                  CategoryTheory.CategoryStruct.comp ((LinearStudy.tildeFunctionKoszulComplex R H).d (ell + 1) ell) a =
+                      0 →
+                    Prop :=
+fun (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)
+    (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) (ell : ℕ)
+    {M : (AlgebraicGeometry.Spec R).Modules} (N : ModuleCat ↑R) (lambda : M ≅ (AlgebraicGeometry.tilde.functor R).obj N)
+    (a : (LinearStudy.tildeFunctionKoszulComplex R H).X ell ⟶ M)
+    (ha : CategoryTheory.CategoryStruct.comp ((LinearStudy.tildeFunctionKoszulComplex R H).d (ell + 1) ell) a = 0) =>
+  (CategoryTheory.Abelian.Ext.mk₀ (LinearStudy.tildeQuotientPushforwardIso R (Ideal.span (Set.range H))).hom).comp
+      ((LinearStudy.originalChainTopExtClass (LinearStudy.tildeFunctionKoszulComplex R H) ell
+            (LinearStudy.originalChainCoforkAugmentation (LinearStudy.tildeFunctionKoszulComplex R H)
+              (LinearStudy.tildeKoszulOriginalCutCokernelCofork R H))
+            a ha).comp
+        (CategoryTheory.Abelian.Ext.mk₀ lambda.hom) ⋯)
+      ⋯ =
+    CategoryTheory.Abelian.Ext.mapExactFunctor (AlgebraicGeometry.tilde.functor R)
+      (LinearStudy.tildeKoszulIsoCocycleModuleExt R H he ell N lambda a ha)
+ROLECHECK:LinearStudy.tilde_chainComplex_exactAt_iff:true
+ROLECHECK:LinearStudy.tildeKoszul_moduleExact_of_coforkQuasiIso:true
+ROLECHECK:LinearStudy.tildeKoszulIsoCocycle:false
+ROLECHECK:LinearStudy.tildeKoszulIsoCocycle_isCocycle:true
+ROLECHECK:LinearStudy.tildeKoszulIsoCocycleModuleExt:false
+ROLECHECK:LinearStudy.tildeKoszulCoforkModuleExtIsoLaw:false
+ROLECHECK:LinearStudy.tildeKoszulCoforkModuleExtIsoLaw_proof:true

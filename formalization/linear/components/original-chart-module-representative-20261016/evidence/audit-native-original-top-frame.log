@@ -1,0 +1,107 @@
+@LinearStudy.nativeProjectiveKoszulTopChartModuleFrame : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                (ha : a ∈ 𝓑 1) →
+                                  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+                                  let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+                                  have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+                                  (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf 𝓑
+                                        (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q)) ≅
+                                    (AlgebraicGeometry.tilde.functor R).obj
+                                      ((koszulComplex (Fintype.linearCombination (↑R) h)).X r)
+'LinearStudy.nativeProjectiveKoszulTopChartModuleFrame' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulTopChartModuleFrameLaw : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} → (H : Fin r → S) → (∀ (i : Fin r), H i ∈ 𝓑 q) → ℤ → (a : S) → a ∈ 𝓑 1 → Prop
+'LinearStudy.nativeProjectiveKoszulTopChartModuleFrameLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulTopChartModuleFrameLaw_proof : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] [inst_4 : IsNoetherianRing S] {J : Type}
+  (b : J → S) (hb : ∀ (i : J), b i ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1),
+  LinearStudy.nativeProjectiveKoszulTopChartModuleFrameLaw 𝓑 b hb hgen H hH k a ha
+'LinearStudy.nativeProjectiveKoszulTopChartModuleFrameLaw_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.nativeProjectiveKoszulTopChartModuleFrame : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                (ha : a ∈ 𝓑 1) →
+                                  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+                                  let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+                                  have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+                                  (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf 𝓑
+                                        (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q)) ≅
+                                    (AlgebraicGeometry.tilde.functor R).obj
+                                      ((koszulComplex (Fintype.linearCombination (↑R) h)).X r) :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [IsNoetherianRing S]
+    {J : Type} (b : J → S) (hb : ∀ (i : J), b i ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1) =>
+  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+  let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha LinearStudy.nativeProjectiveKoszulTopChartModuleFrame._proof_3;
+  let h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+  LinearStudy.tildeKoszulOriginalTopCoefficientIso R h (AlgebraicGeometry.Scheme.Modules.restrictFunctor j)
+    (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k)
+    (LinearStudy.nativeProjectiveKoszulMappedTildeAffineIso 𝓑 b hb hgen H hH k a ha)
+    (LinearStudy.nativeProjectiveKoszulComplexTopTwistIso 𝓑 H hH k)
+def LinearStudy.nativeProjectiveKoszulTopChartModuleFrameLaw : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} → (H : Fin r → S) → (∀ (i : Fin r), H i ∈ 𝓑 q) → ℤ → (a : S) → a ∈ 𝓑 1 → Prop :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [IsNoetherianRing S]
+    {J : Type} (b : J → S) (hb : ∀ (i : J), b i ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1) =>
+  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+  let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha LinearStudy.nativeProjectiveKoszulTopChartModuleFrame._proof_3;
+  let h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+  LinearStudy.tildeKoszulOriginalTopModuleFrameLaw R h (AlgebraicGeometry.Scheme.Modules.restrictFunctor j)
+    (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k)
+    (LinearStudy.nativeProjectiveKoszulMappedTildeAffineIso 𝓑 b hb hgen H hH k a ha)
+    (LinearStudy.nativeProjectiveKoszulComplexTopTwistIso 𝓑 H hH k)
+ROLECHECK:LinearStudy.nativeProjectiveKoszulTopChartModuleFrame:false
+ROLECHECK:LinearStudy.nativeProjectiveKoszulTopChartModuleFrameLaw:false
+ROLECHECK:LinearStudy.nativeProjectiveKoszulTopChartModuleFrameLaw_proof:true

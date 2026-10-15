@@ -1,0 +1,68 @@
+@LinearStudy.mappedChainPresentationTermIso : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u_4} →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                (p : LinearStudy.mappedChainPresentationData F) → (r : ℕ) → F.obj (p.fst.X r) ≅ p.snd.fst.X r
+'LinearStudy.mappedChainPresentationTermIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedChainPresentationOriginalTopIso : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u_4} →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                (p : LinearStudy.mappedChainPresentationData F) →
+                  {M : A} → (r : ℕ) → (p.fst.X r ≅ M) → (p.snd.fst.X r ≅ F.obj M)
+'LinearStudy.mappedChainPresentationOriginalTopIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedChainPresentationOriginalTopIso_hom : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] {B : Type u_4} [inst_2 : CategoryTheory.Category.{u_3, u_4} B]
+  [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [inst_4 : F.Additive] [F.PreservesHomology]
+  (p : LinearStudy.mappedChainPresentationData F) {M : A} (r : ℕ) (phi : p.fst.X r ≅ M),
+  (LinearStudy.mappedChainPresentationOriginalTopIso F p r phi).hom =
+    LinearStudy.mappedChainPresentationOriginalTopFunctional F p r phi.hom
+'LinearStudy.mappedChainPresentationOriginalTopIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedChainPresentationOriginalTopIso_normalize : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] {B : Type u_4}
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B)
+  [inst_4 : F.Additive] [F.PreservesHomology] (p : LinearStudy.mappedChainPresentationData F) {M : A} (r : ℕ)
+  (phi : p.fst.X r ≅ M),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.mappedChainPresentationOriginalTopFunctional F p r phi.hom)
+      (LinearStudy.mappedChainPresentationOriginalTopIso F p r phi).inv =
+    CategoryTheory.CategoryStruct.id (p.snd.fst.X r)
+'LinearStudy.mappedChainPresentationOriginalTopIso_normalize' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.mappedChainPresentationTermIso.{v, u, v', u'} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                (p : LinearStudy.mappedChainPresentationData F) → (r : ℕ) → F.obj (p.fst.X r) ≅ p.snd.fst.X r :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {B : Type u'}
+    [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    (p : LinearStudy.mappedChainPresentationData F) (r : ℕ) =>
+  id ((HomologicalComplex.eval B (ComplexShape.down ℕ) r).mapIso p.snd.snd.fst)
+def LinearStudy.mappedChainPresentationOriginalTopIso.{v, u, v', u'} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                (p : LinearStudy.mappedChainPresentationData F) →
+                  {M : A} → (r : ℕ) → (p.fst.X r ≅ M) → (p.snd.fst.X r ≅ F.obj M) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {B : Type u'}
+    [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    (p : LinearStudy.mappedChainPresentationData F) {M : A} (r : ℕ) (phi : p.fst.X r ≅ M) =>
+  (LinearStudy.mappedChainPresentationTermIso F p r).symm ≪≫ F.mapIso phi
+ROLECHECK:LinearStudy.mappedChainPresentationTermIso:false
+ROLECHECK:LinearStudy.mappedChainPresentationOriginalTopIso:false
+ROLECHECK:LinearStudy.mappedChainPresentationOriginalTopIso_hom:true
+ROLECHECK:LinearStudy.mappedChainPresentationOriginalTopIso_normalize:true

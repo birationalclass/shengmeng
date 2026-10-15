@@ -1,0 +1,41 @@
+@LinearStudy.projectivePulledOriginalChartModuleExtLaw : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                  LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                Prop
+'LinearStudy.projectivePulledOriginalChartModuleExtLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledOriginalChartModuleExtLaw_proof : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ) (k : ℤ)
+  (e :
+    CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k),
+  LinearStudy.projectivePulledOriginalChartModuleExtLaw f V L hL w k e
+'LinearStudy.projectivePulledOriginalChartModuleExtLaw_proof' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.projectivePulledOriginalChartModuleExtLaw : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                  LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ)
+    (e :
+      CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) =>
+  LinearStudy.nativeProjectiveKoszulChartModuleExtLaw (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+    (fun (t : Fin (n + 1)) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X t)) ⋯ ⋯
+    (LinearStudy.projectivePulledLinearKoszulForms f V L w) ⋯ k ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))
+    ⋯ (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e
+ROLECHECK:LinearStudy.projectivePulledOriginalChartModuleExtLaw:false
+ROLECHECK:LinearStudy.projectivePulledOriginalChartModuleExtLaw_proof:true

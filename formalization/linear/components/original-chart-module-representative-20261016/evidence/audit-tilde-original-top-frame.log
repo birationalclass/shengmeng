@@ -1,0 +1,112 @@
+@LinearStudy.tildeKoszulOriginalTopCoefficientIso : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (R : CommRingCat) →
+        {r : ℕ} →
+          (H : Fin r → ↑R) →
+            (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) →
+              [inst_2 : F.Additive] →
+                (C : ChainComplex A ℕ) →
+                  ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) →
+                    {M : A} →
+                      (C.X r ≅ M) →
+                        (F.obj M ≅
+                          (AlgebraicGeometry.tilde.functor R).obj
+                            ((koszulComplex (Fintype.linearCombination (↑R) H)).X r))
+'LinearStudy.tildeKoszulOriginalTopCoefficientIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildeKoszulOriginalTopFunctional_preimage_id : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (R : CommRingCat) {r : ℕ}
+  (H : Fin r → ↑R) (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) [inst_2 : F.Additive]
+  [F.PreservesHomology] (C : ChainComplex A ℕ)
+  (gamma : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) {M : A}
+  (phi : C.X r ≅ M),
+  LinearStudy.tildeActualFunctionalPreimage R
+      (CategoryTheory.CategoryStruct.comp
+        (LinearStudy.mappedChainPresentationOriginalTopFunctional F
+          (LinearStudy.tildeKoszulMappedOriginalPresentation R H F C gamma) r phi.hom)
+        (LinearStudy.tildeKoszulOriginalTopCoefficientIso R H F C gamma phi).hom) =
+    CategoryTheory.CategoryStruct.id ((koszulComplex (Fintype.linearCombination (↑R) H)).X r)
+'LinearStudy.tildeKoszulOriginalTopFunctional_preimage_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildeKoszulOriginalTopModuleExt_eq_identity : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (R : CommRingCat) {r : ℕ}
+  (H : Fin r → ↑R) (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) [inst_2 : F.Additive]
+  [inst_3 : F.PreservesHomology] (C : ChainComplex A ℕ)
+  (gamma : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) {M : A}
+  (phi : C.X r ≅ M) (hphi : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) phi.hom = 0),
+  LinearStudy.tildeKoszulIsoCocycleModuleExt R H he r ((koszulComplex (Fintype.linearCombination (↑R) H)).X r)
+      (LinearStudy.tildeKoszulOriginalTopCoefficientIso R H F C gamma phi)
+      (LinearStudy.mappedChainPresentationOriginalTopFunctional F
+        (LinearStudy.tildeKoszulMappedOriginalPresentation R H F C gamma) r phi.hom)
+      ⋯ =
+    (LinearStudy.functionKoszulResolutionOfExact H he).extMk
+      (CategoryTheory.CategoryStruct.id ((LinearStudy.functionKoszulResolutionOfExact H he).complex.X r)) (r + 1) ⋯ ⋯
+'LinearStudy.tildeKoszulOriginalTopModuleExt_eq_identity' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildeKoszulOriginalTopModuleFrameLaw : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (R : CommRingCat) →
+        {r : ℕ} →
+          (H : Fin r → ↑R) →
+            (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) →
+              [inst_2 : F.Additive] →
+                (C : ChainComplex A ℕ) →
+                  ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) →
+                    {M : A} → (C.X r ≅ M) → Prop
+'LinearStudy.tildeKoszulOriginalTopModuleFrameLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildeKoszulOriginalTopModuleFrameLaw_proof : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R)
+  (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) [inst_2 : F.Additive] [F.PreservesHomology]
+  (C : ChainComplex A ℕ)
+  (gamma : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) {M : A}
+  (phi : C.X r ≅ M), LinearStudy.tildeKoszulOriginalTopModuleFrameLaw R H F C gamma phi
+'LinearStudy.tildeKoszulOriginalTopModuleFrameLaw_proof' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.tildeKoszulOriginalTopCoefficientIso.{v, u, s} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (R : CommRingCat) →
+        {r : ℕ} →
+          (H : Fin r → ↑R) →
+            (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) →
+              [inst_2 : F.Additive] →
+                (C : ChainComplex A ℕ) →
+                  ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) →
+                    {M : A} →
+                      (C.X r ≅ M) →
+                        (F.obj M ≅
+                          (AlgebraicGeometry.tilde.functor R).obj
+                            ((koszulComplex (Fintype.linearCombination (↑R) H)).X r)) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (R : CommRingCat) {r : ℕ}
+    (H : Fin r → ↑R) (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) [F.Additive]
+    (C : ChainComplex A ℕ)
+    (gamma : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) {M : A}
+    (phi : C.X r ≅ M) =>
+  (LinearStudy.mappedChainPresentationOriginalTopIso F (LinearStudy.tildeKoszulMappedOriginalPresentation R H F C gamma)
+      r phi).symm
+def LinearStudy.tildeKoszulOriginalTopModuleFrameLaw.{v, u, s} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (R : CommRingCat) →
+        {r : ℕ} →
+          (H : Fin r → ↑R) →
+            (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) →
+              [inst_2 : F.Additive] →
+                (C : ChainComplex A ℕ) →
+                  ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) →
+                    {M : A} → (C.X r ≅ M) → Prop :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (R : CommRingCat) {r : ℕ}
+    (H : Fin r → ↑R) (F : CategoryTheory.Functor A (AlgebraicGeometry.Spec R).Modules) [F.Additive]
+    (C : ChainComplex A ℕ)
+    (gamma : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ LinearStudy.tildeFunctionKoszulComplex R H) {M : A}
+    (phi : C.X r ≅ M) =>
+  LinearStudy.tildeActualFunctionalPreimage R
+      (CategoryTheory.CategoryStruct.comp
+        (LinearStudy.mappedChainPresentationOriginalTopFunctional F
+          (LinearStudy.tildeKoszulMappedOriginalPresentation R H F C gamma) r phi.hom)
+        (LinearStudy.tildeKoszulOriginalTopCoefficientIso R H F C gamma phi).hom) =
+    CategoryTheory.CategoryStruct.id ((koszulComplex (Fintype.linearCombination (↑R) H)).X r)
+ROLECHECK:LinearStudy.tildeKoszulOriginalTopCoefficientIso:false
+ROLECHECK:LinearStudy.tildeKoszulOriginalTopFunctional_preimage_id:true
+ROLECHECK:LinearStudy.tildeKoszulOriginalTopModuleExt_eq_identity:true
+ROLECHECK:LinearStudy.tildeKoszulOriginalTopModuleFrameLaw:false
+ROLECHECK:LinearStudy.tildeKoszulOriginalTopModuleFrameLaw_proof:true

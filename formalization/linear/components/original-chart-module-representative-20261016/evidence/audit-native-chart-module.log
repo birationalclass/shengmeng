@@ -1,0 +1,65 @@
+@LinearStudy.nativeProjectiveKoszulChartModuleExtLaw : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                a ∈ 𝓑 1 →
+                                  (T : (AlgebraicGeometry.Proj 𝓑).Modules) →
+                                    (CategoryTheory.Limits.cokernel
+                                          ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0) ≅
+                                        T) →
+                                      Prop
+'LinearStudy.nativeProjectiveKoszulChartModuleExtLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulChartModuleExtLaw_proof : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] [inst_4 : IsNoetherianRing S] {J : Type}
+  (b : J → S) (hb : ∀ (i : J), b i ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1) (T : (AlgebraicGeometry.Proj 𝓑).Modules)
+  (e : CategoryTheory.Limits.cokernel ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0) ≅ T),
+  LinearStudy.nativeProjectiveKoszulChartModuleExtLaw 𝓑 b hb hgen H hH k a ha T e
+'LinearStudy.nativeProjectiveKoszulChartModuleExtLaw_proof' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.nativeProjectiveKoszulChartModuleExtLaw : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                a ∈ 𝓑 1 →
+                                  (T : (AlgebraicGeometry.Proj 𝓑).Modules) →
+                                    (CategoryTheory.Limits.cokernel
+                                          ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0) ≅
+                                        T) →
+                                      Prop :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [IsNoetherianRing S]
+    {J : Type} (b : J → S) (hb : ∀ (i : J), b i ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1)
+    (T : (AlgebraicGeometry.Proj 𝓑).Modules)
+    (e : CategoryTheory.Limits.cokernel ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0) ≅ T) =>
+  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+  let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha LinearStudy.nativeProjectiveKoszulChartModuleExtLaw._proof_5;
+  let h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+  LinearStudy.tildeKoszulMappedOriginalModuleExtLaw R h (AlgebraicGeometry.Scheme.Modules.restrictFunctor j)
+    (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k)
+    (LinearStudy.nativeProjectiveKoszulMappedTildeAffineIso 𝓑 b hb hgen H hH k a ha) T e
+ROLECHECK:LinearStudy.nativeProjectiveKoszulChartModuleExtLaw:false
+ROLECHECK:LinearStudy.nativeProjectiveKoszulChartModuleExtLaw_proof:true
