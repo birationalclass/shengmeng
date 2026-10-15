@@ -599,7 +599,7 @@ function prepareMainRoom(){
   createLecture=lectureModule.createLecture;createChalkReader=readerModule.createChalkReader;reportVoicePresentation=voiceModule.reportVoicePresentation;narrationResourceBytes=voiceModule.narrationResourceBytes;
   const root=new THREE.Group();root.name='East-facing compact auditorium blackboards';configureLectureRoot(root);root.position.add(buildingOffset('01B'));scene.add(root);
   lecture=await measureCritical('P1 板书组件与报告内容',()=>withDeadline(createLecture(root,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'sylow-theorems',initialLanguage:'zh',onOpening:state=>{$('world').dataset.openingClassroom=JSON.stringify(state);},boardScale:device.boardScale,writingStyle:boardWritingStyle,onPreparation:value=>{$('world').dataset.boardPreparation=JSON.stringify(value);}}),30000,'报告板书加载'));await boardFonts;retreat.roomFill.apply(root);
-  rooms.push(lecture);roomLecterns[0]=retreat.campus.lectern;registerRoomView(lecture,0);
+  lecture.setWoodTone($('boardWoodTone').value);rooms.push(lecture);roomLecterns[0]=retreat.campus.lectern;registerRoomView(lecture,0);
   reader=createChalkReader(new Proxy({}, {get:(_,key)=>lecture[key]}));buildSeminarNavigation();installPhysicalControls();populateReport();
   reportSettings=settingsModule.mountReportSettings(document,{getLecture:()=>lecture,onRate:rate=>rooms.forEach(room=>room.setVoiceRate(rate))});
   await measureCritical('P1 首屏字形与黑板纹理上传',()=>withDeadline(lecture.prepareOpening(),30000,'开场板书加载'));openingPrepared=true;
@@ -760,6 +760,7 @@ function showSettings(open){
  $('settings').hidden=!open;$('settingsButton').setAttribute('aria-expanded',String(open));
 }
 $('settingsButton').addEventListener('click',()=>showSettings($('settings').hidden));
+$('boardWoodTone').addEventListener('change',()=>{rooms.forEach(room=>room.setWoodTone($('boardWoodTone').value));$('world').dataset.boardWoodTone=$('boardWoodTone').value;renderer.shadowMap.needsUpdate=true;});
 $('quality').addEventListener('change',()=>{if(retreat&&GRAPHICS_PRESETS[$('quality').value])applyGraphics(GRAPHICS_PRESETS[$('quality').value]);});
 $('settingsClose').addEventListener('click',()=>showSettings(false));
 $('recommendGraphics').addEventListener('click',()=>{applyGraphics(recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize}));$('world').dataset.graphicsMode='smart';$('recommendStatus').textContent='智能推荐已应用 · 60 帧预算、文字保护、自动调整渲染精度。';});
@@ -1027,7 +1028,7 @@ async function loadTeachingRoom(index){
  const job=(async()=>{
   try{
    const room=await createLecture(root,renderer,level===0?{isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,highlight:$('boardHighlight').value!=='off',reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
-   room.playing=false;room.setWritingSpeed($('writingSpeed').value);room.setClarity($('boardClarity').value);retreat.roomFill.apply(root);rooms[index]=room;registerRoomView(room,index);
+   room.playing=false;room.setWoodTone($('boardWoodTone').value);room.setWritingSpeed($('writingSpeed').value);room.setClarity($('boardClarity').value);retreat.roomFill.apply(root);rooms[index]=room;registerRoomView(room,index);
    if(index===1)buildSeminarNavigation();visibilityAt=-Infinity;return room;
   }catch(error){scene.remove(root);roomJobs.delete(index);throw error;}
  })();roomJobs.set(index,job);return job;

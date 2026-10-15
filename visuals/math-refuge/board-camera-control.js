@@ -1,3 +1,4 @@
+import {placeTrayControl} from './board-tray-layout.js';
 import {reportControlLayout} from './report-voice.js?v=board-controls-3';
 import {SCREEN_COLORS,beginControlInk} from './smart-screen-style.js?v=unframed-controls-1';
 export function createBoardCameraControl(T,parent,column){
@@ -8,14 +9,14 @@ export function createBoardCameraControl(T,parent,column){
  mesh.userData={action:'camera:toggle',column,smartGlass:true};parent.add(mesh);mesh.visible=false;
  const zoomControls=[['zoomOut','camera:farther',1],['zoomIn','camera:closer',-1]].map(([key,action,direction])=>{
   const surface=document.createElement('canvas');surface.width=surface.height=128;const map=new T.CanvasTexture(surface);map.colorSpace=T.SRGBColorSpace;
-  const button=new T.Mesh(new T.PlaneGeometry(.34,.3),new T.MeshBasicMaterial({map,transparent:true,depthWrite:false,toneMapped:false}));
+  const button=new T.Mesh(new T.PlaneGeometry(.3,.3),new T.MeshBasicMaterial({map,transparent:true,depthWrite:false,toneMapped:false}));
   button.name=direction>0?'Board camera farther (+)':'Board camera closer (-)';button.userData={action,column,smartGlass:true};button.visible=false;parent.add(button);return{key,direction,mesh:button,canvas:surface,texture:map,last:null};
  });
  let last=null;
  return {mesh,meshes:[mesh,...zoomControls.map(c=>c.mesh)],update(enabled,visible,withVoice=true,zoom=0){
-  const p=reportControlLayout(column,withVoice).camera;mesh.position.set(p.x,p.y,p.z);mesh.updateMatrix();mesh.visible=visible;
+  const p=reportControlLayout(column,withVoice).camera;placeTrayControl(mesh,p);mesh.visible=visible;
   mesh.userData.label=enabled?'自动镜头 · 开启（点击关闭）':'自动镜头 · 关闭（点击开启）';mesh.userData.active=enabled;
-  for(const control of zoomControls){const p=reportControlLayout(column)[control.key];control.mesh.position.set(p.x,p.y,p.z);control.mesh.updateMatrix();control.mesh.visible=visible;
+  for(const control of zoomControls){const p=reportControlLayout(column)[control.key];placeTrayControl(control.mesh,p);control.mesh.visible=visible;
    const limited=control.direction>0?zoom>=1:zoom<=0;control.mesh.userData.limit=limited;control.mesh.userData.label=control.direction>0?'＋ 拉远 · 最远显示全部黑板':'− 拉近 · 最近保留完整当前黑板';
    if(control.last===limited)continue;control.last=limited;const c=control.canvas.getContext('2d');c.clearRect(0,0,128,128);beginControlInk(c);c.strokeStyle=limited?SCREEN_COLORS.muted:SCREEN_COLORS.text;c.lineWidth=5;c.lineCap='square';c.beginPath();c.moveTo(40,64);c.lineTo(88,64);if(control.direction>0){c.moveTo(64,40);c.lineTo(64,88);}c.stroke();c.restore();control.texture.needsUpdate=true;
   }

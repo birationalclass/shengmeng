@@ -68,7 +68,7 @@ export function lawnWeight(x,z){
 }
 
 // Shaft bounds in lecture-local coordinates, shared by floor and moving lids.
-export const BOARD_SHAFT={left:19.22,right:36.78,back:-11.4,front:-10.4};
+export const BOARD_SHAFT={left:19.22,right:36.78,back:-11.4,front:-10.25};
 export const BOARD_SHAFT_PLAN=[
   HALL.boardX-(10.4+BOARD_SHAFT.front)*LECTURE_SCALE/BUILDING_SCALE,
   HALL.boardX-(10.4+BOARD_SHAFT.back)*LECTURE_SCALE/BUILDING_SCALE,

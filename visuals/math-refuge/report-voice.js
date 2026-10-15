@@ -1,3 +1,4 @@
+import {trayControlLayout,placeTrayControl} from './board-tray-layout.js';
 import {writingSchedule,scheduledWriting} from './board-work.js?v=continuous-classroom-1';
 import {SCREEN_COLORS,CONTROL_VISUAL_SCALE} from './smart-screen-style.js?v=unframed-controls-1';
 // On-demand narration: no network or audio allocation until a report is selected.
@@ -175,10 +176,7 @@ export function reportVoicePresentation(state){
 }
 export function narrationResourceBytes(manifest){return [...new Map((manifest?.chapters||[]).filter(c=>c.src).map(c=>[c.src,Number(c.bytes)||0])).values()].reduce((sum,n)=>sum+n,0);}
 // Language, playback and automatic camera share the board centre with separate hit targets.
-export function reportControlLayout(column=0,withVoice=true){
- const center=22.4+5.6*Math.max(0,Math.min(2,column));
- return{center,previous:{x:center-.94,y:-.02,z:-11.302,width:.6},next:{x:center+.94,y:-.02,z:-11.302,width:.6},language:{x:center-1.94,y:-.02,z:-11.34,width:1.1},voice:{x:center,y:-.02,z:-11.302,width:.6},camera:{x:center+1.94,y:-.02,z:-11.302,width:.6},zoomOut:{x:center+2.47,y:.15,z:-11.302,width:.34,height:.3},zoomIn:{x:center+2.47,y:-.19,z:-11.302,width:.34,height:.3},reveal:{x:center+1.5,y:-.54,z:-11.302,width:.6}};
-}
+export function reportControlLayout(column=0,withVoice=true){return trayControlLayout(column);}
 export function reportVoiceIconPosition(column=0){return reportControlLayout(column).voice;}
 const iconBusy=s=>(['loading','buffering','preparing'].includes(s.phase)&&!(s.transportPlaying&&s.started))||s.phase==='away'&&!s.started;
 const ease=t=>t*t*(3-2*t);
@@ -207,7 +205,7 @@ export function createBoardVoicePanel(T,parent){
  const circle=Array.from({length:count+1},(_,i)=>{const a=-Math.PI/2+i/count*Math.PI*2;return[64+35*Math.cos(a),64+35*Math.sin(a)];});
  const triangle=Array.from({length:count+1},(_,i)=>{const side=Math.min(2,Math.floor(i/(count/3))),t=(i-side*count/3)/(count/3),a=vertices[side],b=vertices[(side+1)%3];return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];});
  let last='',column=0;
- function setColumn(value){column=value;const p=reportVoiceIconPosition(column);mesh.position.set(p.x,p.y,p.z);mesh.updateMatrix();}
+ function setColumn(value){column=value;const p=reportVoiceIconPosition(column);placeTrayControl(mesh,p);}
  setColumn(0);
  return{mesh,setColumn,update(state,dt,visible=true){
   const frame=motion.update(state,dt),busy=iconBusy(state);mesh.visible=visible&&state.phase!=='idle';mesh.userData.action=busy&&!state.transportPlaying?null:'voice:toggle';mesh.userData.icon=frame.kind;mesh.userData.loadProgress=state.progress;

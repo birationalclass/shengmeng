@@ -97,8 +97,8 @@ test('play icon sits below the board beside the language target without overlap'
  const {BOARD_LAYOUT}=await import('./lecture-state.js');
  for(const column of [0,1,2]){
   const p=reportVoiceIconPosition(column),center=22.4+5.6*column;
-  assert(p.y+.48/2<BOARD_LAYOUT.low-BOARD_LAYOUT.height/2);
-  const language=reportControlLayout(column).language;assert(p.x-p.width/2>language.x+language.width/2,'separate real hit targets');const camera=reportControlLayout(column).camera;assert.equal(p.x,center,'playback stays centered');assert.equal((camera.x+language.x)/2,center,'outer controls are symmetric');assert(camera.x-camera.width/2>p.x+p.width/2,'camera target does not overlap playback');
+  assert(p.y+Math.cos(p.tilt)*p.height/2<BOARD_LAYOUT.low-BOARD_LAYOUT.height/2);
+  const language=reportControlLayout(column).language;assert(p.x-p.width/2>language.x+language.width/2,'separate real hit targets');const camera=reportControlLayout(column).camera;assert(p.x>center-2.6&&p.x<center+2.6,'playback remains on the tray');assert(camera.x-camera.width/2>p.x+p.width/2,'camera target does not overlap playback');
   assert(p.x+.48/2<center+BOARD_LAYOUT.width/2);
   assert(p.z>-11.332,'icon stays on the front face of smart glass');
  }

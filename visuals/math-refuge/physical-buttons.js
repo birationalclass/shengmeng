@@ -1,13 +1,17 @@
 // A short, deliberate press activates a modeled button. Drag/cancel never do.
 export function bindPhysicalButtons(canvas,controls,hitTest,activate){
   let press=null,hover=null;const cursor=canvas.style?.cursor||'';
+  const doc=canvas.ownerDocument,hint=doc?.createElement('div');
+  if(hint){hint.setAttribute('role','tooltip');hint.hidden=true;Object.assign(hint.style,{position:'fixed',zIndex:'40',pointerEvents:'none',padding:'6px 10px',borderRadius:'5px',background:'rgba(12,26,23,.94)',color:'#e1f2ed',font:'12px "Microsoft YaHei",sans-serif',maxWidth:'280px'});doc.body.append(hint);}
+  function tooltip(e){if(!hint)return;const label=hover?.userData.label;hint.hidden=!label;if(label){hint.textContent=label+(hover.userData.limit?' · 已到边界':!hover.userData.action?' · 暂不可用':'');hint.style.left=Math.max(8,Math.min(e.clientX-70,(doc.documentElement.clientWidth||innerWidth)-290))+'px';hint.style.top=Math.max(8,e.clientY-44)+'px';}}
   function highlight(object){
     if(hover===object)return;
     if(hover)hover.userData.hovered=false;hover=object;
     if(hover)hover.userData.hovered=true;
+    if(!hover&&hint)hint.hidden=true;
     if(canvas.style)canvas.style.cursor=hover?.userData.action||hover?.userData.autoDoor?'pointer':cursor;
   }
-  function move(e){highlight(press||e.buttons?null:hitTest(e));}
+  function move(e){highlight(press?press.object:e.buttons?null:hitTest(e));tooltip(e);}
   function leave(){highlight(null);}
   function release(){if(!press)return;controls.enabled=press.enabled;press.object.userData.pressed=false;press=null;}
   function down(e){
@@ -24,7 +28,7 @@ export function bindPhysicalButtons(canvas,controls,hitTest,activate){
   function cancel(){release();highlight(null);}
   const events=[['pointerdown',down],['pointerup',up],['pointermove',move],['pointerleave',leave],['pointercancel',cancel],['lostpointercapture',cancel]];
   for(const [type,fn] of events)canvas.addEventListener(type,fn,true);
-  return {dispose(){release();highlight(null);for(const [type,fn] of events)canvas.removeEventListener(type,fn,true);}};
+  return {dispose(){release();highlight(null);hint?.remove();for(const [type,fn] of events)canvas.removeEventListener(type,fn,true);}};
 }
 
 // Only the lectern's explicit scrubber resolves a page from its UV coordinate.

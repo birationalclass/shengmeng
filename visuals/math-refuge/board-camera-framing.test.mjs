@@ -1,3 +1,4 @@
+import {trayControlLayout} from './board-tray-layout.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from '../3d/vendor/three.module.js';
@@ -21,7 +22,7 @@ test('every zoom step fits the complete current board and controls, and maximum 
    for(const col of columns)for(const y of heights)for(const x of [-2.65,2.65])for(const dy of [-1.025,1.025]){
     const p=root.localToWorld(new T.Vector3(22.4+5.6*col+x,y+dy,-10.78)).project(camera);assert(Math.abs(p.x)<1&&Math.abs(p.y)<1,'complete board stays within the rendered viewport');
    }
-   for(const x of [-2.49,2.64]){const p=root.localToWorld(new T.Vector3(22.4+5.6*column+x,-.84,-11.302)).project(camera);assert(Math.abs(p.x)<1&&Math.abs(p.y)<1,'glass controls remain reachable');}
+   for(const control of Object.values(trayControlLayout(column)).filter(p=>typeof p==='object'))for(const side of [-1,1]){const p=root.localToWorld(new T.Vector3(control.x+side*control.width/2,control.y-.16,control.z+.01)).project(camera);assert(Math.abs(p.x)<1&&Math.abs(p.y)<1,'tray controls remain reachable');}
    if(step===10){assert.equal(frame.x,28);assert(Math.abs(frame.bounds.right-frame.bounds.left-16.8)<1e-10);assert(frame.distance<=14.041,'portrait overview stays inside the hall');}
   }
  }

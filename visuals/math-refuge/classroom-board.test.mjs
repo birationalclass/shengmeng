@@ -1,8 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {drawClassroomActivity,classroomCountdown,classroomExerciseSheets,classroomActivityAt} from './classroom-board.js';
 import {reportControlLayout,bindVoiceFocusPause} from './report-voice.js';
-test('five real glass controls fit each board and have non-overlapping hit targets',()=>{
- for(const column of [0,1,2]){const p=reportControlLayout(column),buttons=['language','previous','voice','next','camera'].map(k=>p[k]);for(let i=1;i<buttons.length;i++)assert(buttons[i-1].x+buttons[i-1].width/2<buttons[i].x-buttons[i].width/2);assert(buttons[0].x-buttons[0].width/2>p.center-2.6);assert(buttons.at(-1).x+buttons.at(-1).width/2<p.center+2.6);}
+test('all tray controls share one non-overlapping physical strip',()=>{
+ for(const column of [0,1,2]){const p=reportControlLayout(column),buttons=['language','previous','voice','next','time','camera','zoomOut','zoomIn','reveal'].map(k=>p[k]);for(let i=1;i<buttons.length;i++)assert(buttons[i-1].x+buttons[i-1].width/2<buttons[i].x-buttons[i].width/2);assert(buttons[0].x-buttons[0].width/2>p.center-2.6);assert(buttons.at(-1).x+buttons.at(-1).width/2<p.center+2.6);}
 });
 test('exercise goals are not duplicated, feedback retains the question, and overflow adds sheets at the same legible size',()=>{
  const exercise={given:'已知有限群',goal:'说明归纳参数',prompt:'说明归纳参数'};
