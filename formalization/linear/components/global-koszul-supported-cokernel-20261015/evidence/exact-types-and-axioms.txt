@@ -1,0 +1,277 @@
+@LinearStudy.originalChainFirstDifferential_epi_of_exactAt_zero : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ),
+  HomologicalComplex.ExactAt C 0 → CategoryTheory.Epi (C.d 1 0)
+'LinearStudy.originalChainFirstDifferential_epi_of_exactAt_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalChainFirstCokernel_isZero_of_exactAt_zero : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ),
+  HomologicalComplex.ExactAt C 0 → CategoryTheory.Limits.IsZero (CategoryTheory.Limits.cokernel (C.d 1 0))
+'LinearStudy.originalChainFirstCokernel_isZero_of_exactAt_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleShortComplex_openRestriction_exact_iff_actualStalks : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (j : X ⟶ Y) [inst : AlgebraicGeometry.IsOpenImmersion j] (S : CategoryTheory.ShortComplex Y.Modules),
+  (S.map (AlgebraicGeometry.Scheme.Modules.restrictFunctor j)).Exact ↔
+    ∀ (x : ↥X),
+      (S.map
+          ((AlgebraicGeometry.Scheme.Modules.toPresheaf Y).comp
+            (TopCat.Presheaf.stalkFunctor AddCommGrpCat (j x)))).Exact
+'LinearStudy.schemeModuleShortComplex_openRestriction_exact_iff_actualStalks' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveKoszul_openRestriction_exactAt_offCut : ∀ {K S : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {J : Type}
+  (b : J → S),
+  (∀ (t : J), b t ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range b) = ⊤ →
+      ∀ {r q : ℕ} (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (i : Fin r) (k : ℤ) {X : AlgebraicGeometry.Scheme}
+        (j : X ⟶ AlgebraicGeometry.Proj 𝓑) [inst_4 : AlgebraicGeometry.IsOpenImmersion j],
+        (∀ (x : ↥X), j x ∈ AlgebraicGeometry.Proj.basicOpen 𝓑 (H i)) →
+          ∀ (p : ℕ),
+            (((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj
+                  (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k)).ExactAt
+              p
+'LinearStudy.nativeProjectiveKoszul_openRestriction_exactAt_offCut' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveKoszul_cokernel_openRestriction_isZero_offCut : ∀ {K S : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {J : Type}
+  (b : J → S),
+  (∀ (t : J), b t ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range b) = ⊤ →
+      ∀ {r q : ℕ} (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (i : Fin r) (k : ℤ) {X : AlgebraicGeometry.Scheme}
+        (j : X ⟶ AlgebraicGeometry.Proj 𝓑) [inst_4 : AlgebraicGeometry.IsOpenImmersion j],
+        (∀ (x : ↥X), j x ∈ AlgebraicGeometry.Proj.basicOpen 𝓑 (H i)) →
+          CategoryTheory.Limits.IsZero
+            ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+              (CategoryTheory.Limits.cokernel ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0)))
+'LinearStudy.nativeProjectiveKoszul_cokernel_openRestriction_isZero_offCut' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModule_sections_isZero_of_isZero : ∀ {X : AlgebraicGeometry.Scheme} (M : X.Modules),
+  CategoryTheory.Limits.IsZero M → ∀ (W : X.Opens), CategoryTheory.Limits.IsZero (M.presheaf.obj (Opposite.op W))
+'LinearStudy.schemeModule_sections_isZero_of_isZero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModule_sections_isZero_of_openRestriction : ∀ {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (M : Y.Modules),
+  CategoryTheory.Limits.IsZero ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj M) →
+    ∀ W ≤ (AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj ⊤,
+      CategoryTheory.Limits.IsZero (M.presheaf.obj (Opposite.op W))
+'LinearStudy.schemeModule_sections_isZero_of_openRestriction' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModule_restrictionUnit_restrict_isIso : ∀ {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (M : Y.Modules),
+  CategoryTheory.IsIso
+    ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map
+      ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app M))
+'LinearStudy.schemeModule_restrictionUnit_restrict_isIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModule_restrictionUnit_app_isIso_of_zero_sections : ∀ {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (M : Y.Modules) (V : Y.Opens),
+  (∀ W ≤ V, CategoryTheory.Limits.IsZero (M.presheaf.obj (Opposite.op W))) →
+    ∀ W ≤ V,
+      CategoryTheory.IsIso
+        (AlgebraicGeometry.Scheme.Modules.Hom.app ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app M)
+          W)
+'LinearStudy.schemeModule_restrictionUnit_app_isIso_of_zero_sections' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModule_restrictionUnit_isIso_of_originalCover : ∀ {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (M : Y.Modules) {ι : Type u_2} (V : ι → Y.Opens),
+  (∀ (y : ↥Y), y ∈ (AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj ⊤ ∨ ∃ (i : ι), y ∈ V i) →
+    (∀ (i : ι), ∀ W ≤ V i, CategoryTheory.Limits.IsZero (M.presheaf.obj (Opposite.op W))) →
+      CategoryTheory.IsIso ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app M)
+'LinearStudy.schemeModule_restrictionUnit_isIso_of_originalCover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveKoszul_cokernelRestrictionUnit_isIso : ∀ {K S : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {J : Type}
+  (b : J → S),
+  (∀ (t : J), b t ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range b) = ⊤ →
+      ∀ {r q : ℕ} (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1),
+        (∀ (x : ↥(AlgebraicGeometry.Proj 𝓑)),
+            x ∈ AlgebraicGeometry.Proj.basicOpen 𝓑 a ∨ ∃ (i : Fin r), x ∈ AlgebraicGeometry.Proj.basicOpen 𝓑 (H i)) →
+          CategoryTheory.IsIso
+            ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction (AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯)).unit.app
+              (CategoryTheory.Limits.cokernel ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0)))
+'LinearStudy.nativeProjectiveKoszul_cokernelRestrictionUnit_isIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearSection_exists_globalCokernelRestrictionUnit_isIso : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  0 < f.degree →
+    Function.Surjective f.onPoints →
+      f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+        ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+          (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+              ∀ (x0 : Fin n → ℂ),
+                LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                  ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                    c ≠ 0 ∧
+                      (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                        ∀ (w : Fin (r + 1) → ℂ),
+                          (MvPolynomial.eval w) c ≠ 0 →
+                            let a := (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0);
+                            have ha := ⋯;
+                            let j :=
+                              AlgebraicGeometry.Proj.awayι (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a ha
+                                ⋯;
+                            ∀ (k : ℤ),
+                              CategoryTheory.IsIso
+                                ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app
+                                  (CategoryTheory.Limits.cokernel
+                                    ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0)))
+'LinearStudy.projectivePulledLinearSection_exists_globalCokernelRestrictionUnit_isIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleSupportedRestrictionIso : {X Y : AlgebraicGeometry.Scheme} →
+  (j : X ⟶ Y) →
+    [inst : AlgebraicGeometry.IsOpenImmersion j] →
+      (M : Y.Modules) →
+        (Q : X.Modules) →
+          CategoryTheory.IsIso ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app M) →
+            ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj M ≅ Q) →
+              (M ≅ (AlgebraicGeometry.Scheme.Modules.pushforward j).obj Q)
+'LinearStudy.schemeModuleSupportedRestrictionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSupportedRestrictionIso_hom : ∀ {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (M : Y.Modules) (Q : X.Modules)
+  (hu : CategoryTheory.IsIso ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app M))
+  (e : (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj M ≅ Q),
+  (LinearStudy.schemeModuleSupportedRestrictionIso j M Q hu e).hom =
+    CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app M)
+      ((AlgebraicGeometry.Scheme.Modules.pushforward j).map e.hom)
+'LinearStudy.schemeModuleSupportedRestrictionIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulGlobalCokernelChartPushforwardIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (t : J), b t ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                (ha : a ∈ 𝓑 1) →
+                                  (∀ (x : ↥(AlgebraicGeometry.Proj 𝓑)),
+                                      x ∈ AlgebraicGeometry.Proj.basicOpen 𝓑 a ∨
+                                        ∃ (i : Fin r), x ∈ AlgebraicGeometry.Proj.basicOpen 𝓑 (H i)) →
+                                    let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+                                    have j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+                                    have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+                                    CategoryTheory.Limits.cokernel
+                                        ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0) ≅
+                                      (AlgebraicGeometry.Scheme.Modules.pushforward j).obj
+                                        (LinearStudy.tildeKoszulOriginalCutCokernelCofork R h).pt
+'LinearStudy.nativeProjectiveKoszulGlobalCokernelChartPushforwardIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearSection_exists_globalCokernelChartPushforwardIso : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  0 < f.degree →
+    Function.Surjective f.onPoints →
+      f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+        ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+          (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+              ∀ (x0 : Fin n → ℂ),
+                LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                  ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                    c ≠ 0 ∧
+                      (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                        ∀ (w : Fin (r + 1) → ℂ),
+                          (MvPolynomial.eval w) c ≠ 0 →
+                            let a := (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0);
+                            have ha := ⋯;
+                            let R :=
+                              ↧(HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a);
+                            have j :=
+                              AlgebraicGeometry.Proj.awayι (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a ha
+                                ⋯;
+                            have h := fun (i : Fin r) =>
+                              HomogeneousLocalization.Away.mk (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) ha
+                                f.degree (LinearStudy.projectivePulledLinearKoszulForms f V L w i) ⋯;
+                            ∀ (k : ℤ),
+                              Nonempty
+                                (CategoryTheory.Limits.cokernel
+                                    ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                                  (AlgebraicGeometry.Scheme.Modules.pushforward j).obj
+                                    (LinearStudy.tildeKoszulOriginalCutCokernelCofork R h).pt)
+'LinearStudy.projectivePulledLinearSection_exists_globalCokernelChartPushforwardIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleMorphism_isIso_of_originalCover : ∀ {X : AlgebraicGeometry.Scheme} {M N : X.Modules}
+  {ι : Type u_2} (U : ι → X.Opens),
+  ⊤ ≤ iSup U →
+    ∀ (f : M ⟶ N),
+      (∀ (i : ι), ∀ W ≤ U i, CategoryTheory.IsIso (AlgebraicGeometry.Scheme.Modules.Hom.app f W)) →
+        CategoryTheory.IsIso f
+'LinearStudy.schemeModuleMorphism_isIso_of_originalCover' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleMorphism_app_isIso_of_openImmersion : ∀ {X Y : AlgebraicGeometry.Scheme} {M N : X.Modules}
+  (f : M ⟶ N) (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j]
+  [CategoryTheory.IsIso ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map f)],
+  ∀ U ≤ (AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj ⊤,
+    CategoryTheory.IsIso (AlgebraicGeometry.Scheme.Modules.Hom.app f U)
+'LinearStudy.schemeModuleMorphism_app_isIso_of_openImmersion' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleSupportedRestrictionIso.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  (j : X ⟶ Y) →
+    [inst : AlgebraicGeometry.IsOpenImmersion j] →
+      (M : Y.Modules) →
+        (Q : X.Modules) →
+          CategoryTheory.IsIso ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app M) →
+            ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj M ≅ Q) →
+              (M ≅ (AlgebraicGeometry.Scheme.Modules.pushforward j).obj Q) :=
+fun {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y) [AlgebraicGeometry.IsOpenImmersion j] (M : Y.Modules) (Q : X.Modules)
+    (hu : CategoryTheory.IsIso ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app M))
+    (e : (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj M ≅ Q) =>
+  CategoryTheory.asIso ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app M) ≪≫
+    (AlgebraicGeometry.Scheme.Modules.pushforward j).mapIso e
+def LinearStudy.nativeProjectiveKoszulGlobalCokernelChartPushforwardIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (t : J), b t ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                (ha : a ∈ 𝓑 1) →
+                                  (∀ (x : ↥(AlgebraicGeometry.Proj 𝓑)),
+                                      x ∈ AlgebraicGeometry.Proj.basicOpen 𝓑 a ∨
+                                        ∃ (i : Fin r), x ∈ AlgebraicGeometry.Proj.basicOpen 𝓑 (H i)) →
+                                    let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+                                    have j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+                                    have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+                                    CategoryTheory.Limits.cokernel
+                                        ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0) ≅
+                                      (AlgebraicGeometry.Scheme.Modules.pushforward j).obj
+                                        (LinearStudy.tildeKoszulOriginalCutCokernelCofork R h).pt :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [IsNoetherianRing S]
+    {J : Type} (b : J → S) (hb : ∀ (t : J), b t ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1)
+    (hc :
+      ∀ (x : ↥(AlgebraicGeometry.Proj 𝓑)),
+        x ∈ AlgebraicGeometry.Proj.basicOpen 𝓑 a ∨ ∃ (i : Fin r), x ∈ AlgebraicGeometry.Proj.basicOpen 𝓑 (H i)) =>
+  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+  let j :=
+    AlgebraicGeometry.Proj.awayι 𝓑 a ha LinearStudy.nativeProjectiveKoszulGlobalCokernelChartPushforwardIso._proof_3;
+  have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+  LinearStudy.schemeModuleSupportedRestrictionIso j
+    (CategoryTheory.Limits.cokernel ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0))
+    (LinearStudy.tildeKoszulOriginalCutCokernelCofork ↧(HomogeneousLocalization.Away 𝓑 a) fun (i : Fin r) =>
+        HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯).pt
+    ⋯ (LinearStudy.nativeProjectiveKoszulCokernelChartFromPresentationIso 𝓑 b hb hgen H hH k a ha)
