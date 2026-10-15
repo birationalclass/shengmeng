@@ -1,0 +1,38 @@
+@LinearStudy.schemeModuleInternalExtSourceMap_comp_boundary : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceMap S.f N q)
+      (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q) =
+    0
+'LinearStudy.schemeModuleInternalExtSourceMap_comp_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundary_comp_map : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q)
+      (LinearStudy.schemeModuleInternalExtSourceMap S.g N (q + 1)) =
+    0
+'LinearStudy.schemeModuleInternalExtSourceBoundary_comp_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundary_exact_before : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ),
+  { X₁ := LinearStudy.schemeModuleInternalExt S.X₂ N q, X₂ := LinearStudy.schemeModuleInternalExt S.X₁ N q,
+      X₃ := LinearStudy.schemeModuleInternalExt S.X₃ N (q + 1),
+      f := LinearStudy.schemeModuleInternalExtSourceMap S.f N q,
+      g := LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q, zero := ⋯ }.Exact
+'LinearStudy.schemeModuleInternalExtSourceBoundary_exact_before' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundary_exact_after : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ),
+  { X₁ := LinearStudy.schemeModuleInternalExt S.X₁ N q, X₂ := LinearStudy.schemeModuleInternalExt S.X₃ N (q + 1),
+      X₃ := LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1),
+      f := LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q,
+      g := LinearStudy.schemeModuleInternalExtSourceMap S.g N (q + 1), zero := ⋯ }.Exact
+'LinearStudy.schemeModuleInternalExtSourceBoundary_exact_after' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceMap_comp_boundary:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundary_comp_map:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundary_exact_before:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundary_exact_after:true

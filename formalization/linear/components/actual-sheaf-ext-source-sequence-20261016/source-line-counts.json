@@ -1,0 +1,4233 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-15T23:11:23.533704+00:00",
+  "source": "accepted Lean.findDeclarationRanges and ConstantInfo.getUsedConstantsAsSet from import-all compiler environment; traverse every owned auxiliary constant before merging compiler-recorded ranges",
+  "archiveSha256": "6a5ef1595a7555af2cf54548abaeeff4da122d1deddeb13bd79643ac1349823c",
+  "newComponentOwn": 306,
+  "newComponentAllNeeded": 1188,
+  "metadataComplete": true,
+  "excludedExternalGeneratedConstants": [],
+  "unmappedConstants": [],
+  "sourceHashes": {
+    "source/Linear/OverOpenInjectiveRestriction.lean": "fd7d384326c296ae51232f468cb2b833c266ca757b47bfa818f2f976693ef7f0",
+    "source/Linear/OverOpenZeroPresheaf.lean": "3fddc2b646b30a36057896d20be022c464aa85c472c7c26ff11f629f21b3906f",
+    "source/Linear/OverOpenZeroPresheafAdjunction.lean": "443be7409cc29f60b6d60bb3979b5e945981eb88cc09f13d2913ad39b44072e1",
+    "source/Linear/OverOpenZeroPresheafFunctor.lean": "3e0037a5e8c810ad79e9e9242c6065299f2134240512ef2c06d1e447b15c906f",
+    "source/Linear/OverOpenZeroSheafAdjunction.lean": "333c1544b080c7d5025a317d5fc942904d1b77a14eef64a04aeaa94a59017d4f",
+    "source/Linear/OverOpenZeroSheafFunctor.lean": "fbe3d2d4fac9891ae6bfaaa9f2aa9533eedd8d4f1e8da4789317391709b0e3aa",
+    "source/Linear/SchemeModuleDerivedInternalHom.lean": "b21411c66e8b234cc7805068c3cbf31743cdd37c6ee4bc21956087a5f1eef3bf",
+    "source/Linear/SchemeModuleHomEvaluationRestriction.lean": "e6b78c05f0007adbf71fe91692f44df178401b53c85869ead835b0bd8884943c",
+    "source/Linear/SchemeModuleHomGlobal.lean": "014fe73ff83ce8b4a204d3f156f49d133cafdd2e0f36954aca3c6eace9fc3900",
+    "source/Linear/SchemeModuleHomModuleSections.lean": "f7c11db79ca976453551c2670468b8e28e0b74fbf8ff3c1b434e2958b4c54dff",
+    "source/Linear/SchemeModuleHomModuleSheaf.lean": "dc9e56af0752a4f4669481d24185f5669067da42f22cda8f84e893d08c881c41",
+    "source/Linear/SchemeModuleHomPostcompose.lean": "5e76135352f0c4e6b616843782b191e7c57e161e232aafe44077f4dbb74202bc",
+    "source/Linear/SchemeModuleHomPostcomposeSection.lean": "0c5c9cfc5a2d7b2ebf3cb9a8c60f34d0115e05c9d7c9e73a35836113084702a9",
+    "source/Linear/SchemeModuleHomPrecompose.lean": "bac88e881cf848f3d2904dea1b1b2a101e7afe47400195415aeaf4dd31d4c78f",
+    "source/Linear/SchemeModuleHomPresheaf.lean": "b1e52e00867a3ef2719b4556fb4a89d4ff778f2dd86449287cedc96a88e8e75a",
+    "source/Linear/SchemeModuleHomRestriction.lean": "8a75457d689c76bf7c573d62606b429524d5719499f4341737c5d4874b49004f",
+    "source/Linear/SchemeModuleHomScalar.lean": "be075246712de9cf5203727e19d54478c7baffda34c6ef1a053d9051f626ab2c",
+    "source/Linear/SchemeModuleHomSheaf.lean": "5134148fa3d54a3af759d13d16dd576e549a8b6bb44172f6e278902f96efc497",
+    "source/Linear/SchemeModuleInjectiveHomEpi.lean": "8ca4161091dc241b9a06cce59b102c55afac316b8e6397ae08cae789b830c484",
+    "source/Linear/SchemeModuleInjectiveHomExact.lean": "93f1507fe8a805e60ebfc66b5d8bcc430618fc596f350776a1d3b8858cb92894",
+    "source/Linear/SchemeModuleInternalExtSourceBoundary.lean": "7a906300e4934c851210f5eeafd74e114286db387649fa8f565406e105f54c0d",
+    "source/Linear/SchemeModuleInternalExtSourceBoundaryExact.lean": "d6a1a45577e44977b57c0ee7679402a0fb55204428e5d110804349a89380d134",
+    "source/Linear/SchemeModuleInternalExtSourceBoundaryIso.lean": "0a3c4e802f02affd12d42b6dd3e20acfadb91f0402829e0bd1825ddd3112bb45",
+    "source/Linear/SchemeModuleInternalExtSourceBoundaryNaturality.lean": "5a825cb9dcac32b31c97fa89aeecd4fd395f4319889a4becd54bc4dde1af7cb6",
+    "source/Linear/SchemeModuleInternalExtSourceExact.lean": "19d588bffccc6cd1b7d3e805183d6590de002fc0dab57f69b61c335ec0f8de4c",
+    "source/Linear/SchemeModuleInternalExtSourceMap.lean": "07ce81d0eccaedafc93c629ecb47c2fd22e4520617707649aa4bd568d485031c",
+    "source/Linear/SchemeModuleInternalHomBifunctor.lean": "791c3eeb42268126c181cba4798de95044aad56bfdf70ee81f7551153a4a87a6",
+    "source/Linear/SchemeModuleInternalHomCoefficientFunctor.lean": "b4ea27422f4225330724334a5376cf321bc350c38474ce33c08eb52236b5a40c",
+    "source/Linear/SchemeModuleInternalHomCoefficientLimits.lean": "d698f684bddb09e66dceae0ba7016a9e66e2f0605678b343ae74823c116ab4b4",
+    "source/Linear/SchemeModuleInternalHomComplex.lean": "357c45233a1d564ee475c98a9ec8ad8f55c5d5dd5c5ee70ada293e4383c8a49c",
+    "source/Linear/SchemeModuleInternalHomSourceLimits.lean": "c4371c5b0919b218d7cb124128b568c4b4847fed48fde46093bb71d2100c6bf7",
+    "source/Linear/SchemeModuleInternalHomSourceShortExact.lean": "08e71e79b926d111c89c3fc4b167a9a50c6c503d4a319a26a9140e9da93d5cd6",
+    "source/Linear/SchemeModuleOpenInjectives.lean": "7ea544dfe4d3d9122e1a01995fdee50ec88ac54f8c7113b7aeaa14734f04251d",
+    "source/Linear.lean": "eb9ab91001ff3c97e823747b2c9ebc2212aec916e670eb1a9ecbfe1cbce72bab",
+    "source/lean-toolchain": "bc84812c94489d1e3e191baa1dc10d5eb684382d7fe9d2a5ab085e72c1c67e47",
+    "source/lakefile.toml": "12e6d3039c6ed00731bcf1c8f8e9c116e81771e6a74cad289b920b767f94d9ee",
+    "source/lake-manifest.json": "ef71ef5fb13fd129bbf52a72216543bfd4c8e2b752dd3234d0f18b9964b104da",
+    "source/lean_runner.py": "29184f494ad21d0245b2123e1de05ef5ac8e1f9ee4ca3760eb03dcf1fbc43a29",
+    "source/resource_guard.py": "e645a05b3d1cda35df85b69261c8e151ec249adc6f077f5558df656fded10111",
+    "source/resource-policy.json": "a76f8486e8ef675fd26b6506704d02c82d4d453be35f4ac2477a0dbc6cca5833",
+    "source/RESOURCE_SAFETY.md": "0c949c5650ac6aa8fd712989d07dca7b6f9aadbc5d0a779ff2804cbb9d408e43",
+    "source/AGENTS.md": "77cb9ea044a7492301af545ce02e5209302ba73b1b7bb74682386640d61dc385",
+    "source/CheckOriginalExtRestrictionInternalExtSourceShortExact9cd4ebcd9c75.lean": "dfcaf65cf17919a5b465fabbdbd20509818f736d6016ffab9c6ff0e1742c94f5",
+    "source/CheckOriginalExtRestrictionInternalExtSourceMap91eb09d16722.lean": "19acafffe1e0af43082f8929695a78961cacb0228d1113428a99a530caf1c30e",
+    "source/CheckOriginalExtRestrictionInternalExtSourceExacta0f184b96f5b.lean": "ce43f59f66fb0c855bf190a3567f63c85256dd615828b97668fde901db78ca14",
+    "source/CheckOriginalExtRestrictionInternalExtSourceBoundary3bb2f7e71bf0.lean": "6f5d0d18b993665fe4415d93a55521a13ab96dcd1c587150fe10876e91475c0d",
+    "source/CheckOriginalExtRestrictionInternalExtSourceBoundaryIsoc450b427f440.lean": "711d2ab294fcf60861c8654375684b39651bfb1d8b0287ed44efaa654205c572",
+    "source/CheckOriginalExtRestrictionInternalExtSourceBoundaryExactf53e53a008b6.lean": "e17d152882f5b50745c3626a77cb88ef84fc95d66015ff49f514f0e6d3820a18",
+    "source/CheckOriginalExtRestrictionInternalExtSourceBoundaryNaturality7bfeee71b90e.lean": "47334862c5d7273d1d0f497aa8e1660a0aeb7adff5c9ccbb524457d7b5f9340b"
+  },
+  "cards": {
+    "canonical-boundary": {
+      "declarations": [
+        "LinearStudy.schemeModuleHomSourceShortComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_naturality",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_independent",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_eq_viaResolution"
+      ],
+      "own": 81,
+      "allNeeded": 1012,
+      "metadata": "complete",
+      "unmappedConstants": []
+    },
+    "boundary-exact": {
+      "declarations": [
+        "LinearStudy.schemeModuleInternalExtSourceMap_comp_boundary",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_comp_map",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_exact_before",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_exact_after"
+      ],
+      "own": 62,
+      "allNeeded": 1002,
+      "metadata": "complete",
+      "unmappedConstants": []
+    },
+    "dimension-shift": {
+      "declarations": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution_hom"
+      ],
+      "own": 21,
+      "allNeeded": 927,
+      "metadata": "complete",
+      "unmappedConstants": []
+    },
+    "source-exact": {
+      "declarations": [
+        "LinearStudy.schemeModuleInternalExtSourceShortComplex",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso",
+        "LinearStudy.schemeModuleInternalExtSourceShortComplex_exact"
+      ],
+      "own": 27,
+      "allNeeded": 973,
+      "metadata": "complete",
+      "unmappedConstants": []
+    },
+    "source-maps": {
+      "declarations": [
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap_id",
+        "LinearStudy.schemeModuleInternalExtSourceMap_comp",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap_zero",
+        "LinearStudy.schemeModuleInternalExtSourceMap_zero"
+      ],
+      "own": 48,
+      "allNeeded": 501,
+      "metadata": "complete",
+      "unmappedConstants": []
+    },
+    "hom-short-exact": {
+      "declarations": [
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleHomPrecompose_zero",
+        "LinearStudy.schemeModuleHomSourceShortComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap_f"
+      ],
+      "own": 47,
+      "allNeeded": 884,
+      "metadata": "complete",
+      "unmappedConstants": []
+    },
+    "native-snake": {
+      "declarations": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square"
+      ],
+      "own": 20,
+      "allNeeded": 916,
+      "metadata": "complete",
+      "unmappedConstants": []
+    }
+  },
+  "declarations": {
+    "LinearStudy.schemeModuleHomCoefficientComplexMap_f": {
+      "path": "source/Linear/SchemeModuleInternalHomSourceShortExact.lean",
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "startLine": 62,
+      "endLine": 66,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleHomCoefficientComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPostcompose_comp": {
+      "path": "source/Linear/SchemeModuleHomPostcompose.lean",
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "startLine": 60,
+      "endLine": 70,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPostcompose"
+      ]
+    },
+    "LinearStudy.schemeModuleHom_smul_app": {
+      "path": "source/Linear/SchemeModuleHomScalar.lean",
+      "module": "Linear.SchemeModuleHomScalar",
+      "startLine": 55,
+      "endLine": 59,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomSMul"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap_comp": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceMap.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "startLine": 27,
+      "endLine": 32,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans_comp",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap._proof_2"
+      ]
+    },
+    "LinearStudy.schemeModuleHomSheaf": {
+      "path": "source/Linear/SchemeModuleHomSheaf.lean",
+      "module": "Linear.SchemeModuleHomSheaf",
+      "startLine": 76,
+      "endLine": 82,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPresheaf_isSheaf",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtFunctor": {
+      "path": "source/Linear/SchemeModuleDerivedInternalHom.lean",
+      "module": "Linear.SchemeModuleDerivedInternalHom",
+      "startLine": 15,
+      "endLine": 20,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtFunctor._proof_2",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso_naturality": {
+      "path": "source/Linear/SchemeModuleDerivedInternalHom.lean",
+      "module": "Linear.SchemeModuleDerivedInternalHom",
+      "startLine": 40,
+      "endLine": 54,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtFunctor",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_independent": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundaryNaturality.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "startLine": 63,
+      "endLine": 83,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_naturality"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution_hom": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundaryIso.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "startLine": 27,
+      "endLine": 34,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundary.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "startLine": 24,
+      "endLine": 33,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_4",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_6",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_10",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_1",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_7",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_3",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_9",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_8",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPostcompose": {
+      "path": "source/Linear/SchemeModuleHomPostcompose.lean",
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "startLine": 13,
+      "endLine": 40,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPostcompose._proof_2",
+        "LinearStudy.schemeModuleHomPostcomposeSection",
+        "LinearStudy.schemeModuleHomAbModule",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHomPostcompose._proof_3",
+        "LinearStudy.schemeModuleHomPostcompose._proof_1"
+      ]
+    },
+    "LinearStudy.overOpenZeroMap": {
+      "path": "source/Linear/OverOpenZeroPresheaf.lean",
+      "module": "Linear.OverOpenZeroPresheaf",
+      "startLine": 23,
+      "endLine": 33,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap._proof_2",
+        "LinearStudy.overOpenZeroMap._proof_1",
+        "LinearStudy.overOpenZeroObj",
+        "LinearStudy.overOpenZeroMap._proof_3"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomSourceSectionIso": {
+      "path": "source/Linear/SchemeModuleInternalHomSourceLimits.lean",
+      "module": "Linear.SchemeModuleInternalHomSourceLimits",
+      "startLine": 15,
+      "endLine": 28,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomSourceSectionIso._proof_1",
+        "LinearStudy.schemeModuleHomModuleSectionsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleInternalHomFunctor"
+      ]
+    },
+    "LinearStudy.overOpenZeroHomEquiv": {
+      "path": "source/Linear/OverOpenZeroPresheafAdjunction.lean",
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "startLine": 80,
+      "endLine": 108,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroHomExtend",
+        "LinearStudy.overOpenZeroHomRestrict",
+        "LinearStudy.overOpenZeroHomEquiv._proof_2",
+        "LinearStudy.overOpenZeroHomEquiv._proof_1"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPresheaf": {
+      "path": "source/Linear/SchemeModuleHomPresheaf.lean",
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "startLine": 22,
+      "endLine": 39,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPresheaf._proof_3",
+        "LinearStudy.schemeModuleHomPresheaf._proof_1",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf._proof_2"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomCoefficientFunctor_preservesFiniteLimits": {
+      "path": "source/Linear/SchemeModuleInternalHomCoefficientLimits.lean",
+      "module": "Linear.SchemeModuleInternalHomCoefficientLimits",
+      "startLine": 52,
+      "endLine": 69,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalHomCoefficientSectionIso",
+        "LinearStudy.schemeModuleOverFunctor_preservesFiniteLimits"
+      ]
+    },
+    "LinearStudy.overOpenZeroPresheafHom": {
+      "path": "source/Linear/OverOpenZeroPresheafFunctor.lean",
+      "module": "Linear.OverOpenZeroPresheafFunctor",
+      "startLine": 13,
+      "endLine": 34,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroPresheafHom._proof_1"
+      ]
+    },
+    "LinearStudy.overOpenZeroHomExtend_lof": {
+      "path": "source/Linear/OverOpenZeroPresheafAdjunction.lean",
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "startLine": 66,
+      "endLine": 78,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroHomExtend"
+      ]
+    },
+    "LinearStudy.overOpenZeroSheafFunctor": {
+      "path": "source/Linear/OverOpenZeroSheafFunctor.lean",
+      "module": "Linear.OverOpenZeroSheafFunctor",
+      "startLine": 17,
+      "endLine": 21,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.overOpenZeroSheafFunctor._proof_2",
+        "LinearStudy.overOpenZeroSheafFunctor._proof_1",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroSheafFunctor._proof_3"
+      ]
+    },
+    "LinearStudy.schemeModuleInjectiveOver": {
+      "path": "source/Linear/SchemeModuleOpenInjectives.lean",
+      "module": "Linear.SchemeModuleOpenInjectives",
+      "startLine": 24,
+      "endLine": 29,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.schemeModuleOverFunctor_preservesInjectiveObjects"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPrecompose_app": {
+      "path": "source/Linear/SchemeModuleHomPrecompose.lean",
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "startLine": 50,
+      "endLine": 56,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ]
+    },
+    "LinearStudy.overOpenZeroMap_id": {
+      "path": "source/Linear/OverOpenZeroPresheaf.lean",
+      "module": "Linear.OverOpenZeroPresheaf",
+      "startLine": 52,
+      "endLine": 71,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap_lof",
+        "LinearStudy.overOpenZeroMap",
+        "LinearStudy.overOpenZeroObj"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExt": {
+      "path": "source/Linear/SchemeModuleDerivedInternalHom.lean",
+      "module": "Linear.SchemeModuleDerivedInternalHom",
+      "startLine": 22,
+      "endLine": 23,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtFunctor"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomBifunctor_flip_obj": {
+      "path": "source/Linear/SchemeModuleInternalHomBifunctor.lean",
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "startLine": 52,
+      "endLine": 55,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInternalHomBifunctor"
+      ]
+    },
+    "LinearStudy.schemeModuleHom_map_smul": {
+      "path": "source/Linear/SchemeModuleHomModuleSheaf.lean",
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "startLine": 22,
+      "endLine": 39,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomObjModule",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomObjAddCommGroup"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomBifunctor": {
+      "path": "source/Linear/SchemeModuleInternalHomBifunctor.lean",
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "startLine": 44,
+      "endLine": 50,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomBifunctor._proof_1",
+        "LinearStudy.schemeModuleInternalHomBifunctor._proof_2",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary_eq_viaResolution": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundaryNaturality.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "startLine": 91,
+      "endLine": 98,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_independent",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPrecompose": {
+      "path": "source/Linear/SchemeModuleHomPrecompose.lean",
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "startLine": 24,
+      "endLine": 48,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose._proof_2",
+        "LinearStudy.schemeModuleHomAbModule",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHomPrecompose._proof_1",
+        "LinearStudy.schemeModuleHomPrecompose._proof_3",
+        "LinearStudy.schemeModuleHomPrecomposeSection"
+      ]
+    },
+    "LinearStudy.overOpenZeroPresheafSheafificationAdjunction": {
+      "path": "source/Linear/OverOpenZeroSheafAdjunction.lean",
+      "module": "Linear.OverOpenZeroSheafAdjunction",
+      "startLine": 16,
+      "endLine": 21,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_3",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_2",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroPresheafAdjunction",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_1"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPrecompose_zero": {
+      "path": "source/Linear/SchemeModuleInternalHomSourceShortExact.lean",
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "startLine": 28,
+      "endLine": 38,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ]
+    },
+    "LinearStudy.schemeModuleHomSubfunctor": {
+      "path": "source/Linear/SchemeModuleHomSheaf.lean",
+      "module": "Linear.SchemeModuleHomSheaf",
+      "startLine": 15,
+      "endLine": 19,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomSubfunctor._proof_1"
+      ]
+    },
+    "LinearStudy.overOpenZeroSheafFunctor_preservesMonomorphisms": {
+      "path": "source/Linear/OverOpenZeroSheafFunctor.lean",
+      "module": "Linear.OverOpenZeroSheafFunctor",
+      "startLine": 23,
+      "endLine": 29,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheafFunctor_preservesMonomorphisms",
+        "LinearStudy.overOpenZeroSheafFunctor",
+        "LinearStudy.overOpenZeroSheafFunctor._proof_2",
+        "LinearStudy.overOpenZeroSheafFunctor._proof_1",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroSheafFunctor._proof_3"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceShortComplex": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceExact.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "startLine": 13,
+      "endLine": 19,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceShortComplex._proof_1"
+      ]
+    },
+    "LinearStudy.schemeModuleInjectiveInternalHom_preservesFiniteColimits": {
+      "path": "source/Linear/SchemeModuleInjectiveHomExact.lean",
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "startLine": 32,
+      "endLine": 35,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInjectiveInternalHom_preservesHomology",
+        "LinearStudy.schemeModuleInternalHomFunctor_additive"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceMap.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "startLine": 43,
+      "endLine": 52,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive": {
+      "path": "source/Linear/SchemeModuleInternalHomCoefficientFunctor.lean",
+      "module": "Linear.SchemeModuleInternalHomCoefficientFunctor",
+      "startLine": 22,
+      "endLine": 24,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPostcompose_add",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ]
+    },
+    "LinearStudy.schemeModuleHomModulePresheaf": {
+      "path": "source/Linear/SchemeModuleHomModuleSheaf.lean",
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "startLine": 68,
+      "endLine": 71,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAbModule",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHom_map_smul"
+      ]
+    },
+    "LinearStudy.schemeModuleHomOverEquiv": {
+      "path": "source/Linear/SchemeModuleHomPresheaf.lean",
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "startLine": 41,
+      "endLine": 67,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv._proof_1",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_4",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_7",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_3",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_8",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_6",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_5",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_2"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPrecompose_comp": {
+      "path": "source/Linear/SchemeModuleHomPrecompose.lean",
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "startLine": 69,
+      "endLine": 79,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ]
+    },
+    "LinearStudy.schemeModuleHomOverLinear": {
+      "path": "source/Linear/SchemeModuleHomPresheaf.lean",
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "startLine": 15,
+      "endLine": 20,
+      "lineCount": 6,
+      "dependencies": []
+    },
+    "LinearStudy.overOpenZeroHomRestrict": {
+      "path": "source/Linear/OverOpenZeroPresheafAdjunction.lean",
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "startLine": 15,
+      "endLine": 40,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.overOpenZeroHomRestrict._proof_3",
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroHomRestrict._proof_1",
+        "LinearStudy.overOpenZeroHomRestrict._proof_2"
+      ]
+    },
+    "LinearStudy.overOpenZeroPresheafFunctor": {
+      "path": "source/Linear/OverOpenZeroPresheafFunctor.lean",
+      "module": "Linear.OverOpenZeroPresheafFunctor",
+      "startLine": 36,
+      "endLine": 50,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroPresheafFunctor._proof_2",
+        "LinearStudy.overOpenZeroPresheafFunctor._proof_1",
+        "LinearStudy.overOpenZeroPresheafHom"
+      ]
+    },
+    "LinearStudy.schemeModuleInjectiveHomAugmentationMap": {
+      "path": "source/Linear/SchemeModuleInjectiveHomExact.lean",
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "startLine": 37,
+      "endLine": 44,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_3",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_2",
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_1",
+        "LinearStudy.schemeModuleInternalHomCochainComplex._proof_3",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_4",
+        "LinearStudy.schemeModuleInternalHomCochainComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceMap.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "startLine": 14,
+      "endLine": 19,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap._proof_2"
+      ]
+    },
+    "LinearStudy.overOpenZeroMap_comp": {
+      "path": "source/Linear/OverOpenZeroPresheaf.lean",
+      "module": "Linear.OverOpenZeroPresheaf",
+      "startLine": 73,
+      "endLine": 94,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap_lof",
+        "LinearStudy.overOpenZeroMap",
+        "LinearStudy.overOpenZeroObj"
+      ]
+    },
+    "LinearStudy.schemeModuleHomCoefficientComplex": {
+      "path": "source/Linear/SchemeModuleInternalHomSourceShortExact.lean",
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "startLine": 15,
+      "endLine": 19,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_2",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_1"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomSourceNatTrans": {
+      "path": "source/Linear/SchemeModuleInternalHomBifunctor.lean",
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "startLine": 14,
+      "endLine": 27,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans._proof_1",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso": {
+      "path": "source/Linear/SchemeModuleDerivedInternalHom.lean",
+      "module": "Linear.SchemeModuleDerivedInternalHom",
+      "startLine": 25,
+      "endLine": 33,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtFunctor._proof_2",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtFunctor._proof_1"
+      ]
+    },
+    "LinearStudy.overOpenZeroPresheaf": {
+      "path": "source/Linear/OverOpenZeroPresheaf.lean",
+      "module": "Linear.OverOpenZeroPresheaf",
+      "startLine": 96,
+      "endLine": 101,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap",
+        "LinearStudy.overOpenZeroObj",
+        "LinearStudy.overOpenZeroMap_id",
+        "LinearStudy.overOpenZeroMap_comp"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap_id": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceMap.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "startLine": 21,
+      "endLine": 25,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans_id",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap._proof_2"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomCoefficientFunctor_map_app": {
+      "path": "source/Linear/SchemeModuleInternalHomCoefficientFunctor.lean",
+      "module": "Linear.SchemeModuleInternalHomCoefficientFunctor",
+      "startLine": 26,
+      "endLine": 33,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPostcompose_app",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomFunctor": {
+      "path": "source/Linear/SchemeModuleInternalHomComplex.lean",
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "startLine": 14,
+      "endLine": 22,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleInternalHomFunctor._proof_1",
+        "LinearStudy.schemeModuleInternalHomFunctor._proof_2"
+      ]
+    },
+    "LinearStudy.schemeModuleHomAbModule": {
+      "path": "source/Linear/SchemeModuleHomModuleSheaf.lean",
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "startLine": 64,
+      "endLine": 66,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomObjModule",
+        "LinearStudy.schemeModuleHomAbPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomFunctor_additive": {
+      "path": "source/Linear/SchemeModuleInternalHomComplex.lean",
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "startLine": 24,
+      "endLine": 26,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleHomPrecompose_add"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceExact.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "startLine": 21,
+      "endLine": 33,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceShortComplex",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_4",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_1",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_12",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_3",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_16",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplex": {
+      "path": "source/Linear/SchemeModuleInternalHomSourceShortExact.lean",
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "startLine": 40,
+      "endLine": 48,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleHomSourceShortComplex._proof_2",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex._proof_1"
+      ]
+    },
+    "LinearStudy.schemeModuleOverFunctor_preservesFiniteLimits": {
+      "path": "source/Linear/SchemeModuleInternalHomCoefficientLimits.lean",
+      "module": "Linear.SchemeModuleInternalHomCoefficientLimits",
+      "startLine": 33,
+      "endLine": 50,
+      "lineCount": 18,
+      "dependencies": []
+    },
+    "LinearStudy.overOpenZeroSheafHomEquiv": {
+      "path": "source/Linear/OverOpenZeroSheafAdjunction.lean",
+      "module": "Linear.OverOpenZeroSheafAdjunction",
+      "startLine": 23,
+      "endLine": 30,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.overOpenZeroSheafFunctor",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_3",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_2",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_1"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundaryIso.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "startLine": 13,
+      "endLine": 25,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_6",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_13",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_3",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_10",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_7",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_14",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_8",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_12",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_1",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_4",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleInjectiveHomAugmentationMap_f": {
+      "path": "source/Linear/SchemeModuleInjectiveHomExact.lean",
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "startLine": 55,
+      "endLine": 59,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap",
+        "LinearStudy.schemeModuleInternalHomCochainComplex"
+      ]
+    },
+    "LinearStudy.overOpenZeroSheafAdjunction": {
+      "path": "source/Linear/OverOpenZeroSheafAdjunction.lean",
+      "module": "Linear.OverOpenZeroSheafAdjunction",
+      "startLine": 32,
+      "endLine": 54,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.overOpenZeroSheafFunctor",
+        "LinearStudy.overOpenZeroSheafAdjunction._proof_2",
+        "LinearStudy.overOpenZeroSheafAdjunction._proof_1",
+        "LinearStudy.overOpenZeroSheafHomEquiv"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceShortComplex_exact": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceExact.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "startLine": 35,
+      "endLine": 41,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceShortComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomSourceNatTrans_id": {
+      "path": "source/Linear/SchemeModuleInternalHomBifunctor.lean",
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "startLine": 29,
+      "endLine": 34,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPrecompose_id",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ]
+    },
+    "LinearStudy.schemeModuleInjectiveHomAugmentationMap_quasiIso": {
+      "path": "source/Linear/SchemeModuleInjectiveHomExact.lean",
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "startLine": 46,
+      "endLine": 53,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_3",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_2",
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInjectiveInternalHom_preservesHomology",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_1",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap",
+        "LinearStudy.schemeModuleInternalHomCochainComplex._proof_3",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_4",
+        "LinearStudy.schemeModuleInternalHomFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCochainComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExt_injective_succ": {
+      "path": "source/Linear/SchemeModuleDerivedInternalHom.lean",
+      "module": "Linear.SchemeModuleDerivedInternalHom",
+      "startLine": 35,
+      "endLine": 38,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ]
+    },
+    "LinearStudy.overOpenRestriction_preservesInjectiveObjects": {
+      "path": "source/Linear/OverOpenInjectiveRestriction.lean",
+      "module": "Linear.OverOpenInjectiveRestriction",
+      "startLine": 21,
+      "endLine": 28,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.overOpenZeroSheafFunctor",
+        "LinearStudy.overOpenZeroSheafFunctor_preservesMonomorphisms",
+        "LinearStudy.overOpenZeroSheafAdjunction"
+      ]
+    },
+    "LinearStudy.schemeModuleHomModuleSectionsEquiv_restrict": {
+      "path": "source/Linear/SchemeModuleHomModuleSections.lean",
+      "module": "Linear.SchemeModuleHomModuleSections",
+      "startLine": 21,
+      "endLine": 36,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSectionsEquiv",
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverEquiv_restrict",
+        "LinearStudy.schemeModuleHomRestrict",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleHomCoefficientComplexMap_zero": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceMap.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "startLine": 54,
+      "endLine": 59,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleHomPrecompose_zero",
+        "LinearStudy.schemeModuleHomCoefficientComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomCochainComplex_d": {
+      "path": "source/Linear/SchemeModuleInternalHomComplex.lean",
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "startLine": 40,
+      "endLine": 45,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleInternalHomCochainComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleHomModuleSheaf": {
+      "path": "source/Linear/SchemeModuleHomModuleSheaf.lean",
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "startLine": 73,
+      "endLine": 79,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModulePresheaf",
+        "LinearStudy.schemeModuleHomModuleSheaf._proof_1"
+      ]
+    },
+    "LinearStudy.schemeModuleHomSectionEvaluation_restrict": {
+      "path": "source/Linear/SchemeModuleHomEvaluationRestriction.lean",
+      "module": "Linear.SchemeModuleHomEvaluationRestriction",
+      "startLine": 22,
+      "endLine": 38,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomSectionEvaluation"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPostcompose_id": {
+      "path": "source/Linear/SchemeModuleHomPostcompose.lean",
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "startLine": 49,
+      "endLine": 58,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPostcompose"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPostcompose_app": {
+      "path": "source/Linear/SchemeModuleHomPostcompose.lean",
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "startLine": 42,
+      "endLine": 47,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPostcompose"
+      ]
+    },
+    "LinearStudy.schemeModuleHomModule": {
+      "path": "source/Linear/SchemeModuleHomScalar.lean",
+      "module": "Linear.SchemeModuleHomScalar",
+      "startLine": 61,
+      "endLine": 108,
+      "lineCount": 48,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModule._proof_3",
+        "LinearStudy.schemeModuleHomModule._proof_1",
+        "LinearStudy.schemeModuleHomAddCommGroup",
+        "LinearStudy.schemeModuleHomModule._proof_4",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomSMul",
+        "LinearStudy.schemeModuleHomModule._proof_2",
+        "LinearStudy.schemeModuleHomModule._proof_6",
+        "LinearStudy.schemeModuleHomModule._proof_5"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPrecompose_add": {
+      "path": "source/Linear/SchemeModuleHomPrecompose.lean",
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "startLine": 81,
+      "endLine": 92,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ]
+    },
+    "LinearStudy.schemeModuleHomScalar": {
+      "path": "source/Linear/SchemeModuleHomScalar.lean",
+      "module": "Linear.SchemeModuleHomScalar",
+      "startLine": 23,
+      "endLine": 49,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomScalar._proof_1",
+        "LinearStudy.schemeModuleHomScalar._proof_2",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplexMap": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundaryNaturality.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "startLine": 14,
+      "endLine": 28,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_1",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_5",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_3",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_2",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_7",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_4",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_6",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleOverFunctor_isRightAdjoint": {
+      "path": "source/Linear/SchemeModuleOpenInjectives.lean",
+      "module": "Linear.SchemeModuleOpenInjectives",
+      "startLine": 13,
+      "endLine": 17,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.overOpenRestriction_isRightAdjoint"
+      ]
+    },
+    "LinearStudy.schemeModuleInjectiveInternalHom_preservesHomology": {
+      "path": "source/Linear/SchemeModuleInjectiveHomExact.lean",
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "startLine": 24,
+      "endLine": 30,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor_preservesFiniteLimits",
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInjectiveInternalHom_preservesEpimorphisms",
+        "LinearStudy.schemeModuleInternalHomFunctor_additive"
+      ]
+    },
+    "LinearStudy.schemeModuleInjectiveInternalHom_preservesEpimorphisms": {
+      "path": "source/Linear/SchemeModuleInjectiveHomExact.lean",
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "startLine": 16,
+      "endLine": 22,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleHomPrecompose_epi"
+      ]
+    },
+    "LinearStudy.schemeModuleHomSMul": {
+      "path": "source/Linear/SchemeModuleHomScalar.lean",
+      "module": "Linear.SchemeModuleHomScalar",
+      "startLine": 51,
+      "endLine": 53,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomScalar",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomSourceNatTrans_comp": {
+      "path": "source/Linear/SchemeModuleInternalHomBifunctor.lean",
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "startLine": 36,
+      "endLine": 42,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPrecompose_comp",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundary.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "startLine": 13,
+      "endLine": 22,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_4",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_6",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_10",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_1",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_7",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_3",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_9",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_8",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ]
+    },
+    "LinearStudy.overOpenZeroPresheafAdjunction": {
+      "path": "source/Linear/OverOpenZeroPresheafAdjunction.lean",
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "startLine": 110,
+      "endLine": 138,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.overOpenZeroHomEquiv",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroPresheafAdjunction._proof_1",
+        "LinearStudy.overOpenZeroPresheafAdjunction._proof_2"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap_resolution": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceMap.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "startLine": 34,
+      "endLine": 41,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso"
+      ]
+    },
+    "LinearStudy.schemeModuleOverFunctor_preservesFiniteColimits": {
+      "path": "source/Linear/SchemeModuleInternalHomSourceLimits.lean",
+      "module": "Linear.SchemeModuleInternalHomSourceLimits",
+      "startLine": 30,
+      "endLine": 36,
+      "lineCount": 7,
+      "dependencies": []
+    },
+    "LinearStudy.schemeModuleHomPresheaf_isSheaf": {
+      "path": "source/Linear/SchemeModuleHomSheaf.lean",
+      "module": "Linear.SchemeModuleHomSheaf",
+      "startLine": 21,
+      "endLine": 74,
+      "lineCount": 54,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomSubfunctor",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap_zero": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceMap.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "startLine": 61,
+      "endLine": 67,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_2",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap_zero",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_1",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomFunctor_preservesFiniteLimits": {
+      "path": "source/Linear/SchemeModuleInternalHomSourceLimits.lean",
+      "module": "Linear.SchemeModuleInternalHomSourceLimits",
+      "startLine": 38,
+      "endLine": 54,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomSourceSectionIso",
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleOverFunctor_preservesFiniteColimits"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary_comp_map": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundaryExact.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryExact",
+      "startLine": 28,
+      "endLine": 41,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ]
+    },
+    "LinearStudy.overOpenZeroObj": {
+      "path": "source/Linear/OverOpenZeroPresheaf.lean",
+      "module": "Linear.OverOpenZeroPresheaf",
+      "startLine": 18,
+      "endLine": 21,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    "LinearStudy.schemeModuleHomModuleGlobalEquiv": {
+      "path": "source/Linear/SchemeModuleHomModuleSections.lean",
+      "module": "Linear.SchemeModuleHomModuleSections",
+      "startLine": 38,
+      "endLine": 42,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomGlobalEquiv"
+      ]
+    },
+    "LinearStudy.schemeModuleOverFunctor_preservesInjectiveObjects": {
+      "path": "source/Linear/SchemeModuleOpenInjectives.lean",
+      "module": "Linear.SchemeModuleOpenInjectives",
+      "startLine": 19,
+      "endLine": 22,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.overOpenRestriction_preservesInjectiveObjects"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary_exact_after": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundaryExact.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryExact",
+      "startLine": 61,
+      "endLine": 77,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_comp_map",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleHomOverEquiv_restrict": {
+      "path": "source/Linear/SchemeModuleHomRestriction.lean",
+      "module": "Linear.SchemeModuleHomRestriction",
+      "startLine": 22,
+      "endLine": 31,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomRestrict",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleHomCoefficientComplexMap": {
+      "path": "source/Linear/SchemeModuleInternalHomSourceShortExact.lean",
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "startLine": 21,
+      "endLine": 26,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_2",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_1"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomCoefficientFunctor": {
+      "path": "source/Linear/SchemeModuleInternalHomCoefficientFunctor.lean",
+      "module": "Linear.SchemeModuleInternalHomCoefficientFunctor",
+      "startLine": 12,
+      "endLine": 20,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPostcompose_id",
+        "LinearStudy.schemeModuleHomPostcompose_comp",
+        "LinearStudy.schemeModuleHomPostcompose"
+      ]
+    },
+    "LinearStudy.schemeModuleHomAddCommGroup": {
+      "path": "source/Linear/SchemeModuleHomScalar.lean",
+      "module": "Linear.SchemeModuleHomScalar",
+      "startLine": 17,
+      "endLine": 21,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundaryNaturality.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "startLine": 85,
+      "endLine": 89,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+      ]
+    },
+    "LinearStudy.overOpenZeroHomExtend": {
+      "path": "source/Linear/OverOpenZeroPresheafAdjunction.lean",
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "startLine": 42,
+      "endLine": 64,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroHomExtend._proof_2",
+        "LinearStudy.overOpenZeroHomExtend._proof_1"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_naturality": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundaryNaturality.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "startLine": 30,
+      "endLine": 61,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso_naturality",
+        "LinearStudy.schemeModuleInternalExtFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleHomObjAddCommGroup": {
+      "path": "source/Linear/SchemeModuleHomModuleSheaf.lean",
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "startLine": 14,
+      "endLine": 16,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAddCommGroup",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPrecompose_app_surjective": {
+      "path": "source/Linear/SchemeModuleInjectiveHomEpi.lean",
+      "module": "Linear.SchemeModuleInjectiveHomEpi",
+      "startLine": 14,
+      "endLine": 31,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleOverFunctor_isRightAdjoint",
+        "LinearStudy.schemeModuleInjectiveOver",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleHomModuleSectionsEquiv": {
+      "path": "source/Linear/SchemeModuleHomModuleSections.lean",
+      "module": "Linear.SchemeModuleHomModuleSections",
+      "startLine": 15,
+      "endLine": 19,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPostcomposeSection_evaluation": {
+      "path": "source/Linear/SchemeModuleHomPostcomposeSection.lean",
+      "module": "Linear.SchemeModuleHomPostcomposeSection",
+      "startLine": 23,
+      "endLine": 26,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPostcomposeSection",
+        "LinearStudy.schemeModuleHomSectionEvaluation"
+      ]
+    },
+    "LinearStudy.schemeModuleHomRestrict": {
+      "path": "source/Linear/SchemeModuleHomRestriction.lean",
+      "module": "Linear.SchemeModuleHomRestriction",
+      "startLine": 14,
+      "endLine": 20,
+      "lineCount": 7,
+      "dependencies": []
+    },
+    "LinearStudy.schemeModuleHomPostcompose_add": {
+      "path": "source/Linear/SchemeModuleHomPostcompose.lean",
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "startLine": 72,
+      "endLine": 81,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPostcompose"
+      ]
+    },
+    "LinearStudy.overOpenZeroMap_lof": {
+      "path": "source/Linear/OverOpenZeroPresheaf.lean",
+      "module": "Linear.OverOpenZeroPresheaf",
+      "startLine": 35,
+      "endLine": 50,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap",
+        "LinearStudy.overOpenZeroObj"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPrecomposeSection": {
+      "path": "source/Linear/SchemeModuleHomPrecompose.lean",
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "startLine": 14,
+      "endLine": 22,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleHomGlobalEquiv": {
+      "path": "source/Linear/SchemeModuleHomGlobal.lean",
+      "module": "Linear.SchemeModuleHomGlobal",
+      "startLine": 15,
+      "endLine": 50,
+      "lineCount": 36,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_5",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_8",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_3",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_7",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_1",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_6",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_2",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_4",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary_exact_before": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundaryExact.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryExact",
+      "startLine": 43,
+      "endLine": 59,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalExtSourceMap_comp_boundary",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPrecompose_id": {
+      "path": "source/Linear/SchemeModuleHomPrecompose.lean",
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "startLine": 58,
+      "endLine": 67,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ]
+    },
+    "LinearStudy.overOpenRestriction_isRightAdjoint": {
+      "path": "source/Linear/OverOpenInjectiveRestriction.lean",
+      "module": "Linear.OverOpenInjectiveRestriction",
+      "startLine": 16,
+      "endLine": 19,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.overOpenZeroSheafFunctor",
+        "LinearStudy.overOpenZeroSheafAdjunction"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomCochainComplex": {
+      "path": "source/Linear/SchemeModuleInternalHomComplex.lean",
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "startLine": 28,
+      "endLine": 33,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInternalHomCochainComplex._proof_3",
+        "LinearStudy.schemeModuleInternalHomCochainComplex._proof_1",
+        "LinearStudy.schemeModuleInternalHomCochainComplex._proof_2"
+      ]
+    },
+    "LinearStudy.schemeModuleHomAbPresheaf": {
+      "path": "source/Linear/SchemeModuleHomModuleSheaf.lean",
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "startLine": 41,
+      "endLine": 62,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAbPresheaf._proof_3",
+        "LinearStudy.schemeModuleHomAbPresheaf._proof_1",
+        "LinearStudy.schemeModuleHomAbPresheaf._proof_4",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomAbPresheaf._proof_2",
+        "LinearStudy.schemeModuleHomObjAddCommGroup"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPostcomposeSection": {
+      "path": "source/Linear/SchemeModuleHomPostcomposeSection.lean",
+      "module": "Linear.SchemeModuleHomPostcomposeSection",
+      "startLine": 14,
+      "endLine": 21,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ]
+    },
+    "LinearStudy.overOpenZeroPresheafFunctor_preservesMonomorphisms": {
+      "path": "source/Linear/OverOpenZeroPresheafFunctor.lean",
+      "module": "Linear.OverOpenZeroPresheafFunctor",
+      "startLine": 52,
+      "endLine": 62,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheafFunctor"
+      ]
+    },
+    "LinearStudy.schemeModuleHomSectionEvaluation": {
+      "path": "source/Linear/SchemeModuleHomEvaluationRestriction.lean",
+      "module": "Linear.SchemeModuleHomEvaluationRestriction",
+      "startLine": 14,
+      "endLine": 20,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation._proof_2",
+        "LinearStudy.schemeModuleHomSectionEvaluation._proof_1",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomCochainComplex_X": {
+      "path": "source/Linear/SchemeModuleInternalHomComplex.lean",
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "startLine": 35,
+      "endLine": 38,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleInternalHomCochainComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplex_shortExact": {
+      "path": "source/Linear/SchemeModuleInternalHomSourceShortExact.lean",
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "startLine": 50,
+      "endLine": 60,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor_preservesFiniteLimits",
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInjectiveInternalHom_preservesFiniteColimits",
+        "LinearStudy.schemeModuleInternalHomFunctor_additive",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalHomCoefficientSectionIso": {
+      "path": "source/Linear/SchemeModuleInternalHomCoefficientLimits.lean",
+      "module": "Linear.SchemeModuleInternalHomCoefficientLimits",
+      "startLine": 17,
+      "endLine": 31,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSectionsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalHomCoefficientSectionIso._proof_1"
+      ]
+    },
+    "LinearStudy.schemeModuleHomObjModule": {
+      "path": "source/Linear/SchemeModuleHomModuleSheaf.lean",
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "startLine": 18,
+      "endLine": 20,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModule",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomObjAddCommGroup"
+      ]
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap_comp_boundary": {
+      "path": "source/Linear/SchemeModuleInternalExtSourceBoundaryExact.lean",
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryExact",
+      "startLine": 13,
+      "endLine": 26,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ]
+    },
+    "LinearStudy.schemeModuleHomPrecompose_epi": {
+      "path": "source/Linear/SchemeModuleInjectiveHomEpi.lean",
+      "module": "Linear.SchemeModuleInjectiveHomEpi",
+      "startLine": 33,
+      "endLine": 42,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomPrecompose_app_surjective"
+      ]
+    }
+  },
+  "constants": {
+    "LinearStudy.schemeModuleHomCoefficientComplexMap_f": {
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleHomCoefficientComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomCoefficientComplexMap_f"
+    },
+    "LinearStudy.overOpenZeroHomRestrict._proof_2": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroHomRestrict"
+    },
+    "LinearStudy.overOpenZeroMap._proof_3": {
+      "module": "Linear.OverOpenZeroPresheaf",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroMap"
+    },
+    "LinearStudy.schemeModuleHomPresheaf._proof_1": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPresheaf"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_1": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleHomSectionEvaluation._proof_2": {
+      "module": "Linear.SchemeModuleHomEvaluationRestriction",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSectionEvaluation"
+    },
+    "LinearStudy.schemeModuleHomModule._proof_2": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomSMul"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModule"
+    },
+    "LinearStudy.schemeModuleInternalExtFunctor._proof_1": {
+      "module": "Linear.SchemeModuleDerivedInternalHom",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtFunctor"
+    },
+    "LinearStudy.schemeModuleHomPostcompose_comp": {
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPostcompose"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPostcompose_comp"
+    },
+    "LinearStudy.schemeModuleInternalHomCoefficientSectionIso._proof_1": {
+      "module": "Linear.SchemeModuleInternalHomCoefficientLimits",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSectionsEquiv",
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomCoefficientSectionIso"
+    },
+    "LinearStudy.schemeModuleHom_smul_app": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomSMul"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHom_smul_app"
+    },
+    "LinearStudy.overOpenZeroSheafAdjunction._proof_2": {
+      "module": "Linear.OverOpenZeroSheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroSheafFunctor",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction",
+        "LinearStudy.overOpenZeroSheafHomEquiv"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroSheafAdjunction"
+    },
+    "LinearStudy.overOpenZeroHomRestrict._proof_1": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap_lof",
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroMap",
+        "LinearStudy.overOpenZeroObj"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroHomRestrict"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap_comp": {
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans_comp",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceMap_comp"
+    },
+    "LinearStudy.schemeModuleHomPrecompose._proof_2": {
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAbModule",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPrecomposeSection"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPrecompose"
+    },
+    "LinearStudy.schemeModuleHomSheaf": {
+      "module": "Linear.SchemeModuleHomSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPresheaf_isSheaf",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSheaf"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_5": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+    },
+    "LinearStudy.schemeModuleHomPresheaf._proof_2": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPresheaf"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_14": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_13",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_1",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleHomPrecompose._proof_1": {
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPrecomposeSection"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPrecompose"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_2": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleInternalExtFunctor": {
+      "module": "Linear.SchemeModuleDerivedInternalHom",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtFunctor._proof_2",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtFunctor"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_3": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso_naturality": {
+      "module": "Linear.SchemeModuleDerivedInternalHom",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtFunctor",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso_naturality"
+    },
+    "LinearStudy.schemeModuleHomPostcompose._proof_1": {
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomPostcomposeSection",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPostcompose"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_6": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_1",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_independent": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_naturality"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_independent"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_7": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_5",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_1",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution_hom": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution_hom"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_6": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_4",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_6",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_10",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_1",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_7",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_3",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_9",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_8",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square"
+    },
+    "LinearStudy.schemeModuleHomPostcompose": {
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPostcompose._proof_2",
+        "LinearStudy.schemeModuleHomPostcomposeSection",
+        "LinearStudy.schemeModuleHomAbModule",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHomPostcompose._proof_3",
+        "LinearStudy.schemeModuleHomPostcompose._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPostcompose"
+    },
+    "LinearStudy.overOpenZeroMap": {
+      "module": "Linear.OverOpenZeroPresheaf",
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap._proof_2",
+        "LinearStudy.overOpenZeroMap._proof_1",
+        "LinearStudy.overOpenZeroObj",
+        "LinearStudy.overOpenZeroMap._proof_3"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroMap"
+    },
+    "LinearStudy.schemeModuleInternalHomSourceSectionIso": {
+      "module": "Linear.SchemeModuleInternalHomSourceLimits",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomSourceSectionIso._proof_1",
+        "LinearStudy.schemeModuleHomModuleSectionsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleInternalHomFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomSourceSectionIso"
+    },
+    "LinearStudy.overOpenZeroHomEquiv": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroHomExtend",
+        "LinearStudy.overOpenZeroHomRestrict",
+        "LinearStudy.overOpenZeroHomEquiv._proof_2",
+        "LinearStudy.overOpenZeroHomEquiv._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroHomEquiv"
+    },
+    "LinearStudy.schemeModuleHomCoefficientComplex._proof_2": {
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomCoefficientComplex"
+    },
+    "LinearStudy.schemeModuleHomPresheaf": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPresheaf._proof_3",
+        "LinearStudy.schemeModuleHomPresheaf._proof_1",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPresheaf"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_10": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_1",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_9"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_9": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_1",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_8",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_3",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_12": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_11",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_1",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleHomModule._proof_5": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAddCommGroup",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomSMul"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModule"
+    },
+    "LinearStudy.schemeModuleInternalHomCoefficientFunctor_preservesFiniteLimits": {
+      "module": "Linear.SchemeModuleInternalHomCoefficientLimits",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalHomCoefficientSectionIso",
+        "LinearStudy.schemeModuleOverFunctor_preservesFiniteLimits"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomCoefficientFunctor_preservesFiniteLimits"
+    },
+    "LinearStudy.schemeModuleHomModule._proof_6": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAddCommGroup",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomSMul"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModule"
+    },
+    "LinearStudy.overOpenZeroPresheafHom": {
+      "module": "Linear.OverOpenZeroPresheafFunctor",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroPresheafHom._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafHom"
+    },
+    "LinearStudy.overOpenZeroMap._proof_2": {
+      "module": "Linear.OverOpenZeroPresheaf",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroMap"
+    },
+    "LinearStudy.overOpenZeroHomExtend_lof": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroHomExtend"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroHomExtend_lof"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary._proof_2": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundary._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundary"
+    },
+    "LinearStudy.overOpenZeroPresheafAdjunction._proof_2": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroHomEquiv",
+        "LinearStudy.overOpenZeroPresheafFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafAdjunction"
+    },
+    "LinearStudy.overOpenZeroSheafFunctor": {
+      "module": "Linear.OverOpenZeroSheafFunctor",
+      "dependencies": [
+        "LinearStudy.overOpenZeroSheafFunctor._proof_2",
+        "LinearStudy.overOpenZeroSheafFunctor._proof_1",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroSheafFunctor._proof_3"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroSheafFunctor"
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplex._proof_1": {
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomPrecompose_comp",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleHomPrecompose_zero",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSourceShortComplex"
+    },
+    "LinearStudy.overOpenZeroSheafFunctor._proof_2": {
+      "module": "Linear.OverOpenZeroSheafFunctor",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroSheafFunctor"
+    },
+    "LinearStudy.schemeModuleHomGlobalEquiv._proof_4": {
+      "module": "Linear.SchemeModuleHomGlobal",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomGlobalEquiv"
+    },
+    "LinearStudy.schemeModuleInjectiveOver": {
+      "module": "Linear.SchemeModuleOpenInjectives",
+      "dependencies": [
+        "LinearStudy.schemeModuleOverFunctor_preservesInjectiveObjects"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInjectiveOver"
+    },
+    "LinearStudy.schemeModuleHomPrecompose_app": {
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPrecompose_app"
+    },
+    "LinearStudy.overOpenZeroMap_id": {
+      "module": "Linear.OverOpenZeroPresheaf",
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap_lof",
+        "LinearStudy.overOpenZeroMap",
+        "LinearStudy.overOpenZeroObj"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroMap_id"
+    },
+    "LinearStudy.schemeModuleInternalExt": {
+      "module": "Linear.SchemeModuleDerivedInternalHom",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExt"
+    },
+    "LinearStudy.schemeModuleInternalHomBifunctor._proof_1": {
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans_id",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomBifunctor"
+    },
+    "LinearStudy.overOpenZeroHomRestrict._proof_3": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroHomRestrict"
+    },
+    "LinearStudy.schemeModuleInternalHomBifunctor_flip_obj": {
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInternalHomBifunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomBifunctor_flip_obj"
+    },
+    "LinearStudy.schemeModuleHom_map_smul": {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomObjModule",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomObjAddCommGroup"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHom_map_smul"
+    },
+    "LinearStudy.schemeModuleInternalHomBifunctor": {
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomBifunctor._proof_1",
+        "LinearStudy.schemeModuleInternalHomBifunctor._proof_2",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomBifunctor"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary_eq_viaResolution": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_independent",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundary_eq_viaResolution"
+    },
+    "LinearStudy.overOpenZeroHomExtend._proof_2": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroHomExtend"
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_4": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSourceShortComplexMap"
+    },
+    "LinearStudy.schemeModuleHomPrecompose": {
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose._proof_2",
+        "LinearStudy.schemeModuleHomAbModule",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHomPrecompose._proof_1",
+        "LinearStudy.schemeModuleHomPrecompose._proof_3",
+        "LinearStudy.schemeModuleHomPrecomposeSection"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPrecompose"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_4": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_3",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_1",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.overOpenZeroPresheafSheafificationAdjunction": {
+      "module": "Linear.OverOpenZeroSheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_3",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_2",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroPresheafAdjunction",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafSheafificationAdjunction"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_2": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleHomPrecompose_zero": {
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPrecompose_zero"
+    },
+    "LinearStudy.schemeModuleHomSubfunctor": {
+      "module": "Linear.SchemeModuleHomSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomSubfunctor._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSubfunctor"
+    },
+    "LinearStudy.overOpenZeroSheafFunctor_preservesMonomorphisms": {
+      "module": "Linear.OverOpenZeroSheafFunctor",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheafFunctor_preservesMonomorphisms",
+        "LinearStudy.overOpenZeroSheafFunctor",
+        "LinearStudy.overOpenZeroSheafFunctor._proof_2",
+        "LinearStudy.overOpenZeroSheafFunctor._proof_1",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroSheafFunctor._proof_3"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroSheafFunctor_preservesMonomorphisms"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceShortComplex": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceShortComplex._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceShortComplex"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_1": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+    },
+    "LinearStudy.schemeModuleInjectiveInternalHom_preservesFiniteColimits": {
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInjectiveInternalHom_preservesHomology",
+        "LinearStudy.schemeModuleInternalHomFunctor_additive"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInjectiveInternalHom_preservesFiniteColimits"
+    },
+    "LinearStudy.schemeModuleInternalHomSourceSectionIso._proof_1": {
+      "module": "Linear.SchemeModuleInternalHomSourceLimits",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSectionsEquiv",
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomSourceSectionIso"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square": {
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square"
+    },
+    "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive": {
+      "module": "Linear.SchemeModuleInternalHomCoefficientFunctor",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPostcompose_add",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive"
+    },
+    "LinearStudy.schemeModuleHomModulePresheaf": {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAbModule",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHom_map_smul"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModulePresheaf"
+    },
+    "LinearStudy.schemeModuleHomOverEquiv": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv._proof_1",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_4",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_7",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_3",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_8",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_6",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_5",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomOverEquiv"
+    },
+    "LinearStudy.schemeModuleHomPrecompose_comp": {
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPrecompose_comp"
+    },
+    "LinearStudy.schemeModuleHomOverLinear": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomOverLinear"
+    },
+    "LinearStudy.overOpenZeroHomRestrict": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroHomRestrict._proof_3",
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroHomRestrict._proof_1",
+        "LinearStudy.overOpenZeroHomRestrict._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroHomRestrict"
+    },
+    "LinearStudy.overOpenZeroPresheafFunctor": {
+      "module": "Linear.OverOpenZeroPresheafFunctor",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroPresheafFunctor._proof_2",
+        "LinearStudy.overOpenZeroPresheafFunctor._proof_1",
+        "LinearStudy.overOpenZeroPresheafHom"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafFunctor"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary._proof_1": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundary"
+    },
+    "LinearStudy.overOpenZeroPresheafAdjunction._proof_1": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroHomEquiv",
+        "LinearStudy.overOpenZeroHomExtend",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroHomExtend_lof"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafAdjunction"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_3": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_6": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_1",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_3",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_2",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_4"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSourceShortComplexMap"
+    },
+    "LinearStudy.schemeModuleInjectiveHomAugmentationMap": {
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_3",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_2",
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_1",
+        "LinearStudy.schemeModuleInternalHomCochainComplex._proof_3",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_4",
+        "LinearStudy.schemeModuleInternalHomCochainComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInjectiveHomAugmentationMap"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap": {
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceMap"
+    },
+    "LinearStudy.schemeModuleInternalHomFunctor._proof_1": {
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPrecompose_id",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomFunctor"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap._proof_1": {
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceMap"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_7": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_1",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+    },
+    "LinearStudy.schemeModuleHomGlobalEquiv._proof_7": {
+      "module": "Linear.SchemeModuleHomGlobal",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomGlobalEquiv"
+    },
+    "LinearStudy.overOpenZeroMap_comp": {
+      "module": "Linear.OverOpenZeroPresheaf",
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap_lof",
+        "LinearStudy.overOpenZeroMap",
+        "LinearStudy.overOpenZeroObj"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroMap_comp"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceShortComplex._proof_1": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceMap_zero",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap_comp"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceShortComplex"
+    },
+    "LinearStudy.schemeModuleHomCoefficientComplex": {
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_2",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomCoefficientComplex"
+    },
+    "LinearStudy.schemeModuleInternalHomSourceNatTrans": {
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans._proof_1",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomSourceNatTrans"
+    },
+    "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso": {
+      "module": "Linear.SchemeModuleDerivedInternalHom",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtFunctor._proof_2",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtFunctor._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_5": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.overOpenZeroPresheaf": {
+      "module": "Linear.OverOpenZeroPresheaf",
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap",
+        "LinearStudy.overOpenZeroObj",
+        "LinearStudy.overOpenZeroMap_id",
+        "LinearStudy.overOpenZeroMap_comp"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheaf"
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_7": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_1",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_5",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_2",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_4"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSourceShortComplexMap"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap_id": {
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans_id",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceMap_id"
+    },
+    "LinearStudy.schemeModuleInternalHomCoefficientFunctor_map_app": {
+      "module": "Linear.SchemeModuleInternalHomCoefficientFunctor",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPostcompose_app",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomCoefficientFunctor_map_app"
+    },
+    "LinearStudy.schemeModuleHomAbPresheaf._proof_3": {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAbPresheaf._proof_1",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomAbPresheaf._proof_2",
+        "LinearStudy.schemeModuleHomObjAddCommGroup"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomAbPresheaf"
+    },
+    "LinearStudy.schemeModuleInternalHomFunctor": {
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleInternalHomFunctor._proof_1",
+        "LinearStudy.schemeModuleInternalHomFunctor._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomFunctor"
+    },
+    "LinearStudy.schemeModuleHomSubfunctor._proof_1": {
+      "module": "Linear.SchemeModuleHomSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSubfunctor"
+    },
+    "LinearStudy.schemeModuleHomGlobalEquiv._proof_3": {
+      "module": "Linear.SchemeModuleHomGlobal",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_1",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomGlobalEquiv"
+    },
+    "LinearStudy.schemeModuleHomAbModule": {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomObjModule",
+        "LinearStudy.schemeModuleHomAbPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomAbModule"
+    },
+    "LinearStudy.schemeModuleInternalHomFunctor_additive": {
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleHomPrecompose_add"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomFunctor_additive"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_8": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleInternalHomCochainComplex._proof_3": {
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomCochainComplex"
+    },
+    "LinearStudy.schemeModuleHomScalar._proof_2": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomScalar._proof_1",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomScalar"
+    },
+    "LinearStudy.schemeModuleHomPostcompose._proof_2": {
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPostcomposeSection",
+        "LinearStudy.schemeModuleHomAbModule",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPostcompose"
+    },
+    "LinearStudy.overOpenZeroSheafFunctor._proof_3": {
+      "module": "Linear.OverOpenZeroSheafFunctor",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroSheafFunctor"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_11": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_1",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_2": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSourceShortComplexMap"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceShortComplex",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_4",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_1",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_12",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_3",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_16",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.overOpenZeroHomEquiv._proof_1": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroHomExtend",
+        "LinearStudy.overOpenZeroHomRestrict",
+        "LinearStudy.overOpenZeroHomExtend_lof"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroHomEquiv"
+    },
+    "LinearStudy.overOpenZeroPresheafFunctor._proof_2": {
+      "module": "Linear.OverOpenZeroPresheafFunctor",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroPresheafHom"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafFunctor"
+    },
+    "LinearStudy.schemeModuleHomOverEquiv._proof_8": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomOverEquiv"
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplex": {
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleHomSourceShortComplex._proof_2",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSourceShortComplex"
+    },
+    "LinearStudy.schemeModuleHomOverEquiv._proof_5": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomOverEquiv"
+    },
+    "LinearStudy.schemeModuleOverFunctor_preservesFiniteLimits": {
+      "module": "Linear.SchemeModuleInternalHomCoefficientLimits",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleOverFunctor_preservesFiniteLimits"
+    },
+    "LinearStudy.overOpenZeroSheafHomEquiv": {
+      "module": "Linear.OverOpenZeroSheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroSheafFunctor",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_3",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_2",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroSheafHomEquiv"
+    },
+    "LinearStudy.schemeModuleHomScalar._proof_1": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomScalar"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_4": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_1",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_3",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_6",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_13",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_3",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_10",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_7",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_14",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_8",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_12",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_1",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_4",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleInjectiveHomAugmentationMap_f": {
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap",
+        "LinearStudy.schemeModuleInternalHomCochainComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInjectiveHomAugmentationMap_f"
+    },
+    "LinearStudy.overOpenZeroSheafAdjunction": {
+      "module": "Linear.OverOpenZeroSheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroSheafFunctor",
+        "LinearStudy.overOpenZeroSheafAdjunction._proof_2",
+        "LinearStudy.overOpenZeroSheafAdjunction._proof_1",
+        "LinearStudy.overOpenZeroSheafHomEquiv"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroSheafAdjunction"
+    },
+    "LinearStudy.schemeModuleHomModuleSheaf._proof_1": {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModulePresheaf",
+        "LinearStudy.schemeModuleHomPresheaf_isSheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModuleSheaf"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceShortComplex_exact": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceShortComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceShortComplex_exact"
+    },
+    "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_1": {
+      "module": "Linear.OverOpenZeroSheafAdjunction",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafSheafificationAdjunction"
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_3": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSourceShortComplexMap"
+    },
+    "LinearStudy.overOpenZeroMap._proof_1": {
+      "module": "Linear.OverOpenZeroPresheaf",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroMap"
+    },
+    "LinearStudy.overOpenZeroPresheafHom._proof_1": {
+      "module": "Linear.OverOpenZeroPresheafFunctor",
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap_lof",
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroMap",
+        "LinearStudy.overOpenZeroObj"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafHom"
+    },
+    "LinearStudy.schemeModuleInternalHomSourceNatTrans_id": {
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPrecompose_id",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomSourceNatTrans_id"
+    },
+    "LinearStudy.schemeModuleInjectiveHomAugmentationMap_quasiIso": {
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_3",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_2",
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInjectiveInternalHom_preservesHomology",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_1",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap",
+        "LinearStudy.schemeModuleInternalHomCochainComplex._proof_3",
+        "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_4",
+        "LinearStudy.schemeModuleInternalHomFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCochainComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInjectiveHomAugmentationMap_quasiIso"
+    },
+    "LinearStudy.schemeModuleInternalExt_injective_succ": {
+      "module": "Linear.SchemeModuleDerivedInternalHom",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExt_injective_succ"
+    },
+    "LinearStudy.overOpenRestriction_preservesInjectiveObjects": {
+      "module": "Linear.OverOpenInjectiveRestriction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroSheafFunctor",
+        "LinearStudy.overOpenZeroSheafFunctor_preservesMonomorphisms",
+        "LinearStudy.overOpenZeroSheafAdjunction"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenRestriction_preservesInjectiveObjects"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_8": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+    },
+    "LinearStudy.schemeModuleHomCoefficientComplex._proof_1": {
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomCoefficientComplex"
+    },
+    "LinearStudy.schemeModuleHomModuleSectionsEquiv_restrict": {
+      "module": "Linear.SchemeModuleHomModuleSections",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSectionsEquiv",
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverEquiv_restrict",
+        "LinearStudy.schemeModuleHomRestrict",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModuleSectionsEquiv_restrict"
+    },
+    "LinearStudy.schemeModuleHomAbPresheaf._proof_2": {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomObjAddCommGroup"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomAbPresheaf"
+    },
+    "LinearStudy.schemeModuleHomCoefficientComplexMap_zero": {
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleHomPrecompose_zero",
+        "LinearStudy.schemeModuleHomCoefficientComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomCoefficientComplexMap_zero"
+    },
+    "LinearStudy.schemeModuleInternalHomCochainComplex_d": {
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleInternalHomCochainComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomCochainComplex_d"
+    },
+    "LinearStudy.schemeModuleHomModuleSheaf": {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModulePresheaf",
+        "LinearStudy.schemeModuleHomModuleSheaf._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModuleSheaf"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_1": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleHomSectionEvaluation_restrict": {
+      "module": "Linear.SchemeModuleHomEvaluationRestriction",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomSectionEvaluation"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSectionEvaluation_restrict"
+    },
+    "LinearStudy.schemeModuleHomPostcompose_id": {
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPostcompose"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPostcompose_id"
+    },
+    "LinearStudy.schemeModuleHomPostcompose_app": {
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPostcompose"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPostcompose_app"
+    },
+    "LinearStudy.schemeModuleHomAbPresheaf._proof_1": {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomObjAddCommGroup"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomAbPresheaf"
+    },
+    "LinearStudy.schemeModuleHomModule": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModule._proof_3",
+        "LinearStudy.schemeModuleHomModule._proof_1",
+        "LinearStudy.schemeModuleHomAddCommGroup",
+        "LinearStudy.schemeModuleHomModule._proof_4",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomSMul",
+        "LinearStudy.schemeModuleHomModule._proof_2",
+        "LinearStudy.schemeModuleHomModule._proof_6",
+        "LinearStudy.schemeModuleHomModule._proof_5"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModule"
+    },
+    "LinearStudy.schemeModuleHomPrecompose_add": {
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPrecompose_add"
+    },
+    "LinearStudy.schemeModuleHomScalar": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomScalar._proof_1",
+        "LinearStudy.schemeModuleHomScalar._proof_2",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomScalar"
+    },
+    "LinearStudy.schemeModuleHomAbPresheaf._proof_4": {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAbPresheaf._proof_1",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomAbPresheaf._proof_2",
+        "LinearStudy.schemeModuleHomObjAddCommGroup"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomAbPresheaf"
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplexMap": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_1",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_5",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_3",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_2",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_7",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_4",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_6",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSourceShortComplexMap"
+    },
+    "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_3": {
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInjectiveHomAugmentationMap"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_11": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_1",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleOverFunctor_isRightAdjoint": {
+      "module": "Linear.SchemeModuleOpenInjectives",
+      "dependencies": [
+        "LinearStudy.overOpenRestriction_isRightAdjoint"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleOverFunctor_isRightAdjoint"
+    },
+    "LinearStudy.schemeModuleInjectiveInternalHom_preservesHomology": {
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor_preservesFiniteLimits",
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInjectiveInternalHom_preservesEpimorphisms",
+        "LinearStudy.schemeModuleInternalHomFunctor_additive"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInjectiveInternalHom_preservesHomology"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_12": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_10",
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_11",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_7",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_1",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_8",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_3",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_6",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_2",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_9",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleInjectiveInternalHom_preservesEpimorphisms": {
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleHomPrecompose_epi"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInjectiveInternalHom_preservesEpimorphisms"
+    },
+    "LinearStudy.overOpenZeroHomEquiv._proof_2": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroHomExtend",
+        "LinearStudy.overOpenZeroHomRestrict",
+        "LinearStudy.overOpenZeroHomExtend_lof"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroHomEquiv"
+    },
+    "LinearStudy.schemeModuleHomSMul": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomScalar",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSMul"
+    },
+    "LinearStudy.schemeModuleInternalHomSourceNatTrans_comp": {
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPrecompose_comp",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomSourceNatTrans_comp"
+    },
+    "LinearStudy.schemeModuleHomModule._proof_3": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAddCommGroup",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomSMul"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModule"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_15": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_1",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_9": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_1",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_4",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_6",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_10",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_1",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_7",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_3",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_9",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_8",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+    },
+    "LinearStudy.overOpenZeroSheafAdjunction._proof_1": {
+      "module": "Linear.OverOpenZeroSheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroSheafFunctor",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroPresheafSheafificationAdjunction",
+        "LinearStudy.overOpenZeroSheafHomEquiv"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroSheafAdjunction"
+    },
+    "LinearStudy.overOpenZeroPresheafAdjunction": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroHomEquiv",
+        "LinearStudy.overOpenZeroPresheafFunctor",
+        "LinearStudy.overOpenZeroPresheafAdjunction._proof_1",
+        "LinearStudy.overOpenZeroPresheafAdjunction._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafAdjunction"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_16": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_10",
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_7",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_1",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_3",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_14",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_6",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_15",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_2",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_13",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap_resolution": {
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceMap_resolution"
+    },
+    "LinearStudy.schemeModuleOverFunctor_preservesFiniteColimits": {
+      "module": "Linear.SchemeModuleInternalHomSourceLimits",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleOverFunctor_preservesFiniteColimits"
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_5": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSourceShortComplexMap"
+    },
+    "LinearStudy.schemeModuleHomPresheaf_isSheaf": {
+      "module": "Linear.SchemeModuleHomSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomSubfunctor",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPresheaf_isSheaf"
+    },
+    "LinearStudy.schemeModuleInternalHomCochainComplex._proof_2": {
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInternalHomFunctor_additive"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomCochainComplex"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap_zero": {
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_2",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap_zero",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_1",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceMap_zero"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_7": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_1",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_3",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_6",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_4": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleInternalHomFunctor_preservesFiniteLimits": {
+      "module": "Linear.SchemeModuleInternalHomSourceLimits",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomSourceSectionIso",
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleOverFunctor_preservesFiniteColimits"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomFunctor_preservesFiniteLimits"
+    },
+    "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_4": {
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInternalHomFunctor_additive"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInjectiveHomAugmentationMap"
+    },
+    "LinearStudy.schemeModuleHomModule._proof_1": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomSMul"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModule"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary_comp_map": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundary_comp_map"
+    },
+    "LinearStudy.overOpenZeroObj": {
+      "module": "Linear.OverOpenZeroPresheaf",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroObj"
+    },
+    "LinearStudy.schemeModuleHomModuleGlobalEquiv": {
+      "module": "Linear.SchemeModuleHomModuleSections",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomGlobalEquiv"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModuleGlobalEquiv"
+    },
+    "LinearStudy.overOpenZeroHomExtend._proof_1": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap_lof",
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroMap",
+        "LinearStudy.overOpenZeroObj"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroHomExtend"
+    },
+    "LinearStudy.schemeModuleOverFunctor_preservesInjectiveObjects": {
+      "module": "Linear.SchemeModuleOpenInjectives",
+      "dependencies": [
+        "LinearStudy.overOpenRestriction_preservesInjectiveObjects"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleOverFunctor_preservesInjectiveObjects"
+    },
+    "LinearStudy.overOpenZeroPresheafFunctor._proof_1": {
+      "module": "Linear.OverOpenZeroPresheafFunctor",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroPresheafHom"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafFunctor"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary_exact_after": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_comp_map",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundary_exact_after"
+    },
+    "LinearStudy.schemeModuleHomOverEquiv_restrict": {
+      "module": "Linear.SchemeModuleHomRestriction",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomRestrict",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomOverEquiv_restrict"
+    },
+    "LinearStudy.schemeModuleHomCoefficientComplexMap": {
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_2",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleHomCoefficientComplex._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomCoefficientComplexMap"
+    },
+    "LinearStudy.schemeModuleInternalHomSourceNatTrans._proof_1": {
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomSourceNatTrans"
+    },
+    "LinearStudy.schemeModuleHomGlobalEquiv._proof_5": {
+      "module": "Linear.SchemeModuleHomGlobal",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_4",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomGlobalEquiv"
+    },
+    "LinearStudy.schemeModuleHomSectionEvaluation._proof_1": {
+      "module": "Linear.SchemeModuleHomEvaluationRestriction",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSectionEvaluation"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_10": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_9",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_1",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleInternalHomCoefficientFunctor": {
+      "module": "Linear.SchemeModuleInternalHomCoefficientFunctor",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPostcompose_id",
+        "LinearStudy.schemeModuleHomPostcompose_comp",
+        "LinearStudy.schemeModuleHomPostcompose"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+    },
+    "LinearStudy.schemeModuleInternalHomCochainComplex._proof_1": {
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomCochainComplex"
+    },
+    "LinearStudy.schemeModuleHomPostcompose._proof_3": {
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPostcompose._proof_2",
+        "LinearStudy.schemeModuleHomPostcomposeSection",
+        "LinearStudy.schemeModuleHomAbModule",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHomPostcompose._proof_1",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPostcompose"
+    },
+    "LinearStudy.overOpenZeroSheafFunctor._proof_1": {
+      "module": "Linear.OverOpenZeroSheafFunctor",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroSheafFunctor"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_10": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_1",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleHomOverEquiv._proof_3": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv._proof_1",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomOverEquiv"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_3": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleHomGlobalEquiv._proof_1": {
+      "module": "Linear.SchemeModuleHomGlobal",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomGlobalEquiv"
+    },
+    "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_2": {
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInjectiveHomAugmentationMap"
+    },
+    "LinearStudy.schemeModuleHomOverEquiv._proof_6": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomOverEquiv"
+    },
+    "LinearStudy.schemeModuleHomGlobalEquiv._proof_2": {
+      "module": "Linear.SchemeModuleHomGlobal",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_1",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomGlobalEquiv"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap.eq_1": {
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceMap"
+    },
+    "LinearStudy.schemeModuleHomAddCommGroup": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomAddCommGroup"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary._proof_2",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundary"
+    },
+    "LinearStudy.overOpenZeroHomExtend": {
+      "module": "Linear.OverOpenZeroPresheafAdjunction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheaf",
+        "LinearStudy.overOpenZeroHomExtend._proof_2",
+        "LinearStudy.overOpenZeroHomExtend._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroHomExtend"
+    },
+    "LinearStudy.schemeModuleHomOverEquiv._proof_7": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomOverEquiv"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_naturality": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso_naturality",
+        "LinearStudy.schemeModuleInternalExtFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleHomSourceShortComplexMap",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_naturality"
+    },
+    "LinearStudy.schemeModuleHomObjAddCommGroup": {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAddCommGroup",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomObjAddCommGroup"
+    },
+    "LinearStudy.schemeModuleHomPrecompose_app_surjective": {
+      "module": "Linear.SchemeModuleInjectiveHomEpi",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleOverFunctor_isRightAdjoint",
+        "LinearStudy.schemeModuleInjectiveOver",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPrecompose_app_surjective"
+    },
+    "LinearStudy.schemeModuleHomModuleSectionsEquiv": {
+      "module": "Linear.SchemeModuleHomModuleSections",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModuleSectionsEquiv"
+    },
+    "LinearStudy.schemeModuleInternalHomBifunctor._proof_2": {
+      "module": "Linear.SchemeModuleInternalHomBifunctor",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans_comp",
+        "LinearStudy.schemeModuleInternalHomSourceNatTrans",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomBifunctor"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_2": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+    },
+    "LinearStudy.schemeModuleHomModule._proof_4": {
+      "module": "Linear.SchemeModuleHomScalar",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAddCommGroup",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomSMul"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomModule"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_13": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleHomPostcomposeSection_evaluation": {
+      "module": "Linear.SchemeModuleHomPostcomposeSection",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPostcomposeSection",
+        "LinearStudy.schemeModuleHomSectionEvaluation"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPostcomposeSection_evaluation"
+    },
+    "LinearStudy.schemeModuleHomRestrict": {
+      "module": "Linear.SchemeModuleHomRestriction",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomRestrict"
+    },
+    "LinearStudy.schemeModuleHomPostcompose_add": {
+      "module": "Linear.SchemeModuleHomPostcompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPostcompose"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPostcompose_add"
+    },
+    "LinearStudy.overOpenZeroMap_lof": {
+      "module": "Linear.OverOpenZeroPresheaf",
+      "dependencies": [
+        "LinearStudy.overOpenZeroMap",
+        "LinearStudy.overOpenZeroObj"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroMap_lof"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap._proof_2": {
+      "module": "Linear.SchemeModuleInternalExtSourceMap",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceMap._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceMap"
+    },
+    "LinearStudy.schemeModuleHomPrecomposeSection": {
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPrecomposeSection"
+    },
+    "LinearStudy.schemeModuleHomGlobalEquiv": {
+      "module": "Linear.SchemeModuleHomGlobal",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_5",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_8",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_3",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_7",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_1",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_6",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_2",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_4",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomGlobalEquiv"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_5": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_4",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_3"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleHomPrecompose._proof_3": {
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose._proof_2",
+        "LinearStudy.schemeModuleHomAbModule",
+        "LinearStudy.schemeModuleHomAbPresheaf",
+        "LinearStudy.schemeModuleHomPrecompose._proof_1",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPrecomposeSection"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPrecompose"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundary_exact_before": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalExtSourceMap_comp_boundary",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundary_exact_before"
+    },
+    "LinearStudy.schemeModuleHomPrecompose_id": {
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPrecompose_id"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_14": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_1",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_3",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_13"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    },
+    "LinearStudy.schemeModuleHomOverEquiv._proof_4": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv._proof_1",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomOverEquiv._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomOverEquiv"
+    },
+    "LinearStudy.overOpenRestriction_isRightAdjoint": {
+      "module": "Linear.OverOpenInjectiveRestriction",
+      "dependencies": [
+        "LinearStudy.overOpenZeroSheafFunctor",
+        "LinearStudy.overOpenZeroSheafAdjunction"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenRestriction_isRightAdjoint"
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplexMap._proof_1": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryNaturality",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSourceShortComplexMap"
+    },
+    "LinearStudy.schemeModuleInternalHomCochainComplex": {
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInternalHomCochainComplex._proof_3",
+        "LinearStudy.schemeModuleInternalHomCochainComplex._proof_1",
+        "LinearStudy.schemeModuleInternalHomCochainComplex._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomCochainComplex"
+    },
+    "LinearStudy.schemeModuleHomOverEquiv._proof_1": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomOverEquiv"
+    },
+    "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_3": {
+      "module": "Linear.OverOpenZeroSheafAdjunction",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafSheafificationAdjunction"
+    },
+    "LinearStudy.schemeModuleHomAbPresheaf": {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomAbPresheaf._proof_3",
+        "LinearStudy.schemeModuleHomAbPresheaf._proof_1",
+        "LinearStudy.schemeModuleHomAbPresheaf._proof_4",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomAbPresheaf._proof_2",
+        "LinearStudy.schemeModuleHomObjAddCommGroup"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomAbPresheaf"
+    },
+    "LinearStudy.schemeModuleHomPostcomposeSection": {
+      "module": "Linear.SchemeModuleHomPostcomposeSection",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPostcomposeSection"
+    },
+    "LinearStudy.overOpenZeroPresheafFunctor_preservesMonomorphisms": {
+      "module": "Linear.OverOpenZeroPresheafFunctor",
+      "dependencies": [
+        "LinearStudy.overOpenZeroPresheafFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafFunctor_preservesMonomorphisms"
+    },
+    "LinearStudy.schemeModuleInjectiveHomAugmentationMap._proof_1": {
+      "module": "Linear.SchemeModuleInjectiveHomExact",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInjectiveHomAugmentationMap"
+    },
+    "LinearStudy.overOpenZeroPresheafSheafificationAdjunction._proof_2": {
+      "module": "Linear.OverOpenZeroSheafAdjunction",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.overOpenZeroPresheafSheafificationAdjunction"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_6": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_5",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_1",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleHomSectionEvaluation": {
+      "module": "Linear.SchemeModuleHomEvaluationRestriction",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomSectionEvaluation._proof_2",
+        "LinearStudy.schemeModuleHomSectionEvaluation._proof_1",
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSectionEvaluation"
+    },
+    "LinearStudy.schemeModuleInternalHomCochainComplex_X": {
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleInternalHomCochainComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomCochainComplex_X"
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplex_shortExact": {
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomFunctor_preservesFiniteLimits",
+        "LinearStudy.schemeModuleInternalHomFunctor",
+        "LinearStudy.schemeModuleInjectiveInternalHom_preservesFiniteColimits",
+        "LinearStudy.schemeModuleInternalHomFunctor_additive",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSourceShortComplex_shortExact"
+    },
+    "LinearStudy.schemeModuleHomOverEquiv._proof_2": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomOverEquiv"
+    },
+    "LinearStudy.schemeModuleInternalHomFunctor._proof_2": {
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomPrecompose_comp"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomFunctor"
+    },
+    "LinearStudy.schemeModuleHomSourceShortComplex._proof_2": {
+      "module": "Linear.SchemeModuleInternalHomSourceShortExact",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomSourceShortComplex"
+    },
+    "LinearStudy.schemeModuleInternalHomCoefficientSectionIso": {
+      "module": "Linear.SchemeModuleInternalHomCoefficientLimits",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSectionsEquiv",
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalHomCoefficientSectionIso._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalHomCoefficientSectionIso"
+    },
+    "LinearStudy.schemeModuleHomGlobalEquiv._proof_6": {
+      "module": "Linear.SchemeModuleHomGlobal",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomGlobalEquiv"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution._proof_8": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryIso",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution"
+    },
+    "LinearStudy.schemeModuleHomPresheaf._proof_3": {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomOverLinear"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPresheaf"
+    },
+    "LinearStudy.schemeModuleHomObjModule": {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModule",
+        "LinearStudy.schemeModuleHomPresheaf",
+        "LinearStudy.schemeModuleHomObjAddCommGroup"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomObjModule"
+    },
+    "LinearStudy.schemeModuleHomGlobalEquiv._proof_8": {
+      "module": "Linear.SchemeModuleHomGlobal",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomGlobalEquiv._proof_7",
+        "LinearStudy.schemeModuleHomOverLinear",
+        "LinearStudy.schemeModuleHomPresheaf"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomGlobalEquiv"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceMap_comp_boundary": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundaryExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExt",
+        "LinearStudy.schemeModuleHomCoefficientComplexMap",
+        "LinearStudy.schemeModuleInternalExtSourceMap",
+        "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution",
+        "LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square",
+        "LinearStudy.schemeModuleHomCoefficientComplex",
+        "LinearStudy.schemeModuleHomSourceShortComplex_shortExact",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor",
+        "LinearStudy.schemeModuleInternalExtSourceMap_resolution_square",
+        "LinearStudy.schemeModuleInternalExtInjectiveResolutionIso",
+        "LinearStudy.schemeModuleHomSourceShortComplex"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceMap_comp_boundary"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution._proof_9": {
+      "module": "Linear.SchemeModuleInternalExtSourceBoundary",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution"
+    },
+    "LinearStudy.schemeModuleHomPrecompose_epi": {
+      "module": "Linear.SchemeModuleInjectiveHomEpi",
+      "dependencies": [
+        "LinearStudy.schemeModuleHomModuleSheaf",
+        "LinearStudy.schemeModuleHomPrecompose",
+        "LinearStudy.schemeModuleHomPrecompose_app_surjective"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleHomPrecompose_epi"
+    },
+    "LinearStudy.schemeModuleInternalExtFunctor._proof_2": {
+      "module": "Linear.SchemeModuleDerivedInternalHom",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalExtFunctor._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtFunctor"
+    },
+    "LinearStudy.schemeModuleInternalExtSourceResolutionIso._proof_13": {
+      "module": "Linear.SchemeModuleInternalExtSourceExact",
+      "dependencies": [
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive",
+        "LinearStudy.schemeModuleInternalHomCoefficientFunctor"
+      ],
+      "recordedRangeOwner": "LinearStudy.schemeModuleInternalExtSourceResolutionIso"
+    }
+  },
+  "verification": {
+    "accepted": true,
+    "driver": "D:\\codex\\Math\\formalization\\linear\\research\\ActualSheafExtSourceSequenceSourceRanges20261016.lean",
+    "sourceSha256": "22436de881b16336f5ee0f630ad5dacd9db3bb58865838cede8601cfe83c4b59",
+    "logSha256": "da3d21ed5dd2d31e4151a6dd95b3e8c894edcc1b91e4bb10ad293e82b5681113",
+    "resourceSha256": "334a898b872a05c0b3eac95251a7053f8158bfa673709d932e98e5049d0d645a"
+  }
+}

@@ -1,0 +1,71 @@
+@LinearStudy.schemeModuleHomSourceShortComplexMap : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    {K L : CochainComplex X.Modules ℕ} →
+      (K ⟶ L) → (LinearStudy.schemeModuleHomSourceShortComplex S K ⟶ LinearStudy.schemeModuleHomSourceShortComplex S L)
+'LinearStudy.schemeModuleHomSourceShortComplexMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_naturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) {N M : X.Modules} (c : N ⟶ M)
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution M)
+  (phi : I.cocomplex ⟶ J.cocomplex),
+  CategoryTheory.CategoryStruct.comp (I.ι.f 0) (phi.f 0) = CategoryTheory.CategoryStruct.comp c (J.ι.f 0) →
+    ∀ (q : ℕ),
+      CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q)
+          ((LinearStudy.schemeModuleInternalExtFunctor S.X₃ (q + 1)).map c) =
+        CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor S.X₁ q).map c)
+          (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS M J q)
+'LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_independent : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I J : CategoryTheory.InjectiveResolution N) (q : ℕ),
+  LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q =
+    LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N J q
+'LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_independent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundary : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        (q : ℕ) → LinearStudy.schemeModuleInternalExt S.X₁ N q ⟶ LinearStudy.schemeModuleInternalExt S.X₃ N (q + 1)
+'LinearStudy.schemeModuleInternalExtSourceBoundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundary_eq_viaResolution : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ),
+  LinearStudy.schemeModuleInternalExtSourceBoundary S hS N q =
+    LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q
+'LinearStudy.schemeModuleInternalExtSourceBoundary_eq_viaResolution' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleHomSourceShortComplexMap.{u} : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    {K L : CochainComplex X.Modules ℕ} →
+      (K ⟶ L) →
+        (LinearStudy.schemeModuleHomSourceShortComplex S K ⟶ LinearStudy.schemeModuleHomSourceShortComplex S L) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) {K L : CochainComplex X.Modules ℕ}
+    (phi : K ⟶ L) =>
+  {
+    τ₁ :=
+      ((LinearStudy.schemeModuleInternalHomCoefficientFunctor X S.X₃).mapHomologicalComplex (ComplexShape.up ℕ)).map
+        phi,
+    τ₂ :=
+      ((LinearStudy.schemeModuleInternalHomCoefficientFunctor X S.X₂).mapHomologicalComplex (ComplexShape.up ℕ)).map
+        phi,
+    τ₃ :=
+      ((LinearStudy.schemeModuleInternalHomCoefficientFunctor X S.X₁).mapHomologicalComplex (ComplexShape.up ℕ)).map
+        phi,
+    comm₁₂ := ⋯, comm₂₃ := ⋯ }
+def LinearStudy.schemeModuleInternalExtSourceBoundary.{u} : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        (q : ℕ) → LinearStudy.schemeModuleInternalExt S.X₁ N q ⟶ LinearStudy.schemeModuleInternalExt S.X₃ N (q + 1) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+    (q : ℕ) =>
+  LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N (CategoryTheory.injectiveResolution N) q
+ROLECHECK:LinearStudy.schemeModuleHomSourceShortComplexMap:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_naturality:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_independent:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundary:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundary_eq_viaResolution:true

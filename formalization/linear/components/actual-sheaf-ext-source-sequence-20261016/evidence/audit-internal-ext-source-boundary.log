@@ -1,0 +1,32 @@
+@LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (q : ℕ) → LinearStudy.schemeModuleInternalExt S.X₁ N q ⟶ LinearStudy.schemeModuleInternalExt S.X₃ N (q + 1)
+'LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q)
+      (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso S.X₃ N (q + 1) I).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso S.X₁ N q I).hom
+      (⋯.δ q (q + 1) ⋯)
+'LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution.{u} : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (q : ℕ) → LinearStudy.schemeModuleInternalExt S.X₁ N q ⟶ LinearStudy.schemeModuleInternalExt S.X₃ N (q + 1) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+    (I : CategoryTheory.InjectiveResolution N) (q : ℕ) =>
+  CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso S.X₁ N q I).hom
+    (CategoryTheory.CategoryStruct.comp (⋯.δ q (q + 1) ⋯)
+      (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso S.X₃ N (q + 1) I).inv)
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundary_resolution_square:true

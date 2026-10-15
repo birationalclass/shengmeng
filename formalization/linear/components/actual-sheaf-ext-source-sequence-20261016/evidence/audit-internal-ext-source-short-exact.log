@@ -1,0 +1,54 @@
+@LinearStudy.schemeModuleHomCoefficientComplex : {X : AlgebraicGeometry.Scheme} →
+  X.Modules → CochainComplex X.Modules ℕ → CochainComplex X.Modules ℕ
+'LinearStudy.schemeModuleHomCoefficientComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomCoefficientComplexMap : {X : AlgebraicGeometry.Scheme} →
+  {A B : X.Modules} →
+    (A ⟶ B) →
+      (K : CochainComplex X.Modules ℕ) →
+        LinearStudy.schemeModuleHomCoefficientComplex B K ⟶ LinearStudy.schemeModuleHomCoefficientComplex A K
+'LinearStudy.schemeModuleHomCoefficientComplexMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomPrecompose_zero : ∀ {X : AlgebraicGeometry.Scheme} (A B N : X.Modules),
+  LinearStudy.schemeModuleHomPrecompose 0 = 0
+'LinearStudy.schemeModuleHomPrecompose_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomSourceShortComplex : {X : AlgebraicGeometry.Scheme} →
+  CategoryTheory.ShortComplex X.Modules →
+    CochainComplex X.Modules ℕ → CategoryTheory.ShortComplex (CochainComplex X.Modules ℕ)
+'LinearStudy.schemeModuleHomSourceShortComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomSourceShortComplex_shortExact : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules),
+  S.ShortExact →
+    ∀ (K : CochainComplex X.Modules ℕ) [∀ (j : ℕ), CategoryTheory.Injective (K.X j)],
+      (LinearStudy.schemeModuleHomSourceShortComplex S K).ShortExact
+'LinearStudy.schemeModuleHomSourceShortComplex_shortExact' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomCoefficientComplexMap_f : ∀ {X : AlgebraicGeometry.Scheme} {A B : X.Modules} (f : A ⟶ B)
+  (K : CochainComplex X.Modules ℕ) (j : ℕ),
+  (LinearStudy.schemeModuleHomCoefficientComplexMap f K).f j = LinearStudy.schemeModuleHomPrecompose f
+'LinearStudy.schemeModuleHomCoefficientComplexMap_f' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleHomCoefficientComplex.{u} : {X : AlgebraicGeometry.Scheme} →
+  X.Modules → CochainComplex X.Modules ℕ → CochainComplex X.Modules ℕ :=
+fun {X : AlgebraicGeometry.Scheme} (P : X.Modules) (K : CochainComplex X.Modules ℕ) =>
+  ((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).mapHomologicalComplex (ComplexShape.up ℕ)).obj K
+def LinearStudy.schemeModuleHomCoefficientComplexMap.{u} : {X : AlgebraicGeometry.Scheme} →
+  {A B : X.Modules} →
+    (A ⟶ B) →
+      (K : CochainComplex X.Modules ℕ) →
+        LinearStudy.schemeModuleHomCoefficientComplex B K ⟶ LinearStudy.schemeModuleHomCoefficientComplex A K :=
+fun {X : AlgebraicGeometry.Scheme} {A B : X.Modules} (f : A ⟶ B) (K : CochainComplex X.Modules ℕ) =>
+  (CategoryTheory.NatTrans.mapHomologicalComplex (LinearStudy.schemeModuleInternalHomSourceNatTrans f)
+        (ComplexShape.up ℕ)).app
+    K
+def LinearStudy.schemeModuleHomSourceShortComplex.{u} : {X : AlgebraicGeometry.Scheme} →
+  CategoryTheory.ShortComplex X.Modules →
+    CochainComplex X.Modules ℕ → CategoryTheory.ShortComplex (CochainComplex X.Modules ℕ) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) (K : CochainComplex X.Modules ℕ) =>
+  { X₁ := LinearStudy.schemeModuleHomCoefficientComplex S.X₃ K,
+    X₂ := LinearStudy.schemeModuleHomCoefficientComplex S.X₂ K,
+    X₃ := LinearStudy.schemeModuleHomCoefficientComplex S.X₁ K,
+    f := LinearStudy.schemeModuleHomCoefficientComplexMap S.g K,
+    g := LinearStudy.schemeModuleHomCoefficientComplexMap S.f K, zero := ⋯ }
+ROLECHECK:LinearStudy.schemeModuleHomCoefficientComplex:false
+ROLECHECK:LinearStudy.schemeModuleHomCoefficientComplexMap:false
+ROLECHECK:LinearStudy.schemeModuleHomPrecompose_zero:true
+ROLECHECK:LinearStudy.schemeModuleHomSourceShortComplex:false
+ROLECHECK:LinearStudy.schemeModuleHomSourceShortComplex_shortExact:true
+ROLECHECK:LinearStudy.schemeModuleHomCoefficientComplexMap_f:true

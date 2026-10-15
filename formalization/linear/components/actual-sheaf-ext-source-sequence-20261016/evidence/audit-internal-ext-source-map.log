@@ -1,0 +1,52 @@
+@LinearStudy.schemeModuleInternalExtSourceMap : {X : AlgebraicGeometry.Scheme} →
+  {A B : X.Modules} →
+    (A ⟶ B) →
+      (N : X.Modules) → (q : ℕ) → LinearStudy.schemeModuleInternalExt B N q ⟶ LinearStudy.schemeModuleInternalExt A N q
+'LinearStudy.schemeModuleInternalExtSourceMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceMap_id : ∀ {X : AlgebraicGeometry.Scheme} (A N : X.Modules) (q : ℕ),
+  LinearStudy.schemeModuleInternalExtSourceMap (CategoryTheory.CategoryStruct.id A) N q =
+    CategoryTheory.CategoryStruct.id (LinearStudy.schemeModuleInternalExt A N q)
+'LinearStudy.schemeModuleInternalExtSourceMap_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceMap_comp : ∀ {X : AlgebraicGeometry.Scheme} {A B C : X.Modules} (f : A ⟶ B)
+  (g : B ⟶ C) (N : X.Modules) (q : ℕ),
+  LinearStudy.schemeModuleInternalExtSourceMap (CategoryTheory.CategoryStruct.comp f g) N q =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceMap g N q)
+      (LinearStudy.schemeModuleInternalExtSourceMap f N q)
+'LinearStudy.schemeModuleInternalExtSourceMap_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceMap_resolution : ∀ {X : AlgebraicGeometry.Scheme} {A B : X.Modules}
+  (f : A ⟶ B) (N : X.Modules) (q : ℕ) (I : CategoryTheory.InjectiveResolution N),
+  LinearStudy.schemeModuleInternalExtSourceMap f N q =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso B N q I).hom
+      (CategoryTheory.CategoryStruct.comp
+        (HomologicalComplex.homologyMap (LinearStudy.schemeModuleHomCoefficientComplexMap f I.cocomplex) q)
+        (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso A N q I).inv)
+'LinearStudy.schemeModuleInternalExtSourceMap_resolution' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceMap_resolution_square : ∀ {X : AlgebraicGeometry.Scheme} {A B : X.Modules}
+  (f : A ⟶ B) (N : X.Modules) (q : ℕ) (I : CategoryTheory.InjectiveResolution N),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceMap f N q)
+      (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso A N q I).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso B N q I).hom
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleHomCoefficientComplexMap f I.cocomplex) q)
+'LinearStudy.schemeModuleInternalExtSourceMap_resolution_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleHomCoefficientComplexMap_zero : ∀ {X : AlgebraicGeometry.Scheme} (A B : X.Modules)
+  (K : CochainComplex X.Modules ℕ), LinearStudy.schemeModuleHomCoefficientComplexMap 0 K = 0
+'LinearStudy.schemeModuleHomCoefficientComplexMap_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceMap_zero : ∀ {X : AlgebraicGeometry.Scheme} (A B N : X.Modules) (q : ℕ),
+  LinearStudy.schemeModuleInternalExtSourceMap 0 N q = 0
+'LinearStudy.schemeModuleInternalExtSourceMap_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleInternalExtSourceMap.{u} : {X : AlgebraicGeometry.Scheme} →
+  {A B : X.Modules} →
+    (A ⟶ B) →
+      (N : X.Modules) →
+        (q : ℕ) → LinearStudy.schemeModuleInternalExt B N q ⟶ LinearStudy.schemeModuleInternalExt A N q :=
+fun {X : AlgebraicGeometry.Scheme} {A B : X.Modules} (f : A ⟶ B) (N : X.Modules) (q : ℕ) =>
+  (CategoryTheory.NatTrans.rightDerived (LinearStudy.schemeModuleInternalHomSourceNatTrans f) q).app N
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceMap:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceMap_id:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceMap_comp:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceMap_resolution:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceMap_resolution_square:true
+ROLECHECK:LinearStudy.schemeModuleHomCoefficientComplexMap_zero:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceMap_zero:true

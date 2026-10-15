@@ -1,0 +1,39 @@
+@LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (q : ℕ) →
+            CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N q) →
+              CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1)) →
+                (LinearStudy.schemeModuleInternalExt S.X₁ N q ≅ LinearStudy.schemeModuleInternalExt S.X₃ N (q + 1))
+'LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution_hom : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+  (hi : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N q))
+  (hj : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1))),
+  (LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution S hS N I q hi hj).hom =
+    LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q
+'LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution_hom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution.{u} : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (q : ℕ) →
+            CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N q) →
+              CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1)) →
+                (LinearStudy.schemeModuleInternalExt S.X₁ N q ≅ LinearStudy.schemeModuleInternalExt S.X₃ N (q + 1)) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+    (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+    (hi : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N q))
+    (hj : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1))) =>
+  LinearStudy.schemeModuleInternalExtInjectiveResolutionIso S.X₁ N q I ≪≫
+    ⋯.δIso q (q + 1) ⋯ ⋯ ⋯ ≪≫ (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso S.X₃ N (q + 1) I).symm
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution_hom:true

@@ -1,0 +1,40 @@
+@LinearStudy.schemeModuleInternalExtSourceShortComplex : {X : AlgebraicGeometry.Scheme} →
+  CategoryTheory.ShortComplex X.Modules → X.Modules → ℕ → CategoryTheory.ShortComplex X.Modules
+'LinearStudy.schemeModuleInternalExtSourceShortComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceResolutionIso : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    (N : X.Modules) →
+      (q : ℕ) →
+        (I : CategoryTheory.InjectiveResolution N) →
+          LinearStudy.schemeModuleInternalExtSourceShortComplex S N q ≅
+            (LinearStudy.schemeModuleHomSourceShortComplex S I.cocomplex).map
+              (HomologicalComplex.homologyFunctor X.Modules (ComplexShape.up ℕ) q)
+'LinearStudy.schemeModuleInternalExtSourceResolutionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceShortComplex_exact : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules),
+  S.ShortExact →
+    ∀ (N : X.Modules) (q : ℕ) (I : CategoryTheory.InjectiveResolution N),
+      (LinearStudy.schemeModuleInternalExtSourceShortComplex S N q).Exact
+'LinearStudy.schemeModuleInternalExtSourceShortComplex_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleInternalExtSourceShortComplex.{u} : {X : AlgebraicGeometry.Scheme} →
+  CategoryTheory.ShortComplex X.Modules → X.Modules → ℕ → CategoryTheory.ShortComplex X.Modules :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) (N : X.Modules) (q : ℕ) =>
+  { X₁ := LinearStudy.schemeModuleInternalExt S.X₃ N q, X₂ := LinearStudy.schemeModuleInternalExt S.X₂ N q,
+    X₃ := LinearStudy.schemeModuleInternalExt S.X₁ N q, f := LinearStudy.schemeModuleInternalExtSourceMap S.g N q,
+    g := LinearStudy.schemeModuleInternalExtSourceMap S.f N q, zero := ⋯ }
+def LinearStudy.schemeModuleInternalExtSourceResolutionIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    (N : X.Modules) →
+      (q : ℕ) →
+        (I : CategoryTheory.InjectiveResolution N) →
+          LinearStudy.schemeModuleInternalExtSourceShortComplex S N q ≅
+            (LinearStudy.schemeModuleHomSourceShortComplex S I.cocomplex).map
+              (HomologicalComplex.homologyFunctor X.Modules (ComplexShape.up ℕ) q) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) (N : X.Modules) (q : ℕ)
+    (I : CategoryTheory.InjectiveResolution N) =>
+  CategoryTheory.ShortComplex.isoMk (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso S.X₃ N q I)
+    (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso S.X₂ N q I)
+    (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso S.X₁ N q I) ⋯ ⋯
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceShortComplex:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceResolutionIso:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceShortComplex_exact:true
