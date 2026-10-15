@@ -1,0 +1,1157 @@
+@LinearStudy.cochainResolutionExtClass : {A : Type u_4} →
+  [inst : CategoryTheory.Category.{u_3, u_4} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        [HasDerivedCategory A] →
+          (K : CochainComplex A ℤ) →
+            {E M : A} →
+              (r : ℕ) →
+                (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) →
+                  [QuasiIso alpha] →
+                    CategoryTheory.ShiftedHom K ((CochainComplex.singleFunctor A 0).obj M) ↑r →
+                      CategoryTheory.Abelian.Ext E M r
+'LinearStudy.cochainResolutionExtClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainResolutionExtClass_hom : ∀ {A : Type u_4} [inst : CategoryTheory.Category.{u_3, u_4} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K : CochainComplex A ℤ) {E M : A} (r : ℕ) (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  [inst_4 : QuasiIso alpha] (beta : CategoryTheory.ShiftedHom K ((CochainComplex.singleFunctor A 0).obj M) ↑r),
+  (LinearStudy.cochainResolutionExtClass K r alpha beta).hom =
+    (CategoryTheory.ShiftedHom.mk₀ 0 ⋯
+          (CategoryTheory.CategoryStruct.comp ((DerivedCategory.singleFunctorIsoCompQ A 0).hom.app E)
+            (CategoryTheory.inv (DerivedCategory.Q.map alpha)))).comp
+      ((beta.map DerivedCategory.Q).comp
+        (CategoryTheory.ShiftedHom.mk₀ 0 ⋯ ((DerivedCategory.singleFunctorIsoCompQ A 0).inv.app M)) ⋯)
+      ⋯
+'LinearStudy.cochainResolutionExtClass_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainResolutionTopExtClass : {A : Type u_4} →
+  [inst : CategoryTheory.Category.{u_3, u_4} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        [HasDerivedCategory A] →
+          (K : CochainComplex A ℤ) →
+            {E M : A} →
+              (r : ℕ) →
+                (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) →
+                  [QuasiIso alpha] →
+                    (f : K.X (-↑r) ⟶ M) →
+                      CategoryTheory.CategoryStruct.comp (K.d (-↑r - 1) (-↑r)) f = 0 → CategoryTheory.Abelian.Ext E M r
+'LinearStudy.cochainResolutionTopExtClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainResolutionTopExtClass_comp_mk₀ : ∀ {A : Type u_4} [inst : CategoryTheory.Category.{u_3, u_4} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K : CochainComplex A ℤ) {E M N : A} (r : ℕ) (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  [inst_4 : QuasiIso alpha] (f : K.X (-↑r) ⟶ M) (hf : CategoryTheory.CategoryStruct.comp (K.d (-↑r - 1) (-↑r)) f = 0)
+  (g : M ⟶ N),
+  (LinearStudy.cochainResolutionTopExtClass K r alpha f hf).comp (CategoryTheory.Abelian.Ext.mk₀ g) ⋯ =
+    LinearStudy.cochainResolutionTopExtClass K r alpha (CategoryTheory.CategoryStruct.comp f g) ⋯
+'LinearStudy.cochainResolutionTopExtClass_comp_mk₀' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainAsCochain : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] → ChainComplex A ℕ → CochainComplex A ℤ
+'LinearStudy.originalChainAsCochain' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainAsCochainXIso : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) → (p : ℤ) → (n : ℕ) → -↑n = p → ((LinearStudy.originalChainAsCochain C).X p ≅ C.X n)
+'LinearStudy.originalChainAsCochainXIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainAsCochain_d : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) (p₁ p₂ : ℤ) (n₁ n₂ : ℕ) (h₁ : -↑n₁ = p₁) (h₂ : -↑n₂ = p₂),
+  (LinearStudy.originalChainAsCochain C).d p₁ p₂ =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.originalChainAsCochainXIso C p₁ n₁ h₁).hom
+      (CategoryTheory.CategoryStruct.comp (C.d n₁ n₂) (LinearStudy.originalChainAsCochainXIso C p₂ n₂ h₂).inv)
+'LinearStudy.originalChainAsCochain_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainAugmentationAsCochain : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        {E : A} →
+          (C ⟶ (ChainComplex.single₀ A).obj E) →
+            (LinearStudy.originalChainAsCochain C ⟶ (CochainComplex.singleFunctor A 0).obj E)
+'LinearStudy.originalChainAugmentationAsCochain' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainAugmentationAsCochain_quasiIso : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E : A}
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [QuasiIso alpha],
+  QuasiIso (LinearStudy.originalChainAugmentationAsCochain C alpha)
+'LinearStudy.originalChainAugmentationAsCochain_quasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainTopExtClass : {A : Type u_4} →
+  [inst : CategoryTheory.Category.{u_3, u_4} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        [HasDerivedCategory A] →
+          (C : ChainComplex A ℕ) →
+            {E M : A} →
+              (r : ℕ) →
+                (alpha : C ⟶ (ChainComplex.single₀ A).obj E) →
+                  [QuasiIso alpha] →
+                    (f : C.X r ⟶ M) →
+                      CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) f = 0 → CategoryTheory.Abelian.Ext E M r
+'LinearStudy.originalChainTopExtClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainTopExtClass_comp_mk₀ : ∀ {A : Type u_4} [inst : CategoryTheory.Category.{u_3, u_4} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (C : ChainComplex A ℕ) {E M N : A} (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_4 : QuasiIso alpha]
+  (f : C.X r ⟶ M) (hf : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) f = 0) (g : M ⟶ N),
+  (LinearStudy.originalChainTopExtClass C r alpha f hf).comp (CategoryTheory.Abelian.Ext.mk₀ g) ⋯ =
+    LinearStudy.originalChainTopExtClass C r alpha (CategoryTheory.CategoryStruct.comp f g) ⋯
+'LinearStudy.originalChainTopExtClass_comp_mk₀' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chosenProjectiveNormalization_cone_dimension : ∀ {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+  Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+    (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+      ringKrullDim (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) = ↑(r + 1)
+'LinearStudy.chosenProjectiveNormalization_cone_dimension' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chosenProjectiveNormalization_chart_dimension : ∀ {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+  Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+    (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+      ∀ (x : Fin n → ℂ),
+        LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet → ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r
+'LinearStudy.chosenProjectiveNormalization_chart_dimension' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chosenProjectiveNormalization_definingIdeal_ne_bot : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+  Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+    (LinearStudy.projectiveLinearNormalizationMap V L).Finite → r < n → V.ideal.toIdeal ≠ ⊥
+'LinearStudy.chosenProjectiveNormalization_definingIdeal_ne_bot' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveKoszulTerm_isZero_above_rank : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (r q p : ℕ) (k : ℤ),
+  r < p → CategoryTheory.Limits.IsZero (LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q p k)
+'LinearStudy.nativeProjectiveKoszulTerm_isZero_above_rank' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulTopTermTwistIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (r q : ℕ) →
+              (k : ℤ) →
+                LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q r k ≅
+                  LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯
+                    (k - ↑r * ↑q)
+'LinearStudy.nativeProjectiveKoszulTopTermTwistIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulComplexTopTwistIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r q : ℕ} →
+              (H : Fin r → S) →
+                (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                  (k : ℤ) →
+                    (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).X r ≅
+                      LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯
+                        (k - ↑r * ↑q)
+'LinearStudy.nativeProjectiveKoszulComplexTopTwistIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulGlobalTopFunctional_isCocycle : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) {M : (AlgebraicGeometry.Proj 𝓑).Modules}
+  (f : (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).X r ⟶ M),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d (r + 1) r) f = 0
+'LinearStudy.nativeProjectiveKoszulGlobalTopFunctional_isCocycle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [inst_4 : CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules] →
+              [HasDerivedCategory (AlgebraicGeometry.Proj 𝓑).Modules] →
+                {r q : ℕ} →
+                  (H : Fin r → S) →
+                    (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                      (k : ℤ) →
+                        {E N : (AlgebraicGeometry.Proj 𝓑).Modules} →
+                          (alpha :
+                              LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+                                (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E) →
+                            [QuasiIso alpha] →
+                              (LinearStudy.nativeProjectiveModuleSheaf 𝓑
+                                    (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q) ⟶
+                                  N) →
+                                CategoryTheory.Abelian.Ext E N r
+'LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative_comp_mk₀ : ∀ {K S : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  [inst_4 : CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules]
+  [inst_5 : HasDerivedCategory (AlgebraicGeometry.Proj 𝓑).Modules] {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) {E N P : (AlgebraicGeometry.Proj 𝓑).Modules}
+  (alpha :
+    LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+      (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+  [inst_6 : QuasiIso alpha]
+  (a : LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q) ⟶ N)
+  (g : N ⟶ P),
+  (LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative 𝓑 H hH k alpha a).comp
+      (CategoryTheory.Abelian.Ext.mk₀ g) ⋯ =
+    LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative 𝓑 H hH k alpha
+      (CategoryTheory.CategoryStruct.comp a g)
+'LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative_comp_mk₀' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveKoszulResolutionClass : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [inst_4 : CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules] →
+              [HasDerivedCategory (AlgebraicGeometry.Proj 𝓑).Modules] →
+                {r q : ℕ} →
+                  (H : Fin r → S) →
+                    (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                      (k : ℤ) →
+                        {E : (AlgebraicGeometry.Proj 𝓑).Modules} →
+                          (alpha :
+                              LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+                                (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E) →
+                            [QuasiIso alpha] →
+                              CategoryTheory.Abelian.Ext E
+                                (LinearStudy.nativeProjectiveModuleSheaf 𝓑
+                                  (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q))
+                                r
+'LinearStudy.nativeProjectiveKoszulResolutionClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulResolutionClass_comp_mk₀ : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  [inst_4 : CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules]
+  [inst_5 : HasDerivedCategory (AlgebraicGeometry.Proj 𝓑).Modules] {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) {E N : (AlgebraicGeometry.Proj 𝓑).Modules}
+  (alpha :
+    LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+      (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+  [inst_6 : QuasiIso alpha]
+  (a : LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q) ⟶ N),
+  (LinearStudy.nativeProjectiveKoszulResolutionClass 𝓑 H hH k alpha).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯ =
+    LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative 𝓑 H hH k alpha a
+'LinearStudy.nativeProjectiveKoszulResolutionClass_comp_mk₀' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainStandardTopExtClass : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        {E M : A} →
+          (r : ℕ) →
+            (alpha : C ⟶ (ChainComplex.single₀ A).obj E) →
+              [QuasiIso alpha] →
+                (f : C.X r ⟶ M) →
+                  CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) f = 0 → CategoryTheory.Abelian.Ext E M r
+'LinearStudy.originalChainStandardTopExtClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainStandardTopExtClassPushProof : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E M N : A} (r : ℕ)
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_2 : QuasiIso alpha] (f : C.X r ⟶ M)
+  (hf : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) f = 0) (g : M ⟶ N),
+  (LinearStudy.originalChainTopExtClass C r alpha f hf).comp (CategoryTheory.Abelian.Ext.mk₀ g) ⋯ =
+    LinearStudy.originalChainTopExtClass C r alpha (CategoryTheory.CategoryStruct.comp f g) ⋯
+'LinearStudy.originalChainStandardTopExtClassPushProof' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulStandardResolutionClass : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r q : ℕ} →
+              (H : Fin r → S) →
+                (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                  (k : ℤ) →
+                    {E : (AlgebraicGeometry.Proj 𝓑).Modules} →
+                      (alpha :
+                          LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+                            (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E) →
+                        [QuasiIso alpha] →
+                          CategoryTheory.Abelian.Ext E
+                            (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑)
+                              ⋯ (k - ↑r * ↑q))
+                            r
+'LinearStudy.nativeProjectiveKoszulStandardResolutionClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulStandardResolutionClassPushProof : ∀ {K S : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ}
+  (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) {E N : (AlgebraicGeometry.Proj 𝓑).Modules}
+  (alpha :
+    LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+      (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+  [inst_4 : QuasiIso alpha]
+  (a : LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q) ⟶ N),
+  (LinearStudy.originalChainTopExtClass (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k) r alpha
+          (LinearStudy.nativeProjectiveKoszulComplexTopTwistIso 𝓑 H hH k).hom ⋯).comp
+      (CategoryTheory.Abelian.Ext.mk₀ a) ⋯ =
+    LinearStudy.originalChainTopExtClass (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k) r alpha
+      (CategoryTheory.CategoryStruct.comp (LinearStudy.nativeProjectiveKoszulComplexTopTwistIso 𝓑 H hH k).hom a) ⋯
+'LinearStudy.nativeProjectiveKoszulStandardResolutionClassPushProof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearSectionOriginalSetupResolutionProof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  r < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+            (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ∀ (x0 : Fin n → ℂ),
+                  LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                    ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                      c ≠ 0 ∧
+                        (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                          ∀ (w : Fin (r + 1) → ℂ),
+                            (MvPolynomial.eval w) c ≠ 0 →
+                              let J := LinearStudy.projectivePulledLinearSectionIdeal f V L w;
+                              have hJ := ⋯;
+                              ∀ (k : ℤ),
+                                have C := LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k;
+                                let T :=
+                                  (AlgebraicGeometry.Scheme.Modules.pushforward
+                                        (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+                                    (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece J)
+                                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                                        (LinearStudy.homogeneousQuotientPiece J))
+                                      ⋯ k);
+                                ∃ (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T),
+                                  QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation C T e) ∧
+                                    (LinearStudy.originalChainCokernelTargetAugmentation C T e).f 0 =
+                                      CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (C.d 1 0))
+                                        e.hom
+'LinearStudy.projectivePulledLinearSectionOriginalSetupResolutionProof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledWholeCutResolutionTarget : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (Fin (r + 1) → ℂ) →
+            ℤ → (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules
+'LinearStudy.projectivePulledWholeCutResolutionTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledKoszulTopResolutionTarget : {n : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      ℕ → ℤ → (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules
+'LinearStudy.projectivePulledKoszulTopResolutionTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledKoszulTopResolutionTarget_original_t : ∀ {n : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (rank : ℕ),
+  LinearStudy.projectivePulledKoszulTopResolutionTarget f V rank (↑rank * ↑f.degree - ↑rank - 1) =
+    LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+      (LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)) ⋯
+      (-↑rank - 1)
+'LinearStudy.projectivePulledKoszulTopResolutionTarget_original_t' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalKoszulTopTwistIso : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).X r ≅
+                LinearStudy.projectivePulledKoszulTopResolutionTarget f V r k
+'LinearStudy.projectivePulledOriginalKoszulTopTwistIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledOriginalKoszulTopFunctional_isCocycle : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ) (k : ℤ)
+  {M : (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules}
+  (a : (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).X r ⟶ M),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d (r + 1) r) a = 0
+'LinearStudy.projectivePulledOriginalKoszulTopFunctional_isCocycle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalChainExplicitStandardTopExtClass : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        {E M : A} →
+          (r : ℕ) →
+            (alpha : C ⟶ (ChainComplex.single₀ A).obj E) →
+              QuasiIso alpha →
+                (a : C.X r ⟶ M) →
+                  CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → CategoryTheory.Abelian.Ext E M r
+'LinearStudy.originalChainExplicitStandardTopExtClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainExplicitStandardTopExtClassPushProof : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E M N : A}
+  (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) (g : M ⟶ N),
+  (LinearStudy.originalChainTopExtClass C r alpha a ha).comp (CategoryTheory.Abelian.Ext.mk₀ g) ⋯ =
+    LinearStudy.originalChainTopExtClass C r alpha (CategoryTheory.CategoryStruct.comp a g) ⋯
+'LinearStudy.originalChainExplicitStandardTopExtClassPushProof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalChainWholeCutExtClass : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (e :
+                  CategoryTheory.Limits.cokernel
+                      ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                    LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                QuasiIso
+                    (LinearStudy.originalChainCokernelTargetAugmentation
+                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e) →
+                  CategoryTheory.Abelian.Ext (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+                    (LinearStudy.projectivePulledKoszulTopResolutionTarget f V r k) r
+'LinearStudy.projectivePulledOriginalChainWholeCutExtClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainExplicitStandardTopExtClass_comp_mk₀ : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E M N : A}
+  (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) (g : M ⟶ N),
+  (LinearStudy.originalChainExplicitStandardTopExtClass C r alpha hAlpha a ha).comp (CategoryTheory.Abelian.Ext.mk₀ g)
+      ⋯ =
+    LinearStudy.originalChainExplicitStandardTopExtClass C r alpha hAlpha (CategoryTheory.CategoryStruct.comp a g) ⋯
+'LinearStudy.originalChainExplicitStandardTopExtClass_comp_mk₀' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalChainExplicitStandardTopExtClassAllPushProof : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E M : A}
+  (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) (N : A) (g : M ⟶ N),
+  (LinearStudy.originalChainExplicitStandardTopExtClass C r alpha hAlpha a ha).comp (CategoryTheory.Abelian.Ext.mk₀ g)
+      ⋯ =
+    LinearStudy.originalChainExplicitStandardTopExtClass C r alpha hAlpha (CategoryTheory.CategoryStruct.comp a g) ⋯
+'LinearStudy.originalChainExplicitStandardTopExtClassAllPushProof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.parameterFamily_enrich_exists_proof : ∀ {U : Type u_1} {W : Type u_2} {I : Type u_3} {E : W → I → Type u_4}
+  {B1 B2 : U → Prop} {G : U → W → Prop} {P R : (w : W) → (i : I) → E w i → Prop}
+  {T : (w : W) → (i : I) → (e : E w i) → P w i e → Prop},
+  (∃ (u : U), B1 u ∧ B2 u ∧ ∀ (w : W), G u w → ∀ (i : I), ∃ (e : E w i), P w i e ∧ R w i e) →
+    (∀ (w : W) (i : I) (e : E w i) (he : P w i e), T w i e he) →
+      ∃ (u : U), B1 u ∧ B2 u ∧ ∀ (w : W), G u w → ∀ (i : I), ∃ (e : E w i) (he : P w i e), R w i e ∧ T w i e he
+'LinearStudy.parameterFamily_enrich_exists_proof' does not depend on any axioms
+@LinearStudy.projectivePulledOriginalChainWholeCutExtAllPushProof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ) (k : ℤ)
+  (e :
+    CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+  (he :
+    QuasiIso
+      (LinearStudy.originalChainCokernelTargetAugmentation
+        (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e))
+  (N : (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules)
+  (g : LinearStudy.projectivePulledKoszulTopResolutionTarget f V r k ⟶ N),
+  (LinearStudy.originalChainExplicitStandardTopExtClass (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) r
+          (LinearStudy.originalChainCokernelTargetAugmentation
+            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+            (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)
+          he (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom ⋯).comp
+      (CategoryTheory.Abelian.Ext.mk₀ g) ⋯ =
+    LinearStudy.originalChainExplicitStandardTopExtClass (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+      r
+      (LinearStudy.originalChainCokernelTargetAugmentation
+        (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)
+      he (CategoryTheory.CategoryStruct.comp (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom g)
+      ⋯
+'LinearStudy.projectivePulledOriginalChainWholeCutExtAllPushProof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalSetupWholeCutExtFamilyProof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  r < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+            (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ∀ (x0 : Fin n → ℂ),
+                  LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                    ∃ (u : MvPolynomial (Fin (r + 1)) ℂ),
+                      u ≠ 0 ∧
+                        (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) u ≠ 0) ∧
+                          ∀ (w : Fin (r + 1) → ℂ),
+                            (MvPolynomial.eval w) u ≠ 0 →
+                              ∀ (i : ℤ),
+                                ∃ (e :
+                                  CategoryTheory.Limits.cokernel
+                                      ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i).d 1 0) ≅
+                                    (AlgebraicGeometry.Scheme.Modules.pushforward
+                                          (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                        (LinearStudy.homogeneousQuotientPiece
+                                          (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                                        (LinearStudy.nativeProjectiveRingIntegerPiece
+                                          (LinearStudy.homogeneousQuotientPiece
+                                            (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                                        ⋯ i))
+                                  (he :
+                                  QuasiIso
+                                    (LinearStudy.originalChainCokernelTargetAugmentation
+                                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                      ((AlgebraicGeometry.Scheme.Modules.pushforward
+                                            (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+                                        (LinearStudy.nativeProjectiveModuleSheaf
+                                          (LinearStudy.homogeneousQuotientPiece
+                                            (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                                          (LinearStudy.nativeProjectiveRingIntegerPiece
+                                            (LinearStudy.homogeneousQuotientPiece
+                                              (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                                          ⋯ i))
+                                      e)),
+                                  (LinearStudy.originalChainCokernelTargetAugmentation
+                                            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                            ((AlgebraicGeometry.Scheme.Modules.pushforward
+                                                  (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL
+                                                    w)).obj
+                                              (LinearStudy.nativeProjectiveModuleSheaf
+                                                (LinearStudy.homogeneousQuotientPiece
+                                                  (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                                                (LinearStudy.nativeProjectiveRingIntegerPiece
+                                                  (LinearStudy.homogeneousQuotientPiece
+                                                    (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                                                ⋯ i))
+                                            e).f
+                                        0 =
+                                      CategoryTheory.CategoryStruct.comp
+                                        (CategoryTheory.Limits.cokernel.π
+                                          ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i).d 1 0))
+                                        e.hom ∧
+                                    ∀
+                                      (N :
+                                        (AlgebraicGeometry.Proj
+                                            (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules)
+                                      (g : LinearStudy.projectivePulledKoszulTopResolutionTarget f V r i ⟶ N),
+                                      (LinearStudy.originalChainExplicitStandardTopExtClass
+                                              (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i) r
+                                              (LinearStudy.originalChainCokernelTargetAugmentation
+                                                (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                                (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w i) e)
+                                              he
+                                              (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w i).hom
+                                              ⋯).comp
+                                          (CategoryTheory.Abelian.Ext.mk₀ g) ⋯ =
+                                        LinearStudy.originalChainExplicitStandardTopExtClass
+                                          (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i) r
+                                          (LinearStudy.originalChainCokernelTargetAugmentation
+                                            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                            (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w i) e)
+                                          he
+                                          (CategoryTheory.CategoryStruct.comp
+                                            (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w i).hom g)
+                                          ⋯
+'LinearStudy.projectivePulledOriginalSetupWholeCutExtFamilyProof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.cochainResolutionExtClass.{w, w', v, u} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        [HasDerivedCategory A] →
+          (K : CochainComplex A ℤ) →
+            {E M : A} →
+              (r : ℕ) →
+                (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) →
+                  [QuasiIso alpha] →
+                    CategoryTheory.ShiftedHom K ((CochainComplex.singleFunctor A 0).obj M) ↑r →
+                      CategoryTheory.Abelian.Ext E M r :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    [HasDerivedCategory A] (K : CochainComplex A ℤ) {E M : A} (r : ℕ)
+    (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [QuasiIso alpha]
+    (beta : CategoryTheory.ShiftedHom K ((CochainComplex.singleFunctor A 0).obj M) ↑r) =>
+  CategoryTheory.Abelian.Ext.homEquiv.symm
+    ((CategoryTheory.ShiftedHom.mk₀ 0 LinearStudy.cochainResolutionExtClass._proof_4
+          (CategoryTheory.CategoryStruct.comp ((DerivedCategory.singleFunctorIsoCompQ A 0).hom.app E)
+            (CategoryTheory.inv (DerivedCategory.Q.map alpha)))).comp
+      ((beta.map DerivedCategory.Q).comp
+        (CategoryTheory.ShiftedHom.mk₀ 0 LinearStudy.cochainResolutionExtClass._proof_4
+          ((DerivedCategory.singleFunctorIsoCompQ A 0).inv.app M))
+        ⋯)
+      ⋯)
+def LinearStudy.cochainResolutionTopExtClass.{w, w', v, u} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        [HasDerivedCategory A] →
+          (K : CochainComplex A ℤ) →
+            {E M : A} →
+              (r : ℕ) →
+                (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) →
+                  [QuasiIso alpha] →
+                    (f : K.X (-↑r) ⟶ M) →
+                      CategoryTheory.CategoryStruct.comp (K.d (-↑r - 1) (-↑r)) f = 0 →
+                        CategoryTheory.Abelian.Ext E M r :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    [HasDerivedCategory A] (K : CochainComplex A ℤ) {E M : A} (r : ℕ)
+    (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [QuasiIso alpha] (f : K.X (-↑r) ⟶ M)
+    (hf : CategoryTheory.CategoryStruct.comp (K.d (-↑r - 1) (-↑r)) f = 0) =>
+  LinearStudy.cochainResolutionExtClass K r alpha
+    (CochainComplex.HomComplex.Cocycle.equivHomShift.symm
+      (CochainComplex.HomComplex.Cocycle.toSingleMk f ⋯ (-↑r - 1) ⋯ hf))
+def LinearStudy.originalChainAsCochain.{v, u} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] → ChainComplex A ℕ → CochainComplex A ℤ :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) =>
+  HomologicalComplex.extend C ComplexShape.embeddingDownNat
+def LinearStudy.originalChainAsCochainXIso.{v, u} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) → (p : ℤ) → (n : ℕ) → -↑n = p → ((LinearStudy.originalChainAsCochain C).X p ≅ C.X n) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) (p : ℤ) (n : ℕ)
+    (h : -↑n = p) =>
+  HomologicalComplex.extendXIso C ComplexShape.embeddingDownNat h
+def LinearStudy.originalChainAugmentationAsCochain.{v, u} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        {E : A} →
+          (C ⟶ (ChainComplex.single₀ A).obj E) →
+            (LinearStudy.originalChainAsCochain C ⟶ (CochainComplex.singleFunctor A 0).obj E) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E : A}
+    (alpha : C ⟶ (ChainComplex.single₀ A).obj E) =>
+  CategoryTheory.CategoryStruct.comp ((ComplexShape.embeddingDownNat.extendFunctor A).map alpha)
+    (HomologicalComplex.extendSingleIso ComplexShape.embeddingDownNat E 0 0
+        LinearStudy.originalChainAugmentationAsCochain._proof_1).hom
+def LinearStudy.originalChainTopExtClass.{w, w', v, u} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        [HasDerivedCategory A] →
+          (C : ChainComplex A ℕ) →
+            {E M : A} →
+              (r : ℕ) →
+                (alpha : C ⟶ (ChainComplex.single₀ A).obj E) →
+                  [QuasiIso alpha] →
+                    (f : C.X r ⟶ M) →
+                      CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) f = 0 → CategoryTheory.Abelian.Ext E M r :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    [HasDerivedCategory A] (C : ChainComplex A ℕ) {E M : A} (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E)
+    [QuasiIso alpha] (f : C.X r ⟶ M) (hf : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) f = 0) =>
+  LinearStudy.cochainResolutionTopExtClass (LinearStudy.originalChainAsCochain C) r
+    (LinearStudy.originalChainAugmentationAsCochain C alpha)
+    (CategoryTheory.CategoryStruct.comp (LinearStudy.originalChainAsCochainXIso C (-↑r) r ⋯).hom f) ⋯
+def LinearStudy.nativeProjectiveKoszulTopTermTwistIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (r q : ℕ) →
+              (k : ℤ) →
+                LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q r k ≅
+                  LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯
+                    (k - ↑r * ↑q) :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (r q : ℕ) (k : ℤ) =>
+  LinearStudy.nativeProjectiveKoszulTermTwistIso 𝓑 r q r k ≪≫
+    CategoryTheory.Limits.biproductUniqueIso fun (x : ↑(Set.powersetCard (Fin r) r)) =>
+      LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q)
+def LinearStudy.nativeProjectiveKoszulComplexTopTwistIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r q : ℕ} →
+              (H : Fin r → S) →
+                (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                  (k : ℤ) →
+                    (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).X r ≅
+                      LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯
+                        (k - ↑r * ↑q) :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) =>
+  CategoryTheory.eqToIso ⋯ ≪≫ LinearStudy.nativeProjectiveKoszulTopTermTwistIso 𝓑 r q k
+def LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative.{w, w'} : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [inst_4 : CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules] →
+              [HasDerivedCategory (AlgebraicGeometry.Proj 𝓑).Modules] →
+                {r q : ℕ} →
+                  (H : Fin r → S) →
+                    (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                      (k : ℤ) →
+                        {E N : (AlgebraicGeometry.Proj 𝓑).Modules} →
+                          (alpha :
+                              LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+                                (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E) →
+                            [QuasiIso alpha] →
+                              (LinearStudy.nativeProjectiveModuleSheaf 𝓑
+                                    (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q) ⟶
+                                  N) →
+                                CategoryTheory.Abelian.Ext E N r :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
+    [CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules] [HasDerivedCategory (AlgebraicGeometry.Proj 𝓑).Modules]
+    {r q : ℕ} (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) {E N : (AlgebraicGeometry.Proj 𝓑).Modules}
+    (alpha :
+      LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+        (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+    [QuasiIso alpha]
+    (a :
+      LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q) ⟶ N) =>
+  LinearStudy.originalChainTopExtClass (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k) r alpha
+    (CategoryTheory.CategoryStruct.comp (LinearStudy.nativeProjectiveKoszulComplexTopTwistIso 𝓑 H hH k).hom a) ⋯
+def LinearStudy.nativeProjectiveKoszulResolutionClass.{w, w'} : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [inst_4 : CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules] →
+              [HasDerivedCategory (AlgebraicGeometry.Proj 𝓑).Modules] →
+                {r q : ℕ} →
+                  (H : Fin r → S) →
+                    (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                      (k : ℤ) →
+                        {E : (AlgebraicGeometry.Proj 𝓑).Modules} →
+                          (alpha :
+                              LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+                                (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E) →
+                            [QuasiIso alpha] →
+                              CategoryTheory.Abelian.Ext E
+                                (LinearStudy.nativeProjectiveModuleSheaf 𝓑
+                                  (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q))
+                                r :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
+    [CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules] [HasDerivedCategory (AlgebraicGeometry.Proj 𝓑).Modules]
+    {r q : ℕ} (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) {E : (AlgebraicGeometry.Proj 𝓑).Modules}
+    (alpha :
+      LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+        (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+    [QuasiIso alpha] =>
+  LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative 𝓑 H hH k alpha
+    (CategoryTheory.CategoryStruct.id
+      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q)))
+def LinearStudy.originalChainStandardTopExtClass.{v, u} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        {E M : A} →
+          (r : ℕ) →
+            (alpha : C ⟶ (ChainComplex.single₀ A).obj E) →
+              [QuasiIso alpha] →
+                (f : C.X r ⟶ M) →
+                  CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) f = 0 → CategoryTheory.Abelian.Ext E M r :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E M : A} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [QuasiIso alpha] (f : C.X r ⟶ M)
+    (hf : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) f = 0) =>
+  LinearStudy.originalChainTopExtClass C r alpha f hf
+def LinearStudy.originalChainStandardTopExtClassPushProof.{v, u} : ∀ {A : Type u}
+  [inst : CategoryTheory.Category.{v, u} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E M N : A}
+  (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_2 : QuasiIso alpha] (f : C.X r ⟶ M)
+  (hf : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) f = 0) (g : M ⟶ N),
+  (LinearStudy.originalChainTopExtClass C r alpha f hf).comp (CategoryTheory.Abelian.Ext.mk₀ g) ⋯ =
+    LinearStudy.originalChainTopExtClass C r alpha (CategoryTheory.CategoryStruct.comp f g) ⋯ :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E M N : A}
+    (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [QuasiIso alpha] (f : C.X r ⟶ M)
+    (hf : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) f = 0) (g : M ⟶ N) =>
+  LinearStudy.originalChainTopExtClass_comp_mk₀ C r alpha f hf g
+def LinearStudy.nativeProjectiveKoszulStandardResolutionClass : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r q : ℕ} →
+              (H : Fin r → S) →
+                (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                  (k : ℤ) →
+                    {E : (AlgebraicGeometry.Proj 𝓑).Modules} →
+                      (alpha :
+                          LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+                            (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E) →
+                        [QuasiIso alpha] →
+                          CategoryTheory.Abelian.Ext E
+                            (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑)
+                              ⋯ (k - ↑r * ↑q))
+                            r :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) {E : (AlgebraicGeometry.Proj 𝓑).Modules}
+    (alpha :
+      LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+        (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+    [QuasiIso alpha] =>
+  LinearStudy.originalChainStandardTopExtClass (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k) r alpha
+    (LinearStudy.nativeProjectiveKoszulComplexTopTwistIso 𝓑 H hH k).hom ⋯
+def LinearStudy.nativeProjectiveKoszulStandardResolutionClassPushProof : ∀ {K S : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ}
+  (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) {E N : (AlgebraicGeometry.Proj 𝓑).Modules}
+  (alpha :
+    LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+      (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+  [inst_4 : QuasiIso alpha]
+  (a : LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ (k - ↑r * ↑q) ⟶ N),
+  (LinearStudy.originalChainTopExtClass (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k) r alpha
+          (LinearStudy.nativeProjectiveKoszulComplexTopTwistIso 𝓑 H hH k).hom ⋯).comp
+      (CategoryTheory.Abelian.Ext.mk₀ a) ⋯ =
+    LinearStudy.originalChainTopExtClass (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k) r alpha
+      (CategoryTheory.CategoryStruct.comp (LinearStudy.nativeProjectiveKoszulComplexTopTwistIso 𝓑 H hH k).hom a) ⋯ :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) {E N : (AlgebraicGeometry.Proj 𝓑).Modules}
+    (alpha :
+      LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k ⟶
+        (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+    [QuasiIso alpha]
+    (a :
+      LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑)
+          (LinearStudy.nativeProjectiveRingIntegerPiece_graded 𝓑) (k - ↑r * ↑q) ⟶
+        N) =>
+  LinearStudy.originalChainStandardTopExtClassPushProof (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k) r alpha
+    (LinearStudy.nativeProjectiveKoszulComplexTopTwistIso 𝓑 H hH k).hom
+    (LinearStudy.nativeProjectiveKoszulGlobalTopFunctional_isCocycle 𝓑 H hH k
+      (LinearStudy.nativeProjectiveKoszulComplexTopTwistIso 𝓑 H hH k).hom)
+    a
+def LinearStudy.projectivePulledLinearSectionOriginalSetupResolutionProof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  r < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+            (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ∀ (x0 : Fin n → ℂ),
+                  LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                    ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                      c ≠ 0 ∧
+                        (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                          ∀ (w : Fin (r + 1) → ℂ),
+                            (MvPolynomial.eval w) c ≠ 0 →
+                              let J := LinearStudy.projectivePulledLinearSectionIdeal f V L w;
+                              have hJ := ⋯;
+                              ∀ (k : ℤ),
+                                have C := LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k;
+                                let T :=
+                                  (AlgebraicGeometry.Scheme.Modules.pushforward
+                                        (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+                                    (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece J)
+                                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                                        (LinearStudy.homogeneousQuotientPiece J))
+                                      ⋯ k);
+                                ∃ (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T),
+                                  QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation C T e) ∧
+                                    (LinearStudy.originalChainCokernelTargetAugmentation C T e).f 0 =
+                                      CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (C.d 1 0))
+                                        e.hom :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hrn : r < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+    (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (x0 : Fin n → ℂ)
+    (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) =>
+  LinearStudy.projectivePulledLinearSection_exists_wholeCutNativeTwist_quotientAugmentation_quasiIso f V
+    (LinearStudy.chosenProjectiveNormalization_definingIdeal_ne_bot V L hinj hfinite hrn) hq hf hV L hL hinj hfinite
+    (LinearStudy.chosenProjectiveNormalization_chart_dimension V L hinj hfinite x0 hx0) x0 hx0
+def LinearStudy.projectivePulledWholeCutResolutionTarget : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (Fin (r + 1) → ℂ) →
+            ℤ → (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) =>
+  let J := LinearStudy.projectivePulledLinearSectionIdeal f V L w;
+  have hJ := ⋯;
+  (AlgebraicGeometry.Scheme.Modules.pushforward
+        (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+    (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece J)
+      (LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece J)) ⋯ k)
+def LinearStudy.projectivePulledKoszulTopResolutionTarget : {n : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      ℕ → ℤ → (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules :=
+fun {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (rank : ℕ)
+    (k : ℤ) =>
+  LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+    (LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)) ⋯
+    (k - ↑rank * ↑f.degree)
+def LinearStudy.projectivePulledOriginalKoszulTopTwistIso : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).X r ≅
+                LinearStudy.projectivePulledKoszulTopResolutionTarget f V r k :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) =>
+  LinearStudy.nativeProjectiveKoszulComplexTopTwistIso (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+    (LinearStudy.projectivePulledLinearKoszulForms f V L w) ⋯ k
+def LinearStudy.originalChainExplicitStandardTopExtClass.{v, u} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        {E M : A} →
+          (r : ℕ) →
+            (alpha : C ⟶ (ChainComplex.single₀ A).obj E) →
+              QuasiIso alpha →
+                (a : C.X r ⟶ M) →
+                  CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → CategoryTheory.Abelian.Ext E M r :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E M : A} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M)
+    (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) =>
+  LinearStudy.originalChainStandardTopExtClass C r alpha a ha
+def LinearStudy.originalChainExplicitStandardTopExtClassPushProof.{v, u} : ∀ {A : Type u}
+  [inst : CategoryTheory.Category.{v, u} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E M N : A}
+  (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) (g : M ⟶ N),
+  (LinearStudy.originalChainTopExtClass C r alpha a ha).comp (CategoryTheory.Abelian.Ext.mk₀ g) ⋯ =
+    LinearStudy.originalChainTopExtClass C r alpha (CategoryTheory.CategoryStruct.comp a g) ⋯ :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E M N : A}
+    (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M)
+    (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) (g : M ⟶ N) =>
+  LinearStudy.originalChainStandardTopExtClassPushProof C r alpha a ha g
+def LinearStudy.projectivePulledOriginalChainWholeCutExtClass : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (e :
+                  CategoryTheory.Limits.cokernel
+                      ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                    LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                QuasiIso
+                    (LinearStudy.originalChainCokernelTargetAugmentation
+                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e) →
+                  CategoryTheory.Abelian.Ext (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+                    (LinearStudy.projectivePulledKoszulTopResolutionTarget f V r k) r :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ)
+    (e :
+      CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+    (he :
+      QuasiIso
+        (LinearStudy.originalChainCokernelTargetAugmentation
+          (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+          (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)) =>
+  LinearStudy.originalChainExplicitStandardTopExtClass (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) r
+    (LinearStudy.originalChainCokernelTargetAugmentation (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)
+    he (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom ⋯
+def LinearStudy.originalChainExplicitStandardTopExtClassAllPushProof.{v, u} : ∀ {A : Type u}
+  [inst : CategoryTheory.Category.{v, u} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E M : A} (r : ℕ)
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) (N : A) (g : M ⟶ N),
+  (LinearStudy.originalChainExplicitStandardTopExtClass C r alpha hAlpha a ha).comp (CategoryTheory.Abelian.Ext.mk₀ g)
+      ⋯ =
+    LinearStudy.originalChainExplicitStandardTopExtClass C r alpha hAlpha (CategoryTheory.CategoryStruct.comp a g) ⋯ :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E M : A} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M)
+    (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) (N : A) (g : M ⟶ N) =>
+  LinearStudy.originalChainExplicitStandardTopExtClass_comp_mk₀ C r alpha hAlpha a ha g
+def LinearStudy.projectivePulledOriginalChainWholeCutExtAllPushProof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ) (k : ℤ)
+  (e :
+    CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+  (he :
+    QuasiIso
+      (LinearStudy.originalChainCokernelTargetAugmentation
+        (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e))
+  (N : (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules)
+  (g : LinearStudy.projectivePulledKoszulTopResolutionTarget f V r k ⟶ N),
+  (LinearStudy.originalChainExplicitStandardTopExtClass (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) r
+          (LinearStudy.originalChainCokernelTargetAugmentation
+            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+            (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)
+          he (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom ⋯).comp
+      (CategoryTheory.Abelian.Ext.mk₀ g) ⋯ =
+    LinearStudy.originalChainExplicitStandardTopExtClass (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+      r
+      (LinearStudy.originalChainCokernelTargetAugmentation
+        (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)
+      he (CategoryTheory.CategoryStruct.comp (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom g)
+      ⋯ :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ)
+    (e :
+      CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+    (he :
+      QuasiIso
+        (LinearStudy.originalChainCokernelTargetAugmentation
+          (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+          (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)) =>
+  LinearStudy.originalChainExplicitStandardTopExtClassAllPushProof
+    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) r
+    (LinearStudy.originalChainCokernelTargetAugmentation (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)
+    he (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom
+    (LinearStudy.projectivePulledOriginalKoszulTopFunctional_isCocycle f V L hL w k
+      (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom)
+def LinearStudy.projectivePulledOriginalSetupWholeCutExtFamilyProof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  r < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+            (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ∀ (x0 : Fin n → ℂ),
+                  LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                    ∃ (u : MvPolynomial (Fin (r + 1)) ℂ),
+                      u ≠ 0 ∧
+                        (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) u ≠ 0) ∧
+                          ∀ (w : Fin (r + 1) → ℂ),
+                            (MvPolynomial.eval w) u ≠ 0 →
+                              ∀ (i : ℤ),
+                                ∃ (e :
+                                  CategoryTheory.Limits.cokernel
+                                      ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i).d 1 0) ≅
+                                    (AlgebraicGeometry.Scheme.Modules.pushforward
+                                          (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                        (LinearStudy.homogeneousQuotientPiece
+                                          (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                                        (LinearStudy.nativeProjectiveRingIntegerPiece
+                                          (LinearStudy.homogeneousQuotientPiece
+                                            (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                                        ⋯ i))
+                                  (he :
+                                  QuasiIso
+                                    (LinearStudy.originalChainCokernelTargetAugmentation
+                                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                      ((AlgebraicGeometry.Scheme.Modules.pushforward
+                                            (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+                                        (LinearStudy.nativeProjectiveModuleSheaf
+                                          (LinearStudy.homogeneousQuotientPiece
+                                            (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                                          (LinearStudy.nativeProjectiveRingIntegerPiece
+                                            (LinearStudy.homogeneousQuotientPiece
+                                              (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                                          ⋯ i))
+                                      e)),
+                                  (LinearStudy.originalChainCokernelTargetAugmentation
+                                            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                            ((AlgebraicGeometry.Scheme.Modules.pushforward
+                                                  (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL
+                                                    w)).obj
+                                              (LinearStudy.nativeProjectiveModuleSheaf
+                                                (LinearStudy.homogeneousQuotientPiece
+                                                  (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                                                (LinearStudy.nativeProjectiveRingIntegerPiece
+                                                  (LinearStudy.homogeneousQuotientPiece
+                                                    (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                                                ⋯ i))
+                                            e).f
+                                        0 =
+                                      CategoryTheory.CategoryStruct.comp
+                                        (CategoryTheory.Limits.cokernel.π
+                                          ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i).d 1 0))
+                                        e.hom ∧
+                                    ∀
+                                      (N :
+                                        (AlgebraicGeometry.Proj
+                                            (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules)
+                                      (g : LinearStudy.projectivePulledKoszulTopResolutionTarget f V r i ⟶ N),
+                                      (LinearStudy.originalChainExplicitStandardTopExtClass
+                                              (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i) r
+                                              (LinearStudy.originalChainCokernelTargetAugmentation
+                                                (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                                (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w i) e)
+                                              he
+                                              (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w i).hom
+                                              ⋯).comp
+                                          (CategoryTheory.Abelian.Ext.mk₀ g) ⋯ =
+                                        LinearStudy.originalChainExplicitStandardTopExtClass
+                                          (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i) r
+                                          (LinearStudy.originalChainCokernelTargetAugmentation
+                                            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                            (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w i) e)
+                                          he
+                                          (CategoryTheory.CategoryStruct.comp
+                                            (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w i).hom g)
+                                          ⋯ :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hrn : r < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+    (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (x0 : Fin n → ℂ)
+    (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) =>
+  LinearStudy.parameterFamily_enrich_exists_proof
+    (LinearStudy.projectivePulledLinearSectionOriginalSetupResolutionProof f V hrn hq hf hV L hL hinj hfinite x0 hx0)
+    fun (w : Fin (r + 1) → ℂ) (k : ℤ)
+      (e :
+        CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+          (AlgebraicGeometry.Scheme.Modules.pushforward
+                (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+            (LinearStudy.nativeProjectiveModuleSheaf
+              (LinearStudy.homogeneousQuotientPiece (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+              (LinearStudy.nativeProjectiveRingIntegerPiece
+                (LinearStudy.homogeneousQuotientPiece (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+              (LinearStudy.nativeProjectiveRingIntegerPiece_graded
+                (LinearStudy.homogeneousQuotientPiece (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+              k))
+      (he :
+        QuasiIso
+          (LinearStudy.originalChainCokernelTargetAugmentation
+            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+            ((AlgebraicGeometry.Scheme.Modules.pushforward
+                  (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf
+                (LinearStudy.homogeneousQuotientPiece (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                (LinearStudy.nativeProjectiveRingIntegerPiece
+                  (LinearStudy.homogeneousQuotientPiece (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                (LinearStudy.nativeProjectiveRingIntegerPiece_graded
+                  (LinearStudy.homogeneousQuotientPiece (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                k))
+            e)) =>
+    LinearStudy.projectivePulledOriginalChainWholeCutExtAllPushProof f V L hL w k e he
+ROLECHECK:LinearStudy.cochainResolutionExtClass:false
+ROLECHECK:LinearStudy.cochainResolutionExtClass_hom:true
+ROLECHECK:LinearStudy.cochainResolutionTopExtClass:false
+ROLECHECK:LinearStudy.cochainResolutionTopExtClass_comp_mk₀:true
+ROLECHECK:LinearStudy.originalChainAsCochain:false
+ROLECHECK:LinearStudy.originalChainAsCochainXIso:false
+ROLECHECK:LinearStudy.originalChainAsCochain_d:true
+ROLECHECK:LinearStudy.originalChainAugmentationAsCochain:false
+ROLECHECK:LinearStudy.originalChainAugmentationAsCochain_quasiIso:true
+ROLECHECK:LinearStudy.originalChainTopExtClass:false
+ROLECHECK:LinearStudy.originalChainTopExtClass_comp_mk₀:true
+ROLECHECK:LinearStudy.chosenProjectiveNormalization_cone_dimension:true
+ROLECHECK:LinearStudy.chosenProjectiveNormalization_chart_dimension:true
+ROLECHECK:LinearStudy.chosenProjectiveNormalization_definingIdeal_ne_bot:true
+ROLECHECK:LinearStudy.nativeProjectiveKoszulTerm_isZero_above_rank:true
+ROLECHECK:LinearStudy.nativeProjectiveKoszulTopTermTwistIso:false
+ROLECHECK:LinearStudy.nativeProjectiveKoszulComplexTopTwistIso:false
+ROLECHECK:LinearStudy.nativeProjectiveKoszulGlobalTopFunctional_isCocycle:true
+ROLECHECK:LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative:false
+ROLECHECK:LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative_comp_mk₀:true
+ROLECHECK:LinearStudy.nativeProjectiveKoszulResolutionClass:false
+ROLECHECK:LinearStudy.nativeProjectiveKoszulResolutionClass_comp_mk₀:true
+ROLECHECK:LinearStudy.originalChainStandardTopExtClass:false
+ROLECHECK:LinearStudy.originalChainStandardTopExtClassPushProof:true
+ROLECHECK:LinearStudy.nativeProjectiveKoszulStandardResolutionClass:false
+ROLECHECK:LinearStudy.nativeProjectiveKoszulStandardResolutionClassPushProof:true
+ROLECHECK:LinearStudy.projectivePulledLinearSectionOriginalSetupResolutionProof:true
+ROLECHECK:LinearStudy.projectivePulledWholeCutResolutionTarget:false
+ROLECHECK:LinearStudy.projectivePulledKoszulTopResolutionTarget:false
+ROLECHECK:LinearStudy.projectivePulledKoszulTopResolutionTarget_original_t:true
+ROLECHECK:LinearStudy.projectivePulledOriginalKoszulTopTwistIso:false
+ROLECHECK:LinearStudy.projectivePulledOriginalKoszulTopFunctional_isCocycle:true
+ROLECHECK:LinearStudy.originalChainExplicitStandardTopExtClass:false
+ROLECHECK:LinearStudy.originalChainExplicitStandardTopExtClassPushProof:true
+ROLECHECK:LinearStudy.projectivePulledOriginalChainWholeCutExtClass:false
+ROLECHECK:LinearStudy.originalChainExplicitStandardTopExtClass_comp_mk₀:true
+ROLECHECK:LinearStudy.originalChainExplicitStandardTopExtClassAllPushProof:true
+ROLECHECK:LinearStudy.parameterFamily_enrich_exists_proof:true
+ROLECHECK:LinearStudy.projectivePulledOriginalChainWholeCutExtAllPushProof:true
+ROLECHECK:LinearStudy.projectivePulledOriginalSetupWholeCutExtFamilyProof:true

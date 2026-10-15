@@ -1,0 +1,133 @@
+module
+import all Linear.CochainResolutionExtClass
+import all Linear.CochainResolutionTopExtNaturality
+import all Linear.ChainResolutionAsCochain
+import all Linear.ChainResolutionTopExtClass
+import all Linear.ChosenProjectiveNormalizationDimensions
+import all Linear.NativeKoszulFiniteTopTerm
+import all Linear.NativeKoszulResolutionExtClass
+import all Linear.ChainStandardTopExtClass
+import all Linear.NativeKoszulStandardResolutionClass
+import all Linear.ProjectivePulledOriginalSetupResolution
+import all Linear.ProjectivePulledWholeCutResolutionObjects
+import all Linear.ProjectivePulledOriginalKoszulTopBoundary
+import all Linear.ChainExplicitStandardTopExtClass
+import all Linear.ProjectivePulledOriginalChainWholeCutExtClass
+import all Linear.ChainExplicitTopExtNaturality
+import all Linear.ParameterFamilyEnrichWitness
+import all Linear.ProjectivePulledOriginalChainWholeCutExtNaturality
+import all Linear.ProjectivePulledOriginalSetupWholeCutExtFamily
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.cochainResolutionExtClass
+#print axioms LinearStudy.cochainResolutionExtClass
+#check @LinearStudy.cochainResolutionExtClass_hom
+#print axioms LinearStudy.cochainResolutionExtClass_hom
+#check @LinearStudy.cochainResolutionTopExtClass
+#print axioms LinearStudy.cochainResolutionTopExtClass
+#check @LinearStudy.cochainResolutionTopExtClass_comp_mk₀
+#print axioms LinearStudy.cochainResolutionTopExtClass_comp_mk₀
+#check @LinearStudy.originalChainAsCochain
+#print axioms LinearStudy.originalChainAsCochain
+#check @LinearStudy.originalChainAsCochainXIso
+#print axioms LinearStudy.originalChainAsCochainXIso
+#check @LinearStudy.originalChainAsCochain_d
+#print axioms LinearStudy.originalChainAsCochain_d
+#check @LinearStudy.originalChainAugmentationAsCochain
+#print axioms LinearStudy.originalChainAugmentationAsCochain
+#check @LinearStudy.originalChainAugmentationAsCochain_quasiIso
+#print axioms LinearStudy.originalChainAugmentationAsCochain_quasiIso
+#check @LinearStudy.originalChainTopExtClass
+#print axioms LinearStudy.originalChainTopExtClass
+#check @LinearStudy.originalChainTopExtClass_comp_mk₀
+#print axioms LinearStudy.originalChainTopExtClass_comp_mk₀
+#check @LinearStudy.chosenProjectiveNormalization_cone_dimension
+#print axioms LinearStudy.chosenProjectiveNormalization_cone_dimension
+#check @LinearStudy.chosenProjectiveNormalization_chart_dimension
+#print axioms LinearStudy.chosenProjectiveNormalization_chart_dimension
+#check @LinearStudy.chosenProjectiveNormalization_definingIdeal_ne_bot
+#print axioms LinearStudy.chosenProjectiveNormalization_definingIdeal_ne_bot
+#check @LinearStudy.nativeProjectiveKoszulTerm_isZero_above_rank
+#print axioms LinearStudy.nativeProjectiveKoszulTerm_isZero_above_rank
+#check @LinearStudy.nativeProjectiveKoszulTopTermTwistIso
+#print axioms LinearStudy.nativeProjectiveKoszulTopTermTwistIso
+#check @LinearStudy.nativeProjectiveKoszulComplexTopTwistIso
+#print axioms LinearStudy.nativeProjectiveKoszulComplexTopTwistIso
+#check @LinearStudy.nativeProjectiveKoszulGlobalTopFunctional_isCocycle
+#print axioms LinearStudy.nativeProjectiveKoszulGlobalTopFunctional_isCocycle
+#check @LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative
+#print axioms LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative
+#check @LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative_comp_mk₀
+#print axioms LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative_comp_mk₀
+#check @LinearStudy.nativeProjectiveKoszulResolutionClass
+#print axioms LinearStudy.nativeProjectiveKoszulResolutionClass
+#check @LinearStudy.nativeProjectiveKoszulResolutionClass_comp_mk₀
+#print axioms LinearStudy.nativeProjectiveKoszulResolutionClass_comp_mk₀
+#check @LinearStudy.originalChainStandardTopExtClass
+#print axioms LinearStudy.originalChainStandardTopExtClass
+#check @LinearStudy.originalChainStandardTopExtClassPushProof
+#print axioms LinearStudy.originalChainStandardTopExtClassPushProof
+#check @LinearStudy.nativeProjectiveKoszulStandardResolutionClass
+#print axioms LinearStudy.nativeProjectiveKoszulStandardResolutionClass
+#check @LinearStudy.nativeProjectiveKoszulStandardResolutionClassPushProof
+#print axioms LinearStudy.nativeProjectiveKoszulStandardResolutionClassPushProof
+#check @LinearStudy.projectivePulledLinearSectionOriginalSetupResolutionProof
+#print axioms LinearStudy.projectivePulledLinearSectionOriginalSetupResolutionProof
+#check @LinearStudy.projectivePulledWholeCutResolutionTarget
+#print axioms LinearStudy.projectivePulledWholeCutResolutionTarget
+#check @LinearStudy.projectivePulledKoszulTopResolutionTarget
+#print axioms LinearStudy.projectivePulledKoszulTopResolutionTarget
+#check @LinearStudy.projectivePulledKoszulTopResolutionTarget_original_t
+#print axioms LinearStudy.projectivePulledKoszulTopResolutionTarget_original_t
+#check @LinearStudy.projectivePulledOriginalKoszulTopTwistIso
+#print axioms LinearStudy.projectivePulledOriginalKoszulTopTwistIso
+#check @LinearStudy.projectivePulledOriginalKoszulTopFunctional_isCocycle
+#print axioms LinearStudy.projectivePulledOriginalKoszulTopFunctional_isCocycle
+#check @LinearStudy.originalChainExplicitStandardTopExtClass
+#print axioms LinearStudy.originalChainExplicitStandardTopExtClass
+#check @LinearStudy.originalChainExplicitStandardTopExtClassPushProof
+#print axioms LinearStudy.originalChainExplicitStandardTopExtClassPushProof
+#check @LinearStudy.projectivePulledOriginalChainWholeCutExtClass
+#print axioms LinearStudy.projectivePulledOriginalChainWholeCutExtClass
+#check @LinearStudy.originalChainExplicitStandardTopExtClass_comp_mk₀
+#print axioms LinearStudy.originalChainExplicitStandardTopExtClass_comp_mk₀
+#check @LinearStudy.originalChainExplicitStandardTopExtClassAllPushProof
+#print axioms LinearStudy.originalChainExplicitStandardTopExtClassAllPushProof
+#check @LinearStudy.parameterFamily_enrich_exists_proof
+#print axioms LinearStudy.parameterFamily_enrich_exists_proof
+#check @LinearStudy.projectivePulledOriginalChainWholeCutExtAllPushProof
+#print axioms LinearStudy.projectivePulledOriginalChainWholeCutExtAllPushProof
+#check @LinearStudy.projectivePulledOriginalSetupWholeCutExtFamilyProof
+#print axioms LinearStudy.projectivePulledOriginalSetupWholeCutExtFamilyProof
+#print LinearStudy.cochainResolutionExtClass
+#print LinearStudy.cochainResolutionTopExtClass
+#print LinearStudy.originalChainAsCochain
+#print LinearStudy.originalChainAsCochainXIso
+#print LinearStudy.originalChainAugmentationAsCochain
+#print LinearStudy.originalChainTopExtClass
+#print LinearStudy.nativeProjectiveKoszulTopTermTwistIso
+#print LinearStudy.nativeProjectiveKoszulComplexTopTwistIso
+#print LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative
+#print LinearStudy.nativeProjectiveKoszulResolutionClass
+#print LinearStudy.originalChainStandardTopExtClass
+#print LinearStudy.originalChainStandardTopExtClassPushProof
+#print LinearStudy.nativeProjectiveKoszulStandardResolutionClass
+#print LinearStudy.nativeProjectiveKoszulStandardResolutionClassPushProof
+#print LinearStudy.projectivePulledLinearSectionOriginalSetupResolutionProof
+#print LinearStudy.projectivePulledWholeCutResolutionTarget
+#print LinearStudy.projectivePulledKoszulTopResolutionTarget
+#print LinearStudy.projectivePulledOriginalKoszulTopTwistIso
+#print LinearStudy.originalChainExplicitStandardTopExtClass
+#print LinearStudy.originalChainExplicitStandardTopExtClassPushProof
+#print LinearStudy.projectivePulledOriginalChainWholeCutExtClass
+#print LinearStudy.originalChainExplicitStandardTopExtClassAllPushProof
+#print LinearStudy.projectivePulledOriginalChainWholeCutExtAllPushProof
+#print LinearStudy.projectivePulledOriginalSetupWholeCutExtFamilyProof
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool) := [(`LinearStudy.cochainResolutionExtClass,false),(`LinearStudy.cochainResolutionExtClass_hom,true),(`LinearStudy.cochainResolutionTopExtClass,false),(`LinearStudy.cochainResolutionTopExtClass_comp_mk₀,true),(`LinearStudy.originalChainAsCochain,false),(`LinearStudy.originalChainAsCochainXIso,false),(`LinearStudy.originalChainAsCochain_d,true),(`LinearStudy.originalChainAugmentationAsCochain,false),(`LinearStudy.originalChainAugmentationAsCochain_quasiIso,true),(`LinearStudy.originalChainTopExtClass,false),(`LinearStudy.originalChainTopExtClass_comp_mk₀,true),(`LinearStudy.chosenProjectiveNormalization_cone_dimension,true),(`LinearStudy.chosenProjectiveNormalization_chart_dimension,true),(`LinearStudy.chosenProjectiveNormalization_definingIdeal_ne_bot,true),(`LinearStudy.nativeProjectiveKoszulTerm_isZero_above_rank,true),(`LinearStudy.nativeProjectiveKoszulTopTermTwistIso,false),(`LinearStudy.nativeProjectiveKoszulComplexTopTwistIso,false),(`LinearStudy.nativeProjectiveKoszulGlobalTopFunctional_isCocycle,true),(`LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative,false),(`LinearStudy.nativeProjectiveKoszulResolutionExtRepresentative_comp_mk₀,true),(`LinearStudy.nativeProjectiveKoszulResolutionClass,false),(`LinearStudy.nativeProjectiveKoszulResolutionClass_comp_mk₀,true),(`LinearStudy.originalChainStandardTopExtClass,false),(`LinearStudy.originalChainStandardTopExtClassPushProof,true),(`LinearStudy.nativeProjectiveKoszulStandardResolutionClass,false),(`LinearStudy.nativeProjectiveKoszulStandardResolutionClassPushProof,true),(`LinearStudy.projectivePulledLinearSectionOriginalSetupResolutionProof,true),(`LinearStudy.projectivePulledWholeCutResolutionTarget,false),(`LinearStudy.projectivePulledKoszulTopResolutionTarget,false),(`LinearStudy.projectivePulledKoszulTopResolutionTarget_original_t,true),(`LinearStudy.projectivePulledOriginalKoszulTopTwistIso,false),(`LinearStudy.projectivePulledOriginalKoszulTopFunctional_isCocycle,true),(`LinearStudy.originalChainExplicitStandardTopExtClass,false),(`LinearStudy.originalChainExplicitStandardTopExtClassPushProof,true),(`LinearStudy.projectivePulledOriginalChainWholeCutExtClass,false),(`LinearStudy.originalChainExplicitStandardTopExtClass_comp_mk₀,true),(`LinearStudy.originalChainExplicitStandardTopExtClassAllPushProof,true),(`LinearStudy.parameterFamily_enrich_exists_proof,true),(`LinearStudy.projectivePulledOriginalChainWholeCutExtAllPushProof,true),(`LinearStudy.projectivePulledOriginalSetupWholeCutExtFamilyProof,true)]
+  let env ← Lean.getEnv
+  for (n,want) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"
