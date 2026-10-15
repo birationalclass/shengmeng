@@ -24,8 +24,9 @@ export function drawReferenceIcon(ctx,kind,x,y,size=22){
  }
 }
 // Automatic overlays are deliberately outside the chalk/erase raster.
+export const WATERMARK_FONT_SIZE=54,WATERMARK_OPACITY=.10;
 export function drawClassroomMetadata(ctx,page,index,language,{exercise=false,total=40}={}){
- ctx.save();ctx.fillStyle='#eee9d5';ctx.textBaseline='alphabetic';ctx.font='18px "Microsoft YaHei", "Segoe UI", sans-serif';ctx.globalAlpha=.32;ctx.textAlign='right';ctx.fillText(language==='en'?'Page '+(index+1)+' / '+total:'第 '+(index+1)+' / '+total+' 页',1470,625);
- if(!page.classroom){ctx.restore();return;}ctx.fillText(page.source||'§2.6',1470,28);
- ctx.restore();
+ if(page.period==='break')return;
+ ctx.save();ctx.fillStyle='#eee9d5';ctx.textBaseline='alphabetic';ctx.font=WATERMARK_FONT_SIZE+'px "Microsoft YaHei", "Segoe UI", sans-serif';ctx.globalAlpha=WATERMARK_OPACITY;const left=exercise||page.exerciseBoard;ctx.textAlign=left?'left':'right';ctx.fillText((index+1)+' / '+total,left?84:1470,625);
+ if(page.classroom){ctx.textAlign='right';ctx.fillText(page.source||'§2.6',1470,54);}ctx.restore();
 }

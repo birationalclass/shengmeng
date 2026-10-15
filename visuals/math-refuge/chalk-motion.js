@@ -1,7 +1,8 @@
-export const ERASE_PASSES=14,DRY_SECONDS=12,ERASER_HALF_WIDTH=47,ERASER_HALF_HEIGHT=28;
+import {ERASER_ANGLE,FELT_HALF_WIDTH,FELT_HALF_HEIGHT,feltCoreBounds} from './eraser-contact.js';
+export const ERASE_PASSES=14,DRY_SECONDS=12,ERASER_HALF_WIDTH=FELT_HALF_WIDTH,ERASER_HALF_HEIGHT=FELT_HALF_HEIGHT;
 const clamp=x=>Math.max(0,Math.min(1,x));
 const cache=new WeakMap();
-export const LETTER_SECONDS=.25,ERASER_SPEED=360,ERASER_TRANSFER_SPEED=720;
+export const LETTER_SECONDS=.25,ERASER_SPEED=468,ERASER_TRANSFER_SPEED=936;
 export function rowReveal(progress,row,count){return clamp(progress*count-row);}
 // Sample the displayed ink, not a reconstructed handwriting stroke order.
 export function inkGuides(imageData,rows){
@@ -95,12 +96,11 @@ export function rasterStrokeReveal(rows,progress,row,guides){
 // Follow actual horizontal ink bands; never merge different text lines into
 // one full-board rectangle. A real raster takes precedence over stroke boxes.
 export function erasingPlan(imageData,rows=[]){
- const width=imageData?.width||1536,height=imageData?.height||640,segments=[],occupiedRows=new Uint8Array(height),angle=-.08;
+ const width=imageData?.width||1536,height=imageData?.height||640,segments=[],occupiedRows=new Uint8Array(height),angle=ERASER_ANGLE;
  const inkAt=(x,y)=>imageData?imageData.data[(y*width+x)*4+3]>=16:rows.some(r=>x>=r[0]&&x<r[0]+r[2]&&y>=r[1]&&y<r[1]+r[3]);
  for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(inkAt(x,y)){occupiedRows[y]=1;break;}
- // Inscribed felt rectangle guarantees full coverage even with its small tilt.
- const safeY=Math.floor((ERASER_HALF_HEIGHT-ERASER_HALF_WIDTH*Math.abs(Math.sin(angle)))/Math.cos(angle))-3;
- const safeX=Math.floor((ERASER_HALF_WIDTH-safeY*Math.abs(Math.sin(angle)))/Math.cos(angle))-4;
+ // Every band fits inside the fully opaque core of the actual soft felt mask.
+ const {x:safeX,y:safeY}=feltCoreBounds(angle);
  let previous=null,row=0;
  for(let top=0;top<height;){
   while(top<height&&!occupiedRows[top])top++;if(top>=height)break;
@@ -111,15 +111,15 @@ export function erasingPlan(imageData,rows=[]){
   if(left>=0)runs.push([left,last]);if(row%2)runs.reverse();
   for(const [left,right]of runs){const narrow=right-left<safeX*2,start=narrow?(left+right)/2:left+safeX,end=narrow?start:right-safeX;
    const a=[row%2?end:start,center],b=[row%2?start:end,center];
-   if(previous)segments.push({a:previous,b:a,cost:Math.max(ERASER_SPEED*.08,Math.hypot(a[0]-previous[0],a[1]-previous[1])*ERASER_SPEED/ERASER_TRANSFER_SPEED),contact:false,row});
-   segments.push({a,b,cost:Math.max(ERASER_SPEED*.22,Math.abs(end-start)),contact:true,row});previous=b;
+   if(previous)segments.push({a:previous,b:a,cost:Math.max(360*.08,Math.hypot(a[0]-previous[0],a[1]-previous[1])*ERASER_SPEED/ERASER_TRANSFER_SPEED),contact:false,row});
+   segments.push({a,b,cost:Math.max(360*.22,Math.abs(end-start)),contact:true,row});previous=b;
   }row++;top=bottom+1;
  }
- const result=plan(segments,ERASER_SPEED);result.duration=segments.length?Math.max(6,result.duration):.2;result.angle=angle;result.speed=ERASER_SPEED;return result;
+ const result=plan(segments,ERASER_SPEED);result.duration=segments.length?Math.max(6/1.3,result.duration):.2;result.angle=angle;result.speed=ERASER_SPEED;return result;
 }
 export function eraserPose(progress,width=1536,height=640,path){
  const p=sample(path||erasingPlan(null,[[32,18,width-64,height-36]]),progress);
- return {...p,angle:path?.angle??-.08};
+ return {...p,angle:path?.angle??ERASER_ANGLE};
 }
 export function wetOpacity(age){return .16*Math.pow(clamp(1-age/DRY_SECONDS),1.4);}
 export function chalkLength(wear){return Math.max(.045,.17-Math.max(0,wear));}

@@ -1,3 +1,5 @@
+import {createStudentLottery,drawStudentLottery,lotteryHitTargets,LOTTERY_RECT} from './student-lottery.js';
+import {createCoursePreload} from './course-preload.js';
 import {prepareInlineMath} from './chalk-inline-math.js?v=inline-formula-2';
 import {LessonBudget} from './lesson-budget.js?v=sylow-two-lessons-20261015';
 import {narrationHighlights,measuredHighlight,highlightFrame,createBoardHighlight} from './board-highlight.js?v=smart-voice-9';
@@ -23,6 +25,7 @@ import {inkGuides,inkReveal,strokeReveal,rasterStrokeReveal,writingPose,writingP
 import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
 import {narrationWork,boardWorkFrame,writingSchedule,settledBoardFrame} from './board-work.js?v=unframed-controls-1';
 import {BoardReview} from './board-review.js';
+import {stampFelt} from './eraser-contact.js';
 
 import {chalkCopy,chalkPageText,composeChalkPage} from './chalk-language.js?v=sylow-two-lessons-20261015';
 
@@ -42,7 +45,7 @@ export async function createLecture(scene,renderer,options={}){
   const disabled=Boolean(options.disabled),canAuthor=typeof document.createElementNS==='function'&&typeof window!=='undefined';let writingStyle=options.writingStyle==='marck'?'marck':'refined';const boardMipBias={value:-.45};
   const reports=disabled?[{id:'unavailable',speaker:'',speakerEn:'',topic:'',topicEn:'',url:'',sourceLabel:''}]:options.reports||[...REPORTS,...CLASSROOM_PROGRAMS];
   let activeReport=reports.find(report=>report.id===(options.defaultReport||'hu'))||reports[0];
-  const prepareReport=createReportLoader(),openingReport=disabled?{pages:[{kind:'closing',title:'',source:'',text:'',en:{title:'',source:'',text:''},rows:[]}]}:await prepareReport(activeReport);
+  const studentLottery=createStudentLottery();const assetPreload=createCoursePreload();const prepareReport=createReportLoader(),openingReport=disabled?{pages:[{kind:'closing',title:'',source:'',text:'',en:{title:'',source:'',text:''},rows:[]}]}:await prepareReport(activeReport);
   reportProgress(.25);
   let voiceEnabled=true,voiceTone='original',voiceBookmark=null,highlightEnabled=options.highlight!==false,highlightState=null,highlightManifest=null,highlightSpecs=[];const measuredHighlights=new Map();
   let navigation=openingReport.navigation;
@@ -81,7 +84,7 @@ export async function createLecture(scene,renderer,options={}){
         cache.set(index,sample);pending.delete(index);version++;
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
         if(pixels)guides.set(index,inkGuides(pixels,rows));
-        const wipe=erasingPlan(pixels,rows);erasePlans.set(index,wipe);
+        if(pages[index].exerciseBoard&&pixels){const c=document.createElement('canvas');c.width=W;c.height=H;const cx=c.getContext('2d');cx.putImageData(pixels,0,0);cx.fillStyle='white';cx.fillRect(...LOTTERY_RECT);pixels=cx.getImageData(0,0,W,H);}const wipe=erasingPlan(pixels,rows);erasePlans.set(index,wipe);
         clock.setDurations(index,{write:Math.max(.8,writingPlan(rows,guides.get(index)).duration),erase:Math.max(.4,wipe.duration),hold:pages[index].kind==='cover'?5:8});
         // Retain six on-board pages and the active/next page, evict other SVGs.
         const keep=new Set([...seekPinned,...clock.slots.map(s=>s.page),clock.page,Math.min(clock.page+1,pages.length-1)]);
@@ -155,6 +158,7 @@ export async function createLecture(scene,renderer,options={}){
       stick.userData={column:pair,colorIndex:j};scene.add(stick);
     }
   }
+  const lotteryTargets=lotteryHitTargets(THREE,boards,W,H,BOARD_W,BOARD_H);
   function voiceReport(report){const variant=report.narration?.voices?.find(v=>v.id===voiceTone);return variant?{...report,narration:{...report.narration,manifest:variant.manifest}}:report;}
   const highlighter=createBoardHighlight(THREE,{width:BOARD_W,height:BOARD_H});
   const voice=createReportVoice(),unbindVoiceFocus=bindVoiceFocusPause(voice);const voicePanels=Array.from({length:3},(_,column)=>{const panel=createBoardVoicePanel(THREE,scene);panel.setColumn(column);return panel;});
@@ -234,6 +238,7 @@ export async function createLecture(scene,renderer,options={}){
   // Empty classrooms retain their board meshes but allocate no full-size ink buffers.
   const wipeCanvas=document.createElement('canvas');wipeCanvas.width=1;wipeCanvas.height=1;
   const wipeCtx=wipeCanvas.getContext('2d');let wipeSamples=0;
+  const erasedGrain=document.createElement('canvas');erasedGrain.width=erasedGrain.height=1;const erasedGrainCtx=erasedGrain.getContext('2d');
   function resetWipe(){wipeCanvas.width=hasSelection?W*pixelScale:1;wipeCanvas.height=hasSelection?H*pixelScale:1;wipeCtx.setTransform?.(pixelScale,0,0,pixelScale,0,0);wipeSamples=0;}
   function inkCanvas(){const c=document.createElement('canvas');c.width=W*pixelScale;c.height=H*pixelScale;const ctx=c.getContext('2d');ctx.setTransform?.(pixelScale,0,0,pixelScale,0,0);return [c,ctx];}
   function ensureInk(board){
@@ -268,12 +273,13 @@ export async function createLecture(scene,renderer,options={}){
     ensureInk(board);const ctx=board.ctx;
     const erasing=index===clock.active&&clock.phase==='erase'&&clock.progress>0;
     const wet=board.wet,wetAge=wet?effectTime-wet.started:Infinity;
-    const wetKey=wet&&wet.progress>0&&wetAge<wet.duration+DRY_SECONDS?(Math.floor(effectTime*12)+':'+wet.progress.toFixed(3)):'';
+    const wetKey=''; // A dry felt eraser leaves no dark water/roughness stamps.
     const physical=pages[slot.page]?.exerciseBoard;
     const activity=physical?null:currentExercise(slot.page);
     const automatic=physical&&voice.state.activity?.page===slot.page?voice.state.activity:null;
     const choice=undefined;
-    const activityKey=automatic?Math.ceil(automatic.remaining)+':'+voice.state.phase:'';
+    const lottery=physical?studentLottery.view(activeReport.id+':'+slot.page,{auto:slot.page===clock.page&&voice.state.activity?.activityType==='exercise',animate:!erasing&&slot.page===clock.page}):null;
+    const activityKey=(lottery?.key||'')+':'+(pages[slot.page].period==='break'?Math.floor(voice.state.time)+':'+voice.state.phase:automatic?Math.ceil(automatic.remaining)+':'+voice.state.phase:'');
     const key=`${omittedProofPages.size}:${activityKey}:${slot.page}:${slot.progress}:${erasing?clock.progress:''}:${cache.has(slot.page)}:${wetKey}`;
     if(!preparing&&(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0))return;
     if(board.last===key)return;board.last=key;
@@ -291,24 +297,25 @@ export async function createLecture(scene,renderer,options={}){
       });
       if(language!=='zh')ctx.drawImage(dust,0,0,W,H);
     }
+      if(lottery&&image)drawStudentLottery(ctx,lottery,language);
       if(erasing&&image){
         const wipePlan=wet?.plan||erasePlans.get(slot.page),samples=Math.max(700,Math.ceil(wipePlan.total/2)),end=Math.floor(clock.progress*samples);
         for(let i=wipeSamples;i<=end;i++){
           const p=eraserPose(i/samples,W,H,wipePlan);if(!p.contact)continue;
-          wipeCtx.save();wipeCtx.translate(p.x,p.y);wipeCtx.rotate(p.angle);wipeCtx.beginPath();wipeCtx.rect(-EW,-EH,EW*2,EH*2);wipeCtx.clip();wipeCtx.rotate(-p.angle);wipeCtx.translate(-p.x,-p.y);wipeCtx.drawImage(grain,0,0,W,H);wipeCtx.restore();
+          stampFelt(wipeCtx,p);
         }
-        wipeSamples=end+1;ctx.drawImage(wipeCanvas,0,0,W,H);
+        wipeSamples=end+1;
+        if(erasedGrain.width!==grain.width||erasedGrain.height!==grain.height){erasedGrain.width=grain.width;erasedGrain.height=grain.height;}
+        erasedGrainCtx.globalCompositeOperation='source-over';erasedGrainCtx.clearRect(0,0,erasedGrain.width,erasedGrain.height);erasedGrainCtx.drawImage(grain,0,0);erasedGrainCtx.globalCompositeOperation='destination-in';erasedGrainCtx.drawImage(wipeCanvas,0,0);ctx.drawImage(erasedGrain,0,0,W,H);
       }
     if(omittedProofPages.size&&slot.page===pages.length-1){ctx.save();ctx.font='32px '+SCREEN_FONT;ctx.fillStyle='#9bc9df';ctx.textAlign='center';ctx.fillText(language==='zh'?'第三定理证明略过；下一课使用其结论。':'The third proof was omitted; its conclusions are used in the next class.',W/2,475,1390);ctx.restore();}
-    if(image)drawClassroomMetadata(ctx,pages[slot.page],slot.page,language,{exercise:physical||Boolean(activity),total:pages.length});
-    if(physical&&slot.page===clock.page){const b=voice.manifest?.boards.find(b=>b.page===slot.page),a=voice.manifest?.chapters.find(c=>c.page===slot.page&&c.activityType==='exercise');ctx.save();ctx.font='26px '+SCREEN_FONT;ctx.fillStyle='#e4cf9c';const thinking=voice.state.activity?.activityType==='exercise'&&voice.state.activity.page===slot.page;const text=thinking?classroomCountdown(voice.state.activity.remaining,voice.state.phase==='paused',language):a&&voice.state.time>=a.start+a.duration?(language==='en'?'Solution':'讲评'):'';if(text)ctx.fillText(text,88,598);ctx.restore();exerciseFrames.set(slot.page,{physical:true,page:slot.page,lines:pages[slot.page].exerciseLines.length+1,feedback:!!a&&voice.state.time>=a.start+a.duration,thinkingSeconds:a?.duration,countdown:text});}
+    if(image&&pages[slot.page].period!=='break')drawClassroomMetadata(ctx,pages[slot.page],slot.page,language,{exercise:physical||Boolean(activity),total:pages.length});
+    if(image&&pages[slot.page].period==='break'){const b=voice.manifest?.boards.find(b=>b.page===slot.page),remaining=Math.max(0,Math.ceil((b?.end??300)-(b?voice.state.time:0))),label=Math.floor(remaining/60)+':'+String(remaining%60).padStart(2,'0');ctx.save();ctx.font='86px '+SCREEN_MONO;ctx.textAlign='center';ctx.fillStyle='#eee9d5';ctx.fillText(label,W/2,390);ctx.restore();}
+    if(physical&&slot.page===clock.page){const b=voice.manifest?.boards.find(b=>b.page===slot.page),a=voice.manifest?.chapters.find(c=>c.page===slot.page&&c.activityType==='exercise'),thinking=voice.state.activity?.activityType==='exercise'&&voice.state.activity.page===slot.page;let text='';if(thinking){const seconds=Math.max(0,Math.ceil(voice.state.activity.remaining));text=Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');const questionBottom=Math.max(200,...(pageRows.get(slot.page)||[]).filter(r=>r.mainLine<=pages[slot.page].questionLineCount).map(r=>r[1]+r[3])),y=Math.min(H-70,questionBottom+110);ctx.save();ctx.font='76px '+SCREEN_MONO;ctx.textAlign='center';ctx.fillStyle=voice.state.phase==='paused'?'#c8d9d9':'#d4edf0';ctx.fillText(text,W/2,y);ctx.restore();}exerciseFrames.set(slot.page,{physical:true,page:slot.page,lines:pages[slot.page].exerciseLines.length+1,feedback:!!a&&voice.state.time>=a.start+a.duration,thinkingSeconds:a?.duration,countdown:text,countdownCentered:true});}
+
 
     const r=board.roughCtx,roughChanged=board.roughKey!==wetKey;
     if(roughChanged){r.fillStyle='white';r.fillRect(0,0,W/4,H/4);}
-    if(wetKey)for(let i=0;i<=Math.floor(wet.progress*420);i++){
-      const p=eraserPose(i/420,W,H,wet.plan),age=effectTime-wet.started-i/420*wet.duration,opacity=wetOpacity(Math.max(0,age));if(!p.contact||opacity<=0)continue;
-      for(const [target,scale] of (roughChanged?[[ctx,1],[r,.25]]:[[ctx,1]])){target.save();target.translate(p.x*scale,p.y*scale);target.rotate(p.angle);target.fillStyle=scale===1?`rgba(4,24,22,${opacity*.32})`:`rgba(0,0,0,${opacity*.6})`;target.fillRect(-EW*scale,-EH*scale,EW*2*scale,EH*2*scale);target.restore();}
-    }
     if(roughChanged){board.roughKey=wetKey;board.roughTexture.needsUpdate=true;}
     board.texture.needsUpdate=true;
   }
@@ -378,6 +385,7 @@ export async function createLecture(scene,renderer,options={}){
     const withVoice=hasSelection||Boolean(pendingReport);
     for(const button of consoleButtons){const position=reportControlLayout(button.userData.column,withVoice).language;button.position.set(position.x,position.y,position.z);button.updateMatrix();button.visible=renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');}
     pageControls.forEach(panel=>panel.update({previousEnabled:hasSelection&&clock.page>clock.startAt,nextEnabled:hasSelection&&clock.page<clock.stopAt,activity:voice.state.activity,visible:renderActive&&!hydrating&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report')}));
+    for(const target of lotteryTargets){const page=clock.slots[target.userData.index].page;target.visible=hasSelection&&page>=0&&pages[page]?.exerciseBoard&&target.userData.index===clock.active&&clock.phase!=='erase'&&renderActive&&!stored;}
     cameraPanels.forEach(panel=>panel.update(autoCamera,renderActive&&!hydrating&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'),withVoice));
     voicePanels.forEach(panel=>updateTextSheen(THREE,panel.mesh,dt,reduced));
     if(storageRig){
@@ -422,7 +430,7 @@ export async function createLecture(scene,renderer,options={}){
           else if(boardWork.kind==='review')boardWork.elapsed=boardWork.duration-boardReview.remaining(boardWork.page);
           else if(voice.transportPlaying)boardWork.elapsed+=dt*writingSpeed;
           frame=boardWorkFrame(boardWork);
-          if(boardWork.elapsed>=boardWork.duration&&(boardWork.kind!=='erase'||eraser.userData.state==='resting')){if(boardWork.kind==='write')boardReview.mark(boardWork.page);completedWork.add(boardWork.key);boardWork.resolve();boardWork=null;}
+          if(boardWork.elapsed>=boardWork.duration&&(boardWork.kind!=='erase'||eraser.userData.state==='resting')){if(boardWork.kind==='write'&&boardWork.end>=boardWork.total)boardReview.mark(boardWork.page);completedWork.add(boardWork.key);boardWork.resolve();boardWork=null;}
         }
         if(voice.state.phase==='playing'||voice.boardHeld)previousNarrationTime=voice.state.time;
         if(!boardWork&&!proofJumping&&voice.transportPlaying&&lessonBudget.shouldSkip(frame,voice.manifest.boards.filter(b=>b.optionalProof))){void omitOptionalProof().catch(error=>{loadingError=error;});return;}
@@ -637,7 +645,7 @@ export async function createLecture(scene,renderer,options={}){
         hydrating=false;loadingError=null;update(0,openingDemo?.phase!=='writing');
       }catch(error){if(epoch===renderEpoch){loadingError=error;hydrating=false;}}
     },
-    get boardCanvases(){return boards.map(b=>b.canvas);},get timeReadout(){return timePanels[0].text;},get toolState(){return {chalk:chalk.position.toArray(),chalkColor:chalk.userData.inkColor,chalkMaterial:chalk.material.color.getHexString(),chalkEmissive:chalk.material.emissive.getHexString(),eraser:eraser.position.toArray(),pickup:eraserPickup?.elapsed??null,returning:eraserReturn?.elapsed??null,workElapsed:boardWork?.elapsed??null,eraserState:eraser.userData.state,eraseSeconds:eraseRun?.elapsed??null,eraseDuration:eraseRun?.duration??null,lifts:[...mix],transportPlaying:voice.transportPlaying};},get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get teachingClock(){return {period:lessonBudget.period,elapsed:lessonBudget.elapsed,thirdProof:lessonBudget.decision};},get report(){return activeReport;},consoleButtons,reportButtons,get hoverTargets(){return disabled?[]:[...touchButtons.filter(b=>!screenHub||!reportButtons.includes(b)||(screenHub.state.power&&screenHub.state.mode==='report')),...voicePanels.filter(panel=>panel.mesh.visible).map(panel=>panel.mesh),...(screenHub?.targets||[])];},setConsoleState,
+    drawStudent(){if(!pages[clock.page]?.exerciseBoard)return false;if(!studentLottery.count)return studentLottery.chooseFile();return studentLottery.spin(activeReport.id+':'+clock.page);},importStudentRoster:()=>studentLottery.chooseFile(),setStudentRoster:text=>studentLottery.importRoster(text),get lotteryState(){return studentLottery.view(activeReport.id+':'+clock.page);},get preloadState(){return{boards:assetPreload.state,audio:voice.preloadState};},get boardBackground(){return grain;},get boardCanvases(){return boards.map(b=>b.canvas);},get timeReadout(){return timePanels[0].text;},get toolState(){return {chalk:chalk.position.toArray(),chalkColor:chalk.userData.inkColor,chalkMaterial:chalk.material.color.getHexString(),chalkEmissive:chalk.material.emissive.getHexString(),eraser:eraser.position.toArray(),eraserRotation:eraser.rotation.toArray(),pickup:eraserPickup?.elapsed??null,returning:eraserReturn?.elapsed??null,workElapsed:boardWork?.elapsed??null,eraserState:eraser.userData.state,eraseSeconds:eraseRun?.elapsed??null,eraseDuration:eraseRun?.duration??null,lifts:[...mix],transportPlaying:voice.transportPlaying};},get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get teachingClock(){return {period:lessonBudget.period,elapsed:lessonBudget.elapsed,thirdProof:lessonBudget.decision};},get report(){return activeReport;},consoleButtons,reportButtons,get hoverTargets(){return disabled?[]:[...lotteryTargets,...touchButtons.filter(b=>!screenHub||!reportButtons.includes(b)||(screenHub.state.power&&screenHub.state.mode==='report')),...voicePanels.filter(panel=>panel.mesh.visible).map(panel=>panel.mesh),...(screenHub?.targets||[])];},setConsoleState,
     get highlightEnabled(){return highlightEnabled;},setHighlight(value){highlightEnabled=Boolean(value);if(!highlightEnabled){highlighter.hide();highlightState=null;}},get highlightTargets(){return measuredHighlights.get(clock.page)?.cues.map(c=>({id:c.id,row:c.row,side:c.side,begin:c.begin,duration:c.duration,rect:c.rect,visibleAt:c.visibleAt}))||[];},get highlightState(){return highlightState&&{page:highlightState.page,row:highlightState.row,side:highlightState.side,alpha:highlightState.alpha,age:highlightState.age};},
     setVoiceRate(value){return voice.setRate(value);},get voiceRate(){return voice.state.rate;},get voiceState(){return {...voice.state};},get voiceTone(){return voiceTone;},get voiceEnabled(){return voiceEnabled;},get voiceManifest(){return voice.manifest;},async voiceSeek(time){lessonBudget.configure(voice.manifest);lessonBudget.seek(time,voice.manifest?.boards.filter(b=>b.optionalProof)||[]);omittedProofPages.clear();boards.forEach(b=>b.last='');voice.pause();cancelBoardWork();highlighter.hide();highlightState=null;return voice.seek(time);},skipClassroomActivity:()=>stepExercise(1)?Promise.resolve(true):voice.skipActivity(),get exerciseFrame(){return exerciseFrames.get(clock.page)||null;},async toggleVoice(){if(!activeReport.narration||!voiceEnabled){playing=hasSelection&&!playing;return true;}return voice.toggle();},
     async setVoiceTone(tone){
@@ -653,7 +661,7 @@ export async function createLecture(scene,renderer,options={}){
     reportFocus:()=>scene.localToWorld(new THREE.Vector3(reportX+1.1,2.45,-11.34)),
     async setReport(id,{autoplay=false,loadVoice=true}={}){
       if(disabled)return false;
-      openingDemo=null;voiceBookmark=null;
+      openingDemo=null;voiceBookmark=null;assetPreload.cancel();
       const next=reports.find(r=>r.id===id);if(!next)throw new Error('未知报告');if(voiceTone!=='off'&&voiceTone!=='original'&&!next.narration?.voices?.some(v=>v.id===voiceTone))voiceTone='original';screenHub?.report();
       voice.setContextActive(false);
       if(storageRig){stored=false;storageRig.visible=true;updateStorageLabel();}
@@ -661,14 +669,14 @@ export async function createLecture(scene,renderer,options={}){
       try{
         const manifest=await prepareReport(next);if(request!==reportRequest)return false;
         // Keep the current talk intact until its replacement cover is available.
-        generation++;lessonBudget.select(next.id);omittedProofPages.clear();navigation=manifest.navigation;pages=manifest.pages;activeReport=next;programScreen?.select(next);clock=new LectureClock(pages.length);estimateDurations();hasSelection=true;if(navigation?.sections)clock.stopAt=navigation.sections[0].end;loadingError=null;
+        generation++;lessonBudget.select(next.id);omittedProofPages.clear();navigation=manifest.navigation;pages=manifest.pages;activeReport=next;studentLottery.setCourse(next.courseId||next.id,next.id);programScreen?.select(next);clock=new LectureClock(pages.length);estimateDurations();hasSelection=true;if(navigation?.sections)clock.stopAt=navigation.sections[0].end;loadingError=null;
         clearPageCache();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();resetWipe();
         boards.forEach(b=>{b.last='';b.wet=null;});targets.fill(0);eraserReturn=null;eraserPickup=null;eraser.visible=false;eraser.userData.state='parked';
         parkedErasers.forEach(e=>e.visible=true);chalk.visible=false;previousTip=null;lastWritePage=-1;wear=0;particles.forEach(p=>p.life=0);particlePositions.fill(-10000);dustGeometry.attributes.position.needsUpdate=true;
         playing=!next.narration||!voiceEnabled;version++;await load(0,manifest.cover);if(next.kind==='classroom'&&loadVoice&&voiceEnabled){await voicePreparation;if(voice.state.phase==='error')throw Error(voice.state.error);}
         if(request!==reportRequest)return false;
         // A new report starts on a clean board; there is no previous page to lift or erase.
-        clock.startWrite();boards.forEach((_,i)=>draw(i));return true;
+        clock.startWrite();boards.forEach((_,i)=>draw(i));if(next.kind==='classroom'){void assetPreload.start(pages);if(loadVoice&&voiceEnabled)void voicePreparation.then(()=>{if(request===reportRequest)return voice.prefetchAll();});}return true;
       }catch(error){if(request!==reportRequest)return false;void voice.select(null);throw error;}
       finally{if(request===reportRequest){pendingReport=null;setReportState();}}
     },
@@ -698,7 +706,7 @@ export async function createLecture(scene,renderer,options={}){
     select,stepExercise,step(delta){if(stepExercise(delta))return Promise.resolve(true);return seek((requestedPage??clock.page)+delta,{preservePlayback:true});},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:(BOARD_LAYOUT.low+BOARD_LAYOUT.high)/2,-10.4+BOARD_MOUNT_OFFSET)),
-    dispose(){unbindVoiceFocus();voice.dispose();cancelBoardWork();pageControls.forEach(panel=>panel.dispose());highlighter.dispose();voicePanels.forEach(panel=>panel.dispose());timePanels.forEach(panel=>panel.dispose());cameraPanels.forEach(panel=>panel.dispose());storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();programScreen?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...(programScreen?[]:reportButtons)].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.previousCanvas){board.previousInk.value.dispose();board.previousCanvas.width=1;board.previousCanvas.height=1;}if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
+    dispose(){assetPreload.cancel();unbindVoiceFocus();voice.dispose();cancelBoardWork();pageControls.forEach(panel=>panel.dispose());highlighter.dispose();voicePanels.forEach(panel=>panel.dispose());timePanels.forEach(panel=>panel.dispose());cameraPanels.forEach(panel=>panel.dispose());storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();programScreen?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...(programScreen?[]:reportButtons)].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.previousCanvas){board.previousInk.value.dispose();board.previousCanvas.width=1;board.previousCanvas.height=1;}if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,erasedGrain,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
   };
 }
 import {drawPulley} from './pulley-icon.js?v=1';

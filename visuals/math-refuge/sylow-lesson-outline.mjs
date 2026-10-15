@@ -103,7 +103,7 @@ b('同余条件的群作用解释','The action behind the congruence',[
 t('固定 P，让 P 共轭作用于全部西罗子群','Fix P and let P act on all Sylow subgroups.','这一板作为定理之后的解释，说明模 P 余一从哪里来。我们已经有西罗子群，现在把作用群缩小为固定的那个西罗 P 子群。'),
 f(String.raw`|P\cdot Q|=[P:N_P(Q)]`,'轨道稳定子定理说明，每个轨道的大小都整除 P 的幂，所以或者是一，或者是 P 的正整数次幂。非单点轨道的大小都被 P 整除。'),
 t('固定点 Q 表示 P 正规化 Q','A fixed Q is normalized by P.','若丘是固定点，P 里的每个元素都保持丘，所以 P 包含在丘的正规化子中。这时两个子群的乘积确实构成子群。'),
-f(String.raw`PQ\le G,\quad|PQ|=\frac{|P||Q|}{|P\cap Q|}\Longrightarrow PQ=Q=P`,'这个乘积子群的阶仍为 P 幂；丘的阶已经是群阶里允许的最大 P 幂，因此乘积不能比丘大。于是 P 包含在丘中，同阶又使两者相等。'),
+f(String.raw`PQ\le G,\quad|PQ|=\frac{|P|\cdot |Q|}{|P\cap Q|}\Longrightarrow PQ=Q=P`,'这个乘积子群的阶仍为 P 幂；丘的阶已经是群阶里允许的最大 P 幂，因此乘积不能比丘大。于是 P 包含在丘中，同阶又使两者相等。'),
 f(String.raw`\#\text{fixed points}=1\Longrightarrow n_p\equiv1\pmod p`,'所以固定点只有 P 自己。把整个集合拆成轨道，除去这个单点，其余轨道大小都被 P 整除，子群总数就模 P 余一。')],
 '说明为何“P 正规化 Q”保证 PQ 是子群，并复述唯一固定点的理由。','Q 在 PQ 中正规；乘积闭合且逆封闭。PQ 为 p 群且含西罗 Q，故等于 Q；于是 P=Q。'),
 b('唯一性与正规性','Uniqueness and normality',[

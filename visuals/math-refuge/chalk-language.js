@@ -1,3 +1,4 @@
+import {orbitDiagram} from './orbit-diagram.js';
 import {inlineInk,drawInlineInk} from './chalk-inline-math.js?v=inline-formula-2';
 import {chalkInlineRuns,mathFont} from './chalk-typography.js?v=inline-root-1';
 import {drawChalkAnnotation} from './chalk-annotations.js?v=report-line-sync-6';
@@ -10,7 +11,7 @@ export function chalkCopy(page,language='zh',{board=false}={}){
 }
 export function chalkPageText(page,language='zh'){
  const copy=chalkCopy(page,language,{board:true}),pick=value=>Array.isArray(value)?value[language==='en'?1:0]:value;
- return [copy.source,copy.title,copy.author,page.presenter,page.assistant,page.assistantEn,copy.text,...(page.exerciseLines||[]).map(l=>language==='en'?l.enText:l.text),pick(page.topic),pick(page.subtitle),...(page.boardLines||[]).map(l=>l.tex||(language==='en'?l.enText:l.text)),...(page.flowLabels||[]).map(l=>language==='en'?l.enText:l.text),JSON.stringify(page.annotation||{}),JSON.stringify(page.diagram||{})].filter(Boolean).join('\n');
+ return [copy.source,copy.title,copy.author,page.presenter,page.assistant,page.assistantEn,copy.text,...(page.exerciseLines||[]).map(l=>language==='en'?l.enText:l.text),pick(page.topic),pick(page.subtitle),...(page.boardLines||[]).map(l=>l.tex||(language==='en'?l.enText:l.text)),...(page.flowLabels||[]).map(l=>language==='en'?l.enText:l.text),JSON.stringify(page.annotation||{}),JSON.stringify(page.diagram||{}),JSON.stringify(page.arrowReasons||{})].filter(Boolean).join('\n');
 }
 
 export function wrapChalkText(ctx,text,width){
@@ -46,6 +47,7 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
   if(page.kind==='closing'){let size=124;while(measure(copy.title,size)>1368&&size>24)size--;textRow(copy.title,(1536-measure(copy.title,size))/2,360,size,'#e4cf9c',false,page.emphasis?.[0]);return rows;}
   if(page.kind==='cover'){
     const center=(text,y,size,color='#eee9d5')=>{while(measure(text,size)>1368&&size>24)size--;textRow(text,(1536-measure(text,size))/2,y,size,color);};
+    if(page.period==='break'){center(language==='en'?'Break':'课间休息',220,106,'#e4cf9c');return rows;}
     if(page.coverType==='section'){center(copy.title,190,106,'#e4cf9c');center(language==='en'?page.presenterEn:page.presenter,320,48);center(language==='en'?page.assistantEn:page.assistant,405,48);center(copy.text,535,38,'#e4cf9c');return rows;}
     let titleSize=106;while(measure(copy.title,titleSize)>1368&&titleSize>64)titleSize--;
     let lines=wrapChalkText({measureText:t=>({width:measure(t,titleSize)})},copy.title,1368);
@@ -61,7 +63,12 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
   if(!page.hideHeading&&!options.hideHeading){const icon=page.classroom&&page.reference?.kind;ctx.fillStyle='#e4cf9c';if(icon)drawReferenceIcon(ctx,icon,84,38,36);textRow(page.classroom?classroomHeading(page,language,copy.title):copy.source+'  '+copy.title,icon?136:84,76,44,'#e4cf9c',true);rows.at(-1).mainLine=0;if(icon){const r=rows.at(-1),right=r[0]+r[2],bottom=r[1]+r[3];r[0]=80;r[1]=Math.min(36,r[1]);r[2]=right-80;r[3]=Math.max(76,bottom)-r[1];}}
   if(page.exerciseBoard||page.statementBoard||page.expositionBoard){
     if(page.exerciseLines.length>5)throw Error('Exercise needs another physical board: '+page.title);
-    page.exerciseLines.forEach((line,i)=>{if(line.tex){ctx.drawImage(formula,88,158+i*83-60,1360,142);rows.push(Object.assign([88,158+i*83-60,1360,142],{mainLine:i+1,formulaRow:0}));return;}const text=language==='en'?line.enText:line.text,mark=page.emphasis?.[i+1];if(measure(text,38)>1328)throw Error('Exercise line overflows: '+text);textRow(text,88,158+i*83,38,CHALK_SEMANTIC_COLORS[mark?.tone]||'#eee9d5',false,mark);rows.at(-1).mainLine=i+1;});
+    page.exerciseLines.forEach((line,i)=>{if(line.tex){ctx.drawImage(formula,88,158+i*83-60,1360,142);rows.push(Object.assign([88,158+i*83-60,1360,142],{mainLine:i+1,formulaRow:0}));return;}const text=language==='en'?line.enText:line.text,mark=page.emphasis?.[i+1];let size=38;const width=page.orbitVisualization?865:1328;while(measure(text,size)>width&&size>28)size--;if(measure(text,size)>width)throw Error('Exercise line overflows: '+text);textRow(text,88,158+i*83,size,CHALK_SEMANTIC_COLORS[mark?.tone]||'#eee9d5',false,mark);rows.at(-1).mainLine=i+1;
+      if(page.orbitVisualization&&i===1){orbitDiagram(ctx,{
+       stroke(points,color,width){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();points.forEach(([x,y],j)=>j?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.restore();const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);rows.push(Object.assign([Math.min(...xs)-width,Math.min(...ys)-width,Math.max(...xs)-Math.min(...xs)+2*width,Math.max(...ys)-Math.min(...ys)+2*width],{strokePath:points,strokeWidth:width,chalkColor:color,mainLine:2,auxiliaryDiagram:true}));},
+       label(text,x,y,size,color){textRow(text,x,y,size,color);rows.at(-1).mainLine=2;rows.at(-1).auxiliaryDiagram=true;}
+      });}
+    });
     return rows;
   }
   if(!page.diagram&&(page.layout==='flow'||!page.annotation)){
@@ -77,6 +84,9 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
         }
         ctx.drawImage(formula,...source,...item.rect);
         rows.push(Object.assign([...item.rect],{formulaRow:item.index,mainLine:item.mainLine}));
+        const reason=page.arrowReasons?.[item.mainLine];
+        if(reason){const arrow=formula.authoredOperations?.find(o=>['⇒','⟹','→'].includes(o.symbol)&&o.rect[0]+o.rect[2]/2>=source[0]&&o.rect[0]+o.rect[2]/2<=source[0]+source[2]&&o.rect[1]+o.rect[3]/2>=source[1]&&o.rect[1]+o.rect[3]/2<=source[1]+source[3]);if(!arrow)throw Error('Reason needs a visible implication arrow: '+page.title);const a=arrow.symbolRect||arrow.rect,x=item.rect[0]+(a[0]+a[2]/2-source[0])/source[2]*item.rect[2],label=reason[language],size=24;textRow(label,x-measure(label,size)/2,item.rect[1]+2,size,'#eee9d5');rows.at(-1).mainLine=item.mainLine;rows.at(-1).proofReason=true;}
+
         if(item.index===cues.afterRow)rows.push(...cues.map(c=>Object.assign(c,{mainLine:item.mainLine})));
       }else{
         textRow(item.text,item.x,item.y,item.size,CHALK_SEMANTIC_COLORS[page.emphasis?.[item.mainLine]?.tone]||'#eee9d5',false,page.emphasis?.[item.mainLine]);

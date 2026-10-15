@@ -9,7 +9,7 @@ test('semantic targets exist exactly in the intended line, and order-21 count re
 test('automatic metadata has no chalk icon or extension label and retains section/folio while erasing',()=>{
  const texts=[],ctx={save(){},restore(){},fillText(t,x,y){texts.push({t,x,y});}};
  drawClassroomMetadata(ctx,{classroom:true,statementOnly:true,reference:{kind:'textbook'},source:'§2.6'},20,'zh',{total:44});
- assert(texts.some(p=>p.t==='§2.6'));assert(texts.some(p=>p.t==='第 21 / 44 页'));assert(texts.every(p=>p.y===28||p.y===625));
+ assert(texts.some(p=>p.t==='§2.6'));assert(texts.some(p=>p.t==='21 / 44'));assert(texts.every(p=>p.y===54||p.y===625));
  texts.length=0;drawClassroomMetadata(ctx,{classroom:true,reference:{kind:'extension',label:['扩展','Extension']}},27,'zh',{total:44});assert(!texts.some(p=>p.t.includes('扩展')));
 });
 test('book and puzzle are the original course-homepage paths',()=>{
