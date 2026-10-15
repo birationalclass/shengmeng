@@ -1,0 +1,357 @@
+@LinearStudy.schemeModuleOpenRestrictionCokernelIso : {X Y : AlgebraicGeometry.Scheme} →
+  (j : X ⟶ Y) →
+    [inst : AlgebraicGeometry.IsOpenImmersion j] →
+      {M N : Y.Modules} →
+        (d : M ⟶ N) →
+          (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj (CategoryTheory.Limits.cokernel d) ≅
+            CategoryTheory.Limits.cokernel ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d)
+'LinearStudy.schemeModuleOpenRestrictionCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOpenRestrictionCokernelIso_projection : ∀ {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] {M N : Y.Modules} (d : M ⟶ N),
+  CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map (CategoryTheory.Limits.cokernel.π d))
+      (LinearStudy.schemeModuleOpenRestrictionCokernelIso j d).hom =
+    CategoryTheory.Limits.cokernel.π ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d)
+'LinearStudy.schemeModuleOpenRestrictionCokernelIso_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveKoszulActualRestrictionCokernelIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (R : CommRingCat) →
+              (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) →
+                [inst_4 : AlgebraicGeometry.IsOpenImmersion j] →
+                  {r q : ℕ} →
+                    (H : Fin r → S) →
+                      (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                        (k : ℤ) →
+                          (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+                              (CategoryTheory.Limits.cokernel
+                                ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0)) ≅
+                            CategoryTheory.Limits.cokernel
+                              ((LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k).d 1 0)
+'LinearStudy.nativeProjectiveKoszulActualRestrictionCokernelIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalChainFirstCokernelIso : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C D : ChainComplex A ℕ) →
+        (C ≅ D) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ CategoryTheory.Limits.cokernel (D.d 1 0))
+'LinearStudy.originalChainFirstCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainFirstCokernelIso_projection : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] (C D : ChainComplex A ℕ) (e : C ≅ D),
+  CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (C.d 1 0))
+      (LinearStudy.originalChainFirstCokernelIso C D e).hom =
+    CategoryTheory.CategoryStruct.comp (e.hom.f 0) (CategoryTheory.Limits.cokernel.π (D.d 1 0))
+'LinearStudy.originalChainFirstCokernelIso_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulFirstCokernelOriginalCutIso : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      CategoryTheory.Limits.cokernel ((LinearStudy.tildeFunctionKoszulComplex R H).d 1 0) ≅
+        (LinearStudy.tildeKoszulPresentation R H).X₃
+'LinearStudy.tildeKoszulFirstCokernelOriginalCutIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulFirstCokernelOriginalCutIso_projection : ∀ (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π ((LinearStudy.tildeFunctionKoszulComplex R H).d 1 0))
+      (LinearStudy.tildeKoszulFirstCokernelOriginalCutIso R H).hom =
+    (LinearStudy.tildeKoszulPresentation R H).g
+'LinearStudy.tildeKoszulFirstCokernelOriginalCutIso_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveKoszulStandardAffineCokernelIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                (ha : a ∈ 𝓑 1) →
+                                  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+                                  let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+                                  have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+                                  CategoryTheory.Limits.cokernel
+                                      ((LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k).d 1 0) ≅
+                                    CategoryTheory.Limits.cokernel ((LinearStudy.tildeFunctionKoszulComplex R h).d 1 0)
+'LinearStudy.nativeProjectiveKoszulStandardAffineCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedChainFirstCokernelPresentationIso : {A : Type u_2} →
+  {B : Type u_4} →
+    [inst : CategoryTheory.Category.{u_1, u_2} A] →
+      [inst_1 : CategoryTheory.Abelian A] →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                [F.PreservesHomology] →
+                  (C : ChainComplex A ℕ) →
+                    (D : ChainComplex B ℕ) →
+                      ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ D) →
+                        (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) →
+                          CategoryTheory.Limits.IsColimit Q → (F.obj (CategoryTheory.Limits.cokernel (C.d 1 0)) ≅ Q.pt)
+'LinearStudy.mappedChainFirstCokernelPresentationIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedChainFirstCokernelPresentationIso_projection : ∀ {A : Type u_2} {B : Type u_4}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A]
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B)
+  [inst_4 : F.Additive] [inst_5 : F.PreservesHomology] (C : ChainComplex A ℕ) (D : ChainComplex B ℕ)
+  (e : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ D) (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0))
+  (hQ : CategoryTheory.Limits.IsColimit Q),
+  CategoryTheory.CategoryStruct.comp (F.map (CategoryTheory.Limits.cokernel.π (C.d 1 0)))
+      (LinearStudy.mappedChainFirstCokernelPresentationIso F C D e Q hQ).hom =
+    CategoryTheory.CategoryStruct.comp (e.hom.f 0) (CategoryTheory.Limits.Cofork.π Q)
+'LinearStudy.mappedChainFirstCokernelPresentationIso_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.tildeKoszulOriginalCutCokernelCofork : (R : CommRingCat) →
+  {r : ℕ} → (H : Fin r → ↑R) → CategoryTheory.Limits.CokernelCofork ((LinearStudy.tildeFunctionKoszulComplex R H).d 1 0)
+'LinearStudy.tildeKoszulOriginalCutCokernelCofork' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulOriginalCutCokernelCofork_point : ∀ (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R),
+  (LinearStudy.tildeKoszulOriginalCutCokernelCofork R H).pt =
+    (AlgebraicGeometry.Scheme.Modules.pushforward
+          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).obj
+      (SheafOfModules.unit (AlgebraicGeometry.Spec ↧(↑R ⧸ Ideal.span (Set.range H))).ringCatSheaf)
+'LinearStudy.tildeKoszulOriginalCutCokernelCofork_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulOriginalCutCokernelCofork_projection : ∀ (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R),
+  CategoryTheory.Limits.Cofork.π (LinearStudy.tildeKoszulOriginalCutCokernelCofork R H) =
+    (LinearStudy.tildeKoszulPresentation R H).g
+'LinearStudy.tildeKoszulOriginalCutCokernelCofork_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulOriginalCutCokernelCoforkIsColimit : (R : CommRingCat) →
+  {r : ℕ} → (H : Fin r → ↑R) → CategoryTheory.Limits.IsColimit (LinearStudy.tildeKoszulOriginalCutCokernelCofork R H)
+'LinearStudy.tildeKoszulOriginalCutCokernelCoforkIsColimit' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulCokernelChartFromPresentationIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                (ha : a ∈ 𝓑 1) →
+                                  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+                                  let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+                                  have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+                                  (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+                                      (CategoryTheory.Limits.cokernel
+                                        ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0)) ≅
+                                    (LinearStudy.tildeKoszulOriginalCutCokernelCofork R h).pt
+'LinearStudy.nativeProjectiveKoszulCokernelChartFromPresentationIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearKoszulCokernelChartOriginalCutIso : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (a : LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) →
+                (ha : a ∈ LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal 1) →
+                  let R := ↧(HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a);
+                  let j := AlgebraicGeometry.Proj.awayι (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a ha ⋯;
+                  have h := fun (i : Fin r) =>
+                    HomogeneousLocalization.Away.mk (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) ha f.degree
+                      (LinearStudy.projectivePulledLinearKoszulForms f V L w i) ⋯;
+                  (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+                      (CategoryTheory.Limits.cokernel
+                        ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0)) ≅
+                    (LinearStudy.tildeKoszulOriginalCutCokernelCofork R h).pt
+'LinearStudy.projectivePulledLinearKoszulCokernelChartOriginalCutIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleOpenRestrictionCokernelIso.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  (j : X ⟶ Y) →
+    [inst : AlgebraicGeometry.IsOpenImmersion j] →
+      {M N : Y.Modules} →
+        (d : M ⟶ N) →
+          (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj (CategoryTheory.Limits.cokernel d) ≅
+            CategoryTheory.Limits.cokernel ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d) :=
+fun {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y) [AlgebraicGeometry.IsOpenImmersion j] {M N : Y.Modules} (d : M ⟶ N) =>
+  CategoryTheory.Limits.PreservesCokernel.iso (AlgebraicGeometry.Scheme.Modules.restrictFunctor j) d
+def LinearStudy.nativeProjectiveKoszulActualRestrictionCokernelIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (R : CommRingCat) →
+              (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) →
+                [inst_4 : AlgebraicGeometry.IsOpenImmersion j] →
+                  {r q : ℕ} →
+                    (H : Fin r → S) →
+                      (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                        (k : ℤ) →
+                          (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+                              (CategoryTheory.Limits.cokernel
+                                ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0)) ≅
+                            CategoryTheory.Limits.cokernel
+                              ((LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k).d 1 0) :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (R : CommRingCat)
+    (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) [AlgebraicGeometry.IsOpenImmersion j] {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) =>
+  LinearStudy.schemeModuleOpenRestrictionCokernelIso j ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0)
+def LinearStudy.originalChainFirstCokernelIso.{v_1, u_1} : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{v_1, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C D : ChainComplex A ℕ) →
+        (C ≅ D) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ CategoryTheory.Limits.cokernel (D.d 1 0)) :=
+fun {A : Type u_1} [CategoryTheory.Category.{v_1, u_1} A] [CategoryTheory.Abelian A] (C D : ChainComplex A ℕ)
+    (e : C ≅ D) =>
+  CategoryTheory.Limits.cokernel.mapIso (C.d 1 0) (D.d 1 0)
+    ((HomologicalComplex.eval A (ComplexShape.down ℕ) 1).mapIso e)
+    ((HomologicalComplex.eval A (ComplexShape.down ℕ) 0).mapIso e) ⋯
+def LinearStudy.tildeKoszulFirstCokernelOriginalCutIso.{u} : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      CategoryTheory.Limits.cokernel ((LinearStudy.tildeFunctionKoszulComplex R H).d 1 0) ≅
+        (LinearStudy.tildeKoszulPresentation R H).X₃ :=
+fun (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) =>
+  (CategoryTheory.Limits.cokernelIsCokernel
+        ((LinearStudy.tildeFunctionKoszulComplex R H).d 1 0)).coconePointUniqueUpToIso
+    ⋯.gIsCokernel
+def LinearStudy.nativeProjectiveKoszulStandardAffineCokernelIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                (ha : a ∈ 𝓑 1) →
+                                  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+                                  let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+                                  have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+                                  CategoryTheory.Limits.cokernel
+                                      ((LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k).d 1 0) ≅
+                                    CategoryTheory.Limits.cokernel
+                                      ((LinearStudy.tildeFunctionKoszulComplex R h).d 1 0) :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [IsNoetherianRing S]
+    {J : Type} (b : J → S) (hb : ∀ (i : J), b i ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1) =>
+  LinearStudy.originalChainFirstCokernelIso
+    (LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 (↧(HomogeneousLocalization.Away 𝓑 a))
+      (AlgebraicGeometry.Proj.awayι 𝓑 a ha LinearStudy.nativeProjectiveKoszulStandardAffineCokernelIso._proof_3) H hH k)
+    (LinearStudy.tildeFunctionKoszulComplex ↧(HomogeneousLocalization.Away 𝓑 a) fun (i : Fin r) =>
+      HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯)
+    (LinearStudy.nativeProjectiveKoszulNamedTildeAffineIso 𝓑 b hb hgen H hH k a ha)
+def LinearStudy.mappedChainFirstCokernelPresentationIso.{v_1, u_1, v_2, u_2} : {A : Type u_1} →
+  {B : Type u_2} →
+    [inst : CategoryTheory.Category.{v_1, u_1} A] →
+      [inst_1 : CategoryTheory.Abelian A] →
+        [inst_2 : CategoryTheory.Category.{v_2, u_2} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                [F.PreservesHomology] →
+                  (C : ChainComplex A ℕ) →
+                    (D : ChainComplex B ℕ) →
+                      ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ D) →
+                        (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) →
+                          CategoryTheory.Limits.IsColimit Q →
+                            (F.obj (CategoryTheory.Limits.cokernel (C.d 1 0)) ≅ Q.pt) :=
+fun {A : Type u_1} {B : Type u_2} [CategoryTheory.Category.{v_1, u_1} A] [CategoryTheory.Abelian A]
+    [CategoryTheory.Category.{v_2, u_2} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    [F.PreservesHomology] (C : ChainComplex A ℕ) (D : ChainComplex B ℕ)
+    (e : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ D) (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0))
+    (hQ : CategoryTheory.Limits.IsColimit Q) =>
+  CategoryTheory.Limits.PreservesCokernel.iso F (C.d 1 0) ≪≫
+    LinearStudy.originalChainFirstCokernelIso ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C) D e ≪≫
+      (CategoryTheory.Limits.cokernelIsCokernel (D.d 1 0)).coconePointUniqueUpToIso hQ
+def LinearStudy.tildeKoszulOriginalCutCokernelCofork.{u} : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) → CategoryTheory.Limits.CokernelCofork ((LinearStudy.tildeFunctionKoszulComplex R H).d 1 0) :=
+fun (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) =>
+  CategoryTheory.Limits.CokernelCofork.ofπ (LinearStudy.tildeKoszulPresentation R H).g ⋯
+def LinearStudy.tildeKoszulOriginalCutCokernelCoforkIsColimit.{u} : (R : CommRingCat) →
+  {r : ℕ} → (H : Fin r → ↑R) → CategoryTheory.Limits.IsColimit (LinearStudy.tildeKoszulOriginalCutCokernelCofork R H) :=
+fun (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) => ⋯.gIsCokernel
+def LinearStudy.nativeProjectiveKoszulCokernelChartFromPresentationIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                            (k : ℤ) →
+                              (a : S) →
+                                (ha : a ∈ 𝓑 1) →
+                                  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+                                  let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+                                  have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+                                  (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+                                      (CategoryTheory.Limits.cokernel
+                                        ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k).d 1 0)) ≅
+                                    (LinearStudy.tildeKoszulOriginalCutCokernelCofork R h).pt :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [IsNoetherianRing S]
+    {J : Type} (b : J → S) (hb : ∀ (i : J), b i ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1) =>
+  let R := ↧(HomogeneousLocalization.Away 𝓑 a);
+  let j :=
+    AlgebraicGeometry.Proj.awayι 𝓑 a ha LinearStudy.nativeProjectiveKoszulCokernelChartFromPresentationIso._proof_3;
+  let h := fun (i : Fin r) => HomogeneousLocalization.Away.mk 𝓑 ha q (H i) ⋯;
+  let F := AlgebraicGeometry.Scheme.Modules.restrictFunctor j;
+  LinearStudy.mappedChainFirstCokernelPresentationIso F (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k)
+    (LinearStudy.tildeFunctionKoszulComplex R h)
+    (LinearStudy.nativeProjectiveKoszulNamedTildeAffineIso 𝓑 b hb hgen H hH k a ha)
+    (LinearStudy.tildeKoszulOriginalCutCokernelCofork R h)
+    (LinearStudy.tildeKoszulOriginalCutCokernelCoforkIsColimit R h)
+def LinearStudy.projectivePulledLinearKoszulCokernelChartOriginalCutIso : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (a : LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) →
+                (ha : a ∈ LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal 1) →
+                  let R := ↧(HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a);
+                  let j := AlgebraicGeometry.Proj.awayι (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a ha ⋯;
+                  have h := fun (i : Fin r) =>
+                    HomogeneousLocalization.Away.mk (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) ha f.degree
+                      (LinearStudy.projectivePulledLinearKoszulForms f V L w i) ⋯;
+                  (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj
+                      (CategoryTheory.Limits.cokernel
+                        ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0)) ≅
+                    (LinearStudy.tildeKoszulOriginalCutCokernelCofork R h).pt :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) (a : LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+    (ha : a ∈ LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal 1) =>
+  id
+    (LinearStudy.nativeProjectiveKoszulCokernelChartFromPresentationIso
+      (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+      (fun (i : Fin (n + 1)) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X i)) ⋯ ⋯
+      (LinearStudy.projectivePulledLinearKoszulForms f V L w) ⋯ k a ha)
