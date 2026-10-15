@@ -1,7 +1,7 @@
 // Approach at real-time speed, then ease into accelerated dawn after arrival.
 export class SunriseIntro {
  constructor(clock,presentation){this.clock=clock;this.presentation=presentation;this.active=false;this.waiting=false;this.catchingUp=false;this.elapsed=0;this.catchElapsed=0;}
- prepare(sunrise){this.elapsed=0;this.active=false;this.catchingUp=false;this.waiting=true;this.clock.previewAt(sunrise-.10);this.clock.play(1);this.presentation.hour=this.clock.hour;}
+ prepare(sunrise){this.elapsed=0;this.active=false;this.catchingUp=false;this.waiting=true;this.clock.previewAt(sunrise-.10);this.clock.play(1);Object.assign(this.presentation,{hour:this.clock.hour,phase:'idle',progress:0,opacity:0});}
  arrive(){if(!this.waiting)return;this.waiting=false;this.active=true;this.clock.play(1);}
  start(sunrise){this.prepare(sunrise);this.arrive();}
  cancel(){this.active=false;this.waiting=false;if(this.catchingUp)this.clock.setRate(1);this.catchingUp=false;}

@@ -22,7 +22,7 @@ import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.j
 import {createScreenWebview} from './screen-webview.js?v126';
 import {VIDEO_SITES} from './smart-glass-hub.js?v109';
 import {OPENING_POSE,OpeningCameraLock,openingFrameFov} from './opening-camera.js?v=handoff-105';
-import {SunriseIntro} from './sunrise-intro.js?v122';
+import {SunriseIntro} from './sunrise-intro.js?v=sunrise-replay-20261015';
 import {bindRenderActivity} from './render-activity.js?v=loading-visible-144';
 import {FrameQuality} from './frame-quality.js?v=reading-pixels-76';
 import {OceanBudget} from './ocean-budget.js?v=adaptive-ocean-2';
@@ -144,11 +144,19 @@ async function enterScene(){
   $('world').focus({preventScroll:true});
   renderActivity.setEnabled(!failed);
 }
+function resetOpeningSunrise(){
+  hallSunRamp=null;
+  sunriseIntro.prepare(solarEvents(sceneTime.now()).sunrise);
+  visualHour=lastShadowHour=sceneTime.hour;$('timeRate').value='1';
+  updateSceneTime();
+}
 async function replayOpening(preserveInitialView=false){
   if(!entered||!retreat||cameraLocked())return;
   screenWebview.close();if(activeRoom!==0)activateRoom(0,false);
   openingPreparing=true;
   try{
+    // A replay owns its clock immediately, even while required resources prepare.
+    resetOpeningSunrise();
     await prepareOpeningResources();
     motionVelocity.set(0,0,0);motionAcceleration.set(0,0,0);motionSample=false;
     controls.enableDamping=false;controls.update();
@@ -157,8 +165,8 @@ async function replayOpening(preserveInitialView=false){
     blend=null;opening=null;free=true;touring=false;controls.enabled=false;
     if(!openingPrepared)await lecture.prepareOpening();openingPrepared=false;populateReport();
     retreat.fleet.resetSunrisePass();
-    if(!sunriseIntro.waiting)sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);
-    visualHour=lastShadowHour=sceneTime.hour;$('timeRate').value='1';
+    // Preparation may span dawn; anchor the actual flight to a fresh sunrise too.
+    resetOpeningSunrise();
     openingCameraLock.start(performance.now());keys.clear();controls.enabled=false;
     flightPerformance.start(performance.now());frameSamples.length=0;cpuSamples.length=0;lastTime=0;
     selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);

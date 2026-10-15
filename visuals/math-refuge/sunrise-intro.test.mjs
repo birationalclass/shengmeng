@@ -44,6 +44,41 @@ test('application fixes dawn before scene construction and preserves it on first
  const state=runInNewContext(block+';({hour:sceneTime.hour,visualHour,lastShadowHour,waiting:sunriseIntro.waiting,presentation:timePresentation.hour})',context);
  assert(Math.abs(state.hour-5.9)<1e-12);assert.equal(state.visualHour,state.hour);assert.equal(state.lastShadowHour,state.hour);assert.equal(state.presentation,state.hour);assert(state.waiting);
  assert(source.includes('device,{hour:sceneTime.hour,date:sceneTime.date,weather:'));
- assert(source.includes('if(!sunriseIntro.waiting)sunriseIntro.prepare('));
+ assert(source.includes('resetOpeningSunrise();'));
  assert(!source.includes('retreat.setTime(solarEvents('),'Preview and entry use one clock');
+});
+
+test('replaying dawn clears a pending manual-time fade and every prior intro phase',()=>{
+ for(const prior of ['waiting','active','catchingUp']){
+  const clock=new RetreatTime(),view=new TimePresentation(20),intro=new SunriseIntro(clock,view);
+  intro[prior]=true;intro.elapsed=28;intro.catchElapsed=15;
+  clock.previewAt(20);view.seek();view.update(20,.1);
+  assert(view.opacity>0);
+  intro.prepare(6);
+  assert(intro.waiting);assert(!intro.active);assert(!intro.catchingUp);assert.equal(intro.elapsed,0);
+  assert.equal(clock.playing,true);assert.equal(clock.rate,1);
+  assert(Math.abs(view.update(clock.hour,0)-5.9)<1e-10);
+  assert.equal(view.phase,'idle');assert.equal(view.opacity,0);
+ }
+});
+
+test('the real opening handler resets dawn before awaiting resources, including a stale waiting state',async()=>{
+ const {readFile}=await import('node:fs/promises'),{runInNewContext}=await import('node:vm');
+ const source=await readFile(new URL('./app.js',import.meta.url),'utf8');
+ const handler=source.slice(source.indexOf('function resetOpeningSunrise()'),source.indexOf("openingButton.addEventListener('click'"));
+ for(const staleWaiting of [false,true]){
+  const clock=new RetreatTime(),view=new TimePresentation(20),intro=new SunriseIntro(clock,view);
+  clock.previewAt(20);intro.waiting=staleWaiting;view.seek();view.update(20,.1);
+  let rejectResources;const resources=new Promise((_,reject)=>{rejectResources=reject;});
+  const rate={value:'30'},context={sceneTime:clock,timePresentation:view,sunriseIntro:intro,
+   entered:true,retreat:{},cameraLocked:()=>false,screenWebview:{close(){}},activeRoom:0,
+   openingPreparing:false,hallSunRamp:2,solarEvents:()=>({sunrise:6}),visualHour:20,lastShadowHour:20,
+   $:()=>rate,updateSceneTime(){},prepareOpeningResources:()=>resources};
+  const replay=runInNewContext(handler+';replayOpening',context);
+  const result=replay();
+  assert(Math.abs(clock.hour-5.9)<1e-10,'click selects dawn before resource preparation completes');
+  assert.equal(context.hallSunRamp,null);assert.equal(rate.value,'1');assert.equal(view.opacity,0);
+  const failure=Error('test preparation stopped');rejectResources(failure);
+  await assert.rejects(result,error=>error===failure);assert.equal(context.openingPreparing,false);
+ }
 });
