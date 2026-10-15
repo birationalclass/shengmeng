@@ -214,11 +214,8 @@ export async function createLecture(scene,renderer,options={}){
   const chalk=new THREE.Mesh(new THREE.CylinderGeometry(.017,.014,.17,8),new THREE.MeshStandardMaterial({color:'#f3edda',roughness:1,metalness:0,emissive:'#e3dcc8',emissiveIntensity:.32,envMapIntensity:.15}));
   const chalkAxis=new THREE.Vector3(.22,-.42,.88).normalize();chalk.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),chalkAxis);chalk.name='Writing chalk';scene.add(chalk);
   const eraserWidth=EW*2/W*BOARD_W,eraserHeight=EH*2/H*BOARD_H;
-  const eraser=new THREE.Mesh(hardware.roundedBox(eraserWidth,eraserHeight,.08),frameMaterial);eraser.name='Moving blackboard eraser';scene.add(eraser);
-  const felt=new THREE.Mesh(hardware.roundedBox(eraserWidth*.98,eraserHeight*.98,.025,.012),hardware.felt);felt.name='Textured layered felt';felt.position.z=-.0525;eraser.add(felt);
-  const grip=new THREE.Mesh(hardware.roundedBox(eraserWidth*.7,eraserHeight*.54,.018,.016),frameMaterial);grip.name='Rounded palm grip';grip.position.z=.045;eraser.add(grip);
-  for(const sign of [-1,1]){const seam=part(eraser,[0,sign*eraserHeight*.33,.043],[eraserWidth*.76,.006,.004],hardware.rubber);seam.name='Recessed finger groove';}
-  for(let i=0;i<3;i++){const fibre=part(eraser,[0,0,-.044-i*.007],[eraserWidth*.985,eraserHeight*.985,.003],hardware.felt);fibre.name='Felt laminate';}
+  const eraser=trayHardware.createEraser(eraserWidth,eraserHeight,hardware);scene.add(eraser);
+  const felt=eraser.getObjectByName('Textured layered felt');
   const parkedErasers=Array.from({length:3},(_,column)=>{
     const parked=eraser.clone();parked.name=`Tray eraser ${column+1}`;parked.position.set(23.25+column*5.6,TRAY.restY,TRAY.z);parked.rotation.set(-Math.PI/2,0,.035);
     parked.userData={column,resting:true};scene.add(parked);return parked;

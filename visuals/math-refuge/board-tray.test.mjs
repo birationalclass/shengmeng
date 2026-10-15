@@ -7,11 +7,23 @@ import {createBoardPageControls} from './board-page-control.js';
 import {createBoardCameraControl} from './board-camera-control.js';
 import {createBoardVoicePanel} from './report-voice.js';
 import {updateTextSheen} from './smart-screen.js';
+import {createBoardHardware,TRAY} from './board-hardware.js';
+import {ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js';
+test('concept eraser is one rounded wood cap with the exact original felt contact and tray rest height',()=>{
+ const hardware=createBoardHardware(T),trayHardware=createBoardTrayHardware(T),scene=new T.Scene(),w=ERASER_HALF_WIDTH*2/1536*5.3,h=ERASER_HALF_HEIGHT*2/640*2.05,eraser=trayHardware.createEraser(w,h,hardware),tray=trayHardware.create(scene,0,0);scene.add(eraser);
+ try{assert.equal(eraser.children.length,1,'single cap with a thin dark felt base, no raised grip or grooves');assert.equal(eraser.material,tray.children[0].material);const felt=eraser.getObjectByName('Textured layered felt'),feltBounds=new T.Box3().setFromObject(felt);assert(Math.abs(feltBounds.min.z+.065)<1e-8);assert.equal(felt.material,hardware.felt);assert([...eraser.geometry.getAttribute('uv').array].every(Number.isFinite));
+ const rest=eraser.clone();rest.position.set(0,TRAY.restY,TRAY.z);rest.rotation.set(-Math.PI/2,0,.035);const box=new T.Box3().setFromObject(rest);assert(Math.abs(box.min.y-TRAY.top)<1e-7,'felt sits on the gutter floor without floating');assert(box.max.y-box.min.y<.10);assert(box.min.z>TRAY.z-TRAY.depth/2&&box.max.z<TRAY.z+TRAY.depth/2);trayHardware.setTone('deep');assert.equal(eraser.material.map,tray.children[0].material.map);trayHardware.setTone('pale');assert.notEqual(eraser.material.map,felt.material.map);assert.equal(eraser.material.map,tray.children[0].material.map);
+ }finally{trayHardware.dispose();hardware.dispose();}
+});
 test('all tone options recolor board frames and tray together, and gradient follows height',()=>{
  const hardware=createBoardTrayHardware(T),scene=new T.Scene(),tray=hardware.create(scene,0,0),frame=hardware.createFrame(scene,5.3,2.05),wood=tray.children[0].material;
- try{for(const tone of ['deep','honey','gradient']){assert.equal(hardware.setTone(tone),tone);assert.equal(frame.children[0].material,wood);assert(frame.children.every(r=>r.geometry.getAttribute('color')));assert(tray.children[0].geometry.getAttribute('color'));}
+ try{assert.equal(hardware.tone,'pale','the approved pale finish is the default');for(const tone of ['pale','deep','honey','gradient']){assert.equal(hardware.setTone(tone),tone);assert.equal(frame.children[0].material,wood);assert(frame.children.every(r=>r.geometry.getAttribute('color')));assert(tray.children[0].geometry.getAttribute('color'));}
  const top=frame.children[0].geometry.getAttribute('color'),bottom=frame.children[1].geometry.getAttribute('color');assert(top.getX(0)>bottom.getX(0),'top rail is lighter than bottom rail');hardware.setTone('deep');assert.equal(wood.color.getHexString(),'646464');assert.equal(frame.children[0].geometry.getAttribute('color').getX(0),1);
  }finally{hardware.dispose();}
+});
+test('pale finish has its own shared albedo and switching finishes does not decode textures again',async()=>{
+ const loaded=[];let disposed=0;const Fake={...T,TextureLoader:class{async loadAsync(src){const map=new T.Texture();map.userData.source=src;map.addEventListener('dispose',()=>disposed++);loaded.push(map);return map;}}},hardware=createBoardTrayHardware(Fake),scene=new T.Scene(),tray=hardware.create(scene,0,0),frame=hardware.createFrame(scene,5.3,2.05),wood=tray.children[0].material;
+ try{await hardware.loadGrain();const pale=wood.map;assert.equal(loaded.length,2);assert.equal(frame.children[0].material.map,pale);assert(pale.userData.source.startsWith('data:image/jpeg;base64,'));hardware.setTone('deep');assert.notEqual(wood.map,pale);hardware.setTone('pale');assert.equal(wood.map,pale);assert.equal(wood.bumpMap,pale);assert(wood.roughness>=.7);assert.equal(loaded.length,2,'reuse both decoded maps across the six frames and three trays');}finally{hardware.dispose();}assert.equal(disposed,2);
 });
 test('mitered board frame shares the tray wood and leaves the entire writing face unobstructed',()=>{
  const hardware=createBoardTrayHardware(T),scene=new T.Scene(),tray=hardware.create(scene,0,0),board=new T.Group();scene.add(board);const frame=hardware.createFrame(board,5.3,2.05),second=hardware.createFrame(new T.Group(),5.3,2.05);
