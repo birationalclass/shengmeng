@@ -1,0 +1,26 @@
+@LinearStudy.overOpenRestriction_isRightAdjoint : ∀ {C : Type u_1} [inst : Preorder C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+  [CategoryTheory.HasSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat],
+  (SheafOfModules.overFunctor R U).IsRightAdjoint
+'LinearStudy.overOpenRestriction_isRightAdjoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenRestriction_preservesInjectiveObjects : ∀ {C : Type u_1} [inst : Preorder C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+  [CategoryTheory.HasSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat],
+  (SheafOfModules.overFunctor R U).PreservesInjectiveObjects
+'LinearStudy.overOpenRestriction_preservesInjectiveObjects' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleOverFunctor_isRightAdjoint : ∀ (X : AlgebraicGeometry.Scheme) (U : X.Opens),
+  (SheafOfModules.overFunctor X.ringCatSheaf U).IsRightAdjoint
+'LinearStudy.schemeModuleOverFunctor_isRightAdjoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleOverFunctor_preservesInjectiveObjects : ∀ (X : AlgebraicGeometry.Scheme) (U : X.Opens),
+  (SheafOfModules.overFunctor X.ringCatSheaf U).PreservesInjectiveObjects
+'LinearStudy.schemeModuleOverFunctor_preservesInjectiveObjects' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleInjectiveOver : ∀ (X : AlgebraicGeometry.Scheme) (I : X.Modules) [CategoryTheory.Injective I]
+  (U : X.Opens), CategoryTheory.Injective (SheafOfModules.over I U)
+'LinearStudy.schemeModuleInjectiveOver' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.overOpenRestriction_isRightAdjoint:true
+ROLECHECK:LinearStudy.overOpenRestriction_preservesInjectiveObjects:true
+ROLECHECK:LinearStudy.schemeModuleOverFunctor_isRightAdjoint:true
+ROLECHECK:LinearStudy.schemeModuleOverFunctor_preservesInjectiveObjects:true
+ROLECHECK:LinearStudy.schemeModuleInjectiveOver:true

@@ -1,0 +1,106 @@
+@LinearStudy.overOpenZeroSheafFunctor : {C : Type u_1} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      (R : CategoryTheory.Sheaf J RingCat) →
+        (U : C) →
+          [CategoryTheory.HasSheafify J AddCommGrpCat] →
+            [J.WEqualsLocallyBijective AddCommGrpCat] →
+              CategoryTheory.Functor (SheafOfModules (R.over U)) (SheafOfModules R)
+'LinearStudy.overOpenZeroSheafFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenZeroSheafFunctor_preservesMonomorphisms : ∀ {C : Type u_1} [inst : Preorder C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+  [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat],
+  (LinearStudy.overOpenZeroSheafFunctor R U).PreservesMonomorphisms
+'LinearStudy.overOpenZeroSheafFunctor_preservesMonomorphisms' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenZeroPresheafSheafificationAdjunction : {C : Type u_1} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      (R : CategoryTheory.Sheaf J RingCat) →
+        (U : C) →
+          [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] →
+            [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat] →
+              (LinearStudy.overOpenZeroPresheafFunctor R.obj U).comp
+                  (PresheafOfModules.sheafification (CategoryTheory.CategoryStruct.id R.obj)) ⊣
+                (SheafOfModules.forget R).comp (PresheafOfModules.pushforward₀ (CategoryTheory.Over.forget U) R.obj)
+'LinearStudy.overOpenZeroPresheafSheafificationAdjunction' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenZeroSheafHomEquiv : {C : Type u_1} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      (R : CategoryTheory.Sheaf J RingCat) →
+        (U : C) →
+          [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] →
+            [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat] →
+              (N : SheafOfModules (R.over U)) →
+                (M : SheafOfModules R) →
+                  ((LinearStudy.overOpenZeroSheafFunctor R U).obj N ⟶ M) ≃ (N ⟶ (SheafOfModules.overFunctor R U).obj M)
+'LinearStudy.overOpenZeroSheafHomEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenZeroSheafAdjunction : {C : Type u_1} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      (R : CategoryTheory.Sheaf J RingCat) →
+        (U : C) →
+          [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] →
+            [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat] →
+              LinearStudy.overOpenZeroSheafFunctor R U ⊣ SheafOfModules.overFunctor R U
+'LinearStudy.overOpenZeroSheafAdjunction' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.overOpenZeroSheafFunctor.{u} : {C : Type u} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      (R : CategoryTheory.Sheaf J RingCat) →
+        (U : C) →
+          [CategoryTheory.HasSheafify J AddCommGrpCat] →
+            [J.WEqualsLocallyBijective AddCommGrpCat] →
+              CategoryTheory.Functor (SheafOfModules (R.over U)) (SheafOfModules R) :=
+fun {C : Type u} [Preorder C] {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+    [CategoryTheory.HasSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat] =>
+  (SheafOfModules.forget (R.over U)).comp
+    ((LinearStudy.overOpenZeroPresheafFunctor R.obj U).comp
+      (PresheafOfModules.sheafification (CategoryTheory.CategoryStruct.id R.obj)))
+def LinearStudy.overOpenZeroPresheafSheafificationAdjunction.{u} : {C : Type u} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      (R : CategoryTheory.Sheaf J RingCat) →
+        (U : C) →
+          [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] →
+            [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat] →
+              (LinearStudy.overOpenZeroPresheafFunctor R.obj U).comp
+                  (PresheafOfModules.sheafification (CategoryTheory.CategoryStruct.id R.obj)) ⊣
+                (SheafOfModules.forget R).comp (PresheafOfModules.pushforward₀ (CategoryTheory.Over.forget U) R.obj) :=
+fun {C : Type u} [Preorder C] {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+    [CategoryTheory.HasSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat] =>
+  (LinearStudy.overOpenZeroPresheafAdjunction R.obj U).comp
+    (PresheafOfModules.sheafificationAdjunction (CategoryTheory.CategoryStruct.id R.obj))
+def LinearStudy.overOpenZeroSheafHomEquiv.{u} : {C : Type u} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      (R : CategoryTheory.Sheaf J RingCat) →
+        (U : C) →
+          [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] →
+            [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat] →
+              (N : SheafOfModules (R.over U)) →
+                (M : SheafOfModules R) →
+                  ((LinearStudy.overOpenZeroSheafFunctor R U).obj N ⟶ M) ≃
+                    (N ⟶ (SheafOfModules.overFunctor R U).obj M) :=
+fun {C : Type u} [Preorder C] {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+    [CategoryTheory.HasSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat]
+    (N : SheafOfModules (R.over U)) (M : SheafOfModules R) =>
+  ((LinearStudy.overOpenZeroPresheafSheafificationAdjunction R U).homEquiv N.val M).trans
+    (SheafOfModules.fullyFaithfulForget (R.over U)).homEquiv.symm
+def LinearStudy.overOpenZeroSheafAdjunction.{u} : {C : Type u} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      (R : CategoryTheory.Sheaf J RingCat) →
+        (U : C) →
+          [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] →
+            [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat] →
+              LinearStudy.overOpenZeroSheafFunctor R U ⊣ SheafOfModules.overFunctor R U :=
+fun {C : Type u} [Preorder C] {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+    [CategoryTheory.HasSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat] =>
+  CategoryTheory.Adjunction.mkOfHomEquiv
+    { homEquiv := LinearStudy.overOpenZeroSheafHomEquiv R U, homEquiv_naturality_left_symm := ⋯,
+      homEquiv_naturality_right := ⋯ }
+ROLECHECK:LinearStudy.overOpenZeroSheafFunctor:false
+ROLECHECK:LinearStudy.overOpenZeroSheafFunctor_preservesMonomorphisms:true
+ROLECHECK:LinearStudy.overOpenZeroPresheafSheafificationAdjunction:false
+ROLECHECK:LinearStudy.overOpenZeroSheafHomEquiv:false
+ROLECHECK:LinearStudy.overOpenZeroSheafAdjunction:false

@@ -1,0 +1,12 @@
+@LinearStudy.schemeModuleHomPrecompose_app_surjective : ∀ {X : AlgebraicGeometry.Scheme} (I : X.Modules)
+  [CategoryTheory.Injective I] {A B : X.Modules} (f : A ⟶ B) [CategoryTheory.Mono f] (U : X.Opens),
+  Function.Surjective
+    ⇑(CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleHomPrecompose f) U))
+'LinearStudy.schemeModuleHomPrecompose_app_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomPrecompose_epi : ∀ {X : AlgebraicGeometry.Scheme} (I : X.Modules)
+  [CategoryTheory.Injective I] {A B : X.Modules} (f : A ⟶ B) [CategoryTheory.Mono f],
+  CategoryTheory.Epi (LinearStudy.schemeModuleHomPrecompose f)
+'LinearStudy.schemeModuleHomPrecompose_epi' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleHomPrecompose_app_surjective:true
+ROLECHECK:LinearStudy.schemeModuleHomPrecompose_epi:true

@@ -1,0 +1,29 @@
+LinearStudy.schemeModuleInternalHomSourceSectionIso : (X : AlgebraicGeometry.Scheme) →
+  (N : X.Modules) →
+    (U : X.Opens) →
+      (LinearStudy.schemeModuleInternalHomFunctor X N).comp
+          ((SheafOfModules.evaluation X.ringCatSheaf (Opposite.op U)).comp
+            (CategoryTheory.forget (ModuleCat ↑(X.ringCatSheaf.obj.obj (Opposite.op U))))) ≅
+        (SheafOfModules.overFunctor X.ringCatSheaf U).op.comp (CategoryTheory.yoneda.obj (SheafOfModules.over N U))
+'LinearStudy.schemeModuleInternalHomSourceSectionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleOverFunctor_preservesFiniteColimits : ∀ (X : AlgebraicGeometry.Scheme) (U : X.Opens),
+  CategoryTheory.Limits.PreservesFiniteColimits (SheafOfModules.overFunctor X.ringCatSheaf U)
+'LinearStudy.schemeModuleOverFunctor_preservesFiniteColimits' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInternalHomFunctor_preservesFiniteLimits : ∀ (X : AlgebraicGeometry.Scheme) (N : X.Modules),
+  CategoryTheory.Limits.PreservesFiniteLimits (LinearStudy.schemeModuleInternalHomFunctor X N)
+'LinearStudy.schemeModuleInternalHomFunctor_preservesFiniteLimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleInternalHomSourceSectionIso.{u} : (X : AlgebraicGeometry.Scheme) →
+  (N : X.Modules) →
+    (U : X.Opens) →
+      (LinearStudy.schemeModuleInternalHomFunctor X N).comp
+          ((SheafOfModules.evaluation X.ringCatSheaf (Opposite.op U)).comp
+            (CategoryTheory.forget (ModuleCat ↑(X.ringCatSheaf.obj.obj (Opposite.op U))))) ≅
+        (SheafOfModules.overFunctor X.ringCatSheaf U).op.comp (CategoryTheory.yoneda.obj (SheafOfModules.over N U)) :=
+fun (X : AlgebraicGeometry.Scheme) (N : X.Modules) (U : X.Opens) =>
+  CategoryTheory.NatIso.ofComponents
+    (fun (P : X.Modulesᵒᵖ) => (LinearStudy.schemeModuleHomModuleSectionsEquiv (Opposite.unop P) N U).toIso) ⋯
+ROLECHECK:LinearStudy.schemeModuleInternalHomSourceSectionIso:false
+ROLECHECK:LinearStudy.schemeModuleOverFunctor_preservesFiniteColimits:true
+ROLECHECK:LinearStudy.schemeModuleInternalHomFunctor_preservesFiniteLimits:true

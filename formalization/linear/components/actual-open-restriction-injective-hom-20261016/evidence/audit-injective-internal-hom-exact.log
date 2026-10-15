@@ -1,0 +1,54 @@
+LinearStudy.schemeModuleInjectiveInternalHom_preservesEpimorphisms : ∀ (X : AlgebraicGeometry.Scheme) (I : X.Modules)
+  [CategoryTheory.Injective I], (LinearStudy.schemeModuleInternalHomFunctor X I).PreservesEpimorphisms
+'LinearStudy.schemeModuleInjectiveInternalHom_preservesEpimorphisms' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleInjectiveInternalHom_preservesHomology : ∀ (X : AlgebraicGeometry.Scheme) (I : X.Modules)
+  [CategoryTheory.Injective I], (LinearStudy.schemeModuleInternalHomFunctor X I).PreservesHomology
+'LinearStudy.schemeModuleInjectiveInternalHom_preservesHomology' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleInjectiveInternalHom_preservesFiniteColimits : ∀ (X : AlgebraicGeometry.Scheme) (I : X.Modules)
+  [CategoryTheory.Injective I],
+  CategoryTheory.Limits.PreservesFiniteColimits (LinearStudy.schemeModuleInternalHomFunctor X I)
+'LinearStudy.schemeModuleInjectiveInternalHom_preservesFiniteColimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleInjectiveHomAugmentationMap : (X : AlgebraicGeometry.Scheme) →
+  (I : X.Modules) →
+    (C : ChainComplex X.Modules ℕ) →
+      {E : X.Modules} →
+        (C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          (LinearStudy.schemeModuleInternalHomCochainComplex I ((ChainComplex.single₀ X.Modules).obj E) ⟶
+            LinearStudy.schemeModuleInternalHomCochainComplex I C)
+'LinearStudy.schemeModuleInjectiveHomAugmentationMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInjectiveHomAugmentationMap_quasiIso : ∀ (X : AlgebraicGeometry.Scheme) (I : X.Modules)
+  [CategoryTheory.Injective I] (C : ChainComplex X.Modules ℕ) {E : X.Modules}
+  (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) [QuasiIso alpha],
+  QuasiIso (LinearStudy.schemeModuleInjectiveHomAugmentationMap X I C alpha)
+'LinearStudy.schemeModuleInjectiveHomAugmentationMap_quasiIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleInjectiveHomAugmentationMap_f : ∀ (X : AlgebraicGeometry.Scheme) (I : X.Modules)
+  [CategoryTheory.Injective I] (C : ChainComplex X.Modules ℕ) {E : X.Modules}
+  (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (j : ℕ),
+  (LinearStudy.schemeModuleInjectiveHomAugmentationMap X I C alpha).f j =
+    LinearStudy.schemeModuleHomPrecompose (alpha.f j)
+'LinearStudy.schemeModuleInjectiveHomAugmentationMap_f' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleInjectiveHomAugmentationMap.{u} : (X : AlgebraicGeometry.Scheme) →
+  (I : X.Modules) →
+    (C : ChainComplex X.Modules ℕ) →
+      {E : X.Modules} →
+        (C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          (LinearStudy.schemeModuleInternalHomCochainComplex I ((ChainComplex.single₀ X.Modules).obj E) ⟶
+            LinearStudy.schemeModuleInternalHomCochainComplex I C) :=
+fun (X : AlgebraicGeometry.Scheme) (I : X.Modules) (C : ChainComplex X.Modules ℕ) {E : X.Modules}
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) =>
+  ((LinearStudy.schemeModuleInternalHomFunctor X I).mapHomologicalComplex (ComplexShape.up ℕ)).map
+    ((HomologicalComplex.opFunctor X.Modules (ComplexShape.down ℕ)).map alpha.op)
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHom_preservesEpimorphisms:true
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHom_preservesHomology:true
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHom_preservesFiniteColimits:true
+ROLECHECK:LinearStudy.schemeModuleInjectiveHomAugmentationMap:false
+ROLECHECK:LinearStudy.schemeModuleInjectiveHomAugmentationMap_quasiIso:true
+ROLECHECK:LinearStudy.schemeModuleInjectiveHomAugmentationMap_f:true
