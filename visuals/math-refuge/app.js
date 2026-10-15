@@ -191,7 +191,7 @@ const curves=SHOTS.map(s=>({
 const totalDuration=SHOTS.reduce((a,s)=>a+s.duration,0);
 const motionVelocity=new THREE.Vector3(),motionAcceleration=new THREE.Vector3(),previousPosition=new THREE.Vector3(),previousVelocity=new THREE.Vector3();
 const shotPosition=new THREE.Vector3(),shotTarget=new THREE.Vector3(),viewDirection=new THREE.Vector3(),lookMatrix=new THREE.Matrix4(),viewUp=new THREE.Vector3(0,1,0);
-let reportSettings=null;
+let reportSettings=null,shotFov=57;
 const rooms=[],roomLecterns=[],roomViews=[],campusLightTarget=new THREE.Vector3(12*BUILDING_SCALE,3*BUILDING_SCALE,0);
 const roomFrustum=new THREE.Frustum(),roomProjection=new THREE.Matrix4();let visibilityAt=-Infinity;
 function updateRoomVisibility(stamp){
@@ -210,13 +210,14 @@ function updateRoomVisibility(stamp){
 let activeRoom=0,physicalRoom=-1;
 let motionSample=false,lastUIStamp=0,choosingReport=false,speakerView=false;
 function shotPose(){
-  if(speakerView){const pose=roomLecterns[activeRoom].speakerPose(camera.aspect);shotPosition.copy(pose.position);shotTarget.copy(pose.target);return;}
-  const s=SHOTS[shot],t=s.walk?walkProgress(time,s.duration):smoothProgress(time/s.duration);
+  if(speakerView){const pose=roomLecterns[activeRoom].speakerPose(camera.aspect);shotFov=pose.fov;shotPosition.copy(pose.position);shotTarget.copy(pose.target);return;}
+  const s=SHOTS[shot];shotFov=s.fov;const t=s.walk?walkProgress(time,s.duration):smoothProgress(time/s.duration);
   curves[shot].position.getPointAt(t,shotPosition);curves[shot].target.getPointAt(t,shotTarget);
   if(s.hallOrbit&&!touring){shotPosition.fromArray(hallOrbit(s.positions[0],s.targets[0],time));shotTarget.fromArray(s.targets[0]);}
   if(s.lecture&&lecture){
     const framing=boardFraming(camera.aspect,s.fov);shotTarget.copy(choosingReport?lecture.reportFocus():lecture.focus(true));
-    shotPosition.copy(shotTarget).add(viewDirection.fromArray([-(choosingReport?Math.max(4.6,framing.distance):framing.distance)*lecture.viewScale,0,0]));
+    if(choosingReport)shotPosition.copy(shotTarget).add(viewDirection.fromArray([-Math.max(4.6,framing.distance)*lecture.viewScale,0,0]));
+    else{const view=lecture.cameraView(camera.aspect,s.fov);shotPosition.copy(view.position);shotTarget.copy(view.target);shotFov=view.fov;}
   }
 }
 function fail(error){
@@ -267,7 +268,7 @@ function beginTransition(){
     distance:position.distanceTo(target),endDistance:shotPosition.distanceTo(shotTarget),
     velocity:motionVelocity.clone(),acceleration:motionAcceleration.clone().clampLength(0,3),
     duration:reduced.matches?1.6:Math.max(transitionSeconds(position.distanceTo(shotPosition)),rotation.angleTo(endRotation)/(Math.PI/14))};
-  const route=hallFloorRoute(position.toArray(),shotPosition.toArray());if(route){const points=route.map(p=>new THREE.Vector3(...p));blend.route=new THREE.CatmullRomCurve3(points,false,'centripetal');if(!curveClearsHall(blend.route,cameraProbeRadius(camera.near,Math.max(camera.fov,SHOTS[shot].fov||60),camera.aspect))){const safe=new THREE.CurvePath();for(let i=1;i<points.length;i++)safe.add(new THREE.LineCurve3(points[i-1],points[i]));blend.route=safe;}blend.duration=Math.max(blend.duration,blend.route.getLength()/3.2);}
+  const route=hallFloorRoute(position.toArray(),shotPosition.toArray());if(route){const points=route.map(p=>new THREE.Vector3(...p));blend.route=new THREE.CatmullRomCurve3(points,false,'centripetal');if(!curveClearsHall(blend.route,cameraProbeRadius(camera.near,Math.max(camera.fov,shotFov||60),camera.aspect))){const safe=new THREE.CurvePath();for(let i=1;i<points.length;i++)safe.add(new THREE.LineCurve3(points[i-1],points[i]));blend.route=safe;}blend.duration=Math.max(blend.duration,blend.route.getLength()/3.2);}
   frameSamples.length=0;cpuSamples.length=0;metricsAt=0;
   $('transition').style.opacity=0;
 }
@@ -315,7 +316,7 @@ function applyShot(dt,realDelta=dt){
     camera.quaternion.slerpQuaternions(blend.rotation,blend.endRotation,k);
     viewDirection.set(0,0,-1).applyQuaternion(camera.quaternion);
     controls.target.copy(camera.position).addScaledVector(viewDirection,THREE.MathUtils.lerp(blend.distance,blend.endDistance,k));
-    camera.fov=THREE.MathUtils.lerp(blend.fov,s.fov,k);$('transition').style.opacity=0;
+    camera.fov=THREE.MathUtils.lerp(blend.fov,shotFov,k);$('transition').style.opacity=0;
     if(k===1){
       const arrival=blend.openingArrival;if(arrival)$('world').dataset.openingPerformance=JSON.stringify(flightPerformance.finish(performance.now()));blend=null;
       if(arrival){
@@ -336,7 +337,7 @@ function applyShot(dt,realDelta=dt){
       }
     }
   }else{
-    camera.position.copy(position);controls.target.copy(target);camera.fov=s.fov;
+    camera.position.copy(position);controls.target.copy(target);camera.fov=shotFov;
     $('transition').style.opacity=0;
   }
   if(camera.fov!==priorFov)camera.updateProjectionMatrix();controls.update();
@@ -914,6 +915,7 @@ function installPhysicalControls(){
     else if(action==='board:reveal')void lecture.revealCurrent();
     else if(action==='activity:skip')void lecture.skipClassroomActivity();
     else if(action==='voice:toggle')$('lecturePlay').click();
+    else if(action==='camera:farther'||action==='camera:closer'){lecture.adjustCameraZoom(action==='camera:farther'?1:-1);lecture.autoCamera=true;boardFollow.reset();focusLecture();updateLectureUI();}
     else if(action==='camera:toggle'){lecture.autoCamera=!lecture.autoCamera;if(lecture.autoCamera){boardFollow.reset();focusLecture();}else stopTour();updateLectureUI();}
     else if(action==='language')switchChalkLanguage();
     else if(action.startsWith('program:')){lecture.screenAction(action);updateLectureUI();}
@@ -968,6 +970,7 @@ function updateLectureUI(){
   $('readerOpen').disabled=!lecture.hasSelection;$('lecturePlay').disabled=!lecture.hasSelection||voiceUI.busy||lecture.clock.ended;$('lectureNext').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.stopAt;$('lecturePrevious').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.startAt;
   for(const id of ['lectureProgress','lecturePage','lectureRewrite'])$(id).disabled=!lecture.hasSelection;
   controlLabel($('lecturePlay'),lecture.clock.ended?'报告已结束':voiceUI.buttonLabel||(lecture.playing?'暂停板书':'继续板书'));$('lecturePlay').setAttribute('aria-pressed',String(lecture.playing));
+  $('world').dataset.boardCameraZoom=String(lecture.cameraZoom);
   $('world').dataset.voicePhase=voice.phase;$('world').dataset.voiceTime=voice.time.toFixed(1);$('world').dataset.voiceDuration=voice.duration.toFixed(1);const highlight=lecture.highlightState;$('world').dataset.voiceHighlight=highlight?highlight.page+':'+highlight.row+':'+highlight.side:'';const cue=lecture.narrationCue;$('world').dataset.voiceRow=String(cue?.row??-1);
   $('lectureProgressValue').textContent=lecture.hasSelection?`${lecture.progress.page+1} / ${lecture.progress.total}`:'—';
   if(document.activeElement!==$('lectureProgress'))$('lectureProgress').value=String(lecture.progress.page+1);

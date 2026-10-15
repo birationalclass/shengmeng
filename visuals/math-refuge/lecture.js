@@ -5,6 +5,7 @@ import {LessonBudget} from './lesson-budget.js?v=sylow-two-lessons-20261015';
 import {narrationHighlights,measuredHighlight,highlightFrame,createBoardHighlight} from './board-highlight.js?v=smart-voice-9';
 import {createBoardPageControls} from './board-page-control.js?v=unframed-controls-1';
 import {drawClassroomActivity,classroomActivityAt,classroomCountdown} from './classroom-board.js?v=retained-exercise-1';
+import {boardCameraFrame,stepBoardCameraZoom} from './board-camera-framing.js';
 import {createBoardCameraControl} from './board-camera-control.js?v=unframed-controls-1';
 import {boardContentJump,advanceBoardQueue} from './board-transition.js';
 import {drawClassroomMetadata} from './classroom-metadata.js?v=sylow-two-lessons-20261015';
@@ -206,9 +207,9 @@ export async function createLecture(scene,renderer,options={}){
   }
   const seminarScreen=navigation?.sections?createSeminarScreen(THREE,scene,navigation):null;
   if(seminarScreen){reportHeader.mesh.visible=false;seminarScreen.setLanguage(language);}
-  let autoCamera=true;const cameraPanels=Array.from({length:3},(_,column)=>createBoardCameraControl(THREE,scene,column));
+  let autoCamera=true,cameraZoom=0;const cameraPanels=Array.from({length:3},(_,column)=>createBoardCameraControl(THREE,scene,column));
   const pageControls=Array.from({length:3},(_,column)=>createBoardPageControls(THREE,scene,column));
-  const touchButtons=[...pageControls.flatMap(panel=>panel.meshes),...cameraPanels.map(panel=>panel.mesh),...consoleButtons,...reportButtons,...(seminarScreen?.targets||[])];
+  const touchButtons=[...pageControls.flatMap(panel=>panel.meshes),...cameraPanels.flatMap(panel=>panel.meshes),...consoleButtons,...reportButtons,...(seminarScreen?.targets||[])];
   setConsoleState();setReportState();
   if(disabled){reportHeader.mesh.visible=false;touchButtons.forEach(b=>b.visible=false);}
   const chalk=new THREE.Mesh(new THREE.CylinderGeometry(.017,.014,.17,8),new THREE.MeshStandardMaterial({color:'#f3edda',roughness:1,metalness:0,emissive:'#e3dcc8',emissiveIntensity:.32,envMapIntensity:.15}));
@@ -386,7 +387,7 @@ export async function createLecture(scene,renderer,options={}){
     for(const button of consoleButtons){const position=reportControlLayout(button.userData.column,withVoice).language;button.position.set(position.x,position.y,position.z);button.updateMatrix();button.visible=renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');}
     pageControls.forEach(panel=>panel.update({previousEnabled:hasSelection&&clock.page>clock.startAt,nextEnabled:hasSelection&&clock.page<clock.stopAt,activity:voice.state.activity,visible:renderActive&&!hydrating&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report')}));
     for(const target of lotteryTargets){const page=clock.slots[target.userData.index].page;target.visible=hasSelection&&page>=0&&pages[page]?.exerciseBoard&&target.userData.index===clock.active&&clock.phase!=='erase'&&renderActive&&!stored;}
-    cameraPanels.forEach(panel=>panel.update(autoCamera,renderActive&&!hydrating&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'),withVoice));
+    cameraPanels.forEach(panel=>panel.update(autoCamera,renderActive&&!hydrating&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'),withVoice,cameraZoom));
     voicePanels.forEach(panel=>updateTextSheen(THREE,panel.mesh,dt,reduced));
     if(storageRig){
       storageMotion.update(dt,stored);storageProgress=storageMotion.progress;
@@ -560,6 +561,8 @@ export async function createLecture(scene,renderer,options={}){
   const movingNodes=new Set([scene,storageRig,...storageLids,...boards.map(b=>b.group),chalk,eraser]);
   scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {
+    get cameraZoom(){return cameraZoom;},adjustCameraZoom(direction){cameraZoom=stepBoardCameraZoom(cameraZoom,direction);return cameraZoom;},
+    cameraView(aspect,fov=57){const frame=boardCameraFrame(aspect,fov,cameraZoom,{column:Math.floor(clock.active/2),boardY:boards[clock.active].group.position.y});return{...frame,target:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z)),position:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z+frame.distance))};},
     get autoCamera(){return autoCamera;},set autoCamera(value){autoCamera=Boolean(value);},
     get followEnabled(){return autoCamera&&!disabled&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');},
     get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},

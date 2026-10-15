@@ -177,7 +177,7 @@ export function narrationResourceBytes(manifest){return [...new Map((manifest?.c
 // Language, playback and automatic camera share the board centre with separate hit targets.
 export function reportControlLayout(column=0,withVoice=true){
  const center=22.4+5.6*Math.max(0,Math.min(2,column));
- return{center,previous:{x:center-.94,y:-.16,z:-11.302,width:.6},next:{x:center+.94,y:-.16,z:-11.302,width:.6},language:{x:center-1.94,y:-.16,z:-11.34,width:1.1},voice:{x:center,y:-.16,z:-11.302,width:.6},camera:{x:center+1.94,y:-.16,z:-11.302,width:.6},reveal:{x:center+1.5,y:-.68,z:-11.302,width:.6}};
+ return{center,previous:{x:center-.94,y:-.02,z:-11.302,width:.6},next:{x:center+.94,y:-.02,z:-11.302,width:.6},language:{x:center-1.94,y:-.02,z:-11.34,width:1.1},voice:{x:center,y:-.02,z:-11.302,width:.6},camera:{x:center+1.94,y:-.02,z:-11.302,width:.6},zoomOut:{x:center+2.47,y:.15,z:-11.302,width:.34,height:.3},zoomIn:{x:center+2.47,y:-.19,z:-11.302,width:.34,height:.3},reveal:{x:center+1.5,y:-.54,z:-11.302,width:.6}};
 }
 export function reportVoiceIconPosition(column=0){return reportControlLayout(column).voice;}
 const iconBusy=s=>(['loading','buffering','preparing'].includes(s.phase)&&!(s.transportPlaying&&s.started))||s.phase==='away'&&!s.started;
