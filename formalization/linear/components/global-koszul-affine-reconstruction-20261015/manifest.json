@@ -1,0 +1,1753 @@
+{
+  "schemaVersion": 1,
+  "id": "global-koszul-affine-reconstruction-20261015",
+  "createdAt": "2026-10-15T08:05:20.569476+08:00",
+  "leanVersion": "v4.35.0-rc3",
+  "mathlibRevision": "2a885768dae569d938bb9ff3474da6a8753bb90a",
+  "rootModules": [
+    "Linear.KoszulCoordinateEntryNaturality",
+    "Linear.NativeGlobalKoszulDehomogenizedDifferential",
+    "Linear.NativeGlobalKoszulChartSectionComplex",
+    "Linear.NativeGlobalKoszulQuasicoherent",
+    "Linear.AffineQuasicoherentComplexCounit",
+    "Linear.NativeGlobalKoszulAffineCounit",
+    "Linear.HomogeneousQuotientKoszulAffineCounit"
+  ],
+  "closedSourceModules": 188,
+  "newModules": 7,
+  "newProofs": 17,
+  "newDefinitions": 5,
+  "auditedDeclarations": 22,
+  "newPhysicalSourceLines": 487,
+  "unchangedEarlierFrozenDependencies": 181,
+  "priorFrozenEvidence": [
+    {
+      "archive": "Linear-local-20261011-m180-source.zip",
+      "sha256": "a71cda4581491c72042686fada4545865584cfbf2ded6ade6b99ecbd7987b5d3"
+    },
+    {
+      "archive": "ActualAffineSourceLinearComponent-20261012-LF-source.zip",
+      "sha256": "71649e88efb4760d37e527ef7b3c78e553972cd8799f69a9ffea61b1394f6aed"
+    },
+    {
+      "archive": "ActualSheafCohomologyFiniteCut-20261015-LF-source.zip",
+      "sha256": "d38dad246b4ab404c4fcd4ce5c5296948a4a7a3a59a8b12a58a99b0622151a93"
+    },
+    {
+      "archive": "AffineClosedCutGeometricPullback-20261015-LF-source.zip",
+      "sha256": "92e77c193d6914da3b803320ed77b5bf355a08e89236ddf545127a28ca513eac"
+    },
+    {
+      "archive": "AffineKoszulGeometricRestriction-20261015-LF-source.zip",
+      "sha256": "be38239cf6f7d2b76e06affff9dbe6e66da03d71aa36ac5556f6980e0a67d494"
+    },
+    {
+      "archive": "AffineKoszulInternalDualHom-20261014-LF-source.zip",
+      "sha256": "198c7b7f9eb773ff4153102f41a94a2baca0ca38262b0d1a510d86f7a38b69d3"
+    },
+    {
+      "archive": "AffineKoszulInternalHomRestriction-20261015-LF-source.zip",
+      "sha256": "576919043afced6d17170fa58390447be9644b7a9daf346e465300dd45098c8b"
+    },
+    {
+      "archive": "AffineKoszulInternalHomTopCohomology-20261015-LF-source.zip",
+      "sha256": "ffabf5ba8e038be48973dd8151c026379c29c2ba3365ef33b57529e98dec89b3"
+    },
+    {
+      "archive": "AllOpenSourceLinearityComponent-20261012-LF-source.zip",
+      "sha256": "310408d5a7248ad6d57cfb36d55aa4de96256ba7aaade6a47741c04c8fc3d010"
+    },
+    {
+      "archive": "CanonicalGradedCoefficientCokernel-20261014-LF-source.zip",
+      "sha256": "1140bea656318dca425fdf8d8733f7c7dcb763167ed6e856a8898c8fe8227885"
+    },
+    {
+      "archive": "ConditionalCanonicalContinuation-20261012-LF-source.zip",
+      "sha256": "7c800a8c4f799fd3b9a5430204f9e1679fc57eb6c197f3508fee7e864bb4895d"
+    },
+    {
+      "archive": "FiniteCanonicalCoefficientAlignment-20261014-LF-source.zip",
+      "sha256": "548eb4d7b6e7ee0074ab28ceeb6dc8a2554948b70b382f410c52fb11968002bf"
+    },
+    {
+      "archive": "GlobalKoszulSectionFrames-20261015-LF-source.zip",
+      "sha256": "de501be934d185bd89377173c4cb5755226f02bfb47aafa2933a44b7c8b5ef5d"
+    },
+    {
+      "archive": "GlobalWeightedKoszul-20261015-LF-source.zip",
+      "sha256": "d3032884dede6c376b1c21d827baabc47443dcab6fbfccb88efe175c7a2fbcbd"
+    },
+    {
+      "archive": "KoszulActualCoefficientExtGeometricRestriction-20261015-LF-source.zip",
+      "sha256": "6c22d307846833eba91fa52aad8a9ae30e37795254d2759dd78366305923ce8a"
+    },
+    {
+      "archive": "KoszulAllDegreeCohomologyFiniteSupport-20261015-LF-source.zip",
+      "sha256": "422fff8d2b52c7d4591fba971da257347f2d481d37c08bbf8c0edfd9adeb31b4"
+    },
+    {
+      "archive": "KoszulArbitraryCoefficientAffineRestriction-20261015-LF-source.zip",
+      "sha256": "196a2dbef6a52948ed1359a27bbf0ee343594891178330e3efa2a56cdefe0bc0"
+    },
+    {
+      "archive": "KoszulArbitraryCoefficientCokernel-20261015-LF-source.zip",
+      "sha256": "c81e3638b68972e4a9572dd4f1e881d2dca5b56ec48ec8842c57512576704a0d"
+    },
+    {
+      "archive": "KoszulLocalExtRestriction-20261014-LF-source.zip",
+      "sha256": "338587bcff6a35730917ad1702337b26b3f9212e9ca89e37774cc1ef6da342bb"
+    },
+    {
+      "archive": "NativeCanonicalResidue-20261013-LF-source.zip",
+      "sha256": "8ebef272873946ac88dc8a081ecfcc038277d0619b11a88c512a9a8b9efe3d1a"
+    },
+    {
+      "archive": "NativeChartMultiplication-20261014-LF-source.zip",
+      "sha256": "73c349bbdb81a96c97913dc49efb28d906c223fa68cd81f3c2e91d01774169fe"
+    },
+    {
+      "archive": "NativeChartSourceLinearComponent-20261012-LF-source.zip",
+      "sha256": "429ea05f3004eceef2be521194ef4315e94310dc951a85399a514f38c95c4ffd"
+    },
+    {
+      "archive": "NativeFiniteGradedLifting-20261013-LF-source.zip",
+      "sha256": "97d3268ec6916f7be65046d50397d5ed661e819002b0d2eef94fb5e390167743"
+    },
+    {
+      "archive": "NativeFixedDegreeExtension-20261013-LF-source.zip",
+      "sha256": "b4232e9f3e7e4221b6bde52a09f3d6f714bdf67467175eaa55efa32e0f1016a8"
+    },
+    {
+      "archive": "NativeGeneralTopDuality-20261013-LF-source.zip",
+      "sha256": "38a4c1db124cbae1813f1acafc1c798c6a5c92c767e54fc7127900522d8ffc51"
+    },
+    {
+      "archive": "NativeGradedMatrixDuality-20261014-LF-source.zip",
+      "sha256": "4fee8fb69d816df69da0754fe604d335bbb58ede9e8f6b2f9969a94b9ee8ba22"
+    },
+    {
+      "archive": "NativeGradedPresentationDescent-20261014-LF-source.zip",
+      "sha256": "b71093d07567ce64aa7272e71c0d61ad6fb39bcfa319700706b362ee012b7b1f"
+    },
+    {
+      "archive": "NativeIntegerFreeRelationDuality-20261014-LF-source.zip",
+      "sha256": "de7ea8df27fdbfc9824d8e44b5b6b77ea204575b5323fb2cc9e95675adebc127"
+    },
+    {
+      "archive": "NativeIntegerHomogeneousMapDuality-20261014-LF-source.zip",
+      "sha256": "30cd771cc3f8cef48683f2b33e9c08fcb4427cc8d9f632a25d257b406a310393"
+    },
+    {
+      "archive": "NativeIntegerTwistedModuleMapDuality-20261014-LF-source.zip",
+      "sha256": "1259bed8935b769376333ed63215e5aa4ccb5da46ef172ca0e838f281e5bd679"
+    },
+    {
+      "archive": "NativeIntegerTwistedPresentationMaps-20261014-LF-source.zip",
+      "sha256": "e7d2f444b6ab76d80c7856249ca8d7b96159761b3a0768325dd8cc757eea8d77"
+    },
+    {
+      "archive": "NativeIntegerTwistedQuotientLift-20261014-LF-source.zip",
+      "sha256": "6afd46c61baa44ef37a0c0519a8f09ed90d92247cf8cbe45b36788d2e0287332"
+    },
+    {
+      "archive": "NativeMonomialTopTranspose-20261014-LF-source.zip",
+      "sha256": "40d032707f44af9678a3034a4efa810449fe7505e3ab3f03e10c7d588a8b0aee"
+    },
+    {
+      "archive": "NativeOrderedCech-20261013-LF-source.zip",
+      "sha256": "d8f6917e8d9a077f35933511b759461ea474989b1b67943228e0d5ac6034dd1a"
+    },
+    {
+      "archive": "NativeOriginalPresentationCechHomDuality-20261014-LF-source.zip",
+      "sha256": "2257c077d7fb26280c96595a264318efb16820d412137819ed662611c1c65838"
+    },
+    {
+      "archive": "NativeOriginalPresentationMatrixHom-20261014-LF-source.zip",
+      "sha256": "a1308bc44a0ad9006309f45c12f7991e1c9e0e14f701f00f569144a032869d41"
+    },
+    {
+      "archive": "NativeOriginalProjectiveLifting-20261013-LF-source.zip",
+      "sha256": "6affc9cd4ab1268b94640f3dcbc83d5de0fdb7d6448379e12312df61b27b7313"
+    },
+    {
+      "archive": "NativePolynomialTopTranspose-20261014-LF-source.zip",
+      "sha256": "6e39b03bf07a570208a0722e82aeabe72c16721effbc9012e65b3cdce909d4af"
+    },
+    {
+      "archive": "NativePresentationCechHomPrefixes-20261014-LF-source.zip",
+      "sha256": "fb0226a7cbaa28e4a7c5150c7136ecb5e8492d6e960ad64e87bec0c2493996b8"
+    },
+    {
+      "archive": "NativeProjectiveHOneLifting-20261012-LF-source.zip",
+      "sha256": "f24c273b27cd77bafe706a1bbd28a2245e7d1c3b04c14dd73803e2a41f0839db"
+    },
+    {
+      "archive": "NativeProjectiveLaurent-20261013-LF-source.zip",
+      "sha256": "0c06a4ac128367ccdbd8db3dec8869bc629ed1f88acacd6a7ec5fd2f6b242530"
+    },
+    {
+      "archive": "NativeProjectivePolynomialSections-20261013-LF-source.zip",
+      "sha256": "d6b476bf5aaca6f31c28c08d4ea5bff8fcd5ea88e5d70e038ed5285687b16ef9"
+    },
+    {
+      "archive": "NativeProjectiveTensorTwist-20261013-LF-source.zip",
+      "sha256": "45f67b941a9bd349c6da4ef95cae4df3af679955e3a147f446da73a297b9d841"
+    },
+    {
+      "archive": "NativeProjectiveTwistPresentation-20261013-LF-source.zip",
+      "sha256": "30f4c8663f138e8e84fab1e3191a00298fa412aea7ad11642128ee0638ada25b"
+    },
+    {
+      "archive": "OriginalChartLocalSourceLinearComponent-20261012-LF-source.zip",
+      "sha256": "1ea73b87983c1b6b178451d0481df82ed274db79f7ab2cebc4364913ec31b2ff"
+    },
+    {
+      "archive": "OriginalGlobalSourceActionComponent-20261012-LF-source.zip",
+      "sha256": "f748e453306083d9b88d7e32b7e16aee6c99ca7a126acb1a29ba73e57bafdc7c"
+    },
+    {
+      "archive": "OriginalHomSourceSheafComponent-20261012-LF-source.zip",
+      "sha256": "263687f81bf4b2e850e65b736192ba46eb3fc9037e5bb7b1136d93c2a2d0a133"
+    },
+    {
+      "archive": "OriginalPushforwardSourceActionComponent-20261012-LF-source.zip",
+      "sha256": "f544d8c61d0aa3c66ee42079842033f83d49fc9803d30612401b474163b7d853"
+    },
+    {
+      "archive": "SourceActionDerivedComponent-20261012-LF-source.zip",
+      "sha256": "9ad384dd639a2c81e22570a0f9cbff083b27e94581e4c4be12ed984b52c74333"
+    }
+  ],
+  "actualOriginalKoszulEntryRingMapAndScalingNaturalityVerified": true,
+  "actualOriginalDehomogenizedKoszulEntryEqualityVerified": true,
+  "actualOriginalStandardDehomogenizedWholeSectionDifferentialVerified": true,
+  "actualOriginalChartSectionComplexIsoConstructed": true,
+  "actualOriginalAllIntegerSourceQuasicoherenceDerived": true,
+  "actualOriginalKoszulSourceQuasicoherenceDerived": true,
+  "actualOriginalKoszulRestrictedSourceQuasicoherenceDerived": true,
+  "actualNativeAffineQuasicoherentSheafComplexCounitIsoConstructed": true,
+  "actualOriginalAffineRestrictedKoszulConstructed": true,
+  "actualOriginalAffineRestrictedKoszulTildeGammaComplexIsoConstructed": true,
+  "actualHomogeneousQuotientSourceConditionsDerived": true,
+  "actualHomogeneousQuotientAffineKoszulCounitIsoConstructed": true,
+  "actualOriginalGlobalKoszulRestrictedCohomologyIsoConstructed": false,
+  "heldUnverifiedExcludedSourceHashes": [
+    "659e0b3a22df1b8937fb3fb71d1f0e75042ac3f7f280a4b2cb4899043b6aae64",
+    "55d641bb002215f4ba8df28b1eb59d83b4ebdea9a2a145c520c778ef2aa5ae92"
+  ],
+  "originalGlobalKoszulAffineFrameIdentificationVerified": false,
+  "originalStandardAffineKoszulSheafComplexIsoVerified": false,
+  "originalGlobalKoszulSourceExactnessVerified": false,
+  "originalGlobalKoszulAugmentationVerified": false,
+  "originalGlobalKoszulExtensionClassVerified": false,
+  "originalUniformFixedMSectionProductionVerified": false,
+  "originalGlobalCechToDerivedSheafComparisonVerified": false,
+  "derivedSheafExtComparisonVerified": false,
+  "originalLemma4_1Verified": false,
+  "originalLemma4_2Verified": false,
+  "mainTheoremVerified": false,
+  "canonicalDualizingIdentificationVerified": false,
+  "baseVerifiedLocalCheckpoint": 180,
+  "coefficientTarget": "any original O_Proj-module N for actual internal-Hom construction",
+  "verificationScope": "# Original Koszul chart sections and actual affine SHEAF reconstruction\n\nLet K be a field,S the ORIGINAL nonnegative graded K-algebra,H ORIGINAL\ndegree-q forms,a ORIGINAL degree-one chart coordinate,U ANY actual\nsubopen of D_+(a),and k ANY integer. Use the SAME original global K(H)(k).\nPROVE actual original exterior coefficients natural under ring maps and\nscaling;derive SAME standard-dehomogenized original differential on U.\nCONSTRUCT genuine ENTIRE original section-complex comparison:\n Gamma_U K(H)(k) ~= Koszul_coordinate(H_i/a^q;O_X(U)),\nEVERY original component/frame inverse and EVERY differential retained.\n\nFor Noetherian S generated in degree one,PROVE SAME actual original\ninteger-twist finite free source,Koszul terms and actual restrictions QC.\nThis is a proved SOURCE property,never a new assumption on coefficient N.\n\nReuse native mathlib ACTUAL tilde-Gamma counit and QC invertibility;\nits SAME original naturality supplies a genuine ENTIRE SHEAF-complex\niso tilde(Gamma C) ~= C on Spec R. CONSTRUCT ACTUAL original restriction\nC=j^*K(H)(k) for ANY actual original affine open immersion j:Spec R->X,\nand APPLY this same actual counit,with QC of ALL original terms DERIVED.\nEvery comparison component is the SAME actual geometric counit.\n\nFor SAME ORIGINAL finite homogeneous polynomial quotient S=K[x]/I,\nCONSTRUCT its grading and DERIVE Noetherianity,coordinate generation,\nsource QC and actual affine Koszul counit comparison from original data.\nNo added grading/QC/Noetherian/generation/counit-isomorphism certificate.\nNo characteristic restriction or target N QC/CM/free/flat/FG/FP hypothesis.\nAll integer twists and original degrees retained,including k negative.\n\nLet S be the ORIGINAL nonnegative graded field algebra,H original degree-q forms,a original degree-one chart coordinate,U ANY original chart subopen,k ANY integer. PROVE original canonical exterior wedge determinant and actual Koszul entry naturality under arbitrary ring homomorphisms,derive SAME actual alternating entry and scaling formulas. PROVE D_ji/a^q equals SAME original standard Koszul(H_i/a^q) entry,using ORIGINAL prime evaluation and coordinate unit cancellation. PROVE WHOLE original global section differential standard-dehomogenized formula. CONSTRUCT ACTUAL ENTIRE original global K(H)(k) evaluated on ANY chart subopen chain-isomorphic to SAME standard dehomogenized coordinate complex;EVERY component is SAME original frame inverse and EVERY differential commutes. Under explicit Noetherian/degree-one generation,DERIVE quasicoherence of SAME original integer shifted-free source and ALL original global Koszul terms/restrictions by previously audited finite-graded QC and identity integer regrading. Reuse native mathlib ACTUAL tilde-Gamma counit,QC implies isomorphism and SAME naturality to CONSTRUCT actual ENTIRE quasicoherent SHEAF-complex reconstruction tilde(Gamma C)~=C,EVERY component SAME original counit. Apply to SAME ORIGINAL global Koszul restricted through ANY actual affine open immersion j:Spec R->Proj S;source QC DERIVED,never an extra desired compatibility/counit invertibility premise. For SAME ORIGINAL finite homogeneous polynomial quotient S=K[x]/I,CONSTRUCT grading and DERIVE Noetherianity/coordinate generation/source QC and actual affine restricted Koszul counit comparison,without adding those as hypotheses. No characteristic restriction or coefficient-target N QC,CM,free,flat,FG,FP or invertibility assumption. This closes the actual SOURCE tilde-Gamma reconstruction bridge. Original chart section standard Koszul iso and actual affine sheaf reconstruction are BOTH constructed on original objects,but their remaining Spec/chart scalar transport to standard affine SHEAF Koszul is NOT asserted. Standard affine sheaf-complex iso,global source exactness/augmentation/finite-cut support/epsilon/derived SHEAF Ext/global Cech/proper-duality/uniform fixedm remain OPEN. Original4.1/4.2/main OPEN,theta UNVERIFIED,wholecheckpoint180. Same single8GiB2threadsCPU25%20min,oldholds retained,no agents,all task filesD.\n\nOPEN: Transport SAME original standard chart-section complex iso through actual Spec chart and GammaSpec scalar maps,to obtain SAME standard affine SHEAF Koszul comparison.\nDerive original GLOBAL source exactness,augmentation and finite-cut cohomology support.\nOriginal epsilon/connecting,derived SHEAF Ext,global Cech/proper-duality and uniform fixedm remain OPEN.\nCanonical theta UNVERIFIED;original4.1/4.2/main OPEN;wholecheckpoint180.\nThe SAME standard original chart SECTION-complex iso and SAME actual\naffine SHEAF-complex reconstruction are constructed. The original\nSpec/chart/GammaSpec scalar conversion between them remains OPEN.\nWe DO NOT claim the standard affine SHEAF Koszul comparison yet.\nOriginal global source exactness/augmentation/support,epsilon/connecting,\nderived SHEAF Ext,global Cech/proper-duality/uniform fixedm and canonical\ntheta remain OPEN/UNVERIFIED. Original4.1/4.2/main OPEN,checkpoint180.\n\n7 roots,487 physical lines,22 exact declarations:\n17 proofs,5 definitions;188\nclosed modules,181 older frozen dependencies unchanged.\nAll full exact types/axioms and ALL5 new actual complex/counit definition\nbodies printed and manually read. Only propext,Classical.choice,Quot.sound.\nOne compiler,8GiB hard Job,2threads,CPU25%,20min;oldholds retained,\nno agents,all task artifactsD. Lean4.35.0-rc3/pinned mathlib\n2a885768dae569d938bb9ff3474da6a8753bb90a.\n",
+  "remainingObligations": [
+    "Transport SAME original standard chart-section complex iso through actual Spec chart and GammaSpec scalar maps,to obtain SAME standard affine SHEAF Koszul comparison.",
+    "Derive original GLOBAL source exactness,augmentation and finite-cut cohomology support.",
+    "Original epsilon/connecting,derived SHEAF Ext,global Cech/proper-duality and uniform fixedm remain OPEN.",
+    "Canonical theta UNVERIFIED;original4.1/4.2/main OPEN;wholecheckpoint180."
+  ],
+  "resourceLimits": {
+    "concurrentCompilers": 1,
+    "hardJobMemoryMiB": 8192,
+    "leanThreads": 2,
+    "cpuPercent": 25,
+    "timeoutSeconds": 1200
+  },
+  "sources": [
+    {
+      "module": "Linear.ActualPresentationDualKernel",
+      "path": "source/Linear/ActualPresentationDualKernel.lean",
+      "sha256": "98f2c3be701014fdc259ce3a282b373286782e435b44562096336a8a2a481dae",
+      "physicalLines": 35
+    },
+    {
+      "module": "Linear.ActualPresentationGradedDualKernel",
+      "path": "source/Linear/ActualPresentationGradedDualKernel.lean",
+      "sha256": "bd85866d3aa4d903a2e40cc417f04ba6f40da9263e7d433a424a573e3570eda9",
+      "physicalLines": 98
+    },
+    {
+      "module": "Linear.AffineFiltered",
+      "path": "source/Linear/AffineFiltered.lean",
+      "sha256": "d118cc1b4d3c968c1c325966f3eaa7a07c63f34a3d834c2c663dbf78c86e7379",
+      "physicalLines": 228
+    },
+    {
+      "module": "Linear.AffineQuasicoherentComplexCounit",
+      "path": "source/Linear/AffineQuasicoherentComplexCounit.lean",
+      "sha256": "c0c1a586292adcc1aa17755a6810f9d4b67cf7376e5b3c54f175070eadec81cf",
+      "physicalLines": 45
+    },
+    {
+      "module": "Linear.ArbitraryParameterJacobian",
+      "path": "source/Linear/ArbitraryParameterJacobian.lean",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "physicalLines": 115
+    },
+    {
+      "module": "Linear.ArbitraryParameterSocle",
+      "path": "source/Linear/ArbitraryParameterSocle.lean",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "physicalLines": 197
+    },
+    {
+      "module": "Linear.ArtinianDiagonal",
+      "path": "source/Linear/ArtinianDiagonal.lean",
+      "sha256": "8db1dc43dde887efb38a60ea3eb90c69bdd2d418819875fd87bc70863bd81c6a",
+      "physicalLines": 132
+    },
+    {
+      "module": "Linear.ArtinianGlobalPairing",
+      "path": "source/Linear/ArtinianGlobalPairing.lean",
+      "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
+      "physicalLines": 133
+    },
+    {
+      "module": "Linear.CenteredRelativeJacobian",
+      "path": "source/Linear/CenteredRelativeJacobian.lean",
+      "sha256": "e148aa48c54d723e24919baf7620cc0bf93af46047df930de0349be26a48b4d6",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.CompleteIntersectionChange",
+      "path": "source/Linear/CompleteIntersectionChange.lean",
+      "sha256": "baf17fddcfc62d1f354f5bc15ec423dfe5903b26067b7b252646ca868a490df9",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.DeterminantAnnihilator",
+      "path": "source/Linear/DeterminantAnnihilator.lean",
+      "sha256": "8a7ebfa5bd2b642ca93d1e463a2031c1b36eb037baf35a4d11f29d9632703c0f",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.DiagonalNonzero",
+      "path": "source/Linear/DiagonalNonzero.lean",
+      "sha256": "48a9c1a36db8b5f60ea30f901d81940a071160919182f2d9c39a461c1c16655c",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.DiagonalNormalization",
+      "path": "source/Linear/DiagonalNormalization.lean",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "physicalLines": 113
+    },
+    {
+      "module": "Linear.DiagonalTrace",
+      "path": "source/Linear/DiagonalTrace.lean",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "physicalLines": 177
+    },
+    {
+      "module": "Linear.DoublePoint",
+      "path": "source/Linear/DoublePoint.lean",
+      "sha256": "a7017ec416d7ac1e16f04e31df7e4f51920677b4d4da88cda1647bbd6813dd7d",
+      "physicalLines": 119
+    },
+    {
+      "module": "Linear.Duality",
+      "path": "source/Linear/Duality.lean",
+      "sha256": "00105abf68fc434f67069718ef64e3b8e06d4dc1b5ea23be2854f36890e1327a",
+      "physicalLines": 114
+    },
+    {
+      "module": "Linear.FiniteSpecialization",
+      "path": "source/Linear/FiniteSpecialization.lean",
+      "sha256": "5966c5143536cb2e72fb00e09defff6d0c8ddb1beff10ad6727ea39d0c312162",
+      "physicalLines": 97
+    },
+    {
+      "module": "Linear.FirstJet",
+      "path": "source/Linear/FirstJet.lean",
+      "sha256": "699167928d2f69bd07dc55c7ce6c1b204dc30ed01f3b8f84921b5aab0fabba28",
+      "physicalLines": 158
+    },
+    {
+      "module": "Linear.GlobalDiagonalNormalization",
+      "path": "source/Linear/GlobalDiagonalNormalization.lean",
+      "sha256": "deb4c5debe04dce44c3925d5b473eb7459bf8747aff5c4710fdfa60e75e23f69",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.GradedIntegerProjection",
+      "path": "source/Linear/GradedIntegerProjection.lean",
+      "sha256": "52892ad4e5bf6091a82d60f482e115ab760c8483261a5e73abd3ccbe9cf4fa19",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.GradedIntegerProjector",
+      "path": "source/Linear/GradedIntegerProjector.lean",
+      "sha256": "3c146b5ea3ccae9a3566b6fc1ec19fb3474c1426b42aed3d12b3e83fcf150e7f",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.GradedModuleProjection",
+      "path": "source/Linear/GradedModuleProjection.lean",
+      "sha256": "0281f26fd12a05947a7af758cb23a38a18052cf4d8376fe121129751747d312c",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.HomogeneousCoordinateGrading",
+      "path": "source/Linear/HomogeneousCoordinateGrading.lean",
+      "sha256": "51027580a417a916c5d14b47257422ec0fd6060b6bb820ac573eb30af1562540",
+      "physicalLines": 55
+    },
+    {
+      "module": "Linear.HomogeneousCoordinatePieces",
+      "path": "source/Linear/HomogeneousCoordinatePieces.lean",
+      "sha256": "95a349c6d14f13c94c8ab81a19ac9e055451117db00bbfccbb9ba7aa9a1ccaaf",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.HomogeneousKoszulCoordinateComplex",
+      "path": "source/Linear/HomogeneousKoszulCoordinateComplex.lean",
+      "sha256": "6d2fdd89d50645953c67d0f3c1b23a9633d07cee0a5b51abfbfd969875de8d4e",
+      "physicalLines": 49
+    },
+    {
+      "module": "Linear.HomogeneousPullbackComponents",
+      "path": "source/Linear/HomogeneousPullbackComponents.lean",
+      "sha256": "b913e29799ad2210e3d320630a4d2f3bcd3a0621f3adb96484d8a2277091f16a",
+      "physicalLines": 37
+    },
+    {
+      "module": "Linear.HomogeneousQuotient",
+      "path": "source/Linear/HomogeneousQuotient.lean",
+      "sha256": "815b79ba26f16335119f3544ec59cad7b6c25e4f190a9cb41911f22ceffad9b2",
+      "physicalLines": 234
+    },
+    {
+      "module": "Linear.HomogeneousQuotientKoszulAffineCounit",
+      "path": "source/Linear/HomogeneousQuotientKoszulAffineCounit.lean",
+      "sha256": "48df87700e7c51c5f92c5196103153c54e6ce4cb726037d4b25f00343dea66d1",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.IntegerGradedFiniteFreeSurjection",
+      "path": "source/Linear/IntegerGradedFiniteFreeSurjection.lean",
+      "sha256": "c3ec94c67f728cb8912e2c5276c91f6b2aeebbf275e290b289622f38ac5fdce6",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.IntegerGradedFinitePresentation",
+      "path": "source/Linear/IntegerGradedFinitePresentation.lean",
+      "sha256": "7c89c5716843acdffe0324ca20d00ba59e12cc7b336b079cf99f97e6556df6ac",
+      "physicalLines": 68
+    },
+    {
+      "module": "Linear.IntegerGradedFiniteRelations",
+      "path": "source/Linear/IntegerGradedFiniteRelations.lean",
+      "sha256": "68874f2ce89ebef7353f0f1559d7423471fb9521adbd5a753bcf08f581361185",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.IntegerGradedHomogeneousAnnihilator",
+      "path": "source/Linear/IntegerGradedHomogeneousAnnihilator.lean",
+      "sha256": "aeb95e5226264d08acbf6d407405b7e3866611cd7fb3f4cf5992785eca7b384b",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.IntegerGradedKernelGenerators",
+      "path": "source/Linear/IntegerGradedKernelGenerators.lean",
+      "sha256": "d353a14c1ac61d6bfd8795573d6e1105de846d290a6256e9db85d5002a51591f",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.IntegerGradedModuleGenerators",
+      "path": "source/Linear/IntegerGradedModuleGenerators.lean",
+      "sha256": "68bd621aa09129ef7d7e50bd7ba9d5989c78b507e3965c2d098440ab32d24238",
+      "physicalLines": 38
+    },
+    {
+      "module": "Linear.IntegerGradedModuleProjection",
+      "path": "source/Linear/IntegerGradedModuleProjection.lean",
+      "sha256": "12dc84575739244cf64391a7577b13bd35b6b21e1ddf53d2cbdd8a413cf977eb",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.IntegerGradedRingProduct",
+      "path": "source/Linear/IntegerGradedRingProduct.lean",
+      "sha256": "5687a4ca281cf7f40d5e1ffa9a4ffdf0b550c9b0843c187cffb912082b27370c",
+      "physicalLines": 30
+    },
+    {
+      "module": "Linear.IntegerGradedSubmoduleDecomposition",
+      "path": "source/Linear/IntegerGradedSubmoduleDecomposition.lean",
+      "sha256": "5d8bb37ebae456c71efaa2128e096f44c70343a0bbf5252f7c3a5f5ec816e2d8",
+      "physicalLines": 85
+    },
+    {
+      "module": "Linear.IntegerGradedSurjectionPreimage",
+      "path": "source/Linear/IntegerGradedSurjectionPreimage.lean",
+      "sha256": "7cc92f566e10c0e9a0b9683481e879c9cdfcfe8bb6dc1b5e9394427d2a6006f7",
+      "physicalLines": 45
+    },
+    {
+      "module": "Linear.IntegerGradingShift",
+      "path": "source/Linear/IntegerGradingShift.lean",
+      "sha256": "592514150de910ae02bc080e333c71ad6fe815e93d9e0cb426ad7854493e0a46",
+      "physicalLines": 39
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeDecomposition",
+      "path": "source/Linear/IntegerShiftedFreeDecomposition.lean",
+      "sha256": "1ca324da7899372542b6542fc7b39f2a95c9d7abcbe1477aa1137e79f4258a40",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeDualRelations",
+      "path": "source/Linear/IntegerShiftedFreeDualRelations.lean",
+      "sha256": "0f3969558ed85b701e63f3e261e131e9513cc2da76662677c6eb8c303ba27780",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeGeneralRelationPi",
+      "path": "source/Linear/IntegerShiftedFreeGeneralRelationPi.lean",
+      "sha256": "2602aa243b0744f644fd4aed4663ceaa3895b90e22feabc0cdec77bda1dc26b7",
+      "physicalLines": 50
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeGeneratorMap",
+      "path": "source/Linear/IntegerShiftedFreeGeneratorMap.lean",
+      "sha256": "cfdd79803fc1cbf4a1b9a72fed48e9cba1340674ab03548bef605cb4b02d305e",
+      "physicalLines": 61
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeGradedDualRelation",
+      "path": "source/Linear/IntegerShiftedFreeGradedDualRelation.lean",
+      "sha256": "f73bb1fa075a1afca9b930b979095574e94bbfe39cf36528c3d18a25b1390d44",
+      "physicalLines": 89
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeHomCoordinates",
+      "path": "source/Linear/IntegerShiftedFreeHomCoordinates.lean",
+      "sha256": "055e6abcfbe07dcac5a8ac9a80edd8a9e57adeca409881c130871d5cfa6ca01d",
+      "physicalLines": 89
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeHomPiCoordinates",
+      "path": "source/Linear/IntegerShiftedFreeHomPiCoordinates.lean",
+      "sha256": "927ab04867f572657f580b3c726dfbb1aa418173dbf80244f04c147cd80c985c",
+      "physicalLines": 69
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeMatrix",
+      "path": "source/Linear/IntegerShiftedFreeMatrix.lean",
+      "sha256": "3fe72187eaeb1c35f7b1dc10778b1656de976287ec3c8a1804b284b55c7a9d70",
+      "physicalLines": 65
+    },
+    {
+      "module": "Linear.IntegerShiftedFreePieces",
+      "path": "source/Linear/IntegerShiftedFreePieces.lean",
+      "sha256": "5c934b9a1958f01ac5614596702bbafc30e4c5e610ab33a830f3a05bca978833",
+      "physicalLines": 78
+    },
+    {
+      "module": "Linear.IntegerShiftedFreeRegradingPresentation",
+      "path": "source/Linear/IntegerShiftedFreeRegradingPresentation.lean",
+      "sha256": "134ced8d7d7e0a43070784285b47d4aab0b0458ffe443afbc716dc72080fe77b",
+      "physicalLines": 81
+    },
+    {
+      "module": "Linear.JacobianNonzero",
+      "path": "source/Linear/JacobianNonzero.lean",
+      "sha256": "20ed4e44d0b9fa4287a5c50209d30429dbd9b5ca8ce293957c78e1c4405e52ff",
+      "physicalLines": 180
+    },
+    {
+      "module": "Linear.JacobianSpecialization",
+      "path": "source/Linear/JacobianSpecialization.lean",
+      "sha256": "c9c03f9379d2459aa6656047cd06177ff663a0082dd724b1c00e8b33ecd5f028",
+      "physicalLines": 119
+    },
+    {
+      "module": "Linear.JacobianTrace",
+      "path": "source/Linear/JacobianTrace.lean",
+      "sha256": "82069953a58ad8596eb1ee01b72e6975761b590b433a22ff54447c3fab00feca",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.KoszulComparison",
+      "path": "source/Linear/KoszulComparison.lean",
+      "sha256": "80b12745a16e3dfee452d3d3a9ed1256fee52ae447d1f0304339de2287f337f1",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.KoszulCoordinateEntryNaturality",
+      "path": "source/Linear/KoszulCoordinateEntryNaturality.lean",
+      "sha256": "98b66204b8235e39ac07bf2fc11771316c99ce191dc93cce2d6fcdf0b2df96b3",
+      "physicalLines": 89
+    },
+    {
+      "module": "Linear.KoszulFunctionResolution",
+      "path": "source/Linear/KoszulFunctionResolution.lean",
+      "sha256": "1704b393bc83f91ed6e7fe36f2977231a4e8d4fada95d60ffdb1cdfbee65090a",
+      "physicalLines": 107
+    },
+    {
+      "module": "Linear.KoszulHomogeneousCoordinates",
+      "path": "source/Linear/KoszulHomogeneousCoordinates.lean",
+      "sha256": "6575474e0ca343ac5e735c2bf973b741c693a089be3bd551a4267bfb264b924f",
+      "physicalLines": 134
+    },
+    {
+      "module": "Linear.KoszulHomotopyTop",
+      "path": "source/Linear/KoszulHomotopyTop.lean",
+      "sha256": "76b6e0c66c51ce5cdf82da9a5a405ee3ce61b8569e8a4db688a394f24dd10479",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.KoszulResolution",
+      "path": "source/Linear/KoszulResolution.lean",
+      "sha256": "ce9ac141b89a8081c15fe06317a4c55b0a04d922d0286b9c9948d2419814268d",
+      "physicalLines": 95
+    },
+    {
+      "module": "Linear.KoszulSocleDeterminant",
+      "path": "source/Linear/KoszulSocleDeterminant.lean",
+      "sha256": "06945275d214ac136ee4df4624ef6792ddab57d7b3d8df7b46b40c091cdb7612",
+      "physicalLines": 171
+    },
+    {
+      "module": "Linear.KoszulSocleMap",
+      "path": "source/Linear/KoszulSocleMap.lean",
+      "sha256": "a9f334337f7503bf2efe0b6bc4980c54c5a1ac66eb948798f57ef9bf623e42d2",
+      "physicalLines": 32
+    },
+    {
+      "module": "Linear.KoszulTop",
+      "path": "source/Linear/KoszulTop.lean",
+      "sha256": "fcc60344a344fe3dd497f1f262099d8f6351e03c3b7c4b257432b8e8ce3ce7c7",
+      "physicalLines": 79
+    },
+    {
+      "module": "Linear.LiftedParameterCoordinates",
+      "path": "source/Linear/LiftedParameterCoordinates.lean",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "physicalLines": 157
+    },
+    {
+      "module": "Linear.LiftedParameterMaps",
+      "path": "source/Linear/LiftedParameterMaps.lean",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "physicalLines": 253
+    },
+    {
+      "module": "Linear.LiftedParameterPresentation",
+      "path": "source/Linear/LiftedParameterPresentation.lean",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "physicalLines": 137
+    },
+    {
+      "module": "Linear.LiftedParametersRegular",
+      "path": "source/Linear/LiftedParametersRegular.lean",
+      "sha256": "76e7a5d5b67de8f986aca4a87f40879f2442ee4d01487437cd922450d0bcd873",
+      "physicalLines": 85
+    },
+    {
+      "module": "Linear.LocalResidueEvaluation",
+      "path": "source/Linear/LocalResidueEvaluation.lean",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "physicalLines": 233
+    },
+    {
+      "module": "Linear.NativeCoordinateRatio",
+      "path": "source/Linear/NativeCoordinateRatio.lean",
+      "sha256": "1ae364594d3ba8ae93c34dee84960f762a9d84c2fde99070b85e62fbb5f692d3",
+      "physicalLines": 120
+    },
+    {
+      "module": "Linear.NativeGlobalKoszulAffineCounit",
+      "path": "source/Linear/NativeGlobalKoszulAffineCounit.lean",
+      "sha256": "d6671dea14ef7cf71af6930af51b9291c7e3f425f7d418b491058b1ebafd5c9e",
+      "physicalLines": 69
+    },
+    {
+      "module": "Linear.NativeGlobalKoszulChartSectionComplex",
+      "path": "source/Linear/NativeGlobalKoszulChartSectionComplex.lean",
+      "sha256": "e3e01a901f86857fb7d0e5aa3268881ef12c3d7a8bf72aa937603d6c6bca777b",
+      "physicalLines": 79
+    },
+    {
+      "module": "Linear.NativeGlobalKoszulDehomogenizedDifferential",
+      "path": "source/Linear/NativeGlobalKoszulDehomogenizedDifferential.lean",
+      "sha256": "96dbd1ba61e5b449a754d2b7f7cec3b974480af23cb6e5983cc36a49d7229217",
+      "physicalLines": 83
+    },
+    {
+      "module": "Linear.NativeGlobalKoszulFrameEntries",
+      "path": "source/Linear/NativeGlobalKoszulFrameEntries.lean",
+      "sha256": "dc0625e776fe6e505be071a43e2aa8da9131c63120d2fa4cf4528d2758e58a13",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.NativeGlobalKoszulQuasicoherent",
+      "path": "source/Linear/NativeGlobalKoszulQuasicoherent.lean",
+      "sha256": "c9be231b01a39e855ec3d72d53ecd6ebe891c34c6a1963859cfec24242d70c83",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.NativeGlobalKoszulSectionMatrix",
+      "path": "source/Linear/NativeGlobalKoszulSectionMatrix.lean",
+      "sha256": "831008c9479cfbbc917da8431895bee4a6df04fcead785595c2666930bcb00d6",
+      "physicalLines": 93
+    },
+    {
+      "module": "Linear.NativeHomogeneousGlobalSection",
+      "path": "source/Linear/NativeHomogeneousGlobalSection.lean",
+      "sha256": "7a976f69de524896f855455813f9e0792def3aa0ea1fe5509e53787c51b5c13b",
+      "physicalLines": 88
+    },
+    {
+      "module": "Linear.NativeHomogeneousIntegerFrameMultiply",
+      "path": "source/Linear/NativeHomogeneousIntegerFrameMultiply.lean",
+      "sha256": "e3e468300733b84c9ab79b271dd29c36b5ebafd1db16c34ef79e7cc8da65f1a6",
+      "physicalLines": 73
+    },
+    {
+      "module": "Linear.NativeHomogeneousSectionFrame",
+      "path": "source/Linear/NativeHomogeneousSectionFrame.lean",
+      "sha256": "9844f4e77782eae44a375e25180eae39449eebaf10e958fc6654041d4cb34752",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.NativeIntegerFreeTwistRegrading",
+      "path": "source/Linear/NativeIntegerFreeTwistRegrading.lean",
+      "sha256": "23bd683338588a16707897aaeb8b7cbb728b79fca43ad21300e24f587cdae284",
+      "physicalLines": 128
+    },
+    {
+      "module": "Linear.NativeIntegerPrimeTwist",
+      "path": "source/Linear/NativeIntegerPrimeTwist.lean",
+      "sha256": "7d83a846a77467dca8dc5502bdfe59018a3883cd56589baf2b2b93314b537be4",
+      "physicalLines": 106
+    },
+    {
+      "module": "Linear.NativeIntegerShiftedFreeBicone",
+      "path": "source/Linear/NativeIntegerShiftedFreeBicone.lean",
+      "sha256": "4bbdc596a194bca77030a555c7ab00ab970f5beaf29c7a4f435f690efc3f0ba4",
+      "physicalLines": 135
+    },
+    {
+      "module": "Linear.NativeIntegerShiftedFreeCoordinateMaps",
+      "path": "source/Linear/NativeIntegerShiftedFreeCoordinateMaps.lean",
+      "sha256": "024c48124354154a745b60a6e2f86bd449e0a72fe4e7177985bdfa165f6ead51",
+      "physicalLines": 96
+    },
+    {
+      "module": "Linear.NativeIntegerShiftedFreeSectionFrames",
+      "path": "source/Linear/NativeIntegerShiftedFreeSectionFrames.lean",
+      "sha256": "cbe8b97923cfdc706c4be5c5338e8364381a5e50f6d1772cb7b4d5983f11873d",
+      "physicalLines": 99
+    },
+    {
+      "module": "Linear.NativeIntegerTwistDegreeTransport",
+      "path": "source/Linear/NativeIntegerTwistDegreeTransport.lean",
+      "sha256": "1d19865fdcc55c380a25ca4e625297013e43bec9e43e337b412ecb6fcf07e42f",
+      "physicalLines": 34
+    },
+    {
+      "module": "Linear.NativeIntegerTwistScalarCommute",
+      "path": "source/Linear/NativeIntegerTwistScalarCommute.lean",
+      "sha256": "f2f3582a43952ad3d5f9e64cac96dd4e515d53ab93de19e8cf1ed6a4701a8947",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.NativeIntegerTwistSectionFrames",
+      "path": "source/Linear/NativeIntegerTwistSectionFrames.lean",
+      "sha256": "eaf29da9c32fccb9dc20ef0432a55223d3b0b009b305a1d127de72dff16e6542",
+      "physicalLines": 145
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeOneCover",
+      "path": "source/Linear/NativeProjectiveDegreeOneCover.lean",
+      "sha256": "accd01c4d8e818b4ca4cc6d33e680e4d189d011abf5fd2bbddf0c2d534058f1d",
+      "physicalLines": 58
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeZeroComposition",
+      "path": "source/Linear/NativeProjectiveDegreeZeroComposition.lean",
+      "sha256": "5f032dd04c5d82558bb338c47607f9683042974e8d506c3b5e7deaec9ae04424",
+      "physicalLines": 59
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeZeroEpi",
+      "path": "source/Linear/NativeProjectiveDegreeZeroEpi.lean",
+      "sha256": "516d0cdb7abfd8564fd2ccaf71596c500d531253716c6ddf0bb8068989bc05d3",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeZeroIdentities",
+      "path": "source/Linear/NativeProjectiveDegreeZeroIdentities.lean",
+      "sha256": "427e80da6eb2593d24d130ac490e99b082a0eba8cc5068924dd038a9083ce2db",
+      "physicalLines": 120
+    },
+    {
+      "module": "Linear.NativeProjectiveDegreeZeroMap",
+      "path": "source/Linear/NativeProjectiveDegreeZeroMap.lean",
+      "sha256": "98c0d8578034e766970a67187a8a991938b776bedf482da077e22a104099ad12",
+      "physicalLines": 88
+    },
+    {
+      "module": "Linear.NativeProjectiveExactFinitePresentation",
+      "path": "source/Linear/NativeProjectiveExactFinitePresentation.lean",
+      "sha256": "1311912ae48a6221950c648b823a206107c0a01734da322b6afbf593bceff2fa",
+      "physicalLines": 67
+    },
+    {
+      "module": "Linear.NativeProjectiveFiniteGradedChartPresentation",
+      "path": "source/Linear/NativeProjectiveFiniteGradedChartPresentation.lean",
+      "sha256": "789d2cd6306de380c5b076aff72542b976bdc62f8d438a384cc0bbd80cb89a31",
+      "physicalLines": 67
+    },
+    {
+      "module": "Linear.NativeProjectiveFiniteGradedQuasicoherent",
+      "path": "source/Linear/NativeProjectiveFiniteGradedQuasicoherent.lean",
+      "sha256": "23ca55d62e93fd0c780061215e95248395c71ccf605523a637511f1050352cac",
+      "physicalLines": 42
+    },
+    {
+      "module": "Linear.NativeProjectiveHomogeneousSMul",
+      "path": "source/Linear/NativeProjectiveHomogeneousSMul.lean",
+      "sha256": "85f987b26327c5629a29f78779e095ee7411be8c08735a1075b3dff28f8fe112",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.NativeProjectiveIntegerTwistChartFree",
+      "path": "source/Linear/NativeProjectiveIntegerTwistChartFree.lean",
+      "sha256": "9479919e80bdbe800a8a64c1585bad861858c183523ef6c6c7a0d9f36a7e6601",
+      "physicalLines": 45
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelFraction",
+      "path": "source/Linear/NativeProjectiveKernelFraction.lean",
+      "sha256": "a8e68a04b852fab510d37384e3c985107978b5d8fc2834ac2008ed73da9c11e9",
+      "physicalLines": 75
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelGrading",
+      "path": "source/Linear/NativeProjectiveKernelGrading.lean",
+      "sha256": "1d3e15492afed282beeeebe67e4b1164fd3e9c2783596a1c43a22bb30e537f4e",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelLocalLift",
+      "path": "source/Linear/NativeProjectiveKernelLocalLift.lean",
+      "sha256": "0947cc8e5e575c707aa8da9c18e46d9dddad06e81edbff35c5aa71b8a0b787f1",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelSectionExact",
+      "path": "source/Linear/NativeProjectiveKernelSectionExact.lean",
+      "sha256": "665bc140bcfdbfc2b8a76b7a83d02fbaf4d7bca8089bedf2530c5e10d26049a8",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.NativeProjectiveKernelSheaf",
+      "path": "source/Linear/NativeProjectiveKernelSheaf.lean",
+      "sha256": "35b88f671ea03037fc9e9e87432eacbca214b58ec23f2115e70c2bedc9155e50",
+      "physicalLines": 75
+    },
+    {
+      "module": "Linear.NativeProjectiveKoszulComplex",
+      "path": "source/Linear/NativeProjectiveKoszulComplex.lean",
+      "sha256": "c0b181de4a0641b07eeceb88da5b78b5bae152e8c0a5c334a23ec7769c03aecf",
+      "physicalLines": 101
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleFractionLift",
+      "path": "source/Linear/NativeProjectiveModuleFractionLift.lean",
+      "sha256": "a3de4ba746f376a7570f0ab8acffdb5b2541d57873e7a40d8b4b631fed1c67c7",
+      "physicalLines": 41
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalAdd",
+      "path": "source/Linear/NativeProjectiveModuleLocalAdd.lean",
+      "sha256": "57a228b3302c5b94f2711f717cf6d08b53937bf3288fe60a0466d91435668e5a",
+      "physicalLines": 84
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalMap",
+      "path": "source/Linear/NativeProjectiveModuleLocalMap.lean",
+      "sha256": "4efe6440880dd3c95ef5d5c2bbf6d06a24d29ac94265603222222a44f1696f8b",
+      "physicalLines": 80
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalPredicate",
+      "path": "source/Linear/NativeProjectiveModuleLocalPredicate.lean",
+      "sha256": "e2115c92d44050cc2877e9bca10ead5657be45b49de9526fae7af55e3d7f48e0",
+      "physicalLines": 64
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleLocalSMul",
+      "path": "source/Linear/NativeProjectiveModuleLocalSMul.lean",
+      "sha256": "a56eef16375a14c18d7b612579a93b2cda12b8bba38801c3f6676d069750c26f",
+      "physicalLines": 95
+    },
+    {
+      "module": "Linear.NativeProjectiveModulePresheaf",
+      "path": "source/Linear/NativeProjectiveModulePresheaf.lean",
+      "sha256": "32a57fb96bba0b23e7b7eca54c1bd0a68374c102bd1c0f247c56739ffbfff867",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSections",
+      "path": "source/Linear/NativeProjectiveModuleSections.lean",
+      "sha256": "1ada8ff22c27caf3391a2e3080fddae3d2d30fb01140838b56cb11ccae289d2d",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSheaf",
+      "path": "source/Linear/NativeProjectiveModuleSheaf.lean",
+      "sha256": "f1d285c41b1325dfeb3d8fa8ff3e3d508af7b7c1307f70d34058192052a29201",
+      "physicalLines": 37
+    },
+    {
+      "module": "Linear.NativeProjectiveModuleSheafMap",
+      "path": "source/Linear/NativeProjectiveModuleSheafMap.lean",
+      "sha256": "d349cd4c673e7e8805c983666a310b579e0738f424ab24f397968cc65331b074",
+      "physicalLines": 89
+    },
+    {
+      "module": "Linear.NativeProjectiveOverCokernel",
+      "path": "source/Linear/NativeProjectiveOverCokernel.lean",
+      "sha256": "fb4c392f6e102bbf3f43299a24c933c2d561d74fe81c9321843a0abf2bf114a4",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.NativeProjectivePrimeMapExact",
+      "path": "source/Linear/NativeProjectivePrimeMapExact.lean",
+      "sha256": "b51f29882ba032227b59e3433026c8afa1cc51aa47d8485ff6953461d779a0c0",
+      "physicalLines": 27
+    },
+    {
+      "module": "Linear.NativeProjectivePrimeTwistUnit",
+      "path": "source/Linear/NativeProjectivePrimeTwistUnit.lean",
+      "sha256": "2fdcddebb7bcfd76e4feef9e7ef3c6ca8dde0991e1f2e8b9470dd15f0f2cfffb",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.NativeProjectiveRingIntegerPieces",
+      "path": "source/Linear/NativeProjectiveRingIntegerPieces.lean",
+      "sha256": "4017d431d5faf02665d8c5d299aaf3adc2747ed9f426d0dcbdffb3835f8e1dfb",
+      "physicalLines": 48
+    },
+    {
+      "module": "Linear.NativeProjectiveRingModuleLocalization",
+      "path": "source/Linear/NativeProjectiveRingModuleLocalization.lean",
+      "sha256": "13d48996b79724616983b634cde070ea8def5b4e97a213c7f2d855d966461750",
+      "physicalLines": 72
+    },
+    {
+      "module": "Linear.NativeProjectiveSheafExact",
+      "path": "source/Linear/NativeProjectiveSheafExact.lean",
+      "sha256": "1554ce5c5978feb2041e8548ef6822f218d990b4b6d80bd7d03272bc141fc9e9",
+      "physicalLines": 103
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeBiproduct",
+      "path": "source/Linear/NativeProjectiveShiftedFreeBiproduct.lean",
+      "sha256": "3dfafd781ee564293826ee8f020d3fcdc3b611a253b7d4eaabce21d5e4c30f01",
+      "physicalLines": 56
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeChart",
+      "path": "source/Linear/NativeProjectiveShiftedFreeChart.lean",
+      "sha256": "a8b99d0e5b0f3b8e582b7e0e2f46f52b5081dd3267c1a88ebb7d9cfd7baeed90",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeCoordinateMaps",
+      "path": "source/Linear/NativeProjectiveShiftedFreeCoordinateMaps.lean",
+      "sha256": "8de84a0c4b1451da4cb50618c9406291118f22463dd557aff890e107f4252e6b",
+      "physicalLines": 101
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreePrimeIdentities",
+      "path": "source/Linear/NativeProjectiveShiftedFreePrimeIdentities.lean",
+      "sha256": "35372197f9e3b80cd781802864ece41586f650ad56339eb0dc5747aafed36703",
+      "physicalLines": 55
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeSheafIdentities",
+      "path": "source/Linear/NativeProjectiveShiftedFreeSheafIdentities.lean",
+      "sha256": "bda1e5a81027a2edb1524d923968ea12bc42ac15d944fbd0e31050a99c953a3b",
+      "physicalLines": 96
+    },
+    {
+      "module": "Linear.NativeProjectiveShiftedFreeSheafMaps",
+      "path": "source/Linear/NativeProjectiveShiftedFreeSheafMaps.lean",
+      "sha256": "27881ea9ca4ff43689f13eaf12d1ab4ed2a5053c9382d4c18e3edc26bdd110eb",
+      "physicalLines": 74
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistChartFree",
+      "path": "source/Linear/NativeProjectiveTwistChartFree.lean",
+      "sha256": "b6ccfba8f8abaf04dd7eb40555b23b06af28cfb71f35ae700d0c942d04b7b251",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistFraction",
+      "path": "source/Linear/NativeProjectiveTwistFraction.lean",
+      "sha256": "a5ae39d7ff084d4e673a65a019aa2ab18e60df97a7bc8346220eef877297d4bb",
+      "physicalLines": 85
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistRegrading",
+      "path": "source/Linear/NativeProjectiveTwistRegrading.lean",
+      "sha256": "8e3e8c0d90c51b89d408bdad169d6227ff24d2aea9bd6e36836e73552b261fa6",
+      "physicalLines": 94
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistSectionEquiv",
+      "path": "source/Linear/NativeProjectiveTwistSectionEquiv.lean",
+      "sha256": "0aa852ed6dd392689f64d63aa2e72922c50ed6d18d2b625996e24107eab57a51",
+      "physicalLines": 66
+    },
+    {
+      "module": "Linear.NativeProjectiveTwistSheafOverIso",
+      "path": "source/Linear/NativeProjectiveTwistSheafOverIso.lean",
+      "sha256": "a23bad63d87d551b02c02645a12bd7cbc4f6c6eed6941fb124433773a62a998e",
+      "physicalLines": 54
+    },
+    {
+      "module": "Linear.NativeShiftedFreeIntegerTwistBiproduct",
+      "path": "source/Linear/NativeShiftedFreeIntegerTwistBiproduct.lean",
+      "sha256": "b127fae46ea5de0fdf928e4151b750c81f4e9ec62887f6c5a25dff749f46e9a2",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.NativeShiftedFreeSheafMatrixEntry",
+      "path": "source/Linear/NativeShiftedFreeSheafMatrixEntry.lean",
+      "sha256": "fa882170b7860be63a83f486419c420daa634a46e298414c6e0ad65fd041f971",
+      "physicalLines": 61
+    },
+    {
+      "module": "Linear.NativeStructureModuleFraction",
+      "path": "source/Linear/NativeStructureModuleFraction.lean",
+      "sha256": "d680e9e569b17f4604591f1eddecd1a9b9fbc1b08e7e0cc5928023ba72594b09",
+      "physicalLines": 61
+    },
+    {
+      "module": "Linear.NativeStructureModuleSections",
+      "path": "source/Linear/NativeStructureModuleSections.lean",
+      "sha256": "4e7fd6269baae74fb097b15fe0f9e9ee80c9e85cb5ffe4284a7e3e1e436d1d16",
+      "physicalLines": 103
+    },
+    {
+      "module": "Linear.NativeStructureModuleSheaf",
+      "path": "source/Linear/NativeStructureModuleSheaf.lean",
+      "sha256": "e32a4e6e7c54ea04b4fb2795008ab5c652d071ca42d3dba3cfb77134a642fdf7",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.NativeTwistRegradingMapNaturality",
+      "path": "source/Linear/NativeTwistRegradingMapNaturality.lean",
+      "sha256": "b7c171d82244d5710c6415ab92880263072cd10c4661ef582cab34c2a21da86e",
+      "physicalLines": 46
+    },
+    {
+      "module": "Linear.NilpotentEvaluation",
+      "path": "source/Linear/NilpotentEvaluation.lean",
+      "sha256": "ba548ae54a09805d18c0a67616600842020082a08df4c8092ae67b4c42bdc871",
+      "physicalLines": 74
+    },
+    {
+      "module": "Linear.NilpotentEvaluationUnique",
+      "path": "source/Linear/NilpotentEvaluationUnique.lean",
+      "sha256": "c9ba1a17ade996700f2b2e0ced2d6e9a7428c9c4867388809828d9651fe1e431",
+      "physicalLines": 149
+    },
+    {
+      "module": "Linear.NilpotentRegular",
+      "path": "source/Linear/NilpotentRegular.lean",
+      "sha256": "f15652633da27496fc641422562ceefcdadda0dd70a36c79b6776357033018c9",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.PairingMatrix",
+      "path": "source/Linear/PairingMatrix.lean",
+      "sha256": "aa15aafe057d5bdf3881e401f8a27e479f3ffb77c68dfbe93cf06d08ff16ecde",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.ParameterLinearPart",
+      "path": "source/Linear/ParameterLinearPart.lean",
+      "sha256": "5755d08c8063724334df12890bba97078501a34de8c9799d7cab0da2013ae449",
+      "physicalLines": 70
+    },
+    {
+      "module": "Linear.ParameterPairingChange",
+      "path": "source/Linear/ParameterPairingChange.lean",
+      "sha256": "9aa8bc7a50113102c944d46a1e5f8e2496d131c39efee02ad31d20dba7691f08",
+      "physicalLines": 88
+    },
+    {
+      "module": "Linear.ParameterQuotient",
+      "path": "source/Linear/ParameterQuotient.lean",
+      "sha256": "ecedb6ff69cfb3bb3a9fa97eeefb40335a86ffe31fb49f8cd00398fc525e9b53",
+      "physicalLines": 114
+    },
+    {
+      "module": "Linear.ParameterSubstitution",
+      "path": "source/Linear/ParameterSubstitution.lean",
+      "sha256": "c253665adb7aabd4f639d1ec12446ee9f70af874dfdcae6186ef62e74fe8ec6e",
+      "physicalLines": 124
+    },
+    {
+      "module": "Linear.PolynomialApproximation",
+      "path": "source/Linear/PolynomialApproximation.lean",
+      "sha256": "113efcfc5c5beaf7150cff35b3fda3d1853fa9c19897a1e128b9158d1887a187",
+      "physicalLines": 82
+    },
+    {
+      "module": "Linear.PolynomialDiagonal",
+      "path": "source/Linear/PolynomialDiagonal.lean",
+      "sha256": "769caeb6e040f1c016a4070b56b73bdda07e6dc5be294cc4dbe8b06d42e5feeb",
+      "physicalLines": 69
+    },
+    {
+      "module": "Linear.PolynomialDoubleFiber",
+      "path": "source/Linear/PolynomialDoubleFiber.lean",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "physicalLines": 276
+    },
+    {
+      "module": "Linear.PolynomialFiberDiagonal",
+      "path": "source/Linear/PolynomialFiberDiagonal.lean",
+      "sha256": "349ca2d5c9a4255e6c283beb8cfb55cdbf1613137febf41a8c6b228ae51ae4d3",
+      "physicalLines": 110
+    },
+    {
+      "module": "Linear.PolynomialGlobalResidue",
+      "path": "source/Linear/PolynomialGlobalResidue.lean",
+      "sha256": "e83282756eaff7e570e912c38dc0508a23376d44b587142f595ac56db142ac7e",
+      "physicalLines": 157
+    },
+    {
+      "module": "Linear.PolynomialOriginFinite",
+      "path": "source/Linear/PolynomialOriginFinite.lean",
+      "sha256": "bb1e9cdb388c3b98e5527f5aa6c8d0d6876ca272a84c2d4af6cb441fd03dad1a",
+      "physicalLines": 43
+    },
+    {
+      "module": "Linear.PolynomialRegular",
+      "path": "source/Linear/PolynomialRegular.lean",
+      "sha256": "789096a78f53b3d00a04ee811c67437f0f0c25c86bb7425375248bf74ea9e5ac",
+      "physicalLines": 91
+    },
+    {
+      "module": "Linear.PolynomialSocle",
+      "path": "source/Linear/PolynomialSocle.lean",
+      "sha256": "e92e113f68dcdd4ad84f9d09d24714624d02c496b2517585816b3d235209c5b5",
+      "physicalLines": 53
+    },
+    {
+      "module": "Linear.PowerSeriesAugmentation",
+      "path": "source/Linear/PowerSeriesAugmentation.lean",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "physicalLines": 142
+    },
+    {
+      "module": "Linear.PowerSeriesCentering",
+      "path": "source/Linear/PowerSeriesCentering.lean",
+      "sha256": "5dcb5c506616c29da2c93ec573fbcee0c9e29fccb0cac8602dde00bc7237669c",
+      "physicalLines": 77
+    },
+    {
+      "module": "Linear.PowerSeriesCoefficients",
+      "path": "source/Linear/PowerSeriesCoefficients.lean",
+      "sha256": "4916a65bd995b9bc121f7a8b3d0eae0efa38013d1446bc3f451bcc14e9213e38",
+      "physicalLines": 145
+    },
+    {
+      "module": "Linear.PowerSeriesCoordinateChart",
+      "path": "source/Linear/PowerSeriesCoordinateChart.lean",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "physicalLines": 131
+    },
+    {
+      "module": "Linear.PowerSeriesDerivative",
+      "path": "source/Linear/PowerSeriesDerivative.lean",
+      "sha256": "21a450c5ef7b483d8e916e87bd72368fce15f5f177b5840a849a353829531e45",
+      "physicalLines": 83
+    },
+    {
+      "module": "Linear.PowerSeriesDiagonal",
+      "path": "source/Linear/PowerSeriesDiagonal.lean",
+      "sha256": "9059d808ee26c0dbdd829d1b4d9f0e59bd3c05f472ea91030f8ac98ae7cc1f77",
+      "physicalLines": 90
+    },
+    {
+      "module": "Linear.PowerSeriesFlatten",
+      "path": "source/Linear/PowerSeriesFlatten.lean",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "physicalLines": 161
+    },
+    {
+      "module": "Linear.PowerSeriesFlattenDerivative",
+      "path": "source/Linear/PowerSeriesFlattenDerivative.lean",
+      "sha256": "02a513347606616034771f40c5184a002620d6088e4db07d1ecf2847a06a72cd",
+      "physicalLines": 96
+    },
+    {
+      "module": "Linear.PowerSeriesRegular",
+      "path": "source/Linear/PowerSeriesRegular.lean",
+      "sha256": "62267496ce860a5ded36ceea1c8e2cc74543873cc661e5e49aa8f97de17db065",
+      "physicalLines": 60
+    },
+    {
+      "module": "Linear.PowerSeriesSocle",
+      "path": "source/Linear/PowerSeriesSocle.lean",
+      "sha256": "30a412a1f2f54182789566179aa0194d06f3a742232c64016f6b7899dfecb8bb",
+      "physicalLines": 141
+    },
+    {
+      "module": "Linear.PowerSeriesSpecialization",
+      "path": "source/Linear/PowerSeriesSpecialization.lean",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "physicalLines": 145
+    },
+    {
+      "module": "Linear.PowerSeriesTranslation",
+      "path": "source/Linear/PowerSeriesTranslation.lean",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "physicalLines": 134
+    },
+    {
+      "module": "Linear.Primitive",
+      "path": "source/Linear/Primitive.lean",
+      "sha256": "020420375e55a6ccb702d732c2bba4eb7bff3c327c2ba74612b4b8e7baff1027",
+      "physicalLines": 80
+    },
+    {
+      "module": "Linear.Reduction",
+      "path": "source/Linear/Reduction.lean",
+      "sha256": "d427deebc1b6b2a831c6c05a257c3520f65cd06eac89ee061a23019e68c0f9e9",
+      "physicalLines": 57
+    },
+    {
+      "module": "Linear.RegularGeneratorsFree",
+      "path": "source/Linear/RegularGeneratorsFree.lean",
+      "sha256": "cf14c5753928d0ff01b7d49e8a5c4a99d4a4dce0658ef9d3c9c72941f9c68b03",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.RegularSpecialization",
+      "path": "source/Linear/RegularSpecialization.lean",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "physicalLines": 168
+    },
+    {
+      "module": "Linear.RelativeJacobian",
+      "path": "source/Linear/RelativeJacobian.lean",
+      "sha256": "a542fad749ca0a74c1f94851fe3a45c8598e95f4c17f48450f4aaa9b41aea7fe",
+      "physicalLines": 106
+    },
+    {
+      "module": "Linear.RelativeJacobianTrace",
+      "path": "source/Linear/RelativeJacobianTrace.lean",
+      "sha256": "ae8347033ae5324f5fdfcd88ee2d92530f01b2b0efd6eea4a4d4ab8a14b34760",
+      "physicalLines": 112
+    },
+    {
+      "module": "Linear.ResiduePairing",
+      "path": "source/Linear/ResiduePairing.lean",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "physicalLines": 145
+    },
+    {
+      "module": "Linear.SchemeModuleHomGlobal",
+      "path": "source/Linear/SchemeModuleHomGlobal.lean",
+      "sha256": "014fe73ff83ce8b4a204d3f156f49d133cafdd2e0f36954aca3c6eace9fc3900",
+      "physicalLines": 52
+    },
+    {
+      "module": "Linear.SchemeModuleHomModuleSections",
+      "path": "source/Linear/SchemeModuleHomModuleSections.lean",
+      "sha256": "f7c11db79ca976453551c2670468b8e28e0b74fbf8ff3c1b434e2958b4c54dff",
+      "physicalLines": 44
+    },
+    {
+      "module": "Linear.SchemeModuleHomModuleSheaf",
+      "path": "source/Linear/SchemeModuleHomModuleSheaf.lean",
+      "sha256": "dc9e56af0752a4f4669481d24185f5669067da42f22cda8f84e893d08c881c41",
+      "physicalLines": 81
+    },
+    {
+      "module": "Linear.SchemeModuleHomPrecompose",
+      "path": "source/Linear/SchemeModuleHomPrecompose.lean",
+      "sha256": "bac88e881cf848f3d2904dea1b1b2a101e7afe47400195415aeaf4dd31d4c78f",
+      "physicalLines": 94
+    },
+    {
+      "module": "Linear.SchemeModuleHomPresheaf",
+      "path": "source/Linear/SchemeModuleHomPresheaf.lean",
+      "sha256": "b1e52e00867a3ef2719b4556fb4a89d4ff778f2dd86449287cedc96a88e8e75a",
+      "physicalLines": 69
+    },
+    {
+      "module": "Linear.SchemeModuleHomRestriction",
+      "path": "source/Linear/SchemeModuleHomRestriction.lean",
+      "sha256": "8a75457d689c76bf7c573d62606b429524d5719499f4341737c5d4874b49004f",
+      "physicalLines": 33
+    },
+    {
+      "module": "Linear.SchemeModuleHomScalar",
+      "path": "source/Linear/SchemeModuleHomScalar.lean",
+      "sha256": "be075246712de9cf5203727e19d54478c7baffda34c6ef1a053d9051f626ab2c",
+      "physicalLines": 110
+    },
+    {
+      "module": "Linear.SchemeModuleHomSheaf",
+      "path": "source/Linear/SchemeModuleHomSheaf.lean",
+      "sha256": "5134148fa3d54a3af759d13d16dd576e549a8b6bb44172f6e278902f96efc497",
+      "physicalLines": 84
+    },
+    {
+      "module": "Linear.SchemeModuleInternalHomComplex",
+      "path": "source/Linear/SchemeModuleInternalHomComplex.lean",
+      "sha256": "357c45233a1d564ee475c98a9ec8ad8f55c5d5dd5c5ee70ada293e4383c8a49c",
+      "physicalLines": 47
+    },
+    {
+      "module": "Linear.SchemeModuleOpenRestrictionExact",
+      "path": "source/Linear/SchemeModuleOpenRestrictionExact.lean",
+      "sha256": "d4c25273e1edfc5126262b7bad9c0d728af26d26269587b53d57d585a1c23eea",
+      "physicalLines": 71
+    },
+    {
+      "module": "Linear.SheafFreePresentationOfExact",
+      "path": "source/Linear/SheafFreePresentationOfExact.lean",
+      "sha256": "b236df68a16b6f3bc356f3b2a20227fe2fe3424bb2d6928bf103256603ee2ccf",
+      "physicalLines": 35
+    },
+    {
+      "module": "Linear.SoclePairing",
+      "path": "source/Linear/SoclePairing.lean",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "physicalLines": 125
+    },
+    {
+      "module": "Linear.SocleTransport",
+      "path": "source/Linear/SocleTransport.lean",
+      "sha256": "b35c088a3aaa192b97975fd7ef6cd1d239bee98653cfd8ee1a6c62ca9af7dab7",
+      "physicalLines": 45
+    },
+    {
+      "module": "Linear.Target",
+      "path": "source/Linear/Target.lean",
+      "sha256": "c52f521b90d60866bacee0354da36530c36190ea0d5527d713d4f0127a6ef1ef",
+      "physicalLines": 62
+    },
+    {
+      "module": "Linear.TensorDifference",
+      "path": "source/Linear/TensorDifference.lean",
+      "sha256": "0973518273c958d80299be1f4d0ac3324f953334583dd5f1cd638f958be72206",
+      "physicalLines": 93
+    },
+    {
+      "module": "Linear.TensorSpecialization",
+      "path": "source/Linear/TensorSpecialization.lean",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "physicalLines": 194
+    },
+    {
+      "module": "Linear.TraceElement",
+      "path": "source/Linear/TraceElement.lean",
+      "sha256": "b9cf6e1f101c59eaa1ea8599410efcf618a9450b966841cfe816972f74c8ed3b",
+      "physicalLines": 120
+    },
+    {
+      "module": "Linear.UniversalDifference",
+      "path": "source/Linear/UniversalDifference.lean",
+      "sha256": "0475614d273bcc3cd4870e90280454633b4996b0e2b5cb4e7ccac0474ec92766",
+      "physicalLines": 89
+    },
+    {
+      "module": "Linear.Vendor.ExteriorBaseChange",
+      "path": "source/Linear/Vendor/ExteriorBaseChange.lean",
+      "sha256": "45617eb40c0e0f9fce4e66de6ea34defcfd9e48344cd21966085d7025d476a4b",
+      "physicalLines": 238
+    },
+    {
+      "module": "Linear.Vendor.ExteriorProduct",
+      "path": "source/Linear/Vendor/ExteriorProduct.lean",
+      "sha256": "57bef70d222f202e7d48f05838b243e776a818c7fb68c0dd4c79e2f96e3ea22a",
+      "physicalLines": 280
+    },
+    {
+      "module": "Linear.Vendor.KoszulComplex",
+      "path": "source/Linear/Vendor/KoszulComplex.lean",
+      "sha256": "eeec48b0830a1ecf31160f5818c61a00a8f9ecca5d3a0a8004ce8f6fe578618a",
+      "physicalLines": 702
+    },
+    {
+      "path": "source/Linear.lean",
+      "sha256": "1db425a160bab8018a2167c58d539405fd9e2f4ab1098b35562636a22a7be100",
+      "physicalLines": 8
+    },
+    {
+      "path": "source/CheckAxioms.lean",
+      "sha256": "74c27ee51d293de8ab226de02e835111f05aedc185657bac47842b61c414f1bd",
+      "physicalLines": 59
+    },
+    {
+      "path": "source/lean-toolchain",
+      "sha256": "bc84812c94489d1e3e191baa1dc10d5eb684382d7fe9d2a5ab085e72c1c67e47",
+      "physicalLines": 1
+    },
+    {
+      "path": "source/lakefile.toml",
+      "sha256": "12e6d3039c6ed00731bcf1c8f8e9c116e81771e6a74cad289b920b767f94d9ee",
+      "physicalLines": 11
+    },
+    {
+      "path": "source/lake-manifest.json",
+      "sha256": "ef71ef5fb13fd129bbf52a72216543bfd4c8e2b752dd3234d0f18b9964b104da",
+      "physicalLines": 96
+    }
+  ],
+  "compiledModules": [
+    {
+      "module": "Linear.KoszulCoordinateEntryNaturality",
+      "sourceSha256": "98b66204b8235e39ac07bf2fc11771316c99ce191dc93cce2d6fcdf0b2df96b3",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.KoszulCoordinateEntryNaturality.compiler.log",
+      "compilerLogSha256": "813b755469c62c2f80b8b35ef48626c0a72d1f8824c6f1530d52932a010c9091",
+      "resourceLog": "evidence/Linear.KoszulCoordinateEntryNaturality.resource.json"
+    },
+    {
+      "module": "Linear.NativeGlobalKoszulDehomogenizedDifferential",
+      "sourceSha256": "96dbd1ba61e5b449a754d2b7f7cec3b974480af23cb6e5983cc36a49d7229217",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.NativeGlobalKoszulDehomogenizedDifferential.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.NativeGlobalKoszulDehomogenizedDifferential.resource.json"
+    },
+    {
+      "module": "Linear.NativeGlobalKoszulChartSectionComplex",
+      "sourceSha256": "e3e01a901f86857fb7d0e5aa3268881ef12c3d7a8bf72aa937603d6c6bca777b",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.NativeGlobalKoszulChartSectionComplex.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.NativeGlobalKoszulChartSectionComplex.resource.json"
+    },
+    {
+      "module": "Linear.NativeGlobalKoszulQuasicoherent",
+      "sourceSha256": "c9be231b01a39e855ec3d72d53ecd6ebe891c34c6a1963859cfec24242d70c83",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.NativeGlobalKoszulQuasicoherent.compiler.log",
+      "compilerLogSha256": "b9ba899c04c2f227a39b022ef822a80b4f86c15ce1d9070cb0197f7f89c99c0d",
+      "resourceLog": "evidence/Linear.NativeGlobalKoszulQuasicoherent.resource.json"
+    },
+    {
+      "module": "Linear.AffineQuasicoherentComplexCounit",
+      "sourceSha256": "c0c1a586292adcc1aa17755a6810f9d4b67cf7376e5b3c54f175070eadec81cf",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.AffineQuasicoherentComplexCounit.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.AffineQuasicoherentComplexCounit.resource.json"
+    },
+    {
+      "module": "Linear.NativeGlobalKoszulAffineCounit",
+      "sourceSha256": "d6671dea14ef7cf71af6930af51b9291c7e3f425f7d418b491058b1ebafd5c9e",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.NativeGlobalKoszulAffineCounit.compiler.log",
+      "compilerLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "resourceLog": "evidence/Linear.NativeGlobalKoszulAffineCounit.resource.json"
+    },
+    {
+      "module": "Linear.HomogeneousQuotientKoszulAffineCounit",
+      "sourceSha256": "48df87700e7c51c5f92c5196103153c54e6ce4cb726037d4b25f00343dea66d1",
+      "returnCode": 0,
+      "compilerLog": "evidence/Linear.HomogeneousQuotientKoszulAffineCounit.compiler.log",
+      "compilerLogSha256": "6c9efca369fa2eff1079d1953fd2d3d64c6529ee38c8dab7f197e0a58804e823",
+      "resourceLog": "evidence/Linear.HomogeneousQuotientKoszulAffineCounit.resource.json"
+    }
+  ],
+  "declarations": [
+    {
+      "name": "LinearStudy.koszulExteriorCoordinates_wedge_map",
+      "kind": "theorem",
+      "module": "Linear.KoszulCoordinateEntryNaturality",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.homogeneousKoszulCoordinateDifferential_entry_formula",
+      "kind": "theorem",
+      "module": "Linear.KoszulCoordinateEntryNaturality",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.homogeneousKoszulCoordinateDifferential_entry_map",
+      "kind": "theorem",
+      "module": "Linear.KoszulCoordinateEntryNaturality",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.homogeneousKoszulCoordinateDifferential_entry_scale",
+      "kind": "theorem",
+      "module": "Linear.KoszulCoordinateEntryNaturality",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeHomogeneousKoszulEntry_dehomogenize",
+      "kind": "theorem",
+      "module": "Linear.NativeGlobalKoszulDehomogenizedDifferential",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeGlobalKoszulDifferential_standardSectionFrame",
+      "kind": "theorem",
+      "module": "Linear.NativeGlobalKoszulDehomogenizedDifferential",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeGlobalKoszulChartSectionComplexIso",
+      "kind": "def",
+      "module": "Linear.NativeGlobalKoszulChartSectionComplex",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeGlobalKoszulChartSectionComplexIso_hom",
+      "kind": "theorem",
+      "module": "Linear.NativeGlobalKoszulChartSectionComplex",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeIntegerShiftedFree_isQuasicoherent",
+      "kind": "theorem",
+      "module": "Linear.NativeGlobalKoszulQuasicoherent",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveKoszulTerm_isQuasicoherent",
+      "kind": "theorem",
+      "module": "Linear.NativeGlobalKoszulQuasicoherent",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveKoszulTerm_restrict_isQuasicoherent",
+      "kind": "theorem",
+      "module": "Linear.NativeGlobalKoszulQuasicoherent",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineModuleSpecGlobalSections_additive",
+      "kind": "theorem",
+      "module": "Linear.AffineQuasicoherentComplexCounit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineQuasicoherentComplexCounitIso",
+      "kind": "def",
+      "module": "Linear.AffineQuasicoherentComplexCounit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.affineQuasicoherentComplexCounitIso_hom",
+      "kind": "theorem",
+      "module": "Linear.AffineQuasicoherentComplexCounit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveKoszulOnAffine",
+      "kind": "def",
+      "module": "Linear.NativeGlobalKoszulAffineCounit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveKoszulOnAffine_X",
+      "kind": "theorem",
+      "module": "Linear.NativeGlobalKoszulAffineCounit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveKoszulOnAffine_isQuasicoherent",
+      "kind": "theorem",
+      "module": "Linear.NativeGlobalKoszulAffineCounit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveKoszulAffineCounitIso",
+      "kind": "def",
+      "module": "Linear.NativeGlobalKoszulAffineCounit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.nativeProjectiveKoszulAffineCounitIso_hom",
+      "kind": "theorem",
+      "module": "Linear.NativeGlobalKoszulAffineCounit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.homogeneousQuotient_coordinate_adjoin_eq_top",
+      "kind": "theorem",
+      "module": "Linear.HomogeneousQuotientKoszulAffineCounit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.homogeneousQuotientKoszulTerm_isQuasicoherent",
+      "kind": "theorem",
+      "module": "Linear.HomogeneousQuotientKoszulAffineCounit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    },
+    {
+      "name": "LinearStudy.homogeneousQuotientKoszulAffineCounitIso",
+      "kind": "def",
+      "module": "Linear.HomogeneousQuotientKoszulAffineCounit",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "exactTypePrinted": true
+    }
+  ],
+  "reusedSourceProvenance": [
+    {
+      "path": "evidence/AffineQuasicoherentComplexCounit.provenance.json",
+      "sha256": "29f43328c7a420367c8d66cc8ce815ac843dc50bdd5ff89708fd5f3b25eae087"
+    }
+  ],
+  "audit": {
+    "sourceSha256": "74c27ee51d293de8ab226de02e835111f05aedc185657bac47842b61c414f1bd",
+    "log": "evidence/exact-types-and-axioms.txt",
+    "logSha256": "7c1b066e8cc87d12cb3100ad7579b0d1637a3b176cfad2f57ce7529245f9d376",
+    "returnCode": 0,
+    "permittedAxioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "archive": "source.zip",
+  "archiveSha256": "d9e18d133f9f765a5498938ceac378c87d736a034ee3b4bb74ee3d370a843498",
+  "published": false,
+  "gitHubLeanCI": "Actual local controlled compilation and exact-type/axiom audit;no new whole-project Lean CI claim.",
+  "publicationEvidenceOutsideFrozenArchive": {
+    "evidence/source-range-driver.lean": "acc4b5f77f930c59c71888d0f6a179f96a2f5cfb0a97bba26b5fb1c3d1287d21",
+    "evidence/source-range-compiler.log": "09e94332568cc61d339227f2160468c7e6f15bcbae6dcc1f0604e843f2a779ac",
+    "evidence/source-range-resource.json": "98d09f1ef4468114fd465f14f4bcf892f80d80e2dacf97ef10b1e9a66f3b3356",
+    "evidence/source-range-verification.json": "19264afcbf6f08bfd32302f5ab9f21836d72e2efcbddd3cf6db9e5c05e6224b8",
+    "source-line-counts.json": "5680fdb8a054e0047d67df9e3a594b5b16345c228e24da37ded3fcac00f2ea2d"
+  },
+  "sourceLineCounts": "source-line-counts.json",
+  "sourceLineMetadataVerified": true
+}

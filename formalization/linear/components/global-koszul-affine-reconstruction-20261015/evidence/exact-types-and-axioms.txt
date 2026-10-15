@@ -1,0 +1,335 @@
+@LinearStudy.koszulExteriorCoordinates_wedge_map : ∀ {R : Type u_1} {T : Type u_2} [inst : CommRing R]
+  [inst_1 : CommRing T] (φ : R →+* T) (r p : ℕ) (v : Fin p → Fin r) (t : ↑(Set.powersetCard (Fin r) p)),
+  φ ((LinearStudy.koszulExteriorCoordinates r p) ((exteriorPower.ιMulti R p) (⇑(Pi.basisFun R (Fin r)) ∘ v)) t) =
+    (LinearStudy.koszulExteriorCoordinates r p) ((exteriorPower.ιMulti T p) (⇑(Pi.basisFun T (Fin r)) ∘ v)) t
+'LinearStudy.koszulExteriorCoordinates_wedge_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousKoszulCoordinateDifferential_entry_formula : ∀ {R : Type u_1} [inst : CommRing R] {r : ℕ}
+  (H : Fin r → R) (p : ℕ) (s : ↑(Set.powersetCard (Fin r) (p + 1))) (t : ↑(Set.powersetCard (Fin r) p)),
+  LinearStudy.integerShiftedFreeMapEntry (LinearStudy.homogeneousKoszulCoordinateDifferential H p) s t =
+    ∑ i : Fin (p + 1),
+      (-1) ^ ↑i * H ((Set.powersetCard.ofFinEmbEquiv.symm s) i) *
+        (LinearStudy.koszulExteriorCoordinates r p)
+          ((exteriorPower.ιMulti R p) (⇑(Pi.basisFun R (Fin r)) ∘ i.removeNth ⇑(Set.powersetCard.ofFinEmbEquiv.symm s)))
+          t
+'LinearStudy.homogeneousKoszulCoordinateDifferential_entry_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.homogeneousKoszulCoordinateDifferential_entry_map : ∀ {R : Type u_1} {T : Type u_2} [inst : CommRing R]
+  [inst_1 : CommRing T] {r : ℕ} (φ : R →+* T) (H : Fin r → R) (p : ℕ) (s : ↑(Set.powersetCard (Fin r) (p + 1)))
+  (t : ↑(Set.powersetCard (Fin r) p)),
+  φ (LinearStudy.integerShiftedFreeMapEntry (LinearStudy.homogeneousKoszulCoordinateDifferential H p) s t) =
+    LinearStudy.integerShiftedFreeMapEntry (LinearStudy.homogeneousKoszulCoordinateDifferential (⇑φ ∘ H) p) s t
+'LinearStudy.homogeneousKoszulCoordinateDifferential_entry_map' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.homogeneousKoszulCoordinateDifferential_entry_scale : ∀ {R : Type u_1} [inst : CommRing R] {r : ℕ} (c : R)
+  (H : Fin r → R) (p : ℕ) (s : ↑(Set.powersetCard (Fin r) (p + 1))) (t : ↑(Set.powersetCard (Fin r) p)),
+  LinearStudy.integerShiftedFreeMapEntry
+      (LinearStudy.homogeneousKoszulCoordinateDifferential (fun (i : Fin r) => c * H i) p) s t =
+    c * LinearStudy.integerShiftedFreeMapEntry (LinearStudy.homogeneousKoszulCoordinateDifferential H p) s t
+'LinearStudy.homogeneousKoszulCoordinateDifferential_entry_scale' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeHomogeneousKoszulEntry_dehomogenize : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (p : ℕ) (i : ↑(Set.powersetCard (Fin r) (p + 1))) (j : ↑(Set.powersetCard (Fin r) p))
+  (a : S) (ha : a ∈ 𝓑 1) (U : (AlgebraicGeometry.Proj 𝓑).Opens) (hU : U ≤ AlgebraicGeometry.Proj.basicOpen 𝓑 a),
+  LinearStudy.nativeHomogeneousChartCoefficientSection 𝓑 q
+      ⟨LinearStudy.integerShiftedFreeMapEntry (LinearStudy.homogeneousKoszulCoordinateDifferential H p) i j, ⋯⟩ a ha U
+      hU =
+    LinearStudy.integerShiftedFreeMapEntry
+      (LinearStudy.homogeneousKoszulCoordinateDifferential
+        (fun (l : Fin r) => LinearStudy.nativeHomogeneousChartCoefficientSection 𝓑 q ⟨H l, ⋯⟩ a ha U hU) p)
+      i j
+'LinearStudy.nativeHomogeneousKoszulEntry_dehomogenize' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeGlobalKoszulDifferential_standardSectionFrame : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (p : ℕ) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1) (U : (AlgebraicGeometry.Proj 𝓑).Opens)
+  (hU : U ≤ AlgebraicGeometry.Proj.basicOpen 𝓑 a)
+  (v : ↑(Set.powersetCard (Fin r) (p + 1)) → ↑((AlgebraicGeometry.Proj 𝓑).presheaf.obj (Opposite.op U))),
+  (CategoryTheory.ConcreteCategory.hom
+        ((LinearStudy.nativeProjectiveKoszulDifferential 𝓑 H hH p k).val.app (Opposite.op U)))
+      ((LinearStudy.nativeIntegerShiftedFreeSectionFrame 𝓑
+          (fun (x : ↑(Set.powersetCard (Fin r) (p + 1))) => ↑(p + 1) * ↑q) k a ha (Opposite.op U) ⋯)
+        v) =
+    (LinearStudy.nativeIntegerShiftedFreeSectionFrame 𝓑 (fun (x : ↑(Set.powersetCard (Fin r) p)) => ↑p * ↑q) k a ha
+        (Opposite.op U) ⋯)
+      ((LinearStudy.homogeneousKoszulCoordinateDifferential
+          (fun (l : Fin r) => LinearStudy.nativeHomogeneousChartCoefficientSection 𝓑 q ⟨H l, ⋯⟩ a ha U hU) p)
+        v)
+'LinearStudy.nativeGlobalKoszulDifferential_standardSectionFrame' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeGlobalKoszulChartSectionComplexIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r q : ℕ} →
+              (H : Fin r → S) →
+                (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                  (k : ℤ) →
+                    (a : S) →
+                      (ha : a ∈ 𝓑 1) →
+                        (U : (AlgebraicGeometry.Proj 𝓑).Opens) →
+                          (hU : U ≤ AlgebraicGeometry.Proj.basicOpen 𝓑 a) →
+                            (((SheafOfModules.forget (AlgebraicGeometry.Proj 𝓑).ringCatSheaf).comp
+                                        (PresheafOfModules.evaluation (AlgebraicGeometry.Proj 𝓑).ringCatSheaf.obj
+                                          (Opposite.op U))).mapHomologicalComplex
+                                    (ComplexShape.down ℕ)).obj
+                                (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k) ≅
+                              LinearStudy.homogeneousKoszulCoordinateComplex fun (l : Fin r) =>
+                                LinearStudy.nativeHomogeneousChartCoefficientSection 𝓑 q ⟨H l, ⋯⟩ a ha U hU
+'LinearStudy.nativeGlobalKoszulChartSectionComplexIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeGlobalKoszulChartSectionComplexIso_hom : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1) (U : (AlgebraicGeometry.Proj 𝓑).Opens)
+  (hU : U ≤ AlgebraicGeometry.Proj.basicOpen 𝓑 a) (p : ℕ),
+  (LinearStudy.nativeGlobalKoszulChartSectionComplexIso 𝓑 H hH k a ha U hU).hom.f p =
+    ModuleCat.ofHom
+      ↑(LinearStudy.nativeIntegerShiftedFreeSectionFrame 𝓑 (fun (x : ↑(Set.powersetCard (Fin r) p)) => ↑p * ↑q) k a ha
+            (Opposite.op U) ⋯).symm
+'LinearStudy.nativeGlobalKoszulChartSectionComplexIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIntegerShiftedFree_isQuasicoherent : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] [IsNoetherianRing S] {I J : Type}
+  [Fintype I] [DecidableEq I] (w : I → ℤ) (a : J → S),
+  (∀ (i : J), a i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ →
+      ∀ (k : ℤ),
+        SheafOfModules.IsQuasicoherent
+          (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.integerShiftedFreePiece 𝓑 w) ⋯ k)
+'LinearStudy.nativeIntegerShiftedFree_isQuasicoherent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulTerm_isQuasicoherent : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] [IsNoetherianRing S] {J : Type} (a : J → S),
+  (∀ (i : J), a i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ →
+      ∀ (r q p : ℕ) (k : ℤ), SheafOfModules.IsQuasicoherent (LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q p k)
+'LinearStudy.nativeProjectiveKoszulTerm_isQuasicoherent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulTerm_restrict_isQuasicoherent : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] [IsNoetherianRing S] {J : Type} (a : J → S),
+  (∀ (i : J), a i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ →
+      ∀ (r q p : ℕ) (k : ℤ) {Y : AlgebraicGeometry.Scheme} (f : Y ⟶ AlgebraicGeometry.Proj 𝓑)
+        [inst_5 : AlgebraicGeometry.IsOpenImmersion f],
+        SheafOfModules.IsQuasicoherent
+          ((AlgebraicGeometry.Scheme.Modules.restrictFunctor f).obj (LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q p k))
+'LinearStudy.nativeProjectiveKoszulTerm_restrict_isQuasicoherent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineModuleSpecGlobalSections_additive : ∀ (R : CommRingCat), AlgebraicGeometry.moduleSpecΓFunctor.Additive
+'LinearStudy.affineModuleSpecGlobalSections_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineQuasicoherentComplexCounitIso : (R : CommRingCat) →
+  {ι : Type u_2} →
+    (c : ComplexShape ι) →
+      (C : HomologicalComplex (AlgebraicGeometry.Spec R).Modules c) →
+        [∀ (i : ι), SheafOfModules.IsQuasicoherent (C.X i)] →
+          ((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex c).obj
+              ((AlgebraicGeometry.moduleSpecΓFunctor.mapHomologicalComplex c).obj C) ≅
+            C
+'LinearStudy.affineQuasicoherentComplexCounitIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineQuasicoherentComplexCounitIso_hom : ∀ (R : CommRingCat) {ι : Type u_2} (c : ComplexShape ι)
+  (C : HomologicalComplex (AlgebraicGeometry.Spec R).Modules c)
+  [inst : ∀ (i : ι), SheafOfModules.IsQuasicoherent (C.X i)] (i : ι),
+  (LinearStudy.affineQuasicoherentComplexCounitIso R c C).hom.f i = (C.X i).fromTildeΓ
+'LinearStudy.affineQuasicoherentComplexCounitIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulOnAffine : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (R : CommRingCat) →
+              (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) →
+                [AlgebraicGeometry.IsOpenImmersion j] →
+                  {r q : ℕ} →
+                    (H : Fin r → S) → (∀ (i : Fin r), H i ∈ 𝓑 q) → ℤ → ChainComplex (AlgebraicGeometry.Spec R).Modules ℕ
+'LinearStudy.nativeProjectiveKoszulOnAffine' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulOnAffine_X : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (R : CommRingCat)
+  (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) [inst_4 : AlgebraicGeometry.IsOpenImmersion j] {r q : ℕ}
+  (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (p : ℕ),
+  (LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k).X p =
+    (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).obj (LinearStudy.nativeProjectiveKoszulTerm 𝓑 r q p k)
+'LinearStudy.nativeProjectiveKoszulOnAffine_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulOnAffine_isQuasicoherent : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] [IsNoetherianRing S] {J : Type} (a : J → S),
+  (∀ (i : J), a i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ →
+      ∀ (R : CommRingCat) (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑)
+        [inst_5 : AlgebraicGeometry.IsOpenImmersion j] {r q : ℕ} (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ)
+        (p : ℕ), SheafOfModules.IsQuasicoherent ((LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k).X p)
+'LinearStudy.nativeProjectiveKoszulOnAffine_isQuasicoherent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulAffineCounitIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (a : J → S) →
+                  (∀ (i : J), a i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range a) = ⊤ →
+                      (R : CommRingCat) →
+                        (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) →
+                          [inst_5 : AlgebraicGeometry.IsOpenImmersion j] →
+                            {r q : ℕ} →
+                              (H : Fin r → S) →
+                                (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                                  (k : ℤ) →
+                                    ((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex
+                                            (ComplexShape.down ℕ)).obj
+                                        ((AlgebraicGeometry.moduleSpecΓFunctor.mapHomologicalComplex
+                                              (ComplexShape.down ℕ)).obj
+                                          (LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k)) ≅
+                                      LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k
+'LinearStudy.nativeProjectiveKoszulAffineCounitIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveKoszulAffineCounitIso_hom : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] [inst_4 : IsNoetherianRing S] {J : Type}
+  (a : J → S) (ha : ∀ (i : J), a i ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range a) = ⊤) (R : CommRingCat)
+  (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) [inst_5 : AlgebraicGeometry.IsOpenImmersion j] {r q : ℕ}
+  (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (p : ℕ),
+  (LinearStudy.nativeProjectiveKoszulAffineCounitIso 𝓑 a ha hgen R j H hH k).hom.f p =
+    ((LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k).X p).fromTildeΓ
+'LinearStudy.nativeProjectiveKoszulAffineCounitIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousQuotient_coordinate_adjoin_eq_top : ∀ {K σ : Type} [inst : Field K]
+  (I : Ideal (MvPolynomial σ K)),
+  Algebra.adjoin K (Set.range fun (i : σ) => (Ideal.Quotient.mk I) (MvPolynomial.X i)) = ⊤
+'LinearStudy.homogeneousQuotient_coordinate_adjoin_eq_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousQuotientKoszulTerm_isQuasicoherent : ∀ {K σ : Type} [inst : Field K] [Finite σ]
+  (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (r q p : ℕ)
+  (k : ℤ),
+  SheafOfModules.IsQuasicoherent
+    (LinearStudy.nativeProjectiveKoszulTerm (LinearStudy.homogeneousQuotientPiece I) r q p k)
+'LinearStudy.homogeneousQuotientKoszulTerm_isQuasicoherent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousQuotientKoszulAffineCounitIso : {K σ : Type} →
+  [inst : Field K] →
+    [Finite σ] →
+      (I : Ideal (MvPolynomial σ K)) →
+        (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) →
+          {r q : ℕ} →
+            (H : Fin r → MvPolynomial σ K ⧸ I) →
+              (R : CommRingCat) →
+                (k : ℤ) →
+                  (hH : ∀ (i : Fin r), H i ∈ LinearStudy.homogeneousQuotientPiece I q) →
+                    (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece I)) →
+                      [inst_2 : AlgebraicGeometry.IsOpenImmersion j] →
+                        ((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).obj
+                            ((AlgebraicGeometry.moduleSpecΓFunctor.mapHomologicalComplex (ComplexShape.down ℕ)).obj
+                              (LinearStudy.nativeProjectiveKoszulOnAffine (LinearStudy.homogeneousQuotientPiece I) R j H
+                                hH k)) ≅
+                          LinearStudy.nativeProjectiveKoszulOnAffine (LinearStudy.homogeneousQuotientPiece I) R j H hH k
+'LinearStudy.homogeneousQuotientKoszulAffineCounitIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.nativeGlobalKoszulChartSectionComplexIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r q : ℕ} →
+              (H : Fin r → S) →
+                (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                  (k : ℤ) →
+                    (a : S) →
+                      (ha : a ∈ 𝓑 1) →
+                        (U : (AlgebraicGeometry.Proj 𝓑).Opens) →
+                          (hU : U ≤ AlgebraicGeometry.Proj.basicOpen 𝓑 a) →
+                            (((SheafOfModules.forget (AlgebraicGeometry.Proj 𝓑).ringCatSheaf).comp
+                                        (PresheafOfModules.evaluation (AlgebraicGeometry.Proj 𝓑).ringCatSheaf.obj
+                                          (Opposite.op U))).mapHomologicalComplex
+                                    (ComplexShape.down ℕ)).obj
+                                (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k) ≅
+                              LinearStudy.homogeneousKoszulCoordinateComplex fun (l : Fin r) =>
+                                LinearStudy.nativeHomogeneousChartCoefficientSection 𝓑 q ⟨H l, ⋯⟩ a ha U hU :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1)
+    (U : (AlgebraicGeometry.Proj 𝓑).Opens) (hU : U ≤ AlgebraicGeometry.Proj.basicOpen 𝓑 a) =>
+  HomologicalComplex.Hom.isoOfComponents
+    (fun (p : ℕ) =>
+      (LinearStudy.nativeIntegerShiftedFreeSectionFrame 𝓑 (fun (x : ↑(Set.powersetCard (Fin r) p)) => ↑p * ↑q) k a ha
+            (Opposite.op U) ⋯).symm.toModuleIso)
+    ⋯
+def LinearStudy.affineQuasicoherentComplexCounitIso.{u, v} : (R : CommRingCat) →
+  {ι : Type v} →
+    (c : ComplexShape ι) →
+      (C : HomologicalComplex (AlgebraicGeometry.Spec R).Modules c) →
+        [∀ (i : ι), SheafOfModules.IsQuasicoherent (C.X i)] →
+          ((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex c).obj
+              ((AlgebraicGeometry.moduleSpecΓFunctor.mapHomologicalComplex c).obj C) ≅
+            C :=
+fun (R : CommRingCat) {ι : Type v} (c : ComplexShape ι) (C : HomologicalComplex (AlgebraicGeometry.Spec R).Modules c)
+    [∀ (i : ι), SheafOfModules.IsQuasicoherent (C.X i)] =>
+  HomologicalComplex.Hom.isoOfComponents (fun (i : ι) => CategoryTheory.asIso (C.X i).fromTildeΓ) ⋯
+def LinearStudy.nativeProjectiveKoszulOnAffine : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (R : CommRingCat) →
+              (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) →
+                [AlgebraicGeometry.IsOpenImmersion j] →
+                  {r q : ℕ} →
+                    (H : Fin r → S) →
+                      (∀ (i : Fin r), H i ∈ 𝓑 q) → ℤ → ChainComplex (AlgebraicGeometry.Spec R).Modules ℕ :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (R : CommRingCat)
+    (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) [AlgebraicGeometry.IsOpenImmersion j] {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) =>
+  ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj
+    (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH k)
+def LinearStudy.nativeProjectiveKoszulAffineCounitIso : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (a : J → S) →
+                  (∀ (i : J), a i ∈ 𝓑 1) →
+                    Algebra.adjoin K (Set.range a) = ⊤ →
+                      (R : CommRingCat) →
+                        (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) →
+                          [inst_5 : AlgebraicGeometry.IsOpenImmersion j] →
+                            {r q : ℕ} →
+                              (H : Fin r → S) →
+                                (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) →
+                                  (k : ℤ) →
+                                    ((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex
+                                            (ComplexShape.down ℕ)).obj
+                                        ((AlgebraicGeometry.moduleSpecΓFunctor.mapHomologicalComplex
+                                              (ComplexShape.down ℕ)).obj
+                                          (LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k)) ≅
+                                      LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] [IsNoetherianRing S]
+    {J : Type} (a : J → S) (ha : ∀ (i : J), a i ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range a) = ⊤) (R : CommRingCat)
+    (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj 𝓑) [AlgebraicGeometry.IsOpenImmersion j] {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) =>
+  LinearStudy.affineQuasicoherentComplexCounitIso R (ComplexShape.down ℕ)
+    (LinearStudy.nativeProjectiveKoszulOnAffine 𝓑 R j H hH k)
+def LinearStudy.homogeneousQuotientKoszulAffineCounitIso : {K σ : Type} →
+  [inst : Field K] →
+    [Finite σ] →
+      (I : Ideal (MvPolynomial σ K)) →
+        (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) →
+          {r q : ℕ} →
+            (H : Fin r → MvPolynomial σ K ⧸ I) →
+              (R : CommRingCat) →
+                (k : ℤ) →
+                  (hH : ∀ (i : Fin r), H i ∈ LinearStudy.homogeneousQuotientPiece I q) →
+                    (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece I)) →
+                      [inst_2 : AlgebraicGeometry.IsOpenImmersion j] →
+                        ((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).obj
+                            ((AlgebraicGeometry.moduleSpecΓFunctor.mapHomologicalComplex (ComplexShape.down ℕ)).obj
+                              (LinearStudy.nativeProjectiveKoszulOnAffine (LinearStudy.homogeneousQuotientPiece I) R j H
+                                hH k)) ≅
+                          LinearStudy.nativeProjectiveKoszulOnAffine (LinearStudy.homogeneousQuotientPiece I) R j H hH
+                            k :=
+fun {K σ : Type} [Field K] [Finite σ] (I : Ideal (MvPolynomial σ K))
+    (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) {r q : ℕ} (H : Fin r → MvPolynomial σ K ⧸ I)
+    (R : CommRingCat) (k : ℤ) (hH : ∀ (i : Fin r), H i ∈ LinearStudy.homogeneousQuotientPiece I q)
+    (j : AlgebraicGeometry.Spec R ⟶ AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece I))
+    [AlgebraicGeometry.IsOpenImmersion j] =>
+  LinearStudy.nativeProjectiveKoszulAffineCounitIso (LinearStudy.homogeneousQuotientPiece I)
+    (fun (i : σ) => (Ideal.Quotient.mk I) (MvPolynomial.X i)) ⋯ ⋯ R j H hH k
