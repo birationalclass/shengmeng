@@ -1,0 +1,492 @@
+@LinearStudy.homogeneousQuotientFactor_away_originalFraction : ∀ {K : Type u_1} [inst : Field K] {n : ℕ}
+  (I J : Ideal (MvPolynomial (Fin (n + 1)) K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I)
+  (hJ : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) J) (hIJ : I ≤ J) (m : ℕ)
+  (H : MvPolynomial (Fin (n + 1)) K) (hH : H.IsHomogeneous m),
+  let φ := LinearStudy.homogeneousQuotientFactorGraded I J hIJ;
+  (HomogeneousLocalization.Away.map φ ((Ideal.Quotient.mk I) (MvPolynomial.X 0)))
+      (LinearStudy.homogeneousQuotientNativeChartElement I hI m H hH) =
+    LinearStudy.homogeneousQuotientNativeChartElement J hJ m H hH
+'LinearStudy.homogeneousQuotientFactor_away_originalFraction' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousQuotientClosedEmbedding_away_square : ∀ {K : Type u_1} [inst : Field K] {n : ℕ}
+  (I J : Ideal (MvPolynomial (Fin (n + 1)) K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I)
+  (hJ : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) J) (hIJ : I ≤ J),
+  let φ := LinearStudy.homogeneousQuotientFactorGraded I J hIJ;
+  let a := (Ideal.Quotient.mk I) (MvPolynomial.X 0);
+  have ha := ⋯;
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.awayι (LinearStudy.homogeneousQuotientPiece J) (φ a) ⋯ ⋯)
+      (LinearStudy.homogeneousQuotientClosedEmbedding I J hI hJ hIJ) =
+    CategoryTheory.CategoryStruct.comp
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (HomogeneousLocalization.Away.map φ a)))
+      (AlgebraicGeometry.Proj.awayι (LinearStudy.homogeneousQuotientPiece I) a ha ⋯)
+'LinearStudy.homogeneousQuotientClosedEmbedding_away_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousQuotient_nativeChart_factor_of_fraction_formulas : ∀ {K : Type u_1} [inst : Field K] {n : ℕ}
+  (I J : Ideal (MvPolynomial (Fin (n + 1)) K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I)
+  (hJ : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) J) (hIJ : I ≤ J)
+  (eI :
+    MvPolynomial (Fin n) K ⧸ Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I ≃+*
+      HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece I) ((Ideal.Quotient.mk I) (MvPolynomial.X 0))),
+  (∀ (m : ℕ) (H : MvPolynomial (Fin (n + 1)) K) (hH : H.IsHomogeneous m),
+      eI
+          ((Ideal.Quotient.mk (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I))
+            (LinearStudy.affineChartPolynomialMap H)) =
+        LinearStudy.homogeneousQuotientNativeChartElement I hI m H hH) →
+    ∀
+      (eJ :
+        MvPolynomial (Fin n) K ⧸ Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom J ≃+*
+          HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece J)
+            ((Ideal.Quotient.mk J) (MvPolynomial.X 0))),
+      (∀ (m : ℕ) (H : MvPolynomial (Fin (n + 1)) K) (hH : H.IsHomogeneous m),
+          eJ
+              ((Ideal.Quotient.mk (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom J))
+                (LinearStudy.affineChartPolynomialMap H)) =
+            LinearStudy.homogeneousQuotientNativeChartElement J hJ m H hH) →
+        ∀ (x : MvPolynomial (Fin n) K ⧸ Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I),
+          (HomogeneousLocalization.Away.map (LinearStudy.homogeneousQuotientFactorGraded I J hIJ)
+                ((Ideal.Quotient.mk I) (MvPolynomial.X 0)))
+              (eI x) =
+            eJ ((Ideal.Quotient.factor ⋯) x)
+'LinearStudy.homogeneousQuotient_nativeChart_factor_of_fraction_formulas' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.homogeneousQuotient_nativeChart_exists_factor_compatible : ∀ {K : Type u_1} [inst : Field K] {n : ℕ}
+  (I J : Ideal (MvPolynomial (Fin (n + 1)) K))
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I)
+  (hJ : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) J) (hIJ : I ≤ J),
+  ∃ (eI :
+    MvPolynomial (Fin n) K ⧸ Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I ≃+*
+      HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece I) ((Ideal.Quotient.mk I) (MvPolynomial.X 0)))
+    (eJ :
+    MvPolynomial (Fin n) K ⧸ Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom J ≃+*
+      HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece J) ((Ideal.Quotient.mk J) (MvPolynomial.X 0))),
+    (∀ (m : ℕ) (H : MvPolynomial (Fin (n + 1)) K) (hH : H.IsHomogeneous m),
+        eI
+            ((Ideal.Quotient.mk (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I))
+              (LinearStudy.affineChartPolynomialMap H)) =
+          LinearStudy.homogeneousQuotientNativeChartElement I hI m H hH) ∧
+      (∀ (m : ℕ) (H : MvPolynomial (Fin (n + 1)) K) (hH : H.IsHomogeneous m),
+          eJ
+              ((Ideal.Quotient.mk (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom J))
+                (LinearStudy.affineChartPolynomialMap H)) =
+            LinearStudy.homogeneousQuotientNativeChartElement J hJ m H hH) ∧
+        ∀ (x : MvPolynomial (Fin n) K ⧸ Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I),
+          (HomogeneousLocalization.Away.map (LinearStudy.homogeneousQuotientFactorGraded I J hIJ)
+                ((Ideal.Quotient.mk I) (MvPolynomial.X 0)))
+              (eI x) =
+            eJ ((Ideal.Quotient.factor ⋯) x)
+'LinearStudy.homogeneousQuotient_nativeChart_exists_factor_compatible' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.ringEquivOriginalQuotientFactor : {B : Type u_1} →
+  {R : Type u_2} →
+    {C : Type u_3} →
+      {T : Type u_4} →
+        [inst : CommRing B] →
+          [inst_1 : CommRing R] →
+            [inst_2 : CommRing C] →
+              [inst_3 : CommRing T] →
+                (J : Ideal B) →
+                  (I : Ideal R) → (eB : B ≃+* R) → C ≃+* T → B ⧸ J ≃+* C → I = Ideal.map eB.toRingHom J → R ⧸ I ≃+* T
+'LinearStudy.ringEquivOriginalQuotientFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.ringEquivOriginalQuotientFactor_mk : ∀ {B : Type u_1} {R : Type u_2} {C : Type u_3} {T : Type u_4}
+  [inst : CommRing B] [inst_1 : CommRing R] [inst_2 : CommRing C] [inst_3 : CommRing T] (J : Ideal B) (I : Ideal R)
+  (eB : B ≃+* R) (eC : C ≃+* T) (eQ : B ⧸ J ≃+* C) (hI : I = Ideal.map eB.toRingHom J) (g : B →+* C) (f : R →+* T),
+  (∀ (x : B), eQ ((Ideal.Quotient.mk J) x) = g x) →
+    (∀ (x : B), f (eB x) = eC (g x)) →
+      ∀ (x : R), (LinearStudy.ringEquivOriginalQuotientFactor J I eB eC eQ hI) ((Ideal.Quotient.mk I) x) = f x
+'LinearStudy.ringEquivOriginalQuotientFactor_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledLinearSection_nativeChart_exists_quotient_factor_equiv : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ),
+  let J := LinearStudy.projectivePulledLinearSectionIdeal f V L w;
+  have hJ := ⋯;
+  let a := (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0);
+  have ha := ⋯;
+  have h := fun (i : Fin r) =>
+    HomogeneousLocalization.Away.mk (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) ha f.degree
+      (LinearStudy.projectivePulledLinearKoszulForms f V L w i) ⋯;
+  ∃ (e :
+    HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a ⧸ Ideal.span (Set.range h) ≃+*
+      HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece J) ((Ideal.Quotient.mk J) (MvPolynomial.X 0))),
+    ∀ (x : HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a),
+      e ((Ideal.Quotient.mk (Ideal.span (Set.range h))) x) =
+        (HomogeneousLocalization.Away.map (LinearStudy.homogeneousQuotientFactorGraded V.ideal.toIdeal J ⋯) a) x
+'LinearStudy.projectivePulledLinearSection_nativeChart_exists_quotient_factor_equiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeSpec_originalQuotientFactor_square : ∀ {R T : Type u_1} [inst : CommRing R] [inst_1 : CommRing T]
+  (I : Ideal R) (e : R ⧸ I ≃+* T) (u : R →+* T),
+  (∀ (x : R), e ((Ideal.Quotient.mk I) x) = u x) →
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Spec.map (CommRingCat.ofHom e.symm.toRingHom))
+        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom u)) =
+      AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk I))
+'LinearStudy.schemeSpec_originalQuotientFactor_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledLinearSection_nativeChart_exists_embedding_iso : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ),
+  (let J := LinearStudy.projectivePulledLinearSectionIdeal f V L w;
+    AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece J)
+        ((Ideal.Quotient.mk J) (MvPolynomial.X 0)) =
+      ⊤) →
+    let a := (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0);
+    have ha := ⋯;
+    let R := HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a;
+    have h := fun (i : Fin r) =>
+      HomogeneousLocalization.Away.mk (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) ha f.degree
+        (LinearStudy.projectivePulledLinearKoszulForms f V L w i) ⋯;
+    ∃ (g :
+      AlgebraicGeometry.Spec ↧(R ⧸ Ideal.span (Set.range h)) ≅
+        LinearStudy.projectivePulledLinearSectionScheme f V L hL w),
+      CategoryTheory.CategoryStruct.comp g.hom (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w) =
+        CategoryTheory.CategoryStruct.comp
+          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range h)))))
+          (AlgebraicGeometry.Proj.awayι (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a ha ⋯)
+'LinearStudy.projectivePulledLinearSection_nativeChart_exists_embedding_iso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearSection_exists_wholeCut_nativeChart_embedding_iso : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  0 < f.degree →
+    Function.Surjective f.onPoints →
+      f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+        ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+          (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+              ∀ (x0 : Fin n → ℂ),
+                LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                  ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                    c ≠ 0 ∧
+                      (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                        ∀ (w : Fin (r + 1) → ℂ),
+                          (MvPolynomial.eval w) c ≠ 0 →
+                            let a := (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0);
+                            have ha := ⋯;
+                            let R :=
+                              HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a;
+                            have h := fun (i : Fin r) =>
+                              HomogeneousLocalization.Away.mk (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) ha
+                                f.degree (LinearStudy.projectivePulledLinearKoszulForms f V L w i) ⋯;
+                            ∃ (g :
+                              AlgebraicGeometry.Spec ↧(R ⧸ Ideal.span (Set.range h)) ≅
+                                LinearStudy.projectivePulledLinearSectionScheme f V L hL w),
+                              CategoryTheory.CategoryStruct.comp g.hom
+                                  (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w) =
+                                CategoryTheory.CategoryStruct.comp
+                                  (AlgebraicGeometry.Spec.map
+                                    (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range h)))))
+                                  (AlgebraicGeometry.Proj.awayι (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) a
+                                    ha ⋯)
+'LinearStudy.projectivePulledLinearSection_exists_wholeCut_nativeChart_embedding_iso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModule_restrictionUnit_isIso_of_isIso : ∀ {X Y : AlgebraicGeometry.Scheme} (f : X ⟶ Y)
+  [inst : CategoryTheory.IsIso f] (M : Y.Modules),
+  CategoryTheory.IsIso ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction f).unit.app M)
+'LinearStudy.schemeModule_restrictionUnit_isIso_of_isIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModulePushforwardUnitIsoOfIso : {X Y : AlgebraicGeometry.Scheme} →
+  (e : X ≅ Y) →
+    (AlgebraicGeometry.Scheme.Modules.pushforward e.hom).obj (SheafOfModules.unit X.ringCatSheaf) ≅
+      SheafOfModules.unit Y.ringCatSheaf
+'LinearStudy.schemeModulePushforwardUnitIsoOfIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOriginalCutStructurePushforwardIso : {Z0 Z U X : AlgebraicGeometry.Scheme} →
+  (e : Z0 ≅ Z) →
+    (q : Z0 ⟶ U) →
+      (j : U ⟶ X) →
+        (i : Z ⟶ X) →
+          CategoryTheory.CategoryStruct.comp e.hom i = CategoryTheory.CategoryStruct.comp q j →
+            ((AlgebraicGeometry.Scheme.Modules.pushforward j).obj
+                ((AlgebraicGeometry.Scheme.Modules.pushforward q).obj (SheafOfModules.unit Z0.ringCatSheaf)) ≅
+              (AlgebraicGeometry.Scheme.Modules.pushforward i).obj (SheafOfModules.unit Z.ringCatSheaf))
+'LinearStudy.schemeModuleOriginalCutStructurePushforwardIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleOriginalCutCokernelTargetIso : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      {X Z : AlgebraicGeometry.Scheme} →
+        (j : AlgebraicGeometry.Spec R ⟶ X) →
+          (i : Z ⟶ X) →
+            (g : AlgebraicGeometry.Spec ↧(↑R ⧸ Ideal.span (Set.range H)) ≅ Z) →
+              CategoryTheory.CategoryStruct.comp g.hom i =
+                  CategoryTheory.CategoryStruct.comp
+                    (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H))))) j →
+                ((AlgebraicGeometry.Scheme.Modules.pushforward j).obj
+                    (LinearStudy.tildeKoszulOriginalCutCokernelCofork R H).pt ≅
+                  (AlgebraicGeometry.Scheme.Modules.pushforward i).obj (SheafOfModules.unit Z.ringCatSheaf))
+'LinearStudy.schemeModuleOriginalCutCokernelTargetIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledLinearSection_exists_globalCokernelWholeCutPushforwardIso : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  0 < f.degree →
+    Function.Surjective f.onPoints →
+      f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+        ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+          (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+              ∀ (x0 : Fin n → ℂ),
+                LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                  ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                    c ≠ 0 ∧
+                      (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                        ∀ (w : Fin (r + 1) → ℂ),
+                          (MvPolynomial.eval w) c ≠ 0 →
+                            ∀ (k : ℤ),
+                              Nonempty
+                                (CategoryTheory.Limits.cokernel
+                                    ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                                  (AlgebraicGeometry.Scheme.Modules.pushforward
+                                        (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+                                    (SheafOfModules.unit
+                                      (LinearStudy.projectivePulledLinearSectionScheme f V L hL w).ringCatSheaf))
+'LinearStudy.projectivePulledLinearSection_exists_globalCokernelWholeCutPushforwardIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIntegerTwistWholePresheafIso : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (a : S) →
+              a ∈ 𝓑 1 →
+                (∀ (p : ProjectiveSpectrum 𝓑), a ∉ p.asHomogeneousIdeal) →
+                  (k : ℤ) →
+                    PresheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf.obj ≅
+                      LinearStudy.nativeProjectiveModulePresheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ k
+'LinearStudy.nativeIntegerTwistWholePresheafIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIntegerTwistWholeSheafIso : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (a : S) →
+              a ∈ 𝓑 1 →
+                (∀ (p : ProjectiveSpectrum 𝓑), a ∉ p.asHomogeneousIdeal) →
+                  (k : ℤ) →
+                    SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf ≅
+                      LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ k
+'LinearStudy.nativeIntegerTwistWholeSheafIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIntegerTwistWholeSheafIsoOfBasicOpenTop : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (a : S) →
+              a ∈ 𝓑 1 →
+                AlgebraicGeometry.Proj.basicOpen 𝓑 a = ⊤ →
+                  (k : ℤ) →
+                    SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf ≅
+                      LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ k
+'LinearStudy.nativeIntegerTwistWholeSheafIsoOfBasicOpenTop' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledLinearSection_exists_globalCokernelWholeCutNativeTwistIso : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  0 < f.degree →
+    Function.Surjective f.onPoints →
+      f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+        ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+          (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+              ∀ (x0 : Fin n → ℂ),
+                LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                  ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                    c ≠ 0 ∧
+                      (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                        ∀ (w : Fin (r + 1) → ℂ),
+                          (MvPolynomial.eval w) c ≠ 0 →
+                            let J := LinearStudy.projectivePulledLinearSectionIdeal f V L w;
+                            have hJ := ⋯;
+                            ∀ (k : ℤ),
+                              Nonempty
+                                (CategoryTheory.Limits.cokernel
+                                    ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                                  (AlgebraicGeometry.Scheme.Modules.pushforward
+                                        (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+                                    (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece J)
+                                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                                        (LinearStudy.homogeneousQuotientPiece J))
+                                      ⋯ k))
+'LinearStudy.projectivePulledLinearSection_exists_globalCokernelWholeCutNativeTwistIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalChainCokernelTargetAugmentation : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        (T : A) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) → (C ⟶ (ChainComplex.single₀ A).obj T)
+'LinearStudy.originalChainCokernelTargetAugmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainCokernelTargetAugmentation_f_zero : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) (T : A)
+  (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T),
+  (LinearStudy.originalChainCokernelTargetAugmentation C T e).f 0 =
+    CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (C.d 1 0)) e.hom
+'LinearStudy.originalChainCokernelTargetAugmentation_f_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainCokernelTargetAugmentation_quasiIso_of_cokernel : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) (T : A)
+  (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T),
+  QuasiIso (LinearStudy.originalChainCokernelAugmentation C) →
+    QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation C T e)
+'LinearStudy.originalChainCokernelTargetAugmentation_quasiIso_of_cokernel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearSection_exists_wholeCutNativeTwist_quotientAugmentation_quasiIso : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  V.ideal.toIdeal ≠ ⊥ →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+            (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (r + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                let J := LinearStudy.projectivePulledLinearSectionIdeal f V L w;
+                                have hJ := ⋯;
+                                ∀ (k : ℤ),
+                                  have C := LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k;
+                                  let T :=
+                                    (AlgebraicGeometry.Scheme.Modules.pushforward
+                                          (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece J)
+                                        (LinearStudy.nativeProjectiveRingIntegerPiece
+                                          (LinearStudy.homogeneousQuotientPiece J))
+                                        ⋯ k);
+                                  ∃ (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T),
+                                    QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation C T e) ∧
+                                      (LinearStudy.originalChainCokernelTargetAugmentation C T e).f 0 =
+                                        CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (C.d 1 0))
+                                          e.hom
+'LinearStudy.projectivePulledLinearSection_exists_wholeCutNativeTwist_quotientAugmentation_quasiIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.ringEquivOriginalQuotientFactor.{u_1, u_2, u_3, u_4} : {B : Type u_1} →
+  {R : Type u_2} →
+    {C : Type u_3} →
+      {T : Type u_4} →
+        [inst : CommRing B] →
+          [inst_1 : CommRing R] →
+            [inst_2 : CommRing C] →
+              [inst_3 : CommRing T] →
+                (J : Ideal B) →
+                  (I : Ideal R) → (eB : B ≃+* R) → C ≃+* T → B ⧸ J ≃+* C → I = Ideal.map eB.toRingHom J → R ⧸ I ≃+* T :=
+fun {B : Type u_1} {R : Type u_2} {C : Type u_3} {T : Type u_4} [CommRing B] [CommRing R] [CommRing C] [CommRing T]
+    (J : Ideal B) (I : Ideal R) (eB : B ≃+* R) (eC : C ≃+* T) (eQ : B ⧸ J ≃+* C) (hI : I = Ideal.map eB.toRingHom J) =>
+  (J.quotientEquiv I eB hI).symm.trans (eQ.trans eC)
+def LinearStudy.schemeModulePushforwardUnitIsoOfIso.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  (e : X ≅ Y) →
+    (AlgebraicGeometry.Scheme.Modules.pushforward e.hom).obj (SheafOfModules.unit X.ringCatSheaf) ≅
+      SheafOfModules.unit Y.ringCatSheaf :=
+fun {X Y : AlgebraicGeometry.Scheme} (e : X ≅ Y) =>
+  (AlgebraicGeometry.Scheme.Modules.pushforward e.hom).mapIso
+      (AlgebraicGeometry.Scheme.Modules.restrictUnitIso e.hom).symm ≪≫
+    (CategoryTheory.asIso
+        ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction e.hom).unit.app
+          (SheafOfModules.unit Y.ringCatSheaf))).symm
+def LinearStudy.schemeModuleOriginalCutStructurePushforwardIso.{u} : {Z0 Z U X : AlgebraicGeometry.Scheme} →
+  (e : Z0 ≅ Z) →
+    (q : Z0 ⟶ U) →
+      (j : U ⟶ X) →
+        (i : Z ⟶ X) →
+          CategoryTheory.CategoryStruct.comp e.hom i = CategoryTheory.CategoryStruct.comp q j →
+            ((AlgebraicGeometry.Scheme.Modules.pushforward j).obj
+                ((AlgebraicGeometry.Scheme.Modules.pushforward q).obj (SheafOfModules.unit Z0.ringCatSheaf)) ≅
+              (AlgebraicGeometry.Scheme.Modules.pushforward i).obj (SheafOfModules.unit Z.ringCatSheaf)) :=
+fun {Z0 Z U X : AlgebraicGeometry.Scheme} (e : Z0 ≅ Z) (q : Z0 ⟶ U) (j : U ⟶ X) (i : Z ⟶ X)
+    (hsquare : CategoryTheory.CategoryStruct.comp e.hom i = CategoryTheory.CategoryStruct.comp q j) =>
+  (AlgebraicGeometry.Scheme.Modules.pushforwardComp q j).app (SheafOfModules.unit Z0.ringCatSheaf) ≪≫
+    (AlgebraicGeometry.Scheme.Modules.pushforwardCongr ⋯).app (SheafOfModules.unit Z0.ringCatSheaf) ≪≫
+      (AlgebraicGeometry.Scheme.Modules.pushforwardComp e.hom i).symm.app (SheafOfModules.unit Z0.ringCatSheaf) ≪≫
+        (AlgebraicGeometry.Scheme.Modules.pushforward i).mapIso (LinearStudy.schemeModulePushforwardUnitIsoOfIso e)
+def LinearStudy.schemeModuleOriginalCutCokernelTargetIso.{u} : (R : CommRingCat) →
+  {r : ℕ} →
+    (H : Fin r → ↑R) →
+      {X Z : AlgebraicGeometry.Scheme} →
+        (j : AlgebraicGeometry.Spec R ⟶ X) →
+          (i : Z ⟶ X) →
+            (g : AlgebraicGeometry.Spec ↧(↑R ⧸ Ideal.span (Set.range H)) ≅ Z) →
+              CategoryTheory.CategoryStruct.comp g.hom i =
+                  CategoryTheory.CategoryStruct.comp
+                    (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H))))) j →
+                ((AlgebraicGeometry.Scheme.Modules.pushforward j).obj
+                    (LinearStudy.tildeKoszulOriginalCutCokernelCofork R H).pt ≅
+                  (AlgebraicGeometry.Scheme.Modules.pushforward i).obj (SheafOfModules.unit Z.ringCatSheaf)) :=
+fun (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R) {X Z : AlgebraicGeometry.Scheme} (j : AlgebraicGeometry.Spec R ⟶ X)
+    (i : Z ⟶ X) (g : AlgebraicGeometry.Spec ↧(↑R ⧸ Ideal.span (Set.range H)) ≅ Z)
+    (hg :
+      CategoryTheory.CategoryStruct.comp g.hom i =
+        CategoryTheory.CategoryStruct.comp
+          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H))))) j) =>
+  (AlgebraicGeometry.Scheme.Modules.pushforward j).mapIso (CategoryTheory.eqToIso ⋯) ≪≫
+    LinearStudy.schemeModuleOriginalCutStructurePushforwardIso g
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H))))) j i hg
+def LinearStudy.nativeIntegerTwistWholePresheafIso.{u} : {K S : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (a : S) →
+              a ∈ 𝓑 1 →
+                (∀ (p : ProjectiveSpectrum 𝓑), a ∉ p.asHomogeneousIdeal) →
+                  (k : ℤ) →
+                    PresheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf.obj ≅
+                      LinearStudy.nativeProjectiveModulePresheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯
+                        k :=
+fun {K S : Type u} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1)
+    (hp : ∀ (p : ProjectiveSpectrum 𝓑), a ∉ p.asHomogeneousIdeal) (k : ℤ) =>
+  PresheafOfModules.isoMk
+    (fun (U : (TopologicalSpace.Opens ↥(AlgebraicGeometry.Proj 𝓑))ᵒᵖ) =>
+      (LinearStudy.nativeIntegerTwistSectionFrame 𝓑 a ha k U ⋯).toModuleIso)
+    ⋯
+def LinearStudy.nativeIntegerTwistWholeSheafIso.{u} : {K S : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (a : S) →
+              a ∈ 𝓑 1 →
+                (∀ (p : ProjectiveSpectrum 𝓑), a ∉ p.asHomogeneousIdeal) →
+                  (k : ℤ) →
+                    SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf ≅
+                      LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ k :=
+fun {K S : Type u} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1)
+    (hp : ∀ (p : ProjectiveSpectrum 𝓑), a ∉ p.asHomogeneousIdeal) (k : ℤ) =>
+  (SheafOfModules.fullyFaithfulForget (AlgebraicGeometry.Proj 𝓑).ringCatSheaf).preimageIso
+    (LinearStudy.nativeIntegerTwistWholePresheafIso 𝓑 a ha hp k)
+def LinearStudy.nativeIntegerTwistWholeSheafIsoOfBasicOpenTop.{u} : {K S : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            (a : S) →
+              a ∈ 𝓑 1 →
+                AlgebraicGeometry.Proj.basicOpen 𝓑 a = ⊤ →
+                  (k : ℤ) →
+                    SheafOfModules.unit (AlgebraicGeometry.Proj 𝓑).ringCatSheaf ≅
+                      LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ k :=
+fun {K S : Type u} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (a : S) (ha : a ∈ 𝓑 1)
+    (htop : AlgebraicGeometry.Proj.basicOpen 𝓑 a = ⊤) (k : ℤ) =>
+  LinearStudy.nativeIntegerTwistWholeSheafIso 𝓑 a ha ⋯ k
+def LinearStudy.originalChainCokernelTargetAugmentation.{v_1, u_1} : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{v_1, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        (T : A) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) → (C ⟶ (ChainComplex.single₀ A).obj T) :=
+fun {A : Type u_1} [CategoryTheory.Category.{v_1, u_1} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) (T : A)
+    (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) =>
+  CategoryTheory.CategoryStruct.comp (LinearStudy.originalChainCokernelAugmentation C)
+    ((ChainComplex.single₀ A).map e.hom)
