@@ -1,0 +1,51 @@
+module
+import all Linear.SchemeModulePresentationTargetAugmentation
+import all Linear.SchemeModuleOriginalCutNativeTwistTarget
+import all Linear.ProjectivePulledWholeCutNativeAugmentationConditions
+import all Linear.ParameterFamilyDependentCover
+import all Linear.SchemeModuleOriginalQuotientAugmentationProof
+import all Linear.NativeKoszulOriginalQuotientAugmentationProof
+import all Linear.ProjectivePulledWholeCutLiteralTarget
+import all Linear.ProjectivePulledOriginalQuotientAugmentationProof
+import all Linear.ProjectivePulledWholeCutLiteralAugmentationProof
+import all Linear.ProjectivePulledWholeCutLiteralAugmentationFamily
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.schemeModuleMappedPresentationDataTargetAugmentation_exists
+#print axioms LinearStudy.schemeModuleMappedPresentationDataTargetAugmentation_exists
+#check @LinearStudy.schemeModuleOriginalCutNativeTwistTargetIso
+#print axioms LinearStudy.schemeModuleOriginalCutNativeTwistTargetIso
+#check @LinearStudy.projectivePulledWholeCutNativeAugmentationConditions
+#print axioms LinearStudy.projectivePulledWholeCutNativeAugmentationConditions
+#check @LinearStudy.projectivePulledLinearSection_exists_wholeCutNativeAugmentationConditions
+#print axioms LinearStudy.projectivePulledLinearSection_exists_wholeCutNativeAugmentationConditions
+#check @LinearStudy.parameterFamily_of_dependent_cover
+#print axioms LinearStudy.parameterFamily_of_dependent_cover
+#check @LinearStudy.schemeModuleOriginalQuotientAugmentationProof
+#print axioms LinearStudy.schemeModuleOriginalQuotientAugmentationProof
+#check @LinearStudy.nativeProjectiveKoszulOriginalQuotientAugmentationProof
+#print axioms LinearStudy.nativeProjectiveKoszulOriginalQuotientAugmentationProof
+#check @LinearStudy.projectivePulledKoszulWholeCutLiteralTargetIso
+#print axioms LinearStudy.projectivePulledKoszulWholeCutLiteralTargetIso
+#check @LinearStudy.projectivePulledLinearKoszulOriginalQuotientAugmentationProof
+#print axioms LinearStudy.projectivePulledLinearKoszulOriginalQuotientAugmentationProof
+#check @LinearStudy.projectivePulledWholeCutLiteralAugmentationProof
+#print axioms LinearStudy.projectivePulledWholeCutLiteralAugmentationProof
+#check @LinearStudy.projectivePulledLinearSectionWholeCutLiteralAugmentationFamilyProof
+#print axioms LinearStudy.projectivePulledLinearSectionWholeCutLiteralAugmentationFamilyProof
+#print LinearStudy.schemeModuleOriginalCutNativeTwistTargetIso
+#print LinearStudy.projectivePulledWholeCutNativeAugmentationConditions
+#print LinearStudy.schemeModuleOriginalQuotientAugmentationProof
+#print LinearStudy.nativeProjectiveKoszulOriginalQuotientAugmentationProof
+#print LinearStudy.projectivePulledKoszulWholeCutLiteralTargetIso
+#print LinearStudy.projectivePulledLinearKoszulOriginalQuotientAugmentationProof
+#print LinearStudy.projectivePulledWholeCutLiteralAugmentationProof
+#print LinearStudy.projectivePulledLinearSectionWholeCutLiteralAugmentationFamilyProof
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool) := [(`LinearStudy.schemeModuleMappedPresentationDataTargetAugmentation_exists,true),(`LinearStudy.schemeModuleOriginalCutNativeTwistTargetIso,false),(`LinearStudy.projectivePulledWholeCutNativeAugmentationConditions,false),(`LinearStudy.projectivePulledLinearSection_exists_wholeCutNativeAugmentationConditions,true),(`LinearStudy.parameterFamily_of_dependent_cover,true),(`LinearStudy.schemeModuleOriginalQuotientAugmentationProof,true),(`LinearStudy.nativeProjectiveKoszulOriginalQuotientAugmentationProof,true),(`LinearStudy.projectivePulledKoszulWholeCutLiteralTargetIso,false),(`LinearStudy.projectivePulledLinearKoszulOriginalQuotientAugmentationProof,true),(`LinearStudy.projectivePulledWholeCutLiteralAugmentationProof,true),(`LinearStudy.projectivePulledLinearSectionWholeCutLiteralAugmentationFamilyProof,true)]
+  let env ← Lean.getEnv
+  for (n,want) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"
