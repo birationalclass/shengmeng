@@ -29,7 +29,8 @@ export function updateGlassFeedback(mesh,dt,reduced=false){
   if(!data.trayControl)mesh.scale.set(state.base[0]*state.scale,state.base[1]*state.scale,state.base[2]);mesh.updateMatrix();
   if(data.trayFeedback){const u=data.trayFeedback.uniforms;u.strength.value=pressed?.8:Math.max(hovered?.5:0,state.pulse*.85);}
   const label=mesh.children.find(o=>o.userData.screenLabel)||mesh,color=label.material?.color;
-  if(color){const warmth=pressed?1:state.pulse,k=1-Math.exp(-Math.max(0,dt)*16),base=hovered?1:.9;
+  if(color&&data.trayDarkInk){const k=1-Math.exp(-Math.max(0,dt)*16),target=hovered?[.07,.19,.23]:[.020,.031,.043];color.r+=(target[0]-color.r)*k;color.g+=(target[1]-color.g)*k;color.b+=(target[2]-color.b)*k;}
+  else if(color){const warmth=pressed?1:state.pulse,k=1-Math.exp(-Math.max(0,dt)*16),base=hovered?1:.9;
     color.r+=(1-color.r)*k;color.g+=(base+(1-base)*warmth-color.g)*k;color.b+=(base-(base-.72)*warmth-color.b)*k;
   }
 }

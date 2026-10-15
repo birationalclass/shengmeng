@@ -1,4 +1,5 @@
-import {createBoardTrayHardware} from './board-tray.js';
+import {createBoardTrayHardware} from './board-tray.js?v=crystal-black-b2';
+import {isCrystalScheme,paintStoneBoard,setTrackScheme} from './board-mineral.js';
 import {placeTrayControl,TRAY_STORAGE} from './board-tray-layout.js';
 import {createStudentLottery,drawStudentLottery,lotteryHitTargets,LOTTERY_RECT} from './student-lottery.js';
 import {createCoursePreload} from './course-preload.js';
@@ -38,7 +39,7 @@ import {createHallProgramScreen} from './hall-program-screen.js?v=sylow-two-less
 import {createReportLoader} from './report-loader.js?v=report-line-sync-6';
 
 import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=43-tight-boards';
-import {silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=smart-voice-9';
+import {silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=crystal-black-b2';
 
 const W=1536,H=640,BOARD_W=BOARD_LAYOUT.width,BOARD_H=BOARD_LAYOUT.height;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
@@ -102,7 +103,7 @@ export async function createLecture(scene,renderer,options={}){
   if(!disabled&&hasSelection)await load(0,openingReport.cover);
   reportProgress(1);
   if(navigation?.sections?.length)clock.stopAt=navigation.sections[0].end;
-  const contentFadeQueue=[],boards=[],mix=[0,0,0],targets=[0,0,0];let playing=hasSelection&&!stored,accumulator=0,writingSpeed=1;
+  const contentFadeQueue=[],boards=[],tracks=[],mix=[0,0,0],targets=[0,0,0];let playing=hasSelection&&!stored,accumulator=0,writingSpeed=1;
   const hardware=createBoardHardware(THREE),frameMaterial=hardware.wood;
   const metal=new THREE.MeshStandardMaterial({color:'#ad9d87',roughness:.84,metalness:.25,envMapIntensity:.25});
   const cube=new THREE.BoxGeometry(1,1,1);
@@ -114,7 +115,7 @@ export async function createLecture(scene,renderer,options={}){
   const blankTexture=new THREE.CanvasTexture(blankCanvas);blankTexture.colorSpace=THREE.SRGBColorSpace;
   for(let pair=0;pair<3;pair++){
     const x=22.4+pair*5.6;
-    const track=new THREE.Group();track.name='Double-channel lift track '+(pair+1);scene.add(track);
+    const track=new THREE.Group();tracks.push(track);track.name='Double-channel lift track '+(pair+1);scene.add(track);
     track.position.z=BOARD_MOUNT_OFFSET;
     track.userData={column:pair,depths:[-10.505,-10.345].map(z=>z+BOARD_MOUNT_OFFSET),travel:[BOARD_LAYOUT.low,BOARD_LAYOUT.high],glassMounted:true};
     const railCenter=(BOARD_LAYOUT.railBottom+BOARD_LAYOUT.railTop)/2,railLength=BOARD_LAYOUT.railTop-BOARD_LAYOUT.railBottom+.06;
@@ -130,6 +131,7 @@ export async function createLecture(scene,renderer,options={}){
       }
     }
     for(const y of [BOARD_LAYOUT.railBottom,BOARD_LAYOUT.railTop]){const stop=part(track,[x,y,-10.51],[5.58,.06,.43],metal);stop.name=y===BOARD_LAYOUT.railTop?'Upper rail stop':'Lower rail stop';}
+    trayHardware.createRack(track,x,BOARD_LAYOUT);
     for(let side=0;side<2;side++){
       const group=new THREE.Group();group.position.set(x,boardHeights(0)[side],-10.45+side*.16+BOARD_MOUNT_OFFSET);
       group.name=`Sliding chalkboard ${pair+1}${side?'B':'A'}`;scene.add(group);
@@ -237,17 +239,18 @@ export async function createLecture(scene,renderer,options={}){
   const erasedGrain=document.createElement('canvas');erasedGrain.width=erasedGrain.height=1;const erasedGrainCtx=erasedGrain.getContext('2d');
   function resetWipe(){wipeCanvas.width=hasSelection?W*pixelScale:1;wipeCanvas.height=hasSelection?H*pixelScale:1;wipeCtx.setTransform?.(pixelScale,0,0,pixelScale,0,0);wipeSamples=0;}
   function inkCanvas(){const c=document.createElement('canvas');c.width=W*pixelScale;c.height=H*pixelScale;const ctx=c.getContext('2d');ctx.setTransform?.(pixelScale,0,0,pixelScale,0,0);return [c,ctx];}
+  function paintBackground(ctx,w,h){if(isCrystalScheme(trayHardware.tone))paintStoneBoard(ctx,w,h);else{ctx.fillStyle='#193d33';ctx.fillRect(0,0,w,h);}}
   function ensureInk(board){
     if(!grain){
-      let g,d;[grain,g]=inkCanvas();g.fillStyle='#193d33';g.fillRect(0,0,W,H);
-      for(let i=0;i<12000;i++){g.fillStyle=i%2?'#e7f0d808':'#041c1b18';g.fillRect(random()*W,random()*H,1+random()*2,1);}
-      [dust,d]=inkCanvas();d.fillStyle='#193d3328';for(let i=0;i<6000;i++)d.fillRect(random()*W,random()*H,.5+random(),.6);
+      let g,d;[grain,g]=inkCanvas();paintBackground(g,W,H);
+      if(!isCrystalScheme(trayHardware.tone))for(let i=0;i<12000;i++){g.fillStyle=i%2?'#e7f0d808':'#041c1b18';g.fillRect(random()*W,random()*H,1+random()*2,1);}
+      [dust,d]=inkCanvas();d.fillStyle=isCrystalScheme(trayHardware.tone)?'#34363818':'#193d3328';for(let i=0;i<6000;i++)d.fillRect(random()*W,random()*H,.5+random(),.6);
     }
     if(board.canvas)return;
     [board.canvas,board.ctx]=inkCanvas();
     // A new canvas is transparent black. Seed it before binding or capturing
     // a previous frame, including when the room is still outside the camera.
-    board.ctx.fillStyle='#193d33';board.ctx.fillRect(0,0,W,H);
+    paintBackground(board.ctx,W,H);
     board.texture=new THREE.CanvasTexture(board.canvas);board.texture.colorSpace=THREE.SRGBColorSpace;
     board.texture.anisotropy=Math.min(pixelScale<1?4:16,renderer.capabilities.getMaxAnisotropy());board.texture.generateMipmaps=true;board.texture.minFilter=THREE.LinearMipmapLinearFilter;
     const roughCanvas=document.createElement('canvas');roughCanvas.width=W/4;roughCanvas.height=H/4;board.roughCtx=roughCanvas.getContext('2d');board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture=new THREE.CanvasTexture(roughCanvas);
@@ -266,7 +269,7 @@ export async function createLecture(scene,renderer,options={}){
     if(!preparing&&(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0))return;
     const content={page:slot.page,progress:slot.progress,available:cache.has(slot.page)};
     if(preparing){board.fadeAge=1;board.inkBlend.value=1;}else if(boardContentJump(board.content,content))beginContentFade(board);board.content=content;
-    if(slot.page<0){if(board.last==='blank')return;board.last='blank';if(board.canvas){board.ctx.fillStyle='#193d33';board.ctx.fillRect(0,0,W,H);board.texture.needsUpdate=true;board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture.needsUpdate=true;board.roughKey='';}return;}
+    if(slot.page<0){if(board.last==='blank')return;board.last='blank';if(board.canvas){paintBackground(board.ctx,W,H);board.texture.needsUpdate=true;board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture.needsUpdate=true;board.roughKey='';}return;}
     ensureInk(board);const ctx=board.ctx;
     const erasing=index===clock.active&&clock.phase==='erase'&&clock.progress>0;
     const wet=board.wet,wetAge=wet?effectTime-wet.started:Infinity;
@@ -559,7 +562,7 @@ export async function createLecture(scene,renderer,options={}){
   scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {
     get cameraZoom(){return cameraZoom;},adjustCameraZoom(direction){cameraZoom=stepBoardCameraZoom(cameraZoom,direction);return cameraZoom;},
-    cameraView(aspect,fov=57){const frame=boardCameraFrame(aspect,fov,cameraZoom,{column:Math.floor(clock.active/2),boardY:boards[clock.active].group.position.y});return{...frame,target:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z)),position:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z+frame.distance))};},
+    cameraView(aspect,fov=57){const frame=boardCameraFrame(aspect,fov,cameraZoom,{column:Math.floor(clock.active/2),boardY:boards[clock.active].group.position.y,boardZ:boards[clock.active].group.position.z,frameMargin:isCrystalScheme(trayHardware.tone)?.028+.003*Math.SQRT2:.04+.0025*Math.SQRT2});return{...frame,target:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z)),position:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z+frame.distance))};},
     get autoCamera(){return autoCamera;},set autoCamera(value){autoCamera=Boolean(value);},
     get followEnabled(){return autoCamera&&!disabled&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');},
     get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},
@@ -697,7 +700,16 @@ export async function createLecture(scene,renderer,options={}){
       }catch(error){if(request!==reportRequest)return false;void voice.select(null);throw error;}
       finally{if(request===reportRequest){pendingReport=null;setReportState();}}
     },
-    setWoodTone(value){return trayHardware.setTone(value);},get woodTone(){return trayHardware.tone;},
+    setWoodTone(value){
+      const old=trayHardware.tone,tone=trayHardware.setTone(value),stone=isCrystalScheme(tone);if(tone===old)return tone;
+      tracks.forEach(track=>setTrackScheme(track,trayHardware.crystalMaterial,stone));
+      hardware.back.color.set(stone?'#202124':'#243c32');
+      boards.forEach(b=>{b.group.children[0].material.color.set(stone?'#ffffff':'#c9c5bb');for(const m of b.group.children){if(m.name==='Rear nanmu stiffener')m.material=stone?trayHardware.crystalMaterial:frameMaterial;if(m.name==='Rail carriage bracket'||m.name==='Guide roller')m.visible=!stone;}});
+      for(const root of [...pageControls.flatMap(p=>p.meshes),...cameraPanels.flatMap(p=>p.meshes),...consoleButtons,...voicePanels.map(p=>p.mesh),...timePanels.map(p=>p.mesh)]){root.userData.trayDarkInk=stone;root.traverse(m=>{if(m.material?.map&&m.material.color)m.material.color.set(stone?'#27313a':'#ffffff');});}
+      if(stone!==isCrystalScheme(old)){paintBackground(blankCtx,128,64);blankTexture.needsUpdate=true;if(grain)grain.width=1;if(dust)dust.width=1;grain=dust=null;contentFadeQueue.length=0;boards.forEach(b=>{b.last='';b.fadeAge=1;b.inkBlend.value=1;});boards.forEach((_,i)=>draw(i,true));}
+      if(stone)void trayHardware.prepareMinerals(renderer).then(ready=>{if(ready&&isCrystalScheme(trayHardware.tone)){paintBackground(blankCtx,128,64);blankTexture.needsUpdate=true;if(grain)grain.width=1;grain=null;boards.forEach(b=>b.last='');boards.forEach((_,i)=>draw(i,true));}}).catch(error=>{loadingError=error.message;});
+      return tone;
+    },get woodTone(){return trayHardware.tone;},
     setWritingSpeed(value){writingSpeed=Math.max(.25,Math.min(2,Number(value)||1));},
     get writingSpeed(){return writingSpeed;},
     get language(){return language;},copy:(index=clock.page)=>chalkCopy(pages[index],language),

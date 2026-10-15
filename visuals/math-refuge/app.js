@@ -300,7 +300,7 @@ function applyShot(dt,realDelta=dt){
   const s=speakerView?roomLecterns[activeRoom].speakerPose(camera.aspect):SHOTS[shot];shotPose();const position=shotPosition,target=shotTarget;
   if(s.lecture&&lecture){
     // A steady board-height teaching camera follows the active pair, not a room orbit.
-    if(!blend&&dt>0){position.lerpVectors(camera.position,position,1-Math.exp(-dt*.75));target.lerpVectors(controls.target,target,1-Math.exp(-dt*.75));}
+    if(!blend&&dt>0){viewDirection.subVectors(camera.position,controls.target);position.sub(target).lerp(viewDirection,Math.exp(-dt*.75)).add(target);}
   }
   const priorFov=camera.fov;
   if(blend){

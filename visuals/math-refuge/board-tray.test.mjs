@@ -70,9 +70,9 @@ test('all inclined controls can be clicked in front of the real glass and tray, 
   const voice=createBoardVoicePanel(T,scene);voice.setColumn(column);voice.mesh.visible=true;panels.push(voice);
   const language=new T.Mesh(new T.PlaneGeometry(1.1,.65),new T.MeshBasicMaterial());language.userData.action='language';placeTrayControl(language,trayControlLayout(column).language);scene.add(language);
   scene.updateMatrixWorld(true);
-  for(const [key,action] of Object.entries({language:'language',previous:'board:previous',voice:'voice:toggle',next:'board:next',camera:'camera:toggle',zoomOut:'camera:farther',zoomIn:'camera:closer',reveal:'board:reveal'})){
+  for(const tone of ['pale','crystal-black']){hardware.setTone(tone);scene.updateMatrixWorld(true);for(const [key,action] of Object.entries({language:'language',previous:'board:previous',voice:'voice:toggle',next:'board:next',camera:'camera:toggle',zoomOut:'camera:farther',zoomIn:'camera:closer',reveal:'board:reveal'})){
    const p=trayControlLayout(column)[key],normal=new T.Vector3(0,Math.sin(p.tilt),Math.cos(p.tilt)),center=new T.Vector3(p.x,p.y,p.z),ray=new T.Raycaster(center.clone().add(normal),normal.clone().negate());
-   const hit=ray.intersectObjects(scene.children,true)[0];assert.equal(hit?.object.userData.action,action,'visible '+key+' is the first physical hit');
-  }
+   const hit=ray.intersectObjects(scene.children,true)[0];assert.equal(hit?.object.userData.action,action,'visible '+key+' is the first physical hit on '+tone);
+  }}
  }}finally{panels.forEach(p=>p.dispose());hardware.dispose();globalThis.document=old;}
 });
