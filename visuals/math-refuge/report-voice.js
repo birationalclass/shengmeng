@@ -91,12 +91,12 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   get transportPlaying(){return desired&&contextActive;},
   get boardHeld(){return Boolean(boardHold);},
   async holdForBoard(job,at){
-   if(boardHold||!desired||!audio||!manifest)return false;
-   const mine=epoch,hold={};boardHold=hold;playToken++;sync();audio.pause();
+   if(boardHold||!desired||(!audio&&!activity)||!manifest)return false;
+   const mine=epoch,hold={};boardHold=hold;playToken++;sync();audio?.pause();if(activity)activity.running=false;
    const start=manifest.chapters[index].start;
-   if(Number.isFinite(at)&&at>=start&&at-start<manifest.chapters[index].duration){audio.currentTime=(manifest.chapters[index].mediaStart||0)+at-start;state.time=at;}
+   if(Number.isFinite(at)&&at>=start&&at-start<manifest.chapters[index].duration){if(audio)audio.currentTime=(manifest.chapters[index].mediaStart||0)+at-start;else activity.at=at-start;state.time=at;}
    state.phase='preparing';state.temporaryPause=false;emit();
-   try{await job;}finally{if(boardHold===hold){boardHold=null;if(mine===epoch&&desired&&contextActive){const c=manifest.chapters[index];if(audio.currentTime-(c.mediaStart||0)>=c.duration-.015){if(index+1<manifest.chapters.length)await advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}else await play();}}}
+   try{await job;}finally{if(boardHold===hold){boardHold=null;if(mine===epoch&&desired&&contextActive){const c=manifest.chapters[index];if(audio&&audio.currentTime-(c.mediaStart||0)>=c.duration-.015){if(index+1<manifest.chapters.length)await advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}else await play();}}}
    return true;
   },
   async skipActivity(){if(!activity||!manifest)return false;if(index+1<manifest.chapters.length){await advance(index+1);return true;}pause();state.phase='ended';state.time=state.duration;emit();return true;},
@@ -168,7 +168,7 @@ export function narrationResourceBytes(manifest){return [...new Map((manifest?.c
 // Language, playback and automatic camera share the board centre with separate hit targets.
 export function reportControlLayout(column=0,withVoice=true){
  const center=22.4+5.6*Math.max(0,Math.min(2,column));
- return{center,previous:{x:center-.94,y:-.16,z:-11.302,width:.6},next:{x:center+.94,y:-.16,z:-11.302,width:.6},language:{x:center-1.94,y:-.16,z:-11.34,width:1.1},voice:{x:center,y:-.16,z:-11.302,width:.6},camera:{x:center+1.94,y:-.16,z:-11.302,width:.6}};
+ return{center,previous:{x:center-.94,y:-.16,z:-11.302,width:.6},next:{x:center+.94,y:-.16,z:-11.302,width:.6},language:{x:center-1.94,y:-.16,z:-11.34,width:1.1},voice:{x:center,y:-.16,z:-11.302,width:.6},camera:{x:center+1.94,y:-.16,z:-11.302,width:.6},reveal:{x:center+1.5,y:-.68,z:-11.302,width:.6}};
 }
 export function reportVoiceIconPosition(column=0){return reportControlLayout(column).voice;}
 const iconBusy=s=>(['loading','buffering','preparing'].includes(s.phase)&&!(s.transportPlaying&&s.started))||s.phase==='away'&&!s.started;

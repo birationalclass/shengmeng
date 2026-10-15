@@ -22,6 +22,7 @@ import {LectureClock,boardSlot,boardHeights,BOARD_LAYOUT} from './lecture-state.
 import {inkGuides,inkReveal,strokeReveal,rasterStrokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=semantic-chalk-2';
 import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
 import {narrationWork,boardWorkFrame,writingSchedule,settledBoardFrame} from './board-work.js?v=unframed-controls-1';
+import {BoardReview} from './board-review.js';
 
 import {chalkCopy,chalkPageText,composeChalkPage} from './chalk-language.js?v=sylow-two-lessons-20261015';
 
@@ -46,22 +47,23 @@ export async function createLecture(scene,renderer,options={}){
   let voiceEnabled=true,voiceTone='original',voiceBookmark=null,highlightEnabled=options.highlight!==false,highlightState=null,highlightManifest=null,highlightSpecs=[];const measuredHighlights=new Map();
   let navigation=openingReport.navigation;
   let pages=openingReport.pages,clock=new LectureClock(pages.length),reportRequest=0,pendingReport=null,seekRequest=0,seeking=false;
-  let seekPinned=new Set(),hasSelection=!disabled&&!options.requireSelection,present=true,renderActive=true,hydrating=false,renderEpoch=0;
+  let requestedPage=null,seekPinned=new Set(),hasSelection=!disabled&&!options.requireSelection,present=true,renderActive=true,hydrating=false,renderEpoch=0;
   let screenHub=null,openingDemo=null,openingSurfacesReady=false;
   let storageRig=null,stored=Boolean(options.retractable&&options.startStored),storageProgress=stored?1:0,storageLabel=null,storageLabelText='';
   const storageMotion=new BoardStorage(stored),storageLids=[];let storageWell=null,storageCap=null;
-  const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:p.kind==='cover'?2:8}));
+  const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:p.kind==='cover'?5:8}));
   estimateDurations();
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='en',generation=0;
   let fontsReady=0;
   if(document.fonts&&!disabled)await withDeadline(Promise.all(['42px RefugeChinese','42px RefugeLatin','42px RefugeMath'].map(font=>document.fonts.load(font).then(result=>{reportProgress(.25+(++fontsReady)/3*.45);return result;}))),15000,'板书字体加载');
   let chineseChalk=null;
   const lessonBudget=new LessonBudget(),omittedProofPages=new Set();let proofJumping=false;
+  const boardReview=new BoardReview(),revealedPages=new Set();
   let boardWork=null,eraseRun=null,previousNarrationTime=null,workManifest=null;const completedWork=new Set(),exerciseChoices=new Map(),exerciseFrames=new Map(),exerciseEraseKeys=new Map();
   function currentExercise(index=clock.page){if(pages[index]?.exerciseBoard)return null;const b=voice.manifest?.boards.find(b=>b.page===index);return activeReport.kind==='classroom'&&b?classroomActivityAt(voice.manifest,Math.min(voice.state.time,b.end-.001),index):null;}
   function stepExercise(delta){const a=currentExercise(),frame=exerciseFrames.get(clock.page);if(!a||!frame)return false;const next=frame.sheetIndex+delta;if(next<0||next>=frame.sheetCount)return false;exerciseChoices.set(a.start+':'+a.feedback,next);boards.forEach(b=>b.last='');return true;}
   async function omitOptionalProof(){const optional=voice.manifest?.boards.filter(b=>b.optionalProof)||[];if(!optional.length||proofJumping)return false;proofJumping=true;lessonBudget.decision='skip';optional.forEach(b=>omittedProofPages.add(b.page));cancelBoardWork();highlighter.hide();highlightState=null;try{await voice.seek(optional.at(-1).end,{preservePlayback:true});version++;return true;}finally{proofJumping=false;}}
-  function cancelBoardWork(){boardWork?.resolve();boardWork=null;eraseRun=null;previousNarrationTime=null;workManifest=null;completedWork.clear();}
+  function cancelBoardWork(){boardWork?.resolve();boardWork=null;eraseRun=null;previousNarrationTime=null;workManifest=null;completedWork.clear();boardReview.clear();revealedPages.clear();}
   function clearPageCache(){cancelBoardWork();exerciseChoices.clear();exerciseFrames.clear();exerciseEraseKeys.clear();for(const c of cache.values()){c.width=1;c.height=1;}cache.clear();}
   function load(index,preparedImage){
     if(index<0)return Promise.resolve(null);
@@ -80,7 +82,7 @@ export async function createLecture(scene,renderer,options={}){
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
         if(pixels)guides.set(index,inkGuides(pixels,rows));
         const wipe=erasingPlan(pixels,rows);erasePlans.set(index,wipe);
-        clock.setDurations(index,{write:Math.max(.8,writingPlan(rows,guides.get(index)).duration),erase:Math.max(.4,wipe.duration),hold:pages[index].kind==='cover'?2:8});
+        clock.setDurations(index,{write:Math.max(.8,writingPlan(rows,guides.get(index)).duration),erase:Math.max(.4,wipe.duration),hold:pages[index].kind==='cover'?5:8});
         // Retain six on-board pages and the active/next page, evict other SVGs.
         const keep=new Set([...seekPinned,...clock.slots.map(s=>s.page),clock.page,Math.min(clock.page+1,pages.length-1)]);
         for(const key of cache.keys())if(cache.size>(pixelScale<1?8:10)&&!keep.has(key)){cache.get(key).width=1;cache.get(key).height=1;cache.delete(key);guides.delete(key);erasePlans.delete(key);pageRows.delete(key);}
@@ -314,13 +316,14 @@ export async function createLecture(scene,renderer,options={}){
     const board=boards[clock.active].group;
     tool.position.set(board.position.x+(x/W-.5)*BOARD_W,board.position.y+(.5-y/H)*BOARD_H,board.position.z+.014);
   }
-  function select(page){if(disabled)return;voice.pause();if(voice.manifest){void seek(page);return;}openingDemo=null;clock.select(page);targets[Math.floor(clock.active/2)]=clock.active%2;version++;load(clock.page).catch(error=>{loadingError=error;});}
+  function select(page){if(disabled)return;if(voice.manifest)return seek(page,{preservePlayback:true});openingDemo=null;clock.select(page);targets[Math.floor(clock.active/2)]=clock.active%2;version++;load(clock.page).catch(error=>{loadingError=error;});}
   async function seek(page,{preservePlayback=false}={}){
     if(disabled)return false;
     cancelBoardWork();
     openingDemo=null;
     const request=++seekRequest,epoch=generation;
     const target=Math.max(clock.startAt,Math.min(clock.stopAt,Math.trunc(page)||0));
+    requestedPage=target;
     seeking=true;seekPinned=new Set(Array.from({length:target-Math.max(clock.startAt,target-(voice.manifest?6:5))+1},(_,i)=>Math.max(clock.startAt,target-(voice.manifest?6:5))+i));
     try{
       const preparation=Promise.all(Array.from({length:target-Math.max(clock.startAt,target-(voice.manifest?6:5))+1},(_,i)=>load(Math.max(clock.startAt,target-(voice.manifest?6:5))+i)));
@@ -339,7 +342,20 @@ export async function createLecture(scene,renderer,options={}){
       boards.forEach((_,i)=>draw(i,true));version++;
       return true;
     }catch(error){if(request===seekRequest)loadingError=error;throw error;}
-    finally{if(request===seekRequest){seeking=false;seekPinned.clear();}}
+    finally{if(request===seekRequest){seeking=false;requestedPage=null;seekPinned.clear();}}
+  }
+  async function revealCurrent(){
+    if(disabled||!hasSelection||seeking)return false;
+    const page=clock.page,epoch=generation,request=seekRequest;voice.pause();playing=false;await load(page);if(epoch!==generation||request!==seekRequest||page!==clock.page||seeking)return false;
+    const event=voice.manifest?.boards.find(b=>b.page===page);
+    if(event&&!await voice.seek(Math.max(event.writeStart,event.end-.03)))return false;
+    if(epoch!==generation||request!==seekRequest||page!==clock.page||seeking)return false;
+    workManifest=voice.manifest;revealedPages.add(page);completedWork.add('write:'+page+':end');boardReview.mark(page);
+    if(boardWork?.page===page){boardWork.resolve();boardWork=null;}
+    const frame={page,phase:'hold',progress:1,writing:false,ended:false,duration:5};syncNarrationClock(clock,frame,boardSlot);
+    mix[Math.floor(clock.active/2)]=targets[Math.floor(clock.active/2)]=clock.active%2;
+    boardHeights(mix[Math.floor(clock.active/2)]).forEach((h,s)=>boards[Math.floor(clock.active/2)*2+s].group.position.y=h);
+    chalk.visible=false;eraser.visible=false;eraserPickup=null;eraserReturn=null;eraser.userData.state='resting';boards.forEach(b=>{b.last='';b.wet=null;});resetWipe();boards.forEach((_,i)=>draw(i,true));version++;return true;
   }
   function finishOpening(){
     openingDemo=null;if(!storageRig)return;
@@ -389,21 +405,24 @@ export async function createLecture(scene,renderer,options={}){
       const needed=[frame.page,frame.page>=6?frame.page-6:-1,priorPage,priorPage>=6?priorPage-6:-1].filter(i=>i>=0);
       if(needed.every(i=>cache.has(i))&&!seeking){
         frame=settledBoardFrame(narrationFrame(voice.manifest,voice.state.time,writingPlan(pageRows.get(frame.page),guides.get(frame.page)),erasePlans.get(frame.page-6)),completedWork);
+        if(revealedPages.has(frame.page))frame={...frame,phase:'hold',progress:1,writing:false};
+        if(frame.phase==='hold'&&frame.progress===1)boardReview.mark(frame.page);
         if(frame.phase==='erase'&&eraseRun?.page!==frame.page){const event=voice.manifest.boards.find(b=>b.page===frame.page),plan=erasePlans.get(frame.page-6);eraseRun={page:frame.page,duration:plan.duration,elapsed:previousNarrationTime===null?Math.max(0,Math.min(plan.duration,voice.state.time-event.eraseStart-1.8)):0};}
         if(eraseRun?.page===frame.page){
           if(voice.transportPlaying&&eraser.userData.state==='erasing')eraseRun.elapsed=Math.min(eraseRun.duration,eraseRun.elapsed+dt);
           if(eraseRun.elapsed>=eraseRun.duration&&eraser.userData.state==='resting')completedWork.add('erase:'+eraseRun.page);
           if(frame.phase==='erase')frame={...frame,progress:eraseRun.elapsed/eraseRun.duration,duration:eraseRun.duration};
         }
-        if(!boardWork&&voice.state.phase==='playing'&&!reduced){
-          const work=narrationWork(voice.manifest,voice.state.time,previousNarrationTime,writingPlan(pageRows.get(priorPage),guides.get(priorPage)),erasePlans.get(priorPage-6),completedWork);
-          if(work){if(work.kind==='erase'){if(eraseRun?.page!==work.page)eraseRun={page:work.page,duration:work.duration,elapsed:work.elapsed};work.elapsed=eraseRun.elapsed;}const job=new Promise(resolve=>boardWork={...work,resolve});void voice.holdForBoard(job,work.at);}
+        if(!boardWork&&voice.state.phase==='playing'){
+          const work=narrationWork(voice.manifest,voice.state.time,previousNarrationTime,writingPlan(pageRows.get(priorPage),guides.get(priorPage)),erasePlans.get(priorPage-6),completedWork,boardReview.remaining(priorPage));
+          if(work){if(work.kind==='review')boardReview.mark(work.page);if(work.kind==='erase'){if(eraseRun?.page!==work.page)eraseRun={page:work.page,duration:work.duration,elapsed:work.elapsed};work.elapsed=eraseRun.elapsed;}const job=new Promise(resolve=>boardWork={...work,resolve});void voice.holdForBoard(job,work.at);}
         }
         if(boardWork){
           if(boardWork.kind==='erase')boardWork.elapsed=eraseRun.elapsed;
+          else if(boardWork.kind==='review')boardWork.elapsed=boardWork.duration-boardReview.remaining(boardWork.page);
           else if(voice.transportPlaying)boardWork.elapsed+=dt*writingSpeed;
           frame=boardWorkFrame(boardWork);
-          if(boardWork.elapsed>=boardWork.duration&&(boardWork.kind==='write'||eraser.userData.state==='resting')){completedWork.add(boardWork.key);boardWork.resolve();boardWork=null;}
+          if(boardWork.elapsed>=boardWork.duration&&(boardWork.kind!=='erase'||eraser.userData.state==='resting')){if(boardWork.kind==='write')boardReview.mark(boardWork.page);completedWork.add(boardWork.key);boardWork.resolve();boardWork=null;}
         }
         if(voice.state.phase==='playing'||voice.boardHeld)previousNarrationTime=voice.state.time;
         if(!boardWork&&!proofJumping&&voice.transportPlaying&&lessonBudget.shouldSkip(frame,voice.manifest.boards.filter(b=>b.optionalProof))){void omitOptionalProof().catch(error=>{loadingError=error;});return;}
@@ -418,6 +437,7 @@ export async function createLecture(scene,renderer,options={}){
       }
     }else if(boardWork||workManifest)cancelBoardWork();
     const ready=cache.has(clock.page)&&(clock.slots[clock.active].page<0||cache.has(clock.slots[clock.active].page));
+    if(!narrated&&clock.phase==='hold'){boardReview.mark(clock.page);clock.elapsed=Math.max(clock.elapsed,Math.min(clock.duration,5-boardReview.remaining(clock.page)));}
     if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}
     // Ordinary reports retain their original mechanism. Narration uses Audio.currentTime.
     const collectingEraser=clock.phase==='erase'&&eraser.userData.state!=='erasing'||clock.phase==='write'&&Boolean(eraserReturn);
@@ -589,7 +609,7 @@ export async function createLecture(scene,renderer,options={}){
     toggleStorage(){voice.pause();openingDemo=null;if(storageRig){stored=!stored;if(!stored)screenHub?.report();if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();setReportState();}return stored;},
     setClarity(value){boardMipBias.value=value==='natural'?0:-.45;},
     setPresence(value){present=Boolean(value);if(!present)void voice.setContextActive(false);},get present(){return present;},
-    update,seek,disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0;},get hasSelection(){return hasSelection;},
+    update,seek,revealCurrent,get navigationPage(){return requestedPage??clock.page;},get reviewRemaining(){return boardReview.remaining(clock.page);},disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0;},get hasSelection(){return hasSelection;},
     get progress(){return {page:clock.page-clock.startAt,total:clock.stopAt-clock.startAt+1};},
     screenAction:action=>{if(programScreen?.action(action)){screenHub?.report();return true;}voice.pause();openingDemo=null;return screenHub?.action(action)||seminarScreen?.action(action);},
     get programTab(){return programScreen?.tab||'reports';},
@@ -675,7 +695,7 @@ export async function createLecture(scene,renderer,options={}){
     get playing(){return present&&hasSelection&&(activeReport.narration&&voiceEnabled&&!openingDemo?voice.transportPlaying:playing)&&!clock.ended;},set playing(value){if(activeReport.narration&&voiceEnabled&&!openingDemo){if(!value)voice.pause();else if(voice.state.phase!=='playing')void voice.toggle();}else playing=hasSelection&&value;},
     skipOptionalProof:omitOptionalProof,
     async completePage(page=clock.page){if(!await seek(page))return false;const b=voice.manifest?.boards.find(b=>b.page===clock.page);if(b){const schedule=writingSchedule(b,writingPlan(pageRows.get(b.page),guides.get(b.page)));await voice.seek(schedule?Math.min(schedule.end,b.end-.25):b.writeEnd);workManifest=voice.manifest;completedWork.add('write:'+b.page+':end');}else staticPage();return true;},
-    select,stepExercise,step(delta){if(stepExercise(delta))return;const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
+    select,stepExercise,step(delta){if(stepExercise(delta))return Promise.resolve(true);return seek((requestedPage??clock.page)+delta,{preservePlayback:true});},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:(BOARD_LAYOUT.low+BOARD_LAYOUT.high)/2,-10.4+BOARD_MOUNT_OFFSET)),
     dispose(){unbindVoiceFocus();voice.dispose();cancelBoardWork();pageControls.forEach(panel=>panel.dispose());highlighter.dispose();voicePanels.forEach(panel=>panel.dispose());timePanels.forEach(panel=>panel.dispose());cameraPanels.forEach(panel=>panel.dispose());storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();programScreen?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...(programScreen?[]:reportButtons)].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.previousCanvas){board.previousInk.value.dispose();board.previousCanvas.width=1;board.previousCanvas.height=1;}if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}

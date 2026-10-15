@@ -20,7 +20,7 @@ export function settledBoardFrame(frame,completed){
 }
 // Only unfinished whole-board work and erasing hold the transport.
 // Seek snapshots never replay previous unfinished work.
-export function narrationWork(manifest,time,previous,writing,erase,completed){
+export function narrationWork(manifest,time,previous,writing,erase,completed,reviewRemaining=0){
  if(previous===null||time<previous||time-previous>.5)return null;
  const b=manifest.boards.findLast(b=>b.start<=previous);if(!b)return null;
  const crossing=at=>previous<=at&&time>=at;
@@ -34,6 +34,7 @@ export function narrationWork(manifest,time,previous,writing,erase,completed){
   const start=scheduledWriting(schedule,deadline).progress*writing.total,end=writing.total;
   return{key,kind:'write',page:b.page,at:deadline,elapsed:0,duration:(end-start)/writing.unitsPerSecond,start,end,total:writing.total};
  }
+ if(reviewRemaining>0&&!completed.has('review:'+b.page+':end')&&crossing(b.end-.02))return{key:'review:'+b.page+':end',kind:'review',page:b.page,at:b.end-.02,elapsed:0,duration:reviewRemaining};
  return null;
 }
-export function boardWorkFrame(work){const p=Math.max(0,Math.min(1,work.elapsed/work.duration));return{page:work.page,phase:work.kind==='erase'?'erase':'write',progress:work.kind==='erase'?p:(work.start+p*(work.end-work.start))/work.total,writing:work.kind==='write'&&p<1,ended:false,duration:work.duration};}
+export function boardWorkFrame(work){const p=Math.max(0,Math.min(1,work.elapsed/work.duration));return{page:work.page,phase:work.kind==='review'?'hold':work.kind==='erase'?'erase':'write',progress:work.kind==='review'?1:work.kind==='erase'?p:(work.start+p*(work.end-work.start))/work.total,writing:work.kind==='write'&&p<1,ended:false,duration:work.duration};}

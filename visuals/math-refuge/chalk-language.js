@@ -4,6 +4,7 @@ import {drawChalkAnnotation} from './chalk-annotations.js?v=report-line-sync-6';
 import {explainedFlow} from './flow-explanation.js?v=textbook-problems-1';
 import {wrapBoardText} from './chalk-wrap.js?v62-chalk-ink';
 import {classroomHeading,CHALK_SEMANTIC_COLORS,drawReferenceIcon} from './classroom-metadata.js?v=sylow-two-lessons-20261015';
+import {focusPieces} from './chalk-blue-focus.js';
 export function chalkCopy(page,language='zh',{board=false}={}){
   return language==='en'?{...page.en,text:!board&&page.en.readingText||page.en.text}:{title:page.title,text:!board&&page.readingText||page.text,source:page.source,author:page.author};
 }
@@ -37,11 +38,12 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
   function textRow(text,x,y,size,color,heading=false,mark=null){
     while(measure(text,size,heading)>1368&&size>24)size--;
     ctx.fillStyle=color;let cursor=x;const chineseSpans=[];
-    for(const run of chalkInlineRuns(text)){ctx.fillStyle=run.math&&mark?.fragments?.some(part=>run.text.includes(part))?'#93c9ff':color;ctx.font=`${size*(run.script ? .7 : 1)}px ${runFont(run,heading)}`;drawInlineInk(ctx,run,cursor,y+(run.script==='sub'?size*.22:run.script==='sup'?-size*.4:0),size*(run.script?.7:1));const width=inlineInk(ctx,run,size*(run.script?.7:1)).width;if(/[\u3400-\u9fff]/.test(run.text))chineseSpans.push([cursor,cursor+width]);cursor+=width;}
+    const proseFocus=mark?.textFragments?.[language]||[];
+    for(const original of chalkInlineRuns(text))for(const piece of original.math?[{text:original.text,blue:mark?.fragments?.some(part=>original.text.includes(part))}]:focusPieces(original.text,proseFocus)){const run={...original,text:piece.text};ctx.fillStyle=piece.blue?'#93c9ff':color;ctx.font=`${size*(run.script ? .7 : 1)}px ${runFont(run,heading)}`;drawInlineInk(ctx,run,cursor,y+(run.script==='sub'?size*.22:run.script==='sup'?-size*.4:0),size*(run.script?.7:1));const width=inlineInk(ctx,run,size*(run.script?.7:1)).width;if(/[\u3400-\u9fff]/.test(run.text))chineseSpans.push([cursor,cursor+width]);cursor+=width;}
     const ink=bounds(text,size,heading);
     rows.push(Object.assign([x+ink.left-4,y-ink.ascent-4,ink.right-ink.left+8,ink.ascent+ink.descent+8],{chineseSpans,chalkColor:color}));
   }
-  if(page.kind==='closing'){let size=124;while(measure(copy.title,size)>1368&&size>24)size--;textRow(copy.title,(1536-measure(copy.title,size))/2,360,size,'#e4cf9c');return rows;}
+  if(page.kind==='closing'){let size=124;while(measure(copy.title,size)>1368&&size>24)size--;textRow(copy.title,(1536-measure(copy.title,size))/2,360,size,'#e4cf9c',false,page.emphasis?.[0]);return rows;}
   if(page.kind==='cover'){
     const center=(text,y,size,color='#eee9d5')=>{while(measure(text,size)>1368&&size>24)size--;textRow(text,(1536-measure(text,size))/2,y,size,color);};
     if(page.coverType==='section'){center(copy.title,190,106,'#e4cf9c');center(language==='en'?page.presenterEn:page.presenter,320,48);center(language==='en'?page.assistantEn:page.assistant,405,48);center(copy.text,535,38,'#e4cf9c');return rows;}
@@ -57,9 +59,9 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
     return rows;
   }
   if(!page.hideHeading&&!options.hideHeading){const icon=page.classroom&&page.reference?.kind;ctx.fillStyle='#e4cf9c';if(icon)drawReferenceIcon(ctx,icon,84,38,36);textRow(page.classroom?classroomHeading(page,language,copy.title):copy.source+'  '+copy.title,icon?136:84,76,44,'#e4cf9c',true);rows.at(-1).mainLine=0;if(icon){const r=rows.at(-1),right=r[0]+r[2],bottom=r[1]+r[3];r[0]=80;r[1]=Math.min(36,r[1]);r[2]=right-80;r[3]=Math.max(76,bottom)-r[1];}}
-  if(page.exerciseBoard||page.statementBoard){
+  if(page.exerciseBoard||page.statementBoard||page.expositionBoard){
     if(page.exerciseLines.length>5)throw Error('Exercise needs another physical board: '+page.title);
-    page.exerciseLines.forEach((line,i)=>{const text=language==='en'?line.enText:line.text;if(measure(text,38)>1328)throw Error('Exercise line overflows: '+text);textRow(text,88,158+i*83,38,line.role==='answer'?'#93c9ff':'#eee9d5');rows.at(-1).mainLine=i+1;});
+    page.exerciseLines.forEach((line,i)=>{if(line.tex){ctx.drawImage(formula,88,158+i*83-60,1360,142);rows.push(Object.assign([88,158+i*83-60,1360,142],{mainLine:i+1,formulaRow:0}));return;}const text=language==='en'?line.enText:line.text,mark=page.emphasis?.[i+1];if(measure(text,38)>1328)throw Error('Exercise line overflows: '+text);textRow(text,88,158+i*83,38,CHALK_SEMANTIC_COLORS[mark?.tone]||'#eee9d5',false,mark);rows.at(-1).mainLine=i+1;});
     return rows;
   }
   if(!page.diagram&&(page.layout==='flow'||!page.annotation)){

@@ -47,7 +47,10 @@
       "author": "主讲：子皿曰成",
       "sourceCaptionInInk": false,
       "sourcePage": 0,
-      "checkpointPolicy": "authored-only"
+      "checkpointPolicy": "authored-only",
+      "bluePolicy": {
+        "exempt": "cover"
+      }
     },
     {
       "title": "p 子群与西罗 p 子群",
@@ -65,6 +68,20 @@
           125
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "判断 H 是不是2子群、是不是西罗2子群；说明两者的区别。",
+      "answer": "四是二的平方，所以 H 是二子群。二十四等于二的三次方乘以三，西罗二子群的阶须为八，因此 H 不是西罗二子群。",
+      "exercise": {
+        "given": "G 为24阶有限群，H≤G，|H|=4。",
+        "goal": "判断 H 是不是2子群、是不是西罗2子群；说明两者的区别。",
+        "prompt": "判断 H 是不是2子群、是不是西罗2子群；说明两者的区别。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {},
       "classroom": true,
@@ -140,20 +157,10 @@
       "sourceCaptionInInk": false,
       "sourcePage": 1,
       "checkpointPolicy": "authored-only",
-      "activity": "判断 H 是不是2子群、是不是西罗2子群；说明两者的区别。",
-      "exercise": {
-        "given": "G 为24阶有限群，H≤G，|H|=4。",
-        "goal": "判断 H 是不是2子群、是不是西罗2子群；说明两者的区别。",
-        "prompt": "判断 H 是不是2子群、是不是西罗2子群；说明两者的区别。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "四是二的平方，所以 H 是二子群。二十四等于二的三次方乘以三，西罗二子群的阶须为八，因此 H 不是西罗二子群。"
+      "bluePolicy": {
+        "exempt": "definitions-only",
+        "reason": "只有定义与记号，没有证明"
+      }
     },
     {
       "title": "随堂练习",
@@ -208,9 +215,20 @@
       "strictLineCount": true,
       "mainLineCount": 5,
       "scheduledStart": 118.91066666666667,
-      "scheduledDuration": 91.38608333333333,
+      "scheduledDuration": 91.2595,
       "asset": "./assets/chalk/sylow-theorems/reviewed-003-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-003-en.png"
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-003-en.png",
+      "emphasis": {
+        "4": {
+          "tone": "conclusion"
+        }
+      },
+      "bluePolicy": {
+        "focusRows": [
+          4
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "定理2.6.1 — 陈述",
@@ -292,10 +310,141 @@
       ],
       "strictLineCount": true,
       "mainLineCount": 5,
-      "scheduledStart": 210.29675,
+      "scheduledStart": 210.17016666666666,
       "scheduledDuration": 39.525333333333336,
       "asset": "./assets/chalk/sylow-theorems/reviewed-004-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-004-en.png"
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-004-en.png",
+      "emphasis": {
+        "4": {
+          "tone": "conclusion"
+        }
+      },
+      "bluePolicy": {
+        "focusRows": [
+          4
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
+    },
+    {
+      "title": "共轭作用 — 类方程的来由",
+      "en": {
+        "title": "Conjugation and the class equation",
+        "text": "Conjugation: g·x=gxg⁻¹, for g,x∈G.\nC_G(x)={g∈G:gx=xg} is the stabilizer of x.\nA class has size [G:C_G(x)]; central classes are singletons.\nChoose representatives x₁,…,xᵣ of the noncentral classes.\nThe class equation"
+      },
+      "classroom": true,
+      "expositionBoard": true,
+      "source": "§2.6",
+      "period": 1,
+      "sourcePage": 2,
+      "reference": {
+        "kind": "extension"
+      },
+      "exerciseLines": [
+        {
+          "text": "共轭作用：g·x=gxg⁻¹（g,x∈G）。",
+          "enText": "Conjugation: g·x=gxg⁻¹, for g,x∈G.",
+          "role": "exposition"
+        },
+        {
+          "text": "C_G(x)={g∈G:gx=xg} 是 x 的稳定子。",
+          "enText": "C_G(x)={g∈G:gx=xg} is the stabilizer of x.",
+          "role": "exposition"
+        },
+        {
+          "text": "共轭类大小为 [G:C_G(x)]；中心元素各成单点类。",
+          "enText": "A class has size [G:C_G(x)]; central classes are singletons.",
+          "role": "exposition"
+        },
+        {
+          "text": "非中心共轭类各取代表 x₁,…,xᵣ，i=1,…,r。",
+          "enText": "Choose representatives x₁,…,xᵣ of the noncentral classes.",
+          "role": "exposition"
+        },
+        {
+          "tex": "|G|=|Z(G)|+\\sum_{i=1}^{r}[G:C_G(x_i)]",
+          "text": "类方程",
+          "enText": "The class equation",
+          "role": "exposition"
+        }
+      ],
+      "audioGroups": [
+        [
+          [
+            "th02-conj-r00"
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          [
+            "th02-conj-r01"
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          [
+            "th02-conj-r02"
+          ],
+          [
+            2
+          ]
+        ],
+        [
+          [
+            "th02-conj-r03"
+          ],
+          [
+            3
+          ]
+        ],
+        [
+          [
+            "th02-conj-r04"
+          ],
+          [
+            4
+          ]
+        ],
+        [
+          [
+            "th02-conj-r05"
+          ],
+          [
+            5
+          ]
+        ]
+      ],
+      "text": "共轭作用：g·x=gxg⁻¹（g,x∈G）。\nC_G(x)={g∈G:gx=xg} 是 x 的稳定子。\n共轭类大小为 [G:C_G(x)]；中心元素各成单点类。\n非中心共轭类各取代表 x₁,…,xᵣ，i=1,…,r。\n类方程",
+      "formulaAsset": "./assets/chalk/sylow-theorems/class-equation.svg",
+      "rows": [
+        [
+          0,
+          0,
+          1536,
+          640
+        ]
+      ],
+      "strictLineCount": true,
+      "mainLineCount": 6,
+      "scheduledStart": 249.69549999999998,
+      "scheduledDuration": 96.3927916666667,
+      "asset": "./assets/chalk/sylow-theorems/reviewed-005-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-005-en.png",
+      "emphasis": {
+        "5": {
+          "tone": "conclusion"
+        }
+      },
+      "bluePolicy": {
+        "focusRows": [
+          5
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "定理2.6.1 — 群阶的强归纳",
@@ -314,6 +463,20 @@
           126
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "说明归纳参数是什么，两个分支分别准备转到哪类较小群。",
+      "answer": "归纳参数是群的阶。中心阶被 P 整除时转到商群；否则转到一个非中心元素的真中心化子。不是对 k 直接归纳。",
+      "exercise": {
+        "given": "|G|=pᵃm，p∤m，1≤k≤a；对|G|归纳。",
+        "goal": "说明归纳参数是什么，两个分支分别准备转到哪类较小群。",
+        "prompt": "说明归纳参数是什么，两个分支分别准备转到哪类较小群。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {
         "1": {
@@ -357,8 +520,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-003.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-005-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-005-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-006-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-006-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -383,27 +546,20 @@
       "readingTex": "1\\le k\\le a\\Longrightarrow\\exists H\\le G:\\ |H|=p^k\\\\|G|=|Z(G)|+\\sum_i[G:C_G(x_i)]",
       "tex": "1\\le k\\le a\\Longrightarrow\\exists H\\le G:\\ |H|=p^k\\\\|G|=|Z(G)|+\\sum_i[G:C_G(x_i)]",
       "period": 1,
-      "scheduledStart": 249.82208333333335,
+      "scheduledStart": 346.0882916666667,
       "scheduledDuration": 102.98779166666668,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 2,
       "checkpointPolicy": "authored-only",
-      "activity": "说明归纳参数是什么，两个分支分别准备转到哪类较小群。",
-      "exercise": {
-        "given": "|G|=pᵃm，p∤m，1≤k≤a；对|G|归纳。",
-        "goal": "说明归纳参数是什么，两个分支分别准备转到哪类较小群。",
-        "prompt": "说明归纳参数是什么，两个分支分别准备转到哪类较小群。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "归纳参数是群的阶。中心阶被 P 整除时转到商群；否则转到一个非中心元素的真中心化子。不是对 k 直接归纳。"
+      "bluePolicy": {
+        "focusRows": [
+          1,
+          2
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "第一定理2.6.1 — 中心分支的商群",
@@ -422,6 +578,20 @@
           126
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "证明 H 正规，并解释为什么 k=1 要单独处理。",
+      "answer": "H 包含于中心，所以任意共轭保持 H。k 等于一时 H 就是所求子群，不需要在商群里寻找非平凡 P 子群。",
+      "exercise": {
+        "given": "p∣|Z(G)|，z∈Z(G)，|z|=p，H=⟨z⟩。",
+        "goal": "证明 H 正规，并解释为什么 k=1 要单独处理。",
+        "prompt": "证明 H 正规，并解释为什么 k=1 要单独处理。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {
         "3": {
@@ -459,8 +629,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-004.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-006-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-006-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-007-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-007-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -497,27 +667,19 @@
       "readingTex": "z\\in Z(G),\\quad |z|=p,\\quad H=\\langle z\\rangle\\\\H\\trianglelefteq G,\\qquad |H|=p\\\\|G/H|=p^{a-1}m<|G|",
       "tex": "z\\in Z(G),\\quad |z|=p,\\quad H=\\langle z\\rangle\\\\H\\trianglelefteq G,\\qquad |H|=p\\\\|G/H|=p^{a-1}m<|G|",
       "period": 1,
-      "scheduledStart": 352.80987500000003,
-      "scheduledDuration": 96.24195833333334,
+      "scheduledStart": 449.0760833333334,
+      "scheduledDuration": 108.85966666666668,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 3,
       "checkpointPolicy": "authored-only",
-      "activity": "证明 H 正规，并解释为什么 k=1 要单独处理。",
-      "exercise": {
-        "given": "p∣|Z(G)|，z∈Z(G)，|z|=p，H=⟨z⟩。",
-        "goal": "证明 H 正规，并解释为什么 k=1 要单独处理。",
-        "prompt": "证明 H 正规，并解释为什么 k=1 要单独处理。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "H 包含于中心，所以任意共轭保持 H。k 等于一时 H 就是所求子群，不需要在商群里寻找非平凡 P 子群。"
+      "bluePolicy": {
+        "focusRows": [
+          3
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "第一定理2.6.1 — 把商群子群提升回来",
@@ -536,6 +698,20 @@
           126
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "对 π 的原像 P 证明子群性，并计算它的阶。",
+      "answer": "子群的同态原像是子群。投影从 P 到 Q 的核是 H，故 P 的阶等于 H 的阶乘以 Q 的阶，也就是 P 的 k 次方。",
+      "exercise": {
+        "given": "H正规且|H|=p；Q≤G/H且|Q|=pᵏ⁻¹。",
+        "goal": "对 π 的原像 P 证明子群性，并计算它的阶。",
+        "prompt": "对 π 的原像 P 证明子群性，并计算它的阶。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {
         "5": {
@@ -570,8 +746,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-005.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-007-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-007-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-008-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-008-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -608,27 +784,19 @@
       "readingTex": "Q\\le G/H,\\qquad |Q|=p^{k-1}\\\\\\pi:G\\to G/H,\\qquad P=\\pi^{-1}(Q)\\\\|P|=|H||Q|=p\\cdot p^{k-1}=p^k",
       "tex": "Q\\le G/H,\\qquad |Q|=p^{k-1}\\\\\\pi:G\\to G/H,\\qquad P=\\pi^{-1}(Q)\\\\|P|=|H||Q|=p\\cdot p^{k-1}=p^k",
       "period": 1,
-      "scheduledStart": 449.0518333333334,
-      "scheduledDuration": 94.31941666666667,
+      "scheduledStart": 557.9357500000001,
+      "scheduledDuration": 107.09066666666668,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 4,
       "checkpointPolicy": "authored-only",
-      "activity": "对 π 的原像 P 证明子群性，并计算它的阶。",
-      "exercise": {
-        "given": "H正规且|H|=p；Q≤G/H且|Q|=pᵏ⁻¹。",
-        "goal": "对 π 的原像 P 证明子群性，并计算它的阶。",
-        "prompt": "对 π 的原像 P 证明子群性，并计算它的阶。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "子群的同态原像是子群。投影从 P 到 Q 的核是 H，故 P 的阶等于 H 的阶乘以 Q 的阶，也就是 P 的 k 次方。"
+      "bluePolicy": {
+        "focusRows": [
+          5
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "随堂练习",
@@ -682,10 +850,21 @@
       ],
       "strictLineCount": true,
       "mainLineCount": 5,
-      "scheduledStart": 543.37125,
-      "scheduledDuration": 171.993,
-      "asset": "./assets/chalk/sylow-theorems/reviewed-008-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-008-en.png"
+      "scheduledStart": 665.0264166666668,
+      "scheduledDuration": 159.9619583333333,
+      "asset": "./assets/chalk/sylow-theorems/reviewed-009-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-009-en.png",
+      "emphasis": {
+        "4": {
+          "tone": "conclusion"
+        }
+      },
+      "bluePolicy": {
+        "focusRows": [
+          4
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "第一定理2.6.1 — 非中心分支",
@@ -704,6 +883,20 @@
           126
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "解释“有一项不被p整除”和“中心化子保留pᵃ”两个推理，并说明何处用归纳。",
+      "answer": "若所有非中心类大小都被 P 整除，类方程模 P 的右侧就等于非零的中心项，矛盾。选中不被 P 整除的指数后，最高 P 幂留在中心化子里；它是阶更小的真子群，因此能用归纳。",
+      "exercise": {
+        "given": "p∤|Z(G)|，|G|=pᵃm；xᵢ取非中心共轭类代表。",
+        "goal": "解释“有一项不被p整除”和“中心化子保留pᵃ”两个推理，并说明何处用归纳。",
+        "prompt": "解释“有一项不被p整除”和“中心化子保留pᵃ”两个推理，并说明何处用归纳。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {
         "5": {
@@ -738,8 +931,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-006.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-009-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-009-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-010-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-010-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -776,27 +969,19 @@
       "readingTex": "\\exists i:\\ p\\nmid[G:C_G(x_i)]\\\\|G|=[G:C_G(x_i)]\\,|C_G(x_i)|\\\\p^a\\mid|C_G(x_i)|\\Longrightarrow\\exists P\\le C_G(x_i):|P|=p^k",
       "tex": "\\exists i:\\ p\\nmid[G:C_G(x_i)]\\\\|G|=[G:C_G(x_i)]\\,|C_G(x_i)|\\\\p^a\\mid|C_G(x_i)|\\Longrightarrow\\exists P\\le C_G(x_i):|P|=p^k",
       "period": 1,
-      "scheduledStart": 715.3642500000001,
-      "scheduledDuration": 97.56495833333335,
+      "scheduledStart": 824.9883750000001,
+      "scheduledDuration": 96.51083333333335,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 5,
       "checkpointPolicy": "authored-only",
-      "activity": "解释“有一项不被p整除”和“中心化子保留pᵃ”两个推理，并说明何处用归纳。",
-      "exercise": {
-        "given": "p∤|Z(G)|，|G|=pᵃm；xᵢ取非中心共轭类代表。",
-        "goal": "解释“有一项不被p整除”和“中心化子保留pᵃ”两个推理，并说明何处用归纳。",
-        "prompt": "解释“有一项不被p整除”和“中心化子保留pᵃ”两个推理，并说明何处用归纳。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "若所有非中心类大小都被 P 整除，类方程模 P 的右侧就等于非零的中心项，矛盾。选中不被 P 整除的指数后，最高 P 幂留在中心化子里；它是阶更小的真子群，因此能用归纳。"
+      "bluePolicy": {
+        "focusRows": [
+          5
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "推论1 — 西罗子群的存在性",
@@ -814,6 +999,20 @@
           126
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "列出第一定理保证的2幂阶、3幂阶子群，并说明尚不能判断什么。",
+      "answer": "第一定理保证二、四、八阶子群以及三、九阶子群存在。西罗二子群为八阶，西罗三子群为九阶；唯一性和正规性还没有从第一定理得到。",
+      "exercise": {
+        "given": "|G|=72=2³·3²。",
+        "goal": "列出第一定理保证的2幂阶、3幂阶子群，并说明尚不能判断什么。",
+        "prompt": "列出第一定理保证的2幂阶、3幂阶子群，并说明尚不能判断什么。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {
         "4": {
@@ -852,8 +1051,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-007.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-010-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-010-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-011-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-011-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -884,27 +1083,19 @@
       "readingTex": "1\\le k\\le a\\Longrightarrow\\exists H\\le G:\\ |H|=p^k\\\\\\exists P\\le G:\\ |P|=p^a",
       "tex": "1\\le k\\le a\\Longrightarrow\\exists H\\le G:\\ |H|=p^k\\\\\\exists P\\le G:\\ |P|=p^a",
       "period": 1,
-      "scheduledStart": 812.9292083333335,
-      "scheduledDuration": 87.61691666666668,
+      "scheduledStart": 921.4992083333335,
+      "scheduledDuration": 94.55750000000002,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 6,
       "checkpointPolicy": "authored-only",
-      "activity": "列出第一定理保证的2幂阶、3幂阶子群，并说明尚不能判断什么。",
-      "exercise": {
-        "given": "|G|=72=2³·3²。",
-        "goal": "列出第一定理保证的2幂阶、3幂阶子群，并说明尚不能判断什么。",
-        "prompt": "列出第一定理保证的2幂阶、3幂阶子群，并说明尚不能判断什么。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "第一定理保证二、四、八阶子群以及三、九阶子群存在。西罗二子群为八阶，西罗三子群为九阶；唯一性和正规性还没有从第一定理得到。"
+      "bluePolicy": {
+        "focusRows": [
+          4
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "随堂练习",
@@ -958,10 +1149,21 @@
       ],
       "strictLineCount": true,
       "mainLineCount": 5,
-      "scheduledStart": 900.5461250000002,
-      "scheduledDuration": 130.79895833333333,
-      "asset": "./assets/chalk/sylow-theorems/reviewed-011-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-011-en.png"
+      "scheduledStart": 1016.0567083333335,
+      "scheduledDuration": 130.672375,
+      "asset": "./assets/chalk/sylow-theorems/reviewed-012-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-012-en.png",
+      "emphasis": {
+        "3": {
+          "tone": "conclusion"
+        }
+      },
+      "bluePolicy": {
+        "focusRows": [
+          3
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "kind": "cover",
@@ -981,8 +1183,8 @@
       },
       "boardLines": [],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-008.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-012-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-012-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-013-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-013-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [],
@@ -1000,12 +1202,15 @@
       "readingTex": "",
       "tex": "",
       "period": "break",
-      "scheduledStart": 1031.3450833333336,
+      "scheduledStart": 1146.7290833333336,
       "scheduledDuration": 300,
       "author": "主讲：子皿曰成",
       "sourceCaptionInInk": false,
       "sourcePage": 7,
-      "checkpointPolicy": "authored-only"
+      "checkpointPolicy": "authored-only",
+      "bluePolicy": {
+        "exempt": "cover"
+      }
     },
     {
       "kind": "cover",
@@ -1025,8 +1230,8 @@
       },
       "boardLines": [],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-009.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-013-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-013-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-014-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-014-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [],
@@ -1044,12 +1249,15 @@
       "readingTex": "",
       "tex": "",
       "period": 2,
-      "scheduledStart": 1331.3450833333336,
+      "scheduledStart": 1446.7290833333336,
       "scheduledDuration": 44.527166666666666,
       "author": "主讲：子皿曰成",
       "sourceCaptionInInk": false,
       "sourcePage": 8,
-      "checkpointPolicy": "authored-only"
+      "checkpointPolicy": "authored-only",
+      "bluePolicy": {
+        "exempt": "cover"
+      }
     },
     {
       "title": "引理1 — 陈述",
@@ -1130,10 +1338,21 @@
       ],
       "strictLineCount": true,
       "mainLineCount": 5,
-      "scheduledStart": 1375.8722500000003,
-      "scheduledDuration": 57.31495833333334,
-      "asset": "./assets/chalk/sylow-theorems/reviewed-014-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-014-en.png"
+      "scheduledStart": 1491.2562500000004,
+      "scheduledDuration": 56.996875,
+      "asset": "./assets/chalk/sylow-theorems/reviewed-015-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-015-en.png",
+      "emphasis": {
+        "3": {
+          "tone": "conclusion"
+        }
+      },
+      "bluePolicy": {
+        "focusRows": [
+          3
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "引理1 — p 群作用的不动元素",
@@ -1151,6 +1370,20 @@
           126
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "证明 X 有不动点，并说明结论为何不是“不动点唯一”。",
+      "answer": "所有非单点轨道都被 P 整除。集合的总大小不被 P 整除，所以必须有单点轨道。这样的轨道可能不止一个，引理只保证至少一个。",
+      "exercise": {
+        "given": "H为p群，作用于有限集合X，p∤|X|。",
+        "goal": "证明 X 有不动点，并说明结论为何不是“不动点唯一”。",
+        "prompt": "证明 X 有不动点，并说明结论为何不是“不动点唯一”。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {
         "5": {
@@ -1185,8 +1418,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-010.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-015-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-015-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-016-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-016-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -1223,27 +1456,19 @@
       "readingTex": "|H\\cdot x|=[H:H_x]=p^{r_x}\\\\|X|\\equiv|X^H|\\pmod p\\\\p\\nmid|X|\\Longrightarrow X^H\\ne\\varnothing",
       "tex": "|H\\cdot x|=[H:H_x]=p^{r_x}\\\\|X|\\equiv|X^H|\\pmod p\\\\p\\nmid|X|\\Longrightarrow X^H\\ne\\varnothing",
       "period": 2,
-      "scheduledStart": 1433.1872083333337,
+      "scheduledStart": 1548.2531250000004,
       "scheduledDuration": 104.73129166666666,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 9,
       "checkpointPolicy": "authored-only",
-      "activity": "证明 X 有不动点，并说明结论为何不是“不动点唯一”。",
-      "exercise": {
-        "given": "H为p群，作用于有限集合X，p∤|X|。",
-        "goal": "证明 X 有不动点，并说明结论为何不是“不动点唯一”。",
-        "prompt": "证明 X 有不动点，并说明结论为何不是“不动点唯一”。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "所有非单点轨道都被 P 整除。集合的总大小不被 P 整除，所以必须有单点轨道。这样的轨道可能不止一个，引理只保证至少一个。"
+      "bluePolicy": {
+        "focusRows": [
+          5
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "定理2.6.2 — 陈述",
@@ -1325,10 +1550,21 @@
       ],
       "strictLineCount": true,
       "mainLineCount": 5,
-      "scheduledStart": 1537.9185000000004,
+      "scheduledStart": 1652.9844166666671,
       "scheduledDuration": 66.12499999999999,
-      "asset": "./assets/chalk/sylow-theorems/reviewed-016-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-016-en.png"
+      "asset": "./assets/chalk/sylow-theorems/reviewed-017-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-017-en.png",
+      "emphasis": {
+        "3": {
+          "tone": "conclusion"
+        }
+      },
+      "bluePolicy": {
+        "focusRows": [
+          3
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "定理2.6.2 — 左陪集上的作用",
@@ -1347,6 +1583,20 @@
           127
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "核对左乘作用良定义，并说明为什么 X 的大小与p互素。",
+      "answer": "相同左陪集左乘同一个 h 后仍相同，因此作用不依赖代表。P 的阶是群阶中的最高 P 幂，所以左陪集个数等于互素因子艾姆。",
+      "exercise": {
+        "given": "H为G的p子群，P为任一西罗p子群。",
+        "goal": "核对左乘作用良定义，并说明为什么 X 的大小与p互素。",
+        "prompt": "核对左乘作用良定义，并说明为什么 X 的大小与p互素。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {
         "2": {
@@ -1384,8 +1634,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-011.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-017-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-017-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-018-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-018-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -1422,27 +1672,19 @@
       "readingTex": "\\exists g\\in G:\\ H\\le gPg^{-1}\\\\X=G/P,\\qquad |X|=[G:P]=m\\\\h\\cdot(gP)=hgP\\qquad(h\\in H)",
       "tex": "\\exists g\\in G:\\ H\\le gPg^{-1}\\\\X=G/P,\\qquad |X|=[G:P]=m\\\\h\\cdot(gP)=hgP\\qquad(h\\in H)",
       "period": 2,
-      "scheduledStart": 1604.0435000000004,
-      "scheduledDuration": 96.64120833333334,
+      "scheduledStart": 1719.1094166666671,
+      "scheduledDuration": 97.16158333333334,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 10,
       "checkpointPolicy": "authored-only",
-      "activity": "核对左乘作用良定义，并说明为什么 X 的大小与p互素。",
-      "exercise": {
-        "given": "H为G的p子群，P为任一西罗p子群。",
-        "goal": "核对左乘作用良定义，并说明为什么 X 的大小与p互素。",
-        "prompt": "核对左乘作用良定义，并说明为什么 X 的大小与p互素。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "相同左陪集左乘同一个 h 后仍相同，因此作用不依赖代表。P 的阶是群阶中的最高 P 幂，所以左陪集个数等于互素因子艾姆。"
+      "bluePolicy": {
+        "focusRows": [
+          2
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "第二定理2.6.2 — 从不动陪集得到包含",
@@ -1461,6 +1703,20 @@
           127
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "推出 H≤gPg⁻¹，并说明为什么不能只验证某个h。",
+      "answer": "固定条件对每个 h 成立，因此每个 h 都属于相应共轭子群，得到 H 的整体包含。只验证某个元素不能推出整个子群包含。",
+      "exercise": {
+        "given": "对所有h∈H都有hgP=gP。",
+        "goal": "推出 H≤gPg⁻¹，并说明为什么不能只验证某个h。",
+        "prompt": "推出 H≤gPg⁻¹，并说明为什么不能只验证某个h。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {
         "5": {
@@ -1495,8 +1751,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-012.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-018-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-018-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-019-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-019-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -1533,27 +1789,19 @@
       "readingTex": "hgP=gP\\qquad\\forall h\\in H\\\\g^{-1}hg\\in P\\qquad\\forall h\\in H\\\\H\\le gPg^{-1}",
       "tex": "hgP=gP\\qquad\\forall h\\in H\\\\g^{-1}hg\\in P\\qquad\\forall h\\in H\\\\H\\le gPg^{-1}",
       "period": 2,
-      "scheduledStart": 1700.6847083333337,
+      "scheduledStart": 1816.2710000000004,
       "scheduledDuration": 97.90687500000001,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 11,
       "checkpointPolicy": "authored-only",
-      "activity": "推出 H≤gPg⁻¹，并说明为什么不能只验证某个h。",
-      "exercise": {
-        "given": "对所有h∈H都有hgP=gP。",
-        "goal": "推出 H≤gPg⁻¹，并说明为什么不能只验证某个h。",
-        "prompt": "推出 H≤gPg⁻¹，并说明为什么不能只验证某个h。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "固定条件对每个 h 成立，因此每个 h 都属于相应共轭子群，得到 H 的整体包含。只验证某个元素不能推出整个子群包含。"
+      "bluePolicy": {
+        "focusRows": [
+          5
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "推论2 — 西罗子群的共轭性",
@@ -1571,6 +1819,20 @@
           127
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "说明如何由包含得到共轭，以及为何不能由此断言唯一。",
+      "answer": "两边的阶相等，所以包含成为相等。这个相等把 H 写成 P 的一个共轭，并没有说所有共轭都等于 P 本身，因此还不能断言唯一。",
+      "exercise": {
+        "given": "H、P均为G的西罗p子群，且H≤gPg⁻¹。",
+        "goal": "说明如何由包含得到共轭，以及为何不能由此断言唯一。",
+        "prompt": "说明如何由包含得到共轭，以及为何不能由此断言唯一。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {
         "4": {
@@ -1608,8 +1870,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-013.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-019-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-019-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-020-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-020-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -1646,27 +1908,19 @@
       "readingTex": "H\\le gPg^{-1}\\\\|H|=|gPg^{-1}|=p^a\\\\H=gPg^{-1}",
       "tex": "H\\le gPg^{-1}\\\\|H|=|gPg^{-1}|=p^a\\\\H=gPg^{-1}",
       "period": 2,
-      "scheduledStart": 1798.5915833333338,
+      "scheduledStart": 1914.1778750000003,
       "scheduledDuration": 87.00245833333335,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 12,
       "checkpointPolicy": "authored-only",
-      "activity": "说明如何由包含得到共轭，以及为何不能由此断言唯一。",
-      "exercise": {
-        "given": "H、P均为G的西罗p子群，且H≤gPg⁻¹。",
-        "goal": "说明如何由包含得到共轭，以及为何不能由此断言唯一。",
-        "prompt": "说明如何由包含得到共轭，以及为何不能由此断言唯一。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "两边的阶相等，所以包含成为相等。这个相等把 H 写成 P 的一个共轭，并没有说所有共轭都等于 P 本身，因此还不能断言唯一。"
+      "bluePolicy": {
+        "focusRows": [
+          4
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "随堂练习",
@@ -1720,10 +1974,21 @@
       ],
       "strictLineCount": true,
       "mainLineCount": 5,
-      "scheduledStart": 1885.5940416666672,
-      "scheduledDuration": 132.55033333333333,
-      "asset": "./assets/chalk/sylow-theorems/reviewed-020-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-020-en.png"
+      "scheduledStart": 2001.1803333333337,
+      "scheduledDuration": 132.42379166666666,
+      "asset": "./assets/chalk/sylow-theorems/reviewed-021-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-021-en.png",
+      "emphasis": {
+        "3": {
+          "tone": "conclusion"
+        }
+      },
+      "bluePolicy": {
+        "focusRows": [
+          3
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "定理2.6.3与推论3 — 陈述",
@@ -1827,10 +2092,21 @@
       ],
       "strictLineCount": true,
       "mainLineCount": 6,
-      "scheduledStart": 2018.1443750000005,
+      "scheduledStart": 2133.6041250000003,
       "scheduledDuration": 106.35741666666665,
-      "asset": "./assets/chalk/sylow-theorems/reviewed-021-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-021-en.png"
+      "asset": "./assets/chalk/sylow-theorems/reviewed-022-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-022-en.png",
+      "emphasis": {
+        "5": {
+          "tone": "conclusion"
+        }
+      },
+      "bluePolicy": {
+        "focusRows": [
+          5
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "定理2.6.3与推论3 — 计数结论",
@@ -1849,6 +2125,20 @@
           128
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "同时使用推论3与第三定理，列出n₃的候选值。",
+      "answer": "个数整除四，所以先有一、二、四。模三余一的只保留一和四。这里只得到候选值，尚未判断某个具体群取哪一个。",
+      "exercise": {
+        "given": "|G|=12=3·4，p=3。",
+        "goal": "同时使用推论3与第三定理，列出n₃的候选值。",
+        "prompt": "同时使用推论3与第三定理，列出n₃的候选值。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {
         "4": {
@@ -1887,8 +2177,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-014.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-022-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-022-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-023-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-023-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -1919,27 +2209,20 @@
       "readingTex": "n_p=|\\operatorname{Syl}_p(G)|\\\\n_p\\mid|G|,\\qquad n_p\\equiv1\\pmod p",
       "tex": "n_p=|\\operatorname{Syl}_p(G)|\\\\n_p\\mid|G|,\\qquad n_p\\equiv1\\pmod p",
       "period": 2,
-      "scheduledStart": 2124.501791666667,
+      "scheduledStart": 2239.961541666667,
       "scheduledDuration": 92.46608333333334,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 13,
       "checkpointPolicy": "authored-only",
-      "activity": "同时使用推论3与第三定理，列出n₃的候选值。",
-      "exercise": {
-        "given": "|G|=12=3·4，p=3。",
-        "goal": "同时使用推论3与第三定理，列出n₃的候选值。",
-        "prompt": "同时使用推论3与第三定理，列出n₃的候选值。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "个数整除四，所以先有一、二、四。模三余一的只保留一和四。这里只得到候选值，尚未判断某个具体群取哪一个。"
+      "bluePolicy": {
+        "focusRows": [
+          4,
+          5
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "随堂练习",
@@ -1988,10 +2271,21 @@
       ],
       "strictLineCount": true,
       "mainLineCount": 4,
-      "scheduledStart": 2216.9678750000003,
-      "scheduledDuration": 130.40920833333334,
-      "asset": "./assets/chalk/sylow-theorems/reviewed-023-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-023-en.png"
+      "scheduledStart": 2332.4276250000003,
+      "scheduledDuration": 130.28266666666667,
+      "asset": "./assets/chalk/sylow-theorems/reviewed-024-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-024-en.png",
+      "emphasis": {
+        "3": {
+          "tone": "conclusion"
+        }
+      },
+      "bluePolicy": {
+        "focusRows": [
+          3
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "第三定理2.6.3 — 正规化子与整除",
@@ -2010,6 +2304,20 @@
           128
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "证明P≤N_G(P)，并推导nₚ整除m。",
+      "answer": "P 的内共轭保持它自己，所以 P 是正规化子的子群。共轭性给出 n 下标 P 等于 G 到正规化子的指数；指数乘法再给出它整除艾姆。",
+      "exercise": {
+        "given": "P为G的西罗p子群，|G|=pᵃm。",
+        "goal": "证明P≤N_G(P)，并推导nₚ整除m。",
+        "prompt": "证明P≤N_G(P)，并推导nₚ整除m。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {
         "5": {
@@ -2043,8 +2351,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-015.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-024-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-024-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-025-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-025-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -2087,27 +2395,19 @@
       "readingTex": "g\\cdot P=gPg^{-1},\\qquad X=G\\cdot P\\\\G_P=N_G(P)=\\{g:gPg^{-1}=P\\}\\\\n_p=[G:N_G(P)],\\qquad P\\le N_G(P)\\\\m=[G:P]=n_p[N_G(P):P]\\Longrightarrow n_p\\mid m",
       "tex": "g\\cdot P=gPg^{-1},\\qquad X=G\\cdot P\\\\G_P=N_G(P)=\\{g:gPg^{-1}=P\\}\\\\n_p=[G:N_G(P)],\\qquad P\\le N_G(P)\\\\m=[G:P]=n_p[N_G(P):P]\\Longrightarrow n_p\\mid m",
       "period": 2,
-      "scheduledStart": 2347.3770833333338,
+      "scheduledStart": 2462.7102916666668,
       "scheduledDuration": 98.83133333333335,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 14,
       "checkpointPolicy": "authored-only",
-      "activity": "证明P≤N_G(P)，并推导nₚ整除m。",
-      "exercise": {
-        "given": "P为G的西罗p子群，|G|=pᵃm。",
-        "goal": "证明P≤N_G(P)，并推导nₚ整除m。",
-        "prompt": "证明P≤N_G(P)，并推导nₚ整除m。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "P 的内共轭保持它自己，所以 P 是正规化子的子群。共轭性给出 n 下标 P 等于 G 到正规化子的指数；指数乘法再给出它整除艾姆。"
+      "bluePolicy": {
+        "focusRows": [
+          5
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "第三定理2.6.3 — 唯一不动点",
@@ -2126,6 +2426,20 @@
           128
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
+      },
+      "activity": "说明为何它们也是正规化子的西罗子群，再证明P=P₀。",
+      "answer": "二者已有最高 P 幂阶，而正规化子包含于 G，不可能有更高的 P 幂阶子群。共轭推论在正规化子内给出 P 零是 P 的一个内共轭，而所有这些内共轭仍是 P，所以二者相等。",
+      "exercise": {
+        "given": "P₀、P均为G的西罗p子群，P₀≤N_G(P)。",
+        "goal": "说明为何它们也是正规化子的西罗子群，再证明P=P₀。",
+        "prompt": "说明为何它们也是正规化子的西罗子群，再证明P=P₀。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
       },
       "emphasis": {
         "5": {
@@ -2160,8 +2474,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-016.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-025-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-025-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-026-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-026-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -2198,27 +2512,19 @@
       "readingTex": "P\\in X^{P_0}\\Longrightarrow P_0\\le N_G(P)\\\\\\exists x\\in N_G(P):P_0=xPx^{-1}=P\\\\X^{P_0}=\\{P_0\\}",
       "tex": "P\\in X^{P_0}\\Longrightarrow P_0\\le N_G(P)\\\\\\exists x\\in N_G(P):P_0=xPx^{-1}=P\\\\X^{P_0}=\\{P_0\\}",
       "period": 2,
-      "scheduledStart": 2446.2084166666673,
+      "scheduledStart": 2561.5416250000003,
       "scheduledDuration": 100.46529166666667,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 15,
       "checkpointPolicy": "authored-only",
-      "activity": "说明为何它们也是正规化子的西罗子群，再证明P=P₀。",
-      "exercise": {
-        "given": "P₀、P均为G的西罗p子群，P₀≤N_G(P)。",
-        "goal": "说明为何它们也是正规化子的西罗子群，再证明P=P₀。",
-        "prompt": "说明为何它们也是正规化子的西罗子群，再证明P=P₀。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "二者已有最高 P 幂阶，而正规化子包含于 G，不可能有更高的 P 幂阶子群。共轭推论在正规化子内给出 P 零是 P 的一个内共轭，而所有这些内共轭仍是 P，所以二者相等。"
+      "bluePolicy": {
+        "focusRows": [
+          5
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "title": "第三定理2.6.3 — 轨道求和得到同余",
@@ -2238,10 +2544,21 @@
         ],
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
       },
+      "activity": "由两条计数条件求 n₅，并说明本课已经得到什么。",
+      "answer": "个数整除四，又模五余一，只能等于一。计数结论说明五阶西罗子群唯一；应用课会进一步解释唯一性与正规性等价，以及哪些结构结论还需要额外论证。",
+      "exercise": {
+        "given": "|G|=20=5·4，p=5。",
+        "goal": "由两条计数条件求 n₅，并说明本课已经得到什么。",
+        "prompt": "由两条计数条件求 n₅，并说明本课已经得到什么。",
+        "reference": {
+          "kind": "extension",
+          "label": [
+            "随堂练习",
+            "Classroom exercise"
+          ]
+        }
+      },
       "emphasis": {
-        "3": {
-          "tone": "conclusion"
-        },
         "4": {
           "tone": "conclusion"
         }
@@ -2274,8 +2591,8 @@
         }
       ],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-017.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-026-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-026-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-027-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-027-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [
@@ -2312,27 +2629,19 @@
       "readingTex": "|X|\\equiv|X^{P_0}|\\pmod p\\\\n_p\\equiv1\\pmod p\\\\n_p\\mid m,\\qquad n_p\\equiv1\\pmod p",
       "tex": "|X|\\equiv|X^{P_0}|\\pmod p\\\\n_p\\equiv1\\pmod p\\\\n_p\\mid m,\\qquad n_p\\equiv1\\pmod p",
       "period": 2,
-      "scheduledStart": 2546.673708333334,
-      "scheduledDuration": 100.18475000000001,
+      "scheduledStart": 2662.006916666667,
+      "scheduledDuration": 99.90845833333334,
       "strictLineCount": true,
       "mainLineCount": 6,
       "sourceCaptionInInk": false,
       "sourcePage": 16,
       "checkpointPolicy": "authored-only",
-      "activity": "由两条计数条件求 n₅，并说明本课已经得到什么。",
-      "exercise": {
-        "given": "|G|=20=5·4，p=5。",
-        "goal": "由两条计数条件求 n₅，并说明本课已经得到什么。",
-        "prompt": "由两条计数条件求 n₅，并说明本课已经得到什么。",
-        "reference": {
-          "kind": "extension",
-          "label": [
-            "随堂练习",
-            "Classroom exercise"
-          ]
-        }
-      },
-      "answer": "个数整除四，又模五余一，只能等于一。计数结论说明五阶西罗子群唯一；应用课会进一步解释唯一性与正规性等价，以及哪些结构结论还需要额外论证。"
+      "bluePolicy": {
+        "focusRows": [
+          4
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     },
     {
       "kind": "closing",
@@ -2351,8 +2660,8 @@
       },
       "boardLines": [],
       "formulaAsset": "./assets/chalk/sylow-theorems/formula-018.svg",
-      "asset": "./assets/chalk/sylow-theorems/reviewed-027-zh.png",
-      "assetEn": "./assets/chalk/sylow-theorems/reviewed-027-en.png",
+      "asset": "./assets/chalk/sylow-theorems/reviewed-028-zh.png",
+      "assetEn": "./assets/chalk/sylow-theorems/reviewed-028-en.png",
       "formulaAlign": "center",
       "formulaEm": 38.4,
       "formulaRows": [],
@@ -2370,12 +2679,30 @@
       "readingTex": "",
       "tex": "",
       "period": 2,
-      "scheduledStart": 2646.858458333334,
+      "scheduledStart": 2761.9153750000005,
       "scheduledDuration": 23.465375,
       "author": "主讲：子皿曰成",
       "sourceCaptionInInk": false,
       "sourcePage": 17,
-      "checkpointPolicy": "authored-only"
+      "checkpointPolicy": "authored-only",
+      "emphasis": {
+        "0": {
+          "textFragments": {
+            "zh": [
+              "结束"
+            ],
+            "en": [
+              "End"
+            ]
+          }
+        }
+      },
+      "bluePolicy": {
+        "focusRows": [
+          0
+        ],
+        "priority": "本板结论优先，其次核心公式；局部强调，不整板染蓝"
+      }
     }
   ],
   "classroomLayoutVersion": 2
