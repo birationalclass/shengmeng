@@ -1,0 +1,91 @@
+@LinearStudy.schemeModuleInternalExtFunctor : {X : AlgebraicGeometry.Scheme} →
+  X.Modules → ℕ → CategoryTheory.Functor X.Modules X.Modules
+'LinearStudy.schemeModuleInternalExtFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExt : {X : AlgebraicGeometry.Scheme} → X.Modules → X.Modules → ℕ → X.Modules
+'LinearStudy.schemeModuleInternalExt' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtInjectiveResolutionIso : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) →
+    (q : ℕ) →
+      (I : CategoryTheory.InjectiveResolution N) →
+        LinearStudy.schemeModuleInternalExt P N q ≅
+          (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+                I.cocomplex).homology
+            q
+'LinearStudy.schemeModuleInternalExtInjectiveResolutionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExt_injective_succ : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules)
+  [CategoryTheory.Injective N] (q : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt P N (q + 1))
+'LinearStudy.schemeModuleInternalExt_injective_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtInjectiveResolutionIso_naturality : ∀ {X : AlgebraicGeometry.Scheme} (P : X.Modules)
+  {M N : X.Modules} (c : M ⟶ N) (q : ℕ) (I : CategoryTheory.InjectiveResolution M)
+  (J : CategoryTheory.InjectiveResolution N) (phi : I.cocomplex ⟶ J.cocomplex),
+  CategoryTheory.CategoryStruct.comp (I.ι.f 0) (phi.f 0) = CategoryTheory.CategoryStruct.comp c (J.ι.f 0) →
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor P q).map c)
+        (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso P N q J).hom =
+      CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso P M q I).hom
+        ((HomologicalComplex.homologyFunctor X.Modules (ComplexShape.up ℕ) q).map
+          (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).mapHomologicalComplex (ComplexShape.up ℕ)).map
+            phi))
+'LinearStudy.schemeModuleInternalExtInjectiveResolutionIso_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInternalExtZeroIso : {X : AlgebraicGeometry.Scheme} →
+  (P : X.Modules) →
+    LinearStudy.schemeModuleInternalExtFunctor P 0 ≅ LinearStudy.schemeModuleInternalHomCoefficientFunctor X P
+'LinearStudy.schemeModuleInternalExtZeroIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtZeroIso_naturality : ∀ {X : AlgebraicGeometry.Scheme} (P : X.Modules)
+  {M N : X.Modules} (c : M ⟶ N),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor P 0).map c)
+      ((LinearStudy.schemeModuleInternalExtZeroIso P).app N).hom =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtZeroIso P).app M).hom
+      (LinearStudy.schemeModuleHomPostcompose c)
+'LinearStudy.schemeModuleInternalExtZeroIso_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtZeroIso_inv_app : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules),
+  ((LinearStudy.schemeModuleInternalExtZeroIso P).app N).inv =
+    (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).toRightDerivedZero.app N
+'LinearStudy.schemeModuleInternalExtZeroIso_inv_app' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtZeroSectionEquiv : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) →
+    (U : X.Opens) →
+      ↑((LinearStudy.schemeModuleInternalExt P N 0).presheaf.obj (Opposite.op U)) ≃
+        (SheafOfModules.over P U ⟶ SheafOfModules.over N U)
+'LinearStudy.schemeModuleInternalExtZeroSectionEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleInternalExtFunctor.{u} : {X : AlgebraicGeometry.Scheme} →
+  X.Modules → ℕ → CategoryTheory.Functor X.Modules X.Modules :=
+fun {X : AlgebraicGeometry.Scheme} (P : X.Modules) (q : ℕ) =>
+  (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).rightDerived q
+def LinearStudy.schemeModuleInternalExt.{u} : {X : AlgebraicGeometry.Scheme} → X.Modules → X.Modules → ℕ → X.Modules :=
+fun {X : AlgebraicGeometry.Scheme} (P N : X.Modules) (q : ℕ) => (LinearStudy.schemeModuleInternalExtFunctor P q).obj N
+def LinearStudy.schemeModuleInternalExtInjectiveResolutionIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) →
+    (q : ℕ) →
+      (I : CategoryTheory.InjectiveResolution N) →
+        LinearStudy.schemeModuleInternalExt P N q ≅
+          (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+                I.cocomplex).homology
+            q :=
+fun {X : AlgebraicGeometry.Scheme} (P N : X.Modules) (q : ℕ) (I : CategoryTheory.InjectiveResolution N) =>
+  I.isoRightDerivedObj (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P) q
+def LinearStudy.schemeModuleInternalExtZeroIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (P : X.Modules) →
+    LinearStudy.schemeModuleInternalExtFunctor P 0 ≅ LinearStudy.schemeModuleInternalHomCoefficientFunctor X P :=
+fun {X : AlgebraicGeometry.Scheme} (P : X.Modules) =>
+  (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).rightDerivedZeroIsoSelf
+def LinearStudy.schemeModuleInternalExtZeroSectionEquiv.{u} : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) →
+    (U : X.Opens) →
+      ↑((LinearStudy.schemeModuleInternalExt P N 0).presheaf.obj (Opposite.op U)) ≃
+        (SheafOfModules.over P U ⟶ SheafOfModules.over N U) :=
+fun {X : AlgebraicGeometry.Scheme} (P N : X.Modules) (U : X.Opens) =>
+  (((SheafOfModules.evaluation X.ringCatSheaf (Opposite.op U)).comp
+              (CategoryTheory.forget (ModuleCat ↑(X.ringCatSheaf.obj.obj (Opposite.op U))))).mapIso
+          ((LinearStudy.schemeModuleInternalExtZeroIso P).app N)).toEquiv.trans
+    (LinearStudy.schemeModuleHomModuleSectionsEquiv P N U)
+ROLECHECK:LinearStudy.schemeModuleInternalExtFunctor:false
+ROLECHECK:LinearStudy.schemeModuleInternalExt:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtInjectiveResolutionIso:false
+ROLECHECK:LinearStudy.schemeModuleInternalExt_injective_succ:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtInjectiveResolutionIso_naturality:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtZeroIso:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtZeroIso_naturality:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtZeroIso_inv_app:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtZeroSectionEquiv:false

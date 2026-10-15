@@ -1,0 +1,10 @@
+@LinearStudy.schemeModuleGlobalToInternalExtViaResolution_cocycle : ∀ {X : AlgebraicGeometry.Scheme} {N : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (P : X.Modules) (n : ℕ)
+  (f : ↥(LinearStudy.injectiveCocycleGroup I P (n + 1))),
+  (LinearStudy.schemeModuleGlobalToInternalExtViaResolution I P n)
+      ((LinearStudy.injectiveCocycleExtMap I P (n + 1)) f) =
+    (LinearStudy.schemeModuleInjectiveCocycleToInternalExt I P (n + 1)) f
+'LinearStudy.schemeModuleGlobalToInternalExtViaResolution_cocycle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtViaResolution_cocycle:true

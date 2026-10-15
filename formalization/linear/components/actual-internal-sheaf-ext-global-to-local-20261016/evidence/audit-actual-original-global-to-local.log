@@ -1,0 +1,48 @@
+@LinearStudy.schemeModuleOriginalChainTopExtClassSmall : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E M : X.Modules} →
+      (r : ℕ) →
+        (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          QuasiIso alpha →
+            (a : C.X r ⟶ M) →
+              CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → CategoryTheory.Abelian.Ext E M r
+'LinearStudy.schemeModuleOriginalChainTopExtClassSmall' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOriginalChainTopExtClassSmall_comp_mk₀ : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E M N : X.Modules} (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E)
+  (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) (g : M ⟶ N),
+  (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha a ha).comp (CategoryTheory.Abelian.Ext.mk₀ g)
+      ⋯ =
+    LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha (CategoryTheory.CategoryStruct.comp a g) ⋯
+'LinearStudy.schemeModuleOriginalChainTopExtClassSmall_comp_mk₀' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalChainClass_globalToLocal_coefficient : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E M N : X.Modules} (n : ℕ) (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E)
+  (hAlpha : QuasiIso alpha) (a : C.X (n + 1) ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (n + 1 + 1) (n + 1)) a = 0) (g : M ⟶ N),
+  (LinearStudy.schemeModuleGlobalToInternalExt E N n)
+      (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C (n + 1) alpha hAlpha
+        (CategoryTheory.CategoryStruct.comp a g) ⋯) =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleGlobalToInternalExt E M n)
+        (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C (n + 1) alpha hAlpha a ha))
+      ((LinearStudy.schemeModuleInternalExtFunctor E (n + 1)).map g)
+'LinearStudy.schemeModuleOriginalChainClass_globalToLocal_coefficient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleOriginalChainTopExtClassSmall.{u} : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E M : X.Modules} →
+      (r : ℕ) →
+        (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          QuasiIso alpha →
+            (a : C.X r ⟶ M) →
+              CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → CategoryTheory.Abelian.Ext E M r :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) {E M : X.Modules} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M)
+    (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) =>
+  (LinearStudy.nativeExtUniverseEquiv E M r)
+    (LinearStudy.originalChainExplicitStandardTopExtClass C r alpha hAlpha a ha)
+ROLECHECK:LinearStudy.schemeModuleOriginalChainTopExtClassSmall:false
+ROLECHECK:LinearStudy.schemeModuleOriginalChainTopExtClassSmall_comp_mk₀:true
+ROLECHECK:LinearStudy.schemeModuleOriginalChainClass_globalToLocal_coefficient:true

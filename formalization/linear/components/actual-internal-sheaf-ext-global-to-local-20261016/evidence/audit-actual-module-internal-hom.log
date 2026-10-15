@@ -1,0 +1,53 @@
+LinearStudy.affineKoszulActualModuleExtInternalHomTopIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+          (AlgebraicGeometry.tilde ↧(CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N (n + 1)) ≅
+            HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N (n + 1) H) (n + 1))
+'LinearStudy.affineKoszulActualModuleExtInternalHomTopIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulActualInternalHomCyclesToModuleExt : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+          (HomologicalComplex.cycles (LinearStudy.affineKoszulInternalHomCochainComplex R N (n + 1) H) (n + 1) ⟶
+            AlgebraicGeometry.tilde ↧(CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N (n + 1)))
+'LinearStudy.affineKoszulActualInternalHomCyclesToModuleExt' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulActualModuleExtInternalHomTopIso_cycles : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ)
+  (H : Fin (n + 1) → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulActualInternalHomCyclesToModuleExt R N n H he)
+      (LinearStudy.affineKoszulActualModuleExtInternalHomTopIso R N n H he).hom =
+    HomologicalComplex.homologyπ (LinearStudy.affineKoszulInternalHomCochainComplex R N (n + 1) H) (n + 1)
+'LinearStudy.affineKoszulActualModuleExtInternalHomTopIso_cycles' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.affineKoszulActualModuleExtInternalHomTopIso.{u} : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+          (AlgebraicGeometry.tilde ↧(CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N (n + 1)) ≅
+            HomologicalComplex.homology (LinearStudy.affineKoszulInternalHomCochainComplex R N (n + 1) H) (n + 1)) :=
+fun (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ) (H : Fin (n + 1) → ↑R)
+    (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) =>
+  LinearStudy.affineKoszulDerivedModuleExtGeometricIso R N n H he ≪≫
+    (LinearStudy.affineKoszulInternalHomTopCohomologyGeometricIso R N n H).symm
+def LinearStudy.affineKoszulActualInternalHomCyclesToModuleExt.{u} : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (n : ℕ) →
+      (H : Fin (n + 1) → ↑R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+          (HomologicalComplex.cycles (LinearStudy.affineKoszulInternalHomCochainComplex R N (n + 1) H) (n + 1) ⟶
+            AlgebraicGeometry.tilde ↧(CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N (n + 1))) :=
+fun (R : CommRingCat) (N : ModuleCat ↑R) (n : ℕ) (H : Fin (n + 1) → ↑R)
+    (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) =>
+  CategoryTheory.CategoryStruct.comp
+    (HomologicalComplex.iCycles (LinearStudy.affineKoszulInternalHomCochainComplex R N (n + 1) H) (n + 1))
+    (CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulTermHomCoefficientIso R N (n + 1) (n + 1)).inv
+      ((AlgebraicGeometry.tilde.functor R).map
+        (ModuleCat.ofHom (LinearStudy.koszulExactTopExtCoefficientRepresentativeLinearMap n H he N))))
+ROLECHECK:LinearStudy.affineKoszulActualModuleExtInternalHomTopIso:false
+ROLECHECK:LinearStudy.affineKoszulActualInternalHomCyclesToModuleExt:false
+ROLECHECK:LinearStudy.affineKoszulActualModuleExtInternalHomTopIso_cycles:true

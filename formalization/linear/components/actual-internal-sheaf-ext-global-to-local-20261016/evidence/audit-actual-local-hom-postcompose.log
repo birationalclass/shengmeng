@@ -1,0 +1,27 @@
+@LinearStudy.schemeModuleHomPostcomposeSection : {Y : AlgebraicGeometry.Scheme} →
+  (P M N : Y.Modules) →
+    (M ⟶ N) →
+      (U : Y.Opens) →
+        ↑((LinearStudy.schemeModuleHomModuleSheaf P M).presheaf.obj (Opposite.op U)) →
+          ↑((LinearStudy.schemeModuleHomModuleSheaf P N).presheaf.obj (Opposite.op U))
+'LinearStudy.schemeModuleHomPostcomposeSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomPostcomposeSection_evaluation : ∀ {Y : AlgebraicGeometry.Scheme} (P M N : Y.Modules)
+  (C : M ⟶ N) (U : Y.Opens) (h : ↑((LinearStudy.schemeModuleHomModuleSheaf P M).presheaf.obj (Opposite.op U)))
+  (b : ↑(P.presheaf.obj (Opposite.op U))),
+  (LinearStudy.schemeModuleHomSectionEvaluation P N U (LinearStudy.schemeModuleHomPostcomposeSection P M N C U h)) b =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app C U))
+      ((LinearStudy.schemeModuleHomSectionEvaluation P M U h) b)
+'LinearStudy.schemeModuleHomPostcomposeSection_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleHomPostcomposeSection.{u} : {Y : AlgebraicGeometry.Scheme} →
+  (P M N : Y.Modules) →
+    (M ⟶ N) →
+      (U : Y.Opens) →
+        ↑((LinearStudy.schemeModuleHomModuleSheaf P M).presheaf.obj (Opposite.op U)) →
+          ↑((LinearStudy.schemeModuleHomModuleSheaf P N).presheaf.obj (Opposite.op U)) :=
+fun {Y : AlgebraicGeometry.Scheme} (P M N : Y.Modules) (C : M ⟶ N) (U : Y.Opens)
+    (h : ↑((LinearStudy.schemeModuleHomModuleSheaf P M).presheaf.obj (Opposite.op U))) =>
+  (LinearStudy.schemeModuleHomOverEquiv P N U)
+    (CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomOverEquiv P M U).symm h)
+      ((SheafOfModules.overFunctor Y.ringCatSheaf U).map C))
+ROLECHECK:LinearStudy.schemeModuleHomPostcomposeSection:false
+ROLECHECK:LinearStudy.schemeModuleHomPostcomposeSection_evaluation:true

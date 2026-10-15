@@ -1,0 +1,80 @@
+@LinearStudy.nativeExtUniverseEquiv.{u_1, u_2, u_3,
+    u_4} : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian.{u_2, u_1} A] →
+      [inst_2 : CategoryTheory.HasExt.{u_3, u_2, u_1} A] →
+        [inst_3 : CategoryTheory.HasExt.{u_4, u_2, u_1} A] →
+          (X Y : A) →
+            (q : ℕ) →
+              Equiv.{u_3 + 1, u_4 + 1} (CategoryTheory.Abelian.Ext.{u_3, u_2, u_1} X Y q)
+                (CategoryTheory.Abelian.Ext.{u_4, u_2, u_1} X Y q)
+'LinearStudy.nativeExtUniverseEquiv' depends on axioms: [propext, Classical.choice.{u}, Quot.sound.{u}]
+@LinearStudy.nativeExtUniverseEquiv_hom.{u_1, u_2, u_3, u_4,
+    u_5} : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian.{u_2, u_1} A]
+  [inst_2 : CategoryTheory.HasExt.{u_3, u_2, u_1} A] [inst_3 : CategoryTheory.HasExt.{u_4, u_2, u_1} A] (X Y : A)
+  (q : ℕ) [inst_4 : HasDerivedCategory.{u_5, u_2, u_1} A] (e : CategoryTheory.Abelian.Ext.{u_3, u_2, u_1} X Y q),
+  Eq.{u_5 + 1}
+    (CategoryTheory.Abelian.Ext.hom.{u_5, u_4, u_2, u_1}
+      ((LinearStudy.nativeExtUniverseEquiv.{u_1, u_2, u_3, u_4} X Y q) e))
+    (CategoryTheory.Abelian.Ext.hom.{u_5, u_3, u_2, u_1} e)
+'LinearStudy.nativeExtUniverseEquiv_hom' depends on axioms: [propext, Classical.choice.{u}, Quot.sound.{u}]
+@LinearStudy.nativeExtUniverseAddEquiv.{u_1, u_2, u_3,
+    u_4} : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian.{u_2, u_1} A] →
+      [inst_2 : CategoryTheory.HasExt.{u_3, u_2, u_1} A] →
+        [inst_3 : CategoryTheory.HasExt.{u_4, u_2, u_1} A] →
+          (X Y : A) →
+            (q : ℕ) →
+              AddEquiv.{u_3, u_4} (CategoryTheory.Abelian.Ext.{u_3, u_2, u_1} X Y q)
+                (CategoryTheory.Abelian.Ext.{u_4, u_2, u_1} X Y q)
+'LinearStudy.nativeExtUniverseAddEquiv' depends on axioms: [propext, Classical.choice.{u}, Quot.sound.{u}]
+@LinearStudy.nativeExtUniverseEquiv_comp.{u_1, u_2, u_3,
+    u_4} : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian.{u_2, u_1} A]
+  [inst_2 : CategoryTheory.HasExt.{u_3, u_2, u_1} A] [inst_3 : CategoryTheory.HasExt.{u_4, u_2, u_1} A] {X Y Z : A}
+  {a b c : ℕ} (e : CategoryTheory.Abelian.Ext.{u_3, u_2, u_1} X Y a)
+  (f : CategoryTheory.Abelian.Ext.{u_3, u_2, u_1} Y Z b) (h : Eq.{1} (HAdd.hAdd.{0, 0, 0} a b) c),
+  Eq.{u_4 + 1}
+    ((LinearStudy.nativeExtUniverseEquiv.{u_1, u_2, u_3, u_4} X Z c)
+      (CategoryTheory.Abelian.Ext.comp.{u_3, u_2, u_1} e f h))
+    (CategoryTheory.Abelian.Ext.comp.{u_4, u_2, u_1} ((LinearStudy.nativeExtUniverseEquiv.{u_1, u_2, u_3, u_4} X Y a) e)
+      ((LinearStudy.nativeExtUniverseEquiv.{u_1, u_2, u_3, u_4} Y Z b) f) h)
+'LinearStudy.nativeExtUniverseEquiv_comp' depends on axioms: [propext, Classical.choice.{u}, Quot.sound.{u}]
+@LinearStudy.nativeExtUniverseEquiv_mk₀.{u_1, u_2, u_3,
+    u_4} : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian.{u_2, u_1} A]
+  [inst_2 : CategoryTheory.HasExt.{u_3, u_2, u_1} A] [inst_3 : CategoryTheory.HasExt.{u_4, u_2, u_1} A] {X Y : A}
+  (f : Quiver.Hom.{u_2, u_1} X Y),
+  Eq.{u_4 + 1}
+    ((LinearStudy.nativeExtUniverseEquiv.{u_1, u_2, u_3, u_4} X Y 0) (CategoryTheory.Abelian.Ext.mk₀.{u_3, u_2, u_1} f))
+    (CategoryTheory.Abelian.Ext.mk₀.{u_4, u_2, u_1} f)
+'LinearStudy.nativeExtUniverseEquiv_mk₀' depends on axioms: [propext, Classical.choice.{u}, Quot.sound.{u}]
+def LinearStudy.nativeExtUniverseEquiv.{u, v, w₁, w₂} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian.{v, u} A] →
+      [inst_2 : CategoryTheory.HasExt.{w₁, v, u} A] →
+        [inst_3 : CategoryTheory.HasExt.{w₂, v, u} A] →
+          (X Y : A) →
+            (q : ℕ) →
+              Equiv.{w₁ + 1, w₂ + 1} (CategoryTheory.Abelian.Ext.{w₁, v, u} X Y q)
+                (CategoryTheory.Abelian.Ext.{w₂, v, u} X Y q) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian.{v, u} A]
+    [CategoryTheory.HasExt.{w₁, v, u} A] [CategoryTheory.HasExt.{w₂, v, u} A] (X Y : A) (q : ℕ) =>
+  CategoryTheory.Localization.SmallShiftedHom.chgUniv.{w₂, w₁, 0, v, max u v}
+def LinearStudy.nativeExtUniverseAddEquiv.{u, v, w₁, w₂} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian.{v, u} A] →
+      [inst_2 : CategoryTheory.HasExt.{w₁, v, u} A] →
+        [inst_3 : CategoryTheory.HasExt.{w₂, v, u} A] →
+          (X Y : A) →
+            (q : ℕ) →
+              AddEquiv.{w₁, w₂} (CategoryTheory.Abelian.Ext.{w₁, v, u} X Y q)
+                (CategoryTheory.Abelian.Ext.{w₂, v, u} X Y q) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian.{v, u} A]
+    [CategoryTheory.HasExt.{w₁, v, u} A] [CategoryTheory.HasExt.{w₂, v, u} A] (X Y : A) (q : ℕ) =>
+  let __Equiv := LinearStudy.nativeExtUniverseEquiv.{u, v, w₁, w₂} X Y q;
+  AddEquiv.mk.{w₁, w₂} __Equiv ⋯
+ROLECHECK:LinearStudy.nativeExtUniverseEquiv:false
+ROLECHECK:LinearStudy.nativeExtUniverseEquiv_hom:true
+ROLECHECK:LinearStudy.nativeExtUniverseAddEquiv:false
+ROLECHECK:LinearStudy.nativeExtUniverseEquiv_comp:true
+ROLECHECK:LinearStudy.nativeExtUniverseEquiv_mk₀:true

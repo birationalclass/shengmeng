@@ -1,0 +1,42 @@
+@LinearStudy.schemeModuleGlobalToInternalExt : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) →
+    (n : ℕ) →
+      CategoryTheory.Abelian.Ext P N (n + 1) →+
+        (SheafOfModules.unit X.ringCatSheaf ⟶ LinearStudy.schemeModuleInternalExt P N (n + 1))
+'LinearStudy.schemeModuleGlobalToInternalExt' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExt_eq_viaResolution : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules)
+  (n : ℕ) (I : CategoryTheory.InjectiveResolution N),
+  LinearStudy.schemeModuleGlobalToInternalExt P N n = LinearStudy.schemeModuleGlobalToInternalExtViaResolution I P n
+'LinearStudy.schemeModuleGlobalToInternalExt_eq_viaResolution' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExt_naturality : ∀ {X : AlgebraicGeometry.Scheme} (P : X.Modules)
+  {M N : X.Modules} (c : M ⟶ N) (n : ℕ) (e : CategoryTheory.Abelian.Ext P M (n + 1)),
+  (LinearStudy.schemeModuleGlobalToInternalExt P N n) (e.comp (CategoryTheory.Abelian.Ext.mk₀ c) ⋯) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleGlobalToInternalExt P M n) e)
+      ((LinearStudy.schemeModuleInternalExtFunctor P (n + 1)).map c)
+'LinearStudy.schemeModuleGlobalToInternalExt_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtSections : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) →
+    (n : ℕ) →
+      CategoryTheory.Abelian.Ext P N (n + 1) →+
+        ↑((LinearStudy.schemeModuleInternalExt P N (n + 1)).presheaf.obj (Opposite.op ⊤))
+'LinearStudy.schemeModuleGlobalToInternalExtSections' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleGlobalToInternalExt.{u} : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) →
+    (n : ℕ) →
+      CategoryTheory.Abelian.Ext P N (n + 1) →+
+        (SheafOfModules.unit X.ringCatSheaf ⟶ LinearStudy.schemeModuleInternalExt P N (n + 1)) :=
+fun {X : AlgebraicGeometry.Scheme} (P N : X.Modules) (n : ℕ) =>
+  LinearStudy.schemeModuleGlobalToInternalExtViaResolution (CategoryTheory.injectiveResolution N) P n
+def LinearStudy.schemeModuleGlobalToInternalExtSections.{u} : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) →
+    (n : ℕ) →
+      CategoryTheory.Abelian.Ext P N (n + 1) →+
+        ↑((LinearStudy.schemeModuleInternalExt P N (n + 1)).presheaf.obj (Opposite.op ⊤)) :=
+fun {X : AlgebraicGeometry.Scheme} (P N : X.Modules) (n : ℕ) =>
+  LinearStudy.schemeModuleGlobalToInternalExtSectionsViaResolution (CategoryTheory.injectiveResolution N) P n
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt:false
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_eq_viaResolution:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_naturality:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtSections:false

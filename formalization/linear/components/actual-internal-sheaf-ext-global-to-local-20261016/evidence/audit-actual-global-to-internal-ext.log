@@ -1,0 +1,76 @@
+@LinearStudy.schemeModuleInjectiveCocycleToInternalExt : {X : AlgebraicGeometry.Scheme} →
+  {N : X.Modules} →
+    (I : CategoryTheory.InjectiveResolution N) →
+      (P : X.Modules) →
+        (q : ℕ) →
+          ↥(LinearStudy.injectiveCocycleGroup I P q) →+
+            (SheafOfModules.unit X.ringCatSheaf ⟶ LinearStudy.schemeModuleInternalExt P N q)
+'LinearStudy.schemeModuleInjectiveCocycleToInternalExt' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtViaResolution : {X : AlgebraicGeometry.Scheme} →
+  {N : X.Modules} →
+    CategoryTheory.InjectiveResolution N →
+      (P : X.Modules) →
+        (n : ℕ) →
+          CategoryTheory.Abelian.Ext P N (n + 1) →+
+            (SheafOfModules.unit X.ringCatSheaf ⟶ LinearStudy.schemeModuleInternalExt P N (n + 1))
+'LinearStudy.schemeModuleGlobalToInternalExtViaResolution' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtViaResolution_extMk : ∀ {X : AlgebraicGeometry.Scheme} {N : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (P : X.Modules) (n : ℕ) (f : P ⟶ I.cocomplex.X (n + 1))
+  (hf : CategoryTheory.CategoryStruct.comp f (I.cocomplex.d (n + 1) (n + 1 + 1)) = 0),
+  (LinearStudy.schemeModuleGlobalToInternalExtViaResolution I P n) (I.extMk f (n + 1 + 1) ⋯ hf) =
+    (LinearStudy.schemeModuleInjectiveCocycleToInternalExt I P (n + 1)) ⟨f, hf⟩
+'LinearStudy.schemeModuleGlobalToInternalExtViaResolution_extMk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtSectionsViaResolution : {X : AlgebraicGeometry.Scheme} →
+  {N : X.Modules} →
+    CategoryTheory.InjectiveResolution N →
+      (P : X.Modules) →
+        (n : ℕ) →
+          CategoryTheory.Abelian.Ext P N (n + 1) →+
+            ↑((LinearStudy.schemeModuleInternalExt P N (n + 1)).presheaf.obj (Opposite.op ⊤))
+'LinearStudy.schemeModuleGlobalToInternalExtSectionsViaResolution' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleInjectiveCocycleToInternalExt.{u} : {X : AlgebraicGeometry.Scheme} →
+  {N : X.Modules} →
+    (I : CategoryTheory.InjectiveResolution N) →
+      (P : X.Modules) →
+        (q : ℕ) →
+          ↥(LinearStudy.injectiveCocycleGroup I P q) →+
+            (SheafOfModules.unit X.ringCatSheaf ⟶ LinearStudy.schemeModuleInternalExt P N q) :=
+fun {X : AlgebraicGeometry.Scheme} {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) (P : X.Modules) (q : ℕ) =>
+  {
+    toFun := fun (f : ↥(LinearStudy.injectiveCocycleGroup I P q)) =>
+      CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInjectiveInternalHomClassMap I P q) f)
+        (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso P N q I).inv,
+    map_zero' := ⋯, map_add' := ⋯ }
+def LinearStudy.schemeModuleGlobalToInternalExtViaResolution.{u} : {X : AlgebraicGeometry.Scheme} →
+  {N : X.Modules} →
+    CategoryTheory.InjectiveResolution N →
+      (P : X.Modules) →
+        (n : ℕ) →
+          CategoryTheory.Abelian.Ext P N (n + 1) →+
+            (SheafOfModules.unit X.ringCatSheaf ⟶ LinearStudy.schemeModuleInternalExt P N (n + 1)) :=
+fun {X : AlgebraicGeometry.Scheme} {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) (P : X.Modules) (n : ℕ) =>
+  ((LinearStudy.injectiveCocycleExtMap I P (n + 1)).liftOfSurjective ⋯)
+    ⟨LinearStudy.schemeModuleInjectiveCocycleToInternalExt I P (n + 1), ⋯⟩
+def LinearStudy.schemeModuleGlobalToInternalExtSectionsViaResolution.{u} : {X : AlgebraicGeometry.Scheme} →
+  {N : X.Modules} →
+    CategoryTheory.InjectiveResolution N →
+      (P : X.Modules) →
+        (n : ℕ) →
+          CategoryTheory.Abelian.Ext P N (n + 1) →+
+            ↑((LinearStudy.schemeModuleInternalExt P N (n + 1)).presheaf.obj (Opposite.op ⊤)) :=
+fun {X : AlgebraicGeometry.Scheme} {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) (P : X.Modules) (n : ℕ) =>
+  {
+    toFun := fun (e : CategoryTheory.Abelian.Ext P N (n + 1)) =>
+      (CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.Scheme.Modules.Hom.app ((LinearStudy.schemeModuleGlobalToInternalExtViaResolution I P n) e)
+            ⊤))
+        1,
+    map_zero' := ⋯, map_add' := ⋯ }
+ROLECHECK:LinearStudy.schemeModuleInjectiveCocycleToInternalExt:false
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtViaResolution:false
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtViaResolution_extMk:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtSectionsViaResolution:false

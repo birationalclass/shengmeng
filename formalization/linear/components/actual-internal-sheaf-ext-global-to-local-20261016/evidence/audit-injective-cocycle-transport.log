@@ -1,0 +1,37 @@
+@LinearStudy.injectiveCocycleTransport : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {N N' : A} →
+        (I : CategoryTheory.InjectiveResolution N) →
+          (J : CategoryTheory.InjectiveResolution N') →
+            (P : A) →
+              (q : ℕ) →
+                (I.cocomplex ⟶ J.cocomplex) →
+                  ↥(LinearStudy.injectiveCocycleGroup I P q) →+ ↥(LinearStudy.injectiveCocycleGroup J P q)
+'LinearStudy.injectiveCocycleTransport' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.injectiveCocycleExtMap_transport : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] {N N' : A}
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution N') (P : A) (q : ℕ) {c : N ⟶ N'}
+  (phi : I.Hom J c) (f : ↥(LinearStudy.injectiveCocycleGroup I P q)),
+  (LinearStudy.injectiveCocycleExtMap J P q) ((LinearStudy.injectiveCocycleTransport I J P q phi.hom) f) =
+    ((LinearStudy.injectiveCocycleExtMap I P q) f).comp (CategoryTheory.Abelian.Ext.mk₀ c) ⋯
+'LinearStudy.injectiveCocycleExtMap_transport' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.injectiveCocycleTransport.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {N N' : A} →
+        (I : CategoryTheory.InjectiveResolution N) →
+          (J : CategoryTheory.InjectiveResolution N') →
+            (P : A) →
+              (q : ℕ) →
+                (I.cocomplex ⟶ J.cocomplex) →
+                  ↥(LinearStudy.injectiveCocycleGroup I P q) →+ ↥(LinearStudy.injectiveCocycleGroup J P q) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {N N' : A}
+    (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution N') (P : A) (q : ℕ)
+    (phi : I.cocomplex ⟶ J.cocomplex) =>
+  {
+    toFun := fun (f : ↥(LinearStudy.injectiveCocycleGroup I P q)) =>
+      ⟨CategoryTheory.CategoryStruct.comp (↑f) (phi.f q), ⋯⟩,
+    map_zero' := ⋯, map_add' := ⋯ }
+ROLECHECK:LinearStudy.injectiveCocycleTransport:false
+ROLECHECK:LinearStudy.injectiveCocycleExtMap_transport:true

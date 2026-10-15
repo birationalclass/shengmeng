@@ -1,0 +1,29 @@
+@LinearStudy.schemeModuleInjectiveCocycleToInternalExt_naturality : ∀ {X : AlgebraicGeometry.Scheme} {N N' : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution N') (P : X.Modules) {c : N ⟶ N'}
+  (phi : I.Hom J c) (q : ℕ) (f : ↥(LinearStudy.injectiveCocycleGroup I P q)),
+  (LinearStudy.schemeModuleInjectiveCocycleToInternalExt J P q)
+      ((LinearStudy.injectiveCocycleTransport I J P q phi.hom) f) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInjectiveCocycleToInternalExt I P q) f)
+      ((LinearStudy.schemeModuleInternalExtFunctor P q).map c)
+'LinearStudy.schemeModuleInjectiveCocycleToInternalExt_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtViaResolution_naturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {N N' : X.Modules} (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution N')
+  (P : X.Modules) {c : N ⟶ N'} (phi : I.Hom J c) (n : ℕ) (e : CategoryTheory.Abelian.Ext P N (n + 1)),
+  (LinearStudy.schemeModuleGlobalToInternalExtViaResolution J P n) (e.comp (CategoryTheory.Abelian.Ext.mk₀ c) ⋯) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleGlobalToInternalExtViaResolution I P n) e)
+      ((LinearStudy.schemeModuleInternalExtFunctor P (n + 1)).map c)
+'LinearStudy.schemeModuleGlobalToInternalExtViaResolution_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtViaResolution_independent : ∀ {X : AlgebraicGeometry.Scheme} {N : X.Modules}
+  (I J : CategoryTheory.InjectiveResolution N) (P : X.Modules) (n : ℕ),
+  LinearStudy.schemeModuleGlobalToInternalExtViaResolution I P n =
+    LinearStudy.schemeModuleGlobalToInternalExtViaResolution J P n
+'LinearStudy.schemeModuleGlobalToInternalExtViaResolution_independent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInjectiveCocycleToInternalExt_naturality:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtViaResolution_naturality:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtViaResolution_independent:true

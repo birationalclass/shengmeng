@@ -1,0 +1,18 @@
+@LinearStudy.schemeModuleHomUnitAddEquiv : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) → (SheafOfModules.unit X.ringCatSheaf ⟶ LinearStudy.schemeModuleHomModuleSheaf P N) ≃+ (P ⟶ N)
+'LinearStudy.schemeModuleHomUnitAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomUnitAddEquiv_symm_postcompose : ∀ {X : AlgebraicGeometry.Scheme} (P : X.Modules)
+  {M N : X.Modules} (f : P ⟶ M) (c : M ⟶ N),
+  (LinearStudy.schemeModuleHomUnitAddEquiv P N).symm (CategoryTheory.CategoryStruct.comp f c) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv P M).symm f)
+      (LinearStudy.schemeModuleHomPostcompose c)
+'LinearStudy.schemeModuleHomUnitAddEquiv_symm_postcompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleHomUnitAddEquiv.{u} : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) → (SheafOfModules.unit X.ringCatSheaf ⟶ LinearStudy.schemeModuleHomModuleSheaf P N) ≃+ (P ⟶ N) :=
+fun {X : AlgebraicGeometry.Scheme} (P N : X.Modules) =>
+  let __Equiv :=
+    (SheafOfModules.unitHomEquiv (LinearStudy.schemeModuleHomModuleSheaf P N)).trans
+      (LinearStudy.schemeModuleHomModuleGlobalEquiv P N);
+  { toEquiv := __Equiv, map_add' := ⋯ }
+ROLECHECK:LinearStudy.schemeModuleHomUnitAddEquiv:false
+ROLECHECK:LinearStudy.schemeModuleHomUnitAddEquiv_symm_postcompose:true

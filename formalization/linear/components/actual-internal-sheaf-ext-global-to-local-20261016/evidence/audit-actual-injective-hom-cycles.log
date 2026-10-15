@@ -1,0 +1,67 @@
+@LinearStudy.schemeModuleInjectiveInternalHomComplex : {X : AlgebraicGeometry.Scheme} →
+  {N : X.Modules} → CategoryTheory.InjectiveResolution N → X.Modules → CochainComplex X.Modules ℕ
+'LinearStudy.schemeModuleInjectiveInternalHomComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInjectiveInternalHomCycleMap : {X : AlgebraicGeometry.Scheme} →
+  {N : X.Modules} →
+    (I : CategoryTheory.InjectiveResolution N) →
+      (P : X.Modules) →
+        (q : ℕ) →
+          ↥(LinearStudy.injectiveCocycleGroup I P q) →+
+            (SheafOfModules.unit X.ringCatSheaf ⟶
+              HomologicalComplex.cycles (LinearStudy.schemeModuleInjectiveInternalHomComplex I P) q)
+'LinearStudy.schemeModuleInjectiveInternalHomCycleMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInjectiveInternalHomClassMap : {X : AlgebraicGeometry.Scheme} →
+  {N : X.Modules} →
+    (I : CategoryTheory.InjectiveResolution N) →
+      (P : X.Modules) →
+        (q : ℕ) →
+          ↥(LinearStudy.injectiveCocycleGroup I P q) →+
+            (SheafOfModules.unit X.ringCatSheaf ⟶
+              HomologicalComplex.homology (LinearStudy.schemeModuleInjectiveInternalHomComplex I P) q)
+'LinearStudy.schemeModuleInjectiveInternalHomClassMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInjectiveInternalHomClassMap_boundary_zero : ∀ {X : AlgebraicGeometry.Scheme} {N : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (P : X.Modules) (n : ℕ)
+  (f : ↥(LinearStudy.injectiveCocycleGroup I P (n + 1))) (g : P ⟶ I.cocomplex.X n),
+  CategoryTheory.CategoryStruct.comp g (I.cocomplex.d n (n + 1)) = ↑f →
+    (LinearStudy.schemeModuleInjectiveInternalHomClassMap I P (n + 1)) f = 0
+'LinearStudy.schemeModuleInjectiveInternalHomClassMap_boundary_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleInjectiveInternalHomComplex.{u} : {X : AlgebraicGeometry.Scheme} →
+  {N : X.Modules} → CategoryTheory.InjectiveResolution N → X.Modules → CochainComplex X.Modules ℕ :=
+fun {X : AlgebraicGeometry.Scheme} {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) (P : X.Modules) =>
+  ((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+    I.cocomplex
+def LinearStudy.schemeModuleInjectiveInternalHomCycleMap.{u} : {X : AlgebraicGeometry.Scheme} →
+  {N : X.Modules} →
+    (I : CategoryTheory.InjectiveResolution N) →
+      (P : X.Modules) →
+        (q : ℕ) →
+          ↥(LinearStudy.injectiveCocycleGroup I P q) →+
+            (SheafOfModules.unit X.ringCatSheaf ⟶
+              HomologicalComplex.cycles (LinearStudy.schemeModuleInjectiveInternalHomComplex I P) q) :=
+fun {X : AlgebraicGeometry.Scheme} {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) (P : X.Modules) (q : ℕ) =>
+  let K := LinearStudy.schemeModuleInjectiveInternalHomComplex I P;
+  {
+    toFun := fun (f : ↥(LinearStudy.injectiveCocycleGroup I P q)) =>
+      HomologicalComplex.liftCycles K ((LinearStudy.schemeModuleHomUnitAddEquiv P (I.cocomplex.X q)).symm ↑f) (q + 1) ⋯
+        ⋯,
+    map_zero' := ⋯, map_add' := ⋯ }
+def LinearStudy.schemeModuleInjectiveInternalHomClassMap.{u} : {X : AlgebraicGeometry.Scheme} →
+  {N : X.Modules} →
+    (I : CategoryTheory.InjectiveResolution N) →
+      (P : X.Modules) →
+        (q : ℕ) →
+          ↥(LinearStudy.injectiveCocycleGroup I P q) →+
+            (SheafOfModules.unit X.ringCatSheaf ⟶
+              HomologicalComplex.homology (LinearStudy.schemeModuleInjectiveInternalHomComplex I P) q) :=
+fun {X : AlgebraicGeometry.Scheme} {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) (P : X.Modules) (q : ℕ) =>
+  {
+    toFun := fun (f : ↥(LinearStudy.injectiveCocycleGroup I P q)) =>
+      CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInjectiveInternalHomCycleMap I P q) f)
+        (HomologicalComplex.homologyπ (LinearStudy.schemeModuleInjectiveInternalHomComplex I P) q),
+    map_zero' := ⋯, map_add' := ⋯ }
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomComplex:false
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomCycleMap:false
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomClassMap:false
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomClassMap_boundary_zero:true

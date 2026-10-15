@@ -1,0 +1,40 @@
+@LinearStudy.schemeModuleInternalHomSourceNatTrans : {X : AlgebraicGeometry.Scheme} →
+  {P' P : X.Modules} →
+    (P' ⟶ P) →
+      (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P ⟶
+        LinearStudy.schemeModuleInternalHomCoefficientFunctor X P')
+'LinearStudy.schemeModuleInternalHomSourceNatTrans' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalHomSourceNatTrans_id : ∀ {X : AlgebraicGeometry.Scheme} (P : X.Modules),
+  LinearStudy.schemeModuleInternalHomSourceNatTrans (CategoryTheory.CategoryStruct.id P) =
+    CategoryTheory.CategoryStruct.id (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P)
+'LinearStudy.schemeModuleInternalHomSourceNatTrans_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalHomSourceNatTrans_comp : ∀ {X : AlgebraicGeometry.Scheme} {P' P P'' : X.Modules}
+  (u : P'' ⟶ P') (v : P' ⟶ P),
+  LinearStudy.schemeModuleInternalHomSourceNatTrans (CategoryTheory.CategoryStruct.comp u v) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalHomSourceNatTrans v)
+      (LinearStudy.schemeModuleInternalHomSourceNatTrans u)
+'LinearStudy.schemeModuleInternalHomSourceNatTrans_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInternalHomBifunctor : (X : AlgebraicGeometry.Scheme) →
+  CategoryTheory.Functor X.Modulesᵒᵖ (CategoryTheory.Functor X.Modules X.Modules)
+'LinearStudy.schemeModuleInternalHomBifunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInternalHomBifunctor_flip_obj : ∀ (X : AlgebraicGeometry.Scheme) (N : X.Modules),
+  (LinearStudy.schemeModuleInternalHomBifunctor X).flip.obj N = LinearStudy.schemeModuleInternalHomFunctor X N
+'LinearStudy.schemeModuleInternalHomBifunctor_flip_obj' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleInternalHomSourceNatTrans.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P' P : X.Modules} →
+    (P' ⟶ P) →
+      (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P ⟶
+        LinearStudy.schemeModuleInternalHomCoefficientFunctor X P') :=
+fun {X : AlgebraicGeometry.Scheme} {P' P : X.Modules} (u : P' ⟶ P) =>
+  { app := fun (N : X.Modules) => LinearStudy.schemeModuleHomPrecompose u, naturality := ⋯ }
+def LinearStudy.schemeModuleInternalHomBifunctor.{u} : (X : AlgebraicGeometry.Scheme) →
+  CategoryTheory.Functor X.Modulesᵒᵖ (CategoryTheory.Functor X.Modules X.Modules) :=
+fun (X : AlgebraicGeometry.Scheme) =>
+  { obj := fun (P : X.Modulesᵒᵖ) => LinearStudy.schemeModuleInternalHomCoefficientFunctor X (Opposite.unop P),
+    map := fun {X_1 Y : X.Modulesᵒᵖ} (u : X_1 ⟶ Y) => LinearStudy.schemeModuleInternalHomSourceNatTrans u.unop,
+    map_id := ⋯, map_comp := ⋯ }
+ROLECHECK:LinearStudy.schemeModuleInternalHomSourceNatTrans:false
+ROLECHECK:LinearStudy.schemeModuleInternalHomSourceNatTrans_id:true
+ROLECHECK:LinearStudy.schemeModuleInternalHomSourceNatTrans_comp:true
+ROLECHECK:LinearStudy.schemeModuleInternalHomBifunctor:false
+ROLECHECK:LinearStudy.schemeModuleInternalHomBifunctor_flip_obj:true

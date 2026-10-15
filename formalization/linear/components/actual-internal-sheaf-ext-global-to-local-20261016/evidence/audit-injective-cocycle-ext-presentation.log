@@ -1,0 +1,47 @@
+@LinearStudy.injectiveCocycleGroup : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {N : A} → (I : CategoryTheory.InjectiveResolution N) → (P : A) → (q : ℕ) → AddSubgroup (P ⟶ I.cocomplex.X q)
+'LinearStudy.injectiveCocycleGroup' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.injectiveCocycleExtMap : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        {N : A} →
+          (I : CategoryTheory.InjectiveResolution N) →
+            (P : A) → (q : ℕ) → ↥(LinearStudy.injectiveCocycleGroup I P q) →+ CategoryTheory.Abelian.Ext P N q
+'LinearStudy.injectiveCocycleExtMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.injectiveCocycleExtMap_surjective : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] {N : A}
+  (I : CategoryTheory.InjectiveResolution N) (P : A) (q : ℕ),
+  Function.Surjective ⇑(LinearStudy.injectiveCocycleExtMap I P q)
+'LinearStudy.injectiveCocycleExtMap_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.injectiveCocycleExtMap_succ_eq_zero_iff : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] {N : A}
+  (I : CategoryTheory.InjectiveResolution N) (P : A) (n : ℕ) (f : ↥(LinearStudy.injectiveCocycleGroup I P (n + 1))),
+  (LinearStudy.injectiveCocycleExtMap I P (n + 1)) f = 0 ↔
+    ∃ (g : P ⟶ I.cocomplex.X n), CategoryTheory.CategoryStruct.comp g (I.cocomplex.d n (n + 1)) = ↑f
+'LinearStudy.injectiveCocycleExtMap_succ_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.injectiveCocycleGroup.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {N : A} → (I : CategoryTheory.InjectiveResolution N) → (P : A) → (q : ℕ) → AddSubgroup (P ⟶ I.cocomplex.X q) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {N : A}
+    (I : CategoryTheory.InjectiveResolution N) (P : A) (q : ℕ) =>
+  { carrier := {f : P ⟶ I.cocomplex.X q | CategoryTheory.CategoryStruct.comp f (I.cocomplex.d q (q + 1)) = 0},
+    add_mem' := ⋯, zero_mem' := ⋯, neg_mem' := ⋯ }
+def LinearStudy.injectiveCocycleExtMap.{u, v, w} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        {N : A} →
+          (I : CategoryTheory.InjectiveResolution N) →
+            (P : A) → (q : ℕ) → ↥(LinearStudy.injectiveCocycleGroup I P q) →+ CategoryTheory.Abelian.Ext P N q :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A] {N : A}
+    (I : CategoryTheory.InjectiveResolution N) (P : A) (q : ℕ) =>
+  { toFun := fun (f : ↥(LinearStudy.injectiveCocycleGroup I P q)) => I.extMk (↑f) (q + 1) ⋯ ⋯, map_zero' := ⋯,
+    map_add' := ⋯ }
+ROLECHECK:LinearStudy.injectiveCocycleGroup:false
+ROLECHECK:LinearStudy.injectiveCocycleExtMap:false
+ROLECHECK:LinearStudy.injectiveCocycleExtMap_surjective:true
+ROLECHECK:LinearStudy.injectiveCocycleExtMap_succ_eq_zero_iff:true

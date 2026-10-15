@@ -1,0 +1,116 @@
+@LinearStudy.schemeModuleHomPostcompose : {X : AlgebraicGeometry.Scheme} →
+  {P M N : X.Modules} →
+    (M ⟶ N) → (LinearStudy.schemeModuleHomModuleSheaf P M ⟶ LinearStudy.schemeModuleHomModuleSheaf P N)
+'LinearStudy.schemeModuleHomPostcompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomPostcompose_app : ∀ {X : AlgebraicGeometry.Scheme} {P M N : X.Modules} (c : M ⟶ N)
+  (U : X.Opens) (f : ↑((LinearStudy.schemeModuleHomModuleSheaf P M).presheaf.obj (Opposite.op U)))
+  (W : (CategoryTheory.Over U)ᵒᵖ) (x : ↑(P.presheaf.obj (Opposite.op (Opposite.unop W).left))),
+  (CategoryTheory.ConcreteCategory.hom
+        ((↑((CategoryTheory.ConcreteCategory.hom
+                  (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleHomPostcompose c) U))
+                f)).app
+          W))
+      x =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app c (Opposite.unop W).left))
+      ((CategoryTheory.ConcreteCategory.hom ((↑f).app W)) x)
+'LinearStudy.schemeModuleHomPostcompose_app' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomPostcompose_id : ∀ {X : AlgebraicGeometry.Scheme} {P M : X.Modules},
+  LinearStudy.schemeModuleHomPostcompose (CategoryTheory.CategoryStruct.id M) =
+    CategoryTheory.CategoryStruct.id (LinearStudy.schemeModuleHomModuleSheaf P M)
+'LinearStudy.schemeModuleHomPostcompose_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomPostcompose_comp : ∀ {X : AlgebraicGeometry.Scheme} {P M N T : X.Modules} (c : M ⟶ N)
+  (d : N ⟶ T),
+  LinearStudy.schemeModuleHomPostcompose (CategoryTheory.CategoryStruct.comp c d) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPostcompose c)
+      (LinearStudy.schemeModuleHomPostcompose d)
+'LinearStudy.schemeModuleHomPostcompose_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomPostcompose_add : ∀ {X : AlgebraicGeometry.Scheme} {P M N : X.Modules} (c d : M ⟶ N),
+  LinearStudy.schemeModuleHomPostcompose (c + d) =
+    LinearStudy.schemeModuleHomPostcompose c + LinearStudy.schemeModuleHomPostcompose d
+'LinearStudy.schemeModuleHomPostcompose_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInternalHomCoefficientFunctor : (X : AlgebraicGeometry.Scheme) →
+  X.Modules → CategoryTheory.Functor X.Modules X.Modules
+'LinearStudy.schemeModuleInternalHomCoefficientFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalHomCoefficientFunctor_map_app : ∀ {X : AlgebraicGeometry.Scheme} (P : X.Modules)
+  {M N : X.Modules} (c : M ⟶ N) (U : X.Opens)
+  (f : ↑((LinearStudy.schemeModuleHomModuleSheaf P M).presheaf.obj (Opposite.op U))) (W : (CategoryTheory.Over U)ᵒᵖ)
+  (x : ↑(P.presheaf.obj (Opposite.op (Opposite.unop W).left))),
+  (CategoryTheory.ConcreteCategory.hom
+        ((↑((CategoryTheory.ConcreteCategory.hom
+                  (AlgebraicGeometry.Scheme.Modules.Hom.app
+                    ((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).map c) U))
+                f)).app
+          W))
+      x =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app c (Opposite.unop W).left))
+      ((CategoryTheory.ConcreteCategory.hom ((↑f).app W)) x)
+'LinearStudy.schemeModuleInternalHomCoefficientFunctor_map_app' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive : ∀ (X : AlgebraicGeometry.Scheme) (P : X.Modules),
+  (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).Additive
+'LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleInternalHomCoefficientSectionIso : (X : AlgebraicGeometry.Scheme) →
+  (P : X.Modules) →
+    (U : X.Opens) →
+      (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).comp
+          ((SheafOfModules.evaluation X.ringCatSheaf (Opposite.op U)).comp
+            (CategoryTheory.forget (ModuleCat ↑(X.ringCatSheaf.obj.obj (Opposite.op U))))) ≅
+        (SheafOfModules.overFunctor X.ringCatSheaf U).comp
+          (CategoryTheory.coyoneda.obj (Opposite.op (SheafOfModules.over P U)))
+'LinearStudy.schemeModuleInternalHomCoefficientSectionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleOverFunctor_preservesFiniteLimits : ∀ (X : AlgebraicGeometry.Scheme) (U : X.Opens),
+  CategoryTheory.Limits.PreservesFiniteLimits (SheafOfModules.overFunctor X.ringCatSheaf U)
+'LinearStudy.schemeModuleOverFunctor_preservesFiniteLimits' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInternalHomCoefficientFunctor_preservesFiniteLimits : ∀ (X : AlgebraicGeometry.Scheme)
+  (P : X.Modules),
+  CategoryTheory.Limits.PreservesFiniteLimits (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P)
+'LinearStudy.schemeModuleInternalHomCoefficientFunctor_preservesFiniteLimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleHomPostcompose.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P M N : X.Modules} →
+    (M ⟶ N) → (LinearStudy.schemeModuleHomModuleSheaf P M ⟶ LinearStudy.schemeModuleHomModuleSheaf P N) :=
+fun {X : AlgebraicGeometry.Scheme} {P M N : X.Modules} (c : M ⟶ N) =>
+  {
+    val :=
+      {
+        app := fun (U : (TopologicalSpace.Opens ↥X)ᵒᵖ) =>
+          ModuleCat.ofHom
+            { toFun := LinearStudy.schemeModuleHomPostcomposeSection P M N c (Opposite.unop U), map_add' := ⋯,
+              map_smul' := ⋯ },
+        naturality := ⋯ } }
+def LinearStudy.schemeModuleInternalHomCoefficientFunctor.{u} : (X : AlgebraicGeometry.Scheme) →
+  X.Modules → CategoryTheory.Functor X.Modules X.Modules :=
+fun (X : AlgebraicGeometry.Scheme) (P : X.Modules) =>
+  { obj := fun (M : X.Modules) => LinearStudy.schemeModuleHomModuleSheaf P M,
+    map := fun {X_1 Y : X.Modules} (c : X_1 ⟶ Y) => LinearStudy.schemeModuleHomPostcompose c, map_id := ⋯,
+    map_comp := ⋯ }
+theorem LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive.{u} : ∀ (X : AlgebraicGeometry.Scheme)
+  (P : X.Modules), (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).Additive :=
+fun (X : AlgebraicGeometry.Scheme) (P : X.Modules) =>
+  { map_add := fun {A B : X.Modules} {c d : A ⟶ B} => LinearStudy.schemeModuleHomPostcompose_add c d }
+def LinearStudy.schemeModuleInternalHomCoefficientSectionIso.{u} : (X : AlgebraicGeometry.Scheme) →
+  (P : X.Modules) →
+    (U : X.Opens) →
+      (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).comp
+          ((SheafOfModules.evaluation X.ringCatSheaf (Opposite.op U)).comp
+            (CategoryTheory.forget (ModuleCat ↑(X.ringCatSheaf.obj.obj (Opposite.op U))))) ≅
+        (SheafOfModules.overFunctor X.ringCatSheaf U).comp
+          (CategoryTheory.coyoneda.obj (Opposite.op (SheafOfModules.over P U))) :=
+fun (X : AlgebraicGeometry.Scheme) (P : X.Modules) (U : X.Opens) =>
+  CategoryTheory.NatIso.ofComponents
+    (fun (N : X.Modules) => (LinearStudy.schemeModuleHomModuleSectionsEquiv P N U).toIso) ⋯
+ROLECHECK:LinearStudy.schemeModuleHomPostcompose:false
+ROLECHECK:LinearStudy.schemeModuleHomPostcompose_app:true
+ROLECHECK:LinearStudy.schemeModuleHomPostcompose_id:true
+ROLECHECK:LinearStudy.schemeModuleHomPostcompose_comp:true
+ROLECHECK:LinearStudy.schemeModuleHomPostcompose_add:true
+ROLECHECK:LinearStudy.schemeModuleInternalHomCoefficientFunctor:false
+ROLECHECK:LinearStudy.schemeModuleInternalHomCoefficientFunctor_map_app:true
+ROLECHECK:LinearStudy.schemeModuleInternalHomCoefficientFunctor_additive:true
+ROLECHECK:LinearStudy.schemeModuleInternalHomCoefficientSectionIso:false
+ROLECHECK:LinearStudy.schemeModuleOverFunctor_preservesFiniteLimits:true
+ROLECHECK:LinearStudy.schemeModuleInternalHomCoefficientFunctor_preservesFiniteLimits:true
