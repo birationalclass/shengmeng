@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import * as T from '../3d/vendor/three.module.js';
 import {createBoardTrayHardware} from './board-tray.js';
-import {TRAY_DOCK,trayControlLayout,placeTrayControl} from './board-tray-layout.js';
+import {TRAY_DOCK,TRAY_STORAGE,trayControlLayout,placeTrayControl} from './board-tray-layout.js';
 import {BOARD_SHAFT} from './site-layout.js';
 import {createBoardPageControls} from './board-page-control.js';
 import {createBoardCameraControl} from './board-camera-control.js';
@@ -9,10 +9,21 @@ import {createBoardVoicePanel} from './report-voice.js';
 import {updateTextSheen} from './smart-screen.js';
 import {createBoardHardware,TRAY} from './board-hardware.js';
 import {ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js';
+import {eraserTransfer} from './eraser-transfer.js';
+test('actual parked erasers clear both raised rims and rest over the real gutter floor in all columns',()=>{
+ const hardware=createBoardHardware(T),trayHardware=createBoardTrayHardware(T),scene=new T.Scene(),eraser=trayHardware.createEraser(ERASER_HALF_WIDTH*2/1536*5.3,ERASER_HALF_HEIGHT*2/640*2.05,hardware);
+ try{for(let column=0;column<3;column++){const tray=trayHardware.create(scene,22.4+column*5.6,column),shell=tray.children[0],parked=trayHardware.createParkedEraser(eraser,column);scene.add(parked);scene.updateMatrixWorld(true);const box=new T.Box3().setFromObject(parked);assert(box.min.z>TRAY.z+TRAY_STORAGE.back+.015);assert(box.max.z<TRAY.z+TRAY_STORAGE.front-.015,'whole wood cap and felt must fit the usable channel, not just the outer tray bounds');
+ for(const x of [box.min.x,(box.min.x+box.max.x)/2,box.max.x])for(const z of [box.min.z,(box.min.z+box.max.z)/2,box.max.z]){const hit=new T.Raycaster(new T.Vector3(x,1,z),new T.Vector3(0,-1,0)).intersectObject(shell)[0];assert(hit);assert(Math.abs(hit.point.y-TRAY.top)<1e-7,'actual floor height '+hit.point.y+' at '+x+','+z);}
+ }}finally{trayHardware.dispose();hardware.dispose();}
+});
+test('return and reversed pickup descend inside the channel only after clearing both rims',()=>{
+ const hardware=createBoardHardware(T),trayHardware=createBoardTrayHardware(T),eraser=trayHardware.createEraser(ERASER_HALF_WIDTH*2/1536*5.3,ERASER_HALF_HEIGHT*2/640*2.05,hardware),rest=trayHardware.createParkedEraser(eraser,0),start=new T.Vector3(22.4,2,-10.993),startQ=new T.Quaternion().setFromEuler(new T.Euler(.03,0,7*Math.PI/12));
+ try{for(let i=0;i<=500;i++){const pose=eraserTransfer(start,rest.position,i/500,TRAY.z+TRAY.depth/2+.22);eraser.position.set(pose.x,pose.y,pose.z);eraser.quaternion.slerpQuaternions(startQ,rest.quaternion,pose.rotation);const box=new T.Box3().setFromObject(eraser);if(box.min.y<.75){assert(box.min.z>TRAY.z+TRAY_STORAGE.back+.015);assert(box.max.z<TRAY.z+TRAY_STORAGE.front-.015);}assert(box.min.y>=TRAY.top-1e-7);}}finally{trayHardware.dispose();hardware.dispose();}
+});
 test('concept eraser is one rounded wood cap with the exact original felt contact and tray rest height',()=>{
  const hardware=createBoardHardware(T),trayHardware=createBoardTrayHardware(T),scene=new T.Scene(),w=ERASER_HALF_WIDTH*2/1536*5.3,h=ERASER_HALF_HEIGHT*2/640*2.05,eraser=trayHardware.createEraser(w,h,hardware),tray=trayHardware.create(scene,0,0);scene.add(eraser);
  try{assert.equal(eraser.children.length,1,'single cap with a thin dark felt base, no raised grip or grooves');assert.equal(eraser.material,tray.children[0].material);const felt=eraser.getObjectByName('Textured layered felt'),feltBounds=new T.Box3().setFromObject(felt);assert(Math.abs(feltBounds.min.z+.065)<1e-8);assert.equal(felt.material,hardware.felt);assert([...eraser.geometry.getAttribute('uv').array].every(Number.isFinite));
- const rest=eraser.clone();rest.position.set(0,TRAY.restY,TRAY.z);rest.rotation.set(-Math.PI/2,0,.035);const box=new T.Box3().setFromObject(rest);assert(Math.abs(box.min.y-TRAY.top)<1e-7,'felt sits on the gutter floor without floating');assert(box.max.y-box.min.y<.10);assert(box.min.z>TRAY.z-TRAY.depth/2&&box.max.z<TRAY.z+TRAY.depth/2);trayHardware.setTone('deep');assert.equal(eraser.material.map,tray.children[0].material.map);trayHardware.setTone('pale');assert.notEqual(eraser.material.map,felt.material.map);assert.equal(eraser.material.map,tray.children[0].material.map);
+ const rest=trayHardware.createParkedEraser(eraser,0),box=new T.Box3().setFromObject(rest);assert(Math.abs(box.min.y-TRAY.top)<1e-7,'felt sits on the gutter floor without floating');assert(box.max.y-box.min.y<.10);assert(box.min.z>TRAY.z+TRAY_STORAGE.back&&box.max.z<TRAY.z+TRAY_STORAGE.front);trayHardware.setTone('deep');assert.equal(eraser.material.map,tray.children[0].material.map);trayHardware.setTone('pale');assert.notEqual(eraser.material.map,felt.material.map);assert.equal(eraser.material.map,tray.children[0].material.map);
  }finally{trayHardware.dispose();hardware.dispose();}
 });
 test('all tone options recolor board frames and tray together, and gradient follows height',()=>{

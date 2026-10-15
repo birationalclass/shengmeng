@@ -1,5 +1,5 @@
 import {createBoardTrayHardware} from './board-tray.js';
-import {placeTrayControl} from './board-tray-layout.js';
+import {placeTrayControl,TRAY_STORAGE} from './board-tray-layout.js';
 import {createStudentLottery,drawStudentLottery,lotteryHitTargets,LOTTERY_RECT} from './student-lottery.js';
 import {createCoursePreload} from './course-preload.js';
 import {prepareInlineMath} from './chalk-inline-math.js?v=inline-formula-2';
@@ -154,7 +154,7 @@ export async function createLecture(scene,renderer,options={}){
     trayHardware.create(scene,x,pair);
     for(let j=0;j<4;j++){
       const stick=new THREE.Mesh(trayChalkGeometry,trayChalkMaterials[j]);stick.name=`Tray chalk ${pair+1} ${j+1}`;
-      stick.rotation.z=Math.PI/2;stick.rotation.y=(j%2?1:-1)*.08;stick.position.set(x-.95+j*.24,TRAY.top+.020,TRAY.z);
+      stick.rotation.z=Math.PI/2;stick.rotation.y=(j%2?1:-1)*.08;stick.position.set(x-.95+j*.24,TRAY.top+.020,TRAY.z+TRAY_STORAGE.center);
       stick.userData={column:pair,colorIndex:j};scene.add(stick);
     }
   }
@@ -217,8 +217,7 @@ export async function createLecture(scene,renderer,options={}){
   const eraser=trayHardware.createEraser(eraserWidth,eraserHeight,hardware);scene.add(eraser);
   const felt=eraser.getObjectByName('Textured layered felt');
   const parkedErasers=Array.from({length:3},(_,column)=>{
-    const parked=eraser.clone();parked.name=`Tray eraser ${column+1}`;parked.position.set(23.25+column*5.6,TRAY.restY,TRAY.z);parked.rotation.set(-Math.PI/2,0,.035);
-    parked.userData={column,resting:true};scene.add(parked);return parked;
+    const parked=trayHardware.createParkedEraser(eraser,column);scene.add(parked);return parked;
   });
   eraser.visible=false;
   let eraserColumn=0,eraserReturn=null,eraserPickup=null;

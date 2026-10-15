@@ -1,6 +1,6 @@
 import {TRAY_WOOD_DATA} from './board-tray-grain.js';
 import {PALE_WOOD_DATA} from './board-tray-pale-grain.js';
-import {TRAY_DOCK} from './board-tray-layout.js';
+import {TRAY_DOCK,TRAY_STORAGE} from './board-tray-layout.js';
 import {TRAY} from './board-hardware.js';
 // Shared geometry and deterministic small PBR maps: no image downloads or extra
 // work during narration. End faces have their own grain direction, not a butt cap.
@@ -30,8 +30,9 @@ export function createBoardTrayHardware(T,anisotropy=1){
   if(i===0)shape.moveTo(...from);else shape.lineTo(...from);shape.quadraticCurveTo(...p,...to);
  }shape.closePath();return shape;}
  // Shape coordinates are (-z,y); extrusion is rotated onto the board's x axis.
- const profile=roundedProfile([[-.33,.585],[.23,.615],[.23,.735],[.18,.735],[.18,.655],[-.06,.655],[-.06,.71],[-.24,.71],[-.32,.59]],.007);
- const body=new T.ExtrudeGeometry(profile,{depth:TRAY_DOCK.width-.024,bevelEnabled:true,bevelSize:.005,bevelThickness:.012,bevelSegments:3,steps:1,curveSegments:5});body.rotateY(Math.PI/2);body.translate(-(TRAY_DOCK.width-.024)/2,0,TRAY.z);
+ const shellBevel=.005; // Preserve the actual felt contact height after beveling.
+ const profile=roundedProfile([[-.33,.585],[-TRAY_STORAGE.rearEdge,.615],[-TRAY_STORAGE.rearEdge,.735],[-TRAY_STORAGE.back,.735],[-TRAY_STORAGE.back,TRAY.top-shellBevel],[-TRAY_STORAGE.front,TRAY.top-shellBevel],[-TRAY_STORAGE.front,.71],[-.24,.71],[-.32,.59]],.007);
+ const body=new T.ExtrudeGeometry(profile,{depth:TRAY_DOCK.width-.024,bevelEnabled:true,bevelSize:shellBevel,bevelThickness:.012,bevelSegments:3,steps:1,curveSegments:5});body.rotateY(Math.PI/2);body.translate(-(TRAY_DOCK.width-.024)/2,0,TRAY.z);
  woodGeometry(body,.58,.74);const positions=body.getAttribute('position'),normals=body.getAttribute('normal'),uv=body.getAttribute('uv');
  for(let i=0;i<positions.count;i++){const x=positions.getX(i),y=positions.getY(i),z=positions.getZ(i);uv.setXY(i,Math.abs(normals.getX(i))>.8?(z-TRAY.z+.24)/.58:x/TRAY_DOCK.width+.5,(Math.abs(normals.getX(i))>.8?(y-.57)/.18:(z-TRAY.z)*1.2+y*.14+.3));}uv.needsUpdate=true;geometries.push(body);
  function roundedSlab(w,h,d,r,bevel=.002){const shape=roundedProfile([[-w/2,-h/2],[w/2,-h/2],[w/2,h/2],[-w/2,h/2]],r),g=new T.ExtrudeGeometry(shape,{depth:d-2*bevel,bevelEnabled:true,bevelSize:bevel,bevelThickness:bevel,bevelSegments:bevel>.002?3:2,curveSegments:5,steps:1});g.translate(0,0,-d/2+bevel);geometries.push(g);return g;}
@@ -41,6 +42,7 @@ export function createBoardTrayHardware(T,anisotropy=1){
   // Keep the exact previous felt footprint and -0.065 contact plane.
   const felt=new T.Mesh(hardware.roundedBox(w*.98,h*.98,.025,.012),hardware.felt);felt.name='Textured layered felt';felt.position.z=-.0525;eraser.add(felt);return eraser;
  }
+ function createParkedEraser(eraser,column){const parked=eraser.clone();parked.name=`Tray eraser ${column+1}`;parked.position.set(23.25+column*5.6,TRAY.restY,TRAY.z+TRAY_STORAGE.center);parked.rotation.set(-Math.PI/2,0,.035);parked.userData={column,resting:true};return parked;}
  const panel=roundedSlab(TRAY_DOCK.panelWidth,TRAY_DOCK.panelHeight,.014,.028),bracket=new T.BoxGeometry(.055,.10,.26);geometries.push(bracket);
  const frames=new Map();
  function frameRails(w,h){
@@ -49,7 +51,7 @@ export function createBoardTrayHardware(T,anisotropy=1){
   const outlines=[[[ -ox,oy],[ -ix,iy],[ix,iy],[ox,oy]],[[ -ox,-oy],[ox,-oy],[ix,-iy],[-ix,-iy]],[[ -ox,-oy],[-ix,-iy],[-ix,iy],[-ox,oy]],[[ox,-oy],[ox,oy],[ix,iy],[ix,-iy]]];
   const rails=outlines.map((points,index)=>{const shape=new T.Shape();shape.moveTo(...points[0]);points.slice(1).forEach(p=>shape.lineTo(...p));shape.closePath();const g=new T.ExtrudeGeometry(shape,{depth:.066,bevelEnabled:true,bevelSize:.0025,bevelThickness:.0025,bevelSegments:3,steps:1});g.translate(0,0,-.055);const p=g.getAttribute('position'),uv=g.getAttribute('uv');for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i);uv.setXY(i,index<2?x/w+.5:y/h+.5,index<2?(y+(index?oy:-iy))/.08+.2:(x+(index===2?ox:-ix))/.08+.45);}uv.needsUpdate=true;geometries.push(g);woodGeometry(g,-oy,oy);return g;});frames.set(key,rails);return rails;
  }
- return {createEraser,setTone,get tone(){return tone;},createFrame(parent,w,h){const frame=new T.Group();frame.name='Fine mitered nanmu board frame';parent.add(frame);frameRails(w,h).forEach((g,i)=>{const rail=new T.Mesh(g,wood);rail.name=['Top','Bottom','Left','Right'][i]+' beveled mitered wood rail';rail.castShadow=true;rail.receiveShadow=true;frame.add(rail);});return frame;},async loadGrain(){const loaded=await Promise.all([TRAY_WOOD_DATA,PALE_WOOD_DATA].map(src=>new T.TextureLoader().loadAsync(src)));for(const map of loaded){map.colorSpace=T.SRGBColorSpace;map.wrapS=map.wrapT=T.RepeatWrapping;map.anisotropy=Math.min(8,anisotropy);}for(const old of maps)old.dispose();maps.length=0;maps.push(...loaded);[brownMap,paleMap]=loaded;setTone(tone);wood.needsUpdate=true;},create(parent,cx,column){
+ return {createEraser,createParkedEraser,setTone,get tone(){return tone;},createFrame(parent,w,h){const frame=new T.Group();frame.name='Fine mitered nanmu board frame';parent.add(frame);frameRails(w,h).forEach((g,i)=>{const rail=new T.Mesh(g,wood);rail.name=['Top','Bottom','Left','Right'][i]+' beveled mitered wood rail';rail.castShadow=true;rail.receiveShadow=true;frame.add(rail);});return frame;},async loadGrain(){const loaded=await Promise.all([TRAY_WOOD_DATA,PALE_WOOD_DATA].map(src=>new T.TextureLoader().loadAsync(src)));for(const map of loaded){map.colorSpace=T.SRGBColorSpace;map.wrapS=map.wrapT=T.RepeatWrapping;map.anisotropy=Math.min(8,anisotropy);}for(const old of maps)old.dispose();maps.length=0;maps.push(...loaded);[brownMap,paleMap]=loaded;setTone(tone);wood.needsUpdate=true;},create(parent,cx,column){
   const group=new T.Group();group.name='Wide nanmu chalk tray '+(column+1);group.position.x=cx;group.userData={column,depth:.61,centerZ:TRAY.z,floorTop:TRAY.top,integratedControls:true};parent.add(group);
   const shell=new T.Mesh(body,wood);shell.name='Continuous rounded gutter and chamfered control shoulder';shell.castShadow=true;shell.receiveShadow=true;group.add(shell);
   const strip=new T.Mesh(panel,glass);strip.position.set(0,TRAY_DOCK.y,TRAY_DOCK.z);strip.rotation.x=-TRAY_DOCK.tilt;strip.name='Recessed matte glass control strip';strip.receiveShadow=true;group.add(strip);
