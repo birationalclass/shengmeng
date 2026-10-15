@@ -1,0 +1,11 @@
+@LinearStudy.nativeProjectiveKoszulPresentationAugmentationLaw : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] [inst_4 : IsNoetherianRing S] {J : Type}
+  (b : J → S) (hb : ∀ (i : J), b i ∈ 𝓑 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ 𝓑 q) (k : ℤ) (a : S) (ha : a ∈ 𝓑 1),
+  let j := AlgebraicGeometry.Proj.awayι 𝓑 a ha ⋯;
+  LinearStudy.mappedChainPresentationAugmentationLaw (AlgebraicGeometry.Scheme.Modules.restrictFunctor j)
+    (LinearStudy.nativeProjectiveKoszulMappedPresentationData 𝓑 b hb hgen H hH k a ha)
+'LinearStudy.nativeProjectiveKoszulPresentationAugmentationLaw' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.nativeProjectiveKoszulPresentationAugmentationLaw:true

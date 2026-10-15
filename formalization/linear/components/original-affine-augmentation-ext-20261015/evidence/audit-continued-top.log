@@ -1,0 +1,9 @@
+@LinearStudy.cochainResolutionTopExtClass_sourceIso : ∀ {A : Type u_4} [inst : CategoryTheory.Category.{u_3, u_4} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K L : CochainComplex A ℤ) (gamma : K ≅ L) {E M : A} (r : ℕ) (alpha : L ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  [inst_4 : QuasiIso alpha] (a : L.X (-↑r) ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (L.d (-↑r - 1) (-↑r)) a = 0),
+  LinearStudy.cochainResolutionTopExtClass K r (CategoryTheory.CategoryStruct.comp gamma.hom alpha)
+      (CategoryTheory.CategoryStruct.comp (gamma.hom.f (-↑r)) a) ⋯ =
+    LinearStudy.cochainResolutionTopExtClass L r alpha a ha
+'LinearStudy.cochainResolutionTopExtClass_sourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.cochainResolutionTopExtClass_sourceIso:true

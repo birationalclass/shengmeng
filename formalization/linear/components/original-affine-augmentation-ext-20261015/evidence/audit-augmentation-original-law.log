@@ -1,0 +1,46 @@
+@LinearStudy.projectivePulledOriginalChartAugmentationLaw : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                  LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                Prop
+'LinearStudy.projectivePulledOriginalChartAugmentationLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledOriginalChartAugmentationLaw_proof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ) (k : ℤ)
+  (e :
+    CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k),
+  LinearStudy.projectivePulledOriginalChartAugmentationLaw f V L hL w k e
+'LinearStudy.projectivePulledOriginalChartAugmentationLaw_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.projectivePulledOriginalChartAugmentationLaw : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                  LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ)
+    (e :
+      CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) =>
+  let d := LinearStudy.projectivePulledOriginalChartPresentationData f V L hL w k;
+  have ce := CategoryTheory.eqToIso ⋯;
+  LinearStudy.mappedOriginalChainCokernelAugmentationChartLaw
+    (AlgebraicGeometry.Scheme.Modules.restrictFunctor (LinearStudy.originalProjectiveZeroChart V)) d.fst d.snd.fst
+    d.snd.snd.fst d.snd.snd.snd.fst d.snd.snd.snd.snd
+    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) (ce ≪≫ e)
+ROLECHECK:LinearStudy.projectivePulledOriginalChartAugmentationLaw:false
+ROLECHECK:LinearStudy.projectivePulledOriginalChartAugmentationLaw_proof:true

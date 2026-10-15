@@ -1,0 +1,12 @@
+LinearStudy.tildeKoszulOriginalCoforkAugmentation_eq_mappedModule : ∀ (R : CommRingCat) {r : ℕ} (H : Fin r → ↑R),
+  LinearStudy.originalChainCoforkAugmentation (LinearStudy.tildeFunctionKoszulComplex R H)
+      (LinearStudy.tildeKoszulOriginalCutCokernelCofork R H) =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.mappedOriginalChainAugmentation (AlgebraicGeometry.tilde.functor R)
+        (koszulComplex (Fintype.linearCombination (↑R) H)) (LinearStudy.functionKoszulAugmentationMap H))
+      ((ChainComplex.single₀ (AlgebraicGeometry.Spec R).Modules).map
+        (LinearStudy.tildeQuotientPushforwardIso R (Ideal.span (Set.range H))).hom)
+'LinearStudy.tildeKoszulOriginalCoforkAugmentation_eq_mappedModule' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.tildeKoszulOriginalCoforkAugmentation_eq_mappedModule:true

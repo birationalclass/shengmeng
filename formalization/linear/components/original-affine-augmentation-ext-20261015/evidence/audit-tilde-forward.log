@@ -1,0 +1,30 @@
+LinearStudy.tildeNativeModuleExtMappedChainLaw : (R : CommRingCat) →
+  {E M : ModuleCat ↑R} →
+    (P : CategoryTheory.ProjectiveResolution E) →
+      (r : ℕ) → (a : P.complex.X r ⟶ M) → CategoryTheory.CategoryStruct.comp (P.complex.d (r + 1) r) a = 0 → Prop
+'LinearStudy.tildeNativeModuleExtMappedChainLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeNativeModuleExtMappedChainLaw_proof : ∀ (R : CommRingCat) {E M : ModuleCat ↑R}
+  (P : CategoryTheory.ProjectiveResolution E) (r : ℕ) (a : P.complex.X r ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (P.complex.d (r + 1) r) a = 0),
+  LinearStudy.tildeNativeModuleExtMappedChainLaw R P r a ha
+'LinearStudy.tildeNativeModuleExtMappedChainLaw_proof' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.tildeKoszulExactTopExtMappedChain : ∀ (R : CommRingCat) (n : ℕ) (H : Fin (n + 1) → ↑R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j)
+  (N : ModuleCat ↑R) (L : ↥(⋀[↑R]^(n + 1) (Fin (n + 1) → ↑R)) →ₗ[↑R] ↑N),
+  LinearStudy.tildeNativeModuleExtMappedChainLaw R (LinearStudy.functionKoszulResolutionOfExact H he) (n + 1)
+    (ModuleCat.ofHom L) ⋯
+'LinearStudy.tildeKoszulExactTopExtMappedChain' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.tildeNativeModuleExtMappedChainLaw.{u} : (R : CommRingCat) →
+  {E M : ModuleCat ↑R} →
+    (P : CategoryTheory.ProjectiveResolution E) →
+      (r : ℕ) → (a : P.complex.X r ⟶ M) → CategoryTheory.CategoryStruct.comp (P.complex.d (r + 1) r) a = 0 → Prop :=
+fun (R : CommRingCat) {E M : ModuleCat ↑R} (P : CategoryTheory.ProjectiveResolution E) (r : ℕ) (a : P.complex.X r ⟶ M)
+    (ha : CategoryTheory.CategoryStruct.comp (P.complex.d (r + 1) r) a = 0) =>
+  CategoryTheory.Abelian.Ext.mapExactFunctor (AlgebraicGeometry.tilde.functor R) (P.extMk a (r + 1) ⋯ ha) =
+    LinearStudy.originalChainTopExtClass
+      (((AlgebraicGeometry.tilde.functor R).mapHomologicalComplex (ComplexShape.down ℕ)).obj P.complex) r
+      (LinearStudy.mappedOriginalChainAugmentation (AlgebraicGeometry.tilde.functor R) P.complex P.π)
+      ((AlgebraicGeometry.tilde.functor R).map a) ⋯
+ROLECHECK:LinearStudy.tildeNativeModuleExtMappedChainLaw:false
+ROLECHECK:LinearStudy.tildeNativeModuleExtMappedChainLaw_proof:true
+ROLECHECK:LinearStudy.tildeKoszulExactTopExtMappedChain:true

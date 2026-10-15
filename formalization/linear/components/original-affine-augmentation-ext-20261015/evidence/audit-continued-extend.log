@@ -1,0 +1,96 @@
+@LinearStudy.additiveFunctorExtendXIso : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Preadditive A] →
+      [inst_2 : CategoryTheory.Limits.HasZeroObject A] →
+        {B : Type u_4} →
+          [inst_3 : CategoryTheory.Category.{u_3, u_4} B] →
+            [inst_4 : CategoryTheory.Preadditive B] →
+              [inst_5 : CategoryTheory.Limits.HasZeroObject B] →
+                (F : CategoryTheory.Functor A B) →
+                  [inst_6 : F.Additive] →
+                    {ι : Type u_5} →
+                      {c : ComplexShape ι} →
+                        (C : HomologicalComplex A c) →
+                          (i : Option ι) →
+                            F.obj (HomologicalComplex.extend.X C i) ≅
+                              HomologicalComplex.extend.X ((F.mapHomologicalComplex c).obj C) i
+'LinearStudy.additiveFunctorExtendXIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.additiveFunctorExtendXIso_comm : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Preadditive A] [inst_2 : CategoryTheory.Limits.HasZeroObject A] {B : Type u_4}
+  [inst_3 : CategoryTheory.Category.{u_3, u_4} B] [inst_4 : CategoryTheory.Preadditive B]
+  [inst_5 : CategoryTheory.Limits.HasZeroObject B] (F : CategoryTheory.Functor A B) [inst_6 : F.Additive] {ι : Type u_5}
+  {c : ComplexShape ι} (C : HomologicalComplex A c) (i j : Option ι),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.additiveFunctorExtendXIso F C i).hom
+      (HomologicalComplex.extend.d ((F.mapHomologicalComplex c).obj C) i j) =
+    CategoryTheory.CategoryStruct.comp (F.map (HomologicalComplex.extend.d C i j))
+      (LinearStudy.additiveFunctorExtendXIso F C j).hom
+'LinearStudy.additiveFunctorExtendXIso_comm' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.additiveFunctorExtendComplexIso : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Preadditive A] →
+      [inst_2 : CategoryTheory.Limits.HasZeroObject A] →
+        {B : Type u_4} →
+          [inst_3 : CategoryTheory.Category.{u_3, u_4} B] →
+            [inst_4 : CategoryTheory.Preadditive B] →
+              [inst_5 : CategoryTheory.Limits.HasZeroObject B] →
+                (F : CategoryTheory.Functor A B) →
+                  [inst_6 : F.Additive] →
+                    {ι : Type u_5} →
+                      {ι' : Type u_6} →
+                        {c : ComplexShape ι} →
+                          {c' : ComplexShape ι'} →
+                            (C : HomologicalComplex A c) →
+                              (e : c.Embedding c') →
+                                (F.mapHomologicalComplex c').obj (C.extend e) ≅
+                                  ((F.mapHomologicalComplex c).obj C).extend e
+'LinearStudy.additiveFunctorExtendComplexIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.additiveFunctorExtendXIso.{v, u, v', u', w} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Preadditive A] →
+      [inst_2 : CategoryTheory.Limits.HasZeroObject A] →
+        {B : Type u'} →
+          [inst_3 : CategoryTheory.Category.{v', u'} B] →
+            [inst_4 : CategoryTheory.Preadditive B] →
+              [inst_5 : CategoryTheory.Limits.HasZeroObject B] →
+                (F : CategoryTheory.Functor A B) →
+                  [inst_6 : F.Additive] →
+                    {ι : Type w} →
+                      {c : ComplexShape ι} →
+                        (C : HomologicalComplex A c) →
+                          (i : Option ι) →
+                            F.obj (HomologicalComplex.extend.X C i) ≅
+                              HomologicalComplex.extend.X ((F.mapHomologicalComplex c).obj C) i :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Preadditive A]
+    [CategoryTheory.Limits.HasZeroObject A] {B : Type u'} [CategoryTheory.Category.{v', u'} B]
+    [CategoryTheory.Preadditive B] [CategoryTheory.Limits.HasZeroObject B] (F : CategoryTheory.Functor A B) [F.Additive]
+    {ι : Type w} {c : ComplexShape ι} (C : HomologicalComplex A c) (x : Option ι) =>
+  match x with
+  | some val => CategoryTheory.Iso.refl (F.obj (HomologicalComplex.extend.X C (some val)))
+  | none => F.mapZeroObject
+def LinearStudy.additiveFunctorExtendComplexIso.{v, u, v', u', w, w'} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Preadditive A] →
+      [inst_2 : CategoryTheory.Limits.HasZeroObject A] →
+        {B : Type u'} →
+          [inst_3 : CategoryTheory.Category.{v', u'} B] →
+            [inst_4 : CategoryTheory.Preadditive B] →
+              [inst_5 : CategoryTheory.Limits.HasZeroObject B] →
+                (F : CategoryTheory.Functor A B) →
+                  [inst_6 : F.Additive] →
+                    {ι : Type w} →
+                      {ι' : Type w'} →
+                        {c : ComplexShape ι} →
+                          {c' : ComplexShape ι'} →
+                            (C : HomologicalComplex A c) →
+                              (e : c.Embedding c') →
+                                (F.mapHomologicalComplex c').obj (C.extend e) ≅
+                                  ((F.mapHomologicalComplex c).obj C).extend e :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Preadditive A]
+    [CategoryTheory.Limits.HasZeroObject A] {B : Type u'} [CategoryTheory.Category.{v', u'} B]
+    [CategoryTheory.Preadditive B] [CategoryTheory.Limits.HasZeroObject B] (F : CategoryTheory.Functor A B) [F.Additive]
+    {ι : Type w} {ι' : Type w'} {c : ComplexShape ι} {c' : ComplexShape ι'} (C : HomologicalComplex A c)
+    (e : c.Embedding c') =>
+  HomologicalComplex.Hom.isoOfComponents (fun (i : ι') => LinearStudy.additiveFunctorExtendXIso F C (e.r i)) ⋯
+ROLECHECK:LinearStudy.additiveFunctorExtendXIso:false
+ROLECHECK:LinearStudy.additiveFunctorExtendXIso_comm:true
+ROLECHECK:LinearStudy.additiveFunctorExtendComplexIso:false

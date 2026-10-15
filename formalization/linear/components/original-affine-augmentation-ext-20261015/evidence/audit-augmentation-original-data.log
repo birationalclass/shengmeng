@@ -1,0 +1,37 @@
+@LinearStudy.projectivePulledOriginalChartPresentationData : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (Fin (r + 1) → ℂ) →
+            ℤ →
+              LinearStudy.mappedChainPresentationData
+                (AlgebraicGeometry.Scheme.Modules.restrictFunctor (LinearStudy.originalProjectiveZeroChart V))
+'LinearStudy.projectivePulledOriginalChartPresentationData' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledOriginalChartPresentationData_source : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ) (k : ℤ),
+  (LinearStudy.projectivePulledOriginalChartPresentationData f V L hL w k).fst =
+    LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k
+'LinearStudy.projectivePulledOriginalChartPresentationData_source' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.projectivePulledOriginalChartPresentationData : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (Fin (r + 1) → ℂ) →
+            ℤ →
+              LinearStudy.mappedChainPresentationData
+                (AlgebraicGeometry.Scheme.Modules.restrictFunctor (LinearStudy.originalProjectiveZeroChart V)) :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) =>
+  LinearStudy.nativeProjectiveKoszulMappedPresentationData (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+    (fun (t : Fin (n + 1)) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X t)) ⋯ ⋯
+    (LinearStudy.projectivePulledLinearKoszulForms f V L w) ⋯ k ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))
+    ⋯
+ROLECHECK:LinearStudy.projectivePulledOriginalChartPresentationData:false
+ROLECHECK:LinearStudy.projectivePulledOriginalChartPresentationData_source:true

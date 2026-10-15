@@ -1,0 +1,96 @@
+@LinearStudy.originalChainTopExtClass_mapExactFunctor_eq_mappedChain : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] {B : Type u_4}
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] [inst_4 : CategoryTheory.HasExt A]
+  [inst_5 : HasDerivedCategory A] [inst_6 : CategoryTheory.HasExt B] [inst_7 : HasDerivedCategory B]
+  (F : CategoryTheory.Functor A B) [inst_8 : F.Additive] [inst_9 : CategoryTheory.Limits.PreservesFiniteLimits F]
+  [inst_10 : CategoryTheory.Limits.PreservesFiniteColimits F] (C : ChainComplex A ℕ) {E M : A} (r : ℕ)
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_11 : QuasiIso alpha] (a : C.X r ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  CategoryTheory.Abelian.Ext.mapExactFunctor F (LinearStudy.originalChainTopExtClass C r alpha a ha) =
+    LinearStudy.originalChainTopExtClass ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C) r
+      (LinearStudy.mappedOriginalChainAugmentation F C alpha) (F.map a) ⋯
+'LinearStudy.originalChainTopExtClass_mapExactFunctor_eq_mappedChain' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalChainStandardMappedExtLaw : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u_4} →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [F.Additive] →
+                [CategoryTheory.Limits.PreservesFiniteLimits F] →
+                  [CategoryTheory.Limits.PreservesFiniteColimits F] →
+                    (C : ChainComplex A ℕ) →
+                      {E M : A} →
+                        (r : ℕ) →
+                          (alpha : C ⟶ (ChainComplex.single₀ A).obj E) →
+                            QuasiIso alpha →
+                              (a : C.X r ⟶ M) → CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → Prop
+'LinearStudy.originalChainStandardMappedExtLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainStandardMappedExtLaw_proof : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] {B : Type u_4} [inst_2 : CategoryTheory.Category.{u_3, u_4} B]
+  [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [inst_4 : F.Additive]
+  [inst_5 : CategoryTheory.Limits.PreservesFiniteLimits F] [inst_6 : CategoryTheory.Limits.PreservesFiniteColimits F]
+  (C : ChainComplex A ℕ) {E M : A} (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha)
+  (a : C.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  LinearStudy.originalChainStandardMappedExtLaw F C r alpha hAlpha a ha
+'LinearStudy.originalChainStandardMappedExtLaw_proof' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOriginalMappedChainExtLaw : {X Y : AlgebraicGeometry.Scheme} →
+  (j : X ⟶ Y) →
+    [AlgebraicGeometry.IsOpenImmersion j] →
+      (C : ChainComplex Y.Modules ℕ) →
+        {E M : Y.Modules} →
+          (r : ℕ) →
+            (alpha : C ⟶ (ChainComplex.single₀ Y.Modules).obj E) →
+              QuasiIso alpha → (a : C.X r ⟶ M) → CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → Prop
+'LinearStudy.schemeModuleOriginalMappedChainExtLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOriginalMappedChainExtLaw_proof : ∀ {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (C : ChainComplex Y.Modules ℕ) {E M : Y.Modules} (r : ℕ)
+  (alpha : C ⟶ (ChainComplex.single₀ Y.Modules).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  LinearStudy.schemeModuleOriginalMappedChainExtLaw j C r alpha hAlpha a ha
+'LinearStudy.schemeModuleOriginalMappedChainExtLaw_proof' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.originalChainStandardMappedExtLaw.{v, u, v', u'} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [F.Additive] →
+                [CategoryTheory.Limits.PreservesFiniteLimits F] →
+                  [CategoryTheory.Limits.PreservesFiniteColimits F] →
+                    (C : ChainComplex A ℕ) →
+                      {E M : A} →
+                        (r : ℕ) →
+                          (alpha : C ⟶ (ChainComplex.single₀ A).obj E) →
+                            QuasiIso alpha →
+                              (a : C.X r ⟶ M) → CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → Prop :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {B : Type u'}
+    [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    [CategoryTheory.Limits.PreservesFiniteLimits F] [CategoryTheory.Limits.PreservesFiniteColimits F]
+    (C : ChainComplex A ℕ) {E M : A} (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha)
+    (a : C.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) =>
+  CategoryTheory.Abelian.Ext.mapExactFunctor F (LinearStudy.originalChainTopExtClass C r alpha a ha) =
+    LinearStudy.originalChainTopExtClass ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C) r
+      (LinearStudy.mappedOriginalChainAugmentation F C alpha) (F.map a) ⋯
+def LinearStudy.schemeModuleOriginalMappedChainExtLaw.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  (j : X ⟶ Y) →
+    [AlgebraicGeometry.IsOpenImmersion j] →
+      (C : ChainComplex Y.Modules ℕ) →
+        {E M : Y.Modules} →
+          (r : ℕ) →
+            (alpha : C ⟶ (ChainComplex.single₀ Y.Modules).obj E) →
+              QuasiIso alpha → (a : C.X r ⟶ M) → CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → Prop :=
+fun {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y) [AlgebraicGeometry.IsOpenImmersion j] (C : ChainComplex Y.Modules ℕ)
+    {E M : Y.Modules} (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ Y.Modules).obj E) (hAlpha : QuasiIso alpha)
+    (a : C.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) =>
+  LinearStudy.originalChainStandardMappedExtLaw (AlgebraicGeometry.Scheme.Modules.restrictFunctor j) C r alpha hAlpha a
+    ha
+ROLECHECK:LinearStudy.originalChainTopExtClass_mapExactFunctor_eq_mappedChain:true
+ROLECHECK:LinearStudy.originalChainStandardMappedExtLaw:false
+ROLECHECK:LinearStudy.originalChainStandardMappedExtLaw_proof:true
+ROLECHECK:LinearStudy.schemeModuleOriginalMappedChainExtLaw:false
+ROLECHECK:LinearStudy.schemeModuleOriginalMappedChainExtLaw_proof:true

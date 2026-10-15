@@ -1,0 +1,161 @@
+@LinearStudy.originalChainCoforkAugmentation : {B : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} B] →
+    [inst_1 : CategoryTheory.Abelian B] →
+      (D : ChainComplex B ℕ) →
+        (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) → D ⟶ (ChainComplex.single₀ B).obj Q.pt
+'LinearStudy.originalChainCoforkAugmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedOriginalChainTargetCokernelChartIso : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u_4} →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                [F.PreservesHomology] →
+                  (C : ChainComplex A ℕ) →
+                    (D : ChainComplex B ℕ) →
+                      ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ D) →
+                        (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) →
+                          CategoryTheory.Limits.IsColimit Q →
+                            (T : A) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) → (F.obj T ≅ Q.pt)
+'LinearStudy.mappedOriginalChainTargetCokernelChartIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedOriginalChainAugmentation_f_zero : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] {B : Type u_4} [inst_2 : CategoryTheory.Category.{u_3, u_4} B]
+  [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [inst_4 : F.Additive] (C : ChainComplex A ℕ)
+  {E : A} (alpha : C ⟶ (ChainComplex.single₀ A).obj E),
+  (LinearStudy.mappedOriginalChainAugmentation F C alpha).f 0 = F.map (alpha.f 0)
+'LinearStudy.mappedOriginalChainAugmentation_f_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedOriginalChainCokernelTargetAugmentation_chart_comm : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] {B : Type u_4}
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B)
+  [inst_4 : F.Additive] [inst_5 : F.PreservesHomology] (C : ChainComplex A ℕ) (D : ChainComplex B ℕ)
+  (gamma : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ D)
+  (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) (hQ : CategoryTheory.Limits.IsColimit Q) (T : A)
+  (ec : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T),
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.mappedOriginalChainAugmentation F C (LinearStudy.originalChainCokernelTargetAugmentation C T ec))
+      ((ChainComplex.single₀ B).map (LinearStudy.mappedOriginalChainTargetCokernelChartIso F C D gamma Q hQ T ec).hom) =
+    CategoryTheory.CategoryStruct.comp gamma.hom (LinearStudy.originalChainCoforkAugmentation D Q)
+'LinearStudy.mappedOriginalChainCokernelTargetAugmentation_chart_comm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.mappedOriginalChainCokernelAugmentationChartLaw : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u_4} →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                [F.PreservesHomology] →
+                  (C : ChainComplex A ℕ) →
+                    (D : ChainComplex B ℕ) →
+                      ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ D) →
+                        (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) →
+                          CategoryTheory.Limits.IsColimit Q →
+                            (T : A) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) → Prop
+'LinearStudy.mappedOriginalChainCokernelAugmentationChartLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedOriginalChainCokernelAugmentationChartLaw_proof : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] {B : Type u_4}
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B)
+  [inst_4 : F.Additive] [inst_5 : F.PreservesHomology] (C : ChainComplex A ℕ) (D : ChainComplex B ℕ)
+  (gamma : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ D)
+  (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) (hQ : CategoryTheory.Limits.IsColimit Q) (T : A)
+  (ec : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T),
+  LinearStudy.mappedOriginalChainCokernelAugmentationChartLaw F C D gamma Q hQ T ec
+'LinearStudy.mappedOriginalChainCokernelAugmentationChartLaw_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.mappedChainPresentationAugmentationLaw : {A : Type u_2} →
+  {B : Type u_4} →
+    [inst : CategoryTheory.Category.{u_1, u_2} A] →
+      [inst_1 : CategoryTheory.Abelian A] →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] → [F.PreservesHomology] → LinearStudy.mappedChainPresentationData F → Prop
+'LinearStudy.mappedChainPresentationAugmentationLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedChainPresentationAugmentationLaw_proof : ∀ {A : Type u_2} {B : Type u_4}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A]
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B)
+  [inst_4 : F.Additive] [inst_5 : F.PreservesHomology] (d : LinearStudy.mappedChainPresentationData F),
+  LinearStudy.mappedChainPresentationAugmentationLaw F d
+'LinearStudy.mappedChainPresentationAugmentationLaw_proof' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.originalChainCoforkAugmentation.{v', u'} : {B : Type u'} →
+  [inst : CategoryTheory.Category.{v', u'} B] →
+    [inst_1 : CategoryTheory.Abelian B] →
+      (D : ChainComplex B ℕ) →
+        (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) → D ⟶ (ChainComplex.single₀ B).obj Q.pt :=
+fun {B : Type u'} [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Abelian B] (D : ChainComplex B ℕ)
+    (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) =>
+  (D.toSingle₀Equiv Q.pt).symm ⟨CategoryTheory.Limits.Cofork.π Q, ⋯⟩
+def LinearStudy.mappedOriginalChainTargetCokernelChartIso.{v, u, v', u'} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                [F.PreservesHomology] →
+                  (C : ChainComplex A ℕ) →
+                    (D : ChainComplex B ℕ) →
+                      ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ D) →
+                        (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) →
+                          CategoryTheory.Limits.IsColimit Q →
+                            (T : A) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) → (F.obj T ≅ Q.pt) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {B : Type u'}
+    [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    [F.PreservesHomology] (C : ChainComplex A ℕ) (D : ChainComplex B ℕ)
+    (gamma : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ D)
+    (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) (hQ : CategoryTheory.Limits.IsColimit Q) (T : A)
+    (ec : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) =>
+  (F.mapIso ec).symm ≪≫ LinearStudy.mappedChainFirstCokernelPresentationIso F C D gamma Q hQ
+def LinearStudy.mappedOriginalChainCokernelAugmentationChartLaw.{v, u, v', u'} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                [F.PreservesHomology] →
+                  (C : ChainComplex A ℕ) →
+                    (D : ChainComplex B ℕ) →
+                      ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ D) →
+                        (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) →
+                          CategoryTheory.Limits.IsColimit Q →
+                            (T : A) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) → Prop :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {B : Type u'}
+    [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    [F.PreservesHomology] (C : ChainComplex A ℕ) (D : ChainComplex B ℕ)
+    (gamma : (F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅ D)
+    (Q : CategoryTheory.Limits.CokernelCofork (D.d 1 0)) (hQ : CategoryTheory.Limits.IsColimit Q) (T : A)
+    (ec : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) =>
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.mappedOriginalChainAugmentation F C (LinearStudy.originalChainCokernelTargetAugmentation C T ec))
+      ((ChainComplex.single₀ B).map (LinearStudy.mappedOriginalChainTargetCokernelChartIso F C D gamma Q hQ T ec).hom) =
+    CategoryTheory.CategoryStruct.comp gamma.hom (LinearStudy.originalChainCoforkAugmentation D Q)
+def LinearStudy.mappedChainPresentationAugmentationLaw.{v_1, u_1, v_2, u_2} : {A : Type u_1} →
+  {B : Type u_2} →
+    [inst : CategoryTheory.Category.{v_1, u_1} A] →
+      [inst_1 : CategoryTheory.Abelian A] →
+        [inst_2 : CategoryTheory.Category.{v_2, u_2} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] → [F.PreservesHomology] → LinearStudy.mappedChainPresentationData F → Prop :=
+fun {A : Type u_1} {B : Type u_2} [CategoryTheory.Category.{v_1, u_1} A] [CategoryTheory.Abelian A]
+    [CategoryTheory.Category.{v_2, u_2} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    [F.PreservesHomology] (d : LinearStudy.mappedChainPresentationData F) =>
+  ∀ (T : A) (ec : CategoryTheory.Limits.cokernel (d.fst.d 1 0) ≅ T),
+    LinearStudy.mappedOriginalChainCokernelAugmentationChartLaw F d.fst d.snd.fst d.snd.snd.fst d.snd.snd.snd.fst
+      d.snd.snd.snd.snd T ec
+ROLECHECK:LinearStudy.originalChainCoforkAugmentation:false
+ROLECHECK:LinearStudy.mappedOriginalChainTargetCokernelChartIso:false
+ROLECHECK:LinearStudy.mappedOriginalChainAugmentation_f_zero:true
+ROLECHECK:LinearStudy.mappedOriginalChainCokernelTargetAugmentation_chart_comm:true
+ROLECHECK:LinearStudy.mappedOriginalChainCokernelAugmentationChartLaw:false
+ROLECHECK:LinearStudy.mappedOriginalChainCokernelAugmentationChartLaw_proof:true
+ROLECHECK:LinearStudy.mappedChainPresentationAugmentationLaw:false
+ROLECHECK:LinearStudy.mappedChainPresentationAugmentationLaw_proof:true

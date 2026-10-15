@@ -1,0 +1,121 @@
+@LinearStudy.additiveFunctorExtendXIso_naturality : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Preadditive A] [inst_2 : CategoryTheory.Limits.HasZeroObject A] {B : Type u_4}
+  [inst_3 : CategoryTheory.Category.{u_3, u_4} B] [inst_4 : CategoryTheory.Preadditive B]
+  [inst_5 : CategoryTheory.Limits.HasZeroObject B] (F : CategoryTheory.Functor A B) [inst_6 : F.Additive] {ι : Type u_5}
+  {c : ComplexShape ι} {C D : HomologicalComplex A c} (phi : C ⟶ D) (i : Option ι),
+  CategoryTheory.CategoryStruct.comp (F.map (HomologicalComplex.extend.mapX phi i))
+      (LinearStudy.additiveFunctorExtendXIso F D i).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.additiveFunctorExtendXIso F C i).hom
+      (HomologicalComplex.extend.mapX ((F.mapHomologicalComplex c).map phi) i)
+'LinearStudy.additiveFunctorExtendXIso_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.additiveFunctorExtendComplexIso_naturality : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Preadditive A] [inst_2 : CategoryTheory.Limits.HasZeroObject A] {B : Type u_4}
+  [inst_3 : CategoryTheory.Category.{u_3, u_4} B] [inst_4 : CategoryTheory.Preadditive B]
+  [inst_5 : CategoryTheory.Limits.HasZeroObject B] (F : CategoryTheory.Functor A B) [inst_6 : F.Additive] {ι : Type u_5}
+  {ι' : Type u_6} {c : ComplexShape ι} {c' : ComplexShape ι'} {C D : HomologicalComplex A c} (phi : C ⟶ D)
+  (e : c.Embedding c'),
+  CategoryTheory.CategoryStruct.comp ((F.mapHomologicalComplex c').map (HomologicalComplex.extendMap phi e))
+      (LinearStudy.additiveFunctorExtendComplexIso F D e).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.additiveFunctorExtendComplexIso F C e).hom
+      (HomologicalComplex.extendMap ((F.mapHomologicalComplex c).map phi) e)
+'LinearStudy.additiveFunctorExtendComplexIso_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.additiveFunctorExtendXIso_comp_XIso : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Preadditive A] [inst_2 : CategoryTheory.Limits.HasZeroObject A] {B : Type u_4}
+  [inst_3 : CategoryTheory.Category.{u_3, u_4} B] [inst_4 : CategoryTheory.Preadditive B]
+  [inst_5 : CategoryTheory.Limits.HasZeroObject B] (F : CategoryTheory.Functor A B) [inst_6 : F.Additive] {ι : Type u_5}
+  {c : ComplexShape ι} (C : HomologicalComplex A c) {o : Option ι} {i : ι} (h : o = some i),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.additiveFunctorExtendXIso F C o).hom
+      (HomologicalComplex.extend.XIso ((F.mapHomologicalComplex c).obj C) h).hom =
+    F.map (HomologicalComplex.extend.XIso C h).hom
+'LinearStudy.additiveFunctorExtendXIso_comp_XIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.additiveFunctorExtendSingleIso_compatibility : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Preadditive A]
+  [inst_2 : CategoryTheory.Limits.HasZeroObject A] {B : Type u_4} [inst_3 : CategoryTheory.Category.{u_3, u_4} B]
+  [inst_4 : CategoryTheory.Preadditive B] [inst_5 : CategoryTheory.Limits.HasZeroObject B]
+  (F : CategoryTheory.Functor A B) [inst_6 : F.Additive] {ι : Type u_5} {ι' : Type u_6} {c : ComplexShape ι}
+  {c' : ComplexShape ι'} [inst_7 : DecidableEq ι] [inst_8 : DecidableEq ι'] (e : c.Embedding c') (E : A) (i : ι)
+  (i' : ι') (h : e.f i = i'),
+  CategoryTheory.CategoryStruct.comp
+      ((F.mapHomologicalComplex c').map (HomologicalComplex.extendSingleIso e E i i' h).hom)
+      ((HomologicalComplex.singleMapHomologicalComplex F c' i').hom.app E) =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.additiveFunctorExtendComplexIso F ((HomologicalComplex.single A c i).obj E) e).hom
+      (CategoryTheory.CategoryStruct.comp
+        (HomologicalComplex.extendMap ((HomologicalComplex.singleMapHomologicalComplex F c i).hom.app E) e)
+        (HomologicalComplex.extendSingleIso e (F.obj E) i i' h).hom)
+'LinearStudy.additiveFunctorExtendSingleIso_compatibility' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.additiveFunctorOriginalChainCochainIso : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u_4} →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                (C : ChainComplex A ℕ) →
+                  (F.mapHomologicalComplex (ComplexShape.up ℤ)).obj (LinearStudy.originalChainAsCochain C) ≅
+                    LinearStudy.originalChainAsCochain ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C)
+'LinearStudy.additiveFunctorOriginalChainCochainIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedOriginalChainAugmentation : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u_4} →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                (C : ChainComplex A ℕ) →
+                  {E : A} →
+                    (C ⟶ (ChainComplex.single₀ A).obj E) →
+                      ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ⟶ (ChainComplex.single₀ B).obj (F.obj E))
+'LinearStudy.mappedOriginalChainAugmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedOriginalChainAugmentation_asCochain : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] {B : Type u_4} [inst_2 : CategoryTheory.Category.{u_3, u_4} B]
+  [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [inst_4 : F.Additive] (C : ChainComplex A ℕ)
+  {E : A} (alpha : C ⟶ (ChainComplex.single₀ A).obj E),
+  LinearStudy.mappedCochainResolutionAugmentation F (LinearStudy.originalChainAsCochain C)
+      (LinearStudy.originalChainAugmentationAsCochain C alpha) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.additiveFunctorOriginalChainCochainIso F C).hom
+      (LinearStudy.originalChainAugmentationAsCochain ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C)
+        (LinearStudy.mappedOriginalChainAugmentation F C alpha))
+'LinearStudy.mappedOriginalChainAugmentation_asCochain' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.additiveFunctorOriginalChainCochainIso.{v, u, v', u'} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                (C : ChainComplex A ℕ) →
+                  (F.mapHomologicalComplex (ComplexShape.up ℤ)).obj (LinearStudy.originalChainAsCochain C) ≅
+                    LinearStudy.originalChainAsCochain ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {B : Type u'}
+    [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    (C : ChainComplex A ℕ) =>
+  LinearStudy.additiveFunctorExtendComplexIso F C ComplexShape.embeddingDownNat
+def LinearStudy.mappedOriginalChainAugmentation.{v, u, v', u'} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                (C : ChainComplex A ℕ) →
+                  {E : A} →
+                    (C ⟶ (ChainComplex.single₀ A).obj E) →
+                      ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C ⟶
+                        (ChainComplex.single₀ B).obj (F.obj E)) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {B : Type u'}
+    [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    (C : ChainComplex A ℕ) {E : A} (alpha : C ⟶ (ChainComplex.single₀ A).obj E) =>
+  CategoryTheory.CategoryStruct.comp ((F.mapHomologicalComplex (ComplexShape.down ℕ)).map alpha)
+    ((HomologicalComplex.singleMapHomologicalComplex F (ComplexShape.down ℕ) 0).hom.app E)
+ROLECHECK:LinearStudy.additiveFunctorExtendXIso_naturality:true
+ROLECHECK:LinearStudy.additiveFunctorExtendComplexIso_naturality:true
+ROLECHECK:LinearStudy.additiveFunctorExtendXIso_comp_XIso:true
+ROLECHECK:LinearStudy.additiveFunctorExtendSingleIso_compatibility:true
+ROLECHECK:LinearStudy.additiveFunctorOriginalChainCochainIso:false
+ROLECHECK:LinearStudy.mappedOriginalChainAugmentation:false
+ROLECHECK:LinearStudy.mappedOriginalChainAugmentation_asCochain:true

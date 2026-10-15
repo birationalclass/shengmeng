@@ -1,0 +1,41 @@
+@LinearStudy.mappedCochainResolutionTopCocycle : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] {B : Type u_4} [inst_2 : CategoryTheory.Category.{u_3, u_4} B]
+  [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [inst_4 : F.Additive] (K : CochainComplex A ℤ)
+  {M : A} (r : ℕ) (a : K.X (-↑r) ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (K.d (-↑r - 1) (-↑r)) a = 0),
+  LinearStudy.mappedCochainResolutionCocycle F K r
+      (CochainComplex.HomComplex.Cocycle.equivHomShift.symm
+        (CochainComplex.HomComplex.Cocycle.toSingleMk a ⋯ (-↑r - 1) ⋯ ha)) =
+    CochainComplex.HomComplex.Cocycle.equivHomShift.symm
+      (CochainComplex.HomComplex.Cocycle.toSingleMk (F.map a) ⋯ (-↑r - 1) ⋯ ⋯)
+'LinearStudy.mappedCochainResolutionTopCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedOriginalChainTopCocycle : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] {B : Type u_4} [inst_2 : CategoryTheory.Category.{u_3, u_4} B]
+  [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [inst_4 : F.Additive] (C : ChainComplex A ℕ)
+  {M : A} (r : ℕ) (a : C.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  LinearStudy.mappedCochainResolutionCocycle F (LinearStudy.originalChainAsCochain C) r
+      (LinearStudy.originalChainTopShiftedCocycle C r a ha) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.additiveFunctorOriginalChainCochainIso F C).hom
+      (LinearStudy.originalChainTopShiftedCocycle ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C) r (F.map a) ⋯)
+'LinearStudy.mappedOriginalChainTopCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedOriginalChainAugmentation_quasiIso : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] {B : Type u_4} [inst_2 : CategoryTheory.Category.{u_3, u_4} B]
+  [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [inst_4 : F.Additive]
+  [CategoryTheory.Limits.PreservesFiniteLimits F] [CategoryTheory.Limits.PreservesFiniteColimits F]
+  (C : ChainComplex A ℕ) {E : A} (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [QuasiIso alpha],
+  QuasiIso (LinearStudy.mappedOriginalChainAugmentation F C alpha)
+'LinearStudy.mappedOriginalChainAugmentation_quasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainMappedTopExtClass_eq_mappedChain : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] {B : Type u_4}
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B)
+  [inst_4 : F.Additive] [inst_5 : CategoryTheory.Limits.PreservesFiniteLimits F]
+  [inst_6 : CategoryTheory.Limits.PreservesFiniteColimits F] [inst_7 : CategoryTheory.HasExt B]
+  [inst_8 : HasDerivedCategory B] (C : ChainComplex A ℕ) {E M : A} (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E)
+  [inst_9 : QuasiIso alpha] (a : C.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  LinearStudy.originalChainMappedTopExtClass F C r alpha a ha =
+    LinearStudy.originalChainTopExtClass ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj C) r
+      (LinearStudy.mappedOriginalChainAugmentation F C alpha) (F.map a) ⋯
+'LinearStudy.originalChainMappedTopExtClass_eq_mappedChain' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.mappedCochainResolutionTopCocycle:true
+ROLECHECK:LinearStudy.mappedOriginalChainTopCocycle:true
+ROLECHECK:LinearStudy.mappedOriginalChainAugmentation_quasiIso:true
+ROLECHECK:LinearStudy.originalChainMappedTopExtClass_eq_mappedChain:true

@@ -1,0 +1,9 @@
+@LinearStudy.originalChainTopExtClass_eq_projectiveResolution_extMk : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] {E M : A} (P : CategoryTheory.ProjectiveResolution E) (r : ℕ) (a : P.complex.X r ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (P.complex.d (r + 1) r) a = 0),
+  LinearStudy.originalChainTopExtClass P.complex r P.π a ha = P.extMk a (r + 1) ⋯ ha
+'LinearStudy.originalChainTopExtClass_eq_projectiveResolution_extMk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.originalChainTopExtClass_eq_projectiveResolution_extMk:true

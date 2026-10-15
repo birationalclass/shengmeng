@@ -1,0 +1,25 @@
+@LinearStudy.originalChainAugmentationAsCochain_sourceIso : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C D : ChainComplex A ℕ)
+  (gamma : C ≅ D) {E : A} (alpha : D ⟶ (ChainComplex.single₀ A).obj E),
+  LinearStudy.originalChainAugmentationAsCochain C (CategoryTheory.CategoryStruct.comp gamma.hom alpha) =
+    CategoryTheory.CategoryStruct.comp ((ComplexShape.embeddingDownNat.extendFunctor A).mapIso gamma).hom
+      (LinearStudy.originalChainAugmentationAsCochain D alpha)
+'LinearStudy.originalChainAugmentationAsCochain_sourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainTopShiftedCocycle_sourceIso : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] (C D : ChainComplex A ℕ) (gamma : C ≅ D) {M : A} (r : ℕ) (a : D.X r ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (D.d (r + 1) r) a = 0),
+  LinearStudy.originalChainTopShiftedCocycle C r (CategoryTheory.CategoryStruct.comp (gamma.hom.f r) a) ⋯ =
+    (CategoryTheory.ShiftedHom.mk₀ 0 ⋯ ((ComplexShape.embeddingDownNat.extendFunctor A).mapIso gamma).hom).comp
+      (LinearStudy.originalChainTopShiftedCocycle D r a ha) ⋯
+'LinearStudy.originalChainTopShiftedCocycle_sourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainTopExtClass_sourceIso : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (C D : ChainComplex A ℕ) (gamma : C ≅ D) {E M : A} (r : ℕ) (alpha : D ⟶ (ChainComplex.single₀ A).obj E)
+  [inst_4 : QuasiIso alpha] (a : D.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (D.d (r + 1) r) a = 0),
+  LinearStudy.originalChainTopExtClass C r (CategoryTheory.CategoryStruct.comp gamma.hom alpha)
+      (CategoryTheory.CategoryStruct.comp (gamma.hom.f r) a) ⋯ =
+    LinearStudy.originalChainTopExtClass D r alpha a ha
+'LinearStudy.originalChainTopExtClass_sourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.originalChainAugmentationAsCochain_sourceIso:true
+ROLECHECK:LinearStudy.originalChainTopShiftedCocycle_sourceIso:true
+ROLECHECK:LinearStudy.originalChainTopExtClass_sourceIso:true
