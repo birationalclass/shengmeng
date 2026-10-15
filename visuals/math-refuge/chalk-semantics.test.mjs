@@ -14,12 +14,12 @@ test('automatic metadata has no chalk icon or extension label and retains sectio
 });
 test('book and puzzle are the original course-homepage paths',()=>{
  const source=fs.readFileSync(new URL('../../courses/abstract-algebra/2026-fall/lesson-1/screen.js',import.meta.url),'utf8');
- for(const paths of Object.values(REFERENCE_ICON_PATHS))for(const path of paths)assert(source.includes('d="'+path+'"'));
+ for(const paths of [REFERENCE_ICON_PATHS.textbook,REFERENCE_ICON_PATHS.extension])for(const path of paths)assert(source.includes('d="'+path+'"'));
 });
 test('numbered definitions have no duplicate source summary, and metadata never paints a tiny footer goal',()=>{
  const boards=[...firstLesson,...secondLesson],p=boards.find(b=>b.originalIndex===2);
  for(const lang of ['zh','en'])assert.equal(classroomReferenceCaption(p,lang),'');
- assert.equal(classroomReferenceCaption(boards.find(b=>b.originalIndex===3),'zh'),'推论 1');
+ assert.equal(classroomReferenceCaption(boards.find(b=>b.originalIndex===3),'zh'),'');
  for(const b of boards){const texts=[],ctx={save(){},restore(){},fillText(t){texts.push(t);}};drawClassroomMetadata(ctx,{...b,classroom:true},0,'zh');assert(!texts.some(t=>/^目标：|Goal:/.test(t)));}
  assert(p.lines.some(l=>l.text?.includes('2.6.1')));assert(p.lines.some(l=>l.text?.includes('2.6.2')));
 });

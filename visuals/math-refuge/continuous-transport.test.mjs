@@ -9,10 +9,10 @@ test('natural handwriting continues through short cue boundaries without a pause
  for(let t=.1;t<10;t+=.1){const frame=narrationFrame(manifest,t,plan);assert(frame.progress>=previous);assert(frame.progress-previous<.011);assert.equal(frame.phase,'write');assert(frame.writing);assert.equal(narrationWork(manifest,t,t-.1,plan,null,new Set()),null);previous=frame.progress;}
  assert.equal(narrationFrame(manifest,11,plan).progress,1);
 });
-test('a distant next speech cue cannot interrupt the pen between rows',()=>{
- const remote={...board,lineCues:[board.lineCues[0],{row:1,writeStart:100,writeEnd:105}]};
- const schedule=writingSchedule(remote,plan);assert.equal(schedule.entries[1].start,schedule.entries[0].end);
- assert.equal(scheduledWriting(schedule,7).writing,true);assert.equal(scheduledWriting(schedule,11).progress,1);
+test('rows wait for semantic narration but the current row always completes its terminal stroke',()=>{
+ const remote={...board,lineCues:[{row:0,audioStart:0,audioEnd:12,writeStart:0},{row:1,audioStart:13,audioEnd:20,writeStart:13}]};
+ const schedule=writingSchedule(remote,plan);assert.deepEqual(schedule.entries.map(e=>[e.start,e.end]),[[0,5],[13,18]]);
+ assert.equal(scheduledWriting(schedule,5.001).progress,.5);assert.equal(scheduledWriting(schedule,7).writing,false);assert.equal(scheduledWriting(schedule,13.01).writing,true);
 });
 test('only a whole-board overrun holds once, retaining the exact unfinished ink',()=>{
  const b={...board,end:6},m={duration:10,boards:[b]};assert.equal(narrationWork(m,2.01,1.99,plan,null,new Set()),null);

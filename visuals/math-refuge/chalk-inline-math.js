@@ -1,12 +1,21 @@
 // Simple inline radicals share measured geometry with their reveal bounds.
 // Full formulas use the prebuilt MathJax SVGs.
+import {authoredFormula} from './authored-chalk.js?v=inline-formula-2';
+import {chalkInlineRuns} from './chalk-typography.js?v=inline-formula-2';
+let atlasJob;const images=new Map(),metrics=new Map();
+export async function prepareInlineMath(text){
+ const atlas=await(atlasJob??=fetch('./assets/chalk/inline-math/index.json').then(r=>{if(!r.ok)throw Error('行内公式索引未就绪');return r.json();}));
+ await Promise.all([...new Set(chalkInlineRuns(text).filter(r=>r.math&&!r.radical).map(r=>r.text))].map(async text=>{const m=atlas.runs[text];if(!m)return;metrics.set(text,m);for(const color of ['#eee9d5','#93c9ff','#ffada3','#e4cf9c']){const key=text+color;if(!images.has(key)){const job=authoredFormula('./assets/chalk/inline-math/'+m.file,{color});images.set(key,job);try{images.set(key,await job);}catch(e){images.delete(key);throw e;}}else await images.get(key);}}));
+}
 export function inlineInk(ctx,run,size){
+ const m=run.math&&!run.radical&&metrics.get(run.text);if(m){const k=size/m.em;return{width:m.width*k,actualBoundingBoxLeft:0,actualBoundingBoxRight:m.width*k,actualBoundingBoxAscent:m.ascent*k,actualBoundingBoxDescent:m.descent*k};}
  const ink=ctx.measureText(run.text);if(!run.radical)return ink;
  const width=size*.52+Math.max(ink.width,ink.actualBoundingBoxRight||0)+size*.12;
  const ascent=Math.max(size*.83,(ink.actualBoundingBoxAscent??size*.8)+size*.12);
  return {width,actualBoundingBoxLeft:0,actualBoundingBoxRight:width,actualBoundingBoxAscent:ascent+size*.026,actualBoundingBoxDescent:Math.max(ink.actualBoundingBoxDescent||0,size*.046)};
 }
 export function drawInlineInk(ctx,run,x,y,size){
+ const m=run.math&&!run.radical&&metrics.get(run.text),image=m&&images.get(run.text+ctx.fillStyle);if(image&&!(image instanceof Promise)){const k=size/m.em;ctx.drawImage(image,x,y-m.ascent*k,m.width*k,m.height*k);return;}
  if(!run.radical){ctx.fillText(run.text,x,y);return;}
  const ink=inlineInk(ctx,run,size),top=y-ink.actualBoundingBoxAscent+size*.026;
  const points=[[x+size*.025,y-size*.28],[x+size*.14,y-size*.35],[x+size*.28,y+size*.02],[x+size*.49,top],[x+ink.width-size*.025,top]];

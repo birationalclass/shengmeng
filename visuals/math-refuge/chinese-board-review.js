@@ -1,3 +1,4 @@
+import {prepareInlineMath} from './chalk-inline-math.js?v=inline-formula-2';
 import {REPORTS} from './report-catalog.js';
 import {CLASSROOM_PROGRAMS} from './classroom-catalog.js';
 import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=chinese36-1';
@@ -5,13 +6,14 @@ import {authoredContext,authoredFormula} from './authored-chalk.js?v=unframed-co
 import {composeChalkPage,chalkPageText} from './chalk-language.js?v=semantic-chalk-2';
 import {inkGuides,writingPlan,strokeReveal,rasterStrokeReveal,inkReveal} from './chalk-motion.js?v=semantic-chalk-2';
 import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
-import {drawClassroomMetadata} from './classroom-metadata.js?v=semantic-chalk-2';
+import {drawClassroomMetadata} from './classroom-metadata.js?v=classroom-clear-labels-1';
 const $=id=>document.getElementById(id),canvas=$('board'),ctx=canvas.getContext('2d'),reports=[...CLASSROOM_PROGRAMS,...REPORTS,{id:'km',speaker:'讨论班',topic:'极小模型纲领',manifest:'./assets/chalk/km/pages.json'}];
 let library,pages=[],pageIndex=0,language='zh',full,rows=[],guides,plan,progress=1,playing=false,last=0;
 async function image(url){const im=new Image();im.src=url;await im.decode();return im;}
 async function preparePage(p,i,lang,authored=true){
  const pic=authored&&!p.kind&&!p.diagram?await authoredFormula(p.formulaAsset):await image(p.formulaAsset);
  const c=document.createElement('canvas');c.width=1536;c.height=640;const cx=c.getContext('2d'),chinese=lang==='zh'?await library.prepare(chalkPageText(p,lang)):null,recorder=authoredContext(cx,chinese,{latin:authored});
+ if(p.classroom)await prepareInlineMath(chalkPageText(p,lang));
  const original=composeChalkPage(recorder.ctx,p,i,lang,pic,{deferStrokes:true,authored:true});const rows=recorder.rows(original),guides=inkGuides(cx.getImageData(0,0,1536,640),rows),plan=writingPlan(rows,guides);
  return {canvas:c,rows,guides,plan,original};
 }

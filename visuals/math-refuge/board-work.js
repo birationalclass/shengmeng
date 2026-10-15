@@ -1,13 +1,13 @@
-// Queue natural strokes through explanation time instead of pausing each line.
+// Semantic rows wait for narration; strokes within a row never wait.
 const schedules=new WeakMap();
 export function writingSchedule(board,writing){
  if(!writing?.physicalTiming)return null;
  let cached=schedules.get(writing);if(cached?.board===board)return cached.value;
- let cursor=board.writeStart;const entries=[];
+ let cursor=board.writeStart,previousAudioEnd=board.writeStart,previousUnit;const entries=[];
  const cues=board.lineCues?.length?board.lineCues:[{row:null,writeStart:board.writeStart}];
  for(const cue of cues){const segments=cue.row===null?writing.segments:writing.segments.filter(s=>s.mainLine===cue.row);if(!segments.length)throw Error('Narration row has no visible ink: '+cue.row);
-  const from=segments[0].start,to=segments.at(-1).end,start=cursor,end=start+(to-from)/writing.unitsPerSecond;
-  entries.push({row:cue.row,start,end,from,to});cursor=end;
+  const from=segments[0].start,to=segments.at(-1).end,start=Math.max(cursor,cue.writeStart??0,cue.audioStart??0,cue.semanticUnit&&cue.semanticUnit===previousUnit?0:previousAudioEnd),end=start+(to-from)/writing.unitsPerSecond;
+  entries.push({row:cue.row,start,end,from,to});cursor=end;previousAudioEnd=cue.audioEnd??end;previousUnit=cue.semanticUnit;
  }
  const value={entries,end:cursor,total:writing.total};schedules.set(writing,{board,value});return value;
 }

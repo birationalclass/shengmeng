@@ -24,8 +24,8 @@ export function authoredContext(ctx,chinese=null,{latin=true}={}){
  return {ctx:proxy,rows(original){const used=new Set();return original.flatMap(row=>{if(row.strokePath)return[row];const [x,y,w,h]=row;const inside=operations.filter((op,i)=>{if(used.has(i))return false;const [a,b,c,d]=op.rect,cx=a+c/2,cy=b+d/2;if(cx>=x-2&&cx<=x+w+2&&cy>=y-2&&cy<=y+h+2){used.add(i);return true;}return false;});return inside.length?inside.map(op=>Object.assign([...op.rect],op,{mainLine:row.mainLine,formulaRow:row.formulaRow,prose:row.prose})): [row];});}};
 }
 
-export async function authoredFormula(url){
- const response=await fetch(url);if(!response.ok)throw Error('板书公式加载失败');const source=await response.text();
+export async function authoredFormula(url,{color}={}){
+ const response=await fetch(url);if(!response.ok)throw Error('板书公式加载失败');let source=await response.text();if(color)source=source.replaceAll('#eee9d5',color);
  const root=new DOMParser().parseFromString(source,'image/svg+xml').documentElement;
  if(root.localName!=='svg')throw Error('无效板书公式');
  const host=document.createElement('div');host.style.cssText='position:fixed;left:-20000px;top:0;visibility:hidden;pointer-events:none';host.append(root);document.body.append(host);const operations=[],rootMatrix=root.getScreenCTM().inverse();

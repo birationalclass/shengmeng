@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {chineseMetrics,CHINESE_STROKE_SECONDS} from './chinese-chalk.js';
+import {writingSchedule} from './board-work.js';
 import {writingPlan,rasterStrokeReveal} from './chalk-motion.js';
 import {rowNarrationProgress,narrationFrame} from './report-voice.js';
 const row=(scale=1,line=0)=>Object.assign([10,20,200*scale,40*scale],{strokePath:[[10,20],[10+20*scale,20],[10+200*scale,20+40*scale]],strokeRaster:{},strokeSeconds:CHINESE_STROKE_SECONDS,mainLine:line});
@@ -9,14 +10,14 @@ test('each Chinese stroke retains its time budget when glyph size or path length
  const many=writingPlan(Array.from({length:13},()=>row()));assert(Math.abs(contact(many)-13/16)<1e-8);
 });
 test('a later Chinese stroke remains hidden until its own contact interval',()=>{const rows=[row(1,0),row(1,1)];const p=writingPlan(rows);const firstContact=p.segments.find(s=>s.contact);const progress=(firstContact.start+firstContact.cost/2)/p.total;assert(rasterStrokeReveal(rows,progress,0)>0);assert.equal(rasterStrokeReveal(rows,progress,1),0);assert.equal(rasterStrokeReveal(rows,1,1),1);});
-test('Chinese strokes queue continuously across long spoken cue gaps',()=>{
+test('Chinese rows wait for their semantic cue while each stroke keeps its physical budget',()=>{
  const p=writingPlan([row(1,0),row(1,1)]),cues=[{row:0,writeStart:2,writeEnd:10},{row:1,writeStart:12,writeEnd:20}];
  const firstEnd=p.segments.filter(s=>s.mainLine===0).at(-1).end/p.total;
  const manifest={duration:25,boards:[{page:0,start:0,eraseStart:0,writeStart:2,writeEnd:20,end:25,lineCues:cues}]};
  assert.equal(narrationFrame(manifest,2.03,p).writing,true);assert.equal(narrationFrame(manifest,3,p).writing,false);
- assert.equal(narrationFrame(manifest,3,p).progress,1);
- assert.equal(narrationFrame(manifest,12.03,p).writing,false);
- const nextStroke=2+(p.segments.find(s=>s.mainLine===1&&s.contact).start+.001)/p.unitsPerSecond;
+ assert.equal(narrationFrame(manifest,3,p).progress,firstEnd);
+ assert.equal(narrationFrame(manifest,12.03,p).writing,true);
+ const nextStroke=writingSchedule(manifest.boards[0],p).entries[1].end-.001;
  assert(narrationFrame(manifest,nextStroke,p).progress>firstEnd);
 });
 test('Chinese bitmap metrics include font bearings and lower descenders',()=>{const g={fontSize:220,advance:220,bounds:[17,58,235,271],origin:[18,225]},a=chineseMetrics(g,44),b=chineseMetrics(g,88);assert.equal(a.actualBoundingBoxDescent,9.200000000000001);assert.equal(b.width,2*a.width);assert.equal(b.actualBoundingBoxDescent,2*a.actualBoundingBoxDescent);});
