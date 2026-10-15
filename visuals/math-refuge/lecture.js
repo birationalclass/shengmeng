@@ -53,7 +53,7 @@ export async function createLecture(scene,renderer,options={}){
   const storageMotion=new BoardStorage(stored),storageLids=[];let storageWell=null,storageCap=null;
   const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:p.kind==='cover'?5:8}));
   estimateDurations();
-  const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='en',generation=0;
+  const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language=options.initialLanguage==='zh'?'zh':'en',generation=0;
   let fontsReady=0;
   if(document.fonts&&!disabled)await withDeadline(Promise.all(['42px RefugeChinese','42px RefugeLatin','42px RefugeMath'].map(font=>document.fonts.load(font).then(result=>{reportProgress(.25+(++fontsReady)/3*.45);return result;}))),15000,'板书字体加载');
   let chineseChalk=null;
