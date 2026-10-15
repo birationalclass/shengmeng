@@ -586,6 +586,7 @@ export async function createLecture(scene,renderer,options={}){
         await load(page);clock.slots[boardSlot(page)]={page:-1,progress:0};
       }
       openingDemo={phase:'waiting',page,narrated,elapsed:0};
+      options.onOpening?.({stage:'prepared',report:activeReport.id,kind:activeReport.kind,narrated});
       stored=false;storageMotion.reset();storageProgress=0;storageRig.position.y=0;storageRig.visible=true;
       storageLids.forEach(lid=>lid.visible=false);if(storageCap)storageCap.visible=true;
       screenHub?.report();screenHub?.update(0,0);updateStorageLabel();setReportState();
@@ -608,8 +609,19 @@ export async function createLecture(scene,renderer,options={}){
     },
     get openingNarrated(){return openingDemo?.phase==='waiting'&&openingDemo.narrated===true;},
     beginOpening(reduced=false){
+      options.onOpening?.({stage:'arrival',report:activeReport.id,kind:activeReport.kind,demo:openingDemo?.phase,narrated:openingDemo?.narrated});
       if(openingDemo?.phase!=='waiting')return false;
-      if(openingDemo.narrated)return this.setReport(activeReport.id,{autoplay:true});
+      if(openingDemo.narrated){
+        if(activeReport.kind==='classroom'){
+          // Present the complete lesson cover independently of audio readiness.
+          openingDemo=null;playing=false;staticPage();
+          options.onOpening?.({stage:'cover',report:activeReport.id,phase:clock.phase,progress:clock.slots[clock.active].progress});
+          boards.forEach((_,i)=>draw(i,true));programScreen?.select(activeReport);setReportState();
+          void voice.select(voiceReport(activeReport),{autoplay:false});
+          return true;
+        }
+        return this.setReport(activeReport.id,{autoplay:true});
+      }
       const demo=openingDemo;select(demo.page);openingDemo={...demo,phase:'writing',elapsed:0};
       if(reduced)staticPage();playing=true;return true;
     },
