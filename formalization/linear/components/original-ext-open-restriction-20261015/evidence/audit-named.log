@@ -1,0 +1,125 @@
+@LinearStudy.schemeModuleOriginalChainTopExtOpenRestrictionLaw : {X Y : AlgebraicGeometry.Scheme} →
+  (j : X ⟶ Y) →
+    [AlgebraicGeometry.IsOpenImmersion j] →
+      (C : ChainComplex Y.Modules ℕ) →
+        {E M : Y.Modules} →
+          (r : ℕ) →
+            (alpha : C ⟶ (ChainComplex.single₀ Y.Modules).obj E) →
+              QuasiIso alpha → (a : C.X r ⟶ M) → CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → Prop
+'LinearStudy.schemeModuleOriginalChainTopExtOpenRestrictionLaw' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalChainTopExtOpenRestrictionLaw_proof : ∀ {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (C : ChainComplex Y.Modules ℕ) {E M : Y.Modules} (r : ℕ)
+  (alpha : C ⟶ (ChainComplex.single₀ Y.Modules).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  LinearStudy.schemeModuleOriginalChainTopExtOpenRestrictionLaw j C r alpha hAlpha a ha
+'LinearStudy.schemeModuleOriginalChainTopExtOpenRestrictionLaw_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalProjectiveZeroChart : {n : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    AlgebraicGeometry.Spec
+        ↧(HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+            ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))) ⟶
+      AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+'LinearStudy.originalProjectiveZeroChart' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalProjectiveZeroChart_isOpenImmersion : ∀ {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n),
+  AlgebraicGeometry.IsOpenImmersion (LinearStudy.originalProjectiveZeroChart V)
+'LinearStudy.originalProjectiveZeroChart_isOpenImmersion' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledOriginalWholeCutExtRestrictionLaw : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (e :
+                  CategoryTheory.Limits.cokernel
+                      ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                    LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                QuasiIso
+                    (LinearStudy.originalChainCokernelTargetAugmentation
+                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e) →
+                  Prop
+'LinearStudy.projectivePulledOriginalWholeCutExtRestrictionLaw' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalWholeCutExtRestrictionLaw_proof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ) (k : ℤ)
+  (e :
+    CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+  (he :
+    QuasiIso
+      (LinearStudy.originalChainCokernelTargetAugmentation
+        (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)),
+  LinearStudy.projectivePulledOriginalWholeCutExtRestrictionLaw f V L hL w k e he
+'LinearStudy.projectivePulledOriginalWholeCutExtRestrictionLaw_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleOriginalChainTopExtOpenRestrictionLaw.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  (j : X ⟶ Y) →
+    [AlgebraicGeometry.IsOpenImmersion j] →
+      (C : ChainComplex Y.Modules ℕ) →
+        {E M : Y.Modules} →
+          (r : ℕ) →
+            (alpha : C ⟶ (ChainComplex.single₀ Y.Modules).obj E) →
+              QuasiIso alpha → (a : C.X r ⟶ M) → CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → Prop :=
+fun {X Y : AlgebraicGeometry.Scheme} (j : X ⟶ Y) [AlgebraicGeometry.IsOpenImmersion j] (C : ChainComplex Y.Modules ℕ)
+    {E M : Y.Modules} (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ Y.Modules).obj E) (hAlpha : QuasiIso alpha)
+    (a : C.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) =>
+  CategoryTheory.Abelian.Ext.mapExactFunctor (AlgebraicGeometry.Scheme.Modules.restrictFunctor j)
+      (LinearStudy.originalChainTopExtClass C r alpha a ha) =
+    LinearStudy.originalChainMappedTopExtClass (AlgebraicGeometry.Scheme.Modules.restrictFunctor j) C r alpha a ha
+def LinearStudy.originalProjectiveZeroChart : {n : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    AlgebraicGeometry.Spec
+        ↧(HomogeneousLocalization.Away (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+            ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))) ⟶
+      AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) :=
+fun {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) =>
+  AlgebraicGeometry.Proj.awayι (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+    ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)) ⋯ LinearStudy.originalProjectiveZeroChart._proof_9
+def LinearStudy.projectivePulledOriginalWholeCutExtRestrictionLaw : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (e :
+                  CategoryTheory.Limits.cokernel
+                      ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                    LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                QuasiIso
+                    (LinearStudy.originalChainCokernelTargetAugmentation
+                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e) →
+                  Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ)
+    (e :
+      CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+    (he :
+      QuasiIso
+        (LinearStudy.originalChainCokernelTargetAugmentation
+          (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+          (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)) =>
+  LinearStudy.schemeModuleOriginalChainTopExtOpenRestrictionLaw (LinearStudy.originalProjectiveZeroChart V)
+    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) r
+    (LinearStudy.originalChainCokernelTargetAugmentation (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)
+    he (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom ⋯
+ROLECHECK:LinearStudy.schemeModuleOriginalChainTopExtOpenRestrictionLaw:false
+ROLECHECK:LinearStudy.schemeModuleOriginalChainTopExtOpenRestrictionLaw_proof:true
+ROLECHECK:LinearStudy.originalProjectiveZeroChart:false
+ROLECHECK:LinearStudy.originalProjectiveZeroChart_isOpenImmersion:true
+ROLECHECK:LinearStudy.projectivePulledOriginalWholeCutExtRestrictionLaw:false
+ROLECHECK:LinearStudy.projectivePulledOriginalWholeCutExtRestrictionLaw_proof:true
