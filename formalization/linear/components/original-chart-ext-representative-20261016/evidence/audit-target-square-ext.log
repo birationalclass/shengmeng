@@ -1,0 +1,51 @@
+@LinearStudy.cochainResolutionExtClass_targetIso : ∀ {A : Type u_4} [inst : CategoryTheory.Category.{u_3, u_4} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K : CochainComplex A ℤ) {E Q M : A} (r : ℕ) (theta : E ≅ Q) (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  [inst_4 : QuasiIso alpha] (beta : CategoryTheory.ShiftedHom K ((CochainComplex.singleFunctor A 0).obj M) ↑r),
+  (CategoryTheory.Abelian.Ext.mk₀ theta.hom).comp
+      (LinearStudy.cochainResolutionExtClass K r
+        (CategoryTheory.CategoryStruct.comp alpha ((CochainComplex.singleFunctor A 0).map theta.hom)) beta)
+      ⋯ =
+    LinearStudy.cochainResolutionExtClass K r alpha beta
+'LinearStudy.cochainResolutionExtClass_targetIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainAugmentationAsCochain_target_comp : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E Q : A}
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (g : E ⟶ Q),
+  LinearStudy.originalChainAugmentationAsCochain C
+      (CategoryTheory.CategoryStruct.comp alpha ((ChainComplex.single₀ A).map g)) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.originalChainAugmentationAsCochain C alpha)
+      ((CochainComplex.singleFunctor A 0).map g)
+'LinearStudy.originalChainAugmentationAsCochain_target_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainTopExtClass_targetIso : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (C : ChainComplex A ℕ) {E Q M : A} (r : ℕ) (theta : E ≅ Q) (alpha : C ⟶ (ChainComplex.single₀ A).obj E)
+  [inst_4 : QuasiIso alpha] (a : C.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  (CategoryTheory.Abelian.Ext.mk₀ theta.hom).comp
+      (LinearStudy.originalChainTopExtClass C r
+        (CategoryTheory.CategoryStruct.comp alpha ((ChainComplex.single₀ A).map theta.hom)) a ha)
+      ⋯ =
+    LinearStudy.originalChainTopExtClass C r alpha a ha
+'LinearStudy.originalChainTopExtClass_targetIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainAugmentationSquare_quasiIso : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] (C D : ChainComplex A ℕ) (gamma : C ≅ D) {E Q : A} (theta : E ≅ Q)
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [QuasiIso alpha] (beta : D ⟶ (ChainComplex.single₀ A).obj Q),
+  CategoryTheory.CategoryStruct.comp alpha ((ChainComplex.single₀ A).map theta.hom) =
+      CategoryTheory.CategoryStruct.comp gamma.hom beta →
+    QuasiIso beta
+'LinearStudy.originalChainAugmentationSquare_quasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainTopExtClass_augmentationSquare : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (C D : ChainComplex A ℕ) (gamma : C ≅ D) {E Q M : A} (r : ℕ) (theta : E ≅ Q)
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_4 : QuasiIso alpha] (beta : D ⟶ (ChainComplex.single₀ A).obj Q)
+  (square :
+    CategoryTheory.CategoryStruct.comp alpha ((ChainComplex.single₀ A).map theta.hom) =
+      CategoryTheory.CategoryStruct.comp gamma.hom beta)
+  (a : D.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (D.d (r + 1) r) a = 0),
+  (CategoryTheory.Abelian.Ext.mk₀ theta.hom).comp (LinearStudy.originalChainTopExtClass D r beta a ha) ⋯ =
+    LinearStudy.originalChainTopExtClass C r alpha (CategoryTheory.CategoryStruct.comp (gamma.hom.f r) a) ⋯
+'LinearStudy.originalChainTopExtClass_augmentationSquare' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.cochainResolutionExtClass_targetIso:true
+ROLECHECK:LinearStudy.originalChainAugmentationAsCochain_target_comp:true
+ROLECHECK:LinearStudy.originalChainTopExtClass_targetIso:true
+ROLECHECK:LinearStudy.originalChainAugmentationSquare_quasiIso:true
+ROLECHECK:LinearStudy.originalChainTopExtClass_augmentationSquare:true

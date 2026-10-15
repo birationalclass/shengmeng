@@ -1,0 +1,516 @@
+
+===== SPLIT AUDIT target-square-ext =====
+@LinearStudy.cochainResolutionExtClass_targetIso : ∀ {A : Type u_4} [inst : CategoryTheory.Category.{u_3, u_4} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K : CochainComplex A ℤ) {E Q M : A} (r : ℕ) (theta : E ≅ Q) (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  [inst_4 : QuasiIso alpha] (beta : CategoryTheory.ShiftedHom K ((CochainComplex.singleFunctor A 0).obj M) ↑r),
+  (CategoryTheory.Abelian.Ext.mk₀ theta.hom).comp
+      (LinearStudy.cochainResolutionExtClass K r
+        (CategoryTheory.CategoryStruct.comp alpha ((CochainComplex.singleFunctor A 0).map theta.hom)) beta)
+      ⋯ =
+    LinearStudy.cochainResolutionExtClass K r alpha beta
+'LinearStudy.cochainResolutionExtClass_targetIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainAugmentationAsCochain_target_comp : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E Q : A}
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (g : E ⟶ Q),
+  LinearStudy.originalChainAugmentationAsCochain C
+      (CategoryTheory.CategoryStruct.comp alpha ((ChainComplex.single₀ A).map g)) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.originalChainAugmentationAsCochain C alpha)
+      ((CochainComplex.singleFunctor A 0).map g)
+'LinearStudy.originalChainAugmentationAsCochain_target_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainTopExtClass_targetIso : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (C : ChainComplex A ℕ) {E Q M : A} (r : ℕ) (theta : E ≅ Q) (alpha : C ⟶ (ChainComplex.single₀ A).obj E)
+  [inst_4 : QuasiIso alpha] (a : C.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  (CategoryTheory.Abelian.Ext.mk₀ theta.hom).comp
+      (LinearStudy.originalChainTopExtClass C r
+        (CategoryTheory.CategoryStruct.comp alpha ((ChainComplex.single₀ A).map theta.hom)) a ha)
+      ⋯ =
+    LinearStudy.originalChainTopExtClass C r alpha a ha
+'LinearStudy.originalChainTopExtClass_targetIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainAugmentationSquare_quasiIso : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] (C D : ChainComplex A ℕ) (gamma : C ≅ D) {E Q : A} (theta : E ≅ Q)
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [QuasiIso alpha] (beta : D ⟶ (ChainComplex.single₀ A).obj Q),
+  CategoryTheory.CategoryStruct.comp alpha ((ChainComplex.single₀ A).map theta.hom) =
+      CategoryTheory.CategoryStruct.comp gamma.hom beta →
+    QuasiIso beta
+'LinearStudy.originalChainAugmentationSquare_quasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainTopExtClass_augmentationSquare : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (C D : ChainComplex A ℕ) (gamma : C ≅ D) {E Q M : A} (r : ℕ) (theta : E ≅ Q)
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_4 : QuasiIso alpha] (beta : D ⟶ (ChainComplex.single₀ A).obj Q)
+  (square :
+    CategoryTheory.CategoryStruct.comp alpha ((ChainComplex.single₀ A).map theta.hom) =
+      CategoryTheory.CategoryStruct.comp gamma.hom beta)
+  (a : D.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (D.d (r + 1) r) a = 0),
+  (CategoryTheory.Abelian.Ext.mk₀ theta.hom).comp (LinearStudy.originalChainTopExtClass D r beta a ha) ⋯ =
+    LinearStudy.originalChainTopExtClass C r alpha (CategoryTheory.CategoryStruct.comp (gamma.hom.f r) a) ⋯
+'LinearStudy.originalChainTopExtClass_augmentationSquare' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.cochainResolutionExtClass_targetIso:true
+ROLECHECK:LinearStudy.originalChainAugmentationAsCochain_target_comp:true
+ROLECHECK:LinearStudy.originalChainTopExtClass_targetIso:true
+ROLECHECK:LinearStudy.originalChainAugmentationSquare_quasiIso:true
+ROLECHECK:LinearStudy.originalChainTopExtClass_augmentationSquare:true
+
+===== SPLIT AUDIT presentation-ext =====
+@LinearStudy.mappedChainPresentationAugmentationTargetIso : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u_4} →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                [F.PreservesHomology] →
+                  (p : LinearStudy.mappedChainPresentationData F) →
+                    (T : A) → (CategoryTheory.Limits.cokernel (p.fst.d 1 0) ≅ T) → (F.obj T ≅ p.snd.snd.snd.fst.pt)
+'LinearStudy.mappedChainPresentationAugmentationTargetIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedChainPresentationCoforkAugmentation_quasiIso : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] {B : Type u_4}
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B)
+  [inst_4 : F.Additive] [F.PreservesHomology] (p : LinearStudy.mappedChainPresentationData F) (T : A)
+  (ec : CategoryTheory.Limits.cokernel (p.fst.d 1 0) ≅ T)
+  [QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation p.fst T ec)],
+  QuasiIso (LinearStudy.originalChainCoforkAugmentation p.snd.fst p.snd.snd.snd.fst)
+'LinearStudy.mappedChainPresentationCoforkAugmentation_quasiIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.mappedChainPresentationTopExtClass_comparison : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] {B : Type u_4}
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B)
+  [inst_4 : F.Additive] [inst_5 : F.PreservesHomology] [inst_6 : CategoryTheory.HasExt B]
+  [inst_7 : HasDerivedCategory B] (p : LinearStudy.mappedChainPresentationData F) (T : A)
+  (ec : CategoryTheory.Limits.cokernel (p.fst.d 1 0) ≅ T)
+  [inst_8 : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation p.fst T ec)] (r : ℕ) (N : B)
+  (b : p.snd.fst.X r ⟶ N) (hb : CategoryTheory.CategoryStruct.comp (p.snd.fst.d (r + 1) r) b = 0),
+  (CategoryTheory.Abelian.Ext.mk₀ (LinearStudy.mappedChainPresentationAugmentationTargetIso F p T ec).hom).comp
+      (LinearStudy.originalChainTopExtClass p.snd.fst r
+        (LinearStudy.originalChainCoforkAugmentation p.snd.fst p.snd.snd.snd.fst) b hb)
+      ⋯ =
+    LinearStudy.originalChainTopExtClass ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj p.fst) r
+      (LinearStudy.mappedOriginalChainAugmentation F p.fst
+        (LinearStudy.originalChainCokernelTargetAugmentation p.fst T ec))
+      (CategoryTheory.CategoryStruct.comp (p.snd.snd.fst.hom.f r) b) ⋯
+'LinearStudy.mappedChainPresentationTopExtClass_comparison' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainCokernelTargetAugmentation_sourceEq : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C D : ChainComplex A ℕ) (h : C = D)
+  (T : A) (e : CategoryTheory.Limits.cokernel (D.d 1 0) ≅ T),
+  LinearStudy.originalChainCokernelTargetAugmentation C T (CategoryTheory.eqToIso ⋯ ≪≫ e) =
+    CategoryTheory.CategoryStruct.comp (CategoryTheory.eqToIso h).hom
+      (LinearStudy.originalChainCokernelTargetAugmentation D T e)
+'LinearStudy.originalChainCokernelTargetAugmentation_sourceEq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalChainCokernelTargetAugmentation_quasiIso_sourceEq : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] (C D : ChainComplex A ℕ) (h : C = D)
+  (T : A) (e : CategoryTheory.Limits.cokernel (D.d 1 0) ≅ T),
+  QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation D T e) →
+    QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation C T (CategoryTheory.eqToIso ⋯ ≪≫ e))
+'LinearStudy.originalChainCokernelTargetAugmentation_quasiIso_sourceEq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalChainTopExtClass_cokernelSourceEq : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (C D : ChainComplex A ℕ) (h : C = D) (T : A) (e : CategoryTheory.Limits.cokernel (D.d 1 0) ≅ T)
+  [he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation D T e)] {M : A} (r : ℕ) (a : D.X r ⟶ M)
+  (ha : CategoryTheory.CategoryStruct.comp (D.d (r + 1) r) a = 0),
+  LinearStudy.originalChainTopExtClass C r
+      (LinearStudy.originalChainCokernelTargetAugmentation C T (CategoryTheory.eqToIso ⋯ ≪≫ e))
+      (CategoryTheory.CategoryStruct.comp ((CategoryTheory.eqToIso h).hom.f r) a) ⋯ =
+    LinearStudy.originalChainTopExtClass D r (LinearStudy.originalChainCokernelTargetAugmentation D T e) a ha
+'LinearStudy.originalChainTopExtClass_cokernelSourceEq' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedChainPresentationOriginalTopFunctional : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u_4} →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                (p : LinearStudy.mappedChainPresentationData F) →
+                  {M : A} → (r : ℕ) → (p.fst.X r ⟶ M) → (p.snd.fst.X r ⟶ F.obj M)
+'LinearStudy.mappedChainPresentationOriginalTopFunctional' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedChainPresentationOriginalTopFunctional_isCocycle : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] {B : Type u_4}
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B)
+  [inst_4 : F.Additive] [F.PreservesHomology] (p : LinearStudy.mappedChainPresentationData F) {M : A} (r : ℕ)
+  (a : p.fst.X r ⟶ M),
+  CategoryTheory.CategoryStruct.comp (p.fst.d (r + 1) r) a = 0 →
+    CategoryTheory.CategoryStruct.comp (p.snd.fst.d (r + 1) r)
+        (LinearStudy.mappedChainPresentationOriginalTopFunctional F p r a) =
+      0
+'LinearStudy.mappedChainPresentationOriginalTopFunctional_isCocycle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.mappedChainPresentationOriginalTopExt_comparison : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] {B : Type u_4}
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B)
+  [inst_4 : F.Additive] [inst_5 : F.PreservesHomology] [inst_6 : CategoryTheory.HasExt B]
+  [inst_7 : HasDerivedCategory B] (p : LinearStudy.mappedChainPresentationData F) (T : A)
+  (ec : CategoryTheory.Limits.cokernel (p.fst.d 1 0) ≅ T)
+  [inst_8 : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation p.fst T ec)] {M : A} (r : ℕ)
+  (a : p.fst.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (p.fst.d (r + 1) r) a = 0),
+  (CategoryTheory.Abelian.Ext.mk₀ (LinearStudy.mappedChainPresentationAugmentationTargetIso F p T ec).hom).comp
+      (LinearStudy.originalChainTopExtClass p.snd.fst r
+        (LinearStudy.originalChainCoforkAugmentation p.snd.fst p.snd.snd.snd.fst)
+        (LinearStudy.mappedChainPresentationOriginalTopFunctional F p r a) ⋯)
+      ⋯ =
+    LinearStudy.originalChainTopExtClass ((F.mapHomologicalComplex (ComplexShape.down ℕ)).obj p.fst) r
+      (LinearStudy.mappedOriginalChainAugmentation F p.fst
+        (LinearStudy.originalChainCokernelTargetAugmentation p.fst T ec))
+      (F.map a) ⋯
+'LinearStudy.mappedChainPresentationOriginalTopExt_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.mappedChainPresentationOriginalExt_mapExactFunctor : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] {B : Type u_4}
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B)
+  [inst_4 : F.Additive] [inst_5 : F.PreservesHomology] [inst_6 : CategoryTheory.HasExt B]
+  [inst_7 : HasDerivedCategory B] [inst_8 : CategoryTheory.HasExt A] [inst_9 : HasDerivedCategory A]
+  (p : LinearStudy.mappedChainPresentationData F) (T : A) (ec : CategoryTheory.Limits.cokernel (p.fst.d 1 0) ≅ T)
+  [inst_10 : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation p.fst T ec)] {M : A} (r : ℕ)
+  (a : p.fst.X r ⟶ M) (ha : CategoryTheory.CategoryStruct.comp (p.fst.d (r + 1) r) a = 0),
+  CategoryTheory.Abelian.Ext.mapExactFunctor F
+      (LinearStudy.originalChainTopExtClass p.fst r (LinearStudy.originalChainCokernelTargetAugmentation p.fst T ec) a
+        ha) =
+    (CategoryTheory.Abelian.Ext.mk₀ (LinearStudy.mappedChainPresentationAugmentationTargetIso F p T ec).hom).comp
+      (LinearStudy.originalChainTopExtClass p.snd.fst r
+        (LinearStudy.originalChainCoforkAugmentation p.snd.fst p.snd.snd.snd.fst)
+        (LinearStudy.mappedChainPresentationOriginalTopFunctional F p r a) ⋯)
+      ⋯
+'LinearStudy.mappedChainPresentationOriginalExt_mapExactFunctor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.mappedChainPresentationNamedExtLaw : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u_4} →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                [F.PreservesHomology] →
+                  [CategoryTheory.HasExt A] →
+                    [HasDerivedCategory A] →
+                      [CategoryTheory.HasExt B] →
+                        [HasDerivedCategory B] →
+                          (p : LinearStudy.mappedChainPresentationData F) →
+                            (C : ChainComplex A ℕ) →
+                              p.fst = C → (T : A) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) → Prop
+'LinearStudy.mappedChainPresentationNamedExtLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.mappedChainPresentationNamedExtLaw_proof : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} A]
+  [inst_1 : CategoryTheory.Abelian A] {B : Type u_4} [inst_2 : CategoryTheory.Category.{u_3, u_4} B]
+  [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [inst_4 : F.Additive]
+  [inst_5 : F.PreservesHomology] [inst_6 : CategoryTheory.HasExt A] [inst_7 : HasDerivedCategory A]
+  [inst_8 : CategoryTheory.HasExt B] [inst_9 : HasDerivedCategory B] (p : LinearStudy.mappedChainPresentationData F)
+  (C : ChainComplex A ℕ) (hC : p.fst = C) (T : A) (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T),
+  LinearStudy.mappedChainPresentationNamedExtLaw F p C hC T e
+'LinearStudy.mappedChainPresentationNamedExtLaw_proof' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.standardMappedChainPresentationNamedExtLaw : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u_4} →
+        [inst_2 : CategoryTheory.Category.{u_3, u_4} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                [F.PreservesHomology] →
+                  (p : LinearStudy.mappedChainPresentationData F) →
+                    (C : ChainComplex A ℕ) → p.fst = C → (T : A) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) → Prop
+'LinearStudy.standardMappedChainPresentationNamedExtLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.standardMappedChainPresentationNamedExtLaw_proof : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] {B : Type u_4}
+  [inst_2 : CategoryTheory.Category.{u_3, u_4} B] [inst_3 : CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B)
+  [inst_4 : F.Additive] [inst_5 : F.PreservesHomology] (p : LinearStudy.mappedChainPresentationData F)
+  (C : ChainComplex A ℕ) (hC : p.fst = C) (T : A) (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T),
+  LinearStudy.standardMappedChainPresentationNamedExtLaw F p C hC T e
+'LinearStudy.standardMappedChainPresentationNamedExtLaw_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.mappedChainPresentationAugmentationTargetIso.{v, u, v', u'} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                [F.PreservesHomology] →
+                  (p : LinearStudy.mappedChainPresentationData F) →
+                    (T : A) → (CategoryTheory.Limits.cokernel (p.fst.d 1 0) ≅ T) → (F.obj T ≅ p.snd.snd.snd.fst.pt) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {B : Type u'}
+    [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    [F.PreservesHomology] (p : LinearStudy.mappedChainPresentationData F) (T : A)
+    (ec : CategoryTheory.Limits.cokernel (p.fst.d 1 0) ≅ T) =>
+  LinearStudy.mappedOriginalChainTargetCokernelChartIso F p.fst p.snd.fst p.snd.snd.fst p.snd.snd.snd.fst
+    p.snd.snd.snd.snd T ec
+def LinearStudy.mappedChainPresentationOriginalTopFunctional.{v, u, v', u'} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                (p : LinearStudy.mappedChainPresentationData F) →
+                  {M : A} → (r : ℕ) → (p.fst.X r ⟶ M) → (p.snd.fst.X r ⟶ F.obj M) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {B : Type u'}
+    [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    (p : LinearStudy.mappedChainPresentationData F) {M : A} (r : ℕ) (a : p.fst.X r ⟶ M) =>
+  CategoryTheory.CategoryStruct.comp (p.snd.snd.fst.inv.f r) (F.map a)
+def LinearStudy.mappedChainPresentationNamedExtLaw.{v, u, v', u', wA, dA, wB, dB} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                [F.PreservesHomology] →
+                  [CategoryTheory.HasExt A] →
+                    [HasDerivedCategory A] →
+                      [CategoryTheory.HasExt B] →
+                        [HasDerivedCategory B] →
+                          (p : LinearStudy.mappedChainPresentationData F) →
+                            (C : ChainComplex A ℕ) →
+                              p.fst = C → (T : A) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) → Prop :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {B : Type u'}
+    [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    [F.PreservesHomology] [CategoryTheory.HasExt A] [HasDerivedCategory A] [CategoryTheory.HasExt B]
+    [HasDerivedCategory B] (p : LinearStudy.mappedChainPresentationData F) (C : ChainComplex A ℕ) (hC : p.fst = C)
+    (T : A) (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) =>
+  ∀ (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation C T e)) {M : A} (r : ℕ) (a : C.X r ⟶ M)
+    (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+    have ce := CategoryTheory.eqToIso ⋯ ≪≫ e;
+    CategoryTheory.Abelian.Ext.mapExactFunctor F
+        (LinearStudy.originalChainTopExtClass C r (LinearStudy.originalChainCokernelTargetAugmentation C T e) a ha) =
+      (CategoryTheory.Abelian.Ext.mk₀ (LinearStudy.mappedChainPresentationAugmentationTargetIso F p T ce).hom).comp
+        (LinearStudy.originalChainTopExtClass p.snd.fst r
+          (LinearStudy.originalChainCoforkAugmentation p.snd.fst p.snd.snd.snd.fst)
+          (LinearStudy.mappedChainPresentationOriginalTopFunctional F p r
+            (CategoryTheory.CategoryStruct.comp ((CategoryTheory.eqToIso hC).hom.f r) a))
+          ⋯)
+        ⋯
+def LinearStudy.standardMappedChainPresentationNamedExtLaw.{v, u, v', u'} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {B : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} B] →
+          [inst_3 : CategoryTheory.Abelian B] →
+            (F : CategoryTheory.Functor A B) →
+              [inst_4 : F.Additive] →
+                [F.PreservesHomology] →
+                  (p : LinearStudy.mappedChainPresentationData F) →
+                    (C : ChainComplex A ℕ) →
+                      p.fst = C → (T : A) → (CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) → Prop :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {B : Type u'}
+    [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Abelian B] (F : CategoryTheory.Functor A B) [F.Additive]
+    [F.PreservesHomology] (p : LinearStudy.mappedChainPresentationData F) (C : ChainComplex A ℕ) (hC : p.fst = C)
+    (T : A) (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ T) =>
+  LinearStudy.mappedChainPresentationNamedExtLaw F p C hC T e
+ROLECHECK:LinearStudy.mappedChainPresentationAugmentationTargetIso:false
+ROLECHECK:LinearStudy.mappedChainPresentationCoforkAugmentation_quasiIso:true
+ROLECHECK:LinearStudy.mappedChainPresentationTopExtClass_comparison:true
+ROLECHECK:LinearStudy.originalChainCokernelTargetAugmentation_sourceEq:true
+ROLECHECK:LinearStudy.originalChainCokernelTargetAugmentation_quasiIso_sourceEq:true
+ROLECHECK:LinearStudy.originalChainTopExtClass_cokernelSourceEq:true
+ROLECHECK:LinearStudy.mappedChainPresentationOriginalTopFunctional:false
+ROLECHECK:LinearStudy.mappedChainPresentationOriginalTopFunctional_isCocycle:true
+ROLECHECK:LinearStudy.mappedChainPresentationOriginalTopExt_comparison:true
+ROLECHECK:LinearStudy.mappedChainPresentationOriginalExt_mapExactFunctor:true
+ROLECHECK:LinearStudy.mappedChainPresentationNamedExtLaw:false
+ROLECHECK:LinearStudy.mappedChainPresentationNamedExtLaw_proof:true
+ROLECHECK:LinearStudy.standardMappedChainPresentationNamedExtLaw:false
+ROLECHECK:LinearStudy.standardMappedChainPresentationNamedExtLaw_proof:true
+
+===== SPLIT AUDIT original-chart-ext =====
+@LinearStudy.projectivePulledOriginalChartExtRepresentativeLaw : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                  LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                Prop
+'LinearStudy.projectivePulledOriginalChartExtRepresentativeLaw' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalChartExtRepresentativeLaw_proof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ) (k : ℤ)
+  (e :
+    CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k),
+  LinearStudy.projectivePulledOriginalChartExtRepresentativeLaw f V L hL w k e
+'LinearStudy.projectivePulledOriginalChartExtRepresentativeLaw_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.projectivePulledOriginalChartExtRepresentativeLaw : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                  LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ)
+    (e :
+      CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) =>
+  LinearStudy.standardMappedChainPresentationNamedExtLaw
+    (AlgebraicGeometry.Scheme.Modules.restrictFunctor (LinearStudy.originalProjectiveZeroChart V))
+    (LinearStudy.projectivePulledOriginalChartPresentationData f V L hL w k)
+    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) ⋯
+    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e
+ROLECHECK:LinearStudy.projectivePulledOriginalChartExtRepresentativeLaw:false
+ROLECHECK:LinearStudy.projectivePulledOriginalChartExtRepresentativeLaw_proof:true
+
+===== SPLIT AUDIT original-chart-ext-family =====
+@LinearStudy.projectivePulledOriginalSetupChartExtRepresentativeFamilyProof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  r < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+            (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ∀ (x0 : Fin n → ℂ),
+                  LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                    ∃ (u : MvPolynomial (Fin (r + 1)) ℂ),
+                      u ≠ 0 ∧
+                        (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) u ≠ 0) ∧
+                          ∀ (w : Fin (r + 1) → ℂ),
+                            (MvPolynomial.eval w) u ≠ 0 →
+                              ∀ (i : ℤ),
+                                ∃ (e :
+                                  CategoryTheory.Limits.cokernel
+                                      ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i).d 1 0) ≅
+                                    LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w i)
+                                  (_ :
+                                  QuasiIso
+                                    (LinearStudy.originalChainCokernelTargetAugmentation
+                                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                      ((AlgebraicGeometry.Scheme.Modules.pushforward
+                                            (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+                                        (LinearStudy.nativeProjectiveModuleSheaf
+                                          (LinearStudy.homogeneousQuotientPiece
+                                            (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                                          (LinearStudy.nativeProjectiveRingIntegerPiece
+                                            (LinearStudy.homogeneousQuotientPiece
+                                              (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                                          ⋯ i))
+                                      e)),
+                                  (LinearStudy.originalChainCokernelTargetAugmentation
+                                            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                            ((AlgebraicGeometry.Scheme.Modules.pushforward
+                                                  (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL
+                                                    w)).obj
+                                              (LinearStudy.nativeProjectiveModuleSheaf
+                                                (LinearStudy.homogeneousQuotientPiece
+                                                  (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                                                (LinearStudy.nativeProjectiveRingIntegerPiece
+                                                  (LinearStudy.homogeneousQuotientPiece
+                                                    (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                                                ⋯ i))
+                                            e).f
+                                        0 =
+                                      CategoryTheory.CategoryStruct.comp
+                                        (CategoryTheory.Limits.cokernel.π
+                                          ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i).d 1 0))
+                                        e.hom ∧
+                                    LinearStudy.projectivePulledOriginalChartExtRepresentativeLaw f V L hL w i e
+'LinearStudy.projectivePulledOriginalSetupChartExtRepresentativeFamilyProof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.projectivePulledOriginalSetupChartExtRepresentativeFamilyProof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  r < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+            (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ∀ (x0 : Fin n → ℂ),
+                  LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                    ∃ (u : MvPolynomial (Fin (r + 1)) ℂ),
+                      u ≠ 0 ∧
+                        (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) u ≠ 0) ∧
+                          ∀ (w : Fin (r + 1) → ℂ),
+                            (MvPolynomial.eval w) u ≠ 0 →
+                              ∀ (i : ℤ),
+                                ∃ (e :
+                                  CategoryTheory.Limits.cokernel
+                                      ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i).d 1 0) ≅
+                                    LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w i)
+                                  (_ :
+                                  QuasiIso
+                                    (LinearStudy.originalChainCokernelTargetAugmentation
+                                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                      ((AlgebraicGeometry.Scheme.Modules.pushforward
+                                            (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+                                        (LinearStudy.nativeProjectiveModuleSheaf
+                                          (LinearStudy.homogeneousQuotientPiece
+                                            (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                                          (LinearStudy.nativeProjectiveRingIntegerPiece
+                                            (LinearStudy.homogeneousQuotientPiece
+                                              (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                                          ⋯ i))
+                                      e)),
+                                  (LinearStudy.originalChainCokernelTargetAugmentation
+                                            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                            ((AlgebraicGeometry.Scheme.Modules.pushforward
+                                                  (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL
+                                                    w)).obj
+                                              (LinearStudy.nativeProjectiveModuleSheaf
+                                                (LinearStudy.homogeneousQuotientPiece
+                                                  (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                                                (LinearStudy.nativeProjectiveRingIntegerPiece
+                                                  (LinearStudy.homogeneousQuotientPiece
+                                                    (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                                                ⋯ i))
+                                            e).f
+                                        0 =
+                                      CategoryTheory.CategoryStruct.comp
+                                        (CategoryTheory.Limits.cokernel.π
+                                          ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i).d 1 0))
+                                        e.hom ∧
+                                    LinearStudy.projectivePulledOriginalChartExtRepresentativeLaw f V L hL w i e :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hrn : r < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+    (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (x0 : Fin n → ℂ)
+    (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) =>
+  LinearStudy.parameterFamily_enrich_exists_proof
+    (LinearStudy.projectivePulledLinearSectionOriginalSetupResolutionProof f V hrn hq hf hV L hL hinj hfinite x0 hx0)
+    fun (w : Fin (r + 1) → ℂ) (k : ℤ)
+      (e :
+        CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+          LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+      (he :
+        QuasiIso
+          (LinearStudy.originalChainCokernelTargetAugmentation
+            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+            ((AlgebraicGeometry.Scheme.Modules.pushforward
+                  (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L hL w)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf
+                (LinearStudy.homogeneousQuotientPiece (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                (LinearStudy.nativeProjectiveRingIntegerPiece
+                  (LinearStudy.homogeneousQuotientPiece (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                (LinearStudy.nativeProjectiveRingIntegerPiece_graded
+                  (LinearStudy.homogeneousQuotientPiece (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                k))
+            e)) =>
+    LinearStudy.projectivePulledOriginalChartExtRepresentativeLaw_proof f V L hL w k e
+ROLECHECK:LinearStudy.projectivePulledOriginalSetupChartExtRepresentativeFamilyProof:true
