@@ -35,13 +35,14 @@ if(typeof window!=='undefined'){
    }catch(error){runtimeTransfers.end(id,true);throw error;}
  };
  window.fetch.resourceBounded=true;
+ window.fetch.promote=input=>nativeFetch.promote(input);
  try{performance.setResourceTimingBufferSize?.(2000);new PerformanceObserver(list=>{for(const entry of list.getEntries())runtimeTransfers.observe(entry,now());}).observe({type:'resource',buffered:true});}catch{}
  const paint=()=>{const out=document.getElementById('runtimeLoad'),world=document.getElementById('world');if(!out)return;const t=runtimeTransfers.snapshot(now()),s=scheduler?.snapshot(),item=t.active[0]||t.last,entered=world?.dataset.entered==='true';out.hidden=!entered;out.dataset.loading=String(entered&&Boolean(t.active.length||s?.active));
    const nav=document.getElementById('chapters'),navigation=nav&&!nav.hidden?nav.getBoundingClientRect():null;out.style.bottom=Math.max(16,navigation?.height?innerHeight-navigation.top+8:16)+'px';
    const content=(s?.active?s.content:manual||s?.error||s?.content||'空闲 · 按需准备')+(s?.pauseReason?'（等待：'+s.pauseReason+'）':'');
    const load=s?.frameMs?`帧 ${s.frameMs.toFixed(1)} / ${s.frameBudget.toFixed(1)} ms · 加载 ${s.cpuMs.toFixed(1)} ms/批`:'负荷采样中';
    const download=item?`${item.name}${item.complete?'（'+(item.cached?'缓存':'完成')+'）':item.error?'（失败）':'（下载中）'} ${bytesText(item.received)}${item.total!=null&&!item.complete?' / '+bytesText(item.total):''}`:'无下载';
-   let course='';try{const p=JSON.parse(world?.dataset.coursePreload||'null');if(p?.boards?.total||p?.audio?.total){const retry=(p.boards.retrying||0)+(p.audio.retrying||0);course=`\n本课后续：板书 ${p.boards.completed}/${p.boards.total} · 语音 ${p.audio.completed}/${p.audio.total} · 下一板${p.nextReady?'已就绪':'准备中'}${p.preparing?' · 内容解析 '+p.preparing+' 项':''}${retry?' · '+retry+' 项待重试':''}`;out.dataset.course=JSON.stringify(p);}}catch{}
+   let course='';try{const p=JSON.parse(world?.dataset.coursePreload||'null');if(p?.boards?.total||p?.audio?.total){const retry=(p.boards.retrying||0)+(p.audio.retrying||0);course=`\n本课预载：${p.boards.unit==='pack'?'资源包':'资源文件'} ${p.boards.completed}/${p.boards.total} · 语音 ${p.audio.completed}/${p.audio.total} · 第${p.nextPage||'?'}板书${p.nextReady?'已就绪':'：'+(p.nextStage||'等待准备')} · 板面缓存 ${p.prepared||0} 块${retry?' · '+retry+' 项待重试':''}`;out.dataset.course=JSON.stringify(p);}}catch{}
    out.textContent=`加载：${s?.protected?(world?.dataset.openingGPU==='ready'?'开场保护 · '+(s.pending?'按需任务等待':'P0/P1 已就绪'):'开场准备 · '+content):content} · 负荷：${load}\n下载：${download}${t.active.length>1?' · 另 '+(t.active.length-1)+' 项':''} · ${Math.round(t.speed/1000)} KB/s · 已接收 ${bytesText(t.total)}${world?.dataset.cloudPreparation==='ready'?' · 云：'+world.dataset.cloudReason:''}${course}`;
    out.dataset.content=content;out.dataset.pauseReason=s?.pauseReason||'';out.dataset.pending=String(s?.pending||0);out.dataset.protected=String(s?.protected||false);out.dataset.frameMs=String(s?.frameMs||0);out.dataset.loadingCpuMs=String(s?.cpuMs||0);out.dataset.activeDownloads=String(t.active.length);out.dataset.receivedBytes=String(t.total);out.dataset.speed=String(t.speed);
  };setInterval(paint,500);

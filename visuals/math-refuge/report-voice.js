@@ -7,13 +7,14 @@ import {SCREEN_COLORS,CONTROL_VISUAL_SCALE} from './smart-screen-style.js?v=unfr
 export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),prepareBoard=async()=>true,onChange=()=>{},baseURL=new URL('.',import.meta.url).href,now=()=>performance.now()/1000,requestTimeout=15000,retryDelay=2000}={}){
  fetcher=createResourceFetch(fetcher,{idleTimeout:requestTimeout});
  let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,contextActive=true,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0,playbackRate=1,boardHold=null;
+ let manifestReady=Promise.resolve(null),resolveManifest=()=>{};
  let activity=null,segmentEnding=false,navigationIntent=false,navigationGate=null,retainAll=false,prefetchJob=null,assetsPreparing=false,boardReadiness=Promise.resolve(true);const blobs=new Map(),blobJobs=new Map();let preload={phase:'idle',completed:0,total:0,errors:[]};
  const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',errorKind:'',started:false,chapter:0,temporaryPause:false,rate:1,activity:null};
  const emit=()=>{state.transportPlaying=desired&&contextActive&&!assetsPreparing;onChange({...state});};
  const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index];state.time=Math.min(state.duration,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=manifest.chapters[index].start+activity.at;state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}return state.time;};
  function pause(){sync();if(activity)activity.running=false;desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio?.pause();if(['loading','playing','buffering','preparing','away'].includes(state.phase))state.phase='paused';emit();}
  const audioWarm=createBackgroundAssets({retryDelay,load:(job,signal)=>bytes(job.src,epoch,false,job.hint,signal)});
- function release(){pause();audioWarm.cancel();navigationGate=null;boardHold=null;audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
+ function release(){resolveManifest(null);pause();audioWarm.cancel();navigationGate=null;boardHold=null;audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
  async function fetchBytes(src,mine,show,sizeHint=0,signal){
   const controller=new AbortController();controllers.add(controller);
   const cancel=()=>controller.abort(signal.reason);signal?.addEventListener('abort',cancel,{once:true});if(signal?.aborted)cancel();
@@ -26,7 +27,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
    }finally{signal?.removeEventListener('abort',cancel);controllers.delete(controller);}
  }
  async function bytes(src,mine,show,sizeHint=0,signal){
-  if(blobs.has(src))return blobs.get(src);if(blobJobs.has(src))return blobJobs.get(src);
+  if(blobs.has(src))return blobs.get(src);if(blobJobs.has(src)){if(show)fetcher.promote?.(src);return blobJobs.get(src);}
    const job=fetchBytes(src,mine,show,sizeHint,signal).then(blob=>{if(blob&&mine===epoch)blobs.set(src,blob);return blob;});blobJobs.set(src,job);try{return await job;}finally{if(blobJobs.get(src)===job)blobJobs.delete(src);}
  }
  function prefetchAll(){
@@ -36,7 +37,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
  function trim(){const retired=new Set(),retained=activity?manifest?.chapters[index+1]?.src:null;for(const [key,url] of cache)if((key<index||key>index+1)&&(!retained||manifest.chapters[key]?.src!==retained)){retired.add(url);cache.delete(key);}for(const url of retired)if(![...cache.values()].includes(url))revokeURL(url);if(!retainAll){const keep=new Set([...cache.keys()].map(i=>manifest.chapters[i]?.src));for(const src of blobs.keys())if(!keep.has(src))blobs.delete(src);}}
  async function load(i,show=true){
   if(manifest.chapters[i].kind==='activity')return null;
-  if(cache.has(i))return cache.get(i);if(jobs.has(i))return jobs.get(i);
+  if(cache.has(i))return cache.get(i);if(jobs.has(i)){if(show)fetcher.promote?.(manifest.chapters[i].src);return jobs.get(i);}
   for(const [key,url]of cache)if(manifest.chapters[key]?.src===manifest.chapters[i].src){cache.set(i,url);return url;}
   const mine=epoch,c=manifest.chapters[i];
   const job=(async()=>{const blob=await bytes(c.src,mine,show,c.bytes);if(!blob||mine!==epoch)return null;const url=makeURL(blob);cache.set(i,url);trim();return url;})();
@@ -78,17 +79,17 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
  }
  async function advance(i){const resume=desired,mine=epoch,intent=playToken;try{if(await attach(i)&&mine===epoch&&resume&&desired)await play();}catch(error){if(mine===epoch&&intent===playToken){desired=false;state.phase='error';state.error='语音下载失败 · 点击重试';emit();}}}
  async function select(next,{autoplay=false}={}){
-  ++epoch;++attachToken;release();report=next;manifest=null;index=0;offset=0;const mine=epoch;
+  ++epoch;++attachToken;release();manifestReady=new Promise(resolve=>resolveManifest=resolve);report=next;manifest=null;index=0;offset=0;const mine=epoch;
   desired=Boolean(autoplay&&next?.narration);Object.assign(state,{report:next?.id,contentKind:next?.kind==='classroom'?'classroom':'report',phase:next?.narration?'loading':'idle',progress:null,time:0,duration:0,error:'',errorKind:'',started:false,chapter:0,temporaryPause:false});emit();
-  if(!next?.narration)return false;
+  if(!next?.narration){resolveManifest(null);return false;}
   try{
    const src=new URL(next.narration.manifest,baseURL).href,controller=new AbortController();controllers.add(controller);
    let response;try{response=await fetcher(src,{signal:controller.signal,cache:"no-cache"});}finally{controllers.delete(controller);}
    if(!response.ok)throw Error('语音目录下载失败');const data=await response.json();if(mine!==epoch)return false;
    if(!data.chapters?.length||!data.boards?.length||!Number.isFinite(data.duration))throw Error('语音目录无效');
-   manifest={...data,chapters:data.chapters.map(c=>({...c,src:c.kind==='activity'?null:new URL(c.src,src).href}))};state.duration=data.duration;
+   manifest={...data,chapters:data.chapters.map(c=>({...c,src:c.kind==='activity'?null:new URL(c.src,src).href}))};state.duration=data.duration;resolveManifest(manifest);
    const ready=await attach(0);if(ready&&desired)await play();return ready;
-  }catch(error){if(mine!==epoch||error.name==='AbortError')return false;desired=false;state.temporaryPause=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();return false;}
+  }catch(error){if(mine!==epoch)return false;resolveManifest(null);if(error.name==='AbortError')return false;desired=false;state.temporaryPause=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();return false;}
  }
  async function seek(time,{preservePlayback=false,ready=null}={}){
   if(!manifest)return false;const resume=preservePlayback&&(desired||navigationIntent);pause();boardHold=null;navigationIntent=resume;const mine=epoch,intent=playToken,target=Math.max(0,Math.min(manifest.duration,Number(time)||0));state.started=true;const gate=navigationGate={token:intent};
@@ -132,7 +133,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
    const mine=epoch,token=++playToken;sync();if(activity)activity.running=false;audio?.pause();state.phase='preparing';state.progress=null;emit();
    try{await job;if(mine===epoch&&token===playToken&&desired)await play();}
    catch{if(mine===epoch&&token===playToken&&desired){pause();state.phase='error';state.error='板书尚未就绪 · 点击重试';emit();}}
-  },get manifest(){return manifest;},
+  },get manifestReady(){return manifestReady;},get manifest(){return manifest;},
   update(){sync();if(audio&&desired&&!boardHold&&!segmentEnding&&manifest.chapters[index].mediaStart!==undefined&&audio.currentTime-(manifest.chapters[index].mediaStart||0)>=manifest.chapters[index].duration-.015){segmentEnding=true;audio.pause();if(index+1<manifest.chapters.length)void advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}if(activity&&activity.running&&!activity.advancing&&activity.at>=activity.duration){activity.advancing=true;activity.running=false;if(index+1<manifest.chapters.length)void advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}if(manifest&&desired&&contextActive&&(audio||activity)&&index+1<manifest.chapters.length){const c=manifest.chapters[index],remaining=activity?activity.duration-activity.at:c.duration-(audio.currentTime-(c.mediaStart||0));if(remaining<20*playbackRate)void load(index+1,false).catch(()=>{});}return state;},
   dispose(){++epoch;release();manifest=null;state.phase='idle';emit();}};
 }

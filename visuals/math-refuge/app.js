@@ -916,7 +916,7 @@ function installPhysicalControls(){
     else if(action==='board:next'){if(!lecture.stepExercise(1))void seekLecture(lecture.navigationPage+1);}
     else if(action==='board:lottery')void lecture.drawStudent();
     else if(action==='board:roster')void lecture.importStudentRoster();
-    else if(action==='board:reveal')void lecture.revealCurrent();
+    else if(action==='board:time')lecture.toggleTimeDisplay();else if(action==='board:reveal')void lecture.revealCurrent();
     else if(action==='activity:skip')void lecture.skipClassroomActivity();
     else if(action==='voice:toggle')$('lecturePlay').click();
     else if(action==='camera:farther'||action==='camera:closer'){lecture.adjustCameraZoom(action==='camera:farther'?1:-1);lecture.autoCamera=true;boardFollow.reset();focusLecture();updateLectureUI();}

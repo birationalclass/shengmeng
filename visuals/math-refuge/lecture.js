@@ -7,6 +7,7 @@ import {isCrystalScheme,paintStoneBoard,setTrackScheme} from './board-mineral.js
 import {placeTrayControl,TRAY_STORAGE} from './board-tray-layout.js';
 import {createStudentLottery,drawStudentLottery,lotteryHitTargets,LOTTERY_RECT} from './student-lottery.js';
 import {createCoursePreload} from './course-preload.js';
+import {prepareBoardAssets} from './board-assets.js';
 import {prepareInlineMath} from './chalk-inline-math.js?v=inline-formula-2';
 import {LessonBudget} from './lesson-budget.js?v=sylow-two-lessons-20261015';
 import {narrationHighlights,measuredHighlight,highlightFrame,createBoardHighlight} from './board-highlight.js?v=smart-voice-9';
@@ -79,20 +80,20 @@ export async function createLecture(scene,renderer,options={}){
   function load(index,preparedImage,{background=false}={}){
     if(index<0)return Promise.resolve(null);
     if(cache.has(index))return Promise.resolve(cache.get(index));
-    if(pending.has(index))return pending.get(index);
+    if(pending.has(index)){if(!background)void prepareBoardAssets(pages[index]).catch(()=>{});return pending.get(index);}
     const blocked=assetRetry.blocked(index);if(blocked)return blocked;
     const epoch=generation,lang=language,style=writingStyle;
-    let timed;const job=new Promise((resolve,reject)=>{
+    let timed;const stage=label=>{if(timed)timed.stage=label;};const job=new Promise((resolve,reject)=>{
       let image=preparedImage||new Image();const ready=async()=>{try{
         if(epoch!==generation){resolve(null);return;}
         const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
-        let chinese=null;
+        let chinese=null;stage('中文字形准备');
         if(lang==='zh'&&canAuthor){if(!chineseChalk)chineseChalk=createChineseChalk().catch(error=>{chineseChalk=null;throw error;});chinese=await (await chineseChalk).prepare(chalkPageText(pages[index],lang));if(epoch!==generation){resolve(null);return;}}
         await preparationTurn({background:background&&index!==clock.page&&index!==requestedPage});
-        if(pages[index].classroom)await prepareInlineMath(chalkPageText(pages[index],lang));
+        stage('公式笔画解析');if(pages[index].classroom)await prepareInlineMath(chalkPageText(pages[index],lang));
         await preparationTurn({background:background&&index!==clock.page&&index!==requestedPage});
         if(epoch!==generation||pending.get(index)!==timed){resolve(null);return;}
-        const recorder=(style==='refined'||chinese)&&canAuthor?authoredContext(sampleCtx,chinese,{latin:style==='refined'}):null;let rows=composeChalkPage(recorder?.ctx||sampleCtx,pages[index],index,lang,image,{deferStrokes:true,hideHeading:options.hideBoardHeadings,authored:Boolean(recorder)});if(recorder)rows=recorder.rows(rows);pageRows.set(index,rows);
+        stage('排版与擦除规划');const recorder=(style==='refined'||chinese)&&canAuthor?authoredContext(sampleCtx,chinese,{latin:style==='refined'}):null;let rows=composeChalkPage(recorder?.ctx||sampleCtx,pages[index],index,lang,image,{deferStrokes:true,hideHeading:options.hideBoardHeadings,authored:Boolean(recorder)});if(recorder)rows=recorder.rows(rows);pageRows.set(index,rows);
         await preparationTurn({background:background&&index!==clock.page&&index!==requestedPage});
         if(epoch!==generation||pending.get(index)!==timed){resolve(null);return;}
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
@@ -105,14 +106,16 @@ export async function createLecture(scene,renderer,options={}){
         for(const key of cache.keys())if(cache.size>(pixelScale<1?8:10)&&!keep.has(key)){cache.get(key).width=1;cache.get(key).height=1;cache.delete(key);guides.delete(key);erasePlans.delete(key);pageRows.delete(key);}
         resolve(sample);}catch(error){reject(error);}
       };
-      if(preparedImage){queueMicrotask(ready);return;}
-      if(style==='refined'&&canAuthor&&!pages[index].kind&&!pages[index].diagram){authoredFormula(pages[index].formulaAsset+'?v=report-line-sync-6').then(result=>{image=result;ready();},error=>{reject(error);});return;}
-      decodeImage(pages[index].formulaAsset+'?v=report-line-sync-6').then(result=>{image=result;ready();},error=>{reject(error);});
+      const begin=()=>{stage('公式解析');if(preparedImage){queueMicrotask(ready);return;}
+        if(style==='refined'&&canAuthor&&!pages[index].kind&&!pages[index].diagram){authoredFormula(pages[index].formulaAsset+'?v=report-line-sync-6').then(result=>{image=result;ready();},reject);return;}
+        decodeImage(pages[index].formulaAsset+'?v=report-line-sync-6').then(result=>{image=result;ready();},reject);
+      };
+      if(pages[index].resourcePack)void prepareBoardAssets(pages[index],{background:background&&index!==clock.page&&index!==requestedPage}).then(begin,reject);else begin();
     });
     // A page can contain hundreds of healthy small transfers. Each request has
     // an aborting idle watchdog; a page-wide wall-clock race discarded slow but
     // successful preparation and left the selected board permanently stale.
-    timed=job;pending.set(index,timed);timed.catch(error=>{if(pending.get(index)===timed){pending.delete(index);assetRetry.fail(index,error);}});return timed;
+    timed=job;timed.stage=pages[index].resourcePack?'资源包下载':'公式准备';pending.set(index,timed);timed.catch(error=>{if(pending.get(index)===timed){pending.delete(index);assetRetry.fail(index,error);}});return timed;
   }
   if(!disabled&&hasSelection)await load(0,openingReport.cover);
   reportProgress(1);
@@ -179,7 +182,7 @@ export async function createLecture(scene,renderer,options={}){
   function voiceReport(report){const variant=report.narration?.voices?.find(v=>v.id===voiceTone);return variant?{...report,narration:{...report.narration,manifest:variant.manifest}}:report;}
   const highlighter=createBoardHighlight(THREE,{width:BOARD_W,height:BOARD_H});
   const voice=createReportVoice({prepareBoard:async(page,time)=>{const ready=await load(page);if(!ready)return false;const event=voice.manifest?.boards.find(b=>b.page===page);if(page>=6&&event&&time<event.writeStart&&!await load(page-6))return false;return true;}}),unbindVoiceFocus=bindVoiceFocusPause(voice);const voicePanels=Array.from({length:3},(_,column)=>{const panel=createBoardVoicePanel(THREE,scene);panel.setColumn(column);return panel;});
-  const timePanels=Array.from({length:3},(_,column)=>createBoardTimePanel(THREE,scene,column));
+  let localClockDisplay=false;const timePanels=Array.from({length:3},(_,column)=>createBoardTimePanel(THREE,scene,column));
   // Three synchronized controls, centered exactly beneath their board columns.
   const consoleButtons=[],consoleTextures=[];
   const touchCanvas=document.createElement('canvas');touchCanvas.width=704;touchCanvas.height=384;
@@ -386,7 +389,7 @@ export async function createLecture(scene,renderer,options={}){
         // Audio still waits for ink before resuming. Board navigation must not
         // wait for the entire MP3; the destination and controls can be ready first.
         void voice.seek(board.writeStart,{preservePlayback,ready:commit}).catch(()=>{});
-      }else voice.pause();
+      }else{voice.pause();if(activeReport.narration&&voiceEnabled)void voice.manifestReady.then(manifest=>{if(request!==seekRequest||epoch!==generation)return;const destination=manifest?.boards.find(b=>b.page===target);if(destination)void voice.seek(destination.writeStart,{preservePlayback:false,ready:commit}).catch(()=>{});});}
       return await commit;
     }catch(error){if(request===seekRequest)loadingError=error;throw error;}
     finally{if(request===seekRequest){seeking=false;requestedPage=null;seekPinned.clear();}}
@@ -418,7 +421,7 @@ export async function createLecture(scene,renderer,options={}){
     // Move the same small control with the active physical board.
     const controlState=(pendingReport||activeReport).narration&&voiceEnabled&&!openingDemo?voice.state:{...voice.state,phase:hasSelection?(playing?'playing':'paused'):'idle',synthetic:false};
     for(const panel of voicePanels)panel.update(controlState,dt,renderActive&&!stored&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'));
-    timePanels.forEach(panel=>panel.update(voiceEnabled&&voice.manifest?voice.state:null,clock,renderActive&&hasSelection&&!stored&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report')));
+    timePanels.forEach(panel=>panel.update(voiceEnabled&&voice.manifest?voice.state:null,clock,renderActive&&hasSelection&&!stored&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'),localClockDisplay));
     // Only the head of the queue advances: one board completes before the next starts.
     if(reduced||renderActive&&!hydrating&&(!voice.state.started||voice.transportPlaying))advanceBoardQueue(contentFadeQueue,dt,reduced);
     screenHub?.update(dt,storageProgress,reduced);
@@ -427,7 +430,7 @@ export async function createLecture(scene,renderer,options={}){
     pageControls.forEach(panel=>panel.update({previousEnabled:hasSelection&&clock.page>clock.startAt,nextEnabled:hasSelection&&clock.page<clock.stopAt,activity:voice.state.activity,visible:renderActive&&!hydrating&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report')}));
     for(const target of lotteryTargets){const page=clock.slots[target.userData.index].page;target.visible=hasSelection&&page>=0&&pages[page]?.exerciseBoard&&target.userData.index===clock.active&&clock.phase!=='erase'&&renderActive&&!stored;}
     cameraPanels.forEach(panel=>panel.update(autoCamera,renderActive&&!hydrating&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'),withVoice,cameraZoom));
-    voicePanels.forEach(panel=>updateTextSheen(THREE,panel.mesh,dt,reduced));
+    voicePanels.forEach(panel=>updateTextSheen(THREE,panel.mesh,dt,reduced));timePanels.forEach(panel=>updateTextSheen(THREE,panel.mesh,dt,reduced));
     if(storageRig){
       storageMotion.update(dt,stored);storageProgress=storageMotion.progress;
       const t=storageProgress*storageProgress*(3-2*storageProgress);
@@ -664,7 +667,7 @@ export async function createLecture(scene,renderer,options={}){
           openingDemo=null;playing=false;clock.startWrite();
           options.onOpening?.({stage:'loading',report:activeReport.id,phase:clock.phase,progress:clock.slots[clock.active].progress});
           boards.forEach((_,i)=>draw(i,true));programScreen?.select(activeReport);setReportState();
-          void assetPreload.start(pages,{courseText:pages.map(p=>chalkPageText(p,'zh')+'\n'+chalkPageText(p,'en')).join('\n')});
+          void assetPreload.start(pages,{courseText:pages.map(p=>chalkPageText(p,'zh')+'\n'+chalkPageText(p,'en')).join('\n')});if(pages.length>1)void load(1,undefined,{background:true}).catch(()=>{});
           void voice.select(voiceReport(activeReport),{autoplay:true}).then(()=>{
             options.onOpening?.({stage:'loaded',report:activeReport.id,phase:clock.phase,progress:clock.slots[clock.active].progress});
             void voice.prefetchAll();
@@ -708,7 +711,7 @@ export async function createLecture(scene,renderer,options={}){
         hydrating=false;loadingError=null;update(0,openingDemo?.phase!=='writing');
       }catch(error){if(epoch===renderEpoch){loadingError=error;hydrating=false;}}
     },
-    drawStudent(){if(!pages[clock.page]?.exerciseBoard)return false;if(!studentLottery.count)return studentLottery.chooseFile();return studentLottery.spin(activeReport.id+':'+clock.page);},importStudentRoster:()=>studentLottery.chooseFile(),setStudentRoster:text=>studentLottery.importRoster(text),get lotteryState(){return studentLottery.view(activeReport.id+':'+clock.page);},get inkStats(){return{...inkUploader.stats,rasterMs:lastRasterMs,width:boards[clock.active]?.canvas?.width||0,height:boards[clock.active]?.canvas?.height||0};},get preloadState(){return{boards:assetPreload.state,audio:voice.preloadState,prepared:cache.size,preparing:pending.size,nextReady:cache.has(Math.min(clock.page+1,pages.length-1))};},get boardBackground(){return grain;},get boardCanvases(){return boards.map(b=>b.canvas);},get timeReadout(){return timePanels[0].text;},get toolState(){return {chalk:chalk.position.toArray(),chalkColor:chalk.userData.inkColor,chalkMaterial:chalk.material.color.getHexString(),chalkEmissive:chalk.material.emissive.getHexString(),eraser:eraser.position.toArray(),eraserRotation:eraser.rotation.toArray(),pickup:eraserPickup?.elapsed??null,returning:eraserReturn?.elapsed??null,workElapsed:boardWork?.elapsed??null,eraserState:eraser.userData.state,eraseSeconds:eraseRun?.elapsed??null,eraseDuration:eraseRun?.duration??null,lifts:[...mix],transportPlaying:voice.transportPlaying};},get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get teachingClock(){return {period:lessonBudget.period,elapsed:lessonBudget.elapsed,thirdProof:lessonBudget.decision};},get report(){return activeReport;},consoleButtons,reportButtons,get hoverTargets(){return disabled?[]:[...lotteryTargets,...touchButtons.filter(b=>!screenHub||!reportButtons.includes(b)||(screenHub.state.power&&screenHub.state.mode==='report')),...voicePanels.filter(panel=>panel.mesh.visible).map(panel=>panel.mesh),...(screenHub?.targets||[])];},setConsoleState,
+    drawStudent(){if(!pages[clock.page]?.exerciseBoard)return false;if(!studentLottery.count)return studentLottery.chooseFile();return studentLottery.spin(activeReport.id+':'+clock.page);},importStudentRoster:()=>studentLottery.chooseFile(),setStudentRoster:text=>studentLottery.importRoster(text),get lotteryState(){return studentLottery.view(activeReport.id+':'+clock.page);},get inkStats(){return{...inkUploader.stats,rasterMs:lastRasterMs,width:boards[clock.active]?.canvas?.width||0,height:boards[clock.active]?.canvas?.height||0};},get preloadState(){return{boards:assetPreload.state,audio:voice.preloadState,prepared:cache.size,preparing:pending.size,nextPage:Math.min(clock.page+1,pages.length-1)+1,nextStage:pending.get(Math.min(clock.page+1,pages.length-1))?.stage||'',nextReady:cache.has(Math.min(clock.page+1,pages.length-1))};},get boardBackground(){return grain;},get boardCanvases(){return boards.map(b=>b.canvas);},get timeReadout(){return timePanels[0].text;},toggleTimeDisplay(){localClockDisplay=!localClockDisplay;return localClockDisplay;},get timeDisplayMode(){return localClockDisplay?'local':'progress';},get toolState(){return {chalk:chalk.position.toArray(),chalkColor:chalk.userData.inkColor,chalkMaterial:chalk.material.color.getHexString(),chalkEmissive:chalk.material.emissive.getHexString(),eraser:eraser.position.toArray(),eraserRotation:eraser.rotation.toArray(),pickup:eraserPickup?.elapsed??null,returning:eraserReturn?.elapsed??null,workElapsed:boardWork?.elapsed??null,eraserState:eraser.userData.state,eraseSeconds:eraseRun?.elapsed??null,eraseDuration:eraseRun?.duration??null,lifts:[...mix],transportPlaying:voice.transportPlaying};},get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get teachingClock(){return {period:lessonBudget.period,elapsed:lessonBudget.elapsed,thirdProof:lessonBudget.decision};},get report(){return activeReport;},consoleButtons,reportButtons,get hoverTargets(){return disabled?[]:[...timePanels.filter(p=>p.mesh.visible).map(p=>p.mesh),...lotteryTargets,...touchButtons.filter(b=>!screenHub||!reportButtons.includes(b)||(screenHub.state.power&&screenHub.state.mode==='report')),...voicePanels.filter(panel=>panel.mesh.visible).map(panel=>panel.mesh),...(screenHub?.targets||[])];},setConsoleState,
     get highlightEnabled(){return highlightEnabled;},setHighlight(value){highlightEnabled=Boolean(value);if(!highlightEnabled){highlighter.hide();highlightState=null;}},get highlightTargets(){return measuredHighlights.get(clock.page)?.cues.map(c=>({id:c.id,row:c.row,side:c.side,begin:c.begin,duration:c.duration,rect:c.rect,visibleAt:c.visibleAt}))||[];},get highlightState(){return highlightState&&{page:highlightState.page,row:highlightState.row,side:highlightState.side,alpha:highlightState.alpha,age:highlightState.age};},
     setVoiceRate(value){return voice.setRate(value);},get voiceRate(){return voice.state.rate;},get voiceState(){return {...voice.state};},get voiceTone(){return voiceTone;},get voiceEnabled(){return voiceEnabled;},get voiceManifest(){return voice.manifest;},async voiceSeek(time){lessonBudget.configure(voice.manifest);lessonBudget.seek(time,voice.manifest?.boards.filter(b=>b.optionalProof)||[]);omittedProofPages.clear();boards.forEach(b=>b.last='');voice.pause();cancelBoardWork();highlighter.hide();highlightState=null;return voice.seek(time);},skipClassroomActivity:()=>stepExercise(1)?Promise.resolve(true):voice.skipActivity(),get exerciseFrame(){return exerciseFrames.get(clock.page)||null;},async toggleVoice(){if(loadingError){loadingError=null;assetRetry.clear();boardPreparation=null;}if(!activeReport.narration||!voiceEnabled){playing=hasSelection&&!playing;return true;}return voice.toggle();},
     async setVoiceTone(tone){
@@ -740,7 +743,7 @@ export async function createLecture(scene,renderer,options={}){
         // Commit the prepared content independently of audio transfer readiness.
         if(request!==reportRequest)return false;
         // A new report starts on a clean board; there is no previous page to lift or erase.
-        clock.startWrite();boards.forEach((_,i)=>draw(i));if(next.kind==='classroom'){void assetPreload.start(pages,{courseText:pages.map(p=>chalkPageText(p,'zh')+'\n'+chalkPageText(p,'en')).join('\n')});if(loadVoice&&voiceEnabled)void voicePreparation.then(()=>{if(request===reportRequest)return voice.prefetchAll();});}return true;
+        clock.startWrite();boards.forEach((_,i)=>draw(i));if(next.kind==='classroom'){void assetPreload.start(pages,{courseText:pages.map(p=>chalkPageText(p,'zh')+'\n'+chalkPageText(p,'en')).join('\n')});if(pages.length>1)void load(1,undefined,{background:true}).catch(()=>{});if(loadVoice&&voiceEnabled)void voicePreparation.then(()=>{if(request===reportRequest)return voice.prefetchAll();});}return true;
       }catch(error){if(request!==reportRequest)return false;void voice.select(null);throw error;}
       finally{if(request===reportRequest){pendingReport=null;setReportState();}}
     },
