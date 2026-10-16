@@ -1,0 +1,146 @@
+
+===== SPLIT AUDIT original-chain-degree-one-cocycle =====
+@LinearStudy.originalChainDegreeOneConeMap : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        C.d 2 1 = 0 →
+          (LinearStudy.originalChainAsCochain C ⟶
+            CochainComplex.mappingCone ((CochainComplex.singleFunctor A 0).map (C.d 1 0)))
+'LinearStudy.originalChainDegreeOneConeMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainFirstCokernelSequence : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] → ChainComplex A ℕ → CategoryTheory.ShortComplex A
+'LinearStudy.originalChainFirstCokernelSequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainDegreeOneConeMap_augmentation : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) (h : C.d 2 1 = 0),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.originalChainDegreeOneConeMap C h)
+      (CochainComplex.mappingCone.descShortComplex
+        ((LinearStudy.originalChainFirstCokernelSequence C).map (CochainComplex.singleFunctor A 0))) =
+    LinearStudy.originalChainAugmentationAsCochain C (LinearStudy.originalChainCokernelAugmentation C)
+'LinearStudy.originalChainDegreeOneConeMap_augmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainFirstCokernelSequence_shortExact : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ),
+  C.d 2 1 = 0 → HomologicalComplex.ExactAt C 1 → (LinearStudy.originalChainFirstCokernelSequence C).ShortExact
+'LinearStudy.originalChainFirstCokernelSequence_shortExact' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainDegreeOneConeMap_quasiIso : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) (h : C.d 2 1 = 0),
+  (∀ (p : ℕ), 0 < p → HomologicalComplex.ExactAt C p) → QuasiIso (LinearStudy.originalChainDegreeOneConeMap C h)
+'LinearStudy.originalChainDegreeOneConeMap_quasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainDegreeOneConeMap_topCocycle : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) (h : C.d 2 1 = 0),
+  (CochainComplex.mappingCone.fst ((CochainComplex.singleFunctor A 0).map (C.d 1 0))).precomp
+      (LinearStudy.originalChainDegreeOneConeMap C h) =
+    CochainComplex.HomComplex.Cocycle.toSingleMk
+      (LinearStudy.originalChainAsCochainXIso C (-1) 1
+          LinearStudy.originalChainDegreeOneConeMap_topCocycle._proof_1).hom
+      LinearStudy.originalChainDegreeOneConeMap_topCocycle._proof_2 (-2)
+      LinearStudy.originalChainDegreeOneConeMap_topCocycle._proof_3 ⋯
+'LinearStudy.originalChainDegreeOneConeMap_topCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainDegreeOneConeMap_triangleTop : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) (h : C.d 2 1 = 0),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.originalChainDegreeOneConeMap C h)
+      (CochainComplex.mappingCone.triangle ((CochainComplex.singleFunctor A 0).map (C.d 1 0))).mor₃ =
+    -CochainComplex.HomComplex.Cocycle.equivHomShift.symm
+        (CochainComplex.HomComplex.Cocycle.toSingleMk
+          (LinearStudy.originalChainAsCochainXIso C (-1) 1
+              LinearStudy.originalChainDegreeOneConeMap_topCocycle._proof_1).hom
+          LinearStudy.originalChainDegreeOneConeMap_topCocycle._proof_2 (-2)
+          LinearStudy.originalChainDegreeOneConeMap_topCocycle._proof_3 ⋯)
+'LinearStudy.originalChainDegreeOneConeMap_triangleTop' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainResolutionExtClass_sourceQuasiIso : ∀ {A : Type u_4} [inst : CategoryTheory.Category.{u_3, u_4} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K L : CochainComplex A ℤ) (gamma : K ⟶ L) [inst_4 : QuasiIso gamma] {E M : A} (r : ℕ)
+  (alpha : L ⟶ (CochainComplex.singleFunctor A 0).obj E) [inst_5 : QuasiIso alpha]
+  (beta : CategoryTheory.ShiftedHom L ((CochainComplex.singleFunctor A 0).obj M) ↑r),
+  LinearStudy.cochainResolutionExtClass K r (CategoryTheory.CategoryStruct.comp gamma alpha)
+      ((CategoryTheory.ShiftedHom.mk₀ 0 ⋯ gamma).comp beta ⋯) =
+    LinearStudy.cochainResolutionExtClass L r alpha beta
+'LinearStudy.cochainResolutionExtClass_sourceQuasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainResolutionExtClass_neg : ∀ {A : Type u_4} [inst : CategoryTheory.Category.{u_3, u_4} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K : CochainComplex A ℤ) {E M : A} (r : ℕ) (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  [inst_4 : QuasiIso alpha] (beta : CategoryTheory.ShiftedHom K ((CochainComplex.singleFunctor A 0).obj M) ↑r),
+  LinearStudy.cochainResolutionExtClass K r alpha (-beta) = -LinearStudy.cochainResolutionExtClass K r alpha beta
+'LinearStudy.cochainResolutionExtClass_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainResolutionExtClass_congr : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K : CochainComplex A ℤ) {E M : A} (r : ℕ) (alpha alpha' : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  [inst_4 : QuasiIso alpha] [inst_5 : QuasiIso alpha'],
+  alpha = alpha' →
+    ∀ (beta beta' : CategoryTheory.ShiftedHom K ((CochainComplex.singleFunctor A 0).obj M) ↑r),
+      beta = beta' →
+        LinearStudy.cochainResolutionExtClass K r alpha beta = LinearStudy.cochainResolutionExtClass K r alpha' beta'
+'LinearStudy.cochainResolutionExtClass_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainDegreeOneTopExtClass_eq_neg_roof : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (C : ChainComplex A ℕ) (h : C.d 2 1 = 0)
+  (he : ∀ (p : ℕ), 0 < p → HomologicalComplex.ExactAt C p),
+  LinearStudy.originalChainTopExtClass C 1 (LinearStudy.originalChainCokernelAugmentation C)
+      (CategoryTheory.CategoryStruct.id (C.X 1)) ⋯ =
+    -LinearStudy.cochainShortExactRoofClass (LinearStudy.originalChainFirstCokernelSequence C) ⋯
+'LinearStudy.originalChainDegreeOneTopExtClass_eq_neg_roof' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainDegreeOneTopExtClass_eq_boundary : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (C : ChainComplex A ℕ) (h : C.d 2 1 = 0)
+  (he : ∀ (p : ℕ), 0 < p → HomologicalComplex.ExactAt C p) {N : A} (a : C.X 1 ⟶ N),
+  LinearStudy.originalChainTopExtClass C 1 (LinearStudy.originalChainCokernelAugmentation C) a ⋯ =
+    (CategoryTheory.Abelian.Ext.δ ⋯ 0 1 ⋯) (CategoryTheory.Abelian.Ext.mk₀ a)
+'LinearStudy.originalChainDegreeOneTopExtClass_eq_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainDegreeOneInjectiveCocycleRealization : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (C : ChainComplex A ℕ) (h : C.d 2 1 = 0)
+  (he : ∀ (p : ℕ), 0 < p → HomologicalComplex.ExactAt C p) {N : A} (I : CategoryTheory.InjectiveResolution N)
+  (a : C.X 1 ⟶ N),
+  ∃ (b : CochainComplex.HomComplex.Cochain ((CochainComplex.singleFunctor A 0).obj (C.X 0)) I.cochainComplex 0) (c :
+    CochainComplex.HomComplex.Cocycle
+      ((CochainComplex.singleFunctor A 0).obj (CategoryTheory.Limits.cokernel (C.d 1 0))) I.cochainComplex 1),
+    (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map (C.d 1 0))).comp b ⋯ =
+        CochainComplex.HomComplex.Cochain.ofHom
+          (CategoryTheory.CategoryStruct.comp ((CochainComplex.singleFunctor A 0).map a) I.ι') ∧
+      CochainComplex.HomComplex.δ 0 1 b =
+          (CochainComplex.HomComplex.Cochain.ofHom
+                ((CochainComplex.singleFunctor A 0).map (CategoryTheory.Limits.cokernel.π (C.d 1 0)))).comp
+            ↑c ⋯ ∧
+        LinearStudy.originalChainTopExtClass C 1 (LinearStudy.originalChainCokernelAugmentation C) a ⋯ =
+          I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c)
+'LinearStudy.originalChainDegreeOneInjectiveCocycleRealization' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.originalChainDegreeOneConeMap.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        C.d 2 1 = 0 →
+          (LinearStudy.originalChainAsCochain C ⟶
+            CochainComplex.mappingCone ((CochainComplex.singleFunctor A 0).map (C.d 1 0))) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ)
+    (h : C.d 2 1 = 0) =>
+  let a :=
+    CochainComplex.HomComplex.Cocycle.toSingleMk
+      (LinearStudy.originalChainAsCochainXIso C (-1) 1 LinearStudy.originalChainDegreeOneConeMap._proof_1).hom
+      LinearStudy.originalChainDegreeOneConeMap._proof_2 (-2) LinearStudy.originalChainDegreeOneConeMap._proof_3 ⋯;
+  let b :=
+    CochainComplex.HomComplex.Cochain.toSingleMk
+      (LinearStudy.originalChainAsCochainXIso C 0 0 LinearStudy.originalChainDegreeOneConeMap._proof_6).hom
+      LinearStudy.originalChainDegreeOneConeMap._proof_7;
+  CochainComplex.mappingCone.lift ((CochainComplex.singleFunctor A 0).map (C.d 1 0)) a b ⋯
+def LinearStudy.originalChainFirstCokernelSequence.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] → ChainComplex A ℕ → CategoryTheory.ShortComplex A :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) =>
+  { X₁ := C.X 1, X₂ := C.X 0, X₃ := CategoryTheory.Limits.cokernel (C.d 1 0), f := C.d 1 0,
+    g := CategoryTheory.Limits.cokernel.π (C.d 1 0), zero := ⋯ }
+ROLECHECK:LinearStudy.originalChainDegreeOneConeMap:false
+ROLECHECK:LinearStudy.originalChainFirstCokernelSequence:false
+ROLECHECK:LinearStudy.originalChainDegreeOneConeMap_augmentation:true
+ROLECHECK:LinearStudy.originalChainFirstCokernelSequence_shortExact:true
+ROLECHECK:LinearStudy.originalChainDegreeOneConeMap_quasiIso:true
+ROLECHECK:LinearStudy.originalChainDegreeOneConeMap_topCocycle:true
+ROLECHECK:LinearStudy.originalChainDegreeOneConeMap_triangleTop:true
+ROLECHECK:LinearStudy.cochainResolutionExtClass_sourceQuasiIso:true
+ROLECHECK:LinearStudy.cochainResolutionExtClass_neg:true
+ROLECHECK:LinearStudy.cochainResolutionExtClass_congr:true
+ROLECHECK:LinearStudy.originalChainDegreeOneTopExtClass_eq_neg_roof:true
+ROLECHECK:LinearStudy.originalChainDegreeOneTopExtClass_eq_boundary:true
+ROLECHECK:LinearStudy.originalChainDegreeOneInjectiveCocycleRealization:true
