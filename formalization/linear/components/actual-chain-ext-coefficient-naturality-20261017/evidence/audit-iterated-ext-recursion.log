@@ -1,0 +1,17 @@
+@LinearStudy.schemeModuleChainOpcycleIteratedExtIso_zero : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N)
+  (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) (p : ℕ),
+  LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N I hA p 0 =
+    CategoryTheory.Iso.refl (LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N (0 + 1))
+'LinearStudy.schemeModuleChainOpcycleIteratedExtIso_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChainOpcycleIteratedExtIso_succ : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N)
+  (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) (p q : ℕ),
+  LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N I hA p (q + 1) =
+    (LinearStudy.schemeModuleChainOpcycleExtShiftIso K p ⋯ N I q ⋯).symm ≪≫
+      LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N I hA (p + 1) q ≪≫ CategoryTheory.eqToIso ⋯
+'LinearStudy.schemeModuleChainOpcycleIteratedExtIso_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleIteratedExtIso_zero:true
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleIteratedExtIso_succ:true

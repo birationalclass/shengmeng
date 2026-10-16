@@ -1,0 +1,53 @@
+@LinearStudy.schemeModuleSourceHomCoefficientComplexMap : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    {N M : X.Modules} →
+      (N ⟶ M) →
+        (LinearStudy.schemeModuleInternalHomCochainComplex N K ⟶ LinearStudy.schemeModuleInternalHomCochainComplex M K)
+'LinearStudy.schemeModuleSourceHomCoefficientComplexMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSourceHomCoefficientComplexMap_id : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (N : X.Modules),
+  LinearStudy.schemeModuleSourceHomCoefficientComplexMap K (CategoryTheory.CategoryStruct.id N) =
+    CategoryTheory.CategoryStruct.id (LinearStudy.schemeModuleInternalHomCochainComplex N K)
+'LinearStudy.schemeModuleSourceHomCoefficientComplexMap_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSourceHomCoefficientComplexMap_comp : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) {N M P : X.Modules} (c : N ⟶ M) (d : M ⟶ P),
+  LinearStudy.schemeModuleSourceHomCoefficientComplexMap K (CategoryTheory.CategoryStruct.comp c d) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c)
+      (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K d)
+'LinearStudy.schemeModuleSourceHomCoefficientComplexMap_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSourceHomCoefficientComplexFunctor : {X : AlgebraicGeometry.Scheme} →
+  ChainComplex X.Modules ℕ → CategoryTheory.Functor X.Modules (CochainComplex X.Modules ℕ)
+'LinearStudy.schemeModuleSourceHomCoefficientComplexFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSourceHomCohomologyFunctor : {X : AlgebraicGeometry.Scheme} →
+  ChainComplex X.Modules ℕ → ℕ → CategoryTheory.Functor X.Modules X.Modules
+'LinearStudy.schemeModuleSourceHomCohomologyFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSourceHomCohomologyFunctor_map : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (q : ℕ) {N M : X.Modules} (c : N ⟶ M),
+  (LinearStudy.schemeModuleSourceHomCohomologyFunctor K q).map c =
+    HomologicalComplex.homologyMap (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c) q
+'LinearStudy.schemeModuleSourceHomCohomologyFunctor_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleSourceHomCoefficientComplexMap.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    {N M : X.Modules} →
+      (N ⟶ M) →
+        (LinearStudy.schemeModuleInternalHomCochainComplex N K ⟶
+          LinearStudy.schemeModuleInternalHomCochainComplex M K) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) {N M : X.Modules} (c : N ⟶ M) =>
+  { f := fun (p : ℕ) => LinearStudy.schemeModuleHomPostcompose c, comm' := ⋯ }
+def LinearStudy.schemeModuleSourceHomCoefficientComplexFunctor.{u} : {X : AlgebraicGeometry.Scheme} →
+  ChainComplex X.Modules ℕ → CategoryTheory.Functor X.Modules (CochainComplex X.Modules ℕ) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) =>
+  { obj := fun (N : X.Modules) => LinearStudy.schemeModuleInternalHomCochainComplex N K,
+    map := fun {X_1 Y : X.Modules} (c : X_1 ⟶ Y) => LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c,
+    map_id := ⋯, map_comp := ⋯ }
+def LinearStudy.schemeModuleSourceHomCohomologyFunctor.{u} : {X : AlgebraicGeometry.Scheme} →
+  ChainComplex X.Modules ℕ → ℕ → CategoryTheory.Functor X.Modules X.Modules :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (q : ℕ) =>
+  (LinearStudy.schemeModuleSourceHomCoefficientComplexFunctor K).comp
+    (HomologicalComplex.homologyFunctor X.Modules (ComplexShape.up ℕ) q)
+ROLECHECK:LinearStudy.schemeModuleSourceHomCoefficientComplexMap:false
+ROLECHECK:LinearStudy.schemeModuleSourceHomCoefficientComplexMap_id:true
+ROLECHECK:LinearStudy.schemeModuleSourceHomCoefficientComplexMap_comp:true
+ROLECHECK:LinearStudy.schemeModuleSourceHomCoefficientComplexFunctor:false
+ROLECHECK:LinearStudy.schemeModuleSourceHomCohomologyFunctor:false
+ROLECHECK:LinearStudy.schemeModuleSourceHomCohomologyFunctor_map:true

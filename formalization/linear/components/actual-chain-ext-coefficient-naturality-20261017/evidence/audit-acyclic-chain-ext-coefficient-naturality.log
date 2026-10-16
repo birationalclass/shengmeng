@@ -1,0 +1,33 @@
+@LinearStudy.schemeModuleAcyclicCokernelRankInternalExtNatIso : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (E : X.Modules) →
+      (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E) →
+        QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e) →
+          (r : ℕ) →
+            0 < r →
+              (∀ (N : X.Modules), LinearStudy.schemeModuleChainSourceExtAcyclic K N) →
+                CategoryTheory.Limits.IsZero (K.X (r + 1)) →
+                  (LinearStudy.schemeModuleInternalExtFunctor E r ≅
+                    LinearStudy.schemeModuleSourceHomCohomologyFunctor K r)
+'LinearStudy.schemeModuleAcyclicCokernelRankInternalExtNatIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleAcyclicCokernelRankInternalExtNatIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (E : X.Modules) →
+      (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E) →
+        QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e) →
+          (r : ℕ) →
+            0 < r →
+              (∀ (N : X.Modules), LinearStudy.schemeModuleChainSourceExtAcyclic K N) →
+                CategoryTheory.Limits.IsZero (K.X (r + 1)) →
+                  (LinearStudy.schemeModuleInternalExtFunctor E r ≅
+                    LinearStudy.schemeModuleSourceHomCohomologyFunctor K r) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (E : X.Modules)
+    (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E)
+    (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e)) (r : ℕ) (hr : 0 < r)
+    (hAll : ∀ (N : X.Modules), LinearStudy.schemeModuleChainSourceExtAcyclic K N)
+    (hAbove : CategoryTheory.Limits.IsZero (K.X (r + 1))) =>
+  CategoryTheory.NatIso.ofComponents
+    (fun (N : X.Modules) => LinearStudy.schemeModuleAcyclicCokernelRankCanonicalExtIso K E e he N r hr ⋯ hAbove) ⋯
+ROLECHECK:LinearStudy.schemeModuleAcyclicCokernelRankInternalExtNatIso:false

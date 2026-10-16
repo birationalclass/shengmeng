@@ -1,0 +1,406 @@
+
+===== SPLIT AUDIT source-hom-coefficient-complex =====
+@LinearStudy.schemeModuleSourceHomCoefficientComplexMap : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    {N M : X.Modules} →
+      (N ⟶ M) →
+        (LinearStudy.schemeModuleInternalHomCochainComplex N K ⟶ LinearStudy.schemeModuleInternalHomCochainComplex M K)
+'LinearStudy.schemeModuleSourceHomCoefficientComplexMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSourceHomCoefficientComplexMap_id : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (N : X.Modules),
+  LinearStudy.schemeModuleSourceHomCoefficientComplexMap K (CategoryTheory.CategoryStruct.id N) =
+    CategoryTheory.CategoryStruct.id (LinearStudy.schemeModuleInternalHomCochainComplex N K)
+'LinearStudy.schemeModuleSourceHomCoefficientComplexMap_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSourceHomCoefficientComplexMap_comp : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) {N M P : X.Modules} (c : N ⟶ M) (d : M ⟶ P),
+  LinearStudy.schemeModuleSourceHomCoefficientComplexMap K (CategoryTheory.CategoryStruct.comp c d) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c)
+      (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K d)
+'LinearStudy.schemeModuleSourceHomCoefficientComplexMap_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSourceHomCoefficientComplexFunctor : {X : AlgebraicGeometry.Scheme} →
+  ChainComplex X.Modules ℕ → CategoryTheory.Functor X.Modules (CochainComplex X.Modules ℕ)
+'LinearStudy.schemeModuleSourceHomCoefficientComplexFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSourceHomCohomologyFunctor : {X : AlgebraicGeometry.Scheme} →
+  ChainComplex X.Modules ℕ → ℕ → CategoryTheory.Functor X.Modules X.Modules
+'LinearStudy.schemeModuleSourceHomCohomologyFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSourceHomCohomologyFunctor_map : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (q : ℕ) {N M : X.Modules} (c : N ⟶ M),
+  (LinearStudy.schemeModuleSourceHomCohomologyFunctor K q).map c =
+    HomologicalComplex.homologyMap (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c) q
+'LinearStudy.schemeModuleSourceHomCohomologyFunctor_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleSourceHomCoefficientComplexMap.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    {N M : X.Modules} →
+      (N ⟶ M) →
+        (LinearStudy.schemeModuleInternalHomCochainComplex N K ⟶
+          LinearStudy.schemeModuleInternalHomCochainComplex M K) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) {N M : X.Modules} (c : N ⟶ M) =>
+  { f := fun (p : ℕ) => LinearStudy.schemeModuleHomPostcompose c, comm' := ⋯ }
+def LinearStudy.schemeModuleSourceHomCoefficientComplexFunctor.{u} : {X : AlgebraicGeometry.Scheme} →
+  ChainComplex X.Modules ℕ → CategoryTheory.Functor X.Modules (CochainComplex X.Modules ℕ) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) =>
+  { obj := fun (N : X.Modules) => LinearStudy.schemeModuleInternalHomCochainComplex N K,
+    map := fun {X_1 Y : X.Modules} (c : X_1 ⟶ Y) => LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c,
+    map_id := ⋯, map_comp := ⋯ }
+def LinearStudy.schemeModuleSourceHomCohomologyFunctor.{u} : {X : AlgebraicGeometry.Scheme} →
+  ChainComplex X.Modules ℕ → ℕ → CategoryTheory.Functor X.Modules X.Modules :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (q : ℕ) =>
+  (LinearStudy.schemeModuleSourceHomCoefficientComplexFunctor K).comp
+    (HomologicalComplex.homologyFunctor X.Modules (ComplexShape.up ℕ) q)
+ROLECHECK:LinearStudy.schemeModuleSourceHomCoefficientComplexMap:false
+ROLECHECK:LinearStudy.schemeModuleSourceHomCoefficientComplexMap_id:true
+ROLECHECK:LinearStudy.schemeModuleSourceHomCoefficientComplexMap_comp:true
+ROLECHECK:LinearStudy.schemeModuleSourceHomCoefficientComplexFunctor:false
+ROLECHECK:LinearStudy.schemeModuleSourceHomCohomologyFunctor:false
+ROLECHECK:LinearStudy.schemeModuleSourceHomCohomologyFunctor_map:true
+
+===== SPLIT AUDIT hom-cokernel-coefficient-naturality =====
+@LinearStudy.schemeModuleHomSourceCokernelCoefficientMap : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    {N M : X.Modules} →
+      (N ⟶ M) →
+        (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose S.f) ⟶
+          CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose S.f))
+'LinearStudy.schemeModuleHomSourceCokernelCoefficientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomSourceCokernelCoefficientMap_projection : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) {N M : X.Modules} (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose S.f))
+      (LinearStudy.schemeModuleHomSourceCokernelCoefficientMap S c) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPostcompose c)
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose S.f))
+'LinearStudy.schemeModuleHomSourceCokernelCoefficientMap_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleHomSourceBoundaryCokernelIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) {N M : X.Modules} (c : N ⟶ M)
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution M)
+  (hN : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N 1))
+  (hM : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ M 1)),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomSourceCokernelCoefficientMap S c)
+      (LinearStudy.schemeModuleHomSourceBoundaryCokernelIso S hS M J hM).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomSourceBoundaryCokernelIso S hS N I hN).hom
+      ((LinearStudy.schemeModuleInternalExtFunctor S.X₃ 1).map c)
+'LinearStudy.schemeModuleHomSourceBoundaryCokernelIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleHomSourceCokernelCoefficientMap.{u} : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    {N M : X.Modules} →
+      (N ⟶ M) →
+        (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose S.f) ⟶
+          CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose S.f)) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) {N M : X.Modules} (c : N ⟶ M) =>
+  CategoryTheory.Limits.cokernel.map (LinearStudy.schemeModuleHomPrecompose S.f)
+    (LinearStudy.schemeModuleHomPrecompose S.f) (LinearStudy.schemeModuleHomPostcompose c)
+    (LinearStudy.schemeModuleHomPostcompose c) ⋯
+ROLECHECK:LinearStudy.schemeModuleHomSourceCokernelCoefficientMap:false
+ROLECHECK:LinearStudy.schemeModuleHomSourceCokernelCoefficientMap_projection:true
+ROLECHECK:LinearStudy.schemeModuleHomSourceBoundaryCokernelIso_coefficientNaturality:true
+
+===== SPLIT AUDIT single-shift-coefficient-naturality =====
+@LinearStudy.schemeModuleChainOpcycleExtShiftIso_inv_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1)) {N M : X.Modules} (c : N ⟶ M)
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution M) (q : ℕ)
+  (hN : ∀ (j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+  (hM : ∀ (j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) M (j + 1))),
+  CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleInternalExtFunctor (HomologicalComplex.opcycles K p) (q + 2)).map c)
+      (LinearStudy.schemeModuleChainOpcycleExtShiftIso K p hK M J q hM).inv =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainOpcycleExtShiftIso K p hK N I q hN).inv
+      ((LinearStudy.schemeModuleInternalExtFunctor (HomologicalComplex.opcycles K (p + 1)) (q + 1)).map c)
+'LinearStudy.schemeModuleChainOpcycleExtShiftIso_inv_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleExtShiftIso_inv_coefficientNaturality:true
+
+===== SPLIT AUDIT ext-index-coefficient-naturality =====
+@LinearStudy.schemeModuleInternalExtSourceIndex_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (P : ℕ → X.Modules) (i j : ℕ) (h : i = j) {N M : X.Modules} (c : N ⟶ M) (q : ℕ),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor (P i) q).map c)
+      (CategoryTheory.eqToHom ⋯) =
+    CategoryTheory.CategoryStruct.comp (CategoryTheory.eqToHom ⋯)
+      ((LinearStudy.schemeModuleInternalExtFunctor (P j) q).map c)
+'LinearStudy.schemeModuleInternalExtSourceIndex_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInternalExtDegree_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme} (P : X.Modules)
+  (i j : ℕ) (h : i = j) {N M : X.Modules} (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor P i).map c)
+      (CategoryTheory.eqToHom ⋯) =
+    CategoryTheory.CategoryStruct.comp (CategoryTheory.eqToHom ⋯)
+      ((LinearStudy.schemeModuleInternalExtFunctor P j).map c)
+'LinearStudy.schemeModuleInternalExtDegree_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleSourceHomCohomologyDegree_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (i j : ℕ) (h : i = j) {N M : X.Modules} (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleSourceHomCohomologyFunctor K i).map c)
+      (CategoryTheory.eqToHom ⋯) =
+    CategoryTheory.CategoryStruct.comp (CategoryTheory.eqToHom ⋯)
+      ((LinearStudy.schemeModuleSourceHomCohomologyFunctor K j).map c)
+'LinearStudy.schemeModuleSourceHomCohomologyDegree_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceIndex_coefficientNaturality:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtDegree_coefficientNaturality:true
+ROLECHECK:LinearStudy.schemeModuleSourceHomCohomologyDegree_coefficientNaturality:true
+
+===== SPLIT AUDIT iterated-ext-recursion =====
+@LinearStudy.schemeModuleChainOpcycleIteratedExtIso_zero : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N)
+  (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) (p : ℕ),
+  LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N I hA p 0 =
+    CategoryTheory.Iso.refl (LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N (0 + 1))
+'LinearStudy.schemeModuleChainOpcycleIteratedExtIso_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChainOpcycleIteratedExtIso_succ : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N)
+  (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) (p q : ℕ),
+  LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N I hA p (q + 1) =
+    (LinearStudy.schemeModuleChainOpcycleExtShiftIso K p ⋯ N I q ⋯).symm ≪≫
+      LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N I hA (p + 1) q ≪≫ CategoryTheory.eqToIso ⋯
+'LinearStudy.schemeModuleChainOpcycleIteratedExtIso_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleIteratedExtIso_zero:true
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleIteratedExtIso_succ:true
+
+===== SPLIT AUDIT iterated-shift-coefficient-naturality =====
+@LinearStudy.schemeModuleChainOpcycleIteratedExtIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) {N M : X.Modules} (c : N ⟶ M)
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution M)
+  (hN : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+  (hM : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) M (j + 1))) (p q : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleInternalExtFunctor (HomologicalComplex.opcycles K p) (q + 1)).map c)
+      (LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK M J hM p q).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N I hN p q).hom
+      ((LinearStudy.schemeModuleInternalExtFunctor (HomologicalComplex.opcycles K (p + q)) 1).map c)
+'LinearStudy.schemeModuleChainOpcycleIteratedExtIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleIteratedExtIso_coefficientNaturality:true
+
+===== SPLIT AUDIT opcycle-hom-coefficient-naturality =====
+@LinearStudy.schemeModuleChainOpcycleHomCokernelIso_inv_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1)) {N M : X.Modules} (c : N ⟶ M)
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution M)
+  (hN : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N 1))
+  (hM : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) M 1)),
+  CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleInternalExtFunctor (HomologicalComplex.opcycles K p) 1).map c)
+      (LinearStudy.schemeModuleChainOpcycleHomCokernelIso K p hK M J hM).inv =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainOpcycleHomCokernelIso K p hK N I hN).inv
+      (LinearStudy.schemeModuleHomSourceCokernelCoefficientMap (LinearStudy.schemeModuleChainOpcycleSequence K p) c)
+'LinearStudy.schemeModuleChainOpcycleHomCokernelIso_inv_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleHomCokernelIso_inv_coefficientNaturality:true
+
+===== SPLIT AUDIT top-hom-coefficient-naturality =====
+@LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      {N M : X.Modules} →
+        (N ⟶ M) →
+          (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)) ⟶
+            CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)))
+'LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap_projection : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) {N M : X.Modules} (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)))
+      (LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap K p c) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPostcompose c)
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)))
+'LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleChainTopHomCokernelIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) (hAbove : CategoryTheory.Limits.IsZero (K.X (p + 2))) {N M : X.Modules}
+  (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.schemeModuleHomSourceCokernelCoefficientMap (LinearStudy.schemeModuleChainOpcycleSequence K p) c)
+      (LinearStudy.schemeModuleChainTopHomCokernelIso K M p hAbove).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainTopHomCokernelIso K N p hAbove).hom
+      (LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap K p c)
+'LinearStudy.schemeModuleChainTopHomCokernelIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleSourceHomHomologyIsoSc_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) {N M : X.Modules} (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c) (p + 1))
+      (HomologicalComplex.homologyIsoSc' (LinearStudy.schemeModuleInternalHomCochainComplex M K) p (p + 1) (p + 2) ⋯
+          ⋯).hom =
+    CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyIsoSc' (LinearStudy.schemeModuleInternalHomCochainComplex N K) p (p + 1) (p + 2) ⋯
+          ⋯).hom
+      (CategoryTheory.ShortComplex.homologyMap
+        ((HomologicalComplex.shortComplexFunctor' X.Modules (ComplexShape.up ℕ) p (p + 1) (p + 2)).map
+          (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c)))
+'LinearStudy.schemeModuleSourceHomHomologyIsoSc_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      {N M : X.Modules} →
+        (N ⟶ M) →
+          (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)) ⟶
+            CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p))) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (p : ℕ) {N M : X.Modules} (c : N ⟶ M) =>
+  CategoryTheory.Limits.cokernel.map (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p))
+    (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)) (LinearStudy.schemeModuleHomPostcompose c)
+    (LinearStudy.schemeModuleHomPostcompose c) ⋯
+ROLECHECK:LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap:false
+ROLECHECK:LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap_projection:true
+ROLECHECK:LinearStudy.schemeModuleChainTopHomCokernelIso_coefficientNaturality:true
+ROLECHECK:LinearStudy.schemeModuleSourceHomHomologyIsoSc_coefficientNaturality:true
+
+===== SPLIT AUDIT top-homology-coefficient-naturality =====
+@LinearStudy.schemeModuleChainTopHomologyCokernelIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) (hAbove : CategoryTheory.Limits.IsZero (K.X (p + 2))) {N M : X.Modules}
+  (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c) (p + 1))
+      (LinearStudy.schemeModuleChainTopHomologyCokernelIso K M p hAbove).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainTopHomologyCokernelIso K N p hAbove).hom
+      (LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap K p c)
+'LinearStudy.schemeModuleChainTopHomologyCokernelIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleChainTopHomologyCokernelIso_coefficientNaturality:true
+
+===== SPLIT AUDIT acyclic-chain-top-hom-equation =====
+@LinearStudy.schemeModuleAcyclicChainTopInternalExtIso_hom_equation : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+  (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+  (hAbove : CategoryTheory.Limits.IsZero (K.X (q + 2))),
+  (LinearStudy.schemeModuleAcyclicChainTopInternalExtIso K hK N I q hA hAbove).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N I hA 0 q).hom
+      (CategoryTheory.CategoryStruct.comp (CategoryTheory.eqToIso ⋯).hom
+        (CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainOpcycleHomCokernelIso K q ⋯ N I ⋯).inv
+          (CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainTopHomCokernelIso K N q hAbove).hom
+            (LinearStudy.schemeModuleChainTopHomologyCokernelIso K N q hAbove).inv)))
+'LinearStudy.schemeModuleAcyclicChainTopInternalExtIso_hom_equation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleAcyclicChainTopInternalExtIso_hom_equation:true
+
+===== SPLIT AUDIT acyclic-chain-top-coefficient-naturality =====
+@LinearStudy.schemeModuleAcyclicChainTopInternalExtIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) {N M : X.Modules} (c : N ⟶ M)
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution M) (q : ℕ)
+  (hN : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+  (hM : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) M (j + 1)))
+  (hAbove : CategoryTheory.Limits.IsZero (K.X (q + 2))),
+  CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleInternalExtFunctor (HomologicalComplex.opcycles K 0) (q + 1)).map c)
+      (LinearStudy.schemeModuleAcyclicChainTopInternalExtIso K hK M J q hM hAbove).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleAcyclicChainTopInternalExtIso K hK N I q hN hAbove).hom
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c) (q + 1))
+'LinearStudy.schemeModuleAcyclicChainTopInternalExtIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleAcyclicChainTopInternalExtIso_coefficientNaturality:true
+
+===== SPLIT AUDIT ext-source-iso-coefficient-naturality =====
+@LinearStudy.schemeModuleInternalExtSourceIso_inv_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {P Q : X.Modules} (e : P ≅ Q) {N M : X.Modules} (c : N ⟶ M) (q : ℕ),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor Q q).map c)
+      (LinearStudy.schemeModuleInternalExtSourceIso e M q).inv =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceIso e N q).inv
+      ((LinearStudy.schemeModuleInternalExtFunctor P q).map c)
+'LinearStudy.schemeModuleInternalExtSourceIso_inv_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceIso_inv_coefficientNaturality:true
+
+===== SPLIT AUDIT acyclic-cokernel-top-coefficient-naturality =====
+@LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (E : X.Modules) (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E)
+  (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e)) {N M : X.Modules} (c : N ⟶ M)
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution M) (q : ℕ)
+  (hN : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+  (hM : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) M (j + 1)))
+  (hAbove : CategoryTheory.Limits.IsZero (K.X (q + 2))),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor E (q + 1)).map c)
+      (LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso K E e he M J q hM hAbove).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso K E e he N I q hN hAbove).hom
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c) (q + 1))
+'LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso_coefficientNaturality:true
+
+===== SPLIT AUDIT acyclic-cokernel-rank-coefficient-naturality =====
+@LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (E : X.Modules) (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E)
+  (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e)) {N M : X.Modules} (c : N ⟶ M)
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution M) (r : ℕ) (hr : 0 < r)
+  (hN : LinearStudy.schemeModuleChainSourceExtAcyclic K N) (hM : LinearStudy.schemeModuleChainSourceExtAcyclic K M)
+  (hAbove : CategoryTheory.Limits.IsZero (K.X (r + 1))),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor E r).map c)
+      (LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso K E e he M J r hr hM hAbove).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso K E e he N I r hr hN hAbove).hom
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c) r)
+'LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso_coefficientNaturality:true
+
+===== SPLIT AUDIT acyclic-rank-canonical-coefficient-naturality =====
+@LinearStudy.schemeModuleAcyclicCokernelRankCanonicalExtIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (E : X.Modules) (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E)
+  (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e)) {N M : X.Modules} (c : N ⟶ M) (r : ℕ)
+  (hr : 0 < r) (hN : LinearStudy.schemeModuleChainSourceExtAcyclic K N)
+  (hM : LinearStudy.schemeModuleChainSourceExtAcyclic K M) (hAbove : CategoryTheory.Limits.IsZero (K.X (r + 1))),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor E r).map c)
+      (LinearStudy.schemeModuleAcyclicCokernelRankCanonicalExtIso K E e he M r hr hM hAbove).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.schemeModuleAcyclicCokernelRankCanonicalExtIso K E e he N r hr hN hAbove).hom
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c) r)
+'LinearStudy.schemeModuleAcyclicCokernelRankCanonicalExtIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleAcyclicCokernelRankCanonicalExtIso_coefficientNaturality:true
+
+===== SPLIT AUDIT acyclic-chain-ext-coefficient-naturality =====
+@LinearStudy.schemeModuleAcyclicCokernelRankInternalExtNatIso : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (E : X.Modules) →
+      (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E) →
+        QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e) →
+          (r : ℕ) →
+            0 < r →
+              (∀ (N : X.Modules), LinearStudy.schemeModuleChainSourceExtAcyclic K N) →
+                CategoryTheory.Limits.IsZero (K.X (r + 1)) →
+                  (LinearStudy.schemeModuleInternalExtFunctor E r ≅
+                    LinearStudy.schemeModuleSourceHomCohomologyFunctor K r)
+'LinearStudy.schemeModuleAcyclicCokernelRankInternalExtNatIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleAcyclicCokernelRankInternalExtNatIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (E : X.Modules) →
+      (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E) →
+        QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e) →
+          (r : ℕ) →
+            0 < r →
+              (∀ (N : X.Modules), LinearStudy.schemeModuleChainSourceExtAcyclic K N) →
+                CategoryTheory.Limits.IsZero (K.X (r + 1)) →
+                  (LinearStudy.schemeModuleInternalExtFunctor E r ≅
+                    LinearStudy.schemeModuleSourceHomCohomologyFunctor K r) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (E : X.Modules)
+    (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E)
+    (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e)) (r : ℕ) (hr : 0 < r)
+    (hAll : ∀ (N : X.Modules), LinearStudy.schemeModuleChainSourceExtAcyclic K N)
+    (hAbove : CategoryTheory.Limits.IsZero (K.X (r + 1))) =>
+  CategoryTheory.NatIso.ofComponents
+    (fun (N : X.Modules) => LinearStudy.schemeModuleAcyclicCokernelRankCanonicalExtIso K E e he N r hr ⋯ hAbove) ⋯
+ROLECHECK:LinearStudy.schemeModuleAcyclicCokernelRankInternalExtNatIso:false

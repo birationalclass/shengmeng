@@ -1,0 +1,12 @@
+@LinearStudy.schemeModuleChainTopHomologyCokernelIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) (hAbove : CategoryTheory.Limits.IsZero (K.X (p + 2))) {N M : X.Modules}
+  (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c) (p + 1))
+      (LinearStudy.schemeModuleChainTopHomologyCokernelIso K M p hAbove).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainTopHomologyCokernelIso K N p hAbove).hom
+      (LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap K p c)
+'LinearStudy.schemeModuleChainTopHomologyCokernelIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleChainTopHomologyCokernelIso_coefficientNaturality:true

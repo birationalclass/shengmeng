@@ -1,0 +1,10 @@
+@LinearStudy.schemeModuleInternalExtSourceIso_inv_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {P Q : X.Modules} (e : P ≅ Q) {N M : X.Modules} (c : N ⟶ M) (q : ℕ),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor Q q).map c)
+      (LinearStudy.schemeModuleInternalExtSourceIso e M q).inv =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceIso e N q).inv
+      ((LinearStudy.schemeModuleInternalExtFunctor P q).map c)
+'LinearStudy.schemeModuleInternalExtSourceIso_inv_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceIso_inv_coefficientNaturality:true

@@ -1,0 +1,14 @@
+@LinearStudy.schemeModuleChainOpcycleExtShiftIso_inv_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1)) {N M : X.Modules} (c : N ⟶ M)
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution M) (q : ℕ)
+  (hN : ∀ (j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+  (hM : ∀ (j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) M (j + 1))),
+  CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleInternalExtFunctor (HomologicalComplex.opcycles K p) (q + 2)).map c)
+      (LinearStudy.schemeModuleChainOpcycleExtShiftIso K p hK M J q hM).inv =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainOpcycleExtShiftIso K p hK N I q hN).inv
+      ((LinearStudy.schemeModuleInternalExtFunctor (HomologicalComplex.opcycles K (p + 1)) (q + 1)).map c)
+'LinearStudy.schemeModuleChainOpcycleExtShiftIso_inv_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleExtShiftIso_inv_coefficientNaturality:true

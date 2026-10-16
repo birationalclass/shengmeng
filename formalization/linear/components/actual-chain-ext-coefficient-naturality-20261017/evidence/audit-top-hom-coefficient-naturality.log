@@ -1,0 +1,61 @@
+@LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      {N M : X.Modules} →
+        (N ⟶ M) →
+          (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)) ⟶
+            CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)))
+'LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap_projection : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) {N M : X.Modules} (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)))
+      (LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap K p c) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPostcompose c)
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)))
+'LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleChainTopHomCokernelIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) (hAbove : CategoryTheory.Limits.IsZero (K.X (p + 2))) {N M : X.Modules}
+  (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.schemeModuleHomSourceCokernelCoefficientMap (LinearStudy.schemeModuleChainOpcycleSequence K p) c)
+      (LinearStudy.schemeModuleChainTopHomCokernelIso K M p hAbove).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainTopHomCokernelIso K N p hAbove).hom
+      (LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap K p c)
+'LinearStudy.schemeModuleChainTopHomCokernelIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleSourceHomHomologyIsoSc_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) {N M : X.Modules} (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c) (p + 1))
+      (HomologicalComplex.homologyIsoSc' (LinearStudy.schemeModuleInternalHomCochainComplex M K) p (p + 1) (p + 2) ⋯
+          ⋯).hom =
+    CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyIsoSc' (LinearStudy.schemeModuleInternalHomCochainComplex N K) p (p + 1) (p + 2) ⋯
+          ⋯).hom
+      (CategoryTheory.ShortComplex.homologyMap
+        ((HomologicalComplex.shortComplexFunctor' X.Modules (ComplexShape.up ℕ) p (p + 1) (p + 2)).map
+          (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c)))
+'LinearStudy.schemeModuleSourceHomHomologyIsoSc_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      {N M : X.Modules} →
+        (N ⟶ M) →
+          (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)) ⟶
+            CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p))) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (p : ℕ) {N M : X.Modules} (c : N ⟶ M) =>
+  CategoryTheory.Limits.cokernel.map (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p))
+    (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)) (LinearStudy.schemeModuleHomPostcompose c)
+    (LinearStudy.schemeModuleHomPostcompose c) ⋯
+ROLECHECK:LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap:false
+ROLECHECK:LinearStudy.schemeModuleChainDifferentialHomCokernelCoefficientMap_projection:true
+ROLECHECK:LinearStudy.schemeModuleChainTopHomCokernelIso_coefficientNaturality:true
+ROLECHECK:LinearStudy.schemeModuleSourceHomHomologyIsoSc_coefficientNaturality:true

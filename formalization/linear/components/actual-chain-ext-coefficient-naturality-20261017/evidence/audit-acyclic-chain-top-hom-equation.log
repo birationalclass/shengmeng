@@ -1,0 +1,15 @@
+@LinearStudy.schemeModuleAcyclicChainTopInternalExtIso_hom_equation : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+  (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+  (hAbove : CategoryTheory.Limits.IsZero (K.X (q + 2))),
+  (LinearStudy.schemeModuleAcyclicChainTopInternalExtIso K hK N I q hA hAbove).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N I hA 0 q).hom
+      (CategoryTheory.CategoryStruct.comp (CategoryTheory.eqToIso ⋯).hom
+        (CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainOpcycleHomCokernelIso K q ⋯ N I ⋯).inv
+          (CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainTopHomCokernelIso K N q hAbove).hom
+            (LinearStudy.schemeModuleChainTopHomologyCokernelIso K N q hAbove).inv)))
+'LinearStudy.schemeModuleAcyclicChainTopInternalExtIso_hom_equation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleAcyclicChainTopInternalExtIso_hom_equation:true

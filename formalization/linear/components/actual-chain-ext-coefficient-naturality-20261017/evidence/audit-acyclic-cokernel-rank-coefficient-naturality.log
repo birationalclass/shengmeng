@@ -1,0 +1,15 @@
+@LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (E : X.Modules) (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E)
+  (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e)) {N M : X.Modules} (c : N ⟶ M)
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution M) (r : ℕ) (hr : 0 < r)
+  (hN : LinearStudy.schemeModuleChainSourceExtAcyclic K N) (hM : LinearStudy.schemeModuleChainSourceExtAcyclic K M)
+  (hAbove : CategoryTheory.Limits.IsZero (K.X (r + 1))),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor E r).map c)
+      (LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso K E e he M J r hr hM hAbove).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso K E e he N I r hr hN hAbove).hom
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c) r)
+'LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso_coefficientNaturality:true

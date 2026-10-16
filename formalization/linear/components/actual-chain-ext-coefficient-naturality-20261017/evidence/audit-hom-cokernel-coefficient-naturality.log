@@ -1,0 +1,41 @@
+@LinearStudy.schemeModuleHomSourceCokernelCoefficientMap : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    {N M : X.Modules} →
+      (N ⟶ M) →
+        (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose S.f) ⟶
+          CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose S.f))
+'LinearStudy.schemeModuleHomSourceCokernelCoefficientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomSourceCokernelCoefficientMap_projection : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) {N M : X.Modules} (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose S.f))
+      (LinearStudy.schemeModuleHomSourceCokernelCoefficientMap S c) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPostcompose c)
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose S.f))
+'LinearStudy.schemeModuleHomSourceCokernelCoefficientMap_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleHomSourceBoundaryCokernelIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) {N M : X.Modules} (c : N ⟶ M)
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution M)
+  (hN : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N 1))
+  (hM : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ M 1)),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomSourceCokernelCoefficientMap S c)
+      (LinearStudy.schemeModuleHomSourceBoundaryCokernelIso S hS M J hM).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomSourceBoundaryCokernelIso S hS N I hN).hom
+      ((LinearStudy.schemeModuleInternalExtFunctor S.X₃ 1).map c)
+'LinearStudy.schemeModuleHomSourceBoundaryCokernelIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleHomSourceCokernelCoefficientMap.{u} : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    {N M : X.Modules} →
+      (N ⟶ M) →
+        (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose S.f) ⟶
+          CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose S.f)) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) {N M : X.Modules} (c : N ⟶ M) =>
+  CategoryTheory.Limits.cokernel.map (LinearStudy.schemeModuleHomPrecompose S.f)
+    (LinearStudy.schemeModuleHomPrecompose S.f) (LinearStudy.schemeModuleHomPostcompose c)
+    (LinearStudy.schemeModuleHomPostcompose c) ⋯
+ROLECHECK:LinearStudy.schemeModuleHomSourceCokernelCoefficientMap:false
+ROLECHECK:LinearStudy.schemeModuleHomSourceCokernelCoefficientMap_projection:true
+ROLECHECK:LinearStudy.schemeModuleHomSourceBoundaryCokernelIso_coefficientNaturality:true

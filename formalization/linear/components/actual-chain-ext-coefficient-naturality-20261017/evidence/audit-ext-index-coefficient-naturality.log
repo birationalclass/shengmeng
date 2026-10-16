@@ -1,0 +1,30 @@
+@LinearStudy.schemeModuleInternalExtSourceIndex_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (P : ℕ → X.Modules) (i j : ℕ) (h : i = j) {N M : X.Modules} (c : N ⟶ M) (q : ℕ),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor (P i) q).map c)
+      (CategoryTheory.eqToHom ⋯) =
+    CategoryTheory.CategoryStruct.comp (CategoryTheory.eqToHom ⋯)
+      ((LinearStudy.schemeModuleInternalExtFunctor (P j) q).map c)
+'LinearStudy.schemeModuleInternalExtSourceIndex_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInternalExtDegree_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme} (P : X.Modules)
+  (i j : ℕ) (h : i = j) {N M : X.Modules} (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor P i).map c)
+      (CategoryTheory.eqToHom ⋯) =
+    CategoryTheory.CategoryStruct.comp (CategoryTheory.eqToHom ⋯)
+      ((LinearStudy.schemeModuleInternalExtFunctor P j).map c)
+'LinearStudy.schemeModuleInternalExtDegree_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleSourceHomCohomologyDegree_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (i j : ℕ) (h : i = j) {N M : X.Modules} (c : N ⟶ M),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleSourceHomCohomologyFunctor K i).map c)
+      (CategoryTheory.eqToHom ⋯) =
+    CategoryTheory.CategoryStruct.comp (CategoryTheory.eqToHom ⋯)
+      ((LinearStudy.schemeModuleSourceHomCohomologyFunctor K j).map c)
+'LinearStudy.schemeModuleSourceHomCohomologyDegree_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceIndex_coefficientNaturality:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtDegree_coefficientNaturality:true
+ROLECHECK:LinearStudy.schemeModuleSourceHomCohomologyDegree_coefficientNaturality:true

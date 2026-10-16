@@ -1,0 +1,16 @@
+@LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso_coefficientNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (E : X.Modules) (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E)
+  (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e)) {N M : X.Modules} (c : N ⟶ M)
+  (I : CategoryTheory.InjectiveResolution N) (J : CategoryTheory.InjectiveResolution M) (q : ℕ)
+  (hN : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+  (hM : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) M (j + 1)))
+  (hAbove : CategoryTheory.Limits.IsZero (K.X (q + 2))),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtFunctor E (q + 1)).map c)
+      (LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso K E e he M J q hM hAbove).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso K E e he N I q hN hAbove).hom
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleSourceHomCoefficientComplexMap K c) (q + 1))
+'LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso_coefficientNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso_coefficientNaturality:true
