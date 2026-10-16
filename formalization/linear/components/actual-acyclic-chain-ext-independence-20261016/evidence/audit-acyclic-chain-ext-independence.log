@@ -1,0 +1,84 @@
+@LinearStudy.schemeModuleChainOpcycleExtShiftIso_independent : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1)) (N : X.Modules)
+  (I J : CategoryTheory.InjectiveResolution N) (q : ℕ)
+  (hA : ∀ (j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))),
+  LinearStudy.schemeModuleChainOpcycleExtShiftIso K p hK N I q hA =
+    LinearStudy.schemeModuleChainOpcycleExtShiftIso K p hK N J q hA
+'LinearStudy.schemeModuleChainOpcycleExtShiftIso_independent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChainOpcycleHomCokernelIso_independent : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1)) (N : X.Modules)
+  (I J : CategoryTheory.InjectiveResolution N)
+  (hA : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N 1)),
+  LinearStudy.schemeModuleChainOpcycleHomCokernelIso K p hK N I hA =
+    LinearStudy.schemeModuleChainOpcycleHomCokernelIso K p hK N J hA
+'LinearStudy.schemeModuleChainOpcycleHomCokernelIso_independent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleChainOpcycleIteratedExtIso_independent : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) (N : X.Modules)
+  (I J : CategoryTheory.InjectiveResolution N)
+  (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) (p q : ℕ),
+  LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N I hA p q =
+    LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N J hA p q
+'LinearStudy.schemeModuleChainOpcycleIteratedExtIso_independent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleChainOpcycleExtCokernelIso_independent : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) (N : X.Modules)
+  (I J : CategoryTheory.InjectiveResolution N)
+  (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) (p q : ℕ),
+  LinearStudy.schemeModuleChainOpcycleExtCokernelIso K hK N I hA p q =
+    LinearStudy.schemeModuleChainOpcycleExtCokernelIso K hK N J hA p q
+'LinearStudy.schemeModuleChainOpcycleExtCokernelIso_independent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleAcyclicChainTopInternalExtIso_independent : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) (N : X.Modules)
+  (I J : CategoryTheory.InjectiveResolution N) (q : ℕ)
+  (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+  (hAbove : CategoryTheory.Limits.IsZero (K.X (q + 2))),
+  LinearStudy.schemeModuleAcyclicChainTopInternalExtIso K hK N I q hA hAbove =
+    LinearStudy.schemeModuleAcyclicChainTopInternalExtIso K hK N J q hA hAbove
+'LinearStudy.schemeModuleAcyclicChainTopInternalExtIso_independent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso_independent : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (E : X.Modules) (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E)
+  (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e)) (N : X.Modules)
+  (I J : CategoryTheory.InjectiveResolution N) (q : ℕ)
+  (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+  (hAbove : CategoryTheory.Limits.IsZero (K.X (q + 2))),
+  LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso K E e he N I q hA hAbove =
+    LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso K E e he N J q hA hAbove
+'LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso_independent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso_independent : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (E : X.Modules) (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E)
+  (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e)) (N : X.Modules)
+  (I J : CategoryTheory.InjectiveResolution N) (r : ℕ) (hr : 0 < r)
+  (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+  (hAbove : CategoryTheory.Limits.IsZero (K.X (r + 1))),
+  LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso K E e he N I r hr hA hAbove =
+    LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso K E e he N J r hr hA hAbove
+'LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso_independent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleAcyclicCokernelRankCanonicalExtIso_eq_viaResolution : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (E : X.Modules) (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E)
+  (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e)) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (r : ℕ) (hr : 0 < r)
+  (hA : LinearStudy.schemeModuleChainSourceExtAcyclic K N) (hAbove : CategoryTheory.Limits.IsZero (K.X (r + 1))),
+  LinearStudy.schemeModuleAcyclicCokernelRankCanonicalExtIso K E e he N r hr hA hAbove =
+    LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso K E e he N I r hr hA hAbove
+'LinearStudy.schemeModuleAcyclicCokernelRankCanonicalExtIso_eq_viaResolution' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleExtShiftIso_independent:true
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleHomCokernelIso_independent:true
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleIteratedExtIso_independent:true
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleExtCokernelIso_independent:true
+ROLECHECK:LinearStudy.schemeModuleAcyclicChainTopInternalExtIso_independent:true
+ROLECHECK:LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso_independent:true
+ROLECHECK:LinearStudy.schemeModuleAcyclicCokernelRankInternalExtIso_independent:true
+ROLECHECK:LinearStudy.schemeModuleAcyclicCokernelRankCanonicalExtIso_eq_viaResolution:true
