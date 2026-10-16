@@ -1,0 +1,44 @@
+@LinearStudy.shortExactInjectiveCochainLift_allDegrees_exists : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] (S : CategoryTheory.ShortComplex A),
+  S.ShortExact →
+    ∀ (K : CochainComplex A ℤ) (q : ℤ) [CategoryTheory.Injective (K.X q)]
+      (a : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj S.X₁) K q),
+      ∃ (b : CochainComplex.HomComplex.Cochain ((CochainComplex.singleFunctor A 0).obj S.X₂) K q) (c :
+        CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj S.X₃) K (q + 1)),
+        (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.f)).comp b ⋯ = ↑a ∧
+          CochainComplex.HomComplex.δ q (q + 1) b =
+            (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.g)).comp ↑c ⋯
+'LinearStudy.shortExactInjectiveCochainLift_allDegrees_exists' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.actualHomCocycleComp : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {F G K : CochainComplex A ℤ} →
+        {n m p : ℤ} →
+          CochainComplex.HomComplex.Cocycle F G n →
+            CochainComplex.HomComplex.Cocycle G K m → n + m = p → CochainComplex.HomComplex.Cocycle F K p
+'LinearStudy.actualHomCocycleComp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainConeLiftClass_allDegrees : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (S : CategoryTheory.ShortComplex (CochainComplex A ℤ)) (K : CochainComplex A ℤ)
+  (q : ℤ) (a : CochainComplex.HomComplex.Cocycle S.X₁ K q) (b : CochainComplex.HomComplex.Cochain S.X₂ K q)
+  (c : CochainComplex.HomComplex.Cocycle S.X₃ K (q + 1)),
+  (CochainComplex.HomComplex.Cochain.ofHom S.f).comp b ⋯ = ↑a →
+    CochainComplex.HomComplex.δ q (q + 1) b = (CochainComplex.HomComplex.Cochain.ofHom S.g).comp ↑c ⋯ →
+      CochainComplex.HomComplex.CohomologyClass.mk (c.precomp (CochainComplex.mappingCone.descShortComplex S)) =
+        CochainComplex.HomComplex.CohomologyClass.mk
+          (q.negOnePow • LinearStudy.actualHomCocycleComp (CochainComplex.mappingCone.fst S.f) a ⋯)
+'LinearStudy.cochainConeLiftClass_allDegrees' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.actualHomCocycleComp.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {F G K : CochainComplex A ℤ} →
+        {n m p : ℤ} →
+          CochainComplex.HomComplex.Cocycle F G n →
+            CochainComplex.HomComplex.Cocycle G K m → n + m = p → CochainComplex.HomComplex.Cocycle F K p :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {F G K : CochainComplex A ℤ} {n m p : ℤ}
+    (a : CochainComplex.HomComplex.Cocycle F G n) (b : CochainComplex.HomComplex.Cocycle G K m) (h : n + m = p) =>
+  CochainComplex.HomComplex.Cocycle.mk ((↑a).comp (↑b) h) (p + 1) ⋯ ⋯
+ROLECHECK:LinearStudy.shortExactInjectiveCochainLift_allDegrees_exists:true
+ROLECHECK:LinearStudy.actualHomCocycleComp:false
+ROLECHECK:LinearStudy.cochainConeLiftClass_allDegrees:true

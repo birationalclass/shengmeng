@@ -1,0 +1,462 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-16T22:24:01.647797+00:00",
+  "source": "accepted Lean.findDeclarationRanges and ConstantInfo.getUsedConstantsAsSet from import-all compiler environment; traverse every owned auxiliary constant before merging compiler-recorded ranges",
+  "archiveSha256": "1c94b5fb726c98c8e82f8cfdc5c164ecc4b263dcbc90e2f15d338cd10803c376",
+  "newComponentOwn": 197,
+  "newComponentAllNeeded": 212,
+  "metadataComplete": true,
+  "excludedExternalGeneratedConstants": [],
+  "unmappedConstants": [],
+  "sourceHashes": {
+    "source/Linear/CochainConeLiftClassAllDegrees.lean": "f8067bafbb016c484411fb494cde7e936f351bb567bd17c73c3cd90321c61675",
+    "source/Linear/CochainConeLiftClassBridge.lean": "050cd9388367f141bb62533548b1d2f9914a56c49ba19b6015c2516194900b0c",
+    "source/Linear/CochainConeLiftDerivedAllDegrees.lean": "f3d23c59ce7f5f1e5cf2cf015b45cd16f57cfaeffc8f8839c8e2c42e5f479972",
+    "source/Linear/CochainConeLiftDerivedBridge.lean": "4bbafc6aff655e5d774647da88d32d0f4485a68ef84f8d4e272ec932591d29f8",
+    "source/Linear/CochainConeLiftTriangleDegrees.lean": "a7acf3f96099fc87311925af4cb4d37dfe606e7848f6b4f5e2a994ec5e8b0675",
+    "source/Linear/HomCocycleShiftedComposition.lean": "abfe958f9bfa83d67b958f07dd4fa368cae127d463a96e2f76276eec16034eeb",
+    "source/Linear/ShortExactInjectiveCochainLift.lean": "6746782cc84992819be548ba083ee839b78212773e7d2c68c4c77ec544d22b51",
+    "source/Linear/ShortExactInjectiveCochainLiftAllDegrees.lean": "761dd60512d50e619b7064fead618acf5da05fb81679c3fe5f582b02aa537b08",
+    "source/Linear/ShortExactInjectiveCocycleAllDegrees.lean": "9c4d00a2da9bf999c6fb8c0b7733310009f8c635298a5597b0abe13cc74ab5ec",
+    "source/Linear/ShortExactInjectiveExtBoundaryAllDegrees.lean": "1037710e4140a75ed55915730372131a6e1d2253c13b894cf4f25b0f27d3062a",
+    "source/Linear.lean": "8e3f4e669b3a220345115b436a090383f8b6a587a83907e7e0fc4b4f72db4b05",
+    "source/lean-toolchain": "bc84812c94489d1e3e191baa1dc10d5eb684382d7fe9d2a5ab085e72c1c67e47",
+    "source/lakefile.toml": "12e6d3039c6ed00731bcf1c8f8e9c116e81771e6a74cad289b920b767f94d9ee",
+    "source/lake-manifest.json": "ef71ef5fb13fd129bbf52a72216543bfd4c8e2b752dd3234d0f18b9964b104da",
+    "source/lean_runner.py": "29184f494ad21d0245b2123e1de05ef5ac8e1f9ee4ca3760eb03dcf1fbc43a29",
+    "source/resource_guard.py": "e645a05b3d1cda35df85b69261c8e151ec249adc6f077f5558df656fded10111",
+    "source/resource-policy.json": "a76f8486e8ef675fd26b6506704d02c82d4d453be35f4ac2477a0dbc6cca5833",
+    "source/RESOURCE_SAFETY.md": "0c949c5650ac6aa8fd712989d07dca7b6f9aadbc5d0a779ff2804cbb9d408e43",
+    "source/AGENTS.md": "77cb9ea044a7492301af545ce02e5209302ba73b1b7bb74682386640d61dc385",
+    "source/CheckOriginalExtRestrictionAllDegreeActualCochainCone4a9febc61cc4.lean": "6cb739df6612cc69e6c1c8104e55e435f2862826a08a20534570175288a027f0",
+    "source/CheckOriginalExtRestrictionAllDegreeDerivedCone3ef54d115276.lean": "781d61c8517c5ad692b061d9ac7b0ae1d848626bbe6113f93132426b2bfdb433",
+    "source/CheckOriginalExtRestrictionAllDegreeNativeExtBoundaryc1009b60f3b8.lean": "e8a66a9760a5305ff000839dddf0198138aa21617429c31ab88c5d33ca0975be"
+  },
+  "cards": {
+    "actual-lifts": {
+      "declarations": [
+        "LinearStudy.shortExactInjectiveCochainLift_allDegrees_exists"
+      ],
+      "own": 35,
+      "allNeeded": 35,
+      "metadata": "complete",
+      "unmappedConstants": []
+    },
+    "cone-class": {
+      "declarations": [
+        "LinearStudy.actualHomCocycleComp",
+        "LinearStudy.cochainConeLiftClass_allDegrees"
+      ],
+      "own": 40,
+      "allNeeded": 40,
+      "metadata": "complete",
+      "unmappedConstants": []
+    },
+    "native-triangle-sign": {
+      "declarations": [
+        "LinearStudy.actualHomCocycleComp_shiftedHom",
+        "LinearStudy.cochainConeLiftDerived_allDegrees",
+        "LinearStudy.cochainConeLiftTriangle_allDegrees",
+        "LinearStudy.cochainConeLiftTriangle_degrees"
+      ],
+      "own": 57,
+      "allNeeded": 112,
+      "metadata": "complete",
+      "unmappedConstants": []
+    },
+    "actual-boundary": {
+      "declarations": [
+        "LinearStudy.shortExactInjectiveExtBoundary_allDegrees",
+        "LinearStudy.shortExactInjectiveCocycle_allDegrees_exists"
+      ],
+      "own": 65,
+      "allNeeded": 212,
+      "metadata": "complete",
+      "unmappedConstants": []
+    }
+  },
+  "declarations": {
+    "LinearStudy.cochainConeTriangle_mor3_neg_fst": {
+      "path": "source/Linear/CochainConeLiftDerivedBridge.lean",
+      "module": "Linear.CochainConeLiftDerivedBridge",
+      "startLine": 40,
+      "endLine": 44,
+      "lineCount": 5,
+      "dependencies": []
+    },
+    "LinearStudy.cochainConeLiftDerivedBridge": {
+      "path": "source/Linear/CochainConeLiftDerivedBridge.lean",
+      "module": "Linear.CochainConeLiftDerivedBridge",
+      "startLine": 26,
+      "endLine": 37,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.cochainDerivedMap_eq_of_classEq",
+        "LinearStudy.cochainConeLiftClassBridge"
+      ]
+    },
+    "LinearStudy.actualHomCocycleComp_shiftedHom": {
+      "path": "source/Linear/HomCocycleShiftedComposition.lean",
+      "module": "Linear.HomCocycleShiftedComposition",
+      "startLine": 15,
+      "endLine": 27,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.actualHomCocycleComp._proof_2",
+        "LinearStudy.actualHomCocycleComp_shiftedHom._proof_2",
+        "LinearStudy.actualHomCocycleComp",
+        "_private.Linear.HomCocycleShiftedComposition.0.LinearStudy.actualHomCocycleComp_shiftedHom._proof_1_3",
+        "LinearStudy.actualHomCocycleComp._proof_1"
+      ]
+    },
+    "LinearStudy.shortExactInjectiveCochainLift_exists": {
+      "path": "source/Linear/ShortExactInjectiveCochainLift.lean",
+      "module": "Linear.ShortExactInjectiveCochainLift",
+      "startLine": 15,
+      "endLine": 48,
+      "lineCount": 34,
+      "dependencies": []
+    },
+    "LinearStudy.shortExactInjectiveExtBoundary_allDegrees": {
+      "path": "source/Linear/ShortExactInjectiveExtBoundaryAllDegrees.lean",
+      "module": "Linear.ShortExactInjectiveExtBoundaryAllDegrees",
+      "startLine": 17,
+      "endLine": 62,
+      "lineCount": 46,
+      "dependencies": [
+        "_private.Linear.ShortExactInjectiveExtBoundaryAllDegrees.0.LinearStudy.shortExactInjectiveExtBoundary_allDegrees._proof_1_2",
+        "_private.Linear.ShortExactInjectiveExtBoundaryAllDegrees.0.LinearStudy.shortExactInjectiveExtBoundary_allDegrees._proof_1_1",
+        "LinearStudy.cochainConeLiftTriangle_degrees"
+      ]
+    },
+    "LinearStudy.cochainConeLiftClass_allDegrees": {
+      "path": "source/Linear/CochainConeLiftClassAllDegrees.lean",
+      "module": "Linear.CochainConeLiftClassAllDegrees",
+      "startLine": 22,
+      "endLine": 54,
+      "lineCount": 33,
+      "dependencies": [
+        "_private.Linear.CochainConeLiftClassAllDegrees.0.LinearStudy.cochainConeLiftClass_allDegrees._abel_1_2",
+        "_private.Linear.CochainConeLiftClassAllDegrees.0.LinearStudy.cochainConeLiftClass_allDegrees._proof_1_1",
+        "_private.Linear.CochainConeLiftClassAllDegrees.0.LinearStudy.cochainConeLiftClass_allDegrees._proof_1",
+        "LinearStudy.actualHomCocycleComp",
+        "LinearStudy.cochainConeLiftClass_allDegrees._proof_2"
+      ]
+    },
+    "LinearStudy.shortExactInjectiveCocycle_allDegrees_exists": {
+      "path": "source/Linear/ShortExactInjectiveCocycleAllDegrees.lean",
+      "module": "Linear.ShortExactInjectiveCocycleAllDegrees",
+      "startLine": 16,
+      "endLine": 34,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.shortExactInjectiveCochainLift_allDegrees_exists",
+        "LinearStudy.shortExactInjectiveExtBoundary_allDegrees"
+      ]
+    },
+    "LinearStudy.cochainDerivedMap_eq_of_classEq": {
+      "path": "source/Linear/CochainConeLiftDerivedBridge.lean",
+      "module": "Linear.CochainConeLiftDerivedBridge",
+      "startLine": 15,
+      "endLine": 24,
+      "lineCount": 10,
+      "dependencies": []
+    },
+    "LinearStudy.cochainConeLiftDerived_allDegrees": {
+      "path": "source/Linear/CochainConeLiftDerivedAllDegrees.lean",
+      "module": "Linear.CochainConeLiftDerivedAllDegrees",
+      "startLine": 15,
+      "endLine": 29,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.cochainDerivedMap_eq_of_classEq",
+        "LinearStudy.actualHomCocycleComp_shiftedHom",
+        "LinearStudy.actualHomCocycleComp_shiftedHom._proof_2",
+        "LinearStudy.cochainConeLiftDerived_allDegrees._proof_1",
+        "LinearStudy.actualHomCocycleComp",
+        "LinearStudy.cochainConeLiftClass_allDegrees",
+        "LinearStudy.cochainConeLiftClass_allDegrees._proof_2"
+      ]
+    },
+    "LinearStudy.actualHomCocycleComp": {
+      "path": "source/Linear/CochainConeLiftClassAllDegrees.lean",
+      "module": "Linear.CochainConeLiftClassAllDegrees",
+      "startLine": 14,
+      "endLine": 20,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.actualHomCocycleComp._proof_2",
+        "LinearStudy.actualHomCocycleComp._proof_1"
+      ]
+    },
+    "LinearStudy.cochainConeLiftTriangle_degrees": {
+      "path": "source/Linear/CochainConeLiftTriangleDegrees.lean",
+      "module": "Linear.CochainConeLiftTriangleDegrees",
+      "startLine": 12,
+      "endLine": 25,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.cochainConeLiftTriangle_allDegrees"
+      ]
+    },
+    "LinearStudy.cochainConeLiftClassBridge": {
+      "path": "source/Linear/CochainConeLiftClassBridge.lean",
+      "module": "Linear.CochainConeLiftClassBridge",
+      "startLine": 15,
+      "endLine": 47,
+      "lineCount": 33,
+      "dependencies": [
+        "_private.Linear.CochainConeLiftClassBridge.0.LinearStudy.cochainConeLiftClassBridge._proof_1_1",
+        "_private.Linear.CochainConeLiftClassBridge.0.LinearStudy.cochainConeLiftClassBridge._abel_1_2"
+      ]
+    },
+    "LinearStudy.cochainConeLiftTriangle_allDegrees": {
+      "path": "source/Linear/CochainConeLiftDerivedAllDegrees.lean",
+      "module": "Linear.CochainConeLiftDerivedAllDegrees",
+      "startLine": 31,
+      "endLine": 45,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.cochainConeTriangle_mor3_neg_fst",
+        "LinearStudy.cochainConeLiftDerived_allDegrees",
+        "LinearStudy.cochainConeLiftDerived_allDegrees._proof_1"
+      ]
+    },
+    "LinearStudy.shortExactInjectiveCochainLift_allDegrees_exists": {
+      "path": "source/Linear/ShortExactInjectiveCochainLiftAllDegrees.lean",
+      "module": "Linear.ShortExactInjectiveCochainLiftAllDegrees",
+      "startLine": 14,
+      "endLine": 48,
+      "lineCount": 35,
+      "dependencies": []
+    }
+  },
+  "constants": {
+    "_private.Linear.CochainConeLiftClassBridge.0.LinearStudy.cochainConeLiftClassBridge._proof_1_1": {
+      "module": "Linear.CochainConeLiftClassBridge",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftClassBridge"
+    },
+    "_private.Linear.HomCocycleShiftedComposition.0.LinearStudy.actualHomCocycleComp_shiftedHom._proof_1": {
+      "module": "Linear.HomCocycleShiftedComposition",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.actualHomCocycleComp_shiftedHom"
+    },
+    "LinearStudy.actualHomCocycleComp._proof_2": {
+      "module": "Linear.CochainConeLiftClassAllDegrees",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.actualHomCocycleComp"
+    },
+    "LinearStudy.cochainConeTriangle_mor3_neg_fst": {
+      "module": "Linear.CochainConeLiftDerivedBridge",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainConeTriangle_mor3_neg_fst"
+    },
+    "LinearStudy.cochainConeLiftDerived_allDegrees._proof_1": {
+      "module": "Linear.CochainConeLiftDerivedAllDegrees",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftDerived_allDegrees"
+    },
+    "_private.Linear.ShortExactInjectiveExtBoundaryAllDegrees.0.LinearStudy.shortExactInjectiveExtBoundary_allDegrees._proof_1_1": {
+      "module": "Linear.ShortExactInjectiveExtBoundaryAllDegrees",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.shortExactInjectiveExtBoundary_allDegrees"
+    },
+    "LinearStudy.cochainConeLiftDerivedBridge": {
+      "module": "Linear.CochainConeLiftDerivedBridge",
+      "dependencies": [
+        "LinearStudy.cochainDerivedMap_eq_of_classEq",
+        "LinearStudy.cochainConeLiftClassBridge"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftDerivedBridge"
+    },
+    "_private.Linear.ShortExactInjectiveExtBoundaryAllDegrees.0.LinearStudy.shortExactInjectiveExtBoundary_allDegrees._simp_1_4": {
+      "module": "Linear.ShortExactInjectiveExtBoundaryAllDegrees",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.shortExactInjectiveExtBoundary_allDegrees"
+    },
+    "LinearStudy.actualHomCocycleComp.congr_simp": {
+      "module": "Linear.CochainConeLiftDerivedAllDegrees",
+      "dependencies": [
+        "LinearStudy.actualHomCocycleComp"
+      ],
+      "recordedRangeOwner": "LinearStudy.actualHomCocycleComp"
+    },
+    "LinearStudy.actualHomCocycleComp_shiftedHom": {
+      "module": "Linear.HomCocycleShiftedComposition",
+      "dependencies": [
+        "LinearStudy.actualHomCocycleComp._proof_2",
+        "LinearStudy.actualHomCocycleComp_shiftedHom._proof_2",
+        "LinearStudy.actualHomCocycleComp",
+        "_private.Linear.HomCocycleShiftedComposition.0.LinearStudy.actualHomCocycleComp_shiftedHom._proof_1_3",
+        "LinearStudy.actualHomCocycleComp._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.actualHomCocycleComp_shiftedHom"
+    },
+    "_private.Linear.CochainConeLiftClassAllDegrees.0.LinearStudy.cochainConeLiftClass_allDegrees._proof_1_1": {
+      "module": "Linear.CochainConeLiftClassAllDegrees",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftClass_allDegrees"
+    },
+    "_private.Linear.CochainConeLiftClassAllDegrees.0.LinearStudy.cochainConeLiftClass_allDegrees._proof_1": {
+      "module": "Linear.CochainConeLiftClassAllDegrees",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftClass_allDegrees"
+    },
+    "_private.Linear.CochainConeLiftClassBridge.0.LinearStudy.cochainConeLiftClassBridge._abel_1_2": {
+      "module": "Linear.CochainConeLiftClassBridge",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftClassBridge"
+    },
+    "_private.Linear.ShortExactInjectiveExtBoundaryAllDegrees.0.LinearStudy.shortExactInjectiveExtBoundary_allDegrees._proof_1_2": {
+      "module": "Linear.ShortExactInjectiveExtBoundaryAllDegrees",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.shortExactInjectiveExtBoundary_allDegrees"
+    },
+    "LinearStudy.actualHomCocycleComp.eq_1": {
+      "module": "Linear.HomCocycleShiftedComposition",
+      "dependencies": [
+        "LinearStudy.actualHomCocycleComp._proof_2",
+        "LinearStudy.actualHomCocycleComp",
+        "LinearStudy.actualHomCocycleComp._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.actualHomCocycleComp"
+    },
+    "LinearStudy.shortExactInjectiveCochainLift_exists": {
+      "module": "Linear.ShortExactInjectiveCochainLift",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.shortExactInjectiveCochainLift_exists"
+    },
+    "LinearStudy.actualHomCocycleComp._proof_1": {
+      "module": "Linear.CochainConeLiftClassAllDegrees",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.actualHomCocycleComp"
+    },
+    "LinearStudy.shortExactInjectiveExtBoundary_allDegrees": {
+      "module": "Linear.ShortExactInjectiveExtBoundaryAllDegrees",
+      "dependencies": [
+        "_private.Linear.ShortExactInjectiveExtBoundaryAllDegrees.0.LinearStudy.shortExactInjectiveExtBoundary_allDegrees._proof_1_2",
+        "_private.Linear.ShortExactInjectiveExtBoundaryAllDegrees.0.LinearStudy.shortExactInjectiveExtBoundary_allDegrees._proof_1_1",
+        "LinearStudy.cochainConeLiftTriangle_degrees"
+      ],
+      "recordedRangeOwner": "LinearStudy.shortExactInjectiveExtBoundary_allDegrees"
+    },
+    "CochainComplex.HomComplex.Cochain.rightShift.eq_1": {
+      "module": "Linear.HomCocycleShiftedComposition",
+      "dependencies": [],
+      "recordedRangeOwner": null
+    },
+    "LinearStudy.cochainConeLiftClass_allDegrees": {
+      "module": "Linear.CochainConeLiftClassAllDegrees",
+      "dependencies": [
+        "_private.Linear.CochainConeLiftClassAllDegrees.0.LinearStudy.cochainConeLiftClass_allDegrees._abel_1_2",
+        "_private.Linear.CochainConeLiftClassAllDegrees.0.LinearStudy.cochainConeLiftClass_allDegrees._proof_1_1",
+        "_private.Linear.CochainConeLiftClassAllDegrees.0.LinearStudy.cochainConeLiftClass_allDegrees._proof_1",
+        "LinearStudy.actualHomCocycleComp",
+        "LinearStudy.cochainConeLiftClass_allDegrees._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftClass_allDegrees"
+    },
+    "LinearStudy.shortExactInjectiveCocycle_allDegrees_exists": {
+      "module": "Linear.ShortExactInjectiveCocycleAllDegrees",
+      "dependencies": [
+        "LinearStudy.shortExactInjectiveCochainLift_allDegrees_exists",
+        "LinearStudy.shortExactInjectiveExtBoundary_allDegrees"
+      ],
+      "recordedRangeOwner": "LinearStudy.shortExactInjectiveCocycle_allDegrees_exists"
+    },
+    "LinearStudy.cochainDerivedMap_eq_of_classEq": {
+      "module": "Linear.CochainConeLiftDerivedBridge",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainDerivedMap_eq_of_classEq"
+    },
+    "LinearStudy.actualHomCocycleComp_shiftedHom._proof_2": {
+      "module": "Linear.HomCocycleShiftedComposition",
+      "dependencies": [
+        "_private.Linear.HomCocycleShiftedComposition.0.LinearStudy.actualHomCocycleComp_shiftedHom._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.actualHomCocycleComp_shiftedHom"
+    },
+    "CategoryTheory.ShortComplex.map.eq_1": {
+      "module": "Linear.ShortExactInjectiveExtBoundaryAllDegrees",
+      "dependencies": [],
+      "recordedRangeOwner": null
+    },
+    "LinearStudy.cochainConeLiftClass_allDegrees._proof_2": {
+      "module": "Linear.CochainConeLiftClassAllDegrees",
+      "dependencies": [
+        "_private.Linear.CochainConeLiftClassAllDegrees.0.LinearStudy.cochainConeLiftClass_allDegrees._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftClass_allDegrees"
+    },
+    "LinearStudy.cochainConeLiftDerived_allDegrees": {
+      "module": "Linear.CochainConeLiftDerivedAllDegrees",
+      "dependencies": [
+        "LinearStudy.cochainDerivedMap_eq_of_classEq",
+        "LinearStudy.actualHomCocycleComp_shiftedHom",
+        "LinearStudy.actualHomCocycleComp_shiftedHom._proof_2",
+        "LinearStudy.cochainConeLiftDerived_allDegrees._proof_1",
+        "LinearStudy.actualHomCocycleComp",
+        "LinearStudy.cochainConeLiftClass_allDegrees",
+        "LinearStudy.cochainConeLiftClass_allDegrees._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftDerived_allDegrees"
+    },
+    "LinearStudy.actualHomCocycleComp": {
+      "module": "Linear.CochainConeLiftClassAllDegrees",
+      "dependencies": [
+        "LinearStudy.actualHomCocycleComp._proof_2",
+        "LinearStudy.actualHomCocycleComp._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.actualHomCocycleComp"
+    },
+    "LinearStudy.cochainConeLiftTriangle_degrees": {
+      "module": "Linear.CochainConeLiftTriangleDegrees",
+      "dependencies": [
+        "LinearStudy.cochainConeLiftTriangle_allDegrees"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftTriangle_degrees"
+    },
+    "LinearStudy.cochainConeLiftClassBridge": {
+      "module": "Linear.CochainConeLiftClassBridge",
+      "dependencies": [
+        "_private.Linear.CochainConeLiftClassBridge.0.LinearStudy.cochainConeLiftClassBridge._proof_1_1",
+        "_private.Linear.CochainConeLiftClassBridge.0.LinearStudy.cochainConeLiftClassBridge._abel_1_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftClassBridge"
+    },
+    "_private.Linear.HomCocycleShiftedComposition.0.LinearStudy.actualHomCocycleComp_shiftedHom._proof_1_3": {
+      "module": "Linear.HomCocycleShiftedComposition",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.actualHomCocycleComp_shiftedHom"
+    },
+    "LinearStudy.cochainConeLiftTriangle_allDegrees": {
+      "module": "Linear.CochainConeLiftDerivedAllDegrees",
+      "dependencies": [
+        "LinearStudy.cochainConeTriangle_mor3_neg_fst",
+        "LinearStudy.cochainConeLiftDerived_allDegrees",
+        "LinearStudy.cochainConeLiftDerived_allDegrees._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftTriangle_allDegrees"
+    },
+    "_private.Linear.CochainConeLiftClassAllDegrees.0.LinearStudy.cochainConeLiftClass_allDegrees._abel_1_2": {
+      "module": "Linear.CochainConeLiftClassAllDegrees",
+      "dependencies": [
+        "_private.Linear.CochainConeLiftClassAllDegrees.0.LinearStudy.cochainConeLiftClass_allDegrees._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftClass_allDegrees"
+    },
+    "LinearStudy.shortExactInjectiveCochainLift_allDegrees_exists": {
+      "module": "Linear.ShortExactInjectiveCochainLiftAllDegrees",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.shortExactInjectiveCochainLift_allDegrees_exists"
+    }
+  },
+  "verification": {
+    "accepted": true,
+    "driver": "D:\\codex\\Math\\formalization\\linear\\research\\ActualAllDegreeExtBoundarySourceRanges20261017.lean",
+    "sourceSha256": "ffb2d1cffc28c5a36bbeeaf3a42231cc69aed97d347b5990bb25c91e13b37a0b",
+    "logSha256": "4373fb66fd969c2e90b7b67b9f526779ce0251b10e6144aa48f2d1291b18c7f8",
+    "resourceSha256": "c76852a6d69074fe6875c1c30052144c9a530fc23e10585729d9078e1914ebd9"
+  }
+}

@@ -1,0 +1,45 @@
+@LinearStudy.cochainConeLiftTriangle_degrees : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : HasDerivedCategory A]
+  (S : CategoryTheory.ShortComplex (CochainComplex A ℤ)) (K : CochainComplex A ℤ) (q r : ℤ) (hqr : q + 1 = r)
+  (a : CochainComplex.HomComplex.Cocycle S.X₁ K q) (b : CochainComplex.HomComplex.Cochain S.X₂ K q)
+  (c : CochainComplex.HomComplex.Cocycle S.X₃ K r),
+  (CochainComplex.HomComplex.Cochain.ofHom S.f).comp b ⋯ = ↑a →
+    CochainComplex.HomComplex.δ q r b = (CochainComplex.HomComplex.Cochain.ofHom S.g).comp ↑c ⋯ →
+      CategoryTheory.ShiftedHom.map
+          (CochainComplex.HomComplex.Cocycle.equivHomShift.symm
+            (c.precomp (CochainComplex.mappingCone.descShortComplex S)))
+          DerivedCategory.Q =
+        (r.negOnePow •
+              CategoryTheory.ShiftedHom.comp (CochainComplex.mappingCone.triangle S.f).mor₃
+                (CochainComplex.HomComplex.Cocycle.equivHomShift.symm a) hqr).map
+          DerivedCategory.Q
+'LinearStudy.cochainConeLiftTriangle_degrees' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.shortExactInjectiveExtBoundary_allDegrees : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (S : CategoryTheory.ShortComplex A)
+  (hS : S.ShortExact) {N : A} (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+  (a : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj S.X₁) I.cochainComplex ↑q)
+  (b : CochainComplex.HomComplex.Cochain ((CochainComplex.singleFunctor A 0).obj S.X₂) I.cochainComplex ↑q)
+  (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj S.X₃) I.cochainComplex ↑(q + 1)),
+  (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.f)).comp b ⋯ = ↑a →
+    CochainComplex.HomComplex.δ (↑q) (↑(q + 1)) b =
+        (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.g)).comp ↑c ⋯ →
+      (CategoryTheory.Abelian.Ext.δ hS q (q + 1) ⋯)
+          (I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk a)) =
+        I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c)
+'LinearStudy.shortExactInjectiveExtBoundary_allDegrees' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.shortExactInjectiveCocycle_allDegrees_exists : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (S : CategoryTheory.ShortComplex A) (hS : S.ShortExact) {N : A} (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+  (a : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj S.X₁) I.cochainComplex ↑q),
+  ∃ (b : CochainComplex.HomComplex.Cochain ((CochainComplex.singleFunctor A 0).obj S.X₂) I.cochainComplex ↑q) (c :
+    CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj S.X₃) I.cochainComplex ↑(q + 1)),
+    (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.f)).comp b ⋯ = ↑a ∧
+      CochainComplex.HomComplex.δ (↑q) (↑(q + 1)) b =
+          (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.g)).comp ↑c ⋯ ∧
+        (CategoryTheory.Abelian.Ext.δ hS q (q + 1) ⋯)
+            (I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk a)) =
+          I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c)
+'LinearStudy.shortExactInjectiveCocycle_allDegrees_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.cochainConeLiftTriangle_degrees:true
+ROLECHECK:LinearStudy.shortExactInjectiveExtBoundary_allDegrees:true
+ROLECHECK:LinearStudy.shortExactInjectiveCocycle_allDegrees_exists:true
