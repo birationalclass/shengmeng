@@ -5,9 +5,9 @@ import {decodeImage} from './mobile-runtime.js';
 const BASE=new URL('./assets/chalk/chinese36/',import.meta.url);
 export const CHINESE_STROKE_SECONDS=1/16;
 const canvas=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;};
-const colorRGB=color=>{const h=String(color).replace('#','');return h.length===6?[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)):[238,233,213];};
+const colorRGB=color=>{const value=String(color),h=value.replace('#',''),rgb=value.match(/^rgba?\(\s*(\d+)\D+(\d+)\D+(\d+)/);return rgb?rgb.slice(1,4).map(Number):h.length===6?[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)):[238,233,213];};
 const groups=new WeakMap();let partialCanvas=null,partialData=null;
-function paintGlyph(ctx,g,rect,index,progress,color,complete=false){
+export function paintGlyph(ctx,g,rect,index,progress,color,complete=false){
  const rgb=colorRGB(color),key=rgb.join(',');let image=complete?(key==='238,233,213'?g.image:g.colors.get(key)):null;
  if(!image){
   if(!partialCanvas||partialCanvas.width!==g.width){partialCanvas=canvas(g.width,g.width);partialData=partialCanvas.getContext('2d').createImageData(g.width,g.width);}

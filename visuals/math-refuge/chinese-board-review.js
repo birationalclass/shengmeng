@@ -1,3 +1,4 @@
+import {prepareMaliChalk} from './mali-chalk.js';
 import {prepareInlineMath} from './chalk-inline-math.js?v=inline-formula-2';
 import {REPORTS} from './report-catalog.js';
 import {CLASSROOM_PROGRAMS} from './classroom-catalog.js';
@@ -11,9 +12,10 @@ const $=id=>document.getElementById(id),canvas=$('board'),ctx=canvas.getContext(
 let library,pages=[],pageIndex=0,language='zh',full,rows=[],guides,plan,progress=1,playing=false,last=0;
 async function image(url){const im=new Image();im.src=url;await im.decode();return im;}
 async function preparePage(p,i,lang,authored=true){
- const pic=authored&&!p.kind&&!p.diagram?await authoredFormula(p.formulaAsset):await image(p.formulaAsset);
+ await prepareMaliChalk(chalkPageText(p,lang));
+ const pic=authored&&!p.kind?await authoredFormula(p.formulaAsset):await image(p.formulaAsset);
  const c=document.createElement('canvas');c.width=1536;c.height=640;const cx=c.getContext('2d'),chinese=lang==='zh'?await library.prepare(chalkPageText(p,lang)):null,recorder=authoredContext(cx,chinese,{latin:authored});
- if(p.classroom)await prepareInlineMath(chalkPageText(p,lang));
+ await prepareInlineMath(chalkPageText(p,lang));
  const original=composeChalkPage(recorder.ctx,p,i,lang,pic,{deferStrokes:true,authored:true});const rows=recorder.rows(original),guides=inkGuides(cx.getImageData(0,0,1536,640),rows),plan=writingPlan(rows,guides);
  return {canvas:c,rows,guides,plan,original};
 }
@@ -21,7 +23,7 @@ function render(){ctx.fillStyle='#193d33';ctx.fillRect(0,0,1536,640);if(!full)re
 async function selectPage(i){playing=false;last=0;pageIndex=Math.max(0,Math.min(pages.length-1,i));$('status').textContent='正在准备本页字形…';const prepared=await preparePage(pages[pageIndex],pageIndex,language);full=prepared.canvas;rows=prepared.rows;guides=prepared.guides;plan=prepared.plan;progress=1;$('page').value=pageIndex;render();}
 async function selectReport(id){const r=reports.find(r=>r.id===id);pages=(await fetch(r.manifest).then(r=>r.json())).pages;$('page').replaceChildren(...pages.map((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+' · '+p.title;return o}));$('report').value=id;await selectPage(0);}
 try{
- await Promise.all(['42px RefugeChinese','42px RefugeLatin','42px RefugeMath'].map(f=>document.fonts.load(f)));library=await createChineseChalk();
+ await Promise.all(['42px RefugeChinese','42px RefugeLatin','42px RefugeMath','42px RefugeMathSymbols'].map(f=>document.fonts.load(f)));library=await createChineseChalk();
  $('report').replaceChildren(...reports.map(r=>{const o=document.createElement('option');o.value=r.id;o.textContent=r.speaker+' · '+r.topic;return o}));await selectReport('ye2');await selectPage(5);
  $('report').onchange=e=>selectReport(e.target.value);$('page').onchange=e=>selectPage(Number(e.target.value));$('lang').onclick=async()=>{language=language==='zh'?'en':'zh';await selectPage(pageIndex)};$('complete').onclick=()=>{playing=false;progress=1;render()};$('restart').onclick=()=>{playing=false;last=0;progress=0;render()};$('play').onclick=()=>{if(progress>=1)progress=0;playing=!playing;last=0;render()};$('seek').oninput=()=>{playing=false;progress=Number($('seek').value)/10000;render()};
  function frame(now){if(playing&&!document.hidden){if(last)progress=Math.min(1,progress+(now-last)/1000*Number($('speed').value)/plan.duration);if(progress>=1)playing=false;render();}last=playing?now:0;requestAnimationFrame(frame)}requestAnimationFrame(frame);

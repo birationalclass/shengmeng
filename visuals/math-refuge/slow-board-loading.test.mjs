@@ -5,7 +5,7 @@ const source=fs.readFileSync(new URL('./lecture.js',import.meta.url),'utf8');
 const deferred=()=>{let resolve,reject;const promise=new Promise((r,e)=>{resolve=r;reject=e;});return{promise,resolve,reject};};
 const tick=()=>new Promise(r=>setImmediate(r));
 function loader(){const glyph=deferred(),turns=[];let deadlineCalls=0;const canvas={width:1536,height:640,getContext:()=>({})};
- const c={options:{},generation:0,language:'zh',writingStyle:'refined',canAuthor:true,cache:new Map(),pending:new Map(),assetRetry:new AssetRetry(),pages:[{classroom:true,formulaAsset:'f.svg'}],Image:class{},document:{createElement:()=>canvas},W:1536,H:640,chineseChalk:null,createChineseChalk:async()=>({prepare:()=>glyph.promise}),chalkPageText:()=>'',preparationTurn:async()=>{turns.push(1);},prepareInlineMath:async()=>{},authoredFormula:async()=>({}),authoredContext:()=>({ctx:{},rows:r=>r}),composeChalkPage:()=>[],pageRows:new Map(),guides:new Map(),erasePlans:new Map(),erasingPlan:()=>({duration:1}),writingPlan:()=>({duration:1}),clock:new LectureClock(1),version:0,seekPinned:new Set(),pixelScale:1,withDeadline:()=>{deadlineCalls++;throw Error('old fixed page deadline');}};
+ const c={options:{},generation:0,language:'zh',writingStyle:'refined',mathStyle:'mali-italic',prepareMaliChalk:async()=>{},canAuthor:true,cache:new Map(),pending:new Map(),assetRetry:new AssetRetry(),pages:[{classroom:true,formulaAsset:'f.svg'}],Image:class{},document:{createElement:()=>canvas},W:1536,H:640,chineseChalk:null,createChineseChalk:async()=>({prepare:()=>glyph.promise}),chalkPageText:()=>'',preparationTurn:async()=>{turns.push(1);},prepareInlineMath:async()=>{},authoredFormula:async()=>({}),authoredContext:()=>({ctx:{},rows:r=>r}),composeChalkPage:()=>[],pageRows:new Map(),guides:new Map(),erasePlans:new Map(),erasingPlan:()=>({duration:1}),writingPlan:()=>({duration:1}),clock:new LectureClock(1),version:0,seekPinned:new Set(),pixelScale:1,withDeadline:()=>{deadlineCalls++;throw Error('old fixed page deadline');}};
  const method=source.slice(source.indexOf('  function load('),source.indexOf('  if(!disabled&&hasSelection)'));
  return{c,glyph,turns,deadlines:()=>deadlineCalls,load:vm.runInNewContext(method+';load',c)};
 }
@@ -15,6 +15,11 @@ test('slow healthy glyph preparation has no 15/20/30 second wall-clock race disc
 });
 test('a superseded course cannot publish a page after a cooperative preparation yield',async()=>{
  const h=loader(),turn=deferred();h.c.preparationTurn=()=>turn.promise;const job=h.load(0);h.glyph.resolve({});await tick();h.c.generation++;h.c.pending.clear();turn.resolve();assert.equal(await job,null);assert.equal(h.c.cache.size,0);assert.equal(h.c.pageRows.size,0);
+});
+test('current board remains unready until its Mali ink finishes, even if formulas and Chinese are ready',async()=>{
+ const h=loader(),font=deferred();h.c.prepareMaliChalk=()=>font.promise;h.glyph.resolve({});
+ const job=h.load(0);await tick();assert.equal(h.c.cache.size,0);assert.equal(h.c.pending.size,1);
+ font.resolve();assert(await job);assert(h.c.cache.has(0));
 });
 test('target board navigation releases while its MP3 is still transferring',async()=>{
  const ink=deferred(),audio=deferred(),clock=new LectureClock(12);clock.seek(4);let drawn=false,readyPromise;

@@ -67,7 +67,7 @@ import {createShanghaiWeather} from './shanghai-weather.js?v=reflection-ready-11
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
 import {bindPhysicalButtons,physicalHitAction} from './physical-buttons.js?v=smart-voice-9';
 import {motionCoordinate} from './camera-motion.js';
-let boardWritingStyle='refined';try{if(localStorage.getItem('refuge-board-writing-style')==='marck')boardWritingStyle='marck';}catch{}
+let boardWritingStyle='mali-italic',boardMathStyle='mali-italic';try{const english=localStorage.getItem('refuge-board-english-font-v2'),math=localStorage.getItem('refuge-board-math-font-v2');if(['mali-italic','refined','marck'].includes(english))boardWritingStyle=english;if(['mali-italic','refined'].includes(math))boardMathStyle=math;}catch{}
 const sceneTime=new RetreatTime(()=>new Date(),shanghaiHour),boardFollow=new BoardFollow();let visualHour=sceneTime.hour,lastShadowHour=sceneTime.hour,weatherReading=null,weatherStatus="loading";
 
 const timePresentation=new TimePresentation(sceneTime.hour);
@@ -90,7 +90,7 @@ try{if(localStorage.getItem('refuge-board-highlight')==='off')$('boardHighlight'
 
 const performanceMonitor=createPerformanceMonitor();
 const movementHud=createMovementHud($('openingHint'),$('movementHud'));
-$('boardWritingStyle').value=boardWritingStyle;if(boardWritingStyle==='marck')$('boardWritingStyleStatus').textContent='Marck Script（舒展）· 原来的非笔顺显现方式。';
+$('boardWritingStyle').value=boardWritingStyle;$('boardMathStyle').value=boardMathStyle;
 const residenceNotes=createResidenceNotes();
 relocateShots(SHOTS);
 // Building navigation frames the exterior; the opening path keeps its own indoor endpoint.
@@ -601,7 +601,7 @@ function prepareMainRoom(){
   const [lectureModule,readerModule,voiceModule,settingsModule]=await measureCritical('P1 功能模块与数学排版',()=>Promise.all([import('./lecture.js?v=sylow-two-lessons-20261015'),import('./chalk-reader.js?v=inline-root-1'),import('./report-voice.js?v=semantic-chalk-2'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]));
   createLecture=lectureModule.createLecture;createChalkReader=readerModule.createChalkReader;reportVoicePresentation=voiceModule.reportVoicePresentation;narrationResourceBytes=voiceModule.narrationResourceBytes;
   const root=new THREE.Group();root.name='East-facing compact auditorium blackboards';configureLectureRoot(root);root.position.add(buildingOffset('01B'));scene.add(root);
-  lecture=await measureCritical('P1 板书组件与报告内容',()=>withDeadline(createLecture(root,renderer,{camera,floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'sylow-theorems',initialLanguage:'zh',onOpening:state=>{$('world').dataset.openingClassroom=JSON.stringify(state);},boardScale:device.boardScale,writingStyle:boardWritingStyle,onPreparation:value=>{$('world').dataset.boardPreparation=JSON.stringify(value);}}),30000,'报告板书加载'));await boardFonts;retreat.roomFill.apply(root);
+  lecture=await measureCritical('P1 板书组件与报告内容',()=>withDeadline(createLecture(root,renderer,{camera,floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'sylow-theorems',initialLanguage:'zh',onOpening:state=>{$('world').dataset.openingClassroom=JSON.stringify(state);},boardScale:device.boardScale,writingStyle:boardWritingStyle,mathStyle:boardMathStyle,onPreparation:value=>{$('world').dataset.boardPreparation=JSON.stringify(value);}}),30000,'报告板书加载'));await boardFonts;retreat.roomFill.apply(root);
   lecture.setWoodTone($('boardWoodTone').value);rooms.push(lecture);roomLecterns[0]=retreat.campus.lectern;registerRoomView(lecture,0);
   reader=createChalkReader(new Proxy({}, {get:(_,key)=>lecture[key]}));buildSeminarNavigation();installPhysicalControls();populateReport();
   reportSettings=settingsModule.mountReportSettings(document,{getLecture:()=>lecture,onRate:rate=>rooms.forEach(room=>room.setVoiceRate(rate))});
@@ -775,7 +775,8 @@ $('boardClarity').addEventListener('change',()=>{rooms.forEach(room=>room.setCla
 try{if(localStorage.getItem('refuge-board-clarity')==='natural')$('boardClarity').value='natural';}catch{}
 $('adaptiveQuality').addEventListener('change',()=>{if(retreat){markManualGraphics();startupAutomatic=false;device.startup=false;frameQuality.reset();renderBudget.reset();updateRenderBudget(performance.now());saveGraphics();}});
 $('boardFollowDelay').addEventListener('input',event=>{boardFollow.setDelay(event.target.value);$('boardFollowDelayValue').textContent=boardFollow.delay+' 秒';});
-$('boardWritingStyle').addEventListener('change',async event=>{const select=event.target,prior=boardWritingStyle;boardWritingStyle=select.value;select.disabled=true;$('boardWritingStyleStatus').textContent='正在切换书写样式…';try{await Promise.all(rooms.map(room=>room.setWritingStyle(boardWritingStyle)));try{localStorage.setItem('refuge-board-writing-style',boardWritingStyle);}catch{}$('boardWritingStyleStatus').textContent=boardWritingStyle==='refined'?'字母、数字及已支持符号按人工笔顺书写；中文和其余符号保留原字形。':'Marck Script（舒展）· 原来的非笔顺显现方式。';}catch(error){boardWritingStyle=prior;select.value=prior;await Promise.allSettled(rooms.map(room=>room.setWritingStyle(prior)));$('boardWritingStyleStatus').textContent='切换未完成，已恢复原样式。';console.error(error);}finally{select.disabled=false;}});
+$('boardMathStyle').addEventListener('change',async event=>{const select=event.target,prior=boardMathStyle;boardMathStyle=select.value;select.disabled=true;try{await Promise.all(rooms.map(room=>room.setMathStyle(boardMathStyle)));try{localStorage.setItem('refuge-board-math-font-v2',boardMathStyle);}catch{}$('boardWritingStyleStatus').textContent='公式样式已更新，英文字体单独设置。';}catch(error){boardMathStyle=prior;select.value=prior;await Promise.allSettled(rooms.map(room=>room.setMathStyle(prior)));$('boardWritingStyleStatus').textContent='切换未完成，已恢复原样式。';console.error(error);}finally{select.disabled=false;}});
+$('boardWritingStyle').addEventListener('change',async event=>{const select=event.target,prior=boardWritingStyle;boardWritingStyle=select.value;select.disabled=true;$('boardWritingStyleStatus').textContent='正在切换书写样式…';try{await Promise.all(rooms.map(room=>room.setWritingStyle(boardWritingStyle)));try{localStorage.setItem('refuge-board-english-font-v2',boardWritingStyle);}catch{}$('boardWritingStyleStatus').textContent='英文样式已更新，公式字体单独设置。';}catch(error){boardWritingStyle=prior;select.value=prior;await Promise.allSettled(rooms.map(room=>room.setWritingStyle(prior)));$('boardWritingStyleStatus').textContent='切换未完成，已恢复原样式。';console.error(error);}finally{select.disabled=false;}});
 $('writingSpeed').addEventListener('input',event=>{const value=Number(event.target.value);lecture?.setWritingSpeed(value);$('writingSpeedValue').textContent=value+' ×';});
 $('rotationSensitivity').addEventListener('input',event=>cameraInput?.set(event.target.value));
 $('light').addEventListener('input',()=>{if(retreat){hallSunRamp=null;sunriseIntro.cancel();timePresentation.seek();sceneTime.previewAt(Number($('light').value));}});
@@ -1030,7 +1031,7 @@ async function loadTeachingRoom(index){
  root.position.add(buildingOffset('07'));scene.add(root);
  const job=(async()=>{
   try{
-   const room=await createLecture(root,renderer,level===0?{camera,isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,highlight:$('boardHighlight').value!=='off',reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
+   const room=await createLecture(root,renderer,level===0?{camera,isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,mathStyle:boardMathStyle,highlight:$('boardHighlight').value!=='off',reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
    room.playing=false;room.setWoodTone($('boardWoodTone').value);room.setWritingSpeed($('writingSpeed').value);room.setClarity($('boardClarity').value);retreat.roomFill.apply(root);rooms[index]=room;registerRoomView(room,index);
    if(index===1)buildSeminarNavigation();visibilityAt=-Infinity;return room;
   }catch(error){scene.remove(root);roomJobs.delete(index);throw error;}

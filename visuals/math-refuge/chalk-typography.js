@@ -1,14 +1,14 @@
-// Mathematical symbols in prose use a local print face, never the chalk font.
+// Math letters have their own handwriting face; structural symbols keep math outlines.
 // Formulas themselves remain MathJax SVG outlines.
 const printed=/([\p{Script=Latin}\p{Number}\u1d00-\u1dbf\u0300-\u036f\u0370-\u03ff\u2070-\u209f\u2100-\u214f\u2190-\u22ff\u{1d400}-\u{1d7ff}§|∤⟨⟩.,:;=+<>()[\]{}^_−/]+)/gu;
-export const mathFont='RefugeMath, "Times New Roman", serif';
+export const mathFont='RefugeMath, RefugeMathSymbols, "Times New Roman", serif';
 export function chalkRuns(text){const runs=[];for(const part of String(text).split(printed).filter(Boolean)){const math=printedTest(part),last=runs.at(-1);if(last&&last.math===math)last.text+=part;else runs.push({text:part,math});}return runs;}
 function printedTest(text){
   const core=text.replace(/^[()[\]{}.,:;]+|[()[\]{}.,:;]+$/g,'');
   const symbols=/[\p{Number}\u1d00-\u1dbf\u0370-\u03ff\u2070-\u209f\u2100-\u214f\u2190-\u22ff\u{1d400}-\u{1d7ff}§|∤⟨⟩=+<>^_−/]/u;
   if(symbols.test(core))return true;
   // Ordinary English words (including accented names) remain handwriting.
-  // Bare variables are print; English articles/pronouns a, A and I are prose.
+  // Bare variables are math; English articles/pronouns a, A and I are prose.
   if(/^[\p{Script=Latin}\p{Mark}]+$/u.test(core))return [...core].length===1&&!/^[aAI]$/.test(core);
   return /[A-Za-z].*[()[\]{}]|[()[\]{}].*[A-Za-z]/.test(core);
 }
@@ -32,7 +32,7 @@ export function chalkHTML(text){return chalkInlineRuns(text).map(run=>{
   return run.math?`<span class="chalk-math">${body}</span>`:body;
 }).join('');}
 export function chalkSVG(text,{heading=false}={}){return chalkInlineRuns(text).map(run=>{
-  if(run.radical)return '<tspan font-family="Times New Roman, serif">√<tspan text-decoration="overline">'+escape(run.text)+'</tspan></tspan>';
+  if(run.radical)return '<tspan font-family="RefugeMath, RefugeMathSymbols, serif">√<tspan text-decoration="overline">'+escape(run.text)+'</tspan></tspan>';
   const attrs=run.script?` font-size="70%" baseline-shift="${run.script}"`:'';
-  return run.math&&!(heading&&/^\d+(?:\.\d+)*[.)]?$/.test(run.text))?`<tspan font-family="Times New Roman, serif"${attrs}>${escape(run.text)}</tspan>`:escape(run.text);
+  return run.math&&!(heading&&/^\d+(?:\.\d+)*[.)]?$/.test(run.text))?`<tspan font-family="RefugeMath, RefugeMathSymbols, serif"${attrs}>${escape(run.text)}</tspan>`:escape(run.text);
 }).join('');}

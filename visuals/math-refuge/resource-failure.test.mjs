@@ -28,7 +28,7 @@ test('repeated rendered frames cannot hammer a failed asset; explicit retry clea
 });
 test('the actual board loader retains failed request backoff after clearing its pending entry',async()=>{
  const source=readFileSync(new URL('./lecture.js',import.meta.url),'utf8'),method=source.slice(source.indexOf('  function load('),source.indexOf('  if(!disabled&&hasSelection)'));
- let calls=0;const c={cache:new Map(),pending:new Map(),assetRetry:new AssetRetry({now:()=>0}),generation:0,language:'en',writingStyle:'refined',Image:class{},canAuthor:true,pages:[{formulaAsset:'broken.svg'}],authoredFormula:()=>{calls++;return Promise.reject(Error('offline'));},withDeadline:p=>p};
+ let calls=0;const c={cache:new Map(),pending:new Map(),assetRetry:new AssetRetry({now:()=>0}),generation:0,language:'en',writingStyle:'refined',mathStyle:'mali-italic',prepareMaliChalk:async()=>{},Image:class{},canAuthor:true,pages:[{formulaAsset:'broken.svg'}],authoredFormula:()=>{calls++;return Promise.reject(Error('offline'));},withDeadline:p=>p};
  const load=vm.runInNewContext(method+';load',c);await assert.rejects(load(0),/offline/);assert.equal(c.pending.size,0);
  for(let i=0;i<300;i++)await assert.rejects(load(0),/offline/);assert.equal(calls,1);c.assetRetry.clear(0);await assert.rejects(load(0),/offline/);assert.equal(calls,2);
 });

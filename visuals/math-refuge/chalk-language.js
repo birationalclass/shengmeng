@@ -40,7 +40,7 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
     while(measure(text,size,heading)>1368&&size>24)size--;
     ctx.fillStyle=color;let cursor=x;const chineseSpans=[];
     const proseFocus=mark?.textFragments?.[language]||[];
-    for(const original of chalkInlineRuns(text))for(const piece of original.math?[{text:original.text,blue:mark?.fragments?.some(part=>original.text.includes(part))}]:focusPieces(original.text,proseFocus)){const run={...original,text:piece.text};ctx.fillStyle=piece.blue?'#93c9ff':color;ctx.font=`${size*(run.script ? .7 : 1)}px ${runFont(run,heading)}`;drawInlineInk(ctx,run,cursor,y+(run.script==='sub'?size*.22:run.script==='sup'?-size*.4:0),size*(run.script?.7:1));const width=inlineInk(ctx,run,size*(run.script?.7:1)).width;if(/[\u3400-\u9fff]/.test(run.text))chineseSpans.push([cursor,cursor+width]);cursor+=width;}
+    for(const original of chalkInlineRuns(text))for(const piece of original.math?[{text:original.text,blue:mark?.fragments?.some(part=>original.text.includes(part))}]:focusPieces(original.text,proseFocus)){const run={...original,text:piece.text,mathStyle:options.mathStyle||'mali-italic'};ctx.fillStyle=piece.blue?'#93c9ff':color;ctx.font=`${size*(run.script ? .7 : 1)}px ${runFont(run,heading)}`;drawInlineInk(ctx,run,cursor,y+(run.script==='sub'?size*.22:run.script==='sup'?-size*.4:0),size*(run.script?.7:1));const width=inlineInk(ctx,run,size*(run.script?.7:1)).width;if(/[\u3400-\u9fff]/.test(run.text))chineseSpans.push([cursor,cursor+width]);cursor+=width;}
     const ink=bounds(text,size,heading);
     rows.push(Object.assign([x+ink.left-4,y-ink.ascent-4,ink.right-ink.left+8,ink.ascent+ink.descent+8],{chineseSpans,chalkColor:color}));
   }

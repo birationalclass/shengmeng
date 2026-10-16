@@ -1,3 +1,4 @@
+import {prepareMaliChalk} from './mali-chalk.js';
 import {AssetRetry} from './asset-retry.js';
 import {boardInkScale} from './board-ink-resolution.js';
 import {changedInkRect,unionInkRects,intersectsInk,createBoardInkUploader} from './board-ink-update.js';
@@ -51,7 +52,7 @@ const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',
 export async function createLecture(scene,renderer,options={}){
   const reportProgress=options.onProgress||(()=>{});
   const pixelScale=options.boardScale===.5?.5:1;const inkUploader=createBoardInkUploader(THREE,renderer);let lastRasterMs=0,lookaheadAt=0;
-  const disabled=Boolean(options.disabled),canAuthor=typeof document.createElementNS==='function'&&typeof window!=='undefined';let writingStyle=options.writingStyle==='marck'?'marck':'refined';const boardMipBias={value:0};
+  const disabled=Boolean(options.disabled),canAuthor=typeof document.createElementNS==='function'&&typeof window!=='undefined';let writingStyle=['refined','marck'].includes(options.writingStyle)?options.writingStyle:'mali-italic',mathStyle=options.mathStyle==='refined'?'refined':'mali-italic';const boardMipBias={value:0};
   const reports=disabled?[{id:'unavailable',speaker:'',speakerEn:'',topic:'',topicEn:'',url:'',sourceLabel:''}]:options.reports||[...REPORTS,...CLASSROOM_PROGRAMS];
   let activeReport=reports.find(report=>report.id===(options.defaultReport||'hu'))||reports[0];
   const studentLottery=createStudentLottery();studentLottery.setCourse(activeReport.courseId||activeReport.id,activeReport.id);const assetPreload=createCoursePreload();const prepareReport=createReportLoader(),openingReport=disabled?{pages:[{kind:'closing',title:'',source:'',text:'',en:{title:'',source:'',text:''},rows:[]}]}:await prepareReport(activeReport);
@@ -67,7 +68,7 @@ export async function createLecture(scene,renderer,options={}){
   estimateDurations();
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();const assetRetry=new AssetRetry();let boardPreparation=null;let loadingError=null,version=0,language=options.initialLanguage==='zh'?'zh':'en',generation=0;
   let fontsReady=0;
-  if(document.fonts&&!disabled)await withDeadline(Promise.all(['42px RefugeChinese','42px RefugeLatin','42px RefugeMath'].map(font=>document.fonts.load(font).then(result=>{reportProgress(.25+(++fontsReady)/3*.45);return result;}))),15000,'板书字体加载');
+  if(document.fonts&&!disabled)await withDeadline(Promise.all(['42px RefugeChinese','42px RefugeLatin','42px RefugeMath','42px RefugeMathSymbols'].map(font=>document.fonts.load(font).then(result=>{reportProgress(.25+(++fontsReady)/4*.45);return result;}))),15000,'板书字体加载');
   let chineseChalk=null;
   const lessonBudget=new LessonBudget(),omittedProofPages=new Set();let proofJumping=false;
   const boardReview=new BoardReview(),revealedPages=new Set();
@@ -82,7 +83,7 @@ export async function createLecture(scene,renderer,options={}){
     if(cache.has(index))return Promise.resolve(cache.get(index));
     if(pending.has(index)){if(!background)void prepareBoardAssets(pages[index]).catch(()=>{});return pending.get(index);}
     const blocked=assetRetry.blocked(index);if(blocked)return blocked;
-    const epoch=generation,lang=language,style=writingStyle;
+    const epoch=generation,lang=language,style=writingStyle,formulaStyle=mathStyle;
     let timed;const stage=label=>{if(timed)timed.stage=label;};const job=new Promise((resolve,reject)=>{
       let image=preparedImage||new Image();const ready=async()=>{try{
         if(epoch!==generation){resolve(null);return;}
@@ -90,10 +91,11 @@ export async function createLecture(scene,renderer,options={}){
         let chinese=null;stage('中文字形准备');
         if(lang==='zh'&&canAuthor){if(!chineseChalk)chineseChalk=createChineseChalk().catch(error=>{chineseChalk=null;throw error;});chinese=await (await chineseChalk).prepare(chalkPageText(pages[index],lang));if(epoch!==generation){resolve(null);return;}}
         await preparationTurn({background:background&&index!==clock.page&&index!==requestedPage});
-        stage('公式笔画解析');if(pages[index].classroom)await prepareInlineMath(chalkPageText(pages[index],lang));
+        stage('Mali 字形准备');if(canAuthor&&(style==='mali-italic'||formulaStyle==='mali-italic'))await prepareMaliChalk(chalkPageText(pages[index],lang));
+        stage('公式笔画解析');await prepareInlineMath(chalkPageText(pages[index],lang),formulaStyle);
         await preparationTurn({background:background&&index!==clock.page&&index!==requestedPage});
         if(epoch!==generation||pending.get(index)!==timed){resolve(null);return;}
-        stage('排版与擦除规划');const recorder=(style==='refined'||chinese)&&canAuthor?authoredContext(sampleCtx,chinese,{latin:style==='refined'}):null;let rows=composeChalkPage(recorder?.ctx||sampleCtx,pages[index],index,lang,image,{deferStrokes:true,hideHeading:options.hideBoardHeadings,authored:Boolean(recorder)});if(recorder)rows=recorder.rows(rows);pageRows.set(index,rows);
+        stage('排版与擦除规划');const recorder=canAuthor?authoredContext(sampleCtx,chinese,{latin:style!=='marck',latinStyle:style,mathStyle:formulaStyle}):null;let rows=composeChalkPage(recorder?.ctx||sampleCtx,pages[index],index,lang,image,{deferStrokes:true,hideHeading:options.hideBoardHeadings,authored:Boolean(recorder),mathStyle:formulaStyle});if(recorder)rows=recorder.rows(rows);pageRows.set(index,rows);
         await preparationTurn({background:background&&index!==clock.page&&index!==requestedPage});
         if(epoch!==generation||pending.get(index)!==timed){resolve(null);return;}
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
@@ -107,7 +109,7 @@ export async function createLecture(scene,renderer,options={}){
         resolve(sample);}catch(error){reject(error);}
       };
       const begin=()=>{stage('公式解析');if(preparedImage){queueMicrotask(ready);return;}
-        if(style==='refined'&&canAuthor&&!pages[index].kind&&!pages[index].diagram){authoredFormula(pages[index].formulaAsset+'?v=report-line-sync-6').then(result=>{image=result;ready();},reject);return;}
+        if(canAuthor&&!pages[index].kind){authoredFormula(pages[index].formulaAsset+'?v=report-line-sync-6',{mathStyle:formulaStyle}).then(result=>{image=result;ready();},reject);return;}
         decodeImage(pages[index].formulaAsset+'?v=report-line-sync-6').then(result=>{image=result;ready();},reject);
       };
       if(pages[index].resourcePack)void prepareBoardAssets(pages[index],{background:background&&index!==clock.page&&index!==requestedPage}).then(begin,reject);else begin();
@@ -761,7 +763,9 @@ export async function createLecture(scene,renderer,options={}){
     get writingSpeed(){return writingSpeed;},
     get language(){return language;},copy:(index=clock.page)=>chalkCopy(pages[index],language),
     get writingStyle(){return writingStyle;},
-    async setWritingStyle(value){const next=value==='marck'?'marck':'refined';if(next===writingStyle||disabled)return;const wasPlaying=playing,progress=clock.progress;playing=false;writingStyle=next;try{await this.setLanguage(language,true);clock.elapsed=progress*clock.duration;}finally{playing=wasPlaying;}},
+    get mathStyle(){return mathStyle;},
+    async setMathStyle(value){const next=value==='refined'?'refined':'mali-italic';if(next===mathStyle||disabled)return;const wasPlaying=playing,progress=clock.progress;playing=false;mathStyle=next;try{await this.setLanguage(language,true);clock.elapsed=progress*clock.duration;}finally{playing=wasPlaying;}},
+    async setWritingStyle(value){const next=['refined','marck'].includes(value)?value:'mali-italic';if(next===writingStyle||disabled)return;const wasPlaying=playing,progress=clock.progress;playing=false;writingStyle=next;try{await this.setLanguage(language,true);clock.elapsed=progress*clock.duration;}finally{playing=wasPlaying;}},
     async setLanguage(value,force=false){
       if(disabled)return false;
       const next=value==='en'?'en':'zh';if(next===language&&!force)return;
