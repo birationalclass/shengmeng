@@ -1,4 +1,4 @@
-import {prepareMaliChalk} from './mali-chalk.js';
+import {prepareMaliChalk} from './mali-chalk.js?v=mali-20261017';
 import {AssetRetry} from './asset-retry.js';
 import {boardInkScale} from './board-ink-resolution.js';
 import {changedInkRect,unionInkRects,intersectsInk,createBoardInkUploader} from './board-ink-update.js';
@@ -9,11 +9,11 @@ import {placeTrayControl,TRAY_STORAGE} from './board-tray-layout.js';
 import {createStudentLottery,drawStudentLottery,lotteryHitTargets,LOTTERY_RECT} from './student-lottery.js';
 import {createCoursePreload} from './course-preload.js';
 import {prepareBoardAssets} from './board-assets.js';
-import {prepareInlineMath} from './chalk-inline-math.js?v=inline-formula-2';
+import {prepareInlineMath} from './chalk-inline-math.js?v=mali-20261017';
 import {LessonBudget} from './lesson-budget.js?v=sylow-two-lessons-20261015';
 import {narrationHighlights,measuredHighlight,highlightFrame,createBoardHighlight} from './board-highlight.js?v=smart-voice-9';
 import {createBoardPageControls} from './board-page-control.js?v=unframed-controls-1';
-import {drawClassroomActivity,classroomActivityAt,classroomCountdown} from './classroom-board.js?v=retained-exercise-1';
+import {drawClassroomActivity,classroomActivityAt,classroomCountdown} from './classroom-board.js?v=mali-20261017';
 import {boardCameraFrame,stepBoardCameraZoom} from './board-camera-framing.js';
 import {createBoardCameraControl} from './board-camera-control.js?v=unframed-controls-1';
 import {boardContentJump,advanceBoardQueue} from './board-transition.js';
@@ -25,8 +25,8 @@ import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v=smart-voice-9';
 import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
-import {authoredContext,authoredFormula} from './authored-chalk.js?v=unframed-controls-1';
-import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=board-controls-2';
+import {authoredContext,authoredFormula} from './authored-chalk.js?v=mali-20261017';
+import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=mali-20261017';
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
 import {createSeminarScreen} from './seminar-screen.js?v=report-line-sync-6';
 import * as THREE from 'three';
@@ -37,7 +37,7 @@ import {narrationWork,boardWorkFrame,writingSchedule,settledBoardFrame} from './
 import {BoardReview} from './board-review.js';
 import {stampFelt} from './eraser-contact.js';
 
-import {chalkCopy,chalkPageText,composeChalkPage} from './chalk-language.js?v=sylow-two-lessons-20261015';
+import {chalkCopy,chalkPageText,composeChalkPage} from './chalk-language.js?v=mali-20261017';
 
 import {REPORTS} from './report-catalog.js?v=ye2-report-14';
 import {CLASSROOM_PROGRAMS} from './classroom-catalog.js?v=sylow-two-lessons-20261015';

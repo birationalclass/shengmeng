@@ -1,7 +1,7 @@
 import {resourceFetch} from './resource-fetch.js';
 import {decodeImage} from './mobile-runtime.js';
 import {preparationTurn} from './preparation-turn.js';
-import {chineseMetrics,paintGlyph} from './chinese-chalk.js?v=board-controls-2';
+import {chineseMetrics,paintGlyph} from './chinese-chalk.js?v=mali-20261017';
 
 // Independent typography defaults. Math layout and structural symbols still
 // belong to the formula layer; neither choice changes Chinese or screen UI.

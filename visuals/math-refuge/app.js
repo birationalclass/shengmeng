@@ -2,7 +2,7 @@ import {bindVisitMenu} from './visit-menu.js';
 import {OpeningPerformance} from './opening-performance.js';
 import {ResourceScheduler} from './resource-scheduler.js?v=demand-1';
 import {loadingContent,connectLoadingScheduler} from './runtime-loading.js?v=demand-1';
-import {createOpeningPreparation,loadMathRuntime,loadBoardFonts} from './staged-startup.js?v=stages-1';
+import {createOpeningPreparation,loadMathRuntime,loadBoardFonts} from './staged-startup.js?v=mali-20261017';
 import {preparePanelShell,bindPanelDismissals} from './panel-shell.js?v=smart-voice-9';
 import {capturePhoto,downloadPhoto} from './photo.js?v=photo-151';
 import {regionAnchor,distanceLabel} from './region-distance.js';
@@ -598,7 +598,7 @@ function prepareMainRoom(){
   $('world').dataset.hallPreparation='loading';$('world').dataset.startupPhase='hall';$('mode').textContent='正在准备报告厅';
   const hallTextures=measureCritical('P0 一楼六张材质贴图',()=>startDeferredTextures(()=>{},{phase:'hall',concurrency:2}));
   const boardFonts=measureCritical('P1 板书字体并行下载',()=>withDeadline(loadBoardFonts(),15000,'板书字体加载'));boardFonts.catch(()=>{});
-  const [lectureModule,readerModule,voiceModule,settingsModule]=await measureCritical('P1 功能模块与数学排版',()=>Promise.all([import('./lecture.js?v=sylow-two-lessons-20261015'),import('./chalk-reader.js?v=inline-root-1'),import('./report-voice.js?v=semantic-chalk-2'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]));
+  const [lectureModule,readerModule,voiceModule,settingsModule]=await measureCritical('P1 功能模块与数学排版',()=>Promise.all([import('./lecture.js?v=mali-20261017'),import('./chalk-reader.js?v=mali-20261017'),import('./report-voice.js?v=semantic-chalk-2'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]));
   createLecture=lectureModule.createLecture;createChalkReader=readerModule.createChalkReader;reportVoicePresentation=voiceModule.reportVoicePresentation;narrationResourceBytes=voiceModule.narrationResourceBytes;
   const root=new THREE.Group();root.name='East-facing compact auditorium blackboards';configureLectureRoot(root);root.position.add(buildingOffset('01B'));scene.add(root);
   lecture=await measureCritical('P1 板书组件与报告内容',()=>withDeadline(createLecture(root,renderer,{camera,floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'sylow-theorems',initialLanguage:'zh',onOpening:state=>{$('world').dataset.openingClassroom=JSON.stringify(state);},boardScale:device.boardScale,writingStyle:boardWritingStyle,mathStyle:boardMathStyle,onPreparation:value=>{$('world').dataset.boardPreparation=JSON.stringify(value);}}),30000,'报告板书加载'));await boardFonts;retreat.roomFill.apply(root);

@@ -33,7 +33,7 @@ export function classroomActivityAt(manifest,time,page){
 }
 export function drawClassroomActivity(ctx,activity,{paused=false,language='zh',sheetIndex}={}){
  ctx.save();ctx.fillStyle='#eee9d5';ctx.textBaseline='alphabetic';ctx.textAlign='left';
- const font='RefugeChinese, RefugeLatin, KaiTi, serif',exercise=activity.exercise,book=exercise?.reference?.kind==='textbook',title=activity.activityType==='break'?(language==='en'?'Five-minute break':'课间休息'):book?exercise.reference.label[language==='en'?1:0]:(language==='en'?'Classroom exercise':'随堂练习');
+ const font='RefugeLatin, RefugeChinese, KaiTi, serif',exercise=activity.exercise,book=exercise?.reference?.kind==='textbook',title=activity.activityType==='break'?(language==='en'?'Five-minute break':'课间休息'):book?exercise.reference.label[language==='en'?1:0]:(language==='en'?'Classroom exercise':'随堂练习');
  ctx.fillStyle='#e4cf9c';ctx.font='52px '+font;drawReferenceIcon(ctx,book?'textbook':'extension',84,60,36);ctx.fillText(title,136,100);
  const sheets=classroomExerciseSheets(activity,language,(t,size)=>{ctx.font=size+'px '+font;return ctx.measureText(t).width;});
  const at=Math.max(0,Math.min(sheets.length-1,sheetIndex??(activity.feedback?Math.floor(activity.feedbackProgress*sheets.length):0)));

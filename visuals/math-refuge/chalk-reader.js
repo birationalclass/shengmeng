@@ -1,4 +1,4 @@
-import {chalkHTML} from './chalk-typography.js?v=inline-root-1';
+import {chalkHTML} from './chalk-typography.js?v=mali-20261017';
 import {controlLabel} from './control-label.js?v=22-handwritten-cover';
 import {readingFormulaWidth} from './display-profile.js?v=8-cover';
 
@@ -23,7 +23,7 @@ export function createChalkReader(lecture){
       $('readerTitle').textContent=copy.title;$('readerExplanation').textContent=copy.text;
       $('readerAuthor').hidden=entry.kind!=='cover';$('readerAuthor').textContent=copy.author||'';$('readerFormulaViewport').hidden=Boolean(entry.kind);
       $('readerTitle').innerHTML=chalkHTML(copy.title);$('readerExplanation').innerHTML=chalkHTML(copy.text)+(entry.annotation?.label?'<br><span style="color:#d9c693">↳ '+chalkHTML(entry.annotation.label[language])+'</span>':'');
-      for(const id of ['readerTitle','readerExplanation'])$(id).style.fontFamily=language==='en'?'RefugeLatin, cursive':'RefugeChinese, cursive';
+      for(const id of ['readerTitle','readerExplanation'])$(id).style.fontFamily=language==='en'?'RefugeLatin, cursive':'RefugeLatin, RefugeChinese, cursive';
       $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v62-chalk-ink';
       $('readerFormula').hidden=false;$('readerError').hidden=true;
       $('readerFormulaViewport').scrollLeft=0;size();

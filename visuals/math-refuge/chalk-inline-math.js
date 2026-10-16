@@ -1,8 +1,8 @@
 import {resourceFetch} from './resource-fetch.js';
 // Simple inline radicals share measured geometry with their reveal bounds.
 // Full formulas use the prebuilt MathJax SVGs.
-import {authoredFormula} from './authored-chalk.js?v=inline-formula-2';
-import {chalkInlineRuns} from './chalk-typography.js?v=inline-formula-2';
+import {authoredFormula} from './authored-chalk.js?v=mali-20261017';
+import {chalkInlineRuns} from './chalk-typography.js?v=mali-20261017';
 import {preparationTurn} from './preparation-turn.js';
 let atlasJob;const images=new Map(),metrics=new Map();
 export async function prepareInlineMath(text,mathStyle='mali-italic'){

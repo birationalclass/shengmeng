@@ -1,6 +1,6 @@
 import {orbitDiagram} from './orbit-diagram.js';
-import {inlineInk,drawInlineInk} from './chalk-inline-math.js?v=inline-formula-2';
-import {chalkInlineRuns,mathFont} from './chalk-typography.js?v=inline-root-1';
+import {inlineInk,drawInlineInk} from './chalk-inline-math.js?v=mali-20261017';
+import {chalkInlineRuns,mathFont} from './chalk-typography.js?v=mali-20261017';
 import {drawChalkAnnotation} from './chalk-annotations.js?v=report-line-sync-6';
 import {explainedFlow} from './flow-explanation.js?v=textbook-problems-1';
 import {wrapBoardText} from './chalk-wrap.js?v62-chalk-ink';
@@ -19,7 +19,7 @@ export function wrapChalkText(ctx,text,width){
 }
 
 export function composeChalkPage(ctx,page,index,language,formula,options={}){
-  const copy=chalkCopy(page,language,{board:true}),font=language==='en'?'RefugeLatin, cursive':'RefugeChinese, RefugeLatin, Kaiti SC, cursive',rows=[];
+  const copy=chalkCopy(page,language,{board:true}),font=language==='en'?'RefugeLatin, cursive':'RefugeLatin, RefugeChinese, Kaiti SC, cursive',rows=[];
   ctx.clearRect(0,0,1536,640);ctx.fillStyle='#eee9d5';ctx.textBaseline='alphabetic';
   const runFont=(run,heading=false)=>run.math&&!(heading&&/^\d+(?:\.\d+)*[.)]?$/.test(run.text))?mathFont:/[\u3400-\u9fff]/.test(run.text)?font:'RefugeLatin, cursive';
   const measurements=new Map();

@@ -1,5 +1,5 @@
 const courseId=new URLSearchParams(location.search).get('course')==='sylow-theorems'?'sylow-theorems':'algebra-sylow';
-import * as T from 'three';import {createLecture} from './lecture.js?v=stable-tray-20261016';
+import * as T from 'three';import {createLecture} from './lecture.js?v=mali-20261017';
 const $=id=>document.getElementById(id),renderer=new T.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);document.body.append(renderer.domElement);
 const scene=new T.Scene();scene.background=new T.Color('#14291f');scene.add(new T.HemisphereLight('#f4f2e5','#17291d',2));const light=new T.DirectionalLight('#fff7ea',2.2);light.position.set(26,7,2);light.target.position.set(28,3,-10);scene.add(light,light.target);
 const camera=new T.PerspectiveCamera(52,innerWidth/innerHeight,.1,100);const overview=()=>{camera.position.set(25,3.0,14);camera.lookAt(25,2.6,-10.45);};overview();let lecture,busy=false,selected=false;
