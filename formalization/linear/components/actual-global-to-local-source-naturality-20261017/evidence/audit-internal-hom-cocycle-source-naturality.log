@@ -1,0 +1,20 @@
+@LinearStudy.schemeModuleInjectiveInternalHomCycleMap_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) {P Q : X.Modules} (g : P ⟶ Q) (q : ℕ)
+  (f : ↥(LinearStudy.injectiveCocycleGroup I Q q)),
+  (LinearStudy.schemeModuleInjectiveInternalHomCycleMap I P q) ((LinearStudy.injectiveCocyclePrecompose I g q) f) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInjectiveInternalHomCycleMap I Q q) f)
+      (HomologicalComplex.cyclesMap (LinearStudy.schemeModuleHomCoefficientComplexMap g I.cocomplex) q)
+'LinearStudy.schemeModuleInjectiveInternalHomCycleMap_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInjectiveInternalHomClassMap_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) {P Q : X.Modules} (g : P ⟶ Q) (q : ℕ)
+  (f : ↥(LinearStudy.injectiveCocycleGroup I Q q)),
+  (LinearStudy.schemeModuleInjectiveInternalHomClassMap I P q) ((LinearStudy.injectiveCocyclePrecompose I g q) f) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInjectiveInternalHomClassMap I Q q) f)
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleHomCoefficientComplexMap g I.cocomplex) q)
+'LinearStudy.schemeModuleInjectiveInternalHomClassMap_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomCycleMap_sourceNaturality:true
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomClassMap_sourceNaturality:true

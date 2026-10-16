@@ -1,0 +1,29 @@
+@LinearStudy.schemeModuleGlobalToInternalExtViaResolution_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {P Q N : X.Modules} (I : CategoryTheory.InjectiveResolution N) (g : P ⟶ Q) (n : ℕ)
+  (e : CategoryTheory.Abelian.Ext Q N (n + 1)),
+  (LinearStudy.schemeModuleGlobalToInternalExtViaResolution I P n) ((CategoryTheory.Abelian.Ext.mk₀ g).comp e ⋯) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleGlobalToInternalExtViaResolution I Q n) e)
+      (LinearStudy.schemeModuleInternalExtSourceMap g N (n + 1))
+'LinearStudy.schemeModuleGlobalToInternalExtViaResolution_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExt_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme} {P Q N : X.Modules}
+  (g : P ⟶ Q) (n : ℕ) (e : CategoryTheory.Abelian.Ext Q N (n + 1)),
+  (LinearStudy.schemeModuleGlobalToInternalExt P N n) ((CategoryTheory.Abelian.Ext.mk₀ g).comp e ⋯) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleGlobalToInternalExt Q N n) e)
+      (LinearStudy.schemeModuleInternalExtSourceMap g N (n + 1))
+'LinearStudy.schemeModuleGlobalToInternalExt_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtSections_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {P Q N : X.Modules} (g : P ⟶ Q) (n : ℕ) (e : CategoryTheory.Abelian.Ext Q N (n + 1)),
+  (LinearStudy.schemeModuleGlobalToInternalExtSections P N n) ((CategoryTheory.Abelian.Ext.mk₀ g).comp e ⋯) =
+    (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleInternalExtSourceMap g N (n + 1)) ⊤))
+      ((LinearStudy.schemeModuleGlobalToInternalExtSections Q N n) e)
+'LinearStudy.schemeModuleGlobalToInternalExtSections_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtViaResolution_sourceNaturality:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_sourceNaturality:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtSections_sourceNaturality:true

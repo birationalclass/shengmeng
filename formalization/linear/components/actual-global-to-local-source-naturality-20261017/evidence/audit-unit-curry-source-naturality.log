@@ -1,0 +1,7 @@
+@LinearStudy.schemeModuleHomUnitAddEquiv_symm_precompose : ∀ {X : AlgebraicGeometry.Scheme} {P Q N : X.Modules}
+  (g : P ⟶ Q) (f : Q ⟶ N),
+  (LinearStudy.schemeModuleHomUnitAddEquiv P N).symm (CategoryTheory.CategoryStruct.comp g f) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv Q N).symm f)
+      (LinearStudy.schemeModuleHomPrecompose g)
+'LinearStudy.schemeModuleHomUnitAddEquiv_symm_precompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleHomUnitAddEquiv_symm_precompose:true

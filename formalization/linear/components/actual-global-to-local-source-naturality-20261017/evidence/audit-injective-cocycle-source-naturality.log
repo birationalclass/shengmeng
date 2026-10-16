@@ -1,0 +1,29 @@
+@LinearStudy.injectiveCocyclePrecompose : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {N : A} →
+        (I : CategoryTheory.InjectiveResolution N) →
+          {P Q : A} →
+            (P ⟶ Q) → (q : ℕ) → ↥(LinearStudy.injectiveCocycleGroup I Q q) →+ ↥(LinearStudy.injectiveCocycleGroup I P q)
+'LinearStudy.injectiveCocyclePrecompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.injectiveCocycleExtMap_precompose : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] {N : A}
+  (I : CategoryTheory.InjectiveResolution N) {P Q : A} (g : P ⟶ Q) (q : ℕ)
+  (f : ↥(LinearStudy.injectiveCocycleGroup I Q q)),
+  (CategoryTheory.Abelian.Ext.mk₀ g).comp ((LinearStudy.injectiveCocycleExtMap I Q q) f) ⋯ =
+    (LinearStudy.injectiveCocycleExtMap I P q) ((LinearStudy.injectiveCocyclePrecompose I g q) f)
+'LinearStudy.injectiveCocycleExtMap_precompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.injectiveCocyclePrecompose.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {N : A} →
+        (I : CategoryTheory.InjectiveResolution N) →
+          {P Q : A} →
+            (P ⟶ Q) →
+              (q : ℕ) → ↥(LinearStudy.injectiveCocycleGroup I Q q) →+ ↥(LinearStudy.injectiveCocycleGroup I P q) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {N : A}
+    (I : CategoryTheory.InjectiveResolution N) {P Q : A} (g : P ⟶ Q) (q : ℕ) =>
+  { toFun := fun (f : ↥(LinearStudy.injectiveCocycleGroup I Q q)) => ⟨CategoryTheory.CategoryStruct.comp g ↑f, ⋯⟩,
+    map_zero' := ⋯, map_add' := ⋯ }
+ROLECHECK:LinearStudy.injectiveCocyclePrecompose:false
+ROLECHECK:LinearStudy.injectiveCocycleExtMap_precompose:true

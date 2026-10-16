@@ -1,0 +1,10 @@
+@LinearStudy.schemeModuleInjectiveCocycleToInternalExt_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) {P Q : X.Modules} (g : P ⟶ Q) (q : ℕ)
+  (f : ↥(LinearStudy.injectiveCocycleGroup I Q q)),
+  (LinearStudy.schemeModuleInjectiveCocycleToInternalExt I P q) ((LinearStudy.injectiveCocyclePrecompose I g q) f) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInjectiveCocycleToInternalExt I Q q) f)
+      (LinearStudy.schemeModuleInternalExtSourceMap g N q)
+'LinearStudy.schemeModuleInjectiveCocycleToInternalExt_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInjectiveCocycleToInternalExt_sourceNaturality:true

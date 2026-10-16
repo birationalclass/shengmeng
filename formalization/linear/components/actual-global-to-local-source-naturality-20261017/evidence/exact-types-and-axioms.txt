@@ -1,0 +1,140 @@
+
+===== SPLIT AUDIT unit-curry-source-naturality =====
+@LinearStudy.schemeModuleHomUnitAddEquiv_symm_precompose : ∀ {X : AlgebraicGeometry.Scheme} {P Q N : X.Modules}
+  (g : P ⟶ Q) (f : Q ⟶ N),
+  (LinearStudy.schemeModuleHomUnitAddEquiv P N).symm (CategoryTheory.CategoryStruct.comp g f) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv Q N).symm f)
+      (LinearStudy.schemeModuleHomPrecompose g)
+'LinearStudy.schemeModuleHomUnitAddEquiv_symm_precompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleHomUnitAddEquiv_symm_precompose:true
+
+===== SPLIT AUDIT injective-cocycle-source-naturality =====
+@LinearStudy.injectiveCocyclePrecompose : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {N : A} →
+        (I : CategoryTheory.InjectiveResolution N) →
+          {P Q : A} →
+            (P ⟶ Q) → (q : ℕ) → ↥(LinearStudy.injectiveCocycleGroup I Q q) →+ ↥(LinearStudy.injectiveCocycleGroup I P q)
+'LinearStudy.injectiveCocyclePrecompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.injectiveCocycleExtMap_precompose : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] {N : A}
+  (I : CategoryTheory.InjectiveResolution N) {P Q : A} (g : P ⟶ Q) (q : ℕ)
+  (f : ↥(LinearStudy.injectiveCocycleGroup I Q q)),
+  (CategoryTheory.Abelian.Ext.mk₀ g).comp ((LinearStudy.injectiveCocycleExtMap I Q q) f) ⋯ =
+    (LinearStudy.injectiveCocycleExtMap I P q) ((LinearStudy.injectiveCocyclePrecompose I g q) f)
+'LinearStudy.injectiveCocycleExtMap_precompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.injectiveCocyclePrecompose.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      {N : A} →
+        (I : CategoryTheory.InjectiveResolution N) →
+          {P Q : A} →
+            (P ⟶ Q) →
+              (q : ℕ) → ↥(LinearStudy.injectiveCocycleGroup I Q q) →+ ↥(LinearStudy.injectiveCocycleGroup I P q) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] {N : A}
+    (I : CategoryTheory.InjectiveResolution N) {P Q : A} (g : P ⟶ Q) (q : ℕ) =>
+  { toFun := fun (f : ↥(LinearStudy.injectiveCocycleGroup I Q q)) => ⟨CategoryTheory.CategoryStruct.comp g ↑f, ⋯⟩,
+    map_zero' := ⋯, map_add' := ⋯ }
+ROLECHECK:LinearStudy.injectiveCocyclePrecompose:false
+ROLECHECK:LinearStudy.injectiveCocycleExtMap_precompose:true
+
+===== SPLIT AUDIT internal-hom-cocycle-source-naturality =====
+@LinearStudy.schemeModuleInjectiveInternalHomCycleMap_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) {P Q : X.Modules} (g : P ⟶ Q) (q : ℕ)
+  (f : ↥(LinearStudy.injectiveCocycleGroup I Q q)),
+  (LinearStudy.schemeModuleInjectiveInternalHomCycleMap I P q) ((LinearStudy.injectiveCocyclePrecompose I g q) f) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInjectiveInternalHomCycleMap I Q q) f)
+      (HomologicalComplex.cyclesMap (LinearStudy.schemeModuleHomCoefficientComplexMap g I.cocomplex) q)
+'LinearStudy.schemeModuleInjectiveInternalHomCycleMap_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInjectiveInternalHomClassMap_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) {P Q : X.Modules} (g : P ⟶ Q) (q : ℕ)
+  (f : ↥(LinearStudy.injectiveCocycleGroup I Q q)),
+  (LinearStudy.schemeModuleInjectiveInternalHomClassMap I P q) ((LinearStudy.injectiveCocyclePrecompose I g q) f) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInjectiveInternalHomClassMap I Q q) f)
+      (HomologicalComplex.homologyMap (LinearStudy.schemeModuleHomCoefficientComplexMap g I.cocomplex) q)
+'LinearStudy.schemeModuleInjectiveInternalHomClassMap_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomCycleMap_sourceNaturality:true
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomClassMap_sourceNaturality:true
+
+===== SPLIT AUDIT cocycle-to-internal-source-naturality =====
+@LinearStudy.schemeModuleInjectiveCocycleToInternalExt_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) {P Q : X.Modules} (g : P ⟶ Q) (q : ℕ)
+  (f : ↥(LinearStudy.injectiveCocycleGroup I Q q)),
+  (LinearStudy.schemeModuleInjectiveCocycleToInternalExt I P q) ((LinearStudy.injectiveCocyclePrecompose I g q) f) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInjectiveCocycleToInternalExt I Q q) f)
+      (LinearStudy.schemeModuleInternalExtSourceMap g N q)
+'LinearStudy.schemeModuleInjectiveCocycleToInternalExt_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInjectiveCocycleToInternalExt_sourceNaturality:true
+
+===== SPLIT AUDIT global-to-internal-source-naturality =====
+@LinearStudy.schemeModuleGlobalToInternalExtViaResolution_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {P Q N : X.Modules} (I : CategoryTheory.InjectiveResolution N) (g : P ⟶ Q) (n : ℕ)
+  (e : CategoryTheory.Abelian.Ext Q N (n + 1)),
+  (LinearStudy.schemeModuleGlobalToInternalExtViaResolution I P n) ((CategoryTheory.Abelian.Ext.mk₀ g).comp e ⋯) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleGlobalToInternalExtViaResolution I Q n) e)
+      (LinearStudy.schemeModuleInternalExtSourceMap g N (n + 1))
+'LinearStudy.schemeModuleGlobalToInternalExtViaResolution_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExt_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme} {P Q N : X.Modules}
+  (g : P ⟶ Q) (n : ℕ) (e : CategoryTheory.Abelian.Ext Q N (n + 1)),
+  (LinearStudy.schemeModuleGlobalToInternalExt P N n) ((CategoryTheory.Abelian.Ext.mk₀ g).comp e ⋯) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleGlobalToInternalExt Q N n) e)
+      (LinearStudy.schemeModuleInternalExtSourceMap g N (n + 1))
+'LinearStudy.schemeModuleGlobalToInternalExt_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtSections_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {P Q N : X.Modules} (g : P ⟶ Q) (n : ℕ) (e : CategoryTheory.Abelian.Ext Q N (n + 1)),
+  (LinearStudy.schemeModuleGlobalToInternalExtSections P N n) ((CategoryTheory.Abelian.Ext.mk₀ g).comp e ⋯) =
+    (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleInternalExtSourceMap g N (n + 1)) ⊤))
+      ((LinearStudy.schemeModuleGlobalToInternalExtSections Q N n) e)
+'LinearStudy.schemeModuleGlobalToInternalExtSections_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtViaResolution_sourceNaturality:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_sourceNaturality:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtSections_sourceNaturality:true
+
+===== SPLIT AUDIT short-exact-roof-calibration =====
+@LinearStudy.cochainShortExactRoofClass : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        [HasDerivedCategory A] →
+          (S : CategoryTheory.ShortComplex A) → S.ShortExact → CategoryTheory.Abelian.Ext S.X₃ S.X₁ 1
+'LinearStudy.cochainShortExactRoofClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainShortExactRoofClass_eq_extClass : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (S : CategoryTheory.ShortComplex A) (hS : S.ShortExact), LinearStudy.cochainShortExactRoofClass S hS = hS.extClass
+'LinearStudy.cochainShortExactRoofClass_eq_extClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainShortExactRoofClass_contravariant_zero_sign : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (S : CategoryTheory.ShortComplex A) (hS : S.ShortExact) {M : A} (a : S.X₁ ⟶ M),
+  (CategoryTheory.Abelian.Ext.δ hS 0 1 ⋯) (CategoryTheory.Abelian.Ext.mk₀ a) =
+    -(LinearStudy.cochainShortExactRoofClass S hS).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯
+'LinearStudy.cochainShortExactRoofClass_contravariant_zero_sign' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.cochainShortExactRoofClass.{u, v, w, d} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        [HasDerivedCategory A] →
+          (S : CategoryTheory.ShortComplex A) → S.ShortExact → CategoryTheory.Abelian.Ext S.X₃ S.X₁ 1 :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    [HasDerivedCategory A] (S : CategoryTheory.ShortComplex A) (hS : S.ShortExact) =>
+  let T := S.map (CochainComplex.singleFunctor A 0);
+  LinearStudy.cochainResolutionExtClass (CochainComplex.mappingCone T.f) 1
+    (CochainComplex.mappingCone.descShortComplex T) (CochainComplex.mappingCone.triangle T.f).mor₃
+ROLECHECK:LinearStudy.cochainShortExactRoofClass:false
+ROLECHECK:LinearStudy.cochainShortExactRoofClass_eq_extClass:true
+ROLECHECK:LinearStudy.cochainShortExactRoofClass_contravariant_zero_sign:true
