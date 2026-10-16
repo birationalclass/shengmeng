@@ -33,6 +33,6 @@ export function drawClassroomMetadata(ctx,page,index,language,{exercise=false,to
  if(page.period==='break')return;
  ctx.save();ctx.fillStyle='#eee9d5';ctx.textBaseline='alphabetic';ctx.font=WATERMARK_FONT_SIZE+'px "Microsoft YaHei", "Segoe UI", sans-serif';ctx.globalAlpha=WATERMARK_OPACITY;ctx.textAlign='left';
  const label=(text,options)=>{const p=watermarkAnchor(ctx.measureText?.(text)||{},options);ctx.fillText(text,p.x,p.y);};
- label((index+1)+' / '+total,{left:exercise||page.exerciseBoard});
+ label((index+1)+' / '+total,{});
  if(page.classroom)label(page.source||'§2.6',{top:true});ctx.restore();
 }

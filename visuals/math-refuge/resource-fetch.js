@@ -1,5 +1,5 @@
 // A stalled header or body must release its request slot. No response cloning.
-export function createResourceFetch(fetcher,{idleTimeout=15000,totalTimeout=120000,api=globalThis,concurrency=6,backgroundLimit=2}={}){
+export function createResourceFetch(fetcher,{idleTimeout=15000,totalTimeout=0,api=globalThis,concurrency=6,backgroundLimit=2}={}){
  if(fetcher.resourceBounded)return fetcher;
  const run=async(input,options={},release=()=>{})=>{
   const controller=new AbortController(),parent=options.signal||input?.signal;
@@ -7,11 +7,11 @@ export function createResourceFetch(fetcher,{idleTimeout=15000,totalTimeout=1200
   const aborted=new Promise((_,reject)=>rejectAbort=reject);aborted.catch(()=>{});
   const cleanup=()=>{api.clearTimeout(idle);api.clearTimeout(total);parent?.removeEventListener('abort',onParent);};
   const finish=()=>{if(finished)return;finished=true;cleanup();release();};
-  const abort=reason=>{if(finished)return;finish();controller.abort(reason);rejectAbort(reason);reader?.cancel(reason).catch(()=>{});try{streamController?.error(reason);}catch{}};
+  const abort=reason=>{if(finished)return;finish();rejectAbort(reason);controller.abort(reason);reader?.cancel(reason).catch(()=>{});try{streamController?.error(reason);}catch{}};
   const onParent=()=>abort(parent.reason||new DOMException('请求已取消','AbortError'));
   const timeout=()=>abort(new DOMException('资源下载停滞，请重试。','TimeoutError'));
-  const heartbeat=()=>{api.clearTimeout(idle);idle=api.setTimeout(timeout,idleTimeout);};
-  parent?.addEventListener('abort',onParent,{once:true});heartbeat();total=api.setTimeout(timeout,totalTimeout);
+  const heartbeat=()=>{api.clearTimeout(idle);idle=api.setTimeout(timeout,options.resourceIdleTimeout??idleTimeout);};
+  parent?.addEventListener('abort',onParent,{once:true});heartbeat();if(totalTimeout>0)total=api.setTimeout(timeout,totalTimeout);
   if(parent?.aborted)onParent();
   try{
    if(controller.signal.aborted)throw controller.signal.reason;

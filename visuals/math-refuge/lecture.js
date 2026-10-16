@@ -87,13 +87,14 @@ export async function createLecture(scene,renderer,options={}){
         if(epoch!==generation){resolve(null);return;}
         const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
         let chinese=null;
-        if(lang==='zh'&&canAuthor){if(!chineseChalk)chineseChalk=withDeadline(createChineseChalk(),15000,'中文板书字形索引').catch(error=>{chineseChalk=null;throw error;});chinese=await (await chineseChalk).prepare(chalkPageText(pages[index],lang));if(epoch!==generation){resolve(null);return;}}
-        await preparationTurn({background:background&&index!==clock.page});
+        if(lang==='zh'&&canAuthor){if(!chineseChalk)chineseChalk=createChineseChalk().catch(error=>{chineseChalk=null;throw error;});chinese=await (await chineseChalk).prepare(chalkPageText(pages[index],lang));if(epoch!==generation){resolve(null);return;}}
+        await preparationTurn({background:background&&index!==clock.page&&index!==requestedPage});
         if(pages[index].classroom)await prepareInlineMath(chalkPageText(pages[index],lang));
-        await preparationTurn({background:background&&index!==clock.page});
+        await preparationTurn({background:background&&index!==clock.page&&index!==requestedPage});
         if(epoch!==generation||pending.get(index)!==timed){resolve(null);return;}
         const recorder=(style==='refined'||chinese)&&canAuthor?authoredContext(sampleCtx,chinese,{latin:style==='refined'}):null;let rows=composeChalkPage(recorder?.ctx||sampleCtx,pages[index],index,lang,image,{deferStrokes:true,hideHeading:options.hideBoardHeadings,authored:Boolean(recorder)});if(recorder)rows=recorder.rows(rows);pageRows.set(index,rows);
-        await preparationTurn({background:background&&index!==clock.page});
+        await preparationTurn({background:background&&index!==clock.page&&index!==requestedPage});
+        if(epoch!==generation||pending.get(index)!==timed){resolve(null);return;}
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
         if(pixels)guides.set(index,inkGuides(pixels,rows));
         if(pages[index].exerciseBoard&&pixels){const c=document.createElement('canvas');c.width=W;c.height=H;const cx=c.getContext('2d');cx.putImageData(pixels,0,0);cx.fillStyle='white';cx.fillRect(...LOTTERY_RECT);pixels=cx.getImageData(0,0,W,H);}const wipe=erasingPlan(pixels,rows);erasePlans.set(index,wipe);
@@ -105,9 +106,13 @@ export async function createLecture(scene,renderer,options={}){
         resolve(sample);}catch(error){reject(error);}
       };
       if(preparedImage){queueMicrotask(ready);return;}
-      if(style==='refined'&&canAuthor&&!pages[index].kind&&!pages[index].diagram){withDeadline(authoredFormula(pages[index].formulaAsset+'?v=report-line-sync-6'),20000,'板书公式加载').then(result=>{image=result;ready();},error=>{reject(error);});return;}
+      if(style==='refined'&&canAuthor&&!pages[index].kind&&!pages[index].diagram){authoredFormula(pages[index].formulaAsset+'?v=report-line-sync-6').then(result=>{image=result;ready();},error=>{reject(error);});return;}
       decodeImage(pages[index].formulaAsset+'?v=report-line-sync-6').then(result=>{image=result;ready();},error=>{reject(error);});
-    });timed=withDeadline(job,30000,'第 '+(index+1)+' 块板书加载');pending.set(index,timed);timed.catch(error=>{if(pending.get(index)===timed){pending.delete(index);assetRetry.fail(index,error);}});return timed;
+    });
+    // A page can contain hundreds of healthy small transfers. Each request has
+    // an aborting idle watchdog; a page-wide wall-clock race discarded slow but
+    // successful preparation and left the selected board permanently stale.
+    timed=job;pending.set(index,timed);timed.catch(error=>{if(pending.get(index)===timed){pending.delete(index);assetRetry.fail(index,error);}});return timed;
   }
   if(!disabled&&hasSelection)await load(0,openingReport.cover);
   reportProgress(1);
@@ -150,7 +155,7 @@ export async function createLecture(scene,renderer,options={}){
       const surface=new THREE.Mesh(new THREE.PlaneGeometry(BOARD_W,BOARD_H),new THREE.MeshPhysicalMaterial({map:texture,color:'#c9c5bb',roughness:1,roughnessMap:null,metalness:0,specularIntensity:0,envMapIntensity:0,emissive:0x000000,emissiveIntensity:0,polygonOffset:true,polygonOffsetFactor:0,polygonOffsetUnits:-1}));
       surface.name='Matte writing face';group.add(surface);
       const body=part(group,[0,0,-.05],[BOARD_W,BOARD_H,.08],hardware.back);body.name='Solid opaque board body';
-      for(const y of [-.65,.65]){const brace=part(group,[0,y,-.094],[BOARD_W-.16,.035,.022],frameMaterial);brace.name='Rear nanmu stiffener';}
+      // The opaque backing needs no decorative crossbars; preserve its perimeter frame.
       trayHardware.createFrame(group,BOARD_W,BOARD_H);
       for(const sign of [-1,1])for(const y of [-.70,.70]){
         const carriage=part(group,[sign*2.702,y,-.055],[.145,.13,.055],metal);carriage.name='Rail carriage bracket';
@@ -376,7 +381,11 @@ export async function createLecture(scene,renderer,options={}){
       boards.forEach((_,i)=>draw(i,true));version++;
       loadingError=null;return true;
       });
-      if(board){lessonBudget.configure(voice.manifest);lessonBudget.seek(board.writeStart,voice.manifest.boards.filter(b=>b.optionalProof));omittedProofPages.clear();await voice.seek(board.writeStart,{preservePlayback,ready:commit});}else voice.pause();
+      if(board){lessonBudget.configure(voice.manifest);lessonBudget.seek(board.writeStart,voice.manifest.boards.filter(b=>b.optionalProof));omittedProofPages.clear();
+        // Audio still waits for ink before resuming. Board navigation must not
+        // wait for the entire MP3; the destination and controls can be ready first.
+        void voice.seek(board.writeStart,{preservePlayback,ready:commit}).catch(()=>{});
+      }else voice.pause();
       return await commit;
     }catch(error){if(request===seekRequest)loadingError=error;throw error;}
     finally{if(request===seekRequest){seeking=false;requestedPage=null;seekPinned.clear();}}
@@ -726,7 +735,8 @@ export async function createLecture(scene,renderer,options={}){
         clearPageCache();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();resetWipe();
         boards.forEach(b=>{b.last='';b.wet=null;});targets.fill(0);eraserReturn=null;eraserPickup=null;eraser.visible=false;eraser.userData.state='parked';
         parkedErasers.forEach(e=>e.visible=true);chalk.visible=false;previousTip=null;lastWritePage=-1;wear=0;particles.forEach(p=>p.life=0);particlePositions.fill(-10000);dustGeometry.attributes.position.needsUpdate=true;
-        playing=!next.narration||!voiceEnabled;version++;await load(0,manifest.cover);if(next.kind==='classroom'&&loadVoice&&voiceEnabled){await voicePreparation;if(voice.state.phase==='error')throw Error(voice.state.error);}
+        playing=!next.narration||!voiceEnabled;version++;await load(0,manifest.cover);
+        // Commit the prepared content independently of audio transfer readiness.
         if(request!==reportRequest)return false;
         // A new report starts on a clean board; there is no previous page to lift or erase.
         clock.startWrite();boards.forEach((_,i)=>draw(i));if(next.kind==='classroom'){void assetPreload.start(pages,{courseText:pages.map(p=>chalkPageText(p,'zh')+'\n'+chalkPageText(p,'en')).join('\n')});if(loadVoice&&voiceEnabled)void voicePreparation.then(()=>{if(request===reportRequest)return voice.prefetchAll();});}return true;
@@ -737,7 +747,7 @@ export async function createLecture(scene,renderer,options={}){
       const old=trayHardware.tone,tone=trayHardware.setTone(value),stone=isCrystalScheme(tone);if(tone===old)return tone;
       tracks.forEach(track=>setTrackScheme(track,trayHardware.crystalMaterial,stone));
       hardware.back.color.set(stone?'#202124':'#243c32');
-      boards.forEach(b=>{b.group.children[0].material.color.set(stone?'#ffffff':'#c9c5bb');for(const m of b.group.children){if(m.name==='Rear nanmu stiffener')m.material=stone?trayHardware.crystalMaterial:frameMaterial;if(m.name==='Rail carriage bracket'||m.name==='Guide roller')m.visible=!stone;}});
+      boards.forEach(b=>{b.group.children[0].material.color.set(stone?'#ffffff':'#c9c5bb');for(const m of b.group.children){if(m.name==='Rail carriage bracket'||m.name==='Guide roller')m.visible=!stone;}});
       for(const root of [...pageControls.flatMap(p=>p.meshes),...cameraPanels.flatMap(p=>p.meshes),...consoleButtons,...voicePanels.map(p=>p.mesh),...timePanels.map(p=>p.mesh)]){root.userData.trayDarkInk=stone;root.traverse(m=>{if(m.material?.map&&m.material.color)m.material.color.set(stone?'#27313a':'#ffffff');});}
       if(stone!==isCrystalScheme(old)){paintBackground(blankCtx,128,64);blankTexture.needsUpdate=true;if(grain)grain.width=1;if(dust)dust.width=1;grain=dust=null;contentFadeQueue.length=0;boards.forEach(b=>{b.last='';b.fadeAge=1;b.inkBlend.value=1;});boards.forEach((_,i)=>draw(i,true));}
       if(stone)void trayHardware.prepareMinerals(renderer).then(ready=>{if(ready&&isCrystalScheme(trayHardware.tone)){paintBackground(blankCtx,128,64);blankTexture.needsUpdate=true;if(grain)grain.width=1;grain=null;boards.forEach(b=>b.last='');boards.forEach((_,i)=>draw(i,true));}}).catch(error=>{loadingError=error.message;});

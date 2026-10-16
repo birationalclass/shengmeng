@@ -60,7 +60,7 @@ window.GroupCourseExercises={
 '2.5':[
  Q('D₄ 作用在正方形顶点上，一个顶点的稳定子阶为？','For D₄ acting on square vertices, what is a vertex stabilizer order?',['1','2','4','8'],1,'轨道有 4 个顶点，|D₄|=8，所以稳定子阶为 2。','The orbit has four points and |D₄|=8, so the stabilizer has order two.'),
  Q('共轭作用中 x 的稳定子是？','What is the stabilizer of x under conjugation?',['⟨x⟩','Z(G)','C_G(x)','G/Z(G)'],2,'gxg⁻¹=x 等价于 gx=xg，正是中心化子的定义。','The stabilizer equation is equivalent to commuting with x.'),
- Q('非平凡有限 p 群的中心至少有多少个元素？','How many elements must the center of a nontrivial finite p-group have?',['1','p','p²','|G|'],1,'类方程给出 p∣|Z(G)|，而中心非空，故至少为 p。','The class equation gives p∣|Z(G)|, and the center is nonempty.'),
+ Q('非平凡有限 p 群的中心至少有多少个元素？','How many elements must the center of a nontrivial finite p-group have?',['1','p','p²','|G|'],1,'共轭轨道公式给出 p∣|Z(G)|，而中心非空，故至少为 p。','The class equation gives p∣|Z(G)|, and the center is nonempty.'),
  Q('正方形四顶点二色着色，允许 D₄ 对称，轨道数为？','How many two-coloring orbits of square vertices are there under D₄?',['4','6','8','16'],1,'不动点总数为 48，除以群阶 8 得 6。','The fixed-point counts sum to 48; divide by eight.'),
  T('给出一个传递但不忠实的作用，并计算其核。','Give a transitive but nonfaithful action and compute its kernel.','C₄=ℤ/4ℤ 作用在 ℤ/2ℤ 上：[k]·[x]=[k+x] mod 2。它传递，因为 [1] 交换两个点；核是 {[0],[2]}。','Let C₄ act on ℤ/2ℤ by addition modulo 2. It is transitive and has kernel {[0],[2]}.')],
 '2.6':[

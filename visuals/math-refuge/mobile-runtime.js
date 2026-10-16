@@ -11,14 +11,12 @@ export function mobilePolicy({width=1280,height=800,userAgent='',maxTouchPoints=
 export function withDeadline(promise,ms,label){
  let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(label+'超时，请检查网络后重试。')),ms);})]).finally(()=>clearTimeout(timer));
 }
-export async function fetchLocal(url,{timeout=20000,...options}={}){
- const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);
- try{const response=await fetch(url,{...options,signal:controller.signal});if(!response.ok)throw new Error('资源加载失败：'+response.status);return await response.text();}
- catch(error){if(controller.signal.aborted)throw new Error('资源加载超时，请检查网络后重试。');throw error;}
- finally{clearTimeout(timer);}
+export async function fetchLocal(url,{timeout=15000,...options}={}){
+ try{const response=await resourceFetch(url,{...options,resourceIdleTimeout:timeout});if(!response.ok)throw new Error('资源加载失败：'+response.status);return await response.text();}
+ catch(error){if(error.name==='TimeoutError')throw new Error('资源加载超时，请检查网络后重试。',{cause:error});throw error;}
 }
 export function decodeImage(url,timeout=20000){
- if(typeof location!=='undefined'&&!/^(blob:|data:)/.test(String(url))){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);return resourceFetch(url,{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('图像加载失败：'+r.status);return r.blob();}).then(async blob=>{const src=URL.createObjectURL(blob);try{return await decodeImage(src,timeout);}finally{URL.revokeObjectURL(src);}}).finally(()=>clearTimeout(timer));}
+ if(typeof location!=='undefined'&&!/^(blob:|data:)/.test(String(url))){return resourceFetch(url).then(r=>{if(!r.ok)throw Error('图像加载失败：'+r.status);return r.blob();}).then(async blob=>{const src=URL.createObjectURL(blob);try{return await decodeImage(src,timeout);}finally{URL.revokeObjectURL(src);}});}
  return new Promise((resolve,reject)=>{const image=new Image(),timer=setTimeout(()=>{image.onload=image.onerror=null;image.src='';reject(new Error('图像加载超时，请检查网络后重试。'));},timeout);
  image.onload=()=>{clearTimeout(timer);resolve(image);};image.onerror=()=>{clearTimeout(timer);reject(new Error('图像加载失败，请检查网络后重试。'));};image.src=url;});
 }

@@ -395,7 +395,7 @@ window.GroupSections={
       ],
       [
         "conjugacy",
-        "共轭作用与类方程",
+        "共轭作用与共轭轨道公式",
         "Conjugation and the class equation"
       ],
       [
