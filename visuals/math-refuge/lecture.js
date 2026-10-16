@@ -28,7 +28,7 @@ import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=board-c
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
 import {createSeminarScreen} from './seminar-screen.js?v=report-line-sync-6';
 import * as THREE from 'three';
-import {LectureClock,boardSlot,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v=report-line-sync-6';
+import {LectureClock,boardSlot,boardHeights,boardFaceZ,BOARD_LAYOUT} from './lecture-state.js?v=report-line-sync-6';
 import {inkGuides,inkReveal,strokeReveal,rasterStrokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=semantic-chalk-2';
 import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
 import {narrationWork,boardWorkFrame,writingSchedule,settledBoardFrame} from './board-work.js?v=unframed-controls-1';
@@ -131,36 +131,37 @@ export async function createLecture(scene,renderer,options={}){
     const x=22.4+pair*5.6;
     const track=new THREE.Group();tracks.push(track);track.name='Double-channel lift track '+(pair+1);scene.add(track);
     track.position.z=BOARD_MOUNT_OFFSET;
-    track.userData={column:pair,depths:[-10.505,-10.345].map(z=>z+BOARD_MOUNT_OFFSET),travel:[BOARD_LAYOUT.low,BOARD_LAYOUT.high],glassMounted:true};
+    const channelDepths=[0,1].map(side=>boardFaceZ(side)-.035);
+    track.userData={column:pair,depths:channelDepths.map(z=>z+BOARD_MOUNT_OFFSET),travel:[BOARD_LAYOUT.low,BOARD_LAYOUT.high],glassMounted:true};
     const railCenter=(BOARD_LAYOUT.railBottom+BOARD_LAYOUT.railTop)/2,railLength=BOARD_LAYOUT.railTop-BOARD_LAYOUT.railBottom+.06;
     for(const sign of [-1,1]){
       const railX=x+sign*2.745;
-      for(const z of [-10.505,-10.345]){
-        part(track,[railX+sign*.033,railCenter,z],[.028,railLength,.13],metal);
-        for(const dz of [-.066,.066])part(track,[railX,railCenter,z+dz],[.075,railLength,.015],metal);
+      for(const z of channelDepths){
+        part(track,[railX+sign*.033,railCenter,z],[.022,railLength,.056],metal);
+        for(const dz of [-.029,.029])part(track,[railX,railCenter,z+dz],[.055,railLength,.009],metal);
       }
       for(const y of [.62,railCenter,5.02]){
-        part(track,[railX,y,-10.61],[.09,.075,.26],metal);
-        part(track,[railX,y,-10.735],[.16,.17,.03],metal);
+        part(track,[railX,y,boardFaceZ(0)-.085],[.065,.060,.14],metal);
+        part(track,[railX,y,boardFaceZ(0)-.15],[.105,.13,.022],metal);
       }
     }
-    for(const y of [BOARD_LAYOUT.railBottom,BOARD_LAYOUT.railTop]){const stop=part(track,[x,y,-10.51],[5.58,.06,.43],metal);stop.name=y===BOARD_LAYOUT.railTop?'Upper rail stop':'Lower rail stop';}
+    for(const y of [BOARD_LAYOUT.railBottom,BOARD_LAYOUT.railTop]){const stop=part(track,[x,y,BOARD_LAYOUT.frontZ-BOARD_LAYOUT.channelGap/2-.025],[5.58,.045,BOARD_LAYOUT.channelGap+.09],metal);stop.name=y===BOARD_LAYOUT.railTop?'Upper rail stop':'Lower rail stop';}
     trayHardware.createRack(track,x,BOARD_LAYOUT);
     for(let side=0;side<2;side++){
-      const group=new THREE.Group();group.position.set(x,boardHeights(0)[side],-10.45+side*.16+BOARD_MOUNT_OFFSET);
+      const group=new THREE.Group();group.position.set(x,boardHeights(0)[side],boardFaceZ(side)+BOARD_MOUNT_OFFSET);
       group.name=`Sliding chalkboard ${pair+1}${side?'B':'A'}`;scene.add(group);
       const canvas=null,ctx=null,texture=blankTexture,roughCtx=null,roughTexture=null;
       // The backing is physically recessed by .01. Avoid slope-dependent
       // depth bias, which grows at grazing angles and can occlude the chalk.
       const surface=new THREE.Mesh(new THREE.PlaneGeometry(BOARD_W,BOARD_H),new THREE.MeshPhysicalMaterial({map:texture,color:'#c9c5bb',roughness:1,roughnessMap:null,metalness:0,specularIntensity:0,envMapIntensity:0,emissive:0x000000,emissiveIntensity:0,polygonOffset:true,polygonOffsetFactor:0,polygonOffsetUnits:-1}));
       surface.name='Matte writing face';group.add(surface);
-      const body=part(group,[0,0,-.05],[BOARD_W,BOARD_H,.08],hardware.back);body.name='Solid opaque board body';
+      const body=part(group,[0,0,-BOARD_LAYOUT.bodyDepth/2-.01],[BOARD_W,BOARD_H,BOARD_LAYOUT.bodyDepth],hardware.back);body.name='Solid opaque board body';
       // The opaque backing needs no decorative crossbars; preserve its perimeter frame.
       trayHardware.createFrame(group,BOARD_W,BOARD_H);
       for(const sign of [-1,1])for(const y of [-.70,.70]){
-        const carriage=part(group,[sign*2.702,y,-.055],[.145,.13,.055],metal);carriage.name='Rail carriage bracket';
-        const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.049,.049,.045,12),hardware.rubber);
-        wheel.name='Guide roller';wheel.rotation.z=Math.PI/2;wheel.position.set(sign*2.745,y,-.055);group.add(wheel);
+        const carriage=part(group,[sign*2.702,y,-.028],[.105,.10,.03],metal);carriage.name='Rail carriage bracket';
+        const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.026,.026,.030,12),hardware.rubber);
+        wheel.name='Guide roller';wheel.rotation.z=Math.PI/2;wheel.position.set(sign*2.745,y,-.028);group.add(wheel);
       }
       const previousInk={value:blankTexture},inkBlend={value:1};
       surface.material.onBeforeCompile=shader=>{shader.uniforms.boardMipBias=boardMipBias;shader.uniforms.previousInk=previousInk;shader.uniforms.inkBlend=inkBlend;shader.fragmentShader='uniform float boardMipBias;\nuniform sampler2D previousInk;\nuniform float inkBlend;\n'+shader.fragmentShader.replace('#include <map_fragment>',THREE.ShaderChunk.map_fragment.replace('texture2D( map, vMapUv )','mix(texture2D(previousInk,vMapUv,boardMipBias),texture2D(map,vMapUv,boardMipBias),inkBlend)'));};
@@ -177,7 +178,7 @@ export async function createLecture(scene,renderer,options={}){
   const lotteryTargets=lotteryHitTargets(THREE,boards,W,H,BOARD_W,BOARD_H);
   function voiceReport(report){const variant=report.narration?.voices?.find(v=>v.id===voiceTone);return variant?{...report,narration:{...report.narration,manifest:variant.manifest}}:report;}
   const highlighter=createBoardHighlight(THREE,{width:BOARD_W,height:BOARD_H});
-  const voice=createReportVoice(),unbindVoiceFocus=bindVoiceFocusPause(voice);const voicePanels=Array.from({length:3},(_,column)=>{const panel=createBoardVoicePanel(THREE,scene);panel.setColumn(column);return panel;});
+  const voice=createReportVoice({prepareBoard:async(page,time)=>{const ready=await load(page);if(!ready)return false;const event=voice.manifest?.boards.find(b=>b.page===page);if(page>=6&&event&&time<event.writeStart&&!await load(page-6))return false;return true;}}),unbindVoiceFocus=bindVoiceFocusPause(voice);const voicePanels=Array.from({length:3},(_,column)=>{const panel=createBoardVoicePanel(THREE,scene);panel.setColumn(column);return panel;});
   const timePanels=Array.from({length:3},(_,column)=>createBoardTimePanel(THREE,scene,column));
   // Three synchronized controls, centered exactly beneath their board columns.
   const consoleButtons=[],consoleTextures=[];

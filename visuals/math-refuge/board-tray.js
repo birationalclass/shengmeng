@@ -2,6 +2,7 @@ import {TRAY_WOOD_DATA} from './board-tray-grain.js';
 import {PALE_WOOD_DATA} from './board-tray-pale-grain.js';
 import {TRAY_DOCK,TRAY_STORAGE} from './board-tray-layout.js';
 import {TRAY} from './board-hardware.js';
+import {BOARD_LAYOUT,boardFaceZ} from './lecture-state.js';
 import {createMineralMaps,isCrystalScheme,loadMineralImages,acquireQuartzEnvironment} from './board-mineral.js';
 // Shared geometry and deterministic small PBR maps: no image downloads or extra
 // work during narration. End faces have their own grain direction, not a butt cap.
@@ -70,20 +71,21 @@ export function createBoardTrayHardware(T,anisotropy=1){
  function createRack(parent,x,layout){
   const group=new T.Group();group.name='Concept quartz independent slim support rack';group.userData.crystalRack=true;group.visible=isCrystalScheme(tone);parent.add(group);
   const center=(layout.railBottom+layout.railTop)/2,length=layout.railTop-layout.railBottom+.10;
-  const column=roundedSlab(.10,length,.30,.012,.008,true),p=column.getAttribute('position'),uv=column.getAttribute('uv');for(let i=0;i<p.count;i++)uv.setXY(i,p.getX(i)/.16+.5,p.getY(i)/length*2+.5);woodGeometry(column,-length/2,length/2);
-  for(const sign of [-1,1]){const post=new T.Mesh(column,crystal);finishMeshes.push(post);post.name='Slim beveled quartz guide post';post.position.set(x+sign*2.77,center,-10.48);post.castShadow=post.receiveShadow=true;group.add(post);}
-  const cross=roundedSlab(5.54,.055,.12,.008,.004);woodGeometry(cross,-.03,.03);
-  for(const y of [layout.railBottom-.04,layout.railTop+.04]){const rail=new T.Mesh(cross,crystal);finishMeshes.push(rail);rail.name='Recessed quartz rack crosspiece';rail.position.set(x,y,-10.57);rail.castShadow=rail.receiveShadow=true;group.add(rail);}
+  const rackZ=layout.frontZ-layout.channelGap/2-.021;
+  const column=roundedSlab(layout.postWidth,length,layout.postDepth,.009,.005,true),p=column.getAttribute('position'),uv=column.getAttribute('uv');for(let i=0;i<p.count;i++)uv.setXY(i,p.getX(i)/.16+.5,p.getY(i)/length*2+.5);woodGeometry(column,-length/2,length/2);
+  for(const sign of [-1,1]){const post=new T.Mesh(column,crystal);finishMeshes.push(post);post.name='Slim beveled quartz guide post';post.position.set(x+sign*2.77,center,rackZ);post.castShadow=post.receiveShadow=true;group.add(post);}
+  const cross=roundedSlab(5.54,.045,.07,.006,.003);woodGeometry(cross,-.03,.03);
+  for(const y of [layout.railBottom-.04,layout.railTop+.04]){const rail=new T.Mesh(cross,crystal);finishMeshes.push(rail);rail.name='Recessed quartz rack crosspiece';rail.position.set(x,y,boardFaceZ(0)-.04);rail.castShadow=rail.receiveShadow=true;group.add(rail);}
   // Two physically separate guide channels face inward, behind each writing panel.
   const channel=new T.BoxGeometry(.009,length-.08,.022);geometries.push(channel);
-  for(const sign of [-1,1])for(const z of [-10.505,-10.345]){const slot=new T.Mesh(channel,steel);slot.name='Recessed independent lift guide';slot.position.set(x+sign*2.716,center,z-.04);group.add(slot);}
+  for(const sign of [-1,1])for(const side of [0,1]){const slot=new T.Mesh(channel,steel);slot.name='Recessed independent lift guide';slot.position.set(x+sign*2.716,center,boardFaceZ(side)-.035);group.add(slot);}
   return group;
  }
  function frameRails(w,h,stone=false){
   const key=w+':'+h+':'+stone;if(frames.has(key))return frames.get(key);
   const outer=stone?.028:.040,ox=w/2+outer,oy=h/2+outer,ix=w/2+.008,iy=h/2+.008;
   const outlines=[[[ -ox,oy],[ -ix,iy],[ix,iy],[ox,oy]],[[ -ox,-oy],[ox,-oy],[ix,-iy],[-ix,-iy]],[[ -ox,-oy],[-ix,-iy],[-ix,iy],[-ox,oy]],[[ox,-oy],[ox,oy],[ix,iy],[ix,-iy]]];
-  const rails=outlines.map((points,index)=>{const shape=new T.Shape();shape.moveTo(...points[0]);points.slice(1).forEach(p=>shape.lineTo(...p));shape.closePath();const g=new T.ExtrudeGeometry(shape,{depth:.066,bevelEnabled:true,bevelSize:stone?.003:.0025,bevelThickness:stone?.003:.0025,bevelSegments:stone?1:3,steps:1});g.translate(0,0,-.055);const p=g.getAttribute('position'),uv=g.getAttribute('uv');for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i);uv.setXY(i,index<2?x/w+.5:y/h+.5,index<2?(y+(index?oy:-iy))/.08+.2:(x+(index===2?ox:-ix))/.08+.45);}uv.needsUpdate=true;geometries.push(g);woodGeometry(g,-oy,oy);return g;});frames.set(key,rails);return rails;
+  const rails=outlines.map((points,index)=>{const shape=new T.Shape();shape.moveTo(...points[0]);points.slice(1).forEach(p=>shape.lineTo(...p));shape.closePath();const g=new T.ExtrudeGeometry(shape,{depth:BOARD_LAYOUT.frameDepth,bevelEnabled:true,bevelSize:stone?.003:.0025,bevelThickness:stone?.003:.0025,bevelSegments:stone?1:3,steps:1});g.translate(0,0,-.029);const p=g.getAttribute('position'),uv=g.getAttribute('uv');for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i);uv.setXY(i,index<2?x/w+.5:y/h+.5,index<2?(y+(index?oy:-iy))/.08+.2:(x+(index===2?ox:-ix))/.08+.45);}uv.needsUpdate=true;geometries.push(g);woodGeometry(g,-oy,oy);return g;});frames.set(key,rails);return rails;
  }
  return {createRack,prepareMinerals(renderer){if(renderer&&!environment){environment=acquireQuartzEnvironment(T,renderer);crystal.envMap=environment.texture;crystal.needsUpdate=true;}return mineralReady||(mineralReady=loadMineralImages().then(images=>{if(disposed)return false;const map=new T.Texture(images.quartz);map.colorSpace=T.SRGBColorSpace;map.wrapS=map.wrapT=T.RepeatWrapping;map.anisotropy=Math.min(8,anisotropy);map.needsUpdate=true;mineral.quartz.dispose();mineral.quartz=map;crystal.map=map;crystalCore.map=map;crystal.needsUpdate=true;crystalCore.needsUpdate=true;return true;}).catch(error=>{mineralReady=null;throw error;}));},createEraser,createParkedEraser,setTone,get tone(){return tone;},get crystalMaterial(){return crystal;},get crystalCoreMaterial(){return crystalCore;},createFrame(parent,w,h){const frame=new T.Group();frame.name='Fine mitered nanmu board frame';parent.add(frame);frameRails(w,h,isCrystalScheme(tone)).forEach((g,i)=>{const rail=new T.Mesh(g,isCrystalScheme(tone)?crystal:wood);finishMeshes.push(rail);frameMeshes.push({mesh:rail,w,h,index:i});rail.name=['Top','Bottom','Left','Right'][i]+' beveled mitered rail';rail.castShadow=true;rail.receiveShadow=true;frame.add(rail);});return frame;},async loadGrain(){const loaded=await Promise.all([TRAY_WOOD_DATA,PALE_WOOD_DATA].map(src=>new T.TextureLoader().loadAsync(src)));for(const map of loaded){map.colorSpace=T.SRGBColorSpace;map.wrapS=map.wrapT=T.RepeatWrapping;map.anisotropy=Math.min(8,anisotropy);}for(const old of maps)old.dispose();maps.length=0;maps.push(...loaded);[brownMap,paleMap]=loaded;setTone(tone);wood.needsUpdate=true;},create(parent,cx,column){
   const group=new T.Group();group.name='Wide nanmu chalk tray '+(column+1);group.position.x=cx;group.userData={column,depth:.61,centerZ:TRAY.z,floorTop:TRAY.top,integratedControls:true};parent.add(group);

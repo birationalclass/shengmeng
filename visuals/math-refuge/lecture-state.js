@@ -2,7 +2,8 @@ export const BOARD_ORDER=[0,1,2,3,4,5];
 export const PHASE_SECONDS={lift:2.6,erase:24,write:23,hold:8};
 export function boardSlot(page){return BOARD_ORDER[((page%6)+6)%6];}
 // Close resting seams; the two depth-separated channels still pass freely.
-export const BOARD_LAYOUT={width:5.3,height:2.05,frame:.035,low:1.835,high:3.96,railBottom:.54,railTop:5.1};
+export const BOARD_LAYOUT={width:5.3,height:2.05,frame:.035,low:1.835,high:3.96,railBottom:.54,railTop:5.1,frontZ:-10.29,channelGap:.075,bodyDepth:.038,frameDepth:.038,postWidth:.072,postDepth:.16};
+export function boardFaceZ(side){return BOARD_LAYOUT.frontZ-(1-side)*BOARD_LAYOUT.channelGap;}
 export function boardHeights(mix){const {low,high}=BOARD_LAYOUT,travel=high-low;return [low+travel*mix,high-travel*mix];}
 export class LectureClock{
   constructor(count){
