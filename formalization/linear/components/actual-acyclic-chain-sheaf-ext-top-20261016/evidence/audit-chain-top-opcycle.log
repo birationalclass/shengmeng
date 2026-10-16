@@ -1,0 +1,58 @@
+@LinearStudy.schemeModuleChainTopOpcycleIso : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (p : ℕ) → CategoryTheory.Limits.IsZero (K.X (p + 1)) → (K.X p ≅ HomologicalComplex.opcycles K p)
+'LinearStudy.schemeModuleChainTopOpcycleIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomSourceIso : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (P ≅ Q) → (N : X.Modules) → LinearStudy.schemeModuleHomModuleSheaf P N ≅ LinearStudy.schemeModuleHomModuleSheaf Q N
+'LinearStudy.schemeModuleHomSourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChainTopHomCokernelIso : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (N : X.Modules) →
+      (p : ℕ) →
+        CategoryTheory.Limits.IsZero (K.X (p + 2)) →
+          (CategoryTheory.Limits.cokernel
+              (LinearStudy.schemeModuleHomPrecompose (HomologicalComplex.fromOpcycles K (p + 1) p)) ≅
+            CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)))
+'LinearStudy.schemeModuleChainTopHomCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChainTopHomCokernelIso_hom : ∀ {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ)
+  (N : X.Modules) (p : ℕ) (hAbove : CategoryTheory.Limits.IsZero (K.X (p + 2))),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π
+        (LinearStudy.schemeModuleHomPrecompose (HomologicalComplex.fromOpcycles K (p + 1) p)))
+      (LinearStudy.schemeModuleChainTopHomCokernelIso K N p hAbove).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPrecompose (HomologicalComplex.pOpcycles K (p + 1)))
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)))
+'LinearStudy.schemeModuleChainTopHomCokernelIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleChainTopOpcycleIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (p : ℕ) → CategoryTheory.Limits.IsZero (K.X (p + 1)) → (K.X p ≅ HomologicalComplex.opcycles K p) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (p : ℕ)
+    (hAbove : CategoryTheory.Limits.IsZero (K.X (p + 1))) =>
+  CategoryTheory.asIso (HomologicalComplex.pOpcycles K p)
+def LinearStudy.schemeModuleHomSourceIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (P ≅ Q) →
+      (N : X.Modules) → LinearStudy.schemeModuleHomModuleSheaf P N ≅ LinearStudy.schemeModuleHomModuleSheaf Q N :=
+fun {X : AlgebraicGeometry.Scheme} {P Q : X.Modules} (e : P ≅ Q) (N : X.Modules) =>
+  { hom := LinearStudy.schemeModuleHomPrecompose e.inv, inv := LinearStudy.schemeModuleHomPrecompose e.hom,
+    hom_inv_id := ⋯, inv_hom_id := ⋯ }
+def LinearStudy.schemeModuleChainTopHomCokernelIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (N : X.Modules) →
+      (p : ℕ) →
+        CategoryTheory.Limits.IsZero (K.X (p + 2)) →
+          (CategoryTheory.Limits.cokernel
+              (LinearStudy.schemeModuleHomPrecompose (HomologicalComplex.fromOpcycles K (p + 1) p)) ≅
+            CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p))) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (N : X.Modules) (p : ℕ)
+    (hAbove : CategoryTheory.Limits.IsZero (K.X (p + 2))) =>
+  CategoryTheory.Limits.cokernel.mapIso
+    (LinearStudy.schemeModuleHomPrecompose (HomologicalComplex.fromOpcycles K (p + 1) p))
+    (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p))
+    (CategoryTheory.Iso.refl (LinearStudy.schemeModuleHomModuleSheaf (K.X p) N))
+    (LinearStudy.schemeModuleHomSourceIso (LinearStudy.schemeModuleChainTopOpcycleIso K (p + 1) hAbove).symm N) ⋯
+ROLECHECK:LinearStudy.schemeModuleChainTopOpcycleIso:false
+ROLECHECK:LinearStudy.schemeModuleHomSourceIso:false
+ROLECHECK:LinearStudy.schemeModuleChainTopHomCokernelIso:false
+ROLECHECK:LinearStudy.schemeModuleChainTopHomCokernelIso_hom:true

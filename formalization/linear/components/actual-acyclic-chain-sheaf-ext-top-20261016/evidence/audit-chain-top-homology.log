@@ -1,0 +1,23 @@
+@LinearStudy.schemeModuleChainTopHomologyCokernelIso : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (N : X.Modules) →
+      (p : ℕ) →
+        CategoryTheory.Limits.IsZero (K.X (p + 2)) →
+          (HomologicalComplex.homology (LinearStudy.schemeModuleInternalHomCochainComplex N K) (p + 1) ≅
+            CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p)))
+'LinearStudy.schemeModuleChainTopHomologyCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleChainTopHomologyCokernelIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (N : X.Modules) →
+      (p : ℕ) →
+        CategoryTheory.Limits.IsZero (K.X (p + 2)) →
+          (HomologicalComplex.homology (LinearStudy.schemeModuleInternalHomCochainComplex N K) (p + 1) ≅
+            CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (K.d (p + 1) p))) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (N : X.Modules) (p : ℕ)
+    (hAbove : CategoryTheory.Limits.IsZero (K.X (p + 2))) =>
+  let C := LinearStudy.schemeModuleInternalHomCochainComplex N K;
+  let S := HomologicalComplex.sc' C p (p + 1) (p + 2);
+  have hg := ⋯;
+  HomologicalComplex.homologyIsoSc' C p (p + 1) (p + 2) ⋯ ⋯ ≪≫
+    (CategoryTheory.ShortComplex.HomologyData.ofHasCokernel S hg).left.homologyIso
+ROLECHECK:LinearStudy.schemeModuleChainTopHomologyCokernelIso:false

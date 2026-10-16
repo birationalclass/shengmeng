@@ -1,0 +1,29 @@
+@LinearStudy.schemeModuleChainOpcycleSequence : {X : AlgebraicGeometry.Scheme} →
+  ChainComplex X.Modules ℕ → ℕ → CategoryTheory.ShortComplex X.Modules
+'LinearStudy.schemeModuleChainOpcycleSequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChainOpcycleSequenceIsCokernel : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      CategoryTheory.Limits.IsColimit
+        (CategoryTheory.Limits.CokernelCofork.ofπ (LinearStudy.schemeModuleChainOpcycleSequence K p).g ⋯)
+'LinearStudy.schemeModuleChainOpcycleSequenceIsCokernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChainOpcycleSequence_shortExact : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (p : ℕ),
+  HomologicalComplex.ExactAt K (p + 1) → (LinearStudy.schemeModuleChainOpcycleSequence K p).ShortExact
+'LinearStudy.schemeModuleChainOpcycleSequence_shortExact' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleChainOpcycleSequence.{u} : {X : AlgebraicGeometry.Scheme} →
+  ChainComplex X.Modules ℕ → ℕ → CategoryTheory.ShortComplex X.Modules :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (p : ℕ) =>
+  { X₁ := HomologicalComplex.opcycles K (p + 1), X₂ := K.X p, X₃ := HomologicalComplex.opcycles K p,
+    f := HomologicalComplex.fromOpcycles K (p + 1) p, g := HomologicalComplex.pOpcycles K p, zero := ⋯ }
+def LinearStudy.schemeModuleChainOpcycleSequenceIsCokernel.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      CategoryTheory.Limits.IsColimit
+        (CategoryTheory.Limits.CokernelCofork.ofπ (LinearStudy.schemeModuleChainOpcycleSequence K p).g ⋯) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (p : ℕ) =>
+  CategoryTheory.Limits.CokernelCofork.isColimitOfIsColimitOfIff' (HomologicalComplex.opcyclesIsCokernel K (p + 1) p ⋯)
+    (HomologicalComplex.fromOpcycles K (p + 1) p) ⋯
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleSequence:false
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleSequenceIsCokernel:false
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleSequence_shortExact:true

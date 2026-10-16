@@ -1,0 +1,59 @@
+@LinearStudy.schemeModuleChainOpcycleZeroCokernelIso : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) → HomologicalComplex.opcycles K 0 ≅ CategoryTheory.Limits.cokernel (K.d 1 0)
+'LinearStudy.schemeModuleChainOpcycleZeroCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChainOpcycleZeroCokernelIso_projection : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ),
+  CategoryTheory.CategoryStruct.comp (HomologicalComplex.pOpcycles K 0)
+      (LinearStudy.schemeModuleChainOpcycleZeroCokernelIso K).hom =
+    CategoryTheory.Limits.cokernel.π (K.d 1 0)
+'LinearStudy.schemeModuleChainOpcycleZeroCokernelIso_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleCokernelAugmentation_exactAt_succ : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : ChainComplex X.Modules ℕ) (E : X.Modules) (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E),
+  QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e) → ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)
+'LinearStudy.schemeModuleCokernelAugmentation_exactAt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (E : X.Modules) →
+      (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E) →
+        QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e) →
+          (N : X.Modules) →
+            CategoryTheory.InjectiveResolution N →
+              (q : ℕ) →
+                (∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) →
+                  CategoryTheory.Limits.IsZero (K.X (q + 2)) →
+                    (LinearStudy.schemeModuleInternalExt E N (q + 1) ≅
+                      HomologicalComplex.homology (LinearStudy.schemeModuleInternalHomCochainComplex N K) (q + 1))
+'LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleChainOpcycleZeroCokernelIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) → HomologicalComplex.opcycles K 0 ≅ CategoryTheory.Limits.cokernel (K.d 1 0) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) =>
+  (HomologicalComplex.opcyclesIsCokernel K 1 0
+        LinearStudy.schemeModuleChainOpcycleZeroCokernelIso._proof_1).coconePointUniqueUpToIso
+    (CategoryTheory.Limits.colimit.isColimit (CategoryTheory.Limits.parallelPair (K.d 1 0) 0))
+def LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (E : X.Modules) →
+      (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E) →
+        QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e) →
+          (N : X.Modules) →
+            CategoryTheory.InjectiveResolution N →
+              (q : ℕ) →
+                (∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) →
+                  CategoryTheory.Limits.IsZero (K.X (q + 2)) →
+                    (LinearStudy.schemeModuleInternalExt E N (q + 1) ≅
+                      HomologicalComplex.homology (LinearStudy.schemeModuleInternalHomCochainComplex N K) (q + 1)) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (E : X.Modules)
+    (e : CategoryTheory.Limits.cokernel (K.d 1 0) ≅ E)
+    (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation K E e)) (N : X.Modules)
+    (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+    (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+    (hAbove : CategoryTheory.Limits.IsZero (K.X (q + 2))) =>
+  (LinearStudy.schemeModuleInternalExtSourceIso (LinearStudy.schemeModuleChainOpcycleZeroCokernelIso K ≪≫ e) N
+        (q + 1)).symm ≪≫
+    LinearStudy.schemeModuleAcyclicChainTopInternalExtIso K ⋯ N I q hA hAbove
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleZeroCokernelIso:false
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleZeroCokernelIso_projection:true
+ROLECHECK:LinearStudy.schemeModuleCokernelAugmentation_exactAt_succ:true
+ROLECHECK:LinearStudy.schemeModuleAcyclicCokernelTopInternalExtIso:false

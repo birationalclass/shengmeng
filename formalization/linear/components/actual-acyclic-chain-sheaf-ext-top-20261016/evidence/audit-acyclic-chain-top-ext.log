@@ -1,0 +1,31 @@
+@LinearStudy.schemeModuleAcyclicChainTopInternalExtIso : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (q : ℕ) →
+            (∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) →
+              CategoryTheory.Limits.IsZero (K.X (q + 2)) →
+                (LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K 0) N (q + 1) ≅
+                  HomologicalComplex.homology (LinearStudy.schemeModuleInternalHomCochainComplex N K) (q + 1))
+'LinearStudy.schemeModuleAcyclicChainTopInternalExtIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleAcyclicChainTopInternalExtIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (q : ℕ) →
+            (∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) →
+              CategoryTheory.Limits.IsZero (K.X (q + 2)) →
+                (LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K 0) N (q + 1) ≅
+                  HomologicalComplex.homology (LinearStudy.schemeModuleInternalHomCochainComplex N K) (q + 1)) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1))
+    (N : X.Modules) (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+    (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+    (hAbove : CategoryTheory.Limits.IsZero (K.X (q + 2))) =>
+  LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N I hA 0 q ≪≫
+    CategoryTheory.eqToIso ⋯ ≪≫
+      (LinearStudy.schemeModuleChainOpcycleHomCokernelIso K q ⋯ N I ⋯).symm ≪≫
+        LinearStudy.schemeModuleChainTopHomCokernelIso K N q hAbove ≪≫
+          (LinearStudy.schemeModuleChainTopHomologyCokernelIso K N q hAbove).symm
+ROLECHECK:LinearStudy.schemeModuleAcyclicChainTopInternalExtIso:false

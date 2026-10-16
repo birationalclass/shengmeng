@@ -1,0 +1,127 @@
+@LinearStudy.schemeModuleChainOpcycleExtShiftIso : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      HomologicalComplex.ExactAt K (p + 1) →
+        (N : X.Modules) →
+          CategoryTheory.InjectiveResolution N →
+            (q : ℕ) →
+              (∀ (j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) →
+                (LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K (p + 1)) N (q + 1) ≅
+                  LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N (q + 2))
+'LinearStudy.schemeModuleChainOpcycleExtShiftIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChainOpcycleExtShiftIso_hom : ∀ {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ)
+  (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1)) (N : X.Modules) (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+  (hA : ∀ (j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))),
+  (LinearStudy.schemeModuleChainOpcycleExtShiftIso K p hK N I q hA).hom =
+    LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution (LinearStudy.schemeModuleChainOpcycleSequence K p) ⋯
+      N I (q + 1)
+'LinearStudy.schemeModuleChainOpcycleExtShiftIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChainOpcycleHomCokernelIso : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      HomologicalComplex.ExactAt K (p + 1) →
+        (N : X.Modules) →
+          CategoryTheory.InjectiveResolution N →
+            CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N 1) →
+              (CategoryTheory.Limits.cokernel
+                  (LinearStudy.schemeModuleHomPrecompose (HomologicalComplex.fromOpcycles K (p + 1) p)) ≅
+                LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N 1)
+'LinearStudy.schemeModuleChainOpcycleHomCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChainOpcycleIteratedExtIso : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) →
+            (p q : ℕ) →
+              LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N (q + 1) ≅
+                LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K (p + q)) N 1
+'LinearStudy.schemeModuleChainOpcycleIteratedExtIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChainOpcycleExtCokernelIso : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) →
+            (p q : ℕ) →
+              LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N (q + 1) ≅
+                CategoryTheory.Limits.cokernel
+                  (LinearStudy.schemeModuleHomPrecompose (HomologicalComplex.fromOpcycles K (p + q + 1) (p + q)))
+'LinearStudy.schemeModuleChainOpcycleExtCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleChainOpcycleExtShiftIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      HomologicalComplex.ExactAt K (p + 1) →
+        (N : X.Modules) →
+          CategoryTheory.InjectiveResolution N →
+            (q : ℕ) →
+              (∀ (j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) →
+                (LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K (p + 1)) N (q + 1) ≅
+                  LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N (q + 2)) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1))
+    (N : X.Modules) (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+    (hA : ∀ (j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) =>
+  LinearStudy.schemeModuleInternalExtSourceBoundaryIsoViaResolution (LinearStudy.schemeModuleChainOpcycleSequence K p) ⋯
+    N I (q + 1) ⋯ ⋯
+def LinearStudy.schemeModuleChainOpcycleHomCokernelIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      HomologicalComplex.ExactAt K (p + 1) →
+        (N : X.Modules) →
+          CategoryTheory.InjectiveResolution N →
+            CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N 1) →
+              (CategoryTheory.Limits.cokernel
+                  (LinearStudy.schemeModuleHomPrecompose (HomologicalComplex.fromOpcycles K (p + 1) p)) ≅
+                LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N 1) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1))
+    (N : X.Modules) (I : CategoryTheory.InjectiveResolution N)
+    (hA : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N 1)) =>
+  LinearStudy.schemeModuleHomSourceBoundaryCokernelIso (LinearStudy.schemeModuleChainOpcycleSequence K p) ⋯ N I hA
+def LinearStudy.schemeModuleChainOpcycleIteratedExtIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) →
+            (p q : ℕ) →
+              LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N (q + 1) ≅
+                LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K (p + q)) N 1 :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1))
+    (N : X.Modules) (I : CategoryTheory.InjectiveResolution N)
+    (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+    (p q : ℕ) =>
+  Nat.recAux (motive := fun (q : ℕ) =>
+    (p : ℕ) →
+      LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N (q + 1) ≅
+        LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K (p + q)) N 1)
+    (fun (p : ℕ) =>
+      CategoryTheory.Iso.refl (LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N (0 + 1)))
+    (fun (q : ℕ)
+        (ih :
+          (p : ℕ) →
+            LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N (q + 1) ≅
+              LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K (p + q)) N 1)
+        (p : ℕ) =>
+      (LinearStudy.schemeModuleChainOpcycleExtShiftIso K p ⋯ N I q ⋯).symm ≪≫ ih (p + 1) ≪≫ CategoryTheory.eqToIso ⋯)
+    q p
+def LinearStudy.schemeModuleChainOpcycleExtCokernelIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : ChainComplex X.Modules ℕ) →
+    (∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1))) →
+            (p q : ℕ) →
+              LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K p) N (q + 1) ≅
+                CategoryTheory.Limits.cokernel
+                  (LinearStudy.schemeModuleHomPrecompose (HomologicalComplex.fromOpcycles K (p + q + 1) (p + q))) :=
+fun {X : AlgebraicGeometry.Scheme} (K : ChainComplex X.Modules ℕ) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1))
+    (N : X.Modules) (I : CategoryTheory.InjectiveResolution N)
+    (hA : ∀ (p j : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (K.X p) N (j + 1)))
+    (p q : ℕ) =>
+  LinearStudy.schemeModuleChainOpcycleIteratedExtIso K hK N I hA p q ≪≫
+    (LinearStudy.schemeModuleChainOpcycleHomCokernelIso K (p + q) ⋯ N I ⋯).symm
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleExtShiftIso:false
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleExtShiftIso_hom:true
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleHomCokernelIso:false
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleIteratedExtIso:false
+ROLECHECK:LinearStudy.schemeModuleChainOpcycleExtCokernelIso:false
