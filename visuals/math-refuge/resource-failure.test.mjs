@@ -27,7 +27,7 @@ test('repeated rendered frames cannot hammer a failed asset; explicit retry clea
  assert.equal(calls,0);assert(retry.blocked(5));now=2001;assert.equal(retry.blocked(5),null);retry.fail(5,Error('offline'));now=4002;assert(retry.blocked(5),'second failure backs off longer');retry.clear(5);assert.equal(retry.blocked(5),null);
 });
 test('the actual board loader retains failed request backoff after clearing its pending entry',async()=>{
- const source=readFileSync(new URL('./lecture.js',import.meta.url),'utf8'),method=source.slice(source.indexOf('  function load(index,preparedImage)'),source.indexOf('  if(!disabled&&hasSelection)'));
+ const source=readFileSync(new URL('./lecture.js',import.meta.url),'utf8'),method=source.slice(source.indexOf('  function load('),source.indexOf('  if(!disabled&&hasSelection)'));
  let calls=0;const c={cache:new Map(),pending:new Map(),assetRetry:new AssetRetry({now:()=>0}),generation:0,language:'en',writingStyle:'refined',Image:class{},canAuthor:true,pages:[{formulaAsset:'broken.svg'}],authoredFormula:()=>{calls++;return Promise.reject(Error('offline'));},withDeadline:p=>p};
  const load=vm.runInNewContext(method+';load',c);await assert.rejects(load(0),/offline/);assert.equal(c.pending.size,0);
  for(let i=0;i<300;i++)await assert.rejects(load(0),/offline/);assert.equal(calls,1);c.assetRetry.clear(0);await assert.rejects(load(0),/offline/);assert.equal(calls,2);
@@ -38,7 +38,7 @@ test('a hung optional job releases the scheduler, and retrying its key can succe
  await checked;await next;assert(signal.aborted);assert(ran);assert.equal(s.snapshot().active,false);await s.enqueue('bad','故障资源',()=>true);
 });
 test('a stalled course prefetch ends locally instead of occupying both workers forever',async()=>{
- const q=createCoursePreload({fetcher:()=>new Promise(()=>{}),requestTimeout:25,baseURL:'https://test/'});await q.start([{formulaAsset:'a.svg'},{formulaAsset:'b.svg'},{formulaAsset:'c.svg'}]);assert.equal(q.state.phase,'partial');assert(q.state.errors.length<=2);assert(q.state.errors.length>0);
+ const q=createCoursePreload({fetcher:()=>new Promise(()=>{}),requestTimeout:25,baseURL:'https://test/'});await q.start([{formulaAsset:'a.svg'},{formulaAsset:'b.svg'},{formulaAsset:'c.svg'}]);assert.equal(q.state.phase,'partial');assert.equal(q.state.completed,0);assert.equal(q.state.retrying,q.state.total);assert(q.state.errors.length>0);q.cancel();
 });
 test('a parked optional task cannot deadlock required startup resources behind the opening gate',async()=>{
  let opening=true;const s=new ResourceScheduler({policy:()=>({opening}),api:{setTimeout,performance,requestIdleCallback:cb=>setTimeout(cb,0)}});let optional=false;

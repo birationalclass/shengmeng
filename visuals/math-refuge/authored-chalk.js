@@ -1,5 +1,6 @@
 import {resourceFetch} from './resource-fetch.js';
 import {decodeImage} from './mobile-runtime.js';
+import {preparationTurn} from './preparation-turn.js';
 import {glyphs,advance} from './refined-handwriting.js?v1';
 const NS='http://www.w3.org/2000/svg',samples=new Map();
 export function authoredGlyph(char){
@@ -32,7 +33,8 @@ export async function authoredFormula(url,{color}={}){
  if(root.localName!=='svg')throw Error('无效板书公式');
  const host=document.createElement('div');host.style.cssText='position:fixed;left:-20000px;top:0;visibility:hidden;pointer-events:none';host.append(root);document.body.append(host);const operations=[],rootMatrix=root.getScreenCTM().inverse();
  try{
- for(const element of [...root.querySelectorAll('path,rect,text,line,polyline,polygon,circle,ellipse')]){
+ let batch=0;for(const element of [...root.querySelectorAll('path,rect,text,line,polyline,polygon,circle,ellipse')]){
+  if(++batch%12===0)await preparationTurn();
   if(element.closest('defs')||!element.getBBox)continue;const box=element.getBBox(),m=rootMatrix.multiply(element.getScreenCTM());if(!m||!box.width&&!box.height)continue;
   const map=([x,y])=>[m.a*x+m.c*y+m.e,m.b*x+m.d*y+m.f];
   let clip=[0,0,Number(root.getAttribute('width')),Number(root.getAttribute('height'))];for(let parent=element.parentElement;parent&&parent!==root;parent=parent.parentElement){if(parent.localName==='svg'){const b=parent.getBoundingClientRect(),a=new DOMPoint(b.left,b.top).matrixTransform(rootMatrix),z=new DOMPoint(b.right,b.bottom).matrixTransform(rootMatrix);clip=clipRect(clip,[a.x,a.y,z.x-a.x,z.y-a.y]);if(!clip)break;}}if(!clip)continue;

@@ -6,7 +6,7 @@ import {LectureClock} from './lecture-state.js';
 const source=readFileSync(new URL('./lecture.js',import.meta.url),'utf8');
 function fixture(kind){
  const calls=[],clock=new LectureClock(28);clock.startWrite();
- const context={options:{},disabled:false,version:0,playing:false,clock,
+ const context={options:{},disabled:false,version:0,playing:false,clock,chalkPageText:()=>'',
   openingDemo:{phase:'waiting',narrated:true},activeReport:{id:'sylow-theorems',kind},pages:[{}],
   boards:Array.from({length:6},()=>({})),draw:(index,preparing)=>calls.push(['draw',index,preparing]),
   programScreen:{select:report=>calls.push(['program',report.id])},setReportState(){},

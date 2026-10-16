@@ -42,6 +42,7 @@ import {teachingRoomAt} from './room-context.js?v=campus-layout-20260926';
 import {configureSeminarRoot,seminarFloor} from './seminar-layout.js?v57-proof-flow';
 import {KM_REPORT} from './seminar-catalog.js?v57-proof-flow';
 import {BUILDINGS,OUTDOOR_AREAS,buildingForShot} from './building-catalog.js?v=true-north-coast-1';
+import './verification-audio.js';
 import * as THREE from 'three';
 import {createBackgroundMusic} from './background-music.js?v=arrival-live-71';
 import {controlLabel} from './control-label.js?v=22-handwritten-cover';
@@ -571,7 +572,7 @@ function tick(stamp){
   flightPerformance.sample(frameMs,performance.now()-cpuStart);resources.frame(frameMs,performance.now()-cpuStart,stamp);
   performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:renderer.getPixelRatio(),rooms:rooms.filter(room=>room.renderActive).length,adaptive:$('adaptiveReadout').textContent});
   if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
-  if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;if(!$('settings').hidden){$('weatherCost').textContent='云 / 大气预计算 GPU '+(weatherGpuMs==null?'待采样':weatherGpuMs.toFixed(2)+' ms')+' · CPU '+weatherCpuMs.toFixed(2)+' ms · 云 '+({low:'标准',medium:'精细',high:'超精细',off:'关闭'}[activeCloudQuality])+'（不含主画面的天空、水面和雨滴）';$('world').dataset.weatherCost=JSON.stringify({prepassGPU:weatherGpuMs,prepassCPU:weatherCpuMs,cloud:activeCloudQuality});}const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported,adaptiveLevel:frameQuality.level,adaptiveFPS:frameQuality.stats?.fps});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
+  if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;$('world').dataset.inkPerformance=JSON.stringify(lecture?.inkStats||{});$('world').dataset.coursePreload=JSON.stringify(lecture?.preloadState||{});if(!$('settings').hidden){$('weatherCost').textContent='云 / 大气预计算 GPU '+(weatherGpuMs==null?'待采样':weatherGpuMs.toFixed(2)+' ms')+' · CPU '+weatherCpuMs.toFixed(2)+' ms · 云 '+({low:'标准',medium:'精细',high:'超精细',off:'关闭'}[activeCloudQuality])+'（不含主画面的天空、水面和雨滴）';$('world').dataset.weatherCost=JSON.stringify({prepassGPU:weatherGpuMs,prepassCPU:weatherCpuMs,cloud:activeCloudQuality});}const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported,adaptiveLevel:frameQuality.level,adaptiveFPS:frameQuality.stats?.fps});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
 
 }
 let startupPaintAt=0;
@@ -600,7 +601,7 @@ function prepareMainRoom(){
   const [lectureModule,readerModule,voiceModule,settingsModule]=await measureCritical('P1 功能模块与数学排版',()=>Promise.all([import('./lecture.js?v=sylow-two-lessons-20261015'),import('./chalk-reader.js?v=inline-root-1'),import('./report-voice.js?v=semantic-chalk-2'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]));
   createLecture=lectureModule.createLecture;createChalkReader=readerModule.createChalkReader;reportVoicePresentation=voiceModule.reportVoicePresentation;narrationResourceBytes=voiceModule.narrationResourceBytes;
   const root=new THREE.Group();root.name='East-facing compact auditorium blackboards';configureLectureRoot(root);root.position.add(buildingOffset('01B'));scene.add(root);
-  lecture=await measureCritical('P1 板书组件与报告内容',()=>withDeadline(createLecture(root,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'sylow-theorems',initialLanguage:'zh',onOpening:state=>{$('world').dataset.openingClassroom=JSON.stringify(state);},boardScale:device.boardScale,writingStyle:boardWritingStyle,onPreparation:value=>{$('world').dataset.boardPreparation=JSON.stringify(value);}}),30000,'报告板书加载'));await boardFonts;retreat.roomFill.apply(root);
+  lecture=await measureCritical('P1 板书组件与报告内容',()=>withDeadline(createLecture(root,renderer,{camera,floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'sylow-theorems',initialLanguage:'zh',onOpening:state=>{$('world').dataset.openingClassroom=JSON.stringify(state);},boardScale:device.boardScale,writingStyle:boardWritingStyle,onPreparation:value=>{$('world').dataset.boardPreparation=JSON.stringify(value);}}),30000,'报告板书加载'));await boardFonts;retreat.roomFill.apply(root);
   lecture.setWoodTone($('boardWoodTone').value);rooms.push(lecture);roomLecterns[0]=retreat.campus.lectern;registerRoomView(lecture,0);
   reader=createChalkReader(new Proxy({}, {get:(_,key)=>lecture[key]}));buildSeminarNavigation();installPhysicalControls();populateReport();
   reportSettings=settingsModule.mountReportSettings(document,{getLecture:()=>lecture,onRate:rate=>rooms.forEach(room=>room.setVoiceRate(rate))});
@@ -1029,7 +1030,7 @@ async function loadTeachingRoom(index){
  root.position.add(buildingOffset('07'));scene.add(root);
  const job=(async()=>{
   try{
-   const room=await createLecture(root,renderer,level===0?{isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,highlight:$('boardHighlight').value!=='off',reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
+   const room=await createLecture(root,renderer,level===0?{camera,isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,highlight:$('boardHighlight').value!=='off',reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
    room.playing=false;room.setWoodTone($('boardWoodTone').value);room.setWritingSpeed($('writingSpeed').value);room.setClarity($('boardClarity').value);retreat.roomFill.apply(root);rooms[index]=room;registerRoomView(room,index);
    if(index===1)buildSeminarNavigation();visibilityAt=-Infinity;return room;
   }catch(error){scene.remove(root);roomJobs.delete(index);throw error;}

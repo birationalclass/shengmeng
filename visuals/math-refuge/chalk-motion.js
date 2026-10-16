@@ -76,21 +76,21 @@ export function writingPlan(rows,guides){
   const result=plan(segments,230);result.chineseStrokeTiming=rows.some(r=>r.strokeRaster);result.letterTiming=rows.some(r=>r.letterSeconds);result.physicalTiming=result.chineseStrokeTiming||result.letterTiming;result.unitsPerSecond=230;cache.set(key,result);return result;
 }
 export const writingPose=(rows,progress,guides)=>sample(writingPlan(rows,guides),progress);
-export function inkReveal(rows,progress,row,guides){
+export function inkReveal(rows,progress,row,guides,pose){
   if(progress>=1)return rows[row][2];
-  const p=writingPose(rows,progress,guides);
+  const p=pose||writingPose(rows,progress,guides);
   if(row<p.row)return rows[row][2];if(row>p.row||p.entering)return 0;
   return Math.max(0,Math.min(rows[row][2],p.x-rows[row][0]+5));
 }
-export function strokeReveal(rows,progress,row,guides){
+export function strokeReveal(rows,progress,row,guides,pose){
   const path=rows[row].strokePath;if(!path)return [];
   if(progress>=1)return path;
-  const p=writingPose(rows,progress,guides);
+  const p=pose||writingPose(rows,progress,guides);
   if(row<p.row)return path;if(row>p.row||p.entering)return [];
   return [...path.slice(0,p.strokePoint+1),[p.x,p.y]];
 }
-export function rasterStrokeReveal(rows,progress,row,guides){
- if(progress>=1)return 1;const p=writingPose(rows,progress,guides);
+export function rasterStrokeReveal(rows,progress,row,guides,pose){
+ if(progress>=1)return 1;const p=pose||writingPose(rows,progress,guides);
  if(row<p.row)return 1;if(row>p.row||p.entering)return 0;return p.strokeProgress??0;
 }
 // Follow actual horizontal ink bands; never merge different text lines into

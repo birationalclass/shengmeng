@@ -3,10 +3,16 @@ import {resourceFetch} from './resource-fetch.js';
 // Full formulas use the prebuilt MathJax SVGs.
 import {authoredFormula} from './authored-chalk.js?v=inline-formula-2';
 import {chalkInlineRuns} from './chalk-typography.js?v=inline-formula-2';
+import {preparationTurn} from './preparation-turn.js';
 let atlasJob;const images=new Map(),metrics=new Map();
 export async function prepareInlineMath(text){
  const atlas=await(atlasJob??=resourceFetch('./assets/chalk/inline-math/index.json').then(r=>{if(!r.ok)throw Error('行内公式索引未就绪');return r.json();}).catch(error=>{atlasJob=null;throw error;}));
- await Promise.all([...new Set(chalkInlineRuns(text).filter(r=>r.math&&!r.radical).map(r=>r.text))].map(async text=>{const m=atlas.runs[text];if(!m)return;metrics.set(text,m);for(const color of ['#eee9d5','#93c9ff','#ffada3','#e4cf9c']){const key=text+color;if(!images.has(key)){const job=authoredFormula('./assets/chalk/inline-math/'+m.file,{color});images.set(key,job);try{images.set(key,await job);}catch(e){images.delete(key);throw e;}}else await images.get(key);}}));
+ // Parse each outline once; colour variants share the measured stroke geometry.
+ for(const run of new Set(chalkInlineRuns(text).filter(r=>r.math&&!r.radical).map(r=>r.text))){const m=atlas.runs[run];if(!m)continue;metrics.set(run,m);const baseKey=run+'#eee9d5';
+  if(!images.has(baseKey)){const job=authoredFormula('./assets/chalk/inline-math/'+m.file);images.set(baseKey,job);try{images.set(baseKey,await job);}catch(error){images.delete(baseKey);throw error;}}
+  const base=await images.get(baseKey);
+  for(const color of ['#93c9ff','#ffada3','#e4cf9c']){const key=run+color;if(images.has(key))continue;await preparationTurn();const c=document.createElement('canvas');c.width=base.naturalWidth||base.width;c.height=base.naturalHeight||base.height;const ctx=c.getContext('2d');ctx.drawImage(base,0,0);ctx.globalCompositeOperation='source-in';ctx.fillStyle=color;ctx.fillRect(0,0,c.width,c.height);c.authoredOperations=base.authoredOperations?.map(op=>({...op,chalkColor:color}));images.set(key,c);}
+ }
 }
 export function inlineInk(ctx,run,size){
  const m=run.math&&!run.radical&&metrics.get(run.text);if(m){const k=size/m.em;return{width:m.width*k,actualBoundingBoxLeft:0,actualBoundingBoxRight:m.width*k,actualBoundingBoxAscent:m.ascent*k,actualBoundingBoxDescent:m.descent*k};}

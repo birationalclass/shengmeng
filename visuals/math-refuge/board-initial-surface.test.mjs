@@ -3,17 +3,18 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import {boardContentJump} from './board-transition.js';
+import {changedInkRect,unionInkRects,intersectsInk} from './board-ink-update.js';
 // Exercise the production allocation and paint functions, including the old
 // blank -> cover transition which captured a transparent canvas before entry.
 const source=readFileSync(new URL('./lecture.js',import.meta.url),'utf8');
 function fixture(){
  const uploads=[];
- function canvas(){const c={width:1536,height:640,color:null};c.getContext=()=>c.ctx??={fillStyle:null,fillRect(){c.color=this.fillStyle;},drawImage(image){c.color=image.color;delete c.countdown;},save(){},restore(){},fillText(text){c.countdown=text;}};return c;}
+ function canvas(){const c={width:1536,height:640,color:null};c.getContext=()=>c.ctx??={fillStyle:null,fillRect(){c.color=this.fillStyle;},drawImage(image){c.color=image.color;delete c.countdown;},beginPath(){},rect(){},clip(){},save(){},restore(){},fillText(text){c.countdown=text;}};return c;}
  const boards=Array.from({length:6},()=>({group:{children:[{material:{}}]},canvas:null,last:'blank',content:{page:-1,progress:0,available:false},inkBlend:{value:1},previousInk:{value:null},fadeAge:1}));
- const context={boards,uploads,W:1536,H:640,grain:{color:'#193d33'},dust:{color:'#193d33'},pixelScale:1,renderer:{capabilities:{getMaxAnisotropy:()=>16}},document:{createElement:canvas},THREE:{CanvasTexture:class{constructor(c){this.image=c;this.initialColor=c.color;uploads.push(this);}},SRGBColorSpace:'srgb'},inkCanvas(){const c=canvas();return [c,c.getContext('2d')];},contentFadeQueue:[],clock:{slots:Array.from({length:6},(_,i)=>({page:i===0?0:-1,progress:0})),phase:'write'},cache:new Map(),options:{isActive:()=>true},renderActive:false,hydrating:false,stored:false,storageProgress:0,boardContentJump,effectTime:0,language:'en'};
+ const context={changedInkRect,unionInkRects,intersectsInk,performance,writingPose:()=>({row:0}),inkUploader:{upload(board){board.texture.needsUpdate=true;}},lastRasterMs:0,boards,uploads,W:1536,H:640,grain:{color:'#193d33'},dust:{color:'#193d33'},pixelScale:1,renderer:{capabilities:{getMaxAnisotropy:()=>16}},document:{createElement:canvas},THREE:{CanvasTexture:class{constructor(c){this.image=c;this.initialColor=c.color;uploads.push(this);}},SRGBColorSpace:'srgb'},inkCanvas(){const c=canvas();return [c,c.getContext('2d')];},contentFadeQueue:[],clock:{slots:Array.from({length:6},(_,i)=>({page:i===0?0:-1,progress:0})),phase:'write'},cache:new Map(),options:{isActive:()=>true},renderActive:false,hydrating:false,stored:false,storageProgress:0,boardContentJump,effectTime:0,language:'en'};
  context.activeReport={kind:'report'};context.voice={state:{phase:'paused',activity:null}};context.drawClassroomActivity=(ctx,a)=>{ctx.fillStyle='exercise:'+Math.ceil(a.remaining);ctx.fillRect(0,0,1536,640);return{sheetIndex:0,eraseRows:[]};};
  Object.assign(context,{translating:false,hasSelection:true,pages:[{rows:[],period:1}],openingDemo:null,boardInkScale:()=>1,omittedProofPages:new Set(),currentExercise:()=>context.voice.state.activity,exerciseFrames:new Map(),exerciseEraseKeys:new Map(),erasePlans:new Map(),erasingPlan:()=>({}),paintBackground(ctx,w,h){ctx.fillStyle='#193d33';ctx.fillRect(0,0,w,h);}});
- context.SCREEN_MONO='monospace';context.clock.active=0;context.clock.page=0;
+ context.SCREEN_MONO='monospace';context.clock.active=0;context.clock.page=0;context.pageRows=new Map();context.guides=new Map();context.LOTTERY_RECT=[1100,200,400,300];
  const start=source.indexOf('  function ensureInk('),end=source.indexOf('  function positionTool(',start);
  const api=vm.runInNewContext(source.slice(start,end)+'\n({ensureInk,draw})',context);return {api,context,boards,uploads};
 }

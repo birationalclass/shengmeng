@@ -1,9 +1,10 @@
 import {createResourceFetch} from './resource-fetch.js';
+import {createBackgroundAssets} from './background-assets.js';
 import {trayControlLayout,placeTrayControl} from './board-tray-layout.js';
 import {writingSchedule,scheduledWriting} from './board-work.js?v=continuous-classroom-1';
 import {SCREEN_COLORS,CONTROL_VISUAL_SCALE} from './smart-screen-style.js?v=unframed-controls-1';
 // On-demand narration: no network or audio allocation until a report is selected.
-export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),onChange=()=>{},baseURL=new URL('.',import.meta.url).href,now=()=>performance.now()/1000,requestTimeout=15000}={}){
+export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),onChange=()=>{},baseURL=new URL('.',import.meta.url).href,now=()=>performance.now()/1000,requestTimeout=15000,retryDelay=2000}={}){
  fetcher=createResourceFetch(fetcher,{idleTimeout:requestTimeout});
  let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,contextActive=true,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0,playbackRate=1,boardHold=null;
  let activity=null,segmentEnding=false,navigationIntent=false,navigationGate=null,retainAll=false,prefetchJob=null;const blobs=new Map(),blobJobs=new Map();let preload={phase:'idle',completed:0,total:0,errors:[]};
@@ -11,27 +12,28 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
  const emit=()=>{state.transportPlaying=desired&&contextActive;onChange({...state});};
  const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index];state.time=Math.min(state.duration,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=manifest.chapters[index].start+activity.at;state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}return state.time;};
  function pause(){sync();if(activity)activity.running=false;desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio?.pause();if(['loading','playing','buffering','preparing','away'].includes(state.phase))state.phase='paused';emit();}
- function release(){pause();navigationGate=null;boardHold=null;audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
- async function fetchBytes(src,mine,show,sizeHint=0){
+ const audioWarm=createBackgroundAssets({retryDelay,load:(job,signal)=>bytes(job.src,epoch,false,job.hint,signal)});
+ function release(){pause();audioWarm.cancel();navigationGate=null;boardHold=null;audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
+ async function fetchBytes(src,mine,show,sizeHint=0,signal){
   const controller=new AbortController();controllers.add(controller);
+  const cancel=()=>controller.abort(signal.reason);signal?.addEventListener('abort',cancel,{once:true});if(signal?.aborted)cancel();
   try{
    const response=await fetcher(src,{signal:controller.signal,cache:"no-cache",priority:show?"high":"low"});if(!response.ok)throw Error('语音下载失败');
    const size=Number(response.headers.get('content-length'))||sizeHint,parts=[];let received=0;
    if(response.body?.getReader){const reader=response.body.getReader();for(;;){const {value,done}=await reader.read();if(done)break;if(mine!==epoch){await reader.cancel();return null;}parts.push(value);received+=value.byteLength;if(show){state.progress=size?Math.min(.99,received/size):null;emit();}}}
    else parts.push(await response.arrayBuffer());
    if(mine!==epoch)return null;return new Blob(parts,{type:'audio/mpeg'});
-  }finally{controllers.delete(controller);}
+   }finally{signal?.removeEventListener('abort',cancel);controllers.delete(controller);}
  }
- async function bytes(src,mine,show,sizeHint=0){
-  if(!retainAll)return fetchBytes(src,mine,show,sizeHint);
+ async function bytes(src,mine,show,sizeHint=0,signal){
   if(blobs.has(src))return blobs.get(src);if(blobJobs.has(src))return blobJobs.get(src);
-  const job=fetchBytes(src,mine,show,sizeHint).then(blob=>{if(blob&&mine===epoch)blobs.set(src,blob);return blob;});blobJobs.set(src,job);try{return await job;}finally{if(blobJobs.get(src)===job)blobJobs.delete(src);}
+   const job=fetchBytes(src,mine,show,sizeHint,signal).then(blob=>{if(blob&&mine===epoch)blobs.set(src,blob);return blob;});blobJobs.set(src,job);try{return await job;}finally{if(blobJobs.get(src)===job)blobJobs.delete(src);}
  }
  function prefetchAll(){
-  if(!manifest)return Promise.resolve(null);if(prefetchJob)return prefetchJob;retainAll=true;const mine=epoch,ready=new Set([...cache.keys()].map(i=>manifest.chapters[i]?.src)),items=[...new Map(manifest.chapters.filter(c=>c.src&&!ready.has(c.src)).map(c=>[c.src,c])).values()];let cursor=0;preload={phase:'loading',completed:0,total:items.length,errors:[]};
-  const job=Promise.all(Array.from({length:2},async()=>{while(mine===epoch&&cursor<items.length){const c=items[cursor++];try{await bytes(c.src,mine,false,c.bytes);}catch(e){if(mine===epoch&&e.name!=='AbortError')preload.errors.push(e.message);}if(mine===epoch)preload.completed++;}})).then(()=>{if(mine===epoch)preload.phase=preload.errors.length?'partial':'ready';return mine===epoch?{...preload}:null;});prefetchJob=job;return job;
+   if(!manifest)return Promise.resolve(null);if(prefetchJob)return audioWarm.retry();retainAll=true;const ready=new Set([...cache.keys()].map(i=>manifest.chapters[i]?.src));
+   for(const c of manifest.chapters)if(c.src&&!ready.has(c.src))audioWarm.add(c.src,'audio',c.bytes);prefetchJob=audioWarm.run();return prefetchJob;
  }
- function trim(){const retired=new Set(),retained=activity?manifest?.chapters[index+1]?.src:null;for(const [key,url] of cache)if((key<index||key>index+1)&&(!retained||manifest.chapters[key]?.src!==retained)){retired.add(url);cache.delete(key);}for(const url of retired)if(![...cache.values()].includes(url))revokeURL(url);}
+ function trim(){const retired=new Set(),retained=activity?manifest?.chapters[index+1]?.src:null;for(const [key,url] of cache)if((key<index||key>index+1)&&(!retained||manifest.chapters[key]?.src!==retained)){retired.add(url);cache.delete(key);}for(const url of retired)if(![...cache.values()].includes(url))revokeURL(url);if(!retainAll){const keep=new Set([...cache.keys()].map(i=>manifest.chapters[i]?.src));for(const src of blobs.keys())if(!keep.has(src))blobs.delete(src);}}
  async function load(i,show=true){
   if(manifest.chapters[i].kind==='activity')return null;
   if(cache.has(i))return cache.get(i);if(jobs.has(i))return jobs.get(i);
@@ -102,7 +104,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   if(desired&&state.temporaryPause&&(audio||activity)&&manifest){state.temporaryPause=false;return play();}
   return false;
  }
- return{state,select,toggle,pause,seek,setContextActive,prefetchAll,get preloadState(){return{...preload,errors:[...preload.errors]};},
+ return{state,select,toggle,pause,seek,setContextActive,prefetchAll,get preloadState(){return audioWarm.state;},
   get transportPlaying(){return desired&&contextActive;},
   get boardHeld(){return Boolean(boardHold);},
   async holdForBoard(job,at){

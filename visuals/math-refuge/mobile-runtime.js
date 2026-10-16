@@ -1,3 +1,4 @@
+import {resourceFetch} from './resource-fetch.js';
 // Device limits are fixed for the visit, including landscape/iPad orientations.
 export function mobilePolicy({width=1280,height=800,userAgent='',maxTouchPoints=0,coarsePointer=false,safe=false}={}){
  const ios=/iPad|iPhone|iPod/.test(userAgent)||(/Macintosh/.test(userAgent)&&maxTouchPoints>1);
@@ -17,6 +18,7 @@ export async function fetchLocal(url,{timeout=20000,...options}={}){
  finally{clearTimeout(timer);}
 }
 export function decodeImage(url,timeout=20000){
+ if(typeof location!=='undefined'&&!/^(blob:|data:)/.test(String(url))){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);return resourceFetch(url,{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('图像加载失败：'+r.status);return r.blob();}).then(async blob=>{const src=URL.createObjectURL(blob);try{return await decodeImage(src,timeout);}finally{URL.revokeObjectURL(src);}}).finally(()=>clearTimeout(timer));}
  return new Promise((resolve,reject)=>{const image=new Image(),timer=setTimeout(()=>{image.onload=image.onerror=null;image.src='';reject(new Error('图像加载超时，请检查网络后重试。'));},timeout);
  image.onload=()=>{clearTimeout(timer);resolve(image);};image.onerror=()=>{clearTimeout(timer);reject(new Error('图像加载失败，请检查网络后重试。'));};image.src=url;});
 }

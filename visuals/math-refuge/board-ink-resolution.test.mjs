@@ -5,3 +5,5 @@ test('near desktop board gets extra texels while mobile and GPU limits remain re
  assert.equal(boardInkScale({width:10000,height:8000}),2);
  assert(boardInkScale({width:2561,height:1441,maxTextureSize:2048})*1536<=2048);
 });
+
+test('a previously enlarged board keeps its allocation when the active slot changes',()=>{assert.equal(boardInkScale({width:800,height:400,previous:2}),2);});
