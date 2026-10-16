@@ -1,0 +1,145 @@
+@LinearStudy.cochainKInjectiveDerivedCocycle_exists : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : HasDerivedCategory A] (K L : CochainComplex A ℤ) (q : ℤ)
+  [L.IsKInjective] (f : CategoryTheory.ShiftedHom (DerivedCategory.Q.obj K) (DerivedCategory.Q.obj L) q),
+  ∃ (c : CochainComplex.HomComplex.Cocycle K L q),
+    CategoryTheory.ShiftedHom.map (CochainComplex.HomComplex.Cocycle.equivHomShift.symm c) DerivedCategory.Q = f
+'LinearStudy.cochainKInjectiveDerivedCocycle_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainKInjectiveClassEq_iff_derivedMapEq : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : HasDerivedCategory A] {K L : CochainComplex A ℤ} (q : ℤ)
+  [L.IsKInjective] (a b : CochainComplex.HomComplex.Cocycle K L q),
+  CochainComplex.HomComplex.CohomologyClass.mk a = CochainComplex.HomComplex.CohomologyClass.mk b ↔
+    CategoryTheory.ShiftedHom.map (CochainComplex.HomComplex.Cocycle.equivHomShift.symm a) DerivedCategory.Q =
+      CategoryTheory.ShiftedHom.map (CochainComplex.HomComplex.Cocycle.equivHomShift.symm b) DerivedCategory.Q
+'LinearStudy.cochainKInjectiveClassEq_iff_derivedMapEq' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainResolutionInjectiveCocycle_exists : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K : CochainComplex A ℤ) {E N : A} (r : ℕ) (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  [inst_4 : QuasiIso alpha] (beta : CochainComplex.HomComplex.Cocycle K ((CochainComplex.singleFunctor A 0).obj N) ↑r)
+  (I : CategoryTheory.InjectiveResolution N),
+  ∃ (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj E) I.cochainComplex ↑r),
+    CochainComplex.HomComplex.CohomologyClass.mk (c.precomp alpha) =
+        CochainComplex.HomComplex.CohomologyClass.mk (beta.postcomp I.ι') ∧
+      LinearStudy.cochainResolutionExtClass K r alpha (CochainComplex.HomComplex.Cocycle.equivHomShift.symm beta) =
+        I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c)
+'LinearStudy.cochainResolutionInjectiveCocycle_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainClassEq_boundary_exists : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Preadditive A] {K L : CochainComplex A ℤ} (q : ℤ)
+  (a b : CochainComplex.HomComplex.Cocycle K L q),
+  CochainComplex.HomComplex.CohomologyClass.mk a = CochainComplex.HomComplex.CohomologyClass.mk b →
+    ∃ (t : CochainComplex.HomComplex.Cochain K L (q - 1)), CochainComplex.HomComplex.δ (q - 1) q t = ↑a - ↑b
+'LinearStudy.cochainClassEq_boundary_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainOrderedTopCocycle : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        {N : A} →
+          (r : ℕ) →
+            (a : C.X r ⟶ N) →
+              CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 →
+                CochainComplex.HomComplex.Cocycle (LinearStudy.originalChainAsCochain C)
+                  ((CochainComplex.singleFunctor A 0).obj N) ↑r
+'LinearStudy.originalChainOrderedTopCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainTopExtClass_orderedCocycle : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (C : ChainComplex A ℕ) {E N : A} (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_4 : QuasiIso alpha]
+  (a : C.X r ⟶ N) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  LinearStudy.originalChainTopExtClass C r alpha a ha =
+    LinearStudy.cochainResolutionExtClass (LinearStudy.originalChainAsCochain C) r
+      (LinearStudy.originalChainAugmentationAsCochain C alpha)
+      (CochainComplex.HomComplex.Cocycle.equivHomShift.symm (LinearStudy.originalChainOrderedTopCocycle C r a ha))
+'LinearStudy.originalChainTopExtClass_orderedCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainTopInjectiveCocycle_exists : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (C : ChainComplex A ℕ) {E N : A} (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_4 : QuasiIso alpha]
+  (a : C.X r ⟶ N) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0)
+  (I : CategoryTheory.InjectiveResolution N),
+  ∃ (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj E) I.cochainComplex ↑r) (t :
+    CochainComplex.HomComplex.Cochain (LinearStudy.originalChainAsCochain C) I.cochainComplex (↑r - 1)),
+    CochainComplex.HomComplex.CohomologyClass.mk (c.precomp (LinearStudy.originalChainAugmentationAsCochain C alpha)) =
+        CochainComplex.HomComplex.CohomologyClass.mk
+          ((LinearStudy.originalChainOrderedTopCocycle C r a ha).postcomp I.ι') ∧
+      CochainComplex.HomComplex.δ (↑r - 1) (↑r) t =
+          ↑(c.precomp (LinearStudy.originalChainAugmentationAsCochain C alpha)) -
+            ↑((LinearStudy.originalChainOrderedTopCocycle C r a ha).postcomp I.ι') ∧
+        LinearStudy.originalChainTopExtClass C r alpha a ha =
+          I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c)
+'LinearStudy.originalChainTopInjectiveCocycle_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainCokernelTopInjectiveCocycle_exists : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (C : ChainComplex A ℕ) (he : ∀ (p : ℕ), 0 < p → HomologicalComplex.ExactAt C p)
+  {N : A} (r : ℕ) (a : C.X r ⟶ N) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0)
+  (I : CategoryTheory.InjectiveResolution N),
+  ∃ (c :
+    CochainComplex.HomComplex.Cocycle
+      ((CochainComplex.singleFunctor A 0).obj (CategoryTheory.Limits.cokernel (C.d 1 0))) I.cochainComplex ↑r)
+    (t : CochainComplex.HomComplex.Cochain (LinearStudy.originalChainAsCochain C) I.cochainComplex (↑r - 1)),
+    CochainComplex.HomComplex.CohomologyClass.mk
+          (c.precomp
+            (LinearStudy.originalChainAugmentationAsCochain C (LinearStudy.originalChainCokernelAugmentation C))) =
+        CochainComplex.HomComplex.CohomologyClass.mk
+          ((LinearStudy.originalChainOrderedTopCocycle C r a ha).postcomp I.ι') ∧
+      CochainComplex.HomComplex.δ (↑r - 1) (↑r) t =
+          ↑(c.precomp
+                (LinearStudy.originalChainAugmentationAsCochain C (LinearStudy.originalChainCokernelAugmentation C))) -
+            ↑((LinearStudy.originalChainOrderedTopCocycle C r a ha).postcomp I.ι') ∧
+        LinearStudy.originalChainTopExtClass C r (LinearStudy.originalChainCokernelAugmentation C) a ha =
+          I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c)
+'LinearStudy.originalChainCokernelTopInjectiveCocycle_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainExplicitStandardTopInjectiveCocycleProof : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E N : A}
+  (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ N)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) (I : CategoryTheory.InjectiveResolution N),
+  ∃ (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj E) I.cochainComplex ↑r) (t :
+    CochainComplex.HomComplex.Cochain (LinearStudy.originalChainAsCochain C) I.cochainComplex (↑r - 1)),
+    CochainComplex.HomComplex.CohomologyClass.mk (c.precomp (LinearStudy.originalChainAugmentationAsCochain C alpha)) =
+        CochainComplex.HomComplex.CohomologyClass.mk
+          ((LinearStudy.originalChainOrderedTopCocycle C r a ha).postcomp I.ι') ∧
+      CochainComplex.HomComplex.δ (↑r - 1) (↑r) t =
+          ↑(c.precomp (LinearStudy.originalChainAugmentationAsCochain C alpha)) -
+            ↑((LinearStudy.originalChainOrderedTopCocycle C r a ha).postcomp I.ι') ∧
+        LinearStudy.originalChainTopExtClass C r alpha a ha =
+          I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c)
+'LinearStudy.originalChainExplicitStandardTopInjectiveCocycleProof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.originalChainOrderedTopCocycle.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        {N : A} →
+          (r : ℕ) →
+            (a : C.X r ⟶ N) →
+              CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 →
+                CochainComplex.HomComplex.Cocycle (LinearStudy.originalChainAsCochain C)
+                  ((CochainComplex.singleFunctor A 0).obj N) ↑r :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {N : A} (r : ℕ)
+    (a : C.X r ⟶ N) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) =>
+  CochainComplex.HomComplex.Cocycle.toSingleMk
+    (CategoryTheory.CategoryStruct.comp (LinearStudy.originalChainAsCochainXIso C (-↑r) r ⋯).hom a) ⋯ (-↑r - 1) ⋯ ⋯
+def LinearStudy.originalChainExplicitStandardTopInjectiveCocycleProof.{u, v} : ∀ {A : Type u}
+  [inst : CategoryTheory.Category.{v, u} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E N : A} (r : ℕ)
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ N)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) (I : CategoryTheory.InjectiveResolution N),
+  ∃ (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj E) I.cochainComplex ↑r) (t :
+    CochainComplex.HomComplex.Cochain (LinearStudy.originalChainAsCochain C) I.cochainComplex (↑r - 1)),
+    CochainComplex.HomComplex.CohomologyClass.mk (c.precomp (LinearStudy.originalChainAugmentationAsCochain C alpha)) =
+        CochainComplex.HomComplex.CohomologyClass.mk
+          ((LinearStudy.originalChainOrderedTopCocycle C r a ha).postcomp I.ι') ∧
+      CochainComplex.HomComplex.δ (↑r - 1) (↑r) t =
+          ↑(c.precomp (LinearStudy.originalChainAugmentationAsCochain C alpha)) -
+            ↑((LinearStudy.originalChainOrderedTopCocycle C r a ha).postcomp I.ι') ∧
+        LinearStudy.originalChainTopExtClass C r alpha a ha =
+          I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E N : A} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ N)
+    (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) (I : CategoryTheory.InjectiveResolution N) =>
+  LinearStudy.originalChainTopInjectiveCocycle_exists C r alpha a ha I
+ROLECHECK:LinearStudy.cochainKInjectiveDerivedCocycle_exists:true
+ROLECHECK:LinearStudy.cochainKInjectiveClassEq_iff_derivedMapEq:true
+ROLECHECK:LinearStudy.cochainResolutionInjectiveCocycle_exists:true
+ROLECHECK:LinearStudy.cochainClassEq_boundary_exists:true
+ROLECHECK:LinearStudy.originalChainOrderedTopCocycle:false
+ROLECHECK:LinearStudy.originalChainTopExtClass_orderedCocycle:true
+ROLECHECK:LinearStudy.originalChainTopInjectiveCocycle_exists:true
+ROLECHECK:LinearStudy.originalChainCokernelTopInjectiveCocycle_exists:true
+ROLECHECK:LinearStudy.originalChainExplicitStandardTopInjectiveCocycleProof:true

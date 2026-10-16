@@ -1,0 +1,124 @@
+@LinearStudy.projectivePulledOriginalWholeCutInjectiveCocycleProof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ) (k : ℤ)
+  (e :
+    CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+  (he :
+    QuasiIso
+      (LinearStudy.originalChainCokernelTargetAugmentation
+        (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e))
+  (I : CategoryTheory.InjectiveResolution (LinearStudy.projectivePulledKoszulTopResolutionTarget f V r k)),
+  ∃ (c :
+    CochainComplex.HomComplex.Cocycle
+      ((CochainComplex.singleFunctor
+            (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules 0).obj
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k))
+      I.cochainComplex ↑r)
+    (t :
+    CochainComplex.HomComplex.Cochain
+      (LinearStudy.originalChainAsCochain (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k))
+      I.cochainComplex (↑r - 1)),
+    CochainComplex.HomComplex.CohomologyClass.mk
+          (c.precomp
+            (LinearStudy.originalChainAugmentationAsCochain
+              (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+              (LinearStudy.originalChainCokernelTargetAugmentation
+                (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e))) =
+        CochainComplex.HomComplex.CohomologyClass.mk
+          ((LinearStudy.originalChainOrderedTopCocycle (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) r
+                (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom ⋯).postcomp
+            I.ι') ∧
+      CochainComplex.HomComplex.δ (↑r - 1) (↑r) t =
+          ↑(c.precomp
+                (LinearStudy.originalChainAugmentationAsCochain
+                  (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                  (LinearStudy.originalChainCokernelTargetAugmentation
+                    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e))) -
+            ↑((LinearStudy.originalChainOrderedTopCocycle (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                    r (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom ⋯).postcomp
+                I.ι') ∧
+        LinearStudy.originalChainTopExtClass (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) r
+            (LinearStudy.originalChainCokernelTargetAugmentation
+              (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+              (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)
+            (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom ⋯ =
+          I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c)
+'LinearStudy.projectivePulledOriginalWholeCutInjectiveCocycleProof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.projectivePulledOriginalWholeCutInjectiveCocycleProof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ) (k : ℤ)
+  (e :
+    CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+  (he :
+    QuasiIso
+      (LinearStudy.originalChainCokernelTargetAugmentation
+        (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e))
+  (I : CategoryTheory.InjectiveResolution (LinearStudy.projectivePulledKoszulTopResolutionTarget f V r k)),
+  ∃ (c :
+    CochainComplex.HomComplex.Cocycle
+      ((CochainComplex.singleFunctor
+            (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules 0).obj
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k))
+      I.cochainComplex ↑r)
+    (t :
+    CochainComplex.HomComplex.Cochain
+      (LinearStudy.originalChainAsCochain (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k))
+      I.cochainComplex (↑r - 1)),
+    CochainComplex.HomComplex.CohomologyClass.mk
+          (c.precomp
+            (LinearStudy.originalChainAugmentationAsCochain
+              (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+              (LinearStudy.originalChainCokernelTargetAugmentation
+                (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e))) =
+        CochainComplex.HomComplex.CohomologyClass.mk
+          ((LinearStudy.originalChainOrderedTopCocycle (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) r
+                (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom ⋯).postcomp
+            I.ι') ∧
+      CochainComplex.HomComplex.δ (↑r - 1) (↑r) t =
+          ↑(c.precomp
+                (LinearStudy.originalChainAugmentationAsCochain
+                  (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                  (LinearStudy.originalChainCokernelTargetAugmentation
+                    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e))) -
+            ↑((LinearStudy.originalChainOrderedTopCocycle (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                    r (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom ⋯).postcomp
+                I.ι') ∧
+        LinearStudy.originalChainTopExtClass (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) r
+            (LinearStudy.originalChainCokernelTargetAugmentation
+              (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+              (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)
+            (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom ⋯ =
+          I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c) :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ)
+    (e :
+      CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+    (he :
+      QuasiIso
+        (LinearStudy.originalChainCokernelTargetAugmentation
+          (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+          (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e))
+    (I : CategoryTheory.InjectiveResolution (LinearStudy.projectivePulledKoszulTopResolutionTarget f V r k)) =>
+  LinearStudy.originalChainExplicitStandardTopInjectiveCocycleProof
+    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) r
+    (LinearStudy.originalChainCokernelTargetAugmentation (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)
+    he (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom
+    (LinearStudy.projectivePulledOriginalKoszulTopFunctional_isCocycle f V L hL w k
+      (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w k).hom)
+    I
+ROLECHECK:LinearStudy.projectivePulledOriginalWholeCutInjectiveCocycleProof:true

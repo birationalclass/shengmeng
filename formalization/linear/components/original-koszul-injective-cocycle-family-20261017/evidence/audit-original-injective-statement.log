@@ -1,0 +1,44 @@
+@LinearStudy.originalChainExplicitStandardTopInjectiveStatement : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        {E N : A} →
+          (r : ℕ) →
+            (alpha : C ⟶ (ChainComplex.single₀ A).obj E) →
+              QuasiIso alpha → (a : C.X r ⟶ N) → CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → Prop
+'LinearStudy.originalChainExplicitStandardTopInjectiveStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalChainExplicitStandardTopInjectiveStatement_proof : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E N : A}
+  (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ N)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  LinearStudy.originalChainExplicitStandardTopInjectiveStatement C r alpha hAlpha a ha
+'LinearStudy.originalChainExplicitStandardTopInjectiveStatement_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.originalChainExplicitStandardTopInjectiveStatement.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        {E N : A} →
+          (r : ℕ) →
+            (alpha : C ⟶ (ChainComplex.single₀ A).obj E) →
+              QuasiIso alpha → (a : C.X r ⟶ N) → CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → Prop :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E N : A} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ N)
+    (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) =>
+  ∀ (I : CategoryTheory.InjectiveResolution N),
+    ∃ (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj E) I.cochainComplex ↑r) (t :
+      CochainComplex.HomComplex.Cochain (LinearStudy.originalChainAsCochain C) I.cochainComplex (↑r - 1)),
+      CochainComplex.HomComplex.CohomologyClass.mk
+            (c.precomp (LinearStudy.originalChainAugmentationAsCochain C alpha)) =
+          CochainComplex.HomComplex.CohomologyClass.mk
+            ((LinearStudy.originalChainOrderedTopCocycle C r a ha).postcomp I.ι') ∧
+        CochainComplex.HomComplex.δ (↑r - 1) (↑r) t =
+            ↑(c.precomp (LinearStudy.originalChainAugmentationAsCochain C alpha)) -
+              ↑((LinearStudy.originalChainOrderedTopCocycle C r a ha).postcomp I.ι') ∧
+          LinearStudy.originalChainTopExtClass C r alpha a ha =
+            I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c)
+ROLECHECK:LinearStudy.originalChainExplicitStandardTopInjectiveStatement:false
+ROLECHECK:LinearStudy.originalChainExplicitStandardTopInjectiveStatement_proof:true
