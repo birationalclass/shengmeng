@@ -1,0 +1,26 @@
+@LinearStudy.schemeModuleHomCoefficientComplexMap_add : ∀ {X : AlgebraicGeometry.Scheme} {A B : X.Modules} (f g : A ⟶ B)
+  (K : CochainComplex X.Modules ℕ),
+  LinearStudy.schemeModuleHomCoefficientComplexMap (f + g) K =
+    LinearStudy.schemeModuleHomCoefficientComplexMap f K + LinearStudy.schemeModuleHomCoefficientComplexMap g K
+'LinearStudy.schemeModuleHomCoefficientComplexMap_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceMap_add : ∀ {X : AlgebraicGeometry.Scheme} {A B : X.Modules} (f g : A ⟶ B)
+  (N : X.Modules) (q : ℕ),
+  LinearStudy.schemeModuleInternalExtSourceMap (f + g) N q =
+    LinearStudy.schemeModuleInternalExtSourceMap f N q + LinearStudy.schemeModuleInternalExtSourceMap g N q
+'LinearStudy.schemeModuleInternalExtSourceMap_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInternalExtSourceFunctor : (X : AlgebraicGeometry.Scheme) →
+  X.Modules → ℕ → CategoryTheory.Functor X.Modulesᵒᵖ X.Modules
+'LinearStudy.schemeModuleInternalExtSourceFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInternalExtSourceFunctor_additive : ∀ (X : AlgebraicGeometry.Scheme) (N : X.Modules) (q : ℕ),
+  (LinearStudy.schemeModuleInternalExtSourceFunctor X N q).Additive
+'LinearStudy.schemeModuleInternalExtSourceFunctor_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleInternalExtSourceFunctor.{u} : (X : AlgebraicGeometry.Scheme) →
+  X.Modules → ℕ → CategoryTheory.Functor X.Modulesᵒᵖ X.Modules :=
+fun (X : AlgebraicGeometry.Scheme) (N : X.Modules) (q : ℕ) =>
+  { obj := fun (P : X.Modulesᵒᵖ) => LinearStudy.schemeModuleInternalExt (Opposite.unop P) N q,
+    map := fun {X_1 Y : X.Modulesᵒᵖ} (f : X_1 ⟶ Y) => LinearStudy.schemeModuleInternalExtSourceMap f.unop N q,
+    map_id := ⋯, map_comp := ⋯ }
+ROLECHECK:LinearStudy.schemeModuleHomCoefficientComplexMap_add:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceMap_add:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceFunctor:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceFunctor_additive:true

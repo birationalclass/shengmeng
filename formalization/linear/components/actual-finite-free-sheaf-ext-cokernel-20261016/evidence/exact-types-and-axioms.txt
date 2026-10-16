@@ -1,0 +1,427 @@
+
+===== SPLIT AUDIT unit-hom-sections =====
+@LinearStudy.schemeModuleOverSectionsEquiv : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) → (U : X.Opens) → (SheafOfModules.over N U).sections ≃ ↑(N.presheaf.obj (Opposite.op U))
+'LinearStudy.schemeModuleOverSectionsEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleUnitOverIso : (X : AlgebraicGeometry.Scheme) →
+  (U : X.Opens) →
+    (SheafOfModules.unit X.ringCatSheaf).over U ≅ SheafOfModules.unit (CategoryTheory.Sheaf.over X.ringCatSheaf U)
+'LinearStudy.schemeModuleUnitOverIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleUnitHomSectionsEquiv : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) →
+    (U : X.Opens) →
+      ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj (Opposite.op U)) ≃
+        ↑(N.presheaf.obj (Opposite.op U))
+'LinearStudy.schemeModuleUnitHomSectionsEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleUnitHomSectionsEquiv_apply : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules) (U : X.Opens)
+  (f : ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj (Opposite.op U))),
+  (LinearStudy.schemeModuleUnitHomSectionsEquiv N U) f =
+    (CategoryTheory.ConcreteCategory.hom
+        ((↑f).app (Opposite.op (CategoryTheory.Over.mk (CategoryTheory.CategoryStruct.id U)))))
+      1
+'LinearStudy.schemeModuleUnitHomSectionsEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleOverSectionsEquiv.{u} : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) → (U : X.Opens) → (SheafOfModules.over N U).sections ≃ ↑(N.presheaf.obj (Opposite.op U)) :=
+fun {X : AlgebraicGeometry.Scheme} (N : X.Modules) (U : X.Opens) =>
+  {
+    toFun := fun (s : (SheafOfModules.over N U).sections) =>
+      ↑s (Opposite.op (CategoryTheory.Over.mk (CategoryTheory.CategoryStruct.id U))),
+    invFun := fun (n : ↑(N.presheaf.obj (Opposite.op U))) =>
+      ⟨fun (W : (CategoryTheory.Over U)ᵒᵖ) =>
+        (CategoryTheory.ConcreteCategory.hom (N.presheaf.map (Opposite.unop W).hom.op)) n, ⋯⟩,
+    left_inv := ⋯, right_inv := ⋯ }
+def LinearStudy.schemeModuleUnitOverIso.{u} : (X : AlgebraicGeometry.Scheme) →
+  (U : X.Opens) →
+    (SheafOfModules.unit X.ringCatSheaf).over U ≅ SheafOfModules.unit (CategoryTheory.Sheaf.over X.ringCatSheaf U) :=
+fun (X : AlgebraicGeometry.Scheme) (U : X.Opens) =>
+  CategoryTheory.Iso.refl ((SheafOfModules.unit X.ringCatSheaf).over U)
+def LinearStudy.schemeModuleUnitHomSectionsEquiv.{u} : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) →
+    (U : X.Opens) →
+      ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj (Opposite.op U)) ≃
+        ↑(N.presheaf.obj (Opposite.op U)) :=
+fun {X : AlgebraicGeometry.Scheme} (N : X.Modules) (U : X.Opens) =>
+  (LinearStudy.schemeModuleHomModuleSectionsEquiv (SheafOfModules.unit X.ringCatSheaf) N U).trans
+    (((LinearStudy.schemeModuleUnitOverIso X U).homCongr (CategoryTheory.Iso.refl (SheafOfModules.over N U))).trans
+      ((SheafOfModules.over N U).unitHomEquiv.trans (LinearStudy.schemeModuleOverSectionsEquiv N U)))
+ROLECHECK:LinearStudy.schemeModuleOverSectionsEquiv:false
+ROLECHECK:LinearStudy.schemeModuleUnitOverIso:false
+ROLECHECK:LinearStudy.schemeModuleUnitHomSectionsEquiv:false
+ROLECHECK:LinearStudy.schemeModuleUnitHomSectionsEquiv_apply:true
+
+===== SPLIT AUDIT unit-hom-iso =====
+@LinearStudy.schemeModuleUnitHomSectionsLinearEquiv : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) →
+    (U : X.Opens) →
+      ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj
+            (Opposite.op U)) ≃ₗ[↑(X.presheaf.obj (Opposite.op U))]
+        ↑(N.presheaf.obj (Opposite.op U))
+'LinearStudy.schemeModuleUnitHomSectionsLinearEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleUnitHomSectionsEquiv_restrict : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules)
+  {U V : X.Opens} (i : V ⟶ U)
+  (f : ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj (Opposite.op U))),
+  (LinearStudy.schemeModuleUnitHomSectionsEquiv N V)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.map i.op))
+        f) =
+    (CategoryTheory.ConcreteCategory.hom (N.presheaf.map i.op)) ((LinearStudy.schemeModuleUnitHomSectionsEquiv N U) f)
+'LinearStudy.schemeModuleUnitHomSectionsEquiv_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleUnitHomIso : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) → LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N ≅ N
+'LinearStudy.schemeModuleUnitHomIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleUnitHomIso_hom_app : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules) (U : X.Opens)
+  (f : ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj (Opposite.op U))),
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleUnitHomIso N).hom U))
+      f =
+    (CategoryTheory.ConcreteCategory.hom
+        ((↑f).app (Opposite.op (CategoryTheory.Over.mk (CategoryTheory.CategoryStruct.id U)))))
+      1
+'LinearStudy.schemeModuleUnitHomIso_hom_app' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInternalHomUnitCoefficientIso : (X : AlgebraicGeometry.Scheme) →
+  LinearStudy.schemeModuleInternalHomCoefficientFunctor X (SheafOfModules.unit X.ringCatSheaf) ≅
+    CategoryTheory.Functor.id X.Modules
+'LinearStudy.schemeModuleInternalHomUnitCoefficientIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleUnitHomSectionsLinearEquiv.{u} : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) →
+    (U : X.Opens) →
+      ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj
+            (Opposite.op U)) ≃ₗ[↑(X.presheaf.obj (Opposite.op U))]
+        ↑(N.presheaf.obj (Opposite.op U)) :=
+fun {X : AlgebraicGeometry.Scheme} (N : X.Modules) (U : X.Opens) =>
+  let __Equiv := LinearStudy.schemeModuleUnitHomSectionsEquiv N U;
+  { toFun := __Equiv.toFun, map_add' := ⋯, map_smul' := ⋯, invFun := __Equiv.invFun, left_inv := ⋯, right_inv := ⋯ }
+def LinearStudy.schemeModuleUnitHomIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) → LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N ≅ N :=
+fun {X : AlgebraicGeometry.Scheme} (N : X.Modules) =>
+  (SheafOfModules.fullyFaithfulForget X.ringCatSheaf).preimageIso
+    (PresheafOfModules.isoMk
+      (fun (U : (TopologicalSpace.Opens ↥X)ᵒᵖ) =>
+        (LinearStudy.schemeModuleUnitHomSectionsLinearEquiv N (Opposite.unop U)).toModuleIso)
+      ⋯)
+def LinearStudy.schemeModuleInternalHomUnitCoefficientIso.{u} : (X : AlgebraicGeometry.Scheme) →
+  LinearStudy.schemeModuleInternalHomCoefficientFunctor X (SheafOfModules.unit X.ringCatSheaf) ≅
+    CategoryTheory.Functor.id X.Modules :=
+fun (X : AlgebraicGeometry.Scheme) => CategoryTheory.NatIso.ofComponents LinearStudy.schemeModuleUnitHomIso ⋯
+ROLECHECK:LinearStudy.schemeModuleUnitHomSectionsLinearEquiv:false
+ROLECHECK:LinearStudy.schemeModuleUnitHomSectionsEquiv_restrict:true
+ROLECHECK:LinearStudy.schemeModuleUnitHomIso:false
+ROLECHECK:LinearStudy.schemeModuleUnitHomIso_hom_app:true
+ROLECHECK:LinearStudy.schemeModuleInternalHomUnitCoefficientIso:false
+
+===== SPLIT AUDIT unit-internal-ext =====
+LinearStudy.schemeModuleUnitHomCoefficient_preservesFiniteLimits : ∀ (X : AlgebraicGeometry.Scheme),
+  CategoryTheory.Limits.PreservesFiniteLimits
+    (LinearStudy.schemeModuleInternalHomCoefficientFunctor X (SheafOfModules.unit X.ringCatSheaf))
+'LinearStudy.schemeModuleUnitHomCoefficient_preservesFiniteLimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleUnitHomCoefficient_preservesFiniteColimits : ∀ (X : AlgebraicGeometry.Scheme),
+  CategoryTheory.Limits.PreservesFiniteColimits
+    (LinearStudy.schemeModuleInternalHomCoefficientFunctor X (SheafOfModules.unit X.ringCatSheaf))
+'LinearStudy.schemeModuleUnitHomCoefficient_preservesFiniteColimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleUnitInternalExtResolutionIso : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) →
+    (q : ℕ) →
+      (I : CategoryTheory.InjectiveResolution N) →
+        LinearStudy.schemeModuleInternalExt (SheafOfModules.unit X.ringCatSheaf) N q ≅
+          HomologicalComplex.homology I.cocomplex q
+'LinearStudy.schemeModuleUnitInternalExtResolutionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleUnitInternalExt_succ : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules) (q : ℕ),
+  CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (SheafOfModules.unit X.ringCatSheaf) N (q + 1))
+'LinearStudy.schemeModuleUnitInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleUnitInternalExtResolutionIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) →
+    (q : ℕ) →
+      (I : CategoryTheory.InjectiveResolution N) →
+        LinearStudy.schemeModuleInternalExt (SheafOfModules.unit X.ringCatSheaf) N q ≅
+          HomologicalComplex.homology I.cocomplex q :=
+fun {X : AlgebraicGeometry.Scheme} (N : X.Modules) (q : ℕ) (I : CategoryTheory.InjectiveResolution N) =>
+  LinearStudy.schemeModuleInternalExtInjectiveResolutionIso (SheafOfModules.unit X.ringCatSheaf) N q I ≪≫
+    (HomologicalComplex.homologyFunctor X.Modules (ComplexShape.up ℕ) q).mapIso
+      ((CategoryTheory.NatIso.mapHomologicalComplex (LinearStudy.schemeModuleInternalHomUnitCoefficientIso X)
+              (ComplexShape.up ℕ)).app
+          I.cocomplex ≪≫
+        (CategoryTheory.Functor.mapHomologicalComplexIdIso X.Modules (ComplexShape.up ℕ)).app I.cocomplex)
+ROLECHECK:LinearStudy.schemeModuleUnitHomCoefficient_preservesFiniteLimits:true
+ROLECHECK:LinearStudy.schemeModuleUnitHomCoefficient_preservesFiniteColimits:true
+ROLECHECK:LinearStudy.schemeModuleUnitInternalExtResolutionIso:false
+ROLECHECK:LinearStudy.schemeModuleUnitInternalExt_succ:true
+
+===== SPLIT AUDIT internal-ext-source-additive =====
+@LinearStudy.schemeModuleHomCoefficientComplexMap_add : ∀ {X : AlgebraicGeometry.Scheme} {A B : X.Modules} (f g : A ⟶ B)
+  (K : CochainComplex X.Modules ℕ),
+  LinearStudy.schemeModuleHomCoefficientComplexMap (f + g) K =
+    LinearStudy.schemeModuleHomCoefficientComplexMap f K + LinearStudy.schemeModuleHomCoefficientComplexMap g K
+'LinearStudy.schemeModuleHomCoefficientComplexMap_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceMap_add : ∀ {X : AlgebraicGeometry.Scheme} {A B : X.Modules} (f g : A ⟶ B)
+  (N : X.Modules) (q : ℕ),
+  LinearStudy.schemeModuleInternalExtSourceMap (f + g) N q =
+    LinearStudy.schemeModuleInternalExtSourceMap f N q + LinearStudy.schemeModuleInternalExtSourceMap g N q
+'LinearStudy.schemeModuleInternalExtSourceMap_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInternalExtSourceFunctor : (X : AlgebraicGeometry.Scheme) →
+  X.Modules → ℕ → CategoryTheory.Functor X.Modulesᵒᵖ X.Modules
+'LinearStudy.schemeModuleInternalExtSourceFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInternalExtSourceFunctor_additive : ∀ (X : AlgebraicGeometry.Scheme) (N : X.Modules) (q : ℕ),
+  (LinearStudy.schemeModuleInternalExtSourceFunctor X N q).Additive
+'LinearStudy.schemeModuleInternalExtSourceFunctor_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleInternalExtSourceFunctor.{u} : (X : AlgebraicGeometry.Scheme) →
+  X.Modules → ℕ → CategoryTheory.Functor X.Modulesᵒᵖ X.Modules :=
+fun (X : AlgebraicGeometry.Scheme) (N : X.Modules) (q : ℕ) =>
+  { obj := fun (P : X.Modulesᵒᵖ) => LinearStudy.schemeModuleInternalExt (Opposite.unop P) N q,
+    map := fun {X_1 Y : X.Modulesᵒᵖ} (f : X_1 ⟶ Y) => LinearStudy.schemeModuleInternalExtSourceMap f.unop N q,
+    map_id := ⋯, map_comp := ⋯ }
+ROLECHECK:LinearStudy.schemeModuleHomCoefficientComplexMap_add:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceMap_add:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceFunctor:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceFunctor_additive:true
+
+===== SPLIT AUDIT finite-free-internal-ext =====
+@LinearStudy.schemeModuleFiniteFreeInternalExt_succ : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules) (ι : Type u_1)
+  [Finite ι] (q : ℕ),
+  CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (SheafOfModules.free ι) N (q + 1))
+'LinearStudy.schemeModuleFiniteFreeInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceIso : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (P ≅ Q) →
+      (N : X.Modules) → (q : ℕ) → LinearStudy.schemeModuleInternalExt P N q ≅ LinearStudy.schemeModuleInternalExt Q N q
+'LinearStudy.schemeModuleInternalExtSourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleFiniteFreeFrameInternalExt_succ : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules)
+  (ι : Type u_1) [Finite ι] {P : X.Modules} (e : P ≅ SheafOfModules.free ι) (q : ℕ),
+  CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt P N (q + 1))
+'LinearStudy.schemeModuleFiniteFreeFrameInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleInternalExtSourceIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (P ≅ Q) →
+      (N : X.Modules) →
+        (q : ℕ) → LinearStudy.schemeModuleInternalExt P N q ≅ LinearStudy.schemeModuleInternalExt Q N q :=
+fun {X : AlgebraicGeometry.Scheme} {P Q : X.Modules} (e : P ≅ Q) (N : X.Modules) (q : ℕ) =>
+  { hom := LinearStudy.schemeModuleInternalExtSourceMap e.inv N q,
+    inv := LinearStudy.schemeModuleInternalExtSourceMap e.hom N q, hom_inv_id := ⋯, inv_hom_id := ⋯ }
+ROLECHECK:LinearStudy.schemeModuleFiniteFreeInternalExt_succ:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceIso:false
+ROLECHECK:LinearStudy.schemeModuleFiniteFreeFrameInternalExt_succ:true
+
+===== SPLIT AUDIT internal-ext-source-cokernel =====
+@LinearStudy.schemeModuleInternalExtSourceBoundary_epi : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ),
+  CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1)) →
+    CategoryTheory.Epi (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q)
+'LinearStudy.schemeModuleInternalExtSourceBoundary_epi' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundaryIsCokernel : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    (hS : S.ShortExact) →
+      (N : X.Modules) →
+        (I : CategoryTheory.InjectiveResolution N) →
+          (q : ℕ) →
+            CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1)) →
+              CategoryTheory.Limits.IsColimit
+                (CategoryTheory.Limits.CokernelCofork.ofπ
+                  (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q) ⋯)
+'LinearStudy.schemeModuleInternalExtSourceBoundaryIsCokernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (q : ℕ) →
+            CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1)) →
+              (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleInternalExtSourceMap S.f N q) ≅
+                LinearStudy.schemeModuleInternalExt S.X₃ N (q + 1))
+'LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso_hom : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+  (hB : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1))),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleInternalExtSourceMap S.f N q))
+      (LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso S hS N I q hB).hom =
+    LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q
+'LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso_hom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso_independent : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I J : CategoryTheory.InjectiveResolution N) (q : ℕ)
+  (hB : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1))),
+  LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso S hS N I q hB =
+    LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso S hS N J q hB
+'LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso_independent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleFiniteFreeSourceBoundaryCokernelIso : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (q : ℕ) →
+            (ι : Type u_1) →
+              [Finite ι] →
+                (S.X₂ ≅ SheafOfModules.free ι) →
+                  (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleInternalExtSourceMap S.f N q) ≅
+                    LinearStudy.schemeModuleInternalExt S.X₃ N (q + 1))
+'LinearStudy.schemeModuleFiniteFreeSourceBoundaryCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleFiniteFreeSourceBoundaryCokernelIso_hom : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ) (ι : Type u_1) [inst : Finite ι]
+  (e : S.X₂ ≅ SheafOfModules.free ι),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleInternalExtSourceMap S.f N q))
+      (LinearStudy.schemeModuleFiniteFreeSourceBoundaryCokernelIso S hS N I q ι e).hom =
+    LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q
+'LinearStudy.schemeModuleFiniteFreeSourceBoundaryCokernelIso_hom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleInternalExtSourceBoundaryIsCokernel.{u} : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    (hS : S.ShortExact) →
+      (N : X.Modules) →
+        (I : CategoryTheory.InjectiveResolution N) →
+          (q : ℕ) →
+            CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1)) →
+              CategoryTheory.Limits.IsColimit
+                (CategoryTheory.Limits.CokernelCofork.ofπ
+                  (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q) ⋯) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+    (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+    (hB : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1))) =>
+  ⋯.gIsCokernel
+def LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (q : ℕ) →
+            CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1)) →
+              (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleInternalExtSourceMap S.f N q) ≅
+                LinearStudy.schemeModuleInternalExt S.X₃ N (q + 1)) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+    (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+    (hB : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N (q + 1))) =>
+  (CategoryTheory.Limits.cokernelIsCokernel
+        (LinearStudy.schemeModuleInternalExtSourceMap S.f N q)).coconePointUniqueUpToIso
+    (LinearStudy.schemeModuleInternalExtSourceBoundaryIsCokernel S hS N I q hB)
+def LinearStudy.schemeModuleFiniteFreeSourceBoundaryCokernelIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (q : ℕ) →
+            (ι : Type u) →
+              [Finite ι] →
+                (S.X₂ ≅ SheafOfModules.free ι) →
+                  (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleInternalExtSourceMap S.f N q) ≅
+                    LinearStudy.schemeModuleInternalExt S.X₃ N (q + 1)) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+    (I : CategoryTheory.InjectiveResolution N) (q : ℕ) (ι : Type u) [Finite ι] (e : S.X₂ ≅ SheafOfModules.free ι) =>
+  LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso S hS N I q ⋯
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundary_epi:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundaryIsCokernel:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso_hom:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso_independent:true
+ROLECHECK:LinearStudy.schemeModuleFiniteFreeSourceBoundaryCokernelIso:false
+ROLECHECK:LinearStudy.schemeModuleFiniteFreeSourceBoundaryCokernelIso_hom:true
+
+===== SPLIT AUDIT zero-source-hom-cokernel =====
+@LinearStudy.schemeModuleInternalExtZeroIso_source_inv : ∀ {X : AlgebraicGeometry.Scheme} {A B : X.Modules} (f : A ⟶ B)
+  (N : X.Modules),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPrecompose f)
+      ((LinearStudy.schemeModuleInternalExtZeroIso A).app N).inv =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtZeroIso B).app N).inv
+      (LinearStudy.schemeModuleInternalExtSourceMap f N 0)
+'LinearStudy.schemeModuleInternalExtZeroIso_source_inv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtZeroIso_source : ∀ {X : AlgebraicGeometry.Scheme} {A B : X.Modules} (f : A ⟶ B)
+  (N : X.Modules),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceMap f N 0)
+      ((LinearStudy.schemeModuleInternalExtZeroIso A).app N).hom =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtZeroIso B).app N).hom
+      (LinearStudy.schemeModuleHomPrecompose f)
+'LinearStudy.schemeModuleInternalExtZeroIso_source' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomSourceBoundaryCokernelIso : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N 1) →
+            (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose S.f) ≅
+              LinearStudy.schemeModuleInternalExt S.X₃ N 1)
+'LinearStudy.schemeModuleHomSourceBoundaryCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomSourceBoundaryCokernelIso_hom : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N)
+  (hB : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N 1)),
+  CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose S.f))
+      (LinearStudy.schemeModuleHomSourceBoundaryCokernelIso S hS N I hB).hom =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtZeroIso S.X₁).app N).inv
+      (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I 0)
+'LinearStudy.schemeModuleHomSourceBoundaryCokernelIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomSourceBoundaryCokernelIso_independent : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I J : CategoryTheory.InjectiveResolution N)
+  (hB : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N 1)),
+  LinearStudy.schemeModuleHomSourceBoundaryCokernelIso S hS N I hB =
+    LinearStudy.schemeModuleHomSourceBoundaryCokernelIso S hS N J hB
+'LinearStudy.schemeModuleHomSourceBoundaryCokernelIso_independent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleFiniteFreeHomSourceCokernelIso : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (ι : Type u_1) →
+            [Finite ι] →
+              (S.X₂ ≅ SheafOfModules.free ι) →
+                (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose S.f) ≅
+                  LinearStudy.schemeModuleInternalExt S.X₃ N 1)
+'LinearStudy.schemeModuleFiniteFreeHomSourceCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleFiniteFreeHomSourceCokernelIso_hom : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (ι : Type u_1) [inst : Finite ι] (e : S.X₂ ≅ SheafOfModules.free ι),
+  CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose S.f))
+      (LinearStudy.schemeModuleFiniteFreeHomSourceCokernelIso S hS N I ι e).hom =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInternalExtZeroIso S.X₁).app N).inv
+      (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I 0)
+'LinearStudy.schemeModuleFiniteFreeHomSourceCokernelIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleHomSourceBoundaryCokernelIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N 1) →
+            (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose S.f) ≅
+              LinearStudy.schemeModuleInternalExt S.X₃ N 1) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+    (I : CategoryTheory.InjectiveResolution N)
+    (hB : CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt S.X₂ N 1)) =>
+  CategoryTheory.Limits.cokernel.mapIso (LinearStudy.schemeModuleHomPrecompose S.f)
+      (LinearStudy.schemeModuleInternalExtSourceMap S.f N 0)
+      ((LinearStudy.schemeModuleInternalExtZeroIso S.X₂).app N).symm
+      ((LinearStudy.schemeModuleInternalExtZeroIso S.X₁).app N).symm ⋯ ≪≫
+    LinearStudy.schemeModuleInternalExtSourceBoundaryCokernelIso S hS N I 0 hB
+def LinearStudy.schemeModuleFiniteFreeHomSourceCokernelIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (S : CategoryTheory.ShortComplex X.Modules) →
+    S.ShortExact →
+      (N : X.Modules) →
+        CategoryTheory.InjectiveResolution N →
+          (ι : Type u) →
+            [Finite ι] →
+              (S.X₂ ≅ SheafOfModules.free ι) →
+                (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose S.f) ≅
+                  LinearStudy.schemeModuleInternalExt S.X₃ N 1) :=
+fun {X : AlgebraicGeometry.Scheme} (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules)
+    (I : CategoryTheory.InjectiveResolution N) (ι : Type u) [Finite ι] (e : S.X₂ ≅ SheafOfModules.free ι) =>
+  LinearStudy.schemeModuleHomSourceBoundaryCokernelIso S hS N I ⋯
+ROLECHECK:LinearStudy.schemeModuleInternalExtZeroIso_source_inv:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtZeroIso_source:true
+ROLECHECK:LinearStudy.schemeModuleHomSourceBoundaryCokernelIso:false
+ROLECHECK:LinearStudy.schemeModuleHomSourceBoundaryCokernelIso_hom:true
+ROLECHECK:LinearStudy.schemeModuleHomSourceBoundaryCokernelIso_independent:true
+ROLECHECK:LinearStudy.schemeModuleFiniteFreeHomSourceCokernelIso:false
+ROLECHECK:LinearStudy.schemeModuleFiniteFreeHomSourceCokernelIso_hom:true

@@ -1,0 +1,48 @@
+@LinearStudy.schemeModuleOverSectionsEquiv : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) → (U : X.Opens) → (SheafOfModules.over N U).sections ≃ ↑(N.presheaf.obj (Opposite.op U))
+'LinearStudy.schemeModuleOverSectionsEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleUnitOverIso : (X : AlgebraicGeometry.Scheme) →
+  (U : X.Opens) →
+    (SheafOfModules.unit X.ringCatSheaf).over U ≅ SheafOfModules.unit (CategoryTheory.Sheaf.over X.ringCatSheaf U)
+'LinearStudy.schemeModuleUnitOverIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleUnitHomSectionsEquiv : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) →
+    (U : X.Opens) →
+      ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj (Opposite.op U)) ≃
+        ↑(N.presheaf.obj (Opposite.op U))
+'LinearStudy.schemeModuleUnitHomSectionsEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleUnitHomSectionsEquiv_apply : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules) (U : X.Opens)
+  (f : ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj (Opposite.op U))),
+  (LinearStudy.schemeModuleUnitHomSectionsEquiv N U) f =
+    (CategoryTheory.ConcreteCategory.hom
+        ((↑f).app (Opposite.op (CategoryTheory.Over.mk (CategoryTheory.CategoryStruct.id U)))))
+      1
+'LinearStudy.schemeModuleUnitHomSectionsEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleOverSectionsEquiv.{u} : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) → (U : X.Opens) → (SheafOfModules.over N U).sections ≃ ↑(N.presheaf.obj (Opposite.op U)) :=
+fun {X : AlgebraicGeometry.Scheme} (N : X.Modules) (U : X.Opens) =>
+  {
+    toFun := fun (s : (SheafOfModules.over N U).sections) =>
+      ↑s (Opposite.op (CategoryTheory.Over.mk (CategoryTheory.CategoryStruct.id U))),
+    invFun := fun (n : ↑(N.presheaf.obj (Opposite.op U))) =>
+      ⟨fun (W : (CategoryTheory.Over U)ᵒᵖ) =>
+        (CategoryTheory.ConcreteCategory.hom (N.presheaf.map (Opposite.unop W).hom.op)) n, ⋯⟩,
+    left_inv := ⋯, right_inv := ⋯ }
+def LinearStudy.schemeModuleUnitOverIso.{u} : (X : AlgebraicGeometry.Scheme) →
+  (U : X.Opens) →
+    (SheafOfModules.unit X.ringCatSheaf).over U ≅ SheafOfModules.unit (CategoryTheory.Sheaf.over X.ringCatSheaf U) :=
+fun (X : AlgebraicGeometry.Scheme) (U : X.Opens) =>
+  CategoryTheory.Iso.refl ((SheafOfModules.unit X.ringCatSheaf).over U)
+def LinearStudy.schemeModuleUnitHomSectionsEquiv.{u} : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) →
+    (U : X.Opens) →
+      ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj (Opposite.op U)) ≃
+        ↑(N.presheaf.obj (Opposite.op U)) :=
+fun {X : AlgebraicGeometry.Scheme} (N : X.Modules) (U : X.Opens) =>
+  (LinearStudy.schemeModuleHomModuleSectionsEquiv (SheafOfModules.unit X.ringCatSheaf) N U).trans
+    (((LinearStudy.schemeModuleUnitOverIso X U).homCongr (CategoryTheory.Iso.refl (SheafOfModules.over N U))).trans
+      ((SheafOfModules.over N U).unitHomEquiv.trans (LinearStudy.schemeModuleOverSectionsEquiv N U)))
+ROLECHECK:LinearStudy.schemeModuleOverSectionsEquiv:false
+ROLECHECK:LinearStudy.schemeModuleUnitOverIso:false
+ROLECHECK:LinearStudy.schemeModuleUnitHomSectionsEquiv:false
+ROLECHECK:LinearStudy.schemeModuleUnitHomSectionsEquiv_apply:true

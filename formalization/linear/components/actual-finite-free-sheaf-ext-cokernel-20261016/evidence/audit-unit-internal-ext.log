@@ -1,0 +1,39 @@
+LinearStudy.schemeModuleUnitHomCoefficient_preservesFiniteLimits : ∀ (X : AlgebraicGeometry.Scheme),
+  CategoryTheory.Limits.PreservesFiniteLimits
+    (LinearStudy.schemeModuleInternalHomCoefficientFunctor X (SheafOfModules.unit X.ringCatSheaf))
+'LinearStudy.schemeModuleUnitHomCoefficient_preservesFiniteLimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleUnitHomCoefficient_preservesFiniteColimits : ∀ (X : AlgebraicGeometry.Scheme),
+  CategoryTheory.Limits.PreservesFiniteColimits
+    (LinearStudy.schemeModuleInternalHomCoefficientFunctor X (SheafOfModules.unit X.ringCatSheaf))
+'LinearStudy.schemeModuleUnitHomCoefficient_preservesFiniteColimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleUnitInternalExtResolutionIso : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) →
+    (q : ℕ) →
+      (I : CategoryTheory.InjectiveResolution N) →
+        LinearStudy.schemeModuleInternalExt (SheafOfModules.unit X.ringCatSheaf) N q ≅
+          HomologicalComplex.homology I.cocomplex q
+'LinearStudy.schemeModuleUnitInternalExtResolutionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleUnitInternalExt_succ : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules) (q : ℕ),
+  CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (SheafOfModules.unit X.ringCatSheaf) N (q + 1))
+'LinearStudy.schemeModuleUnitInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleUnitInternalExtResolutionIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) →
+    (q : ℕ) →
+      (I : CategoryTheory.InjectiveResolution N) →
+        LinearStudy.schemeModuleInternalExt (SheafOfModules.unit X.ringCatSheaf) N q ≅
+          HomologicalComplex.homology I.cocomplex q :=
+fun {X : AlgebraicGeometry.Scheme} (N : X.Modules) (q : ℕ) (I : CategoryTheory.InjectiveResolution N) =>
+  LinearStudy.schemeModuleInternalExtInjectiveResolutionIso (SheafOfModules.unit X.ringCatSheaf) N q I ≪≫
+    (HomologicalComplex.homologyFunctor X.Modules (ComplexShape.up ℕ) q).mapIso
+      ((CategoryTheory.NatIso.mapHomologicalComplex (LinearStudy.schemeModuleInternalHomUnitCoefficientIso X)
+              (ComplexShape.up ℕ)).app
+          I.cocomplex ≪≫
+        (CategoryTheory.Functor.mapHomologicalComplexIdIso X.Modules (ComplexShape.up ℕ)).app I.cocomplex)
+ROLECHECK:LinearStudy.schemeModuleUnitHomCoefficient_preservesFiniteLimits:true
+ROLECHECK:LinearStudy.schemeModuleUnitHomCoefficient_preservesFiniteColimits:true
+ROLECHECK:LinearStudy.schemeModuleUnitInternalExtResolutionIso:false
+ROLECHECK:LinearStudy.schemeModuleUnitInternalExt_succ:true

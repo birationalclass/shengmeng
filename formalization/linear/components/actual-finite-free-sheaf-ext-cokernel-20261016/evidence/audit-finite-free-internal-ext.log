@@ -1,0 +1,24 @@
+@LinearStudy.schemeModuleFiniteFreeInternalExt_succ : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules) (ι : Type u_1)
+  [Finite ι] (q : ℕ),
+  CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (SheafOfModules.free ι) N (q + 1))
+'LinearStudy.schemeModuleFiniteFreeInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceIso : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (P ≅ Q) →
+      (N : X.Modules) → (q : ℕ) → LinearStudy.schemeModuleInternalExt P N q ≅ LinearStudy.schemeModuleInternalExt Q N q
+'LinearStudy.schemeModuleInternalExtSourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleFiniteFreeFrameInternalExt_succ : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules)
+  (ι : Type u_1) [Finite ι] {P : X.Modules} (e : P ≅ SheafOfModules.free ι) (q : ℕ),
+  CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt P N (q + 1))
+'LinearStudy.schemeModuleFiniteFreeFrameInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleInternalExtSourceIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (P ≅ Q) →
+      (N : X.Modules) →
+        (q : ℕ) → LinearStudy.schemeModuleInternalExt P N q ≅ LinearStudy.schemeModuleInternalExt Q N q :=
+fun {X : AlgebraicGeometry.Scheme} {P Q : X.Modules} (e : P ≅ Q) (N : X.Modules) (q : ℕ) =>
+  { hom := LinearStudy.schemeModuleInternalExtSourceMap e.inv N q,
+    inv := LinearStudy.schemeModuleInternalExtSourceMap e.hom N q, hom_inv_id := ⋯, inv_hom_id := ⋯ }
+ROLECHECK:LinearStudy.schemeModuleFiniteFreeInternalExt_succ:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceIso:false
+ROLECHECK:LinearStudy.schemeModuleFiniteFreeFrameInternalExt_succ:true

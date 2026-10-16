@@ -1,0 +1,58 @@
+@LinearStudy.schemeModuleUnitHomSectionsLinearEquiv : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) →
+    (U : X.Opens) →
+      ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj
+            (Opposite.op U)) ≃ₗ[↑(X.presheaf.obj (Opposite.op U))]
+        ↑(N.presheaf.obj (Opposite.op U))
+'LinearStudy.schemeModuleUnitHomSectionsLinearEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleUnitHomSectionsEquiv_restrict : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules)
+  {U V : X.Opens} (i : V ⟶ U)
+  (f : ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj (Opposite.op U))),
+  (LinearStudy.schemeModuleUnitHomSectionsEquiv N V)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.map i.op))
+        f) =
+    (CategoryTheory.ConcreteCategory.hom (N.presheaf.map i.op)) ((LinearStudy.schemeModuleUnitHomSectionsEquiv N U) f)
+'LinearStudy.schemeModuleUnitHomSectionsEquiv_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleUnitHomIso : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) → LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N ≅ N
+'LinearStudy.schemeModuleUnitHomIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleUnitHomIso_hom_app : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules) (U : X.Opens)
+  (f : ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj (Opposite.op U))),
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.schemeModuleUnitHomIso N).hom U))
+      f =
+    (CategoryTheory.ConcreteCategory.hom
+        ((↑f).app (Opposite.op (CategoryTheory.Over.mk (CategoryTheory.CategoryStruct.id U)))))
+      1
+'LinearStudy.schemeModuleUnitHomIso_hom_app' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleInternalHomUnitCoefficientIso : (X : AlgebraicGeometry.Scheme) →
+  LinearStudy.schemeModuleInternalHomCoefficientFunctor X (SheafOfModules.unit X.ringCatSheaf) ≅
+    CategoryTheory.Functor.id X.Modules
+'LinearStudy.schemeModuleInternalHomUnitCoefficientIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleUnitHomSectionsLinearEquiv.{u} : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) →
+    (U : X.Opens) →
+      ↑((LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N).presheaf.obj
+            (Opposite.op U)) ≃ₗ[↑(X.presheaf.obj (Opposite.op U))]
+        ↑(N.presheaf.obj (Opposite.op U)) :=
+fun {X : AlgebraicGeometry.Scheme} (N : X.Modules) (U : X.Opens) =>
+  let __Equiv := LinearStudy.schemeModuleUnitHomSectionsEquiv N U;
+  { toFun := __Equiv.toFun, map_add' := ⋯, map_smul' := ⋯, invFun := __Equiv.invFun, left_inv := ⋯, right_inv := ⋯ }
+def LinearStudy.schemeModuleUnitHomIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (N : X.Modules) → LinearStudy.schemeModuleHomModuleSheaf (SheafOfModules.unit X.ringCatSheaf) N ≅ N :=
+fun {X : AlgebraicGeometry.Scheme} (N : X.Modules) =>
+  (SheafOfModules.fullyFaithfulForget X.ringCatSheaf).preimageIso
+    (PresheafOfModules.isoMk
+      (fun (U : (TopologicalSpace.Opens ↥X)ᵒᵖ) =>
+        (LinearStudy.schemeModuleUnitHomSectionsLinearEquiv N (Opposite.unop U)).toModuleIso)
+      ⋯)
+def LinearStudy.schemeModuleInternalHomUnitCoefficientIso.{u} : (X : AlgebraicGeometry.Scheme) →
+  LinearStudy.schemeModuleInternalHomCoefficientFunctor X (SheafOfModules.unit X.ringCatSheaf) ≅
+    CategoryTheory.Functor.id X.Modules :=
+fun (X : AlgebraicGeometry.Scheme) => CategoryTheory.NatIso.ofComponents LinearStudy.schemeModuleUnitHomIso ⋯
+ROLECHECK:LinearStudy.schemeModuleUnitHomSectionsLinearEquiv:false
+ROLECHECK:LinearStudy.schemeModuleUnitHomSectionsEquiv_restrict:true
+ROLECHECK:LinearStudy.schemeModuleUnitHomIso:false
+ROLECHECK:LinearStudy.schemeModuleUnitHomIso_hom_app:true
+ROLECHECK:LinearStudy.schemeModuleInternalHomUnitCoefficientIso:false
