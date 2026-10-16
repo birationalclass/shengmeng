@@ -29,6 +29,10 @@ test('navigation waits for board ink, and a blur during preparation cancels its 
 test('rapid repeated board navigation retains the original playing intent',async()=>{
  const h=harness();await h.voice.select(report,{autoplay:true});let a,b;const first=h.voice.seek(14,{preservePlayback:true,ready:new Promise(r=>a=r)});await tick();const second=h.voice.seek(2,{preservePlayback:true,ready:new Promise(r=>b=r)});await tick();a();await first;assert(h.audios.at(-1).paused);b();await second;assert.equal(h.voice.state.phase,'playing');assert.equal(h.voice.state.time,2);h.voice.dispose();
 });
+test('play/pause during navigation changes intent while audio waits for board readiness',async()=>{
+ const h=harness();await h.voice.select(report,{autoplay:true});let done;const job=h.voice.seek(14,{preservePlayback:true,ready:new Promise(r=>done=r)});await tick();
+ assert(h.audios.at(-1).paused);await h.voice.toggle();assert.equal(h.voice.state.phase,'paused');await h.voice.toggle();assert(h.audios.at(-1).paused,'manual resume must not start before board readiness');done();await job;assert.equal(h.voice.state.phase,'playing');h.voice.dispose();
+});
 test('changing reports rejects stale directory data and releases existing audio',async()=>{let release;const h=harness({fetcher:()=>new Promise(r=>release=r)});const job=h.voice.select(report);await h.voice.select({id:'hu'});release(Response.json(manifest));await job;assert.equal(h.voice.state.phase,'idle');assert.equal(h.audios.length,0);h.voice.dispose();});
 test('pause during a delayed play promise cannot restart playback',async()=>{let release;const a=new FakeAudio();a.play=()=>new Promise(r=>release=r);const h=harness({makeAudio:()=>a});await h.voice.select(report);const job=h.voice.toggle();h.voice.pause();release();await job;assert.equal(a.paused,true);assert.notEqual(h.voice.state.phase,'playing');h.voice.dispose();});
 test('failed fetch stays error rather than reporting completion',async()=>{const h=harness({fetcher:async()=>new Response('',{status:404})});assert.equal(await h.voice.select(report),false);assert.equal(h.voice.state.phase,'error');h.voice.dispose();});

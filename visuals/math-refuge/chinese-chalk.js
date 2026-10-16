@@ -1,3 +1,5 @@
+import {resourceFetch} from './resource-fetch.js';
+import {decodeImage} from './mobile-runtime.js';
 // Original Honglei 36 raster ink, with independently owned stroke masks.
 // Load just the current page's glyphs. No font binary or runtime font fallback.
 const BASE=new URL('./assets/chalk/chinese36/',import.meta.url);
@@ -26,8 +28,8 @@ export function paintChineseGroup(ctx,rows,row,progressForRow){
 }
 export function chineseMetrics(g,size){const k=size/g.fontSize,[x,y,r,b]=g.bounds,[ox,oy]=g.origin;return{width:g.advance*k,actualBoundingBoxLeft:(ox-x)*k,actualBoundingBoxRight:(r-ox)*k,actualBoundingBoxAscent:(oy-y)*k,actualBoundingBoxDescent:(b-oy)*k};}
 async function loadGlyph(meta){
- const data=await fetch(new URL(meta.data,BASE)).then(r=>{if(!r.ok)throw Error('中文笔画资产加载失败：'+meta.char);return r.json();});
- const im=new Image(),timing=new Image();im.src=new URL(data.ink,BASE);timing.src=new URL(data.timeMap,BASE);await Promise.all([im.decode(),timing.decode()]);
+ const data=await resourceFetch(new URL(meta.data,BASE)).then(r=>{if(!r.ok)throw Error('中文笔画资产加载失败：'+meta.char);return r.json();});
+ const [im,timing]=await Promise.all([decodeImage(new URL(data.ink,BASE)),decodeImage(new URL(data.timeMap,BASE))]);
  const full=canvas(data.width,data.width),map=canvas(data.width,data.width);full.getContext('2d').drawImage(im,0,0);map.getContext('2d').drawImage(timing,0,0);
  const ink=full.getContext('2d').getImageData(0,0,data.width,data.width).data,time=map.getContext('2d').getImageData(0,0,data.width,data.width).data,strokes=[];
  const boxes=data.paths.map(()=>[data.width,data.width,-1,-1]);
@@ -37,11 +39,12 @@ async function loadGlyph(meta){
  full.width=map.width=1;return {...meta,image:im,strokes,alpha,owner,phase,colors:new Map()};
 }
 export async function createChineseChalk(){
- const index=await fetch(new URL('index.json?v=section-yue-glyphs-20261015',BASE)).then(r=>{if(!r.ok)throw Error('中文板书字形索引未就绪');return r.json();}),metadata=new Map(index.glyphs.map(g=>[g.char,g])),jobs=new Map();
+ const index=await resourceFetch(new URL('index.json?v=section-yue-glyphs-20261015',BASE)).then(r=>{if(!r.ok)throw Error('中文板书字形索引未就绪');return r.json();}),metadata=new Map(index.glyphs.map(g=>[g.char,g])),jobs=new Map();
  async function prepare(text){
   const chars=[...new Set([...String(text)].filter(c=>/[\u3400-\u9fff，。；：（）！？、…·]/.test(c)))];
   for(const c of chars)if(!metadata.has(c))throw Error('36号板书字形缺失：'+c);
-  const entries=await Promise.all(chars.map(c=>{if(!jobs.has(c))jobs.set(c,loadGlyph(metadata.get(c)).catch(e=>{jobs.delete(c);throw e;}));return jobs.get(c);}));
+  const entries=[];let cursor=0,failed=false;
+  await Promise.all(Array.from({length:Math.min(4,chars.length)},async()=>{while(cursor<chars.length&&!failed){const c=chars[cursor++];try{if(!jobs.has(c))jobs.set(c,loadGlyph(metadata.get(c)).catch(e=>{jobs.delete(c);throw e;}));entries.push(await jobs.get(c));}catch(error){failed=true;throw error;}}}));
   const ready=new Map(entries.map(g=>[g.char,g]));
   for(const c of jobs.keys())if(jobs.size>160&&!ready.has(c))jobs.delete(c);
   return {glyph:c=>ready.get(c),measure:(g,size)=>chineseMetrics(g,size),

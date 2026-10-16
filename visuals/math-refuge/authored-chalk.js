@@ -1,3 +1,5 @@
+import {resourceFetch} from './resource-fetch.js';
+import {decodeImage} from './mobile-runtime.js';
 import {glyphs,advance} from './refined-handwriting.js?v1';
 const NS='http://www.w3.org/2000/svg',samples=new Map();
 export function authoredGlyph(char){
@@ -25,7 +27,7 @@ export function authoredContext(ctx,chinese=null,{latin=true}={}){
 }
 
 export async function authoredFormula(url,{color}={}){
- const response=await fetch(url);if(!response.ok)throw Error('板书公式加载失败');let source=await response.text();if(color)source=source.replaceAll('#eee9d5',color);
+ const response=await resourceFetch(url);if(!response.ok)throw Error('板书公式加载失败');let source=await response.text();if(color)source=source.replaceAll('#eee9d5',color);
  const root=new DOMParser().parseFromString(source,'image/svg+xml').documentElement;
  if(root.localName!=='svg')throw Error('无效板书公式');
  const host=document.createElement('div');host.style.cssText='position:fixed;left:-20000px;top:0;visibility:hidden;pointer-events:none';host.append(root);document.body.append(host);const operations=[],rootMatrix=root.getScreenCTM().inverse();
@@ -66,6 +68,6 @@ export async function authoredFormula(url,{color}={}){
    const rect=clipRect(pointBox([[box.x,box.y],[box.x+box.width,box.y],[box.x,box.y+box.height],[box.x+box.width,box.y+box.height]].map(map),1),clip);if(rect)operations.push({...semantic,rect});
   }
  }
- const data=new XMLSerializer().serializeToString(root),blob=URL.createObjectURL(new Blob([data],{type:'image/svg+xml'}));try{const image=new Image();image.src=blob;await image.decode();image.authoredOperations=operations;return image;}finally{URL.revokeObjectURL(blob);}
+ const data=new XMLSerializer().serializeToString(root),blob=URL.createObjectURL(new Blob([data],{type:'image/svg+xml'}));try{const image=await decodeImage(blob);image.authoredOperations=operations;return image;}finally{URL.revokeObjectURL(blob);}
  }finally{host.remove();}
 }

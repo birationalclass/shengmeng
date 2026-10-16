@@ -1,19 +1,21 @@
+import {createResourceFetch} from './resource-fetch.js';
 import {trayControlLayout,placeTrayControl} from './board-tray-layout.js';
 import {writingSchedule,scheduledWriting} from './board-work.js?v=continuous-classroom-1';
 import {SCREEN_COLORS,CONTROL_VISUAL_SCALE} from './smart-screen-style.js?v=unframed-controls-1';
 // On-demand narration: no network or audio allocation until a report is selected.
-export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),onChange=()=>{},baseURL=new URL('.',import.meta.url).href,now=()=>performance.now()/1000}={}){
+export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),onChange=()=>{},baseURL=new URL('.',import.meta.url).href,now=()=>performance.now()/1000,requestTimeout=15000}={}){
+ fetcher=createResourceFetch(fetcher,{idleTimeout:requestTimeout});
  let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,contextActive=true,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0,playbackRate=1,boardHold=null;
- let activity=null,segmentEnding=false,navigationIntent=false,retainAll=false,prefetchJob=null;const blobs=new Map(),blobJobs=new Map();let preload={phase:'idle',completed:0,total:0,errors:[]};
- const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',started:false,chapter:0,temporaryPause:false,rate:1,activity:null};
+ let activity=null,segmentEnding=false,navigationIntent=false,navigationGate=null,retainAll=false,prefetchJob=null;const blobs=new Map(),blobJobs=new Map();let preload={phase:'idle',completed:0,total:0,errors:[]};
+ const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',errorKind:'',started:false,chapter:0,temporaryPause:false,rate:1,activity:null};
  const emit=()=>{state.transportPlaying=desired&&contextActive;onChange({...state});};
  const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index];state.time=Math.min(state.duration,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=manifest.chapters[index].start+activity.at;state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}return state.time;};
  function pause(){sync();if(activity)activity.running=false;desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio?.pause();if(['loading','playing','buffering','preparing','away'].includes(state.phase))state.phase='paused';emit();}
- function release(){pause();boardHold=null;audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
+ function release(){pause();navigationGate=null;boardHold=null;audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
  async function fetchBytes(src,mine,show,sizeHint=0){
   const controller=new AbortController();controllers.add(controller);
   try{
-   const response=await fetcher(src,{signal:controller.signal,cache:"no-cache"});if(!response.ok)throw Error('语音下载失败');
+   const response=await fetcher(src,{signal:controller.signal,cache:"no-cache",priority:show?"high":"low"});if(!response.ok)throw Error('语音下载失败');
    const size=Number(response.headers.get('content-length'))||sizeHint,parts=[];let received=0;
    if(response.body?.getReader){const reader=response.body.getReader();for(;;){const {value,done}=await reader.read();if(done)break;if(mine!==epoch){await reader.cancel();return null;}parts.push(value);received+=value.byteLength;if(show){state.progress=size?Math.min(.99,received/size):null;emit();}}}
    else parts.push(await response.arrayBuffer());
@@ -53,20 +55,21 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   target.addEventListener('playing',()=>{if(valid()&&desired){state.phase=boardHold?'preparing':'playing';emit();}});
   target.addEventListener('error',()=>{if(valid()){desired=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();}});
   target.addEventListener('ended',()=>{if(!valid()||segmentEnding||boardHold)return;segmentEnding=true;state.time=manifest.chapters[i].start+manifest.chapters[i].duration;if(i+1<manifest.chapters.length){void advance(i+1);}else{desired=false;state.phase='ended';state.time=state.duration;emit();}});
-  state.progress=1;state.temporaryPause=desired&&!contextActive;state.phase=state.temporaryPause?'away':state.started?'paused':'ready';state.error='';emit();return true;
+  state.progress=1;state.temporaryPause=desired&&!contextActive;state.phase=state.temporaryPause?'away':state.started?'paused':'ready';state.error='';state.errorKind='';emit();return true;
  }
  async function play(){
+  if(navigationGate){navigationIntent=true;navigationGate.token=playToken;state.phase="preparing";state.started=true;emit();return false;}
   if(!audio&&!activity){if(state.phase==='paused'&&(controllers.size||jobs.size)){desired=true;state.phase='loading';emit();}return false;}const mine=epoch,token=++playToken,target=audio;desired=true;
   if(!contextActive){state.temporaryPause=true;state.phase='away';emit();return false;}state.temporaryPause=false;state.started=true;
   if(boardHold){state.phase='preparing';emit();return false;}
   if(activity){activity.stamp=now();activity.running=true;state.phase='playing';state.error='';sync();emit();return true;}
-  try{await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){if(audio!==target||!desired||!contextActive)target.pause();return false;}state.phase='playing';state.error='';emit();return true;}
+  try{await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){if(audio!==target||!desired||!contextActive)target.pause();return false;}state.phase='playing';state.error='';state.errorKind='';emit();return true;}
   catch{if(mine!==epoch||token!==playToken)return false;desired=false;state.phase='paused';state.error='点击黑板播放语音';emit();return false;}
  }
- async function advance(i){const resume=desired,mine=epoch;try{if(await attach(i)&&mine===epoch&&resume&&desired)await play();}catch(error){if(mine===epoch){desired=false;state.phase='error';state.error='语音下载失败 · 点击重试';emit();}}}
+ async function advance(i){const resume=desired,mine=epoch,intent=playToken;try{if(await attach(i)&&mine===epoch&&resume&&desired)await play();}catch(error){if(mine===epoch&&intent===playToken){desired=false;state.phase='error';state.error='语音下载失败 · 点击重试';emit();}}}
  async function select(next,{autoplay=false}={}){
   ++epoch;++attachToken;release();report=next;manifest=null;index=0;offset=0;const mine=epoch;
-  desired=Boolean(autoplay&&next?.narration);Object.assign(state,{report:next?.id,contentKind:next?.kind==='classroom'?'classroom':'report',phase:next?.narration?'loading':'idle',progress:null,time:0,duration:0,error:'',started:false,chapter:0,temporaryPause:false});emit();
+  desired=Boolean(autoplay&&next?.narration);Object.assign(state,{report:next?.id,contentKind:next?.kind==='classroom'?'classroom':'report',phase:next?.narration?'loading':'idle',progress:null,time:0,duration:0,error:'',errorKind:'',started:false,chapter:0,temporaryPause:false});emit();
   if(!next?.narration)return false;
   try{
    const src=new URL(next.narration.manifest,baseURL).href,controller=new AbortController();controllers.add(controller);
@@ -78,16 +81,17 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   }catch(error){if(mine!==epoch||error.name==='AbortError')return false;desired=false;state.temporaryPause=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();return false;}
  }
  async function seek(time,{preservePlayback=false,ready=null}={}){
-  if(!manifest)return false;const resume=preservePlayback&&(desired||navigationIntent);pause();boardHold=null;navigationIntent=resume;const mine=epoch,intent=playToken,target=Math.max(0,Math.min(manifest.duration,Number(time)||0));state.started=true;
+  if(!manifest)return false;const resume=preservePlayback&&(desired||navigationIntent);pause();boardHold=null;navigationIntent=resume;const mine=epoch,intent=playToken,target=Math.max(0,Math.min(manifest.duration,Number(time)||0));state.started=true;const gate=navigationGate={token:intent};
   const i=Math.max(0,manifest.chapters.findLastIndex(c=>c.start<=target)),at=Math.min(manifest.chapters[i].duration-.025,target-manifest.chapters[i].start);
   const inkReady=Promise.resolve(ready);inkReady.catch(()=>{});
-  try{let attached=true;if(activity&&i===index){activity.at=Math.max(0,at);activity.stamp=now();state.time=target;state.phase='paused';sync();emit();}else if(audio&&i===index){audio.currentTime=(manifest.chapters[i].mediaStart||0)+Math.max(0,at);state.time=target;state.phase='paused';emit();}else attached=await attach(i,Math.max(0,at));await inkReady;if(mine===epoch&&intent===playToken){navigationIntent=false;if(attached&&resume)await play();}return attached;}
-  catch{if(mine===epoch&&intent===playToken){navigationIntent=false;state.phase='error';state.error='语音定位失败 · 点击重试';emit();}return false;}
+  try{let attached=true;if(activity&&i===index){activity.at=Math.max(0,at);activity.stamp=now();state.time=target;state.phase='paused';sync();emit();}else if(audio&&i===index){audio.currentTime=(manifest.chapters[i].mediaStart||0)+Math.max(0,at);state.time=target;state.phase='paused';emit();}else attached=await attach(i,Math.max(0,at));if(navigationGate===gate&&ready&&gate.token===playToken){state.phase=navigationIntent?'preparing':'paused';emit();}await inkReady;if(mine===epoch&&navigationGate===gate&&gate.token===playToken){const continuePlaying=navigationIntent;navigationGate=null;navigationIntent=false;if(attached&&continuePlaying)await play();}return attached;}
+  catch{if(mine===epoch&&navigationGate===gate&&gate.token===playToken){navigationIntent=false;state.phase='error';state.error='语音定位失败 · 点击重试';emit();}return false;}finally{if(navigationGate===gate)navigationGate=null;}
  }
  async function toggle(){
+  if(navigationGate){if(navigationIntent)pause();else await play();return true;}
   if(state.phase==='loading'&&desired){pause();return true;}
   if(['playing','buffering','preparing','away'].includes(state.phase)){pause();return true;}
-  if(state.phase==='loading')return false;
+  if(state.phase==='loading'){pause();return true;}
   if(state.phase==='error'){if(!manifest)return select(report);try{return await attach(index,offset)&&await play();}catch{return false;}}
   if(state.phase==='ended')await seek(0);
   return play();
@@ -112,6 +116,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   },
   async skipActivity(){if(!activity||!manifest)return false;if(index+1<manifest.chapters.length){await advance(index+1);return true;}pause();state.phase='ended';state.time=state.duration;emit();return true;},
   setRate(value){sync();const n=Number(value);playbackRate=Number.isFinite(n)?Math.max(.75,Math.min(1.3,n)):1;state.rate=playbackRate;if(audio){audio.preservesPitch=true;audio.playbackRate=playbackRate;}emit();return playbackRate;},
+  failForBoard(error){pause();boardHold=null;state.phase='error';state.errorKind='board';state.error=(error?.message||'板书下载失败')+' · 点击重试';emit();},
   async suspendUntil(job){
    if(!desired||state.phase==='preparing')return;
    const mine=epoch,token=++playToken;sync();if(activity)activity.running=false;audio?.pause();state.phase='preparing';state.progress=null;emit();
@@ -171,7 +176,7 @@ export function reportVoicePresentation(state){
  if(phase==='idle')return{message:'',buttonLabel:null,busy:false};
  const time=formatTime(state.time||0)+' / '+formatTime(state.duration||0);
  const message=busy?'报告语音加载 · '+(state.progress===null?'…':Math.round(state.progress*100)+'%'):phase==='error'?(state.error||'语音未就绪 · 点击重试'):phase==='ready'?'语音已就绪 · AI 合成 · '+formatTime(state.duration)+' · 点击聆听报告':phase==='away'?'暂离报告厅 · '+time:phase==='preparing'?'准备当前板书 · '+time:phase==='buffering'?'语音缓冲 · '+time:'报告 '+time;
- const buttonLabel=phase==='error'?'重试报告语音':['playing','buffering','preparing','away'].includes(phase)?'暂停报告':phase==='paused'?'继续报告':phase==='ended'?'重新聆听报告':'聆听报告';
+ const buttonLabel=phase==='error'?(state.errorKind==='board'?'重试板书':'重试报告语音'):phase==='loading'?'暂停报告':['playing','buffering','preparing','away'].includes(phase)?'暂停报告':phase==='paused'?'继续报告':phase==='ended'?'重新聆听报告':'聆听报告';
  if(state.contentKind==='classroom')return{message:message.replaceAll('报告','课堂').replace('点击聆听课堂','点击开始上课'),buttonLabel:buttonLabel?.replaceAll('报告','课堂').replace('聆听课堂','开始上课'),busy};
  return{message,buttonLabel,busy};
 }
@@ -209,7 +214,7 @@ export function createBoardVoicePanel(T,parent){
  function setColumn(value){column=value;const p=reportVoiceIconPosition(column);placeTrayControl(mesh,p);}
  setColumn(0);
  return{mesh,setColumn,update(state,dt,visible=true){
-  const frame=motion.update(state,dt),busy=iconBusy(state);mesh.visible=visible&&state.phase!=='idle';mesh.userData.action=busy&&!state.transportPlaying?null:'voice:toggle';mesh.userData.icon=frame.kind;mesh.userData.loadProgress=state.progress;
+  const frame=motion.update(state,dt),busy=iconBusy(state);mesh.visible=visible&&state.phase!=='idle';mesh.userData.action='voice:toggle';mesh.userData.icon=frame.kind;mesh.userData.loadProgress=state.progress;
   mesh.userData.label=state.synthetic===false?(state.phase==='playing'?'暂停板书':'继续板书'):(reportVoicePresentation(state).buttonLabel||'聆听报告')+' · AI 合成';
   const key=[frame.kind,frame.ring.toFixed(3),frame.progress.toFixed(3),frame.pause.toFixed(3),frame.indeterminate?frame.spin.toFixed(2):''].join(':');
   if(key===last||!mesh.visible)return;last=key;ctx.clearRect(0,0,128,128);ctx.save();ctx.translate(64,64);ctx.scale(.72*CONTROL_VISUAL_SCALE,.72*CONTROL_VISUAL_SCALE);ctx.translate(-64,-64);ctx.strokeStyle=SCREEN_COLORS.text;ctx.fillStyle=SCREEN_COLORS.text;ctx.lineWidth=4;ctx.lineJoin='miter';ctx.lineCap='square';

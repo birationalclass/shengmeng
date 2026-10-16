@@ -302,7 +302,7 @@ function applyShot(dt,realDelta=dt){
   const s=speakerView?roomLecterns[activeRoom].speakerPose(camera.aspect):SHOTS[shot];shotPose();const position=shotPosition,target=shotTarget;
   if(s.lecture&&lecture){
     // A steady board-height teaching camera follows the active pair, not a room orbit.
-    if(!blend&&dt>0){viewDirection.subVectors(camera.position,controls.target);position.sub(target).lerp(viewDirection,Math.exp(-dt*.75)).add(target);}
+    if(!blend&&dt>0){const amount=1-Math.exp(-dt*2);position.lerpVectors(camera.position,position,amount);target.lerpVectors(controls.target,target,amount);shotFov=THREE.MathUtils.lerp(camera.fov,shotFov,amount);}
   }
   const priorFov=camera.fov;
   if(blend){
@@ -970,7 +970,7 @@ function updateLectureUI(){
   $('boardStorage').hidden=!lecture.retractable;controlLabel($('boardStorage'),lecture.stored?'升起黑板':'收起黑板');$('boardStorage').setAttribute('aria-pressed',String(lecture.stored));
   const voice=lecture.voiceState,voiceUI=reportVoicePresentation(voice);updateVoicePreferences();
   const status=reportProgress||reportLoadError||(voiceUI.message?voiceUI.message+' · '+lecture.status():lecture.status());if(status!==lectureStatus){$('lectureStatus').textContent=status;lectureStatus=status;}
-  $('readerOpen').disabled=!lecture.hasSelection;$('lecturePlay').disabled=!lecture.hasSelection||voiceUI.busy||lecture.clock.ended;$('lectureNext').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.stopAt;$('lecturePrevious').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.startAt;
+  $('readerOpen').disabled=!lecture.hasSelection;$('lecturePlay').disabled=!lecture.hasSelection||lecture.clock.ended;$('lectureNext').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.stopAt;$('lecturePrevious').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.startAt;
   for(const id of ['lectureProgress','lecturePage','lectureRewrite'])$(id).disabled=!lecture.hasSelection;
   controlLabel($('lecturePlay'),lecture.clock.ended?'报告已结束':voiceUI.buttonLabel||(lecture.playing?'暂停板书':'继续板书'));$('lecturePlay').setAttribute('aria-pressed',String(lecture.playing));
   $('world').dataset.boardCameraZoom=String(lecture.cameraZoom);
@@ -994,7 +994,7 @@ $('lectureShade').addEventListener('click',()=>{
   if(!retreat)return;teachingShade=!teachingShade;if(activeRoom===0)retreat.campus.setTeachingShade(teachingShade);else retreat.campus.discussion.blinds[activeRoom-1].visible=teachingShade;
   $('lectureShade').setAttribute('aria-pressed',String(teachingShade));controlLabel($('lectureShade'),teachingShade?'收起遮光帘':'放下海景遮光帘');renderer.shadowMap.needsUpdate=true;
 });
-$('lecturePlay').addEventListener('click',()=>{if(!lecture)return;lecture.playing=!lecture.playing;if(reduced.matches&&!lecture.voiceManifest)lecture.staticPage();});
+$('lecturePlay').addEventListener('click',()=>{if(!lecture)return;void lecture.toggleVoice();if(reduced.matches&&!lecture.voiceManifest)lecture.staticPage();});
 for(const [id,delta] of [['lecturePrevious',-1],['lectureNext',1]])$(id).addEventListener('click',()=>{if(!lecture)return;if(!lecture.stepExercise(delta))seekLecture(lecture.navigationPage+delta);});
 $('lectureRewrite').addEventListener('click',()=>{if(!lecture)return;lecture.rewrite();if(reduced.matches)lecture.staticPage();else lecture.playing=true;});
 $('lecturePage').addEventListener('change',event=>{if(!lecture)return;seekLecture(Number(event.target.value));});

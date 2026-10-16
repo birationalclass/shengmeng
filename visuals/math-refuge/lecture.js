@@ -1,3 +1,4 @@
+import {AssetRetry} from './asset-retry.js';
 import {boardInkScale} from './board-ink-resolution.js';
 import {createBoardTrayHardware} from './board-tray.js?v=crystal-black-b2';
 import {isCrystalScheme,paintStoneBoard,setTrackScheme} from './board-mineral.js';
@@ -61,7 +62,7 @@ export async function createLecture(scene,renderer,options={}){
   const storageMotion=new BoardStorage(stored),storageLids=[];let storageWell=null,storageCap=null;
   const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:p.kind==='cover'?5:8}));
   estimateDurations();
-  const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language=options.initialLanguage==='zh'?'zh':'en',generation=0;
+  const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();const assetRetry=new AssetRetry();let boardPreparation=null;let loadingError=null,version=0,language=options.initialLanguage==='zh'?'zh':'en',generation=0;
   let fontsReady=0;
   if(document.fonts&&!disabled)await withDeadline(Promise.all(['42px RefugeChinese','42px RefugeLatin','42px RefugeMath'].map(font=>document.fonts.load(font).then(result=>{reportProgress(.25+(++fontsReady)/3*.45);return result;}))),15000,'板书字体加载');
   let chineseChalk=null;
@@ -72,34 +73,36 @@ export async function createLecture(scene,renderer,options={}){
   function stepExercise(delta){const a=currentExercise(),frame=exerciseFrames.get(clock.page);if(!a||!frame)return false;const next=frame.sheetIndex+delta;if(next<0||next>=frame.sheetCount)return false;exerciseChoices.set(a.start+':'+a.feedback,next);boards.forEach(b=>b.last='');return true;}
   async function omitOptionalProof(){const optional=voice.manifest?.boards.filter(b=>b.optionalProof)||[];if(!optional.length||proofJumping)return false;proofJumping=true;lessonBudget.decision='skip';optional.forEach(b=>omittedProofPages.add(b.page));cancelBoardWork();highlighter.hide();highlightState=null;try{await voice.seek(optional.at(-1).end,{preservePlayback:true});version++;return true;}finally{proofJumping=false;}}
   function cancelBoardWork(){translatedInk=null;boardWork?.resolve();boardWork=null;eraseRun=null;previousNarrationTime=null;workManifest=null;completedWork.clear();boardReview.clear();revealedPages.clear();}
-  function clearPageCache(){cancelBoardWork();exerciseChoices.clear();exerciseFrames.clear();exerciseEraseKeys.clear();for(const c of cache.values()){c.width=1;c.height=1;}cache.clear();}
+  function clearPageCache(){cancelBoardWork();assetRetry.clear();boardPreparation=null;exerciseChoices.clear();exerciseFrames.clear();exerciseEraseKeys.clear();for(const c of cache.values()){c.width=1;c.height=1;}cache.clear();}
   function load(index,preparedImage){
     if(index<0)return Promise.resolve(null);
     if(cache.has(index))return Promise.resolve(cache.get(index));
     if(pending.has(index))return pending.get(index);
+    const blocked=assetRetry.blocked(index);if(blocked)return blocked;
     const epoch=generation,lang=language,style=writingStyle;
-    const job=new Promise((resolve,reject)=>{
+    let timed;const job=new Promise((resolve,reject)=>{
       let image=preparedImage||new Image();const ready=async()=>{try{
         if(epoch!==generation){resolve(null);return;}
         const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
         let chinese=null;
-        if(lang==='zh'&&canAuthor){if(!chineseChalk)chineseChalk=withDeadline(createChineseChalk(),15000,'中文板书字形索引');chinese=await (await chineseChalk).prepare(chalkPageText(pages[index],lang));if(epoch!==generation){resolve(null);return;}}
+        if(lang==='zh'&&canAuthor){if(!chineseChalk)chineseChalk=withDeadline(createChineseChalk(),15000,'中文板书字形索引').catch(error=>{chineseChalk=null;throw error;});chinese=await (await chineseChalk).prepare(chalkPageText(pages[index],lang));if(epoch!==generation){resolve(null);return;}}
         if(pages[index].classroom)await prepareInlineMath(chalkPageText(pages[index],lang));
+        if(epoch!==generation||pending.get(index)!==timed){resolve(null);return;}
         const recorder=(style==='refined'||chinese)&&canAuthor?authoredContext(sampleCtx,chinese,{latin:style==='refined'}):null;let rows=composeChalkPage(recorder?.ctx||sampleCtx,pages[index],index,lang,image,{deferStrokes:true,hideHeading:options.hideBoardHeadings,authored:Boolean(recorder)});if(recorder)rows=recorder.rows(rows);pageRows.set(index,rows);
-        cache.set(index,sample);pending.delete(index);version++;
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
         if(pixels)guides.set(index,inkGuides(pixels,rows));
         if(pages[index].exerciseBoard&&pixels){const c=document.createElement('canvas');c.width=W;c.height=H;const cx=c.getContext('2d');cx.putImageData(pixels,0,0);cx.fillStyle='white';cx.fillRect(...LOTTERY_RECT);pixels=cx.getImageData(0,0,W,H);}const wipe=erasingPlan(pixels,rows);erasePlans.set(index,wipe);
         clock.setDurations(index,{write:Math.max(.8,writingPlan(rows,guides.get(index)).duration),erase:Math.max(.4,wipe.duration),hold:pages[index].kind==='cover'?5:8});
+        cache.set(index,sample);assetRetry.clear(index);if(pending.get(index)===timed)pending.delete(index);version++;
         // Retain six on-board pages and the active/next page, evict other SVGs.
         const keep=new Set([...seekPinned,...clock.slots.map(s=>s.page),clock.page,Math.min(clock.page+1,pages.length-1)]);
         for(const key of cache.keys())if(cache.size>(pixelScale<1?8:10)&&!keep.has(key)){cache.get(key).width=1;cache.get(key).height=1;cache.delete(key);guides.delete(key);erasePlans.delete(key);pageRows.delete(key);}
-        resolve(sample);}catch(error){pending.delete(index);reject(error);}
+        resolve(sample);}catch(error){reject(error);}
       };
       if(preparedImage){queueMicrotask(ready);return;}
-      if(style==='refined'&&canAuthor&&!pages[index].kind&&!pages[index].diagram){withDeadline(authoredFormula(pages[index].formulaAsset+'?v=report-line-sync-6'),20000,'板书公式加载').then(result=>{image=result;ready();},error=>{pending.delete(index);reject(error);});return;}
-      decodeImage(pages[index].formulaAsset+'?v=report-line-sync-6').then(result=>{image=result;ready();},error=>{pending.delete(index);reject(error);});
-    });const timed=withDeadline(job,30000,'第 '+(index+1)+' 块板书加载');pending.set(index,timed);timed.catch(()=>{if(pending.get(index)===timed)pending.delete(index);});return timed;
+      if(style==='refined'&&canAuthor&&!pages[index].kind&&!pages[index].diagram){withDeadline(authoredFormula(pages[index].formulaAsset+'?v=report-line-sync-6'),20000,'板书公式加载').then(result=>{image=result;ready();},error=>{reject(error);});return;}
+      decodeImage(pages[index].formulaAsset+'?v=report-line-sync-6').then(result=>{image=result;ready();},error=>{reject(error);});
+    });timed=withDeadline(job,30000,'第 '+(index+1)+' 块板书加载');pending.set(index,timed);timed.catch(error=>{if(pending.get(index)===timed){pending.delete(index);assetRetry.fail(index,error);}});return timed;
   }
   if(!disabled&&hasSelection)await load(0,openingReport.cover);
   reportProgress(1);
@@ -331,15 +334,17 @@ export async function createLecture(scene,renderer,options={}){
   function select(page){if(disabled)return;if(voice.manifest)return seek(page,{preservePlayback:true});openingDemo=null;clock.select(page);targets[Math.floor(clock.active/2)]=clock.active%2;version++;load(clock.page).catch(error=>{loadingError=error;});}
   async function seek(page,{preservePlayback=false}={}){
     if(disabled)return false;
-    cancelBoardWork();
+    cancelBoardWork();boardPreparation=null;
     openingDemo=null;
     const request=++seekRequest,epoch=generation;
     const target=Math.max(clock.startAt,Math.min(clock.stopAt,Math.trunc(page)||0));
     const board=voice.manifest?.boards.find(b=>b.page===target);
-    requestedPage=target;
+    loadingError=null;assetRetry.clear(target);requestedPage=target;
     seeking=true;seekPinned=new Set(Array.from({length:target-Math.max(clock.startAt,target-(voice.manifest?6:5))+1},(_,i)=>Math.max(clock.startAt,target-(voice.manifest?6:5))+i));
     try{
-      const preparation=Promise.all(Array.from({length:target-Math.max(clock.startAt,target-(voice.manifest?6:5))+1},(_,i)=>load(Math.max(clock.startAt,target-(voice.manifest?6:5))+i)));
+      const history=[...seekPinned].filter(i=>i!==target),preparation=load(target);
+      // Only the destination is mandatory. An unavailable old page cannot block it.
+      void preparation.then(async()=>{for(const page of history){if(epoch!==generation||request!==seekRequest)return;try{await load(page);}catch{}}}).catch(()=>{});
       const commit=preparation.then(()=>{
       if(request!==seekRequest||epoch!==generation)return false;
       clock.seek(target);
@@ -420,7 +425,7 @@ export async function createLecture(scene,renderer,options={}){
       lessonBudget.configure(voice.manifest);lessonBudget.advance(dt,{...voice.state,transportPlaying:voice.transportPlaying});
       let frame=narrationFrame(voice.manifest,voice.state.time);
       const priorPage=previousNarrationTime===null?frame.page:voice.manifest.boards.findLast(b=>b.start<=previousNarrationTime)?.page??frame.page;
-      const needed=[frame.page,frame.page>=6?frame.page-6:-1,priorPage,priorPage>=6?priorPage-6:-1].filter(i=>i>=0);
+      const needed=[frame.page,frame.phase==='erase'&&frame.page>=6?frame.page-6:-1].filter(i=>i>=0);
       if(needed.every(i=>cache.has(i))&&!seeking){
         frame=settledBoardFrame(narrationFrame(voice.manifest,voice.state.time,writingPlan(pageRows.get(frame.page),guides.get(frame.page)),erasePlans.get(frame.page-6)),completedWork);
         if(translatedInk){if(frame.page!==translatedInk.page)translatedInk=null;else if(frame.phase==='write'||frame.phase==='hold'){const natural=frame.progress;if(natural<translatedInk.progress)frame={...frame,progress:translatedInk.progress,phase:translatedInk.progress===1?'hold':frame.phase,writing:false};else if(voice.transportPlaying)translatedInk=null;}}
@@ -432,7 +437,7 @@ export async function createLecture(scene,renderer,options={}){
           if(eraseRun.elapsed>=eraseRun.duration&&eraser.userData.state==='resting')completedWork.add('erase:'+eraseRun.page);
           if(frame.phase==='erase')frame={...frame,progress:eraseRun.elapsed/eraseRun.duration,duration:eraseRun.duration};
         }
-        if(!boardWork&&voice.state.phase==='playing'){
+        if(!boardWork&&voice.state.phase==='playing'&&pageRows.has(priorPage)){
           const work=narrationWork(voice.manifest,voice.state.time,previousNarrationTime,writingPlan(pageRows.get(priorPage),guides.get(priorPage)),erasePlans.get(priorPage-6),completedWork,boardReview.remaining(priorPage));
           if(work){if(work.kind==='review')boardReview.mark(work.page);if(work.kind==='erase'){if(eraseRun?.page!==work.page)eraseRun={page:work.page,duration:work.duration,elapsed:work.elapsed};work.elapsed=eraseRun.elapsed;}const job=new Promise(resolve=>boardWork={...work,resolve});void voice.holdForBoard(job,work.at);}
         }
@@ -447,12 +452,14 @@ export async function createLecture(scene,renderer,options={}){
         if(!boardWork&&!proofJumping&&voice.transportPlaying&&lessonBudget.shouldSkip(frame,voice.manifest.boards.filter(b=>b.optionalProof))){void omitOptionalProof().catch(error=>{loadingError=error;});return;}
         narrationWriting=frame.writing;syncNarrationClock(clock,frame,boardSlot);targets[Math.floor(clock.active/2)]=clock.active%2;
         playing=voice.transportPlaying;
-        load(Math.min(frame.page+1,pages.length-1)).catch(error=>{loadingError=error;});
+        load(Math.min(frame.page+1,pages.length-1)).catch(()=>{});
       }else{
         playing=false;
-        const preparing=Promise.all(needed.map(i=>load(i)));
-        if(voice.state.phase==='playing')void voice.suspendUntil(preparing);
-        else preparing.catch(error=>{loadingError=error;});
+        if(!loadingError&&!boardPreparation){
+          const epoch=generation,request=seekRequest,preparing=Promise.all(needed.map(i=>load(i)));boardPreparation=preparing;
+          const observed=preparing.catch(error=>{if(epoch===generation&&request===seekRequest){loadingError=error;voice.failForBoard(error);}throw error;}).finally(()=>{if(boardPreparation===preparing)boardPreparation=null;});
+          if(voice.state.phase==='playing')void voice.suspendUntil(observed);else observed.catch(()=>{});
+        }
       }
     }else if(boardWork||workManifest)cancelBoardWork();
     const ready=cache.has(clock.page)&&(clock.slots[clock.active].page<0||cache.has(clock.slots[clock.active].page));
@@ -647,7 +654,7 @@ export async function createLecture(scene,renderer,options={}){
     toggleStorage(){voice.pause();openingDemo=null;if(storageRig){stored=!stored;if(!stored)screenHub?.report();if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();setReportState();}return stored;},
     setClarity(value){boardMipBias.value=value==='natural'?.15:0;},
     setPresence(value){present=Boolean(value);if(!present)void voice.setContextActive(false);},get present(){return present;},
-    update,seek,revealCurrent,get navigationPage(){return requestedPage??clock.page;},get reviewRemaining(){return boardReview.remaining(clock.page);},disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0;},get hasSelection(){return hasSelection;},
+    update,seek,revealCurrent,get navigationPage(){return requestedPage??(loadingError&&voice.manifest&&voice.state.started?narrationFrame(voice.manifest,voice.state.time).page:clock.page);},get reviewRemaining(){return boardReview.remaining(clock.page);},disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0;},get hasSelection(){return hasSelection;},
     get progress(){return {page:clock.page-clock.startAt,total:clock.stopAt-clock.startAt+1};},
     screenAction:action=>{if(programScreen?.action(action)){screenHub?.report();return true;}voice.pause();openingDemo=null;return screenHub?.action(action)||seminarScreen?.action(action);},
     get programTab(){return programScreen?.tab||'reports';},
@@ -677,7 +684,7 @@ export async function createLecture(scene,renderer,options={}){
     },
     drawStudent(){if(!pages[clock.page]?.exerciseBoard)return false;if(!studentLottery.count)return studentLottery.chooseFile();return studentLottery.spin(activeReport.id+':'+clock.page);},importStudentRoster:()=>studentLottery.chooseFile(),setStudentRoster:text=>studentLottery.importRoster(text),get lotteryState(){return studentLottery.view(activeReport.id+':'+clock.page);},get preloadState(){return{boards:assetPreload.state,audio:voice.preloadState};},get boardBackground(){return grain;},get boardCanvases(){return boards.map(b=>b.canvas);},get timeReadout(){return timePanels[0].text;},get toolState(){return {chalk:chalk.position.toArray(),chalkColor:chalk.userData.inkColor,chalkMaterial:chalk.material.color.getHexString(),chalkEmissive:chalk.material.emissive.getHexString(),eraser:eraser.position.toArray(),eraserRotation:eraser.rotation.toArray(),pickup:eraserPickup?.elapsed??null,returning:eraserReturn?.elapsed??null,workElapsed:boardWork?.elapsed??null,eraserState:eraser.userData.state,eraseSeconds:eraseRun?.elapsed??null,eraseDuration:eraseRun?.duration??null,lifts:[...mix],transportPlaying:voice.transportPlaying};},get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get teachingClock(){return {period:lessonBudget.period,elapsed:lessonBudget.elapsed,thirdProof:lessonBudget.decision};},get report(){return activeReport;},consoleButtons,reportButtons,get hoverTargets(){return disabled?[]:[...lotteryTargets,...touchButtons.filter(b=>!screenHub||!reportButtons.includes(b)||(screenHub.state.power&&screenHub.state.mode==='report')),...voicePanels.filter(panel=>panel.mesh.visible).map(panel=>panel.mesh),...(screenHub?.targets||[])];},setConsoleState,
     get highlightEnabled(){return highlightEnabled;},setHighlight(value){highlightEnabled=Boolean(value);if(!highlightEnabled){highlighter.hide();highlightState=null;}},get highlightTargets(){return measuredHighlights.get(clock.page)?.cues.map(c=>({id:c.id,row:c.row,side:c.side,begin:c.begin,duration:c.duration,rect:c.rect,visibleAt:c.visibleAt}))||[];},get highlightState(){return highlightState&&{page:highlightState.page,row:highlightState.row,side:highlightState.side,alpha:highlightState.alpha,age:highlightState.age};},
-    setVoiceRate(value){return voice.setRate(value);},get voiceRate(){return voice.state.rate;},get voiceState(){return {...voice.state};},get voiceTone(){return voiceTone;},get voiceEnabled(){return voiceEnabled;},get voiceManifest(){return voice.manifest;},async voiceSeek(time){lessonBudget.configure(voice.manifest);lessonBudget.seek(time,voice.manifest?.boards.filter(b=>b.optionalProof)||[]);omittedProofPages.clear();boards.forEach(b=>b.last='');voice.pause();cancelBoardWork();highlighter.hide();highlightState=null;return voice.seek(time);},skipClassroomActivity:()=>stepExercise(1)?Promise.resolve(true):voice.skipActivity(),get exerciseFrame(){return exerciseFrames.get(clock.page)||null;},async toggleVoice(){if(!activeReport.narration||!voiceEnabled){playing=hasSelection&&!playing;return true;}return voice.toggle();},
+    setVoiceRate(value){return voice.setRate(value);},get voiceRate(){return voice.state.rate;},get voiceState(){return {...voice.state};},get voiceTone(){return voiceTone;},get voiceEnabled(){return voiceEnabled;},get voiceManifest(){return voice.manifest;},async voiceSeek(time){lessonBudget.configure(voice.manifest);lessonBudget.seek(time,voice.manifest?.boards.filter(b=>b.optionalProof)||[]);omittedProofPages.clear();boards.forEach(b=>b.last='');voice.pause();cancelBoardWork();highlighter.hide();highlightState=null;return voice.seek(time);},skipClassroomActivity:()=>stepExercise(1)?Promise.resolve(true):voice.skipActivity(),get exerciseFrame(){return exerciseFrames.get(clock.page)||null;},async toggleVoice(){if(loadingError){loadingError=null;assetRetry.clear();boardPreparation=null;}if(!activeReport.narration||!voiceEnabled){playing=hasSelection&&!playing;return true;}return voice.toggle();},
     async setVoiceTone(tone){
       const variants=activeReport.narration?.voices||[];if(tone!=='off'&&tone!=='original'&&!variants.some(v=>v.id===tone))throw Error('此报告尚无该音色');
       const bookmark=!voiceEnabled&&voiceBookmark?.report===activeReport.id?voiceBookmark:null,previous=bookmark?.manifest||voice.manifest,time=bookmark?.time??voice.state.time,started=bookmark?.started??voice.state.started,resume=!bookmark&&['playing','away','buffering','preparing'].includes(voice.state.phase);if(tone==='off')voiceBookmark={report:activeReport.id,manifest:previous,time,started,page:clock.page,progress:clock.progress};voiceTone=tone;voiceEnabled=tone!=='off';playing=false;
@@ -748,7 +755,7 @@ export async function createLecture(scene,renderer,options={}){
       const c=b?.lineCues?.find(c=>t>=c.audioStart&&t<c.audioEnd);
       return c?{row:c.row,total:b.lineCues.length,text:c.text}:null;
     },
-    get playing(){return present&&hasSelection&&(activeReport.narration&&voiceEnabled&&!openingDemo?voice.transportPlaying:playing)&&!clock.ended;},set playing(value){if(activeReport.narration&&voiceEnabled&&!openingDemo){if(!value)voice.pause();else if(voice.state.phase!=='playing')void voice.toggle();}else playing=hasSelection&&value;},
+    get playing(){return present&&hasSelection&&(activeReport.narration&&voiceEnabled&&!openingDemo?voice.transportPlaying:playing)&&!clock.ended;},set playing(value){if(value&&loadingError){loadingError=null;assetRetry.clear();boardPreparation=null;}if(activeReport.narration&&voiceEnabled&&!openingDemo){if(!value)voice.pause();else if(voice.state.phase!=='playing')void voice.toggle();}else playing=hasSelection&&value;},
     skipOptionalProof:omitOptionalProof,
     async completePage(page=clock.page){if(!await seek(page))return false;const b=voice.manifest?.boards.find(b=>b.page===clock.page);if(b){const schedule=writingSchedule(b,writingPlan(pageRows.get(b.page),guides.get(b.page)));await voice.seek(schedule?Math.min(schedule.end,b.end-.25):b.writeEnd);workManifest=voice.manifest;completedWork.add('write:'+b.page+':end');}else staticPage();return true;},
     select,stepExercise,step(delta){if(stepExercise(delta))return Promise.resolve(true);return seek((requestedPage??clock.page)+delta,{preservePlayback:true});},rewrite(){select(clock.page);},staticPage,

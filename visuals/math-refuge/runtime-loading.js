@@ -1,3 +1,4 @@
+import {createResourceFetch} from './resource-fetch.js';
 export const bytesText=bytes=>bytes==null?'大小待确认':bytes>=1e6?(bytes/1e6).toFixed(2)+' MB':(bytes/1000).toFixed(1)+' KB';
 export class RuntimeTransfers {
  constructor(base){this.base=base;this.active=new Map();this.samples=[];this.seen=new Set();this.total=0;this.last=null;this.serial=0;}
@@ -25,7 +26,7 @@ export function loadingState(now=performance.now()){
 // One streaming pass, without cloning/buffering a second response. Modules/images/audio
 // loaded by the browser are reported by ResourceTiming when their requests complete.
 if(typeof window!=='undefined'){
- const nativeFetch=window.fetch.bind(window),now=()=>performance.now();
+ const nativeFetch=createResourceFetch(window.fetch.bind(window)),now=()=>performance.now();
  window.fetch=async function(input,options){const url=new URL(typeof input==='string'||input instanceof URL?input:input.url,location.href).href,id=runtimeTransfers.begin(url,null,now());
    try{const response=await nativeFetch(input,options);const item=runtimeTransfers.active.get(id),length=Number(response.headers.get('content-length'));if(item)item.total=length>0&&!response.headers.get('content-encoding')?length:null;
      if(!response.body||!response.ok){runtimeTransfers.end(id,!response.ok);return response;}
@@ -33,6 +34,7 @@ if(typeof window!=='undefined'){
      const observed=new Response(stream,{status:response.status,statusText:response.statusText,headers:response.headers});Object.defineProperties(observed,{url:{value:response.url},redirected:{value:response.redirected},type:{value:response.type}});return observed;
    }catch(error){runtimeTransfers.end(id,true);throw error;}
  };
+ window.fetch.resourceBounded=true;
  try{performance.setResourceTimingBufferSize?.(2000);new PerformanceObserver(list=>{for(const entry of list.getEntries())runtimeTransfers.observe(entry,now());}).observe({type:'resource',buffered:true});}catch{}
  const paint=()=>{const out=document.getElementById('runtimeLoad'),world=document.getElementById('world');if(!out)return;const t=runtimeTransfers.snapshot(now()),s=scheduler?.snapshot(),item=t.active[0]||t.last,entered=world?.dataset.entered==='true';out.hidden=!entered;out.dataset.loading=String(entered&&Boolean(t.active.length||s?.active));
    const nav=document.getElementById('chapters'),navigation=nav&&!nav.hidden?nav.getBoundingClientRect():null;out.style.bottom=Math.max(16,navigation?.height?innerHeight-navigation.top+8:16)+'px';

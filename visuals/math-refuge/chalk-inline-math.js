@@ -1,10 +1,11 @@
+import {resourceFetch} from './resource-fetch.js';
 // Simple inline radicals share measured geometry with their reveal bounds.
 // Full formulas use the prebuilt MathJax SVGs.
 import {authoredFormula} from './authored-chalk.js?v=inline-formula-2';
 import {chalkInlineRuns} from './chalk-typography.js?v=inline-formula-2';
 let atlasJob;const images=new Map(),metrics=new Map();
 export async function prepareInlineMath(text){
- const atlas=await(atlasJob??=fetch('./assets/chalk/inline-math/index.json').then(r=>{if(!r.ok)throw Error('行内公式索引未就绪');return r.json();}));
+ const atlas=await(atlasJob??=resourceFetch('./assets/chalk/inline-math/index.json').then(r=>{if(!r.ok)throw Error('行内公式索引未就绪');return r.json();}).catch(error=>{atlasJob=null;throw error;}));
  await Promise.all([...new Set(chalkInlineRuns(text).filter(r=>r.math&&!r.radical).map(r=>r.text))].map(async text=>{const m=atlas.runs[text];if(!m)return;metrics.set(text,m);for(const color of ['#eee9d5','#93c9ff','#ffada3','#e4cf9c']){const key=text+color;if(!images.has(key)){const job=authoredFormula('./assets/chalk/inline-math/'+m.file,{color});images.set(key,job);try{images.set(key,await job);}catch(e){images.delete(key);throw e;}}else await images.get(key);}}));
 }
 export function inlineInk(ctx,run,size){
