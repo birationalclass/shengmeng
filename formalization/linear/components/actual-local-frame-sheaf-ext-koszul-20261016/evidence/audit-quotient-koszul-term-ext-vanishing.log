@@ -1,0 +1,13 @@
+@LinearStudy.homogeneousQuotientCoordinate_adjoin_eq_top : ∀ {K σ : Type} [inst : Field K]
+  (I : Ideal (MvPolynomial σ K)),
+  Algebra.adjoin K (Set.range fun (i : σ) => (Ideal.Quotient.mk I) (MvPolynomial.X i)) = ⊤
+'LinearStudy.homogeneousQuotientCoordinate_adjoin_eq_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousQuotientKoszulTermInternalExt_succ : ∀ {K σ : Type} [inst : Field K]
+  (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (r d p : ℕ)
+  (k : ℤ) (N : (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece I)).Modules) (q : ℕ),
+  CategoryTheory.Limits.IsZero
+    (LinearStudy.schemeModuleInternalExt
+      (LinearStudy.nativeProjectiveKoszulTerm (LinearStudy.homogeneousQuotientPiece I) r d p k) N (q + 1))
+'LinearStudy.homogeneousQuotientKoszulTermInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.homogeneousQuotientCoordinate_adjoin_eq_top:true
+ROLECHECK:LinearStudy.homogeneousQuotientKoszulTermInternalExt_succ:true

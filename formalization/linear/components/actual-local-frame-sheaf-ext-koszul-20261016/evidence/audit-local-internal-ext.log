@@ -1,0 +1,71 @@
+@LinearStudy.schemeModuleLocalHomCoefficientComplexIso : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        (K : CochainComplex X.Modules ℕ) →
+          ((SheafOfModules.overFunctor X.ringCatSheaf U).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+              (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).mapHomologicalComplex
+                    (ComplexShape.up ℕ)).obj
+                K) ≅
+            ((SheafOfModules.overFunctor X.ringCatSheaf U).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+              (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X Q).mapHomologicalComplex
+                    (ComplexShape.up ℕ)).obj
+                K)
+'LinearStudy.schemeModuleLocalHomCoefficientComplexIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLocalInternalExtSourceIso : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        (N : X.Modules) →
+          (q : ℕ) →
+            CategoryTheory.InjectiveResolution N →
+              (SheafOfModules.over (LinearStudy.schemeModuleInternalExt P N q) U ≅
+                SheafOfModules.over (LinearStudy.schemeModuleInternalExt Q N q) U)
+'LinearStudy.schemeModuleLocalInternalExtSourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleLocalHomCoefficientComplexIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        (K : CochainComplex X.Modules ℕ) →
+          ((SheafOfModules.overFunctor X.ringCatSheaf U).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+              (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).mapHomologicalComplex
+                    (ComplexShape.up ℕ)).obj
+                K) ≅
+            ((SheafOfModules.overFunctor X.ringCatSheaf U).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+              (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X Q).mapHomologicalComplex
+                    (ComplexShape.up ℕ)).obj
+                K) :=
+fun {X : AlgebraicGeometry.Scheme} {P Q : X.Modules} (U : X.Opens)
+    (e : SheafOfModules.over P U ≅ SheafOfModules.over Q U) (K : CochainComplex X.Modules ℕ) =>
+  (CategoryTheory.NatIso.mapHomologicalComplex (LinearStudy.schemeModuleLocalHomCoefficientIso U e)
+        (ComplexShape.up ℕ)).app
+    K
+def LinearStudy.schemeModuleLocalInternalExtSourceIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        (N : X.Modules) →
+          (q : ℕ) →
+            CategoryTheory.InjectiveResolution N →
+              (SheafOfModules.over (LinearStudy.schemeModuleInternalExt P N q) U ≅
+                SheafOfModules.over (LinearStudy.schemeModuleInternalExt Q N q) U) :=
+fun {X : AlgebraicGeometry.Scheme} {P Q : X.Modules} (U : X.Opens)
+    (e : SheafOfModules.over P U ≅ SheafOfModules.over Q U) (N : X.Modules) (q : ℕ)
+    (I : CategoryTheory.InjectiveResolution N) =>
+  (SheafOfModules.overFunctor X.ringCatSheaf U).mapIso
+      (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso P N q I) ≪≫
+    (LinearStudy.schemeModuleOverHomologyIso U
+          (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+            I.cocomplex)
+          q).symm ≪≫
+      (HomologicalComplex.homologyFunctor (SheafOfModules (CategoryTheory.Sheaf.over X.ringCatSheaf U))
+              (ComplexShape.up ℕ) q).mapIso
+          (LinearStudy.schemeModuleLocalHomCoefficientComplexIso U e I.cocomplex) ≪≫
+        LinearStudy.schemeModuleOverHomologyIso U
+            (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X Q).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+              I.cocomplex)
+            q ≪≫
+          ((SheafOfModules.overFunctor X.ringCatSheaf U).mapIso
+              (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso Q N q I)).symm
+ROLECHECK:LinearStudy.schemeModuleLocalHomCoefficientComplexIso:false
+ROLECHECK:LinearStudy.schemeModuleLocalInternalExtSourceIso:false

@@ -1,0 +1,89 @@
+@LinearStudy.schemeModuleLocalHomPrecompose : {X : AlgebraicGeometry.Scheme} →
+  {P' P N : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P' U ⟶ SheafOfModules.over P U) →
+        (SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P N) U ⟶
+          SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P' N) U)
+'LinearStudy.schemeModuleLocalHomPrecompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLocalHomPrecompose_id : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules) (U : X.Opens),
+  LinearStudy.schemeModuleLocalHomPrecompose U (CategoryTheory.CategoryStruct.id (SheafOfModules.over P U)) =
+    CategoryTheory.CategoryStruct.id (SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P N) U)
+'LinearStudy.schemeModuleLocalHomPrecompose_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLocalHomPrecompose_comp : ∀ {X : AlgebraicGeometry.Scheme} {P' P N P'' : X.Modules}
+  (U : X.Opens) (u : SheafOfModules.over P'' U ⟶ SheafOfModules.over P' U)
+  (v : SheafOfModules.over P' U ⟶ SheafOfModules.over P U),
+  LinearStudy.schemeModuleLocalHomPrecompose U (CategoryTheory.CategoryStruct.comp u v) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleLocalHomPrecompose U v)
+      (LinearStudy.schemeModuleLocalHomPrecompose U u)
+'LinearStudy.schemeModuleLocalHomPrecompose_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLocalHomSourceIso : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        (N : X.Modules) →
+          SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P N) U ≅
+            SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf Q N) U
+'LinearStudy.schemeModuleLocalHomSourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLocalHomCoefficientIso : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        ((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).comp
+            (SheafOfModules.overFunctor X.ringCatSheaf U) ≅
+          (LinearStudy.schemeModuleInternalHomCoefficientFunctor X Q).comp
+            (SheafOfModules.overFunctor X.ringCatSheaf U))
+'LinearStudy.schemeModuleLocalHomCoefficientIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleLocalHomPrecompose.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P' P N : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P' U ⟶ SheafOfModules.over P U) →
+        (SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P N) U ⟶
+          SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P' N) U) :=
+fun {X : AlgebraicGeometry.Scheme} {P' P N : X.Modules} (U : X.Opens)
+    (u : SheafOfModules.over P' U ⟶ SheafOfModules.over P U) =>
+  {
+    val :=
+      {
+        app := fun (W : (CategoryTheory.Over U)ᵒᵖ) =>
+          ModuleCat.ofHom
+            {
+              toFun :=
+                fun
+                  (f :
+                    ↑(((PresheafOfModules.pushforward₀ (CategoryTheory.Over.forget U)
+                                ((CategoryTheory.sheafToPresheaf (Opens.grothendieckTopology ↥X) RingCat).obj
+                                  X.ringCatSheaf)).obj
+                            (LinearStudy.schemeModuleHomModuleSheaf P N).val).obj
+                        W)) =>
+                (LinearStudy.schemeModuleHomOverEquiv P' N (Opposite.unop W).left)
+                  (CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomRestrict P' P (Opposite.unop W).hom u)
+                    ((LinearStudy.schemeModuleHomOverEquiv P N (Opposite.unop W).left).symm f)),
+              map_add' := ⋯, map_smul' := ⋯ },
+        naturality := ⋯ } }
+def LinearStudy.schemeModuleLocalHomSourceIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        (N : X.Modules) →
+          SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P N) U ≅
+            SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf Q N) U :=
+fun {X : AlgebraicGeometry.Scheme} {P Q : X.Modules} (U : X.Opens)
+    (e : SheafOfModules.over P U ≅ SheafOfModules.over Q U) (N : X.Modules) =>
+  { hom := LinearStudy.schemeModuleLocalHomPrecompose U e.inv,
+    inv := LinearStudy.schemeModuleLocalHomPrecompose U e.hom, hom_inv_id := ⋯, inv_hom_id := ⋯ }
+def LinearStudy.schemeModuleLocalHomCoefficientIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        ((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).comp
+            (SheafOfModules.overFunctor X.ringCatSheaf U) ≅
+          (LinearStudy.schemeModuleInternalHomCoefficientFunctor X Q).comp
+            (SheafOfModules.overFunctor X.ringCatSheaf U)) :=
+fun {X : AlgebraicGeometry.Scheme} {P Q : X.Modules} (U : X.Opens)
+    (e : SheafOfModules.over P U ≅ SheafOfModules.over Q U) =>
+  CategoryTheory.NatIso.ofComponents (LinearStudy.schemeModuleLocalHomSourceIso U e) ⋯
+ROLECHECK:LinearStudy.schemeModuleLocalHomPrecompose:false
+ROLECHECK:LinearStudy.schemeModuleLocalHomPrecompose_id:true
+ROLECHECK:LinearStudy.schemeModuleLocalHomPrecompose_comp:true
+ROLECHECK:LinearStudy.schemeModuleLocalHomSourceIso:false
+ROLECHECK:LinearStudy.schemeModuleLocalHomCoefficientIso:false

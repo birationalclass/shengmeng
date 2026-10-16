@@ -1,0 +1,8 @@
+@LinearStudy.projectivePulledOriginalKoszulInternalExt_succ : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ) (k : ℤ) (p : ℕ)
+  (N : (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules) (q : ℕ),
+  CategoryTheory.Limits.IsZero
+    (LinearStudy.schemeModuleInternalExt ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).X p) N (q + 1))
+'LinearStudy.projectivePulledOriginalKoszulInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.projectivePulledOriginalKoszulInternalExt_succ:true

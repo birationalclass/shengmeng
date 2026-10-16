@@ -1,0 +1,277 @@
+
+===== SPLIT AUDIT local-hom-source =====
+@LinearStudy.schemeModuleLocalHomPrecompose : {X : AlgebraicGeometry.Scheme} →
+  {P' P N : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P' U ⟶ SheafOfModules.over P U) →
+        (SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P N) U ⟶
+          SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P' N) U)
+'LinearStudy.schemeModuleLocalHomPrecompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLocalHomPrecompose_id : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules) (U : X.Opens),
+  LinearStudy.schemeModuleLocalHomPrecompose U (CategoryTheory.CategoryStruct.id (SheafOfModules.over P U)) =
+    CategoryTheory.CategoryStruct.id (SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P N) U)
+'LinearStudy.schemeModuleLocalHomPrecompose_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLocalHomPrecompose_comp : ∀ {X : AlgebraicGeometry.Scheme} {P' P N P'' : X.Modules}
+  (U : X.Opens) (u : SheafOfModules.over P'' U ⟶ SheafOfModules.over P' U)
+  (v : SheafOfModules.over P' U ⟶ SheafOfModules.over P U),
+  LinearStudy.schemeModuleLocalHomPrecompose U (CategoryTheory.CategoryStruct.comp u v) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleLocalHomPrecompose U v)
+      (LinearStudy.schemeModuleLocalHomPrecompose U u)
+'LinearStudy.schemeModuleLocalHomPrecompose_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLocalHomSourceIso : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        (N : X.Modules) →
+          SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P N) U ≅
+            SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf Q N) U
+'LinearStudy.schemeModuleLocalHomSourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLocalHomCoefficientIso : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        ((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).comp
+            (SheafOfModules.overFunctor X.ringCatSheaf U) ≅
+          (LinearStudy.schemeModuleInternalHomCoefficientFunctor X Q).comp
+            (SheafOfModules.overFunctor X.ringCatSheaf U))
+'LinearStudy.schemeModuleLocalHomCoefficientIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleLocalHomPrecompose.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P' P N : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P' U ⟶ SheafOfModules.over P U) →
+        (SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P N) U ⟶
+          SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P' N) U) :=
+fun {X : AlgebraicGeometry.Scheme} {P' P N : X.Modules} (U : X.Opens)
+    (u : SheafOfModules.over P' U ⟶ SheafOfModules.over P U) =>
+  {
+    val :=
+      {
+        app := fun (W : (CategoryTheory.Over U)ᵒᵖ) =>
+          ModuleCat.ofHom
+            {
+              toFun :=
+                fun
+                  (f :
+                    ↑(((PresheafOfModules.pushforward₀ (CategoryTheory.Over.forget U)
+                                ((CategoryTheory.sheafToPresheaf (Opens.grothendieckTopology ↥X) RingCat).obj
+                                  X.ringCatSheaf)).obj
+                            (LinearStudy.schemeModuleHomModuleSheaf P N).val).obj
+                        W)) =>
+                (LinearStudy.schemeModuleHomOverEquiv P' N (Opposite.unop W).left)
+                  (CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomRestrict P' P (Opposite.unop W).hom u)
+                    ((LinearStudy.schemeModuleHomOverEquiv P N (Opposite.unop W).left).symm f)),
+              map_add' := ⋯, map_smul' := ⋯ },
+        naturality := ⋯ } }
+def LinearStudy.schemeModuleLocalHomSourceIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        (N : X.Modules) →
+          SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf P N) U ≅
+            SheafOfModules.over (LinearStudy.schemeModuleHomModuleSheaf Q N) U :=
+fun {X : AlgebraicGeometry.Scheme} {P Q : X.Modules} (U : X.Opens)
+    (e : SheafOfModules.over P U ≅ SheafOfModules.over Q U) (N : X.Modules) =>
+  { hom := LinearStudy.schemeModuleLocalHomPrecompose U e.inv,
+    inv := LinearStudy.schemeModuleLocalHomPrecompose U e.hom, hom_inv_id := ⋯, inv_hom_id := ⋯ }
+def LinearStudy.schemeModuleLocalHomCoefficientIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        ((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).comp
+            (SheafOfModules.overFunctor X.ringCatSheaf U) ≅
+          (LinearStudy.schemeModuleInternalHomCoefficientFunctor X Q).comp
+            (SheafOfModules.overFunctor X.ringCatSheaf U)) :=
+fun {X : AlgebraicGeometry.Scheme} {P Q : X.Modules} (U : X.Opens)
+    (e : SheafOfModules.over P U ≅ SheafOfModules.over Q U) =>
+  CategoryTheory.NatIso.ofComponents (LinearStudy.schemeModuleLocalHomSourceIso U e) ⋯
+ROLECHECK:LinearStudy.schemeModuleLocalHomPrecompose:false
+ROLECHECK:LinearStudy.schemeModuleLocalHomPrecompose_id:true
+ROLECHECK:LinearStudy.schemeModuleLocalHomPrecompose_comp:true
+ROLECHECK:LinearStudy.schemeModuleLocalHomSourceIso:false
+ROLECHECK:LinearStudy.schemeModuleLocalHomCoefficientIso:false
+
+===== SPLIT AUDIT open-restriction-homology =====
+LinearStudy.schemeModuleOverFunctor_additive : ∀ (X : AlgebraicGeometry.Scheme) (U : X.Opens),
+  (SheafOfModules.overFunctor X.ringCatSheaf U).Additive
+'LinearStudy.schemeModuleOverFunctor_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOverFunctor_preservesHomology : ∀ {X : AlgebraicGeometry.Scheme} (U : X.Opens),
+  (SheafOfModules.overFunctor X.ringCatSheaf U).PreservesHomology
+'LinearStudy.schemeModuleOverFunctor_preservesHomology' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOverHomologyIso : {X : AlgebraicGeometry.Scheme} →
+  (U : X.Opens) →
+    (K : CochainComplex X.Modules ℕ) →
+      (q : ℕ) →
+        (((SheafOfModules.overFunctor X.ringCatSheaf U).mapHomologicalComplex (ComplexShape.up ℕ)).obj K).homology q ≅
+          SheafOfModules.over (HomologicalComplex.homology K q) U
+'LinearStudy.schemeModuleOverHomologyIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleOverHomologyIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (U : X.Opens) →
+    (K : CochainComplex X.Modules ℕ) →
+      (q : ℕ) →
+        (((SheafOfModules.overFunctor X.ringCatSheaf U).mapHomologicalComplex (ComplexShape.up ℕ)).obj K).homology q ≅
+          SheafOfModules.over (HomologicalComplex.homology K q) U :=
+fun {X : AlgebraicGeometry.Scheme} (U : X.Opens) (K : CochainComplex X.Modules ℕ) (q : ℕ) =>
+  (HomologicalComplex.sc K q).mapHomologyIso (SheafOfModules.overFunctor X.ringCatSheaf U)
+ROLECHECK:LinearStudy.schemeModuleOverFunctor_additive:true
+ROLECHECK:LinearStudy.schemeModuleOverFunctor_preservesHomology:true
+ROLECHECK:LinearStudy.schemeModuleOverHomologyIso:false
+
+===== SPLIT AUDIT local-internal-ext =====
+@LinearStudy.schemeModuleLocalHomCoefficientComplexIso : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        (K : CochainComplex X.Modules ℕ) →
+          ((SheafOfModules.overFunctor X.ringCatSheaf U).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+              (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).mapHomologicalComplex
+                    (ComplexShape.up ℕ)).obj
+                K) ≅
+            ((SheafOfModules.overFunctor X.ringCatSheaf U).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+              (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X Q).mapHomologicalComplex
+                    (ComplexShape.up ℕ)).obj
+                K)
+'LinearStudy.schemeModuleLocalHomCoefficientComplexIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLocalInternalExtSourceIso : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        (N : X.Modules) →
+          (q : ℕ) →
+            CategoryTheory.InjectiveResolution N →
+              (SheafOfModules.over (LinearStudy.schemeModuleInternalExt P N q) U ≅
+                SheafOfModules.over (LinearStudy.schemeModuleInternalExt Q N q) U)
+'LinearStudy.schemeModuleLocalInternalExtSourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleLocalHomCoefficientComplexIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        (K : CochainComplex X.Modules ℕ) →
+          ((SheafOfModules.overFunctor X.ringCatSheaf U).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+              (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).mapHomologicalComplex
+                    (ComplexShape.up ℕ)).obj
+                K) ≅
+            ((SheafOfModules.overFunctor X.ringCatSheaf U).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+              (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X Q).mapHomologicalComplex
+                    (ComplexShape.up ℕ)).obj
+                K) :=
+fun {X : AlgebraicGeometry.Scheme} {P Q : X.Modules} (U : X.Opens)
+    (e : SheafOfModules.over P U ≅ SheafOfModules.over Q U) (K : CochainComplex X.Modules ℕ) =>
+  (CategoryTheory.NatIso.mapHomologicalComplex (LinearStudy.schemeModuleLocalHomCoefficientIso U e)
+        (ComplexShape.up ℕ)).app
+    K
+def LinearStudy.schemeModuleLocalInternalExtSourceIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P Q : X.Modules} →
+    (U : X.Opens) →
+      (SheafOfModules.over P U ≅ SheafOfModules.over Q U) →
+        (N : X.Modules) →
+          (q : ℕ) →
+            CategoryTheory.InjectiveResolution N →
+              (SheafOfModules.over (LinearStudy.schemeModuleInternalExt P N q) U ≅
+                SheafOfModules.over (LinearStudy.schemeModuleInternalExt Q N q) U) :=
+fun {X : AlgebraicGeometry.Scheme} {P Q : X.Modules} (U : X.Opens)
+    (e : SheafOfModules.over P U ≅ SheafOfModules.over Q U) (N : X.Modules) (q : ℕ)
+    (I : CategoryTheory.InjectiveResolution N) =>
+  (SheafOfModules.overFunctor X.ringCatSheaf U).mapIso
+      (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso P N q I) ≪≫
+    (LinearStudy.schemeModuleOverHomologyIso U
+          (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X P).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+            I.cocomplex)
+          q).symm ≪≫
+      (HomologicalComplex.homologyFunctor (SheafOfModules (CategoryTheory.Sheaf.over X.ringCatSheaf U))
+              (ComplexShape.up ℕ) q).mapIso
+          (LinearStudy.schemeModuleLocalHomCoefficientComplexIso U e I.cocomplex) ≪≫
+        LinearStudy.schemeModuleOverHomologyIso U
+            (((LinearStudy.schemeModuleInternalHomCoefficientFunctor X Q).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+              I.cocomplex)
+            q ≪≫
+          ((SheafOfModules.overFunctor X.ringCatSheaf U).mapIso
+              (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso Q N q I)).symm
+ROLECHECK:LinearStudy.schemeModuleLocalHomCoefficientComplexIso:false
+ROLECHECK:LinearStudy.schemeModuleLocalInternalExtSourceIso:false
+
+===== SPLIT AUDIT local-finite-free-vanishing =====
+@LinearStudy.schemeModuleFreeOverIso : {X : AlgebraicGeometry.Scheme} →
+  (U : X.Opens) → (ι : Type u_1) → [Finite ι] → (SheafOfModules.free ι).over U ≅ SheafOfModules.free ι
+'LinearStudy.schemeModuleFreeOverIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModule_isZero_of_over_cover : ∀ {X : AlgebraicGeometry.Scheme} (M : X.Modules) {ι : Type u_1}
+  (U : ι → X.Opens),
+  iSup U = ⊤ → (∀ (i : ι), CategoryTheory.Limits.IsZero (SheafOfModules.over M (U i))) → CategoryTheory.Limits.IsZero M
+'LinearStudy.schemeModule_isZero_of_over_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLocalFiniteFreeInternalExt_succ : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules)
+  (U : X.Opens) (ι : Type u_1) [Finite ι] (e : SheafOfModules.over P U ≅ SheafOfModules.free ι) (q : ℕ),
+  CategoryTheory.Limits.IsZero (SheafOfModules.over (LinearStudy.schemeModuleInternalExt P N (q + 1)) U)
+'LinearStudy.schemeModuleLocalFiniteFreeInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleFiniteLocallyFreeInternalExt_succ_of_cover : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules)
+  {κ : Type u_1} (U : κ → X.Opens),
+  iSup U = ⊤ →
+    ∀ (ι : κ → Type u_1) [∀ (i : κ), Finite (ι i)]
+      (e : (i : κ) → SheafOfModules.over P (U i) ≅ SheafOfModules.free (ι i)) (q : ℕ),
+      CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt P N (q + 1))
+'LinearStudy.schemeModuleFiniteLocallyFreeInternalExt_succ_of_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleFreeOverIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (U : X.Opens) → (ι : Type u) → [Finite ι] → (SheafOfModules.free ι).over U ≅ SheafOfModules.free ι :=
+fun {X : AlgebraicGeometry.Scheme} (U : X.Opens) (ι : Type u) [Finite ι] =>
+  (SheafOfModules.mapFreeIso (SheafOfModules.overFunctor X.ringCatSheaf U) ι
+      (LinearStudy.schemeModuleUnitOverIso X U).symm).symm
+ROLECHECK:LinearStudy.schemeModuleFreeOverIso:false
+ROLECHECK:LinearStudy.schemeModule_isZero_of_over_cover:true
+ROLECHECK:LinearStudy.schemeModuleLocalFiniteFreeInternalExt_succ:true
+ROLECHECK:LinearStudy.schemeModuleFiniteLocallyFreeInternalExt_succ_of_cover:true
+
+===== SPLIT AUDIT native-twist-ext-vanishing =====
+@LinearStudy.nativeIntegerTwistInternalExt_succ : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {ι : Type u_1} (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ →
+      ∀ (k : ℤ) (N : (AlgebraicGeometry.Proj 𝓑).Modules) (q : ℕ),
+        CategoryTheory.Limits.IsZero
+          (LinearStudy.schemeModuleInternalExt
+            (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ k) N (q + 1))
+'LinearStudy.nativeIntegerTwistInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.nativeIntegerTwistInternalExt_succ:true
+
+===== SPLIT AUDIT biproduct-ext-vanishing =====
+@LinearStudy.schemeModuleBiproductInternalExt_isZero : ∀ {X : AlgebraicGeometry.Scheme} (N : X.Modules) {ι : Type u_1}
+  [Fintype ι] (P : ι → X.Modules) [inst : CategoryTheory.Limits.HasBiproduct P] (q : ℕ),
+  (∀ (i : ι), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (P i) N q)) →
+    CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (⨁ P) N q)
+'LinearStudy.schemeModuleBiproductInternalExt_isZero' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleBiproductInternalExt_isZero:true
+
+===== SPLIT AUDIT native-koszul-term-ext-vanishing =====
+@LinearStudy.nativeProjectiveKoszulTermInternalExt_succ : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {ι : Type} (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ →
+      ∀ (r d p : ℕ) (k : ℤ) (N : (AlgebraicGeometry.Proj 𝓑).Modules) (q : ℕ),
+        CategoryTheory.Limits.IsZero
+          (LinearStudy.schemeModuleInternalExt (LinearStudy.nativeProjectiveKoszulTerm 𝓑 r d p k) N (q + 1))
+'LinearStudy.nativeProjectiveKoszulTermInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.nativeProjectiveKoszulTermInternalExt_succ:true
+
+===== SPLIT AUDIT quotient-koszul-term-ext-vanishing =====
+@LinearStudy.homogeneousQuotientCoordinate_adjoin_eq_top : ∀ {K σ : Type} [inst : Field K]
+  (I : Ideal (MvPolynomial σ K)),
+  Algebra.adjoin K (Set.range fun (i : σ) => (Ideal.Quotient.mk I) (MvPolynomial.X i)) = ⊤
+'LinearStudy.homogeneousQuotientCoordinate_adjoin_eq_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneousQuotientKoszulTermInternalExt_succ : ∀ {K σ : Type} [inst : Field K]
+  (I : Ideal (MvPolynomial σ K)) (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (r d p : ℕ)
+  (k : ℤ) (N : (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece I)).Modules) (q : ℕ),
+  CategoryTheory.Limits.IsZero
+    (LinearStudy.schemeModuleInternalExt
+      (LinearStudy.nativeProjectiveKoszulTerm (LinearStudy.homogeneousQuotientPiece I) r d p k) N (q + 1))
+'LinearStudy.homogeneousQuotientKoszulTermInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.homogeneousQuotientCoordinate_adjoin_eq_top:true
+ROLECHECK:LinearStudy.homogeneousQuotientKoszulTermInternalExt_succ:true
+
+===== SPLIT AUDIT original-koszul-term-ext-vanishing =====
+@LinearStudy.projectivePulledOriginalKoszulInternalExt_succ : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ) (k : ℤ) (p : ℕ)
+  (N : (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules) (q : ℕ),
+  CategoryTheory.Limits.IsZero
+    (LinearStudy.schemeModuleInternalExt ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).X p) N (q + 1))
+'LinearStudy.projectivePulledOriginalKoszulInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.projectivePulledOriginalKoszulInternalExt_succ:true

@@ -1,0 +1,10 @@
+@LinearStudy.nativeIntegerTwistInternalExt_succ : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {ι : Type u_1} (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ →
+      ∀ (k : ℤ) (N : (AlgebraicGeometry.Proj 𝓑).Modules) (q : ℕ),
+        CategoryTheory.Limits.IsZero
+          (LinearStudy.schemeModuleInternalExt
+            (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ k) N (q + 1))
+'LinearStudy.nativeIntegerTwistInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.nativeIntegerTwistInternalExt_succ:true

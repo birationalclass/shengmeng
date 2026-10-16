@@ -1,0 +1,24 @@
+LinearStudy.schemeModuleOverFunctor_additive : ∀ (X : AlgebraicGeometry.Scheme) (U : X.Opens),
+  (SheafOfModules.overFunctor X.ringCatSheaf U).Additive
+'LinearStudy.schemeModuleOverFunctor_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOverFunctor_preservesHomology : ∀ {X : AlgebraicGeometry.Scheme} (U : X.Opens),
+  (SheafOfModules.overFunctor X.ringCatSheaf U).PreservesHomology
+'LinearStudy.schemeModuleOverFunctor_preservesHomology' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOverHomologyIso : {X : AlgebraicGeometry.Scheme} →
+  (U : X.Opens) →
+    (K : CochainComplex X.Modules ℕ) →
+      (q : ℕ) →
+        (((SheafOfModules.overFunctor X.ringCatSheaf U).mapHomologicalComplex (ComplexShape.up ℕ)).obj K).homology q ≅
+          SheafOfModules.over (HomologicalComplex.homology K q) U
+'LinearStudy.schemeModuleOverHomologyIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleOverHomologyIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (U : X.Opens) →
+    (K : CochainComplex X.Modules ℕ) →
+      (q : ℕ) →
+        (((SheafOfModules.overFunctor X.ringCatSheaf U).mapHomologicalComplex (ComplexShape.up ℕ)).obj K).homology q ≅
+          SheafOfModules.over (HomologicalComplex.homology K q) U :=
+fun {X : AlgebraicGeometry.Scheme} (U : X.Opens) (K : CochainComplex X.Modules ℕ) (q : ℕ) =>
+  (HomologicalComplex.sc K q).mapHomologyIso (SheafOfModules.overFunctor X.ringCatSheaf U)
+ROLECHECK:LinearStudy.schemeModuleOverFunctor_additive:true
+ROLECHECK:LinearStudy.schemeModuleOverFunctor_preservesHomology:true
+ROLECHECK:LinearStudy.schemeModuleOverHomologyIso:false

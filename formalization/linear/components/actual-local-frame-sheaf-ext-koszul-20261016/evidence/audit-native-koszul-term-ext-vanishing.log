@@ -1,0 +1,9 @@
+@LinearStudy.nativeProjectiveKoszulTermInternalExt_succ : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {ι : Type} (a : ι → S),
+  (∀ (i : ι), a i ∈ 𝓑 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ →
+      ∀ (r d p : ℕ) (k : ℤ) (N : (AlgebraicGeometry.Proj 𝓑).Modules) (q : ℕ),
+        CategoryTheory.Limits.IsZero
+          (LinearStudy.schemeModuleInternalExt (LinearStudy.nativeProjectiveKoszulTerm 𝓑 r d p k) N (q + 1))
+'LinearStudy.nativeProjectiveKoszulTermInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.nativeProjectiveKoszulTermInternalExt_succ:true

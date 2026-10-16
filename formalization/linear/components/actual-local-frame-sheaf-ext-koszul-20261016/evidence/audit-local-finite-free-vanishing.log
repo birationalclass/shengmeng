@@ -1,0 +1,29 @@
+@LinearStudy.schemeModuleFreeOverIso : {X : AlgebraicGeometry.Scheme} →
+  (U : X.Opens) → (ι : Type u_1) → [Finite ι] → (SheafOfModules.free ι).over U ≅ SheafOfModules.free ι
+'LinearStudy.schemeModuleFreeOverIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModule_isZero_of_over_cover : ∀ {X : AlgebraicGeometry.Scheme} (M : X.Modules) {ι : Type u_1}
+  (U : ι → X.Opens),
+  iSup U = ⊤ → (∀ (i : ι), CategoryTheory.Limits.IsZero (SheafOfModules.over M (U i))) → CategoryTheory.Limits.IsZero M
+'LinearStudy.schemeModule_isZero_of_over_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLocalFiniteFreeInternalExt_succ : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules)
+  (U : X.Opens) (ι : Type u_1) [Finite ι] (e : SheafOfModules.over P U ≅ SheafOfModules.free ι) (q : ℕ),
+  CategoryTheory.Limits.IsZero (SheafOfModules.over (LinearStudy.schemeModuleInternalExt P N (q + 1)) U)
+'LinearStudy.schemeModuleLocalFiniteFreeInternalExt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleFiniteLocallyFreeInternalExt_succ_of_cover : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules)
+  {κ : Type u_1} (U : κ → X.Opens),
+  iSup U = ⊤ →
+    ∀ (ι : κ → Type u_1) [∀ (i : κ), Finite (ι i)]
+      (e : (i : κ) → SheafOfModules.over P (U i) ≅ SheafOfModules.free (ι i)) (q : ℕ),
+      CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt P N (q + 1))
+'LinearStudy.schemeModuleFiniteLocallyFreeInternalExt_succ_of_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleFreeOverIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  (U : X.Opens) → (ι : Type u) → [Finite ι] → (SheafOfModules.free ι).over U ≅ SheafOfModules.free ι :=
+fun {X : AlgebraicGeometry.Scheme} (U : X.Opens) (ι : Type u) [Finite ι] =>
+  (SheafOfModules.mapFreeIso (SheafOfModules.overFunctor X.ringCatSheaf U) ι
+      (LinearStudy.schemeModuleUnitOverIso X U).symm).symm
+ROLECHECK:LinearStudy.schemeModuleFreeOverIso:false
+ROLECHECK:LinearStudy.schemeModule_isZero_of_over_cover:true
+ROLECHECK:LinearStudy.schemeModuleLocalFiniteFreeInternalExt_succ:true
+ROLECHECK:LinearStudy.schemeModuleFiniteLocallyFreeInternalExt_succ_of_cover:true
