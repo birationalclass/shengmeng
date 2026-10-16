@@ -1,0 +1,151 @@
+@LinearStudy.cochainSingleAugmentation_precomp_v_zero : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] {K L : CochainComplex A ℤ} {E : A} (q j l : ℤ) (hjl : j + q = l)
+  (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj E) L q),
+  j ≠ 0 → (↑(c.precomp alpha)).v j l hjl = 0
+'LinearStudy.cochainSingleAugmentation_precomp_v_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainTopFunctional_postcomp_v_zero : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] {K L : CochainComplex A ℤ} {N : A} (q j l : ℤ) (hjl : j + q = l)
+  (a : K.X (-q) ⟶ N) (phi : (CochainComplex.singleFunctor A 0).obj N ⟶ L),
+  j ≠ -q →
+    ((CochainComplex.HomComplex.Cochain.toSingleMk a ⋯).comp (CochainComplex.HomComplex.Cochain.ofHom phi) ⋯).v j l
+        hjl =
+      0
+'LinearStudy.cochainTopFunctional_postcomp_v_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainAugmentedTopHomotopy_middle : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] {K L : CochainComplex A ℤ} {E N : A} (q j : ℤ)
+  (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj E) L q) (a : K.X (-q) ⟶ N)
+  (phi : (CochainComplex.singleFunctor A 0).obj N ⟶ L) (t : CochainComplex.HomComplex.Cochain K L (q - 1)),
+  CochainComplex.HomComplex.δ (q - 1) q t =
+      ↑(c.precomp alpha) -
+        (CochainComplex.HomComplex.Cochain.toSingleMk a ⋯).comp (CochainComplex.HomComplex.Cochain.ofHom phi) ⋯ →
+    j ≠ 0 →
+      j ≠ -q →
+        CategoryTheory.CategoryStruct.comp (t.v j (j + q - 1) ⋯) (L.d (j + q - 1) (j + q)) +
+            q.negOnePow • CategoryTheory.CategoryStruct.comp (K.d j (j + 1)) (t.v (j + 1) (j + q) ⋯) =
+          0
+'LinearStudy.cochainAugmentedTopHomotopy_middle' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainAugmentedTopHomotopy_top : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] {K L : CochainComplex A ℤ} {E N : A} (q : ℤ),
+  0 < q →
+    ∀ (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+      (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj E) L q) (a : K.X (-q) ⟶ N)
+      (phi : (CochainComplex.singleFunctor A 0).obj N ⟶ L) (t : CochainComplex.HomComplex.Cochain K L (q - 1)),
+      CochainComplex.HomComplex.δ (q - 1) q t =
+          ↑(c.precomp alpha) -
+            (CochainComplex.HomComplex.Cochain.toSingleMk a ⋯).comp (CochainComplex.HomComplex.Cochain.ofHom phi) ⋯ →
+        CategoryTheory.Limits.IsZero (L.X (-1)) →
+          q.negOnePow • CategoryTheory.CategoryStruct.comp (K.d (-q) (-q + 1)) (t.v (-q + 1) 0 ⋯) =
+            -CategoryTheory.CategoryStruct.comp a
+                (CategoryTheory.CategoryStruct.comp (HomologicalComplex.singleObjXSelf (ComplexShape.up ℤ) 0 N).inv
+                  (phi.f 0))
+'LinearStudy.cochainAugmentedTopHomotopy_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainAugmentedTopHomotopy_bottom : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] {K L : CochainComplex A ℤ} {E N : A} (q : ℤ),
+  0 < q →
+    ∀ (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+      (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj E) L q) (a : K.X (-q) ⟶ N)
+      (phi : (CochainComplex.singleFunctor A 0).obj N ⟶ L) (t : CochainComplex.HomComplex.Cochain K L (q - 1)),
+      CochainComplex.HomComplex.δ (q - 1) q t =
+          ↑(c.precomp alpha) -
+            (CochainComplex.HomComplex.Cochain.toSingleMk a ⋯).comp (CochainComplex.HomComplex.Cochain.ofHom phi) ⋯ →
+        K.d 0 1 = 0 →
+          CategoryTheory.CategoryStruct.comp (t.v 0 (q - 1) ⋯) (L.d (q - 1) q) =
+            CategoryTheory.CategoryStruct.comp (alpha.f 0) ((↑c).v 0 q ⋯)
+'LinearStudy.cochainAugmentedTopHomotopy_bottom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainResolutionTopHomotopyEquations_exists : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (K : CochainComplex A ℤ) [K.IsStrictlyLE 0] {E N : A} (r : ℕ),
+  0 < r →
+    ∀ (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [inst_5 : QuasiIso alpha] (a : K.X (-↑r) ⟶ N)
+      (ha : CategoryTheory.CategoryStruct.comp (K.d (-↑r - 1) (-↑r)) a = 0) (I : CategoryTheory.InjectiveResolution N),
+      ∃ (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj E) I.cochainComplex ↑r) (t :
+        CochainComplex.HomComplex.Cochain K I.cochainComplex (↑r - 1)),
+        LinearStudy.cochainResolutionTopExtClass K r alpha a ha =
+            I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c) ∧
+          (↑r).negOnePow • CategoryTheory.CategoryStruct.comp (K.d (-↑r) (-↑r + 1)) (t.v (-↑r + 1) 0 ⋯) =
+              -CategoryTheory.CategoryStruct.comp a
+                  (CategoryTheory.CategoryStruct.comp (HomologicalComplex.singleObjXSelf (ComplexShape.up ℤ) 0 N).inv
+                    (I.ι'.f 0)) ∧
+            (∀ (j : ℤ),
+                -↑r < j →
+                  j < 0 →
+                    CategoryTheory.CategoryStruct.comp (t.v j (j + ↑r - 1) ⋯)
+                          (I.cochainComplex.d (j + ↑r - 1) (j + ↑r)) +
+                        (↑r).negOnePow • CategoryTheory.CategoryStruct.comp (K.d j (j + 1)) (t.v (j + 1) (j + ↑r) ⋯) =
+                      0) ∧
+              CategoryTheory.CategoryStruct.comp (t.v 0 (↑r - 1) ⋯) (I.cochainComplex.d (↑r - 1) ↑r) =
+                CategoryTheory.CategoryStruct.comp (alpha.f 0) ((↑c).v 0 ↑r ⋯)
+'LinearStudy.cochainResolutionTopHomotopyEquations_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainSourceLiftSigns : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Preadditive A] →
+      {K L : CochainComplex A ℤ} →
+        (q : ℤ) → CochainComplex.HomComplex.Cochain K L (q - 1) → CochainComplex.HomComplex.Cochain K L (q - 1)
+'LinearStudy.cochainSourceLiftSigns' depends on axioms: [propext, Quot.sound]
+@LinearStudy.cochainSourceLiftSigns_top : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Preadditive A] {K L : CochainComplex A ℤ} (q : ℤ)
+  (t : CochainComplex.HomComplex.Cochain K L (q - 1)) (a : K.X (-q) ⟶ L.X 0),
+  q.negOnePow • CategoryTheory.CategoryStruct.comp (K.d (-q) (-q + 1)) (t.v (-q + 1) 0 ⋯) = -a →
+    CategoryTheory.CategoryStruct.comp (K.d (-q) (-q + 1)) ((LinearStudy.cochainSourceLiftSigns q t).v (-q + 1) 0 ⋯) = a
+'LinearStudy.cochainSourceLiftSigns_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainSourceLiftSigns_middle : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Preadditive A] {K L : CochainComplex A ℤ} (q j : ℤ)
+  (t : CochainComplex.HomComplex.Cochain K L (q - 1)),
+  CategoryTheory.CategoryStruct.comp (t.v j (j + q - 1) ⋯) (L.d (j + q - 1) (j + q)) +
+        q.negOnePow • CategoryTheory.CategoryStruct.comp (K.d j (j + 1)) (t.v (j + 1) (j + q) ⋯) =
+      0 →
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.cochainSourceLiftSigns q t).v j (j + q - 1) ⋯)
+        (L.d (j + q - 1) (j + q)) =
+      CategoryTheory.CategoryStruct.comp (K.d j (j + 1)) ((LinearStudy.cochainSourceLiftSigns q t).v (j + 1) (j + q) ⋯)
+'LinearStudy.cochainSourceLiftSigns_middle' depends on axioms: [propext, Quot.sound]
+@LinearStudy.cochainSourceLiftSigns_bottom : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Preadditive A] {K L : CochainComplex A ℤ} (q : ℤ)
+  (t : CochainComplex.HomComplex.Cochain K L (q - 1)) {E : A} (alpha : K.X 0 ⟶ E) (c : E ⟶ L.X q),
+  CategoryTheory.CategoryStruct.comp (t.v 0 (q - 1) ⋯) (L.d (q - 1) q) = CategoryTheory.CategoryStruct.comp alpha c →
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.cochainSourceLiftSigns q t).v 0 (q - 1) ⋯) (L.d (q - 1) q) =
+      CategoryTheory.CategoryStruct.comp alpha c
+'LinearStudy.cochainSourceLiftSigns_bottom' depends on axioms: [propext, Quot.sound]
+@LinearStudy.cochainResolutionSourceLiftEquations_exists : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (K : CochainComplex A ℤ) [K.IsStrictlyLE 0] {E N : A} (r : ℕ),
+  0 < r →
+    ∀ (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [inst_5 : QuasiIso alpha] (a : K.X (-↑r) ⟶ N)
+      (ha : CategoryTheory.CategoryStruct.comp (K.d (-↑r - 1) (-↑r)) a = 0) (I : CategoryTheory.InjectiveResolution N),
+      ∃ (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj E) I.cochainComplex ↑r) (t :
+        CochainComplex.HomComplex.Cochain K I.cochainComplex (↑r - 1)),
+        LinearStudy.cochainResolutionTopExtClass K r alpha a ha =
+            I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c) ∧
+          CategoryTheory.CategoryStruct.comp (K.d (-↑r) (-↑r + 1)) (t.v (-↑r + 1) 0 ⋯) =
+              CategoryTheory.CategoryStruct.comp a
+                (CategoryTheory.CategoryStruct.comp (HomologicalComplex.singleObjXSelf (ComplexShape.up ℤ) 0 N).inv
+                  (I.ι'.f 0)) ∧
+            (∀ (j : ℤ),
+                -↑r < j →
+                  j < 0 →
+                    CategoryTheory.CategoryStruct.comp (t.v j (j + ↑r - 1) ⋯)
+                        (I.cochainComplex.d (j + ↑r - 1) (j + ↑r)) =
+                      CategoryTheory.CategoryStruct.comp (K.d j (j + 1)) (t.v (j + 1) (j + ↑r) ⋯)) ∧
+              CategoryTheory.CategoryStruct.comp (t.v 0 (↑r - 1) ⋯) (I.cochainComplex.d (↑r - 1) ↑r) =
+                CategoryTheory.CategoryStruct.comp (alpha.f 0) ((↑c).v 0 ↑r ⋯)
+'LinearStudy.cochainResolutionSourceLiftEquations_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.cochainSourceLiftSigns.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Preadditive A] →
+      {K L : CochainComplex A ℤ} →
+        (q : ℤ) → CochainComplex.HomComplex.Cochain K L (q - 1) → CochainComplex.HomComplex.Cochain K L (q - 1) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Preadditive A] {K L : CochainComplex A ℤ} (q : ℤ)
+    (t : CochainComplex.HomComplex.Cochain K L (q - 1)) =>
+  CochainComplex.HomComplex.Cochain.mk fun (j k : ℤ) (h : j + (q - 1) = k) => ((q + 1) * j).negOnePow • t.v j k h
+ROLECHECK:LinearStudy.cochainSingleAugmentation_precomp_v_zero:true
+ROLECHECK:LinearStudy.cochainTopFunctional_postcomp_v_zero:true
+ROLECHECK:LinearStudy.cochainAugmentedTopHomotopy_middle:true
+ROLECHECK:LinearStudy.cochainAugmentedTopHomotopy_top:true
+ROLECHECK:LinearStudy.cochainAugmentedTopHomotopy_bottom:true
+ROLECHECK:LinearStudy.cochainResolutionTopHomotopyEquations_exists:true
+ROLECHECK:LinearStudy.cochainSourceLiftSigns:false
+ROLECHECK:LinearStudy.cochainSourceLiftSigns_top:true
+ROLECHECK:LinearStudy.cochainSourceLiftSigns_middle:true
+ROLECHECK:LinearStudy.cochainSourceLiftSigns_bottom:true
+ROLECHECK:LinearStudy.cochainResolutionSourceLiftEquations_exists:true
