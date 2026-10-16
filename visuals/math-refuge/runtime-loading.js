@@ -34,8 +34,8 @@ if(typeof window!=='undefined'){
    }catch(error){runtimeTransfers.end(id,true);throw error;}
  };
  try{performance.setResourceTimingBufferSize?.(2000);new PerformanceObserver(list=>{for(const entry of list.getEntries())runtimeTransfers.observe(entry,now());}).observe({type:'resource',buffered:true});}catch{}
- const paint=()=>{const out=document.getElementById('runtimeLoad'),world=document.getElementById('world');if(!out)return;const t=runtimeTransfers.snapshot(now()),s=scheduler?.snapshot(),item=t.active[0]||t.last,entered=world?.dataset.entered==='true';out.hidden=!entered;
-   const navigation=document.getElementById('chapters')?.getBoundingClientRect();out.style.bottom=Math.max(16,navigation?.height?innerHeight-navigation.top+8:16)+'px';
+ const paint=()=>{const out=document.getElementById('runtimeLoad'),world=document.getElementById('world');if(!out)return;const t=runtimeTransfers.snapshot(now()),s=scheduler?.snapshot(),item=t.active[0]||t.last,entered=world?.dataset.entered==='true';out.hidden=!entered;out.dataset.loading=String(entered&&Boolean(t.active.length||s?.active));
+   const nav=document.getElementById('chapters'),navigation=nav&&!nav.hidden?nav.getBoundingClientRect():null;out.style.bottom=Math.max(16,navigation?.height?innerHeight-navigation.top+8:16)+'px';
    const content=(s?.active?s.content:manual||s?.error||s?.content||'空闲 · 按需准备')+(s?.pauseReason?'（等待：'+s.pauseReason+'）':'');
    const load=s?.frameMs?`帧 ${s.frameMs.toFixed(1)} / ${s.frameBudget.toFixed(1)} ms · 加载 ${s.cpuMs.toFixed(1)} ms/批`:'负荷采样中';
    const download=item?`${item.name}${item.complete?'（'+(item.cached?'缓存':'完成')+'）':item.error?'（失败）':'（下载中）'} ${bytesText(item.received)}${item.total!=null&&!item.complete?' / '+bytesText(item.total):''}`:'无下载';

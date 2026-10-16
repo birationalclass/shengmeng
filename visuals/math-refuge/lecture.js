@@ -1,3 +1,4 @@
+import {boardInkScale} from './board-ink-resolution.js';
 import {createBoardTrayHardware} from './board-tray.js?v=crystal-black-b2';
 import {isCrystalScheme,paintStoneBoard,setTrackScheme} from './board-mineral.js';
 import {placeTrayControl,TRAY_STORAGE} from './board-tray-layout.js';
@@ -46,7 +47,7 @@ const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',
 export async function createLecture(scene,renderer,options={}){
   const reportProgress=options.onProgress||(()=>{});
   const pixelScale=options.boardScale===.5?.5:1;
-  const disabled=Boolean(options.disabled),canAuthor=typeof document.createElementNS==='function'&&typeof window!=='undefined';let writingStyle=options.writingStyle==='marck'?'marck':'refined';const boardMipBias={value:-.45};
+  const disabled=Boolean(options.disabled),canAuthor=typeof document.createElementNS==='function'&&typeof window!=='undefined';let writingStyle=options.writingStyle==='marck'?'marck':'refined';const boardMipBias={value:0};
   const reports=disabled?[{id:'unavailable',speaker:'',speakerEn:'',topic:'',topicEn:'',url:'',sourceLabel:''}]:options.reports||[...REPORTS,...CLASSROOM_PROGRAMS];
   let activeReport=reports.find(report=>report.id===(options.defaultReport||'hu'))||reports[0];
   const studentLottery=createStudentLottery();studentLottery.setCourse(activeReport.courseId||activeReport.id,activeReport.id);const assetPreload=createCoursePreload();const prepareReport=createReportLoader(),openingReport=disabled?{pages:[{kind:'closing',title:'',source:'',text:'',en:{title:'',source:'',text:''},rows:[]}]}:await prepareReport(activeReport);
@@ -98,7 +99,7 @@ export async function createLecture(scene,renderer,options={}){
       if(preparedImage){queueMicrotask(ready);return;}
       if(style==='refined'&&canAuthor&&!pages[index].kind&&!pages[index].diagram){withDeadline(authoredFormula(pages[index].formulaAsset+'?v=report-line-sync-6'),20000,'板书公式加载').then(result=>{image=result;ready();},error=>{pending.delete(index);reject(error);});return;}
       decodeImage(pages[index].formulaAsset+'?v=report-line-sync-6').then(result=>{image=result;ready();},error=>{pending.delete(index);reject(error);});
-    });pending.set(index,job);return job;
+    });const timed=withDeadline(job,30000,'第 '+(index+1)+' 块板书加载');pending.set(index,timed);timed.catch(()=>{if(pending.get(index)===timed)pending.delete(index);});return timed;
   }
   if(!disabled&&hasSelection)await load(0,openingReport.cover);
   reportProgress(1);
@@ -238,7 +239,7 @@ export async function createLecture(scene,renderer,options={}){
   const wipeCtx=wipeCanvas.getContext('2d');let wipeSamples=0;
   const erasedGrain=document.createElement('canvas');erasedGrain.width=erasedGrain.height=1;const erasedGrainCtx=erasedGrain.getContext('2d');
   function resetWipe(){wipeCanvas.width=hasSelection?W*pixelScale:1;wipeCanvas.height=hasSelection?H*pixelScale:1;wipeCtx.setTransform?.(pixelScale,0,0,pixelScale,0,0);wipeSamples=0;}
-  function inkCanvas(){const c=document.createElement('canvas');c.width=W*pixelScale;c.height=H*pixelScale;const ctx=c.getContext('2d');ctx.setTransform?.(pixelScale,0,0,pixelScale,0,0);return [c,ctx];}
+  function inkCanvas(scale=pixelScale){const c=document.createElement('canvas');c.width=W*scale;c.height=H*scale;const ctx=c.getContext('2d');ctx.setTransform?.(scale,0,0,scale,0,0);return [c,ctx];}
   function paintBackground(ctx,w,h){if(isCrystalScheme(trayHardware.tone))paintStoneBoard(ctx,w,h);else{ctx.fillStyle='#193d33';ctx.fillRect(0,0,w,h);}}
   function ensureInk(board){
     if(!grain){
@@ -260,6 +261,7 @@ export async function createLecture(scene,renderer,options={}){
     if(!board.canvas||contentFadeQueue.includes(board))return;
     contentFadeQueue.push(board);
     if(!board.previousCanvas){board.previousCanvas=document.createElement('canvas');board.previousCanvas.width=W;board.previousCanvas.height=H;board.previousInk.value=new THREE.CanvasTexture(board.previousCanvas);board.previousInk.value.colorSpace=THREE.SRGBColorSpace;board.previousInk.value.anisotropy=board.texture.anisotropy;}
+    if(board.previousCanvas.width!==board.canvas.width||board.previousCanvas.height!==board.canvas.height){board.previousInk.value.dispose();board.previousCanvas.width=board.canvas.width;board.previousCanvas.height=board.canvas.height;board.previousInk.value=new THREE.CanvasTexture(board.previousCanvas);board.previousInk.value.colorSpace=THREE.SRGBColorSpace;board.previousInk.value.anisotropy=board.texture.anisotropy;}
     board.previousCanvas.getContext('2d').drawImage(board.canvas,0,0);
     board.previousInk.value.needsUpdate=true;board.fadeAge=0;board.inkBlend.value=0;
   }
@@ -270,7 +272,10 @@ export async function createLecture(scene,renderer,options={}){
     const content={page:slot.page,progress:slot.progress,available:cache.has(slot.page)};
     if(preparing){board.fadeAge=1;board.inkBlend.value=1;}else if(boardContentJump(board.content,content))beginContentFade(board);board.content=content;
     if(slot.page<0){if(board.last==='blank')return;board.last='blank';if(board.canvas){paintBackground(board.ctx,W,H);board.texture.needsUpdate=true;board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture.needsUpdate=true;board.roughKey='';}return;}
-    ensureInk(board);const ctx=board.ctx;
+    ensureInk(board);
+    const rect=renderer.domElement?.getBoundingClientRect?.(),scale=index===clock.active&&voice.state.started&&!openingDemo?boardInkScale({base:pixelScale,width:(rect?.width||W)*(renderer.getPixelRatio?.()||1),height:(rect?.height||H)*(renderer.getPixelRatio?.()||1),maxTextureSize:renderer.capabilities.maxTextureSize}):pixelScale;
+    if(board.canvas.width!==Math.round(W*scale)){const old=board.texture;board.canvas.width=Math.round(W*scale);board.canvas.height=Math.round(H*scale);board.ctx.setTransform(scale,0,0,scale,0,0);board.texture=new THREE.CanvasTexture(board.canvas);board.texture.colorSpace=THREE.SRGBColorSpace;board.texture.anisotropy=old.anisotropy;board.texture.minFilter=old.minFilter;board.group.children[0].material.map=board.texture;board.group.children[0].material.needsUpdate=true;old.dispose();board.last=null;}
+    const ctx=board.ctx;
     const erasing=index===clock.active&&clock.phase==='erase'&&clock.progress>0;
     const wet=board.wet,wetAge=wet?effectTime-wet.started:Infinity;
     const wetKey=''; // A dry felt eraser leaves no dark water/roughness stamps.
@@ -330,13 +335,15 @@ export async function createLecture(scene,renderer,options={}){
     openingDemo=null;
     const request=++seekRequest,epoch=generation;
     const target=Math.max(clock.startAt,Math.min(clock.stopAt,Math.trunc(page)||0));
+    const board=voice.manifest?.boards.find(b=>b.page===target);
     requestedPage=target;
     seeking=true;seekPinned=new Set(Array.from({length:target-Math.max(clock.startAt,target-(voice.manifest?6:5))+1},(_,i)=>Math.max(clock.startAt,target-(voice.manifest?6:5))+i));
     try{
       const preparation=Promise.all(Array.from({length:target-Math.max(clock.startAt,target-(voice.manifest?6:5))+1},(_,i)=>load(Math.max(clock.startAt,target-(voice.manifest?6:5))+i)));
-      const board=voice.manifest?.boards.find(b=>b.page===target);if(board){lessonBudget.configure(voice.manifest);lessonBudget.seek(board.writeStart,voice.manifest.boards.filter(b=>b.optionalProof));omittedProofPages.clear();}if(board)await voice.seek(board.writeStart,{preservePlayback,ready:preparation});else{voice.pause();await preparation;}
+      const commit=preparation.then(()=>{
       if(request!==seekRequest||epoch!==generation)return false;
       clock.seek(target);
+      if(board)syncNarrationClock(clock,narrationFrame(voice.manifest,board.writeStart,writingPlan(pageRows.get(target),guides.get(target)),erasePlans.get(target-6)),boardSlot);
       for(let pair=0;pair<3;pair++){
         const a=clock.slots[pair*2].page,b=clock.slots[pair*2+1].page;
         mix[pair]=targets[pair]=b>a?1:0;
@@ -347,7 +354,10 @@ export async function createLecture(scene,renderer,options={}){
       particles.forEach(p=>p.life=0);particlePositions.fill(-10000);dustGeometry.attributes.position.needsUpdate=true;
       boards.forEach(b=>{b.wet=null;b.last='';});resetWipe();
       boards.forEach((_,i)=>draw(i,true));version++;
-      return true;
+      loadingError=null;return true;
+      });
+      if(board){lessonBudget.configure(voice.manifest);lessonBudget.seek(board.writeStart,voice.manifest.boards.filter(b=>b.optionalProof));omittedProofPages.clear();await voice.seek(board.writeStart,{preservePlayback,ready:commit});}else voice.pause();
+      return await commit;
     }catch(error){if(request===seekRequest)loadingError=error;throw error;}
     finally{if(request===seekRequest){seeking=false;requestedPage=null;seekPinned.clear();}}
   }
@@ -399,7 +409,7 @@ export async function createLecture(scene,renderer,options={}){
       updateStorageLabel(reduced);if(storageProgress>0||stored||!storageMotion.ready){highlighter.hide();highlightState=null;return;}
     }
     // Offscreen boards retain their exact state; looking at sunrise must not fast-forward pages.
-    if(!renderActive||hydrating||translating){highlighter.hide();highlightState=null;return;}
+    if(!renderActive||hydrating||translating||seeking){highlighter.hide();highlightState=null;return;}
     dt=Math.max(0,Math.min(.1,dt));for(const b of touchButtons){updateTextSheen(THREE,b,dt,reduced);}updateTextSheen(THREE,reportHeader.mesh,dt,reduced);
     dateCheck+=dt;if(dateCheck>=1){dateCheck=0;if(seminarDate()!==dateLabel)setReportState();}if(playing&&!reduced)effectTime+=dt;
     const oldPhase=clock.phase,oldActive=clock.active;
@@ -461,7 +471,7 @@ export async function createLecture(scene,renderer,options={}){
     }else if(oldPhase==='erase'&&boards[oldActive].wet)boards[oldActive].wet.progress=1;
     if(reduced)for(const board of boards)board.wet=null;
     for(let pair=0;pair<3;pair++){
-      if(!narrated||voice.transportPlaying||seeking)mix[pair]=reduced?targets[pair]:THREE.MathUtils.damp(mix[pair],targets[pair],3,dt);
+      if(!narrated||voice.transportPlaying||seeking)mix[pair]=reduced?targets[pair]:THREE.MathUtils.damp(mix[pair],targets[pair],3*.7,dt);
       boardHeights(mix[pair]).forEach((height,side)=>boards[pair*2+side].group.position.y=height);
     }
     chalk.visible=present&&playing&&!reduced&&ready&&clock.phase==='write'&&!eraserReturn&&(!narrated||narrationWriting);
@@ -562,7 +572,7 @@ export async function createLecture(scene,renderer,options={}){
   scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {
     get cameraZoom(){return cameraZoom;},adjustCameraZoom(direction){cameraZoom=stepBoardCameraZoom(cameraZoom,direction);return cameraZoom;},
-    cameraView(aspect,fov=57){const frame=boardCameraFrame(aspect,fov,cameraZoom,{column:Math.floor(clock.active/2),boardY:boards[clock.active].group.position.y,boardZ:boards[clock.active].group.position.z,frameMargin:isCrystalScheme(trayHardware.tone)?.028+.003*Math.SQRT2:.04+.0025*Math.SQRT2});return{...frame,target:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z)),position:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z+frame.distance))};},
+    cameraView(aspect,fov=57){const frame=boardCameraFrame(aspect,fov,cameraZoom,{column:Math.floor(clock.active/2),boardY:BOARD_LAYOUT.low,boardZ:-10.29+BOARD_MOUNT_OFFSET,frameMargin:isCrystalScheme(trayHardware.tone)?.028+.003*Math.SQRT2:.04+.0025*Math.SQRT2});return{...frame,target:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z)),position:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z+frame.distance))};},
     get autoCamera(){return autoCamera;},set autoCamera(value){autoCamera=Boolean(value);},
     get followEnabled(){return autoCamera&&!disabled&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');},
     get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},
@@ -635,7 +645,7 @@ export async function createLecture(scene,renderer,options={}){
     },
     finishOpening,
     toggleStorage(){voice.pause();openingDemo=null;if(storageRig){stored=!stored;if(!stored)screenHub?.report();if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();setReportState();}return stored;},
-    setClarity(value){boardMipBias.value=value==='natural'?0:-.45;},
+    setClarity(value){boardMipBias.value=value==='natural'?.15:0;},
     setPresence(value){present=Boolean(value);if(!present)void voice.setContextActive(false);},get present(){return present;},
     update,seek,revealCurrent,get navigationPage(){return requestedPage??clock.page;},get reviewRemaining(){return boardReview.remaining(clock.page);},disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0;},get hasSelection(){return hasSelection;},
     get progress(){return {page:clock.page-clock.startAt,total:clock.stopAt-clock.startAt+1};},

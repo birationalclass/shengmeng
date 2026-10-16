@@ -5,12 +5,13 @@ import {boardCameraFrame,stepBoardCameraZoom} from './board-camera-framing.js';
 import {BOARD_LAYOUT} from './lecture-state.js';
 import {configureLectureRoot} from './site-layout.js';
 import {BOARD_MOUNT_OFFSET} from './board-hardware.js';
+import {TRAY_DOCK,trayControlLayout} from './board-tray-layout.js';
 test('plus pulls back, minus approaches and repeated adjustments stop at both framing limits',()=>{
  let zoom=0;for(let i=0;i<20;i++)zoom=stepBoardCameraZoom(zoom,1);assert.equal(zoom,1);
  for(let i=0;i<20;i++)zoom=stepBoardCameraZoom(zoom,-1);assert.equal(zoom,0);
  assert.equal(stepBoardCameraZoom(.5,1),.6);assert.equal(stepBoardCameraZoom(.5,-1),.4);
 });
-test('current board stays centered and uncut at every zoom; nearest fills one axis and farthest contains all six',()=>{
+test('current board stays centered and uncut at every zoom; nearest includes every tray control in all columns',()=>{
  for(const aspect of [390/844,1,1280/720,2388/800])for(const column of [0,1,2])for(const boardY of [BOARD_LAYOUT.low,BOARD_LAYOUT.high])for(const boardZ of [-10.45+BOARD_MOUNT_OFFSET,-10.29+BOARD_MOUNT_OFFSET]){
   let distance=0;
   for(let step=0;step<=10;step++){
@@ -23,8 +24,11 @@ test('current board stays centered and uncut at every zoom; nearest fills one ax
    for(const col of columns)for(const y of heights)for(const x of [-2.65-.04-.0025*Math.SQRT2,2.65+.04+.0025*Math.SQRT2])for(const dy of [-1.025-.04-.0025*Math.SQRT2,1.025+.04+.0025*Math.SQRT2]){
     const p=root.localToWorld(new T.Vector3(22.4+5.6*col+x,y+dy,(step===10?-10.29+BOARD_MOUNT_OFFSET:boardZ)+.0135)).project(camera);assert(Math.abs(p.x)<=1&&Math.abs(p.y)<=1,'complete outer frame stays within viewport');edge=Math.max(edge,Math.abs(p.x),Math.abs(p.y));
    }
-   if(step===0)assert(edge>.998,'nearest view uses the whole available width or height');
-   if(step===10)assert(frame.distance<=14.18,'portrait overview stays inside the hall');
+   for(const slot of Object.values(trayControlLayout(column)).filter(p=>typeof p==='object'))for(const dx of [-slot.width/2,slot.width/2])for(const dy of [-slot.height/2,slot.height/2]){
+    const p=root.localToWorld(new T.Vector3(slot.x+dx,slot.y+dy*Math.cos(TRAY_DOCK.tilt),slot.z-dy*Math.sin(TRAY_DOCK.tilt))).project(camera);
+    assert(Math.abs(p.x)<1&&Math.abs(p.y)<1,'complete tray controls stay on screen');
+   }
+   if(step===10)assert(frame.distance<=14.4,'portrait overview stays inside the hall');
   }
  }
 });

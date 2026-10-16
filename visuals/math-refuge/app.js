@@ -1,3 +1,4 @@
+import {bindVisitMenu} from './visit-menu.js';
 import {OpeningPerformance} from './opening-performance.js';
 import {ResourceScheduler} from './resource-scheduler.js?v=demand-1';
 import {loadingContent,connectLoadingScheduler} from './runtime-loading.js?v=demand-1';
@@ -74,6 +75,7 @@ sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);
 visualHour=lastShadowHour=sceneTime.hour;
 let changingVoice=false,voiceLoadError='';
 const $=id=>document.getElementById(id);
+bindVisitMenu($('visitDock'),$('visitToggle'),$('chapters'));
 for(const id of ['lecturePanel','settings','timePanel','performancePanel','chalkReader','seminarPanel'])preparePanelShell($(id));
 bindPanelDismissals(document,[
  {panel:$('lecturePanel'),triggers:[$('lectureButton')],close:()=>{$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');}},
@@ -131,7 +133,7 @@ const openingCameraLock=new OpeningCameraLock();
 const cameraLocked=()=>openingPreparing||openingCameraLock.locked(performance.now());
 // Capture before OrbitControls and scene hit targets, while other settings remain usable.
 for(const type of ['pointerdown','wheel','click','dblclick'])document.addEventListener(type,event=>{
- if(cameraLocked()&&event.target.closest?.('#world,#chapters,#tour,#roomControls,#buildingRooms,#lecternConsole,#lecturePanel')){event.preventDefault();event.stopImmediatePropagation();}
+ if(cameraLocked()&&event.target.closest?.('#world,#visitDock,#chapters,#tour,#roomControls,#buildingRooms,#lecternConsole,#lecturePanel')){event.preventDefault();event.stopImmediatePropagation();}
 },{capture:true,passive:false});
 let entryTransition=false;
 async function enterScene(){

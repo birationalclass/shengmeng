@@ -80,7 +80,8 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
  async function seek(time,{preservePlayback=false,ready=null}={}){
   if(!manifest)return false;const resume=preservePlayback&&(desired||navigationIntent);pause();boardHold=null;navigationIntent=resume;const mine=epoch,intent=playToken,target=Math.max(0,Math.min(manifest.duration,Number(time)||0));state.started=true;
   const i=Math.max(0,manifest.chapters.findLastIndex(c=>c.start<=target)),at=Math.min(manifest.chapters[i].duration-.025,target-manifest.chapters[i].start);
-  try{let attached=true;if(activity&&i===index){activity.at=Math.max(0,at);activity.stamp=now();state.time=target;state.phase='paused';sync();emit();}else if(audio&&i===index){audio.currentTime=(manifest.chapters[i].mediaStart||0)+Math.max(0,at);state.time=target;state.phase='paused';emit();}else attached=await attach(i,Math.max(0,at));await ready;if(mine===epoch&&intent===playToken){navigationIntent=false;if(attached&&resume)await play();}return attached;}
+  const inkReady=Promise.resolve(ready);inkReady.catch(()=>{});
+  try{let attached=true;if(activity&&i===index){activity.at=Math.max(0,at);activity.stamp=now();state.time=target;state.phase='paused';sync();emit();}else if(audio&&i===index){audio.currentTime=(manifest.chapters[i].mediaStart||0)+Math.max(0,at);state.time=target;state.phase='paused';emit();}else attached=await attach(i,Math.max(0,at));await inkReady;if(mine===epoch&&intent===playToken){navigationIntent=false;if(attached&&resume)await play();}return attached;}
   catch{if(mine===epoch&&intent===playToken){navigationIntent=false;state.phase='error';state.error='语音定位失败 · 点击重试';emit();}return false;}
  }
  async function toggle(){
