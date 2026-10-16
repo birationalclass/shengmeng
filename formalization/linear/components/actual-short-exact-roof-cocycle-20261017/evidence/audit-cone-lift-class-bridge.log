@@ -1,0 +1,10 @@
+@LinearStudy.cochainConeLiftClassBridge : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (S : CategoryTheory.ShortComplex (CochainComplex A ℤ)) (K : CochainComplex A ℤ)
+  (a : CochainComplex.HomComplex.Cocycle S.X₁ K 0) (b : CochainComplex.HomComplex.Cochain S.X₂ K 0)
+  (c : CochainComplex.HomComplex.Cocycle S.X₃ K 1),
+  (CochainComplex.HomComplex.Cochain.ofHom S.f).comp b ⋯ = ↑a →
+    CochainComplex.HomComplex.δ 0 1 b = (CochainComplex.HomComplex.Cochain.ofHom S.g).comp ↑c ⋯ →
+      CochainComplex.HomComplex.CohomologyClass.mk ((CochainComplex.mappingCone.fst S.f).postcomp a.homOf) =
+        CochainComplex.HomComplex.CohomologyClass.mk (c.precomp (CochainComplex.mappingCone.descShortComplex S))
+'LinearStudy.cochainConeLiftClassBridge' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.cochainConeLiftClassBridge:true

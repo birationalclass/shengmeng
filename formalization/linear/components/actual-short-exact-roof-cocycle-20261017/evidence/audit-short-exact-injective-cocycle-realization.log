@@ -1,0 +1,17 @@
+@LinearStudy.shortExactInjectiveCocycleRealization : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (S : CategoryTheory.ShortComplex A) (hS : S.ShortExact) {N : A} (I : CategoryTheory.InjectiveResolution N)
+  (a : S.X₁ ⟶ N),
+  ∃ (b : CochainComplex.HomComplex.Cochain ((CochainComplex.singleFunctor A 0).obj S.X₂) I.cochainComplex 0) (c :
+    CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj S.X₃) I.cochainComplex 1),
+    (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.f)).comp b ⋯ =
+        CochainComplex.HomComplex.Cochain.ofHom
+          (CategoryTheory.CategoryStruct.comp ((CochainComplex.singleFunctor A 0).map a) I.ι') ∧
+      CochainComplex.HomComplex.δ 0 1 b =
+          (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.g)).comp ↑c ⋯ ∧
+        (LinearStudy.cochainShortExactRoofClass S hS).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯ =
+            -I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c) ∧
+          (CategoryTheory.Abelian.Ext.δ hS 0 1 ⋯) (CategoryTheory.Abelian.Ext.mk₀ a) =
+            I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c)
+'LinearStudy.shortExactInjectiveCocycleRealization' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.shortExactInjectiveCocycleRealization:true

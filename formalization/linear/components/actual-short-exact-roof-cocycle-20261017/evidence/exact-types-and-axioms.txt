@@ -1,0 +1,109 @@
+
+===== SPLIT AUDIT cone-lift-class-bridge =====
+@LinearStudy.cochainConeLiftClassBridge : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (S : CategoryTheory.ShortComplex (CochainComplex A ℤ)) (K : CochainComplex A ℤ)
+  (a : CochainComplex.HomComplex.Cocycle S.X₁ K 0) (b : CochainComplex.HomComplex.Cochain S.X₂ K 0)
+  (c : CochainComplex.HomComplex.Cocycle S.X₃ K 1),
+  (CochainComplex.HomComplex.Cochain.ofHom S.f).comp b ⋯ = ↑a →
+    CochainComplex.HomComplex.δ 0 1 b = (CochainComplex.HomComplex.Cochain.ofHom S.g).comp ↑c ⋯ →
+      CochainComplex.HomComplex.CohomologyClass.mk ((CochainComplex.mappingCone.fst S.f).postcomp a.homOf) =
+        CochainComplex.HomComplex.CohomologyClass.mk (c.precomp (CochainComplex.mappingCone.descShortComplex S))
+'LinearStudy.cochainConeLiftClassBridge' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.cochainConeLiftClassBridge:true
+
+===== SPLIT AUDIT cone-lift-derived-bridge =====
+@LinearStudy.cochainDerivedMap_eq_of_classEq : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : HasDerivedCategory A] {K L : CochainComplex A ℤ} {n : ℤ}
+  (x y : CochainComplex.HomComplex.Cocycle K L n),
+  CochainComplex.HomComplex.CohomologyClass.mk x = CochainComplex.HomComplex.CohomologyClass.mk y →
+    CategoryTheory.ShiftedHom.map (CochainComplex.HomComplex.Cocycle.equivHomShift.symm x) DerivedCategory.Q =
+      CategoryTheory.ShiftedHom.map (CochainComplex.HomComplex.Cocycle.equivHomShift.symm y) DerivedCategory.Q
+'LinearStudy.cochainDerivedMap_eq_of_classEq' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainConeLiftDerivedBridge : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : HasDerivedCategory A]
+  (S : CategoryTheory.ShortComplex (CochainComplex A ℤ)) (K : CochainComplex A ℤ)
+  (a : CochainComplex.HomComplex.Cocycle S.X₁ K 0) (b : CochainComplex.HomComplex.Cochain S.X₂ K 0)
+  (c : CochainComplex.HomComplex.Cocycle S.X₃ K 1),
+  (CochainComplex.HomComplex.Cochain.ofHom S.f).comp b ⋯ = ↑a →
+    CochainComplex.HomComplex.δ 0 1 b = (CochainComplex.HomComplex.Cochain.ofHom S.g).comp ↑c ⋯ →
+      CategoryTheory.ShiftedHom.map
+          (CochainComplex.HomComplex.Cocycle.equivHomShift.symm ((CochainComplex.mappingCone.fst S.f).postcomp a.homOf))
+          DerivedCategory.Q =
+        CategoryTheory.ShiftedHom.map
+          (CochainComplex.HomComplex.Cocycle.equivHomShift.symm
+            (c.precomp (CochainComplex.mappingCone.descShortComplex S)))
+          DerivedCategory.Q
+'LinearStudy.cochainConeLiftDerivedBridge' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainConeTriangle_mor3_neg_fst : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] {K L : CochainComplex A ℤ} (f : K ⟶ L),
+  (CochainComplex.mappingCone.triangle f).mor₃ =
+    CochainComplex.HomComplex.Cocycle.equivHomShift.symm (-CochainComplex.mappingCone.fst f)
+'LinearStudy.cochainConeTriangle_mor3_neg_fst' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.cochainDerivedMap_eq_of_classEq:true
+ROLECHECK:LinearStudy.cochainConeLiftDerivedBridge:true
+ROLECHECK:LinearStudy.cochainConeTriangle_mor3_neg_fst:true
+
+===== SPLIT AUDIT cone-lift-triangle-equation =====
+@LinearStudy.cochainConeLiftTriangleEquation : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : HasDerivedCategory A]
+  (S : CategoryTheory.ShortComplex (CochainComplex A ℤ)) (K : CochainComplex A ℤ) (a : S.X₁ ⟶ K)
+  (b : CochainComplex.HomComplex.Cochain S.X₂ K 0) (c : CochainComplex.HomComplex.Cocycle S.X₃ K 1),
+  (CochainComplex.HomComplex.Cochain.ofHom S.f).comp b ⋯ = CochainComplex.HomComplex.Cochain.ofHom a →
+    CochainComplex.HomComplex.δ 0 1 b = (CochainComplex.HomComplex.Cochain.ofHom S.g).comp ↑c ⋯ →
+      CategoryTheory.CategoryStruct.comp (DerivedCategory.Q.map (CochainComplex.mappingCone.triangle S.f).mor₃)
+          (CategoryTheory.CategoryStruct.comp ((CategoryTheory.Functor.commShiftIso DerivedCategory.Q 1).hom.app S.X₁)
+            ((CategoryTheory.shiftFunctor (DerivedCategory A) 1).map (DerivedCategory.Q.map a))) =
+        -CategoryTheory.CategoryStruct.comp (DerivedCategory.Q.map (CochainComplex.mappingCone.descShortComplex S))
+            (CategoryTheory.ShiftedHom.map (CochainComplex.HomComplex.Cocycle.equivHomShift.symm c) DerivedCategory.Q)
+'LinearStudy.cochainConeLiftTriangleEquation' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.cochainConeLiftTriangleEquation:true
+
+===== SPLIT AUDIT short-exact-injective-cochain-lift =====
+@LinearStudy.shortExactInjectiveCochainLift_exists : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (S : CategoryTheory.ShortComplex A),
+  S.ShortExact →
+    ∀ (K : CochainComplex A ℤ) [CategoryTheory.Injective (K.X 0)] (a : (CochainComplex.singleFunctor A 0).obj S.X₁ ⟶ K),
+      ∃ (b : CochainComplex.HomComplex.Cochain ((CochainComplex.singleFunctor A 0).obj S.X₂) K 0) (c :
+        CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj S.X₃) K 1),
+        (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.f)).comp b ⋯ =
+            CochainComplex.HomComplex.Cochain.ofHom a ∧
+          CochainComplex.HomComplex.δ 0 1 b =
+            (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.g)).comp ↑c ⋯
+'LinearStudy.shortExactInjectiveCochainLift_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.shortExactInjectiveCochainLift_exists:true
+
+===== SPLIT AUDIT short-exact-roof-injective-cocycle =====
+@LinearStudy.shortExactRoof_comp_eq_neg_injectiveCocycle : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (S : CategoryTheory.ShortComplex A) (hS : S.ShortExact) {N : A}
+  (I : CategoryTheory.InjectiveResolution N) (a : S.X₁ ⟶ N)
+  (b : CochainComplex.HomComplex.Cochain ((CochainComplex.singleFunctor A 0).obj S.X₂) I.cochainComplex 0)
+  (c : CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj S.X₃) I.cochainComplex 1),
+  (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.f)).comp b ⋯ =
+      CochainComplex.HomComplex.Cochain.ofHom
+        (CategoryTheory.CategoryStruct.comp ((CochainComplex.singleFunctor A 0).map a) I.ι') →
+    CochainComplex.HomComplex.δ 0 1 b =
+        (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.g)).comp ↑c ⋯ →
+      (LinearStudy.cochainShortExactRoofClass S hS).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯ =
+        -I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c)
+'LinearStudy.shortExactRoof_comp_eq_neg_injectiveCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.shortExactRoof_comp_eq_neg_injectiveCocycle:true
+
+===== SPLIT AUDIT short-exact-injective-cocycle-realization =====
+@LinearStudy.shortExactInjectiveCocycleRealization : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (S : CategoryTheory.ShortComplex A) (hS : S.ShortExact) {N : A} (I : CategoryTheory.InjectiveResolution N)
+  (a : S.X₁ ⟶ N),
+  ∃ (b : CochainComplex.HomComplex.Cochain ((CochainComplex.singleFunctor A 0).obj S.X₂) I.cochainComplex 0) (c :
+    CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj S.X₃) I.cochainComplex 1),
+    (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.f)).comp b ⋯ =
+        CochainComplex.HomComplex.Cochain.ofHom
+          (CategoryTheory.CategoryStruct.comp ((CochainComplex.singleFunctor A 0).map a) I.ι') ∧
+      CochainComplex.HomComplex.δ 0 1 b =
+          (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.g)).comp ↑c ⋯ ∧
+        (LinearStudy.cochainShortExactRoofClass S hS).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯ =
+            -I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c) ∧
+          (CategoryTheory.Abelian.Ext.δ hS 0 1 ⋯) (CategoryTheory.Abelian.Ext.mk₀ a) =
+            I.extEquivCohomologyClass.symm (CochainComplex.HomComplex.CohomologyClass.mk c)
+'LinearStudy.shortExactInjectiveCocycleRealization' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.shortExactInjectiveCocycleRealization:true

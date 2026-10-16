@@ -1,0 +1,533 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-16T21:28:38.368724+00:00",
+  "source": "accepted Lean.findDeclarationRanges and ConstantInfo.getUsedConstantsAsSet from import-all compiler environment; traverse every owned auxiliary constant before merging compiler-recorded ranges",
+  "archiveSha256": "6aca2b8059115898eb70e01f9f85e2798e1d3f2784b674484301606eb2343fbb",
+  "newComponentOwn": 179,
+  "newComponentAllNeeded": 235,
+  "metadataComplete": true,
+  "excludedExternalGeneratedConstants": [],
+  "unmappedConstants": [],
+  "sourceHashes": {
+    "source/Linear/CochainConeLiftClassBridge.lean": "050cd9388367f141bb62533548b1d2f9914a56c49ba19b6015c2516194900b0c",
+    "source/Linear/CochainConeLiftDerivedBridge.lean": "4bbafc6aff655e5d774647da88d32d0f4485a68ef84f8d4e272ec932591d29f8",
+    "source/Linear/CochainConeLiftTriangleEquation.lean": "781fb9e3a8621d7b925432addc60ba2e1289977627fbde69577cd9ed98563994",
+    "source/Linear/CochainResolutionExtClass.lean": "6f33cae1917b0a20b66a881452be5ea2643997962317273210ea66348e180b0f",
+    "source/Linear/CochainShortExactRoofClass.lean": "80756a9380ac19d03a388183c2f1b221d0b5adc4ba76b4355618a3059f4cc052",
+    "source/Linear/ShortExactInjectiveCochainLift.lean": "6746782cc84992819be548ba083ee839b78212773e7d2c68c4c77ec544d22b51",
+    "source/Linear/ShortExactInjectiveCocycleRealization.lean": "92844448df1be527ffb5fbfdc1ad463e012f8e80c130a4a364c19e1ce6b2d806",
+    "source/Linear/ShortExactRoofInjectiveCocycle.lean": "adcdbb6300d972516d1050cf3c92e6316f918be41aebc8bc2998bf86b864ff3f",
+    "source/Linear.lean": "0a800bc8a87fca75058aed7c2ff2ebe9f64add8536689e7f13f8f33b3432ce25",
+    "source/lean-toolchain": "bc84812c94489d1e3e191baa1dc10d5eb684382d7fe9d2a5ab085e72c1c67e47",
+    "source/lakefile.toml": "12e6d3039c6ed00731bcf1c8f8e9c116e81771e6a74cad289b920b767f94d9ee",
+    "source/lake-manifest.json": "ef71ef5fb13fd129bbf52a72216543bfd4c8e2b752dd3234d0f18b9964b104da",
+    "source/lean_runner.py": "29184f494ad21d0245b2123e1de05ef5ac8e1f9ee4ca3760eb03dcf1fbc43a29",
+    "source/resource_guard.py": "e645a05b3d1cda35df85b69261c8e151ec249adc6f077f5558df656fded10111",
+    "source/resource-policy.json": "a76f8486e8ef675fd26b6506704d02c82d4d453be35f4ac2477a0dbc6cca5833",
+    "source/RESOURCE_SAFETY.md": "0c949c5650ac6aa8fd712989d07dca7b6f9aadbc5d0a779ff2804cbb9d408e43",
+    "source/AGENTS.md": "77cb9ea044a7492301af545ce02e5209302ba73b1b7bb74682386640d61dc385",
+    "source/CheckOriginalExtRestrictionConeLiftClassBridge4e5ae4bd9dce.lean": "b6f621b4e2d2f98d2554ef9b13d3b3c86cc5717a69a20e85c785484c789d10a0",
+    "source/CheckOriginalExtRestrictionConeLiftDerivedBridge1f9d7acbb52e.lean": "076d3e9d693aea90fd5be9e50bb7e72bd1b30fa2c3b2de46ac413e349f998aef",
+    "source/CheckOriginalExtRestrictionConeLiftTriangleEquation86794a2ca56c.lean": "d0cdb07a8051e6ffe44a589a325901bb473cc3dde3a2b3b4f79d765775ecb7dd",
+    "source/CheckOriginalExtRestrictionShortExactInjectiveCochainLift9ee016f5c08d.lean": "f2131932de6fcc116b552f7e0388c9e5122aa78fa318fd3d84b5bf170de0bea0",
+    "source/CheckOriginalExtRestrictionShortExactRoofInjectiveCocycled9ad393e4bd7.lean": "57513ffe32551851a95f9a82ee572512c64a7bcce383832c356f02765527561c",
+    "source/CheckOriginalExtRestrictionShortExactInjectiveCocycleRealization5ea00879275a.lean": "f2944edec000209c938fba6266256e573b055557a2084704a0c86bae29f45072"
+  },
+  "cards": {
+    "cochain-to-derived": {
+      "declarations": [
+        "LinearStudy.cochainConeLiftClassBridge",
+        "LinearStudy.cochainDerivedMap_eq_of_classEq",
+        "LinearStudy.cochainConeLiftDerivedBridge"
+      ],
+      "own": 55,
+      "allNeeded": 55,
+      "metadata": "complete",
+      "unmappedConstants": []
+    },
+    "cone-sign": {
+      "declarations": [
+        "LinearStudy.cochainConeTriangle_mor3_neg_fst",
+        "LinearStudy.cochainConeLiftTriangleEquation"
+      ],
+      "own": 26,
+      "allNeeded": 81,
+      "metadata": "complete",
+      "unmappedConstants": []
+    },
+    "construct-lifts": {
+      "declarations": [
+        "LinearStudy.shortExactInjectiveCochainLift_exists"
+      ],
+      "own": 34,
+      "allNeeded": 34,
+      "metadata": "complete",
+      "unmappedConstants": []
+    },
+    "same-roof-cocycle": {
+      "declarations": [
+        "LinearStudy.shortExactRoof_comp_eq_neg_injectiveCocycle",
+        "LinearStudy.shortExactInjectiveCocycleRealization"
+      ],
+      "own": 64,
+      "allNeeded": 235,
+      "metadata": "complete",
+      "unmappedConstants": []
+    }
+  },
+  "declarations": {
+    "LinearStudy.cochainResolutionExtClass_hom": {
+      "path": "source/Linear/CochainResolutionExtClass.lean",
+      "module": "Linear.CochainResolutionExtClass",
+      "startLine": 30,
+      "endLine": 41,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.cochainResolutionExtClass._proof_7",
+        "LinearStudy.cochainResolutionExtClass._proof_1",
+        "LinearStudy.cochainResolutionExtClass._proof_5",
+        "LinearStudy.cochainResolutionExtClass._proof_4",
+        "LinearStudy.cochainResolutionExtClass",
+        "LinearStudy.cochainResolutionExtClass._proof_6"
+      ]
+    },
+    "LinearStudy.cochainResolutionExtClass": {
+      "path": "source/Linear/CochainResolutionExtClass.lean",
+      "module": "Linear.CochainResolutionExtClass",
+      "startLine": 14,
+      "endLine": 28,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.cochainResolutionExtClass._proof_7",
+        "LinearStudy.cochainResolutionExtClass._proof_1",
+        "LinearStudy.cochainResolutionExtClass._proof_2",
+        "LinearStudy.cochainResolutionExtClass._proof_3",
+        "LinearStudy.cochainResolutionExtClass._proof_5",
+        "LinearStudy.cochainResolutionExtClass._proof_4",
+        "LinearStudy.cochainResolutionExtClass._proof_6"
+      ]
+    },
+    "LinearStudy.cochainConeTriangle_mor3_neg_fst": {
+      "path": "source/Linear/CochainConeLiftDerivedBridge.lean",
+      "module": "Linear.CochainConeLiftDerivedBridge",
+      "startLine": 40,
+      "endLine": 44,
+      "lineCount": 5,
+      "dependencies": []
+    },
+    "LinearStudy.cochainResolutionTopExtClass": {
+      "path": "source/Linear/CochainResolutionExtClass.lean",
+      "module": "Linear.CochainResolutionExtClass",
+      "startLine": 43,
+      "endLine": 51,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.cochainResolutionExtClass._proof_1",
+        "LinearStudy.cochainResolutionExtClass._proof_2",
+        "LinearStudy.cochainResolutionTopExtClass._proof_3",
+        "LinearStudy.cochainResolutionExtClass._proof_3",
+        "LinearStudy.cochainResolutionExtClass",
+        "LinearStudy.cochainResolutionTopExtClass._proof_1"
+      ]
+    },
+    "LinearStudy.cochainConeLiftDerivedBridge": {
+      "path": "source/Linear/CochainConeLiftDerivedBridge.lean",
+      "module": "Linear.CochainConeLiftDerivedBridge",
+      "startLine": 26,
+      "endLine": 37,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.cochainDerivedMap_eq_of_classEq",
+        "LinearStudy.cochainConeLiftClassBridge"
+      ]
+    },
+    "LinearStudy.cochainShortExactRoofClass_eq_extClass": {
+      "path": "source/Linear/CochainShortExactRoofClass.lean",
+      "module": "Linear.CochainShortExactRoofClass",
+      "startLine": 25,
+      "endLine": 36,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.cochainShortExactRoofClass._proof_3",
+        "LinearStudy.cochainResolutionExtClass_hom",
+        "LinearStudy.cochainShortExactRoofClass._proof_9",
+        "LinearStudy.cochainShortExactRoofClass._proof_2",
+        "LinearStudy.cochainResolutionExtClass",
+        "LinearStudy.cochainShortExactRoofClass._proof_1",
+        "LinearStudy.cochainShortExactRoofClass"
+      ]
+    },
+    "LinearStudy.shortExactInjectiveCochainLift_exists": {
+      "path": "source/Linear/ShortExactInjectiveCochainLift.lean",
+      "module": "Linear.ShortExactInjectiveCochainLift",
+      "startLine": 15,
+      "endLine": 48,
+      "lineCount": 34,
+      "dependencies": []
+    },
+    "LinearStudy.cochainShortExactRoofClass_contravariant_zero_sign": {
+      "path": "source/Linear/CochainShortExactRoofClass.lean",
+      "module": "Linear.CochainShortExactRoofClass",
+      "startLine": 38,
+      "endLine": 45,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.cochainShortExactRoofClass",
+        "LinearStudy.cochainShortExactRoofClass_eq_extClass"
+      ]
+    },
+    "LinearStudy.cochainDerivedMap_eq_of_classEq": {
+      "path": "source/Linear/CochainConeLiftDerivedBridge.lean",
+      "module": "Linear.CochainConeLiftDerivedBridge",
+      "startLine": 15,
+      "endLine": 24,
+      "lineCount": 10,
+      "dependencies": []
+    },
+    "LinearStudy.shortExactInjectiveCocycleRealization": {
+      "path": "source/Linear/ShortExactInjectiveCocycleRealization.lean",
+      "module": "Linear.ShortExactInjectiveCocycleRealization",
+      "startLine": 16,
+      "endLine": 38,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.shortExactInjectiveCochainLift_exists",
+        "LinearStudy.cochainShortExactRoofClass_contravariant_zero_sign",
+        "LinearStudy.shortExactRoof_comp_eq_neg_injectiveCocycle",
+        "LinearStudy.cochainShortExactRoofClass"
+      ]
+    },
+    "LinearStudy.cochainShortExactRoofClass": {
+      "path": "source/Linear/CochainShortExactRoofClass.lean",
+      "module": "Linear.CochainShortExactRoofClass",
+      "startLine": 15,
+      "endLine": 23,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.cochainShortExactRoofClass._proof_3",
+        "LinearStudy.cochainShortExactRoofClass._proof_9",
+        "LinearStudy.cochainShortExactRoofClass._proof_2",
+        "LinearStudy.cochainResolutionExtClass",
+        "LinearStudy.cochainShortExactRoofClass._proof_1"
+      ]
+    },
+    "LinearStudy.shortExactRoof_comp_eq_neg_injectiveCocycle": {
+      "path": "source/Linear/ShortExactRoofInjectiveCocycle.lean",
+      "module": "Linear.ShortExactRoofInjectiveCocycle",
+      "startLine": 19,
+      "endLine": 59,
+      "lineCount": 41,
+      "dependencies": [
+        "LinearStudy.cochainConeLiftTriangleEquation",
+        "LinearStudy.cochainShortExactRoofClass",
+        "LinearStudy.cochainShortExactRoofClass_eq_extClass"
+      ]
+    },
+    "LinearStudy.cochainConeLiftClassBridge": {
+      "path": "source/Linear/CochainConeLiftClassBridge.lean",
+      "module": "Linear.CochainConeLiftClassBridge",
+      "startLine": 15,
+      "endLine": 47,
+      "lineCount": 33,
+      "dependencies": [
+        "_private.Linear.CochainConeLiftClassBridge.0.LinearStudy.cochainConeLiftClassBridge._proof_1_1",
+        "_private.Linear.CochainConeLiftClassBridge.0.LinearStudy.cochainConeLiftClassBridge._abel_1_2"
+      ]
+    },
+    "LinearStudy.cochainConeLiftTriangleEquation": {
+      "path": "source/Linear/CochainConeLiftTriangleEquation.lean",
+      "module": "Linear.CochainConeLiftTriangleEquation",
+      "startLine": 14,
+      "endLine": 34,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.cochainConeLiftDerivedBridge",
+        "LinearStudy.cochainConeTriangle_mor3_neg_fst"
+      ]
+    }
+  },
+  "constants": {
+    "LinearStudy.cochainResolutionExtClass_hom": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [
+        "LinearStudy.cochainResolutionExtClass._proof_7",
+        "LinearStudy.cochainResolutionExtClass._proof_1",
+        "LinearStudy.cochainResolutionExtClass._proof_5",
+        "LinearStudy.cochainResolutionExtClass._proof_4",
+        "LinearStudy.cochainResolutionExtClass",
+        "LinearStudy.cochainResolutionExtClass._proof_6"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionExtClass_hom"
+    },
+    "_private.Linear.CochainResolutionExtClass.0.LinearStudy.cochainResolutionTopExtClass._proof_2": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionTopExtClass"
+    },
+    "_private.Linear.CochainConeLiftClassBridge.0.LinearStudy.cochainConeLiftClassBridge._proof_1_1": {
+      "module": "Linear.CochainConeLiftClassBridge",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftClassBridge"
+    },
+    "LinearStudy.cochainResolutionExtClass": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [
+        "LinearStudy.cochainResolutionExtClass._proof_7",
+        "LinearStudy.cochainResolutionExtClass._proof_1",
+        "LinearStudy.cochainResolutionExtClass._proof_2",
+        "LinearStudy.cochainResolutionExtClass._proof_3",
+        "LinearStudy.cochainResolutionExtClass._proof_5",
+        "LinearStudy.cochainResolutionExtClass._proof_4",
+        "LinearStudy.cochainResolutionExtClass._proof_6"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionExtClass"
+    },
+    "LinearStudy.cochainShortExactRoofClass._proof_6": {
+      "module": "Linear.CochainShortExactRoofClass",
+      "dependencies": [
+        "LinearStudy.cochainShortExactRoofClass._proof_4",
+        "LinearStudy.cochainShortExactRoofClass._proof_1",
+        "LinearStudy.cochainShortExactRoofClass._proof_5"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainShortExactRoofClass"
+    },
+    "LinearStudy.cochainConeTriangle_mor3_neg_fst": {
+      "module": "Linear.CochainConeLiftDerivedBridge",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainConeTriangle_mor3_neg_fst"
+    },
+    "LinearStudy.cochainResolutionTopExtClass": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [
+        "LinearStudy.cochainResolutionExtClass._proof_1",
+        "LinearStudy.cochainResolutionExtClass._proof_2",
+        "LinearStudy.cochainResolutionTopExtClass._proof_3",
+        "LinearStudy.cochainResolutionExtClass._proof_3",
+        "LinearStudy.cochainResolutionExtClass",
+        "LinearStudy.cochainResolutionTopExtClass._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionTopExtClass"
+    },
+    "_private.Linear.ShortExactRoofInjectiveCocycle.0.LinearStudy.shortExactRoof_comp_eq_neg_injectiveCocycle._simp_1_2": {
+      "module": "Linear.ShortExactRoofInjectiveCocycle",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.shortExactRoof_comp_eq_neg_injectiveCocycle"
+    },
+    "LinearStudy.cochainShortExactRoofClass._proof_3": {
+      "module": "Linear.CochainShortExactRoofClass",
+      "dependencies": [
+        "LinearStudy.cochainShortExactRoofClass._proof_2",
+        "LinearStudy.cochainShortExactRoofClass._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainShortExactRoofClass"
+    },
+    "LinearStudy.cochainConeLiftDerivedBridge": {
+      "module": "Linear.CochainConeLiftDerivedBridge",
+      "dependencies": [
+        "LinearStudy.cochainDerivedMap_eq_of_classEq",
+        "LinearStudy.cochainConeLiftClassBridge"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftDerivedBridge"
+    },
+    "LinearStudy.cochainResolutionTopExtClass._proof_1": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionTopExtClass"
+    },
+    "LinearStudy.cochainShortExactRoofClass._proof_9": {
+      "module": "Linear.CochainShortExactRoofClass",
+      "dependencies": [
+        "LinearStudy.cochainShortExactRoofClass._proof_4",
+        "LinearStudy.cochainShortExactRoofClass._proof_6",
+        "LinearStudy.cochainShortExactRoofClass._proof_8",
+        "LinearStudy.cochainShortExactRoofClass._proof_1",
+        "LinearStudy.cochainShortExactRoofClass._proof_5",
+        "LinearStudy.cochainShortExactRoofClass._proof_7"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainShortExactRoofClass"
+    },
+    "LinearStudy.cochainShortExactRoofClass._proof_1": {
+      "module": "Linear.CochainShortExactRoofClass",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainShortExactRoofClass"
+    },
+    "_private.Linear.CochainConeLiftClassBridge.0.LinearStudy.cochainConeLiftClassBridge._abel_1_2": {
+      "module": "Linear.CochainConeLiftClassBridge",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftClassBridge"
+    },
+    "LinearStudy.cochainShortExactRoofClass_eq_extClass": {
+      "module": "Linear.CochainShortExactRoofClass",
+      "dependencies": [
+        "LinearStudy.cochainShortExactRoofClass._proof_3",
+        "LinearStudy.cochainResolutionExtClass_hom",
+        "LinearStudy.cochainShortExactRoofClass._proof_9",
+        "LinearStudy.cochainShortExactRoofClass._proof_2",
+        "LinearStudy.cochainResolutionExtClass",
+        "LinearStudy.cochainShortExactRoofClass._proof_1",
+        "LinearStudy.cochainShortExactRoofClass"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainShortExactRoofClass_eq_extClass"
+    },
+    "LinearStudy.cochainResolutionExtClass._proof_7": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionExtClass"
+    },
+    "LinearStudy.shortExactInjectiveCochainLift_exists": {
+      "module": "Linear.ShortExactInjectiveCochainLift",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.shortExactInjectiveCochainLift_exists"
+    },
+    "LinearStudy.cochainResolutionExtClass._proof_5": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [
+        "LinearStudy.cochainResolutionExtClass._proof_1",
+        "LinearStudy.cochainResolutionExtClass._proof_2",
+        "LinearStudy.cochainResolutionExtClass._proof_3"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionExtClass"
+    },
+    "LinearStudy.cochainShortExactRoofClass_contravariant_zero_sign": {
+      "module": "Linear.CochainShortExactRoofClass",
+      "dependencies": [
+        "LinearStudy.cochainShortExactRoofClass",
+        "LinearStudy.cochainShortExactRoofClass_eq_extClass"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainShortExactRoofClass_contravariant_zero_sign"
+    },
+    "LinearStudy.cochainDerivedMap_eq_of_classEq": {
+      "module": "Linear.CochainConeLiftDerivedBridge",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainDerivedMap_eq_of_classEq"
+    },
+    "LinearStudy.cochainShortExactRoofClass._proof_2": {
+      "module": "Linear.CochainShortExactRoofClass",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainShortExactRoofClass"
+    },
+    "LinearStudy.cochainResolutionExtClass._proof_6": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionExtClass"
+    },
+    "LinearStudy.shortExactInjectiveCocycleRealization": {
+      "module": "Linear.ShortExactInjectiveCocycleRealization",
+      "dependencies": [
+        "LinearStudy.shortExactInjectiveCochainLift_exists",
+        "LinearStudy.cochainShortExactRoofClass_contravariant_zero_sign",
+        "LinearStudy.shortExactRoof_comp_eq_neg_injectiveCocycle",
+        "LinearStudy.cochainShortExactRoofClass"
+      ],
+      "recordedRangeOwner": "LinearStudy.shortExactInjectiveCocycleRealization"
+    },
+    "LinearStudy.cochainShortExactRoofClass._proof_4": {
+      "module": "Linear.CochainShortExactRoofClass",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainShortExactRoofClass"
+    },
+    "LinearStudy.cochainResolutionExtClass._proof_4": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionExtClass"
+    },
+    "LinearStudy.cochainShortExactRoofClass": {
+      "module": "Linear.CochainShortExactRoofClass",
+      "dependencies": [
+        "LinearStudy.cochainShortExactRoofClass._proof_3",
+        "LinearStudy.cochainShortExactRoofClass._proof_9",
+        "LinearStudy.cochainShortExactRoofClass._proof_2",
+        "LinearStudy.cochainResolutionExtClass",
+        "LinearStudy.cochainShortExactRoofClass._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainShortExactRoofClass"
+    },
+    "CategoryTheory.ShortComplex.map.eq_1": {
+      "module": "Linear.ShortExactRoofInjectiveCocycle",
+      "dependencies": [],
+      "recordedRangeOwner": null
+    },
+    "LinearStudy.cochainShortExactRoofClass._proof_8": {
+      "module": "Linear.CochainShortExactRoofClass",
+      "dependencies": [
+        "LinearStudy.cochainShortExactRoofClass._proof_4",
+        "LinearStudy.cochainShortExactRoofClass._proof_1",
+        "LinearStudy.cochainShortExactRoofClass._proof_5"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainShortExactRoofClass"
+    },
+    "LinearStudy.shortExactRoof_comp_eq_neg_injectiveCocycle": {
+      "module": "Linear.ShortExactRoofInjectiveCocycle",
+      "dependencies": [
+        "LinearStudy.cochainConeLiftTriangleEquation",
+        "LinearStudy.cochainShortExactRoofClass",
+        "LinearStudy.cochainShortExactRoofClass_eq_extClass"
+      ],
+      "recordedRangeOwner": "LinearStudy.shortExactRoof_comp_eq_neg_injectiveCocycle"
+    },
+    "LinearStudy.cochainResolutionExtClass._proof_3": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionExtClass"
+    },
+    "LinearStudy.cochainResolutionExtClass._proof_2": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [
+        "LinearStudy.cochainResolutionExtClass._proof_1"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionExtClass"
+    },
+    "LinearStudy.cochainConeLiftClassBridge": {
+      "module": "Linear.CochainConeLiftClassBridge",
+      "dependencies": [
+        "_private.Linear.CochainConeLiftClassBridge.0.LinearStudy.cochainConeLiftClassBridge._proof_1_1",
+        "_private.Linear.CochainConeLiftClassBridge.0.LinearStudy.cochainConeLiftClassBridge._abel_1_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftClassBridge"
+    },
+    "LinearStudy.cochainShortExactRoofClass._proof_5": {
+      "module": "Linear.CochainShortExactRoofClass",
+      "dependencies": [
+        "LinearStudy.cochainShortExactRoofClass._proof_4"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainShortExactRoofClass"
+    },
+    "LinearStudy.cochainResolutionExtClass._proof_1": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionExtClass"
+    },
+    "LinearStudy.cochainResolutionTopExtClass._proof_3": {
+      "module": "Linear.CochainResolutionExtClass",
+      "dependencies": [
+        "_private.Linear.CochainResolutionExtClass.0.LinearStudy.cochainResolutionTopExtClass._proof_2"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainResolutionTopExtClass"
+    },
+    "LinearStudy.cochainConeLiftTriangleEquation": {
+      "module": "Linear.CochainConeLiftTriangleEquation",
+      "dependencies": [
+        "LinearStudy.cochainConeLiftDerivedBridge",
+        "LinearStudy.cochainConeTriangle_mor3_neg_fst"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainConeLiftTriangleEquation"
+    },
+    "LinearStudy.cochainShortExactRoofClass._proof_7": {
+      "module": "Linear.CochainShortExactRoofClass",
+      "dependencies": [
+        "LinearStudy.cochainShortExactRoofClass._proof_4",
+        "LinearStudy.cochainShortExactRoofClass._proof_6",
+        "LinearStudy.cochainShortExactRoofClass._proof_1",
+        "LinearStudy.cochainShortExactRoofClass._proof_5"
+      ],
+      "recordedRangeOwner": "LinearStudy.cochainShortExactRoofClass"
+    }
+  },
+  "verification": {
+    "accepted": true,
+    "driver": "D:\\codex\\Math\\formalization\\linear\\research\\ActualShortExactRoofCocycleSourceRanges20261017.lean",
+    "sourceSha256": "bc2ccde3a2b489c5e3c44aa5cc7e7386d1618c9c3eceba9cac88f1112233bc15",
+    "logSha256": "884e5a5a3a03bb925f2b7174cf11bc4065c5e523f7d90280adf2cb291f9891d2",
+    "resourceSha256": "3f03fcd7032077f0ba2bd1ddd83b041ede666a6e40212c13cee20c7fabe08ead"
+  }
+}

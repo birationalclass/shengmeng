@@ -1,0 +1,12 @@
+@LinearStudy.shortExactInjectiveCochainLift_exists : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (S : CategoryTheory.ShortComplex A),
+  S.ShortExact →
+    ∀ (K : CochainComplex A ℤ) [CategoryTheory.Injective (K.X 0)] (a : (CochainComplex.singleFunctor A 0).obj S.X₁ ⟶ K),
+      ∃ (b : CochainComplex.HomComplex.Cochain ((CochainComplex.singleFunctor A 0).obj S.X₂) K 0) (c :
+        CochainComplex.HomComplex.Cocycle ((CochainComplex.singleFunctor A 0).obj S.X₃) K 1),
+        (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.f)).comp b ⋯ =
+            CochainComplex.HomComplex.Cochain.ofHom a ∧
+          CochainComplex.HomComplex.δ 0 1 b =
+            (CochainComplex.HomComplex.Cochain.ofHom ((CochainComplex.singleFunctor A 0).map S.g)).comp ↑c ⋯
+'LinearStudy.shortExactInjectiveCochainLift_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.shortExactInjectiveCochainLift_exists:true
