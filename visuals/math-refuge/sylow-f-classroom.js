@@ -1,6 +1,6 @@
 import {prepareBoard,paintPrepared} from './sylow-f-renderer.js';
 import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=classroom-clarity-20261017-2';
-import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=classroom-clarity-20261017-2';
+import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=pcm-wav-20261017-1';
 const $=id=>document.getElementById(id),query=new URLSearchParams(location.search);window.fRendererReady=true;
 let course,manifest,prepared,board=0,audio=new Audio(),playing=false,language='zh',generation=0,requestedTime=0,courseEpoch=0,preparing=false,playIntent=false,completedWall=0;
 let finishCurrent=()=>{},openingLocked=false;
@@ -44,7 +44,7 @@ function paint(){if(!course)return;const b=course.boards[board],item=manifest?.b
 }
 $('course').onchange=()=>loadCourse().catch(e=>$('status').textContent=e.message);$('board-select').onchange=e=>selectBoard(+e.target.value).catch(e=>$('status').textContent=e.message);
 $('prev').onclick=()=>selectBoard(board-1).catch(e=>$('status').textContent=e.message);$('next').onclick=()=>selectBoard(board+1).catch(e=>$('status').textContent=e.message);
-$('play').onclick=async()=>{if(!openingLocked&&board===0&&manifest?.openingSelection&&manifest.openingSelection.period!==openingPeriod())await loadCourse();openingLocked=true;if(!manifest){$('status').textContent='本板音频尚在生成，请先审阅逐行稿。';return;}playIntent=!playIntent;if(preparing){update();return;}if(!playIntent)audio.pause();else{const b=manifest.boards[board];if(audio.ended||audio.currentTime>=b.seconds-.02){finishCurrent();update();return;}if(completedWall&&b.boardHoldSeconds>0&&audio.currentTime>=b.seconds-b.boardHoldSeconds)audio.currentTime=Math.min(b.seconds-.005,Math.max(audio.currentTime,b.lastStrokeEnd+(Date.now()-completedWall)/1000));await playPrepared();}update();};
+$('play').onclick=async()=>{if(!openingLocked&&board===0&&manifest?.openingSelection&&manifest.openingSelection.period!==openingPeriod())await loadCourse();openingLocked=true;if(!manifest){$('status').textContent='本板音频尚在生成，请先审阅逐行稿。';return;}playIntent=!playIntent;if(preparing){update();return;}if(!playIntent){audio.pause();}else{const b=manifest.boards[board];if(audio.ended||audio.currentTime>=b.seconds-.02){finishCurrent();update();return;}if(completedWall&&b.boardHoldSeconds>0&&audio.currentTime>=b.seconds-b.boardHoldSeconds)audio.currentTime=Math.min(b.seconds-.005,Math.max(audio.currentTime,b.lastStrokeEnd+(Date.now()-completedWall)/1000));await playPrepared();}update();};
 $('complete').onclick=()=>{playIntent=false;audio.pause();playing=false;if(manifest)audio.currentTime=Math.max(0,manifest.boards[board].seconds-.01);requestedTime=Infinity;completedWall=Date.now();paint();update();};
 $('lang').onclick=async()=>{const resume=playIntent,t=audio.currentTime;language=language==='zh'?'en':'zh';await selectBoard(board,resume);if(manifest)audio.currentTime=t;paint();};
 $('seek').oninput=()=>{if(manifest){audio.currentTime=Number($('seek').value)/1000*manifest.boards[board].seconds;completedWall=audio.currentTime>=manifest.boards[board].lastStrokeEnd?Date.now():0;}paint();};

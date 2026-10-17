@@ -1,4 +1,4 @@
-import {primeClassroomAudio,disconnectClassroomAudio} from './classroom-audio-output.js?v=classroom-clarity-20261017-2';
+import {primeClassroomAudio,disconnectClassroomAudio} from './classroom-audio-output.js?v=pcm-wav-20261017-1';
 import {selectClassroomOpening,classroomAudioRate} from './classroom-opening.js?v=classroom-clarity-20261017-2';
 import {createResourceFetch} from './resource-fetch.js';
 import {createBackgroundAssets} from './background-assets.js';
@@ -25,7 +25,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
    const size=Number(response.headers.get('content-length'))||sizeHint,parts=[];let received=0;
    if(response.body?.getReader){const reader=response.body.getReader();for(;;){const {value,done}=await reader.read();if(done)break;if(mine!==epoch){await reader.cancel();return null;}parts.push(value);received+=value.byteLength;if(show){state.progress=size?Math.min(.99,received/size):null;emit();}}}
    else parts.push(await response.arrayBuffer());
-   if(mine!==epoch)return null;return new Blob(parts,{type:'audio/mpeg'});
+   if(mine!==epoch)return null;return new Blob(parts,{type:response.headers?.get?.('content-type')||(/\.wav(?:[?#]|$)/i.test(src)?'audio/wav':'audio/mpeg')});
    }finally{signal?.removeEventListener('abort',cancel);controllers.delete(controller);}
  }
  async function bytes(src,mine,show,sizeHint=0,signal){
@@ -74,7 +74,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   assetsPreparing=true;state.phase='preparing';emit();
   try{const ready=await boardReadiness;if(ready===false)throw Error('当前黑板尚未就绪');if(target&&manifest?.policy?.defaultPlaybackRate)await primeClassroomAudio(target);}
   catch(error){if(mine===epoch&&token===playToken&&desired){pause();state.phase='error';state.errorKind='board';state.error=(error.message||'当前黑板加载失败')+' · 点击重试';emit();}return false;}
-  if(mine!==epoch||token!==playToken||!desired||audio!==target)return false;assetsPreparing=false;
+  if(mine!==epoch||token!==playToken||!desired||audio!==target){return false;}assetsPreparing=false;
   if(activity){activity.stamp=now();activity.running=true;state.phase='playing';state.error='';sync();emit();return true;}
   try{await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){if(audio!==target||!desired||!contextActive)target.pause();return false;}state.phase='playing';state.error='';state.errorKind='';emit();return true;}
   catch{if(mine!==epoch||token!==playToken)return false;desired=false;state.phase='paused';state.error='点击黑板播放语音';emit();return false;}
