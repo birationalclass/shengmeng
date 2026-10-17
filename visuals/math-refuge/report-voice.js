@@ -1,5 +1,5 @@
 import {prepareClassroomAudioBlob} from './classroom-audio-decode.js?v=mp3-predecode-1';
-import {primeClassroomAudio,disconnectClassroomAudio} from './classroom-audio-output.js?v=pcm-wav-20261017-1';
+import {primeClassroomAudio,disconnectClassroomAudio} from './classroom-audio-output.js?v=native-pcm-20261017-1';
 import {selectClassroomOpening,classroomAudioRate} from './classroom-opening.js?v=classroom-clarity-20261017-2';
 import {createResourceFetch} from './resource-fetch.js';
 import {createBackgroundAssets} from './background-assets.js';
@@ -77,7 +77,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   catch(error){if(mine===epoch&&token===playToken&&desired){pause();state.phase='error';state.errorKind='board';state.error=(error.message||'当前黑板加载失败')+' · 点击重试';emit();}return false;}
   if(mine!==epoch||token!==playToken||!desired||audio!==target){return false;}assetsPreparing=false;
   if(activity){activity.stamp=now();activity.running=true;state.phase='playing';state.error='';sync();emit();return true;}
-  try{await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){if(audio!==target||!desired||!contextActive)target.pause();return false;}state.phase='playing';state.error='';state.errorKind='';emit();return true;}
+  try{if(manifest?.policy?.thinkingUsesRealSeconds)sync();else target.playbackRate=playbackRate;await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){if(audio!==target||!desired||!contextActive)target.pause();return false;}state.phase='playing';state.error='';state.errorKind='';emit();return true;}
   catch{if(mine!==epoch||token!==playToken)return false;desired=false;state.phase='paused';state.error='点击黑板播放语音';emit();return false;}
  }
  async function advance(i){const resume=desired,mine=epoch,intent=playToken;try{if(await attach(i)&&mine===epoch&&resume&&desired)await play();}catch(error){if(mine===epoch&&intent===playToken){desired=false;state.phase='error';state.error='语音下载失败 · 点击重试';emit();}}}
