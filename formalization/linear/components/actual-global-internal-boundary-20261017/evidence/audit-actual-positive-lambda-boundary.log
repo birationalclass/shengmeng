@@ -1,0 +1,40 @@
+@LinearStudy.schemeModuleInjectiveCocycleToInternalExt_apply : ∀ {X : AlgebraicGeometry.Scheme} {N : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (P : X.Modules) (q : ℕ) (a : ↥(LinearStudy.injectiveCocycleGroup I P q)),
+  (LinearStudy.schemeModuleInjectiveCocycleToInternalExt I P q) a =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInjectiveInternalHomClassMap I P q) a)
+      (LinearStudy.schemeModuleInternalExtInjectiveResolutionIso P N q I).inv
+'LinearStudy.schemeModuleInjectiveCocycleToInternalExt_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInjectiveCocycleToInternalExt_boundary : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) {N : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ) (a : ↥(LinearStudy.injectiveCocycleGroup I S.X₁ q))
+  (b : S.X₂ ⟶ I.cocomplex.X q) (c : ↥(LinearStudy.injectiveCocycleGroup I S.X₃ (q + 1))),
+  CategoryTheory.CategoryStruct.comp S.f b = ↑a →
+    CategoryTheory.CategoryStruct.comp b (I.cocomplex.d q (q + 1)) = CategoryTheory.CategoryStruct.comp S.g ↑c →
+      CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInjectiveCocycleToInternalExt I S.X₁ q) a)
+          (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q) =
+        (LinearStudy.schemeModuleInjectiveCocycleToInternalExt I S.X₃ (q + 1)) c
+'LinearStudy.schemeModuleInjectiveCocycleToInternalExt_boundary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtViaResolution_boundary : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) {N : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (n : ℕ) (e : CategoryTheory.Abelian.Ext S.X₁ N (n + 1)),
+  (LinearStudy.schemeModuleGlobalToInternalExtViaResolution I S.X₃ (n + 1))
+      ((CategoryTheory.Abelian.Ext.δ hS (n + 1) (n + 1 + 1) ⋯) e) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleGlobalToInternalExtViaResolution I S.X₁ n) e)
+      (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I (n + 1))
+'LinearStudy.schemeModuleGlobalToInternalExtViaResolution_boundary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExt_boundary : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules) (n : ℕ)
+  (e : CategoryTheory.Abelian.Ext S.X₁ N (n + 1)),
+  (LinearStudy.schemeModuleGlobalToInternalExt S.X₃ N (n + 1))
+      ((CategoryTheory.Abelian.Ext.δ hS (n + 1) (n + 1 + 1) ⋯) e) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleGlobalToInternalExt S.X₁ N n) e)
+      (LinearStudy.schemeModuleInternalExtSourceBoundary S hS N (n + 1))
+'LinearStudy.schemeModuleGlobalToInternalExt_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInjectiveCocycleToInternalExt_apply:true
+ROLECHECK:LinearStudy.schemeModuleInjectiveCocycleToInternalExt_boundary:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtViaResolution_boundary:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_boundary:true

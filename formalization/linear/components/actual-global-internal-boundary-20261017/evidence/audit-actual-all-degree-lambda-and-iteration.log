@@ -1,0 +1,229 @@
+@LinearStudy.schemeModuleGlobalToInternalExtAll : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) →
+    (q : ℕ) →
+      CategoryTheory.Abelian.Ext P N q →+
+        (SheafOfModules.unit X.ringCatSheaf ⟶ LinearStudy.schemeModuleInternalExt P N q)
+'LinearStudy.schemeModuleGlobalToInternalExtAll' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtAll_zero : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules),
+  LinearStudy.schemeModuleGlobalToInternalExtAll P N 0 =
+    (LinearStudy.schemeModuleHomToInternalExtZero P N).comp CategoryTheory.Abelian.Ext.addEquiv₀.toAddMonoidHom
+'LinearStudy.schemeModuleGlobalToInternalExtAll_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtAll_succ : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules) (n : ℕ),
+  LinearStudy.schemeModuleGlobalToInternalExtAll P N (n + 1) = LinearStudy.schemeModuleGlobalToInternalExt P N n
+'LinearStudy.schemeModuleGlobalToInternalExtAll_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtAll_mkZero : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules) (a : P ⟶ N),
+  (LinearStudy.schemeModuleGlobalToInternalExtAll P N 0) (CategoryTheory.Abelian.Ext.mk₀ a) =
+    (LinearStudy.schemeModuleHomToInternalExtZero P N) a
+'LinearStudy.schemeModuleGlobalToInternalExtAll_mkZero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtAll_boundary : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) (N : X.Modules) (q : ℕ)
+  (e : CategoryTheory.Abelian.Ext S.X₁ N q),
+  (LinearStudy.schemeModuleGlobalToInternalExtAll S.X₃ N (q + 1)) ((CategoryTheory.Abelian.Ext.δ hS q (q + 1) ⋯) e) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleGlobalToInternalExtAll S.X₁ N q) e)
+      (LinearStudy.schemeModuleInternalExtSourceBoundary S hS N q)
+'LinearStudy.schemeModuleGlobalToInternalExtAll_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleCochainInternalBoundaryStep : {X : AlgebraicGeometry.Scheme} →
+  (K : CochainComplex X.Modules ℤ) →
+    {E : X.Modules} →
+      (N : X.Modules) →
+        (r : ℕ) →
+          (alpha : K ⟶ (CochainComplex.singleFunctor X.Modules 0).obj E) →
+            [QuasiIso alpha] →
+              (n : ℕ) →
+                LinearStudy.schemeModuleInternalExt
+                    (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r n)) N n ⟶
+                  LinearStudy.schemeModuleInternalExt
+                    (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r (n + 1))) N (n + 1)
+'LinearStudy.schemeModuleCochainInternalBoundaryStep' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleCochainInternalBoundaryStep_eq : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : CochainComplex X.Modules ℤ) {E : X.Modules} (N : X.Modules) (r : ℕ)
+  (alpha : K ⟶ (CochainComplex.singleFunctor X.Modules 0).obj E) [inst : QuasiIso alpha] (n : ℕ) (hn : n < r),
+  LinearStudy.schemeModuleCochainInternalBoundaryStep K N r alpha n =
+    LinearStudy.schemeModuleInternalExtSourceBoundary
+      (LinearStudy.cochainOpcycleSourceSequence K (LinearStudy.cochainSourceDegree r n)) ⋯ N n
+'LinearStudy.schemeModuleCochainInternalBoundaryStep_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleCochainIteratedInternalBoundary : {X : AlgebraicGeometry.Scheme} →
+  (K : CochainComplex X.Modules ℤ) →
+    {E : X.Modules} →
+      (N : X.Modules) →
+        (r : ℕ) →
+          (alpha : K ⟶ (CochainComplex.singleFunctor X.Modules 0).obj E) →
+            [QuasiIso alpha] →
+              (n : ℕ) →
+                n ≤ r →
+                  (LinearStudy.schemeModuleInternalExt
+                      (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)) N 0 ⟶
+                    LinearStudy.schemeModuleInternalExt
+                      (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r n)) N n)
+'LinearStudy.schemeModuleCochainIteratedInternalBoundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleCochainIteratedInternalBoundary_zero : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : CochainComplex X.Modules ℤ) {E : X.Modules} (N : X.Modules) (r : ℕ)
+  (alpha : K ⟶ (CochainComplex.singleFunctor X.Modules 0).obj E) [inst : QuasiIso alpha],
+  LinearStudy.schemeModuleCochainIteratedInternalBoundary K N r alpha 0 ⋯ =
+    CategoryTheory.CategoryStruct.id
+      (LinearStudy.schemeModuleInternalExt (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)) N 0)
+'LinearStudy.schemeModuleCochainIteratedInternalBoundary_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleCochainIteratedInternalBoundary_succ : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : CochainComplex X.Modules ℤ) {E : X.Modules} (N : X.Modules) (r : ℕ)
+  (alpha : K ⟶ (CochainComplex.singleFunctor X.Modules 0).obj E) [inst : QuasiIso alpha] (n : ℕ) (hn : n + 1 ≤ r),
+  LinearStudy.schemeModuleCochainIteratedInternalBoundary K N r alpha (n + 1) hn =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleCochainIteratedInternalBoundary K N r alpha n ⋯)
+      (LinearStudy.schemeModuleInternalExtSourceBoundary
+        (LinearStudy.cochainOpcycleSourceSequence K (LinearStudy.cochainSourceDegree r n)) ⋯ N n)
+'LinearStudy.schemeModuleCochainIteratedInternalBoundary_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtAll_iteratedBoundary : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : CochainComplex X.Modules ℤ) {E : X.Modules} (N : X.Modules) (r : ℕ)
+  (alpha : K ⟶ (CochainComplex.singleFunctor X.Modules 0).obj E) [inst : QuasiIso alpha] (n : ℕ) (hn : n ≤ r)
+  (e : CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)) N 0),
+  (LinearStudy.schemeModuleGlobalToInternalExtAll (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r n))
+        N n)
+      ((LinearStudy.cochainOpcycleIteratedBoundary K r alpha n hn) e) =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleGlobalToInternalExtAll
+          (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)) N 0)
+        e)
+      (LinearStudy.schemeModuleCochainIteratedInternalBoundary K N r alpha n hn)
+'LinearStudy.schemeModuleGlobalToInternalExtAll_iteratedBoundary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleCochainResolutionTopExtClass_internalBoundary : ∀ {X : AlgebraicGeometry.Scheme}
+  (K : CochainComplex X.Modules ℤ) [K.IsStrictlyLE 0] {E N : X.Modules} (r : ℕ),
+  0 < r →
+    ∀ (alpha : K ⟶ (CochainComplex.singleFunctor X.Modules 0).obj E) [inst : QuasiIso alpha] (a : K.X (-↑r) ⟶ N)
+      (ha : CategoryTheory.CategoryStruct.comp (K.d (-↑r - 1) (-↑r)) a = 0),
+      (LinearStudy.schemeModuleGlobalToInternalExtAll
+            (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r r)) N r)
+          ((CategoryTheory.Abelian.Ext.mk₀
+                (LinearStudy.cochainSourceTerminalMap r (LinearStudy.cochainAugmentationOpcycle alpha))).comp
+            (LinearStudy.cochainResolutionTopExtClass K r alpha a ha) ⋯) =
+        CategoryTheory.CategoryStruct.comp
+          ((LinearStudy.schemeModuleHomToInternalExtZero
+              (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)) N)
+            (LinearStudy.cochainTopOpcycleFunctional K r a ha))
+          (LinearStudy.schemeModuleCochainIteratedInternalBoundary K N r alpha r ⋯)
+'LinearStudy.schemeModuleCochainResolutionTopExtClass_internalBoundary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalChainTopExtClass_internalBoundary : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E N : X.Modules} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) [inst : QuasiIso alpha] (a : C.X r ⟶ N)
+      (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+      (LinearStudy.schemeModuleGlobalToInternalExtAll
+            (HomologicalComplex.opcycles (LinearStudy.originalChainAsCochain C) (LinearStudy.cochainSourceDegree r r)) N
+            r)
+          ((CategoryTheory.Abelian.Ext.mk₀
+                (LinearStudy.cochainSourceTerminalMap r
+                  (LinearStudy.cochainAugmentationOpcycle
+                    (LinearStudy.originalChainAugmentationAsCochain C alpha)))).comp
+            (LinearStudy.originalChainTopExtClass C r alpha a ha) ⋯) =
+        CategoryTheory.CategoryStruct.comp
+          ((LinearStudy.schemeModuleHomToInternalExtZero
+              (HomologicalComplex.opcycles (LinearStudy.originalChainAsCochain C) (LinearStudy.cochainSourceDegree r 0))
+              N)
+            (LinearStudy.originalChainTopOpcycleFunctional C r a ha))
+          (LinearStudy.schemeModuleCochainIteratedInternalBoundary (LinearStudy.originalChainAsCochain C) N r
+            (LinearStudy.originalChainAugmentationAsCochain C alpha) r ⋯)
+'LinearStudy.schemeModuleOriginalChainTopExtClass_internalBoundary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeExtUniverseEquiv_originalChainTopExtClass : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : CategoryTheory.HasExt A] [inst_4 : HasDerivedCategory A] (C : ChainComplex A ℕ) {E N : A} (r : ℕ)
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_5 : QuasiIso alpha] (a : C.X r ⟶ N)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  (LinearStudy.nativeExtUniverseEquiv E N r) (LinearStudy.originalChainTopExtClass C r alpha a ha) =
+    LinearStudy.originalChainTopExtClass C r alpha a ha
+'LinearStudy.nativeExtUniverseEquiv_originalChainTopExtClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOriginalChainTopExtClassSmall_eq_native : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E N : X.Modules} (r : ℕ) (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E)
+  (hAlpha : QuasiIso alpha) (a : C.X r ⟶ N) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha a ha =
+    LinearStudy.originalChainTopExtClass C r alpha a ha
+'LinearStudy.schemeModuleOriginalChainTopExtClassSmall_eq_native' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalSmallClass_internalBoundary : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E N : X.Modules} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ N)
+      (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+      (LinearStudy.schemeModuleGlobalToInternalExtAll
+            (HomologicalComplex.opcycles (LinearStudy.originalChainAsCochain C) (LinearStudy.cochainSourceDegree r r)) N
+            r)
+          ((CategoryTheory.Abelian.Ext.mk₀
+                (LinearStudy.cochainSourceTerminalMap r
+                  (LinearStudy.cochainAugmentationOpcycle
+                    (LinearStudy.originalChainAugmentationAsCochain C alpha)))).comp
+            (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha a ha) ⋯) =
+        CategoryTheory.CategoryStruct.comp
+          ((LinearStudy.schemeModuleHomToInternalExtZero
+              (HomologicalComplex.opcycles (LinearStudy.originalChainAsCochain C) (LinearStudy.cochainSourceDegree r 0))
+              N)
+            (LinearStudy.originalChainTopOpcycleFunctional C r a ha))
+          (LinearStudy.schemeModuleCochainIteratedInternalBoundary (LinearStudy.originalChainAsCochain C) N r
+            (LinearStudy.originalChainAugmentationAsCochain C alpha) r ⋯)
+'LinearStudy.schemeModuleOriginalSmallClass_internalBoundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleGlobalToInternalExtAll.{u} : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) →
+    (q : ℕ) →
+      CategoryTheory.Abelian.Ext P N q →+
+        (SheafOfModules.unit X.ringCatSheaf ⟶ LinearStudy.schemeModuleInternalExt P N q) :=
+fun {X : AlgebraicGeometry.Scheme} (P N : X.Modules) (q : ℕ) =>
+  match q with
+  | 0 => (LinearStudy.schemeModuleHomToInternalExtZero P N).comp CategoryTheory.Abelian.Ext.addEquiv₀.toAddMonoidHom
+  | n.succ => LinearStudy.schemeModuleGlobalToInternalExt P N n
+def LinearStudy.schemeModuleCochainInternalBoundaryStep.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : CochainComplex X.Modules ℤ) →
+    {E : X.Modules} →
+      (N : X.Modules) →
+        (r : ℕ) →
+          (alpha : K ⟶ (CochainComplex.singleFunctor X.Modules 0).obj E) →
+            [QuasiIso alpha] →
+              (n : ℕ) →
+                LinearStudy.schemeModuleInternalExt
+                    (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r n)) N n ⟶
+                  LinearStudy.schemeModuleInternalExt
+                    (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r (n + 1))) N (n + 1) :=
+fun {X : AlgebraicGeometry.Scheme} (K : CochainComplex X.Modules ℤ) {E : X.Modules} (N : X.Modules) (r : ℕ)
+    (alpha : K ⟶ (CochainComplex.singleFunctor X.Modules 0).obj E) [QuasiIso alpha] (n : ℕ) =>
+  if hn : n < r then
+    LinearStudy.schemeModuleInternalExtSourceBoundary
+      (LinearStudy.cochainOpcycleSourceSequence K (LinearStudy.cochainSourceDegree r n)) ⋯ N n
+  else 0
+def LinearStudy.schemeModuleCochainIteratedInternalBoundary.{u} : {X : AlgebraicGeometry.Scheme} →
+  (K : CochainComplex X.Modules ℤ) →
+    {E : X.Modules} →
+      (N : X.Modules) →
+        (r : ℕ) →
+          (alpha : K ⟶ (CochainComplex.singleFunctor X.Modules 0).obj E) →
+            [QuasiIso alpha] →
+              (n : ℕ) →
+                n ≤ r →
+                  (LinearStudy.schemeModuleInternalExt
+                      (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)) N 0 ⟶
+                    LinearStudy.schemeModuleInternalExt
+                      (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r n)) N n) :=
+fun {X : AlgebraicGeometry.Scheme} (K : CochainComplex X.Modules ℤ) {E : X.Modules} (N : X.Modules) (r : ℕ)
+    (alpha : K ⟶ (CochainComplex.singleFunctor X.Modules 0).obj E) [QuasiIso alpha] (n : ℕ) (hn : n ≤ r) =>
+  CategoryTheory.Functor.OfSequence.map (LinearStudy.schemeModuleCochainInternalBoundaryStep K N r alpha) 0 n ⋯
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtAll:false
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtAll_zero:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtAll_succ:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtAll_mkZero:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtAll_boundary:true
+ROLECHECK:LinearStudy.schemeModuleCochainInternalBoundaryStep:false
+ROLECHECK:LinearStudy.schemeModuleCochainInternalBoundaryStep_eq:true
+ROLECHECK:LinearStudy.schemeModuleCochainIteratedInternalBoundary:false
+ROLECHECK:LinearStudy.schemeModuleCochainIteratedInternalBoundary_zero:true
+ROLECHECK:LinearStudy.schemeModuleCochainIteratedInternalBoundary_succ:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtAll_iteratedBoundary:true
+ROLECHECK:LinearStudy.schemeModuleCochainResolutionTopExtClass_internalBoundary:true
+ROLECHECK:LinearStudy.schemeModuleOriginalChainTopExtClass_internalBoundary:true
+ROLECHECK:LinearStudy.nativeExtUniverseEquiv_originalChainTopExtClass:true
+ROLECHECK:LinearStudy.schemeModuleOriginalChainTopExtClassSmall_eq_native:true
+ROLECHECK:LinearStudy.schemeModuleOriginalSmallClass_internalBoundary:true

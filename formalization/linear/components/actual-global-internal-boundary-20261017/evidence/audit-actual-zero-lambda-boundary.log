@@ -1,0 +1,43 @@
+@LinearStudy.schemeModuleHomToInternalExtZero : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) → (P ⟶ N) →+ (SheafOfModules.unit X.ringCatSheaf ⟶ LinearStudy.schemeModuleInternalExt P N 0)
+'LinearStudy.schemeModuleHomToInternalExtZero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomZeroInjectiveCycle : ∀ {X : AlgebraicGeometry.Scheme} {P N : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (a : P ⟶ N)
+  (ha : CategoryTheory.CategoryStruct.comp (CategoryTheory.CategoryStruct.comp a (I.ι.f 0)) (I.cocomplex.d 0 1) = 0),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv P N).symm a)
+      (I.toRightDerivedZero' (LinearStudy.schemeModuleInternalHomCoefficientFunctor X P)) =
+    (LinearStudy.schemeModuleInjectiveInternalHomCycleMap I P 0) ⟨CategoryTheory.CategoryStruct.comp a (I.ι.f 0), ha⟩
+'LinearStudy.schemeModuleHomZeroInjectiveCycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.injectiveNativeExtMk_ofHom : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] {P N : A}
+  (I : CategoryTheory.InjectiveResolution N) (a : P ⟶ N)
+  (ha : CategoryTheory.CategoryStruct.comp (CategoryTheory.CategoryStruct.comp a (I.ι.f 0)) (I.cocomplex.d 0 1) = 0),
+  I.extMk (CategoryTheory.CategoryStruct.comp a (I.ι.f 0)) 1 ⋯ ha = CategoryTheory.Abelian.Ext.mk₀ a
+'LinearStudy.injectiveNativeExtMk_ofHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomToInternalExtZero_viaResolution : ∀ {X : AlgebraicGeometry.Scheme} {P N : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (a : P ⟶ N)
+  (ha : CategoryTheory.CategoryStruct.comp (CategoryTheory.CategoryStruct.comp a (I.ι.f 0)) (I.cocomplex.d 0 1) = 0),
+  (LinearStudy.schemeModuleHomToInternalExtZero P N) a =
+    (LinearStudy.schemeModuleInjectiveCocycleToInternalExt I P 0) ⟨CategoryTheory.CategoryStruct.comp a (I.ι.f 0), ha⟩
+'LinearStudy.schemeModuleHomToInternalExtZero_viaResolution' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomToInternalExtZero_boundary : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) {N : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (a : S.X₁ ⟶ N),
+  (LinearStudy.schemeModuleGlobalToInternalExtViaResolution I S.X₃ 0)
+      ((CategoryTheory.Abelian.Ext.δ hS 0 1 ⋯) (CategoryTheory.Abelian.Ext.mk₀ a)) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomToInternalExtZero S.X₁ N) a)
+      (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I 0)
+'LinearStudy.schemeModuleHomToInternalExtZero_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleHomToInternalExtZero.{u} : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) → (P ⟶ N) →+ (SheafOfModules.unit X.ringCatSheaf ⟶ LinearStudy.schemeModuleInternalExt P N 0) :=
+fun {X : AlgebraicGeometry.Scheme} (P N : X.Modules) =>
+  {
+    toFun := fun (a : P ⟶ N) =>
+      CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv P N).symm a)
+        ((LinearStudy.schemeModuleInternalExtZeroIso P).app N).inv,
+    map_zero' := ⋯, map_add' := ⋯ }
+ROLECHECK:LinearStudy.schemeModuleHomToInternalExtZero:false
+ROLECHECK:LinearStudy.schemeModuleHomZeroInjectiveCycle:true
+ROLECHECK:LinearStudy.injectiveNativeExtMk_ofHom:true
+ROLECHECK:LinearStudy.schemeModuleHomToInternalExtZero_viaResolution:true
+ROLECHECK:LinearStudy.schemeModuleHomToInternalExtZero_boundary:true

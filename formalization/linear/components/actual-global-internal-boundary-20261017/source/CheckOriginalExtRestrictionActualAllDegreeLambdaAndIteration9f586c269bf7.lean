@@ -1,0 +1,54 @@
+module
+import all Linear.SchemeModuleGlobalToInternalExtAllDegrees
+import all Linear.SchemeModuleCochainInternalBoundaryStep
+import all Linear.SchemeModuleCochainIteratedInternalBoundary
+import all Linear.SchemeModuleGlobalToInternalExtIteration
+import all Linear.SchemeModuleCochainResolutionInternalBoundaryClass
+import all Linear.SchemeModuleOriginalChainInternalBoundaryClass
+import all Linear.OriginalChainTopExtUniverse
+import all Linear.SchemeModuleOriginalSmallClassBoundary
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.schemeModuleGlobalToInternalExtAll
+#print axioms LinearStudy.schemeModuleGlobalToInternalExtAll
+#check @LinearStudy.schemeModuleGlobalToInternalExtAll_zero
+#print axioms LinearStudy.schemeModuleGlobalToInternalExtAll_zero
+#check @LinearStudy.schemeModuleGlobalToInternalExtAll_succ
+#print axioms LinearStudy.schemeModuleGlobalToInternalExtAll_succ
+#check @LinearStudy.schemeModuleGlobalToInternalExtAll_mkZero
+#print axioms LinearStudy.schemeModuleGlobalToInternalExtAll_mkZero
+#check @LinearStudy.schemeModuleGlobalToInternalExtAll_boundary
+#print axioms LinearStudy.schemeModuleGlobalToInternalExtAll_boundary
+#check @LinearStudy.schemeModuleCochainInternalBoundaryStep
+#print axioms LinearStudy.schemeModuleCochainInternalBoundaryStep
+#check @LinearStudy.schemeModuleCochainInternalBoundaryStep_eq
+#print axioms LinearStudy.schemeModuleCochainInternalBoundaryStep_eq
+#check @LinearStudy.schemeModuleCochainIteratedInternalBoundary
+#print axioms LinearStudy.schemeModuleCochainIteratedInternalBoundary
+#check @LinearStudy.schemeModuleCochainIteratedInternalBoundary_zero
+#print axioms LinearStudy.schemeModuleCochainIteratedInternalBoundary_zero
+#check @LinearStudy.schemeModuleCochainIteratedInternalBoundary_succ
+#print axioms LinearStudy.schemeModuleCochainIteratedInternalBoundary_succ
+#check @LinearStudy.schemeModuleGlobalToInternalExtAll_iteratedBoundary
+#print axioms LinearStudy.schemeModuleGlobalToInternalExtAll_iteratedBoundary
+#check @LinearStudy.schemeModuleCochainResolutionTopExtClass_internalBoundary
+#print axioms LinearStudy.schemeModuleCochainResolutionTopExtClass_internalBoundary
+#check @LinearStudy.schemeModuleOriginalChainTopExtClass_internalBoundary
+#print axioms LinearStudy.schemeModuleOriginalChainTopExtClass_internalBoundary
+#check @LinearStudy.nativeExtUniverseEquiv_originalChainTopExtClass
+#print axioms LinearStudy.nativeExtUniverseEquiv_originalChainTopExtClass
+#check @LinearStudy.schemeModuleOriginalChainTopExtClassSmall_eq_native
+#print axioms LinearStudy.schemeModuleOriginalChainTopExtClassSmall_eq_native
+#check @LinearStudy.schemeModuleOriginalSmallClass_internalBoundary
+#print axioms LinearStudy.schemeModuleOriginalSmallClass_internalBoundary
+#print LinearStudy.schemeModuleGlobalToInternalExtAll
+#print LinearStudy.schemeModuleCochainInternalBoundaryStep
+#print LinearStudy.schemeModuleCochainIteratedInternalBoundary
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool) := [(`LinearStudy.schemeModuleGlobalToInternalExtAll,false),(`LinearStudy.schemeModuleGlobalToInternalExtAll_zero,true),(`LinearStudy.schemeModuleGlobalToInternalExtAll_succ,true),(`LinearStudy.schemeModuleGlobalToInternalExtAll_mkZero,true),(`LinearStudy.schemeModuleGlobalToInternalExtAll_boundary,true),(`LinearStudy.schemeModuleCochainInternalBoundaryStep,false),(`LinearStudy.schemeModuleCochainInternalBoundaryStep_eq,true),(`LinearStudy.schemeModuleCochainIteratedInternalBoundary,false),(`LinearStudy.schemeModuleCochainIteratedInternalBoundary_zero,true),(`LinearStudy.schemeModuleCochainIteratedInternalBoundary_succ,true),(`LinearStudy.schemeModuleGlobalToInternalExtAll_iteratedBoundary,true),(`LinearStudy.schemeModuleCochainResolutionTopExtClass_internalBoundary,true),(`LinearStudy.schemeModuleOriginalChainTopExtClass_internalBoundary,true),(`LinearStudy.nativeExtUniverseEquiv_originalChainTopExtClass,true),(`LinearStudy.schemeModuleOriginalChainTopExtClassSmall_eq_native,true),(`LinearStudy.schemeModuleOriginalSmallClass_internalBoundary,true)]
+  let env ← Lean.getEnv
+  for (n,want) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"

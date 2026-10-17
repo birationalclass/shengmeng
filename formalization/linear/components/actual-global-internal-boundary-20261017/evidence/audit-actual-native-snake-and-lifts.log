@@ -1,0 +1,35 @@
+@LinearStudy.schemeModuleInjectiveInternalHomClassMap_boundary : ∀ {X : AlgebraicGeometry.Scheme}
+  (S : CategoryTheory.ShortComplex X.Modules) (hS : S.ShortExact) {N : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ) (a : ↥(LinearStudy.injectiveCocycleGroup I S.X₁ q))
+  (b : S.X₂ ⟶ I.cocomplex.X q) (c : ↥(LinearStudy.injectiveCocycleGroup I S.X₃ (q + 1))),
+  CategoryTheory.CategoryStruct.comp S.f b = ↑a →
+    CategoryTheory.CategoryStruct.comp b (I.cocomplex.d q (q + 1)) = CategoryTheory.CategoryStruct.comp S.g ↑c →
+      CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleInjectiveInternalHomClassMap I S.X₁ q) a)
+          (⋯.δ q (q + 1) ⋯) =
+        (LinearStudy.schemeModuleInjectiveInternalHomClassMap I S.X₃ (q + 1)) c
+'LinearStudy.schemeModuleInjectiveInternalHomClassMap_boundary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.shortExactInjectiveExtBoundary_nativeComponents : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (S : CategoryTheory.ShortComplex A) (hS : S.ShortExact) {N : A} (I : CategoryTheory.InjectiveResolution N) (q : ℕ)
+  (a : S.X₁ ⟶ I.cocomplex.X q) (ha : CategoryTheory.CategoryStruct.comp a (I.cocomplex.d q (q + 1)) = 0)
+  (b : S.X₂ ⟶ I.cocomplex.X q) (c : S.X₃ ⟶ I.cocomplex.X (q + 1))
+  (hc : CategoryTheory.CategoryStruct.comp c (I.cocomplex.d (q + 1) (q + 1 + 1)) = 0),
+  CategoryTheory.CategoryStruct.comp S.f b = a →
+    CategoryTheory.CategoryStruct.comp b (I.cocomplex.d q (q + 1)) = CategoryTheory.CategoryStruct.comp S.g c →
+      (CategoryTheory.Abelian.Ext.δ hS q (q + 1) ⋯) (I.extMk a (q + 1) ⋯ ha) = I.extMk c (q + 1 + 1) ⋯ hc
+'LinearStudy.shortExactInjectiveExtBoundary_nativeComponents' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.shortExactInjectiveNativeLifts_exists : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (S : CategoryTheory.ShortComplex A),
+  S.ShortExact →
+    ∀ {N : A} (I : CategoryTheory.InjectiveResolution N) (q : ℕ) (a : S.X₁ ⟶ I.cocomplex.X q),
+      CategoryTheory.CategoryStruct.comp a (I.cocomplex.d q (q + 1)) = 0 →
+        ∃ (b : S.X₂ ⟶ I.cocomplex.X q) (c : S.X₃ ⟶ I.cocomplex.X (q + 1)),
+          CategoryTheory.CategoryStruct.comp S.f b = a ∧
+            CategoryTheory.CategoryStruct.comp b (I.cocomplex.d q (q + 1)) = CategoryTheory.CategoryStruct.comp S.g c ∧
+              CategoryTheory.CategoryStruct.comp c (I.cocomplex.d (q + 1) (q + 1 + 1)) = 0
+'LinearStudy.shortExactInjectiveNativeLifts_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomClassMap_boundary:true
+ROLECHECK:LinearStudy.shortExactInjectiveExtBoundary_nativeComponents:true
+ROLECHECK:LinearStudy.shortExactInjectiveNativeLifts_exists:true
