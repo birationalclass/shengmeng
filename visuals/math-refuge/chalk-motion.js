@@ -111,7 +111,7 @@ export function erasingPlan(imageData,rows=[]){
   if(left>=0)runs.push([left,last]);if(row%2)runs.reverse();
   for(const [left,right]of runs){const narrow=right-left<safeX*2,start=narrow?(left+right)/2:left+safeX,end=narrow?start:right-safeX;
    const a=[row%2?end:start,center],b=[row%2?start:end,center];
-   if(previous)segments.push({a:previous,b:a,cost:Math.max(360*.08,Math.hypot(a[0]-previous[0],a[1]-previous[1])*ERASER_SPEED/ERASER_TRANSFER_SPEED),contact:false,row});
+   if(previous)segments.push({a:previous,b:a,cost:Math.max(360*.08,Math.hypot(a[0]-previous[0],a[1]-previous[1])*ERASER_SPEED/ERASER_TRANSFER_SPEED),contact:true,returnSweep:true,row});
    segments.push({a,b,cost:Math.max(360*.22,Math.abs(end-start)),contact:true,row});previous=b;
   }row++;top=bottom+1;
  }
