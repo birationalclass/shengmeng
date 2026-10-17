@@ -825,7 +825,7 @@ function populateReport(){
     const option=document.createElement('option'),copy=lecture.copy(i);option.value=String(i);option.textContent=`${copy.source} · ${copy.title}`;$('lecturePage').append(option);
   }
   $('reportSelect').replaceChildren(...lecture.reports.map(report=>{const option=document.createElement('option');option.value=report.id;option.textContent=(report.label||report.speaker)+' · '+report.topic;return option;}));
-  $('reportSelect').value=lecture.report.id;populateVoiceOptions();reportSettings?.refresh();lecture.setVoiceRate(reportSettings?.settings.rate||1);
+  $('reportSelect').value=lecture.report.id;populateVoiceOptions();reportSettings?.refresh();lecture.setVoiceRate(lecture.report.kind==='classroom'?(lecture.report.narration?.defaultPlaybackRate??lecture.voiceManifest?.policy?.defaultPlaybackRate??1):(reportSettings?.settings.rate||1));
   $('reportVersionLink').hidden=lecture.report.id!=='ye2';
   $('reportSettings').hidden=lecture.report.kind==='classroom';
   let skipThird=$('classroomSkipThird');if(!skipThird){skipThird=document.createElement('button');skipThird.id='classroomSkipThird';skipThird.type='button';skipThird.textContent='略过第三定理证明';skipThird.onclick=async()=>{await lecture.skipOptionalProof();updateLectureUI();};$('reportSettings').before(skipThird);}skipThird.hidden=lecture.report.id!=='sylow-theorems';
@@ -866,7 +866,7 @@ async function switchReport(id,{autoplay=false}={}){
 let programLibrary=null;
 async function selectClassroom(period=1,{autoplay=true,id=lecture?.report.kind==='classroom'?lecture.report.id:'algebra-sylow'}={}){
  if(!await switchReport(id,{autoplay:false}))return false;
- await lecture.setLanguage('zh');populateReport();lecture.setVoiceRate(1);await lecture.voiceSeek(period===2?3000:0);if(autoplay)await lecture.toggleVoice();updateLectureUI();return true;
+ await lecture.setLanguage('zh');populateReport();lecture.setVoiceRate(lecture.report.narration?.defaultPlaybackRate??lecture.voiceManifest?.policy?.defaultPlaybackRate??1);await lecture.voiceSeek(period===2?(lecture.voiceManifest?.periods?.find(p=>p.id===2)?.start??3000):0);if(autoplay)await lecture.toggleVoice();updateLectureUI();return true;
 }
 async function openProgramLibrary(tab='classroom'){
  if(!programLibrary){const {createCourseLibrary}=await import('./course-library.js?v=sylow-two-lessons-20261015');programLibrary=createCourseLibrary({getLecture:()=>lecture,onSelect:(id,{period,autoplay})=>['algebra-sylow','sylow-theorems'].includes(id)?selectClassroom(period,{autoplay,id}):switchReport(id,{autoplay})});}

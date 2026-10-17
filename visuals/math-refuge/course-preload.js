@@ -15,7 +15,7 @@ export function createCoursePreload({fetcher=globalThis.fetch,baseURL=new URL('.
  }});
  function strings(value){return typeof value==='string'?value:Array.isArray(value)?value.map(strings).join('\n'):value&&typeof value==='object'?Object.values(value).map(strings).join('\n'):'';}
  function start(pages,{courseText}={}){queue.cancel();packed=pages.length>0&&pages.every(p=>p.resourcePack);if(packed){pages.forEach(p=>queue.add(new URL(p.resourcePack,baseURL).href,'boardPack'));return queue.run();}const text=courseText??strings(pages);wanted=new Set([...text]);runs=new Set(chalkInlineRuns(text).filter(r=>r.math&&!r.radical).map(r=>r.text));
-  const add=(url,kind)=>queue.add(new URL(url,baseURL).href,kind);pages.forEach(p=>{if(p.formulaAsset)add(p.formulaAsset+'?v=report-line-sync-6');});
+  const add=(url,kind)=>queue.add(new URL(url,baseURL).href,kind);pages.forEach(p=>{if(p.formulaAsset)add(p.formulaAsset+'?v=report-line-sync-6');const b=p.orderedBoard;if(b){for(const r of b.rows)for(const t of [...(r.tokens||[]),...(r.enTokens||[])])if(t.asset)add(t.asset);if(b.diagramAsset)add(b.diagramAsset);}});
   add('./assets/chalk/inline-math/index.json','atlas');add('./assets/chalk/chinese36/index.json?v=section-yue-glyphs-20261015','glyphIndex');return queue.run();
  }
  return{start,cancel:queue.cancel,retry:queue.retry,get state(){return{...queue.state,unit:packed?'pack':'file'};}};

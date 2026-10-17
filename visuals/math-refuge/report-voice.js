@@ -168,7 +168,7 @@ export function narrationFrame(manifest,time,writingPlan,erasePlan){
  if(schedule&&t>=b.writeStart){const ink=scheduledWriting(schedule,t);return{page:b.page,phase:ink.progress<1?'write':'hold',...ink,ended:t>=manifest.duration,duration:Math.max(.001,schedule.end-b.writeStart)};}
  let phase='hold',start=b.writeEnd,end=b.end;
  if(t<b.eraseStart){phase='lift';start=b.start;end=b.eraseStart;}
- else if(t<b.writeStart){phase='erase';start=b.eraseStart+1.8;end=b.writeStart;}
+ else if(t<b.writeStart){phase=b.page<6?'lift':'erase';start=b.page<6?b.start:b.eraseStart+1.8;end=b.writeStart;}
  else if(t<b.writeEnd){phase='write';start=b.writeStart;end=b.writeEnd;}
  const linear=Math.max(0,Math.min(1,(t-start)/Math.max(.001,end-start)));
  const natural=(writingPlan?.physicalTiming||writingPlan?.chineseStrokeTiming)?writingPlan.total/writingPlan.unitsPerSecond:end-start;

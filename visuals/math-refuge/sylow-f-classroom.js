@@ -16,12 +16,13 @@ function manuscript(b){$('script').replaceChildren();for(const r of b.rows){cons
 async function loadCourse(){const n=++courseEpoch;++generation;audio.pause();playing=false;playIntent=false;course=null;manifest=null;prepared=null;board=0;openingLocked=false;for(const url of audioURLs)URL.revokeObjectURL(url);audioURLs.clear();audioJobs.clear();compressedJobs.clear();audioFiles.clear();const id=$('course').value;
  const nextCourse=await fetch('./assets/chalk/zzl-f/'+id+'.json',{cache:'no-store'}).then(r=>r.json());if(n!==courseEpoch)return;course=nextCourse;
  const privateRoot='/02_报告与语音/数学难民营讲稿/声音建模/ZZL/12_代数学I_2.6上下_F逐行课堂/';
- const nextManifest=query.get('local')==='1'?await fetch(privateRoot+id+'/口播与时间总表.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null):null;if(n!==courseEpoch)return;manifest=nextManifest?selectClassroomOpening(nextManifest):null;
- if(manifest)for(const b of manifest.boards)b.file=privateRoot+id+'/逐板音频/'+b.file.split('/').pop();
+ const local=query.get('local')==='1',audioRoot=local?privateRoot+id+'/':'./assets/audio/courses/zzl-f/'+id+'/';
+ const nextManifest=await fetch(audioRoot+(local?'口播与时间总表.json':'narration.json'),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);if(n!==courseEpoch)return;manifest=nextManifest?selectClassroomOpening(nextManifest):null;
+ if(manifest)for(const b of manifest.boards)b.file=audioRoot+(local?'逐板音频/':'')+b.file.split('/').pop();
  if(manifest?.openingSelection){const r=course.boards[0].rows[1];r.speech=manifest.openingSelection.greeting+r.speech;}
  if(n!==courseEpoch)return;$('board-select').replaceChildren(...course.boards.map((b,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`${i+1} · ${b.title}`;return o}));
  $('assistant').textContent=course.assistantPlan.map(x=>`${x.minutes}分钟 · ${x.topic}：${x.task}`).join('\n');$('assistant').style.whiteSpace='pre-line';
- $('duration').textContent=manifest?`主讲 ${fmt(manifest.durationWithoutBreak)}；课间 ${fmt(300)}；合计 ${fmt(manifest.duration)}；孟晟助教另计30:00。`:'ZZL/F口播仅本机保存；本页提供板书与逐行讲稿审阅。';
+ $('duration').textContent=manifest?`主讲 ${fmt(manifest.durationWithoutBreak)}；课间 ${fmt(300)}；合计 ${fmt(manifest.duration)}；孟晟助教另计30:00。`:'ZZL/F整板语音尚未就绪，请稍后重试。';
  if(!manifest&&course.timingSummary)$('duration').textContent=`本机成品排程：主讲 ${fmt(course.timingSummary.durationWithoutBreak)} + 课间5:00；合计 ${fmt(course.timingSummary.duration)}。孟晟助教另计30:00。ZZL/F音频仅本机保存。`;
  if(!manifest&&course.timingSummary?.playbackTiming)$('duration').textContent=`当前85%语速含课间约 ${fmt(course.timingSummary.playbackTiming.duration)}；提问与练习按原定真实秒数。孟晟助教另计30:00。ZZL/F音频仅本机保存。`;
  if(manifest)$('duration').textContent=`语速85% · 保持音高；含课间约 ${fmt(classroomDuration(manifest,.85))}。提问10秒、练习60秒保持不变；孟晟助教另计30:00。`;
