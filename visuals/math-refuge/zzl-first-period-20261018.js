@@ -1,6 +1,6 @@
 import {MIN_BOARD_REVIEW_SECONDS} from './board-review.js';
 import {prepareClassroomAudioBlob,classroomAudioDecodeState} from './classroom-audio-decode.js?v=mp3-predecode-1';
-import {prepareBoard,paintPrepared} from './sylow-f-renderer.js';
+import {prepareBoard,paintPrepared} from './zzl-first-period-renderer-20261018.js?v=mali-ready-1';
 import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=classroom-clarity-20261017-2';
 import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=native-pcm-20261017-1';
 const $=id=>document.getElementById(id),query=new URLSearchParams(location.search);window.fRendererReady=true;
