@@ -22,12 +22,18 @@ export function classroomAudioRate(board,time,rate=1){
  if(board?.id?.endsWith('-break'))return 1;
  if(board?.waits?.some(w=>time>=w.start&&time<w.end))return 1;
  if(board?.boardHoldSeconds>0&&time>=board.seconds-board.boardHoldSeconds)return 1;
+ const emphasis=board?.deliveryRanges?.find(r=>time>=r.start&&time<r.end);
+ if(emphasis)return rate*emphasis.rateMultiplier;
  return rate;
 }
 export function classroomDuration(manifest,rate=1){
  return manifest.boards.reduce((sum,b)=>{
   if(b.id.endsWith('-break'))return sum+b.seconds;
-  const fixed=(b.waits||[]).reduce((n,w)=>n+w.end-w.start,0)+(b.boardHoldSeconds||0);
-  return sum+(b.seconds-fixed)/rate+fixed;
+  const boundaries=new Set([0,b.seconds]);
+  for(const r of [...(b.waits||[]),...(b.deliveryRanges||[])]){boundaries.add(r.start);boundaries.add(r.end);}
+  if(b.boardHoldSeconds>0)boundaries.add(b.seconds-b.boardHoldSeconds);
+  const points=[...boundaries].sort((a,b)=>a-b);let total=0;
+  for(let i=1;i<points.length;i++){const start=points[i-1],end=points[i];total+=(end-start)/classroomAudioRate(b,(start+end)/2,rate);}
+  return sum+total;
  },0);
 }

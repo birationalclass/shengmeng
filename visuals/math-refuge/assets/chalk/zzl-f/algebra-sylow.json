@@ -30,7 +30,25 @@
     "noBudgetPadding": true,
     "defaultPlaybackRate": 0.85,
     "preservesPitch": true,
-    "thinkingUsesRealSeconds": true
+    "thinkingUsesRealSeconds": true,
+    "caseAwareSpeech": true,
+    "audioPreRollSeconds": 0.3,
+    "questionRateMultiplier": 0.9,
+    "keyPointRateMultiplier": 0.92,
+    "openingWholeSentenceBright": true,
+    "openingClock": "system-local",
+    "morningBeforeHour": 12,
+    "eveningFromHour": 18,
+    "theoremIntroductions": {
+      "first": "我们先给出……",
+      "middle": "接下来，我们陈述……",
+      "last": "最后，我们……"
+    },
+    "lemmaPropertyIntroductions": [
+      "我们先看一个引理／性质。",
+      "我们需要接下来这个引理／性质……"
+    ],
+    "lastCountsTheoremsOnly": true
   },
   "boards": [
     {
@@ -38,6 +56,17 @@
       "title": "西罗定理的应用",
       "titleEn": "Applications of the Sylow theorems",
       "kind": "cover",
+      "opening": {
+        "clock": "system-local",
+        "morningBeforeHour": 12,
+        "eveningFromHour": 18,
+        "greetings": {
+          "morning": "同学们，上午好。",
+          "afternoon": "同学们，下午好。",
+          "evening": "同学们，晚上好。"
+        },
+        "defaultPeriod": "afternoon"
+      },
       "rows": [
         {
           "display": "西罗定理的应用",
@@ -78,6 +107,7 @@
           "en": "Teaching assistant: Sheng Meng",
           "speech": "我的助教是孟晟，如果他开始胡言乱语了，你可以多听我讲。",
           "color": "white",
+          "delivery": "gentle-humor",
           "id": "A-cover.L03",
           "tokens": [
             {
@@ -88,8 +118,7 @@
             {
               "text": "Teaching assistant: Sheng Meng"
             }
-          ],
-          "delivery": "gentle-humor"
+          ]
         },
         {
           "display": "代数学I · §2.6下",
@@ -121,17 +150,7 @@
         "column": 0,
         "position": "upper"
       },
-      "opening": {
-        "clock": "system-local",
-        "morningBeforeHour": 12,
-        "eveningFromHour": 18,
-        "greetings": {
-          "morning": "同学们，上午好。",
-          "afternoon": "同学们，下午好。",
-          "evening": "同学们，晚上好。"
-        },
-        "defaultPeriod": "afternoon"
-      }
+      "spokenCasePairs": []
     },
     {
       "id": "A01",
@@ -142,7 +161,7 @@
         {
           "display": "西罗工具 · 先陈述后使用",
           "en": "State the tools before applying them",
-          "speech": "这次从完整的工具陈述出发，把子群个数逐步转成群结构。",
+          "speech": "我们先给出本节要用的西罗定理及其推论。",
           "color": "gold",
           "id": "A01.L01",
           "tokens": [
@@ -159,7 +178,7 @@
         {
           "display": "$|G|=p^a m$，$p\\nmid m$；$n_p=|\\operatorname{Syl}_p(G)|$",
           "en": "$|G|=p^a m$，$p\\nmid m$；$n_p=|\\operatorname{Syl}_p(G)|$",
-          "speech": "本次课沿用群阶分解，n下标p仍表示西罗p子群的个数。",
+          "speech": "本次课沿用群阶分解，n下标小p仍表示西罗小p子群的个数。",
           "color": "white",
           "id": "A01.L02",
           "tokens": [
@@ -312,7 +331,7 @@
         {
           "display": "$P,Q\\in\\operatorname{Syl}_p(G)\\Rightarrow Q=gPg^{-1}$",
           "en": "$P,Q\\in\\operatorname{Syl}_p(G)\\Rightarrow Q=gPg^{-1}$",
-          "speech": "所有西罗p子群彼此共轭，这是把唯一性翻译成正规性的桥梁。",
+          "speech": "所有西罗小p子群彼此共轭，这是把唯一性翻译成正规性的桥梁。",
           "color": "white",
           "id": "A01.L05",
           "tokens": [
@@ -409,12 +428,20 @@
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
       },
       "diagram": null,
+      "statementIntroduction": {
+        "resultKind": "review",
+        "positionInTheorems": null,
+        "text": "我们先给出本节要用的西罗定理及其推论。"
+      },
       "page": 1,
       "half": 1,
       "slot": {
         "column": 0,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "P"
+      ]
     },
     {
       "id": "A-X6",
@@ -594,7 +621,8 @@
       "slot": {
         "column": 1,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A-X7",
@@ -823,7 +851,8 @@
       "slot": {
         "column": 1,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A02",
@@ -851,7 +880,7 @@
         {
           "display": "$P\\in\\operatorname{Syl}_p(G)$；待证$P\\trianglelefteq G\\iff n_p=1$",
           "en": "A Sylow subgroup is normal exactly when it is unique.",
-          "speech": "先把命题说完整：P是西罗p子群，它正规，当且仅当这样的子群只有一个。",
+          "speech": "先把命题说完整：大P是西罗小p子群，它正规，当且仅当这样的子群只有一个。",
           "color": "white",
           "id": "A02.L02",
           "tokens": [
@@ -888,7 +917,7 @@
         {
           "display": "$n_p=1\\Rightarrow gPg^{-1}=P\\quad(\\forall g\\in G)$",
           "en": "$n_p=1\\Rightarrow gPg^{-1}=P\\quad(\\forall g\\in G)$",
-          "speech": "若只有一个，共轭后的子群也是西罗子群，因此每次都回到P，P正规。",
+          "speech": "若只有一个，共轭后的子群也是西罗子群，因此每次都回到大P，大P正规。",
           "color": "white",
           "id": "A02.L03",
           "tokens": [
@@ -919,7 +948,7 @@
         {
           "display": "反向：设$P\\trianglelefteq G$，任取$Q\\in\\operatorname{Syl}_p(G)$",
           "en": "For the converse assume P is normal and take Q.",
-          "speech": "反过来，假设P正规，再任取另一个西罗p子群Q。",
+          "speech": "反过来，假设大P正规，再任取另一个西罗小p子群Q。",
           "color": "white",
           "id": "A02.L04",
           "tokens": [
@@ -959,7 +988,7 @@
         {
           "display": "共轭性：$Q=gPg^{-1}=P$",
           "en": "Conjugacy：$Q=gPg^{-1}=P$",
-          "speech": "共轭性把Q写成P的某个共轭，而正规性让这个共轭仍等于P。",
+          "speech": "共轭性把Q写成大P的某个共轭，而正规性让这个共轭仍等于大P。",
           "color": "white",
           "id": "A02.L05",
           "tokens": [
@@ -1043,7 +1072,11 @@
       "slot": {
         "column": 2,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": [
+        "G",
+        "P"
+      ]
     },
     {
       "id": "A-E1",
@@ -1248,7 +1281,8 @@
         "column": 2,
         "position": "lower"
       },
-      "exerciseNumberInHalf": 1
+      "exerciseNumberInHalf": 1,
+      "spokenCasePairs": []
     },
     {
       "id": "A03",
@@ -1573,7 +1607,8 @@
       "slot": {
         "column": 0,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A04",
@@ -1848,7 +1883,8 @@
       "slot": {
         "column": 0,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A05",
@@ -2126,7 +2162,8 @@
       "slot": {
         "column": 1,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A-E2",
@@ -2351,7 +2388,8 @@
         "column": 1,
         "position": "lower"
       },
-      "exerciseNumberInHalf": 2
+      "exerciseNumberInHalf": 2,
+      "spokenCasePairs": []
     },
     {
       "id": "A06",
@@ -2594,7 +2632,8 @@
       "slot": {
         "column": 2,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A07",
@@ -2662,7 +2701,7 @@
         {
           "display": "$f_{a,b}(t)=at+b$；$a\\in A$，$b\\in\\mathbb F_7$",
           "en": "$f_{a,b}(t)=at+b$；$a\\in A$，$b\\in\\mathbb F_7$",
-          "speech": "令a取三个乘数，b取七个平移参数，一共二十一个不同的仿射变换。",
+          "speech": "令小a取三个乘数，b取七个平移参数，一共二十一个不同的仿射变换。",
           "color": "white",
           "id": "A07.L03",
           "tokens": [
@@ -2745,7 +2784,7 @@
         {
           "display": "$f_{a,b}\\circ f_{c,d}=f_{ac,\\,ad+b}$",
           "en": "$f_{a,b}\\circ f_{c,d}=f_{ac,\\,ad+b}$",
-          "speech": "直接计算复合，乘数仍在A里，平移参数仍在域里，因此乘法封闭。",
+          "speech": "直接计算复合，乘数仍在大A里，平移参数仍在域里，因此乘法封闭。",
           "color": "white",
           "id": "A07.L04",
           "tokens": [
@@ -2900,7 +2939,11 @@
       "slot": {
         "column": 2,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "A",
+        "F"
+      ]
     },
     {
       "id": "A-X8",
@@ -3125,7 +3168,10 @@
       "slot": {
         "column": 0,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": [
+        "F"
+      ]
     },
     {
       "id": "A08",
@@ -3373,6 +3419,7 @@
         "column": 0,
         "position": "lower"
       },
+      "spokenCasePairs": [],
       "diagramAfterRow": 3,
       "diagramSpeech": [
         "右边七个点是模七的各个元素。平移u沿外圈把每个点送到下一个点。",
@@ -3580,7 +3627,8 @@
         "column": 1,
         "position": "upper"
       },
-      "exerciseNumberInHalf": 3
+      "exerciseNumberInHalf": 3,
+      "spokenCasePairs": []
     },
     {
       "id": "A-X1",
@@ -3807,7 +3855,8 @@
       "slot": {
         "column": 1,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A-X2",
@@ -3982,7 +4031,7 @@
         }
       ],
       "question": {
-        "text": "为了让核成为非平凡真正规子群，要分别排除哪两个极端？",
+        "text": "我们要用置换表示的核K证明G不是单群。为使K成为非平凡真正规子群，必须分别排除K等于哪两个子群？",
         "afterRow": 1,
         "seconds": 10
       },
@@ -4001,7 +4050,8 @@
       "slot": {
         "column": 2,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A-break",
@@ -4016,7 +4066,8 @@
       "slot": {
         "column": 2,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A09",
@@ -4281,7 +4332,8 @@
       "slot": {
         "column": 0,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A10",
@@ -4480,7 +4532,8 @@
       "slot": {
         "column": 0,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A11",
@@ -4679,7 +4732,8 @@
       "slot": {
         "column": 1,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A-E4",
@@ -4864,7 +4918,8 @@
         "column": 1,
         "position": "lower"
       },
-      "exerciseNumberInHalf": 1
+      "exerciseNumberInHalf": 1,
+      "spokenCasePairs": []
     },
     {
       "id": "A-X3",
@@ -5114,7 +5169,8 @@
       "slot": {
         "column": 2,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A-X4",
@@ -5315,7 +5371,10 @@
       "slot": {
         "column": 2,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "N"
+      ]
     },
     {
       "id": "A-X5",
@@ -5492,7 +5551,7 @@
         }
       ],
       "question": {
-        "text": "已经证明单射后，这次还凭什么得到满射？",
+        "text": "已经证明从六阶群G到三次对称群的同态是单射。再比较哪两个群的阶，才能推出这个同态还是满射？",
         "afterRow": 3,
         "seconds": 10
       },
@@ -5510,7 +5569,8 @@
       "slot": {
         "column": 0,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A12",
@@ -5662,7 +5722,7 @@
         {
           "display": "$G\\curvearrowright X:\\quad g\\cdot P=gPg^{-1}$",
           "en": "$G\\curvearrowright X:\\quad g\\cdot P=gPg^{-1}$",
-          "speech": "共轭给出G在这个集合上的作用，所以得到到四次对称群的同态。",
+          "speech": "共轭给出大G在这个集合上的作用，所以得到到四次对称群的同态。",
           "color": "white",
           "id": "A12.L05",
           "tokens": [
@@ -5693,7 +5753,7 @@
         {
           "display": "$\\varphi:G\\to S_4$；$\\ker\\varphi\\trianglelefteq G$",
           "en": "The action gives a homomorphism and a normal kernel.",
-          "speech": "作用同态的核天然正规，接下来通过假设G单，限制这个核。",
+          "speech": "作用同态的核天然正规，接下来通过假设大G单，限制这个核。",
           "color": "blue",
           "id": "A12.L06",
           "tokens": [
@@ -5741,9 +5801,12 @@
         "column": 0,
         "position": "lower"
       },
+      "spokenCasePairs": [
+        "G"
+      ],
       "diagramAfterRow": 3,
       "diagramSpeech": [
-        "右图只用A四作一个具体示例，不预先假定当前G就是A四。四个点各代表一个三阶子群。",
+        "右图只用A四作一个具体示例，不预先假定当前大G就是A四。四个点各代表一个三阶子群。",
         "用三循环一二三作共轭，一个子群保持不变，另外三个被轮换。图里的点是子群，不是群元素。"
       ],
       "diagramAsset": "./assets/chalk/zzl-f/diagrams/four-subgroups.json",
@@ -5947,7 +6010,8 @@
       "slot": {
         "column": 1,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A14",
@@ -6152,7 +6216,7 @@
         }
       ],
       "question": {
-        "text": "A四里这四个元素，为什么在共轭下整体不变？",
+        "text": "这里V包含单位元和三个双换位。为什么对V里的元素作共轭，不会把它们送到V之外？",
         "afterRow": 3,
         "seconds": 10
       },
@@ -6163,7 +6227,8 @@
       "slot": {
         "column": 1,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A-E5",
@@ -6377,7 +6442,8 @@
         "column": 2,
         "position": "upper"
       },
-      "exerciseNumberInHalf": 2
+      "exerciseNumberInHalf": 2,
+      "spokenCasePairs": []
     },
     {
       "id": "A15",
@@ -6624,7 +6690,8 @@
       "slot": {
         "column": 2,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A16",
@@ -6894,7 +6961,8 @@
       "slot": {
         "column": 0,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "A-E6",
@@ -7105,7 +7173,8 @@
         "column": 0,
         "position": "lower"
       },
-      "exerciseNumberInHalf": 3
+      "exerciseNumberInHalf": 3,
+      "spokenCasePairs": []
     },
     {
       "id": "A17",
@@ -7273,7 +7342,8 @@
       "slot": {
         "column": 1,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     }
   ],
   "assistantPlan": [
@@ -7303,31 +7373,40 @@
   "source": "教材2.6原文核对.txt，PDF125—130；教师补充另标",
   "paidApiCalls": 0,
   "timingSummary": {
-    "duration": 3375.114791666667,
-    "durationWithoutBreak": 3075.114791666667,
+    "duration": 3402.4076875,
+    "durationWithoutBreak": 3102.4076875,
     "breakSeconds": 300,
     "breakdown": {
-      "speech": 1044.2799999999995,
-      "sentenceGaps": 279.5,
+      "speech": 1065.9799999999996,
+      "sentenceGaps": 278.5,
       "writing": 1364.4288662670508,
-      "writingSpeechOverlap": 654.1201071808089,
+      "writingSpeechOverlap": 654.0736538320634,
       "questions": 230.0,
       "exercises": 360.0,
-      "boardHold": 72.52799163667304,
-      "transition": 378.4976516642597,
+      "boardHold": 69.1744296637765,
+      "transition": 388.3976516642596,
       "breakTime": 300.0
     },
     "periods": [
       {
         "id": 1,
         "start": 0.0,
-        "end": 1543.9263750000002
+        "end": 1556.6703541666668
       },
       {
         "id": 2,
-        "start": 1860.2398750000002,
-        "end": 3375.114791666667
+        "start": 1873.2838541666667,
+        "end": 3402.4076875
       }
-    ]
+    ],
+    "playbackTiming": {
+      "defaultRate": 0.85,
+      "questionRate": 0.765,
+      "keyPointRate": 0.782,
+      "duration": 3866.6946069703886,
+      "durationWithoutBreak": 3566.6946069703886,
+      "breakSeconds": 300,
+      "thinkingUsesRealSeconds": true
+    }
   }
 }

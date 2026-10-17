@@ -1,4 +1,5 @@
-import {selectClassroomOpening,classroomAudioRate} from './classroom-opening.js';
+import {primeClassroomAudio,disconnectClassroomAudio} from './classroom-audio-output.js?v=classroom-clarity-20261017-2';
+import {selectClassroomOpening,classroomAudioRate} from './classroom-opening.js?v=classroom-clarity-20261017-2';
 import {createResourceFetch} from './resource-fetch.js';
 import {createBackgroundAssets} from './background-assets.js';
 import {trayControlLayout,placeTrayControl} from './board-tray-layout.js';
@@ -15,7 +16,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
  const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index];state.time=Math.min(state.duration,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=manifest.chapters[index].start+activity.at;state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}if(audio&&manifest?.policy?.thinkingUsesRealSeconds){const c=manifest.chapters[index],b=manifest.boards.find(b=>b.page===c.page),at=audio.currentTime-(c.mediaStart||0),rate=classroomAudioRate(b,at,playbackRate);if(audio.playbackRate!==rate)audio.playbackRate=rate;}return state.time;};
  function pause(){sync();if(activity)activity.running=false;desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio?.pause();if(['loading','playing','buffering','preparing','away'].includes(state.phase))state.phase='paused';emit();}
  const audioWarm=createBackgroundAssets({retryDelay,load:(job,signal)=>bytes(job.src,epoch,false,job.hint,signal)});
- function release(){resolveManifest(null);pause();audioWarm.cancel();navigationGate=null;boardHold=null;audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
+ function release(){resolveManifest(null);pause();audioWarm.cancel();navigationGate=null;boardHold=null;disconnectClassroomAudio(audio);audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
  async function fetchBytes(src,mine,show,sizeHint=0,signal){
   const controller=new AbortController();controllers.add(controller);
   const cancel=()=>controller.abort(signal.reason);signal?.addEventListener('abort',cancel,{once:true});if(signal?.aborted)cancel();
@@ -45,7 +46,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   jobs.set(i,job);try{return await job;}finally{if(jobs.get(i)===job)jobs.delete(i);}
  }
  async function attach(i,at=0){
-  const mine=epoch,attachment=++attachToken;index=i;offset=at;audio?.pause();audio=null;activity=null;segmentEnding=false;state.activity=null;assetsPreparing=true;
+  const mine=epoch,attachment=++attachToken;index=i;offset=at;audio?.pause();disconnectClassroomAudio(audio);audio=null;activity=null;segmentEnding=false;state.activity=null;assetsPreparing=true;
   state.chapter=i;state.time=manifest.chapters[i].start+at;
   const page=manifest.chapters[i].page??manifest.boards.findLast(b=>b.start<=state.time)?.page??0,boardTime=state.time;
   boardReadiness=Promise.resolve().then(()=>prepareBoard(page,boardTime));boardReadiness.catch(()=>{});
@@ -71,7 +72,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   // Both the complete current audio blob and the matching prepared board are
   // mandatory. This gate covers autoplay, next chapter, seek, retry and re-entry.
   assetsPreparing=true;state.phase='preparing';emit();
-  try{const ready=await boardReadiness;if(ready===false)throw Error('当前黑板尚未就绪');}
+  try{const ready=await boardReadiness;if(ready===false)throw Error('当前黑板尚未就绪');if(target&&manifest?.policy?.defaultPlaybackRate)await primeClassroomAudio(target);}
   catch(error){if(mine===epoch&&token===playToken&&desired){pause();state.phase='error';state.errorKind='board';state.error=(error.message||'当前黑板加载失败')+' · 点击重试';emit();}return false;}
   if(mine!==epoch||token!==playToken||!desired||audio!==target)return false;assetsPreparing=false;
   if(activity){activity.stamp=now();activity.running=true;state.phase='playing';state.error='';sync();emit();return true;}

@@ -30,7 +30,25 @@
     "noBudgetPadding": true,
     "defaultPlaybackRate": 0.85,
     "preservesPitch": true,
-    "thinkingUsesRealSeconds": true
+    "thinkingUsesRealSeconds": true,
+    "caseAwareSpeech": true,
+    "audioPreRollSeconds": 0.3,
+    "questionRateMultiplier": 0.9,
+    "keyPointRateMultiplier": 0.92,
+    "openingWholeSentenceBright": true,
+    "openingClock": "system-local",
+    "morningBeforeHour": 12,
+    "eveningFromHour": 18,
+    "theoremIntroductions": {
+      "first": "我们先给出……",
+      "middle": "接下来，我们陈述……",
+      "last": "最后，我们……"
+    },
+    "lemmaPropertyIntroductions": [
+      "我们先看一个引理／性质。",
+      "我们需要接下来这个引理／性质……"
+    ],
+    "lastCountsTheoremsOnly": true
   },
   "boards": [
     {
@@ -38,6 +56,17 @@
       "title": "西罗三大定理",
       "titleEn": "The Sylow theorems",
       "kind": "cover",
+      "opening": {
+        "clock": "system-local",
+        "morningBeforeHour": 12,
+        "eveningFromHour": 18,
+        "greetings": {
+          "morning": "同学们，上午好。",
+          "afternoon": "同学们，下午好。",
+          "evening": "同学们，晚上好。"
+        },
+        "defaultPeriod": "afternoon"
+      },
       "rows": [
         {
           "display": "西罗三大定理",
@@ -78,6 +107,7 @@
           "en": "Teaching assistant: Sheng Meng",
           "speech": "我的助教是孟晟，如果他开始胡言乱语了，你可以多听我讲。",
           "color": "white",
+          "delivery": "gentle-humor",
           "id": "T-cover.L03",
           "tokens": [
             {
@@ -88,8 +118,7 @@
             {
               "text": "Teaching assistant: Sheng Meng"
             }
-          ],
-          "delivery": "gentle-humor"
+          ]
         },
         {
           "display": "代数学I · §2.6上",
@@ -121,17 +150,7 @@
         "column": 0,
         "position": "upper"
       },
-      "opening": {
-        "clock": "system-local",
-        "morningBeforeHour": 12,
-        "eveningFromHour": 18,
-        "greetings": {
-          "morning": "同学们，上午好。",
-          "afternoon": "同学们，下午好。",
-          "evening": "同学们，晚上好。"
-        },
-        "defaultPeriod": "afternoon"
-      }
+      "spokenCasePairs": []
     },
     {
       "id": "T01",
@@ -159,7 +178,7 @@
         {
           "display": "$|G|=p^a m,\\quad p\\nmid m,\\quad a\\ge1$",
           "en": "$|G|=p^a m,\\quad p\\nmid m,\\quad a\\ge1$",
-          "speech": "设G为有限群，p为整除群阶的素数。把全部p因子取出，a就是群阶中p的最高指数。",
+          "speech": "设G为有限群，小p为整除群阶的素数。把全部小p因子取出，a就是群阶中小p的最高指数。",
           "color": "white",
           "id": "T01.L02",
           "tokens": [
@@ -190,7 +209,7 @@
         {
           "display": "定义2.6.1：$p$群的阶为$p^r$，$r\\ge1$",
           "en": "A p-group has order p to a positive power.",
-          "speech": "教材把阶为p的正整数次幂的有限群称为p群，单位群不在这个定义里。",
+          "speech": "教材把阶为小p的正整数次幂的有限群称为小p群，单位群不在这个定义里。",
           "color": "white",
           "id": "T01.L03",
           "tokens": [
@@ -243,7 +262,7 @@
         {
           "display": "$H\\le G,\\quad |H|=p^r,\\quad 1\\le r\\le a$",
           "en": "$H\\le G,\\quad |H|=p^r,\\quad 1\\le r\\le a$",
-          "speech": "G的子群如果自身是p群，就叫p子群。拉格朗日定理说明r不超过a。",
+          "speech": "G的子群如果自身是小p群，就叫小p子群。拉格朗日定理说明r不超过a。",
           "color": "white",
           "id": "T01.L04",
           "tokens": [
@@ -274,7 +293,7 @@
         {
           "display": "定义2.6.2：阶达到最高$p$幂",
           "en": "A Sylow subgroup attains the full p-power.",
-          "speech": "西罗p子群的阶，恰好达到群阶中最大的p幂。",
+          "speech": "西罗小p子群的阶，恰好达到群阶中最大的小p幂。",
           "color": "white",
           "id": "T01.L05",
           "tokens": [
@@ -304,7 +323,7 @@
         {
           "display": "$P\\le G,\\quad |P|=p^a$",
           "en": "$P\\le G,\\quad |P|=p^a$",
-          "speech": "这里的P是子群，p是素数。定义还没有保证这样的子群存在。",
+          "speech": "这里的大P是子群，小p是素数。定义还没有保证这样的子群存在。",
           "color": "white",
           "id": "T01.L06",
           "tokens": [
@@ -348,7 +367,10 @@
       "slot": {
         "column": 0,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "P"
+      ]
     },
     {
       "id": "T-E1",
@@ -527,7 +549,8 @@
         "column": 1,
         "position": "upper"
       },
-      "exerciseNumberInHalf": 1
+      "exerciseNumberInHalf": 1,
+      "spokenCasePairs": []
     },
     {
       "id": "T02",
@@ -538,7 +561,7 @@
         {
           "display": "定理2.6.1 · 陈述",
           "en": "Theorem 2.6.1 · Statement",
-          "speech": "先把第一定理完整写出，再准备证明。",
+          "speech": "我们先给出西罗第一定理的陈述。",
           "color": "gold",
           "id": "T02.L01",
           "tokens": [
@@ -645,7 +668,7 @@
         {
           "display": "则存在$P\\le G$，使$|P|=p^k$",
           "en": "There is a subgroup of order p to the k.",
-          "speech": "每一个允许的指数，都确实有相应的子群。这比只保证最大p幂阶更强。",
+          "speech": "每一个允许的指数，都确实有相应的子群。这比只保证最大小p幂阶更强。",
           "color": "blue",
           "id": "T02.L04",
           "tokens": [
@@ -712,7 +735,7 @@
         {
           "display": "西罗第一定理补上$p$幂阶的存在性",
           "en": "Sylow supplies existence for prime powers.",
-          "speech": "现在只对p幂这样的约数，得到了反方向的存在性。不能把它推广到所有约数。",
+          "speech": "现在只对小p幂这样的约数，得到了反方向的存在性。不能把它推广到所有约数。",
           "color": "white",
           "id": "T02.L06",
           "tokens": [
@@ -750,12 +773,20 @@
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
       },
       "diagram": null,
+      "statementIntroduction": {
+        "resultKind": "theorem",
+        "positionInTheorems": "first",
+        "text": "我们先给出西罗第一定理的陈述。"
+      },
       "page": 3,
       "half": 1,
       "slot": {
         "column": 1,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "P"
+      ]
     },
     {
       "id": "T03",
@@ -783,7 +814,7 @@
         {
           "display": "$G\\curvearrowright G:\\quad g\\cdot x=gxg^{-1}$",
           "en": "$G\\curvearrowright G:\\quad g\\cdot x=gxg^{-1}$",
-          "speech": "先让G通过共轭作用在自身上。作用群和被作用集合在这里都取G。",
+          "speech": "先让大G通过共轭作用在自身上。作用群和被作用集合在这里都取大G。",
           "color": "white",
           "id": "T03.L02",
           "tokens": [
@@ -843,93 +874,93 @@
           ]
         },
         {
-          "display": "$\\mathrm{Cl}(x)=\\{gxg^{-1}:g\\in G\\}$",
-          "en": "$\\mathrm{Cl}(x)=\\{gxg^{-1}:g\\in G\\}$",
-          "speech": "x的轨道就是它的共轭类。每个元素落在唯一一个共轭类中。",
+          "display": "$O_x=\\{gxg^{-1}:g\\in G\\}$",
+          "en": "$O_x=\\{gxg^{-1}:g\\in G\\}$",
+          "speech": "x的轨道记为O下标x，也就是它的共轭类。每个元素落在唯一一个共轭类中。",
           "color": "white",
           "id": "T03.L04",
           "tokens": [
             {
-              "tex": "\\mathrm{Cl}(x)=\\{gxg^{-1}:g\\in G\\}",
-              "asset": "./assets/chalk/zzl-f/math/8485d7498b119306.svg",
+              "tex": "O_x=\\{gxg^{-1}:g\\in G\\}",
+              "asset": "./assets/chalk/zzl-f/math/f2d777b5dc459da7.svg",
               "viewBox": [
                 0,
                 -883.9,
-                10515.3,
+                9415.8,
                 1133.9
               ]
             }
           ],
           "enTokens": [
             {
-              "tex": "\\mathrm{Cl}(x)=\\{gxg^{-1}:g\\in G\\}",
-              "asset": "./assets/chalk/zzl-f/math/8485d7498b119306.svg",
+              "tex": "O_x=\\{gxg^{-1}:g\\in G\\}",
+              "asset": "./assets/chalk/zzl-f/math/f2d777b5dc459da7.svg",
               "viewBox": [
                 0,
                 -883.9,
-                10515.3,
+                9415.8,
                 1133.9
               ]
             }
           ]
         },
         {
-          "display": "$|\\mathrm{Cl}(x)|=[G:C_G(x)]$",
-          "en": "$|\\mathrm{Cl}(x)|=[G:C_G(x)]$",
+          "display": "$|O_x|=[G:C_G(x)]$",
+          "en": "$|O_x|=[G:C_G(x)]$",
           "speech": "由轨道稳定子定理，共轭类大小等于中心化子的指数。",
           "color": "blue",
           "id": "T03.L05",
           "tokens": [
             {
-              "tex": "|\\mathrm{Cl}(x)|=[G:C_G(x)]",
-              "asset": "./assets/chalk/zzl-f/math/1f0b92dbc3c9bcfc.svg",
+              "tex": "|O_x|=[G:C_G(x)]",
+              "asset": "./assets/chalk/zzl-f/math/860e964f43ad56dc.svg",
               "viewBox": [
                 0,
                 -750,
-                9118.9,
+                8019.4,
                 1000
               ]
             }
           ],
           "enTokens": [
             {
-              "tex": "|\\mathrm{Cl}(x)|=[G:C_G(x)]",
-              "asset": "./assets/chalk/zzl-f/math/1f0b92dbc3c9bcfc.svg",
+              "tex": "|O_x|=[G:C_G(x)]",
+              "asset": "./assets/chalk/zzl-f/math/860e964f43ad56dc.svg",
               "viewBox": [
                 0,
                 -750,
-                9118.9,
+                8019.4,
                 1000
               ]
             }
           ]
         },
         {
-          "display": "$x\\in Z(G)\\iff |\\mathrm{Cl}(x)|=1$",
-          "en": "$x\\in Z(G)\\iff |\\mathrm{Cl}(x)|=1$",
+          "display": "$x\\in Z(G)\\iff |O_x|=1$",
+          "en": "$x\\in Z(G)\\iff |O_x|=1$",
           "speech": "轨道只有一个点，表示所有元素共轭x都不改变x，这恰好就是中心元素。",
           "color": "white",
           "id": "T03.L06",
           "tokens": [
             {
-              "tex": "x\\in Z(G)\\iff |\\mathrm{Cl}(x)|=1",
-              "asset": "./assets/chalk/zzl-f/math/ce23558544b9bf7d.svg",
+              "tex": "x\\in Z(G)\\iff |O_x|=1",
+              "asset": "./assets/chalk/zzl-f/math/e5a52fc7348a08c1.svg",
               "viewBox": [
                 0,
                 -750,
-                11790.7,
+                10691.1,
                 1000
               ]
             }
           ],
           "enTokens": [
             {
-              "tex": "x\\in Z(G)\\iff |\\mathrm{Cl}(x)|=1",
-              "asset": "./assets/chalk/zzl-f/math/ce23558544b9bf7d.svg",
+              "tex": "x\\in Z(G)\\iff |O_x|=1",
+              "asset": "./assets/chalk/zzl-f/math/e5a52fc7348a08c1.svg",
               "viewBox": [
                 0,
                 -750,
-                11790.7,
+                10691.1,
                 1000
               ]
             }
@@ -956,7 +987,10 @@
       "slot": {
         "column": 2,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": [
+        "G"
+      ]
     },
     {
       "id": "T04",
@@ -1049,31 +1083,31 @@
           ]
         },
         {
-          "display": "$G=Z(G)\\ \\sqcup\\ \\bigsqcup_{i=1}^s\\mathrm{Cl}(x_i)$",
-          "en": "$G=Z(G)\\ \\sqcup\\ \\bigsqcup_{i=1}^s\\mathrm{Cl}(x_i)$",
+          "display": "$G=Z(G)\\ \\sqcup\\ \\bigsqcup_{i=1}^sO_{x_i}$",
+          "en": "$G=Z(G)\\ \\sqcup\\ \\bigsqcup_{i=1}^sO_{x_i}$",
           "speech": "中心元素各自形成单点类，其余类两两不交。这样把整个群完整分开。",
           "color": "white",
           "id": "T04.L04",
           "tokens": [
             {
-              "tex": "G=Z(G)\\ \\sqcup\\ \\bigsqcup_{i=1}^s\\mathrm{Cl}(x_i)",
-              "asset": "./assets/chalk/zzl-f/math/fab28f16acdf610c.svg",
+              "tex": "G=Z(G)\\ \\sqcup\\ \\bigsqcup_{i=1}^sO_{x_i}",
+              "asset": "./assets/chalk/zzl-f/math/6d9f52061468d35b.svg",
               "viewBox": [
                 0,
                 -1562.5,
-                10175.9,
+                8980.6,
                 2808.5
               ]
             }
           ],
           "enTokens": [
             {
-              "tex": "G=Z(G)\\ \\sqcup\\ \\bigsqcup_{i=1}^s\\mathrm{Cl}(x_i)",
-              "asset": "./assets/chalk/zzl-f/math/fab28f16acdf610c.svg",
+              "tex": "G=Z(G)\\ \\sqcup\\ \\bigsqcup_{i=1}^sO_{x_i}",
+              "asset": "./assets/chalk/zzl-f/math/6d9f52061468d35b.svg",
               "viewBox": [
                 0,
                 -1562.5,
-                10175.9,
+                8980.6,
                 2808.5
               ]
             }
@@ -1162,7 +1196,8 @@
       "slot": {
         "column": 2,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "T-X1",
@@ -1225,63 +1260,63 @@
           ]
         },
         {
-          "display": "$\\mathrm{Cl}((12))=\\{(12),(13),(23)\\}$",
-          "en": "$\\mathrm{Cl}((12))=\\{(12),(13),(23)\\}$",
+          "display": "$O_{(12)}=\\{(12),(13),(23)\\}$",
+          "en": "$O_{(12)}=\\{(12),(13),(23)\\}$",
           "speech": "任意换位通过标号置换互相共轭，所以这一类有三个元素。",
           "color": "white",
           "id": "T-X1.L03",
           "tokens": [
             {
-              "tex": "\\mathrm{Cl}((12))=\\{(12),(13),(23)\\}",
-              "asset": "./assets/chalk/zzl-f/math/8d94ddc495f5c55d.svg",
+              "tex": "O_{(12)}=\\{(12),(13),(23)\\}",
+              "asset": "./assets/chalk/zzl-f/math/90c959a27377b816.svg",
               "viewBox": [
                 0,
                 -750,
-                12112.9,
-                1000
+                10660.1,
+                1103.5
               ]
             }
           ],
           "enTokens": [
             {
-              "tex": "\\mathrm{Cl}((12))=\\{(12),(13),(23)\\}",
-              "asset": "./assets/chalk/zzl-f/math/8d94ddc495f5c55d.svg",
+              "tex": "O_{(12)}=\\{(12),(13),(23)\\}",
+              "asset": "./assets/chalk/zzl-f/math/90c959a27377b816.svg",
               "viewBox": [
                 0,
                 -750,
-                12112.9,
-                1000
+                10660.1,
+                1103.5
               ]
             }
           ]
         },
         {
-          "display": "$\\mathrm{Cl}((123))=\\{(123),(132)\\}$",
-          "en": "$\\mathrm{Cl}((123))=\\{(123),(132)\\}$",
+          "display": "$O_{(123)}=\\{(123),(132)\\}$",
+          "en": "$O_{(123)}=\\{(123),(132)\\}$",
           "speech": "两个三循环互相共轭，形成大小为二的另一个非中心类。",
           "color": "white",
           "id": "T-X1.L04",
           "tokens": [
             {
-              "tex": "\\mathrm{Cl}((123))=\\{(123),(132)\\}",
-              "asset": "./assets/chalk/zzl-f/math/95d3ac5f7d90564a.svg",
+              "tex": "O_{(123)}=\\{(123),(132)\\}",
+              "asset": "./assets/chalk/zzl-f/math/916f0f6a7281fa70.svg",
               "viewBox": [
                 0,
                 -750,
-                11390.2,
-                1000
+                9791,
+                1103.5
               ]
             }
           ],
           "enTokens": [
             {
-              "tex": "\\mathrm{Cl}((123))=\\{(123),(132)\\}",
-              "asset": "./assets/chalk/zzl-f/math/95d3ac5f7d90564a.svg",
+              "tex": "O_{(123)}=\\{(123),(132)\\}",
+              "asset": "./assets/chalk/zzl-f/math/916f0f6a7281fa70.svg",
               "viewBox": [
                 0,
                 -750,
-                11390.2,
-                1000
+                9791,
+                1103.5
               ]
             }
           ]
@@ -1376,7 +1411,7 @@
         }
       ],
       "question": {
-        "text": "这次求和应有两项还是五项？代表元究竟代表什么？",
+        "text": "在三次对称群里，非中心元素一共有五个。共轭轨道公式的求和，应该按这五个元素逐个相加，还是按两个非中心共轭类分别相加？",
         "afterRow": 3,
         "seconds": 10
       },
@@ -1387,7 +1422,8 @@
       "slot": {
         "column": 0,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "T05",
@@ -1415,7 +1451,7 @@
         {
           "display": "归纳参数：$|G|=N$",
           "en": "Induction parameter: the order of the group.",
-          "speech": "对群的阶N作强归纳。不是对a归纳，也不是对所求指数k归纳。",
+          "speech": "对群的阶N作强归纳。不是对a归纳，也不是对所求指数小k归纳。",
           "color": "blue",
           "id": "T05.L02",
           "tokens": [
@@ -1472,7 +1508,7 @@
         {
           "display": "当前：$|G|=N=p^a m$，固定$1\\le k\\le a$",
           "en": "Now fix G of order N and the desired exponent k.",
-          "speech": "当前要在这个G中，找到p的k次方阶子群。",
+          "speech": "当前要在这个G中，找到p的小k次方阶子群。",
           "color": "white",
           "id": "T05.L04",
           "tokens": [
@@ -1620,7 +1656,10 @@
       "slot": {
         "column": 0,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "K"
+      ]
     },
     {
       "id": "T06",
@@ -1688,7 +1727,7 @@
         {
           "display": "设$p\\mid |Z(G)|$，取$z\\in Z(G)$且$|z|=p$",
           "en": "In the center choose an element of order p.",
-          "speech": "中心是有限交换群。用已学的第二点二节例十二，取中心里的p阶元素z，不循环引用西罗定理。",
+          "speech": "中心是有限交换群。用已学的第二点二节例十二，取中心里的小p阶元素小z，不循环引用西罗定理。",
           "color": "white",
           "id": "T06.L03",
           "tokens": [
@@ -1741,7 +1780,7 @@
         {
           "display": "$H=\\langle z\\rangle\\le Z(G),\\quad H\\trianglelefteq G,\\ |H|=p$",
           "en": "$H=\\langle z\\rangle\\le Z(G),\\quad H\\trianglelefteq G,\\ |H|=p$",
-          "speech": "z生成的H落在中心里，因而正规，阶为p。",
+          "speech": "小z生成的H落在中心里，因而正规，阶为小p。",
           "color": "white",
           "id": "T06.L04",
           "tokens": [
@@ -1842,7 +1881,7 @@
         }
       ],
       "question": {
-        "text": "k等于一时，还需要在商群里寻找正指数的p子群吗？",
+        "text": "k等于一时，还需要在商群里寻找正指数的小p子群吗？",
         "afterRow": 3,
         "seconds": 10
       },
@@ -1860,7 +1899,11 @@
       "slot": {
         "column": 1,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": [
+        "P",
+        "Z"
+      ]
     },
     {
       "id": "T07",
@@ -1925,7 +1968,7 @@
         {
           "display": "归纳：$\\exists Q\\le G/H$，$|Q|=p^{k-1}$",
           "en": "Apply induction to the smaller quotient.",
-          "speech": "由归纳假设，在商群中取到p的k减一次方阶子群Q。",
+          "speech": "由归纳假设，在商群中取到小p的k减一次方阶子群Q。",
           "color": "white",
           "id": "T07.L03",
           "tokens": [
@@ -1965,7 +2008,7 @@
         {
           "display": "$\\pi:G\\to G/H,\\quad P=\\pi^{-1}(Q)$",
           "en": "$\\pi:G\\to G/H,\\quad P=\\pi^{-1}(Q)$",
-          "speech": "令π为自然商映射，并取Q在G中的完整原像，记为P。",
+          "speech": "令π为自然商映射，并取Q在G中的完整原像，记为大P。",
           "color": "white",
           "id": "T07.L04",
           "tokens": [
@@ -2075,7 +2118,10 @@
       "slot": {
         "column": 1,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "P"
+      ]
     },
     {
       "id": "T-X2",
@@ -2391,7 +2437,8 @@
       "slot": {
         "column": 2,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "T-E2",
@@ -2419,7 +2466,7 @@
         {
           "display": "$H\\trianglelefteq G$，$|H|=p$",
           "en": "H is normal of order p.",
-          "speech": "沿用中心分支，H是p阶正规子群。",
+          "speech": "沿用中心分支，H是小p阶正规子群。",
           "color": "white",
           "id": "T-E2.L02",
           "tokens": [
@@ -2506,7 +2553,7 @@
         {
           "display": "对$P=\\pi^{-1}(Q)$，证明子群性并求阶",
           "en": "Prove the preimage is a subgroup and compute its order.",
-          "speech": "证明Q的原像P是子群，并求出它的阶。",
+          "speech": "证明Q的原像大P是子群，并求出它的阶。",
           "color": "white",
           "id": "T-E2.L04",
           "tokens": [
@@ -2573,7 +2620,7 @@
         {
           "display": "$|P|=|H|\\cdot|Q|=p^k$",
           "en": "Multiply the kernel order by the image order.",
-          "speech": "因此P模H同构于Q，阶数等于p乘以p的k减一次方，也就是p的k次方。",
+          "speech": "因此大P模H同构于Q，阶数等于小p乘以小p的k减一次方，也就是小p的k次方。",
           "color": "white",
           "id": "T-E2.L06",
           "tokens": [
@@ -2606,7 +2653,10 @@
         "column": 2,
         "position": "lower"
       },
-      "exerciseNumberInHalf": 2
+      "exerciseNumberInHalf": 2,
+      "spokenCasePairs": [
+        "P"
+      ]
     },
     {
       "id": "T08",
@@ -2850,7 +2900,8 @@
       "slot": {
         "column": 0,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "T09",
@@ -2878,7 +2929,7 @@
         {
           "display": "$K=C_G(x_i)<G$，$|K|=p^a m_i$，$p\\nmid m_i$",
           "en": "K is a smaller group with the same full p-power.",
-          "speech": "把刚才的中心化子记为K。它的最高p指数仍是a，但是它的群阶更小。",
+          "speech": "把刚才的中心化子记为大K。它的最高小p指数仍是a，但是它的群阶更小。",
           "color": "white",
           "id": "T09.L02",
           "tokens": [
@@ -2955,7 +3006,7 @@
         {
           "display": "$p^k\\mid|K|\\ \\overset{\\text{归纳}}{\\Longrightarrow}\\ \\exists P\\le K,\\ |P|=p^k$",
           "en": "$p^k\\mid|K|\\ \\overset{\\text{Induction}}{\\Longrightarrow}\\ \\exists P\\le K,\\ |P|=p^k$",
-          "speech": "固定的k仍在一到a之间，归纳假设给出K中的目标阶子群。",
+          "speech": "固定的小k仍在一到a之间，归纳假设给出大K中的目标阶子群。",
           "color": "blue",
           "id": "T09.L04",
           "tokens": [
@@ -3039,7 +3090,7 @@
         {
           "display": "两个分支穷尽：定理2.6.1得证",
           "en": "Both cases are complete; the first theorem follows.",
-          "speech": "中心分支和非中心分支都完成了任意k的构造，第一定理得证。",
+          "speech": "中心分支和非中心分支都完成了任意小k的构造，第一定理得证。",
           "color": "white",
           "id": "T09.L06",
           "tokens": [
@@ -3055,7 +3106,7 @@
         }
       ],
       "question": {
-        "text": "这里a没有减小，究竟哪个数保证归纳合法？",
+        "text": "对真中心化子调用归纳假设时，群阶中小p的指数a可以不下降。那么必须严格下降的归纳参数，究竟是什么？",
         "afterRow": 1,
         "seconds": 10
       },
@@ -3073,7 +3124,11 @@
       "slot": {
         "column": 0,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "K",
+        "P"
+      ]
     },
     {
       "id": "T-E3",
@@ -3281,7 +3336,8 @@
         "column": 1,
         "position": "upper"
       },
-      "exerciseNumberInHalf": 3
+      "exerciseNumberInHalf": 3,
+      "spokenCasePairs": []
     },
     {
       "id": "T10",
@@ -3309,7 +3365,7 @@
         {
           "display": "$G$有限，$|G|=p^a m$，$p\\nmid m$",
           "en": "Keep the finite-group hypotheses.",
-          "speech": "回到任意有限群，仍取群阶中最大的p幂。",
+          "speech": "回到任意有限群，仍取群阶中最大的小p幂。",
           "color": "white",
           "id": "T10.L02",
           "tokens": [
@@ -3389,7 +3445,7 @@
         {
           "display": "取$k=a$，存在$P\\le G$，$|P|=p^a$",
           "en": "Take$k=a$，there exists$P\\le G$，$|P|=p^a$",
-          "speech": "把k取成a，就得到定义中要求的最大p幂阶子群。",
+          "speech": "把k取成a，就得到定义中要求的最大小p幂阶子群。",
           "color": "blue",
           "id": "T10.L04",
           "tokens": [
@@ -3478,7 +3534,7 @@
         {
           "display": "$\\operatorname{Syl}_p(G)\\ne\\varnothing$",
           "en": "$\\operatorname{Syl}_p(G)\\ne\\varnothing$",
-          "speech": "把全部西罗p子群组成的集合记为Syl下标p的G，这个集合非空。",
+          "speech": "把全部西罗小p子群组成的集合记为Syl下标小p的G，这个集合非空。",
           "color": "white",
           "id": "T10.L05",
           "tokens": [
@@ -3543,7 +3599,10 @@
       "slot": {
         "column": 1,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "P"
+      ]
     },
     {
       "id": "T-break",
@@ -3558,7 +3617,8 @@
       "slot": {
         "column": 2,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "T11",
@@ -3569,7 +3629,7 @@
         {
           "display": "引理1 · 不动元素的陈述",
           "en": "Lemma 1 · A fixed point",
-          "speech": "下面把子群包含问题，逐渐转成一个有限集合上的不动点问题。",
+          "speech": "我们先看一个引理。",
           "color": "gold",
           "id": "T11.L01",
           "tokens": [
@@ -3586,7 +3646,7 @@
         {
           "display": "$H$为有限$p$群，作用于有限集合$X$",
           "en": "A finite p-group H acts on a finite set X.",
-          "speech": "先陈述第二定理要用的不动元素引理。H是作用群，X是有限集合。",
+          "speech": "先陈述第二定理要用的不动元素引理。大H是作用群，大X是有限集合。",
           "color": "white",
           "id": "T11.L02",
           "tokens": [
@@ -3636,7 +3696,7 @@
         {
           "display": "$p\\nmid |X|$",
           "en": "The set size is prime to p.",
-          "speech": "条件是p不整除集合的元素个数。这里不要求X有群结构。",
+          "speech": "条件是p不整除集合的元素个数。这里不要求大X有群结构。",
           "color": "white",
           "id": "T11.L03",
           "tokens": [
@@ -3660,7 +3720,7 @@
         {
           "display": "$X^H=\\{x\\in X: hx=x,\\ \\forall h\\in H\\}$",
           "en": "$X^H=\\{x\\in X: hx=x,\\ \\forall h\\in H\\}$",
-          "speech": "X上标H表示被H的所有元素同时固定的点。",
+          "speech": "大X上标大H表示被大H的所有元素同时固定的点。",
           "color": "white",
           "id": "T11.L04",
           "tokens": [
@@ -3743,12 +3803,21 @@
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
       },
       "diagram": null,
+      "statementIntroduction": {
+        "resultKind": "lemma",
+        "positionInTheorems": null,
+        "text": "我们先看一个引理。"
+      },
       "page": 17,
       "half": 2,
       "slot": {
         "column": 2,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "H",
+        "X"
+      ]
     },
     {
       "id": "T12",
@@ -3776,7 +3845,7 @@
         {
           "display": "取各轨道代表$x_1,\\ldots,x_r$",
           "en": "Choose one representative from each orbit.",
-          "speech": "轨道把X分成不相交的部分，每个轨道各选一个代表。",
+          "speech": "轨道把大X分成不相交的部分，每个轨道各选一个代表。",
           "color": "white",
           "id": "T12.L02",
           "tokens": [
@@ -3971,9 +4040,12 @@
         "column": 0,
         "position": "upper"
       },
+      "spokenCasePairs": [
+        "X"
+      ],
       "diagramAfterRow": 3,
       "diagramSpeech": [
-        "图中取p等于二，X有十一个点。三条单点轨道，另外有两条二点轨道和一条四点轨道。",
+        "图中取p等于二，大X有十一个点。三条单点轨道，另外有两条二点轨道和一条四点轨道。",
         "虚框标出一个完整的四点轨道。每条轨道大小都是二的幂，而三个单点共同贡献奇数余数。"
       ],
       "diagramAsset": "./assets/chalk/zzl-f/diagrams/p2-orbits.json",
@@ -4133,7 +4205,8 @@
         "column": 0,
         "position": "lower"
       },
-      "exerciseNumberInHalf": 1
+      "exerciseNumberInHalf": 1,
+      "spokenCasePairs": []
     },
     {
       "id": "T13",
@@ -4144,7 +4217,7 @@
         {
           "display": "定理2.6.2 · 陈述",
           "en": "Theorem 2.6.2 · Statement",
-          "speech": "存在性之后，第二定理说明一般p子群怎样落入西罗子群。",
+          "speech": "接下来，我们陈述西罗第二定理。",
           "color": "gold",
           "id": "T13.L01",
           "tokens": [
@@ -4161,7 +4234,7 @@
         {
           "display": "$G$有限，$H\\le G$为$p$子群",
           "en": "G is finite and H is a p-subgroup.",
-          "speech": "现在完整陈述西罗第二定理。先任取G中的一个p子群H。",
+          "speech": "现在完整陈述西罗第二定理。先任取大G中的一个小p子群H。",
           "color": "white",
           "id": "T13.L02",
           "tokens": [
@@ -4214,7 +4287,7 @@
         {
           "display": "任给$P\\in\\operatorname{Syl}_p(G)$",
           "en": "Choose any Sylow p-subgroup P.",
-          "speech": "再任意给定一个西罗p子群P。P不是为了迎合H而特别挑选的。",
+          "speech": "再任意给定一个西罗小p子群大P。大P不是为了迎合H而特别挑选的。",
           "color": "white",
           "id": "T13.L03",
           "tokens": [
@@ -4241,7 +4314,7 @@
         {
           "display": "则存在$g\\in G$，使$H\\le gPg^{-1}$",
           "en": "There exists$g\\in G$，such that$H\\le gPg^{-1}$",
-          "speech": "总能找到g，使H包含在这个P的某个共轭子群中。",
+          "speech": "总能找到小g，使H包含在这个大P的某个共轭子群中。",
           "color": "blue",
           "id": "T13.L04",
           "tokens": [
@@ -4304,7 +4377,7 @@
         {
           "display": "$gPg^{-1}=\\{gxg^{-1}:x\\in P\\}$",
           "en": "$gPg^{-1}=\\{gxg^{-1}:x\\in P\\}$",
-          "speech": "右边是一个子群，由对P的所有元素同时作共轭得到。",
+          "speech": "右边是一个子群，由对大P的所有元素同时作共轭得到。",
           "color": "white",
           "id": "T13.L05",
           "tokens": [
@@ -4335,7 +4408,7 @@
         {
           "display": "量词：先给$H,P$，再找$g$",
           "en": "Quantifiers: given H and P, find g.",
-          "speech": "g可以依赖H和P；结论不是每个g都能实现包含。",
+          "speech": "小g可以依赖H和大P；结论不是每个小g都能实现包含。",
           "color": "white",
           "id": "T13.L06",
           "tokens": [
@@ -4384,12 +4457,21 @@
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
       },
       "diagram": null,
+      "statementIntroduction": {
+        "resultKind": "theorem",
+        "positionInTheorems": "middle",
+        "text": "接下来，我们陈述西罗第二定理。"
+      },
       "page": 20,
       "half": 2,
       "slot": {
         "column": 1,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": [
+        "G",
+        "P"
+      ]
     },
     {
       "id": "T14",
@@ -4400,7 +4482,7 @@
         {
           "display": "第二定理2.6.2 · 左陪集作用",
           "en": "Theorem 2.6.2 · Action on cosets",
-          "speech": "证明的关键，是找到一个大小不被p整除、又能让H作用的集合。",
+          "speech": "证明的关键，是找到一个大小不被小p整除、又能让大H作用的集合。",
           "color": "gold",
           "id": "T14.L01",
           "tokens": [
@@ -4417,7 +4499,7 @@
         {
           "display": "$P\\in\\operatorname{Syl}_p(G)$，$H\\le G$为$p$子群",
           "en": "Fix P and H as in the theorem.",
-          "speech": "固定刚才任意给定的P和H，目标是找到实现包含的共轭元素。",
+          "speech": "固定刚才任意给定的大P和大H，目标是找到实现包含的共轭元素。",
           "color": "white",
           "id": "T14.L02",
           "tokens": [
@@ -4470,7 +4552,7 @@
         {
           "display": "$X=\\{gP:g\\in G\\}$，$|X|=[G:P]=m$",
           "en": "$X=\\{gP:g\\in G\\}$，$|X|=[G:P]=m$",
-          "speech": "把P的全部左陪集收集成X。每个陪集含有相同个数的元素，所以X的大小是m。",
+          "speech": "把大P的全部左陪集收集成X。每个陪集含有相同个数的元素，所以X的大小是m。",
           "color": "white",
           "id": "T14.L03",
           "tokens": [
@@ -4527,7 +4609,7 @@
         {
           "display": "$H\\curvearrowright X:\\quad h\\cdot(gP)=(hg)P$",
           "en": "$H\\curvearrowright X:\\quad h\\cdot(gP)=(hg)P$",
-          "speech": "让H通过左乘作用于X。同一个陪集换代表后，左乘仍得到同一个陪集，故良定义。",
+          "speech": "让大H通过左乘作用于X。同一个陪集换代表后，左乘仍得到同一个陪集，故良定义。",
           "color": "white",
           "id": "T14.L04",
           "tokens": [
@@ -4558,7 +4640,7 @@
         {
           "display": "$p\\nmid m$，故由引理1，$X^H\\ne\\varnothing$",
           "en": "$p\\nmid m$，by Lemma 1，$X^H\\ne\\varnothing$",
-          "speech": "H是p群，m不被p整除，不动点引理的条件全部满足。",
+          "speech": "大H是小p群，m不被小p整除，不动点引理的条件全部满足。",
           "color": "blue",
           "id": "T14.L05",
           "tokens": [
@@ -4615,7 +4697,7 @@
         {
           "display": "$X$是集合；$P$未必正规，不能写成商群",
           "en": "X is a coset set, not an assumed quotient group.",
-          "speech": "注意我们只用了左陪集集合，没有假设P正规，不能把这个X当成商群。",
+          "speech": "注意我们只用了左陪集集合，没有假设大P正规，不能把这个X当成商群。",
           "color": "white",
           "id": "T14.L06",
           "tokens": [
@@ -4654,7 +4736,7 @@
         }
       ],
       "question": {
-        "text": "既要让H作用，又想让集合大小避开p，应该选什么集合？",
+        "text": "已知大H是小p子群，大P是西罗小p子群。我们让大H作用在哪个集合上，才能使这个集合的元素个数不被小p整除？",
         "afterRow": 1,
         "seconds": 10
       },
@@ -4674,10 +4756,15 @@
         "column": 1,
         "position": "lower"
       },
+      "spokenCasePairs": [
+        "G",
+        "H",
+        "P"
+      ],
       "diagramAfterRow": 3,
       "diagramSpeech": [
-        "右图给一个独立例子：在三次对称群中，取P和H都由换位一二生成。三个点表示P的三个左陪集。",
-        "H的非单位元固定P，并交换另外两个陪集。虚框中的单点轨道，就是一个共同不动陪集。"
+        "右图给一个独立例子：在三次对称群中，取大P和大H都由换位一二生成。三个点表示大P的三个左陪集。",
+        "大H的非单位元固定大P，并交换另外两个陪集。虚框中的单点轨道，就是一个共同不动陪集。"
       ],
       "diagramAsset": "./assets/chalk/zzl-f/diagrams/cosets-s3.json",
       "diagramSha256": "4c4715ca1ef88e1d674919c9c2b48e5d80a959fc36fe719f7f5f937351cee48b"
@@ -4708,7 +4795,7 @@
         {
           "display": "取$gP\\in X^H$",
           "en": "Choose a coset fixed by all of H.",
-          "speech": "由引理，取一个被H中每个元素都固定的左陪集gP。",
+          "speech": "由引理，取一个被大H中每个元素都固定的左陪集gP。",
           "color": "white",
           "id": "T15.L02",
           "tokens": [
@@ -4735,7 +4822,7 @@
         {
           "display": "$hgP=gP\\quad(\\forall h\\in H)$",
           "en": "$hgP=gP\\quad(\\forall h\\in H)$",
-          "speech": "不动性的定义，正是每个h左乘后，仍回到原来的陪集。",
+          "speech": "不动性的定义，正是每个小h左乘后，仍回到原来的陪集。",
           "color": "white",
           "id": "T15.L03",
           "tokens": [
@@ -4766,7 +4853,7 @@
         {
           "display": "$hgP=gP\\iff g^{-1}hg\\in P$",
           "en": "$hgP=gP\\iff g^{-1}hg\\in P$",
-          "speech": "左乘g的逆，把陪集相等变成成员关系。这里的h仍然是H中任意元素。",
+          "speech": "左乘g的逆，把陪集相等变成成员关系。这里的小h仍然是大H中任意元素。",
           "color": "white",
           "id": "T15.L04",
           "tokens": [
@@ -4797,7 +4884,7 @@
         {
           "display": "$g^{-1}Hg\\le P\\iff H\\le gPg^{-1}$",
           "en": "$g^{-1}Hg\\le P\\iff H\\le gPg^{-1}$",
-          "speech": "因为对全部h成立，我们得到整个子群的包含，这就是第二定理。",
+          "speech": "因为对全部小h成立，我们得到整个子群的包含，这就是第二定理。",
           "color": "blue",
           "id": "T15.L05",
           "tokens": [
@@ -4828,7 +4915,7 @@
         {
           "display": "同一个$g$对所有$h\\in H$同时成立",
           "en": "A single g works for every element of H.",
-          "speech": "一个共同不动陪集非常关键，它保证我们选到同一个g，而不是每个h各用一个g。",
+          "speech": "一个共同不动陪集非常关键，它保证我们选到同一个g，而不是每个小h各用一个g。",
           "color": "white",
           "id": "T15.L06",
           "tokens": [
@@ -4870,7 +4957,7 @@
         }
       ],
       "question": {
-        "text": "如果每个h都用不同的g，还能推出整个H的包含吗？",
+        "text": "这里的陪集gP要被大H的每个元素固定。如果g随着小h改变，还能得到同一个共轭子群包含整个大H吗？",
         "afterRow": 2,
         "seconds": 10
       },
@@ -4889,7 +4976,10 @@
       "slot": {
         "column": 2,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": [
+        "H"
+      ]
     },
     {
       "id": "T-X3",
@@ -5109,7 +5199,8 @@
       "slot": {
         "column": 2,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "T16",
@@ -5137,7 +5228,7 @@
         {
           "display": "任取$P,Q\\in\\operatorname{Syl}_p(G)$",
           "en": "Take any two Sylow p-subgroups.",
-          "speech": "现在把第二定理中的一般p子群也取成西罗子群Q。",
+          "speech": "现在把第二定理中的一般小p子群也取成西罗子群Q。",
           "color": "white",
           "id": "T16.L02",
           "tokens": [
@@ -5227,7 +5318,7 @@
         {
           "display": "$|Q|=|gPg^{-1}|=p^a$",
           "en": "$|Q|=|gPg^{-1}|=p^a$",
-          "speech": "两边都是最大p幂阶子群，共轭又不改变阶数。",
+          "speech": "两边都是最大小p幂阶子群，共轭又不改变阶数。",
           "color": "white",
           "id": "T16.L04",
           "tokens": [
@@ -5258,7 +5349,7 @@
         {
           "display": "有限且同阶：$Q=gPg^{-1}$",
           "en": "Finite and of equal order：$Q=gPg^{-1}$",
-          "speech": "有限集合之间，同阶包含只能是相等，所以全部西罗p子群互相共轭。",
+          "speech": "有限集合之间，同阶包含只能是相等，所以全部西罗小p子群互相共轭。",
           "color": "blue",
           "id": "T16.L05",
           "tokens": [
@@ -5295,7 +5386,7 @@
         {
           "display": "共轭、同构、相等是不同的结论",
           "en": "Conjugate, isomorphic, and equal are distinct notions.",
-          "speech": "共轭保证抽象同构，却不保证它们在G里是同一个子集。",
+          "speech": "共轭保证抽象同构，却不保证它们在大G里是同一个子集。",
           "color": "white",
           "id": "T16.L06",
           "tokens": [
@@ -5311,7 +5402,7 @@
         }
       ],
       "question": {
-        "text": "已经有包含，要再补什么条件才能升级为相等？",
+        "text": "大P和Q都是西罗小p子群。为什么Q包含在大P的一个共轭子群里，就能进一步推出这两个子群相等？",
         "afterRow": 2,
         "seconds": 10
       },
@@ -5329,7 +5420,11 @@
       "slot": {
         "column": 0,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": [
+        "G",
+        "P"
+      ]
     },
     {
       "id": "T-E5",
@@ -5518,7 +5613,10 @@
         "column": 0,
         "position": "lower"
       },
-      "exerciseNumberInHalf": 2
+      "exerciseNumberInHalf": 2,
+      "spokenCasePairs": [
+        "G"
+      ]
     },
     {
       "id": "T17",
@@ -5529,7 +5627,7 @@
         {
           "display": "定理2.6.3与推论3 · 陈述",
           "en": "Theorem 2.6.3 and Corollary 3",
-          "speech": "最后把西罗子群的个数变成可计算的算术条件。",
+          "speech": "最后，我们陈述西罗第三定理。",
           "color": "gold",
           "id": "T17.L01",
           "tokens": [
@@ -5740,12 +5838,18 @@
         "sha256": "aee38591bb521ac7b6dce93fdb40de7221c8df74c05c72ba4dbac9087de22259"
       },
       "diagram": null,
+      "statementIntroduction": {
+        "resultKind": "theorem",
+        "positionInTheorems": "last",
+        "text": "最后，我们陈述西罗第三定理。"
+      },
       "page": 26,
       "half": 2,
       "slot": {
         "column": 1,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": []
     },
     {
       "id": "T18",
@@ -5773,7 +5877,7 @@
         {
           "display": "$G\\curvearrowright X:\\quad g\\cdot P=gPg^{-1}$",
           "en": "$G\\curvearrowright X:\\quad g\\cdot P=gPg^{-1}$",
-          "speech": "让整个G对全部西罗p子群作共轭。推论二保证X就是一个轨道。",
+          "speech": "让整个大G对全部西罗小p子群作共轭。推论二保证X就是一个轨道。",
           "color": "white",
           "id": "T18.L02",
           "tokens": [
@@ -5804,7 +5908,7 @@
         {
           "display": "$N_G(P)=\\{g\\in G:gPg^{-1}=P\\}$",
           "en": "$N_G(P)=\\{g\\in G:gPg^{-1}=P\\}$",
-          "speech": "稳定这个子群整体的元素组成正规化子。它不要求逐个固定P里的每个元素。",
+          "speech": "稳定这个子群整体的元素组成正规化子。它不要求逐个固定大P里的每个元素。",
           "color": "white",
           "id": "T18.L03",
           "tokens": [
@@ -5892,7 +5996,7 @@
         {
           "display": "$P\\le N_G(P)$；$m=[G:P]$",
           "en": "P is contained in its own normalizer.",
-          "speech": "P的内共轭保持P，所以P包含在自己的正规化子中。",
+          "speech": "大P的内共轭保持大P，所以大P包含在自己的正规化子中。",
           "color": "white",
           "id": "T18.L05",
           "tokens": [
@@ -5959,7 +6063,7 @@
         }
       ],
       "question": {
-        "text": "稳定的是整个子群，还是里面每一个元素？应该用哪个子群作稳定子？",
+        "text": "大G在全部西罗小p子群组成的集合上作共轭作用。一个元素稳定大P，是把整个大P送回大P，还是必须固定大P里的每一个元素？",
         "afterRow": 1,
         "seconds": 10
       },
@@ -5978,7 +6082,12 @@
       "slot": {
         "column": 1,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "G",
+        "N",
+        "P"
+      ]
     },
     {
       "id": "T-X4",
@@ -6100,7 +6209,7 @@
         {
           "display": "$P\\trianglelefteq S_3\\Rightarrow N_G(P)=S_3$",
           "en": "The normalizer preserves P as a set.",
-          "speech": "P是指数二子群，因此正规，每个群元素都整体保持P。它的正规化子是整个G。",
+          "speech": "P是指数二子群，因此正规，每个群元素都整体保持P。它的正规化子是整个大G。",
           "color": "white",
           "id": "T-X4.L04",
           "tokens": [
@@ -6195,7 +6304,10 @@
       "slot": {
         "column": 2,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": [
+        "G"
+      ]
     },
     {
       "id": "T-X5",
@@ -6223,7 +6335,7 @@
         {
           "display": "$P_0,Q\\in\\operatorname{Syl}_p(G)$，且$P_0\\le N_G(Q)$",
           "en": "Take a fixed subgroup Q under conjugation by P0.",
-          "speech": "为下一板准备一个需要明确核对的条件：P零和Q在正规化子里面，仍然是西罗子群。",
+          "speech": "为下一板准备一个需要明确核对的条件：大P零和Q在正规化子里面，仍然是西罗子群。",
           "color": "white",
           "id": "T-X5.L02",
           "tokens": [
@@ -6260,7 +6372,7 @@
         {
           "display": "令$K=N_G(Q)$；$Q\\le K\\le G$且$P_0\\le K$",
           "en": "Both subgroups lie in K, the normalizer of Q.",
-          "speech": "Q总包含在自己的正规化子里；不动性又保证P零包含在K里。",
+          "speech": "Q总包含在自己的正规化子里；不动性又保证大P零包含在K里。",
           "color": "white",
           "id": "T-X5.L03",
           "tokens": [
@@ -6313,7 +6425,7 @@
         {
           "display": "$p^a=|Q|\\mid|K|$，且$|K|\\mid|G|=p^a m$",
           "en": "$p^a=|Q|\\mid|K|$，and$|K|\\mid|G|=p^a m$",
-          "speech": "Q的阶迫使K至少含有p的a次方；K作为G的子群，又不可能含有更高的p幂。",
+          "speech": "Q的阶迫使K至少含有小p的a次方；K作为G的子群，又不可能含有更高的小p幂。",
           "color": "white",
           "id": "T-X5.L04",
           "tokens": [
@@ -6370,7 +6482,7 @@
         {
           "display": "所以$K$的最高$p$幂恰为$p^a$",
           "en": "The full p-power in the order of K is exactly the same.",
-          "speech": "上下两条整除关系夹出，K的最高p幂恰好还是p的a次方。",
+          "speech": "上下两条整除关系夹出，K的最高小p幂恰好还是小p的a次方。",
           "color": "white",
           "id": "T-X5.L05",
           "tokens": [
@@ -6423,7 +6535,7 @@
         {
           "display": "$P_0,Q\\in\\operatorname{Syl}_p(K)$，可在$K$中用共轭性",
           "en": "Conjugacy applies to these two Sylow subgroups inside K.",
-          "speech": "因此两者都是K的西罗p子群。共轭性已经证明，可以在K里调用，不需要再作归纳。",
+          "speech": "因此两者都是K的西罗小p子群。共轭性已经证明，可以在K里调用，不需要再作归纳。",
           "color": "blue",
           "id": "T-X5.L06",
           "tokens": [
@@ -6473,7 +6585,10 @@
       "slot": {
         "column": 2,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "P"
+      ]
     },
     {
       "id": "T19",
@@ -6501,7 +6616,7 @@
         {
           "display": "固定$P_0\\in X$；$P_0\\curvearrowright X$作共轭",
           "en": "Restrict conjugation to a fixed Sylow subgroup.",
-          "speech": "现在把作用群缩小成固定的P零。它本身当然是一个不动点。",
+          "speech": "现在把作用群缩小成固定的大P零。它本身当然是一个不动点。",
           "color": "white",
           "id": "T19.L02",
           "tokens": [
@@ -6544,7 +6659,7 @@
         {
           "display": "$Q\\in X^{P_0}\\iff P_0\\le N_G(Q)$",
           "en": "$Q\\in X^{P_0}\\iff P_0\\le N_G(Q)$",
-          "speech": "若另一个西罗子群Q被P零整体固定，则P零包含在Q的正规化子中。",
+          "speech": "若另一个西罗子群Q被大P零整体固定，则大P零包含在Q的正规化子中。",
           "color": "white",
           "id": "T19.L03",
           "tokens": [
@@ -6575,7 +6690,7 @@
         {
           "display": "$P_0,Q\\in\\operatorname{Syl}_p(N_G(Q))$",
           "en": "$P_0,Q\\in\\operatorname{Syl}_p(N_G(Q))$",
-          "speech": "P零和Q都落在这个正规化子里，而且阶达到它的最高p幂。",
+          "speech": "大P零和Q都落在这个正规化子里，而且阶达到它的最高小p幂。",
           "color": "white",
           "id": "T19.L04",
           "tokens": [
@@ -6606,7 +6721,7 @@
         {
           "display": "在$N_G(Q)$中用推论2：$Q=uP_0u^{-1}$",
           "en": "Apply conjugacy inside the normalizer.",
-          "speech": "对正规化子使用已经证明的共轭性，存在其中的u，把P零共轭到Q。",
+          "speech": "对正规化子使用已经证明的共轭性，存在其中的u，把大P零共轭到Q。",
           "color": "white",
           "id": "T19.L05",
           "tokens": [
@@ -6646,7 +6761,7 @@
         {
           "display": "$u\\in N_G(Q)\\Rightarrow P_0=u^{-1}Qu=Q$",
           "en": "$u\\in N_G(Q)\\Rightarrow P_0=u^{-1}Qu=Q$",
-          "speech": "但u正规化Q，于是P零只能等于Q。因此唯一不动子群就是P零。",
+          "speech": "但u正规化Q，于是大P零只能等于Q。因此唯一不动子群就是大P零。",
           "color": "blue",
           "id": "T19.L06",
           "tokens": [
@@ -6676,7 +6791,7 @@
         }
       ],
       "question": {
-        "text": "已经知道Q被P零正规化，能不能把共轭性用在更小的环境里？",
+        "text": "已知大P零正规化Q，而且大P零和Q都在Q的正规化子里。在这个正规化子中，能不能对大P零和Q使用西罗共轭性？",
         "afterRow": 2,
         "seconds": 10
       },
@@ -6694,7 +6809,10 @@
       "slot": {
         "column": 0,
         "position": "upper"
-      }
+      },
+      "spokenCasePairs": [
+        "P"
+      ]
     },
     {
       "id": "T20",
@@ -6722,7 +6840,7 @@
         {
           "display": "$P_0$为$p$群，$X^{P_0}=\\{P_0\\}$",
           "en": "The acting group is a p-group with exactly one fixed point.",
-          "speech": "刚才已经证明，这个作用恰好只有P零一个共同不动点。",
+          "speech": "刚才已经证明，这个作用恰好只有大P零一个共同不动点。",
           "color": "white",
           "id": "T20.L02",
           "tokens": [
@@ -6772,7 +6890,7 @@
         {
           "display": "其余轨道$\\mathcal O_j$的大小为$p^{c_j}$，$c_j\\ge1$",
           "en": "Every other orbit has size divisible by p.",
-          "speech": "其余轨道不是单点，大小都是p的正整数次幂。",
+          "speech": "其余轨道不是单点，大小都是小p的正整数次幂。",
           "color": "white",
           "id": "T20.L03",
           "tokens": [
@@ -6825,7 +6943,7 @@
         {
           "display": "$n_p=|X|=1+\\sum_j p^{c_j}$",
           "en": "$n_p=|X|=1+\\sum_j p^{c_j}$",
-          "speech": "把轨道加起来，唯一的单点轨道贡献一，其余部分每项都被p整除。",
+          "speech": "把轨道加起来，唯一的单点轨道贡献一，其余部分每项都被小p整除。",
           "color": "white",
           "id": "T20.L04",
           "tokens": [
@@ -6926,7 +7044,7 @@
         }
       ],
       "question": {
-        "text": "非单点轨道都被p整除，为什么最后余数恰好是一？",
+        "text": "非单点轨道都被小p整除，为什么最后余数恰好是一？",
         "afterRow": 2,
         "seconds": 10
       },
@@ -6944,7 +7062,10 @@
       "slot": {
         "column": 0,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "P"
+      ]
     },
     {
       "id": "T-E6",
@@ -7126,7 +7247,8 @@
         "column": 1,
         "position": "upper"
       },
-      "exerciseNumberInHalf": 3
+      "exerciseNumberInHalf": 3,
+      "spokenCasePairs": []
     },
     {
       "id": "T21",
@@ -7191,7 +7313,7 @@
         {
           "display": "第二定理：$H\\le gPg^{-1}$",
           "en": "The second theorem gives containment.",
-          "speech": "第二定理让H作用在P的左陪集集合上，再把不动陪集翻译成包含。",
+          "speech": "第二定理让H作用在大P的左陪集集合上，再把不动陪集翻译成包含。",
           "color": "white",
           "id": "T21.L03",
           "tokens": [
@@ -7334,7 +7456,10 @@
       "slot": {
         "column": 1,
         "position": "lower"
-      }
+      },
+      "spokenCasePairs": [
+        "P"
+      ]
     }
   ],
   "assistantPlan": [
@@ -7364,31 +7489,40 @@
   "source": "教材2.6原文核对.txt，PDF125—130；教师补充另标",
   "paidApiCalls": 0,
   "timingSummary": {
-    "duration": 3351.001979166667,
-    "durationWithoutBreak": 3051.001979166667,
+    "duration": 3408.934395833333,
+    "durationWithoutBreak": 3108.934395833333,
     "breakSeconds": 300,
     "breakdown": {
-      "speech": 1035.0200000000002,
-      "sentenceGaps": 301.0,
-      "writing": 1281.8515224848518,
-      "writingSpeechOverlap": 612.0658956170709,
+      "speech": 1089.5600000000002,
+      "sentenceGaps": 300.0,
+      "writing": 1279.2453751055602,
+      "writingSpeechOverlap": 606.792533399624,
       "questions": 200.0,
       "exercises": 360.0,
-      "boardHold": 93.96658241285702,
-      "transition": 391.22939876911585,
+      "boardHold": 85.86969276901658,
+      "transition": 401.0515148987132,
       "breakTime": 300.0
     },
     "periods": [
       {
         "id": 1,
         "start": 0.0,
-        "end": 1373.1218541666665
+        "end": 1392.6843958333332
       },
       {
         "id": 2,
-        "start": 1693.1436666666664,
-        "end": 3351.001979166667
+        "start": 1713.0062083333332,
+        "end": 3408.934395833333
       }
-    ]
+    ],
+    "playbackTiming": {
+      "defaultRate": 0.85,
+      "questionRate": 0.765,
+      "keyPointRate": 0.782,
+      "duration": 3876.154326222773,
+      "durationWithoutBreak": 3576.154326222773,
+      "breakSeconds": 300,
+      "thinkingUsesRealSeconds": true
+    }
   }
 }
