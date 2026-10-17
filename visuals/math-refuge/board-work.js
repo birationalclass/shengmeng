@@ -38,7 +38,7 @@ export function narrationWork(manifest,time,previous,writing,erase,completed,rev
   const start=scheduledWriting(schedule,deadline).progress*writing.total,end=writing.total;
   return{key,kind:'write',page:b.page,at:deadline,elapsed:0,duration:(end-start)/writing.unitsPerSecond,start,end,total:writing.total};
  }
- if(reviewRemaining>0&&!completed.has('review:'+b.page+':end')&&crossing(b.end-.02))return{key:'review:'+b.page+':end',kind:'review',page:b.page,at:b.end-.02,elapsed:0,duration:reviewRemaining};
+ if(reviewRemaining>0&&!completed.has('review:'+b.page+':end')&&crossing(b.end-.25))return{key:'review:'+b.page+':end',kind:'review',page:b.page,at:b.end-.25,elapsed:0,duration:reviewRemaining};
  return null;
 }
 export function boardWorkFrame(work){const p=Math.max(0,Math.min(1,work.elapsed/work.duration));return{page:work.page,phase:work.kind==='review'?'hold':work.kind==='erase'?'erase':'write',progress:work.kind==='review'?1:work.kind==='erase'?p:(work.start+p*(work.end-work.start))/work.total,writing:work.kind==='write'&&p<1,ended:false,duration:work.duration};}

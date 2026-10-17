@@ -1,5 +1,5 @@
 // Reading time is wall time, including a manual pause. It never resumes playback.
-export const MIN_BOARD_REVIEW_SECONDS=5;
+export const MIN_BOARD_REVIEW_SECONDS=10;
 export class BoardReview {
  constructor(now=()=>performance.now()/1000){this.now=now;this.finished=new Map();}
  clear(){this.finished.clear();}

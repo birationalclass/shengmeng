@@ -34,7 +34,7 @@ import {LectureClock,boardSlot,boardHeights,boardFaceZ,BOARD_LAYOUT} from './lec
 import {inkGuides,inkReveal,strokeReveal,rasterStrokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=semantic-chalk-2';
 import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
 import {narrationWork,boardWorkFrame,writingSchedule,settledBoardFrame} from './board-work.js?v=unframed-controls-1';
-import {BoardReview} from './board-review.js';
+import {BoardReview,MIN_BOARD_REVIEW_SECONDS} from './board-review.js';
 import {stampFelt} from './eraser-contact.js';
 
 import {chalkCopy,chalkPageText,composeChalkPage} from './chalk-language.js?v=mali-20261017';
@@ -64,7 +64,7 @@ export async function createLecture(scene,renderer,options={}){
   let screenHub=null,openingDemo=null,openingSurfacesReady=false,translating=false,languageRequest=0,translatedInk=null;
   let storageRig=null,stored=Boolean(options.retractable&&options.startStored),storageProgress=stored?1:0,storageLabel=null,storageLabelText='';
   const storageMotion=new BoardStorage(stored),storageLids=[];let storageWell=null,storageCap=null;
-  const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:p.kind==='cover'?5:8}));
+  const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:MIN_BOARD_REVIEW_SECONDS}));
   estimateDurations();
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();const assetRetry=new AssetRetry();let boardPreparation=null;let loadingError=null,version=0,language=options.initialLanguage==='zh'?'zh':'en',generation=0;
   let fontsReady=0;
@@ -110,7 +110,7 @@ export async function createLecture(scene,renderer,options={}){
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
         if(pixels)guides.set(index,inkGuides(pixels,rows));
         if(pages[index].exerciseBoard&&pixels){const c=document.createElement('canvas');c.width=W;c.height=H;const cx=c.getContext('2d');cx.putImageData(pixels,0,0);cx.fillStyle='white';cx.fillRect(...LOTTERY_RECT);pixels=cx.getImageData(0,0,W,H);}const wipe=erasingPlan(pixels,rows);erasePlans.set(index,wipe);
-        clock.setDurations(index,{write:Math.max(.8,writingPlan(rows,guides.get(index)).duration),erase:Math.max(.4,wipe.duration),hold:pages[index].kind==='cover'?5:8});
+        clock.setDurations(index,{write:Math.max(.8,writingPlan(rows,guides.get(index)).duration),erase:Math.max(.4,wipe.duration),hold:MIN_BOARD_REVIEW_SECONDS});
         cache.set(index,sample);assetRetry.clear(index);if(pending.get(index)===timed)pending.delete(index);version++;
         // Retain six on-board pages and the active/next page, evict other SVGs.
         const keep=new Set([...seekPinned,...clock.slots.map(s=>s.page),clock.page,Math.min(clock.page+1,pages.length-1)]);
@@ -503,7 +503,7 @@ export async function createLecture(scene,renderer,options={}){
       }
     }else if(boardWork||workManifest)cancelBoardWork();
     const ready=cache.has(clock.page)&&(clock.slots[clock.active].page<0||cache.has(clock.slots[clock.active].page));
-    if(!narrated&&clock.phase==='hold'){boardReview.mark(clock.page);clock.elapsed=Math.max(clock.elapsed,Math.min(clock.duration,5-boardReview.remaining(clock.page)));}
+    if(!narrated&&clock.phase==='hold'){boardReview.mark(clock.page);clock.elapsed=Math.max(clock.elapsed,Math.min(clock.duration,MIN_BOARD_REVIEW_SECONDS-boardReview.remaining(clock.page)));}
     if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}
     // Ordinary reports retain their original mechanism. Narration uses Audio.currentTime.
     const collectingEraser=clock.phase==='erase'&&eraser.userData.state!=='erasing'||clock.phase==='write'&&Boolean(eraserReturn);
