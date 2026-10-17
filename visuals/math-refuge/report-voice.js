@@ -1,3 +1,4 @@
+import {prepareClassroomAudioBlob} from './classroom-audio-decode.js?v=mp3-predecode-1';
 import {primeClassroomAudio,disconnectClassroomAudio} from './classroom-audio-output.js?v=pcm-wav-20261017-1';
 import {selectClassroomOpening,classroomAudioRate} from './classroom-opening.js?v=classroom-clarity-20261017-2';
 import {createResourceFetch} from './resource-fetch.js';
@@ -42,7 +43,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   if(cache.has(i))return cache.get(i);if(jobs.has(i)){if(show)fetcher.promote?.(manifest.chapters[i].src);return jobs.get(i);}
   for(const [key,url]of cache)if(manifest.chapters[key]?.src===manifest.chapters[i].src){cache.set(i,url);return url;}
   const mine=epoch,c=manifest.chapters[i];
-  const job=(async()=>{const blob=await bytes(c.src,mine,show,c.bytes);if(!blob||mine!==epoch)return null;const url=makeURL(blob);cache.set(i,url);trim();return url;})();
+  const job=(async()=>{const blob=await bytes(c.src,mine,show,c.bytes);if(!blob||mine!==epoch)return null;const playable=manifest.policy?.audioTransport==='mp3-predecode-pcm'?await prepareClassroomAudioBlob(blob,{expectedSeconds:c.mediaStart===undefined?c.duration:undefined}):blob;if(mine!==epoch)return null;const url=makeURL(playable);cache.set(i,url);trim();return url;})();
   jobs.set(i,job);try{return await job;}finally{if(jobs.get(i)===job)jobs.delete(i);}
  }
  async function attach(i,at=0){
