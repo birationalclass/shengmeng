@@ -1,0 +1,53 @@
+@LinearStudy.schemeModuleHomShortComplexSourceMap : {X : AlgebraicGeometry.Scheme} →
+  {S T : CategoryTheory.ShortComplex X.Modules} →
+    (S ⟶ T) →
+      (K : CochainComplex X.Modules ℕ) →
+        LinearStudy.schemeModuleHomSourceShortComplex T K ⟶ LinearStudy.schemeModuleHomSourceShortComplex S K
+'LinearStudy.schemeModuleHomShortComplexSourceMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {S T : CategoryTheory.ShortComplex X.Modules} (phi : S ⟶ T) (hS : S.ShortExact) (hT : T.ShortExact) (N : X.Modules)
+  (I : CategoryTheory.InjectiveResolution N) (q : ℕ),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution T hT N I q)
+      (LinearStudy.schemeModuleInternalExtSourceMap phi.τ₃ N (q + 1)) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceMap phi.τ₁ N q)
+      (LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution S hS N I q)
+'LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInternalExtSourceBoundary_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme}
+  {S T : CategoryTheory.ShortComplex X.Modules} (phi : S ⟶ T) (hS : S.ShortExact) (hT : T.ShortExact) (N : X.Modules)
+  (q : ℕ),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceBoundary T hT N q)
+      (LinearStudy.schemeModuleInternalExtSourceMap phi.τ₃ N (q + 1)) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleInternalExtSourceMap phi.τ₁ N q)
+      (LinearStudy.schemeModuleInternalExtSourceBoundary S hS N q)
+'LinearStudy.schemeModuleInternalExtSourceBoundary_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalOpcycleBoundary_embedding : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E : X.Modules} (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E)
+  [inst : QuasiIso alpha] (N : X.Modules) (j : ℤ) (p : ℕ) (h : -↑p = j + 1) (q : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.schemeModuleInternalExtSourceBoundary (LinearStudy.schemeModuleChainOpcycleSequence C p) ⋯ N q)
+      (LinearStudy.schemeModuleInternalExtSourceMap (LinearStudy.schemeModuleOriginalOpcycleSourceIso C j p h).hom.τ₃ N
+        (q + 1)) =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.schemeModuleInternalExtSourceMap (LinearStudy.schemeModuleOriginalOpcycleSourceIso C j p h).hom.τ₁ N
+        q)
+      (LinearStudy.schemeModuleInternalExtSourceBoundary
+        (LinearStudy.cochainOpcycleSourceSequence (LinearStudy.originalChainAsCochain C) j) ⋯ N q)
+'LinearStudy.schemeModuleOriginalOpcycleBoundary_embedding' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleHomShortComplexSourceMap.{u} : {X : AlgebraicGeometry.Scheme} →
+  {S T : CategoryTheory.ShortComplex X.Modules} →
+    (S ⟶ T) →
+      (K : CochainComplex X.Modules ℕ) →
+        LinearStudy.schemeModuleHomSourceShortComplex T K ⟶ LinearStudy.schemeModuleHomSourceShortComplex S K :=
+fun {X : AlgebraicGeometry.Scheme} {S T : CategoryTheory.ShortComplex X.Modules} (phi : S ⟶ T)
+    (K : CochainComplex X.Modules ℕ) =>
+  { τ₁ := LinearStudy.schemeModuleHomCoefficientComplexMap phi.τ₃ K,
+    τ₂ := LinearStudy.schemeModuleHomCoefficientComplexMap phi.τ₂ K,
+    τ₃ := LinearStudy.schemeModuleHomCoefficientComplexMap phi.τ₁ K, comm₁₂ := ⋯, comm₂₃ := ⋯ }
+ROLECHECK:LinearStudy.schemeModuleHomShortComplexSourceMap:false
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundaryViaResolution_sourceNaturality:true
+ROLECHECK:LinearStudy.schemeModuleInternalExtSourceBoundary_sourceNaturality:true
+ROLECHECK:LinearStudy.schemeModuleOriginalOpcycleBoundary_embedding:true

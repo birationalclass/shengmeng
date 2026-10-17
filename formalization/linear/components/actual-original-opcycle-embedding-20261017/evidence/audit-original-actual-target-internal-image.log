@@ -1,0 +1,64 @@
+@LinearStudy.originalChainTerminalSourceIso : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        {E : A} →
+          (r : ℕ) →
+            (alpha : C ⟶ (ChainComplex.single₀ A).obj E) →
+              QuasiIso alpha →
+                (HomologicalComplex.opcycles (LinearStudy.originalChainAsCochain C)
+                    (LinearStudy.cochainSourceDegree r r) ≅
+                  E)
+'LinearStudy.originalChainTerminalSourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainTerminalSourceIso_hom : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E : A} (r : ℕ)
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha),
+  (LinearStudy.originalChainTerminalSourceIso C r alpha hAlpha).hom =
+    LinearStudy.cochainSourceTerminalMap r
+      (LinearStudy.cochainAugmentationOpcycle (LinearStudy.originalChainAugmentationAsCochain C alpha))
+'LinearStudy.originalChainTerminalSourceIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtAll_sourceIso : ∀ {X : AlgebraicGeometry.Scheme} {P Q : X.Modules}
+  (e : P ≅ Q) (N : X.Modules) (q : ℕ) (x : CategoryTheory.Abelian.Ext Q N q),
+  (LinearStudy.schemeModuleGlobalToInternalExtAll Q N q) x =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleGlobalToInternalExtAll P N q) ((CategoryTheory.Abelian.Ext.mk₀ e.hom).comp x ⋯))
+      (LinearStudy.schemeModuleInternalExtSourceIso e N q).hom
+'LinearStudy.schemeModuleGlobalToInternalExtAll_sourceIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOriginalSmallClass_internalImage : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E N : X.Modules} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ N)
+      (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+      (LinearStudy.schemeModuleGlobalToInternalExtAll E N r)
+          (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha a ha) =
+        CategoryTheory.CategoryStruct.comp
+          ((LinearStudy.schemeModuleHomToInternalExtZero
+              (HomologicalComplex.opcycles (LinearStudy.originalChainAsCochain C) (LinearStudy.cochainSourceDegree r 0))
+              N)
+            (LinearStudy.originalChainTopOpcycleFunctional C r a ha))
+          (CategoryTheory.CategoryStruct.comp
+            (LinearStudy.schemeModuleCochainIteratedInternalBoundary (LinearStudy.originalChainAsCochain C) N r
+              (LinearStudy.originalChainAugmentationAsCochain C alpha) r ⋯)
+            (LinearStudy.schemeModuleInternalExtSourceMap
+              (LinearStudy.originalChainTerminalSourceIso C r alpha hAlpha).inv N r))
+'LinearStudy.schemeModuleOriginalSmallClass_internalImage' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.originalChainTerminalSourceIso.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (C : ChainComplex A ℕ) →
+        {E : A} →
+          (r : ℕ) →
+            (alpha : C ⟶ (ChainComplex.single₀ A).obj E) →
+              QuasiIso alpha →
+                (HomologicalComplex.opcycles (LinearStudy.originalChainAsCochain C)
+                    (LinearStudy.cochainSourceDegree r r) ≅
+                  E) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E : A} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ A).obj E) (hAlpha : QuasiIso alpha) =>
+  CategoryTheory.asIso
+    (LinearStudy.cochainSourceTerminalMap r
+      (LinearStudy.cochainAugmentationOpcycle (LinearStudy.originalChainAugmentationAsCochain C alpha)))
+ROLECHECK:LinearStudy.originalChainTerminalSourceIso:false
+ROLECHECK:LinearStudy.originalChainTerminalSourceIso_hom:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtAll_sourceIso:true
+ROLECHECK:LinearStudy.schemeModuleOriginalSmallClass_internalImage:true

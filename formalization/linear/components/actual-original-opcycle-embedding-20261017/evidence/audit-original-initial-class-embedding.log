@@ -1,0 +1,39 @@
+@LinearStudy.schemeModuleHomToInternalExtZero_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme} {P Q N : X.Modules}
+  (g : P ⟶ Q) (a : Q ⟶ N),
+  (LinearStudy.schemeModuleHomToInternalExtZero P N) (CategoryTheory.CategoryStruct.comp g a) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomToInternalExtZero Q N) a)
+      (LinearStudy.schemeModuleInternalExtSourceMap g N 0)
+'LinearStudy.schemeModuleHomToInternalExtZero_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtAll_sourceNaturality : ∀ {X : AlgebraicGeometry.Scheme} {P Q N : X.Modules}
+  (g : P ⟶ Q) (q : ℕ) (e : CategoryTheory.Abelian.Ext Q N q),
+  (LinearStudy.schemeModuleGlobalToInternalExtAll P N q) ((CategoryTheory.Abelian.Ext.mk₀ g).comp e ⋯) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleGlobalToInternalExtAll Q N q) e)
+      (LinearStudy.schemeModuleInternalExtSourceMap g N q)
+'LinearStudy.schemeModuleGlobalToInternalExtAll_sourceNaturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalChainTopOpcycleFunctional_embedding : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (C : ChainComplex A ℕ) {N : A} (r : ℕ) (a : C.X r ⟶ N)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  LinearStudy.originalChainTopOpcycleFunctional C r a ha =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.originalChainAsCochainOpcyclesIso C (-↑r) r ⋯).hom
+      (HomologicalComplex.descOpcycles C a (r + 1) ⋯ ha)
+'LinearStudy.originalChainTopOpcycleFunctional_embedding' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOriginalTopInitialClass_embedding : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {N : X.Modules} (r : ℕ) (a : C.X r ⟶ N)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+  (LinearStudy.schemeModuleHomToInternalExtZero
+        (HomologicalComplex.opcycles (LinearStudy.originalChainAsCochain C) (LinearStudy.cochainSourceDegree r 0)) N)
+      (LinearStudy.originalChainTopOpcycleFunctional C r a ha) =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleHomToInternalExtZero (HomologicalComplex.opcycles C r) N)
+        (HomologicalComplex.descOpcycles C a (r + 1) ⋯ ha))
+      (LinearStudy.schemeModuleInternalExtSourceMap (LinearStudy.originalChainAsCochainOpcyclesIso C (-↑r) r ⋯).hom N 0)
+'LinearStudy.schemeModuleOriginalTopInitialClass_embedding' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleHomToInternalExtZero_sourceNaturality:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtAll_sourceNaturality:true
+ROLECHECK:LinearStudy.originalChainTopOpcycleFunctional_embedding:true
+ROLECHECK:LinearStudy.schemeModuleOriginalTopInitialClass_embedding:true
