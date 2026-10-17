@@ -11,7 +11,7 @@ export function bindPhysicalButtons(canvas,controls,hitTest,activate){
     if(!hover&&hint)hint.hidden=true;
     if(canvas.style)canvas.style.cursor=hover?.userData.action||hover?.userData.autoDoor?'pointer':cursor;
   }
-  function move(e){highlight(press?press.object:e.buttons?null:hitTest(e));tooltip(e);}
+  function move(e){if(press&&press.id===e.pointerId&&Math.hypot(e.clientX-press.x,e.clientY-press.y)>=7){release();highlight(null);if(hint)hint.hidden=true;return;}highlight(press?press.object:e.buttons?null:hitTest(e));tooltip(e);}
   function leave(){highlight(null);}
   function release(){if(!press)return;controls.enabled=press.enabled;press.object.userData.pressed=false;press=null;}
   function down(e){

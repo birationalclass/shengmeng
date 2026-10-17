@@ -128,7 +128,7 @@ export async function createLecture(scene,renderer,options={}){
   const cube=new THREE.BoxGeometry(1,1,1);
   const trayHardware=createBoardTrayHardware(THREE,renderer.capabilities?.getMaxAnisotropy?.()||1);if(canAuthor)await trayHardware.loadGrain();
   const trayChalkGeometry=new THREE.CylinderGeometry(.018,.015,.16,10);
-  const trayChalkMaterials=['#f5efdc','#e9aa24','#e75575','#339bdd'].map(color=>new THREE.MeshStandardMaterial({color,roughness:1,emissive:color,emissiveIntensity:.18}));
+  const trayChalkMaterials=['#eee9d5','#e4cf9c','#ffada3','#93c9ff','#c3a1e8','#a4d5a0'].map(color=>new THREE.MeshStandardMaterial({color,roughness:1,emissive:color,emissiveIntensity:.18}));
   function part(parent,p,s,material){const mesh=new THREE.Mesh(cube,material);mesh.position.fromArray(p);mesh.scale.fromArray(s);parent.add(mesh);return mesh;}
   const blankCanvas=document.createElement('canvas');blankCanvas.width=128;blankCanvas.height=64;const blankCtx=blankCanvas.getContext('2d');blankCtx.fillStyle='#193d33';blankCtx.fillRect(0,0,128,64);
   const blankTexture=new THREE.CanvasTexture(blankCanvas);blankTexture.colorSpace=THREE.SRGBColorSpace;
@@ -174,7 +174,7 @@ export async function createLecture(scene,renderer,options={}){
       boards.push({group,canvas,ctx,texture,roughCtx,roughTexture,previousInk,inkBlend,fadeAge:1,wet:null,last:''});
     }
     trayHardware.create(scene,x,pair);
-    for(let j=0;j<4;j++){
+    for(let j=0;j<trayChalkMaterials.length;j++){
       const stick=new THREE.Mesh(trayChalkGeometry,trayChalkMaterials[j]);stick.name=`Tray chalk ${pair+1} ${j+1}`;
       stick.rotation.z=Math.PI/2;stick.rotation.y=(j%2?1:-1)*.08;stick.position.set(x-.95+j*.24,TRAY.top+.020,TRAY.z+TRAY_STORAGE.center);
       stick.userData={column:pair,colorIndex:j};scene.add(stick);
