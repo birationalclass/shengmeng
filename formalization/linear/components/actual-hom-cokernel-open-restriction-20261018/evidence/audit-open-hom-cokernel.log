@@ -1,0 +1,40 @@
+@LinearStudy.schemeModuleHomOpenImmersionCokernelIso : {X Y : AlgebraicGeometry.Scheme} →
+  {M' M : X.Modules} →
+    (N : X.Modules) →
+      (j : Y ⟶ X) →
+        [inst : AlgebraicGeometry.IsOpenImmersion j] →
+          (d : M' ⟶ M) →
+            (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d)).restrict j ≅
+              CategoryTheory.Limits.cokernel
+                (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d))
+'LinearStudy.schemeModuleHomOpenImmersionCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionCokernelIso_projection : ∀ {X Y : AlgebraicGeometry.Scheme} {M' M : X.Modules}
+  (N : X.Modules) (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (d : M' ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map
+        (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d)))
+      (LinearStudy.schemeModuleHomOpenImmersionCokernelIso N j d).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomOpenImmersionIso M' N j).hom
+      (CategoryTheory.Limits.cokernel.π
+        (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d)))
+'LinearStudy.schemeModuleHomOpenImmersionCokernelIso_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleHomOpenImmersionCokernelIso.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  {M' M : X.Modules} →
+    (N : X.Modules) →
+      (j : Y ⟶ X) →
+        [inst : AlgebraicGeometry.IsOpenImmersion j] →
+          (d : M' ⟶ M) →
+            (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d)).restrict j ≅
+              CategoryTheory.Limits.cokernel
+                (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d)) :=
+fun {X Y : AlgebraicGeometry.Scheme} {M' M : X.Modules} (N : X.Modules) (j : Y ⟶ X)
+    [AlgebraicGeometry.IsOpenImmersion j] (d : M' ⟶ M) =>
+  LinearStudy.schemeModuleOpenRestrictionCokernelIso j (LinearStudy.schemeModuleHomPrecompose d) ≪≫
+    CategoryTheory.Limits.cokernel.mapIso
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map (LinearStudy.schemeModuleHomPrecompose d))
+      (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d))
+      (LinearStudy.schemeModuleHomOpenImmersionIso M N j) (LinearStudy.schemeModuleHomOpenImmersionIso M' N j) ⋯
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionCokernelIso:false
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionCokernelIso_projection:true

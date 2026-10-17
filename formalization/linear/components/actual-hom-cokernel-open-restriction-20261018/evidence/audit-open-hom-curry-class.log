@@ -1,0 +1,26 @@
+@LinearStudy.schemeModuleHomOpenImmersionIso_curry : ∀ {X Y : AlgebraicGeometry.Scheme} {M N : X.Modules} (j : Y ⟶ X)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (a : M ⟶ N),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.restrictUnitIso j).inv
+      (CategoryTheory.CategoryStruct.comp
+        ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map
+          ((LinearStudy.schemeModuleHomUnitAddEquiv M N).symm a))
+        (LinearStudy.schemeModuleHomOpenImmersionIso M N j).hom) =
+    (LinearStudy.schemeModuleHomUnitAddEquiv (M.restrict j) (N.restrict j)).symm
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map a)
+'LinearStudy.schemeModuleHomOpenImmersionIso_curry' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionCokernelIso_class : ∀ {X Y : AlgebraicGeometry.Scheme} {M' M N : X.Modules}
+  (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (d : M' ⟶ M) (a : M' ⟶ N),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.restrictUnitIso j).inv
+      (CategoryTheory.CategoryStruct.comp
+        ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map
+          (CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv M' N).symm a)
+            (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d))))
+        (LinearStudy.schemeModuleHomOpenImmersionCokernelIso N j d).hom) =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleHomUnitAddEquiv (M'.restrict j) (N.restrict j)).symm
+        ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map a))
+      (CategoryTheory.Limits.cokernel.π
+        (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d)))
+'LinearStudy.schemeModuleHomOpenImmersionCokernelIso_class' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionIso_curry:true
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionCokernelIso_class:true

@@ -1,0 +1,9 @@
+@LinearStudy.schemeModuleHomOpenImmersionIso_precompose : ∀ {X Y : AlgebraicGeometry.Scheme} {M' M : X.Modules}
+  (N : X.Modules) (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (a : M' ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map (LinearStudy.schemeModuleHomPrecompose a))
+      (LinearStudy.schemeModuleHomOpenImmersionIso M' N j).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomOpenImmersionIso M N j).hom
+      (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map a))
+'LinearStudy.schemeModuleHomOpenImmersionIso_precompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionIso_precompose:true

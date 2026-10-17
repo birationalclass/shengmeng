@@ -1,0 +1,48 @@
+@LinearStudy.schemeModuleHomArrowCokernelIso : {X : AlgebraicGeometry.Scheme} →
+  {A B A' B' N N' : X.Modules} →
+    (s : A ≅ A') →
+      (t : B ≅ B') →
+        (N ≅ N') →
+          (d : A ⟶ B) →
+            (d' : A' ⟶ B') →
+              CategoryTheory.CategoryStruct.comp d t.hom = CategoryTheory.CategoryStruct.comp s.hom d' →
+                (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d) ≅
+                  CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d'))
+'LinearStudy.schemeModuleHomArrowCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomArrowCokernelIso_projection : ∀ {X : AlgebraicGeometry.Scheme} {A B A' B' N N' : X.Modules}
+  (s : A ≅ A') (t : B ≅ B') (e : N ≅ N') (d : A ⟶ B) (d' : A' ⟶ B')
+  (w : CategoryTheory.CategoryStruct.comp d t.hom = CategoryTheory.CategoryStruct.comp s.hom d'),
+  CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d))
+      (LinearStudy.schemeModuleHomArrowCokernelIso s t e d d' w).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomTransportIso s e).hom
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d'))
+'LinearStudy.schemeModuleHomArrowCokernelIso_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomArrowCokernelIso_class : ∀ {X : AlgebraicGeometry.Scheme} {A B A' B' N N' : X.Modules}
+  (s : A ≅ A') (t : B ≅ B') (e : N ≅ N') (d : A ⟶ B) (d' : A' ⟶ B')
+  (w : CategoryTheory.CategoryStruct.comp d t.hom = CategoryTheory.CategoryStruct.comp s.hom d') (a : A ⟶ N),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv A N).symm a)
+      (CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d))
+        (LinearStudy.schemeModuleHomArrowCokernelIso s t e d d' w).hom) =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleHomUnitAddEquiv A' N').symm
+        (CategoryTheory.CategoryStruct.comp s.inv (CategoryTheory.CategoryStruct.comp a e.hom)))
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d'))
+'LinearStudy.schemeModuleHomArrowCokernelIso_class' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleHomArrowCokernelIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {A B A' B' N N' : X.Modules} →
+    (s : A ≅ A') →
+      (t : B ≅ B') →
+        (N ≅ N') →
+          (d : A ⟶ B) →
+            (d' : A' ⟶ B') →
+              CategoryTheory.CategoryStruct.comp d t.hom = CategoryTheory.CategoryStruct.comp s.hom d' →
+                (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d) ≅
+                  CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d')) :=
+fun {X : AlgebraicGeometry.Scheme} {A B A' B' N N' : X.Modules} (s : A ≅ A') (t : B ≅ B') (e : N ≅ N') (d : A ⟶ B)
+    (d' : A' ⟶ B') (w : CategoryTheory.CategoryStruct.comp d t.hom = CategoryTheory.CategoryStruct.comp s.hom d') =>
+  CategoryTheory.Limits.cokernel.mapIso (LinearStudy.schemeModuleHomPrecompose d)
+    (LinearStudy.schemeModuleHomPrecompose d') (LinearStudy.schemeModuleHomTransportIso t e)
+    (LinearStudy.schemeModuleHomTransportIso s e) ⋯
+ROLECHECK:LinearStudy.schemeModuleHomArrowCokernelIso:false
+ROLECHECK:LinearStudy.schemeModuleHomArrowCokernelIso_projection:true
+ROLECHECK:LinearStudy.schemeModuleHomArrowCokernelIso_class:true

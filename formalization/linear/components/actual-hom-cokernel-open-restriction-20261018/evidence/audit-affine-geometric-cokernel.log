@@ -1,0 +1,37 @@
+LinearStudy.affineKoszulHomGeometricCokernelIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (p : ℕ) →
+      (H : Fin (p + 1) → ↑R) →
+        CategoryTheory.Limits.cokernel
+            (LinearStudy.schemeModuleHomPrecompose
+              ((AlgebraicGeometry.tilde.functor R).map
+                (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))) ≅
+          (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).X₃
+'LinearStudy.affineKoszulHomGeometricCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulHomGeometricCokernelIso_projection : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ)
+  (H : Fin (p + 1) → ↑R),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π
+        (LinearStudy.schemeModuleHomPrecompose
+          ((AlgebraicGeometry.tilde.functor R).map
+            (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))))
+      (LinearStudy.affineKoszulHomGeometricCokernelIso R N p H).hom =
+    (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).g
+'LinearStudy.affineKoszulHomGeometricCokernelIso_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.affineKoszulHomGeometricCokernelIso.{u} : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (p : ℕ) →
+      (H : Fin (p + 1) → ↑R) →
+        CategoryTheory.Limits.cokernel
+            (LinearStudy.schemeModuleHomPrecompose
+              ((AlgebraicGeometry.tilde.functor R).map
+                (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))) ≅
+          (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).X₃ :=
+fun (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ) (H : Fin (p + 1) → ↑R) =>
+  (CategoryTheory.Limits.cokernelIsCokernel
+        (LinearStudy.schemeModuleHomPrecompose
+          ((AlgebraicGeometry.tilde.functor R).map
+            (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p))))).coconePointUniqueUpToIso
+    ⋯.gIsCokernel
+ROLECHECK:LinearStudy.affineKoszulHomGeometricCokernelIso:false
+ROLECHECK:LinearStudy.affineKoszulHomGeometricCokernelIso_projection:true

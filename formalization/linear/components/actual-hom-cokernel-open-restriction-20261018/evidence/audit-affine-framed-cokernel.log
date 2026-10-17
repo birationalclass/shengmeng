@@ -1,0 +1,79 @@
+LinearStudy.affineKoszulFramedHomCokernelIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (p : ℕ) →
+      (H : Fin (p + 1) → ↑R) →
+        {A B M : (AlgebraicGeometry.Spec R).Modules} →
+          (s : A ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R))) →
+            (t : B ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^p (Fin (p + 1) → ↑R))) →
+              (M ≅ AlgebraicGeometry.tilde N) →
+                (d : A ⟶ B) →
+                  CategoryTheory.CategoryStruct.comp d t.hom =
+                      CategoryTheory.CategoryStruct.comp s.hom
+                        ((AlgebraicGeometry.tilde.functor R).map
+                          (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p))) →
+                    (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d) ≅
+                      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).X₃)
+'LinearStudy.affineKoszulFramedHomCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulFramedHomCokernelIso_projection : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ)
+  (H : Fin (p + 1) → ↑R) {A B M : (AlgebraicGeometry.Spec R).Modules}
+  (s : A ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+  (t : B ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^p (Fin (p + 1) → ↑R))) (e : M ≅ AlgebraicGeometry.tilde N) (d : A ⟶ B)
+  (w :
+    CategoryTheory.CategoryStruct.comp d t.hom =
+      CategoryTheory.CategoryStruct.comp s.hom
+        ((AlgebraicGeometry.tilde.functor R).map
+          (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))),
+  CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d))
+      (LinearStudy.affineKoszulFramedHomCokernelIso R N p H s t e d w).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomTransportIso s e).hom
+      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).g
+'LinearStudy.affineKoszulFramedHomCokernelIso_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulFramedHomCokernelIso_class : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ)
+  (H : Fin (p + 1) → ↑R) {A B M : (AlgebraicGeometry.Spec R).Modules}
+  (s : A ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+  (t : B ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^p (Fin (p + 1) → ↑R))) (e : M ≅ AlgebraicGeometry.tilde N) (d : A ⟶ B)
+  (w :
+    CategoryTheory.CategoryStruct.comp d t.hom =
+      CategoryTheory.CategoryStruct.comp s.hom
+        ((AlgebraicGeometry.tilde.functor R).map
+          (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p))))
+  (a : A ⟶ M),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv A M).symm a)
+      (CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d))
+        (LinearStudy.affineKoszulFramedHomCokernelIso R N p H s t e d w).hom) =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleHomUnitAddEquiv (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+            (AlgebraicGeometry.tilde N)).symm
+        (CategoryTheory.CategoryStruct.comp s.inv (CategoryTheory.CategoryStruct.comp a e.hom)))
+      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).g
+'LinearStudy.affineKoszulFramedHomCokernelIso_class' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.affineKoszulFramedHomCokernelIso.{u} : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (p : ℕ) →
+      (H : Fin (p + 1) → ↑R) →
+        {A B M : (AlgebraicGeometry.Spec R).Modules} →
+          (s : A ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R))) →
+            (t : B ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^p (Fin (p + 1) → ↑R))) →
+              (M ≅ AlgebraicGeometry.tilde N) →
+                (d : A ⟶ B) →
+                  CategoryTheory.CategoryStruct.comp d t.hom =
+                      CategoryTheory.CategoryStruct.comp s.hom
+                        ((AlgebraicGeometry.tilde.functor R).map
+                          (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p))) →
+                    (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d) ≅
+                      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).X₃) :=
+fun (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ) (H : Fin (p + 1) → ↑R) {A B M : (AlgebraicGeometry.Spec R).Modules}
+    (s : A ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+    (t : B ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^p (Fin (p + 1) → ↑R))) (e : M ≅ AlgebraicGeometry.tilde N) (d : A ⟶ B)
+    (w :
+      CategoryTheory.CategoryStruct.comp d t.hom =
+        CategoryTheory.CategoryStruct.comp s.hom
+          ((AlgebraicGeometry.tilde.functor R).map
+            (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))) =>
+  LinearStudy.schemeModuleHomArrowCokernelIso s t e d
+      ((AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))
+      w ≪≫
+    LinearStudy.affineKoszulHomGeometricCokernelIso R N p H
+ROLECHECK:LinearStudy.affineKoszulFramedHomCokernelIso:false
+ROLECHECK:LinearStudy.affineKoszulFramedHomCokernelIso_projection:true
+ROLECHECK:LinearStudy.affineKoszulFramedHomCokernelIso_class:true

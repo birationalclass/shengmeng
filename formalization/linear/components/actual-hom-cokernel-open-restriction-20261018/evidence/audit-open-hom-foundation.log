@@ -1,0 +1,93 @@
+@LinearStudy.openImmersionOverPost_isEquivalence : ∀ {X Y : AlgebraicGeometry.Scheme} (j : Y ⟶ X)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (W : Y.Opens),
+  (CategoryTheory.Over.post (AlgebraicGeometry.Scheme.Hom.opensFunctor j)).IsEquivalence
+'LinearStudy.openImmersionOverPost_isEquivalence' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionRestrictSection : {X Y : AlgebraicGeometry.Scheme} →
+  (M N : X.Modules) →
+    (j : Y ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (W : Y.Opens) →
+          ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj
+                (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W))) →
+            ↑((LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j)).presheaf.obj (Opposite.op W))
+'LinearStudy.schemeModuleHomOpenImmersionRestrictSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionRestrictSection_evaluation : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (M N : X.Modules) (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (W : Y.Opens)
+  (h :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj
+        (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W))))
+  (Z : (CategoryTheory.Over W)ᵒᵖ) (x : ↑((M.restrict j).presheaf.obj (Opposite.op (Opposite.unop Z).left))),
+  (CategoryTheory.ConcreteCategory.hom ((↑(LinearStudy.schemeModuleHomOpenImmersionRestrictSection M N j W h)).app Z))
+      x =
+    (CategoryTheory.ConcreteCategory.hom
+        ((↑h).app ((CategoryTheory.Over.post (AlgebraicGeometry.Scheme.Hom.opensFunctor j)).op.obj Z)))
+      x
+'LinearStudy.schemeModuleHomOpenImmersionRestrictSection_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionRestrictSection_bijective : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (M N : X.Modules) (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (W : Y.Opens),
+  Function.Bijective (LinearStudy.schemeModuleHomOpenImmersionRestrictSection M N j W)
+'LinearStudy.schemeModuleHomOpenImmersionRestrictSection_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionMorphism : {X Y : AlgebraicGeometry.Scheme} →
+  (M N : X.Modules) →
+    (j : Y ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (LinearStudy.schemeModuleHomModuleSheaf M N).restrict j ⟶
+          LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j)
+'LinearStudy.schemeModuleHomOpenImmersionMorphism' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionIso : {X Y : AlgebraicGeometry.Scheme} →
+  (M N : X.Modules) →
+    (j : Y ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (LinearStudy.schemeModuleHomModuleSheaf M N).restrict j ≅
+          LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j)
+'LinearStudy.schemeModuleHomOpenImmersionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleHomOpenImmersionRestrictSection.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  (M N : X.Modules) →
+    (j : Y ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (W : Y.Opens) →
+          ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj
+                (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W))) →
+            ↑((LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j)).presheaf.obj (Opposite.op W)) :=
+fun {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (j : Y ⟶ X) [AlgebraicGeometry.IsOpenImmersion j] (W : Y.Opens)
+    (h :
+      ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj
+          (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W)))) =>
+  ⟨(CategoryTheory.Over.post (AlgebraicGeometry.Scheme.Hom.opensFunctor j)).op.whiskerLeft ↑h, ⋯⟩
+def LinearStudy.schemeModuleHomOpenImmersionMorphism.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  (M N : X.Modules) →
+    (j : Y ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (LinearStudy.schemeModuleHomModuleSheaf M N).restrict j ⟶
+          LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j) :=
+fun {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (j : Y ⟶ X) [AlgebraicGeometry.IsOpenImmersion j] =>
+  {
+    val :=
+      {
+        app := fun (W : (TopologicalSpace.Opens ↥Y)ᵒᵖ) =>
+          let T := (LinearStudy.schemeModuleHomModuleSheaf M N).restrict j;
+          let L := LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j);
+          have f :=
+            { toFun := LinearStudy.schemeModuleHomOpenImmersionRestrictSection M N j (Opposite.unop W), map_add' := ⋯,
+              map_smul' := ⋯ };
+          ModuleCat.homEquiv.symm f,
+        naturality := ⋯ } }
+def LinearStudy.schemeModuleHomOpenImmersionIso.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  (M N : X.Modules) →
+    (j : Y ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (LinearStudy.schemeModuleHomModuleSheaf M N).restrict j ≅
+          LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j) :=
+fun {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (j : Y ⟶ X) [AlgebraicGeometry.IsOpenImmersion j] =>
+  let η := LinearStudy.schemeModuleHomOpenImmersionMorphism M N j;
+  CategoryTheory.asIso η
+ROLECHECK:LinearStudy.openImmersionOverPost_isEquivalence:true
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionRestrictSection:false
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionRestrictSection_evaluation:true
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionRestrictSection_bijective:true
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionMorphism:false
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionIso:false

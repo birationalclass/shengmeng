@@ -1,0 +1,383 @@
+
+===== SPLIT AUDIT open-hom-foundation =====
+@LinearStudy.openImmersionOverPost_isEquivalence : ∀ {X Y : AlgebraicGeometry.Scheme} (j : Y ⟶ X)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (W : Y.Opens),
+  (CategoryTheory.Over.post (AlgebraicGeometry.Scheme.Hom.opensFunctor j)).IsEquivalence
+'LinearStudy.openImmersionOverPost_isEquivalence' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionRestrictSection : {X Y : AlgebraicGeometry.Scheme} →
+  (M N : X.Modules) →
+    (j : Y ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (W : Y.Opens) →
+          ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj
+                (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W))) →
+            ↑((LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j)).presheaf.obj (Opposite.op W))
+'LinearStudy.schemeModuleHomOpenImmersionRestrictSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionRestrictSection_evaluation : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (M N : X.Modules) (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (W : Y.Opens)
+  (h :
+    ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj
+        (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W))))
+  (Z : (CategoryTheory.Over W)ᵒᵖ) (x : ↑((M.restrict j).presheaf.obj (Opposite.op (Opposite.unop Z).left))),
+  (CategoryTheory.ConcreteCategory.hom ((↑(LinearStudy.schemeModuleHomOpenImmersionRestrictSection M N j W h)).app Z))
+      x =
+    (CategoryTheory.ConcreteCategory.hom
+        ((↑h).app ((CategoryTheory.Over.post (AlgebraicGeometry.Scheme.Hom.opensFunctor j)).op.obj Z)))
+      x
+'LinearStudy.schemeModuleHomOpenImmersionRestrictSection_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionRestrictSection_bijective : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (M N : X.Modules) (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (W : Y.Opens),
+  Function.Bijective (LinearStudy.schemeModuleHomOpenImmersionRestrictSection M N j W)
+'LinearStudy.schemeModuleHomOpenImmersionRestrictSection_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionMorphism : {X Y : AlgebraicGeometry.Scheme} →
+  (M N : X.Modules) →
+    (j : Y ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (LinearStudy.schemeModuleHomModuleSheaf M N).restrict j ⟶
+          LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j)
+'LinearStudy.schemeModuleHomOpenImmersionMorphism' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionIso : {X Y : AlgebraicGeometry.Scheme} →
+  (M N : X.Modules) →
+    (j : Y ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (LinearStudy.schemeModuleHomModuleSheaf M N).restrict j ≅
+          LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j)
+'LinearStudy.schemeModuleHomOpenImmersionIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleHomOpenImmersionRestrictSection.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  (M N : X.Modules) →
+    (j : Y ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (W : Y.Opens) →
+          ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj
+                (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W))) →
+            ↑((LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j)).presheaf.obj (Opposite.op W)) :=
+fun {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (j : Y ⟶ X) [AlgebraicGeometry.IsOpenImmersion j] (W : Y.Opens)
+    (h :
+      ↑((LinearStudy.schemeModuleHomModuleSheaf M N).presheaf.obj
+          (Opposite.op ((AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj W)))) =>
+  ⟨(CategoryTheory.Over.post (AlgebraicGeometry.Scheme.Hom.opensFunctor j)).op.whiskerLeft ↑h, ⋯⟩
+def LinearStudy.schemeModuleHomOpenImmersionMorphism.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  (M N : X.Modules) →
+    (j : Y ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (LinearStudy.schemeModuleHomModuleSheaf M N).restrict j ⟶
+          LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j) :=
+fun {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (j : Y ⟶ X) [AlgebraicGeometry.IsOpenImmersion j] =>
+  {
+    val :=
+      {
+        app := fun (W : (TopologicalSpace.Opens ↥Y)ᵒᵖ) =>
+          let T := (LinearStudy.schemeModuleHomModuleSheaf M N).restrict j;
+          let L := LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j);
+          have f :=
+            { toFun := LinearStudy.schemeModuleHomOpenImmersionRestrictSection M N j (Opposite.unop W), map_add' := ⋯,
+              map_smul' := ⋯ };
+          ModuleCat.homEquiv.symm f,
+        naturality := ⋯ } }
+def LinearStudy.schemeModuleHomOpenImmersionIso.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  (M N : X.Modules) →
+    (j : Y ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (LinearStudy.schemeModuleHomModuleSheaf M N).restrict j ≅
+          LinearStudy.schemeModuleHomModuleSheaf (M.restrict j) (N.restrict j) :=
+fun {X Y : AlgebraicGeometry.Scheme} (M N : X.Modules) (j : Y ⟶ X) [AlgebraicGeometry.IsOpenImmersion j] =>
+  let η := LinearStudy.schemeModuleHomOpenImmersionMorphism M N j;
+  CategoryTheory.asIso η
+ROLECHECK:LinearStudy.openImmersionOverPost_isEquivalence:true
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionRestrictSection:false
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionRestrictSection_evaluation:true
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionRestrictSection_bijective:true
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionMorphism:false
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionIso:false
+
+===== SPLIT AUDIT open-hom-source-naturality =====
+@LinearStudy.schemeModuleHomOpenImmersionIso_precompose : ∀ {X Y : AlgebraicGeometry.Scheme} {M' M : X.Modules}
+  (N : X.Modules) (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (a : M' ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map (LinearStudy.schemeModuleHomPrecompose a))
+      (LinearStudy.schemeModuleHomOpenImmersionIso M' N j).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomOpenImmersionIso M N j).hom
+      (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map a))
+'LinearStudy.schemeModuleHomOpenImmersionIso_precompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionIso_precompose:true
+
+===== SPLIT AUDIT open-hom-cokernel =====
+@LinearStudy.schemeModuleHomOpenImmersionCokernelIso : {X Y : AlgebraicGeometry.Scheme} →
+  {M' M : X.Modules} →
+    (N : X.Modules) →
+      (j : Y ⟶ X) →
+        [inst : AlgebraicGeometry.IsOpenImmersion j] →
+          (d : M' ⟶ M) →
+            (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d)).restrict j ≅
+              CategoryTheory.Limits.cokernel
+                (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d))
+'LinearStudy.schemeModuleHomOpenImmersionCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionCokernelIso_projection : ∀ {X Y : AlgebraicGeometry.Scheme} {M' M : X.Modules}
+  (N : X.Modules) (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (d : M' ⟶ M),
+  CategoryTheory.CategoryStruct.comp
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map
+        (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d)))
+      (LinearStudy.schemeModuleHomOpenImmersionCokernelIso N j d).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomOpenImmersionIso M' N j).hom
+      (CategoryTheory.Limits.cokernel.π
+        (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d)))
+'LinearStudy.schemeModuleHomOpenImmersionCokernelIso_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleHomOpenImmersionCokernelIso.{u} : {X Y : AlgebraicGeometry.Scheme} →
+  {M' M : X.Modules} →
+    (N : X.Modules) →
+      (j : Y ⟶ X) →
+        [inst : AlgebraicGeometry.IsOpenImmersion j] →
+          (d : M' ⟶ M) →
+            (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d)).restrict j ≅
+              CategoryTheory.Limits.cokernel
+                (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d)) :=
+fun {X Y : AlgebraicGeometry.Scheme} {M' M : X.Modules} (N : X.Modules) (j : Y ⟶ X)
+    [AlgebraicGeometry.IsOpenImmersion j] (d : M' ⟶ M) =>
+  LinearStudy.schemeModuleOpenRestrictionCokernelIso j (LinearStudy.schemeModuleHomPrecompose d) ≪≫
+    CategoryTheory.Limits.cokernel.mapIso
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map (LinearStudy.schemeModuleHomPrecompose d))
+      (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d))
+      (LinearStudy.schemeModuleHomOpenImmersionIso M N j) (LinearStudy.schemeModuleHomOpenImmersionIso M' N j) ⋯
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionCokernelIso:false
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionCokernelIso_projection:true
+
+===== SPLIT AUDIT open-hom-curry-class =====
+@LinearStudy.schemeModuleHomOpenImmersionIso_curry : ∀ {X Y : AlgebraicGeometry.Scheme} {M N : X.Modules} (j : Y ⟶ X)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (a : M ⟶ N),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.restrictUnitIso j).inv
+      (CategoryTheory.CategoryStruct.comp
+        ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map
+          ((LinearStudy.schemeModuleHomUnitAddEquiv M N).symm a))
+        (LinearStudy.schemeModuleHomOpenImmersionIso M N j).hom) =
+    (LinearStudy.schemeModuleHomUnitAddEquiv (M.restrict j) (N.restrict j)).symm
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map a)
+'LinearStudy.schemeModuleHomOpenImmersionIso_curry' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomOpenImmersionCokernelIso_class : ∀ {X Y : AlgebraicGeometry.Scheme} {M' M N : X.Modules}
+  (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (d : M' ⟶ M) (a : M' ⟶ N),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.restrictUnitIso j).inv
+      (CategoryTheory.CategoryStruct.comp
+        ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map
+          (CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv M' N).symm a)
+            (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d))))
+        (LinearStudy.schemeModuleHomOpenImmersionCokernelIso N j d).hom) =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleHomUnitAddEquiv (M'.restrict j) (N.restrict j)).symm
+        ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map a))
+      (CategoryTheory.Limits.cokernel.π
+        (LinearStudy.schemeModuleHomPrecompose ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map d)))
+'LinearStudy.schemeModuleHomOpenImmersionCokernelIso_class' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionIso_curry:true
+ROLECHECK:LinearStudy.schemeModuleHomOpenImmersionCokernelIso_class:true
+
+===== SPLIT AUDIT hom-transport =====
+@LinearStudy.schemeModuleHomTransportIso : {X : AlgebraicGeometry.Scheme} →
+  {M M' N N' : X.Modules} →
+    (M ≅ M') → (N ≅ N') → (LinearStudy.schemeModuleHomModuleSheaf M N ≅ LinearStudy.schemeModuleHomModuleSheaf M' N')
+'LinearStudy.schemeModuleHomTransportIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomTransportIso_hom : ∀ {X : AlgebraicGeometry.Scheme} {M M' N N' : X.Modules} (s : M ≅ M')
+  (t : N ≅ N'),
+  (LinearStudy.schemeModuleHomTransportIso s t).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPrecompose s.inv)
+      (LinearStudy.schemeModuleHomPostcompose t.hom)
+'LinearStudy.schemeModuleHomTransportIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomTransportIso_curry : ∀ {X : AlgebraicGeometry.Scheme} {M M' N N' : X.Modules} (s : M ≅ M')
+  (t : N ≅ N') (a : M ⟶ N),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv M N).symm a)
+      (LinearStudy.schemeModuleHomTransportIso s t).hom =
+    (LinearStudy.schemeModuleHomUnitAddEquiv M' N').symm
+      (CategoryTheory.CategoryStruct.comp s.inv (CategoryTheory.CategoryStruct.comp a t.hom))
+'LinearStudy.schemeModuleHomTransportIso_curry' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomTransportIso_differential : ∀ {X : AlgebraicGeometry.Scheme} {A B A' B' N N' : X.Modules}
+  (s : A ≅ A') (t : B ≅ B') (e : N ≅ N') (d : A ⟶ B) (d' : A' ⟶ B'),
+  CategoryTheory.CategoryStruct.comp d t.hom = CategoryTheory.CategoryStruct.comp s.hom d' →
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPrecompose d)
+        (LinearStudy.schemeModuleHomTransportIso s e).hom =
+      CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomTransportIso t e).hom
+        (LinearStudy.schemeModuleHomPrecompose d')
+'LinearStudy.schemeModuleHomTransportIso_differential' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleHomTransportIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {M M' N N' : X.Modules} →
+    (M ≅ M') → (N ≅ N') → (LinearStudy.schemeModuleHomModuleSheaf M N ≅ LinearStudy.schemeModuleHomModuleSheaf M' N') :=
+fun {X : AlgebraicGeometry.Scheme} {M M' N N' : X.Modules} (s : M ≅ M') (t : N ≅ N') =>
+  (LinearStudy.schemeModuleInternalHomFunctor X N).mapIso s.symm.op ≪≫
+    (LinearStudy.schemeModuleInternalHomCoefficientFunctor X M').mapIso t
+ROLECHECK:LinearStudy.schemeModuleHomTransportIso:false
+ROLECHECK:LinearStudy.schemeModuleHomTransportIso_hom:true
+ROLECHECK:LinearStudy.schemeModuleHomTransportIso_curry:true
+ROLECHECK:LinearStudy.schemeModuleHomTransportIso_differential:true
+
+===== SPLIT AUDIT hom-arrow-cokernel =====
+@LinearStudy.schemeModuleHomArrowCokernelIso : {X : AlgebraicGeometry.Scheme} →
+  {A B A' B' N N' : X.Modules} →
+    (s : A ≅ A') →
+      (t : B ≅ B') →
+        (N ≅ N') →
+          (d : A ⟶ B) →
+            (d' : A' ⟶ B') →
+              CategoryTheory.CategoryStruct.comp d t.hom = CategoryTheory.CategoryStruct.comp s.hom d' →
+                (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d) ≅
+                  CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d'))
+'LinearStudy.schemeModuleHomArrowCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomArrowCokernelIso_projection : ∀ {X : AlgebraicGeometry.Scheme} {A B A' B' N N' : X.Modules}
+  (s : A ≅ A') (t : B ≅ B') (e : N ≅ N') (d : A ⟶ B) (d' : A' ⟶ B')
+  (w : CategoryTheory.CategoryStruct.comp d t.hom = CategoryTheory.CategoryStruct.comp s.hom d'),
+  CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d))
+      (LinearStudy.schemeModuleHomArrowCokernelIso s t e d d' w).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomTransportIso s e).hom
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d'))
+'LinearStudy.schemeModuleHomArrowCokernelIso_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomArrowCokernelIso_class : ∀ {X : AlgebraicGeometry.Scheme} {A B A' B' N N' : X.Modules}
+  (s : A ≅ A') (t : B ≅ B') (e : N ≅ N') (d : A ⟶ B) (d' : A' ⟶ B')
+  (w : CategoryTheory.CategoryStruct.comp d t.hom = CategoryTheory.CategoryStruct.comp s.hom d') (a : A ⟶ N),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv A N).symm a)
+      (CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d))
+        (LinearStudy.schemeModuleHomArrowCokernelIso s t e d d' w).hom) =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleHomUnitAddEquiv A' N').symm
+        (CategoryTheory.CategoryStruct.comp s.inv (CategoryTheory.CategoryStruct.comp a e.hom)))
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d'))
+'LinearStudy.schemeModuleHomArrowCokernelIso_class' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleHomArrowCokernelIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {A B A' B' N N' : X.Modules} →
+    (s : A ≅ A') →
+      (t : B ≅ B') →
+        (N ≅ N') →
+          (d : A ⟶ B) →
+            (d' : A' ⟶ B') →
+              CategoryTheory.CategoryStruct.comp d t.hom = CategoryTheory.CategoryStruct.comp s.hom d' →
+                (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d) ≅
+                  CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d')) :=
+fun {X : AlgebraicGeometry.Scheme} {A B A' B' N N' : X.Modules} (s : A ≅ A') (t : B ≅ B') (e : N ≅ N') (d : A ⟶ B)
+    (d' : A' ⟶ B') (w : CategoryTheory.CategoryStruct.comp d t.hom = CategoryTheory.CategoryStruct.comp s.hom d') =>
+  CategoryTheory.Limits.cokernel.mapIso (LinearStudy.schemeModuleHomPrecompose d)
+    (LinearStudy.schemeModuleHomPrecompose d') (LinearStudy.schemeModuleHomTransportIso t e)
+    (LinearStudy.schemeModuleHomTransportIso s e) ⋯
+ROLECHECK:LinearStudy.schemeModuleHomArrowCokernelIso:false
+ROLECHECK:LinearStudy.schemeModuleHomArrowCokernelIso_projection:true
+ROLECHECK:LinearStudy.schemeModuleHomArrowCokernelIso_class:true
+
+===== SPLIT AUDIT affine-geometric-cokernel =====
+LinearStudy.affineKoszulHomGeometricCokernelIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (p : ℕ) →
+      (H : Fin (p + 1) → ↑R) →
+        CategoryTheory.Limits.cokernel
+            (LinearStudy.schemeModuleHomPrecompose
+              ((AlgebraicGeometry.tilde.functor R).map
+                (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))) ≅
+          (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).X₃
+'LinearStudy.affineKoszulHomGeometricCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulHomGeometricCokernelIso_projection : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ)
+  (H : Fin (p + 1) → ↑R),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π
+        (LinearStudy.schemeModuleHomPrecompose
+          ((AlgebraicGeometry.tilde.functor R).map
+            (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))))
+      (LinearStudy.affineKoszulHomGeometricCokernelIso R N p H).hom =
+    (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).g
+'LinearStudy.affineKoszulHomGeometricCokernelIso_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.affineKoszulHomGeometricCokernelIso.{u} : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (p : ℕ) →
+      (H : Fin (p + 1) → ↑R) →
+        CategoryTheory.Limits.cokernel
+            (LinearStudy.schemeModuleHomPrecompose
+              ((AlgebraicGeometry.tilde.functor R).map
+                (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))) ≅
+          (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).X₃ :=
+fun (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ) (H : Fin (p + 1) → ↑R) =>
+  (CategoryTheory.Limits.cokernelIsCokernel
+        (LinearStudy.schemeModuleHomPrecompose
+          ((AlgebraicGeometry.tilde.functor R).map
+            (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p))))).coconePointUniqueUpToIso
+    ⋯.gIsCokernel
+ROLECHECK:LinearStudy.affineKoszulHomGeometricCokernelIso:false
+ROLECHECK:LinearStudy.affineKoszulHomGeometricCokernelIso_projection:true
+
+===== SPLIT AUDIT affine-framed-cokernel =====
+LinearStudy.affineKoszulFramedHomCokernelIso : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (p : ℕ) →
+      (H : Fin (p + 1) → ↑R) →
+        {A B M : (AlgebraicGeometry.Spec R).Modules} →
+          (s : A ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R))) →
+            (t : B ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^p (Fin (p + 1) → ↑R))) →
+              (M ≅ AlgebraicGeometry.tilde N) →
+                (d : A ⟶ B) →
+                  CategoryTheory.CategoryStruct.comp d t.hom =
+                      CategoryTheory.CategoryStruct.comp s.hom
+                        ((AlgebraicGeometry.tilde.functor R).map
+                          (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p))) →
+                    (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d) ≅
+                      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).X₃)
+'LinearStudy.affineKoszulFramedHomCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulFramedHomCokernelIso_projection : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ)
+  (H : Fin (p + 1) → ↑R) {A B M : (AlgebraicGeometry.Spec R).Modules}
+  (s : A ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+  (t : B ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^p (Fin (p + 1) → ↑R))) (e : M ≅ AlgebraicGeometry.tilde N) (d : A ⟶ B)
+  (w :
+    CategoryTheory.CategoryStruct.comp d t.hom =
+      CategoryTheory.CategoryStruct.comp s.hom
+        ((AlgebraicGeometry.tilde.functor R).map
+          (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))),
+  CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d))
+      (LinearStudy.affineKoszulFramedHomCokernelIso R N p H s t e d w).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomTransportIso s e).hom
+      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).g
+'LinearStudy.affineKoszulFramedHomCokernelIso_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulFramedHomCokernelIso_class : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ)
+  (H : Fin (p + 1) → ↑R) {A B M : (AlgebraicGeometry.Spec R).Modules}
+  (s : A ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+  (t : B ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^p (Fin (p + 1) → ↑R))) (e : M ≅ AlgebraicGeometry.tilde N) (d : A ⟶ B)
+  (w :
+    CategoryTheory.CategoryStruct.comp d t.hom =
+      CategoryTheory.CategoryStruct.comp s.hom
+        ((AlgebraicGeometry.tilde.functor R).map
+          (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p))))
+  (a : A ⟶ M),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv A M).symm a)
+      (CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose d))
+        (LinearStudy.affineKoszulFramedHomCokernelIso R N p H s t e d w).hom) =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleHomUnitAddEquiv (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+            (AlgebraicGeometry.tilde N)).symm
+        (CategoryTheory.CategoryStruct.comp s.inv (CategoryTheory.CategoryStruct.comp a e.hom)))
+      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).g
+'LinearStudy.affineKoszulFramedHomCokernelIso_class' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.affineKoszulFramedHomCokernelIso.{u} : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (p : ℕ) →
+      (H : Fin (p + 1) → ↑R) →
+        {A B M : (AlgebraicGeometry.Spec R).Modules} →
+          (s : A ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R))) →
+            (t : B ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^p (Fin (p + 1) → ↑R))) →
+              (M ≅ AlgebraicGeometry.tilde N) →
+                (d : A ⟶ B) →
+                  CategoryTheory.CategoryStruct.comp d t.hom =
+                      CategoryTheory.CategoryStruct.comp s.hom
+                        ((AlgebraicGeometry.tilde.functor R).map
+                          (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p))) →
+                    (CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose d) ≅
+                      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).X₃) :=
+fun (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ) (H : Fin (p + 1) → ↑R) {A B M : (AlgebraicGeometry.Spec R).Modules}
+    (s : A ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+    (t : B ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^p (Fin (p + 1) → ↑R))) (e : M ≅ AlgebraicGeometry.tilde N) (d : A ⟶ B)
+    (w :
+      CategoryTheory.CategoryStruct.comp d t.hom =
+        CategoryTheory.CategoryStruct.comp s.hom
+          ((AlgebraicGeometry.tilde.functor R).map
+            (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))) =>
+  LinearStudy.schemeModuleHomArrowCokernelIso s t e d
+      ((AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))
+      w ≪≫
+    LinearStudy.affineKoszulHomGeometricCokernelIso R N p H
+ROLECHECK:LinearStudy.affineKoszulFramedHomCokernelIso:false
+ROLECHECK:LinearStudy.affineKoszulFramedHomCokernelIso_projection:true
+ROLECHECK:LinearStudy.affineKoszulFramedHomCokernelIso_class:true

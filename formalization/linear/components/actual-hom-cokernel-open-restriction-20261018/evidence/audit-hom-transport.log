@@ -1,0 +1,35 @@
+@LinearStudy.schemeModuleHomTransportIso : {X : AlgebraicGeometry.Scheme} →
+  {M M' N N' : X.Modules} →
+    (M ≅ M') → (N ≅ N') → (LinearStudy.schemeModuleHomModuleSheaf M N ≅ LinearStudy.schemeModuleHomModuleSheaf M' N')
+'LinearStudy.schemeModuleHomTransportIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomTransportIso_hom : ∀ {X : AlgebraicGeometry.Scheme} {M M' N N' : X.Modules} (s : M ≅ M')
+  (t : N ≅ N'),
+  (LinearStudy.schemeModuleHomTransportIso s t).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPrecompose s.inv)
+      (LinearStudy.schemeModuleHomPostcompose t.hom)
+'LinearStudy.schemeModuleHomTransportIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomTransportIso_curry : ∀ {X : AlgebraicGeometry.Scheme} {M M' N N' : X.Modules} (s : M ≅ M')
+  (t : N ≅ N') (a : M ⟶ N),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv M N).symm a)
+      (LinearStudy.schemeModuleHomTransportIso s t).hom =
+    (LinearStudy.schemeModuleHomUnitAddEquiv M' N').symm
+      (CategoryTheory.CategoryStruct.comp s.inv (CategoryTheory.CategoryStruct.comp a t.hom))
+'LinearStudy.schemeModuleHomTransportIso_curry' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomTransportIso_differential : ∀ {X : AlgebraicGeometry.Scheme} {A B A' B' N N' : X.Modules}
+  (s : A ≅ A') (t : B ≅ B') (e : N ≅ N') (d : A ⟶ B) (d' : A' ⟶ B'),
+  CategoryTheory.CategoryStruct.comp d t.hom = CategoryTheory.CategoryStruct.comp s.hom d' →
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPrecompose d)
+        (LinearStudy.schemeModuleHomTransportIso s e).hom =
+      CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomTransportIso t e).hom
+        (LinearStudy.schemeModuleHomPrecompose d')
+'LinearStudy.schemeModuleHomTransportIso_differential' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleHomTransportIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {M M' N N' : X.Modules} →
+    (M ≅ M') → (N ≅ N') → (LinearStudy.schemeModuleHomModuleSheaf M N ≅ LinearStudy.schemeModuleHomModuleSheaf M' N') :=
+fun {X : AlgebraicGeometry.Scheme} {M M' N N' : X.Modules} (s : M ≅ M') (t : N ≅ N') =>
+  (LinearStudy.schemeModuleInternalHomFunctor X N).mapIso s.symm.op ≪≫
+    (LinearStudy.schemeModuleInternalHomCoefficientFunctor X M').mapIso t
+ROLECHECK:LinearStudy.schemeModuleHomTransportIso:false
+ROLECHECK:LinearStudy.schemeModuleHomTransportIso_hom:true
+ROLECHECK:LinearStudy.schemeModuleHomTransportIso_curry:true
+ROLECHECK:LinearStudy.schemeModuleHomTransportIso_differential:true
