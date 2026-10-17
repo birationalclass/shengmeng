@@ -27,7 +27,10 @@
     "minimumBoardHoldSeconds": 5,
     "holdUsesWallClock": true,
     "thinkingPausesWithPlayback": true,
-    "noBudgetPadding": true
+    "noBudgetPadding": true,
+    "defaultPlaybackRate": 0.85,
+    "preservesPitch": true,
+    "thinkingUsesRealSeconds": true
   },
   "boards": [
     {
@@ -56,7 +59,7 @@
         {
           "display": "主讲：子皿曰成",
           "en": "AI lecturer: Zimin Yuecheng",
-          "speech": "大家好，我是本课AI主讲子皿曰成。",
+          "speech": "我是本课AI主讲子皿曰成。",
           "color": "white",
           "id": "T-cover.L02",
           "tokens": [
@@ -85,7 +88,8 @@
             {
               "text": "Teaching assistant: Sheng Meng"
             }
-          ]
+          ],
+          "delivery": "gentle-humor"
         },
         {
           "display": "代数学I · §2.6上",
@@ -116,6 +120,17 @@
       "slot": {
         "column": 0,
         "position": "upper"
+      },
+      "opening": {
+        "clock": "system-local",
+        "morningBeforeHour": 12,
+        "eveningFromHour": 18,
+        "greetings": {
+          "morning": "同学们，上午好。",
+          "afternoon": "同学们，下午好。",
+          "evening": "同学们，晚上好。"
+        },
+        "defaultPeriod": "afternoon"
       }
     },
     {
@@ -127,7 +142,7 @@
         {
           "display": "定义2.6.1—2.6.2 · 两种子群",
           "en": "Definitions 2.6.1–2.6.2",
-          "speech": "先分清定义，后面才能判断存在性与唯一性。",
+          "speech": "我们先定义两种重要的子群类型。",
           "color": "gold",
           "id": "T01.L01",
           "tokens": [
@@ -7353,10 +7368,10 @@
     "durationWithoutBreak": 3051.001979166667,
     "breakSeconds": 300,
     "breakdown": {
-      "speech": 1034.74,
-      "sentenceGaps": 300.0,
+      "speech": 1035.0200000000002,
+      "sentenceGaps": 301.0,
       "writing": 1281.8515224848518,
-      "writingSpeechOverlap": 610.7858956170709,
+      "writingSpeechOverlap": 612.0658956170709,
       "questions": 200.0,
       "exercises": 360.0,
       "boardHold": 93.96658241285702,

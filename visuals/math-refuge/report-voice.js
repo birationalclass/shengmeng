@@ -1,3 +1,4 @@
+import {selectClassroomOpening,classroomAudioRate} from './classroom-opening.js';
 import {createResourceFetch} from './resource-fetch.js';
 import {createBackgroundAssets} from './background-assets.js';
 import {trayControlLayout,placeTrayControl} from './board-tray-layout.js';
@@ -11,7 +12,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
  let activity=null,segmentEnding=false,navigationIntent=false,navigationGate=null,retainAll=false,prefetchJob=null,assetsPreparing=false,boardReadiness=Promise.resolve(true);const blobs=new Map(),blobJobs=new Map();let preload={phase:'idle',completed:0,total:0,errors:[]};
  const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',errorKind:'',started:false,chapter:0,temporaryPause:false,rate:1,activity:null};
  const emit=()=>{state.transportPlaying=desired&&contextActive&&!assetsPreparing;onChange({...state});};
- const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index];state.time=Math.min(state.duration,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=manifest.chapters[index].start+activity.at;state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}return state.time;};
+ const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index];state.time=Math.min(state.duration,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=manifest.chapters[index].start+activity.at;state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}if(audio&&manifest?.policy?.thinkingUsesRealSeconds){const c=manifest.chapters[index],b=manifest.boards.find(b=>b.page===c.page),at=audio.currentTime-(c.mediaStart||0),rate=classroomAudioRate(b,at,playbackRate);if(audio.playbackRate!==rate)audio.playbackRate=rate;}return state.time;};
  function pause(){sync();if(activity)activity.running=false;desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio?.pause();if(['loading','playing','buffering','preparing','away'].includes(state.phase))state.phase='paused';emit();}
  const audioWarm=createBackgroundAssets({retryDelay,load:(job,signal)=>bytes(job.src,epoch,false,job.hint,signal)});
  function release(){resolveManifest(null);pause();audioWarm.cancel();navigationGate=null;boardHold=null;audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
@@ -85,7 +86,8 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   try{
    const src=new URL(next.narration.manifest,baseURL).href,controller=new AbortController();controllers.add(controller);
    let response;try{response=await fetcher(src,{signal:controller.signal,cache:"no-cache"});}finally{controllers.delete(controller);}
-   if(!response.ok)throw Error('语音目录下载失败');const data=await response.json();if(mine!==epoch)return false;
+   if(!response.ok)throw Error('语音目录下载失败');const data=selectClassroomOpening(await response.json());if(mine!==epoch)return false;
+   if(data.policy?.defaultPlaybackRate){playbackRate=data.policy.defaultPlaybackRate;state.rate=playbackRate;}
    if(!data.chapters?.length||!data.boards?.length||!Number.isFinite(data.duration))throw Error('语音目录无效');
    manifest={...data,chapters:data.chapters.map(c=>({...c,src:c.kind==='activity'?null:new URL(c.src,src).href}))};state.duration=data.duration;resolveManifest(manifest);
    const ready=await attach(0);if(ready&&desired)await play();return ready;
