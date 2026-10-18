@@ -18,7 +18,7 @@ function object(ctx,o){
 export async function prepareBoard(b,language='zh'){
  const source=b;if(b.kind==='break')b={...b,kind:'cover',rows:[{display:'课间休息',en:'Break',tokens:[{text:'课间休息'}],enTokens:[{text:'Break'}],color:'gold'}]};
  libraryPromise??=createChineseChalk();const library=await libraryPromise;
- await prepareMaliChalk(b.rows.map(r=>r.display+' '+r.en).join(''));
+ await Promise.all([prepareMaliChalk(b.rows.map(r=>r.display+' '+r.en).join('')),document.fonts.load('42px RefugeLatin')]);
  const chinese=await library.prepare(glyphText(b)),canvas=document.createElement('canvas');canvas.width=1536;canvas.height=640;
  const ctx=canvas.getContext('2d'),rec=authoredContext(ctx,chinese),cx=rec.ctx,original=[],sizes=[];
  let diagram=b.diagramAsset?await fetch(b.diagramAsset).then(r=>{if(!r.ok)throw Error(r.status);return r.json()}):null;
