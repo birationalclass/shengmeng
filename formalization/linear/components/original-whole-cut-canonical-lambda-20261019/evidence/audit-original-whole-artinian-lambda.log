@@ -1,0 +1,49 @@
+@LinearStudy.projectivePulledLinearSection_exists_wholeCut_isArtinian : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  0 < f.degree →
+    Function.Surjective f.onPoints →
+      f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+        ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+          (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+              ∀ (x0 : Fin n → ℂ),
+                LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                  ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                    c ≠ 0 ∧
+                      (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                        ∀ (w : Fin (r + 1) → ℂ),
+                          (MvPolynomial.eval w) c ≠ 0 →
+                            AlgebraicGeometry.IsArtinianScheme
+                              (LinearStudy.projectivePulledLinearSectionScheme f V L hL w)
+'LinearStudy.projectivePulledLinearSection_exists_wholeCut_isArtinian' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearSection_exists_wholeCutCanonicalLambda_bijective : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  0 < f.degree →
+    Function.Surjective f.onPoints →
+      f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+        ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+          (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+              ∀ (x0 : Fin n → ℂ),
+                LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                  ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                    c ≠ 0 ∧
+                      (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                        ∀ (w : Fin (r + 1) → ℂ),
+                          (MvPolynomial.eval w) c ≠ 0 →
+                            ∀ (k : ℤ)
+                              (N :
+                                (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules)
+                              (j : ℕ),
+                              Function.Bijective
+                                ⇑(LinearStudy.schemeModuleGlobalToInternalExtSections
+                                    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) N j)
+'LinearStudy.projectivePulledLinearSection_exists_wholeCutCanonicalLambda_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.projectivePulledLinearSection_exists_wholeCut_isArtinian:true
+ROLECHECK:LinearStudy.projectivePulledLinearSection_exists_wholeCutCanonicalLambda_bijective:true

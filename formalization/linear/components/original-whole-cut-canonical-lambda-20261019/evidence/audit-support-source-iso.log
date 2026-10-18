@@ -1,0 +1,25 @@
+@LinearStudy.schemeModuleGlobalToInternalExt_bijective_of_sourceIso : ∀ {X : AlgebraicGeometry.Scheme} {P Q : X.Modules}
+  (e : P ≅ Q) (N : X.Modules) (n : ℕ),
+  Function.Bijective ⇑(LinearStudy.schemeModuleGlobalToInternalExt Q N n) →
+    Function.Bijective ⇑(LinearStudy.schemeModuleGlobalToInternalExt P N n)
+'LinearStudy.schemeModuleGlobalToInternalExt_bijective_of_sourceIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExt_closedDiscrete_bijective_of_sourceIso : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) {P : X.Modules} (e : P ≅ (AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) (N : X.Modules)
+      (n : ℕ), Function.Bijective ⇑(LinearStudy.schemeModuleGlobalToInternalExt P N n)
+'LinearStudy.schemeModuleGlobalToInternalExt_closedDiscrete_bijective_of_sourceIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExt_artinianClosed_bijective_of_sourceIso : ∀ {D X : AlgebraicGeometry.Scheme}
+  [AlgebraicGeometry.IsArtinianScheme D] (f : D ⟶ X) [AlgebraicGeometry.IsClosedImmersion f] (L : D.Modules)
+  {P : X.Modules} (e : P ≅ (AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) (N : X.Modules) (n : ℕ),
+  Function.Bijective ⇑(LinearStudy.schemeModuleGlobalToInternalExt P N n)
+'LinearStudy.schemeModuleGlobalToInternalExt_artinianClosed_bijective_of_sourceIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_bijective_of_sourceIso:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_closedDiscrete_bijective_of_sourceIso:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_artinianClosed_bijective_of_sourceIso:true

@@ -1,0 +1,261 @@
+
+===== EXACT AUDIT support-source-iso =====
+@LinearStudy.schemeModuleGlobalToInternalExt_bijective_of_sourceIso : ∀ {X : AlgebraicGeometry.Scheme} {P Q : X.Modules}
+  (e : P ≅ Q) (N : X.Modules) (n : ℕ),
+  Function.Bijective ⇑(LinearStudy.schemeModuleGlobalToInternalExt Q N n) →
+    Function.Bijective ⇑(LinearStudy.schemeModuleGlobalToInternalExt P N n)
+'LinearStudy.schemeModuleGlobalToInternalExt_bijective_of_sourceIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExt_closedDiscrete_bijective_of_sourceIso : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) {P : X.Modules} (e : P ≅ (AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) (N : X.Modules)
+      (n : ℕ), Function.Bijective ⇑(LinearStudy.schemeModuleGlobalToInternalExt P N n)
+'LinearStudy.schemeModuleGlobalToInternalExt_closedDiscrete_bijective_of_sourceIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExt_artinianClosed_bijective_of_sourceIso : ∀ {D X : AlgebraicGeometry.Scheme}
+  [AlgebraicGeometry.IsArtinianScheme D] (f : D ⟶ X) [AlgebraicGeometry.IsClosedImmersion f] (L : D.Modules)
+  {P : X.Modules} (e : P ≅ (AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) (N : X.Modules) (n : ℕ),
+  Function.Bijective ⇑(LinearStudy.schemeModuleGlobalToInternalExt P N n)
+'LinearStudy.schemeModuleGlobalToInternalExt_artinianClosed_bijective_of_sourceIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_bijective_of_sourceIso:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_closedDiscrete_bijective_of_sourceIso:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_artinianClosed_bijective_of_sourceIso:true
+
+===== EXACT AUDIT original-whole-artinian-lambda =====
+@LinearStudy.projectivePulledLinearSection_exists_wholeCut_isArtinian : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  0 < f.degree →
+    Function.Surjective f.onPoints →
+      f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+        ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+          (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+              ∀ (x0 : Fin n → ℂ),
+                LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                  ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                    c ≠ 0 ∧
+                      (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                        ∀ (w : Fin (r + 1) → ℂ),
+                          (MvPolynomial.eval w) c ≠ 0 →
+                            AlgebraicGeometry.IsArtinianScheme
+                              (LinearStudy.projectivePulledLinearSectionScheme f V L hL w)
+'LinearStudy.projectivePulledLinearSection_exists_wholeCut_isArtinian' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledLinearSection_exists_wholeCutCanonicalLambda_bijective : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  0 < f.degree →
+    Function.Surjective f.onPoints →
+      f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+        ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+          (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+              ∀ (x0 : Fin n → ℂ),
+                LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                  ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                    c ≠ 0 ∧
+                      (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                        ∀ (w : Fin (r + 1) → ℂ),
+                          (MvPolynomial.eval w) c ≠ 0 →
+                            ∀ (k : ℤ)
+                              (N :
+                                (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules)
+                              (j : ℕ),
+                              Function.Bijective
+                                ⇑(LinearStudy.schemeModuleGlobalToInternalExtSections
+                                    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) N j)
+'LinearStudy.projectivePulledLinearSection_exists_wholeCutCanonicalLambda_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.projectivePulledLinearSection_exists_wholeCut_isArtinian:true
+ROLECHECK:LinearStudy.projectivePulledLinearSection_exists_wholeCutCanonicalLambda_bijective:true
+
+===== EXACT AUDIT original-cokernel-lambda-statement =====
+@LinearStudy.projectivePulledOriginalCokernelLambdaStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) → (Fin (r + 1) → ℂ) → ℤ → Prop
+'LinearStudy.projectivePulledOriginalCokernelLambdaStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledOriginalCokernelLambdaStatement_proof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ) (k : ℤ),
+  AlgebraicGeometry.IsArtinianScheme (LinearStudy.projectivePulledLinearSectionScheme f V L hL w) →
+    ∀
+      (e :
+        CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+          LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k),
+      LinearStudy.projectivePulledOriginalCokernelLambdaStatement f V L hL w k
+'LinearStudy.projectivePulledOriginalCokernelLambdaStatement_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.projectivePulledOriginalCokernelLambdaStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) → (Fin (r + 1) → ℂ) → ℤ → Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) =>
+  ∀ (N : (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules) (j : ℕ),
+    Function.Bijective
+      ⇑(LinearStudy.schemeModuleGlobalToInternalExt
+          (CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0)) N j)
+ROLECHECK:LinearStudy.projectivePulledOriginalCokernelLambdaStatement:false
+ROLECHECK:LinearStudy.projectivePulledOriginalCokernelLambdaStatement_proof:true
+
+===== EXACT AUDIT original-cokernel-lambda-family =====
+@LinearStudy.projectivePulledLinearSection_exists_originalCokernelCanonicalLambda_bijective : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  0 < f.degree →
+    Function.Surjective f.onPoints →
+      f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+        ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+          (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+          Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+            (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+              ∀ (x0 : Fin n → ℂ),
+                LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                  ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                    c ≠ 0 ∧
+                      (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                        ∀ (w : Fin (r + 1) → ℂ),
+                          (MvPolynomial.eval w) c ≠ 0 →
+                            ∀ (k : ℤ), LinearStudy.projectivePulledOriginalCokernelLambdaStatement f V L hL w k
+'LinearStudy.projectivePulledLinearSection_exists_originalCokernelCanonicalLambda_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.projectivePulledLinearSection_exists_originalCokernelCanonicalLambda_bijective:true
+
+===== EXACT AUDIT original-setup-whole-cokernel-lambda =====
+@LinearStudy.parameterPolynomialFamily_intersection : ∀ {R : Type u_1} [inst : CommRing R] [IsDomain R] [Infinite R]
+  {s : Type u_2} {P Q : (s → R) → Prop},
+  (∃ (c : MvPolynomial s R),
+      c ≠ 0 ∧ (∃ (w : s → R), (MvPolynomial.eval w) c ≠ 0) ∧ ∀ (w : s → R), (MvPolynomial.eval w) c ≠ 0 → P w) →
+    (∃ (c : MvPolynomial s R),
+        c ≠ 0 ∧ (∃ (w : s → R), (MvPolynomial.eval w) c ≠ 0) ∧ ∀ (w : s → R), (MvPolynomial.eval w) c ≠ 0 → Q w) →
+      ∃ (c : MvPolynomial s R),
+        c ≠ 0 ∧ (∃ (w : s → R), (MvPolynomial.eval w) c ≠ 0) ∧ ∀ (w : s → R), (MvPolynomial.eval w) c ≠ 0 → P w ∧ Q w
+'LinearStudy.parameterPolynomialFamily_intersection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledOriginalSetupWholeTopCokernelLambdaFamilyProof : ∀ {n r : ℕ},
+  0 < r →
+    ∀ (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+      r < n →
+        0 < f.degree →
+          Function.Surjective f.onPoints →
+            f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+              ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+                (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+                Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+                  (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                    ∀ (x0 : Fin n → ℂ),
+                      LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                        ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                          c ≠ 0 ∧
+                            (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                              ∀ (w : Fin (r + 1) → ℂ),
+                                (MvPolynomial.eval w) c ≠ 0 →
+                                  (∀ (i : ℤ),
+                                      ∃ (e :
+                                        CategoryTheory.Limits.cokernel
+                                            ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i).d 1 0) ≅
+                                          LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w i)
+                                        (he :
+                                        QuasiIso
+                                          (LinearStudy.originalChainCokernelTargetAugmentation
+                                            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                            (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w i) e)),
+                                        (LinearStudy.originalChainCokernelTargetAugmentation
+                                                  (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                                  ((AlgebraicGeometry.Scheme.Modules.pushforward
+                                                        (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L
+                                                          hL w)).obj
+                                                    (LinearStudy.nativeProjectiveModuleSheaf
+                                                      (LinearStudy.homogeneousQuotientPiece
+                                                        (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                                                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                                                        (LinearStudy.homogeneousQuotientPiece
+                                                          (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                                                      ⋯ i))
+                                                  e).f
+                                              0 =
+                                            CategoryTheory.CategoryStruct.comp
+                                              (CategoryTheory.Limits.cokernel.π
+                                                ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i).d 1 0))
+                                              e.hom ∧
+                                          LinearStudy.projectivePulledOriginalWholeTopCokernelStatement f V L hL w i e
+                                            he) ∧
+                                    ∀ (k : ℤ), LinearStudy.projectivePulledOriginalCokernelLambdaStatement f V L hL w k
+'LinearStudy.projectivePulledOriginalSetupWholeTopCokernelLambdaFamilyProof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.projectivePulledOriginalSetupWholeTopCokernelLambdaFamilyProof : ∀ {n r : ℕ},
+  0 < r →
+    ∀ (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+      r < n →
+        0 < f.degree →
+          Function.Surjective f.onPoints →
+            f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+              ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+                (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+                Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+                  (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                    ∀ (x0 : Fin n → ℂ),
+                      LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                        ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                          c ≠ 0 ∧
+                            (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                              ∀ (w : Fin (r + 1) → ℂ),
+                                (MvPolynomial.eval w) c ≠ 0 →
+                                  (∀ (i : ℤ),
+                                      ∃ (e :
+                                        CategoryTheory.Limits.cokernel
+                                            ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i).d 1 0) ≅
+                                          LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w i)
+                                        (he :
+                                        QuasiIso
+                                          (LinearStudy.originalChainCokernelTargetAugmentation
+                                            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                            (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w i) e)),
+                                        (LinearStudy.originalChainCokernelTargetAugmentation
+                                                  (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i)
+                                                  ((AlgebraicGeometry.Scheme.Modules.pushforward
+                                                        (LinearStudy.projectivePulledLinearSectionClosedEmbedding f V L
+                                                          hL w)).obj
+                                                    (LinearStudy.nativeProjectiveModuleSheaf
+                                                      (LinearStudy.homogeneousQuotientPiece
+                                                        (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+                                                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                                                        (LinearStudy.homogeneousQuotientPiece
+                                                          (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+                                                      ⋯ i))
+                                                  e).f
+                                              0 =
+                                            CategoryTheory.CategoryStruct.comp
+                                              (CategoryTheory.Limits.cokernel.π
+                                                ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w i).d 1 0))
+                                              e.hom ∧
+                                          LinearStudy.projectivePulledOriginalWholeTopCokernelStatement f V L hL w i e
+                                            he) ∧
+                                    ∀ (k : ℤ),
+                                      LinearStudy.projectivePulledOriginalCokernelLambdaStatement f V L hL w k :=
+fun {n r : ℕ} (hr : 0 < r) (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (hrn : r < n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (hinj : Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L))
+    (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (x0 : Fin n → ℂ)
+    (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) =>
+  LinearStudy.parameterPolynomialFamily_intersection
+    (LinearStudy.projectivePulledOriginalSetupWholeTopCokernelFamilyProof hr f V hrn hq hf hV L hL hinj hfinite x0 hx0)
+    (LinearStudy.projectivePulledLinearSection_exists_originalCokernelCanonicalLambda_bijective f V hq hf hV L hL hinj
+      hfinite x0 hx0)
+ROLECHECK:LinearStudy.parameterPolynomialFamily_intersection:true
+ROLECHECK:LinearStudy.projectivePulledOriginalSetupWholeTopCokernelLambdaFamilyProof:true
