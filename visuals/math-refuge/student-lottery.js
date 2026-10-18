@@ -1,6 +1,6 @@
 // Course rosters are read from the published site; drawn-student history stays local.
 export const COURSE_ROSTERS={'algebra-i':new URL('./assets/rosters/algebra-i.json',import.meta.url).href};
-import {SCREEN_FONT,SCREEN_MONO} from './smart-screen-style.js';
+import {SCREEN_FONT} from './smart-screen-style.js';
 export const LOTTERY_RECT=[1100,180,396,280],LOTTERY_HANDLE=[1445,290],LOTTERY_ROSTER=[1268,450];
 export const SLOT_SPIN_SECONDS=2.8;
 export function slotReels(digits,age){
@@ -30,24 +30,45 @@ export function createStudentLottery({storage=globalThis.localStorage,randomInde
  async function chooseFile(){if(rosterSources[course])return loadPublished();const input=document.createElement('input');input.type='file';input.accept='.json,.csv,.tsv';input.hidden=true;document.body.append(input);return new Promise(resolve=>{input.onchange=async()=>{try{if(input.files[0])importRoster(await input.files[0].text());resolve(true);}catch(e){error=e.message;revision++;resolve(false);}finally{input.remove();}};input.oncancel=()=>{input.remove();resolve(false);};input.click();});}
  return{setCourse,importRoster,spin,view,chooseFile,reload:loadPublished,get ready(){return ready;},get count(){return roster.length;},clear(){++request;controller?.abort();loading=false;storage?.removeItem(storageKey(course));storage?.removeItem(usedKey());roster=[];used={};draws.clear();revision++;}};
 }
+// Fixed paths and grain keep the chalk marks stable while the reels move.
+const CHALK_DIGITS=[
+ 'M25 4 C3 3 3 65 24 66 C47 67 47 4 25 4 Z',
+ 'M13 17 L26 5 L25 65 M12 66 L38 66',
+ 'M7 16 C12 -1 41 0 42 18 C43 32 20 44 7 65 L43 65',
+ 'M8 10 C22 -1 43 4 41 19 C40 29 27 32 20 32 C47 30 49 66 24 67 C16 67 10 64 6 59',
+ 'M35 66 L36 4 L5 45 L46 45',
+ 'M42 5 L10 6 L8 31 C48 14 53 66 25 67 C17 67 10 64 6 59',
+ 'M39 7 C11 -6 -3 63 23 67 C48 71 51 27 26 29 C15 29 8 37 7 43',
+ 'M5 6 L44 5 C29 25 20 44 15 66',
+ 'M25 33 C-5 21 8 2 25 4 C47 4 48 24 25 33 C-4 43 3 68 25 67 C52 67 52 44 25 33',
+ 'M41 29 C39 45 5 46 7 21 C9 -3 43 -2 42 26 C41 45 32 66 14 67'
+];
+function chalkStroke(ctx,path,color,width=3,seed=0){
+ ctx.save();ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.lineJoin='round';ctx.globalAlpha*=.84;
+ ctx.setLineDash([11.7,.65,7.4,.45]);ctx.lineDashOffset=seed;ctx.stroke(path);
+ ctx.translate(.55,-.4);ctx.globalAlpha*=.35;ctx.lineWidth=width*.48;ctx.setLineDash([2.5,2.1,4.2,1.2]);ctx.stroke(path);ctx.restore();
+}
 export function drawStudentLottery(ctx,state,language='zh'){
  ctx.save();ctx.textAlign='center';ctx.textBaseline='alphabetic';
  const round=(x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);};
- const frame=ctx.createLinearGradient(0,210,0,372);frame.addColorStop(0,'#d8d9c5');frame.addColorStop(.12,'#748d88');frame.addColorStop(.45,'#a8bbb0');frame.addColorStop(1,'#4b6862');
- ctx.fillStyle='#0a1715';round(1132,210,274,162,17);ctx.fill();ctx.strokeStyle=frame;ctx.lineWidth=7;ctx.stroke();
+ const ivory='#eee8c9',outline=new Path2D('M1152 211 C1225 209 1320 211 1384 210 Q1406 210 1405 232 L1406 350 Q1406 372 1384 371 L1153 372 Q1132 372 1133 350 L1132 233 Q1131 211 1152 211 Z');
+ chalkStroke(ctx,outline,ivory,3.7,1);
+ chalkStroke(ctx,new Path2D('M1156 221 C1220 219 1323 221 1382 220 Q1396 220 1395 235 L1396 348 Q1396 362 1382 361 L1157 362 Q1142 362 1143 348 L1142 236 Q1141 221 1156 221 Z'),ivory,2.5,4);
  for(let i=0;i<2;i++){
   const x=1149+i*124,y=232,w=108,h=119;
-  ctx.save();round(x,y,w,h,8);ctx.clip();ctx.fillStyle='#eff0df';ctx.fillRect(x,y,w,h);
-  ctx.fillStyle='#203c36';ctx.font='76px '+SCREEN_MONO;
-  if(state.reels){const pos=state.reels[i].position,whole=Math.floor(pos),fraction=pos-whole;for(let j=-1;j<=2;j++)ctx.fillText(String((whole+j+100)%10),x+w/2,318+(j-fraction)*93);}
-  else ctx.fillText('—',x+w/2,318);
-  const shade=ctx.createLinearGradient(0,y,0,y+h);shade.addColorStop(0,'#071e2899');shade.addColorStop(.22,'#071e2800');shade.addColorStop(.7,'#071e2800');shade.addColorStop(1,'#071e28a6');ctx.fillStyle=shade;ctx.fillRect(x,y,w,h);ctx.restore();
-  ctx.strokeStyle='#d5e2d5';ctx.lineWidth=2;round(x,y,w,h,8);ctx.stroke();
+  ctx.save();round(x,y,w,h,9);ctx.clip();ctx.beginPath();ctx.rect(x,y+8,w,h-16);ctx.clip();
+  const digit=(n,baseline)=>{ctx.save();ctx.translate(x+w/2-24,baseline-70);chalkStroke(ctx,new Path2D(CHALK_DIGITS[n]),ivory,3.6,i*3+n);ctx.restore();};
+  if(state.reels){const pos=state.reels[i].position,whole=Math.floor(pos),fraction=pos-whole;for(let j=-1;j<=2;j++)digit((whole+j+100)%10,326+(j-fraction)*93);}
+  else chalkStroke(ctx,new Path2D(`M${x+34} 291 Q${x+54} 290 ${x+74} 291`),ivory,3.8,i*3);
+  ctx.restore();const window=new Path2D();window.roundRect(x,y,w,h,9);chalkStroke(ctx,window,ivory,2.6,i*4);
  }
- // A mounted pull lever, with a short downward stroke and spring return.
+ // The sketched lever uses the original pivot and hit area.
  const pivot=[1438,320],angle=-Math.PI/2+(state.leverPull||0)*Math.PI*.91,knob=[pivot[0]+Math.cos(angle)*92,pivot[1]+Math.sin(angle)*92];
- ctx.fillStyle='#435f59';round(1412,301,48,39,9);ctx.fill();ctx.strokeStyle='#b9ccc6';ctx.lineWidth=10;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(...pivot);ctx.lineTo(...knob);ctx.stroke();ctx.strokeStyle='#f0f0df';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(pivot[0]-2,pivot[1]);ctx.lineTo(knob[0]-2,knob[1]);ctx.stroke();
- const red=ctx.createRadialGradient(knob[0]-5,knob[1]-6,2,...knob,18);red.addColorStop(0,'#ffd3b1');red.addColorStop(.32,'#df6955');red.addColorStop(1,'#7d242a');ctx.fillStyle=red;ctx.beginPath();ctx.arc(...knob,17,0,Math.PI*2);ctx.fill();ctx.fillStyle='#d5dfce';ctx.beginPath();ctx.arc(...pivot,9,0,Math.PI*2);ctx.fill();
+ const mount=new Path2D();mount.roundRect(1412,301,48,39,7);chalkStroke(ctx,mount,ivory,2.5,5);
+ const lever=new Path2D();lever.moveTo(...pivot);lever.lineTo(...knob);chalkStroke(ctx,lever,ivory,4.1,2);
+ const ball=new Path2D();ball.arc(...knob,15.5,0,Math.PI*2);chalkStroke(ctx,ball,'#e2bb68',3.4,7);
+ const hatch=new Path2D();for(let y=-11;y<=11;y+=4){const dx=Math.sqrt(13*13-y*y);hatch.moveTo(knob[0]-dx,knob[1]+y+2);hatch.lineTo(knob[0]+dx,knob[1]+y-2);}chalkStroke(ctx,hatch,'#e2bb68',1.6,3);
+ const joint=new Path2D();joint.arc(...pivot,5,0,Math.PI*2);chalkStroke(ctx,joint,ivory,2.3,0);
  ctx.font='30px '+SCREEN_FONT;ctx.fillStyle=state.error?'#ffada3':'#e3ece6';const text=state.error||state.name||(state.loading&&!state.count?(language==='en'?'Loading course roster…':'读取课程花名册…'):state.spinning?(language==='en'?'Drawing…':'摇号中…'):state.count?(state.remaining?(language==='en'?'Pull the lever':'拉动把手'):(language==='en'?'No candidates left':'本节候选已抽完')):(language==='en'?'Load course roster':'载入课程花名册'));ctx.fillText(text,1268,415,320);
  ctx.restore();
 }
