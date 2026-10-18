@@ -24,8 +24,9 @@ export function classroomAudioRate(board,time,rate=1){
  if(board?.waits?.some(w=>time>=w.start&&time<w.end))return 1;
  if(board?.boardHoldSeconds>0&&time>=board.seconds-board.boardHoldSeconds)return 1;
  const emphasis=board?.deliveryRanges?.find(r=>time>=r.start&&time<r.end);
- if(emphasis)return rate*emphasis.rateMultiplier;
- return rate;
+ const speechRate=Number.isFinite(board?.playbackRate)?rate*board.playbackRate/(board.rateBaseline||1):rate;
+ if(emphasis)return speechRate*emphasis.rateMultiplier;
+ return speechRate;
 }
 export function classroomDuration(manifest,rate=1){
  return manifest.boards.reduce((sum,b)=>{
