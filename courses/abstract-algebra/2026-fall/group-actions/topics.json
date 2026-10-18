@@ -1,0 +1,1370 @@
+[
+  {
+    "slug": "fifteen",
+    "title": "十五数码：到不了的复原状态",
+    "en": "THE FIFTEEN PUZZLE",
+    "summary": "每一次合法滑动都在改变排列，却始终无法跨过同一个不变量。",
+    "chapters": [
+      {
+        "title": "从一幅完整图片开始",
+        "en": "BEGIN WITH A COMPLETE PICTURE",
+        "hero": "从完整图片，到无法复原的拼图",
+        "kind": "picture",
+        "captions": [
+          [
+            "先看一幅完整图片，还没有任何编号。",
+            "Begin with one complete picture, without numbered tiles."
+          ],
+          [
+            "把图片切成十六块，移走右下角的一块。",
+            "Cut it into sixteen pieces and remove the lower-right piece."
+          ],
+          [
+            "只交换两块图片，空格保持不动。",
+            "Exchange just two picture tiles and leave the blank fixed."
+          ],
+          [
+            "现在才加上编号：交换的是 14 与 15。",
+            "Only now add labels: the exchanged pieces are 14 and 15."
+          ]
+        ]
+      },
+      {
+        "title": "合法操作究竟是什么",
+        "en": "WHAT A LEGAL MOVE DOES",
+        "hero": "每步：一个数字与相邻空格交换",
+        "kind": "moves",
+        "captions": [
+          [
+            "只有与空格相邻的数字，才能滑入空格。",
+            "Only a tile adjacent to the blank may slide into it."
+          ],
+          [
+            "画面中的每一步，都由实际棋盘状态计算。",
+            "Every move shown is computed from the current board."
+          ],
+          [
+            "把空格也看作符号 16，就有十六个符号的排列。",
+            "Treat the blank as symbol 16 in a permutation."
+          ],
+          [
+            "每次合法滑动，恰好是一对符号的对换。",
+            "A legal slide is one transposition of two symbols."
+          ]
+        ]
+      },
+      {
+        "title": "排列符号每次变号",
+        "en": "PERMUTATION PARITY",
+        "hero": "sgn(π) → −sgn(π)",
+        "kind": "sign",
+        "captions": [
+          [
+            "相对于完成状态，排列的符号只能是正一或负一。",
+            "Relative to the goal, the sign is either plus or minus one."
+          ],
+          [
+            "数字与空格互换，排列符号随之变号。",
+            "Swapping the blank and a tile reverses that sign."
+          ],
+          [
+            "所以排列符号本身，并不是滑动的不变量。",
+            "Permutation sign alone is not invariant under a slide."
+          ],
+          [
+            "还需要寻找另一个同时变号的量。",
+            "We need a second quantity that changes sign as well."
+          ]
+        ]
+      },
+      {
+        "title": "空格走在黑白格之间",
+        "en": "THE BLANK CHANGES COLOR",
+        "hero": "(−1)ʳ⁺ᶜ → −(−1)ʳ⁺ᶜ",
+        "kind": "checker",
+        "captions": [
+          [
+            "行列从一开始编号，把棋盘涂成黑白两色。",
+            "Number rows and columns from one and color the board."
+          ],
+          [
+            "相邻格的 r+c 奇偶性一定相反。",
+            "Adjacent squares have opposite parity of r plus c."
+          ],
+          [
+            "空格每走一步，黑白颜色也发生交换。",
+            "Every slide changes the color occupied by the blank."
+          ],
+          [
+            "因此这个因子也在每一步变号。",
+            "Thus the checkerboard factor changes sign each time."
+          ]
+        ]
+      },
+      {
+        "title": "两次变号相消",
+        "en": "TWO SIGN CHANGES CANCEL",
+        "hero": "I = sgn(π) · (−1)ʳ⁺ᶜ",
+        "kind": "invariant",
+        "captions": [
+          [
+            "把两个每次变号的因子乘在一起。",
+            "Multiply the two factors that both change sign."
+          ],
+          [
+            "一对负号相乘为正，乘积不会改变。",
+            "The two minus signs cancel, preserving their product."
+          ],
+          [
+            "继续滑动：数字、空格都在变，I 始终不变。",
+            "The board changes continuously through moves; I does not."
+          ],
+          [
+            "这就是排除不可能操作的证据。",
+            "This invariant certifies an obstruction to reachability."
+          ]
+        ]
+      },
+      {
+        "title": "对比两个起点",
+        "en": "COMPARE THE TWO INITIAL STATES",
+        "hero": "完成态 I = +1；交换态 I = −1",
+        "kind": "compare",
+        "captions": [
+          [
+            "完成状态排列符号为正，空格的行列和为偶数。",
+            "At the goal, both factors equal plus one."
+          ],
+          [
+            "只交换 14、15，排列符号变成负一。",
+            "Swapping 14 and 15 changes only permutation sign."
+          ],
+          [
+            "空格没有移动，所以黑白因子不变。",
+            "The blank does not move, so its factor is unchanged."
+          ],
+          [
+            "两个 I 不同，任何合法路径都无法连接它们。",
+            "Different invariant values forbid a legal path between them."
+          ]
+        ]
+      },
+      {
+        "title": "合法操作与轨道",
+        "en": "LEGAL OPERATIONS AND ORBITS",
+        "hero": "同一轨道 ⇒ 相同的 I",
+        "kind": "orbits",
+        "captions": [
+          [
+            "一次合法操作可逆，反着移动就能撤销。",
+            "Every legal slide is reversible."
+          ],
+          [
+            "严格地说，可用每条边对应的状态对换生成作用。",
+            "Edge involutions generate an action on board states."
+          ],
+          [
+            "合法操作生成的群，把状态分成不同轨道。",
+            "The generated action partitions states into orbits."
+          ],
+          [
+            "不变量不同，就一定不在同一个轨道。",
+            "Different invariant values imply different orbits."
+          ]
+        ]
+      },
+      {
+        "title": "不必穷举所有移动",
+        "en": "PROVE IMPOSSIBILITY WITHOUT SEARCH",
+        "hero": "操作的限制，藏在不变量里",
+        "kind": "ending",
+        "captions": [
+          [
+            "证明已经覆盖任意长度的合法移动序列。",
+            "The argument covers every length of legal sequence."
+          ],
+          [
+            "I 不同足以排除可达，不需要逐一尝试。",
+            "Different I values rule out reachability without a search."
+          ],
+          [
+            "一般而言，不变量相同未必就足够。",
+            "In general, equal invariants need not imply reachability."
+          ],
+          [
+            "群作用让我们看见：哪些改变永远做不到。",
+            "Group actions reveal changes no allowed operation can make."
+          ]
+        ]
+      }
+    ],
+    "bars": 96,
+    "duration": 260,
+    "notes": [
+      "本片只使用不变量排除可达，不把一般作用中“同不变量”误说成“同轨道”。",
+      "严格的全状态作用：对棋盘每条边 e 定义 Tₑ。空格在端点时交换空格与另一端数字；空格不在端点时固定状态。每个 Tₑ 都是对合，生成状态集合上的置换群，其轨道就是合法移动的连通分支。",
+      "空格作为符号 16，行列从 1 开始，完成态 I=+1。"
+    ],
+    "sources": [
+      "https://people.csail.mit.edu/meyer/induction-edit.pdf"
+    ],
+    "summaryEn": "Every legal slide changes the permutation, yet a preserved invariant obstructs restoration."
+  },
+  {
+    "slug": "cube",
+    "title": "魔方：镜像角块的障碍",
+    "en": "THE MIRRORED CORNER",
+    "summary": "交换同一角块的两张贴纸改变手性，任何合法转动都无法补救。",
+    "chapters": [
+      {
+        "title": "交换两张贴纸",
+        "en": "SWAP TWO STICKERS",
+        "hero": "只改一个角块，为什么整个魔方无解？",
+        "kind": "swap",
+        "captions": [
+          [
+            "从完整复原的魔方开始，只观察一个角块。",
+            "Start with a solved cube and focus on one corner."
+          ],
+          [
+            "揭下同一角块的两张不同颜色贴纸，再交换位置。",
+            "Swap two different stickers on that same corner."
+          ],
+          [
+            "其他贴纸、其他块的位置全部保持不动。",
+            "Keep every other sticker and cubie unchanged."
+          ],
+          [
+            "这个改动改变的是手性，不是角块扭转量。",
+            "This changes handedness, not the corner-twist coordinate."
+          ]
+        ]
+      },
+      {
+        "title": "先看真实的合法转动",
+        "en": "FOLLOW A REAL FACE TURN",
+        "hero": "合法转动移动角块，也旋转角块",
+        "kind": "turns",
+        "captions": [
+          [
+            "每次只把一个面旋转九十度。",
+            "Each move turns one face through ninety degrees."
+          ],
+          [
+            "角块的位置和三个贴纸的朝向一起更新。",
+            "The cubie position and all sticker normals move together."
+          ],
+          [
+            "一个角块始终作为刚体运动，不能穿过自己的镜像。",
+            "A corner moves as a rigid object, never into its mirror."
+          ],
+          [
+            "画面的面转动，由三维旋转矩阵实际计算。",
+            "Face turns are computed using three-dimensional rotations."
+          ]
+        ]
+      },
+      {
+        "title": "三种颜色的循环顺序",
+        "en": "THE CYCLIC ORDER OF THREE COLORS",
+        "hero": "(a,b,c)、(b,c,a)、(c,a,b)",
+        "kind": "cycles",
+        "captions": [
+          [
+            "从角块外侧，固定观察三张贴纸的循环方向。",
+            "Use a consistent outward viewing orientation."
+          ],
+          [
+            "改变从哪张颜色开始，不改变这个循环顺序。",
+            "Changing the starting color preserves the cyclic order."
+          ],
+          [
+            "因此这三个写法描述同一类手性。",
+            "These three arrangements have the same handedness."
+          ],
+          [
+            "实际旋转可以改变姿态，却不会变出镜像。",
+            "Physical rotations change pose but preserve handedness."
+          ]
+        ]
+      },
+      {
+        "title": "镜像属于另一类",
+        "en": "THE MIRROR BELONGS TO ANOTHER CLASS",
+        "hero": "(a,c,b)、(c,b,a)、(b,a,c)",
+        "kind": "mirror",
+        "captions": [
+          [
+            "交换 a 和 b，对应两种颜色的对换。",
+            "Exchange a and b: this is a transposition of two colors."
+          ],
+          [
+            "三种颜色的循环方向因此反过来。",
+            "The cyclic orientation of the three colors reverses."
+          ],
+          [
+            "右边是左边的镜像，不是另一种旋转姿态。",
+            "The right object is a mirror, not another rotated pose."
+          ],
+          [
+            "两个循环类之间，存在不能靠旋转跨越的障碍。",
+            "Rotations cannot cross between these two cyclic classes."
+          ]
+        ]
+      },
+      {
+        "title": "用定向记录手性",
+        "en": "ORIENTATION RECORDS HANDEDNESS",
+        "hero": "det(R) = +1；交换两列使行列式变号",
+        "kind": "determinant",
+        "captions": [
+          [
+            "给三种颜色配上三个独立方向。",
+            "Attach three independent directions to the three colors."
+          ],
+          [
+            "合法空间旋转的行列式等于正一。",
+            "A proper spatial rotation has determinant plus one."
+          ],
+          [
+            "交换两个颜色标签，相当于交换两列。",
+            "Swapping color labels exchanges two determinant columns."
+          ],
+          [
+            "行列式变号，把手性差别写成一个不变量。",
+            "The sign reverses, giving an orientation invariant."
+          ]
+        ]
+      },
+      {
+        "title": "扭转与反射是两回事",
+        "en": "TWISTING IS NOT REFLECTING",
+        "hero": "循环置换保手性；一对对换改手性",
+        "kind": "twist",
+        "captions": [
+          [
+            "把角块绕外侧对角线转一百二十度。",
+            "Turn a corner around its outward diagonal by 120 degrees."
+          ],
+          [
+            "三个颜色循环移动，仍属于原来的手性类。",
+            "The three colors cycle within the same handedness class."
+          ],
+          [
+            "这不是交换两张贴纸，两者不能混为一谈。",
+            "A twist is different from exchanging two stickers."
+          ],
+          [
+            "本片论证不依赖“角块扭转量总和”的规则。",
+            "This argument does not use the corner-twist-sum rule."
+          ]
+        ]
+      },
+      {
+        "title": "合法转动的群作用",
+        "en": "THE GROUP ACTION OF LEGAL TURNS",
+        "hero": "合法转动保持每个角块的手性",
+        "kind": "orbits",
+        "captions": [
+          [
+            "所有合法转动及其复合，组成作用在状态上的群。",
+            "Legal turns and their compositions act on cube states."
+          ],
+          [
+            "复原状态的轨道，只包含手性相容的角块。",
+            "The solved-state orbit contains only compatible corners."
+          ],
+          [
+            "交换贴纸之后的镜像角块，落在这个轨道之外。",
+            "The mirrored corner lies outside that orbit."
+          ],
+          [
+            "再多的公式、再长的转动序列，也无法复原。",
+            "No turn algorithm, however long, can restore it."
+          ]
+        ]
+      },
+      {
+        "title": "与十五数码相遇",
+        "en": "THE SAME KIND OF OBSTRUCTION",
+        "hero": "小改动，也可能跨越整个轨道",
+        "kind": "ending",
+        "captions": [
+          [
+            "十五数码保持的是排列符号与空格颜色的乘积。",
+            "The sliding puzzle preserves a parity product."
+          ],
+          [
+            "这个魔方问题保持的是角块颜色的手性。",
+            "This cube problem preserves corner-color handedness."
+          ],
+          [
+            "两者都把“试不出来”变成严格的“不可能”。",
+            "Both turn unsuccessful search into a proof of impossibility."
+          ],
+          [
+            "群作用不仅告诉我们能做什么，也告诉我们限制。",
+            "A group action reveals both possibilities and limitations."
+          ]
+        ]
+      }
+    ],
+    "bars": 96,
+    "duration": 260,
+    "notes": [
+      "只交换同一个角块上的两张不同颜色贴纸，其他贴纸不动；没有拆换其他块。",
+      "手性通过从角块外侧一致选定的循环方向定义。三维图中的带色三轴是手性的示意，不是角块扭转量的编码。",
+      "四分之一面转动作用于实际三维块位置和贴纸法向；中间帧是旋转过程，端点才是标准魔方状态。"
+    ],
+    "sources": [
+      "https://people.math.harvard.edu/~jjchen/docs/Group%20Theory%20and%20the%20Rubik%27s%20Cube.pdf"
+    ],
+    "summaryEn": "Exchanging two stickers on one corner reverses handedness, beyond all legal face turns."
+  },
+  {
+    "slug": "interval",
+    "title": "闭区间：不动点阻止群结构",
+    "en": "AN INTERVAL CANNOT BE A TOPOLOGICAL GROUP",
+    "summary": "连续自映射必有不动点，非单位元的左乘却绝无不动点。",
+    "chapters": [
+      {
+        "title": "能在一条线段上定义群吗",
+        "en": "CAN A CLOSED INTERVAL BE A GROUP?",
+        "hero": "[0,1] 能成为拓扑群吗？",
+        "kind": "question",
+        "captions": [
+          [
+            "我们保留闭区间原有的拓扑。",
+            "Keep the interval with its usual topology."
+          ],
+          [
+            "要求乘法和取逆都连续，而不只是一套抽象运算。",
+            "Multiplication and inversion must both be continuous."
+          ],
+          [
+            "问题不是找不到熟悉的公式，而是任何公式都不行。",
+            "The obstruction rules out every compatible group law."
+          ],
+          [
+            "关键来自连续映射与群左乘的冲突。",
+            "The conflict is between continuity and group translation."
+          ]
+        ]
+      },
+      {
+        "title": "让图像遇见对角线",
+        "en": "MEET THE DIAGONAL",
+        "hero": "f : [0,1] → [0,1]，寻找 f(x) = x",
+        "kind": "graph",
+        "captions": [
+          [
+            "把 f 的图像和对角线 y=x 画在同一个方格里。",
+            "Draw the graph of f together with the diagonal y equals x."
+          ],
+          [
+            "交点的横坐标，正是不动点。",
+            "An intersection gives a fixed point."
+          ],
+          [
+            "图像可以弯曲，却不能跳出这个闭方格。",
+            "The graph may bend but must remain inside the square."
+          ],
+          [
+            "我们要证明，连续性迫使它与对角线相遇。",
+            "Continuity forces the graph to meet the diagonal."
+          ]
+        ]
+      },
+      {
+        "title": "把交点改写成零点",
+        "en": "TURN AN INTERSECTION INTO A ZERO",
+        "hero": "h(x) = f(x) − x",
+        "kind": "difference",
+        "captions": [
+          [
+            "从 f 的函数值里减去 x，得到连续函数 h。",
+            "Subtract x to obtain a continuous function h."
+          ],
+          [
+            "在左端点，h(0)=f(0) 大于或等于零。",
+            "At the left endpoint h of zero is nonnegative."
+          ],
+          [
+            "在右端点，h(1)=f(1)−1 小于或等于零。",
+            "At the right endpoint h of one is nonpositive."
+          ],
+          [
+            "介值定理给出 h(x₀)=0，也就是 f(x₀)=x₀。",
+            "The intermediate value theorem supplies a fixed point."
+          ]
+        ]
+      },
+      {
+        "title": "群中的左乘没有不动点",
+        "en": "LEFT TRANSLATION HAS NO FIXED POINT",
+        "hero": "a ≠ e，Lₐ(x) = ax",
+        "kind": "translation",
+        "captions": [
+          [
+            "现在暂时在任意一个群里工作。",
+            "Now work in an arbitrary group."
+          ],
+          [
+            "取非单位元 a，考察它对每个 x 的左乘。",
+            "Choose a nonidentity element a and left-multiply every x."
+          ],
+          [
+            "若某个点不动，就有 ax=x。",
+            "A fixed point would satisfy ax equals x."
+          ],
+          [
+            "两边右乘 x⁻¹，得到 a=e，与选择矛盾。",
+            "Right cancellation would force a to be the identity."
+          ]
+        ]
+      },
+      {
+        "title": "假设闭区间真是拓扑群",
+        "en": "SUPPOSE THE INTERVAL WERE A TOPOLOGICAL GROUP",
+        "hero": "Lₐ 连续，同时没有不动点？",
+        "kind": "conflict",
+        "captions": [
+          [
+            "假设已经在闭区间上找到了相容的群运算。",
+            "Assume a compatible group law exists on the interval."
+          ],
+          [
+            "固定 a 之后，乘法连续保证 Lₐ 连续。",
+            "Continuity of multiplication makes L sub a continuous."
+          ],
+          [
+            "闭区间的不动点结论说：它必须有不动点。",
+            "The interval theorem says this map has a fixed point."
+          ],
+          [
+            "群的消去律说：只要 a≠e，它绝无不动点。",
+            "Cancellation says it has none when a is not the identity."
+          ]
+        ]
+      },
+      {
+        "title": "为什么开直线没有这个矛盾",
+        "en": "WHY THE REAL LINE IS DIFFERENT",
+        "hero": "ℝ 上：Lₐ(x) = a + x",
+        "kind": "real-line",
+        "captions": [
+          [
+            "实数加法给整条直线一个拓扑群结构。",
+            "Addition makes the real line a topological group."
+          ],
+          [
+            "非零平移没有不动点，这完全没有问题。",
+            "A nonzero translation has no fixed point."
+          ],
+          [
+            "因为整条直线不具有闭区间的不动点性质。",
+            "The real line lacks the interval fixed-point property."
+          ],
+          [
+            "有限闭端点的约束，正是这里的重要差别。",
+            "The closed bounded interval imposes a different constraint."
+          ]
+        ]
+      },
+      {
+        "title": "不是运算技巧，而是拓扑障碍",
+        "en": "A TOPOLOGICAL OBSTRUCTION",
+        "hero": "连续性 + 不动点性质 ⇒ 排除群结构",
+        "kind": "ending",
+        "captions": [
+          [
+            "每个拓扑群都通过左乘作用在自身上。",
+            "Every topological group acts on itself by left translations."
+          ],
+          [
+            "这个作用中，非单位元从来不会固定一个点。",
+            "No nonidentity left translation fixes a point."
+          ],
+          [
+            "闭区间却要求每个连续自映射都有不动点。",
+            "Every continuous self-map of the interval has a fixed point."
+          ],
+          [
+            "因此闭区间的通常拓扑不能容纳这种群作用。",
+            "Its usual topology cannot support this group action."
+          ]
+        ]
+      }
+    ],
+    "bars": 84,
+    "duration": 228,
+    "notes": [
+      "结论要求群结构与 [0,1] 的通常拓扑相容，不是关于任意集合上的抽象群运算。",
+      "左乘的无不动点性来自群消去律；连续性来自乘法连续。",
+      "图像展示的若干具体函数用于直观说明，一般证明由端点不等式与介值定理完成。"
+    ],
+    "sources": [
+      "https://pi.math.cornell.edu/~hatcher/AT/AT..pdf"
+    ],
+    "summaryEn": "Every continuous interval self-map has a fixed point; a nonidentity group translation has none."
+  },
+  {
+    "slug": "sphere",
+    "title": "球面：度数揭示群结构的障碍",
+    "en": "SPHERES AND A DEGREE OBSTRUCTION",
+    "summary": "S² 上不是所有映射都有不动点；真正有效的是与恒等映射同伦的那些映射。",
+    "chapters": [
+      {
+        "title": "球面不是实心球",
+        "en": "A SPHERE IS NOT A SOLID BALL",
+        "hero": "B³ 是实心球，S² 是它的边界",
+        "kind": "ball",
+        "captions": [
+          [
+            "Brouwer 定理讨论闭实心球到自身的连续映射。",
+            "Brouwer applies to continuous self-maps of a closed ball."
+          ],
+          [
+            "球面只是边界，不能直接套用这个结论。",
+            "A sphere is only the boundary; the conclusion does not transfer."
+          ],
+          [
+            "把每个球面点送到对径点，就没有不动点。",
+            "The antipodal map on a sphere has no fixed point."
+          ],
+          [
+            "所以排除 S² 的群结构，需要一个更精确的论证。",
+            "Ruling out a group law on S squared needs another argument."
+          ]
+        ]
+      },
+      {
+        "title": "对径映射没有不动点",
+        "en": "THE ANTIPODAL MAP",
+        "hero": "A(x) = −x，x ≠ −x 在 S² 上恒成立",
+        "kind": "antipodal",
+        "captions": [
+          [
+            "球面上的单位向量不可能等于自己的相反数。",
+            "A unit vector cannot equal its negative."
+          ],
+          [
+            "所有点都到达球面另一侧，没有任何点留下。",
+            "Every point moves to the opposite side."
+          ],
+          [
+            "这已经否定了“球面上每个连续映射都有不动点”。",
+            "Thus not every continuous sphere map has a fixed point."
+          ],
+          [
+            "但对径映射不与 S² 上的恒等映射同伦。",
+            "On S squared the antipodal map is not homotopic to identity."
+          ]
+        ]
+      },
+      {
+        "title": "真正需要的弱结论",
+        "en": "THE PRECISE FIXED-POINT STATEMENT",
+        "hero": "f ≃ id 在 S² 上 ⇒ f 有不动点",
+        "kind": "identity",
+        "captions": [
+          [
+            "同伦表示把一个映射连续变形成另一个映射。",
+            "A homotopy continuously deforms one map into another."
+          ],
+          [
+            "例如绕轴的小旋转，与恒等映射同伦。",
+            "A rotation is homotopic to the identity."
+          ],
+          [
+            "它的两个轴端点保持不动，可以直接看见。",
+            "The two axis poles are visible fixed points."
+          ],
+          [
+            "我们将证明：所有与恒等同伦的映射都必须如此。",
+            "Every map homotopic to identity must have a fixed point."
+          ]
+        ]
+      },
+      {
+        "title": "假设一个映射完全没有不动点",
+        "en": "ASSUME THERE ARE NO FIXED POINTS",
+        "hero": "没有不动点 ⇒ f 可以同伦到 −id",
+        "kind": "homotopy",
+        "captions": [
+          [
+            "取 f(x) 与 −x 的线性插值，再归一化回球面。",
+            "Interpolate between f of x and minus x, then normalize."
+          ],
+          [
+            "起点是 f，终点是对径映射。",
+            "This starts at f and ends at the antipodal map."
+          ],
+          [
+            "这里演示的 f 是对径映射与小旋转的复合。",
+            "The example combines a small rotation with the antipodal map."
+          ],
+          [
+            "一般公式是否有效，关键看分母会不会变成零。",
+            "For the general formula the denominator must never vanish."
+          ]
+        ]
+      },
+      {
+        "title": "分母为什么不为零",
+        "en": "WHY THE DENOMINATOR IS NONZERO",
+        "hero": "(1−t)f(x) = tx ⇒ t = 1/2 ⇒ f(x) = x",
+        "kind": "denominator",
+        "captions": [
+          [
+            "若分子为零，则两边分别为两个单位向量的倍数。",
+            "If the numerator vanishes, compare the two unit-vector multiples."
+          ],
+          [
+            "取范数得到 1−t=t，所以 t=1/2。",
+            "Their norms imply one minus t equals t."
+          ],
+          [
+            "再代回就得到 f(x)=x，出现不动点。",
+            "Substitution then gives a fixed point."
+          ],
+          [
+            "这与假设矛盾，因此归一化同伦处处有定义。",
+            "That contradicts the assumption, so the homotopy is defined."
+          ]
+        ]
+      },
+      {
+        "title": "度数不能在同伦中改变",
+        "en": "DEGREE IS A HOMOTOPY INVARIANT",
+        "hero": "deg(id) = 1；deg(−id 在 S²) = −1",
+        "kind": "degree",
+        "captions": [
+          [
+            "球面的度数记录有向覆盖的总次数。",
+            "Degree counts oriented covering with signs."
+          ],
+          [
+            "恒等映射度数为正一；S² 的对径映射为负一。",
+            "Identity has degree one; the antipodal map on S squared has minus one."
+          ],
+          [
+            "没有不动点迫使 f 的度数为负一。",
+            "Having no fixed point forces degree minus one."
+          ],
+          [
+            "若又与恒等同伦，度数必须为正一，产生矛盾。",
+            "A homotopy to identity would instead force degree one."
+          ]
+        ]
+      },
+      {
+        "title": "群左乘与恒等映射同伦",
+        "en": "LEFT TRANSLATION IS HOMOTOPIC TO IDENTITY",
+        "hero": "H(t,x) = γ(t)x：从 x 到 ax",
+        "kind": "group",
+        "captions": [
+          [
+            "假设 S² 是拓扑群，从单位元走一条道路到 a。",
+            "Suppose S squared is a topological group; join e to a by a path."
+          ],
+          [
+            "用道路上的每个元素，分别对所有 x 做左乘。",
+            "Left-multiply every x by each point of that path."
+          ],
+          [
+            "乘法连续，所以这确实给出一个同伦。",
+            "Continuous multiplication makes this a homotopy."
+          ],
+          [
+            "它把恒等映射连续变形成 Lₐ。",
+            "It deforms the identity into left translation by a."
+          ]
+        ]
+      },
+      {
+        "title": "两种要求正面冲突",
+        "en": "THE CONTRADICTION",
+        "hero": "Lₐ ≃ id ⇒ 有不动点；a≠e ⇒ 无不动点",
+        "kind": "conflict",
+        "captions": [
+          [
+            "与恒等同伦，迫使这个左乘有不动点。",
+            "The homotopy forces this translation to have a fixed point."
+          ],
+          [
+            "而群的消去律，又绝不允许它有不动点。",
+            "Group cancellation forbids any such fixed point."
+          ],
+          [
+            "所以 S² 的通常拓扑无法支持拓扑群结构。",
+            "The usual topology of S squared cannot support a group law."
+          ],
+          [
+            "这次障碍来自球面的度数，而不是 Brouwer 定理。",
+            "This obstruction comes from degree, not a misuse of Brouwer."
+          ]
+        ]
+      },
+      {
+        "title": "推广到所有正偶维球面",
+        "en": "ALL POSITIVE EVEN DIMENSIONS",
+        "hero": "deg(−id 在 Sⁿ) = (−1)ⁿ⁺¹",
+        "kind": "ending",
+        "captions": [
+          [
+            "对径映射的度数随球面维数的奇偶性改变。",
+            "Antipodal degree depends on the parity of dimension."
+          ],
+          [
+            "当 n=2m 且 m≥1，度数等于负一。",
+            "In every positive even dimension the degree is minus one."
+          ],
+          [
+            "这些球面都是道路连通，同样的左乘论证继续成立。",
+            "Path connectivity makes the same translation argument apply."
+          ],
+          [
+            "但奇维球面不被这个度数矛盾排除，需另外研究。",
+            "Odd spheres require a different analysis."
+          ]
+        ]
+      }
+    ],
+    "bars": 108,
+    "duration": 292,
+    "notes": [
+      "归一化同伦 H(t,x)=((1−t)f(x)−tx)/||(1−t)f(x)−tx||。假设 f 无不动点，则分母非零。",
+      "使用的拓扑输入是度数的同伦不变性和 deg(−id on Sⁿ)=(−1)ⁿ⁺¹。",
+      "本篇只排除正偶维球面；不能用它排除所有奇维球面，更不能把 Brouwer 的实心球结论直接用于球面。",
+      "示意中的单位球面是 S² 本身；绘图的投影方向不改变数学对象。"
+    ],
+    "sources": [
+      "https://pi.math.cornell.edu/~hatcher/AT/AT..pdf"
+    ],
+    "summaryEn": "Maps homotopic to identity have fixed points on even spheres; the antipodal map explains why."
+  },
+  {
+    "slug": "quaternions",
+    "title": "S³ 与 S⁷：结合律的分界",
+    "en": "QUATERNIONS, OCTONIONS AND SPHERES",
+    "summary": "单位四元数给 S³ 一个群；单位八元数的非结合性揭示另一条边界。",
+    "chapters": [
+      {
+        "title": "为什么有的球面真的能成群",
+        "en": "SOME SPHERES REALLY ARE GROUPS",
+        "hero": "S¹、S³ 可以；S⁷ 的自然乘法不行",
+        "kind": "overview",
+        "captions": [
+          [
+            "偶维球面的度数障碍，并没有排除奇维球面。",
+            "The even-dimensional degree obstruction does not rule out odd spheres."
+          ],
+          [
+            "单位复数构成 S¹，乘法给出交换群。",
+            "Unit complex numbers form the abelian group S one."
+          ],
+          [
+            "单位四元数构成 S³，给出非交换群。",
+            "Unit quaternions form a nonabelian group on S three."
+          ],
+          [
+            "单位八元数构成 S⁷，但它的乘法不满足结合律。",
+            "Unit octonions form S seven, but multiplication is not associative."
+          ]
+        ]
+      },
+      {
+        "title": "四个坐标上的单位球面",
+        "en": "A UNIT SPHERE IN FOUR COORDINATES",
+        "hero": "q = a + bi + cj + dk，a²+b²+c²+d² = 1",
+        "kind": "coordinates",
+        "captions": [
+          [
+            "S³ 位于四维实空间，不是普通三维空间中的球壳。",
+            "S three lies in four-dimensional real space."
+          ],
+          [
+            "画面把四个坐标分成两个平面，各画一个圆。",
+            "The display uses two coordinate planes for the four coordinates."
+          ],
+          [
+            "两个圆的半径平方相加为一。",
+            "The two squared radii add to one."
+          ],
+          [
+            "这是四维坐标的展示，不把 S³ 错画成 S²。",
+            "This is a coordinate display, not a claim that S three is S two."
+          ]
+        ]
+      },
+      {
+        "title": "四元数乘法的骨架",
+        "en": "THE QUATERNION MULTIPLICATION RULES",
+        "hero": "i² = j² = k² = ijk = −1",
+        "kind": "multiplication",
+        "captions": [
+          [
+            "三个虚单位的平方都等于负一。",
+            "Each imaginary unit squares to minus one."
+          ],
+          [
+            "按顺序有 ij=k、jk=i、ki=j。",
+            "In cyclic order, i j is k, j k is i, and k i is j."
+          ],
+          [
+            "反过来乘，符号改变，所以这个群不交换。",
+            "Reversing the order changes the sign."
+          ],
+          [
+            "但结合律仍然成立，这是成为群的关键条件。",
+            "Associativity remains valid and is essential for a group."
+          ]
+        ]
+      },
+      {
+        "title": "封闭、单位元与逆元",
+        "en": "CLOSURE, IDENTITY AND INVERSES",
+        "hero": "|pq| = |p||q|，q⁻¹ = q̄ 在 |q|=1 时",
+        "kind": "norm",
+        "captions": [
+          [
+            "四元数范数满足乘法公式。",
+            "Quaternion norm is multiplicative."
+          ],
+          [
+            "两个单位四元数相乘，范数仍为一。",
+            "The product of two unit quaternions is again a unit."
+          ],
+          [
+            "单位元是 1，单位四元数的逆元是共轭。",
+            "The identity is one; a unit inverse is its conjugate."
+          ],
+          [
+            "乘法与共轭都连续，因此得到拓扑群，且是李群。",
+            "The operations are continuous, producing a Lie group."
+          ]
+        ]
+      },
+      {
+        "title": "它就是 SU(2)",
+        "en": "THE GROUP SU(2)",
+        "hero": "S³ ≅ SU(2)",
+        "kind": "su2",
+        "captions": [
+          [
+            "把四元数写成两个复坐标 z=a+bi、w=c+di。",
+            "Write z equals a plus b i and w equals c plus d i."
+          ],
+          [
+            "矩阵的两列正交归一，行列式等于一。",
+            "The associated matrix is unitary with determinant one."
+          ],
+          [
+            "采用画面中的符号约定，矩阵乘法对应四元数乘法。",
+            "With the displayed sign convention, multiplication agrees."
+          ],
+          [
+            "所以单位四元数与 SU(2) 是同一个群的两种表示。",
+            "Unit quaternions and SU two describe isomorphic groups."
+          ]
+        ]
+      },
+      {
+        "title": "恒等到对径，真的可以连续变形",
+        "en": "FROM IDENTITY TO THE ANTIPODAL MAP",
+        "hero": "H(t,q) = (cos πt + i sin πt)q",
+        "kind": "homotopy",
+        "captions": [
+          [
+            "从单位四元数 1 沿圆弧走到 −1。",
+            "Follow the quaternion arc from one to minus one."
+          ],
+          [
+            "对所有 q 左乘这条弧上的点，得到一个同伦。",
+            "Left multiplication along the arc gives a homotopy."
+          ],
+          [
+            "每个 0<t≤1 的左乘都没有不动点。",
+            "For every positive t up to one, the translation has no fixed point."
+          ],
+          [
+            "S³ 上对径映射的度数是正一，因此没有之前的矛盾。",
+            "Antipodal degree on S three is plus one, so no contradiction arises."
+          ]
+        ]
+      },
+      {
+        "title": "单连通不意味着不动点性质",
+        "en": "SIMPLY CONNECTED IS NOT A FIXED-POINT PROPERTY",
+        "hero": "π₁(S³) = 0，但 −q 没有不动点",
+        "kind": "loops",
+        "captions": [
+          [
+            "S³ 是单连通的：闭路可以收缩为一个点。",
+            "S three is simply connected: loops can contract to a point."
+          ],
+          [
+            "画面示意一条闭路在局部坐标中收缩。",
+            "The diagram illustrates one contraction in coordinates."
+          ],
+          [
+            "但对径映射没有不动点，这两个结论并不冲突。",
+            "The antipodal map still has no fixed point."
+          ],
+          [
+            "不能从单连通推出 Brouwer 的实心球结论。",
+            "Simple connectivity does not imply the ball fixed-point property."
+          ]
+        ]
+      },
+      {
+        "title": "同一个旋转，对应两个四元数",
+        "en": "TWO QUATERNIONS FOR ONE ROTATION",
+        "hero": "SO(3) ≅ S³ / {±1}",
+        "kind": "rotations",
+        "captions": [
+          [
+            "单位四元数通过 v↦qvq⁻¹ 作用在三维向量上。",
+            "A unit quaternion rotates vectors by q v q inverse."
+          ],
+          [
+            "把 q 换成 −q，两个负号在共轭作用中相消。",
+            "Changing q to minus q cancels the two signs."
+          ],
+          [
+            "因此 q 和 −q 描述同一个三维旋转。",
+            "Thus q and minus q represent the same spatial rotation."
+          ],
+          [
+            "把这对点识别，得到旋转群 SO(3)。",
+            "Identifying each antipodal pair gives SO three."
+          ]
+        ]
+      },
+      {
+        "title": "八元数保留了什么",
+        "en": "WHAT THE OCTONIONS RETAIN",
+        "hero": "S⁷：范数、单位元、逆元都还在",
+        "kind": "octonions",
+        "captions": [
+          [
+            "八元数有八个实坐标，单位长度的元素组成 S⁷。",
+            "Octonions have eight real coordinates; the units form S seven."
+          ],
+          [
+            "范数仍满足乘法公式，因此单位元素对乘法封闭。",
+            "Multiplicative norm still gives closure of unit elements."
+          ],
+          [
+            "单位元与逆元也存在，问题不在这里。",
+            "Identity and inverses also remain available."
+          ],
+          [
+            "要成为群，还必须检查结合律。",
+            "To obtain a group, associativity must also hold."
+          ]
+        ]
+      },
+      {
+        "title": "一个算得出的结合律反例",
+        "en": "AN EXPLICIT ASSOCIATIVITY FAILURE",
+        "hero": "(e₁e₂)e₄ = e₇，e₁(e₂e₄) = −e₇",
+        "kind": "associator",
+        "captions": [
+          [
+            "固定 Cayley–Dickson 的基与乘法约定。",
+            "Fix the displayed Cayley–Dickson basis convention."
+          ],
+          [
+            "先把 e₁ 与 e₂ 相乘，再乘 e₄，得到 e₇。",
+            "Multiplying the left pair first gives e seven."
+          ],
+          [
+            "先把 e₂ 与 e₄ 相乘，再左乘 e₁，得到 −e₇。",
+            "Multiplying the right pair first gives minus e seven."
+          ],
+          [
+            "括号改变了结果，单位八元数的自然乘法不是群。",
+            "The brackets change the result, so this multiplication is not a group law."
+          ]
+        ]
+      },
+      {
+        "title": "完整分类是额外的定理",
+        "en": "THE FULL CLASSIFICATION NEEDS MORE",
+        "hero": "具有拓扑群结构的球面：S⁰、S¹、S³",
+        "kind": "ending",
+        "captions": [
+          [
+            "八元数不结合，只排除了它给出的自然乘法。",
+            "Nonassociativity rules out the natural octonion multiplication."
+          ],
+          [
+            "这本身并没有排除 S⁷ 上所有其他可能的运算。",
+            "That alone does not rule out every other law on S seven."
+          ],
+          [
+            "更强的球面拓扑群分类，确实只留下 S⁰、S¹、S³。",
+            "The stronger classification leaves only S zero, S one and S three."
+          ],
+          [
+            "此处引用这个额外定理，不把它冒充为前面的推论。",
+            "This is an additional theorem, not a consequence already proved."
+          ]
+        ]
+      }
+    ],
+    "bars": 132,
+    "duration": 356,
+    "notes": [
+      "S³ 以两个二维坐标平面和四坐标数值展示，画面不是将四维球面等同于普通球面。",
+      "四元数 q=a+bi+cj+dk 对应矩阵 [[z,w],[-conj(w),conj(z)]]，其中 z=a+bi、w=c+di；此约定与代码中的 ij=k 相容。",
+      "八元数采用 (a,b)(c,d)=(ac−conj(d)b, da+bconj(c))，四元数对的基 e₁=(i,0)、e₂=(j,0)、e₄=(0,1)、e₇=(0,k)。",
+      "S³ 单连通与球面拓扑群的完整分类作为外部定理引用。闭路收缩图是具体示例，不替代一般证明。"
+    ],
+    "sources": [
+      "https://math.ucr.edu/home/baez/octonions/",
+      "https://homepages.math.uic.edu/~itobasco/courses/NYU/Top1.pdf",
+      "https://pi.math.cornell.edu/~hatcher/AT/AT..pdf"
+    ],
+    "summaryEn": "Unit quaternions make S3 a group; octonion nonassociativity exposes another boundary."
+  },
+  {
+    "slug": "fourier",
+    "title": "傅里叶：整数作用听见频率",
+    "en": "INTEGER ACTIONS REVEAL FREQUENCIES",
+    "summary": "从实函数对的二维旋转出发，观察整数群作用如何组织正弦、余弦与频率。",
+    "chapters": [
+      {
+        "title": "函数里藏着哪些频率",
+        "en": "FREQUENCIES HIDDEN IN A FUNCTION",
+        "hero": "群作用，不只用来数轨道",
+        "kind": "signal",
+        "captions": [
+          [
+            "一条起伏的周期曲线，可以同时含有几个频率。",
+            "One periodic curve may contain several frequencies."
+          ],
+          [
+            "我们从实函数和二维旋转开始，不先引入复指数。",
+            "Start with real functions and planar rotations."
+          ],
+          [
+            "整数 n 决定旋转的频率。",
+            "An integer n determines the rotation frequency."
+          ],
+          [
+            "目标是看见正弦、余弦系数怎样从操作中产生。",
+            "We want to see how the sine and cosine coefficients arise."
+          ]
+        ]
+      },
+      {
+        "title": "作用对象必须放得下旋转",
+        "en": "CHOOSE A SPACE CLOSED UNDER ROTATION",
+        "hero": "X = 连续 2π 周期实函数对 (f,g)",
+        "kind": "pairs",
+        "captions": [
+          [
+            "先把一个函数，扩展为两个实函数组成的向量。",
+            "Use pairs of real functions as two-component vectors."
+          ],
+          [
+            "在每个位置 x，都有一个二维向量 (f(x),g(x))。",
+            "Each position x carries a planar vector."
+          ],
+          [
+            "两个分量都要求连续，而且具有同一周期。",
+            "Both components are continuous and periodic."
+          ],
+          [
+            "这样旋转之后的结果，仍留在同一个空间 X 中。",
+            "Rotation then stays within the same space X."
+          ]
+        ]
+      },
+      {
+        "title": "整数在每个位置施加旋转",
+        "en": "INTEGERS ROTATE EACH VECTOR",
+        "hero": "n · (f,g)(x) = R(nx)(f(x),g(x))",
+        "kind": "rotation",
+        "captions": [
+          [
+            "在位置 x，把向量旋转 nx 这个角度。",
+            "At x rotate the vector through angle n x."
+          ],
+          [
+            "同一个 n，在不同 x 处产生不同的角度。",
+            "The same integer gives different angles at different positions."
+          ],
+          [
+            "n 为整数，旋转后的函数仍是 2π 周期的。",
+            "Integer n preserves the two-pi periodicity."
+          ],
+          [
+            "零对应恒等操作，负整数对应反向旋转。",
+            "Zero acts identically; negative integers reverse the rotation."
+          ]
+        ]
+      },
+      {
+        "title": "为什么这真是群作用",
+        "en": "VERIFY THE ACTION LAW",
+        "hero": "R(mx)R(nx) = R((m+n)x)",
+        "kind": "action",
+        "captions": [
+          [
+            "先按 nx 旋转，再按 mx 旋转。",
+            "Rotate first through n x and then through m x."
+          ],
+          [
+            "二维旋转的角度相加，得到 (m+n)x。",
+            "Planar rotation angles add to m plus n times x."
+          ],
+          [
+            "因此 m·(n·v)=(m+n)·v。",
+            "Thus acting by n and then m agrees with acting by their sum."
+          ],
+          [
+            "这就是整数加法群作用的相容性条件。",
+            "This is precisely the compatibility law for a Z action."
+          ]
+        ]
+      },
+      {
+        "title": "只在最开始取第二分量为零",
+        "en": "SET THE SECOND COMPONENT TO ZERO ONCE",
+        "hero": "f ↦ (f,0)，然后让整个向量参与作用",
+        "kind": "embed",
+        "captions": [
+          [
+            "为了研究一个给定的实函数，先把它放成 (f,0)。",
+            "Embed a single real function as the pair f, zero."
+          ],
+          [
+            "群作用后得到 f(x)cos(nx) 和 f(x)sin(nx)。",
+            "The action produces f times cosine and f times sine."
+          ],
+          [
+            "此时第二分量通常已经不为零。",
+            "The second component is now usually nonzero."
+          ],
+          [
+            "不能再把它强行清零，否则就破坏了群作用。",
+            "Resetting it to zero would break the action law."
+          ]
+        ]
+      },
+      {
+        "title": "选不同的 n，读出不同频率",
+        "en": "SELECT A FREQUENCY",
+        "hero": "频率 n → 余弦分量 aₙ、正弦分量 bₙ",
+        "kind": "coefficients",
+        "captions": [
+          [
+            "依次选 n=1、2、3、5，观察对应的频率分量。",
+            "Inspect frequency components one, two, three and five."
+          ],
+          [
+            "示例中 n=1 读出余弦，n=2 读出正弦。",
+            "Frequency one reads a cosine term; frequency two reads a sine term."
+          ],
+          [
+            "不匹配的振荡在整个周期中相互抵消。",
+            "Mismatched oscillations cancel over a full period."
+          ],
+          [
+            "正交性解释这种筛选，而不只是画面上的巧合。",
+            "Orthogonality explains the selection, beyond this particular picture."
+          ]
+        ]
+      },
+      {
+        "title": "把各个频率放回曲线",
+        "en": "REBUILD THE SIGNAL",
+        "hero": "f ≈ a₀/2 + Σₙ≤N (aₙcos nx + bₙsin nx)",
+        "kind": "reconstruction",
+        "captions": [
+          [
+            "先画常数项，再逐项加入不同频率。",
+            "Begin with the constant term and add frequency components."
+          ],
+          [
+            "每加入一项，曲线就多出相应的起伏。",
+            "Each term contributes its own oscillation."
+          ],
+          [
+            "本片示例是三角多项式，到第五项已经完全恢复。",
+            "This example is a trigonometric polynomial, exact by frequency five."
+          ],
+          [
+            "一般连续函数可能需要无限多个频率。",
+            "A general continuous function can require infinitely many frequencies."
+          ]
+        ]
+      },
+      {
+        "title": "系数产生，不等于恢复已经证明",
+        "en": "COEFFICIENTS AND COMPLETENESS ARE DISTINCT",
+        "hero": "旋转组织频率；完备性保证 L² 恢复",
+        "kind": "completeness",
+        "captions": [
+          [
+            "群作用把余弦与正弦分量组织成同一个结构。",
+            "The action organizes sine and cosine components in one structure."
+          ],
+          [
+            "要证明展开能够恢复原函数，还要三角系的完备性。",
+            "Recovery also requires completeness of the trigonometric system."
+          ],
+          [
+            "对连续周期函数，至少可以保证 L² 意义下收敛。",
+            "Continuous periodic functions are recovered in the L-squared sense."
+          ],
+          [
+            "这里不把 L² 收敛误写成任意点逐点或一致收敛。",
+            "We do not replace L-squared convergence by an unjustified stronger claim."
+          ]
+        ]
+      },
+      {
+        "title": "整数、旋转与频率连成一条线",
+        "en": "INTEGERS, ROTATIONS AND FREQUENCIES",
+        "hero": "ℤ 的群作用，把正弦与余弦组织起来",
+        "kind": "ending",
+        "captions": [
+          [
+            "十五数码与魔方，用不变量识别操作的边界。",
+            "The two puzzles use invariants to reveal limits of operations."
+          ],
+          [
+            "区间与球面，用拓扑排除不可能的群结构。",
+            "Intervals and spheres reveal topological obstructions."
+          ],
+          [
+            "傅里叶分析则用群作用，把函数中的频率提取出来。",
+            "Fourier analysis organizes and extracts frequencies through an action."
+          ],
+          [
+            "群作用不仅用于计数，也帮助我们理解结构。",
+            "Group actions reveal structure far beyond counting."
+          ]
+        ]
+      }
+    ],
+    "bars": 108,
+    "duration": 292,
+    "notes": [
+      "作用空间为全部连续 2π 周期实函数对，n∈ℤ。只在初始嵌入 f↦(f,0)，作用后保留两个分量。",
+      "本片示例 f(x)=0.3+cos x+0.65 sin(2x)+0.35 cos(3x)+0.25 sin(5x)，系数在代码内部独立核对，图中不伪造频谱。",
+      "系数定义仅保留在可选说明：aₙ=(1/π)∫₋π^π f cos(nx)，bₙ=(1/π)∫₋π^π f sin(nx)，a₀=(1/π)∫f；重构常数项为 a₀/2。",
+      "一般恢复结论使用三角函数系在 L² 中的完备性作为外部输入；不宣称任意连续函数的傅里叶级数处处或一致收敛。",
+      "按用户修订：不设置独立积分例子或分量积分累加动画。"
+    ],
+    "sources": [
+      "https://ocw.mit.edu/courses/res-18-015-topics-in-fourier-analysis-spring-2024/lists/lecture-notes/"
+    ],
+    "summaryEn": "Real function pairs and planar rotations reveal how an integer-group action organizes frequencies."
+  }
+]

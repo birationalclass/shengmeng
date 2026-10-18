@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="data:,">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>球面：度数揭示群结构的障碍 · 结构之美</title>
+<link href="assets/fonts/fonts.css?v=20261019-group-actions-v1" rel="stylesheet">
+<style>
+  :root { --bg: #000; --fg: #f3ead8; --gold: #e2bd6b; --dim: rgba(255,255,255,.55); }
+  :root:not([data-theme="light"]) { --bg: #000; }
+  :root[data-theme="dark"] { --bg: #000; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); overflow: hidden; }
+  body { font-family: "Noto Serif SC", serif; }
+  #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+  canvas { width: 100vw; height: 56.25vw; max-height: 100vh; max-width: 177.78vh; background: #000; display: block; }
+  #start { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+    background: radial-gradient(ellipse at center, #1a1408 0%, #000 70%); cursor: pointer; z-index: 5; text-align: center; padding: 16px; }
+  #start h1 { font-weight: 900; font-size: clamp(28px, 6vw, 96px); margin: 0; letter-spacing: .12em;
+    background: linear-gradient(120deg, #7a5520, #f3d88f 45%, #fff4d2 50%, #d9b25c 55%, #7a5520); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #start p { margin: 0; font-family: "Cinzel", serif; letter-spacing: .3em; color: #cdb88e; font-size: clamp(12px, 2vw, 20px); }
+  #start button { margin-top: 18px; font: 700 18px "Noto Serif SC", serif; color: #1a1206; background: var(--gold); border: 0; border-radius: 999px;
+    padding: 14px 34px; cursor: pointer; letter-spacing: .15em; }
+  #start small { color: var(--dim); font-size: 13px; letter-spacing: .1em; }
+  #ui { position: fixed; left: 0; right: 0; bottom: 0; padding: 14px 16px 16px; display: flex; gap: 14px; align-items: center;
+    background: linear-gradient(transparent, rgba(0,0,0,.75)); transition: opacity .4s; z-index: 4; font: 13px "Cinzel", serif; color: #ddd; }
+  #ui.hide { opacity: 0; }
+  #ui button { background: none; border: 0; color: #fff; font-size: 18px; cursor: pointer; width: 32px; }
+  #bar { flex: 1; height: 5px; background: rgba(255,255,255,.2); border-radius: 3px; cursor: pointer; position: relative; }
+  #fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--gold); border-radius: 3px; width: 0; }
+
+#tools{position:fixed;top:12px;left:12px;right:12px;z-index:6;display:flex;gap:8px;justify-content:flex-end;font:13px system-ui,sans-serif}#tools a,#tools button{font:inherit;text-decoration:none;color:#e6d5b3;background:#071016b8;border:1px solid #74644366;border-radius:22px;padding:8px 12px;cursor:pointer}#tools #home{margin-right:auto}#tools a:focus-visible,#tools button:focus-visible{outline:2px solid #e2bd6b;outline-offset:3px}#tools a:hover,#tools button:hover{border-color:#e2bd6b}
+#notes{position:fixed;inset:0;padding:5vh 6vw;overflow:auto;background:#000e;z-index:8;box-sizing:border-box}#notes[hidden]{display:none}#notes article{max-width:850px;margin:auto;border:1px solid #8c7243;border-radius:16px;background:#101820;padding:26px;line-height:1.9}#notes h2{color:#f1d795}#notes button{font:inherit;color:#f1d795;background:#17212a;border:1px solid #736349;padding:8px 12px;border-radius:8px;margin:4px;cursor:pointer}#notes a{color:#a4ddff}#closeNotes{float:right}
+#diagnostic{position:fixed;left:10px;bottom:58px;z-index:9;display:none;background:#271d16;color:#ffd5a5;font:12px system-ui;padding:7px;max-width:90vw}#bar{height:28px;background:transparent;touch-action:none;user-select:none}#bar::before{content:'';position:absolute;left:0;right:0;top:50%;height:5px;transform:translateY(-50%);background:#ffffff33;border-radius:3px}#fill{top:50%;bottom:auto;height:5px;transform:translateY(-50%);pointer-events:none}#fill::after{content:'';position:absolute;right:-7px;top:50%;width:14px;height:14px;transform:translateY(-50%);background:var(--gold);border-radius:50%}#bar:focus-visible{outline:2px solid var(--gold)}#tm,#dur{flex:0 0 4.5ch;text-align:center;font-variant-numeric:tabular-nums}@media(max-width:600px){#tools{top:8px;left:8px;right:8px;gap:5px;font-size:12px}#tools a,#tools button{padding:7px 9px}#notes{padding:14px}#notes article{padding:18px}#ui{padding:8px;gap:7px}}
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="c" width="1920" height="1080"></canvas></div>
+<div id="start">
+  <h1>球面：度数揭示群结构的障碍</h1>
+  <p>SPHERES AND A DEGREE OBSTRUCTION</p>
+  <button id="go" disabled>▶ 播放独立篇</button>
+  <small id="load">载入字体中…</small>
+</div>
+<div id="ui" class="hide"><button id="pp">❚❚</button><span id="tm">0:00</span><div id="bar"><div id="fill"></div></div><span id="dur">4:23</span><button id="fs">⛶</button></div>
+<audio id="au" preload="auto"></audio>
+<nav id="tools"><a id="home" href="../?v=20261019-group-actions-v1">← 群作用</a><a href="video.html?v=20261019-group-actions-v1">视频</a><button id="chaptersBtn" disabled>章节</button><button id="muteBtn">声音</button></nav><section id="notes" role="dialog" aria-modal="true" aria-labelledby="notesTitle" hidden><article><button id="closeNotes">关闭 ×</button><h2 id="notesTitle">球面：度数揭示群结构的障碍</h2><p>S² 上不是所有映射都有不动点；真正有效的是与恒等映射同伦的那些映射。</p><div id="chapterList"></div><p>归一化同伦 H(t,x)=((1−t)f(x)−tx)/||(1−t)f(x)−tx||。假设 f 无不动点，则分母非零。</p><p>使用的拓扑输入是度数的同伦不变性和 deg(−id on Sⁿ)=(−1)ⁿ⁺¹。</p><p>本篇只排除正偶维球面；不能用它排除所有奇维球面，更不能把 Brouwer 的实心球结论直接用于球面。</p><p>示意中的单位球面是 S² 本身；绘图的投影方向不改变数学对象。</p><p>参考资料：<a href="https://pi.math.cornell.edu/~hatcher/AT/AT..pdf" target="_blank" rel="noreferrer">资料 1</a></p><p>拖动进度条定位；空格播放 / 暂停；左右箭头前后 5 秒；F 全屏。参考资料和额外定理与画面中的具体示例分开说明。</p></article></section><div id="diagnostic" role="status"></div><script>function problem(s){const d=document.getElementById('diagnostic');d.style.display='block';d.textContent=s}addEventListener('error',e=>problem('运行错误：'+e.message));addEventListener('unhandledrejection',e=>problem('资源或初始化失败：'+String(e.reason)));</script><script>
+'use strict';
+const W = 1920, H = 1080, BPM = 90, BEAT = 60 / BPM, BAR = BEAT * 4, NBARS = 108, TOTAL = NBARS * BAR + 4;
+const EXPORT = /[?&]export=1/.test(location.search);
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const RW = EXPORT ? W : Math.round(Math.min(1440, Math.max(960, Math.min(innerWidth, innerHeight * 16 / 9) * Math.min(devicePixelRatio || 1, 1.5))) / 16) * 16;
+const RH = RW * 9 / 16, RENDER_SCALE = RW / W;
+cv.width = RW; cv.height = RH;
+const PI = Math.PI, TAU = PI * 2;
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const lerp = (a, b, t) => a + (b - a) * t;
+const sstep = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+const eio = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eout = t => 1 - Math.pow(1 - t, 3);
+const eexpo = t => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
+const win = (t, a, b, fi = .5, fo = .5) => sstep(a, a + fi, t) * (1 - sstep(b - fo, b, t));
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const hash1 = n => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const F_ZH = '"Noto Serif SC", "Source Han Serif SC", "SimSun", serif';
+const F_EN = '"Cinzel", "Times New Roman", serif';
+const F_IT = '"Cormorant Garamond", "Times New Roman", serif';
+const F_MATH = '"STIX Two Text", "Cambria Math", "Times New Roman", serif';
+const F_SCRIPT = '"Great Vibes", cursive';
+const F_MONO = '"Consolas", "Menlo", monospace';
+
+function text(s, x, y, o = {}) {
+  ctx.save();
+  ctx.font = `${o.style || ''} ${o.weight || 400} ${o.size || 40}px ${o.font || F_ZH}`;
+  ctx.textAlign = o.align || 'center'; ctx.textBaseline = o.base || 'middle';
+  if (o.ls) { ctx.letterSpacing = o.ls + 'px'; if ((o.align || 'center') === 'center') x += o.ls / 2; }
+  ctx.globalAlpha = o.alpha ?? 1;
+  if (o.glow) { ctx.shadowColor = o.glow; ctx.shadowBlur = o.blur || 24; }
+  ctx.fillStyle = o.color || '#fff';
+  ctx.fillText(s, x, y);
+  ctx.restore();
+}
+function goldGrad(x0, y0, x1, y1, s) {
+  const g = ctx.createLinearGradient(x0, y0, x1, y1);
+  g.addColorStop(0, '#6e4b1b'); g.addColorStop(.35, '#d9b25c');
+  if (s > .05 && s < .95) { g.addColorStop(s - .05, '#e7c574'); g.addColorStop(s, '#fff6dc'); g.addColorStop(s + .05, '#e7c574'); }
+  g.addColorStop(.7, '#c99a45'); g.addColorStop(1, '#7a5520');
+  return g;
+}
+function glowDot(x, y, r, col, a = 1) {
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, `rgba(255,255,255,${a})`); g.addColorStop(.18, col.replace('A', a * .9)); g.addColorStop(1, col.replace('A', 0));
+  ctx.fillStyle = g; ctx.fillRect(x - r, y - r, 2 * r, 2 * r);
+}
+function hexA(hex) { const n = parseInt(hex.slice(1), 16); return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},A)`; }
+
+// ======================================================================== WebGL: backdrops + film post-processing
+const glc = document.createElement('canvas'); glc.width = RW; glc.height = RH;
+const gl = glc.getContext('webgl2', { preserveDrawingBuffer: true, antialias: false, alpha: false, premultipliedAlpha: false });
+gl.getExtension('EXT_color_buffer_float'); gl.getExtension('OES_texture_float_linear');
+const VS = `#version 300 es
+in vec2 p; out vec2 vUv; void main() { vUv = p * .5 + .5; gl_Position = vec4(p, 0., 1.); }`;
+const HEAD = `#version 300 es
+precision highp float;
+in vec2 vUv; out vec4 o;
+uniform vec2 uRes;
+#define PI 3.14159265359
+float hash(vec2 p){ uvec2 q=uvec2(ivec2(floor(p))+ivec2(4096))*uvec2(1597334673u,3812015801u); uint n=(q.x^q.y)*1597334673u; n^=n>>16; n*=2246822519u; n^=n>>13; return float(n)*(1./4294967295.); }
+`;
+const FS_BG = HEAD + `
+uniform float uTime; uniform int uMode; uniform vec3 uTint; uniform float uAmp;
+uniform int uKA; uniform int uKB; uniform float uKMix; uniform float uKZoom; uniform float uKRot;
+uniform float uP; uniform float uQ; uniform vec2 uA; uniform float uHRot; uniform float uHRad; uniform float uHue;
+uniform sampler2D uTex; uniform float uReveal;
+float noise(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f);
+  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x), f.y); }
+float fbm(vec2 p){ float s=0., a=.5; for(int i=0;i<6;i++){ s+=a*noise(p); p=p*2.03+vec2(1.7,9.2); a*=.5; } return s; }
+vec3 hsv(float h,float s,float v){ vec3 k=clamp(abs(mod(h*6.+vec3(0,4,2),6.)-3.)-1.,0.,1.); return v*mix(vec3(1),k,s); }
+vec3 nebula(vec2 uv){
+  float t=uTime*.02; vec2 p=uv*1.25;
+  vec2 q=vec2(fbm(p+t), fbm(p+vec2(5.2,1.3)-t));
+  float n=fbm(p+2.2*q+vec2(t*2.,0.));
+  vec3 c=vec3(.008,.01,.025);
+  c+=uTint*smoothstep(.35,1.05,n)*1.3;
+  c+=uTint.zxy*.45*pow(clamp(q.y-.2,0.,1.),3.);
+  float h=hash(floor(gl_FragCoord.xy/2.));
+  c+=vec3(.9,.95,1.)*step(.9975,h)*(.55+.45*sin(uTime*2.+h*500.));
+  return c;
+}
+// ---- Islamic star patterns: Hankin rays from the edge midpoint of a square or hexagonal cell, folded by p4m / p6m
+vec2 kfold(vec2 p, int m){
+  vec2 g; float n;
+  if(m%2==0){ g=fract(p)-.5; n=4.; }
+  else { vec2 s=vec2(1.,1.7320508); vec2 a=mod(p,s)-s*.5; vec2 b=mod(p-s*.5,s)-s*.5; g=dot(a,a)<dot(b,b)?a:b; n=6.; }
+  float ang=atan(g.y,g.x), r=length(g), sec=2.*PI/n;
+  ang=mod(ang,sec); if(ang>sec*.5) ang=sec-ang;
+  return r*vec2(cos(ang),sin(ang));
+}
+float lineSD(vec2 q, vec2 m, float th){ return dot(q-m, vec2(-cos(th),-sin(th))); }
+vec3 pal(float i){
+  i=mod(i,6.);
+  return i<1.?vec3(.05,.12,.30):i<2.?vec3(.04,.24,.27):i<3.?vec3(.40,.24,.09):i<4.?vec3(.30,.26,.20):i<5.?vec3(.34,.09,.08):vec3(.05,.05,.08);
+}
+vec3 girih(vec2 q, int m, float t){
+  float th1, th2, rr;
+  if(m==0){ th1=radians(67.5+5.*sin(t*.35)); th2=radians(112.5); rr=.17; }
+  else if(m==1){ th1=radians(70.+6.*sin(t*.3)); th2=radians(125.); rr=.2; }
+  else if(m==2){ th1=radians(52.+7.*sin(t*.4)); th2=radians(97.5); rr=.13; }
+  else { th1=radians(80.+5.*sin(t*.33)); th2=radians(140.); rr=.25; }
+  vec2 M=vec2(.5,0.);
+  float s1=lineSD(q,M,th1), s2=lineSD(q,vec2(0.),th2), s3=length(q)-rr;
+  float band=min(min(abs(s1),abs(s2)),abs(s3));
+  float id=step(0.,s1)+2.*step(0.,s2)+3.*step(0.,s3);
+  vec3 tile=pal(id+float(m))*(.72+.28*smoothstep(0.,.22,band));
+  float w=.03, aa=.0045;
+  float inB=smoothstep(w,w-aa,band);
+  float outl=smoothstep(w+.013,w+.013-aa,band)-inB;
+  vec3 gold=vec3(.96,.76,.38)*(.82+.3*sin(t*1.4+(q.x-q.y)*9.));
+  vec3 col=mix(tile,vec3(.025,.02,.015),clamp(outl,0.,1.));
+  return mix(col,gold,inB);
+}
+vec3 kaleido(vec2 uv){
+  vec2 p=uv*uKZoom; float c=cos(uKRot), s=sin(uKRot); p=mat2(c,-s,s,c)*p;
+  vec3 col=mix(girih(kfold(p,uKA),uKA,uTime), girih(kfold(p,uKB),uKB,uTime), uKMix);
+  return col*(.92+.12*sin(length(uv)*2.5-uTime*.8));
+}
+// ---- hyperbolic {p,q} tilings in the Poincare disk
+vec2 cmul(vec2 a, vec2 b){ return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x); }
+vec2 cdiv(vec2 a, vec2 b){ return vec2(a.x*b.x+a.y*b.y, a.y*b.x-a.x*b.y)/dot(b,b); }
+vec3 hyper(vec2 uv){
+  vec2 z=uv/uHRad; float r2=dot(z,z);
+  if(r2>=1.){ float rim=exp(-(sqrt(r2)-1.)*30.); return vec3(.45,.6,1.)*rim*.7+nebula(uv)*.5; }
+  z=cdiv(z+uA, vec2(1.,0.)+cmul(vec2(uA.x,-uA.y),z));
+  float c0=cos(uHRot), s0=sin(uHRot); z=mat2(c0,-s0,s0,c0)*z;
+  float sp=sin(PI/uP), cp=cos(PI/uP), cq=cos(PI/uQ);
+  float rr=sp/sqrt(cq*cq-sp*sp), cc=sqrt(1.+rr*rr);
+  vec2 n=vec2(-sp,cp);
+  float flips=0., inv=0.;
+  for(int i=0;i<90;i++){
+    bool ch=false;
+    if(z.y<0.){ z.y=-z.y; flips+=1.; ch=true; }
+    float d=dot(z,n); if(d>0.){ z-=2.*d*n; flips+=1.; ch=true; }
+    vec2 w=z-vec2(cc,0.); float l2=dot(w,w);
+    if(l2<rr*rr){ z=vec2(cc,0.)+w*(rr*rr/l2); flips+=1.; inv+=1.; ch=true; }
+    if(!ch) break;
+  }
+  float px=(2./uRes.y/uHRad)*(1.-dot(z,z))/max(1.-r2,1e-5);
+  float dE=abs(length(z-vec2(cc,0.))-rr);
+  float dM=min(z.y, abs(dot(z,n)));
+  float lineE=1.-smoothstep(.006, .006+px*1.5, dE);
+  float lineM=1.-smoothstep(.0015, .0015+px*1.5, dM);
+  float par=mod(flips,2.);
+  vec3 base=hsv(uHue+inv*.045, .7, .42+.22*par);
+  float shade=1.-.65*smoothstep(0.,1.,length(z)/(cc-rr));
+  vec3 col=base*(.35+.65*shade);
+  col=mix(col, vec3(1.,.9,.65), lineE*.95);
+  col+=vec3(.55,.75,1.)*lineM*.22;
+  col=mix(col, vec3(.35,.45,.8), smoothstep(.93,1.,sqrt(r2))*.7);
+  return col;
+}
+// ---- carved stone: the text mask in uTex is cut into a bump-mapped rock surface up to uReveal
+float sH(vec2 p){ return fbm(p*2.2)*.6+fbm(p*7.+4.)*.22-pow(1.-abs(noise(p*5.3)*2.-1.),28.)*.05; }
+float mk(vec2 uv){ return texture(uTex,uv).r*smoothstep(uReveal+.003,uReveal-.003,uv.x); }
+vec3 stone(vec2 uv, vec2 p){
+  float px=2./uRes.y;
+  float h=sH(p)-.34*mk(uv);
+  float hx=sH(p+vec2(px*1.5,0.))-.34*mk(uv+vec2(1.5/uRes.x,0.));
+  float hy=sH(p+vec2(0.,px*1.5))-.34*mk(uv+vec2(0.,1.5/uRes.y));
+  vec3 n=normalize(vec3((h-hx)*42.,(h-hy)*42.,1.));
+  vec3 L=normalize(vec3(-.55,.62,.56));
+  float dif=max(dot(n,L),0.);
+  float spec=pow(max(dot(reflect(-L,n),vec3(0.,0.,1.)),0.),26.)*.22;
+  float m=mk(uv);
+  vec3 alb=mix(vec3(.34,.33,.315),vec3(.50,.485,.45),fbm(p*5.+9.));
+  alb*=1.-.42*m;
+  vec3 col=alb*(.2+1.05*dif)*vec3(1.05,1.,.93)+spec;
+  col+=vec3(1.,.55,.2)*exp(-abs(uv.x-uReveal)*140.)*m*.8;
+  return col;
+}
+void main(){
+  vec2 uv=(gl_FragCoord.xy-.5*uRes)/(.5*uRes.y);
+  vec3 c = uMode==0 ? nebula(uv) : uMode==1 ? kaleido(uv) : uMode==2 ? hyper(uv) : stone(gl_FragCoord.xy/uRes, uv);
+  o=vec4(c*uAmp,1.);
+}`;
+const FS_ACC = HEAD + `uniform sampler2D uT; uniform float uW; void main(){ o = vec4(texture(uT, vUv).rgb * uW, 1.); }`;
+const FS_DOWN = HEAD + `uniform sampler2D uT; uniform vec2 uTexel; uniform float uThresh;
+vec3 pre(vec3 c){ if(uThresh<=0.) return c; float l=max(c.r,max(c.g,c.b)); float k=clamp(l-uThresh+.12,0.,.24); k=k*k/.48; return c*max(k,l-uThresh)/max(l,1e-4); }
+void main(){ vec2 h=uTexel*.5;
+  vec3 s=pre(texture(uT,vUv).rgb)*4.+pre(texture(uT,vUv-h).rgb)+pre(texture(uT,vUv+h).rgb)+pre(texture(uT,vUv+vec2(h.x,-h.y)).rgb)+pre(texture(uT,vUv-vec2(h.x,-h.y)).rgb);
+  o=vec4(s/8.,1.); }`;
+const FS_UP = HEAD + `uniform sampler2D uT; uniform vec2 uTexel;
+void main(){ vec2 h=uTexel*.5; vec3 s=vec3(0.);
+  s+=texture(uT,vUv+vec2(-h.x*2.,0.)).rgb; s+=texture(uT,vUv+vec2(-h.x,h.y)).rgb*2.; s+=texture(uT,vUv+vec2(0.,h.y*2.)).rgb; s+=texture(uT,vUv+vec2(h.x,h.y)).rgb*2.;
+  s+=texture(uT,vUv+vec2(h.x*2.,0.)).rgb; s+=texture(uT,vUv+vec2(h.x,-h.y)).rgb*2.; s+=texture(uT,vUv+vec2(0.,-h.y*2.)).rgb; s+=texture(uT,vUv+vec2(-h.x,-h.y)).rgb*2.;
+  o=vec4(s/12.,1.); }`;
+const FS_FINAL = HEAD + `uniform sampler2D uScene; uniform sampler2D uBloom; uniform float uBloomAmt; uniform float uCA; uniform float uVig; uniform float uGrain;
+uniform float uSeed; uniform float uSat; uniform float uSplit; uniform vec3 uTintS; uniform vec3 uTintH;
+void main(){
+  vec2 d=vUv-.5;
+  vec3 c=vec3(texture(uScene,vUv-d*uCA).r, texture(uScene,vUv).g, texture(uScene,vUv+d*uCA).b);
+  c+=texture(uBloom,vUv).rgb*uBloomAmt;
+  vec3 k=max(c-.8,0.); c=min(c,.8)+k/(1.+k*5.);
+  float l=dot(c,vec3(.2126,.7152,.0722));
+  c=mix(c, c*mix(uTintS,uTintH,smoothstep(.04,.62,l)), uSplit);
+  c=mix(vec3(l),c,uSat);
+  c*=1.-uVig*smoothstep(.3,1.05,length(d*vec2(1.,.62))*1.5);
+  c+=(hash(gl_FragCoord.xy+vec2(uSeed*37.,uSeed*17.))-.5)*uGrain*(.55+.45*(1.-l));
+  o=vec4(c,1.);
+}`;
+function compile(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s; }
+function program(fs, names) {
+  const pr = gl.createProgram(); gl.attachShader(pr, compile(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, compile(gl.FRAGMENT_SHADER, fs));
+  gl.bindAttribLocation(pr, 0, 'p'); gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(pr));
+  const u = {}; for (const n of ['uRes', ...names]) u[n] = gl.getUniformLocation(pr, n); return { pr, u };
+}
+const P_BG = program(FS_BG, ['uTime', 'uMode', 'uTint', 'uAmp', 'uKA', 'uKB', 'uKMix', 'uKZoom', 'uKRot', 'uP', 'uQ', 'uA', 'uHRot', 'uHRad', 'uHue', 'uTex', 'uReveal']);
+const P_ACC = program(FS_ACC, ['uT', 'uW']);
+const P_DOWN = program(FS_DOWN, ['uT', 'uTexel', 'uThresh']);
+const P_UP = program(FS_UP, ['uT', 'uTexel']);
+const P_FIN = program(FS_FINAL, ['uScene', 'uBloom', 'uBloomAmt', 'uCA', 'uVig', 'uGrain', 'uSeed', 'uSat', 'uSplit', 'uTintS', 'uTintH']);
+const VAO = gl.createVertexArray(); gl.bindVertexArray(VAO);
+gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+function makeTex(w, h, float) {
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texImage2D(gl.TEXTURE_2D, 0, float ? gl.RGBA16F : gl.RGBA8, w, h, 0, gl.RGBA, float ? gl.HALF_FLOAT : gl.UNSIGNED_BYTE, null);
+  for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+  return t;
+}
+function makeFbo(w, h) { const t = makeTex(w, h, true), f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0); return { t, f, w, h }; }
+const SCENE_TEX = makeTex(RW, RH, false), MASK_TEX = makeTex(RW, RH, false);
+const ACC = makeFbo(RW, RH), MIPS = [1, 2, 3, 4, 5].map(k => makeFbo(Math.ceil(RW / 2 ** k), Math.ceil(RH / 2 ** k)));
+function tri(target, w, h) { gl.bindFramebuffer(gl.FRAMEBUFFER, target); gl.viewport(0, 0, w, h); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+function bindTex(unit, t) { gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t); }
+function glDraw(mode, u = {}, alpha = 1) {
+  const P = P_BG; gl.useProgram(P.pr); gl.disable(gl.BLEND);
+  gl.uniform2f(P.u.uRes, RW, RH); gl.uniform1f(P.u.uTime, u.time ?? 0); gl.uniform1i(P.u.uMode, mode);
+  const t = u.tint || [.2, .3, .7]; gl.uniform3f(P.u.uTint, t[0], t[1], t[2]); gl.uniform1f(P.u.uAmp, u.amp ?? 1);
+  gl.uniform1i(P.u.uKA, u.ka ?? 0); gl.uniform1i(P.u.uKB, u.kb ?? 0); gl.uniform1f(P.u.uKMix, u.kmix ?? 0);
+  gl.uniform1f(P.u.uKZoom, u.kzoom ?? 2); gl.uniform1f(P.u.uKRot, u.krot ?? 0);
+  gl.uniform1f(P.u.uP, u.p ?? 7); gl.uniform1f(P.u.uQ, u.q ?? 3); const a = u.a || [0, 0]; gl.uniform2f(P.u.uA, a[0], a[1]);
+  gl.uniform1f(P.u.uHRot, u.hrot ?? 0); gl.uniform1f(P.u.uHRad, u.hrad ?? .92); gl.uniform1f(P.u.uHue, u.hue ?? .55);
+  gl.uniform1f(P.u.uReveal, u.reveal ?? 0); bindTex(1, MASK_TEX); gl.uniform1i(P.u.uTex, 1); bindTex(0, null);
+  tri(null, RW, RH);
+  ctx.save(); ctx.globalAlpha = alpha; ctx.drawImage(glc, 0, 0, W, H); ctx.restore();
+}
+function accumulate(k, K) {
+  bindTex(0, SCENE_TEX); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, cv);
+  gl.useProgram(P_ACC.pr); gl.uniform1i(P_ACC.u.uT, 0); gl.uniform1f(P_ACC.u.uW, 1 / K);
+  if (k === 0) gl.disable(gl.BLEND); else { gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE); }
+  tri(ACC.f, RW, RH); gl.disable(gl.BLEND);
+}
+const GRADE = { bloom: .85, ca: .0022, vig: .55, grain: .045, sat: 1.04, split: .55, tintS: [.9, .97, 1.1], tintH: [1.07, 1.0, .9] };
+function post(T, g) {
+  let src = ACC;
+  gl.useProgram(P_DOWN.pr); gl.uniform1i(P_DOWN.u.uT, 0);
+  MIPS.forEach((dst, i) => { bindTex(0, src.t); gl.uniform2f(P_DOWN.u.uTexel, 1 / src.w, 1 / src.h); gl.uniform1f(P_DOWN.u.uThresh, i ? 0 : .5); tri(dst.f, dst.w, dst.h); src = dst; });
+  gl.useProgram(P_UP.pr); gl.uniform1i(P_UP.u.uT, 0); gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+  for (let i = MIPS.length - 1; i > 0; i--) { const s = MIPS[i], d = MIPS[i - 1]; bindTex(0, s.t); gl.uniform2f(P_UP.u.uTexel, 1 / s.w, 1 / s.h); tri(d.f, d.w, d.h); }
+  gl.disable(gl.BLEND);
+  const P = P_FIN; gl.useProgram(P.pr); bindTex(0, ACC.t); bindTex(1, MIPS[0].t);
+  gl.uniform1i(P.u.uScene, 0); gl.uniform1i(P.u.uBloom, 1); gl.uniform2f(P.u.uRes, RW, RH);
+  gl.uniform1f(P.u.uBloomAmt, g.bloom); gl.uniform1f(P.u.uCA, g.ca); gl.uniform1f(P.u.uVig, g.vig); gl.uniform1f(P.u.uGrain, g.grain);
+  gl.uniform1f(P.u.uSeed, Math.floor(T * 30) % 97); gl.uniform1f(P.u.uSat, g.sat); gl.uniform1f(P.u.uSplit, g.split);
+  gl.uniform3fv(P.u.uTintS, g.tintS); gl.uniform3fv(P.u.uTintH, g.tintH);
+  tri(null, RW, RH); bindTex(1, null); bindTex(0, null);
+}
+
+// ======================================================================== shared assets
+const rnd = mulberry(20260925);
+const STARS = Array.from({ length: 500 }, () => ({ x: rnd() * W, y: rnd() * H, z: .2 + rnd() * .8, p: rnd() * TAU }));
+function starfield(t, a = 1, vx = 8, vy = 0) {
+  ctx.save(); ctx.fillStyle = '#fff';
+  for (const s of STARS) {
+    const x = ((s.x + t * vx * s.z) % W + W) % W, y = ((s.y + t * vy * s.z) % H + H) % H;
+    ctx.globalAlpha = a * s.z * (.55 + .45 * Math.sin(t * 2 + s.p));
+    const r = s.z * 2.2; ctx.fillRect(x, y, r, r);
+  }
+  ctx.restore();
+}
+function bgGrad(c0, c1, cx = W / 2, cy = H / 2) {
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 1200);
+  g.addColorStop(0, c0); g.addColorStop(1, c1); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+function proj(v, yaw, pitch, cx, cy, F, D = 7) {
+  const c1 = Math.cos(yaw), s1 = Math.sin(yaw), c2 = Math.cos(pitch), s2 = Math.sin(pitch);
+  const x = v[0] * c1 + v[2] * s1, z = -v[0] * s1 + v[2] * c1, y = v[1];
+  const y2 = y * c2 - z * s2, z2 = y * s2 + z * c2, d = D - z2;
+  return [cx + F * x / d, cy - F * y2 / d, z2];
+}
+// snowflake: a recursive D6-symmetric branch set, in unit coordinates
+const SNOW = (() => {
+  const segs = [];
+  function branch(x, y, ang, len, depth) {
+    const x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len; segs.push([x, y, x2, y2]);
+    if (!depth) return;
+    for (const f of [.3, .5, .68, .84]) {
+      const bx = x + Math.cos(ang) * len * f, by = y + Math.sin(ang) * len * f, bl = len * (depth === 2 ? .36 * (1.12 - f) : .45 * (1.1 - f));
+      for (const s of [1, -1]) branch(bx, by, ang + s * PI / 3, bl, depth - 1);
+    }
+  }
+  for (let k = 0; k < 6; k++) branch(0, 0, k * PI / 3 - PI / 2, 1, 2);
+  for (let k = 0; k < 6; k++) { const a1 = k * PI / 3 - PI / 2, a2 = a1 + PI / 3; segs.push([.2 * Math.cos(a1), .2 * Math.sin(a1), .2 * Math.cos(a2), .2 * Math.sin(a2)]); }
+  for (let k = 0; k < 6; k++) { const a1 = k * PI / 3 - PI / 3, a2 = a1 + PI / 3; segs.push([.34 * Math.cos(a1), .34 * Math.sin(a1), .34 * Math.cos(a2), .34 * Math.sin(a2)]); }
+  return segs;
+})();
+const SNOWPTS = (() => {
+  const lens = SNOW.map(s => Math.hypot(s[2] - s[0], s[3] - s[1])); const L = lens.reduce((a, b) => a + b, 0);
+  const pts = []; const n = 2600; let acc = 0, si = 0;
+  for (let i = 0; i < n; i++) {
+    const d = (i + .5) / n * L; while (acc + lens[si] < d) { acc += lens[si]; si++; }
+    const f = (d - acc) / lens[si], s = SNOW[si]; pts.push([lerp(s[0], s[2], f), lerp(s[1], s[3], f)]);
+  }
+  return pts.map(p => { const a = rnd() * TAU, d = 1.6 + rnd() * 2.2; return { tx: p[0], ty: p[1], sx: Math.cos(a) * d, sy: Math.sin(a) * d * .7,
+    delay: rnd(), ea: rnd() * TAU, ed: .4 + rnd() * 2.4, sz: .8 + rnd() * 1.8 }; });
+})();
+function drawSnow(cx, cy, R, rot, a = 1, sx = 1, col = '170,220,255') {
+  if (a <= 0) return;
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(sx, 1); ctx.rotate(rot); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
+  for (const [w, al] of [[10, .08], [5, .18], [2.2, .9]]) {
+    ctx.beginPath(); for (const s of SNOW) { ctx.moveTo(s[0] * R, s[1] * R); ctx.lineTo(s[2] * R, s[3] * R); }
+    ctx.strokeStyle = `rgba(${col},${al * a})`; ctx.lineWidth = w; ctx.stroke();
+  }
+  ctx.restore();
+}
+function sunburst(cx, cy, lt, a, n = 24, col = '255,200,120') {
+  if (a <= 0) return;
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(lt * .05); ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 1100); g.addColorStop(0, `rgba(${col},${.16 * a})`); g.addColorStop(1, `rgba(${col},0)`);
+  ctx.fillStyle = g;
+  for (let i = 0; i < n; i++) { const a0 = i * TAU / n; ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, 1200, a0, a0 + TAU / n * .45); ctx.fill(); }
+  ctx.restore();
+}
+function flare(x, y, a, len = 900) {         // anamorphic lens streak
+  if (a <= 0) return;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createLinearGradient(x - len, 0, x + len, 0);
+  g.addColorStop(0, 'rgba(120,170,255,0)'); g.addColorStop(.5, `rgba(255,236,200,${.9 * a})`); g.addColorStop(1, 'rgba(120,170,255,0)');
+  ctx.fillStyle = g; ctx.fillRect(x - len, y - 2, len * 2, 4);
+  ctx.globalAlpha = .35 * a; ctx.fillRect(x - len * .6, y - 9, len * 1.2, 18);
+  ctx.restore();
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.translate(x, y); ctx.scale(4, 1); glowDot(0, 0, 60, 'rgba(255,220,170,A)', a); ctx.restore();
+}
+function titleLayout(str, cx, size, ls) {
+  ctx.save(); ctx.font = `900 ${size}px ${F_ZH}`; const ws = [...str].map(c => ctx.measureText(c).width); ctx.restore();
+  const total = ws.reduce((a, b) => a + b, 0) + ls * (ws.length - 1); let x = cx - total / 2;
+  return ws.map(w => { const r = { x: x + w / 2, w, total }; x += w + ls; return r; });
+}
+function titleWord(str, cx, cy, size, lt, t0, stagger, ls, a = 1, grow = .6) {
+  const L = titleLayout(str, cx, size, ls), total = L[0].total, sheenX = cx - total / 2 + (((lt * .32) % 1.8) - .3) * total;
+  ctx.save(); ctx.font = `900 ${size}px ${F_ZH}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  [...str].forEach((ch, i) => {
+    const { x, w } = L[i], k = clamp((lt - t0 - i * stagger) / 1.0);
+    if (k <= 0) return;
+    const e = eexpo(k), sc = 1 + grow * (1 - e);
+    ctx.save(); ctx.translate(x, cy); ctx.scale(sc, sc); ctx.globalAlpha = clamp(k * 2.5) * a;
+    ctx.shadowColor = 'rgba(255,180,80,.55)'; ctx.shadowBlur = 50;
+    ctx.fillStyle = goldGrad(-w / 2, -size / 2, w / 2, size / 2, (sheenX - (x - w / 2)) / w); ctx.fillText(ch, 0, 0);
+    ctx.restore();
+  });
+  ctx.restore();
+}
+function glitchText(s, x, y, size, a, font = F_EN, seed = 0) {
+  if (a <= 0) return;
+  const j = (hash1(seed * 7.1) - .5) * 14;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  text(s, x - 5 + j, y, { font, size, color: 'rgba(255,60,80,1)', alpha: a * .55 });
+  text(s, x + 5 - j, y, { font, size, color: 'rgba(60,220,255,1)', alpha: a * .55 });
+  ctx.restore();
+  text(s, x, y, { font, size, color: '#fff', alpha: a, glow: 'rgba(255,255,255,.6)', blur: 20 });
+}
+
+// ======================================================================== scene library
+const SC = [];
+function scene(o) { SC.push(o); return o; }
+const camPush = (amt = .045) => (lt, d) => ({ z: 1 + amt * lt / d, x: 10 * Math.sin(lt * .21), y: 6 * Math.sin(lt * .17 + 1) });
+const camArc = (amt = .04) => (lt, d) => ({ z: 1 + amt * Math.sin(PI * clamp(lt / d)) });
+
+
+function rollNumber(str, lt, t0, dur, seed = 0) {
+  const n = str.length; let out = '';
+  for (let i = 0; i < n; i++) {
+    const ch = str[i]; if (ch < '0' || ch > '9') { out += ch; continue; }
+    const lock = t0 + dur * i / n; out += lt >= lock ? ch : String(Math.floor(hash1(Math.floor(lt * 30) * 13 + i * 7 + seed) * 10));
+  }
+  return out;
+}
+
+
+/* Pure models. Rendering never invents a legal move or a computed coefficient. */
+const ActionMath=(()=>{
+ const dot=(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0), norm=a=>Math.hypot(...a),add=(a,b)=>a.map((x,i)=>x+b[i]),scale=(a,t)=>a.map(x=>x*t),unit=a=>scale(a,1/norm(a));
+ const identity=Array.from({length:16},(_,i)=>(i+1)%16);
+ function sign(a){let n=0;const p=a.map(x=>x===0?16:x);for(let i=0;i<p.length;i++)for(let j=i+1;j<p.length;j++)if(p[i]>p[j])n++;return n%2?-1:1}
+ function invariant(a){const z=a.indexOf(0);return sign(a)*((-1)**(Math.floor(z/4)+z%4+2))}
+ function neighbors(a){const z=a.indexOf(0);return [z-4,z+4,z-1,z+1].filter(p=>p>=0&&p<16&&Math.abs(Math.floor(z/4)-Math.floor(p/4))+Math.abs(z%4-p%4)===1)}
+ function slide(a,p){if(!neighbors(a).includes(p))throw Error('Illegal slide');const b=a.slice(),z=b.indexOf(0);[b[z],b[p]]=[b[p],b[z]];return b}
+ function edgeAction(a,u,v){if(Math.abs(Math.floor(u/4)-Math.floor(v/4))+Math.abs(u%4-v%4)!==1)throw Error('Not an edge');return a[u]===0?slide(a,v):a[v]===0?slide(a,u):a.slice()}
+ function walk(seed=1,count=60,start=identity){let a=start.slice(),old=-1;const states=[a],moves=[];for(let i=0;i<count;i++){seed=(1664525*seed+1013904223)>>>0;let ps=neighbors(a).filter(p=>p!==old);const p=ps[seed%ps.length];old=a.indexOf(0);moves.push(p);a=slide(a,p);states.push(a)}return {states,moves}}
+ function rotate(v,axis,t){const a=axis==='x'?0:axis==='y'?1:2,b=(a+1)%3,c=(a+2)%3,w=v.slice();w[b]=Math.cos(t)*v[b]-Math.sin(t)*v[c];w[c]=Math.sin(t)*v[b]+Math.cos(t)*v[c];return w}
+ const det=([a,b,c])=>a[0]*(b[1]*c[2]-b[2]*c[1])-a[1]*(b[0]*c[2]-b[2]*c[0])+a[2]*(b[0]*c[1]-b[1]*c[0]);
+ const qconj=q=>[q[0],-q[1],-q[2],-q[3]];
+ const qmul=(p,q)=>[p[0]*q[0]-p[1]*q[1]-p[2]*q[2]-p[3]*q[3],p[0]*q[1]+p[1]*q[0]+p[2]*q[3]-p[3]*q[2],p[0]*q[2]-p[1]*q[3]+p[2]*q[0]+p[3]*q[1],p[0]*q[3]+p[1]*q[2]-p[2]*q[1]+p[3]*q[0]];
+ function omul(p,q){const a=p.slice(0,4),b=p.slice(4),c=q.slice(0,4),d=q.slice(4);return add(qmul(a,c),scale(qmul(qconj(d),b),-1)).concat(add(qmul(d,a),qmul(b,qconj(c))))}
+ const basis=i=>Array.from({length:8},(_,j)=>+(i===j));
+ const rotatePair=(f,g,n,x)=>[Math.cos(n*x)*f-Math.sin(n*x)*g,Math.sin(n*x)*f+Math.cos(n*x)*g];
+ const signal=x=>.3+Math.cos(x)+.65*Math.sin(2*x)+.35*Math.cos(3*x)+.25*Math.sin(5*x);
+ function coefficients(n,N=4096){let a=0,b=0;for(let j=0;j<N;j++){const x=-Math.PI+(j+.5)*2*Math.PI/N,[u,v]=rotatePair(signal(x),0,n,x);a+=u*2/N;b+=v*2/N}return [a,b]}
+ function partial(x,N){let y=.3;for(const [n,a,b]of [[1,1,0],[2,0,.65],[3,.35,0],[5,0,.25]])if(n<=N)y+=a*Math.cos(n*x)+b*Math.sin(n*x);return y}
+ function noFixedMap(x){return scale(rotate(x,'z',.7),-1)}
+ const homotopy=(x,t)=>unit(add(scale(noFixedMap(x),1-t),scale(x,-t)));
+ function cube(){const pieces=[];for(let x=-1;x<=1;x++)for(let y=-1;y<=1;y++)for(let z=-1;z<=1;z++){if(!x&&!y&&!z)continue;const stickers=[];for(const [axis,sgn,color]of [[0,1,'#e8313c'],[0,-1,'#ff8a1f'],[1,1,'#f5f5f5'],[1,-1,'#ffd500'],[2,1,'#18b35a'],[2,-1,'#1f6fe0']])if([x,y,z][axis]===sgn){const n=[0,0,0];n[axis]=sgn;stickers.push({normal:n,color})}pieces.push({pos:[x,y,z],stickers,frame:[[1,0,0],[0,1,0],[0,0,1]]})}return pieces}
+ function cubeTurn(pieces,axis,layer,angle){const k='xyz'.indexOf(axis);return pieces.map(p=>Math.abs(p.pos[k]-layer)<.01?{...p,pos:rotate(p.pos,axis,angle),frame:p.frame.map(v=>rotate(v,axis,angle)),stickers:p.stickers.map(s=>({...s,normal:rotate(s.normal,axis,angle)}))}:p)}
+ function cubeSequence(t,start=cube()){let state=start;const moves=[['y',1,1],['x',1,1],['z',1,-1],['y',1,-1],['x',1,-1],['z',1,1]],whole=Math.floor(t),phase=t-whole;for(let j=0;j<whole;j++){const [a,l,s]=moves[j%moves.length];state=cubeTurn(state,a,l,s*Math.PI/2)}const [a,l,s]=moves[whole%moves.length];return cubeTurn(state,a,l,s*Math.PI/2*(phase*phase*(3-2*phase)))}
+ function audit(){let a=identity.slice(),moves=0;for(let s=1;s<=40;s++){const w=walk(s,80);for(let j=1;j<w.states.length;j++){if(invariant(w.states[j])!==1)throw Error('Puzzle invariant');if(sign(w.states[j])!==-sign(w.states[j-1]))throw Error('Permutation sign');moves++}}
+ const swapped=identity.slice();[swapped[13],swapped[14]]=[swapped[14],swapped[13]];
+ for(const [u,v]of [[0,1],[5,6],[11,15]]){const b=edgeAction(edgeAction(a,u,v),u,v);if(b.some((x,i)=>x!==a[i]))throw Error('Edge action is not involutive')}
+ let err=0;for(let i=1;i<=30;i++){const p=unit([Math.sin(i),Math.cos(2*i),.3,.4]),q=unit([.1,Math.cos(i),Math.sin(i),.2]),r=unit([.2,.3,Math.sin(3*i),Math.cos(i)]);err=Math.max(err,norm(add(qmul(qmul(p,q),r),scale(qmul(p,qmul(q,r)),-1))),Math.abs(norm(qmul(p,q))-1));}
+ const left=omul(omul(basis(1),basis(2)),basis(4)),right=omul(basis(1),omul(basis(2),basis(4)));
+ if(left[7]!==1||right[7]!==-1||invariant(swapped)!==-1||err>1e-12)throw Error('Algebra model failure');
+ let actionErr=0,denomMin=2;for(let j=0;j<90;j++){const x=j*.17,[u,v]=rotatePair(.4,-.3,3,x),[a,b]=rotatePair(u,v,-5,x),[c,d]=rotatePair(.4,-.3,-2,x);actionErr=Math.max(actionErr,Math.hypot(a-c,b-d));const X=unit([Math.sin(x),Math.cos(x),.4]);for(let t=0;t<=1;t+=.05)denomMin=Math.min(denomMin,norm(add(scale(noFixedMap(X),1-t),scale(X,-t))))}
+ const measured=Array.from({length:6},(_,n)=>coefficients(n));const expected=[[.6,0],[1,0],[0,.65],[.35,0],[0,0],[0,.25]];const coefficientError=Math.max(...measured.flatMap((v,n)=>v.map((x,k)=>Math.abs(x-expected[n][k]))));
+ if(actionErr>1e-12||coefficientError>1e-10||denomMin<.5)throw Error('Analytic model failure');
+ return {passed:true,puzzle:{legalMoves:moves,solvedInvariant:1,swappedInvariant:invariant(swapped),edgeGeneratorsInvolutions:true},chirality:{properRotationDeterminant:det([[1,0,0],[0,1,0],[0,0,1]]),swappedColorsDeterminant:det([[0,1,0],[1,0,0],[0,0,1]])},quaternions:{maxAssociativityOrNormError:err},octonions:{left,right,associative:false},sphere:{sampleHomotopyDenominatorMinimum:denomMin,evenAntipodalDegree:-1,oddAntipodalDegree:1},fourier:{actionError:actionErr,coefficientError,measured,initialSecondComponentOnly:0,convergenceClaim:'L2; completeness is an external input'}}}
+ return {dot,norm,add,scale,unit,identity,sign,invariant,neighbors,slide,edgeAction,walk,rotate,det,qmul,qconj,omul,basis,rotatePair,signal,coefficients,partial,noFixedMap,homotopy,cube,cubeTurn,cubeSequence,audit};
+})();
+if(typeof module!=='undefined')module.exports=ActionMath;
+
+const C_GOLD='255,209,102',C_TEAL='90,255,220',C_PINK='255,126,182',C_BLUE='140,200,255';
+const COL={gold:'#ffda88',teal:'#a2ffe4',pink:'#ffb5d4',blue:'#b4daff',dim:'#b8c5ca'};
+function ink(ps,color=C_TEAL,alpha=1,width=2.4,closed=false){if(ps.length<2||alpha<=0)return;ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineCap='round';ctx.lineJoin='round';for(const [w,a]of[[width*5,.045],[width*2,.15],[width,.9]]){ctx.beginPath();ps.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](p[0],p[1]));if(closed)ctx.closePath();ctx.strokeStyle=`rgba(${color},${a*alpha})`;ctx.lineWidth=w;ctx.stroke()}ctx.restore()}
+function bead(p,color=C_TEAL,a=1,r=28){ctx.save();ctx.globalCompositeOperation='lighter';glowDot(p[0],p[1],r,`rgba(${color},A)`,a);ctx.restore()}
+function small(s,x,y,color=COL.dim,size=30,a=1,font=F_ZH){text(s,x,y,{size,color,alpha:a,font})}
+function eq(s,y=225,size=56,a=1,x=960,color=COL.teal){text(s,x,y,{font:F_MATH,size,color,alpha:a,glow:'rgba(90,255,220,.23)',blur:16})}
+function cosmos(t){glDraw(0,{time:t+70,tint:[.08,.22,.28],amp:.38});starfield(t,.1,3)}
+function arrow(a,b,color=C_TEAL,alpha=1,w=2.2){ink([a,b],color,alpha,w);const d=Math.atan2(b[1]-a[1],b[0]-a[0]);ink([[b[0]-12*Math.cos(d-.4),b[1]-12*Math.sin(d-.4)],b,[b[0]-12*Math.cos(d+.4),b[1]-12*Math.sin(d+.4)]],color,alpha,w)}
+function lineBox(x,y,w,h,color=C_BLUE,a=1){ctx.save();ctx.globalAlpha=a;ctx.fillStyle='rgba(0,8,14,.45)';ctx.beginPath();ctx.roundRect(x-w/2,y-h/2,w,h,15);ctx.fill();ctx.strokeStyle=`rgba(${color},.3)`;ctx.lineWidth=1.5;ctx.stroke();ctx.restore()}
+function notes(lines,lt,{x=1490,y=425,size=33,step=71,start=2}={}){lines.forEach((s,i)=>small(s,x,y+i*step,i===0?COL.gold:COL.blue,size,sstep(start+i*1.3,start+i*1.3+.8,lt),/[=∈→⇒∑π]/.test(s)?F_MATH:F_ZH))}
+function foot(s,color=COL.dim){small(s,960,880,color,27)}
+function graph(fn,{x=680,y=610,w=1040,h=430,xmin=-Math.PI,xmax=Math.PI,ymin=-2,ymax=2,color=C_GOLD,alpha=1}={}){const at=(u,v)=>[x-w/2+(u-xmin)/(xmax-xmin)*w,y+h/2-(v-ymin)/(ymax-ymin)*h];ink([at(xmin,0),at(xmax,0)],C_BLUE,.3,1);ink([at(0,ymin),at(0,ymax)],C_BLUE,.3,1);const points=Array.from({length:241},(_,j)=>{const u=xmin+(xmax-xmin)*j/240;return at(u,fn(u))});ink(points,color,alpha,2.6);return at}
+function project(v,{x=650,y=600,scale=220,angle=-.6,tilt=.35}={}){const p=ActionMath.rotate(ActionMath.rotate(v,'y',angle),'x',tilt);return [x+scale*p[0],y-scale*p[1],p[2]]}
+function poly3(points,opt,color=C_TEAL,a=1,width=2){ink(points.map(p=>project(p,opt)),color,a,width)}
+function sphere(t,{x=650,y=600,r=235,map=p=>p,grid=true,labels=false}={}){const opt={x,y,scale:r,angle:-.4+t*.018,tilt:.25};if(grid){for(let j=-3;j<=3;j++){const z=j/4,k=Math.sqrt(1-z*z);poly3(Array.from({length:97},(_,i)=>map([k*Math.cos(i*TAU/96),k*Math.sin(i*TAU/96),z])),opt,C_BLUE,.23,1.1)}for(let j=0;j<8;j++){const a=j*PI/4;poly3(Array.from({length:97},(_,i)=>map([Math.cos(a)*Math.sin(i*TAU/96),Math.sin(a)*Math.sin(i*TAU/96),Math.cos(i*TAU/96)])),opt,C_TEAL,.2,1.1)}}
+ for(let j=0;j<30;j++){const z=1-2*(j+.5)/30,a=j*2.399963,k=Math.sqrt(1-z*z),p=project(map([k*Math.cos(a),k*Math.sin(a),z]),opt);bead(p,j%3?C_TEAL:C_GOLD,.6,13)}return v=>project(map(v),opt)}
+function board(a,{x=660,y=580,size=550,from=null,f=1,highlight=[]}={}){const cell=size/4;for(let i=0;i<16;i++){const c=i%4,r=Math.floor(i/4),px=x-size/2+(c+.5)*cell,py=y-size/2+(r+.5)*cell;ctx.save();ctx.fillStyle=(r+c)%2?'rgba(100,220,200,.035)':'rgba(255,210,100,.055)';ctx.fillRect(px-cell/2+2,py-cell/2+2,cell-4,cell-4);ctx.restore();if(!a[i]){small('空格',px,py,COL.dim,22);continue}let tx=px,ty=py;if(from){const j=from.indexOf(a[i]);tx=lerp(x-size/2+(j%4+.5)*cell,px,f);ty=lerp(y-size/2+(Math.floor(j/4)+.5)*cell,py,f)}lineBox(tx,ty,cell-15,cell-15,highlight.includes(a[i])?C_PINK:C_GOLD);small(String(a[i]),tx,ty,highlight.includes(a[i])?COL.pink:COL.gold,Math.round(cell*.4),1,F_MATH)}return {cell}}
+function invariantDisplay(a,lt,x=1470,y=450){const z=a.indexOf(0),s=ActionMath.sign(a),p=(-1)**(Math.floor(z/4)+z%4+2);notes(['sgn(π) = '+(s>0?'+1':'−1'),'(−1)ʳ⁺ᶜ = '+(p>0?'+1':'−1'),'I = '+(s*p>0?'+1':'−1')],lt,{x,y,step:95,size:41,start:0})}
+function triad(t,{x=650,y=585,mirror=false,rotate=true}={}){const basis=[[1,0,0],[0,1,0],[0,0,1]],colors=[C_GOLD,C_TEAL,C_PINK],names=['a','b','c'];for(let i=0;i<3;i++){let v=basis[mirror&&i<2?1-i:i];if(rotate){v=ActionMath.rotate(ActionMath.rotate(v,'z',t*.24),'y',.4*Math.sin(t*.2))}const p=project(v,{x,y,scale:210,angle:-.6,tilt:.5});arrow([x,y],p,colors[i]);bead(p,colors[i],1,23);small(names[i],p[0]+18,p[1]-24,[COL.gold,COL.teal,COL.pink][i],34,1,F_MATH)}bead([x,y],C_BLUE,1,17)}
+function orbit(t,{x=680,y=590,split=false}={}){for(let side=0;side<(split?2:1);side++){const cx=split?480+side*600:x;const points=Array.from({length:17},(_,j)=>[cx+210*Math.cos(j*TAU/17),y+150*Math.sin(j*TAU/17)]);ink(points,side?C_PINK:C_TEAL,.4,1.5,true);for(let j=0;j<points.length;j++){bead(points[j],side?C_PINK:C_TEAL,.6,15)}bead([cx+210*Math.cos(t*.6),y+150*Math.sin(t*.6)],side?C_PINK:C_GOLD,1,34);eq(side?'I = −1':'I = +1',y+235,39,1,cx,side?COL.pink:COL.teal)}}
+function fraction(top,bottom,x,y,w=950,size=42){eq(top,y-32,size,1,x);ink([[x-w/2,y],[x+w/2,y]],C_TEAL,.6,1.7);eq(bottom,y+42,size,1,x)}
+function registerTopic(spec){spec.chapters.forEach((ch,i)=>{const subs=ch.captions.map((p,j)=>[.8+j*7.8,7.8+j*7.8,p[0],p[1]]);scene({start:i*12,len:i===spec.chapters.length-1?13.5:12,ch:[String(i+1).padStart(2,'0'),ch.title,ch.en],fi:.65,fo:.65,mb:2,cam:()=>({z:1}),draw:(lt,d,T)=>{cosmos(T);eq(ch.hero,225,ch.hero.length>37?43:ch.hero.length>27?48:57);DRAW[spec.slug](ch.kind,lt,i,ch);},subs,sfx:[[1,'swell',{dur:1.2,gain:.4}],[8.4,'blip',{midi:74+i%5*2,gain:.4}],[16.2,'crystal',{gain:.4}],[24.2,'ding',{midi:81+i%4,gain:.45}]]})});window.__chapters=()=>SC.map(s=>({start:s.start*BAR,duration:s.len*BAR,title:s.ch[1],english:s.ch[2],subtitles:s.subs}));window.__modelAudit=()=>ActionMath.audit();window.__topic=spec.slug}
+
+// Adapted from the original promo's drawRubik: perspective, dark cubie bodies,
+// RCOL palette, directional lighting, sticker sheen, floor reflection, debris.
+const ORIGINAL_CUBE_COLORS=['#ff8a1f','#e8313c','#ffd500','#f5f5f5','#1f6fe0','#18b35a'];
+function cubeDust(t){ctx.save();for(let j=0;j<65;j++){const z=((hash1(j+32)*30-t*(.5+hash1(j+8))*1.1)%30+30)%30+4,s=420/z,x=960+(hash1(j*3+1)-.5)*30*s*1.3,y=560+(hash1(j*3+2)-.5)*18*s;ctx.globalAlpha=clamp((34-z)/10)*clamp((z-4)/4)*.28;ctx.fillStyle=ORIGINAL_CUBE_COLORS[j%6];ctx.save();ctx.translate(x,y);ctx.rotate(j+t*.15);ctx.fillRect(-s*.32,-s*.32,s*.64,s*.64);ctx.restore()}ctx.restore()}
+function cubeDraw(t,{x=650,y=590,size=110,pieces=M.cube(),view=-.6}={}){
+ const pitch=.45,D=11,F=size*11,viewPoint=v=>M.rotate(M.rotate(v,'y',view),'x',pitch),light=[-.35,.6,.72],scale=size/100;
+ const shade=(hex,k)=>{const n=parseInt(hex.slice(1),16);return `rgb(${Math.min(255,((n>>16)&255)*k)|0},${Math.min(255,((n>>8)&255)*k)|0},${Math.min(255,(n&255)*k)|0})`};
+ const polygon=ps=>{ctx.beginPath();ps.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](p[0],p[1]));ctx.closePath()};
+ const render=mirror=>{const faces=[],floor=-1.75;const reflect=v=>mirror?[v[0],2*floor-v[1],v[2]]:v;
+  for(const p of pieces){const frame=p.frame||[[1,0,0],[0,1,0],[0,0,1]];for(let axis=0;axis<3;axis++)for(const sign of [-1,1]){
+   const n=M.scale(frame[axis],sign),center=M.add(p.pos,M.scale(n,.5)),u=frame[(axis+1)%3],v=frame[(axis+2)%3],corners=(off,h)=>[[-1,-1],[1,-1],[1,1],[-1,1]].map(([a,b])=>M.add(p.pos,M.add(M.scale(n,off),M.add(M.scale(u,a*h),M.scale(v,b*h)))));
+   const N=viewPoint(mirror?[n[0],-n[1],n[2]]:n),cen=viewPoint(reflect(center));if(M.dot(N,[-cen[0],-cen[1],D-cen[2]])<=0)continue;
+   const prj=ps=>ps.map(w=>{const q=viewPoint(reflect(w));return [x+F*q[0]/(D-q[2]),y-F*q[1]/(D-q[2])]});
+   const sticker=p.stickers.find(s=>M.dot(s.normal,n)>.999),lit=.5+.5*Math.max(0,M.dot(N,light));
+   faces.push({z:cen[2],body:prj(corners(.5,.49)),st:sticker?prj(corners(.503,.405)):null,col:sticker?.color,lit,highlight:p.highlight});
+  }}faces.sort((a,b)=>a.z-b.z);ctx.save();ctx.lineJoin='round';
+  for(const f of faces){const yy=f.body.reduce((s,p)=>s+p[1],0)/4;ctx.globalAlpha=mirror?.19*(1-sstep(805,895,yy)):1;if(ctx.globalAlpha<.002)continue;polygon(f.body);ctx.fillStyle='#0b0b0f';ctx.fill();ctx.strokeStyle='#0b0b0f';ctx.lineWidth=2;ctx.stroke();if(!f.st)continue;polygon(f.st);const col=shade(f.col,f.lit);ctx.fillStyle=col;ctx.fill();ctx.strokeStyle=f.highlight?'#ff8dbe':col;ctx.lineWidth=f.highlight?3.6:3*scale;ctx.stroke();const a=f.st[0],b=f.st[2],g=ctx.createLinearGradient(a[0],a[1],b[0],b[1]);g.addColorStop(0,`rgba(255,255,255,${.3*f.lit})`);g.addColorStop(.45,'rgba(255,255,255,0)');ctx.fillStyle=g;ctx.fill()}
+  ctx.restore();
+ };
+ ctx.save();ctx.globalCompositeOperation='lighter';glowDot(x,y,480,'rgba(120,170,255,A)',.17);const floorLight=ctx.createRadialGradient(x,y+230,0,x,y+230,420);floorLight.addColorStop(0,'rgba(120,160,230,.11)');floorLight.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=floorLight;ctx.fillRect(x-420,y+100,840,220);ctx.restore();render(true);render(false);
+}
+
+// Original code-drawn landscape: one intact image, then exact image crops.
+let landscapeTexture;
+window.__introState=t=>({wholePicture:t<7,cut:t>=7,blankRemoved:t>=15,tilesSwapped:t>=22,labelsVisible:t>24});
+function landscape(){if(landscapeTexture)return landscapeTexture;const c=document.createElement('canvas');c.width=c.height=800;const g=c.getContext('2d');let grad=g.createLinearGradient(0,0,0,800);grad.addColorStop(0,'#08152f');grad.addColorStop(.5,'#24626b');grad.addColorStop(.77,'#e2ae6b');grad.addColorStop(1,'#133e48');g.fillStyle=grad;g.fillRect(0,0,800,800);
+ for(let j=0;j<105;j++){g.fillStyle='rgba(255,235,180,'+(.3+hash1(j)*.5)+')';g.beginPath();g.arc(hash1(j+3)*800,hash1(j+80)*380,.8+hash1(j+9)*1.4,0,TAU);g.fill()}
+ const moon=g.createRadialGradient(570,170,15,570,170,130);moon.addColorStop(0,'#ffeac3');moon.addColorStop(.25,'#f9d79b');moon.addColorStop(.32,'rgba(255,226,166,.22)');moon.addColorStop(1,'rgba(255,226,166,0)');g.fillStyle=moon;g.fillRect(420,20,300,300);
+ for(let k=0;k<4;k++){g.beginPath();g.moveTo(0,800);for(let x=0;x<=800;x+=8){const y=390+k*75+70*Math.sin(x*.007+k*.9)+45*Math.sin(x*.019+k*1.3);g.lineTo(x,y)}g.lineTo(800,800);g.closePath();g.fillStyle=['#29485b','#24505b','#123c48','#082d37'][k];g.fill()}
+ g.save();g.lineCap='round';for(let layer=0;layer<3;layer++){g.beginPath();for(let j=0;j<=150;j++){const u=j/150,y=540+u*260,x=480+Math.sin(u*7.8)*(.2+u)*170;g[j?'lineTo':'moveTo'](x,y)}g.strokeStyle=['rgba(255,220,140,.18)','#5bbbab','#b9e6c6'][layer];g.lineWidth=[42,16,5][layer];g.stroke()}g.restore();
+ for(const [x,y,s]of [[150,620,1],[680,704,.8],[220,758,1.25]]){g.fillStyle='#061f2a';g.fillRect(x-5*s,y-30*s,10*s,90*s);for(let k=0;k<4;k++){g.beginPath();g.moveTo(x,y-105*s+k*27*s);g.lineTo(x-(55-k*7)*s,y-35*s+k*23*s);g.lineTo(x+(55-k*7)*s,y-35*s+k*23*s);g.closePath();g.fill()}}
+ landscapeTexture=c;return c}
+function pictureIntroduction(t){const tex=landscape(),x=650,y=575,size=550,cell=size/4,left=x-size/2,top=y-size/2,cut=sstep(6.5,11,t),drop=sstep(11,15,t),swap=sstep(16,22,t),labels=sstep(24,28,t);
+ if(t<7){ctx.drawImage(tex,left,top,size,size)}else for(let tile=1;tile<=16;tile++){const from=tile-1;let row=Math.floor(from/4),col=from%4,dx=left+col*cell,dy=top+row*cell,a=1;if(tile===16){dx+=drop*170;dy+=drop*75;a=1-drop}if(tile===14){dx+=swap*cell;dy-=Math.sin(PI*swap)*42}if(tile===15){dx-=swap*cell;dy+=Math.sin(PI*swap)*42}ctx.save();ctx.globalAlpha=a;const gap=cut*2;ctx.drawImage(tex,col*200,row*200,200,200,dx+gap,dy+gap,cell-2*gap,cell-2*gap);if(labels>0&&tile!==16){ctx.fillStyle=`rgba(1,12,20,${.65*labels})`;ctx.fillRect(dx+cell*.2,dy+cell*.23,cell*.6,cell*.54)}ctx.restore();if(tile!==16)small(String(tile),dx+cell/2,dy+cell/2,tile>=14?COL.pink:COL.gold,46,labels,F_MATH)}
+ for(let j=0;j<=4;j++){ink([[left+j*cell,top],[left+j*cell,top+size]],C_GOLD,.65*cut,1.7);ink([[left,top+j*cell],[left+size,top+j*cell]],C_GOLD,.65*cut,1.7)}
+ if(t<6.5)notes(['先看完整的一幅图','此时没有数字','也没有打乱的图块'],t,{y:425});else if(t<16)notes(['分成 4×4 个图块','取走右下角一块','留下一个空格'],t-6.5,{y:425});else if(t<24)notes(['只交换这两块图片','空格没有移动','能只靠滑动复原吗？'],t-16,{y:425});else notes(['此时再开始标号','交换的是 14 与 15','下面解释为什么无解'],t-24,{y:425});
+}
+
+const M=ActionMath, DRAW={};
+const solved=M.identity.slice(),swapped=solved.slice();[swapped[13],swapped[14]]=[swapped[14],swapped[13]];
+const puzzleWalk=M.walk(1949,80),badWalk=M.walk(2026,80,swapped);
+function movingBoard(lt,start=0,bad=false,opt={}){const states=(bad?badWalk:puzzleWalk).states,q=Math.max(0,(lt-start)/1.5),i=Math.min(states.length-2,Math.floor(q)),f=sstep(.08,.75,q-i);board(states[i+1],{...opt,from:states[i],f});return f>.8?states[i+1]:states[i]}
+DRAW.fifteen=(kind,t)=>{if(kind==='picture'){pictureIntroduction(t);return}
+ if(kind==='swap'){const f=sstep(5,9,t);board(swapped,{from:solved,f,highlight:[14,15]});notes(['只交换两个数字','空格仍在 (4,4)','合法滑动能做到吗？'],t);eq(f>.8?'14 ↔ 15':'完成状态',785,39,1,1460,COL.pink);return}
+ if(['moves','sign','checker','invariant'].includes(kind)){const a=movingBoard(t,0,true);if(kind==='checker'){const z=a.indexOf(0),r=Math.floor(z/4)+1,c=z%4+1;notes(['空格的位置','r = '+r+'，c = '+c,'r+c = '+(r+c),'每步改变黑白颜色'],t,{step:85})}else if(kind==='sign')notes(['每步是一对对换','sgn(π) = '+(M.sign(a)>0?'+1':'−1'),'它本身不是不变量'],t,{step:100});else if(kind==='invariant')invariantDisplay(a,t);else notes(['相邻才能滑入','数字 ↔ 空格','空格也是第十六个符号'],t);foot(kind==='invariant'?'(−sgn(π)) · (−(−1)ʳ⁺ᶜ) = sgn(π) · (−1)ʳ⁺ᶜ':'合法移动不是任意两个格子的交换。');return}
+ if(kind==='compare'){board(solved,{x:500,size:490});board(swapped,{x:1420,size:490,highlight:[14,15]});eq('I = (+1)(+1) = +1',330,37,1,500,COL.gold);eq('I = (−1)(+1) = −1',330,37,1,1420,COL.pink);small('完成态',500,875,COL.gold,32);small('交换态 · 空格不动',1420,875,COL.pink,32);return}
+ if(kind==='orbits'){orbit(t,{y:570,split:true});arrow([710,570],[850,570],C_PINK,.3);small('不存在合法路径',960,335,COL.pink,39);foot('轨道是状态集合中的轨道；圆环只是示意，不是棋盘上的移动轨迹。');return}
+ board(puzzleWalk.states[Math.floor(t/2)%50],{x:500,size:460});board(badWalk.states[Math.floor(t/2)%50],{x:1420,size:460,highlight:[14,15]});eq('合法移动始终 I = +1',350,36,1,500,COL.teal);eq('合法移动始终 I = −1',350,36,1,1420,COL.pink);foot('不同的不变量值，给出不同轨道的严格证据。');
+};
+function mirroredCube(swap=true){const p=M.cube();const corner=p.find(p=>p.pos.every(x=>x===1));corner.highlight=true;if(swap)[corner.stickers[0].color,corner.stickers[1].color]=[corner.stickers[1].color,corner.stickers[0].color];return p}
+DRAW.cube=(kind,t)=>{cubeDust(t);
+ if(kind==='swap'){cubeDraw(t,{x:560,size:110,pieces:mirroredCube(false)});cubeDraw(t,{x:1410,size:110,pieces:mirroredCube(t>=7)});small('完成状态',560,310,COL.gold,34);small(t<6?'观察粉线标出的角块':'仅交换这个角块的两张贴纸',1410,310,COL.pink,30);if(t>=5&&t<9){const f=sstep(5,9,t),a=project([1.6,1,1],{x:1410,y:600,scale:110,angle:-.6,tilt:.5}),b=project([1,1.6,1],{x:1410,y:600,scale:110,angle:-.6,tilt:.5});bead([lerp(a[0],b[0],f),lerp(a[1],b[1],f)-30*Math.sin(PI*f)],C_GOLD,1,30);bead([lerp(b[0],a[0],f),lerp(b[1],a[1],f)+30*Math.sin(PI*f)],C_PINK,1,30)}foot('交换贴纸是题目给定的修改，不是合法魔方面转动。');return}
+ if(kind==='turns'){cubeDraw(t,{pieces:M.cubeSequence(t/3.2)});notes(['面转动：±90°','位置与法向一起旋转','角块始终保持为刚体'],t);foot('面转动的连续中间帧用于演示，标准魔方状态取转动端点。');return}
+ if(['cycles','mirror','determinant','twist'].includes(kind)){
+  if(kind==='mirror'){triad(t,{x:540});triad(t,{x:1380,mirror:true});eq('(a,b,c)',810,43,1,540,COL.gold);eq('(b,a,c)',810,43,1,1380,COL.pink);small('原来的手性',540,350,COL.gold,33);small('交换两色后的手性',1380,350,COL.pink,33)}
+  else{triad(t);const lines=kind==='cycles'?['(a,b,c)','(b,c,a)','(c,a,b)','同一个循环类']:kind==='determinant'?['合法旋转 R','det(R) = +1','交换两列 ⇒ 变号','手性被保持']:['绕体对角线旋转','120°：三色循环移动','循环置换保持手性','不是交换两张贴纸'];notes(lines,t,{step:82,size:34})}
+  foot('三轴对应三种颜色的定向；共同旋转不改变这个定向的符号。');return;
+ }
+ if(kind==='orbits'){cubeDraw(t,{x:530,size:105,pieces:M.cubeSequence(t/4)});cubeDraw(t,{x:1390,size:105,pieces:M.cubeSequence(t/4,mirroredCube())});eq('原轨道：手性保持',310,36,1,530,COL.teal);eq('修改态：镜像手性',310,36,1,1390,COL.pink);foot('两边可以做相同的合法转动，却始终无法消除那一处手性差别。');return}
+ triad(t,{x:560});triad(t,{x:1380,mirror:true});small('合法转动保持手性',560,365,COL.teal,34);small('交换两色改变手性',1380,365,COL.pink,34);foot('这与十五数码的奇偶不变量不同，但排除可达的逻辑完全相同。');
+};
+function intervalGraph(t,{difference=false}={}){const k=.55+.16*Math.sin(t*.16),fn=x=>.2+.55*x+.12*Math.sin(TAU*x),opt={x:660,y:585,w:930,h:500,xmin:0,xmax:1,ymin:difference?-.7:0,ymax:difference?.7:1};const at=graph(x=>difference?fn(x)-x:fn(x),opt);if(!difference)ink([at(0,0),at(1,1)],C_PINK,.7,2);let lo=0,hi=1;for(let j=0;j<35;j++){const m=(lo+hi)/2;if(fn(m)-m>0)lo=m;else hi=m}const root=(lo+hi)/2,p=at(root,difference?0:root);bead(p,C_TEAL,.7+.2*Math.sin(t),35);small(difference?'h(x₀)=0':'f(x₀)=x₀',p[0]+100,p[1]-40,COL.teal,30,1,F_MATH);small('0',at(0,0)[0],at(0,0)[1]+32,COL.blue,25);small('1',at(1,0)[0],at(1,0)[1]+32,COL.blue,25);return at}
+DRAW.interval=(kind,t)=>{
+ if(kind==='question'){ink([[210,570],[1110,570]],C_TEAL,1,5);bead([210,570],C_GOLD,1,35);bead([1110,570],C_GOLD,1,35);eq('0',640,45,1,210);eq('1',640,45,1,1110);for(let j=0;j<13;j++){const x=210+900*j/12;bead([x,570],C_TEAL,.6,13)}notes(['保持区间原有拓扑','乘法连续','取逆连续','是否存在这样的运算？'],t);return}
+ if(['graph','difference'].includes(kind)){intervalGraph(t,{difference:kind==='difference'});notes(kind==='graph'?['金线：y=f(x)','粉线：y=x','交点就是不动点']:['h(0) ≥ 0','h(1) ≤ 0','介值定理','h(x₀) = 0'],t,{step:85});return}
+ if(kind==='translation'){const points=[240,400,560,720,880];for(let i=0;i<points.length;i++){const y=405+i*87;small('x',points[i],y,COL.gold,35,1,F_MATH);arrow([points[i]+35,y],[points[i]+200,y],C_TEAL,.65);small('ax',points[i]+250,y,COL.teal,35,1,F_MATH)}notes(['若 ax = x','右乘 x⁻¹','a = e','与 a ≠ e 矛盾'],t,{step:85});foot('一般群中的位置示意，不是在 [0,1] 上假造一个群运算。');return}
+ if(kind==='conflict'){intervalGraph(t);notes(['拓扑：Lₐ 必有不动点','群论：Lₐ 没有不动点','a ≠ e','矛盾'],t,{size:31,step:88});foot('假设群结构与通常拓扑相容，才同时得到这两个结论。',COL.pink);return}
+ if(kind==='real-line'){ink([[150,590],[1150,590]],C_BLUE,.4,2);for(let j=-3;j<=3;j++){const x=650+j*135;small(String(j),x,650,COL.blue,30);const u=x+100*sstep(0,3,t%5);bead([u,590],C_GOLD,.9,25);if(t%5>3)arrow([x,590],[x+100,590],C_TEAL,.4)}notes(['加法群 (ℝ,+)','a ≠ 0','x ↦ x+a','没有不动点'],t);foot('非零平移不把 [0,1] 映回 [0,1]，所以不是闭区间论证的反例。');return}
+ intervalGraph(t);notes(['每个群都作用在自身','非平凡左乘无不动点','[0,1] 强制有不动点','通常拓扑排除群结构'],t,{size:30,step:88});
+};
+DRAW.sphere=(kind,t)=>{
+ if(kind==='ball'){sphere(t,{x:500,y:600,r:230});ctx.save();const g=ctx.createRadialGradient(1420,600,0,1420,600,230);g.addColorStop(0,'rgba(100,255,220,.24)');g.addColorStop(1,'rgba(100,255,220,.02)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(1420,600,230,0,TAU);ctx.fill();ctx.restore();sphere(t,{x:1420,y:600,r:230});eq('S²：只有边界',350,38,1,500,COL.gold);eq('B³：包含内部',350,38,1,1420,COL.teal);foot('Brouwer 适用于实心闭球，不直接适用于它的边界球面。');return}
+ if(kind==='antipodal'){const at=sphere(t);for(let j=0;j<5;j++){const x=M.unit([Math.cos(j*1.2),Math.sin(j*1.2),.4]),p=at(x),q=at(M.scale(x,-1));arrow(p,q,C_PINK,.5);bead(p,C_GOLD,1,22);bead(q,C_PINK,1,22)}notes(['A(x) = −x','固定点要求 x = −x','于是 x = 0','与 ||x|| = 1 矛盾'],t);return}
+ if(kind==='identity'){const theta=.6+.5*Math.sin(t*.2),at=sphere(t,{map:p=>M.rotate(p,'z',theta)});for(const p of [[0,0,1],[0,0,-1]]){const v=at(p);bead(v,C_GOLD,1,40);small('固定',v[0]+65,v[1],COL.gold,28)}notes(['小旋转与恒等同伦','两个轴端点保持不动','要证明的是：','f ≃ id ⇒ 有不动点'],t,{size:30});return}
+ if(kind==='homotopy'){const u=(1-Math.cos(t*.23))/2;sphere(t,{x:560,map:p=>M.homotopy(p,u)});fraction('(1−t)f(x) − tx','||(1−t)f(x) − tx||',1450,490,650,31);small('t = '+u.toFixed(2),1450,640,COL.gold,36,1,F_MATH);small('t=0：f      t=1：−id',1450,740,COL.blue,30);foot('无不动点的具体例子：f(x)=−R_z(0.7)x；一般论证见下一镜头。');return}
+ if(kind==='denominator'){sphere(t);notes(['假设 (1−t)f(x) = tx','取范数：1−t = t','所以 t = 1/2','代回：f(x) = x','与无不动点假设矛盾'],t,{size:32,step:78,y:390});foot('因此从 f 到对径映射的归一化插值始终有定义。');return}
+ if(kind==='degree'){sphere(t,{x:510});sphere(t,{x:1410,map:p=>M.scale(p,-1)});eq('id：度数 +1',345,39,1,510,COL.gold);eq('−id：度数 −1',345,39,1,1410,COL.pink);eq('f ≃ id 且 f ≃ −id ⇒ 1 = −1',870,44,1,960,COL.pink);return}
+ if(kind==='group'){sphere(t,{x:660});const opt={x:660,y:600,scale:235,angle:-.4+t*.018,tilt:.25},u=clamp(t/24),p=project([Math.sin(u*1.4),0,Math.cos(u*1.4)],opt);bead(p,C_GOLD,1,36);small('γ(t)',p[0]+65,p[1]-25,COL.gold,36,1,F_MATH);notes(['假设存在群结构','γ(0) = e，γ(1) = a','H(t,x) = γ(t)x','id ≃ Lₐ'],t,{size:33});foot('金色道路是 γ 的示意；本片没有给 S² 假造实际群乘法。');return}
+ if(kind==='conflict'){sphere(t);notes(['Lₐ ≃ id','所以 Lₐ 有不动点','但 a ≠ e','消去律：无不动点','矛盾，S² 不是拓扑群'],t,{size:31,step:80,y:390});return}
+ sphere(t);notes(['S²、S⁴、S⁶、…','deg(−id) = −1','道路连通 + 左乘同伦','同一个矛盾继续成立'],t,{size:32,step:88});foot('奇维时 deg(−id)=+1；不能靠这一论证排除所有奇维球面。');
+};
+function coordinatePlanes(t,{theta=t*.14,x=610,y=570,r=.8}={}){const s=Math.sqrt(1-r*r);for(let plane=0;plane<2;plane++){const cx=x+(plane?250:-250),rho=plane?s:r,rr=185;ink(Array.from({length:97},(_,i)=>[cx+rr*rho*Math.cos(i*TAU/96),y-rr*rho*Math.sin(i*TAU/96)]),plane?C_BLUE:C_TEAL,.5,1.4);ink([[cx-210,y],[cx+210,y]],C_BLUE,.2,1);ink([[cx,y-210],[cx,y+210]],C_BLUE,.2,1);const a=theta+(plane?.65:0),p=[cx+rr*rho*Math.cos(a),y-rr*rho*Math.sin(a)];arrow([cx,y],p,plane?C_PINK:C_GOLD,.9);bead(p,plane?C_PINK:C_GOLD,1,28);small(plane?'(c,d) 平面':'(a,b) 平面',cx,y+235,COL.blue,27)}const values=[r*Math.cos(theta),r*Math.sin(theta),s*Math.cos(theta+.65),s*Math.sin(theta+.65)];small('('+values.map(x=>x.toFixed(2)).join(', ')+')',x,845,COL.teal,26,1,F_MATH);return values}
+function multiplicationTree(x,y,left=true){const gold=left?C_GOLD:C_PINK;const labels=left?['e₁','e₂','e₄','e₃','e₇']:['e₁','e₂','e₄','e₆','−e₇'];for(let i=0;i<3;i++){small(labels[i],x-190+i*190,y,COL.blue,46,1,F_MATH)}const mx=left?x-95:x+95;arrow([x+(left?-190:0),y+40],[mx,y+130],gold,.7);arrow([x+(left?0:190),y+40],[mx,y+130],gold,.7);eq(labels[3],y+170,52,1,mx,left?COL.gold:COL.pink);arrow([mx,y+215],[x,y+300],gold,.7);arrow([x+(left?190:-190),y+40],[x,y+300],gold,.7);eq(labels[4],y+350,66,1,x,left?COL.gold:COL.pink)}
+DRAW.quaternions=(kind,t)=>{
+ if(kind==='overview'){for(const [x,sphereName,algebra,status]of [[360,'S¹','单位复数','交换群'],[960,'S³','单位四元数','非交换群'],[1560,'S⁷','单位八元数','自然乘法不结合']]){eq(sphereName,410,95,1,x);small(algebra,x,560,COL.blue,35);small(status,x,680,x===1560?COL.pink:COL.gold,33)}return}
+ if(['coordinates','norm','homotopy'].includes(kind)){const theta=kind==='homotopy'?PI*(.5-.5*Math.cos(t*.18)):t*.17;coordinatePlanes(t,{theta});notes(kind==='coordinates'?['四个实坐标','(a,b) 与 (c,d)','两个坐标圆的展示','不是普通的 S²']:kind==='norm'?['|p| = |q| = 1','|pq| = |p||q| = 1','单位元 1','q⁻¹ = q̄']:['p(t)=cos πt+i sin πt','t=0：p=1','t=1：p=−1','0<t≤1：无不动点'],t,{size:30,step:83});return}
+ if(kind==='multiplication'){triad(t,{x:610});notes(['ij = k，ji = −k','jk = i，kj = −i','ki = j，ik = −j','(pq)r = p(qr)'],t,{size:39,step:95});foot('非交换仍可以是群；结合律必须保留。');return}
+ if(kind==='su2'){coordinatePlanes(t);eq('z = a + bi，w = c + di',350,35,1,1450);eq('⎛ z          w ⎞',470,45,1,1450);eq('⎝ −w̄        z̄ ⎠',535,45,1,1450);small('U*U = I',1450,650,COL.gold,40,1,F_MATH);small('det(U) = |z|²+|w|² = 1',1450,735,COL.teal,32,1,F_MATH);foot('这一矩阵约定与 ij=k 相容；矩阵乘法对应四元数乘法。');return}
+ if(kind==='loops'){const u=.5-.5*Math.cos(t*.18),points=Array.from({length:161},(_,j)=>{const a=j*TAU/160;return [(1-u)*Math.cos(a),(1-u)*Math.sin(a),(1-u)*.25*Math.sin(3*a)]});poly3(points,{x:650,y:590,scale:240,angle:-.4,tilt:.6},C_TEAL,1,3);bead(project(points[0],{x:650,y:590,scale:240,angle:-.4,tilt:.6}),C_GOLD,1,30);notes(['π₁(S³) = 0','闭路可以收缩','但 q ↦ −q 无不动点','单连通 ≠ 不动点性质'],t,{size:31,step:95});foot('图为去掉一点后的三维坐标示例；S³ 单连通作为一般定理引用。');return}
+ if(kind==='rotations'){const theta=t*.12;cubeDraw(t,{x:520,size:120,pieces:M.cube().map(p=>({pos:M.rotate(p.pos,'y',2*theta),frame:p.frame.map(v=>M.rotate(v,'y',2*theta)),stickers:p.stickers.map(s=>({...s,normal:M.rotate(s.normal,'y',2*theta)}))}))});cubeDraw(t,{x:1410,size:120,pieces:M.cube().map(p=>({pos:M.rotate(p.pos,'y',2*(theta+PI)),frame:p.frame.map(v=>M.rotate(v,'y',2*(theta+PI))),stickers:p.stickers.map(s=>({...s,normal:M.rotate(s.normal,'y',2*(theta+PI))}))}))});eq('q',365,54,1,520,COL.gold);eq('−q',365,54,1,1410,COL.pink);eq('qvq⁻¹ = (−q)v(−q)⁻¹',855,43);return}
+ if(kind==='octonions'){const vals=Array.from({length:8},(_,j)=>Math.sin(t*.12+j*.7)),n=M.norm(vals);vals.forEach((v,j)=>{const x=260+j*115,h=v/n*240;ink([[x,610],[x,610-h]],j%2?C_BLUE:C_TEAL,.8,14);small('x'+String(j),x,790,COL.blue,30,1,F_MATH)});notes(['八个实坐标','Σ xⱼ² = 1','|pq| = |p||q|','有单位元与逆元','还缺少结合律？'],t,{size:32,step:80,y:380});return}
+ if(kind==='associator'){multiplicationTree(530,385,true);multiplicationTree(1410,385,false);eq('(e₁e₂)e₄',320,43,1,530,COL.gold);eq('e₁(e₂e₄)',320,43,1,1410,COL.pink);foot('Cayley–Dickson 约定：e₁=(i,0)，e₂=(j,0)，e₄=(0,1)，e₇=(0,k)。');return}
+ const rows=[['S⁰','实数单位 ±1','是'],['S¹','单位复数','是 · 交换'],['S³','单位四元数','是 · 非交换'],['S⁷','单位八元数','自然乘法不是群']];rows.forEach((r,i)=>{const y=390+i*105;eq(r[0],y,53,1,340,COL.gold);small(r[1],900,y,COL.blue,35);small(r[2],1500,y,i===3?COL.pink:COL.teal,34)});foot('完整分类是额外定理；八元数的不结合性本身不足以排除其他群运算。',COL.pink);
+};
+function vectorField(n,t,{y=675,partial=1,gZero=true}={}){const x0=180,w=1010,N=25;ink([[x0,y],[x0+w,y]],C_BLUE,.22,1);for(let j=0;j<N;j++){const x=-PI+j*TAU/(N-1),f=M.signal(x),g=gZero?0:.4*Math.cos(2*x),[u,v]=M.rotatePair(f,g,n,x),px=x0+j*w/(N-1),p=[px+u*37,y-v*37];arrow([px,y],p,j/N<partial?C_TEAL:C_BLUE,j/N<partial?.85:.22,1.6);if(Math.abs((t*.08)%1-j/N)<.025)bead(p,C_GOLD,1,21)}small('−π',x0,y+75,COL.blue,26,1,F_MATH);small('π',x0+w,y+75,COL.blue,26,1,F_MATH)}
+const fourierCoefficients=Array.from({length:7},(_,n)=>M.coefficients(n,1024));
+function spectrum(x=1480,y=680){for(let n=1;n<=6;n++){const px=x-215+(n-1)*85,[a,b]=fourierCoefficients[n];ink([[px-10,y],[px-10,y-200*a]],C_GOLD,.9,14);ink([[px+10,y],[px+10,y-200*b]],C_TEAL,.9,14);small(String(n),px,y+43,COL.blue,26,1,F_MATH)}small('金：aₙ   青：bₙ',x,y+115,COL.blue,28)}
+DRAW.fourier=(kind,t)=>{
+ if(kind==='signal'){graph(M.signal);notes(['一个连续周期函数','f(x+2π) = f(x)','哪些频率藏在里面？'],t);spectrum(1480,740);return}
+ if(kind==='pairs'){graph(M.signal,{y:455,h:240});vectorField(0,t,{gZero:false});notes(['X 中的元素是函数对','v(x) = (f(x),g(x))','每个位置一根向量','两个分量都保留'],t,{size:30,y:400,step:82});return}
+ if(kind==='rotation'){const n=[1,2,-1,0][Math.min(3,Math.floor(t/8))];graph(M.signal,{y:430,h:225});vectorField(n,t);eq('n = '+n,380,51,1,1480,COL.gold);eq('R(nx) =',480,34,1,1480);eq('⎛ cos nx   −sin nx ⎞',550,31,1,1480);eq('⎝ sin nx     cos nx ⎠',610,31,1,1480);foot('整数 n 保证 2π 周期性；切换 n 时展示不同的整数作用。');return}
+ if(kind==='action'){const x=.9,m=2,n=1,angle=(t*.15)%TAU,cx=650,cy=600,r=220;ink(Array.from({length:97},(_,j)=>[cx+r*Math.cos(j*TAU/96),cy-r*Math.sin(j*TAU/96)]),C_BLUE,.3);for(const [a,c]of [[0,C_BLUE],[n*x,C_GOLD],[(m+n)*x,C_TEAL]]){const p=[cx+r*Math.cos(a),cy-r*Math.sin(a)];arrow([cx,cy],p,c,.9);bead(p,c,1,25)}notes(['先旋转 nx','再旋转 mx','总角度 (m+n)x','0·v = v','m·(n·v)=(m+n)·v'],t,{size:32,step:75,y:390});return}
+ if(kind==='embed'){graph(M.signal,{y:415,h:210});vectorField(2,t);notes(['初始：(f,0)','作用后：','(f cos 2x, f sin 2x)','第二分量不能清零'],t,{size:31,y:390,step:88});foot('第二分量一般不为零；后续作用必须继续旋转整个函数对。');return}
+ if(kind==='coefficients'){const n=[1,2,3,5][Math.min(3,Math.floor(t/8))],[a,b]=fourierCoefficients[n];graph(x=>M.signal(x)*Math.cos(n*x),{y:420,h:220,color:C_GOLD});graph(x=>M.signal(x)*Math.sin(n*x),{y:725,h:220,color:C_TEAL});eq('n = '+n,340,48,1,1480,COL.gold);eq('aₙ = '+a.toFixed(2),435,43,1,1480,COL.gold);eq('bₙ = '+b.toFixed(2),515,43,1,1480);spectrum(1480,755);return}
+ if(kind==='reconstruction'){const n=[0,1,2,3,5][Math.min(4,Math.floor(t/6))];graph(M.signal,{alpha:.32});graph(x=>M.partial(x,n),{color:C_TEAL});eq('N = '+n,370,52,1,1480,COL.gold);notes(['淡金：原函数','青绿：部分和','N=5：示例精确恢复'],t,{y:490,step:90,size:31});foot('示例为三角多项式；有限恢复不等于已经证明所有连续函数的展开定理。');return}
+ if(kind==='completeness'){graph(M.signal,{alpha:.35});graph(x=>M.partial(x,Math.min(5,Math.floor(t/5))),{color:C_TEAL});notes(['外部输入：三角系完备','||f−Sₙf||₂ → 0','L² 是整体均方误差趋零','不是任意点都逐点收敛','也不宣称一般一致收敛'],t,{size:29,step:78,y:390});return}
+ graph(M.signal,{color:C_TEAL});spectrum(1480,680);small('整数 n → 旋转 → 正弦 / 余弦 → 频率',960,865,COL.gold,36);
+};
+
+const LESSON={"slug": "sphere", "title": "球面：度数揭示群结构的障碍", "en": "SPHERES AND A DEGREE OBSTRUCTION", "summary": "S² 上不是所有映射都有不动点；真正有效的是与恒等映射同伦的那些映射。", "chapters": [{"title": "球面不是实心球", "en": "A SPHERE IS NOT A SOLID BALL", "hero": "B³ 是实心球，S² 是它的边界", "kind": "ball", "captions": [["Brouwer 定理讨论闭实心球到自身的连续映射。", "Brouwer applies to continuous self-maps of a closed ball."], ["球面只是边界，不能直接套用这个结论。", "A sphere is only the boundary; the conclusion does not transfer."], ["把每个球面点送到对径点，就没有不动点。", "The antipodal map on a sphere has no fixed point."], ["所以排除 S² 的群结构，需要一个更精确的论证。", "Ruling out a group law on S squared needs another argument."]]}, {"title": "对径映射没有不动点", "en": "THE ANTIPODAL MAP", "hero": "A(x) = −x，x ≠ −x 在 S² 上恒成立", "kind": "antipodal", "captions": [["球面上的单位向量不可能等于自己的相反数。", "A unit vector cannot equal its negative."], ["所有点都到达球面另一侧，没有任何点留下。", "Every point moves to the opposite side."], ["这已经否定了“球面上每个连续映射都有不动点”。", "Thus not every continuous sphere map has a fixed point."], ["但对径映射不与 S² 上的恒等映射同伦。", "On S squared the antipodal map is not homotopic to identity."]]}, {"title": "真正需要的弱结论", "en": "THE PRECISE FIXED-POINT STATEMENT", "hero": "f ≃ id 在 S² 上 ⇒ f 有不动点", "kind": "identity", "captions": [["同伦表示把一个映射连续变形成另一个映射。", "A homotopy continuously deforms one map into another."], ["例如绕轴的小旋转，与恒等映射同伦。", "A rotation is homotopic to the identity."], ["它的两个轴端点保持不动，可以直接看见。", "The two axis poles are visible fixed points."], ["我们将证明：所有与恒等同伦的映射都必须如此。", "Every map homotopic to identity must have a fixed point."]]}, {"title": "假设一个映射完全没有不动点", "en": "ASSUME THERE ARE NO FIXED POINTS", "hero": "没有不动点 ⇒ f 可以同伦到 −id", "kind": "homotopy", "captions": [["取 f(x) 与 −x 的线性插值，再归一化回球面。", "Interpolate between f of x and minus x, then normalize."], ["起点是 f，终点是对径映射。", "This starts at f and ends at the antipodal map."], ["这里演示的 f 是对径映射与小旋转的复合。", "The example combines a small rotation with the antipodal map."], ["一般公式是否有效，关键看分母会不会变成零。", "For the general formula the denominator must never vanish."]]}, {"title": "分母为什么不为零", "en": "WHY THE DENOMINATOR IS NONZERO", "hero": "(1−t)f(x) = tx ⇒ t = 1/2 ⇒ f(x) = x", "kind": "denominator", "captions": [["若分子为零，则两边分别为两个单位向量的倍数。", "If the numerator vanishes, compare the two unit-vector multiples."], ["取范数得到 1−t=t，所以 t=1/2。", "Their norms imply one minus t equals t."], ["再代回就得到 f(x)=x，出现不动点。", "Substitution then gives a fixed point."], ["这与假设矛盾，因此归一化同伦处处有定义。", "That contradicts the assumption, so the homotopy is defined."]]}, {"title": "度数不能在同伦中改变", "en": "DEGREE IS A HOMOTOPY INVARIANT", "hero": "deg(id) = 1；deg(−id 在 S²) = −1", "kind": "degree", "captions": [["球面的度数记录有向覆盖的总次数。", "Degree counts oriented covering with signs."], ["恒等映射度数为正一；S² 的对径映射为负一。", "Identity has degree one; the antipodal map on S squared has minus one."], ["没有不动点迫使 f 的度数为负一。", "Having no fixed point forces degree minus one."], ["若又与恒等同伦，度数必须为正一，产生矛盾。", "A homotopy to identity would instead force degree one."]]}, {"title": "群左乘与恒等映射同伦", "en": "LEFT TRANSLATION IS HOMOTOPIC TO IDENTITY", "hero": "H(t,x) = γ(t)x：从 x 到 ax", "kind": "group", "captions": [["假设 S² 是拓扑群，从单位元走一条道路到 a。", "Suppose S squared is a topological group; join e to a by a path."], ["用道路上的每个元素，分别对所有 x 做左乘。", "Left-multiply every x by each point of that path."], ["乘法连续，所以这确实给出一个同伦。", "Continuous multiplication makes this a homotopy."], ["它把恒等映射连续变形成 Lₐ。", "It deforms the identity into left translation by a."]]}, {"title": "两种要求正面冲突", "en": "THE CONTRADICTION", "hero": "Lₐ ≃ id ⇒ 有不动点；a≠e ⇒ 无不动点", "kind": "conflict", "captions": [["与恒等同伦，迫使这个左乘有不动点。", "The homotopy forces this translation to have a fixed point."], ["而群的消去律，又绝不允许它有不动点。", "Group cancellation forbids any such fixed point."], ["所以 S² 的通常拓扑无法支持拓扑群结构。", "The usual topology of S squared cannot support a group law."], ["这次障碍来自球面的度数，而不是 Brouwer 定理。", "This obstruction comes from degree, not a misuse of Brouwer."]]}, {"title": "推广到所有正偶维球面", "en": "ALL POSITIVE EVEN DIMENSIONS", "hero": "deg(−id 在 Sⁿ) = (−1)ⁿ⁺¹", "kind": "ending", "captions": [["对径映射的度数随球面维数的奇偶性改变。", "Antipodal degree depends on the parity of dimension."], ["当 n=2m 且 m≥1，度数等于负一。", "In every positive even dimension the degree is minus one."], ["这些球面都是道路连通，同样的左乘论证继续成立。", "Path connectivity makes the same translation argument apply."], ["但奇维球面不被这个度数矛盾排除，需另外研究。", "Odd spheres require a different analysis."]]}], "bars": 108, "duration": 292, "notes": ["归一化同伦 H(t,x)=((1−t)f(x)−tx)/||(1−t)f(x)−tx||。假设 f 无不动点，则分母非零。", "使用的拓扑输入是度数的同伦不变性和 deg(−id on Sⁿ)=(−1)ⁿ⁺¹。", "本篇只排除正偶维球面；不能用它排除所有奇维球面，更不能把 Brouwer 的实心球结论直接用于球面。", "示意中的单位球面是 S² 本身；绘图的投影方向不改变数学对象。"], "sources": ["https://pi.math.cornell.edu/~hatcher/AT/AT..pdf"], "summaryEn": "Maps homotopic to identity have fixed points on even spheres; the antipodal map explains why."};
+registerTopic(LESSON);
+// ======================================================================== timeline + frame pipeline
+SC.forEach(s => { s.t0 = s.start * BAR; s.d = s.len * BAR; });
+const SUBS = SC.flatMap(s => s.subs.map(([a, b, zh, en]) => ({ a: s.t0 + a, b: s.t0 + b, zh, en })));
+const HITS = [].map(([b, k]) => [b * BAR, k]);
+const sceneAt = t => { let sc = SC[0]; for (const s of SC) if (t >= s.t0) sc = s; return sc; };
+function drawLayer(t, jx, jy) {
+  t = clamp(t, 0, TOTAL - 1e-3);
+  const sc = sceneAt(t), lt = t - sc.t0;
+  ctx.setTransform(RENDER_SCALE, 0, 0, RENDER_SCALE, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none';
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  let shake = 0;
+  for (const [th, k] of HITS) if (t >= th && t < th + 1.5) shake += 16 * k * Math.exp(-(t - th) * 6);
+  const cam = sc.cam ? sc.cam(lt, sc.d) : camPush()(lt, sc.d);
+  ctx.save();
+  ctx.translate(W / 2 + jx + (cam.x || 0) + (shake > .3 ? Math.sin(t * 91) * shake : 0), H / 2 + jy + (cam.y || 0) + (shake > .3 ? Math.cos(t * 73) * shake : 0));
+  ctx.scale(cam.z, cam.z); ctx.translate(-W / 2, -H / 2);
+  sc.draw(lt, sc.d, t);
+  ctx.restore();
+  const fade = 1 - win(lt, 0, sc.d, sc.fi ?? .35, sc.fo ?? .35);
+  if (fade > 0) { ctx.fillStyle = `rgba(0,0,0,${fade})`; ctx.fillRect(0, 0, W, H); }
+}
+function chapter(sc, lt) {
+  if (!sc.ch) return; const a = win(lt, .5, 5, .6, .8); if (a <= 0) return;
+  const [n, zh, en] = sc.ch, x = 90, y = 92, slide = (1 - eout(clamp((lt - .5) / .8))) * -30;
+  ctx.font = `700 46px ${F_EN}`; const nw = ctx.measureText(n).width;
+  text(n, x + slide, y, { font: F_EN, weight: 700, size: 46, color: '#e2bd6b', alpha: a, align: 'left' });
+  ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = '#e2bd6b'; ctx.fillRect(x + nw + 20 + slide, y - 26, 2, 52); ctx.restore();
+  text(zh, x + nw + 42 + slide, y - 8, { size: 36, weight: 700, color: '#fff', alpha: a, align: 'left' });
+  text(en, x + nw + 44 + slide, y + 30, { font: F_EN, size: 16, ls: 5, color: '#cdb88e', alpha: a, align: 'left' });
+}
+function subtitles(T) {
+  for (const s of SUBS) {
+    if (T < s.a - .3 || T > s.b + .3) continue;
+    const a = win(T, s.a, s.b, .25, .3); if (a <= 0) continue;
+    ctx.save(); const g = ctx.createLinearGradient(0, 880, 0, H); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${.55 * a})`); ctx.fillStyle = g; ctx.fillRect(0, 880, W, 200); ctx.restore();
+    text(s.zh, W / 2, 970, { size: 36, weight: 700, color: '#fff', alpha: a, glow: 'rgba(0,0,0,.9)', blur: 12, ls: 1 });
+    text(s.en, W / 2, 1026, { font: F_IT, style: 'italic', size: 26, color: '#ddd5c4', alpha: a * .9, glow: 'rgba(0,0,0,.9)', blur: 8 });
+  }
+}
+function overlays(T) {
+  const lb = 110 * (1 - sstep(1, 3, T)) + 110 * sstep(TOTAL - 6, TOTAL - 3, T);
+  if (lb > .5) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, lb); ctx.fillRect(0, H - lb, W, lb); }
+  const sc = sceneAt(T); chapter(sc, T - sc.t0);
+  subtitles(T);
+  let flash = 0; for (const [th, k] of HITS) if (T >= th && T < th + 1.5) flash += .75 * k * Math.exp(-(T - th) * 5);
+  if (flash > .01) { ctx.fillStyle = `rgba(255,248,235,${Math.min(.9, flash)})`; ctx.fillRect(0, 0, W, H); }
+}
+const SHUTTER = .5, JIT = [[.5, .5], [.25, .75], [.75, .25], [.125, .625], [.625, .125], [.375, .375], [.875, .875], [.0625, .5625]];
+function frame(T, fps = 30, samples = 1) {
+  window.__displayTime = T;
+  T = clamp(T, 0, TOTAL - 1e-3);
+  const sc = sceneAt(T), K = samples > 1 ? Math.max(1, sc.mb ?? 3) : 1;
+  for (let k = 0; k < K; k++) {
+    let tk = K > 1 ? Math.max(0, T + ((k + .5) / K - .5) * SHUTTER / fps) : T;
+    if (sceneAt(tk) !== sc || (sc.shot && sc.shot(tk - sc.t0) !== sc.shot(T - sc.t0))) tk = T;
+    drawLayer(tk, K > 1 ? JIT[k][0] - .5 : 0, K > 1 ? JIT[k][1] - .5 : 0);
+    accumulate(k, K);
+  }
+  post(T, { ...GRADE, ...(sc.bloom ? { bloom: GRADE.bloom * sc.bloom } : {}), ...(sc.grade || {}) });
+  ctx.setTransform(RENDER_SCALE, 0, 0, RENDER_SCALE, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'copy'; ctx.drawImage(glc, 0, 0, W, H); ctx.globalCompositeOperation = 'source-over';
+  overlays(T);
+}
+
+// ======================================================================== fonts, playback, export hooks
+let fontsReady = false;
+const SRC = document.scripts[document.scripts.length - 1].textContent;
+const CHARS = [...new Set(SRC.replace(/[\x00-\x7f]/g, ''))].join('') + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+Promise.all([
+  ...['400', '700', '900'].map(w => document.fonts.load(`${w} 40px "Noto Serif SC"`, CHARS)),
+  document.fonts.load('400 40px "Cinzel"'), document.fonts.load('700 40px "Cinzel"'), document.fonts.load('italic 500 40px "Cormorant Garamond"'), document.fonts.load('500 40px "Cormorant Garamond"'),
+  document.fonts.load('40px "Great Vibes"', "Il y a quelque chose à compléter Je n'ai pas le temps"), document.fonts.load('400 40px "STIX Two Text"', CHARS), document.fonts.load('italic 400 40px "STIX Two Text"', CHARS),
+]).then(() => document.fonts.ready).then(() => { fontsReady = true; for(const id of ['go','chaptersBtn']){const el=document.getElementById(id);if(el)el.disabled=false;} const l = document.getElementById('load'); if (l) l.textContent = '字体已就绪 · 建议全屏观看（F）'; frame(0); });
+setTimeout(() => { if(!fontsReady) document.getElementById('load').textContent='字体仍在准备，请稍候…'; },15000);
+
+window.__ready = () => fontsReady;
+window.__frame = (t, fps = 30) => { frame(t, fps, 3); return cv.toDataURL('image/jpeg', .93); };
+window.__duration = TOTAL;
+window.__cues = () => SC.flatMap(s => (s.sfx || []).map(([t, name, o]) => ({ t: +(s.t0 + t).toFixed(4), name, ...(o || {}) }))).sort((a, b) => a.t - b.t);
+
+const au = document.getElementById('au');
+au.src = (window.EMBED && window.EMBED.audio) ? 'data:audio/mpeg;base64,' + window.EMBED.audio : 'music.mp3?v=20261019-group-actions-v1';
+if (EXPORT) { document.getElementById('start').remove(); document.getElementById('ui').remove(); }
+else {
+  let playing = false, clock0 = 0, useAudio = true, hideT = 0, heldTime = 0;
+  const ui = document.getElementById('ui'), pp = document.getElementById('pp'), fill = document.getElementById('fill'), tm = document.getElementById('tm');
+  document.getElementById('dur').textContent = `${Math.floor(TOTAL / 60)}:${String(Math.round(TOTAL % 60)).padStart(2, '0')}`;
+  const now = () => useAudio ? au.currentTime : (playing ? (performance.now() - clock0) / 1000 : heldTime);
+  let loopId = 0, lastPaint = -Infinity;
+  function loop(stamp) {
+    loopId = 0;
+    if (!playing) return;
+    if (stamp - lastPaint < 1000 / 30 - 1) { loopId = requestAnimationFrame(loop); return; }
+    lastPaint = stamp;
+    const T = now(); frame(T);
+    fill.style.width = (T / TOTAL * 100) + '%'; bar.setAttribute('aria-valuenow',String(T)); tm.textContent = `${Math.floor(T / 60)}:${String(Math.floor(T % 60)).padStart(2, '0')}`;
+    if (T >= TOTAL - .05) { playing = false; pp.textContent = '▶'; }
+    if (playing) loopId = requestAnimationFrame(loop);
+  }
+  function play() { if (playing) return; if (!useAudio) clock0 = performance.now() - heldTime * 1000; playing = true; lastPaint = -Infinity; pp.textContent = '❚❚'; au.play().catch(() => { useAudio = false; clock0 = performance.now() - au.currentTime * 1000; }); loopId = requestAnimationFrame(loop); }
+  function pause() { heldTime = now(); playing = false; cancelAnimationFrame(loopId); loopId = 0; pp.textContent = '▶'; au.pause(); }
+  document.getElementById('go').onclick = () => { document.getElementById('start').remove(); if (au.currentTime >= TOTAL - .1) au.currentTime = 0; play(); poke(); };
+  pp.onclick = () => playing ? pause() : play();
+  const bar = document.getElementById('bar');
+  let dragging = false, resumeAfterDrag = false, scrubRender = 0, scrubTime = 0;
+  bar.setAttribute('role', 'slider');
+  bar.setAttribute('aria-label', '播放进度');
+  bar.setAttribute('aria-valuemin', '0');
+  bar.setAttribute('aria-valuemax', String(TOTAL));
+  bar.setAttribute('aria-valuenow', '0');
+  bar.tabIndex = 0;
+  function seekTo(t) {
+    scrubTime = clamp(t, 0, TOTAL);
+    heldTime = scrubTime;
+    au.currentTime = scrubTime;
+    if (!useAudio) clock0 = performance.now() - scrubTime * 1000;
+    fill.style.width = (scrubTime / TOTAL * 100) + '%';
+    tm.textContent = `${Math.floor(scrubTime / 60)}:${String(Math.floor(scrubTime % 60)).padStart(2, '0')}`;
+    bar.setAttribute('aria-valuenow', String(scrubTime));
+    if (!playing && !scrubRender) scrubRender = requestAnimationFrame(() => {
+      scrubRender = 0;
+      frame(scrubTime);
+    });
+  }
+  function seekPointer(e) {
+    const r = bar.getBoundingClientRect();
+    seekTo(clamp((e.clientX - r.left) / r.width) * TOTAL);
+  }
+  bar.addEventListener('pointerdown', e => {
+    if (!e.isPrimary || e.button !== 0 || dragging) return;
+    e.preventDefault();
+    dragging = true;
+    resumeAfterDrag = playing;
+    if (playing) pause();
+    bar.setPointerCapture(e.pointerId);
+    poke();
+    clearTimeout(hideT);
+    seekPointer(e);
+  });
+  bar.addEventListener('pointermove', e => {
+    if (dragging && bar.hasPointerCapture(e.pointerId)) seekPointer(e);
+  });
+  function finishDrag(e, seekFinal) {
+    if (!dragging) return;
+    if (seekFinal) seekPointer(e);
+    dragging = false;
+    if (bar.hasPointerCapture(e.pointerId)) bar.releasePointerCapture(e.pointerId);
+    if (resumeAfterDrag && scrubTime < TOTAL - .05) play();
+    resumeAfterDrag = false;
+    poke();
+  }
+  bar.addEventListener('pointerup', e => finishDrag(e, true));
+  bar.addEventListener('pointercancel', e => finishDrag(e, false));
+  bar.addEventListener('lostpointercapture', e => finishDrag(e, false));
+  bar.addEventListener('keydown', e => {
+    if (e.code === 'Home' || e.code === 'End') {
+      e.preventDefault();
+      seekTo(e.code === 'Home' ? 0 : TOTAL);
+      poke();
+    }
+  });
+  document.getElementById('fs').onclick = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  window.__seek = t => { seekTo(t); poke(); }; window.__pause = pause; window.__play = play; window.__playing = () => playing;
+  function poke() { ui.classList.remove('hide'); clearTimeout(hideT); hideT = setTimeout(() => {if(!dragging)ui.classList.add('hide')},2200); }
+  addEventListener('mousemove', poke);
+  addEventListener('keydown', e => {
+    if (document.getElementById('start')) return;
+    if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); }
+    if (e.code === 'KeyF') document.getElementById('fs').click();
+    if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') { e.preventDefault(); seekTo(now()+(e.code==='ArrowRight'?5:-5)); }
+    poke();
+  });
+}
+
+if(!EXPORT){const panel=document.getElementById('notes'),btn=document.getElementById('chaptersBtn');let resume=false;
+function closeNotes(){panel.hidden=true;if(resume)window.__play();resume=false;btn.focus()}
+btn.onclick=()=>{resume=window.__playing();window.__pause();panel.hidden=false;document.getElementById('closeNotes').focus()};document.getElementById('closeNotes').onclick=closeNotes;
+for(const s of SC){const b=document.createElement('button');b.textContent=s.ch[0]+' '+s.ch[1];b.onclick=()=>{document.getElementById('start')?.remove();window.__seek(s.t0+.8);resume=false;closeNotes()};document.getElementById('chapterList').append(b)}
+document.getElementById('muteBtn').onclick=()=>{au.muted=!au.muted;document.getElementById('muteBtn').textContent=au.muted?'静音':'声音'};
+addEventListener('keydown',e=>{if(panel.hidden)return;if(e.code==='Escape')closeNotes();if(['Space','ArrowLeft','ArrowRight','KeyF'].includes(e.code))e.stopImmediatePropagation();if(e.code==='Tab'){const els=[...panel.querySelectorAll('button,a')],first=els[0],last=els.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}},true);
+}else document.getElementById('tools').remove();
+</script>
+</body></html>

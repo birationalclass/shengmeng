@@ -1,0 +1,211 @@
+{
+  "slug": "cube",
+  "title": "魔方：镜像角块的障碍",
+  "en": "THE MIRRORED CORNER",
+  "summary": "交换同一角块的两张贴纸改变手性，任何合法转动都无法补救。",
+  "chapters": [
+    {
+      "title": "交换两张贴纸",
+      "en": "SWAP TWO STICKERS",
+      "hero": "只改一个角块，为什么整个魔方无解？",
+      "kind": "swap",
+      "captions": [
+        [
+          "从完整复原的魔方开始，只观察一个角块。",
+          "Start with a solved cube and focus on one corner."
+        ],
+        [
+          "揭下同一角块的两张不同颜色贴纸，再交换位置。",
+          "Swap two different stickers on that same corner."
+        ],
+        [
+          "其他贴纸、其他块的位置全部保持不动。",
+          "Keep every other sticker and cubie unchanged."
+        ],
+        [
+          "这个改动改变的是手性，不是角块扭转量。",
+          "This changes handedness, not the corner-twist coordinate."
+        ]
+      ]
+    },
+    {
+      "title": "先看真实的合法转动",
+      "en": "FOLLOW A REAL FACE TURN",
+      "hero": "合法转动移动角块，也旋转角块",
+      "kind": "turns",
+      "captions": [
+        [
+          "每次只把一个面旋转九十度。",
+          "Each move turns one face through ninety degrees."
+        ],
+        [
+          "角块的位置和三个贴纸的朝向一起更新。",
+          "The cubie position and all sticker normals move together."
+        ],
+        [
+          "一个角块始终作为刚体运动，不能穿过自己的镜像。",
+          "A corner moves as a rigid object, never into its mirror."
+        ],
+        [
+          "画面的面转动，由三维旋转矩阵实际计算。",
+          "Face turns are computed using three-dimensional rotations."
+        ]
+      ]
+    },
+    {
+      "title": "三种颜色的循环顺序",
+      "en": "THE CYCLIC ORDER OF THREE COLORS",
+      "hero": "(a,b,c)、(b,c,a)、(c,a,b)",
+      "kind": "cycles",
+      "captions": [
+        [
+          "从角块外侧，固定观察三张贴纸的循环方向。",
+          "Use a consistent outward viewing orientation."
+        ],
+        [
+          "改变从哪张颜色开始，不改变这个循环顺序。",
+          "Changing the starting color preserves the cyclic order."
+        ],
+        [
+          "因此这三个写法描述同一类手性。",
+          "These three arrangements have the same handedness."
+        ],
+        [
+          "实际旋转可以改变姿态，却不会变出镜像。",
+          "Physical rotations change pose but preserve handedness."
+        ]
+      ]
+    },
+    {
+      "title": "镜像属于另一类",
+      "en": "THE MIRROR BELONGS TO ANOTHER CLASS",
+      "hero": "(a,c,b)、(c,b,a)、(b,a,c)",
+      "kind": "mirror",
+      "captions": [
+        [
+          "交换 a 和 b，对应两种颜色的对换。",
+          "Exchange a and b: this is a transposition of two colors."
+        ],
+        [
+          "三种颜色的循环方向因此反过来。",
+          "The cyclic orientation of the three colors reverses."
+        ],
+        [
+          "右边是左边的镜像，不是另一种旋转姿态。",
+          "The right object is a mirror, not another rotated pose."
+        ],
+        [
+          "两个循环类之间，存在不能靠旋转跨越的障碍。",
+          "Rotations cannot cross between these two cyclic classes."
+        ]
+      ]
+    },
+    {
+      "title": "用定向记录手性",
+      "en": "ORIENTATION RECORDS HANDEDNESS",
+      "hero": "det(R) = +1；交换两列使行列式变号",
+      "kind": "determinant",
+      "captions": [
+        [
+          "给三种颜色配上三个独立方向。",
+          "Attach three independent directions to the three colors."
+        ],
+        [
+          "合法空间旋转的行列式等于正一。",
+          "A proper spatial rotation has determinant plus one."
+        ],
+        [
+          "交换两个颜色标签，相当于交换两列。",
+          "Swapping color labels exchanges two determinant columns."
+        ],
+        [
+          "行列式变号，把手性差别写成一个不变量。",
+          "The sign reverses, giving an orientation invariant."
+        ]
+      ]
+    },
+    {
+      "title": "扭转与反射是两回事",
+      "en": "TWISTING IS NOT REFLECTING",
+      "hero": "循环置换保手性；一对对换改手性",
+      "kind": "twist",
+      "captions": [
+        [
+          "把角块绕外侧对角线转一百二十度。",
+          "Turn a corner around its outward diagonal by 120 degrees."
+        ],
+        [
+          "三个颜色循环移动，仍属于原来的手性类。",
+          "The three colors cycle within the same handedness class."
+        ],
+        [
+          "这不是交换两张贴纸，两者不能混为一谈。",
+          "A twist is different from exchanging two stickers."
+        ],
+        [
+          "本片论证不依赖“角块扭转量总和”的规则。",
+          "This argument does not use the corner-twist-sum rule."
+        ]
+      ]
+    },
+    {
+      "title": "合法转动的群作用",
+      "en": "THE GROUP ACTION OF LEGAL TURNS",
+      "hero": "合法转动保持每个角块的手性",
+      "kind": "orbits",
+      "captions": [
+        [
+          "所有合法转动及其复合，组成作用在状态上的群。",
+          "Legal turns and their compositions act on cube states."
+        ],
+        [
+          "复原状态的轨道，只包含手性相容的角块。",
+          "The solved-state orbit contains only compatible corners."
+        ],
+        [
+          "交换贴纸之后的镜像角块，落在这个轨道之外。",
+          "The mirrored corner lies outside that orbit."
+        ],
+        [
+          "再多的公式、再长的转动序列，也无法复原。",
+          "No turn algorithm, however long, can restore it."
+        ]
+      ]
+    },
+    {
+      "title": "与十五数码相遇",
+      "en": "THE SAME KIND OF OBSTRUCTION",
+      "hero": "小改动，也可能跨越整个轨道",
+      "kind": "ending",
+      "captions": [
+        [
+          "十五数码保持的是排列符号与空格颜色的乘积。",
+          "The sliding puzzle preserves a parity product."
+        ],
+        [
+          "这个魔方问题保持的是角块颜色的手性。",
+          "This cube problem preserves corner-color handedness."
+        ],
+        [
+          "两者都把“试不出来”变成严格的“不可能”。",
+          "Both turn unsuccessful search into a proof of impossibility."
+        ],
+        [
+          "群作用不仅告诉我们能做什么，也告诉我们限制。",
+          "A group action reveals both possibilities and limitations."
+        ]
+      ]
+    }
+  ],
+  "bars": 96,
+  "duration": 260,
+  "notes": [
+    "只交换同一个角块上的两张不同颜色贴纸，其他贴纸不动；没有拆换其他块。",
+    "手性通过从角块外侧一致选定的循环方向定义。三维图中的带色三轴是手性的示意，不是角块扭转量的编码。",
+    "四分之一面转动作用于实际三维块位置和贴纸法向；中间帧是旋转过程，端点才是标准魔方状态。"
+  ],
+  "sources": [
+    "https://people.math.harvard.edu/~jjchen/docs/Group%20Theory%20and%20the%20Rubik%27s%20Cube.pdf"
+  ],
+  "summaryEn": "Exchanging two stickers on one corner reverses handedness, beyond all legal face turns."
+}

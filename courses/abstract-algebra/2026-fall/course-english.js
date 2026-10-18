@@ -44,3 +44,5 @@ window.CourseLanguage.add({
 window.CourseLanguage.add({'从一条线到椭圆曲线':'From a Line to an Elliptic Curve','观看视频':'Watch video','可视化生成':'Live visualization'});
 
 window.CourseLanguage.add({'共享秘密':'Shared secret','不传钥匙，共享秘密':'A Shared Secret Without Sending Private Keys'});
+
+window.CourseLanguage.add({'群作用':'Group actions'});

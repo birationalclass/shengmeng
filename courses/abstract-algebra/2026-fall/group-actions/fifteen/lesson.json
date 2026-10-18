@@ -1,0 +1,211 @@
+{
+  "slug": "fifteen",
+  "title": "十五数码：到不了的复原状态",
+  "en": "THE FIFTEEN PUZZLE",
+  "summary": "每一次合法滑动都在改变排列，却始终无法跨过同一个不变量。",
+  "chapters": [
+    {
+      "title": "从一幅完整图片开始",
+      "en": "BEGIN WITH A COMPLETE PICTURE",
+      "hero": "从完整图片，到无法复原的拼图",
+      "kind": "picture",
+      "captions": [
+        [
+          "先看一幅完整图片，还没有任何编号。",
+          "Begin with one complete picture, without numbered tiles."
+        ],
+        [
+          "把图片切成十六块，移走右下角的一块。",
+          "Cut it into sixteen pieces and remove the lower-right piece."
+        ],
+        [
+          "只交换两块图片，空格保持不动。",
+          "Exchange just two picture tiles and leave the blank fixed."
+        ],
+        [
+          "现在才加上编号：交换的是 14 与 15。",
+          "Only now add labels: the exchanged pieces are 14 and 15."
+        ]
+      ]
+    },
+    {
+      "title": "合法操作究竟是什么",
+      "en": "WHAT A LEGAL MOVE DOES",
+      "hero": "每步：一个数字与相邻空格交换",
+      "kind": "moves",
+      "captions": [
+        [
+          "只有与空格相邻的数字，才能滑入空格。",
+          "Only a tile adjacent to the blank may slide into it."
+        ],
+        [
+          "画面中的每一步，都由实际棋盘状态计算。",
+          "Every move shown is computed from the current board."
+        ],
+        [
+          "把空格也看作符号 16，就有十六个符号的排列。",
+          "Treat the blank as symbol 16 in a permutation."
+        ],
+        [
+          "每次合法滑动，恰好是一对符号的对换。",
+          "A legal slide is one transposition of two symbols."
+        ]
+      ]
+    },
+    {
+      "title": "排列符号每次变号",
+      "en": "PERMUTATION PARITY",
+      "hero": "sgn(π) → −sgn(π)",
+      "kind": "sign",
+      "captions": [
+        [
+          "相对于完成状态，排列的符号只能是正一或负一。",
+          "Relative to the goal, the sign is either plus or minus one."
+        ],
+        [
+          "数字与空格互换，排列符号随之变号。",
+          "Swapping the blank and a tile reverses that sign."
+        ],
+        [
+          "所以排列符号本身，并不是滑动的不变量。",
+          "Permutation sign alone is not invariant under a slide."
+        ],
+        [
+          "还需要寻找另一个同时变号的量。",
+          "We need a second quantity that changes sign as well."
+        ]
+      ]
+    },
+    {
+      "title": "空格走在黑白格之间",
+      "en": "THE BLANK CHANGES COLOR",
+      "hero": "(−1)ʳ⁺ᶜ → −(−1)ʳ⁺ᶜ",
+      "kind": "checker",
+      "captions": [
+        [
+          "行列从一开始编号，把棋盘涂成黑白两色。",
+          "Number rows and columns from one and color the board."
+        ],
+        [
+          "相邻格的 r+c 奇偶性一定相反。",
+          "Adjacent squares have opposite parity of r plus c."
+        ],
+        [
+          "空格每走一步，黑白颜色也发生交换。",
+          "Every slide changes the color occupied by the blank."
+        ],
+        [
+          "因此这个因子也在每一步变号。",
+          "Thus the checkerboard factor changes sign each time."
+        ]
+      ]
+    },
+    {
+      "title": "两次变号相消",
+      "en": "TWO SIGN CHANGES CANCEL",
+      "hero": "I = sgn(π) · (−1)ʳ⁺ᶜ",
+      "kind": "invariant",
+      "captions": [
+        [
+          "把两个每次变号的因子乘在一起。",
+          "Multiply the two factors that both change sign."
+        ],
+        [
+          "一对负号相乘为正，乘积不会改变。",
+          "The two minus signs cancel, preserving their product."
+        ],
+        [
+          "继续滑动：数字、空格都在变，I 始终不变。",
+          "The board changes continuously through moves; I does not."
+        ],
+        [
+          "这就是排除不可能操作的证据。",
+          "This invariant certifies an obstruction to reachability."
+        ]
+      ]
+    },
+    {
+      "title": "对比两个起点",
+      "en": "COMPARE THE TWO INITIAL STATES",
+      "hero": "完成态 I = +1；交换态 I = −1",
+      "kind": "compare",
+      "captions": [
+        [
+          "完成状态排列符号为正，空格的行列和为偶数。",
+          "At the goal, both factors equal plus one."
+        ],
+        [
+          "只交换 14、15，排列符号变成负一。",
+          "Swapping 14 and 15 changes only permutation sign."
+        ],
+        [
+          "空格没有移动，所以黑白因子不变。",
+          "The blank does not move, so its factor is unchanged."
+        ],
+        [
+          "两个 I 不同，任何合法路径都无法连接它们。",
+          "Different invariant values forbid a legal path between them."
+        ]
+      ]
+    },
+    {
+      "title": "合法操作与轨道",
+      "en": "LEGAL OPERATIONS AND ORBITS",
+      "hero": "同一轨道 ⇒ 相同的 I",
+      "kind": "orbits",
+      "captions": [
+        [
+          "一次合法操作可逆，反着移动就能撤销。",
+          "Every legal slide is reversible."
+        ],
+        [
+          "严格地说，可用每条边对应的状态对换生成作用。",
+          "Edge involutions generate an action on board states."
+        ],
+        [
+          "合法操作生成的群，把状态分成不同轨道。",
+          "The generated action partitions states into orbits."
+        ],
+        [
+          "不变量不同，就一定不在同一个轨道。",
+          "Different invariant values imply different orbits."
+        ]
+      ]
+    },
+    {
+      "title": "不必穷举所有移动",
+      "en": "PROVE IMPOSSIBILITY WITHOUT SEARCH",
+      "hero": "操作的限制，藏在不变量里",
+      "kind": "ending",
+      "captions": [
+        [
+          "证明已经覆盖任意长度的合法移动序列。",
+          "The argument covers every length of legal sequence."
+        ],
+        [
+          "I 不同足以排除可达，不需要逐一尝试。",
+          "Different I values rule out reachability without a search."
+        ],
+        [
+          "一般而言，不变量相同未必就足够。",
+          "In general, equal invariants need not imply reachability."
+        ],
+        [
+          "群作用让我们看见：哪些改变永远做不到。",
+          "Group actions reveal changes no allowed operation can make."
+        ]
+      ]
+    }
+  ],
+  "bars": 96,
+  "duration": 260,
+  "notes": [
+    "本片只使用不变量排除可达，不把一般作用中“同不变量”误说成“同轨道”。",
+    "严格的全状态作用：对棋盘每条边 e 定义 Tₑ。空格在端点时交换空格与另一端数字；空格不在端点时固定状态。每个 Tₑ 都是对合，生成状态集合上的置换群，其轨道就是合法移动的连通分支。",
+    "空格作为符号 16，行列从 1 开始，完成态 I=+1。"
+  ],
+  "sources": [
+    "https://people.csail.mit.edu/meyer/induction-edit.pdf"
+  ],
+  "summaryEn": "Every legal slide changes the permutation, yet a preserved invariant obstructs restoration."
+}

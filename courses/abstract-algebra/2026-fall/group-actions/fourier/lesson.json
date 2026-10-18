@@ -1,0 +1,237 @@
+{
+  "slug": "fourier",
+  "title": "傅里叶：整数作用听见频率",
+  "en": "INTEGER ACTIONS REVEAL FREQUENCIES",
+  "summary": "从实函数对的二维旋转出发，观察整数群作用如何组织正弦、余弦与频率。",
+  "chapters": [
+    {
+      "title": "函数里藏着哪些频率",
+      "en": "FREQUENCIES HIDDEN IN A FUNCTION",
+      "hero": "群作用，不只用来数轨道",
+      "kind": "signal",
+      "captions": [
+        [
+          "一条起伏的周期曲线，可以同时含有几个频率。",
+          "One periodic curve may contain several frequencies."
+        ],
+        [
+          "我们从实函数和二维旋转开始，不先引入复指数。",
+          "Start with real functions and planar rotations."
+        ],
+        [
+          "整数 n 决定旋转的频率。",
+          "An integer n determines the rotation frequency."
+        ],
+        [
+          "目标是看见正弦、余弦系数怎样从操作中产生。",
+          "We want to see how the sine and cosine coefficients arise."
+        ]
+      ]
+    },
+    {
+      "title": "作用对象必须放得下旋转",
+      "en": "CHOOSE A SPACE CLOSED UNDER ROTATION",
+      "hero": "X = 连续 2π 周期实函数对 (f,g)",
+      "kind": "pairs",
+      "captions": [
+        [
+          "先把一个函数，扩展为两个实函数组成的向量。",
+          "Use pairs of real functions as two-component vectors."
+        ],
+        [
+          "在每个位置 x，都有一个二维向量 (f(x),g(x))。",
+          "Each position x carries a planar vector."
+        ],
+        [
+          "两个分量都要求连续，而且具有同一周期。",
+          "Both components are continuous and periodic."
+        ],
+        [
+          "这样旋转之后的结果，仍留在同一个空间 X 中。",
+          "Rotation then stays within the same space X."
+        ]
+      ]
+    },
+    {
+      "title": "整数在每个位置施加旋转",
+      "en": "INTEGERS ROTATE EACH VECTOR",
+      "hero": "n · (f,g)(x) = R(nx)(f(x),g(x))",
+      "kind": "rotation",
+      "captions": [
+        [
+          "在位置 x，把向量旋转 nx 这个角度。",
+          "At x rotate the vector through angle n x."
+        ],
+        [
+          "同一个 n，在不同 x 处产生不同的角度。",
+          "The same integer gives different angles at different positions."
+        ],
+        [
+          "n 为整数，旋转后的函数仍是 2π 周期的。",
+          "Integer n preserves the two-pi periodicity."
+        ],
+        [
+          "零对应恒等操作，负整数对应反向旋转。",
+          "Zero acts identically; negative integers reverse the rotation."
+        ]
+      ]
+    },
+    {
+      "title": "为什么这真是群作用",
+      "en": "VERIFY THE ACTION LAW",
+      "hero": "R(mx)R(nx) = R((m+n)x)",
+      "kind": "action",
+      "captions": [
+        [
+          "先按 nx 旋转，再按 mx 旋转。",
+          "Rotate first through n x and then through m x."
+        ],
+        [
+          "二维旋转的角度相加，得到 (m+n)x。",
+          "Planar rotation angles add to m plus n times x."
+        ],
+        [
+          "因此 m·(n·v)=(m+n)·v。",
+          "Thus acting by n and then m agrees with acting by their sum."
+        ],
+        [
+          "这就是整数加法群作用的相容性条件。",
+          "This is precisely the compatibility law for a Z action."
+        ]
+      ]
+    },
+    {
+      "title": "只在最开始取第二分量为零",
+      "en": "SET THE SECOND COMPONENT TO ZERO ONCE",
+      "hero": "f ↦ (f,0)，然后让整个向量参与作用",
+      "kind": "embed",
+      "captions": [
+        [
+          "为了研究一个给定的实函数，先把它放成 (f,0)。",
+          "Embed a single real function as the pair f, zero."
+        ],
+        [
+          "群作用后得到 f(x)cos(nx) 和 f(x)sin(nx)。",
+          "The action produces f times cosine and f times sine."
+        ],
+        [
+          "此时第二分量通常已经不为零。",
+          "The second component is now usually nonzero."
+        ],
+        [
+          "不能再把它强行清零，否则就破坏了群作用。",
+          "Resetting it to zero would break the action law."
+        ]
+      ]
+    },
+    {
+      "title": "选不同的 n，读出不同频率",
+      "en": "SELECT A FREQUENCY",
+      "hero": "频率 n → 余弦分量 aₙ、正弦分量 bₙ",
+      "kind": "coefficients",
+      "captions": [
+        [
+          "依次选 n=1、2、3、5，观察对应的频率分量。",
+          "Inspect frequency components one, two, three and five."
+        ],
+        [
+          "示例中 n=1 读出余弦，n=2 读出正弦。",
+          "Frequency one reads a cosine term; frequency two reads a sine term."
+        ],
+        [
+          "不匹配的振荡在整个周期中相互抵消。",
+          "Mismatched oscillations cancel over a full period."
+        ],
+        [
+          "正交性解释这种筛选，而不只是画面上的巧合。",
+          "Orthogonality explains the selection, beyond this particular picture."
+        ]
+      ]
+    },
+    {
+      "title": "把各个频率放回曲线",
+      "en": "REBUILD THE SIGNAL",
+      "hero": "f ≈ a₀/2 + Σₙ≤N (aₙcos nx + bₙsin nx)",
+      "kind": "reconstruction",
+      "captions": [
+        [
+          "先画常数项，再逐项加入不同频率。",
+          "Begin with the constant term and add frequency components."
+        ],
+        [
+          "每加入一项，曲线就多出相应的起伏。",
+          "Each term contributes its own oscillation."
+        ],
+        [
+          "本片示例是三角多项式，到第五项已经完全恢复。",
+          "This example is a trigonometric polynomial, exact by frequency five."
+        ],
+        [
+          "一般连续函数可能需要无限多个频率。",
+          "A general continuous function can require infinitely many frequencies."
+        ]
+      ]
+    },
+    {
+      "title": "系数产生，不等于恢复已经证明",
+      "en": "COEFFICIENTS AND COMPLETENESS ARE DISTINCT",
+      "hero": "旋转组织频率；完备性保证 L² 恢复",
+      "kind": "completeness",
+      "captions": [
+        [
+          "群作用把余弦与正弦分量组织成同一个结构。",
+          "The action organizes sine and cosine components in one structure."
+        ],
+        [
+          "要证明展开能够恢复原函数，还要三角系的完备性。",
+          "Recovery also requires completeness of the trigonometric system."
+        ],
+        [
+          "对连续周期函数，至少可以保证 L² 意义下收敛。",
+          "Continuous periodic functions are recovered in the L-squared sense."
+        ],
+        [
+          "这里不把 L² 收敛误写成任意点逐点或一致收敛。",
+          "We do not replace L-squared convergence by an unjustified stronger claim."
+        ]
+      ]
+    },
+    {
+      "title": "整数、旋转与频率连成一条线",
+      "en": "INTEGERS, ROTATIONS AND FREQUENCIES",
+      "hero": "ℤ 的群作用，把正弦与余弦组织起来",
+      "kind": "ending",
+      "captions": [
+        [
+          "十五数码与魔方，用不变量识别操作的边界。",
+          "The two puzzles use invariants to reveal limits of operations."
+        ],
+        [
+          "区间与球面，用拓扑排除不可能的群结构。",
+          "Intervals and spheres reveal topological obstructions."
+        ],
+        [
+          "傅里叶分析则用群作用，把函数中的频率提取出来。",
+          "Fourier analysis organizes and extracts frequencies through an action."
+        ],
+        [
+          "群作用不仅用于计数，也帮助我们理解结构。",
+          "Group actions reveal structure far beyond counting."
+        ]
+      ]
+    }
+  ],
+  "bars": 108,
+  "duration": 292,
+  "notes": [
+    "作用空间为全部连续 2π 周期实函数对，n∈ℤ。只在初始嵌入 f↦(f,0)，作用后保留两个分量。",
+    "本片示例 f(x)=0.3+cos x+0.65 sin(2x)+0.35 cos(3x)+0.25 sin(5x)，系数在代码内部独立核对，图中不伪造频谱。",
+    "系数定义仅保留在可选说明：aₙ=(1/π)∫₋π^π f cos(nx)，bₙ=(1/π)∫₋π^π f sin(nx)，a₀=(1/π)∫f；重构常数项为 a₀/2。",
+    "一般恢复结论使用三角函数系在 L² 中的完备性作为外部输入；不宣称任意连续函数的傅里叶级数处处或一致收敛。",
+    "按用户修订：不设置独立积分例子或分量积分累加动画。"
+  ],
+  "sources": [
+    "https://ocw.mit.edu/courses/res-18-015-topics-in-fourier-analysis-spring-2024/lists/lecture-notes/"
+  ],
+  "summaryEn": "Real function pairs and planar rotations reveal how an integer-group action organizes frequencies."
+}
