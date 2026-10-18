@@ -1,0 +1,170 @@
+{
+  "checkedAt": "2026-10-18T08:14:27.101053+08:00",
+  "purpose": "Explicit assistant review after reading all25 complete printed types/axioms/roles and the actual LF proof sources. Evidence-only operation; no audit flags updated here.",
+  "reviews": [
+    {
+      "group": "support-topology",
+      "auditRecord": "D:\\codex\\Math\\formalization\\linear\\research\\original-ext-open-restriction-support-topology-20261016-audit.json",
+      "auditLog": "D:\\codex\\Math\\formalization\\linear\\research\\CheckOriginalExtRestrictionSupportTopologyc43e4873ad6e.compiler.log",
+      "auditLogSha256": "307aecc2fe58a7feace9e2edef74b5d58ad4f3fb48cb72a28c214e968e2ec1d9",
+      "sourceFiles": [
+        {
+          "module": "Linear.ClosedDiscreteSupportSheafFlasque",
+          "path": "D:\\codex\\Math\\formalization\\linear\\Linear\\ClosedDiscreteSupportSheafFlasque.lean",
+          "sha256": "32dea1138d82ee5c8554c38387e62985e1eec78a63e920e102767d462e3e1ca9",
+          "lines": 65
+        },
+        {
+          "module": "Linear.DiscreteClosedMapSupportFlasque",
+          "path": "D:\\codex\\Math\\formalization\\linear\\Linear\\DiscreteClosedMapSupportFlasque.lean",
+          "sha256": "b07672251f2a94e2b59dc19556eb3481dd5a2c904dd651000cf7c45906dd261c",
+          "lines": 26
+        }
+      ],
+      "mathematicalReview": {
+        "LinearStudy.closedDiscreteSupportAbelianSheaf_restriction_surjective": "Assume every S intersect V is closed in X and actual sections vanish on opens disjoint S. For V<=U use W=U minus (S intersect V), original binary sheaf gluing with zero on W, and the original overlap restrictions. No flasqueness is a premise.",
+        "LinearStudy.closedDiscreteSupportAbelianSheaf_isFlasque": "The native flasque property is derived from the preceding restriction-surjectivity theorem on the same original abelian sheaf. The closed-slice and off-support zero-section hypotheses remain explicit in this generic lemma.",
+        "LinearStudy.discreteClosedMap_range_inter_open_isClosed": "For an actual closed continuous map from a discrete topological space, every subset of the source is closed. Apply the closed-map property to the preimage of V; its image is exactly range(f) intersect V. No finiteness or embedding hypothesis is inserted.",
+        "LinearStudy.discreteClosedMap_supportedAbelianSheaf_isFlasque": "Closed slices are derived from the actual closed map and discrete topology, then the zero-extension gluing theorem applies to the same actual sheaf and restrictions. Off-support vanishing remains explicit at this generic topological stage."
+      },
+      "allOrdinaryTheorems": true,
+      "definitionBodiesToReview": 0,
+      "exactSourceProofsRead": true,
+      "specificSourceAndLogChecks": true
+    },
+    {
+      "group": "support-hom-vanishing",
+      "auditRecord": "D:\\codex\\Math\\formalization\\linear\\research\\original-ext-open-restriction-support-hom-vanishing-20261016-audit.json",
+      "auditLog": "D:\\codex\\Math\\formalization\\linear\\research\\CheckOriginalExtRestrictionSupportHomVanishing9a1a431d1adb.compiler.log",
+      "auditLogSha256": "49dfa9456d409610961d5162715c80f1f6489d1de8e10fa21fce4a94d5e06278",
+      "sourceFiles": [
+        {
+          "module": "Linear.SchemeModuleHomZeroSourceSupport",
+          "path": "D:\\codex\\Math\\formalization\\linear\\Linear\\SchemeModuleHomZeroSourceSupport.lean",
+          "sha256": "db116b559c478ff698107f24ff6871ab50dd4b72dbce319619041d29e0ba7122",
+          "lines": 33
+        },
+        {
+          "module": "Linear.SchemeModuleSupportedSubHomFlasque",
+          "path": "D:\\codex\\Math\\formalization\\linear\\Linear\\SchemeModuleSupportedSubHomFlasque.lean",
+          "sha256": "580b411778a3b750db4534d2edb2fac0de3f03cd5dc16011cd90db9472825d6d",
+          "lines": 38
+        },
+        {
+          "module": "Linear.SchemeModulePushforwardOpenSupport",
+          "path": "D:\\codex\\Math\\formalization\\linear\\Linear\\SchemeModulePushforwardOpenSupport.lean",
+          "sha256": "c6fa5bb534e3b14c43b33045f161aa5fbe49869fdfe49d88c34a02a9fdcdfa72",
+          "lines": 56
+        }
+      ],
+      "mathematicalReview": {
+        "LinearStudy.schemeModuleHomModuleSheaf_isZero_of_source": "The existing additive contravariant internal-Hom functor sends the opposite zero source to zero. Coefficient N is an arbitrary original O_X-module sheaf; no quasi-coherence, finite presentation or freeness is required.",
+        "LinearStudy.schemeModuleHomModuleSheaf_open_isZero_of_source": "The already proved actual open-restriction Hom isomorphism transfers zero-source vanishing to the original Hom sheaf restricted to j. The input is only zero of the restricted original source, not a desired Hom/support certificate.",
+        "LinearStudy.schemeModuleSubHom_open_isZero_of_source": "Actual open restriction preserves finite limits, hence the original mono M into Hom(P,N) stays mono. A mono into the previously derived zero target forces M restricted to j to be zero. This includes kernels, cycles and boundaries.",
+        "LinearStudy.schemeModuleSubHom_supportedFlasque": "Derive actual sub-Hom restriction vanishing from source support; transfer it to original section groups by the actual restriction image-top identity. Apply zero extension to the actual underlying additive sheaf. Coefficient N remains arbitrary.",
+        "LinearStudy.schemeModuleSubHom_closedDiscreteFlasque": "The closed map from a discrete source derives the closed-slice condition for range(f). Source support is still explicit here, and the subsequent pushforward theorem derives it instead of assuming the final flasqueness conclusion.",
+        "LinearStudy.schemeModulePushforward_sections_subsingleton_of_disjointRange": "Actual direct-image sections on U are definitionally L sections on f inverse U. Disjointness from the actual range forces that preimage to be the empty open; the native sheaf terminal-object theorem makes its actual section group zero.",
+        "LinearStudy.schemeModulePushforward_open_isZero_of_disjointRange": "For every original subopen of U, its image is still disjoint range(f). Prove identity equals zero on all actual restricted module sections using the preceding direct-image vanishing, and native sheaf morphism extensionality.",
+        "LinearStudy.schemeModuleSubHom_pushforward_closedDiscreteFlasque": "Source support of P=f_*L is now derived from actual direct-image sections. Combine it with the closed-discrete support theorem for every mono M into Hom(P,N). This is not an assumption of Hom flasqueness or Ext comparison.",
+        "LinearStudy.schemeModuleSubHom_artinianClosedImmersionFlasque": "Native IsArtinianScheme gives discrete topology. The original closed immersion supplies its actual closed embedding and closed-map property. Thus all original sub-Hom sheaves are flasque for arbitrary L and N."
+      },
+      "allOrdinaryTheorems": true,
+      "definitionBodiesToReview": 0,
+      "exactSourceProofsRead": true,
+      "specificSourceAndLogChecks": true
+    },
+    {
+      "group": "support-unit-lifting",
+      "auditRecord": "D:\\codex\\Math\\formalization\\linear\\research\\original-ext-open-restriction-support-unit-lifting-20261016-audit.json",
+      "auditLog": "D:\\codex\\Math\\formalization\\linear\\research\\CheckOriginalExtRestrictionSupportUnitLifting9d2d420f9fd3.compiler.log",
+      "auditLogSha256": "739ea9d51b36110000ef88354a7c11a3496f976baa679359be237bb0fae0f4f1",
+      "sourceFiles": [
+        {
+          "module": "Linear.SchemeModuleFlasqueKernelSectionLifting",
+          "path": "D:\\codex\\Math\\formalization\\linear\\Linear\\SchemeModuleFlasqueKernelSectionLifting.lean",
+          "sha256": "2d311185c77c8e8fe6e06ac16bacf53bef775560f3cf37f466bb731545ad5a72",
+          "lines": 56
+        },
+        {
+          "module": "Linear.SchemeModuleSupportedUnitHomLifting",
+          "path": "D:\\codex\\Math\\formalization\\linear\\Linear\\SchemeModuleSupportedUnitHomLifting.lean",
+          "sha256": "d7681ca1cc8c9aa99ce190e3a0ea8e085e0f59018d3a612aeda39166cfe04239",
+          "lines": 23
+        }
+      ],
+      "mathematicalReview": {
+        "LinearStudy.moduleSheafGlobalSectionMorphism_of_morphism": "An actual structure-unit morphism is recovered from its value at one on the top open. Native unit-Hom equivalence and original restriction naturality prove recovery; the actual structure-sheaf restriction map preserves one.",
+        "LinearStudy.schemeModule_epi_sections_surjective_of_flasqueKernel": "For an original epi g, use its actual kernel short exact sequence, the pre-existing exact additive-sheaf forgetful functor, and native flasque-kernel section lifting. Flasqueness is an explicit generic hypothesis; O_X is not assumed projective.",
+        "LinearStudy.schemeModule_unitHom_lift_of_flasqueKernel": "Lift the actual global value at one through the original epi using the preceding section theorem. Build the unit morphism from that section and prove its composite is the original morphism using postcomposition naturality and recovery.",
+        "LinearStudy.schemeModule_unitHom_lift_of_closedDiscreteSubHom": "The kernel of the original epi is an actual subobject of its source M, and therefore of Hom(f_*L,A). The already proved closed-discrete theorem derives flasqueness of this actual kernel. Apply genuine section lifting, not global projectivity."
+      },
+      "allOrdinaryTheorems": true,
+      "definitionBodiesToReview": 0,
+      "exactSourceProofsRead": true,
+      "specificSourceAndLogChecks": true
+    },
+    {
+      "group": "support-cocycle-lifting",
+      "auditRecord": "D:\\codex\\Math\\formalization\\linear\\research\\original-ext-open-restriction-support-cocycle-lifting-20261016-audit.json",
+      "auditLog": "D:\\codex\\Math\\formalization\\linear\\research\\CheckOriginalExtRestrictionSupportCocycleLiftingda074e2cba43.compiler.log",
+      "auditLogSha256": "d5bfc5c1236a59cd71aef89264e352f47935d45152ce136c5a528db842e0b322",
+      "sourceFiles": [
+        {
+          "module": "Linear.SchemeModuleInjectiveInternalHomCycleSurjective",
+          "path": "D:\\codex\\Math\\formalization\\linear\\Linear\\SchemeModuleInjectiveInternalHomCycleSurjective.lean",
+          "sha256": "c21c9d3572d68680ac37c98c4ed6e9cfa6a19ca474d5abe127a4d6c3ecf0f682",
+          "lines": 29
+        },
+        {
+          "module": "Linear.SchemeModuleSupportedInternalHomClass",
+          "path": "D:\\codex\\Math\\formalization\\linear\\Linear\\SchemeModuleSupportedInternalHomClass.lean",
+          "sha256": "e9f5a3d49290c60a107e522322338eb614817f26fdbc3f08049aecb6cdee70f4",
+          "lines": 63
+        }
+      ],
+      "mathematicalReview": {
+        "LinearStudy.schemeModuleInjectiveInternalHomCycleMap_surjective": "For a unit-valued cycle z, uncurry z followed by the actual cycle inclusion. Native iCycles_d and the existing postcomposition-currying law derive the original cocycle equation. Mono cancellation proves the resulting original cycle is exactly z.",
+        "LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_surjective": "The actual homology projection is epi and its source cycles embed into the same original Hom term. Closed-discrete support derives its flasque-kernel lift. The preceding cycle-map surjectivity then gives an original cocycle representing every class.",
+        "LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_zero_iff": "For a zero homology class use the actual exact sequence K_n -> cycles_(n+1) -> H_(n+1). Native exactness makes its toCycles map epi; supported-kernel lifting produces a global primitive in the SAME original coefficient resolution. Reverse implication is the previously proved actual boundary-zero theorem."
+      },
+      "allOrdinaryTheorems": true,
+      "definitionBodiesToReview": 0,
+      "exactSourceProofsRead": true,
+      "specificSourceAndLogChecks": true
+    },
+    {
+      "group": "support-canonical-lambda",
+      "auditRecord": "D:\\codex\\Math\\formalization\\linear\\research\\original-ext-open-restriction-support-canonical-lambda-20261016-audit.json",
+      "auditLog": "D:\\codex\\Math\\formalization\\linear\\research\\CheckOriginalExtRestrictionSupportCanonicalLambda79d387c78a2d.compiler.log",
+      "auditLogSha256": "cc6669bbcad6b66462dd514bd55ab60e9c8e669f1db2172e94ba8ab26fd28516",
+      "sourceFiles": [
+        {
+          "module": "Linear.SchemeModuleClosedDiscreteGlobalToInternalExt",
+          "path": "D:\\codex\\Math\\formalization\\linear\\Linear\\SchemeModuleClosedDiscreteGlobalToInternalExt.lean",
+          "sha256": "fe188f762ee58e36ef6437bf114784be93b9ed949cb02647586912cbdc6ae6b4",
+          "lines": 57
+        },
+        {
+          "module": "Linear.SchemeModuleClosedDiscreteGlobalToInternalExtSections",
+          "path": "D:\\codex\\Math\\formalization\\linear\\Linear\\SchemeModuleClosedDiscreteGlobalToInternalExtSections.lean",
+          "sha256": "56c9f1bd5a60b4ccac394a9743820e3a921dd4b614c65e731fc6f2b627501c46",
+          "lines": 40
+        }
+      ],
+      "mathematicalReview": {
+        "LinearStudy.schemeModuleGlobalToInternalExtViaResolution_closedDiscrete_bijective": "Use the existing native injective-cocycle Ext presentation. Injectivity follows from the proved internal-class zero iff SAME global primitive criterion and native Ext boundary criterion. Surjectivity lifts the class after the SAME actual resolution comparison iso. No desired lambda inverse is supplied.",
+        "LinearStudy.schemeModuleGlobalToInternalExt_closedDiscrete_bijective": "The target is the previously constructed canonical resolution-independent lambda, not a new replacement map. Its equality with the map via the native coefficient resolution transfers the already proved closed-discrete bijectivity.",
+        "LinearStudy.schemeModuleGlobalToInternalExt_artinianClosedImmersion_bijective": "Specialize canonical lambda bijectivity to an actual Artinian closed immersion using native discrete topology and actual closed-map property. Degree is n+1 for arbitrary natural n; coefficient N is arbitrary. Original geometric 4.2 still needs specialization and its original class restriction.",
+        "LinearStudy.schemeModuleGlobalToInternalExtSections_closedDiscrete_bijective": "Evaluation at one identifies actual structure-unit morphisms with actual sections on the top open; injectivity uses recovery and surjectivity uses the already proved section-morphism formula. Compose with the SAME canonical lambda bijection.",
+        "LinearStudy.schemeModuleGlobalToInternalExtSections_artinianClosedImmersion_bijective": "For actual Artinian closed i:D->X and original modules L,N, the original canonical map Ext^(n+1)(i_*L,N) -> Gamma(X,derived SHEAF Ext^(n+1)(i_*L,N)) is bijective. No desired cohomology vanishing, quasi-coherence, flatness or freeness certificate occurs in this final type."
+      },
+      "allOrdinaryTheorems": true,
+      "definitionBodiesToReview": 0,
+      "exactSourceProofsRead": true,
+      "specificSourceAndLogChecks": true
+    }
+  ],
+  "original4_1": false,
+  "original4_2": false,
+  "mainTheorem": false
+}

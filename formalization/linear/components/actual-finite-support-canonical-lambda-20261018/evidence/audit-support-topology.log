@@ -1,0 +1,32 @@
+@LinearStudy.closedDiscreteSupportAbelianSheaf_restriction_surjective : ∀ {X : TopCat} (S : Set ↑X),
+  (∀ (V : TopologicalSpace.Opens ↑X), IsClosed (S ∩ ↑V)) →
+    ∀ (F : TopCat.Sheaf AddCommGrpCat X),
+      (∀ (T : TopologicalSpace.Opens ↑X), Disjoint (↑T) S → Subsingleton ↑(F.obj.obj (Opposite.op T))) →
+        ∀ {U V : TopologicalSpace.Opens ↑X} (i : V ⟶ U),
+          Function.Surjective ⇑(CategoryTheory.ConcreteCategory.hom (F.obj.map i.op))
+'LinearStudy.closedDiscreteSupportAbelianSheaf_restriction_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.closedDiscreteSupportAbelianSheaf_isFlasque : ∀ {X : TopCat} (S : Set ↑X),
+  (∀ (V : TopologicalSpace.Opens ↑X), IsClosed (S ∩ ↑V)) →
+    ∀ (F : TopCat.Sheaf AddCommGrpCat X),
+      (∀ (T : TopologicalSpace.Opens ↑X), Disjoint (↑T) S → Subsingleton ↑(F.obj.obj (Opposite.op T))) → F.IsFlasque
+'LinearStudy.closedDiscreteSupportAbelianSheaf_isFlasque' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteClosedMap_range_inter_open_isClosed : ∀ {D X : TopCat} [DiscreteTopology ↑D] (f : D ⟶ X),
+  IsClosedMap ⇑(CategoryTheory.ConcreteCategory.hom f) →
+    ∀ (V : TopologicalSpace.Opens ↑X), IsClosed (Set.range ⇑(CategoryTheory.ConcreteCategory.hom f) ∩ ↑V)
+'LinearStudy.discreteClosedMap_range_inter_open_isClosed' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteClosedMap_supportedAbelianSheaf_isFlasque : ∀ {D X : TopCat} [DiscreteTopology ↑D] (f : D ⟶ X),
+  IsClosedMap ⇑(CategoryTheory.ConcreteCategory.hom f) →
+    ∀ (F : TopCat.Sheaf AddCommGrpCat X),
+      (∀ (T : TopologicalSpace.Opens ↑X),
+          Disjoint (↑T) (Set.range ⇑(CategoryTheory.ConcreteCategory.hom f)) →
+            Subsingleton ↑(F.obj.obj (Opposite.op T))) →
+        F.IsFlasque
+'LinearStudy.discreteClosedMap_supportedAbelianSheaf_isFlasque' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.closedDiscreteSupportAbelianSheaf_restriction_surjective:true
+ROLECHECK:LinearStudy.closedDiscreteSupportAbelianSheaf_isFlasque:true
+ROLECHECK:LinearStudy.discreteClosedMap_range_inter_open_isClosed:true
+ROLECHECK:LinearStudy.discreteClosedMap_supportedAbelianSheaf_isFlasque:true

@@ -1,0 +1,34 @@
+@LinearStudy.moduleSheafGlobalSectionMorphism_of_morphism : ∀ {X : AlgebraicGeometry.Scheme} (M : X.Modules)
+  (f : SheafOfModules.unit X.ringCatSheaf ⟶ M),
+  LinearStudy.moduleSheafGlobalSectionMorphism M
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app f ⊤)) 1) =
+    f
+'LinearStudy.moduleSheafGlobalSectionMorphism_of_morphism' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModule_epi_sections_surjective_of_flasqueKernel : ∀ {X : AlgebraicGeometry.Scheme} {M N : X.Modules}
+  (g : M ⟶ N) [CategoryTheory.Epi g],
+  ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj (CategoryTheory.Limits.kernel g)).IsFlasque →
+    ∀ (U : X.Opens),
+      Function.Surjective ⇑(CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app g U))
+'LinearStudy.schemeModule_epi_sections_surjective_of_flasqueKernel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModule_unitHom_lift_of_flasqueKernel : ∀ {X : AlgebraicGeometry.Scheme} {M N : X.Modules} (g : M ⟶ N)
+  [CategoryTheory.Epi g],
+  ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj (CategoryTheory.Limits.kernel g)).IsFlasque →
+    ∀ (f : SheafOfModules.unit X.ringCatSheaf ⟶ N),
+      ∃ (e : SheafOfModules.unit X.ringCatSheaf ⟶ M), CategoryTheory.CategoryStruct.comp e g = f
+'LinearStudy.schemeModule_unitHom_lift_of_flasqueKernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModule_unitHom_lift_of_closedDiscreteSubHom : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) (A M N : X.Modules)
+      (j : M ⟶ LinearStudy.schemeModuleHomModuleSheaf ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) A)
+      [CategoryTheory.Mono j] (g : M ⟶ N) [CategoryTheory.Epi g] (s : SheafOfModules.unit X.ringCatSheaf ⟶ N),
+      ∃ (t : SheafOfModules.unit X.ringCatSheaf ⟶ M), CategoryTheory.CategoryStruct.comp t g = s
+'LinearStudy.schemeModule_unitHom_lift_of_closedDiscreteSubHom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.moduleSheafGlobalSectionMorphism_of_morphism:true
+ROLECHECK:LinearStudy.schemeModule_epi_sections_surjective_of_flasqueKernel:true
+ROLECHECK:LinearStudy.schemeModule_unitHom_lift_of_flasqueKernel:true
+ROLECHECK:LinearStudy.schemeModule_unitHom_lift_of_closedDiscreteSubHom:true

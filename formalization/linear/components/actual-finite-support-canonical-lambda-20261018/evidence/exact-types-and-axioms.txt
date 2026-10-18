@@ -1,0 +1,226 @@
+
+===== SPLIT AUDIT support-topology =====
+@LinearStudy.closedDiscreteSupportAbelianSheaf_restriction_surjective : ∀ {X : TopCat} (S : Set ↑X),
+  (∀ (V : TopologicalSpace.Opens ↑X), IsClosed (S ∩ ↑V)) →
+    ∀ (F : TopCat.Sheaf AddCommGrpCat X),
+      (∀ (T : TopologicalSpace.Opens ↑X), Disjoint (↑T) S → Subsingleton ↑(F.obj.obj (Opposite.op T))) →
+        ∀ {U V : TopologicalSpace.Opens ↑X} (i : V ⟶ U),
+          Function.Surjective ⇑(CategoryTheory.ConcreteCategory.hom (F.obj.map i.op))
+'LinearStudy.closedDiscreteSupportAbelianSheaf_restriction_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.closedDiscreteSupportAbelianSheaf_isFlasque : ∀ {X : TopCat} (S : Set ↑X),
+  (∀ (V : TopologicalSpace.Opens ↑X), IsClosed (S ∩ ↑V)) →
+    ∀ (F : TopCat.Sheaf AddCommGrpCat X),
+      (∀ (T : TopologicalSpace.Opens ↑X), Disjoint (↑T) S → Subsingleton ↑(F.obj.obj (Opposite.op T))) → F.IsFlasque
+'LinearStudy.closedDiscreteSupportAbelianSheaf_isFlasque' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteClosedMap_range_inter_open_isClosed : ∀ {D X : TopCat} [DiscreteTopology ↑D] (f : D ⟶ X),
+  IsClosedMap ⇑(CategoryTheory.ConcreteCategory.hom f) →
+    ∀ (V : TopologicalSpace.Opens ↑X), IsClosed (Set.range ⇑(CategoryTheory.ConcreteCategory.hom f) ∩ ↑V)
+'LinearStudy.discreteClosedMap_range_inter_open_isClosed' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteClosedMap_supportedAbelianSheaf_isFlasque : ∀ {D X : TopCat} [DiscreteTopology ↑D] (f : D ⟶ X),
+  IsClosedMap ⇑(CategoryTheory.ConcreteCategory.hom f) →
+    ∀ (F : TopCat.Sheaf AddCommGrpCat X),
+      (∀ (T : TopologicalSpace.Opens ↑X),
+          Disjoint (↑T) (Set.range ⇑(CategoryTheory.ConcreteCategory.hom f)) →
+            Subsingleton ↑(F.obj.obj (Opposite.op T))) →
+        F.IsFlasque
+'LinearStudy.discreteClosedMap_supportedAbelianSheaf_isFlasque' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.closedDiscreteSupportAbelianSheaf_restriction_surjective:true
+ROLECHECK:LinearStudy.closedDiscreteSupportAbelianSheaf_isFlasque:true
+ROLECHECK:LinearStudy.discreteClosedMap_range_inter_open_isClosed:true
+ROLECHECK:LinearStudy.discreteClosedMap_supportedAbelianSheaf_isFlasque:true
+
+===== SPLIT AUDIT support-hom-vanishing =====
+@LinearStudy.schemeModuleHomModuleSheaf_isZero_of_source : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules),
+  CategoryTheory.Limits.IsZero P → CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleHomModuleSheaf P N)
+'LinearStudy.schemeModuleHomModuleSheaf_isZero_of_source' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomModuleSheaf_open_isZero_of_source : ∀ {X Y : AlgebraicGeometry.Scheme} (j : Y ⟶ X)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (P N : X.Modules),
+  CategoryTheory.Limits.IsZero (P.restrict j) →
+    CategoryTheory.Limits.IsZero ((LinearStudy.schemeModuleHomModuleSheaf P N).restrict j)
+'LinearStudy.schemeModuleHomModuleSheaf_open_isZero_of_source' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleSubHom_open_isZero_of_source : ∀ {X Y : AlgebraicGeometry.Scheme} (j : Y ⟶ X)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (P N M : X.Modules) (g : M ⟶ LinearStudy.schemeModuleHomModuleSheaf P N)
+  [CategoryTheory.Mono g], CategoryTheory.Limits.IsZero (P.restrict j) → CategoryTheory.Limits.IsZero (M.restrict j)
+'LinearStudy.schemeModuleSubHom_open_isZero_of_source' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSubHom_supportedFlasque : ∀ {X : AlgebraicGeometry.Scheme} (S : Set ↥X),
+  (∀ (U : X.Opens), IsClosed (S ∩ ↑U)) →
+    ∀ (P N M : X.Modules) (g : M ⟶ LinearStudy.schemeModuleHomModuleSheaf P N) [CategoryTheory.Mono g],
+      (∀ (U : X.Opens), Disjoint (↑U) S → CategoryTheory.Limits.IsZero (P.restrict U.ι)) →
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M).IsFlasque
+'LinearStudy.schemeModuleSubHom_supportedFlasque' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSubHom_closedDiscreteFlasque : ∀ {D X : AlgebraicGeometry.Scheme} [DiscreteTopology ↥D]
+  (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (P N M : X.Modules) (g : M ⟶ LinearStudy.schemeModuleHomModuleSheaf P N) [CategoryTheory.Mono g],
+      (∀ (U : X.Opens), Disjoint (↑U) (Set.range ⇑f) → CategoryTheory.Limits.IsZero (P.restrict U.ι)) →
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M).IsFlasque
+'LinearStudy.schemeModuleSubHom_closedDiscreteFlasque' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModulePushforward_sections_subsingleton_of_disjointRange : ∀ {D X : AlgebraicGeometry.Scheme}
+  (f : D ⟶ X) (L : D.Modules) (U : X.Opens),
+  Disjoint (↑U) (Set.range ⇑f) →
+    Subsingleton ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L).presheaf.obj (Opposite.op U))
+'LinearStudy.schemeModulePushforward_sections_subsingleton_of_disjointRange' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModulePushforward_open_isZero_of_disjointRange : ∀ {D X : AlgebraicGeometry.Scheme} (f : D ⟶ X)
+  (L : D.Modules) (U : X.Opens),
+  Disjoint (↑U) (Set.range ⇑f) →
+    CategoryTheory.Limits.IsZero (((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L).restrict U.ι)
+'LinearStudy.schemeModulePushforward_open_isZero_of_disjointRange' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleSubHom_pushforward_closedDiscreteFlasque : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) (N M : X.Modules)
+      (g : M ⟶ LinearStudy.schemeModuleHomModuleSheaf ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) N)
+      [CategoryTheory.Mono g], ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M).IsFlasque
+'LinearStudy.schemeModuleSubHom_pushforward_closedDiscreteFlasque' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleSubHom_artinianClosedImmersionFlasque : ∀ {D X : AlgebraicGeometry.Scheme}
+  [AlgebraicGeometry.IsArtinianScheme D] (f : D ⟶ X) [AlgebraicGeometry.IsClosedImmersion f] (L : D.Modules)
+  (N M : X.Modules)
+  (g : M ⟶ LinearStudy.schemeModuleHomModuleSheaf ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) N)
+  [CategoryTheory.Mono g], ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M).IsFlasque
+'LinearStudy.schemeModuleSubHom_artinianClosedImmersionFlasque' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleHomModuleSheaf_isZero_of_source:true
+ROLECHECK:LinearStudy.schemeModuleHomModuleSheaf_open_isZero_of_source:true
+ROLECHECK:LinearStudy.schemeModuleSubHom_open_isZero_of_source:true
+ROLECHECK:LinearStudy.schemeModuleSubHom_supportedFlasque:true
+ROLECHECK:LinearStudy.schemeModuleSubHom_closedDiscreteFlasque:true
+ROLECHECK:LinearStudy.schemeModulePushforward_sections_subsingleton_of_disjointRange:true
+ROLECHECK:LinearStudy.schemeModulePushforward_open_isZero_of_disjointRange:true
+ROLECHECK:LinearStudy.schemeModuleSubHom_pushforward_closedDiscreteFlasque:true
+ROLECHECK:LinearStudy.schemeModuleSubHom_artinianClosedImmersionFlasque:true
+
+===== SPLIT AUDIT support-unit-lifting =====
+@LinearStudy.moduleSheafGlobalSectionMorphism_of_morphism : ∀ {X : AlgebraicGeometry.Scheme} (M : X.Modules)
+  (f : SheafOfModules.unit X.ringCatSheaf ⟶ M),
+  LinearStudy.moduleSheafGlobalSectionMorphism M
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app f ⊤)) 1) =
+    f
+'LinearStudy.moduleSheafGlobalSectionMorphism_of_morphism' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModule_epi_sections_surjective_of_flasqueKernel : ∀ {X : AlgebraicGeometry.Scheme} {M N : X.Modules}
+  (g : M ⟶ N) [CategoryTheory.Epi g],
+  ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj (CategoryTheory.Limits.kernel g)).IsFlasque →
+    ∀ (U : X.Opens),
+      Function.Surjective ⇑(CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app g U))
+'LinearStudy.schemeModule_epi_sections_surjective_of_flasqueKernel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModule_unitHom_lift_of_flasqueKernel : ∀ {X : AlgebraicGeometry.Scheme} {M N : X.Modules} (g : M ⟶ N)
+  [CategoryTheory.Epi g],
+  ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj (CategoryTheory.Limits.kernel g)).IsFlasque →
+    ∀ (f : SheafOfModules.unit X.ringCatSheaf ⟶ N),
+      ∃ (e : SheafOfModules.unit X.ringCatSheaf ⟶ M), CategoryTheory.CategoryStruct.comp e g = f
+'LinearStudy.schemeModule_unitHom_lift_of_flasqueKernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModule_unitHom_lift_of_closedDiscreteSubHom : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) (A M N : X.Modules)
+      (j : M ⟶ LinearStudy.schemeModuleHomModuleSheaf ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) A)
+      [CategoryTheory.Mono j] (g : M ⟶ N) [CategoryTheory.Epi g] (s : SheafOfModules.unit X.ringCatSheaf ⟶ N),
+      ∃ (t : SheafOfModules.unit X.ringCatSheaf ⟶ M), CategoryTheory.CategoryStruct.comp t g = s
+'LinearStudy.schemeModule_unitHom_lift_of_closedDiscreteSubHom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.moduleSheafGlobalSectionMorphism_of_morphism:true
+ROLECHECK:LinearStudy.schemeModule_epi_sections_surjective_of_flasqueKernel:true
+ROLECHECK:LinearStudy.schemeModule_unitHom_lift_of_flasqueKernel:true
+ROLECHECK:LinearStudy.schemeModule_unitHom_lift_of_closedDiscreteSubHom:true
+
+===== SPLIT AUDIT support-cocycle-lifting =====
+@LinearStudy.schemeModuleInjectiveInternalHomCycleMap_surjective : ∀ {X : AlgebraicGeometry.Scheme} {N : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (P : X.Modules) (q : ℕ),
+  Function.Surjective ⇑(LinearStudy.schemeModuleInjectiveInternalHomCycleMap I P q)
+'LinearStudy.schemeModuleInjectiveInternalHomCycleMap_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_surjective : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) (q : ℕ),
+      Function.Surjective
+        ⇑(LinearStudy.schemeModuleInjectiveInternalHomClassMap I
+            ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) q)
+'LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_zero_iff : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) (n : ℕ)
+      (c : ↥(LinearStudy.injectiveCocycleGroup I ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) (n + 1))),
+      (LinearStudy.schemeModuleInjectiveInternalHomClassMap I ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L)
+              (n + 1))
+            c =
+          0 ↔
+        ∃ (g : (AlgebraicGeometry.Scheme.Modules.pushforward f).obj L ⟶ I.cocomplex.X n),
+          CategoryTheory.CategoryStruct.comp g (I.cocomplex.d n (n + 1)) = ↑c
+'LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_zero_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomCycleMap_surjective:true
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_surjective:true
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_zero_iff:true
+
+===== SPLIT AUDIT support-canonical-lambda =====
+@LinearStudy.schemeModuleGlobalToInternalExtViaResolution_closedDiscrete_bijective : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) (N : X.Modules) (I : CategoryTheory.InjectiveResolution N) (n : ℕ),
+      Function.Bijective
+        ⇑(LinearStudy.schemeModuleGlobalToInternalExtViaResolution I
+            ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) n)
+'LinearStudy.schemeModuleGlobalToInternalExtViaResolution_closedDiscrete_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExt_closedDiscrete_bijective : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) (N : X.Modules) (n : ℕ),
+      Function.Bijective
+        ⇑(LinearStudy.schemeModuleGlobalToInternalExt ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) N n)
+'LinearStudy.schemeModuleGlobalToInternalExt_closedDiscrete_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExt_artinianClosedImmersion_bijective : ∀ {D X : AlgebraicGeometry.Scheme}
+  [AlgebraicGeometry.IsArtinianScheme D] (f : D ⟶ X) [AlgebraicGeometry.IsClosedImmersion f] (L : D.Modules)
+  (N : X.Modules) (n : ℕ),
+  Function.Bijective
+    ⇑(LinearStudy.schemeModuleGlobalToInternalExt ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) N n)
+'LinearStudy.schemeModuleGlobalToInternalExt_artinianClosedImmersion_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtSections_closedDiscrete_bijective : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) (N : X.Modules) (n : ℕ),
+      Function.Bijective
+        ⇑(LinearStudy.schemeModuleGlobalToInternalExtSections ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) N
+            n)
+'LinearStudy.schemeModuleGlobalToInternalExtSections_closedDiscrete_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtSections_artinianClosedImmersion_bijective : ∀
+  {D X : AlgebraicGeometry.Scheme} [AlgebraicGeometry.IsArtinianScheme D] (f : D ⟶ X)
+  [AlgebraicGeometry.IsClosedImmersion f] (L : D.Modules) (N : X.Modules) (n : ℕ),
+  Function.Bijective
+    ⇑(LinearStudy.schemeModuleGlobalToInternalExtSections ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) N n)
+'LinearStudy.schemeModuleGlobalToInternalExtSections_artinianClosedImmersion_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtViaResolution_closedDiscrete_bijective:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_closedDiscrete_bijective:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExt_artinianClosedImmersion_bijective:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtSections_closedDiscrete_bijective:true
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtSections_artinianClosedImmersion_bijective:true

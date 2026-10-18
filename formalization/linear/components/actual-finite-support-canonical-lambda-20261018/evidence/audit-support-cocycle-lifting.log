@@ -1,0 +1,33 @@
+@LinearStudy.schemeModuleInjectiveInternalHomCycleMap_surjective : ∀ {X : AlgebraicGeometry.Scheme} {N : X.Modules}
+  (I : CategoryTheory.InjectiveResolution N) (P : X.Modules) (q : ℕ),
+  Function.Surjective ⇑(LinearStudy.schemeModuleInjectiveInternalHomCycleMap I P q)
+'LinearStudy.schemeModuleInjectiveInternalHomCycleMap_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_surjective : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) (q : ℕ),
+      Function.Surjective
+        ⇑(LinearStudy.schemeModuleInjectiveInternalHomClassMap I
+            ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) q)
+'LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_zero_iff : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) {N : X.Modules} (I : CategoryTheory.InjectiveResolution N) (n : ℕ)
+      (c : ↥(LinearStudy.injectiveCocycleGroup I ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) (n + 1))),
+      (LinearStudy.schemeModuleInjectiveInternalHomClassMap I ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L)
+              (n + 1))
+            c =
+          0 ↔
+        ∃ (g : (AlgebraicGeometry.Scheme.Modules.pushforward f).obj L ⟶ I.cocomplex.X n),
+          CategoryTheory.CategoryStruct.comp g (I.cocomplex.d n (n + 1)) = ↑c
+'LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_zero_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomCycleMap_surjective:true
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_surjective:true
+ROLECHECK:LinearStudy.schemeModuleInjectiveInternalHomClassMap_closedDiscrete_zero_iff:true

@@ -1,0 +1,67 @@
+@LinearStudy.schemeModuleHomModuleSheaf_isZero_of_source : ∀ {X : AlgebraicGeometry.Scheme} (P N : X.Modules),
+  CategoryTheory.Limits.IsZero P → CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleHomModuleSheaf P N)
+'LinearStudy.schemeModuleHomModuleSheaf_isZero_of_source' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleHomModuleSheaf_open_isZero_of_source : ∀ {X Y : AlgebraicGeometry.Scheme} (j : Y ⟶ X)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (P N : X.Modules),
+  CategoryTheory.Limits.IsZero (P.restrict j) →
+    CategoryTheory.Limits.IsZero ((LinearStudy.schemeModuleHomModuleSheaf P N).restrict j)
+'LinearStudy.schemeModuleHomModuleSheaf_open_isZero_of_source' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleSubHom_open_isZero_of_source : ∀ {X Y : AlgebraicGeometry.Scheme} (j : Y ⟶ X)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (P N M : X.Modules) (g : M ⟶ LinearStudy.schemeModuleHomModuleSheaf P N)
+  [CategoryTheory.Mono g], CategoryTheory.Limits.IsZero (P.restrict j) → CategoryTheory.Limits.IsZero (M.restrict j)
+'LinearStudy.schemeModuleSubHom_open_isZero_of_source' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSubHom_supportedFlasque : ∀ {X : AlgebraicGeometry.Scheme} (S : Set ↥X),
+  (∀ (U : X.Opens), IsClosed (S ∩ ↑U)) →
+    ∀ (P N M : X.Modules) (g : M ⟶ LinearStudy.schemeModuleHomModuleSheaf P N) [CategoryTheory.Mono g],
+      (∀ (U : X.Opens), Disjoint (↑U) S → CategoryTheory.Limits.IsZero (P.restrict U.ι)) →
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M).IsFlasque
+'LinearStudy.schemeModuleSubHom_supportedFlasque' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSubHom_closedDiscreteFlasque : ∀ {D X : AlgebraicGeometry.Scheme} [DiscreteTopology ↥D]
+  (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (P N M : X.Modules) (g : M ⟶ LinearStudy.schemeModuleHomModuleSheaf P N) [CategoryTheory.Mono g],
+      (∀ (U : X.Opens), Disjoint (↑U) (Set.range ⇑f) → CategoryTheory.Limits.IsZero (P.restrict U.ι)) →
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M).IsFlasque
+'LinearStudy.schemeModuleSubHom_closedDiscreteFlasque' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModulePushforward_sections_subsingleton_of_disjointRange : ∀ {D X : AlgebraicGeometry.Scheme}
+  (f : D ⟶ X) (L : D.Modules) (U : X.Opens),
+  Disjoint (↑U) (Set.range ⇑f) →
+    Subsingleton ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L).presheaf.obj (Opposite.op U))
+'LinearStudy.schemeModulePushforward_sections_subsingleton_of_disjointRange' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModulePushforward_open_isZero_of_disjointRange : ∀ {D X : AlgebraicGeometry.Scheme} (f : D ⟶ X)
+  (L : D.Modules) (U : X.Opens),
+  Disjoint (↑U) (Set.range ⇑f) →
+    CategoryTheory.Limits.IsZero (((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L).restrict U.ι)
+'LinearStudy.schemeModulePushforward_open_isZero_of_disjointRange' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleSubHom_pushforward_closedDiscreteFlasque : ∀ {D X : AlgebraicGeometry.Scheme}
+  [DiscreteTopology ↥D] (f : D ⟶ X),
+  IsClosedMap ⇑f →
+    ∀ (L : D.Modules) (N M : X.Modules)
+      (g : M ⟶ LinearStudy.schemeModuleHomModuleSheaf ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) N)
+      [CategoryTheory.Mono g], ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M).IsFlasque
+'LinearStudy.schemeModuleSubHom_pushforward_closedDiscreteFlasque' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleSubHom_artinianClosedImmersionFlasque : ∀ {D X : AlgebraicGeometry.Scheme}
+  [AlgebraicGeometry.IsArtinianScheme D] (f : D ⟶ X) [AlgebraicGeometry.IsClosedImmersion f] (L : D.Modules)
+  (N M : X.Modules)
+  (g : M ⟶ LinearStudy.schemeModuleHomModuleSheaf ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) N)
+  [CategoryTheory.Mono g], ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M).IsFlasque
+'LinearStudy.schemeModuleSubHom_artinianClosedImmersionFlasque' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleHomModuleSheaf_isZero_of_source:true
+ROLECHECK:LinearStudy.schemeModuleHomModuleSheaf_open_isZero_of_source:true
+ROLECHECK:LinearStudy.schemeModuleSubHom_open_isZero_of_source:true
+ROLECHECK:LinearStudy.schemeModuleSubHom_supportedFlasque:true
+ROLECHECK:LinearStudy.schemeModuleSubHom_closedDiscreteFlasque:true
+ROLECHECK:LinearStudy.schemeModulePushforward_sections_subsingleton_of_disjointRange:true
+ROLECHECK:LinearStudy.schemeModulePushforward_open_isZero_of_disjointRange:true
+ROLECHECK:LinearStudy.schemeModuleSubHom_pushforward_closedDiscreteFlasque:true
+ROLECHECK:LinearStudy.schemeModuleSubHom_artinianClosedImmersionFlasque:true
