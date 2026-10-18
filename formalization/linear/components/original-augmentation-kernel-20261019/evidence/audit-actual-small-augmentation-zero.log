@@ -1,0 +1,53 @@
+@LinearStudy.schemeModuleOriginalSmallClass_augmentation_precomp_zero : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E N : X.Modules} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ N)
+      (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+      (CategoryTheory.Abelian.Ext.mk₀ (alpha.f 0)).comp
+          (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha a ha) ⋯ =
+        0
+'LinearStudy.schemeModuleOriginalSmallClass_augmentation_precomp_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalSmallClass_quotient_precomp_zero : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E N : X.Modules} (r : ℕ),
+  0 < r →
+    ∀ (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ E)
+      (he : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation C E e)) (a : C.X r ⟶ N)
+      (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+      (CategoryTheory.Abelian.Ext.mk₀
+              (CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (C.d 1 0)) e.hom)).comp
+          (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r
+            (LinearStudy.originalChainCokernelTargetAugmentation C E e) he a ha)
+          ⋯ =
+        0
+'LinearStudy.schemeModuleOriginalSmallClass_quotient_precomp_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalClassAugmentationZeroStatement : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E : X.Modules} → ℕ → (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) → QuasiIso alpha → Prop
+'LinearStudy.schemeModuleOriginalClassAugmentationZeroStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalClassAugmentationZeroStatement_proof : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E : X.Modules} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha),
+      LinearStudy.schemeModuleOriginalClassAugmentationZeroStatement C r alpha hAlpha
+'LinearStudy.schemeModuleOriginalClassAugmentationZeroStatement_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleOriginalClassAugmentationZeroStatement.{u} : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E : X.Modules} → ℕ → (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) → QuasiIso alpha → Prop :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) {E : X.Modules} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha) =>
+  ∀ (N : X.Modules) (a : C.X r ⟶ N) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+    (CategoryTheory.Abelian.Ext.mk₀ (alpha.f 0)).comp
+        (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha a ha) ⋯ =
+      0
+ROLECHECK:LinearStudy.schemeModuleOriginalSmallClass_augmentation_precomp_zero:true
+ROLECHECK:LinearStudy.schemeModuleOriginalSmallClass_quotient_precomp_zero:true
+ROLECHECK:LinearStudy.schemeModuleOriginalClassAugmentationZeroStatement:false
+ROLECHECK:LinearStudy.schemeModuleOriginalClassAugmentationZeroStatement_proof:true

@@ -1,0 +1,77 @@
+@LinearStudy.cochainResolutionExtClass_sourceSquare : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K L : CochainComplex A ℤ) {E F N : A} (r : ℕ) (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  [inst_4 : QuasiIso alpha] (tau : L ⟶ (CochainComplex.singleFunctor A 0).obj F) [inst_5 : QuasiIso tau] (gamma : L ⟶ K)
+  (u : F ⟶ E),
+  CategoryTheory.CategoryStruct.comp gamma alpha =
+      CategoryTheory.CategoryStruct.comp tau ((CochainComplex.singleFunctor A 0).map u) →
+    ∀ (beta : CategoryTheory.ShiftedHom K ((CochainComplex.singleFunctor A 0).obj N) ↑r),
+      (CategoryTheory.Abelian.Ext.mk₀ u).comp (LinearStudy.cochainResolutionExtClass K r alpha beta) ⋯ =
+        LinearStudy.cochainResolutionExtClass L r tau ((CategoryTheory.ShiftedHom.mk₀ 0 ⋯ gamma).comp beta ⋯)
+'LinearStudy.cochainResolutionExtClass_sourceSquare' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainResolutionExtClass_zero : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K : CochainComplex A ℤ) {E N : A} (r : ℕ) (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  [inst_4 : QuasiIso alpha], LinearStudy.cochainResolutionExtClass K r alpha 0 = 0
+'LinearStudy.cochainResolutionExtClass_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainSingle_positive_shiftedHom_zero : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] {F N : A} (r : ℕ),
+  0 < r →
+    ∀
+      (beta :
+        CategoryTheory.ShiftedHom ((CochainComplex.singleFunctor A 0).obj F) ((CochainComplex.singleFunctor A 0).obj N)
+          ↑r),
+      beta = 0
+'LinearStudy.cochainSingle_positive_shiftedHom_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainResolutionExtClass_augmentation_precomp_zero : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (K : CochainComplex A ℤ) [K.IsStrictlyLE 0] {E N : A} (r : ℕ),
+  0 < r →
+    ∀ (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [inst_5 : QuasiIso alpha]
+      (beta : CategoryTheory.ShiftedHom K ((CochainComplex.singleFunctor A 0).obj N) ↑r),
+      (CategoryTheory.Abelian.Ext.mk₀
+              (CategoryTheory.CategoryStruct.comp (alpha.f 0)
+                (HomologicalComplex.singleObjXSelf (ComplexShape.up ℤ) 0 E).hom)).comp
+          (LinearStudy.cochainResolutionExtClass K r alpha beta) ⋯ =
+        0
+'LinearStudy.cochainResolutionExtClass_augmentation_precomp_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalChainAugmentationAsCochain_f_zero : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (C : ChainComplex A ℕ) {E : A} (alpha : C ⟶ (ChainComplex.single₀ A).obj E),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.originalChainAugmentationAsCochain C alpha).f 0)
+      (HomologicalComplex.singleObjXSelf (ComplexShape.up ℤ) 0 E).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.originalChainAsCochainXIso C 0 0 LinearStudy.originalChainAugmentationAsCochain_f_zero._proof_1).hom
+      (alpha.f 0)
+'LinearStudy.originalChainAugmentationAsCochain_f_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainTopExtClass_augmentation_precomp_zero : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (C : ChainComplex A ℕ) {E N : A} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_4 : QuasiIso alpha] (a : C.X r ⟶ N)
+      (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+      (CategoryTheory.Abelian.Ext.mk₀ (alpha.f 0)).comp (LinearStudy.originalChainTopExtClass C r alpha a ha) ⋯ = 0
+'LinearStudy.originalChainTopExtClass_augmentation_precomp_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalChainTopExtClass_quotient_precomp_zero : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (C : ChainComplex A ℕ) {E N : A} (r : ℕ),
+  0 < r →
+    ∀ (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ E)
+      (hAlpha : QuasiIso (LinearStudy.originalChainCokernelTargetAugmentation C E e)) (a : C.X r ⟶ N)
+      (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+      (CategoryTheory.Abelian.Ext.mk₀
+              (CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.cokernel.π (C.d 1 0)) e.hom)).comp
+          (LinearStudy.originalChainTopExtClass C r (LinearStudy.originalChainCokernelTargetAugmentation C E e) a ha)
+          ⋯ =
+        0
+'LinearStudy.originalChainTopExtClass_quotient_precomp_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.cochainResolutionExtClass_sourceSquare:true
+ROLECHECK:LinearStudy.cochainResolutionExtClass_zero:true
+ROLECHECK:LinearStudy.cochainSingle_positive_shiftedHom_zero:true
+ROLECHECK:LinearStudy.cochainResolutionExtClass_augmentation_precomp_zero:true
+ROLECHECK:LinearStudy.originalChainAugmentationAsCochain_f_zero:true
+ROLECHECK:LinearStudy.originalChainTopExtClass_augmentation_precomp_zero:true
+ROLECHECK:LinearStudy.originalChainTopExtClass_quotient_precomp_zero:true

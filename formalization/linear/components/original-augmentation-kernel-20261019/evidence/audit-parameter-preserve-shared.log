@@ -1,0 +1,9 @@
+@LinearStudy.parameterFamily_enrich_preserving_shared : ∀ {U : Type u_1} {W : Type u_2} {I : Type u_3}
+  {E : W → I → Type u_4} {B1 B2 : U → Prop} {G : U → W → Prop} {P : (w : W) → (i : I) → E w i → Prop}
+  {R T : (w : W) → (i : I) → (e : E w i) → P w i e → Prop} {Q : W → Prop},
+  (∃ (u : U), B1 u ∧ B2 u ∧ ∀ (w : W), G u w → (∀ (i : I), ∃ (e : E w i), ∃ (he : P w i e), R w i e he) ∧ Q w) →
+    (∀ (w : W) (i : I) (e : E w i) (he : P w i e), R w i e he → T w i e he) →
+      ∃ (u : U),
+        B1 u ∧ B2 u ∧ ∀ (w : W), G u w → (∀ (i : I), ∃ (e : E w i), ∃ (he : P w i e), R w i e he ∧ T w i e he) ∧ Q w
+'LinearStudy.parameterFamily_enrich_preserving_shared' does not depend on any axioms
+ROLECHECK:LinearStudy.parameterFamily_enrich_preserving_shared:true
