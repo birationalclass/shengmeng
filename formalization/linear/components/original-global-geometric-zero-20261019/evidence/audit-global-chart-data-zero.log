@@ -1,0 +1,48 @@
+@LinearStudy.schemeModuleOpenKoszulChartDataGlobalZeroStatement : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      LinearStudy.schemeModuleOpenKoszulChartData C (p + 1) →
+        {E : X.Modules} →
+          (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+            QuasiIso alpha → CategoryTheory.Limits.IsZero (C.X (p + 2)) → Prop
+'LinearStudy.schemeModuleOpenKoszulChartDataGlobalZeroStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOpenKoszulChartDataGlobalZeroProof : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) (p : ℕ) (D : LinearStudy.schemeModuleOpenKoszulChartData C (p + 1)) {E : X.Modules}
+  (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (C.X (p + 2))),
+  LinearStudy.schemeModuleOpenKoszulChartDataCutZeroStatement C p D alpha hAlpha hAbove →
+    (∀ (N : X.Modules), Function.Injective ⇑(LinearStudy.schemeModuleGlobalToInternalExt E N p)) →
+      (∀ (N : X.Modules),
+          CategoryTheory.IsIso
+            ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction D.snd.fst).unit.app
+              (LinearStudy.schemeModuleInternalExt E N (p + 1)))) →
+        LinearStudy.schemeModuleOpenKoszulChartDataGlobalZeroStatement C p D alpha hAlpha hAbove
+'LinearStudy.schemeModuleOpenKoszulChartDataGlobalZeroProof' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleOpenKoszulChartDataGlobalZeroStatement.{u} : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      LinearStudy.schemeModuleOpenKoszulChartData C (p + 1) →
+        {E : X.Modules} →
+          (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+            QuasiIso alpha → CategoryTheory.Limits.IsZero (C.X (p + 2)) → Prop :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) (p : ℕ)
+    (D : LinearStudy.schemeModuleOpenKoszulChartData C (p + 1)) {E : X.Modules}
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+    (hAbove : CategoryTheory.Limits.IsZero (C.X (p + 2))) =>
+  ∀ (N : X.Modules) (hN : SheafOfModules.IsQuasicoherent N) (a : C.X (p + 1) ⟶ N),
+    LinearStudy.schemeModuleOriginalChainTopExtClassSmall C (p + 1) alpha hAlpha a ⋯ = 0 ↔
+      (AlgebraicGeometry.Scheme.Modules.pullback
+              (AlgebraicGeometry.Spec.map
+                (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range D.snd.snd.snd.fst)))))).map
+          (LinearStudy.affineKoszulTopFunctionalSection D.fst
+            (AlgebraicGeometry.moduleSpecΓFunctor.obj (N.restrict D.snd.fst)) p
+            (CategoryTheory.CategoryStruct.comp
+              (LinearStudy.schemeModuleChainOpenKoszulTermIso D.fst D.snd.fst p D.snd.snd.snd.fst C D.snd.snd.snd.snd
+                  (p + 1)).inv
+              (CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.Scheme.Modules.restrictFunctor D.snd.fst).map a)
+                (LinearStudy.schemeModuleOpenQuasicoherentCoefficientIso D.fst D.snd.fst N).hom))) =
+        0
+ROLECHECK:LinearStudy.schemeModuleOpenKoszulChartDataGlobalZeroStatement:false
+ROLECHECK:LinearStudy.schemeModuleOpenKoszulChartDataGlobalZeroProof:true

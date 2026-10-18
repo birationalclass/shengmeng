@@ -1,0 +1,14 @@
+@LinearStudy.schemeModuleOpenKoszulChartDataGlobalZeroProof_of_cokernelLambda : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) (p : ℕ) (D : LinearStudy.schemeModuleOpenKoszulChartData C (p + 1)) {E : X.Modules}
+  (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (C.X (p + 2))) (e : CategoryTheory.Limits.cokernel (C.d 1 0) ≅ E),
+  LinearStudy.schemeModuleOpenKoszulChartDataCutZeroStatement C p D alpha hAlpha hAbove →
+    (∀ (N : X.Modules),
+        Function.Bijective
+          ⇑(LinearStudy.schemeModuleGlobalToInternalExt (CategoryTheory.Limits.cokernel (C.d 1 0)) N p)) →
+      LinearStudy.schemeModuleChartInternalExtSupportStatement C (p + 1) D E →
+        LinearStudy.schemeModuleOpenKoszulChartDataGlobalZeroStatement C p D alpha hAlpha hAbove
+'LinearStudy.schemeModuleOpenKoszulChartDataGlobalZeroProof_of_cokernelLambda' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleOpenKoszulChartDataGlobalZeroProof_of_cokernelLambda:true

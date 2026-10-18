@@ -1,0 +1,26 @@
+@LinearStudy.schemeModuleChartInternalExtSupportStatement : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) → (r : ℕ) → LinearStudy.schemeModuleOpenKoszulChartData C r → X.Modules → Prop
+'LinearStudy.schemeModuleChartInternalExtSupportStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleChartInternalExtSupportStatement_of_chartHEq : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) (r : ℕ) (D : LinearStudy.schemeModuleOpenKoszulChartData C r) (E : X.Modules)
+  (R : CommRingCat) (j : AlgebraicGeometry.Spec R ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j],
+  D.fst = R →
+    D.snd.fst ≍ j →
+      (∀ (N : X.Modules) (q : ℕ),
+          CategoryTheory.IsIso
+            ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app
+              (LinearStudy.schemeModuleInternalExt E N q))) →
+        LinearStudy.schemeModuleChartInternalExtSupportStatement C r D E
+'LinearStudy.schemeModuleChartInternalExtSupportStatement_of_chartHEq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleChartInternalExtSupportStatement.{u} : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) → (r : ℕ) → LinearStudy.schemeModuleOpenKoszulChartData C r → X.Modules → Prop :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) (r : ℕ)
+    (D : LinearStudy.schemeModuleOpenKoszulChartData C r) (E : X.Modules) =>
+  ∀ (N : X.Modules) (q : ℕ),
+    CategoryTheory.IsIso
+      ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction D.snd.fst).unit.app
+        (LinearStudy.schemeModuleInternalExt E N q))
+ROLECHECK:LinearStudy.schemeModuleChartInternalExtSupportStatement:false
+ROLECHECK:LinearStudy.schemeModuleChartInternalExtSupportStatement_of_chartHEq:true

@@ -1,0 +1,10 @@
+@LinearStudy.schemeModuleChartInternalExtSupportStatement_of_originalCover : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) (r : ℕ) (D : LinearStudy.schemeModuleOpenKoszulChartData C r) (E : X.Modules)
+  {ι : Type u_2} (V : ι → X.Opens),
+  (∀ (x : ↥X), x ∈ (AlgebraicGeometry.Scheme.Hom.opensFunctor D.snd.fst).obj ⊤ ∨ ∃ (i : ι), x ∈ V i) →
+    (∀ (i : ι), CategoryTheory.Limits.IsZero (E.restrict (V i).ι)) →
+      LinearStudy.schemeModuleChartInternalExtSupportStatement C r D E
+'LinearStudy.schemeModuleChartInternalExtSupportStatement_of_originalCover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleChartInternalExtSupportStatement_of_originalCover:true

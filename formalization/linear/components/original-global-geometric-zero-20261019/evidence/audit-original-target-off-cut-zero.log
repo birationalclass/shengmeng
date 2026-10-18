@@ -1,0 +1,47 @@
+@LinearStudy.projectivePulledOriginalTargetOffCutZeroProof : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ) (k : ℤ)
+  (e :
+    CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+  (i : Fin r),
+  CategoryTheory.Limits.IsZero
+    ((LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k).restrict
+      (AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+          (LinearStudy.projectivePulledLinearKoszulForms f V L w i)).ι)
+'LinearStudy.projectivePulledOriginalTargetOffCutZeroProof' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.projectivePulledOriginalTargetOffCutZeroProof : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ) (k : ℤ)
+  (e :
+    CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+  (i : Fin r),
+  CategoryTheory.Limits.IsZero
+    ((LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k).restrict
+      (AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+          (LinearStudy.projectivePulledLinearKoszulForms f V L w i)).ι) :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ)
+    (e :
+      CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+    (i : Fin r) =>
+  LinearStudy.nativeProjectiveKoszul_target_openRestriction_isZero_offCut
+    (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+    (fun (t : Fin (n + 1)) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X t))
+    (fun (t : Fin (n + 1)) => Exists.intro (MvPolynomial.X t) ⟨MvPolynomial.isHomogeneous_X ℂ t, rfl⟩)
+    (LinearStudy.homogeneousQuotient_coordinate_adjoin_eq_top V.ideal.toIdeal)
+    (LinearStudy.projectivePulledLinearKoszulForms f V L w)
+    (LinearStudy.projectivePulledLinearKoszulForms_homogeneous f V L hL w) i k
+    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+    (LinearStudy.projectivePulledOriginalNativeCokernelIso f V L hL w k e)
+    (AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+        (LinearStudy.projectivePulledLinearKoszulForms f V L w i)).ι
+    fun
+      (x :
+        ↥↑(AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+              (LinearStudy.projectivePulledLinearKoszulForms f V L w i))) =>
+    x.property
+ROLECHECK:LinearStudy.projectivePulledOriginalTargetOffCutZeroProof:true

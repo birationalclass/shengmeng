@@ -1,0 +1,9 @@
+@LinearStudy.projectivePulledOriginalNamedExactChart_image : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ) (k : ℤ),
+  have D := LinearStudy.projectivePulledOriginalNamedExactChart f V L hL w k;
+  (AlgebraicGeometry.Scheme.Hom.opensFunctor D.snd.fst).obj ⊤ =
+    AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+      ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))
+'LinearStudy.projectivePulledOriginalNamedExactChart_image' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.projectivePulledOriginalNamedExactChart_image:true

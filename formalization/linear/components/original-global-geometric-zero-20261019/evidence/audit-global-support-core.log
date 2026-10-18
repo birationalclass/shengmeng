@@ -1,0 +1,37 @@
+@LinearStudy.schemeModuleInternalExt_open_isZero_of_source : ∀ {X Y : AlgebraicGeometry.Scheme} (j : Y ⟶ X)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (P N : X.Modules),
+  CategoryTheory.Limits.IsZero (P.restrict j) →
+    ∀ (q : ℕ), CategoryTheory.Limits.IsZero ((LinearStudy.schemeModuleInternalExt P N q).restrict j)
+'LinearStudy.schemeModuleInternalExt_open_isZero_of_source' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleInternalExt_restrictionUnit_isIso_of_originalCover : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (P N : X.Modules) (q : ℕ) {ι : Type u_2} (V : ι → X.Opens),
+  (∀ (x : ↥X), x ∈ (AlgebraicGeometry.Scheme.Hom.opensFunctor j).obj ⊤ ∨ ∃ (i : ι), x ∈ V i) →
+    (∀ (i : ι), CategoryTheory.Limits.IsZero (P.restrict (V i).ι)) →
+      CategoryTheory.IsIso
+        ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app (LinearStudy.schemeModuleInternalExt P N q))
+'LinearStudy.schemeModuleInternalExt_restrictionUnit_isIso_of_originalCover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModule_morphism_zero_iff_restrict_of_target_unit_isIso : ∀ {X Y : AlgebraicGeometry.Scheme}
+  (j : Y ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] {A B : X.Modules} (a : A ⟶ B),
+  CategoryTheory.IsIso ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app B) →
+    (a = 0 ↔ (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map a = 0)
+'LinearStudy.schemeModule_morphism_zero_iff_restrict_of_target_unit_isIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalExt_zero_iff_open : ∀ {X Y : AlgebraicGeometry.Scheme} (j : Y ⟶ X)
+  [inst : AlgebraicGeometry.IsOpenImmersion j] (E N : X.Modules) (p : ℕ),
+  Function.Injective ⇑(LinearStudy.schemeModuleGlobalToInternalExt E N p) →
+    CategoryTheory.IsIso
+        ((AlgebraicGeometry.Scheme.Modules.restrictAdjunction j).unit.app
+          (LinearStudy.schemeModuleInternalExt E N (p + 1))) →
+      ∀ (x : CategoryTheory.Abelian.Ext E N (p + 1)),
+        x = 0 ↔
+          (AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map
+              ((LinearStudy.schemeModuleGlobalToInternalExtAll E N (p + 1)) x) =
+            0
+'LinearStudy.schemeModuleGlobalExt_zero_iff_open' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleInternalExt_open_isZero_of_source:true
+ROLECHECK:LinearStudy.schemeModuleInternalExt_restrictionUnit_isIso_of_originalCover:true
+ROLECHECK:LinearStudy.schemeModule_morphism_zero_iff_restrict_of_target_unit_isIso:true
+ROLECHECK:LinearStudy.schemeModuleGlobalExt_zero_iff_open:true

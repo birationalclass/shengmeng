@@ -1,0 +1,42 @@
+@LinearStudy.projectivePulledOriginalChartInternalExtSupportStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) → (Fin (r + 1) → ℂ) → ℤ → Prop
+'LinearStudy.projectivePulledOriginalChartInternalExtSupportStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalChartInternalExtSupportStatement_proof : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ) (k : ℤ),
+  (∀ (x : ↥(AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))),
+      x ∈
+          AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+            ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0)) ∨
+        ∃ (i : Fin r),
+          x ∈
+            AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+              (LinearStudy.projectivePulledLinearKoszulForms f V L w i)) →
+    ∀
+      (e :
+        CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+          LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k),
+      LinearStudy.projectivePulledOriginalChartInternalExtSupportStatement f V L hL w k
+'LinearStudy.projectivePulledOriginalChartInternalExtSupportStatement_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.projectivePulledOriginalChartInternalExtSupportStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) → (Fin (r + 1) → ℂ) → ℤ → Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) =>
+  LinearStudy.schemeModuleChartInternalExtSupportStatement
+    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) r
+    (LinearStudy.projectivePulledOriginalNamedExactChart f V L hL w k)
+    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+ROLECHECK:LinearStudy.projectivePulledOriginalChartInternalExtSupportStatement:false
+ROLECHECK:LinearStudy.projectivePulledOriginalChartInternalExtSupportStatement_proof:true

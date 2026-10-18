@@ -1,0 +1,15 @@
+@LinearStudy.nativeProjectiveKoszul_target_openRestriction_isZero_offCut : ∀ {K S : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] {J : Type}
+  (b : J → S),
+  (∀ (t : J), b t ∈ B 1) →
+    Algebra.adjoin K (Set.range b) = ⊤ →
+      ∀ {r q : ℕ} (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ B q) (i : Fin r) (k : ℤ)
+        (E : (AlgebraicGeometry.Proj B).Modules)
+        (e : CategoryTheory.Limits.cokernel ((LinearStudy.nativeProjectiveKoszulComplex B H hH k).d 1 0) ≅ E)
+        {Y : AlgebraicGeometry.Scheme} (j : Y ⟶ AlgebraicGeometry.Proj B)
+        [inst_4 : AlgebraicGeometry.IsOpenImmersion j],
+        (∀ (x : ↥Y), j x ∈ AlgebraicGeometry.Proj.basicOpen B (H i)) → CategoryTheory.Limits.IsZero (E.restrict j)
+'LinearStudy.nativeProjectiveKoszul_target_openRestriction_isZero_offCut' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.nativeProjectiveKoszul_target_openRestriction_isZero_offCut:true
