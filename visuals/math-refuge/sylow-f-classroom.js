@@ -1,3 +1,4 @@
+import {boardWaitAt,countdownTextRect,containsCountdown} from './board-countdown.js';
 import {MIN_BOARD_REVIEW_SECONDS} from './board-review.js';
 import {prepareClassroomAudioBlob,classroomAudioDecodeState} from './classroom-audio-decode.js?v=mp3-predecode-1';
 import {prepareBoard,paintPrepared} from './sylow-f-renderer.js';
@@ -39,11 +40,13 @@ async function selectBoard(index,resume=playIntent){const n=++generation;playInt
  if(n!==generation)return;preparing=false;$('complete').disabled=false;const target=audio,valid=()=>n===generation&&audio===target;finishCurrent=()=>{if(!valid()||!playIntent)return;const remaining=completedWall?MIN_BOARD_REVIEW_SECONDS-(Date.now()-completedWall)/1000:0;if(remaining>0){setTimeout(finishCurrent,Math.min(1000,remaining*1000));return;}if(board<course.boards.length-1)selectBoard(board+1,true);else{playing=false;playIntent=false;update();}};audio.onended=finishCurrent;audio.onplay=()=>{if(valid()){playing=true;update()}};audio.onpause=()=>{if(valid()){playing=false;update()}};paint();if(playIntent&&item?.file)await playPrepared(audio,n);update();
 }
 function update(){$('play').textContent=playIntent?'暂停':'播放';$('status').textContent=`${course?.title||''} · ${board+1} / ${course?.boards.length||0} · ZZL / F${!manifest?' · 文本与板书预览':''}`;}
-function paint(){if(!course)return;const b=course.boards[board],item=manifest?.boards[board],t=item?audio.currentTime:requestedTime,cx=$('board').getContext('2d');
+let countdownHit=null;
+function skipCountdown(){const item=manifest?.boards[board],wait=boardWaitAt(item,audio.currentTime);if(preparing||!wait)return false;audio.currentTime=wait.end+.001;paint();return true;}
+function paint(){countdownHit=null;if(!course)return;const b=course.boards[board],item=manifest?.boards[board],t=item?audio.currentTime:requestedTime,cx=$('board').getContext('2d');
  if(item){const rate=classroomAudioRate(item,t,.85);if(audio.playbackRate!==rate)audio.playbackRate=rate;}
  if(b.kind==='break'){cx.fillStyle='#06271c';cx.fillRect(0,0,1536,640);cx.fillStyle='#e4cf9c';cx.font='92px RefugeChinese';cx.textAlign='center';cx.fillText('课间休息',768,250);cx.font='88px sans-serif';cx.fillText(fmt(Math.min(300,Math.max(0,(item?.seconds||300)-t))),768,405);cx.textAlign='left';return;}
  if(!prepared)return;const fractions={};if(item){for(const w of item.writing)fractions[w.logical]=Math.max(fractions[w.logical]||0,Math.min(1,Math.max(0,(t-w.start)/(w.end-w.start))));}else Object.keys(prepared.logical).forEach(k=>fractions[k]=1);
- paintPrepared(cx,prepared,fractions);if(item&&t>=item.lastStrokeEnd){completedWall ||= Date.now();}else completedWall=0;const wait=item?.waits?.find(w=>t>=w.start&&t<w.end);if(wait){cx.fillStyle='#e4cf9c';cx.font='72px sans-serif';cx.textAlign='center';cx.fillText(fmt(Math.ceil(wait.end-t)),768,b.kind==='exercise'?425:575);cx.textAlign='left';}
+ paintPrepared(cx,prepared,fractions);if(item&&t>=item.lastStrokeEnd){completedWall ||= Date.now();}else completedWall=0;const wait=item?.waits?.find(w=>t>=w.start&&t<w.end);if(wait){cx.fillStyle='#e4cf9c';cx.font='72px sans-serif';cx.textAlign='center';const text=fmt(Math.ceil(wait.end-t)),y=b.kind==='exercise'?425:575;cx.fillText(text,768,y);countdownHit=countdownTextRect(cx,text,768,y,78);cx.textAlign='left';}
  const cue=item?.cues?.find(w=>t>=w.start&&t<w.end);for(const e of $('script').querySelectorAll('article'))e.classList.toggle('active',e.dataset.line===cue?.lineId);
  if(item)$('seek').value=audio.currentTime/item.seconds*1000;
 }
@@ -53,8 +56,11 @@ $('play').onclick=async()=>{if(!openingLocked&&board===0&&manifest?.openingSelec
 $('complete').onclick=()=>{playIntent=false;audio.pause();playing=false;if(manifest)audio.currentTime=Math.max(0,manifest.boards[board].seconds-.01);requestedTime=Infinity;completedWall=Date.now();paint();update();};
 $('lang').onclick=async()=>{const resume=playIntent,t=audio.currentTime;language=language==='zh'?'en':'zh';await selectBoard(board,resume);if(manifest)audio.currentTime=t;paint();};
 $('seek').oninput=()=>{if(manifest){audio.currentTime=Number($('seek').value)/1000*manifest.boards[board].seconds;completedWall=audio.currentTime>=manifest.boards[board].lastStrokeEnd?Date.now():0;}paint();};
-function frame(){paint();requestAnimationFrame(frame)}requestAnimationFrame(frame);
+const countdownPoint=e=>{const r=$('board').getBoundingClientRect();return [(e.clientX-r.left)*1536/r.width,(e.clientY-r.top)*640/r.height];};
+$('board').addEventListener('click',e=>{if(containsCountdown(countdownHit,...countdownPoint(e)))skipCountdown();});
+$('board').addEventListener('pointermove',e=>{const hit=containsCountdown(countdownHit,...countdownPoint(e));$('board').style.cursor=hit?'pointer':'';$('board').title=hit?'点击跳过剩余思考':'';});
+function frame(){paint();if(!countdownHit){$('board').style.cursor='';$('board').title='';}requestAnimationFrame(frame)}requestAnimationFrame(frame);
 if(query.get('course'))$('course').value=query.get('course');
 if(!query.has('measure'))loadCourse().catch(e=>{$('status').textContent=e.message;console.error(e)});
-window.fClassroom={selectBoard,loadCourse,getState:()=>({board,playing,language,prepared,manifest,course,audio,output:classroomAudioOutputState(),decode:classroomAudioDecodeState(),audioCache:{compressed:compressedJobs.size,decoded:audioFiles.size}}),setTime:t=>{audio.pause();audio.currentTime=t;paint();}};
+window.fClassroom={selectBoard,loadCourse,skipCountdown,getState:()=>({countdownHit,board,playing,language,prepared,manifest,course,audio,output:classroomAudioOutputState(),decode:classroomAudioDecodeState(),audioCache:{compressed:compressedJobs.size,decoded:audioFiles.size}}),setTime:t=>{audio.pause();audio.currentTime=t;paint();}};
 const focusPause=()=>{playIntent=false;audio.pause();};addEventListener('blur',focusPause);document.addEventListener('visibilitychange',()=>{if(document.hidden)focusPause();});

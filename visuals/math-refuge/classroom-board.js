@@ -42,6 +42,6 @@ export function drawClassroomActivity(ctx,activity,{paused=false,language='zh',s
  ctx.font='22px "Microsoft YaHei", "Segoe UI", sans-serif';ctx.textAlign='right';
  ctx.fillText(sheets.length>1?(language==='en'?`Exercise board ${at+1} / ${sheets.length}`:`练习第 ${at+1} / ${sheets.length} 板`):language==='en'?'Pause below · Right arrow to continue':'下方播放键可暂停 · 右箭头继续',1448,590);ctx.restore();
  const eraseRows=[[84,48,Math.min(1368,measureTextWidth(ctx,title,font,52)+64),60],...sheets[at].map((line,i)=>[84,139+i*72,Math.min(1336,measureTextWidth(ctx,line.text,font)+8),48])];
- return{lines:sheets[at].length+1,title,feedback:Boolean(activity.feedback),sheetIndex:at,sheetCount:sheets.length,eraseRows,countdown:classroomCountdown(activity.remaining,paused,language)};
+ return{lines:sheets[at].length+1,title,feedback:Boolean(activity.feedback),sheetIndex:at,sheetCount:sheets.length,eraseRows,countdown:classroomCountdown(activity.remaining,paused,language),countdownRect:activity.feedback?null:[84,552,measureTextWidth(ctx,classroomCountdown(activity.remaining,paused,language),font,32)+16,48]};
 }
 function measureTextWidth(ctx,text,font,size=38){ctx.save();ctx.font=size+'px '+font;const width=ctx.measureText(text).width;ctx.restore();return width;}
