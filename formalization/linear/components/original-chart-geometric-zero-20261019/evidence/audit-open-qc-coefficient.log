@@ -1,0 +1,19 @@
+LinearStudy.schemeModuleOpenQuasicoherentCoefficientIso : (R : CommRingCat) →
+  {X : AlgebraicGeometry.Scheme} →
+    (j : AlgebraicGeometry.Spec R ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (N : X.Modules) →
+          [SheafOfModules.IsQuasicoherent N] →
+            N.restrict j ≅ AlgebraicGeometry.tilde (AlgebraicGeometry.moduleSpecΓFunctor.obj (N.restrict j))
+'LinearStudy.schemeModuleOpenQuasicoherentCoefficientIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleOpenQuasicoherentCoefficientIso.{u} : (R : CommRingCat) →
+  {X : AlgebraicGeometry.Scheme} →
+    (j : AlgebraicGeometry.Spec R ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (N : X.Modules) →
+          [SheafOfModules.IsQuasicoherent N] →
+            N.restrict j ≅ AlgebraicGeometry.tilde (AlgebraicGeometry.moduleSpecΓFunctor.obj (N.restrict j)) :=
+fun (R : CommRingCat) {X : AlgebraicGeometry.Scheme} (j : AlgebraicGeometry.Spec R ⟶ X)
+    [AlgebraicGeometry.IsOpenImmersion j] (N : X.Modules) [SheafOfModules.IsQuasicoherent N] =>
+  (CategoryTheory.asIso (N.restrict j).fromTildeΓ).symm
+ROLECHECK:LinearStudy.schemeModuleOpenQuasicoherentCoefficientIso:false

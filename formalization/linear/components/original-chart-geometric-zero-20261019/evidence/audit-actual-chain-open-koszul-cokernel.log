@@ -1,0 +1,109 @@
+LinearStudy.schemeModuleChainOpenKoszulTermIso : (R : CommRingCat) →
+  {X : AlgebraicGeometry.Scheme} →
+    (j : AlgebraicGeometry.Spec R ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (p : ℕ) →
+          (H : Fin (p + 1) → ↑R) →
+            (C : ChainComplex X.Modules ℕ) →
+              (((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj
+                    C ≅
+                  LinearStudy.tildeFunctionKoszulComplex R H) →
+                (q : ℕ) → (C.X q).restrict j ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^q (Fin (p + 1) → ↑R))
+'LinearStudy.schemeModuleChainOpenKoszulTermIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleChainOpenKoszulTermIso_differential : ∀ (R : CommRingCat) {X : AlgebraicGeometry.Scheme}
+  (j : AlgebraicGeometry.Spec R ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (p : ℕ) (H : Fin (p + 1) → ↑R)
+  (C : ChainComplex X.Modules ℕ)
+  (gamma :
+    ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅
+      LinearStudy.tildeFunctionKoszulComplex R H),
+  CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map (C.d (p + 1) p))
+      (LinearStudy.schemeModuleChainOpenKoszulTermIso R j p H C gamma p).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainOpenKoszulTermIso R j p H C gamma (p + 1)).hom
+      ((AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination (↑R) H) p)))
+'LinearStudy.schemeModuleChainOpenKoszulTermIso_differential' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleChainOpenKoszulHomCokernelIso : (R : CommRingCat) →
+  {X : AlgebraicGeometry.Scheme} →
+    (j : AlgebraicGeometry.Spec R ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (p : ℕ) →
+          (H : Fin (p + 1) → ↑R) →
+            (C : ChainComplex X.Modules ℕ) →
+              (((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj
+                    C ≅
+                  LinearStudy.tildeFunctionKoszulComplex R H) →
+                (N : X.Modules) →
+                  (T : ModuleCat ↑R) →
+                    (N.restrict j ≅ AlgebraicGeometry.tilde T) →
+                      ((CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (C.d (p + 1) p))).restrict
+                          j ≅
+                        (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R T p H).X₃)
+'LinearStudy.schemeModuleChainOpenKoszulHomCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleChainOpenKoszulHomCokernelIso_class : ∀ (R : CommRingCat) {X : AlgebraicGeometry.Scheme}
+  (j : AlgebraicGeometry.Spec R ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (p : ℕ) (H : Fin (p + 1) → ↑R)
+  (C : ChainComplex X.Modules ℕ)
+  (gamma :
+    ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅
+      LinearStudy.tildeFunctionKoszulComplex R H)
+  (N : X.Modules) (T : ModuleCat ↑R) (beta : N.restrict j ≅ AlgebraicGeometry.tilde T) (a : C.X (p + 1) ⟶ N),
+  CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Scheme.Modules.restrictUnitIso j).inv
+      (CategoryTheory.CategoryStruct.comp
+        ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map
+          (CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv (C.X (p + 1)) N).symm a)
+            (CategoryTheory.Limits.cokernel.π (LinearStudy.schemeModuleHomPrecompose (C.d (p + 1) p)))))
+        (LinearStudy.schemeModuleChainOpenKoszulHomCokernelIso R j p H C gamma N T beta).hom) =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleHomUnitAddEquiv (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+            (AlgebraicGeometry.tilde T)).symm
+        (CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleChainOpenKoszulTermIso R j p H C gamma (p + 1)).inv
+          (CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map a) beta.hom)))
+      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R T p H).g
+'LinearStudy.schemeModuleChainOpenKoszulHomCokernelIso_class' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleChainOpenKoszulTermIso.{u} : (R : CommRingCat) →
+  {X : AlgebraicGeometry.Scheme} →
+    (j : AlgebraicGeometry.Spec R ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (p : ℕ) →
+          (H : Fin (p + 1) → ↑R) →
+            (C : ChainComplex X.Modules ℕ) →
+              (((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj
+                    C ≅
+                  LinearStudy.tildeFunctionKoszulComplex R H) →
+                (q : ℕ) → (C.X q).restrict j ≅ AlgebraicGeometry.tilde ↧↥(⋀[↑R]^q (Fin (p + 1) → ↑R)) :=
+fun (R : CommRingCat) {X : AlgebraicGeometry.Scheme} (j : AlgebraicGeometry.Spec R ⟶ X)
+    [AlgebraicGeometry.IsOpenImmersion j] (p : ℕ) (H : Fin (p + 1) → ↑R) (C : ChainComplex X.Modules ℕ)
+    (gamma :
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅
+        LinearStudy.tildeFunctionKoszulComplex R H)
+    (q : ℕ) =>
+  (HomologicalComplex.eval (AlgebraicGeometry.Spec R).Modules (ComplexShape.down ℕ) q).mapIso gamma
+def LinearStudy.schemeModuleChainOpenKoszulHomCokernelIso.{u} : (R : CommRingCat) →
+  {X : AlgebraicGeometry.Scheme} →
+    (j : AlgebraicGeometry.Spec R ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (p : ℕ) →
+          (H : Fin (p + 1) → ↑R) →
+            (C : ChainComplex X.Modules ℕ) →
+              (((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj
+                    C ≅
+                  LinearStudy.tildeFunctionKoszulComplex R H) →
+                (N : X.Modules) →
+                  (T : ModuleCat ↑R) →
+                    (N.restrict j ≅ AlgebraicGeometry.tilde T) →
+                      ((CategoryTheory.Limits.cokernel (LinearStudy.schemeModuleHomPrecompose (C.d (p + 1) p))).restrict
+                          j ≅
+                        (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R T p H).X₃) :=
+fun (R : CommRingCat) {X : AlgebraicGeometry.Scheme} (j : AlgebraicGeometry.Spec R ⟶ X)
+    [AlgebraicGeometry.IsOpenImmersion j] (p : ℕ) (H : Fin (p + 1) → ↑R) (C : ChainComplex X.Modules ℕ)
+    (gamma :
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅
+        LinearStudy.tildeFunctionKoszulComplex R H)
+    (N : X.Modules) (T : ModuleCat ↑R) (beta : N.restrict j ≅ AlgebraicGeometry.tilde T) =>
+  LinearStudy.schemeModuleHomOpenImmersionCokernelIso N j (C.d (p + 1) p) ≪≫
+    LinearStudy.affineKoszulFramedHomCokernelIso R T p H
+      (LinearStudy.schemeModuleChainOpenKoszulTermIso R j p H C gamma (p + 1))
+      (LinearStudy.schemeModuleChainOpenKoszulTermIso R j p H C gamma p) beta
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map (C.d (p + 1) p)) ⋯
+ROLECHECK:LinearStudy.schemeModuleChainOpenKoszulTermIso:false
+ROLECHECK:LinearStudy.schemeModuleChainOpenKoszulTermIso_differential:true
+ROLECHECK:LinearStudy.schemeModuleChainOpenKoszulHomCokernelIso:false
+ROLECHECK:LinearStudy.schemeModuleChainOpenKoszulHomCokernelIso_class:true

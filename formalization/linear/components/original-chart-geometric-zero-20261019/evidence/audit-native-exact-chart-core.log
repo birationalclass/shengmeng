@@ -1,0 +1,116 @@
+LinearStudy.schemeModuleOpenKoszulChartData_of_mappedPresentation : (R : CommRingCat) →
+  {X : AlgebraicGeometry.Scheme} →
+    (j : AlgebraicGeometry.Spec R ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        {r : ℕ} →
+          (H : Fin r → ↑R) →
+            (d : LinearStudy.mappedChainPresentationData (AlgebraicGeometry.Scheme.Modules.restrictFunctor j)) →
+              d.snd.fst = LinearStudy.tildeFunctionKoszulComplex R H →
+                LinearStudy.schemeModuleOpenKoszulChartData d.fst r
+'LinearStudy.schemeModuleOpenKoszulChartData_of_mappedPresentation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleOpenKoszulChartData_of_sourceIdentification : (R : CommRingCat) →
+  {X : AlgebraicGeometry.Scheme} →
+    (j : AlgebraicGeometry.Spec R ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        {r : ℕ} →
+          (H : Fin r → ↑R) →
+            (C : ChainComplex X.Modules ℕ) →
+              (d : LinearStudy.mappedChainPresentationData (AlgebraicGeometry.Scheme.Modules.restrictFunctor j)) →
+                d.fst = C →
+                  d.snd.fst = LinearStudy.tildeFunctionKoszulComplex R H →
+                    LinearStudy.schemeModuleOpenKoszulChartData C r
+'LinearStudy.schemeModuleOpenKoszulChartData_of_sourceIdentification' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeKoszulMappedChartComplex_identity : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] [inst_4 : IsNoetherianRing S] {J : Type}
+  (b : J → S) (hb : ∀ (i : J), b i ∈ B 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ} (H : Fin r → S)
+  (hH : ∀ (i : Fin r), H i ∈ B q) (k : ℤ) (z : S) (hz : z ∈ B 1),
+  let R := ↧(HomogeneousLocalization.Away B z);
+  have h := fun (i : Fin r) => HomogeneousLocalization.Away.mk B hz q (H i) ⋯;
+  (LinearStudy.nativeProjectiveKoszulMappedPresentationData B b hb hgen H hH k z hz).snd.fst =
+    LinearStudy.tildeFunctionKoszulComplex R h
+'LinearStudy.nativeKoszulMappedChartComplex_identity' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveOpenKoszulExactChart : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ B 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ B q) →
+                            (k : ℤ) →
+                              (z : S) →
+                                z ∈ B 1 →
+                                  LinearStudy.schemeModuleOpenKoszulChartData
+                                    (LinearStudy.nativeProjectiveKoszulComplex B H hH k) r
+'LinearStudy.nativeProjectiveOpenKoszulExactChart' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.schemeModuleOpenKoszulChartData_of_mappedPresentation.{u} : (R : CommRingCat) →
+  {X : AlgebraicGeometry.Scheme} →
+    (j : AlgebraicGeometry.Spec R ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        {r : ℕ} →
+          (H : Fin r → ↑R) →
+            (d : LinearStudy.mappedChainPresentationData (AlgebraicGeometry.Scheme.Modules.restrictFunctor j)) →
+              d.snd.fst = LinearStudy.tildeFunctionKoszulComplex R H →
+                LinearStudy.schemeModuleOpenKoszulChartData d.fst r :=
+fun (R : CommRingCat) {X : AlgebraicGeometry.Scheme} (j : AlgebraicGeometry.Spec R ⟶ X)
+    [AlgebraicGeometry.IsOpenImmersion j] {r : ℕ} (H : Fin r → ↑R)
+    (d : LinearStudy.mappedChainPresentationData (AlgebraicGeometry.Scheme.Modules.restrictFunctor j))
+    (hD : d.snd.fst = LinearStudy.tildeFunctionKoszulComplex R H) =>
+  ⟨R, ⟨j, ⟨⋯, ⟨H, d.snd.snd.fst ≪≫ CategoryTheory.eqToIso hD⟩⟩⟩⟩
+def LinearStudy.schemeModuleOpenKoszulChartData_of_sourceIdentification.{u} : (R : CommRingCat) →
+  {X : AlgebraicGeometry.Scheme} →
+    (j : AlgebraicGeometry.Spec R ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        {r : ℕ} →
+          (H : Fin r → ↑R) →
+            (C : ChainComplex X.Modules ℕ) →
+              (d : LinearStudy.mappedChainPresentationData (AlgebraicGeometry.Scheme.Modules.restrictFunctor j)) →
+                d.fst = C →
+                  d.snd.fst = LinearStudy.tildeFunctionKoszulComplex R H →
+                    LinearStudy.schemeModuleOpenKoszulChartData C r :=
+fun (R : CommRingCat) {X : AlgebraicGeometry.Scheme} (j : AlgebraicGeometry.Spec R ⟶ X)
+    [AlgebraicGeometry.IsOpenImmersion j] {r : ℕ} (H : Fin r → ↑R) (C : ChainComplex X.Modules ℕ)
+    (d : LinearStudy.mappedChainPresentationData (AlgebraicGeometry.Scheme.Modules.restrictFunctor j)) (hC : d.fst = C)
+    (hD : d.snd.fst = LinearStudy.tildeFunctionKoszulComplex R H) =>
+  ⟨R, ⟨j, ⟨⋯, ⟨H, CategoryTheory.eqToIso ⋯ ≪≫ d.snd.snd.fst ≪≫ CategoryTheory.eqToIso hD⟩⟩⟩⟩
+def LinearStudy.nativeProjectiveOpenKoszulExactChart : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            [IsNoetherianRing S] →
+              {J : Type} →
+                (b : J → S) →
+                  (∀ (i : J), b i ∈ B 1) →
+                    Algebra.adjoin K (Set.range b) = ⊤ →
+                      {r q : ℕ} →
+                        (H : Fin r → S) →
+                          (hH : ∀ (i : Fin r), H i ∈ B q) →
+                            (k : ℤ) →
+                              (z : S) →
+                                z ∈ B 1 →
+                                  LinearStudy.schemeModuleOpenKoszulChartData
+                                    (LinearStudy.nativeProjectiveKoszulComplex B H hH k) r :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] [IsNoetherianRing S]
+    {J : Type} (b : J → S) (hb : ∀ (i : J), b i ∈ B 1) (hgen : Algebra.adjoin K (Set.range b) = ⊤) {r q : ℕ}
+    (H : Fin r → S) (hH : ∀ (i : Fin r), H i ∈ B q) (k : ℤ) (z : S) (hz : z ∈ B 1) =>
+  LinearStudy.schemeModuleOpenKoszulChartData_of_sourceIdentification (↧(HomogeneousLocalization.Away B z))
+    (AlgebraicGeometry.Proj.awayι B z hz LinearStudy.nativeProjectiveOpenKoszulExactChart._proof_3)
+    (fun (i : Fin r) => HomogeneousLocalization.Away.mk B hz q (H i) ⋯)
+    (LinearStudy.nativeProjectiveKoszulComplex B H hH k)
+    (LinearStudy.nativeProjectiveKoszulMappedPresentationData B b hb hgen H hH k z hz) ⋯ ⋯
+ROLECHECK:LinearStudy.schemeModuleOpenKoszulChartData_of_mappedPresentation:false
+ROLECHECK:LinearStudy.schemeModuleOpenKoszulChartData_of_sourceIdentification:false
+ROLECHECK:LinearStudy.nativeKoszulMappedChartComplex_identity:true
+ROLECHECK:LinearStudy.nativeProjectiveOpenKoszulExactChart:false

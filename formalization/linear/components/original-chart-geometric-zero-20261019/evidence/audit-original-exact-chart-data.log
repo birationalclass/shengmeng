@@ -1,0 +1,55 @@
+@LinearStudy.projectivePulledOriginalExactChartData : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              LinearStudy.schemeModuleOpenKoszulChartData
+                (LinearStudy.nativeProjectiveKoszulComplex (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                  (LinearStudy.projectivePulledLinearKoszulForms f V L w) ⋯ k)
+                r
+'LinearStudy.projectivePulledOriginalExactChartData' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledOriginalNamedExactChart : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              LinearStudy.schemeModuleOpenKoszulChartData (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                r
+'LinearStudy.projectivePulledOriginalNamedExactChart' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.projectivePulledOriginalExactChartData : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              LinearStudy.schemeModuleOpenKoszulChartData
+                (LinearStudy.nativeProjectiveKoszulComplex (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                  (LinearStudy.projectivePulledLinearKoszulForms f V L w) ⋯ k)
+                r :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) =>
+  LinearStudy.nativeProjectiveOpenKoszulExactChart (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+    (fun (t : Fin (n + 1)) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X t)) ⋯ ⋯
+    (LinearStudy.projectivePulledLinearKoszulForms f V L w) ⋯ k ((Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X 0))
+    ⋯
+def LinearStudy.projectivePulledOriginalNamedExactChart : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              LinearStudy.schemeModuleOpenKoszulChartData (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                r :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) =>
+  id (LinearStudy.projectivePulledOriginalExactChartData f V L hL w k)
+ROLECHECK:LinearStudy.projectivePulledOriginalExactChartData:false
+ROLECHECK:LinearStudy.projectivePulledOriginalNamedExactChart:false

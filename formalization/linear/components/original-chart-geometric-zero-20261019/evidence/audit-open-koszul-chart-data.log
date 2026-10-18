@@ -1,0 +1,47 @@
+@LinearStudy.schemeModuleOpenKoszulChartData : {X : AlgebraicGeometry.Scheme} →
+  ChainComplex X.Modules ℕ → ℕ → Type (u_1 + 1)
+'LinearStudy.schemeModuleOpenKoszulChartData' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOpenKoszulChartDataCutStatement : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      LinearStudy.schemeModuleOpenKoszulChartData C (p + 1) →
+        {E : X.Modules} →
+          (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+            QuasiIso alpha → CategoryTheory.Limits.IsZero (C.X (p + 2)) → Prop
+'LinearStudy.schemeModuleOpenKoszulChartDataCutStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOpenKoszulChartDataCutStatement_proof : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) (p : ℕ) (D : LinearStudy.schemeModuleOpenKoszulChartData C (p + 1)) {E : X.Modules}
+  (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (C.X (p + 2))),
+  (∀ (N : X.Modules),
+      SheafOfModules.IsQuasicoherent N →
+        ∀ (q v : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (C.X q) N (v + 1))) →
+    LinearStudy.schemeModuleOpenKoszulChartDataCutStatement C p D alpha hAlpha hAbove
+'LinearStudy.schemeModuleOpenKoszulChartDataCutStatement_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleOpenKoszulChartData.{u} : {X : AlgebraicGeometry.Scheme} →
+  ChainComplex X.Modules ℕ → ℕ → Type (u + 1) :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) (r : ℕ) =>
+  (R : CommRingCat) ×
+    (j : AlgebraicGeometry.Spec R ⟶ X) ×
+      (hj : AlgebraicGeometry.IsOpenImmersion j) ×'
+        (H : Fin r → ↑R) ×
+          (((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅
+            LinearStudy.tildeFunctionKoszulComplex R H)
+def LinearStudy.schemeModuleOpenKoszulChartDataCutStatement.{u} : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      LinearStudy.schemeModuleOpenKoszulChartData C (p + 1) →
+        {E : X.Modules} →
+          (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+            QuasiIso alpha → CategoryTheory.Limits.IsZero (C.X (p + 2)) → Prop :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) (p : ℕ)
+    (D : LinearStudy.schemeModuleOpenKoszulChartData C (p + 1)) {E : X.Modules}
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+    (hAbove : CategoryTheory.Limits.IsZero (C.X (p + 2))) =>
+  LinearStudy.schemeModuleOriginalOpenKoszulQCCutStatement D.fst D.snd.fst p D.snd.snd.snd.fst C D.snd.snd.snd.snd alpha
+    hAlpha hAbove
+ROLECHECK:LinearStudy.schemeModuleOpenKoszulChartData:false
+ROLECHECK:LinearStudy.schemeModuleOpenKoszulChartDataCutStatement:false
+ROLECHECK:LinearStudy.schemeModuleOpenKoszulChartDataCutStatement_proof:true

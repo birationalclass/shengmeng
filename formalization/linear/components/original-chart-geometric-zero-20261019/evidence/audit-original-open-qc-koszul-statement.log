@@ -1,0 +1,55 @@
+LinearStudy.schemeModuleOriginalOpenKoszulQCCutStatement : (R : CommRingCat) →
+  {X : AlgebraicGeometry.Scheme} →
+    (j : AlgebraicGeometry.Spec R ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (p : ℕ) →
+          (H : Fin (p + 1) → ↑R) →
+            (C : ChainComplex X.Modules ℕ) →
+              (((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj
+                    C ≅
+                  LinearStudy.tildeFunctionKoszulComplex R H) →
+                {E : X.Modules} →
+                  (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+                    QuasiIso alpha → CategoryTheory.Limits.IsZero (C.X (p + 2)) → Prop
+'LinearStudy.schemeModuleOriginalOpenKoszulQCCutStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleOriginalOpenKoszulQCCutStatement_proof : ∀ (R : CommRingCat) {X : AlgebraicGeometry.Scheme}
+  (j : AlgebraicGeometry.Spec R ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (p : ℕ) (H : Fin (p + 1) → ↑R)
+  (C : ChainComplex X.Modules ℕ)
+  (gamma :
+    ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅
+      LinearStudy.tildeFunctionKoszulComplex R H)
+  {E : X.Modules} (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (C.X (p + 2))),
+  (∀ (N : X.Modules),
+      SheafOfModules.IsQuasicoherent N →
+        ∀ (q v : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (C.X q) N (v + 1))) →
+    LinearStudy.schemeModuleOriginalOpenKoszulQCCutStatement R j p H C gamma alpha hAlpha hAbove
+'LinearStudy.schemeModuleOriginalOpenKoszulQCCutStatement_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleOriginalOpenKoszulQCCutStatement.{u} : (R : CommRingCat) →
+  {X : AlgebraicGeometry.Scheme} →
+    (j : AlgebraicGeometry.Spec R ⟶ X) →
+      [inst : AlgebraicGeometry.IsOpenImmersion j] →
+        (p : ℕ) →
+          (H : Fin (p + 1) → ↑R) →
+            (C : ChainComplex X.Modules ℕ) →
+              (((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj
+                    C ≅
+                  LinearStudy.tildeFunctionKoszulComplex R H) →
+                {E : X.Modules} →
+                  (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+                    QuasiIso alpha → CategoryTheory.Limits.IsZero (C.X (p + 2)) → Prop :=
+fun (R : CommRingCat) {X : AlgebraicGeometry.Scheme} (j : AlgebraicGeometry.Spec R ⟶ X)
+    [AlgebraicGeometry.IsOpenImmersion j] (p : ℕ) (H : Fin (p + 1) → ↑R) (C : ChainComplex X.Modules ℕ)
+    (gamma :
+      ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅
+        LinearStudy.tildeFunctionKoszulComplex R H)
+    {E : X.Modules} (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+    (hAbove : CategoryTheory.Limits.IsZero (C.X (p + 2))) =>
+  ∀ (N : X.Modules) (hN : SheafOfModules.IsQuasicoherent N) (a : C.X (p + 1) ⟶ N),
+    LinearStudy.schemeModuleOriginalOpenKoszulCutStatement R j p H C gamma N
+      (AlgebraicGeometry.moduleSpecΓFunctor.obj (N.restrict j))
+      (LinearStudy.schemeModuleOpenQuasicoherentCoefficientIso R j N) alpha hAlpha a ⋯
+ROLECHECK:LinearStudy.schemeModuleOriginalOpenKoszulQCCutStatement:false
+ROLECHECK:LinearStudy.schemeModuleOriginalOpenKoszulQCCutStatement_proof:true

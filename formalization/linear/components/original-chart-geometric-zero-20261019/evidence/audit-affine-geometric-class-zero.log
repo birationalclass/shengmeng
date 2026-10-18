@@ -1,0 +1,47 @@
+LinearStudy.affineKoszulTopFunctionalSection : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (p : ℕ) →
+      (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)) ⟶ AlgebraicGeometry.tilde N) →
+        (SheafOfModules.unit (AlgebraicGeometry.Spec R).ringCatSheaf ⟶ AlgebraicGeometry.tilde N)
+'LinearStudy.affineKoszulTopFunctionalSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulGeometricClass_eq_restriction : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ)
+  (H : Fin (p + 1) → ↑R) (a : AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)) ⟶ AlgebraicGeometry.tilde N),
+  CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleHomUnitAddEquiv (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+            (AlgebraicGeometry.tilde N)).symm
+        a)
+      (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).g =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulTopFunctionalSection R N p a)
+      ((AlgebraicGeometry.Scheme.Modules.pullbackPushforwardAdjunction
+              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).unit.app
+        (AlgebraicGeometry.tilde N))
+'LinearStudy.affineKoszulGeometricClass_eq_restriction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulGeometricClass_zero_iff_pullback : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ)
+  (H : Fin (p + 1) → ↑R) (a : AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)) ⟶ AlgebraicGeometry.tilde N),
+  CategoryTheory.CategoryStruct.comp
+        ((LinearStudy.schemeModuleHomUnitAddEquiv (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+              (AlgebraicGeometry.tilde N)).symm
+          a)
+        (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).g =
+      0 ↔
+    (AlgebraicGeometry.Scheme.Modules.pullback
+            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).map
+        (LinearStudy.affineKoszulTopFunctionalSection R N p a) =
+      0
+'LinearStudy.affineKoszulGeometricClass_zero_iff_pullback' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.affineKoszulTopFunctionalSection.{u} : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (p : ℕ) →
+      (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)) ⟶ AlgebraicGeometry.tilde N) →
+        (SheafOfModules.unit (AlgebraicGeometry.Spec R).ringCatSheaf ⟶ AlgebraicGeometry.tilde N) :=
+fun (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ)
+    (a : AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)) ⟶ AlgebraicGeometry.tilde N) =>
+  CategoryTheory.CategoryStruct.comp
+    ((LinearStudy.schemeModuleHomUnitAddEquiv (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+          (AlgebraicGeometry.tilde N)).symm
+      a)
+    (CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulTermHomCoefficientIso R N (p + 1) (p + 1)).inv
+      ((AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom ↑(LinearStudy.koszulTopHomCoefficientEquiv p))))
+ROLECHECK:LinearStudy.affineKoszulTopFunctionalSection:false
+ROLECHECK:LinearStudy.affineKoszulGeometricClass_eq_restriction:true
+ROLECHECK:LinearStudy.affineKoszulGeometricClass_zero_iff_pullback:true

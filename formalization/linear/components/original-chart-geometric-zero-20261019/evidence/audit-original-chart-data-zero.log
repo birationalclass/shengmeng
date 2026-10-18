@@ -1,0 +1,70 @@
+@LinearStudy.projectivePulledOriginalChartDataCutZeroStatement : {n p : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (p + 1 + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (p + 1 + 1) → ℂ) →
+            (k : ℤ) →
+              (e :
+                  CategoryTheory.Limits.cokernel
+                      ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                    LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                QuasiIso
+                    (LinearStudy.originalChainCokernelTargetAugmentation
+                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e) →
+                  Prop
+'LinearStudy.projectivePulledOriginalChartDataCutZeroStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalChartDataCutZeroStatement_proof : ∀ {n p : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (p + 1 + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (p + 1 + 1) → ℂ) (k : ℤ)
+  (e :
+    CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+  (he :
+    QuasiIso
+      (LinearStudy.originalChainCokernelTargetAugmentation
+        (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)),
+  LinearStudy.projectivePulledOriginalChartDataCutZeroStatement f V L hL w k e he
+'LinearStudy.projectivePulledOriginalChartDataCutZeroStatement_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.projectivePulledOriginalChartDataCutZeroStatement : {n p : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (p + 1 + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (p + 1 + 1) → ℂ) →
+            (k : ℤ) →
+              (e :
+                  CategoryTheory.Limits.cokernel
+                      ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                    LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                QuasiIso
+                    (LinearStudy.originalChainCokernelTargetAugmentation
+                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e) →
+                  Prop :=
+fun {n p : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n)
+    (hL : ∀ (i : Fin (p + 1 + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (p + 1 + 1) → ℂ) (k : ℤ)
+    (e :
+      CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+    (he :
+      QuasiIso
+        (LinearStudy.originalChainCokernelTargetAugmentation
+          (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+          (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)) =>
+  LinearStudy.schemeModuleOpenKoszulChartDataCutZeroStatement
+    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) p
+    (LinearStudy.projectivePulledOriginalNamedExactChart f V L hL w k)
+    (LinearStudy.originalChainCokernelTargetAugmentation (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)
+    he ⋯
+ROLECHECK:LinearStudy.projectivePulledOriginalChartDataCutZeroStatement:false
+ROLECHECK:LinearStudy.projectivePulledOriginalChartDataCutZeroStatement_proof:true

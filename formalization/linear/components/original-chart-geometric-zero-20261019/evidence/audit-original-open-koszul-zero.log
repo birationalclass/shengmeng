@@ -1,0 +1,26 @@
+LinearStudy.schemeModuleOriginalOpenKoszulCutStatement_zero_iff : ∀ (R : CommRingCat) {X : AlgebraicGeometry.Scheme}
+  (j : AlgebraicGeometry.Spec R ⟶ X) [inst : AlgebraicGeometry.IsOpenImmersion j] (p : ℕ) (H : Fin (p + 1) → ↑R)
+  (C : ChainComplex X.Modules ℕ)
+  (gamma :
+    ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).mapHomologicalComplex (ComplexShape.down ℕ)).obj C ≅
+      LinearStudy.tildeFunctionKoszulComplex R H)
+  {E : X.Modules} (N : X.Modules) (T : ModuleCat ↑R) (beta : N.restrict j ≅ AlgebraicGeometry.tilde T)
+  (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha) (a : C.X (p + 1) ⟶ N)
+  (ha : CategoryTheory.CategoryStruct.comp (C.d (p + 2) (p + 1)) a = 0),
+  LinearStudy.schemeModuleOriginalOpenKoszulCutStatement R j p H C gamma N T beta alpha hAlpha a ha →
+    ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map
+          ((LinearStudy.schemeModuleGlobalToInternalExtAll E N (p + 1))
+            (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C (p + 1) alpha hAlpha a ha)) =
+        0 ↔
+      (AlgebraicGeometry.Scheme.Modules.pullback
+              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).map
+          (LinearStudy.affineKoszulTopFunctionalSection R T p
+            (CategoryTheory.CategoryStruct.comp
+              (LinearStudy.schemeModuleChainOpenKoszulTermIso R j p H C gamma (p + 1)).inv
+              (CategoryTheory.CategoryStruct.comp ((AlgebraicGeometry.Scheme.Modules.restrictFunctor j).map a)
+                beta.hom))) =
+        0)
+'LinearStudy.schemeModuleOriginalOpenKoszulCutStatement_zero_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleOriginalOpenKoszulCutStatement_zero_iff:true
