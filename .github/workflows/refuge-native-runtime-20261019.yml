@@ -1,0 +1,108 @@
+{
+  "name": "Build and test dependency-free Math Refuge launchers",
+  "on": {
+    "push": {
+      "branches": [
+        "codex/refuge-native-review-20261019"
+      ],
+      "paths": [
+        ".github/workflows/refuge-native-runtime-20261019.yml",
+        ".github/refuge-native/**"
+      ]
+    }
+  },
+  "permissions": {
+    "contents": "write"
+  },
+  "jobs": {
+    "native": {
+      "strategy": {
+        "fail-fast": false,
+        "matrix": {
+          "include": [
+            {
+              "runner": "macos-15",
+              "binary": "refuge-mac-arm64"
+            },
+            {
+              "runner": "macos-15-intel",
+              "binary": "refuge-mac-amd64"
+            },
+            {
+              "runner": "windows-latest",
+              "binary": "refuge-windows-amd64.exe"
+            },
+            {
+              "runner": "ubuntu-latest",
+              "binary": "refuge-linux-amd64"
+            }
+          ]
+        }
+      },
+      "runs-on": "${{ matrix.runner }}",
+      "timeout-minutes": 15,
+      "env": {
+        "GO111MODULE": "off",
+        "CGO_ENABLED": "0",
+        "BINARY": "${{ matrix.binary }}"
+      },
+      "steps": [
+        {
+          "uses": "actions/checkout@v4"
+        },
+        {
+          "uses": "actions/setup-go@v5",
+          "with": {
+            "go-version": "1.25.x",
+            "cache": false
+          }
+        },
+        {
+          "name": "Test and build native executable",
+          "shell": "bash",
+          "run": "mkdir -p runtime\ngo test ./.github/refuge-native\ngo build -trimpath -ldflags=\"-s -w\" -o \"runtime/$BINARY\" ./.github/refuge-native"
+        },
+        {
+          "name": "Ad-hoc signature for macOS binary integrity",
+          "if": "runner.os == 'macOS'",
+          "run": "codesign --force --sign - \"runtime/$BINARY\"\ncodesign --verify --verbose \"runtime/$BINARY\""
+        },
+        {
+          "name": "Run standalone server and test audio range requests",
+          "shell": "bash",
+          "run": "python - <<'PY'\nimport subprocess,tempfile,pathlib,time,urllib.request,json,os,platform\np=pathlib.Path(tempfile.mkdtemp());(p/'visuals/math-refuge').mkdir(parents=True);(p/'visuals/math-refuge/index.html').write_text('native offline test');(p/'test.mp3').write_bytes(b'0123456789')\nexe=pathlib.Path('runtime')/os.environ['BINARY'];urlfile=p/'url.txt';process=subprocess.Popen([str(exe.resolve()),'-root',str(p),'-no-browser','-url-file',str(urlfile)])\ntry:\n for _ in range(100):\n  if urlfile.exists():break\n  assert process.poll() is None;time.sleep(.1)\n url=urlfile.read_text();assert url.startswith('http://127.0.0.1:');assert urllib.request.urlopen(url).read()==b'native offline test'\n req=urllib.request.Request(url.split('/visuals/')[0]+'/test.mp3',headers={'Range':'bytes=2-5'});r=urllib.request.urlopen(req);assert r.status==206 and r.read()==b'2345'\n pathlib.Path('runtime/'+os.environ['BINARY']+'-test.json').write_text(json.dumps(dict(os=platform.system(),arch=platform.machine(),nativeExecutable=True,loopbackOnly=True,http=True,audioRange=True)))\nfinally:process.terminate();process.wait(timeout=10)\n\nPY"
+        },
+        {
+          "uses": "actions/upload-artifact@v4",
+          "with": {
+            "name": "${{ matrix.binary }}",
+            "path": "runtime/*",
+            "retention-days": 7
+          }
+        }
+      ]
+    },
+    "runtime": {
+      "needs": "native",
+      "runs-on": "ubuntu-latest",
+      "timeout-minutes": 10,
+      "steps": [
+        {
+          "uses": "actions/download-artifact@v4",
+          "with": {
+            "path": "runtime",
+            "merge-multiple": true
+          }
+        },
+        {
+          "name": "Publish tested runtime bundle",
+          "env": {
+            "GH_TOKEN": "${{ github.token }}",
+            "GH_REPO": "birationalclass/shengmeng"
+          },
+          "run": "python3 - <<'PY'\nfrom pathlib import Path\nimport zipfile,hashlib,json\np=Path('runtime');z=Path('math-refuge-native-runtime-20261019.zip')\nwith zipfile.ZipFile(z,'w',compression=zipfile.ZIP_DEFLATED) as out:\n for f in sorted(p.iterdir()):\n  i=zipfile.ZipInfo('runtime/'+f.name);i.compress_type=zipfile.ZIP_DEFLATED;i.create_system=3;i.external_attr=(0o100644 if f.suffix=='.json' else 0o100755)<<16;out.writestr(i,f.read_bytes())\nprint('RUNTIME',z.stat().st_size,hashlib.sha256(z.read_bytes()).hexdigest())\nPY\ngh release upload math-refuge-local-20261019 math-refuge-native-runtime-20261019.zip"
+        }
+      ]
+    }
+  }
+}
