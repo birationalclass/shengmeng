@@ -2,7 +2,7 @@ import {resourceFetch} from './resource-fetch.js';
 import {decodeImage} from './mobile-runtime.js';
 import {preparationTurn} from './preparation-turn.js';
 import {glyphs,advance} from './refined-handwriting.js?v1';
-import {maliGlyph,maliMetrics,maliOperations,paintMali,prepareMaliChalk,fitMaliGlyph,maliInkURL} from './mali-chalk.js?v=mali-20261017';
+import {maliGlyph,maliMetrics,maliOperations,paintMali,prepareMaliChalk,fitMaliGlyph,maliInkURL} from './mali-chalk.js?v=safari-glyph-20261019-1';
 const NS='http://www.w3.org/2000/svg',samples=new Map();
 export function authoredGlyph(char){
  if(samples.has(char))return samples.get(char);if(!glyphs[char]||typeof document.createElementNS!=='function')return null;

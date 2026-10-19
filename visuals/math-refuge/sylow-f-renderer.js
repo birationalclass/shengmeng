@@ -1,5 +1,5 @@
-import {prepareMaliChalk} from './mali-chalk.js';
-import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js';
+import {prepareMaliChalk} from './mali-chalk.js?v=safari-glyph-20261019-1';
+import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=safari-glyph-20261019-1';
 import {authoredContext,authoredFormula} from './authored-chalk.js';
 import {writingPlan,inkGuides,strokeReveal,rasterStrokeReveal,inkReveal,erasingPlan} from './chalk-motion.js';
 import {paintChalkStroke} from './chalk-annotations.js';

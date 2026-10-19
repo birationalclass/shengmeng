@@ -6,15 +6,19 @@ const BASE=new URL('./assets/chalk/chinese36/',import.meta.url);
 export const CHINESE_STROKE_SECONDS=1/16;
 const canvas=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;};
 const colorRGB=color=>{const value=String(color),h=value.replace('#',''),rgb=value.match(/^rgba?\(\s*(\d+)\D+(\d+)\D+(\d+)/);return rgb?rgb.slice(1,4).map(Number):h.length===6?[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)):[238,233,213];};
-const groups=new WeakMap();let partialCanvas=null,partialData=null;
+const groups=new WeakMap(),partialBuffers=new WeakMap();
 export function paintGlyph(ctx,g,rect,index,progress,color,complete=false){
  const rgb=colorRGB(color),key=rgb.join(',');let image=complete?(key==='238,233,213'?g.image:g.colors.get(key)):null;
  if(!image){
-  if(!partialCanvas||partialCanvas.width!==g.width){partialCanvas=canvas(g.width,g.width);partialData=partialCanvas.getContext('2d').createImageData(g.width,g.width);}
-  const target=partialData.data,limit=Math.round(progress*255);
+  // Keep each glyph's mutable surface separate. Completed colored glyphs are
+  // written from their pixels directly, never copied from a shared canvas that
+  // can be changed before a browser's deferred canvas/GPU copy is consumed.
+  let buffer=complete?null:partialBuffers.get(g);
+  if(!buffer){const image=canvas(g.width,g.width),context=image.getContext('2d');buffer={image,context,data:context.createImageData(g.width,g.width)};if(!complete)partialBuffers.set(g,buffer);}
+  const target=buffer.data.data,limit=Math.round(progress*255);
   for(let i=0;i<g.alpha.length;i++){const k=i*4;target[k]=rgb[0];target[k+1]=rgb[1];target[k+2]=rgb[2];target[k+3]=complete||g.owner[i]<index||g.owner[i]===index&&g.phase[i]<=limit?g.alpha[i]:0;}
-  partialCanvas.getContext('2d').putImageData(partialData,0,0);image=partialCanvas;
-  if(complete){image=canvas(g.width,g.width);image.getContext('2d').drawImage(partialCanvas,0,0);g.colors.set(key,image);}
+  buffer.context.putImageData(buffer.data,0,0);image=buffer.image;
+  if(complete)g.colors.set(key,image);
  }
  ctx.drawImage(image,...rect);
 }

@@ -11,11 +11,17 @@ export function changedInkRect(rows,from,to,pose,width=1536,height=640){
 }
 export const intersectsInk=(r,area)=>!area||r[0]<area[0]+area[2]&&r[0]+r[2]>area[0]&&r[1]<area[1]+area[3]&&r[1]+r[3]>area[1];
 
+// Compatibility path for the reported Safari stale-glyph rendering: upload the
+// board canvas there, rather than recycling a mutable canvas-backed GPU patch.
+export function fullBoardUploadRequired(userAgent=globalThis.navigator?.userAgent||''){
+ return /AppleWebKit\//.test(userAgent)&&!/(?:Chrome|Chromium|Edg|OPR|Android)\//.test(userAgent);
+}
+
 // Copy only the changed canvas region into an already allocated GPU texture.
 // The small CPU->GPU patch avoids re-uploading a 15 MiB canvas every stroke.
 // Three r180 owns the GL state and generates the destination mip chain.
-export function createBoardInkUploader(THREE,renderer,{makeCanvas=()=>document.createElement('canvas')}={}){
- const supported=renderer.isWebGLRenderer&&typeof renderer.copyTextureToTexture==='function';let patch=null,source=null;const stats={full:0,partial:0,lastBytes:0,bytes:0,lastUploadMs:0};
+export function createBoardInkUploader(THREE,renderer,{makeCanvas=()=>document.createElement('canvas'),fullUpload=fullBoardUploadRequired()}={}){
+ const supported=!fullUpload&&renderer.isWebGLRenderer&&typeof renderer.copyTextureToTexture==='function';let patch=null,source=null;const stats={full:0,partial:0,lastBytes:0,bytes:0,lastUploadMs:0};
  function upload(board,area=null){const started=performance.now(),canvas=board.canvas;
   const scale=canvas.width/1536;
   if(!supported||!board.inkUploaded||!area||area[2]*area[3]>1536*640*.6){board.texture.needsUpdate=true;board.inkUploaded=true;stats.full++;stats.lastBytes=canvas.width*canvas.height*4;}

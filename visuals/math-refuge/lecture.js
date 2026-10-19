@@ -1,8 +1,8 @@
 import {classroomWaitAt,countdownTextRect,createCountdownTargets,placeCountdownTarget} from './board-countdown.js';
-import {prepareMaliChalk} from './mali-chalk.js?v=mali-20261017';
+import {prepareMaliChalk} from './mali-chalk.js?v=safari-glyph-20261019-1';
 import {AssetRetry} from './asset-retry.js';
 import {boardInkScale} from './board-ink-resolution.js';
-import {changedInkRect,unionInkRects,intersectsInk,createBoardInkUploader} from './board-ink-update.js';
+import {changedInkRect,unionInkRects,intersectsInk,createBoardInkUploader} from './board-ink-update.js?v=safari-glyph-20261019-1';
 import {preparationTurn} from './preparation-turn.js';
 import {createBoardTrayHardware} from './board-tray.js?v=crystal-black-b2';
 import {isCrystalScheme,paintStoneBoard,setTrackScheme} from './board-mineral.js';
@@ -27,7 +27,7 @@ import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './si
 import {createSmartGlassHub} from './smart-glass-hub.js?v=smart-voice-9';
 import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
 import {authoredContext,authoredFormula} from './authored-chalk.js?v=mali-20261017';
-import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=mali-20261017';
+import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=safari-glyph-20261019-1';
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
 import {createSeminarScreen} from './seminar-screen.js?v=report-line-sync-6';
 import * as THREE from 'three';
@@ -91,7 +91,7 @@ export async function createLecture(scene,renderer,options={}){
         const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
         let rows;
         if(pages[index].orderedBoard){
-          const {prepareBoard}=await import('./sylow-f-renderer.js?v=zzl-f-row50-20261017');
+          const {prepareBoard}=await import('./sylow-f-renderer.js?v=safari-glyph-20261019-1');
           const prepared=await prepareBoard(pages[index].orderedBoard,lang);
           if(epoch!==generation){resolve(null);return;}
           sampleCtx.drawImage(prepared.canvas,0,0);rows=prepared.rows;

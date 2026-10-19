@@ -2,7 +2,7 @@ import {renderClassroomManuscript} from './classroom-manuscript.js?v=C-full-2026
 import {boardWaitAt,countdownTextRect,containsCountdown} from './board-countdown.js';
 import {MIN_BOARD_REVIEW_SECONDS} from './board-review.js';
 import {prepareClassroomAudioBlob,classroomAudioDecodeState} from './classroom-audio-decode.js?v=mp3-predecode-1';
-import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=C-full-20261019';
+import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=safari-glyph-20261019-1';
 import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=exercise-C-20261018';
 import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=native-pcm-20261017-1';
 const $=id=>document.getElementById(id),query=new URLSearchParams(location.search);window.fRendererReady=true;
