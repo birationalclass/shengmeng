@@ -1,0 +1,185 @@
+
+===== EXACT AUDIT top-flasque-h-foundation =====
+LinearStudy.topOpenFreeAbelianPresheafFunctor : (X : TopCat) →
+  CategoryTheory.Functor (TopologicalSpace.Opens ↑X)
+    (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ AddCommGrpCat)
+'LinearStudy.topOpenFreeAbelianPresheafFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenFreeAbelianPresheaf_map_mono : ∀ (X : TopCat) {U V : TopologicalSpace.Opens ↑X} (i : U ⟶ V),
+  CategoryTheory.Mono ((LinearStudy.topOpenFreeAbelianPresheafFunctor X).map i)
+'LinearStudy.topOpenFreeAbelianPresheaf_map_mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenFreeAbelianSheafFunctor : (X : TopCat) →
+  CategoryTheory.Functor (TopologicalSpace.Opens ↑X) (TopCat.Sheaf AddCommGrpCat X)
+'LinearStudy.topOpenFreeAbelianSheafFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenFreeAbelianSheaf_map_mono : ∀ (X : TopCat) {U V : TopologicalSpace.Opens ↑X} (i : U ⟶ V),
+  CategoryTheory.Mono ((LinearStudy.topOpenFreeAbelianSheafFunctor X).map i)
+'LinearStudy.topOpenFreeAbelianSheaf_map_mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenFreeAbelianSheafHomEquiv : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    (F : TopCat.Sheaf AddCommGrpCat X) →
+      ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U ⟶ F) ≃ ↑(F.obj.obj (Opposite.op U))
+'LinearStudy.topOpenFreeAbelianSheafHomEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenFreeAbelianSheafHomEquiv_restrict : ∀ (X : TopCat) {U V : TopologicalSpace.Opens ↑X} (i : U ⟶ V)
+  (F : TopCat.Sheaf AddCommGrpCat X) (a : (LinearStudy.topOpenFreeAbelianSheafFunctor X).obj V ⟶ F),
+  (LinearStudy.topOpenFreeAbelianSheafHomEquiv X U F)
+      (CategoryTheory.CategoryStruct.comp ((LinearStudy.topOpenFreeAbelianSheafFunctor X).map i) a) =
+    (CategoryTheory.ConcreteCategory.hom (F.obj.map i.op)) ((LinearStudy.topOpenFreeAbelianSheafHomEquiv X V F) a)
+'LinearStudy.topOpenFreeAbelianSheafHomEquiv_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenFreeAbelianSheafHomEquiv_postcompose : ∀ (X : TopCat) (U : TopologicalSpace.Opens ↑X)
+  {F G : TopCat.Sheaf AddCommGrpCat X} (f : F ⟶ G) (a : (LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U ⟶ F),
+  (LinearStudy.topOpenFreeAbelianSheafHomEquiv X U G) (CategoryTheory.CategoryStruct.comp a f) =
+    (CategoryTheory.ConcreteCategory.hom (f.hom.app (Opposite.op U)))
+      ((LinearStudy.topOpenFreeAbelianSheafHomEquiv X U F) a)
+'LinearStudy.topOpenFreeAbelianSheafHomEquiv_postcompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topAbelianSheaf_injective_isFlasque : ∀ (X : TopCat) (I : TopCat.Sheaf AddCommGrpCat X)
+  [CategoryTheory.Injective I], I.IsFlasque
+'LinearStudy.topAbelianSheaf_injective_isFlasque' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topAbelianSheafIntegerHomSectionsAddEquiv : (X : TopCat) →
+  (F : TopCat.Sheaf AddCommGrpCat X) →
+    ((CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj ↧(ULift.{u_1, 0} ℤ) ⟶ F) ≃+
+      ↑(F.obj.obj (Opposite.op ⊤))
+'LinearStudy.topAbelianSheafIntegerHomSectionsAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topAbelianSheafIntegerHomSectionsAddEquiv_postcompose : ∀ (X : TopCat) {F G : TopCat.Sheaf AddCommGrpCat X}
+  (f : F ⟶ G)
+  (a : (CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj ↧(ULift.{u_1, 0} ℤ) ⟶ F),
+  (LinearStudy.topAbelianSheafIntegerHomSectionsAddEquiv X G) (CategoryTheory.CategoryStruct.comp a f) =
+    (CategoryTheory.ConcreteCategory.hom (f.hom.app (Opposite.op ⊤)))
+      ((LinearStudy.topAbelianSheafIntegerHomSectionsAddEquiv X F) a)
+'LinearStudy.topAbelianSheafIntegerHomSectionsAddEquiv_postcompose' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.topAbelianSheaf_flasque_quotient_of_injective : ∀ {X : TopCat}
+  {S : CategoryTheory.ShortComplex (TopCat.Sheaf AddCommGrpCat X)},
+  S.ShortExact → S.X₁.IsFlasque → CategoryTheory.Injective S.X₂ → S.X₃.IsFlasque
+'LinearStudy.topAbelianSheaf_flasque_quotient_of_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.topAbelianSheaf_shortExact_integerHom_lift_of_flasque : ∀ {X : TopCat}
+  {S : CategoryTheory.ShortComplex (TopCat.Sheaf AddCommGrpCat X)},
+  S.ShortExact →
+    S.X₁.IsFlasque →
+      ∀
+        (a :
+          (CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj ↧(ULift.{u_1, 0} ℤ) ⟶ S.X₃),
+        ∃ (b :
+          (CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj ↧(ULift.{u_1, 0} ℤ) ⟶ S.X₂),
+          CategoryTheory.CategoryStruct.comp b S.g = a
+'LinearStudy.topAbelianSheaf_shortExact_integerHom_lift_of_flasque' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.topAbelianSheaf_flasque_higherCohomology_vanish : ∀ (X : TopCat) (F : TopCat.Sheaf AddCommGrpCat X),
+  F.IsFlasque → ∀ (n : ℕ), Subsingleton (CategoryTheory.Sheaf.H F (n + 1))
+'LinearStudy.topAbelianSheaf_flasque_higherCohomology_vanish' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModule_injective_actualHigherCohomology_vanish : ∀ (X : AlgebraicGeometry.Scheme) (I : X.Modules)
+  [CategoryTheory.Injective I] (n : ℕ), Subsingleton (LinearStudy.schemeModuleActualCohomology X I (n + 1))
+'LinearStudy.schemeModule_injective_actualHigherCohomology_vanish' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.topOpenFreeAbelianPresheafFunctor.{u} : (X : TopCat) →
+  CategoryTheory.Functor (TopologicalSpace.Opens ↑X)
+    (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ AddCommGrpCat) :=
+fun (X : TopCat) =>
+  CategoryTheory.uliftYoneda.{u, u, u}.comp
+    ((CategoryTheory.Functor.whiskeringRight (TopologicalSpace.Opens ↑X)ᵒᵖ (Type u) AddCommGrpCat).obj
+      AddCommGrpCat.free)
+def LinearStudy.topOpenFreeAbelianSheafFunctor.{u} : (X : TopCat) →
+  CategoryTheory.Functor (TopologicalSpace.Opens ↑X) (TopCat.Sheaf AddCommGrpCat X) :=
+fun (X : TopCat) =>
+  (LinearStudy.topOpenFreeAbelianPresheafFunctor X).comp
+    (CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat)
+def LinearStudy.topOpenFreeAbelianSheafHomEquiv.{u} : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    (F : TopCat.Sheaf AddCommGrpCat X) →
+      ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U ⟶ F) ≃ ↑(F.obj.obj (Opposite.op U)) :=
+fun (X : TopCat) (U : TopologicalSpace.Opens ↑X) (F : TopCat.Sheaf AddCommGrpCat X) =>
+  ((CategoryTheory.sheafificationAdjunction (Opens.grothendieckTopology ↑X) AddCommGrpCat).homEquiv
+        ((LinearStudy.topOpenFreeAbelianPresheafFunctor X).obj U) F).trans
+    (((CategoryTheory.Adjunction.whiskerRight (TopologicalSpace.Opens ↑X)ᵒᵖ AddCommGrpCat.adj).homEquiv
+          (CategoryTheory.uliftYoneda.{u, u, u}.obj U) F.obj).trans
+      CategoryTheory.uliftYonedaEquiv)
+def LinearStudy.topAbelianSheafIntegerHomSectionsAddEquiv.{u} : (X : TopCat) →
+  (F : TopCat.Sheaf AddCommGrpCat X) →
+    ((CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj ↧(ULift.{u, 0} ℤ) ⟶ F) ≃+
+      ↑(F.obj.obj (Opposite.op ⊤)) :=
+fun (X : TopCat) (F : TopCat.Sheaf AddCommGrpCat X) =>
+  ((CategoryTheory.constantSheafAdj (Opens.grothendieckTopology ↑X) AddCommGrpCat
+            CategoryTheory.Limits.isTerminalTop).homAddEquiv
+        (↧(ULift.{u, 0} ℤ)) F).trans
+    (((CategoryTheory.sheafSections (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj (Opposite.op ⊤)).obj
+        F).uliftZMultiplesAddEquiv
+ROLECHECK:LinearStudy.topOpenFreeAbelianPresheafFunctor:false
+ROLECHECK:LinearStudy.topOpenFreeAbelianPresheaf_map_mono:true
+ROLECHECK:LinearStudy.topOpenFreeAbelianSheafFunctor:false
+ROLECHECK:LinearStudy.topOpenFreeAbelianSheaf_map_mono:true
+ROLECHECK:LinearStudy.topOpenFreeAbelianSheafHomEquiv:false
+ROLECHECK:LinearStudy.topOpenFreeAbelianSheafHomEquiv_restrict:true
+ROLECHECK:LinearStudy.topOpenFreeAbelianSheafHomEquiv_postcompose:true
+ROLECHECK:LinearStudy.topAbelianSheaf_injective_isFlasque:true
+ROLECHECK:LinearStudy.topAbelianSheafIntegerHomSectionsAddEquiv:false
+ROLECHECK:LinearStudy.topAbelianSheafIntegerHomSectionsAddEquiv_postcompose:true
+ROLECHECK:LinearStudy.topAbelianSheaf_flasque_quotient_of_injective:true
+ROLECHECK:LinearStudy.topAbelianSheaf_shortExact_integerHom_lift_of_flasque:true
+ROLECHECK:LinearStudy.topAbelianSheaf_flasque_higherCohomology_vanish:true
+ROLECHECK:LinearStudy.schemeModule_injective_actualHigherCohomology_vanish:true
+
+===== EXACT AUDIT global-ext-actual-h-zero =====
+@LinearStudy.extZeroHomEquiv_postcompose : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (O : A) {F G : A} (f : F ⟶ G)
+  (x : CategoryTheory.Abelian.Ext O F 0),
+  CategoryTheory.Abelian.Ext.addEquiv₀ (x.comp (CategoryTheory.Abelian.Ext.mk₀ f) ⋯) =
+    CategoryTheory.CategoryStruct.comp (CategoryTheory.Abelian.Ext.addEquiv₀ x) f
+'LinearStudy.extZeroHomEquiv_postcompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv : (X : AlgebraicGeometry.Scheme) →
+  (F : X.Modules) → (SheafOfModules.unit X.ringCatSheaf ⟶ F) ≃+ ↑(F.presheaf.obj (Opposite.op ⊤))
+'LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtZeroSectionsAddEquiv : (X : AlgebraicGeometry.Scheme) →
+  (F : X.Modules) →
+    CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) F 0 ≃+ ↑(F.presheaf.obj (Opposite.op ⊤))
+'LinearStudy.schemeModuleGlobalExtZeroSectionsAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv : (X : AlgebraicGeometry.Scheme) →
+  (F : X.Modules) →
+    CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) F 0 ≃+
+      LinearStudy.schemeModuleActualCohomology X F 0
+'LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv_evaluate : ∀ (X : AlgebraicGeometry.Scheme) (F : X.Modules)
+  (x : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) F 0),
+  (CategoryTheory.Sheaf.H.equiv₀ ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj F)
+        CategoryTheory.Limits.isTerminalTop)
+      ((LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv X F) x) =
+    (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (CategoryTheory.Abelian.Ext.addEquiv₀ x) ⊤))
+      1
+'LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv_evaluate' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv_naturality : ∀ (X : AlgebraicGeometry.Scheme) {F G : X.Modules}
+  (f : F ⟶ G) (x : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) F 0),
+  (LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv X G) (x.comp (CategoryTheory.Abelian.Ext.mk₀ f) ⋯) =
+    (CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f) 0)
+      ((LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv X F) x)
+'LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv.{u} : (X : AlgebraicGeometry.Scheme) →
+  (F : X.Modules) → (SheafOfModules.unit X.ringCatSheaf ⟶ F) ≃+ ↑(F.presheaf.obj (Opposite.op ⊤)) :=
+fun (X : AlgebraicGeometry.Scheme) (F : X.Modules) =>
+  {
+    toFun := fun (f : SheafOfModules.unit X.ringCatSheaf ⟶ F) =>
+      (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app f ⊤)) 1,
+    invFun := LinearStudy.moduleSheafGlobalSectionMorphism F, left_inv := ⋯, right_inv := ⋯, map_add' := ⋯ }
+def LinearStudy.schemeModuleGlobalExtZeroSectionsAddEquiv.{u} : (X : AlgebraicGeometry.Scheme) →
+  (F : X.Modules) →
+    CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) F 0 ≃+ ↑(F.presheaf.obj (Opposite.op ⊤)) :=
+fun (X : AlgebraicGeometry.Scheme) (F : X.Modules) =>
+  CategoryTheory.Abelian.Ext.addEquiv₀.trans (LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv X F)
+def LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv.{u} : (X : AlgebraicGeometry.Scheme) →
+  (F : X.Modules) →
+    CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) F 0 ≃+
+      LinearStudy.schemeModuleActualCohomology X F 0 :=
+fun (X : AlgebraicGeometry.Scheme) (F : X.Modules) =>
+  (LinearStudy.schemeModuleGlobalExtZeroSectionsAddEquiv X F).trans
+    (CategoryTheory.Sheaf.H.equiv₀ ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj F)
+        CategoryTheory.Limits.isTerminalTop).symm
+ROLECHECK:LinearStudy.extZeroHomEquiv_postcompose:true
+ROLECHECK:LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv:false
+ROLECHECK:LinearStudy.schemeModuleGlobalExtZeroSectionsAddEquiv:false
+ROLECHECK:LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv:false
+ROLECHECK:LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv_evaluate:true
+ROLECHECK:LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv_naturality:true

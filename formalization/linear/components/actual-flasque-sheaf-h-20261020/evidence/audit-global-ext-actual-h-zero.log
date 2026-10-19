@@ -1,0 +1,63 @@
+@LinearStudy.extZeroHomEquiv_postcompose : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (O : A) {F G : A} (f : F ⟶ G)
+  (x : CategoryTheory.Abelian.Ext O F 0),
+  CategoryTheory.Abelian.Ext.addEquiv₀ (x.comp (CategoryTheory.Abelian.Ext.mk₀ f) ⋯) =
+    CategoryTheory.CategoryStruct.comp (CategoryTheory.Abelian.Ext.addEquiv₀ x) f
+'LinearStudy.extZeroHomEquiv_postcompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv : (X : AlgebraicGeometry.Scheme) →
+  (F : X.Modules) → (SheafOfModules.unit X.ringCatSheaf ⟶ F) ≃+ ↑(F.presheaf.obj (Opposite.op ⊤))
+'LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtZeroSectionsAddEquiv : (X : AlgebraicGeometry.Scheme) →
+  (F : X.Modules) →
+    CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) F 0 ≃+ ↑(F.presheaf.obj (Opposite.op ⊤))
+'LinearStudy.schemeModuleGlobalExtZeroSectionsAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv : (X : AlgebraicGeometry.Scheme) →
+  (F : X.Modules) →
+    CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) F 0 ≃+
+      LinearStudy.schemeModuleActualCohomology X F 0
+'LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv_evaluate : ∀ (X : AlgebraicGeometry.Scheme) (F : X.Modules)
+  (x : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) F 0),
+  (CategoryTheory.Sheaf.H.equiv₀ ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj F)
+        CategoryTheory.Limits.isTerminalTop)
+      ((LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv X F) x) =
+    (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (CategoryTheory.Abelian.Ext.addEquiv₀ x) ⊤))
+      1
+'LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv_evaluate' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv_naturality : ∀ (X : AlgebraicGeometry.Scheme) {F G : X.Modules}
+  (f : F ⟶ G) (x : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) F 0),
+  (LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv X G) (x.comp (CategoryTheory.Abelian.Ext.mk₀ f) ⋯) =
+    (CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f) 0)
+      ((LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv X F) x)
+'LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv.{u} : (X : AlgebraicGeometry.Scheme) →
+  (F : X.Modules) → (SheafOfModules.unit X.ringCatSheaf ⟶ F) ≃+ ↑(F.presheaf.obj (Opposite.op ⊤)) :=
+fun (X : AlgebraicGeometry.Scheme) (F : X.Modules) =>
+  {
+    toFun := fun (f : SheafOfModules.unit X.ringCatSheaf ⟶ F) =>
+      (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app f ⊤)) 1,
+    invFun := LinearStudy.moduleSheafGlobalSectionMorphism F, left_inv := ⋯, right_inv := ⋯, map_add' := ⋯ }
+def LinearStudy.schemeModuleGlobalExtZeroSectionsAddEquiv.{u} : (X : AlgebraicGeometry.Scheme) →
+  (F : X.Modules) →
+    CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) F 0 ≃+ ↑(F.presheaf.obj (Opposite.op ⊤)) :=
+fun (X : AlgebraicGeometry.Scheme) (F : X.Modules) =>
+  CategoryTheory.Abelian.Ext.addEquiv₀.trans (LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv X F)
+def LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv.{u} : (X : AlgebraicGeometry.Scheme) →
+  (F : X.Modules) →
+    CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) F 0 ≃+
+      LinearStudy.schemeModuleActualCohomology X F 0 :=
+fun (X : AlgebraicGeometry.Scheme) (F : X.Modules) =>
+  (LinearStudy.schemeModuleGlobalExtZeroSectionsAddEquiv X F).trans
+    (CategoryTheory.Sheaf.H.equiv₀ ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj F)
+        CategoryTheory.Limits.isTerminalTop).symm
+ROLECHECK:LinearStudy.extZeroHomEquiv_postcompose:true
+ROLECHECK:LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv:false
+ROLECHECK:LinearStudy.schemeModuleGlobalExtZeroSectionsAddEquiv:false
+ROLECHECK:LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv:false
+ROLECHECK:LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv_evaluate:true
+ROLECHECK:LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv_naturality:true
