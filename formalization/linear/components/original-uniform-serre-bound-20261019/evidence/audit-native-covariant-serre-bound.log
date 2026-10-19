@@ -1,0 +1,86 @@
+@LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r d : ℕ} →
+              (H : Fin r → S) →
+                (hH : ∀ (j : Fin r), H j ∈ 𝓑 d) →
+                  {E : (AlgebraicGeometry.Proj 𝓑).Modules} →
+                    (alpha :
+                        LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1) ⟶
+                          (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E) →
+                      QuasiIso alpha → (AlgebraicGeometry.Proj 𝓑).Modules → Prop
+'LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement_of_Serre : ∀ {K S : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r d : ℕ},
+  0 < r →
+    ∀ (H : Fin r → S) (hH : ∀ (j : Fin r), H j ∈ 𝓑 d) {E : (AlgebraicGeometry.Proj 𝓑).Modules}
+      (alpha :
+        LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1) ⟶
+          (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+      (hAlpha : QuasiIso alpha) (O : (AlgebraicGeometry.Proj 𝓑).Modules) (N : ℕ),
+      N + r + 1 ≤ d →
+        (∀ (s : ℤ),
+            ↑N ≤ s →
+              ∀ (i : ℕ),
+                0 < i →
+                  Subsingleton
+                    (CategoryTheory.Abelian.Ext O
+                      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ s)
+                      i)) →
+          LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement 𝓑 H hH alpha hAlpha O
+'LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement_of_Serre' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeKoszul_uniformCovariantExact_from_Serre : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (O : (AlgebraicGeometry.Proj 𝓑).Modules)
+  (N r : ℕ),
+  0 < r →
+    (∀ (s : ℤ),
+        ↑N ≤ s →
+          ∀ (i : ℕ),
+            0 < i →
+              Subsingleton
+                (CategoryTheory.Abelian.Ext O
+                  (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ s) i)) →
+      ∃ (m : ℕ),
+        0 < m ∧
+          ∀ (D : ℕ),
+            1 ≤ D →
+              ∀ (d : ℕ),
+                m * D < d →
+                  ∀ (H : Fin r → S) (hH : ∀ (j : Fin r), H j ∈ 𝓑 d) (E : (AlgebraicGeometry.Proj 𝓑).Modules)
+                    (alpha :
+                      LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1) ⟶
+                        (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+                    (hAlpha : QuasiIso alpha),
+                    LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement 𝓑 H hH alpha hAlpha O
+'LinearStudy.nativeKoszul_uniformCovariantExact_from_Serre' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r d : ℕ} →
+              (H : Fin r → S) →
+                (hH : ∀ (j : Fin r), H j ∈ 𝓑 d) →
+                  {E : (AlgebraicGeometry.Proj 𝓑).Modules} →
+                    (alpha :
+                        LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1) ⟶
+                          (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E) →
+                      QuasiIso alpha → (AlgebraicGeometry.Proj 𝓑).Modules → Prop :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {r d : ℕ}
+    (H : Fin r → S) (hH : ∀ (j : Fin r), H j ∈ 𝓑 d) {E : (AlgebraicGeometry.Proj 𝓑).Modules}
+    (alpha :
+      LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1) ⟶
+        (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+    (hAlpha : QuasiIso alpha) (O : (AlgebraicGeometry.Proj 𝓑).Modules) =>
+  LinearStudy.schemeModuleOriginalCovariantAtSourceStatement
+    (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1)) r alpha hAlpha ⋯
+    (LinearStudy.nativeProjectiveKoszulComplexTopTwistIso 𝓑 H hH (↑r * ↑d - ↑r - 1)) O
+ROLECHECK:LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement:false
+ROLECHECK:LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement_of_Serre:true
+ROLECHECK:LinearStudy.nativeKoszul_uniformCovariantExact_from_Serre:true

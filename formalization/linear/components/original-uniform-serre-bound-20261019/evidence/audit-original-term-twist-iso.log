@@ -1,0 +1,37 @@
+@LinearStudy.projectivePulledOriginalTermTwistIso : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (p : ℕ) →
+                (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).X p ≅
+                  ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) =>
+                    LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                        (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                      ⋯ (k - ↑p * ↑f.degree)
+'LinearStudy.projectivePulledOriginalTermTwistIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.projectivePulledOriginalTermTwistIso : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (p : ℕ) →
+                (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).X p ≅
+                  ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) =>
+                    LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                        (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                      ⋯ (k - ↑p * ↑f.degree) :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) (p : ℕ) =>
+  id
+    (⋯.mpr
+      (LinearStudy.nativeProjectiveKoszulTermTwistIso (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) r f.degree
+        p k))
+ROLECHECK:LinearStudy.projectivePulledOriginalTermTwistIso:false

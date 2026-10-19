@@ -1,0 +1,38 @@
+@LinearStudy.schemeModuleOriginalCovariantAtSourceStatement : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E M : X.Modules} →
+      (r : ℕ) →
+        (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          QuasiIso alpha → CategoryTheory.Limits.IsZero (C.X (r + 1)) → (C.X r ≅ M) → X.Modules → Prop
+'LinearStudy.schemeModuleOriginalCovariantAtSourceStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOriginalCovariantAtSourceStatement_proof : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E M : X.Modules} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+      (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (phi : C.X r ≅ M) (O : X.Modules),
+      (∀ j < r, ∀ (q : ℕ), 0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (C.X (r - j - 1)) q)) →
+        LinearStudy.schemeModuleOriginalCovariantAtSourceStatement C r alpha hAlpha hAbove phi O
+'LinearStudy.schemeModuleOriginalCovariantAtSourceStatement_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleOriginalCovariantAtSourceStatement.{u} : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E M : X.Modules} →
+      (r : ℕ) →
+        (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          QuasiIso alpha → CategoryTheory.Limits.IsZero (C.X (r + 1)) → (C.X r ≅ M) → X.Modules → Prop :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) {E M : X.Modules} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+    (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (phi : C.X r ≅ M) (O : X.Modules) =>
+  (∀ (x : CategoryTheory.Abelian.Ext O M r),
+      ∃ (y : O ⟶ E),
+        (CategoryTheory.Abelian.Ext.mk₀ y).comp
+            (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha phi.hom ⋯) ⋯ =
+          x) ∧
+    ∀ (x : O ⟶ E),
+      (CategoryTheory.Abelian.Ext.mk₀ x).comp
+            (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha phi.hom ⋯) ⋯ =
+          0 ↔
+        ∃ (z : O ⟶ C.X 0), CategoryTheory.CategoryStruct.comp z (alpha.f 0) = x
+ROLECHECK:LinearStudy.schemeModuleOriginalCovariantAtSourceStatement:false
+ROLECHECK:LinearStudy.schemeModuleOriginalCovariantAtSourceStatement_proof:true

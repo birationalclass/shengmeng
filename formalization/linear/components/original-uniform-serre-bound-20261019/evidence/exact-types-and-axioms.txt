@@ -1,0 +1,453 @@
+
+===== EXACT AUDIT relative-ext-finite-biproduct =====
+@LinearStudy.extCovariantFiniteBiproduct_subsingleton : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (O : A) {ι : Type u_4} [Fintype ι] (P : ι → A)
+  [inst_4 : CategoryTheory.Limits.HasBiproduct P] (q : ℕ),
+  (∀ (i : ι), Subsingleton (CategoryTheory.Abelian.Ext O (P i) q)) → Subsingleton (CategoryTheory.Abelian.Ext O (⨁ P) q)
+'LinearStudy.extCovariantFiniteBiproduct_subsingleton' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.extCovariantFiniteBiproduct_subsingleton:true
+
+===== EXACT AUDIT generic-covariant-complex-serre =====
+@LinearStudy.extCovariantComplex_middle_from_Serre_bound : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : CategoryTheory.Limits.HasFiniteBiproducts A] (C : ChainComplex A ℕ) (O : A) (T : ℤ → A) (N r d : ℕ)
+  (e : (p : ℕ) → C.X p ≅ ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) => T (↑r * ↑d - ↑r - 1 - ↑p * ↑d)),
+  N + r + 1 ≤ d →
+    (∀ (s : ℤ), ↑N ≤ s → ∀ (i : ℕ), 0 < i → Subsingleton (CategoryTheory.Abelian.Ext O (T s) i)) →
+      ∀ j < r, ∀ (i : ℕ), 0 < i → Subsingleton (CategoryTheory.Abelian.Ext O (C.X (r - j - 1)) i)
+'LinearStudy.extCovariantComplex_middle_from_Serre_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.extCovariantComplex_middle_from_Serre_bound:true
+
+===== EXACT AUDIT original-term-twist-iso =====
+@LinearStudy.projectivePulledOriginalTermTwistIso : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (p : ℕ) →
+                (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).X p ≅
+                  ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) =>
+                    LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                        (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                      ⋯ (k - ↑p * ↑f.degree)
+'LinearStudy.projectivePulledOriginalTermTwistIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.projectivePulledOriginalTermTwistIso : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (k : ℤ) →
+              (p : ℕ) →
+                (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).X p ≅
+                  ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) =>
+                    LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                        (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                      ⋯ (k - ↑p * ↑f.degree) :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ) (k : ℤ) (p : ℕ) =>
+  id
+    (⋯.mpr
+      (LinearStudy.nativeProjectiveKoszulTermTwistIso (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) r f.degree
+        p k))
+ROLECHECK:LinearStudy.projectivePulledOriginalTermTwistIso:false
+
+===== EXACT AUDIT native-relative-serre-bound =====
+@LinearStudy.nativeKoszulRelativeExt_term_of_twist_bound : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  [inst_4 : CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules] (O : (AlgebraicGeometry.Proj 𝓑).Modules) (N : ℕ),
+  (∀ (s : ℤ),
+      ↑N ≤ s →
+        ∀ (i : ℕ),
+          0 < i →
+            Subsingleton
+              (CategoryTheory.Abelian.Ext O
+                (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ s) i)) →
+    ∀ (r d p : ℕ) (k : ℤ),
+      ↑N ≤ k - ↑p * ↑d →
+        ∀ (i : ℕ),
+          0 < i → Subsingleton (CategoryTheory.Abelian.Ext O (LinearStudy.nativeProjectiveKoszulTerm 𝓑 r d p k) i)
+'LinearStudy.nativeKoszulRelativeExt_term_of_twist_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeKoszulRelativeExt_middle_of_Serre_bound : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  [inst_4 : CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules] (O : (AlgebraicGeometry.Proj 𝓑).Modules) (N : ℕ),
+  (∀ (s : ℤ),
+      ↑N ≤ s →
+        ∀ (i : ℕ),
+          0 < i →
+            Subsingleton
+              (CategoryTheory.Abelian.Ext O
+                (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ s) i)) →
+    ∀ {r d : ℕ} (H : Fin r → S) (hH : ∀ (j : Fin r), H j ∈ 𝓑 d),
+      N + r + 1 ≤ d →
+        ∀ p < r,
+          ∀ (i : ℕ),
+            0 < i →
+              Subsingleton
+                (CategoryTheory.Abelian.Ext O
+                  ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1)).X p) i)
+'LinearStudy.nativeKoszulRelativeExt_middle_of_Serre_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeKoszulRelativeExt_uniform_bound : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  [inst_4 : CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules] (O : (AlgebraicGeometry.Proj 𝓑).Modules)
+  (N r : ℕ),
+  (∀ (s : ℤ),
+      ↑N ≤ s →
+        ∀ (i : ℕ),
+          0 < i →
+            Subsingleton
+              (CategoryTheory.Abelian.Ext O
+                (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ s) i)) →
+    ∃ (m : ℕ),
+      0 < m ∧
+        ∀ (D : ℕ),
+          1 ≤ D →
+            ∀ (d : ℕ),
+              m * D < d →
+                ∀ (H : Fin r → S) (hH : ∀ (j : Fin r), H j ∈ 𝓑 d),
+                  ∀ p < r,
+                    ∀ (i : ℕ),
+                      0 < i →
+                        Subsingleton
+                          (CategoryTheory.Abelian.Ext O
+                            ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1)).X p) i)
+'LinearStudy.nativeKoszulRelativeExt_uniform_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.nativeKoszulRelativeExt_term_of_twist_bound:true
+ROLECHECK:LinearStudy.nativeKoszulRelativeExt_middle_of_Serre_bound:true
+ROLECHECK:LinearStudy.nativeKoszulRelativeExt_uniform_bound:true
+
+===== EXACT AUDIT scheme-covariant-at-source =====
+@LinearStudy.schemeModuleOriginalCovariantAtSourceStatement : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E M : X.Modules} →
+      (r : ℕ) →
+        (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          QuasiIso alpha → CategoryTheory.Limits.IsZero (C.X (r + 1)) → (C.X r ≅ M) → X.Modules → Prop
+'LinearStudy.schemeModuleOriginalCovariantAtSourceStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOriginalCovariantAtSourceStatement_proof : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E M : X.Modules} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+      (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (phi : C.X r ≅ M) (O : X.Modules),
+      (∀ j < r, ∀ (q : ℕ), 0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (C.X (r - j - 1)) q)) →
+        LinearStudy.schemeModuleOriginalCovariantAtSourceStatement C r alpha hAlpha hAbove phi O
+'LinearStudy.schemeModuleOriginalCovariantAtSourceStatement_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleOriginalCovariantAtSourceStatement.{u} : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E M : X.Modules} →
+      (r : ℕ) →
+        (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          QuasiIso alpha → CategoryTheory.Limits.IsZero (C.X (r + 1)) → (C.X r ≅ M) → X.Modules → Prop :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) {E M : X.Modules} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+    (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (phi : C.X r ≅ M) (O : X.Modules) =>
+  (∀ (x : CategoryTheory.Abelian.Ext O M r),
+      ∃ (y : O ⟶ E),
+        (CategoryTheory.Abelian.Ext.mk₀ y).comp
+            (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha phi.hom ⋯) ⋯ =
+          x) ∧
+    ∀ (x : O ⟶ E),
+      (CategoryTheory.Abelian.Ext.mk₀ x).comp
+            (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha phi.hom ⋯) ⋯ =
+          0 ↔
+        ∃ (z : O ⟶ C.X 0), CategoryTheory.CategoryStruct.comp z (alpha.f 0) = x
+ROLECHECK:LinearStudy.schemeModuleOriginalCovariantAtSourceStatement:false
+ROLECHECK:LinearStudy.schemeModuleOriginalCovariantAtSourceStatement_proof:true
+
+===== EXACT AUDIT native-covariant-serre-bound =====
+@LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r d : ℕ} →
+              (H : Fin r → S) →
+                (hH : ∀ (j : Fin r), H j ∈ 𝓑 d) →
+                  {E : (AlgebraicGeometry.Proj 𝓑).Modules} →
+                    (alpha :
+                        LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1) ⟶
+                          (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E) →
+                      QuasiIso alpha → (AlgebraicGeometry.Proj 𝓑).Modules → Prop
+'LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement_of_Serre : ∀ {K S : Type} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] {r d : ℕ},
+  0 < r →
+    ∀ (H : Fin r → S) (hH : ∀ (j : Fin r), H j ∈ 𝓑 d) {E : (AlgebraicGeometry.Proj 𝓑).Modules}
+      (alpha :
+        LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1) ⟶
+          (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+      (hAlpha : QuasiIso alpha) (O : (AlgebraicGeometry.Proj 𝓑).Modules) (N : ℕ),
+      N + r + 1 ≤ d →
+        (∀ (s : ℤ),
+            ↑N ≤ s →
+              ∀ (i : ℕ),
+                0 < i →
+                  Subsingleton
+                    (CategoryTheory.Abelian.Ext O
+                      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ s)
+                      i)) →
+          LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement 𝓑 H hH alpha hAlpha O
+'LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement_of_Serre' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeKoszul_uniformCovariantExact_from_Serre : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑] (O : (AlgebraicGeometry.Proj 𝓑).Modules)
+  (N r : ℕ),
+  0 < r →
+    (∀ (s : ℤ),
+        ↑N ≤ s →
+          ∀ (i : ℕ),
+            0 < i →
+              Subsingleton
+                (CategoryTheory.Abelian.Ext O
+                  (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ s) i)) →
+      ∃ (m : ℕ),
+        0 < m ∧
+          ∀ (D : ℕ),
+            1 ≤ D →
+              ∀ (d : ℕ),
+                m * D < d →
+                  ∀ (H : Fin r → S) (hH : ∀ (j : Fin r), H j ∈ 𝓑 d) (E : (AlgebraicGeometry.Proj 𝓑).Modules)
+                    (alpha :
+                      LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1) ⟶
+                        (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+                    (hAlpha : QuasiIso alpha),
+                    LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement 𝓑 H hH alpha hAlpha O
+'LinearStudy.nativeKoszul_uniformCovariantExact_from_Serre' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement : {K S : Type} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (𝓑 : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra 𝓑] →
+            {r d : ℕ} →
+              (H : Fin r → S) →
+                (hH : ∀ (j : Fin r), H j ∈ 𝓑 d) →
+                  {E : (AlgebraicGeometry.Proj 𝓑).Modules} →
+                    (alpha :
+                        LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1) ⟶
+                          (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E) →
+                      QuasiIso alpha → (AlgebraicGeometry.Proj 𝓑).Modules → Prop :=
+fun {K S : Type} [Field K] [CommRing S] [Algebra K S] (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] {r d : ℕ}
+    (H : Fin r → S) (hH : ∀ (j : Fin r), H j ∈ 𝓑 d) {E : (AlgebraicGeometry.Proj 𝓑).Modules}
+    (alpha :
+      LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1) ⟶
+        (ChainComplex.single₀ (AlgebraicGeometry.Proj 𝓑).Modules).obj E)
+    (hAlpha : QuasiIso alpha) (O : (AlgebraicGeometry.Proj 𝓑).Modules) =>
+  LinearStudy.schemeModuleOriginalCovariantAtSourceStatement
+    (LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1)) r alpha hAlpha ⋯
+    (LinearStudy.nativeProjectiveKoszulComplexTopTwistIso 𝓑 H hH (↑r * ↑d - ↑r - 1)) O
+ROLECHECK:LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement:false
+ROLECHECK:LinearStudy.nativeKoszulCovariantAtOriginalTwistStatement_of_Serre:true
+ROLECHECK:LinearStudy.nativeKoszul_uniformCovariantExact_from_Serre:true
+
+===== EXACT AUDIT abstract-covariant-serre-statement =====
+@LinearStudy.schemeModuleOriginalCovariantSerreStatement : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E M : X.Modules} →
+      (r : ℕ) →
+        (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          QuasiIso alpha →
+            CategoryTheory.Limits.IsZero (C.X (r + 1)) →
+              (C.X r ≅ M) →
+                (T : ℤ → X.Modules) →
+                  ℕ →
+                    (d : ℕ) →
+                      ((p : ℕ) → C.X p ≅ ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) => T (↑r * ↑d - ↑r - 1 - ↑p * ↑d)) →
+                        Prop
+'LinearStudy.schemeModuleOriginalCovariantSerreStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOriginalCovariantSerreStatement_proof : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E M : X.Modules} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+      (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (phi : C.X r ≅ M) (T : ℤ → X.Modules) (N d : ℕ)
+      (e : (p : ℕ) → C.X p ≅ ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) => T (↑r * ↑d - ↑r - 1 - ↑p * ↑d)),
+      N + r + 1 ≤ d → LinearStudy.schemeModuleOriginalCovariantSerreStatement C r alpha hAlpha hAbove phi T N d e
+'LinearStudy.schemeModuleOriginalCovariantSerreStatement_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleOriginalCovariantSerreStatement.{u} : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E M : X.Modules} →
+      (r : ℕ) →
+        (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          QuasiIso alpha →
+            CategoryTheory.Limits.IsZero (C.X (r + 1)) →
+              (C.X r ≅ M) →
+                (T : ℤ → X.Modules) →
+                  ℕ →
+                    (d : ℕ) →
+                      ((p : ℕ) → C.X p ≅ ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) => T (↑r * ↑d - ↑r - 1 - ↑p * ↑d)) →
+                        Prop :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) {E M : X.Modules} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+    (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (phi : C.X r ≅ M) (T : ℤ → X.Modules) (N d : ℕ)
+    (e : (p : ℕ) → C.X p ≅ ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) => T (↑r * ↑d - ↑r - 1 - ↑p * ↑d)) =>
+  ∀ (O : X.Modules),
+    (∀ (s : ℤ), ↑N ≤ s → ∀ (i : ℕ), 0 < i → Subsingleton (CategoryTheory.Abelian.Ext O (T s) i)) →
+      LinearStudy.schemeModuleOriginalCovariantAtSourceStatement C r alpha hAlpha hAbove phi O
+ROLECHECK:LinearStudy.schemeModuleOriginalCovariantSerreStatement:false
+ROLECHECK:LinearStudy.schemeModuleOriginalCovariantSerreStatement_proof:true
+
+===== EXACT AUDIT original-covariant-serre-bound =====
+@LinearStudy.projectivePulledOriginalStructureTwistSerreBoundStatement : {n : ℕ} →
+  LinearStudy.IntegralProjectiveEquations n → ℕ → Prop
+'LinearStudy.projectivePulledOriginalStructureTwistSerreBoundStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalCovariantAtSerreTwistStatement : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (e :
+                CategoryTheory.Limits.cokernel
+                    ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).d 1 0) ≅
+                  LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) →
+              QuasiIso
+                  (LinearStudy.originalChainCokernelTargetAugmentation
+                    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+                    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e) →
+                ℕ → Prop
+'LinearStudy.projectivePulledOriginalCovariantAtSerreTwistStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalCovariantAtSerreTwistStatement_of_Serre : ∀ {n r : ℕ},
+  0 < r →
+    ∀ (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+      (w : Fin (r + 1) → ℂ)
+      (e :
+        CategoryTheory.Limits.cokernel
+            ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).d 1 0) ≅
+          LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1))
+      (he :
+        QuasiIso
+          (LinearStudy.originalChainCokernelTargetAugmentation
+            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+            (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e))
+      (N : ℕ),
+      N + r + 1 ≤ f.degree → LinearStudy.projectivePulledOriginalCovariantAtSerreTwistStatement f V L hL w e he N
+'LinearStudy.projectivePulledOriginalCovariantAtSerreTwistStatement_of_Serre' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginal_uniformCovariantExact_from_Serre : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (N : ℕ),
+  0 < r →
+    ∃ (m : ℕ),
+      0 < m ∧
+        ∀ (D : ℕ),
+          1 ≤ D →
+            ∀ (f : LinearStudy.HomogeneousEndomorphism n),
+              m * D < f.degree →
+                ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+                  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ),
+                  let k := ↑r * ↑f.degree - ↑r - 1;
+                  ∀
+                    (e :
+                      CategoryTheory.Limits.cokernel
+                          ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+                    (he :
+                      QuasiIso
+                        (LinearStudy.originalChainCokernelTargetAugmentation
+                          (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                          (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)),
+                    LinearStudy.projectivePulledOriginalCovariantAtSerreTwistStatement f V L hL w e he N
+'LinearStudy.projectivePulledOriginal_uniformCovariantExact_from_Serre' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginal_uniformCovariantExact_above_from_Serre : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (N lower : ℕ),
+  0 < r →
+    ∃ (m : ℕ),
+      0 < m ∧
+        lower ≤ m ∧
+          ∀ (D : ℕ),
+            1 ≤ D →
+              ∀ (f : LinearStudy.HomogeneousEndomorphism n),
+                m * D < f.degree →
+                  ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+                    (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ),
+                    let k := ↑r * ↑f.degree - ↑r - 1;
+                    ∀
+                      (e :
+                        CategoryTheory.Limits.cokernel
+                            ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                          LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+                      (he :
+                        QuasiIso
+                          (LinearStudy.originalChainCokernelTargetAugmentation
+                            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                            (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)),
+                      LinearStudy.projectivePulledOriginalCovariantAtSerreTwistStatement f V L hL w e he N
+'LinearStudy.projectivePulledOriginal_uniformCovariantExact_above_from_Serre' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.projectivePulledOriginalStructureTwistSerreBoundStatement : {n : ℕ} →
+  LinearStudy.IntegralProjectiveEquations n → ℕ → Prop :=
+fun {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (N : ℕ) =>
+  ∀ (s : ℤ),
+    ↑N ≤ s →
+      ∀ (i : ℕ),
+        0 < i →
+          Subsingleton
+            (CategoryTheory.Abelian.Ext
+              (SheafOfModules.unit
+                (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).ringCatSheaf)
+              (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                (LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)) ⋯
+                s)
+              i)
+def LinearStudy.projectivePulledOriginalCovariantAtSerreTwistStatement : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (e :
+                CategoryTheory.Limits.cokernel
+                    ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).d 1 0) ≅
+                  LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) →
+              QuasiIso
+                  (LinearStudy.originalChainCokernelTargetAugmentation
+                    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+                    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e) →
+                ℕ → Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ)
+    (e :
+      CategoryTheory.Limits.cokernel
+          ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1))
+    (he :
+      QuasiIso
+        (LinearStudy.originalChainCokernelTargetAugmentation
+          (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+          (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e))
+    (N : ℕ) =>
+  LinearStudy.schemeModuleOriginalCovariantSerreStatement
+    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)) r
+    (LinearStudy.originalChainCokernelTargetAugmentation
+      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e)
+    he ⋯ (LinearStudy.projectivePulledOriginalKoszulTopTwistIso f V L hL w (↑r * ↑f.degree - ↑r - 1))
+    (fun (s : ℤ) =>
+      LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+        (LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)) ⋯ s)
+    N f.degree (LinearStudy.projectivePulledOriginalTermTwistIso f V L hL w (↑r * ↑f.degree - ↑r - 1))
+ROLECHECK:LinearStudy.projectivePulledOriginalStructureTwistSerreBoundStatement:false
+ROLECHECK:LinearStudy.projectivePulledOriginalCovariantAtSerreTwistStatement:false
+ROLECHECK:LinearStudy.projectivePulledOriginalCovariantAtSerreTwistStatement_of_Serre:true
+ROLECHECK:LinearStudy.projectivePulledOriginal_uniformCovariantExact_from_Serre:true
+ROLECHECK:LinearStudy.projectivePulledOriginal_uniformCovariantExact_above_from_Serre:true

@@ -1,0 +1,46 @@
+@LinearStudy.schemeModuleOriginalCovariantSerreStatement : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E M : X.Modules} →
+      (r : ℕ) →
+        (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          QuasiIso alpha →
+            CategoryTheory.Limits.IsZero (C.X (r + 1)) →
+              (C.X r ≅ M) →
+                (T : ℤ → X.Modules) →
+                  ℕ →
+                    (d : ℕ) →
+                      ((p : ℕ) → C.X p ≅ ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) => T (↑r * ↑d - ↑r - 1 - ↑p * ↑d)) →
+                        Prop
+'LinearStudy.schemeModuleOriginalCovariantSerreStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOriginalCovariantSerreStatement_proof : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) {E M : X.Modules} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+      (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (phi : C.X r ≅ M) (T : ℤ → X.Modules) (N d : ℕ)
+      (e : (p : ℕ) → C.X p ≅ ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) => T (↑r * ↑d - ↑r - 1 - ↑p * ↑d)),
+      N + r + 1 ≤ d → LinearStudy.schemeModuleOriginalCovariantSerreStatement C r alpha hAlpha hAbove phi T N d e
+'LinearStudy.schemeModuleOriginalCovariantSerreStatement_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleOriginalCovariantSerreStatement.{u} : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E M : X.Modules} →
+      (r : ℕ) →
+        (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          QuasiIso alpha →
+            CategoryTheory.Limits.IsZero (C.X (r + 1)) →
+              (C.X r ≅ M) →
+                (T : ℤ → X.Modules) →
+                  ℕ →
+                    (d : ℕ) →
+                      ((p : ℕ) → C.X p ≅ ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) => T (↑r * ↑d - ↑r - 1 - ↑p * ↑d)) →
+                        Prop :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) {E M : X.Modules} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+    (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (phi : C.X r ≅ M) (T : ℤ → X.Modules) (N d : ℕ)
+    (e : (p : ℕ) → C.X p ≅ ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) => T (↑r * ↑d - ↑r - 1 - ↑p * ↑d)) =>
+  ∀ (O : X.Modules),
+    (∀ (s : ℤ), ↑N ≤ s → ∀ (i : ℕ), 0 < i → Subsingleton (CategoryTheory.Abelian.Ext O (T s) i)) →
+      LinearStudy.schemeModuleOriginalCovariantAtSourceStatement C r alpha hAlpha hAbove phi O
+ROLECHECK:LinearStudy.schemeModuleOriginalCovariantSerreStatement:false
+ROLECHECK:LinearStudy.schemeModuleOriginalCovariantSerreStatement_proof:true

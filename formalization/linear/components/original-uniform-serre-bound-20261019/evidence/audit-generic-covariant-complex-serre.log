@@ -1,0 +1,9 @@
+@LinearStudy.extCovariantComplex_middle_from_Serre_bound : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : CategoryTheory.Limits.HasFiniteBiproducts A] (C : ChainComplex A ℕ) (O : A) (T : ℤ → A) (N r d : ℕ)
+  (e : (p : ℕ) → C.X p ≅ ⨁ fun (x : ↑(Set.powersetCard (Fin r) p)) => T (↑r * ↑d - ↑r - 1 - ↑p * ↑d)),
+  N + r + 1 ≤ d →
+    (∀ (s : ℤ), ↑N ≤ s → ∀ (i : ℕ), 0 < i → Subsingleton (CategoryTheory.Abelian.Ext O (T s) i)) →
+      ∀ j < r, ∀ (i : ℕ), 0 < i → Subsingleton (CategoryTheory.Abelian.Ext O (C.X (r - j - 1)) i)
+'LinearStudy.extCovariantComplex_middle_from_Serre_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.extCovariantComplex_middle_from_Serre_bound:true

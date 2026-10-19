@@ -1,0 +1,62 @@
+@LinearStudy.nativeKoszulRelativeExt_term_of_twist_bound : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  [inst_4 : CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules] (O : (AlgebraicGeometry.Proj 𝓑).Modules) (N : ℕ),
+  (∀ (s : ℤ),
+      ↑N ≤ s →
+        ∀ (i : ℕ),
+          0 < i →
+            Subsingleton
+              (CategoryTheory.Abelian.Ext O
+                (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ s) i)) →
+    ∀ (r d p : ℕ) (k : ℤ),
+      ↑N ≤ k - ↑p * ↑d →
+        ∀ (i : ℕ),
+          0 < i → Subsingleton (CategoryTheory.Abelian.Ext O (LinearStudy.nativeProjectiveKoszulTerm 𝓑 r d p k) i)
+'LinearStudy.nativeKoszulRelativeExt_term_of_twist_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeKoszulRelativeExt_middle_of_Serre_bound : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  [inst_4 : CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules] (O : (AlgebraicGeometry.Proj 𝓑).Modules) (N : ℕ),
+  (∀ (s : ℤ),
+      ↑N ≤ s →
+        ∀ (i : ℕ),
+          0 < i →
+            Subsingleton
+              (CategoryTheory.Abelian.Ext O
+                (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ s) i)) →
+    ∀ {r d : ℕ} (H : Fin r → S) (hH : ∀ (j : Fin r), H j ∈ 𝓑 d),
+      N + r + 1 ≤ d →
+        ∀ p < r,
+          ∀ (i : ℕ),
+            0 < i →
+              Subsingleton
+                (CategoryTheory.Abelian.Ext O
+                  ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1)).X p) i)
+'LinearStudy.nativeKoszulRelativeExt_middle_of_Serre_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeKoszulRelativeExt_uniform_bound : ∀ {K S : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (𝓑 : ℕ → Submodule K S) [inst_3 : GradedAlgebra 𝓑]
+  [inst_4 : CategoryTheory.HasExt (AlgebraicGeometry.Proj 𝓑).Modules] (O : (AlgebraicGeometry.Proj 𝓑).Modules)
+  (N r : ℕ),
+  (∀ (s : ℤ),
+      ↑N ≤ s →
+        ∀ (i : ℕ),
+          0 < i →
+            Subsingleton
+              (CategoryTheory.Abelian.Ext O
+                (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.nativeProjectiveRingIntegerPiece 𝓑) ⋯ s) i)) →
+    ∃ (m : ℕ),
+      0 < m ∧
+        ∀ (D : ℕ),
+          1 ≤ D →
+            ∀ (d : ℕ),
+              m * D < d →
+                ∀ (H : Fin r → S) (hH : ∀ (j : Fin r), H j ∈ 𝓑 d),
+                  ∀ p < r,
+                    ∀ (i : ℕ),
+                      0 < i →
+                        Subsingleton
+                          (CategoryTheory.Abelian.Ext O
+                            ((LinearStudy.nativeProjectiveKoszulComplex 𝓑 H hH (↑r * ↑d - ↑r - 1)).X p) i)
+'LinearStudy.nativeKoszulRelativeExt_uniform_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.nativeKoszulRelativeExt_term_of_twist_bound:true
+ROLECHECK:LinearStudy.nativeKoszulRelativeExt_middle_of_Serre_bound:true
+ROLECHECK:LinearStudy.nativeKoszulRelativeExt_uniform_bound:true
