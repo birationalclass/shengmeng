@@ -1,0 +1,697 @@
+
+===== EXACT AUDIT actual-cech-free-sheaf-resolution =====
+@CategoryTheory.Functor.mapFormalCoproduct : {C : Type u_2} →
+  [inst : CategoryTheory.Category.{u_3, u_2} C] →
+    {D : Type u_4} →
+      [inst_1 : CategoryTheory.Category.{u_5, u_4} D] →
+        CategoryTheory.Functor C D →
+          CategoryTheory.Functor (CategoryTheory.Limits.FormalCoproduct C) (CategoryTheory.Limits.FormalCoproduct D)
+'CategoryTheory.Functor.mapFormalCoproduct' depends on axioms: [propext, Quot.sound]
+@CategoryTheory.Subfunctor.ofObjects : {C : Type u_3} →
+  [inst : CategoryTheory.Category.{u_2, u_3} C] →
+    {ι : Type u_4} → (ι → C) → CategoryTheory.Subfunctor ((CategoryTheory.Functor.const Cᵒᵖ).obj PUnit.{u_1 + 1})
+'CategoryTheory.Subfunctor.ofObjects' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.Subfunctor.ofObjects_obj_eq_univ : ∀ {C : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} C]
+  {ι : Type u_3} {X : ι → C} {U : Cᵒᵖ} {i : ι} (f : Opposite.unop U ⟶ X i),
+  (CategoryTheory.Subfunctor.ofObjects X).obj U = ⊤
+'CategoryTheory.Subfunctor.ofObjects_obj_eq_univ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.Subfunctor.ofObjects_obj_eq_empty : ∀ {C : Type u_2} [inst : CategoryTheory.Category.{u_1, u_2} C]
+  {ι : Type u_3} {X : ι → C} {U : Cᵒᵖ},
+  (∀ (i : ι), IsEmpty (Opposite.unop U ⟶ X i)) → (CategoryTheory.Subfunctor.ofObjects X).obj U = ∅
+'CategoryTheory.Subfunctor.ofObjects_obj_eq_empty' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.Subfunctor.uniqueOfObjectsObj : {C : Type u_3} →
+  [inst : CategoryTheory.Category.{u_2, u_3} C] →
+    {ι : Type u_4} →
+      {X : ι → C} →
+        {U : Cᵒᵖ} → {i : ι} → (Opposite.unop U ⟶ X i) → Unique ↑((CategoryTheory.Subfunctor.ofObjects X).obj U)
+'CategoryTheory.Subfunctor.uniqueOfObjectsObj' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.Subfunctor.isTerminalOfObjectsToFunctor : {C : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} C] →
+    {ι : Type u_3} →
+      (X : ι → C) →
+        {T : C} →
+          {i : ι} →
+            (T ⟶ X i) →
+              CategoryTheory.Limits.IsTerminal T →
+                CategoryTheory.Limits.IsTerminal (CategoryTheory.Subfunctor.ofObjects X).toFunctor
+'CategoryTheory.Subfunctor.isTerminalOfObjectsToFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.isTerminalShrinkYonedaObj : {C : Type u_3} →
+  [inst : CategoryTheory.Category.{u_2, u_3} C] →
+    [inst_1 : CategoryTheory.LocallySmall.{u_1, u_2, u_3} C] →
+      {T : C} →
+        CategoryTheory.Limits.IsTerminal T →
+          CategoryTheory.Limits.IsTerminal (CategoryTheory.shrinkYoneda.{u_1, u_2, u_3}.obj T)
+'CategoryTheory.isTerminalShrinkYonedaObj' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.Subfunctor.ofObjectsIsoOfAdj : {C : Type u_3} →
+  [inst : CategoryTheory.Category.{u_1, u_3} C] →
+    {D : Type u_4} →
+      [inst_1 : CategoryTheory.Category.{u_2, u_4} D] →
+        {F : CategoryTheory.Functor D C} →
+          {G : CategoryTheory.Functor C D} →
+            (F ⊣ G) →
+              {ι : Type u_5} →
+                (U : ι → C) →
+                  F.op.comp (CategoryTheory.Subfunctor.ofObjects U).toFunctor ≅
+                    (CategoryTheory.Subfunctor.ofObjects (G.obj ∘ U)).toFunctor
+'CategoryTheory.Subfunctor.ofObjectsIsoOfAdj' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.Adjunction.shrinkYonedaIso : {C : Type u_4} →
+  [inst : CategoryTheory.Category.{u_2, u_4} C] →
+    {D : Type u_5} →
+      [inst_1 : CategoryTheory.Category.{u_3, u_5} D] →
+        [inst_2 : CategoryTheory.LocallySmall.{u_1, u_2, u_4} C] →
+          [inst_3 : CategoryTheory.LocallySmall.{u_1, u_3, u_5} D] →
+            {F : CategoryTheory.Functor D C} →
+              {G : CategoryTheory.Functor C D} →
+                (F ⊣ G) →
+                  (CategoryTheory.shrinkYoneda.{u_1, u_2, u_4}.comp
+                      ((CategoryTheory.Functor.whiskeringLeft Dᵒᵖ Cᵒᵖ (Type u_1)).obj F.op) ≅
+                    G.comp CategoryTheory.shrinkYoneda.{u_1, u_3, u_5})
+'CategoryTheory.Adjunction.shrinkYonedaIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.Limits.FormalCoproduct.evalObjCompIso : {C : Type u_5} →
+  [inst : CategoryTheory.Category.{u_2, u_5} C] →
+    {D : Type u_6} →
+      [inst_1 : CategoryTheory.Category.{u_3, u_6} D] →
+        {E : Type u_7} →
+          [inst_2 : CategoryTheory.Category.{u_4, u_7} E] →
+            [inst_3 : CategoryTheory.Limits.HasCoproducts D] →
+              [inst_4 : CategoryTheory.Limits.HasCoproducts E] →
+                (F : CategoryTheory.Functor C D) →
+                  (G : CategoryTheory.Functor D E) →
+                    [∀ (α : Type u_1), CategoryTheory.Limits.PreservesColimitsOfShape (CategoryTheory.Discrete α) G] →
+                      (CategoryTheory.Limits.FormalCoproduct.eval C E).obj (F.comp G) ≅
+                        ((CategoryTheory.Limits.FormalCoproduct.eval C D).obj F).comp G
+'CategoryTheory.Limits.FormalCoproduct.evalObjCompIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.Limits.FormalCoproduct.evalShrinkYonedaCompIsoOfAdj : {C : Type u_4} →
+  [inst : CategoryTheory.Category.{u_2, u_4} C] →
+    {D : Type u_5} →
+      [inst_1 : CategoryTheory.Category.{u_3, u_5} D] →
+        [inst_2 : CategoryTheory.LocallySmall.{u_1, u_2, u_4} C] →
+          [inst_3 : CategoryTheory.LocallySmall.{u_1, u_3, u_5} D] →
+            {F : CategoryTheory.Functor D C} →
+              {G : CategoryTheory.Functor C D} →
+                (F ⊣ G) →
+                  (((CategoryTheory.Limits.FormalCoproduct.eval C (CategoryTheory.Functor Cᵒᵖ (Type u_1))).obj
+                          CategoryTheory.shrinkYoneda.{u_1, u_2, u_4}).comp
+                      ((CategoryTheory.Functor.whiskeringLeft Dᵒᵖ Cᵒᵖ (Type u_1)).obj F.op) ≅
+                    G.mapFormalCoproduct.comp
+                      ((CategoryTheory.Limits.FormalCoproduct.eval D (CategoryTheory.Functor Dᵒᵖ (Type u_1))).obj
+                        CategoryTheory.shrinkYoneda.{u_1, u_3, u_5}))
+'CategoryTheory.Limits.FormalCoproduct.evalShrinkYonedaCompIsoOfAdj' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@CategoryTheory.Limits.FormalCoproduct.mapFormalCoproductObjPowerIso : {C : Type u_5} →
+  [inst : CategoryTheory.Category.{u_3, u_5} C] →
+    {D : Type u_6} →
+      [inst_1 : CategoryTheory.Category.{u_4, u_6} D] →
+        (U : CategoryTheory.Limits.FormalCoproduct C) →
+          (G : CategoryTheory.Functor C D) →
+            (α : Type u_2) →
+              [inst_2 : CategoryTheory.Limits.HasProductsOfShape α C] →
+                [inst_3 : CategoryTheory.Limits.HasProductsOfShape α D] →
+                  [CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) G] →
+                    G.mapFormalCoproduct.obj (U.power α) ≅ (G.mapFormalCoproduct.obj U).power α
+'CategoryTheory.Limits.FormalCoproduct.mapFormalCoproductObjPowerIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@CategoryTheory.Limits.FormalCoproduct.cechCompMapFormalCoproductIso : {C : Type u_4} →
+  [inst : CategoryTheory.Category.{u_2, u_4} C] →
+    {D : Type u_5} →
+      [inst_1 : CategoryTheory.Category.{u_3, u_5} D] →
+        (U : CategoryTheory.Limits.FormalCoproduct C) →
+          [inst_2 : CategoryTheory.Limits.HasFiniteProducts C] →
+            [inst_3 : CategoryTheory.Limits.HasFiniteProducts D] →
+              (G : CategoryTheory.Functor C D) →
+                [CategoryTheory.Limits.PreservesFiniteProducts G] →
+                  CategoryTheory.Functor.comp U.cech G.mapFormalCoproduct ≅ (G.mapFormalCoproduct.obj U).cech
+'CategoryTheory.Limits.FormalCoproduct.cechCompMapFormalCoproductIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@CategoryTheory.Limits.FormalCoproduct.shrinkYonedaCech : {C : Type u_3} →
+  [inst : CategoryTheory.Category.{u_2, u_3} C] →
+    [CategoryTheory.LocallySmall.{u_1, u_2, u_3} C] →
+      CategoryTheory.Limits.FormalCoproduct C →
+        [CategoryTheory.Limits.HasFiniteProducts C] →
+          CategoryTheory.SimplicialObject.Augmented (CategoryTheory.Functor Cᵒᵖ (Type u_1))
+'CategoryTheory.Limits.FormalCoproduct.shrinkYonedaCech' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.Limits.FormalCoproduct.isEmpty_shrinkYonedaCechRightObj : ∀ {C : Type u_3}
+  [inst : CategoryTheory.Category.{u_2, u_3} C] [inst_1 : CategoryTheory.LocallySmall.{u_1, u_2, u_3} C]
+  (U : CategoryTheory.Limits.FormalCoproduct C) [inst_2 : CategoryTheory.Limits.HasFiniteProducts C] (X : Cᵒᵖ),
+  (∀ (i : U.I), IsEmpty (Opposite.unop X ⟶ U.obj i)) → IsEmpty (U.shrinkYonedaCech.right.obj X)
+'CategoryTheory.Limits.FormalCoproduct.isEmpty_shrinkYonedaCechRightObj' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@CategoryTheory.Limits.FormalCoproduct.extraDegeneracyShrinkYonedaCech : {C : Type u_3} →
+  [inst : CategoryTheory.Category.{u_2, u_3} C] →
+    [inst_1 : CategoryTheory.LocallySmall.{u_1, u_2, u_3} C] →
+      (U : CategoryTheory.Limits.FormalCoproduct C) →
+        [inst_2 : CategoryTheory.Limits.HasFiniteProducts C] →
+          {T : C} → {i : U.I} → (T ⟶ U.obj i) → CategoryTheory.Limits.IsTerminal T → U.shrinkYonedaCech.ExtraDegeneracy
+'CategoryTheory.Limits.FormalCoproduct.extraDegeneracyShrinkYonedaCech' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@CategoryTheory.Limits.FormalCoproduct.shrinkYonedaCechIsoOfAdj : {C : Type u_4} →
+  [inst : CategoryTheory.Category.{u_2, u_4} C] →
+    {D : Type u_5} →
+      [inst_1 : CategoryTheory.Category.{u_3, u_5} D] →
+        [inst_2 : CategoryTheory.LocallySmall.{u_1, u_2, u_4} C] →
+          [inst_3 : CategoryTheory.LocallySmall.{u_1, u_3, u_5} D] →
+            (U : CategoryTheory.Limits.FormalCoproduct C) →
+              {F : CategoryTheory.Functor D C} →
+                {G : CategoryTheory.Functor C D} →
+                  (F ⊣ G) →
+                    [inst_4 : CategoryTheory.Limits.HasFiniteProducts C] →
+                      [inst_5 : CategoryTheory.Limits.HasFiniteProducts D] →
+                        ((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor Cᵒᵖ (Type u_1))
+                                    (CategoryTheory.Functor Dᵒᵖ (Type u_1))).obj
+                                ((CategoryTheory.Functor.whiskeringLeft Dᵒᵖ Cᵒᵖ (Type u_1)).obj F.op)).obj
+                            U.shrinkYonedaCech ≅
+                          (G.mapFormalCoproduct.obj U).shrinkYonedaCech
+'CategoryTheory.Limits.FormalCoproduct.shrinkYonedaCechIsoOfAdj' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@CategoryTheory.Limits.FormalCoproduct.nonempty_extraDegeneracy_shrinkYonedaCech_evaluation : ∀ {C : Type u_3}
+  [inst : CategoryTheory.Category.{u_2, u_3} C] [inst_1 : CategoryTheory.LocallySmall.{u_1, u_2, u_3} C]
+  (U : CategoryTheory.Limits.FormalCoproduct C) [inst_2 : CategoryTheory.Limits.HasFiniteLimits C] (X : Cᵒᵖ),
+  Nonempty
+    (((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor Cᵒᵖ (Type u_1)) (Type u_1)).obj
+            ((CategoryTheory.evaluation Cᵒᵖ (Type u_1)).obj X)).obj
+        U.shrinkYonedaCech).ExtraDegeneracy
+'CategoryTheory.Limits.FormalCoproduct.nonempty_extraDegeneracy_shrinkYonedaCech_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.alternatingAugmentationWhiskeringArrowIso : {C : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} C] →
+    [inst_1 : CategoryTheory.Abelian C] →
+      {D : Type u_3} →
+        [inst_2 : CategoryTheory.Category.{u_4, u_3} D] →
+          [inst_3 : CategoryTheory.Abelian D] →
+            (S : CategoryTheory.SimplicialObject.Augmented C) →
+              (F : CategoryTheory.Functor C D) →
+                [inst_4 : F.Additive] →
+                  CategoryTheory.Arrow.mk
+                      ((F.mapHomologicalComplex (ComplexShape.down ℕ)).map
+                        (AlgebraicTopology.AlternatingFaceMapComplex.ε.app S)) ≅
+                    CategoryTheory.Arrow.mk
+                      (AlgebraicTopology.AlternatingFaceMapComplex.ε.app
+                        (((CategoryTheory.SimplicialObject.Augmented.whiskering C D).obj F).obj S))
+'LinearStudy.alternatingAugmentationWhiskeringArrowIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.augmentedPointwiseWhiskeringIso : {C : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} C] →
+    {A : Type u_3} →
+      [inst_1 : CategoryTheory.Category.{u_4, u_3} A] →
+        (S : CategoryTheory.SimplicialObject.Augmented (CategoryTheory.Functor C (Type u_5))) →
+          (G : CategoryTheory.Functor (Type u_5) A) →
+            (X : C) →
+              ((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor C A) A).obj
+                      ((CategoryTheory.evaluation C A).obj X)).obj
+                  (((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor C (Type u_5))
+                            (CategoryTheory.Functor C A)).obj
+                        ((CategoryTheory.Functor.whiskeringRight C (Type u_5) A).obj G)).obj
+                    S) ≅
+                ((CategoryTheory.SimplicialObject.Augmented.whiskering (Type u_5) A).obj G).obj
+                  (((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor C (Type u_5))
+                            (Type u_5)).obj
+                        ((CategoryTheory.evaluation C (Type u_5)).obj X)).obj
+                    S)
+'LinearStudy.augmentedPointwiseWhiskeringIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@CategoryTheory.Limits.FormalCoproduct.shrinkYonedaCech_presheaf_augmentation_quasiIso : ∀ {C : Type u_2}
+  [inst : CategoryTheory.Category.{u_3, u_2} C] [inst_1 : CategoryTheory.LocallySmall.{u_1, u_3, u_2} C]
+  [inst_2 : CategoryTheory.Limits.HasFiniteLimits C] (U : CategoryTheory.Limits.FormalCoproduct C) {A : Type u_4}
+  [inst_3 : CategoryTheory.Category.{u_5, u_4} A] [inst_4 : CategoryTheory.Abelian A]
+  (G : CategoryTheory.Functor (Type u_1) A),
+  QuasiIso
+    (AlgebraicTopology.AlternatingFaceMapComplex.ε.app
+      (((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor Cᵒᵖ (Type u_1))
+                (CategoryTheory.Functor Cᵒᵖ A)).obj
+            ((CategoryTheory.Functor.whiskeringRight Cᵒᵖ (Type u_1) A).obj G)).obj
+        U.shrinkYonedaCech))
+'CategoryTheory.Limits.FormalCoproduct.shrinkYonedaCech_presheaf_augmentation_quasiIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.topCoverGeneratedTerminal_locallySurjective : ∀ (X : TopCat) {ι : Type u_1}
+  (U : ι → TopologicalSpace.Opens ↑X),
+  ⊤ ≤ iSup U →
+    CategoryTheory.Presheaf.IsLocallySurjective (Opens.grothendieckTopology ↑X)
+      (CategoryTheory.Subfunctor.ofObjects U).ι
+'LinearStudy.topCoverGeneratedTerminal_locallySurjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCoverGeneratedTerminal_locallyInjective : ∀ (X : TopCat) {ι : Type u_1}
+  (U : ι → TopologicalSpace.Opens ↑X),
+  CategoryTheory.Presheaf.IsLocallyInjective (Opens.grothendieckTopology ↑X) (CategoryTheory.Subfunctor.ofObjects U).ι
+'LinearStudy.topCoverGeneratedTerminal_locallyInjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCoverGeneratedTerminal_sheafify_inclusion_isIso : ∀ (X : TopCat) {ι : Type u_1}
+  (U : ι → TopologicalSpace.Opens ↑X),
+  ⊤ ≤ iSup U →
+    CategoryTheory.IsIso
+      ((CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↑X) (Type u_1)).map
+        (CategoryTheory.Subfunctor.ofObjects U).ι)
+'LinearStudy.topCoverGeneratedTerminal_sheafify_inclusion_isIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.topCoverGeneratedTerminal_freeAbelian_sheafify_inclusion_isIso : ∀ (X : TopCat) {ι : Type u_1}
+  (U : ι → TopologicalSpace.Opens ↑X),
+  ⊤ ≤ iSup U →
+    CategoryTheory.IsIso
+      ((CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).map
+        (((CategoryTheory.Functor.whiskeringRight (TopologicalSpace.Opens ↑X)ᵒᵖ (Type u_1) AddCommGrpCat).obj
+              AddCommGrpCat.free).map
+          (CategoryTheory.Subfunctor.ofObjects U).ι))
+'LinearStudy.topCoverGeneratedTerminal_freeAbelian_sheafify_inclusion_isIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.freePUnitNativeIntegerIso : AddCommGrpCat.free.obj PUnit.{u_1 + 1} ≅ ↧(ULift.{u_1, 0} ℤ)
+'LinearStudy.freePUnitNativeIntegerIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCoverGeneratedFreeAbelianIntegerTargetMap : (X : TopCat) →
+  {ι : Type u_1} →
+    (U : ι → TopologicalSpace.Opens ↑X) →
+      (CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj
+          (((CategoryTheory.Functor.whiskeringRight (TopologicalSpace.Opens ↑X)ᵒᵖ (Type u_1) AddCommGrpCat).obj
+                AddCommGrpCat.free).obj
+            (CategoryTheory.Subfunctor.ofObjects U).toFunctor) ⟶
+        (CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj ↧(ULift.{u_1, 0} ℤ)
+'LinearStudy.topCoverGeneratedFreeAbelianIntegerTargetMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCoverGeneratedFreeAbelianIntegerTargetMap_isIso : ∀ (X : TopCat) {ι : Type u_1}
+  (U : ι → TopologicalSpace.Opens ↑X),
+  ⊤ ≤ iSup U → CategoryTheory.IsIso (LinearStudy.topCoverGeneratedFreeAbelianIntegerTargetMap X U)
+'LinearStudy.topCoverGeneratedFreeAbelianIntegerTargetMap_isIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.topCechFreeAbelianAugmented : (X : TopCat) →
+  {ι : Type u_1} →
+    (ι → TopologicalSpace.Opens ↑X) → CategoryTheory.SimplicialObject.Augmented (TopCat.Sheaf AddCommGrpCat X)
+'LinearStudy.topCechFreeAbelianAugmented' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCechFreeAbelianAugmented_quasiIso : ∀ (X : TopCat) {ι : Type u_1} (U : ι → TopologicalSpace.Opens ↑X),
+  QuasiIso (AlgebraicTopology.AlternatingFaceMapComplex.ε.app (LinearStudy.topCechFreeAbelianAugmented X U))
+'LinearStudy.topCechFreeAbelianAugmented_quasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCechNativeIntegerAugmentation : (X : TopCat) →
+  {ι : Type u_1} →
+    (U : ι → TopologicalSpace.Opens ↑X) →
+      (AlgebraicTopology.alternatingFaceMapComplex (TopCat.Sheaf AddCommGrpCat X)).obj
+          (LinearStudy.topCechFreeAbelianAugmented X U).left ⟶
+        (ChainComplex.single₀ (TopCat.Sheaf AddCommGrpCat X)).obj
+          ((CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj ↧(ULift.{u_1, 0} ℤ))
+'LinearStudy.topCechNativeIntegerAugmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCechNativeIntegerAugmentation_quasiIso : ∀ (X : TopCat) {ι : Type u_1}
+  (U : ι → TopologicalSpace.Opens ↑X), ⊤ ≤ iSup U → QuasiIso (LinearStudy.topCechNativeIntegerAugmentation X U)
+'LinearStudy.topCechNativeIntegerAugmentation_quasiIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+def CategoryTheory.Functor.mapFormalCoproduct.{w, u, v, u₂, v₂} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {D : Type u₂} →
+      [inst_1 : CategoryTheory.Category.{v₂, u₂} D] →
+        CategoryTheory.Functor C D →
+          CategoryTheory.Functor (CategoryTheory.Limits.FormalCoproduct C) (CategoryTheory.Limits.FormalCoproduct D) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {D : Type u₂} [CategoryTheory.Category.{v₂, u₂} D]
+    (F : CategoryTheory.Functor C D) =>
+  { obj := fun (X : CategoryTheory.Limits.FormalCoproduct C) => { I := X.I, obj := F.obj ∘ X.obj },
+    map := fun {X Y : CategoryTheory.Limits.FormalCoproduct C} (f : X ⟶ Y) =>
+      { f := f.f, φ := fun (i : { I := X.I, obj := F.obj ∘ X.obj }.I) => F.map (f.φ i) },
+    map_id := ⋯, map_comp := ⋯ }
+def CategoryTheory.Subfunctor.ofObjects.{w, v, u, u_1} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {ι : Type u_1} → (ι → C) → CategoryTheory.Subfunctor ((CategoryTheory.Functor.const Cᵒᵖ).obj PUnit.{w + 1}) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {ι : Type u_1} (X : ι → C) =>
+  {
+    obj := fun (U : Cᵒᵖ) =>
+      {x : ((CategoryTheory.Functor.const Cᵒᵖ).obj PUnit.{w + 1}).obj U | ∃ (i : ι), Nonempty (Opposite.unop U ⟶ X i)},
+    map := ⋯ }
+def CategoryTheory.Subfunctor.uniqueOfObjectsObj.{w, v, u, u_1} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {ι : Type u_1} →
+      {X : ι → C} →
+        {U : Cᵒᵖ} → {i : ι} → (Opposite.unop U ⟶ X i) → Unique ↑((CategoryTheory.Subfunctor.ofObjects X).obj U) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {ι : Type u_1} {X : ι → C} {U : Cᵒᵖ} {i : ι}
+    (f : Opposite.unop U ⟶ X i) =>
+  { default := ⟨PUnit.unit, ⋯⟩, uniq := ⋯ }
+def CategoryTheory.Subfunctor.isTerminalOfObjectsToFunctor.{v, u, u_1, u_2} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {ι : Type u_1} →
+      (X : ι → C) →
+        {T : C} →
+          {i : ι} →
+            (T ⟶ X i) →
+              CategoryTheory.Limits.IsTerminal T →
+                CategoryTheory.Limits.IsTerminal (CategoryTheory.Subfunctor.ofObjects X).toFunctor :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {ι : Type u_1} (X : ι → C) {T : C} {i : ι} (f : T ⟶ X i)
+    (hT : CategoryTheory.Limits.IsTerminal T) =>
+  CategoryTheory.Functor.isTerminal fun (x : Cᵒᵖ) =>
+    (CategoryTheory.Limits.Types.isTerminalEquivUnique ((CategoryTheory.Subfunctor.ofObjects X).toFunctor.obj x)).invFun
+      (CategoryTheory.Subfunctor.uniqueOfObjectsObj (CategoryTheory.CategoryStruct.comp (hT.from (Opposite.unop x)) f))
+def CategoryTheory.isTerminalShrinkYonedaObj.{w, v, u} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    [inst_1 : CategoryTheory.LocallySmall.{w, v, u} C] →
+      {T : C} →
+        CategoryTheory.Limits.IsTerminal T →
+          CategoryTheory.Limits.IsTerminal (CategoryTheory.shrinkYoneda.{w, v, u}.obj T) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] [CategoryTheory.LocallySmall.{w, v, u} C] {T : C}
+    (hT : CategoryTheory.Limits.IsTerminal T) =>
+  CategoryTheory.Functor.isTerminal fun (x : Cᵒᵖ) =>
+    (CategoryTheory.Limits.Types.isTerminalEquivUnique ((CategoryTheory.shrinkYoneda.{w, v, u}.obj T).obj x)).invFun
+      { default := CategoryTheory.shrinkYonedaObjObjEquiv.symm (hT.from (Opposite.unop x)), uniq := ⋯ }
+def CategoryTheory.Subfunctor.ofObjectsIsoOfAdj.{v, v', u, u', u_1, u_2} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {D : Type u'} →
+      [inst_1 : CategoryTheory.Category.{v', u'} D] →
+        {F : CategoryTheory.Functor D C} →
+          {G : CategoryTheory.Functor C D} →
+            (F ⊣ G) →
+              {ι : Type u_1} →
+                (U : ι → C) →
+                  F.op.comp (CategoryTheory.Subfunctor.ofObjects U).toFunctor ≅
+                    (CategoryTheory.Subfunctor.ofObjects (G.obj ∘ U)).toFunctor :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {D : Type u'} [CategoryTheory.Category.{v', u'} D]
+    {F : CategoryTheory.Functor D C} {G : CategoryTheory.Functor C D} (adj : F ⊣ G) {ι : Type u_1} (U : ι → C) =>
+  CategoryTheory.NatIso.ofComponents
+    (fun (X : Dᵒᵖ) =>
+      ((Equiv.refl (((CategoryTheory.Functor.const Cᵒᵖ).obj PUnit.{u_2 + 1}).obj (F.op.obj X))).subtypeEquiv ⋯).toIso)
+    ⋯
+def CategoryTheory.Adjunction.shrinkYonedaIso.{w, v, v', u, u'} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {D : Type u'} →
+      [inst_1 : CategoryTheory.Category.{v', u'} D] →
+        [inst_2 : CategoryTheory.LocallySmall.{w, v, u} C] →
+          [inst_3 : CategoryTheory.LocallySmall.{w, v', u'} D] →
+            {F : CategoryTheory.Functor D C} →
+              {G : CategoryTheory.Functor C D} →
+                (F ⊣ G) →
+                  (CategoryTheory.shrinkYoneda.{w, v, u}.comp
+                      ((CategoryTheory.Functor.whiskeringLeft Dᵒᵖ Cᵒᵖ (Type w)).obj F.op) ≅
+                    G.comp CategoryTheory.shrinkYoneda.{w, v', u'}) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {D : Type u'} [CategoryTheory.Category.{v', u'} D]
+    [CategoryTheory.LocallySmall.{w, v, u} C] [CategoryTheory.LocallySmall.{w, v', u'} D]
+    {F : CategoryTheory.Functor D C} {G : CategoryTheory.Functor C D} (adj : F ⊣ G) =>
+  CategoryTheory.NatIso.ofComponents
+    (fun (X : C) =>
+      CategoryTheory.NatIso.ofComponents
+        (fun (Y : Dᵒᵖ) =>
+          (CategoryTheory.shrinkYonedaObjObjEquiv.trans
+              ((adj.homEquiv (Opposite.unop Y) X).trans CategoryTheory.shrinkYonedaObjObjEquiv.symm)).toIso)
+        ⋯)
+    ⋯
+def CategoryTheory.Limits.FormalCoproduct.evalObjCompIso.{w, v, v', v'', u, u', u''} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {D : Type u'} →
+      [inst_1 : CategoryTheory.Category.{v', u'} D] →
+        {E : Type u''} →
+          [inst_2 : CategoryTheory.Category.{v'', u''} E] →
+            [inst_3 : CategoryTheory.Limits.HasCoproducts D] →
+              [inst_4 : CategoryTheory.Limits.HasCoproducts E] →
+                (F : CategoryTheory.Functor C D) →
+                  (G : CategoryTheory.Functor D E) →
+                    [∀ (α : Type w), CategoryTheory.Limits.PreservesColimitsOfShape (CategoryTheory.Discrete α) G] →
+                      (CategoryTheory.Limits.FormalCoproduct.eval C E).obj (F.comp G) ≅
+                        ((CategoryTheory.Limits.FormalCoproduct.eval C D).obj F).comp G :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {D : Type u'} [CategoryTheory.Category.{v', u'} D] {E : Type u''}
+    [CategoryTheory.Category.{v'', u''} E] [CategoryTheory.Limits.HasCoproducts D]
+    [CategoryTheory.Limits.HasCoproducts E] (F : CategoryTheory.Functor C D) (G : CategoryTheory.Functor D E)
+    [∀ (α : Type w), CategoryTheory.Limits.PreservesColimitsOfShape (CategoryTheory.Discrete α) G] =>
+  CategoryTheory.NatIso.ofComponents
+    (fun (x : CategoryTheory.Limits.FormalCoproduct C) =>
+      (CategoryTheory.Limits.PreservesCoproduct.iso G fun (i : x.I) => F.obj (x.obj i)).symm)
+    ⋯
+def CategoryTheory.Limits.FormalCoproduct.evalShrinkYonedaCompIsoOfAdj.{w, v, v', u, u'} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {D : Type u'} →
+      [inst_1 : CategoryTheory.Category.{v', u'} D] →
+        [inst_2 : CategoryTheory.LocallySmall.{w, v, u} C] →
+          [inst_3 : CategoryTheory.LocallySmall.{w, v', u'} D] →
+            {F : CategoryTheory.Functor D C} →
+              {G : CategoryTheory.Functor C D} →
+                (F ⊣ G) →
+                  (((CategoryTheory.Limits.FormalCoproduct.eval C (CategoryTheory.Functor Cᵒᵖ (Type w))).obj
+                          CategoryTheory.shrinkYoneda.{w, v, u}).comp
+                      ((CategoryTheory.Functor.whiskeringLeft Dᵒᵖ Cᵒᵖ (Type w)).obj F.op) ≅
+                    G.mapFormalCoproduct.comp
+                      ((CategoryTheory.Limits.FormalCoproduct.eval D (CategoryTheory.Functor Dᵒᵖ (Type w))).obj
+                        CategoryTheory.shrinkYoneda.{w, v', u'})) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {D : Type u'} [CategoryTheory.Category.{v', u'} D]
+    [CategoryTheory.LocallySmall.{w, v, u} C] [CategoryTheory.LocallySmall.{w, v', u'} D]
+    {F : CategoryTheory.Functor D C} {G : CategoryTheory.Functor C D} (adj : F ⊣ G) =>
+  (CategoryTheory.Limits.FormalCoproduct.evalObjCompIso CategoryTheory.shrinkYoneda.{w, v, u}
+        ((CategoryTheory.Functor.whiskeringLeft Dᵒᵖ Cᵒᵖ (Type w)).obj F.op)).symm ≪≫
+    (CategoryTheory.Limits.FormalCoproduct.eval C (CategoryTheory.Functor Dᵒᵖ (Type w))).mapIso adj.shrinkYonedaIso
+def CategoryTheory.Limits.FormalCoproduct.mapFormalCoproductObjPowerIso.{w, t, v, v', u, u'} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {D : Type u'} →
+      [inst_1 : CategoryTheory.Category.{v', u'} D] →
+        (U : CategoryTheory.Limits.FormalCoproduct C) →
+          (G : CategoryTheory.Functor C D) →
+            (α : Type t) →
+              [inst_2 : CategoryTheory.Limits.HasProductsOfShape α C] →
+                [inst_3 : CategoryTheory.Limits.HasProductsOfShape α D] →
+                  [CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) G] →
+                    G.mapFormalCoproduct.obj (U.power α) ≅ (G.mapFormalCoproduct.obj U).power α :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {D : Type u'} [CategoryTheory.Category.{v', u'} D]
+    (U : CategoryTheory.Limits.FormalCoproduct C) (G : CategoryTheory.Functor C D) (α : Type t)
+    [CategoryTheory.Limits.HasProductsOfShape α C] [CategoryTheory.Limits.HasProductsOfShape α D]
+    [CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) G] =>
+  CategoryTheory.Limits.FormalCoproduct.isoOfComponents (Equiv.refl (G.mapFormalCoproduct.obj (U.power α)).I)
+    fun (x : (G.mapFormalCoproduct.obj (U.power α)).I) => CategoryTheory.Limits.PreservesProduct.iso G (U.obj ∘ x)
+def CategoryTheory.Limits.FormalCoproduct.cechCompMapFormalCoproductIso.{w, v, v', u, u'} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {D : Type u'} →
+      [inst_1 : CategoryTheory.Category.{v', u'} D] →
+        (U : CategoryTheory.Limits.FormalCoproduct C) →
+          [inst_2 : CategoryTheory.Limits.HasFiniteProducts C] →
+            [inst_3 : CategoryTheory.Limits.HasFiniteProducts D] →
+              (G : CategoryTheory.Functor C D) →
+                [CategoryTheory.Limits.PreservesFiniteProducts G] →
+                  CategoryTheory.Functor.comp U.cech G.mapFormalCoproduct ≅ (G.mapFormalCoproduct.obj U).cech :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {D : Type u'} [CategoryTheory.Category.{v', u'} D]
+    (U : CategoryTheory.Limits.FormalCoproduct C) [CategoryTheory.Limits.HasFiniteProducts C]
+    [CategoryTheory.Limits.HasFiniteProducts D] (G : CategoryTheory.Functor C D)
+    [CategoryTheory.Limits.PreservesFiniteProducts G] =>
+  CategoryTheory.NatIso.ofComponents
+    (fun (x : SimplexCategoryᵒᵖ) => U.mapFormalCoproductObjPowerIso G (CategoryTheory.ToType (Opposite.unop x))) ⋯
+def CategoryTheory.Limits.FormalCoproduct.shrinkYonedaCech.{w, v, u} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    [CategoryTheory.LocallySmall.{w, v, u} C] →
+      CategoryTheory.Limits.FormalCoproduct C →
+        [CategoryTheory.Limits.HasFiniteProducts C] →
+          CategoryTheory.SimplicialObject.Augmented (CategoryTheory.Functor Cᵒᵖ (Type w)) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] [CategoryTheory.LocallySmall.{w, v, u} C]
+    (U : CategoryTheory.Limits.FormalCoproduct C) [CategoryTheory.Limits.HasFiniteProducts C] =>
+  {
+    left :=
+      ((CategoryTheory.SimplicialObject.whiskering (CategoryTheory.Limits.FormalCoproduct C)
+                (CategoryTheory.Functor Cᵒᵖ (Type w))).obj
+            ((CategoryTheory.Limits.FormalCoproduct.eval C (CategoryTheory.Functor Cᵒᵖ (Type w))).obj
+              CategoryTheory.shrinkYoneda.{w, v, u})).obj
+        U.cech,
+    right := (CategoryTheory.Subfunctor.ofObjects U.obj).toFunctor,
+    hom :=
+      {
+        app := fun (n : SimplexCategoryᵒᵖ) =>
+          {
+            app := fun (V : Cᵒᵖ) =>
+              TypeCat.ofHom
+                fun
+                  (v :
+                    (((CategoryTheory.Functor.id
+                                  (CategoryTheory.SimplicialObject (CategoryTheory.Functor Cᵒᵖ (Type w)))).obj
+                              (((CategoryTheory.SimplicialObject.whiskering (CategoryTheory.Limits.FormalCoproduct C)
+                                        (CategoryTheory.Functor Cᵒᵖ (Type w))).obj
+                                    ((CategoryTheory.Limits.FormalCoproduct.eval C
+                                          (CategoryTheory.Functor Cᵒᵖ (Type w))).obj
+                                      CategoryTheory.shrinkYoneda.{w, v, u})).obj
+                                U.cech)).obj
+                          n).obj
+                      V) =>
+                ⟨PUnit.unit, ⋯⟩,
+            naturality := ⋯ },
+        naturality := ⋯ } }
+def CategoryTheory.Limits.FormalCoproduct.extraDegeneracyShrinkYonedaCech.{w, v, u} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    [inst_1 : CategoryTheory.LocallySmall.{w, v, u} C] →
+      (U : CategoryTheory.Limits.FormalCoproduct C) →
+        [inst_2 : CategoryTheory.Limits.HasFiniteProducts C] →
+          {T : C} →
+            {i : U.I} → (T ⟶ U.obj i) → CategoryTheory.Limits.IsTerminal T → U.shrinkYonedaCech.ExtraDegeneracy :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] [CategoryTheory.LocallySmall.{w, v, u} C]
+    (U : CategoryTheory.Limits.FormalCoproduct C) [CategoryTheory.Limits.HasFiniteProducts C] {T : C} {i : U.I}
+    (f : T ⟶ U.obj i) (hT : CategoryTheory.Limits.IsTerminal T) =>
+  CategoryTheory.SimplicialObject.Augmented.ExtraDegeneracy.ofIso
+    (CategoryTheory.Comma.isoMk
+      (CategoryTheory.Iso.refl
+        (((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Limits.FormalCoproduct C)
+                    (CategoryTheory.Functor Cᵒᵖ (Type w))).obj
+                ((CategoryTheory.Limits.FormalCoproduct.eval C (CategoryTheory.Functor Cᵒᵖ (Type w))).obj
+                  CategoryTheory.shrinkYoneda.{w, v, u})).obj
+            (U.cech.augmentOfIsTerminal (CategoryTheory.Limits.FormalCoproduct.isTerminalIncl T hT))).left)
+      (((CategoryTheory.isTerminalShrinkYonedaObj hT).ofIso
+            (CategoryTheory.Limits.coproductUniqueIso fun (x : PUnit.{w + 1}) =>
+                CategoryTheory.shrinkYoneda.{w, v, u}.obj T).symm).uniqueUpToIso
+        (CategoryTheory.Subfunctor.isTerminalOfObjectsToFunctor U.obj f hT))
+      ⋯)
+    ((U.extraDegeneracyCech hT f).map
+      ((CategoryTheory.Limits.FormalCoproduct.eval C (CategoryTheory.Functor Cᵒᵖ (Type w))).obj
+        CategoryTheory.shrinkYoneda.{w, v, u}))
+def CategoryTheory.Limits.FormalCoproduct.shrinkYonedaCechIsoOfAdj.{w, v, v', u, u'} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {D : Type u'} →
+      [inst_1 : CategoryTheory.Category.{v', u'} D] →
+        [inst_2 : CategoryTheory.LocallySmall.{w, v, u} C] →
+          [inst_3 : CategoryTheory.LocallySmall.{w, v', u'} D] →
+            (U : CategoryTheory.Limits.FormalCoproduct C) →
+              {F : CategoryTheory.Functor D C} →
+                {G : CategoryTheory.Functor C D} →
+                  (F ⊣ G) →
+                    [inst_4 : CategoryTheory.Limits.HasFiniteProducts C] →
+                      [inst_5 : CategoryTheory.Limits.HasFiniteProducts D] →
+                        ((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor Cᵒᵖ (Type w))
+                                    (CategoryTheory.Functor Dᵒᵖ (Type w))).obj
+                                ((CategoryTheory.Functor.whiskeringLeft Dᵒᵖ Cᵒᵖ (Type w)).obj F.op)).obj
+                            U.shrinkYonedaCech ≅
+                          (G.mapFormalCoproduct.obj U).shrinkYonedaCech :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {D : Type u'} [CategoryTheory.Category.{v', u'} D]
+    [CategoryTheory.LocallySmall.{w, v, u} C] [CategoryTheory.LocallySmall.{w, v', u'} D]
+    (U : CategoryTheory.Limits.FormalCoproduct C) {F : CategoryTheory.Functor D C} {G : CategoryTheory.Functor C D}
+    (adj : F ⊣ G) [CategoryTheory.Limits.HasFiniteProducts C] [CategoryTheory.Limits.HasFiniteProducts D] =>
+  CategoryTheory.Comma.isoMk
+    ((((CategoryTheory.Limits.FormalCoproduct.eval C (CategoryTheory.Functor Cᵒᵖ (Type w))).obj
+                CategoryTheory.shrinkYoneda.{w, v, u}).whiskeringRightObjCompIso
+            ((CategoryTheory.Functor.whiskeringLeft Dᵒᵖ Cᵒᵖ (Type w)).obj F.op)).app
+        U.cech ≪≫
+      CategoryTheory.Functor.isoWhiskerLeft U.cech
+          (CategoryTheory.Limits.FormalCoproduct.evalShrinkYonedaCompIsoOfAdj adj) ≪≫
+        (CategoryTheory.Functor.associator U.cech G.mapFormalCoproduct
+              ((CategoryTheory.Limits.FormalCoproduct.eval D (CategoryTheory.Functor Dᵒᵖ (Type w))).obj
+                CategoryTheory.shrinkYoneda.{w, v', u'})).symm ≪≫
+          CategoryTheory.Functor.isoWhiskerRight (U.cechCompMapFormalCoproductIso G)
+            ((CategoryTheory.Limits.FormalCoproduct.eval D (CategoryTheory.Functor Dᵒᵖ (Type w))).obj
+              CategoryTheory.shrinkYoneda.{w, v', u'}))
+    (CategoryTheory.Subfunctor.ofObjectsIsoOfAdj adj U.obj) ⋯
+def LinearStudy.alternatingAugmentationWhiskeringArrowIso.{u, v, u', v'} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    [inst_1 : CategoryTheory.Abelian C] →
+      {D : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} D] →
+          [inst_3 : CategoryTheory.Abelian D] →
+            (S : CategoryTheory.SimplicialObject.Augmented C) →
+              (F : CategoryTheory.Functor C D) →
+                [inst_4 : F.Additive] →
+                  CategoryTheory.Arrow.mk
+                      ((F.mapHomologicalComplex (ComplexShape.down ℕ)).map
+                        (AlgebraicTopology.AlternatingFaceMapComplex.ε.app S)) ≅
+                    CategoryTheory.Arrow.mk
+                      (AlgebraicTopology.AlternatingFaceMapComplex.ε.app
+                        (((CategoryTheory.SimplicialObject.Augmented.whiskering C D).obj F).obj S)) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] [CategoryTheory.Abelian C] {D : Type u'}
+    [CategoryTheory.Category.{v', u'} D] [CategoryTheory.Abelian D] (S : CategoryTheory.SimplicialObject.Augmented C)
+    (F : CategoryTheory.Functor C D) [F.Additive] =>
+  CategoryTheory.Arrow.isoMk ((AlgebraicTopology.alternatingFaceMapComplexCompMapHomologicalComplexIso F).app S.left)
+    ((HomologicalComplex.singleMapHomologicalComplex F (ComplexShape.down ℕ) 0).app S.right) ⋯
+def LinearStudy.augmentedPointwiseWhiskeringIso.{u, v, u', v', w} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {A : Type u'} →
+      [inst_1 : CategoryTheory.Category.{v', u'} A] →
+        (S : CategoryTheory.SimplicialObject.Augmented (CategoryTheory.Functor C (Type w))) →
+          (G : CategoryTheory.Functor (Type w) A) →
+            (X : C) →
+              ((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor C A) A).obj
+                      ((CategoryTheory.evaluation C A).obj X)).obj
+                  (((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor C (Type w))
+                            (CategoryTheory.Functor C A)).obj
+                        ((CategoryTheory.Functor.whiskeringRight C (Type w) A).obj G)).obj
+                    S) ≅
+                ((CategoryTheory.SimplicialObject.Augmented.whiskering (Type w) A).obj G).obj
+                  (((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor C (Type w))
+                            (Type w)).obj
+                        ((CategoryTheory.evaluation C (Type w)).obj X)).obj
+                    S) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {A : Type u'} [CategoryTheory.Category.{v', u'} A]
+    (S : CategoryTheory.SimplicialObject.Augmented (CategoryTheory.Functor C (Type w)))
+    (G : CategoryTheory.Functor (Type w) A) (X : C) =>
+  CategoryTheory.Comma.isoMk
+    (CategoryTheory.Iso.refl
+      (((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor C A) A).obj
+              ((CategoryTheory.evaluation C A).obj X)).obj
+          (((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor C (Type w))
+                    (CategoryTheory.Functor C A)).obj
+                ((CategoryTheory.Functor.whiskeringRight C (Type w) A).obj G)).obj
+            S)).left)
+    (CategoryTheory.Iso.refl
+      (((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor C A) A).obj
+              ((CategoryTheory.evaluation C A).obj X)).obj
+          (((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor C (Type w))
+                    (CategoryTheory.Functor C A)).obj
+                ((CategoryTheory.Functor.whiskeringRight C (Type w) A).obj G)).obj
+            S)).right)
+    ⋯
+def LinearStudy.freePUnitNativeIntegerIso.{u} : AddCommGrpCat.free.obj PUnit.{u + 1} ≅ ↧(ULift.{u, 0} ℤ) :=
+((FreeAbelianGroup.uniqueEquiv PUnit.{u + 1}).trans AddEquiv.ulift.symm).toAddCommGrpIso
+def LinearStudy.topCoverGeneratedFreeAbelianIntegerTargetMap.{u} : (X : TopCat) →
+  {ι : Type u} →
+    (U : ι → TopologicalSpace.Opens ↑X) →
+      (CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj
+          (((CategoryTheory.Functor.whiskeringRight (TopologicalSpace.Opens ↑X)ᵒᵖ (Type u) AddCommGrpCat).obj
+                AddCommGrpCat.free).obj
+            (CategoryTheory.Subfunctor.ofObjects U).toFunctor) ⟶
+        (CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj ↧(ULift.{u, 0} ℤ) :=
+fun (X : TopCat) {ι : Type u} (U : ι → TopologicalSpace.Opens ↑X) =>
+  CategoryTheory.CategoryStruct.comp
+    ((CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).map
+      (((CategoryTheory.Functor.whiskeringRight (TopologicalSpace.Opens ↑X)ᵒᵖ (Type u) AddCommGrpCat).obj
+            AddCommGrpCat.free).map
+        (CategoryTheory.Subfunctor.ofObjects U).ι))
+    (CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).map
+        (CategoryTheory.Functor.constComp (TopologicalSpace.Opens ↑X)ᵒᵖ PUnit.{u + 1} AddCommGrpCat.free).hom)
+      ((CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).map
+        LinearStudy.freePUnitNativeIntegerIso.hom))
+def LinearStudy.topCechFreeAbelianAugmented.{u} : (X : TopCat) →
+  {ι : Type u} →
+    (ι → TopologicalSpace.Opens ↑X) → CategoryTheory.SimplicialObject.Augmented (TopCat.Sheaf AddCommGrpCat X) :=
+fun (X : TopCat) {ι : Type u} (U : ι → TopologicalSpace.Opens ↑X) =>
+  ((CategoryTheory.SimplicialObject.Augmented.whiskering
+            (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ AddCommGrpCat)
+            (CategoryTheory.Sheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat)).obj
+        (CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat)).obj
+    (((CategoryTheory.SimplicialObject.Augmented.whiskering
+              (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ (Type u))
+              (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ AddCommGrpCat)).obj
+          ((CategoryTheory.Functor.whiskeringRight (TopologicalSpace.Opens ↑X)ᵒᵖ (Type u) AddCommGrpCat).obj
+            AddCommGrpCat.free)).obj
+      { I := ι, obj := U }.shrinkYonedaCech)
+def LinearStudy.topCechNativeIntegerAugmentation.{u} : (X : TopCat) →
+  {ι : Type u} →
+    (U : ι → TopologicalSpace.Opens ↑X) →
+      (AlgebraicTopology.alternatingFaceMapComplex (TopCat.Sheaf AddCommGrpCat X)).obj
+          (LinearStudy.topCechFreeAbelianAugmented X U).left ⟶
+        (ChainComplex.single₀ (TopCat.Sheaf AddCommGrpCat X)).obj
+          ((CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat).obj ↧(ULift.{u, 0} ℤ)) :=
+fun (X : TopCat) {ι : Type u} (U : ι → TopologicalSpace.Opens ↑X) =>
+  CategoryTheory.CategoryStruct.comp
+    (AlgebraicTopology.AlternatingFaceMapComplex.ε.app (LinearStudy.topCechFreeAbelianAugmented X U))
+    ((ChainComplex.single₀ (TopCat.Sheaf AddCommGrpCat X)).map
+      (LinearStudy.topCoverGeneratedFreeAbelianIntegerTargetMap X U))
+ROLECHECK:CategoryTheory.Functor.mapFormalCoproduct:false
+ROLECHECK:CategoryTheory.Subfunctor.ofObjects:false
+ROLECHECK:CategoryTheory.Subfunctor.ofObjects_obj_eq_univ:true
+ROLECHECK:CategoryTheory.Subfunctor.ofObjects_obj_eq_empty:true
+ROLECHECK:CategoryTheory.Subfunctor.uniqueOfObjectsObj:false
+ROLECHECK:CategoryTheory.Subfunctor.isTerminalOfObjectsToFunctor:false
+ROLECHECK:CategoryTheory.isTerminalShrinkYonedaObj:false
+ROLECHECK:CategoryTheory.Subfunctor.ofObjectsIsoOfAdj:false
+ROLECHECK:CategoryTheory.Adjunction.shrinkYonedaIso:false
+ROLECHECK:CategoryTheory.Limits.FormalCoproduct.evalObjCompIso:false
+ROLECHECK:CategoryTheory.Limits.FormalCoproduct.evalShrinkYonedaCompIsoOfAdj:false
+ROLECHECK:CategoryTheory.Limits.FormalCoproduct.mapFormalCoproductObjPowerIso:false
+ROLECHECK:CategoryTheory.Limits.FormalCoproduct.cechCompMapFormalCoproductIso:false
+ROLECHECK:CategoryTheory.Limits.FormalCoproduct.shrinkYonedaCech:false
+ROLECHECK:CategoryTheory.Limits.FormalCoproduct.isEmpty_shrinkYonedaCechRightObj:true
+ROLECHECK:CategoryTheory.Limits.FormalCoproduct.extraDegeneracyShrinkYonedaCech:false
+ROLECHECK:CategoryTheory.Limits.FormalCoproduct.shrinkYonedaCechIsoOfAdj:false
+ROLECHECK:CategoryTheory.Limits.FormalCoproduct.nonempty_extraDegeneracy_shrinkYonedaCech_evaluation:true
+ROLECHECK:LinearStudy.alternatingAugmentationWhiskeringArrowIso:false
+ROLECHECK:LinearStudy.augmentedPointwiseWhiskeringIso:false
+ROLECHECK:CategoryTheory.Limits.FormalCoproduct.shrinkYonedaCech_presheaf_augmentation_quasiIso:true
+ROLECHECK:LinearStudy.topCoverGeneratedTerminal_locallySurjective:true
+ROLECHECK:LinearStudy.topCoverGeneratedTerminal_locallyInjective:true
+ROLECHECK:LinearStudy.topCoverGeneratedTerminal_sheafify_inclusion_isIso:true
+ROLECHECK:LinearStudy.topCoverGeneratedTerminal_freeAbelian_sheafify_inclusion_isIso:true
+ROLECHECK:LinearStudy.freePUnitNativeIntegerIso:false
+ROLECHECK:LinearStudy.topCoverGeneratedFreeAbelianIntegerTargetMap:false
+ROLECHECK:LinearStudy.topCoverGeneratedFreeAbelianIntegerTargetMap_isIso:true
+ROLECHECK:LinearStudy.topCechFreeAbelianAugmented:false
+ROLECHECK:LinearStudy.topCechFreeAbelianAugmented_quasiIso:true
+ROLECHECK:LinearStudy.topCechNativeIntegerAugmentation:false
+ROLECHECK:LinearStudy.topCechNativeIntegerAugmentation_quasiIso:true
