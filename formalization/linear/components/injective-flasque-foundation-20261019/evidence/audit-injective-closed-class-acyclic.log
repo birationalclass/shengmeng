@@ -1,0 +1,9 @@
+@LinearStudy.ext_subsingleton_of_injective_closed_class : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [CategoryTheory.EnoughInjectives A] [inst_3 : CategoryTheory.HasExt A] (O : A)
+  (P : A → Prop),
+  (∀ {S : CategoryTheory.ShortComplex A}, S.ShortExact → P S.X₁ → CategoryTheory.Injective S.X₂ → P S.X₃) →
+    (∀ {S : CategoryTheory.ShortComplex A},
+        S.ShortExact → P S.X₁ → ∀ (f : O ⟶ S.X₃), ∃ (g : O ⟶ S.X₂), CategoryTheory.CategoryStruct.comp g S.g = f) →
+      ∀ (F : A), P F → ∀ (n : ℕ), Subsingleton (CategoryTheory.Abelian.Ext O F (n + 1))
+'LinearStudy.ext_subsingleton_of_injective_closed_class' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.ext_subsingleton_of_injective_closed_class:true

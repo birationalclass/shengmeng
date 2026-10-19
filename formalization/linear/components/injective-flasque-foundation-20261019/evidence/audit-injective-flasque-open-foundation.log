@@ -1,0 +1,166 @@
+@LinearStudy.adjunction_homEquiv_map_counit : ∀ {C : Type u_3} {D : Type u_4}
+  [inst : CategoryTheory.Category.{u_1, u_3} C] [inst_1 : CategoryTheory.Category.{u_2, u_4} D]
+  {F : CategoryTheory.Functor C D} {G : CategoryTheory.Functor D C} (adj : F ⊣ G) (X : C) (Y : D) (g : X ⟶ G.obj Y),
+  (adj.homEquiv X Y) (CategoryTheory.CategoryStruct.comp (F.map g) (adj.counit.app Y)) = g
+'LinearStudy.adjunction_homEquiv_map_counit' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleSheafification_homEquiv_map_counit : ∀ {C : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat)
+  [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat]
+  (P : PresheafOfModules R.obj) (M : SheafOfModules R)
+  (g : P ⟶ (PresheafOfModules.restrictScalars (CategoryTheory.CategoryStruct.id R.obj)).obj M.val),
+  ((PresheafOfModules.sheafificationAdjunction (CategoryTheory.CategoryStruct.id R.obj)).homEquiv P M)
+      (CategoryTheory.CategoryStruct.comp
+        ((PresheafOfModules.sheafification (CategoryTheory.CategoryStruct.id R.obj)).map g)
+        ((PresheafOfModules.sheafificationAdjunction (CategoryTheory.CategoryStruct.id R.obj)).counit.app M)) =
+    g
+'LinearStudy.moduleSheafification_homEquiv_map_counit' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenUnitZeroPresheafToUnit : {C : Type u_1} →
+  [inst : Preorder C] →
+    (R : CategoryTheory.Functor Cᵒᵖ RingCat) →
+      (U : C) →
+        LinearStudy.overOpenZeroPresheaf R U (PresheafOfModules.unit ((CategoryTheory.Over.forget U).op.comp R)) ⟶
+          PresheafOfModules.unit R
+'LinearStudy.overOpenUnitZeroPresheafToUnit' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenUnitZeroPresheafToUnit_lof : ∀ {C : Type u_1} [inst : Preorder C]
+  (R : CategoryTheory.Functor Cᵒᵖ RingCat) (U : C) (V : Cᵒᵖ) (i : Opposite.unop V ⟶ U) (x : ↑(R.obj V)),
+  (CategoryTheory.ConcreteCategory.hom ((LinearStudy.overOpenUnitZeroPresheafToUnit R U).app V))
+      ((DirectSum.lof (↑(R.obj V)) (Opposite.unop V ⟶ U) (fun (x : Opposite.unop V ⟶ U) => ↑(R.obj V)) i) x) =
+    x
+'LinearStudy.overOpenUnitZeroPresheafToUnit_lof' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenUnitZeroPresheafToUnit_mono : ∀ {C : Type u_1} [inst : Preorder C]
+  (R : CategoryTheory.Functor Cᵒᵖ RingCat) (U : C), CategoryTheory.Mono (LinearStudy.overOpenUnitZeroPresheafToUnit R U)
+'LinearStudy.overOpenUnitZeroPresheafToUnit_mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenUnitZeroSheafToUnit : {C : Type u_1} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      (R : CategoryTheory.Sheaf J RingCat) →
+        (U : C) →
+          [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] →
+            [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat] →
+              (LinearStudy.overOpenZeroSheafFunctor R U).obj (SheafOfModules.unit (R.over U)) ⟶ SheafOfModules.unit R
+'LinearStudy.overOpenUnitZeroSheafToUnit' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenUnitZeroSheafToUnit_mono : ∀ {C : Type u_1} [inst : Preorder C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+  [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat],
+  CategoryTheory.Mono (LinearStudy.overOpenUnitZeroSheafToUnit R U)
+'LinearStudy.overOpenUnitZeroSheafToUnit_mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenUnitZeroBoundPresheaf : {C : Type u_1} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} → (R : CategoryTheory.Sheaf J RingCat) → C → PresheafOfModules R.obj
+'LinearStudy.overOpenUnitZeroBoundPresheaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenUnitZeroBoundPresheafToUnit : {C : Type u_1} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      (R : CategoryTheory.Sheaf J RingCat) →
+        (U : C) →
+          LinearStudy.overOpenUnitZeroBoundPresheaf R U ⟶
+            (PresheafOfModules.restrictScalars (CategoryTheory.CategoryStruct.id R.obj)).obj (SheafOfModules.unit R).val
+'LinearStudy.overOpenUnitZeroBoundPresheafToUnit' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenUnitZeroBoundPresheafToUnit_mono : ∀ {C : Type u_1} [inst : Preorder C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+  [CategoryTheory.HasSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat],
+  CategoryTheory.Mono (LinearStudy.overOpenUnitZeroBoundPresheafToUnit R U)
+'LinearStudy.overOpenUnitZeroBoundPresheafToUnit_mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenUnitZeroBoundPresheafToUnit_homEquiv : ∀ {C : Type u_1} [inst : Preorder C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+  [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat],
+  ((PresheafOfModules.sheafificationAdjunction (CategoryTheory.CategoryStruct.id R.obj)).homEquiv
+        (LinearStudy.overOpenUnitZeroBoundPresheaf R U) (SheafOfModules.unit R))
+      (CategoryTheory.CategoryStruct.comp
+        ((PresheafOfModules.sheafification (CategoryTheory.CategoryStruct.id R.obj)).map
+          (LinearStudy.overOpenUnitZeroBoundPresheafToUnit R U))
+        ((PresheafOfModules.sheafificationAdjunction (CategoryTheory.CategoryStruct.id R.obj)).counit.app
+          (SheafOfModules.unit R))) =
+    LinearStudy.overOpenUnitZeroBoundPresheafToUnit R U
+'LinearStudy.overOpenUnitZeroBoundPresheafToUnit_homEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenZeroSheafHomEquiv_val : ∀ {C : Type u_1} [inst : Preorder C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+  [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat]
+  (N : SheafOfModules (R.over U)) (M : SheafOfModules R) (a : (LinearStudy.overOpenZeroSheafFunctor R U).obj N ⟶ M),
+  ((LinearStudy.overOpenZeroSheafHomEquiv R U N M) a).val =
+    LinearStudy.overOpenZeroHomRestrict R.obj U N.val M.val
+      (((PresheafOfModules.sheafificationAdjunction (CategoryTheory.CategoryStruct.id R.obj)).homEquiv
+          (LinearStudy.overOpenZeroPresheaf R.obj U N.val) M)
+        a)
+'LinearStudy.overOpenZeroSheafHomEquiv_val' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenUnitZeroSheafToUnit_presheafAdjoint : ∀ {C : Type u_1} [inst : Preorder C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+  [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat],
+  ((PresheafOfModules.sheafificationAdjunction (CategoryTheory.CategoryStruct.id R.obj)).homEquiv
+        ((LinearStudy.overOpenZeroPresheafFunctor R.obj U).obj
+          ((SheafOfModules.forget (R.over U)).obj (SheafOfModules.unit (R.over U))))
+        (SheafOfModules.unit R))
+      (LinearStudy.overOpenUnitZeroSheafToUnit R U) =
+    LinearStudy.overOpenUnitZeroPresheafToUnit R.obj U
+'LinearStudy.overOpenUnitZeroSheafToUnit_presheafAdjoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenUnitZeroSheafToUnit_adjoint : ∀ {C : Type u_1} [inst : Preorder C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+  [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat],
+  (LinearStudy.overOpenZeroSheafHomEquiv R U (SheafOfModules.unit (R.over U)) (SheafOfModules.unit R))
+      (LinearStudy.overOpenUnitZeroSheafToUnit R U) =
+    CategoryTheory.CategoryStruct.id (SheafOfModules.unit (R.over U))
+'LinearStudy.overOpenUnitZeroSheafToUnit_adjoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.overOpenUnitHom_extend_of_injective : ∀ {C : Type u_1} [inst : Preorder C]
+  {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+  [CategoryTheory.HasSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat] (I : SheafOfModules R)
+  [CategoryTheory.Injective I] (a : SheafOfModules.unit (R.over U) ⟶ (SheafOfModules.overFunctor R U).obj I),
+  ∃ (b : SheafOfModules.unit R ⟶ I), (SheafOfModules.overFunctor R U).map b = a
+'LinearStudy.overOpenUnitHom_extend_of_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.overOpenUnitZeroPresheafToUnit.{u} : {C : Type u} →
+  [inst : Preorder C] →
+    (R : CategoryTheory.Functor Cᵒᵖ RingCat) →
+      (U : C) →
+        LinearStudy.overOpenZeroPresheaf R U (PresheafOfModules.unit ((CategoryTheory.Over.forget U).op.comp R)) ⟶
+          PresheafOfModules.unit R :=
+fun {C : Type u} [Preorder C] (R : CategoryTheory.Functor Cᵒᵖ RingCat) (U : C) =>
+  LinearStudy.overOpenZeroHomExtend R U (PresheafOfModules.unit ((CategoryTheory.Over.forget U).op.comp R))
+    (PresheafOfModules.unit R)
+    (CategoryTheory.CategoryStruct.id (PresheafOfModules.unit ((CategoryTheory.Over.forget U).op.comp R)))
+def LinearStudy.overOpenUnitZeroSheafToUnit.{u} : {C : Type u} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      (R : CategoryTheory.Sheaf J RingCat) →
+        (U : C) →
+          [inst_1 : CategoryTheory.HasSheafify J AddCommGrpCat] →
+            [inst_2 : J.WEqualsLocallyBijective AddCommGrpCat] →
+              (LinearStudy.overOpenZeroSheafFunctor R U).obj (SheafOfModules.unit (R.over U)) ⟶ SheafOfModules.unit R :=
+fun {C : Type u} [Preorder C] {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat) (U : C)
+    [CategoryTheory.HasSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat] =>
+  CategoryTheory.CategoryStruct.comp
+    ((PresheafOfModules.sheafification (CategoryTheory.CategoryStruct.id R.obj)).map
+      (LinearStudy.overOpenUnitZeroPresheafToUnit R.obj U))
+    ((PresheafOfModules.sheafificationAdjunction (CategoryTheory.CategoryStruct.id R.obj)).counit.app
+      (SheafOfModules.unit R))
+def LinearStudy.overOpenUnitZeroBoundPresheaf.{u} : {C : Type u} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} → (R : CategoryTheory.Sheaf J RingCat) → C → PresheafOfModules R.obj :=
+fun {C : Type u} [Preorder C] {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat)
+    (U : C) =>
+  (LinearStudy.overOpenZeroPresheafFunctor R.obj U).obj
+    ((SheafOfModules.forget (R.over U)).obj (SheafOfModules.unit (R.over U)))
+def LinearStudy.overOpenUnitZeroBoundPresheafToUnit.{u} : {C : Type u} →
+  [inst : Preorder C] →
+    {J : CategoryTheory.GrothendieckTopology C} →
+      (R : CategoryTheory.Sheaf J RingCat) →
+        (U : C) →
+          LinearStudy.overOpenUnitZeroBoundPresheaf R U ⟶
+            (PresheafOfModules.restrictScalars (CategoryTheory.CategoryStruct.id R.obj)).obj
+              (SheafOfModules.unit R).val :=
+fun {C : Type u} [Preorder C] {J : CategoryTheory.GrothendieckTopology C} (R : CategoryTheory.Sheaf J RingCat)
+    (U : C) =>
+  LinearStudy.overOpenUnitZeroPresheafToUnit R.obj U
+ROLECHECK:LinearStudy.adjunction_homEquiv_map_counit:true
+ROLECHECK:LinearStudy.moduleSheafification_homEquiv_map_counit:true
+ROLECHECK:LinearStudy.overOpenUnitZeroPresheafToUnit:false
+ROLECHECK:LinearStudy.overOpenUnitZeroPresheafToUnit_lof:true
+ROLECHECK:LinearStudy.overOpenUnitZeroPresheafToUnit_mono:true
+ROLECHECK:LinearStudy.overOpenUnitZeroSheafToUnit:false
+ROLECHECK:LinearStudy.overOpenUnitZeroSheafToUnit_mono:true
+ROLECHECK:LinearStudy.overOpenUnitZeroBoundPresheaf:false
+ROLECHECK:LinearStudy.overOpenUnitZeroBoundPresheafToUnit:false
+ROLECHECK:LinearStudy.overOpenUnitZeroBoundPresheafToUnit_mono:true
+ROLECHECK:LinearStudy.overOpenUnitZeroBoundPresheafToUnit_homEquiv:true
+ROLECHECK:LinearStudy.overOpenZeroSheafHomEquiv_val:true
+ROLECHECK:LinearStudy.overOpenUnitZeroSheafToUnit_presheafAdjoint:true
+ROLECHECK:LinearStudy.overOpenUnitZeroSheafToUnit_adjoint:true
+ROLECHECK:LinearStudy.overOpenUnitHom_extend_of_injective:true

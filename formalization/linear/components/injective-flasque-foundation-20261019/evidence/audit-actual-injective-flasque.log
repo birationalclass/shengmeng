@@ -1,0 +1,11 @@
+LinearStudy.schemeModule_injective_globalRestriction_surjective : ∀ (X : AlgebraicGeometry.Scheme) (I : X.Modules)
+  [CategoryTheory.Injective I] (U : X.Opens),
+  Function.Surjective ⇑(CategoryTheory.ConcreteCategory.hom (I.presheaf.map (CategoryTheory.homOfLE ⋯).op))
+'LinearStudy.schemeModule_injective_globalRestriction_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModule_injective_isFlasque : ∀ (X : AlgebraicGeometry.Scheme) (I : X.Modules)
+  [CategoryTheory.Injective I], ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj I).IsFlasque
+'LinearStudy.schemeModule_injective_isFlasque' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModule_injective_globalRestriction_surjective:true
+ROLECHECK:LinearStudy.schemeModule_injective_isFlasque:true
