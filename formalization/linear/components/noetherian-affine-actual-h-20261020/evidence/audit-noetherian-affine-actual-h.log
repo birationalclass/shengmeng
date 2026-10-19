@@ -1,0 +1,93 @@
+@LinearStudy.noetherian_artinRees_kernel_restriction : ∀ {R P N : Type u_1} [inst : CommRing R] [IsNoetherianRing R]
+  [inst_2 : AddCommGroup P] [inst_3 : Module R P] [Module.Finite R P] [inst_5 : AddCommGroup N] [inst_6 : Module R N]
+  (J : Ideal R) (f : P →ₗ[R] R) (g : P →ₗ[R] N),
+  J • f.ker ≤ g.ker → ∃ (n : ℕ), 0 < n ∧ ∀ x ∈ J ^ n • ⊤, f x = 0 → g x = 0
+'LinearStudy.noetherian_artinRees_kernel_restriction' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.injective_linearMap_extend_of_ker_le : ∀ {R P I : Type u_1} [inst : CommRing R] [inst_1 : AddCommGroup P]
+  [inst_2 : Module R P] [inst_3 : AddCommGroup I] [inst_4 : Module R I] [Module.Injective R I] (f : P →ₗ[R] R)
+  (g : P →ₗ[R] I), f.ker ≤ g.ker → ∃ (h : R →ₗ[R] I), h ∘ₗ f = g
+'LinearStudy.injective_linearMap_extend_of_ker_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finiteCompatibleFamily_ideal_kills_relations : ∀ {R I ι : Type u_1} [inst : CommRing R]
+  [inst_1 : AddCommGroup I] [inst_2 : Module R I] [inst_3 : Fintype ι] (b : ι → R) (a : ι → I),
+  (∀ (i j : ι), b j • a i = b i • a j) →
+    Ideal.span (Set.range b) • (Fintype.linearCombination R b).ker ≤ (Fintype.linearCombination R a).ker
+'LinearStudy.finiteCompatibleFamily_ideal_kills_relations' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.noetherian_injective_compatible_family_lift : ∀ {R I ι : Type u_1} [inst : CommRing R] [IsNoetherianRing R]
+  [inst_2 : AddCommGroup I] [inst_3 : Module R I] [Module.Injective R I] [Fintype ι] (b : ι → R) (a : ι → I),
+  (∀ (i j : ι), b j • a i = b i • a j) → ∃ (n : ℕ) (x : I), ∀ (i : ι), b i ^ (n + 1) • x = b i ^ n • a i
+'LinearStudy.noetherian_injective_compatible_family_lift' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.noetherian_injective_structureSheaf_toOpen_surjective : ∀ {R I : Type u_1} [inst : CommRing R]
+  [IsNoetherianRing R] [inst_2 : AddCommGroup I] [inst_3 : Module R I] [Module.Injective R I]
+  (U : TopologicalSpace.Opens ↑(AlgebraicGeometry.PrimeSpectrum.Top R)),
+  Function.Surjective ⇑(AlgebraicGeometry.StructureSheaf.toOpenₗ R I U)
+'LinearStudy.noetherian_injective_structureSheaf_toOpen_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.noetherian_injective_tilde_isFlasque : ∀ (R : CommRingCat) [IsNoetherianRing ↑R] (I : ModuleCat ↑R)
+  [Module.Injective ↑R ↑I],
+  ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Spec R)).obj (AlgebraicGeometry.tilde I)).IsFlasque
+'LinearStudy.noetherian_injective_tilde_isFlasque' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.noetherian_injective_tilde_globalUnitExt_vanish : ∀ (R : CommRingCat) [IsNoetherianRing ↑R]
+  (I : ModuleCat ↑R) [Module.Injective ↑R ↑I] (n : ℕ),
+  Subsingleton
+    (CategoryTheory.Abelian.Ext (SheafOfModules.unit (AlgebraicGeometry.Spec R).ringCatSheaf)
+      (AlgebraicGeometry.tilde I) (n + 1))
+'LinearStudy.noetherian_injective_tilde_globalUnitExt_vanish' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.pointedExactFunctorExtMap_zero_bijective_of_fullyFaithful : ∀ {C : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} C] [inst_1 : CategoryTheory.Abelian C] [inst_2 : CategoryTheory.HasExt C]
+  {D : Type u_3} [inst_3 : CategoryTheory.Category.{u_4, u_3} D] [inst_4 : CategoryTheory.Abelian D]
+  [inst_5 : CategoryTheory.HasExt D] (F : CategoryTheory.Functor C D) [inst_6 : F.Additive]
+  [inst_7 : CategoryTheory.Limits.PreservesFiniteLimits F] [inst_8 : CategoryTheory.Limits.PreservesFiniteColimits F]
+  [F.Full] [F.Faithful] {O : C} {P : D} (e : P ⟶ F.obj O) [CategoryTheory.IsIso e] (M : C),
+  Function.Bijective ⇑(LinearStudy.pointedExactFunctorExtMap F e M 0)
+'LinearStudy.pointedExactFunctorExtMap_zero_bijective_of_fullyFaithful' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.tilde_functor_preservesFiniteLimits : ∀ (R : CommRingCat),
+  CategoryTheory.Limits.PreservesFiniteLimits (AlgebraicGeometry.tilde.functor R)
+'LinearStudy.tilde_functor_preservesFiniteLimits' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.noetherian_affine_tilde_globalUnitExt_comparison_bijective : ∀ (R : CommRingCat) [IsNoetherianRing ↑R]
+  (M : ModuleCat ↑R) (n : ℕ),
+  Function.Bijective
+    ⇑(LinearStudy.pointedExactFunctorExtMap (AlgebraicGeometry.tilde.functor R) AlgebraicGeometry.tildeSelf.inv M n)
+'LinearStudy.noetherian_affine_tilde_globalUnitExt_comparison_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.noetherian_affine_tilde_globalUnitExt_vanish : ∀ (R : CommRingCat) [IsNoetherianRing ↑R] (M : ModuleCat ↑R)
+  (n : ℕ),
+  Subsingleton
+    (CategoryTheory.Abelian.Ext (SheafOfModules.unit (AlgebraicGeometry.Spec R).ringCatSheaf)
+      (AlgebraicGeometry.tilde M) (n + 1))
+'LinearStudy.noetherian_affine_tilde_globalUnitExt_vanish' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.noetherian_affine_tilde_actualHigherCohomology_vanish : ∀ (R : CommRingCat) [IsNoetherianRing ↑R]
+  (M : ModuleCat ↑R) (n : ℕ),
+  Subsingleton (LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Spec R) (AlgebraicGeometry.tilde M) (n + 1))
+'LinearStudy.noetherian_affine_tilde_actualHigherCohomology_vanish' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.noetherian_affine_quasicoherent_actualHigherCohomology_vanish : ∀ (R : CommRingCat) [IsNoetherianRing ↑R]
+  (M : (AlgebraicGeometry.Spec R).Modules) [SheafOfModules.IsQuasicoherent M] (n : ℕ),
+  Subsingleton (LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Spec R) M (n + 1))
+'LinearStudy.noetherian_affine_quasicoherent_actualHigherCohomology_vanish' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.noetherian_affine_quasicoherent_globalUnitExt_vanish : ∀ (R : CommRingCat) [IsNoetherianRing ↑R]
+  (M : (AlgebraicGeometry.Spec R).Modules) [SheafOfModules.IsQuasicoherent M] (n : ℕ),
+  Subsingleton (CategoryTheory.Abelian.Ext (SheafOfModules.unit (AlgebraicGeometry.Spec R).ringCatSheaf) M (n + 1))
+'LinearStudy.noetherian_affine_quasicoherent_globalUnitExt_vanish' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.noetherian_artinRees_kernel_restriction:true
+ROLECHECK:LinearStudy.injective_linearMap_extend_of_ker_le:true
+ROLECHECK:LinearStudy.finiteCompatibleFamily_ideal_kills_relations:true
+ROLECHECK:LinearStudy.noetherian_injective_compatible_family_lift:true
+ROLECHECK:LinearStudy.noetherian_injective_structureSheaf_toOpen_surjective:true
+ROLECHECK:LinearStudy.noetherian_injective_tilde_isFlasque:true
+ROLECHECK:LinearStudy.noetherian_injective_tilde_globalUnitExt_vanish:true
+ROLECHECK:LinearStudy.pointedExactFunctorExtMap_zero_bijective_of_fullyFaithful:true
+ROLECHECK:LinearStudy.tilde_functor_preservesFiniteLimits:true
+ROLECHECK:LinearStudy.noetherian_affine_tilde_globalUnitExt_comparison_bijective:true
+ROLECHECK:LinearStudy.noetherian_affine_tilde_globalUnitExt_vanish:true
+ROLECHECK:LinearStudy.noetherian_affine_tilde_actualHigherCohomology_vanish:true
+ROLECHECK:LinearStudy.noetherian_affine_quasicoherent_actualHigherCohomology_vanish:true
+ROLECHECK:LinearStudy.noetherian_affine_quasicoherent_globalUnitExt_vanish:true
