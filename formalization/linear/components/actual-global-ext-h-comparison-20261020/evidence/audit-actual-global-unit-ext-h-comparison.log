@@ -1,0 +1,182 @@
+@LinearStudy.pointedExactFunctorExtMap : {C : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} C] →
+    [inst_1 : CategoryTheory.Abelian C] →
+      [inst_2 : CategoryTheory.HasExt C] →
+        {D : Type u_3} →
+          [inst_3 : CategoryTheory.Category.{u_4, u_3} D] →
+            [inst_4 : CategoryTheory.Abelian D] →
+              [inst_5 : CategoryTheory.HasExt D] →
+                (F : CategoryTheory.Functor C D) →
+                  [F.Additive] →
+                    [CategoryTheory.Limits.PreservesFiniteLimits F] →
+                      [CategoryTheory.Limits.PreservesFiniteColimits F] →
+                        {O : C} →
+                          {P : D} →
+                            (P ⟶ F.obj O) →
+                              (M : C) →
+                                (n : ℕ) → CategoryTheory.Abelian.Ext O M n →+ CategoryTheory.Abelian.Ext P (F.obj M) n
+'LinearStudy.pointedExactFunctorExtMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.pointedExactFunctorExtMap_postcompose : ∀ {C : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} C]
+  [inst_1 : CategoryTheory.Abelian C] [inst_2 : CategoryTheory.HasExt C] {D : Type u_3}
+  [inst_3 : CategoryTheory.Category.{u_4, u_3} D] [inst_4 : CategoryTheory.Abelian D] [inst_5 : CategoryTheory.HasExt D]
+  (F : CategoryTheory.Functor C D) [inst_6 : F.Additive] [inst_7 : CategoryTheory.Limits.PreservesFiniteLimits F]
+  [inst_8 : CategoryTheory.Limits.PreservesFiniteColimits F] {O : C} {P : D} (e : P ⟶ F.obj O) {M N : C} (f : M ⟶ N)
+  (n : ℕ) (x : CategoryTheory.Abelian.Ext O M n),
+  (LinearStudy.pointedExactFunctorExtMap F e N n) (x.comp (CategoryTheory.Abelian.Ext.mk₀ f) ⋯) =
+    ((LinearStudy.pointedExactFunctorExtMap F e M n) x).comp (CategoryTheory.Abelian.Ext.mk₀ (F.map f)) ⋯
+'LinearStudy.pointedExactFunctorExtMap_postcompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.pointedExactFunctorExtMap_boundary : ∀ {C : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} C]
+  [inst_1 : CategoryTheory.Abelian C] [inst_2 : CategoryTheory.HasExt C] {D : Type u_3}
+  [inst_3 : CategoryTheory.Category.{u_4, u_3} D] [inst_4 : CategoryTheory.Abelian D] [inst_5 : CategoryTheory.HasExt D]
+  (F : CategoryTheory.Functor C D) [inst_6 : F.Additive] [inst_7 : CategoryTheory.Limits.PreservesFiniteLimits F]
+  [inst_8 : CategoryTheory.Limits.PreservesFiniteColimits F] {O : C} {P : D} (e : P ⟶ F.obj O)
+  {S : CategoryTheory.ShortComplex C} (hS : S.ShortExact) (n : ℕ) (x : CategoryTheory.Abelian.Ext O S.X₃ n),
+  (LinearStudy.pointedExactFunctorExtMap F e S.X₁ (n + 1)) (x.comp hS.extClass ⋯) =
+    ((LinearStudy.pointedExactFunctorExtMap F e S.X₃ n) x).comp ⋯.extClass ⋯
+'LinearStudy.pointedExactFunctorExtMap_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.pointedExactFunctorExtMap_bijective : ∀ {C : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} C]
+  [inst_1 : CategoryTheory.Abelian C] [inst_2 : CategoryTheory.HasExt C] [CategoryTheory.EnoughInjectives C]
+  {D : Type u_3} [inst_4 : CategoryTheory.Category.{u_4, u_3} D] [inst_5 : CategoryTheory.Abelian D]
+  [inst_6 : CategoryTheory.HasExt D] (F : CategoryTheory.Functor C D) [inst_7 : F.Additive]
+  [inst_8 : CategoryTheory.Limits.PreservesFiniteLimits F] [inst_9 : CategoryTheory.Limits.PreservesFiniteColimits F]
+  {O : C} {P : D} (e : P ⟶ F.obj O),
+  (∀ (M : C), Function.Bijective ⇑(LinearStudy.pointedExactFunctorExtMap F e M 0)) →
+    (∀ (I : C) [CategoryTheory.Injective I] (n : ℕ), Subsingleton (CategoryTheory.Abelian.Ext P (F.obj I) (n + 1))) →
+      ∀ (M : C) (n : ℕ), Function.Bijective ⇑(LinearStudy.pointedExactFunctorExtMap F e M n)
+'LinearStudy.pointedExactFunctorExtMap_bijective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.pointedExactFunctorExtMap_zero_homEquiv : ∀ {C : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} C]
+  [inst_1 : CategoryTheory.Abelian C] [inst_2 : CategoryTheory.HasExt C] {D : Type u_3}
+  [inst_3 : CategoryTheory.Category.{u_4, u_3} D] [inst_4 : CategoryTheory.Abelian D] [inst_5 : CategoryTheory.HasExt D]
+  (F : CategoryTheory.Functor C D) [inst_6 : F.Additive] [inst_7 : CategoryTheory.Limits.PreservesFiniteLimits F]
+  [inst_8 : CategoryTheory.Limits.PreservesFiniteColimits F] {O : C} {P : D} (e : P ⟶ F.obj O) (M : C)
+  (x : CategoryTheory.Abelian.Ext O M 0),
+  CategoryTheory.Abelian.Ext.addEquiv₀ ((LinearStudy.pointedExactFunctorExtMap F e M 0) x) =
+    CategoryTheory.CategoryStruct.comp e (F.map (CategoryTheory.Abelian.Ext.addEquiv₀ x))
+'LinearStudy.pointedExactFunctorExtMap_zero_homEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleToAdditiveSheaf_additive : ∀ (X : AlgebraicGeometry.Scheme),
+  (LinearStudy.schemeModuleToAdditiveSheaf X).Additive
+'LinearStudy.schemeModuleToAdditiveSheaf_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleToAdditiveSheaf_preservesFiniteColimits : ∀ (X : AlgebraicGeometry.Scheme),
+  CategoryTheory.Limits.PreservesFiniteColimits (LinearStudy.schemeModuleToAdditiveSheaf X)
+'LinearStudy.schemeModuleToAdditiveSheaf_preservesFiniteColimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleIntegerToUnderlyingUnit : (X : AlgebraicGeometry.Scheme) →
+  (CategoryTheory.constantSheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat).obj ↧(ULift.{u_1, 0} ℤ) ⟶
+    (LinearStudy.schemeModuleToAdditiveSheaf X).obj (SheafOfModules.unit X.ringCatSheaf)
+'LinearStudy.schemeModuleIntegerToUnderlyingUnit' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleIntegerToUnderlyingUnit_section : ∀ (X : AlgebraicGeometry.Scheme),
+  (LinearStudy.topAbelianSheafIntegerHomSectionsAddEquiv (↑X.toPresheafedSpace)
+        ((LinearStudy.schemeModuleToAdditiveSheaf X).obj (SheafOfModules.unit X.ringCatSheaf)))
+      (LinearStudy.schemeModuleIntegerToUnderlyingUnit X) =
+    1
+'LinearStudy.schemeModuleIntegerToUnderlyingUnit_section' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtActualHMap : (X : AlgebraicGeometry.Scheme) →
+  (M : X.Modules) →
+    (n : ℕ) →
+      CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) M n →+
+        LinearStudy.schemeModuleActualCohomology X M n
+'LinearStudy.schemeModuleGlobalExtActualHMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtActualHMap_naturality : ∀ (X : AlgebraicGeometry.Scheme) {M N : X.Modules} (f : M ⟶ N)
+  (n : ℕ) (x : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) M n),
+  (LinearStudy.schemeModuleGlobalExtActualHMap X N n) (x.comp (CategoryTheory.Abelian.Ext.mk₀ f) ⋯) =
+    (CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f) n)
+      ((LinearStudy.schemeModuleGlobalExtActualHMap X M n) x)
+'LinearStudy.schemeModuleGlobalExtActualHMap_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtActualHMap_boundary : ∀ (X : AlgebraicGeometry.Scheme)
+  {S : CategoryTheory.ShortComplex X.Modules} (hS : S.ShortExact) (n : ℕ)
+  (x : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) S.X₃ n),
+  (LinearStudy.schemeModuleGlobalExtActualHMap X S.X₁ (n + 1)) (x.comp hS.extClass ⋯) =
+    CategoryTheory.Abelian.Ext.comp ((LinearStudy.schemeModuleGlobalExtActualHMap X S.X₃ n) x) ⋯.extClass ⋯
+'LinearStudy.schemeModuleGlobalExtActualHMap_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtActualHMap_zero : ∀ (X : AlgebraicGeometry.Scheme) (M : X.Modules)
+  (x : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) M 0),
+  (LinearStudy.schemeModuleGlobalExtActualHMap X M 0) x = (LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv X M) x
+'LinearStudy.schemeModuleGlobalExtActualHMap_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtActualHMap_bijective : ∀ (X : AlgebraicGeometry.Scheme) (M : X.Modules) (n : ℕ),
+  Function.Bijective ⇑(LinearStudy.schemeModuleGlobalExtActualHMap X M n)
+'LinearStudy.schemeModuleGlobalExtActualHMap_bijective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtActualHAddEquiv : (X : AlgebraicGeometry.Scheme) →
+  (M : X.Modules) →
+    (n : ℕ) →
+      CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) M n ≃+
+        LinearStudy.schemeModuleActualCohomology X M n
+'LinearStudy.schemeModuleGlobalExtActualHAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtActualHAddEquiv_naturality : ∀ (X : AlgebraicGeometry.Scheme) {M N : X.Modules}
+  (f : M ⟶ N) (n : ℕ) (x : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) M n),
+  (LinearStudy.schemeModuleGlobalExtActualHAddEquiv X N n) (x.comp (CategoryTheory.Abelian.Ext.mk₀ f) ⋯) =
+    (CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f) n)
+      ((LinearStudy.schemeModuleGlobalExtActualHAddEquiv X M n) x)
+'LinearStudy.schemeModuleGlobalExtActualHAddEquiv_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtActualHAddEquiv_boundary : ∀ (X : AlgebraicGeometry.Scheme)
+  {S : CategoryTheory.ShortComplex X.Modules} (hS : S.ShortExact) (n : ℕ)
+  (x : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) S.X₃ n),
+  (LinearStudy.schemeModuleGlobalExtActualHAddEquiv X S.X₁ (n + 1)) (x.comp hS.extClass ⋯) =
+    CategoryTheory.Abelian.Ext.comp ((LinearStudy.schemeModuleGlobalExtActualHAddEquiv X S.X₃ n) x) ⋯.extClass ⋯
+'LinearStudy.schemeModuleGlobalExtActualHAddEquiv_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleGlobalExtActualHAddEquiv_zero : ∀ (X : AlgebraicGeometry.Scheme) (M : X.Modules),
+  LinearStudy.schemeModuleGlobalExtActualHAddEquiv X M 0 = LinearStudy.schemeModuleGlobalExtZeroActualHAddEquiv X M
+'LinearStudy.schemeModuleGlobalExtActualHAddEquiv_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.pointedExactFunctorExtMap.{u, v, u', v', w, w'} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    [inst_1 : CategoryTheory.Abelian C] →
+      [inst_2 : CategoryTheory.HasExt C] →
+        {D : Type u'} →
+          [inst_3 : CategoryTheory.Category.{v', u'} D] →
+            [inst_4 : CategoryTheory.Abelian D] →
+              [inst_5 : CategoryTheory.HasExt D] →
+                (F : CategoryTheory.Functor C D) →
+                  [F.Additive] →
+                    [CategoryTheory.Limits.PreservesFiniteLimits F] →
+                      [CategoryTheory.Limits.PreservesFiniteColimits F] →
+                        {O : C} →
+                          {P : D} →
+                            (P ⟶ F.obj O) →
+                              (M : C) →
+                                (n : ℕ) →
+                                  CategoryTheory.Abelian.Ext O M n →+ CategoryTheory.Abelian.Ext P (F.obj M) n :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] [CategoryTheory.Abelian C] [CategoryTheory.HasExt C] {D : Type u'}
+    [CategoryTheory.Category.{v', u'} D] [CategoryTheory.Abelian D] [CategoryTheory.HasExt D]
+    (F : CategoryTheory.Functor C D) [F.Additive] [CategoryTheory.Limits.PreservesFiniteLimits F]
+    [CategoryTheory.Limits.PreservesFiniteColimits F] {O : C} {P : D} (e : P ⟶ F.obj O) (M : C) (n : ℕ) =>
+  ((CategoryTheory.Abelian.Ext.mk₀ e).precomp (F.obj M) ⋯).comp (F.mapExtAddHom O M n)
+def LinearStudy.schemeModuleIntegerToUnderlyingUnit.{u} : (X : AlgebraicGeometry.Scheme) →
+  (CategoryTheory.constantSheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat).obj ↧(ULift.{u, 0} ℤ) ⟶
+    (LinearStudy.schemeModuleToAdditiveSheaf X).obj (SheafOfModules.unit X.ringCatSheaf) :=
+fun (X : AlgebraicGeometry.Scheme) =>
+  (LinearStudy.topAbelianSheafIntegerHomSectionsAddEquiv (↑X.toPresheafedSpace)
+        ((LinearStudy.schemeModuleToAdditiveSheaf X).obj (SheafOfModules.unit X.ringCatSheaf))).symm
+    1
+def LinearStudy.schemeModuleGlobalExtActualHMap.{u} : (X : AlgebraicGeometry.Scheme) →
+  (M : X.Modules) →
+    (n : ℕ) →
+      CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) M n →+
+        LinearStudy.schemeModuleActualCohomology X M n :=
+fun (X : AlgebraicGeometry.Scheme) (M : X.Modules) (n : ℕ) =>
+  LinearStudy.pointedExactFunctorExtMap (LinearStudy.schemeModuleToAdditiveSheaf X)
+    (LinearStudy.schemeModuleIntegerToUnderlyingUnit X) M n
+def LinearStudy.schemeModuleGlobalExtActualHAddEquiv.{u} : (X : AlgebraicGeometry.Scheme) →
+  (M : X.Modules) →
+    (n : ℕ) →
+      CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) M n ≃+
+        LinearStudy.schemeModuleActualCohomology X M n :=
+fun (X : AlgebraicGeometry.Scheme) (M : X.Modules) (n : ℕ) =>
+  AddEquiv.ofBijective (LinearStudy.schemeModuleGlobalExtActualHMap X M n) ⋯
+ROLECHECK:LinearStudy.pointedExactFunctorExtMap:false
+ROLECHECK:LinearStudy.pointedExactFunctorExtMap_postcompose:true
+ROLECHECK:LinearStudy.pointedExactFunctorExtMap_boundary:true
+ROLECHECK:LinearStudy.pointedExactFunctorExtMap_bijective:true
+ROLECHECK:LinearStudy.pointedExactFunctorExtMap_zero_homEquiv:true
+ROLECHECK:LinearStudy.schemeModuleToAdditiveSheaf_additive:true
+ROLECHECK:LinearStudy.schemeModuleToAdditiveSheaf_preservesFiniteColimits:true
+ROLECHECK:LinearStudy.schemeModuleIntegerToUnderlyingUnit:false
+ROLECHECK:LinearStudy.schemeModuleIntegerToUnderlyingUnit_section:true
+ROLECHECK:LinearStudy.schemeModuleGlobalExtActualHMap:false
+ROLECHECK:LinearStudy.schemeModuleGlobalExtActualHMap_naturality:true
+ROLECHECK:LinearStudy.schemeModuleGlobalExtActualHMap_boundary:true
+ROLECHECK:LinearStudy.schemeModuleGlobalExtActualHMap_zero:true
+ROLECHECK:LinearStudy.schemeModuleGlobalExtActualHMap_bijective:true
+ROLECHECK:LinearStudy.schemeModuleGlobalExtActualHAddEquiv:false
+ROLECHECK:LinearStudy.schemeModuleGlobalExtActualHAddEquiv_naturality:true
+ROLECHECK:LinearStudy.schemeModuleGlobalExtActualHAddEquiv_boundary:true
+ROLECHECK:LinearStudy.schemeModuleGlobalExtActualHAddEquiv_zero:true
