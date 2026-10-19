@@ -1,23 +1,25 @@
+import {BoardReview,boardReviewStart} from './board-review.js?v=uniform-review-20261019';
 import {prepareClassroomAudioBlob} from './classroom-audio-decode.js?v=mp3-predecode-1';
 import {primeClassroomAudio,disconnectClassroomAudio} from './classroom-audio-output.js?v=native-pcm-20261017-1';
-import {selectClassroomOpening,classroomAudioRate} from './classroom-opening.js?v=classroom-clarity-20261017-2';
+import {selectClassroomOpening,classroomAudioRate} from './classroom-opening.js?v=uniform-review-20261019';
 import {createResourceFetch} from './resource-fetch.js';
 import {createBackgroundAssets} from './background-assets.js';
 import {trayControlLayout,placeTrayControl} from './board-tray-layout.js';
-import {writingSchedule,scheduledWriting} from './board-work.js?v=continuous-classroom-1';
+import {writingSchedule,scheduledWriting} from './board-work.js?v=uniform-review-20261019';
 import {SCREEN_COLORS,CONTROL_VISUAL_SCALE} from './smart-screen-style.js?v=unframed-controls-1';
 // On-demand narration: no network or audio allocation until a report is selected.
-export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),prepareBoard=async()=>true,onChange=()=>{},baseURL=new URL('.',import.meta.url).href,now=()=>performance.now()/1000,requestTimeout=15000,retryDelay=2000}={}){
+export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),prepareBoard=async()=>true,finishBoard=async()=>false,minimumBoardReview=true,onChange=()=>{},baseURL=new URL('.',import.meta.url).href,now=()=>performance.now()/1000,requestTimeout=15000,retryDelay=2000}={}){
  fetcher=createResourceFetch(fetcher,{idleTimeout:requestTimeout});
  let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,contextActive=true,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0,playbackRate=1,boardHold=null;
  let manifestReady=Promise.resolve(null),resolveManifest=()=>{};
  let activity=null,segmentEnding=false,navigationIntent=false,navigationGate=null,retainAll=false,prefetchJob=null,assetsPreparing=false,boardReadiness=Promise.resolve(true);const blobs=new Map(),blobJobs=new Map();let preload={phase:'idle',completed:0,total:0,errors:[]};
  const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',errorKind:'',started:false,chapter:0,temporaryPause:false,rate:1,activity:null};
+ const review=new BoardReview(now);let reviewTimer=null;
  const emit=()=>{state.transportPlaying=desired&&contextActive&&!assetsPreparing;onChange({...state});};
- const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index];state.time=Math.min(state.duration,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=manifest.chapters[index].start+activity.at;state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}if(audio&&manifest?.policy?.thinkingUsesRealSeconds){const c=manifest.chapters[index],b=manifest.boards.find(b=>b.page===c.page),at=audio.currentTime-(c.mediaStart||0),rate=classroomAudioRate(b,at,playbackRate);if(audio.playbackRate!==rate)audio.playbackRate=rate;}return state.time;};
+ const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index];state.time=Math.min(state.duration,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=manifest.chapters[index].start+activity.at;state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}if(audio&&manifest?.policy?.thinkingUsesRealSeconds){const c=manifest.chapters[index],b=manifest.boards.find(b=>b.page===c.page),at=audio.currentTime-(c.mediaStart||0),rate=classroomAudioRate(b,at,playbackRate);if(audio.playbackRate!==rate)audio.playbackRate=rate;}if(manifest){const b=manifest.boards.find(b=>b.page===(manifest.chapters[index].page??index));if(b&&!b.id?.endsWith('-break')&&state.time-b.start>=boardReviewStart(b))review.mark(b.page);}return state.time;};
  function pause(){sync();if(activity)activity.running=false;desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio?.pause();if(['loading','playing','buffering','preparing','away'].includes(state.phase))state.phase='paused';emit();}
  const audioWarm=createBackgroundAssets({retryDelay,load:(job,signal)=>bytes(job.src,epoch,false,job.hint,signal)});
- function release(){resolveManifest(null);pause();audioWarm.cancel();navigationGate=null;boardHold=null;disconnectClassroomAudio(audio);audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
+ function release(){clearTimeout(reviewTimer);review.clear();resolveManifest(null);pause();audioWarm.cancel();navigationGate=null;boardHold=null;disconnectClassroomAudio(audio);audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
  async function fetchBytes(src,mine,show,sizeHint=0,signal){
   const controller=new AbortController();controllers.add(controller);
   const cancel=()=>controller.abort(signal.reason);signal?.addEventListener('abort',cancel,{once:true});if(signal?.aborted)cancel();
@@ -47,7 +49,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   jobs.set(i,job);try{return await job;}finally{if(jobs.get(i)===job)jobs.delete(i);}
  }
  async function attach(i,at=0){
-  const mine=epoch,attachment=++attachToken;index=i;offset=at;audio?.pause();disconnectClassroomAudio(audio);audio=null;activity=null;segmentEnding=false;state.activity=null;assetsPreparing=true;
+  const mine=epoch,attachment=++attachToken;index=i;offset=at;review.reset(manifest.chapters[i].page??i);audio?.pause();disconnectClassroomAudio(audio);audio=null;activity=null;segmentEnding=false;state.activity=null;assetsPreparing=true;
   state.chapter=i;state.time=manifest.chapters[i].start+at;
   const page=manifest.chapters[i].page??manifest.boards.findLast(b=>b.start<=state.time)?.page??0,boardTime=state.time;
   boardReadiness=Promise.resolve().then(()=>prepareBoard(page,boardTime));boardReadiness.catch(()=>{});
@@ -62,7 +64,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   target.addEventListener('waiting',()=>{if(valid()&&desired){state.phase='buffering';emit();}});
   target.addEventListener('playing',()=>{if(valid()&&desired){state.phase=boardHold?'preparing':'playing';emit();}});
   target.addEventListener('error',()=>{if(valid()){desired=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();}});
-  target.addEventListener('ended',()=>{if(!valid()||segmentEnding||boardHold)return;segmentEnding=true;state.time=manifest.chapters[i].start+manifest.chapters[i].duration;if(i+1<manifest.chapters.length){void advance(i+1);}else{desired=false;state.phase='ended';state.time=state.duration;emit();}});
+  target.addEventListener('ended',()=>{if(!valid()||segmentEnding||boardHold)return;finishChapter();});
   state.progress=1;state.temporaryPause=desired&&!contextActive;state.phase=state.temporaryPause?'away':state.started?'paused':'ready';state.error='';state.errorKind='';emit();return true;
  }
  async function play(){
@@ -79,6 +81,24 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   if(activity){activity.stamp=now();activity.running=true;state.phase='playing';state.error='';sync();emit();return true;}
   try{if(manifest?.policy?.thinkingUsesRealSeconds)sync();else target.playbackRate=playbackRate;await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){if(audio!==target||!desired||!contextActive)target.pause();return false;}state.phase='playing';state.error='';state.errorKind='';emit();return true;}
   catch{if(mine!==epoch||token!==playToken)return false;desired=false;state.phase='paused';state.error='点击黑板播放语音';emit();return false;}
+ }
+ function finishChapter(){
+  if(segmentEnding||boardHold||!manifest)return;
+  segmentEnding=true;const mine=epoch,i=index,c=manifest.chapters[i],page=c.page??i,b=manifest.boards.find(b=>b.page===page),next=manifest.chapters[i+1];
+  const proceed=()=>{if(i+1<manifest.chapters.length)return advance(i+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}};
+  if(!minimumBoardReview||!b||b.id?.endsWith('-break')||(next&&(next.page??i+1)===page))return proceed();
+  // Keep the old board selected until the final ink and real reading time finish.
+  const hold={review:true};boardHold=hold;sync();audio?.pause();if(audio)audio.currentTime=(c.mediaStart||0)+c.duration-.001;state.time=Math.max(c.start,c.start+c.duration-.001);state.phase='preparing';emit();
+  Promise.resolve().then(()=>finishBoard(page,state.time)).then(inkFinishedNow=>{
+   if(mine!==epoch||boardHold!==hold)return;
+   if(inkFinishedNow)review.reset(page);review.mark(page);
+   const poll=()=>{
+    if(mine!==epoch||boardHold!==hold)return;
+    if(review.remaining(page)>0){reviewTimer=setTimeout(poll,Math.min(100,review.remaining(page)*1000));return;}
+    if(!desired||!contextActive){reviewTimer=setTimeout(poll,100);return;}
+    boardHold=null;proceed();
+   };poll();
+  }).catch(error=>{if(mine===epoch&&boardHold===hold){boardHold=null;pause();state.phase='error';state.error='板书完成检查失败 · 点击重试';emit();}});
  }
  async function advance(i){const resume=desired,mine=epoch,intent=playToken;try{if(await attach(i)&&mine===epoch&&resume&&desired)await play();}catch(error){if(mine===epoch&&intent===playToken){desired=false;state.phase='error';state.error='语音下载失败 · 点击重试';emit();}}}
  async function select(next,{autoplay=false}={}){
@@ -126,7 +146,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
    const start=manifest.chapters[index].start;
    if(Number.isFinite(at)&&at>=start&&at-start<manifest.chapters[index].duration){if(audio)audio.currentTime=(manifest.chapters[index].mediaStart||0)+at-start;else activity.at=at-start;state.time=at;}
    state.phase='preparing';state.temporaryPause=false;emit();
-   try{await job;}finally{if(boardHold===hold){boardHold=null;if(mine===epoch&&desired&&contextActive){const c=manifest.chapters[index];if(audio&&audio.currentTime-(c.mediaStart||0)>=c.duration-.015){if(index+1<manifest.chapters.length)await advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}else await play();}}}
+   try{await job;}finally{if(boardHold===hold){boardHold=null;if(mine===epoch&&desired&&contextActive){const c=manifest.chapters[index];if(audio&&audio.currentTime-(c.mediaStart||0)>=c.duration-.015){segmentEnding=false;await finishChapter();}else await play();}}}
    return true;
   },
   async skipActivity(){if(!activity||!manifest)return false;if(index+1<manifest.chapters.length){await advance(index+1);return true;}pause();state.phase='ended';state.time=state.duration;emit();return true;},
@@ -138,7 +158,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
    try{await job;if(mine===epoch&&token===playToken&&desired)await play();}
    catch{if(mine===epoch&&token===playToken&&desired){pause();state.phase='error';state.error='板书尚未就绪 · 点击重试';emit();}}
   },get manifestReady(){return manifestReady;},get manifest(){return manifest;},
-  update(){sync();if(audio&&desired&&!boardHold&&!segmentEnding&&manifest.chapters[index].mediaStart!==undefined&&audio.currentTime-(manifest.chapters[index].mediaStart||0)>=manifest.chapters[index].duration-.015){segmentEnding=true;audio.pause();if(index+1<manifest.chapters.length)void advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}if(activity&&activity.running&&!activity.advancing&&activity.at>=activity.duration){activity.advancing=true;activity.running=false;if(index+1<manifest.chapters.length)void advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}if(manifest&&desired&&contextActive&&(audio||activity)&&index+1<manifest.chapters.length){const c=manifest.chapters[index],remaining=activity?activity.duration-activity.at:c.duration-(audio.currentTime-(c.mediaStart||0));if(remaining<20*playbackRate)void load(index+1,false).catch(()=>{});}return state;},
+  update(){sync();if(audio&&desired&&!boardHold&&!segmentEnding&&manifest.chapters[index].mediaStart!==undefined&&audio.currentTime-(manifest.chapters[index].mediaStart||0)>=manifest.chapters[index].duration-.015){audio.pause();finishChapter();}if(activity&&activity.running&&!activity.advancing&&activity.at>=activity.duration){activity.advancing=true;activity.running=false;if(index+1<manifest.chapters.length)void advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}if(manifest&&desired&&contextActive&&(audio||activity)&&index+1<manifest.chapters.length){const c=manifest.chapters[index],remaining=activity?activity.duration-activity.at:c.duration-(audio.currentTime-(c.mediaStart||0));if(remaining<20*playbackRate)void load(index+1,false).catch(()=>{});}return state;},
   dispose(){++epoch;release();manifest=null;state.phase='idle';emit();}};
 }
 // Use the same measured stroke costs as chalkPosition and inkReveal, so a

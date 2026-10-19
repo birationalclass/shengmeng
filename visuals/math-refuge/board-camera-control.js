@@ -1,5 +1,5 @@
 import {placeTrayControl} from './board-tray-layout.js';
-import {reportControlLayout} from './report-voice.js?v=board-controls-3';
+import {reportControlLayout} from './report-voice.js?v=uniform-review-20261019';
 import {SCREEN_COLORS,beginControlInk} from './smart-screen-style.js?v=unframed-controls-1';
 export function createBoardCameraControl(T,parent,column){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=128;

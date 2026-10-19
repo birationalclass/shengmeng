@@ -1,4 +1,4 @@
-import {MIN_BOARD_REVIEW_SECONDS} from './board-review.js';
+import {MIN_BOARD_REVIEW_SECONDS,boardReviewStart} from './board-review.js?v=uniform-review-20261019';
 // Choose a real recorded greeting using the playback device's local clock.
 export function openingPeriod(date=new Date()){
  const hour=date.getHours();return hour<12?'morning':hour<18?'afternoon':'evening';
@@ -31,12 +31,12 @@ export function classroomAudioRate(board,time,rate=1){
 export function classroomDuration(manifest,rate=1){
  return manifest.boards.reduce((sum,b)=>{
   if(b.id.endsWith('-break'))return sum+b.seconds;
-  const boundaries=new Set([0,b.seconds]);
+  const reviewStart=boardReviewStart(b),boundaries=new Set([0,b.seconds,Math.min(b.seconds,reviewStart)]);
   if(Number.isFinite(b.lastStrokeEnd))boundaries.add(b.lastStrokeEnd);
   for(const r of [...(b.waits||[]),...(b.deliveryRanges||[])]){boundaries.add(r.start);boundaries.add(r.end);}
   if(b.boardHoldSeconds>0)boundaries.add(b.seconds-b.boardHoldSeconds);
   const points=[...boundaries].sort((a,b)=>a-b);let total=0,reading=0;
-  for(let i=1;i<points.length;i++){const start=points[i-1],end=points[i],seconds=(end-start)/classroomAudioRate(b,(start+end)/2,rate);total+=seconds;if(start>=b.lastStrokeEnd)reading+=seconds;}
-  return sum+total+(Number.isFinite(b.lastStrokeEnd)?Math.max(0,MIN_BOARD_REVIEW_SECONDS-reading):0);
+  for(let i=1;i<points.length;i++){const start=points[i-1],end=points[i],seconds=(end-start)/classroomAudioRate(b,(start+end)/2,rate);total+=seconds;if(start>=reviewStart)reading+=seconds;}
+  return sum+total+(Math.max(0,MIN_BOARD_REVIEW_SECONDS-reading));
  },0);
 }

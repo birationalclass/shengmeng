@@ -1,5 +1,5 @@
 export const BOARD_ORDER=[0,1,2,3,4,5];
-export const PHASE_SECONDS={lift:2.6,erase:24,write:23,hold:8};
+export const PHASE_SECONDS={lift:2.6,erase:24,write:23,hold:10};
 export function boardSlot(page){return BOARD_ORDER[((page%6)+6)%6];}
 // Close resting seams; the two depth-separated channels still pass freely.
 export const BOARD_LAYOUT={width:5.3,height:2.05,frame:.035,low:1.835,high:3.96,railBottom:.54,railTop:5.1,frontZ:-10.29,channelGap:.075,bodyDepth:.038,frameDepth:.038,postWidth:.072,postDepth:.16};
@@ -23,7 +23,7 @@ export class LectureClock{
   }
   next(delta=1){const next=Math.max(this.startAt,Math.min(this.stopAt,this.page+delta));if(next!==this.page)this.select(next);}
   startWrite(){this.phase='write';this.elapsed=0;this.slots[this.active]={page:this.page,progress:0};}
-  setDurations(page,durations){this.timings.set(page,durations);}
+  setDurations(page,durations){this.timings.set(page,{...durations,hold:Math.max(10,durations.hold||0)});}
   get duration(){return this.timings.get(this.phase==='erase'?this.slots[this.active].page:this.page)?.[this.phase]||PHASE_SECONDS[this.phase];}
   update(dt){
     if(this.ended)return;

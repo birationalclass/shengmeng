@@ -2,7 +2,7 @@ import {TRAY_WOOD_DATA} from './board-tray-grain.js';
 import {PALE_WOOD_DATA} from './board-tray-pale-grain.js';
 import {TRAY_DOCK,TRAY_STORAGE} from './board-tray-layout.js';
 import {TRAY} from './board-hardware.js';
-import {BOARD_LAYOUT,boardFaceZ} from './lecture-state.js';
+import {BOARD_LAYOUT,boardFaceZ} from './lecture-state.js?v=uniform-review-20261019';
 import {createMineralMaps,isCrystalScheme,loadMineralImages,acquireQuartzEnvironment} from './board-mineral.js';
 // Shared geometry and deterministic small PBR maps: no image downloads or extra
 // work during narration. End faces have their own grain direction, not a butt cap.

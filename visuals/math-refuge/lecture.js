@@ -21,7 +21,7 @@ import {boardContentJump,advanceBoardQueue} from './board-transition.js';
 import {drawClassroomMetadata} from './classroom-metadata.js?v=sylow-two-lessons-20261015';
 import {createBoardTimePanel} from './board-time.js?v=unframed-controls-1';
 import {SCREEN_FONT,SCREEN_MONO,SCREEN_COLORS,CONTROL_VISUAL_SCALE} from './smart-screen-style.js?v=unframed-controls-1';
-import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock,bindVoiceFocusPause} from './report-voice.js?v=semantic-chalk-2';
+import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock,bindVoiceFocusPause} from './report-voice.js?v=uniform-review-20261019';
 import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v=smart-voice-9';
@@ -31,11 +31,11 @@ import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=safari-
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
 import {createSeminarScreen} from './seminar-screen.js?v=report-line-sync-6';
 import * as THREE from 'three';
-import {LectureClock,boardSlot,boardHeights,boardFaceZ,BOARD_LAYOUT} from './lecture-state.js?v=report-line-sync-6';
+import {LectureClock,boardSlot,boardHeights,boardFaceZ,BOARD_LAYOUT} from './lecture-state.js?v=uniform-review-20261019';
 import {inkGuides,inkReveal,strokeReveal,rasterStrokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=semantic-chalk-2';
 import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
-import {narrationWork,boardWorkFrame,writingSchedule,settledBoardFrame} from './board-work.js?v=unframed-controls-1';
-import {BoardReview,MIN_BOARD_REVIEW_SECONDS} from './board-review.js';
+import {narrationWork,boardWorkFrame,writingSchedule,settledBoardFrame} from './board-work.js?v=uniform-review-20261019';
+import {BoardReview,MIN_BOARD_REVIEW_SECONDS} from './board-review.js?v=uniform-review-20261019';
 import {stampFelt} from './eraser-contact.js';
 
 import {chalkCopy,chalkPageText,composeChalkPage} from './chalk-language.js?v=mali-20261017';
@@ -194,7 +194,12 @@ export async function createLecture(scene,renderer,options={}){
   const lotteryTargets=lotteryHitTargets(THREE,boards,W,H,BOARD_W,BOARD_H);
   function voiceReport(report){const variant=report.narration?.voices?.find(v=>v.id===voiceTone);return variant?{...report,narration:{...report.narration,manifest:variant.manifest}}:report;}
   const highlighter=createBoardHighlight(THREE,{width:BOARD_W,height:BOARD_H});
-  const voice=createReportVoice({prepareBoard:async(page,time)=>{const ready=await load(page);if(!ready)return false;const event=voice.manifest?.boards.find(b=>b.page===page);if(page>=6&&event&&time<event.writeStart&&!await load(page-6))return false;return true;}}),unbindVoiceFocus=bindVoiceFocusPause(voice);const voicePanels=Array.from({length:3},(_,column)=>{const panel=createBoardVoicePanel(THREE,scene);panel.setColumn(column);return panel;});
+  const voice=createReportVoice({finishBoard:async(page,time)=>{
+    const frame=settledBoardFrame(narrationFrame(voice.manifest,time,writingPlan(pageRows.get(page),guides.get(page)),erasePlans.get(page-6)),completedWork);
+    if(frame.progress>=1&&frame.phase==='hold')return false;
+    const plan=writingPlan(pageRows.get(page),guides.get(page)),start=Math.max(0,frame.progress*plan.total);
+    await new Promise(resolve=>boardWork={key:'write:'+page+':end',kind:'write',page,at:time,elapsed:0,duration:(plan.total-start)/plan.unitsPerSecond,start,end:plan.total,total:plan.total,resolve});return true;
+  },prepareBoard:async(page,time)=>{const ready=await load(page);if(!ready)return false;const event=voice.manifest?.boards.find(b=>b.page===page);if(page>=6&&event&&time<event.writeStart&&!await load(page-6))return false;return true;}}),unbindVoiceFocus=bindVoiceFocusPause(voice);const voicePanels=Array.from({length:3},(_,column)=>{const panel=createBoardVoicePanel(THREE,scene);panel.setColumn(column);return panel;});
   let localClockDisplay=false;const timePanels=Array.from({length:3},(_,column)=>createBoardTimePanel(THREE,scene,column));
   // Three synchronized controls, centered exactly beneath their board columns.
   const consoleButtons=[],consoleTextures=[];
@@ -415,7 +420,7 @@ export async function createLecture(scene,renderer,options={}){
     if(epoch!==generation||request!==seekRequest||page!==clock.page||seeking)return false;
     workManifest=voice.manifest;revealedPages.add(page);completedWork.add('write:'+page+':end');boardReview.mark(page);
     if(boardWork?.page===page){boardWork.resolve();boardWork=null;}
-    const frame={page,phase:'hold',progress:1,writing:false,ended:false,duration:5};syncNarrationClock(clock,frame,boardSlot);
+    const frame={page,phase:'hold',progress:1,writing:false,ended:false,duration:MIN_BOARD_REVIEW_SECONDS};syncNarrationClock(clock,frame,boardSlot);
     mix[Math.floor(clock.active/2)]=targets[Math.floor(clock.active/2)]=clock.active%2;
     boardHeights(mix[Math.floor(clock.active/2)]).forEach((h,s)=>boards[Math.floor(clock.active/2)*2+s].group.position.y=h);
     chalk.visible=false;eraser.visible=false;eraserPickup=null;eraserReturn=null;eraser.userData.state='resting';boards.forEach(b=>{b.last='';b.wet=null;});resetWipe();boards.forEach((_,i)=>draw(i,true));version++;return true;

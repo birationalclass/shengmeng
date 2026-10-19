@@ -1,8 +1,8 @@
 import {boardWaitAt,countdownTextRect,containsCountdown} from './board-countdown.js';
-import {MIN_BOARD_REVIEW_SECONDS} from './board-review.js';
+import {MIN_BOARD_REVIEW_SECONDS} from './board-review.js?v=uniform-review-20261019';
 import {prepareClassroomAudioBlob,classroomAudioDecodeState} from './classroom-audio-decode.js?v=mp3-predecode-1';
 import {prepareBoard,paintPrepared} from './zzl-first-period-renderer-20261018.js?v=mali-ready-1';
-import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=classroom-clarity-20261017-2';
+import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=uniform-review-20261019';
 import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=native-pcm-20261017-1';
 const $=id=>document.getElementById(id),query=new URLSearchParams(location.search);window.fRendererReady=true;
 let course,manifest,prepared,board=0,audio=new Audio(),playing=false,language='zh',generation=0,requestedTime=0,courseEpoch=0,preparing=false,playIntent=false,completedWall=0;

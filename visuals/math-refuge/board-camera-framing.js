@@ -1,5 +1,5 @@
 import {TRAY_DOCK} from './board-tray-layout.js';
-import {BOARD_LAYOUT} from './lecture-state.js';
+import {BOARD_LAYOUT} from './lecture-state.js?v=uniform-review-20261019';
 import {BOARD_MOUNT_OFFSET} from './board-hardware.js';
 const clamp=value=>Math.max(0,Math.min(1,Number(value)||0));
 export function stepBoardCameraZoom(value,direction){return clamp(Math.round((clamp(value)+Math.sign(direction)*.1)*10)/10);}
