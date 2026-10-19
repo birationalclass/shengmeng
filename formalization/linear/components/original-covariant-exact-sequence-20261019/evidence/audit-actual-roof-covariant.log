@@ -1,0 +1,50 @@
+@LinearStudy.cochain_pOpcycles_index_transport : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [CategoryTheory.HasExt A] [HasDerivedCategory A] (K : CochainComplex A ℤ) (j : ℤ)
+  (h : j = 0),
+  CategoryTheory.CategoryStruct.comp (HomologicalComplex.pOpcycles K j) (CategoryTheory.eqToHom ⋯) =
+    CategoryTheory.CategoryStruct.comp (HomologicalComplex.XIsoOfEq K h).hom (HomologicalComplex.pOpcycles K 0)
+'LinearStudy.cochain_pOpcycles_index_transport' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainActualRoofCovariant_surjective : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K : CochainComplex A ℤ) [K.IsStrictlyLE 0] {E : A} (r : ℕ),
+  0 < r →
+    ∀ (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [inst_5 : QuasiIso alpha]
+      (I : CategoryTheory.InjectiveResolution (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)))
+      (O : A),
+      (∀ j < r,
+          ∀ (q : ℕ),
+            0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (K.X (LinearStudy.cochainSourceDegree r j + 1)) q)) →
+        ∀ (x : CategoryTheory.Abelian.Ext O (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)) r),
+          ∃ (y : CategoryTheory.Abelian.Ext O E 0),
+            y.comp
+                (LinearStudy.cochainResolutionTopExtClass K r alpha
+                  (HomologicalComplex.pOpcycles K (LinearStudy.cochainSourceDegree r 0)) ⋯)
+                ⋯ =
+              x
+'LinearStudy.cochainActualRoofCovariant_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainActualRoofCovariant_kernel : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K : CochainComplex A ℤ) [K.IsStrictlyLE 0] {E : A} (p : ℕ) (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  [inst_5 : QuasiIso alpha]
+  (I : CategoryTheory.InjectiveResolution (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree (p + 1) 0)))
+  (O : A),
+  (∀ j < p,
+      ∀ (q : ℕ),
+        0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (K.X (LinearStudy.cochainSourceDegree (p + 1) j + 1)) q)) →
+    ∀ (x : CategoryTheory.Abelian.Ext O E 0),
+      x.comp
+            (LinearStudy.cochainResolutionTopExtClass K (p + 1) alpha
+              (HomologicalComplex.pOpcycles K (LinearStudy.cochainSourceDegree (p + 1) 0)) ⋯)
+            ⋯ =
+          0 ↔
+        ∃ (z : CategoryTheory.Abelian.Ext O (K.X 0) 0),
+          z.comp
+              (CategoryTheory.Abelian.Ext.mk₀
+                (CategoryTheory.CategoryStruct.comp (alpha.f 0)
+                  (HomologicalComplex.singleObjXSelf (ComplexShape.up ℤ) 0 E).hom))
+              ⋯ =
+            x
+'LinearStudy.cochainActualRoofCovariant_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.cochain_pOpcycles_index_transport:true
+ROLECHECK:LinearStudy.cochainActualRoofCovariant_surjective:true
+ROLECHECK:LinearStudy.cochainActualRoofCovariant_kernel:true

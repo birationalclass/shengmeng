@@ -1,0 +1,63 @@
+@LinearStudy.originalChainCovariant_middle_acyclic : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [HasDerivedCategory A]
+  [CategoryTheory.EnoughInjectives A] (C : ChainComplex A ℕ) (O : A) (r j : ℕ),
+  j < r →
+    ∀ (q : ℕ),
+      Subsingleton (CategoryTheory.Abelian.Ext O (C.X (r - j - 1)) q) →
+        Subsingleton
+          (CategoryTheory.Abelian.Ext O
+            ((LinearStudy.originalChainAsCochain C).X (LinearStudy.cochainSourceDegree r j + 1)) q)
+'LinearStudy.originalChainCovariant_middle_acyclic' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainCovariant_surjective : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  [CategoryTheory.EnoughInjectives A] (C : ChainComplex A ℕ) {E : A} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_5 : QuasiIso alpha]
+      (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (O : A),
+      (∀ j < r, ∀ (q : ℕ), 0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (C.X (r - j - 1)) q)) →
+        ∀ (x : CategoryTheory.Abelian.Ext O (C.X r) r),
+          ∃ (y : O ⟶ E),
+            (CategoryTheory.Abelian.Ext.mk₀ y).comp
+                (LinearStudy.originalChainTopExtClass C r alpha (CategoryTheory.CategoryStruct.id (C.X r)) ⋯) ⋯ =
+              x
+'LinearStudy.originalChainCovariant_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainCovariant_kernel : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  [CategoryTheory.EnoughInjectives A] (C : ChainComplex A ℕ) {E : A} (p : ℕ)
+  (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_5 : QuasiIso alpha]
+  (hAbove : CategoryTheory.Limits.IsZero (C.X (p + 2))) (O : A),
+  (∀ j < p, ∀ (q : ℕ), 0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (C.X (p - j)) q)) →
+    ∀ (x : O ⟶ E),
+      (CategoryTheory.Abelian.Ext.mk₀ x).comp
+            (LinearStudy.originalChainTopExtClass C (p + 1) alpha (CategoryTheory.CategoryStruct.id (C.X (p + 1))) ⋯)
+            ⋯ =
+          0 ↔
+        ∃ (z : O ⟶ C.X 0), CategoryTheory.CategoryStruct.comp z (alpha.f 0) = x
+'LinearStudy.originalChainCovariant_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainCovariantCoefficientIso_surjective : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] [CategoryTheory.EnoughInjectives A] (C : ChainComplex A ℕ) {E M : A} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_5 : QuasiIso alpha]
+      (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (phi : C.X r ≅ M) (O : A),
+      (∀ j < r, ∀ (q : ℕ), 0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (C.X (r - j - 1)) q)) →
+        ∀ (x : CategoryTheory.Abelian.Ext O M r),
+          ∃ (y : O ⟶ E),
+            (CategoryTheory.Abelian.Ext.mk₀ y).comp (LinearStudy.originalChainTopExtClass C r alpha phi.hom ⋯) ⋯ = x
+'LinearStudy.originalChainCovariantCoefficientIso_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalChainCovariantCoefficientIso_kernel : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] [CategoryTheory.EnoughInjectives A] (C : ChainComplex A ℕ) {E M : A} (r : ℕ),
+  0 < r →
+    ∀ (alpha : C ⟶ (ChainComplex.single₀ A).obj E) [inst_5 : QuasiIso alpha]
+      (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (phi : C.X r ≅ M) (O : A),
+      (∀ j < r, ∀ (q : ℕ), 0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (C.X (r - j - 1)) q)) →
+        ∀ (x : O ⟶ E),
+          (CategoryTheory.Abelian.Ext.mk₀ x).comp (LinearStudy.originalChainTopExtClass C r alpha phi.hom ⋯) ⋯ = 0 ↔
+            ∃ (z : O ⟶ C.X 0), CategoryTheory.CategoryStruct.comp z (alpha.f 0) = x
+'LinearStudy.originalChainCovariantCoefficientIso_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.originalChainCovariant_middle_acyclic:true
+ROLECHECK:LinearStudy.originalChainCovariant_surjective:true
+ROLECHECK:LinearStudy.originalChainCovariant_kernel:true
+ROLECHECK:LinearStudy.originalChainCovariantCoefficientIso_surjective:true
+ROLECHECK:LinearStudy.originalChainCovariantCoefficientIso_kernel:true

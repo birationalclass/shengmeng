@@ -1,0 +1,36 @@
+@LinearStudy.relativeAcyclicCovariantBoundary_surjective : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (O : A) {S : CategoryTheory.ShortComplex A} (hS : S.ShortExact) (n m : ℕ) (hm : n + 1 = m)
+  [Subsingleton (CategoryTheory.Abelian.Ext O S.X₂ m)], Function.Surjective ⇑(hS.extClass.postcomp O hm)
+'LinearStudy.relativeAcyclicCovariantBoundary_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.relativeAcyclicCovariantBoundary_injective : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (O : A) {S : CategoryTheory.ShortComplex A}
+  (hS : S.ShortExact) (n m : ℕ) (hm : n + 1 = m) [Subsingleton (CategoryTheory.Abelian.Ext O S.X₂ n)],
+  Function.Injective ⇑(hS.extClass.postcomp O hm)
+'LinearStudy.relativeAcyclicCovariantBoundary_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.ext_comp_unit_smul : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] {O E N : A} {m n k : ℕ}
+  (x : CategoryTheory.Abelian.Ext O E m) (s : ℤˣ) (e : CategoryTheory.Abelian.Ext E N n) (h : m + n = k),
+  x.comp (s • e) h = s • x.comp e h
+'LinearStudy.ext_comp_unit_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.ext_unit_smul_comp : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] {O E N : A} {m n k : ℕ} (s : ℤˣ)
+  (e : CategoryTheory.Abelian.Ext O E m) (x : CategoryTheory.Abelian.Ext E N n) (h : m + n = k),
+  (s • e).comp x h = s • e.comp x h
+'LinearStudy.ext_unit_smul_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.ext_comp_unit_smul_zero_iff : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] {O E N : A} {m n k : ℕ}
+  (x : CategoryTheory.Abelian.Ext O E m) (s : ℤˣ) (e : CategoryTheory.Abelian.Ext E N n) (h : m + n = k),
+  x.comp (s • e) h = 0 ↔ x.comp e h = 0
+'LinearStudy.ext_comp_unit_smul_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.ext_postcomp_unit_smul_surjective : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] {O E N : A} {m n k : ℕ} (s : ℤˣ)
+  (e : CategoryTheory.Abelian.Ext E N n) (h : m + n = k),
+  Function.Surjective ⇑(e.postcomp O h) → Function.Surjective ⇑((s • e).postcomp O h)
+'LinearStudy.ext_postcomp_unit_smul_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.relativeAcyclicCovariantBoundary_surjective:true
+ROLECHECK:LinearStudy.relativeAcyclicCovariantBoundary_injective:true
+ROLECHECK:LinearStudy.ext_comp_unit_smul:true
+ROLECHECK:LinearStudy.ext_unit_smul_comp:true
+ROLECHECK:LinearStudy.ext_comp_unit_smul_zero_iff:true
+ROLECHECK:LinearStudy.ext_postcomp_unit_smul_surjective:true

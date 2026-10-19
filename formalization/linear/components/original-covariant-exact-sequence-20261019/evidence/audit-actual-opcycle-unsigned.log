@@ -1,0 +1,79 @@
+@LinearStudy.cochainOpcycleUnsignedExtension : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : CochainComplex A ℤ) →
+          {E : A} →
+            (r : ℕ) →
+              (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) →
+                [QuasiIso alpha] →
+                  (n : ℕ) →
+                    n ≤ r →
+                      CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r n))
+                        (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)) n
+'LinearStudy.cochainOpcycleUnsignedExtension' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainOpcycleUnsignedExtension_zero : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (K : CochainComplex A ℤ) {E : A} (r : ℕ)
+  (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [inst_3 : QuasiIso alpha],
+  LinearStudy.cochainOpcycleUnsignedExtension K r alpha 0 ⋯ =
+    CategoryTheory.Abelian.Ext.mk₀
+      (CategoryTheory.CategoryStruct.id (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)))
+'LinearStudy.cochainOpcycleUnsignedExtension_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainOpcycleUnsignedExtension_succ : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (K : CochainComplex A ℤ) {E : A} (r : ℕ)
+  (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [inst_3 : QuasiIso alpha] (n : ℕ) (hn : n + 1 ≤ r),
+  LinearStudy.cochainOpcycleUnsignedExtension K r alpha (n + 1) hn =
+    ⋯.extClass.comp (LinearStudy.cochainOpcycleUnsignedExtension K r alpha n ⋯) ⋯
+'LinearStudy.cochainOpcycleUnsignedExtension_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainOpcycleUnsignedExtension_surjective : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (K : CochainComplex A ℤ) {E : A} (r : ℕ)
+  (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [inst_3 : QuasiIso alpha] (O : A),
+  (∀ j < r,
+      ∀ (q : ℕ),
+        0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (K.X (LinearStudy.cochainSourceDegree r j + 1)) q)) →
+    ∀ (x : CategoryTheory.Abelian.Ext O (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)) r),
+      ∃ (y : CategoryTheory.Abelian.Ext O (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r r)) 0),
+        y.comp (LinearStudy.cochainOpcycleUnsignedExtension K r alpha r ⋯) ⋯ = x
+'LinearStudy.cochainOpcycleUnsignedExtension_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainOpcycleUnsignedExtension_kernel : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (K : CochainComplex A ℤ) {E : A} (r : ℕ)
+  (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [inst_3 : QuasiIso alpha] (O : A) (n : ℕ) (hn : n + 1 ≤ r),
+  (∀ j < n,
+      ∀ (q : ℕ),
+        0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (K.X (LinearStudy.cochainSourceDegree r j + 1)) q)) →
+    ∀ (x : CategoryTheory.Abelian.Ext O (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r (n + 1))) 0),
+      x.comp (LinearStudy.cochainOpcycleUnsignedExtension K r alpha (n + 1) hn) ⋯ = 0 ↔
+        ∃ (y : CategoryTheory.Abelian.Ext O (K.X (LinearStudy.cochainSourceDegree r n + 1)) 0),
+          y.comp
+              (CategoryTheory.Abelian.Ext.mk₀
+                (HomologicalComplex.pOpcycles K (LinearStudy.cochainSourceDegree r n + 1)))
+              ⋯ =
+            x
+'LinearStudy.cochainOpcycleUnsignedExtension_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.cochainOpcycleUnsignedExtension.{u, v, w} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : CochainComplex A ℤ) →
+          {E : A} →
+            (r : ℕ) →
+              (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) →
+                [QuasiIso alpha] →
+                  (n : ℕ) →
+                    n ≤ r →
+                      CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r n))
+                        (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)) n :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    (K : CochainComplex A ℤ) {E : A} (r : ℕ) (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [QuasiIso alpha]
+    (n : ℕ) (hn : n ≤ r) =>
+  LinearStudy.iteratedCovariantExtClass
+    (fun (j : ℕ) => HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r j))
+    (fun (j : ℕ) => K.X (LinearStudy.cochainSourceDegree r j + 1))
+    (fun (j : ℕ) =>
+      HomologicalComplex.fromOpcycles K (LinearStudy.cochainSourceDegree r j) (LinearStudy.cochainSourceDegree r j + 1))
+    (fun (j : ℕ) => HomologicalComplex.pOpcycles K (LinearStudy.cochainSourceDegree r j + 1)) ⋯ r ⋯ n hn
+ROLECHECK:LinearStudy.cochainOpcycleUnsignedExtension:false
+ROLECHECK:LinearStudy.cochainOpcycleUnsignedExtension_zero:true
+ROLECHECK:LinearStudy.cochainOpcycleUnsignedExtension_succ:true
+ROLECHECK:LinearStudy.cochainOpcycleUnsignedExtension_surjective:true
+ROLECHECK:LinearStudy.cochainOpcycleUnsignedExtension_kernel:true

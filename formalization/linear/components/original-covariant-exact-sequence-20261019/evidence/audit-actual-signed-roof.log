@@ -1,0 +1,18 @@
+@LinearStudy.cochainTopOpcycleFunctional_projection : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [CategoryTheory.HasExt A] [HasDerivedCategory A] (K : CochainComplex A ℤ) (r : ℕ),
+  LinearStudy.cochainTopOpcycleFunctional K r (HomologicalComplex.pOpcycles K (-↑r)) ⋯ =
+    CategoryTheory.CategoryStruct.id (HomologicalComplex.opcycles K (-↑r))
+'LinearStudy.cochainTopOpcycleFunctional_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainOpcycleSignedExtension_eq_actual_roof : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  [inst_3 : HasDerivedCategory A] (K : CochainComplex A ℤ) [K.IsStrictlyLE 0] {E : A} (r : ℕ),
+  0 < r →
+    ∀ (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [inst_5 : QuasiIso alpha]
+      (I : CategoryTheory.InjectiveResolution (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0))),
+      LinearStudy.cochainOpcycleSignedExtension K r alpha r ⋯ =
+        (CategoryTheory.Abelian.Ext.mk₀
+              (LinearStudy.cochainSourceTerminalMap r (LinearStudy.cochainAugmentationOpcycle alpha))).comp
+          (LinearStudy.cochainResolutionTopExtClass K r alpha (HomologicalComplex.pOpcycles K (-↑r)) ⋯) ⋯
+'LinearStudy.cochainOpcycleSignedExtension_eq_actual_roof' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.cochainTopOpcycleFunctional_projection:true
+ROLECHECK:LinearStudy.cochainOpcycleSignedExtension_eq_actual_roof:true

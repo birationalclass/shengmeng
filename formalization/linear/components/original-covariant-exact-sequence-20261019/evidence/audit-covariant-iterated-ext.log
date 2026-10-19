@@ -1,0 +1,86 @@
+@LinearStudy.iteratedCovariantExtClass : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (Z B : ℕ → A) →
+          (f : (j : ℕ) → Z j ⟶ B j) →
+            (g : (j : ℕ) → B j ⟶ Z (j + 1)) →
+              (hfg : ∀ (j : ℕ), CategoryTheory.CategoryStruct.comp (f j) (g j) = 0) →
+                (r : ℕ) →
+                  (∀ j < r, { X₁ := Z j, X₂ := B j, X₃ := Z (j + 1), f := f j, g := g j, zero := ⋯ }.ShortExact) →
+                    (n : ℕ) → n ≤ r → CategoryTheory.Abelian.Ext (Z n) (Z 0) n
+'LinearStudy.iteratedCovariantExtClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.iteratedCovariantExtClass_zero : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (Z B : ℕ → A) (f : (j : ℕ) → Z j ⟶ B j)
+  (g : (j : ℕ) → B j ⟶ Z (j + 1)) (hfg : ∀ (j : ℕ), CategoryTheory.CategoryStruct.comp (f j) (g j) = 0) (r : ℕ)
+  (hS : ∀ j < r, { X₁ := Z j, X₂ := B j, X₃ := Z (j + 1), f := f j, g := g j, zero := ⋯ }.ShortExact),
+  LinearStudy.iteratedCovariantExtClass Z B f g hfg r hS 0 ⋯ =
+    CategoryTheory.Abelian.Ext.mk₀ (CategoryTheory.CategoryStruct.id (Z 0))
+'LinearStudy.iteratedCovariantExtClass_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.iteratedCovariantExtClass_succ : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (Z B : ℕ → A) (f : (j : ℕ) → Z j ⟶ B j)
+  (g : (j : ℕ) → B j ⟶ Z (j + 1)) (hfg : ∀ (j : ℕ), CategoryTheory.CategoryStruct.comp (f j) (g j) = 0) (r : ℕ)
+  (hS : ∀ j < r, { X₁ := Z j, X₂ := B j, X₃ := Z (j + 1), f := f j, g := g j, zero := ⋯ }.ShortExact) (n : ℕ)
+  (hn : n + 1 ≤ r),
+  LinearStudy.iteratedCovariantExtClass Z B f g hfg r hS (n + 1) hn =
+    ⋯.extClass.comp (LinearStudy.iteratedCovariantExtClass Z B f g hfg r hS n ⋯) ⋯
+'LinearStudy.iteratedCovariantExtClass_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.iteratedCovariantExtClass_postcomp_surjective : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (Z B : ℕ → A) (f : (j : ℕ) → Z j ⟶ B j) (g : (j : ℕ) → B j ⟶ Z (j + 1))
+  (hfg : ∀ (j : ℕ), CategoryTheory.CategoryStruct.comp (f j) (g j) = 0) (r : ℕ)
+  (hS : ∀ j < r, { X₁ := Z j, X₂ := B j, X₃ := Z (j + 1), f := f j, g := g j, zero := ⋯ }.ShortExact) (O : A) (n : ℕ)
+  (hn : n ≤ r),
+  (∀ j < n, ∀ (q : ℕ), 0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (B j) q)) →
+    ∀ (m k : ℕ) (hdegree : m + n = k) (x : CategoryTheory.Abelian.Ext O (Z 0) k),
+      ∃ (y : CategoryTheory.Abelian.Ext O (Z n) m),
+        y.comp (LinearStudy.iteratedCovariantExtClass Z B f g hfg r hS n hn) hdegree = x
+'LinearStudy.iteratedCovariantExtClass_postcomp_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.iteratedCovariantExtClass_postcomp_injective : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (Z B : ℕ → A) (f : (j : ℕ) → Z j ⟶ B j) (g : (j : ℕ) → B j ⟶ Z (j + 1))
+  (hfg : ∀ (j : ℕ), CategoryTheory.CategoryStruct.comp (f j) (g j) = 0) (r : ℕ)
+  (hS : ∀ j < r, { X₁ := Z j, X₂ := B j, X₃ := Z (j + 1), f := f j, g := g j, zero := ⋯ }.ShortExact) (O : A) (n : ℕ)
+  (hn : n ≤ r),
+  (∀ j < n, ∀ (q : ℕ), 0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (B j) q)) →
+    ∀ (m k : ℕ),
+      0 < m →
+        ∀ (hdegree : m + n = k),
+          Function.Injective ⇑((LinearStudy.iteratedCovariantExtClass Z B f g hfg r hS n hn).postcomp O hdegree)
+'LinearStudy.iteratedCovariantExtClass_postcomp_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.iteratedCovariantExtClass_kernel : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (Z B : ℕ → A) (f : (j : ℕ) → Z j ⟶ B j)
+  (g : (j : ℕ) → B j ⟶ Z (j + 1)) (hfg : ∀ (j : ℕ), CategoryTheory.CategoryStruct.comp (f j) (g j) = 0) (r : ℕ)
+  (hS : ∀ j < r, { X₁ := Z j, X₂ := B j, X₃ := Z (j + 1), f := f j, g := g j, zero := ⋯ }.ShortExact) (O : A) (n : ℕ)
+  (hn : n + 1 ≤ r),
+  (∀ j < n, ∀ (q : ℕ), 0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (B j) q)) →
+    ∀ (x : CategoryTheory.Abelian.Ext O (Z (n + 1)) 0),
+      x.comp (LinearStudy.iteratedCovariantExtClass Z B f g hfg r hS (n + 1) hn) ⋯ = 0 ↔
+        ∃ (y : CategoryTheory.Abelian.Ext O (B n) 0), y.comp (CategoryTheory.Abelian.Ext.mk₀ (g n)) ⋯ = x
+'LinearStudy.iteratedCovariantExtClass_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.iteratedCovariantExtClass.{u, v, w} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (Z B : ℕ → A) →
+          (f : (j : ℕ) → Z j ⟶ B j) →
+            (g : (j : ℕ) → B j ⟶ Z (j + 1)) →
+              (hfg : ∀ (j : ℕ), CategoryTheory.CategoryStruct.comp (f j) (g j) = 0) →
+                (r : ℕ) →
+                  (∀ j < r, { X₁ := Z j, X₂ := B j, X₃ := Z (j + 1), f := f j, g := g j, zero := ⋯ }.ShortExact) →
+                    (n : ℕ) → n ≤ r → CategoryTheory.Abelian.Ext (Z n) (Z 0) n :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A] (Z B : ℕ → A)
+    (f : (j : ℕ) → Z j ⟶ B j) (g : (j : ℕ) → B j ⟶ Z (j + 1))
+    (hfg : ∀ (j : ℕ), CategoryTheory.CategoryStruct.comp (f j) (g j) = 0) (r : ℕ)
+    (hS : ∀ j < r, { X₁ := Z j, X₂ := B j, X₃ := Z (j + 1), f := f j, g := g j, zero := ⋯ }.ShortExact) (n : ℕ)
+    (hn : n ≤ r) =>
+  Nat.recAux (motive := fun (n : ℕ) => n ≤ r → CategoryTheory.Abelian.Ext (Z n) (Z 0) n)
+    (fun (hn : 0 ≤ r) => CategoryTheory.Abelian.Ext.mk₀ (CategoryTheory.CategoryStruct.id (Z 0)))
+    (fun (n : ℕ) (ih : n ≤ r → CategoryTheory.Abelian.Ext (Z n) (Z 0) n) (hn : n + 1 ≤ r) => ⋯.extClass.comp (ih ⋯) ⋯) n
+    hn
+ROLECHECK:LinearStudy.iteratedCovariantExtClass:false
+ROLECHECK:LinearStudy.iteratedCovariantExtClass_zero:true
+ROLECHECK:LinearStudy.iteratedCovariantExtClass_succ:true
+ROLECHECK:LinearStudy.iteratedCovariantExtClass_postcomp_surjective:true
+ROLECHECK:LinearStudy.iteratedCovariantExtClass_postcomp_injective:true
+ROLECHECK:LinearStudy.iteratedCovariantExtClass_kernel:true

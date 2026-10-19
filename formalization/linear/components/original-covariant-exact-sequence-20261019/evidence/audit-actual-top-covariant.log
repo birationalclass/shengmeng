@@ -1,0 +1,69 @@
+@LinearStudy.cochainActualTopOpcycleIso : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : CochainComplex A ℤ) →
+        (r : ℕ) →
+          CategoryTheory.Limits.IsZero (K.X (-↑r - 1)) →
+            (K.X (-↑r) ≅ HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0))
+'LinearStudy.cochainActualTopOpcycleIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainActualTopOpcycleIso_hom : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (K : CochainComplex A ℤ) (r : ℕ)
+  (hAbove : CategoryTheory.Limits.IsZero (K.X (-↑r - 1))),
+  (LinearStudy.cochainActualTopOpcycleIso K r hAbove).hom =
+    HomologicalComplex.pOpcycles K (LinearStudy.cochainSourceDegree r 0)
+'LinearStudy.cochainActualTopOpcycleIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainActualTopCovariant_surjective : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K : CochainComplex A ℤ) [K.IsStrictlyLE 0] {E : A} (r : ℕ),
+  0 < r →
+    ∀ (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E) [inst_5 : QuasiIso alpha]
+      (hAbove : CategoryTheory.Limits.IsZero (K.X (-↑r - 1)))
+      (I : CategoryTheory.InjectiveResolution (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)))
+      (O : A),
+      (∀ j < r,
+          ∀ (q : ℕ),
+            0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (K.X (LinearStudy.cochainSourceDegree r j + 1)) q)) →
+        ∀ (x : CategoryTheory.Abelian.Ext O (K.X (-↑r)) r),
+          ∃ (y : CategoryTheory.Abelian.Ext O E 0),
+            y.comp (LinearStudy.cochainResolutionTopExtClass K r alpha (CategoryTheory.CategoryStruct.id (K.X (-↑r))) ⋯)
+                ⋯ =
+              x
+'LinearStudy.cochainActualTopCovariant_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.cochainActualTopCovariant_kernel : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] [inst_3 : HasDerivedCategory A]
+  (K : CochainComplex A ℤ) [K.IsStrictlyLE 0] {E : A} (p : ℕ) (alpha : K ⟶ (CochainComplex.singleFunctor A 0).obj E)
+  [inst_5 : QuasiIso alpha] (hAbove : CategoryTheory.Limits.IsZero (K.X (-↑(p + 1) - 1)))
+  (I : CategoryTheory.InjectiveResolution (HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree (p + 1) 0)))
+  (O : A),
+  (∀ j < p,
+      ∀ (q : ℕ),
+        0 < q → Subsingleton (CategoryTheory.Abelian.Ext O (K.X (LinearStudy.cochainSourceDegree (p + 1) j + 1)) q)) →
+    ∀ (x : CategoryTheory.Abelian.Ext O E 0),
+      x.comp
+            (LinearStudy.cochainResolutionTopExtClass K (p + 1) alpha
+              (CategoryTheory.CategoryStruct.id (K.X (-↑(p + 1)))) ⋯)
+            ⋯ =
+          0 ↔
+        ∃ (z : CategoryTheory.Abelian.Ext O (K.X 0) 0),
+          z.comp
+              (CategoryTheory.Abelian.Ext.mk₀
+                (CategoryTheory.CategoryStruct.comp (alpha.f 0)
+                  (HomologicalComplex.singleObjXSelf (ComplexShape.up ℤ) 0 E).hom))
+              ⋯ =
+            x
+'LinearStudy.cochainActualTopCovariant_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.cochainActualTopOpcycleIso.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : CochainComplex A ℤ) →
+        (r : ℕ) →
+          CategoryTheory.Limits.IsZero (K.X (-↑r - 1)) →
+            (K.X (-↑r) ≅ HomologicalComplex.opcycles K (LinearStudy.cochainSourceDegree r 0)) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (K : CochainComplex A ℤ) (r : ℕ)
+    (hAbove : CategoryTheory.Limits.IsZero (K.X (-↑r - 1))) =>
+  let pi := HomologicalComplex.pOpcycles K (LinearStudy.cochainSourceDegree r 0);
+  CategoryTheory.asIso pi
+ROLECHECK:LinearStudy.cochainActualTopOpcycleIso:false
+ROLECHECK:LinearStudy.cochainActualTopOpcycleIso_hom:true
+ROLECHECK:LinearStudy.cochainActualTopCovariant_surjective:true
+ROLECHECK:LinearStudy.cochainActualTopCovariant_kernel:true
