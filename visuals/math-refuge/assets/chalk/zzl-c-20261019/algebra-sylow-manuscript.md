@@ -52,7 +52,7 @@
 - 第3行：第一定理：每个$p^k$阶子群存在，$1\le k\le a$
 - 第4行：第二定理：$p$子群落在任给西罗子群的某个共轭中
 - 第5行：$P,Q\in\operatorname{Syl}_p(G)\Rightarrow Q=gPg^{-1}$
-- 第6行：$n_p\mid m$，且$n_p\equiv1\pmod p$
+- 第6行：第三定理及推论：$n_p\mid m$，且$n_p\equiv1\pmod p$
 
 ### 口播（实际播放顺序）
 
