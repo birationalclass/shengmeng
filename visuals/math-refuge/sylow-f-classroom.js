@@ -19,9 +19,9 @@ const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function manuscript(b){renderClassroomManuscript($('script'),b,manifest,board);}
 async function loadCourse(){const n=++courseEpoch;++generation;audio.pause();playing=false;playIntent=false;course=null;manifest=null;prepared=null;board=0;openingLocked=false;for(const url of audioURLs)URL.revokeObjectURL(url);audioURLs.clear();audioJobs.clear();compressedJobs.clear();audioFiles.clear();const id=$('course').value;
- const nextCourse=await fetch('./assets/chalk/zzl-c-20261019/'+id+(id==='sylow-theorems'?'-abelian-v1.json':'.json?v=third-label-20261019'),{cache:'no-store'}).then(r=>r.json());if(n!==courseEpoch)return;course=nextCourse;
+ const nextCourse=await fetch('./assets/chalk/zzl-c-20261019/'+id+(id==='sylow-theorems'?'-abelian-v1.json?v=neutral-theorems-20261019':'.json?v=neutral-theorems-20261019'),{cache:'no-store'}).then(r=>r.json());if(n!==courseEpoch)return;course=nextCourse;
  const audioRoot='./assets/audio/courses/zzl-c-20261019/'+id+'/';
- const nextManifest=await fetch(audioRoot+(id==='sylow-theorems'?'narration-abelian-v1.json':'narration.json?v=third-label-20261019'),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);if(n!==courseEpoch)return;manifest=nextManifest?selectClassroomOpening(nextManifest):null;
+ const nextManifest=await fetch(audioRoot+(id==='sylow-theorems'?'narration-abelian-v1.json?v=neutral-theorems-20261019':'narration.json?v=neutral-theorems-20261019'),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);if(n!==courseEpoch)return;manifest=nextManifest?selectClassroomOpening(nextManifest):null;
  if(manifest)for(const b of manifest.boards)b.file=audioRoot+b.file.split('/').pop();
  if(manifest?.openingSelection){const r=course.boards[0].rows[1];r.speech=manifest.openingSelection.greeting+r.speech;}
  if(n!==courseEpoch)return;$('board-select').replaceChildren(...course.boards.map((b,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`${i+1} · ${b.title}`;return o}));
