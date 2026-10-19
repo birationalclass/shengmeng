@@ -1,0 +1,363 @@
+
+===== EXACT AUDIT actual-cech-hom-injective =====
+LinearStudy.topOpenFreeAbelianSheafHomSectionsAddEquiv : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    (F : TopCat.Sheaf AddCommGrpCat X) →
+      ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U ⟶ F) ≃+ ↑(F.obj.obj (Opposite.op U))
+'LinearStudy.topOpenFreeAbelianSheafHomSectionsAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenFreeAbelianSheafHomPresheafIso : (X : TopCat) →
+  (F : TopCat.Sheaf AddCommGrpCat X) →
+    (LinearStudy.topOpenFreeAbelianSheafFunctor X).op.comp (CategoryTheory.preadditiveYoneda.obj F) ≅ F.obj
+'LinearStudy.topOpenFreeAbelianSheafHomPresheafIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.formalCoproductContravariantComponentIso : {C : Type u_2} →
+  [inst : CategoryTheory.Category.{u_3, u_2} C] →
+    {A : Type u_4} →
+      [inst_1 : CategoryTheory.Category.{u_5, u_4} A] →
+        {B : Type u_6} →
+          [inst_2 : CategoryTheory.Category.{u_7, u_6} B] →
+            [inst_3 : CategoryTheory.Limits.HasCoproducts A] →
+              [inst_4 : CategoryTheory.Limits.HasProducts B] →
+                (K : CategoryTheory.Functor C A) →
+                  (H : CategoryTheory.Functor Aᵒᵖ B) →
+                    [∀ (α : Type u_1), CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) H] →
+                      (U : CategoryTheory.Limits.FormalCoproduct C) →
+                        H.obj (Opposite.op (∐ K.obj ∘ U.obj)) ≅
+                          ∏ᶜ fun (i : U.I) => H.obj (Opposite.op (K.obj (U.obj i)))
+'LinearStudy.formalCoproductContravariantComponentIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.formalCoproductContravariantComponentIso_hom_π : ∀ {C : Type u_2}
+  [inst : CategoryTheory.Category.{u_3, u_2} C] {A : Type u_4} [inst_1 : CategoryTheory.Category.{u_5, u_4} A]
+  {B : Type u_6} [inst_2 : CategoryTheory.Category.{u_7, u_6} B] [inst_3 : CategoryTheory.Limits.HasCoproducts A]
+  [inst_4 : CategoryTheory.Limits.HasProducts B] (K : CategoryTheory.Functor C A) (H : CategoryTheory.Functor Aᵒᵖ B)
+  [inst_5 : ∀ (α : Type u_1), CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) H]
+  (U : CategoryTheory.Limits.FormalCoproduct C) (i : U.I),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.formalCoproductContravariantComponentIso K H U).hom
+      (CategoryTheory.Limits.Pi.π (fun (j : U.I) => H.obj (Opposite.op (K.obj (U.obj j)))) i) =
+    H.map (CategoryTheory.Limits.Sigma.ι (K.obj ∘ U.obj) i).op
+'LinearStudy.formalCoproductContravariantComponentIso_hom_π' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.formalCoproductContravariantEvaluationIso : {C : Type u_2} →
+  [inst : CategoryTheory.Category.{u_3, u_2} C] →
+    {A : Type u_4} →
+      [inst_1 : CategoryTheory.Category.{u_5, u_4} A] →
+        {B : Type u_6} →
+          [inst_2 : CategoryTheory.Category.{u_7, u_6} B] →
+            [inst_3 : CategoryTheory.Limits.HasCoproducts A] →
+              [inst_4 : CategoryTheory.Limits.HasProducts B] →
+                (K : CategoryTheory.Functor C A) →
+                  (H : CategoryTheory.Functor Aᵒᵖ B) →
+                    [∀ (α : Type u_1), CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) H] →
+                      ((CategoryTheory.Limits.FormalCoproduct.eval C A).obj K).op.comp H ≅
+                        (CategoryTheory.Limits.FormalCoproduct.evalOp C B).obj (K.op.comp H)
+'LinearStudy.formalCoproductContravariantEvaluationIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeAdjunctionHomPresheafIso : {A : Type u_2} →
+  [inst : CategoryTheory.Category.{u_1, u_2} A] →
+    [inst_1 : CategoryTheory.Preadditive A] →
+      {B : Type u_3} →
+        [inst_2 : CategoryTheory.Category.{u_1, u_3} B] →
+          [inst_3 : CategoryTheory.Preadditive B] →
+            {L : CategoryTheory.Functor A B} →
+              {R : CategoryTheory.Functor B A} →
+                (L ⊣ R) →
+                  [L.Additive] →
+                    [R.Additive] →
+                      (N : B) →
+                        L.op.comp (CategoryTheory.preadditiveYoneda.obj N) ≅
+                          CategoryTheory.preadditiveYoneda.obj (R.obj N)
+'LinearStudy.nativeAdjunctionHomPresheafIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenFreeAbelianPresheafHomPresheafIso : (X : TopCat) →
+  (F : TopCat.Sheaf AddCommGrpCat X) →
+    (LinearStudy.topOpenFreeAbelianPresheafFunctor X).op.comp (CategoryTheory.preadditiveYoneda.obj F.obj) ≅ F.obj
+'LinearStudy.topOpenFreeAbelianPresheafHomPresheafIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCechFreeAbelianPresheafAugmented : (X : TopCat) →
+  {ι : Type u_1} →
+    (ι → TopologicalSpace.Opens ↑X) →
+      CategoryTheory.SimplicialObject.Augmented (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ AddCommGrpCat)
+'LinearStudy.topCechFreeAbelianPresheafAugmented' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCechFreePresheafSimplicialIso : (X : TopCat) →
+  {ι : Type u_1} →
+    (U : ι → TopologicalSpace.Opens ↑X) →
+      (LinearStudy.topCechFreeAbelianPresheafAugmented X U).left ≅
+        CategoryTheory.Functor.comp { I := ι, obj := U }.cech
+          ((CategoryTheory.Limits.FormalCoproduct.eval (TopologicalSpace.Opens ↑X)
+                (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ AddCommGrpCat)).obj
+            (LinearStudy.topOpenFreeAbelianPresheafFunctor X))
+'LinearStudy.topCechFreePresheafSimplicialIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeRightOpIso : {C : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} C] →
+    {A : Type u_3} →
+      [inst_1 : CategoryTheory.Category.{u_4, u_3} A] →
+        {F G : CategoryTheory.Functor Cᵒᵖ A} → (F ≅ G) → (F.rightOp ≅ G.rightOp)
+'LinearStudy.nativeRightOpIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCechFreeSheafHomCosimplicialIso : (X : TopCat) →
+  {ι : Type u_1} →
+    (U : ι → TopologicalSpace.Opens ↑X) →
+      (F : TopCat.Sheaf AddCommGrpCat X) →
+        (CategoryTheory.Functor.rightOp (LinearStudy.topCechFreeAbelianAugmented X U).left).comp
+            (CategoryTheory.preadditiveYoneda.obj F) ≅
+          (CategoryTheory.Limits.FormalCoproduct.cosimplicialObjectFunctor { I := ι, obj := U }.cech).obj F.obj
+'LinearStudy.topCechFreeSheafHomCosimplicialIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCechFreeSheafHomComplex : (X : TopCat) →
+  {ι : Type u_1} → (ι → TopologicalSpace.Opens ↑X) → TopCat.Sheaf AddCommGrpCat X → CochainComplex AddCommGrpCat ℕ
+'LinearStudy.topCechFreeSheafHomComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCechFreeSheafHomComplexIso : (X : TopCat) →
+  {ι : Type u_1} →
+    (U : ι → TopologicalSpace.Opens ↑X) →
+      (F : TopCat.Sheaf AddCommGrpCat X) →
+        LinearStudy.topCechFreeSheafHomComplex X U F ≅ (CategoryTheory.cechComplexFunctor U).obj F.obj
+'LinearStudy.topCechFreeSheafHomComplexIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.alternatingHomCochainIso : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Preadditive A] →
+      {B : Type u_3} →
+        [inst_2 : CategoryTheory.Category.{u_4, u_3} B] →
+          [inst_3 : CategoryTheory.Preadditive B] →
+            (S : CategoryTheory.SimplicialObject A) →
+              (H : CategoryTheory.Functor Aᵒᵖ B) →
+                [inst_4 : H.Additive] →
+                  (H.mapHomologicalComplex (ComplexShape.up ℕ)).obj
+                      (HomologicalComplex.op ((AlgebraicTopology.alternatingFaceMapComplex A).obj S)) ≅
+                    (AlgebraicTopology.alternatingCofaceMapComplex B).obj ((CategoryTheory.Functor.rightOp S).comp H)
+'LinearStudy.alternatingHomCochainIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.injectiveHomOppositeOfResolution_exactAt : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (Z : A) (f : K ⟶ (ChainComplex.single₀ A).obj Z)
+  [QuasiIso f] (F : A) [CategoryTheory.Injective F] (n : ℕ),
+  (((CategoryTheory.preadditiveYoneda.obj F).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+        (HomologicalComplex.op K)).ExactAt
+    (n + 1)
+'LinearStudy.injectiveHomOppositeOfResolution_exactAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topInjectiveAbelianSheaf_nativeCech_exactAt : ∀ (X : TopCat) {ι : Type u_1}
+  (U : ι → TopologicalSpace.Opens ↑X),
+  ⊤ ≤ iSup U →
+    ∀ (F : TopCat.Sheaf AddCommGrpCat X) [CategoryTheory.Injective F] (n : ℕ),
+      HomologicalComplex.ExactAt ((CategoryTheory.cechComplexFunctor U).obj F.obj) (n + 1)
+'LinearStudy.topInjectiveAbelianSheaf_nativeCech_exactAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topInjectiveAbelianSheaf_nativeCech_positiveHomology_isZero : ∀ (X : TopCat) {ι : Type u_1}
+  (U : ι → TopologicalSpace.Opens ↑X),
+  ⊤ ≤ iSup U →
+    ∀ (F : TopCat.Sheaf AddCommGrpCat X) [CategoryTheory.Injective F] (n : ℕ),
+      CategoryTheory.Limits.IsZero
+        (HomologicalComplex.homology ((CategoryTheory.cechComplexFunctor U).obj F.obj) (n + 1))
+'LinearStudy.topInjectiveAbelianSheaf_nativeCech_positiveHomology_isZero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.topOpenFreeAbelianSheafHomSectionsAddEquiv.{u} : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    (F : TopCat.Sheaf AddCommGrpCat X) →
+      ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U ⟶ F) ≃+ ↑(F.obj.obj (Opposite.op U)) :=
+fun (X : TopCat) (U : TopologicalSpace.Opens ↑X) (F : TopCat.Sheaf AddCommGrpCat X) =>
+  let __Equiv := LinearStudy.topOpenFreeAbelianSheafHomEquiv X U F;
+  { toEquiv := __Equiv, map_add' := ⋯ }
+def LinearStudy.topOpenFreeAbelianSheafHomPresheafIso.{u} : (X : TopCat) →
+  (F : TopCat.Sheaf AddCommGrpCat X) →
+    (LinearStudy.topOpenFreeAbelianSheafFunctor X).op.comp (CategoryTheory.preadditiveYoneda.obj F) ≅ F.obj :=
+fun (X : TopCat) (F : TopCat.Sheaf AddCommGrpCat X) =>
+  CategoryTheory.NatIso.ofComponents
+    (fun (U : (TopologicalSpace.Opens ↑X)ᵒᵖ) =>
+      (LinearStudy.topOpenFreeAbelianSheafHomSectionsAddEquiv X (Opposite.unop U) F).toAddCommGrpIso)
+    ⋯
+def LinearStudy.formalCoproductContravariantComponentIso.{w, u, v, u', v', u'', v''} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {A : Type u'} →
+      [inst_1 : CategoryTheory.Category.{v', u'} A] →
+        {B : Type u''} →
+          [inst_2 : CategoryTheory.Category.{v'', u''} B] →
+            [inst_3 : CategoryTheory.Limits.HasCoproducts A] →
+              [inst_4 : CategoryTheory.Limits.HasProducts B] →
+                (K : CategoryTheory.Functor C A) →
+                  (H : CategoryTheory.Functor Aᵒᵖ B) →
+                    [∀ (α : Type w), CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) H] →
+                      (U : CategoryTheory.Limits.FormalCoproduct C) →
+                        H.obj (Opposite.op (∐ K.obj ∘ U.obj)) ≅
+                          ∏ᶜ fun (i : U.I) => H.obj (Opposite.op (K.obj (U.obj i))) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {A : Type u'} [CategoryTheory.Category.{v', u'} A] {B : Type u''}
+    [CategoryTheory.Category.{v'', u''} B] [CategoryTheory.Limits.HasCoproducts A] [CategoryTheory.Limits.HasProducts B]
+    (K : CategoryTheory.Functor C A) (H : CategoryTheory.Functor Aᵒᵖ B)
+    [∀ (α : Type w), CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) H]
+    (U : CategoryTheory.Limits.FormalCoproduct C) =>
+  H.mapIso (CategoryTheory.Limits.opCoproductIsoProduct (K.obj ∘ U.obj)) ≪≫
+    CategoryTheory.Limits.PreservesProduct.iso H fun (i : U.I) => Opposite.op (K.obj (U.obj i))
+def LinearStudy.formalCoproductContravariantEvaluationIso.{w, u, v, u', v', u'', v''} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {A : Type u'} →
+      [inst_1 : CategoryTheory.Category.{v', u'} A] →
+        {B : Type u''} →
+          [inst_2 : CategoryTheory.Category.{v'', u''} B] →
+            [inst_3 : CategoryTheory.Limits.HasCoproducts A] →
+              [inst_4 : CategoryTheory.Limits.HasProducts B] →
+                (K : CategoryTheory.Functor C A) →
+                  (H : CategoryTheory.Functor Aᵒᵖ B) →
+                    [∀ (α : Type w), CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) H] →
+                      ((CategoryTheory.Limits.FormalCoproduct.eval C A).obj K).op.comp H ≅
+                        (CategoryTheory.Limits.FormalCoproduct.evalOp C B).obj (K.op.comp H) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {A : Type u'} [CategoryTheory.Category.{v', u'} A] {B : Type u''}
+    [CategoryTheory.Category.{v'', u''} B] [CategoryTheory.Limits.HasCoproducts A] [CategoryTheory.Limits.HasProducts B]
+    (K : CategoryTheory.Functor C A) (H : CategoryTheory.Functor Aᵒᵖ B)
+    [∀ (α : Type w), CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) H] =>
+  CategoryTheory.NatIso.ofComponents
+    (fun (U : (CategoryTheory.Limits.FormalCoproduct C)ᵒᵖ) =>
+      LinearStudy.formalCoproductContravariantComponentIso K H (Opposite.unop U))
+    ⋯
+def LinearStudy.nativeAdjunctionHomPresheafIso.{u, v, v'} : {A : Type v} →
+  [inst : CategoryTheory.Category.{u, v} A] →
+    [inst_1 : CategoryTheory.Preadditive A] →
+      {B : Type v'} →
+        [inst_2 : CategoryTheory.Category.{u, v'} B] →
+          [inst_3 : CategoryTheory.Preadditive B] →
+            {L : CategoryTheory.Functor A B} →
+              {R : CategoryTheory.Functor B A} →
+                (L ⊣ R) →
+                  [L.Additive] →
+                    [R.Additive] →
+                      (N : B) →
+                        L.op.comp (CategoryTheory.preadditiveYoneda.obj N) ≅
+                          CategoryTheory.preadditiveYoneda.obj (R.obj N) :=
+fun {A : Type v} [CategoryTheory.Category.{u, v} A] [CategoryTheory.Preadditive A] {B : Type v'}
+    [CategoryTheory.Category.{u, v'} B] [CategoryTheory.Preadditive B] {L : CategoryTheory.Functor A B}
+    {R : CategoryTheory.Functor B A} (adj : L ⊣ R) [L.Additive] [R.Additive] (N : B) =>
+  CategoryTheory.NatIso.ofComponents (fun (V : Aᵒᵖ) => (adj.homAddEquiv (Opposite.unop V) N).toAddCommGrpIso) ⋯
+def LinearStudy.topOpenFreeAbelianPresheafHomPresheafIso.{u} : (X : TopCat) →
+  (F : TopCat.Sheaf AddCommGrpCat X) →
+    (LinearStudy.topOpenFreeAbelianPresheafFunctor X).op.comp (CategoryTheory.preadditiveYoneda.obj F.obj) ≅ F.obj :=
+fun (X : TopCat) (F : TopCat.Sheaf AddCommGrpCat X) =>
+  let K := LinearStudy.topOpenFreeAbelianPresheafFunctor X;
+  let S := CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat;
+  let Y := CategoryTheory.preadditiveYoneda.obj F;
+  have e :=
+    LinearStudy.nativeAdjunctionHomPresheafIso
+      (CategoryTheory.sheafificationAdjunction (Opens.grothendieckTopology ↑X) AddCommGrpCat) F;
+  K.op.isoWhiskerLeft e.symm ≪≫
+    (K.op.associator S.op Y).symm ≪≫
+      CategoryTheory.Functor.isoWhiskerRight (K.opComp S).symm Y ≪≫
+        LinearStudy.topOpenFreeAbelianSheafHomPresheafIso X F
+def LinearStudy.topCechFreeAbelianPresheafAugmented.{u} : (X : TopCat) →
+  {ι : Type u} →
+    (ι → TopologicalSpace.Opens ↑X) →
+      CategoryTheory.SimplicialObject.Augmented (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ AddCommGrpCat) :=
+fun (X : TopCat) {ι : Type u} (U : ι → TopologicalSpace.Opens ↑X) =>
+  ((CategoryTheory.SimplicialObject.Augmented.whiskering (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ (Type u))
+            (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ AddCommGrpCat)).obj
+        ((CategoryTheory.Functor.whiskeringRight (TopologicalSpace.Opens ↑X)ᵒᵖ (Type u) AddCommGrpCat).obj
+          AddCommGrpCat.free)).obj
+    { I := ι, obj := U }.shrinkYonedaCech
+def LinearStudy.topCechFreePresheafSimplicialIso.{u} : (X : TopCat) →
+  {ι : Type u} →
+    (U : ι → TopologicalSpace.Opens ↑X) →
+      (LinearStudy.topCechFreeAbelianPresheafAugmented X U).left ≅
+        CategoryTheory.Functor.comp { I := ι, obj := U }.cech
+          ((CategoryTheory.Limits.FormalCoproduct.eval (TopologicalSpace.Opens ↑X)
+                (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ AddCommGrpCat)).obj
+            (LinearStudy.topOpenFreeAbelianPresheafFunctor X)) :=
+fun (X : TopCat) {ι : Type u} (U : ι → TopologicalSpace.Opens ↑X) =>
+  let W :=
+    (CategoryTheory.Functor.whiskeringRight (TopologicalSpace.Opens ↑X)ᵒᵖ (Type u) AddCommGrpCat).obj
+      AddCommGrpCat.free;
+  let E :=
+    CategoryTheory.Limits.FormalCoproduct.eval (TopologicalSpace.Opens ↑X)
+      (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ AddCommGrpCat);
+  have e := CategoryTheory.Functor.isoWhiskerRight CategoryTheory.uliftYonedaIsoShrinkYoneda.symm W;
+  id
+    (CategoryTheory.Functor.associator { I := ι, obj := U }.cech
+        ((CategoryTheory.Limits.FormalCoproduct.eval (TopologicalSpace.Opens ↑X)
+              (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ (Type u))).obj
+          CategoryTheory.shrinkYoneda.{u, u, u})
+        W ≪≫
+      have a := (CategoryTheory.Limits.FormalCoproduct.evalObjCompIso CategoryTheory.shrinkYoneda.{u, u, u} W).symm;
+      have b := E.mapIso e;
+      CategoryTheory.Functor.isoWhiskerLeft { I := ι, obj := U }.cech (a ≪≫ b))
+def LinearStudy.nativeRightOpIso.{u, v, u', v'} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    {A : Type u'} →
+      [inst_1 : CategoryTheory.Category.{v', u'} A] →
+        {F G : CategoryTheory.Functor Cᵒᵖ A} → (F ≅ G) → (F.rightOp ≅ G.rightOp) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] {A : Type u'} [CategoryTheory.Category.{v', u'} A]
+    {F G : CategoryTheory.Functor Cᵒᵖ A} (e : F ≅ G) =>
+  { hom := CategoryTheory.NatTrans.rightOp e.inv, inv := CategoryTheory.NatTrans.rightOp e.hom, hom_inv_id := ⋯,
+    inv_hom_id := ⋯ }
+def LinearStudy.topCechFreeSheafHomCosimplicialIso.{u} : (X : TopCat) →
+  {ι : Type u} →
+    (U : ι → TopologicalSpace.Opens ↑X) →
+      (F : TopCat.Sheaf AddCommGrpCat X) →
+        (CategoryTheory.Functor.rightOp (LinearStudy.topCechFreeAbelianAugmented X U).left).comp
+            (CategoryTheory.preadditiveYoneda.obj F) ≅
+          (CategoryTheory.Limits.FormalCoproduct.cosimplicialObjectFunctor { I := ι, obj := U }.cech).obj F.obj :=
+fun (X : TopCat) {ι : Type u} (U : ι → TopologicalSpace.Opens ↑X) (F : TopCat.Sheaf AddCommGrpCat X) =>
+  let P := LinearStudy.topCechFreeAbelianPresheafAugmented X U;
+  let S := CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat;
+  let E :=
+    CategoryTheory.Limits.FormalCoproduct.eval (TopologicalSpace.Opens ↑X)
+      (CategoryTheory.Functor (TopologicalSpace.Opens ↑X)ᵒᵖ AddCommGrpCat);
+  let K := LinearStudy.topOpenFreeAbelianPresheafFunctor X;
+  let YS := CategoryTheory.preadditiveYoneda.obj F;
+  let YP := CategoryTheory.preadditiveYoneda.obj F.obj;
+  let C := { I := ι, obj := U }.cech;
+  id
+    (have a := CategoryTheory.Functor.isoWhiskerRight (CategoryTheory.Functor.rightOpComp P.left S) YS;
+    have b := (CategoryTheory.Functor.rightOp P.left).associator S.op YS;
+    have c :=
+      (CategoryTheory.Functor.rightOp P.left).isoWhiskerLeft
+        (LinearStudy.nativeAdjunctionHomPresheafIso
+          (CategoryTheory.sheafificationAdjunction (Opens.grothendieckTopology ↑X) AddCommGrpCat) F);
+    have d :=
+      CategoryTheory.Functor.isoWhiskerRight
+        (LinearStudy.nativeRightOpIso (LinearStudy.topCechFreePresheafSimplicialIso X U)) YP;
+    have e := CategoryTheory.Functor.isoWhiskerRight (CategoryTheory.Functor.rightOpComp C (E.obj K)) YP;
+    have f := (CategoryTheory.Functor.rightOp C).associator (E.obj K).op YP;
+    have g :=
+      (CategoryTheory.Functor.rightOp C).isoWhiskerLeft (LinearStudy.formalCoproductContravariantEvaluationIso K YP);
+    have h :=
+      (CategoryTheory.Functor.rightOp C).isoWhiskerLeft
+        ((CategoryTheory.Limits.FormalCoproduct.evalOp (TopologicalSpace.Opens ↑X) AddCommGrpCat).mapIso
+          (LinearStudy.topOpenFreeAbelianPresheafHomPresheafIso X F));
+    a ≪≫ b ≪≫ c ≪≫ d ≪≫ e ≪≫ f ≪≫ g ≪≫ h)
+def LinearStudy.topCechFreeSheafHomComplex.{u} : (X : TopCat) →
+  {ι : Type u} → (ι → TopologicalSpace.Opens ↑X) → TopCat.Sheaf AddCommGrpCat X → CochainComplex AddCommGrpCat ℕ :=
+fun (X : TopCat) {ι : Type u} (U : ι → TopologicalSpace.Opens ↑X) (F : TopCat.Sheaf AddCommGrpCat X) =>
+  (AlgebraicTopology.alternatingCofaceMapComplex AddCommGrpCat).obj
+    ((CategoryTheory.Functor.rightOp (LinearStudy.topCechFreeAbelianAugmented X U).left).comp
+      (CategoryTheory.preadditiveYoneda.obj F))
+def LinearStudy.topCechFreeSheafHomComplexIso.{u} : (X : TopCat) →
+  {ι : Type u} →
+    (U : ι → TopologicalSpace.Opens ↑X) →
+      (F : TopCat.Sheaf AddCommGrpCat X) →
+        LinearStudy.topCechFreeSheafHomComplex X U F ≅ (CategoryTheory.cechComplexFunctor U).obj F.obj :=
+fun (X : TopCat) {ι : Type u} (U : ι → TopologicalSpace.Opens ↑X) (F : TopCat.Sheaf AddCommGrpCat X) =>
+  (AlgebraicTopology.alternatingCofaceMapComplex AddCommGrpCat).mapIso
+    (LinearStudy.topCechFreeSheafHomCosimplicialIso X U F)
+def LinearStudy.alternatingHomCochainIso.{u, v, u', v'} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Preadditive A] →
+      {B : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} B] →
+          [inst_3 : CategoryTheory.Preadditive B] →
+            (S : CategoryTheory.SimplicialObject A) →
+              (H : CategoryTheory.Functor Aᵒᵖ B) →
+                [inst_4 : H.Additive] →
+                  (H.mapHomologicalComplex (ComplexShape.up ℕ)).obj
+                      (HomologicalComplex.op ((AlgebraicTopology.alternatingFaceMapComplex A).obj S)) ≅
+                    (AlgebraicTopology.alternatingCofaceMapComplex B).obj ((CategoryTheory.Functor.rightOp S).comp H) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Preadditive A] {B : Type u'}
+    [CategoryTheory.Category.{v', u'} B] [CategoryTheory.Preadditive B] (S : CategoryTheory.SimplicialObject A)
+    (H : CategoryTheory.Functor Aᵒᵖ B) [H.Additive] =>
+  HomologicalComplex.Hom.isoOfComponents
+    (fun (x : ℕ) =>
+      CategoryTheory.Iso.refl
+        (((H.mapHomologicalComplex (ComplexShape.up ℕ)).obj
+              (HomologicalComplex.op ((AlgebraicTopology.alternatingFaceMapComplex A).obj S))).X
+          x))
+    ⋯
+ROLECHECK:LinearStudy.topOpenFreeAbelianSheafHomSectionsAddEquiv:false
+ROLECHECK:LinearStudy.topOpenFreeAbelianSheafHomPresheafIso:false
+ROLECHECK:LinearStudy.formalCoproductContravariantComponentIso:false
+ROLECHECK:LinearStudy.formalCoproductContravariantComponentIso_hom_π:true
+ROLECHECK:LinearStudy.formalCoproductContravariantEvaluationIso:false
+ROLECHECK:LinearStudy.nativeAdjunctionHomPresheafIso:false
+ROLECHECK:LinearStudy.topOpenFreeAbelianPresheafHomPresheafIso:false
+ROLECHECK:LinearStudy.topCechFreeAbelianPresheafAugmented:false
+ROLECHECK:LinearStudy.topCechFreePresheafSimplicialIso:false
+ROLECHECK:LinearStudy.nativeRightOpIso:false
+ROLECHECK:LinearStudy.topCechFreeSheafHomCosimplicialIso:false
+ROLECHECK:LinearStudy.topCechFreeSheafHomComplex:false
+ROLECHECK:LinearStudy.topCechFreeSheafHomComplexIso:false
+ROLECHECK:LinearStudy.alternatingHomCochainIso:false
+ROLECHECK:LinearStudy.injectiveHomOppositeOfResolution_exactAt:true
+ROLECHECK:LinearStudy.topInjectiveAbelianSheaf_nativeCech_exactAt:true
+ROLECHECK:LinearStudy.topInjectiveAbelianSheaf_nativeCech_positiveHomology_isZero:true
