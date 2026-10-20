@@ -1,0 +1,356 @@
+module
+import all Linear.ChainExactOfAllHomExact
+import all Linear.ChainZeroHomologySameRelations
+import all Linear.FiniteTypeHomogeneousChartNoetherian
+import all Linear.FiniteTypeNativeProjActualCohomology
+import all Linear.FormalCoproductCovariantEvaluation
+import all Linear.FormalProductEvaluationWhiskering
+import all Linear.FullCechZeroRelations
+import all Linear.FullFreePresheafValueCech
+import all Linear.NativeFormalFreeValueHom
+import all Linear.NativeFreeCoproductHomAddEquiv
+import all Linear.NativeGradedWeightedBaseSourceMap
+import all Linear.NativeGradedWeightedBaseSourceScalar
+import all Linear.NativeSourceSpecChartLinear
+import all Linear.NoetherianAffineOpenActualCohomology
+import all Linear.NoetherianAffineSchemeActualCohomology
+import all Linear.NoetherianOrderedAffineCoverNativeH
+import all Linear.NormalizationSourceChartLinearMap
+import all Linear.NormalizationSourceChartMembership
+import all Linear.NormalizationSourceChartSurjective
+import all Linear.NormalizationWeightedChartScalar
+import all Linear.OrderedCechNativeHVanishing
+import all Linear.OrderedConstantCechBottomContraction
+import all Linear.OrderedConstantCechFiniteContraction
+import all Linear.OrderedContainedCechTuples
+import all Linear.OrderedFormalCechComplex
+import all Linear.OrderedFormalCechFunctoriality
+import all Linear.OrderedFormalHomCochainIso
+import all Linear.OrderedFreeAbelianPresheafComplex
+import all Linear.OrderedFreePresheafValueExact
+import all Linear.OrderedFreePresheafValueHomCochain
+import all Linear.OrderedFreeSheafCechResolution
+import all Linear.OrderedFreeSheafHomComplex
+import all Linear.OrderedModuleCechActualAbelian
+import all Linear.OrderedSimplexBottomInsertion
+import all Linear.OrderedToFullFreeFormalCech
+import all Linear.OriginalProjectiveChartScalarTransport
+import all Linear.OriginalProjectiveChartSectionRing
+import all Linear.SchemeModuleIsoRestrictionEquivalence
+import all Linear.SchemeModuleOpenRestrictionActualAbelian
+import all Linear.SchemeModuleSchemeIsoGlobalExt
+import all Linear.SchemeModuleSpecOpenNamedScalar
+import all Linear.SchemeModuleSpecOpenSections
+import all Linear.SchemeModuleSpecOpenSectionsRestrictedScalar
+import all Linear.SchemeModuleSpecOpenSectionsScalar
+import all Linear.TopFormalFreePresheafValueHom
+set_option maxHeartbeats 50000
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.chain_exactAt_of_all_actualHom_exactAt
+#print axioms LinearStudy.chain_exactAt_of_all_actualHom_exactAt
+#check @LinearStudy.chain_opcycles_zero_isIso_of_same_relations
+#print axioms LinearStudy.chain_opcycles_zero_isIso_of_same_relations
+#check @LinearStudy.chain_quasiIsoAt_zero_of_same_relations
+#print axioms LinearStudy.chain_quasiIsoAt_zero_of_same_relations
+#check @LinearStudy.finiteTypeHomogeneousChart_isNoetherian
+#print axioms LinearStudy.finiteTypeHomogeneousChart_isNoetherian
+#check @LinearStudy.finiteTypeNativeProj_isLocallyNoetherian_of_cover
+#print axioms LinearStudy.finiteTypeNativeProj_isLocallyNoetherian_of_cover
+#check @LinearStudy.finiteTypeNativeProj_actualHigherH_vanish_of_orderedCechExact
+#print axioms LinearStudy.finiteTypeNativeProj_actualHigherH_vanish_of_orderedCechExact
+#check @LinearStudy.formalCoproductCovariant_map_ι_hom
+#print axioms LinearStudy.formalCoproductCovariant_map_ι_hom
+#check @LinearStudy.formalCoproductCovariantEvaluationIso
+#print axioms LinearStudy.formalCoproductCovariantEvaluationIso
+#check @LinearStudy.formalProductEvaluation_component_hom_π
+#print axioms LinearStudy.formalProductEvaluation_component_hom_π
+#check @LinearStudy.formalProductEvaluationWhiskeringIso
+#print axioms LinearStudy.formalProductEvaluationWhiskeringIso
+#check @LinearStudy.fullZeroCechGeneratorToOrdered
+#print axioms LinearStudy.fullZeroCechGeneratorToOrdered
+#check @LinearStudy.fullZeroCechGeneratorToOrdered_hom
+#print axioms LinearStudy.fullZeroCechGeneratorToOrdered_hom
+#check @LinearStudy.fullFreePresheafValue_zero_relations
+#print axioms LinearStudy.fullFreePresheafValue_zero_relations
+#check @LinearStudy.fullFreeAbelianPresheafComplex
+#print axioms LinearStudy.fullFreeAbelianPresheafComplex
+#check @LinearStudy.fullFreePresheafValueChain
+#print axioms LinearStudy.fullFreePresheafValueChain
+#check @LinearStudy.orderedToFullFreePresheafChain
+#print axioms LinearStudy.orderedToFullFreePresheafChain
+#check @LinearStudy.orderedToFullFreePresheafValueChain
+#print axioms LinearStudy.orderedToFullFreePresheafValueChain
+#check @LinearStudy.orderedToFullFreePresheafValueChain_zero_isIso
+#print axioms LinearStudy.orderedToFullFreePresheafValueChain_zero_isIso
+#check @LinearStudy.fullFreePresheafValueChain_d
+#print axioms LinearStudy.fullFreePresheafValueChain_d
+#check @LinearStudy.fullFreeAbelianPresheafComplex_positive_exact
+#print axioms LinearStudy.fullFreeAbelianPresheafComplex_positive_exact
+#check @LinearStudy.orderedConstantCech_zero_cocycle_eq
+#print axioms LinearStudy.orderedConstantCech_zero_cocycle_eq
+#check @LinearStudy.nativeFreeCoproductHomAddEquiv_apply
+#print axioms LinearStudy.nativeFreeCoproductHomAddEquiv_apply
+#check @LinearStudy.nativeFormalEval_ι_map
+#print axioms LinearStudy.nativeFormalEval_ι_map
+#check @LinearStudy.nativeFormalFreeValueHom_precomp
+#print axioms LinearStudy.nativeFormalFreeValueHom_precomp
+#check @LinearStudy.nativeFreeAbelianHomAddEquiv
+#print axioms LinearStudy.nativeFreeAbelianHomAddEquiv
+#check @LinearStudy.nativeFreeAbelianHomAddEquiv_apply
+#print axioms LinearStudy.nativeFreeAbelianHomAddEquiv_apply
+#check @LinearStudy.nativeCoproductHomAddEquiv
+#print axioms LinearStudy.nativeCoproductHomAddEquiv
+#check @LinearStudy.nativeFreeCoproductHomAddEquiv
+#print axioms LinearStudy.nativeFreeCoproductHomAddEquiv
+#check @LinearStudy.nativeGradedWeightedBaseSourceChartMap
+#print axioms LinearStudy.nativeGradedWeightedBaseSourceChartMap
+#check @LinearStudy.nativeGradedWeightedBaseSourceChartMap_bijective
+#print axioms LinearStudy.nativeGradedWeightedBaseSourceChartMap_bijective
+#check @LinearStudy.nativeGradedWeightedBaseSourceChartMap_mk
+#print axioms LinearStudy.nativeGradedWeightedBaseSourceChartMap_mk
+#check @LinearStudy.moduleBaseSourceLocalizationEquiv_weighted_chart_smul
+#print axioms LinearStudy.moduleBaseSourceLocalizationEquiv_weighted_chart_smul
+#check @LinearStudy.nativeSourceSpecChartSectionsModule
+#print axioms LinearStudy.nativeSourceSpecChartSectionsModule
+#check @LinearStudy.nativeSourceSpecChartSectionLinearMap
+#print axioms LinearStudy.nativeSourceSpecChartSectionLinearMap
+#check @LinearStudy.nativeSourceSpecChartSectionLinearMap_bijective
+#print axioms LinearStudy.nativeSourceSpecChartSectionLinearMap_bijective
+#check @LinearStudy.noetherianAffineOpen_quasicoherent_actualHigherH_vanish
+#print axioms LinearStudy.noetherianAffineOpen_quasicoherent_actualHigherH_vanish
+#check @LinearStudy.noetherianAffineScheme_quasicoherent_actualHigherH_vanish
+#print axioms LinearStudy.noetherianAffineScheme_quasicoherent_actualHigherH_vanish
+#check @LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherH_vanish
+#print axioms LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherH_vanish
+#check @LinearStudy.normalizationHomogeneousSourceChartAlgebra
+#print axioms LinearStudy.normalizationHomogeneousSourceChartAlgebra
+#check @LinearStudy.nativeNormalizationSourceChartMap
+#print axioms LinearStudy.nativeNormalizationSourceChartMap
+#check @LinearStudy.nativeNormalizationSourceChartMap_val
+#print axioms LinearStudy.nativeNormalizationSourceChartMap_val
+#check @LinearStudy.nativeNormalizationSourceAwayZero_value
+#print axioms LinearStudy.nativeNormalizationSourceAwayZero_value
+#check @LinearStudy.nativeNormalizationSourceAwayZero_surjective
+#print axioms LinearStudy.nativeNormalizationSourceAwayZero_surjective
+#check @LinearStudy.normalizationHomogeneousWeightedChartMap_mk
+#print axioms LinearStudy.normalizationHomogeneousWeightedChartMap_mk
+#check @LinearStudy.nativeNormalizationFullChartEquiv_weighted_chart_smul
+#print axioms LinearStudy.nativeNormalizationFullChartEquiv_weighted_chart_smul
+#check @LinearStudy.orderedFiniteFreeSheafTermIso
+#print axioms LinearStudy.orderedFiniteFreeSheafTermIso
+#check @LinearStudy.orderedFiniteFreeSheafTerm_ext_subsingleton
+#print axioms LinearStudy.orderedFiniteFreeSheafTerm_ext_subsingleton
+#check @LinearStudy.topFiniteOrderedCech_actualHigherH_vanish_of_localAcyclic
+#print axioms LinearStudy.topFiniteOrderedCech_actualHigherH_vanish_of_localAcyclic
+#check @LinearStudy.orderedConstantCechDifferential
+#print axioms LinearStudy.orderedConstantCechDifferential
+#check @LinearStudy.orderedConstantCechBottomContraction
+#print axioms LinearStudy.orderedConstantCechBottomContraction
+#check @LinearStudy.orderedSimplex_delete_succ_head_eq_bottom
+#print axioms LinearStudy.orderedSimplex_delete_succ_head_eq_bottom
+#check @LinearStudy.orderedSimplexPrependBottom_delete_first
+#print axioms LinearStudy.orderedSimplexPrependBottom_delete_first
+#check @LinearStudy.orderedConstantCech_exists_boundary
+#print axioms LinearStudy.orderedConstantCech_exists_boundary
+#check @LinearStudy.orderedConstantCech_finite_exists_boundary
+#print axioms LinearStudy.orderedConstantCech_finite_exists_boundary
+#check @LinearStudy.orderedSimplexSingleton
+#print axioms LinearStudy.orderedSimplexSingleton
+#check @LinearStudy.orderedConstantCech_zero_cocycle_constant
+#print axioms LinearStudy.orderedConstantCech_zero_cocycle_constant
+#check @LinearStudy.coverIndicesContainingOpen
+#print axioms LinearStudy.coverIndicesContainingOpen
+#check @LinearStudy.orderedCechTupleSection
+#print axioms LinearStudy.orderedCechTupleSection
+#check @LinearStudy.orderedCechTupleSectionEquiv
+#print axioms LinearStudy.orderedCechTupleSectionEquiv
+#check @LinearStudy.orderedCechTupleSectionDelete
+#print axioms LinearStudy.orderedCechTupleSectionDelete
+#check @LinearStudy.orderedCechTupleSectionEquiv_delete
+#print axioms LinearStudy.orderedCechTupleSectionEquiv_delete
+#check @LinearStudy.orderedFormalCechObject
+#print axioms LinearStudy.orderedFormalCechObject
+#check @LinearStudy.orderedFormalCechCoface
+#print axioms LinearStudy.orderedFormalCechCoface
+#check @LinearStudy.orderedFormalCechCoface_comp
+#print axioms LinearStudy.orderedFormalCechCoface_comp
+#check @LinearStudy.orderedFormalCechCoface_comp'
+#print axioms LinearStudy.orderedFormalCechCoface_comp'
+#check @LinearStudy.orderedFormalCechDifferential
+#print axioms LinearStudy.orderedFormalCechDifferential
+#check @LinearStudy.orderedFormalCechDifferential_comp
+#print axioms LinearStudy.orderedFormalCechDifferential_comp
+#check @LinearStudy.orderedFormalCechComplex
+#print axioms LinearStudy.orderedFormalCechComplex
+#check @LinearStudy.orderedFormalCechComplex_X
+#print axioms LinearStudy.orderedFormalCechComplex_X
+#check @LinearStudy.orderedFormalCechComplex_d
+#print axioms LinearStudy.orderedFormalCechComplex_d
+#check @LinearStudy.orderedFormalCechComplexIso
+#print axioms LinearStudy.orderedFormalCechComplexIso
+#check @LinearStudy.orderedFormalCechWhiskeringIso
+#print axioms LinearStudy.orderedFormalCechWhiskeringIso
+#check @LinearStudy.orderedCovariantWhiskeringChainIso
+#print axioms LinearStudy.orderedCovariantWhiskeringChainIso
+#check @LinearStudy.actualHomSourceComplexIso
+#print axioms LinearStudy.actualHomSourceComplexIso
+#check @LinearStudy.orderedFormalActualHomCochainIso
+#print axioms LinearStudy.orderedFormalActualHomCochainIso
+#check @LinearStudy.orderedFreeOpenFormalPresheafFunctor
+#print axioms LinearStudy.orderedFreeOpenFormalPresheafFunctor
+#check @LinearStudy.orderedFreeAbelianPresheafComplex
+#print axioms LinearStudy.orderedFreeAbelianPresheafComplex
+#check @LinearStudy.orderedFreePresheafValue_actualHom_positive_exact
+#print axioms LinearStudy.orderedFreePresheafValue_actualHom_positive_exact
+#check @LinearStudy.orderedFreePresheafValueChain_positive_exact
+#print axioms LinearStudy.orderedFreePresheafValueChain_positive_exact
+#check @LinearStudy.orderedFreeAbelianPresheafComplex_positive_exact
+#print axioms LinearStudy.orderedFreeAbelianPresheafComplex_positive_exact
+#check @LinearStudy.functionReindexAddEquiv
+#print axioms LinearStudy.functionReindexAddEquiv
+#check @LinearStudy.orderedFreePresheafValueChain
+#print axioms LinearStudy.orderedFreePresheafValueChain
+#check @LinearStudy.orderedFreeValueHomCoefficients
+#print axioms LinearStudy.orderedFreeValueHomCoefficients
+#check @LinearStudy.orderedFreePresheafValueChain_d
+#print axioms LinearStudy.orderedFreePresheafValueChain_d
+#check @LinearStudy.orderedFreeValueHomCoefficients_d
+#print axioms LinearStudy.orderedFreeValueHomCoefficients_d
+#check @LinearStudy.orderedToFullFreePresheafValue_quasiIsoAt_zero
+#print axioms LinearStudy.orderedToFullFreePresheafValue_quasiIsoAt_zero
+#check @LinearStudy.orderedToFullFreePresheafChain_quasiIso
+#print axioms LinearStudy.orderedToFullFreePresheafChain_quasiIso
+#check @LinearStudy.orderedFreeAbelianSheafComplex
+#print axioms LinearStudy.orderedFreeAbelianSheafComplex
+#check @LinearStudy.orderedToNativeFullFreeSheafChain
+#print axioms LinearStudy.orderedToNativeFullFreeSheafChain
+#check @LinearStudy.orderedToNativeFullFreeSheafChain_quasiIso
+#print axioms LinearStudy.orderedToNativeFullFreeSheafChain_quasiIso
+#check @LinearStudy.orderedCechNativeIntegerAugmentation
+#print axioms LinearStudy.orderedCechNativeIntegerAugmentation
+#check @LinearStudy.orderedCechNativeIntegerAugmentation_quasiIso
+#print axioms LinearStudy.orderedCechNativeIntegerAugmentation_quasiIso
+#check @LinearStudy.orderedTopAbelianCechComplex
+#print axioms LinearStudy.orderedTopAbelianCechComplex
+#check @LinearStudy.orderedFreeSheafActualHomComplexIso
+#print axioms LinearStudy.orderedFreeSheafActualHomComplexIso
+#check @LinearStudy.baseModulePresheafActualAbelianIso
+#print axioms LinearStudy.baseModulePresheafActualAbelianIso
+#check @LinearStudy.orderedModuleCechActualAbelianComplexIso
+#print axioms LinearStudy.orderedModuleCechActualAbelianComplexIso
+#check @LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherH_vanish_of_moduleCechExact
+#print axioms LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherH_vanish_of_moduleCechExact
+#check @LinearStudy.orderedSimplexPrependBottom
+#print axioms LinearStudy.orderedSimplexPrependBottom
+#check @LinearStudy.orderedSimplexPrependBottom_delete_zero
+#print axioms LinearStudy.orderedSimplexPrependBottom_delete_zero
+#check @LinearStudy.orderedSimplexBottom_lt_delete_head
+#print axioms LinearStudy.orderedSimplexBottom_lt_delete_head
+#check @LinearStudy.orderedSimplexPrependBottom_delete_succ
+#print axioms LinearStudy.orderedSimplexPrependBottom_delete_succ
+#check @LinearStudy.orderedCechFormalInclusion
+#print axioms LinearStudy.orderedCechFormalInclusion
+#check @LinearStudy.orderedCechFace_comp_formalInclusion
+#print axioms LinearStudy.orderedCechFace_comp_formalInclusion
+#check @LinearStudy.orderedCechDegreeZeroIndexEquiv
+#print axioms LinearStudy.orderedCechDegreeZeroIndexEquiv
+#check @LinearStudy.orderedCechFormalDegreeZeroIso
+#print axioms LinearStudy.orderedCechFormalDegreeZeroIso
+#check @LinearStudy.orderedCechFormalInclusion_zero_isIso
+#print axioms LinearStudy.orderedCechFormalInclusion_zero_isIso
+#check @LinearStudy.orderedToFullFormalCechChain
+#print axioms LinearStudy.orderedToFullFormalCechChain
+#check @LinearStudy.originalProjectiveChartScalarTransport
+#print axioms LinearStudy.originalProjectiveChartScalarTransport
+#check @LinearStudy.originalProjectiveChartScalar_appLE
+#print axioms LinearStudy.originalProjectiveChartScalar_appLE
+#check @LinearStudy.schemeModuleIsoRestrictionEquivalence
+#print axioms LinearStudy.schemeModuleIsoRestrictionEquivalence
+#check @LinearStudy.schemeModuleIsoRestriction_isEquivalence
+#print axioms LinearStudy.schemeModuleIsoRestriction_isEquivalence
+#check @LinearStudy.schemeModuleOpenRestrictionActualAbelianIso
+#print axioms LinearStudy.schemeModuleOpenRestrictionActualAbelianIso
+#check @LinearStudy.schemeModuleSchemeIsoGlobalExtAddEquiv
+#print axioms LinearStudy.schemeModuleSchemeIsoGlobalExtAddEquiv
+#check @LinearStudy.schemeModuleSpecOpenSectionsEquiv_smul_namedImages
+#print axioms LinearStudy.schemeModuleSpecOpenSectionsEquiv_smul_namedImages
+#check @LinearStudy.schemeModuleSpecOpenSectionsEquiv
+#print axioms LinearStudy.schemeModuleSpecOpenSectionsEquiv
+#check @LinearStudy.schemeModuleSpecOpenSectionsEquiv_restrict
+#print axioms LinearStudy.schemeModuleSpecOpenSectionsEquiv_restrict
+#check @LinearStudy.schemeModuleSpecOpenSectionsEquiv_smul_fromTop
+#print axioms LinearStudy.schemeModuleSpecOpenSectionsEquiv_smul_fromTop
+#check @LinearStudy.schemeModuleSpecOpenSectionsEquiv_smul
+#print axioms LinearStudy.schemeModuleSpecOpenSectionsEquiv_smul
+#check @LinearStudy.topFormalFreePresheafEvaluationIso
+#print axioms LinearStudy.topFormalFreePresheafEvaluationIso
+#check @LinearStudy.topFormalFreeValueHomAddEquiv
+#print axioms LinearStudy.topFormalFreeValueHomAddEquiv
+#check @LinearStudy.topFormalFreeValueHomAddEquiv_precomp
+#print axioms LinearStudy.topFormalFreeValueHomAddEquiv_precomp
+#print LinearStudy.formalCoproductCovariantEvaluationIso
+#print LinearStudy.formalProductEvaluationWhiskeringIso
+#print LinearStudy.fullZeroCechGeneratorToOrdered
+#print LinearStudy.fullFreeAbelianPresheafComplex
+#print LinearStudy.fullFreePresheafValueChain
+#print LinearStudy.orderedToFullFreePresheafChain
+#print LinearStudy.orderedToFullFreePresheafValueChain
+#print LinearStudy.orderedToFullFreePresheafValueChain_zero_isIso
+#print LinearStudy.nativeFreeAbelianHomAddEquiv
+#print LinearStudy.nativeCoproductHomAddEquiv
+#print LinearStudy.nativeFreeCoproductHomAddEquiv
+#print LinearStudy.nativeGradedWeightedBaseSourceChartMap
+#print LinearStudy.nativeSourceSpecChartSectionsModule
+#print LinearStudy.nativeSourceSpecChartSectionLinearMap
+#print LinearStudy.normalizationHomogeneousSourceChartAlgebra
+#print LinearStudy.nativeNormalizationSourceChartMap
+#print LinearStudy.orderedFiniteFreeSheafTermIso
+#print LinearStudy.orderedConstantCechDifferential
+#print LinearStudy.orderedConstantCechBottomContraction
+#print LinearStudy.orderedSimplexSingleton
+#print LinearStudy.coverIndicesContainingOpen
+#print LinearStudy.orderedCechTupleSection
+#print LinearStudy.orderedCechTupleSectionEquiv
+#print LinearStudy.orderedCechTupleSectionDelete
+#print LinearStudy.orderedFormalCechObject
+#print LinearStudy.orderedFormalCechCoface
+#print LinearStudy.orderedFormalCechDifferential
+#print LinearStudy.orderedFormalCechComplex
+#print LinearStudy.orderedFormalCechComplexIso
+#print LinearStudy.orderedFormalCechWhiskeringIso
+#print LinearStudy.orderedCovariantWhiskeringChainIso
+#print LinearStudy.actualHomSourceComplexIso
+#print LinearStudy.orderedFormalActualHomCochainIso
+#print LinearStudy.orderedFreeOpenFormalPresheafFunctor
+#print LinearStudy.orderedFreeAbelianPresheafComplex
+#print LinearStudy.functionReindexAddEquiv
+#print LinearStudy.orderedFreePresheafValueChain
+#print LinearStudy.orderedFreeValueHomCoefficients
+#print LinearStudy.orderedFreeAbelianSheafComplex
+#print LinearStudy.orderedToNativeFullFreeSheafChain
+#print LinearStudy.orderedCechNativeIntegerAugmentation
+#print LinearStudy.orderedTopAbelianCechComplex
+#print LinearStudy.orderedFreeSheafActualHomComplexIso
+#print LinearStudy.baseModulePresheafActualAbelianIso
+#print LinearStudy.orderedModuleCechActualAbelianComplexIso
+#print LinearStudy.orderedSimplexPrependBottom
+#print LinearStudy.orderedCechFormalInclusion
+#print LinearStudy.orderedCechDegreeZeroIndexEquiv
+#print LinearStudy.orderedCechFormalDegreeZeroIso
+#print LinearStudy.orderedCechFormalInclusion_zero_isIso
+#print LinearStudy.orderedToFullFormalCechChain
+#print LinearStudy.schemeModuleIsoRestrictionEquivalence
+#print LinearStudy.schemeModuleOpenRestrictionActualAbelianIso
+#print LinearStudy.schemeModuleSchemeIsoGlobalExtAddEquiv
+#print LinearStudy.schemeModuleSpecOpenSectionsEquiv
+#print LinearStudy.topFormalFreePresheafEvaluationIso
+#print LinearStudy.topFormalFreeValueHomAddEquiv
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool) := [(`LinearStudy.chain_exactAt_of_all_actualHom_exactAt,true),(`LinearStudy.chain_opcycles_zero_isIso_of_same_relations,true),(`LinearStudy.chain_quasiIsoAt_zero_of_same_relations,true),(`LinearStudy.finiteTypeHomogeneousChart_isNoetherian,true),(`LinearStudy.finiteTypeNativeProj_isLocallyNoetherian_of_cover,true),(`LinearStudy.finiteTypeNativeProj_actualHigherH_vanish_of_orderedCechExact,true),(`LinearStudy.formalCoproductCovariant_map_ι_hom,true),(`LinearStudy.formalCoproductCovariantEvaluationIso,false),(`LinearStudy.formalProductEvaluation_component_hom_π,true),(`LinearStudy.formalProductEvaluationWhiskeringIso,false),(`LinearStudy.fullZeroCechGeneratorToOrdered,false),(`LinearStudy.fullZeroCechGeneratorToOrdered_hom,true),(`LinearStudy.fullFreePresheafValue_zero_relations,true),(`LinearStudy.fullFreeAbelianPresheafComplex,false),(`LinearStudy.fullFreePresheafValueChain,false),(`LinearStudy.orderedToFullFreePresheafChain,false),(`LinearStudy.orderedToFullFreePresheafValueChain,false),(`LinearStudy.orderedToFullFreePresheafValueChain_zero_isIso,true),(`LinearStudy.fullFreePresheafValueChain_d,true),(`LinearStudy.fullFreeAbelianPresheafComplex_positive_exact,true),(`LinearStudy.orderedConstantCech_zero_cocycle_eq,true),(`LinearStudy.nativeFreeCoproductHomAddEquiv_apply,true),(`LinearStudy.nativeFormalEval_ι_map,true),(`LinearStudy.nativeFormalFreeValueHom_precomp,true),(`LinearStudy.nativeFreeAbelianHomAddEquiv,false),(`LinearStudy.nativeFreeAbelianHomAddEquiv_apply,true),(`LinearStudy.nativeCoproductHomAddEquiv,false),(`LinearStudy.nativeFreeCoproductHomAddEquiv,false),(`LinearStudy.nativeGradedWeightedBaseSourceChartMap,false),(`LinearStudy.nativeGradedWeightedBaseSourceChartMap_bijective,true),(`LinearStudy.nativeGradedWeightedBaseSourceChartMap_mk,true),(`LinearStudy.moduleBaseSourceLocalizationEquiv_weighted_chart_smul,true),(`LinearStudy.nativeSourceSpecChartSectionsModule,false),(`LinearStudy.nativeSourceSpecChartSectionLinearMap,false),(`LinearStudy.nativeSourceSpecChartSectionLinearMap_bijective,true),(`LinearStudy.noetherianAffineOpen_quasicoherent_actualHigherH_vanish,true),(`LinearStudy.noetherianAffineScheme_quasicoherent_actualHigherH_vanish,true),(`LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherH_vanish,true),(`LinearStudy.normalizationHomogeneousSourceChartAlgebra,false),(`LinearStudy.nativeNormalizationSourceChartMap,false),(`LinearStudy.nativeNormalizationSourceChartMap_val,true),(`LinearStudy.nativeNormalizationSourceAwayZero_value,true),(`LinearStudy.nativeNormalizationSourceAwayZero_surjective,true),(`LinearStudy.normalizationHomogeneousWeightedChartMap_mk,true),(`LinearStudy.nativeNormalizationFullChartEquiv_weighted_chart_smul,true),(`LinearStudy.orderedFiniteFreeSheafTermIso,false),(`LinearStudy.orderedFiniteFreeSheafTerm_ext_subsingleton,true),(`LinearStudy.topFiniteOrderedCech_actualHigherH_vanish_of_localAcyclic,true),(`LinearStudy.orderedConstantCechDifferential,false),(`LinearStudy.orderedConstantCechBottomContraction,false),(`LinearStudy.orderedSimplex_delete_succ_head_eq_bottom,true),(`LinearStudy.orderedSimplexPrependBottom_delete_first,true),(`LinearStudy.orderedConstantCech_exists_boundary,true),(`LinearStudy.orderedConstantCech_finite_exists_boundary,true),(`LinearStudy.orderedSimplexSingleton,false),(`LinearStudy.orderedConstantCech_zero_cocycle_constant,true),(`LinearStudy.coverIndicesContainingOpen,false),(`LinearStudy.orderedCechTupleSection,false),(`LinearStudy.orderedCechTupleSectionEquiv,false),(`LinearStudy.orderedCechTupleSectionDelete,false),(`LinearStudy.orderedCechTupleSectionEquiv_delete,true),(`LinearStudy.orderedFormalCechObject,false),(`LinearStudy.orderedFormalCechCoface,false),(`LinearStudy.orderedFormalCechCoface_comp,true),(`LinearStudy.orderedFormalCechCoface_comp',true),(`LinearStudy.orderedFormalCechDifferential,false),(`LinearStudy.orderedFormalCechDifferential_comp,true),(`LinearStudy.orderedFormalCechComplex,false),(`LinearStudy.orderedFormalCechComplex_X,true),(`LinearStudy.orderedFormalCechComplex_d,true),(`LinearStudy.orderedFormalCechComplexIso,false),(`LinearStudy.orderedFormalCechWhiskeringIso,false),(`LinearStudy.orderedCovariantWhiskeringChainIso,false),(`LinearStudy.actualHomSourceComplexIso,false),(`LinearStudy.orderedFormalActualHomCochainIso,false),(`LinearStudy.orderedFreeOpenFormalPresheafFunctor,false),(`LinearStudy.orderedFreeAbelianPresheafComplex,false),(`LinearStudy.orderedFreePresheafValue_actualHom_positive_exact,true),(`LinearStudy.orderedFreePresheafValueChain_positive_exact,true),(`LinearStudy.orderedFreeAbelianPresheafComplex_positive_exact,true),(`LinearStudy.functionReindexAddEquiv,false),(`LinearStudy.orderedFreePresheafValueChain,false),(`LinearStudy.orderedFreeValueHomCoefficients,false),(`LinearStudy.orderedFreePresheafValueChain_d,true),(`LinearStudy.orderedFreeValueHomCoefficients_d,true),(`LinearStudy.orderedToFullFreePresheafValue_quasiIsoAt_zero,true),(`LinearStudy.orderedToFullFreePresheafChain_quasiIso,true),(`LinearStudy.orderedFreeAbelianSheafComplex,false),(`LinearStudy.orderedToNativeFullFreeSheafChain,false),(`LinearStudy.orderedToNativeFullFreeSheafChain_quasiIso,true),(`LinearStudy.orderedCechNativeIntegerAugmentation,false),(`LinearStudy.orderedCechNativeIntegerAugmentation_quasiIso,true),(`LinearStudy.orderedTopAbelianCechComplex,false),(`LinearStudy.orderedFreeSheafActualHomComplexIso,false),(`LinearStudy.baseModulePresheafActualAbelianIso,false),(`LinearStudy.orderedModuleCechActualAbelianComplexIso,false),(`LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherH_vanish_of_moduleCechExact,true),(`LinearStudy.orderedSimplexPrependBottom,false),(`LinearStudy.orderedSimplexPrependBottom_delete_zero,true),(`LinearStudy.orderedSimplexBottom_lt_delete_head,true),(`LinearStudy.orderedSimplexPrependBottom_delete_succ,true),(`LinearStudy.orderedCechFormalInclusion,false),(`LinearStudy.orderedCechFace_comp_formalInclusion,true),(`LinearStudy.orderedCechDegreeZeroIndexEquiv,false),(`LinearStudy.orderedCechFormalDegreeZeroIso,false),(`LinearStudy.orderedCechFormalInclusion_zero_isIso,true),(`LinearStudy.orderedToFullFormalCechChain,false),(`LinearStudy.originalProjectiveChartScalarTransport,true),(`LinearStudy.originalProjectiveChartScalar_appLE,true),(`LinearStudy.schemeModuleIsoRestrictionEquivalence,false),(`LinearStudy.schemeModuleIsoRestriction_isEquivalence,true),(`LinearStudy.schemeModuleOpenRestrictionActualAbelianIso,false),(`LinearStudy.schemeModuleSchemeIsoGlobalExtAddEquiv,false),(`LinearStudy.schemeModuleSpecOpenSectionsEquiv_smul_namedImages,true),(`LinearStudy.schemeModuleSpecOpenSectionsEquiv,false),(`LinearStudy.schemeModuleSpecOpenSectionsEquiv_restrict,true),(`LinearStudy.schemeModuleSpecOpenSectionsEquiv_smul_fromTop,true),(`LinearStudy.schemeModuleSpecOpenSectionsEquiv_smul,true),(`LinearStudy.topFormalFreePresheafEvaluationIso,false),(`LinearStudy.topFormalFreeValueHomAddEquiv,false),(`LinearStudy.topFormalFreeValueHomAddEquiv_precomp,true)]
+  let env ← Lean.getEnv
+  for (n,want) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"

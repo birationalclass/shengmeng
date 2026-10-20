@@ -1,0 +1,57 @@
+module
+import all Linear.LocalizedSectionFunctionSurjective
+import all Linear.NativeSourceSpecOpenSectionsModule
+import all Linear.NativeWeightedProjOpen
+import all Linear.NativeWeightedSpecSectionFunctionScalar
+import all Linear.NativeWeightedAffineSectionsFunctionSurjective
+import all Linear.NativeFiniteGradedWeightedSectionsFunctionSurjective
+import all Linear.AffineQuasicoherentSectionsSurjective
+import all Linear.QuasicoherentAffineOpenSections
+import all Linear.NativeIntegerTwistChartSingleFraction
+import all Linear.NativeShiftedFreeChartSectionsSurjective
+import all Linear.NativeChartSectionsModuleNaturality
+import all Linear.NativeFiniteGradedChartSectionsSurjective
+set_option maxHeartbeats 50000
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.localizedSectionFunction_surjective
+#print axioms LinearStudy.localizedSectionFunction_surjective
+#check @LinearStudy.nativeSourceSpecOpenSectionsModule
+#print axioms LinearStudy.nativeSourceSpecOpenSectionsModule
+#check @LinearStudy.nativeWeightedProjRatioOpen_image
+#print axioms LinearStudy.nativeWeightedProjRatioOpen_image
+#check @LinearStudy.nativeWeightedSpecSectionFunction_smul
+#print axioms LinearStudy.nativeWeightedSpecSectionFunction_smul
+#check @LinearStudy.nativeWeightedChartSectionMap_surjective_of_actualChart_function
+#print axioms LinearStudy.nativeWeightedChartSectionMap_surjective_of_actualChart_function
+#check @LinearStudy.nativeFiniteGradedWeightedChartSectionMap_surjective
+#print axioms LinearStudy.nativeFiniteGradedWeightedChartSectionMap_surjective
+#check @LinearStudy.nativeFiniteGradedCechProductChartSectionMap_surjective
+#print axioms LinearStudy.nativeFiniteGradedCechProductChartSectionMap_surjective
+#check @LinearStudy.affineQuasicoherent_globalSections_surjective
+#print axioms LinearStudy.affineQuasicoherent_globalSections_surjective
+#check @LinearStudy.quasicoherent_sections_surjective_on_affineOpen
+#print axioms LinearStudy.quasicoherent_sections_surjective_on_affineOpen
+#check @LinearStudy.quasicoherent_sections_surjective_on_nativeProjChart
+#print axioms LinearStudy.quasicoherent_sections_surjective_on_nativeProjChart
+#check @LinearStudy.nativeZeroTwistChart_section_singleFraction
+#print axioms LinearStudy.nativeZeroTwistChart_section_singleFraction
+#check @LinearStudy.nativeIntegerTwistChart_section_singleFraction
+#print axioms LinearStudy.nativeIntegerTwistChart_section_singleFraction
+#check @LinearStudy.nativeShiftedFreeChartDegreeZeroSectionMap_surjective
+#print axioms LinearStudy.nativeShiftedFreeChartDegreeZeroSectionMap_surjective
+#check @LinearStudy.nativeProjectiveChartRefinement_moduleMap
+#print axioms LinearStudy.nativeProjectiveChartRefinement_moduleMap
+#check @LinearStudy.nativeGradedModuleAwayDegreeZero_moduleMap_mem
+#print axioms LinearStudy.nativeGradedModuleAwayDegreeZero_moduleMap_mem
+#check @LinearStudy.nativeFiniteGradedChartDegreeZeroSectionMap_surjective
+#print axioms LinearStudy.nativeFiniteGradedChartDegreeZeroSectionMap_surjective
+#print LinearStudy.nativeSourceSpecOpenSectionsModule
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool) := [(`LinearStudy.localizedSectionFunction_surjective,true),(`LinearStudy.nativeSourceSpecOpenSectionsModule,false),(`LinearStudy.nativeWeightedProjRatioOpen_image,true),(`LinearStudy.nativeWeightedSpecSectionFunction_smul,true),(`LinearStudy.nativeWeightedChartSectionMap_surjective_of_actualChart_function,true),(`LinearStudy.nativeFiniteGradedWeightedChartSectionMap_surjective,true),(`LinearStudy.nativeFiniteGradedCechProductChartSectionMap_surjective,true),(`LinearStudy.affineQuasicoherent_globalSections_surjective,true),(`LinearStudy.quasicoherent_sections_surjective_on_affineOpen,true),(`LinearStudy.quasicoherent_sections_surjective_on_nativeProjChart,true),(`LinearStudy.nativeZeroTwistChart_section_singleFraction,true),(`LinearStudy.nativeIntegerTwistChart_section_singleFraction,true),(`LinearStudy.nativeShiftedFreeChartDegreeZeroSectionMap_surjective,true),(`LinearStudy.nativeProjectiveChartRefinement_moduleMap,true),(`LinearStudy.nativeGradedModuleAwayDegreeZero_moduleMap_mem,true),(`LinearStudy.nativeFiniteGradedChartDegreeZeroSectionMap_surjective,true)]
+  let env ← Lean.getEnv
+  for (n,want) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"
