@@ -1,0 +1,323 @@
+@LinearStudy.chainOpcycleSequence : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] → ChainComplex A ℕ → ℕ → CategoryTheory.ShortComplex A
+'LinearStudy.chainOpcycleSequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chainOpcycleSequenceIsCokernel : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        (p : ℕ) →
+          CategoryTheory.Limits.IsColimit
+            (CategoryTheory.Limits.CokernelCofork.ofπ (LinearStudy.chainOpcycleSequence K p).g ⋯)
+'LinearStudy.chainOpcycleSequenceIsCokernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chainOpcycleSequence_shortExact : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (p : ℕ),
+  HomologicalComplex.ExactAt K (p + 1) → (LinearStudy.chainOpcycleSequence K p).ShortExact
+'LinearStudy.chainOpcycleSequence_shortExact' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chainActualHomCochain : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] → ChainComplex A ℕ → A → CochainComplex AddCommGrpCat ℕ
+'LinearStudy.chainActualHomCochain' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chainActualHomExact_opcycle_extension : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (F : A) (p : ℕ),
+  HomologicalComplex.ExactAt (LinearStudy.chainActualHomCochain K F) (p + 1) →
+    ∀ (a : HomologicalComplex.opcycles K (p + 1) ⟶ F),
+      ∃ (b : K.X p ⟶ F), CategoryTheory.CategoryStruct.comp (HomologicalComplex.fromOpcycles K (p + 1) p) b = a
+'LinearStudy.chainActualHomExact_opcycle_extension' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicChainOpcycle_ext_subsingleton : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (K : ChainComplex A ℕ) (F : A),
+  (∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) →
+    (∀ (p : ℕ), HomologicalComplex.ExactAt (LinearStudy.chainActualHomCochain K F) (p + 1)) →
+      (∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+        ∀ (p n : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F (n + 1))
+'LinearStudy.acyclicChainOpcycle_ext_subsingleton' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chainResolutionOpcycleZeroIso : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        (Z : A) → (f : K ⟶ (ChainComplex.single₀ A).obj Z) → [QuasiIso f] → HomologicalComplex.opcycles K 0 ≅ Z
+'LinearStudy.chainResolutionOpcycleZeroIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicResolution_ext_subsingleton : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] (K : ChainComplex A ℕ) (Z : A)
+  (f : K ⟶ (ChainComplex.single₀ A).obj Z) [QuasiIso f] (F : A),
+  (∀ (p : ℕ), HomologicalComplex.ExactAt (LinearStudy.chainActualHomCochain K F) (p + 1)) →
+    (∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+      ∀ (n : ℕ), Subsingleton (CategoryTheory.Abelian.Ext Z F (n + 1))
+'LinearStudy.acyclicResolution_ext_subsingleton' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.ext_subsingleton_of_source_iso : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] {O P F : A} (e : O ≅ P) (n : ℕ),
+  Subsingleton (CategoryTheory.Abelian.Ext O F n) → Subsingleton (CategoryTheory.Abelian.Ext P F n)
+'LinearStudy.ext_subsingleton_of_source_iso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finiteCoproduct_ext_subsingleton : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A] {J : Type u_4} [inst_3 : Finite J] (O : J → A)
+  (F : A) (n : ℕ),
+  (∀ (j : J), Subsingleton (CategoryTheory.Abelian.Ext (O j) F n)) → Subsingleton (CategoryTheory.Abelian.Ext (∐ O) F n)
+'LinearStudy.finiteCoproduct_ext_subsingleton' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenAbelianSheafRestriction : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    CategoryTheory.Functor (TopCat.Sheaf AddCommGrpCat X)
+      (TopCat.Sheaf AddCommGrpCat ((TopologicalSpace.Opens.toTopCat X).obj U))
+'LinearStudy.topOpenAbelianSheafRestriction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenAbelianSheafRestriction_additive : ∀ (X : TopCat) (U : TopologicalSpace.Opens ↑X),
+  (LinearStudy.topOpenAbelianSheafRestriction X U).Additive
+'LinearStudy.topOpenAbelianSheafRestriction_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenAbelianSheafRestriction_preservesFiniteLimits : ∀ (X : TopCat) (U : TopologicalSpace.Opens ↑X),
+  CategoryTheory.Limits.PreservesFiniteLimits (LinearStudy.topOpenAbelianSheafRestriction X U)
+'LinearStudy.topOpenAbelianSheafRestriction_preservesFiniteLimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.topOpenAbelianSheafRestriction_preservesColimits : ∀ (X : TopCat) (U : TopologicalSpace.Opens ↑X),
+  CategoryTheory.Limits.PreservesColimits (LinearStudy.topOpenAbelianSheafRestriction X U)
+'LinearStudy.topOpenAbelianSheafRestriction_preservesColimits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.topOpenAbelianSheafRestriction_isFlasque : ∀ (X : TopCat) (U : TopologicalSpace.Opens ↑X)
+  (F : TopCat.Sheaf AddCommGrpCat X), F.IsFlasque → ((LinearStudy.topOpenAbelianSheafRestriction X U).obj F).IsFlasque
+'LinearStudy.topOpenAbelianSheafRestriction_isFlasque' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenRestrictionGlobalSectionsIso : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    (F : TopCat.Sheaf AddCommGrpCat X) →
+      ((LinearStudy.topOpenAbelianSheafRestriction X U).obj F).obj.obj (Opposite.op ⊤) ≅ F.obj.obj (Opposite.op U)
+'LinearStudy.topOpenRestrictionGlobalSectionsIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenRestrictionGlobalSectionsIso_naturality : ∀ (X : TopCat) (U : TopologicalSpace.Opens ↑X)
+  {F G : TopCat.Sheaf AddCommGrpCat X} (f : F ⟶ G),
+  CategoryTheory.CategoryStruct.comp (((LinearStudy.topOpenAbelianSheafRestriction X U).map f).hom.app (Opposite.op ⊤))
+      (LinearStudy.topOpenRestrictionGlobalSectionsIso X U G).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.topOpenRestrictionGlobalSectionsIso X U F).hom
+      (f.hom.app (Opposite.op U))
+'LinearStudy.topOpenRestrictionGlobalSectionsIso_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenRestrictionHomAddEquiv : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    (F : TopCat.Sheaf AddCommGrpCat X) →
+      ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U ⟶ F) ≃+
+        ((CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑((TopologicalSpace.Opens.toTopCat X).obj U))
+                AddCommGrpCat).obj
+            ↧(ULift.{u_1, 0} ℤ) ⟶
+          (LinearStudy.topOpenAbelianSheafRestriction X U).obj F)
+'LinearStudy.topOpenRestrictionHomAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenRestrictionHomAddEquiv_postcompose : ∀ (X : TopCat) (U : TopologicalSpace.Opens ↑X)
+  {F G : TopCat.Sheaf AddCommGrpCat X} (f : F ⟶ G) (a : (LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U ⟶ F),
+  (LinearStudy.topOpenRestrictionHomAddEquiv X U G) (CategoryTheory.CategoryStruct.comp a f) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.topOpenRestrictionHomAddEquiv X U F) a)
+      ((LinearStudy.topOpenAbelianSheafRestriction X U).map f)
+'LinearStudy.topOpenRestrictionHomAddEquiv_postcompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.pointedExactFunctorExtMap_zero_bijective_of_homEquiv : ∀ {C : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} C] [inst_1 : CategoryTheory.Abelian C] [inst_2 : CategoryTheory.HasExt C]
+  {D : Type u_3} [inst_3 : CategoryTheory.Category.{u_4, u_3} D] [inst_4 : CategoryTheory.Abelian D]
+  [inst_5 : CategoryTheory.HasExt D] (R : CategoryTheory.Functor C D) [inst_6 : R.Additive]
+  [inst_7 : CategoryTheory.Limits.PreservesFiniteLimits R] [inst_8 : CategoryTheory.Limits.PreservesFiniteColimits R]
+  {O : C} {P : D} (e : P ⟶ R.obj O) (M : C) (E : (O ⟶ M) ≃ (P ⟶ R.obj M)),
+  (∀ (a : O ⟶ M), CategoryTheory.CategoryStruct.comp e (R.map a) = E a) →
+    Function.Bijective ⇑(LinearStudy.pointedExactFunctorExtMap R e M 0)
+'LinearStudy.pointedExactFunctorExtMap_zero_bijective_of_homEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.topOpenRestrictionIntegerPoint : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    (CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑((TopologicalSpace.Opens.toTopCat X).obj U))
+            AddCommGrpCat).obj
+        ↧(ULift.{u_1, 0} ℤ) ⟶
+      (LinearStudy.topOpenAbelianSheafRestriction X U).obj ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U)
+'LinearStudy.topOpenRestrictionIntegerPoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenRestrictionIntegerPoint_comp : ∀ (X : TopCat) (U : TopologicalSpace.Opens ↑X)
+  (F : TopCat.Sheaf AddCommGrpCat X) (a : (LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U ⟶ F),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.topOpenRestrictionIntegerPoint X U)
+      ((LinearStudy.topOpenAbelianSheafRestriction X U).map a) =
+    (LinearStudy.topOpenRestrictionHomAddEquiv X U F) a
+'LinearStudy.topOpenRestrictionIntegerPoint_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenRestrictionPointedExt_zero_bijective : ∀ (X : TopCat) (U : TopologicalSpace.Opens ↑X)
+  (F : TopCat.Sheaf AddCommGrpCat X),
+  Function.Bijective
+    ⇑(LinearStudy.pointedExactFunctorExtMap (LinearStudy.topOpenAbelianSheafRestriction X U)
+        (LinearStudy.topOpenRestrictionIntegerPoint X U) F 0)
+'LinearStudy.topOpenRestrictionPointedExt_zero_bijective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenFreeSheafExtActualHAddEquiv : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    (F : TopCat.Sheaf AddCommGrpCat X) →
+      (n : ℕ) →
+        CategoryTheory.Abelian.Ext ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U) F n ≃+
+          CategoryTheory.Sheaf.H ((LinearStudy.topOpenAbelianSheafRestriction X U).obj F) n
+'LinearStudy.topOpenFreeSheafExtActualHAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topOpenFreeSheafExt_subsingleton_of_actualH : ∀ (X : TopCat) (U : TopologicalSpace.Opens ↑X)
+  (F : TopCat.Sheaf AddCommGrpCat X) (n : ℕ),
+  Subsingleton (CategoryTheory.Sheaf.H ((LinearStudy.topOpenAbelianSheafRestriction X U).obj F) n) →
+    Subsingleton (CategoryTheory.Abelian.Ext ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U) F n)
+'LinearStudy.topOpenFreeSheafExt_subsingleton_of_actualH' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCechFiniteFreeSheafTermIso : (X : TopCat) →
+  {ι : Type u_1} →
+    [inst : Finite ι] →
+      (U : ι → TopologicalSpace.Opens ↑X) →
+        (n : ℕ) →
+          ((AlgebraicTopology.alternatingFaceMapComplex (TopCat.Sheaf AddCommGrpCat X)).obj
+                  (LinearStudy.topCechFreeAbelianAugmented X U).left).X
+              n ≅
+            ∐ fun (i : Fin (n + 1) → ι) =>
+              (LinearStudy.topOpenFreeAbelianSheafFunctor X).obj (∏ᶜ fun (k : Fin (n + 1)) => U (i k))
+'LinearStudy.topCechFiniteFreeSheafTermIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topCechFiniteFreeSheafTerm_ext_subsingleton : ∀ (X : TopCat) {ι : Type u_1} [Finite ι]
+  (U : ι → TopologicalSpace.Opens ↑X) (F : TopCat.Sheaf AddCommGrpCat X) (p j : ℕ),
+  (∀ (i : Fin (p + 1) → ι),
+      Subsingleton
+        (CategoryTheory.Sheaf.H
+          ((LinearStudy.topOpenAbelianSheafRestriction X (∏ᶜ fun (k : Fin (p + 1)) => U (i k))).obj F) (j + 1))) →
+    Subsingleton
+      (CategoryTheory.Abelian.Ext
+        (((AlgebraicTopology.alternatingFaceMapComplex (TopCat.Sheaf AddCommGrpCat X)).obj
+              (LinearStudy.topCechFreeAbelianAugmented X U).left).X
+          p)
+        F (j + 1))
+'LinearStudy.topCechFiniteFreeSheafTerm_ext_subsingleton' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topFiniteCech_actualHigherH_vanish_of_localAcyclic : ∀ (X : TopCat) {ι : Type u_1} [Finite ι]
+  (U : ι → TopologicalSpace.Opens ↑X),
+  ⊤ ≤ iSup U →
+    ∀ (F : TopCat.Sheaf AddCommGrpCat X),
+      (∀ (p : ℕ), HomologicalComplex.ExactAt ((CategoryTheory.cechComplexFunctor U).obj F.obj) (p + 1)) →
+        (∀ (p : ℕ) (i : Fin (p + 1) → ι) (j : ℕ),
+            Subsingleton
+              (CategoryTheory.Sheaf.H
+                ((LinearStudy.topOpenAbelianSheafRestriction X (∏ᶜ fun (k : Fin (p + 1)) => U (i k))).obj F) (j + 1))) →
+          ∀ (n : ℕ), Subsingleton (CategoryTheory.Sheaf.H F (n + 1))
+'LinearStudy.topFiniteCech_actualHigherH_vanish_of_localAcyclic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.chainOpcycleSequence.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] → ChainComplex A ℕ → ℕ → CategoryTheory.ShortComplex A :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (p : ℕ) =>
+  { X₁ := HomologicalComplex.opcycles K (p + 1), X₂ := K.X p, X₃ := HomologicalComplex.opcycles K p,
+    f := HomologicalComplex.fromOpcycles K (p + 1) p, g := HomologicalComplex.pOpcycles K p, zero := ⋯ }
+def LinearStudy.chainOpcycleSequenceIsCokernel.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        (p : ℕ) →
+          CategoryTheory.Limits.IsColimit
+            (CategoryTheory.Limits.CokernelCofork.ofπ (LinearStudy.chainOpcycleSequence K p).g ⋯) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (p : ℕ) =>
+  CategoryTheory.Limits.CokernelCofork.isColimitOfIsColimitOfIff' (HomologicalComplex.opcyclesIsCokernel K (p + 1) p ⋯)
+    (HomologicalComplex.fromOpcycles K (p + 1) p) ⋯
+def LinearStudy.chainActualHomCochain.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] → ChainComplex A ℕ → A → CochainComplex AddCommGrpCat ℕ :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (F : A) =>
+  ((CategoryTheory.preadditiveYoneda.obj F).mapHomologicalComplex (ComplexShape.up ℕ)).obj (HomologicalComplex.op K)
+def LinearStudy.chainResolutionOpcycleZeroIso.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        (Z : A) → (f : K ⟶ (ChainComplex.single₀ A).obj Z) → [QuasiIso f] → HomologicalComplex.opcycles K 0 ≅ Z :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (Z : A)
+    (f : K ⟶ (ChainComplex.single₀ A).obj Z) [QuasiIso f] =>
+  (HomologicalComplex.isoHomologyι K 0 0 LinearStudy.chainResolutionOpcycleZeroIso._proof_1 ⋯).symm ≪≫
+    isoOfQuasiIsoAt f 0 ≪≫ HomologicalComplex.singleObjHomologySelfIso (ComplexShape.down ℕ) 0 Z
+def LinearStudy.topOpenAbelianSheafRestriction.{u} : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    CategoryTheory.Functor (TopCat.Sheaf AddCommGrpCat X)
+      (TopCat.Sheaf AddCommGrpCat ((TopologicalSpace.Opens.toTopCat X).obj U)) :=
+fun (X : TopCat) (U : TopologicalSpace.Opens ↑X) => Topology.IsOpenEmbedding.sheafPullback AddCommGrpCat ⋯
+theorem LinearStudy.topOpenAbelianSheafRestriction_additive.{u} : ∀ (X : TopCat) (U : TopologicalSpace.Opens ↑X),
+  (LinearStudy.topOpenAbelianSheafRestriction X U).Additive :=
+fun (X : TopCat) (U : TopologicalSpace.Opens ↑X) =>
+  {
+    map_add := fun {X_1 Y : TopCat.Sheaf AddCommGrpCat X} {f g : X_1 ⟶ Y} =>
+      Eq.refl ((LinearStudy.topOpenAbelianSheafRestriction X U).map (f + g)) }
+theorem LinearStudy.topOpenAbelianSheafRestriction_preservesFiniteLimits.{u} : ∀ (X : TopCat)
+  (U : TopologicalSpace.Opens ↑X),
+  CategoryTheory.Limits.PreservesFiniteLimits (LinearStudy.topOpenAbelianSheafRestriction X U) :=
+fun (X : TopCat) (U : TopologicalSpace.Opens ↑X) =>
+  let R := LinearStudy.topOpenAbelianSheafRestriction X U;
+  let G :=
+    CategoryTheory.sheafToPresheaf (Opens.grothendieckTopology ↑((TopologicalSpace.Opens.toTopCat X).obj U))
+      AddCommGrpCat;
+  CategoryTheory.Limits.preservesFiniteLimits_of_reflects_of_preserves R G
+theorem LinearStudy.topOpenAbelianSheafRestriction_preservesColimits.{u} : ∀ (X : TopCat)
+  (U : TopologicalSpace.Opens ↑X),
+  CategoryTheory.Limits.PreservesColimits (LinearStudy.topOpenAbelianSheafRestriction X U) :=
+fun (X : TopCat) (U : TopologicalSpace.Opens ↑X) =>
+  CategoryTheory.Limits.preservesColimits_of_natIso
+    (Topology.IsOpenEmbedding.sheafPullbackIso AddCommGrpCat (TopologicalSpace.Opens.isOpenEmbedding U))
+def LinearStudy.topOpenRestrictionGlobalSectionsIso.{u} : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    (F : TopCat.Sheaf AddCommGrpCat X) →
+      ((LinearStudy.topOpenAbelianSheafRestriction X U).obj F).obj.obj (Opposite.op ⊤) ≅ F.obj.obj (Opposite.op U) :=
+fun (X : TopCat) (U : TopologicalSpace.Opens ↑X) (F : TopCat.Sheaf AddCommGrpCat X) =>
+  id (F.obj.mapIso (CategoryTheory.eqToIso ⋯))
+def LinearStudy.topOpenRestrictionHomAddEquiv.{u} : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    (F : TopCat.Sheaf AddCommGrpCat X) →
+      ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U ⟶ F) ≃+
+        ((CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑((TopologicalSpace.Opens.toTopCat X).obj U))
+                AddCommGrpCat).obj
+            ↧(ULift.{u, 0} ℤ) ⟶
+          (LinearStudy.topOpenAbelianSheafRestriction X U).obj F) :=
+fun (X : TopCat) (U : TopologicalSpace.Opens ↑X) (F : TopCat.Sheaf AddCommGrpCat X) =>
+  (LinearStudy.topOpenFreeAbelianSheafHomSectionsAddEquiv X U F).trans
+    ((LinearStudy.topOpenRestrictionGlobalSectionsIso X U F).addCommGroupIsoToAddEquiv.symm.trans
+      (LinearStudy.topAbelianSheafIntegerHomSectionsAddEquiv ((TopologicalSpace.Opens.toTopCat X).obj U)
+          ((LinearStudy.topOpenAbelianSheafRestriction X U).obj F)).symm)
+def LinearStudy.topOpenRestrictionIntegerPoint.{u} : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    (CategoryTheory.constantSheaf (Opens.grothendieckTopology ↑((TopologicalSpace.Opens.toTopCat X).obj U))
+            AddCommGrpCat).obj
+        ↧(ULift.{u, 0} ℤ) ⟶
+      (LinearStudy.topOpenAbelianSheafRestriction X U).obj ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U) :=
+fun (X : TopCat) (U : TopologicalSpace.Opens ↑X) =>
+  (LinearStudy.topOpenRestrictionHomAddEquiv X U ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U))
+    (CategoryTheory.CategoryStruct.id ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U))
+def LinearStudy.topOpenFreeSheafExtActualHAddEquiv.{u} : (X : TopCat) →
+  (U : TopologicalSpace.Opens ↑X) →
+    (F : TopCat.Sheaf AddCommGrpCat X) →
+      (n : ℕ) →
+        CategoryTheory.Abelian.Ext ((LinearStudy.topOpenFreeAbelianSheafFunctor X).obj U) F n ≃+
+          CategoryTheory.Sheaf.H ((LinearStudy.topOpenAbelianSheafRestriction X U).obj F) n :=
+fun (X : TopCat) (U : TopologicalSpace.Opens ↑X) (F : TopCat.Sheaf AddCommGrpCat X) (n : ℕ) =>
+  AddEquiv.ofBijective
+    (LinearStudy.pointedExactFunctorExtMap (LinearStudy.topOpenAbelianSheafRestriction X U)
+      (LinearStudy.topOpenRestrictionIntegerPoint X U) F n)
+    ⋯
+def LinearStudy.topCechFiniteFreeSheafTermIso.{u} : (X : TopCat) →
+  {ι : Type u} →
+    [inst : Finite ι] →
+      (U : ι → TopologicalSpace.Opens ↑X) →
+        (n : ℕ) →
+          ((AlgebraicTopology.alternatingFaceMapComplex (TopCat.Sheaf AddCommGrpCat X)).obj
+                  (LinearStudy.topCechFreeAbelianAugmented X U).left).X
+              n ≅
+            ∐ fun (i : Fin (n + 1) → ι) =>
+              (LinearStudy.topOpenFreeAbelianSheafFunctor X).obj (∏ᶜ fun (k : Fin (n + 1)) => U (i k)) :=
+fun (X : TopCat) {ι : Type u} [Finite ι] (U : ι → TopologicalSpace.Opens ↑X) (n : ℕ) =>
+  let S := CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↑X) AddCommGrpCat;
+  let K := LinearStudy.topOpenFreeAbelianPresheafFunctor X;
+  id
+    (S.mapIso ((LinearStudy.topCechFreePresheafSimplicialIso X U).app (Opposite.op { len := n })) ≪≫
+      id
+        (CategoryTheory.Limits.PreservesCoproduct.iso S fun (i : Fin (n + 1) → ι) =>
+          K.obj (∏ᶜ fun (k : Fin (n + 1)) => U (i k))))
+ROLECHECK:LinearStudy.chainOpcycleSequence:false
+ROLECHECK:LinearStudy.chainOpcycleSequenceIsCokernel:false
+ROLECHECK:LinearStudy.chainOpcycleSequence_shortExact:true
+ROLECHECK:LinearStudy.chainActualHomCochain:false
+ROLECHECK:LinearStudy.chainActualHomExact_opcycle_extension:true
+ROLECHECK:LinearStudy.acyclicChainOpcycle_ext_subsingleton:true
+ROLECHECK:LinearStudy.chainResolutionOpcycleZeroIso:false
+ROLECHECK:LinearStudy.acyclicResolution_ext_subsingleton:true
+ROLECHECK:LinearStudy.ext_subsingleton_of_source_iso:true
+ROLECHECK:LinearStudy.finiteCoproduct_ext_subsingleton:true
+ROLECHECK:LinearStudy.topOpenAbelianSheafRestriction:false
+ROLECHECK:LinearStudy.topOpenAbelianSheafRestriction_additive:true
+ROLECHECK:LinearStudy.topOpenAbelianSheafRestriction_preservesFiniteLimits:true
+ROLECHECK:LinearStudy.topOpenAbelianSheafRestriction_preservesColimits:true
+ROLECHECK:LinearStudy.topOpenAbelianSheafRestriction_isFlasque:true
+ROLECHECK:LinearStudy.topOpenRestrictionGlobalSectionsIso:false
+ROLECHECK:LinearStudy.topOpenRestrictionGlobalSectionsIso_naturality:true
+ROLECHECK:LinearStudy.topOpenRestrictionHomAddEquiv:false
+ROLECHECK:LinearStudy.topOpenRestrictionHomAddEquiv_postcompose:true
+ROLECHECK:LinearStudy.pointedExactFunctorExtMap_zero_bijective_of_homEquiv:true
+ROLECHECK:LinearStudy.topOpenRestrictionIntegerPoint:false
+ROLECHECK:LinearStudy.topOpenRestrictionIntegerPoint_comp:true
+ROLECHECK:LinearStudy.topOpenRestrictionPointedExt_zero_bijective:true
+ROLECHECK:LinearStudy.topOpenFreeSheafExtActualHAddEquiv:false
+ROLECHECK:LinearStudy.topOpenFreeSheafExt_subsingleton_of_actualH:true
+ROLECHECK:LinearStudy.topCechFiniteFreeSheafTermIso:false
+ROLECHECK:LinearStudy.topCechFiniteFreeSheafTerm_ext_subsingleton:true
+ROLECHECK:LinearStudy.topFiniteCech_actualHigherH_vanish_of_localAcyclic:true
