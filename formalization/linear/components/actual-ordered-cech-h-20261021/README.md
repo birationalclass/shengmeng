@@ -1,0 +1,7 @@
+# Actual ordered Cech to native H comparison
+
+For the ORIGINAL integral projective V,ALL integer twists k including negative,andALL positive cohomological degrees q+1,construct an explicit additive isomorphism between the SAME actual ordered coordinate-Cech homology and actual native H(V,O_V(k)). ONLY V,k,q are inputs;original coordinate cover,finite presentation,QC,Noetherianity and local actual-H acyclicity are DERIVED. General finite locally acyclic ordered covers and actual module-Cech homology after exact scalar forgetting are included. The actual ordered free resolution targets the SAME native integer sheaf. Global Ext is computed by SAME actual Hom cochain homology without source projectivity or desired-comparison premise. Original alternating differentials retained;dimension shifts use unsigned native Yoneda precomposition. Standard signed connecting-map normalization,geometric trace/perfection,canonical-dualizing identification and original4.1/4.2/main remain OPEN. No final nonzeroQ or geometric perfect-duality theorem is claimed.
+
+8 compiled/audited roots,29 declarations:9 theorem declarations and20 actual object constructions. 452 physical root lines;282 closed project modules;274 unchanged LIVE-archive-hash-verified dependencies. All authored sources,exact types and construction bodies reviewed by Codex;no independent human review claimed. Component verification only;latest complete whole-local checkpoint180.
+
+All95resourceholds retained;8GiB,2threads,CPU<=25%,20min. D-drive staging and mandatory lean_runner controller.

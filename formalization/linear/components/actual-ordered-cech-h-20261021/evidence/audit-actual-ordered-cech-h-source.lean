@@ -1,0 +1,98 @@
+module
+import all Linear.AcyclicResolutionGlobalExtShift
+import all Linear.AcyclicResolutionGlobalExtCokernel
+import all Linear.ChainActualHomCycles
+import all Linear.AcyclicResolutionGlobalExtHomology
+import all Linear.OrderedCechActualHComparison
+import all Linear.NoetherianOrderedAffineCoverActualHComparison
+import all Linear.NativeProjActualHComparison
+import all Linear.OriginalProjectiveTwistActualHComparison
+set_option maxHeartbeats 50000
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.relativeAcyclicContravariantBoundary_surjective
+#print axioms LinearStudy.relativeAcyclicContravariantBoundary_surjective
+#check @LinearStudy.relativeAcyclicContravariantBoundary_injective
+#print axioms LinearStudy.relativeAcyclicContravariantBoundary_injective
+#check @LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv
+#print axioms LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv
+#check @LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv
+#print axioms LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv
+#check @LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv
+#print axioms LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv
+#check @LinearStudy.acyclicResolutionExtSourceIsoAddEquiv
+#print axioms LinearStudy.acyclicResolutionExtSourceIsoAddEquiv
+#check @LinearStudy.acyclicResolutionExtSourceIsoAddEquiv_apply
+#print axioms LinearStudy.acyclicResolutionExtSourceIsoAddEquiv_apply
+#check @LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv
+#print axioms LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv
+#check @LinearStudy.acyclicChainOpcycleHomPrecompose
+#print axioms LinearStudy.acyclicChainOpcycleHomPrecompose
+#check @LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary
+#print axioms LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary
+#check @LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_surjective
+#print axioms LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_surjective
+#check @LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_kernel
+#print axioms LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_kernel
+#check @LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation
+#print axioms LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation
+#check @LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation_exact
+#print axioms LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation_exact
+#check @LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso
+#print axioms LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso
+#check @LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso_projection
+#print axioms LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso_projection
+#check @LinearStudy.acyclicResolutionGlobalExtHomCokernelIso
+#print axioms LinearStudy.acyclicResolutionGlobalExtHomCokernelIso
+#check @LinearStudy.chainActualHomCyclesNativeIso
+#print axioms LinearStudy.chainActualHomCyclesNativeIso
+#check @LinearStudy.chainActualHomCyclesNativeIso_inv_iCycles
+#print axioms LinearStudy.chainActualHomCyclesNativeIso_inv_iCycles
+#check @LinearStudy.chainActualHomCyclesOpcyclesIso
+#print axioms LinearStudy.chainActualHomCyclesOpcyclesIso
+#check @LinearStudy.chainActualHomCyclesOpcyclesIso_boundary
+#print axioms LinearStudy.chainActualHomCyclesOpcyclesIso_boundary
+#check @LinearStudy.chainActualHomCochainHomologyCokernelIso
+#print axioms LinearStudy.chainActualHomCochainHomologyCokernelIso
+#check @LinearStudy.acyclicResolutionGlobalExtActualHomologyIso
+#print axioms LinearStudy.acyclicResolutionGlobalExtActualHomologyIso
+#check @LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic
+#print axioms LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic
+#check @LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso
+#print axioms LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso
+#check @LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso
+#print axioms LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso
+#check @LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso
+#print axioms LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso
+#check @LinearStudy.finiteTypeNativeProj_moduleCechActualHigherHIso
+#print axioms LinearStudy.finiteTypeNativeProj_moduleCechActualHigherHIso
+#check @LinearStudy.originalProjectiveTwist_actualOrderedCechHigherHIso
+#print axioms LinearStudy.originalProjectiveTwist_actualOrderedCechHigherHIso
+#print LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv
+#print LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv
+#print LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv
+#print LinearStudy.acyclicResolutionExtSourceIsoAddEquiv
+#print LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv
+#print LinearStudy.acyclicChainOpcycleHomPrecompose
+#print LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary
+#print LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation
+#print LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso
+#print LinearStudy.acyclicResolutionGlobalExtHomCokernelIso
+#print LinearStudy.chainActualHomCyclesNativeIso
+#print LinearStudy.chainActualHomCyclesOpcyclesIso
+#print LinearStudy.chainActualHomCochainHomologyCokernelIso
+#print LinearStudy.acyclicResolutionGlobalExtActualHomologyIso
+#print LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic
+#print LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso
+#print LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso
+#print LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso
+#print LinearStudy.finiteTypeNativeProj_moduleCechActualHigherHIso
+#print LinearStudy.originalProjectiveTwist_actualOrderedCechHigherHIso
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool) := [(`LinearStudy.relativeAcyclicContravariantBoundary_surjective,true),(`LinearStudy.relativeAcyclicContravariantBoundary_injective,true),(`LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv,false),(`LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv,false),(`LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv,false),(`LinearStudy.acyclicResolutionExtSourceIsoAddEquiv,false),(`LinearStudy.acyclicResolutionExtSourceIsoAddEquiv_apply,true),(`LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv,false),(`LinearStudy.acyclicChainOpcycleHomPrecompose,false),(`LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary,false),(`LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_surjective,true),(`LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_kernel,true),(`LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation,false),(`LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation_exact,true),(`LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso,false),(`LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso_projection,true),(`LinearStudy.acyclicResolutionGlobalExtHomCokernelIso,false),(`LinearStudy.chainActualHomCyclesNativeIso,false),(`LinearStudy.chainActualHomCyclesNativeIso_inv_iCycles,true),(`LinearStudy.chainActualHomCyclesOpcyclesIso,false),(`LinearStudy.chainActualHomCyclesOpcyclesIso_boundary,true),(`LinearStudy.chainActualHomCochainHomologyCokernelIso,false),(`LinearStudy.acyclicResolutionGlobalExtActualHomologyIso,false),(`LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic,false),(`LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso,false),(`LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso,false),(`LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso,false),(`LinearStudy.finiteTypeNativeProj_moduleCechActualHigherHIso,false),(`LinearStudy.originalProjectiveTwist_actualOrderedCechHigherHIso,false)]
+  let env ← Lean.getEnv
+  for (n,want) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"

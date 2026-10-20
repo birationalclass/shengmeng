@@ -1,0 +1,776 @@
+@LinearStudy.relativeAcyclicContravariantBoundary_surjective : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (F : A) {S : CategoryTheory.ShortComplex A} (hS : S.ShortExact) (n m : ℕ) (hm : 1 + n = m)
+  [Subsingleton (CategoryTheory.Abelian.Ext S.X₂ F m)], Function.Surjective ⇑(hS.extClass.precomp F hm)
+'LinearStudy.relativeAcyclicContravariantBoundary_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.relativeAcyclicContravariantBoundary_injective : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (F : A) {S : CategoryTheory.ShortComplex A} (hS : S.ShortExact) (n m : ℕ) (hm : 1 + n = m)
+  [Subsingleton (CategoryTheory.Abelian.Ext S.X₂ F n)], Function.Injective ⇑(hS.extClass.precomp F hm)
+'LinearStudy.relativeAcyclicContravariantBoundary_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (F : A) →
+          {S : CategoryTheory.ShortComplex A} →
+            S.ShortExact →
+              (n m : ℕ) →
+                1 + n = m →
+                  [Subsingleton (CategoryTheory.Abelian.Ext S.X₂ F n)] →
+                    [Subsingleton (CategoryTheory.Abelian.Ext S.X₂ F m)] →
+                      CategoryTheory.Abelian.Ext S.X₁ F n ≃+ CategoryTheory.Abelian.Ext S.X₃ F m
+'LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (F : A) →
+            (p q : ℕ) →
+              HomologicalComplex.ExactAt K (p + 1) →
+                (∀ (j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+                  CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F (q + 2) ≃+
+                    CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K (p + 1)) F (q + 1)
+'LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (F : A) →
+            (∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) →
+              (∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+                (p q : ℕ) →
+                  CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F (q + 1) ≃+
+                    CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K (p + q)) F 1
+'LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicResolutionExtSourceIsoAddEquiv : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        {P Q : A} → (P ≅ Q) → (F : A) → (n : ℕ) → CategoryTheory.Abelian.Ext Q F n ≃+ CategoryTheory.Abelian.Ext P F n
+'LinearStudy.acyclicResolutionExtSourceIsoAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicResolutionExtSourceIsoAddEquiv_apply : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  {P Q : A} (e : P ≅ Q) (F : A) (n : ℕ) (z : CategoryTheory.Abelian.Ext Q F n),
+  (LinearStudy.acyclicResolutionExtSourceIsoAddEquiv e F n) z = (CategoryTheory.Abelian.Ext.mk₀ e.hom).comp z ⋯
+'LinearStudy.acyclicResolutionExtSourceIsoAddEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (Z : A) →
+            (f : K ⟶ (ChainComplex.single₀ A).obj Z) →
+              [QuasiIso f] →
+                (F : A) →
+                  (∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+                    (q : ℕ) →
+                      CategoryTheory.Abelian.Ext Z F (q + 1) ≃+
+                        CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K q) F 1
+'LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicChainOpcycleHomPrecompose : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) → (F : A) → (p : ℕ) → ↧(K.X p ⟶ F) ⟶ ↧(HomologicalComplex.opcycles K (p + 1) ⟶ F)
+'LinearStudy.acyclicChainOpcycleHomPrecompose' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (F : A) →
+            (p : ℕ) →
+              HomologicalComplex.ExactAt K (p + 1) →
+                (HomologicalComplex.opcycles K (p + 1) ⟶ F) →+
+                  CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F 1
+'LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_surjective : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) (F : A) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1))
+  [Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F 1)],
+  Function.Surjective ⇑(LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary K F p hK)
+'LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_kernel : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) (F : A) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1))
+  (a : HomologicalComplex.opcycles K (p + 1) ⟶ F),
+  (LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary K F p hK) a = 0 ↔
+    ∃ (b : K.X p ⟶ F), CategoryTheory.CategoryStruct.comp (HomologicalComplex.fromOpcycles K (p + 1) p) b = a
+'LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          A → (p : ℕ) → HomologicalComplex.ExactAt K (p + 1) → CategoryTheory.ShortComplex AddCommGrpCat
+'LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation_exact : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) (F : A) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1)),
+  (LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation K F p hK).Exact
+'LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation_exact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (F : A) →
+            (p : ℕ) →
+              HomologicalComplex.ExactAt K (p + 1) →
+                [Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F 1)] →
+                  CategoryTheory.Limits.cokernel (LinearStudy.acyclicChainOpcycleHomPrecompose K F p) ≅
+                    ↧(CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F 1)
+'LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso_projection : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) (F : A) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1))
+  [inst_3 : Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F 1)],
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.acyclicChainOpcycleHomPrecompose K F p))
+      (LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso K F p hK).hom =
+    AddCommGrpCat.ofHom (LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary K F p hK)
+'LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicResolutionGlobalExtHomCokernelIso : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (Z : A) →
+            (f : K ⟶ (ChainComplex.single₀ A).obj Z) →
+              [QuasiIso f] →
+                (F : A) →
+                  (∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+                    (q : ℕ) →
+                      ↧(CategoryTheory.Abelian.Ext Z F (q + 1)) ≅
+                        CategoryTheory.Limits.cokernel (LinearStudy.acyclicChainOpcycleHomPrecompose K F q)
+'LinearStudy.acyclicResolutionGlobalExtHomCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chainActualHomCyclesNativeIso : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        (F : A) →
+          (n : ℕ) →
+            HomologicalComplex.cycles (LinearStudy.chainActualHomCochain K F) n ≅
+              (CategoryTheory.preadditiveYoneda.obj F).obj ((HomologicalComplex.op K).cycles n)
+'LinearStudy.chainActualHomCyclesNativeIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chainActualHomCyclesNativeIso_inv_iCycles : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (F : A) (n : ℕ),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.chainActualHomCyclesNativeIso K F n).inv
+      (HomologicalComplex.iCycles (LinearStudy.chainActualHomCochain K F) n) =
+    (CategoryTheory.preadditiveYoneda.obj F).map ((HomologicalComplex.op K).iCycles n)
+'LinearStudy.chainActualHomCyclesNativeIso_inv_iCycles' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chainActualHomCyclesOpcyclesIso : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        (F : A) →
+          (n : ℕ) →
+            HomologicalComplex.cycles (LinearStudy.chainActualHomCochain K F) n ≅ ↧(HomologicalComplex.opcycles K n ⟶ F)
+'LinearStudy.chainActualHomCyclesOpcyclesIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chainActualHomCyclesOpcyclesIso_boundary : ∀ {A : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} A]
+  [inst_1 : CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (F : A) (p : ℕ),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.acyclicChainOpcycleHomPrecompose K F p)
+      (LinearStudy.chainActualHomCyclesOpcyclesIso K F (p + 1)).inv =
+    HomologicalComplex.toCycles (LinearStudy.chainActualHomCochain K F) p (p + 1)
+'LinearStudy.chainActualHomCyclesOpcyclesIso_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chainActualHomCochainHomologyCokernelIso : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        (F : A) →
+          (p : ℕ) →
+            HomologicalComplex.homology (LinearStudy.chainActualHomCochain K F) (p + 1) ≅
+              CategoryTheory.Limits.cokernel (LinearStudy.acyclicChainOpcycleHomPrecompose K F p)
+'LinearStudy.chainActualHomCochainHomologyCokernelIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicResolutionGlobalExtActualHomologyIso : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (Z : A) →
+            (f : K ⟶ (ChainComplex.single₀ A).obj Z) →
+              [QuasiIso f] →
+                (F : A) →
+                  (∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+                    (q : ℕ) →
+                      ↧(CategoryTheory.Abelian.Ext Z F (q + 1)) ≅
+                        HomologicalComplex.homology (LinearStudy.chainActualHomCochain K F) (q + 1)
+'LinearStudy.acyclicResolutionGlobalExtActualHomologyIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic : (X : AlgebraicGeometry.Scheme) →
+  {ι : Type u_1} →
+    [inst : LinearOrder ι] →
+      [Finite ι] →
+        (U : ι → X.Opens) →
+          ⊤ ≤ iSup U →
+            (F : TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace) →
+              (∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) (j : ℕ),
+                  Subsingleton
+                    (CategoryTheory.Sheaf.H
+                      ((LinearStudy.topOpenAbelianSheafRestriction (↑X.toPresheafedSpace)
+                            (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k))).obj
+                        F)
+                      (j + 1))) →
+                (n : ℕ) →
+                  HomologicalComplex.homology (LinearStudy.orderedTopAbelianCechComplex X U F) (n + 1) ≅
+                    ↧(CategoryTheory.Sheaf.H F (n + 1))
+'LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso : (X : AlgebraicGeometry.Scheme) →
+  [AlgebraicGeometry.IsLocallyNoetherian X] →
+    {ι : Type u_1} →
+      [inst : LinearOrder ι] →
+        [Finite ι] →
+          (U : ι → X.Opens) →
+            ⊤ ≤ iSup U →
+              (∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+                  AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k))) →
+                (M : X.Modules) →
+                  [SheafOfModules.IsQuasicoherent M] →
+                    (n : ℕ) →
+                      HomologicalComplex.homology
+                          (LinearStudy.orderedTopAbelianCechComplex X U
+                            ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M))
+                          (n + 1) ≅
+                        ↧(LinearStudy.schemeModuleActualCohomology X M (n + 1))
+'LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso : {X S : AlgebraicGeometry.Scheme} →
+  [AlgebraicGeometry.IsLocallyNoetherian X] →
+    (pi : X ⟶ S) →
+      {ι : Type u_1} →
+        [inst : LinearOrder ι] →
+          [Finite ι] →
+            (U : ι → X.Opens) →
+              ⊤ ≤ iSup U →
+                (∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+                    AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k))) →
+                  (M : X.Modules) →
+                    [SheafOfModules.IsQuasicoherent M] →
+                      (n : ℕ) →
+                        (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).obj
+                            (HomologicalComplex.homology
+                              (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex pi M U) (n + 1)) ≅
+                          ↧(LinearStudy.schemeModuleActualCohomology X M (n + 1))
+'LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso : {K A : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing A] →
+      [inst_2 : Algebra K A] →
+        (B : ℕ → Submodule K A) →
+          [inst_3 : GradedAlgebra B] →
+            [IsNoetherianRing A] →
+              [Algebra.FiniteType K A] →
+                {ι : Type u_1} →
+                  [inst_6 : LinearOrder ι] →
+                    [Finite ι] →
+                      (a : ι → A) →
+                        (∀ (i : ι), a i ∈ B 1) →
+                          ⨆ (i : ι), AlgebraicGeometry.Proj.basicOpen B (a i) = ⊤ →
+                            (M : (AlgebraicGeometry.Proj B).Modules) →
+                              [SheafOfModules.IsQuasicoherent M] →
+                                (q : ℕ) →
+                                  HomologicalComplex.homology
+                                      (LinearStudy.orderedTopAbelianCechComplex (AlgebraicGeometry.Proj B)
+                                        (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B (a i))
+                                        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+                                          M))
+                                      (q + 1) ≅
+                                    ↧(LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B) M (q + 1))
+'LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finiteTypeNativeProj_moduleCechActualHigherHIso : {K A : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing A] →
+      [inst_2 : Algebra K A] →
+        (B : ℕ → Submodule K A) →
+          [inst_3 : GradedAlgebra B] →
+            [IsNoetherianRing A] →
+              [Algebra.FiniteType K A] →
+                {ι : Type u_1} →
+                  [inst_6 : LinearOrder ι] →
+                    [Finite ι] →
+                      (a : ι → A) →
+                        (∀ (i : ι), a i ∈ B 1) →
+                          ⨆ (i : ι), AlgebraicGeometry.Proj.basicOpen B (a i) = ⊤ →
+                            {Y : AlgebraicGeometry.Scheme} →
+                              (pi : AlgebraicGeometry.Proj B ⟶ Y) →
+                                (M : (AlgebraicGeometry.Proj B).Modules) →
+                                  [SheafOfModules.IsQuasicoherent M] →
+                                    (q : ℕ) →
+                                      (CategoryTheory.forget₂ (ModuleCat ↑(Y.presheaf.obj (Opposite.op ⊤)))
+                                              AddCommGrpCat).obj
+                                          (HomologicalComplex.homology
+                                            (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex pi M fun (i : ι) =>
+                                              AlgebraicGeometry.Proj.basicOpen B (a i))
+                                            (q + 1)) ≅
+                                        ↧(LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B) M (q + 1))
+'LinearStudy.finiteTypeNativeProj_moduleCechActualHigherHIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalProjectiveTwist_actualOrderedCechHigherHIso : {n : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (k : ℤ) →
+      (q : ℕ) →
+        HomologicalComplex.homology
+            (LinearStudy.orderedTopAbelianCechComplex
+              (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+              (fun (i : ULift.{0, 0} (Fin (n + 1))) =>
+                AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                  ((fun (i : ULift.{0, 0} (Fin (n + 1))) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X i.down))
+                    i))
+              ((LinearStudy.schemeModuleToActualAbelianSheaf
+                    (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))).obj
+                (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                  (LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                  ⋯ k)))
+            (q + 1) ≅
+          ↧(LinearStudy.schemeModuleActualCohomology
+              (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+              (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                (LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)) ⋯
+                k)
+              (q + 1))
+'LinearStudy.originalProjectiveTwist_actualOrderedCechHigherHIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv.{u, v, w} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (F : A) →
+          {S : CategoryTheory.ShortComplex A} →
+            S.ShortExact →
+              (n m : ℕ) →
+                1 + n = m →
+                  [Subsingleton (CategoryTheory.Abelian.Ext S.X₂ F n)] →
+                    [Subsingleton (CategoryTheory.Abelian.Ext S.X₂ F m)] →
+                      CategoryTheory.Abelian.Ext S.X₁ F n ≃+ CategoryTheory.Abelian.Ext S.X₃ F m :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A] (F : A)
+    {S : CategoryTheory.ShortComplex A} (hS : S.ShortExact) (n m : ℕ) (hm : 1 + n = m)
+    [Subsingleton (CategoryTheory.Abelian.Ext S.X₂ F n)] [Subsingleton (CategoryTheory.Abelian.Ext S.X₂ F m)] =>
+  AddEquiv.ofBijective (hS.extClass.precomp F hm) ⋯
+def LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv.{u, v, w} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (F : A) →
+            (p q : ℕ) →
+              HomologicalComplex.ExactAt K (p + 1) →
+                (∀ (j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+                  CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F (q + 2) ≃+
+                    CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K (p + 1)) F (q + 1) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    (K : ChainComplex A ℕ) (F : A) (p q : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1))
+    (hA : ∀ (j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) =>
+  (LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv F ⋯ (q + 1) (q + 2) ⋯).symm
+def LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv.{u, v, w} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (F : A) →
+            (∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1)) →
+              (∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+                (p q : ℕ) →
+                  CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F (q + 1) ≃+
+                    CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K (p + q)) F 1 :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    (K : ChainComplex A ℕ) (F : A) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1))
+    (hA : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) (p q : ℕ) =>
+  Nat.recAux (motive := fun (q : ℕ) =>
+    (p : ℕ) →
+      CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F (q + 1) ≃+
+        CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K (p + q)) F 1)
+    (fun (p : ℕ) => AddEquiv.refl (CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F (0 + 1)))
+    (fun (q : ℕ)
+        (ih :
+          (p : ℕ) →
+            CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F (q + 1) ≃+
+              CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K (p + q)) F 1)
+        (p : ℕ) =>
+      have e := (LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv K F p q ⋯ ⋯).trans (ih (p + 1));
+      have h := ⋯;
+      have hdeg := ⋯;
+      ⋯.mp e)
+    q p
+def LinearStudy.acyclicResolutionExtSourceIsoAddEquiv.{u, v, w} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        {P Q : A} →
+          (P ≅ Q) → (F : A) → (n : ℕ) → CategoryTheory.Abelian.Ext Q F n ≃+ CategoryTheory.Abelian.Ext P F n :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A] {P Q : A}
+    (e : P ≅ Q) (F : A) (n : ℕ) =>
+  (((CategoryTheory.Abelian.extFunctor n).mapIso e.op).app F).addCommGroupIsoToAddEquiv
+def LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv.{u, v, w} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (Z : A) →
+            (f : K ⟶ (ChainComplex.single₀ A).obj Z) →
+              [QuasiIso f] →
+                (F : A) →
+                  (∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+                    (q : ℕ) →
+                      CategoryTheory.Abelian.Ext Z F (q + 1) ≃+
+                        CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K q) F 1 :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    (K : ChainComplex A ℕ) (Z : A) (f : K ⟶ (ChainComplex.single₀ A).obj Z) [QuasiIso f] (F : A)
+    (hA : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) (q : ℕ) =>
+  have hK := ⋯;
+  have e := LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv K F hK hA 0 q;
+  have h := ⋯;
+  (LinearStudy.acyclicResolutionExtSourceIsoAddEquiv (LinearStudy.chainResolutionOpcycleZeroIso K Z f) F (q + 1)).trans
+    (h.mp e)
+def LinearStudy.acyclicChainOpcycleHomPrecompose.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) → (F : A) → (p : ℕ) → ↧(K.X p ⟶ F) ⟶ ↧(HomologicalComplex.opcycles K (p + 1) ⟶ F) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (F : A) (p : ℕ) =>
+  (CategoryTheory.preadditiveYoneda.obj F).map (HomologicalComplex.fromOpcycles K (p + 1) p).op
+def LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (F : A) →
+            (p : ℕ) →
+              HomologicalComplex.ExactAt K (p + 1) →
+                (HomologicalComplex.opcycles K (p + 1) ⟶ F) →+
+                  CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F 1 :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    (K : ChainComplex A ℕ) (F : A) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1)) =>
+  (⋯.extClass.precomp F LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary._proof_1).comp
+    CategoryTheory.Abelian.Ext.addEquiv₀.symm.toAddMonoidHom
+def LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          A → (p : ℕ) → HomologicalComplex.ExactAt K (p + 1) → CategoryTheory.ShortComplex AddCommGrpCat :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    (K : ChainComplex A ℕ) (F : A) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1)) =>
+  { X₁ := ↧(K.X p ⟶ F), X₂ := ↧(HomologicalComplex.opcycles K (p + 1) ⟶ F),
+    X₃ := ↧(CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F 1),
+    f := LinearStudy.acyclicChainOpcycleHomPrecompose K F p,
+    g := AddCommGrpCat.ofHom (LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary K F p hK), zero := ⋯ }
+def LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (F : A) →
+            (p : ℕ) →
+              HomologicalComplex.ExactAt K (p + 1) →
+                [Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F 1)] →
+                  CategoryTheory.Limits.cokernel (LinearStudy.acyclicChainOpcycleHomPrecompose K F p) ≅
+                    ↧(CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F 1) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    (K : ChainComplex A ℕ) (F : A) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1))
+    [Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F 1)] =>
+  (CategoryTheory.Limits.cokernelIsCokernel
+        (LinearStudy.acyclicChainOpcycleHomPrecompose K F p)).coconePointUniqueUpToIso
+    ⋯.gIsCokernel
+def LinearStudy.acyclicResolutionGlobalExtHomCokernelIso.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (Z : A) →
+            (f : K ⟶ (ChainComplex.single₀ A).obj Z) →
+              [QuasiIso f] →
+                (F : A) →
+                  (∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+                    (q : ℕ) →
+                      ↧(CategoryTheory.Abelian.Ext Z F (q + 1)) ≅
+                        CategoryTheory.Limits.cokernel (LinearStudy.acyclicChainOpcycleHomPrecompose K F q) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    (K : ChainComplex A ℕ) (Z : A) (f : K ⟶ (ChainComplex.single₀ A).obj Z) [QuasiIso f] (F : A)
+    (hA : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) (q : ℕ) =>
+  have hK := ⋯;
+  (LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv K Z f F hA q).toAddCommGrpIso ≪≫
+    (LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso K F q hK).symm
+def LinearStudy.chainActualHomCyclesNativeIso.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        (F : A) →
+          (n : ℕ) →
+            HomologicalComplex.cycles (LinearStudy.chainActualHomCochain K F) n ≅
+              (CategoryTheory.preadditiveYoneda.obj F).obj ((HomologicalComplex.op K).cycles n) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (F : A) (n : ℕ) =>
+  (HomologicalComplex.cyclesIsKernel (LinearStudy.chainActualHomCochain K F) n (n + 1) ⋯).conePointUniqueUpToIso
+    ((CategoryTheory.Limits.KernelFork.ofι ((HomologicalComplex.op K).iCycles n) ⋯).mapIsLimit
+      ((HomologicalComplex.op K).cyclesIsKernel n (n + 1) ⋯) (CategoryTheory.preadditiveYoneda.obj F))
+def LinearStudy.chainActualHomCyclesOpcyclesIso.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        (F : A) →
+          (n : ℕ) →
+            HomologicalComplex.cycles (LinearStudy.chainActualHomCochain K F) n ≅
+              ↧(HomologicalComplex.opcycles K n ⟶ F) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (F : A) (n : ℕ) =>
+  LinearStudy.chainActualHomCyclesNativeIso K F n ≪≫
+    (CategoryTheory.preadditiveYoneda.obj F).mapIso (HomologicalComplex.cyclesOpIso K n)
+def LinearStudy.chainActualHomCochainHomologyCokernelIso.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        (F : A) →
+          (p : ℕ) →
+            HomologicalComplex.homology (LinearStudy.chainActualHomCochain K F) (p + 1) ≅
+              CategoryTheory.Limits.cokernel (LinearStudy.acyclicChainOpcycleHomPrecompose K F p) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (K : ChainComplex A ℕ) (F : A) (p : ℕ) =>
+  ((CategoryTheory.Limits.cokernelIsCokernel
+            (HomologicalComplex.toCycles (LinearStudy.chainActualHomCochain K F) p (p + 1))).coconePointUniqueUpToIso
+        (HomologicalComplex.homologyIsCokernel (LinearStudy.chainActualHomCochain K F) p (p + 1) ⋯)).symm ≪≫
+    CategoryTheory.Limits.cokernel.mapIso
+      (HomologicalComplex.toCycles (LinearStudy.chainActualHomCochain K F) p (p + 1))
+      (LinearStudy.acyclicChainOpcycleHomPrecompose K F p)
+      (CategoryTheory.Iso.refl ((LinearStudy.chainActualHomCochain K F).X p))
+      (LinearStudy.chainActualHomCyclesOpcyclesIso K F (p + 1)) ⋯
+def LinearStudy.acyclicResolutionGlobalExtActualHomologyIso.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (Z : A) →
+            (f : K ⟶ (ChainComplex.single₀ A).obj Z) →
+              [QuasiIso f] →
+                (F : A) →
+                  (∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+                    (q : ℕ) →
+                      ↧(CategoryTheory.Abelian.Ext Z F (q + 1)) ≅
+                        HomologicalComplex.homology (LinearStudy.chainActualHomCochain K F) (q + 1) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    (K : ChainComplex A ℕ) (Z : A) (f : K ⟶ (ChainComplex.single₀ A).obj Z) [QuasiIso f] (F : A)
+    (hA : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) (q : ℕ) =>
+  LinearStudy.acyclicResolutionGlobalExtHomCokernelIso K Z f F hA q ≪≫
+    (LinearStudy.chainActualHomCochainHomologyCokernelIso K F q).symm
+def LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic.{u} : (X : AlgebraicGeometry.Scheme) →
+  {ι : Type u} →
+    [inst : LinearOrder ι] →
+      [Finite ι] →
+        (U : ι → X.Opens) →
+          ⊤ ≤ iSup U →
+            (F : TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace) →
+              (∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) (j : ℕ),
+                  Subsingleton
+                    (CategoryTheory.Sheaf.H
+                      ((LinearStudy.topOpenAbelianSheafRestriction (↑X.toPresheafedSpace)
+                            (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k))).obj
+                        F)
+                      (j + 1))) →
+                (n : ℕ) →
+                  HomologicalComplex.homology (LinearStudy.orderedTopAbelianCechComplex X U F) (n + 1) ≅
+                    ↧(CategoryTheory.Sheaf.H F (n + 1)) :=
+fun (X : AlgebraicGeometry.Scheme) {ι : Type u} [LinearOrder ι] [Finite ι] (U : ι → X.Opens) (hU : ⊤ ≤ iSup U)
+    (F : TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace)
+    (hlocal :
+      ∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) (j : ℕ),
+        Subsingleton
+          (CategoryTheory.Sheaf.H
+            ((LinearStudy.topOpenAbelianSheafRestriction (↑X.toPresheafedSpace)
+                  (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k))).obj
+              F)
+            (j + 1)))
+    (n : ℕ) =>
+  let K := LinearStudy.orderedFreeAbelianSheafComplex X U;
+  let Z := (CategoryTheory.constantSheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat).obj ↧(ULift.{u, 0} ℤ);
+  let f := LinearStudy.orderedCechNativeIntegerAugmentation X U;
+  have e := LinearStudy.orderedFreeSheafActualHomComplexIso X U F;
+  have hA := ⋯;
+  (HomologicalComplex.homologyFunctor AddCommGrpCat (ComplexShape.up ℕ) (n + 1)).mapIso e.symm ≪≫
+    (LinearStudy.acyclicResolutionGlobalExtActualHomologyIso K Z f F hA n).symm
+def LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso.{u} : (X : AlgebraicGeometry.Scheme) →
+  [AlgebraicGeometry.IsLocallyNoetherian X] →
+    {ι : Type u} →
+      [inst : LinearOrder ι] →
+        [Finite ι] →
+          (U : ι → X.Opens) →
+            ⊤ ≤ iSup U →
+              (∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+                  AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k))) →
+                (M : X.Modules) →
+                  [SheafOfModules.IsQuasicoherent M] →
+                    (n : ℕ) →
+                      HomologicalComplex.homology
+                          (LinearStudy.orderedTopAbelianCechComplex X U
+                            ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M))
+                          (n + 1) ≅
+                        ↧(LinearStudy.schemeModuleActualCohomology X M (n + 1)) :=
+fun (X : AlgebraicGeometry.Scheme) [AlgebraicGeometry.IsLocallyNoetherian X] {ι : Type u} [LinearOrder ι] [Finite ι]
+    (U : ι → X.Opens) (hU : ⊤ ≤ iSup U)
+    (haff :
+      ∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+        AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k)))
+    (M : X.Modules) [SheafOfModules.IsQuasicoherent M] (n : ℕ) =>
+  LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic X U hU
+    ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M) ⋯ n
+def LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso.{u} : {X S : AlgebraicGeometry.Scheme} →
+  [AlgebraicGeometry.IsLocallyNoetherian X] →
+    (pi : X ⟶ S) →
+      {ι : Type u} →
+        [inst : LinearOrder ι] →
+          [Finite ι] →
+            (U : ι → X.Opens) →
+              ⊤ ≤ iSup U →
+                (∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+                    AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k))) →
+                  (M : X.Modules) →
+                    [SheafOfModules.IsQuasicoherent M] →
+                      (n : ℕ) →
+                        (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).obj
+                            (HomologicalComplex.homology
+                              (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex pi M U) (n + 1)) ≅
+                          ↧(LinearStudy.schemeModuleActualCohomology X M (n + 1)) :=
+fun {X S : AlgebraicGeometry.Scheme} [AlgebraicGeometry.IsLocallyNoetherian X] (pi : X ⟶ S) {ι : Type u} [LinearOrder ι]
+    [Finite ι] (U : ι → X.Opens) (hU : ⊤ ≤ iSup U)
+    (haff :
+      ∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+        AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k)))
+    (M : X.Modules) [SheafOfModules.IsQuasicoherent M] (n : ℕ) =>
+  let H := CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat;
+  let C := AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex pi M U;
+  ((HomologicalComplex.sc C (n + 1)).mapHomologyIso H).symm ≪≫
+    (HomologicalComplex.homologyFunctor AddCommGrpCat (ComplexShape.up ℕ) (n + 1)).mapIso
+        (LinearStudy.orderedModuleCechActualAbelianComplexIso pi M U) ≪≫
+      LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso X U hU haff M n
+def LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso.{u} : {K A : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing A] →
+      [inst_2 : Algebra K A] →
+        (B : ℕ → Submodule K A) →
+          [inst_3 : GradedAlgebra B] →
+            [IsNoetherianRing A] →
+              [Algebra.FiniteType K A] →
+                {ι : Type u} →
+                  [inst_6 : LinearOrder ι] →
+                    [Finite ι] →
+                      (a : ι → A) →
+                        (∀ (i : ι), a i ∈ B 1) →
+                          ⨆ (i : ι), AlgebraicGeometry.Proj.basicOpen B (a i) = ⊤ →
+                            (M : (AlgebraicGeometry.Proj B).Modules) →
+                              [SheafOfModules.IsQuasicoherent M] →
+                                (q : ℕ) →
+                                  HomologicalComplex.homology
+                                      (LinearStudy.orderedTopAbelianCechComplex (AlgebraicGeometry.Proj B)
+                                        (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B (a i))
+                                        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+                                          M))
+                                      (q + 1) ≅
+                                    ↧(LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B) M (q + 1)) :=
+fun {K A : Type u} [Field K] [CommRing A] [Algebra K A] (B : ℕ → Submodule K A) [GradedAlgebra B] [IsNoetherianRing A]
+    [Algebra.FiniteType K A] {ι : Type u} [LinearOrder ι] [Finite ι] (a : ι → A) (ha : ∀ (i : ι), a i ∈ B 1)
+    (hcover : ⨆ (i : ι), AlgebraicGeometry.Proj.basicOpen B (a i) = ⊤) (M : (AlgebraicGeometry.Proj B).Modules)
+    [SheafOfModules.IsQuasicoherent M] (q : ℕ) =>
+  LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso (AlgebraicGeometry.Proj B)
+    (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B (a i)) ⋯ ⋯ M q
+def LinearStudy.finiteTypeNativeProj_moduleCechActualHigherHIso.{u} : {K A : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing A] →
+      [inst_2 : Algebra K A] →
+        (B : ℕ → Submodule K A) →
+          [inst_3 : GradedAlgebra B] →
+            [IsNoetherianRing A] →
+              [Algebra.FiniteType K A] →
+                {ι : Type u} →
+                  [inst_6 : LinearOrder ι] →
+                    [Finite ι] →
+                      (a : ι → A) →
+                        (∀ (i : ι), a i ∈ B 1) →
+                          ⨆ (i : ι), AlgebraicGeometry.Proj.basicOpen B (a i) = ⊤ →
+                            {Y : AlgebraicGeometry.Scheme} →
+                              (pi : AlgebraicGeometry.Proj B ⟶ Y) →
+                                (M : (AlgebraicGeometry.Proj B).Modules) →
+                                  [SheafOfModules.IsQuasicoherent M] →
+                                    (q : ℕ) →
+                                      (CategoryTheory.forget₂ (ModuleCat ↑(Y.presheaf.obj (Opposite.op ⊤)))
+                                              AddCommGrpCat).obj
+                                          (HomologicalComplex.homology
+                                            (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex pi M fun (i : ι) =>
+                                              AlgebraicGeometry.Proj.basicOpen B (a i))
+                                            (q + 1)) ≅
+                                        ↧(LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B) M
+                                            (q + 1)) :=
+fun {K A : Type u} [Field K] [CommRing A] [Algebra K A] (B : ℕ → Submodule K A) [GradedAlgebra B] [IsNoetherianRing A]
+    [Algebra.FiniteType K A] {ι : Type u} [LinearOrder ι] [Finite ι] (a : ι → A) (ha : ∀ (i : ι), a i ∈ B 1)
+    (hcover : ⨆ (i : ι), AlgebraicGeometry.Proj.basicOpen B (a i) = ⊤) {Y : AlgebraicGeometry.Scheme}
+    (pi : AlgebraicGeometry.Proj B ⟶ Y) (M : (AlgebraicGeometry.Proj B).Modules) [SheafOfModules.IsQuasicoherent M]
+    (q : ℕ) =>
+  LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso pi
+    (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B (a i)) ⋯ ⋯ M q
+def LinearStudy.originalProjectiveTwist_actualOrderedCechHigherHIso : {n : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (k : ℤ) →
+      (q : ℕ) →
+        HomologicalComplex.homology
+            (LinearStudy.orderedTopAbelianCechComplex
+              (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+              (fun (i : ULift.{0, 0} (Fin (n + 1))) =>
+                AlgebraicGeometry.Proj.basicOpen (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                  ((fun (i : ULift.{0, 0} (Fin (n + 1))) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X i.down))
+                    i))
+              ((LinearStudy.schemeModuleToActualAbelianSheaf
+                    (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))).obj
+                (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                  (LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                  ⋯ k)))
+            (q + 1) ≅
+          ↧(LinearStudy.schemeModuleActualCohomology
+              (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+              (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                (LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)) ⋯
+                k)
+              (q + 1)) :=
+fun {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (k : ℤ) (q : ℕ) =>
+  let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  let G := LinearStudy.nativeProjectiveRingIntegerPiece B;
+  have hG := ⋯;
+  let a := fun (i : ULift.{0, 0} (Fin (n + 1))) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X i.down);
+  have ha := ⋯;
+  have hgen := ⋯;
+  have hcover := ⋯;
+  let F := LinearStudy.nativeProjectiveModuleSheaf B G hG k;
+  LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso B a ha hcover F q
+ROLECHECK:LinearStudy.relativeAcyclicContravariantBoundary_surjective:true
+ROLECHECK:LinearStudy.relativeAcyclicContravariantBoundary_injective:true
+ROLECHECK:LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv:false
+ROLECHECK:LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv:false
+ROLECHECK:LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv:false
+ROLECHECK:LinearStudy.acyclicResolutionExtSourceIsoAddEquiv:false
+ROLECHECK:LinearStudy.acyclicResolutionExtSourceIsoAddEquiv_apply:true
+ROLECHECK:LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv:false
+ROLECHECK:LinearStudy.acyclicChainOpcycleHomPrecompose:false
+ROLECHECK:LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary:false
+ROLECHECK:LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_surjective:true
+ROLECHECK:LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_kernel:true
+ROLECHECK:LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation:false
+ROLECHECK:LinearStudy.acyclicChainOpcycleHomGlobalExtPresentation_exact:true
+ROLECHECK:LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso:false
+ROLECHECK:LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso_projection:true
+ROLECHECK:LinearStudy.acyclicResolutionGlobalExtHomCokernelIso:false
+ROLECHECK:LinearStudy.chainActualHomCyclesNativeIso:false
+ROLECHECK:LinearStudy.chainActualHomCyclesNativeIso_inv_iCycles:true
+ROLECHECK:LinearStudy.chainActualHomCyclesOpcyclesIso:false
+ROLECHECK:LinearStudy.chainActualHomCyclesOpcyclesIso_boundary:true
+ROLECHECK:LinearStudy.chainActualHomCochainHomologyCokernelIso:false
+ROLECHECK:LinearStudy.acyclicResolutionGlobalExtActualHomologyIso:false
+ROLECHECK:LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic:false
+ROLECHECK:LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso:false
+ROLECHECK:LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso:false
+ROLECHECK:LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso:false
+ROLECHECK:LinearStudy.finiteTypeNativeProj_moduleCechActualHigherHIso:false
+ROLECHECK:LinearStudy.originalProjectiveTwist_actualOrderedCechHigherHIso:false
