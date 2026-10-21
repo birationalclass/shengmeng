@@ -1,0 +1,114 @@
+module
+import all Linear.SemilinearComparisonScalar
+import all Linear.NativeWeightedSourceAmbientSectionScalar
+import all Linear.NativeIndependentSourceAmbientCechSectionScalar
+import all Linear.ProjStructureSectionRestriction
+import all Linear.NormalizationChartConstants
+import all Linear.ProjStructureSectionScalarValue
+import all Linear.ProjBasicOpenBaseScalar
+import all Linear.NativeProjectiveModuleScalarApply
+import all Linear.NativeIndependentSourceAmbientCechBaseScalar
+import all Linear.OrderedCrossSpaceCechEndomorphism
+import all Linear.SchemeModuleActualAbelianScalarValue
+import all Linear.ConcreteAdditiveEquivSquare
+import all Linear.NativeProjectiveModuleBaseScalarValue
+import all Linear.NativeIndependentSourceAmbientCechProductScalar
+import all Linear.NativeIndependentSourceAmbientCechIntersectionScalar
+import all Linear.NativeIndependentSourceAmbientOrderedCechScalar
+import all Linear.OrderedCechModuleScalarNaturality
+import all Linear.NativeIndependentSourceAmbientOrderedTwistCechScalar
+import all Linear.NativeProjActualHCoefficientNaturality
+import all Linear.NativeProjectiveTwistQuasicoherent
+import all Linear.NativeIndependentNormalizationActualHFactorization
+import all Linear.NativeIndependentNormalizationActualHScalar
+import all Linear.NativeIndependentNormalizationHFactorization
+import all Linear.NativeIndependentNormalizationModuleHScalar
+import all Linear.NativeIndependentNormalizationModuleHPointwiseScalar
+import all Linear.NativeIndependentNormalizationModuleHLinearComparison
+set_option maxHeartbeats 50000
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.semilinear_bijective_comparison_smul
+#print axioms LinearStudy.semilinear_bijective_comparison_smul
+#check @LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv_smul
+#print axioms LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv_smul
+#check @LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_smul
+#print axioms LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_smul
+#check @LinearStudy.Proj_structure_section_restriction
+#print axioms LinearStudy.Proj_structure_section_restriction
+#check @LinearStudy.normalizationHomogeneousChartMap_fromZero
+#print axioms LinearStudy.normalizationHomogeneousChartMap_fromZero
+#check @LinearStudy.normalizationHomogeneousChartMap_baseConstant
+#print axioms LinearStudy.normalizationHomogeneousChartMap_baseConstant
+#check @LinearStudy.Proj_structure_section_baseScalar_value
+#print axioms LinearStudy.Proj_structure_section_baseScalar_value
+#check @LinearStudy.projBasicOpenBaseScalar
+#print axioms LinearStudy.projBasicOpenBaseScalar
+#check @LinearStudy.projBasicOpenBaseScalar_eq_chart
+#print axioms LinearStudy.projBasicOpenBaseScalar_eq_chart
+#check @LinearStudy.nativeProjectiveModuleScalarApply
+#print axioms LinearStudy.nativeProjectiveModuleScalarApply
+#check @LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_baseScalar
+#print axioms LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_baseScalar
+#check @LinearStudy.abelianOpenSectionComparisonIso_endomorphism
+#print axioms LinearStudy.abelianOpenSectionComparisonIso_endomorphism
+#check @LinearStudy.orderedCrossSpaceAbelianCechComplexIso_endomorphism
+#print axioms LinearStudy.orderedCrossSpaceAbelianCechComplexIso_endomorphism
+#check @LinearStudy.schemeModuleActualAbelianScalar_app
+#print axioms LinearStudy.schemeModuleActualAbelianScalar_app
+#check @LinearStudy.additiveEquivIso_endomorphism
+#print axioms LinearStudy.additiveEquivIso_endomorphism
+#check @LinearStudy.nativeProjectiveModuleActualBaseScalar_app
+#print axioms LinearStudy.nativeProjectiveModuleActualBaseScalar_app
+#check @LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar
+#print axioms LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar
+#check @LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso_baseScalar
+#print axioms LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso_baseScalar
+#check @LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar
+#print axioms LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar
+#check @LinearStudy.orderedTopAbelianCechCoefficientIso_hom_eq_map
+#print axioms LinearStudy.orderedTopAbelianCechCoefficientIso_hom_eq_map
+#check @LinearStudy.orderedTopAbelianCechCoefficientIso_inv_eq_map
+#print axioms LinearStudy.orderedTopAbelianCechCoefficientIso_inv_eq_map
+#check @LinearStudy.orderedTopAbelianCech_moduleScalar_naturality
+#print axioms LinearStudy.orderedTopAbelianCech_moduleScalar_naturality
+#check @LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_baseScalar
+#print axioms LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_baseScalar
+#check @LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso_coefficient_naturality
+#print axioms LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso_coefficient_naturality
+#check @LinearStudy.nativeFiniteGradedTwist_isQuasicoherent_of_cover
+#print axioms LinearStudy.nativeFiniteGradedTwist_isQuasicoherent_of_cover
+#check @LinearStudy.nativeIndependentFiniteNormalization_actualHigherHIso_factorization
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_actualHigherHIso_factorization
+#check @LinearStudy.nativeIndependentFiniteNormalization_actualHigherHIso_baseScalar
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_actualHigherHIso_baseScalar
+#check @LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_factorization
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_factorization
+#check @LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_baseScalar
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_baseScalar
+#check @LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_baseScalar_apply
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_baseScalar_apply
+#check @LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_smul
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_smul
+#check @LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHLinearEquiv
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHLinearEquiv
+#check @LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHLinearEquiv_apply
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHLinearEquiv_apply
+#print LinearStudy.projBasicOpenBaseScalar
+#print LinearStudy.nativeProjectiveModuleScalarApply
+#print LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHLinearEquiv
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool) := [(`LinearStudy.semilinear_bijective_comparison_smul,true),(`LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv_smul,true),(`LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_smul,true),(`LinearStudy.Proj_structure_section_restriction,true),(`LinearStudy.normalizationHomogeneousChartMap_fromZero,true),(`LinearStudy.normalizationHomogeneousChartMap_baseConstant,true),(`LinearStudy.Proj_structure_section_baseScalar_value,true),(`LinearStudy.projBasicOpenBaseScalar,false),(`LinearStudy.projBasicOpenBaseScalar_eq_chart,true),(`LinearStudy.nativeProjectiveModuleScalarApply,false),(`LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_baseScalar,true),(`LinearStudy.abelianOpenSectionComparisonIso_endomorphism,true),(`LinearStudy.orderedCrossSpaceAbelianCechComplexIso_endomorphism,true),(`LinearStudy.schemeModuleActualAbelianScalar_app,true),(`LinearStudy.additiveEquivIso_endomorphism,true),(`LinearStudy.nativeProjectiveModuleActualBaseScalar_app,true),(`LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar,true),(`LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso_baseScalar,true),(`LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar,true),(`LinearStudy.orderedTopAbelianCechCoefficientIso_hom_eq_map,true),(`LinearStudy.orderedTopAbelianCechCoefficientIso_inv_eq_map,true),(`LinearStudy.orderedTopAbelianCech_moduleScalar_naturality,true),(`LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_baseScalar,true),(`LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso_coefficient_naturality,true),(`LinearStudy.nativeFiniteGradedTwist_isQuasicoherent_of_cover,true),(`LinearStudy.nativeIndependentFiniteNormalization_actualHigherHIso_factorization,true),(`LinearStudy.nativeIndependentFiniteNormalization_actualHigherHIso_baseScalar,true),(`LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_factorization,true),(`LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_baseScalar,true),(`LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_baseScalar_apply,true),(`LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_smul,true),(`LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHLinearEquiv,false),(`LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHLinearEquiv_apply,true)]
+  let env ← Lean.getEnv
+  for (n,want) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"
+    let kernelKind := match info with
+      | .thmInfo _ => "theorem"
+      | .defnInfo _ => "definition"
+      | _ => "other"
+    unless kernelKind == (if want then "theorem" else "definition") do
+      throwError m!"Incorrect kernel declaration kind: {n}"
+    Lean.logInfo m!"KINDCHECK:{n}:{kernelKind}"

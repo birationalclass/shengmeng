@@ -1,0 +1,442 @@
+===== Linear.SemilinearComparisonScalar =====
+module
+public import Mathlib.Algebra.Module.LinearMap.Defs
+public import Mathlib.Algebra.Group.Equiv.Defs
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+universe u v w uM uN uP
+variable {R : Type u} {A : Type v} {B : Type w}
+variable [Semiring R] [Semiring A] [Semiring B]
+variable {M : Type uM} {N : Type uN} {P : Type uP}
+variable [AddCommMonoid M] [AddCommMonoid N] [AddCommMonoid P]
+variable [Module R M] [Module A N] [Module B P]
+/-- Two actual semilinear bijections out of the SAME module induce an
+additive comparison commuting with their two specified scalar maps.
+This is a consequence of semilinearity, not an assumed comparison square. -/
+theorem semilinear_bijective_comparison_smul
+    (sigmaA : R →+* A) (sigmaB : R →+* B)
+    (fA : M →ₛₗ[sigmaA] N) (fB : M →ₛₗ[sigmaB] P)
+    (hA : Function.Bijective fA) (hB : Function.Bijective fB)
+    (r : R) (s : N) :
+    ((AddEquiv.ofBijective fA.toAddMonoidHom hA).symm.trans
+      (AddEquiv.ofBijective fB.toAddMonoidHom hB)) (sigmaA r • s) =
+      sigmaB r • ((AddEquiv.ofBijective fA.toAddMonoidHom hA).symm.trans
+        (AddEquiv.ofBijective fB.toAddMonoidHom hB)) s := by
+  let eA := AddEquiv.ofBijective fA.toAddMonoidHom hA
+  let eB := AddEquiv.ofBijective fB.toAddMonoidHom hB
+  obtain ⟨x,rfl⟩ := hA.surjective s
+  change eB (eA.symm (sigmaA r • fA x)) = sigmaB r • eB (eA.symm (fA x))
+  rw [← fA.map_smulₛₗ r x]
+  change fB (eA.symm (eA (r • x))) = sigmaB r • fB (eA.symm (eA x))
+  rw [eA.symm_apply_apply,eA.symm_apply_apply]
+  exact fB.map_smulₛₗ r x
+end LinearStudy
+
+===== Linear.NativeWeightedSourceAmbientSectionScalar =====
+module
+public import Linear.NativeWeightedSourceAmbientSectionEquiv
+public import Linear.SemilinearComparisonScalar
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M)
+variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ c : R,c ∈ A n → ∀ x : M,x ∈ D j → c • x ∈ D ((n : ℤ)+j))
+variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ c : S,c ∈ B n → ∀ x : M,x ∈ D j → c • x ∈ D ((n : ℤ)+j))
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+attribute [local irreducible] nativeProjectiveChartDegreeZeroSectionMap
+  nativeBaseSourceWeightedChartSectionLinearMap
+/-- The SAME original weighted ambient/source section comparison commutes
+with the ACTUAL original homogeneous-chart scalar map. The two LOCAL
+section bijections remain explicit here and are derived in finite-data
+applications. No desired global H linearity or geometric trace is assumed. -/
+theorem nativeWeightedSourceAmbientSectionAddEquiv_smul
+    (d : ℕ) (a : R) (ha : a ∈ A d)
+    (hA : Function.Bijective (nativeProjectiveChartDegreeZeroSectionMap A D hR d a ha))
+    (hB : Function.Bijective (nativeProjectiveChartDegreeZeroSectionMap B D hS d
+      (algebraMap R S a) ((normalizationBaseGradedRingHom A B).map_mem ha)))
+    (r : HomogeneousLocalization.Away A a)
+    (s : nativeProjectiveModuleSections A D hR 0 (op (Proj.basicOpen A a))) :
+    nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS d a ha hA hB
+        ((Proj.awayToSection A a).hom r • s) =
+      ((Proj.awayToSection B (algebraMap R S a)).hom.comp
+        (normalizationHomogeneousChartMap A B a)) r •
+          nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS d a ha hA hB s := by
+  exact semilinear_bijective_comparison_smul
+    (Proj.awayToSection A a).hom
+    ((Proj.awayToSection B (algebraMap R S a)).hom.comp
+      (normalizationHomogeneousChartMap A B a))
+    (nativeProjectiveChartDegreeZeroSectionMap A D hR d a ha)
+    (nativeBaseSourceWeightedChartSectionLinearMap A B D hR hS d a ha)
+    hA (nativeBaseSourceWeightedChartSectionLinearMap_bijective A B D hR hS d a ha hB)
+    r s
+end LinearStudy
+
+===== Linear.NativeIndependentSourceAmbientCechSectionScalar =====
+module
+public import Linear.NativeIndependentSourceAmbientCechSections
+public import Linear.NativeWeightedSourceAmbientSectionScalar
+public import Linear.NativeFiniteGradedIndependentCechSections
+public import Linear.NativeFiniteGradedWeightedSectionsFunctionSurjective
+public import Linear.NativeBaseSourceBaseChartInjective
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M]
+variable [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ c : R,c ∈ A n → ∀ x : M,x ∈ D j → c • x ∈ D ((n : ℤ)+j))
+variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ c : S,c ∈ B n → ∀ x : M,x ∈ D j → c • x ∈ D ((n : ℤ)+j))
+variable [IsDomain S] [Module.IsTorsionFree S M]
+variable [IsNoetherianRing R] [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M]
+variable {ι : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable {κ : Type u} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+include c hc
+attribute [local instance] nativeHomogeneousAwayModuleScalar LocalizedModule.moduleOfIsLocalization
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+/-- On every actual finite-coordinate product chart, the SAME existing
+ambient/source section comparison commutes with actual homogeneous-chart
+scalars. Both local section bijections are DERIVED. Source coordinates c,
+not the normalization coordinate images, generate the source algebra. -/
+theorem nativeIndependentSourceAmbientCechSectionAddEquiv_smul
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+    (p : ℕ) (t : Fin (p+1) → ι)
+    (r : HomogeneousLocalization.Away A (∏ k : Fin (p+1),a (t k)))
+    (s : nativeProjectiveModuleSections A D hR 0
+      (op (Proj.basicOpen A (∏ k : Fin (p+1),a (t k))))) :
+    nativeIndependentSourceAmbientCechSectionAddEquiv A B D hR hS a ha c hc
+      hgenR hgenC p t
+      ((Proj.awayToSection A (∏ k : Fin (p+1),a (t k))).hom r • s) =
+    ((Proj.awayToSection B (algebraMap R S (∏ k : Fin (p+1),a (t k)))).hom.comp
+      (normalizationHomogeneousChartMap A B (∏ k : Fin (p+1),a (t k)))) r •
+        nativeIndependentSourceAmbientCechSectionAddEquiv A B D hR hS a ha c hc
+          hgenR hgenC p t s := by
+  let z := ∏ k : Fin (p+1),a (t k)
+  have hz : z ∈ A (p+1) := nativeProjective_cechProduct_mem_degree A a ha p t
+  have hA := nativeFiniteGradedAmbientCechProductSectionMap_bijective A B D hR a ha hgenR p t
+  have hB := nativeFiniteGradedIndependentSourceCechProductSectionMap_bijective A B D hS c hc hgenC a ha p t
+  exact nativeWeightedSourceAmbientSectionAddEquiv_smul A B D hR hS
+    (p+1) z hz hA hB r s
+end LinearStudy
+
+===== Linear.ProjStructureSectionRestriction =====
+module
+public import Linear.ProjStructureSectionSquare
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u
+variable {K R T : Type u} [CommRing K] [CommRing R] [Algebra K R] [CommRing T]
+/-- Actual base constants restricted to a positive projective basic open
+are the SAME degree-zero chart constants followed by awayToSection. -/
+theorem Proj_structure_section_restriction
+    (A : ℕ → Submodule K R) [GradedAlgebra A] (c : T →+* A 0)
+    {d : ℕ} (a : R) (ha : a ∈ A d) (hd : 0 < d) :
+    (Scheme.ΓSpecIso (CommRingCat.of T)).inv ≫
+      (Proj.toSpecZero A ≫ Spec.map (CommRingCat.ofHom c)).appTop ≫
+      (Proj A).presheaf.map (homOfLE le_top).op =
+    CommRingCat.ofHom ((HomogeneousLocalization.fromZeroRingHom A (Submonoid.powers a)).comp c) ≫
+      Proj.awayToSection A a := by
+  have h := congrArg (fun f => f ≫ (Proj.basicOpenIsoAway A a ha hd).hom)
+    (Proj_structure_section_square A c a ha hd)
+  have hsigma : (Proj.basicOpenIsoAway A a ha hd).hom = Proj.awayToSection A a := rfl
+  simp only [Category.assoc,Iso.inv_hom_id,Category.comp_id] at h
+  rw [hsigma] at h
+  exact h
+end LinearStudy
+
+===== Linear.NormalizationChartConstants =====
+module
+public import Linear.NormalizationHomogeneousChartMap
+public import Linear.AwayCongr
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+universe u
+variable {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+/-- The actual normalization chart map preserves the original degree-zero
+constants, by the native homogeneous-localization map formula. -/
+theorem normalizationHomogeneousChartMap_fromZero (a : R) (r : A 0) :
+    normalizationHomogeneousChartMap A B a
+      (HomogeneousLocalization.fromZeroRingHom A (Submonoid.powers a) r) =
+    HomogeneousLocalization.fromZeroRingHom B (Submonoid.powers (algebraMap R S a))
+      ⟨algebraMap R S r,(normalizationBaseGradedRingHom A B).map_mem r.property⟩ :=
+  awayMap_fromZeroRingHom (normalizationBaseGradedRingHom A B) a r
+/-- In particular the actual chart map preserves the original ground-field
+constants. This uses the ORIGINAL scalar tower, not a desired H-linearity. -/
+theorem normalizationHomogeneousChartMap_baseConstant (a : R) (r : K) :
+    normalizationHomogeneousChartMap A B a
+      (HomogeneousLocalization.fromZeroRingHom A (Submonoid.powers a) (algebraMap K (A 0) r)) =
+    HomogeneousLocalization.fromZeroRingHom B (Submonoid.powers (algebraMap R S a))
+      (algebraMap K (B 0) r) := by
+  rw [normalizationHomogeneousChartMap_fromZero]
+  congr 1
+  apply Subtype.ext
+  exact (IsScalarTower.algebraMap_apply K R S r).symm
+end LinearStudy
+
+===== Linear.ProjStructureSectionScalarValue =====
+module
+public import Linear.ProjStructureSectionRestriction
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u
+variable {K R T : Type u} [CommRing K] [CommRing R] [Algebra K R] [CommRing T]
+/-- Pointwise calibration of the ORIGINAL base-global-section scalar
+on a genuine positive-degree projective basic open. -/
+theorem Proj_structure_section_baseScalar_value
+    (A : ℕ → Submodule K R) [GradedAlgebra A] (c : T →+* A 0)
+    {d : ℕ} (a : R) (ha : a ∈ A d) (hd : 0 < d)
+    (r : Γ(Spec (CommRingCat.of T),⊤)) :
+    ((Proj A).presheaf.map (homOfLE le_top).op).hom
+      ((Proj.toSpecZero A ≫ Spec.map (CommRingCat.ofHom c)).appTop.hom r) =
+    (Proj.awayToSection A a).hom
+      (HomogeneousLocalization.fromZeroRingHom A (Submonoid.powers a)
+        (c ((Scheme.ΓSpecIso (CommRingCat.of T)).hom.hom r))) := by
+  have h := congrArg (fun f => f.hom ((Scheme.ΓSpecIso (CommRingCat.of T)).hom.hom r))
+    (Proj_structure_section_restriction A c a ha hd)
+  have hi : (Scheme.ΓSpecIso (CommRingCat.of T)).inv.hom
+      ((Scheme.ΓSpecIso (CommRingCat.of T)).hom.hom r) = r :=
+    ConcreteCategory.congr_hom (Iso.hom_inv_id (Scheme.ΓSpecIso (CommRingCat.of T))) r
+  change ((Proj A).presheaf.map (homOfLE le_top).op).hom
+      ((Proj.toSpecZero A ≫ Spec.map (CommRingCat.ofHom c)).appTop.hom
+        ((Scheme.ΓSpecIso (CommRingCat.of T)).inv.hom
+          ((Scheme.ΓSpecIso (CommRingCat.of T)).hom.hom r))) = _ at h
+  rw [hi] at h
+  exact h
+end LinearStudy
+
+===== Linear.ProjBasicOpenBaseScalar =====
+module
+public import Linear.ProjStructureSectionScalarValue
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R T : Type u} [CommRing K] [CommRing R] [Algebra K R] [CommRing T]
+/-- The ORIGINAL structure-map scalar restricted to the ORIGINAL basic
+open, with its section-ring type fixed before module elaboration. -/
+def projBasicOpenBaseScalar (A : ℕ → Submodule K R) [GradedAlgebra A]
+    (c : T →+* A 0) (a : R) (r : Γ(Spec (CommRingCat.of T),⊤)) :
+    (ProjectiveSpectrum.Proj.structureSheaf A).1.obj (op (Proj.basicOpen A a)) :=
+  ((Proj A).presheaf.map (homOfLE le_top).op).hom
+    ((Proj.toSpecZero A ≫ Spec.map (CommRingCat.ofHom c)).appTop.hom r)
+/-- Exact calibration with the original homogeneous-localization constants;
+the scalar was defined by restriction, not by this chart formula. -/
+theorem projBasicOpenBaseScalar_eq_chart
+    (A : ℕ → Submodule K R) [GradedAlgebra A] (c : T →+* A 0)
+    {d : ℕ} (a : R) (ha : a ∈ A d) (hd : 0 < d)
+    (r : Γ(Spec (CommRingCat.of T),⊤)) :
+    projBasicOpenBaseScalar A c a r =
+      (Proj.awayToSection A a).hom
+        (HomogeneousLocalization.fromZeroRingHom A (Submonoid.powers a)
+          (c ((Scheme.ΓSpecIso (CommRingCat.of T)).hom.hom r))) :=
+  Proj_structure_section_baseScalar_value A c a ha hd r
+end LinearStudy
+
+===== Linear.NativeProjectiveModuleScalarApply =====
+module
+public import Linear.NativeProjectiveModuleSections
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry TopCat TopologicalSpace CategoryTheory Opposite
+variable {K S D : Type*} [Field K] [CommRing S] [Algebra K S]
+variable [AddCommGroup D] [Module S D] [Module K D]
+variable (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
+variable (𝒟 : ℤ → Submodule K D)
+variable (hgrade : ∀ n : ℕ, ∀ d : ℤ, ∀ b : S, b ∈ 𝓑 n →
+  ∀ ell : D, ell ∈ 𝒟 d → b • ell ∈ 𝒟 ((n : ℤ)+d))
+attribute [local instance] nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+
+/-- The ORIGINAL native structure-ring action on the ORIGINAL section
+submodule, with both carrier types fixed before typeclass elaboration. -/
+def nativeProjectiveModuleScalarApply (k : ℤ)
+    (U : (Opens (ProjectiveSpectrum.top 𝓑))ᵒᵖ)
+    (r : (ProjectiveSpectrum.Proj.structureSheaf 𝓑).1.obj U)
+    (s : nativeProjectiveModuleSections 𝓑 𝒟 hgrade k U) :
+    nativeProjectiveModuleSections 𝓑 𝒟 hgrade k U :=
+  @SMul.smul ((ProjectiveSpectrum.Proj.structureSheaf 𝓑).1.obj U)
+    (nativeProjectiveModuleSections 𝓑 𝒟 hgrade k U) inferInstance r s
+end LinearStudy
+
+===== Linear.NativeIndependentSourceAmbientCechBaseScalar =====
+module
+public import Linear.NativeIndependentSourceAmbientCechSectionScalar
+public import Linear.ProjBasicOpenBaseScalar
+public import Linear.NativeProjectiveModuleScalarApply
+public import Linear.NormalizationChartConstants
+public import Linear.NativeWeightedSourceAmbientSectionScalar
+public import Linear.NativeFiniteGradedIndependentCechSections
+public import Linear.NativeFiniteGradedWeightedSectionsFunctionSurjective
+public import Linear.NativeBaseSourceBaseChartInjective
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 50000
+set_option diagnostics true
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M]
+variable [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ c : R,c ∈ A n → ∀ x : M,x ∈ D j → c • x ∈ D ((n : ℤ)+j))
+variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ c : S,c ∈ B n → ∀ x : M,x ∈ D j → c • x ∈ D ((n : ℤ)+j))
+variable [IsDomain S] [Module.IsTorsionFree S M]
+variable [IsNoetherianRing R] [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M]
+variable {ι : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable {κ : Type u} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+include c hc
+attribute [local instance] nativeHomogeneousAwayModuleScalar LocalizedModule.moduleOfIsLocalization
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+attribute [local irreducible] nativeIndependentSourceAmbientCechSectionAddEquiv projBasicOpenBaseScalar
+/-- The SAME actual finite-normalization section comparison commutes
+with the ORIGINAL base-global-section actions obtained from the two Proj
+structure maps to Spec K. Both chart bijections and scalar calibration
+are derived; no H-linearity premise is assumed. -/
+theorem nativeIndependentSourceAmbientCechSectionAddEquiv_baseScalar
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+    (p : ℕ) (t : Fin (p+1) → ι)
+    (r : Γ(Spec (CommRingCat.of K),⊤))
+    (s : nativeProjectiveModuleSections A D hR 0
+      (op (Proj.basicOpen A (∏ j : Fin (p+1),a (t j))))) :
+    nativeIndependentSourceAmbientCechSectionAddEquiv A B D hR hS a ha c hc
+      hgenR hgenC p t
+      (nativeProjectiveModuleScalarApply A D hR 0
+        (op (Proj.basicOpen A (∏ j : Fin (p+1),a (t j))))
+        (projBasicOpenBaseScalar A (algebraMap K (A 0)) (∏ j : Fin (p+1),a (t j)) r) s) =
+    nativeProjectiveModuleScalarApply B D hS 0
+      (op (Proj.basicOpen B (algebraMap R S (∏ j : Fin (p+1),a (t j)))))
+      (projBasicOpenBaseScalar B (algebraMap K (B 0)) (algebraMap R S (∏ j : Fin (p+1),a (t j))) r)
+      (nativeIndependentSourceAmbientCechSectionAddEquiv A B D hR hS a ha c hc
+        hgenR hgenC p t s) := by
+  let z := ∏ j : Fin (p+1),a (t j)
+  have hz : z ∈ A (p+1) := nativeProjective_cechProduct_mem_degree A a ha p t
+  have hzB : algebraMap R S z ∈ B (p+1) := (normalizationBaseGradedRingHom A B).map_mem hz
+  have hA := projBasicOpenBaseScalar_eq_chart A (algebraMap K (A 0)) z hz (Nat.succ_pos p) r
+  have hB := projBasicOpenBaseScalar_eq_chart B (algebraMap K (B 0))
+    (algebraMap R S z) hzB (Nat.succ_pos p) r
+  rw [hA,hB]
+  have h := nativeIndependentSourceAmbientCechSectionAddEquiv_smul A B D hR hS a ha c hc
+    hgenR hgenC p t
+    (HomogeneousLocalization.fromZeroRingHom A (Submonoid.powers z)
+      (algebraMap K (A 0) ((Scheme.ΓSpecIso (CommRingCat.of K)).hom.hom r))) s
+  exact h.trans (congrArg (fun v => nativeProjectiveModuleScalarApply B D hS 0
+    (op (Proj.basicOpen B (algebraMap R S z))) ((Proj.awayToSection B (algebraMap R S z)).hom v)
+    (nativeIndependentSourceAmbientCechSectionAddEquiv A B D hR hS a ha c hc hgenR hgenC p t s))
+      (normalizationHomogeneousChartMap_baseConstant A B z
+        ((Scheme.ΓSpecIso (CommRingCat.of K)).hom.hom r)))
+end LinearStudy
+
+===== Linear.OrderedCrossSpaceCechEndomorphism =====
+module
+public import Linear.OrderedCrossSpaceAbelianCechIso
+public import Linear.OrderedFormalCechCoefficientFunctor
+public import Linear.AbelianOpenSectionIsoTransport
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits Opposite
+open AlgebraicGeometry.Scheme.Modules
+universe u
+/-- Native equality transport retains a proved original coefficient square. -/
+theorem abelianOpenSectionComparisonIso_endomorphism {X Y : Scheme.{u}}
+    (F : X.Opensᵒᵖ ⥤ AddCommGrpCat.{u}) (G : Y.Opensᵒᵖ ⥤ AddCommGrpCat.{u})
+    (U U' : X.Opens) (V V' : Y.Opens) (hU : U=U') (hV : V=V')
+    (e : F.obj (op U') ≅ G.obj (op V')) (a : F ⟶ F) (b : G ⟶ G)
+    (he : e.hom ≫ b.app (op V') = a.app (op U') ≫ e.hom) :
+    (abelianOpenSectionComparisonIso F G U U' V V' hU hV e).hom ≫ b.app (op V) =
+      a.app (op U) ≫ (abelianOpenSectionComparisonIso F G U U' V V' hU hV e).hom := by
+  subst U'
+  subst V'
+  simpa [abelianOpenSectionComparisonIso,abelianOpenSectionEqIso] using he
+/-- A proved endomorphism square on EVERY original intersection implies
+that square for the SAME existing cross-space ordered Cech complex iso.
+Faces, signs, product objects and actual coefficient maps are unchanged. -/
+theorem orderedCrossSpaceAbelianCechComplexIso_endomorphism
+    {X Y : Scheme.{u}} {ι : Type u} [LinearOrder ι]
+    (F : X.Opensᵒᵖ ⥤ AddCommGrpCat.{u}) (G : Y.Opensᵒᵖ ⥤ AddCommGrpCat.{u})
+    (U : ι → X.Opens) (V : ι → Y.Opens)
+    (e : ∀ (p : ℕ) (t : OrderedCechIndex ι p),
+      F.obj (op (∏ᶜ fun l : Fin (p+1) => U (t.1 l))) ≅
+        G.obj (op (∏ᶜ fun l : Fin (p+1) => V (t.1 l))))
+    (he : ∀ (p : ℕ) (k : Fin (p+2)) (t : OrderedCechIndex ι (p+1)),
+      (e p (t.delete k)).hom ≫ G.map ((orderedCechFace V p k).φ t).op =
+        F.map ((orderedCechFace U p k).φ t).op ≫ (e (p+1) t).hom)
+    (a : F ⟶ F) (b : G ⟶ G)
+    (ha : ∀ (p : ℕ) (t : OrderedCechIndex ι p),
+      (e p t).hom ≫ b.app (op (∏ᶜ fun l : Fin (p+1) => V (t.1 l))) =
+        a.app (op (∏ᶜ fun l : Fin (p+1) => U (t.1 l))) ≫ (e p t).hom) :
+    (orderedCrossSpaceAbelianCechComplexIso F G U V e he).hom ≫
+      (orderedFormalCechCoefficientFunctor V).map
+        ((FormalCoproduct.evalOp.{u} Y.Opens AddCommGrpCat.{u}).map b) =
+    (orderedFormalCechCoefficientFunctor U).map
+        ((FormalCoproduct.evalOp.{u} X.Opens AddCommGrpCat.{u}).map a) ≫
+      (orderedCrossSpaceAbelianCechComplexIso F G U V e he).hom := by
+  apply HomologicalComplex.Hom.ext
+  funext p
+  change CategoryTheory.Limits.Pi.map (fun t : OrderedCechIndex ι p => (e p t).hom) ≫
+      CategoryTheory.Limits.Pi.map (fun t : OrderedCechIndex ι p => b.app (op (∏ᶜ fun l : Fin (p+1) => V (t.1 l)))) =
+    CategoryTheory.Limits.Pi.map (fun t : OrderedCechIndex ι p => a.app (op (∏ᶜ fun l : Fin (p+1) => U (t.1 l)))) ≫
+      CategoryTheory.Limits.Pi.map (fun t : OrderedCechIndex ι p => (e p t).hom)
+  rw [CategoryTheory.Limits.Pi.map_comp_map,CategoryTheory.Limits.Pi.map_comp_map]
+  congr 1
+  funext t
+  exact ha p t
+end LinearStudy
+
