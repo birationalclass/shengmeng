@@ -8227,6 +8227,67 @@
         "When $K^2=\\chi(\\mathcal O_X)=0$, this formula gives no positive lower bound for sections. Nonvanishing is still true, but a complete proof requires additional surface geometry, such as the Albanese map and elliptic fibrations; no complete proof of that case was given here. This question concerns the canonical divisor $K_X$ and does not replace the original-paper approach to general nef divisors on K3 surfaces.",
         "References: [surface Riemann–Roch](https://math.umd.edu/~pbrosnan/notes/Surfaces/sect0017.html); [surface classification notes](https://mathweb.ucsd.edu/~jmckerna/Teaching/20-21/Spring/206A/l_7.pdf)."
       ]
+    },
+    {
+      "id": "canonical-surface-nef-dimension-two-20261021-q",
+      "role": "user",
+      "time": "2026-10-21",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "如果 $n(X,K_X)=2$ 呢？"
+      ],
+      "en": [
+        "What if $n(X,K_X)=2$?"
+      ]
+    },
+    {
+      "id": "canonical-surface-nef-dimension-two-20261021-a",
+      "role": "assistant",
+      "time": "2026-10-21",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "需要区分 nef dimension 与 numerical dimension。$n(X,K_X)=2$ 按定义并不等于 $K_X^2>0$；RR 仍只给出 $h^0(mK_X)\\ge\\chi(\\mathcal O_X)+m(m-1)K_X^2/2$（$m\\ge2$）。曲面 abundance 可推出对 canonical 除子这两种二维条件等价，但用它来证明 nonvanishing 已经预先使用了更强结论。因此需要另外处理 $K_X^2=\\chi(\\mathcal O_X)=0$ 的情形。"
+      ],
+      "en": [
+        "Nef dimension must be distinguished from numerical dimension. The definition of $n(X,K_X)=2$ does not itself assert $K_X^2>0$. RR still only gives $h^0(mK_X)\\ge\\chi(\\mathcal O_X)+m(m-1)K_X^2/2$ for $m\\ge2$. Surface abundance implies the equivalence for the canonical divisor, but invoking it to prove nonvanishing would assume a stronger result. An additional argument is needed in the case $K_X^2=\\chi(\\mathcal O_X)=0$."
+      ]
+    },
+    {
+      "id": "canonical-surface-nef-two-nonvanishing-proof-20261021-q",
+      "role": "user",
+      "time": "2026-10-21",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "如何证明 nef dimension 等于二能推出 nonvanishing？"
+      ],
+      "en": [
+        "How can one prove nonvanishing when the nef dimension is two?"
+      ]
+    },
+    {
+      "id": "canonical-surface-nef-two-nonvanishing-proof-20261021-a",
+      "role": "assistant",
+      "time": "2026-10-21",
+      "kind": "mathematics",
+      "proofStatus": "unverified",
+      "zh": [
+        "在 $K=K_X$ nef、$n(X,K)=2$ 的条件下，可用 RR 加上经典的 Albanese 纤维化输入证明 $H^0(X,2K)\\ne0$，不预先引用 abundance。",
+        "反设 $h^0(2K)=0$，则 $p_g=h^0(K)=0$。由 $K\\not\\equiv0$ 和 nefness 得 $h^0(-K)=0$。RR 给出 \\[0=h^0(2K)=1-q+K^2+h^1(2K),\\qquad1-q+K^2\\le0.\\] Noether 公式和 $b_1=2q$ 则给出 \\[12(1-q)=K^2+2-4q+b_2,\\qquad b_2=10-8q-K^2.\\] 因 $b_2\\ge1$、$K^2\\ge0$，有 $q\\le1$。结合前式，只能是 \\[q=1,\\quad K^2=0,\\quad b_2=2,\\quad e(X)=0.\\]",
+        "对 Albanese 映射作 Stein 分解，得到连通纤维映射 $f:X\\to B$，其中 $B$ 是椭圆曲线。一般纤维 $F$ 满足 $K\\cdot F=2g(F)-2$。若 $g(F)=0$，与 nefness 矛盾；若 $g(F)=1$，这些覆盖曲面且与 $K$ 交数为零的纤维与 $n(X,K)=2$ 矛盾。",
+        "若 $g(F)\\ge2$，这里需要一个额外的经典几何输入：在上述 $e(X)=0$ 情形，$f$ 是 smooth 且 isotrivial；经有限 étale 覆盖，得到 \\[\\pi:B^{\\prime}\\times F\\to X,\\qquad g(B^{\\prime})=1.\\] 因而 \\[\\pi^*K_X=K_{B^{\\prime}\\times F}=\\operatorname{pr}_F^*K_F.\\] 曲线 $B^{\\prime}\\times\\{p\\}$ 与 $\\pi^*K_X$ 的交数为零，其在 $X$ 上的像覆盖 $X$，由投影公式与 $K_X$ 的交数仍为零，再次与 $n(X,K_X)=2$ 矛盾。故 $h^0(2K_X)>0$。",
+        "这里的额外输入正是剩余 $q=1$ 情形的 smooth/isotrivial Albanese 纤维化论证，见 [Peters 曲面讲义第8节](https://www-fourier.univ-grenoble-alpes.fr/~peters/ConfsAndSchools/surface.f/surf-spec.pdf)。这是引用该几何输入的证明，并非仅由 RR 得出的证明；本次整理不把该输入或整体证明标为已独立验证。"
+      ],
+      "en": [
+        "For $K=K_X$ nef with $n(X,K)=2$, RR together with a classical Albanese-fibration input proves $H^0(X,2K)\\ne0$, without assuming abundance.",
+        "Suppose $h^0(2K)=0$. Then $p_g=h^0(K)=0$. Since $K\\not\\equiv0$ is nef, $h^0(-K)=0$. RR gives \\[0=h^0(2K)=1-q+K^2+h^1(2K),\\qquad1-q+K^2\\le0.\\] Noether's formula and $b_1=2q$ give \\[12(1-q)=K^2+2-4q+b_2,\\qquad b_2=10-8q-K^2.\\] Since $b_2\\ge1$ and $K^2\\ge0$, we have $q\\le1$. Together these imply \\[q=1,\\quad K^2=0,\\quad b_2=2,\\quad e(X)=0.\\]",
+        "The Stein factorization of the Albanese map gives a connected fibration $f:X\\to B$ over an elliptic curve. For a general fibre $F$, adjunction gives $K\\cdot F=2g(F)-2$. Genus zero contradicts nefness. Genus one gives a covering family of $K$-trivial curves, contradicting $n(X,K)=2$.",
+        "If $g(F)\\ge2$, an additional classical geometric input says that this $e(X)=0$ fibration is smooth and isotrivial. A finite étale cover therefore gives \\[\\pi:B^{\\prime}\\times F\\to X,\\qquad g(B^{\\prime})=1.\\] Thus \\[\\pi^*K_X=K_{B^{\\prime}\\times F}=\\operatorname{pr}_F^*K_F.\\] The curves $B^{\\prime}\\times\\{p\\}$ have zero intersection with $\\pi^*K_X$. Their images cover $X$ and, by the projection formula, have zero intersection with $K_X$, again contradicting $n(X,K_X)=2$. Therefore $h^0(2K_X)>0$.",
+        "The extra input is precisely the smooth/isotrivial Albanese-fibration argument in the remaining $q=1$ case; see [Peters, Section 8](https://www-fourier.univ-grenoble-alpes.fr/~peters/ConfsAndSchools/surface.f/surf-spec.pdf). This is a proof using that geometric input, not RR alone. The journal update does not mark the input or the full argument as independently verified."
+      ],
+      "highlight": true
     }
   ],
   "sourceTheorem": {
