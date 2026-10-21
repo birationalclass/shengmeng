@@ -1,0 +1,408 @@
+@LinearStudy.nativeAdjunctionHomPresheafIso_coefficient_naturality : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Preadditive A] {B : Type u_3}
+  [inst_2 : CategoryTheory.Category.{u_1, u_3} B] [inst_3 : CategoryTheory.Preadditive B]
+  {L : CategoryTheory.Functor A B} {R : CategoryTheory.Functor B A} (adj : L ⊣ R) [inst_4 : L.Additive]
+  [inst_5 : R.Additive] {F G : B} (a : F ⟶ G),
+  CategoryTheory.CategoryStruct.comp (L.op.whiskerLeft (CategoryTheory.preadditiveYoneda.map a))
+      (LinearStudy.nativeAdjunctionHomPresheafIso adj G).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.nativeAdjunctionHomPresheafIso adj F).hom
+      (CategoryTheory.preadditiveYoneda.map (R.map a))
+'LinearStudy.nativeAdjunctionHomPresheafIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.topOpenFreeAbelianSheafHomPresheafIso_coefficient_naturality : ∀ (X : TopCat)
+  {F G : TopCat.Sheaf AddCommGrpCat X} (a : F ⟶ G),
+  CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.topOpenFreeAbelianSheafFunctor X).op.whiskerLeft (CategoryTheory.preadditiveYoneda.map a))
+      (LinearStudy.topOpenFreeAbelianSheafHomPresheafIso X G).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.topOpenFreeAbelianSheafHomPresheafIso X F).hom a.hom
+'LinearStudy.topOpenFreeAbelianSheafHomPresheafIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.topOpenFreeAbelianPresheafHomPresheafIso_coefficient_naturality : ∀ (X : TopCat)
+  {F G : TopCat.Sheaf AddCommGrpCat X} (a : F ⟶ G),
+  CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.topOpenFreeAbelianPresheafFunctor X).op.whiskerLeft (CategoryTheory.preadditiveYoneda.map a.hom))
+      (LinearStudy.topOpenFreeAbelianPresheafHomPresheafIso X G).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.topOpenFreeAbelianPresheafHomPresheafIso X F).hom a.hom
+'LinearStudy.topOpenFreeAbelianPresheafHomPresheafIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.formalCoproductContravariantComponentIso_coefficient_naturality : ∀ {C : Type u_2}
+  [inst : CategoryTheory.Category.{u_3, u_2} C] {A : Type u_4} [inst_1 : CategoryTheory.Category.{u_5, u_4} A]
+  {B : Type u_6} [inst_2 : CategoryTheory.Category.{u_7, u_6} B] [inst_3 : CategoryTheory.Limits.HasCoproducts A]
+  [inst_4 : CategoryTheory.Limits.HasProducts B] (K : CategoryTheory.Functor C A) (H₁ H₂ : CategoryTheory.Functor Aᵒᵖ B)
+  [inst_5 : ∀ (α : Type u_1), CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) H₁]
+  [inst_6 : ∀ (α : Type u_1), CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) H₂] (a : H₁ ⟶ H₂)
+  (U : CategoryTheory.Limits.FormalCoproduct C),
+  CategoryTheory.CategoryStruct.comp (a.app (Opposite.op (∐ K.obj ∘ U.obj)))
+      (LinearStudy.formalCoproductContravariantComponentIso K H₂ U).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.formalCoproductContravariantComponentIso K H₁ U).hom
+      (CategoryTheory.Limits.Pi.map fun (i : U.I) => a.app (Opposite.op (K.obj (U.obj i))))
+'LinearStudy.formalCoproductContravariantComponentIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.formalCoproductContravariantEvaluationIso_coefficient_naturality : ∀ {C : Type u_2}
+  [inst : CategoryTheory.Category.{u_3, u_2} C] {A : Type u_4} [inst_1 : CategoryTheory.Category.{u_5, u_4} A]
+  {B : Type u_6} [inst_2 : CategoryTheory.Category.{u_7, u_6} B] [inst_3 : CategoryTheory.Limits.HasCoproducts A]
+  [inst_4 : CategoryTheory.Limits.HasProducts B] (K : CategoryTheory.Functor C A) (H₁ H₂ : CategoryTheory.Functor Aᵒᵖ B)
+  [inst_5 : ∀ (α : Type u_1), CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) H₁]
+  [inst_6 : ∀ (α : Type u_1), CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete α) H₂]
+  (a : H₁ ⟶ H₂),
+  CategoryTheory.CategoryStruct.comp (((CategoryTheory.Limits.FormalCoproduct.eval C A).obj K).op.whiskerLeft a)
+      (LinearStudy.formalCoproductContravariantEvaluationIso K H₂).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.formalCoproductContravariantEvaluationIso K H₁).hom
+      ((CategoryTheory.Limits.FormalCoproduct.evalOp C B).map (K.op.whiskerLeft a))
+'LinearStudy.formalCoproductContravariantEvaluationIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedFormalCechCoefficientFunctor : {X : AlgebraicGeometry.Scheme} →
+  {D : Type u_3} →
+    [inst : CategoryTheory.Category.{u_2, u_3} D] →
+      [inst_1 : CategoryTheory.Preadditive D] →
+        {ι : Type u_1} →
+          [LinearOrder ι] →
+            (ι → X.Opens) →
+              CategoryTheory.Functor (CategoryTheory.Functor (CategoryTheory.Limits.FormalCoproduct X.Opens)ᵒᵖ D)
+                (CochainComplex D ℕ)
+'LinearStudy.orderedFormalCechCoefficientFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedFormalCechCoefficientFunctor_mapIso : ∀ {X : AlgebraicGeometry.Scheme} {D : Type u_3}
+  [inst : CategoryTheory.Category.{u_2, u_3} D] [inst_1 : CategoryTheory.Preadditive D] {ι : Type u_1}
+  [inst_2 : LinearOrder ι] (U : ι → X.Opens)
+  {F G : CategoryTheory.Functor (CategoryTheory.Limits.FormalCoproduct X.Opens)ᵒᵖ D} (e : F ≅ G),
+  (LinearStudy.orderedFormalCechCoefficientFunctor U).mapIso e = LinearStudy.orderedFormalCechComplexIso U e
+'LinearStudy.orderedFormalCechCoefficientFunctor_mapIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.actualHomSourceComplexIso_coefficient_naturality : ∀ {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_1, u_2} A] [inst_1 : CategoryTheory.Abelian A] {K L : ChainComplex A ℕ} (e : K ≅ L)
+  {F G : A} (a : F ⟶ G),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.chainActualHomCochainCoefficientMap K a)
+      (LinearStudy.actualHomSourceComplexIso e G).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.actualHomSourceComplexIso e F).hom
+      (LinearStudy.chainActualHomCochainCoefficientMap L a)
+'LinearStudy.actualHomSourceComplexIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedFormalActualHomCochainIso_coefficient_naturality : ∀ {X : AlgebraicGeometry.Scheme} {A : Type u_3}
+  [inst : CategoryTheory.Category.{u_2, u_3} A] [inst_1 : CategoryTheory.Abelian A] {ι : Type u_1}
+  [inst_2 : LinearOrder ι] (U : ι → X.Opens)
+  (P : CategoryTheory.Functor (CategoryTheory.Limits.FormalCoproduct X.Opens) A) {F G : A} (a : F ⟶ G),
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.chainActualHomCochainCoefficientMap
+        (HomologicalComplex.unop (LinearStudy.orderedFormalCechComplex P.op U)) a)
+      (LinearStudy.orderedFormalActualHomCochainIso U P G).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.orderedFormalActualHomCochainIso U P F).hom
+      ((LinearStudy.orderedFormalCechCoefficientFunctor U).map
+        (P.op.whiskerLeft (CategoryTheory.preadditiveYoneda.map a)))
+'LinearStudy.orderedFormalActualHomCochainIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.orderedFreeSheafHomCoefficientPresheafIso : (X : AlgebraicGeometry.Scheme) →
+  (F : CategoryTheory.Sheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat) →
+    ((LinearStudy.orderedFreeOpenFormalPresheafFunctor X).comp
+              (CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat)).op.comp
+        (CategoryTheory.preadditiveYoneda.obj F) ≅
+      (CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens AddCommGrpCat).obj F.obj
+'LinearStudy.orderedFreeSheafHomCoefficientPresheafIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.orderedFreeSheafHomCoefficientPresheafIso_hom_app : ∀ (X : AlgebraicGeometry.Scheme)
+  (F : CategoryTheory.Sheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat)
+  (V : (CategoryTheory.Limits.FormalCoproduct X.Opens)ᵒᵖ),
+  (LinearStudy.orderedFreeSheafHomCoefficientPresheafIso X F).hom.app V =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.nativeAdjunctionHomPresheafIso
+              (CategoryTheory.sheafificationAdjunction (Opens.grothendieckTopology ↥X) AddCommGrpCat) F).hom.app
+        (Opposite.op ((LinearStudy.orderedFreeOpenFormalPresheafFunctor X).obj (Opposite.unop V))))
+      (CategoryTheory.CategoryStruct.comp
+        ((LinearStudy.formalCoproductContravariantEvaluationIso
+                (LinearStudy.topOpenFreeAbelianPresheafFunctor ↑X.toPresheafedSpace)
+                (CategoryTheory.preadditiveYoneda.obj F.obj)).hom.app
+          V)
+        (((CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens AddCommGrpCat).map
+              (LinearStudy.topOpenFreeAbelianPresheafHomPresheafIso (↑X.toPresheafedSpace) F).hom).app
+          V))
+'LinearStudy.orderedFreeSheafHomCoefficientPresheafIso_hom_app' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.orderedFreeSheafHomCoefficientPresheafIso_coefficient_naturality : ∀ (X : AlgebraicGeometry.Scheme)
+  {F G : CategoryTheory.Sheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat} (a : F ⟶ G),
+  CategoryTheory.CategoryStruct.comp
+      (((LinearStudy.orderedFreeOpenFormalPresheafFunctor X).comp
+              (CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat)).op.whiskerLeft
+        (CategoryTheory.preadditiveYoneda.map a))
+      (LinearStudy.orderedFreeSheafHomCoefficientPresheafIso X G).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.orderedFreeSheafHomCoefficientPresheafIso X F).hom
+      ((CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens AddCommGrpCat).map a.hom)
+'LinearStudy.orderedFreeSheafHomCoefficientPresheafIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.orderedTopAbelianCechCoefficientMap : (X : AlgebraicGeometry.Scheme) →
+  {ι : Type u_1} →
+    [inst : LinearOrder ι] →
+      (U : ι → X.Opens) →
+        {F G : TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace} →
+          (F ⟶ G) → (LinearStudy.orderedTopAbelianCechComplex X U F ⟶ LinearStudy.orderedTopAbelianCechComplex X U G)
+'LinearStudy.orderedTopAbelianCechCoefficientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.orderedFreeSheafActualHomComplexIso_factorization : ∀ (X : AlgebraicGeometry.Scheme) {ι : Type u_1}
+  [inst : LinearOrder ι] (U : ι → X.Opens) (F : TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace),
+  LinearStudy.orderedFreeSheafActualHomComplexIso X U F =
+    LinearStudy.actualHomSourceComplexIso
+        (LinearStudy.orderedCovariantWhiskeringChainIso U (LinearStudy.orderedFreeOpenFormalPresheafFunctor X)
+          (CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat))
+        F ≪≫
+      LinearStudy.orderedFormalActualHomCochainIso U
+          ((LinearStudy.orderedFreeOpenFormalPresheafFunctor X).comp
+            (CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat))
+          F ≪≫
+        (LinearStudy.orderedFormalCechCoefficientFunctor U).mapIso
+          (LinearStudy.orderedFreeSheafHomCoefficientPresheafIso X F)
+'LinearStudy.orderedFreeSheafActualHomComplexIso_factorization' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.orderedFreeSheafActualHomComplexIso_coefficient_naturality : ∀ (X : AlgebraicGeometry.Scheme) {ι : Type u_1}
+  [inst : LinearOrder ι] (U : ι → X.Opens) {F G : TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace} (a : F ⟶ G),
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.chainActualHomCochainCoefficientMap (LinearStudy.orderedFreeAbelianSheafComplex X U) a)
+      (LinearStudy.orderedFreeSheafActualHomComplexIso X U G).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.orderedFreeSheafActualHomComplexIso X U F).hom
+      (LinearStudy.orderedTopAbelianCechCoefficientMap X U a)
+'LinearStudy.orderedFreeSheafActualHomComplexIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicResolutionActualCochainComparison_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) (Z : A) (f : K ⟶ (ChainComplex.single₀ A).obj Z) [inst_3 : QuasiIso f] {F G : A} (a : F ⟶ G)
+  (hF : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1)))
+  (hG : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) G (j + 1))) {C D : CochainComplex AddCommGrpCat ℕ}
+  (eF : LinearStudy.chainActualHomCochain K F ≅ C) (eG : LinearStudy.chainActualHomCochain K G ≅ D) (b : C ⟶ D),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.chainActualHomCochainCoefficientMap K a) eG.hom =
+      CategoryTheory.CategoryStruct.comp eF.hom b →
+    ∀ (q : ℕ),
+      CategoryTheory.CategoryStruct.comp (HomologicalComplex.homologyMap b (q + 1))
+          ((HomologicalComplex.homologyFunctor AddCommGrpCat (ComplexShape.up ℕ) (q + 1)).mapIso eG.symm ≪≫
+              (LinearStudy.acyclicResolutionGlobalExtActualHomologyIso K Z f G hG q).symm).hom =
+        CategoryTheory.CategoryStruct.comp
+          ((HomologicalComplex.homologyFunctor AddCommGrpCat (ComplexShape.up ℕ) (q + 1)).mapIso eF.symm ≪≫
+              (LinearStudy.acyclicResolutionGlobalExtActualHomologyIso K Z f F hF q).symm).hom
+          (AddCommGrpCat.ofHom ((CategoryTheory.Abelian.Ext.mk₀ a).postcomp Z ⋯))
+'LinearStudy.acyclicResolutionActualCochainComparison_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic_coefficient_naturality : ∀
+  (X : AlgebraicGeometry.Scheme) {ι : Type u_1} [inst : LinearOrder ι] [inst_1 : Finite ι] (U : ι → X.Opens)
+  (hU : ⊤ ≤ iSup U) {F G : TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace} (a : F ⟶ G)
+  (hF :
+    ∀ (p : ℕ) (b : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) (j : ℕ),
+      Subsingleton
+        (CategoryTheory.Sheaf.H
+          ((LinearStudy.topOpenAbelianSheafRestriction (↑X.toPresheafedSpace)
+                (∏ᶜ fun (k : Fin (p + 1)) => U (↑b k))).obj
+            F)
+          (j + 1)))
+  (hG :
+    ∀ (p : ℕ) (b : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) (j : ℕ),
+      Subsingleton
+        (CategoryTheory.Sheaf.H
+          ((LinearStudy.topOpenAbelianSheafRestriction (↑X.toPresheafedSpace)
+                (∏ᶜ fun (k : Fin (p + 1)) => U (↑b k))).obj
+            G)
+          (j + 1)))
+  (n : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap (LinearStudy.orderedTopAbelianCechCoefficientMap X U a) (n + 1))
+      (LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic X U hU G hG n).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic X U hU F hF n).hom
+      ((CategoryTheory.Sheaf.functorH (Opens.grothendieckTopology ↥X) (n + 1)).map a)
+'LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso_coefficient_naturality : ∀
+  (X : AlgebraicGeometry.Scheme) [inst : AlgebraicGeometry.IsLocallyNoetherian X] {ι : Type u_1}
+  [inst_1 : LinearOrder ι] [inst_2 : Finite ι] (U : ι → X.Opens) (hU : ⊤ ≤ iSup U)
+  (haff :
+    ∀ (p : ℕ) (b : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+      AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑b k)))
+  {M N : X.Modules} [inst_3 : SheafOfModules.IsQuasicoherent M] [inst_4 : SheafOfModules.IsQuasicoherent N] (a : M ⟶ N)
+  (n : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap
+        (LinearStudy.orderedTopAbelianCechCoefficientMap X U ((LinearStudy.schemeModuleToActualAbelianSheaf X).map a))
+        (n + 1))
+      (LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso X U hU haff N n).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso X U hU haff M n).hom
+      ((CategoryTheory.Sheaf.functorH (Opens.grothendieckTopology ↥X) (n + 1)).map
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).map a))
+'LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicResolutionActualCochainExtIso : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (Z : A) →
+            (f : K ⟶ (ChainComplex.single₀ A).obj Z) →
+              [QuasiIso f] →
+                (F : A) →
+                  (∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+                    {C : CochainComplex AddCommGrpCat ℕ} →
+                      (LinearStudy.chainActualHomCochain K F ≅ C) →
+                        (q : ℕ) → HomologicalComplex.homology C (q + 1) ≅ ↧(CategoryTheory.Abelian.Ext Z F (q + 1))
+'LinearStudy.acyclicResolutionActualCochainExtIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicResolutionActualCochainExtIso_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) (Z : A) (f : K ⟶ (ChainComplex.single₀ A).obj Z) [inst_3 : QuasiIso f] {F G : A} (a : F ⟶ G)
+  (hF : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1)))
+  (hG : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) G (j + 1))) {C D : CochainComplex AddCommGrpCat ℕ}
+  (eF : LinearStudy.chainActualHomCochain K F ≅ C) (eG : LinearStudy.chainActualHomCochain K G ≅ D) (b : C ⟶ D),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.chainActualHomCochainCoefficientMap K a) eG.hom =
+      CategoryTheory.CategoryStruct.comp eF.hom b →
+    ∀ (q : ℕ),
+      CategoryTheory.CategoryStruct.comp (HomologicalComplex.homologyMap b (q + 1))
+          (LinearStudy.acyclicResolutionActualCochainExtIso K Z f G hG eG q).hom =
+        CategoryTheory.CategoryStruct.comp (LinearStudy.acyclicResolutionActualCochainExtIso K Z f F hF eF q).hom
+          (AddCommGrpCat.ofHom ((CategoryTheory.Abelian.Ext.mk₀ a).postcomp Z ⋯))
+'LinearStudy.acyclicResolutionActualCochainExtIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic_factorization : ∀ (X : AlgebraicGeometry.Scheme)
+  {ι : Type u_1} [inst : LinearOrder ι] [inst_1 : Finite ι] (U : ι → X.Opens) (hU : ⊤ ≤ iSup U)
+  (F : TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace)
+  (hF :
+    ∀ (p : ℕ) (b : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) (j : ℕ),
+      Subsingleton
+        (CategoryTheory.Sheaf.H
+          ((LinearStudy.topOpenAbelianSheafRestriction (↑X.toPresheafedSpace)
+                (∏ᶜ fun (k : Fin (p + 1)) => U (↑b k))).obj
+            F)
+          (j + 1)))
+  (n : ℕ),
+  LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic X U hU F hF n =
+    LinearStudy.acyclicResolutionActualCochainExtIso (LinearStudy.orderedFreeAbelianSheafComplex X U)
+      ((CategoryTheory.constantSheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat).obj ↧(ULift.{u_1, 0} ℤ))
+      (LinearStudy.orderedCechNativeIntegerAugmentation X U) F ⋯ (LinearStudy.orderedFreeSheafActualHomComplexIso X U F)
+      n
+'LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic_factorization' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic_coefficient_naturality_apply : ∀
+  (X : AlgebraicGeometry.Scheme) {ι : Type u_1} [inst : LinearOrder ι] [inst_1 : Finite ι] (U : ι → X.Opens)
+  (hU : ⊤ ≤ iSup U) {F G : TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace} (a : F ⟶ G)
+  (hF :
+    ∀ (p : ℕ) (b : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) (j : ℕ),
+      Subsingleton
+        (CategoryTheory.Sheaf.H
+          ((LinearStudy.topOpenAbelianSheafRestriction (↑X.toPresheafedSpace)
+                (∏ᶜ fun (k : Fin (p + 1)) => U (↑b k))).obj
+            F)
+          (j + 1)))
+  (hG :
+    ∀ (p : ℕ) (b : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) (j : ℕ),
+      Subsingleton
+        (CategoryTheory.Sheaf.H
+          ((LinearStudy.topOpenAbelianSheafRestriction (↑X.toPresheafedSpace)
+                (∏ᶜ fun (k : Fin (p + 1)) => U (↑b k))).obj
+            G)
+          (j + 1)))
+  (n : ℕ) (x : ↑(HomologicalComplex.homology (LinearStudy.orderedTopAbelianCechComplex X U F) (n + 1))),
+  (CategoryTheory.ConcreteCategory.hom
+        (LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic X U hU G hG n).hom)
+      ((CategoryTheory.ConcreteCategory.hom
+          (HomologicalComplex.homologyMap (LinearStudy.orderedTopAbelianCechCoefficientMap X U a) (n + 1)))
+        x) =
+    (CategoryTheory.Sheaf.H.map a (n + 1))
+      ((CategoryTheory.ConcreteCategory.hom
+          (LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic X U hU F hF n).hom)
+        x)
+'LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic_coefficient_naturality_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.orderedFormalCechCoefficientFunctor.{u, v, w} : {X : AlgebraicGeometry.Scheme} →
+  {D : Type w} →
+    [inst : CategoryTheory.Category.{v, w} D] →
+      [inst_1 : CategoryTheory.Preadditive D] →
+        {ι : Type u} →
+          [LinearOrder ι] →
+            (ι → X.Opens) →
+              CategoryTheory.Functor (CategoryTheory.Functor (CategoryTheory.Limits.FormalCoproduct X.Opens)ᵒᵖ D)
+                (CochainComplex D ℕ) :=
+fun {X : AlgebraicGeometry.Scheme} {D : Type w} [CategoryTheory.Category.{v, w} D] [CategoryTheory.Preadditive D]
+    {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) =>
+  {
+    obj := fun (F : CategoryTheory.Functor (CategoryTheory.Limits.FormalCoproduct X.Opens)ᵒᵖ D) =>
+      LinearStudy.orderedFormalCechComplex F U,
+    map := fun {X_1 Y : CategoryTheory.Functor (CategoryTheory.Limits.FormalCoproduct X.Opens)ᵒᵖ D} (a : X_1 ⟶ Y) =>
+      CochainComplex.ofHom
+        (fun (n : ℕ) => a.app (Opposite.op (AlgebraicGeometry.Scheme.Modules.orderedCechFormalObject U n))) ⋯,
+    map_id := ⋯, map_comp := ⋯ }
+def LinearStudy.orderedFreeSheafHomCoefficientPresheafIso.{u} : (X : AlgebraicGeometry.Scheme) →
+  (F : CategoryTheory.Sheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat) →
+    ((LinearStudy.orderedFreeOpenFormalPresheafFunctor X).comp
+              (CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat)).op.comp
+        (CategoryTheory.preadditiveYoneda.obj F) ≅
+      (CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens AddCommGrpCat).obj F.obj :=
+fun (X : AlgebraicGeometry.Scheme) (F : CategoryTheory.Sheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat) =>
+  let P := LinearStudy.orderedFreeOpenFormalPresheafFunctor X;
+  let K := LinearStudy.topOpenFreeAbelianPresheafFunctor ↑X.toPresheafedSpace;
+  let S := CategoryTheory.presheafToSheaf (Opens.grothendieckTopology ↥X) AddCommGrpCat;
+  let YS := CategoryTheory.preadditiveYoneda.obj F;
+  let YP := CategoryTheory.preadditiveYoneda.obj F.obj;
+  CategoryTheory.Functor.isoWhiskerRight (P.opComp S) YS ≪≫
+    P.op.associator S.op YS ≪≫
+      P.op.isoWhiskerLeft
+          (LinearStudy.nativeAdjunctionHomPresheafIso
+            (CategoryTheory.sheafificationAdjunction (Opens.grothendieckTopology ↥X) AddCommGrpCat) F) ≪≫
+        LinearStudy.formalCoproductContravariantEvaluationIso K YP ≪≫
+          (CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens AddCommGrpCat).mapIso
+            (LinearStudy.topOpenFreeAbelianPresheafHomPresheafIso (↑X.toPresheafedSpace) F)
+def LinearStudy.orderedTopAbelianCechCoefficientMap.{u} : (X : AlgebraicGeometry.Scheme) →
+  {ι : Type u} →
+    [inst : LinearOrder ι] →
+      (U : ι → X.Opens) →
+        {F G : TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace} →
+          (F ⟶ G) → (LinearStudy.orderedTopAbelianCechComplex X U F ⟶ LinearStudy.orderedTopAbelianCechComplex X U G) :=
+fun (X : AlgebraicGeometry.Scheme) {ι : Type u} [LinearOrder ι] (U : ι → X.Opens)
+    {F G : TopCat.Sheaf AddCommGrpCat ↑X.toPresheafedSpace} (a : F ⟶ G) =>
+  (LinearStudy.orderedFormalCechCoefficientFunctor U).map
+    ((CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens AddCommGrpCat).map a.hom)
+def LinearStudy.acyclicResolutionActualCochainExtIso.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      [inst_2 : CategoryTheory.HasExt A] →
+        (K : ChainComplex A ℕ) →
+          (Z : A) →
+            (f : K ⟶ (ChainComplex.single₀ A).obj Z) →
+              [QuasiIso f] →
+                (F : A) →
+                  (∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) →
+                    {C : CochainComplex AddCommGrpCat ℕ} →
+                      (LinearStudy.chainActualHomCochain K F ≅ C) →
+                        (q : ℕ) → HomologicalComplex.homology C (q + 1) ≅ ↧(CategoryTheory.Abelian.Ext Z F (q + 1)) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+    (K : ChainComplex A ℕ) (Z : A) (f : K ⟶ (ChainComplex.single₀ A).obj Z) [QuasiIso f] (F : A)
+    (hF : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1))) {C : CochainComplex AddCommGrpCat ℕ}
+    (eF : LinearStudy.chainActualHomCochain K F ≅ C) (q : ℕ) =>
+  (HomologicalComplex.homologyFunctor AddCommGrpCat (ComplexShape.up ℕ) (q + 1)).mapIso eF.symm ≪≫
+    (LinearStudy.acyclicResolutionGlobalExtActualHomologyIso K Z f F hF q).symm
+ROLECHECK:LinearStudy.nativeAdjunctionHomPresheafIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.topOpenFreeAbelianSheafHomPresheafIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.topOpenFreeAbelianPresheafHomPresheafIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.formalCoproductContravariantComponentIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.formalCoproductContravariantEvaluationIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.orderedFormalCechCoefficientFunctor:false
+ROLECHECK:LinearStudy.orderedFormalCechCoefficientFunctor_mapIso:true
+ROLECHECK:LinearStudy.actualHomSourceComplexIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.orderedFormalActualHomCochainIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.orderedFreeSheafHomCoefficientPresheafIso:false
+ROLECHECK:LinearStudy.orderedFreeSheafHomCoefficientPresheafIso_hom_app:true
+ROLECHECK:LinearStudy.orderedFreeSheafHomCoefficientPresheafIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.orderedTopAbelianCechCoefficientMap:false
+ROLECHECK:LinearStudy.orderedFreeSheafActualHomComplexIso_factorization:true
+ROLECHECK:LinearStudy.orderedFreeSheafActualHomComplexIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.acyclicResolutionActualCochainComparison_coefficient_naturality:true
+ROLECHECK:LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic_coefficient_naturality:true
+ROLECHECK:LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.acyclicResolutionActualCochainExtIso:false
+ROLECHECK:LinearStudy.acyclicResolutionActualCochainExtIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic_factorization:true
+ROLECHECK:LinearStudy.topFiniteOrderedCech_actualHigherHIso_of_localAcyclic_coefficient_naturality_apply:true
