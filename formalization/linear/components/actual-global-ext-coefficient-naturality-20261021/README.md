@@ -1,0 +1,5 @@
+# Actual global Ext coefficient naturality
+
+Coefficient naturality of SAME actual unbounded acyclic-resolution global Ext/Hom-cochain homology comparison,derived from original unsigned Yoneda boundaries,all opcycle shifts,actual source augmentation,actual Hom cokernel and native cycles/homology maps. Arbitrary abelian category with HasExt,actual resolution QuasiIso and BOTH coefficient termwise relative positive-Ext acyclicity explicit. No desired naturality premise. ORIGINAL geometric Cech/native-H comparison naturality,homogeneous Hom/global-omega identification,normalized trace,canonical dualizing identification and original4.1/4.2/main remain OPEN.
+
+7 compiled/audited roots,18 declarations:16 theorem declarations and2 actual object constructions. 364 physical root lines;15 closed project modules;8 unchanged parents checked against the ACTUAL live ordered-Cech archive. Reviewed by Codex;no independent human review claimed. Original4.1/4.2/main OPEN;whole-local checkpoint180. All95holds retained;8GiB,2threads,CPU<=25%,20minutes,D-drive staging.

@@ -1,0 +1,237 @@
+@LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  {F G : A} (a : F ⟶ G) {S : CategoryTheory.ShortComplex A} (hS : S.ShortExact) (n m : ℕ) (hm : 1 + n = m)
+  [inst_3 : Subsingleton (CategoryTheory.Abelian.Ext S.X₂ F n)]
+  [inst_4 : Subsingleton (CategoryTheory.Abelian.Ext S.X₂ F m)]
+  [inst_5 : Subsingleton (CategoryTheory.Abelian.Ext S.X₂ G n)]
+  [inst_6 : Subsingleton (CategoryTheory.Abelian.Ext S.X₂ G m)] (z : CategoryTheory.Abelian.Ext S.X₁ F n),
+  (LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv G hS n m hm) (z.comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯) =
+    ((LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv F hS n m hm) z).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯
+'LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv_symm_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  {F G : A} (a : F ⟶ G) {S : CategoryTheory.ShortComplex A} (hS : S.ShortExact) (n m : ℕ) (hm : 1 + n = m)
+  [inst_3 : Subsingleton (CategoryTheory.Abelian.Ext S.X₂ F n)]
+  [inst_4 : Subsingleton (CategoryTheory.Abelian.Ext S.X₂ F m)]
+  [inst_5 : Subsingleton (CategoryTheory.Abelian.Ext S.X₂ G n)]
+  [inst_6 : Subsingleton (CategoryTheory.Abelian.Ext S.X₂ G m)] (z : CategoryTheory.Abelian.Ext S.X₃ F m),
+  (LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv G hS n m hm).symm
+      (z.comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯) =
+    ((LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv F hS n m hm).symm z).comp
+      (CategoryTheory.Abelian.Ext.mk₀ a) ⋯
+'LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv_symm_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) {F G : A} (a : F ⟶ G) (p q : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1))
+  (hF : ∀ (j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1)))
+  (hG : ∀ (j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) G (j + 1)))
+  (z : CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F (q + 2)),
+  (LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv K G p q hK hG) (z.comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯) =
+    ((LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv K F p q hK hF) z).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯
+'LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.extAddEquivIndexTransport_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (P : A) (Q : ℕ → A) {F G : A} (a : F ⟶ G) {n n' i i' : ℕ}
+  (eF : CategoryTheory.Abelian.Ext P F n ≃+ CategoryTheory.Abelian.Ext (Q i) F 1)
+  (eG : CategoryTheory.Abelian.Ext P G n ≃+ CategoryTheory.Abelian.Ext (Q i) G 1),
+  (∀ (z : CategoryTheory.Abelian.Ext P F n),
+      eG (z.comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯) = (eF z).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯) →
+    ∀ (hn : n = n') (hi : i = i') (z : CategoryTheory.Abelian.Ext P F n'),
+      (⋯.mp eG) (z.comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯) = ((⋯.mp eF) z).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯
+'LinearStudy.extAddEquivIndexTransport_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) {F G : A} (a : F ⟶ G) (hK : ∀ (p : ℕ), HomologicalComplex.ExactAt K (p + 1))
+  (hF : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1)))
+  (hG : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) G (j + 1))) (p q : ℕ)
+  (z : CategoryTheory.Abelian.Ext (HomologicalComplex.opcycles K p) F (q + 1)),
+  (LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv K G hK hG p q)
+      (z.comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯) =
+    ((LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv K F hK hF p q) z).comp (CategoryTheory.Abelian.Ext.mk₀ a)
+      ⋯
+'LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicResolutionExtSourceIsoAddEquiv_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  {P Q F G : A} (e : P ≅ Q) (a : F ⟶ G) (n : ℕ) (z : CategoryTheory.Abelian.Ext Q F n),
+  (LinearStudy.acyclicResolutionExtSourceIsoAddEquiv e G n) (z.comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯) =
+    ((LinearStudy.acyclicResolutionExtSourceIsoAddEquiv e F n) z).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯
+'LinearStudy.acyclicResolutionExtSourceIsoAddEquiv_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) (Z : A) (f : K ⟶ (ChainComplex.single₀ A).obj Z) [inst_3 : QuasiIso f] {F G : A} (a : F ⟶ G)
+  (hF : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1)))
+  (hG : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) G (j + 1))) (q : ℕ)
+  (z : CategoryTheory.Abelian.Ext Z F (q + 1)),
+  (LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv K Z f G hG q) (z.comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯) =
+    ((LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv K Z f F hF q) z).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯
+'LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicChainOpcycleHomCokernelCoefficientMap : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        {F G : A} →
+          (F ⟶ G) →
+            (p : ℕ) →
+              CategoryTheory.Limits.cokernel (LinearStudy.acyclicChainOpcycleHomPrecompose K F p) ⟶
+                CategoryTheory.Limits.cokernel (LinearStudy.acyclicChainOpcycleHomPrecompose K G p)
+'LinearStudy.acyclicChainOpcycleHomCokernelCoefficientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.acyclicChainOpcycleHomCokernelCoefficientMap_projection : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) {F G : A} (a : F ⟶ G) (p : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.acyclicChainOpcycleHomPrecompose K F p))
+      (LinearStudy.acyclicChainOpcycleHomCokernelCoefficientMap K a p) =
+    CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.preadditiveYoneda.map a).app (Opposite.op (HomologicalComplex.opcycles K (p + 1))))
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.acyclicChainOpcycleHomPrecompose K G p))
+'LinearStudy.acyclicChainOpcycleHomCokernelCoefficientMap_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) {F G : A} (a : F ⟶ G) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1))
+  (b : HomologicalComplex.opcycles K (p + 1) ⟶ F),
+  (LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary K G p hK) (CategoryTheory.CategoryStruct.comp b a) =
+    ((LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary K F p hK) b).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯
+'LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) {F G : A} (a : F ⟶ G) (p : ℕ) (hK : HomologicalComplex.ExactAt K (p + 1))
+  [inst_3 : Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F 1)]
+  [inst_4 : Subsingleton (CategoryTheory.Abelian.Ext (K.X p) G 1)],
+  CategoryTheory.CategoryStruct.comp (LinearStudy.acyclicChainOpcycleHomCokernelCoefficientMap K a p)
+      (LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso K G p hK).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso K F p hK).hom
+      (AddCommGrpCat.ofHom ((CategoryTheory.Abelian.Ext.mk₀ a).postcomp (HomologicalComplex.opcycles K p) ⋯))
+'LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.chainActualHomCochainCoefficientMap : {A : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        {F G : A} → (F ⟶ G) → (LinearStudy.chainActualHomCochain K F ⟶ LinearStudy.chainActualHomCochain K G)
+'LinearStudy.chainActualHomCochainCoefficientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.chainActualHomCyclesNativeIso_inv_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] (K : ChainComplex A ℕ) {F G : A}
+  (a : F ⟶ G) (n : ℕ),
+  CategoryTheory.CategoryStruct.comp ((CategoryTheory.preadditiveYoneda.map a).app ((HomologicalComplex.op K).cycles n))
+      (LinearStudy.chainActualHomCyclesNativeIso K G n).inv =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.chainActualHomCyclesNativeIso K F n).inv
+      (HomologicalComplex.cyclesMap (LinearStudy.chainActualHomCochainCoefficientMap K a) n)
+'LinearStudy.chainActualHomCyclesNativeIso_inv_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.chainActualHomCyclesOpcyclesIso_inv_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] (K : ChainComplex A ℕ) {F G : A}
+  (a : F ⟶ G) (n : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.preadditiveYoneda.map a).app (Opposite.op (HomologicalComplex.opcycles K n)))
+      (LinearStudy.chainActualHomCyclesOpcyclesIso K G n).inv =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.chainActualHomCyclesOpcyclesIso K F n).inv
+      (HomologicalComplex.cyclesMap (LinearStudy.chainActualHomCochainCoefficientMap K a) n)
+'LinearStudy.chainActualHomCyclesOpcyclesIso_inv_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.chainActualHomCyclesOpcyclesIso_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] (K : ChainComplex A ℕ) {F G : A}
+  (a : F ⟶ G) (n : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.cyclesMap (LinearStudy.chainActualHomCochainCoefficientMap K a) n)
+      (LinearStudy.chainActualHomCyclesOpcyclesIso K G n).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.chainActualHomCyclesOpcyclesIso K F n).hom
+      ((CategoryTheory.preadditiveYoneda.map a).app (Opposite.op (HomologicalComplex.opcycles K n)))
+'LinearStudy.chainActualHomCyclesOpcyclesIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.chainActualHomCochainHomologyCokernelIso_projection : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) (F : A) (p : ℕ),
+  CategoryTheory.CategoryStruct.comp (HomologicalComplex.homologyπ (LinearStudy.chainActualHomCochain K F) (p + 1))
+      (LinearStudy.chainActualHomCochainHomologyCokernelIso K F p).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.chainActualHomCyclesOpcyclesIso K F (p + 1)).hom
+      (CategoryTheory.Limits.cokernel.π (LinearStudy.acyclicChainOpcycleHomPrecompose K F p))
+'LinearStudy.chainActualHomCochainHomologyCokernelIso_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.chainActualHomCochainHomologyCokernelIso_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) {F G : A} (a : F ⟶ G) (p : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap (LinearStudy.chainActualHomCochainCoefficientMap K a) (p + 1))
+      (LinearStudy.chainActualHomCochainHomologyCokernelIso K G p).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.chainActualHomCochainHomologyCokernelIso K F p).hom
+      (LinearStudy.acyclicChainOpcycleHomCokernelCoefficientMap K a p)
+'LinearStudy.chainActualHomCochainHomologyCokernelIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.acyclicResolutionGlobalExtActualHomologyIso_coefficient_naturality : ∀ {A : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} A] [inst_1 : CategoryTheory.Abelian A] [inst_2 : CategoryTheory.HasExt A]
+  (K : ChainComplex A ℕ) (Z : A) (f : K ⟶ (ChainComplex.single₀ A).obj Z) [inst_3 : QuasiIso f] {F G : A} (a : F ⟶ G)
+  (hF : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) F (j + 1)))
+  (hG : ∀ (p j : ℕ), Subsingleton (CategoryTheory.Abelian.Ext (K.X p) G (j + 1))) (q : ℕ),
+  CategoryTheory.CategoryStruct.comp (AddCommGrpCat.ofHom ((CategoryTheory.Abelian.Ext.mk₀ a).postcomp Z ⋯))
+      (LinearStudy.acyclicResolutionGlobalExtActualHomologyIso K Z f G hG q).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.acyclicResolutionGlobalExtActualHomologyIso K Z f F hF q).hom
+      (HomologicalComplex.homologyMap (LinearStudy.chainActualHomCochainCoefficientMap K a) (q + 1))
+'LinearStudy.acyclicResolutionGlobalExtActualHomologyIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.acyclicChainOpcycleHomCokernelCoefficientMap.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        {F G : A} →
+          (F ⟶ G) →
+            (p : ℕ) →
+              CategoryTheory.Limits.cokernel (LinearStudy.acyclicChainOpcycleHomPrecompose K F p) ⟶
+                CategoryTheory.Limits.cokernel (LinearStudy.acyclicChainOpcycleHomPrecompose K G p) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (K : ChainComplex A ℕ) {F G : A}
+    (a : F ⟶ G) (p : ℕ) =>
+  CategoryTheory.Limits.cokernel.map (LinearStudy.acyclicChainOpcycleHomPrecompose K F p)
+    (LinearStudy.acyclicChainOpcycleHomPrecompose K G p)
+    ((CategoryTheory.preadditiveYoneda.map a).app (Opposite.op (K.X p)))
+    ((CategoryTheory.preadditiveYoneda.map a).app (Opposite.op (HomologicalComplex.opcycles K (p + 1)))) ⋯
+def LinearStudy.chainActualHomCochainCoefficientMap.{u, v} : {A : Type u} →
+  [inst : CategoryTheory.Category.{v, u} A] →
+    [inst_1 : CategoryTheory.Abelian A] →
+      (K : ChainComplex A ℕ) →
+        {F G : A} → (F ⟶ G) → (LinearStudy.chainActualHomCochain K F ⟶ LinearStudy.chainActualHomCochain K G) :=
+fun {A : Type u} [CategoryTheory.Category.{v, u} A] [CategoryTheory.Abelian A] (K : ChainComplex A ℕ) {F G : A}
+    (a : F ⟶ G) =>
+  (CategoryTheory.NatTrans.mapHomologicalComplex (CategoryTheory.preadditiveYoneda.map a) (ComplexShape.up ℕ)).app
+    (HomologicalComplex.op K)
+ROLECHECK:LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv_coefficient_naturality:true
+ROLECHECK:LinearStudy.relativeAcyclicContravariantBoundaryAddEquiv_symm_coefficient_naturality:true
+ROLECHECK:LinearStudy.acyclicChainOpcycleGlobalExtShiftAddEquiv_coefficient_naturality:true
+ROLECHECK:LinearStudy.extAddEquivIndexTransport_coefficient_naturality:true
+ROLECHECK:LinearStudy.acyclicChainOpcycleIteratedGlobalExtAddEquiv_coefficient_naturality:true
+ROLECHECK:LinearStudy.acyclicResolutionExtSourceIsoAddEquiv_coefficient_naturality:true
+ROLECHECK:LinearStudy.acyclicResolutionGlobalExtOpcycleAddEquiv_coefficient_naturality:true
+ROLECHECK:LinearStudy.acyclicChainOpcycleHomCokernelCoefficientMap:false
+ROLECHECK:LinearStudy.acyclicChainOpcycleHomCokernelCoefficientMap_projection:true
+ROLECHECK:LinearStudy.acyclicChainOpcycleHomGlobalExtBoundary_coefficient_naturality:true
+ROLECHECK:LinearStudy.acyclicChainOpcycleHomGlobalExtCokernelIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.chainActualHomCochainCoefficientMap:false
+ROLECHECK:LinearStudy.chainActualHomCyclesNativeIso_inv_coefficient_naturality:true
+ROLECHECK:LinearStudy.chainActualHomCyclesOpcyclesIso_inv_coefficient_naturality:true
+ROLECHECK:LinearStudy.chainActualHomCyclesOpcyclesIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.chainActualHomCochainHomologyCokernelIso_projection:true
+ROLECHECK:LinearStudy.chainActualHomCochainHomologyCokernelIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.acyclicResolutionGlobalExtActualHomologyIso_coefficient_naturality:true
