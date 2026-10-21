@@ -1,0 +1,1284 @@
+@LinearStudy.nativeRingIntegerBaseGradeCompatibility : ∀ {K R S : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S] [IsScalarTower K R S]
+  (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B] (d : ℕ)
+  (j : ℤ),
+  ∀ z ∈ A d,
+    ∀ x ∈ LinearStudy.nativeProjectiveRingIntegerPiece B j,
+      z • x ∈ LinearStudy.nativeProjectiveRingIntegerPiece B (↑d + j)
+'LinearStudy.nativeRingIntegerBaseGradeCompatibility' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeFiniteGradedIndependentCechProductSectionMap_surjective : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  [IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  [DirectSum.Decomposition D] (hD : ∀ (n : ℕ) (d : ℤ), ∀ z ∈ B n, ∀ x ∈ D d, z • x ∈ D (↑n + d)) [IsNoetherianRing S]
+  [Module.Finite S M] {κ ι : Type u_1} (c : κ → S),
+  (∀ (i : κ), c i ∈ B 1) →
+    Algebra.adjoin K (Set.range c) = ⊤ →
+      ∀ (b : ι → S) (hb : ∀ (i : ι), b i ∈ B 1) (p : ℕ) (t : Fin (p + 1) → ι),
+        Function.Surjective
+          ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap B D hD (p + 1) (∏ k : Fin (p + 1), b (t k)) ⋯)
+'LinearStudy.nativeFiniteGradedIndependentCechProductSectionMap_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeFiniteGradedIndependentSourceCechProductSectionMap_bijective : ∀ {K R S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M]
+  [inst_10 : Module S M] [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R)
+  [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B]
+  (D : ℤ → Submodule K M) [DirectSum.Decomposition D] (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+  [IsDomain S] [Module.IsTorsionFree S M] [IsNoetherianRing S] [Module.Finite S M] {κ ι : Type u_1} (c : κ → S),
+  (∀ (i : κ), c i ∈ B 1) →
+    Algebra.adjoin K (Set.range c) = ⊤ →
+      ∀ (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) (p : ℕ) (t : Fin (p + 1) → ι),
+        Function.Bijective
+          ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap B D hS (p + 1)
+              ((algebraMap R S) (∏ k : Fin (p + 1), a (t k))) ⋯)
+'LinearStudy.nativeFiniteGradedIndependentSourceCechProductSectionMap_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv : {K R S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module R M] →
+                      [inst_10 : Module S M] →
+                        [IsScalarTower R S M] →
+                          [IsScalarTower K R M] →
+                            [IsScalarTower K S M] →
+                              (A : ℕ → Submodule K R) →
+                                [inst_14 : GradedAlgebra A] →
+                                  (B : ℕ → Submodule K S) →
+                                    [inst_15 : GradedAlgebra B] →
+                                      [SetLike.GradedSMul A B] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Module.Finite R M] →
+                                                          [Module.Finite S M] →
+                                                            {ι : Type u_1} →
+                                                              (a : ι → R) →
+                                                                (∀ (i : ι), a i ∈ A 1) →
+                                                                  {κ : Type u_1} →
+                                                                    (c : κ → S) →
+                                                                      (∀ (i : κ), c i ∈ B 1) →
+                                                                        Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                          Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                            (p : ℕ) →
+                                                                              (t : Fin (p + 1) → ι) →
+                                                                                ↥(LinearStudy.nativeProjectiveModuleSections
+                                                                                      A D hR 0
+                                                                                      (Opposite.op
+                                                                                        (AlgebraicGeometry.Proj.basicOpen
+                                                                                          A
+                                                                                          (∏ k : Fin (p + 1),
+                                                                                            a (t k))))) ≃+
+                                                                                  ↥(LinearStudy.nativeProjectiveModuleSections
+                                                                                      B D hS 0
+                                                                                      (Opposite.op
+                                                                                        (AlgebraicGeometry.Proj.basicOpen
+                                                                                          B
+                                                                                          ((algebraMap R S)
+                                                                                            (∏ k : Fin (p + 1),
+                                                                                              a (t k))))))
+'LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_delete : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M]
+  [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M] [inst_13 : IsScalarTower K S M]
+  (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_15 : GradedAlgebra B]
+  [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [inst_17 : DirectSum.Decomposition D]
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain S]
+  [inst_19 : Module.IsTorsionFree S M] [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S]
+  [inst_22 : Module.Finite R M] [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1)
+  {κ : Type u_1} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ) (t : Fin (p + 2) → ι) (k : Fin (p + 2))
+  (s :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ j : Fin (p + 1), a (t (k.succAbove j))))))),
+  (LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv A B D hR hS a ha c hc hgenR hgenC (p + 1) t)
+      ((CategoryTheory.ConcreteCategory.hom
+          ((LinearStudy.nativeProjectiveModulePresheaf A D hR 0).map (CategoryTheory.homOfLE ⋯).op))
+        s) =
+    (CategoryTheory.ConcreteCategory.hom
+        ((LinearStudy.nativeProjectiveModulePresheaf B D hS 0).map (CategoryTheory.homOfLE ⋯).op))
+      ((LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv A B D hR hS a ha c hc hgenR hgenC p
+          fun (j : Fin (p + 1)) => t (k.succAbove j))
+        s)
+'LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_delete' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientCechProductIso : {K R S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module R M] →
+                      [inst_10 : Module S M] →
+                        [IsScalarTower R S M] →
+                          [IsScalarTower K R M] →
+                            [IsScalarTower K S M] →
+                              (A : ℕ → Submodule K R) →
+                                [inst_14 : GradedAlgebra A] →
+                                  (B : ℕ → Submodule K S) →
+                                    [inst_15 : GradedAlgebra B] →
+                                      [SetLike.GradedSMul A B] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Module.Finite R M] →
+                                                          [Module.Finite S M] →
+                                                            {ι : Type u_1} →
+                                                              (a : ι → R) →
+                                                                (∀ (i : ι), a i ∈ A 1) →
+                                                                  {κ : Type u_1} →
+                                                                    (c : κ → S) →
+                                                                      (∀ (i : κ), c i ∈ B 1) →
+                                                                        Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                          Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                            (p : ℕ) →
+                                                                              (t : Fin (p + 1) → ι) →
+                                                                                have F :=
+                                                                                  ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                          (AlgebraicGeometry.Proj
+                                                                                            A)).obj
+                                                                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                        A D hR 0)).obj;
+                                                                                have G :=
+                                                                                  ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                          (AlgebraicGeometry.Proj
+                                                                                            B)).obj
+                                                                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                        B D hS 0)).obj;
+                                                                                F.obj
+                                                                                    (Opposite.op
+                                                                                      (AlgebraicGeometry.Proj.basicOpen
+                                                                                        A
+                                                                                        (∏ j : Fin (p + 1), a (t j)))) ≅
+                                                                                  G.obj
+                                                                                    (Opposite.op
+                                                                                      (AlgebraicGeometry.Proj.basicOpen
+                                                                                        B
+                                                                                        ((algebraMap R S)
+                                                                                          (∏ j : Fin (p + 1),
+                                                                                            a (t j)))))
+'LinearStudy.nativeIndependentSourceAmbientCechProductIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso : {K R S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module R M] →
+                      [inst_10 : Module S M] →
+                        [IsScalarTower R S M] →
+                          [IsScalarTower K R M] →
+                            [IsScalarTower K S M] →
+                              (A : ℕ → Submodule K R) →
+                                [inst_14 : GradedAlgebra A] →
+                                  (B : ℕ → Submodule K S) →
+                                    [inst_15 : GradedAlgebra B] →
+                                      [SetLike.GradedSMul A B] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Module.Finite R M] →
+                                                          [Module.Finite S M] →
+                                                            {ι : Type u_1} →
+                                                              (a : ι → R) →
+                                                                (∀ (i : ι), a i ∈ A 1) →
+                                                                  {κ : Type u_1} →
+                                                                    (c : κ → S) →
+                                                                      (∀ (i : κ), c i ∈ B 1) →
+                                                                        Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                          Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                            (p : ℕ) →
+                                                                              (t : Fin (p + 1) → ι) →
+                                                                                have F :=
+                                                                                  ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                          (AlgebraicGeometry.Proj
+                                                                                            A)).obj
+                                                                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                        A D hR 0)).obj;
+                                                                                have G :=
+                                                                                  ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                          (AlgebraicGeometry.Proj
+                                                                                            B)).obj
+                                                                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                        B D hS 0)).obj;
+                                                                                F.obj
+                                                                                    (Opposite.op
+                                                                                      (∏ᶜ fun (j : Fin (p + 1)) =>
+                                                                                        AlgebraicGeometry.Proj.basicOpen
+                                                                                          A (a (t j)))) ≅
+                                                                                  G.obj
+                                                                                    (Opposite.op
+                                                                                      (∏ᶜ fun (j : Fin (p + 1)) =>
+                                                                                        AlgebraicGeometry.Proj.basicOpen
+                                                                                          B
+                                                                                          ((algebraMap R S) (a (t j)))))
+'LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientCechProductIso_delete : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M]
+  [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M] [inst_13 : IsScalarTower K S M]
+  (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_15 : GradedAlgebra B]
+  [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [inst_17 : DirectSum.Decomposition D]
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain S]
+  [inst_19 : Module.IsTorsionFree S M] [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S]
+  [inst_22 : Module.Finite R M] [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1)
+  {κ : Type u_1} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ) (t : Fin (p + 2) → ι) (k : Fin (p + 2)),
+  let F :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj;
+  let G :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj;
+  let small := ∏ j : Fin (p + 1), a (t (k.succAbove j));
+  let big := ∏ j : Fin (p + 2), a (t j);
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.nativeIndependentSourceAmbientCechProductIso A B D hR hS a ha c hc hgenR hgenC p
+          fun (j : Fin (p + 1)) => t (k.succAbove j)).hom
+      (G.map (CategoryTheory.homOfLE ⋯).op) =
+    CategoryTheory.CategoryStruct.comp (F.map (CategoryTheory.homOfLE ⋯).op)
+      (LinearStudy.nativeIndependentSourceAmbientCechProductIso A B D hR hS a ha c hc hgenR hgenC (p + 1) t).hom
+'LinearStudy.nativeIndependentSourceAmbientCechProductIso_delete' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso_face : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M]
+  [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M] [inst_13 : IsScalarTower K S M]
+  (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_15 : GradedAlgebra B]
+  [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [inst_17 : DirectSum.Decomposition D]
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain S]
+  [inst_19 : Module.IsTorsionFree S M] [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S]
+  [inst_22 : Module.Finite R M] [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1)
+  {κ : Type u_1} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) [inst_24 : LinearOrder ι]
+  (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ) (k : Fin (p + 2))
+  (t : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι (p + 1)),
+  let F :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj;
+  let G :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj;
+  let U := fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i);
+  let V := fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i));
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso A B D hR hS a ha c hc hgenR hgenC p
+          ↑(t.delete k)).hom
+      (G.map ((AlgebraicGeometry.Scheme.Modules.orderedCechFace V p k).φ t).op) =
+    CategoryTheory.CategoryStruct.comp (F.map ((AlgebraicGeometry.Scheme.Modules.orderedCechFace U p k).φ t).op)
+      (LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso A B D hR hS a ha c hc hgenR hgenC (p + 1) ↑t).hom
+'LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso_face' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientOrderedCechIso : {K R S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module R M] →
+                      [inst_10 : Module S M] →
+                        [IsScalarTower R S M] →
+                          [IsScalarTower K R M] →
+                            [IsScalarTower K S M] →
+                              (A : ℕ → Submodule K R) →
+                                [inst_14 : GradedAlgebra A] →
+                                  (B : ℕ → Submodule K S) →
+                                    [inst_15 : GradedAlgebra B] →
+                                      [SetLike.GradedSMul A B] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Module.Finite R M] →
+                                                          [Module.Finite S M] →
+                                                            {ι : Type u_1} →
+                                                              (a : ι → R) →
+                                                                (∀ (i : ι), a i ∈ A 1) →
+                                                                  {κ : Type u_1} →
+                                                                    (c : κ → S) →
+                                                                      (∀ (i : κ), c i ∈ B 1) →
+                                                                        [inst_24 : LinearOrder ι] →
+                                                                          Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                            Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                              (LinearStudy.orderedTopAbelianCechComplex
+                                                                                  (AlgebraicGeometry.Proj A)
+                                                                                  (fun (i : ι) =>
+                                                                                    AlgebraicGeometry.Proj.basicOpen A
+                                                                                      (a i))
+                                                                                  ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                        (AlgebraicGeometry.Proj A)).obj
+                                                                                    (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                      A D hR 0)) ≅
+                                                                                LinearStudy.orderedTopAbelianCechComplex
+                                                                                  (AlgebraicGeometry.Proj B)
+                                                                                  (fun (i : ι) =>
+                                                                                    AlgebraicGeometry.Proj.basicOpen B
+                                                                                      ((algebraMap R S) (a i)))
+                                                                                  ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                        (AlgebraicGeometry.Proj B)).obj
+                                                                                    (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                      B D hS 0)))
+'LinearStudy.nativeIndependentSourceAmbientOrderedCechIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso : {K R S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module R M] →
+                      [inst_10 : Module S M] →
+                        [IsScalarTower R S M] →
+                          [IsScalarTower K R M] →
+                            [IsScalarTower K S M] →
+                              (A : ℕ → Submodule K R) →
+                                [inst_14 : GradedAlgebra A] →
+                                  (B : ℕ → Submodule K S) →
+                                    [inst_15 : GradedAlgebra B] →
+                                      [SetLike.GradedSMul A B] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Module.Finite R M] →
+                                                          [Module.Finite S M] →
+                                                            {ι : Type u_1} →
+                                                              (a : ι → R) →
+                                                                (∀ (i : ι), a i ∈ A 1) →
+                                                                  {κ : Type u_1} →
+                                                                    (c : κ → S) →
+                                                                      (∀ (i : κ), c i ∈ B 1) →
+                                                                        [inst_24 : LinearOrder ι] →
+                                                                          Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                            Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                              (k : ℤ) →
+                                                                                LinearStudy.orderedTopAbelianCechComplex
+                                                                                    (AlgebraicGeometry.Proj A)
+                                                                                    (fun (i : ι) =>
+                                                                                      AlgebraicGeometry.Proj.basicOpen A
+                                                                                        (a i))
+                                                                                    ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                          (AlgebraicGeometry.Proj
+                                                                                            A)).obj
+                                                                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                        A D hR k)) ≅
+                                                                                  LinearStudy.orderedTopAbelianCechComplex
+                                                                                    (AlgebraicGeometry.Proj B)
+                                                                                    (fun (i : ι) =>
+                                                                                      AlgebraicGeometry.Proj.basicOpen B
+                                                                                        ((algebraMap R S) (a i)))
+                                                                                    ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                          (AlgebraicGeometry.Proj
+                                                                                            B)).obj
+                                                                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                        B D hS k))
+'LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeFiniteNormalization_sourceCoordinateCover : ∀ {K R S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [IsScalarTower K R S] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S) [inst_8 : GradedAlgebra B]
+  [SetLike.GradedSMul A B] [Module.Finite R S] {ι : Type u_1} (a : ι → R),
+  (∀ (i : ι), a i ∈ A 1) →
+    Algebra.adjoin K (Set.range a) = ⊤ → ⨆ (i : ι), AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)) = ⊤
+'LinearStudy.nativeFiniteNormalization_sourceCoordinateCover' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIndependentFiniteNormalization_actualHigherHIso : {K R S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                (A : ℕ → Submodule K R) →
+                  [inst_7 : GradedAlgebra A] →
+                    (B : ℕ → Submodule K S) →
+                      [inst_8 : GradedAlgebra B] →
+                        [SetLike.GradedSMul A B] →
+                          [inst_10 : AddCommGroup M] →
+                            [inst_11 : Module K M] →
+                              [inst_12 : Module R M] →
+                                [inst_13 : Module S M] →
+                                  [IsScalarTower R S M] →
+                                    [IsScalarTower K R M] →
+                                      [IsScalarTower K S M] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Algebra.FiniteType K S] →
+                                                          [Module.Finite R S] →
+                                                            [Module.Finite R M] →
+                                                              [Module.Finite S M] →
+                                                                {ι κ : Type u_1} →
+                                                                  [inst_26 : LinearOrder ι] →
+                                                                    [Finite ι] →
+                                                                      (a : ι → R) →
+                                                                        (∀ (i : ι), a i ∈ A 1) →
+                                                                          (c : κ → S) →
+                                                                            (∀ (i : κ), c i ∈ B 1) →
+                                                                              Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                                  (k : ℤ) →
+                                                                                    (q : ℕ) →
+                                                                                      HomologicalComplex.homology
+                                                                                          (LinearStudy.orderedTopAbelianCechComplex
+                                                                                            (AlgebraicGeometry.Proj A)
+                                                                                            (fun (i : ι) =>
+                                                                                              AlgebraicGeometry.Proj.basicOpen
+                                                                                                A (a i))
+                                                                                            ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                                  (AlgebraicGeometry.Proj
+                                                                                                    A)).obj
+                                                                                              (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                                A D hR k)))
+                                                                                          (q + 1) ≅
+                                                                                        ↧(LinearStudy.schemeModuleActualCohomology
+                                                                                            (AlgebraicGeometry.Proj B)
+                                                                                            (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                              B D hS k)
+                                                                                            (q + 1))
+'LinearStudy.nativeIndependentFiniteNormalization_actualHigherHIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalNormalization_actualOrderedCechHigherHIso : {n r : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+      (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+        (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+          (k : ℤ) →
+            (q : ℕ) →
+              HomologicalComplex.homology
+                  (LinearStudy.orderedTopAbelianCechComplex
+                    (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ))
+                    (fun (i : Fin (r + 1)) =>
+                      AlgebraicGeometry.Proj.basicOpen (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+                        (MvPolynomial.X i))
+                    ((LinearStudy.schemeModuleToActualAbelianSheaf
+                          (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ))).obj
+                      (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+                        (LinearStudy.nativeProjectiveRingIntegerPiece
+                          (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                        ⋯ k)))
+                  (q + 1) ≅
+                ↧(LinearStudy.schemeModuleActualCohomology
+                    (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                    (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                        (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                      ⋯ k)
+                    (q + 1))
+'LinearStudy.originalNormalization_actualOrderedCechHigherHIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso : {K R S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                (A : ℕ → Submodule K R) →
+                  [inst_7 : GradedAlgebra A] →
+                    (B : ℕ → Submodule K S) →
+                      [inst_8 : GradedAlgebra B] →
+                        [SetLike.GradedSMul A B] →
+                          [inst_10 : AddCommGroup M] →
+                            [inst_11 : Module K M] →
+                              [inst_12 : Module R M] →
+                                [inst_13 : Module S M] →
+                                  [IsScalarTower R S M] →
+                                    [IsScalarTower K R M] →
+                                      [IsScalarTower K S M] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Algebra.FiniteType K S] →
+                                                          [Module.Finite R S] →
+                                                            [Module.Finite R M] →
+                                                              [Module.Finite S M] →
+                                                                {ι κ : Type u_1} →
+                                                                  [inst_26 : LinearOrder ι] →
+                                                                    [Finite ι] →
+                                                                      (a : ι → R) →
+                                                                        (∀ (i : ι), a i ∈ A 1) →
+                                                                          (c : κ → S) →
+                                                                            (∀ (i : κ), c i ∈ B 1) →
+                                                                              {Y : AlgebraicGeometry.Scheme} →
+                                                                                (pi : AlgebraicGeometry.Proj A ⟶ Y) →
+                                                                                  Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                                    Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                                      (k : ℤ) →
+                                                                                        (q : ℕ) →
+                                                                                          (CategoryTheory.forget₂
+                                                                                                  (ModuleCat
+                                                                                                    ↑(Y.presheaf.obj
+                                                                                                        (Opposite.op
+                                                                                                          ⊤)))
+                                                                                                  AddCommGrpCat).obj
+                                                                                              (HomologicalComplex.homology
+                                                                                                (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex
+                                                                                                  pi
+                                                                                                  (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                                    A D hR k)
+                                                                                                  fun (i : ι) =>
+                                                                                                  AlgebraicGeometry.Proj.basicOpen
+                                                                                                    A (a i))
+                                                                                                (q + 1)) ≅
+                                                                                            ↧(LinearStudy.schemeModuleActualCohomology
+                                                                                                (AlgebraicGeometry.Proj
+                                                                                                  B)
+                                                                                                (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                                  B D hS k)
+                                                                                                (q + 1))
+'LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalNormalization_actualModuleCechHigherHIso : {n r : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+      (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+        (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+          (k : ℤ) →
+            (q : ℕ) →
+              (CategoryTheory.forget₂ (ModuleCat ↑((AlgebraicGeometry.Spec ↧ℂ).presheaf.obj (Opposite.op ⊤)))
+                      AddCommGrpCat).obj
+                  (HomologicalComplex.homology
+                    (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+                      (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+                        (LinearStudy.nativeProjectiveRingIntegerPiece
+                          (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                        ⋯ k)
+                      fun (i : Fin (r + 1)) =>
+                      AlgebraicGeometry.Proj.basicOpen (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+                        (MvPolynomial.X i))
+                    (q + 1)) ≅
+                ↧(LinearStudy.schemeModuleActualCohomology
+                    (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                    (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                        (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                      ⋯ k)
+                    (q + 1))
+'LinearStudy.originalNormalization_actualModuleCechHigherHIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv.{u} : {K R S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module R M] →
+                      [inst_10 : Module S M] →
+                        [IsScalarTower R S M] →
+                          [IsScalarTower K R M] →
+                            [IsScalarTower K S M] →
+                              (A : ℕ → Submodule K R) →
+                                [inst_14 : GradedAlgebra A] →
+                                  (B : ℕ → Submodule K S) →
+                                    [inst_15 : GradedAlgebra B] →
+                                      [SetLike.GradedSMul A B] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Module.Finite R M] →
+                                                          [Module.Finite S M] →
+                                                            {ι : Type u} →
+                                                              (a : ι → R) →
+                                                                (∀ (i : ι), a i ∈ A 1) →
+                                                                  {κ : Type u} →
+                                                                    (c : κ → S) →
+                                                                      (∀ (i : κ), c i ∈ B 1) →
+                                                                        Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                          Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                            (p : ℕ) →
+                                                                              (t : Fin (p + 1) → ι) →
+                                                                                ↥(LinearStudy.nativeProjectiveModuleSections
+                                                                                      A D hR 0
+                                                                                      (Opposite.op
+                                                                                        (AlgebraicGeometry.Proj.basicOpen
+                                                                                          A
+                                                                                          (∏ k : Fin (p + 1),
+                                                                                            a (t k))))) ≃+
+                                                                                  ↥(LinearStudy.nativeProjectiveModuleSections
+                                                                                      B D hS 0
+                                                                                      (Opposite.op
+                                                                                        (AlgebraicGeometry.Proj.basicOpen
+                                                                                          B
+                                                                                          ((algebraMap R S)
+                                                                                            (∏ k : Fin (p + 1),
+                                                                                              a (t k)))))) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] [SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [IsDomain S] [Module.IsTorsionFree S M]
+    [IsNoetherianRing R] [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M] {ι : Type u} (a : ι → R)
+    (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ)
+    (t : Fin (p + 1) → ι) =>
+  let z := ∏ k : Fin (p + 1), a (t k);
+  have hz := ⋯;
+  have hA := ⋯;
+  have hB := ⋯;
+  LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS (p + 1) z hz hA hB
+def LinearStudy.nativeIndependentSourceAmbientCechProductIso.{u} : {K R S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module R M] →
+                      [inst_10 : Module S M] →
+                        [IsScalarTower R S M] →
+                          [IsScalarTower K R M] →
+                            [IsScalarTower K S M] →
+                              (A : ℕ → Submodule K R) →
+                                [inst_14 : GradedAlgebra A] →
+                                  (B : ℕ → Submodule K S) →
+                                    [inst_15 : GradedAlgebra B] →
+                                      [SetLike.GradedSMul A B] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Module.Finite R M] →
+                                                          [Module.Finite S M] →
+                                                            {ι : Type u} →
+                                                              (a : ι → R) →
+                                                                (∀ (i : ι), a i ∈ A 1) →
+                                                                  {κ : Type u} →
+                                                                    (c : κ → S) →
+                                                                      (∀ (i : κ), c i ∈ B 1) →
+                                                                        Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                          Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                            (p : ℕ) →
+                                                                              (t : Fin (p + 1) → ι) →
+                                                                                have F :=
+                                                                                  ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                          (AlgebraicGeometry.Proj
+                                                                                            A)).obj
+                                                                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                        A D hR 0)).obj;
+                                                                                have G :=
+                                                                                  ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                          (AlgebraicGeometry.Proj
+                                                                                            B)).obj
+                                                                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                        B D hS 0)).obj;
+                                                                                F.obj
+                                                                                    (Opposite.op
+                                                                                      (AlgebraicGeometry.Proj.basicOpen
+                                                                                        A
+                                                                                        (∏ j : Fin (p + 1), a (t j)))) ≅
+                                                                                  G.obj
+                                                                                    (Opposite.op
+                                                                                      (AlgebraicGeometry.Proj.basicOpen
+                                                                                        B
+                                                                                        ((algebraMap R S)
+                                                                                          (∏ j : Fin (p + 1),
+                                                                                            a (t j))))) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] [SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [IsDomain S] [Module.IsTorsionFree S M]
+    [IsNoetherianRing R] [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M] {ι : Type u} (a : ι → R)
+    (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ)
+    (t : Fin (p + 1) → ι) =>
+  (LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv A B D hR hS a ha c hc hgenR hgenC p t).toAddCommGrpIso
+def LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso.{u} : {K R S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module R M] →
+                      [inst_10 : Module S M] →
+                        [IsScalarTower R S M] →
+                          [IsScalarTower K R M] →
+                            [IsScalarTower K S M] →
+                              (A : ℕ → Submodule K R) →
+                                [inst_14 : GradedAlgebra A] →
+                                  (B : ℕ → Submodule K S) →
+                                    [inst_15 : GradedAlgebra B] →
+                                      [SetLike.GradedSMul A B] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Module.Finite R M] →
+                                                          [Module.Finite S M] →
+                                                            {ι : Type u} →
+                                                              (a : ι → R) →
+                                                                (∀ (i : ι), a i ∈ A 1) →
+                                                                  {κ : Type u} →
+                                                                    (c : κ → S) →
+                                                                      (∀ (i : κ), c i ∈ B 1) →
+                                                                        Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                          Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                            (p : ℕ) →
+                                                                              (t : Fin (p + 1) → ι) →
+                                                                                have F :=
+                                                                                  ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                          (AlgebraicGeometry.Proj
+                                                                                            A)).obj
+                                                                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                        A D hR 0)).obj;
+                                                                                have G :=
+                                                                                  ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                          (AlgebraicGeometry.Proj
+                                                                                            B)).obj
+                                                                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                        B D hS 0)).obj;
+                                                                                F.obj
+                                                                                    (Opposite.op
+                                                                                      (∏ᶜ fun (j : Fin (p + 1)) =>
+                                                                                        AlgebraicGeometry.Proj.basicOpen
+                                                                                          A (a (t j)))) ≅
+                                                                                  G.obj
+                                                                                    (Opposite.op
+                                                                                      (∏ᶜ fun (j : Fin (p + 1)) =>
+                                                                                        AlgebraicGeometry.Proj.basicOpen
+                                                                                          B
+                                                                                          ((algebraMap R S)
+                                                                                            (a (t j))))) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] [SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [IsDomain S] [Module.IsTorsionFree S M]
+    [IsNoetherianRing R] [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M] {ι : Type u} (a : ι → R)
+    (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ)
+    (t : Fin (p + 1) → ι) =>
+  let F :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj;
+  let G :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj;
+  LinearStudy.abelianOpenSectionComparisonIso F G
+    (∏ᶜ fun (j : Fin (p + 1)) => AlgebraicGeometry.Proj.basicOpen A (a (t j)))
+    (AlgebraicGeometry.Proj.basicOpen A (∏ k : Fin (p + 1), a (t k)))
+    (∏ᶜ fun (j : Fin (p + 1)) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a (t j))))
+    (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (∏ j : Fin (p + 1), a (t j)))) ⋯ ⋯
+    (LinearStudy.nativeIndependentSourceAmbientCechProductIso A B D hR hS a ha c hc hgenR hgenC p t)
+def LinearStudy.nativeIndependentSourceAmbientOrderedCechIso.{u} : {K R S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module R M] →
+                      [inst_10 : Module S M] →
+                        [IsScalarTower R S M] →
+                          [IsScalarTower K R M] →
+                            [IsScalarTower K S M] →
+                              (A : ℕ → Submodule K R) →
+                                [inst_14 : GradedAlgebra A] →
+                                  (B : ℕ → Submodule K S) →
+                                    [inst_15 : GradedAlgebra B] →
+                                      [SetLike.GradedSMul A B] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Module.Finite R M] →
+                                                          [Module.Finite S M] →
+                                                            {ι : Type u} →
+                                                              (a : ι → R) →
+                                                                (∀ (i : ι), a i ∈ A 1) →
+                                                                  {κ : Type u} →
+                                                                    (c : κ → S) →
+                                                                      (∀ (i : κ), c i ∈ B 1) →
+                                                                        [inst_24 : LinearOrder ι] →
+                                                                          Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                            Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                              (LinearStudy.orderedTopAbelianCechComplex
+                                                                                  (AlgebraicGeometry.Proj A)
+                                                                                  (fun (i : ι) =>
+                                                                                    AlgebraicGeometry.Proj.basicOpen A
+                                                                                      (a i))
+                                                                                  ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                        (AlgebraicGeometry.Proj A)).obj
+                                                                                    (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                      A D hR 0)) ≅
+                                                                                LinearStudy.orderedTopAbelianCechComplex
+                                                                                  (AlgebraicGeometry.Proj B)
+                                                                                  (fun (i : ι) =>
+                                                                                    AlgebraicGeometry.Proj.basicOpen B
+                                                                                      ((algebraMap R S) (a i)))
+                                                                                  ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                        (AlgebraicGeometry.Proj B)).obj
+                                                                                    (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                      B D hS 0))) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] [SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [IsDomain S] [Module.IsTorsionFree S M]
+    [IsNoetherianRing R] [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M] {ι : Type u} (a : ι → R)
+    (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) [LinearOrder ι]
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) =>
+  LinearStudy.orderedCrossSpaceAbelianCechComplexIso
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj
+    (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+    (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+    (fun (p : ℕ) (t : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) =>
+      LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso A B D hR hS a ha c hc hgenR hgenC p ↑t)
+    ⋯
+def LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso.{u} : {K R S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module R M] →
+                      [inst_10 : Module S M] →
+                        [IsScalarTower R S M] →
+                          [IsScalarTower K R M] →
+                            [IsScalarTower K S M] →
+                              (A : ℕ → Submodule K R) →
+                                [inst_14 : GradedAlgebra A] →
+                                  (B : ℕ → Submodule K S) →
+                                    [inst_15 : GradedAlgebra B] →
+                                      [SetLike.GradedSMul A B] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Module.Finite R M] →
+                                                          [Module.Finite S M] →
+                                                            {ι : Type u} →
+                                                              (a : ι → R) →
+                                                                (∀ (i : ι), a i ∈ A 1) →
+                                                                  {κ : Type u} →
+                                                                    (c : κ → S) →
+                                                                      (∀ (i : κ), c i ∈ B 1) →
+                                                                        [inst_24 : LinearOrder ι] →
+                                                                          Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                            Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                              (k : ℤ) →
+                                                                                LinearStudy.orderedTopAbelianCechComplex
+                                                                                    (AlgebraicGeometry.Proj A)
+                                                                                    (fun (i : ι) =>
+                                                                                      AlgebraicGeometry.Proj.basicOpen A
+                                                                                        (a i))
+                                                                                    ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                          (AlgebraicGeometry.Proj
+                                                                                            A)).obj
+                                                                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                        A D hR k)) ≅
+                                                                                  LinearStudy.orderedTopAbelianCechComplex
+                                                                                    (AlgebraicGeometry.Proj B)
+                                                                                    (fun (i : ι) =>
+                                                                                      AlgebraicGeometry.Proj.basicOpen B
+                                                                                        ((algebraMap R S) (a i)))
+                                                                                    ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                          (AlgebraicGeometry.Proj
+                                                                                            B)).obj
+                                                                                      (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                        B D hS k)) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] [SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [IsDomain S] [Module.IsTorsionFree S M]
+    [IsNoetherianRing R] [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M] {ι : Type u} (a : ι → R)
+    (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) [LinearOrder ι]
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) =>
+  let Dk := LinearStudy.integerGradingShift D k;
+  have hRk := ⋯;
+  have hSk := ⋯;
+  have e := LinearStudy.nativeIndependentSourceAmbientOrderedCechIso A B Dk hRk hSk a ha c hc hgenR hgenC;
+  have eA :=
+    LinearStudy.orderedTopAbelianCechCoefficientIso (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).mapIso
+        (LinearStudy.nativeProjectiveTwistRegradingIso A D hR k));
+  have eB :=
+    LinearStudy.orderedTopAbelianCechCoefficientIso
+      (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).mapIso
+        (LinearStudy.nativeProjectiveTwistRegradingIso B D hS k));
+  eA.symm ≪≫ e ≪≫ eB
+def LinearStudy.nativeIndependentFiniteNormalization_actualHigherHIso.{u} : {K R S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                (A : ℕ → Submodule K R) →
+                  [inst_7 : GradedAlgebra A] →
+                    (B : ℕ → Submodule K S) →
+                      [inst_8 : GradedAlgebra B] →
+                        [SetLike.GradedSMul A B] →
+                          [inst_10 : AddCommGroup M] →
+                            [inst_11 : Module K M] →
+                              [inst_12 : Module R M] →
+                                [inst_13 : Module S M] →
+                                  [IsScalarTower R S M] →
+                                    [IsScalarTower K R M] →
+                                      [IsScalarTower K S M] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Algebra.FiniteType K S] →
+                                                          [Module.Finite R S] →
+                                                            [Module.Finite R M] →
+                                                              [Module.Finite S M] →
+                                                                {ι κ : Type u} →
+                                                                  [inst_26 : LinearOrder ι] →
+                                                                    [Finite ι] →
+                                                                      (a : ι → R) →
+                                                                        (∀ (i : ι), a i ∈ A 1) →
+                                                                          (c : κ → S) →
+                                                                            (∀ (i : κ), c i ∈ B 1) →
+                                                                              Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                                  (k : ℤ) →
+                                                                                    (q : ℕ) →
+                                                                                      HomologicalComplex.homology
+                                                                                          (LinearStudy.orderedTopAbelianCechComplex
+                                                                                            (AlgebraicGeometry.Proj A)
+                                                                                            (fun (i : ι) =>
+                                                                                              AlgebraicGeometry.Proj.basicOpen
+                                                                                                A (a i))
+                                                                                            ((LinearStudy.schemeModuleToActualAbelianSheaf
+                                                                                                  (AlgebraicGeometry.Proj
+                                                                                                    A)).obj
+                                                                                              (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                                A D hR k)))
+                                                                                          (q + 1) ≅
+                                                                                        ↧(LinearStudy.schemeModuleActualCohomology
+                                                                                            (AlgebraicGeometry.Proj B)
+                                                                                            (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                              B D hS k)
+                                                                                            (q + 1)) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S) [GradedAlgebra B]
+    [SetLike.GradedSMul A B] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [IsDomain S] [Module.IsTorsionFree S M]
+    [IsNoetherianRing R] [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite R S] [Module.Finite R M]
+    [Module.Finite S M] {ι κ : Type u} [LinearOrder ι] [Finite ι] (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) (c : κ → S)
+    (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) =>
+  let F := LinearStudy.nativeProjectiveModuleSheaf B D hS k;
+  have e := LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso A B D hR hS a ha c hc hgenR hgenC k;
+  (HomologicalComplex.homologyFunctor AddCommGrpCat (ComplexShape.up ℕ) (q + 1)).mapIso e ≪≫
+    LinearStudy.finiteTypeNativeProj_orderedActualHigherHIso B (fun (i : ι) => (algebraMap R S) (a i)) ⋯ ⋯ F q
+def LinearStudy.originalNormalization_actualOrderedCechHigherHIso : {n r : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+      (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+        (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+          (k : ℤ) →
+            (q : ℕ) →
+              HomologicalComplex.homology
+                  (LinearStudy.orderedTopAbelianCechComplex
+                    (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ))
+                    (fun (i : Fin (r + 1)) =>
+                      AlgebraicGeometry.Proj.basicOpen (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+                        (MvPolynomial.X i))
+                    ((LinearStudy.schemeModuleToActualAbelianSheaf
+                          (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ))).obj
+                      (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+                        (LinearStudy.nativeProjectiveRingIntegerPiece
+                          (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                        ⋯ k)))
+                  (q + 1) ≅
+                ↧(LinearStudy.schemeModuleActualCohomology
+                    (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                    (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                        (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                      ⋯ k)
+                    (q + 1)) :=
+fun {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+    (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (k : ℤ) (q : ℕ) =>
+  let R := MvPolynomial (Fin (r + 1)) ℂ;
+  let S := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  let phi := LinearStudy.projectiveLinearNormalizationMap V L;
+  let A := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+  let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  let D := LinearStudy.nativeProjectiveRingIntegerPiece B;
+  have hS := ⋯;
+  have hR := ⋯;
+  let a := MvPolynomial.X;
+  have ha := ⋯;
+  let c := fun (i : ULift.{0, 0} (Fin (n + 1))) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X i.down);
+  have hc := ⋯;
+  have hgenC := ⋯;
+  LinearStudy.nativeIndependentFiniteNormalization_actualHigherHIso A B D hR hS a ha c hc ⋯ hgenC k q
+def LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso.{u} : {K R S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                (A : ℕ → Submodule K R) →
+                  [inst_7 : GradedAlgebra A] →
+                    (B : ℕ → Submodule K S) →
+                      [inst_8 : GradedAlgebra B] →
+                        [SetLike.GradedSMul A B] →
+                          [inst_10 : AddCommGroup M] →
+                            [inst_11 : Module K M] →
+                              [inst_12 : Module R M] →
+                                [inst_13 : Module S M] →
+                                  [IsScalarTower R S M] →
+                                    [IsScalarTower K R M] →
+                                      [IsScalarTower K S M] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                                [IsDomain S] →
+                                                  [Module.IsTorsionFree S M] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Algebra.FiniteType K S] →
+                                                          [Module.Finite R S] →
+                                                            [Module.Finite R M] →
+                                                              [Module.Finite S M] →
+                                                                {ι κ : Type u} →
+                                                                  [inst_26 : LinearOrder ι] →
+                                                                    [Finite ι] →
+                                                                      (a : ι → R) →
+                                                                        (∀ (i : ι), a i ∈ A 1) →
+                                                                          (c : κ → S) →
+                                                                            (∀ (i : κ), c i ∈ B 1) →
+                                                                              {Y : AlgebraicGeometry.Scheme} →
+                                                                                (pi : AlgebraicGeometry.Proj A ⟶ Y) →
+                                                                                  Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                                    Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                                      (k : ℤ) →
+                                                                                        (q : ℕ) →
+                                                                                          (CategoryTheory.forget₂
+                                                                                                  (ModuleCat
+                                                                                                    ↑(Y.presheaf.obj
+                                                                                                        (Opposite.op
+                                                                                                          ⊤)))
+                                                                                                  AddCommGrpCat).obj
+                                                                                              (HomologicalComplex.homology
+                                                                                                (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex
+                                                                                                  pi
+                                                                                                  (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                                    A D hR k)
+                                                                                                  fun (i : ι) =>
+                                                                                                  AlgebraicGeometry.Proj.basicOpen
+                                                                                                    A (a i))
+                                                                                                (q + 1)) ≅
+                                                                                            ↧(LinearStudy.schemeModuleActualCohomology
+                                                                                                (AlgebraicGeometry.Proj
+                                                                                                  B)
+                                                                                                (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                                  B D hS k)
+                                                                                                (q + 1)) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S) [GradedAlgebra B]
+    [SetLike.GradedSMul A B] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [IsDomain S] [Module.IsTorsionFree S M]
+    [IsNoetherianRing R] [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite R S] [Module.Finite R M]
+    [Module.Finite S M] {ι κ : Type u} [LinearOrder ι] [Finite ι] (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) (c : κ → S)
+    (hc : ∀ (i : κ), c i ∈ B 1) {Y : AlgebraicGeometry.Scheme} (pi : AlgebraicGeometry.Proj A ⟶ Y)
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) =>
+  let H := CategoryTheory.forget₂ (ModuleCat ↑(Y.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat;
+  let C :=
+    AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex pi (LinearStudy.nativeProjectiveModuleSheaf A D hR k)
+      fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i);
+  ((HomologicalComplex.sc C (q + 1)).mapHomologyIso H).symm ≪≫
+    (HomologicalComplex.homologyFunctor AddCommGrpCat (ComplexShape.up ℕ) (q + 1)).mapIso
+        (LinearStudy.orderedModuleCechActualAbelianComplexIso pi (LinearStudy.nativeProjectiveModuleSheaf A D hR k)
+          fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i)) ≪≫
+      LinearStudy.nativeIndependentFiniteNormalization_actualHigherHIso A B D hR hS a ha c hc hgenR hgenC k q
+def LinearStudy.originalNormalization_actualModuleCechHigherHIso : {n r : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+      (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+        (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+          (k : ℤ) →
+            (q : ℕ) →
+              (CategoryTheory.forget₂ (ModuleCat ↑((AlgebraicGeometry.Spec ↧ℂ).presheaf.obj (Opposite.op ⊤)))
+                      AddCommGrpCat).obj
+                  (HomologicalComplex.homology
+                    (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex MvPolynomial.homogeneousProjπ
+                      (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+                        (LinearStudy.nativeProjectiveRingIntegerPiece
+                          (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                        ⋯ k)
+                      fun (i : Fin (r + 1)) =>
+                      AlgebraicGeometry.Proj.basicOpen (MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ)
+                        (MvPolynomial.X i))
+                    (q + 1)) ≅
+                ↧(LinearStudy.schemeModuleActualCohomology
+                    (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                    (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                        (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                      ⋯ k)
+                    (q + 1)) :=
+fun {n r : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+    (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (k : ℤ) (q : ℕ) =>
+  let R := MvPolynomial (Fin (r + 1)) ℂ;
+  let S := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  let phi := LinearStudy.projectiveLinearNormalizationMap V L;
+  let A := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+  let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  let D := LinearStudy.nativeProjectiveRingIntegerPiece B;
+  have hS := ⋯;
+  have hR := ⋯;
+  let a := MvPolynomial.X;
+  have ha := ⋯;
+  let c := fun (i : ULift.{0, 0} (Fin (n + 1))) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X i.down);
+  have hc := ⋯;
+  have hgenC := ⋯;
+  LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso A B D hR hS a ha c hc
+    MvPolynomial.homogeneousProjπ ⋯ hgenC k q
+ROLECHECK:LinearStudy.nativeRingIntegerBaseGradeCompatibility:true
+ROLECHECK:LinearStudy.nativeFiniteGradedIndependentCechProductSectionMap_surjective:true
+ROLECHECK:LinearStudy.nativeFiniteGradedIndependentSourceCechProductSectionMap_bijective:true
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv:false
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_delete:true
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientCechProductIso:false
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso:false
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientCechProductIso_delete:true
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientCechIntersectionIso_face:true
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientOrderedCechIso:false
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso:false
+ROLECHECK:LinearStudy.nativeFiniteNormalization_sourceCoordinateCover:true
+ROLECHECK:LinearStudy.nativeIndependentFiniteNormalization_actualHigherHIso:false
+ROLECHECK:LinearStudy.originalNormalization_actualOrderedCechHigherHIso:false
+ROLECHECK:LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso:false
+ROLECHECK:LinearStudy.originalNormalization_actualModuleCechHigherHIso:false
