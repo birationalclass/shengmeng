@@ -1,0 +1,8 @@
+module
+public import Linear.IntegerGradedFinitePresentationData
+public import Linear.IntegerGradedHomPrecompositionIdentity
+public import Linear.IntegerPresentationDataCoordinateDuality
+public import Linear.IntegerPresentationDataCoordinateIndependence
+public import Linear.IntegerPresentationDataCoordinateNaturality
+public import Linear.NativeSpecifiedNormalizationActualTopDuality
+public import Linear.OriginalSpecifiedNormalizationActualTopDuality

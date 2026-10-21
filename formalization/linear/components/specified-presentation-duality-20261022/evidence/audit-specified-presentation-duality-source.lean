@@ -1,0 +1,47 @@
+module
+import all Linear.IntegerGradedFinitePresentationData
+import all Linear.IntegerGradedHomPrecompositionIdentity
+import all Linear.IntegerPresentationDataCoordinateDuality
+import all Linear.IntegerPresentationDataCoordinateNaturality
+import all Linear.IntegerPresentationDataCoordinateIndependence
+import all Linear.NativeSpecifiedNormalizationActualTopDuality
+import all Linear.OriginalSpecifiedNormalizationActualTopDuality
+set_option maxHeartbeats 50000
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.IntegerGradedFinitePresentationData
+#print axioms LinearStudy.IntegerGradedFinitePresentationData
+#check @LinearStudy.integerGradedFinitePresentationData_nonempty
+#print axioms LinearStudy.integerGradedFinitePresentationData_nonempty
+#check @LinearStudy.integerGradedFiniteChosenPresentationData
+#print axioms LinearStudy.integerGradedFiniteChosenPresentationData
+#check @LinearStudy.integerGradedHomPrecomposition_id
+#print axioms LinearStudy.integerGradedHomPrecomposition_id
+#check @MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso
+#print axioms MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso
+#check @MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso
+#print axioms MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso
+#check @MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso_naturality
+#print axioms MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso_naturality
+#check @MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso_independent
+#print axioms MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso_independent
+#check @MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso_eq
+#print axioms MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso_eq
+#check @LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso
+#print axioms LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso
+#check @LinearStudy.originalNormalization_specifiedActualTopHomDualIso
+#print axioms LinearStudy.originalNormalization_specifiedActualTopHomDualIso
+#print LinearStudy.IntegerGradedFinitePresentationData
+#print LinearStudy.integerGradedFiniteChosenPresentationData
+#print MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso
+#print MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso
+#print LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso
+#print LinearStudy.originalNormalization_specifiedActualTopHomDualIso
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool) := [(`LinearStudy.IntegerGradedFinitePresentationData,false),(`LinearStudy.integerGradedFinitePresentationData_nonempty,true),(`LinearStudy.integerGradedFiniteChosenPresentationData,false),(`LinearStudy.integerGradedHomPrecomposition_id,true),(`MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso,false),(`MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso,false),(`MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso_naturality,true),(`MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso_independent,true),(`MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso_eq,true),(`LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso,false),(`LinearStudy.originalNormalization_specifiedActualTopHomDualIso,false)]
+  let env ← Lean.getEnv
+  for (n,want) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"

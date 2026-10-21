@@ -1,0 +1,468 @@
+@LinearStudy.IntegerGradedFinitePresentationData : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] → [Module S M] → (ℕ → Submodule K S) → (ℤ → Submodule K M) → Type u_1
+'LinearStudy.IntegerGradedFinitePresentationData' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerGradedFinitePresentationData_nonempty : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M] [IsScalarTower K S M]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D] [IsNoetherianRing S]
+  [Module.Finite S M],
+  (∀ (n : ℕ) (d : ℤ), ∀ b ∈ B n, ∀ x ∈ D d, b • x ∈ D (↑n + d)) →
+    Nonempty (LinearStudy.IntegerGradedFinitePresentationData B D)
+'LinearStudy.integerGradedFinitePresentationData_nonempty' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerGradedFiniteChosenPresentationData : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              [IsScalarTower K S M] →
+                (B : ℕ → Submodule K S) →
+                  [GradedAlgebra B] →
+                    (D : ℤ → Submodule K M) →
+                      [DirectSum.Decomposition D] →
+                        [IsNoetherianRing S] →
+                          [Module.Finite S M] →
+                            (∀ (n : ℕ) (d : ℤ), ∀ b ∈ B n, ∀ x ∈ D d, b • x ∈ D (↑n + d)) →
+                              LinearStudy.IntegerGradedFinitePresentationData B D
+'LinearStudy.integerGradedFiniteChosenPresentationData' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.integerGradedHomPrecomposition_id : ∀ {K S M : Type} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M] (B : ℕ → Submodule K S)
+  [GradedAlgebra B] (D : ℤ → Submodule K M) (d : ℤ),
+  LinearStudy.integerGradedHomPrecomposition B D D LinearMap.id ⋯ d = LinearMap.id
+'LinearStudy.integerGradedHomPrecomposition_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso : {K M : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          [inst_3 : AddCommGroup M] →
+            [inst_4 : Module K M] →
+              [inst_5 : Module (MvPolynomial σ K) M] →
+                [IsScalarTower K (MvPolynomial σ K) M] →
+                  (D : ℤ → Submodule K M) →
+                    [DirectSum.Decomposition D] →
+                      (hD :
+                          ∀ (t : ℕ) (d : ℤ),
+                            ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d)) →
+                        LinearStudy.IntegerGradedFinitePresentationData (MvPolynomial.homogeneousSubmodule σ K) D →
+                          (n : ℕ) →
+                            Fintype.card σ = n + 2 →
+                              (k : ℤ) →
+                                (ModuleCat.restrictScalars
+                                        (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).obj
+                                    ((MvPolynomial.coordinateNativeCechHomologyFunctor n).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K) D
+                                        hD k)) ≅
+                                  ↧(Module.Dual K
+                                      ↥(LinearStudy.integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K) D
+                                          (-↑(Fintype.card σ) - k)))
+'MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso : {K M : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          [inst_3 : AddCommGroup M] →
+            [inst_4 : Module K M] →
+              [inst_5 : Module (MvPolynomial σ K) M] →
+                [IsScalarTower K (MvPolynomial σ K) M] →
+                  (D : ℤ → Submodule K M) →
+                    [DirectSum.Decomposition D] →
+                      (hD :
+                          ∀ (t : ℕ) (d : ℤ),
+                            ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d)) →
+                        [Module.Finite (MvPolynomial σ K) M] →
+                          (n : ℕ) →
+                            Fintype.card σ = n + 2 →
+                              (k : ℤ) →
+                                (ModuleCat.restrictScalars
+                                        (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).obj
+                                    ((MvPolynomial.coordinateNativeCechHomologyFunctor n).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K) D
+                                        hD k)) ≅
+                                  ↧(Module.Dual K
+                                      ↥(LinearStudy.integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K) D
+                                          (-↑(Fintype.card σ) - k)))
+'MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso_naturality : ∀ {K M N : Type} [inst : Field K]
+  {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module (MvPolynomial σ K) M] [inst_6 : IsScalarTower K (MvPolynomial σ K) M] [inst_7 : AddCommGroup N]
+  [inst_8 : Module K N] [inst_9 : Module (MvPolynomial σ K) N] [inst_10 : IsScalarTower K (MvPolynomial σ K) N]
+  (D : ℤ → Submodule K M) [inst_11 : DirectSum.Decomposition D] (E : ℤ → Submodule K N)
+  [inst_12 : DirectSum.Decomposition E]
+  (hD : ∀ (t : ℕ) (d : ℤ), ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d))
+  (hE : ∀ (t : ℕ) (d : ℤ), ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ E d, p • x ∈ E (↑t + d))
+  (P : LinearStudy.IntegerGradedFinitePresentationData (MvPolynomial.homogeneousSubmodule σ K) D)
+  (Q : LinearStudy.IntegerGradedFinitePresentationData (MvPolynomial.homogeneousSubmodule σ K) E)
+  (e : M →ₗ[MvPolynomial σ K] N) (he : ∀ (d : ℤ), ∀ x ∈ D d, e x ∈ E d) (n : ℕ) (hcard : Fintype.card σ = n + 2)
+  (k : ℤ),
+  CategoryTheory.CategoryStruct.comp
+      ((ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).map
+        ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+          (LinearStudy.nativeProjectiveDegreeZeroSheafMap (MvPolynomial.homogeneousSubmodule σ K) D E hD hE e he k)))
+      (MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso E hE Q n hcard k).hom =
+    CategoryTheory.CategoryStruct.comp
+      (MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso D hD P n hcard k).hom
+      (ModuleCat.ofHom
+        (LinearStudy.integerGradedHomPrecomposition (MvPolynomial.homogeneousSubmodule σ K) D E e he
+            (-↑(Fintype.card σ) - k)).dualMap)
+'MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso_independent : ∀ {K M : Type} [inst : Field K]
+  {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module (MvPolynomial σ K) M] [inst_6 : IsScalarTower K (MvPolynomial σ K) M] (D : ℤ → Submodule K M)
+  [inst_7 : DirectSum.Decomposition D]
+  (hD : ∀ (t : ℕ) (d : ℤ), ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d))
+  (P Q : LinearStudy.IntegerGradedFinitePresentationData (MvPolynomial.homogeneousSubmodule σ K) D) (n : ℕ)
+  (hcard : Fintype.card σ = n + 2) (k : ℤ),
+  MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso D hD P n hcard k =
+    MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso D hD Q n hcard k
+'MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso_independent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso_eq : ∀ {K M : Type} [inst : Field K]
+  {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module (MvPolynomial σ K) M] [inst_6 : IsScalarTower K (MvPolynomial σ K) M] (D : ℤ → Submodule K M)
+  [inst_7 : DirectSum.Decomposition D]
+  (hD : ∀ (t : ℕ) (d : ℤ), ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d))
+  [inst_8 : Module.Finite (MvPolynomial σ K) M]
+  (P : LinearStudy.IntegerGradedFinitePresentationData (MvPolynomial.homogeneousSubmodule σ K) D) (n : ℕ)
+  (hcard : Fintype.card σ = n + 2) (k : ℤ),
+  MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso D hD n hcard k =
+    MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso D hD P n hcard k
+'MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso : {K S M : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          [inst_3 : CommRing S] →
+            [inst_4 : Algebra K S] →
+              [inst_5 : Algebra (MvPolynomial σ K) S] →
+                [IsScalarTower K (MvPolynomial σ K) S] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_7 : GradedAlgebra B] →
+                      [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] →
+                        [inst_9 : AddCommGroup M] →
+                          [inst_10 : Module K M] →
+                            [inst_11 : Module (MvPolynomial σ K) M] →
+                              [inst_12 : Module S M] →
+                                [IsScalarTower (MvPolynomial σ K) S M] →
+                                  [IsScalarTower K (MvPolynomial σ K) M] →
+                                    [IsScalarTower K S M] →
+                                      (D : ℤ → Submodule K M) →
+                                        [DirectSum.Decomposition D] →
+                                          (∀ (d : ℕ) (j : ℤ),
+                                              ∀ z ∈ MvPolynomial.homogeneousSubmodule σ K d,
+                                                ∀ x ∈ D j, z • x ∈ D (↑d + j)) →
+                                            (hS : ∀ (d : ℕ) (j : ℤ), ∀ z ∈ B d, ∀ x ∈ D j, z • x ∈ D (↑d + j)) →
+                                              [IsDomain S] →
+                                                [Module.IsTorsionFree S M] →
+                                                  [IsNoetherianRing S] →
+                                                    [Algebra.FiniteType K S] →
+                                                      [Module.Finite (MvPolynomial σ K) S] →
+                                                        [Module.Finite (MvPolynomial σ K) M] →
+                                                          [Module.Finite S M] →
+                                                            {κ : Type} →
+                                                              (c : κ → S) →
+                                                                (∀ (i : κ), c i ∈ B 1) →
+                                                                  Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                    (q : ℕ) →
+                                                                      Fintype.card σ = q + 2 →
+                                                                        (k : ℤ) →
+                                                                          ↧(LinearStudy.schemeModuleActualCohomology
+                                                                                (AlgebraicGeometry.Proj B)
+                                                                                (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                  B D hS k)
+                                                                                (q + 1)) ≅
+                                                                            (CategoryTheory.forget₂ (ModuleCat K)
+                                                                                  AddCommGrpCat).obj
+                                                                              ↧(Module.Dual K
+                                                                                  ↥(LinearStudy.integerGradedHomPiece
+                                                                                      (MvPolynomial.homogeneousSubmodule
+                                                                                        σ K)
+                                                                                      D (-↑(Fintype.card σ) - k)))
+'LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalNormalization_specifiedActualTopHomDualIso : {n : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (q : ℕ) →
+      (L : Fin (q + 2) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (q + 2)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+            (k : ℤ) →
+              ↧(LinearStudy.schemeModuleActualCohomology
+                    (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                    (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                        (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                      ⋯ k)
+                    (q + 1)) ≅
+                (CategoryTheory.forget₂ (ModuleCat ℂ) AddCommGrpCat).obj
+                  ↧(Module.Dual ℂ
+                      ↥(LinearStudy.integerGradedHomPiece (MvPolynomial.homogeneousSubmodule (Fin (q + 2)) ℂ)
+                          (LinearStudy.nativeProjectiveRingIntegerPiece
+                            (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                          (-↑(Fintype.card (Fin (q + 2))) - k)))
+'LinearStudy.originalNormalization_specifiedActualTopHomDualIso' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+structure LinearStudy.IntegerGradedFinitePresentationData.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup M] [Module K M] [Module S M] (B : ℕ → Submodule K S) (D : ℤ → Submodule K M) : Type u
+number of parameters: 11
+fields:
+  LinearStudy.IntegerGradedFinitePresentationData.generators : Finset M
+  LinearStudy.IntegerGradedFinitePresentationData.generatorDegrees : ↥self.generators → ℤ
+  LinearStudy.IntegerGradedFinitePresentationData.generator_surjective : Function.Surjective
+      ⇑(LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥self.generators) => ↑i)
+  LinearStudy.IntegerGradedFinitePresentationData.generator_homogeneous : ∀ (d : ℤ),
+      ∀ f ∈ LinearStudy.integerShiftedFreePiece B self.generatorDegrees d,
+        (LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥self.generators) => ↑i) f ∈ D d
+  LinearStudy.IntegerGradedFinitePresentationData.relations : Finset
+      ↥(LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥self.generators) => ↑i).ker
+  LinearStudy.IntegerGradedFinitePresentationData.relationDegrees : ↥self.relations → ℤ
+  LinearStudy.IntegerGradedFinitePresentationData.relation_exact : (LinearStudy.integerShiftedFreeGeneratorMap
+          fun (i : ↥self.relations) => ↑↑i).range =
+      (LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥self.generators) => ↑i).ker
+  LinearStudy.IntegerGradedFinitePresentationData.relation_homogeneous : ∀ (d : ℤ),
+      ∀ f ∈ LinearStudy.integerShiftedFreePiece B self.relationDegrees d,
+        (LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥self.relations) => ↑↑i) f ∈
+          LinearStudy.integerShiftedFreePiece B self.generatorDegrees d
+constructor:
+  LinearStudy.IntegerGradedFinitePresentationData.mk.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+    [AddCommGroup M] [Module K M] [Module S M] {B : ℕ → Submodule K S} {D : ℤ → Submodule K M} (generators : Finset M)
+    (generatorDegrees : ↥generators → ℤ)
+    (generator_surjective :
+      Function.Surjective ⇑(LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥generators) => ↑i))
+    (generator_homogeneous :
+      ∀ (d : ℤ),
+        ∀ f ∈ LinearStudy.integerShiftedFreePiece B generatorDegrees d,
+          (LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥generators) => ↑i) f ∈ D d)
+    (relations : Finset ↥(LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥generators) => ↑i).ker)
+    (relationDegrees : ↥relations → ℤ)
+    (relation_exact :
+      (LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥relations) => ↑↑i).range =
+        (LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥generators) => ↑i).ker)
+    (relation_homogeneous :
+      ∀ (d : ℤ),
+        ∀ f ∈ LinearStudy.integerShiftedFreePiece B relationDegrees d,
+          (LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥relations) => ↑↑i) f ∈
+            LinearStudy.integerShiftedFreePiece B generatorDegrees d) :
+    LinearStudy.IntegerGradedFinitePresentationData B D
+def LinearStudy.integerGradedFiniteChosenPresentationData.{u} : {K S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              [IsScalarTower K S M] →
+                (B : ℕ → Submodule K S) →
+                  [GradedAlgebra B] →
+                    (D : ℤ → Submodule K M) →
+                      [DirectSum.Decomposition D] →
+                        [IsNoetherianRing S] →
+                          [Module.Finite S M] →
+                            (∀ (n : ℕ) (d : ℤ), ∀ b ∈ B n, ∀ x ∈ D d, b • x ∈ D (↑n + d)) →
+                              LinearStudy.IntegerGradedFinitePresentationData B D :=
+fun {K S M : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M]
+    [IsScalarTower K S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    [IsNoetherianRing S] [Module.Finite S M] (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ B n, ∀ x ∈ D d, b • x ∈ D (↑n + d)) =>
+  Classical.choice ⋯
+def MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso : {K M : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          [inst_3 : AddCommGroup M] →
+            [inst_4 : Module K M] →
+              [inst_5 : Module (MvPolynomial σ K) M] →
+                [IsScalarTower K (MvPolynomial σ K) M] →
+                  (D : ℤ → Submodule K M) →
+                    [DirectSum.Decomposition D] →
+                      (hD :
+                          ∀ (t : ℕ) (d : ℤ),
+                            ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d)) →
+                        LinearStudy.IntegerGradedFinitePresentationData (MvPolynomial.homogeneousSubmodule σ K) D →
+                          (n : ℕ) →
+                            Fintype.card σ = n + 2 →
+                              (k : ℤ) →
+                                (ModuleCat.restrictScalars
+                                        (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).obj
+                                    ((MvPolynomial.coordinateNativeCechHomologyFunctor n).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K) D
+                                        hD k)) ≅
+                                  ↧(Module.Dual K
+                                      ↥(LinearStudy.integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K) D
+                                          (-↑(Fintype.card σ) - k))) :=
+fun {K M : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ] [AddCommGroup M] [Module K M]
+    [Module (MvPolynomial σ K) M] [IsScalarTower K (MvPolynomial σ K) M] (D : ℤ → Submodule K M)
+    [DirectSum.Decomposition D]
+    (hD : ∀ (t : ℕ) (d : ℤ), ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d))
+    (P : LinearStudy.IntegerGradedFinitePresentationData (MvPolynomial.homogeneousSubmodule σ K) D) (n : ℕ)
+    (hcard : Fintype.card σ = n + 2) (k : ℤ) =>
+  let beta := LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥P.generators) => ↑i;
+  let rel := LinearStudy.integerShiftedFreeGeneratorMap fun (i : ↥P.relations) => ↑↑i;
+  MvPolynomial.coordinateNativeIntegerTwistedPresentationGradedHomDualIso P.relationDegrees P.generatorDegrees D hD rel
+    beta ⋯ ⋯ ⋯ ⋯ n hcard k
+def MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso : {K M : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [inst_2 : LinearOrder σ] →
+          [inst_3 : AddCommGroup M] →
+            [inst_4 : Module K M] →
+              [inst_5 : Module (MvPolynomial σ K) M] →
+                [IsScalarTower K (MvPolynomial σ K) M] →
+                  (D : ℤ → Submodule K M) →
+                    [DirectSum.Decomposition D] →
+                      (hD :
+                          ∀ (t : ℕ) (d : ℤ),
+                            ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d)) →
+                        [Module.Finite (MvPolynomial σ K) M] →
+                          (n : ℕ) →
+                            Fintype.card σ = n + 2 →
+                              (k : ℤ) →
+                                (ModuleCat.restrictScalars
+                                        (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).obj
+                                    ((MvPolynomial.coordinateNativeCechHomologyFunctor n).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf (MvPolynomial.homogeneousSubmodule σ K) D
+                                        hD k)) ≅
+                                  ↧(Module.Dual K
+                                      ↥(LinearStudy.integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K) D
+                                          (-↑(Fintype.card σ) - k))) :=
+fun {K M : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ] [AddCommGroup M] [Module K M]
+    [Module (MvPolynomial σ K) M] [IsScalarTower K (MvPolynomial σ K) M] (D : ℤ → Submodule K M)
+    [DirectSum.Decomposition D]
+    (hD : ∀ (t : ℕ) (d : ℤ), ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d))
+    [Module.Finite (MvPolynomial σ K) M] (n : ℕ) (hcard : Fintype.card σ = n + 2) (k : ℤ) =>
+  MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso D hD
+    (LinearStudy.integerGradedFiniteChosenPresentationData (MvPolynomial.homogeneousSubmodule σ K) D hD) n hcard k
+def LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso : {K S M : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          [inst_3 : CommRing S] →
+            [inst_4 : Algebra K S] →
+              [inst_5 : Algebra (MvPolynomial σ K) S] →
+                [IsScalarTower K (MvPolynomial σ K) S] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_7 : GradedAlgebra B] →
+                      [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] →
+                        [inst_9 : AddCommGroup M] →
+                          [inst_10 : Module K M] →
+                            [inst_11 : Module (MvPolynomial σ K) M] →
+                              [inst_12 : Module S M] →
+                                [IsScalarTower (MvPolynomial σ K) S M] →
+                                  [IsScalarTower K (MvPolynomial σ K) M] →
+                                    [IsScalarTower K S M] →
+                                      (D : ℤ → Submodule K M) →
+                                        [DirectSum.Decomposition D] →
+                                          (∀ (d : ℕ) (j : ℤ),
+                                              ∀ z ∈ MvPolynomial.homogeneousSubmodule σ K d,
+                                                ∀ x ∈ D j, z • x ∈ D (↑d + j)) →
+                                            (hS : ∀ (d : ℕ) (j : ℤ), ∀ z ∈ B d, ∀ x ∈ D j, z • x ∈ D (↑d + j)) →
+                                              [IsDomain S] →
+                                                [Module.IsTorsionFree S M] →
+                                                  [IsNoetherianRing S] →
+                                                    [Algebra.FiniteType K S] →
+                                                      [Module.Finite (MvPolynomial σ K) S] →
+                                                        [Module.Finite (MvPolynomial σ K) M] →
+                                                          [Module.Finite S M] →
+                                                            {κ : Type} →
+                                                              (c : κ → S) →
+                                                                (∀ (i : κ), c i ∈ B 1) →
+                                                                  Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                    (q : ℕ) →
+                                                                      Fintype.card σ = q + 2 →
+                                                                        (k : ℤ) →
+                                                                          ↧(LinearStudy.schemeModuleActualCohomology
+                                                                                (AlgebraicGeometry.Proj B)
+                                                                                (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                  B D hS k)
+                                                                                (q + 1)) ≅
+                                                                            (CategoryTheory.forget₂ (ModuleCat K)
+                                                                                  AddCommGrpCat).obj
+                                                                              ↧(Module.Dual K
+                                                                                  ↥(LinearStudy.integerGradedHomPiece
+                                                                                      (MvPolynomial.homogeneousSubmodule
+                                                                                        σ K)
+                                                                                      D (-↑(Fintype.card σ) - k))) :=
+fun {K S M : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ] [CommRing S] [Algebra K S]
+    [Algebra (MvPolynomial σ K) S] [IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S) [GradedAlgebra B]
+    [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] [AddCommGroup M] [Module K M]
+    [Module (MvPolynomial σ K) M] [Module S M] [IsScalarTower (MvPolynomial σ K) S M]
+    [IsScalarTower K (MvPolynomial σ K) M] [IsScalarTower K S M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (d : ℕ) (j : ℤ), ∀ z ∈ MvPolynomial.homogeneousSubmodule σ K d, ∀ x ∈ D j, z • x ∈ D (↑d + j))
+    (hS : ∀ (d : ℕ) (j : ℤ), ∀ z ∈ B d, ∀ x ∈ D j, z • x ∈ D (↑d + j)) [IsDomain S] [Module.IsTorsionFree S M]
+    [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite (MvPolynomial σ K) S]
+    [Module.Finite (MvPolynomial σ K) M] [Module.Finite S M] {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2) (k : ℤ) =>
+  let A := MvPolynomial.homogeneousSubmodule σ K;
+  have eD := MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso D hR q hcard k;
+  let a := fun (i : ULift.{0, 0} σ) => MvPolynomial.X i.down;
+  have ha := ⋯;
+  have hgenA := ⋯;
+  have eH :=
+    LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso A B D hR hS a ha c hc
+      MvPolynomial.homogeneousProjπ hgenA hgenC k q;
+  eH.symm ≪≫ (CategoryTheory.forget₂ (ModuleCat K) AddCommGrpCat).mapIso eD
+def LinearStudy.originalNormalization_specifiedActualTopHomDualIso : {n : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (q : ℕ) →
+      (L : Fin (q + 2) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (q + 2)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+            (k : ℤ) →
+              ↧(LinearStudy.schemeModuleActualCohomology
+                    (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                    (LinearStudy.nativeProjectiveModuleSheaf (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                      (LinearStudy.nativeProjectiveRingIntegerPiece
+                        (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                      ⋯ k)
+                    (q + 1)) ≅
+                (CategoryTheory.forget₂ (ModuleCat ℂ) AddCommGrpCat).obj
+                  ↧(Module.Dual ℂ
+                      ↥(LinearStudy.integerGradedHomPiece (MvPolynomial.homogeneousSubmodule (Fin (q + 2)) ℂ)
+                          (LinearStudy.nativeProjectiveRingIntegerPiece
+                            (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal))
+                          (-↑(Fintype.card (Fin (q + 2))) - k))) :=
+fun {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (q : ℕ) (L : Fin (q + 2) → LinearStudy.CoordinateRing n)
+    (hL : ∀ (i : Fin (q + 2)), MvPolynomial.IsHomogeneous (L i) 1)
+    (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (k : ℤ) =>
+  have R := MvPolynomial (Fin (q + 2)) ℂ;
+  let S := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  let phi := LinearStudy.projectiveLinearNormalizationMap V L;
+  let A := MvPolynomial.homogeneousSubmodule (Fin (q + 2)) ℂ;
+  let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  let D := LinearStudy.nativeProjectiveRingIntegerPiece B;
+  have hS := ⋯;
+  have hR := ⋯;
+  let c := fun (i : ULift.{0, 0} (Fin (n + 1))) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X i.down);
+  have hc := ⋯;
+  have hgenC := ⋯;
+  LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso B D hR hS c hc hgenC q ⋯ k
+ROLECHECK:LinearStudy.IntegerGradedFinitePresentationData:false
+ROLECHECK:LinearStudy.integerGradedFinitePresentationData_nonempty:true
+ROLECHECK:LinearStudy.integerGradedFiniteChosenPresentationData:false
+ROLECHECK:LinearStudy.integerGradedHomPrecomposition_id:true
+ROLECHECK:MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso:false
+ROLECHECK:MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso:false
+ROLECHECK:MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso_naturality:true
+ROLECHECK:MvPolynomial.coordinateNativeIntegerPresentationDataGradedHomDualIso_independent:true
+ROLECHECK:MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso_eq:true
+ROLECHECK:LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso:false
+ROLECHECK:LinearStudy.originalNormalization_specifiedActualTopHomDualIso:false
