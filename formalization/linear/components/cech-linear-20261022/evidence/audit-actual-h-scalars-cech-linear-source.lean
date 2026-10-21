@@ -1,0 +1,163 @@
+module
+import all Linear.OriginalGlobalModuleScalarRingLaws
+import all Linear.OriginalGlobalModuleScalarRingHom
+import all Linear.AdditiveFunctorEndRingHom
+import all Linear.SchemeModuleActualHScalarRingHom
+import all Linear.SchemeModuleActualHGlobalSectionsModule
+import all Linear.AdditiveFunctorScalarSquare
+import all Linear.SchemeModuleActualHFunctorCalibration
+import all Linear.SchemeModuleActualHLinearCoefficientMap
+import all Linear.SchemeModuleActualHBaseScalars
+import all Linear.FormalProductCoefficientNaturality
+import all Linear.OrderedFormalCechWhiskeringNaturality
+import all Linear.OrderedModuleCechCoefficientFactors
+import all Linear.OrderedModuleCechActualAbelianFactorization
+import all Linear.OrderedModuleCechActualAbelianNaturality
+import all Linear.HomologicalComplexScalarHomology
+import all Linear.FormalCechScalarIdentity
+import all Linear.OrderedModuleCechCoefficientScalar
+import all Linear.ModuleHomologyForgettingNaturality
+import all Linear.OrderedModuleCechActualCoefficientMap
+import all Linear.OrderedModuleCechActualAbelianHomology
+import all Linear.NoetherianModuleCechHFactorization
+import all Linear.NoetherianModuleCechHCoefficientNaturality
+import all Linear.NoetherianModuleCechHPointwiseNaturality
+import all Linear.NoetherianModuleCechHLinearComparison
+set_option maxHeartbeats 50000
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.originalGlobalModuleScalar_zero
+#print axioms LinearStudy.originalGlobalModuleScalar_zero
+#check @LinearStudy.originalGlobalModuleScalar_one
+#print axioms LinearStudy.originalGlobalModuleScalar_one
+#check @LinearStudy.originalGlobalModuleScalar_add
+#print axioms LinearStudy.originalGlobalModuleScalar_add
+#check @LinearStudy.originalGlobalModuleScalar_mul
+#print axioms LinearStudy.originalGlobalModuleScalar_mul
+#check @LinearStudy.originalGlobalModuleScalarRingHom
+#print axioms LinearStudy.originalGlobalModuleScalarRingHom
+#check @LinearStudy.additiveFunctorEndRingHom
+#print axioms LinearStudy.additiveFunctorEndRingHom
+#check @LinearStudy.addCommGroupEndRingHom
+#print axioms LinearStudy.addCommGroupEndRingHom
+#check @LinearStudy.schemeModuleActualHFunctor
+#print axioms LinearStudy.schemeModuleActualHFunctor
+#check @LinearStudy.schemeModuleActualHFunctor_additive
+#print axioms LinearStudy.schemeModuleActualHFunctor_additive
+#check @LinearStudy.schemeModuleActualHScalarRingHom
+#print axioms LinearStudy.schemeModuleActualHScalarRingHom
+#check @LinearStudy.schemeModuleActualHScalarRingHom_apply
+#print axioms LinearStudy.schemeModuleActualHScalarRingHom_apply
+#check @LinearStudy.schemeModuleActualHGlobalSectionsModule
+#print axioms LinearStudy.schemeModuleActualHGlobalSectionsModule
+#check @LinearStudy.schemeModuleActualHGlobalSectionsModule_smul
+#print axioms LinearStudy.schemeModuleActualHGlobalSectionsModule_smul
+#check @LinearStudy.additiveFunctor_map_commuting_apply
+#print axioms LinearStudy.additiveFunctor_map_commuting_apply
+#check @LinearStudy.schemeModuleActualHFunctor_map_apply
+#print axioms LinearStudy.schemeModuleActualHFunctor_map_apply
+#check @LinearStudy.schemeModuleActualHScalarRingHom_applyFunctor
+#print axioms LinearStudy.schemeModuleActualHScalarRingHom_applyFunctor
+#check @LinearStudy.schemeModuleActualH_scalar_naturality
+#print axioms LinearStudy.schemeModuleActualH_scalar_naturality
+#check @LinearStudy.schemeModuleActualHLinearCoefficientMap
+#print axioms LinearStudy.schemeModuleActualHLinearCoefficientMap
+#check @LinearStudy.schemeModuleActualHLinearCoefficientMap_apply
+#print axioms LinearStudy.schemeModuleActualHLinearCoefficientMap_apply
+#check @LinearStudy.schemeModuleActualHBaseModule
+#print axioms LinearStudy.schemeModuleActualHBaseModule
+#check @LinearStudy.schemeModuleActualHBaseModule_smul
+#print axioms LinearStudy.schemeModuleActualHBaseModule_smul
+#check @LinearStudy.schemeModuleActualHBaseLinearCoefficientMap
+#print axioms LinearStudy.schemeModuleActualHBaseLinearCoefficientMap
+#check @LinearStudy.schemeModuleActualHBaseLinearCoefficientMap_apply
+#print axioms LinearStudy.schemeModuleActualHBaseLinearCoefficientMap_apply
+#check @LinearStudy.preservesProductIso_coefficient_naturality
+#print axioms LinearStudy.preservesProductIso_coefficient_naturality
+#check @LinearStudy.formalProductEvaluationWhiskeringIso_coefficient_naturality
+#print axioms LinearStudy.formalProductEvaluationWhiskeringIso_coefficient_naturality
+#check @LinearStudy.orderedFormalCechWhiskeringIso_coefficient_naturality
+#print axioms LinearStudy.orderedFormalCechWhiskeringIso_coefficient_naturality
+#check @LinearStudy.orderedBaseCechComplexFunctor_map_eq_formal
+#print axioms LinearStudy.orderedBaseCechComplexFunctor_map_eq_formal
+#check @LinearStudy.baseModulePresheafActualAbelianIso_coefficient_naturality
+#print axioms LinearStudy.baseModulePresheafActualAbelianIso_coefficient_naturality
+#check @LinearStudy.orderedBaseModuleActualAbelianCoefficientIso
+#print axioms LinearStudy.orderedBaseModuleActualAbelianCoefficientIso
+#check @LinearStudy.orderedBaseModuleActualAbelianCoefficientIso_coefficient_naturality
+#print axioms LinearStudy.orderedBaseModuleActualAbelianCoefficientIso_coefficient_naturality
+#check @LinearStudy.orderedModuleCechActualAbelianComplexIso_factorization
+#print axioms LinearStudy.orderedModuleCechActualAbelianComplexIso_factorization
+#check @LinearStudy.orderedModuleCechActualAbelianComplexIso_coefficient_naturality
+#print axioms LinearStudy.orderedModuleCechActualAbelianComplexIso_coefficient_naturality
+#check @LinearStudy.actualHomologicalComplex_homologyMap_smul
+#print axioms LinearStudy.actualHomologicalComplex_homologyMap_smul
+#check @LinearStudy.actualHomologicalComplex_homologyMap_smul_id
+#print axioms LinearStudy.actualHomologicalComplex_homologyMap_smul_id
+#check @LinearStudy.formalProductEvaluation_map_smul_id
+#print axioms LinearStudy.formalProductEvaluation_map_smul_id
+#check @LinearStudy.orderedFormalCechCoefficientFunctor_map_smul_id
+#print axioms LinearStudy.orderedFormalCechCoefficientFunctor_map_smul_id
+#check @LinearStudy.baseModulePresheafFunctor_map_originalScalar
+#print axioms LinearStudy.baseModulePresheafFunctor_map_originalScalar
+#check @LinearStudy.orderedBaseCechComplexFunctor_map_originalScalar
+#print axioms LinearStudy.orderedBaseCechComplexFunctor_map_originalScalar
+#check @LinearStudy.orderedBaseCech_homologyMap_originalScalar
+#print axioms LinearStudy.orderedBaseCech_homologyMap_originalScalar
+#check @LinearStudy.moduleHomologyForgettingIso_coefficient_naturality
+#print axioms LinearStudy.moduleHomologyForgettingIso_coefficient_naturality
+#check @LinearStudy.orderedBaseCechActualCoefficientMap
+#print axioms LinearStudy.orderedBaseCechActualCoefficientMap
+#check @LinearStudy.orderedBaseCechActualCoefficientMap_eq_functorMap
+#print axioms LinearStudy.orderedBaseCechActualCoefficientMap_eq_functorMap
+#check @LinearStudy.orderedBaseCechActualCoefficientMap_forgetting_naturality
+#print axioms LinearStudy.orderedBaseCechActualCoefficientMap_forgetting_naturality
+#check @LinearStudy.orderedBaseCechActualCoefficientMap_originalScalar
+#print axioms LinearStudy.orderedBaseCechActualCoefficientMap_originalScalar
+#check @LinearStudy.orderedModuleCechActualAbelianHomologyIso
+#print axioms LinearStudy.orderedModuleCechActualAbelianHomologyIso
+#check @LinearStudy.orderedModuleCechActualAbelianHomologyIso_coefficient_naturality
+#print axioms LinearStudy.orderedModuleCechActualAbelianHomologyIso_coefficient_naturality
+#check @LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_factorization
+#print axioms LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_factorization
+#check @LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_twoFactor
+#print axioms LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_twoFactor
+#check @LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality
+#print axioms LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality
+#check @LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality_apply
+#print axioms LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality_apply
+#check @LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_smul
+#print axioms LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_smul
+#check @LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv
+#print axioms LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv
+#check @LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv_apply
+#print axioms LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv_apply
+#print LinearStudy.originalGlobalModuleScalarRingHom
+#print LinearStudy.additiveFunctorEndRingHom
+#print LinearStudy.addCommGroupEndRingHom
+#print LinearStudy.schemeModuleActualHFunctor
+#print LinearStudy.schemeModuleActualHFunctor_additive
+#print LinearStudy.schemeModuleActualHScalarRingHom
+#print LinearStudy.schemeModuleActualHGlobalSectionsModule
+#print LinearStudy.schemeModuleActualHLinearCoefficientMap
+#print LinearStudy.schemeModuleActualHBaseModule
+#print LinearStudy.schemeModuleActualHBaseLinearCoefficientMap
+#print LinearStudy.orderedBaseModuleActualAbelianCoefficientIso
+#print LinearStudy.orderedBaseCechActualCoefficientMap
+#print LinearStudy.orderedModuleCechActualAbelianHomologyIso
+#print LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool) := [(`LinearStudy.originalGlobalModuleScalar_zero,true),(`LinearStudy.originalGlobalModuleScalar_one,true),(`LinearStudy.originalGlobalModuleScalar_add,true),(`LinearStudy.originalGlobalModuleScalar_mul,true),(`LinearStudy.originalGlobalModuleScalarRingHom,false),(`LinearStudy.additiveFunctorEndRingHom,false),(`LinearStudy.addCommGroupEndRingHom,false),(`LinearStudy.schemeModuleActualHFunctor,false),(`LinearStudy.schemeModuleActualHFunctor_additive,true),(`LinearStudy.schemeModuleActualHScalarRingHom,false),(`LinearStudy.schemeModuleActualHScalarRingHom_apply,true),(`LinearStudy.schemeModuleActualHGlobalSectionsModule,false),(`LinearStudy.schemeModuleActualHGlobalSectionsModule_smul,true),(`LinearStudy.additiveFunctor_map_commuting_apply,true),(`LinearStudy.schemeModuleActualHFunctor_map_apply,true),(`LinearStudy.schemeModuleActualHScalarRingHom_applyFunctor,true),(`LinearStudy.schemeModuleActualH_scalar_naturality,true),(`LinearStudy.schemeModuleActualHLinearCoefficientMap,false),(`LinearStudy.schemeModuleActualHLinearCoefficientMap_apply,true),(`LinearStudy.schemeModuleActualHBaseModule,false),(`LinearStudy.schemeModuleActualHBaseModule_smul,true),(`LinearStudy.schemeModuleActualHBaseLinearCoefficientMap,false),(`LinearStudy.schemeModuleActualHBaseLinearCoefficientMap_apply,true),(`LinearStudy.preservesProductIso_coefficient_naturality,true),(`LinearStudy.formalProductEvaluationWhiskeringIso_coefficient_naturality,true),(`LinearStudy.orderedFormalCechWhiskeringIso_coefficient_naturality,true),(`LinearStudy.orderedBaseCechComplexFunctor_map_eq_formal,true),(`LinearStudy.baseModulePresheafActualAbelianIso_coefficient_naturality,true),(`LinearStudy.orderedBaseModuleActualAbelianCoefficientIso,false),(`LinearStudy.orderedBaseModuleActualAbelianCoefficientIso_coefficient_naturality,true),(`LinearStudy.orderedModuleCechActualAbelianComplexIso_factorization,true),(`LinearStudy.orderedModuleCechActualAbelianComplexIso_coefficient_naturality,true),(`LinearStudy.actualHomologicalComplex_homologyMap_smul,true),(`LinearStudy.actualHomologicalComplex_homologyMap_smul_id,true),(`LinearStudy.formalProductEvaluation_map_smul_id,true),(`LinearStudy.orderedFormalCechCoefficientFunctor_map_smul_id,true),(`LinearStudy.baseModulePresheafFunctor_map_originalScalar,true),(`LinearStudy.orderedBaseCechComplexFunctor_map_originalScalar,true),(`LinearStudy.orderedBaseCech_homologyMap_originalScalar,true),(`LinearStudy.moduleHomologyForgettingIso_coefficient_naturality,true),(`LinearStudy.orderedBaseCechActualCoefficientMap,false),(`LinearStudy.orderedBaseCechActualCoefficientMap_eq_functorMap,true),(`LinearStudy.orderedBaseCechActualCoefficientMap_forgetting_naturality,true),(`LinearStudy.orderedBaseCechActualCoefficientMap_originalScalar,true),(`LinearStudy.orderedModuleCechActualAbelianHomologyIso,false),(`LinearStudy.orderedModuleCechActualAbelianHomologyIso_coefficient_naturality,true),(`LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_factorization,true),(`LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_twoFactor,true),(`LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality,true),(`LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality_apply,true),(`LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_smul,true),(`LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv,false),(`LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv_apply,true)]
+  let env ← Lean.getEnv
+  for (n,want) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"
+    let kernelKind := match info with
+      | .thmInfo _ => "theorem"
+      | .defnInfo _ => "definition"
+      | _ => "other"
+    unless kernelKind == (if want then "theorem" else "definition") do
+      throwError m!"Incorrect kernel declaration kind: {n}"
+    Lean.logInfo m!"KINDCHECK:{n}:{kernelKind}"

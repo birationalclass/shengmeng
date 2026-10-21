@@ -1,0 +1,1043 @@
+FILE: Linear/OriginalGlobalModuleScalarRingLaws.lean
+module
+public import Linear.SchemeModuleScalarNaturality
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory AlgebraicGeometry TopologicalSpace Opposite
+universe u
+variable {X : Scheme.{u}}
+/-- Original coefficient multiplication by zero is the zero morphism. -/
+theorem originalGlobalModuleScalar_zero (M : X.Modules) :
+    originalGlobalModuleScalar 0 M = 0 := by
+  apply SheafOfModules.hom_ext
+  ext U x
+  change X.presheaf.map U.unop.leTop.op 0 • x = 0
+  simp
+/-- Original coefficient multiplication by one is the identity morphism. -/
+theorem originalGlobalModuleScalar_one (M : X.Modules) :
+    originalGlobalModuleScalar 1 M = 𝟙 M := by
+  apply SheafOfModules.hom_ext
+  ext U x
+  change X.presheaf.map U.unop.leTop.op 1 • x = x
+  simp
+/-- The original scalar endomorphism is additive in the original global section. -/
+theorem originalGlobalModuleScalar_add (r s : Γ(X,⊤)) (M : X.Modules) :
+    originalGlobalModuleScalar (r+s) M =
+      originalGlobalModuleScalar r M + originalGlobalModuleScalar s M := by
+  apply SheafOfModules.hom_ext
+  ext U x
+  change X.presheaf.map U.unop.leTop.op (r+s) • x =
+    X.presheaf.map U.unop.leTop.op r • x + X.presheaf.map U.unop.leTop.op s • x
+  simp only [map_add,add_smul]
+/-- Multiplication of original global sections gives composition in its
+actual order on every original open; no cohomology scalar action is assumed. -/
+theorem originalGlobalModuleScalar_mul (r s : Γ(X,⊤)) (M : X.Modules) :
+    originalGlobalModuleScalar (r*s) M =
+      originalGlobalModuleScalar s M ≫ originalGlobalModuleScalar r M := by
+  apply SheafOfModules.hom_ext
+  ext U x
+  change X.presheaf.map U.unop.leTop.op (r*s) • x =
+    X.presheaf.map U.unop.leTop.op r • (X.presheaf.map U.unop.leTop.op s • x)
+  simp only [map_mul,mul_smul]
+end LinearStudy
+
+FILE: Linear/OriginalGlobalModuleScalarRingHom.lean
+module
+public import Linear.OriginalGlobalModuleScalarRingLaws
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+universe u
+variable {X : Scheme.{u}}
+/-- The ORIGINAL global sections act through their actual coefficient
+endomorphisms. This is independent of any cohomology comparison choice. -/
+def originalGlobalModuleScalarRingHom (M : X.Modules) : Γ(X,⊤) →+* End M where
+  toFun r := originalGlobalModuleScalar r M
+  map_one' := originalGlobalModuleScalar_one M
+  map_mul' r s := originalGlobalModuleScalar_mul r s M
+  map_zero' := originalGlobalModuleScalar_zero M
+  map_add' r s := originalGlobalModuleScalar_add r s M
+end LinearStudy
+
+FILE: Linear/AdditiveFunctorEndRingHom.lean
+module
+public import Mathlib.CategoryTheory.Preadditive.AdditiveFunctor
+public import Mathlib.Algebra.Category.Grp.Preadditive
+public import Mathlib.Algebra.Module.Hom
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory
+universe u v u' v'
+/-- Bundle native additive F.map and native F.mapEnd into the SAME map
+on endomorphism rings, retaining actual composition and addition. -/
+def additiveFunctorEndRingHom {C : Type u} [Category.{v} C] [Preadditive C]
+    {D : Type u'} [Category.{v'} D] [Preadditive D]
+    (F : C ⥤ D) [F.Additive] (X : C) : End X →+* End (F.obj X) where
+  __ := F.mapEnd X
+  map_zero' := F.map_zero X X
+  map_add' _ _ := F.map_add
+/-- The native AddCommGrpCat endomorphism is its ORIGINAL additive map.
+No comparison equivalence or choice is used. -/
+def addCommGroupEndRingHom (A : AddCommGrpCat.{u}) : End A →+* AddMonoid.End A where
+  toFun f := f.hom
+  map_one' := rfl
+  map_mul' _ _ := rfl
+  map_zero' := rfl
+  map_add' _ _ := rfl
+end LinearStudy
+
+FILE: Linear/SchemeModuleActualHScalarRingHom.lean
+module
+public import Linear.AdditiveFunctorEndRingHom
+public import Linear.OriginalGlobalModuleScalarRingHom
+public import Linear.SchemeModuleActualCohomologyGroup
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+universe u
+/-- The native sheaf-H functor after forgetting ORIGINAL module coefficients.
+This retains the existing cohomology groups and original coefficient maps. -/
+def schemeModuleActualHFunctor (X : Scheme.{u}) (n : ℕ) : X.Modules ⥤ AddCommGrpCat.{u} :=
+  schemeModuleToAdditiveSheaf X ⋙ CategoryTheory.Sheaf.functorH.{u} (Opens.grothendieckTopology X) n
+instance schemeModuleActualHFunctor_additive (X : Scheme.{u}) (n : ℕ) :
+    (schemeModuleActualHFunctor X n).Additive := by
+  change (SheafOfModules.toSheaf X.ringCatSheaf ⋙
+    CategoryTheory.Sheaf.functorH.{u} (Opens.grothendieckTopology X) n).Additive
+  infer_instance
+/-- Intrinsic ORIGINAL-global-section action on native actual H: apply the
+native additive H functor to ACTUAL coefficient multiplication. No duality
+comparison, arbitrary isomorphism, trace or scalar-compatibility premise. -/
+def schemeModuleActualHScalarRingHom (X : Scheme.{u}) (M : X.Modules) (n : ℕ) :
+    Γ(X,⊤) →+* AddMonoid.End (schemeModuleActualCohomology X M n) :=
+  (addCommGroupEndRingHom ((schemeModuleActualHFunctor X n).obj M)).comp
+    ((additiveFunctorEndRingHom (schemeModuleActualHFunctor X n) M).comp
+      (originalGlobalModuleScalarRingHom M))
+/-- Exact calibration with the ORIGINAL coefficient multiplication map,
+in EVERY cohomological degree on the SAME original space. -/
+theorem schemeModuleActualHScalarRingHom_apply (X : Scheme.{u}) (M : X.Modules) (n : ℕ)
+    (r : Γ(X,⊤)) (x : schemeModuleActualCohomology X M n) :
+    schemeModuleActualHScalarRingHom X M n r x =
+      CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf X).map
+        (originalGlobalModuleScalar r M)) n x := rfl
+end LinearStudy
+
+FILE: Linear/SchemeModuleActualHGlobalSectionsModule.lean
+module
+public import Linear.SchemeModuleActualHScalarRingHom
+public import Mathlib.Algebra.Module.RingHom
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+universe u
+/-- Native actual H is a module over ORIGINAL global structure sections,
+using ONLY the intrinsic original-coefficient-multiplication ring action.
+The existing additive group and actual sheaf cohomology are unchanged. -/
+def schemeModuleActualHGlobalSectionsModule (X : Scheme.{u}) (M : X.Modules) (n : ℕ) :
+    Module Γ(X,⊤) (schemeModuleActualCohomology X M n) :=
+  Module.compHom (schemeModuleActualCohomology X M n) (schemeModuleActualHScalarRingHom X M n)
+/-- EXACT action formula in every degree;no scalar-compatibility assumption
+and no scalar action transported through a duality comparison. -/
+theorem schemeModuleActualHGlobalSectionsModule_smul
+    (X : Scheme.{u}) (M : X.Modules) (n : ℕ)
+    (r : Γ(X,⊤)) (x : schemeModuleActualCohomology X M n) :
+    letI := schemeModuleActualHGlobalSectionsModule X M n
+    r • x = CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf X).map
+      (originalGlobalModuleScalar r M)) n x := rfl
+end LinearStudy
+
+FILE: Linear/AdditiveFunctorScalarSquare.lean
+module
+public import Linear.AdditiveFunctorEndRingHom
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory
+universe u v w
+/-- Apply an actual functor to an ORIGINAL coefficient scalar square.
+This is a generic pointwise interface;no derived sheaf object is unfolded. -/
+theorem additiveFunctor_map_commuting_apply {C : Type u} [Category.{v} C]
+    (F : C ⥤ AddCommGrpCat.{w}) {M N : C} (f : M ⟶ N)
+    (sM : M ⟶ M) (sN : N ⟶ N) (h : sM ≫ f = f ≫ sN) (x : F.obj M) :
+    F.map f (F.map sM x) = F.map sN (F.map f x) := by
+  have hh : F.map sM ≫ F.map f = F.map f ≫ F.map sN := by
+    rw [← F.map_comp,h,F.map_comp]
+  exact ConcreteCategory.congr_hom hh x
+end LinearStudy
+
+FILE: Linear/SchemeModuleActualHFunctorCalibration.lean
+module
+public import Linear.SchemeModuleActualHScalarRingHom
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+universe u
+/-- A small exact interface to native actual H.map;the same coefficient
+map and native cohomology group are retained definitionally. -/
+theorem schemeModuleActualHFunctor_map_apply (X : Scheme.{u})
+    {M N : X.Modules} (f : M ⟶ N) (n : ℕ)
+    (x : schemeModuleActualCohomology X M n) :
+    (schemeModuleActualHFunctor X n).map f x =
+      CategoryTheory.Sheaf.H.map.{u} ((schemeModuleToActualAbelianSheaf X).map f) n x := rfl
+/-- The intrinsic scalar ring action is exactly the native H functor on
+actual scalar multiplication;no comparison equivalence is used. -/
+theorem schemeModuleActualHScalarRingHom_applyFunctor (X : Scheme.{u})
+    (M : X.Modules) (n : ℕ) (r : Γ(X,⊤)) (x : schemeModuleActualCohomology X M n) :
+    schemeModuleActualHScalarRingHom X M n r x =
+      (schemeModuleActualHFunctor X n).map (originalGlobalModuleScalar r M) x := rfl
+end LinearStudy
+
+FILE: Linear/SchemeModuleActualHLinearCoefficientMap.lean
+module
+public import Linear.SchemeModuleActualHGlobalSectionsModule
+public import Linear.SchemeModuleActualHFunctorCalibration
+public import Linear.AdditiveFunctorScalarSquare
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+universe u
+/-- The native coefficient map commutes with the INTRINSIC action of the
+same original global section,in EVERY degree. Derived from the original
+module-map scalar square through the SAME native H functor. -/
+theorem schemeModuleActualH_scalar_naturality (X : Scheme.{u})
+    {M N : X.Modules} (f : M ⟶ N) (n : ℕ) (r : Γ(X,⊤))
+    (x : schemeModuleActualCohomology X M n) :
+    CategoryTheory.Sheaf.H.map.{u} ((schemeModuleToActualAbelianSheaf X).map f) n
+        (schemeModuleActualHScalarRingHom X M n r x) =
+      schemeModuleActualHScalarRingHom X N n r
+        (CategoryTheory.Sheaf.H.map.{u} ((schemeModuleToActualAbelianSheaf X).map f) n x) := by
+  rw [schemeModuleActualHScalarRingHom_applyFunctor X M n,
+    schemeModuleActualHScalarRingHom_applyFunctor X N n,
+    ← schemeModuleActualHFunctor_map_apply X f n,
+    ← schemeModuleActualHFunctor_map_apply X f n]
+  exact additiveFunctor_map_commuting_apply (schemeModuleActualHFunctor X n) f
+    (originalGlobalModuleScalar r M) (originalGlobalModuleScalar r N)
+    (originalGlobalModuleScalar_naturality r f) x
+/-- The SAME original native-H coefficient map is linear for intrinsic
+ORIGINAL-global-section module structures. No comparison choice is used. -/
+def schemeModuleActualHLinearCoefficientMap (X : Scheme.{u})
+    {M N : X.Modules} (f : M ⟶ N) (n : ℕ) :
+    letI := schemeModuleActualHGlobalSectionsModule X M n
+    letI := schemeModuleActualHGlobalSectionsModule X N n
+    schemeModuleActualCohomology X M n →ₗ[Γ(X,⊤)] schemeModuleActualCohomology X N n := by
+  letI := schemeModuleActualHGlobalSectionsModule X M n
+  letI := schemeModuleActualHGlobalSectionsModule X N n
+  exact {
+    __ := CategoryTheory.Sheaf.H.map.{u} ((schemeModuleToActualAbelianSheaf X).map f) n
+    map_smul' := fun r x => schemeModuleActualH_scalar_naturality X f n r x }
+/-- Exact underlying map,not a transported substitute. -/
+theorem schemeModuleActualHLinearCoefficientMap_apply (X : Scheme.{u})
+    {M N : X.Modules} (f : M ⟶ N) (n : ℕ)
+    (x : schemeModuleActualCohomology X M n) :
+    schemeModuleActualHLinearCoefficientMap X f n x =
+      CategoryTheory.Sheaf.H.map.{u} ((schemeModuleToActualAbelianSheaf X).map f) n x := rfl
+end LinearStudy
+
+FILE: Linear/SchemeModuleActualHBaseScalars.lean
+module
+public import Linear.SchemeModuleActualHLinearCoefficientMap
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+universe u
+/-- The ORIGINAL base-global-section action on actual H is restriction of
+the intrinsic source action along the ACTUAL scheme map on global sections. -/
+def schemeModuleActualHBaseModule {X S : Scheme.{u}} (π : X ⟶ S)
+    (M : X.Modules) (n : ℕ) : Module Γ(S,⊤) (schemeModuleActualCohomology X M n) := by
+  letI := schemeModuleActualHGlobalSectionsModule X M n
+  exact Module.compHom (schemeModuleActualCohomology X M n) π.appTop.hom
+/-- Exact base action formula in every degree,on the SAME source space. -/
+theorem schemeModuleActualHBaseModule_smul {X S : Scheme.{u}} (π : X ⟶ S)
+    (M : X.Modules) (n : ℕ) (r : Γ(S,⊤)) (x : schemeModuleActualCohomology X M n) :
+    letI := schemeModuleActualHBaseModule π M n
+    r • x = CategoryTheory.Sheaf.H.map.{u} ((schemeModuleToActualAbelianSheaf X).map
+      (originalGlobalModuleScalar (π.appTop r) M)) n x := rfl
+/-- The ORIGINAL actual H coefficient map is linear over the ORIGINAL
+base-global-section ring,using its actual scheme structure map. -/
+def schemeModuleActualHBaseLinearCoefficientMap {X S : Scheme.{u}} (π : X ⟶ S)
+    {M N : X.Modules} (f : M ⟶ N) (n : ℕ) :
+    letI := schemeModuleActualHBaseModule π M n
+    letI := schemeModuleActualHBaseModule π N n
+    schemeModuleActualCohomology X M n →ₗ[Γ(S,⊤)] schemeModuleActualCohomology X N n := by
+  letI := schemeModuleActualHBaseModule π M n
+  letI := schemeModuleActualHBaseModule π N n
+  exact {
+    __ := CategoryTheory.Sheaf.H.map.{u} ((schemeModuleToActualAbelianSheaf X).map f) n
+    map_smul' := fun r x => schemeModuleActualH_scalar_naturality X f n (π.appTop r) x }
+/-- The underlying coefficient map is EXACTLY native H.map. -/
+theorem schemeModuleActualHBaseLinearCoefficientMap_apply {X S : Scheme.{u}} (π : X ⟶ S)
+    {M N : X.Modules} (f : M ⟶ N) (n : ℕ) (x : schemeModuleActualCohomology X M n) :
+    schemeModuleActualHBaseLinearCoefficientMap π f n x =
+      CategoryTheory.Sheaf.H.map.{u} ((schemeModuleToActualAbelianSheaf X).map f) n x := rfl
+end LinearStudy
+
+FILE: Linear/FormalProductCoefficientNaturality.lean
+module
+public import Linear.FormalProductEvaluationWhiskering
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits Opposite
+universe w u v u' v' u'' v''
+variable {C : Type u} [Category.{v} C] {A : Type u'} [Category.{v'} A]
+  {B : Type u''} [Category.{v''} B] [HasProducts.{w} A] [HasProducts.{w} B]
+/-- The native product-preservation isomorphism is natural in the actual
+coefficient family map,derived on ORIGINAL product projections. -/
+theorem preservesProductIso_coefficient_naturality {J : Type w}
+    (H : A ⥤ B) [PreservesLimitsOfShape (Discrete J) H]
+    {P Q : J → A} (a : ∀ j,P j ⟶ Q j) :
+    H.map (CategoryTheory.Limits.Pi.map a) ≫ (PreservesProduct.iso H Q).hom =
+      (PreservesProduct.iso H P).hom ≫ CategoryTheory.Limits.Pi.map (fun j => H.map (a j)) := by
+  apply Pi.hom_ext
+  intro i
+  simp only [Category.assoc,PreservesProduct.iso_hom,piComparison_comp_π,CategoryTheory.Limits.Pi.map_π]
+  rw [← H.map_comp,CategoryTheory.Limits.Pi.map_π,H.map_comp]
+  rw [← Category.assoc,piComparison_comp_π]
+/-- The SAME original formal-product-evaluation/forgetting comparison
+is natural in the ORIGINAL coefficient-presheaf transformation. -/
+theorem formalProductEvaluationWhiskeringIso_coefficient_naturality
+    {T T' : Cᵒᵖ ⥤ A} (a : T ⟶ T') (H : A ⥤ B)
+    [∀ (J : Type w),PreservesLimitsOfShape (Discrete J) H] :
+    Functor.whiskerRight ((FormalCoproduct.evalOp.{w} C A).map a) H ≫
+        (formalProductEvaluationWhiskeringIso T' H).hom =
+      (formalProductEvaluationWhiskeringIso T H).hom ≫
+        (FormalCoproduct.evalOp.{w} C B).map (Functor.whiskerRight a H) := by
+  ext U
+  exact preservesProductIso_coefficient_naturality H
+    (fun i => a.app (op (U.unop.obj i)))
+end LinearStudy
+
+FILE: Linear/OrderedFormalCechWhiskeringNaturality.lean
+module
+public import Linear.OrderedFormalCechCoefficientFunctor
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits Opposite AlgebraicGeometry
+universe u v w v' w'
+variable {X : Scheme.{u}} {A : Type w} [Category.{v} A] [Preadditive A]
+  {B : Type w'} [Category.{v'} B] [Preadditive B]
+  {ι : Type u} [LinearOrder ι] (U : ι → X.Opens)
+/-- The SAME original ordered-complex/additive-forgetting comparison is
+natural in ORIGINAL coefficient-presheaf transformations,including signs. -/
+theorem orderedFormalCechWhiskeringIso_coefficient_naturality
+    {F G : (FormalCoproduct.{u} X.Opens)ᵒᵖ ⥤ A} (a : F ⟶ G)
+    (H : A ⥤ B) [H.Additive] :
+    (H.mapHomologicalComplex (.up ℕ)).map ((orderedFormalCechCoefficientFunctor U).map a) ≫
+        (orderedFormalCechWhiskeringIso U G H).hom =
+      (orderedFormalCechWhiskeringIso U F H).hom ≫
+        (orderedFormalCechCoefficientFunctor U).map (Functor.whiskerRight a H) := by
+  apply HomologicalComplex.Hom.ext
+  funext n
+  change H.map (a.app (op (AlgebraicGeometry.Scheme.Modules.orderedCechFormalObject U n))) ≫ 𝟙 _ =
+    𝟙 _ ≫ H.map (a.app (op (AlgebraicGeometry.Scheme.Modules.orderedCechFormalObject U n)))
+  simp only [Category.comp_id,Category.id_comp]
+end LinearStudy
+
+FILE: Linear/OrderedModuleCechCoefficientFactors.lean
+module
+public import Linear.OrderedModuleCechActualAbelian
+public import Linear.ModuleOrderedBaseCechFunctor
+public import Linear.OrderedFormalCechCoefficientFunctor
+public import Linear.FormalProductCoefficientNaturality
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits Opposite AlgebraicGeometry
+open AlgebraicGeometry.Scheme.Modules
+universe u
+/-- The ORIGINAL base-linear Cech coefficient map equals the SAME
+formal-presheaf coefficient map,including its actual alternating differential. -/
+theorem orderedBaseCechComplexFunctor_map_eq_formal
+    {X S : Scheme.{u}} (π : X ⟶ S) {ι : Type u} [LinearOrder ι] (U : ι → X.Opens)
+    {M N : X.Modules} (f : M ⟶ N) :
+    (orderedBaseCechComplexFunctor π U).map f =
+      (orderedFormalCechCoefficientFunctor U).map
+        ((FormalCoproduct.evalOp.{u} X.Opens (ModuleCat.{u} Γ(S,⊤))).map
+          ((baseModulePresheafFunctor π).map f)) := by
+  apply HomologicalComplex.Hom.ext
+  funext n
+  rfl
+/-- Forgetting original base scalar structure commutes with the SAME
+original module coefficient map on every open. -/
+theorem baseModulePresheafActualAbelianIso_coefficient_naturality
+    {X S : Scheme.{u}} (π : X ⟶ S) {M N : X.Modules} (f : M ⟶ N) :
+    Functor.whiskerRight ((baseModulePresheafFunctor π).map f)
+        (forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}) ≫
+      (baseModulePresheafActualAbelianIso π N).hom =
+    (baseModulePresheafActualAbelianIso π M).hom ≫
+      ((schemeModuleToActualAbelianSheaf X).map f).hom := by
+  ext U
+  rfl
+/-- Name the SAME two original formal-presheaf forgetting factors used
+inside the existing module-Cech/abelian-Cech comparison. -/
+def orderedBaseModuleActualAbelianCoefficientIso
+    {X S : Scheme.{u}} (π : X ⟶ S) (M : X.Modules) :
+    (FormalCoproduct.evalOp.{u} X.Opens (ModuleCat.{u} Γ(S,⊤))).obj
+        (baseModulePresheaf π M) ⋙ forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u} ≅
+      (FormalCoproduct.evalOp.{u} X.Opens AddCommGrpCat.{u}).obj
+        (((schemeModuleToActualAbelianSheaf X).obj M).obj) :=
+  formalProductEvaluationWhiskeringIso (baseModulePresheaf π M)
+      (forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}) ≪≫
+    (FormalCoproduct.evalOp.{u} X.Opens AddCommGrpCat.{u}).mapIso
+      (baseModulePresheafActualAbelianIso π M)
+/-- Coefficient naturality of the SAME two original presheaf factors,
+derived from native product projections and original open-section maps. -/
+theorem orderedBaseModuleActualAbelianCoefficientIso_coefficient_naturality
+    {X S : Scheme.{u}} (π : X ⟶ S) {M N : X.Modules} (f : M ⟶ N) :
+    Functor.whiskerRight
+        ((FormalCoproduct.evalOp.{u} X.Opens (ModuleCat.{u} Γ(S,⊤))).map
+          ((baseModulePresheafFunctor π).map f))
+        (forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}) ≫
+      (orderedBaseModuleActualAbelianCoefficientIso π N).hom =
+    (orderedBaseModuleActualAbelianCoefficientIso π M).hom ≫
+      (FormalCoproduct.evalOp.{u} X.Opens AddCommGrpCat.{u}).map
+        (((schemeModuleToActualAbelianSheaf X).map f).hom) := by
+  let H := forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}
+  let E := FormalCoproduct.evalOp.{u} X.Opens AddCommGrpCat.{u}
+  let a := (baseModulePresheafFunctor π).map f
+  have h₁ : CommSq
+      (Functor.whiskerRight ((FormalCoproduct.evalOp.{u} X.Opens (ModuleCat.{u} Γ(S,⊤))).map a) H)
+      (formalProductEvaluationWhiskeringIso (baseModulePresheaf π M) H).hom
+      (formalProductEvaluationWhiskeringIso (baseModulePresheaf π N) H).hom
+      (E.map (Functor.whiskerRight a H)) :=
+    ⟨formalProductEvaluationWhiskeringIso_coefficient_naturality a H⟩
+  have h₂ : CommSq (E.map (Functor.whiskerRight a H))
+      (E.mapIso (baseModulePresheafActualAbelianIso π M)).hom
+      (E.mapIso (baseModulePresheafActualAbelianIso π N)).hom
+      (E.map (((schemeModuleToActualAbelianSheaf X).map f).hom)) := by
+    constructor
+    change E.map _ ≫ E.map _ = E.map _ ≫ E.map _
+    simpa only [Functor.map_comp] using
+      congrArg E.map (baseModulePresheafActualAbelianIso_coefficient_naturality π f)
+  exact (h₁.vert_comp h₂).w
+end LinearStudy
+
+FILE: Linear/OrderedModuleCechActualAbelianFactorization.lean
+module
+public import Linear.OrderedModuleCechCoefficientFactors
+public import Linear.OrderedFormalCechWhiskeringNaturality
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits Opposite AlgebraicGeometry
+open AlgebraicGeometry.Scheme.Modules
+universe u
+/-- Exact factorization of the SAME pre-existing original module-Cech /
+abelian-Cech comparison,not a replacement complex or comparison map. -/
+theorem orderedModuleCechActualAbelianComplexIso_factorization
+    {X S : Scheme.{u}} (π : X ⟶ S) (M : X.Modules)
+    {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) :
+    orderedModuleCechActualAbelianComplexIso π M U =
+      ((forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}).mapHomologicalComplex (.up ℕ)).mapIso
+        (Iso.refl (orderedBaseCechComplex π M U)) ≪≫
+      orderedFormalCechWhiskeringIso U
+        ((FormalCoproduct.evalOp.{u} X.Opens (ModuleCat.{u} Γ(S,⊤))).obj (baseModulePresheaf π M))
+        (forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}) ≪≫
+      (orderedFormalCechCoefficientFunctor (D:=AddCommGrpCat.{u}) U).mapIso
+        (orderedBaseModuleActualAbelianCoefficientIso π M) := by
+  rw [orderedFormalCechCoefficientFunctor_mapIso]
+  unfold orderedModuleCechActualAbelianComplexIso orderedBaseModuleActualAbelianCoefficientIso
+  rfl
+end LinearStudy
+
+FILE: Linear/OrderedModuleCechActualAbelianNaturality.lean
+module
+public import Linear.OrderedModuleCechActualAbelianFactorization
+public import Linear.OrderedFreeSheafHomCoefficientNaturality
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits Opposite AlgebraicGeometry
+open AlgebraicGeometry.Scheme.Modules
+universe u
+/-- The SAME original module-valued/abelian Cech comparison is natural
+in ORIGINAL module coefficient maps,including all original faces/signs.
+No desired cohomology naturality or scalar compatibility is an input. -/
+theorem orderedModuleCechActualAbelianComplexIso_coefficient_naturality
+    {X S : Scheme.{u}} (π : X ⟶ S) {M N : X.Modules} (f : M ⟶ N)
+    {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) :
+    ((forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}).mapHomologicalComplex (.up ℕ)).map
+        ((orderedBaseCechComplexFunctor π U).map f) ≫
+      (orderedModuleCechActualAbelianComplexIso π N U).hom =
+    (orderedModuleCechActualAbelianComplexIso π M U).hom ≫
+      orderedTopAbelianCechCoefficientMap X U ((schemeModuleToActualAbelianSheaf X).map f) := by
+  let H := forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}
+  let HC := H.mapHomologicalComplex (.up ℕ)
+  let E := FormalCoproduct.evalOp.{u} X.Opens (ModuleCat.{u} Γ(S,⊤))
+  let F := E.obj (baseModulePresheaf π M)
+  let G := E.obj (baseModulePresheaf π N)
+  let T := orderedFormalCechCoefficientFunctor (D:=ModuleCat.{u} Γ(S,⊤)) U
+  let B := orderedFormalCechCoefficientFunctor (D:=AddCommGrpCat.{u}) U
+  let a := E.map ((baseModulePresheafFunctor π).map f)
+  let eM := HC.mapIso (Iso.refl (orderedBaseCechComplex π M U))
+  let eN := HC.mapIso (Iso.refl (orderedBaseCechComplex π N U))
+  have h₁ : CommSq (HC.map ((orderedBaseCechComplexFunctor π U).map f)) eM.hom eN.hom
+      (HC.map (T.map a)) := by
+    constructor
+    change HC.map ((orderedBaseCechComplexFunctor π U).map f) ≫
+      (HC.mapIso (Iso.refl (orderedBaseCechComplex π N U))).hom =
+      (HC.mapIso (Iso.refl (orderedBaseCechComplex π M U))).hom ≫ HC.map (T.map a)
+    simp only [Functor.mapIso_refl,Iso.refl_hom,Category.comp_id,Category.id_comp]
+    exact congrArg HC.map (orderedBaseCechComplexFunctor_map_eq_formal π U f)
+  have h₂ : CommSq (HC.map (T.map a))
+      (orderedFormalCechWhiskeringIso U F H).hom
+      (orderedFormalCechWhiskeringIso U G H).hom
+      (B.map (Functor.whiskerRight a H)) :=
+    ⟨orderedFormalCechWhiskeringIso_coefficient_naturality U a H⟩
+  have h₃ : CommSq (B.map (Functor.whiskerRight a H))
+      (B.mapIso (orderedBaseModuleActualAbelianCoefficientIso π M)).hom
+      (B.mapIso (orderedBaseModuleActualAbelianCoefficientIso π N)).hom
+      (orderedTopAbelianCechCoefficientMap X U ((schemeModuleToActualAbelianSheaf X).map f)) := by
+    constructor
+    change B.map _ ≫ B.map _ = B.map _ ≫ B.map _
+    simpa only [Functor.map_comp] using congrArg B.map
+      (orderedBaseModuleActualAbelianCoefficientIso_coefficient_naturality π f)
+  rw [orderedModuleCechActualAbelianComplexIso_factorization,
+    orderedModuleCechActualAbelianComplexIso_factorization]
+  change HC.map ((orderedBaseCechComplexFunctor π U).map f) ≫
+      (eN.hom ≫ ((orderedFormalCechWhiskeringIso U G H).hom ≫
+        (B.mapIso (orderedBaseModuleActualAbelianCoefficientIso π N)).hom)) =
+    (eM.hom ≫ ((orderedFormalCechWhiskeringIso U F H).hom ≫
+      (B.mapIso (orderedBaseModuleActualAbelianCoefficientIso π M)).hom)) ≫
+        orderedTopAbelianCechCoefficientMap X U ((schemeModuleToActualAbelianSheaf X).map f)
+  exact (h₁.vert_comp (h₂.vert_comp h₃)).w
+end LinearStudy
+
+FILE: Linear/HomologicalComplexScalarHomology.lean
+module
+public import Mathlib.Algebra.Homology.Linear
+public import Mathlib.Algebra.Homology.ShortComplex.Linear
+public import Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory
+universe u v w
+variable {R : Type w} [Semiring R] {C : Type u} [Category.{v} C] [Preadditive C]
+  [CategoryTheory.Linear R C] [CategoryWithHomology C] {ι : Type} {c : ComplexShape ι}
+/-- Native complex homology preserves ACTUAL scalar multiples in EVERY
+degree,by the native short-complex scalar theorem. No outgoing-zero premise. -/
+theorem actualHomologicalComplex_homologyMap_smul
+    {K L : HomologicalComplex C c} (a : R) (f : K ⟶ L) (n : ι) :
+    HomologicalComplex.homologyMap (a • f) n = a • HomologicalComplex.homologyMap f n := by
+  have h : (HomologicalComplex.shortComplexFunctor C c n).map (a • f) =
+      a • (HomologicalComplex.shortComplexFunctor C c n).map f := by
+    apply ShortComplex.Hom.ext
+    all_goals rfl
+  change ShortComplex.homologyMap
+      ((HomologicalComplex.shortComplexFunctor C c n).map (a • f)) = _
+  rw [h,ShortComplex.homologyMap_smul]
+  rfl
+/-- Exact scalar multiplication on native complex homology is induced by
+the original scalar identity chain map,in every degree. -/
+theorem actualHomologicalComplex_homologyMap_smul_id
+    (K : HomologicalComplex C c) (a : R) (n : ι) :
+    HomologicalComplex.homologyMap (a • 𝟙 K) n = a • 𝟙 (K.homology n) := by
+  rw [actualHomologicalComplex_homologyMap_smul,HomologicalComplex.homologyMap_id]
+end LinearStudy
+
+FILE: Linear/FormalCechScalarIdentity.lean
+module
+public import Linear.OrderedFormalCechCoefficientFunctor
+public import Mathlib.Algebra.Homology.Linear
+public import Mathlib.CategoryTheory.Linear.FunctorCategory
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits Opposite AlgebraicGeometry
+open AlgebraicGeometry.Scheme.Modules
+universe u v w t
+variable {R : Type t} [Semiring R] {X : Scheme.{u}}
+  {A : Type w} [Category.{v} A] [Preadditive A] [CategoryTheory.Linear R A]
+/-- Formal product evaluation retains the ORIGINAL scalar identity map,
+proved on native product projections rather than chosen product coordinates. -/
+theorem formalProductEvaluation_map_smul_id [HasProducts.{u} A]
+    (T : X.Opensᵒᵖ ⥤ A) (r : R) :
+    (FormalCoproduct.evalOp.{u} X.Opens A).map (r • 𝟙 T) =
+      r • 𝟙 ((FormalCoproduct.evalOp.{u} X.Opens A).obj T) := by
+  apply NatTrans.ext
+  funext U
+  change CategoryTheory.Limits.Pi.map (fun j : U.unop.I => r • 𝟙 (T.obj (op (U.unop.obj j)))) =
+    r • 𝟙 (∏ᶜ fun j : U.unop.I => T.obj (op (U.unop.obj j)))
+  apply Pi.hom_ext
+  intro i
+  rw [CategoryTheory.Limits.Pi.map_π,CategoryTheory.Linear.smul_comp,Category.id_comp,
+    CategoryTheory.Linear.comp_smul,Category.comp_id]
+/-- The SAME original ordered alternating complex coefficient functor
+retains scalar identity maps,including all faces and signs. -/
+theorem orderedFormalCechCoefficientFunctor_map_smul_id
+    {ι : Type u} [LinearOrder ι] (U : ι → X.Opens)
+    (F : (FormalCoproduct.{u} X.Opens)ᵒᵖ ⥤ A) (r : R) :
+    (orderedFormalCechCoefficientFunctor U).map (r • 𝟙 F) =
+      r • 𝟙 (orderedFormalCechComplex F U) := by
+  apply HomologicalComplex.Hom.ext
+  funext n
+  rfl
+end LinearStudy
+
+FILE: Linear/OrderedModuleCechCoefficientScalar.lean
+module
+public import Linear.OrderedModuleCechCoefficientFactors
+public import Linear.FormalCechScalarIdentity
+public import Linear.OriginalGlobalModuleScalarRingHom
+public import Linear.HomologicalComplexScalarHomology
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits Opposite AlgebraicGeometry
+open AlgebraicGeometry.Scheme.Modules
+universe u
+/-- ORIGINAL coefficient multiplication by the actual pulled-back base
+section equals the ORIGINAL base-linear presheaf scalar identity map. -/
+theorem baseModulePresheafFunctor_map_originalScalar
+    {X S : Scheme.{u}} (π : X ⟶ S) (M : X.Modules) (r : Γ(S,⊤)) :
+    (baseModulePresheafFunctor π).map (originalGlobalModuleScalar (π.appTop r) M) =
+      r • 𝟙 (baseModulePresheaf π M) := by
+  ext U x
+  rfl
+/-- ORIGINAL ordered Cech coefficient multiplication is the native
+base-linear scalar identity complex map,with all original signs retained. -/
+theorem orderedBaseCechComplexFunctor_map_originalScalar
+    {X S : Scheme.{u}} (π : X ⟶ S) (M : X.Modules) (r : Γ(S,⊤))
+    {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) :
+    (orderedBaseCechComplexFunctor π U).map (originalGlobalModuleScalar (π.appTop r) M) =
+      r • 𝟙 (orderedBaseCechComplex π M U) := by
+  let P := baseModulePresheaf π M
+  let E := FormalCoproduct.evalOp.{u} X.Opens (ModuleCat.{u} Γ(S,⊤))
+  let T := orderedFormalCechCoefficientFunctor (D:=ModuleCat.{u} Γ(S,⊤)) U
+  let a : P ⟶ P := (baseModulePresheafFunctor π).map (originalGlobalModuleScalar (π.appTop r) M)
+  calc
+    _ = T.map (E.map a) := orderedBaseCechComplexFunctor_map_eq_formal π U _
+    _ = T.map (E.map (r • 𝟙 P)) :=
+      congrArg (fun g : P ⟶ P => T.map (E.map g))
+        (baseModulePresheafFunctor_map_originalScalar π M r)
+    _ = T.map (r • 𝟙 (E.obj P)) :=
+      congrArg (fun g : E.obj P ⟶ E.obj P => T.map g)
+        (formalProductEvaluation_map_smul_id P r)
+    _ = _ := orderedFormalCechCoefficientFunctor_map_smul_id U (E.obj P) r
+/-- The SAME scalar coefficient map induces native scalar multiplication
+on ORIGINAL module-valued ordered Cech homology,in EVERY degree. -/
+theorem orderedBaseCech_homologyMap_originalScalar
+    {X S : Scheme.{u}} (π : X ⟶ S) (M : X.Modules) (r : Γ(S,⊤))
+    {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) (n : ℕ) :
+    HomologicalComplex.homologyMap
+        ((orderedBaseCechComplexFunctor π U).map (originalGlobalModuleScalar (π.appTop r) M)) n =
+      r • 𝟙 ((orderedBaseCechComplex π M U).homology n) := by
+  calc
+    _ = HomologicalComplex.homologyMap (r • 𝟙 (orderedBaseCechComplex π M U)) n :=
+      congrArg (fun g : orderedBaseCechComplex π M U ⟶ orderedBaseCechComplex π M U =>
+        HomologicalComplex.homologyMap g n)
+        (orderedBaseCechComplexFunctor_map_originalScalar π M r U)
+    _ = _ := actualHomologicalComplex_homologyMap_smul_id (orderedBaseCechComplex π M U) r n
+end LinearStudy
+
+FILE: Linear/ModuleHomologyForgettingNaturality.lean
+module
+public import Mathlib.Algebra.Category.ModuleCat.Abelian
+public import Mathlib.Algebra.Category.Grp.Abelian
+public import Mathlib.Algebra.Category.ModuleCat.Colimits
+public import Mathlib.Algebra.Homology.ShortComplex.PreservesHomology
+public import Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits
+universe u
+/-- Native forgetting-of-scalars homology comparison is natural in the
+ORIGINAL complex map,by mathlib's original short-complex naturality. -/
+theorem moduleHomologyForgettingIso_coefficient_naturality
+    {R : Type u} [Ring R] {ι : Type} {c : ComplexShape ι}
+    {K L : HomologicalComplex (ModuleCat.{u} R) c} (f : K ⟶ L) (n : ι) :
+    (forget₂ (ModuleCat.{u} R) AddCommGrpCat.{u}).map (HomologicalComplex.homologyMap f n) ≫
+        ((L.sc n).mapHomologyIso (forget₂ (ModuleCat.{u} R) AddCommGrpCat.{u})).inv =
+      ((K.sc n).mapHomologyIso (forget₂ (ModuleCat.{u} R) AddCommGrpCat.{u})).inv ≫
+        HomologicalComplex.homologyMap
+          (((forget₂ (ModuleCat.{u} R) AddCommGrpCat.{u}).mapHomologicalComplex c).map f) n := by
+  exact ShortComplex.mapHomologyIso_inv_naturality
+    ((HomologicalComplex.shortComplexFunctor (ModuleCat.{u} R) c n).map f)
+    (forget₂ (ModuleCat.{u} R) AddCommGrpCat.{u})
+end LinearStudy
+
+FILE: Linear/OrderedModuleCechActualCoefficientMap.lean
+module
+public import Linear.OrderedModuleCechActualAbelianNaturality
+public import Linear.OrderedModuleCechCoefficientScalar
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
+open AlgebraicGeometry.Scheme.Modules
+universe u
+/-- Name the SAME original coefficient complex map with its original
+source/target complex types EXPLICIT. No replacement map is chosen. -/
+def orderedBaseCechActualCoefficientMap {X S : Scheme.{u}} (π : X ⟶ S)
+    {M N : X.Modules} (f : M ⟶ N) {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) :
+    orderedBaseCechComplex π M U ⟶ orderedBaseCechComplex π N U :=
+  (orderedBaseCechComplexFunctor π U).map f
+/-- Exact agreement with the existing original complex functor map. -/
+theorem orderedBaseCechActualCoefficientMap_eq_functorMap {X S : Scheme.{u}} (π : X ⟶ S)
+    {M N : X.Modules} (f : M ⟶ N) {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) :
+    orderedBaseCechActualCoefficientMap π f U = (orderedBaseCechComplexFunctor π U).map f := rfl
+/-- Exact original forgetting square through the small named map. -/
+theorem orderedBaseCechActualCoefficientMap_forgetting_naturality
+    {X S : Scheme.{u}} (π : X ⟶ S) {M N : X.Modules} (f : M ⟶ N)
+    {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) :
+    ((forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}).mapHomologicalComplex (.up ℕ)).map
+        (orderedBaseCechActualCoefficientMap π f U) ≫
+      (orderedModuleCechActualAbelianComplexIso π N U).hom =
+    (orderedModuleCechActualAbelianComplexIso π M U).hom ≫
+      orderedTopAbelianCechCoefficientMap X U ((schemeModuleToActualAbelianSheaf X).map f) :=
+  orderedModuleCechActualAbelianComplexIso_coefficient_naturality π f U
+/-- Original scalar coefficient map has the SAME native scalar-identity value. -/
+theorem orderedBaseCechActualCoefficientMap_originalScalar
+    {X S : Scheme.{u}} (π : X ⟶ S) (M : X.Modules) (r : Γ(S,⊤))
+    {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) :
+    orderedBaseCechActualCoefficientMap π (originalGlobalModuleScalar (π.appTop r) M) U =
+      r • 𝟙 (orderedBaseCechComplex π M U) :=
+  orderedBaseCechComplexFunctor_map_originalScalar π M r U
+end LinearStudy
+
+FILE: Linear/OrderedModuleCechActualAbelianHomology.lean
+module
+public import Linear.OrderedModuleCechActualCoefficientMap
+public import Linear.ModuleHomologyForgettingNaturality
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
+open AlgebraicGeometry.Scheme.Modules
+universe u
+/-- Name the SAME two native module-homology/abelian-Cech-homology factors
+already used inside the old actual-H comparison. No new cohomology model. -/
+def orderedModuleCechActualAbelianHomologyIso
+    {X S : Scheme.{u}} (π : X ⟶ S) (M : X.Modules)
+    {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) (n : ℕ) :
+    (forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}).obj
+        ((orderedBaseCechComplex π M U).homology n) ≅
+      (orderedTopAbelianCechComplex X U ((schemeModuleToActualAbelianSheaf X).obj M)).homology n :=
+  (((orderedBaseCechComplex π M U).sc n).mapHomologyIso
+      (forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u})).symm ≪≫
+    (HomologicalComplex.homologyFunctor _ _ n).mapIso (orderedModuleCechActualAbelianComplexIso π M U)
+/-- Naturality of the SAME two original forgetting/homology factors,
+separately checked before composing with the derived actual-H comparison. -/
+theorem orderedModuleCechActualAbelianHomologyIso_coefficient_naturality
+    {X S : Scheme.{u}} (π : X ⟶ S) {M N : X.Modules} (f : M ⟶ N)
+    {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) (n : ℕ) :
+    (forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}).map
+        (HomologicalComplex.homologyMap (orderedBaseCechActualCoefficientMap π f U) n) ≫
+      (orderedModuleCechActualAbelianHomologyIso π N U n).hom =
+    (orderedModuleCechActualAbelianHomologyIso π M U n).hom ≫
+      HomologicalComplex.homologyMap
+        (orderedTopAbelianCechCoefficientMap X U ((schemeModuleToActualAbelianSheaf X).map f)) n := by
+  let H := forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}
+  let HC := H.mapHomologicalComplex (.up ℕ)
+  let T := HomologicalComplex.homologyFunctor AddCommGrpCat.{u} (.up ℕ) n
+  let φ := orderedBaseCechActualCoefficientMap π f U
+  let dM := ((orderedBaseCechComplex π M U).sc n).mapHomologyIso H
+  let dN := ((orderedBaseCechComplex π N U).sc n).mapHomologyIso H
+  let eM := orderedModuleCechActualAbelianComplexIso π M U
+  let eN := orderedModuleCechActualAbelianComplexIso π N U
+  let a := orderedTopAbelianCechCoefficientMap X U ((schemeModuleToActualAbelianSheaf X).map f)
+  have h₁ : CommSq (H.map (HomologicalComplex.homologyMap φ n)) dM.inv dN.inv
+      (HomologicalComplex.homologyMap (HC.map φ) n) :=
+    ⟨moduleHomologyForgettingIso_coefficient_naturality φ n⟩
+  have hc : CommSq (HC.map φ) eM.hom eN.hom a :=
+    ⟨orderedBaseCechActualCoefficientMap_forgetting_naturality π f U⟩
+  have h₂ : CommSq (HomologicalComplex.homologyMap (HC.map φ) n)
+      (T.mapIso eM).hom (T.mapIso eN).hom (HomologicalComplex.homologyMap a n) :=
+    T.map_commSq hc
+  change H.map (HomologicalComplex.homologyMap φ n) ≫ (dN.inv ≫ (T.mapIso eN).hom) =
+    (dM.inv ≫ (T.mapIso eM).hom) ≫ HomologicalComplex.homologyMap a n
+  exact (h₁.vert_comp h₂).w
+end LinearStudy
+
+FILE: Linear/NoetherianModuleCechHFactorization.lean
+module
+public import Linear.NoetherianOrderedAffineCoverActualHComparison
+public import Linear.OrderedModuleCechActualAbelianHomology
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
+open AlgebraicGeometry.Scheme.Modules
+universe u
+/-- Exact factorization of the SAME original module-Cech/native-H comparison.
+Only names the existing construction;no replacement comparison is introduced. -/
+theorem noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_factorization
+    {X S : Scheme.{u}} [IsLocallyNoetherian X] (π : X ⟶ S)
+    {ι : Type u} [LinearOrder ι] [Finite ι] (U : ι → X.Opens)
+    (hU : (⊤ : X.Opens) ≤ iSup U)
+    (haff : ∀ (p : ℕ) (a : OrderedCechIndex ι p),IsAffineOpen (∏ᶜ fun k : Fin (p+1) => U (a.1 k)))
+    (M : X.Modules) [M.IsQuasicoherent] (n : ℕ) :
+    noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n =
+      (((orderedBaseCechComplex π M U).sc (n+1)).mapHomologyIso
+        (forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u})).symm ≪≫
+      (HomologicalComplex.homologyFunctor _ _ (n+1)).mapIso
+        (orderedModuleCechActualAbelianComplexIso π M U) ≪≫
+      noetherianFiniteOrderedAffineCover_actualHigherHIso X U hU haff M n := by
+  rfl
+/-- The SAME old actual-H comparison factors through the named original
+two-factor forgetting comparison;this is an exact equality. -/
+theorem noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_twoFactor
+    {X S : Scheme.{u}} [IsLocallyNoetherian X] (π : X ⟶ S)
+    {ι : Type u} [LinearOrder ι] [Finite ι] (U : ι → X.Opens)
+    (hU : (⊤ : X.Opens) ≤ iSup U)
+    (haff : ∀ (p : ℕ) (a : OrderedCechIndex ι p),IsAffineOpen (∏ᶜ fun k : Fin (p+1) => U (a.1 k)))
+    (M : X.Modules) [M.IsQuasicoherent] (n : ℕ) :
+    noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n =
+      orderedModuleCechActualAbelianHomologyIso π M U (n+1) ≪≫
+        noetherianFiniteOrderedAffineCover_actualHigherHIso X U hU haff M n := by
+  rw [noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_factorization]
+  apply Iso.ext
+  simp only [orderedModuleCechActualAbelianHomologyIso,Iso.trans_hom,Iso.symm_hom,Category.assoc]
+end LinearStudy
+
+FILE: Linear/NoetherianModuleCechHCoefficientNaturality.lean
+module
+public import Linear.NoetherianModuleCechHFactorization
+public import Linear.OrderedModuleCechActualCoefficientMap
+public import Linear.OrderedModuleCechActualAbelianNaturality
+public import Linear.ModuleHomologyForgettingNaturality
+public import Linear.NoetherianOrderedCechHCoefficientNaturality
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option diagnostics true
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
+open AlgebraicGeometry.Scheme.Modules
+universe u
+attribute [local irreducible] orderedBaseCechActualCoefficientMap
+  orderedModuleCechActualAbelianHomologyIso
+attribute [local irreducible] noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso
+  orderedModuleCechActualAbelianComplexIso noetherianFiniteOrderedAffineCover_actualHigherHIso
+  topFiniteOrderedCech_actualHigherHIso_of_localAcyclic orderedFreeSheafActualHomComplexIso
+  acyclicResolutionActualCochainExtIso
+/-- The SAME original MODULE-valued Cech/native-positive-H comparison is
+natural in ORIGINAL module coefficient maps. All local-H acyclicity is
+DERIVED from the original Noetherian affine-intersection cover and BOTH
+quasicoherent coefficients. No desired naturality or scalar premise. -/
+theorem noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality
+    {X S : Scheme.{u}} [IsLocallyNoetherian X] (π : X ⟶ S)
+    {ι : Type u} [LinearOrder ι] [Finite ι] (U : ι → X.Opens)
+    (hU : (⊤ : X.Opens) ≤ iSup U)
+    (haff : ∀ (p : ℕ) (a : OrderedCechIndex ι p),IsAffineOpen (∏ᶜ fun k : Fin (p+1) => U (a.1 k)))
+    {M N : X.Modules} [M.IsQuasicoherent] [N.IsQuasicoherent] (f : M ⟶ N) (n : ℕ) :
+    (forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}).map
+        (HomologicalComplex.homologyMap (orderedBaseCechActualCoefficientMap π f U) (n+1)) ≫
+      (noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff N n).hom =
+    (noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n).hom ≫
+      (CategoryTheory.Sheaf.functorH.{u} (Opens.grothendieckTopology X) (n+1)).map
+        ((schemeModuleToActualAbelianSheaf X).map f) := by
+  have h₁ : CommSq
+      ((forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}).map
+        (HomologicalComplex.homologyMap (orderedBaseCechActualCoefficientMap π f U) (n+1)))
+      (orderedModuleCechActualAbelianHomologyIso π M U (n+1)).hom
+      (orderedModuleCechActualAbelianHomologyIso π N U (n+1)).hom
+      (HomologicalComplex.homologyMap
+        (orderedTopAbelianCechCoefficientMap X U ((schemeModuleToActualAbelianSheaf X).map f)) (n+1)) :=
+    ⟨orderedModuleCechActualAbelianHomologyIso_coefficient_naturality π f U (n+1)⟩
+  have h₂ : CommSq
+      (HomologicalComplex.homologyMap
+        (orderedTopAbelianCechCoefficientMap X U ((schemeModuleToActualAbelianSheaf X).map f)) (n+1))
+      (noetherianFiniteOrderedAffineCover_actualHigherHIso X U hU haff M n).hom
+      (noetherianFiniteOrderedAffineCover_actualHigherHIso X U hU haff N n).hom
+      ((CategoryTheory.Sheaf.functorH.{u} (Opens.grothendieckTopology X) (n+1)).map
+        ((schemeModuleToActualAbelianSheaf X).map f)) :=
+    ⟨noetherianFiniteOrderedAffineCover_actualHigherHIso_coefficient_naturality X U hU haff f n⟩
+  rw [noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_twoFactor,
+    noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_twoFactor]
+  exact (h₁.vert_comp h₂).w
+end LinearStudy
+
+FILE: Linear/NoetherianModuleCechHPointwiseNaturality.lean
+module
+public import Linear.NoetherianModuleCechHCoefficientNaturality
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option diagnostics true
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
+open AlgebraicGeometry.Scheme.Modules
+universe u
+attribute [local irreducible] orderedBaseCechActualCoefficientMap
+attribute [local irreducible] noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso
+  orderedModuleCechActualAbelianComplexIso noetherianFiniteOrderedAffineCover_actualHigherHIso
+  topFiniteOrderedCech_actualHigherHIso_of_localAcyclic orderedFreeSheafActualHomComplexIso
+  acyclicResolutionActualCochainExtIso
+/-- Pointwise form of SAME original module-Cech/native-H coefficient
+naturality,with native homologyMap and native H.map in the statement. -/
+theorem noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality_apply
+    {X S : Scheme.{u}} [IsLocallyNoetherian X] (π : X ⟶ S)
+    {ι : Type u} [LinearOrder ι] [Finite ι] (U : ι → X.Opens)
+    (hU : (⊤ : X.Opens) ≤ iSup U)
+    (haff : ∀ (p : ℕ) (a : OrderedCechIndex ι p),IsAffineOpen (∏ᶜ fun k : Fin (p+1) => U (a.1 k)))
+    {M N : X.Modules} [M.IsQuasicoherent] [N.IsQuasicoherent] (f : M ⟶ N) (n : ℕ)
+    (x : (orderedBaseCechComplex π M U).homology (n+1)) :
+    (noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff N n).hom
+        (HomologicalComplex.homologyMap (orderedBaseCechActualCoefficientMap π f U) (n+1) x) =
+      CategoryTheory.Sheaf.H.map.{u} ((schemeModuleToActualAbelianSheaf X).map f) (n+1)
+        ((noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n).hom x) :=
+  ConcreteCategory.congr_hom
+    (noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality
+      π U hU haff f n) x
+end LinearStudy
+
+FILE: Linear/NoetherianModuleCechHLinearComparison.lean
+module
+public import Linear.NoetherianModuleCechHPointwiseNaturality
+public import Linear.OrderedModuleCechCoefficientScalar
+public import Linear.SchemeModuleActualHBaseScalars
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
+open AlgebraicGeometry.Scheme.Modules
+universe u
+attribute [local irreducible] noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso
+  orderedModuleCechActualAbelianComplexIso noetherianFiniteOrderedAffineCover_actualHigherHIso
+  topFiniteOrderedCech_actualHigherHIso_of_localAcyclic orderedFreeSheafActualHomComplexIso
+  acyclicResolutionActualCochainExtIso
+/-- The SAME original module-Cech/native-positive-H comparison commutes
+with ACTUAL base-global-section multiplication. Derived by specializing
+coefficient naturality to the ORIGINAL coefficient scalar morphism. -/
+theorem noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_smul
+    {X S : Scheme.{u}} [IsLocallyNoetherian X] (π : X ⟶ S)
+    {ι : Type u} [LinearOrder ι] [Finite ι] (U : ι → X.Opens)
+    (hU : (⊤ : X.Opens) ≤ iSup U)
+    (haff : ∀ (p : ℕ) (a : OrderedCechIndex ι p),IsAffineOpen (∏ᶜ fun k : Fin (p+1) => U (a.1 k)))
+    (M : X.Modules) [M.IsQuasicoherent] (n : ℕ) (r : Γ(S,⊤))
+    (x : (orderedBaseCechComplex π M U).homology (n+1)) :
+    letI := schemeModuleActualHBaseModule π M (n+1)
+    (noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n).hom (r • x) =
+      r • (noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n).hom x := by
+  letI := schemeModuleActualHBaseModule π M (n+1)
+  rw [schemeModuleActualHBaseModule_smul]
+  have h := noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality_apply
+    π U hU haff (originalGlobalModuleScalar (π.appTop r) M) n x
+  have hs := orderedBaseCechActualCoefficientMap_originalScalar π M r U
+  have hh := congrArg (fun g : orderedBaseCechComplex π M U ⟶ orderedBaseCechComplex π M U =>
+    HomologicalComplex.homologyMap g (n+1)) hs
+  rw [actualHomologicalComplex_homologyMap_smul_id] at hh
+  rw [hh] at h
+  exact h
+/-- The SAME pre-existing comparison upgraded to a LINEAR equivalence
+for the intrinsic ORIGINAL base-scalar action. This does NOT define the
+H scalar action by transporting it through this comparison. -/
+def noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv
+    {X S : Scheme.{u}} [IsLocallyNoetherian X] (π : X ⟶ S)
+    {ι : Type u} [LinearOrder ι] [Finite ι] (U : ι → X.Opens)
+    (hU : (⊤ : X.Opens) ≤ iSup U)
+    (haff : ∀ (p : ℕ) (a : OrderedCechIndex ι p),IsAffineOpen (∏ᶜ fun k : Fin (p+1) => U (a.1 k)))
+    (M : X.Modules) [M.IsQuasicoherent] (n : ℕ) :
+    letI := schemeModuleActualHBaseModule π M (n+1)
+    (orderedBaseCechComplex π M U).homology (n+1) ≃ₗ[Γ(S,⊤)]
+      schemeModuleActualCohomology X M (n+1) := by
+  letI := schemeModuleActualHBaseModule π M (n+1)
+  exact {
+    (noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n).addCommGroupIsoToAddEquiv with
+    map_smul' := fun r x =>
+      noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_smul π U hU haff M n r x }
+/-- Exact equality of underlying maps with the OLD actual comparison. -/
+theorem noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv_apply
+    {X S : Scheme.{u}} [IsLocallyNoetherian X] (π : X ⟶ S)
+    {ι : Type u} [LinearOrder ι] [Finite ι] (U : ι → X.Opens)
+    (hU : (⊤ : X.Opens) ≤ iSup U)
+    (haff : ∀ (p : ℕ) (a : OrderedCechIndex ι p),IsAffineOpen (∏ᶜ fun k : Fin (p+1) => U (a.1 k)))
+    (M : X.Modules) [M.IsQuasicoherent] (n : ℕ)
+    (x : (orderedBaseCechComplex π M U).homology (n+1)) :
+    noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv π U hU haff M n x =
+      (noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n).hom x := rfl
+end LinearStudy
+

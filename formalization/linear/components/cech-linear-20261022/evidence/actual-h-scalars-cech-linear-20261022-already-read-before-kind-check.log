@@ -1,0 +1,676 @@
+@LinearStudy.originalGlobalModuleScalar_zero : ∀ {X : AlgebraicGeometry.Scheme} (M : X.Modules),
+  LinearStudy.originalGlobalModuleScalar 0 M = 0
+'LinearStudy.originalGlobalModuleScalar_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalGlobalModuleScalar_one : ∀ {X : AlgebraicGeometry.Scheme} (M : X.Modules),
+  LinearStudy.originalGlobalModuleScalar 1 M = CategoryTheory.CategoryStruct.id M
+'LinearStudy.originalGlobalModuleScalar_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalGlobalModuleScalar_add : ∀ {X : AlgebraicGeometry.Scheme} (r s : ↑(X.presheaf.obj (Opposite.op ⊤)))
+  (M : X.Modules),
+  LinearStudy.originalGlobalModuleScalar (r + s) M =
+    LinearStudy.originalGlobalModuleScalar r M + LinearStudy.originalGlobalModuleScalar s M
+'LinearStudy.originalGlobalModuleScalar_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalGlobalModuleScalar_mul : ∀ {X : AlgebraicGeometry.Scheme} (r s : ↑(X.presheaf.obj (Opposite.op ⊤)))
+  (M : X.Modules),
+  LinearStudy.originalGlobalModuleScalar (r * s) M =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.originalGlobalModuleScalar s M)
+      (LinearStudy.originalGlobalModuleScalar r M)
+'LinearStudy.originalGlobalModuleScalar_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalGlobalModuleScalarRingHom : {X : AlgebraicGeometry.Scheme} →
+  (M : X.Modules) → ↑(X.presheaf.obj (Opposite.op ⊤)) →+* CategoryTheory.End M
+'LinearStudy.originalGlobalModuleScalarRingHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.additiveFunctorEndRingHom : {C : Type u_1} →
+  [inst : CategoryTheory.Category.{u_2, u_1} C] →
+    [inst_1 : CategoryTheory.Preadditive C] →
+      {D : Type u_3} →
+        [inst_2 : CategoryTheory.Category.{u_4, u_3} D] →
+          [inst_3 : CategoryTheory.Preadditive D] →
+            (F : CategoryTheory.Functor C D) →
+              [F.Additive] → (X : C) → CategoryTheory.End X →+* CategoryTheory.End (F.obj X)
+'LinearStudy.additiveFunctorEndRingHom' depends on axioms: [propext]
+LinearStudy.addCommGroupEndRingHom : (A : AddCommGrpCat) → CategoryTheory.End A →+* AddMonoid.End ↑A
+'LinearStudy.addCommGroupEndRingHom' depends on axioms: [propext, Quot.sound]
+LinearStudy.schemeModuleActualHFunctor : (X : AlgebraicGeometry.Scheme) →
+  ℕ → CategoryTheory.Functor X.Modules AddCommGrpCat
+'LinearStudy.schemeModuleActualHFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleActualHFunctor_additive : ∀ (X : AlgebraicGeometry.Scheme) (n : ℕ),
+  (LinearStudy.schemeModuleActualHFunctor X n).Additive
+'LinearStudy.schemeModuleActualHFunctor_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleActualHScalarRingHom : (X : AlgebraicGeometry.Scheme) →
+  (M : X.Modules) →
+    (n : ℕ) → ↑(X.presheaf.obj (Opposite.op ⊤)) →+* AddMonoid.End (LinearStudy.schemeModuleActualCohomology X M n)
+'LinearStudy.schemeModuleActualHScalarRingHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleActualHScalarRingHom_apply : ∀ (X : AlgebraicGeometry.Scheme) (M : X.Modules) (n : ℕ)
+  (r : ↑(X.presheaf.obj (Opposite.op ⊤))) (x : LinearStudy.schemeModuleActualCohomology X M n),
+  ((LinearStudy.schemeModuleActualHScalarRingHom X M n) r) x =
+    (CategoryTheory.Sheaf.H.map
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).map (LinearStudy.originalGlobalModuleScalar r M)) n)
+      x
+'LinearStudy.schemeModuleActualHScalarRingHom_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleActualHGlobalSectionsModule : (X : AlgebraicGeometry.Scheme) →
+  (M : X.Modules) →
+    (n : ℕ) → Module (↑(X.presheaf.obj (Opposite.op ⊤))) (LinearStudy.schemeModuleActualCohomology X M n)
+'LinearStudy.schemeModuleActualHGlobalSectionsModule' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleActualHGlobalSectionsModule_smul : ∀ (X : AlgebraicGeometry.Scheme) (M : X.Modules) (n : ℕ)
+  (r : ↑(X.presheaf.obj (Opposite.op ⊤))) (x : LinearStudy.schemeModuleActualCohomology X M n),
+  r • x =
+    (CategoryTheory.Sheaf.H.map
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).map (LinearStudy.originalGlobalModuleScalar r M)) n)
+      x
+'LinearStudy.schemeModuleActualHGlobalSectionsModule_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.additiveFunctor_map_commuting_apply : ∀ {C : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} C]
+  (F : CategoryTheory.Functor C AddCommGrpCat) {M N : C} (f : M ⟶ N) (sM : M ⟶ M) (sN : N ⟶ N),
+  CategoryTheory.CategoryStruct.comp sM f = CategoryTheory.CategoryStruct.comp f sN →
+    ∀ (x : ↑(F.obj M)),
+      (CategoryTheory.ConcreteCategory.hom (F.map f)) ((CategoryTheory.ConcreteCategory.hom (F.map sM)) x) =
+        (CategoryTheory.ConcreteCategory.hom (F.map sN)) ((CategoryTheory.ConcreteCategory.hom (F.map f)) x)
+'LinearStudy.additiveFunctor_map_commuting_apply' depends on axioms: [propext, Quot.sound]
+LinearStudy.schemeModuleActualHFunctor_map_apply : ∀ (X : AlgebraicGeometry.Scheme) {M N : X.Modules} (f : M ⟶ N)
+  (n : ℕ) (x : LinearStudy.schemeModuleActualCohomology X M n),
+  (CategoryTheory.ConcreteCategory.hom ((LinearStudy.schemeModuleActualHFunctor X n).map f)) x =
+    (CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f) n) x
+'LinearStudy.schemeModuleActualHFunctor_map_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleActualHScalarRingHom_applyFunctor : ∀ (X : AlgebraicGeometry.Scheme) (M : X.Modules) (n : ℕ)
+  (r : ↑(X.presheaf.obj (Opposite.op ⊤))) (x : LinearStudy.schemeModuleActualCohomology X M n),
+  ((LinearStudy.schemeModuleActualHScalarRingHom X M n) r) x =
+    (CategoryTheory.ConcreteCategory.hom
+        ((LinearStudy.schemeModuleActualHFunctor X n).map (LinearStudy.originalGlobalModuleScalar r M)))
+      x
+'LinearStudy.schemeModuleActualHScalarRingHom_applyFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleActualH_scalar_naturality : ∀ (X : AlgebraicGeometry.Scheme) {M N : X.Modules} (f : M ⟶ N)
+  (n : ℕ) (r : ↑(X.presheaf.obj (Opposite.op ⊤))) (x : LinearStudy.schemeModuleActualCohomology X M n),
+  (CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f) n)
+      (((LinearStudy.schemeModuleActualHScalarRingHom X M n) r) x) =
+    ((LinearStudy.schemeModuleActualHScalarRingHom X N n) r)
+      ((CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f) n) x)
+'LinearStudy.schemeModuleActualH_scalar_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleActualHLinearCoefficientMap : (X : AlgebraicGeometry.Scheme) →
+  {M N : X.Modules} →
+    (M ⟶ N) →
+      (n : ℕ) →
+        LinearStudy.schemeModuleActualCohomology X M n →ₗ[↑(X.presheaf.obj (Opposite.op ⊤))]
+          LinearStudy.schemeModuleActualCohomology X N n
+'LinearStudy.schemeModuleActualHLinearCoefficientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleActualHLinearCoefficientMap_apply : ∀ (X : AlgebraicGeometry.Scheme) {M N : X.Modules}
+  (f : M ⟶ N) (n : ℕ) (x : LinearStudy.schemeModuleActualCohomology X M n),
+  (LinearStudy.schemeModuleActualHLinearCoefficientMap X f n) x =
+    (CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f) n) x
+'LinearStudy.schemeModuleActualHLinearCoefficientMap_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleActualHBaseModule : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) →
+    (M : X.Modules) →
+      (n : ℕ) → Module (↑(S.presheaf.obj (Opposite.op ⊤))) (LinearStudy.schemeModuleActualCohomology X M n)
+'LinearStudy.schemeModuleActualHBaseModule' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleActualHBaseModule_smul : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S) (M : X.Modules) (n : ℕ)
+  (r : ↑(S.presheaf.obj (Opposite.op ⊤))) (x : LinearStudy.schemeModuleActualCohomology X M n),
+  r • x =
+    (CategoryTheory.Sheaf.H.map
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).map
+          (LinearStudy.originalGlobalModuleScalar
+            ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop π)) r) M))
+        n)
+      x
+'LinearStudy.schemeModuleActualHBaseModule_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleActualHBaseLinearCoefficientMap : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    {M N : X.Modules} →
+      (M ⟶ N) →
+        (n : ℕ) →
+          LinearStudy.schemeModuleActualCohomology X M n →ₗ[↑(S.presheaf.obj (Opposite.op ⊤))]
+            LinearStudy.schemeModuleActualCohomology X N n
+'LinearStudy.schemeModuleActualHBaseLinearCoefficientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleActualHBaseLinearCoefficientMap_apply : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  {M N : X.Modules} (f : M ⟶ N) (n : ℕ) (x : LinearStudy.schemeModuleActualCohomology X M n),
+  (LinearStudy.schemeModuleActualHBaseLinearCoefficientMap π f n) x =
+    (CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f) n) x
+'LinearStudy.schemeModuleActualHBaseLinearCoefficientMap_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.preservesProductIso_coefficient_naturality : ∀ {A : Type u_2} [inst : CategoryTheory.Category.{u_3, u_2} A]
+  {B : Type u_4} [inst_1 : CategoryTheory.Category.{u_5, u_4} B] [inst_2 : CategoryTheory.Limits.HasProducts A]
+  [inst_3 : CategoryTheory.Limits.HasProducts B] {J : Type u_1} (H : CategoryTheory.Functor A B)
+  [inst_4 : CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete J) H] {P Q : J → A}
+  (a : (j : J) → P j ⟶ Q j),
+  CategoryTheory.CategoryStruct.comp (H.map (CategoryTheory.Limits.Pi.map a))
+      (CategoryTheory.Limits.PreservesProduct.iso H Q).hom =
+    CategoryTheory.CategoryStruct.comp (CategoryTheory.Limits.PreservesProduct.iso H P).hom
+      (CategoryTheory.Limits.Pi.map fun (j : J) => H.map (a j))
+'LinearStudy.preservesProductIso_coefficient_naturality' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.formalProductEvaluationWhiskeringIso_coefficient_naturality : ∀ {C : Type u_2}
+  [inst : CategoryTheory.Category.{u_3, u_2} C] {A : Type u_4} [inst_1 : CategoryTheory.Category.{u_5, u_4} A]
+  {B : Type u_6} [inst_2 : CategoryTheory.Category.{u_7, u_6} B] [inst_3 : CategoryTheory.Limits.HasProducts A]
+  [inst_4 : CategoryTheory.Limits.HasProducts B] {T T' : CategoryTheory.Functor Cᵒᵖ A} (a : T ⟶ T')
+  (H : CategoryTheory.Functor A B)
+  [inst_5 : ∀ (J : Type u_1), CategoryTheory.Limits.PreservesLimitsOfShape (CategoryTheory.Discrete J) H],
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Functor.whiskerRight ((CategoryTheory.Limits.FormalCoproduct.evalOp C A).map a) H)
+      (LinearStudy.formalProductEvaluationWhiskeringIso T' H).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.formalProductEvaluationWhiskeringIso T H).hom
+      ((CategoryTheory.Limits.FormalCoproduct.evalOp C B).map (CategoryTheory.Functor.whiskerRight a H))
+'LinearStudy.formalProductEvaluationWhiskeringIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedFormalCechWhiskeringIso_coefficient_naturality : ∀ {X : AlgebraicGeometry.Scheme} {A : Type u_3}
+  [inst : CategoryTheory.Category.{u_2, u_3} A] [inst_1 : CategoryTheory.Preadditive A] {B : Type u_5}
+  [inst_2 : CategoryTheory.Category.{u_4, u_5} B] [inst_3 : CategoryTheory.Preadditive B] {ι : Type u_1}
+  [inst_4 : LinearOrder ι] (U : ι → X.Opens)
+  {F G : CategoryTheory.Functor (CategoryTheory.Limits.FormalCoproduct X.Opens)ᵒᵖ A} (a : F ⟶ G)
+  (H : CategoryTheory.Functor A B) [inst_5 : H.Additive],
+  CategoryTheory.CategoryStruct.comp
+      ((H.mapHomologicalComplex (ComplexShape.up ℕ)).map ((LinearStudy.orderedFormalCechCoefficientFunctor U).map a))
+      (LinearStudy.orderedFormalCechWhiskeringIso U G H).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.orderedFormalCechWhiskeringIso U F H).hom
+      ((LinearStudy.orderedFormalCechCoefficientFunctor U).map (CategoryTheory.Functor.whiskerRight a H))
+'LinearStudy.orderedFormalCechWhiskeringIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedBaseCechComplexFunctor_map_eq_formal : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S) {ι : Type u_1}
+  [inst : LinearOrder ι] (U : ι → X.Opens) {M N : X.Modules} (f : M ⟶ N),
+  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U).map f =
+    (LinearStudy.orderedFormalCechCoefficientFunctor U).map
+      ((CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤)))).map
+        ((AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor π).map f))
+'LinearStudy.orderedBaseCechComplexFunctor_map_eq_formal' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.baseModulePresheafActualAbelianIso_coefficient_naturality : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  {M N : X.Modules} (f : M ⟶ N),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Functor.whiskerRight ((AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor π).map f)
+        (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat))
+      (LinearStudy.baseModulePresheafActualAbelianIso π N).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.baseModulePresheafActualAbelianIso π M).hom
+      ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f).hom
+'LinearStudy.baseModulePresheafActualAbelianIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedBaseModuleActualAbelianCoefficientIso : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    (M : X.Modules) →
+      ((CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤)))).obj
+              (AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M)).comp
+          (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat) ≅
+        (CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens AddCommGrpCat).obj
+          ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M).obj
+'LinearStudy.orderedBaseModuleActualAbelianCoefficientIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedBaseModuleActualAbelianCoefficientIso_coefficient_naturality : ∀ {X S : AlgebraicGeometry.Scheme}
+  (π : X ⟶ S) {M N : X.Modules} (f : M ⟶ N),
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Functor.whiskerRight
+        ((CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤)))).map
+          ((AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor π).map f))
+        (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat))
+      (LinearStudy.orderedBaseModuleActualAbelianCoefficientIso π N).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.orderedBaseModuleActualAbelianCoefficientIso π M).hom
+      ((CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens AddCommGrpCat).map
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f).hom)
+'LinearStudy.orderedBaseModuleActualAbelianCoefficientIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedModuleCechActualAbelianComplexIso_factorization : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  LinearStudy.orderedModuleCechActualAbelianComplexIso π M U =
+    ((CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).mapHomologicalComplex
+            (ComplexShape.up ℕ)).mapIso
+        (CategoryTheory.Iso.refl (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U)) ≪≫
+      LinearStudy.orderedFormalCechWhiskeringIso U
+          ((CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤)))).obj
+            (AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M))
+          (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat) ≪≫
+        (LinearStudy.orderedFormalCechCoefficientFunctor U).mapIso
+          (LinearStudy.orderedBaseModuleActualAbelianCoefficientIso π M)
+'LinearStudy.orderedModuleCechActualAbelianComplexIso_factorization' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedModuleCechActualAbelianComplexIso_coefficient_naturality : ∀ {X S : AlgebraicGeometry.Scheme}
+  (π : X ⟶ S) {M N : X.Modules} (f : M ⟶ N) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  CategoryTheory.CategoryStruct.comp
+      (((CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).mapHomologicalComplex
+            (ComplexShape.up ℕ)).map
+        ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U).map f))
+      (LinearStudy.orderedModuleCechActualAbelianComplexIso π N U).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.orderedModuleCechActualAbelianComplexIso π M U).hom
+      (LinearStudy.orderedTopAbelianCechCoefficientMap X U ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f))
+'LinearStudy.orderedModuleCechActualAbelianComplexIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.actualHomologicalComplex_homologyMap_smul : ∀ {R : Type u_3} [inst : Semiring R] {C : Type u_1}
+  [inst_1 : CategoryTheory.Category.{u_2, u_1} C] [inst_2 : CategoryTheory.Preadditive C]
+  [inst_3 : CategoryTheory.Linear R C] [inst_4 : CategoryTheory.CategoryWithHomology C] {ι : Type} {c : ComplexShape ι}
+  {K L : HomologicalComplex C c} (a : R) (f : K ⟶ L) (n : ι),
+  HomologicalComplex.homologyMap (a • f) n = a • HomologicalComplex.homologyMap f n
+'LinearStudy.actualHomologicalComplex_homologyMap_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.actualHomologicalComplex_homologyMap_smul_id : ∀ {R : Type u_3} [inst : Semiring R] {C : Type u_1}
+  [inst_1 : CategoryTheory.Category.{u_2, u_1} C] [inst_2 : CategoryTheory.Preadditive C]
+  [inst_3 : CategoryTheory.Linear R C] [inst_4 : CategoryTheory.CategoryWithHomology C] {ι : Type} {c : ComplexShape ι}
+  (K : HomologicalComplex C c) (a : R) (n : ι),
+  HomologicalComplex.homologyMap (a • CategoryTheory.CategoryStruct.id K) n =
+    a • CategoryTheory.CategoryStruct.id (K.homology n)
+'LinearStudy.actualHomologicalComplex_homologyMap_smul_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.formalProductEvaluation_map_smul_id : ∀ {R : Type u_4} [inst : Semiring R] {X : AlgebraicGeometry.Scheme}
+  {A : Type u_3} [inst_1 : CategoryTheory.Category.{u_2, u_3} A] [inst_2 : CategoryTheory.Preadditive A]
+  [inst_3 : CategoryTheory.Linear R A] [inst_4 : CategoryTheory.Limits.HasProducts A]
+  (T : CategoryTheory.Functor X.Opensᵒᵖ A) (r : R),
+  (CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens A).map (r • CategoryTheory.CategoryStruct.id T) =
+    r • CategoryTheory.CategoryStruct.id ((CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens A).obj T)
+'LinearStudy.formalProductEvaluation_map_smul_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedFormalCechCoefficientFunctor_map_smul_id : ∀ {R : Type u_4} [inst : Semiring R]
+  {X : AlgebraicGeometry.Scheme} {A : Type u_3} [inst_1 : CategoryTheory.Category.{u_2, u_3} A]
+  [inst_2 : CategoryTheory.Preadditive A] [inst_3 : CategoryTheory.Linear R A] {ι : Type u_1} [inst_4 : LinearOrder ι]
+  (U : ι → X.Opens) (F : CategoryTheory.Functor (CategoryTheory.Limits.FormalCoproduct X.Opens)ᵒᵖ A) (r : R),
+  (LinearStudy.orderedFormalCechCoefficientFunctor U).map (r • CategoryTheory.CategoryStruct.id F) =
+    r • CategoryTheory.CategoryStruct.id (LinearStudy.orderedFormalCechComplex F U)
+'LinearStudy.orderedFormalCechCoefficientFunctor_map_smul_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.baseModulePresheafFunctor_map_originalScalar : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) (r : ↑(S.presheaf.obj (Opposite.op ⊤))),
+  (AlgebraicGeometry.Scheme.Modules.baseModulePresheafFunctor π).map
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop π)) r) M) =
+    r • CategoryTheory.CategoryStruct.id (AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M)
+'LinearStudy.baseModulePresheafFunctor_map_originalScalar' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedBaseCechComplexFunctor_map_originalScalar : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) (r : ↑(S.presheaf.obj (Opposite.op ⊤))) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U).map
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop π)) r) M) =
+    r • CategoryTheory.CategoryStruct.id (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U)
+'LinearStudy.orderedBaseCechComplexFunctor_map_originalScalar' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedBaseCech_homologyMap_originalScalar : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S) (M : X.Modules)
+  (r : ↑(S.presheaf.obj (Opposite.op ⊤))) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ),
+  HomologicalComplex.homologyMap
+      ((AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop π)) r) M))
+      n =
+    r •
+      CategoryTheory.CategoryStruct.id
+        (HomologicalComplex.homology (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U) n)
+'LinearStudy.orderedBaseCech_homologyMap_originalScalar' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.moduleHomologyForgettingIso_coefficient_naturality : ∀ {R : Type u_1} [inst : Ring R] {ι : Type}
+  {c : ComplexShape ι} {K L : HomologicalComplex (ModuleCat R) c} (f : K ⟶ L) (n : ι),
+  CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).map (HomologicalComplex.homologyMap f n))
+      ((L.sc n).mapHomologyIso (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat)).inv =
+    CategoryTheory.CategoryStruct.comp
+      ((K.sc n).mapHomologyIso (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat)).inv
+      (HomologicalComplex.homologyMap
+        (((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).mapHomologicalComplex c).map f) n)
+'LinearStudy.moduleHomologyForgettingIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedBaseCechActualCoefficientMap : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    {M N : X.Modules} →
+      (M ⟶ N) →
+        {ι : Type u_1} →
+          [inst : LinearOrder ι] →
+            (U : ι → X.Opens) →
+              AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U ⟶
+                AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π N U
+'LinearStudy.orderedBaseCechActualCoefficientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedBaseCechActualCoefficientMap_eq_functorMap : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  {M N : X.Modules} (f : M ⟶ N) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  LinearStudy.orderedBaseCechActualCoefficientMap π f U =
+    (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U).map f
+'LinearStudy.orderedBaseCechActualCoefficientMap_eq_functorMap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedBaseCechActualCoefficientMap_forgetting_naturality : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  {M N : X.Modules} (f : M ⟶ N) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  CategoryTheory.CategoryStruct.comp
+      (((CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).mapHomologicalComplex
+            (ComplexShape.up ℕ)).map
+        (LinearStudy.orderedBaseCechActualCoefficientMap π f U))
+      (LinearStudy.orderedModuleCechActualAbelianComplexIso π N U).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.orderedModuleCechActualAbelianComplexIso π M U).hom
+      (LinearStudy.orderedTopAbelianCechCoefficientMap X U ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f))
+'LinearStudy.orderedBaseCechActualCoefficientMap_forgetting_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedBaseCechActualCoefficientMap_originalScalar : ∀ {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S)
+  (M : X.Modules) (r : ↑(S.presheaf.obj (Opposite.op ⊤))) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens),
+  LinearStudy.orderedBaseCechActualCoefficientMap π
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop π)) r) M)
+      U =
+    r • CategoryTheory.CategoryStruct.id (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U)
+'LinearStudy.orderedBaseCechActualCoefficientMap_originalScalar' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedModuleCechActualAbelianHomologyIso : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    (M : X.Modules) →
+      {ι : Type u_1} →
+        [inst : LinearOrder ι] →
+          (U : ι → X.Opens) →
+            (n : ℕ) →
+              (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).obj
+                  (HomologicalComplex.homology (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U) n) ≅
+                HomologicalComplex.homology
+                  (LinearStudy.orderedTopAbelianCechComplex X U
+                    ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M))
+                  n
+'LinearStudy.orderedModuleCechActualAbelianHomologyIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.orderedModuleCechActualAbelianHomologyIso_coefficient_naturality : ∀ {X S : AlgebraicGeometry.Scheme}
+  (π : X ⟶ S) {M N : X.Modules} (f : M ⟶ N) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens) (n : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).map
+        (HomologicalComplex.homologyMap (LinearStudy.orderedBaseCechActualCoefficientMap π f U) n))
+      (LinearStudy.orderedModuleCechActualAbelianHomologyIso π N U n).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.orderedModuleCechActualAbelianHomologyIso π M U n).hom
+      (HomologicalComplex.homologyMap
+        (LinearStudy.orderedTopAbelianCechCoefficientMap X U ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f))
+        n)
+'LinearStudy.orderedModuleCechActualAbelianHomologyIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_factorization : ∀
+  {X S : AlgebraicGeometry.Scheme} [inst : AlgebraicGeometry.IsLocallyNoetherian X] (π : X ⟶ S) {ι : Type u_1}
+  [inst_1 : LinearOrder ι] [inst_2 : Finite ι] (U : ι → X.Opens) (hU : ⊤ ≤ iSup U)
+  (haff :
+    ∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+      AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k)))
+  (M : X.Modules) [inst_3 : SheafOfModules.IsQuasicoherent M] (n : ℕ),
+  LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n =
+    ((HomologicalComplex.sc (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U) (n + 1)).mapHomologyIso
+          (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat)).symm ≪≫
+      (HomologicalComplex.homologyFunctor AddCommGrpCat (ComplexShape.up ℕ) (n + 1)).mapIso
+          (LinearStudy.orderedModuleCechActualAbelianComplexIso π M U) ≪≫
+        LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso X U hU haff M n
+'LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_factorization' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_twoFactor : ∀
+  {X S : AlgebraicGeometry.Scheme} [inst : AlgebraicGeometry.IsLocallyNoetherian X] (π : X ⟶ S) {ι : Type u_1}
+  [inst_1 : LinearOrder ι] [inst_2 : Finite ι] (U : ι → X.Opens) (hU : ⊤ ≤ iSup U)
+  (haff :
+    ∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+      AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k)))
+  (M : X.Modules) [inst_3 : SheafOfModules.IsQuasicoherent M] (n : ℕ),
+  LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n =
+    LinearStudy.orderedModuleCechActualAbelianHomologyIso π M U (n + 1) ≪≫
+      LinearStudy.noetherianFiniteOrderedAffineCover_actualHigherHIso X U hU haff M n
+'LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_twoFactor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality : ∀
+  {X S : AlgebraicGeometry.Scheme} [inst : AlgebraicGeometry.IsLocallyNoetherian X] (π : X ⟶ S) {ι : Type u_1}
+  [inst_1 : LinearOrder ι] [inst_2 : Finite ι] (U : ι → X.Opens) (hU : ⊤ ≤ iSup U)
+  (haff :
+    ∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+      AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k)))
+  {M N : X.Modules} [inst_3 : SheafOfModules.IsQuasicoherent M] [inst_4 : SheafOfModules.IsQuasicoherent N] (f : M ⟶ N)
+  (n : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).map
+        (HomologicalComplex.homologyMap (LinearStudy.orderedBaseCechActualCoefficientMap π f U) (n + 1)))
+      (LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff N n).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n).hom
+      ((CategoryTheory.Sheaf.functorH (Opens.grothendieckTopology ↥X) (n + 1)).map
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f))
+'LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality_apply : ∀
+  {X S : AlgebraicGeometry.Scheme} [inst : AlgebraicGeometry.IsLocallyNoetherian X] (π : X ⟶ S) {ι : Type u_1}
+  [inst_1 : LinearOrder ι] [inst_2 : Finite ι] (U : ι → X.Opens) (hU : ⊤ ≤ iSup U)
+  (haff :
+    ∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+      AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k)))
+  {M N : X.Modules} [inst_3 : SheafOfModules.IsQuasicoherent M] [inst_4 : SheafOfModules.IsQuasicoherent N] (f : M ⟶ N)
+  (n : ℕ) (x : ↑(HomologicalComplex.homology (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U) (n + 1))),
+  (CategoryTheory.ConcreteCategory.hom
+        (LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff N n).hom)
+      ((CategoryTheory.ConcreteCategory.hom
+          (HomologicalComplex.homologyMap (LinearStudy.orderedBaseCechActualCoefficientMap π f U) (n + 1)))
+        x) =
+    (CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f) (n + 1))
+      ((CategoryTheory.ConcreteCategory.hom
+          (LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n).hom)
+        x)
+'LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_smul : ∀ {X S : AlgebraicGeometry.Scheme}
+  [inst : AlgebraicGeometry.IsLocallyNoetherian X] (π : X ⟶ S) {ι : Type u_1} [inst_1 : LinearOrder ι]
+  [inst_2 : Finite ι] (U : ι → X.Opens) (hU : ⊤ ≤ iSup U)
+  (haff :
+    ∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+      AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k)))
+  (M : X.Modules) [inst_3 : SheafOfModules.IsQuasicoherent M] (n : ℕ) (r : ↑(S.presheaf.obj (Opposite.op ⊤)))
+  (x : ↑(HomologicalComplex.homology (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U) (n + 1))),
+  (CategoryTheory.ConcreteCategory.hom
+        (LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n).hom)
+      (r • x) =
+    r •
+      (CategoryTheory.ConcreteCategory.hom
+          (LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n).hom)
+        x
+'LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_smul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv : {X S : AlgebraicGeometry.Scheme} →
+  [AlgebraicGeometry.IsLocallyNoetherian X] →
+    (π : X ⟶ S) →
+      {ι : Type u_1} →
+        [inst : LinearOrder ι] →
+          [Finite ι] →
+            (U : ι → X.Opens) →
+              ⊤ ≤ iSup U →
+                (∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+                    AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k))) →
+                  (M : X.Modules) →
+                    [SheafOfModules.IsQuasicoherent M] →
+                      (n : ℕ) →
+                        ↑(HomologicalComplex.homology (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U)
+                              (n + 1)) ≃ₗ[↑(S.presheaf.obj (Opposite.op ⊤))]
+                          LinearStudy.schemeModuleActualCohomology X M (n + 1)
+'LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv_apply : ∀
+  {X S : AlgebraicGeometry.Scheme} [inst : AlgebraicGeometry.IsLocallyNoetherian X] (π : X ⟶ S) {ι : Type u_1}
+  [inst_1 : LinearOrder ι] [inst_2 : Finite ι] (U : ι → X.Opens) (hU : ⊤ ≤ iSup U)
+  (haff :
+    ∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+      AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k)))
+  (M : X.Modules) [inst_3 : SheafOfModules.IsQuasicoherent M] (n : ℕ)
+  (x : ↑(HomologicalComplex.homology (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U) (n + 1))),
+  (LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv π U hU haff M n) x =
+    (CategoryTheory.ConcreteCategory.hom
+        (LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M n).hom)
+      x
+'LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.originalGlobalModuleScalarRingHom.{u} : {X : AlgebraicGeometry.Scheme} →
+  (M : X.Modules) → ↑(X.presheaf.obj (Opposite.op ⊤)) →+* CategoryTheory.End M :=
+fun {X : AlgebraicGeometry.Scheme} (M : X.Modules) =>
+  { toFun := fun (r : ↑(X.presheaf.obj (Opposite.op ⊤))) => LinearStudy.originalGlobalModuleScalar r M, map_one' := ⋯,
+    map_mul' := ⋯, map_zero' := ⋯, map_add' := ⋯ }
+def LinearStudy.additiveFunctorEndRingHom.{u, v, u', v'} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    [inst_1 : CategoryTheory.Preadditive C] →
+      {D : Type u'} →
+        [inst_2 : CategoryTheory.Category.{v', u'} D] →
+          [inst_3 : CategoryTheory.Preadditive D] →
+            (F : CategoryTheory.Functor C D) →
+              [F.Additive] → (X : C) → CategoryTheory.End X →+* CategoryTheory.End (F.obj X) :=
+fun {C : Type u} [CategoryTheory.Category.{v, u} C] [CategoryTheory.Preadditive C] {D : Type u'}
+    [CategoryTheory.Category.{v', u'} D] [CategoryTheory.Preadditive D] (F : CategoryTheory.Functor C D) [F.Additive]
+    (X : C) =>
+  let __spread.0 := CategoryTheory.Functor.mapEnd X F;
+  { toMonoidHom := __spread.0, map_zero' := ⋯, map_add' := ⋯ }
+def LinearStudy.addCommGroupEndRingHom.{u} : (A : AddCommGrpCat) → CategoryTheory.End A →+* AddMonoid.End ↑A :=
+fun (A : AddCommGrpCat) =>
+  { toFun := fun (f : CategoryTheory.End A) => AddCommGrpCat.Hom.hom f, map_one' := ⋯, map_mul' := ⋯, map_zero' := ⋯,
+    map_add' := ⋯ }
+def LinearStudy.schemeModuleActualHFunctor.{u} : (X : AlgebraicGeometry.Scheme) →
+  ℕ → CategoryTheory.Functor X.Modules AddCommGrpCat :=
+fun (X : AlgebraicGeometry.Scheme) (n : ℕ) =>
+  (LinearStudy.schemeModuleToAdditiveSheaf X).comp (CategoryTheory.Sheaf.functorH (Opens.grothendieckTopology ↥X) n)
+theorem LinearStudy.schemeModuleActualHFunctor_additive.{u} : ∀ (X : AlgebraicGeometry.Scheme) (n : ℕ),
+  (LinearStudy.schemeModuleActualHFunctor X n).Additive :=
+fun (X : AlgebraicGeometry.Scheme) (n : ℕ) => id inferInstance
+def LinearStudy.schemeModuleActualHScalarRingHom.{u} : (X : AlgebraicGeometry.Scheme) →
+  (M : X.Modules) →
+    (n : ℕ) → ↑(X.presheaf.obj (Opposite.op ⊤)) →+* AddMonoid.End (LinearStudy.schemeModuleActualCohomology X M n) :=
+fun (X : AlgebraicGeometry.Scheme) (M : X.Modules) (n : ℕ) =>
+  (LinearStudy.addCommGroupEndRingHom ((LinearStudy.schemeModuleActualHFunctor X n).obj M)).comp
+    ((LinearStudy.additiveFunctorEndRingHom (LinearStudy.schemeModuleActualHFunctor X n) M).comp
+      (LinearStudy.originalGlobalModuleScalarRingHom M))
+def LinearStudy.schemeModuleActualHGlobalSectionsModule.{u} : (X : AlgebraicGeometry.Scheme) →
+  (M : X.Modules) →
+    (n : ℕ) → Module (↑(X.presheaf.obj (Opposite.op ⊤))) (LinearStudy.schemeModuleActualCohomology X M n) :=
+fun (X : AlgebraicGeometry.Scheme) (M : X.Modules) (n : ℕ) =>
+  Module.compHom (LinearStudy.schemeModuleActualCohomology X M n) (LinearStudy.schemeModuleActualHScalarRingHom X M n)
+def LinearStudy.schemeModuleActualHLinearCoefficientMap.{u} : (X : AlgebraicGeometry.Scheme) →
+  {M N : X.Modules} →
+    (M ⟶ N) →
+      (n : ℕ) →
+        LinearStudy.schemeModuleActualCohomology X M n →ₗ[↑(X.presheaf.obj (Opposite.op ⊤))]
+          LinearStudy.schemeModuleActualCohomology X N n :=
+fun (X : AlgebraicGeometry.Scheme) {M N : X.Modules} (f : M ⟶ N) (n : ℕ) =>
+  let __spread.0 := CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f) n;
+  { toFun := (↑__spread.0).toFun, map_add' := ⋯, map_smul' := ⋯ }
+def LinearStudy.schemeModuleActualHBaseModule.{u} : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) →
+    (M : X.Modules) →
+      (n : ℕ) → Module (↑(S.presheaf.obj (Opposite.op ⊤))) (LinearStudy.schemeModuleActualCohomology X M n) :=
+fun {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S) (M : X.Modules) (n : ℕ) =>
+  Module.compHom (LinearStudy.schemeModuleActualCohomology X M n)
+    (CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.Hom.appTop π))
+def LinearStudy.schemeModuleActualHBaseLinearCoefficientMap.{u} : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    {M N : X.Modules} →
+      (M ⟶ N) →
+        (n : ℕ) →
+          LinearStudy.schemeModuleActualCohomology X M n →ₗ[↑(S.presheaf.obj (Opposite.op ⊤))]
+            LinearStudy.schemeModuleActualCohomology X N n :=
+fun {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S) {M N : X.Modules} (f : M ⟶ N) (n : ℕ) =>
+  let __spread.0 := CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map f) n;
+  { toFun := (↑__spread.0).toFun, map_add' := ⋯, map_smul' := ⋯ }
+def LinearStudy.orderedBaseModuleActualAbelianCoefficientIso.{u} : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    (M : X.Modules) →
+      ((CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤)))).obj
+              (AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M)).comp
+          (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat) ≅
+        (CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens AddCommGrpCat).obj
+          ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M).obj :=
+fun {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S) (M : X.Modules) =>
+  LinearStudy.formalProductEvaluationWhiskeringIso (AlgebraicGeometry.Scheme.Modules.baseModulePresheaf π M)
+      (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat) ≪≫
+    (CategoryTheory.Limits.FormalCoproduct.evalOp X.Opens AddCommGrpCat).mapIso
+      (LinearStudy.baseModulePresheafActualAbelianIso π M)
+def LinearStudy.orderedBaseCechActualCoefficientMap.{u} : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    {M N : X.Modules} →
+      (M ⟶ N) →
+        {ι : Type u} →
+          [inst : LinearOrder ι] →
+            (U : ι → X.Opens) →
+              AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U ⟶
+                AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π N U :=
+fun {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S) {M N : X.Modules} (f : M ⟶ N) {ι : Type u} [LinearOrder ι]
+    (U : ι → X.Opens) =>
+  (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplexFunctor π U).map f
+def LinearStudy.orderedModuleCechActualAbelianHomologyIso.{u} : {X S : AlgebraicGeometry.Scheme} →
+  (π : X ⟶ S) →
+    (M : X.Modules) →
+      {ι : Type u} →
+        [inst : LinearOrder ι] →
+          (U : ι → X.Opens) →
+            (n : ℕ) →
+              (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).obj
+                  (HomologicalComplex.homology (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U) n) ≅
+                HomologicalComplex.homology
+                  (LinearStudy.orderedTopAbelianCechComplex X U
+                    ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M))
+                  n :=
+fun {X S : AlgebraicGeometry.Scheme} (π : X ⟶ S) (M : X.Modules) {ι : Type u} [LinearOrder ι] (U : ι → X.Opens)
+    (n : ℕ) =>
+  ((HomologicalComplex.sc (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U) n).mapHomologyIso
+        (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat)).symm ≪≫
+    (HomologicalComplex.homologyFunctor AddCommGrpCat (ComplexShape.up ℕ) n).mapIso
+      (LinearStudy.orderedModuleCechActualAbelianComplexIso π M U)
+def LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv.{u} : {X S :
+    AlgebraicGeometry.Scheme} →
+  [AlgebraicGeometry.IsLocallyNoetherian X] →
+    (π : X ⟶ S) →
+      {ι : Type u} →
+        [inst : LinearOrder ι] →
+          [Finite ι] →
+            (U : ι → X.Opens) →
+              ⊤ ≤ iSup U →
+                (∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+                    AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k))) →
+                  (M : X.Modules) →
+                    [SheafOfModules.IsQuasicoherent M] →
+                      (n : ℕ) →
+                        ↑(HomologicalComplex.homology (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex π M U)
+                              (n + 1)) ≃ₗ[↑(S.presheaf.obj (Opposite.op ⊤))]
+                          LinearStudy.schemeModuleActualCohomology X M (n + 1) :=
+fun {X S : AlgebraicGeometry.Scheme} [AlgebraicGeometry.IsLocallyNoetherian X] (π : X ⟶ S) {ι : Type u} [LinearOrder ι]
+    [Finite ι] (U : ι → X.Opens) (hU : ⊤ ≤ iSup U)
+    (haff :
+      ∀ (p : ℕ) (a : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p),
+        AlgebraicGeometry.IsAffineOpen (∏ᶜ fun (k : Fin (p + 1)) => U (↑a k)))
+    (M : X.Modules) [SheafOfModules.IsQuasicoherent M] (n : ℕ) =>
+  let __src :=
+    (LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso π U hU haff M
+        n).addCommGroupIsoToAddEquiv;
+  { toFun := __src.toFun, map_add' := ⋯, map_smul' := ⋯, invFun := __src.invFun, left_inv := ⋯, right_inv := ⋯ }
+ROLECHECK:LinearStudy.originalGlobalModuleScalar_zero:true
+ROLECHECK:LinearStudy.originalGlobalModuleScalar_one:true
+ROLECHECK:LinearStudy.originalGlobalModuleScalar_add:true
+ROLECHECK:LinearStudy.originalGlobalModuleScalar_mul:true
+ROLECHECK:LinearStudy.originalGlobalModuleScalarRingHom:false
+ROLECHECK:LinearStudy.additiveFunctorEndRingHom:false
+ROLECHECK:LinearStudy.addCommGroupEndRingHom:false
+ROLECHECK:LinearStudy.schemeModuleActualHFunctor:false
+ROLECHECK:LinearStudy.schemeModuleActualHFunctor_additive:true
+ROLECHECK:LinearStudy.schemeModuleActualHScalarRingHom:false
+ROLECHECK:LinearStudy.schemeModuleActualHScalarRingHom_apply:true
+ROLECHECK:LinearStudy.schemeModuleActualHGlobalSectionsModule:false
+ROLECHECK:LinearStudy.schemeModuleActualHGlobalSectionsModule_smul:true
+ROLECHECK:LinearStudy.additiveFunctor_map_commuting_apply:true
+ROLECHECK:LinearStudy.schemeModuleActualHFunctor_map_apply:true
+ROLECHECK:LinearStudy.schemeModuleActualHScalarRingHom_applyFunctor:true
+ROLECHECK:LinearStudy.schemeModuleActualH_scalar_naturality:true
+ROLECHECK:LinearStudy.schemeModuleActualHLinearCoefficientMap:false
+ROLECHECK:LinearStudy.schemeModuleActualHLinearCoefficientMap_apply:true
+ROLECHECK:LinearStudy.schemeModuleActualHBaseModule:false
+ROLECHECK:LinearStudy.schemeModuleActualHBaseModule_smul:true
+ROLECHECK:LinearStudy.schemeModuleActualHBaseLinearCoefficientMap:false
+ROLECHECK:LinearStudy.schemeModuleActualHBaseLinearCoefficientMap_apply:true
+ROLECHECK:LinearStudy.preservesProductIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.formalProductEvaluationWhiskeringIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.orderedFormalCechWhiskeringIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.orderedBaseCechComplexFunctor_map_eq_formal:true
+ROLECHECK:LinearStudy.baseModulePresheafActualAbelianIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.orderedBaseModuleActualAbelianCoefficientIso:false
+ROLECHECK:LinearStudy.orderedBaseModuleActualAbelianCoefficientIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.orderedModuleCechActualAbelianComplexIso_factorization:true
+ROLECHECK:LinearStudy.orderedModuleCechActualAbelianComplexIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.actualHomologicalComplex_homologyMap_smul:true
+ROLECHECK:LinearStudy.actualHomologicalComplex_homologyMap_smul_id:true
+ROLECHECK:LinearStudy.formalProductEvaluation_map_smul_id:true
+ROLECHECK:LinearStudy.orderedFormalCechCoefficientFunctor_map_smul_id:true
+ROLECHECK:LinearStudy.baseModulePresheafFunctor_map_originalScalar:true
+ROLECHECK:LinearStudy.orderedBaseCechComplexFunctor_map_originalScalar:true
+ROLECHECK:LinearStudy.orderedBaseCech_homologyMap_originalScalar:true
+ROLECHECK:LinearStudy.moduleHomologyForgettingIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.orderedBaseCechActualCoefficientMap:false
+ROLECHECK:LinearStudy.orderedBaseCechActualCoefficientMap_eq_functorMap:true
+ROLECHECK:LinearStudy.orderedBaseCechActualCoefficientMap_forgetting_naturality:true
+ROLECHECK:LinearStudy.orderedBaseCechActualCoefficientMap_originalScalar:true
+ROLECHECK:LinearStudy.orderedModuleCechActualAbelianHomologyIso:false
+ROLECHECK:LinearStudy.orderedModuleCechActualAbelianHomologyIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_factorization:true
+ROLECHECK:LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_twoFactor:true
+ROLECHECK:LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality:true
+ROLECHECK:LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_coefficient_naturality_apply:true
+ROLECHECK:LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHIso_smul:true
+ROLECHECK:LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv:false
+ROLECHECK:LinearStudy.noetherianFiniteOrderedAffineCover_moduleCechActualHigherHLinearEquiv_apply:true
