@@ -1,2 +1,27 @@
-const program=(id,label,labelEn)=>({id,kind:'classroom',speaker:'子皿曰成',speakerEn:'Zimin Yuecheng',assistant:'孟晟',assistantEn:'Sheng Meng',label,labelEn,courseId:'algebra-i',chapter:2,section:'2.6',sectionPart:id==='sylow-theorems'?'上':'下',topic:id==='sylow-theorems'?'§2.6 上 · 西罗三大定理':'§2.6 下 · 西罗定理的应用',topicEn:id==='sylow-theorems'?'§2.6 A · Sylow theorems':'§2.6 B · Applications of Sylow theorems',manifest:'./assets/chalk/zzl-c-20261019/'+id+(id==='sylow-theorems'?'-abelian-v1-pages.json?v=neutral-theorems-20261019':'-pages.json?v=neutral-theorems-20261019'),narration:{manifest:'./assets/audio/courses/zzl-c-20261019/'+id+(id==='sylow-theorems'?'/narration-abelian-v1.json?v=neutral-theorems-20261019':'/narration.json?v=neutral-theorems-20261019'),language:'zh',synthetic:true,defaultPlaybackRate:1,label:'ZZL · C明亮开课',voices:[{id:'zzl',label:'ZZL · C明亮开课',manifest:'./assets/audio/courses/zzl-c-20261019/'+id+(id==='sylow-theorems'?'/narration-abelian-v1.json?v=neutral-theorems-20261019':'/narration.json?v=neutral-theorems-20261019')}]},url:'./sylow-f-classroom.html?course='+id,sourceLabel:'课件、逐行讲稿与课堂任务',courseURL:'https://birationalclass.github.io/shengmeng/courses/abstract-algebra/2026-fall/?view=lesson&section=2.6'});
-export const CLASSROOM_PROGRAMS=[program('sylow-theorems','西罗三大定理','Sylow theorems'),program('algebra-sylow','西罗定理的应用','Applications of Sylow theorems')];
+const COURSE_URL='https://birationalclass.github.io/shengmeng/courses/abstract-algebra/2026-fall/';
+const VOICE_LABEL='ZZL · C明亮开课';
+function program({id,label,labelEn,chapter,section,sections=[section],sectionPart='',topic,topicEn,courseManifest,pagesManifest,narrationManifest,audioRoot,rosterLocalOnly=false}){
+ return {id,kind:'classroom',speaker:'子皿曰成',speakerEn:'Zimin Yuecheng',assistant:'孟晟',assistantEn:'Sheng Meng',label,labelEn,courseId:'algebra-i',chapter,section,sections,sectionPart,topic,topicEn,
+  courseManifest,audioRoot,rosterLocalOnly,manifest:pagesManifest,
+  narration:{manifest:narrationManifest,language:'zh',synthetic:true,defaultPlaybackRate:1,label:VOICE_LABEL,voices:[{id:'zzl',label:VOICE_LABEL,manifest:narrationManifest}]},
+  url:'./sylow-f-classroom.html?course='+id,sourceLabel:'课件、逐行讲稿与课堂任务',courseURL:COURSE_URL+'?view=lesson&section='+sections[0]};
+}
+function sylowProgram(id,label,labelEn){
+ const upper=id==='sylow-theorems',suffix=upper?'-abelian-v1':'',version='?v=neutral-theorems-20261019',audioRoot='./assets/audio/courses/zzl-c-20261019/'+id+'/';
+ return program({id,label,labelEn,chapter:2,section:'2.6',sectionPart:upper?'上':'下',topic:upper?'§2.6 上 · 西罗三大定理':'§2.6 下 · 西罗定理的应用',topicEn:upper?'§2.6 A · Sylow theorems':'§2.6 B · Applications of Sylow theorems',
+  courseManifest:'./assets/chalk/zzl-c-20261019/'+id+suffix+'.json'+version,pagesManifest:'./assets/chalk/zzl-c-20261019/'+id+suffix+'-pages.json'+version,narrationManifest:audioRoot+'narration'+suffix+'.json'+version,audioRoot});
+}
+function ringsProgram(id,label,labelEn,sections){
+ const section=sections.join('—'),version='?v=rings-20261022',chalk='./assets/chalk/rings-20261022/'+id,audioRoot='./assets/audio/courses/rings-20261022/'+id+'/';
+ return program({id,label,labelEn,chapter:3,section,sections,rosterLocalOnly:true,topic:'§'+section+' · '+label,topicEn:'§'+section+' · '+labelEn,courseManifest:chalk+'.json'+version,pagesManifest:chalk+'-pages.json'+version,narrationManifest:audioRoot+'narration.json'+version,audioRoot});
+}
+export const CLASSROOM_PROGRAMS=[
+ sylowProgram('sylow-theorems','西罗三大定理','Sylow theorems'),
+ sylowProgram('algebra-sylow','西罗定理的应用','Applications of Sylow theorems'),
+ ringsProgram('rings-basics','环、整环与域','Rings, integral domains and fields',['3.1','3.2']),
+ ringsProgram('rings-ideals','理想与商环','Ideals and quotient rings',['3.3']),
+ ringsProgram('rings-homomorphisms','环的同态','Ring homomorphisms',['3.4']),
+ ringsProgram('rings-prime-maximal','素理想与极大理想','Prime and maximal ideals',['3.5']),
+ ringsProgram('rings-characteristic','环的特征与素域','Characteristic and prime fields',['3.6'])
+];
+export const classroomProgram=id=>CLASSROOM_PROGRAMS.find(program=>program.id===id);

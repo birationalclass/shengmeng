@@ -7,8 +7,8 @@ import {preparationTurn} from './preparation-turn.js';
 import {createBoardTrayHardware} from './board-tray.js?v=crystal-black-b2';
 import {isCrystalScheme,paintStoneBoard,setTrackScheme} from './board-mineral.js';
 import {placeTrayControl,TRAY_STORAGE} from './board-tray-layout.js';
-import {createStudentLottery,drawStudentLottery,lotteryHitTargets,LOTTERY_RECT} from './student-lottery.js';
-import {createCoursePreload} from './course-preload.js';
+import {createStudentLottery,drawStudentLottery,lotteryHitTargets,LOTTERY_RECT} from './student-lottery.js?v=rings-20261022';
+import {createCoursePreload} from './course-preload.js?v=rings-20261022';
 import {prepareBoardAssets} from './board-assets.js';
 import {prepareInlineMath} from './chalk-inline-math.js?v=mali-20261017';
 import {LessonBudget} from './lesson-budget.js?v=sylow-two-lessons-20261015';
@@ -26,8 +26,8 @@ import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v=smart-voice-9';
 import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
-import {authoredContext,authoredFormula} from './authored-chalk.js?v=mali-20261017';
-import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=safari-glyph-20261019-1';
+import {authoredContext,authoredFormula} from './authored-chalk.js?v=rings-20261022';
+import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=rings-20261022';
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
 import {createSeminarScreen} from './seminar-screen.js?v=report-line-sync-6';
 import * as THREE from 'three';
@@ -41,8 +41,8 @@ import {stampFelt} from './eraser-contact.js';
 import {chalkCopy,chalkPageText,composeChalkPage} from './chalk-language.js?v=mali-20261017';
 
 import {REPORTS} from './report-catalog.js?v=ye2-report-14';
-import {CLASSROOM_PROGRAMS} from './classroom-catalog.js?v=sylow-two-lessons-20261015';
-import {createHallProgramScreen} from './hall-program-screen.js?v=sylow-two-lessons-20261015';
+import {CLASSROOM_PROGRAMS} from './classroom-catalog.js?v=rings-20261022';
+import {createHallProgramScreen} from './hall-program-screen.js?v=rings-20261022';
 import {createReportLoader} from './report-loader.js?v=report-line-sync-6';
 
 import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=43-tight-boards';
@@ -56,7 +56,7 @@ export async function createLecture(scene,renderer,options={}){
   const disabled=Boolean(options.disabled),canAuthor=typeof document.createElementNS==='function'&&typeof window!=='undefined';let writingStyle=['refined','marck'].includes(options.writingStyle)?options.writingStyle:'mali-italic',mathStyle=options.mathStyle==='refined'?'refined':'mali-italic';const boardMipBias={value:0};
   const reports=disabled?[{id:'unavailable',speaker:'',speakerEn:'',topic:'',topicEn:'',url:'',sourceLabel:''}]:options.reports||[...REPORTS,...CLASSROOM_PROGRAMS];
   let activeReport=reports.find(report=>report.id===(options.defaultReport||'hu'))||reports[0];
-  const studentLottery=createStudentLottery();studentLottery.setCourse(activeReport.courseId||activeReport.id,activeReport.id);const assetPreload=createCoursePreload();const prepareReport=createReportLoader(),openingReport=disabled?{pages:[{kind:'closing',title:'',source:'',text:'',en:{title:'',source:'',text:''},rows:[]}]}:await prepareReport(activeReport);
+  const studentLottery=createStudentLottery();studentLottery.setCourse(activeReport.courseId||activeReport.id,activeReport.id,{localOnly:activeReport.rosterLocalOnly===true});const assetPreload=createCoursePreload();const prepareReport=createReportLoader(),openingReport=disabled?{pages:[{kind:'closing',title:'',source:'',text:'',en:{title:'',source:'',text:''},rows:[]}]}:await prepareReport(activeReport);
   reportProgress(.25);
   let voiceEnabled=true,voiceTone='original',voiceBookmark=null,highlightEnabled=options.highlight!==false,highlightState=null,highlightManifest=null,highlightSpecs=[];const measuredHighlights=new Map();
   let navigation=openingReport.navigation;
@@ -91,7 +91,7 @@ export async function createLecture(scene,renderer,options={}){
         const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
         let rows;
         if(pages[index].orderedBoard){
-          const {prepareBoard}=await import('./sylow-f-renderer.js?v=safari-glyph-20261019-1');
+          const {prepareBoard}=await import('./sylow-f-renderer.js?v=rings-20261022');
           const prepared=await prepareBoard(pages[index].orderedBoard,lang);
           if(epoch!==generation){resolve(null);return;}
           sampleCtx.drawImage(prepared.canvas,0,0);rows=prepared.rows;
@@ -768,7 +768,7 @@ export async function createLecture(scene,renderer,options={}){
       try{
         const manifest=await prepareReport(next);if(request!==reportRequest)return false;
         // Keep the current talk intact until its replacement cover is available.
-        generation++;lessonBudget.select(next.id);omittedProofPages.clear();navigation=manifest.navigation;pages=manifest.pages;activeReport=next;studentLottery.setCourse(next.courseId||next.id,next.id);programScreen?.select(next);clock=new LectureClock(pages.length);estimateDurations();hasSelection=true;if(navigation?.sections)clock.stopAt=navigation.sections[0].end;loadingError=null;
+        generation++;lessonBudget.select(next.id);omittedProofPages.clear();navigation=manifest.navigation;pages=manifest.pages;activeReport=next;studentLottery.setCourse(next.courseId||next.id,next.id,{localOnly:next.rosterLocalOnly===true});programScreen?.select(next);clock=new LectureClock(pages.length);estimateDurations();hasSelection=true;if(navigation?.sections)clock.stopAt=navigation.sections[0].end;loadingError=null;
         clearPageCache();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();resetWipe();
         boards.forEach(b=>{b.last='';b.wet=null;});targets.fill(0);eraserReturn=null;eraserPickup=null;eraser.visible=false;eraser.userData.state='parked';
         parkedErasers.forEach(e=>e.visible=true);chalk.visible=false;previousTip=null;lastWritePage=-1;wear=0;particles.forEach(p=>p.life=0);particlePositions.fill(-10000);dustGeometry.attributes.position.needsUpdate=true;

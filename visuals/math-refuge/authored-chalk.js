@@ -3,7 +3,8 @@ import {decodeImage} from './mobile-runtime.js';
 import {preparationTurn} from './preparation-turn.js';
 import {glyphs,advance} from './refined-handwriting.js?v1';
 import {maliGlyph,maliMetrics,maliOperations,paintMali,prepareMaliChalk,fitMaliGlyph,maliInkURL} from './mali-chalk.js?v=safari-glyph-20261019-1';
-const NS='http://www.w3.org/2000/svg',samples=new Map();
+import {createChineseChalk,CHINESE_STROKE_SECONDS} from './chinese-chalk.js?v=rings-20261022';
+const NS='http://www.w3.org/2000/svg',samples=new Map();let formulaChinesePromise;
 export function authoredGlyph(char){
  if(samples.has(char))return samples.get(char);if(!glyphs[char]||typeof document.createElementNS!=='function')return null;
  const paths=glyphs[char].map(d=>{const p=document.createElementNS(NS,'path');p.setAttribute('d',d);const n=Math.max(3,Math.ceil(p.getTotalLength()/2)),points=[];for(let i=0;i<=n;i++){const a=p.getPointAtLength(p.getTotalLength()*i/n);points.push([a.x,a.y]);}return points;});
@@ -32,6 +33,7 @@ export async function authoredFormula(url,{color,mathStyle='mali-italic'}={}){
  const response=await resourceFetch(url);if(!response.ok)throw Error('板书公式加载失败');let source=await response.text();if(color)source=source.replaceAll('#eee9d5',color);
  const root=new DOMParser().parseFromString(source,'image/svg+xml').documentElement;
  if(root.localName!=='svg')throw Error('无效板书公式');
+ const chineseText=[...root.querySelectorAll('text')].map(e=>e.textContent).join(''),chinese=/[\u3400-\u9fff]/.test(chineseText)?await(await(formulaChinesePromise??=createChineseChalk())).prepare(chineseText):null;
  if(mathStyle==='mali-italic')await prepareMaliChalk([...root.querySelectorAll('[data-c]')].map(e=>String.fromCodePoint(parseInt(e.getAttribute('data-c'),16)).normalize('NFKD')).join(''));
  const host=document.createElement('div');host.style.cssText='position:fixed;left:-20000px;top:0;visibility:hidden;pointer-events:none';host.append(root);document.body.append(host);const operations=[],rootMatrix=root.getScreenCTM().inverse();
  try{
@@ -43,9 +45,9 @@ export async function authoredFormula(url,{color,mathStyle='mali-italic'}={}){
   const symbolCode=parseInt(element.getAttribute('data-c')||'',16),symbol=Number.isFinite(symbolCode)?String.fromCodePoint(symbolCode).normalize('NFKD'):null;let topLevel=true;for(let p=element.parentElement;p&&p.getAttribute('data-mml-node')!=='math';p=p.parentElement){if(/^(mfrac|msub|msup|msubsup|munder|mover|munderover|msqrt|mroot)$/.test(p.getAttribute('data-mml-node')||''))topLevel=false;}const symbolRect=clipRect(pointBox([[box.x,box.y],[box.x+box.width,box.y],[box.x,box.y+box.height],[box.x+box.width,box.y+box.height]].map(map)),clip);
   const inkColor=getComputedStyle(element).fill||'#eee9d5',semantic={symbol,topLevel,symbolRect,chalkColor:inkColor};
   const record=(points,width)=>{for(const part of clipPolyline(points,clip))operations.push({...semantic,rect:clipRect(pointBox(part,width/2+1),clip),strokePath:part,strokeWidth:width,chalkColor:inkColor});};
-  const code=parseInt(element.getAttribute('data-c')||'',16),char=Number.isFinite(code)?String.fromCodePoint(code).normalize('NFKD'):null;
+  const textChar=element.localName==='text'&&[...element.textContent].length===1?element.textContent:null,code=parseInt(element.getAttribute('data-c')||'',16),char=Number.isFinite(code)?String.fromCodePoint(code).normalize('NFKD'):textChar;
   const compatible=code<128||(code>=0x1d434&&code<=0x1d467)||[0x210e,0x2212,0x2264,0x2265,0x21d2,0x21d4].includes(code);
-  const mg=mathStyle==='mali-italic'&&compatible&&char&&/^[A-Za-z0-9.,:;!?]$/.test(char)?maliGlyph(char):null;
+  const cg=char&&chinese?.glyph(char),mg=cg||(mathStyle==='mali-italic'&&compatible&&char&&/^[A-Za-z0-9.,:;!?]$/.test(char)?maliGlyph(char):null);if(cg)cg.urls??=new Map();
   const glyph=mathStyle==='refined'&&compatible&&char?authoredGlyph(char):null;
   const fraction=element.localName==='rect'&&element.parentElement?.getAttribute('data-mml-node')==='mfrac';
   if(['|','∣'].includes(symbol)&&box.height>box.width*4){
@@ -57,11 +59,11 @@ export async function authoredFormula(url,{color,mathStyle='mali-italic'}={}){
   }else if(mg&&box.width&&box.height){
    // Uniform fit: retain Mali's original aspect, existing MathJax baselines,
    // script placement and spacing. Never stretch letters into a math outline.
-   const fit=fitMaliGlyph(mg,box),k=fit.scale,tx=fit.x,ty=2*box.y+box.height-fit.y;
-   const image=document.createElementNS(NS,'image');image.setAttribute('href',maliInkURL(mg,inkColor));image.setAttribute('width',mg.width);image.setAttribute('height',mg.width);image.setAttribute('transform',`matrix(${k} 0 0 ${-k} ${tx} ${ty})`);
+   const fit=fitMaliGlyph(mg,box),k=fit.scale,tx=fit.x,flip=element.localName!=='text',ty=flip?2*box.y+box.height-fit.y:fit.y;
+   const image=document.createElementNS(NS,'image');image.setAttribute('href',maliInkURL(mg,inkColor));image.setAttribute('width',mg.width);image.setAttribute('height',mg.width);image.setAttribute('transform',`matrix(${k} 0 0 ${flip?-k:k} ${tx} ${ty})`);
    const group=document.createElementNS(NS,'g');if(element.hasAttribute('transform'))group.setAttribute('transform',element.getAttribute('transform'));group.append(image);element.replaceWith(group);
-   const points=p=>map([tx+p[0]*k,ty-p[1]*k]),glyphRect=pointBox([[0,0],[mg.width,mg.width]].map(points)),id={};
-   for(const s of mg.strokes){const [x,y,w,h]=s.box,rect=clipRect(pointBox([[x,y],[x+w,y+h]].map(points)),clip);if(!rect)continue;operations.push({...semantic,rect,strokePath:s.points.map(points),strokeRaster:{stroke:s,rect,group:id,glyph:mg,glyphRect},letterGroup:id,letterSeconds:(/[A-Z]/.test(char)?.32:/[a-z0-9]/.test(char)?.25:.16)/mg.strokes.length,character:char});}
+   const points=p=>map([tx+p[0]*k,ty+(flip?-1:1)*p[1]*k]),glyphRect=pointBox([[0,0],[mg.width,mg.width]].map(points)),id={};
+   for(const s of mg.strokes){const [x,y,w,h]=s.box,rect=clipRect(pointBox([[x,y],[x+w,y+h]].map(points)),clip);if(!rect)continue;operations.push({...semantic,rect,strokePath:s.points.map(points),strokeRaster:{stroke:s,rect,group:id,glyph:mg,glyphRect},...(cg?{strokeSeconds:CHINESE_STROKE_SECONDS}:{letterGroup:id,letterSeconds:(/[A-Z]/.test(char)?.32:/[a-z0-9]/.test(char)?.25:.16)/mg.strokes.length}),character:char});}
   }else if(glyph&&box.width&&box.height){
    // Words inside a formula (e.g. "even" and "odd") are still handwriting,
    // rather than mathematical symbols whose tiny bounds set their speed.

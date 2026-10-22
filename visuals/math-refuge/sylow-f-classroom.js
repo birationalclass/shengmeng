@@ -1,8 +1,10 @@
 import {renderClassroomManuscript} from './classroom-manuscript.js?v=C-full-20261019';
+import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=rings-20261022';
+import {createCoursePreload} from './course-preload.js?v=rings-20261022';
 import {boardWaitAt,countdownTextRect,containsCountdown} from './board-countdown.js';
 import {MIN_BOARD_REVIEW_SECONDS,boardReviewStart} from './board-review.js?v=uniform-review-20261019';
 import {prepareClassroomAudioBlob,classroomAudioDecodeState} from './classroom-audio-decode.js?v=mp3-predecode-1';
-import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=safari-glyph-20261019-1';
+import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=rings-20261022';
 import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=uniform-review-20261019';
 import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=native-pcm-20261017-1';
 const $=id=>document.getElementById(id),query=new URLSearchParams(location.search);window.fRendererReady=true;
@@ -12,23 +14,28 @@ const lessonRate=()=>manifest?.policy?.defaultPlaybackRate||1;
 let finishCurrent=()=>{},openingLocked=false;
 async function playPrepared(target=audio,mine=generation){await primeClassroomAudio(target);if(target!==audio||mine!==generation||!playIntent){if(target!==audio)disconnectClassroomAudio(target);return false;}target.playbackRate=classroomAudioRate(manifest?.boards[board],target.currentTime,lessonRate());await target.play();return true;}
 const audioJobs=new Map(),audioURLs=new Set(),compressedJobs=new Map(),audioFiles=new Map();
+const assetPreload=createCoursePreload({concurrency:2});
 function trimAudioURLs(){const keep=new Set([manifest?.boards[board]?.file,manifest?.boards[board+1]?.file]);for(const [file,url] of audioFiles)if(!keep.has(file)){URL.revokeObjectURL(url);audioURLs.delete(url);audioFiles.delete(file);audioJobs.delete(file);}}
 async function compressedAudio(file){if(!compressedJobs.has(file)){const job=(async()=>{const r=await fetch(file);if(!r.ok)throw Error('本板语音下载失败');return r.blob();})().catch(e=>{if(compressedJobs.get(file)===job)compressedJobs.delete(file);throw e;});compressedJobs.set(file,job);}return compressedJobs.get(file);}
 async function audioURL(file){if(!audioJobs.has(file)){const mine=courseEpoch,job=(async()=>{const blob=await compressedAudio(file),item=manifest?.boards.find(b=>b.file===file),pcm=await prepareClassroomAudioBlob(blob,{expectedSeconds:item?.seconds});if(mine!==courseEpoch)return null;const url=URL.createObjectURL(pcm);audioURLs.add(url);audioFiles.set(file,url);trimAudioURLs();return url;})().catch(e=>{if(audioJobs.get(file)===job)audioJobs.delete(file);throw e;});audioJobs.set(file,job);}return audioJobs.get(file);}
 const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function manuscript(b){renderClassroomManuscript($('script'),b,manifest,board);}
-async function loadCourse(){const n=++courseEpoch;++generation;audio.pause();playing=false;playIntent=false;course=null;manifest=null;prepared=null;board=0;openingLocked=false;for(const url of audioURLs)URL.revokeObjectURL(url);audioURLs.clear();audioJobs.clear();compressedJobs.clear();audioFiles.clear();const id=$('course').value;
- const nextCourse=await fetch('./assets/chalk/zzl-c-20261019/'+id+(id==='sylow-theorems'?'-abelian-v1.json?v=neutral-theorems-20261019':'.json?v=neutral-theorems-20261019'),{cache:'no-store'}).then(r=>r.json());if(n!==courseEpoch)return;course=nextCourse;
- const audioRoot='./assets/audio/courses/zzl-c-20261019/'+id+'/';
- const nextManifest=await fetch(audioRoot+(id==='sylow-theorems'?'narration-abelian-v1.json?v=neutral-theorems-20261019':'narration.json?v=neutral-theorems-20261019'),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);if(n!==courseEpoch)return;manifest=nextManifest?selectClassroomOpening(nextManifest):null;
+async function loadCourse(){const n=++courseEpoch;++generation;audio.pause();assetPreload.cancel();playing=false;playIntent=false;course=null;manifest=null;prepared=null;board=0;openingLocked=false;for(const url of audioURLs)URL.revokeObjectURL(url);audioURLs.clear();audioJobs.clear();compressedJobs.clear();audioFiles.clear();const id=$('course').value;
+ const program=classroomProgram(id);if(!program)throw Error('未找到这门板书课堂');
+ const nextCourse=await fetch(program.courseManifest,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('本课板书下载失败');return r.json();});if(n!==courseEpoch)return;course=nextCourse;
+ for(const b of course.boards)b.sectionLabel ||= b.section?'§'+String(b.section).replace(/^§/,''):'§'+program.section;
+ document.title=program.topic+' · ZZL课堂';
+ const audioRoot=program.audioRoot;
+ const nextManifest=await fetch(program.narration.manifest,{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);if(n!==courseEpoch)return;manifest=nextManifest?selectClassroomOpening(nextManifest):null;
  if(manifest)for(const b of manifest.boards)b.file=audioRoot+b.file.split('/').pop();
  if(manifest?.openingSelection){const r=course.boards[0].rows[1];r.speech=manifest.openingSelection.greeting+r.speech;}
  if(n!==courseEpoch)return;$('board-select').replaceChildren(...course.boards.map((b,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`${i+1} · ${b.title}`;return o}));
- $('assistant').textContent=course.assistantPlan.map(x=>`${x.minutes}分钟 · ${x.topic}：${x.task}`).join('\n');$('assistant').style.whiteSpace='pre-line';
+ $('assistant').textContent=(course.assistantPlan||[]).map(x=>`${x.minutes}分钟 · ${x.topic}：${x.task}`).join('\n');$('assistant').style.whiteSpace='pre-line';
  $('duration').textContent=manifest?`C原版表达 · 播放100% · 本课约 ${fmt(classroomDuration(manifest,lessonRate()))}（含课间05:00）；简单练习30秒 / 有点挑战60秒；孟晟助教另计30:00。`:'本板语音尚未就绪，可重试或查看讲稿。';
  $('play').disabled=!manifest;$('seek').disabled=!manifest;
  await selectBoard(Math.min(Number(query.get('board')||0),course.boards.length-1),false);
+ void assetPreload.start(course.boards.map(orderedBoard=>({orderedBoard})),{courseText:course.boards.flatMap(b=>b.rows.map(r=>r.display+' '+r.en)).join('\n')});
  // First board ready: preload all later board MP3s in a bounded queue.
  if(manifest){const queue=manifest.boards.slice(board+1).filter(b=>b.file&&!b.id.endsWith('-break'));let cursor=0;void Promise.all(Array.from({length:3},async()=>{while(cursor<queue.length&&n===courseEpoch){const b=queue[cursor++];try{await compressedAudio(b.file);}catch{}}}));}
 }
@@ -59,7 +66,8 @@ const countdownPoint=e=>{const r=$('board').getBoundingClientRect();return [(e.c
 $('board').addEventListener('click',e=>{if(containsCountdown(countdownHit,...countdownPoint(e)))skipCountdown();});
 $('board').addEventListener('pointermove',e=>{const hit=containsCountdown(countdownHit,...countdownPoint(e));$('board').style.cursor=hit?'pointer':'';$('board').title=hit?'点击跳过剩余思考':'';});
 function frame(){paint();if(!countdownHit){$('board').style.cursor='';$('board').title='';}requestAnimationFrame(frame)}requestAnimationFrame(frame);
-if(query.get('course'))$('course').value=query.get('course');
+$('course').replaceChildren(...CLASSROOM_PROGRAMS.map(program=>{const option=document.createElement('option');option.value=program.id;option.textContent=program.topic.replace(/^§/,'');return option;}));
+if(classroomProgram(query.get('course')))$('course').value=query.get('course');
 if(!query.has('measure'))loadCourse().catch(e=>{$('status').textContent=e.message;console.error(e)});
-window.fClassroom={selectBoard,loadCourse,skipCountdown,getState:()=>({countdownHit,board,playing,language,prepared,manifest,course,audio,output:classroomAudioOutputState(),decode:classroomAudioDecodeState(),audioCache:{compressed:compressedJobs.size,decoded:audioFiles.size}}),setTime:t=>{audio.pause();audio.currentTime=t;paint();}};
+window.fClassroom={selectBoard,loadCourse,skipCountdown,getState:()=>({countdownHit,board,playing,language,prepared,manifest,course,audio,output:classroomAudioOutputState(),decode:classroomAudioDecodeState(),assetPreload:assetPreload.state,audioCache:{compressed:compressedJobs.size,decoded:audioFiles.size}}),setTime:t=>{audio.pause();audio.currentTime=t;paint();}};
 const focusPause=()=>{playIntent=false;audio.pause();};addEventListener('blur',focusPause);document.addEventListener('visibilitychange',()=>{if(document.hidden)focusPause();});
