@@ -1,0 +1,1632 @@
+===== Linear.ModuleBaseSourceLocalizationNaturality SHA256 06f5e9194cac5993f3f9fa68165ba41217d9d84401e74f5d940889a3225198f9 =====
+module
+public import Linear.ModuleBaseSourceLocalization
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+universe u
+variable {R S M N : Type u} [CommRing R] [CommRing S] [Algebra R S]
+variable [AddCommGroup M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module R N] [Module S N] [IsScalarTower R S N]
+/-- The ORIGINAL base/source localization comparison is natural for an
+ORIGINAL S-linear coefficient map,restricted to R on the ambient side.
+Both actual localization maps retain the SAME original numerator. -/
+theorem moduleBaseSourceLocalizationEquiv_map (a : R) (f : M →ₗ[S] N)
+    (x : LocalizedModule (Submonoid.powers a) M) :
+    LocalizedModule.map (Submonoid.powers (algebraMap R S a)) f
+      (moduleBaseSourceLocalizationEquiv (S:=S) a x) =
+      moduleBaseSourceLocalizationEquiv (S:=S) a
+        (LocalizedModule.map (Submonoid.powers a) (f.restrictScalars R) x) := by
+  induction x using LocalizedModule.induction_on with
+  | h m b =>
+    simp only [moduleBaseSourceLocalizationEquiv_mk,LocalizedModule.map_mk,
+      LinearMap.restrictScalars_apply]
+end LinearStudy
+
+===== Linear.LocalizedModuleRefinementNaturality SHA256 8c552f20f7c41f5d9373fbe8a9fd356d962ec09c6354d3feb338ad4d90ae84c2 =====
+module
+public import Linear.LocalizedModuleRefinement
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+variable {R M N : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+variable [AddCommGroup N] [Module R N]
+/-- Actual original localization restriction is natural for every
+ORIGINAL coefficient map;both sides keep the same numerator and denominator. -/
+theorem originalLocalizedModuleRefinement_map (P T : Submonoid R) (hPT : P ≤ T)
+    (f : M →ₗ[R] N) (x : LocalizedModule P M) :
+    LocalizedModule.map T f (originalLocalizedModuleRefinement P T hPT x) =
+      originalLocalizedModuleRefinement P T hPT (LocalizedModule.map P f x) := by
+  induction x using LocalizedModule.induction_on with
+  | h m b => simp only [originalLocalizedModuleRefinement_mk,LocalizedModule.map_mk]
+end LinearStudy
+
+===== Linear.NativeProjectiveChartCoefficientValue SHA256 0cccaabb4f8284c1c2ba590a8fd9fc9539c38812d7366a8a7a65c488f15a6839 =====
+module
+public import Linear.LocalizedModuleRefinementNaturality
+public import Linear.NativeProjectiveModuleLocalMap
+public import Linear.NativeProjectiveChartRefinement
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry
+universe u
+variable {K R M N : Type u} [Field K] [CommRing R] [Algebra K R]
+variable [AddCommGroup M] [Module R M] [Module K M]
+variable [AddCommGroup N] [Module R N] [Module K N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeProjectiveAtPrimeModuleScalar
+/-- ORIGINAL coefficient maps commute with ACTUAL chart refinement at
+EACH ORIGINAL source prime,retaining the original localized numerator. -/
+theorem nativeProjectiveChartRefinement_coefficient (a : R) (f : M →ₗ[R] N)
+    (x : LocalizedModule (Submonoid.powers a) M) (p : ProjectiveSpectrum.basicOpen A a) :
+    nativeProjectiveModuleAtPrimeMap A f p.1 (nativeProjectiveChartRefinement A a x p) =
+      nativeProjectiveChartRefinement A a (LocalizedModule.map (Submonoid.powers a) f x) p := by
+  change LocalizedModule.map p.1.asHomogeneousIdeal.toIdeal.primeCompl f
+    (originalLocalizedModuleRefinement (Submonoid.powers a) p.1.asHomogeneousIdeal.toIdeal.primeCompl
+      (Submonoid.powers_le.mpr p.2) x) = _
+  exact originalLocalizedModuleRefinement_map (Submonoid.powers a)
+    p.1.asHomogeneousIdeal.toIdeal.primeCompl (Submonoid.powers_le.mpr p.2) f x
+end LinearStudy
+
+===== Linear.NativeGradedWeightedCoefficientMap SHA256 9232f278161a07393ffa9c93930134ba6f72a44c5352dcf74392cda199eda7da =====
+module
+public import Linear.NativeGradedWeightedSingleFraction
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+universe u
+variable {K R M N : Type u} [Field K] [CommRing R] [Algebra K R]
+variable [AddCommGroup M] [Module R M] [Module K M]
+variable [AddCommGroup N] [Module R N] [Module K N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (f : M →ₗ[R] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+include hD hf
+/-- An ORIGINAL degree-zero coefficient map preserves the ACTUAL weighted
+zero chart. Numerator degree is n*d for the TRUE denominator degree d. -/
+theorem nativeGradedModuleAwayDegreeZero_coefficient_mem (d : ℕ) (a : R) (ha : a ∈ A d)
+    (x : LocalizedModule (Submonoid.powers a) M)
+    (hx : x ∈ nativeGradedModuleAwayDegreeZero A D d a) :
+    LocalizedModule.map (Submonoid.powers a) f x ∈ nativeGradedModuleAwayDegreeZero A E d a := by
+  obtain ⟨n,m,hm,rfl⟩ := nativeGradedModuleAwayDegreeZero_exists_fraction A D hD d a ha x hx
+  rw [LocalizedModule.map_mk]
+  exact Submodule.subset_span ⟨n,f m,hf _ m hm,rfl⟩
+/-- The ORIGINAL localized coefficient function on the SAME weighted chart.
+No replacement coefficient map or chart scalar action is introduced. -/
+def nativeGradedModuleAwayDegreeZeroCoefficientMap (d : ℕ) (a : R) (ha : a ∈ A d)
+    (x : nativeGradedModuleAwayDegreeZero A D d a) : nativeGradedModuleAwayDegreeZero A E d a :=
+  ⟨LocalizedModule.map (Submonoid.powers a) f x.val,
+    nativeGradedModuleAwayDegreeZero_coefficient_mem A D E hD f hf d a ha x.val x.property⟩
+end LinearStudy
+
+===== Linear.NativeProjectiveWeightedChartCoefficient SHA256 b8293466659083e88eca76d7a1874b1e7349e57c0173ad5364f51c7bf82f6261 =====
+module
+public import Linear.NativeGradedWeightedCoefficientMap
+public import Linear.NativeProjectiveChartCoefficientValue
+public import Linear.NativeProjectiveDegreeZeroMap
+public import Linear.NativeProjectiveChartSections
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R M N : Type u} [Field K] [CommRing R] [Algebra K R]
+variable [AddCommGroup M] [Module R M] [Module K M]
+variable [AddCommGroup N] [Module R N] [Module K N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[R] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+/-- The ACTUAL original chart-to-section map commutes with the ORIGINAL
+degree-zero coefficient map. All weighted denominators retain degree d. -/
+theorem nativeProjectiveChartDegreeZeroSectionMap_coefficient (d : ℕ) (a : R) (ha : a ∈ A d)
+    (x : nativeGradedModuleAwayDegreeZero A D d a) :
+    nativeProjectiveDegreeZeroSectionMap A D E hD hE f hf 0 (op (Proj.basicOpen A a))
+      (nativeProjectiveChartDegreeZeroSectionMap A D hD d a ha x) =
+      nativeProjectiveChartDegreeZeroSectionMap A E hE d a ha
+        (nativeGradedModuleAwayDegreeZeroCoefficientMap A D E hD f hf d a ha x) := by
+  apply Subtype.ext
+  funext p
+  exact nativeProjectiveChartRefinement_coefficient A a f x.val p
+end LinearStudy
+
+===== Linear.NativeBaseSourceWeightedCoefficientSections SHA256 33b27c34356babd658f15998abf389a2cfda86d5d321b5dd752d019882f538db =====
+module
+public import Linear.NativeProjectiveWeightedChartCoefficient
+public import Linear.ModuleBaseSourceLocalizationNaturality
+public import Linear.NativeBaseSourceSectionsOverlap
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+/-- The ACTUAL original weighted base-to-source section map commutes with
+an ORIGINAL S-linear coefficient map and its ORIGINAL R restriction. -/
+theorem nativeBaseSourceWeightedChartSection_coefficient (d : ℕ) (a : R) (ha : a ∈ A d)
+    (x : nativeGradedModuleAwayDegreeZero A D d a) :
+    nativeProjectiveDegreeZeroSectionMap B D E hSD hSE f hf 0
+      (op (Proj.basicOpen B (algebraMap R S a)))
+      (nativeBaseSourceWeightedChartSection A B D (hR:=hRD) (hS:=hSD) d a ha x) =
+      nativeBaseSourceWeightedChartSection A B E (hR:=hRE) (hS:=hSE) d a ha
+        (nativeGradedModuleAwayDegreeZeroCoefficientMap A D E hRD (f.restrictScalars R) hf d a ha x) := by
+  apply Subtype.ext
+  funext p
+  change nativeProjectiveModuleAtPrimeMap B f p.1
+    (nativeProjectiveChartRefinement B (algebraMap R S a)
+      (moduleBaseSourceLocalizationEquiv (S:=S) a x.val) p) =
+    nativeProjectiveChartRefinement B (algebraMap R S a)
+      (moduleBaseSourceLocalizationEquiv (S:=S) a
+        (LocalizedModule.map (Submonoid.powers a) (f.restrictScalars R) x.val)) p
+  exact (nativeProjectiveChartRefinement_coefficient B (algebraMap R S a) f
+    (moduleBaseSourceLocalizationEquiv (S:=S) a x.val) p).trans
+    (congrArg (fun z => nativeProjectiveChartRefinement B (algebraMap R S a) z p)
+      (moduleBaseSourceLocalizationEquiv_map a f x.val))
+end LinearStudy
+
+===== Linear.SurjectiveCalibratedComparisonNaturality SHA256 1352710f9973bfe7b1156d66b5fc596d4fe315f61f218a3f3db0531fd26e079d =====
+module
+public import Mathlib.Logic.Function.Basic
+@[expose] public section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+/-- Naturality of a calibrated comparison follows from the TWO original
+coefficient squares on a surjective common chart. No target naturality is assumed. -/
+theorem surjectiveCalibratedComparison_naturality
+    {X Y A B C D : Type*} (qA : X → A) (qB : X → B) (qC : Y → C) (qD : Y → D)
+    (eA : A → B) (eC : C → D) (f : X → Y) (u : A → C) (v : B → D)
+    (hqA : Function.Surjective qA)
+    (hA : ∀ x,eA (qA x)=qB x) (hC : ∀ y,eC (qC y)=qD y)
+    (hu : ∀ x,u (qA x)=qC (f x)) (hv : ∀ x,v (qB x)=qD (f x)) (a : A) :
+    eC (u a) = v (eA a) := by
+  obtain ⟨x,rfl⟩ := hqA a
+  rw [hu,hC,hA,hv]
+end LinearStudy
+
+===== Linear.NativeWeightedSourceAmbientCoefficient SHA256 2452c8f33143eaab6b05ba09f5745f93a4f4df41078f1c1edc65d107203303f5 =====
+module
+public import Linear.NativeBaseSourceWeightedCoefficientSections
+public import Linear.NativeWeightedSourceAmbientSectionEquiv
+public import Linear.SurjectiveCalibratedComparisonNaturality
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+attribute [local irreducible] nativeWeightedSourceAmbientSectionAddEquiv
+/-- The SAME weighted ambient/source section comparison is natural for
+an ORIGINAL S-linear degree-zero coefficient map. The FOUR LOCAL chart
+bijections are explicit here;finite graded applications derive them. -/
+theorem nativeWeightedSourceAmbientSectionAddEquiv_coefficient
+    (d : ℕ) (a : R) (ha : a ∈ A d)
+    (hAM : Function.Bijective (nativeProjectiveChartDegreeZeroSectionMap A D hRD d a ha))
+    (hBM : Function.Bijective (nativeProjectiveChartDegreeZeroSectionMap B D hSD d
+      (algebraMap R S a) ((normalizationBaseGradedRingHom A B).map_mem ha)))
+    (hAN : Function.Bijective (nativeProjectiveChartDegreeZeroSectionMap A E hRE d a ha))
+    (hBN : Function.Bijective (nativeProjectiveChartDegreeZeroSectionMap B E hSE d
+      (algebraMap R S a) ((normalizationBaseGradedRingHom A B).map_mem ha)))
+    (x : nativeProjectiveModuleSections A D hRD 0 (op (Proj.basicOpen A a))) :
+    nativeWeightedSourceAmbientSectionAddEquiv A B E hRE hSE d a ha hAN hBN
+      (nativeProjectiveDegreeZeroSectionMap A D E hRD hRE (f.restrictScalars R) hf 0
+        (op (Proj.basicOpen A a)) x) =
+      nativeProjectiveDegreeZeroSectionMap B D E hSD hSE f hf 0
+        (op (Proj.basicOpen B (algebraMap R S a)))
+        (nativeWeightedSourceAmbientSectionAddEquiv A B D hRD hSD d a ha hAM hBM x) := by
+  exact surjectiveCalibratedComparison_naturality
+    (nativeProjectiveChartDegreeZeroSectionMap A D hRD d a ha)
+    (nativeBaseSourceWeightedChartSection A B D (hR:=hRD) (hS:=hSD) d a ha)
+    (nativeProjectiveChartDegreeZeroSectionMap A E hRE d a ha)
+    (nativeBaseSourceWeightedChartSection A B E (hR:=hRE) (hS:=hSE) d a ha)
+    (nativeWeightedSourceAmbientSectionAddEquiv A B D hRD hSD d a ha hAM hBM)
+    (nativeWeightedSourceAmbientSectionAddEquiv A B E hRE hSE d a ha hAN hBN)
+    (nativeGradedModuleAwayDegreeZeroCoefficientMap A D E hRD (f.restrictScalars R) hf d a ha)
+    (nativeProjectiveDegreeZeroSectionMap A D E hRD hRE (f.restrictScalars R) hf 0 (op (Proj.basicOpen A a)))
+    (nativeProjectiveDegreeZeroSectionMap B D E hSD hSE f hf 0 (op (Proj.basicOpen B (algebraMap R S a))))
+    hAM.surjective
+    (nativeWeightedSourceAmbientSectionAddEquiv_chart A B D hRD hSD d a ha hAM hBM)
+    (nativeWeightedSourceAmbientSectionAddEquiv_chart A B E hRE hSE d a ha hAN hBN)
+    (nativeProjectiveChartDegreeZeroSectionMap_coefficient A D E hRD hRE (f.restrictScalars R) hf d a ha)
+    (nativeBaseSourceWeightedChartSection_coefficient A B D E hRD hSD hRE hSE f hf d a ha) x
+end LinearStudy
+
+===== Linear.NativeIndependentSourceAmbientCoefficientSections SHA256 495d43f94e71839853532bf4456041275649fe2293d2ad182fd448097a7c300d =====
+module
+public import Linear.NativeWeightedSourceAmbientCoefficient
+public import Linear.NativeIndependentSourceAmbientCechSections
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable [IsScalarTower K R M] [IsScalarTower K S M]
+variable [IsScalarTower K R N] [IsScalarTower K S N]
+variable [IsDomain S] [Module.IsTorsionFree S M] [Module.IsTorsionFree S N]
+variable [IsNoetherianRing R] [IsNoetherianRing S]
+variable [Module.Finite R M] [Module.Finite S M] [Module.Finite R N] [Module.Finite S N]
+variable {ι κ : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+attribute [local irreducible] nativeWeightedSourceAmbientSectionAddEquiv
+/-- The SAME original finite graded ambient/source section equivalence is
+natural for every ORIGINAL degree-zero S-linear coefficient map. ALL FOUR
+local bijections are DERIVED from the stated original finiteness and
+coordinate-generation data. Source c generates S,not the images of a. -/
+theorem nativeIndependentSourceAmbientCechSectionAddEquiv_coefficient
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ) (t : Fin (p+1) → ι)
+    (x : nativeProjectiveModuleSections A D hRD 0
+      (op (Proj.basicOpen A (∏ l : Fin (p+1),a (t l))))) :
+    nativeIndependentSourceAmbientCechSectionAddEquiv A B E hRE hSE a ha c hc hgenR hgenC p t
+      (nativeProjectiveDegreeZeroSectionMap A D E hRD hRE (f.restrictScalars R) hf 0
+        (op (Proj.basicOpen A (∏ l : Fin (p+1),a (t l)))) x) =
+      nativeProjectiveDegreeZeroSectionMap B D E hSD hSE f hf 0
+        (op (Proj.basicOpen B (algebraMap R S (∏ l : Fin (p+1),a (t l)))))
+        (nativeIndependentSourceAmbientCechSectionAddEquiv A B D hRD hSD a ha c hc hgenR hgenC p t x) := by
+  let z := ∏ l : Fin (p+1),a (t l)
+  have hz : z ∈ A (p+1) := nativeProjective_cechProduct_mem_degree A a ha p t
+  have hAM := nativeFiniteGradedAmbientCechProductSectionMap_bijective A B D hRD a ha hgenR p t
+  have hBM := nativeFiniteGradedIndependentSourceCechProductSectionMap_bijective A B D hSD c hc hgenC a ha p t
+  have hAN := nativeFiniteGradedAmbientCechProductSectionMap_bijective A B E hRE a ha hgenR p t
+  have hBN := nativeFiniteGradedIndependentSourceCechProductSectionMap_bijective A B E hSE c hc hgenC a ha p t
+  exact nativeWeightedSourceAmbientSectionAddEquiv_coefficient A B D E hRD hSD hRE hSE f hf
+    (p+1) z hz hAM hBM hAN hBN x
+end LinearStudy
+
+===== Linear.ConcreteAdditiveEquivNaturality SHA256 cc8b19690a58636a7c2898ea3a541f2c0c28ff502dbd5eb64083c55f6259e840 =====
+module
+public import Linear.ConcreteAdditiveEquivSquare
+@[expose] public section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory
+universe u
+/-- TWO original coefficient objects and their SAME actual additive comparisons.
+The original pointwise square gives the original categorical square. -/
+theorem additiveEquivIso_coefficient {A B C D : AddCommGrpCat.{u}}
+    (e : A ≃+ B) (e' : C ≃+ D) (f : A ⟶ C) (g : B ⟶ D)
+    (h : ∀ x,e' (f x) = g (e x)) :
+    e.toAddCommGrpIso.hom ≫ g = f ≫ e'.toAddCommGrpIso.hom := by
+  ext x
+  exact (h x).symm
+end LinearStudy
+
+===== Linear.OrderedCrossSpaceCechCoefficientNaturality SHA256 cda37d36fecd5358f3dc5e27ef47e4c38ac060cd097f6333e949eaa821e24a02 =====
+module
+public import Linear.OrderedCrossSpaceCechEndomorphism
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits Opposite
+open AlgebraicGeometry.Scheme.Modules
+universe u
+/-- Equality transport preserves the actual coefficient square between TWO
+original coefficient sheaves on their SAME original intersection opens. -/
+theorem abelianOpenSectionComparisonIso_coefficient {X Y : Scheme.{u}}
+    (F F' : X.Opensᵒᵖ ⥤ AddCommGrpCat.{u}) (G G' : Y.Opensᵒᵖ ⥤ AddCommGrpCat.{u})
+    (U U' : X.Opens) (V V' : Y.Opens) (hU : U=U') (hV : V=V')
+    (e : F.obj (op U') ≅ G.obj (op V')) (e' : F'.obj (op U') ≅ G'.obj (op V'))
+    (a : F ⟶ F') (b : G ⟶ G')
+    (he : e.hom ≫ b.app (op V') = a.app (op U') ≫ e'.hom) :
+    (abelianOpenSectionComparisonIso F G U U' V V' hU hV e).hom ≫ b.app (op V) =
+      a.app (op U) ≫ (abelianOpenSectionComparisonIso F' G' U U' V V' hU hV e').hom := by
+  subst U'
+  subst V'
+  simpa [abelianOpenSectionComparisonIso,abelianOpenSectionEqIso] using he
+/-- Coefficient naturality on EACH original intersection gives naturality
+for the SAME TWO cross-space ordered Cech complex comparisons. All product
+objects,faces,signs and actual original coefficient maps are retained. -/
+theorem orderedCrossSpaceAbelianCechComplexIso_coefficient
+    {X Y : Scheme.{u}} {ι : Type u} [LinearOrder ι]
+    (F F' : X.Opensᵒᵖ ⥤ AddCommGrpCat.{u}) (G G' : Y.Opensᵒᵖ ⥤ AddCommGrpCat.{u})
+    (U : ι → X.Opens) (V : ι → Y.Opens)
+    (e : ∀ (p : ℕ) (t : OrderedCechIndex ι p),
+      F.obj (op (∏ᶜ fun l : Fin (p+1) => U (t.1 l))) ≅
+        G.obj (op (∏ᶜ fun l : Fin (p+1) => V (t.1 l))))
+    (he : ∀ (p : ℕ) (k : Fin (p+2)) (t : OrderedCechIndex ι (p+1)),
+      (e p (t.delete k)).hom ≫ G.map ((orderedCechFace V p k).φ t).op =
+        F.map ((orderedCechFace U p k).φ t).op ≫ (e (p+1) t).hom)
+    (e' : ∀ (p : ℕ) (t : OrderedCechIndex ι p),
+      F'.obj (op (∏ᶜ fun l : Fin (p+1) => U (t.1 l))) ≅
+        G'.obj (op (∏ᶜ fun l : Fin (p+1) => V (t.1 l))))
+    (he' : ∀ (p : ℕ) (k : Fin (p+2)) (t : OrderedCechIndex ι (p+1)),
+      (e' p (t.delete k)).hom ≫ G'.map ((orderedCechFace V p k).φ t).op =
+        F'.map ((orderedCechFace U p k).φ t).op ≫ (e' (p+1) t).hom)
+    (a : F ⟶ F') (b : G ⟶ G')
+    (ha : ∀ (p : ℕ) (t : OrderedCechIndex ι p),
+      (e p t).hom ≫ b.app (op (∏ᶜ fun l : Fin (p+1) => V (t.1 l))) =
+        a.app (op (∏ᶜ fun l : Fin (p+1) => U (t.1 l))) ≫ (e' p t).hom) :
+    (orderedCrossSpaceAbelianCechComplexIso F G U V e he).hom ≫
+      (orderedFormalCechCoefficientFunctor V).map
+        ((FormalCoproduct.evalOp.{u} Y.Opens AddCommGrpCat.{u}).map b) =
+    (orderedFormalCechCoefficientFunctor U).map
+        ((FormalCoproduct.evalOp.{u} X.Opens AddCommGrpCat.{u}).map a) ≫
+      (orderedCrossSpaceAbelianCechComplexIso F' G' U V e' he').hom := by
+  apply HomologicalComplex.Hom.ext
+  funext p
+  change CategoryTheory.Limits.Pi.map (fun t : OrderedCechIndex ι p => (e p t).hom) ≫
+      CategoryTheory.Limits.Pi.map (fun t : OrderedCechIndex ι p => b.app (op (∏ᶜ fun l : Fin (p+1) => V (t.1 l)))) =
+    CategoryTheory.Limits.Pi.map (fun t : OrderedCechIndex ι p => a.app (op (∏ᶜ fun l : Fin (p+1) => U (t.1 l)))) ≫
+      CategoryTheory.Limits.Pi.map (fun t : OrderedCechIndex ι p => (e' p t).hom)
+  rw [CategoryTheory.Limits.Pi.map_comp_map,CategoryTheory.Limits.Pi.map_comp_map]
+  congr 1
+  funext t
+  exact ha p t
+end LinearStudy
+
+===== Linear.NativeProjectiveDegreeZeroActualCoefficientValue SHA256 e965f592796417cbaadd21d0c8b70b4cdaa0c3da4983148814910d18b86fa66c =====
+module
+public import Linear.NativeProjectiveDegreeZeroMap
+public import Linear.SchemeModuleFiniteSupportCohomology
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R M N : Type u} [Field K] [CommRing R] [Algebra K R]
+variable [AddCommGroup M] [Module R M] [Module K M]
+variable [AddCommGroup N] [Module R N] [Module K N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[R] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+/-- Forgetting the ORIGINAL degree-zero native module-sheaf map to the
+ACTUAL abelian sheaf preserves its ORIGINAL section formula,for EVERY
+integer twist and EVERY original open. No replacement map is introduced. -/
+theorem nativeProjectiveDegreeZeroActualAbelian_app (k : ℤ) (U : (Proj A).Opens)
+    (x : nativeProjectiveModuleSections A D hD k (op U)) :
+    (((schemeModuleToActualAbelianSheaf (Proj A)).map
+      (nativeProjectiveDegreeZeroSheafMap A D E hD hE f hf k)).hom.app (op U)) x =
+        nativeProjectiveDegreeZeroSectionMap A D E hD hE f hf k (op U) x := rfl
+end LinearStudy
+
+===== Linear.NativeIndependentSourceAmbientCechProductCoefficient SHA256 93f70ef2a1d4653d1924f469dde03d130add30834532f5a89fce2a8cfd30af05 =====
+module
+public import Linear.NativeIndependentSourceAmbientCoefficientSections
+public import Linear.NativeIndependentSourceAmbientCechObjects
+public import Linear.ConcreteAdditiveEquivNaturality
+public import Linear.NativeProjectiveDegreeZeroActualCoefficientValue
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable [IsScalarTower K R M] [IsScalarTower K S M]
+variable [IsScalarTower K R N] [IsScalarTower K S N]
+variable [IsDomain S] [Module.IsTorsionFree S M] [Module.IsTorsionFree S N]
+variable [IsNoetherianRing R] [IsNoetherianRing S]
+variable [Module.Finite R M] [Module.Finite S M] [Module.Finite R N] [Module.Finite S N]
+variable {ι κ : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+attribute [local irreducible] nativeWeightedSourceAmbientSectionAddEquiv
+attribute [local irreducible] nativeIndependentSourceAmbientCechSectionAddEquiv
+/-- The SAME product-chart comparison is natural for the ORIGINAL actual
+abelian-sheaf coefficient map between TWO finite graded modules. Every local
+bijection is derived;source coordinates c generate S independently of a. -/
+theorem nativeIndependentSourceAmbientCechProductIso_coefficient
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ) (t : Fin (p+1) → ι) :
+    let fA := ((schemeModuleToActualAbelianSheaf (Proj A)).map
+      (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf 0)).hom
+    let fB := ((schemeModuleToActualAbelianSheaf (Proj B)).map
+      (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf 0)).hom
+    (nativeIndependentSourceAmbientCechProductIso A B D hRD hSD a ha c hc hgenR hgenC p t).hom ≫
+      fB.app (op (Proj.basicOpen B (algebraMap R S (∏ j : Fin (p+1),a (t j))))) =
+    fA.app (op (Proj.basicOpen A (∏ j : Fin (p+1),a (t j)))) ≫
+      (nativeIndependentSourceAmbientCechProductIso A B E hRE hSE a ha c hc hgenR hgenC p t).hom := by
+  let fA := ((schemeModuleToActualAbelianSheaf (Proj A)).map
+    (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf 0)).hom
+  let fB := ((schemeModuleToActualAbelianSheaf (Proj B)).map
+    (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf 0)).hom
+  let UA := Proj.basicOpen A (∏ j : Fin (p+1),a (t j))
+  let UB := Proj.basicOpen B (algebraMap R S (∏ j : Fin (p+1),a (t j)))
+  let eD := nativeIndependentSourceAmbientCechSectionAddEquiv A B D hRD hSD a ha c hc hgenR hgenC p t
+  let eE := nativeIndependentSourceAmbientCechSectionAddEquiv A B E hRE hSE a ha c hc hgenR hgenC p t
+  apply additiveEquivIso_coefficient eD eE (fA.app (op UA)) (fB.app (op UB))
+  intro x
+  change eE (nativeProjectiveDegreeZeroSectionMap A D E hRD hRE
+    (f.restrictScalars R) hf 0 (op UA) x) =
+      nativeProjectiveDegreeZeroSectionMap B D E hSD hSE f hf 0 (op UB) (eD x)
+  exact nativeIndependentSourceAmbientCechSectionAddEquiv_coefficient A B D E hRD hSD hRE hSE f hf
+    a ha c hc hgenR hgenC p t x
+end LinearStudy
+
+===== Linear.NativeIndependentSourceAmbientCechIntersectionCoefficient SHA256 d0a3686d1c95a15f1dae310ef88ce90320949f3d76af6fe066b3d4a30ce39b8a =====
+module
+public import Linear.NativeIndependentSourceAmbientCechProductCoefficient
+public import Linear.OrderedCrossSpaceCechCoefficientNaturality
+public import Linear.NativeIndependentSourceAmbientCechObjects
+public import Linear.ConcreteAdditiveEquivNaturality
+public import Linear.NativeProjectiveDegreeZeroActualCoefficientValue
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable [IsScalarTower K R M] [IsScalarTower K S M]
+variable [IsScalarTower K R N] [IsScalarTower K S N]
+variable [IsDomain S] [Module.IsTorsionFree S M] [Module.IsTorsionFree S N]
+variable [IsNoetherianRing R] [IsNoetherianRing S]
+variable [Module.Finite R M] [Module.Finite S M] [Module.Finite R N] [Module.Finite S N]
+variable {ι κ : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+attribute [local irreducible] nativeWeightedSourceAmbientSectionAddEquiv
+open CategoryTheory.Limits
+/-- The original intersection opens retain the derived coefficient square
+by equality transport from the SAME original product-chart comparisons. -/
+theorem nativeIndependentSourceAmbientCechIntersectionIso_coefficient
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ) (t : Fin (p+1) → ι) :
+    let fA := ((schemeModuleToActualAbelianSheaf (Proj A)).map
+      (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf 0)).hom
+    let fB := ((schemeModuleToActualAbelianSheaf (Proj B)).map
+      (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf 0)).hom
+    (nativeIndependentSourceAmbientCechIntersectionIso A B D hRD hSD a ha c hc hgenR hgenC p t).hom ≫
+      fB.app (op (∏ᶜ fun j : Fin (p+1) => Proj.basicOpen B (algebraMap R S (a (t j))))) =
+    fA.app (op (∏ᶜ fun j : Fin (p+1) => Proj.basicOpen A (a (t j)))) ≫
+      (nativeIndependentSourceAmbientCechIntersectionIso A B E hRE hSE a ha c hc hgenR hgenC p t).hom := by
+  let FA := ((schemeModuleToActualAbelianSheaf (Proj A)).obj (nativeProjectiveModuleSheaf A D hRD 0)).obj
+  let FA' := ((schemeModuleToActualAbelianSheaf (Proj A)).obj (nativeProjectiveModuleSheaf A E hRE 0)).obj
+  let FB := ((schemeModuleToActualAbelianSheaf (Proj B)).obj (nativeProjectiveModuleSheaf B D hSD 0)).obj
+  let FB' := ((schemeModuleToActualAbelianSheaf (Proj B)).obj (nativeProjectiveModuleSheaf B E hSE 0)).obj
+  let fA := ((schemeModuleToActualAbelianSheaf (Proj A)).map
+    (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf 0)).hom
+  let fB := ((schemeModuleToActualAbelianSheaf (Proj B)).map
+    (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf 0)).hom
+  exact abelianOpenSectionComparisonIso_coefficient FA FA' FB FB'
+    _ _ _ _ (nativeProjective_cechIntersection_eq_basicOpen A a p t)
+    (nativeSourceCoordinateCechIntersection_eq_basicOpen B a p t)
+    (nativeIndependentSourceAmbientCechProductIso A B D hRD hSD a ha c hc hgenR hgenC p t)
+    (nativeIndependentSourceAmbientCechProductIso A B E hRE hSE a ha c hc hgenR hgenC p t)
+    fA fB (nativeIndependentSourceAmbientCechProductIso_coefficient A B D E hRD hSD hRE hSE f hf
+      a ha c hc hgenR hgenC p t)
+end LinearStudy
+
+===== Linear.NativeIndependentSourceAmbientOrderedCechCoefficient SHA256 8e310ec90897c06f8036cb8c1420a27dda5695968ee206899705c74b0df78ae0 =====
+module
+public import Linear.NativeIndependentSourceAmbientCechIntersectionCoefficient
+public import Linear.NativeIndependentSourceAmbientOrderedCech
+public import Linear.OrderedFreeSheafHomCoefficientNaturality
+public import Linear.OrderedCrossSpaceCechCoefficientNaturality
+public import Linear.NativeIndependentSourceAmbientCechObjects
+public import Linear.ConcreteAdditiveEquivNaturality
+public import Linear.NativeProjectiveDegreeZeroActualCoefficientValue
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable [IsScalarTower K R M] [IsScalarTower K S M]
+variable [IsScalarTower K R N] [IsScalarTower K S N]
+variable [IsDomain S] [Module.IsTorsionFree S M] [Module.IsTorsionFree S N]
+variable [IsNoetherianRing R] [IsNoetherianRing S]
+variable [Module.Finite R M] [Module.Finite S M] [Module.Finite R N] [Module.Finite S N]
+variable {ι κ : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+attribute [local irreducible] nativeWeightedSourceAmbientSectionAddEquiv
+open CategoryTheory.Limits AlgebraicGeometry.Scheme.Modules
+variable [LinearOrder ι]
+/-- The SAME existing source/ambient ordered Cech comparisons are natural
+for the ORIGINAL degree-zero map between TWO finite graded modules. All
+intersection squares are derived;original faces,signs and maps are retained. -/
+theorem nativeIndependentSourceAmbientOrderedCechIso_coefficient
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) :
+    let fA := (schemeModuleToActualAbelianSheaf (Proj A)).map
+      (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf 0)
+    let fB := (schemeModuleToActualAbelianSheaf (Proj B)).map
+      (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf 0)
+    (nativeIndependentSourceAmbientOrderedCechIso A B D hRD hSD a ha c hc hgenR hgenC).hom ≫
+      orderedTopAbelianCechCoefficientMap (Proj B) (fun i => Proj.basicOpen B (algebraMap R S (a i))) fB =
+    orderedTopAbelianCechCoefficientMap (Proj A) (fun i => Proj.basicOpen A (a i)) fA ≫
+      (nativeIndependentSourceAmbientOrderedCechIso A B E hRE hSE a ha c hc hgenR hgenC).hom := by
+  let FA := ((schemeModuleToActualAbelianSheaf (Proj A)).obj (nativeProjectiveModuleSheaf A D hRD 0)).obj
+  let FA' := ((schemeModuleToActualAbelianSheaf (Proj A)).obj (nativeProjectiveModuleSheaf A E hRE 0)).obj
+  let FB := ((schemeModuleToActualAbelianSheaf (Proj B)).obj (nativeProjectiveModuleSheaf B D hSD 0)).obj
+  let FB' := ((schemeModuleToActualAbelianSheaf (Proj B)).obj (nativeProjectiveModuleSheaf B E hSE 0)).obj
+  let fA := (schemeModuleToActualAbelianSheaf (Proj A)).map
+    (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf 0)
+  let fB := (schemeModuleToActualAbelianSheaf (Proj B)).map
+    (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf 0)
+  exact orderedCrossSpaceAbelianCechComplexIso_coefficient FA FA' FB FB'
+    (fun i => Proj.basicOpen A (a i)) (fun i => Proj.basicOpen B (algebraMap R S (a i)))
+    (fun p t => nativeIndependentSourceAmbientCechIntersectionIso A B D hRD hSD a ha c hc hgenR hgenC p t.1)
+    (fun p k t => nativeIndependentSourceAmbientCechIntersectionIso_face A B D hRD hSD a ha c hc hgenR hgenC p k t)
+    (fun p t => nativeIndependentSourceAmbientCechIntersectionIso A B E hRE hSE a ha c hc hgenR hgenC p t.1)
+    (fun p k t => nativeIndependentSourceAmbientCechIntersectionIso_face A B E hRE hSE a ha c hc hgenR hgenC p k t)
+    fA.hom fB.hom
+    (fun p t => nativeIndependentSourceAmbientCechIntersectionIso_coefficient A B D E hRD hSD hRE hSE f hf
+      a ha c hc hgenR hgenC p t.1)
+end LinearStudy
+
+===== Linear.NativeTwistRegradingCoefficientSquares SHA256 13c5996c80e7e9798e2366fdab83d5662fcd56840b7b52db386df2f1bfaa4082 =====
+module
+public import Linear.NativeProjectiveDegreeZeroMap
+public import Linear.SchemeModuleFiniteSupportCohomology
+public import Linear.NativeProjectiveTwistRegrading
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R M N : Type u} [Field K] [CommRing R] [Algebra K R]
+variable [AddCommGroup M] [Module R M] [Module K M]
+variable [AddCommGroup N] [Module R N] [Module K N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[R] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+/-- Original regrading is natural for the ORIGINAL degree-zero coefficient
+map on EVERY open. This is the two-object hom square,proved by the SAME
+identity on prime-localized values used by the existing regrading proof. -/
+theorem nativeProjectiveTwistRegradingIso_coefficient_hom (k : ℤ) :
+    nativeProjectiveDegreeZeroSheafMap A (integerGradingShift D k) (integerGradingShift E k)
+      (integerGradingShift_smul_homogeneous A D hD k)
+      (integerGradingShift_smul_homogeneous A E hE k) f (fun j x hx => hf (j+k) x hx) 0 ≫
+        (nativeProjectiveTwistRegradingIso A E hE k).hom =
+    (nativeProjectiveTwistRegradingIso A D hD k).hom ≫
+      nativeProjectiveDegreeZeroSheafMap A D E hD hE f hf k := by
+  apply SheafOfModules.hom_ext
+  apply PresheafOfModules.hom_ext
+  intro U
+  apply ModuleCat.hom_ext
+  apply LinearMap.ext
+  intro x
+  apply Subtype.ext
+  rfl
+/-- The original inverse regrading square,for the SAME degree-zero map
+and EVERY integer twist. No comparison or naturality certificate is assumed. -/
+theorem nativeProjectiveTwistRegradingIso_coefficient_inv (k : ℤ) :
+    nativeProjectiveDegreeZeroSheafMap A D E hD hE f hf k ≫
+      (nativeProjectiveTwistRegradingIso A E hE k).inv =
+    (nativeProjectiveTwistRegradingIso A D hD k).inv ≫
+      nativeProjectiveDegreeZeroSheafMap A (integerGradingShift D k) (integerGradingShift E k)
+        (integerGradingShift_smul_homogeneous A D hD k)
+        (integerGradingShift_smul_homogeneous A E hE k) f (fun j x hx => hf (j+k) x hx) 0 := by
+  apply SheafOfModules.hom_ext
+  apply PresheafOfModules.hom_ext
+  intro U
+  apply ModuleCat.hom_ext
+  apply LinearMap.ext
+  intro x
+  apply Subtype.ext
+  rfl
+end LinearStudy
+
+===== Linear.NativeOrderedCechRegradingCoefficient SHA256 e717f813a5d423cde922625962a6be45295d0f49cb9592c6b0ef031d012118de =====
+module
+public import Linear.NativeTwistRegradingCoefficientSquares
+public import Linear.OrderedCechModuleScalarNaturality
+public import Linear.SchemeModuleFiniteSupportCohomology
+public import Linear.NativeProjectiveTwistRegrading
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R M N : Type u} [Field K] [CommRing R] [Algebra K R]
+variable [AddCommGroup M] [Module R M] [Module K M]
+variable [AddCommGroup N] [Module R N] [Module K N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[R] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+open AlgebraicGeometry.Scheme.Modules CategoryTheory.Limits
+variable {ι : Type u} [LinearOrder ι] (U : ι → (Proj A).Opens)
+/-- The SAME actual ordered-Cech regrading hom respects the ORIGINAL
+coefficient morphism in EVERY integer twist,by functoriality of actual maps. -/
+theorem nativeOrderedCechRegradingIso_coefficient_hom (k : ℤ) :
+    orderedTopAbelianCechCoefficientMap (Proj A) U ((schemeModuleToActualAbelianSheaf (Proj A)).map
+      (nativeProjectiveDegreeZeroSheafMap A (integerGradingShift D k) (integerGradingShift E k)
+        (integerGradingShift_smul_homogeneous A D hD k)
+        (integerGradingShift_smul_homogeneous A E hE k) f (fun j x hx => hf (j+k) x hx) 0)) ≫
+      (orderedTopAbelianCechCoefficientIso U ((schemeModuleToActualAbelianSheaf (Proj A)).mapIso
+        (nativeProjectiveTwistRegradingIso A E hE k))).hom =
+    (orderedTopAbelianCechCoefficientIso U ((schemeModuleToActualAbelianSheaf (Proj A)).mapIso
+        (nativeProjectiveTwistRegradingIso A D hD k))).hom ≫
+      orderedTopAbelianCechCoefficientMap (Proj A) U ((schemeModuleToActualAbelianSheaf (Proj A)).map
+        (nativeProjectiveDegreeZeroSheafMap A D E hD hE f hf k)) := by
+  rw [orderedTopAbelianCechCoefficientIso_hom_eq_map,orderedTopAbelianCechCoefficientIso_hom_eq_map]
+  let C := schemeModuleToActualAbelianSheaf (Proj A) ⋙
+    sheafToPresheaf (_root_.Opens.grothendieckTopology (Proj A)) AddCommGrpCat.{u} ⋙
+    FormalCoproduct.evalOp.{u} (Proj A).Opens AddCommGrpCat.{u} ⋙ orderedFormalCechCoefficientFunctor U
+  change C.map _ ≫ C.map _ = C.map _ ≫ C.map _
+  simpa only [Functor.map_comp] using
+    congrArg C.map (nativeProjectiveTwistRegradingIso_coefficient_hom A D E hD hE f hf k)
+/-- The SAME ordered-Cech inverse regrading respects the ORIGINAL map.
+The proof maps the proved original O-linear sheaf square,without transfer
+of coefficient actions or assumptions about the final Cech comparison. -/
+theorem nativeOrderedCechRegradingIso_coefficient_inv (k : ℤ) :
+    orderedTopAbelianCechCoefficientMap (Proj A) U ((schemeModuleToActualAbelianSheaf (Proj A)).map
+      (nativeProjectiveDegreeZeroSheafMap A D E hD hE f hf k)) ≫
+      (orderedTopAbelianCechCoefficientIso U ((schemeModuleToActualAbelianSheaf (Proj A)).mapIso
+        (nativeProjectiveTwistRegradingIso A E hE k))).inv =
+    (orderedTopAbelianCechCoefficientIso U ((schemeModuleToActualAbelianSheaf (Proj A)).mapIso
+        (nativeProjectiveTwistRegradingIso A D hD k))).inv ≫
+      orderedTopAbelianCechCoefficientMap (Proj A) U ((schemeModuleToActualAbelianSheaf (Proj A)).map
+        (nativeProjectiveDegreeZeroSheafMap A (integerGradingShift D k) (integerGradingShift E k)
+          (integerGradingShift_smul_homogeneous A D hD k)
+          (integerGradingShift_smul_homogeneous A E hE k) f (fun j x hx => hf (j+k) x hx) 0)) := by
+  rw [orderedTopAbelianCechCoefficientIso_inv_eq_map,orderedTopAbelianCechCoefficientIso_inv_eq_map]
+  let C := schemeModuleToActualAbelianSheaf (Proj A) ⋙
+    sheafToPresheaf (_root_.Opens.grothendieckTopology (Proj A)) AddCommGrpCat.{u} ⋙
+    FormalCoproduct.evalOp.{u} (Proj A).Opens AddCommGrpCat.{u} ⋙ orderedFormalCechCoefficientFunctor U
+  change C.map _ ≫ C.map _ = C.map _ ≫ C.map _
+  simpa only [Functor.map_comp] using
+    congrArg C.map (nativeProjectiveTwistRegradingIso_coefficient_inv A D E hD hE f hf k)
+end LinearStudy
+
+===== Linear.NativeIndependentSourceAmbientOrderedTwistCechCoefficient SHA256 8a497df65c6c0e95f6b4845f2e5f5f2fa40878edfd001febd695c1638c54b3ed =====
+module
+public import Linear.NativeIndependentSourceAmbientOrderedCechCoefficient
+public import Linear.NativeIndependentSourceAmbientOrderedTwistCech
+public import Linear.NativeOrderedCechRegradingCoefficient
+public import Linear.NativeIndependentSourceAmbientOrderedCech
+public import Linear.OrderedFreeSheafHomCoefficientNaturality
+public import Linear.OrderedCrossSpaceCechCoefficientNaturality
+public import Linear.NativeIndependentSourceAmbientCechObjects
+public import Linear.ConcreteAdditiveEquivNaturality
+public import Linear.NativeProjectiveDegreeZeroActualCoefficientValue
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable [IsScalarTower K R M] [IsScalarTower K S M]
+variable [IsScalarTower K R N] [IsScalarTower K S N]
+variable [IsDomain S] [Module.IsTorsionFree S M] [Module.IsTorsionFree S N]
+variable [IsNoetherianRing R] [IsNoetherianRing S]
+variable [Module.Finite R M] [Module.Finite S M] [Module.Finite R N] [Module.Finite S N]
+variable {ι κ : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+attribute [local irreducible] nativeWeightedSourceAmbientSectionAddEquiv
+open CategoryTheory.Limits AlgebraicGeometry.Scheme.Modules
+variable [LinearOrder ι]
+/-- EVERY integer twist of the SAME source/ambient ordered Cech comparison
+is natural for the ORIGINAL degree-zero S-linear map between TWO finite
+graded modules. The TWO O-linear regrading squares are proved on actual
+localized values;all product/intersection/face/sign comparisons are original. -/
+theorem nativeIndependentSourceAmbientOrderedTwistCechIso_coefficient
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) :
+    let fA := (schemeModuleToActualAbelianSheaf (Proj A)).map
+      (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf k)
+    let fB := (schemeModuleToActualAbelianSheaf (Proj B)).map
+      (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf k)
+    (nativeIndependentSourceAmbientOrderedTwistCechIso A B D hRD hSD a ha c hc hgenR hgenC k).hom ≫
+      orderedTopAbelianCechCoefficientMap (Proj B) (fun i => Proj.basicOpen B (algebraMap R S (a i))) fB =
+    orderedTopAbelianCechCoefficientMap (Proj A) (fun i => Proj.basicOpen A (a i)) fA ≫
+      (nativeIndependentSourceAmbientOrderedTwistCechIso A B E hRE hSE a ha c hc hgenR hgenC k).hom := by
+  let Dk := integerGradingShift D k
+  let Ek := integerGradingShift E k
+  let hRDk := integerGradingShift_smul_homogeneous A D hRD k
+  let hSDk := integerGradingShift_smul_homogeneous B D hSD k
+  let hREk := integerGradingShift_smul_homogeneous A E hRE k
+  let hSEk := integerGradingShift_smul_homogeneous B E hSE k
+  let hfk := fun j x hx => hf (j+k) x hx
+  letI : DirectSum.Decomposition Dk := integerGradingShiftDecomposition D k
+  letI : DirectSum.Decomposition Ek := integerGradingShiftDecomposition E k
+  let U := fun i => Proj.basicOpen A (a i)
+  let V := fun i => Proj.basicOpen B (algebraMap R S (a i))
+  let eAD := orderedTopAbelianCechCoefficientIso U
+    ((schemeModuleToActualAbelianSheaf (Proj A)).mapIso (nativeProjectiveTwistRegradingIso A D hRD k))
+  let eAE := orderedTopAbelianCechCoefficientIso U
+    ((schemeModuleToActualAbelianSheaf (Proj A)).mapIso (nativeProjectiveTwistRegradingIso A E hRE k))
+  let eBD := orderedTopAbelianCechCoefficientIso V
+    ((schemeModuleToActualAbelianSheaf (Proj B)).mapIso (nativeProjectiveTwistRegradingIso B D hSD k))
+  let eBE := orderedTopAbelianCechCoefficientIso V
+    ((schemeModuleToActualAbelianSheaf (Proj B)).mapIso (nativeProjectiveTwistRegradingIso B E hSE k))
+  let eD := nativeIndependentSourceAmbientOrderedCechIso A B Dk hRDk hSDk a ha c hc hgenR hgenC
+  let eE := nativeIndependentSourceAmbientOrderedCechIso A B Ek hREk hSEk a ha c hc hgenR hgenC
+  let muAk := orderedTopAbelianCechCoefficientMap (Proj A) U ((schemeModuleToActualAbelianSheaf (Proj A)).map
+    (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf k))
+  let muA0 := orderedTopAbelianCechCoefficientMap (Proj A) U ((schemeModuleToActualAbelianSheaf (Proj A)).map
+    (nativeProjectiveDegreeZeroSheafMap A Dk Ek hRDk hREk (f.restrictScalars R) hfk 0))
+  let muBk := orderedTopAbelianCechCoefficientMap (Proj B) V ((schemeModuleToActualAbelianSheaf (Proj B)).map
+    (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf k))
+  let muB0 := orderedTopAbelianCechCoefficientMap (Proj B) V ((schemeModuleToActualAbelianSheaf (Proj B)).map
+    (nativeProjectiveDegreeZeroSheafMap B Dk Ek hSDk hSEk f hfk 0))
+  have hA : CommSq muAk eAD.inv eAE.inv muA0 :=
+    ⟨nativeOrderedCechRegradingIso_coefficient_inv A D E hRD hRE (f.restrictScalars R) hf U k⟩
+  have hB : CommSq muB0 eBD.hom eBE.hom muBk :=
+    ⟨nativeOrderedCechRegradingIso_coefficient_hom B D E hSD hSE f hf V k⟩
+  have h0 : CommSq muA0 eD.hom eE.hom muB0 :=
+    ⟨(nativeIndependentSourceAmbientOrderedCechIso_coefficient A B Dk Ek hRDk hSDk hREk hSEk f hfk
+      a ha c hc hgenR hgenC).symm⟩
+  change (eAD.inv ≫ eD.hom ≫ eBD.hom) ≫ muBk = muAk ≫ (eAE.inv ≫ eE.hom ≫ eBE.hom)
+  exact (hA.vert_comp (h0.vert_comp hB)).w.symm
+end LinearStudy
+
+===== Linear.CategoricalComparisonCoefficientFactorization SHA256 623dfae5cab16c17c283ff9d0102363cf24029e19be3a2ff6cda0cd08e622613 =====
+module
+public import Linear.OrderedCrossSpaceCechCoefficientNaturality
+@[expose] public section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory
+universe u v
+/-- Compose TWO proved original coefficient squares using EXACT equalities
+for the old comparisons. Keeping the object structures abstract prevents
+repeated expansion of large actual-cohomology group presentations. -/
+theorem originalComparisonIsoCoefficientSquare_of_factorizations
+    {C : Type u} [Category.{v} C] {A A' B B' D D' : C}
+    (e : A ≅ B) (e' : A' ≅ B') (j : B ≅ D) (j' : B' ≅ D')
+    (old : A ≅ D) (old' : A' ≅ D') (hold : old = e ≪≫ j) (hold' : old' = e' ≪≫ j')
+    (a : A ⟶ A') (b : B ⟶ B') (d : D ⟶ D')
+    (h1 : a ≫ e'.hom = e.hom ≫ b) (h2 : b ≫ j'.hom = j.hom ≫ d) :
+    a ≫ old'.hom = old.hom ≫ d := by
+  rw [hold,hold']
+  exact ((show CommSq a e.hom e'.hom b from ⟨h1⟩).vert_comp
+    (show CommSq b j.hom j'.hom d from ⟨h2⟩)).w
+end LinearStudy
+
+===== Linear.NativeIndependentSourceAmbientCechHomologyCoefficient SHA256 3cacdd281bb88ba10eadb29b557f7c0bc9cedccc6f8ce00ef75f37c01404bd37 =====
+module
+public import Linear.NativeIndependentSourceAmbientOrderedTwistCechCoefficient
+public import Linear.NativeIndependentSourceAmbientOrderedTwistCech
+public import Linear.NativeOrderedCechRegradingCoefficient
+public import Linear.NativeIndependentSourceAmbientOrderedCech
+public import Linear.OrderedFreeSheafHomCoefficientNaturality
+public import Linear.OrderedCrossSpaceCechCoefficientNaturality
+public import Linear.NativeIndependentSourceAmbientCechObjects
+public import Linear.ConcreteAdditiveEquivNaturality
+public import Linear.NativeProjectiveDegreeZeroActualCoefficientValue
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable [IsScalarTower K R M] [IsScalarTower K S M]
+variable [IsScalarTower K R N] [IsScalarTower K S N]
+variable [IsDomain S] [Module.IsTorsionFree S M] [Module.IsTorsionFree S N]
+variable [IsNoetherianRing R] [IsNoetherianRing S]
+variable [Module.Finite R M] [Module.Finite S M] [Module.Finite R N] [Module.Finite S N]
+variable {ι κ : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+attribute [local irreducible] nativeWeightedSourceAmbientSectionAddEquiv
+open CategoryTheory.Limits AlgebraicGeometry.Scheme.Modules
+variable [LinearOrder ι]
+/-- Actual homology of the SAME original ordered Cech comparison is natural
+for the ORIGINAL coefficient map,EVERY integer twist and EVERY positive degree.
+Only the original homology functor is applied;no actual-H square is assumed. -/
+theorem nativeIndependentSourceAmbientOrderedTwistCechIso_homology_coefficient
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) :
+    let mA := orderedTopAbelianCechCoefficientMap (Proj A) (fun i => Proj.basicOpen A (a i))
+      ((schemeModuleToActualAbelianSheaf (Proj A)).map
+        (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf k))
+    let mB := orderedTopAbelianCechCoefficientMap (Proj B) (fun i => Proj.basicOpen B (algebraMap R S (a i)))
+      ((schemeModuleToActualAbelianSheaf (Proj B)).map
+        (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf k))
+    let T := HomologicalComplex.homologyFunctor AddCommGrpCat.{u} (.up ℕ) (q+1)
+    HomologicalComplex.homologyMap mA (q+1) ≫
+      (T.mapIso (nativeIndependentSourceAmbientOrderedTwistCechIso A B E hRE hSE a ha c hc hgenR hgenC k)).hom =
+    (T.mapIso (nativeIndependentSourceAmbientOrderedTwistCechIso A B D hRD hSD a ha c hc hgenR hgenC k)).hom ≫
+      HomologicalComplex.homologyMap mB (q+1) := by
+  let T := HomologicalComplex.homologyFunctor AddCommGrpCat.{u} (.up ℕ) (q+1)
+  exact (T.map_commSq (show CommSq _ _ _ _ from
+    ⟨(nativeIndependentSourceAmbientOrderedTwistCechIso_coefficient A B D E hRD hSD hRE hSE f hf
+      a ha c hc hgenR hgenC k).symm⟩)).w
+end LinearStudy
+
+===== Linear.NativeFiniteGradedSourceActualHCoefficient SHA256 df26735ba6d64ee681572ec7b25d7470642b253df13c647b547c3c22134beacb =====
+module
+public import Linear.NativeProjActualHCoefficientNaturality
+public import Linear.NativeProjectiveTwistQuasicoherent
+public import Linear.NativeProjectiveDegreeZeroMap
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u
+variable {K S M N : Type u} [Field K] [CommRing S] [Algebra K S]
+variable [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M]
+variable [AddCommGroup N] [Module K N] [Module S N] [IsScalarTower K S N]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+variable [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite S M] [Module.Finite S N]
+variable {ι : Type u} [LinearOrder ι] [Finite ι] (b : ι → S) (hb : ∀ i,b i ∈ B 1)
+attribute [local irreducible] finiteTypeNativeProj_orderedActualHigherHIso
+  noetherianFiniteOrderedAffineCover_actualHigherHIso topFiniteOrderedCech_actualHigherHIso_of_localAcyclic
+  orderedFreeSheafActualHomComplexIso acyclicResolutionActualCochainExtIso
+/-- The SAME actual source-Cech/native-H comparisons are natural for the
+ORIGINAL native degree-zero module-sheaf map,in EVERY integer twist and
+positive degree. BOTH original native sheaves are proved quasicoherent
+from the given ordinary degree-one COVER;no coefficient square is assumed. -/
+theorem nativeFiniteGradedTwist_actualHigherHIso_coefficient
+    (hcover : (⨆ i,Proj.basicOpen B (b i)) = ⊤) (k : ℤ) (q : ℕ) :
+    let MB := nativeProjectiveModuleSheaf B D hD k
+    let NB := nativeProjectiveModuleSheaf B E hE k
+    letI : MB.IsQuasicoherent := nativeFiniteGradedTwist_isQuasicoherent_of_cover B D hD k b hb hcover
+    letI : NB.IsQuasicoherent := nativeFiniteGradedTwist_isQuasicoherent_of_cover B E hE k b hb hcover
+    let fB := nativeProjectiveDegreeZeroSheafMap B D E hD hE f hf k
+    HomologicalComplex.homologyMap
+      (orderedTopAbelianCechCoefficientMap (Proj B) (fun i => Proj.basicOpen B (b i))
+        ((schemeModuleToActualAbelianSheaf (Proj B)).map fB)) (q+1) ≫
+      (finiteTypeNativeProj_orderedActualHigherHIso B b hb hcover NB q).hom =
+    (finiteTypeNativeProj_orderedActualHigherHIso B b hb hcover MB q).hom ≫
+      (CategoryTheory.Sheaf.functorH.{u} (_root_.Opens.grothendieckTopology (Proj B)) (q+1)).map
+        ((schemeModuleToActualAbelianSheaf (Proj B)).map fB) := by
+  let MB := nativeProjectiveModuleSheaf B D hD k
+  let NB := nativeProjectiveModuleSheaf B E hE k
+  letI : MB.IsQuasicoherent := nativeFiniteGradedTwist_isQuasicoherent_of_cover B D hD k b hb hcover
+  letI : NB.IsQuasicoherent := nativeFiniteGradedTwist_isQuasicoherent_of_cover B E hE k b hb hcover
+  exact finiteTypeNativeProj_orderedActualHigherHIso_coefficient_naturality B b hb hcover
+    (nativeProjectiveDegreeZeroSheafMap B D E hD hE f hf k) q
+end LinearStudy
+
+===== Linear.SchemeModuleActualHObjects SHA256 799c50f53d903b6808897e59b9cd032dd352282f4d2f75e28fbe214ecc6ff47f =====
+module
+public import Linear.SchemeModuleFiniteSupportCohomology
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u
+/-- A named interface for the EXACT original actual-H group object.
+No new cohomology group,transported action or mathematical input. -/
+def schemeModuleActualHObject (X : Scheme.{u}) (M : X.Modules) (n : ℕ) : AddCommGrpCat.{u} :=
+  (CategoryTheory.Sheaf.functorH.{u} (_root_.Opens.grothendieckTopology X) n).obj
+    ((schemeModuleToActualAbelianSheaf X).obj M)
+/-- The EXACT original actual-H coefficient morphism,with cached objects. -/
+def schemeModuleActualHCoefficientHom {X : Scheme.{u}} {M N : X.Modules} (f : M ⟶ N) (n : ℕ) :
+    schemeModuleActualHObject X M n ⟶ schemeModuleActualHObject X N n :=
+  (CategoryTheory.Sheaf.functorH.{u} (_root_.Opens.grothendieckTopology X) n).map
+    ((schemeModuleToActualAbelianSheaf X).map f)
+theorem schemeModuleActualHObject_eq_original (X : Scheme.{u}) (M : X.Modules) (n : ℕ) :
+    schemeModuleActualHObject X M n =
+      (CategoryTheory.Sheaf.functorH.{u} (_root_.Opens.grothendieckTopology X) n).obj
+        ((schemeModuleToActualAbelianSheaf X).obj M) := rfl
+theorem schemeModuleActualHObject_carrier_eq_original (X : Scheme.{u}) (M : X.Modules) (n : ℕ) :
+    (schemeModuleActualHObject X M n : Type u) = schemeModuleActualCohomology X M n := rfl
+theorem schemeModuleActualHCoefficientHom_eq_original {X : Scheme.{u}} {M N : X.Modules}
+    (f : M ⟶ N) (n : ℕ) :
+    schemeModuleActualHCoefficientHom f n =
+      (CategoryTheory.Sheaf.functorH.{u} (_root_.Opens.grothendieckTopology X) n).map
+        ((schemeModuleToActualAbelianSheaf X).map f) := rfl
+end LinearStudy
+
+===== Linear.NativeProjectiveCechHomologyObjects SHA256 91def766ad2133e2443e8676c1c07a7e73b4986f0fa7da5df71a0d5ece9178d3 =====
+module
+public import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Basic
+public import Linear.NativeProjectiveDegreeZeroActualCoefficientValue
+public import Linear.OrderedFreeSheafHomCoefficientNaturality
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u
+variable {K S M N : Type u} [Field K] [CommRing S] [Algebra K S]
+variable [AddCommGroup M] [Module K M] [Module S M]
+variable [AddCommGroup N] [Module K N] [Module S N]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable {ι : Type u} [LinearOrder ι]
+/-- EXACT original ordered-Cech homology object of the actual native sheaf. -/
+def nativeProjectiveOrderedCechHomologyObject (b : ι → S) (k : ℤ) (n : ℕ) : AddCommGrpCat.{u} :=
+  (orderedTopAbelianCechComplex (Proj B) (fun i => Proj.basicOpen B (b i))
+    ((schemeModuleToActualAbelianSheaf (Proj B)).obj (nativeProjectiveModuleSheaf B D hD k))).homology n
+/-- EXACT original coefficient map on this SAME ordered-Cech homology. -/
+def nativeProjectiveOrderedCechHomologyCoefficientHom
+    (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+    (b : ι → S) (k : ℤ) (n : ℕ) :
+    nativeProjectiveOrderedCechHomologyObject B D hD b k n ⟶
+      nativeProjectiveOrderedCechHomologyObject B E hE b k n :=
+  HomologicalComplex.homologyMap
+    (orderedTopAbelianCechCoefficientMap (Proj B) (fun i => Proj.basicOpen B (b i))
+      ((schemeModuleToActualAbelianSheaf (Proj B)).map
+        (nativeProjectiveDegreeZeroSheafMap B D E hD hE f hf k))) n
+/-- Underlying map is the ACTUAL original homologyMap,definitionally. -/
+theorem nativeProjectiveOrderedCechHomologyCoefficientHom_eq_original
+    (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+    (b : ι → S) (k : ℤ) (n : ℕ) :
+    nativeProjectiveOrderedCechHomologyCoefficientHom B D E hD hE f hf b k n =
+      HomologicalComplex.homologyMap
+        (orderedTopAbelianCechCoefficientMap (Proj B) (fun i => Proj.basicOpen B (b i))
+          ((schemeModuleToActualAbelianSheaf (Proj B)).map
+            (nativeProjectiveDegreeZeroSheafMap B D E hD hE f hf k))) n := rfl
+end LinearStudy
+
+===== Linear.NativeNormalizationActualHCachedComparison SHA256 56bbdc2b9cdd04e4331ba9d851fcc2c884e22ad1e8481443c0d0a5b5d6e98223 =====
+module
+public import Linear.NativeIndependentNormalizationActualHComparison
+public import Linear.NativeProjectiveCechHomologyObjects
+public import Linear.SchemeModuleActualHObjects
+public import Linear.FiniteNormalizationCoordinateCover
+public import Linear.NativeProjActualHComparison
+public import Linear.NativeProjectiveTwistFinitePresentation
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M]
+variable [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M]
+variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n : ℤ)+j))
+variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n : ℤ)+j))
+variable [IsDomain S] [Module.IsTorsionFree S M]
+variable [IsNoetherianRing R] [IsNoetherianRing S] [Algebra.FiniteType K S]
+variable [Module.Finite R S] [Module.Finite R M] [Module.Finite S M]
+variable {ι κ : Type u} [LinearOrder ι] [Finite ι]
+variable (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+/-- Cache the SAME original normalization comparison with EXACT original
+objects. This is an alias of the old constructed comparison,not a choice. -/
+def nativeIndependentFiniteNormalization_cachedActualHigherHIso
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) :
+    nativeProjectiveOrderedCechHomologyObject A D hR a k (q+1) ≅
+      schemeModuleActualHObject (Proj B) (nativeProjectiveModuleSheaf B D hS k) (q+1) :=
+  nativeIndependentFiniteNormalization_actualHigherHIso A B D hR hS a ha c hc hgenR hgenC k q
+/-- The named comparison is EXACTLY the old specified map. -/
+theorem nativeIndependentFiniteNormalization_cachedActualHigherHIso_eq_original
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) :
+    nativeIndependentFiniteNormalization_cachedActualHigherHIso A B D hR hS a ha c hc hgenR hgenC k q =
+      nativeIndependentFiniteNormalization_actualHigherHIso A B D hR hS a ha c hc hgenR hgenC k q := rfl
+end LinearStudy
+
+===== Linear.NativeNormalizationCachedCechComparison SHA256 d57b201dd0b29a4bd023b65ced76fd45a166fec60fb9a2dc119d19c76f2f8a66 =====
+module
+public import Linear.NativeIndependentSourceAmbientOrderedTwistCechCoefficient
+public import Linear.NativeIndependentNormalizationActualHFactorization
+public import Linear.CategoricalComparisonCoefficientFactorization
+public import Linear.NativeProjectiveCechHomologyObjects
+public import Linear.NativeIndependentSourceAmbientCechHomologyCoefficient
+public import Linear.NativeFiniteGradedSourceActualHCoefficient
+public import Linear.NativeProjActualHCoefficientNaturality
+public import Linear.NativeProjectiveTwistQuasicoherent
+public import Linear.FiniteNormalizationCoordinateCover
+public import Linear.NativeProjActualHComparison
+public import Linear.NativeProjectiveTwistFinitePresentation
+public import Linear.NativeIndependentSourceAmbientOrderedTwistCech
+public import Linear.NativeOrderedCechRegradingCoefficient
+public import Linear.NativeIndependentSourceAmbientOrderedCech
+public import Linear.OrderedFreeSheafHomCoefficientNaturality
+public import Linear.OrderedCrossSpaceCechCoefficientNaturality
+public import Linear.NativeIndependentSourceAmbientCechObjects
+public import Linear.ConcreteAdditiveEquivNaturality
+public import Linear.NativeProjectiveDegreeZeroActualCoefficientValue
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+set_option diagnostics true
+set_option diagnostics.threshold 1000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable [IsScalarTower K R M] [IsScalarTower K S M]
+variable [IsScalarTower K R N] [IsScalarTower K S N]
+variable [IsDomain S] [Module.IsTorsionFree S M] [Module.IsTorsionFree S N]
+variable [IsNoetherianRing R] [IsNoetherianRing S]
+variable [Module.Finite R M] [Module.Finite S M] [Module.Finite R N] [Module.Finite S N]
+variable {ι κ : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+attribute [local irreducible] nativeWeightedSourceAmbientSectionAddEquiv
+open CategoryTheory.Limits AlgebraicGeometry.Scheme.Modules
+variable [LinearOrder ι]
+variable [Finite ι] [Algebra.FiniteType K S] [Module.Finite R S]
+attribute [local irreducible] finiteTypeNativeProj_orderedActualHigherHIso
+  noetherianFiniteOrderedAffineCover_actualHigherHIso topFiniteOrderedCech_actualHigherHIso_of_localAcyclic
+  nativeIndependentSourceAmbientOrderedTwistCechIso orderedFreeSheafActualHomComplexIso
+  acyclicResolutionActualCochainExtIso
+/-- SAME original source/ambient Cech homology iso,with named exact objects. -/
+def nativeIndependentFiniteNormalization_cachedCechHomologyIso
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) :
+    nativeProjectiveOrderedCechHomologyObject A D hRD a k (q+1) ≅
+      nativeProjectiveOrderedCechHomologyObject B D hSD (fun i => algebraMap R S (a i)) k (q+1) :=
+  (HomologicalComplex.homologyFunctor AddCommGrpCat.{u} (.up ℕ) (q+1)).mapIso
+    (nativeIndependentSourceAmbientOrderedTwistCechIso A B D hRD hSD a ha c hc hgenR hgenC k)
+/-- The SAME original all-twist Cech homology coefficient square,with
+named objects and original coefficient maps;no new square is assumed. -/
+theorem nativeIndependentFiniteNormalization_cachedCechHomologyIso_coefficient
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) :
+    nativeProjectiveOrderedCechHomologyCoefficientHom A D E hRD hRE (f.restrictScalars R) hf a k (q+1) ≫
+      (nativeIndependentFiniteNormalization_cachedCechHomologyIso A B E hRE hSE a ha c hc hgenR hgenC k q).hom =
+    (nativeIndependentFiniteNormalization_cachedCechHomologyIso A B D hRD hSD a ha c hc hgenR hgenC k q).hom ≫
+      nativeProjectiveOrderedCechHomologyCoefficientHom B D E hSD hSE f hf
+        (fun i => algebraMap R S (a i)) k (q+1) := by
+  exact nativeIndependentSourceAmbientOrderedTwistCechIso_homology_coefficient A B D E hRD hSD hRE hSE f hf
+    a ha c hc hgenR hgenC k q
+end LinearStudy
+
+===== Linear.NativeSourceActualHCachedComparison SHA256 d22c998d6406a60b10670bfbbcebee97ae90c631008e61333d5965d8fc3b4652 =====
+module
+public import Linear.NativeFiniteGradedSourceActualHCoefficient
+public import Linear.NativeProjectiveCechHomologyObjects
+public import Linear.SchemeModuleActualHObjects
+public import Linear.NativeProjectiveTwistQuasicoherent
+public import Linear.NativeProjectiveDegreeZeroMap
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u
+variable {K S M N : Type u} [Field K] [CommRing S] [Algebra K S]
+variable [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M]
+variable [AddCommGroup N] [Module K N] [Module S N] [IsScalarTower K S N]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+variable [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite S M] [Module.Finite S N]
+variable {ι : Type u} [LinearOrder ι] [Finite ι] (b : ι → S) (hb : ∀ i,b i ∈ B 1)
+attribute [local irreducible] finiteTypeNativeProj_orderedActualHigherHIso
+  noetherianFiniteOrderedAffineCover_actualHigherHIso topFiniteOrderedCech_actualHigherHIso_of_localAcyclic
+  orderedFreeSheafActualHomComplexIso acyclicResolutionActualCochainExtIso
+/-- The SAME actual source ordered-Cech/native-H comparison,with exact
+named objects. Original source QC is DERIVED from its degree-one cover. -/
+def nativeFiniteGradedTwist_cachedActualHigherHIso
+    (hcover : (⨆ i,Proj.basicOpen B (b i)) = ⊤) (k : ℤ) (q : ℕ) :
+    nativeProjectiveOrderedCechHomologyObject B D hD b k (q+1) ≅
+      schemeModuleActualHObject (Proj B) (nativeProjectiveModuleSheaf B D hD k) (q+1) := by
+  letI : (nativeProjectiveModuleSheaf B D hD k).IsQuasicoherent :=
+    nativeFiniteGradedTwist_isQuasicoherent_of_cover B D hD k b hb hcover
+  exact finiteTypeNativeProj_orderedActualHigherHIso B b hb hcover (nativeProjectiveModuleSheaf B D hD k) q
+/-- Exact original coefficient naturality of this SAME source comparison,
+all integer twists and positive degrees. BOTH native QC facts are derived. -/
+theorem nativeFiniteGradedTwist_cachedActualHigherHIso_coefficient
+    (hcover : (⨆ i,Proj.basicOpen B (b i)) = ⊤) (k : ℤ) (q : ℕ) :
+    nativeProjectiveOrderedCechHomologyCoefficientHom B D E hD hE f hf b k (q+1) ≫
+      (nativeFiniteGradedTwist_cachedActualHigherHIso B E hE b hb hcover k q).hom =
+    (nativeFiniteGradedTwist_cachedActualHigherHIso B D hD b hb hcover k q).hom ≫
+      schemeModuleActualHCoefficientHom (nativeProjectiveDegreeZeroSheafMap B D E hD hE f hf k) (q+1) := by
+  letI : (nativeProjectiveModuleSheaf B D hD k).IsQuasicoherent :=
+    nativeFiniteGradedTwist_isQuasicoherent_of_cover B D hD k b hb hcover
+  letI : (nativeProjectiveModuleSheaf B E hE k).IsQuasicoherent :=
+    nativeFiniteGradedTwist_isQuasicoherent_of_cover B E hE k b hb hcover
+  exact nativeFiniteGradedTwist_actualHigherHIso_coefficient B D E hD hE f hf b hb hcover k q
+end LinearStudy
+
+===== Linear.NativeNormalizationCachedFactorization SHA256 d59696f031bc1042012fc7a50fe05267e86e9b2adeab2f467320e57d48c8a06d =====
+module
+public import Linear.NativeNormalizationActualHCachedComparison
+public import Linear.NativeNormalizationCachedCechComparison
+public import Linear.NativeSourceActualHCachedComparison
+public import Linear.NativeIndependentNormalizationActualHFactorization
+public import Linear.NativeProjectiveCechHomologyObjects
+public import Linear.SchemeModuleActualHObjects
+public import Linear.FiniteNormalizationCoordinateCover
+public import Linear.NativeProjActualHComparison
+public import Linear.NativeProjectiveTwistFinitePresentation
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M]
+variable [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M]
+variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n : ℤ)+j))
+variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n : ℤ)+j))
+variable [IsDomain S] [Module.IsTorsionFree S M]
+variable [IsNoetherianRing R] [IsNoetherianRing S] [Algebra.FiniteType K S]
+variable [Module.Finite R S] [Module.Finite R M] [Module.Finite S M]
+variable {ι κ : Type u} [LinearOrder ι] [Finite ι]
+variable (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+/-- EXACT factorization of the SAME original normalization map through
+its original Cech and source-H factors,with named exact objects. -/
+theorem nativeIndependentFiniteNormalization_cachedActualHigherHIso_factorization
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) :
+    nativeIndependentFiniteNormalization_cachedActualHigherHIso A B D hR hS a ha c hc hgenR hgenC k q =
+      nativeIndependentFiniteNormalization_cachedCechHomologyIso A B D hR hS a ha c hc hgenR hgenC k q ≪≫
+      nativeFiniteGradedTwist_cachedActualHigherHIso B D hS
+        (fun i => algebraMap R S (a i))
+        (fun i => (normalizationBaseGradedRingHom A B).map_mem (ha i))
+        (nativeFiniteNormalization_sourceCoordinateCover A B a ha hgenR) k q := by
+  letI : (nativeProjectiveModuleSheaf B D hS k).IsQuasicoherent :=
+    nativeFiniteGradedTwist_isQuasicoherent_of_cover B D hS k c hc
+      (degreeOneGenerated_nativeProj_cover B c hc hgenC)
+  exact nativeIndependentFiniteNormalization_actualHigherHIso_factorization A B D hR hS a ha c hc
+    hgenR hgenC k q
+end LinearStudy
+
+===== Linear.NativeNormalizationCachedCoefficientNaturality SHA256 98c8aed1d72d3f68573819a617c32890a636a5550862ef5e44bc29a48e9196d4 =====
+module
+public import Linear.NativeIndependentSourceAmbientOrderedTwistCechCoefficient
+public import Linear.NativeIndependentNormalizationActualHFactorization
+public import Linear.CategoricalComparisonCoefficientFactorization
+public import Linear.NativeNormalizationCachedFactorization
+public import Linear.NativeProjectiveCechHomologyObjects
+public import Linear.NativeIndependentSourceAmbientCechHomologyCoefficient
+public import Linear.NativeFiniteGradedSourceActualHCoefficient
+public import Linear.NativeProjActualHCoefficientNaturality
+public import Linear.NativeProjectiveTwistQuasicoherent
+public import Linear.FiniteNormalizationCoordinateCover
+public import Linear.NativeProjActualHComparison
+public import Linear.NativeProjectiveTwistFinitePresentation
+public import Linear.NativeIndependentSourceAmbientOrderedTwistCech
+public import Linear.NativeOrderedCechRegradingCoefficient
+public import Linear.NativeIndependentSourceAmbientOrderedCech
+public import Linear.OrderedFreeSheafHomCoefficientNaturality
+public import Linear.OrderedCrossSpaceCechCoefficientNaturality
+public import Linear.NativeIndependentSourceAmbientCechObjects
+public import Linear.ConcreteAdditiveEquivNaturality
+public import Linear.NativeProjectiveDegreeZeroActualCoefficientValue
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+set_option diagnostics true
+set_option diagnostics.threshold 1000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable [IsScalarTower K R M] [IsScalarTower K S M]
+variable [IsScalarTower K R N] [IsScalarTower K S N]
+variable [IsDomain S] [Module.IsTorsionFree S M] [Module.IsTorsionFree S N]
+variable [IsNoetherianRing R] [IsNoetherianRing S]
+variable [Module.Finite R M] [Module.Finite S M] [Module.Finite R N] [Module.Finite S N]
+variable {ι κ : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+attribute [local irreducible] nativeWeightedSourceAmbientSectionAddEquiv
+open CategoryTheory.Limits AlgebraicGeometry.Scheme.Modules
+variable [LinearOrder ι]
+variable [Finite ι] [Algebra.FiniteType K S] [Module.Finite R S]
+attribute [local irreducible] finiteTypeNativeProj_orderedActualHigherHIso
+  noetherianFiniteOrderedAffineCover_actualHigherHIso topFiniteOrderedCech_actualHigherHIso_of_localAcyclic
+  nativeIndependentSourceAmbientOrderedTwistCechIso orderedFreeSheafActualHomComplexIso
+  acyclicResolutionActualCochainExtIso
+/-- Naturality of the SAME original finite-normalization actual-H
+comparison for EVERY original degree-zero S-linear map,ALL integer twists
+and ALL positive degrees. Named objects/maps are EXACT original objects
+and maps by proved identities;the comparison equals the OLD specified iso.
+No desired coefficient square or global-duality certificate is an input. -/
+theorem nativeIndependentFiniteNormalization_cachedActualHigherHIso_coefficient
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) :
+    nativeProjectiveOrderedCechHomologyCoefficientHom A D E hRD hRE (f.restrictScalars R) hf a k (q+1) ≫
+      (nativeIndependentFiniteNormalization_cachedActualHigherHIso A B E hRE hSE a ha c hc hgenR hgenC k q).hom =
+    (nativeIndependentFiniteNormalization_cachedActualHigherHIso A B D hRD hSD a ha c hc hgenR hgenC k q).hom ≫
+      schemeModuleActualHCoefficientHom (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf k) (q+1) := by
+  let eM := nativeIndependentFiniteNormalization_cachedCechHomologyIso A B D hRD hSD a ha c hc hgenR hgenC k q
+  let eN := nativeIndependentFiniteNormalization_cachedCechHomologyIso A B E hRE hSE a ha c hc hgenR hgenC k q
+  let jM := nativeFiniteGradedTwist_cachedActualHigherHIso B D hSD
+    (fun i => algebraMap R S (a i))
+    (fun i => (normalizationBaseGradedRingHom A B).map_mem (ha i))
+    (nativeFiniteNormalization_sourceCoordinateCover A B a ha hgenR) k q
+  let jN := nativeFiniteGradedTwist_cachedActualHigherHIso B E hSE
+    (fun i => algebraMap R S (a i))
+    (fun i => (normalizationBaseGradedRingHom A B).map_mem (ha i))
+    (nativeFiniteNormalization_sourceCoordinateCover A B a ha hgenR) k q
+  exact originalComparisonIsoCoefficientSquare_of_factorizations eM eN jM jN
+    (nativeIndependentFiniteNormalization_cachedActualHigherHIso A B D hRD hSD a ha c hc hgenR hgenC k q)
+    (nativeIndependentFiniteNormalization_cachedActualHigherHIso A B E hRE hSE a ha c hc hgenR hgenC k q)
+    (nativeIndependentFiniteNormalization_cachedActualHigherHIso_factorization A B D hRD hSD a ha c hc hgenR hgenC k q)
+    (nativeIndependentFiniteNormalization_cachedActualHigherHIso_factorization A B E hRE hSE a ha c hc hgenR hgenC k q)
+    (nativeProjectiveOrderedCechHomologyCoefficientHom A D E hRD hRE (f.restrictScalars R) hf a k (q+1))
+    (nativeProjectiveOrderedCechHomologyCoefficientHom B D E hSD hSE f hf (fun i => algebraMap R S (a i)) k (q+1))
+    (schemeModuleActualHCoefficientHom (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf k) (q+1))
+    (nativeIndependentFiniteNormalization_cachedCechHomologyIso_coefficient A B D E hRD hSD hRE hSE f hf
+      a ha c hc hgenR hgenC k q)
+    (nativeFiniteGradedTwist_cachedActualHigherHIso_coefficient B D E hSD hSE f hf
+      (fun i => algebraMap R S (a i))
+      (fun i => (normalizationBaseGradedRingHom A B).map_mem (ha i))
+      (nativeFiniteNormalization_sourceCoordinateCover A B a ha hgenR) k q)
+end LinearStudy
+
+===== Linear.NativeIndependentNormalizationActualHCoefficient SHA256 fed7b30329e06e965117453f3b0239a24774ffa1fa9f61c1cde3009a691ef60c =====
+module
+public import Linear.NativeNormalizationCachedCoefficientNaturality
+public import Linear.NativeIndependentSourceAmbientOrderedTwistCechCoefficient
+public import Linear.NativeIndependentNormalizationActualHFactorization
+public import Linear.CategoricalComparisonCoefficientFactorization
+public import Linear.NativeIndependentSourceAmbientCechHomologyCoefficient
+public import Linear.NativeFiniteGradedSourceActualHCoefficient
+public import Linear.NativeProjActualHCoefficientNaturality
+public import Linear.NativeProjectiveTwistQuasicoherent
+public import Linear.FiniteNormalizationCoordinateCover
+public import Linear.NativeProjActualHComparison
+public import Linear.NativeProjectiveTwistFinitePresentation
+public import Linear.NativeIndependentSourceAmbientOrderedTwistCech
+public import Linear.NativeOrderedCechRegradingCoefficient
+public import Linear.NativeIndependentSourceAmbientOrderedCech
+public import Linear.OrderedFreeSheafHomCoefficientNaturality
+public import Linear.OrderedCrossSpaceCechCoefficientNaturality
+public import Linear.NativeIndependentSourceAmbientCechObjects
+public import Linear.ConcreteAdditiveEquivNaturality
+public import Linear.NativeProjectiveDegreeZeroActualCoefficientValue
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+set_option diagnostics true
+set_option diagnostics.threshold 1000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable [IsScalarTower K R M] [IsScalarTower K S M]
+variable [IsScalarTower K R N] [IsScalarTower K S N]
+variable [IsDomain S] [Module.IsTorsionFree S M] [Module.IsTorsionFree S N]
+variable [IsNoetherianRing R] [IsNoetherianRing S]
+variable [Module.Finite R M] [Module.Finite S M] [Module.Finite R N] [Module.Finite S N]
+variable {ι κ : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+attribute [local irreducible] nativeWeightedSourceAmbientSectionAddEquiv
+open CategoryTheory.Limits AlgebraicGeometry.Scheme.Modules
+variable [LinearOrder ι]
+variable [Finite ι] [Algebra.FiniteType K S] [Module.Finite R S]
+attribute [local irreducible] finiteTypeNativeProj_orderedActualHigherHIso
+  noetherianFiniteOrderedAffineCover_actualHigherHIso topFiniteOrderedCech_actualHigherHIso_of_localAcyclic
+  nativeIndependentSourceAmbientOrderedTwistCechIso orderedFreeSheafActualHomComplexIso
+  acyclicResolutionActualCochainExtIso
+/-- The SAME original finite-normalization comparison is natural in the
+ORIGINAL degree-zero S-linear coefficient map,EVERY integer twist and
+EVERY positive degree. Both coefficient QC conditions and the source cover
+are derived. The proof uses TWO separately compiled squares and the exact old
+factorizations;no coefficient square is supplied as a new hypothesis. -/
+theorem nativeIndependentFiniteNormalization_actualHigherHIso_coefficient
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) :
+    let fA := (schemeModuleToActualAbelianSheaf (Proj A)).map
+      (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf k)
+    let fB := (schemeModuleToActualAbelianSheaf (Proj B)).map
+      (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf k)
+    HomologicalComplex.homologyMap
+      (orderedTopAbelianCechCoefficientMap (Proj A) (fun i => Proj.basicOpen A (a i)) fA) (q+1) ≫
+      (nativeIndependentFiniteNormalization_actualHigherHIso A B E hRE hSE a ha c hc hgenR hgenC k q).hom =
+    (nativeIndependentFiniteNormalization_actualHigherHIso A B D hRD hSD a ha c hc hgenR hgenC k q).hom ≫
+      (CategoryTheory.Sheaf.functorH.{u} (_root_.Opens.grothendieckTopology (Proj B)) (q+1)).map fB := by
+  exact nativeIndependentFiniteNormalization_cachedActualHigherHIso_coefficient
+    A B D E hRD hSD hRE hSE f hf a ha c hc hgenR hgenC k q
+end LinearStudy
+
+===== Linear.NativeIndependentNormalizationModuleHCoefficient SHA256 9a54d4ac4fd4b68a3f21e97f00e06435327ab46ab9ec563b5c07f865e20f7901 =====
+module
+public import Linear.NativeIndependentNormalizationActualHCoefficient
+public import Linear.NativeIndependentNormalizationHFactorization
+public import Linear.OrderedModuleCechActualAbelianHomology
+public import Linear.NativeIndependentNormalizationActualHFactorization
+public import Linear.NativeProjActualHCoefficientNaturality
+public import Linear.NativeProjectiveTwistQuasicoherent
+public import Linear.FiniteNormalizationCoordinateCover
+public import Linear.NativeProjActualHComparison
+public import Linear.NativeProjectiveTwistFinitePresentation
+public import Linear.NativeIndependentSourceAmbientOrderedTwistCech
+public import Linear.NativeOrderedCechRegradingCoefficient
+public import Linear.NativeIndependentSourceAmbientOrderedCech
+public import Linear.OrderedFreeSheafHomCoefficientNaturality
+public import Linear.OrderedCrossSpaceCechCoefficientNaturality
+public import Linear.NativeIndependentSourceAmbientCechObjects
+public import Linear.ConcreteAdditiveEquivNaturality
+public import Linear.NativeProjectiveDegreeZeroActualCoefficientValue
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option diagnostics true
+set_option diagnostics.threshold 1000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable [IsScalarTower K R M] [IsScalarTower K S M]
+variable [IsScalarTower K R N] [IsScalarTower K S N]
+variable [IsDomain S] [Module.IsTorsionFree S M] [Module.IsTorsionFree S N]
+variable [IsNoetherianRing R] [IsNoetherianRing S]
+variable [Module.Finite R M] [Module.Finite S M] [Module.Finite R N] [Module.Finite S N]
+variable {ι κ : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+attribute [local irreducible] nativeWeightedSourceAmbientSectionAddEquiv
+open CategoryTheory.Limits AlgebraicGeometry.Scheme.Modules
+variable [LinearOrder ι]
+variable [Finite ι] [Algebra.FiniteType K S] [Module.Finite R S]
+attribute [local irreducible] finiteTypeNativeProj_orderedActualHigherHIso
+  noetherianFiniteOrderedAffineCover_actualHigherHIso topFiniteOrderedCech_actualHigherHIso_of_localAcyclic
+  nativeIndependentSourceAmbientOrderedTwistCechIso orderedFreeSheafActualHomComplexIso
+  acyclicResolutionActualCochainExtIso
+/-- The SAME original module-valued ambient-Cech/source-H comparison is
+natural for the ORIGINAL degree-zero map,EVERY integer twist and positive
+degree. Original module-homology forgetting and actual coefficient maps
+are retained;no comparison square is supplied as a hypothesis. -/
+theorem nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_coefficient
+    {Y : Scheme.{u}} (pi : Proj A ⟶ Y)
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) :
+    let phiA := orderedBaseCechActualCoefficientMap pi
+      (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf k)
+      (fun i => Proj.basicOpen A (a i))
+    let fB := (schemeModuleToActualAbelianSheaf (Proj B)).map
+      (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf k)
+    (forget₂ (ModuleCat.{u} Γ(Y,⊤)) AddCommGrpCat.{u}).map
+      (HomologicalComplex.homologyMap phiA (q+1)) ≫
+      (nativeIndependentFiniteNormalization_moduleCechActualHigherHIso A B E hRE hSE a ha c hc pi hgenR hgenC k q).hom =
+    (nativeIndependentFiniteNormalization_moduleCechActualHigherHIso A B D hRD hSD a ha c hc pi hgenR hgenC k q).hom ≫
+      (CategoryTheory.Sheaf.functorH.{u} (_root_.Opens.grothendieckTopology (Proj B)) (q+1)).map fB := by
+  let MA := nativeProjectiveModuleSheaf A D hRD k
+  let NA := nativeProjectiveModuleSheaf A E hRE k
+  let U := fun i => Proj.basicOpen A (a i)
+  let fA0 := nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf k
+  let fA := (schemeModuleToActualAbelianSheaf (Proj A)).map fA0
+  let fB := (schemeModuleToActualAbelianSheaf (Proj B)).map
+    (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf k)
+  let phiA := orderedBaseCechActualCoefficientMap pi fA0 U
+  let mA := orderedTopAbelianCechCoefficientMap (Proj A) U fA
+  let H := forget₂ (ModuleCat.{u} Γ(Y,⊤)) AddCommGrpCat.{u}
+  let eM := orderedModuleCechActualAbelianHomologyIso pi MA U (q+1)
+  let eN := orderedModuleCechActualAbelianHomologyIso pi NA U (q+1)
+  let jM := nativeIndependentFiniteNormalization_actualHigherHIso A B D hRD hSD a ha c hc hgenR hgenC k q
+  let jN := nativeIndependentFiniteNormalization_actualHigherHIso A B E hRE hSE a ha c hc hgenR hgenC k q
+  have h1 : CommSq (H.map (HomologicalComplex.homologyMap phiA (q+1))) eM.hom eN.hom
+      (HomologicalComplex.homologyMap mA (q+1)) :=
+    ⟨orderedModuleCechActualAbelianHomologyIso_coefficient_naturality pi fA0 U (q+1)⟩
+  have h2 : CommSq (HomologicalComplex.homologyMap mA (q+1)) jM.hom jN.hom
+      ((CategoryTheory.Sheaf.functorH.{u} (_root_.Opens.grothendieckTopology (Proj B)) (q+1)).map fB) :=
+    ⟨nativeIndependentFiniteNormalization_actualHigherHIso_coefficient A B D E hRD hSD hRE hSE f hf
+      a ha c hc hgenR hgenC k q⟩
+  simp only [nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_factorization,Iso.trans_hom]
+  exact (h1.vert_comp h2).w
+end LinearStudy
