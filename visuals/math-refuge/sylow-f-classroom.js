@@ -21,6 +21,15 @@ async function audioURL(file){if(!audioJobs.has(file)){const mine=courseEpoch,jo
 const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function manuscript(b){renderClassroomManuscript($('script'),b,manifest,board);}
+function assistantPlanText(plan){
+ const entries=Array.isArray(plan)?plan:plan&&typeof plan==='object'?[plan]:[];
+ return entries.flatMap(item=>{
+  if(!item||typeof item!=='object')return [];
+  const minutes=Number.isFinite(item.minutes)?`${item.minutes}分钟`:'';
+  const task=Array.isArray(item.tasks)?item.tasks.filter(x=>typeof x==='string').join('；'):[item.topic,item.task].filter(Boolean).join('：');
+  return [[minutes,task].filter(Boolean).join(' · '),typeof item.note==='string'?item.note:''].filter(Boolean);
+ }).join('\n');
+}
 async function loadCourse(){const n=++courseEpoch;++generation;audio.pause();assetPreload.cancel();playing=false;playIntent=false;course=null;manifest=null;prepared=null;board=0;openingLocked=false;for(const url of audioURLs)URL.revokeObjectURL(url);audioURLs.clear();audioJobs.clear();compressedJobs.clear();audioFiles.clear();const id=$('course').value;
  const program=classroomProgram(id);if(!program)throw Error('未找到这门板书课堂');
  const nextCourse=await fetch(program.courseManifest,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('本课板书下载失败');return r.json();});if(n!==courseEpoch)return;course=nextCourse;
@@ -31,7 +40,7 @@ async function loadCourse(){const n=++courseEpoch;++generation;audio.pause();ass
  if(manifest)for(const b of manifest.boards)b.file=audioRoot+b.file.split('/').pop();
  if(manifest?.openingSelection){const r=course.boards[0].rows[1];r.speech=manifest.openingSelection.greeting+r.speech;}
  if(n!==courseEpoch)return;$('board-select').replaceChildren(...course.boards.map((b,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`${i+1} · ${b.title}`;return o}));
- $('assistant').textContent=(course.assistantPlan||[]).map(x=>`${x.minutes}分钟 · ${x.topic}：${x.task}`).join('\n');$('assistant').style.whiteSpace='pre-line';
+ $('assistant').textContent=assistantPlanText(course.assistantPlan);$('assistant').style.whiteSpace='pre-line';
  $('duration').textContent=manifest?`C原版表达 · 播放100% · 本课约 ${fmt(classroomDuration(manifest,lessonRate()))}（含课间05:00）；简单练习30秒 / 有点挑战60秒；孟晟助教另计30:00。`:'本板语音尚未就绪，可重试或查看讲稿。';
  $('play').disabled=!manifest;$('seek').disabled=!manifest;
  await selectBoard(Math.min(Number(query.get('board')||0),course.boards.length-1),false);
