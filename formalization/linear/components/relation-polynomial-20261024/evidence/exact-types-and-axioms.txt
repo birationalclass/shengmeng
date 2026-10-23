@@ -1,0 +1,1131 @@
+LinearStudy.schemeModuleGlobalScalar_ext_centrality : ∀ (X : AlgebraicGeometry.Scheme)
+  (z : ↑(X.presheaf.obj (Opposite.op ⊤))) {M N : X.Modules} (r : ℕ) (epsilon : CategoryTheory.Abelian.Ext M N r),
+  epsilon.comp (CategoryTheory.Abelian.Ext.mk₀ (LinearStudy.originalGlobalModuleScalar z N)) ⋯ =
+    (CategoryTheory.Abelian.Ext.mk₀ (LinearStudy.originalGlobalModuleScalar z M)).comp epsilon ⋯
+'LinearStudy.schemeModuleGlobalScalar_ext_centrality' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.schemeModuleUnitHomGlobalSections_symm_originalScalar : ∀ (X : AlgebraicGeometry.Scheme) (E : X.Modules)
+  (z : ↑(X.presheaf.obj (Opposite.op ⊤))) (s : ↑(E.presheaf.obj (Opposite.op ⊤))),
+  (LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv X E).symm (z • s) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv X E).symm s)
+      (LinearStudy.originalGlobalModuleScalar z E)
+'LinearStudy.schemeModuleUnitHomGlobalSections_symm_originalScalar' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleExtClassActualSectionBoundary_originalScalar : ∀ (X : AlgebraicGeometry.Scheme)
+  {E M : X.Modules} (r : ℕ) (epsilon : CategoryTheory.Abelian.Ext E M r) (z : ↑(X.presheaf.obj (Opposite.op ⊤)))
+  (s : ↑(E.presheaf.obj (Opposite.op ⊤))),
+  LinearStudy.schemeModuleExtClassActualSectionBoundary epsilon (z • s) =
+    (CategoryTheory.Sheaf.H.map
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).map (LinearStudy.originalGlobalModuleScalar z M)) r)
+      (LinearStudy.schemeModuleExtClassActualSectionBoundary epsilon s)
+'LinearStudy.schemeModuleExtClassActualSectionBoundary_originalScalar' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleSectionsSpecModule : {K : Type u_1} →
+  [inst : CommRing K] →
+    {X : AlgebraicGeometry.Scheme} →
+      (X ⟶ AlgebraicGeometry.Spec ↧K) → (E : X.Modules) → Module K ↑(E.presheaf.obj (Opposite.op ⊤))
+'LinearStudy.schemeModuleSectionsSpecModule' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleSectionsSpecModule_smul : ∀ {K : Type u_1} [inst : CommRing K] {X : AlgebraicGeometry.Scheme}
+  (pi : X ⟶ AlgebraicGeometry.Spec ↧K) (E : X.Modules) (a : K) (s : ↑(E.presheaf.obj (Opposite.op ⊤))),
+  a • s =
+    (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop pi))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv) a) •
+      s
+'LinearStudy.schemeModuleSectionsSpecModule_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleExtClassActualSectionBoundarySpecLinearMap : {K : Type u_1} →
+  [inst : CommRing K] →
+    {X : AlgebraicGeometry.Scheme} →
+      (pi : X ⟶ AlgebraicGeometry.Spec ↧K) →
+        {E M : X.Modules} →
+          (r : ℕ) →
+            CategoryTheory.Abelian.Ext E M r →
+              ↑(E.presheaf.obj (Opposite.op ⊤)) →ₗ[K] LinearStudy.schemeModuleActualCohomology X M r
+'LinearStudy.schemeModuleExtClassActualSectionBoundarySpecLinearMap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleExtClassActualSectionBoundarySpecLinearMap_forget : ∀ {K : Type u_1} [inst : CommRing K]
+  {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) {E M : X.Modules} (r : ℕ)
+  (epsilon : CategoryTheory.Abelian.Ext E M r),
+  (have this := LinearStudy.schemeModuleExtClassActualSectionBoundarySpecLinearMap pi r epsilon;
+      this).toAddMonoidHom =
+    LinearStudy.schemeModuleExtClassActualSectionBoundaryAddHom epsilon
+'LinearStudy.schemeModuleExtClassActualSectionBoundarySpecLinearMap_forget' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalActualSectionBoundarySpecLinearMap : {K : Type u_1} →
+  [inst : CommRing K] →
+    {X : AlgebraicGeometry.Scheme} →
+      (pi : X ⟶ AlgebraicGeometry.Spec ↧K) →
+        {E M : X.Modules} →
+          (CC : ChainComplex X.Modules ℕ) →
+            (r : ℕ) →
+              (alpha : CC ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+                QuasiIso alpha →
+                  CategoryTheory.Limits.IsZero (CC.X (r + 1)) →
+                    (CC.X r ≅ M) →
+                      ↑(E.presheaf.obj (Opposite.op ⊤)) →ₗ[K] LinearStudy.schemeModuleActualCohomology X M r
+'LinearStudy.schemeModuleOriginalActualSectionBoundarySpecLinearMap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalActualSectionBoundarySpecLinearMap_forget : ∀ {K : Type u_1} [inst : CommRing K]
+  {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) {E M : X.Modules} (CC : ChainComplex X.Modules ℕ)
+  (r : ℕ) (alpha : CC ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (CC.X (r + 1))) (phi : CC.X r ≅ M),
+  (have this := LinearStudy.schemeModuleOriginalActualSectionBoundarySpecLinearMap pi CC r alpha hAlpha hAbove phi;
+      this).toAddMonoidHom =
+    LinearStudy.schemeModuleOriginalActualSectionBoundary CC r alpha hAlpha hAbove phi
+'LinearStudy.schemeModuleOriginalActualSectionBoundarySpecLinearMap_forget' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalActualSectionRelation_nonzero_descent : ∀ {K : Type u_1} [inst : Field K]
+  {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) {E M : X.Modules} (CC : ChainComplex X.Modules ℕ)
+  (r : ℕ) (alpha : CC ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (CC.X (r + 1))) (phi : CC.X r ≅ M),
+  LinearStudy.schemeModuleOriginalActualSectionExactStatement CC r alpha hAlpha hAbove phi →
+    ∀ (lambda : Module.Dual K ↑(E.presheaf.obj (Opposite.op ⊤))),
+      lambda ≠ 0 →
+        (∀ (z : ↑((CC.X 0).presheaf.obj (Opposite.op ⊤))),
+            lambda ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app (alpha.f 0) ⊤)) z) =
+              0) →
+          ∃ (ell : Module.Dual K (LinearStudy.schemeModuleActualCohomology X M r)),
+            ell ≠ 0 ∧
+              ∀ (s : ↑(E.presheaf.obj (Opposite.op ⊤))),
+                ell ((LinearStudy.schemeModuleOriginalActualSectionBoundary CC r alpha hAlpha hAbove phi) s) = lambda s
+'LinearStudy.schemeModuleOriginalActualSectionRelation_nonzero_descent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionSpecifiedTrace_original_section_relation_representative : ∀ {K S : Type} [inst : Field K]
+  {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {M : Type} [inst_13 : AddCommGroup M] [inst_14 : Module K M]
+  [inst_15 : Module (MvPolynomial σ K) M] [inst_16 : Module S M] [IsScalarTower (MvPolynomial σ K) S M]
+  [IsScalarTower K (MvPolynomial σ K) M] [IsScalarTower K S M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D],
+  (∀ (n : ℕ) (j : ℤ), ∀ z ∈ MvPolynomial.homogeneousSubmodule σ K n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+    ∀ (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [Module.IsTorsionFree S M]
+      [Module.Finite (MvPolynomial σ K) M] [Module.Finite S M] {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+      (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2)
+      {G : (AlgebraicGeometry.Proj B).Modules} (CC : ChainComplex (AlgebraicGeometry.Proj B).Modules ℕ)
+      (alpha : CC ⟶ (ChainComplex.single₀ (AlgebraicGeometry.Proj B).Modules).obj G) (hAlpha : QuasiIso alpha)
+      (hAbove : CategoryTheory.Limits.IsZero (CC.X (q + 1 + 1)))
+      (phi : CC.X (q + 1) ≅ LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))),
+      LinearStudy.schemeModuleOriginalActualSectionExactStatement CC (q + 1) alpha hAlpha hAbove phi →
+        have piB :=
+          CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0))));
+        ∀ (lambda : Module.Dual K ↑(G.presheaf.obj (Opposite.op ⊤))),
+          lambda ≠ 0 →
+            (∀ (z : ↑((CC.X 0).presheaf.obj (Opposite.op ⊤))),
+                lambda
+                    ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app (alpha.f 0) ⊤)) z) =
+                  0) →
+              ∃ (a :
+                LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ)) ⟶
+                  LinearStudy.nativeProjectiveModuleSheaf B
+                    (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) ⋯
+                    (-↑(Fintype.card σ))),
+                a ≠ 0 ∧
+                  ∀ (s : ↑(G.presheaf.obj (Opposite.op ⊤))),
+                    (LinearStudy.schemeModuleExtSectionTracePairing
+                          (LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace B c hc hgenC q hcard)
+                          ((LinearStudy.schemeModuleExtClassCoefficientPushforwardAddHom
+                              (LinearStudy.schemeModuleOriginalChainTopExtClassSmall CC (q + 1) alpha hAlpha phi.hom ⋯))
+                            a))
+                        s =
+                      lambda s
+'LinearStudy.nativeCoextensionSpecifiedTrace_original_section_relation_representative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalFixedTopNonzeroRelationStatement : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (e :
+                CategoryTheory.Limits.cokernel
+                    ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).d 1 0) ≅
+                  LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) →
+              QuasiIso
+                  (LinearStudy.originalChainCokernelTargetAugmentation
+                    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+                    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e) →
+                Prop
+'LinearStudy.projectivePulledOriginalFixedTopNonzeroRelationStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalFixedTopNonzeroRelationStatement_of_exact : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+  (w : Fin (r + 1) → ℂ)
+  (e :
+    CategoryTheory.Limits.cokernel
+        ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1))
+  (he :
+    QuasiIso
+      (LinearStudy.originalChainCokernelTargetAugmentation
+        (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e)),
+  LinearStudy.projectivePulledOriginalFixedTopActualSectionStatement f V L hL w e he →
+    LinearStudy.projectivePulledOriginalFixedTopNonzeroRelationStatement f V L hL w e he
+'LinearStudy.projectivePulledOriginalFixedTopNonzeroRelationStatement_of_exact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginal_uniform_nonzero_relation_descent_above : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (lower : ℕ),
+  0 < r →
+    ∃ (m : ℕ),
+      0 < m ∧
+        lower ≤ m ∧
+          ∀ (D : ℕ),
+            1 ≤ D →
+              ∀ (f : LinearStudy.HomogeneousEndomorphism n),
+                m * D < f.degree →
+                  ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+                    (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ),
+                    let t := ↑r * ↑f.degree - ↑r - 1;
+                    ∀
+                      (e :
+                        CategoryTheory.Limits.cokernel
+                            ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w t).d 1 0) ≅
+                          LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w t)
+                      (he :
+                        QuasiIso
+                          (LinearStudy.originalChainCokernelTargetAugmentation
+                            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w t)
+                            (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w t) e)),
+                      LinearStudy.projectivePulledOriginalFixedTopNonzeroRelationStatement f V L hL w e he
+'LinearStudy.projectivePulledOriginal_uniform_nonzero_relation_descent_above' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.finiteAdditiveDual_exists_nonzero_representative : ∀ {K : Type u_1} {H : Type u_2} {V : Type u_3}
+  [inst : Field K] [inst_1 : AddCommGroup H] [inst_2 : AddCommGroup V] [inst_3 : Module K V] [Module.Finite K V]
+  (e : H ≃+ Module.Dual K V) (rho : K → H → H),
+  (∀ (r : K) (x : H), e (rho r x) = r • e x) →
+    ∀ (ell : H →+ K),
+      (∀ (r : K) (x : H), ell (rho r x) = r * ell x) → ell ≠ 0 → ∃ (v : V), v ≠ 0 ∧ ∀ (x : H), (e x) v = ell x
+'LinearStudy.finiteAdditiveDual_exists_nonzero_representative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionSpecifiedTopDual_exists_nonzero_graded_representative : ∀ {K S : Type} [inst : Field K]
+  {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {M : Type} [inst_13 : AddCommGroup M] [inst_14 : Module K M]
+  [inst_15 : Module (MvPolynomial σ K) M] [inst_16 : Module S M] [inst_17 : IsScalarTower (MvPolynomial σ K) S M]
+  [inst_18 : IsScalarTower K (MvPolynomial σ K) M] [inst_19 : IsScalarTower K S M] (D : ℤ → Submodule K M)
+  [inst_20 : DirectSum.Decomposition D]
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ MvPolynomial.homogeneousSubmodule σ K n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [inst_21 : Module.IsTorsionFree S M]
+  [inst_22 : Module.Finite (MvPolynomial σ K) M] [inst_23 : Module.Finite S M] {κ : Type} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2)
+  (ell :
+    LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B)
+        (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))) (q + 1) →+
+      K),
+  (∀ (r : K)
+      (x :
+        CategoryTheory.Sheaf.H
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+            (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))))
+          (q + 1)),
+      ell
+          ((CategoryTheory.Sheaf.H.map
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                    ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv) r))
+                  (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ)))))
+              (q + 1))
+            x) =
+        r * ell x) →
+    ell ≠ 0 →
+      ∃ (psi :
+        ↥(LinearStudy.integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K) D
+            (-↑(Fintype.card σ) - -↑(Fintype.card σ)))),
+        psi ≠ 0 ∧
+          ∀
+            (x :
+              LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B)
+                (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))) (q + 1)),
+            ((LinearStudy.actualAbelianIsoAddEquiv
+                    (LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso B D hR hS c hc hgenC q hcard
+                      (-↑(Fintype.card σ))))
+                  x)
+                psi =
+              ell x
+'LinearStudy.nativeCoextensionSpecifiedTopDual_exists_nonzero_graded_representative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.coextensionOriginalAdjoint_ring_generator : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] (psi : Module.Dual R S) (x : S),
+  (LinearStudy.coextensionOriginalAdjoint psi) x = x • (LinearStudy.coextensionOriginalAdjoint psi) 1
+'LinearStudy.coextensionOriginalAdjoint_ring_generator' depends on axioms: [propext, Quot.sound]
+@LinearStudy.coextensionOriginalAdjoint_ring_one_ne_zero : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] (psi : Module.Dual R S), psi ≠ 0 → (LinearStudy.coextensionOriginalAdjoint psi) 1 ≠ 0
+'LinearStudy.coextensionOriginalAdjoint_ring_one_ne_zero' depends on axioms: [propext, Quot.sound]
+@LinearStudy.coextensionOriginalAdjoint_ring_one_mem_zero : ∀ {K R S : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (A : ℕ → Submodule K R) [inst_7 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [GradedAlgebra B] [SetLike.GradedSMul A B] (d : ℤ),
+  d = 0 →
+    ∀ (psi : ↥(LinearStudy.integerGradedHomPiece A (LinearStudy.nativeProjectiveRingIntegerPiece B) d)),
+      (LinearStudy.coextensionOriginalAdjoint ↑psi) 1 ∈ LinearStudy.coextensionGradedPiece A B 0
+'LinearStudy.coextensionOriginalAdjoint_ring_one_mem_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalNormalizationDual_exists_fixed_polynomial_images_above : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+  (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+    Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+      (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+        ∀ (lower : ℕ),
+          let R := MvPolynomial (Fin (r + 1)) ℂ;
+          let S := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+          let phi := LinearStudy.projectiveLinearNormalizationMap V L;
+          let A := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+          have B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+          let C := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+          ∃ (m : ℕ),
+            lower ≤ m ∧
+              0 < m ∧
+                ∃ (e : ↑C →ₗ[S] S),
+                  Function.Injective ⇑e ∧
+                    ∀ z ∈ LinearStudy.coextensionGradedPiece A B 0,
+                      z ≠ 0 →
+                        ∃ (Q : LinearStudy.CoordinateRing n),
+                          MvPolynomial.IsHomogeneous Q m ∧
+                            Q ∉ V.ideal.toIdeal ∧ (Ideal.Quotient.mk V.ideal.toIdeal) Q = e z
+'LinearStudy.originalNormalizationDual_exists_fixed_polynomial_images_above' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionSpecifiedTopDual_ring_exists_nonzero_zero_degree_element : ∀ {K S : Type} [inst : Field K]
+  {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2)
+  (ell :
+    LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B)
+        (LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+          (-↑(Fintype.card σ)))
+        (q + 1) →+
+      K),
+  (∀ (r : K)
+      (x :
+        CategoryTheory.Sheaf.H
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+            (LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+              (-↑(Fintype.card σ))))
+          (q + 1)),
+      ell
+          ((CategoryTheory.Sheaf.H.map
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                    ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv) r))
+                  (LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+                    (-↑(Fintype.card σ)))))
+              (q + 1))
+            x) =
+        r * ell x) →
+    ell ≠ 0 →
+      let A := MvPolynomial.homogeneousSubmodule σ K;
+      let D := LinearStudy.nativeProjectiveRingIntegerPiece B;
+      let C := (ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj ↧(MvPolynomial σ K);
+      ∃ z ∈ LinearStudy.coextensionGradedPiece A B 0,
+        z ≠ 0 ∧
+          ∃ (psi : ↥(LinearStudy.integerGradedHomPiece A D (-↑(Fintype.card σ) - -↑(Fintype.card σ)))),
+            z = (LinearStudy.coextensionOriginalAdjoint ↑psi) 1 ∧
+              ∀
+                (x :
+                  LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B)
+                    (LinearStudy.nativeProjectiveModuleSheaf B D ⋯ (-↑(Fintype.card σ))) (q + 1)),
+                ((LinearStudy.actualAbelianIsoAddEquiv
+                        (LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso B D ⋯ ⋯ c hc hgenC q hcard
+                          (-↑(Fintype.card σ))))
+                      x)
+                    psi =
+                  ell x
+'LinearStudy.nativeCoextensionSpecifiedTopDual_ring_exists_nonzero_zero_degree_element' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement : {K S : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          [inst_3 : CommRing S] →
+            [inst_4 : Algebra K S] →
+              [inst_5 : Algebra (MvPolynomial σ K) S] →
+                [IsScalarTower K (MvPolynomial σ K) S] →
+                  (B : ℕ → Submodule K S) →
+                    [GradedAlgebra B] →
+                      [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] →
+                        [IsDomain S] →
+                          [IsNoetherianRing S] →
+                            [Algebra.FiniteType K S] →
+                              [Module.Finite (MvPolynomial σ K) S] →
+                                {τ : Type} →
+                                  (MvPolynomial τ K →ₐ[K] S) →
+                                    Ideal (MvPolynomial τ K) →
+                                      ℕ →
+                                        (↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj
+                                                ↧(MvPolynomial σ K)) →ₗ[S]
+                                            S) →
+                                          {κ : Type} →
+                                            (c : κ → S) →
+                                              (∀ (i : κ), c i ∈ B 1) →
+                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                  (q : ℕ) → Fintype.card σ = q + 2 → Prop
+'LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement_of_images : ∀ {K S : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {τ : Type} (P : MvPolynomial τ K →ₐ[K] S)
+  (I : Ideal (MvPolynomial τ K)) (m : ℕ)
+  (e : ↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj ↧(MvPolynomial σ K)) →ₗ[S] S) {κ : Type}
+  (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ)
+  (hcard : Fintype.card σ = q + 2),
+  (∀ z ∈ LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B 0,
+      z ≠ 0 → ∃ (Q : MvPolynomial τ K), Q.IsHomogeneous m ∧ Q ∉ I ∧ P Q = e z) →
+    LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement B P I m e c hc hgenC q hcard
+'LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement_of_images' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalNormalization_exists_fixed_polynomial_of_top_functional_above : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (q : ℕ) (L : Fin (q + 2) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (q + 2)), MvPolynomial.IsHomogeneous (L i) 1),
+  Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+    ∀ (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (lower : ℕ),
+      let R := MvPolynomial (Fin (q + 2)) ℂ;
+      let S := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+      let phi := LinearStudy.projectiveLinearNormalizationMap V L;
+      have A := MvPolynomial.homogeneousSubmodule (Fin (q + 2)) ℂ;
+      let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+      let C := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+      let c := fun (i : ULift.{0, 0} (Fin (n + 1))) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X i.down);
+      have hc := ⋯;
+      have hgenC := ⋯;
+      ∃ (m : ℕ),
+        lower ≤ m ∧
+          0 < m ∧
+            ∃ (e : ↑C →ₗ[S] S),
+              Function.Injective ⇑e ∧
+                LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement B (Ideal.Quotient.mkₐ ℂ V.ideal.toIdeal)
+                  V.ideal.toIdeal m e c hc hgenC q ⋯
+'LinearStudy.originalNormalization_exists_fixed_polynomial_of_top_functional_above' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionFixedPolynomialRepresentativeStatement : {K S : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          [inst_3 : CommRing S] →
+            [inst_4 : Algebra K S] →
+              [inst_5 : Algebra (MvPolynomial σ K) S] →
+                [IsScalarTower K (MvPolynomial σ K) S] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_7 : GradedAlgebra B] →
+                      [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] →
+                        [IsDomain S] →
+                          [IsNoetherianRing S] →
+                            [Algebra.FiniteType K S] →
+                              [Module.Finite (MvPolynomial σ K) S] →
+                                {τ : Type} →
+                                  (MvPolynomial τ K →ₐ[K] S) →
+                                    Ideal (MvPolynomial τ K) →
+                                      ℕ →
+                                        (↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj
+                                                ↧(MvPolynomial σ K)) →ₗ[S]
+                                            S) →
+                                          {κ : Type} →
+                                            (c : κ → S) →
+                                              (∀ (i : κ), c i ∈ B 1) →
+                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                  (q : ℕ) →
+                                                    Fintype.card σ = q + 2 →
+                                                      (LinearStudy.schemeModuleActualCohomology
+                                                            (AlgebraicGeometry.Proj B)
+                                                            (LinearStudy.nativeProjectiveModuleSheaf B
+                                                              (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+                                                              (-↑(Fintype.card σ)))
+                                                            (q + 1) →+
+                                                          K) →
+                                                        Prop
+'LinearStudy.nativeCoextensionFixedPolynomialRepresentativeStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionFixedPolynomialRepresentativeStatement_of_functional : ∀ {K S : Type} [inst : Field K]
+  {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {τ : Type} (P : MvPolynomial τ K →ₐ[K] S)
+  (I : Ideal (MvPolynomial τ K)) (m : ℕ)
+  (e : ↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj ↧(MvPolynomial σ K)) →ₗ[S] S) {κ : Type}
+  (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ)
+  (hcard : Fintype.card σ = q + 2)
+  (ell :
+    LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B)
+        (LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+          (-↑(Fintype.card σ)))
+        (q + 1) →+
+      K),
+  (∀ (a : K)
+      (x :
+        CategoryTheory.Sheaf.H
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+            (LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+              (-↑(Fintype.card σ))))
+          (q + 1)),
+      ell
+          ((CategoryTheory.Sheaf.H.map
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                    ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv) a))
+                  (LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+                    (-↑(Fintype.card σ)))))
+              (q + 1))
+            x) =
+        a * ell x) →
+    ell ≠ 0 →
+      LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement B P I m e c hc hgenC q hcard →
+        LinearStudy.nativeCoextensionFixedPolynomialRepresentativeStatement B P I m e c hc hgenC q hcard ell
+'LinearStudy.nativeCoextensionFixedPolynomialRepresentativeStatement_of_functional' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalSectionRelationRepresentativeStatement : {K : Type u_1} →
+  [inst : Field K] →
+    {X : AlgebraicGeometry.Scheme} →
+      (X ⟶ AlgebraicGeometry.Spec ↧K) →
+        {E M : X.Modules} →
+          (CC : ChainComplex X.Modules ℕ) →
+            (r : ℕ) →
+              (alpha : CC ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+                QuasiIso alpha →
+                  CategoryTheory.Limits.IsZero (CC.X (r + 1)) →
+                    (CC.X r ≅ M) → ((LinearStudy.schemeModuleActualCohomology X M r →+ K) → Prop) → Prop
+'LinearStudy.schemeModuleOriginalSectionRelationRepresentativeStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalSectionRelationRepresentativeStatement_of_exact : ∀ {K : Type u_1} [inst : Field K]
+  {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) {E M : X.Modules} (CC : ChainComplex X.Modules ℕ)
+  (r : ℕ) (alpha : CC ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (CC.X (r + 1))) (phi : CC.X r ≅ M)
+  (Rep : (LinearStudy.schemeModuleActualCohomology X M r →+ K) → Prop),
+  LinearStudy.schemeModuleOriginalActualSectionExactStatement CC r alpha hAlpha hAbove phi →
+    (∀ (ell : LinearStudy.schemeModuleActualCohomology X M r →+ K),
+        (∀ (a : K) (x : LinearStudy.schemeModuleActualCohomology X M r),
+            ell
+                ((CategoryTheory.Sheaf.H.map
+                    ((LinearStudy.schemeModuleToActualAbelianSheaf X).map
+                      (LinearStudy.originalGlobalModuleScalar
+                        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop pi))
+                          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv) a))
+                        M))
+                    r)
+                  x) =
+              a * ell x) →
+          ell ≠ 0 → Rep ell) →
+      LinearStudy.schemeModuleOriginalSectionRelationRepresentativeStatement pi CC r alpha hAlpha hAbove phi Rep
+'LinearStudy.schemeModuleOriginalSectionRelationRepresentativeStatement_of_exact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionOriginalRelationPolynomialStatement : {K S : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          [inst_3 : CommRing S] →
+            [inst_4 : Algebra K S] →
+              [inst_5 : Algebra (MvPolynomial σ K) S] →
+                [IsScalarTower K (MvPolynomial σ K) S] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_7 : GradedAlgebra B] →
+                      [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] →
+                        [IsDomain S] →
+                          [IsNoetherianRing S] →
+                            [Algebra.FiniteType K S] →
+                              [Module.Finite (MvPolynomial σ K) S] →
+                                {τ : Type} →
+                                  (MvPolynomial τ K →ₐ[K] S) →
+                                    Ideal (MvPolynomial τ K) →
+                                      ℕ →
+                                        (↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj
+                                                ↧(MvPolynomial σ K)) →ₗ[S]
+                                            S) →
+                                          {κ : Type} →
+                                            (c : κ → S) →
+                                              (∀ (i : κ), c i ∈ B 1) →
+                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                  (q : ℕ) →
+                                                    Fintype.card σ = q + 2 →
+                                                      {G : (AlgebraicGeometry.Proj B).Modules} →
+                                                        (CC : ChainComplex (AlgebraicGeometry.Proj B).Modules ℕ) →
+                                                          (alpha :
+                                                              CC ⟶
+                                                                (ChainComplex.single₀
+                                                                      (AlgebraicGeometry.Proj B).Modules).obj
+                                                                  G) →
+                                                            QuasiIso alpha →
+                                                              CategoryTheory.Limits.IsZero (CC.X (q + 1 + 1)) →
+                                                                (CC.X (q + 1) ≅
+                                                                    LinearStudy.nativeProjectiveModuleSheaf B
+                                                                      (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+                                                                      (-↑(Fintype.card σ))) →
+                                                                  Prop
+'LinearStudy.nativeCoextensionOriginalRelationPolynomialStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionOriginalRelationPolynomialStatement_of_exact : ∀ {K S : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {τ : Type} (P : MvPolynomial τ K →ₐ[K] S)
+  (I : Ideal (MvPolynomial τ K)) (m : ℕ)
+  (e : ↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj ↧(MvPolynomial σ K)) →ₗ[S] S) {κ : Type}
+  (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ)
+  (hcard : Fintype.card σ = q + 2) {G : (AlgebraicGeometry.Proj B).Modules}
+  (CC : ChainComplex (AlgebraicGeometry.Proj B).Modules ℕ)
+  (alpha : CC ⟶ (ChainComplex.single₀ (AlgebraicGeometry.Proj B).Modules).obj G) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (CC.X (q + 1 + 1)))
+  (phi :
+    CC.X (q + 1) ≅
+      LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+        (-↑(Fintype.card σ))),
+  LinearStudy.schemeModuleOriginalActualSectionExactStatement CC (q + 1) alpha hAlpha hAbove phi →
+    LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement B P I m e c hc hgenC q hcard →
+      LinearStudy.nativeCoextensionOriginalRelationPolynomialStatement B P I m e c hc hgenC q hcard CC alpha hAlpha
+        hAbove phi
+'LinearStudy.nativeCoextensionOriginalRelationPolynomialStatement_of_exact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalAnyTopActualSectionStatement : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (e :
+                CategoryTheory.Limits.cokernel
+                    ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).d 1 0) ≅
+                  LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) →
+              QuasiIso
+                  (LinearStudy.originalChainCokernelTargetAugmentation
+                    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+                    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e) →
+                Prop
+'LinearStudy.projectivePulledOriginalAnyTopActualSectionStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalAnyTopActualSectionStatement_of_bound : ∀ {n r : ℕ},
+  0 < r →
+    ∀ (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+      (w : Fin (r + 1) → ℂ)
+      (e :
+        CategoryTheory.Limits.cokernel
+            ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).d 1 0) ≅
+          LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1))
+      (he :
+        QuasiIso
+          (LinearStudy.originalChainCokernelTargetAugmentation
+            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+            (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e))
+      (N : ℕ),
+      N + r + 1 ≤ f.degree →
+        LinearStudy.projectivePulledOriginalStructureTwistSerreBoundStatement V N →
+          LinearStudy.projectivePulledOriginalAnyTopActualSectionStatement f V L hL w e he
+'LinearStudy.projectivePulledOriginalAnyTopActualSectionStatement_of_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginal_uniformAnyTopActualSectionExact_above : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (lower : ℕ),
+  0 < r →
+    ∃ (m : ℕ),
+      0 < m ∧
+        lower ≤ m ∧
+          ∀ (D : ℕ),
+            1 ≤ D →
+              ∀ (f : LinearStudy.HomogeneousEndomorphism n),
+                m * D < f.degree →
+                  ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+                    (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (r + 1) → ℂ),
+                    let t := ↑r * ↑f.degree - ↑r - 1;
+                    ∀
+                      (e :
+                        CategoryTheory.Limits.cokernel
+                            ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w t).d 1 0) ≅
+                          LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w t)
+                      (he :
+                        QuasiIso
+                          (LinearStudy.originalChainCokernelTargetAugmentation
+                            (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w t)
+                            (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w t) e)),
+                      LinearStudy.projectivePulledOriginalAnyTopActualSectionStatement f V L hL w e he
+'LinearStudy.projectivePulledOriginal_uniformAnyTopActualSectionExact_above' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalProjectivePolynomialSection_nonzero_of_normalization : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (P : Fin (r + 1) → LinearStudy.CoordinateRing n),
+  (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (P i) 1) →
+    Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V P) →
+      ∀ (m : ℕ) (Q : LinearStudy.CoordinateRing n) (hQ : MvPolynomial.IsHomogeneous Q m),
+        Q ∉ V.ideal.toIdeal → LinearStudy.originalProjectivePolynomialSection V m Q hQ ≠ 0
+'LinearStudy.originalProjectivePolynomialSection_nonzero_of_normalization' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleSectionsSpecModule.{u} : {K : Type u} →
+  [inst : CommRing K] →
+    {X : AlgebraicGeometry.Scheme} →
+      (X ⟶ AlgebraicGeometry.Spec ↧K) → (E : X.Modules) → Module K ↑(E.presheaf.obj (Opposite.op ⊤)) :=
+fun {K : Type u} [CommRing K] {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) (E : X.Modules) =>
+  Module.compHom (↑(E.presheaf.obj (Opposite.op ⊤)))
+    ((CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.Hom.appTop pi)).comp
+      (CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv))
+def LinearStudy.schemeModuleExtClassActualSectionBoundarySpecLinearMap.{u} : {K : Type u} →
+  [inst : CommRing K] →
+    {X : AlgebraicGeometry.Scheme} →
+      (pi : X ⟶ AlgebraicGeometry.Spec ↧K) →
+        {E M : X.Modules} →
+          (r : ℕ) →
+            CategoryTheory.Abelian.Ext E M r →
+              ↑(E.presheaf.obj (Opposite.op ⊤)) →ₗ[K] LinearStudy.schemeModuleActualCohomology X M r :=
+fun {K : Type u} [CommRing K] {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) {E M : X.Modules}
+    (r : ℕ) (epsilon : CategoryTheory.Abelian.Ext E M r) =>
+  let __spread.0 := LinearStudy.schemeModuleExtClassActualSectionBoundaryAddHom epsilon;
+  { toFun := (↑__spread.0).toFun, map_add' := ⋯, map_smul' := ⋯ }
+def LinearStudy.schemeModuleOriginalActualSectionBoundarySpecLinearMap.{u} : {K : Type u} →
+  [inst : CommRing K] →
+    {X : AlgebraicGeometry.Scheme} →
+      (pi : X ⟶ AlgebraicGeometry.Spec ↧K) →
+        {E M : X.Modules} →
+          (CC : ChainComplex X.Modules ℕ) →
+            (r : ℕ) →
+              (alpha : CC ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+                QuasiIso alpha →
+                  CategoryTheory.Limits.IsZero (CC.X (r + 1)) →
+                    (CC.X r ≅ M) →
+                      ↑(E.presheaf.obj (Opposite.op ⊤)) →ₗ[K] LinearStudy.schemeModuleActualCohomology X M r :=
+fun {K : Type u} [CommRing K] {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) {E M : X.Modules}
+    (CC : ChainComplex X.Modules ℕ) (r : ℕ) (alpha : CC ⟶ (ChainComplex.single₀ X.Modules).obj E)
+    (hAlpha : QuasiIso alpha) (hAbove : CategoryTheory.Limits.IsZero (CC.X (r + 1))) (phi : CC.X r ≅ M) =>
+  LinearStudy.schemeModuleExtClassActualSectionBoundarySpecLinearMap pi r
+    (LinearStudy.schemeModuleOriginalChainTopExtClassSmall CC r alpha hAlpha phi.hom ⋯)
+def LinearStudy.projectivePulledOriginalFixedTopNonzeroRelationStatement : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (e :
+                CategoryTheory.Limits.cokernel
+                    ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).d 1 0) ≅
+                  LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) →
+              QuasiIso
+                  (LinearStudy.originalChainCokernelTargetAugmentation
+                    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+                    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e) →
+                Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ)
+    (e :
+      CategoryTheory.Limits.cokernel
+          ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1))
+    (he :
+      QuasiIso
+        (LinearStudy.originalChainCokernelTargetAugmentation
+          (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+          (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e)) =>
+  let t := ↑r * ↑f.degree - ↑r - 1;
+  let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  let CC := LinearStudy.projectivePulledLinearKoszulComplex f V L hL w t;
+  let G := LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w t;
+  let F := LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯ (-↑r - 1);
+  have pi :=
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap ℂ ↥(B 0))));
+  let alpha := LinearStudy.originalChainCokernelTargetAugmentation CC G e;
+  have hAbove := ⋯;
+  have phi := LinearStudy.projectivePulledOriginalKoszulTopOriginalCoefficientIso f V L hL w;
+  ∀ (lambda : Module.Dual ℂ ↑(G.presheaf.obj (Opposite.op ⊤))),
+    lambda ≠ 0 →
+      (∀ (z : ↑((CC.X 0).presheaf.obj (Opposite.op ⊤))),
+          lambda ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app (alpha.f 0) ⊤)) z) =
+            0) →
+        ∃ (ell : Module.Dual ℂ (LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B) F r)),
+          ell ≠ 0 ∧
+            ∀ (s : ↑(G.presheaf.obj (Opposite.op ⊤))),
+              ell ((LinearStudy.schemeModuleOriginalActualSectionBoundary CC r alpha he hAbove phi) s) = lambda s
+def LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement : {K S : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          [inst_3 : CommRing S] →
+            [inst_4 : Algebra K S] →
+              [inst_5 : Algebra (MvPolynomial σ K) S] →
+                [IsScalarTower K (MvPolynomial σ K) S] →
+                  (B : ℕ → Submodule K S) →
+                    [GradedAlgebra B] →
+                      [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] →
+                        [IsDomain S] →
+                          [IsNoetherianRing S] →
+                            [Algebra.FiniteType K S] →
+                              [Module.Finite (MvPolynomial σ K) S] →
+                                {τ : Type} →
+                                  (MvPolynomial τ K →ₐ[K] S) →
+                                    Ideal (MvPolynomial τ K) →
+                                      ℕ →
+                                        (↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj
+                                                ↧(MvPolynomial σ K)) →ₗ[S]
+                                            S) →
+                                          {κ : Type} →
+                                            (c : κ → S) →
+                                              (∀ (i : κ), c i ∈ B 1) →
+                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                  (q : ℕ) → Fintype.card σ = q + 2 → Prop :=
+fun {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ] [CommRing S] [Algebra K S]
+    [Algebra (MvPolynomial σ K) S] [IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S) [GradedAlgebra B]
+    [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] [IsDomain S] [IsNoetherianRing S]
+    [Algebra.FiniteType K S] [Module.Finite (MvPolynomial σ K) S] {τ : Type} (P : MvPolynomial τ K →ₐ[K] S)
+    (I : Ideal (MvPolynomial τ K)) (m : ℕ)
+    (e : ↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj ↧(MvPolynomial σ K)) →ₗ[S] S) {κ : Type}
+    (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ)
+    (hcard : Fintype.card σ = q + 2) =>
+  let A := MvPolynomial.homogeneousSubmodule σ K;
+  let D := LinearStudy.nativeProjectiveRingIntegerPiece B;
+  let C := (ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj ↧(MvPolynomial σ K);
+  have hR := ⋯;
+  have hS := ⋯;
+  let k := -↑(Fintype.card σ);
+  let F := LinearStudy.nativeProjectiveModuleSheaf B D hS k;
+  let H := LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B) F (q + 1);
+  have piB :=
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0))));
+  let W := ↥(LinearStudy.integerGradedHomPiece A D (k - k));
+  have J := LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso B D hR hS c hc hgenC q hcard k;
+  have comparison := LinearStudy.actualAbelianIsoAddEquiv J;
+  ∀ (ell : H →+ K),
+    (∀ (a : K) (x : H),
+        ell
+            ((CategoryTheory.Sheaf.H.map
+                ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                  (LinearStudy.originalGlobalModuleScalar
+                    ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop piB))
+                      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv) a))
+                    F))
+                (q + 1))
+              x) =
+          a * ell x) →
+      ell ≠ 0 →
+        ∃ z ∈ LinearStudy.coextensionGradedPiece A B 0,
+          z ≠ 0 ∧
+            ∃ (Q : MvPolynomial τ K),
+              Q.IsHomogeneous m ∧
+                Q ∉ I ∧
+                  P Q = e z ∧
+                    ∃ (psi : W),
+                      z = (LinearStudy.coextensionOriginalAdjoint ↑psi) 1 ∧ ∀ (x : H), (comparison x) psi = ell x
+def LinearStudy.nativeCoextensionFixedPolynomialRepresentativeStatement : {K S : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          [inst_3 : CommRing S] →
+            [inst_4 : Algebra K S] →
+              [inst_5 : Algebra (MvPolynomial σ K) S] →
+                [IsScalarTower K (MvPolynomial σ K) S] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_7 : GradedAlgebra B] →
+                      [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] →
+                        [IsDomain S] →
+                          [IsNoetherianRing S] →
+                            [Algebra.FiniteType K S] →
+                              [Module.Finite (MvPolynomial σ K) S] →
+                                {τ : Type} →
+                                  (MvPolynomial τ K →ₐ[K] S) →
+                                    Ideal (MvPolynomial τ K) →
+                                      ℕ →
+                                        (↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj
+                                                ↧(MvPolynomial σ K)) →ₗ[S]
+                                            S) →
+                                          {κ : Type} →
+                                            (c : κ → S) →
+                                              (∀ (i : κ), c i ∈ B 1) →
+                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                  (q : ℕ) →
+                                                    Fintype.card σ = q + 2 →
+                                                      (LinearStudy.schemeModuleActualCohomology
+                                                            (AlgebraicGeometry.Proj B)
+                                                            (LinearStudy.nativeProjectiveModuleSheaf B
+                                                              (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+                                                              (-↑(Fintype.card σ)))
+                                                            (q + 1) →+
+                                                          K) →
+                                                        Prop :=
+fun {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ] [CommRing S] [Algebra K S]
+    [Algebra (MvPolynomial σ K) S] [IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S) [GradedAlgebra B]
+    [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] [IsDomain S] [IsNoetherianRing S]
+    [Algebra.FiniteType K S] [Module.Finite (MvPolynomial σ K) S] {τ : Type} (P : MvPolynomial τ K →ₐ[K] S)
+    (I : Ideal (MvPolynomial τ K)) (m : ℕ)
+    (e : ↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj ↧(MvPolynomial σ K)) →ₗ[S] S) {κ : Type}
+    (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ)
+    (hcard : Fintype.card σ = q + 2)
+    (ell :
+      LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B)
+          (LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+            (-↑(Fintype.card σ)))
+          (q + 1) →+
+        K) =>
+  let A := MvPolynomial.homogeneousSubmodule σ K;
+  let D := LinearStudy.nativeProjectiveRingIntegerPiece B;
+  let C := (ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj ↧(MvPolynomial σ K);
+  have hR := ⋯;
+  have hS := ⋯;
+  let k := -↑(Fintype.card σ);
+  let F := LinearStudy.nativeProjectiveModuleSheaf B D hS k;
+  let H := LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B) F (q + 1);
+  have piB :=
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0))));
+  let W := ↥(LinearStudy.integerGradedHomPiece A D (k - k));
+  have J := LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso B D hR hS c hc hgenC q hcard k;
+  have comparison := LinearStudy.actualAbelianIsoAddEquiv J;
+  ∃ z ∈ LinearStudy.coextensionGradedPiece A B 0,
+    z ≠ 0 ∧
+      ∃ (Q : MvPolynomial τ K),
+        Q.IsHomogeneous m ∧
+          Q ∉ I ∧
+            P Q = e z ∧
+              ∃ (psi : W), z = (LinearStudy.coextensionOriginalAdjoint ↑psi) 1 ∧ ∀ (x : H), (comparison x) psi = ell x
+def LinearStudy.schemeModuleOriginalSectionRelationRepresentativeStatement.{u} : {K : Type u} →
+  [inst : Field K] →
+    {X : AlgebraicGeometry.Scheme} →
+      (X ⟶ AlgebraicGeometry.Spec ↧K) →
+        {E M : X.Modules} →
+          (CC : ChainComplex X.Modules ℕ) →
+            (r : ℕ) →
+              (alpha : CC ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+                QuasiIso alpha →
+                  CategoryTheory.Limits.IsZero (CC.X (r + 1)) →
+                    (CC.X r ≅ M) → ((LinearStudy.schemeModuleActualCohomology X M r →+ K) → Prop) → Prop :=
+fun {K : Type u} [Field K] {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) {E M : X.Modules}
+    (CC : ChainComplex X.Modules ℕ) (r : ℕ) (alpha : CC ⟶ (ChainComplex.single₀ X.Modules).obj E)
+    (hAlpha : QuasiIso alpha) (hAbove : CategoryTheory.Limits.IsZero (CC.X (r + 1))) (phi : CC.X r ≅ M)
+    (Rep : (LinearStudy.schemeModuleActualCohomology X M r →+ K) → Prop) =>
+  ∀ (lambda : Module.Dual K ↑(E.presheaf.obj (Opposite.op ⊤))),
+    lambda ≠ 0 →
+      (∀ (s : ↑((CC.X 0).presheaf.obj (Opposite.op ⊤))),
+          lambda ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app (alpha.f 0) ⊤)) s) =
+            0) →
+        ∃ (ell : LinearStudy.schemeModuleActualCohomology X M r →+ K),
+          ell ≠ 0 ∧
+            (∀ (a : K) (x : LinearStudy.schemeModuleActualCohomology X M r),
+                ell
+                    ((CategoryTheory.Sheaf.H.map
+                        ((LinearStudy.schemeModuleToActualAbelianSheaf X).map
+                          (LinearStudy.originalGlobalModuleScalar
+                            ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop pi))
+                              ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv) a))
+                            M))
+                        r)
+                      x) =
+                  a * ell x) ∧
+              (∀ (s : ↑(E.presheaf.obj (Opposite.op ⊤))),
+                  ell ((LinearStudy.schemeModuleOriginalActualSectionBoundary CC r alpha hAlpha hAbove phi) s) =
+                    lambda s) ∧
+                Rep ell
+def LinearStudy.nativeCoextensionOriginalRelationPolynomialStatement : {K S : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          [inst_3 : CommRing S] →
+            [inst_4 : Algebra K S] →
+              [inst_5 : Algebra (MvPolynomial σ K) S] →
+                [IsScalarTower K (MvPolynomial σ K) S] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_7 : GradedAlgebra B] →
+                      [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] →
+                        [IsDomain S] →
+                          [IsNoetherianRing S] →
+                            [Algebra.FiniteType K S] →
+                              [Module.Finite (MvPolynomial σ K) S] →
+                                {τ : Type} →
+                                  (MvPolynomial τ K →ₐ[K] S) →
+                                    Ideal (MvPolynomial τ K) →
+                                      ℕ →
+                                        (↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj
+                                                ↧(MvPolynomial σ K)) →ₗ[S]
+                                            S) →
+                                          {κ : Type} →
+                                            (c : κ → S) →
+                                              (∀ (i : κ), c i ∈ B 1) →
+                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                  (q : ℕ) →
+                                                    Fintype.card σ = q + 2 →
+                                                      {G : (AlgebraicGeometry.Proj B).Modules} →
+                                                        (CC : ChainComplex (AlgebraicGeometry.Proj B).Modules ℕ) →
+                                                          (alpha :
+                                                              CC ⟶
+                                                                (ChainComplex.single₀
+                                                                      (AlgebraicGeometry.Proj B).Modules).obj
+                                                                  G) →
+                                                            QuasiIso alpha →
+                                                              CategoryTheory.Limits.IsZero (CC.X (q + 1 + 1)) →
+                                                                (CC.X (q + 1) ≅
+                                                                    LinearStudy.nativeProjectiveModuleSheaf B
+                                                                      (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+                                                                      (-↑(Fintype.card σ))) →
+                                                                  Prop :=
+fun {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ] [CommRing S] [Algebra K S]
+    [Algebra (MvPolynomial σ K) S] [IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S) [GradedAlgebra B]
+    [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] [IsDomain S] [IsNoetherianRing S]
+    [Algebra.FiniteType K S] [Module.Finite (MvPolynomial σ K) S] {τ : Type} (P : MvPolynomial τ K →ₐ[K] S)
+    (I : Ideal (MvPolynomial τ K)) (m : ℕ)
+    (e : ↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj ↧(MvPolynomial σ K)) →ₗ[S] S) {κ : Type}
+    (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ)
+    (hcard : Fintype.card σ = q + 2) {G : (AlgebraicGeometry.Proj B).Modules}
+    (CC : ChainComplex (AlgebraicGeometry.Proj B).Modules ℕ)
+    (alpha : CC ⟶ (ChainComplex.single₀ (AlgebraicGeometry.Proj B).Modules).obj G) (hAlpha : QuasiIso alpha)
+    (hAbove : CategoryTheory.Limits.IsZero (CC.X (q + 1 + 1)))
+    (phi :
+      CC.X (q + 1) ≅
+        LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+          (-↑(Fintype.card σ))) =>
+  let D := LinearStudy.nativeProjectiveRingIntegerPiece B;
+  have hS := ⋯;
+  let F := LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ));
+  have piB :=
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0))));
+  have Rep := fun (ell : LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B) F (q + 1) →+ K) =>
+    LinearStudy.nativeCoextensionFixedPolynomialRepresentativeStatement B P I m e c hc hgenC q hcard ell;
+  LinearStudy.schemeModuleOriginalSectionRelationRepresentativeStatement piB CC (q + 1) alpha hAlpha hAbove phi Rep
+def LinearStudy.projectivePulledOriginalAnyTopActualSectionStatement : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (r + 1) → ℂ) →
+            (e :
+                CategoryTheory.Limits.cokernel
+                    ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).d 1 0) ≅
+                  LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) →
+              QuasiIso
+                  (LinearStudy.originalChainCokernelTargetAugmentation
+                    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+                    (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e) →
+                Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1)
+    (w : Fin (r + 1) → ℂ)
+    (e :
+      CategoryTheory.Limits.cokernel
+          ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1))
+    (he :
+      QuasiIso
+        (LinearStudy.originalChainCokernelTargetAugmentation
+          (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+          (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e)) =>
+  ∀ (M : (AlgebraicGeometry.Proj (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)).Modules)
+    (phi : (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)).X r ≅ M),
+    LinearStudy.schemeModuleOriginalActualSectionExactStatement
+      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1)) r
+      (LinearStudy.originalChainCokernelTargetAugmentation
+        (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w (↑r * ↑f.degree - ↑r - 1))
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w (↑r * ↑f.degree - ↑r - 1)) e)
+      he ⋯ phi
+ROLECHECK:LinearStudy.schemeModuleGlobalScalar_ext_centrality:true
+KINDCHECK:LinearStudy.schemeModuleGlobalScalar_ext_centrality:theorem
+ROLECHECK:LinearStudy.schemeModuleUnitHomGlobalSections_symm_originalScalar:true
+KINDCHECK:LinearStudy.schemeModuleUnitHomGlobalSections_symm_originalScalar:theorem
+ROLECHECK:LinearStudy.schemeModuleExtClassActualSectionBoundary_originalScalar:true
+KINDCHECK:LinearStudy.schemeModuleExtClassActualSectionBoundary_originalScalar:theorem
+ROLECHECK:LinearStudy.schemeModuleSectionsSpecModule:false
+KINDCHECK:LinearStudy.schemeModuleSectionsSpecModule:definition
+ROLECHECK:LinearStudy.schemeModuleSectionsSpecModule_smul:true
+KINDCHECK:LinearStudy.schemeModuleSectionsSpecModule_smul:theorem
+ROLECHECK:LinearStudy.schemeModuleExtClassActualSectionBoundarySpecLinearMap:false
+KINDCHECK:LinearStudy.schemeModuleExtClassActualSectionBoundarySpecLinearMap:definition
+ROLECHECK:LinearStudy.schemeModuleExtClassActualSectionBoundarySpecLinearMap_forget:true
+KINDCHECK:LinearStudy.schemeModuleExtClassActualSectionBoundarySpecLinearMap_forget:theorem
+ROLECHECK:LinearStudy.schemeModuleOriginalActualSectionBoundarySpecLinearMap:false
+KINDCHECK:LinearStudy.schemeModuleOriginalActualSectionBoundarySpecLinearMap:definition
+ROLECHECK:LinearStudy.schemeModuleOriginalActualSectionBoundarySpecLinearMap_forget:true
+KINDCHECK:LinearStudy.schemeModuleOriginalActualSectionBoundarySpecLinearMap_forget:theorem
+ROLECHECK:LinearStudy.schemeModuleOriginalActualSectionRelation_nonzero_descent:true
+KINDCHECK:LinearStudy.schemeModuleOriginalActualSectionRelation_nonzero_descent:theorem
+ROLECHECK:LinearStudy.nativeCoextensionSpecifiedTrace_original_section_relation_representative:true
+KINDCHECK:LinearStudy.nativeCoextensionSpecifiedTrace_original_section_relation_representative:theorem
+ROLECHECK:LinearStudy.projectivePulledOriginalFixedTopNonzeroRelationStatement:false
+KINDCHECK:LinearStudy.projectivePulledOriginalFixedTopNonzeroRelationStatement:definition
+ROLECHECK:LinearStudy.projectivePulledOriginalFixedTopNonzeroRelationStatement_of_exact:true
+KINDCHECK:LinearStudy.projectivePulledOriginalFixedTopNonzeroRelationStatement_of_exact:theorem
+ROLECHECK:LinearStudy.projectivePulledOriginal_uniform_nonzero_relation_descent_above:true
+KINDCHECK:LinearStudy.projectivePulledOriginal_uniform_nonzero_relation_descent_above:theorem
+ROLECHECK:LinearStudy.finiteAdditiveDual_exists_nonzero_representative:true
+KINDCHECK:LinearStudy.finiteAdditiveDual_exists_nonzero_representative:theorem
+ROLECHECK:LinearStudy.nativeCoextensionSpecifiedTopDual_exists_nonzero_graded_representative:true
+KINDCHECK:LinearStudy.nativeCoextensionSpecifiedTopDual_exists_nonzero_graded_representative:theorem
+ROLECHECK:LinearStudy.coextensionOriginalAdjoint_ring_generator:true
+KINDCHECK:LinearStudy.coextensionOriginalAdjoint_ring_generator:theorem
+ROLECHECK:LinearStudy.coextensionOriginalAdjoint_ring_one_ne_zero:true
+KINDCHECK:LinearStudy.coextensionOriginalAdjoint_ring_one_ne_zero:theorem
+ROLECHECK:LinearStudy.coextensionOriginalAdjoint_ring_one_mem_zero:true
+KINDCHECK:LinearStudy.coextensionOriginalAdjoint_ring_one_mem_zero:theorem
+ROLECHECK:LinearStudy.originalNormalizationDual_exists_fixed_polynomial_images_above:true
+KINDCHECK:LinearStudy.originalNormalizationDual_exists_fixed_polynomial_images_above:theorem
+ROLECHECK:LinearStudy.nativeCoextensionSpecifiedTopDual_ring_exists_nonzero_zero_degree_element:true
+KINDCHECK:LinearStudy.nativeCoextensionSpecifiedTopDual_ring_exists_nonzero_zero_degree_element:theorem
+ROLECHECK:LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement:false
+KINDCHECK:LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement:definition
+ROLECHECK:LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement_of_images:true
+KINDCHECK:LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement_of_images:theorem
+ROLECHECK:LinearStudy.originalNormalization_exists_fixed_polynomial_of_top_functional_above:true
+KINDCHECK:LinearStudy.originalNormalization_exists_fixed_polynomial_of_top_functional_above:theorem
+ROLECHECK:LinearStudy.nativeCoextensionFixedPolynomialRepresentativeStatement:false
+KINDCHECK:LinearStudy.nativeCoextensionFixedPolynomialRepresentativeStatement:definition
+ROLECHECK:LinearStudy.nativeCoextensionFixedPolynomialRepresentativeStatement_of_functional:true
+KINDCHECK:LinearStudy.nativeCoextensionFixedPolynomialRepresentativeStatement_of_functional:theorem
+ROLECHECK:LinearStudy.schemeModuleOriginalSectionRelationRepresentativeStatement:false
+KINDCHECK:LinearStudy.schemeModuleOriginalSectionRelationRepresentativeStatement:definition
+ROLECHECK:LinearStudy.schemeModuleOriginalSectionRelationRepresentativeStatement_of_exact:true
+KINDCHECK:LinearStudy.schemeModuleOriginalSectionRelationRepresentativeStatement_of_exact:theorem
+ROLECHECK:LinearStudy.nativeCoextensionOriginalRelationPolynomialStatement:false
+KINDCHECK:LinearStudy.nativeCoextensionOriginalRelationPolynomialStatement:definition
+ROLECHECK:LinearStudy.nativeCoextensionOriginalRelationPolynomialStatement_of_exact:true
+KINDCHECK:LinearStudy.nativeCoextensionOriginalRelationPolynomialStatement_of_exact:theorem
+ROLECHECK:LinearStudy.projectivePulledOriginalAnyTopActualSectionStatement:false
+KINDCHECK:LinearStudy.projectivePulledOriginalAnyTopActualSectionStatement:definition
+ROLECHECK:LinearStudy.projectivePulledOriginalAnyTopActualSectionStatement_of_bound:true
+KINDCHECK:LinearStudy.projectivePulledOriginalAnyTopActualSectionStatement_of_bound:theorem
+ROLECHECK:LinearStudy.projectivePulledOriginal_uniformAnyTopActualSectionExact_above:true
+KINDCHECK:LinearStudy.projectivePulledOriginal_uniformAnyTopActualSectionExact_above:theorem
+ROLECHECK:LinearStudy.originalProjectivePolynomialSection_nonzero_of_normalization:true
+KINDCHECK:LinearStudy.originalProjectivePolynomialSection_nonzero_of_normalization:theorem
