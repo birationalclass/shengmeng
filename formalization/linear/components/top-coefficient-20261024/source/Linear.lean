@@ -1,0 +1,5 @@
+module
+public import Linear.CoordinateCechCoefficientForgettingIdentity
+public import Linear.IntegerFinitePresentationCoordinateNaturality
+public import Linear.NativeSpecifiedNormalizationTopDualityCoefficient
+public import Linear.SpecifiedDualityCoefficientTransfer

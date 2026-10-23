@@ -1,0 +1,87 @@
+@MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso_naturality : ∀ {K M N : Type}
+  [inst : Field K] {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : AddCommGroup M]
+  [inst_4 : Module K M] [inst_5 : Module (MvPolynomial σ K) M] [inst_6 : IsScalarTower K (MvPolynomial σ K) M]
+  [inst_7 : AddCommGroup N] [inst_8 : Module K N] [inst_9 : Module (MvPolynomial σ K) N]
+  [inst_10 : IsScalarTower K (MvPolynomial σ K) N] (D : ℤ → Submodule K M) [inst_11 : DirectSum.Decomposition D]
+  (E : ℤ → Submodule K N) [inst_12 : DirectSum.Decomposition E]
+  (hD : ∀ (t : ℕ) (d : ℤ), ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D d, p • x ∈ D (↑t + d))
+  (hE : ∀ (t : ℕ) (d : ℤ), ∀ p ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ E d, p • x ∈ E (↑t + d))
+  [inst_13 : Module.Finite (MvPolynomial σ K) M] [inst_14 : Module.Finite (MvPolynomial σ K) N]
+  (e : M →ₗ[MvPolynomial σ K] N) (he : ∀ (d : ℤ), ∀ x ∈ D d, e x ∈ E d) (n : ℕ) (hcard : Fintype.card σ = n + 2)
+  (k : ℤ),
+  CategoryTheory.CategoryStruct.comp
+      ((ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).map
+        ((MvPolynomial.coordinateNativeCechHomologyFunctor n).map
+          (LinearStudy.nativeProjectiveDegreeZeroSheafMap (MvPolynomial.homogeneousSubmodule σ K) D E hD hE e he k)))
+      (MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso E hE n hcard k).hom =
+    CategoryTheory.CategoryStruct.comp
+      (MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso D hD n hcard k).hom
+      (ModuleCat.ofHom
+        (LinearStudy.integerGradedHomPrecomposition (MvPolynomial.homogeneousSubmodule σ K) D E e he
+            (-↑(Fintype.card σ) - k)).dualMap)
+'MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalSpecifiedDualityCoefficientSquare_of_comparisonSquares : ∀ {C : Type u_1}
+  [inst : CategoryTheory.Category.{u_2, u_1} C] {A A' H H' D D' : C} (e : A ≅ H) (e' : A' ≅ H') (j : A ≅ D)
+  (j' : A' ≅ D') (a : A ⟶ A') (h : H ⟶ H') (d : D ⟶ D'),
+  CategoryTheory.CategoryStruct.comp a e'.hom = CategoryTheory.CategoryStruct.comp e.hom h →
+    CategoryTheory.CategoryStruct.comp a j'.hom = CategoryTheory.CategoryStruct.comp j.hom d →
+      CategoryTheory.CategoryStruct.comp h (e'.symm ≪≫ j').hom = CategoryTheory.CategoryStruct.comp (e.symm ≪≫ j).hom d
+'LinearStudy.originalSpecifiedDualityCoefficientSquare_of_comparisonSquares' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@MvPolynomial.coordinateNativeCechHomologyFunctor_map_forget : ∀ {K : Type} [inst : Field K] {σ : Type} [Fintype σ]
+  [inst_2 : LinearOrder σ] {M N : (AlgebraicGeometry.Proj (MvPolynomial.homogeneousSubmodule σ K)).Modules} (f : M ⟶ N)
+  (q : ℕ),
+  (CategoryTheory.forget₂ (ModuleCat K) AddCommGrpCat).map
+      ((ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).map
+        ((MvPolynomial.coordinateNativeCechHomologyFunctor q).map f)) =
+    (CategoryTheory.forget₂ (ModuleCat ↑(MvPolynomial.coordinateCanonicalBaseRing K)) AddCommGrpCat).map
+      (HomologicalComplex.homologyMap
+        (LinearStudy.orderedBaseCechActualCoefficientMap MvPolynomial.homogeneousProjπ f
+          MvPolynomial.coordinateOpenCover)
+        (q + 1))
+'MvPolynomial.coordinateNativeCechHomologyFunctor_map_forget' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso_coefficient : ∀ {K S M N : Type} [inst : Field K]
+  {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : AddCommGroup M] [inst_10 : Module K M] [inst_11 : Module (MvPolynomial σ K) M] [inst_12 : Module S M]
+  [inst_13 : IsScalarTower (MvPolynomial σ K) S M] [inst_14 : IsScalarTower K (MvPolynomial σ K) M]
+  [inst_15 : IsScalarTower K S M] [inst_16 : AddCommGroup N] [inst_17 : Module K N]
+  [inst_18 : Module (MvPolynomial σ K) N] [inst_19 : Module S N] [inst_20 : IsScalarTower (MvPolynomial σ K) S N]
+  [inst_21 : IsScalarTower K (MvPolynomial σ K) N] [inst_22 : IsScalarTower K S N] (D : ℤ → Submodule K M)
+  [inst_23 : DirectSum.Decomposition D] (E : ℤ → Submodule K N) [inst_24 : DirectSum.Decomposition E]
+  (hRM : ∀ (t : ℕ) (j : ℤ), ∀ z ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ D j, z • x ∈ D (↑t + j))
+  (hSM : ∀ (t : ℕ) (j : ℤ), ∀ z ∈ B t, ∀ x ∈ D j, z • x ∈ D (↑t + j))
+  (hRN : ∀ (t : ℕ) (j : ℤ), ∀ z ∈ MvPolynomial.homogeneousSubmodule σ K t, ∀ x ∈ E j, z • x ∈ E (↑t + j))
+  (hSN : ∀ (t : ℕ) (j : ℤ), ∀ z ∈ B t, ∀ x ∈ E j, z • x ∈ E (↑t + j)) [inst_25 : IsDomain S]
+  [inst_26 : Module.IsTorsionFree S M] [inst_27 : Module.IsTorsionFree S N] [inst_28 : IsNoetherianRing S]
+  [inst_29 : Algebra.FiniteType K S] [inst_30 : Module.Finite (MvPolynomial σ K) S]
+  [inst_31 : Module.Finite (MvPolynomial σ K) M] [inst_32 : Module.Finite S M]
+  [inst_33 : Module.Finite (MvPolynomial σ K) N] [inst_34 : Module.Finite S N] (f : M →ₗ[S] N)
+  (hf : ∀ (j : ℤ), ∀ x ∈ D j, f x ∈ E j) {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2) (k : ℤ),
+  CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.Sheaf.functorH (Opens.grothendieckTopology ↥(AlgebraicGeometry.Proj B)) (q + 1)).map
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+          (LinearStudy.nativeProjectiveDegreeZeroSheafMap B D E hSM hSN f hf k)))
+      (LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso B E hRN hSN c hc hgenC q hcard k).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso B D hRM hSM c hc hgenC q hcard k).hom
+      ((CategoryTheory.forget₂ (ModuleCat K) AddCommGrpCat).map
+        (ModuleCat.ofHom
+          (LinearStudy.integerGradedHomPrecomposition (MvPolynomial.homogeneousSubmodule σ K) D E
+              (↑(MvPolynomial σ K) f) hf (-↑(Fintype.card σ) - k)).dualMap))
+'LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso_coefficient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso_naturality:true
+KINDCHECK:MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso_naturality:theorem
+ROLECHECK:LinearStudy.originalSpecifiedDualityCoefficientSquare_of_comparisonSquares:true
+KINDCHECK:LinearStudy.originalSpecifiedDualityCoefficientSquare_of_comparisonSquares:theorem
+ROLECHECK:MvPolynomial.coordinateNativeCechHomologyFunctor_map_forget:true
+KINDCHECK:MvPolynomial.coordinateNativeCechHomologyFunctor_map_forget:theorem
+ROLECHECK:LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso_coefficient:true
+KINDCHECK:LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso_coefficient:theorem

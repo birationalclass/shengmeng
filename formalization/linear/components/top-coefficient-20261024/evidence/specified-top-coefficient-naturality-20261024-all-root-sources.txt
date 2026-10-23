@@ -1,0 +1,204 @@
+MODULE Linear.IntegerFinitePresentationCoordinateNaturality
+CANONICAL D:\codex\Math\formalization\linear\Linear\IntegerFinitePresentationCoordinateNaturality.lean
+module
+public import Linear.IntegerPresentationDataCoordinateIndependence
+public import Linear.NativeIntegerTwistedPresentationMapDuality
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+namespace MvPolynomial
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+attribute [local instance] MvPolynomial.gradedAlgebra
+variable {K M N : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+variable [AddCommGroup M] [Module K M] [Module (MvPolynomial σ K) M]
+variable [IsScalarTower K (MvPolynomial σ K) M]
+variable [AddCommGroup N] [Module K N] [Module (MvPolynomial σ K) N]
+variable [IsScalarTower K (MvPolynomial σ K) N]
+variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+variable (E : ℤ → Submodule K N) [DirectSum.Decomposition E]
+variable (hD : ∀ t : ℕ,∀ d : ℤ,∀ p : MvPolynomial σ K,p ∈ homogeneousSubmodule σ K t →
+  ∀ x : M,x ∈ D d → p • x ∈ D ((t:ℤ)+d))
+variable (hE : ∀ t : ℕ,∀ d : ℤ,∀ p : MvPolynomial σ K,p ∈ homogeneousSubmodule σ K t →
+  ∀ x : N,x ∈ E d → p • x ∈ E ((t:ℤ)+d))
+attribute [local irreducible] coordinateNativeIntegerPresentationDataGradedHomDualIso
+  coordinateNativeCechHomologyFunctor LinearStudy.nativeProjectiveModuleSheaf
+  LinearStudy.nativeProjectiveDegreeZeroSheafMap
+/-- The SAME finite-module-chosen presentation-data comparison is natural
+for the ORIGINAL degree-zero map in EVERY integer twist. The two finite
+homogeneous presentation data are the previously specified choices;
+no whole-isomorphism choice and no desired square are assumed. -/
+theorem coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso_naturality
+    [Module.Finite (MvPolynomial σ K) M] [Module.Finite (MvPolynomial σ K) N]
+    (e : M →ₗ[MvPolynomial σ K] N)
+    (he : ∀ d : ℤ,∀ x : M,x ∈ D d → e x ∈ E d)
+    (n : ℕ) (hcard : Fintype.card σ=n+2) (k : ℤ) :
+    (ModuleCat.restrictScalars (coordinateCanonicalCoefficientRingEquiv K).toRingHom).map
+      ((coordinateNativeCechHomologyFunctor (K:=K) (σ:=σ) n).map
+        (LinearStudy.nativeProjectiveDegreeZeroSheafMap (homogeneousSubmodule σ K)
+          D E hD hE e he k)) ≫
+      (coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso E hE n hcard k).hom =
+    (coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso D hD n hcard k).hom ≫
+      ModuleCat.ofHom (LinearStudy.integerGradedHomPrecomposition (homogeneousSubmodule σ K)
+        D E e he (-(Fintype.card σ:ℤ)-k)).dualMap := by
+  simpa only [coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso] using
+    coordinateNativeIntegerPresentationDataGradedHomDualIso_naturality D E hD hE
+    (LinearStudy.integerGradedFiniteChosenPresentationData (homogeneousSubmodule σ K) D hD)
+    (LinearStudy.integerGradedFiniteChosenPresentationData (homogeneousSubmodule σ K) E hE)
+    e he n hcard k
+end MvPolynomial
+
+MODULE Linear.SpecifiedDualityCoefficientTransfer
+CANONICAL D:\codex\Math\formalization\linear\Linear\SpecifiedDualityCoefficientTransfer.lean
+module
+public import Linear.CategoricalComparisonCoefficientFactorization
+@[expose] public section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory
+universe u v
+/-- Transfer two proved ORIGINAL coefficient squares through the inverse
+of the SAME comparison. This is an algebraic transfer,not a proof that
+geometric omega/trace has been identified. -/
+theorem originalSpecifiedDualityCoefficientSquare_of_comparisonSquares
+    {C : Type u} [Category.{v} C] {A A' H H' D D' : C}
+    (e : A ≅ H) (e' : A' ≅ H') (j : A ≅ D) (j' : A' ≅ D')
+    (a : A ⟶ A') (h : H ⟶ H') (d : D ⟶ D')
+    (h1 : a ≫ e'.hom = e.hom ≫ h) (h2 : a ≫ j'.hom = j.hom ≫ d) :
+    h ≫ (e'.symm ≪≫ j').hom = (e.symm ≪≫ j).hom ≫ d := by
+  let sq : CommSq a e.hom e'.hom h := ⟨h1⟩
+  let dsq : CommSq a j.hom j'.hom d := ⟨h2⟩
+  exact (sq.vert_inv.vert_comp dsq).w
+end LinearStudy
+
+MODULE Linear.CoordinateCechCoefficientForgettingIdentity
+CANONICAL D:\codex\Math\formalization\linear\Linear\CoordinateCechCoefficientForgettingIdentity.lean
+module
+public import Linear.IntegerFinitePresentationCoordinateNaturality
+public import Linear.OrderedModuleCechActualCoefficientMap
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace MvPolynomial
+open AlgebraicGeometry CategoryTheory
+attribute [local instance] MvPolynomial.gradedAlgebra
+variable {K : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+/-- Forgetting the ORIGINAL canonical base-scalar restriction of the
+ORIGINAL coordinate Cech homology map gives EXACTLY the old original
+module-valued Cech coefficient homology map after its original forgetting.
+This is an identity of maps;no naturality square is an input. -/
+theorem coordinateNativeCechHomologyFunctor_map_forget
+    {M N : (Proj (homogeneousSubmodule σ K)).Modules} (f : M ⟶ N) (q : ℕ) :
+    (forget₂ (ModuleCat K) AddCommGrpCat).map
+      ((ModuleCat.restrictScalars (coordinateCanonicalCoefficientRingEquiv K).toRingHom).map
+        ((coordinateNativeCechHomologyFunctor (K:=K) (σ:=σ) q).map f)) =
+    (forget₂ (ModuleCat (coordinateCanonicalBaseRing K)) AddCommGrpCat).map
+      (HomologicalComplex.homologyMap
+        (LinearStudy.orderedBaseCechActualCoefficientMap (homogeneousProjπ (R:=K) (σ:=σ))
+          f (coordinateOpenCover (R:=K) (σ:=σ))) (q+1)) := by
+  rfl
+end MvPolynomial
+
+MODULE Linear.NativeSpecifiedNormalizationTopDualityCoefficient
+CANONICAL D:\codex\Math\formalization\linear\Linear\NativeSpecifiedNormalizationTopDualityCoefficient.lean
+module
+public import Linear.CoordinateCechCoefficientForgettingIdentity
+public import Linear.SpecifiedDualityCoefficientTransfer
+public import Linear.NativeSpecifiedNormalizationActualTopDuality
+public import Linear.NativeIndependentNormalizationModuleHCoefficient
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+attribute [local instance] MvPolynomial.gradedAlgebra
+variable {K S M N : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+variable [CommRing S] [Algebra K S] [Algebra (MvPolynomial σ K) S]
+variable [IsScalarTower K (MvPolynomial σ K) S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+variable [AddCommGroup M] [Module K M] [Module (MvPolynomial σ K) M] [Module S M]
+variable [IsScalarTower (MvPolynomial σ K) S M] [IsScalarTower K (MvPolynomial σ K) M] [IsScalarTower K S M]
+variable [AddCommGroup N] [Module K N] [Module (MvPolynomial σ K) N] [Module S N]
+variable [IsScalarTower (MvPolynomial σ K) S N] [IsScalarTower K (MvPolynomial σ K) N] [IsScalarTower K S N]
+variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+variable (E : ℤ → Submodule K N) [DirectSum.Decomposition E]
+variable (hRM : ∀ t : ℕ,∀ j : ℤ,∀ z : MvPolynomial σ K,z ∈ MvPolynomial.homogeneousSubmodule σ K t → ∀ x : M,x ∈ D j → z • x ∈ D ((t:ℤ)+j))
+variable (hSM : ∀ t : ℕ,∀ j : ℤ,∀ z : S,z ∈ B t → ∀ x : M,x ∈ D j → z • x ∈ D ((t:ℤ)+j))
+variable (hRN : ∀ t : ℕ,∀ j : ℤ,∀ z : MvPolynomial σ K,z ∈ MvPolynomial.homogeneousSubmodule σ K t → ∀ x : N,x ∈ E j → z • x ∈ E ((t:ℤ)+j))
+variable (hSN : ∀ t : ℕ,∀ j : ℤ,∀ z : S,z ∈ B t → ∀ x : N,x ∈ E j → z • x ∈ E ((t:ℤ)+j))
+variable [IsDomain S] [Module.IsTorsionFree S M] [Module.IsTorsionFree S N]
+variable [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite (MvPolynomial σ K) S]
+variable [Module.Finite (MvPolynomial σ K) M] [Module.Finite S M]
+variable [Module.Finite (MvPolynomial σ K) N] [Module.Finite S N]
+/-- The SAME originally specified actual-top comparison is natural for the
+ORIGINAL S-linear degree-zero coefficient map,all integer twists and
+positive top degree q+1 with card sigma=q+2. No omega/trace identification
+is asserted or assumed by this statement. -/
+theorem nativeFiniteNormalization_specifiedActualTopHomDualIso_coefficient
+    (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+    {κ : Type} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+    (q : ℕ) (hcard : Fintype.card σ=q+2) (k : ℤ) :
+    (CategoryTheory.Sheaf.functorH (_root_.Opens.grothendieckTopology (Proj B)) (q+1)).map
+      ((schemeModuleToActualAbelianSheaf (Proj B)).map
+        (nativeProjectiveDegreeZeroSheafMap B D E hSM hSN f hf k)) ≫
+      (nativeFiniteNormalization_specifiedActualTopHomDualIso B E hRN hSN c hc hgenC q hcard k).hom =
+    (nativeFiniteNormalization_specifiedActualTopHomDualIso B D hRM hSM c hc hgenC q hcard k).hom ≫
+      (forget₂ (ModuleCat K) AddCommGrpCat).map
+        (ModuleCat.ofHom (integerGradedHomPrecomposition (MvPolynomial.homogeneousSubmodule σ K)
+          D E (f.restrictScalars (MvPolynomial σ K)) hf (-(Fintype.card σ:ℤ)-k)).dualMap) := by
+  let A := MvPolynomial.homogeneousSubmodule σ K
+  let a : ULift.{0} σ → MvPolynomial σ K := fun i => MvPolynomial.X i.down
+  have ha : ∀ i,a i ∈ A 1 := fun i => MvPolynomial.isHomogeneous_X K i.down
+  have hgenA : Algebra.adjoin K (Set.range a) = ⊤ := by
+    have hrange : Set.range a = Set.range (MvPolynomial.X : σ → MvPolynomial σ K) := by
+      ext x
+      constructor
+      · rintro ⟨i,rfl⟩;exact ⟨i.down,rfl⟩
+      · rintro ⟨i,rfl⟩;exact ⟨ULift.up i,rfl⟩
+    rw [hrange]
+    exact MvPolynomial.adjoin_range_X
+  let piA := MvPolynomial.homogeneousProjπ (R:=K) (σ:=σ)
+  let G := forget₂ (ModuleCat Γ(Spec (.of K),⊤)) AddCommGrpCat
+  let F := forget₂ (ModuleCat K) AddCommGrpCat
+  let eM := nativeIndependentFiniteNormalization_moduleCechActualHigherHIso A B D hRM hSM a ha c hc piA hgenA hgenC k q
+  let eN := nativeIndependentFiniteNormalization_moduleCechActualHigherHIso A B E hRN hSN a ha c hc piA hgenA hgenC k q
+  let jM := F.mapIso (MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso D hRM q hcard k)
+  let jN := F.mapIso (MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso E hRN q hcard k)
+  let alpha := G.map (HomologicalComplex.homologyMap
+    (orderedBaseCechActualCoefficientMap piA
+      (nativeProjectiveDegreeZeroSheafMap A D E hRM hRN (f.restrictScalars (MvPolynomial σ K)) hf k)
+      (fun i => Proj.basicOpen A (a i))) (q+1))
+  let h := (CategoryTheory.Sheaf.functorH (_root_.Opens.grothendieckTopology (Proj B)) (q+1)).map
+    ((schemeModuleToActualAbelianSheaf (Proj B)).map (nativeProjectiveDegreeZeroSheafMap B D E hSM hSN f hf k))
+  let delta := F.map (ModuleCat.ofHom (integerGradedHomPrecomposition A D E
+    (f.restrictScalars (MvPolynomial σ K)) hf (-(Fintype.card σ:ℤ)-k)).dualMap)
+  have h1 : alpha ≫ eN.hom = eM.hom ≫ h :=
+    nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_coefficient
+      A B D E hRM hSM hRN hSN f hf a ha c hc piA hgenA hgenC k q
+  have h2 : alpha ≫ jN.hom = jM.hom ≫ delta := by
+    have hd := MvPolynomial.coordinateNativeFiniteIntegerPresentationDataGradedHomDualIso_naturality
+      D E hRM hRN (f.restrictScalars (MvPolynomial σ K)) hf q hcard k
+    have hh := congrArg (fun z => F.map z) hd
+    simp only [Functor.map_comp] at hh
+    have hmap : F.map
+        ((ModuleCat.restrictScalars (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom).map
+          ((MvPolynomial.coordinateNativeCechHomologyFunctor (K:=K) (σ:=σ) q).map
+            (nativeProjectiveDegreeZeroSheafMap A D E hRM hRN
+              (f.restrictScalars (MvPolynomial σ K)) hf k))) = alpha :=
+      MvPolynomial.coordinateNativeCechHomologyFunctor_map_forget
+        (nativeProjectiveDegreeZeroSheafMap A D E hRM hRN
+          (f.restrictScalars (MvPolynomial σ K)) hf k) q
+    rw [hmap] at hh
+    exact hh
+  change h ≫ (eN.symm ≪≫ jN).hom = (eM.symm ≪≫ jM).hom ≫ delta
+  exact originalSpecifiedDualityCoefficientSquare_of_comparisonSquares eM eN jM jN alpha h delta h1 h2
+end LinearStudy
