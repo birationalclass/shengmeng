@@ -53,7 +53,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat,createArrivalEnvironment} from './scene.js?v=demand-1';
+import {createRetreat,createArrivalEnvironment} from './scene.js?v=classroom-beach-day-20261023';
 let createLecture,reportVoicePresentation,narrationResourceBytes;
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';

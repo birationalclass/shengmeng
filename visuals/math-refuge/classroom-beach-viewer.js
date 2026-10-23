@@ -3,7 +3,7 @@ import {OrbitControls} from '../3d/vendor/OrbitControls.js';
 import {installCoastWalks,walkProgress} from './coast-walks.js';
 import {classroomBreakTime,classroomBreakHour} from './classroom-beach-time.js';
 import {CLASSROOM_BEACH_ROUTES} from './classroom-beach-break.js';
-import {createArrivalEnvironment} from './scene.js?v=demand-1';
+import {createArrivalEnvironment} from './scene.js?v=classroom-beach-day-20261023';
 import {startDeferredTextures} from './deferred-textures.js?v=demand-1';
 const query=new URLSearchParams(location.search),token=query.get('token'),route=CLASSROOM_BEACH_ROUTES.find(r=>r.id===query.get('route'))||CLASSROOM_BEACH_ROUTES[0];
 const tell=(type,extra={})=>parent.postMessage({type,token,...extra},location.origin);
