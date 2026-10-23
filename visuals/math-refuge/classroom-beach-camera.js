@@ -1,7 +1,8 @@
 import * as T from 'three';
 import {BUILDING_SCALE as S,HALL,DECK_Y} from './site-layout.js';
 import {buildingOffset} from './campus-layout.js';
-const ease=t=>t*t*t*(10+t*(-15+6*t));
+// Roundoff near a segment endpoint can otherwise produce t > 1 for Three.js.
+const ease=t=>Math.max(0,Math.min(1,t*t*t*(10+t*(-15+6*t))));
 const v=a=>new T.Vector3(...a),up=new T.Vector3(0,1,0);
 const rotation=(eye,target)=>new T.Quaternion().setFromRotationMatrix(new T.Matrix4().lookAt(eye,target,up));
 export function classroomBoardPose(aspect=16/9){

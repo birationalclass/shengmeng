@@ -1,5 +1,5 @@
 export const CLASSROOM_BREAK_SECONDS=300;
-export const CLASSROOM_BREAK_CLOUD=.5;
+export const CLASSROOM_BREAK_CLOUD=.2;
 export function classroomBreakHour(date=new Date()){
  const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Shanghai',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(date);
  const value=type=>Number(parts.find(p=>p.type===type).value);
