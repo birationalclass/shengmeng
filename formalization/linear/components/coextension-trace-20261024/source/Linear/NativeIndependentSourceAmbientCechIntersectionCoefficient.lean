@@ -1,0 +1,66 @@
+module
+public import Linear.NativeIndependentSourceAmbientCechProductCoefficient
+public import Linear.OrderedCrossSpaceCechCoefficientNaturality
+public import Linear.NativeIndependentSourceAmbientCechObjects
+public import Linear.ConcreteAdditiveEquivNaturality
+public import Linear.NativeProjectiveDegreeZeroActualCoefficientValue
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M N : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+variable [AddCommGroup N] [Module K N] [Module R N] [Module S N] [IsScalarTower R S N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable (hRD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hSD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hRE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (hSE : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[S] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable [IsScalarTower K R M] [IsScalarTower K S M]
+variable [IsScalarTower K R N] [IsScalarTower K S N]
+variable [IsDomain S] [Module.IsTorsionFree S M] [Module.IsTorsionFree S N]
+variable [IsNoetherianRing R] [IsNoetherianRing S]
+variable [Module.Finite R M] [Module.Finite S M] [Module.Finite R N] [Module.Finite S N]
+variable {ι κ : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+attribute [local irreducible] nativeWeightedSourceAmbientSectionAddEquiv
+open CategoryTheory.Limits
+/-- The original intersection opens retain the derived coefficient square
+by equality transport from the SAME original product-chart comparisons. -/
+theorem nativeIndependentSourceAmbientCechIntersectionIso_coefficient
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ) (t : Fin (p+1) → ι) :
+    let fA := ((schemeModuleToActualAbelianSheaf (Proj A)).map
+      (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf 0)).hom
+    let fB := ((schemeModuleToActualAbelianSheaf (Proj B)).map
+      (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf 0)).hom
+    (nativeIndependentSourceAmbientCechIntersectionIso A B D hRD hSD a ha c hc hgenR hgenC p t).hom ≫
+      fB.app (op (∏ᶜ fun j : Fin (p+1) => Proj.basicOpen B (algebraMap R S (a (t j))))) =
+    fA.app (op (∏ᶜ fun j : Fin (p+1) => Proj.basicOpen A (a (t j)))) ≫
+      (nativeIndependentSourceAmbientCechIntersectionIso A B E hRE hSE a ha c hc hgenR hgenC p t).hom := by
+  let FA := ((schemeModuleToActualAbelianSheaf (Proj A)).obj (nativeProjectiveModuleSheaf A D hRD 0)).obj
+  let FA' := ((schemeModuleToActualAbelianSheaf (Proj A)).obj (nativeProjectiveModuleSheaf A E hRE 0)).obj
+  let FB := ((schemeModuleToActualAbelianSheaf (Proj B)).obj (nativeProjectiveModuleSheaf B D hSD 0)).obj
+  let FB' := ((schemeModuleToActualAbelianSheaf (Proj B)).obj (nativeProjectiveModuleSheaf B E hSE 0)).obj
+  let fA := ((schemeModuleToActualAbelianSheaf (Proj A)).map
+    (nativeProjectiveDegreeZeroSheafMap A D E hRD hRE (f.restrictScalars R) hf 0)).hom
+  let fB := ((schemeModuleToActualAbelianSheaf (Proj B)).map
+    (nativeProjectiveDegreeZeroSheafMap B D E hSD hSE f hf 0)).hom
+  exact abelianOpenSectionComparisonIso_coefficient FA FA' FB FB'
+    _ _ _ _ (nativeProjective_cechIntersection_eq_basicOpen A a p t)
+    (nativeSourceCoordinateCechIntersection_eq_basicOpen B a p t)
+    (nativeIndependentSourceAmbientCechProductIso A B D hRD hSD a ha c hc hgenR hgenC p t)
+    (nativeIndependentSourceAmbientCechProductIso A B E hRE hSE a ha c hc hgenR hgenC p t)
+    fA fB (nativeIndependentSourceAmbientCechProductIso_coefficient A B D E hRD hSD hRE hSE f hf
+      a ha c hc hgenR hgenC p t)
+end LinearStudy
