@@ -7,7 +7,7 @@ import {prepareClassroomAudioBlob,classroomAudioDecodeState} from './classroom-a
 import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=rings-20261022';
 import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=uniform-review-20261019';
 import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=native-pcm-20261017-1';
-import {createClassroomBeachBreak} from './classroom-beach-break.js?v=beach-break-20261023';
+import {createClassroomBeachBreak} from './classroom-beach-break.js?v=beach-day-fast-20261023';
 const $=id=>document.getElementById(id),query=new URLSearchParams(location.search);window.fRendererReady=true;
 let course,manifest,prepared,board=0,audio=new Audio(),playing=false,language='zh',generation=0,requestedTime=0,courseEpoch=0,preparing=false,playIntent=false,completedWall=0;
 if(query.has('testSilent'))audio.muted=true;
