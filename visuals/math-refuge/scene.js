@@ -267,7 +267,15 @@ export async function createArrivalEnvironment(renderer,scene,report,device,init
   u.seaColor.value.copy(scene.fog.color);sky.userData.updateAtmosphere(0);
   for(const [key,source] of Object.entries({skyMap:'atmosphereMap',skyPrevious:'atmosphereMapPrevious',skyBlend:'atmosphereBlend',skyPhysical:'useAtmosphere',skyCloudMap:'cloudMap',skyCloudPrevious:'cloudMapPrevious',skyCloudBlend:'cloudBlend',skyCloudEnabled:'useVolumeClouds'})){(w[key]??={value:null}).value=u[source].value;}
   w.nightVisibility.value=.06+state.daylight*.94;w.sunDirection.value.fromArray(geographicDirectionToCampus(apparentSunDirection(state.direction)));w.sunTint.value.copy(u.sunColor.value);w.sunStrength.value=state.direct;w.skyDay.value=state.daylight;study.setQuality(0);
-  return {ocean,sky,study,waterNormal};
+  function setTime(hour,date=new Date(),dt=0,cloudCoverage=.5){
+    const state=solarState(hour,date),direction=geographicDirectionToCampus(state.direction),u=sky.material.uniforms,w=oceanMaterial.uniforms,cloud=Math.max(0,Math.min(1,cloudCoverage)),storm=smooth(.4,1,cloud);
+    u.sunPosition.value.fromArray(direction);u.sunColor.value.set('#fff4e0').lerp(new THREE.Color('#ff7334'),state.warm);u.day.value=state.daylight;u.warm.value=state.warm;u.direct.value=state.direct;u.cloud.value=cloud;u.storm.value=storm;u.stars.value=state.night;u.radius.value=state.radius;u.sidereal.value=hour*Math.PI/12;u.clock.value+=dt;
+    scene.fog.color.set('#477b9c').lerp(new THREE.Color('#101b2b'),1-state.daylight);scene.fog.density=.000018+.00023*(1-state.daylight);u.seaColor.value.copy(scene.fog.color);sky.userData.updateAtmosphere(dt);
+    for(const [key,source] of Object.entries({skyMap:'atmosphereMap',skyPrevious:'atmosphereMapPrevious',skyBlend:'atmosphereBlend',skyPhysical:'useAtmosphere',skyCloudMap:'cloudMap',skyCloudPrevious:'cloudMapPrevious',skyCloudBlend:'cloudBlend',skyCloudEnabled:'useVolumeClouds'}))w[key].value=u[source].value;
+    w.nightVisibility.value=.06+state.daylight*.94;w.sunDirection.value.fromArray(geographicDirectionToCampus(apparentSunDirection(state.direction)));w.sunTint.value.copy(u.sunColor.value);w.sunStrength.value=state.direct*(1-.86*storm);w.skyDay.value=state.daylight;w.skyCoverage.value=cloud;w.skyStorm.value=storm;
+    sky.userData.state={hour,elevation:state.elevation,cloud,day:state.daylight};
+  }
+  return {ocean,sky,study,waterNormal,setTime};
 }
 
 export async function createRetreat(renderer,scene,report,device={},initialTime={}){
@@ -621,12 +629,12 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   const lampOffColor=new THREE.Color('#292c2a');let mediaTarget=0,mediaBlend=0,environmentBlend=0;
   function setMediaOpen(value){mediaTarget=value?1:0;}
   let cloudEventDate="",cloudEvents;
-  function setTime(hour,regenerate=false,dt=0,weatherRate=1,date=new Date()){
+  function setTime(hour,regenerate=false,dt=0,weatherRate=1,date=new Date(),overrides=null){
     ensureEnvironment();mediaBlend+=(mediaTarget-mediaBlend)*(1-Math.exp(-Math.max(0,dt)/.4));roomFill.hallGain.value=1-.30*mediaBlend;
     const cloudDateKey=date.toDateString();if(cloudDateKey!==cloudEventDate){cloudEvents=solarEvents(date);cloudEventDate=cloudDateKey;}
     const state=solarState(hour,date),campusSun=geographicDirectionToCampus(state.direction),day=state.daylight,k=fadeToward(0,1,dt,4);
     for(const key of Object.keys(weather))if(key!=='windDirection')weather[key]+=(weatherTarget[key]-weather[key])*k;weather.windDirection=weatherTarget.windDirection;advanceWeatherWinds(cloudWind,waterWind,weatherTarget.wind,weatherTarget.windDirection,dt,weatherRate);
-    const cloud=weather.cloud*twilightCloudFactor(hour,cloudEvents),storm=smooth(.4,1,cloud),sunThrough=1-.86*storm;
+    const cloud=overrides?.cloudCoverage??weather.cloud*twilightCloudFactor(hour,cloudEvents),storm=smooth(.4,1,cloud),sunThrough=1-.86*storm;
     const u=sky.material.uniforms;u.sunPosition.value.fromArray(campusSun);u.sunColor.value.copy(noonColor).lerp(warmColor,state.warm);u.day.value=day;u.warm.value=state.warm;u.direct.value=state.direct;u.cloud.value=cloud;u.storm.value=storm;u.radius.value=state.radius*(sky.userData.solarSize==='physical'?1:2+(1-smooth(0,14,Math.abs(state.elevation))));u.stars.value=state.night;u.sidereal.value=hour*Math.PI/12;skySeconds+=dt*(.3+weather.wind/25);u.clock.value=skySeconds;u.cloudOffset.value.set(cloudWind.offset.x,cloudWind.offset.z);
     roomFill.setDaylight(day*(1-.3*storm));pathLighting.update(day);
     ocean.material.uniforms.rainAmount.value=Math.min(1,weather.rain/3);ocean.material.uniforms.nightVisibility.value=.06+day*.94;ocean.material.uniforms.sunDirection.value.fromArray(campusSun);ocean.material.uniforms.sunTint.value.copy(u.sunColor.value);ocean.material.uniforms.sunStrength.value=state.direct*sunThrough;ocean.material.uniforms.overcast.value=storm;

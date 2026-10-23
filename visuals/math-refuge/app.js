@@ -1,4 +1,6 @@
 import {bindVisitMenu} from './visit-menu.js';
+import {createMainClassroomBeachBreak} from './classroom-beach-main.js';
+let classroomBeach=null;
 import {OpeningPerformance} from './opening-performance.js';
 import {ResourceScheduler} from './resource-scheduler.js?v=demand-1';
 import {loadingContent,connectLoadingScheduler} from './runtime-loading.js?v=demand-1';
@@ -277,6 +279,7 @@ function beginTransition(){
 }
 function selectShot(index,reportView=false,openingArrival=false){
   if(cameraLocked()&&!openingArrival)return;
+  classroomBeach?.cancel();
   if(pendingRoom!==-1){++roomActivation;pendingRoom=-1;delete $('world').dataset.pendingRoom;}
   if(!openingArrival)requestShotInterior(SHOTS[index]);
   if(sunriseIntro.waiting&&!openingArrival){sunriseIntro.cancel();sceneTime.setRate(1);sceneTime.sync();$('timeRate').value='1';}
@@ -499,6 +502,7 @@ function tick(stamp){
   const weatherSample=weatherTimer?.poll(stamp);if(weatherSample!=null){weatherGpuSamples.push(weatherSample);if(weatherGpuSamples.length>40)weatherGpuSamples.shift();weatherGpuMs=weatherGpuSamples.reduce((a,b)=>a+b,0)/weatherGpuSamples.length;}
   if(!weatherProbeFrame&&($('adaptiveQuality').value==='auto'||performanceMonitor.visible||!$('settings').hidden))gpuTimer?.begin(stamp);
   rooms.forEach(room=>room.update(room.renderActive?dt:Math.min(60,frameMs/1000),reduced.matches));
+  classroomBeach?.update();
   retreat?.campus.automaticDoors.update(dt,reduced.matches,blend?.openingPath?[camera.position,new THREE.Vector3(...blend.openingPath.sample(blend.elapsed+1.2))]:[camera.position]);
   const remaining=openingCameraLock.remaining(stamp);
   if(remaining)controls.enabled=false;else if($('world').dataset.cameraLocked==='true')controls.enabled=true;
@@ -513,7 +517,7 @@ function tick(stamp){
   }else if(SHOTS[shot].hallOrbit&&!free&&!speakerView&&!reduced.matches){
     time=(time+dt)%100;applyShot(dt);
   }else if(SHOTS[shot].walk&&!free){
-    time=Math.min(SHOTS[shot].duration,time+dt);applyShot(dt);
+    time=Math.min(SHOTS[shot].duration,classroomBeach?.state?.elapsed??time+dt);applyShot(dt);
     if(time===SHOTS[shot].duration){free=true;updateLabels();}
   }else if(!speakerView&&SHOTS[shot].lecture&&lecture&&boardFollow.following&&lecture.followEnabled){
     // Board tracking belongs to the teaching chapter, independently of touring.
@@ -812,6 +816,12 @@ function updateSceneTime(){
 }
 
 function updateAtmosphere(dt){
+ const rest=classroomBeach?.state;
+ if(rest&&beachPreviousTime){
+  const cycle=rest,step=rest.playing?dt:0;sceneTime.hour=cycle.sceneHour;sceneTime.dayOffset=beachPreviousTime.dayOffset+cycle.dayOffset;visualHour=cycle.sceneHour;
+  retreat.setTime(visualHour,false,step,cycle.timeRate,sceneTime.date,{cloudCoverage:cycle.cloudCoverage});
+  renderer.shadowMap.needsUpdate=true;lastShadowHour=visualHour;$('world').dataset.visualHour=visualHour.toFixed(4);$('world').dataset.breakCloud=String(retreat.sky.material.uniforms.cloud.value);return;
+ }
  if(hallSunRamp!==null){if(!sceneTime.playing||!sceneTime.preview)hallSunRamp=null;else if(!blend){if(hallSunRamp===0&&SHOTS[shot].name==='报告厅看日出')retreat.fleet.startSunrisePass();hallSunRamp+=dt;sceneTime.setRate(sunViewRate(hallSunRamp));if(hallSunRamp>=5)hallSunRamp=null;}}
  if(sunriseIntro.update(dt))$('timeRate').value='1';sceneTime.update(dt);visualHour=timePresentation.update(sceneTime.hour,dt);$('timeFade').style.opacity=String(timePresentation.opacity);retreat.setTime(visualHour,false,dt,sceneTime.playing?sceneTime.rate:1,sceneTime.date);
  const angle=Math.abs(((visualHour-lastShadowHour+36)%24)-12);
@@ -996,7 +1006,7 @@ $('lectureShade').addEventListener('click',()=>{
   if(!retreat)return;teachingShade=!teachingShade;if(activeRoom===0)retreat.campus.setTeachingShade(teachingShade);else retreat.campus.discussion.blinds[activeRoom-1].visible=teachingShade;
   $('lectureShade').setAttribute('aria-pressed',String(teachingShade));controlLabel($('lectureShade'),teachingShade?'收起遮光帘':'放下海景遮光帘');renderer.shadowMap.needsUpdate=true;
 });
-$('lecturePlay').addEventListener('click',()=>{if(!lecture)return;void lecture.toggleVoice();if(reduced.matches&&!lecture.voiceManifest)lecture.staticPage();});
+$('lecturePlay').addEventListener('click',()=>{if(classroomBeach?.state){classroomBeach.toggle();return;}if(!lecture)return;void lecture.toggleVoice();if(reduced.matches&&!lecture.voiceManifest)lecture.staticPage();});
 for(const [id,delta] of [['lecturePrevious',-1],['lectureNext',1]])$(id).addEventListener('click',()=>{if(!lecture)return;if(!lecture.stepExercise(delta))seekLecture(lecture.navigationPage+delta);});
 $('lectureRewrite').addEventListener('click',()=>{if(!lecture)return;lecture.rewrite();if(reduced.matches)lecture.staticPage();else lecture.playing=true;});
 $('lecturePage').addEventListener('change',event=>{if(!lecture)return;seekLecture(Number(event.target.value));});
@@ -1157,3 +1167,19 @@ $('photoButton').addEventListener('click',async()=>{
 });
 
 // Report settings are mounted when the main room becomes available, after entry.
+let beachPreviousSettings=null,beachPreviousTime=null;
+function cutToClassroomShot(index,elapsed=0){
+ shot=index;time=elapsed;opening=null;speakerView=false;choosingReport=false;touring=false;free=false;blend=null;boardFollow.reset();
+ shotPose();camera.position.copy(shotPosition);controls.target.copy(shotTarget);camera.fov=shotFov;camera.updateProjectionMatrix();controls.update();
+ motionVelocity.set(0,0,0);motionAcceleration.set(0,0,0);motionSample=false;updateLabels();syncRoomControls();
+}
+function restoreBeachSettings(){if(retreat?.ocean.userData.study&&beachPreviousSettings)Object.assign(retreat.ocean.userData.study.settings,beachPreviousSettings);beachPreviousSettings=null;
+ if(beachPreviousTime){Object.assign(sceneTime,beachPreviousTime);if(!sceneTime.preview)sceneTime.sync();beachPreviousTime=null;visualHour=sceneTime.hour;timePresentation.hour=visualHour;timePresentation.phase='idle';timePresentation.opacity=0;sunriseIntro.cancel();updateSceneTime();retreat?.setTime(visualHour,false,0,1,sceneTime.date);}
+ delete $('world').dataset.classroomBreak;delete $('world').dataset.breakCloud;}
+
+classroomBeach=createMainClassroomBeachBreak({getLecture:()=>lecture,getStartHour:()=>sceneTime.hour,
+ enterCoast:s=>{const index=SHOTS.findIndex(shot=>shot.walk&&shot.name===s.routeName);if(index<0)throw Error('未找到课间沙滩路线');const settings=retreat.ocean.userData.study.settings;beachPreviousSettings={paused:settings.paused,tide:settings.tide};settings.tide=.9;beachPreviousTime={preview:sceneTime.preview,playing:sceneTime.playing,rate:sceneTime.rate,hour:sceneTime.hour,dayOffset:sceneTime.dayOffset,baseDate:sceneTime.baseDate};sceneTime.preview=true;sceneTime.playing=false;sunriseIntro.cancel();hallSunRamp=null;$('timeFade').style.opacity='0';setSeminarPanel(false);reader?.close();cutToClassroomShot(index,s.elapsed);},
+ moveCoast:s=>{time=s.elapsed;if(retreat?.ocean.userData.study)retreat.ocean.userData.study.settings.paused=!s.playing;$('world').dataset.classroomBreak=JSON.stringify(s);},
+ async returnToClassroom(target){restoreBeachSettings();cutToClassroomShot(0);target.setPresence(true);await target.setRenderActive(true);boardFollow.reset();blend=null;applyShot(0);syncRoomControls();updateLectureUI();},
+ onCancel:restoreBeachSettings,onError:error=>{$('lectureStatus').textContent=error;}
+});

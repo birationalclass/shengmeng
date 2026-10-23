@@ -7,11 +7,17 @@ import {prepareClassroomAudioBlob,classroomAudioDecodeState} from './classroom-a
 import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=rings-20261022';
 import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=uniform-review-20261019';
 import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=native-pcm-20261017-1';
+import {createClassroomBeachBreak} from './classroom-beach-break.js?v=beach-break-20261023';
 const $=id=>document.getElementById(id),query=new URLSearchParams(location.search);window.fRendererReady=true;
 let course,manifest,prepared,board=0,audio=new Audio(),playing=false,language='zh',generation=0,requestedTime=0,courseEpoch=0,preparing=false,playIntent=false,completedWall=0;
 if(query.has('testSilent'))audio.muted=true;
 const lessonRate=()=>manifest?.policy?.defaultPlaybackRate||1;
 let finishCurrent=()=>{},openingLocked=false;
+const beachBreak=createClassroomBeachBreak({
+ onState:s=>{if(course?.boards[board]?.kind==='break'){playIntent=s.playing;playing=s.playing&&s.ready;update();}},
+ onFinish:s=>{if(course?.boards[board]?.kind==='break'&&s.key===course.id+':'+board+':'+generation)return selectBoard(board+1,s.resume);},
+ onError:error=>{$('status').textContent=error;}
+});
 async function playPrepared(target=audio,mine=generation){await primeClassroomAudio(target);if(target!==audio||mine!==generation||!playIntent){if(target!==audio)disconnectClassroomAudio(target);return false;}target.playbackRate=classroomAudioRate(manifest?.boards[board],target.currentTime,lessonRate());await target.play();return true;}
 const audioJobs=new Map(),audioURLs=new Set(),compressedJobs=new Map(),audioFiles=new Map();
 const assetPreload=createCoursePreload({concurrency:2});
@@ -30,7 +36,7 @@ function assistantPlanText(plan){
   return [[minutes,task].filter(Boolean).join(' · '),typeof item.note==='string'?item.note:''].filter(Boolean);
  }).join('\n');
 }
-async function loadCourse(){const n=++courseEpoch;++generation;audio.pause();assetPreload.cancel();playing=false;playIntent=false;course=null;manifest=null;prepared=null;board=0;openingLocked=false;for(const url of audioURLs)URL.revokeObjectURL(url);audioURLs.clear();audioJobs.clear();compressedJobs.clear();audioFiles.clear();const id=$('course').value;
+async function loadCourse(){beachBreak.cancel();const n=++courseEpoch;++generation;audio.pause();assetPreload.cancel();playing=false;playIntent=false;course=null;manifest=null;prepared=null;board=0;openingLocked=false;for(const url of audioURLs)URL.revokeObjectURL(url);audioURLs.clear();audioJobs.clear();compressedJobs.clear();audioFiles.clear();const id=$('course').value;
  const program=classroomProgram(id);if(!program)throw Error('未找到这门板书课堂');
  const nextCourse=await fetch(program.courseManifest,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('本课板书下载失败');return r.json();});if(n!==courseEpoch)return;course=nextCourse;
  for(const b of course.boards)b.sectionLabel ||= b.section?'§'+String(b.section).replace(/^§/,''):'§'+program.section;
@@ -48,7 +54,8 @@ async function loadCourse(){const n=++courseEpoch;++generation;audio.pause();ass
  // First board ready: preload all later board MP3s in a bounded queue.
  if(manifest){const queue=manifest.boards.slice(board+1).filter(b=>b.file&&!b.id.endsWith('-break'));let cursor=0;void Promise.all(Array.from({length:3},async()=>{while(cursor<queue.length&&n===courseEpoch){const b=queue[cursor++];try{await compressedAudio(b.file);}catch{}}}));}
 }
-async function selectBoard(index,resume=playIntent){const n=++generation;playIntent=resume;preparing=true;$('complete').disabled=true;playing=false;audio.pause();completedWall=0;prepared=null;audio.currentTime=0;const blank=$('board').getContext('2d');blank.fillStyle='#06271c';blank.fillRect(0,0,1536,640);board=Math.max(0,Math.min(course.boards.length-1,index));$('board-select').value=board;$('status').textContent='正在准备本板字迹与整块语音…';const b=course.boards[board];manuscript(b);
+async function selectBoard(index,resume=playIntent){beachBreak.cancel();const n=++generation;playIntent=resume;preparing=true;$('complete').disabled=true;playing=false;audio.pause();completedWall=0;prepared=null;audio.currentTime=0;const blank=$('board').getContext('2d');blank.fillStyle='#06271c';blank.fillRect(0,0,1536,640);board=Math.max(0,Math.min(course.boards.length-1,index));$('board-select').value=board;$('status').textContent='正在准备本板字迹与整块语音…';const b=course.boards[board];manuscript(b);
+ if(b.kind==='break'){audio.onended=null;audio.onplay=null;audio.onpause=null;preparing=false;$('complete').disabled=false;requestedTime=0;await beachBreak.start({key:course.id+':'+board+':'+n,duration:300,playing:resume});paint();update();return;}
  const nextPrepared=b.kind==='break'?null:await prepareBoard(b,language);if(n!==generation)return;prepared=nextPrepared;if(prepared)prepared.total=course.boards.length;
  const item=manifest?.boards[board];audio.onended=null;audio.onplay=null;audio.onpause=null;audio.preload='auto';audio.preservesPitch=true;audio.playbackRate=classroomAudioRate(item,0,lessonRate());requestedTime=0;
  if(item?.file){const src=await audioURL(item.file);if(n!==generation)return;audio.src=src;await new Promise((resolve,reject)=>{audio.addEventListener('loadedmetadata',resolve,{once:true});audio.addEventListener('error',()=>reject(Error('本板语音加载失败，可重试或换板')),{once:true});audio.load();});trimAudioURLs();const next=manifest.boards[board+1];if(next?.file)void audioURL(next.file).catch(()=>{});}
@@ -57,7 +64,7 @@ async function selectBoard(index,resume=playIntent){const n=++generation;playInt
 function update(){$('play').textContent=playIntent?'暂停':'播放';$('status').textContent=`${course?.title||''} · ${board+1} / ${course?.boards.length||0} · ZZL / C${!manifest?' · 文本与板书预览':''}`;}
 let countdownHit=null;
 function skipCountdown(){const item=manifest?.boards[board],wait=boardWaitAt(item,audio.currentTime);if(preparing||!wait)return false;audio.currentTime=wait.end+.001;paint();return true;}
-function paint(){countdownHit=null;if(!course)return;const b=course.boards[board],item=manifest?.boards[board],t=item?audio.currentTime:requestedTime,cx=$('board').getContext('2d');
+function paint(){countdownHit=null;if(!course)return;const b=course.boards[board],item=manifest?.boards[board],t=beachBreak.state?.elapsed??(item?audio.currentTime:requestedTime),cx=$('board').getContext('2d');
  if(item){const rate=classroomAudioRate(item,t,lessonRate());if(audio.playbackRate!==rate)audio.playbackRate=rate;}
  if(b.kind==='break'){cx.fillStyle='#06271c';cx.fillRect(0,0,1536,640);cx.fillStyle='#e4cf9c';cx.font='92px RefugeChinese';cx.textAlign='center';cx.fillText('课间休息',768,250);cx.font='88px sans-serif';cx.fillText(fmt(Math.min(300,Math.max(0,(item?.seconds||300)-t))),768,405);cx.textAlign='left';return;}
  if(!prepared)return;const fractions={};if(item){for(const w of item.writing)fractions[w.logical]=Math.max(fractions[w.logical]||0,Math.min(1,Math.max(0,(t-w.start)/(w.end-w.start))));}else Object.keys(prepared.logical).forEach(k=>fractions[k]=1);
@@ -67,10 +74,10 @@ function paint(){countdownHit=null;if(!course)return;const b=course.boards[board
 }
 $('course').onchange=()=>loadCourse().catch(e=>$('status').textContent=e.message);$('board-select').onchange=e=>selectBoard(+e.target.value).catch(e=>$('status').textContent=e.message);
 $('prev').onclick=()=>selectBoard(board-1).catch(e=>$('status').textContent=e.message);$('next').onclick=()=>selectBoard(board+1).catch(e=>$('status').textContent=e.message);
-$('play').onclick=async()=>{if(!openingLocked&&board===0&&manifest?.openingSelection&&manifest.openingSelection.period!==openingPeriod())await loadCourse();openingLocked=true;if(!manifest){$('status').textContent='本板音频尚在生成，请先审阅逐行稿。';return;}playIntent=!playIntent;if(preparing){update();return;}if(!playIntent){audio.pause();}else{const b=manifest.boards[board];if(audio.ended||audio.currentTime>=b.seconds-.02){finishCurrent();update();return;}if(completedWall&&b.boardHoldSeconds>0&&audio.currentTime>=b.seconds-b.boardHoldSeconds)audio.currentTime=Math.min(b.seconds-.005,Math.max(audio.currentTime,boardReviewStart(b)+(Date.now()-completedWall)/1000));await playPrepared();}update();};
-$('complete').onclick=()=>{playIntent=false;audio.pause();playing=false;if(manifest)audio.currentTime=Math.max(0,manifest.boards[board].seconds-.01);requestedTime=Infinity;completedWall=Date.now();paint();update();};
+$('play').onclick=async()=>{if(beachBreak.state){if(beachBreak.state.playing)beachBreak.pause();else beachBreak.play();return;}if(!openingLocked&&board===0&&manifest?.openingSelection&&manifest.openingSelection.period!==openingPeriod())await loadCourse();openingLocked=true;if(!manifest){$('status').textContent='本板音频尚在生成，请先审阅逐行稿。';return;}playIntent=!playIntent;if(preparing){update();return;}if(!playIntent){audio.pause();}else{const b=manifest.boards[board];if(audio.ended||audio.currentTime>=b.seconds-.02){finishCurrent();update();return;}if(completedWall&&b.boardHoldSeconds>0&&audio.currentTime>=b.seconds-b.boardHoldSeconds)audio.currentTime=Math.min(b.seconds-.005,Math.max(audio.currentTime,boardReviewStart(b)+(Date.now()-completedWall)/1000));await playPrepared();}update();};
+$('complete').onclick=()=>{if(beachBreak.state){beachBreak.pause();beachBreak.seek(300);paint();return;}playIntent=false;audio.pause();playing=false;if(manifest)audio.currentTime=Math.max(0,manifest.boards[board].seconds-.01);requestedTime=Infinity;completedWall=Date.now();paint();update();};
 $('lang').onclick=async()=>{const resume=playIntent,t=audio.currentTime;language=language==='zh'?'en':'zh';await selectBoard(board,resume);if(manifest)audio.currentTime=t;paint();};
-$('seek').oninput=()=>{if(manifest){audio.currentTime=Number($('seek').value)/1000*manifest.boards[board].seconds;completedWall=audio.currentTime>=boardReviewStart(manifest.boards[board])?Date.now():0;}paint();};
+$('seek').oninput=()=>{if(beachBreak.state){beachBreak.seek(Number($('seek').value)/1000*300);paint();return;}if(manifest){audio.currentTime=Number($('seek').value)/1000*manifest.boards[board].seconds;completedWall=audio.currentTime>=boardReviewStart(manifest.boards[board])?Date.now():0;}paint();};
 const countdownPoint=e=>{const r=$('board').getBoundingClientRect();return [(e.clientX-r.left)*1536/r.width,(e.clientY-r.top)*640/r.height];};
 $('board').addEventListener('click',e=>{if(containsCountdown(countdownHit,...countdownPoint(e)))skipCountdown();});
 $('board').addEventListener('pointermove',e=>{const hit=containsCountdown(countdownHit,...countdownPoint(e));$('board').style.cursor=hit?'pointer':'';$('board').title=hit?'点击跳过剩余思考':'';});
@@ -78,5 +85,5 @@ function frame(){paint();if(!countdownHit){$('board').style.cursor='';$('board')
 $('course').replaceChildren(...CLASSROOM_PROGRAMS.map(program=>{const option=document.createElement('option');option.value=program.id;option.textContent=program.topic.replace(/^§/,'');return option;}));
 if(classroomProgram(query.get('course')))$('course').value=query.get('course');
 if(!query.has('measure'))loadCourse().catch(e=>{$('status').textContent=e.message;console.error(e)});
-window.fClassroom={selectBoard,loadCourse,skipCountdown,getState:()=>({countdownHit,board,playing,language,prepared,manifest,course,audio,output:classroomAudioOutputState(),decode:classroomAudioDecodeState(),assetPreload:assetPreload.state,audioCache:{compressed:compressedJobs.size,decoded:audioFiles.size}}),setTime:t=>{audio.pause();audio.currentTime=t;paint();}};
-const focusPause=()=>{playIntent=false;audio.pause();};addEventListener('blur',focusPause);document.addEventListener('visibilitychange',()=>{if(document.hidden)focusPause();});
+window.fClassroom={selectBoard,loadCourse,skipCountdown,getState:()=>({countdownHit,board,playing,language,prepared,manifest,course,audio,beachBreak:beachBreak.state,output:classroomAudioOutputState(),decode:classroomAudioDecodeState(),assetPreload:assetPreload.state,audioCache:{compressed:compressedJobs.size,decoded:audioFiles.size}}),setTime:t=>{if(beachBreak.state){beachBreak.seek(t);paint();return;}audio.pause();audio.currentTime=t;paint();}};
+const focusPause=()=>{if(beachBreak.state)return;playIntent=false;audio.pause();};addEventListener('blur',focusPause);document.addEventListener('visibilitychange',()=>{if(document.hidden){beachBreak.pause();focusPause();}});
