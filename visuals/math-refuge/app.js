@@ -1,3 +1,4 @@
+import {createClassroomBeachFlight} from './classroom-beach-camera.js';
 import {bindVisitMenu} from './visit-menu.js';
 import {createMainClassroomBeachBreak} from './classroom-beach-main.js';
 let classroomBeach=null;
@@ -509,7 +510,9 @@ function tick(stamp){
   movementHud.hint(remaining,dt);
   if(remaining)$('mode').textContent='开场运镜';else if($('world').dataset.cameraLocked==='true')updateLabels();
   $('world').dataset.cameraLocked=String(remaining>0);
-  if(touring){
+  if(beachFlight){
+    animateBeachFlight(frameMs/1000);
+  }else if(touring){
     if(!blend){const state=advanceShot(shot,time,dt,Number($('speed').value));time=state.time;if(shot!==state.index){shot=state.index;beginTransition();updateLabels();}}
     applyShot(dt);
   }else if(blend){
@@ -1167,19 +1170,34 @@ $('photoButton').addEventListener('click',async()=>{
 });
 
 // Report settings are mounted when the main room becomes available, after entry.
-let beachPreviousSettings=null,beachPreviousTime=null;
+let beachPreviousSettings=null,beachPreviousTime=null,beachFlight=null;
+function animateBeachFlight(dt){
+ const f=beachFlight;if(!f)return;
+ if(classroomBeach?.state?.playing)f.elapsed=Math.min(f.path.duration,f.elapsed+Math.min(.1,Math.max(0,dt)));
+ const pose=f.path.sample(f.elapsed);camera.position.fromArray(pose.position);camera.quaternion.fromArray(pose.quaternion);controls.target.fromArray(pose.target);camera.fov=pose.fov;camera.updateProjectionMatrix();
+ $('world').dataset.beachFlight=JSON.stringify({direction:f.returning?'returning':'departing',seconds:f.elapsed,duration:f.path.duration,position:pose.position,progress:pose.progress});
+ if(f.elapsed>=f.path.duration){beachFlight=null;controls.enabled=f.controlsEnabled;f.resolve(true);}
+}
+function startBeachFlight(board,coast,returning=false){
+ if(beachFlight){beachFlight.resolve(false);beachFlight=null;}
+ const path=createClassroomBeachFlight(board,coast,{returning,reduced:reduced.matches}),controlsEnabled=controls.enabled;controls.enabled=false;blend=null;
+ return new Promise(resolve=>{beachFlight={path,elapsed:0,returning,controlsEnabled,resolve};animateBeachFlight(0);});
+}
+function captureBeachPose(){return{position:camera.position.toArray(),target:controls.target.toArray(),quaternion:camera.quaternion.toArray(),fov:camera.fov};}
+function aimClassroomShot(index){shot=index;time=0;opening=null;speakerView=false;choosingReport=false;touring=false;free=false;blend=null;boardFollow.reset();shotPose();updateLabels();return{position:shotPosition.toArray(),target:shotTarget.toArray(),fov:shotFov};}
+
 function cutToClassroomShot(index,elapsed=0){
  shot=index;time=elapsed;opening=null;speakerView=false;choosingReport=false;touring=false;free=false;blend=null;boardFollow.reset();
  shotPose();camera.position.copy(shotPosition);controls.target.copy(shotTarget);camera.fov=shotFov;camera.updateProjectionMatrix();controls.update();
  motionVelocity.set(0,0,0);motionAcceleration.set(0,0,0);motionSample=false;updateLabels();syncRoomControls();
 }
-function restoreBeachSettings(){if(retreat?.ocean.userData.study&&beachPreviousSettings)Object.assign(retreat.ocean.userData.study.settings,beachPreviousSettings);beachPreviousSettings=null;
+function restoreBeachSettings(){if(beachFlight){const f=beachFlight;beachFlight=null;controls.enabled=f.controlsEnabled;f.resolve(false);}delete $('world').dataset.beachFlight;if(retreat?.ocean.userData.study&&beachPreviousSettings)Object.assign(retreat.ocean.userData.study.settings,beachPreviousSettings);beachPreviousSettings=null;
  if(beachPreviousTime){Object.assign(sceneTime,beachPreviousTime);if(!sceneTime.preview)sceneTime.sync();beachPreviousTime=null;visualHour=sceneTime.hour;timePresentation.hour=visualHour;timePresentation.phase='idle';timePresentation.opacity=0;sunriseIntro.cancel();updateSceneTime();retreat?.setTime(visualHour,false,0,1,sceneTime.date);}
  delete $('world').dataset.classroomBreak;delete $('world').dataset.breakCloud;}
 
 classroomBeach=createMainClassroomBeachBreak({getLecture:()=>lecture,getStartHour:()=>sceneTime.hour,
- enterCoast:s=>{const index=SHOTS.findIndex(shot=>shot.walk&&shot.name===s.routeName);if(index<0)throw Error('未找到课间沙滩路线');const settings=retreat.ocean.userData.study.settings;beachPreviousSettings={paused:settings.paused,tide:settings.tide};settings.tide=.9;beachPreviousTime={preview:sceneTime.preview,playing:sceneTime.playing,rate:sceneTime.rate,hour:sceneTime.hour,dayOffset:sceneTime.dayOffset,baseDate:sceneTime.baseDate};sceneTime.preview=true;sceneTime.playing=false;sunriseIntro.cancel();hallSunRamp=null;$('timeFade').style.opacity='0';setSeminarPanel(false);reader?.close();cutToClassroomShot(index,s.elapsed);},
- moveCoast:s=>{time=s.elapsed;if(retreat?.ocean.userData.study)retreat.ocean.userData.study.settings.paused=!s.playing;$('world').dataset.classroomBreak=JSON.stringify(s);},
- async returnToClassroom(target){restoreBeachSettings();cutToClassroomShot(0);target.setPresence(true);await target.setRenderActive(true);boardFollow.reset();blend=null;applyShot(0);syncRoomControls();updateLectureUI();},
+ enterCoast:async s=>{const boardPose=captureBeachPose();const index=SHOTS.findIndex(shot=>shot.walk&&shot.name===s.routeName);if(index<0)throw Error('未找到课间沙滩路线');const settings=retreat.ocean.userData.study.settings;beachPreviousSettings={paused:settings.paused,tide:settings.tide};settings.tide=.9;beachPreviousTime={preview:sceneTime.preview,playing:sceneTime.playing,rate:sceneTime.rate,hour:sceneTime.hour,dayOffset:sceneTime.dayOffset,baseDate:sceneTime.baseDate};sceneTime.preview=true;sceneTime.playing=false;sunriseIntro.cancel();hallSunRamp=null;$('timeFade').style.opacity='0';setSeminarPanel(false);reader?.close();const coastPose=aimClassroomShot(index);const arrived=await startBeachFlight(boardPose,coastPose);if(arrived&&classroomBeach.state?.key===s.key)time=s.elapsed;},
+ moveCoast:s=>{if(beachPreviousSettings&&s.phase!=='returning')time=s.elapsed;if(beachPreviousSettings&&retreat?.ocean.userData.study)retreat.ocean.userData.study.settings.paused=!s.playing;$('world').dataset.classroomBreak=JSON.stringify(s);},
+ async returnToClassroom(target){const coastPose=captureBeachPose();target.setPresence(true);await target.setRenderActive(true);const boardPose=aimClassroomShot(0);const arrived=await startBeachFlight(boardPose,coastPose,true);if(!arrived)return;restoreBeachSettings();target.setPresence(true);boardFollow.reset();syncRoomControls();updateLectureUI();},
  onCancel:restoreBeachSettings,onError:error=>{$('lectureStatus').textContent=error;}
 });

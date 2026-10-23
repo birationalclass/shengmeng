@@ -17,13 +17,13 @@ export function createMainClassroomBeachBreak({getLecture,getStartHour,enterCoas
     const ok=destination?await target.voiceSeek(destination.start):await target.seek(next,{preservePlayback:false});
     if(ok===false||getLecture()!==target||target.report.id!==id)return;
     await returnToClassroom(target);
-    if(getLecture()===target&&target.report.id===id&&s.resume)target.playing=true;
+    if(beach.state?.key===s.key&&getLecture()===target&&target.report.id===id&&s.resume)target.playing=true;
    }catch(error){onError?.(error.message);}finally{returning=false;owner=null;}
   },
   onCancel(){owner=null;onCancel?.();}
  });
  function update(){
-  if(beach.state){if(!current())beach.cancel();return;}
+  if(beach.state){if(!returning&&!current())beach.cancel();return;}
   if(returning)return;const target=getLecture(),index=target?.clock.page,board=target?.pages[index];
   if(!target||target.report.kind!=='classroom'||!target.playing||!(board?.period==='break'||board?.orderedBoard?.kind==='break'))return;
   owner=target;identity=target.report.id;page=index;const item=target.voiceManifest?.boards.find(b=>b.page===index),elapsed=Math.max(0,target.voiceState.time-(item?item.end-300:target.voiceState.time));

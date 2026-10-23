@@ -7,14 +7,14 @@ import {prepareClassroomAudioBlob,classroomAudioDecodeState} from './classroom-a
 import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=rings-20261022';
 import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=uniform-review-20261019';
 import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=native-pcm-20261017-1';
-import {createClassroomBeachBreak} from './classroom-beach-break.js?v=beach-day-fast-20261023';
+import {createClassroomBeachBreak} from './classroom-beach-break.js?v=beach-camera-20261023';
 const $=id=>document.getElementById(id),query=new URLSearchParams(location.search);window.fRendererReady=true;
 let course,manifest,prepared,board=0,audio=new Audio(),playing=false,language='zh',generation=0,requestedTime=0,courseEpoch=0,preparing=false,playIntent=false,completedWall=0;
 if(query.has('testSilent'))audio.muted=true;
 const lessonRate=()=>manifest?.policy?.defaultPlaybackRate||1;
 let finishCurrent=()=>{},openingLocked=false;
 const beachBreak=createClassroomBeachBreak({
- onState:s=>{if(course?.boards[board]?.kind==='break'){playIntent=s.playing;playing=s.playing&&s.ready;update();}},
+ onState:s=>{if(course?.boards[board]?.kind==='break'){playIntent=s.resumeLecture;playing=s.playing&&s.ready;update();}},
  onFinish:s=>{if(course?.boards[board]?.kind==='break'&&s.key===course.id+':'+board+':'+generation)return selectBoard(board+1,s.resume);},
  onError:error=>{$('status').textContent=error;}
 });
@@ -54,8 +54,8 @@ async function loadCourse(){beachBreak.cancel();const n=++courseEpoch;++generati
  // First board ready: preload all later board MP3s in a bounded queue.
  if(manifest){const queue=manifest.boards.slice(board+1).filter(b=>b.file&&!b.id.endsWith('-break'));let cursor=0;void Promise.all(Array.from({length:3},async()=>{while(cursor<queue.length&&n===courseEpoch){const b=queue[cursor++];try{await compressedAudio(b.file);}catch{}}}));}
 }
-async function selectBoard(index,resume=playIntent){beachBreak.cancel();const n=++generation;playIntent=resume;preparing=true;$('complete').disabled=true;playing=false;audio.pause();completedWall=0;prepared=null;audio.currentTime=0;const blank=$('board').getContext('2d');blank.fillStyle='#06271c';blank.fillRect(0,0,1536,640);board=Math.max(0,Math.min(course.boards.length-1,index));$('board-select').value=board;$('status').textContent='正在准备本板字迹与整块语音…';const b=course.boards[board];manuscript(b);
- if(b.kind==='break'){audio.onended=null;audio.onplay=null;audio.onpause=null;preparing=false;$('complete').disabled=false;requestedTime=0;await beachBreak.start({key:course.id+':'+board+':'+n,duration:300,playing:resume});paint();update();return;}
+async function selectBoard(index,resume=playIntent){const departureImage=course?.boards[Math.max(0,Math.min(course.boards.length-1,index))]?.kind==='break'?$('board').toDataURL('image/png'):null;beachBreak.cancel();const n=++generation;playIntent=resume;preparing=true;$('complete').disabled=true;playing=false;audio.pause();completedWall=0;prepared=null;audio.currentTime=0;const blank=$('board').getContext('2d');blank.fillStyle='#06271c';blank.fillRect(0,0,1536,640);board=Math.max(0,Math.min(course.boards.length-1,index));$('board-select').value=board;$('status').textContent='正在准备本板字迹与整块语音…';const b=course.boards[board];manuscript(b);
+ if(b.kind==='break'){audio.onended=null;audio.onplay=null;audio.onpause=null;preparing=false;$('complete').disabled=false;requestedTime=0;await beachBreak.start({key:course.id+':'+board+':'+n,duration:300,playing:true,resumeLecture:resume,boardImage:departureImage});paint();update();return;}
  const nextPrepared=b.kind==='break'?null:await prepareBoard(b,language);if(n!==generation)return;prepared=nextPrepared;if(prepared)prepared.total=course.boards.length;
  const item=manifest?.boards[board];audio.onended=null;audio.onplay=null;audio.onpause=null;audio.preload='auto';audio.preservesPitch=true;audio.playbackRate=classroomAudioRate(item,0,lessonRate());requestedTime=0;
  if(item?.file){const src=await audioURL(item.file);if(n!==generation)return;audio.src=src;await new Promise((resolve,reject)=>{audio.addEventListener('loadedmetadata',resolve,{once:true});audio.addEventListener('error',()=>reject(Error('本板语音加载失败，可重试或换板')),{once:true});audio.load();});trimAudioURLs();const next=manifest.boards[board+1];if(next?.file)void audioURL(next.file).catch(()=>{});}
@@ -86,4 +86,4 @@ $('course').replaceChildren(...CLASSROOM_PROGRAMS.map(program=>{const option=doc
 if(classroomProgram(query.get('course')))$('course').value=query.get('course');
 if(!query.has('measure'))loadCourse().catch(e=>{$('status').textContent=e.message;console.error(e)});
 window.fClassroom={selectBoard,loadCourse,skipCountdown,getState:()=>({countdownHit,board,playing,language,prepared,manifest,course,audio,beachBreak:beachBreak.state,output:classroomAudioOutputState(),decode:classroomAudioDecodeState(),assetPreload:assetPreload.state,audioCache:{compressed:compressedJobs.size,decoded:audioFiles.size}}),setTime:t=>{if(beachBreak.state){beachBreak.seek(t);paint();return;}audio.pause();audio.currentTime=t;paint();}};
-const focusPause=()=>{if(beachBreak.state)return;playIntent=false;audio.pause();};addEventListener('blur',focusPause);document.addEventListener('visibilitychange',()=>{if(document.hidden){beachBreak.pause();focusPause();}});
+const focusPause=()=>{if(beachBreak.state)return;playIntent=false;audio.pause();};addEventListener('blur',focusPause);document.addEventListener('visibilitychange',()=>{if(document.hidden)focusPause();});
