@@ -1,0 +1,696 @@
+===== Linear.SchemeModuleExtTracePairing =====
+1: module
+2: public import Linear.SchemeModuleOriginalActualSectionBoundary
+3: @[expose] public section
+4: noncomputable section
+5: set_option autoImplicit false
+6: set_option maxHeartbeats 50000
+7: set_option backward.isDefEq.respectTransparency false
+8: set_option backward.isDefEq.respectTransparency.types false
+9: namespace LinearStudy
+10: open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian
+11: universe u v
+12: variable {X : Scheme.{u}} {E M W : X.Modules} {r : ℕ}
+13: variable {R : Type v} [AddCommGroup R]
+14: /-- Actual native H paired with a coefficient morphism by SAME calibrated
+15: Ext/H inverse and Yoneda composition followed by an EXPLICIT trace.
+16: This constructs an additive pairing;no trace existence,perfection,
+17: canonical dualizing identification or geometric Serre duality is assumed proved. -/
+18: def schemeModuleActualHTracePairing
+19:     (trace : Ext.{u} (SheafOfModules.unit X.ringCatSheaf) W r →+ R)
+20:     (a : M ⟶ W) : schemeModuleActualCohomology X M r →+ R where
+21:   toFun h := trace (((schemeModuleGlobalExtActualHAddEquiv X M r).symm h).comp
+22:     (Ext.mk₀ a) (add_zero r))
+23:   map_zero' := by simp only [map_zero,Ext.zero_comp]
+24:   map_add' h k := by simp only [map_add,Ext.add_comp]
+25: /-- Actual global-section/Ext pairing induced by SAME explicit trace.
+26: This uses the original unit-Hom/global-section equivalence. -/
+27: def schemeModuleExtSectionTracePairing
+28:     (trace : Ext.{u} (SheafOfModules.unit X.ringCatSheaf) W r →+ R)
+29:     (z : Ext.{u} E W r) : Γ(E,⊤) →+ R where
+30:   toFun s := trace ((Ext.mk₀ ((schemeModuleUnitHomGlobalSectionsAddEquiv X E).symm s)).comp
+31:     z (zero_add r))
+32:   map_zero' := by simp only [map_zero,Ext.mk₀_zero,Ext.zero_comp]
+33:   map_add' s t := by simp only [map_add,Ext.mk₀_add,Ext.add_comp]
+34: /-- Push the SAME Ext class forward by an ACTUAL coefficient morphism. -/
+35: def schemeModuleExtClassCoefficientPushforwardAddHom (epsilon : Ext.{u} E M r) :
+36:     (M ⟶ W) →+ Ext.{u} E W r where
+37:   toFun a := epsilon.comp (Ext.mk₀ a) (add_zero r)
+38:   map_zero' := by simp only [Ext.mk₀_zero,Ext.comp_zero]
+39:   map_add' a b := by simp only [Ext.mk₀_add,Ext.comp_add]
+40: /-- Transpose FORMULA for actual section boundary,derived from Yoneda
+41: associativity rather than inserted as a compatibility hypothesis.
+42: The trace remains EXPLICIT;its geometric existence/perfection is separate. -/
+43: theorem schemeModuleExtClassActualSectionBoundary_trace_transpose
+44:     (epsilon : Ext.{u} E M r) (a : M ⟶ W)
+45:     (trace : Ext.{u} (SheafOfModules.unit X.ringCatSheaf) W r →+ R)
+46:     (s : Γ(E,⊤)) :
+47:     schemeModuleActualHTracePairing trace a (schemeModuleExtClassActualSectionBoundary epsilon s) =
+48:       schemeModuleExtSectionTracePairing trace
+49:         (schemeModuleExtClassCoefficientPushforwardAddHom epsilon a) s := by
+50:   dsimp only [schemeModuleActualHTracePairing,schemeModuleExtClassActualSectionBoundary,
+51:     schemeModuleExtSectionTracePairing,schemeModuleExtClassCoefficientPushforwardAddHom,
+52:     AddMonoidHom.coe_mk,ZeroHom.coe_mk]
+53:   rw [AddEquiv.symm_apply_apply]
+54:   congr 1
+55:   exact Ext.comp_assoc_of_third_deg_zero _ _ _ (zero_add r)
+56: /-- Same transpose formula for SAME original chain/Koszul Ext roof and
+57: SAME actual endpoint morphism. No replacement Ext class is introduced. -/
+58: theorem schemeModuleOriginalActualSectionBoundary_trace_transpose
+59:     (C : ChainComplex X.Modules ℕ) (r : ℕ)
+60:     (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+61:     (hAbove : CategoryTheory.Limits.IsZero (C.X (r+1))) (phi : C.X r ≅ M)
+62:     (a : M ⟶ W)
+63:     (trace : Ext.{u} (SheafOfModules.unit X.ringCatSheaf) W r →+ R)
+64:     (s : Γ(E,⊤)) :
+65:     schemeModuleActualHTracePairing trace a
+66:         (schemeModuleOriginalActualSectionBoundary C r alpha hAlpha hAbove phi s) =
+67:       schemeModuleExtSectionTracePairing trace
+68:         (schemeModuleExtClassCoefficientPushforwardAddHom
+69:           (schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha phi.hom
+70:             (hAbove.eq_of_src _ _)) a) s := by
+71:   exact schemeModuleExtClassActualSectionBoundary_trace_transpose _ a trace s
+72: /-- CONDITIONAL consequence of explicit trace NONDEGENERACY and actual
+73: boundary surjectivity:coefficient pushforward is injective.
+74: No actual geometric perfect pairing,trace or dualizing object is supplied
+75: by this theorem;these hypotheses must be discharged independently. -/
+76: theorem schemeModuleExtClassCoefficientPushforward_injective_of_trace
+77:     (epsilon : Ext.{u} E M r)
+78:     (trace : Ext.{u} (SheafOfModules.unit X.ringCatSheaf) W r →+ R)
+79:     (hTrace : ∀ a : M ⟶ W,(∀ h : schemeModuleActualCohomology X M r,
+80:       schemeModuleActualHTracePairing trace a h = 0) → a = 0)
+81:     (hDelta : Function.Surjective (schemeModuleExtClassActualSectionBoundary epsilon)) :
+82:     Function.Injective (schemeModuleExtClassCoefficientPushforwardAddHom (W := W) epsilon) := by
+83:   intro a b hab
+84:   apply sub_eq_zero.mp
+85:   apply hTrace (a-b)
+86:   intro h
+87:   obtain ⟨s,rfl⟩ := hDelta h
+88:   rw [schemeModuleExtClassActualSectionBoundary_trace_transpose]
+89:   have hz : schemeModuleExtClassCoefficientPushforwardAddHom epsilon (a-b) = 0 := by
+90:     rw [map_sub,hab,sub_self]
+91:   rw [hz]
+92:   simp only [schemeModuleExtSectionTracePairing,Ext.comp_zero,map_zero,AddMonoidHom.coe_mk,ZeroHom.coe_mk]
+93: end LinearStudy
+===== Linear.SchemeModuleActualTraceCalibration =====
+1: module
+2: public import Linear.SchemeModuleExtTracePairing
+3: public import Linear.SchemeModuleActualCohomologyGroup
+4: @[expose] public section
+5: noncomputable section
+6: set_option autoImplicit false
+7: set_option maxHeartbeats 50000
+8: set_option backward.isDefEq.respectTransparency false
+9: set_option backward.isDefEq.respectTransparency.types false
+10: namespace LinearStudy
+11: open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian
+12: universe u v
+13: variable {X : Scheme.{u}} {E M W : X.Modules} {r : ℕ}
+14: variable {R : Type v} [AddCommGroup R]
+15: attribute [local instance] schemeModuleActualCohomologyAddCommGroup
+16: /-- Convert an ORIGINAL actual-H trace to the SAME GLOBAL unit-Ext trace
+17: using the canonical calibrated comparison. This is an additive construction,
+18: not a geometric normalization or a new dualizing identification. -/
+19: def schemeModuleActualHToGlobalExtTrace
+20:     (trace : schemeModuleActualCohomology X W r →+ R) :
+21:     Ext.{u} (SheafOfModules.unit X.ringCatSheaf) W r →+ R :=
+22:   trace.comp (schemeModuleGlobalExtActualHAddEquiv X W r).toAddMonoidHom
+23: /-- The ORIGINAL Yoneda/Ext pairing is EXACTLY the ORIGINAL actual-H
+24: coefficient map followed by trace. Calibrated coefficient naturality is
+25: reused;no desired pairing compatibility square is an input. -/
+26: theorem schemeModuleActualHToGlobalExtTrace_pairing
+27:     (trace : schemeModuleActualCohomology X W r →+ R) (a : M ⟶ W)
+28:     (h : schemeModuleActualCohomology X M r) :
+29:     schemeModuleActualHTracePairing (schemeModuleActualHToGlobalExtTrace trace) a h =
+30:       trace (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf X).map a) r h) := by
+31:   change trace (schemeModuleGlobalExtActualHAddEquiv X W r
+32:     (((schemeModuleGlobalExtActualHAddEquiv X M r).symm h).comp
+33:       (Ext.mk₀ a) (add_zero r))) = _
+34:   rw [schemeModuleGlobalExtActualHAddEquiv_naturality,AddEquiv.apply_symm_apply]
+35: /-- The SAME original chain/Koszul section boundary satisfies the actual-H
+36: trace formula after replacing the EXPLICIT unit-Ext trace by the calibrated
+37: trace constructed from actual H. No replacement boundary or Ext roof. -/
+38: theorem schemeModuleOriginalActualSectionBoundary_actualH_trace_transpose
+39:     (C : ChainComplex X.Modules ℕ) (r : ℕ)
+40:     (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+41:     (hAbove : CategoryTheory.Limits.IsZero (C.X (r+1))) (phi : C.X r ≅ M)
+42:     (a : M ⟶ W) (trace : schemeModuleActualCohomology X W r →+ R)
+43:     (s : Γ(E,⊤)) :
+44:     trace (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf X).map a) r
+45:       (schemeModuleOriginalActualSectionBoundary C r alpha hAlpha hAbove phi s)) =
+46:     schemeModuleExtSectionTracePairing (schemeModuleActualHToGlobalExtTrace trace)
+47:       (schemeModuleExtClassCoefficientPushforwardAddHom
+48:         (schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha phi.hom
+49:           (hAbove.eq_of_src _ _)) a) s := by
+50:   rw [← schemeModuleActualHToGlobalExtTrace_pairing]
+51:   exact schemeModuleOriginalActualSectionBoundary_trace_transpose
+52:     C r alpha hAlpha hAbove phi a (schemeModuleActualHToGlobalExtTrace trace) s
+53: end LinearStudy
+===== Linear.NativeCoextensionSpecifiedGlobalExtTrace =====
+1: module
+2: public import Linear.NativeCoextensionSpecifiedEvaluationTrace
+3: public import Linear.SchemeModuleActualTraceCalibration
+4: @[expose] public section
+5: noncomputable section
+6: set_option autoImplicit false
+7: set_option maxHeartbeats 50000
+8: set_option backward.isDefEq.respectTransparency false
+9: set_option backward.isDefEq.respectTransparency.types false
+10: namespace LinearStudy
+11: open AlgebraicGeometry CategoryTheory CategoryTheory.Limits CategoryTheory.Abelian
+12: attribute [local instance] MvPolynomial.gradedAlgebra
+13: variable {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+14: variable [CommRing S] [Algebra K S] [Algebra (MvPolynomial σ K) S]
+15: variable [IsScalarTower K (MvPolynomial σ K) S]
+16: variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+17: variable [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+18: variable [IsDomain S] [IsNoetherianRing S] [Algebra.FiniteType K S]
+19: variable [Module.Finite (MvPolynomial σ K) S]
+20: attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+21:   coextensionGradedDecomposition coextensionOriginalBaseScalarTower
+22: attribute [local instance] coextensionTraceBaseSourceTower coextensionTraceFieldSourceTower
+23:   coextensionTraceFiniteBase coextensionTraceFiniteSource coextensionTraceTorsionFree
+24:   schemeModuleActualCohomologyAddCommGroup
+25: attribute [local irreducible] nativeCoextensionSpecifiedTopEvaluationTrace nativeProjectiveModuleSheaf
+26: /-- The ACTUAL global unit-Ext trace supplied by the CONSTRUCTED model
+27: trace and SAME canonical Ext/H comparison. It is not an arbitrary trace
+28: certificate or normalized geometric trace identification. -/
+29: def nativeCoextensionSpecifiedTopGlobalExtTrace
+30:     {κ : Type} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+31:     (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+32:     (q : ℕ) (hcard : Fintype.card σ=q+2) :
+33:     Ext.{0} (SheafOfModules.unit (Proj B).ringCatSheaf)
+34:       (nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+35:         (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) (-(Fintype.card σ:ℤ))) (q+1) →+ K :=
+36:   schemeModuleActualHToGlobalExtTrace
+37:     (nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard)
+38: /-- Exact underlying value through the SAME canonical original Ext/H map. -/
+39: theorem nativeCoextensionSpecifiedTopGlobalExtTrace_apply
+40:     {κ : Type} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+41:     (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+42:     (q : ℕ) (hcard : Fintype.card σ=q+2)
+43:     (z : Ext.{0} (SheafOfModules.unit (Proj B).ringCatSheaf)
+44:       (nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+45:         (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) (-(Fintype.card σ:ℤ))) (q+1)) :
+46:     nativeCoextensionSpecifiedTopGlobalExtTrace B c hc hgenC q hcard z =
+47:       nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard
+48:         (schemeModuleGlobalExtActualHAddEquiv (Proj B)
+49:           (nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+50:             (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) (-(Fintype.card σ:ℤ))) (q+1) z) := by
+51:   rfl
+52: /-- For EVERY ACTUAL source sheaf and coefficient morphism,the ORIGINAL
+53: Ext pairing is actual H.map followed by the CONSTRUCTED model trace.
+54: No coefficient naturality or trace-compatibility certificate is an input. -/
+55: theorem nativeCoextensionSpecifiedTopGlobalExtTrace_actualPairing
+56:     {κ : Type} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+57:     (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+58:     (q : ℕ) (hcard : Fintype.card σ=q+2)
+59:     {F : (Proj B).Modules}
+60:     (a : F ⟶ nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+61:       (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) (-(Fintype.card σ:ℤ)))
+62:     (x : schemeModuleActualCohomology (Proj B) F (q+1)) :
+63:     schemeModuleActualHTracePairing
+64:       (nativeCoextensionSpecifiedTopGlobalExtTrace B c hc hgenC q hcard) a x =
+65:     nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard
+66:       (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map a) (q+1) x) := by
+67:   exact schemeModuleActualHToGlobalExtTrace_pairing
+68:     (nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard) a x
+69: /-- Specialize the SAME ORIGINAL chain/Koszul roof formula to the
+70: CONSTRUCTED coextension model trace. The actual-H trace parameter is
+71: DISCHARGED. The actual chain,augmentation,top identification,small Ext
+72: class and actual original boundary are unchanged. Canonical/geometric
+73: trace identification and the original right nondegeneracy remain separate. -/
+74: theorem nativeCoextensionSpecifiedTopGlobalExtTrace_originalBoundary
+75:     {κ : Type} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+76:     (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+77:     (q : ℕ) (hcard : Fintype.card σ=q+2)
+78:     {G F : (Proj B).Modules} (CC : ChainComplex (Proj B).Modules ℕ)
+79:     (alpha : CC ⟶ (ChainComplex.single₀ (Proj B).Modules).obj G) (hAlpha : QuasiIso alpha)
+80:     (hAbove : CategoryTheory.Limits.IsZero (CC.X ((q+1)+1))) (phi : CC.X (q+1) ≅ F)
+81:     (a : F ⟶ nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+82:       (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) (-(Fintype.card σ:ℤ)))
+83:     (s : Γ(G,⊤)) :
+84:     nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard
+85:       (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map a) (q+1)
+86:         (schemeModuleOriginalActualSectionBoundary CC (q+1) alpha hAlpha hAbove phi s)) =
+87:     schemeModuleExtSectionTracePairing
+88:       (nativeCoextensionSpecifiedTopGlobalExtTrace B c hc hgenC q hcard)
+89:       (schemeModuleExtClassCoefficientPushforwardAddHom
+90:         (schemeModuleOriginalChainTopExtClassSmall CC (q+1) alpha hAlpha phi.hom
+91:           (hAbove.eq_of_src _ _)) a) s := by
+92:   exact schemeModuleOriginalActualSectionBoundary_actualH_trace_transpose
+93:     CC (q+1) alpha hAlpha hAbove phi a
+94:       (nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard) s
+95: end LinearStudy
+===== Linear.IntegerGradedHomPieceFinite =====
+1: module
+2: public import Linear.IntegerGradedModuleGenerators
+3: public import Linear.ActualPresentationGradedDualKernel
+4: public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+5: public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+6: @[expose] public section
+7: noncomputable section
+8: set_option autoImplicit false
+9: set_option maxHeartbeats 50000
+10: namespace LinearStudy
+11: variable {K S M : Type*} [Field K] [CommRing S] [Algebra K S]
+12: variable [AddCommGroup M] [Module K M] [Module S M]
+13: /-- A fixed ORIGINAL Hom degree is finite dimensional when original
+14: coefficient pieces are finite dimensional and the original source is
+15: finite over S. Evaluation on actual homogeneous generators is injective;
+16: no free graded basis,duality certificate or Hom-finiteness input is used. -/
+17: theorem integerGradedHomPiece_finite_of_pieces
+18:     (B : ℕ → Submodule K S) (D : ℤ → Submodule K M)
+19:     [DirectSum.Decomposition D] [Module.Finite S M]
+20:     (hpieces : ∀ j : ℤ, Module.Finite K (nativeProjectiveRingIntegerPiece B j))
+21:     (d : ℤ) : Module.Finite K (integerGradedHomPiece B D d) := by
+22:   classical
+23:   obtain ⟨s,hs,hh⟩ := integerGradedModule_exists_homogeneous_generators (A:=S) D
+24:   let w : s → ℤ := fun i => Classical.choose (hh i i.property)
+25:   have hw (i : s) : (i : M) ∈ D (w i) := Classical.choose_spec (hh i i.property)
+26:   let f : integerGradedHomPiece B D d →ₗ[K]
+27:       (∀ i : s, nativeProjectiveRingIntegerPiece B (w i+d)) :=
+28:     { toFun := fun phi i => ⟨phi.1 i,phi.property (w i) i (hw i)⟩
+29:       map_add' := by intros; funext i; rfl
+30:       map_smul' := by intros; funext i; rfl }
+31:   letI (i : s) : Module.Finite K (nativeProjectiveRingIntegerPiece B (w i+d)) := hpieces _
+32:   apply Module.Finite.of_injective f
+33:   intro phi psi he
+34:   apply Subtype.ext
+35:   apply LinearMap.ext_on hs
+36:   intro x hx
+37:   exact congrArg Subtype.val (congrFun he ⟨x,hx⟩)
+38: 
+39: /-- Reuses mathlib homogeneousSubmodule_fg;negative ORIGINAL integer
+40: polynomial pieces are zero. Includes every integer degree. -/
+41: theorem polynomialIntegerPiece_finite
+42:     {σ : Type*} [Finite σ] (d : ℤ) :
+43:     Module.Finite K (nativeProjectiveRingIntegerPiece (MvPolynomial.homogeneousSubmodule σ K) d) := by
+44:   by_cases hd : 0 ≤ d
+45:   · rw [nativeProjectiveRingIntegerPiece, if_pos hd]
+46:     exact Module.Finite.iff_fg.mpr (MvPolynomial.homogeneousSubmodule_fg σ K d.toNat)
+47:   · rw [nativeProjectiveRingIntegerPiece, if_neg hd]
+48:     infer_instance
+49: 
+50: /-- The actual ORIGINAL homogeneous Hom_R(M,R)_d is finite dimensional
+51: for a finite original integer-graded polynomial module. No homogeneity
+52: of a newly chosen basis or separate finite-dimensionality premise. -/
+53: theorem polynomialIntegerGradedHomPiece_finite
+54:     {σ : Type*} [Finite σ]
+55:     [Module (MvPolynomial σ K) M] [Module.Finite (MvPolynomial σ K) M]
+56:     (D : ℤ → Submodule K M) [DirectSum.Decomposition D] (d : ℤ) :
+57:     Module.Finite K (integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K) D d) :=
+58:   integerGradedHomPiece_finite_of_pieces _ D (fun j => polynomialIntegerPiece_finite j) d
+59: end LinearStudy
+===== Linear.FiniteAdditiveDualRepresentative =====
+1: module
+2: public import Mathlib.LinearAlgebra.Dual.Lemmas
+3: @[expose] public section
+4: noncomputable section
+5: set_option autoImplicit false
+6: set_option maxHeartbeats 50000
+7: namespace LinearStudy
+8: /-- A finite dual comparison represents every additive functional linear
+9: for the independently specified ORIGINAL scalar operation. Both scalar
+10: laws are explicit;the native application proves the comparison law from
+11: original coefficient multiplication. No scalar action is transported. -/
+12: theorem finiteAdditiveDual_exists_representative
+13:     {K H V : Type*} [Field K] [AddCommGroup H] [AddCommGroup V] [Module K V]
+14:     [Module.Finite K V] (e : H ≃+ Module.Dual K V) (rho : K → H → H)
+15:     (hscalar : ∀ r x,e (rho r x)=r • e x)
+16:     (ell : H →+ K) (hlin : ∀ r x,ell (rho r x)=r * ell x) :
+17:     ∃ v : V,∀ x,e x v=ell x := by
+18:   letI : Module.Free K V := Module.Free.of_divisionRing K V
+19:   letI : Module.IsReflexive K V := Module.IsReflexive.of_finite_of_free K V
+20:   have hinv (r : K) (y : Module.Dual K V) : e.symm (r • y)=rho r (e.symm y) := by
+21:     apply e.injective
+22:     rw [e.apply_symm_apply,hscalar,e.apply_symm_apply]
+23:   let g : Module.Dual K (Module.Dual K V) := {
+24:     toFun := fun y => ell (e.symm y)
+25:     map_add' := fun y z => by rw [map_add,map_add]
+26:     map_smul' := fun r y => by
+27:       change ell (e.symm (r • y))=r * ell (e.symm y)
+28:       rw [hinv,hlin] }
+29:   refine ⟨(Module.evalEquiv K V).symm g,?_⟩
+30:   intro x
+31:   rw [Module.apply_evalEquiv_symm_apply]
+32:   change ell (e.symm (e x))=ell x
+33:   rw [e.symm_apply_apply]
+34: end LinearStudy
+===== Linear.NativeCoextensionSpecifiedFunctionalLift =====
+1: module
+2: public import Linear.NativeCoextensionSpecifiedTraceAdjointPairing
+3: public import Linear.IntegerGradedHomPieceFinite
+4: public import Linear.FiniteAdditiveDualRepresentative
+5: @[expose] public section
+6: noncomputable section
+7: set_option autoImplicit false
+8: set_option maxHeartbeats 50000
+9: set_option backward.isDefEq.respectTransparency true
+10: set_option backward.isDefEq.respectTransparency.types true
+11: namespace LinearStudy
+12: open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+13: attribute [local instance] MvPolynomial.gradedAlgebra
+14: variable {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+15: variable [CommRing S] [Algebra K S] [Algebra (MvPolynomial σ K) S]
+16: variable [IsScalarTower K (MvPolynomial σ K) S]
+17: variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+18: variable [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+19: variable [IsDomain S] [IsNoetherianRing S] [Algebra.FiniteType K S]
+20: variable [Module.Finite (MvPolynomial σ K) S]
+21: attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+22:   coextensionGradedDecomposition coextensionOriginalBaseScalarTower
+23: attribute [local instance] coextensionTraceBaseSourceTower coextensionTraceFieldSourceTower
+24:   coextensionTraceFiniteBase coextensionTraceFiniteSource coextensionTraceTorsionFree
+25:   schemeModuleActualCohomologyAddCommGroup
+26: attribute [local irreducible] nativeFiniteNormalization_specifiedActualTopHomDualIso
+27: variable {M : Type} [AddCommGroup M] [Module K M] [Module (MvPolynomial σ K) M] [Module S M]
+28: variable [IsScalarTower (MvPolynomial σ K) S M] [IsScalarTower K (MvPolynomial σ K) M] [IsScalarTower K S M]
+29: variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+30: variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ z : MvPolynomial σ K,z ∈ MvPolynomial.homogeneousSubmodule σ K n →
+31:   ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+32: variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+33: variable [Module.IsTorsionFree S M] [Module.Finite (MvPolynomial σ K) M] [Module.Finite S M]
+34: attribute [local irreducible] nativeCoextensionSpecifiedTopEvaluationTrace integerGradedHomPrecomposition
+35:   nativeProjectiveModuleSheaf nativeProjectiveDegreeZeroSheafMap
+36: include hR in
+37: /-- ORIGINAL coefficient-scalar linearity is written explicitly,not
+38: transported through the comparison. Every such functional on actual
+39: H(M(-card sigma)) is represented by an ACTUAL coefficient map to the SAME
+40: C(-card sigma),using the CONSTRUCTED model trace and PROVED Hom finiteness.
+41: No canonical omega identification or full Hom-perfectness is asserted. -/
+42: theorem nativeCoextensionSpecifiedTrace_exists_functional_lift_of_originalScalar
+43:     {κ : Type} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+44:     (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+45:     (q : ℕ) (hcard : Fintype.card σ=q+2)
+46:     (ell : schemeModuleActualCohomology (Proj B)
+47:       (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))) (q+1) →+ K)
+48:     (hlinear : ∀ r : K,∀ x,
+49:       ell (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map
+50:         (originalGlobalModuleScalar
+51:           ((Proj.toSpecZero B ≫ Spec.map (CommRingCat.ofHom (algebraMap K (B 0)))).appTop
+52:             ((Scheme.ΓSpecIso (CommRingCat.of K)).inv r))
+53:           (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))))) (q+1) x)=r * ell x) :
+54:     ∃ a : nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ)) ⟶
+55:         nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+56:           (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+57:           (-(Fintype.card σ:ℤ)),
+58:       ∀ x,nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard
+59:         (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map a)
+60:           (q+1) x)=ell x := by
+61:   let H := schemeModuleActualCohomology (Proj B)
+62:     (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))) (q+1)
+63:   let V : Type := integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K) D
+64:     (-(Fintype.card σ:ℤ)-(-(Fintype.card σ:ℤ)))
+65:   letI : Module.Finite K V := polynomialIntegerGradedHomPiece_finite D _
+66:   let J := nativeFiniteNormalization_specifiedActualTopHomDualIso B D hR hS c hc hgenC q hcard
+67:     (-(Fintype.card σ:ℤ))
+68:   let e : H ≃+ Module.Dual K V := actualAbelianIsoAddEquiv (K:=K) (H:=H) (V:=V) J
+69:   let piB := Proj.toSpecZero B ≫ Spec.map (CommRingCat.ofHom (algebraMap K (B 0)))
+70:   let rho : K → H → H := fun r =>
+71:     CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map
+72:       (originalGlobalModuleScalar (piB.appTop ((Scheme.ΓSpecIso (CommRingCat.of K)).inv r))
+73:         (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))))) (q+1)
+74:   have hscalar (r : K) (x : H) : e (rho r x)=r • e x :=
+75:     nativeFiniteNormalization_specifiedActualTopHomDualIso_originalScalar
+76:       B D hR hS c hc hgenC q hcard (-(Fintype.card σ:ℤ)) r x
+77:   have hrep : ∃ psi : V,∀ x : H,e x psi=ell x :=
+78:     finiteAdditiveDual_exists_representative (K:=K) (H:=H) (V:=V) e rho hscalar ell hlinear
+79:   obtain ⟨psi,hpsi⟩ := hrep
+80:   let f := coextensionOriginalAdjoint (S:=S) psi.1
+81:   let hf := coextensionOriginalAdjoint_degreeZero (MvPolynomial.homogeneousSubmodule σ K)
+82:     B D hS (-(Fintype.card σ:ℤ)-(-(Fintype.card σ:ℤ))) (sub_self _) psi
+83:   refine ⟨nativeProjectiveDegreeZeroSheafMap B D
+84:     (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) hS
+85:     (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+86:     f hf (-(Fintype.card σ:ℤ)),?_⟩
+87:   intro x
+88:   have hp := nativeCoextensionSpecifiedTopEvaluationTrace_adjointPairing
+89:     B D hR hS c hc hgenC q hcard psi x
+90:   dsimp only at hp
+91:   exact hp.trans (hpsi x)
+92: end LinearStudy
+===== Linear.NativeCoextensionSpecifiedLinearFunctionalLift =====
+1: module
+2: public import Linear.NativeCoextensionSpecifiedFunctionalLift
+3: @[expose] public section
+4: noncomputable section
+5: set_option autoImplicit false
+6: set_option maxHeartbeats 50000
+7: set_option backward.isDefEq.respectTransparency false
+8: set_option backward.isDefEq.respectTransparency.types false
+9: namespace LinearStudy
+10: open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+11: attribute [local instance] MvPolynomial.gradedAlgebra
+12: variable {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+13: variable [CommRing S] [Algebra K S] [Algebra (MvPolynomial σ K) S]
+14: variable [IsScalarTower K (MvPolynomial σ K) S]
+15: variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+16: variable [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+17: variable [IsDomain S] [IsNoetherianRing S] [Algebra.FiniteType K S]
+18: variable [Module.Finite (MvPolynomial σ K) S]
+19: attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+20:   coextensionGradedDecomposition coextensionOriginalBaseScalarTower
+21: attribute [local instance] coextensionTraceBaseSourceTower coextensionTraceFieldSourceTower
+22:   coextensionTraceFiniteBase coextensionTraceFiniteSource coextensionTraceTorsionFree
+23:   schemeModuleActualCohomologyAddCommGroup
+24: attribute [local irreducible] nativeFiniteNormalization_specifiedActualTopHomDualIso
+25: variable {M : Type} [AddCommGroup M] [Module K M] [Module (MvPolynomial σ K) M] [Module S M]
+26: variable [IsScalarTower (MvPolynomial σ K) S M] [IsScalarTower K (MvPolynomial σ K) M] [IsScalarTower K S M]
+27: variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+28: variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ z : MvPolynomial σ K,z ∈ MvPolynomial.homogeneousSubmodule σ K n →
+29:   ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+30: variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+31: variable [Module.IsTorsionFree S M] [Module.Finite (MvPolynomial σ K) M] [Module.Finite S M]
+32: attribute [local irreducible] nativeCoextensionSpecifiedTopEvaluationTrace integerGradedHomPrecomposition
+33:   nativeProjectiveModuleSheaf nativeProjectiveDegreeZeroSheafMap
+34: include hR in
+35: /-- The preceding explicit original-scalar statement applies to every
+36: actual K-linear functional for the independently defined Spec K action.
+37: This supplies the representation needed by original Lemma4.2;full global
+38: Hom-perfectness and canonical/normalized trace identification remain open. -/
+39: theorem nativeCoextensionSpecifiedTrace_exists_linear_functional_lift
+40:     {κ : Type} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+41:     (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+42:     (q : ℕ) (hcard : Fintype.card σ=q+2) :
+43:     let piB := Proj.toSpecZero B ≫ Spec.map (CommRingCat.ofHom (algebraMap K (B 0)))
+44:     letI : Module K (schemeModuleActualCohomology (Proj B)
+45:       (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))) (q+1)) :=
+46:         schemeModuleActualHSpecModule piB
+47:           (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))) (q+1)
+48:     ∀ ell : Module.Dual K (schemeModuleActualCohomology (Proj B)
+49:         (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))) (q+1)),
+50:       ∃ a : nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ)) ⟶
+51:           nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+52:             (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+53:             (-(Fintype.card σ:ℤ)),
+54:         ∀ x,nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard
+55:           (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map a)
+56:             (q+1) x)=ell x := by
+57:   dsimp only
+58:   let piB := Proj.toSpecZero B ≫ Spec.map (CommRingCat.ofHom (algebraMap K (B 0)))
+59:   letI : Module K (schemeModuleActualCohomology (Proj B)
+60:     (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))) (q+1)) :=
+61:       schemeModuleActualHSpecModule piB
+62:         (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))) (q+1)
+63:   intro ell
+64:   apply nativeCoextensionSpecifiedTrace_exists_functional_lift_of_originalScalar
+65:     B D hR hS c hc hgenC q hcard ell.toAddMonoidHom
+66:   intro r x
+67:   change ell (r • x)=r * ell x
+68:   exact ell.map_smul r x
+69: end LinearStudy
+===== Linear.SchemeModuleActualTraceRepresentingNonzero =====
+1: module
+2: public import Linear.SchemeModuleActualCohomologyGroup
+3: @[expose] public section
+4: noncomputable section
+5: set_option autoImplicit false
+6: set_option maxHeartbeats 50000
+7: set_option backward.isDefEq.respectTransparency false
+8: set_option backward.isDefEq.respectTransparency.types false
+9: namespace LinearStudy
+10: open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian
+11: universe u
+12: attribute [local instance] schemeModuleActualCohomologyAddCommGroup
+13: /-- A nonzero original additive functional represented by actual H of a
+14: coefficient morphism forces that SAME actual morphism to be nonzero.
+15: This does not construct a representative or assume geometric duality. -/
+16: theorem schemeModuleActualTraceRepresentingMap_ne_zero
+17:     {K : Type u} [AddCommGroup K] (X : Scheme.{u}) {M W : X.Modules} (r : ℕ)
+18:     (trace : schemeModuleActualCohomology X W r →+ K)
+19:     (ell : schemeModuleActualCohomology X M r →+ K) (hell : ell ≠ 0)
+20:     (a : M ⟶ W) (hrep : ∀ x, trace (CategoryTheory.Sheaf.H.map
+21:       ((schemeModuleToActualAbelianSheaf X).map a) r x)=ell x) : a ≠ 0 := by
+22:   intro ha
+23:   apply hell
+24:   apply AddMonoidHom.ext
+25:   intro x
+26:   have h := hrep x
+27:   rw [ha] at h
+28:   have hz : (schemeModuleToActualAbelianSheaf X).map (0 : M ⟶ W)=0 := by
+29:     change (SheafOfModules.toSheaf X.ringCatSheaf).map (0 : M ⟶ W)=0
+30:     exact (SheafOfModules.toSheaf X.ringCatSheaf).map_zero M W
+31:   rw [hz] at h
+32:   simpa only [CategoryTheory.Sheaf.H.map_apply,Ext.mk₀_zero,Ext.comp_zero,map_zero,AddMonoidHom.zero_apply] using h.symm
+33: end LinearStudy
+===== Linear.NativeCoextensionSpecifiedNonzeroFunctionalLift =====
+1: module
+2: public import Linear.NativeCoextensionSpecifiedFunctionalLift
+3: public import Linear.SchemeModuleActualTraceRepresentingNonzero
+4: @[expose] public section
+5: noncomputable section
+6: set_option autoImplicit false
+7: set_option maxHeartbeats 50000
+8: set_option backward.isDefEq.respectTransparency true
+9: set_option backward.isDefEq.respectTransparency.types true
+10: namespace LinearStudy
+11: open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+12: attribute [local instance] MvPolynomial.gradedAlgebra
+13: variable {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+14: variable [CommRing S] [Algebra K S] [Algebra (MvPolynomial σ K) S]
+15: variable [IsScalarTower K (MvPolynomial σ K) S]
+16: variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+17: variable [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+18: variable [IsDomain S] [IsNoetherianRing S] [Algebra.FiniteType K S]
+19: variable [Module.Finite (MvPolynomial σ K) S]
+20: attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+21:   coextensionGradedDecomposition coextensionOriginalBaseScalarTower
+22: attribute [local instance] coextensionTraceBaseSourceTower coextensionTraceFieldSourceTower
+23:   coextensionTraceFiniteBase coextensionTraceFiniteSource coextensionTraceTorsionFree
+24:   schemeModuleActualCohomologyAddCommGroup
+25: attribute [local irreducible] nativeFiniteNormalization_specifiedActualTopHomDualIso
+26: variable {M : Type} [AddCommGroup M] [Module K M] [Module (MvPolynomial σ K) M] [Module S M]
+27: variable [IsScalarTower (MvPolynomial σ K) S M] [IsScalarTower K (MvPolynomial σ K) M] [IsScalarTower K S M]
+28: variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+29: variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ z : MvPolynomial σ K,z ∈ MvPolynomial.homogeneousSubmodule σ K n →
+30:   ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+31: variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+32: variable [Module.IsTorsionFree S M] [Module.Finite (MvPolynomial σ K) M] [Module.Finite S M]
+33: attribute [local irreducible] nativeCoextensionSpecifiedTopEvaluationTrace integerGradedHomPrecomposition
+34:   nativeProjectiveModuleSheaf nativeProjectiveDegreeZeroSheafMap
+35: include hR in
+36: /-- A nonzero ORIGINAL scalar-linear functional has a nonzero ACTUAL
+37: coefficient map representative under the constructed model trace. No
+38: nonzero section of canonical omega or final polynomial is claimed. -/
+39: theorem nativeCoextensionSpecifiedTrace_exists_nonzero_functional_lift_of_originalScalar
+40:     {κ : Type} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+41:     (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+42:     (q : ℕ) (hcard : Fintype.card σ=q+2)
+43:     (ell : schemeModuleActualCohomology (Proj B)
+44:       (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))) (q+1) →+ K)
+45:     (hlinear : ∀ r : K,∀ x,
+46:       ell (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map
+47:         (originalGlobalModuleScalar
+48:           ((Proj.toSpecZero B ≫ Spec.map (CommRingCat.ofHom (algebraMap K (B 0)))).appTop
+49:             ((Scheme.ΓSpecIso (CommRingCat.of K)).inv r))
+50:           (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))))) (q+1) x)=r * ell x) (hell : ell ≠ 0) :
+51:     ∃ a : nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ)) ⟶
+52:         nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+53:           (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+54:           (-(Fintype.card σ:ℤ)),
+55:       a ≠ 0 ∧ ∀ x,nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard
+56:         (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map a)
+57:           (q+1) x)=ell x := by
+58:   have hrep : ∃ a : nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ)) ⟶
+59:       nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+60:         (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+61:         (-(Fintype.card σ:ℤ)),
+62:       ∀ x,nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard
+63:         (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map a) (q+1) x)=ell x :=
+64:     nativeCoextensionSpecifiedTrace_exists_functional_lift_of_originalScalar
+65:       (K:=K) (S:=S) (M:=M) (σ:=σ) B D hR hS c hc hgenC q hcard ell hlinear
+66:   obtain ⟨a,ha⟩ := hrep
+67:   have hane : a ≠ 0 := schemeModuleActualTraceRepresentingMap_ne_zero (K:=K) (Proj B)
+68:     (M:=nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ)))
+69:     (W:=nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+70:       (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+71:       (-(Fintype.card σ:ℤ))) (q+1)
+72:     (nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard) ell hell a ha
+73:   exact ⟨a,hane,ha⟩
+74: end LinearStudy
+===== Linear.NativeCoextensionOriginalBoundaryFunctionalLift =====
+1: module
+2: public import Linear.NativeCoextensionSpecifiedNonzeroFunctionalLift
+3: public import Linear.NativeCoextensionSpecifiedGlobalExtTrace
+4: @[expose] public section
+5: noncomputable section
+6: set_option autoImplicit false
+7: set_option maxHeartbeats 50000
+8: set_option backward.isDefEq.respectTransparency true
+9: set_option backward.isDefEq.respectTransparency.types true
+10: namespace LinearStudy
+11: open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+12: attribute [local instance] MvPolynomial.gradedAlgebra
+13: variable {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+14: variable [CommRing S] [Algebra K S] [Algebra (MvPolynomial σ K) S]
+15: variable [IsScalarTower K (MvPolynomial σ K) S]
+16: variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+17: variable [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+18: variable [IsDomain S] [IsNoetherianRing S] [Algebra.FiniteType K S]
+19: variable [Module.Finite (MvPolynomial σ K) S]
+20: attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+21:   coextensionGradedDecomposition coextensionOriginalBaseScalarTower
+22: attribute [local instance] coextensionTraceBaseSourceTower coextensionTraceFieldSourceTower
+23:   coextensionTraceFiniteBase coextensionTraceFiniteSource coextensionTraceTorsionFree
+24:   schemeModuleActualCohomologyAddCommGroup
+25: attribute [local irreducible] nativeFiniteNormalization_specifiedActualTopHomDualIso
+26: variable {M : Type} [AddCommGroup M] [Module K M] [Module (MvPolynomial σ K) M] [Module S M]
+27: variable [IsScalarTower (MvPolynomial σ K) S M] [IsScalarTower K (MvPolynomial σ K) M] [IsScalarTower K S M]
+28: variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+29: variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ z : MvPolynomial σ K,z ∈ MvPolynomial.homogeneousSubmodule σ K n →
+30:   ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+31: variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+32: variable [Module.IsTorsionFree S M] [Module.Finite (MvPolynomial σ K) M] [Module.Finite S M]
+33: attribute [local irreducible] nativeCoextensionSpecifiedTopEvaluationTrace integerGradedHomPrecomposition
+34:   nativeProjectiveModuleSheaf nativeProjectiveDegreeZeroSheafMap
+35: include hR in
+36: /-- The SAME nonzero actual representative works BEFORE ALL original
+37: chain/Koszul roofs with the fixed top coefficient. Its SAME pushed-forward
+38: original Ext class gives the prescribed functional on the actual original
+39: section boundary under the constructed MODEL trace. Original alpha and its
+40: quasi-isomorphism remain explicit;no canonical/local-E perfection claimed. -/
+41: theorem nativeCoextensionSpecifiedTrace_exists_nonzero_original_boundary_representative
+42:     {κ : Type} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+43:     (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+44:     (q : ℕ) (hcard : Fintype.card σ=q+2)
+45:     (ell : schemeModuleActualCohomology (Proj B)
+46:       (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))) (q+1) →+ K)
+47:     (hlinear : ∀ r : K,∀ x,
+48:       ell (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map
+49:         (originalGlobalModuleScalar
+50:           ((Proj.toSpecZero B ≫ Spec.map (CommRingCat.ofHom (algebraMap K (B 0)))).appTop
+51:             ((Scheme.ΓSpecIso (CommRingCat.of K)).inv r))
+52:           (nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ))))) (q+1) x)=r * ell x) (hell : ell ≠ 0) :
+53:     ∃ a : nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ)) ⟶
+54:         nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+55:           (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+56:           (-(Fintype.card σ:ℤ)),a ≠ 0 ∧
+57:       ∀ (G : (Proj B).Modules) (CC : ChainComplex (Proj B).Modules ℕ)
+58:         (alpha : CC ⟶ (ChainComplex.single₀ (Proj B).Modules).obj G) (hAlpha : QuasiIso alpha)
+59:         (hAbove : CategoryTheory.Limits.IsZero (CC.X ((q+1)+1)))
+60:         (phi : CC.X (q+1) ≅ nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ)))
+61:         (s : Γ(G,⊤)),
+62:       schemeModuleExtSectionTracePairing
+63:         (nativeCoextensionSpecifiedTopGlobalExtTrace B c hc hgenC q hcard)
+64:         (schemeModuleExtClassCoefficientPushforwardAddHom
+65:           (schemeModuleOriginalChainTopExtClassSmall CC (q+1) alpha hAlpha phi.hom
+66:             (hAbove.eq_of_src _ _)) a) s =
+67:         ell (schemeModuleOriginalActualSectionBoundary CC (q+1) alpha hAlpha hAbove phi s) := by
+68:   have hrep : ∃ a : nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ)) ⟶
+69:         nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+70:           (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+71:           (-(Fintype.card σ:ℤ)),
+72:       a ≠ 0 ∧ ∀ x,nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard
+73:         (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map a)
+74:           (q+1) x)=ell x :=
+75:     nativeCoextensionSpecifiedTrace_exists_nonzero_functional_lift_of_originalScalar
+76:       (K:=K) (S:=S) (M:=M) (σ:=σ) B D hR hS c hc hgenC q hcard ell hlinear hell
+77:   obtain ⟨a,hane,ha⟩ := hrep
+78:   refine ⟨a,hane,?_⟩
+79:   intro G CC alpha hAlpha hAbove phi s
+80:   exact (nativeCoextensionSpecifiedTopGlobalExtTrace_originalBoundary (K:=K) (S:=S) (σ:=σ) B c hc hgenC q hcard
+81:     (G:=G) (F:=nativeProjectiveModuleSheaf B D hS (-(Fintype.card σ:ℤ)))
+82:     CC alpha hAlpha hAbove phi a s).symm.trans
+83:       (ha (schemeModuleOriginalActualSectionBoundary CC (q+1) alpha hAlpha hAbove phi s))
+84: end LinearStudy

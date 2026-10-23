@@ -1,0 +1,551 @@
+@LinearStudy.schemeModuleActualHTracePairing : {X : AlgebraicGeometry.Scheme} →
+  {M W : X.Modules} →
+    {r : ℕ} →
+      {R : Type u_2} →
+        [inst : AddCommGroup R] →
+          (CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R) →
+            (M ⟶ W) → LinearStudy.schemeModuleActualCohomology X M r →+ R
+'LinearStudy.schemeModuleActualHTracePairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleExtSectionTracePairing : {X : AlgebraicGeometry.Scheme} →
+  {E W : X.Modules} →
+    {r : ℕ} →
+      {R : Type u_2} →
+        [inst : AddCommGroup R] →
+          (CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R) →
+            CategoryTheory.Abelian.Ext E W r → ↑(E.presheaf.obj (Opposite.op ⊤)) →+ R
+'LinearStudy.schemeModuleExtSectionTracePairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleExtClassCoefficientPushforwardAddHom : {X : AlgebraicGeometry.Scheme} →
+  {E M W : X.Modules} → {r : ℕ} → CategoryTheory.Abelian.Ext E M r → (M ⟶ W) →+ CategoryTheory.Abelian.Ext E W r
+'LinearStudy.schemeModuleExtClassCoefficientPushforwardAddHom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleExtClassActualSectionBoundary_trace_transpose : ∀ {X : AlgebraicGeometry.Scheme}
+  {E M W : X.Modules} {r : ℕ} {R : Type u_2} [inst : AddCommGroup R] (epsilon : CategoryTheory.Abelian.Ext E M r)
+  (a : M ⟶ W) (trace : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R)
+  (s : ↑(E.presheaf.obj (Opposite.op ⊤))),
+  (LinearStudy.schemeModuleActualHTracePairing trace a)
+      (LinearStudy.schemeModuleExtClassActualSectionBoundary epsilon s) =
+    (LinearStudy.schemeModuleExtSectionTracePairing trace
+        ((LinearStudy.schemeModuleExtClassCoefficientPushforwardAddHom epsilon) a))
+      s
+'LinearStudy.schemeModuleExtClassActualSectionBoundary_trace_transpose' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalActualSectionBoundary_trace_transpose : ∀ {X : AlgebraicGeometry.Scheme}
+  {E M W : X.Modules} {R : Type u_2} [inst : AddCommGroup R] (C : ChainComplex X.Modules ℕ) (r : ℕ)
+  (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (phi : C.X r ≅ M) (a : M ⟶ W)
+  (trace : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R)
+  (s : ↑(E.presheaf.obj (Opposite.op ⊤))),
+  (LinearStudy.schemeModuleActualHTracePairing trace a)
+      ((LinearStudy.schemeModuleOriginalActualSectionBoundary C r alpha hAlpha hAbove phi) s) =
+    (LinearStudy.schemeModuleExtSectionTracePairing trace
+        ((LinearStudy.schemeModuleExtClassCoefficientPushforwardAddHom
+            (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha phi.hom ⋯))
+          a))
+      s
+'LinearStudy.schemeModuleOriginalActualSectionBoundary_trace_transpose' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleExtClassCoefficientPushforward_injective_of_trace : ∀ {X : AlgebraicGeometry.Scheme}
+  {E M W : X.Modules} {r : ℕ} {R : Type u_2} [inst : AddCommGroup R] (epsilon : CategoryTheory.Abelian.Ext E M r)
+  (trace : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R),
+  (∀ (a : M ⟶ W),
+      (∀ (h : LinearStudy.schemeModuleActualCohomology X M r),
+          (LinearStudy.schemeModuleActualHTracePairing trace a) h = 0) →
+        a = 0) →
+    Function.Surjective (LinearStudy.schemeModuleExtClassActualSectionBoundary epsilon) →
+      Function.Injective ⇑(LinearStudy.schemeModuleExtClassCoefficientPushforwardAddHom epsilon)
+'LinearStudy.schemeModuleExtClassCoefficientPushforward_injective_of_trace' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleActualHToGlobalExtTrace : {X : AlgebraicGeometry.Scheme} →
+  {W : X.Modules} →
+    {r : ℕ} →
+      {R : Type u_2} →
+        [inst : AddCommGroup R] →
+          (LinearStudy.schemeModuleActualCohomology X W r →+ R) →
+            CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R
+'LinearStudy.schemeModuleActualHToGlobalExtTrace' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleActualHToGlobalExtTrace_pairing : ∀ {X : AlgebraicGeometry.Scheme} {M W : X.Modules} {r : ℕ}
+  {R : Type u_2} [inst : AddCommGroup R] (trace : LinearStudy.schemeModuleActualCohomology X W r →+ R) (a : M ⟶ W)
+  (h : LinearStudy.schemeModuleActualCohomology X M r),
+  (LinearStudy.schemeModuleActualHTracePairing (LinearStudy.schemeModuleActualHToGlobalExtTrace trace) a) h =
+    trace ((CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map a) r) h)
+'LinearStudy.schemeModuleActualHToGlobalExtTrace_pairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOriginalActualSectionBoundary_actualH_trace_transpose : ∀ {X : AlgebraicGeometry.Scheme}
+  {E M W : X.Modules} {R : Type u_2} [inst : AddCommGroup R] (C : ChainComplex X.Modules ℕ) (r : ℕ)
+  (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (C.X (r + 1))) (phi : C.X r ≅ M) (a : M ⟶ W)
+  (trace : LinearStudy.schemeModuleActualCohomology X W r →+ R) (s : ↑(E.presheaf.obj (Opposite.op ⊤))),
+  trace
+      ((CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map a) r)
+        ((LinearStudy.schemeModuleOriginalActualSectionBoundary C r alpha hAlpha hAbove phi) s)) =
+    (LinearStudy.schemeModuleExtSectionTracePairing (LinearStudy.schemeModuleActualHToGlobalExtTrace trace)
+        ((LinearStudy.schemeModuleExtClassCoefficientPushforwardAddHom
+            (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha phi.hom ⋯))
+          a))
+      s
+'LinearStudy.schemeModuleOriginalActualSectionBoundary_actualH_trace_transpose' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace : {K S : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          [inst_3 : CommRing S] →
+            [inst_4 : Algebra K S] →
+              [inst_5 : Algebra (MvPolynomial σ K) S] →
+                [inst_6 : IsScalarTower K (MvPolynomial σ K) S] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_7 : GradedAlgebra B] →
+                      [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] →
+                        [IsDomain S] →
+                          [IsNoetherianRing S] →
+                            [Algebra.FiniteType K S] →
+                              [Module.Finite (MvPolynomial σ K) S] →
+                                {κ : Type} →
+                                  (c : κ → S) →
+                                    (∀ (i : κ), c i ∈ B 1) →
+                                      Algebra.adjoin K (Set.range c) = ⊤ →
+                                        (q : ℕ) →
+                                          Fintype.card σ = q + 2 →
+                                            CategoryTheory.Abelian.Ext
+                                                (SheafOfModules.unit (AlgebraicGeometry.Proj B).ringCatSheaf)
+                                                (LinearStudy.nativeProjectiveModuleSheaf B
+                                                  (LinearStudy.coextensionGradedPiece
+                                                    (MvPolynomial.homogeneousSubmodule σ K) B)
+                                                  ⋯ (-↑(Fintype.card σ)))
+                                                (q + 1) →+
+                                              K
+'LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace_apply : ∀ {K S : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2)
+  (z :
+    CategoryTheory.Abelian.Ext (SheafOfModules.unit (AlgebraicGeometry.Proj B).ringCatSheaf)
+      (LinearStudy.nativeProjectiveModuleSheaf B
+        (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) ⋯ (-↑(Fintype.card σ)))
+      (q + 1)),
+  (LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace B c hc hgenC q hcard) z =
+    (LinearStudy.nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard)
+      ((LinearStudy.schemeModuleGlobalExtActualHAddEquiv (AlgebraicGeometry.Proj B)
+          (LinearStudy.nativeProjectiveModuleSheaf B
+            (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) ⋯ (-↑(Fintype.card σ)))
+          (q + 1))
+        z)
+'LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace_actualPairing : ∀ {K S : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2)
+  {F : (AlgebraicGeometry.Proj B).Modules}
+  (a :
+    F ⟶
+      LinearStudy.nativeProjectiveModuleSheaf B
+        (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) ⋯ (-↑(Fintype.card σ)))
+  (x : LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B) F (q + 1)),
+  (LinearStudy.schemeModuleActualHTracePairing
+        (LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace B c hc hgenC q hcard) a)
+      x =
+    (LinearStudy.nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard)
+      ((CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map a)
+          (q + 1))
+        x)
+'LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace_actualPairing' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace_originalBoundary : ∀ {K S : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2)
+  {G F : (AlgebraicGeometry.Proj B).Modules} (CC : ChainComplex (AlgebraicGeometry.Proj B).Modules ℕ)
+  (alpha : CC ⟶ (ChainComplex.single₀ (AlgebraicGeometry.Proj B).Modules).obj G) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (CC.X (q + 1 + 1))) (phi : CC.X (q + 1) ≅ F)
+  (a :
+    F ⟶
+      LinearStudy.nativeProjectiveModuleSheaf B
+        (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) ⋯ (-↑(Fintype.card σ)))
+  (s : ↑(G.presheaf.obj (Opposite.op ⊤))),
+  (LinearStudy.nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard)
+      ((CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map a)
+          (q + 1))
+        ((LinearStudy.schemeModuleOriginalActualSectionBoundary CC (q + 1) alpha hAlpha hAbove phi) s)) =
+    (LinearStudy.schemeModuleExtSectionTracePairing
+        (LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace B c hc hgenC q hcard)
+        ((LinearStudy.schemeModuleExtClassCoefficientPushforwardAddHom
+            (LinearStudy.schemeModuleOriginalChainTopExtClassSmall CC (q + 1) alpha hAlpha phi.hom ⋯))
+          a))
+      s
+'LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace_originalBoundary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.integerGradedHomPiece_finite_of_pieces : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  (B : ℕ → Submodule K S) (D : ℤ → Submodule K M) [DirectSum.Decomposition D] [Module.Finite S M],
+  (∀ (j : ℤ), Module.Finite K ↥(LinearStudy.nativeProjectiveRingIntegerPiece B j)) →
+    ∀ (d : ℤ), Module.Finite K ↥(LinearStudy.integerGradedHomPiece B D d)
+'LinearStudy.integerGradedHomPiece_finite_of_pieces' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.polynomialIntegerPiece_finite : ∀ {K : Type u_1} [inst : Field K] {σ : Type u_2} [Finite σ] (d : ℤ),
+  Module.Finite K ↥(LinearStudy.nativeProjectiveRingIntegerPiece (MvPolynomial.homogeneousSubmodule σ K) d)
+'LinearStudy.polynomialIntegerPiece_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.polynomialIntegerGradedHomPiece_finite : ∀ {K : Type u_1} {M : Type u_2} [inst : Field K]
+  [inst_1 : AddCommGroup M] [inst_2 : Module K M] {σ : Type u_3} [Finite σ] [inst_4 : Module (MvPolynomial σ K) M]
+  [Module.Finite (MvPolynomial σ K) M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D] (d : ℤ),
+  Module.Finite K ↥(LinearStudy.integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K) D d)
+'LinearStudy.polynomialIntegerGradedHomPiece_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finiteAdditiveDual_exists_representative : ∀ {K : Type u_1} {H : Type u_2} {V : Type u_3} [inst : Field K]
+  [inst_1 : AddCommGroup H] [inst_2 : AddCommGroup V] [inst_3 : Module K V] [Module.Finite K V]
+  (e : H ≃+ Module.Dual K V) (rho : K → H → H),
+  (∀ (r : K) (x : H), e (rho r x) = r • e x) →
+    ∀ (ell : H →+ K), (∀ (r : K) (x : H), ell (rho r x) = r * ell x) → ∃ (v : V), ∀ (x : H), (e x) v = ell x
+'LinearStudy.finiteAdditiveDual_exists_representative' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeCoextensionSpecifiedTrace_exists_functional_lift_of_originalScalar : ∀ {K S : Type} [inst : Field K]
+  {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {M : Type} [inst_13 : AddCommGroup M] [inst_14 : Module K M]
+  [inst_15 : Module (MvPolynomial σ K) M] [inst_16 : Module S M] [IsScalarTower (MvPolynomial σ K) S M]
+  [IsScalarTower K (MvPolynomial σ K) M] [IsScalarTower K S M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D],
+  (∀ (n : ℕ) (j : ℤ), ∀ z ∈ MvPolynomial.homogeneousSubmodule σ K n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+    ∀ (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [Module.IsTorsionFree S M]
+      [Module.Finite (MvPolynomial σ K) M] [Module.Finite S M] {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+      (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2)
+      (ell :
+        LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B)
+            (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))) (q + 1) →+
+          K),
+      (∀ (r : K)
+          (x :
+            CategoryTheory.Sheaf.H
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+                (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))))
+              (q + 1)),
+          ell
+              ((CategoryTheory.Sheaf.H.map
+                  ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                    (LinearStudy.originalGlobalModuleScalar
+                      ((CategoryTheory.ConcreteCategory.hom
+                          (AlgebraicGeometry.Scheme.Hom.appTop
+                            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv) r))
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ)))))
+                  (q + 1))
+                x) =
+            r * ell x) →
+        ∃ (a :
+          LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ)) ⟶
+            LinearStudy.nativeProjectiveModuleSheaf B
+              (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) ⋯ (-↑(Fintype.card σ))),
+          ∀
+            (x :
+              CategoryTheory.Sheaf.H
+                ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))))
+                (q + 1)),
+            (LinearStudy.nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard)
+                ((CategoryTheory.Sheaf.H.map
+                    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map a) (q + 1))
+                  x) =
+              ell x
+'LinearStudy.nativeCoextensionSpecifiedTrace_exists_functional_lift_of_originalScalar' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionSpecifiedTrace_exists_linear_functional_lift : ∀ {K S : Type} [inst : Field K] {σ : Type}
+  [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {M : Type} [inst_13 : AddCommGroup M] [inst_14 : Module K M]
+  [inst_15 : Module (MvPolynomial σ K) M] [inst_16 : Module S M] [IsScalarTower (MvPolynomial σ K) S M]
+  [IsScalarTower K (MvPolynomial σ K) M] [IsScalarTower K S M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D],
+  (∀ (n : ℕ) (j : ℤ), ∀ z ∈ MvPolynomial.homogeneousSubmodule σ K n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+    ∀ (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [Module.IsTorsionFree S M]
+      [Module.Finite (MvPolynomial σ K) M] [Module.Finite S M] {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+      (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2),
+      have piB :=
+        CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0))));
+      ∀
+        (ell :
+          Module.Dual K
+            (LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B)
+              (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))) (q + 1))),
+        ∃ (a :
+          LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ)) ⟶
+            LinearStudy.nativeProjectiveModuleSheaf B
+              (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) ⋯ (-↑(Fintype.card σ))),
+          ∀
+            (x :
+              CategoryTheory.Sheaf.H
+                ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))))
+                (q + 1)),
+            (LinearStudy.nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard)
+                ((CategoryTheory.Sheaf.H.map
+                    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map a) (q + 1))
+                  x) =
+              ell x
+'LinearStudy.nativeCoextensionSpecifiedTrace_exists_linear_functional_lift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleActualTraceRepresentingMap_ne_zero : ∀ {K : Type u_1} [inst : AddCommGroup K]
+  (X : AlgebraicGeometry.Scheme) {M W : X.Modules} (r : ℕ) (trace : LinearStudy.schemeModuleActualCohomology X W r →+ K)
+  (ell : LinearStudy.schemeModuleActualCohomology X M r →+ K),
+  ell ≠ 0 →
+    ∀ (a : M ⟶ W),
+      (∀ (x : CategoryTheory.Sheaf.H ((LinearStudy.schemeModuleToActualAbelianSheaf X).obj M) r),
+          trace ((CategoryTheory.Sheaf.H.map ((LinearStudy.schemeModuleToActualAbelianSheaf X).map a) r) x) = ell x) →
+        a ≠ 0
+'LinearStudy.schemeModuleActualTraceRepresentingMap_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeCoextensionSpecifiedTrace_exists_nonzero_functional_lift_of_originalScalar : ∀ {K S : Type}
+  [inst : Field K] {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {M : Type} [inst_13 : AddCommGroup M] [inst_14 : Module K M]
+  [inst_15 : Module (MvPolynomial σ K) M] [inst_16 : Module S M] [IsScalarTower (MvPolynomial σ K) S M]
+  [IsScalarTower K (MvPolynomial σ K) M] [IsScalarTower K S M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D],
+  (∀ (n : ℕ) (j : ℤ), ∀ z ∈ MvPolynomial.homogeneousSubmodule σ K n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+    ∀ (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [Module.IsTorsionFree S M]
+      [Module.Finite (MvPolynomial σ K) M] [Module.Finite S M] {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+      (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2)
+      (ell :
+        LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B)
+            (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))) (q + 1) →+
+          K),
+      (∀ (r : K)
+          (x :
+            CategoryTheory.Sheaf.H
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+                (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))))
+              (q + 1)),
+          ell
+              ((CategoryTheory.Sheaf.H.map
+                  ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                    (LinearStudy.originalGlobalModuleScalar
+                      ((CategoryTheory.ConcreteCategory.hom
+                          (AlgebraicGeometry.Scheme.Hom.appTop
+                            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv) r))
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ)))))
+                  (q + 1))
+                x) =
+            r * ell x) →
+        ell ≠ 0 →
+          ∃ (a :
+            LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ)) ⟶
+              LinearStudy.nativeProjectiveModuleSheaf B
+                (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) ⋯ (-↑(Fintype.card σ))),
+            a ≠ 0 ∧
+              ∀
+                (x :
+                  CategoryTheory.Sheaf.H
+                    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))))
+                    (q + 1)),
+                (LinearStudy.nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard)
+                    ((CategoryTheory.Sheaf.H.map
+                        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map a) (q + 1))
+                      x) =
+                  ell x
+'LinearStudy.nativeCoextensionSpecifiedTrace_exists_nonzero_functional_lift_of_originalScalar' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeCoextensionSpecifiedTrace_exists_nonzero_original_boundary_representative : ∀ {K S : Type}
+  [inst : Field K] {σ : Type} [inst_1 : Fintype σ] [inst_2 : LinearOrder σ] [inst_3 : CommRing S] [inst_4 : Algebra K S]
+  [inst_5 : Algebra (MvPolynomial σ K) S] [inst_6 : IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S)
+  [inst_7 : GradedAlgebra B] [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+  [inst_9 : IsDomain S] [inst_10 : IsNoetherianRing S] [inst_11 : Algebra.FiniteType K S]
+  [inst_12 : Module.Finite (MvPolynomial σ K) S] {M : Type} [inst_13 : AddCommGroup M] [inst_14 : Module K M]
+  [inst_15 : Module (MvPolynomial σ K) M] [inst_16 : Module S M] [IsScalarTower (MvPolynomial σ K) S M]
+  [IsScalarTower K (MvPolynomial σ K) M] [IsScalarTower K S M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D],
+  (∀ (n : ℕ) (j : ℤ), ∀ z ∈ MvPolynomial.homogeneousSubmodule σ K n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+    ∀ (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [Module.IsTorsionFree S M]
+      [Module.Finite (MvPolynomial σ K) M] [Module.Finite S M] {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+      (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2)
+      (ell :
+        LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B)
+            (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))) (q + 1) →+
+          K),
+      (∀ (r : K)
+          (x :
+            CategoryTheory.Sheaf.H
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+                (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ))))
+              (q + 1)),
+          ell
+              ((CategoryTheory.Sheaf.H.map
+                  ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                    (LinearStudy.originalGlobalModuleScalar
+                      ((CategoryTheory.ConcreteCategory.hom
+                          (AlgebraicGeometry.Scheme.Hom.appTop
+                            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv) r))
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ)))))
+                  (q + 1))
+                x) =
+            r * ell x) →
+        ell ≠ 0 →
+          ∃ (a :
+            LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ)) ⟶
+              LinearStudy.nativeProjectiveModuleSheaf B
+                (LinearStudy.coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) ⋯ (-↑(Fintype.card σ))),
+            a ≠ 0 ∧
+              ∀ (G : (AlgebraicGeometry.Proj B).Modules) (CC : ChainComplex (AlgebraicGeometry.Proj B).Modules ℕ)
+                (alpha : CC ⟶ (ChainComplex.single₀ (AlgebraicGeometry.Proj B).Modules).obj G) (hAlpha : QuasiIso alpha)
+                (hAbove : CategoryTheory.Limits.IsZero (CC.X (q + 1 + 1)))
+                (phi : CC.X (q + 1) ≅ LinearStudy.nativeProjectiveModuleSheaf B D hS (-↑(Fintype.card σ)))
+                (s : ↑(G.presheaf.obj (Opposite.op ⊤))),
+                (LinearStudy.schemeModuleExtSectionTracePairing
+                      (LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace B c hc hgenC q hcard)
+                      ((LinearStudy.schemeModuleExtClassCoefficientPushforwardAddHom
+                          (LinearStudy.schemeModuleOriginalChainTopExtClassSmall CC (q + 1) alpha hAlpha phi.hom ⋯))
+                        a))
+                    s =
+                  ell ((LinearStudy.schemeModuleOriginalActualSectionBoundary CC (q + 1) alpha hAlpha hAbove phi) s)
+'LinearStudy.nativeCoextensionSpecifiedTrace_exists_nonzero_original_boundary_representative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleActualHTracePairing.{u, v} : {X : AlgebraicGeometry.Scheme} →
+  {M W : X.Modules} →
+    {r : ℕ} →
+      {R : Type v} →
+        [inst : AddCommGroup R] →
+          (CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R) →
+            (M ⟶ W) → LinearStudy.schemeModuleActualCohomology X M r →+ R :=
+fun {X : AlgebraicGeometry.Scheme} {M W : X.Modules} {r : ℕ} {R : Type v} [AddCommGroup R]
+    (trace : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R) (a : M ⟶ W) =>
+  {
+    toFun := fun (h : LinearStudy.schemeModuleActualCohomology X M r) =>
+      trace
+        (((LinearStudy.schemeModuleGlobalExtActualHAddEquiv X M r).symm h).comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯),
+    map_zero' := ⋯, map_add' := ⋯ }
+def LinearStudy.schemeModuleExtSectionTracePairing.{u, v} : {X : AlgebraicGeometry.Scheme} →
+  {E W : X.Modules} →
+    {r : ℕ} →
+      {R : Type v} →
+        [inst : AddCommGroup R] →
+          (CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R) →
+            CategoryTheory.Abelian.Ext E W r → ↑(E.presheaf.obj (Opposite.op ⊤)) →+ R :=
+fun {X : AlgebraicGeometry.Scheme} {E W : X.Modules} {r : ℕ} {R : Type v} [AddCommGroup R]
+    (trace : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R)
+    (z : CategoryTheory.Abelian.Ext E W r) =>
+  {
+    toFun := fun (s : ↑(E.presheaf.obj (Opposite.op ⊤))) =>
+      trace
+        ((CategoryTheory.Abelian.Ext.mk₀ ((LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv X E).symm s)).comp z
+          ⋯),
+    map_zero' := ⋯, map_add' := ⋯ }
+def LinearStudy.schemeModuleExtClassCoefficientPushforwardAddHom.{u} : {X : AlgebraicGeometry.Scheme} →
+  {E M W : X.Modules} → {r : ℕ} → CategoryTheory.Abelian.Ext E M r → (M ⟶ W) →+ CategoryTheory.Abelian.Ext E W r :=
+fun {X : AlgebraicGeometry.Scheme} {E M W : X.Modules} {r : ℕ} (epsilon : CategoryTheory.Abelian.Ext E M r) =>
+  { toFun := fun (a : M ⟶ W) => epsilon.comp (CategoryTheory.Abelian.Ext.mk₀ a) ⋯, map_zero' := ⋯, map_add' := ⋯ }
+def LinearStudy.schemeModuleActualHToGlobalExtTrace.{u, v} : {X : AlgebraicGeometry.Scheme} →
+  {W : X.Modules} →
+    {r : ℕ} →
+      {R : Type v} →
+        [inst : AddCommGroup R] →
+          (LinearStudy.schemeModuleActualCohomology X W r →+ R) →
+            CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R :=
+fun {X : AlgebraicGeometry.Scheme} {W : X.Modules} {r : ℕ} {R : Type v} [AddCommGroup R]
+    (trace : LinearStudy.schemeModuleActualCohomology X W r →+ R) =>
+  trace.comp (LinearStudy.schemeModuleGlobalExtActualHAddEquiv X W r).toAddMonoidHom
+def LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace : {K S : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          [inst_3 : CommRing S] →
+            [inst_4 : Algebra K S] →
+              [inst_5 : Algebra (MvPolynomial σ K) S] →
+                [inst_6 : IsScalarTower K (MvPolynomial σ K) S] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_7 : GradedAlgebra B] →
+                      [inst_8 : SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] →
+                        [IsDomain S] →
+                          [IsNoetherianRing S] →
+                            [Algebra.FiniteType K S] →
+                              [Module.Finite (MvPolynomial σ K) S] →
+                                {κ : Type} →
+                                  (c : κ → S) →
+                                    (∀ (i : κ), c i ∈ B 1) →
+                                      Algebra.adjoin K (Set.range c) = ⊤ →
+                                        (q : ℕ) →
+                                          Fintype.card σ = q + 2 →
+                                            CategoryTheory.Abelian.Ext
+                                                (SheafOfModules.unit (AlgebraicGeometry.Proj B).ringCatSheaf)
+                                                (LinearStudy.nativeProjectiveModuleSheaf B
+                                                  (LinearStudy.coextensionGradedPiece
+                                                    (MvPolynomial.homogeneousSubmodule σ K) B)
+                                                  ⋯ (-↑(Fintype.card σ)))
+                                                (q + 1) →+
+                                              K :=
+fun {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ] [CommRing S] [Algebra K S]
+    [Algebra (MvPolynomial σ K) S] [IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S) [GradedAlgebra B]
+    [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] [IsDomain S] [IsNoetherianRing S]
+    [Algebra.FiniteType K S] [Module.Finite (MvPolynomial σ K) S] {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ) (hcard : Fintype.card σ = q + 2) =>
+  LinearStudy.schemeModuleActualHToGlobalExtTrace
+    (LinearStudy.nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard)
+ROLECHECK:LinearStudy.schemeModuleActualHTracePairing:false
+KINDCHECK:LinearStudy.schemeModuleActualHTracePairing:definition
+ROLECHECK:LinearStudy.schemeModuleExtSectionTracePairing:false
+KINDCHECK:LinearStudy.schemeModuleExtSectionTracePairing:definition
+ROLECHECK:LinearStudy.schemeModuleExtClassCoefficientPushforwardAddHom:false
+KINDCHECK:LinearStudy.schemeModuleExtClassCoefficientPushforwardAddHom:definition
+ROLECHECK:LinearStudy.schemeModuleExtClassActualSectionBoundary_trace_transpose:true
+KINDCHECK:LinearStudy.schemeModuleExtClassActualSectionBoundary_trace_transpose:theorem
+ROLECHECK:LinearStudy.schemeModuleOriginalActualSectionBoundary_trace_transpose:true
+KINDCHECK:LinearStudy.schemeModuleOriginalActualSectionBoundary_trace_transpose:theorem
+ROLECHECK:LinearStudy.schemeModuleExtClassCoefficientPushforward_injective_of_trace:true
+KINDCHECK:LinearStudy.schemeModuleExtClassCoefficientPushforward_injective_of_trace:theorem
+ROLECHECK:LinearStudy.schemeModuleActualHToGlobalExtTrace:false
+KINDCHECK:LinearStudy.schemeModuleActualHToGlobalExtTrace:definition
+ROLECHECK:LinearStudy.schemeModuleActualHToGlobalExtTrace_pairing:true
+KINDCHECK:LinearStudy.schemeModuleActualHToGlobalExtTrace_pairing:theorem
+ROLECHECK:LinearStudy.schemeModuleOriginalActualSectionBoundary_actualH_trace_transpose:true
+KINDCHECK:LinearStudy.schemeModuleOriginalActualSectionBoundary_actualH_trace_transpose:theorem
+ROLECHECK:LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace:false
+KINDCHECK:LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace:definition
+ROLECHECK:LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace_apply:true
+KINDCHECK:LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace_apply:theorem
+ROLECHECK:LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace_actualPairing:true
+KINDCHECK:LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace_actualPairing:theorem
+ROLECHECK:LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace_originalBoundary:true
+KINDCHECK:LinearStudy.nativeCoextensionSpecifiedTopGlobalExtTrace_originalBoundary:theorem
+ROLECHECK:LinearStudy.integerGradedHomPiece_finite_of_pieces:true
+KINDCHECK:LinearStudy.integerGradedHomPiece_finite_of_pieces:theorem
+ROLECHECK:LinearStudy.polynomialIntegerPiece_finite:true
+KINDCHECK:LinearStudy.polynomialIntegerPiece_finite:theorem
+ROLECHECK:LinearStudy.polynomialIntegerGradedHomPiece_finite:true
+KINDCHECK:LinearStudy.polynomialIntegerGradedHomPiece_finite:theorem
+ROLECHECK:LinearStudy.finiteAdditiveDual_exists_representative:true
+KINDCHECK:LinearStudy.finiteAdditiveDual_exists_representative:theorem
+ROLECHECK:LinearStudy.nativeCoextensionSpecifiedTrace_exists_functional_lift_of_originalScalar:true
+KINDCHECK:LinearStudy.nativeCoextensionSpecifiedTrace_exists_functional_lift_of_originalScalar:theorem
+ROLECHECK:LinearStudy.nativeCoextensionSpecifiedTrace_exists_linear_functional_lift:true
+KINDCHECK:LinearStudy.nativeCoextensionSpecifiedTrace_exists_linear_functional_lift:theorem
+ROLECHECK:LinearStudy.schemeModuleActualTraceRepresentingMap_ne_zero:true
+KINDCHECK:LinearStudy.schemeModuleActualTraceRepresentingMap_ne_zero:theorem
+ROLECHECK:LinearStudy.nativeCoextensionSpecifiedTrace_exists_nonzero_functional_lift_of_originalScalar:true
+KINDCHECK:LinearStudy.nativeCoextensionSpecifiedTrace_exists_nonzero_functional_lift_of_originalScalar:theorem
+ROLECHECK:LinearStudy.nativeCoextensionSpecifiedTrace_exists_nonzero_original_boundary_representative:true
+KINDCHECK:LinearStudy.nativeCoextensionSpecifiedTrace_exists_nonzero_original_boundary_representative:theorem
