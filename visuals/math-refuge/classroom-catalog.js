@@ -1,18 +1,18 @@
 const COURSE_URL='https://birationalclass.github.io/shengmeng/courses/abstract-algebra/2026-fall/';
-const VOICE_LABEL='ZZL · C明亮开课';
+const VOICE_LABEL='ZL · C明亮开课';
 function program({id,label,labelEn,chapter,section,sections=[section],sectionPart='',topic,topicEn,courseManifest,pagesManifest,narrationManifest,audioRoot,rosterLocalOnly=false}){
  return {id,kind:'classroom',speaker:'子皿曰成',speakerEn:'Zimin Yuecheng',assistant:'孟晟',assistantEn:'Sheng Meng',label,labelEn,courseId:'algebra-i',chapter,section,sections,sectionPart,topic,topicEn,
   courseManifest,audioRoot,rosterLocalOnly,manifest:pagesManifest,
-  narration:{manifest:narrationManifest,language:'zh',synthetic:true,defaultPlaybackRate:1,label:VOICE_LABEL,voices:[{id:'zzl',label:VOICE_LABEL,manifest:narrationManifest}]},
+  narration:{manifest:narrationManifest,language:'zh',synthetic:true,defaultPlaybackRate:1,label:VOICE_LABEL,voices:[{id:'zl',label:VOICE_LABEL,manifest:narrationManifest}]},
   url:'./sylow-f-classroom.html?course='+id,sourceLabel:'课件、逐行讲稿与课堂任务',courseURL:COURSE_URL+'?view=lesson&section='+sections[0]};
 }
 function sylowProgram(id,label,labelEn){
- const upper=id==='sylow-theorems',suffix=upper?'-abelian-v1':'',version='?v=neutral-theorems-20261019',audioRoot='./assets/audio/courses/zzl-c-20261019/'+id+'/';
+ const upper=id==='sylow-theorems',suffix=upper?'-abelian-v1':'',version='?v=zl-name-20261024',audioRoot='./assets/audio/courses/zl-c-20261019/'+id+'/';
  return program({id,label,labelEn,chapter:2,section:'2.6',sectionPart:upper?'上':'下',topic:upper?'§2.6 上 · 西罗三大定理':'§2.6 下 · 西罗定理的应用',topicEn:upper?'§2.6 A · Sylow theorems':'§2.6 B · Applications of Sylow theorems',
-  courseManifest:'./assets/chalk/zzl-c-20261019/'+id+suffix+'.json'+version,pagesManifest:'./assets/chalk/zzl-c-20261019/'+id+suffix+'-pages.json'+version,narrationManifest:audioRoot+'narration'+suffix+'.json'+version,audioRoot});
+  courseManifest:'./assets/chalk/zl-c-20261019/'+id+suffix+'.json'+version,pagesManifest:'./assets/chalk/zl-c-20261019/'+id+suffix+'-pages.json'+version,narrationManifest:audioRoot+'narration'+suffix+'.json'+version,audioRoot});
 }
 function ringsProgram(id,label,labelEn,sections){
- const section=sections.join('—'),version='?v=rings-20261022',chalk='./assets/chalk/rings-20261022/'+id,audioRoot='./assets/audio/courses/rings-20261022/'+id+'/';
+ const section=sections.join('—'),version='?v=zl-name-20261024',chalk='./assets/chalk/rings-20261022/'+id,audioRoot='./assets/audio/courses/rings-20261022/'+id+'/';
  return program({id,label,labelEn,chapter:3,section,sections,rosterLocalOnly:true,topic:'§'+section+' · '+label,topicEn:'§'+section+' · '+labelEn,courseManifest:chalk+'.json'+version,pagesManifest:chalk+'-pages.json'+version,narrationManifest:audioRoot+'narration.json'+version,audioRoot});
 }
 export const CLASSROOM_PROGRAMS=[
