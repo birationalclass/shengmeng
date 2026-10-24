@@ -1,0 +1,448 @@
+
+===== Linear.IntegerGradedEndZero =====
+module
+public import Linear.CoextensionHomInjective
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.Algebra.Algebra.Subalgebra.Basic
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 100000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+variable {K S M : Type*} [Field K] [CommRing S] [IsDomain S] [Algebra K S]
+variable [AddCommGroup M] [Module S M] [Module K M] [IsScalarTower K S M]
+variable [SMulCommClass S K M]
+/-- Actual degree-zero endomorphisms form the original scalar subalgebra.
+Only preservation of the supplied ACTUAL pieces is imposed. -/
+def integerGradedEndZero (D : ℤ → Submodule K M) : Subalgebra K (Module.End S M) where
+  carrier := {f | ∀ j x,x ∈ D j → f x ∈ D j}
+  zero_mem' := by intro j x hx;exact (D j).zero_mem
+  one_mem' := by intro j x hx;exact hx
+  add_mem' := by intro f g hf hg j x hx;exact (D j).add_mem (hf j x hx) (hg j x hx)
+  mul_mem' := by intro f g hf hg j x hx;exact hf j (g x) (hg j x hx)
+  algebraMap_mem' := by intro k j x hx;change k • x ∈ D j;exact (D j).smul_mem k hx
+/-- Every nonzero endomorphism of an ACTUAL domain-embedded module is
+injective. Reuse the existing proved rank-one map theorem,not a new rank
+or freeness hypothesis. -/
+theorem embeddedDomainModule_nonzero_end_injective
+    (e : M →ₗ[S] S) (he : Function.Injective e)
+    (f : Module.End S M) (hf : f ≠ 0) : Function.Injective f := by
+  have hcomp : e.comp f ≠ 0 := by
+    intro h
+    apply hf
+    ext x
+    apply he
+    have h' := congrArg (fun g : M →ₗ[S] S => g x) h
+    simpa only [LinearMap.comp_apply,LinearMap.zero_apply,map_zero] using h'
+  have hi := embeddedDomainModule_nonzero_map_injective e he (e.comp f) hcomp
+  intro x y hxy
+  exact hi (congrArg e hxy)
+/-- Degree-zero endomorphisms of the SAME embedded module have no zero
+divisors. Finite dimensionality and algebraic closedness are NOT inputs. -/
+theorem integerGradedEndZero_noZeroDivisors
+    (D : ℤ → Submodule K M) (e : M →ₗ[S] S) (he : Function.Injective e) :
+    NoZeroDivisors (integerGradedEndZero (S:=S) D) := by
+  constructor
+  intro f g hfg
+  by_cases hf : f=0
+  · exact Or.inl hf
+  · right
+    have hf' : f.1 ≠ 0 := fun h => hf (Subtype.ext h)
+    have hi := embeddedDomainModule_nonzero_end_injective e he f.1 hf'
+    apply Subtype.ext
+    ext x
+    apply hi
+    have h := congrArg (fun a : integerGradedEndZero (S:=S) D => a.1 x) hfg
+    change f.1 (g.1 x)=0 at h
+    change f.1 (g.1 x)=f.1 0
+    rw [map_zero]
+    exact h
+end LinearStudy
+
+===== Linear.CoextensionDegreeZeroEndEvaluation =====
+module
+public import Linear.IntegerGradedEndZero
+public import Linear.NativeCoextensionSpecifiedEvaluationTrace
+public import Linear.IntegerGradedHomPieceFinite
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 100000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+namespace LinearStudy
+open CategoryTheory
+attribute [local instance] MvPolynomial.gradedAlgebra
+variable {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+variable [CommRing S] [IsDomain S] [Algebra K S] [Algebra (MvPolynomial σ K) S]
+variable [IsScalarTower K (MvPolynomial σ K) S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+variable [IsNoetherianRing S] [Algebra.FiniteType K S]
+variable [Module.Finite (MvPolynomial σ K) S]
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+  coextensionGradedDecomposition coextensionOriginalBaseScalarTower
+  coextensionTraceBaseSourceTower coextensionTraceFieldSourceTower coextensionTraceFiniteBase
+/-- Evaluate ACTUAL degree-zero upper-linear endomorphisms of the SAME
+coextension at the ORIGINAL eval-at-one functional. The target is the SAME
+original homogeneous Hom piece,not a newly transported scalar structure. -/
+def coextensionDegreeZeroEndEvaluation :
+    integerGradedEndZero (S:=S) (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) →ₗ[K]
+      integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K)
+        (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) 0 where
+  toFun f := ⟨(coextensionOriginalEvaluationAtOne (R:=(MvPolynomial σ K)) (S:=S)).comp
+    (f.1.restrictScalars (MvPolynomial σ K)),by
+      intro j ell hell
+      exact (coextensionOriginalEvaluationAtOne_mem_integerGradedHomPiece
+        (MvPolynomial.homogeneousSubmodule σ K) B) j (f.1 ell) (f.property j ell hell)⟩
+  map_add' f g := by
+    apply Subtype.ext
+    apply LinearMap.ext
+    intro ell
+    rfl
+  map_smul' k f := by
+    apply Subtype.ext
+    apply LinearMap.ext
+    intro ell
+    change coextensionOriginalEvaluationAtOne (R:=(MvPolynomial σ K)) (S:=S) (k • f.1 ell)=
+      k • coextensionOriginalEvaluationAtOne (R:=(MvPolynomial σ K)) (S:=S) (f.1 ell)
+    exact (coextensionOriginalEvaluationAtOne (R:=(MvPolynomial σ K)) (S:=S)).map_smul_of_tower k _
+/-- The ACTUAL coextension adjunction proves injectivity of evaluation:
+its value on s*ell recovers the original upper-linear map at ell and s.
+No scalarity or nondegeneracy is assumed. -/
+theorem coextensionDegreeZeroEndEvaluation_injective :
+    Function.Injective (coextensionDegreeZeroEndEvaluation (σ:=σ) B) := by
+  intro f g h
+  let A := (ModuleCat.restrictCoextendScalarsAdj (algebraMap (MvPolynomial σ K) S)).homEquiv
+    (ModuleCat.of S ((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj
+      (ModuleCat.of (MvPolynomial σ K) (MvPolynomial σ K))))
+    (ModuleCat.of (MvPolynomial σ K) (MvPolynomial σ K))
+  have hh : A.symm (ModuleCat.ofHom f.1)=A.symm (ModuleCat.ofHom g.1) := by
+    apply ModuleCat.hom_ext
+    apply LinearMap.ext
+    intro ell
+    exact congrArg (fun phi => phi.1 ell) h
+  have he := A.symm.injective hh
+  apply Subtype.ext
+  exact congrArg ModuleCat.Hom.hom he
+/-- Finite dimensionality of the ACTUAL degree-zero endomorphism algebra
+is DERIVED from the existing homogeneous-Hom finiteness theorem and the
+original injective evaluation. It is not a supplied rigidity premise. -/
+theorem coextensionDegreeZeroEnd_finite :
+    Module.Finite K (integerGradedEndZero (S:=S)
+      (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)) := by
+  let V : Type := integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K)
+    (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) 0
+  letI : Module.Finite K V := polynomialIntegerGradedHomPiece_finite
+    (K:=K) (σ:=σ) (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) 0
+  letI : IsNoetherian K V := by
+    convert! (isNoetherian_of_isNoetherianRing_of_finite K V) using 1
+  exact Module.Finite.of_injective (R:=K) (S:=K) (coextensionDegreeZeroEndEvaluation (σ:=σ) B)
+    (coextensionDegreeZeroEndEvaluation_injective (σ:=σ) B)
+end LinearStudy
+
+===== Linear.CoextensionDegreeZeroRigidity =====
+module
+public import Linear.CoextensionDegreeZeroEndEvaluation
+public import Linear.OriginalGradedCoextensionAdjointZero
+public import Linear.FiniteDomainDualNonzero
+public import Linear.NativeCoextensionSpecifiedEvaluationTrace
+public import Linear.IntegerGradedHomPieceFinite
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 100000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+namespace LinearStudy
+open CategoryTheory
+attribute [local instance] MvPolynomial.gradedAlgebra
+variable {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+variable [CommRing S] [IsDomain S] [Algebra K S] [Algebra (MvPolynomial σ K) S]
+variable [IsScalarTower K (MvPolynomial σ K) S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+variable [IsNoetherianRing S] [Algebra.FiniteType K S]
+variable [Module.Finite (MvPolynomial σ K) S]
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+  coextensionGradedDecomposition coextensionOriginalBaseScalarTower
+  coextensionTraceBaseSourceTower coextensionTraceFieldSourceTower coextensionTraceFiniteBase
+/-- Surjectivity is the ALREADY PROVED original graded coextension
+adjunction. No new scalar action or guessed degree projection is used. -/
+theorem coextensionDegreeZeroEndEvaluation_surjective :
+    Function.Surjective (coextensionDegreeZeroEndEvaluation (σ:=σ) B) := by
+  intro phi
+  let f := coextensionOriginalAdjoint (S:=S) phi.1
+  have hf := coextensionOriginalAdjoint_degreeZero (MvPolynomial.homogeneousSubmodule σ K)
+    B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+    (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+    0 rfl phi
+  refine ⟨⟨f,hf⟩,?_⟩
+  apply Subtype.ext
+  apply LinearMap.ext
+  intro ell
+  exact coextensionOriginalEvaluationAtOne_adjoint phi.1 ell
+/-- The ACTUAL degree-zero endomorphism algebra is scalar over the
+original algebraically closed field. Its finiteness,domain property and
+nontriviality are DERIVED from the original faithful finite normalization.
+No global CM,S2,free-dual or rigidity hypothesis is added. -/
+theorem coextensionDegreeZeroEnd_exists_scalar
+    [IsAlgClosed K] [FaithfulSMul (MvPolynomial σ K) S]
+    (f : integerGradedEndZero (S:=S)
+      (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)) :
+    ∃ a : K,f=algebraMap K _ a := by
+  let A := integerGradedEndZero (S:=S)
+    (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+  obtain ⟨e,he⟩ := coextensionDual_exists_integral_embedding (R:=MvPolynomial σ K) (S:=S)
+  letI : NoZeroDivisors A := integerGradedEndZero_noZeroDivisors
+    (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) e he
+  obtain ⟨ell,hell⟩ := coextensionDual_exists_nonzero_at_one (R:=MvPolynomial σ K) (S:=S)
+  letI : Nontrivial A := ⟨⟨1,0,by
+    intro h
+    have hv := congrArg (fun g : A => g.1 ell (1:S)) h
+    exact hell hv⟩⟩
+  letI : IsDomain A := NoZeroDivisors.to_isDomain A
+  letI : Module.Finite K A := coextensionDegreeZeroEnd_finite (σ:=σ) B
+  obtain ⟨a,ha⟩ := (IsAlgClosed.algebraMap_bijective_of_isIntegral (k:=K) (K:=A)).2 f
+  exact ⟨a,ha.symm⟩
+/-- The ORIGINAL degree-zero Hom is spanned by the SAME eval-at-one
+functional. This is a consequence of actual adjunction and proven scalar
+rigidity,not an assumed duality or trace comparison. -/
+theorem coextensionDegreeZeroHom_exists_scalar_evaluation
+    [IsAlgClosed K] [FaithfulSMul (MvPolynomial σ K) S]
+    (phi : integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K)
+      (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) 0) :
+    ∃ a : K,∀ ell,phi.1 ell=a • coextensionOriginalEvaluationAtOne (R:=MvPolynomial σ K) (S:=S) ell := by
+  obtain ⟨f,hf⟩ := coextensionDegreeZeroEndEvaluation_surjective (σ:=σ) B phi
+  obtain ⟨a,ha⟩ := coextensionDegreeZeroEnd_exists_scalar (σ:=σ) B f
+  refine ⟨a,?_⟩
+  intro ell
+  rw [← hf,ha]
+  change coextensionOriginalEvaluationAtOne (R:=MvPolynomial σ K) (S:=S) (a • ell)=
+    a • coextensionOriginalEvaluationAtOne (R:=MvPolynomial σ K) (S:=S) ell
+  exact (coextensionOriginalEvaluationAtOne (R:=MvPolynomial σ K) (S:=S)).map_smul_of_tower a ell
+end LinearStudy
+
+===== Linear.NativeCoextensionSpecifiedTraceProperties =====
+module
+public import Linear.NativeCoextensionSpecifiedEvaluationTrace
+public import Linear.FiniteDomainDualNonzero
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+attribute [local instance] MvPolynomial.gradedAlgebra
+variable {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+variable [CommRing S] [Algebra K S] [Algebra (MvPolynomial σ K) S]
+variable [IsScalarTower K (MvPolynomial σ K) S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+variable [IsDomain S] [IsNoetherianRing S] [Algebra.FiniteType K S]
+variable [Module.Finite (MvPolynomial σ K) S]
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+  coextensionGradedDecomposition coextensionOriginalBaseScalarTower
+attribute [local instance] coextensionTraceBaseSourceTower coextensionTraceFieldSourceTower
+  coextensionTraceFiniteBase coextensionTraceFiniteSource coextensionTraceTorsionFree
+  schemeModuleActualCohomologyAddCommGroup
+attribute [local irreducible] nativeFiniteNormalization_specifiedActualTopHomDualIso
+/-- In a FAITHFUL finite domain normalization,the ORIGINAL degree-zero
+functional ell↦ell(1) is nonzero,using the existing fraction-field proof. -/
+theorem nativeCoextensionSpecifiedTopEvaluationHom_ne_zero
+    [FaithfulSMul (MvPolynomial σ K) S] :
+    nativeCoextensionSpecifiedTopEvaluationHom (σ:=σ) B ≠ 0 := by
+  intro hz
+  obtain ⟨ell,hell⟩ := coextensionDual_exists_nonzero_at_one
+    (R:=MvPolynomial σ K) (S:=S)
+  have h := congrArg (fun phi => phi.1 ell) hz
+  exact hell h
+/-- The model trace actually takes value ONE for a faithful normalization.
+Neither nonzero trace nor a normalization certificate is an input. -/
+theorem nativeCoextensionSpecifiedTopEvaluationTrace_exists_one
+    [FaithfulSMul (MvPolynomial σ K) S]
+    {κ : Type} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+    (q : ℕ) (hcard : Fintype.card σ=q+2) :
+    ∃ x,nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard x=1 := by
+  let V : Type := integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K) (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+    (-(Fintype.card σ:ℤ)-(-(Fintype.card σ:ℤ)))
+  let lam : V := nativeCoextensionSpecifiedTopEvaluationHom B
+  have hne : lam ≠ 0 := nativeCoextensionSpecifiedTopEvaluationHom_ne_zero (σ:=σ) B
+  letI : Module.Free K V := by
+    convert! (Module.Free.of_divisionRing K V) using 1
+  obtain ⟨f,hf⟩ := Module.Projective.exists_dual_eq_one K (V:=V) hne
+  let I := nativeFiniteNormalization_specifiedActualTopHomDualIso B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+    (coextensionNormalizationBaseGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+    (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) c hc hgenC q hcard
+      (-(Fintype.card σ:ℤ))
+  let H := schemeModuleActualCohomology (Proj B)
+    (nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+      (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+      (-(Fintype.card σ:ℤ))) (q+1)
+  let e : H ≃+ Module.Dual K V := actualAbelianIsoAddEquiv (K:=K) (H:=H) (V:=V) I
+  obtain ⟨x,hx⟩ := e.surjective f
+  refine ⟨x,?_⟩
+  change e x lam=1
+  rw [hx]
+  exact hf
+end LinearStudy
+
+===== Linear.NativeCoextensionSpecifiedTraceInjective =====
+module
+public import Linear.NativeCoextensionSpecifiedEvaluationTrace
+public import Linear.CoextensionDegreeZeroRigidity
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+attribute [local instance] MvPolynomial.gradedAlgebra
+variable {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+variable [CommRing S] [Algebra K S] [Algebra (MvPolynomial σ K) S]
+variable [IsScalarTower K (MvPolynomial σ K) S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+variable [IsDomain S] [IsNoetherianRing S] [Algebra.FiniteType K S]
+variable [Module.Finite (MvPolynomial σ K) S]
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+  coextensionGradedDecomposition coextensionOriginalBaseScalarTower
+attribute [local instance] coextensionTraceBaseSourceTower coextensionTraceFieldSourceTower
+  coextensionTraceFiniteBase coextensionTraceFiniteSource coextensionTraceTorsionFree
+  schemeModuleActualCohomologyAddCommGroup
+attribute [local irreducible] nativeFiniteNormalization_specifiedActualTopHomDualIso
+/-- The SAME actual model trace is injective for the ORIGINAL faithful
+finite domain normalization over an algebraically closed field. Actual
+Hom0 is proved scalar via its original coextension adjunction. No global
+CM,S2,locally free canonical module or proper-trace comparison is assumed. -/
+theorem nativeCoextensionSpecifiedTopEvaluationTrace_injective
+    [IsAlgClosed K] [FaithfulSMul (MvPolynomial σ K) S]
+    {κ : Type} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+    (q : ℕ) (hcard : Fintype.card σ=q+2) :
+    Function.Injective (nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard) := by
+  let V : Type := integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K)
+    (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+    (-(Fintype.card σ:ℤ)-(-(Fintype.card σ:ℤ)))
+  let H := schemeModuleActualCohomology (Proj B)
+    (nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+      (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+      (-(Fintype.card σ:ℤ))) (q+1)
+  let I := nativeFiniteNormalization_specifiedActualTopHomDualIso B
+    (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+    (coextensionNormalizationBaseGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+    (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+    c hc hgenC q hcard (-(Fintype.card σ:ℤ))
+  let e : H ≃+ Module.Dual K V := actualAbelianIsoAddEquiv (K:=K) (H:=H) (V:=V) I
+  let lam : V := nativeCoextensionSpecifiedTopEvaluationHom B
+  intro x y hxy
+  apply e.injective
+  apply LinearMap.ext
+  intro phi
+  let phi0 : integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K)
+      (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) 0 :=
+    ⟨phi.1,by simpa only [sub_self] using phi.property⟩
+  obtain ⟨a,ha⟩ := coextensionDegreeZeroHom_exists_scalar_evaluation (σ:=σ) B phi0
+  have hphi : phi=a • lam := by
+    apply Subtype.ext
+    apply LinearMap.ext
+    intro ell
+    exact ha ell
+  rw [hphi,map_smul,map_smul]
+  change e x lam=e y lam at hxy
+  exact congrArg (fun z : K => a • z) hxy
+end LinearStudy
+
+===== Linear.NativeCoextensionSpecifiedTraceScalarRigidity =====
+module
+public import Linear.NativeCoextensionSpecifiedEvaluationTrace
+public import Linear.NativeCoextensionSpecifiedTraceInjective
+public import Linear.NativeCoextensionSpecifiedTraceProperties
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+attribute [local instance] MvPolynomial.gradedAlgebra
+variable {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ]
+variable [CommRing S] [Algebra K S] [Algebra (MvPolynomial σ K) S]
+variable [IsScalarTower K (MvPolynomial σ K) S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B]
+variable [IsDomain S] [IsNoetherianRing S] [Algebra.FiniteType K S]
+variable [Module.Finite (MvPolynomial σ K) S]
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+  coextensionGradedDecomposition coextensionOriginalBaseScalarTower
+attribute [local instance] coextensionTraceBaseSourceTower coextensionTraceFieldSourceTower
+  coextensionTraceFiniteBase coextensionTraceFiniteSource coextensionTraceTorsionFree
+  schemeModuleActualCohomologyAddCommGroup
+attribute [local irreducible] nativeFiniteNormalization_specifiedActualTopHomDualIso
+variable [IsAlgClosed K] [FaithfulSMul (MvPolynomial σ K) S]
+variable {κ : Type} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+variable (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+variable (q : ℕ) (hcard : Fintype.card σ=q+2)
+/-- The SAME trace is linear for the ORIGINAL coefficient action on
+actual H. Reuse the already proved original scalar comparison;no scalar
+action is transported through a chosen equivalence. -/
+theorem nativeCoextensionSpecifiedTopEvaluationTrace_originalScalar
+    (a : K) (x : schemeModuleActualCohomology (Proj B) (nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) (-(Fintype.card σ:ℤ))) (q+1)) :
+    nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map (originalGlobalModuleScalar ((Proj.toSpecZero B ≫ Spec.map (CommRingCat.ofHom (algebraMap K (B 0)))).appTop ((Scheme.ΓSpecIso (CommRingCat.of K)).inv a)) (nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) (-(Fintype.card σ:ℤ))))) (q+1) x) = a * nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard x := by
+  let V := integerGradedHomPiece (MvPolynomial.homogeneousSubmodule σ K)
+    (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+    (-(Fintype.card σ:ℤ)-(-(Fintype.card σ:ℤ)))
+  have hs := nativeFiniteNormalization_specifiedActualTopHomDualIso_originalScalar B
+    (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B)
+    (coextensionNormalizationBaseGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+    (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B)
+    c hc hgenC q hcard (-(Fintype.card σ:ℤ)) a x
+  exact congrArg (fun f : Module.Dual K V => f (nativeCoextensionSpecifiedTopEvaluationHom B)) hs
+/-- The SAME trace takes EVERY original field value on actual H;unit
+normalization and original scalar linearity are proved,not supplied. -/
+theorem nativeCoextensionSpecifiedTopEvaluationTrace_surjective :
+    Function.Surjective (nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard) := by
+  obtain ⟨x,hx⟩ := nativeCoextensionSpecifiedTopEvaluationTrace_exists_one B c hc hgenC q hcard
+  intro a
+  refine ⟨CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map (originalGlobalModuleScalar ((Proj.toSpecZero B ≫ Spec.map (CommRingCat.ofHom (algebraMap K (B 0)))).appTop ((Scheme.ΓSpecIso (CommRingCat.of K)).inv a)) (nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) (-(Fintype.card σ:ℤ))))) (q+1) x,?_⟩
+  rw [nativeCoextensionSpecifiedTopEvaluationTrace_originalScalar B c hc hgenC q hcard,hx,mul_one]
+/-- The ORIGINAL actual top-H model trace is bijective. In particular
+its trace space is one dimensional over the original coefficient field;
+this does not identify a geometric proper trace or canonical coefficient. -/
+theorem nativeCoextensionSpecifiedTopEvaluationTrace_bijective :
+    Function.Bijective (nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard) :=
+  ⟨nativeCoextensionSpecifiedTopEvaluationTrace_injective B c hc hgenC q hcard,
+    nativeCoextensionSpecifiedTopEvaluationTrace_surjective B c hc hgenC q hcard⟩
+/-- EVERY nonzero functional on the SAME actual H,linear for ORIGINAL
+coefficient multiplication,is a NONZERO scalar multiple of the SAME
+model trace. Application to a geometric proper trace still requires its
+actual coefficient identification and original scalar compatibility. -/
+theorem nativeCoextensionSpecifiedTopEvaluationTrace_nonzero_scalar_transfer
+    (ell : (schemeModuleActualCohomology (Proj B) (nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) (-(Fintype.card σ:ℤ))) (q+1)) →+ K)
+    (hlinear : ∀ a : K,∀ x,ell (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map (originalGlobalModuleScalar ((Proj.toSpecZero B ≫ Spec.map (CommRingCat.ofHom (algebraMap K (B 0)))).appTop ((Scheme.ΓSpecIso (CommRingCat.of K)).inv a)) (nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) (-(Fintype.card σ:ℤ))))) (q+1) x)=a * ell x)
+    (hne : ell ≠ 0) :
+    ∃ a : K,a ≠ 0 ∧ ∀ x,ell x=a * nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard x := by
+  obtain ⟨x0,hx0⟩ := nativeCoextensionSpecifiedTopEvaluationTrace_exists_one B c hc hgenC q hcard
+  have form (x) : ell x=ell x0 * nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard x := by
+    have hx : x=CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map (originalGlobalModuleScalar ((Proj.toSpecZero B ≫ Spec.map (CommRingCat.ofHom (algebraMap K (B 0)))).appTop ((Scheme.ΓSpecIso (CommRingCat.of K)).inv (nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard x))) (nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) (-(Fintype.card σ:ℤ))))) (q+1) x0 := by
+      apply nativeCoextensionSpecifiedTopEvaluationTrace_injective B c hc hgenC q hcard
+      rw [nativeCoextensionSpecifiedTopEvaluationTrace_originalScalar B c hc hgenC q hcard,hx0,mul_one]
+    calc
+      ell x=ell (CategoryTheory.Sheaf.H.map ((schemeModuleToActualAbelianSheaf (Proj B)).map (originalGlobalModuleScalar ((Proj.toSpecZero B ≫ Spec.map (CommRingCat.ofHom (algebraMap K (B 0)))).appTop ((Scheme.ΓSpecIso (CommRingCat.of K)).inv (nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard x))) (nativeProjectiveModuleSheaf B (coextensionGradedPiece (MvPolynomial.homogeneousSubmodule σ K) B) (coextensionProjectiveGradeCompatibility (MvPolynomial.homogeneousSubmodule σ K) B) (-(Fintype.card σ:ℤ))))) (q+1) x0) := congrArg ell hx
+      _=nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard x * ell x0 := hlinear _ _
+      _=ell x0 * nativeCoextensionSpecifiedTopEvaluationTrace B c hc hgenC q hcard x := mul_comm _ _
+  refine ⟨ell x0,?_,form⟩
+  intro hz
+  apply hne
+  ext x
+  rw [form,hz,zero_mul]
+  rfl
+end LinearStudy

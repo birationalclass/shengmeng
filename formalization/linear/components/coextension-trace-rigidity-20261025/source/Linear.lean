@@ -1,0 +1,7 @@
+module
+public import Linear.CoextensionDegreeZeroEndEvaluation
+public import Linear.CoextensionDegreeZeroRigidity
+public import Linear.IntegerGradedEndZero
+public import Linear.NativeCoextensionSpecifiedTraceInjective
+public import Linear.NativeCoextensionSpecifiedTraceProperties
+public import Linear.NativeCoextensionSpecifiedTraceScalarRigidity
