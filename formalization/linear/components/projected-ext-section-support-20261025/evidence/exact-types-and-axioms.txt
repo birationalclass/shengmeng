@@ -1,0 +1,119 @@
+@LinearStudy.schemeModuleImage_open_isZero_of_map_zero : ∀ {X : AlgebraicGeometry.Scheme} {A B : X.Modules} (b : A ⟶ B)
+  (V : X.Opens),
+  (AlgebraicGeometry.Scheme.Modules.restrictFunctor V.ι).map b = 0 →
+    CategoryTheory.Limits.IsZero ((CategoryTheory.Abelian.image b).restrict V.ι)
+'LinearStudy.schemeModuleImage_open_isZero_of_map_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemePushforwardOpenProjector_restrict_zero : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens) (V : X.Opens),
+  ((TopologicalSpace.Opens.map f.base).obj V ≤
+      have this := { carrier := (↑U)ᶜ, is_open' := ⋯ };
+      this) →
+    (AlgebraicGeometry.Scheme.Modules.restrictFunctor V.ι).map
+        (LinearStudy.discreteSchemePushforwardOpenProjector f L U) =
+      0
+'LinearStudy.discreteSchemePushforwardOpenProjector_restrict_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.discreteSchemePushforwardOpenProjector_image_restrict_isZero : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens) (V : X.Opens),
+  ((TopologicalSpace.Opens.map f.base).obj V ≤
+      have this := { carrier := (↑U)ᶜ, is_open' := ⋯ };
+      this) →
+    CategoryTheory.Limits.IsZero
+      ((CategoryTheory.Abelian.image (LinearStudy.discreteSchemePushforwardOpenProjector f L U)).restrict V.ι)
+'LinearStudy.discreteSchemePushforwardOpenProjector_image_restrict_isZero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.discreteSchemePushforwardOpenProjector_image_internalExt_restrict_isZero : ∀
+  {D X : AlgebraicGeometry.Scheme} [inst : DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens) (V : X.Opens),
+  ((TopologicalSpace.Opens.map f.base).obj V ≤
+      have this := { carrier := (↑U)ᶜ, is_open' := ⋯ };
+      this) →
+    ∀ (N : X.Modules) (q : ℕ),
+      CategoryTheory.Limits.IsZero
+        ((LinearStudy.schemeModuleInternalExt
+              (CategoryTheory.Abelian.image (LinearStudy.discreteSchemePushforwardOpenProjector f L U)) N q).restrict
+          V.ι)
+'LinearStudy.discreteSchemePushforwardOpenProjector_image_internalExt_restrict_isZero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleGlobalToInternalExtSections_precompose_restrict_zero : ∀ {X : AlgebraicGeometry.Scheme}
+  {A B W : X.Modules} (b : A ⟶ B) (V : X.Opens),
+  (AlgebraicGeometry.Scheme.Modules.restrictFunctor V.ι).map b = 0 →
+    ∀ (n : ℕ) (z : CategoryTheory.Abelian.Ext B W (n + 1)),
+      (CategoryTheory.ConcreteCategory.hom
+            ((LinearStudy.schemeModuleInternalExt A W (n + 1)).presheaf.map (TopologicalSpace.Opens.leTop V).op))
+          ((LinearStudy.schemeModuleGlobalToInternalExtSections A W n) ((CategoryTheory.Abelian.Ext.mk₀ b).comp z ⋯)) =
+        0
+'LinearStudy.schemeModuleGlobalToInternalExtSections_precompose_restrict_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.discreteSchemeProjectedExtClass_internal_section_restrict_zero : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens) (V : X.Opens),
+  ((TopologicalSpace.Opens.map f.base).obj V ≤
+      have this := { carrier := (↑U)ᶜ, is_open' := ⋯ };
+      this) →
+    ∀ (W : X.Modules) (n : ℕ)
+      (z : CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W (n + 1)),
+      (CategoryTheory.ConcreteCategory.hom
+            ((LinearStudy.schemeModuleInternalExt ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W
+                    (n + 1)).presheaf.map
+              (TopologicalSpace.Opens.leTop V).op))
+          ((LinearStudy.schemeModuleGlobalToInternalExtSections ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L)
+              W n)
+            (LinearStudy.discreteSchemeProjectedExtClass f L U z)) =
+        0
+'LinearStudy.discreteSchemeProjectedExtClass_internal_section_restrict_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.discreteSchemePointProjectedExtClass_internal_section_vanish_away : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (x : ↥D) (V : X.Opens),
+  f x ∉ V →
+    ∀ (W : X.Modules) (n : ℕ)
+      (z : CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W (n + 1)),
+      (CategoryTheory.ConcreteCategory.hom
+            ((LinearStudy.schemeModuleInternalExt ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W
+                    (n + 1)).presheaf.map
+              (TopologicalSpace.Opens.leTop V).op))
+          ((LinearStudy.schemeModuleGlobalToInternalExtSections ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L)
+              W n)
+            (LinearStudy.discreteSchemePointProjectedExtClass f L x z)) =
+        0
+'LinearStudy.discreteSchemePointProjectedExtClass_internal_section_vanish_away' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleGlobalToInternalExtSections.{u} : {X : AlgebraicGeometry.Scheme} →
+  (P N : X.Modules) →
+    (n : ℕ) →
+      CategoryTheory.Abelian.Ext P N (n + 1) →+
+        ↑((LinearStudy.schemeModuleInternalExt P N (n + 1)).presheaf.obj (Opposite.op ⊤)) :=
+fun {X : AlgebraicGeometry.Scheme} (P N : X.Modules) (n : ℕ) =>
+  LinearStudy.schemeModuleGlobalToInternalExtSectionsViaResolution (CategoryTheory.injectiveResolution N) P n
+'LinearStudy.schemeModuleGlobalToInternalExtSections' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.discreteSchemeProjectedExtClass.{u} : {D X : AlgebraicGeometry.Scheme} →
+  [DiscreteTopology ↥D] →
+    (f : D ⟶ X) →
+      (L : D.Modules) →
+        D.Opens →
+          {W : X.Modules} →
+            {r : ℕ} →
+              CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r →
+                CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r :=
+fun {D X : AlgebraicGeometry.Scheme} [DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens) {W : X.Modules}
+    {r : ℕ} (z : CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r) =>
+  (CategoryTheory.Abelian.Ext.mk₀ (LinearStudy.discreteSchemePushforwardOpenProjector f L U)).comp z ⋯
+'LinearStudy.discreteSchemeProjectedExtClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleImage_open_isZero_of_map_zero:true
+KINDCHECK:LinearStudy.schemeModuleImage_open_isZero_of_map_zero:theorem
+ROLECHECK:LinearStudy.discreteSchemePushforwardOpenProjector_restrict_zero:true
+KINDCHECK:LinearStudy.discreteSchemePushforwardOpenProjector_restrict_zero:theorem
+ROLECHECK:LinearStudy.discreteSchemePushforwardOpenProjector_image_restrict_isZero:true
+KINDCHECK:LinearStudy.discreteSchemePushforwardOpenProjector_image_restrict_isZero:theorem
+ROLECHECK:LinearStudy.discreteSchemePushforwardOpenProjector_image_internalExt_restrict_isZero:true
+KINDCHECK:LinearStudy.discreteSchemePushforwardOpenProjector_image_internalExt_restrict_isZero:theorem
+ROLECHECK:LinearStudy.schemeModuleGlobalToInternalExtSections_precompose_restrict_zero:true
+KINDCHECK:LinearStudy.schemeModuleGlobalToInternalExtSections_precompose_restrict_zero:theorem
+ROLECHECK:LinearStudy.discreteSchemeProjectedExtClass_internal_section_restrict_zero:true
+KINDCHECK:LinearStudy.discreteSchemeProjectedExtClass_internal_section_restrict_zero:theorem
+ROLECHECK:LinearStudy.discreteSchemePointProjectedExtClass_internal_section_vanish_away:true
+KINDCHECK:LinearStudy.discreteSchemePointProjectedExtClass_internal_section_vanish_away:theorem
