@@ -5,12 +5,12 @@ import {RoomEnvironment} from '../vendor/RoomEnvironment.js';
 import {OrbitControls} from '../vendor/OrbitControls.js';
 import {profile} from './stroke-volume.js';
 import {catalog,materialPresets,classicMaterialPresets,materialVersions} from './catalog.js';
-import {createVolume,updateVolume} from './surface.js';
+import {createVolume,updateVolume} from './surface.js?v=14';
 import {zipStore,modelFiles} from './export-format.js';
 import {createTextGlyph,cleanText} from './text-engine.js';
-import {prepareSpatialModel,constructionCurves} from './spatial-model.js';
+import {prepareSpatialModel,constructionCurves} from './spatial-model.js?v=14';
 import {sampleRailSection} from './yang-volume.js';
-import {writingProgress,writingPhase} from './brush-gesture.js';
+import {writingProgress,writingPhase} from './brush-gesture.js?v=14';
 import {windReferencePreset,windReferencePresetV8} from './wind-reference.js';
 import {createReferenceEnvironment} from './reference-environment.js';
 
@@ -92,6 +92,7 @@ function shapeSummary(){
  const oldGuang=settings.model==='legacy'&&glyph.text.includes('广');
  $('shape-summary').textContent=settings.model==='legacy'?(oldGuang?'旧广 · 通用自动造型\n相同材质、镜头与书写进度':'初始造型 · 保持当前材质、视角和进度'):settings.model==='reference-v8'?'v8 · 上一轮曲面\n当前材质、视角与进度保持':settings.model==='spatial'&&modelReport.transfers?.length?'v11 · 第二笔回卷接第三笔\n右下铺面 → 内缘上挑 → 移锋落笔':settings.model==='reference-v10'?'v10 · 内撇接虫\n保留上一版，供同角度对照':settings.model==='reference-v9'?'v9 · 分段接笔\n各段独立完成，再接下一段':modelReport.continuousRuns?.length?'v10 · 一条曲面连续生长\n同一前沿翻转 · 回锋不重新起笔':modelReport.strokeLinks?.some(l=>l.type==='temporal-gesture')?'虫左侧越过外撇\n单侧铺锋与前后穿插':modelReport.strokeLinks?.length?'收锋回带，再落锋入笔':manual?`逐笔重塑 · ${manual} 笔宽面与圆边\n保留手工铺锋和截面翻转`:`空间塑形 · ${modelReport.regions} 处交叠区域\n${glyph.modeling?.automatic?'含通用自动字形，未逐笔精修':'保留已有逐笔字势'}`;
  $('model-v10-option').hidden=!glyph.referenceV10Strokes;$('trajectory-row').hidden=!penTransfers.length;$('model-v8-option').hidden=!glyph.referenceV8Strokes;$('model-v9-option').hidden=!glyph.referenceV8Strokes;
+ if(modelReport.brushPlan?.inferredStrokes)$('shape-summary').textContent+='\n动态笔锋 · '+modelReport.brushPlan.inferredStrokes+' 笔推断运笔';
  $('stage-note').textContent=glyph.subtitle+' · '+(oldGuang?'旧广为通用自动造型':glyph.modeling?.label||'逐笔设计');
  $('model-info').textContent=(glyph.charSources?.length>1?glyph.charSources.length+' 字 · ':'')+items.length+' 段 · '+(modelReport.continuousRuns?.length?'连续生长':modelReport.sectionJoins?.length?'分段相接':modelReport.strokeLinks?.length?'连续笔势':settings.model==='spatial'?'空间塑形':'上一版造型');
  $('connection-row').hidden=!items.some(item=>item.spec.joinable);
@@ -189,7 +190,7 @@ $('hook-detail').onclick=()=>{
 $('turntable').onclick=()=>{spinning=!spinning;follow=false;controls.autoRotate=spinning;controls.autoRotateSpeed=.75;controls.enableDamping=true;updateButtons();dirty=true;};$('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('stage').requestFullscreen();}catch{notice('当前环境不支持全屏，可用浏览器放大查看。');}};
 for(const id of Object.keys(materialPresets)){const b=document.createElement('button');b.className='preset';b.dataset.preset=id;const swatch=document.createElement('i'),label=document.createElement('span');swatch.setAttribute('aria-hidden','true');b.append(swatch,label);b.onclick=()=>selectMaterial(id);$('presets').append(b);}
 $('materialVersion').onchange=e=>selectMaterial(settings.materialPreset,e.target.value);
-$('writing').onchange=e=>{settings.writing=e.target.value;rebuildSpecs();writeURL();notice(settings.writing==='flow'?'连续曲面生长 · 回锋不断':'原分段显露 · 保留相同的成字造型与镜头');};
+$('writing').onchange=e=>{settings.writing=e.target.value;rebuildSpecs();writeURL();notice(settings.writing==='flow'?'动态运笔 · 铺锋、提按与翻转':'逐段显露 · 相同字形与运镜');};
 $('connection').onchange=e=>{settings.connection=e.target.value;rebuildSpecs();syncUI();writeURL();notice(settings.connection==='linked'?'第二笔回卷 → 第三笔承势 · 单侧铺面':'逐笔查看 · 相同镜头与书写进度');};
 for(const id of ['color','metalness','roughness','clearcoat','anisotropy'])$(id).oninput=e=>{settings[id]=id==='color'?e.target.value:+e.target.value;settings.preset='custom';syncUI();applyMaterial();};$('ridges').oninput=e=>{settings.ridges=+e.target.value;settings.preset='custom';syncUI();dirtySurfaces();};
 for(const id of ['fullness','depth','turn','layering','harmony'])$(id).oninput=e=>{settings[id]=+e.target.value;shapeDirty=true;updateOutputs();};$('explode').oninput=e=>{settings.explode=+e.target.value;updateOutputs();dirty=true;};

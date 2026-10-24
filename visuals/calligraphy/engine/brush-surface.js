@@ -1,7 +1,7 @@
 import * as T from '../vendor/three.module.js';
 import {profile} from './stroke-volume.js';
 import {sampleRailSection} from './yang-volume.js';
-import {brushHead} from './brush-gesture.js';
+import {brushHead} from './brush-gesture.js?v=14';
 
 const cubic2=(a,b,c,d,t)=>{const v=1-t;return [0,1].map(i=>a[i]*v*v*v+3*b[i]*v*v*t+3*c[i]*v*t*t+d[i]*t*t*t);};
 const continuousCaches=new WeakMap();
@@ -79,7 +79,8 @@ export function updateBrushGeometry(g,s,progress=1,writing='flow'){
  if(s.boundaryLoft)return updateBoundaryBrushGeometry(g,s,progress,writing);
  const {L,R}=g.userData,positions=g.attributes.position.array,p=T.MathUtils.clamp(progress,.00001,1);
  sampleRailSection(s,0).center.toArray(positions,0);
- const tip=sampleRailSection(s,p),tipHead=brushHead(s,p,p,writing);tip.center.clone().addScaledVector(tip.d,tipHead.shift*tip.width).toArray(positions,positions.length-3);
+ const anchored=writing==='flow'&&s.gesture?.inferred&&s.gesture.anchor==='a'&&p<.99999;
+ const tip=sampleRailSection(s,p),tipHead=brushHead(s,p,p,writing);(anchored?tip.a:tip.center).clone().addScaledVector(tip.d,tipHead.shift*tip.width).toArray(positions,positions.length-3);
  for(let j=1;j<L;j++){
   const u=p*j/L,q=sampleRailSection(s,u),exponent=2/profile(s.sectionPower||[2.4,2.4],u),flow=brushHead(s,p,u,writing);
   const acrossAxis=q.d.clone().multiplyScalar(Math.cos(flow.roll)).addScaledVector(q.n,Math.sin(flow.roll)),normal=q.n.clone().multiplyScalar(Math.cos(flow.roll)).addScaledVector(q.d,-Math.sin(flow.roll));
@@ -88,7 +89,7 @@ export function updateBrushGeometry(g,s,progress=1,writing='flow'){
    const theta=k/R*Math.PI*2,c=Math.cos(theta),v=Math.sin(theta),x=Math.sign(c)*Math.abs(c)**exponent,y=Math.sign(v)*Math.abs(v)**exponent;
    const arch=1-x*x,crown=v>=0?q.crown:q.rear;
    const across=q.width*(.5*x+(crown-.5)*arch)*flow.spread,height=((v>=0?q.front:q.back)*y+q.camber*arch)*flow.pressure;
-   const point=q.center.clone().addScaledVector(q.d,flow.shift*q.width).addScaledVector(acrossAxis,across*head).addScaledVector(normal,height*head);
+   const point=(anchored?q.a:q.center).clone().addScaledVector(q.d,flow.shift*q.width).addScaledVector(acrossAxis,(across+(anchored?.5*q.width*flow.spread:0))*head).addScaledVector(normal,height*head);
    point.toArray(positions,(1+(j-1)*R+k)*3);
   }
  }

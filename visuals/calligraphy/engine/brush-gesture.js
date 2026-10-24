@@ -23,7 +23,7 @@ export function brushHead(spec,progress,u,mode='flow',motion){
  const settle=1-smooth((progress-.87)/.13),wake=(g.wake||.10)*settle;
  const mature=wake>1e-7?smooth((progress-u)/wake):1,active=1-mature;
  let turnWeight=0;if(g.continuous)for(const joint of g.turns||[])turnWeight=Math.max(turnWeight,1-smooth((Math.abs(progress-joint)-.02)/.08));
- const leadingSpread=g.continuous?.32+.58*turnWeight:.10;
+ const leadingSpread=g.tipSpread?profile(g.tipSpread,progress):(g.continuous?.32+.58*turnWeight:.10);
  return {spread:leadingSpread+(1-leadingSpread)*mature,pressure:1+active*((motion?.pressure??profile(g.pressure||[.6,1,.3],progress))-1),shift:(g.leadingEdge||0)*active*.5,roll:(motion?.roll??profile(g.roll||[0,0],progress))*active*settle};
 }
 

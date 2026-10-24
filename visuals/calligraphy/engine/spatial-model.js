@@ -1,7 +1,8 @@
+import {applyBrushPlan} from '../brush-planner.js?v=14';
 import * as T from '../vendor/three.module.js';
 import {profile,sampleSection} from './stroke-volume.js';
 import {sampleRailSection} from './yang-volume.js';
-import {prepareVolume} from './surface.js';
+import {prepareVolume} from './surface.js?v=14';
 import {guardRailBends} from './bend-guard.js';
 import {attachStrokeLink} from './stroke-link.js';
 import {combineContinuousRuns} from './continuous-run.js';
@@ -228,9 +229,10 @@ export function prepareSpatialModel(glyph,settings={}){
   }
  });
  parts.forEach(part=>{part.spec.motion=pressureMotion(part.spec,part.stroke.motion);});
+ const brushPlan=applyBrushPlan(parts);
  const rendered=['spatial','reference-v10'].includes(config.model)&&config.connection==='linked'&&config.writing==='flow'?combineContinuousRuns(parts):parts;
  const mappedJoins=sectionJoins.map(join=>{const merged=rendered.some(part=>part.run&&part.sourceIndices.includes(join.from)&&part.sourceIndices.includes(join.to));return {...join,merged,scope:merged?'Internal junction of one closed loft; no closing cap.':join.scope};});
- return {parts:rendered,transfers,report:{revision:config.model==='reference-v9'?'boundary-volume-v9-20261024':config.model==='reference-v10'?'continuous-growth-v10-20261024':'wind-second-to-third-v11-20261024',model:config.model,method:'returning fan contour for stroke 2 / lifted transfer into stroke 3 / authored depth order / matched contours',authoredSegmentCount:source.length,renderedPieceCount:rendered.length,indexSpace:'source segment indices, zero based',transfers:transfers.map(({curve,...data})=>data),continuousRuns:rendered.filter(part=>part.run).map(part=>part.run),manualLensSegments:parts.filter(part=>part.spec.brush).length,automaticDotRepairs:parts.filter(part=>part.spec.dotRefined).length,strokeLinks,sectionJoins:mappedJoins,depthOrder:contact.constraints.filter(c=>c.authoredOrder).map(c=>({upper:c.upper,lower:c.lower,u:c.u,v:c.v,point:c.point,required:c.required})),overlaps:contact.overlaps,regions:contact.regions,constraints:contact.constraints.length,...result,scope:'Stroke 2 returns around the foot to its waist before the lifted move into stroke 3. The optional trajectory guide is not deposited material. Existing inner-to-insect run remains a separate gesture. Local reconstruction; sampled contact checks are not a global collision certificate.',paper:'https://doi.org/10.1145/3736782'}};
+ return {parts:rendered,transfers,report:{brushPlan,revision:config.model==='reference-v9'?'boundary-volume-v9-20261024':config.model==='reference-v10'?'continuous-growth-v10-20261024':'wind-second-to-third-v11-20261024',model:config.model,method:'returning fan contour for stroke 2 / lifted transfer into stroke 3 / authored depth order / matched contours',authoredSegmentCount:source.length,renderedPieceCount:rendered.length,indexSpace:'source segment indices, zero based',transfers:transfers.map(({curve,...data})=>data),continuousRuns:rendered.filter(part=>part.run).map(part=>part.run),manualLensSegments:parts.filter(part=>part.spec.brush).length,automaticDotRepairs:parts.filter(part=>part.spec.dotRefined).length,strokeLinks,sectionJoins:mappedJoins,depthOrder:contact.constraints.filter(c=>c.authoredOrder).map(c=>({upper:c.upper,lower:c.lower,u:c.u,v:c.v,point:c.point,required:c.required})),overlaps:contact.overlaps,regions:contact.regions,constraints:contact.constraints.length,...result,scope:'Stroke 2 returns around the foot to its waist before the lifted move into stroke 3. The optional trajectory guide is not deposited material. Existing inner-to-insect run remains a separate gesture. Local reconstruction; sampled contact checks are not a global collision certificate.',paper:'https://doi.org/10.1145/3736782'}};
 }
 
 export function constructionCurves(spec,kind){
