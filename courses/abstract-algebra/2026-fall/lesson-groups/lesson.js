@@ -47,6 +47,7 @@ if(q.written){const input=root.querySelector('#written-answer');input.value=save
 window.LessonScreen?.refresh();
 }
 function extensionPanel(root,extension){
+ if(extension.kind==='rubik-action'){disposeExtension=window.RubikAction.mount(root);return;}
  if(extension.kind==='card-magic'){window.CardMagic.mount(root,extension);return;}
  const overviews=[['把已有群的运算沿双射搬到 X 上。','Transport an existing group operation to X along a bijection.'],['有限非空集：使用同样大小的循环群。','Finite nonempty sets: use a cyclic group of the same size.'],['无限集：先让有限子集在对称差下成为交换群。','Infinite sets: first make the finite subsets an abelian group under symmetric difference.'],['使用等势结论，把这个群搬回原集合。','Use the cardinality equality to transport this group back to the original set.']];
  const blocks=items=>items.map(item=>`<p>${html(item.text)}</p>${item.tex?`<div class="construction-math">${window.katex.renderToString(item.tex,{displayMode:true,throwOnError:true,strict:'ignore',output:'htmlAndMathml'})}</div>`:''}`).join('');

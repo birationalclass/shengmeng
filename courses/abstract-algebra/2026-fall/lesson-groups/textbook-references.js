@@ -812,3 +812,5 @@ window.GroupTextbookReferences = {
     }
   }
 };
+
+window.GroupTextbookReferences["2.5"]["rubik-action"]={label:["拓展 · 魔方与有限作用","Extension · The cube and finite actions"],pdfPages:[],note:"非教材内容；按提问要求补充的魔方建模与有限可逆作用的周期性证明。"};

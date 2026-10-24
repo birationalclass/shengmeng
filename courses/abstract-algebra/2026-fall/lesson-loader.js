@@ -1,11 +1,11 @@
 /* Fetch only the requested section. The parent owns this document's lifetime. */
 (()=>{
   'use strict';
-  const version='20261011-direct-product-uniqueness';
   const first=location.pathname.includes('/lesson-1/');
   const requested=new URLSearchParams(location.search).get('section');
   const valid=first?/^1\.[12]$/:/^(1\.[3-7]|2\.[1-7]|3\.[1-6]|4\.[1-5])$/;
   const id=valid.test(requested)?requested:first?'1.1':'1.3';
+  const version=id==='2.5'?'20261024-rubik-actions':'20261011-direct-product-uniqueness';
   const health=window.CourseHealth;
   let stage='data',resource=`${id}.json`;
   const controller=new AbortController();
@@ -38,6 +38,10 @@
       progress(12,`§${id} · 正在加载内容与样式`,`§${id} · Loading content and styles`);
       const [payload]=await bounded(Promise.all([data,window.CourseLoad.stylesReady()]));if(disposed)return;
       health?.clear('lesson-data');stage='script';
+      if(id==='2.5'){
+        resource='rubik-action.css';
+        await bounded(new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href=`rubik-action.css?v=${version}`;link.onload=resolve;link.onerror=()=>reject(Error('Cube stylesheet unavailable'));document.head.append(link);}));
+      }
       let scripts;
       if(first){
         window.LessonNotebookContent={[id]:payload.notebook};
@@ -47,7 +51,7 @@
         window.GroupCourseContent={[id]:payload.book};
         window.GroupCourseExercises={[id]:payload.exercises};
         window.GroupTextbookReferences={[id]:payload.references};
-        scripts=[...(id==='1.4'?['symmetric-difference.js']:id==='1.6'?['card-magic.js']:[]),...(Number(id[0])>=3?['ring-models.js','ring-visuals.js']:['models.js','visuals.js']),'lesson.js','../lesson-1/screen.js','../lesson-1/embedded.js','../lesson-keyboard.js'];
+        scripts=[...(id==='2.5'?['rubik-action-model.js','rubik-action.js']:[]),...(id==='1.4'?['symmetric-difference.js']:id==='1.6'?['card-magic.js']:[]),...(Number(id[0])>=3?['ring-models.js','ring-visuals.js']:['models.js','visuals.js']),'lesson.js','../lesson-1/screen.js','../lesson-1/embedded.js','../lesson-keyboard.js'];
       }
       for(const [i,src] of scripts.entries()){
         resource=src.split('/').pop();

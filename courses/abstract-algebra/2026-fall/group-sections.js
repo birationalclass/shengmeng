@@ -379,6 +379,11 @@ window.GroupSections={
         "A group as rules for motion"
       ],
       [
+        "rubik-action",
+        "魔方拓展：建模、有限与回归",
+        "Cube extension: modeling, finiteness and return"
+      ],
+      [
         "representation",
         "作用等价于置换表示",
         "Actions and permutation representations"
