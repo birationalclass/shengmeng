@@ -70,7 +70,7 @@
     if(view==='lesson'){
       window.CourseOpeningExit?.();window.CourseOpeningBoot?.dismiss();
       if(!chapter.ready){placeholder();reveal(null);}
-      else if(!frame){loading.show();loadedSection=section;window.CourseHealth?.expect('lesson-frame',`§${section} 内嵌课件`,`Section ${section} embedded lesson`,65000);frame=document.createElement('iframe');frame.style.visibility='hidden';frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=${section==='2.5'?'20261024-rubik-actions':'20261011-direct-product-uniqueness'}&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
+      else if(!frame){loading.show();loadedSection=section;window.CourseHealth?.expect('lesson-frame',`§${section} 内嵌课件`,`Section ${section} embedded lesson`,65000);frame=document.createElement('iframe');frame.style.visibility='hidden';frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=${section==='2.5'?'20261024-rubik-group-definition':'20261011-direct-product-uniqueness'}&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
       else frame?.contentWindow?.postMessage({type:'course-navigate',section,anchor},location.origin);
     }else {reveal(null);requestAnimationFrame(()=>{if(next.courseHash)scrollCourse(next.courseHash,'instant');else courseScroller.scrollTo({top:courseScroll,behavior:'instant'});});}labels();
   }

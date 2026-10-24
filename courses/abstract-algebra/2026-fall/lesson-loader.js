@@ -5,7 +5,7 @@
   const requested=new URLSearchParams(location.search).get('section');
   const valid=first?/^1\.[12]$/:/^(1\.[3-7]|2\.[1-7]|3\.[1-6]|4\.[1-5])$/;
   const id=valid.test(requested)?requested:first?'1.1':'1.3';
-  const version=id==='2.5'?'20261024-rubik-actions':'20261011-direct-product-uniqueness';
+  const version=id==='2.5'?'20261024-rubik-group-definition':'20261011-direct-product-uniqueness';
   const health=window.CourseHealth;
   let stage='data',resource=`${id}.json`;
   const controller=new AbortController();

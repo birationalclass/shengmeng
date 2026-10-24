@@ -67,8 +67,8 @@ add('2.7','自由群与群的表达','Free groups and group presentations',[
 ],{optional:true});
 
 // User-requested supplement. No textbook theorem number is assigned.
-L['2.5'].entries.splice(1,0,E('rubik-action','魔方拓展：建模、有限与回归','Cube extension: modeling, finiteness and return',String.raw`G\curvearrowright X,\quad |X|<\infty\quad\Longrightarrow\quad\forall g,x\ \exists d\ge1:\ g^d\cdot x=x`,
- '先把魔方的合法操作建模为 54 个位置的置换，再区分它对位置集 P 和对整个状态集 X 的作用。只记录整面转动完成后的状态，固定魔方整体朝向。任意选定一个状态 x₀，反复执行同一套操作 g，一定有正数 d 使 gᵈ·x₀=x₀；起点不必是复原状态。',
- 'Model legal cube operations as permutations of 54 slots, then distinguish the actions on positions P and whole-cube states X. Record completed face turns with the whole cube orientation fixed. For any chosen start x₀, repeating one fixed operation g eventually gives gᵈ·x₀=x₀ for some positive d; the start need not be solved.',
+L['2.5'].entries.splice(1,0,E('rubik-action','魔方拓展：建模、有限与回归','Cube extension: modeling, finiteness and return',String.raw`P=\{1,\ldots,54\},\quad G=\langle R,L,U,D,F,B\rangle\leq\operatorname{Sym}(P)`,
+ '固定魔方朝向，P 是 54 个贴纸位置。R、L、U、D、F、B 是六个面从外侧看顺时针转 90° 诱导的置换。G 定义为这六个置换及其逆的所有有限复合组成的集合，含零次复合。乘法为函数复合：gh=g∘h，先 h 后 g；单位元为 idP，逆元为逆双射。两个动作串对全部位置的作用相同，就代表同一个群元素。再由此定义 G 对完整魔方状态集 X 的作用。',
+ 'Fix the cube orientation and let P be its 54 sticker slots. R, L, U, D, F and B are the permutations induced by clockwise 90-degree face turns viewed from outside. Define G as all finite composites of these six permutations and their inverses, including the empty composite. Multiplication is function composition gh=g∘h, applying h before g; the identity is idP and inverses are inverse bijections. Sequences moving every slot identically represent the same element. This then defines an action of G on whole-cube states X.',
  {extension:{kind:'rubik-action'},example:B('有限性给出重复；操作可逆，才能把重复退回到最初的状态。不要把“重复同一套动作”改成“每次任意换动作”。','Finiteness gives a repetition; invertibility moves it back to the initial state. Repeating one fixed sequence is different from arbitrarily changing operations.')}));
 })();
