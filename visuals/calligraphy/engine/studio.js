@@ -15,9 +15,10 @@ import {windReferencePreset,windReferencePresetV8} from './wind-reference.js';
 import {createReferenceEnvironment} from './reference-environment.js';
 
 const $=id=>document.getElementById(id),canvas=$('canvas');
-const defaults={preset:'ink',materialPreset:'ink',materialVersion:'smooth',...materialPresets.ink,writingScript:'traditional',writing:'flow',connection:'linked',model:'spatial',turn:1,layering:1,harmony:.5,guides:false,trajectory:false,fullness:1,depth:1,explode:0,lighting:'reference-v9',background:'stone',display:'plain',azimuth:-35,keyPower:2.8,environment:1,exposure:1,shadows:true,wireframe:false};
+const defaults={preset:'ink',materialPreset:'ink',materialVersion:'classic',...classicMaterialPresets.ink,writingScript:'traditional',writing:'flow',connection:'linked',model:'spatial',turn:1,layering:1,harmony:.5,guides:false,trajectory:false,fullness:1,depth:1,explode:0,lighting:'reference-v9',background:'stone',display:'plain',azimuth:-35,keyPower:2.8,environment:1,exposure:1,shadows:true,wireframe:false};
 let renderScale=1.25;
-let settings={...defaults},glyph,items=[],time=0,paused=false,speed=1,follow=true,spinning=false,dirty=true,shapeDirty=false,lastYang='01',viewRadius=8.4,buildRevision=0,building=false,recording=null,seamPlayback=null;
+const emptyGlyph={id:'empty',text:'',title:'',subtitle:'',strokes:[],duration:0,writeStart:0,writeEnd:0,frontalAt:0,charSources:[],source:{name:'',phrase:'',url:'',image:'',caption:'',description:''}};
+let settings={...defaults},glyph=emptyGlyph,items=[],time=0,paused=true,speed=1,follow=true,spinning=false,dirty=true,shapeDirty=false,lastYang='01',viewRadius=8.4,buildRevision=0,building=false,recording=null,seamPlayback=null;
 const renderer=new T.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(1);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFShadowMap;
 const scene=new T.Scene(),camera=new T.PerspectiveCamera(30,1,.1,200),target=new T.Vector3(0,1.9,0),modelBounds=new T.Box3();
@@ -58,7 +59,7 @@ const square=new T.Mesh(new T.BoxGeometry(4.65,4.65,.10),boardMaterial),plinth=n
 for(const mesh of [circle,square,plinth]){mesh.receiveShadow=true;mesh.castShadow=true;displayGroup.add(mesh);}
 const numeric={metalness:[0,1],roughness:[.08,.85],clearcoat:[0,1],anisotropy:[0,1],ridges:[0,1],fullness:[.5,1.5],depth:[0,2],turn:[0,1.5],layering:[0,1.5],harmony:[0,1],explode:[0,1],azimuth:[-150,150],keyPower:[0,6],environment:[.1,2.5],exposure:[.5,1.7]};
 const enums={writingScript:['traditional','simplified','original'],lighting:['soft','rim','warm','reference','reference-v9'],background:['stone','dark','paper'],display:['plain','circle','square'],model:['spatial','reference-v10','reference-v9','reference-v8','legacy'],materialVersion:['smooth','classic'],writing:['flow','reveal'],connection:['linked','separate']};
-const duration=()=>glyph?.duration||6;
+const duration=()=>glyph?.duration||0;
 let noticeTimeout;function notice(text){$('notice').textContent=text;$('notice').hidden=false;clearTimeout(noticeTimeout);noticeTimeout=setTimeout(()=>$('notice').hidden=true,4400);}
 function feedback(text,error=false){if(error)notice(text);$('text-feedback').textContent=text;$('text-feedback').classList.toggle('error',error);$('text-form').classList.toggle('invalid',error);$('text-input').setAttribute('aria-invalid',String(error));}
 function updateOutputs(){for(const id of Object.keys(numeric)){const out=document.querySelector(`output[for="${id}"]`);if(out)out.textContent=id==='azimuth'?Math.round(settings[id])+'°':settings[id].toFixed(2);}}
@@ -97,6 +98,7 @@ function shapeSummary(){
  $('shape-summary').dataset.report=JSON.stringify(modelReport);$('resolved-text').textContent='输出 · '+glyph.text;
 }
 function rebuildSpecs(){
+ if(!glyph.text){shapeDirty=false;dirty=true;return;}
  const next=prepareSpatialModel(glyph,settings),bounds=new T.Box3();
  const visibility=new Map(items.flatMap(item=>item.sourceIndices.map(index=>[index,item.enabled]))),resolution=part=>meshResolution(part,glyph.strokes.length,glyph.charSources?.length>1);
  if(next.parts.length!==items.length||next.parts.some((part,i)=>{const r=resolution(part);return items[i].g.userData.L!==r.L||items[i].g.userData.R!==r.R;})){
@@ -115,11 +117,14 @@ function renderStrokeControls(){
 }
 function dirtySurfaces(){for(const item of items)item.last=-1;dirty=true;}
 function writeURL(){
- const url=new URL(location.href);url.search='';url.searchParams.set('text',glyph.inputText||glyph.text);url.searchParams.set('script',settings.writingScript);url.searchParams.set('material',settings.materialPreset);if(settings.materialVersion!=='smooth')url.searchParams.set('surface',settings.materialVersion);if(lastYang!=='01')url.searchParams.set('variant',lastYang);if(settings.model!=='spatial')url.searchParams.set('model',settings.model);history.replaceState(null,'',url);
+ const url=new URL(location.href);url.search='';if(glyph.text)url.searchParams.set('text',glyph.inputText||glyph.text);url.searchParams.set('script',settings.writingScript);url.searchParams.set('material',settings.materialPreset);if(settings.materialVersion!=='classic')url.searchParams.set('surface',settings.materialVersion);if(lastYang!=='01')url.searchParams.set('variant',lastYang);if(settings.model!=='spatial')url.searchParams.set('model',settings.model);history.replaceState(null,'',url);
 }
-function updateButtons(){$('pause').innerHTML=icons[paused?'play':'pause'];$('pause').setAttribute('aria-label',paused?'继续书写':'暂停书写');$('pause').title=paused?'继续书写':'暂停书写';$('pause').setAttribute('aria-pressed',String(!paused));$('turntable').setAttribute('aria-pressed',String(spinning));$('seam-replay').setAttribute('aria-pressed',String(!!seamPlayback));}
+function updateButtons(){
+ const hasGlyph=!!glyph.text;
+ for(const id of ['pause','replay','timeline','speed','front','quarter','side','back','complete','reset','turntable','save-image','save-animation','export-model','save-settings'])$(id).disabled=!hasGlyph||building;
+$('pause').innerHTML=icons[paused?'play':'pause'];$('pause').setAttribute('aria-label',paused?'继续书写':'暂停书写');$('pause').title=paused?'继续书写':'暂停书写';$('pause').setAttribute('aria-pressed',String(!paused));$('turntable').setAttribute('aria-pressed',String(spinning));$('seam-replay').setAttribute('aria-pressed',String(!!seamPlayback));}
 function sourcePanel(){
- const src=glyph.source;$('source-name').textContent=src.name;$('source-phrase').textContent=src.phrase;$('source-link').href=src.url;$('description').textContent=src.description;
+ const src=glyph.source;$('source-name').textContent=src.name;$('source-phrase').textContent=src.phrase;$('source-link').href=src.url;$('source-link').hidden=!src.url;$('description').textContent=src.description;
  $('reference-image').closest('figure').hidden=!src.image;if(src.image){$('reference-image').src=src.image;$('reference-image').alt=src.name;}$('reference-caption').textContent=src.caption;
  $('source-list').replaceChildren();if(glyph.charSources?.length>1)for(const source of glyph.charSources){const link=document.createElement('a');link.textContent=source.name+' ↗';link.href=source.url;link.target='_blank';link.rel='noreferrer';$('source-list').append(link);}
  $('model-download').hidden=true;$('model-download').removeAttribute('href');
@@ -135,7 +140,7 @@ function installGlyph(next,complete=false){
  modelReport=constructed.report;penTransfers=constructed.transfers||[];rebuildTransferGuide();rebuildGuides();shapeSummary();sourcePanel();$('version-title').textContent=glyph.text+' · '+glyph.title;
  renderStrokeControls();writeURL();updateButtons();dirty=true;
 }
-function setBuilding(value,text=''){building=value;$('generate-text').disabled=value;$('save-animation').disabled=value;$('text-form').setAttribute('aria-busy',String(value));$('generate-text').textContent=value?'构形中…':'书写';$('loading').hidden=!value;$('loading').textContent=text||'正在构形…';}
+function setBuilding(value,text=''){building=value;$('generate-text').disabled=value;$('save-animation').disabled=value;$('text-form').setAttribute('aria-busy',String(value));$('generate-text').textContent=value?'构形中…':'书写';$('loading').hidden=!value;$('loading').textContent=text||'正在构形…';updateButtons();}
 async function generateText(value,complete=false){
  const revision=++buildRevision;
  try{const original=cleanText(value),script=settings.writingScript;setBuilding(true,'正在准备字形…');const text=cleanText(await convertScript(original,script));feedback('正在构建「'+text+'」…');setBuilding(true,'正在构形 · '+text);await new Promise(resolve=>requestAnimationFrame(resolve));const next=await createTextGlyph(text,{variantId:lastYang});if(revision!==buildRevision)return;next.inputText=original;next.inputScript=script;installGlyph(next,complete);$('text-input').value=original;$('resolved-text').textContent='输出 · '+next.text;feedback((text===next.text?'':text+' → ')+next.text+' · '+(next.modeling?.label||'逐笔设计')+' · '+duration().toFixed(0)+' 秒');if(params.get('看')==='回锋'&&glyph.text==='風')playSeam();}
@@ -145,6 +150,8 @@ function selectKnown(id,complete=false){++buildRevision;setBuilding(false);insta
 const smooth=(a,b,t)=>T.MathUtils.smoothstep(t,a,b);
 function shot(t){const mix=smooth(0,glyph.writeEnd,t),finish=smooth(glyph.writeEnd,glyph.frontalAt,t),yaw=T.MathUtils.lerp(-.24,.16,mix)*(1-finish),radius=viewRadius+.12*(1-finish);controls.minDistance=4.8;controls.enableDamping=false;controls.target.copy(target);camera.position.set(Math.sin(yaw)*radius,target.y+.15*(1-finish),Math.cos(yaw)*radius);controls.update();}
 function render(){
+ if(!glyph.text){transferGuides.visible=false;displayGroup.visible=false;renderer.render(scene,camera);$('clock').textContent='0.00 / 0.00';$('timeline').value=0;$('view-label').textContent='';$('status').textContent='';return;}
+
  let current=-1;
  for(const item of items){const raw=T.MathUtils.clamp((time-item.s.start)/(item.s.end-item.s.start),0,1),p=writingProgress(item.spec,raw,settings.writing);item.mesh.visible=item.enabled&&p>.0001;if(item.mesh.visible&&item.last!==p){updateVolume(item.g,item.spec,item.kind,p,settings.ridges,settings.writing);item.last=p;}item.mesh.position.set((item.i-(items.length-1)/2)*.020*settings.explode,(item.i%3-1)*.08*settings.explode,(item.i-(items.length-1)/2)*.23*settings.explode);for(const line of item.guideLines||[]){line.visible=settings.guides&&item.mesh.visible;line.position.copy(item.mesh.position);line.geometry.setDrawRange(0,Math.max(2,Math.floor(p*120)+1));}if(raw>0)current=item.i;}
  updateTransferGuide();if(follow)shot(time);displayGroup.visible=settings.display!=='plain'&&camera.position.z>-.15;renderer.render(scene,camera);$('clock').textContent=time.toFixed(2)+' / '+duration().toFixed(2);$('timeline').value=time;$('view-label').textContent=recording?'保存动画中':seamPlayback?'第二→第三笔 · ¼×循环':spinning?'环绕查看':follow?(time>=glyph.frontalAt?'正面落幅':'轻微运镜'):'自由视角';
@@ -156,9 +163,9 @@ function fixed(yaw,rise=0){follow=false;stopSpin();controls.minDistance=4.8;cont
 controls.addEventListener('change',()=>dirty=true);controls.addEventListener('start',()=>{follow=false;stopSpin();controls.enableDamping=true;dirty=true;});
 let composing=false;$('text-input').oncompositionstart=()=>composing=true;$('text-input').oncompositionend=()=>composing=false;
 $('text-form').onsubmit=e=>{e.preventDefault();if(!composing&&!recording&&!building)generateText($('text-input').value);};
-document.querySelectorAll('[data-char]').forEach(b=>b.onclick=()=>generateText(b.dataset.char,paused&&time>=duration()));
+document.querySelectorAll('[data-char]').forEach(b=>b.onclick=()=>generateText(b.dataset.char,!!glyph.text&&paused&&time>=duration()));
 document.querySelectorAll('[data-text]').forEach(b=>b.onclick=()=>{if(!recording&&!building){$('text-input').value=b.dataset.text;generateText(b.dataset.text);}});
-document.querySelectorAll('[data-variant]').forEach(b=>b.onclick=()=>{const complete=paused&&time>=duration();lastYang=b.dataset.variant;if(glyph.generated&&glyph.text.includes('楊'))generateText(glyph.inputText,complete);else generateText($('text-input').value,complete);});
+document.querySelectorAll('[data-variant]').forEach(b=>b.onclick=()=>{const complete=!!glyph.text&&paused&&time>=duration();lastYang=b.dataset.variant;if(glyph.generated&&glyph.text.includes('楊'))generateText(glyph.inputText,complete);else generateText($('text-input').value,complete);});
 $('replay').onclick=()=>{seamPlayback=null;time=0;paused=false;follow=true;stopSpin();settings.explode=0;$('explode').value=0;updateOutputs();updateButtons();dirty=true;};$('complete').onclick=()=>{seamPlayback=null;time=duration();paused=true;follow=true;stopSpin();updateButtons();dirty=true;};
  $('wind-reference-preset').onclick=()=>{settings={...defaults,...windReferencePreset};const url=new URL(location.href);url.searchParams.set('校准','風11');history.replaceState(null,'',url);selectKnown('feng',true);syncUI();applyMaterial();applyLighting();notice('風 v11 · 第二笔右下钩面向上回卷，再移锋承接第三笔。点“二→三慢放”查看。');};
 $('pause').onclick=()=>{if(time>=duration()){time=0;paused=false;follow=true;stopSpin();}else paused=!paused;updateButtons();dirty=true;};$('timeline').oninput=e=>{seamPlayback=null;time=+e.target.value;paused=true;updateButtons();dirty=true;};$('speed').onchange=e=>speed=+e.target.value;
@@ -238,18 +245,19 @@ if(calibration==='風8')Object.assign(settings,windReferencePresetV8,{model:'ref
 if(calibration==='風9'||calibration==='風10'||calibration==='風11')Object.assign(settings,windReferencePreset);
 if(params.get('接笔')==='separate')settings.connection='separate';
 if(params.get('运笔')==='reveal')settings.writing='reveal';
-if(params.get('材质版')==='classic')settings.materialVersion='classic';
+if(enums.materialVersion.includes(params.get('材质版')))settings.materialVersion=params.get('材质版');
 if(Object.hasOwn(materialPresets,initialPreset)&&!(hasCalibration&&initialPreset==='silver'&&settings.materialVersion==='smooth'))Object.assign(settings,materialVersions[settings.materialVersion].presets[initialPreset],{preset:initialPreset,materialPreset:initialPreset});
 else if(!hasCalibration)Object.assign(settings,materialVersions[settings.materialVersion].presets.ink);
 if(enums.model.includes(params.get('模型')))settings.model=calibration==='風8'&&params.get('v')!=='wind9'&&params.get('模型')==='spatial'?'reference-v8':params.get('模型');
 if(calibration==='風10'&&params.get('v')!=='wind11'&&settings.model==='spatial')settings.model='reference-v10';
 if(enums.lighting.includes(params.get('灯光')))settings.lighting=params.get('灯光');
 lastYang=['01','02','03'].includes(params.get('版'))?params.get('版'):'01';
-selectKnown(params.get('字')==='風'||(!params.get('字')&&hasCalibration)?'feng':params.get('字')==='天'?'tian':lastYang,params.get('完成')==='1');syncUI();applyMaterial();applyLighting();panel('material');$('loading').hidden=true;
-let last=performance.now();function loop(now){const dt=Math.min(.25,Math.max(0,(now-last)/1000));last=now;if(shapeDirty)rebuildSpecs();if(!follow)controls.update(dt);if(recording){recording.elapsed=Math.min(recording.duration,Math.max(0,(now-recording.start)/1000));time=recording.range?recording.range.start+recording.elapsed*recording.range.speed:recording.elapsed;dirty=true;}else if(!paused){time=Math.min(seamPlayback?.end||duration(),time+dt*speed);dirty=true;if(seamPlayback&&time>=seamPlayback.end){time=seamPlayback.start;}else if(time>=duration()){paused=true;updateButtons();}}if(spinning)dirty=true;if(dirty){dirty=false;render();}if(recording&&recording.elapsed>=recording.duration&&!recording.finishing){const capture=recording;capture.finishing=true;requestAnimationFrame(()=>{if(recording===capture&&capture.recorder.state!=='inactive')capture.recorder.stop();});}requestAnimationFrame(loop);}requestAnimationFrame(loop);{const text=params.get('文')||'杨琪';$('text-input').value=text;generateText(text,params.get('完成')==='1');}
+$('text-input').value='';$('timeline').max=0;$('variants').hidden=true;$('hook-detail').hidden=true;$('seam-replay').hidden=true;$('writing-row').hidden=true;$('connection-row').hidden=true;
+$('resolved-text').textContent='';$('shape-summary').textContent='输入文字后查看笔势。';$('source-name').textContent='';sourcePanel();syncUI();applyMaterial();applyLighting();panel('material');$('loading').hidden=true;updateButtons();writeURL();
+let last=performance.now();function loop(now){const dt=Math.min(.25,Math.max(0,(now-last)/1000));last=now;if(shapeDirty)rebuildSpecs();if(!follow)controls.update(dt);if(recording){recording.elapsed=Math.min(recording.duration,Math.max(0,(now-recording.start)/1000));time=recording.range?recording.range.start+recording.elapsed*recording.range.speed:recording.elapsed;dirty=true;}else if(!paused){time=Math.min(seamPlayback?.end||duration(),time+dt*speed);dirty=true;if(seamPlayback&&time>=seamPlayback.end){time=seamPlayback.start;}else if(time>=duration()){paused=true;updateButtons();}}if(spinning)dirty=true;if(dirty){dirty=false;render();}if(recording&&recording.elapsed>=recording.duration&&!recording.finishing){const capture=recording;capture.finishing=true;requestAnimationFrame(()=>{if(recording===capture&&capture.recorder.state!=='inactive')capture.recorder.stop();});}requestAnimationFrame(loop);}requestAnimationFrame(loop);
 
-if(params.get('看')==='回锋'&&!params.get('文')&&glyph.text==='風')playSeam();
 
-$('writingScript').onchange=async e=>{settings.writingScript=e.target.value;await generateText($('text-input').value);syncUI();};
+
+$('writingScript').onchange=async e=>{settings.writingScript=e.target.value;if($('text-input').value.trim())await generateText($('text-input').value);else writeURL();syncUI();};
 export function studioState(){return {text:glyph?.text,input:glyph?.inputText,script:settings.writingScript,paused,time,duration:duration(),recording:!!recording,building,settings:{...settings},camera:{position:camera.position.toArray(),target:controls.target.toArray()},segments:items.length};}
 export function setQuality(value){const preset={draft:[.9,1024],balanced:[1.25,1536],high:[1.75,2048]}[value]||[1.25,1536];renderer.shadowMap.enabled=settings.shadows;key.shadow.mapSize.set(preset[1],preset[1]);key.shadow.map?.dispose();key.shadow.map=null;renderScale=preset[0];resize();dirty=true;}

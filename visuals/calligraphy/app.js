@@ -19,7 +19,7 @@ document.addEventListener('keydown',e=>{
  if(!editing&&e.key.toLowerCase()==='h'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();setUI(!document.body.classList.contains('ui-hidden'));}
 });
 try{
- const studio=await import('./engine/studio.js');
+ const studio=await import('./engine/studio.js?v=13');
  // Fullscreen includes the controls, so playback and settings stay accessible.
  $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{$('notice').hidden=false;$('notice').textContent='当前环境不支持全屏。';}};
  document.addEventListener('fullscreenchange',()=>{$('fullscreen').setAttribute('aria-pressed',String(!!document.fullscreenElement));});
@@ -30,7 +30,7 @@ try{
  function sync(){const state=studio.studioState();
   if(state.settings.background!==previousBackground){document.body.classList.toggle('dark',state.settings.background==='dark');previousBackground=state.settings.background;}
   $('pause').dataset.tip=$('pause').getAttribute('aria-label');
-  $('view-label').textContent=state.building?'正在构形':state.paused&&state.time>=state.duration?'成字':'立体书写';
+  $('view-label').textContent=state.building?'正在构形':!state.text?'':state.paused&&state.time>=state.duration?'成字':'立体书写';
  }
  sync();setInterval(sync,240);
 }catch(error){
