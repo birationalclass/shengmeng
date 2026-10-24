@@ -1,0 +1,264 @@
+SOURCE:ParameterFamilyProjectSharedWitness
+module
+@[expose] public section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+universe u v w x
+/-- Retain the SAME parameter open,witness e,proof he and first actual
+law while replacing the auxiliary conjunction by a proved consequence
+of the SAME shared laws. No new choice/open/geometric premise. -/
+theorem parameterFamily_project_from_sharedFacts
+    {U : Type u} {W : Type v} {I : Type w} {E : W → I → Type x}
+    {B1 B2 : U → Prop} {G : U → W → Prop}
+    {P : ∀ (w : W) (i : I),E w i → Prop}
+    {A B T : ∀ (w : W) (i : I) (e : E w i),P w i e → Prop}
+    {Q Z : W → Prop}
+    (family : ∃ u : U,B1 u ∧ B2 u ∧ ∀ w : W,G u w →
+      ((∀ i : I,∃ e : E w i,∃ he : P w i e,A w i e he ∧ B w i e he) ∧ Q w) ∧ Z w)
+    (build : ∀ w,Q w → Z w → ∀ i e he,B w i e he → T w i e he) :
+    ∃ u : U,B1 u ∧ B2 u ∧ ∀ w : W,G u w →
+      ∀ i : I,∃ e : E w i,∃ he : P w i e,A w i e he ∧ T w i e he := by
+  obtain ⟨u,h1,h2,hall⟩ := family
+  refine ⟨u,h1,h2,?_⟩
+  intro w hw
+  obtain ⟨⟨hR,hQ⟩,hZ⟩ := hall w hw
+  intro i
+  obtain ⟨e,he,ha,hb⟩ := hR i
+  exact ⟨e,he,ha,build w hQ hZ i e he hb⟩
+end LinearStudy
+
+
+SOURCE:SchemeModuleGlobalKoszulIntrinsicZero
+module
+public import Linear.SchemeModuleOriginalKoszulPushIntrinsicZero
+public import Linear.SchemeModuleGlobalExtOpenZero
+public import Linear.SchemeModuleChartInternalExtSupport
+public import Linear.SchemeModuleFiniteSupportLambdaSourceIso
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian CategoryTheory.Limits
+universe u
+attribute [local instance] schemeModuleOpenRestriction_additive
+attribute [local irreducible] schemeModuleOriginalChainTopExtClassSmall schemeModuleGlobalToInternalExtAll
+variable {X : Scheme.{u}} (C : ChainComplex X.Modules ℕ) (p : ℕ)
+variable (D : schemeModuleOpenKoszulChartData C (p+1))
+variable {E : X.Modules} (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E)
+variable (hAlpha : QuasiIso alpha) (hAbove : IsZero (C.X (p+2)))
+/-- Statement only:the SAME GLOBAL original Ext class vanishes iff the
+ORIGINAL top coefficient morphism has zero ACTUAL cut pullback. -/
+def schemeModuleGlobalKoszulIntrinsicZeroStatement : Prop :=
+  letI := D.2.2.1
+  letI := hAlpha
+  letI := HasDerivedCategory.standard X.Modules
+  ∀ (N : X.Modules) (_ : N.IsQuasicoherent) (a : C.X (p+1) ⟶ N),
+    schemeModuleOriginalChainTopExtClassSmall C (p+1) alpha hAlpha a
+      (hAbove.eq_of_src _ _)=0 ↔
+      (Scheme.Modules.pullback (Spec.map (CommRingCat.ofHom
+        (Ideal.Quotient.mk (Ideal.span (Set.range D.2.2.2.1)))))).map
+          ((Scheme.Modules.restrictFunctor D.2.1).map a)=0
+/-- SAME canonical lambda and actual target-support unit detect GLOBAL
+vanishing. Explicit generic input laws are derived from original
+finite-cut geometry in the projective family. -/
+theorem schemeModuleGlobalKoszulIntrinsicZeroProof
+    (hA : ∀ (N : X.Modules) (_ : N.IsQuasicoherent) q v,
+      IsZero (schemeModuleInternalExt (C.X q) N (v+1)))
+    (hLambda : ∀ N,Function.Injective (schemeModuleGlobalToInternalExt E N p))
+    (hUnit : letI := D.2.2.1
+      ∀ N,IsIso ((Scheme.Modules.restrictAdjunction D.2.1).unit.app
+        (schemeModuleInternalExt E N (p+1)))) :
+    schemeModuleGlobalKoszulIntrinsicZeroStatement C p D alpha hAlpha hAbove := by
+  letI := D.2.2.1
+  letI := hAlpha
+  letI := HasDerivedCategory.standard X.Modules
+  intro N hN a
+  have h := schemeModuleOpenKoszulIntrinsicMapZeroProof C p D alpha hAlpha hAbove hA
+  unfold schemeModuleOpenKoszulIntrinsicMapZeroStatement at h
+  exact (schemeModuleGlobalExt_zero_iff_open D.2.1 E N p (hLambda N) (hUnit N)
+    (schemeModuleOriginalChainTopExtClassSmall C (p+1) alpha hAlpha a
+      (hAbove.eq_of_src _ _))).trans (h N hN a)
+/-- Derive target-lambda injectivity from the SAME actual cokernel iso;
+actual original cover will derive support. No class-law field is input. -/
+theorem schemeModuleGlobalKoszulIntrinsicZeroProof_of_cokernelLambda
+    (e : cokernel (C.d 1 0) ≅ E)
+    (hA : ∀ (N : X.Modules) (_ : N.IsQuasicoherent) q v,
+      IsZero (schemeModuleInternalExt (C.X q) N (v+1)))
+    (hLambda : ∀ N,Function.Bijective
+      (schemeModuleGlobalToInternalExt (cokernel (C.d 1 0)) N p))
+    (hSupport : schemeModuleChartInternalExtSupportStatement C (p+1) D E) :
+    schemeModuleGlobalKoszulIntrinsicZeroStatement C p D alpha hAlpha hAbove := by
+  apply schemeModuleGlobalKoszulIntrinsicZeroProof C p D alpha hAlpha hAbove hA
+  · intro N
+    exact (schemeModuleGlobalToInternalExt_bijective_of_sourceIso e.symm N p (hLambda N)).injective
+  · intro N
+    exact hSupport N (p+1)
+/-- The SAME GLOBAL b_*epsilon,with actual source iso cancelled after
+actual pullback. No target frame,faithful pullback or new trace input. -/
+theorem schemeModuleOriginalKoszulPush_global_intrinsic_zero_iff
+    (hA : ∀ (N : X.Modules) (_ : N.IsQuasicoherent) q v,
+      IsZero (schemeModuleInternalExt (C.X q) N (v+1)))
+    (hLambda : ∀ N,Function.Injective (schemeModuleGlobalToInternalExt E N p))
+    (hUnit : letI := D.2.2.1
+      ∀ N,IsIso ((Scheme.Modules.restrictAdjunction D.2.1).unit.app
+        (schemeModuleInternalExt E N (p+1))))
+    {M N : X.Modules} [N.IsQuasicoherent]
+    (phi : C.X (p+1) ≅ M) (b : M ⟶ N) :
+    letI := D.2.2.1
+    letI := hAlpha
+    letI := HasDerivedCategory.standard X.Modules
+    ((schemeModuleOriginalChainTopExtClassSmall C (p+1) alpha hAlpha phi.hom
+      (hAbove.eq_of_src _ _)).comp (Ext.mk₀ b) (add_zero _))=0 ↔
+      (Scheme.Modules.pullback (Spec.map (CommRingCat.ofHom
+        (Ideal.Quotient.mk (Ideal.span (Set.range D.2.2.2.1)))))).map
+          ((Scheme.Modules.restrictFunctor D.2.1).map b)=0 := by
+  letI := D.2.2.1
+  letI := hAlpha
+  letI := HasDerivedCategory.standard X.Modules
+  exact (schemeModuleGlobalExt_zero_iff_open D.2.1 E N p (hLambda N) (hUnit N)
+    ((schemeModuleOriginalChainTopExtClassSmall C (p+1) alpha hAlpha phi.hom
+      (hAbove.eq_of_src _ _)).comp (Ext.mk₀ b) (add_zero _))).trans
+    (schemeModuleOriginalKoszulPush_intrinsic_zero_iff C p D alpha hAlpha hAbove hA phi b)
+end LinearStudy
+
+
+SOURCE:ProjectivePulledOriginalGlobalIntrinsicZero
+module
+public import Linear.ProjectivePulledOriginalChartDataCutZero
+public import Linear.ProjectivePulledOriginalChartInternalExtSupport
+public import Linear.SchemeModuleGlobalKoszulIntrinsicZero
+public import Linear.ProjectivePulledWholeCokernelLambdaStatement
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+attribute [local instance] MvPolynomial.gradedAlgebra
+attribute [local irreducible] homogeneousQuotientGrading nativeProjectiveKoszulComplex
+  nativeProjectiveKoszulTerm projectivePulledLinearKoszulForms projectivePulledLinearKoszulComplex
+  projectivePulledWholeCutResolutionTarget projectivePulledOriginalNamedExactChart
+  schemeModuleGlobalKoszulIntrinsicZeroStatement
+variable {n p : ℕ}
+/-- Statement only:the SAME actual GLOBAL original Ext class is zero iff
+its ORIGINAL top coefficient morphism has zero genuine
+pullback to the original nonreduced affine cut. ALL quasicoherent
+coefficients and functionals are included. -/
+def projectivePulledOriginalGlobalIntrinsicZeroStatement
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (w : Fin ((p+1)+1) → ℂ) (k : ℤ)
+    (e : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+      cokernel ((projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        projectivePulledWholeCutResolutionTarget f V L hL w k)
+    (he : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+      QuasiIso (originalChainCokernelTargetAugmentation
+        (projectivePulledLinearKoszulComplex f V L hL w k)
+        (projectivePulledWholeCutResolutionTarget f V L hL w k) e)) : Prop :=
+  letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+  schemeModuleGlobalKoszulIntrinsicZeroStatement
+    (projectivePulledLinearKoszulComplex f V L hL w k) p
+    (projectivePulledOriginalNamedExactChart f V L hL w k)
+    (originalChainCokernelTargetAugmentation (projectivePulledLinearKoszulComplex f V L hL w k)
+      (projectivePulledWholeCutResolutionTarget f V L hL w k) e) he
+    (projectivePulledOriginalKoszul_isZero_above f V L hL w k (p+2) (by omega))
+/-- The original ambient cover DERIVES internal-Ext support;the actual
+source iso transfers canonical-lambda injectivity from the original
+cokernel to the SAME whole-cut target. Both cover and cokernel-lambda
+bijectivity are derived in the final common-parameter family. -/
+theorem projectivePulledOriginalGlobalIntrinsicZeroStatement_proof
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (w : Fin ((p+1)+1) → ℂ) (k : ℤ)
+    (e : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+      cokernel ((projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        projectivePulledWholeCutResolutionTarget f V L hL w k)
+    (he : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+      QuasiIso (originalChainCokernelTargetAugmentation
+        (projectivePulledLinearKoszulComplex f V L hL w k)
+        (projectivePulledWholeCutResolutionTarget f V L hL w k) e))
+    (hc : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+      ∀ x : Proj (homogeneousQuotientPiece V.ideal.toIdeal),
+        x ∈ Proj.basicOpen (homogeneousQuotientPiece V.ideal.toIdeal)
+          (Ideal.Quotient.mk V.ideal.toIdeal (MvPolynomial.X 0)) ∨
+        ∃ i : Fin (p+1),x ∈ Proj.basicOpen (homogeneousQuotientPiece V.ideal.toIdeal)
+          (projectivePulledLinearKoszulForms f V L w i))
+    (hLambda : projectivePulledOriginalCokernelLambdaStatement f V L hL w k) :
+    projectivePulledOriginalGlobalIntrinsicZeroStatement f V L hL w k e he := by
+  letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+  apply schemeModuleGlobalKoszulIntrinsicZeroProof_of_cokernelLambda _ _ _ _ _ _ e
+  · intro N _ q v
+    exact projectivePulledOriginalKoszulInternalExt_succ f V L hL w k q N v
+  · exact fun N => hLambda N p
+  · exact projectivePulledOriginalChartInternalExtSupportStatement_proof f V L hL w k hc e
+end LinearStudy
+
+
+SOURCE:ProjectivePulledOriginalSetupGlobalIntrinsicFamily
+module
+public import Linear.ProjectivePulledOriginalChartDataCutStatement
+public import Linear.ProjectivePulledOriginalChartDataCutZero
+public import Linear.ProjectivePulledOriginalSetupWholeTopCokernelLambdaFamily
+public import Linear.ParameterFamilyEnrichWitness
+public import Linear.ParameterFamilyProjectSharedWitness
+public import Linear.ProjectivePulledOriginalGlobalIntrinsicZero
+public import Linear.ProjectivePulledOriginalSetupIntrinsicZeroFamily
+public import Linear.ProjectivePulledKoszulOriginalAmbientCover
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+attribute [local instance] MvPolynomial.gradedAlgebra
+attribute [local irreducible] projectivePulledOriginalChartDataCutStatement
+  projectivePulledOriginalChartDataCutZeroStatement projectivePulledOriginalChartIntrinsicMapZeroStatement
+  projectivePulledOriginalWholeTopCokernelStatement projectivePulledOriginalCokernelLambdaStatement
+attribute [local irreducible] projectivePulledOriginalGlobalIntrinsicZeroStatement
+attribute [local irreducible] projectivePulledLinearKoszulComplex projectivePulledWholeCutResolutionTarget
+  homogeneousQuotientGrading
+variable {n p : ℕ}
+/-- ORIGINAL geometry derives GLOBAL vanishing of the SAME original
+Ext class iff the ORIGINAL coefficient map has zero ACTUAL cut pullback.
+ONE nonempty parameter open precedes ALL integer twists;actual augmentation,
+quasiiso,source vanishings,lambda and support are DERIVED. Nonzero local
+trace weights,canonical identification and original4.1/4.2/main OPEN. -/
+theorem projectivePulledOriginalSetupGlobalIntrinsicZeroFamilyProof
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n) (hrn : p+1 < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+    (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+    (hfinite : (projectiveLinearNormalizationMap V L).Finite)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet) :
+    ∃ c : MvPolynomial (Fin ((p+1)+1)) ℂ, c ≠ 0 ∧
+      (∃ w : Fin ((p+1)+1) → ℂ, MvPolynomial.eval w c ≠ 0) ∧
+      ∀ w : Fin ((p+1)+1) → ℂ, MvPolynomial.eval w c ≠ 0 →
+        letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+        ∀ k : ℤ,
+          ∃ e : cokernel ((projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+              projectivePulledWholeCutResolutionTarget f V L hL w k,
+          ∃ he : QuasiIso (originalChainCokernelTargetAugmentation
+              (projectivePulledLinearKoszulComplex f V L hL w k)
+              (projectivePulledWholeCutResolutionTarget f V L hL w k) e),
+            (originalChainCokernelTargetAugmentation
+              (projectivePulledLinearKoszulComplex f V L hL w k)
+              (projectivePulledWholeCutResolutionTarget f V L hL w k) e).f 0 =
+                cokernel.π ((projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≫ e.hom ∧
+            projectivePulledOriginalGlobalIntrinsicZeroStatement f V L hL w k e he := by
+  exact parameterFamily_project_from_sharedFacts
+    (T := fun w k e he => projectivePulledOriginalGlobalIntrinsicZeroStatement f V L hL w k e he)
+    (parameterPolynomialFamily_intersection
+      (projectivePulledOriginalSetupIntrinsicZeroFamilyProof f V hrn hq hf hV L hL hinj hfinite x0 hx0)
+      (projectivePulledLinearSection_exists_original_ambient_cover f V hq hf hV L hL hinj hfinite x0 hx0))
+    (fun w hLambda hCover k e he _ =>
+      projectivePulledOriginalGlobalIntrinsicZeroStatement_proof f V L hL w k e he hCover (hLambda k))
+end LinearStudy
