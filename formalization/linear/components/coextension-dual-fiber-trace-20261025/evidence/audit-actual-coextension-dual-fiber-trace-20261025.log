@@ -1,0 +1,334 @@
+@LinearStudy.coextensionFieldTrace_nonzero_element_exists_one : ∀ {K A : Type u_1} [inst : Field K]
+  [inst_1 : CommRing A] [inst_2 : Algebra K A] (e : A),
+  e ≠ 0 →
+    ∃ (ell : ↑((ModuleCat.coextendScalars (algebraMap K A)).obj ↧K)),
+      LinearStudy.coextensionOriginalEvaluationAtOne (e • ell) = 1
+'LinearStudy.coextensionFieldTrace_nonzero_element_exists_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.coextensionFieldTrace_idempotent_fixed_exists_one : ∀ {K A : Type u_1} [inst : Field K]
+  [inst_1 : CommRing A] [inst_2 : Algebra K A] (e : A),
+  e ≠ 0 →
+    e * e = e →
+      ∃ (eta : ↑((ModuleCat.coextendScalars (algebraMap K A)).obj ↧K)),
+        e • eta = eta ∧ LinearStudy.coextensionOriginalEvaluationAtOne eta = 1
+'LinearStudy.coextensionFieldTrace_idempotent_fixed_exists_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.coextensionOriginalDualTensorEquiv : {R S K : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            [Module.Free R S] →
+              [Module.Finite R S] →
+                TensorProduct R K
+                    ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                        ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[K]
+                  Module.Dual K (TensorProduct R K S)
+'LinearStudy.coextensionOriginalDualTensorEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.coextensionOriginalDualTensorEquiv_tmul_apply : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [inst_5 : Module.Free R S]
+  [inst_6 : Module.Finite R S] (a : K)
+  (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+  (s : S),
+  (LinearStudy.coextensionOriginalDualTensorEquiv (a ⊗ₜ[R] ell)) (1 ⊗ₜ[R] s) =
+    a * (algebraMap R K) ((LinearStudy.coextensionOriginalDualEquiv ell) s)
+'LinearStudy.coextensionOriginalDualTensorEquiv_tmul_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.coextensionOriginalDualTensorEquiv_original_evaluation : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [inst_5 : Module.Free R S]
+  [inst_6 : Module.Finite R S] (a : K)
+  (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+  (LinearStudy.coextensionOriginalDualTensorEquiv (a ⊗ₜ[R] ell)) (1 ⊗ₜ[R] 1) =
+    a *
+      (algebraMap R K)
+        (LinearStudy.coextensionOriginalEvaluationAtOne
+          (have this := ell;
+          this))
+'LinearStudy.coextensionOriginalDualTensorEquiv_original_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.coextensionOriginalScalarRLinear : {R S : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra R S] →
+        S →
+          ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) →ₗ[R]
+            ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))
+'LinearStudy.coextensionOriginalScalarRLinear' depends on axioms: [propext, Quot.sound]
+@LinearStudy.coextensionOriginalScalarFiberEnd : {R S K : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Field K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            S →
+              TensorProduct R K
+                  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                      ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) →ₗ[K]
+                TensorProduct R K
+                  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                      ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))
+'LinearStudy.coextensionOriginalScalarFiberEnd' depends on axioms: [propext, Quot.sound]
+@LinearStudy.coextensionOriginalFiberTrace : {R S K : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Field K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            [Module.Free R S] →
+              [Module.Finite R S] →
+                Module.Dual K
+                  (TensorProduct R K
+                    ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                        ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+'LinearStudy.coextensionOriginalFiberTrace' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.coextensionOriginalDualTensorEquiv_both_tmul : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : Field K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [inst_5 : Module.Free R S]
+  [inst_6 : Module.Finite R S] (a b : K)
+  (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+  (t : S),
+  (LinearStudy.coextensionOriginalDualTensorEquiv (a ⊗ₜ[R] ell)) (b ⊗ₜ[R] t) =
+    b * (a * (algebraMap R K) ((LinearStudy.coextensionOriginalDualEquiv ell) t))
+'LinearStudy.coextensionOriginalDualTensorEquiv_both_tmul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.coextensionOriginalDualTensorEquiv_scalar_naturality : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : Field K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [inst_5 : Module.Free R S]
+  [inst_6 : Module.Finite R S] (s : S)
+  (m :
+    TensorProduct R K
+      ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+  (z : TensorProduct R K S),
+  (LinearStudy.coextensionOriginalDualTensorEquiv ((LinearStudy.coextensionOriginalScalarFiberEnd s) m)) z =
+    (LinearStudy.coextensionOriginalDualTensorEquiv m) (z * 1 ⊗ₜ[R] s)
+'LinearStudy.coextensionOriginalDualTensorEquiv_scalar_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.coextensionOriginalScalarFiberEnd_idempotent : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : Field K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [Module.Free R S]
+  [Module.Finite R S] (s : S),
+  1 ⊗ₜ[R] s * 1 ⊗ₜ[R] s = 1 ⊗ₜ[R] s →
+    ∀
+      (m :
+        TensorProduct R K
+          ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+      (LinearStudy.coextensionOriginalScalarFiberEnd s) ((LinearStudy.coextensionOriginalScalarFiberEnd s) m) =
+        (LinearStudy.coextensionOriginalScalarFiberEnd s) m
+'LinearStudy.coextensionOriginalScalarFiberEnd_idempotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.coextensionOriginalFiberTrace_tmul : ∀ {R S K : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Field K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [inst_5 : Module.Free R S]
+  [inst_6 : Module.Finite R S] (a : K)
+  (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+  LinearStudy.coextensionOriginalFiberTrace (a ⊗ₜ[R] ell) =
+    a *
+      (algebraMap R K)
+        (LinearStudy.coextensionOriginalEvaluationAtOne
+          (have this := ell;
+          this))
+'LinearStudy.coextensionOriginalFiberTrace_tmul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.coextensionOriginalFiberTrace_actual_point_exists_one : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : Field K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [inst_5 : Module.Free R S]
+  [inst_6 : Module.Finite R S] (s : S),
+  1 ⊗ₜ[R] s ≠ 0 →
+    1 ⊗ₜ[R] s * 1 ⊗ₜ[R] s = 1 ⊗ₜ[R] s →
+      ∃ (m :
+        TensorProduct R K
+          ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+        (LinearStudy.coextensionOriginalScalarFiberEnd s) m = m ∧ LinearStudy.coextensionOriginalFiberTrace m = 1
+'LinearStudy.coextensionOriginalFiberTrace_actual_point_exists_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.coextensionOriginalScalarFiberEnd_eq_of_fiber_eq : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : Field K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [Module.Free R S]
+  [Module.Finite R S] (s t : S),
+  1 ⊗ₜ[R] s = 1 ⊗ₜ[R] t →
+    LinearStudy.coextensionOriginalScalarFiberEnd s = LinearStudy.coextensionOriginalScalarFiberEnd t
+'LinearStudy.coextensionOriginalScalarFiberEnd_eq_of_fiber_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.coextensionOriginalResidueFiberPointEnd : {R S K : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Field K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            Function.Surjective ⇑(algebraMap R K) →
+              TensorProduct R K S →
+                TensorProduct R K
+                    ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                        ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) →ₗ[K]
+                  TensorProduct R K
+                    ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                        ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))
+'LinearStudy.coextensionOriginalResidueFiberPointEnd' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.coextensionOriginalResidueFiberPointEnd_of_lift : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : Field K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [Module.Free R S]
+  [Module.Finite R S] (hres : Function.Surjective ⇑(algebraMap R K)) (e : TensorProduct R K S) (s : S),
+  1 ⊗ₜ[R] s = e →
+    LinearStudy.coextensionOriginalResidueFiberPointEnd hres e = LinearStudy.coextensionOriginalScalarFiberEnd s
+'LinearStudy.coextensionOriginalResidueFiberPointEnd_of_lift' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.coextensionOriginalResidueFiberPointEnd_idempotent : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : Field K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [Module.Free R S]
+  [Module.Finite R S] (hres : Function.Surjective ⇑(algebraMap R K)) (e : TensorProduct R K S),
+  e * e = e →
+    ∀
+      (m :
+        TensorProduct R K
+          ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+      (LinearStudy.coextensionOriginalResidueFiberPointEnd hres e)
+          ((LinearStudy.coextensionOriginalResidueFiberPointEnd hres e) m) =
+        (LinearStudy.coextensionOriginalResidueFiberPointEnd hres e) m
+'LinearStudy.coextensionOriginalResidueFiberPointEnd_idempotent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.coextensionOriginalResidueFiberPointTrace_exists_one : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : Field K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [inst_5 : Module.Free R S]
+  [inst_6 : Module.Finite R S] (hres : Function.Surjective ⇑(algebraMap R K)) (e : TensorProduct R K S),
+  e ≠ 0 →
+    e * e = e →
+      ∃ (m :
+        TensorProduct R K
+          ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+        (LinearStudy.coextensionOriginalResidueFiberPointEnd hres e) m = m ∧
+          LinearStudy.coextensionOriginalFiberTrace m = 1
+'LinearStudy.coextensionOriginalResidueFiberPointTrace_exists_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.coextensionOriginalDualTensorEquiv.{u} : {R S K : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            [Module.Free R S] →
+              [Module.Finite R S] →
+                TensorProduct R K
+                    ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                        ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[K]
+                  Module.Dual K (TensorProduct R K S) :=
+fun {R S K : Type u} [CommRing R] [CommRing S] [CommRing K] [Algebra R S] [Algebra R K] [Module.Free R S]
+    [Module.Finite R S] =>
+  (LinearEquiv.baseChange R K
+        (↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+        (Module.Dual R S) LinearStudy.coextensionOriginalDualEquiv).trans
+    ⋯.toDualBaseChange
+def LinearStudy.coextensionOriginalScalarRLinear.{u} : {R S : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra R S] →
+        S →
+          ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) →ₗ[R]
+            ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) :=
+fun {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] (s : S) =>
+  {
+    toFun :=
+      fun
+        (ell :
+          ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))) =>
+      have this :=
+        s •
+          have this := ell;
+          this;
+      this,
+    map_add' := ⋯, map_smul' := ⋯ }
+def LinearStudy.coextensionOriginalScalarFiberEnd.{u} : {R S K : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Field K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            S →
+              TensorProduct R K
+                  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                      ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) →ₗ[K]
+                TensorProduct R K
+                  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                      ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) :=
+fun {R S K : Type u} [CommRing R] [CommRing S] [Field K] [Algebra R S] [Algebra R K] (s : S) =>
+  LinearMap.baseChange K (LinearStudy.coextensionOriginalScalarRLinear s)
+def LinearStudy.coextensionOriginalFiberTrace.{u} : {R S K : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Field K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            [Module.Free R S] →
+              [Module.Finite R S] →
+                Module.Dual K
+                  (TensorProduct R K
+                    ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                        ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))) :=
+fun {R S K : Type u} [CommRing R] [CommRing S] [Field K] [Algebra R S] [Algebra R K] [Module.Free R S]
+    [Module.Finite R S] =>
+  (Module.Dual.eval K (TensorProduct R K S)) 1 ∘ₗ ↑LinearStudy.coextensionOriginalDualTensorEquiv
+def LinearStudy.coextensionOriginalResidueFiberPointEnd.{u} : {R S K : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Field K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            Function.Surjective ⇑(algebraMap R K) →
+              TensorProduct R K S →
+                TensorProduct R K
+                    ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                        ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) →ₗ[K]
+                  TensorProduct R K
+                    ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                        ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) :=
+fun {R S K : Type u} [CommRing R] [CommRing S] [Field K] [Algebra R S] [Algebra R K]
+    (hres : Function.Surjective ⇑(algebraMap R K)) (e : TensorProduct R K S) =>
+  LinearStudy.coextensionOriginalScalarFiberEnd (Classical.choose ⋯)
+def LinearStudy.coextensionOriginalDualEquiv.{u} : {R S : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra R S] →
+        ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[R]
+          Module.Dual R S :=
+fun {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] =>
+  LinearStudy.restrictedCoextensionDualEquiv.trans (Module.Dual.congr LinearStudy.restrictedAlgebraModuleEquiv)
+'LinearStudy.coextensionOriginalDualEquiv' depends on axioms: [propext, Quot.sound]
+def LinearStudy.coextensionOriginalEvaluationAtOne.{u} : {R S : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra R S] → Module.Dual R ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R) :=
+fun {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] =>
+  (Module.Dual.eval R S) 1 ∘ₗ ↑LinearStudy.coextensionOriginalDualEquiv
+'LinearStudy.coextensionOriginalEvaluationAtOne' depends on axioms: [propext, Quot.sound]
+ROLECHECK:LinearStudy.coextensionFieldTrace_nonzero_element_exists_one:true
+KINDCHECK:LinearStudy.coextensionFieldTrace_nonzero_element_exists_one:theorem
+ROLECHECK:LinearStudy.coextensionFieldTrace_idempotent_fixed_exists_one:true
+KINDCHECK:LinearStudy.coextensionFieldTrace_idempotent_fixed_exists_one:theorem
+ROLECHECK:LinearStudy.coextensionOriginalDualTensorEquiv:false
+KINDCHECK:LinearStudy.coextensionOriginalDualTensorEquiv:definition
+ROLECHECK:LinearStudy.coextensionOriginalDualTensorEquiv_tmul_apply:true
+KINDCHECK:LinearStudy.coextensionOriginalDualTensorEquiv_tmul_apply:theorem
+ROLECHECK:LinearStudy.coextensionOriginalDualTensorEquiv_original_evaluation:true
+KINDCHECK:LinearStudy.coextensionOriginalDualTensorEquiv_original_evaluation:theorem
+ROLECHECK:LinearStudy.coextensionOriginalScalarRLinear:false
+KINDCHECK:LinearStudy.coextensionOriginalScalarRLinear:definition
+ROLECHECK:LinearStudy.coextensionOriginalScalarFiberEnd:false
+KINDCHECK:LinearStudy.coextensionOriginalScalarFiberEnd:definition
+ROLECHECK:LinearStudy.coextensionOriginalFiberTrace:false
+KINDCHECK:LinearStudy.coextensionOriginalFiberTrace:definition
+ROLECHECK:LinearStudy.coextensionOriginalDualTensorEquiv_both_tmul:true
+KINDCHECK:LinearStudy.coextensionOriginalDualTensorEquiv_both_tmul:theorem
+ROLECHECK:LinearStudy.coextensionOriginalDualTensorEquiv_scalar_naturality:true
+KINDCHECK:LinearStudy.coextensionOriginalDualTensorEquiv_scalar_naturality:theorem
+ROLECHECK:LinearStudy.coextensionOriginalScalarFiberEnd_idempotent:true
+KINDCHECK:LinearStudy.coextensionOriginalScalarFiberEnd_idempotent:theorem
+ROLECHECK:LinearStudy.coextensionOriginalFiberTrace_tmul:true
+KINDCHECK:LinearStudy.coextensionOriginalFiberTrace_tmul:theorem
+ROLECHECK:LinearStudy.coextensionOriginalFiberTrace_actual_point_exists_one:true
+KINDCHECK:LinearStudy.coextensionOriginalFiberTrace_actual_point_exists_one:theorem
+ROLECHECK:LinearStudy.coextensionOriginalScalarFiberEnd_eq_of_fiber_eq:true
+KINDCHECK:LinearStudy.coextensionOriginalScalarFiberEnd_eq_of_fiber_eq:theorem
+ROLECHECK:LinearStudy.coextensionOriginalResidueFiberPointEnd:false
+KINDCHECK:LinearStudy.coextensionOriginalResidueFiberPointEnd:definition
+ROLECHECK:LinearStudy.coextensionOriginalResidueFiberPointEnd_of_lift:true
+KINDCHECK:LinearStudy.coextensionOriginalResidueFiberPointEnd_of_lift:theorem
+ROLECHECK:LinearStudy.coextensionOriginalResidueFiberPointEnd_idempotent:true
+KINDCHECK:LinearStudy.coextensionOriginalResidueFiberPointEnd_idempotent:theorem
+ROLECHECK:LinearStudy.coextensionOriginalResidueFiberPointTrace_exists_one:true
+KINDCHECK:LinearStudy.coextensionOriginalResidueFiberPointTrace_exists_one:theorem

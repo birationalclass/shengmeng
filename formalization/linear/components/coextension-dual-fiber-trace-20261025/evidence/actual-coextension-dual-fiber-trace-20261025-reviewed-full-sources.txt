@@ -1,0 +1,304 @@
+SOURCE Linear.CoextensionFieldPointTrace
+module
+public import Linear.CoextensionEvaluationAtOne
+public import Mathlib.LinearAlgebra.Dual.Lemmas
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory
+universe u
+variable {K A : Type u} [Field K] [CommRing A] [Algebra K A]
+/-- For the ACTUAL coextension over the residue field,the ORIGINAL
+evaluation-at-one is nonzero on multiplication by EVERY nonzero e.
+No arbitrary perfect functional replaces this trace;A need not be a domain. -/
+theorem coextensionFieldTrace_nonzero_element_exists_one
+    (e : A) (he : e ≠ 0) :
+    ∃ ell : (ModuleCat.coextendScalars (algebraMap K A)).obj (ModuleCat.of K K),
+      coextensionOriginalEvaluationAtOne (R:=K) (S:=A) (e • ell)=1 := by
+  obtain ⟨f,hf⟩ := Module.Projective.exists_dual_eq_one K he
+  let ell : (ModuleCat.coextendScalars (algebraMap K A)).obj (ModuleCat.of K K) := (coextensionOriginalDualEquiv (R:=K) (S:=A)).symm f
+  refine ⟨ell,?_⟩
+  have hval := congrArg (fun g : Module.Dual K A => g e)
+    ((coextensionOriginalDualEquiv (R:=K) (S:=A)).apply_symm_apply f)
+  change ell e = f e at hval
+  rw [coextensionOriginalEvaluationAtOne_apply,ModuleCat.CoextendScalars.smul_apply]
+  simpa only [one_mul,hval] using hf
+/-- The SAME actual trace takes1 on the ACTUAL idempotent-fixed
+coefficient subspace. This is the algebraic fiber lemma only:the original
+geometric coefficient/Ext base change is not supplied or asserted. -/
+theorem coextensionFieldTrace_idempotent_fixed_exists_one
+    (e : A) (he : e ≠ 0) (hi : e*e=e) :
+    ∃ eta : (ModuleCat.coextendScalars (algebraMap K A)).obj (ModuleCat.of K K),
+      e • eta=eta ∧ coextensionOriginalEvaluationAtOne (R:=K) (S:=A) eta=1 := by
+  obtain ⟨ell,hell⟩ := coextensionFieldTrace_nonzero_element_exists_one (K:=K) e he
+  refine ⟨e • ell,?_,hell⟩
+  rw [← mul_smul,hi]
+end LinearStudy
+
+
+SOURCE Linear.CoextensionOriginalDualTensorBaseChange
+module
+public import Linear.CoextensionEvaluationAtOne
+public import Mathlib.LinearAlgebra.Dual.BaseChange
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+variable {R S K : Type u} [CommRing R] [CommRing S] [CommRing K]
+variable [Algebra R S] [Algebra R K] [Module.Free R S] [Module.Finite R S]
+/-- ACTUAL base change of the ORIGINAL restricted coextension dual.
+Finite/free hypotheses are EXPLICIT here;no global freeness of original
+geometric S/R is asserted. Reuse mathlib's actual dual base-change iso. -/
+def coextensionOriginalDualTensorEquiv :
+    K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj
+      ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))) ≃ₗ[K]
+        Module.Dual K (K ⊗[R] S) :=
+  (coextensionOriginalDualEquiv (R:=R) (S:=S)).baseChange R K _ _ ≪≫ₗ
+    (TensorProduct.isBaseChange R S K).toDualBaseChange
+/-- The ACTUAL comparison retains the ORIGINAL dual values on pure
+fiber tensors;no transported scalar or desired trace law is an input. -/
+theorem coextensionOriginalDualTensorEquiv_tmul_apply
+    (a : K) (ell : (ModuleCat.restrictScalars (algebraMap R S)).obj
+      ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))) (s : S) :
+    coextensionOriginalDualTensorEquiv (a ⊗ₜ[R] ell) ((1:K) ⊗ₜ[R] s)=
+      a * algebraMap R K ((coextensionOriginalDualEquiv (R:=R) (S:=S) ell) s) := by
+  simpa only [coextensionOriginalDualTensorEquiv,LinearEquiv.trans_apply,
+    LinearEquiv.baseChange_tmul,TensorProduct.mk_apply] using
+      (TensorProduct.isBaseChange R S K).toDualBaseChange_tmul a
+        (coextensionOriginalDualEquiv (R:=R) (S:=S) ell) s
+/-- Evaluation on the ACTUAL tensor unit is the base change of the
+ORIGINAL eval-at-one. This is an algebraic finite-free comparison only;
+original geometric local freeness,Ext comparison and top-H calibration
+remain separate obligations. -/
+theorem coextensionOriginalDualTensorEquiv_original_evaluation
+    (a : K) (ell : (ModuleCat.restrictScalars (algebraMap R S)).obj
+      ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))) :
+    coextensionOriginalDualTensorEquiv (a ⊗ₜ[R] ell) ((1:K) ⊗ₜ[R] (1:S))=
+      a * algebraMap R K (coextensionOriginalEvaluationAtOne (R:=R) (S:=S)
+        (show (ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R) from ell)) := by
+  exact coextensionOriginalDualTensorEquiv_tmul_apply a ell (1:S)
+end LinearStudy
+
+
+SOURCE Linear.CoextensionOriginalFiberPointProjector
+module
+public import Linear.CoextensionFieldPointTrace
+public import Linear.CoextensionOriginalDualTensorBaseChange
+public import Mathlib.RingTheory.TensorProduct.Basic
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+variable {R S K : Type u} [CommRing R] [CommRing S] [Field K]
+variable [Algebra R S] [Algebra R K] [Module.Free R S] [Module.Finite R S]
+/-- The ORIGINAL S multiplication on actual coextension,restricted to
+an R-linear map. No scalar action is transported through a dual comparison. -/
+def coextensionOriginalScalarRLinear (s : S) : ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))) →ₗ[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))) where
+  toFun ell := show ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))) from s • (show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from ell)
+  map_add' x y := by
+    change s • ((show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from x)+(show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from y))=
+      s • (show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from x)+s • (show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from y)
+    exact smul_add _ _ _
+  map_smul' r ell := by
+    change s • (algebraMap R S r • (show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from ell))=
+      algebraMap R S r • (s • (show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from ell))
+    exact smul_comm _ _ _
+/-- Base change of that SAME actual scalar endomorphism. -/
+def coextensionOriginalScalarFiberEnd (s : S) : (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) →ₗ[K] (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) :=
+  (coextensionOriginalScalarRLinear (R:=R) s).baseChange K
+/-- ORIGINAL base-changed eval-at-one,defined at the ACTUAL tensor unit. -/
+def coextensionOriginalFiberTrace : Module.Dual K (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) :=
+  (Module.Dual.eval K (K ⊗[R] S) (1:(K ⊗[R] S))).comp
+    (coextensionOriginalDualTensorEquiv (R:=R) (S:=S) (K:=K)).toLinearMap
+attribute [local irreducible] coextensionOriginalDualTensorEquiv
+/-- Values on BOTH actual pure tensors,from mathlib base change. -/
+theorem coextensionOriginalDualTensorEquiv_both_tmul
+    (a b : K) (ell : ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) (t : S) :
+    coextensionOriginalDualTensorEquiv (a ⊗ₜ[R] ell) (b ⊗ₜ[R] t)=
+      b * (a * algebraMap R K ((coextensionOriginalDualEquiv (R:=R) (S:=S) ell) t)) := by
+  calc
+    _ = coextensionOriginalDualTensorEquiv (a ⊗ₜ[R] ell)
+        (b • ((1:K) ⊗ₜ[R] t)) := by
+      rw [TensorProduct.smul_tmul',smul_eq_mul,mul_one]
+    _ = b * coextensionOriginalDualTensorEquiv (a ⊗ₜ[R] ell) ((1:K) ⊗ₜ[R] t) := by
+      rw [map_smul,smul_eq_mul]
+    _ = _ := by rw [coextensionOriginalDualTensorEquiv_tmul_apply]
+/-- The actual tensor comparison respects ORIGINAL S coefficient action.
+It is a theorem about the original endomorphism,not a transported action. -/
+theorem coextensionOriginalDualTensorEquiv_scalar_naturality
+    (s : S) (m : (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))))) (z : (K ⊗[R] S)) :
+    coextensionOriginalDualTensorEquiv
+        (coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s m) z=
+      coextensionOriginalDualTensorEquiv m (z*((1:K) ⊗ₜ[R] s)) := by
+  induction m using TensorProduct.inductionOn with
+  | add m n hm hn => simp only [map_add,LinearMap.add_apply,hm,hn]
+  | tmul a ell =>
+    change coextensionOriginalDualTensorEquiv
+      (a ⊗ₜ[R] (show ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))) from s • (show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from ell))) z=
+        coextensionOriginalDualTensorEquiv (a ⊗ₜ[R] ell) (z*((1:K) ⊗ₜ[R] s))
+    induction z using TensorProduct.inductionOn with
+    | add z w hz hw => simp only [add_mul,map_add,hz,hw]
+    | tmul b t =>
+      rw [Algebra.TensorProduct.tmul_mul_tmul,mul_one]
+      rw [coextensionOriginalDualTensorEquiv_both_tmul,
+        coextensionOriginalDualTensorEquiv_both_tmul]
+      change b * (a * algebraMap R K ((s • (show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from ell)) t))=
+        b * (a * algebraMap R K ((show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from ell) (t*s)))
+      rw [ModuleCat.CoextendScalars.smul_apply]
+/-- The actual ORIGINAL scalar tensor endomorphism is idempotent as soon
+as its ACTUAL fiber scalar is idempotent. No transported coefficient action. -/
+theorem coextensionOriginalScalarFiberEnd_idempotent (s : S)
+    (hi : ((1:K) ⊗ₜ[R] s : K ⊗[R] S)*((1:K) ⊗ₜ[R] s)=((1:K) ⊗ₜ[R] s)) :
+    ∀ m,coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s
+      (coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s m)=
+        coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s m := by
+  intro m
+  apply (coextensionOriginalDualTensorEquiv (R:=R) (S:=S) (K:=K)).injective
+  apply LinearMap.ext
+  intro z
+  calc
+    _ = coextensionOriginalDualTensorEquiv
+        (coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s m) (z*((1:K) ⊗ₜ[R] s)) :=
+      coextensionOriginalDualTensorEquiv_scalar_naturality s _ z
+    _ = coextensionOriginalDualTensorEquiv m ((z*((1:K) ⊗ₜ[R] s))*((1:K) ⊗ₜ[R] s)) :=
+      coextensionOriginalDualTensorEquiv_scalar_naturality s m _
+    _ = coextensionOriginalDualTensorEquiv m (z*((1:K) ⊗ₜ[R] s)) := by rw [mul_assoc,hi]
+    _ = _ := (coextensionOriginalDualTensorEquiv_scalar_naturality s m z).symm
+/-- The actual fiber trace retains ORIGINAL eval-at-one on pure coefficients. -/
+theorem coextensionOriginalFiberTrace_tmul (a : K) (ell : ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) :
+    coextensionOriginalFiberTrace (a ⊗ₜ[R] ell)=
+      a * algebraMap R K (coextensionOriginalEvaluationAtOne (R:=R) (S:=S)
+        (show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from ell)) := by
+  change coextensionOriginalDualTensorEquiv (a ⊗ₜ[R] ell) (1:(K ⊗[R] S))=_
+  rw [Algebra.TensorProduct.one_def]
+  exact coextensionOriginalDualTensorEquiv_original_evaluation a ell
+/-- For any ORIGINAL scalar whose ACTUAL fiber class is a nonzero
+idempotent,the SAME original scalar tensor endomorphism fixes a coefficient
+on which the SAME actual fiber trace takes1. Finite/free input remains
+EXPLICIT;original geometric freeness/Ext comparison/top-H calibration
+and nonzero ORIGINAL geometric point weights are NOT asserted. -/
+theorem coextensionOriginalFiberTrace_actual_point_exists_one
+    (s : S) (he : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S)) ≠ 0)
+    (hi : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S))*((1:K) ⊗ₜ[R] s)=((1:K) ⊗ₜ[R] s)) :
+    ∃ m : (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))),coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s m=m ∧
+      coextensionOriginalFiberTrace m=1 := by
+  let e : (K ⊗[R] S) := (1:K) ⊗ₜ[R] s
+  obtain ⟨eta,heta,htrace⟩ := coextensionFieldTrace_idempotent_fixed_exists_one
+    (K:=K) e he hi
+  let f : Module.Dual K (K ⊗[R] S) :=
+    coextensionOriginalDualEquiv (R:=K) (S:=(K ⊗[R] S)) eta
+  let m : (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) := (coextensionOriginalDualTensorEquiv (R:=R) (S:=S) (K:=K)).symm f
+  have hm : coextensionOriginalDualTensorEquiv m=f :=
+    (coextensionOriginalDualTensorEquiv (R:=R) (S:=S) (K:=K)).apply_symm_apply f
+  refine ⟨m,?_,?_⟩
+  · apply (coextensionOriginalDualTensorEquiv (R:=R) (S:=S) (K:=K)).injective
+    apply LinearMap.ext
+    intro z
+    calc
+      _ = coextensionOriginalDualTensorEquiv m (z*e) :=
+        coextensionOriginalDualTensorEquiv_scalar_naturality s m z
+      _ = f (z*e) := LinearMap.congr_fun hm _
+      _ = (coextensionOriginalDualEquiv (R:=K) (S:=(K ⊗[R] S)) (e • eta)) z := by
+        change eta (z*e)=(e • eta) z
+        rw [ModuleCat.CoextendScalars.smul_apply]
+      _ = f z := by rw [heta]
+      _ = _ := (LinearMap.congr_fun hm z).symm
+  · change coextensionOriginalDualTensorEquiv m (1:(K ⊗[R] S))=1
+    rw [hm]
+    exact htrace
+end LinearStudy
+
+
+SOURCE Linear.CoextensionResidueFiberPointProjector
+module
+public import Linear.CoextensionOriginalFiberPointProjector
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+variable {R S K : Type u} [CommRing R] [CommRing S] [Field K]
+variable [Algebra R S] [Algebra R K] [Module.Free R S] [Module.Finite R S]
+/-- Equality of ACTUAL fiber scalars gives equality of ORIGINAL scalar
+tensor endomorphisms. No action is transported through the comparison. -/
+theorem coextensionOriginalScalarFiberEnd_eq_of_fiber_eq
+    (s t : S) (h : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S))=((1:K) ⊗ₜ[R] t)) :
+    coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s=
+      coextensionOriginalScalarFiberEnd (R:=R) (K:=K) t := by
+  apply LinearMap.ext
+  intro m
+  apply (coextensionOriginalDualTensorEquiv (R:=R) (S:=S) (K:=K)).injective
+  apply LinearMap.ext
+  intro z
+  rw [coextensionOriginalDualTensorEquiv_scalar_naturality,
+    coextensionOriginalDualTensorEquiv_scalar_naturality,h]
+/-- An ACTUAL residue-base surjection derives representatives of EVERY
+fiber scalar. Choose a representative and use ORIGINAL S multiplication,
+not multiplication transported through a duality isomorphism. Independence
+of this representative is PROVED below. -/
+def coextensionOriginalResidueFiberPointEnd
+    (hres : Function.Surjective (algebraMap R K)) (e : (K ⊗[R] S)) :
+    (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) →ₗ[K] (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) :=
+  coextensionOriginalScalarFiberEnd (R:=R) (K:=K)
+    (Classical.choose (Algebra.TensorProduct.includeRight_surjective
+      (R:=R) (S:=K) (T:=S) hres e))
+/-- The ACTUAL constructed endomorphism equals ORIGINAL multiplication
+for EVERY representative,so its definition does not impose any desired law. -/
+theorem coextensionOriginalResidueFiberPointEnd_of_lift
+    (hres : Function.Surjective (algebraMap R K)) (e : (K ⊗[R] S))
+    (s : S) (hs : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S))=e) :
+    coextensionOriginalResidueFiberPointEnd hres e=
+      coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s := by
+  unfold coextensionOriginalResidueFiberPointEnd
+  apply coextensionOriginalScalarFiberEnd_eq_of_fiber_eq
+  have hc := Classical.choose_spec (Algebra.TensorProduct.includeRight_surjective
+    (R:=R) (S:=K) (T:=S) hres e)
+  have hc' : ((1:K) ⊗ₜ[R] Classical.choose
+      (Algebra.TensorProduct.includeRight_surjective (R:=R) (S:=K) (T:=S) hres e) : (K ⊗[R] S))=e := by
+    simpa only [Algebra.TensorProduct.includeRight_apply] using hc
+  exact hc'.trans hs.symm
+/-- Every ACTUAL fiber idempotent gives an ACTUAL coefficient projector,
+constructed by ORIGINAL source action. -/
+theorem coextensionOriginalResidueFiberPointEnd_idempotent
+    (hres : Function.Surjective (algebraMap R K)) (e : (K ⊗[R] S)) (hi : e*e=e) :
+    ∀ m,coextensionOriginalResidueFiberPointEnd hres e
+      (coextensionOriginalResidueFiberPointEnd hres e m)=
+        coextensionOriginalResidueFiberPointEnd hres e m := by
+  obtain ⟨s,hs⟩ := Algebra.TensorProduct.includeRight_surjective
+    (R:=R) (S:=K) (T:=S) hres e
+  have hs' : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S))=e := by
+    simpa only [Algebra.TensorProduct.includeRight_apply] using hs
+  rw [coextensionOriginalResidueFiberPointEnd_of_lift hres e s hs']
+  exact coextensionOriginalScalarFiberEnd_idempotent s (by simpa only [hs'] using hi)
+/-- The SAME ORIGINAL fiber trace takes1 on EVERY nonzero actual fiber
+idempotent's ACTUAL original-action coefficient component. Finite/free and
+residue-base surjectivity remain EXPLICIT algebraic hypotheses. Original
+geometric local freeness,Ext comparison and top-H trace calibration are
+NOT supplied;original geometric point weights/main remain OPEN. -/
+theorem coextensionOriginalResidueFiberPointTrace_exists_one
+    (hres : Function.Surjective (algebraMap R K)) (e : (K ⊗[R] S))
+    (he : e ≠ 0) (hi : e*e=e) :
+    ∃ m : (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))),coextensionOriginalResidueFiberPointEnd hres e m=m ∧
+      coextensionOriginalFiberTrace (R:=R) (S:=S) (K:=K) m=1 := by
+  obtain ⟨s,hs⟩ := Algebra.TensorProduct.includeRight_surjective
+    (R:=R) (S:=K) (T:=S) hres e
+  have hs' : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S))=e := by
+    simpa only [Algebra.TensorProduct.includeRight_apply] using hs
+  have hsne : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S)) ≠ 0 := by simpa only [hs'] using he
+  have hsi : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S))*((1:K) ⊗ₜ[R] s)=((1:K) ⊗ₜ[R] s) := by
+    simpa only [hs'] using hi
+  obtain ⟨m,hm,ht⟩ := coextensionOriginalFiberTrace_actual_point_exists_one s hsne hsi
+  refine ⟨m,?_,ht⟩
+  rw [coextensionOriginalResidueFiberPointEnd_of_lift hres e s hs']
+  exact hm
+end LinearStudy
