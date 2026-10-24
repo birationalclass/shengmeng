@@ -1,7 +1,7 @@
 import * as T from '../vendor/three.module.js';
 import {profile} from './stroke-volume.js';
 import {sampleRailSection} from './yang-volume.js';
-import {brushHead} from './brush-gesture.js?v=15';
+import {brushHead} from './brush-gesture.js?v=16';
 
 const cubic2=(a,b,c,d,t)=>{const v=1-t;return [0,1].map(i=>a[i]*v*v*v+3*b[i]*v*v*t+3*c[i]*v*t*t+d[i]*t*t*t);};
 const continuousCaches=new WeakMap();
@@ -44,7 +44,7 @@ export function smoothSectionJoinNormals(g,s,p){
 // Four independently defined rails, connected with tangent cubic quarters.
 // Width grows from boundary A. It is not a tube appearing from its centre.
 function updateBoundaryBrushGeometry(g,s,progress,writing){
- if(s.runSegments&&s.cacheSections!==false)return updateContinuousGeometry(g,s,progress,writing);
+ if((s.runSegments||s.cursive)&&s.cacheSections!==false)return updateContinuousGeometry(g,s,progress,writing);
  const {L,R}=g.userData,positions=g.attributes.position.array,p=T.MathUtils.clamp(progress,.00001,1),h=.5522847498307936;
  sampleRailSection(s,0).center.toArray(positions,0);
  const tip=sampleRailSection(s,p);

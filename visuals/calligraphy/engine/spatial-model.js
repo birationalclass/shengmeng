@@ -1,8 +1,8 @@
-import {applyBrushPlan} from '../brush-planner.js?v=15';
+import {applyBrushPlan} from '../brush-planner.js?v=16';
 import * as T from '../vendor/three.module.js';
 import {profile,sampleSection} from './stroke-volume.js';
 import {sampleRailSection} from './yang-volume.js';
-import {prepareVolume} from './surface.js?v=15';
+import {prepareVolume} from './surface.js?v=16';
 import {guardRailBends} from './bend-guard.js';
 import {attachStrokeLink} from './stroke-link.js';
 import {combineContinuousRuns} from './continuous-run.js';

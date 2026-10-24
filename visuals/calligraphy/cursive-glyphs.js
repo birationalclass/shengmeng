@@ -18,7 +18,7 @@ function stroke(name,stations,start,end,options={}){
   across.multiplyScalar(Math.cos(bank)).addScaledVector(normal,Math.sin(bank));
   a.push(p.clone().addScaledVector(across,-r).toArray());b.push(p.clone().addScaledVector(across,r).toArray());
  }
- return {name,a,b,start,end,brush:'authored-cursive-lens-v1',cursive:true,boundaryLoft:true,
+ return {name,a,b,start,end,brush:'authored-cursive-lens-v1',cursive:true,boundaryLoft:true,longitudinalScale:Math.max(1,curve.getLength()/5),
   front:[.25,.31,.27,.34,.26],back:[.17,.21,.19,.22,.16],crown:[.46,.55,.48,.57,.5],rearCrown:[.5,.48,.52],camber:[0,.025,-.025,.02,0],
   capStart:0,capEnd:0,sectionPower:[2.2,2.4,2.2],motion:[0,.04,.18,.4,.68,.89,1],
   gesture:{anchor:'a',wake:.055,tipSpread:[.35,.55,.45,.62,.42],pressure:[.6,1,.84,1.05,.7],roll:[-.14,.2,-.18,.22,0],

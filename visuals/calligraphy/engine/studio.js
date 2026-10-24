@@ -5,12 +5,12 @@ import {RoomEnvironment} from '../vendor/RoomEnvironment.js';
 import {OrbitControls} from '../vendor/OrbitControls.js';
 import {profile} from './stroke-volume.js';
 import {catalog,materialPresets,classicMaterialPresets,materialVersions} from './catalog.js';
-import {createVolume,updateVolume} from './surface.js?v=15';
+import {createVolume,updateVolume} from './surface.js?v=16';
 import {zipStore,modelFiles} from './export-format.js';
-import {createTextGlyph,cleanText} from './text-engine.js?v=15';
-import {prepareSpatialModel,constructionCurves} from './spatial-model.js?v=15';
+import {createTextGlyph,cleanText} from './text-engine.js?v=16';
+import {prepareSpatialModel,constructionCurves} from './spatial-model.js?v=16';
 import {sampleRailSection} from './yang-volume.js';
-import {writingProgress,writingPhase} from './brush-gesture.js?v=15';
+import {writingProgress,writingPhase} from './brush-gesture.js?v=16';
 import {windReferencePreset,windReferencePresetV8} from './wind-reference.js';
 import {createReferenceEnvironment} from './reference-environment.js';
 

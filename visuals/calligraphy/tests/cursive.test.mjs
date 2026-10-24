@@ -24,6 +24,13 @@ test('cursive letters have authored continuous surfaces and an original comparis
   let previous=-1;for(let k=0;k<=200;k++){const p=writingProgress(part.spec,k/200);assert.ok(p>=previous-1e-9);previous=p;}
   const geometry=createVolume(80,32);
   for(const p of [.00001,.06,.25,.45,.65,.85,1]){updateVolume(geometry,part.spec,part.kind,p,.27,'flow');assert.ok(geometry.attributes.position.array.every(Number.isFinite));}
+  const direct=createVolume(80,32);
+  for(const p of [.36,.73,1]){
+   updateVolume(geometry,part.spec,part.kind,p,0,'flow');updateVolume(direct,{...part.spec,cacheSections:false},part.kind,p,0,'flow');
+   const a=geometry.attributes.position.array,b=direct.attributes.position.array;
+   assert.ok(a.reduce((max,v,i)=>Math.max(max,Math.abs(v-b[i])),0)<.003,'Cached long-stroke sections retain the directly lofted shape.');
+  }
+  direct.dispose();
   geometry.dispose();
  }
  const depth=Array.from({length:301},(_,i)=>sampleRailSection(meng[0].spec,i/300).center.z);

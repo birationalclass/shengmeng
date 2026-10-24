@@ -1,4 +1,4 @@
-import {cursiveGlyphs} from '../cursive-glyphs.js?v=15';
+import {cursiveGlyphs} from '../cursive-glyphs.js?v=16';
 import * as T from '../vendor/three.module.js';
 import {catalog} from './catalog.js';
 import {availableCharacters} from './coverage.js';
