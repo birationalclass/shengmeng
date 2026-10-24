@@ -1,0 +1,401 @@
+@LinearStudy.schemeModuleUnitHomGlobalSections_symm_map : ∀ {X : AlgebraicGeometry.Scheme} {D E : X.Modules} (b : D ⟶ E)
+  (s : ↑(D.presheaf.obj (Opposite.op ⊤))),
+  (LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv X E).symm
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app b ⊤)) s) =
+    CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv X D).symm s) b
+'LinearStudy.schemeModuleUnitHomGlobalSections_symm_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleExtSectionTracePairing_source_naturality : ∀ {X : AlgebraicGeometry.Scheme} {D E W : X.Modules}
+  {r : ℕ} {K : Type u_2} [inst : AddCommGroup K] (b : D ⟶ E)
+  (trace : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ K)
+  (z : CategoryTheory.Abelian.Ext E W r) (s : ↑(D.presheaf.obj (Opposite.op ⊤))),
+  (LinearStudy.schemeModuleExtSectionTracePairing trace ((CategoryTheory.Abelian.Ext.mk₀ b).comp z ⋯)) s =
+    (LinearStudy.schemeModuleExtSectionTracePairing trace z)
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app b ⊤)) s)
+'LinearStudy.schemeModuleExtSectionTracePairing_source_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleExtSectionTracePairing_zero_of_source_projector : ∀ {X : AlgebraicGeometry.Scheme}
+  {E W : X.Modules} {r : ℕ} {K : Type u_2} [inst : AddCommGroup K] (b : E ⟶ E)
+  (trace : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ K)
+  (z : CategoryTheory.Abelian.Ext E W r),
+  (CategoryTheory.Abelian.Ext.mk₀ b).comp z ⋯ = z →
+    ∀ (s : ↑(E.presheaf.obj (Opposite.op ⊤))),
+      (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app b ⊤)) s = 0 →
+        (LinearStudy.schemeModuleExtSectionTracePairing trace z) s = 0
+'LinearStudy.schemeModuleExtSectionTracePairing_zero_of_source_projector' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.discreteScheme_exists_open_idempotent : ∀ (D : AlgebraicGeometry.Scheme) [inst : DiscreteTopology ↥D]
+  (U : D.Opens),
+  ∃ (e : ↑(D.presheaf.obj (Opposite.op ⊤))),
+    (CategoryTheory.ConcreteCategory.hom (D.presheaf.map (TopologicalSpace.Opens.leTop U).op)) e = 1 ∧
+      (CategoryTheory.ConcreteCategory.hom
+              (D.presheaf.map
+                (TopologicalSpace.Opens.leTop
+                    (have this := { carrier := (↑U)ᶜ, is_open' := ⋯ };
+                    this)).op))
+            e =
+          0 ∧
+        e * e = e
+'LinearStudy.discreteScheme_exists_open_idempotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.discreteSchemeOpenIdempotent : (D : AlgebraicGeometry.Scheme) →
+  [DiscreteTopology ↥D] → D.Opens → ↑(D.presheaf.obj (Opposite.op ⊤))
+'LinearStudy.discreteSchemeOpenIdempotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.discreteSchemeOpenIdempotent_restrict_one : ∀ (D : AlgebraicGeometry.Scheme) [inst : DiscreteTopology ↥D]
+  (U : D.Opens),
+  (CategoryTheory.ConcreteCategory.hom (D.presheaf.map (TopologicalSpace.Opens.leTop U).op))
+      (LinearStudy.discreteSchemeOpenIdempotent D U) =
+    1
+'LinearStudy.discreteSchemeOpenIdempotent_restrict_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.discreteSchemeOpenIdempotent_restrict_complement_zero : ∀ (D : AlgebraicGeometry.Scheme)
+  [inst : DiscreteTopology ↥D] (U : D.Opens),
+  (CategoryTheory.ConcreteCategory.hom
+        (D.presheaf.map
+          (TopologicalSpace.Opens.leTop
+              (have this := { carrier := (↑U)ᶜ, is_open' := ⋯ };
+              this)).op))
+      (LinearStudy.discreteSchemeOpenIdempotent D U) =
+    0
+'LinearStudy.discreteSchemeOpenIdempotent_restrict_complement_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.discreteSchemeOpenIdempotent_idempotent : ∀ (D : AlgebraicGeometry.Scheme) [inst : DiscreteTopology ↥D]
+  (U : D.Opens),
+  LinearStudy.discreteSchemeOpenIdempotent D U * LinearStudy.discreteSchemeOpenIdempotent D U =
+    LinearStudy.discreteSchemeOpenIdempotent D U
+'LinearStudy.discreteSchemeOpenIdempotent_idempotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemeOpenIdempotent_restrict_one_of_le : ∀ {D : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (U V : D.Opens),
+  V ≤ U →
+    (CategoryTheory.ConcreteCategory.hom (D.presheaf.map (TopologicalSpace.Opens.leTop V).op))
+        (LinearStudy.discreteSchemeOpenIdempotent D U) =
+      1
+'LinearStudy.discreteSchemeOpenIdempotent_restrict_one_of_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemeOpenIdempotent_restrict_zero_of_le_complement : ∀ {D : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (U V : D.Opens),
+  (V ≤
+      have this := { carrier := (↑U)ᶜ, is_open' := ⋯ };
+      this) →
+    (CategoryTheory.ConcreteCategory.hom (D.presheaf.map (TopologicalSpace.Opens.leTop V).op))
+        (LinearStudy.discreteSchemeOpenIdempotent D U) =
+      0
+'LinearStudy.discreteSchemeOpenIdempotent_restrict_zero_of_le_complement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.discreteSchemePushforwardOpenProjector : {D X : AlgebraicGeometry.Scheme} →
+  [DiscreteTopology ↥D] →
+    (f : D ⟶ X) →
+      (L : D.Modules) →
+        D.Opens →
+          ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L ⟶
+            (AlgebraicGeometry.Scheme.Modules.pushforward f).obj L)
+'LinearStudy.discreteSchemePushforwardOpenProjector' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemePushforwardOpenProjector_idempotent : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens),
+  CategoryTheory.CategoryStruct.comp (LinearStudy.discreteSchemePushforwardOpenProjector f L U)
+      (LinearStudy.discreteSchemePushforwardOpenProjector f L U) =
+    LinearStudy.discreteSchemePushforwardOpenProjector f L U
+'LinearStudy.discreteSchemePushforwardOpenProjector_idempotent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.discreteSchemePushforwardOpenProjector_app : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens) (V : X.Opens)
+  (s : ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L).presheaf.obj (Opposite.op V))),
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.discreteSchemePushforwardOpenProjector f L U) V))
+      s =
+    (CategoryTheory.ConcreteCategory.hom
+          (D.presheaf.map (TopologicalSpace.Opens.leTop ((TopologicalSpace.Opens.map f.base).obj V)).op))
+        (LinearStudy.discreteSchemeOpenIdempotent D U) •
+      have this := s;
+      this
+'LinearStudy.discreteSchemePushforwardOpenProjector_app' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemePushforwardOpenProjector_app_one : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens) (V : X.Opens),
+  (TopologicalSpace.Opens.map f.base).obj V ≤ U →
+    ∀ (s : ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L).presheaf.obj (Opposite.op V))),
+      (CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.discreteSchemePushforwardOpenProjector f L U) V))
+          s =
+        s
+'LinearStudy.discreteSchemePushforwardOpenProjector_app_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemePushforwardOpenProjector_app_zero : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens) (V : X.Opens),
+  ((TopologicalSpace.Opens.map f.base).obj V ≤
+      have this := { carrier := (↑U)ᶜ, is_open' := ⋯ };
+      this) →
+    ∀ (s : ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L).presheaf.obj (Opposite.op V))),
+      (CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.discreteSchemePushforwardOpenProjector f L U) V))
+          s =
+        0
+'LinearStudy.discreteSchemePushforwardOpenProjector_app_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemeProjectedExtClass : {D X : AlgebraicGeometry.Scheme} →
+  [DiscreteTopology ↥D] →
+    (f : D ⟶ X) →
+      (L : D.Modules) →
+        D.Opens →
+          {W : X.Modules} →
+            {r : ℕ} →
+              CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r →
+                CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r
+'LinearStudy.discreteSchemeProjectedExtClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemeProjectedExtClass_fixed : ∀ {D X : AlgebraicGeometry.Scheme} [inst : DiscreteTopology ↥D]
+  (f : D ⟶ X) (L : D.Modules) (U : D.Opens) {W : X.Modules} {r : ℕ}
+  (z : CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r),
+  (CategoryTheory.Abelian.Ext.mk₀ (LinearStudy.discreteSchemePushforwardOpenProjector f L U)).comp
+      (LinearStudy.discreteSchemeProjectedExtClass f L U z) ⋯ =
+    LinearStudy.discreteSchemeProjectedExtClass f L U z
+'LinearStudy.discreteSchemeProjectedExtClass_fixed' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemeProjectedExtClass_trace : ∀ {D X : AlgebraicGeometry.Scheme} [inst : DiscreteTopology ↥D]
+  (f : D ⟶ X) (L : D.Modules) (U : D.Opens) {W : X.Modules} {r : ℕ} {K : Type u_2} [inst_1 : AddCommGroup K]
+  (trace : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ K)
+  (z : CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r)
+  (s : ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L).presheaf.obj (Opposite.op ⊤))),
+  (LinearStudy.schemeModuleExtSectionTracePairing trace (LinearStudy.discreteSchemeProjectedExtClass f L U z)) s =
+    (LinearStudy.schemeModuleExtSectionTracePairing trace z)
+      ((CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.discreteSchemePushforwardOpenProjector f L U) ⊤))
+        s)
+'LinearStudy.discreteSchemeProjectedExtClass_trace' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemeProjectedExtClass_trace_complement_zero : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens) {W : X.Modules} {r : ℕ} {K : Type u_2}
+  [inst_1 : AddCommGroup K] (trace : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ K)
+  (z : CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r)
+  (s : ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L).presheaf.obj (Opposite.op ⊤))),
+  (LinearStudy.schemeModuleExtSectionTracePairing trace (LinearStudy.discreteSchemeProjectedExtClass f L U z))
+      (s -
+        (CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.discreteSchemePushforwardOpenProjector f L U) ⊤))
+          s) =
+    0
+'LinearStudy.discreteSchemeProjectedExtClass_trace_complement_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.discreteSchemeProjectedExtClass_internal_section : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens) (W : X.Modules) (n : ℕ)
+  (z : CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W (n + 1)),
+  (LinearStudy.schemeModuleGlobalToInternalExtSections ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W n)
+      (LinearStudy.discreteSchemeProjectedExtClass f L U z) =
+    (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app
+          (LinearStudy.schemeModuleInternalExtSourceMap (LinearStudy.discreteSchemePushforwardOpenProjector f L U) W
+            (n + 1))
+          ⊤))
+      ((LinearStudy.schemeModuleGlobalToInternalExtSections ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W
+          n)
+        z)
+'LinearStudy.discreteSchemeProjectedExtClass_internal_section' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.discreteSchemePointOpen : (D : AlgebraicGeometry.Scheme) → [DiscreteTopology ↥D] → ↥D → D.Opens
+'LinearStudy.discreteSchemePointOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.discreteSchemePointIdempotent : (D : AlgebraicGeometry.Scheme) →
+  [DiscreteTopology ↥D] → ↥D → ↑(D.presheaf.obj (Opposite.op ⊤))
+'LinearStudy.discreteSchemePointIdempotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.discreteSchemePointIdempotent_selector : ∀ (D : AlgebraicGeometry.Scheme) [inst : DiscreteTopology ↥D]
+  (x y : ↥D),
+  (CategoryTheory.ConcreteCategory.hom
+        (D.presheaf.map (TopologicalSpace.Opens.leTop (LinearStudy.discreteSchemePointOpen D x)).op))
+      (LinearStudy.discreteSchemePointIdempotent D y) =
+    if x = y then 1 else 0
+'LinearStudy.discreteSchemePointIdempotent_selector' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.discreteSchemePointIdempotent_sum : ∀ (D : AlgebraicGeometry.Scheme) [inst : DiscreteTopology ↥D]
+  [inst_1 : Fintype ↥D], ∑ x : ↥D, LinearStudy.discreteSchemePointIdempotent D x = 1
+'LinearStudy.discreteSchemePointIdempotent_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.discreteSchemePointIdempotent_mul_eq_zero : ∀ (D : AlgebraicGeometry.Scheme) [inst : DiscreteTopology ↥D]
+  (x y : ↥D), x ≠ y → LinearStudy.discreteSchemePointIdempotent D x * LinearStudy.discreteSchemePointIdempotent D y = 0
+'LinearStudy.discreteSchemePointIdempotent_mul_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.instDecidableEqCarrierCarrierCommRingCat_linear : (D : AlgebraicGeometry.Scheme) → DecidableEq ↥D
+'LinearStudy.instDecidableEqCarrierCarrierCommRingCat_linear' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemePushforwardPointProjector : {D X : AlgebraicGeometry.Scheme} →
+  [DiscreteTopology ↥D] →
+    (f : D ⟶ X) →
+      (L : D.Modules) →
+        ↥D →
+          ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L ⟶
+            (AlgebraicGeometry.Scheme.Modules.pushforward f).obj L)
+'LinearStudy.discreteSchemePushforwardPointProjector' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemePushforwardPointProjector_sum : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] [inst_1 : Fintype ↥D] (f : D ⟶ X) (L : D.Modules),
+  ∑ x : ↥D, LinearStudy.discreteSchemePushforwardPointProjector f L x =
+    CategoryTheory.CategoryStruct.id ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L)
+'LinearStudy.discreteSchemePushforwardPointProjector_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemePushforwardPointProjector_comp_eq_zero : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (x y : ↥D),
+  x ≠ y →
+    CategoryTheory.CategoryStruct.comp (LinearStudy.discreteSchemePushforwardPointProjector f L x)
+        (LinearStudy.discreteSchemePushforwardPointProjector f L y) =
+      0
+'LinearStudy.discreteSchemePushforwardPointProjector_comp_eq_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.discreteSchemePointProjectedExtClass : {D X : AlgebraicGeometry.Scheme} →
+  [DiscreteTopology ↥D] →
+    (f : D ⟶ X) →
+      (L : D.Modules) →
+        ↥D →
+          {W : X.Modules} →
+            {r : ℕ} →
+              CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r →
+                CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r
+'LinearStudy.discreteSchemePointProjectedExtClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemePointProjectedExtClass_sum : ∀ {D X : AlgebraicGeometry.Scheme} [inst : DiscreteTopology ↥D]
+  [inst_1 : Fintype ↥D] (f : D ⟶ X) (L : D.Modules) {W : X.Modules} {r : ℕ}
+  (z : CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r),
+  ∑ x : ↥D, LinearStudy.discreteSchemePointProjectedExtClass f L x z = z
+'LinearStudy.discreteSchemePointProjectedExtClass_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.discreteSchemePointProjectedExtClass_trace_sum : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : DiscreteTopology ↥D] [inst_1 : Fintype ↥D] (f : D ⟶ X) (L : D.Modules) {W : X.Modules} {r : ℕ} {K : Type u_2}
+  [inst_2 : AddCommGroup K] (trace : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ K)
+  (z : CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r)
+  (s : ↑(((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L).presheaf.obj (Opposite.op ⊤))),
+  (LinearStudy.schemeModuleExtSectionTracePairing trace z) s =
+    ∑ x : ↥D,
+      (LinearStudy.schemeModuleExtSectionTracePairing trace (LinearStudy.discreteSchemePointProjectedExtClass f L x z))
+        s
+'LinearStudy.discreteSchemePointProjectedExtClass_trace_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.artinianSchemePointProjectedExtClass_sum : ∀ {D X : AlgebraicGeometry.Scheme}
+  [inst : AlgebraicGeometry.IsArtinianScheme D] (f : D ⟶ X) (L : D.Modules) {W : X.Modules} {r : ℕ}
+  (z : CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r),
+  ∑ x : ↥D, LinearStudy.discreteSchemePointProjectedExtClass f L x z = z
+'LinearStudy.artinianSchemePointProjectedExtClass_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.discreteSchemeOpenIdempotent.{u} : (D : AlgebraicGeometry.Scheme) →
+  [DiscreteTopology ↥D] → D.Opens → ↑(D.presheaf.obj (Opposite.op ⊤)) :=
+fun (D : AlgebraicGeometry.Scheme) [DiscreteTopology ↥D] (U : D.Opens) => Classical.choose ⋯
+def LinearStudy.discreteSchemePushforwardOpenProjector.{u} : {D X : AlgebraicGeometry.Scheme} →
+  [DiscreteTopology ↥D] →
+    (f : D ⟶ X) →
+      (L : D.Modules) →
+        D.Opens →
+          ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L ⟶
+            (AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) :=
+fun {D X : AlgebraicGeometry.Scheme} [DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens) =>
+  (AlgebraicGeometry.Scheme.Modules.pushforward f).map
+    (LinearStudy.originalGlobalModuleScalar (LinearStudy.discreteSchemeOpenIdempotent D U) L)
+def LinearStudy.discreteSchemeProjectedExtClass.{u} : {D X : AlgebraicGeometry.Scheme} →
+  [DiscreteTopology ↥D] →
+    (f : D ⟶ X) →
+      (L : D.Modules) →
+        D.Opens →
+          {W : X.Modules} →
+            {r : ℕ} →
+              CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r →
+                CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r :=
+fun {D X : AlgebraicGeometry.Scheme} [DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (U : D.Opens) {W : X.Modules}
+    {r : ℕ} (z : CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r) =>
+  (CategoryTheory.Abelian.Ext.mk₀ (LinearStudy.discreteSchemePushforwardOpenProjector f L U)).comp z ⋯
+def LinearStudy.discreteSchemePointOpen.{u} : (D : AlgebraicGeometry.Scheme) → [DiscreteTopology ↥D] → ↥D → D.Opens :=
+fun (D : AlgebraicGeometry.Scheme) [DiscreteTopology ↥D] (x : ↥D) => { carrier := {x}, is_open' := ⋯ }
+def LinearStudy.discreteSchemePointIdempotent.{u} : (D : AlgebraicGeometry.Scheme) →
+  [DiscreteTopology ↥D] → ↥D → ↑(D.presheaf.obj (Opposite.op ⊤)) :=
+fun (D : AlgebraicGeometry.Scheme) [DiscreteTopology ↥D] (x : ↥D) =>
+  LinearStudy.discreteSchemeOpenIdempotent D (LinearStudy.discreteSchemePointOpen D x)
+@[instance_reducible] def LinearStudy.instDecidableEqCarrierCarrierCommRingCat_linear.{u} : (D :
+    AlgebraicGeometry.Scheme) →
+  DecidableEq ↥D :=
+fun (D : AlgebraicGeometry.Scheme) => Classical.decEq ↥D
+def LinearStudy.discreteSchemePushforwardPointProjector.{u} : {D X : AlgebraicGeometry.Scheme} →
+  [DiscreteTopology ↥D] →
+    (f : D ⟶ X) →
+      (L : D.Modules) →
+        ↥D →
+          ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L ⟶
+            (AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) :=
+fun {D X : AlgebraicGeometry.Scheme} [DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (x : ↥D) =>
+  LinearStudy.discreteSchemePushforwardOpenProjector f L (LinearStudy.discreteSchemePointOpen D x)
+def LinearStudy.discreteSchemePointProjectedExtClass.{u} : {D X : AlgebraicGeometry.Scheme} →
+  [DiscreteTopology ↥D] →
+    (f : D ⟶ X) →
+      (L : D.Modules) →
+        ↥D →
+          {W : X.Modules} →
+            {r : ℕ} →
+              CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r →
+                CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r :=
+fun {D X : AlgebraicGeometry.Scheme} [DiscreteTopology ↥D] (f : D ⟶ X) (L : D.Modules) (x : ↥D) {W : X.Modules} {r : ℕ}
+    (z : CategoryTheory.Abelian.Ext ((AlgebraicGeometry.Scheme.Modules.pushforward f).obj L) W r) =>
+  LinearStudy.discreteSchemeProjectedExtClass f L (LinearStudy.discreteSchemePointOpen D x) z
+def LinearStudy.schemeModuleExtSectionTracePairing.{u, v} : {X : AlgebraicGeometry.Scheme} →
+  {E W : X.Modules} →
+    {r : ℕ} →
+      {R : Type v} →
+        [inst : AddCommGroup R] →
+          (CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R) →
+            CategoryTheory.Abelian.Ext E W r → ↑(E.presheaf.obj (Opposite.op ⊤)) →+ R :=
+fun {X : AlgebraicGeometry.Scheme} {E W : X.Modules} {r : ℕ} {R : Type v} [AddCommGroup R]
+    (trace : CategoryTheory.Abelian.Ext (SheafOfModules.unit X.ringCatSheaf) W r →+ R)
+    (z : CategoryTheory.Abelian.Ext E W r) =>
+  {
+    toFun := fun (s : ↑(E.presheaf.obj (Opposite.op ⊤))) =>
+      trace
+        ((CategoryTheory.Abelian.Ext.mk₀ ((LinearStudy.schemeModuleUnitHomGlobalSectionsAddEquiv X E).symm s)).comp z
+          ⋯),
+    map_zero' := ⋯, map_add' := ⋯ }
+'LinearStudy.schemeModuleExtSectionTracePairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleUnitHomGlobalSections_symm_map:true
+KINDCHECK:LinearStudy.schemeModuleUnitHomGlobalSections_symm_map:theorem
+ROLECHECK:LinearStudy.schemeModuleExtSectionTracePairing_source_naturality:true
+KINDCHECK:LinearStudy.schemeModuleExtSectionTracePairing_source_naturality:theorem
+ROLECHECK:LinearStudy.schemeModuleExtSectionTracePairing_zero_of_source_projector:true
+KINDCHECK:LinearStudy.schemeModuleExtSectionTracePairing_zero_of_source_projector:theorem
+ROLECHECK:LinearStudy.discreteScheme_exists_open_idempotent:true
+KINDCHECK:LinearStudy.discreteScheme_exists_open_idempotent:theorem
+ROLECHECK:LinearStudy.discreteSchemeOpenIdempotent:false
+KINDCHECK:LinearStudy.discreteSchemeOpenIdempotent:definition
+ROLECHECK:LinearStudy.discreteSchemeOpenIdempotent_restrict_one:true
+KINDCHECK:LinearStudy.discreteSchemeOpenIdempotent_restrict_one:theorem
+ROLECHECK:LinearStudy.discreteSchemeOpenIdempotent_restrict_complement_zero:true
+KINDCHECK:LinearStudy.discreteSchemeOpenIdempotent_restrict_complement_zero:theorem
+ROLECHECK:LinearStudy.discreteSchemeOpenIdempotent_idempotent:true
+KINDCHECK:LinearStudy.discreteSchemeOpenIdempotent_idempotent:theorem
+ROLECHECK:LinearStudy.discreteSchemeOpenIdempotent_restrict_one_of_le:true
+KINDCHECK:LinearStudy.discreteSchemeOpenIdempotent_restrict_one_of_le:theorem
+ROLECHECK:LinearStudy.discreteSchemeOpenIdempotent_restrict_zero_of_le_complement:true
+KINDCHECK:LinearStudy.discreteSchemeOpenIdempotent_restrict_zero_of_le_complement:theorem
+ROLECHECK:LinearStudy.discreteSchemePushforwardOpenProjector:false
+KINDCHECK:LinearStudy.discreteSchemePushforwardOpenProjector:definition
+ROLECHECK:LinearStudy.discreteSchemePushforwardOpenProjector_idempotent:true
+KINDCHECK:LinearStudy.discreteSchemePushforwardOpenProjector_idempotent:theorem
+ROLECHECK:LinearStudy.discreteSchemePushforwardOpenProjector_app:true
+KINDCHECK:LinearStudy.discreteSchemePushforwardOpenProjector_app:theorem
+ROLECHECK:LinearStudy.discreteSchemePushforwardOpenProjector_app_one:true
+KINDCHECK:LinearStudy.discreteSchemePushforwardOpenProjector_app_one:theorem
+ROLECHECK:LinearStudy.discreteSchemePushforwardOpenProjector_app_zero:true
+KINDCHECK:LinearStudy.discreteSchemePushforwardOpenProjector_app_zero:theorem
+ROLECHECK:LinearStudy.discreteSchemeProjectedExtClass:false
+KINDCHECK:LinearStudy.discreteSchemeProjectedExtClass:definition
+ROLECHECK:LinearStudy.discreteSchemeProjectedExtClass_fixed:true
+KINDCHECK:LinearStudy.discreteSchemeProjectedExtClass_fixed:theorem
+ROLECHECK:LinearStudy.discreteSchemeProjectedExtClass_trace:true
+KINDCHECK:LinearStudy.discreteSchemeProjectedExtClass_trace:theorem
+ROLECHECK:LinearStudy.discreteSchemeProjectedExtClass_trace_complement_zero:true
+KINDCHECK:LinearStudy.discreteSchemeProjectedExtClass_trace_complement_zero:theorem
+ROLECHECK:LinearStudy.discreteSchemeProjectedExtClass_internal_section:true
+KINDCHECK:LinearStudy.discreteSchemeProjectedExtClass_internal_section:theorem
+ROLECHECK:LinearStudy.discreteSchemePointOpen:false
+KINDCHECK:LinearStudy.discreteSchemePointOpen:definition
+ROLECHECK:LinearStudy.discreteSchemePointIdempotent:false
+KINDCHECK:LinearStudy.discreteSchemePointIdempotent:definition
+ROLECHECK:LinearStudy.discreteSchemePointIdempotent_selector:true
+KINDCHECK:LinearStudy.discreteSchemePointIdempotent_selector:theorem
+ROLECHECK:LinearStudy.discreteSchemePointIdempotent_sum:true
+KINDCHECK:LinearStudy.discreteSchemePointIdempotent_sum:theorem
+ROLECHECK:LinearStudy.discreteSchemePointIdempotent_mul_eq_zero:true
+KINDCHECK:LinearStudy.discreteSchemePointIdempotent_mul_eq_zero:theorem
+ROLECHECK:LinearStudy.instDecidableEqCarrierCarrierCommRingCat_linear:false
+KINDCHECK:LinearStudy.instDecidableEqCarrierCarrierCommRingCat_linear:definition
+ROLECHECK:LinearStudy.discreteSchemePushforwardPointProjector:false
+KINDCHECK:LinearStudy.discreteSchemePushforwardPointProjector:definition
+ROLECHECK:LinearStudy.discreteSchemePushforwardPointProjector_sum:true
+KINDCHECK:LinearStudy.discreteSchemePushforwardPointProjector_sum:theorem
+ROLECHECK:LinearStudy.discreteSchemePushforwardPointProjector_comp_eq_zero:true
+KINDCHECK:LinearStudy.discreteSchemePushforwardPointProjector_comp_eq_zero:theorem
+ROLECHECK:LinearStudy.discreteSchemePointProjectedExtClass:false
+KINDCHECK:LinearStudy.discreteSchemePointProjectedExtClass:definition
+ROLECHECK:LinearStudy.discreteSchemePointProjectedExtClass_sum:true
+KINDCHECK:LinearStudy.discreteSchemePointProjectedExtClass_sum:theorem
+ROLECHECK:LinearStudy.discreteSchemePointProjectedExtClass_trace_sum:true
+KINDCHECK:LinearStudy.discreteSchemePointProjectedExtClass_trace_sum:theorem
+ROLECHECK:LinearStudy.artinianSchemePointProjectedExtClass_sum:true
+KINDCHECK:LinearStudy.artinianSchemePointProjectedExtClass_sum:theorem

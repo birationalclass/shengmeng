@@ -1,0 +1,7 @@
+module
+public import Linear.DiscreteSchemeOpenIdempotent
+public import Linear.DiscreteSchemePointIdempotents
+public import Linear.DiscreteSchemePointProjectedExtDecomposition
+public import Linear.DiscreteSchemeProjectedExtTrace
+public import Linear.DiscreteSchemePushforwardOpenProjector
+public import Linear.SchemeModuleExtSectionTraceSourceNaturality

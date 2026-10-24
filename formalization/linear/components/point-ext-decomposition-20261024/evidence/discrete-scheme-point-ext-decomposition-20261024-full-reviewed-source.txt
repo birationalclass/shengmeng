@@ -1,0 +1,444 @@
+module
+public import Linear.SchemeModuleExtTracePairing
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian
+universe u v
+variable {X : Scheme.{u}} {D E W : X.Modules} {r : ℕ}
+variable {K : Type v} [AddCommGroup K]
+/-- The original section/unit-Hom identification respects EVERY actual
+source morphism. This extends the already proved scalar instance by
+reusing the actual global-section morphism naturality. -/
+theorem schemeModuleUnitHomGlobalSections_symm_map
+    (b : D ⟶ E) (s : Γ(D,⊤)) :
+    (schemeModuleUnitHomGlobalSectionsAddEquiv X E).symm (b.app ⊤ s) =
+      (schemeModuleUnitHomGlobalSectionsAddEquiv X D).symm s ≫ b := by
+  exact moduleSheafGlobalSectionMorphism_postcompose D b s
+/-- The SAME global Ext/section trace pairing is contravariantly natural
+in the actual source. The formula uses the original Yoneda class and
+trace. No proper-duality, local perfection or normalization premise. -/
+theorem schemeModuleExtSectionTracePairing_source_naturality
+    (b : D ⟶ E)
+    (trace : Ext.{u} (SheafOfModules.unit X.ringCatSheaf) W r →+ K)
+    (z : Ext.{u} E W r) (s : Γ(D,⊤)) :
+    schemeModuleExtSectionTracePairing trace ((Ext.mk₀ b).comp z (zero_add r)) s =
+      schemeModuleExtSectionTracePairing trace z (b.app ⊤ s) := by
+  dsimp only [schemeModuleExtSectionTracePairing,AddMonoidHom.coe_mk,ZeroHom.coe_mk]
+  rw [schemeModuleUnitHomGlobalSections_symm_map,Ext.mk₀_comp_mk₀_assoc]
+/-- A source projector fixing the SAME Ext class forces its trace
+functional to annihilate sections killed by that projector. Actual
+projector/class identities remain explicit; no geometric support or
+nondegeneracy conclusion is inserted as a hypothesis or claimed here. -/
+theorem schemeModuleExtSectionTracePairing_zero_of_source_projector
+    (b : E ⟶ E)
+    (trace : Ext.{u} (SheafOfModules.unit X.ringCatSheaf) W r →+ K)
+    (z : Ext.{u} E W r)
+    (hfix : (Ext.mk₀ b).comp z (zero_add r)=z)
+    (s : Γ(E,⊤)) (hs : b.app ⊤ s=0) :
+    schemeModuleExtSectionTracePairing trace z s=0 := by
+  have h := schemeModuleExtSectionTracePairing_source_naturality b trace z s
+  rw [hfix,hs,map_zero] at h
+  exact h
+end LinearStudy
+module
+public import Linear.DiscreteSheafFlasque
+public import Mathlib.Algebra.Category.Ring.Constructions
+public import Linear.SchemeModuleActualCohomologyGroup
+public import Linear.OriginalGlobalModuleScalar
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits TopologicalSpace Opposite
+universe u
+/-- On the ACTUAL original discrete scheme, glue one on an open and zero
+on its actual complement. The resulting global structure section is
+idempotent. No selector, idempotent or projector is assumed as input. -/
+theorem discreteScheme_exists_open_idempotent
+    (D : Scheme.{u}) [DiscreteTopology D] (U : D.Opens) :
+    ∃ e : Γ(D,⊤),D.presheaf.map U.leTop.op e=1 ∧
+      D.presheaf.map (show D.Opens from ⟨(U : Set D)ᶜ,isOpen_discrete _⟩).leTop.op e=0 ∧
+      e*e=e := by
+  classical
+  let W : D.Opens := ⟨(U : Set D)ᶜ,isOpen_discrete _⟩
+  let F := D.sheaf
+  have hUW : U ⊓ W = ⊥ := by ext x;simp [W]
+  have hWU : W ⊓ U = ⊥ := by rw [inf_comm,hUW]
+  letI := CommRingCat.subsingleton_of_isTerminal (F.isTerminalOfEqEmpty hUW)
+  letI := CommRingCat.subsingleton_of_isTerminal (F.isTerminalOfEqEmpty hWU)
+  let cover : Fin 2 → D.Opens := ![U,W]
+  let sf : (i : Fin 2) → F.obj.obj (op (cover i))
+    | 0 => 1
+    | 1 => 0
+  have hcomp : TopCat.Presheaf.IsCompatible F.obj cover sf := by
+    simp only [TopCat.Presheaf.IsCompatible,Fin.forall_fin_two]
+    refine ⟨⟨rfl,?_⟩,?_,rfl⟩
+    all_goals
+      dsimp [cover]
+      exact Subsingleton.elim _ _
+  have hcover : (⊤ : D.Opens) ≤ iSup cover := by
+    intro x _
+    by_cases hx : x ∈ U
+    · exact (le_iSup cover 0) hx
+    · exact (le_iSup cover 1) hx
+  obtain ⟨e,he,hunique⟩ := F.existsUnique_gluing' cover ⊤
+    (fun i => homOfLE (show cover i ≤ ⊤ from le_top)) hcover sf hcomp
+  have heU : D.presheaf.map U.leTop.op e=1 := by
+    have h := he 0
+    change D.presheaf.map U.leTop.op e=1 at h
+    exact h
+  have heW : D.presheaf.map W.leTop.op e=0 := by
+    have h := he 1
+    change D.presheaf.map W.leTop.op e=0 at h
+    exact h
+  refine ⟨e,heU,heW,?_⟩
+  apply hunique (e*e)
+  intro i
+  fin_cases i
+  · change D.presheaf.map U.leTop.op (e*e)=1
+    rw [map_mul,heU,one_mul]
+  · change D.presheaf.map W.leTop.op (e*e)=0
+    rw [map_mul,heW,zero_mul]
+/-- The constructed original open idempotent. Its proof is the preceding
+actual sheaf gluing theorem, not a chosen algebraic substitute. -/
+def discreteSchemeOpenIdempotent (D : Scheme.{u}) [DiscreteTopology D]
+    (U : D.Opens) : Γ(D,⊤) :=
+  Classical.choose (discreteScheme_exists_open_idempotent D U)
+theorem discreteSchemeOpenIdempotent_restrict_one
+    (D : Scheme.{u}) [DiscreteTopology D] (U : D.Opens) :
+    D.presheaf.map U.leTop.op (discreteSchemeOpenIdempotent D U)=1 :=
+  (Classical.choose_spec (discreteScheme_exists_open_idempotent D U)).1
+theorem discreteSchemeOpenIdempotent_restrict_complement_zero
+    (D : Scheme.{u}) [DiscreteTopology D] (U : D.Opens) :
+    D.presheaf.map (show D.Opens from ⟨(U : Set D)ᶜ,isOpen_discrete _⟩).leTop.op
+      (discreteSchemeOpenIdempotent D U)=0 :=
+  (Classical.choose_spec (discreteScheme_exists_open_idempotent D U)).2.1
+theorem discreteSchemeOpenIdempotent_idempotent
+    (D : Scheme.{u}) [DiscreteTopology D] (U : D.Opens) :
+    discreteSchemeOpenIdempotent D U * discreteSchemeOpenIdempotent D U =
+      discreteSchemeOpenIdempotent D U :=
+  (Classical.choose_spec (discreteScheme_exists_open_idempotent D U)).2.2
+end LinearStudy
+module
+public import Linear.DiscreteSchemeOpenIdempotent
+public import Linear.OriginalGlobalModuleScalarRingLaws
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite
+universe u
+variable {D X : Scheme.{u}} [DiscreteTopology D]
+/-- The constructed original idempotent is one on every actual subopen. -/
+theorem discreteSchemeOpenIdempotent_restrict_one_of_le
+    (U V : D.Opens) (h : V ≤ U) :
+    D.presheaf.map V.leTop.op (discreteSchemeOpenIdempotent D U)=1 := by
+  calc
+    _ = D.presheaf.map (homOfLE h).op
+        (D.presheaf.map U.leTop.op (discreteSchemeOpenIdempotent D U)) := by
+      rw [← ConcreteCategory.comp_apply,← D.presheaf.map_comp]
+      rfl
+    _ = 1 := by rw [discreteSchemeOpenIdempotent_restrict_one,map_one]
+/-- The SAME idempotent is zero on every actual complementary subopen. -/
+theorem discreteSchemeOpenIdempotent_restrict_zero_of_le_complement
+    (U V : D.Opens)
+    (h : V ≤ (show D.Opens from ⟨(U : Set D)ᶜ,isOpen_discrete _⟩)) :
+    D.presheaf.map V.leTop.op (discreteSchemeOpenIdempotent D U)=0 := by
+  let W : D.Opens := ⟨(U : Set D)ᶜ,isOpen_discrete _⟩
+  calc
+    _ = D.presheaf.map (homOfLE h).op
+        (D.presheaf.map W.leTop.op (discreteSchemeOpenIdempotent D U)) := by
+      rw [← ConcreteCategory.comp_apply,← D.presheaf.map_comp]
+      rfl
+    _ = 0 := by rw [discreteSchemeOpenIdempotent_restrict_complement_zero,map_zero]
+/-- An ACTUAL source endomorphism on the original direct-image module,
+constructed from original structure-sheaf gluing. No abstract projector
+is supplied as an input. It applies to arbitrary coefficients on D. -/
+def discreteSchemePushforwardOpenProjector (f : D ⟶ X)
+    (L : D.Modules) (U : D.Opens) :
+    (Scheme.Modules.pushforward f).obj L ⟶ (Scheme.Modules.pushforward f).obj L :=
+  (Scheme.Modules.pushforward f).map
+    (originalGlobalModuleScalar (discreteSchemeOpenIdempotent D U) L)
+/-- Actual source idempotence,derived from the original coefficient ring
+laws and actual pushforward functor,with no finiteness/free/flat input. -/
+theorem discreteSchemePushforwardOpenProjector_idempotent
+    (f : D ⟶ X) (L : D.Modules) (U : D.Opens) :
+    discreteSchemePushforwardOpenProjector f L U ≫ discreteSchemePushforwardOpenProjector f L U =
+      discreteSchemePushforwardOpenProjector f L U := by
+  unfold discreteSchemePushforwardOpenProjector
+  rw [← Functor.map_comp,← originalGlobalModuleScalar_mul,discreteSchemeOpenIdempotent_idempotent]
+/-- Literal actual local action on EVERY original ambient open. -/
+theorem discreteSchemePushforwardOpenProjector_app
+    (f : D ⟶ X) (L : D.Modules) (U : D.Opens) (V : X.Opens)
+    (s : Γ((Scheme.Modules.pushforward f).obj L,V)) :
+    (discreteSchemePushforwardOpenProjector f L U).app V s =
+      D.presheaf.map (f ⁻¹ᵁ V).leTop.op (discreteSchemeOpenIdempotent D U) •
+        (show Γ(L,f ⁻¹ᵁ V) from s) := by
+  rfl
+/-- The actual direct-image projector is identity on opens whose actual
+inverse image lies in U. No support certificate is supplied. -/
+theorem discreteSchemePushforwardOpenProjector_app_one
+    (f : D ⟶ X) (L : D.Modules) (U : D.Opens) (V : X.Opens)
+    (h : f ⁻¹ᵁ V ≤ U) (s : Γ((Scheme.Modules.pushforward f).obj L,V)) :
+    (discreteSchemePushforwardOpenProjector f L U).app V s=s := by
+  rw [discreteSchemePushforwardOpenProjector_app,
+    discreteSchemeOpenIdempotent_restrict_one_of_le U (f ⁻¹ᵁ V) h,one_smul]
+/-- The actual direct-image projector kills opens whose actual inverse
+image lies in the complement. This is actual sheaf action,not global duality. -/
+theorem discreteSchemePushforwardOpenProjector_app_zero
+    (f : D ⟶ X) (L : D.Modules) (U : D.Opens) (V : X.Opens)
+    (h : f ⁻¹ᵁ V ≤ (show D.Opens from ⟨(U : Set D)ᶜ,isOpen_discrete _⟩))
+    (s : Γ((Scheme.Modules.pushforward f).obj L,V)) :
+    (discreteSchemePushforwardOpenProjector f L U).app V s=0 := by
+  rw [discreteSchemePushforwardOpenProjector_app,
+    discreteSchemeOpenIdempotent_restrict_zero_of_le_complement U (f ⁻¹ᵁ V) h,zero_smul]
+end LinearStudy
+module
+public import Linear.DiscreteSchemePushforwardOpenProjector
+public import Linear.SchemeModuleExtSectionTraceSourceNaturality
+public import Linear.SchemeModuleGlobalToInternalExtSourceNaturality
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian TopologicalSpace Opposite
+universe u v
+variable {D X : Scheme.{u}} [DiscreteTopology D]
+/-- Project the SAME actual global Ext class by the CONSTRUCTED original
+open projector on f_*L. No projector/class-fix identity is assumed. -/
+def discreteSchemeProjectedExtClass (f : D ⟶ X) (L : D.Modules) (U : D.Opens)
+    {W : X.Modules} {r : ℕ} (z : Ext.{u} ((Scheme.Modules.pushforward f).obj L) W r) :
+    Ext.{u} ((Scheme.Modules.pushforward f).obj L) W r :=
+  (Ext.mk₀ (discreteSchemePushforwardOpenProjector f L U)).comp z (zero_add r)
+/-- Source-fix identity is PROVED for this SAME constructed class. -/
+theorem discreteSchemeProjectedExtClass_fixed
+    (f : D ⟶ X) (L : D.Modules) (U : D.Opens) {W : X.Modules} {r : ℕ}
+    (z : Ext.{u} ((Scheme.Modules.pushforward f).obj L) W r) :
+    (Ext.mk₀ (discreteSchemePushforwardOpenProjector f L U)).comp
+      (discreteSchemeProjectedExtClass f L U z) (zero_add r) =
+        discreteSchemeProjectedExtClass f L U z := by
+  unfold discreteSchemeProjectedExtClass
+  rw [Ext.mk₀_comp_mk₀_assoc,discreteSchemePushforwardOpenProjector_idempotent]
+/-- EXACT same-trace formula for the actual projected class and actual
+source sections. The trace is unchanged;perfection is not asserted. -/
+theorem discreteSchemeProjectedExtClass_trace
+    (f : D ⟶ X) (L : D.Modules) (U : D.Opens) {W : X.Modules} {r : ℕ}
+    {K : Type v} [AddCommGroup K]
+    (trace : Ext.{u} (SheafOfModules.unit X.ringCatSheaf) W r →+ K)
+    (z : Ext.{u} ((Scheme.Modules.pushforward f).obj L) W r)
+    (s : Γ((Scheme.Modules.pushforward f).obj L,⊤)) :
+    schemeModuleExtSectionTracePairing trace (discreteSchemeProjectedExtClass f L U z) s =
+      schemeModuleExtSectionTracePairing trace z
+        ((discreteSchemePushforwardOpenProjector f L U).app ⊤ s) :=
+  schemeModuleExtSectionTracePairing_source_naturality _ trace z s
+/-- The actual projected class annihilates the ACTUAL complementary
+source component s-b(s),with SAME trace and no supplied support identity.
+This is locality of a constructed class,not nonzero local weights. -/
+theorem discreteSchemeProjectedExtClass_trace_complement_zero
+    (f : D ⟶ X) (L : D.Modules) (U : D.Opens) {W : X.Modules} {r : ℕ}
+    {K : Type v} [AddCommGroup K]
+    (trace : Ext.{u} (SheafOfModules.unit X.ringCatSheaf) W r →+ K)
+    (z : Ext.{u} ((Scheme.Modules.pushforward f).obj L) W r)
+    (s : Γ((Scheme.Modules.pushforward f).obj L,⊤)) :
+    schemeModuleExtSectionTracePairing trace (discreteSchemeProjectedExtClass f L U z)
+      (s-(discreteSchemePushforwardOpenProjector f L U).app ⊤ s)=0 := by
+  let b := discreteSchemePushforwardOpenProjector f L U
+  have hb : b.app ⊤ (b.app ⊤ s)=b.app ⊤ s := by
+    exact congrArg (fun h => Scheme.Modules.Hom.app h ⊤ s)
+      (discreteSchemePushforwardOpenProjector_idempotent f L U)
+  rw [discreteSchemeProjectedExtClass_trace]
+  change schemeModuleExtSectionTracePairing trace z (b.app ⊤ (s-b.app ⊤ s))=0
+  rw [map_sub,hb,sub_self,map_zero]
+/-- The canonical global-to-INTERNAL-SHEAF-Ext section comparison retains
+this SAME original projected class in every positive degree. No new
+comparison map or coefficient/source isomorphism is supplied. -/
+theorem discreteSchemeProjectedExtClass_internal_section
+    (f : D ⟶ X) (L : D.Modules) (U : D.Opens) (W : X.Modules) (n : ℕ)
+    (z : Ext.{u} ((Scheme.Modules.pushforward f).obj L) W (n+1)) :
+    schemeModuleGlobalToInternalExtSections ((Scheme.Modules.pushforward f).obj L) W n
+      (discreteSchemeProjectedExtClass f L U z) =
+      (schemeModuleInternalExtSourceMap (discreteSchemePushforwardOpenProjector f L U) W (n+1)).app ⊤
+        (schemeModuleGlobalToInternalExtSections ((Scheme.Modules.pushforward f).obj L) W n z) :=
+  schemeModuleGlobalToInternalExtSections_sourceNaturality _ n z
+end LinearStudy
+module
+public import Linear.DiscreteSchemePushforwardOpenProjector
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite
+open scoped BigOperators
+universe u
+local instance (D : Scheme.{u}) : DecidableEq D := Classical.decEq D
+/-- The actual original singleton open,not a point-coordinate model. -/
+def discreteSchemePointOpen (D : Scheme.{u}) [DiscreteTopology D] (x : D) : D.Opens :=
+  ⟨{x},isOpen_discrete _⟩
+/-- Actual original structure-sheaf idempotent selecting a singleton. -/
+def discreteSchemePointIdempotent (D : Scheme.{u}) [DiscreteTopology D] (x : D) : Γ(D,⊤) :=
+  discreteSchemeOpenIdempotent D (discreteSchemePointOpen D x)
+/-- Literal restriction values on every actual original singleton open. -/
+theorem discreteSchemePointIdempotent_selector
+    (D : Scheme.{u}) [DiscreteTopology D] (x y : D) :
+    D.presheaf.map (discreteSchemePointOpen D x).leTop.op
+      (discreteSchemePointIdempotent D y) = if x=y then 1 else 0 := by
+  classical
+  by_cases h : x=y
+  · subst y
+    simpa [discreteSchemePointIdempotent] using
+      discreteSchemeOpenIdempotent_restrict_one D (discreteSchemePointOpen D x)
+  · rw [ite_eq_right h]
+    apply discreteSchemeOpenIdempotent_restrict_zero_of_le_complement
+    intro z hz
+    change z=x at hz
+    change z ≠ y
+    rw [hz]
+    exact h
+/-- Actual singleton idempotents sum to one on every finite original
+scheme with discrete topology. Only sheaf separatedness and actual
+restriction values are used;no product decomposition is assumed. -/
+theorem discreteSchemePointIdempotent_sum
+    (D : Scheme.{u}) [DiscreteTopology D] [Fintype D] :
+    (∑ x : D,discreteSchemePointIdempotent D x)=1 := by
+  classical
+  let cover : D → D.Opens := discreteSchemePointOpen D
+  have hcover : (⊤ : D.Opens) ≤ iSup cover := by
+    intro x _
+    exact (le_iSup cover x) (show x ∈ cover x from rfl)
+  apply D.sheaf.eq_of_locally_eq' cover ⊤ (fun x => (cover x).leTop) hcover
+  intro x
+  change D.presheaf.map (discreteSchemePointOpen D x).leTop.op
+    (∑ y : D,discreteSchemePointIdempotent D y)=D.presheaf.map (discreteSchemePointOpen D x).leTop.op 1
+  rw [map_sum,map_one]
+  simp only [discreteSchemePointIdempotent_selector]
+  simp
+/-- Distinct actual point idempotents are orthogonal,without requiring
+finite source or a supplied residue-coordinate decomposition. -/
+theorem discreteSchemePointIdempotent_mul_eq_zero
+    (D : Scheme.{u}) [DiscreteTopology D] (x y : D) (hxy : x ≠ y) :
+    discreteSchemePointIdempotent D x * discreteSchemePointIdempotent D y=0 := by
+  classical
+  let cover : D → D.Opens := discreteSchemePointOpen D
+  have hcover : (⊤ : D.Opens) ≤ iSup cover := by
+    intro z _
+    exact (le_iSup cover z) (show z ∈ cover z from rfl)
+  apply D.sheaf.eq_of_locally_eq' cover ⊤ (fun z => (cover z).leTop) hcover
+  intro z
+  change D.presheaf.map (discreteSchemePointOpen D z).leTop.op
+    (discreteSchemePointIdempotent D x * discreteSchemePointIdempotent D y)=
+      D.presheaf.map (discreteSchemePointOpen D z).leTop.op 0
+  rw [map_mul,map_zero,discreteSchemePointIdempotent_selector,discreteSchemePointIdempotent_selector]
+  split_ifs <;> simp_all
+end LinearStudy
+module
+public import Linear.DiscreteSchemePointIdempotents
+public import Linear.DiscreteSchemeProjectedExtTrace
+public import Linear.OriginalGlobalModuleScalarRingHom
+public import Linear.FiniteCutArtinianTopology
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian TopologicalSpace Opposite
+open scoped BigOperators
+universe u v
+/-- Actual source projector selecting one original point of D. -/
+def discreteSchemePushforwardPointProjector {D X : Scheme.{u}} [DiscreteTopology D]
+    (f : D ⟶ X) (L : D.Modules) (x : D) :
+    (Scheme.Modules.pushforward f).obj L ⟶ (Scheme.Modules.pushforward f).obj L :=
+  discreteSchemePushforwardOpenProjector f L (discreteSchemePointOpen D x)
+/-- The ACTUAL source point projectors sum to identity. No decomposition
+or source identity is supplied as input. -/
+theorem discreteSchemePushforwardPointProjector_sum
+    {D X : Scheme.{u}} [DiscreteTopology D] [Fintype D]
+    (f : D ⟶ X) (L : D.Modules) :
+    (∑ x : D,discreteSchemePushforwardPointProjector f L x)=𝟙 _ := by
+  classical
+  have hs := congrArg (fun e : Γ(D,⊤) => (originalGlobalModuleScalarRingHom L) e)
+    (discreteSchemePointIdempotent_sum D)
+  rw [map_sum,map_one] at hs
+  change (∑ x : D,(Scheme.Modules.pushforward f).map
+    ((originalGlobalModuleScalarRingHom L) (discreteSchemePointIdempotent D x)))=𝟙 _
+  rw [← Functor.map_sum,hs]
+  exact (Scheme.Modules.pushforward f).map_id L
+/-- Distinct ACTUAL point projectors are orthogonal after pushforward. -/
+theorem discreteSchemePushforwardPointProjector_comp_eq_zero
+    {D X : Scheme.{u}} [DiscreteTopology D]
+    (f : D ⟶ X) (L : D.Modules) (x y : D) (hxy : x ≠ y) :
+    discreteSchemePushforwardPointProjector f L x ≫
+      discreteSchemePushforwardPointProjector f L y=0 := by
+  change (Scheme.Modules.pushforward f).map
+      (originalGlobalModuleScalar (discreteSchemePointIdempotent D x) L) ≫
+    (Scheme.Modules.pushforward f).map
+      (originalGlobalModuleScalar (discreteSchemePointIdempotent D y) L)=0
+  rw [← Functor.map_comp,← originalGlobalModuleScalar_mul,
+    discreteSchemePointIdempotent_mul_eq_zero D y x hxy.symm,
+    originalGlobalModuleScalar_zero,Functor.map_zero]
+/-- The SAME actual global Ext class projected at one original point. -/
+def discreteSchemePointProjectedExtClass {D X : Scheme.{u}} [DiscreteTopology D]
+    (f : D ⟶ X) (L : D.Modules) (x : D) {W : X.Modules} {r : ℕ}
+    (z : Ext.{u} ((Scheme.Modules.pushforward f).obj L) W r) :
+    Ext.{u} ((Scheme.Modules.pushforward f).obj L) W r :=
+  discreteSchemeProjectedExtClass f L (discreteSchemePointOpen D x) z
+/-- Every original global Ext class is the sum of its ACTUAL point
+components. Source,coefficient,degree and Ext class are unchanged. -/
+theorem discreteSchemePointProjectedExtClass_sum
+    {D X : Scheme.{u}} [DiscreteTopology D] [Fintype D]
+    (f : D ⟶ X) (L : D.Modules) {W : X.Modules} {r : ℕ}
+    (z : Ext.{u} ((Scheme.Modules.pushforward f).obj L) W r) :
+    (∑ x : D,discreteSchemePointProjectedExtClass f L x z)=z := by
+  classical
+  change (∑ x : D,(Ext.mk₀ (discreteSchemePushforwardPointProjector f L x)).comp z (zero_add r))=z
+  rw [← Ext.sum_comp,← Ext.mk₀_sum,discreteSchemePushforwardPointProjector_sum,Ext.mk₀_id_comp]
+/-- The SAME arbitrary trace pairing decomposes into these ACTUAL point
+classes. In particular this applies to the constructed model trace;no
+new perfect functional is selected. Nonzero point weights remain OPEN. -/
+theorem discreteSchemePointProjectedExtClass_trace_sum
+    {D X : Scheme.{u}} [DiscreteTopology D] [Fintype D]
+    (f : D ⟶ X) (L : D.Modules) {W : X.Modules} {r : ℕ}
+    {K : Type v} [AddCommGroup K]
+    (trace : Ext.{u} (SheafOfModules.unit X.ringCatSheaf) W r →+ K)
+    (z : Ext.{u} ((Scheme.Modules.pushforward f).obj L) W r)
+    (s : Γ((Scheme.Modules.pushforward f).obj L,⊤)) :
+    schemeModuleExtSectionTracePairing trace z s=
+      ∑ x : D,schemeModuleExtSectionTracePairing trace (discreteSchemePointProjectedExtClass f L x z) s := by
+  classical
+  calc
+    _ = schemeModuleExtSectionTracePairing trace
+        (∑ x : D,discreteSchemePointProjectedExtClass f L x z) s := by
+      rw [discreteSchemePointProjectedExtClass_sum]
+    _ = _ := by
+      dsimp only [schemeModuleExtSectionTracePairing,AddMonoidHom.coe_mk,ZeroHom.coe_mk]
+      rw [Ext.comp_sum,map_sum]
+/-- For an ACTUAL Artinian original cut,finite point set and discrete
+topology are DERIVED from native scheme instances. Only the original
+morphism,coefficient and SAME global Ext class are inputs. -/
+theorem artinianSchemePointProjectedExtClass_sum
+    {D X : Scheme.{u}} [IsArtinianScheme D]
+    (f : D ⟶ X) (L : D.Modules) {W : X.Modules} {r : ℕ}
+    (z : Ext.{u} ((Scheme.Modules.pushforward f).obj L) W r) :
+    letI : Fintype D := Fintype.ofFinite D
+    (∑ x : D,discreteSchemePointProjectedExtClass f L x z)=z := by
+  letI : Fintype D := Fintype.ofFinite D
+  exact discreteSchemePointProjectedExtClass_sum f L z
+end LinearStudy
