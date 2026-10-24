@@ -1,0 +1,405 @@
+@LinearStudy.nativeProjectiveModuleSheafMap_homogeneousGlobalSection : ∀ {K S D E : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D] [inst_5 : Module K D]
+  [inst_6 : AddCommGroup E] [inst_7 : Module S E] [inst_8 : Module K E] (𝓑 : ℕ → Submodule K S)
+  [inst_9 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d))
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ ℰ d, b • ell ∈ ℰ (↑n + d)) (δ : ℤ) (e : D →ₗ[S] E)
+  (hh : ∀ (d : ℤ), ∀ ell ∈ 𝒟 d, e ell ∈ ℰ (d + δ)) (k : ℤ) (ell : ↥(𝒟 k)),
+  (CategoryTheory.ConcreteCategory.hom
+        (AlgebraicGeometry.Scheme.Modules.Hom.app (LinearStudy.nativeProjectiveModuleSheafMap 𝓑 𝒟 ℰ hD hE δ e hh k) ⊤))
+      (LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝓑 𝒟 hD k ell) =
+    LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection 𝓑 ℰ hE (k + δ) ⟨e ↑ell, ⋯⟩
+'LinearStudy.nativeProjectiveModuleSheafMap_homogeneousGlobalSection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeHomogeneousGlobalSection_indexTransport : ∀ {K S D : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D] [inst_5 : Module K D] (B : ℕ → Submodule K S)
+  [inst_6 : GradedAlgebra B] (DG : ℤ → Submodule K D)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ B n, ∀ ell ∈ DG d, b • ell ∈ DG (↑n + d)) (k l : ℤ) (h : k = l) (ell : ↥(DG k)),
+  (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app (CategoryTheory.eqToIso ⋯).hom ⊤))
+      (LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection B DG hD k ell) =
+    LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection B DG hD l ⟨↑ell, ⋯⟩
+'LinearStudy.nativeHomogeneousGlobalSection_indexTransport' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveHomogeneousInjection_exists_zero_degree_mono_sectionFormula : ∀ {K S D E : Type u_1}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D]
+  [inst_5 : Module K D] [inst_6 : AddCommGroup E] [inst_7 : Module S E] [inst_8 : Module K E] (B : ℕ → Submodule K S)
+  [inst_9 : GradedAlgebra B] (DG : ℤ → Submodule K D) (EG : ℤ → Submodule K E)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ B n, ∀ ell ∈ DG d, b • ell ∈ DG (↑n + d))
+  (hE : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ B n, ∀ ell ∈ EG d, b • ell ∈ EG (↑n + d)) (delta : ℤ) (e : D →ₗ[S] E)
+  (hh : ∀ (d : ℤ), ∀ ell ∈ DG d, e ell ∈ EG (d + delta)),
+  Function.Injective ⇑e →
+    ∃ (j : LinearStudy.nativeProjectiveModuleSheaf B DG hD 0 ⟶ LinearStudy.nativeProjectiveModuleSheaf B EG hE delta),
+      CategoryTheory.Mono j ∧
+        ∀ (ell : ↥(DG 0)),
+          (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j ⊤))
+              (LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ell) =
+            LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection B EG hE delta ⟨e ↑ell, ⋯⟩
+'LinearStudy.nativeProjectiveHomogeneousInjection_exists_zero_degree_mono_sectionFormula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalProjectivePolynomialSection_eq_of_quotient_image : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (m : ℕ) (Q : LinearStudy.CoordinateRing n)
+  (hQ : MvPolynomial.IsHomogeneous Q m) (x : LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+  (hx : x ∈ LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal) ↑m),
+  (Ideal.Quotient.mk V.ideal.toIdeal) Q = x →
+    let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+    LinearStudy.originalProjectivePolynomialSection V m Q hQ =
+      LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯ ↑m
+        ⟨x, hx⟩
+'LinearStudy.originalProjectivePolynomialSection_eq_of_quotient_image' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalPolynomial_exists_of_injective_image : ∀ {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  {D : Type} [inst : AddCommGroup D] [inst_1 : Module (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) D]
+  (e : D →ₗ[LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal] LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal),
+  Function.Injective ⇑e →
+    ∀ (m : ℕ) (z : D),
+      z ≠ 0 →
+        e z ∈ LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal m →
+          ∃ (Q : LinearStudy.CoordinateRing n),
+            MvPolynomial.IsHomogeneous Q m ∧ Q ∉ V.ideal.toIdeal ∧ (Ideal.Quotient.mk V.ideal.toIdeal) Q = e z
+'LinearStudy.originalPolynomial_exists_of_injective_image' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalGradedPolynomialSectionImageStatement : {n : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    {D : Type} →
+      [inst : AddCommGroup D] →
+        [inst_1 : Module (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) D] →
+          [inst_2 : Module ℂ D] →
+            (DG : ℤ → Submodule ℂ D) →
+              (hD :
+                  ∀ (a : ℕ) (d : ℤ),
+                    ∀ b ∈ LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal a, ∀ z ∈ DG d, b • z ∈ DG (↑a + d)) →
+                (m : ℕ) →
+                  (D →ₗ[LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal]
+                      LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) →
+                    (let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+                      LinearStudy.nativeProjectiveModuleSheaf B DG hD 0 ⟶
+                        LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+                          ↑m) →
+                      Prop
+'LinearStudy.originalGradedPolynomialSectionImageStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalGradedPolynomialSectionImageStatement_of_formula : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) {D : Type} [inst : AddCommGroup D]
+  [inst_1 : Module (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) D] [inst_2 : Module ℂ D] (DG : ℤ → Submodule ℂ D)
+  (hD :
+    ∀ (a : ℕ) (d : ℤ), ∀ b ∈ LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal a, ∀ z ∈ DG d, b • z ∈ DG (↑a + d))
+  (m : ℕ) (e : D →ₗ[LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal] LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+  (j :
+    let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+    LinearStudy.nativeProjectiveModuleSheaf B DG hD 0 ⟶
+      LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯ ↑m),
+  CategoryTheory.Mono j →
+    Function.Injective ⇑e →
+      ∀
+        (hh :
+          ∀ (d : ℤ),
+            ∀ z ∈ DG d,
+              e z ∈
+                LinearStudy.nativeProjectiveRingIntegerPiece (LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal)
+                  (d + ↑m)),
+        (let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+          ∀ (z : ↥(DG 0)),
+            (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j ⊤))
+                (LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 z) =
+              LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection B
+                (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯ ↑m ⟨e ↑z, ⋯⟩) →
+          ∀ {r : ℕ} (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+            (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+              Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+                LinearStudy.originalGradedPolynomialSectionImageStatement V DG hD m e j
+'LinearStudy.originalGradedPolynomialSectionImageStatement_of_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalNormalizationDual_exists_homogeneous_embedding_witness_above : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+  (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+    Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+      (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+        ∀ (lower : ℕ),
+          let R := MvPolynomial (Fin (r + 1)) ℂ;
+          let S := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+          let phi := LinearStudy.projectiveLinearNormalizationMap V L;
+          let A := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+          have B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+          let C := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+          ∃ (m : ℕ),
+            lower ≤ m ∧
+              0 < m ∧
+                ∃ (e : ↑C →ₗ[S] S),
+                  Function.Injective ⇑e ∧
+                    ∀ (d : ℤ),
+                      ∀ z ∈ LinearStudy.coextensionGradedPiece A B d,
+                        e z ∈ LinearStudy.nativeProjectiveRingIntegerPiece B (d + ↑m)
+'LinearStudy.originalNormalizationDual_exists_homogeneous_embedding_witness_above' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalNormalizationDual_exists_polynomial_section_embedding_above : ∀ {n r : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+  Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+    (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+      ∀ (lower : ℕ),
+        let R := MvPolynomial (Fin (r + 1)) ℂ;
+        let S := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+        let phi := LinearStudy.projectiveLinearNormalizationMap V L;
+        let A := MvPolynomial.homogeneousSubmodule (Fin (r + 1)) ℂ;
+        let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+        let C := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+        let DG := LinearStudy.coextensionGradedPiece A B;
+        let EG := LinearStudy.nativeProjectiveRingIntegerPiece B;
+        have hD := ⋯;
+        have hE := ⋯;
+        ∃ (m : ℕ),
+          lower ≤ m ∧
+            0 < m ∧
+              ∃ (e : ↑C →ₗ[S] S),
+                Function.Injective ⇑e ∧
+                  ∃ (_ : ∀ (d : ℤ), ∀ z ∈ DG d, e z ∈ EG (d + ↑m)) (j :
+                    LinearStudy.nativeProjectiveModuleSheaf B DG hD 0 ⟶
+                      LinearStudy.nativeProjectiveModuleSheaf B EG hE ↑m),
+                    CategoryTheory.Mono j ∧ LinearStudy.originalGradedPolynomialSectionImageStatement V DG hD m e j
+'LinearStudy.originalNormalizationDual_exists_polynomial_section_embedding_above' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalProjectivePolynomialSection_eq_of_quotient_eq : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (m : ℕ) (Q : LinearStudy.CoordinateRing n)
+  (hQ : MvPolynomial.IsHomogeneous Q m) (Q' : LinearStudy.CoordinateRing n) (hQ' : MvPolynomial.IsHomogeneous Q' m),
+  (Ideal.Quotient.mk V.ideal.toIdeal) Q = (Ideal.Quotient.mk V.ideal.toIdeal) Q' →
+    LinearStudy.originalProjectivePolynomialSection V m Q hQ =
+      LinearStudy.originalProjectivePolynomialSection V m Q' hQ'
+'LinearStudy.originalProjectivePolynomialSection_eq_of_quotient_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalGradedPolynomialSectionImageStatement_polynomial_images : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) {D : Type} [inst : AddCommGroup D]
+  [inst_1 : Module (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) D] [inst_2 : Module ℂ D] (DG : ℤ → Submodule ℂ D)
+  (hD :
+    ∀ (a : ℕ) (d : ℤ), ∀ b ∈ LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal a, ∀ z ∈ DG d, b • z ∈ DG (↑a + d))
+  (m : ℕ) (e : D →ₗ[LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal] LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+  (j :
+    let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+    LinearStudy.nativeProjectiveModuleSheaf B DG hD 0 ⟶
+      LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯ ↑m),
+  LinearStudy.originalGradedPolynomialSectionImageStatement V DG hD m e j →
+    ∀ z ∈ DG 0,
+      z ≠ 0 →
+        ∃ (Q : LinearStudy.CoordinateRing n),
+          MvPolynomial.IsHomogeneous Q m ∧ Q ∉ V.ideal.toIdeal ∧ (Ideal.Quotient.mk V.ideal.toIdeal) Q = e z
+'LinearStudy.originalGradedPolynomialSectionImageStatement_polynomial_images' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalNormalizationFixedFunctionalSectionModelStatement : {n : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (q : ℕ) →
+      (L : Fin (q + 2) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (q + 2)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (LinearStudy.projectiveLinearNormalizationMap V L).Finite → ℕ → Prop
+'LinearStudy.originalNormalizationFixedFunctionalSectionModelStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalNormalization_exists_fixed_functional_and_section_model_above : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) (q : ℕ) (L : Fin (q + 2) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (q + 2)), MvPolynomial.IsHomogeneous (L i) 1),
+  Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+    ∀ (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (lower : ℕ),
+      LinearStudy.originalNormalizationFixedFunctionalSectionModelStatement V q L hL hfinite lower
+'LinearStudy.originalNormalization_exists_fixed_functional_and_section_model_above' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalGradedPolynomialSectionImageStatement_any_polynomial : ∀ {n : ℕ}
+  (V : LinearStudy.IntegralProjectiveEquations n) {D : Type} [inst : AddCommGroup D]
+  [inst_1 : Module (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) D] [inst_2 : Module ℂ D] (DG : ℤ → Submodule ℂ D)
+  (hD :
+    ∀ (a : ℕ) (d : ℤ), ∀ b ∈ LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal a, ∀ z ∈ DG d, b • z ∈ DG (↑a + d))
+  (m : ℕ) (e : D →ₗ[LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal] LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+  (j :
+    let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+    LinearStudy.nativeProjectiveModuleSheaf B DG hD 0 ⟶
+      LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯ ↑m),
+  LinearStudy.originalGradedPolynomialSectionImageStatement V DG hD m e j →
+    ∀ (z : D) (hz : z ∈ DG 0),
+      z ≠ 0 →
+        ∀ (Q : LinearStudy.CoordinateRing n) (hQ : MvPolynomial.IsHomogeneous Q m),
+          (Ideal.Quotient.mk V.ideal.toIdeal) Q = e z →
+            let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+            (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j ⊤))
+                  (LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ⟨z, hz⟩) =
+                LinearStudy.originalProjectivePolynomialSection V m Q hQ ∧
+              LinearStudy.originalProjectivePolynomialSection V m Q hQ ≠ 0 ∧
+                LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ⟨z, hz⟩ ≠ 0
+'LinearStudy.originalGradedPolynomialSectionImageStatement_any_polynomial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.originalGradedPolynomialSectionImageStatement : {n : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    {D : Type} →
+      [inst : AddCommGroup D] →
+        [inst_1 : Module (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) D] →
+          [inst_2 : Module ℂ D] →
+            (DG : ℤ → Submodule ℂ D) →
+              (hD :
+                  ∀ (a : ℕ) (d : ℤ),
+                    ∀ b ∈ LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal a, ∀ z ∈ DG d, b • z ∈ DG (↑a + d)) →
+                (m : ℕ) →
+                  (D →ₗ[LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal]
+                      LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) →
+                    (let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+                      LinearStudy.nativeProjectiveModuleSheaf B DG hD 0 ⟶
+                        LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯
+                          ↑m) →
+                      Prop :=
+fun {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) {D : Type} [AddCommGroup D]
+    [Module (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) D] [Module ℂ D] (DG : ℤ → Submodule ℂ D)
+    (hD :
+      ∀ (a : ℕ) (d : ℤ), ∀ b ∈ LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal a, ∀ z ∈ DG d, b • z ∈ DG (↑a + d))
+    (m : ℕ) (e : D →ₗ[LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal] LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+    (j :
+      let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+      LinearStudy.nativeProjectiveModuleSheaf B DG hD 0 ⟶
+        LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.nativeProjectiveRingIntegerPiece B) ⋯ ↑m) =>
+  let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  ∀ (z : D) (hz : z ∈ DG 0),
+    z ≠ 0 →
+      ∃ (Q : LinearStudy.CoordinateRing n) (hQ : MvPolynomial.IsHomogeneous Q m),
+        Q ∉ V.ideal.toIdeal ∧
+          (Ideal.Quotient.mk V.ideal.toIdeal) Q = e z ∧
+            (CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Modules.Hom.app j ⊤))
+                  (LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ⟨z, hz⟩) =
+                LinearStudy.originalProjectivePolynomialSection V m Q hQ ∧
+              LinearStudy.originalProjectivePolynomialSection V m Q hQ ≠ 0 ∧
+                LinearStudy.nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ⟨z, hz⟩ ≠ 0
+def LinearStudy.originalNormalizationFixedFunctionalSectionModelStatement : {n : ℕ} →
+  (V : LinearStudy.IntegralProjectiveEquations n) →
+    (q : ℕ) →
+      (L : Fin (q + 2) → LinearStudy.CoordinateRing n) →
+        (∀ (i : Fin (q + 2)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (LinearStudy.projectiveLinearNormalizationMap V L).Finite → ℕ → Prop :=
+fun {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (q : ℕ) (L : Fin (q + 2) → LinearStudy.CoordinateRing n)
+    (hL : ∀ (i : Fin (q + 2)), MvPolynomial.IsHomogeneous (L i) 1)
+    (hfinite : (LinearStudy.projectiveLinearNormalizationMap V L).Finite) (lower : ℕ) =>
+  let R := MvPolynomial (Fin (q + 2)) ℂ;
+  let S := LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal;
+  let phi := LinearStudy.projectiveLinearNormalizationMap V L;
+  let A := MvPolynomial.homogeneousSubmodule (Fin (q + 2)) ℂ;
+  let B := LinearStudy.homogeneousQuotientPiece V.ideal.toIdeal;
+  let C := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+  let c := fun (i : ULift.{0, 0} (Fin (n + 1))) => (Ideal.Quotient.mk V.ideal.toIdeal) (MvPolynomial.X i.down);
+  have hc := ⋯;
+  have hgenC := ⋯;
+  let DG := LinearStudy.coextensionGradedPiece A B;
+  let EG := LinearStudy.nativeProjectiveRingIntegerPiece B;
+  have hD := ⋯;
+  have hE := ⋯;
+  ∃ (m : ℕ),
+    lower ≤ m ∧
+      0 < m ∧
+        ∃ (e : ↑C →ₗ[S] S),
+          Function.Injective ⇑e ∧
+            ∃ (_ : ∀ (d : ℤ), ∀ z ∈ DG d, e z ∈ EG (d + ↑m)) (j :
+              LinearStudy.nativeProjectiveModuleSheaf B DG hD 0 ⟶ LinearStudy.nativeProjectiveModuleSheaf B EG hE ↑m),
+              CategoryTheory.Mono j ∧
+                LinearStudy.originalGradedPolynomialSectionImageStatement V DG hD m e j ∧
+                  LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement B
+                    (Ideal.Quotient.mkₐ ℂ V.ideal.toIdeal) V.ideal.toIdeal m e c hc hgenC q ⋯
+def LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement : {K S : Type} →
+  [inst : Field K] →
+    {σ : Type} →
+      [inst_1 : Fintype σ] →
+        [LinearOrder σ] →
+          [inst_3 : CommRing S] →
+            [inst_4 : Algebra K S] →
+              [inst_5 : Algebra (MvPolynomial σ K) S] →
+                [IsScalarTower K (MvPolynomial σ K) S] →
+                  (B : ℕ → Submodule K S) →
+                    [GradedAlgebra B] →
+                      [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] →
+                        [IsDomain S] →
+                          [IsNoetherianRing S] →
+                            [Algebra.FiniteType K S] →
+                              [Module.Finite (MvPolynomial σ K) S] →
+                                {τ : Type} →
+                                  (MvPolynomial τ K →ₐ[K] S) →
+                                    Ideal (MvPolynomial τ K) →
+                                      ℕ →
+                                        (↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj
+                                                ↧(MvPolynomial σ K)) →ₗ[S]
+                                            S) →
+                                          {κ : Type} →
+                                            (c : κ → S) →
+                                              (∀ (i : κ), c i ∈ B 1) →
+                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                  (q : ℕ) → Fintype.card σ = q + 2 → Prop :=
+fun {K S : Type} [Field K] {σ : Type} [Fintype σ] [LinearOrder σ] [CommRing S] [Algebra K S]
+    [Algebra (MvPolynomial σ K) S] [IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S) [GradedAlgebra B]
+    [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] [IsDomain S] [IsNoetherianRing S]
+    [Algebra.FiniteType K S] [Module.Finite (MvPolynomial σ K) S] {τ : Type} (P : MvPolynomial τ K →ₐ[K] S)
+    (I : Ideal (MvPolynomial τ K)) (m : ℕ)
+    (e : ↑((ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj ↧(MvPolynomial σ K)) →ₗ[S] S) {κ : Type}
+    (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ)
+    (hcard : Fintype.card σ = q + 2) =>
+  let A := MvPolynomial.homogeneousSubmodule σ K;
+  let D := LinearStudy.nativeProjectiveRingIntegerPiece B;
+  let C := (ModuleCat.coextendScalars (algebraMap (MvPolynomial σ K) S)).obj ↧(MvPolynomial σ K);
+  have hR := ⋯;
+  have hS := ⋯;
+  let k := -↑(Fintype.card σ);
+  let F := LinearStudy.nativeProjectiveModuleSheaf B D hS k;
+  let H := LinearStudy.schemeModuleActualCohomology (AlgebraicGeometry.Proj B) F (q + 1);
+  have piB :=
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0))));
+  let W := ↥(LinearStudy.integerGradedHomPiece A D (k - k));
+  have J := LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso B D hR hS c hc hgenC q hcard k;
+  have comparison := LinearStudy.actualAbelianIsoAddEquiv J;
+  ∀ (ell : H →+ K),
+    (∀ (a : K) (x : H),
+        ell
+            ((CategoryTheory.Sheaf.H.map
+                ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                  (LinearStudy.originalGlobalModuleScalar
+                    ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop piB))
+                      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv) a))
+                    F))
+                (q + 1))
+              x) =
+          a * ell x) →
+      ell ≠ 0 →
+        ∃ z ∈ LinearStudy.coextensionGradedPiece A B 0,
+          z ≠ 0 ∧
+            ∃ (Q : MvPolynomial τ K),
+              Q.IsHomogeneous m ∧
+                Q ∉ I ∧
+                  P Q = e z ∧
+                    ∃ (psi : W),
+                      z = (LinearStudy.coextensionOriginalAdjoint ↑psi) 1 ∧ ∀ (x : H), (comparison x) psi = ell x
+'LinearStudy.nativeCoextensionFixedPolynomialFunctionalStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ROLECHECK:LinearStudy.nativeProjectiveModuleSheafMap_homogeneousGlobalSection:true
+KINDCHECK:LinearStudy.nativeProjectiveModuleSheafMap_homogeneousGlobalSection:theorem
+ROLECHECK:LinearStudy.nativeHomogeneousGlobalSection_indexTransport:true
+KINDCHECK:LinearStudy.nativeHomogeneousGlobalSection_indexTransport:theorem
+ROLECHECK:LinearStudy.nativeProjectiveHomogeneousInjection_exists_zero_degree_mono_sectionFormula:true
+KINDCHECK:LinearStudy.nativeProjectiveHomogeneousInjection_exists_zero_degree_mono_sectionFormula:theorem
+ROLECHECK:LinearStudy.originalProjectivePolynomialSection_eq_of_quotient_image:true
+KINDCHECK:LinearStudy.originalProjectivePolynomialSection_eq_of_quotient_image:theorem
+ROLECHECK:LinearStudy.originalPolynomial_exists_of_injective_image:true
+KINDCHECK:LinearStudy.originalPolynomial_exists_of_injective_image:theorem
+ROLECHECK:LinearStudy.originalGradedPolynomialSectionImageStatement:false
+KINDCHECK:LinearStudy.originalGradedPolynomialSectionImageStatement:definition
+ROLECHECK:LinearStudy.originalGradedPolynomialSectionImageStatement_of_formula:true
+KINDCHECK:LinearStudy.originalGradedPolynomialSectionImageStatement_of_formula:theorem
+ROLECHECK:LinearStudy.originalNormalizationDual_exists_homogeneous_embedding_witness_above:true
+KINDCHECK:LinearStudy.originalNormalizationDual_exists_homogeneous_embedding_witness_above:theorem
+ROLECHECK:LinearStudy.originalNormalizationDual_exists_polynomial_section_embedding_above:true
+KINDCHECK:LinearStudy.originalNormalizationDual_exists_polynomial_section_embedding_above:theorem
+ROLECHECK:LinearStudy.originalProjectivePolynomialSection_eq_of_quotient_eq:true
+KINDCHECK:LinearStudy.originalProjectivePolynomialSection_eq_of_quotient_eq:theorem
+ROLECHECK:LinearStudy.originalGradedPolynomialSectionImageStatement_polynomial_images:true
+KINDCHECK:LinearStudy.originalGradedPolynomialSectionImageStatement_polynomial_images:theorem
+ROLECHECK:LinearStudy.originalNormalizationFixedFunctionalSectionModelStatement:false
+KINDCHECK:LinearStudy.originalNormalizationFixedFunctionalSectionModelStatement:definition
+ROLECHECK:LinearStudy.originalNormalization_exists_fixed_functional_and_section_model_above:true
+KINDCHECK:LinearStudy.originalNormalization_exists_fixed_functional_and_section_model_above:theorem
+ROLECHECK:LinearStudy.originalGradedPolynomialSectionImageStatement_any_polynomial:true
+KINDCHECK:LinearStudy.originalGradedPolynomialSectionImageStatement_any_polynomial:theorem

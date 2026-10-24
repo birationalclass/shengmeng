@@ -1,0 +1,613 @@
+MODULE Linear.NativeHomogeneousShiftSectionMap
+PATH D:\codex\Math\formalization\linear\Linear\NativeHomogeneousShiftSectionMap.lean
+1: module
+2: public import Linear.NativeProjectiveModuleSheafMap
+3: public import Linear.NativeHomogeneousGlobalSectionMap
+4: @[expose] public section
+5: noncomputable section
+6: set_option autoImplicit false
+7: set_option backward.isDefEq.respectTransparency false
+8: set_option backward.isDefEq.respectTransparency.types false
+9: set_option maxHeartbeats 50000
+10: namespace LinearStudy
+11: open AlgebraicGeometry TopCat TopologicalSpace CategoryTheory Opposite
+12: universe u
+13: variable {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]
+14: variable [AddCommGroup D] [Module S D] [Module K D]
+15: variable [AddCommGroup E] [Module S E] [Module K E]
+16: variable (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
+17: variable (𝒟 : ℤ → Submodule K D) (ℰ : ℤ → Submodule K E)
+18: variable (hD : ∀ n : ℕ, ∀ d : ℤ, ∀ b : S, b ∈ 𝓑 n →
+19:   ∀ ell : D, ell ∈ 𝒟 d → b • ell ∈ 𝒟 ((n : ℤ)+d))
+20: variable (hE : ∀ n : ℕ, ∀ d : ℤ, ∀ b : S, b ∈ 𝓑 n →
+21:   ∀ ell : E, ell ∈ ℰ d → b • ell ∈ ℰ ((n : ℤ)+d))
+22: variable (δ : ℤ) (e : D →ₗ[S] E)
+23: variable (hh : ∀ d : ℤ, ∀ ell : D, ell ∈ 𝒟 d → e ell ∈ ℰ (d+δ))
+24: attribute [local instance] nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+25: 
+26: /-- Extend the existing degree-zero section formula to the ACTUAL
+27: homogeneous degree-delta embedding needed for the SAME original Q.
+28: The equality uses original prime localization,with no comparison input. -/
+29: theorem nativeProjectiveModuleSheafMap_homogeneousGlobalSection
+30:     (k : ℤ) (ell : 𝒟 k) :
+31:     (nativeProjectiveModuleSheafMap 𝓑 𝒟 ℰ hD hE δ e hh k).app ⊤
+32:       (nativeProjectiveModuleHomogeneousGlobalSection 𝓑 𝒟 hD k ell) =
+33:     nativeProjectiveModuleHomogeneousGlobalSection 𝓑 ℰ hE (k+δ)
+34:       ⟨e (ell:D),hh k ell ell.property⟩ := by
+35:   apply Subtype.ext
+36:   funext p
+37:   exact nativeProjectiveModuleAtPrimeMap_mk 𝓑 e p.1 ell 1
+38: end LinearStudy
+END MODULE
+MODULE Linear.NativeHomogeneousEmbeddingSectionFormula
+PATH D:\codex\Math\formalization\linear\Linear\NativeHomogeneousEmbeddingSectionFormula.lean
+1: module
+2: public import Linear.NativeHomogeneousShiftSectionMap
+3: public import Linear.NativeDegreeZeroEmbeddingTarget
+4: @[expose] public section
+5: noncomputable section
+6: set_option autoImplicit false
+7: set_option backward.isDefEq.respectTransparency true
+8: set_option backward.isDefEq.respectTransparency.types true
+9: set_option maxHeartbeats 50000
+10: namespace LinearStudy
+11: open AlgebraicGeometry CategoryTheory
+12: universe u
+13: variable {K S D E : Type u} [Field K] [CommRing S] [Algebra K S]
+14: variable [AddCommGroup D] [Module S D] [Module K D]
+15: variable [AddCommGroup E] [Module S E] [Module K E]
+16: variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+17: variable (DG : ℤ → Submodule K D) (EG : ℤ → Submodule K E)
+18: variable (hD : ∀ n : ℕ, ∀ d : ℤ, ∀ b : S, b ∈ B n →
+19:   ∀ ell : D, ell ∈ DG d → b • ell ∈ DG ((n : ℤ)+d))
+20: variable (hE : ∀ n : ℕ, ∀ d : ℤ, ∀ b : S, b ∈ B n →
+21:   ∀ ell : E, ell ∈ EG d → b • ell ∈ EG ((n : ℤ)+d))
+22: 
+23: /-- Arithmetic twist transport retains the SAME element/1 section. -/
+24: theorem nativeHomogeneousGlobalSection_indexTransport
+25:     (k l : ℤ) (h : k=l) (ell : DG k) :
+26:     ((eqToIso (congrArg (nativeProjectiveModuleSheaf B DG hD) h)).hom.app ⊤)
+27:       (nativeProjectiveModuleHomogeneousGlobalSection B DG hD k ell) =
+28:       nativeProjectiveModuleHomogeneousGlobalSection B DG hD l
+29:         ⟨(ell:D),h ▸ ell.property⟩ := by
+30:   subst l
+31:   rfl
+32: /-- Retain an ACTUAL zero-degree embedding and its EXACT action on every
+33: homogeneous global section. The old existence theorem discarded this
+34: section formula;here the SAME constructed map and original element are
+35: retained for the subsequent ORIGINAL polynomial/support comparison. -/
+36: theorem nativeProjectiveHomogeneousInjection_exists_zero_degree_mono_sectionFormula
+37:     (delta : ℤ) (e : D →ₗ[S] E)
+38:     (hh : ∀ d : ℤ,∀ ell : D,ell ∈ DG d → e ell ∈ EG (d+delta))
+39:     (he : Function.Injective e) :
+40:     ∃ j : nativeProjectiveModuleSheaf B DG hD 0 ⟶
+41:         nativeProjectiveModuleSheaf B EG hE delta,
+42:       Mono j ∧ ∀ ell : DG 0,
+43:         (j.app ⊤) (nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ell) =
+44:           nativeProjectiveModuleHomogeneousGlobalSection B EG hE delta
+45:             ⟨e (ell:D),by simpa only [zero_add] using hh 0 ell ell.property⟩ := by
+46:   let f := nativeProjectiveModuleSheafMap B DG EG hD hE delta e hh 0
+47:   letI : Mono f := nativeProjectiveModuleSheafMap_mono B DG EG hD hE delta e hh he 0
+48:   let targetIso : nativeProjectiveModuleSheaf B EG hE (0+delta) ≅
+49:       nativeProjectiveModuleSheaf B EG hE delta :=
+50:     eqToIso (congrArg (nativeProjectiveModuleSheaf B EG hE) (zero_add delta))
+51:   refine ⟨f ≫ targetIso.hom,inferInstance,?_⟩
+52:   intro ell
+53:   change (targetIso.hom.app ⊤) ((f.app ⊤)
+54:     (nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ell)) = _
+55:   rw [nativeProjectiveModuleSheafMap_homogeneousGlobalSection]
+56:   exact nativeHomogeneousGlobalSection_indexTransport B EG hE (0+delta) delta
+57:     (zero_add delta) ⟨e (ell:D),hh 0 ell ell.property⟩
+58: end LinearStudy
+END MODULE
+MODULE Linear.OriginalPolynomialSectionImageEquality
+PATH D:\codex\Math\formalization\linear\Linear\OriginalPolynomialSectionImageEquality.lean
+1: module
+2: public import Linear.OriginalProjectivePolynomialSection
+3: @[expose] public section
+4: noncomputable section
+5: set_option autoImplicit false
+6: set_option maxHeartbeats 50000
+7: namespace LinearStudy
+8: open AlgebraicGeometry CategoryTheory
+9: attribute [local instance] MvPolynomial.gradedAlgebra
+10: /-- The ORIGINAL polynomial section is the SAME element/1 section of its
+11: specified quotient image. Equality of quotient elements is proved data;
+12: no independent section comparison is assumed. -/
+13: theorem originalProjectivePolynomialSection_eq_of_quotient_image
+14:     {n : ℕ} (V : IntegralProjectiveEquations n) (m : ℕ)
+15:     (Q : CoordinateRing n) (hQ : Q.IsHomogeneous m)
+16:     (x : CoordinateRing n ⧸ V.ideal.toIdeal)
+17:     (hx : x ∈ nativeProjectiveRingIntegerPiece (homogeneousQuotientPiece V.ideal.toIdeal) (m:ℤ))
+18:     (h : Ideal.Quotient.mk V.ideal.toIdeal Q=x) :
+19:     letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+20:     let B := homogeneousQuotientPiece V.ideal.toIdeal
+21:     originalProjectivePolynomialSection V m Q hQ =
+22:       nativeProjectiveModuleHomogeneousGlobalSection B (nativeProjectiveRingIntegerPiece B)
+23:         (nativeProjectiveRingIntegerPiece_graded B) (m:ℤ) ⟨x,hx⟩ := by
+24:   subst x
+25:   rfl
+26: end LinearStudy
+END MODULE
+MODULE Linear.OriginalPolynomialInjectiveImageLift
+PATH D:\codex\Math\formalization\linear\Linear\OriginalPolynomialInjectiveImageLift.lean
+1: module
+2: public import Linear.OriginalProjectivePolynomialSection
+3: @[expose] public section
+4: noncomputable section
+5: set_option autoImplicit false
+6: set_option maxHeartbeats 50000
+7: set_option backward.isDefEq.respectTransparency true
+8: set_option backward.isDefEq.respectTransparency.types true
+9: namespace LinearStudy
+10: attribute [local instance] MvPolynomial.gradedAlgebra
+11: /-- Pure ORIGINAL quotient polynomial lifting for one nonzero image of
+12: an injective linear map. It keeps Q in the original coordinate ring and
+13: proves nonmembership in the original ideal. No sheaf is an input. -/
+14: theorem originalPolynomial_exists_of_injective_image
+15:     {n : ℕ} (V : IntegralProjectiveEquations n)
+16:     {D : Type} [AddCommGroup D] [Module (CoordinateRing n ⧸ V.ideal.toIdeal) D]
+17:     (e : D →ₗ[CoordinateRing n ⧸ V.ideal.toIdeal] (CoordinateRing n ⧸ V.ideal.toIdeal))
+18:     (he : Function.Injective e) (m : ℕ) (z : D) (hne : z ≠ 0)
+19:     (himage : e z ∈ homogeneousQuotientPiece V.ideal.toIdeal m) :
+20:     ∃ Q : CoordinateRing n,Q.IsHomogeneous m ∧ Q ∉ V.ideal.toIdeal ∧
+21:       Ideal.Quotient.mk V.ideal.toIdeal Q=e z := by
+22:   obtain ⟨Q,hQ,hval⟩ := (homogeneousQuotientPiece_mem_iff V.ideal.toIdeal m (e z)).mp himage
+23:   refine ⟨Q,hQ,?_,hval⟩
+24:   intro hmem
+25:   apply hne
+26:   apply he
+27:   rw [map_zero,← hval]
+28:   exact Ideal.Quotient.eq_zero_iff_mem.mpr hmem
+29: end LinearStudy
+END MODULE
+MODULE Linear.OriginalGradedPolynomialSectionImage
+PATH D:\codex\Math\formalization\linear\Linear\OriginalGradedPolynomialSectionImage.lean
+1: module
+2: public import Linear.NativeHomogeneousEmbeddingSectionFormula
+3: public import Linear.SheafEmbeddingSectionTransport
+4: public import Linear.OriginalPolynomialSectionNonzero
+5: public import Linear.OriginalPolynomialSectionImageEquality
+6: public import Linear.OriginalPolynomialInjectiveImageLift
+7: @[expose] public section
+8: noncomputable section
+9: set_option autoImplicit false
+10: set_option maxHeartbeats 50000
+11: set_option backward.isDefEq.respectTransparency true
+12: set_option backward.isDefEq.respectTransparency.types true
+13: namespace LinearStudy
+14: open AlgebraicGeometry CategoryTheory
+15: attribute [local instance] MvPolynomial.gradedAlgebra
+16: variable {n : ℕ} (V : IntegralProjectiveEquations n)
+17: variable {D : Type} [AddCommGroup D]
+18: variable [Module (CoordinateRing n ⧸ V.ideal.toIdeal) D] [Module ℂ D]
+19: variable (DG : ℤ → Submodule ℂ D)
+20: variable (hD : ∀ a : ℕ,∀ d : ℤ,∀ b : CoordinateRing n ⧸ V.ideal.toIdeal,
+21:   b ∈ homogeneousQuotientPiece V.ideal.toIdeal a →
+22:   ∀ z : D,z ∈ DG d → b • z ∈ DG ((a:ℤ)+d))
+23: attribute [local irreducible] homogeneousQuotientGrading nativeProjectiveModuleSheaf originalProjectivePolynomialSection
+24: /-- FULL section-image predicate;STATEMENT only,not a proof. -/
+25: def originalGradedPolynomialSectionImageStatement
+26:     (m : ℕ) (e : D →ₗ[CoordinateRing n ⧸ V.ideal.toIdeal] (CoordinateRing n ⧸ V.ideal.toIdeal))
+27:     (j : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+28:       let B := homogeneousQuotientPiece V.ideal.toIdeal
+29:       nativeProjectiveModuleSheaf B DG hD 0 ⟶
+30:         nativeProjectiveModuleSheaf B (nativeProjectiveRingIntegerPiece B)
+31:           (nativeProjectiveRingIntegerPiece_graded B) (m:ℤ)) : Prop :=
+32:   letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+33:   let B := homogeneousQuotientPiece V.ideal.toIdeal
+34:   ∀ (z : D) (hz : z ∈ DG 0),z ≠ 0 →
+35:     ∃ (Q : CoordinateRing n) (hQ : Q.IsHomogeneous m),Q ∉ V.ideal.toIdeal ∧
+36:       Ideal.Quotient.mk V.ideal.toIdeal Q=e z ∧
+37:       (j.app ⊤) (nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ⟨z,hz⟩) =
+38:         originalProjectivePolynomialSection V m Q hQ ∧
+39:       originalProjectivePolynomialSection V m Q hQ ≠ 0 ∧
+40:       nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ⟨z,hz⟩ ≠ 0
+41: 
+42: /-- Generic ORIGINAL-V image step,abstracted in the source module to avoid
+43: repeated coextension type expansion. All polynomial/section conclusions
+44: are exposed in the preceding statement definition. -/
+45: theorem originalGradedPolynomialSectionImageStatement_of_formula
+46:     (m : ℕ) (e : D →ₗ[CoordinateRing n ⧸ V.ideal.toIdeal] (CoordinateRing n ⧸ V.ideal.toIdeal))
+47:     (j : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+48:       let B := homogeneousQuotientPiece V.ideal.toIdeal
+49:       nativeProjectiveModuleSheaf B DG hD 0 ⟶
+50:         nativeProjectiveModuleSheaf B (nativeProjectiveRingIntegerPiece B)
+51:           (nativeProjectiveRingIntegerPiece_graded B) (m:ℤ))
+52:     (hj : Mono j)
+53:     (he : Function.Injective e)
+54:     (hh : ∀ d : ℤ,∀ z : D,z ∈ DG d → e z ∈
+55:       nativeProjectiveRingIntegerPiece (homogeneousQuotientPiece V.ideal.toIdeal) (d+(m:ℤ)))
+56:     (hformula : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+57:       let B := homogeneousQuotientPiece V.ideal.toIdeal
+58:       ∀ z : DG 0,(j.app ⊤) (nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 z) =
+59:         nativeProjectiveModuleHomogeneousGlobalSection B (nativeProjectiveRingIntegerPiece B)
+60:           (nativeProjectiveRingIntegerPiece_graded B) (m:ℤ)
+61:           ⟨e (z:D),by simpa only [zero_add] using hh 0 z z.property⟩)
+62:     {r : ℕ} (L : Fin (r+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+63:     (hinj : Function.Injective (projectiveLinearNormalizationMap V L)) :
+64:     originalGradedPolynomialSectionImageStatement V DG hD m e j := by
+65:   unfold originalGradedPolynomialSectionImageStatement
+66:   letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+67:   let B := homogeneousQuotientPiece V.ideal.toIdeal
+68:   let EG := nativeProjectiveRingIntegerPiece B
+69:   let hE := nativeProjectiveRingIntegerPiece_graded B
+70:   intro B0 z hz hne
+71:   have himage : e z ∈ B m := by
+72:     simpa only [zero_add,nativeProjectiveRingIntegerPiece,Int.natCast_nonneg,if_true,
+73:       Int.toNat_natCast] using hh 0 z hz
+74:   have hp : ∃ Q : CoordinateRing n,Q.IsHomogeneous m ∧ Q ∉ V.ideal.toIdeal ∧
+75:       Ideal.Quotient.mk V.ideal.toIdeal Q=e z :=
+76:     originalPolynomial_exists_of_injective_image (n:=n) (D:=D) V e he m z hne himage
+77:   obtain ⟨Q,hQ,hQnot,hval⟩ := hp
+78:   have hvalue : (j.app ⊤)
+79:       (nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ⟨z,hz⟩) =
+80:       originalProjectivePolynomialSection V m Q hQ := by
+81:     exact (hformula ⟨z,hz⟩).trans
+82:       (originalProjectivePolynomialSection_eq_of_quotient_image V m Q hQ (e z)
+83:         (by simpa only [zero_add] using hh 0 z hz) hval).symm
+84:   have hsection : originalProjectivePolynomialSection V m Q hQ ≠ 0 :=
+85:     originalProjectivePolynomialSection_nonzero_of_normalization (n:=n) (r:=r) V L hL hinj m Q hQ hQnot
+86:   refine ⟨Q,hQ,hQnot,hval,hvalue,hsection,?_⟩
+87:   letI : Mono j := hj
+88:   exact (moduleSheafMono_section_ne_zero_iff j ⊤ _).mp (hvalue.symm ▸ hsection)
+89: end LinearStudy
+END MODULE
+MODULE Linear.OriginalNormalizationHomogeneousEmbeddingWitness
+PATH D:\codex\Math\formalization\linear\Linear\OriginalNormalizationHomogeneousEmbeddingWitness.lean
+1: module
+2: public import Linear.ProjectiveNormalizationEmbeddingAboveBound
+3: @[expose] public section
+4: noncomputable section
+5: set_option autoImplicit false
+6: set_option maxHeartbeats 50000
+7: set_option backward.isDefEq.respectTransparency true
+8: set_option backward.isDefEq.respectTransparency.types true
+9: namespace LinearStudy
+10: open AlgebraicGeometry CategoryTheory
+11: attribute [local instance] MvPolynomial.gradedAlgebra coextensionGradedBaseModule
+12: /-- Retain the full homogeneous embedding property of the SAME original
+13: normalization map above any lower bound. This deliberately discards only
+14: unused sheaf-local-free proof fields from the existing proved theorem. -/
+15: theorem originalNormalizationDual_exists_homogeneous_embedding_witness_above
+16:     {n r : ℕ} (V : IntegralProjectiveEquations n)
+17:     (L : Fin (r+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+18:     (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+19:     (hfinite : (projectiveLinearNormalizationMap V L).Finite) (lower : ℕ) :
+20:   let R := MvPolynomial (Fin (r+1)) ℂ
+21:     let S := CoordinateRing n ⧸ V.ideal.toIdeal
+22:     let phi := projectiveLinearNormalizationMap V L
+23:     letI : Algebra R S := phi.toRingHom.toAlgebra
+24:     letI : IsScalarTower ℂ R S := IsScalarTower.of_algebraMap_eq (fun a => (phi.commutes a).symm)
+25:     letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+26:     let A := MvPolynomial.homogeneousSubmodule (Fin (r+1)) ℂ
+27:     let B := homogeneousQuotientPiece V.ideal.toIdeal
+28:     letI : SetLike.GradedSMul A B := projectiveLinearNormalization_gradedSMul V L hL
+29:     let C := (ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)
+30:     ∃ m : ℕ,lower ≤ m ∧ 0 < m ∧ ∃ e : C →ₗ[S] S,Function.Injective e ∧
+31:     ∀ d : ℤ,∀ z : C,z ∈ coextensionGradedPiece A B d →
+32:       e z ∈ nativeProjectiveRingIntegerPiece B (d+(m:ℤ)) := by
+33:   let R := MvPolynomial (Fin (r+1)) ℂ
+34:   let S := CoordinateRing n ⧸ V.ideal.toIdeal
+35:   let phi := projectiveLinearNormalizationMap V L
+36:   letI : Algebra R S := phi.toRingHom.toAlgebra
+37:   letI : IsScalarTower ℂ R S := IsScalarTower.of_algebraMap_eq (fun a => (phi.commutes a).symm)
+38:   letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+39:   let A := MvPolynomial.homogeneousSubmodule (Fin (r+1)) ℂ
+40:   let B := homogeneousQuotientPiece V.ideal.toIdeal
+41:   letI : SetLike.GradedSMul A B := projectiveLinearNormalization_gradedSMul V L hL
+42:   obtain ⟨m,hbound,hm,e,he,hh,hmono,hfree,hqc⟩ :=
+43:     projectiveLinearNormalization_exists_native_embedding_above (n:=n) (r:=r) V L hL hinj hfinite lower
+44:   exact ⟨m,hbound,hm,e,he,hh⟩
+45: end LinearStudy
+END MODULE
+MODULE Linear.OriginalNormalizationPolynomialSectionEmbedding
+PATH D:\codex\Math\formalization\linear\Linear\OriginalNormalizationPolynomialSectionEmbedding.lean
+1: module
+2: public import Linear.OriginalNormalizationHomogeneousEmbeddingWitness
+3: public import Linear.NativeHomogeneousEmbeddingSectionFormula
+4: public import Linear.OriginalGradedPolynomialSectionImage
+5: @[expose] public section
+6: noncomputable section
+7: set_option autoImplicit false
+8: set_option maxHeartbeats 50000
+9: set_option backward.isDefEq.respectTransparency true
+10: set_option backward.isDefEq.respectTransparency.types true
+11: namespace LinearStudy
+12: open AlgebraicGeometry CategoryTheory
+13: attribute [local instance] MvPolynomial.gradedAlgebra coextensionGradedBaseModule
+14: attribute [local irreducible] homogeneousQuotientGrading nativeProjectiveModuleSheaf originalGradedPolynomialSectionImageStatement
+15: /-- Retain the SAME actual homogeneous embedding,its sheaf monomorphism,
+16: and the exact image of EVERY degree-zero element as an ORIGINAL polynomial
+17: section. ONE m precedes all elements. Nonzero of BOTH actual sections is
+18: proved;canonical omega and prescribed local support remain OPEN. -/
+19: theorem originalNormalizationDual_exists_polynomial_section_embedding_above
+20:     {n r : ℕ} (V : IntegralProjectiveEquations n)
+21:     (L : Fin (r+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+22:     (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+23:     (hfinite : (projectiveLinearNormalizationMap V L).Finite) (lower : ℕ) :
+24:   let R := MvPolynomial (Fin (r+1)) ℂ
+25:   let S := CoordinateRing n ⧸ V.ideal.toIdeal
+26:   let phi := projectiveLinearNormalizationMap V L
+27:   letI : Algebra R S := phi.toRingHom.toAlgebra
+28:   letI : IsScalarTower ℂ R S := IsScalarTower.of_algebraMap_eq (fun a => (phi.commutes a).symm)
+29:   letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+30:   let A := MvPolynomial.homogeneousSubmodule (Fin (r+1)) ℂ
+31:   let B := homogeneousQuotientPiece V.ideal.toIdeal
+32:   letI : SetLike.GradedSMul A B := projectiveLinearNormalization_gradedSMul V L hL
+33:   let C := (ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)
+34:   let DG := coextensionGradedPiece A B
+35:   let EG := nativeProjectiveRingIntegerPiece B
+36:   let hD := coextensionProjectiveGradeCompatibility A B
+37:   let hE := nativeProjectiveRingIntegerPiece_graded B
+38:   ∃ m : ℕ,lower ≤ m ∧ 0 < m ∧ ∃ e : C →ₗ[S] S,Function.Injective e ∧
+39:     ∃ hh : ∀ d : ℤ,∀ z : C,z ∈ DG d → e z ∈ EG (d+(m:ℤ)),
+40:     ∃ j : nativeProjectiveModuleSheaf B DG hD 0 ⟶ nativeProjectiveModuleSheaf B EG hE (m:ℤ),
+41:       Mono j ∧ originalGradedPolynomialSectionImageStatement V DG hD m e j := by
+42:   let R := MvPolynomial (Fin (r+1)) ℂ
+43:   let S := CoordinateRing n ⧸ V.ideal.toIdeal
+44:   let phi := projectiveLinearNormalizationMap V L
+45:   letI : Algebra R S := phi.toRingHom.toAlgebra
+46:   letI : IsScalarTower ℂ R S := IsScalarTower.of_algebraMap_eq (fun a => (phi.commutes a).symm)
+47:   letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+48:   let A := MvPolynomial.homogeneousSubmodule (Fin (r+1)) ℂ
+49:   let B := homogeneousQuotientPiece V.ideal.toIdeal
+50:   letI : SetLike.GradedSMul A B := projectiveLinearNormalization_gradedSMul V L hL
+51:   let C := (ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)
+52:   let DG := coextensionGradedPiece A B
+53:   let EG := nativeProjectiveRingIntegerPiece B
+54:   let hD := coextensionProjectiveGradeCompatibility A B
+55:   let hE := nativeProjectiveRingIntegerPiece_graded B
+56:   have hEmbedding : ∃ m : ℕ,lower ≤ m ∧ 0 < m ∧
+57:       ∃ e : C →ₗ[S] S,Function.Injective e ∧
+58:       ∀ d : ℤ,∀ z : C,z ∈ DG d → e z ∈ EG (d+(m:ℤ)) :=
+59:     originalNormalizationDual_exists_homogeneous_embedding_witness_above
+60:       (n:=n) (r:=r) V L hL hinj hfinite lower
+61:   obtain ⟨m,hbound,hm,e,he,hh⟩ := hEmbedding
+62:   obtain ⟨j,hj,hformula⟩ :=
+63:     nativeProjectiveHomogeneousInjection_exists_zero_degree_mono_sectionFormula
+64:       (K:=ℂ) (S:=S) (D:=C) (E:=S) B DG EG hD hE (m:ℤ) e hh he
+65:   refine ⟨m,hbound,hm,e,he,hh,j,hj,?_⟩
+66:   exact originalGradedPolynomialSectionImageStatement_of_formula (n:=n) (D:=C) V DG hD m e j hj he hh hformula L hL hinj
+67: end LinearStudy
+END MODULE
+MODULE Linear.OriginalPolynomialSectionClassEquality
+PATH D:\codex\Math\formalization\linear\Linear\OriginalPolynomialSectionClassEquality.lean
+1: module
+2: public import Linear.OriginalProjectivePolynomialSection
+3: @[expose] public section
+4: noncomputable section
+5: set_option autoImplicit false
+6: set_option maxHeartbeats 50000
+7: namespace LinearStudy
+8: open AlgebraicGeometry CategoryTheory
+9: attribute [local instance] MvPolynomial.gradedAlgebra
+10: /-- ANY two original homogeneous polynomials of the same degree and
+11: same original quotient class have the SAME actual polynomial section. -/
+12: theorem originalProjectivePolynomialSection_eq_of_quotient_eq
+13:     {n : ℕ} (V : IntegralProjectiveEquations n) (m : ℕ)
+14:     (Q : CoordinateRing n) (hQ : Q.IsHomogeneous m)
+15:     (Q' : CoordinateRing n) (hQ' : Q'.IsHomogeneous m)
+16:     (h : Ideal.Quotient.mk V.ideal.toIdeal Q=Ideal.Quotient.mk V.ideal.toIdeal Q') :
+17:     letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+18:     originalProjectivePolynomialSection V m Q hQ=originalProjectivePolynomialSection V m Q' hQ' := by
+19:   letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+20:   apply Subtype.ext
+21:   funext p
+22:   change LocalizedModule.mk (Ideal.Quotient.mk V.ideal.toIdeal Q) 1 =
+23:     LocalizedModule.mk (Ideal.Quotient.mk V.ideal.toIdeal Q') 1
+24:   rw [h]
+25: end LinearStudy
+END MODULE
+MODULE Linear.OriginalPolynomialSectionImageProjections
+PATH D:\codex\Math\formalization\linear\Linear\OriginalPolynomialSectionImageProjections.lean
+1: module
+2: public import Linear.OriginalGradedPolynomialSectionImage
+3: public import Linear.OriginalPolynomialSectionClassEquality
+4: public import Linear.NativeHomogeneousEmbeddingSectionFormula
+5: public import Linear.SheafEmbeddingSectionTransport
+6: public import Linear.OriginalPolynomialSectionNonzero
+7: public import Linear.OriginalPolynomialSectionImageEquality
+8: public import Linear.OriginalPolynomialInjectiveImageLift
+9: @[expose] public section
+10: noncomputable section
+11: set_option autoImplicit false
+12: set_option maxHeartbeats 50000
+13: set_option backward.isDefEq.respectTransparency true
+14: set_option backward.isDefEq.respectTransparency.types true
+15: namespace LinearStudy
+16: open AlgebraicGeometry CategoryTheory
+17: attribute [local instance] MvPolynomial.gradedAlgebra
+18: variable {n : ℕ} (V : IntegralProjectiveEquations n)
+19: variable {D : Type} [AddCommGroup D]
+20: variable [Module (CoordinateRing n ⧸ V.ideal.toIdeal) D] [Module ℂ D]
+21: variable (DG : ℤ → Submodule ℂ D)
+22: variable (hD : ∀ a : ℕ,∀ d : ℤ,∀ b : CoordinateRing n ⧸ V.ideal.toIdeal,
+23:   b ∈ homogeneousQuotientPiece V.ideal.toIdeal a →
+24:   ∀ z : D,z ∈ DG d → b • z ∈ DG ((a:ℤ)+d))
+25: attribute [local irreducible] homogeneousQuotientGrading nativeProjectiveModuleSheaf originalProjectivePolynomialSection
+26: /-- Project the exact polynomial-image fields from the FULL actual
+27: section-image predicate;this is a theorem about the exposed definition. -/
+28: theorem originalGradedPolynomialSectionImageStatement_polynomial_images
+29:     (m : ℕ) (e : D →ₗ[CoordinateRing n ⧸ V.ideal.toIdeal] (CoordinateRing n ⧸ V.ideal.toIdeal))
+30:     (j : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+31:       let B := homogeneousQuotientPiece V.ideal.toIdeal
+32:       nativeProjectiveModuleSheaf B DG hD 0 ⟶
+33:         nativeProjectiveModuleSheaf B (nativeProjectiveRingIntegerPiece B)
+34:           (nativeProjectiveRingIntegerPiece_graded B) (m:ℤ))
+35:     (hImage : originalGradedPolynomialSectionImageStatement V DG hD m e j) :
+36:     ∀ z : D,z ∈ DG 0 → z ≠ 0 →
+37:       ∃ Q : CoordinateRing n,Q.IsHomogeneous m ∧ Q ∉ V.ideal.toIdeal ∧
+38:         Ideal.Quotient.mk V.ideal.toIdeal Q=e z := by
+39:   unfold originalGradedPolynomialSectionImageStatement at hImage
+40:   intro z hz hne
+41:   obtain ⟨Q,hQ,hnot,hval,_⟩ := hImage z hz hne
+42:   exact ⟨Q,hQ,hnot,hval⟩
+43: end LinearStudy
+END MODULE
+MODULE Linear.OriginalNormalizationFixedFunctionalSectionModel
+PATH D:\codex\Math\formalization\linear\Linear\OriginalNormalizationFixedFunctionalSectionModel.lean
+1: module
+2: public import Linear.OriginalNormalizationPolynomialSectionEmbedding
+3: public import Linear.OriginalPolynomialSectionImageProjections
+4: public import Linear.OriginalNormalizationGradedPolynomial
+5: public import Linear.NativeCoextensionFixedPolynomialFunctional
+6: public import Linear.ProjectiveNormalizationGradedDual
+7: public import Linear.HomogeneousQuotientBaseGrading
+8: @[expose] public section
+9: noncomputable section
+10: set_option autoImplicit false
+11: set_option maxHeartbeats 50000
+12: set_option backward.isDefEq.respectTransparency true
+13: set_option backward.isDefEq.respectTransparency.types true
+14: namespace LinearStudy
+15: open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+16: attribute [local instance] MvPolynomial.gradedAlgebra coextensionGradedBaseModule
+17:   schemeModuleActualCohomologyAddCommGroup nativeProjectiveRingIntegerDecomposition
+18: attribute [local irreducible] homogeneousQuotientGrading nativeProjectiveModuleSheaf
+19:   nativeFiniteNormalization_specifiedActualTopHomDualIso nativeCoextensionFixedPolynomialFunctionalStatement originalGradedPolynomialSectionImageStatement
+20: 
+21: /-- FULL simultaneous fixed embedding/functional model;STATEMENT only. -/
+22: def originalNormalizationFixedFunctionalSectionModelStatement
+23:     {n : ℕ} (V : IntegralProjectiveEquations n) (q : ℕ)
+24:     (L : Fin (q+2) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+25:     (hfinite : (projectiveLinearNormalizationMap V L).Finite) (lower : ℕ) : Prop :=
+26:   let R := MvPolynomial (Fin (q+2)) ℂ
+27:   let S := CoordinateRing n ⧸ V.ideal.toIdeal
+28:   let phi := projectiveLinearNormalizationMap V L
+29:   letI : Algebra R S := phi.toRingHom.toAlgebra
+30:   letI : IsScalarTower ℂ R S := IsScalarTower.of_algebraMap_eq (fun a => (phi.commutes a).symm)
+31:   letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+32:   letI : V.ideal.toIdeal.IsPrime := V.prime
+33:   letI : Module.Finite R S := hfinite
+34:   let A := MvPolynomial.homogeneousSubmodule (Fin (q+2)) ℂ
+35:   let B := homogeneousQuotientPiece V.ideal.toIdeal
+36:   letI : SetLike.GradedSMul A B := projectiveLinearNormalization_gradedSMul V L hL
+37:   let C := (ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)
+38:   let c : ULift.{0} (Fin (n+1)) → S := fun i => Ideal.Quotient.mk V.ideal.toIdeal (MvPolynomial.X i.down)
+39:   have hc : ∀ i,c i ∈ B 1 := fun i => ⟨MvPolynomial.X i.down,MvPolynomial.isHomogeneous_X ℂ i.down,rfl⟩
+40:   have hgenC : Algebra.adjoin ℂ (Set.range c) = ⊤ := homogeneousQuotient_coordinate_adjoin_eq_top V.ideal.toIdeal
+41:   let DG := coextensionGradedPiece A B
+42:   let EG := nativeProjectiveRingIntegerPiece B
+43:   let hD := coextensionProjectiveGradeCompatibility A B
+44:   let hE := nativeProjectiveRingIntegerPiece_graded B
+45:   ∃ m : ℕ,lower ≤ m ∧ 0 < m ∧ ∃ e : C →ₗ[S] S,Function.Injective e ∧
+46:     ∃ hh : ∀ d : ℤ,∀ z : C,z ∈ DG d → e z ∈ EG (d+(m:ℤ)),
+47:     ∃ j : nativeProjectiveModuleSheaf B DG hD 0 ⟶ nativeProjectiveModuleSheaf B EG hE (m:ℤ),
+48:       Mono j ∧ originalGradedPolynomialSectionImageStatement V DG hD m e j ∧
+49:       nativeCoextensionFixedPolynomialFunctionalStatement (K:=ℂ) (S:=S) (σ:=Fin (q+2)) (τ:=Fin (n+1))
+50:         B (Ideal.Quotient.mkₐ ℂ V.ideal.toIdeal) V.ideal.toIdeal m e c hc hgenC q (Fintype.card_fin (q+2))
+51: /-- ONE fixed original m/e/j simultaneously retains the FULL actual
+52: section-image construction for ALL nonzero C_0 elements and the FULL
+53: actual top-H functional polynomial witnesses with SAME e. No concrete
+54: all-cut uniform assembly,canonical identity,or prescribed support claimed. -/
+55: theorem originalNormalization_exists_fixed_functional_and_section_model_above
+56:     {n : ℕ} (V : IntegralProjectiveEquations n) (q : ℕ)
+57:     (L : Fin (q+2) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+58:     (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+59:     (hfinite : (projectiveLinearNormalizationMap V L).Finite) (lower : ℕ) :
+60:     originalNormalizationFixedFunctionalSectionModelStatement V q L hL hfinite lower := by
+61:   unfold originalNormalizationFixedFunctionalSectionModelStatement
+62:   let R := MvPolynomial (Fin (q+2)) ℂ
+63:   let S := CoordinateRing n ⧸ V.ideal.toIdeal
+64:   let phi := projectiveLinearNormalizationMap V L
+65:   letI : Algebra R S := phi.toRingHom.toAlgebra
+66:   letI : IsScalarTower ℂ R S := IsScalarTower.of_algebraMap_eq (fun a => (phi.commutes a).symm)
+67:   letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+68:   letI : V.ideal.toIdeal.IsPrime := V.prime
+69:   letI : Module.Finite R S := hfinite
+70:   let A := MvPolynomial.homogeneousSubmodule (Fin (q+2)) ℂ
+71:   let B := homogeneousQuotientPiece V.ideal.toIdeal
+72:   letI : SetLike.GradedSMul A B := projectiveLinearNormalization_gradedSMul V L hL
+73:   let C := (ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)
+74:   let c : ULift.{0} (Fin (n+1)) → S := fun i => Ideal.Quotient.mk V.ideal.toIdeal (MvPolynomial.X i.down)
+75:   have hc : ∀ i,c i ∈ B 1 := fun i => ⟨MvPolynomial.X i.down,MvPolynomial.isHomogeneous_X ℂ i.down,rfl⟩
+76:   have hgenC : Algebra.adjoin ℂ (Set.range c) = ⊤ := homogeneousQuotient_coordinate_adjoin_eq_top V.ideal.toIdeal
+77:   let DG := coextensionGradedPiece A B
+78:   let EG := nativeProjectiveRingIntegerPiece B
+79:   let hD := coextensionProjectiveGradeCompatibility A B
+80:   let hE := nativeProjectiveRingIntegerPiece_graded B
+81:   have hData : ∃ m : ℕ,lower ≤ m ∧ 0 < m ∧ ∃ e : C →ₗ[S] S,Function.Injective e ∧
+82:       ∃ hh : ∀ d : ℤ,∀ z : C,z ∈ DG d → e z ∈ EG (d+(m:ℤ)),
+83:       ∃ j : nativeProjectiveModuleSheaf B DG hD 0 ⟶ nativeProjectiveModuleSheaf B EG hE (m:ℤ),
+84:         Mono j ∧ originalGradedPolynomialSectionImageStatement V DG hD m e j :=
+85:     originalNormalizationDual_exists_polynomial_section_embedding_above
+86:       (n:=n) (r:=q+1) V L hL hinj hfinite lower
+87:   obtain ⟨m,hbound,hm,e,he,hh,j,hj,hImage⟩ := hData
+88:   have himages : ∀ z : C,z ∈ coextensionGradedPiece A B 0 → z ≠ 0 →
+89:       ∃ Q : CoordinateRing n,Q.IsHomogeneous m ∧ Q ∉ V.ideal.toIdeal ∧
+90:         Ideal.Quotient.mk V.ideal.toIdeal Q=e z :=
+91:     originalGradedPolynomialSectionImageStatement_polynomial_images
+92:       (n:=n) (D:=C) V DG hD m e j hImage
+93:   refine ⟨m,hbound,hm,e,he,hh,j,hj,hImage,?_⟩
+94:   exact nativeCoextensionFixedPolynomialFunctionalStatement_of_images
+95:     (K:=ℂ) (S:=S) (σ:=Fin (q+2)) (τ:=Fin (n+1)) B
+96:       (Ideal.Quotient.mkₐ ℂ V.ideal.toIdeal) V.ideal.toIdeal m e c hc hgenC q
+97:         (Fintype.card_fin (q+2)) himages
+98: end LinearStudy
+END MODULE
+MODULE Linear.OriginalRetainedPolynomialSectionImage
+PATH D:\codex\Math\formalization\linear\Linear\OriginalRetainedPolynomialSectionImage.lean
+1: module
+2: public import Linear.OriginalPolynomialSectionImageProjections
+3: public import Linear.OriginalGradedPolynomialSectionImage
+4: public import Linear.OriginalPolynomialSectionClassEquality
+5: public import Linear.NativeHomogeneousEmbeddingSectionFormula
+6: public import Linear.SheafEmbeddingSectionTransport
+7: public import Linear.OriginalPolynomialSectionNonzero
+8: public import Linear.OriginalPolynomialSectionImageEquality
+9: public import Linear.OriginalPolynomialInjectiveImageLift
+10: @[expose] public section
+11: noncomputable section
+12: set_option autoImplicit false
+13: set_option maxHeartbeats 50000
+14: set_option backward.isDefEq.respectTransparency true
+15: set_option backward.isDefEq.respectTransparency.types true
+16: namespace LinearStudy
+17: open AlgebraicGeometry CategoryTheory
+18: attribute [local instance] MvPolynomial.gradedAlgebra
+19: variable {n : ℕ} (V : IntegralProjectiveEquations n)
+20: variable {D : Type} [AddCommGroup D]
+21: variable [Module (CoordinateRing n ⧸ V.ideal.toIdeal) D] [Module ℂ D]
+22: variable (DG : ℤ → Submodule ℂ D)
+23: variable (hD : ∀ a : ℕ,∀ d : ℤ,∀ b : CoordinateRing n ⧸ V.ideal.toIdeal,
+24:   b ∈ homogeneousQuotientPiece V.ideal.toIdeal a →
+25:   ∀ z : D,z ∈ DG d → b • z ∈ DG ((a:ℤ)+d))
+26: attribute [local irreducible] homogeneousQuotientGrading nativeProjectiveModuleSheaf originalProjectivePolynomialSection
+27: /-- The SAME actual embedding formula holds for ANY retained Q with the
+28: same original quotient image,not just a fresh existential polynomial. -/
+29: theorem originalGradedPolynomialSectionImageStatement_any_polynomial
+30:     (m : ℕ) (e : D →ₗ[CoordinateRing n ⧸ V.ideal.toIdeal] (CoordinateRing n ⧸ V.ideal.toIdeal))
+31:     (j : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+32:       let B := homogeneousQuotientPiece V.ideal.toIdeal
+33:       nativeProjectiveModuleSheaf B DG hD 0 ⟶
+34:         nativeProjectiveModuleSheaf B (nativeProjectiveRingIntegerPiece B)
+35:           (nativeProjectiveRingIntegerPiece_graded B) (m:ℤ))
+36:     (hImage : originalGradedPolynomialSectionImageStatement V DG hD m e j)
+37:     (z : D) (hz : z ∈ DG 0) (hne : z ≠ 0)
+38:     (Q : CoordinateRing n) (hQ : Q.IsHomogeneous m)
+39:     (hval : Ideal.Quotient.mk V.ideal.toIdeal Q=e z) :
+40:     letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+41:     let B := homogeneousQuotientPiece V.ideal.toIdeal
+42:     (j.app ⊤) (nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ⟨z,hz⟩) =
+43:       originalProjectivePolynomialSection V m Q hQ ∧
+44:     originalProjectivePolynomialSection V m Q hQ ≠ 0 ∧
+45:     nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ⟨z,hz⟩ ≠ 0 := by
+46:   letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+47:   unfold originalGradedPolynomialSectionImageStatement at hImage
+48:   let B := homogeneousQuotientPiece V.ideal.toIdeal
+49:   have hData : ∃ (Q0 : CoordinateRing n) (hQ0 : Q0.IsHomogeneous m),Q0 ∉ V.ideal.toIdeal ∧
+50:       Ideal.Quotient.mk V.ideal.toIdeal Q0=e z ∧
+51:       (j.app ⊤) (nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ⟨z,hz⟩) =
+52:         originalProjectivePolynomialSection V m Q0 hQ0 ∧
+53:       originalProjectivePolynomialSection V m Q0 hQ0 ≠ 0 ∧
+54:       nativeProjectiveModuleHomogeneousGlobalSection B DG hD 0 ⟨z,hz⟩ ≠ 0 :=
+55:     hImage z hz hne
+56:   obtain ⟨Q0,hQ0,hnot0,hval0,hj0,hs0,hz0⟩ := hData
+57:   have hEq : originalProjectivePolynomialSection V m Q0 hQ0 =
+58:       originalProjectivePolynomialSection V m Q hQ :=
+59:     originalProjectivePolynomialSection_eq_of_quotient_eq
+60:     (n:=n) V m Q0 hQ0 Q hQ (hval0.trans hval.symm)
+61:   exact ⟨hj0.trans hEq,hEq ▸ hs0,hz0⟩
+62: end LinearStudy
+END MODULE
