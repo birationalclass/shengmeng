@@ -11,7 +11,7 @@ globalThis.fetch=async url=>String(url).startsWith('data/')?new Response(await f
 const fixtures=JSON.parse(await fs.readFile(new URL('brush-baseline-hashes.json',import.meta.url),'utf8'));
 const hash=a=>crypto.createHash('sha256').update(Buffer.from(a.buffer,a.byteOffset,a.byteLength)).digest('hex');
 for(const text of ['風','孟晟','楊琪'])test(text+' preserves source and completed geometry',async()=>{
- const glyph=await createTextGlyph(text),before=fixtures[text],model=prepareSpatialModel(glyph);
+ const glyph=await createTextGlyph(text,{style:'original'}),before=fixtures[text],model=prepareSpatialModel(glyph);
  assert.equal(crypto.createHash('sha256').update(JSON.stringify(glyph.strokes)).digest('hex'),before.sourceHash);
  assert.equal(model.parts.length,before.parts.length);
  for(const [i,part] of model.parts.entries()){

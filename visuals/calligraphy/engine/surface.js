@@ -2,7 +2,7 @@ import * as T from '../vendor/three.module.js';
 import {prepareStroke,updateStrokeGeometry} from './stroke-volume.js';
 import {prepareRailStroke,createStrokeGeometry,updateRailGeometry} from './yang-volume.js';
 import {guardRailBends} from './bend-guard.js';
-import {updateBrushGeometry,smoothSectionJoinNormals} from './brush-surface.js?v=14';
+import {updateBrushGeometry,smoothSectionJoinNormals} from './brush-surface.js?v=15';
 
 export function prepareVolume(stroke,kind,fullness=1,depth=1){
  if(kind==='centerline')return prepareStroke({...stroke,points:stroke.points.map(([x,y,z])=>[x,y,z*depth]),thickness:stroke.thickness.map(n=>n*fullness)});
