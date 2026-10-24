@@ -1,0 +1,283 @@
+@LinearStudy.schemeModuleUnitHomIso_curry : ∀ {X : AlgebraicGeometry.Scheme} {N : X.Modules}
+  (a : SheafOfModules.unit X.ringCatSheaf ⟶ N),
+  CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.schemeModuleHomUnitAddEquiv (SheafOfModules.unit X.ringCatSheaf) N).symm a)
+      (LinearStudy.schemeModuleUnitHomIso N).hom =
+    a
+'LinearStudy.schemeModuleUnitHomIso_curry' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLineFrameHomIso : {X : AlgebraicGeometry.Scheme} →
+  {P N : X.Modules} → (SheafOfModules.unit X.ringCatSheaf ≅ P) → (LinearStudy.schemeModuleHomModuleSheaf P N ≅ N)
+'LinearStudy.schemeModuleLineFrameHomIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLineFrameHomIso_hom : ∀ {X : AlgebraicGeometry.Scheme} {P N : X.Modules}
+  (s : SheafOfModules.unit X.ringCatSheaf ≅ P),
+  (LinearStudy.schemeModuleLineFrameHomIso s).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.schemeModuleHomPrecompose s.hom)
+      (LinearStudy.schemeModuleUnitHomIso N).hom
+'LinearStudy.schemeModuleLineFrameHomIso_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLineFrameHomIso_curry : ∀ {X : AlgebraicGeometry.Scheme} {P N : X.Modules}
+  (s : SheafOfModules.unit X.ringCatSheaf ≅ P) (a : P ⟶ N),
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv P N).symm a)
+      (LinearStudy.schemeModuleLineFrameHomIso s).hom =
+    CategoryTheory.CategoryStruct.comp s.hom a
+'LinearStudy.schemeModuleLineFrameHomIso_curry' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleLineFrame_curry_map_zero_iff : ∀ {X : AlgebraicGeometry.Scheme} {A : Type u_2}
+  [inst : CategoryTheory.Category.{u_3, u_2} A] [inst_1 : CategoryTheory.Limits.HasZeroMorphisms A]
+  (F : CategoryTheory.Functor X.Modules A) [F.PreservesZeroMorphisms] {P N : X.Modules}
+  (s : SheafOfModules.unit X.ringCatSheaf ≅ P) (a : P ⟶ N),
+  F.map ((LinearStudy.schemeModuleHomUnitAddEquiv P N).symm a) = 0 ↔ F.map a = 0
+'LinearStudy.schemeModuleLineFrame_curry_map_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineKoszulTopFunctionalSection_pullback_zero_iff : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ)
+  {Y : AlgebraicGeometry.Scheme} (i : Y ⟶ AlgebraicGeometry.Spec R)
+  (a : AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)) ⟶ AlgebraicGeometry.tilde N),
+  (AlgebraicGeometry.Scheme.Modules.pullback i).map (LinearStudy.affineKoszulTopFunctionalSection R N p a) = 0 ↔
+    (AlgebraicGeometry.Scheme.Modules.pullback i).map a = 0
+'LinearStudy.affineKoszulTopFunctionalSection_pullback_zero_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.affineKoszulGeometricClass_zero_iff_pullback_functional : ∀ (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ)
+  (H : Fin (p + 1) → ↑R) (a : AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)) ⟶ AlgebraicGeometry.tilde N),
+  CategoryTheory.CategoryStruct.comp
+        ((LinearStudy.schemeModuleHomUnitAddEquiv (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+              (AlgebraicGeometry.tilde N)).symm
+          a)
+        (LinearStudy.affineKoszulHomGeometricRestrictionPresentation R N p H).g =
+      0 ↔
+    (AlgebraicGeometry.Scheme.Modules.pullback
+            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).map
+        a =
+      0
+'LinearStudy.affineKoszulGeometricClass_zero_iff_pullback_functional' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOpenKoszulIntrinsicMapZeroStatement : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      LinearStudy.schemeModuleOpenKoszulChartData C (p + 1) →
+        {E : X.Modules} →
+          (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+            QuasiIso alpha → CategoryTheory.Limits.IsZero (C.X (p + 2)) → Prop
+'LinearStudy.schemeModuleOpenKoszulIntrinsicMapZeroStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.schemeModuleOpenKoszulIntrinsicMapZeroProof : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) (p : ℕ) (D : LinearStudy.schemeModuleOpenKoszulChartData C (p + 1)) {E : X.Modules}
+  (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (C.X (p + 2))),
+  (∀ (N : X.Modules),
+      SheafOfModules.IsQuasicoherent N →
+        ∀ (q v : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (C.X q) N (v + 1))) →
+    LinearStudy.schemeModuleOpenKoszulIntrinsicMapZeroStatement C p D alpha hAlpha hAbove
+'LinearStudy.schemeModuleOpenKoszulIntrinsicMapZeroProof' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledOriginalChartIntrinsicMapZeroStatement : {n p : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (p + 1 + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (p + 1 + 1) → ℂ) →
+            (k : ℤ) →
+              (e :
+                  CategoryTheory.Limits.cokernel
+                      ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                    LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                QuasiIso
+                    (LinearStudy.originalChainCokernelTargetAugmentation
+                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e) →
+                  Prop
+'LinearStudy.projectivePulledOriginalChartIntrinsicMapZeroStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalChartIntrinsicMapZeroStatement_proof : ∀ {n p : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n)
+  (hL : ∀ (i : Fin (p + 1 + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (p + 1 + 1) → ℂ) (k : ℤ)
+  (e :
+    CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+  (he :
+    QuasiIso
+      (LinearStudy.originalChainCokernelTargetAugmentation
+        (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)),
+  LinearStudy.projectivePulledOriginalChartIntrinsicMapZeroStatement f V L hL w k e he
+'LinearStudy.projectivePulledOriginalChartIntrinsicMapZeroStatement_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.schemeModuleOriginalKoszulPush_intrinsic_zero_iff : ∀ {X : AlgebraicGeometry.Scheme}
+  (C : ChainComplex X.Modules ℕ) (p : ℕ) (D : LinearStudy.schemeModuleOpenKoszulChartData C (p + 1)) {E : X.Modules}
+  (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+  (hAbove : CategoryTheory.Limits.IsZero (C.X (p + 2))),
+  (∀ (N : X.Modules),
+      SheafOfModules.IsQuasicoherent N →
+        ∀ (q v : ℕ), CategoryTheory.Limits.IsZero (LinearStudy.schemeModuleInternalExt (C.X q) N (v + 1))) →
+    ∀ {M N : X.Modules} [hN : SheafOfModules.IsQuasicoherent N] (phi : C.X (p + 1) ≅ M) (b : M ⟶ N),
+      (AlgebraicGeometry.Scheme.Modules.restrictFunctor D.snd.fst).map
+            ((LinearStudy.schemeModuleGlobalToInternalExtAll E N (p + 1))
+              ((LinearStudy.schemeModuleOriginalChainTopExtClassSmall C (p + 1) alpha hAlpha phi.hom ⋯).comp
+                (CategoryTheory.Abelian.Ext.mk₀ b) ⋯)) =
+          0 ↔
+        (AlgebraicGeometry.Scheme.Modules.pullback
+                (AlgebraicGeometry.Spec.map
+                  (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range D.snd.snd.snd.fst)))))).map
+            ((AlgebraicGeometry.Scheme.Modules.restrictFunctor D.snd.fst).map b) =
+          0
+'LinearStudy.schemeModuleOriginalKoszulPush_intrinsic_zero_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledOriginalSetupIntrinsicZeroFamilyProof : ∀ {n p : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  p + 1 < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n)
+            (hL : ∀ (i : Fin (p + 1 + 1)), MvPolynomial.IsHomogeneous (L i) 1),
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ∀ (x0 : Fin n → ℂ),
+                  LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                    ∃ (c : MvPolynomial (Fin (p + 1 + 1)) ℂ),
+                      c ≠ 0 ∧
+                        (∃ (w : Fin (p + 1 + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                          ∀ (w : Fin (p + 1 + 1) → ℂ),
+                            (MvPolynomial.eval w) c ≠ 0 →
+                              (∀ (k : ℤ),
+                                  ∃ (e :
+                                    CategoryTheory.Limits.cokernel
+                                        ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                                      LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+                                    (he :
+                                    QuasiIso
+                                      (LinearStudy.originalChainCokernelTargetAugmentation
+                                        (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                                        (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)),
+                                    (LinearStudy.originalChainCokernelTargetAugmentation
+                                              (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                                              (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e).f
+                                          0 =
+                                        CategoryTheory.CategoryStruct.comp
+                                          (CategoryTheory.Limits.cokernel.π
+                                            ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0))
+                                          e.hom ∧
+                                      LinearStudy.projectivePulledOriginalWholeTopCokernelStatement f V L hL w k e he ∧
+                                        LinearStudy.projectivePulledOriginalChartDataCutStatement f V L hL w k e he ∧
+                                          LinearStudy.projectivePulledOriginalChartDataCutZeroStatement f V L hL w k e
+                                              he ∧
+                                            LinearStudy.projectivePulledOriginalChartIntrinsicMapZeroStatement f V L hL
+                                              w k e he) ∧
+                                ∀ (k : ℤ), LinearStudy.projectivePulledOriginalCokernelLambdaStatement f V L hL w k
+'LinearStudy.projectivePulledOriginalSetupIntrinsicZeroFamilyProof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleLineFrameHomIso.{u} : {X : AlgebraicGeometry.Scheme} →
+  {P N : X.Modules} → (SheafOfModules.unit X.ringCatSheaf ≅ P) → (LinearStudy.schemeModuleHomModuleSheaf P N ≅ N) :=
+fun {X : AlgebraicGeometry.Scheme} {P N : X.Modules} (s : SheafOfModules.unit X.ringCatSheaf ≅ P) =>
+  (LinearStudy.schemeModuleInternalHomFunctor X N).mapIso s.op ≪≫ LinearStudy.schemeModuleUnitHomIso N
+def LinearStudy.schemeModuleOpenKoszulIntrinsicMapZeroStatement.{u} : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    (p : ℕ) →
+      LinearStudy.schemeModuleOpenKoszulChartData C (p + 1) →
+        {E : X.Modules} →
+          (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+            QuasiIso alpha → CategoryTheory.Limits.IsZero (C.X (p + 2)) → Prop :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) (p : ℕ)
+    (D : LinearStudy.schemeModuleOpenKoszulChartData C (p + 1)) {E : X.Modules}
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+    (hAbove : CategoryTheory.Limits.IsZero (C.X (p + 2))) =>
+  ∀ (N : X.Modules),
+    SheafOfModules.IsQuasicoherent N →
+      ∀ (a : C.X (p + 1) ⟶ N),
+        (AlgebraicGeometry.Scheme.Modules.restrictFunctor D.snd.fst).map
+              ((LinearStudy.schemeModuleGlobalToInternalExtAll E N (p + 1))
+                (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C (p + 1) alpha hAlpha a ⋯)) =
+            0 ↔
+          (AlgebraicGeometry.Scheme.Modules.pullback
+                  (AlgebraicGeometry.Spec.map
+                    (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range D.snd.snd.snd.fst)))))).map
+              ((AlgebraicGeometry.Scheme.Modules.restrictFunctor D.snd.fst).map a) =
+            0
+def LinearStudy.projectivePulledOriginalChartIntrinsicMapZeroStatement : {n p : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) →
+        (hL : ∀ (i : Fin (p + 1 + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+          (w : Fin (p + 1 + 1) → ℂ) →
+            (k : ℤ) →
+              (e :
+                  CategoryTheory.Limits.cokernel
+                      ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+                    LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) →
+                QuasiIso
+                    (LinearStudy.originalChainCokernelTargetAugmentation
+                      (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+                      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e) →
+                  Prop :=
+fun {n p : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n)
+    (hL : ∀ (i : Fin (p + 1 + 1)), MvPolynomial.IsHomogeneous (L i) 1) (w : Fin (p + 1 + 1) → ℂ) (k : ℤ)
+    (e :
+      CategoryTheory.Limits.cokernel ((LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k)
+    (he :
+      QuasiIso
+        (LinearStudy.originalChainCokernelTargetAugmentation
+          (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+          (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)) =>
+  LinearStudy.schemeModuleOpenKoszulIntrinsicMapZeroStatement
+    (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k) p
+    (LinearStudy.projectivePulledOriginalNamedExactChart f V L hL w k)
+    (LinearStudy.originalChainCokernelTargetAugmentation (LinearStudy.projectivePulledLinearKoszulComplex f V L hL w k)
+      (LinearStudy.projectivePulledWholeCutResolutionTarget f V L hL w k) e)
+    he ⋯
+def LinearStudy.schemeModuleOriginalChainTopExtClassSmall.{u} : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E M : X.Modules} →
+      (r : ℕ) →
+        (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          QuasiIso alpha →
+            (a : C.X r ⟶ M) →
+              CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0 → CategoryTheory.Abelian.Ext E M r :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) {E M : X.Modules} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha) (a : C.X r ⟶ M)
+    (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0) =>
+  (LinearStudy.nativeExtUniverseEquiv E M r)
+    (LinearStudy.originalChainExplicitStandardTopExtClass C r alpha hAlpha a ha)
+'LinearStudy.schemeModuleOriginalChainTopExtClassSmall' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.affineKoszulTopFunctionalSection.{u} : (R : CommRingCat) →
+  (N : ModuleCat ↑R) →
+    (p : ℕ) →
+      (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)) ⟶ AlgebraicGeometry.tilde N) →
+        (SheafOfModules.unit (AlgebraicGeometry.Spec R).ringCatSheaf ⟶ AlgebraicGeometry.tilde N) :=
+fun (R : CommRingCat) (N : ModuleCat ↑R) (p : ℕ)
+    (a : AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)) ⟶ AlgebraicGeometry.tilde N) =>
+  CategoryTheory.CategoryStruct.comp
+    ((LinearStudy.schemeModuleHomUnitAddEquiv (AlgebraicGeometry.tilde ↧↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)))
+          (AlgebraicGeometry.tilde N)).symm
+      a)
+    (CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulTermHomCoefficientIso R N (p + 1) (p + 1)).inv
+      ((AlgebraicGeometry.tilde.functor R).map (ModuleCat.ofHom ↑(LinearStudy.koszulTopHomCoefficientEquiv p))))
+'LinearStudy.affineKoszulTopFunctionalSection' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.schemeModuleUnitHomIso_curry:true
+KINDCHECK:LinearStudy.schemeModuleUnitHomIso_curry:theorem
+ROLECHECK:LinearStudy.schemeModuleLineFrameHomIso:false
+KINDCHECK:LinearStudy.schemeModuleLineFrameHomIso:definition
+ROLECHECK:LinearStudy.schemeModuleLineFrameHomIso_hom:true
+KINDCHECK:LinearStudy.schemeModuleLineFrameHomIso_hom:theorem
+ROLECHECK:LinearStudy.schemeModuleLineFrameHomIso_curry:true
+KINDCHECK:LinearStudy.schemeModuleLineFrameHomIso_curry:theorem
+ROLECHECK:LinearStudy.schemeModuleLineFrame_curry_map_zero_iff:true
+KINDCHECK:LinearStudy.schemeModuleLineFrame_curry_map_zero_iff:theorem
+ROLECHECK:LinearStudy.affineKoszulTopFunctionalSection_pullback_zero_iff:true
+KINDCHECK:LinearStudy.affineKoszulTopFunctionalSection_pullback_zero_iff:theorem
+ROLECHECK:LinearStudy.affineKoszulGeometricClass_zero_iff_pullback_functional:true
+KINDCHECK:LinearStudy.affineKoszulGeometricClass_zero_iff_pullback_functional:theorem
+ROLECHECK:LinearStudy.schemeModuleOpenKoszulIntrinsicMapZeroStatement:false
+KINDCHECK:LinearStudy.schemeModuleOpenKoszulIntrinsicMapZeroStatement:definition
+ROLECHECK:LinearStudy.schemeModuleOpenKoszulIntrinsicMapZeroProof:true
+KINDCHECK:LinearStudy.schemeModuleOpenKoszulIntrinsicMapZeroProof:theorem
+ROLECHECK:LinearStudy.projectivePulledOriginalChartIntrinsicMapZeroStatement:false
+KINDCHECK:LinearStudy.projectivePulledOriginalChartIntrinsicMapZeroStatement:definition
+ROLECHECK:LinearStudy.projectivePulledOriginalChartIntrinsicMapZeroStatement_proof:true
+KINDCHECK:LinearStudy.projectivePulledOriginalChartIntrinsicMapZeroStatement_proof:theorem
+ROLECHECK:LinearStudy.schemeModuleOriginalKoszulPush_intrinsic_zero_iff:true
+KINDCHECK:LinearStudy.schemeModuleOriginalKoszulPush_intrinsic_zero_iff:theorem
+ROLECHECK:LinearStudy.projectivePulledOriginalSetupIntrinsicZeroFamilyProof:true
+KINDCHECK:LinearStudy.projectivePulledOriginalSetupIntrinsicZeroFamilyProof:theorem

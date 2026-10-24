@@ -1,0 +1,402 @@
+SOURCE:SchemeModuleHomUnitFrameZero
+module
+public import Linear.SchemeModuleHomTransportIso
+public import Linear.SchemeModuleUnitHomIso
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 100000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Opposite
+universe u v w
+variable {X : Scheme.{u}}
+/-- ORIGINAL unit currying followed by the ACTUAL unit-Hom evaluation
+returns the SAME original morphism. -/
+theorem schemeModuleUnitHomIso_curry {N : X.Modules}
+    (a : SheafOfModules.unit X.ringCatSheaf ⟶ N) :
+    (schemeModuleHomUnitAddEquiv _ N).symm a ≫ (schemeModuleUnitHomIso N).hom=a := by
+  apply SheafOfModules.hom_ext
+  apply PresheafOfModules.hom_ext
+  intro U
+  apply ConcreteCategory.hom_ext
+  intro r
+  let x : Γ(X,U.unop) := r
+  change X.presheaf.map (𝟙 U.unop).op x •
+    (show Γ(N,U.unop) from a.val.app U (1 : Γ(X,U.unop)))=a.val.app U x
+  simp only [op_id]
+  rw [X.presheaf.map_id]
+  change x • (show Γ(N,U.unop) from a.val.app U (1 : Γ(X,U.unop)))=a.val.app U x
+  have h := (a.val.app U).hom.map_smul x (1 : Γ(X,U.unop))
+  simpa only [smul_eq_mul,mul_one] using h.symm
+attribute [local irreducible] schemeModuleHomUnitAddEquiv schemeModuleUnitHomIso
+/-- An ACTUAL source line frame gives an ACTUAL internal-Hom isomorphism
+without choosing or assuming any frame of the target coefficient. -/
+def schemeModuleLineFrameHomIso {P N : X.Modules}
+    (s : SheafOfModules.unit X.ringCatSheaf ≅ P) :
+    schemeModuleHomModuleSheaf P N ≅ N :=
+  (schemeModuleInternalHomFunctor X N).mapIso s.op ≪≫ schemeModuleUnitHomIso N
+theorem schemeModuleLineFrameHomIso_hom {P N : X.Modules}
+    (s : SheafOfModules.unit X.ringCatSheaf ≅ P) :
+    (schemeModuleLineFrameHomIso (N:=N) s).hom=
+      schemeModuleHomPrecompose (N:=N) s.hom ≫ (schemeModuleUnitHomIso N).hom := rfl
+attribute [local irreducible] schemeModuleLineFrameHomIso
+/-- The isomorphism retains the SAME original coefficient morphism. -/
+theorem schemeModuleLineFrameHomIso_curry {P N : X.Modules}
+    (s : SheafOfModules.unit X.ringCatSheaf ≅ P) (a : P ⟶ N) :
+    (schemeModuleHomUnitAddEquiv P N).symm a ≫ (schemeModuleLineFrameHomIso (N:=N) s).hom=
+      s.hom ≫ a := by
+  rw [schemeModuleLineFrameHomIso_hom,← Category.assoc,
+    ← schemeModuleHomUnitAddEquiv_symm_precompose]
+  exact schemeModuleUnitHomIso_curry (s.hom ≫ a)
+/-- Vanishing after ANY original zero-preserving functor is independent
+of the source line frame. In particular,this applies to the ACTUAL
+scheme pullback to the cut;faithful pullback is NOT assumed. -/
+theorem schemeModuleLineFrame_curry_map_zero_iff
+    {A : Type v} [Category.{w} A] [HasZeroMorphisms A]
+    (F : X.Modules ⥤ A) [F.PreservesZeroMorphisms]
+    {P N : X.Modules} (s : SheafOfModules.unit X.ringCatSheaf ≅ P) (a : P ⟶ N) :
+    F.map ((schemeModuleHomUnitAddEquiv P N).symm a)=0 ↔ F.map a=0 := by
+  have hh := congrArg (fun b => F.map b) (schemeModuleLineFrameHomIso_curry s a)
+  rw [F.map_comp,F.map_comp] at hh
+  constructor
+  · intro hz
+    apply (cancel_epi (F.map s.hom)).mp
+    rw [← hh,hz,zero_comp,comp_zero]
+  · intro hz
+    apply (cancel_mono (F.map (schemeModuleLineFrameHomIso (N:=N) s).hom)).mp
+    rw [hh,hz,comp_zero,zero_comp]
+end LinearStudy
+
+
+SOURCE:AffineKoszulIntrinsicPullbackZero
+module
+public import Linear.SchemeModuleHomUnitFrameZero
+public import Linear.AffineKoszulGeometricClassZero
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 100000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
+universe u
+variable (R : CommRingCat.{u}) (N : ModuleCat.{u} R) (p : ℕ)
+/-- Vanishing of the SAME ordered Koszul coefficient section after the
+ACTUAL pullback is precisely vanishing of the ORIGINAL coefficient
+morphism. The ordered top exterior term is an ACTUAL source line;
+no frame/freeness of N,conventional-frame equality or faithful pullback. -/
+theorem affineKoszulTopFunctionalSection_pullback_zero_iff
+    {Y : Scheme.{u}} (i : Y ⟶ Spec R)
+    (a : tilde (ModuleCat.of R (⋀[R]^(p+1) (Fin (p+1) → R))) ⟶ tilde N) :
+    (Scheme.Modules.pullback i).map (affineKoszulTopFunctionalSection R N p a)=0 ↔
+      (Scheme.Modules.pullback i).map a=0 := by
+  let s : SheafOfModules.unit (Spec R).ringCatSheaf ≅
+      tilde (ModuleCat.of R (⋀[R]^(p+1) (Fin (p+1) → R))) :=
+    (tildeSelf (R:=R)).symm ≪≫
+      (tilde.functor R).mapIso (topKoszulEquiv (R:=R) (p+1)).symm.toModuleIso
+  let phi : schemeModuleHomModuleSheaf
+      (tilde (ModuleCat.of R (⋀[R]^(p+1) (Fin (p+1) → R)))) (tilde N) ≅ tilde N :=
+    (affineKoszulTermHomCoefficientIso R N (p+1) (p+1)).symm ≪≫
+      (tilde.functor R).mapIso (koszulTopHomCoefficientEquiv (N:=N) p).toModuleIso
+  let F := Scheme.Modules.pullback i
+  have hs : affineKoszulTopFunctionalSection R N p a=
+      (schemeModuleHomUnitAddEquiv _ (tilde N)).symm a ≫ phi.hom := rfl
+  rw [hs,F.map_comp]
+  constructor
+  · intro hz
+    apply (schemeModuleLineFrame_curry_map_zero_iff F s a).mp
+    apply (cancel_mono (F.map phi.hom)).mp
+    simpa only [zero_comp] using hz
+  · intro hz
+    have hc := (schemeModuleLineFrame_curry_map_zero_iff F s a).mpr hz
+    rw [hc,zero_comp]
+/-- The SAME actual local class vanishes iff the ORIGINAL top functional
+pulls back to zero on the ORIGINAL nonreduced cut. Neither an arbitrary
+coefficient-section replacement nor a conventional sign/frame is used. -/
+theorem affineKoszulGeometricClass_zero_iff_pullback_functional
+    (H : Fin (p+1) → R)
+    (a : tilde (ModuleCat.of R (⋀[R]^(p+1) (Fin (p+1) → R))) ⟶ tilde N) :
+    (schemeModuleHomUnitAddEquiv _ (tilde N)).symm a ≫
+        (affineKoszulHomGeometricRestrictionPresentation R N p H).g=0 ↔
+      (Scheme.Modules.pullback
+        (Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H)))))).map a=0 := by
+  exact (affineKoszulGeometricClass_zero_iff_pullback R N p H a).trans
+    (affineKoszulTopFunctionalSection_pullback_zero_iff R N p
+      (Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range H))))) a)
+end LinearStudy
+
+
+SOURCE:SchemeModuleOpenKoszulIntrinsicZero
+module
+public import Linear.SchemeModuleOpenKoszulChartDataCutZero
+public import Linear.AffineKoszulIntrinsicPullbackZero
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 100000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
+universe u
+attribute [local instance] schemeModuleOpenRestriction_additive
+attribute [local irreducible] schemeModuleOriginalChainTopExtClassSmall schemeModuleGlobalToInternalExtAll
+variable {X : Scheme.{u}} (C : ChainComplex X.Modules ℕ) (p : ℕ)
+variable (D : schemeModuleOpenKoszulChartData C (p+1))
+variable {E : X.Modules} (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E)
+variable (hAlpha : QuasiIso alpha) (hAbove : IsZero (C.X (p+2)))
+/-- STATEMENT,not a proof:the SAME canonical local Ext class vanishes
+iff the ORIGINAL top functional itself pulls back to zero on the SAME
+original nonreduced cut. No replacement coefficient section occurs in
+the conclusion,no coefficient/conventional frame is supplied as input. -/
+def schemeModuleOpenKoszulIntrinsicMapZeroStatement : Prop :=
+  letI := D.2.2.1
+  letI := hAlpha
+  letI := HasDerivedCategory.standard X.Modules
+  ∀ (N : X.Modules) (_ : N.IsQuasicoherent) (a : C.X (p+1) ⟶ N),
+    (Scheme.Modules.restrictFunctor D.2.1).map
+      (schemeModuleGlobalToInternalExtAll E N (p+1)
+        (schemeModuleOriginalChainTopExtClassSmall C (p+1) alpha hAlpha a
+          (hAbove.eq_of_src _ _)))=0 ↔
+      (Scheme.Modules.pullback
+        (Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk
+          (Ideal.span (Set.range D.2.2.2.1)))))).map
+            ((Scheme.Modules.restrictFunctor D.2.1).map a)=0
+/-- PROVE the intrinsic criterion using the ACTUAL original class
+formula and ACTUAL source/target isomorphisms. Original source internal
+Ext acyclicity is explicit here and is DERIVED for the original projective
+Koszul complex;no global CM or target locally-free hypothesis. -/
+theorem schemeModuleOpenKoszulIntrinsicMapZeroProof
+    (hA : ∀ (N : X.Modules) (_ : N.IsQuasicoherent) q v,
+      IsZero (schemeModuleInternalExt (C.X q) N (v+1))) :
+    schemeModuleOpenKoszulIntrinsicMapZeroStatement C p D alpha hAlpha hAbove := by
+  letI := D.2.2.1
+  letI := hAlpha
+  letI := HasDerivedCategory.standard X.Modules
+  intro N hN a
+  letI := hN
+  let T := (moduleSpecΓFunctor (R:=D.1)).obj (N.restrict D.2.1)
+  let beta := schemeModuleOpenQuasicoherentCoefficientIso D.1 D.2.1 N
+  let s := schemeModuleChainOpenKoszulTermIso D.1 D.2.1 p D.2.2.2.1 C D.2.2.2.2 (p+1)
+  let i := Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span (Set.range D.2.2.2.1))))
+  let F := Scheme.Modules.pullback i
+  have h := schemeModuleOpenKoszulChartDataCutZeroProof C p D alpha hAlpha hAbove hA N hN a
+  have haff := affineKoszulTopFunctionalSection_pullback_zero_iff D.1 T p i
+    (s.inv ≫ (Scheme.Modules.restrictFunctor D.2.1).map a ≫ beta.hom)
+  refine h.trans (haff.trans ?_)
+  change F.map (s.inv ≫ (Scheme.Modules.restrictFunctor D.2.1).map a ≫ beta.hom)=0 ↔
+    F.map ((Scheme.Modules.restrictFunctor D.2.1).map a)=0
+  simp only [F.map_comp,Preadditive.IsIso.comp_left_eq_zero,Preadditive.IsIso.comp_right_eq_zero]
+end LinearStudy
+
+
+SOURCE:ProjectivePulledOriginalChartIntrinsicMapZero
+module
+public import Linear.ProjectivePulledOriginalNamedExactChart
+public import Linear.SchemeModuleOpenKoszulIntrinsicZero
+public import Linear.ProjectivePulledOriginalKoszulInternalExtVanishing
+public import Linear.ProjectivePulledOriginalKoszulAboveRank
+public import Linear.ProjectivePulledWholeCutResolutionObjects
+public import Linear.ChainActualCokernelTargetAugmentation
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+attribute [local instance] MvPolynomial.gradedAlgebra
+attribute [local irreducible] homogeneousQuotientGrading nativeProjectiveKoszulComplex
+  nativeProjectiveKoszulTerm projectivePulledLinearKoszulForms projectivePulledLinearKoszulComplex
+  projectivePulledWholeCutResolutionTarget projectivePulledOriginalNamedExactChart
+  schemeModuleOpenKoszulIntrinsicMapZeroStatement
+variable {n p : ℕ}
+/-- STATEMENT ONLY. On the SAME actual original X0 chart,the SAME canonical
+lambda class vanishes iff the ORIGINAL top coefficient MORPHISM itself pulls
+back to zero on the SAME original nonreduced cut. ALL quasicoherent
+coefficients and ALL original functionals are included. -/
+def projectivePulledOriginalChartIntrinsicMapZeroStatement
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (w : Fin ((p+1)+1) → ℂ) (k : ℤ)
+    (e : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+      cokernel ((projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        projectivePulledWholeCutResolutionTarget f V L hL w k)
+    (he : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+      QuasiIso (originalChainCokernelTargetAugmentation
+        (projectivePulledLinearKoszulComplex f V L hL w k)
+        (projectivePulledWholeCutResolutionTarget f V L hL w k) e)) : Prop :=
+  letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+  schemeModuleOpenKoszulIntrinsicMapZeroStatement
+    (projectivePulledLinearKoszulComplex f V L hL w k) p
+    (projectivePulledOriginalNamedExactChart f V L hL w k)
+    (originalChainCokernelTargetAugmentation (projectivePulledLinearKoszulComplex f V L hL w k)
+      (projectivePulledWholeCutResolutionTarget f V L hL w k) e) he
+    (projectivePulledOriginalKoszul_isZero_above f V L hL w k (p+2) (by omega))
+/-- PROOF:derive all source SHEAF Ext vanishings from the
+actual original Koszul terms. Original Setup must supply its e and he. -/
+theorem projectivePulledOriginalChartIntrinsicMapZeroStatement_proof
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (w : Fin ((p+1)+1) → ℂ) (k : ℤ)
+    (e : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+      cokernel ((projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+        projectivePulledWholeCutResolutionTarget f V L hL w k)
+    (he : letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+      QuasiIso (originalChainCokernelTargetAugmentation
+        (projectivePulledLinearKoszulComplex f V L hL w k)
+        (projectivePulledWholeCutResolutionTarget f V L hL w k) e)) :
+    projectivePulledOriginalChartIntrinsicMapZeroStatement f V L hL w k e he := by
+  letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+  apply schemeModuleOpenKoszulIntrinsicMapZeroProof
+  intro N _ q v
+  exact projectivePulledOriginalKoszulInternalExt_succ f V L hL w k q N v
+end LinearStudy
+
+
+SOURCE:SchemeModuleOriginalKoszulPushIntrinsicZero
+module
+public import Linear.SchemeModuleOpenKoszulIntrinsicZero
+public import Linear.SchemeModuleOriginalClassGlobalToLocal
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 100000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Limits CategoryTheory.Abelian AlgebraicGeometry
+universe u
+attribute [local instance] schemeModuleOpenRestriction_additive
+attribute [local irreducible] schemeModuleOriginalChainTopExtClassSmall schemeModuleGlobalToInternalExtAll
+variable {X : Scheme.{u}} (C : ChainComplex X.Modules ℕ) (p : ℕ)
+variable (D : schemeModuleOpenKoszulChartData C (p+1))
+variable {E : X.Modules} (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E)
+variable (hAlpha : QuasiIso alpha) (hAbove : IsZero (C.X (p+2)))
+/-- For the SAME original epsilon built from its actual top-term iso,
+the actual canonical local class of b_*epsilon vanishes EXACTLY when the
+ORIGINAL coefficient morphism b pulls back to zero on the ORIGINAL cut.
+The actual source iso is cancelled,not identified with a conventional
+frame. Arbitrary quasicoherent N;no local freeness or faithful pullback. -/
+theorem schemeModuleOriginalKoszulPush_intrinsic_zero_iff
+    (hA : ∀ (N : X.Modules) (_ : N.IsQuasicoherent) q v,
+      IsZero (schemeModuleInternalExt (C.X q) N (v+1)))
+    {M N : X.Modules} [hN : N.IsQuasicoherent]
+    (phi : C.X (p+1) ≅ M) (b : M ⟶ N) :
+    letI := D.2.2.1
+    letI := hAlpha
+    letI := HasDerivedCategory.standard X.Modules
+    (Scheme.Modules.restrictFunctor D.2.1).map
+      (schemeModuleGlobalToInternalExtAll E N (p+1)
+        ((schemeModuleOriginalChainTopExtClassSmall C (p+1) alpha hAlpha phi.hom
+          (hAbove.eq_of_src _ _)).comp (Ext.mk₀ b) (add_zero _)))=0 ↔
+      (Scheme.Modules.pullback
+        (Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk
+          (Ideal.span (Set.range D.2.2.2.1)))))).map
+            ((Scheme.Modules.restrictFunctor D.2.1).map b)=0 := by
+  letI := D.2.2.1
+  letI := hAlpha
+  letI := HasDerivedCategory.standard X.Modules
+  have hbase := schemeModuleOpenKoszulIntrinsicMapZeroProof C p D alpha hAlpha hAbove hA
+  unfold schemeModuleOpenKoszulIntrinsicMapZeroStatement at hbase
+  have h := hbase N hN (phi.hom ≫ b)
+  have hz :
+      (Scheme.Modules.pullback (Spec.map (CommRingCat.ofHom
+        (Ideal.Quotient.mk (Ideal.span (Set.range D.2.2.2.1)))))).map
+          ((Scheme.Modules.restrictFunctor D.2.1).map (phi.hom ≫ b))=0 ↔
+      (Scheme.Modules.pullback (Spec.map (CommRingCat.ofHom
+        (Ideal.Quotient.mk (Ideal.span (Set.range D.2.2.2.1)))))).map
+          ((Scheme.Modules.restrictFunctor D.2.1).map b)=0 := by
+    simp only [Functor.map_comp,Preadditive.IsIso.comp_left_eq_zero]
+  have hp := schemeModuleOriginalChainTopExtClassSmall_comp_mk₀ C (p+1) alpha hAlpha
+    phi.hom (hAbove.eq_of_src _ _) b
+  have hleft := congrArg
+    (fun z : Ext.{u} E N (p+1) =>
+      (Scheme.Modules.restrictFunctor D.2.1).map
+        (schemeModuleGlobalToInternalExtAll E N (p+1) z)) hp
+  constructor
+  · intro hzero
+    exact (h.trans hz).mp (hleft.symm.trans hzero)
+  · intro hzero
+    exact hleft.trans ((h.trans hz).mpr hzero)
+end LinearStudy
+
+
+SOURCE:ProjectivePulledOriginalSetupIntrinsicZeroFamily
+module
+public import Linear.ProjectivePulledOriginalChartDataCutStatement
+public import Linear.ProjectivePulledOriginalChartDataCutZero
+public import Linear.ProjectivePulledOriginalSetupWholeTopCokernelLambdaFamily
+public import Linear.ParameterFamilyEnrichWitness
+public import Linear.ProjectivePulledOriginalChartIntrinsicMapZero
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+attribute [local instance] MvPolynomial.gradedAlgebra
+attribute [local irreducible] projectivePulledOriginalChartDataCutStatement
+  projectivePulledOriginalChartDataCutZeroStatement projectivePulledOriginalChartIntrinsicMapZeroStatement
+  projectivePulledOriginalWholeTopCokernelStatement projectivePulledOriginalCokernelLambdaStatement
+variable {n p : ℕ}
+/-- One original NONEMPTY parameter open before ALL integer twists,with
+SAME derived e/he,exact original degree-zero augmentation,the original
+WHOLE highest-Hom-cokernel class,the actual original X0-chart class
+formula AND actual geometric-pullback zero criterion AND intrinsic ORIGINAL COEFFICIENT-MAP
+zero criterion for ALL
+quasicoherent coefficients and functionals,and the SAME
+canonical lambda bijection for all coefficients and positive degrees.
+No chart/class/lambda/augmentation certificate is a geometric premise.
+Independent conventional-frame compatibility,global support/gluing,theta4.1,uniformm
+and original4.1/4.2/main remain outside this combined proved family. -/
+theorem projectivePulledOriginalSetupIntrinsicZeroFamilyProof
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n) (hrn : p+1 < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+    (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+    (hfinite : (projectiveLinearNormalizationMap V L).Finite)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet) :
+    ∃ c : MvPolynomial (Fin ((p+1)+1)) ℂ, c ≠ 0 ∧
+      (∃ w : Fin ((p+1)+1) → ℂ, MvPolynomial.eval w c ≠ 0) ∧
+      ∀ w : Fin ((p+1)+1) → ℂ, MvPolynomial.eval w c ≠ 0 →
+        (letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+         ∀ k : ℤ,
+          ∃ e : cokernel ((projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≅
+              projectivePulledWholeCutResolutionTarget f V L hL w k,
+          ∃ he : QuasiIso (originalChainCokernelTargetAugmentation
+              (projectivePulledLinearKoszulComplex f V L hL w k)
+              (projectivePulledWholeCutResolutionTarget f V L hL w k) e),
+            (originalChainCokernelTargetAugmentation
+              (projectivePulledLinearKoszulComplex f V L hL w k)
+              (projectivePulledWholeCutResolutionTarget f V L hL w k) e).f 0 =
+                cokernel.π ((projectivePulledLinearKoszulComplex f V L hL w k).d 1 0) ≫ e.hom ∧
+            projectivePulledOriginalWholeTopCokernelStatement f V L hL w k e he ∧
+            projectivePulledOriginalChartDataCutStatement f V L hL w k e he ∧
+            projectivePulledOriginalChartDataCutZeroStatement f V L hL w k e he ∧
+            projectivePulledOriginalChartIntrinsicMapZeroStatement f V L hL w k e he) ∧
+        (letI := homogeneousQuotientGrading V.ideal.toIdeal V.ideal.isHomogeneous
+         ∀ k : ℤ, projectivePulledOriginalCokernelLambdaStatement f V L hL w k) :=
+  parameterPolynomialFamily_intersection
+    (parameterFamily_enrich_exists_proof
+      (T := fun w k e he => projectivePulledOriginalWholeTopCokernelStatement f V L hL w k e he ∧
+        projectivePulledOriginalChartDataCutStatement f V L hL w k e he ∧
+        projectivePulledOriginalChartDataCutZeroStatement f V L hL w k e he ∧
+        projectivePulledOriginalChartIntrinsicMapZeroStatement f V L hL w k e he)
+      (projectivePulledLinearSectionOriginalSetupResolutionProof
+        f V hrn hq hf hV L hL hinj hfinite x0 hx0)
+      (fun w k e he =>
+        ⟨projectivePulledOriginalWholeTopCokernelStatement_proof (by omega) f V L hL w k e he,
+          projectivePulledOriginalChartDataCutStatement_proof f V L hL w k e he,
+          projectivePulledOriginalChartDataCutZeroStatement_proof f V L hL w k e he,
+          projectivePulledOriginalChartIntrinsicMapZeroStatement_proof f V L hL w k e he⟩))
+    (projectivePulledLinearSection_exists_originalCokernelCanonicalLambda_bijective
+      f V hq hf hV L hL hinj hfinite x0 hx0)
+end LinearStudy
