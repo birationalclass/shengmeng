@@ -1,0 +1,81 @@
+module
+import all Linear.TildePushforwardMappedUnitValues
+import all Linear.OriginalCutEquationCoefficientSheafDual
+import all Linear.KoszulNativeCoextensionOriginalValues
+import all Linear.OriginalCutEquationCoefficientModuleExtDual
+import all Linear.KoszulOriginalModuleExtSheafValues
+import all Linear.OriginalCutEquationCoefficientModuleExtSheafDual
+set_option maxHeartbeats 50000
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.tildePushforwardOriginalGlobalValue
+#print axioms LinearStudy.tildePushforwardOriginalGlobalValue
+#check @LinearStudy.tildePushforwardMappedIso_globalValue
+#print axioms LinearStudy.tildePushforwardMappedIso_globalValue
+#check @LinearStudy.tildePushforwardOriginalGlobalValue_mappedIso
+#print axioms LinearStudy.tildePushforwardOriginalGlobalValue_mappedIso
+#check @LinearStudy.tildePushforwardLinearEquivIso
+#print axioms LinearStudy.tildePushforwardLinearEquivIso
+#check @LinearStudy.tildePushforwardLinearEquivIso_globalValue
+#print axioms LinearStudy.tildePushforwardLinearEquivIso_globalValue
+#check @LinearStudy.tildePushforward_existsOriginalValues
+#print axioms LinearStudy.tildePushforward_existsOriginalValues
+#check @LinearStudy.tildePushforward_existsOriginalTwoValues
+#print axioms LinearStudy.tildePushforward_existsOriginalTwoValues
+#check @LinearStudy.projectivePulledCutEquationCoefficientSheafDualStatement
+#print axioms LinearStudy.projectivePulledCutEquationCoefficientSheafDualStatement
+#check @LinearStudy.projectivePulledCutEquation_sheaf_dual_of_native_dual
+#print axioms LinearStudy.projectivePulledCutEquation_sheaf_dual_of_native_dual
+#check @LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_sheaf_dual_open
+#print axioms LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_sheaf_dual_open
+#check @LinearStudy.koszulExactTopExtOriginalCoefficientEquiv
+#print axioms LinearStudy.koszulExactTopExtOriginalCoefficientEquiv
+#check @LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_representative
+#print axioms LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_representative
+#check @LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_pushGenerator
+#print axioms LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_pushGenerator
+#check @LinearStudy.koszulExactTopExt_existsOriginalTwoValues
+#print axioms LinearStudy.koszulExactTopExt_existsOriginalTwoValues
+#check @LinearStudy.koszulExactTopExtOriginalTwoValuesStatement
+#print axioms LinearStudy.koszulExactTopExtOriginalTwoValuesStatement
+#check @LinearStudy.koszulExactTopExtOriginalTwoValuesStatement_of_coefficient
+#print axioms LinearStudy.koszulExactTopExtOriginalTwoValuesStatement_of_coefficient
+#check @LinearStudy.projectivePulledCutEquationCoefficientModuleExtDualStatement
+#print axioms LinearStudy.projectivePulledCutEquationCoefficientModuleExtDualStatement
+#check @LinearStudy.projectivePulledCutEquation_moduleExt_dual_of_native_dual
+#print axioms LinearStudy.projectivePulledCutEquation_moduleExt_dual_of_native_dual
+#check @LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_dual_open
+#print axioms LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_dual_open
+#check @LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement
+#print axioms LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement
+#check @LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement_of_moduleExt
+#print axioms LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement_of_moduleExt
+#check @LinearStudy.projectivePulledCutEquationCoefficientModuleExtSheafDualStatement
+#print axioms LinearStudy.projectivePulledCutEquationCoefficientModuleExtSheafDualStatement
+#check @LinearStudy.projectivePulledCutEquation_moduleExt_sheaf_dual_of_moduleExt_dual
+#print axioms LinearStudy.projectivePulledCutEquation_moduleExt_sheaf_dual_of_moduleExt_dual
+#check @LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_sheaf_dual_open
+#print axioms LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_sheaf_dual_open
+#print LinearStudy.tildePushforwardOriginalGlobalValue
+#print LinearStudy.tildePushforwardLinearEquivIso
+#print LinearStudy.projectivePulledCutEquationCoefficientSheafDualStatement
+#print LinearStudy.koszulExactTopExtOriginalCoefficientEquiv
+#print LinearStudy.koszulExactTopExtOriginalTwoValuesStatement
+#print LinearStudy.projectivePulledCutEquationCoefficientModuleExtDualStatement
+#print LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement
+#print LinearStudy.projectivePulledCutEquationCoefficientModuleExtSheafDualStatement
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool) := [(`LinearStudy.tildePushforwardOriginalGlobalValue,false),(`LinearStudy.tildePushforwardMappedIso_globalValue,true),(`LinearStudy.tildePushforwardOriginalGlobalValue_mappedIso,true),(`LinearStudy.tildePushforwardLinearEquivIso,false),(`LinearStudy.tildePushforwardLinearEquivIso_globalValue,true),(`LinearStudy.tildePushforward_existsOriginalValues,true),(`LinearStudy.tildePushforward_existsOriginalTwoValues,true),(`LinearStudy.projectivePulledCutEquationCoefficientSheafDualStatement,false),(`LinearStudy.projectivePulledCutEquation_sheaf_dual_of_native_dual,true),(`LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_sheaf_dual_open,true),(`LinearStudy.koszulExactTopExtOriginalCoefficientEquiv,false),(`LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_representative,true),(`LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_pushGenerator,true),(`LinearStudy.koszulExactTopExt_existsOriginalTwoValues,true),(`LinearStudy.koszulExactTopExtOriginalTwoValuesStatement,false),(`LinearStudy.koszulExactTopExtOriginalTwoValuesStatement_of_coefficient,true),(`LinearStudy.projectivePulledCutEquationCoefficientModuleExtDualStatement,false),(`LinearStudy.projectivePulledCutEquation_moduleExt_dual_of_native_dual,true),(`LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_dual_open,true),(`LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement,false),(`LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement_of_moduleExt,true),(`LinearStudy.projectivePulledCutEquationCoefficientModuleExtSheafDualStatement,false),(`LinearStudy.projectivePulledCutEquation_moduleExt_sheaf_dual_of_moduleExt_dual,true),(`LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_sheaf_dual_open,true)]
+  let env ← Lean.getEnv
+  for (n,want) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"
+    let kernelKind := match info with
+      | .thmInfo _ => "theorem"
+      | .defnInfo _ => "definition"
+      | _ => "other"
+    unless kernelKind == (if want then "theorem" else "definition") do
+      throwError m!"Incorrect kernel declaration kind: {n}"
+    Lean.logInfo m!"KINDCHECK:{n}:{kernelKind}"

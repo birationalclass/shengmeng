@@ -1,0 +1,542 @@
+@LinearStudy.tildePushforwardOriginalGlobalValue : {R S : CommRingCat} →
+  (phi : R ⟶ S) →
+    (M : ModuleCat ↑S) →
+      (N : ModuleCat ↑R) →
+        (AlgebraicGeometry.tilde N ≅
+            (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).obj
+              (AlgebraicGeometry.tilde M)) →
+          ↑N → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M)
+'LinearStudy.tildePushforwardOriginalGlobalValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildePushforwardMappedIso_globalValue : ∀ {R S : CommRingCat} (phi : R ⟶ S) (M : ModuleCat ↑S)
+  (N : ModuleCat ↑R) (e : N ≅ (ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) (n : ↑N),
+  (CategoryTheory.ConcreteCategory.hom (LinearStudy.tildePushforwardGlobalIso phi M).hom)
+      ((CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.moduleSpecΓFunctor.map
+            ((AlgebraicGeometry.tilde.functor R).mapIso e ≪≫ LinearStudy.tildePushforwardIso phi M).hom))
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.adjunction.unit.app N)) n)) =
+    (CategoryTheory.ConcreteCategory.hom e.hom) n
+'LinearStudy.tildePushforwardMappedIso_globalValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildePushforwardOriginalGlobalValue_mappedIso : ∀ {R S : CommRingCat} (phi : R ⟶ S) (M : ModuleCat ↑S)
+  (N : ModuleCat ↑R) (e : N ≅ (ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) (n : ↑N),
+  LinearStudy.tildePushforwardOriginalGlobalValue phi M N
+      ((AlgebraicGeometry.tilde.functor R).mapIso e ≪≫ LinearStudy.tildePushforwardIso phi M) n =
+    (CategoryTheory.ConcreteCategory.hom e.hom) n
+'LinearStudy.tildePushforwardOriginalGlobalValue_mappedIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildePushforwardLinearEquivIso : {R S : CommRingCat} →
+  (phi : R ⟶ S) →
+    (M : ModuleCat ↑S) →
+      (N : ModuleCat ↑R) →
+        (↑N ≃ₗ[↑R] ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M)) →
+          (AlgebraicGeometry.tilde N ≅
+            (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).obj
+              (AlgebraicGeometry.tilde M))
+'LinearStudy.tildePushforwardLinearEquivIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildePushforwardLinearEquivIso_globalValue : ∀ {R S : CommRingCat} (phi : R ⟶ S) (M : ModuleCat ↑S)
+  (N : ModuleCat ↑R) (F : ↑N ≃ₗ[↑R] ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M)) (n : ↑N),
+  LinearStudy.tildePushforwardOriginalGlobalValue phi M N (LinearStudy.tildePushforwardLinearEquivIso phi M N F) n = F n
+'LinearStudy.tildePushforwardLinearEquivIso_globalValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildePushforward_existsOriginalValues : ∀ {R S : CommRingCat} (phi : R ⟶ S) (M : ModuleCat ↑S)
+  (N : ModuleCat ↑R) (T : Type u_1) (q : T → ↑N)
+  (P : T → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop),
+  (∃ (F : ↑N ≃ₗ[↑R] ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M)), ∀ (t : T), P t (F (q t))) →
+    ∃ (e :
+      AlgebraicGeometry.tilde N ≅
+        (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).obj
+          (AlgebraicGeometry.tilde M)),
+      ∀ (t : T), P t (LinearStudy.tildePushforwardOriginalGlobalValue phi M N e (q t))
+'LinearStudy.tildePushforward_existsOriginalValues' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.tildePushforward_existsOriginalTwoValues : ∀ {R S : CommRingCat} (phi : R ⟶ S) (M : ModuleCat ↑S)
+  (N : ModuleCat ↑R) (T U : Type u_1) (q : T → ↑N)
+  (P : T → U → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop)
+  (P0 : T → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop),
+  (∃ (F : ↑N ≃ₗ[↑R] ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M)),
+      (∀ (t : T) (v : U), P t v (F (q t))) ∧ ∀ (t : T), P0 t (F (q t))) →
+    ∃ (e :
+      AlgebraicGeometry.tilde N ≅
+        (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).obj
+          (AlgebraicGeometry.tilde M)),
+      (∀ (t : T) (v : U), P t v (LinearStudy.tildePushforwardOriginalGlobalValue phi M N e (q t))) ∧
+        ∀ (t : T), P0 t (LinearStudy.tildePushforwardOriginalGlobalValue phi M N e (q t))
+'LinearStudy.tildePushforward_existsOriginalTwoValues' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledCutEquationCoefficientSheafDualStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n → (Fin (r + 1) → LinearStudy.CoordinateRing n) → (Fin (r + 1) → ℂ) → Prop
+'LinearStudy.projectivePulledCutEquationCoefficientSheafDualStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_sheaf_dual_of_native_dual : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ),
+  LinearStudy.projectivePulledCutEquationCoefficientNativeDualStatement f V L w →
+    LinearStudy.projectivePulledCutEquationCoefficientSheafDualStatement f V L w
+'LinearStudy.projectivePulledCutEquation_sheaf_dual_of_native_dual' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_sheaf_dual_open : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  r < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+            (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+              Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+                (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (r + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                (LinearStudy.projectivePulledCutEquationMap f V L w).Finite ∧
+                                  LinearStudy.projectivePulledCutEquationCoefficientSheafDualStatement f V L w
+'LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_sheaf_dual_open' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.koszulExactTopExtOriginalCoefficientEquiv : {R : Type u_1} →
+  [inst : CommRing R] →
+    (p : ℕ) →
+      (H : Fin (p + 1) → R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j) →
+          (N : ModuleCat R) →
+            (T : Type u_1) →
+              [inst_1 : AddCommGroup T] →
+                [inst_2 : Module R T] →
+                  ((↑N ⧸ Ideal.span (Set.range H) • ⊤) ≃ₗ[R] T) →
+                    CategoryTheory.Abelian.Ext (↧(R ⧸ Ideal.span (Set.range H))) N (p + 1) ≃ₗ[R] T
+'LinearStudy.koszulExactTopExtOriginalCoefficientEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_representative : ∀ {R : Type u_1} [inst : CommRing R] (p : ℕ)
+  (H : Fin (p + 1) → R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j)
+  (N : ModuleCat R) (T : Type u_1) [inst_1 : AddCommGroup T] [inst_2 : Module R T]
+  (F : (↑N ⧸ Ideal.span (Set.range H) • ⊤) ≃ₗ[R] T) (L : ↥(⋀[R]^(p + 1) (Fin (p + 1) → R)) →ₗ[R] ↑N),
+  (LinearStudy.koszulExactTopExtOriginalCoefficientEquiv p H he N T F)
+      (LinearStudy.koszulExactTopExtCoefficientRepresentative p H he N L) =
+    F (Submodule.Quotient.mk (L (LinearStudy.topKoszulGenerator (p + 1))))
+'LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_representative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_pushGenerator : ∀ {R : Type u_1} [inst : CommRing R] (p : ℕ)
+  (H : Fin (p + 1) → R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j)
+  (N : ModuleCat R) (T : Type u_1) [inst_1 : AddCommGroup T] [inst_2 : Module R T]
+  (F : (↑N ⧸ Ideal.span (Set.range H) • ⊤) ≃ₗ[R] T) (a : R →ₗ[R] ↑N),
+  (LinearStudy.koszulExactTopExtOriginalCoefficientEquiv p H he N T F)
+      ((LinearStudy.koszulExactTopExtCoefficientRepresentative p H he (↧R)
+            (LinearStudy.topKoszulCoordinate (p + 1))).comp
+        (CategoryTheory.Abelian.Ext.mk₀ (ModuleCat.ofHom a)) ⋯) =
+    F (Submodule.Quotient.mk (a 1))
+'LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_pushGenerator' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.koszulExactTopExt_existsOriginalTwoValues : ∀ {R : Type u_1} [inst : CommRing R] (p : ℕ)
+  (H : Fin (p + 1) → R)
+  (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j)
+  (N : ModuleCat R) (T : Type u_1) [inst_1 : AddCommGroup T] [inst_2 : Module R T] (U : Type u_1)
+  (P : ↑N → U → T → Prop) (P0 : ↑N → T → Prop),
+  (∃ (F : (↑N ⧸ Ideal.span (Set.range H) • ⊤) ≃ₗ[R] T),
+      (∀ (x : ↑N) (v : U), P x v (F (Submodule.Quotient.mk x))) ∧ ∀ (x : ↑N), P0 x (F (Submodule.Quotient.mk x))) →
+    ∃ (G : CategoryTheory.Abelian.Ext (↧(R ⧸ Ideal.span (Set.range H))) N (p + 1) ≃ₗ[R] T),
+      (∀ (L : ↥(⋀[R]^(p + 1) (Fin (p + 1) → R)) →ₗ[R] ↑N) (v : U),
+          P (L (LinearStudy.topKoszulGenerator (p + 1))) v
+            (G (LinearStudy.koszulExactTopExtCoefficientRepresentative p H he N L))) ∧
+        ∀ (L : ↥(⋀[R]^(p + 1) (Fin (p + 1) → R)) →ₗ[R] ↑N),
+          P0 (L (LinearStudy.topKoszulGenerator (p + 1)))
+            (G (LinearStudy.koszulExactTopExtCoefficientRepresentative p H he N L))
+'LinearStudy.koszulExactTopExt_existsOriginalTwoValues' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulExactTopExtOriginalTwoValuesStatement : {R : Type u_1} →
+  [inst : CommRing R] →
+    (p : ℕ) →
+      (Fin (p + 1) → R) →
+        (N : ModuleCat R) →
+          (T : Type u_1) →
+            [inst_1 : AddCommGroup T] → [Module R T] → (U : Type u_1) → (↑N → U → T → Prop) → (↑N → T → Prop) → Prop
+'LinearStudy.koszulExactTopExtOriginalTwoValuesStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.koszulExactTopExtOriginalTwoValuesStatement_of_coefficient : ∀ {R : Type u_1} [inst : CommRing R] (p : ℕ)
+  (H : Fin (p + 1) → R),
+  (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j) →
+    ∀ (N : ModuleCat R) (T : Type u_1) [inst_1 : AddCommGroup T] [inst_2 : Module R T] (U : Type u_1)
+      (P : ↑N → U → T → Prop) (P0 : ↑N → T → Prop),
+      (∃ (F : (↑N ⧸ Ideal.span (Set.range H) • ⊤) ≃ₗ[R] T),
+          (∀ (x : ↑N) (v : U), P x v (F (Submodule.Quotient.mk x))) ∧ ∀ (x : ↑N), P0 x (F (Submodule.Quotient.mk x))) →
+        LinearStudy.koszulExactTopExtOriginalTwoValuesStatement p H N T U P P0
+'LinearStudy.koszulExactTopExtOriginalTwoValuesStatement_of_coefficient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquationCoefficientModuleExtDualStatement : {n p : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) → (Fin (p + 1 + 1) → ℂ) → Prop
+'LinearStudy.projectivePulledCutEquationCoefficientModuleExtDualStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_moduleExt_dual_of_native_dual : ∀ {n p : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) (w : Fin (p + 1 + 1) → ℂ),
+  (let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+    have H := fun (i : Fin (p + 1)) =>
+      (Ideal.Quotient.mk V.affineIdeal)
+        (LinearStudy.affineChartPolynomialMap
+          ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+    ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination B H)) j) →
+    LinearStudy.projectivePulledCutEquationCoefficientNativeDualStatement f V L w →
+      LinearStudy.projectivePulledCutEquationCoefficientModuleExtDualStatement f V L w
+'LinearStudy.projectivePulledCutEquation_moduleExt_dual_of_native_dual' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_dual_open : ∀ {n p : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  p + 1 < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n),
+            (∀ (i : Fin (p + 1 + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+              Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+                (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (p + 1 + 1)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (p + 1 + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (p + 1 + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                (LinearStudy.projectivePulledCutEquationMap f V L w).Finite ∧
+                                  LinearStudy.projectivePulledCutEquationCoefficientModuleExtDualStatement f V L w
+'LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_dual_open' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement : {R S : CommRingCat} →
+  (phi : R ⟶ S) →
+    (p : ℕ) →
+      (Fin (p + 1) → ↑R) →
+        (N : ModuleCat ↑R) →
+          (M : ModuleCat ↑S) →
+            (U : Type u_1) →
+              (↑N → U → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop) →
+                (↑N → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop) → Prop
+'LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement_of_moduleExt : ∀ {R S : CommRingCat} (phi : R ⟶ S) (p : ℕ)
+  (H : Fin (p + 1) → ↑R) (N : ModuleCat ↑R) (M : ModuleCat ↑S) (U : Type u_1)
+  (P : ↑N → U → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop)
+  (P0 : ↑N → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop),
+  LinearStudy.koszulExactTopExtOriginalTwoValuesStatement p H N
+      (↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M)) U P P0 →
+    LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement phi p H N M U P P0
+'LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement_of_moduleExt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquationCoefficientModuleExtSheafDualStatement : {n p : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) → (Fin (p + 1 + 1) → ℂ) → Prop
+'LinearStudy.projectivePulledCutEquationCoefficientModuleExtSheafDualStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_moduleExt_sheaf_dual_of_moduleExt_dual : ∀ {n p : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) (w : Fin (p + 1 + 1) → ℂ),
+  LinearStudy.projectivePulledCutEquationCoefficientModuleExtDualStatement f V L w →
+    LinearStudy.projectivePulledCutEquationCoefficientModuleExtSheafDualStatement f V L w
+'LinearStudy.projectivePulledCutEquation_moduleExt_sheaf_dual_of_moduleExt_dual' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_sheaf_dual_open : ∀ {n p : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  p + 1 < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n),
+            (∀ (i : Fin (p + 1 + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+              Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+                (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (p + 1 + 1)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (p + 1 + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (p + 1 + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                (LinearStudy.projectivePulledCutEquationMap f V L w).Finite ∧
+                                  LinearStudy.projectivePulledCutEquationCoefficientModuleExtSheafDualStatement f V L w
+'LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_sheaf_dual_open' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.tildePushforwardOriginalGlobalValue.{u} : {R S : CommRingCat} →
+  (phi : R ⟶ S) →
+    (M : ModuleCat ↑S) →
+      (N : ModuleCat ↑R) →
+        (AlgebraicGeometry.tilde N ≅
+            (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).obj
+              (AlgebraicGeometry.tilde M)) →
+          ↑N → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) :=
+fun {R S : CommRingCat} (phi : R ⟶ S) (M : ModuleCat ↑S) (N : ModuleCat ↑R)
+    (e :
+      AlgebraicGeometry.tilde N ≅
+        (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).obj (AlgebraicGeometry.tilde M))
+    (n : ↑N) =>
+  (CategoryTheory.ConcreteCategory.hom (LinearStudy.tildePushforwardGlobalIso phi M).hom)
+    ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.moduleSpecΓFunctor.map e.hom))
+      ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.tilde.adjunction.unit.app N)) n))
+def LinearStudy.tildePushforwardLinearEquivIso.{u} : {R S : CommRingCat} →
+  (phi : R ⟶ S) →
+    (M : ModuleCat ↑S) →
+      (N : ModuleCat ↑R) →
+        (↑N ≃ₗ[↑R] ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M)) →
+          (AlgebraicGeometry.tilde N ≅
+            (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).obj
+              (AlgebraicGeometry.tilde M)) :=
+fun {R S : CommRingCat} (phi : R ⟶ S) (M : ModuleCat ↑S) (N : ModuleCat ↑R)
+    (F : ↑N ≃ₗ[↑R] ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M)) =>
+  (AlgebraicGeometry.tilde.functor R).mapIso F.toModuleIso ≪≫ LinearStudy.tildePushforwardIso phi M
+def LinearStudy.projectivePulledCutEquationCoefficientSheafDualStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (Fin (r + 1) → LinearStudy.CoordinateRing n) → (Fin (r + 1) → ℂ) → Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ) =>
+  let R := MvPolynomial (Fin r) ℂ;
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let J :=
+    Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+  let Q := MvPolynomial (Fin n) ℂ ⧸ J;
+  let phi := LinearStudy.projectivePulledCutEquationMap f V L w;
+  let D := (ModuleCat.coextendScalars (algebraMap R B)).obj ↧R;
+  let Dq := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj ↧ℂ;
+  have I :=
+    Ideal.span
+      (Set.range fun (i : Fin r) =>
+        (Ideal.Quotient.mk V.affineIdeal)
+          (LinearStudy.affineChartPolynomialMap
+            ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))));
+  let Bc := ↧B;
+  let Qc := ↧Q;
+  have beta := CommRingCat.ofHom (LinearStudy.projectivePulledCutOriginalRingMap f V L w).toRingHom;
+  let M := ↧(↑D ⧸ I • ⊤);
+  ∃ (e :
+    AlgebraicGeometry.tilde M ≅
+      (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map beta)).obj
+        (AlgebraicGeometry.tilde Dq)),
+    (∀ (ell : ↑D) (P : MvPolynomial (Fin n) ℂ),
+        ((ModuleCat.CoextendScalars.equiv (algebraMap ℂ Q) ↧ℂ)
+              (have this := LinearStudy.tildePushforwardOriginalGlobalValue beta Dq M e (Submodule.Quotient.mk ell);
+              this))
+            ((Ideal.Quotient.mk J) P) =
+          (algebraMap R ℂ)
+            ((LinearStudy.coextensionOriginalDualEquiv
+                (have this := ell;
+                this))
+              ((Ideal.Quotient.mk V.affineIdeal) P))) ∧
+      ∀ (ell : ↑D),
+        ((ModuleCat.CoextendScalars.equiv (algebraMap ℂ Q) ↧ℂ)
+              (have this := LinearStudy.tildePushforwardOriginalGlobalValue beta Dq M e (Submodule.Quotient.mk ell);
+              this))
+            1 =
+          (algebraMap R ℂ)
+            ((LinearStudy.coextensionOriginalDualEquiv
+                (have this := ell;
+                this))
+              1)
+def LinearStudy.koszulExactTopExtOriginalCoefficientEquiv.{u} : {R : Type u} →
+  [inst : CommRing R] →
+    (p : ℕ) →
+      (H : Fin (p + 1) → R) →
+        (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j) →
+          (N : ModuleCat R) →
+            (T : Type u) →
+              [inst_1 : AddCommGroup T] →
+                [inst_2 : Module R T] →
+                  ((↑N ⧸ Ideal.span (Set.range H) • ⊤) ≃ₗ[R] T) →
+                    CategoryTheory.Abelian.Ext (↧(R ⧸ Ideal.span (Set.range H))) N (p + 1) ≃ₗ[R] T :=
+fun {R : Type u} [CommRing R] (p : ℕ) (H : Fin (p + 1) → R)
+    (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j)
+    (N : ModuleCat R) (T : Type u) [AddCommGroup T] [Module R T] (F : (↑N ⧸ Ideal.span (Set.range H) • ⊤) ≃ₗ[R] T) =>
+  (LinearStudy.koszulExactTopExtCoefficientRestrictionEquiv p H he N).trans F
+def LinearStudy.koszulExactTopExtOriginalTwoValuesStatement.{u} : {R : Type u} →
+  [inst : CommRing R] →
+    (p : ℕ) →
+      (Fin (p + 1) → R) →
+        (N : ModuleCat R) →
+          (T : Type u) →
+            [inst_1 : AddCommGroup T] → [Module R T] → (U : Type u) → (↑N → U → T → Prop) → (↑N → T → Prop) → Prop :=
+fun {R : Type u} [CommRing R] (p : ℕ) (H : Fin (p + 1) → R) (N : ModuleCat R) (T : Type u) [AddCommGroup T] [Module R T]
+    (U : Type u) (P : ↑N → U → T → Prop) (P0 : ↑N → T → Prop) =>
+  ∃ (hx : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination R H)) j) (G :
+    CategoryTheory.Abelian.Ext (↧(R ⧸ Ideal.span (Set.range H))) N (p + 1) ≃ₗ[R] T),
+    (∀ (L : ↥(⋀[R]^(p + 1) (Fin (p + 1) → R)) →ₗ[R] ↑N) (v : U),
+        P (L (LinearStudy.topKoszulGenerator (p + 1))) v
+          (G (LinearStudy.koszulExactTopExtCoefficientRepresentative p H hx N L))) ∧
+      ∀ (L : ↥(⋀[R]^(p + 1) (Fin (p + 1) → R)) →ₗ[R] ↑N),
+        P0 (L (LinearStudy.topKoszulGenerator (p + 1)))
+          (G (LinearStudy.koszulExactTopExtCoefficientRepresentative p H hx N L))
+def LinearStudy.projectivePulledCutEquationCoefficientModuleExtDualStatement : {n p : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) → (Fin (p + 1 + 1) → ℂ) → Prop :=
+fun {n p : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) (w : Fin (p + 1 + 1) → ℂ) =>
+  let R := MvPolynomial (Fin (p + 1)) ℂ;
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let J :=
+    Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+  let Q := MvPolynomial (Fin n) ℂ ⧸ J;
+  have phi := LinearStudy.projectivePulledCutEquationMap f V L w;
+  let D := (ModuleCat.coextendScalars (algebraMap R B)).obj ↧R;
+  let Dq := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj ↧ℂ;
+  have H := fun (i : Fin (p + 1)) =>
+    (Ideal.Quotient.mk V.affineIdeal)
+      (LinearStudy.affineChartPolynomialMap
+        ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+  have I := Ideal.span (Set.range H);
+  let T := (ModuleCat.restrictScalars (LinearStudy.projectivePulledCutOriginalRingMap f V L w).toRingHom).obj Dq;
+  LinearStudy.koszulExactTopExtOriginalTwoValuesStatement p H D (↑T) (MvPolynomial (Fin n) ℂ)
+    (fun (ell : ↑D) (P : MvPolynomial (Fin n) ℂ) (z : ↑T) =>
+      ((ModuleCat.CoextendScalars.equiv (algebraMap ℂ Q) ↧ℂ)
+            (have this := z;
+            this))
+          ((Ideal.Quotient.mk J) P) =
+        (algebraMap R ℂ)
+          ((LinearStudy.coextensionOriginalDualEquiv
+              (have this := ell;
+              this))
+            ((Ideal.Quotient.mk V.affineIdeal) P)))
+    fun (ell : ↑D) (z : ↑T) =>
+    ((ModuleCat.CoextendScalars.equiv (algebraMap ℂ Q) ↧ℂ)
+          (have this := z;
+          this))
+        1 =
+      (algebraMap R ℂ)
+        ((LinearStudy.coextensionOriginalDualEquiv
+            (have this := ell;
+            this))
+          1)
+def LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement.{u} : {R S : CommRingCat} →
+  (phi : R ⟶ S) →
+    (p : ℕ) →
+      (Fin (p + 1) → ↑R) →
+        (N : ModuleCat ↑R) →
+          (M : ModuleCat ↑S) →
+            (U : Type u) →
+              (↑N → U → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop) →
+                (↑N → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop) → Prop :=
+fun {R S : CommRingCat} (phi : R ⟶ S) (p : ℕ) (H : Fin (p + 1) → ↑R) (N : ModuleCat ↑R) (M : ModuleCat ↑S) (U : Type u)
+    (P : ↑N → U → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop)
+    (P0 : ↑N → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop) =>
+  ∃ (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) (e :
+    AlgebraicGeometry.tilde ↧(CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N (p + 1)) ≅
+      (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).obj (AlgebraicGeometry.tilde M)),
+    (∀ (a : ↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)) →ₗ[↑R] ↑N) (v : U),
+        P (a (LinearStudy.topKoszulGenerator (p + 1))) v
+          (LinearStudy.tildePushforwardOriginalGlobalValue phi M
+            (↧(CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N (p + 1))) e
+            (LinearStudy.koszulExactTopExtCoefficientRepresentative p H he N a))) ∧
+      ∀ (a : ↥(⋀[↑R]^(p + 1) (Fin (p + 1) → ↑R)) →ₗ[↑R] ↑N),
+        P0 (a (LinearStudy.topKoszulGenerator (p + 1)))
+          (LinearStudy.tildePushforwardOriginalGlobalValue phi M
+            (↧(CategoryTheory.Abelian.Ext (↧(↑R ⧸ Ideal.span (Set.range H))) N (p + 1))) e
+            (LinearStudy.koszulExactTopExtCoefficientRepresentative p H he N a))
+def LinearStudy.projectivePulledCutEquationCoefficientModuleExtSheafDualStatement : {n p : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) → (Fin (p + 1 + 1) → ℂ) → Prop :=
+fun {n p : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) (w : Fin (p + 1 + 1) → ℂ) =>
+  let R := MvPolynomial (Fin (p + 1)) ℂ;
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let J :=
+    Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+  let Q := MvPolynomial (Fin n) ℂ ⧸ J;
+  have phi := LinearStudy.projectivePulledCutEquationMap f V L w;
+  let D := (ModuleCat.coextendScalars (algebraMap R B)).obj ↧R;
+  let Dq := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj ↧ℂ;
+  have H := fun (i : Fin (p + 1)) =>
+    (Ideal.Quotient.mk V.affineIdeal)
+      (LinearStudy.affineChartPolynomialMap
+        ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+  have I := Ideal.span (Set.range H);
+  have T := (ModuleCat.restrictScalars (LinearStudy.projectivePulledCutOriginalRingMap f V L w).toRingHom).obj Dq;
+  LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement
+    (CommRingCat.ofHom (LinearStudy.projectivePulledCutOriginalRingMap f V L w).toRingHom) p H D Dq
+    (MvPolynomial (Fin n) ℂ)
+    (fun (ell : ↑D) (P : MvPolynomial (Fin n) ℂ)
+        (z :
+          ↑((ModuleCat.restrictScalars
+                  (CommRingCat.Hom.hom
+                    (CommRingCat.ofHom (LinearStudy.projectivePulledCutOriginalRingMap f V L w).toRingHom))).obj
+              Dq)) =>
+      ((ModuleCat.CoextendScalars.equiv (algebraMap ℂ Q) ↧ℂ)
+            (have this := z;
+            this))
+          ((Ideal.Quotient.mk J) P) =
+        (algebraMap R ℂ)
+          ((LinearStudy.coextensionOriginalDualEquiv
+              (have this := ell;
+              this))
+            ((Ideal.Quotient.mk V.affineIdeal) P)))
+    fun (ell : ↑D)
+      (z :
+        ↑((ModuleCat.restrictScalars
+                (CommRingCat.Hom.hom
+                  (CommRingCat.ofHom (LinearStudy.projectivePulledCutOriginalRingMap f V L w).toRingHom))).obj
+            Dq)) =>
+    ((ModuleCat.CoextendScalars.equiv (algebraMap ℂ Q) ↧ℂ)
+          (have this := z;
+          this))
+        1 =
+      (algebraMap R ℂ)
+        ((LinearStudy.coextensionOriginalDualEquiv
+            (have this := ell;
+            this))
+          1)
+ROLECHECK:LinearStudy.tildePushforwardOriginalGlobalValue:false
+KINDCHECK:LinearStudy.tildePushforwardOriginalGlobalValue:definition
+ROLECHECK:LinearStudy.tildePushforwardMappedIso_globalValue:true
+KINDCHECK:LinearStudy.tildePushforwardMappedIso_globalValue:theorem
+ROLECHECK:LinearStudy.tildePushforwardOriginalGlobalValue_mappedIso:true
+KINDCHECK:LinearStudy.tildePushforwardOriginalGlobalValue_mappedIso:theorem
+ROLECHECK:LinearStudy.tildePushforwardLinearEquivIso:false
+KINDCHECK:LinearStudy.tildePushforwardLinearEquivIso:definition
+ROLECHECK:LinearStudy.tildePushforwardLinearEquivIso_globalValue:true
+KINDCHECK:LinearStudy.tildePushforwardLinearEquivIso_globalValue:theorem
+ROLECHECK:LinearStudy.tildePushforward_existsOriginalValues:true
+KINDCHECK:LinearStudy.tildePushforward_existsOriginalValues:theorem
+ROLECHECK:LinearStudy.tildePushforward_existsOriginalTwoValues:true
+KINDCHECK:LinearStudy.tildePushforward_existsOriginalTwoValues:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquationCoefficientSheafDualStatement:false
+KINDCHECK:LinearStudy.projectivePulledCutEquationCoefficientSheafDualStatement:definition
+ROLECHECK:LinearStudy.projectivePulledCutEquation_sheaf_dual_of_native_dual:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_sheaf_dual_of_native_dual:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_sheaf_dual_open:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_sheaf_dual_open:theorem
+ROLECHECK:LinearStudy.koszulExactTopExtOriginalCoefficientEquiv:false
+KINDCHECK:LinearStudy.koszulExactTopExtOriginalCoefficientEquiv:definition
+ROLECHECK:LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_representative:true
+KINDCHECK:LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_representative:theorem
+ROLECHECK:LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_pushGenerator:true
+KINDCHECK:LinearStudy.koszulExactTopExtOriginalCoefficientEquiv_pushGenerator:theorem
+ROLECHECK:LinearStudy.koszulExactTopExt_existsOriginalTwoValues:true
+KINDCHECK:LinearStudy.koszulExactTopExt_existsOriginalTwoValues:theorem
+ROLECHECK:LinearStudy.koszulExactTopExtOriginalTwoValuesStatement:false
+KINDCHECK:LinearStudy.koszulExactTopExtOriginalTwoValuesStatement:definition
+ROLECHECK:LinearStudy.koszulExactTopExtOriginalTwoValuesStatement_of_coefficient:true
+KINDCHECK:LinearStudy.koszulExactTopExtOriginalTwoValuesStatement_of_coefficient:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquationCoefficientModuleExtDualStatement:false
+KINDCHECK:LinearStudy.projectivePulledCutEquationCoefficientModuleExtDualStatement:definition
+ROLECHECK:LinearStudy.projectivePulledCutEquation_moduleExt_dual_of_native_dual:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_moduleExt_dual_of_native_dual:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_dual_open:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_dual_open:theorem
+ROLECHECK:LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement:false
+KINDCHECK:LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement:definition
+ROLECHECK:LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement_of_moduleExt:true
+KINDCHECK:LinearStudy.koszulExactTopExtOriginalTwoSheafValuesStatement_of_moduleExt:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquationCoefficientModuleExtSheafDualStatement:false
+KINDCHECK:LinearStudy.projectivePulledCutEquationCoefficientModuleExtSheafDualStatement:definition
+ROLECHECK:LinearStudy.projectivePulledCutEquation_moduleExt_sheaf_dual_of_moduleExt_dual:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_moduleExt_sheaf_dual_of_moduleExt_dual:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_sheaf_dual_open:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_sheaf_dual_open:theorem

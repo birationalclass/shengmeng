@@ -1,0 +1,583 @@
+SOURCE D:\codex\Math\formalization\linear\Linear\TildePushforwardMappedUnitValues.lean SHA256 97077f0818274ce12df3d6830dbfe9524d3ed60e145d382836bc218a339c9da2
+module
+public import Linear.TildePushforwardUnitValues
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u
+attribute [local irreducible] tildePushforwardGlobalIso tildePushforwardIso
+/-- The ACTUAL original-element global-section comparison for an ACTUAL
+associated-sheaf/pushforward iso. Named to keep deep concrete coefficient
+elaboration and kernel checking bounded;no compatibility is assumed. -/
+def tildePushforwardOriginalGlobalValue {R S : CommRingCat.{u}}
+    (phi : R ⟶ S) (M : ModuleCat.{u} S) (N : ModuleCat.{u} R)
+    (e : tilde N ≅ (Scheme.Modules.pushforward (Spec.map phi)).obj (tilde M))
+    (n : N) : (ModuleCat.restrictScalars phi.hom).obj M :=
+  (tildePushforwardGlobalIso phi M).hom
+    ((moduleSpecΓFunctor (R:=R)).map e.hom ((tilde.adjunction (R:=R)).unit.app N n))
+/-- Transport an ACTUAL original module isomorphism through the ACTUAL
+tilde-pushforward isomorphism. Every ORIGINAL element retains its value
+under the ACTUAL global-section comparison;the square is PROVED. -/
+theorem tildePushforwardMappedIso_globalValue {R S : CommRingCat.{u}}
+    (phi : R ⟶ S) (M : ModuleCat.{u} S) (N : ModuleCat.{u} R)
+    (e : N ≅ (ModuleCat.restrictScalars phi.hom).obj M) (n : N) :
+    (tildePushforwardGlobalIso phi M).hom
+      ((moduleSpecΓFunctor (R:=R)).map
+        (((tilde.functor R).mapIso e) ≪≫ tildePushforwardIso phi M).hom
+          ((tilde.adjunction (R:=R)).unit.app N n))=e.hom n := by
+  have hn := congrArg (fun f => f.hom n)
+    ((tilde.adjunction (R:=R)).unit.naturality e.hom)
+  change (tilde.adjunction (R:=R)).unit.app
+      ((ModuleCat.restrictScalars phi.hom).obj M) (e.hom n)=
+    (moduleSpecΓFunctor (R:=R)).map ((tilde.functor R).map e.hom)
+      ((tilde.adjunction (R:=R)).unit.app N n) at hn
+  have hr := tildePushforwardIso_globalValue phi M (e.hom n)
+  simp only [Iso.trans_hom,Functor.mapIso_hom,Functor.map_comp,ModuleCat.comp_apply]
+  exact (congrArg (fun x => (tildePushforwardGlobalIso phi M).hom
+    ((moduleSpecΓFunctor (R:=R)).map (tildePushforwardIso phi M).hom x)) hn.symm).trans hr
+/-- The named ACTUAL comparison retains each ORIGINAL element after
+mapping the ORIGINAL module iso and applying ACTUAL tilde pushforward. -/
+theorem tildePushforwardOriginalGlobalValue_mappedIso {R S : CommRingCat.{u}}
+    (phi : R ⟶ S) (M : ModuleCat.{u} S) (N : ModuleCat.{u} R)
+    (e : N ≅ (ModuleCat.restrictScalars phi.hom).obj M) (n : N) :
+    tildePushforwardOriginalGlobalValue phi M N
+      (((tilde.functor R).mapIso e) ≪≫ tildePushforwardIso phi M) n=e.hom n :=
+  tildePushforwardMappedIso_globalValue phi M N e n
+/-- Actual associated-sheaf iso from the ORIGINAL base-linear equivalence,
+followed by ACTUAL original affine pushforward. -/
+def tildePushforwardLinearEquivIso {R S : CommRingCat.{u}}
+    (phi : R ⟶ S) (M : ModuleCat.{u} S) (N : ModuleCat.{u} R)
+    (F : N ≃ₗ[R] (ModuleCat.restrictScalars phi.hom).obj M) :
+    tilde N ≅ (Scheme.Modules.pushforward (Spec.map phi)).obj (tilde M) :=
+  (tilde.functor R).mapIso F.toModuleIso ≪≫ tildePushforwardIso phi M
+/-- Keep conversion from linear equivalences to categorical isos inside
+the generic proof,so deep concrete native coefficient types need no large
+kernel reduction. The original value is EXACTLY F n. -/
+theorem tildePushforwardLinearEquivIso_globalValue {R S : CommRingCat.{u}}
+    (phi : R ⟶ S) (M : ModuleCat.{u} S) (N : ModuleCat.{u} R)
+    (F : N ≃ₗ[R] (ModuleCat.restrictScalars phi.hom).obj M) (n : N) :
+    tildePushforwardOriginalGlobalValue phi M N
+      (tildePushforwardLinearEquivIso phi M N F) n=F n :=
+  tildePushforwardOriginalGlobalValue_mappedIso phi M N F.toModuleIso n
+/-- Prove original-value preservation once at generic native module types.
+The predicate may include EVERY original polynomial value and literal
+unit trace. No value equality or sheaf iso is assumed in the conclusion. -/
+theorem tildePushforward_existsOriginalValues {R S : CommRingCat.{u}}
+    (phi : R ⟶ S) (M : ModuleCat.{u} S) (N : ModuleCat.{u} R)
+    (T : Type u) (q : T → N)
+    (P : T → (ModuleCat.restrictScalars phi.hom).obj M → Prop)
+    (h : ∃ F : N ≃ₗ[R] (ModuleCat.restrictScalars phi.hom).obj M,
+      ∀ t,P t (F (q t))) :
+    ∃ e : tilde N ≅ (Scheme.Modules.pushforward (Spec.map phi)).obj (tilde M),
+      ∀ t,P t (tildePushforwardOriginalGlobalValue phi M N e (q t)) := by
+  obtain ⟨F,hF⟩ := h
+  refine ⟨tildePushforwardLinearEquivIso phi M N F,?_⟩
+  intro t
+  rw [tildePushforwardLinearEquivIso_globalValue]
+  exact hF t
+/-- Preserve two original value families through the actual sheaf comparison.
+Keeping the existential and conjunction shape identical avoids opening large
+concrete native coefficient terms in specialized kernel proofs. -/
+theorem tildePushforward_existsOriginalTwoValues {R S : CommRingCat.{u}}
+    (phi : R ⟶ S) (M : ModuleCat.{u} S) (N : ModuleCat.{u} R)
+    (T U : Type u) (q : T → N)
+    (P : T → U → (ModuleCat.restrictScalars phi.hom).obj M → Prop)
+    (P0 : T → (ModuleCat.restrictScalars phi.hom).obj M → Prop)
+    (h : ∃ F : N ≃ₗ[R] (ModuleCat.restrictScalars phi.hom).obj M,
+      (∀ t v,P t v (F (q t))) ∧ ∀ t,P0 t (F (q t))) :
+    ∃ e : tilde N ≅ (Scheme.Modules.pushforward (Spec.map phi)).obj (tilde M),
+      (∀ t v,P t v (tildePushforwardOriginalGlobalValue phi M N e (q t))) ∧
+      ∀ t,P0 t (tildePushforwardOriginalGlobalValue phi M N e (q t)) := by
+  obtain ⟨F,hP,hP0⟩ := h
+  refine ⟨tildePushforwardLinearEquivIso phi M N F,?_,?_⟩
+  · intro t v
+    rw [tildePushforwardLinearEquivIso_globalValue]
+    exact hP t v
+  · intro t
+    rw [tildePushforwardLinearEquivIso_globalValue]
+    exact hP0 t
+end LinearStudy
+
+SOURCE D:\codex\Math\formalization\linear\Linear\OriginalCutEquationCoefficientSheafDual.lean SHA256 68cd3e9d1e1c2910027006a91e49b0719ed8c029abb67afb64e3e421f56aaccd
+module
+public import Linear.OriginalCutEquationCoefficientNativeDual
+public import Linear.TildePushforwardMappedUnitValues
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory TensorProduct
+attribute [local instance] MvPolynomial.gradedAlgebra
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+/-- ACTUAL original coefficient quotient sheaf is isomorphic to the ACTUAL
+pushforward of the native dual on SAME original cut. Every original global
+coefficient/polynomial value and literal eval1 must agree. Statement only,
+not a proof. FIXED normalization and SAME geometric top-H remain OPEN. -/
+def projectivePulledCutEquationCoefficientSheafDualStatement {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ) : Prop :=
+    let R := MvPolynomial (Fin r) ℂ
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+    let J := (projectivePulledLinearSectionIdeal f V L w).map
+      (affineChartPolynomialMap (K:=ℂ)).toRingHom
+    let Q := MvPolynomial (Fin n) ℂ ⧸ J
+    let phi := projectivePulledCutEquationMap f V L w
+    letI : Algebra R B := phi.toRingHom.toAlgebra
+    letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+    letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+    letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom.toAlgebra
+    let D := (ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R)
+    let Dq := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj (ModuleCat.of ℂ ℂ)
+    let I := Ideal.span (Set.range (fun i : Fin r => Ideal.Quotient.mk V.affineIdeal
+      (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))))
+    let Bc := CommRingCat.of B
+    let Qc := CommRingCat.of Q
+    let beta : Bc ⟶ Qc := CommRingCat.ofHom (projectivePulledCutOriginalRingMap f V L w).toRingHom
+    let M : ModuleCat Bc := ModuleCat.of B (D ⧸ (I • (⊤ : Submodule B D)))
+    ∃ e : tilde M ≅ (Scheme.Modules.pushforward (Spec.map beta)).obj (tilde Dq),
+      (∀ (ell : D) (P : MvPolynomial (Fin n) ℂ),
+        (show Dq from tildePushforwardOriginalGlobalValue beta Dq M e
+          (Submodule.Quotient.mk (p:=I • (⊤ : Submodule B D)) ell))
+          (Ideal.Quotient.mk J P)=
+            algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+              (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell))
+                (Ideal.Quotient.mk V.affineIdeal P))) ∧
+      (∀ (ell : D),
+        (show Dq from tildePushforwardOriginalGlobalValue beta Dq M e
+          (Submodule.Quotient.mk (p:=I • (⊤ : Submodule B D)) ell)) (1:Q)=
+          algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+            (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell)) 1))
+/-- ACTUAL B-linear native coefficient duality DERIVES the actual sheaf
+isomorphism and its original-value/global-section square. The comparison
+map is the mapped original module iso followed by actual tilde pushforward. -/
+theorem projectivePulledCutEquation_sheaf_dual_of_native_dual {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ)
+    (hdual : projectivePulledCutEquationCoefficientNativeDualStatement f V L w) :
+    projectivePulledCutEquationCoefficientSheafDualStatement f V L w := by
+  let R := MvPolynomial (Fin r) ℂ
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+  let J := (projectivePulledLinearSectionIdeal f V L w).map
+    (affineChartPolynomialMap (K:=ℂ)).toRingHom
+  let Q := MvPolynomial (Fin n) ℂ ⧸ J
+  let phi := projectivePulledCutEquationMap f V L w
+  letI : Algebra R B := phi.toRingHom.toAlgebra
+  letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+  letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+  letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom.toAlgebra
+  let D := (ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R)
+  let Dq := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj (ModuleCat.of ℂ ℂ)
+  let I := Ideal.span (Set.range (fun i : Fin r => Ideal.Quotient.mk V.affineIdeal
+    (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))))
+  let Bc := CommRingCat.of B
+  let Qc := CommRingCat.of Q
+  let beta : Bc ⟶ Qc := CommRingCat.ofHom (projectivePulledCutOriginalRingMap f V L w).toRingHom
+  let M : ModuleCat Bc := ModuleCat.of B (D ⧸ (I • (⊤ : Submodule B D)))
+  exact tildePushforward_existsOriginalTwoValues beta Dq M D
+    (MvPolynomial (Fin n) ℂ)
+    (fun ell => Submodule.Quotient.mk (p:=I • (⊤ : Submodule B D)) ell)
+    (fun ell P z => (show Dq from z) (Ideal.Quotient.mk J P)=
+      algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+        (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell))
+          (Ideal.Quotient.mk V.affineIdeal P)))
+    (fun ell z => (show Dq from z) (1:Q)=algebraMap R ℂ
+      ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+        (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell)) 1)) hdual
+/-- Full ORIGINAL Setup DERIVES actual native cut-dual sheaf comparison
+on SAME original open,including every original coefficient value and
+literal eval1 square. No comparison iso or global free/flat/CM input. -/
+theorem projectivePulledCutEquation_originalSetup_exists_coefficient_sheaf_dual_open {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n) (hrn : r < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+    (hV : f.onPoints ⁻¹' V.zeroSet=V.zeroSet)
+    (L : Fin (r+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+    (hfinite : (projectiveLinearNormalizationMap V L).Finite)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet) :
+    ∃ c : MvPolynomial (Fin (r+1)) ℂ,c ≠ 0 ∧
+      (∃ w : Fin (r+1) → ℂ,MvPolynomial.eval w c ≠ 0) ∧
+      ∀ w : Fin (r+1) → ℂ,MvPolynomial.eval w c ≠ 0 →
+        (projectivePulledCutEquationMap f V L w).toRingHom.Finite ∧
+        projectivePulledCutEquationCoefficientSheafDualStatement f V L w := by
+  obtain ⟨c,hc,hex,hcprop⟩ := projectivePulledCutEquation_originalSetup_exists_native_coefficient_dual_open
+    f V hrn hq hf hV L hL hinj hfinite x0 hx0
+  refine ⟨c,hc,hex,?_⟩
+  intro w hw
+  exact ⟨(hcprop w hw).1,projectivePulledCutEquation_sheaf_dual_of_native_dual
+    f V L w (hcprop w hw).2⟩
+end LinearStudy
+
+SOURCE D:\codex\Math\formalization\linear\Linear\KoszulNativeCoextensionOriginalValues.lean SHA256 9834513964c5ebdea2503428e20a11988e9eae51a3f5c156d91db12638dad7e5
+module
+public import Linear.KoszulExactTopExtCoefficientRestriction
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Abelian
+universe u
+variable {R : Type u} [CommRing R] (p : ℕ) (H : Fin (p+1) → R)
+variable (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j)
+variable (N : ModuleCat.{u} R) (T : Type u) [AddCommGroup T] [Module R T]
+/-- The ACTUAL derived MODULE Ext comparison uses the SAME original
+Koszul restriction equivalence,followed by the original coefficient dual.
+No derived SHEAF Ext or original geometric top-H comparison is asserted. -/
+def koszulExactTopExtOriginalCoefficientEquiv
+    (F : (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N))) ≃ₗ[R] T) :
+    Ext.{u} (ModuleCat.of R (R ⧸ Ideal.span (Set.range H))) N (p+1) ≃ₗ[R] T :=
+  (koszulExactTopExtCoefficientRestrictionEquiv p H he N).trans F
+/-- Every ORIGINAL ordered-top representative is evaluated on the SAME
+ordered top generator before taking the SAME coefficient quotient. -/
+theorem koszulExactTopExtOriginalCoefficientEquiv_representative
+    (F : (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N))) ≃ₗ[R] T)
+    (L : (⋀[R]^(p+1) (Fin (p+1) → R)) →ₗ[R] N) :
+    koszulExactTopExtOriginalCoefficientEquiv p H he N T F
+      (koszulExactTopExtCoefficientRepresentative p H he N L)=
+        F (Submodule.Quotient.mk (L (topKoszulGenerator (p+1)))) := by
+  change F (koszulExactTopExtCoefficientRestrictionEquiv p H he N _)=_
+  rw [koszulExactTopExtCoefficientRestrictionEquiv_representative]
+/-- The SAME actual ordered-top Ext generator pushed by original a is
+sent to the original coefficient a(1),with no replacement functional. -/
+theorem koszulExactTopExtOriginalCoefficientEquiv_pushGenerator
+    (F : (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N))) ≃ₗ[R] T)
+    (a : R →ₗ[R] N) :
+    koszulExactTopExtOriginalCoefficientEquiv p H he N T F
+      ((koszulExactTopExtCoefficientRepresentative p H he (ModuleCat.of R R)
+        (topKoszulCoordinate (p+1))).comp
+          (Ext.mk₀ (ModuleCat.ofHom a)) (add_zero _))=
+        F (Submodule.Quotient.mk (a 1)) := by
+  change F (koszulExactTopExtCoefficientRestrictionEquiv p H he N _)=_
+  rw [koszulExactTopExtCoefficientRestrictionEquiv_pushGenerator]
+/-- Preserve the original two value families through the ACTUAL derived
+MODULE Ext comparison. This generic proof keeps specialized native
+coextension kernel reductions bounded without increasing any budget. -/
+theorem koszulExactTopExt_existsOriginalTwoValues (U : Type u)
+    (P : N → U → T → Prop) (P0 : N → T → Prop)
+    (h : ∃ F : (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N))) ≃ₗ[R] T,
+      (∀ x v,P x v (F (Submodule.Quotient.mk x))) ∧
+        ∀ x,P0 x (F (Submodule.Quotient.mk x))) :
+    ∃ G : Ext.{u} (ModuleCat.of R (R ⧸ Ideal.span (Set.range H))) N (p+1) ≃ₗ[R] T,
+      (∀ (L : (⋀[R]^(p+1) (Fin (p+1) → R)) →ₗ[R] N) v,
+        P (L (topKoszulGenerator (p+1))) v
+          (G (koszulExactTopExtCoefficientRepresentative p H he N L))) ∧
+      ∀ L,P0 (L (topKoszulGenerator (p+1)))
+        (G (koszulExactTopExtCoefficientRepresentative p H he N L)) := by
+  obtain ⟨F,hP,hP0⟩ := h
+  refine ⟨koszulExactTopExtOriginalCoefficientEquiv p H he N T F,?_,?_⟩
+  · intro L v
+    rw [koszulExactTopExtOriginalCoefficientEquiv_representative]
+    exact hP _ v
+  · intro L
+    rw [koszulExactTopExtOriginalCoefficientEquiv_representative]
+    exact hP0 _
+/-- Actual exactness witness and actual MODULE Ext values,kept at generic
+coefficient types so specialized kernel checks do not reconstruct deep
+Ext category instances. Statement only,not an extra duality premise. -/
+def koszulExactTopExtOriginalTwoValuesStatement (U : Type u)
+    (P : N → U → T → Prop) (P0 : N → T → Prop) : Prop :=
+  ∃ hx : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j,
+    ∃ G : Ext.{u} (ModuleCat.of R (R ⧸ Ideal.span (Set.range H))) N (p+1) ≃ₗ[R] T,
+      (∀ (L : (⋀[R]^(p+1) (Fin (p+1) → R)) →ₗ[R] N) v,
+        P (L (topKoszulGenerator (p+1))) v
+          (G (koszulExactTopExtCoefficientRepresentative p H hx N L))) ∧
+      ∀ L,P0 (L (topKoszulGenerator (p+1)))
+        (G (koszulExactTopExtCoefficientRepresentative p H hx N L))
+include he
+/-- Derive actual Ext and exactness together without expanding concrete
+native modules in an existential-constructor kernel conversion. -/
+theorem koszulExactTopExtOriginalTwoValuesStatement_of_coefficient (U : Type u)
+    (P : N → U → T → Prop) (P0 : N → T → Prop)
+    (h : ∃ F : (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N))) ≃ₗ[R] T,
+      (∀ x v,P x v (F (Submodule.Quotient.mk x))) ∧
+        ∀ x,P0 x (F (Submodule.Quotient.mk x))) :
+    koszulExactTopExtOriginalTwoValuesStatement p H N T U P P0 :=
+  ⟨he,koszulExactTopExt_existsOriginalTwoValues p H he N T U P P0 h⟩
+end LinearStudy
+
+SOURCE D:\codex\Math\formalization\linear\Linear\OriginalCutEquationCoefficientModuleExtDual.lean SHA256 60a72ef123cdbba9840be7b47890f73241db14e90f1efa11da23889b759c847f
+module
+public import Linear.OriginalCutEquationCoefficientNativeDual
+public import Linear.KoszulNativeCoextensionOriginalValues
+public import Linear.ProjectiveCutAffineKoszul
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian
+attribute [local instance] MvPolynomial.gradedAlgebra
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+/-- ACTUAL derived MODULE Ext for the SAME original ordered cut maps to
+native coextension on the SAME cut ring. Every original top functional
+and polynomial value,including literal eval1,are retained. Statement only;
+not derived SHEAF Ext,fixed original C_L or SAME geometric top-H. -/
+def projectivePulledCutEquationCoefficientModuleExtDualStatement {n p : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (w : Fin ((p+1)+1) → ℂ) : Prop :=
+    let R := MvPolynomial (Fin (p+1)) ℂ
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+    let J := (projectivePulledLinearSectionIdeal f V L w).map
+      (affineChartPolynomialMap (K:=ℂ)).toRingHom
+    let Q := MvPolynomial (Fin n) ℂ ⧸ J
+    let phi := projectivePulledCutEquationMap f V L w
+    letI : Algebra R B := phi.toRingHom.toAlgebra
+    letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+    letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+    letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin (p+1) → ℂ)).toRingHom.toAlgebra
+    let D := (ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R)
+    let Dq := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj (ModuleCat.of ℂ ℂ)
+    let H : Fin (p+1) → B := fun i => Ideal.Quotient.mk V.affineIdeal
+      (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))
+    let I := Ideal.span (Set.range H)
+    let T := (ModuleCat.restrictScalars
+      (projectivePulledCutOriginalRingMap f V L w).toRingHom).obj Dq
+    koszulExactTopExtOriginalTwoValuesStatement p H D T (MvPolynomial (Fin n) ℂ)
+      (fun ell P z => (show Dq from z) (Ideal.Quotient.mk J P)=
+        algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+          (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell))
+            (Ideal.Quotient.mk V.affineIdeal P)))
+      (fun ell z => (show Dq from z) (1:Q)=algebraMap R ℂ
+        ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+          (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell)) 1))
+/-- The ACTUAL original native coefficient quotient duality and SAME
+source Koszul exactness DERIVE the actual MODULE Ext/value comparison. -/
+theorem projectivePulledCutEquation_moduleExt_dual_of_native_dual {n p : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (w : Fin ((p+1)+1) → ℂ)
+    (he : let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+      let H : Fin (p+1) → B := fun i => Ideal.Quotient.mk V.affineIdeal
+        (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))
+      ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination B H)).ExactAt j)
+    (hdual : projectivePulledCutEquationCoefficientNativeDualStatement f V L w) :
+    projectivePulledCutEquationCoefficientModuleExtDualStatement f V L w := by
+  let R := MvPolynomial (Fin (p+1)) ℂ
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+  let J := (projectivePulledLinearSectionIdeal f V L w).map
+    (affineChartPolynomialMap (K:=ℂ)).toRingHom
+  let Q := MvPolynomial (Fin n) ℂ ⧸ J
+  let phi := projectivePulledCutEquationMap f V L w
+  letI : Algebra R B := phi.toRingHom.toAlgebra
+  letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+  letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+  letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin (p+1) → ℂ)).toRingHom.toAlgebra
+  let D := (ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R)
+  let Dq := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj (ModuleCat.of ℂ ℂ)
+  let H : Fin (p+1) → B := fun i => Ideal.Quotient.mk V.affineIdeal
+    (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))
+  let I := Ideal.span (Set.range H)
+  let T := (ModuleCat.restrictScalars
+    (projectivePulledCutOriginalRingMap f V L w).toRingHom).obj Dq
+  exact koszulExactTopExtOriginalTwoValuesStatement_of_coefficient p H he D T (MvPolynomial (Fin n) ℂ)
+    (fun ell P z => (show Dq from z) (Ideal.Quotient.mk J P)=
+      algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+        (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell))
+          (Ideal.Quotient.mk V.affineIdeal P)))
+    (fun ell z => (show Dq from z) (1:Q)=algebraMap R ℂ
+      ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+        (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell)) 1)) hdual
+/-- FULL original Setup DERIVES the SAME nonempty open with actual source
+exactness and actual native MODULE Ext duality,for original positive rank
+r=p+1. No coefficient dual or exactness premise is added to Setup. -/
+theorem projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_dual_open {n p : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n) (hrn : p+1 < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+    (hV : f.onPoints ⁻¹' V.zeroSet=V.zeroSet)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+    (hfinite : (projectiveLinearNormalizationMap V L).Finite)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet) :
+    ∃ c : MvPolynomial (Fin ((p+1)+1)) ℂ,c ≠ 0 ∧
+      (∃ w : Fin ((p+1)+1) → ℂ,MvPolynomial.eval w c ≠ 0) ∧
+      ∀ w : Fin ((p+1)+1) → ℂ,MvPolynomial.eval w c ≠ 0 →
+        (projectivePulledCutEquationMap f V L w).toRingHom.Finite ∧
+        projectivePulledCutEquationCoefficientModuleExtDualStatement f V L w := by
+  obtain ⟨a,ha,_,hdual⟩ := projectivePulledCutEquation_originalSetup_exists_native_coefficient_dual_open
+    f V hrn hq hf hV L hL hinj hfinite x0 hx0
+  obtain ⟨b,hb,_,hexact⟩ := projectivePulledLinearSection_exists_affineKoszul_exactAt f V
+    (chosenProjectiveNormalization_definingIdeal_ne_bot V L hinj hfinite hrn)
+    hq hf hV L hL hinj hfinite
+    (chosenProjectiveNormalization_chart_dimension V L hinj hfinite x0 hx0) x0 hx0
+  have hc : a*b ≠ 0 := mul_ne_zero ha hb
+  have hnonempty : ∃ w : Fin ((p+1)+1) → ℂ,MvPolynomial.eval w (a*b) ≠ 0 := by
+    by_contra h
+    push Not at h
+    exact hc (MvPolynomial.funext (fun w => by simpa using h w))
+  refine ⟨a*b,hc,hnonempty,?_⟩
+  intro w hw
+  obtain ⟨hwa,hwb⟩ := mul_ne_zero_iff.mp (by simpa only [MvPolynomial.eval_mul] using hw)
+  obtain ⟨_,_,_,_,_,he⟩ := hexact w hwb
+  exact ⟨(hdual w hwa).1,projectivePulledCutEquation_moduleExt_dual_of_native_dual
+    f V L w he (hdual w hwa).2⟩
+end LinearStudy
+
+SOURCE D:\codex\Math\formalization\linear\Linear\KoszulOriginalModuleExtSheafValues.lean SHA256 221a2233eaff9d73ccb86ff98189fc33ed1a70e2bd3874812aa4af5ab7fcb1e1
+module
+public import Linear.KoszulNativeCoextensionOriginalValues
+public import Linear.TildePushforwardMappedUnitValues
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian
+universe u
+/-- ACTUAL associated sheaf of derived MODULE Ext,ACTUAL original cut
+pushforward and ACTUAL original representative/global-section values.
+This is deliberately not an identification with derived SHEAF Ext. -/
+def koszulExactTopExtOriginalTwoSheafValuesStatement {R S : CommRingCat.{u}}
+    (phi : R ⟶ S) (p : ℕ) (H : Fin (p+1) → R)
+    (N : ModuleCat.{u} R) (M : ModuleCat.{u} S) (U : Type u)
+    (P : N → U → (ModuleCat.restrictScalars phi.hom).obj M → Prop)
+    (P0 : N → (ModuleCat.restrictScalars phi.hom).obj M → Prop) : Prop :=
+  ∃ he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j,
+    ∃ e : tilde (ModuleCat.of R
+        (Ext.{u} (ModuleCat.of R (R ⧸ Ideal.span (Set.range H))) N (p+1))) ≅
+          (Scheme.Modules.pushforward (Spec.map phi)).obj (tilde M),
+      (∀ (a : (⋀[R]^(p+1) (Fin (p+1) → R)) →ₗ[R] N) v,
+        P (a (topKoszulGenerator (p+1))) v
+          (tildePushforwardOriginalGlobalValue phi M (ModuleCat.of R
+            (Ext.{u} (ModuleCat.of R (R ⧸ Ideal.span (Set.range H))) N (p+1))) e
+              (koszulExactTopExtCoefficientRepresentative p H he N a))) ∧
+      ∀ a,P0 (a (topKoszulGenerator (p+1)))
+        (tildePushforwardOriginalGlobalValue phi M (ModuleCat.of R
+          (Ext.{u} (ModuleCat.of R (R ⧸ Ideal.span (Set.range H))) N (p+1))) e
+            (koszulExactTopExtCoefficientRepresentative p H he N a))
+/-- The ACTUAL native MODULE Ext equivalence gives the actual sheaf iso
+and original global-section square. No sheaf comparison or value square
+is supplied as a new assumption. -/
+theorem koszulExactTopExtOriginalTwoSheafValuesStatement_of_moduleExt
+    {R S : CommRingCat.{u}} (phi : R ⟶ S) (p : ℕ) (H : Fin (p+1) → R)
+    (N : ModuleCat.{u} R) (M : ModuleCat.{u} S) (U : Type u)
+    (P : N → U → (ModuleCat.restrictScalars phi.hom).obj M → Prop)
+    (P0 : N → (ModuleCat.restrictScalars phi.hom).obj M → Prop)
+    (h : koszulExactTopExtOriginalTwoValuesStatement p H N
+      ((ModuleCat.restrictScalars phi.hom).obj M) U P P0) :
+    koszulExactTopExtOriginalTwoSheafValuesStatement phi p H N M U P P0 := by
+  obtain ⟨he,hG⟩ := h
+  refine ⟨he,?_⟩
+  exact tildePushforward_existsOriginalTwoValues phi M
+    (ModuleCat.of R (Ext.{u} (ModuleCat.of R (R ⧸ Ideal.span (Set.range H))) N (p+1)))
+    ((⋀[R]^(p+1) (Fin (p+1) → R)) →ₗ[R] N) U
+    (fun a => koszulExactTopExtCoefficientRepresentative p H he N a)
+    (fun a v => P (a (topKoszulGenerator (p+1))) v)
+    (fun a => P0 (a (topKoszulGenerator (p+1)))) hG
+end LinearStudy
+
+SOURCE D:\codex\Math\formalization\linear\Linear\OriginalCutEquationCoefficientModuleExtSheafDual.lean SHA256 b3020e96907f2cd7a079cf84a0b294dfafe65e99ddc49925cd139d5f538f32b2
+module
+public import Linear.OriginalCutEquationCoefficientNativeDual
+public import Linear.KoszulOriginalModuleExtSheafValues
+public import Linear.OriginalCutEquationCoefficientModuleExtDual
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian
+attribute [local instance] MvPolynomial.gradedAlgebra
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+/-- ACTUAL associated sheaf of derived MODULE Ext for the SAME original
+ordered cut maps through actual pushforward/global sections to
+native coextension on the SAME cut ring. Every original top functional
+and polynomial value,including literal eval1,are retained. Statement only;
+not derived SHEAF Ext,fixed original C_L or SAME geometric top-H. -/
+def projectivePulledCutEquationCoefficientModuleExtSheafDualStatement {n p : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (w : Fin ((p+1)+1) → ℂ) : Prop :=
+    let R := MvPolynomial (Fin (p+1)) ℂ
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+    let J := (projectivePulledLinearSectionIdeal f V L w).map
+      (affineChartPolynomialMap (K:=ℂ)).toRingHom
+    let Q := MvPolynomial (Fin n) ℂ ⧸ J
+    let phi := projectivePulledCutEquationMap f V L w
+    letI : Algebra R B := phi.toRingHom.toAlgebra
+    letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+    letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+    letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin (p+1) → ℂ)).toRingHom.toAlgebra
+    let D := (ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R)
+    let Dq := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj (ModuleCat.of ℂ ℂ)
+    let H : Fin (p+1) → B := fun i => Ideal.Quotient.mk V.affineIdeal
+      (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))
+    let I := Ideal.span (Set.range H)
+    let T := (ModuleCat.restrictScalars
+      (projectivePulledCutOriginalRingMap f V L w).toRingHom).obj Dq
+    koszulExactTopExtOriginalTwoSheafValuesStatement
+      (CommRingCat.ofHom (projectivePulledCutOriginalRingMap f V L w).toRingHom) p H D Dq (MvPolynomial (Fin n) ℂ)
+      (fun ell P z => (show Dq from z) (Ideal.Quotient.mk J P)=
+        algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+          (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell))
+            (Ideal.Quotient.mk V.affineIdeal P)))
+      (fun ell z => (show Dq from z) (1:Q)=algebraMap R ℂ
+        ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+          (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell)) 1))
+/-- The SAME actual MODULE Ext comparison DERIVES its actual associated
+sheaf comparison and every original representative/global-section value. -/
+theorem projectivePulledCutEquation_moduleExt_sheaf_dual_of_moduleExt_dual {n p : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (w : Fin ((p+1)+1) → ℂ)
+    (hmodule : projectivePulledCutEquationCoefficientModuleExtDualStatement f V L w) :
+    projectivePulledCutEquationCoefficientModuleExtSheafDualStatement f V L w := by
+  let R := MvPolynomial (Fin (p+1)) ℂ
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+  let J := (projectivePulledLinearSectionIdeal f V L w).map
+    (affineChartPolynomialMap (K:=ℂ)).toRingHom
+  let Q := MvPolynomial (Fin n) ℂ ⧸ J
+  let phi := projectivePulledCutEquationMap f V L w
+  letI : Algebra R B := phi.toRingHom.toAlgebra
+  letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+  letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+  letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin (p+1) → ℂ)).toRingHom.toAlgebra
+  let D := (ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R)
+  let Dq := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj (ModuleCat.of ℂ ℂ)
+  let H : Fin (p+1) → B := fun i => Ideal.Quotient.mk V.affineIdeal
+    (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))
+  let I := Ideal.span (Set.range H)
+  let T := (ModuleCat.restrictScalars
+    (projectivePulledCutOriginalRingMap f V L w).toRingHom).obj Dq
+  exact koszulExactTopExtOriginalTwoSheafValuesStatement_of_moduleExt
+    (CommRingCat.ofHom (projectivePulledCutOriginalRingMap f V L w).toRingHom) p H D Dq (MvPolynomial (Fin n) ℂ)
+    (fun ell P z => (show Dq from z) (Ideal.Quotient.mk J P)=
+      algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+        (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell))
+          (Ideal.Quotient.mk V.affineIdeal P)))
+    (fun ell z => (show Dq from z) (1:Q)=algebraMap R ℂ
+      ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+        (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell)) 1)) hmodule
+/-- FULL original Setup DERIVES actual associated MODULE Ext sheaf/native
+cut duality and actual original global representative values on ONE
+nonempty original open. No SHEAF Ext or fixed C_L comparison is assumed. -/
+theorem projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_sheaf_dual_open {n p : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n) (hrn : p+1 < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+    (hV : f.onPoints ⁻¹' V.zeroSet=V.zeroSet)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+    (hfinite : (projectiveLinearNormalizationMap V L).Finite)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet) :
+    ∃ c : MvPolynomial (Fin ((p+1)+1)) ℂ,c ≠ 0 ∧
+      (∃ w : Fin ((p+1)+1) → ℂ,MvPolynomial.eval w c ≠ 0) ∧
+      ∀ w : Fin ((p+1)+1) → ℂ,MvPolynomial.eval w c ≠ 0 →
+        (projectivePulledCutEquationMap f V L w).toRingHom.Finite ∧
+        projectivePulledCutEquationCoefficientModuleExtSheafDualStatement f V L w := by
+  obtain ⟨c,hc,hex,hgood⟩ := projectivePulledCutEquation_originalSetup_exists_coefficient_moduleExt_dual_open
+    f V hrn hq hf hV L hL hinj hfinite x0 hx0
+  refine ⟨c,hc,hex,?_⟩
+  intro w hw
+  exact ⟨(hgood w hw).1,projectivePulledCutEquation_moduleExt_sheaf_dual_of_moduleExt_dual
+    f V L w (hgood w hw).2⟩
+end LinearStudy
