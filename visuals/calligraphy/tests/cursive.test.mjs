@@ -10,7 +10,7 @@ const original=globalThis.fetch;
 globalThis.fetch=async url=>String(url).startsWith('data/')?new Response(await fs.readFile(new URL('../'+url,import.meta.url))):original(url);
 
 test('cursive letters have authored continuous surfaces and an original comparison',async()=>{
- const glyph=await createTextGlyph('孟晟'),prior=await createTextGlyph('孟晟',{style:'original'}),model=prepareSpatialModel(glyph);
+ const glyph=await createTextGlyph('孟晟',{style:'cursive'}),prior=await createTextGlyph('孟晟',{style:'original'}),model=prepareSpatialModel(glyph);
  assert.equal(glyph.text,prior.text);assert.equal(glyph.modeling.cursive,2);
  assert.equal(prior.modeling.automatic,2);assert.equal(prior.modeling.cursive,0);
  assert.ok(model.parts.length<prior.strokes.length);
@@ -37,7 +37,7 @@ test('cursive letters have authored continuous surfaces and an original comparis
  assert.ok(Math.max(...depth)-Math.min(...depth)>.5,'The cursive loop travels through depth rather than remaining planar.');
 });
 test('style preserves code points and identifies fallback letters',async()=>{
- const glyph=await createTextGlyph('孟天晟山');
+ const glyph=await createTextGlyph('孟天晟山',{style:'cursive'});
  assert.equal(glyph.text,'孟天晟山');assert.equal(glyph.modeling.cursive,2);assert.equal(glyph.modeling.automatic,1);
  assert.deepEqual(glyph.charSources.map(s=>s.cursive),[true,false,true,false]);
  for(const [i,s] of glyph.strokes.entries())if(i)assert.ok(s.start>=glyph.strokes[i-1].end-1e-8);

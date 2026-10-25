@@ -26,6 +26,7 @@ function stroke(name,stations,start,end,options={}){
    phases:[[0,'承势落锋'],[.14,'按行铺面'],[.4,'回环转锋'],[.78,'承转连写'],[.96,'提锋出尖']]},...options};
 }
 const S=stroke;
+export {stroke as createBrushStroke};
 const meng=[S('子皿合势 · 一笔回环',[
  [242,181,0,-.28,-.22],[260,217,16,-.22,-.12],[300,230,24,-.12,.10],[338,213,25,.02,.20],
  [403,170,24,.16,.27],[476,126,23,.23,.15],[537,101,17,.21,-.05],[574,108,14,.16,-.22],
@@ -80,5 +81,5 @@ const sheng=[
 ];
 function compose(text,strokes,end){return {id:'cursive:'+text,text,kind:'rail',title:'回环',subtitle:'草书字势 · 连写曲面',detailLevel:'sculpted',cursive:true,strokes,
  duration:Math.ceil(end+2.7),writeStart:.06,writeEnd:end,frontalAt:end+1.4,
- source:{name:'流江毛草字势 · 本地三维重写',phrase:'以开放字体的整字草势为原型，重新设计运笔与立体笔面',url:'https://github.com/google/fonts/tree/main/ofl/liujianmaocao',image:'assets/cursive/'+text+'-prototype.png',caption:'二维原型：Liu Jian Mao Cao · SIL OFL 1.1',description:'原型字体依据刘正江书法。三维轨迹、笔宽、提按、截面翻转、前后关系与动画时序由本项目独立设计；未取得字体作者的原笔顺，也未取得参考视频模型。长回环由同一个闭合曲面连续写出，保留自然的断连。'}};}
+ source:{name:'流江毛草字势 · 本地三维重写',phrase:'以开放字体的整字草势为原型，重新设计运笔与立体笔面',url:'https://github.com/google/fonts/tree/main/ofl/liujianmaocao',image:'assets/cursive/'+text+'-prototype.png',caption:'二维原型：Liu Jian Mao Cao · SIL OFL 1.1',description:'原型采用 Liu Jian Mao Cao 草书字体。三维轨迹、笔宽、提按、截面翻转、前后关系与动画时序由本项目独立设计；未取得字体作者的原笔顺，也未取得参考视频模型。长回环由同一个闭合曲面连续写出，保留自然的断连。'}};}
 export const cursiveGlyphs=[compose('孟',meng,2.82),compose('晟',sheng,4.64)];

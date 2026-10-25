@@ -12,3 +12,11 @@ body.dark{color-scheme:dark;--ink:#eceee8;--muted:#b1b9b5;--line:#e0eee329;--pan
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
 .floating-panel{overflow:clip}.compact{overflow-y:auto;overscroll-behavior:contain}.compact .panel-heading{position:sticky;top:0;z-index:2;background:var(--panel)}
 #glyph-style-note{font:11px/1.7 Arial,"Microsoft YaHei",sans-serif;color:var(--muted);letter-spacing:0;margin:10px 0 16px;}
+body.has-glyph #stage{left:clamp(240px,25vw,350px);width:auto;height:auto}
+#flat-preview{position:fixed;z-index:1;left:32px;top:115px;bottom:150px;width:clamp(180px,20vw,280px);display:flex;flex-direction:column;justify-content:center;gap:18px;pointer-events:none}
+#flat-heading{display:flex;justify-content:space-between;align-items:baseline;gap:14px;color:var(--muted);font-size:11px;letter-spacing:.08em;flex:none}
+#flat-style{font-size:10px;letter-spacing:.02em;opacity:.8}
+#flat-image{display:block;flex:1;width:100%;min-height:0;max-height:440px;fill:var(--ink);overflow:visible}
+body.ui-hidden #flat-heading{visibility:hidden}
+@media(max-width:700px) and (orientation:portrait){body.has-glyph #stage{inset:205px 0 108px}#flat-preview{left:26px;right:26px;top:78px;bottom:auto;width:auto;height:120px;flex-direction:row;gap:25px;align-items:center}#flat-heading{width:60px;flex-direction:column;align-items:flex-start;gap:8px;font-size:10px}#flat-image{height:120px;width:calc(100% - 85px);max-height:none;flex:1}}
+@media(max-height:540px) and (orientation:landscape){body.has-glyph #stage{left:190px}#flat-preview{left:22px;top:87px;bottom:104px;width:145px;gap:10px}#flat-heading{font-size:10px}}
