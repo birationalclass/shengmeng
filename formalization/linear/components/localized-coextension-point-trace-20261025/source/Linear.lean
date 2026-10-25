@@ -1,0 +1,11 @@
+module
+public import Linear.AbstractLocalizedModuleResidueFiber
+public import Linear.CoextensionReducedLocalFiberTrace
+public import Linear.CoextensionTensorEvaluation
+public import Linear.FiniteReducedFiberLocalFree
+public import Linear.LocalizedCoextensionFiberPointTrace
+public import Linear.LocalizedCoextensionReducedFiberTrace
+public import Linear.LocalizedCoextensionResidueDual
+public import Linear.LocalizedModuleResidueFiber
+public import Linear.PolynomialPointCoextensionTrace
+public import Linear.RegularSequenceMaximalLocalization

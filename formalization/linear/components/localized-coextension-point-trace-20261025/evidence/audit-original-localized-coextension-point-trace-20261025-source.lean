@@ -1,0 +1,95 @@
+module
+import all Linear.RegularSequenceMaximalLocalization
+import all Linear.FiniteReducedFiberLocalFree
+import all Linear.CoextensionReducedLocalFiberTrace
+import all Linear.LocalizedModuleResidueFiber
+import all Linear.AbstractLocalizedModuleResidueFiber
+import all Linear.CoextensionTensorEvaluation
+import all Linear.LocalizedCoextensionResidueDual
+import all Linear.LocalizedCoextensionFiberPointTrace
+import all Linear.LocalizedCoextensionReducedFiberTrace
+import all Linear.PolynomialPointCoextensionTrace
+set_option maxHeartbeats 50000
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.weaklyRegular_of_maximal_localizations
+#print axioms LinearStudy.weaklyRegular_of_maximal_localizations
+#check @LinearStudy.finite_free_of_maximal_local_regular_parameters
+#print axioms LinearStudy.finite_free_of_maximal_local_regular_parameters
+#check @LinearStudy.finite_algebra_closed_fiber_artinian
+#print axioms LinearStudy.finite_algebra_closed_fiber_artinian
+#check @LinearStudy.finite_algebra_maximal_contains_base_maximal
+#print axioms LinearStudy.finite_algebra_maximal_contains_base_maximal
+#check @LinearStudy.finite_reduced_fiber_parameters_regular_at_maximal
+#print axioms LinearStudy.finite_reduced_fiber_parameters_regular_at_maximal
+#check @LinearStudy.finite_free_of_reduced_fiber_local_parameters
+#print axioms LinearStudy.finite_free_of_reduced_fiber_local_parameters
+#check @LinearStudy.coextension_original_point_trace_one_of_reduced_local_fiber
+#print axioms LinearStudy.coextension_original_point_trace_one_of_reduced_local_fiber
+#check @LinearStudy.originalLocalizedModuleFiberEquiv
+#print axioms LinearStudy.originalLocalizedModuleFiberEquiv
+#check @LinearStudy.originalLocalizedModuleFiberEquiv_tmul
+#print axioms LinearStudy.originalLocalizedModuleFiberEquiv_tmul
+#check @LinearStudy.originalLocalizedModuleFiberEquiv_symm_tmul
+#print axioms LinearStudy.originalLocalizedModuleFiberEquiv_symm_tmul
+#check @LinearStudy.abstractLocalizedModuleFiberEquiv
+#print axioms LinearStudy.abstractLocalizedModuleFiberEquiv
+#check @LinearStudy.abstractLocalizedModuleFiberEquiv_tmul
+#print axioms LinearStudy.abstractLocalizedModuleFiberEquiv_tmul
+#check @LinearStudy.abstractLocalizedModuleFiberEquiv_symm_tmul
+#print axioms LinearStudy.abstractLocalizedModuleFiberEquiv_symm_tmul
+#check @LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne
+#print axioms LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne
+#check @LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne_tmul
+#print axioms LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne_tmul
+#check @LinearStudy.localizedCoextensionOriginalDualTensorEquiv
+#print axioms LinearStudy.localizedCoextensionOriginalDualTensorEquiv
+#check @LinearStudy.localizedCoextensionOriginalDualTensorEquiv_tmul_apply
+#print axioms LinearStudy.localizedCoextensionOriginalDualTensorEquiv_tmul_apply
+#check @LinearStudy.localizedCoextensionOriginalDualTensorEquiv_original_evaluation
+#print axioms LinearStudy.localizedCoextensionOriginalDualTensorEquiv_original_evaluation
+#check @LinearStudy.localizedCoextensionOriginalDualTensorEquiv_evaluation
+#print axioms LinearStudy.localizedCoextensionOriginalDualTensorEquiv_evaluation
+#check @LinearStudy.localizedCoextensionOriginalDualTensorEquiv_both_tmul
+#print axioms LinearStudy.localizedCoextensionOriginalDualTensorEquiv_both_tmul
+#check @LinearStudy.localizedCoextensionOriginalDualTensorEquiv_scalar_naturality
+#print axioms LinearStudy.localizedCoextensionOriginalDualTensorEquiv_scalar_naturality
+#check @LinearStudy.localizedCoextensionOriginalScalarFiberEnd_idempotent
+#print axioms LinearStudy.localizedCoextensionOriginalScalarFiberEnd_idempotent
+#check @LinearStudy.localizedCoextensionOriginalFiberTrace_actual_point_exists_one
+#print axioms LinearStudy.localizedCoextensionOriginalFiberTrace_actual_point_exists_one
+#check @LinearStudy.localizedCoextensionOriginalScalarFiberEnd_eq_of_fiber_eq
+#print axioms LinearStudy.localizedCoextensionOriginalScalarFiberEnd_eq_of_fiber_eq
+#check @LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_of_lift
+#print axioms LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_of_lift
+#check @LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_idempotent
+#print axioms LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_idempotent
+#check @LinearStudy.localizedCoextensionOriginalResidueFiberPointTrace_exists_one
+#print axioms LinearStudy.localizedCoextensionOriginalResidueFiberPointTrace_exists_one
+#check @LinearStudy.localized_finite_source_free_of_reduced_fiber
+#print axioms LinearStudy.localized_finite_source_free_of_reduced_fiber
+#check @LinearStudy.original_coextension_point_trace_one_of_local_reduced_fiber
+#print axioms LinearStudy.original_coextension_point_trace_one_of_local_reduced_fiber
+#check @LinearStudy.polynomial_point_local_centered_parameters_generate
+#print axioms LinearStudy.polynomial_point_local_centered_parameters_generate
+#check @LinearStudy.polynomial_point_original_coextension_trace_one
+#print axioms LinearStudy.polynomial_point_original_coextension_trace_one
+#print LinearStudy.originalLocalizedModuleFiberEquiv
+#print LinearStudy.abstractLocalizedModuleFiberEquiv
+#print LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne
+#print LinearStudy.localizedCoextensionOriginalDualTensorEquiv
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool) := [(`LinearStudy.weaklyRegular_of_maximal_localizations,true),(`LinearStudy.finite_free_of_maximal_local_regular_parameters,true),(`LinearStudy.finite_algebra_closed_fiber_artinian,true),(`LinearStudy.finite_algebra_maximal_contains_base_maximal,true),(`LinearStudy.finite_reduced_fiber_parameters_regular_at_maximal,true),(`LinearStudy.finite_free_of_reduced_fiber_local_parameters,true),(`LinearStudy.coextension_original_point_trace_one_of_reduced_local_fiber,true),(`LinearStudy.originalLocalizedModuleFiberEquiv,false),(`LinearStudy.originalLocalizedModuleFiberEquiv_tmul,true),(`LinearStudy.originalLocalizedModuleFiberEquiv_symm_tmul,true),(`LinearStudy.abstractLocalizedModuleFiberEquiv,false),(`LinearStudy.abstractLocalizedModuleFiberEquiv_tmul,true),(`LinearStudy.abstractLocalizedModuleFiberEquiv_symm_tmul,true),(`LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne,false),(`LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne_tmul,true),(`LinearStudy.localizedCoextensionOriginalDualTensorEquiv,false),(`LinearStudy.localizedCoextensionOriginalDualTensorEquiv_tmul_apply,true),(`LinearStudy.localizedCoextensionOriginalDualTensorEquiv_original_evaluation,true),(`LinearStudy.localizedCoextensionOriginalDualTensorEquiv_evaluation,true),(`LinearStudy.localizedCoextensionOriginalDualTensorEquiv_both_tmul,true),(`LinearStudy.localizedCoextensionOriginalDualTensorEquiv_scalar_naturality,true),(`LinearStudy.localizedCoextensionOriginalScalarFiberEnd_idempotent,true),(`LinearStudy.localizedCoextensionOriginalFiberTrace_actual_point_exists_one,true),(`LinearStudy.localizedCoextensionOriginalScalarFiberEnd_eq_of_fiber_eq,true),(`LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_of_lift,true),(`LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_idempotent,true),(`LinearStudy.localizedCoextensionOriginalResidueFiberPointTrace_exists_one,true),(`LinearStudy.localized_finite_source_free_of_reduced_fiber,true),(`LinearStudy.original_coextension_point_trace_one_of_local_reduced_fiber,true),(`LinearStudy.polynomial_point_local_centered_parameters_generate,true),(`LinearStudy.polynomial_point_original_coextension_trace_one,true)]
+  let env ← Lean.getEnv
+  for (n,want) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"
+    let kernelKind := match info with
+      | .thmInfo _ => "theorem"
+      | .defnInfo _ => "definition"
+      | _ => "other"
+    unless kernelKind == (if want then "theorem" else "definition") do
+      throwError m!"Incorrect kernel declaration kind: {n}"
+    Lean.logInfo m!"KINDCHECK:{n}:{kernelKind}"

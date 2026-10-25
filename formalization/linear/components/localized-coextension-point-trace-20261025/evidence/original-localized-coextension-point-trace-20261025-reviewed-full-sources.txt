@@ -1,0 +1,737 @@
+===== Linear.RegularSequenceMaximalLocalization =====
+module
+public import Linear.HomogeneousLocalization
+public import Linear.RegularGeneratorsFree
+public import Mathlib.RingTheory.LocalProperties.Basic
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open RingTheory.Sequence
+/-- Weak regularity of the ACTUAL ring sequence is detected at ALL actual
+maximal localizations. No global CM,finiteness or freeness is an input. -/
+theorem weaklyRegular_of_maximal_localizations
+    {A : Type*} [CommRing A] (rs : List A)
+    (hlocal : ∀ (P : Ideal A) [P.IsMaximal],
+      IsWeaklyRegular (Localization.AtPrime P)
+        (rs.map (algebraMap A (Localization.AtPrime P)))) :
+    IsWeaklyRegular A rs := by
+  refine ⟨fun i hi => ?_⟩
+  let I := Ideal.ofList (rs.take i)
+  rw [ideal_smul_top_self]
+  apply (isSMulRegular_quotient_iff_mem_of_smul_mem I rs[i]).mpr
+  intro a ha
+  apply Ideal.mem_of_localization_maximal
+  intro P hP
+  let L := Localization.AtPrime P
+  let f : A →+* L := algebraMap A L
+  have hl := (hlocal P).regular_mod_prev i (by simpa using hi)
+  change IsSMulRegular (L ⧸ (Ideal.ofList ((rs.map f).take i) •
+    (⊤ : Submodule L L))) ((rs.map f)[i]'(by simpa using hi)) at hl
+  rw [← List.map_take,← Ideal.map_ofList,ideal_smul_top_self] at hl
+  simp only [List.getElem_map] at hl
+  apply (isSMulRegular_quotient_iff_mem_of_smul_mem (I.map f) (f rs[i])).mp hl
+  change f rs[i] * f a ∈ I.map f
+  rw [← map_mul]
+  exact Ideal.mem_map_of_mem f ha
+/-- Derive finite freeness from ACTUAL source-point regularity and the
+base local maximal parameters,using the existing regular-generators theorem.
+This is a local algebra criterion only;original geometric local-ring
+identifications and regularity inputs are NOT asserted or weakened. -/
+theorem finite_free_of_maximal_local_regular_parameters
+    {R S : Type*} [CommRing R] [IsLocalRing R] [IsNoetherianRing R]
+    [CommRing S] [Algebra R S] [Module.Finite R S]
+    (rs : List R) (hgen : Ideal.ofList rs=IsLocalRing.maximalIdeal R)
+    (hlocal : ∀ (P : Ideal S) [P.IsMaximal],
+      IsWeaklyRegular (Localization.AtPrime P)
+        ((rs.map (algebraMap R S)).map (algebraMap S (Localization.AtPrime P)))) :
+    Module.Free R S :=
+  free_of_regular_maximal_algebraMap rs
+    (weaklyRegular_of_maximal_localizations _ hlocal) hgen
+end LinearStudy
+
+
+===== Linear.FiniteReducedFiberLocalFree =====
+module
+public import Linear.RegularSequenceMaximalLocalization
+public import Linear.FiniteReducedLocalCut
+public import Linear.OriginRegular
+public import Mathlib.RingTheory.Ideal.GoingUp
+public import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open RingTheory.Sequence
+/-- Finiteness alone derives Artinianity of the ACTUAL closed fiber of a
+finite algebra over a local ring. No reducedness or flatness is assumed. -/
+theorem finite_algebra_closed_fiber_artinian
+    {R S : Type*} [CommRing R] [IsLocalRing R] [CommRing S]
+    [Algebra R S] [Module.Finite R S] :
+    IsArtinianRing (S ⧸ (IsLocalRing.maximalIdeal R).map (algebraMap R S)) := by
+  let m := IsLocalRing.maximalIdeal R
+  let I := m.map (algebraMap R S)
+  letI : Field (R ⧸ m) := Ideal.Quotient.field m
+  letI : Algebra (R ⧸ m) (S ⧸ I) :=
+    Ideal.Quotient.algebraQuotientOfLEComap (R:=R) (A:=S) (p:=m) (P:=I) Ideal.le_comap_map
+  letI : IsScalarTower R (R ⧸ m) (S ⧸ I) :=
+    IsScalarTower.of_algebraMap_eq (fun _ => rfl)
+  letI : Module.Finite R (S ⧸ I) := Module.Finite.of_surjective
+    (Ideal.Quotient.mkₐ R I).toLinearMap Ideal.Quotient.mk_surjective
+  letI : Module.Finite (R ⧸ m) (S ⧸ I) :=
+    Module.Finite.of_restrictScalars_finite R (R ⧸ m) (S ⧸ I)
+  exact IsArtinianRing.of_finite (R ⧸ m) (S ⧸ I)
+/-- Every actual source maximal ideal of a finite local-base algebra lies
+above the base maximal ideal. The fiber-support inclusion is derived. -/
+theorem finite_algebra_maximal_contains_base_maximal
+    {R S : Type*} [CommRing R] [IsLocalRing R] [CommRing S]
+    [Algebra R S] [Module.Finite R S] (P : Ideal S) [P.IsMaximal] :
+    (IsLocalRing.maximalIdeal R).map (algebraMap R S) ≤ P := by
+  have hc := Ideal.isMaximal_under_of_isIntegral_of_isMaximal (R:=R) (S:=S) P
+  have he : P.comap (algebraMap R S)=IsLocalRing.maximalIdeal R :=
+    IsLocalRing.eq_maximalIdeal hc
+  exact Ideal.map_le_iff_le_comap.mpr he.symm.le
+/-- In the ACTUAL reduced closed fiber,base maximal parameters generate
+each actual source maximal ideal after localization. LOCAL CM and local
+dimension are explicit here;no global CM on the original variety is added. -/
+theorem finite_reduced_fiber_parameters_regular_at_maximal
+    {R S : Type*} [CommRing R] [IsLocalRing R] [IsNoetherianRing R]
+    [CommRing S] [Algebra R S] [Module.Finite R S]
+    [IsReduced (S ⧸ (IsLocalRing.maximalIdeal R).map (algebraMap R S))]
+    (rs : List R) (hgen : Ideal.ofList rs=IsLocalRing.maximalIdeal R)
+    (P : Ideal S) [P.IsMaximal]
+    [IsCohenMacaulayLocalRing (Localization.AtPrime P)]
+    (hlen : (rs.length : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime P)) :
+    IsRegular (Localization.AtPrime P)
+      ((rs.map (algebraMap R S)).map (algebraMap S (Localization.AtPrime P))) := by
+  letI : IsNoetherianRing S := IsNoetherianRing.of_finite R S
+  let I := Ideal.ofList (rs.map (algebraMap R S))
+  have hI : I=(IsLocalRing.maximalIdeal R).map (algebraMap R S) := by
+    dsimp only [I]
+    rw [← Ideal.map_ofList,hgen]
+  letI : IsArtinianRing (S ⧸ I) := by
+    rw [hI]
+    exact finite_algebra_closed_fiber_artinian (R:=R) (S:=S)
+  letI : IsReduced (S ⧸ I) := by rw [hI];infer_instance
+  have hIP : I ≤ P := hI.le.trans (finite_algebra_maximal_contains_base_maximal P)
+  have hloc : Ideal.ofList
+      ((rs.map (algebraMap R S)).map (algebraMap S (Localization.AtPrime P)))=
+        IsLocalRing.maximalIdeal (Localization.AtPrime P) := by
+    rw [← Ideal.map_ofList]
+    exact artinian_reduced_cut_local_ideal_eq_maximalIdeal_of_le I P hIP
+  apply isRegular_of_maximalIdeal_mem_ofList_minimalPrimes
+  · rw [hloc,Ideal.minimalPrimes_eq_subsingleton_self]
+    exact Set.mem_singleton _
+  · simpa only [List.length_map] using hlen
+/-- A LOCAL finite reduced fiber and pointwise LOCAL CM/dimension derive
+freeness;the free/flat conclusion is not an input. Instantiation of the
+actual original geometric charts remains a separate obligation. -/
+theorem finite_free_of_reduced_fiber_local_parameters
+    {R S : Type*} [CommRing R] [IsLocalRing R] [IsNoetherianRing R]
+    [CommRing S] [Algebra R S] [Module.Finite R S]
+    [IsReduced (S ⧸ (IsLocalRing.maximalIdeal R).map (algebraMap R S))]
+    [∀ (P : Ideal S) [P.IsMaximal],IsCohenMacaulayLocalRing (Localization.AtPrime P)]
+    (rs : List R) (hgen : Ideal.ofList rs=IsLocalRing.maximalIdeal R)
+    (hlen : ∀ (P : Ideal S) [P.IsMaximal],
+      (rs.length : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime P)) :
+    Module.Free R S := by
+  apply finite_free_of_maximal_local_regular_parameters rs hgen
+  intro P hP
+  exact (finite_reduced_fiber_parameters_regular_at_maximal rs hgen P (hlen P)).1
+end LinearStudy
+
+
+===== Linear.CoextensionReducedLocalFiberTrace =====
+module
+public import Linear.FiniteReducedFiberLocalFree
+public import Linear.CoextensionResidueFiberPointProjector
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+/-- Derive the finite FREE input of the SAME ORIGINAL coextension fiber
+trace from an ACTUAL reduced local fiber and pointwise LOCAL CM/dimension.
+No global freeness/CM on original V is asserted. Geometric chart matching,
+original Ext comparison and SAME top-H trace calibration remain OPEN. -/
+theorem coextension_original_point_trace_one_of_reduced_local_fiber
+    {R S K : Type u} [CommRing R] [IsLocalRing R] [IsNoetherianRing R]
+    [CommRing S] [Field K] [Algebra R S] [Algebra R K] [Module.Finite R S]
+    [IsReduced (S ⧸ (IsLocalRing.maximalIdeal R).map (algebraMap R S))]
+    [hCM : ∀ (P : Ideal S) [P.IsMaximal],IsCohenMacaulayLocalRing (Localization.AtPrime P)]
+    (rs : List R) (hgen : Ideal.ofList rs=IsLocalRing.maximalIdeal R)
+    (hlen : ∀ (P : Ideal S) [P.IsMaximal],
+      (rs.length : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime P))
+    (hres : Function.Surjective (algebraMap R K)) :
+    letI : Module.Free R S := @finite_free_of_reduced_fiber_local_parameters R S _ _ _ _ _ _ _ hCM rs hgen hlen
+    ∀ e : K ⊗[R] S,e ≠ 0 → e*e=e →
+      ∃ m : K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj
+        ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))),
+        coextensionOriginalResidueFiberPointEnd hres e m=m ∧
+          coextensionOriginalFiberTrace (R:=R) (S:=S) (K:=K) m=1 := by
+  letI : Module.Free R S := @finite_free_of_reduced_fiber_local_parameters R S _ _ _ _ _ _ _ hCM rs hgen hlen
+  intro e he hi
+  exact coextensionOriginalResidueFiberPointTrace_exists_one hres e he hi
+end LinearStudy
+
+
+===== Linear.LocalizedModuleResidueFiber =====
+module
+public import Mathlib.RingTheory.Localization.BaseChange
+public import Mathlib.LinearAlgebra.TensorProduct.Tower
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open TensorProduct
+universe u v
+variable {R K : Type u} [CommRing R] [CommRing K] [Algebra R K]
+variable (P : Submonoid R) [Algebra (Localization P) K] [IsScalarTower R (Localization P) K]
+variable (M : Type v) [AddCommGroup M] [Module R M]
+/-- ACTUAL module localization followed by the SAME residue base change
+is the original module fiber. No freeness or flatness hypothesis. -/
+def originalLocalizedModuleFiberEquiv :
+    K ⊗[Localization P] LocalizedModule P M ≃ₗ[K] K ⊗[R] M :=
+  (TensorProduct.AlgebraTensorModule.congr (LinearEquiv.refl K K)
+    (LocalizedModule.equivTensorProduct P M)).trans
+    (TensorProduct.AlgebraTensorModule.cancelBaseChange R (Localization P) K K M)
+/-- The comparison preserves ORIGINAL pure numerator tensors. -/
+theorem originalLocalizedModuleFiberEquiv_tmul (a : K) (m : M) :
+    originalLocalizedModuleFiberEquiv P M (a ⊗ₜ[Localization P] LocalizedModule.mk m 1)=
+      a ⊗ₜ[R] m := by
+  simp [originalLocalizedModuleFiberEquiv,LocalizedModule.equivTensorProduct_apply_mk,
+    Localization.mk_one_eq_algebraMap]
+/-- The inverse has the ACTUAL numerator representative. -/
+theorem originalLocalizedModuleFiberEquiv_symm_tmul (a : K) (m : M) :
+    (originalLocalizedModuleFiberEquiv P M).symm (a ⊗ₜ[R] m)=
+      a ⊗ₜ[Localization P] LocalizedModule.mk m 1 := by
+  apply (originalLocalizedModuleFiberEquiv P M).injective
+  rw [LinearEquiv.apply_symm_apply,originalLocalizedModuleFiberEquiv_tmul]
+end LinearStudy
+
+
+===== Linear.AbstractLocalizedModuleResidueFiber =====
+module
+public import Linear.LocalizedModuleResidueFiber
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open TensorProduct
+universe u v
+variable {R Q K : Type u} [CommRing R] [CommRing Q] [CommRing K]
+variable [Algebra R Q] [Algebra R K] [Algebra Q K] [IsScalarTower R Q K]
+variable (P : Submonoid R) [IsLocalization P Q]
+variable (M : Type v) [AddCommGroup M] [Module R M]
+/-- ACTUAL module fiber comparison for an arbitrary actual base
+localization,with mathlib original abstract-localization scalar action.
+No action is defined by transport through this comparison. -/
+def abstractLocalizedModuleFiberEquiv :
+    letI : Module Q (LocalizedModule P M) := LocalizedModule.moduleOfIsLocalization
+    K ⊗[Q] LocalizedModule P M ≃ₗ[K] K ⊗[R] M := by
+  letI : Module Q (LocalizedModule P M) := LocalizedModule.moduleOfIsLocalization
+  let e : Q ⊗[R] M ≃ₗ[Q] LocalizedModule P M :=
+    (IsLocalizedModule.isBaseChange P Q (LocalizedModule.mkLinearMap P M)).equiv
+  exact (TensorProduct.AlgebraTensorModule.congr (LinearEquiv.refl K K) e.symm).trans
+    (TensorProduct.AlgebraTensorModule.cancelBaseChange R Q K K M)
+/-- ORIGINAL numerator tensors are preserved by the actual comparison. -/
+theorem abstractLocalizedModuleFiberEquiv_tmul (a : K) (m : M) :
+    letI : Module Q (LocalizedModule P M) := LocalizedModule.moduleOfIsLocalization
+    abstractLocalizedModuleFiberEquiv (Q:=Q) P M (a ⊗ₜ[Q] LocalizedModule.mk m 1)=
+      a ⊗ₜ[R] m := by
+  letI : Module Q (LocalizedModule P M) := LocalizedModule.moduleOfIsLocalization
+  let e : Q ⊗[R] M ≃ₗ[Q] LocalizedModule P M :=
+    (IsLocalizedModule.isBaseChange P Q (LocalizedModule.mkLinearMap P M)).equiv
+  have he : e ((1:Q) ⊗ₜ[R] m)=LocalizedModule.mk m 1 := by
+    simp [e,IsBaseChange.equiv_tmul]
+  have hes : e.symm (LocalizedModule.mk m 1)=((1:Q) ⊗ₜ[R] m) :=
+    e.symm_apply_eq.mpr he.symm
+  change TensorProduct.AlgebraTensorModule.cancelBaseChange R Q K K M
+    ((TensorProduct.AlgebraTensorModule.congr (LinearEquiv.refl K K) e.symm)
+      (a ⊗ₜ[Q] LocalizedModule.mk m 1))=_
+  rw [TensorProduct.AlgebraTensorModule.congr_tmul,LinearEquiv.refl_apply,hes,
+    TensorProduct.AlgebraTensorModule.cancelBaseChange_tmul,one_smul]
+/-- The inverse uses the SAME original numerator. -/
+theorem abstractLocalizedModuleFiberEquiv_symm_tmul (a : K) (m : M) :
+    letI : Module Q (LocalizedModule P M) := LocalizedModule.moduleOfIsLocalization
+    (abstractLocalizedModuleFiberEquiv (Q:=Q) P M).symm (a ⊗ₜ[R] m)=
+      a ⊗ₜ[Q] LocalizedModule.mk m 1 := by
+  letI : Module Q (LocalizedModule P M) := LocalizedModule.moduleOfIsLocalization
+  apply (abstractLocalizedModuleFiberEquiv (Q:=Q) P M).injective
+  rw [LinearEquiv.apply_symm_apply,abstractLocalizedModuleFiberEquiv_tmul]
+end LinearStudy
+
+
+===== Linear.CoextensionTensorEvaluation =====
+module
+public import Linear.CoextensionEvaluationAtOne
+public import Mathlib.LinearAlgebra.Dual.BaseChange
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+variable {R S K : Type u} [CommRing R] [CommRing S] [CommRing K]
+variable [Algebra R S] [Algebra R K]
+/-- Literal base change of ORIGINAL evaluation-at-one. This functional
+exists without finite/free/flat/local-regularity assumptions and is NOT
+defined using any comparison isomorphism or a chosen perfect functional. -/
+def coextensionOriginalBaseChangedEvaluationAtOne :
+    Module.Dual K (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj
+      ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) :=
+  Module.Dual.baseChange K ((Module.Dual.eval R S (1:S)).comp
+    (coextensionOriginalDualEquiv (R:=R) (S:=S)).toLinearMap)
+/-- Exact ORIGINAL eval-at-one value on original pure coefficients. -/
+theorem coextensionOriginalBaseChangedEvaluationAtOne_tmul
+    (a : K) (ell : (ModuleCat.restrictScalars (algebraMap R S)).obj
+      ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))) :
+    coextensionOriginalBaseChangedEvaluationAtOne (a ⊗ₜ[R] ell)=
+      a * algebraMap R K (coextensionOriginalEvaluationAtOne (R:=R) (S:=S)
+        (show (ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R) from ell)) := by
+  rw [coextensionOriginalBaseChangedEvaluationAtOne,Module.Dual.baseChange_apply_tmul]
+  rw [Algebra.smul_def]
+  change algebraMap R K ((coextensionOriginalDualEquiv (R:=R) (S:=S) ell) (1:S))*a=
+    a*algebraMap R K ((coextensionOriginalDualEquiv (R:=R) (S:=S) ell) (1:S))
+  exact mul_comm _ _
+end LinearStudy
+
+
+===== Linear.LocalizedCoextensionResidueDual =====
+module
+public import Linear.AbstractLocalizedModuleResidueFiber
+public import Linear.NativeCoextensionLocalizedTarget
+public import Linear.CoextensionOriginalDualTensorBaseChange
+public import Mathlib.RingTheory.Localization.Finiteness
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+variable {R S Q K : Type u} [CommRing R] [CommRing S] [CommRing Q] [CommRing K]
+variable [Algebra R S] [Algebra R Q] [Algebra R K] [Algebra Q K]
+variable [IsScalarTower R Q K] [Module.Finite R S]
+variable (P : Submonoid R) [IsLocalization P Q]
+variable (hfree : letI : Module Q (LocalizedModule P S) := LocalizedModule.moduleOfIsLocalization
+  Module.Free Q (LocalizedModule P S))
+/-- ACTUAL original coextension fiber dual comparison under ONLY LOCAL
+freeness of the actual localized source. Original S/R is NOT assumed free.
+All localization actions are mathlib's actual original ones,never defined
+by transport through this comparison. -/
+def localizedCoextensionOriginalDualTensorEquiv
+    (hinj : Function.Injective (algebraMap R Q)) :
+    K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj
+      ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))) ≃ₗ[K]
+        Module.Dual K (K ⊗[R] S) := by
+  let S' := LocalizedModule P S
+  let C := (ModuleCat.restrictScalars (algebraMap R S)).obj
+    ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))
+  letI : Module Q (LocalizedModule P ((ModuleCat.restrictScalars (algebraMap R S)).obj
+    ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) :=
+      LocalizedModule.moduleOfIsLocalization
+  letI : Module Q S' := LocalizedModule.moduleOfIsLocalization
+  letI : Algebra Q S' := LocalizedModule.algebraOfIsLocalization (S:=P) Q
+  letI : Module.Free Q S' := hfree
+  letI : Module.Finite Q S' := Module.Finite.of_isLocalizedModule P (Rₚ:=Q)
+    (LocalizedModule.mkLinearMap P S)
+  let alpha := finiteNativeCoextensionLocalizedTargetEquiv (R:=R) (S:=S) P hinj
+  exact (abstractLocalizedModuleFiberEquiv (Q:=Q) P C).symm ≪≫ₗ
+    (alpha.baseChange Q K _ _) ≪≫ₗ
+    coextensionOriginalDualTensorEquiv (R:=Q) (S:=S') (K:=K) ≪≫ₗ
+    Module.Dual.congr (abstractLocalizedModuleFiberEquiv (Q:=Q) P S)
+/-- The LOCAL comparison retains every ORIGINAL functional value on
+actual pure tensors;no desired trace identity is an input. -/
+theorem localizedCoextensionOriginalDualTensorEquiv_tmul_apply
+    (hinj : Function.Injective (algebraMap R Q)) (a : K)
+    (ell : (ModuleCat.restrictScalars (algebraMap R S)).obj
+      ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))) (s : S) :
+    localizedCoextensionOriginalDualTensorEquiv P hfree hinj (a ⊗ₜ[R] ell) ((1:K) ⊗ₜ[R] s)=
+      a * algebraMap R K ((coextensionOriginalDualEquiv (R:=R) (S:=S) ell) s) := by
+  let S' := LocalizedModule P S
+  letI : Module Q (LocalizedModule P ((ModuleCat.restrictScalars (algebraMap R S)).obj
+    ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) :=
+      LocalizedModule.moduleOfIsLocalization
+  letI : Module Q S' := LocalizedModule.moduleOfIsLocalization
+  letI : Algebra Q S' := LocalizedModule.algebraOfIsLocalization (S:=P) Q
+  letI : Module.Free Q S' := hfree
+  letI : Module.Finite Q S' := Module.Finite.of_isLocalizedModule P (Rₚ:=Q)
+    (LocalizedModule.mkLinearMap P S)
+  simp only [localizedCoextensionOriginalDualTensorEquiv,LinearEquiv.trans_apply,
+    abstractLocalizedModuleFiberEquiv_symm_tmul,LinearEquiv.baseChange_tmul]
+  change coextensionOriginalDualTensorEquiv
+    (a ⊗ₜ[Q] (finiteNativeCoextensionLocalizedTargetEquiv (R:=R) (S:=S) P hinj
+      (LocalizedModule.mk ell 1)))
+    ((abstractLocalizedModuleFiberEquiv (Q:=Q) P S).symm ((1:K) ⊗ₜ[R] s))=_
+  rw [abstractLocalizedModuleFiberEquiv_symm_tmul,
+    coextensionOriginalDualTensorEquiv_tmul_apply]
+  change a * algebraMap Q K
+    (nativeCoextensionOriginalDualEquiv (R:=Q) (S:=S')
+      (finiteNativeCoextensionLocalizedTargetEquiv (R:=R) (S:=S) P hinj
+        (LocalizedModule.mk ell 1)) (LocalizedModule.mk s 1))=_
+  rw [finiteNativeCoextensionLocalizedTargetEquiv_apply_original]
+  rw [← IsScalarTower.algebraMap_apply R Q K]
+  rfl
+/-- Original evaluation at the ACTUAL fiber unit is retained even though
+freeness is imposed ONLY after the actual base localization. -/
+theorem localizedCoextensionOriginalDualTensorEquiv_original_evaluation
+    (hinj : Function.Injective (algebraMap R Q)) (a : K)
+    (ell : (ModuleCat.restrictScalars (algebraMap R S)).obj
+      ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))) :
+    localizedCoextensionOriginalDualTensorEquiv P hfree hinj (a ⊗ₜ[R] ell) ((1:K) ⊗ₜ[R] (1:S))=
+      a * algebraMap R K (coextensionOriginalEvaluationAtOne (R:=R) (S:=S)
+        (show (ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R) from ell)) := by
+  exact localizedCoextensionOriginalDualTensorEquiv_tmul_apply P hfree hinj a ell (1:S)
+end LinearStudy
+
+
+===== Linear.LocalizedCoextensionFiberPointTrace =====
+module
+public import Linear.LocalizedCoextensionResidueDual
+public import Linear.CoextensionTensorEvaluation
+public import Linear.CoextensionResidueFiberPointProjector
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+variable {R S Q K : Type u} [CommRing R] [CommRing S] [CommRing Q] [Field K]
+variable [Algebra R S] [Algebra R Q] [Algebra R K] [Algebra Q K]
+variable [IsScalarTower R Q K] [Module.Finite R S]
+variable (P : Submonoid R) [IsLocalization P Q]
+variable (hfree : letI : Module Q (LocalizedModule P S) := LocalizedModule.moduleOfIsLocalization
+  Module.Free Q (LocalizedModule P S))
+variable (hinj : Function.Injective (algebraMap R Q))
+include P hfree hinj
+attribute [local irreducible] localizedCoextensionOriginalDualTensorEquiv
+/-- The actual local dual comparison evaluates at the unit by the
+LITERAL base change of ORIGINAL eval1. The functional is independent of
+this comparison and of every freeness choice. -/
+theorem localizedCoextensionOriginalDualTensorEquiv_evaluation
+    (m : K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj
+      ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) :
+    localizedCoextensionOriginalDualTensorEquiv P hfree hinj m (1:(K ⊗[R] S))=
+      coextensionOriginalBaseChangedEvaluationAtOne m := by
+  induction m using TensorProduct.inductionOn with
+  | tmul a ell =>
+    rw [Algebra.TensorProduct.one_def,
+      localizedCoextensionOriginalDualTensorEquiv_original_evaluation,
+      coextensionOriginalBaseChangedEvaluationAtOne_tmul]
+  | add m n hm hn => simp only [map_add,LinearMap.add_apply,hm,hn]
+/-! ONLY the ACTUAL localized algebra is assumed free. The ORIGINAL
+source action and existing actual point-projector object are retained.
+No global S/R freeness,no replacement trace and no geometric top-H
+calibration are assumed or asserted. -/
+theorem localizedCoextensionOriginalDualTensorEquiv_both_tmul
+    (a b : K) (ell : ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) (t : S) :
+    localizedCoextensionOriginalDualTensorEquiv P hfree hinj (a ⊗ₜ[R] ell) (b ⊗ₜ[R] t)=
+      b * (a * algebraMap R K ((coextensionOriginalDualEquiv (R:=R) (S:=S) ell) t)) := by
+  calc
+    _ = localizedCoextensionOriginalDualTensorEquiv P hfree hinj (a ⊗ₜ[R] ell)
+        (b • ((1:K) ⊗ₜ[R] t)) := by
+      rw [TensorProduct.smul_tmul',smul_eq_mul,mul_one]
+    _ = b * localizedCoextensionOriginalDualTensorEquiv P hfree hinj (a ⊗ₜ[R] ell) ((1:K) ⊗ₜ[R] t) := by
+      rw [map_smul,smul_eq_mul]
+    _ = _ := by rw [localizedCoextensionOriginalDualTensorEquiv_tmul_apply P hfree hinj]
+
+theorem localizedCoextensionOriginalDualTensorEquiv_scalar_naturality
+    (s : S) (m : (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))))) (z : (K ⊗[R] S)) :
+    localizedCoextensionOriginalDualTensorEquiv P hfree hinj
+        (coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s m) z=
+      localizedCoextensionOriginalDualTensorEquiv P hfree hinj m (z*((1:K) ⊗ₜ[R] s)) := by
+  induction m using TensorProduct.inductionOn with
+  | add m n hm hn => simp only [map_add,LinearMap.add_apply,hm,hn]
+  | tmul a ell =>
+    change localizedCoextensionOriginalDualTensorEquiv P hfree hinj
+      (a ⊗ₜ[R] (show ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))) from s • (show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from ell))) z=
+        localizedCoextensionOriginalDualTensorEquiv P hfree hinj (a ⊗ₜ[R] ell) (z*((1:K) ⊗ₜ[R] s))
+    induction z using TensorProduct.inductionOn with
+    | add z w hz hw => simp only [add_mul,map_add,hz,hw]
+    | tmul b t =>
+      rw [Algebra.TensorProduct.tmul_mul_tmul,mul_one]
+      rw [localizedCoextensionOriginalDualTensorEquiv_both_tmul P hfree hinj,
+        localizedCoextensionOriginalDualTensorEquiv_both_tmul P hfree hinj]
+      change b * (a * algebraMap R K ((s • (show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from ell)) t))=
+        b * (a * algebraMap R K ((show ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from ell) (t*s)))
+      rw [ModuleCat.CoextendScalars.smul_apply]
+
+theorem localizedCoextensionOriginalScalarFiberEnd_idempotent (s : S)
+    (hi : ((1:K) ⊗ₜ[R] s : K ⊗[R] S)*((1:K) ⊗ₜ[R] s)=((1:K) ⊗ₜ[R] s)) :
+    ∀ m,coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s
+      (coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s m)=
+        coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s m := by
+  intro m
+  apply (localizedCoextensionOriginalDualTensorEquiv (R:=R) (S:=S) (Q:=Q) (K:=K) P hfree hinj).injective
+  apply LinearMap.ext
+  intro z
+  calc
+    _ = localizedCoextensionOriginalDualTensorEquiv P hfree hinj
+        (coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s m) (z*((1:K) ⊗ₜ[R] s)) :=
+      localizedCoextensionOriginalDualTensorEquiv_scalar_naturality P hfree hinj s _ z
+    _ = localizedCoextensionOriginalDualTensorEquiv P hfree hinj m ((z*((1:K) ⊗ₜ[R] s))*((1:K) ⊗ₜ[R] s)) :=
+      localizedCoextensionOriginalDualTensorEquiv_scalar_naturality P hfree hinj s m _
+    _ = localizedCoextensionOriginalDualTensorEquiv P hfree hinj m (z*((1:K) ⊗ₜ[R] s)) := by rw [mul_assoc,hi]
+    _ = _ := (localizedCoextensionOriginalDualTensorEquiv_scalar_naturality P hfree hinj s m z).symm
+
+theorem localizedCoextensionOriginalFiberTrace_actual_point_exists_one
+    (s : S) (he : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S)) ≠ 0)
+    (hi : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S))*((1:K) ⊗ₜ[R] s)=((1:K) ⊗ₜ[R] s)) :
+    ∃ m : (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))),coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s m=m ∧
+      coextensionOriginalBaseChangedEvaluationAtOne m=1 := by
+  let e : (K ⊗[R] S) := (1:K) ⊗ₜ[R] s
+  obtain ⟨eta,heta,htrace⟩ := coextensionFieldTrace_idempotent_fixed_exists_one
+    (K:=K) e he hi
+  let f : Module.Dual K (K ⊗[R] S) :=
+    coextensionOriginalDualEquiv (R:=K) (S:=(K ⊗[R] S)) eta
+  let m : (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))) := (localizedCoextensionOriginalDualTensorEquiv (R:=R) (S:=S) (Q:=Q) (K:=K) P hfree hinj).symm f
+  have hm : localizedCoextensionOriginalDualTensorEquiv P hfree hinj m=f :=
+    (localizedCoextensionOriginalDualTensorEquiv (R:=R) (S:=S) (Q:=Q) (K:=K) P hfree hinj).apply_symm_apply f
+  refine ⟨m,?_,?_⟩
+  · apply (localizedCoextensionOriginalDualTensorEquiv (R:=R) (S:=S) (Q:=Q) (K:=K) P hfree hinj).injective
+    apply LinearMap.ext
+    intro z
+    calc
+      _ = localizedCoextensionOriginalDualTensorEquiv P hfree hinj m (z*e) :=
+        localizedCoextensionOriginalDualTensorEquiv_scalar_naturality P hfree hinj s m z
+      _ = f (z*e) := LinearMap.congr_fun hm _
+      _ = (coextensionOriginalDualEquiv (R:=K) (S:=(K ⊗[R] S)) (e • eta)) z := by
+        change eta (z*e)=(e • eta) z
+        rw [ModuleCat.CoextendScalars.smul_apply]
+      _ = f z := by rw [heta]
+      _ = _ := (LinearMap.congr_fun hm z).symm
+  · rw [← localizedCoextensionOriginalDualTensorEquiv_evaluation P hfree hinj]
+    rw [hm]
+    exact htrace
+
+theorem localizedCoextensionOriginalScalarFiberEnd_eq_of_fiber_eq
+    (s t : S) (h : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S))=((1:K) ⊗ₜ[R] t)) :
+    coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s=
+      coextensionOriginalScalarFiberEnd (R:=R) (K:=K) t := by
+  apply LinearMap.ext
+  intro m
+  apply (localizedCoextensionOriginalDualTensorEquiv (R:=R) (S:=S) (Q:=Q) (K:=K) P hfree hinj).injective
+  apply LinearMap.ext
+  intro z
+  rw [localizedCoextensionOriginalDualTensorEquiv_scalar_naturality P hfree hinj,
+    localizedCoextensionOriginalDualTensorEquiv_scalar_naturality P hfree hinj,h]
+theorem localizedCoextensionOriginalResidueFiberPointEnd_of_lift
+    (hres : Function.Surjective (algebraMap R K)) (e : (K ⊗[R] S))
+    (s : S) (hs : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S))=e) :
+    coextensionOriginalResidueFiberPointEnd hres e=
+      coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s := by
+  unfold coextensionOriginalResidueFiberPointEnd
+  apply localizedCoextensionOriginalScalarFiberEnd_eq_of_fiber_eq P hfree hinj
+  have hc := Classical.choose_spec (Algebra.TensorProduct.includeRight_surjective
+    (R:=R) (S:=K) (T:=S) hres e)
+  have hc' : ((1:K) ⊗ₜ[R] Classical.choose
+      (Algebra.TensorProduct.includeRight_surjective (R:=R) (S:=K) (T:=S) hres e) : (K ⊗[R] S))=e := by
+    simpa only [Algebra.TensorProduct.includeRight_apply] using hc
+  exact hc'.trans hs.symm
+
+theorem localizedCoextensionOriginalResidueFiberPointEnd_idempotent
+    (hres : Function.Surjective (algebraMap R K)) (e : (K ⊗[R] S)) (hi : e*e=e) :
+    ∀ m,coextensionOriginalResidueFiberPointEnd hres e
+      (coextensionOriginalResidueFiberPointEnd hres e m)=
+        coextensionOriginalResidueFiberPointEnd hres e m := by
+  obtain ⟨s,hs⟩ := Algebra.TensorProduct.includeRight_surjective
+    (R:=R) (S:=K) (T:=S) hres e
+  have hs' : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S))=e := by
+    simpa only [Algebra.TensorProduct.includeRight_apply] using hs
+  rw [localizedCoextensionOriginalResidueFiberPointEnd_of_lift P hfree hinj hres e s hs']
+  exact localizedCoextensionOriginalScalarFiberEnd_idempotent P hfree hinj s (by simpa only [hs'] using hi)
+
+theorem localizedCoextensionOriginalResidueFiberPointTrace_exists_one
+    (hres : Function.Surjective (algebraMap R K)) (e : (K ⊗[R] S))
+    (he : e ≠ 0) (hi : e*e=e) :
+    ∃ m : (K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)))),coextensionOriginalResidueFiberPointEnd hres e m=m ∧
+      coextensionOriginalBaseChangedEvaluationAtOne (R:=R) (S:=S) (K:=K) m=1 := by
+  obtain ⟨s,hs⟩ := Algebra.TensorProduct.includeRight_surjective
+    (R:=R) (S:=K) (T:=S) hres e
+  have hs' : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S))=e := by
+    simpa only [Algebra.TensorProduct.includeRight_apply] using hs
+  have hsne : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S)) ≠ 0 := by simpa only [hs'] using he
+  have hsi : ((1:K) ⊗ₜ[R] s : (K ⊗[R] S))*((1:K) ⊗ₜ[R] s)=((1:K) ⊗ₜ[R] s) := by
+    simpa only [hs'] using hi
+  obtain ⟨m,hm,ht⟩ := localizedCoextensionOriginalFiberTrace_actual_point_exists_one P hfree hinj s hsne hsi
+  refine ⟨m,?_,ht⟩
+  rw [localizedCoextensionOriginalResidueFiberPointEnd_of_lift P hfree hinj hres e s hs']
+  exact hm
+end LinearStudy
+
+
+===== Linear.LocalizedCoextensionReducedFiberTrace =====
+module
+public import Linear.LocalizedCoextensionFiberPointTrace
+public import Linear.FiniteReducedFiberLocalFree
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+variable {R S Q K : Type u} [CommRing R] [CommRing S] [CommRing Q]
+variable [Field K] [Algebra R S] [Algebra R Q] [Algebra R K] [Algebra Q K]
+variable [IsScalarTower R Q K] [Module.Finite R S]
+variable (P : Submonoid R) [IsLocalization P Q] [IsLocalRing Q] [IsNoetherianRing Q]
+/-- Derive freeness of the ACTUAL localized original source from its
+ACTUAL reduced closed fiber and pointwise LOCAL CM/dimension data.
+No generic-open replacement or global S/R free/flat input. -/
+theorem localized_finite_source_free_of_reduced_fiber
+    (rs : List Q) (hgen : Ideal.ofList rs=IsLocalRing.maximalIdeal Q)
+    (hlocal : let S' := LocalizedModule P S
+      letI : Module Q S' := LocalizedModule.moduleOfIsLocalization
+      letI : Algebra Q S' := LocalizedModule.algebraOfIsLocalization (S:=P) Q
+      IsReduced (S' ⧸ (IsLocalRing.maximalIdeal Q).map (algebraMap Q S')) ∧
+        ∀ (p : Ideal S') (_ : p.IsMaximal),
+          IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧
+            (rs.length : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime p)) :
+    letI : Module Q (LocalizedModule P S) := LocalizedModule.moduleOfIsLocalization
+    Module.Free Q (LocalizedModule P S) := by
+  let S' := LocalizedModule P S
+  letI : Module Q S' := LocalizedModule.moduleOfIsLocalization
+  letI : Algebra Q S' := LocalizedModule.algebraOfIsLocalization (S:=P) Q
+  letI : Module.Finite Q S' := Module.Finite.of_isLocalizedModule P (Rₚ:=Q)
+    (LocalizedModule.mkLinearMap P S)
+  letI : IsReduced (S' ⧸ (IsLocalRing.maximalIdeal Q).map (algebraMap Q S')) := hlocal.1
+  let hCM : ∀ (p : Ideal S') [p.IsMaximal],
+      IsCohenMacaulayLocalRing (Localization.AtPrime p) := fun p hp => (hlocal.2 p hp).1
+  have hdim : ∀ (p : Ideal S') [p.IsMaximal],
+      (rs.length : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime p) :=
+    fun p hp => (hlocal.2 p hp).2
+  exact @finite_free_of_reduced_fiber_local_parameters Q S' _ _ _ _ _ _ _ hCM rs hgen hdim
+/-- SAME ORIGINAL coefficient fiber,SAME ORIGINAL source point projector,
+and LITERAL original eval1 base change. Local freeness is DERIVED from the
+actual reduced local fiber data,never assumed globally. Original geometric
+chart instantiation,Ext comparison and SAME top-H trace calibration remain OPEN. -/
+theorem original_coextension_point_trace_one_of_local_reduced_fiber
+    (rs : List Q) (hgen : Ideal.ofList rs=IsLocalRing.maximalIdeal Q)
+    (hlocal : let S' := LocalizedModule P S
+      letI : Module Q S' := LocalizedModule.moduleOfIsLocalization
+      letI : Algebra Q S' := LocalizedModule.algebraOfIsLocalization (S:=P) Q
+      IsReduced (S' ⧸ (IsLocalRing.maximalIdeal Q).map (algebraMap Q S')) ∧
+        ∀ (p : Ideal S') (_ : p.IsMaximal),
+          IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧
+            (rs.length : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime p))
+    (hinj : Function.Injective (algebraMap R Q))
+    (hres : Function.Surjective (algebraMap R K))
+    (e : K ⊗[R] S) (he : e ≠ 0) (hi : e*e=e) :
+    ∃ m : K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj
+      ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))),
+      coextensionOriginalResidueFiberPointEnd hres e m=m ∧
+        coextensionOriginalBaseChangedEvaluationAtOne (R:=R) (S:=S) (K:=K) m=1 := by
+  have hfree := localized_finite_source_free_of_reduced_fiber (S:=S) P rs hgen hlocal
+  exact localizedCoextensionOriginalResidueFiberPointTrace_exists_one P hfree hinj hres e he hi
+end LinearStudy
+
+
+===== Linear.PolynomialPointCoextensionTrace =====
+module
+public import Linear.LocalizedCoextensionReducedFiberTrace
+public import Linear.PolynomialPointEvaluation
+public import Linear.PolynomialLocalParameters
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+/-- The ACTUAL centered coordinate parameters generate the ACTUAL local
+maximal ideal of a polynomial rational point. Reuse the original point-kernel theorem. -/
+theorem polynomial_point_local_centered_parameters_generate
+    {K : Type u} [Field K] {r : ℕ} (y : Fin r → K) :
+    let R := MvPolynomial (Fin r) K
+    let m := RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom
+    letI : m.IsPrime := RingHom.ker_isPrime _
+    Ideal.ofList (List.ofFn (fun i : Fin r =>
+      algebraMap R (Localization.AtPrime m) (MvPolynomial.X i-MvPolynomial.C (y i))))=
+      IsLocalRing.maximalIdeal (Localization.AtPrime m) := by
+  intro R m
+  letI : m.IsPrime := RingHom.ker_isPrime _
+  let Q := Localization.AtPrime m
+  have hh := congrArg (fun J : Ideal R => J.map (algebraMap R Q))
+    (polynomial_point_kernel_eq_span_centered_coordinates y)
+  rw [Ideal.map_span,← Set.range_comp'] at hh
+  have hl : Ideal.ofList (List.ofFn (fun i : Fin r =>
+      algebraMap R Q (MvPolynomial.X i-MvPolynomial.C (y i))))=
+      Ideal.span (Set.range (fun i : Fin r =>
+        algebraMap R Q (MvPolynomial.X i-MvPolynomial.C (y i)))) := by
+    simp [Ideal.ofList,List.mem_ofFn,Set.range]
+  exact hl.trans (hh.symm.trans Localization.AtPrime.map_eq_maximalIdeal)
+/-- At an ACTUAL polynomial base point,derive all base parameters,
+residue surjectivity and localization injectivity. Only ACTUAL localized
+source reducedness and pointwise LOCAL CM/dimension remain explicit.
+The SAME ORIGINAL C fiber/projector and LITERAL eval1 base change are used.
+Original geometric source-chart instantiation and Ext/top-H calibration
+are NOT asserted by this algebraic theorem. -/
+theorem polynomial_point_original_coextension_trace_one
+    {K S : Type u} [Field K] [CommRing S] {r : ℕ}
+    [Algebra (MvPolynomial (Fin r) K) S] [Module.Finite (MvPolynomial (Fin r) K) S]
+    (y : Fin r → K)
+    (hlocal : let R := MvPolynomial (Fin r) K
+      let m := RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom
+      letI : m.IsPrime := RingHom.ker_isPrime _
+      let Q := Localization.AtPrime m
+      let S' := LocalizedModule m.primeCompl S
+      letI : Module Q S' := LocalizedModule.moduleOfIsLocalization
+      letI : Algebra Q S' := LocalizedModule.algebraOfIsLocalization (S:=m.primeCompl) Q
+      IsReduced (S' ⧸ (IsLocalRing.maximalIdeal Q).map (algebraMap Q S')) ∧
+        ∀ (p : Ideal S') (_ : p.IsMaximal),
+          IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧
+            (r : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime p)) :
+    let R := MvPolynomial (Fin r) K
+    letI : Algebra R K := (MvPolynomial.aeval (R:=K) y).toRingHom.toAlgebra
+    ∀ e : K ⊗[R] S,e ≠ 0 → e*e=e →
+      ∃ z : K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj
+        ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))),
+        coextensionOriginalResidueFiberPointEnd
+          (show Function.Surjective (algebraMap R K) from
+            fun a => ⟨MvPolynomial.C a,by
+              change (MvPolynomial.aeval (R:=K) y) (MvPolynomial.C a)=a
+              exact (MvPolynomial.aeval (R:=K) y).commutes a⟩) e z=z ∧
+          coextensionOriginalBaseChangedEvaluationAtOne (R:=R) (S:=S) (K:=K) z=1 := by
+  dsimp only
+  let R := MvPolynomial (Fin r) K
+  let m := RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom
+  letI : m.IsPrime := RingHom.ker_isPrime _
+  let Q := Localization.AtPrime m
+  letI : Algebra R K := (MvPolynomial.aeval (R:=K) y).toRingHom.toAlgebra
+  let rho := polynomialPointLocalEvaluation m y rfl
+  letI : Algebra Q K := rho.toRingHom.toAlgebra
+  letI : IsScalarTower R Q K := IsScalarTower.of_algebraMap_eq
+    (fun F => (polynomialPointLocalEvaluation_polynomial m y rfl F).symm)
+  let rs := List.ofFn (fun i : Fin r =>
+    algebraMap R Q (MvPolynomial.X i-MvPolynomial.C (y i)))
+  have hgen : Ideal.ofList rs=IsLocalRing.maximalIdeal Q :=
+    polynomial_point_local_centered_parameters_generate y
+  have hloc : let S' := LocalizedModule m.primeCompl S
+      letI : Module Q S' := LocalizedModule.moduleOfIsLocalization
+      letI : Algebra Q S' := LocalizedModule.algebraOfIsLocalization (S:=m.primeCompl) Q
+      IsReduced (S' ⧸ (IsLocalRing.maximalIdeal Q).map (algebraMap Q S')) ∧
+        ∀ (p : Ideal S') (_ : p.IsMaximal),
+          IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧
+            (rs.length : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime p) := by
+    refine ⟨hlocal.1,fun p hp => ⟨(hlocal.2 p hp).1,?_⟩⟩
+    simpa only [rs,List.length_ofFn,Fintype.card_fin] using (hlocal.2 p hp).2
+  have hinj : Function.Injective (algebraMap R Q) :=
+    IsLocalization.injective Q m.primeCompl_le_nonZeroDivisors
+  have hres : Function.Surjective (algebraMap R K) := fun a => ⟨MvPolynomial.C a,by
+              change (MvPolynomial.aeval (R:=K) y) (MvPolynomial.C a)=a
+              exact (MvPolynomial.aeval (R:=K) y).commutes a⟩
+  intro e he hi
+  exact original_coextension_point_trace_one_of_local_reduced_fiber
+    m.primeCompl rs hgen hloc hinj hres e he hi
+end LinearStudy

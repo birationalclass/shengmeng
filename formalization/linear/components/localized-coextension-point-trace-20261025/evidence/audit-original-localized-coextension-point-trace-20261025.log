@@ -1,0 +1,518 @@
+@LinearStudy.weaklyRegular_of_maximal_localizations : ∀ {A : Type u_1} [inst : CommRing A] (rs : List A),
+  (∀ (P : Ideal A) [inst_1 : P.IsMaximal],
+      RingTheory.Sequence.IsWeaklyRegular (Localization.AtPrime P)
+        (List.map (⇑(algebraMap A (Localization.AtPrime P))) rs)) →
+    RingTheory.Sequence.IsWeaklyRegular A rs
+'LinearStudy.weaklyRegular_of_maximal_localizations' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finite_free_of_maximal_local_regular_parameters : ∀ {R : Type u_1} {S : Type u_2} [inst : CommRing R]
+  [inst_1 : IsLocalRing R] [IsNoetherianRing R] [inst_3 : CommRing S] [inst_4 : Algebra R S] [Module.Finite R S]
+  (rs : List R),
+  Ideal.ofList rs = IsLocalRing.maximalIdeal R →
+    (∀ (P : Ideal S) [inst_6 : P.IsMaximal],
+        RingTheory.Sequence.IsWeaklyRegular (Localization.AtPrime P)
+          (List.map (⇑(algebraMap S (Localization.AtPrime P))) (List.map (⇑(algebraMap R S)) rs))) →
+      Module.Free R S
+'LinearStudy.finite_free_of_maximal_local_regular_parameters' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finite_algebra_closed_fiber_artinian : ∀ {R : Type u_1} {S : Type u_2} [inst : CommRing R]
+  [inst_1 : IsLocalRing R] [inst_2 : CommRing S] [inst_3 : Algebra R S] [Module.Finite R S],
+  IsArtinianRing (S ⧸ Ideal.map (algebraMap R S) (IsLocalRing.maximalIdeal R))
+'LinearStudy.finite_algebra_closed_fiber_artinian' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finite_algebra_maximal_contains_base_maximal : ∀ {R : Type u_1} {S : Type u_2} [inst : CommRing R]
+  [inst_1 : IsLocalRing R] [inst_2 : CommRing S] [inst_3 : Algebra R S] [Module.Finite R S] (P : Ideal S) [P.IsMaximal],
+  Ideal.map (algebraMap R S) (IsLocalRing.maximalIdeal R) ≤ P
+'LinearStudy.finite_algebra_maximal_contains_base_maximal' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.finite_reduced_fiber_parameters_regular_at_maximal : ∀ {R : Type u_1} {S : Type u_2} [inst : CommRing R]
+  [inst_1 : IsLocalRing R] [IsNoetherianRing R] [inst_3 : CommRing S] [inst_4 : Algebra R S] [Module.Finite R S]
+  [IsReduced (S ⧸ Ideal.map (algebraMap R S) (IsLocalRing.maximalIdeal R))] (rs : List R),
+  Ideal.ofList rs = IsLocalRing.maximalIdeal R →
+    ∀ (P : Ideal S) [inst_7 : P.IsMaximal] [IsCohenMacaulayLocalRing (Localization.AtPrime P)],
+      ↑rs.length = ringKrullDim (Localization.AtPrime P) →
+        RingTheory.Sequence.IsRegular (Localization.AtPrime P)
+          (List.map (⇑(algebraMap S (Localization.AtPrime P))) (List.map (⇑(algebraMap R S)) rs))
+'LinearStudy.finite_reduced_fiber_parameters_regular_at_maximal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.finite_free_of_reduced_fiber_local_parameters : ∀ {R : Type u_1} {S : Type u_2} [inst : CommRing R]
+  [inst_1 : IsLocalRing R] [IsNoetherianRing R] [inst_3 : CommRing S] [inst_4 : Algebra R S] [Module.Finite R S]
+  [IsReduced (S ⧸ Ideal.map (algebraMap R S) (IsLocalRing.maximalIdeal R))]
+  [∀ (P : Ideal S) [inst : P.IsMaximal], IsCohenMacaulayLocalRing (Localization.AtPrime P)] (rs : List R),
+  Ideal.ofList rs = IsLocalRing.maximalIdeal R →
+    (∀ (P : Ideal S) [inst : P.IsMaximal], ↑rs.length = ringKrullDim (Localization.AtPrime P)) → Module.Free R S
+'LinearStudy.finite_free_of_reduced_fiber_local_parameters' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.coextension_original_point_trace_one_of_reduced_local_fiber : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : IsLocalRing R] [inst_2 : IsNoetherianRing R] [inst_3 : CommRing S] [inst_4 : Field K] [inst_5 : Algebra R S]
+  [inst_6 : Algebra R K] [inst_7 : Module.Finite R S]
+  [inst_8 : IsReduced (S ⧸ Ideal.map (algebraMap R S) (IsLocalRing.maximalIdeal R))]
+  [hCM : ∀ (P : Ideal S) [inst : P.IsMaximal], IsCohenMacaulayLocalRing (Localization.AtPrime P)] (rs : List R)
+  (hgen : Ideal.ofList rs = IsLocalRing.maximalIdeal R)
+  (hlen : ∀ (P : Ideal S) [inst : P.IsMaximal], ↑rs.length = ringKrullDim (Localization.AtPrime P))
+  (hres : Function.Surjective ⇑(algebraMap R K)) (e : TensorProduct R K S),
+  e ≠ 0 →
+    e * e = e →
+      ∃ (m :
+        TensorProduct R K
+          ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+        (LinearStudy.coextensionOriginalResidueFiberPointEnd hres e) m = m ∧
+          LinearStudy.coextensionOriginalFiberTrace m = 1
+'LinearStudy.coextension_original_point_trace_one_of_reduced_local_fiber' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalLocalizedModuleFiberEquiv : {R K : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing K] →
+      [inst_2 : Algebra R K] →
+        (P : Submonoid R) →
+          [inst_3 : Algebra (Localization P) K] →
+            [IsScalarTower R (Localization P) K] →
+              (M : Type u_2) →
+                [inst_5 : AddCommGroup M] →
+                  [inst_6 : Module R M] →
+                    TensorProduct (Localization P) K (LocalizedModule P M) ≃ₗ[K] TensorProduct R K M
+'LinearStudy.originalLocalizedModuleFiberEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalLocalizedModuleFiberEquiv_tmul : ∀ {R K : Type u_1} [inst : CommRing R] [inst_1 : CommRing K]
+  [inst_2 : Algebra R K] (P : Submonoid R) [inst_3 : Algebra (Localization P) K]
+  [inst_4 : IsScalarTower R (Localization P) K] (M : Type u_2) [inst_5 : AddCommGroup M] [inst_6 : Module R M] (a : K)
+  (m : M), (LinearStudy.originalLocalizedModuleFiberEquiv P M) (a ⊗ₜ[Localization P] LocalizedModule.mk m 1) = a ⊗ₜ[R] m
+'LinearStudy.originalLocalizedModuleFiberEquiv_tmul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalLocalizedModuleFiberEquiv_symm_tmul : ∀ {R K : Type u_1} [inst : CommRing R] [inst_1 : CommRing K]
+  [inst_2 : Algebra R K] (P : Submonoid R) [inst_3 : Algebra (Localization P) K]
+  [inst_4 : IsScalarTower R (Localization P) K] (M : Type u_2) [inst_5 : AddCommGroup M] [inst_6 : Module R M] (a : K)
+  (m : M),
+  (LinearStudy.originalLocalizedModuleFiberEquiv P M).symm (a ⊗ₜ[R] m) = a ⊗ₜ[Localization P] LocalizedModule.mk m 1
+'LinearStudy.originalLocalizedModuleFiberEquiv_symm_tmul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.abstractLocalizedModuleFiberEquiv : {R Q K : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing Q] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R Q] →
+          [inst_4 : Algebra R K] →
+            [inst_5 : Algebra Q K] →
+              [IsScalarTower R Q K] →
+                (P : Submonoid R) →
+                  [inst_7 : IsLocalization P Q] →
+                    (M : Type u_2) →
+                      [inst_8 : AddCommGroup M] →
+                        [inst_9 : Module R M] → TensorProduct Q K (LocalizedModule P M) ≃ₗ[K] TensorProduct R K M
+'LinearStudy.abstractLocalizedModuleFiberEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.abstractLocalizedModuleFiberEquiv_tmul : ∀ {R Q K : Type u_1} [inst : CommRing R] [inst_1 : CommRing Q]
+  [inst_2 : CommRing K] [inst_3 : Algebra R Q] [inst_4 : Algebra R K] [inst_5 : Algebra Q K]
+  [inst_6 : IsScalarTower R Q K] (P : Submonoid R) [inst_7 : IsLocalization P Q] (M : Type u_2)
+  [inst_8 : AddCommGroup M] [inst_9 : Module R M] (a : K) (m : M),
+  (LinearStudy.abstractLocalizedModuleFiberEquiv P M) (a ⊗ₜ[Q] LocalizedModule.mk m 1) = a ⊗ₜ[R] m
+'LinearStudy.abstractLocalizedModuleFiberEquiv_tmul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.abstractLocalizedModuleFiberEquiv_symm_tmul : ∀ {R Q K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing Q] [inst_2 : CommRing K] [inst_3 : Algebra R Q] [inst_4 : Algebra R K] [inst_5 : Algebra Q K]
+  [inst_6 : IsScalarTower R Q K] (P : Submonoid R) [inst_7 : IsLocalization P Q] (M : Type u_2)
+  [inst_8 : AddCommGroup M] [inst_9 : Module R M] (a : K) (m : M),
+  (LinearStudy.abstractLocalizedModuleFiberEquiv P M).symm (a ⊗ₜ[R] m) = a ⊗ₜ[Q] LocalizedModule.mk m 1
+'LinearStudy.abstractLocalizedModuleFiberEquiv_symm_tmul' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne : {R S K : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            Module.Dual K
+              (TensorProduct R K
+                ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                    ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+'LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne' depends on axioms: [propext, Quot.sound]
+@LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne_tmul : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] (a : K)
+  (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+  LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne (a ⊗ₜ[R] ell) =
+    a *
+      (algebraMap R K)
+        (LinearStudy.coextensionOriginalEvaluationAtOne
+          (have this := ell;
+          this))
+'LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne_tmul' depends on axioms: [propext, Quot.sound]
+@LinearStudy.localizedCoextensionOriginalDualTensorEquiv : {R S Q K : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing Q] →
+        [inst_3 : CommRing K] →
+          [inst_4 : Algebra R S] →
+            [inst_5 : Algebra R Q] →
+              [inst_6 : Algebra R K] →
+                [inst_7 : Algebra Q K] →
+                  [IsScalarTower R Q K] →
+                    [Module.Finite R S] →
+                      (P : Submonoid R) →
+                        [inst_10 : IsLocalization P Q] →
+                          Module.Free Q (LocalizedModule P S) →
+                            Function.Injective ⇑(algebraMap R Q) →
+                              TensorProduct R K
+                                  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                                      ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[K]
+                                Module.Dual K (TensorProduct R K S)
+'LinearStudy.localizedCoextensionOriginalDualTensorEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.localizedCoextensionOriginalDualTensorEquiv_tmul_apply : ∀ {R S Q K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : CommRing K] [inst_4 : Algebra R S] [inst_5 : Algebra R Q]
+  [inst_6 : Algebra R K] [inst_7 : Algebra Q K] [inst_8 : IsScalarTower R Q K] [inst_9 : Module.Finite R S]
+  (P : Submonoid R) [inst_10 : IsLocalization P Q] (hfree : Module.Free Q (LocalizedModule P S))
+  (hinj : Function.Injective ⇑(algebraMap R Q)) (a : K)
+  (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+  (s : S),
+  ((LinearStudy.localizedCoextensionOriginalDualTensorEquiv P hfree hinj) (a ⊗ₜ[R] ell)) (1 ⊗ₜ[R] s) =
+    a * (algebraMap R K) ((LinearStudy.coextensionOriginalDualEquiv ell) s)
+'LinearStudy.localizedCoextensionOriginalDualTensorEquiv_tmul_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localizedCoextensionOriginalDualTensorEquiv_original_evaluation : ∀ {R S Q K : Type u_1}
+  [inst : CommRing R] [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : CommRing K] [inst_4 : Algebra R S]
+  [inst_5 : Algebra R Q] [inst_6 : Algebra R K] [inst_7 : Algebra Q K] [inst_8 : IsScalarTower R Q K]
+  [inst_9 : Module.Finite R S] (P : Submonoid R) [inst_10 : IsLocalization P Q]
+  (hfree : Module.Free Q (LocalizedModule P S)) (hinj : Function.Injective ⇑(algebraMap R Q)) (a : K)
+  (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+  ((LinearStudy.localizedCoextensionOriginalDualTensorEquiv P hfree hinj) (a ⊗ₜ[R] ell)) (1 ⊗ₜ[R] 1) =
+    a *
+      (algebraMap R K)
+        (LinearStudy.coextensionOriginalEvaluationAtOne
+          (have this := ell;
+          this))
+'LinearStudy.localizedCoextensionOriginalDualTensorEquiv_original_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localizedCoextensionOriginalDualTensorEquiv_evaluation : ∀ {R S Q K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : Field K] [inst_4 : Algebra R S] [inst_5 : Algebra R Q]
+  [inst_6 : Algebra R K] [inst_7 : Algebra Q K] [inst_8 : IsScalarTower R Q K] [inst_9 : Module.Finite R S]
+  (P : Submonoid R) [inst_10 : IsLocalization P Q] (hfree : Module.Free Q (LocalizedModule P S))
+  (hinj : Function.Injective ⇑(algebraMap R Q))
+  (m :
+    TensorProduct R K
+      ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+  ((LinearStudy.localizedCoextensionOriginalDualTensorEquiv P hfree hinj) m) 1 =
+    LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne m
+'LinearStudy.localizedCoextensionOriginalDualTensorEquiv_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localizedCoextensionOriginalDualTensorEquiv_both_tmul : ∀ {R S Q K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : Field K] [inst_4 : Algebra R S] [inst_5 : Algebra R Q]
+  [inst_6 : Algebra R K] [inst_7 : Algebra Q K] [inst_8 : IsScalarTower R Q K] [inst_9 : Module.Finite R S]
+  (P : Submonoid R) [inst_10 : IsLocalization P Q] (hfree : Module.Free Q (LocalizedModule P S))
+  (hinj : Function.Injective ⇑(algebraMap R Q)) (a b : K)
+  (ell : ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+  (t : S),
+  ((LinearStudy.localizedCoextensionOriginalDualTensorEquiv P hfree hinj) (a ⊗ₜ[R] ell)) (b ⊗ₜ[R] t) =
+    b * (a * (algebraMap R K) ((LinearStudy.coextensionOriginalDualEquiv ell) t))
+'LinearStudy.localizedCoextensionOriginalDualTensorEquiv_both_tmul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localizedCoextensionOriginalDualTensorEquiv_scalar_naturality : ∀ {R S Q K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : Field K] [inst_4 : Algebra R S] [inst_5 : Algebra R Q]
+  [inst_6 : Algebra R K] [inst_7 : Algebra Q K] [inst_8 : IsScalarTower R Q K] [inst_9 : Module.Finite R S]
+  (P : Submonoid R) [inst_10 : IsLocalization P Q] (hfree : Module.Free Q (LocalizedModule P S))
+  (hinj : Function.Injective ⇑(algebraMap R Q)) (s : S)
+  (m :
+    TensorProduct R K
+      ↑((ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+  (z : TensorProduct R K S),
+  ((LinearStudy.localizedCoextensionOriginalDualTensorEquiv P hfree hinj)
+        ((LinearStudy.coextensionOriginalScalarFiberEnd s) m))
+      z =
+    ((LinearStudy.localizedCoextensionOriginalDualTensorEquiv P hfree hinj) m) (z * 1 ⊗ₜ[R] s)
+'LinearStudy.localizedCoextensionOriginalDualTensorEquiv_scalar_naturality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localizedCoextensionOriginalScalarFiberEnd_idempotent : ∀ {R S Q K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : Field K] [inst_4 : Algebra R S] [inst_5 : Algebra R Q]
+  [inst_6 : Algebra R K] [inst_7 : Algebra Q K] [IsScalarTower R Q K] [Module.Finite R S] (P : Submonoid R)
+  [inst_10 : IsLocalization P Q],
+  Module.Free Q (LocalizedModule P S) →
+    Function.Injective ⇑(algebraMap R Q) →
+      ∀ (s : S),
+        1 ⊗ₜ[R] s * 1 ⊗ₜ[R] s = 1 ⊗ₜ[R] s →
+          ∀
+            (m :
+              TensorProduct R K
+                ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                    ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+            (LinearStudy.coextensionOriginalScalarFiberEnd s) ((LinearStudy.coextensionOriginalScalarFiberEnd s) m) =
+              (LinearStudy.coextensionOriginalScalarFiberEnd s) m
+'LinearStudy.localizedCoextensionOriginalScalarFiberEnd_idempotent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localizedCoextensionOriginalFiberTrace_actual_point_exists_one : ∀ {R S Q K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : Field K] [inst_4 : Algebra R S] [inst_5 : Algebra R Q]
+  [inst_6 : Algebra R K] [inst_7 : Algebra Q K] [IsScalarTower R Q K] [Module.Finite R S] (P : Submonoid R)
+  [inst_10 : IsLocalization P Q],
+  Module.Free Q (LocalizedModule P S) →
+    Function.Injective ⇑(algebraMap R Q) →
+      ∀ (s : S),
+        1 ⊗ₜ[R] s ≠ 0 →
+          1 ⊗ₜ[R] s * 1 ⊗ₜ[R] s = 1 ⊗ₜ[R] s →
+            ∃ (m :
+              TensorProduct R K
+                ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                    ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+              (LinearStudy.coextensionOriginalScalarFiberEnd s) m = m ∧
+                LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne m = 1
+'LinearStudy.localizedCoextensionOriginalFiberTrace_actual_point_exists_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localizedCoextensionOriginalScalarFiberEnd_eq_of_fiber_eq : ∀ {R S Q K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : Field K] [inst_4 : Algebra R S] [inst_5 : Algebra R Q]
+  [inst_6 : Algebra R K] [inst_7 : Algebra Q K] [IsScalarTower R Q K] [Module.Finite R S] (P : Submonoid R)
+  [inst_10 : IsLocalization P Q],
+  Module.Free Q (LocalizedModule P S) →
+    Function.Injective ⇑(algebraMap R Q) →
+      ∀ (s t : S),
+        1 ⊗ₜ[R] s = 1 ⊗ₜ[R] t →
+          LinearStudy.coextensionOriginalScalarFiberEnd s = LinearStudy.coextensionOriginalScalarFiberEnd t
+'LinearStudy.localizedCoextensionOriginalScalarFiberEnd_eq_of_fiber_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_of_lift : ∀ {R S Q K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : Field K] [inst_4 : Algebra R S] [inst_5 : Algebra R Q]
+  [inst_6 : Algebra R K] [inst_7 : Algebra Q K] [IsScalarTower R Q K] [Module.Finite R S] (P : Submonoid R)
+  [inst_10 : IsLocalization P Q],
+  Module.Free Q (LocalizedModule P S) →
+    Function.Injective ⇑(algebraMap R Q) →
+      ∀ (hres : Function.Surjective ⇑(algebraMap R K)) (e : TensorProduct R K S) (s : S),
+        1 ⊗ₜ[R] s = e →
+          LinearStudy.coextensionOriginalResidueFiberPointEnd hres e = LinearStudy.coextensionOriginalScalarFiberEnd s
+'LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_of_lift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_idempotent : ∀ {R S Q K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : Field K] [inst_4 : Algebra R S] [inst_5 : Algebra R Q]
+  [inst_6 : Algebra R K] [inst_7 : Algebra Q K] [IsScalarTower R Q K] [Module.Finite R S] (P : Submonoid R)
+  [inst_10 : IsLocalization P Q],
+  Module.Free Q (LocalizedModule P S) →
+    Function.Injective ⇑(algebraMap R Q) →
+      ∀ (hres : Function.Surjective ⇑(algebraMap R K)) (e : TensorProduct R K S),
+        e * e = e →
+          ∀
+            (m :
+              TensorProduct R K
+                ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                    ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+            (LinearStudy.coextensionOriginalResidueFiberPointEnd hres e)
+                ((LinearStudy.coextensionOriginalResidueFiberPointEnd hres e) m) =
+              (LinearStudy.coextensionOriginalResidueFiberPointEnd hres e) m
+'LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_idempotent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localizedCoextensionOriginalResidueFiberPointTrace_exists_one : ∀ {R S Q K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : Field K] [inst_4 : Algebra R S] [inst_5 : Algebra R Q]
+  [inst_6 : Algebra R K] [inst_7 : Algebra Q K] [IsScalarTower R Q K] [Module.Finite R S] (P : Submonoid R)
+  [inst_10 : IsLocalization P Q],
+  Module.Free Q (LocalizedModule P S) →
+    Function.Injective ⇑(algebraMap R Q) →
+      ∀ (hres : Function.Surjective ⇑(algebraMap R K)) (e : TensorProduct R K S),
+        e ≠ 0 →
+          e * e = e →
+            ∃ (m :
+              TensorProduct R K
+                ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                    ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+              (LinearStudy.coextensionOriginalResidueFiberPointEnd hres e) m = m ∧
+                LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne m = 1
+'LinearStudy.localizedCoextensionOriginalResidueFiberPointTrace_exists_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localized_finite_source_free_of_reduced_fiber : ∀ {R S Q : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : Algebra R S] [inst_4 : Algebra R Q] [Module.Finite R S]
+  (P : Submonoid R) [inst_6 : IsLocalization P Q] [inst_7 : IsLocalRing Q] [IsNoetherianRing Q] (rs : List Q),
+  Ideal.ofList rs = IsLocalRing.maximalIdeal Q →
+    (let S' := LocalizedModule P S;
+      IsReduced (S' ⧸ Ideal.map (algebraMap Q S') (IsLocalRing.maximalIdeal Q)) ∧
+        ∀ (p : Ideal S') (x : p.IsMaximal),
+          IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧ ↑rs.length = ringKrullDim (Localization.AtPrime p)) →
+      Module.Free Q (LocalizedModule P S)
+'LinearStudy.localized_finite_source_free_of_reduced_fiber' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.original_coextension_point_trace_one_of_local_reduced_fiber : ∀ {R S Q K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing Q] [inst_3 : Field K] [inst_4 : Algebra R S] [inst_5 : Algebra R Q]
+  [inst_6 : Algebra R K] [inst_7 : Algebra Q K] [IsScalarTower R Q K] [Module.Finite R S] (P : Submonoid R)
+  [inst_10 : IsLocalization P Q] [inst_11 : IsLocalRing Q] [IsNoetherianRing Q] (rs : List Q),
+  Ideal.ofList rs = IsLocalRing.maximalIdeal Q →
+    (let S' := LocalizedModule P S;
+      IsReduced (S' ⧸ Ideal.map (algebraMap Q S') (IsLocalRing.maximalIdeal Q)) ∧
+        ∀ (p : Ideal S') (x : p.IsMaximal),
+          IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧ ↑rs.length = ringKrullDim (Localization.AtPrime p)) →
+      Function.Injective ⇑(algebraMap R Q) →
+        ∀ (hres : Function.Surjective ⇑(algebraMap R K)) (e : TensorProduct R K S),
+          e ≠ 0 →
+            e * e = e →
+              ∃ (m :
+                TensorProduct R K
+                  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                      ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+                (LinearStudy.coextensionOriginalResidueFiberPointEnd hres e) m = m ∧
+                  LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne m = 1
+'LinearStudy.original_coextension_point_trace_one_of_local_reduced_fiber' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.polynomial_point_local_centered_parameters_generate : ∀ {K : Type u_1} [inst : Field K] {r : ℕ}
+  (y : Fin r → K),
+  let R := MvPolynomial (Fin r) K;
+  let m := RingHom.ker (MvPolynomial.aeval y).toRingHom;
+  Ideal.ofList
+      (List.ofFn fun (i : Fin r) => (algebraMap R (Localization.AtPrime m)) (MvPolynomial.X i - MvPolynomial.C (y i))) =
+    IsLocalRing.maximalIdeal (Localization.AtPrime m)
+'LinearStudy.polynomial_point_local_centered_parameters_generate' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.polynomial_point_original_coextension_trace_one : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  {r : ℕ} [inst_2 : Algebra (MvPolynomial (Fin r) K) S] [Module.Finite (MvPolynomial (Fin r) K) S] (y : Fin r → K),
+  (have R := MvPolynomial (Fin r) K;
+    let m := RingHom.ker (MvPolynomial.aeval y).toRingHom;
+    let Q := Localization.AtPrime m;
+    let S' := LocalizedModule m.primeCompl S;
+    IsReduced (S' ⧸ Ideal.map (algebraMap Q S') (IsLocalRing.maximalIdeal Q)) ∧
+      ∀ (p : Ideal S') (x : p.IsMaximal),
+        IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧ ↑r = ringKrullDim (Localization.AtPrime p)) →
+    let R := MvPolynomial (Fin r) K;
+    ∀ (e : TensorProduct R K S),
+      e ≠ 0 →
+        e * e = e →
+          ∃ (z :
+            TensorProduct R K
+              ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                  ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+            (LinearStudy.coextensionOriginalResidueFiberPointEnd ⋯ e) z = z ∧
+              LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne z = 1
+'LinearStudy.polynomial_point_original_coextension_trace_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.originalLocalizedModuleFiberEquiv.{u, v} : {R K : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing K] →
+      [inst_2 : Algebra R K] →
+        (P : Submonoid R) →
+          [inst_3 : Algebra (Localization P) K] →
+            [IsScalarTower R (Localization P) K] →
+              (M : Type v) →
+                [inst_5 : AddCommGroup M] →
+                  [inst_6 : Module R M] →
+                    TensorProduct (Localization P) K (LocalizedModule P M) ≃ₗ[K] TensorProduct R K M :=
+fun {R K : Type u} [CommRing R] [CommRing K] [Algebra R K] (P : Submonoid R) [Algebra (Localization P) K]
+    [IsScalarTower R (Localization P) K] (M : Type v) [AddCommGroup M] [Module R M] =>
+  (TensorProduct.AlgebraTensorModule.congr (LinearEquiv.refl K K) (LocalizedModule.equivTensorProduct P M)).trans
+    (TensorProduct.AlgebraTensorModule.cancelBaseChange R (Localization P) K K M)
+def LinearStudy.abstractLocalizedModuleFiberEquiv.{u, v} : {R Q K : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing Q] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R Q] →
+          [inst_4 : Algebra R K] →
+            [inst_5 : Algebra Q K] →
+              [IsScalarTower R Q K] →
+                (P : Submonoid R) →
+                  [inst_7 : IsLocalization P Q] →
+                    (M : Type v) →
+                      [inst_8 : AddCommGroup M] →
+                        [inst_9 : Module R M] → TensorProduct Q K (LocalizedModule P M) ≃ₗ[K] TensorProduct R K M :=
+fun {R Q K : Type u} [CommRing R] [CommRing Q] [CommRing K] [Algebra R Q] [Algebra R K] [Algebra Q K]
+    [IsScalarTower R Q K] (P : Submonoid R) [IsLocalization P Q] (M : Type v) [AddCommGroup M] [Module R M] =>
+  have e := ⋯.equiv;
+  (TensorProduct.AlgebraTensorModule.congr (LinearEquiv.refl K K) e.symm).trans
+    (TensorProduct.AlgebraTensorModule.cancelBaseChange R Q K K M)
+def LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne.{u} : {R S K : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            Module.Dual K
+              (TensorProduct R K
+                ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                    ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))) :=
+fun {R S K : Type u} [CommRing R] [CommRing S] [CommRing K] [Algebra R S] [Algebra R K] =>
+  (Module.Dual.baseChange K) ((Module.Dual.eval R S) 1 ∘ₗ ↑LinearStudy.coextensionOriginalDualEquiv)
+def LinearStudy.localizedCoextensionOriginalDualTensorEquiv.{u} : {R S Q K : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing Q] →
+        [inst_3 : CommRing K] →
+          [inst_4 : Algebra R S] →
+            [inst_5 : Algebra R Q] →
+              [inst_6 : Algebra R K] →
+                [inst_7 : Algebra Q K] →
+                  [IsScalarTower R Q K] →
+                    [Module.Finite R S] →
+                      (P : Submonoid R) →
+                        [inst_10 : IsLocalization P Q] →
+                          Module.Free Q (LocalizedModule P S) →
+                            Function.Injective ⇑(algebraMap R Q) →
+                              TensorProduct R K
+                                  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                                      ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)) ≃ₗ[K]
+                                Module.Dual K (TensorProduct R K S) :=
+fun {R S Q K : Type u} [CommRing R] [CommRing S] [CommRing Q] [CommRing K] [Algebra R S] [Algebra R Q] [Algebra R K]
+    [Algebra Q K] [IsScalarTower R Q K] [Module.Finite R S] (P : Submonoid R) [IsLocalization P Q]
+    (hfree : Module.Free Q (LocalizedModule P S)) (hinj : Function.Injective ⇑(algebraMap R Q)) =>
+  let S' := LocalizedModule P S;
+  let C := (ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R);
+  have alpha := LinearStudy.finiteNativeCoextensionLocalizedTargetEquiv P hinj;
+  (((LinearStudy.abstractLocalizedModuleFiberEquiv P ↑C).symm.trans
+            (LinearEquiv.baseChange Q K
+              (LocalizedModule P
+                ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                    ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+              (↑((ModuleCat.restrictScalars (algebraMap Q (LocalizedModule P S))).obj
+                  ((ModuleCat.coextendScalars (algebraMap Q (LocalizedModule P S))).obj ↧Q)))
+              alpha)).trans
+        LinearStudy.coextensionOriginalDualTensorEquiv).trans
+    (Module.Dual.congr (LinearStudy.abstractLocalizedModuleFiberEquiv P S))
+ROLECHECK:LinearStudy.weaklyRegular_of_maximal_localizations:true
+KINDCHECK:LinearStudy.weaklyRegular_of_maximal_localizations:theorem
+ROLECHECK:LinearStudy.finite_free_of_maximal_local_regular_parameters:true
+KINDCHECK:LinearStudy.finite_free_of_maximal_local_regular_parameters:theorem
+ROLECHECK:LinearStudy.finite_algebra_closed_fiber_artinian:true
+KINDCHECK:LinearStudy.finite_algebra_closed_fiber_artinian:theorem
+ROLECHECK:LinearStudy.finite_algebra_maximal_contains_base_maximal:true
+KINDCHECK:LinearStudy.finite_algebra_maximal_contains_base_maximal:theorem
+ROLECHECK:LinearStudy.finite_reduced_fiber_parameters_regular_at_maximal:true
+KINDCHECK:LinearStudy.finite_reduced_fiber_parameters_regular_at_maximal:theorem
+ROLECHECK:LinearStudy.finite_free_of_reduced_fiber_local_parameters:true
+KINDCHECK:LinearStudy.finite_free_of_reduced_fiber_local_parameters:theorem
+ROLECHECK:LinearStudy.coextension_original_point_trace_one_of_reduced_local_fiber:true
+KINDCHECK:LinearStudy.coextension_original_point_trace_one_of_reduced_local_fiber:theorem
+ROLECHECK:LinearStudy.originalLocalizedModuleFiberEquiv:false
+KINDCHECK:LinearStudy.originalLocalizedModuleFiberEquiv:definition
+ROLECHECK:LinearStudy.originalLocalizedModuleFiberEquiv_tmul:true
+KINDCHECK:LinearStudy.originalLocalizedModuleFiberEquiv_tmul:theorem
+ROLECHECK:LinearStudy.originalLocalizedModuleFiberEquiv_symm_tmul:true
+KINDCHECK:LinearStudy.originalLocalizedModuleFiberEquiv_symm_tmul:theorem
+ROLECHECK:LinearStudy.abstractLocalizedModuleFiberEquiv:false
+KINDCHECK:LinearStudy.abstractLocalizedModuleFiberEquiv:definition
+ROLECHECK:LinearStudy.abstractLocalizedModuleFiberEquiv_tmul:true
+KINDCHECK:LinearStudy.abstractLocalizedModuleFiberEquiv_tmul:theorem
+ROLECHECK:LinearStudy.abstractLocalizedModuleFiberEquiv_symm_tmul:true
+KINDCHECK:LinearStudy.abstractLocalizedModuleFiberEquiv_symm_tmul:theorem
+ROLECHECK:LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne:false
+KINDCHECK:LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne:definition
+ROLECHECK:LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne_tmul:true
+KINDCHECK:LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne_tmul:theorem
+ROLECHECK:LinearStudy.localizedCoextensionOriginalDualTensorEquiv:false
+KINDCHECK:LinearStudy.localizedCoextensionOriginalDualTensorEquiv:definition
+ROLECHECK:LinearStudy.localizedCoextensionOriginalDualTensorEquiv_tmul_apply:true
+KINDCHECK:LinearStudy.localizedCoextensionOriginalDualTensorEquiv_tmul_apply:theorem
+ROLECHECK:LinearStudy.localizedCoextensionOriginalDualTensorEquiv_original_evaluation:true
+KINDCHECK:LinearStudy.localizedCoextensionOriginalDualTensorEquiv_original_evaluation:theorem
+ROLECHECK:LinearStudy.localizedCoextensionOriginalDualTensorEquiv_evaluation:true
+KINDCHECK:LinearStudy.localizedCoextensionOriginalDualTensorEquiv_evaluation:theorem
+ROLECHECK:LinearStudy.localizedCoextensionOriginalDualTensorEquiv_both_tmul:true
+KINDCHECK:LinearStudy.localizedCoextensionOriginalDualTensorEquiv_both_tmul:theorem
+ROLECHECK:LinearStudy.localizedCoextensionOriginalDualTensorEquiv_scalar_naturality:true
+KINDCHECK:LinearStudy.localizedCoextensionOriginalDualTensorEquiv_scalar_naturality:theorem
+ROLECHECK:LinearStudy.localizedCoextensionOriginalScalarFiberEnd_idempotent:true
+KINDCHECK:LinearStudy.localizedCoextensionOriginalScalarFiberEnd_idempotent:theorem
+ROLECHECK:LinearStudy.localizedCoextensionOriginalFiberTrace_actual_point_exists_one:true
+KINDCHECK:LinearStudy.localizedCoextensionOriginalFiberTrace_actual_point_exists_one:theorem
+ROLECHECK:LinearStudy.localizedCoextensionOriginalScalarFiberEnd_eq_of_fiber_eq:true
+KINDCHECK:LinearStudy.localizedCoextensionOriginalScalarFiberEnd_eq_of_fiber_eq:theorem
+ROLECHECK:LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_of_lift:true
+KINDCHECK:LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_of_lift:theorem
+ROLECHECK:LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_idempotent:true
+KINDCHECK:LinearStudy.localizedCoextensionOriginalResidueFiberPointEnd_idempotent:theorem
+ROLECHECK:LinearStudy.localizedCoextensionOriginalResidueFiberPointTrace_exists_one:true
+KINDCHECK:LinearStudy.localizedCoextensionOriginalResidueFiberPointTrace_exists_one:theorem
+ROLECHECK:LinearStudy.localized_finite_source_free_of_reduced_fiber:true
+KINDCHECK:LinearStudy.localized_finite_source_free_of_reduced_fiber:theorem
+ROLECHECK:LinearStudy.original_coextension_point_trace_one_of_local_reduced_fiber:true
+KINDCHECK:LinearStudy.original_coextension_point_trace_one_of_local_reduced_fiber:theorem
+ROLECHECK:LinearStudy.polynomial_point_local_centered_parameters_generate:true
+KINDCHECK:LinearStudy.polynomial_point_local_centered_parameters_generate:theorem
+ROLECHECK:LinearStudy.polynomial_point_original_coextension_trace_one:true
+KINDCHECK:LinearStudy.polynomial_point_original_coextension_trace_one:theorem
