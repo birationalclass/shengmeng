@@ -1,0 +1,410 @@
+SOURCE SurjectiveBaseCoefficientQuotient
+module
+public import Linear.SurjectiveBaseFiberQuotient
+public import Mathlib.LinearAlgebra.TensorProduct.Quotient
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open TensorProduct
+universe u
+variable {R S K N : Type u} [CommRing R] [CommRing S] [CommRing K]
+variable [Algebra R S] [Algebra R K] [AddCommGroup N]
+variable [Module S N] [Module R N] [IsScalarTower R S N]
+/-- Actual ORIGINAL coefficient quotient by the extended fiber ideal is
+its actual residue tensor. No flatness,finiteness or arbitrary iso input.
+This construction will be applied to the actual coextension coefficient. -/
+def surjectiveBaseCoefficientQuotientEquiv
+    (hres : Function.Surjective (algebraMap R K)) :
+    (N ⧸ ((RingHom.ker (algebraMap R K)).map (algebraMap R S) •
+      (⊤ : Submodule S N))) ≃ₗ[R] K ⊗[R] N := by
+  let m := RingHom.ker (algebraMap R K)
+  let P := m.map (algebraMap R S) • (⊤ : Submodule S N)
+  have hP : P.restrictScalars R=m • (⊤ : Submodule R N) := by
+    simpa only [P,Submodule.restrictScalars_top] using
+      (Submodule.restrictScalars_map_smul_eq m (⊤ : Submodule S N))
+  let e : (R ⧸ m) ≃ₐ[R] K :=
+    Ideal.quotientKerAlgEquivOfSurjective (f:=Algebra.ofId R K) hres
+  exact (Submodule.Quotient.restrictScalarsEquiv R P).symm.trans
+    ((Submodule.quotEquivOfEq _ _ hP).trans
+      ((TensorProduct.quotTensorEquivQuotSMul N m).symm.trans
+        (TensorProduct.congr e.toLinearEquiv (LinearEquiv.refl R N))))
+/-- The actual quotient comparison retains EVERY original coefficient. -/
+theorem surjectiveBaseCoefficientQuotientEquiv_mk
+    (hres : Function.Surjective (algebraMap R K)) (n : N) :
+    surjectiveBaseCoefficientQuotientEquiv (S:=S) hres (Submodule.Quotient.mk n)=
+      ((1:K) ⊗ₜ[R] n) := by
+  simp only [surjectiveBaseCoefficientQuotientEquiv,LinearEquiv.trans_apply,
+    Submodule.Quotient.restrictScalarsEquiv_symm_mk,Submodule.quotEquivOfEq_mk,
+    TensorProduct.quotTensorEquivQuotSMul_symm_mk,TensorProduct.congr_tmul]
+  change ((Ideal.quotientKerAlgEquivOfSurjective (f:=Algebra.ofId R K) hres)
+    (1 : R ⧸ RingHom.ker (algebraMap R K))) ⊗ₜ[R] n=_
+  simp only [map_one]
+variable [Algebra K R] [Algebra K S] [IsScalarTower K R S] [IsScalarTower K R K]
+variable [Module K N] [IsScalarTower K R N] [IsScalarTower K S N]
+/-- The SAME original coefficient quotient comparison is linear over the
+ORIGINAL coefficient field. This does not transport a source action. -/
+def surjectiveBaseCoefficientQuotientOriginalFieldEquiv
+    (hres : Function.Surjective (algebraMap R K)) :
+    (N ⧸ ((RingHom.ker (algebraMap R K)).map (algebraMap R S) •
+      (⊤ : Submodule S N))) ≃ₗ[K] K ⊗[R] N :=
+  (surjectiveBaseCoefficientQuotientEquiv (S:=S) hres).restrictScalars K
+/-- Original-field linearity leaves every original coefficient class unchanged. -/
+theorem surjectiveBaseCoefficientQuotientOriginalFieldEquiv_mk
+    (hres : Function.Surjective (algebraMap R K)) (n : N) :
+    surjectiveBaseCoefficientQuotientOriginalFieldEquiv (S:=S) hres
+      (Submodule.Quotient.mk n)=((1:K) ⊗ₜ[R] n) :=
+  surjectiveBaseCoefficientQuotientEquiv_mk (R:=R) (S:=S) (K:=K) (N:=N) hres n
+end LinearStudy
+
+SOURCE CoextensionOriginalCoefficientQuotient
+module
+public import Linear.SurjectiveBaseCoefficientQuotient
+public import Linear.CoextensionNativeTopDualityInputs
+public import Linear.TildeCoefficientQuotientPushforward
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+variable {K R S : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [Algebra R K]
+variable [IsScalarTower K R S] [IsScalarTower K R K]
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+/-- ACTUAL native coextension coefficient modulo the ACTUAL fiber ideal
+is its SAME original coefficient residue tensor,over the ORIGINAL field.
+No free/flat/finite input and no transported source module action. -/
+def coextensionOriginalCoefficientQuotientFiberEquiv
+    (hres : Function.Surjective (algebraMap R K)) :
+    let D := (ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)
+    let C := (ModuleCat.restrictScalars (algebraMap R S)).obj D
+    letI : IsScalarTower K S D := IsScalarTower.of_compHom K S D
+    (D ⧸ ((RingHom.ker (algebraMap R K)).map (algebraMap R S) •
+      (⊤ : Submodule S D))) ≃ₗ[K] K ⊗[R] C := by
+  dsimp only
+  let D := (ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)
+  letI : IsScalarTower R S D := IsScalarTower.of_compHom R S D
+  letI : IsScalarTower K S D := IsScalarTower.of_compHom K S D
+  letI : IsScalarTower K R D := coextensionOriginalBaseScalarTower
+  let e := restrictedScalarTowerModuleEquiv (R:=R) (S:=S) D
+  exact (surjectiveBaseCoefficientQuotientOriginalFieldEquiv (S:=S) (N:=D) hres).trans
+    (e.symm.baseChange R K _ _)
+/-- Every ORIGINAL coextension coefficient class is mapped to1 tensor
+that same native coefficient,viewed by the ACTUAL scalar restriction. -/
+theorem coextensionOriginalCoefficientQuotientFiberEquiv_mk
+    (hres : Function.Surjective (algebraMap R K))
+    (ell : (ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) :
+    coextensionOriginalCoefficientQuotientFiberEquiv hres (Submodule.Quotient.mk ell)=
+      ((1:K) ⊗ₜ[R] (show (ModuleCat.restrictScalars (algebraMap R S)).obj
+        ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R)) from ell)) := by
+  simp only [coextensionOriginalCoefficientQuotientFiberEquiv,id_eq,LinearEquiv.trans_apply,
+    surjectiveBaseCoefficientQuotientOriginalFieldEquiv_mk,LinearEquiv.baseChange_tmul]
+  rfl
+end LinearStudy
+
+SOURCE OriginalCutEquationCoefficientQuotientDual
+module
+public import Linear.OriginalCutEquationCoefficientFiberDual
+public import Linear.CoextensionOriginalCoefficientQuotient
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+attribute [local instance] MvPolynomial.gradedAlgebra
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+/-- Actual original cut-coefficient QUOTIENT duality. Statement definition,
+not a proof. The quotient ideal is the SAME original H ideal;the source
+is the native coextension with its ORIGINAL upper-ring action. -/
+def projectivePulledCutEquationCoefficientQuotientDualStatement {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ) : Prop :=
+    let R := MvPolynomial (Fin r) ℂ
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+    let J := (projectivePulledLinearSectionIdeal f V L w).map
+      (affineChartPolynomialMap (K:=ℂ)).toRingHom
+    let Q := MvPolynomial (Fin n) ℂ ⧸ J
+    let phi := projectivePulledCutEquationMap f V L w
+    letI : Algebra R B := phi.toRingHom.toAlgebra
+    letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+    letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+    letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom.toAlgebra
+    let D := (ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R)
+    letI : IsScalarTower ℂ B D := IsScalarTower.of_compHom ℂ B D
+    let I := Ideal.span (Set.range (fun i : Fin r => Ideal.Quotient.mk V.affineIdeal
+      (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))))
+    ∃ F : (D ⧸ (I • (⊤ : Submodule B D))) ≃ₗ[ℂ] Module.Dual ℂ Q,
+      (∀ (ell : D) (P : MvPolynomial (Fin n) ℂ),
+        F (Submodule.Quotient.mk ell) (Ideal.Quotient.mk J P)=
+          algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+            (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell))
+              (Ideal.Quotient.mk V.affineIdeal P))) ∧
+      (∀ (ell : D),F (Submodule.Quotient.mk ell) 1=
+        algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+          (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell)) 1)) ∧
+      (∀ (P : MvPolynomial (Fin n) ℂ) z q,
+        F ((Ideal.Quotient.mk V.affineIdeal P) • z) q=
+          F z (q*Ideal.Quotient.mk J P))
+/-- Join the actual native coefficient quotient to the SAME original cut
+ring dual,retaining EVERY original coefficient value,literal evaluation
+at1,and ORIGINAL source multiplication. No source action is transported. -/
+theorem projectivePulledCutEquation_coefficient_quotient_dual_of_fiber_dual {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ)
+    (hdual : projectivePulledCutEquationCoefficientFiberDualStatement f V L w) :
+    projectivePulledCutEquationCoefficientQuotientDualStatement f V L w := by
+  let R := MvPolynomial (Fin r) ℂ
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+  let phi := projectivePulledCutEquationMap f V L w
+  let rho : R →ₐ[ℂ] ℂ := MvPolynomial.aeval (0 : Fin r → ℂ)
+  letI : Algebra R B := phi.toRingHom.toAlgebra
+  letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+  letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+  letI : Algebra R ℂ := rho.toRingHom.toAlgebra
+  letI : IsScalarTower ℂ R B := IsScalarTower.of_algHom phi
+  letI : IsScalarTower ℂ R ℂ := IsScalarTower.of_algHom rho
+  let D := (ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R)
+  letI : IsScalarTower ℂ B D := IsScalarTower.of_compHom ℂ B D
+  have hres : Function.Surjective (algebraMap R ℂ) :=
+    fun a => ⟨MvPolynomial.C a,rho.commutes a⟩
+  let I := Ideal.span (Set.range (fun i : Fin r => Ideal.Quotient.mk V.affineIdeal
+    (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))))
+  let m := RingHom.ker (algebraMap R ℂ)
+  have hI : m.map (algebraMap R B)=I :=
+    projectivePulledCutEquationMap_zero_fiber_ideal f V L w
+  let Qe := (Submodule.quotEquivOfEq (I • (⊤ : Submodule B D))
+    (m.map (algebraMap R B) • (⊤ : Submodule B D))
+      (congrArg (fun T : Ideal B => T • (⊤ : Submodule B D)) hI.symm)).restrictScalars ℂ
+  let E0 := coextensionOriginalCoefficientQuotientFiberEquiv (K:=ℂ) (R:=R) (S:=B) hres
+  unfold projectivePulledCutEquationCoefficientFiberDualStatement at hdual
+  dsimp only at hdual
+  obtain ⟨E,hpure,hunit,hscalar⟩ := hdual
+  unfold projectivePulledCutEquationCoefficientQuotientDualStatement
+  dsimp only
+  refine ⟨Qe.trans (E0.trans E),?_,?_,?_⟩
+  · intro ell P
+    change E (E0 (Submodule.Quotient.mk ell)) (Ideal.Quotient.mk _ P)=_
+    rw [coextensionOriginalCoefficientQuotientFiberEquiv_mk]
+    simpa only [one_mul] using hpure (1:ℂ) ell P
+  · intro ell
+    change E (E0 (Submodule.Quotient.mk ell)) 1=_
+    rw [coextensionOriginalCoefficientQuotientFiberEquiv_mk]
+    simpa only [one_mul,map_one] using hpure (1:ℂ) ell (1 : MvPolynomial (Fin n) ℂ)
+  · intro P z q
+    induction z using Submodule.Quotient.induction_on with
+    | _ ell =>
+      change E (E0 (Submodule.Quotient.mk ((Ideal.Quotient.mk V.affineIdeal P) • ell))) q=
+        E (E0 (Submodule.Quotient.mk ell)) (q*Ideal.Quotient.mk _ P)
+      rw [coextensionOriginalCoefficientQuotientFiberEquiv_mk,
+        coextensionOriginalCoefficientQuotientFiberEquiv_mk]
+      change E (coextensionOriginalScalarFiberEnd (R:=R) (K:=ℂ)
+        (Ideal.Quotient.mk V.affineIdeal P) ((1:ℂ) ⊗ₜ[R] ell)) q=_
+      exact hscalar P ((1:ℂ) ⊗ₜ[R] ell) q
+/-- Complete ORIGINAL Setup DERIVES quotient duality for the SAME H ideal
+on the SAME nonempty original open. No quotient comparison or freeness
+certificate is a hypothesis. FIXED normalization/top-H remain OPEN. -/
+theorem projectivePulledCutEquation_originalSetup_exists_coefficient_quotient_dual_open {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n) (hrn : r < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+    (hV : f.onPoints ⁻¹' V.zeroSet=V.zeroSet)
+    (L : Fin (r+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+    (hfinite : (projectiveLinearNormalizationMap V L).Finite)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet) :
+    ∃ c : MvPolynomial (Fin (r+1)) ℂ,c ≠ 0 ∧
+      (∃ w : Fin (r+1) → ℂ,MvPolynomial.eval w c ≠ 0) ∧
+      ∀ w : Fin (r+1) → ℂ,MvPolynomial.eval w c ≠ 0 →
+        (projectivePulledCutEquationMap f V L w).toRingHom.Finite ∧
+        projectivePulledCutEquationCoefficientQuotientDualStatement f V L w := by
+  obtain ⟨c,hc,hex,hcprop⟩ := projectivePulledCutEquation_originalSetup_exists_coefficient_dual_open
+    f V hrn hq hf hV L hL hinj hfinite x0 hx0
+  refine ⟨c,hc,hex,?_⟩
+  intro w hw
+  exact ⟨(hcprop w hw).1,projectivePulledCutEquation_coefficient_quotient_dual_of_fiber_dual
+    f V L w (hcprop w hw).2⟩
+end LinearStudy
+
+SOURCE FieldDualNativeCoextensionSource
+module
+public import Linear.CoextensionFractionFunctional
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open CategoryTheory
+universe u
+variable {K B Q N : Type u} [Field K] [CommRing B] [CommRing Q] [Algebra K Q]
+variable [AddCommGroup N] [Module K N] [Module B N]
+/-- A field-linear duality which PROVABLY retains the ORIGINAL B action
+is an ACTUAL B-linear equivalence to the native coextension on Q,with
+scalars restricted through the ORIGINAL beta. No module action is defined
+by transport through E. -/
+def fieldDualNativeCoextensionSourceEquiv (beta : B →+* Q)
+    (E : N ≃ₗ[K] Module.Dual K Q)
+    (hE : ∀ (b : B) (z : N) (q : Q),E (b • z) q=E z (q*beta b)) :
+    N ≃ₗ[B] (ModuleCat.restrictScalars beta).obj
+      ((ModuleCat.coextendScalars (algebraMap K Q)).obj (ModuleCat.of K K)) := by
+  let c := coextensionOriginalDualEquiv (R:=K) (S:=Q)
+  let e : N ≃+ (ModuleCat.restrictScalars beta).obj
+      ((ModuleCat.coextendScalars (algebraMap K Q)).obj (ModuleCat.of K K)) :=
+    E.toAddEquiv.trans c.symm.toAddEquiv
+  refine { e with map_smul' := ?_ }
+  intro b z
+  apply ModuleCat.CoextendScalars.ext
+  apply LinearMap.ext
+  intro q
+  change E (b • z) (show Q from q)=E z ((show Q from q)*beta b)
+  exact hE b z q
+/-- The native-source-linear equivalence retains EVERY original functional
+value,not merely the existence of an unspecified object isomorphism. -/
+theorem fieldDualNativeCoextensionSourceEquiv_apply (beta : B →+* Q)
+    (E : N ≃ₗ[K] Module.Dual K Q)
+    (hE : ∀ (b : B) (z : N) (q : Q),E (b • z) q=E z (q*beta b))
+    (z : N) (q : Q) :
+    (show (ModuleCat.coextendScalars (algebraMap K Q)).obj (ModuleCat.of K K) from
+      fieldDualNativeCoextensionSourceEquiv beta E hE z) q=E z q := by
+  rfl
+end LinearStudy
+
+SOURCE OriginalCutEquationCoefficientNativeDual
+module
+public import Linear.OriginalCutEquationCoefficientQuotientDual
+public import Linear.FieldDualNativeCoextensionSource
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+attribute [local instance] MvPolynomial.gradedAlgebra
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+/-- The ACTUAL quotient map from the ORIGINAL affine variety ring to
+SAME ORIGINAL cut ring,using the already constructed Koszul quotient. -/
+def projectivePulledCutOriginalRingMap {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ) :
+    (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) →ₐ[ℂ]
+      (MvPolynomial (Fin n) ℂ ⧸ (projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom) :=
+  (projectivePulledLinearSection_koszulQuotientAlgEquiv f V L w).toAlgHom.comp
+    (Ideal.Quotient.mkₐ ℂ _)
+/-- The actual cut map retains EVERY ORIGINAL polynomial class. -/
+theorem projectivePulledCutOriginalRingMap_mk {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ)
+    (P : MvPolynomial (Fin n) ℂ) :
+    projectivePulledCutOriginalRingMap f V L w (Ideal.Quotient.mk V.affineIdeal P)=
+      Ideal.Quotient.mk _ P :=
+  projectivePulledLinearSection_koszulQuotientAlgEquiv_mk f V L w P
+/-- The original cut map is an ACTUAL surjective ring map. -/
+theorem projectivePulledCutOriginalRingMap_surjective {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ) :
+    Function.Surjective (projectivePulledCutOriginalRingMap f V L w) := by
+  intro q
+  obtain ⟨P,rfl⟩ := Ideal.Quotient.mk_surjective q
+  exact ⟨Ideal.Quotient.mk V.affineIdeal P,
+    projectivePulledCutOriginalRingMap_mk f V L w P⟩
+/-- Actual ORIGINAL B-linear quotient duality into the native coextension
+on SAME cut Q,restricted through ACTUAL original cut map. Statement only,
+not a proof. Original values and eval1 are retained explicitly. -/
+def projectivePulledCutEquationCoefficientNativeDualStatement {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ) : Prop :=
+    let R := MvPolynomial (Fin r) ℂ
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+    let J := (projectivePulledLinearSectionIdeal f V L w).map
+      (affineChartPolynomialMap (K:=ℂ)).toRingHom
+    let Q := MvPolynomial (Fin n) ℂ ⧸ J
+    let phi := projectivePulledCutEquationMap f V L w
+    letI : Algebra R B := phi.toRingHom.toAlgebra
+    letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+    letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+    letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom.toAlgebra
+    let D := (ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R)
+    let Dq := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj (ModuleCat.of ℂ ℂ)
+    let I := Ideal.span (Set.range (fun i : Fin r => Ideal.Quotient.mk V.affineIdeal
+      (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))))
+    ∃ F : (D ⧸ (I • (⊤ : Submodule B D))) ≃ₗ[B]
+        (ModuleCat.restrictScalars (projectivePulledCutOriginalRingMap f V L w).toRingHom).obj Dq,
+      (∀ (ell : D) (P : MvPolynomial (Fin n) ℂ),
+        (show Dq from F (Submodule.Quotient.mk ell)) (Ideal.Quotient.mk J P)=
+          algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+            (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell))
+              (Ideal.Quotient.mk V.affineIdeal P))) ∧
+      (∀ (ell : D),(show Dq from F (Submodule.Quotient.mk ell)) (1:Q)=
+        algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+          (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell)) 1))
+/-- Original quotient-source action compatibility DERIVES an ACTUAL
+B-linear equivalence to the native cut dual,not a transported action. -/
+theorem projectivePulledCutEquation_native_dual_of_quotient_dual {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ)
+    (hdual : projectivePulledCutEquationCoefficientQuotientDualStatement f V L w) :
+    projectivePulledCutEquationCoefficientNativeDualStatement f V L w := by
+  let R := MvPolynomial (Fin r) ℂ
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+  let phi := projectivePulledCutEquationMap f V L w
+  letI : Algebra R B := phi.toRingHom.toAlgebra
+  letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+  letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+  letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom.toAlgebra
+  let D := (ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R)
+  letI : IsScalarTower ℂ B D := IsScalarTower.of_compHom ℂ B D
+  let beta := projectivePulledCutOriginalRingMap f V L w
+  unfold projectivePulledCutEquationCoefficientQuotientDualStatement at hdual
+  dsimp only at hdual
+  obtain ⟨F,hvalues,hunit,hscalar⟩ := hdual
+  have hs : ∀ b z q,F (b • z) q=F z (q*beta b) := by
+    intro b z q
+    obtain ⟨P,rfl⟩ := Ideal.Quotient.mk_surjective b
+    rw [projectivePulledCutOriginalRingMap_mk]
+    exact hscalar P z q
+  let Fnew := fieldDualNativeCoextensionSourceEquiv beta.toRingHom F hs
+  unfold projectivePulledCutEquationCoefficientNativeDualStatement
+  dsimp only
+  refine ⟨Fnew,?_,?_⟩
+  · intro ell P
+    rw [fieldDualNativeCoextensionSourceEquiv_apply]
+    exact hvalues ell P
+  · intro ell
+    rw [fieldDualNativeCoextensionSourceEquiv_apply]
+    exact hunit ell
+/-- Full ORIGINAL Setup DERIVES actual native B-linear cut-coefficient
+duality on SAME nonempty open. No auxiliary iso or global free/flat/CM
+input. Fixed original normalization and SAME top-H remain OPEN. -/
+theorem projectivePulledCutEquation_originalSetup_exists_native_coefficient_dual_open {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n) (hrn : r < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+    (hV : f.onPoints ⁻¹' V.zeroSet=V.zeroSet)
+    (L : Fin (r+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+    (hfinite : (projectiveLinearNormalizationMap V L).Finite)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet) :
+    ∃ c : MvPolynomial (Fin (r+1)) ℂ,c ≠ 0 ∧
+      (∃ w : Fin (r+1) → ℂ,MvPolynomial.eval w c ≠ 0) ∧
+      ∀ w : Fin (r+1) → ℂ,MvPolynomial.eval w c ≠ 0 →
+        (projectivePulledCutEquationMap f V L w).toRingHom.Finite ∧
+        projectivePulledCutEquationCoefficientNativeDualStatement f V L w := by
+  obtain ⟨c,hc,hex,hcprop⟩ := projectivePulledCutEquation_originalSetup_exists_coefficient_quotient_dual_open
+    f V hrn hq hf hV L hL hinj hfinite x0 hx0
+  refine ⟨c,hc,hex,?_⟩
+  intro w hw
+  exact ⟨(hcprop w hw).1,projectivePulledCutEquation_native_dual_of_quotient_dual
+    f V L w (hcprop w hw).2⟩
+end LinearStudy

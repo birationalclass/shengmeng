@@ -1,0 +1,412 @@
+@LinearStudy.surjectiveBaseCoefficientQuotientEquiv : {R S K N : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            [inst_5 : AddCommGroup N] →
+              [inst_6 : Module S N] →
+                [inst_7 : Module R N] →
+                  [inst_8 : IsScalarTower R S N] →
+                    Function.Surjective ⇑(algebraMap R K) →
+                      (N ⧸ Ideal.map (algebraMap R S) (RingHom.ker (algebraMap R K)) • ⊤) ≃ₗ[R] TensorProduct R K N
+'LinearStudy.surjectiveBaseCoefficientQuotientEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.surjectiveBaseCoefficientQuotientEquiv_mk : ∀ {R S K N : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [inst_5 : AddCommGroup N]
+  [inst_6 : Module S N] [inst_7 : Module R N] [inst_8 : IsScalarTower R S N]
+  (hres : Function.Surjective ⇑(algebraMap R K)) (n : N),
+  (LinearStudy.surjectiveBaseCoefficientQuotientEquiv hres) (Submodule.Quotient.mk n) = 1 ⊗ₜ[R] n
+'LinearStudy.surjectiveBaseCoefficientQuotientEquiv_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.surjectiveBaseCoefficientQuotientOriginalFieldEquiv : {R S K N : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            [inst_5 : AddCommGroup N] →
+              [inst_6 : Module S N] →
+                [inst_7 : Module R N] →
+                  [IsScalarTower R S N] →
+                    [inst_9 : Algebra K R] →
+                      [inst_10 : Algebra K S] →
+                        [IsScalarTower K R K] →
+                          [inst_12 : Module K N] →
+                            [IsScalarTower K R N] →
+                              [inst_14 : IsScalarTower K S N] →
+                                Function.Surjective ⇑(algebraMap R K) →
+                                  (N ⧸ Ideal.map (algebraMap R S) (RingHom.ker (algebraMap R K)) • ⊤) ≃ₗ[K]
+                                    TensorProduct R K N
+'LinearStudy.surjectiveBaseCoefficientQuotientOriginalFieldEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.surjectiveBaseCoefficientQuotientOriginalFieldEquiv_mk : ∀ {R S K N : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [inst_5 : AddCommGroup N]
+  [inst_6 : Module S N] [inst_7 : Module R N] [inst_8 : IsScalarTower R S N] [inst_9 : Algebra K R]
+  [inst_10 : Algebra K S] [IsScalarTower K R S] [inst_12 : IsScalarTower K R K] [inst_13 : Module K N]
+  [inst_14 : IsScalarTower K R N] [inst_15 : IsScalarTower K S N] (hres : Function.Surjective ⇑(algebraMap R K))
+  (n : N), (LinearStudy.surjectiveBaseCoefficientQuotientOriginalFieldEquiv hres) (Submodule.Quotient.mk n) = 1 ⊗ₜ[R] n
+'LinearStudy.surjectiveBaseCoefficientQuotientOriginalFieldEquiv_mk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.coextensionOriginalCoefficientQuotientFiberEquiv : {K R S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [inst_6 : Algebra R K] →
+                [IsScalarTower K R S] →
+                  [IsScalarTower K R K] →
+                    Function.Surjective ⇑(algebraMap R K) →
+                      let D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+                      have C := (ModuleCat.restrictScalars (algebraMap R S)).obj D;
+                      (↑D ⧸ Ideal.map (algebraMap R S) (RingHom.ker (algebraMap R K)) • ⊤) ≃ₗ[K] TensorProduct R K ↑C
+'LinearStudy.coextensionOriginalCoefficientQuotientFiberEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.coextensionOriginalCoefficientQuotientFiberEquiv_mk : ∀ {K R S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : Algebra R K] [inst_7 : IsScalarTower K R S] [inst_8 : IsScalarTower K R K]
+  (hres : Function.Surjective ⇑(algebraMap R K)) (ell : ↑((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)),
+  (LinearStudy.coextensionOriginalCoefficientQuotientFiberEquiv hres) (Submodule.Quotient.mk ell) =
+    1 ⊗ₜ[R]
+      have this := ell;
+      this
+'LinearStudy.coextensionOriginalCoefficientQuotientFiberEquiv_mk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquationCoefficientQuotientDualStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n → (Fin (r + 1) → LinearStudy.CoordinateRing n) → (Fin (r + 1) → ℂ) → Prop
+'LinearStudy.projectivePulledCutEquationCoefficientQuotientDualStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_coefficient_quotient_dual_of_fiber_dual : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ),
+  LinearStudy.projectivePulledCutEquationCoefficientFiberDualStatement f V L w →
+    LinearStudy.projectivePulledCutEquationCoefficientQuotientDualStatement f V L w
+'LinearStudy.projectivePulledCutEquation_coefficient_quotient_dual_of_fiber_dual' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_quotient_dual_open : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  r < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+            (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+              Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+                (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (r + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                (LinearStudy.projectivePulledCutEquationMap f V L w).Finite ∧
+                                  LinearStudy.projectivePulledCutEquationCoefficientQuotientDualStatement f V L w
+'LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_quotient_dual_open' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.fieldDualNativeCoextensionSourceEquiv : {K B Q N : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing B] →
+      [inst_2 : CommRing Q] →
+        [inst_3 : Algebra K Q] →
+          [inst_4 : AddCommGroup N] →
+            [inst_5 : Module K N] →
+              [inst_6 : Module B N] →
+                (beta : B →+* Q) →
+                  (E : N ≃ₗ[K] Module.Dual K Q) →
+                    (∀ (b : B) (z : N) (q : Q), (E (b • z)) q = (E z) (q * beta b)) →
+                      N ≃ₗ[B]
+                        ↑((ModuleCat.restrictScalars beta).obj ((ModuleCat.coextendScalars (algebraMap K Q)).obj ↧K))
+'LinearStudy.fieldDualNativeCoextensionSourceEquiv' depends on axioms: [propext, Quot.sound]
+@LinearStudy.fieldDualNativeCoextensionSourceEquiv_apply : ∀ {K B Q N : Type u_1} [inst : Field K] [inst_1 : CommRing B]
+  [inst_2 : CommRing Q] [inst_3 : Algebra K Q] [inst_4 : AddCommGroup N] [inst_5 : Module K N] [inst_6 : Module B N]
+  (beta : B →+* Q) (E : N ≃ₗ[K] Module.Dual K Q) (hE : ∀ (b : B) (z : N) (q : Q), (E (b • z)) q = (E z) (q * beta b))
+  (z : N) (q : Q),
+  ((ModuleCat.CoextendScalars.equiv (algebraMap K Q) ↧K)
+        (have this := (LinearStudy.fieldDualNativeCoextensionSourceEquiv beta E hE) z;
+        this))
+      q =
+    (E z) q
+'LinearStudy.fieldDualNativeCoextensionSourceEquiv_apply' depends on axioms: [propext, Quot.sound]
+@LinearStudy.projectivePulledCutOriginalRingMap : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (w : Fin (r + 1) → ℂ) →
+          MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal →ₐ[ℂ]
+            MvPolynomial (Fin n) ℂ ⧸
+              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                (LinearStudy.projectivePulledLinearSectionIdeal f V L w)
+'LinearStudy.projectivePulledCutOriginalRingMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledCutOriginalRingMap_mk : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ)
+  (P : MvPolynomial (Fin n) ℂ),
+  (LinearStudy.projectivePulledCutOriginalRingMap f V L w) ((Ideal.Quotient.mk V.affineIdeal) P) =
+    (Ideal.Quotient.mk
+        (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+          (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+      P
+'LinearStudy.projectivePulledCutOriginalRingMap_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledCutOriginalRingMap_surjective : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (w : Fin (r + 1) → ℂ), Function.Surjective ⇑(LinearStudy.projectivePulledCutOriginalRingMap f V L w)
+'LinearStudy.projectivePulledCutOriginalRingMap_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledCutEquationCoefficientNativeDualStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n → (Fin (r + 1) → LinearStudy.CoordinateRing n) → (Fin (r + 1) → ℂ) → Prop
+'LinearStudy.projectivePulledCutEquationCoefficientNativeDualStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_native_dual_of_quotient_dual : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ),
+  LinearStudy.projectivePulledCutEquationCoefficientQuotientDualStatement f V L w →
+    LinearStudy.projectivePulledCutEquationCoefficientNativeDualStatement f V L w
+'LinearStudy.projectivePulledCutEquation_native_dual_of_quotient_dual' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_originalSetup_exists_native_coefficient_dual_open : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  r < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+            (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+              Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+                (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (r + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                (LinearStudy.projectivePulledCutEquationMap f V L w).Finite ∧
+                                  LinearStudy.projectivePulledCutEquationCoefficientNativeDualStatement f V L w
+'LinearStudy.projectivePulledCutEquation_originalSetup_exists_native_coefficient_dual_open' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.surjectiveBaseCoefficientQuotientEquiv.{u} : {R S K N : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            [inst_5 : AddCommGroup N] →
+              [inst_6 : Module S N] →
+                [inst_7 : Module R N] →
+                  [inst_8 : IsScalarTower R S N] →
+                    Function.Surjective ⇑(algebraMap R K) →
+                      (N ⧸ Ideal.map (algebraMap R S) (RingHom.ker (algebraMap R K)) • ⊤) ≃ₗ[R] TensorProduct R K N :=
+fun {R S K N : Type u} [CommRing R] [CommRing S] [CommRing K] [Algebra R S] [Algebra R K] [AddCommGroup N] [Module S N]
+    [Module R N] [IsScalarTower R S N] (hres : Function.Surjective ⇑(algebraMap R K)) =>
+  let m := RingHom.ker (algebraMap R K);
+  let P := Ideal.map (algebraMap R S) m • ⊤;
+  have hP := ⋯;
+  have e := Ideal.quotientKerAlgEquivOfSurjective hres;
+  (Submodule.Quotient.restrictScalarsEquiv R P).symm.trans
+    (((Submodule.restrictScalars R P).quotEquivOfEq (m • ⊤) hP).trans
+      ((TensorProduct.quotTensorEquivQuotSMul N m).symm.trans (TensorProduct.congr (↑e) (LinearEquiv.refl R N))))
+def LinearStudy.surjectiveBaseCoefficientQuotientOriginalFieldEquiv.{u} : {R S K N : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            [inst_5 : AddCommGroup N] →
+              [inst_6 : Module S N] →
+                [inst_7 : Module R N] →
+                  [IsScalarTower R S N] →
+                    [inst_9 : Algebra K R] →
+                      [inst_10 : Algebra K S] →
+                        [IsScalarTower K R K] →
+                          [inst_12 : Module K N] →
+                            [IsScalarTower K R N] →
+                              [inst_14 : IsScalarTower K S N] →
+                                Function.Surjective ⇑(algebraMap R K) →
+                                  (N ⧸ Ideal.map (algebraMap R S) (RingHom.ker (algebraMap R K)) • ⊤) ≃ₗ[K]
+                                    TensorProduct R K N :=
+fun {R S K N : Type u} [CommRing R] [CommRing S] [CommRing K] [Algebra R S] [Algebra R K] [AddCommGroup N] [Module S N]
+    [Module R N] [IsScalarTower R S N] [Algebra K R] [Algebra K S] [IsScalarTower K R K] [Module K N]
+    [IsScalarTower K R N] [IsScalarTower K S N] (hres : Function.Surjective ⇑(algebraMap R K)) =>
+  LinearEquiv.restrictScalars K (LinearStudy.surjectiveBaseCoefficientQuotientEquiv hres)
+def LinearStudy.coextensionOriginalCoefficientQuotientFiberEquiv.{u} : {K R S : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [inst_6 : Algebra R K] →
+                [IsScalarTower K R S] →
+                  [IsScalarTower K R K] →
+                    Function.Surjective ⇑(algebraMap R K) →
+                      let D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+                      have C := (ModuleCat.restrictScalars (algebraMap R S)).obj D;
+                      (↑D ⧸ Ideal.map (algebraMap R S) (RingHom.ker (algebraMap R K)) • ⊤) ≃ₗ[K] TensorProduct R K ↑C :=
+fun {K R S : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [Algebra R K]
+    [IsScalarTower K R S] [IsScalarTower K R K] (hres : Function.Surjective ⇑(algebraMap R K)) =>
+  id
+    (let D := (ModuleCat.coextendScalars (algebraMap R S)).obj ↧R;
+    have e := LinearStudy.restrictedScalarTowerModuleEquiv D;
+    (LinearStudy.surjectiveBaseCoefficientQuotientOriginalFieldEquiv hres).trans
+      (LinearEquiv.baseChange R K (↑D) (↑((ModuleCat.restrictScalars (algebraMap R S)).obj D)) e.symm))
+def LinearStudy.projectivePulledCutEquationCoefficientQuotientDualStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (Fin (r + 1) → LinearStudy.CoordinateRing n) → (Fin (r + 1) → ℂ) → Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ) =>
+  let R := MvPolynomial (Fin r) ℂ;
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let J :=
+    Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+  let Q := MvPolynomial (Fin n) ℂ ⧸ J;
+  let phi := LinearStudy.projectivePulledCutEquationMap f V L w;
+  let D := (ModuleCat.coextendScalars (algebraMap R B)).obj ↧R;
+  have I :=
+    Ideal.span
+      (Set.range fun (i : Fin r) =>
+        (Ideal.Quotient.mk V.affineIdeal)
+          (LinearStudy.affineChartPolynomialMap
+            ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))));
+  ∃ (F : (↑D ⧸ I • ⊤) ≃ₗ[ℂ] Module.Dual ℂ Q),
+    (∀ (ell : ↑D) (P : MvPolynomial (Fin n) ℂ),
+        (F (Submodule.Quotient.mk ell)) ((Ideal.Quotient.mk J) P) =
+          (algebraMap R ℂ)
+            ((LinearStudy.coextensionOriginalDualEquiv
+                (have this := ell;
+                this))
+              ((Ideal.Quotient.mk V.affineIdeal) P))) ∧
+      (∀ (ell : ↑D),
+          (F (Submodule.Quotient.mk ell)) 1 =
+            (algebraMap R ℂ)
+              ((LinearStudy.coextensionOriginalDualEquiv
+                  (have this := ell;
+                  this))
+                1)) ∧
+        ∀ (P : MvPolynomial (Fin n) ℂ) (z : ↑D ⧸ I • ⊤) (q : Q),
+          (F ((Ideal.Quotient.mk V.affineIdeal) P • z)) q = (F z) (q * (Ideal.Quotient.mk J) P)
+def LinearStudy.fieldDualNativeCoextensionSourceEquiv.{u} : {K B Q N : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing B] →
+      [inst_2 : CommRing Q] →
+        [inst_3 : Algebra K Q] →
+          [inst_4 : AddCommGroup N] →
+            [inst_5 : Module K N] →
+              [inst_6 : Module B N] →
+                (beta : B →+* Q) →
+                  (E : N ≃ₗ[K] Module.Dual K Q) →
+                    (∀ (b : B) (z : N) (q : Q), (E (b • z)) q = (E z) (q * beta b)) →
+                      N ≃ₗ[B]
+                        ↑((ModuleCat.restrictScalars beta).obj ((ModuleCat.coextendScalars (algebraMap K Q)).obj ↧K)) :=
+fun {K B Q N : Type u} [Field K] [CommRing B] [CommRing Q] [Algebra K Q] [AddCommGroup N] [Module K N] [Module B N]
+    (beta : B →+* Q) (E : N ≃ₗ[K] Module.Dual K Q)
+    (hE : ∀ (b : B) (z : N) (q : Q), (E (b • z)) q = (E z) (q * beta b)) =>
+  let c := LinearStudy.coextensionOriginalDualEquiv;
+  let e := E.toAddEquiv.trans c.symm.toAddEquiv;
+  { toFun := e.toFun, map_add' := ⋯, map_smul' := ⋯, invFun := e.invFun, left_inv := ⋯, right_inv := ⋯ }
+def LinearStudy.projectivePulledCutOriginalRingMap : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (w : Fin (r + 1) → ℂ) →
+          MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal →ₐ[ℂ]
+            MvPolynomial (Fin n) ℂ ⧸
+              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                (LinearStudy.projectivePulledLinearSectionIdeal f V L w) :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ) =>
+  (↑(LinearStudy.projectivePulledLinearSection_koszulQuotientAlgEquiv f V L w)).comp
+    (Ideal.Quotient.mkₐ ℂ
+      (Ideal.span
+        (Set.range fun (i : Fin r) =>
+          (Ideal.Quotient.mk V.affineIdeal)
+            (LinearStudy.affineChartPolynomialMap
+              ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))))))
+def LinearStudy.projectivePulledCutEquationCoefficientNativeDualStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (Fin (r + 1) → LinearStudy.CoordinateRing n) → (Fin (r + 1) → ℂ) → Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ) =>
+  let R := MvPolynomial (Fin r) ℂ;
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let J :=
+    Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+  let Q := MvPolynomial (Fin n) ℂ ⧸ J;
+  let phi := LinearStudy.projectivePulledCutEquationMap f V L w;
+  let D := (ModuleCat.coextendScalars (algebraMap R B)).obj ↧R;
+  let Dq := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj ↧ℂ;
+  have I :=
+    Ideal.span
+      (Set.range fun (i : Fin r) =>
+        (Ideal.Quotient.mk V.affineIdeal)
+          (LinearStudy.affineChartPolynomialMap
+            ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))));
+  ∃ (F :
+    (↑D ⧸ I • ⊤) ≃ₗ[B]
+      ↑((ModuleCat.restrictScalars (LinearStudy.projectivePulledCutOriginalRingMap f V L w).toRingHom).obj Dq)),
+    (∀ (ell : ↑D) (P : MvPolynomial (Fin n) ℂ),
+        ((ModuleCat.CoextendScalars.equiv (algebraMap ℂ Q) ↧ℂ)
+              (have this := F (Submodule.Quotient.mk ell);
+              this))
+            ((Ideal.Quotient.mk J) P) =
+          (algebraMap R ℂ)
+            ((LinearStudy.coextensionOriginalDualEquiv
+                (have this := ell;
+                this))
+              ((Ideal.Quotient.mk V.affineIdeal) P))) ∧
+      ∀ (ell : ↑D),
+        ((ModuleCat.CoextendScalars.equiv (algebraMap ℂ Q) ↧ℂ)
+              (have this := F (Submodule.Quotient.mk ell);
+              this))
+            1 =
+          (algebraMap R ℂ)
+            ((LinearStudy.coextensionOriginalDualEquiv
+                (have this := ell;
+                this))
+              1)
+ROLECHECK:LinearStudy.surjectiveBaseCoefficientQuotientEquiv:false
+KINDCHECK:LinearStudy.surjectiveBaseCoefficientQuotientEquiv:definition
+ROLECHECK:LinearStudy.surjectiveBaseCoefficientQuotientEquiv_mk:true
+KINDCHECK:LinearStudy.surjectiveBaseCoefficientQuotientEquiv_mk:theorem
+ROLECHECK:LinearStudy.surjectiveBaseCoefficientQuotientOriginalFieldEquiv:false
+KINDCHECK:LinearStudy.surjectiveBaseCoefficientQuotientOriginalFieldEquiv:definition
+ROLECHECK:LinearStudy.surjectiveBaseCoefficientQuotientOriginalFieldEquiv_mk:true
+KINDCHECK:LinearStudy.surjectiveBaseCoefficientQuotientOriginalFieldEquiv_mk:theorem
+ROLECHECK:LinearStudy.coextensionOriginalCoefficientQuotientFiberEquiv:false
+KINDCHECK:LinearStudy.coextensionOriginalCoefficientQuotientFiberEquiv:definition
+ROLECHECK:LinearStudy.coextensionOriginalCoefficientQuotientFiberEquiv_mk:true
+KINDCHECK:LinearStudy.coextensionOriginalCoefficientQuotientFiberEquiv_mk:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquationCoefficientQuotientDualStatement:false
+KINDCHECK:LinearStudy.projectivePulledCutEquationCoefficientQuotientDualStatement:definition
+ROLECHECK:LinearStudy.projectivePulledCutEquation_coefficient_quotient_dual_of_fiber_dual:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_coefficient_quotient_dual_of_fiber_dual:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_quotient_dual_open:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_quotient_dual_open:theorem
+ROLECHECK:LinearStudy.fieldDualNativeCoextensionSourceEquiv:false
+KINDCHECK:LinearStudy.fieldDualNativeCoextensionSourceEquiv:definition
+ROLECHECK:LinearStudy.fieldDualNativeCoextensionSourceEquiv_apply:true
+KINDCHECK:LinearStudy.fieldDualNativeCoextensionSourceEquiv_apply:theorem
+ROLECHECK:LinearStudy.projectivePulledCutOriginalRingMap:false
+KINDCHECK:LinearStudy.projectivePulledCutOriginalRingMap:definition
+ROLECHECK:LinearStudy.projectivePulledCutOriginalRingMap_mk:true
+KINDCHECK:LinearStudy.projectivePulledCutOriginalRingMap_mk:theorem
+ROLECHECK:LinearStudy.projectivePulledCutOriginalRingMap_surjective:true
+KINDCHECK:LinearStudy.projectivePulledCutOriginalRingMap_surjective:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquationCoefficientNativeDualStatement:false
+KINDCHECK:LinearStudy.projectivePulledCutEquationCoefficientNativeDualStatement:definition
+ROLECHECK:LinearStudy.projectivePulledCutEquation_native_dual_of_quotient_dual:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_native_dual_of_quotient_dual:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_native_coefficient_dual_open:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_native_coefficient_dual_open:theorem
