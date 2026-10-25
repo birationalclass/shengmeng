@@ -26,11 +26,11 @@ export class FrameQuality{
   }
  }
  settings({reading=false,clarity='crisp',pixelRatio=1,cloud='medium',shadow=2048}={}){
-  // Keep the reading buffer intact; shed weather and reflection work first.
+  // Keep text crisp and retain low-cost clouds when reducing other effects.
   const readingFloor=clarity==='crisp'?1:.75;
   return {
    scale:Math.max(reading?readingFloor:.7,[1,1,1,.9,.8,.7][this.level]),
-   cloud:this.level>=2?'off':this.level>=1&&cloud!=='off'?'low':cloud,
+   cloud:this.level>=1&&cloud!=='off'?'low':cloud,
    shadow:this.level>=2?0:this.level>=1?Math.min(shadow,1024):shadow,
    simpleWater:this.level>=1,particles:this.level<2,
   };

@@ -5,9 +5,9 @@ export class ResourceScheduler {
  now(){return this.api.performance?.now()??Date.now();}
  async settle(value,job){if(!value||typeof value.then!=='function')return value;let timer;try{return await Promise.race([value,new Promise((_,reject)=>{timer=setTimeout(()=>{job.controller.abort();reject(new Error('任务等待超时，可重试'));},this.taskTimeout);})]);}finally{clearTimeout(timer);}}
  snapshot(){const p=this.policy(),target=1000/(p.targetFPS||60),pauseReason=this.active?this.blockedBy(this.active):'';return {active:Boolean(this.active),content:this.active?.label||'空闲 · 按需准备',pending:this.queue.length,cpuMs:this.active?this.cpuMs:0,frameMs:this.frameMs,renderMs:this.renderMs,frameBudget:target,protected:Boolean(p.opening),paused:Boolean(pauseReason),pauseReason,error:this.error||''};}
- blockedBy(job){const p=this.policy();if(job.priority<2)return '';return p.foreground===false?'页面不可见':p.opening?'开场运镜保护':p.moving?'镜头正在移动':'';}
+ blockedBy(job){const p=this.policy();if(job.priority<2)return '';return p.foreground===false?'页面不可见':p.opening?'开场运镜保护':p.moving&&!job.allowDuringMotion?'镜头正在移动':'';}
  allowed(job){return !this.blockedBy(job);}
- enqueue(key,label,factory,{priority=2}={}){if(this.jobs.has(key))return this.jobs.get(key);let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b;});this.jobs.set(key,promise);this.queue.push({key,label,factory,priority,resolve,reject});this.queue.sort((a,b)=>a.priority-b.priority);void this.pump();return promise;}
+ enqueue(key,label,factory,{priority=2,allowDuringMotion=false}={}){if(this.jobs.has(key))return this.jobs.get(key);let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b;});this.jobs.set(key,promise);this.queue.push({key,label,factory,priority,allowDuringMotion,resolve,reject});this.queue.sort((a,b)=>a.priority-b.priority);void this.pump();return promise;}
  async turn(job,preempt=false){for(;;){if(preempt&&this.queue.some(next=>next.priority<job.priority&&this.allowed(next)))throw {yieldToRequired:true};if(!this.allowed(job)){this.report(this.snapshot());await new Promise(r=>this.api.setTimeout(r,100));continue;}
    // Required work must not wait for idle time: a busy render loop may never offer it.
    // Optional timeout only grants a tiny turn; the opening/movement gate is rechecked.

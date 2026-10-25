@@ -385,7 +385,8 @@ function updateRenderBudget(stamp){
   const protectReading=$('boardClarity').value==='crisp';
   const pixelRatio=readingPixelRatio(profile.pixelRatio,{enabled:protectReading&&$('adaptiveQuality').value==='auto',mobile:device.mobile,width:innerWidth,height:innerHeight,dpr:devicePixelRatio,maxTextureSize:renderer.capabilities.maxTextureSize});
   const settings=frameQuality.settings({reading:protectReading||reading,clarity:$('boardClarity').value,pixelRatio,cloud:$('cloudQuality').value,shadow:Number($('shadowQuality').value)});
-  if($('world').dataset.cloudPreparation==='ready'&&!resources.snapshot().protected&&activeCloudQuality!==settings.cloud&&(renderChangeGate.ready||['off','low','medium','high'].indexOf(settings.cloud)<['off','low','medium','high'].indexOf(activeCloudQuality))){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
+  const cloudLevel=activeCloudQuality==='off'&&settings.cloud!=='off'&&!renderChangeGate.ready?'low':settings.cloud;
+  if($('world').dataset.cloudPreparation==='ready'&&!resources.snapshot().protected&&activeCloudQuality!==cloudLevel&&(renderChangeGate.ready||cloudLevel==='low'||['off','low','medium','high'].indexOf(cloudLevel)<['off','low','medium','high'].indexOf(activeCloudQuality))){activeCloudQuality=cloudLevel;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
   const shadows=settings.shadow>0;
   if(renderer.shadowMap.enabled!==shadows&&(!shadows||renderChangeGate.ready)){renderer.shadowMap.enabled=shadows;renderer.shadowMap.needsUpdate=true;}
   if(shadows&&retreat.sun.shadow.mapSize.x!==settings.shadow&&(renderChangeGate.ready||settings.shadow<retreat.sun.shadow.mapSize.x)){retreat.sun.shadow.mapSize.set(settings.shadow,settings.shadow);retreat.sun.shadow.map?.dispose();retreat.sun.shadow.map=null;renderer.shadowMap.needsUpdate=true;}
@@ -406,7 +407,7 @@ function updateRenderBudget(stamp){
   if($('adaptiveReadout').textContent!==text)$('adaptiveReadout').textContent=text;
   if($('world').dataset.adaptiveLevel!==String(frameQuality.level))$('world').dataset.adaptiveLevel=String(frameQuality.level);
   $('world').dataset.cloudQuality=activeCloudQuality;$('world').dataset.cloudVisibility=retreat.sky.material.uniforms.useVolumeClouds.value.toFixed(3);
-  const cloudCoverage=retreat.sky.material.uniforms.cloud.value;$('world').dataset.cloudCoverage=cloudCoverage.toFixed(4);$('world').dataset.cloudReason=activeCloudQuality==='off'?($('cloudQuality').value==='off'?'设置关闭':'帧预算保护'):cloudCoverage<.0001?'当前天气无云':'已启用';
+  const cloudCoverage=retreat.sky.material.uniforms.cloud.value;$('world').dataset.cloudCoverage=cloudCoverage.toFixed(4);$('world').dataset.cloudReason=activeCloudQuality==='off'?($('cloudQuality').value==='off'?'设置关闭':$('world').dataset.cloudPreparation!=='ready'?'云层准备中':'开场保护'):cloudCoverage<.0001?'当前天气无云':'已启用';
 
 }
 const graphicsKeys=['oceanModel','quality','resolutionScale','shadowQuality','cloudQuality','textureFiltering','waterDetail','targetFPS','adaptiveQuality','rainEffects','starEffects','geometryDetail','windWaves','waveStrength','waterReflection','sunReflection','nightStyle','meteorEffects','sunSize'];
@@ -651,13 +652,13 @@ function requestEnvironment(){
  if(!retreat)return;
  if(environmentJob)return environmentJob;
  $('world').dataset.backgroundPreparation='queued';$('world').dataset.cloudPreparation='queued';$('world').dataset.reflectionPreparation='queued';
- const turn=()=>resources.turn({priority:3});
+ const turn=()=>resources.turn({priority:3}),cloudTurn=()=>resources.turn({priority:2,allowDuringMotion:true});
  // Clouds do not wait behind unrelated landscape or galaxy downloads.
  const clouds=resources.enqueue('environment:clouds','环境 · 云层',async function*(){
    yield ()=>{$('world').dataset.backgroundPreparation='loading';$('world').dataset.cloudPreparation='loading';};
-   yield ()=>retreat.sky.userData.prepareClouds(value=>{$('world').dataset.cloudProgress=String(Math.round(value*100));},turn,$('cloudQuality').value);
+   yield ()=>retreat.sky.userData.prepareClouds(value=>{$('world').dataset.cloudProgress=String(Math.round(value*100));},cloudTurn,$('cloudQuality').value==='off'?'off':'low');
    yield ()=>{$('world').dataset.cloudPreparation='ready';frameQuality.resetSamples();};
- },{priority:2});
+ },{priority:2,allowDuringMotion:true});
  const textures=startDeferredTextures(()=>{},{phase:'background',concurrency:1});
  const reflections=resources.enqueue('environment:reflections','环境 · 海面与反射',async function*(){
    yield ()=>{$('world').dataset.reflectionPreparation='loading';};
