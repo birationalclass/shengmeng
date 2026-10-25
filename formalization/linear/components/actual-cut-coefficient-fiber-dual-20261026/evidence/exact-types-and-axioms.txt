@@ -1,0 +1,257 @@
+@LinearStudy.polynomial_point_original_fiber_dual_exists : ∀ {K S : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  {r : ℕ} [inst_2 : Algebra (MvPolynomial (Fin r) K) S] [Module.Finite (MvPolynomial (Fin r) K) S] (y : Fin r → K),
+  (let R := MvPolynomial (Fin r) K;
+    have m := RingHom.ker (MvPolynomial.aeval y).toRingHom;
+    IsReduced (S ⧸ Ideal.map (algebraMap R S) m)) →
+    (∀ (p : Ideal S) (x : p.IsMaximal),
+        Ideal.comap (algebraMap (MvPolynomial (Fin r) K) S) p = RingHom.ker (MvPolynomial.aeval y).toRingHom →
+          IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧ ↑r = ringKrullDim (Localization.AtPrime p)) →
+      let R := MvPolynomial (Fin r) K;
+      let C := (ModuleCat.restrictScalars (algebraMap R S)).obj ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R);
+      ∃ (Phi : TensorProduct R K ↑C ≃ₗ[K] Module.Dual K (TensorProduct R K S)),
+        (∀ (a : K) (ell : ↑C) (s : S),
+            (Phi (a ⊗ₜ[R] ell)) (1 ⊗ₜ[R] s) = a * (algebraMap R K) ((LinearStudy.coextensionOriginalDualEquiv ell) s)) ∧
+          (∀ (z : TensorProduct R K ↑C), (Phi z) 1 = LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne z) ∧
+            ∀ (s : S)
+              (z :
+                TensorProduct R K
+                  ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                      ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R)))
+              (t : TensorProduct R K S),
+              (Phi ((LinearStudy.coextensionOriginalScalarFiberEnd s) z)) t = (Phi z) (t * 1 ⊗ₜ[R] s)
+'LinearStudy.polynomial_point_original_fiber_dual_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.surjectiveBaseFiberQuotientAlgEquiv : {R S K : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            Function.Surjective ⇑(algebraMap R K) →
+              (S ⧸ Ideal.map (algebraMap R S) (RingHom.ker (algebraMap R K))) ≃ₐ[R] TensorProduct R K S
+'LinearStudy.surjectiveBaseFiberQuotientAlgEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.surjectiveBaseFiberQuotientAlgEquiv_mk : ∀ {R S K : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : CommRing K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] (hres : Function.Surjective ⇑(algebraMap R K))
+  (s : S),
+  (LinearStudy.surjectiveBaseFiberQuotientAlgEquiv hres)
+      ((Ideal.Quotient.mk (Ideal.map (algebraMap R S) (RingHom.ker (algebraMap R K)))) s) =
+    1 ⊗ₜ[R] s
+'LinearStudy.surjectiveBaseFiberQuotientAlgEquiv_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.surjectiveBaseFiberQuotientOriginalFieldEquiv : {R S K : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            [inst_5 : Algebra K R] →
+              [inst_6 : Algebra K S] →
+                [IsScalarTower K R S] →
+                  [IsScalarTower K R K] →
+                    Function.Surjective ⇑(algebraMap R K) →
+                      (S ⧸ Ideal.map (algebraMap R S) (RingHom.ker (algebraMap R K))) ≃ₐ[K] TensorProduct R K S
+'LinearStudy.surjectiveBaseFiberQuotientOriginalFieldEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.surjectiveBaseFiberQuotientOriginalFieldEquiv_mk : ∀ {R S K : Type u_1} [inst : CommRing R]
+  [inst_1 : CommRing S] [inst_2 : CommRing K] [inst_3 : Algebra R S] [inst_4 : Algebra R K] [inst_5 : Algebra K R]
+  [inst_6 : Algebra K S] [inst_7 : IsScalarTower K R S] [inst_8 : IsScalarTower K R K]
+  (hres : Function.Surjective ⇑(algebraMap R K)) (s : S),
+  (LinearStudy.surjectiveBaseFiberQuotientOriginalFieldEquiv hres)
+      ((Ideal.Quotient.mk (Ideal.map (algebraMap R S) (RingHom.ker (algebraMap R K)))) s) =
+    1 ⊗ₜ[R] s
+'LinearStudy.surjectiveBaseFiberQuotientOriginalFieldEquiv_mk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquationMap_zero_fiber_ideal : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n)
+  (w : Fin (r + 1) → ℂ),
+  Ideal.map (LinearStudy.projectivePulledCutEquationMap f V L w).toRingHom
+      (RingHom.ker (MvPolynomial.aeval 0).toRingHom) =
+    Ideal.span
+      (Set.range fun (i : Fin r) =>
+        (Ideal.Quotient.mk V.affineIdeal)
+          (LinearStudy.affineChartPolynomialMap
+            ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i))))
+'LinearStudy.projectivePulledCutEquationMap_zero_fiber_ideal' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledCutEquationTensorFiberEquiv : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (w : Fin (r + 1) → ℂ) →
+          let R := MvPolynomial (Fin r) ℂ;
+          let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+          have phi := LinearStudy.projectivePulledCutEquationMap f V L w;
+          TensorProduct R ℂ B ≃ₐ[ℂ]
+            MvPolynomial (Fin n) ℂ ⧸
+              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                (LinearStudy.projectivePulledLinearSectionIdeal f V L w)
+'LinearStudy.projectivePulledCutEquationTensorFiberEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledCutEquationTensorFiberEquiv_tmul : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ)
+  (a : MvPolynomial (Fin n) ℂ),
+  let R := MvPolynomial (Fin r) ℂ;
+  have B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  have phi := LinearStudy.projectivePulledCutEquationMap f V L w;
+  (LinearStudy.projectivePulledCutEquationTensorFiberEquiv f V L w) (1 ⊗ₜ[R] (Ideal.Quotient.mk V.affineIdeal) a) =
+    (Ideal.Quotient.mk
+        (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+          (LinearStudy.projectivePulledLinearSectionIdeal f V L w)))
+      a
+'LinearStudy.projectivePulledCutEquationTensorFiberEquiv_tmul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquationCoefficientFiberDualStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n → (Fin (r + 1) → LinearStudy.CoordinateRing n) → (Fin (r + 1) → ℂ) → Prop
+'LinearStudy.projectivePulledCutEquationCoefficientFiberDualStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_coefficient_fiber_dual_of_smooth_cut : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  V.ideal.toIdeal ≠ ⊥ →
+    ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ),
+      ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r →
+        (LinearStudy.projectivePulledCutEquationMap f V L w).Finite →
+          (∀
+              x ∈
+                MvPolynomial.zeroLocus ℂ
+                  (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                    (LinearStudy.projectivePulledLinearSectionIdeal f V L w)),
+              ∃ (hxV : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet),
+                Algebra.IsSmoothAt ℂ (V.affinePoint x hxV).asIdeal) →
+            ∀
+              [IsReduced
+                  (MvPolynomial (Fin n) ℂ ⧸
+                    Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                      (LinearStudy.projectivePulledLinearSectionIdeal f V L w))]
+              [Module.Finite ℂ
+                  (MvPolynomial (Fin n) ℂ ⧸
+                    Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                      (LinearStudy.projectivePulledLinearSectionIdeal f V L w))],
+              LinearStudy.projectivePulledCutEquationCoefficientFiberDualStatement f V L w
+'LinearStudy.projectivePulledCutEquation_coefficient_fiber_dual_of_smooth_cut' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_dual_open : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  r < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+            (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+              Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+                (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (r + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                (LinearStudy.projectivePulledCutEquationMap f V L w).Finite ∧
+                                  LinearStudy.projectivePulledCutEquationCoefficientFiberDualStatement f V L w
+'LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_dual_open' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.surjectiveBaseFiberQuotientAlgEquiv.{u} : {R S K : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            Function.Surjective ⇑(algebraMap R K) →
+              (S ⧸ Ideal.map (algebraMap R S) (RingHom.ker (algebraMap R K))) ≃ₐ[R] TensorProduct R K S :=
+fun {R S K : Type u} [CommRing R] [CommRing S] [CommRing K] [Algebra R S] [Algebra R K]
+    (hres : Function.Surjective ⇑(algebraMap R K)) =>
+  let m := RingHom.ker (algebraMap R K);
+  have e := Ideal.quotientKerAlgEquivOfSurjective hres;
+  (AlgEquiv.restrictScalars R (Algebra.TensorProduct.quotIdealMapEquivQuotTensor S m)).trans
+    (Algebra.TensorProduct.congr e AlgEquiv.refl)
+def LinearStudy.surjectiveBaseFiberQuotientOriginalFieldEquiv.{u} : {R S K : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : CommRing K] →
+        [inst_3 : Algebra R S] →
+          [inst_4 : Algebra R K] →
+            [inst_5 : Algebra K R] →
+              [inst_6 : Algebra K S] →
+                [IsScalarTower K R S] →
+                  [IsScalarTower K R K] →
+                    Function.Surjective ⇑(algebraMap R K) →
+                      (S ⧸ Ideal.map (algebraMap R S) (RingHom.ker (algebraMap R K))) ≃ₐ[K] TensorProduct R K S :=
+fun {R S K : Type u} [CommRing R] [CommRing S] [CommRing K] [Algebra R S] [Algebra R K] [Algebra K R] [Algebra K S]
+    [IsScalarTower K R S] [IsScalarTower K R K] (hres : Function.Surjective ⇑(algebraMap R K)) =>
+  let e := LinearStudy.surjectiveBaseFiberQuotientAlgEquiv hres;
+  let __src := e.toRingEquiv;
+  { toEquiv := __src.toEquiv, map_mul' := ⋯, map_add' := ⋯, commutes' := ⋯ }
+def LinearStudy.projectivePulledCutEquationTensorFiberEquiv : {n r : ℕ} →
+  (f : LinearStudy.HomogeneousEndomorphism n) →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (L : Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (w : Fin (r + 1) → ℂ) →
+          let R := MvPolynomial (Fin r) ℂ;
+          let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+          have phi := LinearStudy.projectivePulledCutEquationMap f V L w;
+          TensorProduct R ℂ B ≃ₐ[ℂ]
+            MvPolynomial (Fin n) ℂ ⧸
+              Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                (LinearStudy.projectivePulledLinearSectionIdeal f V L w) :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ) =>
+  id
+    (let R := MvPolynomial (Fin r) ℂ;
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+    let phi := LinearStudy.projectivePulledCutEquationMap f V L w;
+    let rho := MvPolynomial.aeval 0;
+    have hres := ⋯;
+    have E := LinearStudy.surjectiveBaseFiberQuotientOriginalFieldEquiv hres;
+    have hI := ⋯;
+    E.symm.trans
+      ((Ideal.quotientEquivAlgOfEq ℂ hI).trans
+        (LinearStudy.projectivePulledLinearSection_koszulQuotientAlgEquiv f V L w)))
+def LinearStudy.projectivePulledCutEquationCoefficientFiberDualStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (Fin (r + 1) → LinearStudy.CoordinateRing n) → (Fin (r + 1) → ℂ) → Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ) =>
+  let R := MvPolynomial (Fin r) ℂ;
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let J :=
+    Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+  let Q := MvPolynomial (Fin n) ℂ ⧸ J;
+  have phi := LinearStudy.projectivePulledCutEquationMap f V L w;
+  let C := (ModuleCat.restrictScalars (algebraMap R B)).obj ((ModuleCat.coextendScalars (algebraMap R B)).obj ↧R);
+  ∃ (E : TensorProduct R ℂ ↑C ≃ₗ[ℂ] Module.Dual ℂ Q),
+    (∀ (a : ℂ) (ell : ↑C) (P : MvPolynomial (Fin n) ℂ),
+        (E (a ⊗ₜ[R] ell)) ((Ideal.Quotient.mk J) P) =
+          a * (algebraMap R ℂ) ((LinearStudy.coextensionOriginalDualEquiv ell) ((Ideal.Quotient.mk V.affineIdeal) P))) ∧
+      (∀ (z : TensorProduct R ℂ ↑C), (E z) 1 = LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne z) ∧
+        ∀ (P : MvPolynomial (Fin n) ℂ)
+          (z :
+            TensorProduct R ℂ
+              ↑((ModuleCat.restrictScalars (algebraMap R (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal))).obj
+                  ((ModuleCat.coextendScalars (algebraMap R (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal))).obj ↧R)))
+          (q : Q),
+          (E ((LinearStudy.coextensionOriginalScalarFiberEnd ((Ideal.Quotient.mk V.affineIdeal) P)) z)) q =
+            (E z) (q * (Ideal.Quotient.mk J) P)
+ROLECHECK:LinearStudy.polynomial_point_original_fiber_dual_exists:true
+KINDCHECK:LinearStudy.polynomial_point_original_fiber_dual_exists:theorem
+ROLECHECK:LinearStudy.surjectiveBaseFiberQuotientAlgEquiv:false
+KINDCHECK:LinearStudy.surjectiveBaseFiberQuotientAlgEquiv:definition
+ROLECHECK:LinearStudy.surjectiveBaseFiberQuotientAlgEquiv_mk:true
+KINDCHECK:LinearStudy.surjectiveBaseFiberQuotientAlgEquiv_mk:theorem
+ROLECHECK:LinearStudy.surjectiveBaseFiberQuotientOriginalFieldEquiv:false
+KINDCHECK:LinearStudy.surjectiveBaseFiberQuotientOriginalFieldEquiv:definition
+ROLECHECK:LinearStudy.surjectiveBaseFiberQuotientOriginalFieldEquiv_mk:true
+KINDCHECK:LinearStudy.surjectiveBaseFiberQuotientOriginalFieldEquiv_mk:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquationMap_zero_fiber_ideal:true
+KINDCHECK:LinearStudy.projectivePulledCutEquationMap_zero_fiber_ideal:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquationTensorFiberEquiv:false
+KINDCHECK:LinearStudy.projectivePulledCutEquationTensorFiberEquiv:definition
+ROLECHECK:LinearStudy.projectivePulledCutEquationTensorFiberEquiv_tmul:true
+KINDCHECK:LinearStudy.projectivePulledCutEquationTensorFiberEquiv_tmul:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquationCoefficientFiberDualStatement:false
+KINDCHECK:LinearStudy.projectivePulledCutEquationCoefficientFiberDualStatement:definition
+ROLECHECK:LinearStudy.projectivePulledCutEquation_coefficient_fiber_dual_of_smooth_cut:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_coefficient_fiber_dual_of_smooth_cut:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_dual_open:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_coefficient_dual_open:theorem

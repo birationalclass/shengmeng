@@ -1,0 +1,390 @@
+SOURCE PolynomialPointOriginalFiberDual
+module
+public import Linear.PolynomialPointOriginalFiberTrace
+public import Linear.LocalizedCoextensionFiberPointTrace
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+/-- Construct the ACTUAL ORIGINAL coefficient fiber duality from ORIGINAL
+reduced fiber and ORIGINAL point-local geometry. No local/global freeness
+or comparison iso is an input. Preserve every original functional value,
+LITERAL eval1 trace and ORIGINAL source action. This is not yet comparison
+with a different fixed normalization or the SAME geometric top-H trace. -/
+theorem polynomial_point_original_fiber_dual_exists
+    {K S : Type u} [Field K] [CommRing S] {r : ℕ}
+    [Algebra (MvPolynomial (Fin r) K) S] [Module.Finite (MvPolynomial (Fin r) K) S]
+    (y : Fin r → K)
+    (hred : let R := MvPolynomial (Fin r) K
+      let m := RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom
+      IsReduced (S ⧸ m.map (algebraMap R S)))
+    (hgeom : ∀ (p : Ideal S) (_ : p.IsMaximal),
+      p.comap (algebraMap (MvPolynomial (Fin r) K) S)=
+        RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom →
+      IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧
+        (r : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime p)) :
+    let R := MvPolynomial (Fin r) K
+    letI : Algebra R K := (MvPolynomial.aeval (R:=K) y).toRingHom.toAlgebra
+    let C := (ModuleCat.restrictScalars (algebraMap R S)).obj
+      ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))
+    ∃ Phi : (K ⊗[R] C) ≃ₗ[K] Module.Dual K (K ⊗[R] S),
+      (∀ (a : K) (ell : C) (s : S),
+        Phi (a ⊗ₜ[R] ell) ((1:K) ⊗ₜ[R] s)=
+          a*algebraMap R K ((coextensionOriginalDualEquiv (R:=R) (S:=S) ell) s)) ∧
+      (∀ z,Phi z 1=coextensionOriginalBaseChangedEvaluationAtOne z) ∧
+      (∀ (s : S) z t,Phi (coextensionOriginalScalarFiberEnd (R:=R) (K:=K) s z) t=
+        Phi z (t*((1:K) ⊗ₜ[R] s))) := by
+  let R := MvPolynomial (Fin r) K
+  let m := RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom
+  have hres : Function.Surjective (MvPolynomial.aeval (R:=K) y).toRingHom :=
+    fun a => ⟨MvPolynomial.C a,(MvPolynomial.aeval (R:=K) y).commutes a⟩
+  letI : m.IsMaximal := RingHom.ker_isMaximal_of_surjective _ hres
+  let Q := Localization.AtPrime m
+  letI : Algebra R K := (MvPolynomial.aeval (R:=K) y).toRingHom.toAlgebra
+  let rho := polynomialPointLocalEvaluation m y rfl
+  letI : Algebra Q K := rho.toRingHom.toAlgebra
+  letI : IsScalarTower R Q K := IsScalarTower.of_algebraMap_eq
+    (fun F => (polynomialPointLocalEvaluation_polynomial m y rfl F).symm)
+  letI : IsNoetherianRing S := IsNoetherianRing.of_finite R S
+  let rs := List.ofFn (fun i : Fin r =>
+    algebraMap R Q (MvPolynomial.X i-MvPolynomial.C (y i)))
+  have hgen : Ideal.ofList rs=IsLocalRing.maximalIdeal Q :=
+    polynomial_point_local_centered_parameters_generate y
+  have hlocal : let S' := LocalizedModule m.primeCompl S
+      letI : Module Q S' := LocalizedModule.moduleOfIsLocalization
+      letI : Algebra Q S' := LocalizedModule.algebraOfIsLocalization (S:=m.primeCompl) Q
+      IsReduced (S' ⧸ (IsLocalRing.maximalIdeal Q).map (algebraMap Q S')) ∧
+        ∀ (p : Ideal S') (_ : p.IsMaximal),
+          IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧
+            (rs.length : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime p) := by
+    refine ⟨?_,?_⟩
+    · letI : IsReduced (S ⧸ m.map (algebraMap R S)) := hred
+      exact nativeLocalizedSourceClosedFiber_reduced (S:=S) m
+    · intro p hp
+      letI : p.IsMaximal := hp
+      let q := p.comap (LocalizedModule.numeratorRingHom (S:=m.primeCompl) (A:=S))
+      have hg := hgeom q (nativeLocalizedSourcePoint_original_maximal m p)
+        (nativeLocalizedSourcePoint_base_comap m p)
+      letI : IsCohenMacaulayLocalRing (Localization.AtPrime q) := hg.1
+      refine ⟨nativeLocalizedSourcePoint_localCM m.primeCompl p,?_⟩
+      simpa only [rs,List.length_ofFn,Fintype.card_fin] using
+        hg.2.trans (nativeLocalizedSourcePoint_ringKrullDim m.primeCompl p).symm
+  have hfree := localized_finite_source_free_of_reduced_fiber (S:=S) m.primeCompl rs hgen hlocal
+  have hinj : Function.Injective (algebraMap R Q) :=
+    IsLocalization.injective Q m.primeCompl_le_nonZeroDivisors
+  let Phi := localizedCoextensionOriginalDualTensorEquiv (K:=K) m.primeCompl hfree hinj
+  refine ⟨Phi,?_,?_,?_⟩
+  · exact localizedCoextensionOriginalDualTensorEquiv_tmul_apply m.primeCompl hfree hinj
+  · exact localizedCoextensionOriginalDualTensorEquiv_evaluation m.primeCompl hfree hinj
+  · exact localizedCoextensionOriginalDualTensorEquiv_scalar_naturality m.primeCompl hfree hinj
+end LinearStudy
+
+SOURCE SurjectiveBaseFiberQuotient
+module
+public import Mathlib.RingTheory.TensorProduct.Quotient
+public import Mathlib.RingTheory.TensorProduct.Maps
+public import Mathlib.RingTheory.Ideal.Quotient.Operations
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open TensorProduct
+universe u
+variable {R S K : Type u} [CommRing R] [CommRing S] [CommRing K]
+variable [Algebra R S] [Algebra R K]
+/-- ACTUAL fiber quotient comparison from the ACTUAL surjective residue
+map. No chosen point-set bijection or replacement ideal. -/
+def surjectiveBaseFiberQuotientAlgEquiv
+    (hres : Function.Surjective (algebraMap R K)) :
+    (S ⧸ (RingHom.ker (algebraMap R K)).map (algebraMap R S)) ≃ₐ[R] K ⊗[R] S := by
+  let m := RingHom.ker (algebraMap R K)
+  let e : (R ⧸ m) ≃ₐ[R] K :=
+    Ideal.quotientKerAlgEquivOfSurjective (f:=Algebra.ofId R K) hres
+  exact ((Algebra.TensorProduct.quotIdealMapEquivQuotTensor S m).restrictScalars R).trans
+    (Algebra.TensorProduct.congr e (AlgEquiv.refl : S ≃ₐ[R] S))
+/-- Every ORIGINAL source class maps to its ACTUAL original tensor. -/
+theorem surjectiveBaseFiberQuotientAlgEquiv_mk
+    (hres : Function.Surjective (algebraMap R K)) (s : S) :
+    surjectiveBaseFiberQuotientAlgEquiv hres (Ideal.Quotient.mk _ s)=((1:K) ⊗ₜ[R] s) := by
+  simp only [surjectiveBaseFiberQuotientAlgEquiv,AlgEquiv.trans_apply,
+    AlgEquiv.restrictScalars_apply,Algebra.TensorProduct.quotIdealMapEquivQuotTensor_mk,
+    Algebra.TensorProduct.congr_apply,Algebra.TensorProduct.map_tmul,map_one]
+  rfl
+variable [Algebra K R] [Algebra K S] [IsScalarTower K R S] [IsScalarTower K R K]
+/-- The SAME comparison is linear over the ORIGINAL field as well as
+multiplicative. Its value on EVERY original source class is unchanged. -/
+def surjectiveBaseFiberQuotientOriginalFieldEquiv
+    (hres : Function.Surjective (algebraMap R K)) :
+    (S ⧸ (RingHom.ker (algebraMap R K)).map (algebraMap R S)) ≃ₐ[K] K ⊗[R] S := by
+  let e := surjectiveBaseFiberQuotientAlgEquiv (S:=S) hres
+  refine { e.toRingEquiv with commutes' := ?_ }
+  intro c
+  change e (Ideal.Quotient.mk _ (algebraMap K S c))=c ⊗ₜ[R] (1:S)
+  rw [surjectiveBaseFiberQuotientAlgEquiv_mk]
+  calc
+    _ = (algebraMap R K (algebraMap K R c)) ⊗ₜ[R] (1:S) := by
+      rw [IsScalarTower.algebraMap_apply K R S]
+      exact (Algebra.TensorProduct.tmul_one_eq_one_tmul (algebraMap K R c)).symm
+    _ = _ := by rw [← IsScalarTower.algebraMap_apply K R K];simp
+/-- The field-linear comparison also retains EVERY original numerator. -/
+theorem surjectiveBaseFiberQuotientOriginalFieldEquiv_mk
+    (hres : Function.Surjective (algebraMap R K)) (s : S) :
+    surjectiveBaseFiberQuotientOriginalFieldEquiv hres (Ideal.Quotient.mk _ s)=
+      ((1:K) ⊗ₜ[R] s) :=
+  surjectiveBaseFiberQuotientAlgEquiv_mk hres s
+end LinearStudy
+
+SOURCE OriginalCutEquationTensorFiber
+module
+public import Linear.ProjectiveCutEquationMapFinite
+public import Linear.SurjectiveBaseFiberQuotient
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open TensorProduct
+/-- For the NAMED actual original equation map,the actual zero-fiber
+ideal is literally the SAME original equation ideal. -/
+theorem projectivePulledCutEquationMap_zero_fiber_ideal {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ) :
+    (RingHom.ker (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom).map
+      (projectivePulledCutEquationMap f V L w).toRingHom=
+    Ideal.span (Set.range (fun i : Fin r => Ideal.Quotient.mk V.affineIdeal
+      (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i))))) := by
+  have he : projectivePulledCutEquationMap f V L w=
+      MvPolynomial.aeval (fun i : Fin r => Ideal.Quotient.mk V.affineIdeal
+        (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))) := by
+    dsimp only [projectivePulledCutEquationMap]
+    simpa only [Ideal.Quotient.mkₐ_eq_mk] using
+      (MvPolynomial.comp_aeval (f:=fun i : Fin r => affineChartPolynomialMap
+        (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))
+        (Ideal.Quotient.mkₐ ℂ V.affineIdeal))
+  rw [he]
+  exact polynomial_equation_zero_fiber_ideal _
+/-- The ACTUAL original equation-map tensor fiber is the SAME original
+cut ring as an algebra over the ORIGINAL field. No point-set substitution,
+radical,freeness or comparison-iso hypothesis. -/
+def projectivePulledCutEquationTensorFiberEquiv {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ) :
+    let R := MvPolynomial (Fin r) ℂ
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+    let phi := projectivePulledCutEquationMap f V L w
+    letI : Algebra R B := phi.toRingHom.toAlgebra
+    letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+    letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+    letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom.toAlgebra
+    ℂ ⊗[R] B ≃ₐ[ℂ] (MvPolynomial (Fin n) ℂ ⧸
+      (projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom) := by
+  dsimp only
+  let R := MvPolynomial (Fin r) ℂ
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+  let phi := projectivePulledCutEquationMap f V L w
+  let rho : R →ₐ[ℂ] ℂ := MvPolynomial.aeval (0 : Fin r → ℂ)
+  letI : Algebra R B := phi.toRingHom.toAlgebra
+  letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+  letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+  letI : Algebra R ℂ := rho.toRingHom.toAlgebra
+  letI : IsScalarTower ℂ R B := IsScalarTower.of_algHom phi
+  letI : IsScalarTower ℂ R ℂ := IsScalarTower.of_algHom rho
+  have hres : Function.Surjective (algebraMap R ℂ) :=
+    fun a => ⟨MvPolynomial.C a,rho.commutes a⟩
+  let E := surjectiveBaseFiberQuotientOriginalFieldEquiv (S:=B) hres
+  let hI := projectivePulledCutEquationMap_zero_fiber_ideal f V L w
+  exact E.symm.trans ((Ideal.quotientEquivAlgOfEq ℂ hI).trans
+    (projectivePulledLinearSection_koszulQuotientAlgEquiv f V L w))
+/-- The constructed tensor-fiber comparison preserves EVERY original
+polynomial class,not merely the support or an unspecified algebra iso. -/
+theorem projectivePulledCutEquationTensorFiberEquiv_tmul {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ)
+    (a : MvPolynomial (Fin n) ℂ) :
+    let R := MvPolynomial (Fin r) ℂ
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+    let phi := projectivePulledCutEquationMap f V L w
+    letI : Algebra R B := phi.toRingHom.toAlgebra
+    letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+    letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+    letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom.toAlgebra
+    projectivePulledCutEquationTensorFiberEquiv f V L w
+      ((1:ℂ) ⊗ₜ[R] (Ideal.Quotient.mk V.affineIdeal a))=Ideal.Quotient.mk _ a := by
+  dsimp only
+  let R := MvPolynomial (Fin r) ℂ
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+  let phi := projectivePulledCutEquationMap f V L w
+  let rho : R →ₐ[ℂ] ℂ := MvPolynomial.aeval (0 : Fin r → ℂ)
+  letI : Algebra R B := phi.toRingHom.toAlgebra
+  letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+  letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+  letI : Algebra R ℂ := rho.toRingHom.toAlgebra
+  letI : IsScalarTower ℂ R B := IsScalarTower.of_algHom phi
+  letI : IsScalarTower ℂ R ℂ := IsScalarTower.of_algHom rho
+  have hres : Function.Surjective (algebraMap R ℂ) :=
+    fun a => ⟨MvPolynomial.C a,rho.commutes a⟩
+  let E := surjectiveBaseFiberQuotientOriginalFieldEquiv (S:=B) hres
+  have hE : E.symm ((1:ℂ) ⊗ₜ[R] (Ideal.Quotient.mk V.affineIdeal a))=
+      Ideal.Quotient.mk _ (Ideal.Quotient.mk V.affineIdeal a) :=
+    E.symm_apply_eq.mpr (surjectiveBaseFiberQuotientOriginalFieldEquiv_mk
+      hres (Ideal.Quotient.mk V.affineIdeal a)).symm
+  change projectivePulledLinearSection_koszulQuotientAlgEquiv f V L w
+    (Ideal.quotientEquivAlgOfEq ℂ (projectivePulledCutEquationMap_zero_fiber_ideal f V L w)
+      (E.symm ((1:ℂ) ⊗ₜ[R] (Ideal.Quotient.mk V.affineIdeal a))))=_
+  rw [hE]
+  change projectivePulledLinearSection_koszulQuotientAlgEquiv f V L w
+    (Ideal.Quotient.mk _ (Ideal.Quotient.mk V.affineIdeal a))=_
+  exact projectivePulledLinearSection_koszulQuotientAlgEquiv_mk f V L w a
+end LinearStudy
+
+SOURCE OriginalCutEquationCoefficientFiberDual
+module
+public import Linear.OriginalCutEquationTensorFiber
+public import Linear.PolynomialPointOriginalFiberDual
+public import Linear.ProjectiveCutEquationPointTrace
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+attribute [local instance] MvPolynomial.gradedAlgebra
+open CategoryTheory TensorProduct
+/-- ACTUAL original equation-coefficient fiber duality to the SAME original
+cut ring. Statement definition only,not a proof. Pure values,LITERAL eval1
+trace,and ORIGINAL source scalar action are required explicitly. The
+coefficient is cut-dependent;FIXED normalization/top-H comparison OPEN. -/
+def projectivePulledCutEquationCoefficientFiberDualStatement {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ) : Prop :=
+    let R := MvPolynomial (Fin r) ℂ
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+    let J := (projectivePulledLinearSectionIdeal f V L w).map
+      (affineChartPolynomialMap (K:=ℂ)).toRingHom
+    let Q := MvPolynomial (Fin n) ℂ ⧸ J
+    let phi := projectivePulledCutEquationMap f V L w
+    letI : Algebra R B := phi.toRingHom.toAlgebra
+    letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+    letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+    letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom.toAlgebra
+    let C := (ModuleCat.restrictScalars (algebraMap R B)).obj
+      ((ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R))
+    ∃ E : (ℂ ⊗[R] C) ≃ₗ[ℂ] Module.Dual ℂ Q,
+      (∀ (a : ℂ) (ell : C) (P : MvPolynomial (Fin n) ℂ),
+        E (a ⊗ₜ[R] ell) (Ideal.Quotient.mk J P)=
+          a*algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B) ell)
+            (Ideal.Quotient.mk V.affineIdeal P))) ∧
+      (∀ z,E z 1=coextensionOriginalBaseChangedEvaluationAtOne z) ∧
+      (∀ (P : MvPolynomial (Fin n) ℂ) z q,
+        E (coextensionOriginalScalarFiberEnd (R:=R) (K:=ℂ)
+          (Ideal.Quotient.mk V.affineIdeal P) z) q=
+        E z (q*Ideal.Quotient.mk J P))
+/-- From the ACTUAL original smooth finite reduced cut,construct an actual
+field-linear equivalence from its actual equation-coefficient fiber to
+the dual of the SAME original cut ring. Every original value and the
+LITERAL trace and original source-action square are PROVED. -/
+theorem projectivePulledCutEquation_coefficient_fiber_dual_of_smooth_cut {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (hproper : V.ideal.toIdeal ≠ ⊥)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ)
+    (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)=(r : WithBot ℕ∞))
+    (hfinite : (projectivePulledCutEquationMap f V L w).toRingHom.Finite)
+    (hsmooth : ∀ x : Fin n → ℂ,x ∈ MvPolynomial.zeroLocus ℂ
+      ((projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom) →
+      ∃ hxV : normalizedProjectivePoint x ∈ V.zeroSet,
+        Algebra.IsSmoothAt ℂ (V.affinePoint x hxV).asIdeal)
+    [IsReduced (MvPolynomial (Fin n) ℂ ⧸
+      (projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom)]
+    [Module.Finite ℂ (MvPolynomial (Fin n) ℂ ⧸
+      (projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom)] :
+    projectivePulledCutEquationCoefficientFiberDualStatement f V L w := by
+  let R := MvPolynomial (Fin r) ℂ
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+  let phi := projectivePulledCutEquationMap f V L w
+  letI : Algebra R B := phi.toRingHom.toAlgebra
+  letI : SMul R B := phi.toRingHom.toAlgebra.toSMul
+  letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+  letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom.toAlgebra
+  haveI : Module.Finite R B := RingHom.finite_algebraMap.mp hfinite
+  have hred : IsReduced (B ⧸ (RingHom.ker
+      (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom).map phi.toRingHom) := by
+    rw [projectivePulledCutEquationMap_zero_fiber_ideal]
+    let E := projectivePulledLinearSection_koszulQuotientAlgEquiv f V L w
+    exact isReduced_of_injective E.toRingHom E.injective
+  have hgeom := projectivePulledCutEquation_zeroFiber_all_point_local_data
+    f V hproper L w hdim hsmooth
+  obtain ⟨Phi,hpure,hunit,hscalar⟩ := polynomial_point_original_fiber_dual_exists
+    (K:=ℂ) (S:=B) (0 : Fin r → ℂ) hred hgeom
+  let T := projectivePulledCutEquationTensorFiberEquiv f V L w
+  unfold projectivePulledCutEquationCoefficientFiberDualStatement
+  dsimp only
+  refine ⟨Phi.trans (Module.Dual.congr T.toLinearEquiv),?_,?_,?_⟩
+  · intro a ell P
+    change Phi (a ⊗ₜ[R] ell) (T.symm (Ideal.Quotient.mk _ P))=_
+    have hP : T.symm (Ideal.Quotient.mk _ P)=
+        ((1:ℂ) ⊗ₜ[R] (Ideal.Quotient.mk V.affineIdeal P)) :=
+      T.symm_apply_eq.mpr (projectivePulledCutEquationTensorFiberEquiv_tmul f V L w P).symm
+    rw [hP]
+    exact hpure a ell (Ideal.Quotient.mk V.affineIdeal P)
+  · intro z
+    change Phi z (T.symm 1)=_
+    rw [map_one]
+    exact hunit z
+  · intro P z q
+    change Phi (coextensionOriginalScalarFiberEnd (R:=R) (K:=ℂ)
+      (Ideal.Quotient.mk V.affineIdeal P) z) (T.symm q)=
+        Phi z (T.symm (q*Ideal.Quotient.mk _ P))
+    rw [hscalar, map_mul T.symm]
+    have hP : T.symm (Ideal.Quotient.mk _ P)=
+        ((1:ℂ) ⊗ₜ[R] (Ideal.Quotient.mk V.affineIdeal P)) :=
+      T.symm_apply_eq.mpr (projectivePulledCutEquationTensorFiberEquiv_tmul f V L w P).symm
+    rw [hP]
+/-- Complete ORIGINAL Setup DERIVES the actual cut-coefficient fiber duality
+on one nonempty original parameter open. Every original polynomial value,
+literal eval1 trace and source-action square are preserved. No extra
+generic-freeness input;FIXED normalization and SAME top-H remain OPEN. -/
+theorem projectivePulledCutEquation_originalSetup_exists_coefficient_dual_open {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n) (hrn : r < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+    (hV : f.onPoints ⁻¹' V.zeroSet=V.zeroSet)
+    (L : Fin (r+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+    (hfinite : (projectiveLinearNormalizationMap V L).Finite)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet) :
+    ∃ c : MvPolynomial (Fin (r+1)) ℂ,c ≠ 0 ∧
+      (∃ w : Fin (r+1) → ℂ,MvPolynomial.eval w c ≠ 0) ∧
+      ∀ w : Fin (r+1) → ℂ,MvPolynomial.eval w c ≠ 0 →
+        (projectivePulledCutEquationMap f V L w).toRingHom.Finite ∧
+        projectivePulledCutEquationCoefficientFiberDualStatement f V L w := by
+  obtain ⟨a,ha,_,hfiniteA⟩ := projectivePulledCutEquationMap_exists_finite_open
+    f V hq hf hV L hL hinj hfinite x0 hx0
+  obtain ⟨b,hb,_,hcuts⟩ := projectivePulledLinearSection_exists_smooth_finite_reduced_cuts
+    f V hq hf hV L hL hinj hfinite x0 hx0
+  have hc : a*b ≠ 0 := mul_ne_zero ha hb
+  have hex : ∃ w : Fin (r+1) → ℂ,MvPolynomial.eval w (a*b) ≠ 0 := by
+    by_contra h
+    push Not at h
+    exact hc (MvPolynomial.funext (fun w => by simpa using h w))
+  refine ⟨a*b,hc,hex,?_⟩
+  intro w hw
+  obtain ⟨hwa,hwb⟩ := mul_ne_zero_iff.mp (by simpa only [MvPolynomial.eval_mul] using hw)
+  obtain ⟨_,hred,hfin,_,_,hsmooth⟩ := hcuts w hwb
+  letI := hred
+  letI := hfin
+  exact ⟨hfiniteA w hwa,projectivePulledCutEquation_coefficient_fiber_dual_of_smooth_cut f V
+    (chosenProjectiveNormalization_definingIdeal_ne_bot V L hinj hfinite hrn) L w
+    (chosenProjectiveNormalization_chart_dimension V L hinj hfinite x0 hx0)
+    (hfiniteA w hwa) hsmooth⟩
+end LinearStudy
