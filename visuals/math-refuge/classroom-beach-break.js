@@ -10,7 +10,7 @@ export function randomBeachRoute(random=Math.random){return CLASSROOM_BEACH_ROUT
 
 export function createClassroomBeachBreak({inPlace=false,onStart,onFinish,onCancel,onProgress,onState,onError,random=Math.random,now=()=>performance.now()}={}){
 
- if(!document.querySelector('link[data-classroom-beach-style]')){const style=document.createElement('link');style.rel='stylesheet';style.href=new URL('./classroom-beach-break.css?v=break-cloud20-20261024',import.meta.url);style.dataset.classroomBeachStyle='';document.head.append(style);}
+ if(!document.querySelector('link[data-classroom-beach-style]')){const style=document.createElement('link');style.rel='stylesheet';style.href=new URL('./classroom-beach-break.css?v=handoff-skip-20261026',import.meta.url);style.dataset.classroomBeachStyle='';document.head.append(style);}
 
  if(!inPlace&&!document.querySelector('link[data-beach-preload]')){const warm=document.createElement('link');warm.rel='modulepreload';warm.href=new URL('./classroom-beach-viewer.bundle.js?v=terrace-clear-20261025',import.meta.url);warm.fetchPriority='low';warm.dataset.beachPreload='';document.head.append(warm);}
 
@@ -36,7 +36,7 @@ export function createClassroomBeachBreak({inPlace=false,onStart,onFinish,onCanc
 
  async function finish({resume=active?.resumeLecture??false}={}){
 
-  if(!active||active.finishing)return;const a=active,saved=state();a.finishing=true;a.playing=true;notify();
+  if(!active||active.finishing)return;const a=active,saved=state();if(!inPlace&&!a.prepared){remove();await onFinish?.({...saved,resume,skippedBeforeDeparture:true});return;}a.finishing=true;a.playing=true;notify();
 
   try{
 
@@ -54,13 +54,14 @@ export function createClassroomBeachBreak({inPlace=false,onStart,onFinish,onCanc
 
   const panel=document.createElement('section');panel.className='classroom-beach-break'+(inPlace?' in-place':'');panel.setAttribute('aria-label','课间休息');
 
-  panel.innerHTML='<div class="beach-break-hold"></div><div class="beach-break-shade"></div><div class="beach-break-heading"><div>课间休息</div><time aria-live="off">5:00</time></div>';
+  panel.innerHTML='<div class="beach-break-hold"></div><div class="beach-break-shade"></div><div class="beach-break-heading"><div>课间休息</div><time aria-live="off" role="button" tabindex="0" title="点击跳过剩余课间并返回课堂" aria-label="跳过剩余课间并返回课堂">5:00</time></div>';
 
   if(boardImage){const image=document.createElement('img');image.src=boardImage;image.alt='';panel.querySelector('.beach-break-hold').append(image);}
 
   const a=active={key,token,startHour,route:chosen,duration:Math.max(0,Number(duration)||300),elapsed:Math.max(0,Number(elapsed)||0),playing:Boolean(playing),resumeLecture:Boolean(resumeLecture),ready:false,prepared:inPlace,stamp:now(),panel,timer:panel.querySelector('time')};
 
   document.body.append(panel);document.body.classList.add('classroom-beach-resting');
+  const skip=event=>{event.preventDefault();event.stopPropagation();if(active===a)void finish({resume:a.resumeLecture});};a.timer.addEventListener('click',skip);a.timer.addEventListener('keydown',event=>{if(event.key==='Enter'||event.code==='Space')skip(event);});
 
   const ready=()=>{if(active!==a||a.finishing)return;a.prepared=true;a.ready=true;a.error=null;a.stamp=now();clearTimeout(a.timeout);notify();};
 

@@ -1,6 +1,7 @@
-import {renderClassroomManuscript} from './classroom-manuscript.js?v=C-full-20261019';
+import {HandoffGate} from './handoff-gate.js?v=handoff-20261025';
+import {renderClassroomManuscript} from './classroom-manuscript.js?v=handoff-pronunciation-20261026';
 
-import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=multiple-speech-20261025';
+import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=handoff-pronunciation-20261026';
 
 import {createCoursePreload} from './course-preload.js?v=rings-20261022';
 
@@ -16,13 +17,14 @@ import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuratio
 
 import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=native-pcm-20261017-1';
 
-import {createClassroomBeachBreak} from './classroom-beach-break.js?v=terrace-clear-20261025';
+import {createClassroomBeachBreak} from './classroom-beach-break.js?v=handoff-pronunciation-20261026';
 
 const $=id=>document.getElementById(id),query=new URLSearchParams(location.search);window.fRendererReady=true;
 
 let course,manifest,prepared,board=0,audio=new Audio(),playing=false,language='zh',generation=0,requestedTime=0,courseEpoch=0,preparing=false,playIntent=false,completedWall=0;
 
 if(query.has('testSilent'))audio.muted=true;
+const handoff=new HandoffGate();function checkHandoff(){if(!manifest)return;const cue=handoff.check(audio.currentTime,playIntent&&playing&&!preparing);if(!cue)return;playIntent=false;playing=false;audio.currentTime=cue.at;audio.pause();update();}audio.addEventListener('timeupdate',checkHandoff);
 
 const lessonRate=()=>manifest?.policy?.defaultPlaybackRate||1;
 
@@ -116,7 +118,7 @@ async function selectBoard(index,resume=playIntent){const departureImage=course?
 
  const nextPrepared=b.kind==='break'?null:await prepareBoard(b,language);if(n!==generation)return;prepared=nextPrepared;if(prepared)prepared.total=course.boards.length;
 
- const item=manifest?.boards[board];audio.onended=null;audio.onplay=null;audio.onpause=null;audio.preload='auto';audio.preservesPitch=true;audio.playbackRate=classroomAudioRate(item,0,lessonRate());requestedTime=0;
+ const item=manifest?.boards[board];handoff.reset(item?.manualPauses||[],0);audio.onended=null;audio.onplay=null;audio.onpause=null;audio.preload='auto';audio.preservesPitch=true;audio.playbackRate=classroomAudioRate(item,0,lessonRate());requestedTime=0;
 
  if(item?.file){const src=await audioURL(item.file);if(n!==generation)return;audio.src=src;await new Promise((resolve,reject)=>{audio.addEventListener('loadedmetadata',resolve,{once:true});audio.addEventListener('error',()=>reject(Error('本板语音加载失败，可重试或换板')),{once:true});audio.load();});trimAudioURLs();const next=manifest.boards[board+1];if(next?.file)void audioURL(next.file).catch(()=>{});}
 
@@ -130,7 +132,7 @@ let countdownHit=null;
 
 function skipCountdown(){const item=manifest?.boards[board],wait=boardWaitAt(item,audio.currentTime);if(preparing||!wait)return false;audio.currentTime=wait.end+.001;paint();return true;}
 
-function paint(){countdownHit=null;if(!course)return;const b=course.boards[board],item=manifest?.boards[board],t=beachBreak.state?.elapsed??(item?audio.currentTime:requestedTime),cx=$('board').getContext('2d');
+function paint(){checkHandoff();countdownHit=null;if(!course)return;const b=course.boards[board],item=manifest?.boards[board],t=beachBreak.state?.elapsed??(item?audio.currentTime:requestedTime),cx=$('board').getContext('2d');
 
  if(item){const rate=classroomAudioRate(item,t,lessonRate());if(audio.playbackRate!==rate)audio.playbackRate=rate;}
 
@@ -152,11 +154,11 @@ $('prev').onclick=()=>selectBoard(board-1).catch(e=>$('status').textContent=e.me
 
 $('play').onclick=async()=>{if(beachBreak.state){if(beachBreak.state.playing)beachBreak.pause();else beachBreak.play();return;}if(!openingLocked&&board===0&&manifest?.openingSelection&&manifest.openingSelection.period!==openingPeriod())await loadCourse();openingLocked=true;if(!manifest){$('status').textContent='本板音频尚在生成，请先审阅逐行稿。';return;}playIntent=!playIntent;if(preparing){update();return;}if(!playIntent){audio.pause();}else{const b=manifest.boards[board];if(audio.ended||audio.currentTime>=b.seconds-.02){finishCurrent();update();return;}if(completedWall&&b.boardHoldSeconds>0&&audio.currentTime>=b.seconds-b.boardHoldSeconds)audio.currentTime=Math.min(b.seconds-.005,Math.max(audio.currentTime,boardReviewStart(b)+(Date.now()-completedWall)/1000));await playPrepared();}update();};
 
-$('complete').onclick=()=>{if(beachBreak.state){beachBreak.pause();beachBreak.seek(300);paint();return;}playIntent=false;audio.pause();playing=false;if(manifest)audio.currentTime=Math.max(0,manifest.boards[board].seconds-.01);requestedTime=Infinity;completedWall=Date.now();paint();update();};
+$('complete').onclick=()=>{if(beachBreak.state){beachBreak.pause();beachBreak.seek(300);paint();return;}playIntent=false;audio.pause();playing=false;if(manifest){audio.currentTime=Math.max(0,manifest.boards[board].seconds-.01);handoff.seek(audio.currentTime);}requestedTime=Infinity;completedWall=Date.now();paint();update();};
 
-$('lang').onclick=async()=>{const resume=playIntent,t=audio.currentTime;language=language==='zh'?'en':'zh';await selectBoard(board,resume);if(manifest)audio.currentTime=t;paint();};
+$('lang').onclick=async()=>{const resume=playIntent,t=audio.currentTime;language=language==='zh'?'en':'zh';await selectBoard(board,resume);if(manifest){audio.currentTime=t;handoff.seek(t);}paint();};
 
-$('seek').oninput=()=>{if(beachBreak.state){beachBreak.seek(Number($('seek').value)/1000*300);paint();return;}if(manifest){audio.currentTime=Number($('seek').value)/1000*manifest.boards[board].seconds;completedWall=audio.currentTime>=boardReviewStart(manifest.boards[board])?Date.now():0;}paint();};
+$('seek').oninput=()=>{if(beachBreak.state){beachBreak.seek(Number($('seek').value)/1000*300);paint();return;}if(manifest){audio.currentTime=Number($('seek').value)/1000*manifest.boards[board].seconds;handoff.seek(audio.currentTime);completedWall=audio.currentTime>=boardReviewStart(manifest.boards[board])?Date.now():0;}paint();};
 
 const countdownPoint=e=>{const r=$('board').getBoundingClientRect();return [(e.clientX-r.left)*1536/r.width,(e.clientY-r.top)*640/r.height];};
 
@@ -172,7 +174,7 @@ if(classroomProgram(query.get('course')))$('course').value=query.get('course');
 
 if(!query.has('measure'))loadCourse().catch(e=>{$('status').textContent=e.message;console.error(e)});
 
-window.fClassroom={selectBoard,loadCourse,skipCountdown,getState:()=>({countdownHit,board,playing,language,prepared,manifest,course,audio,beachBreak:beachBreak.state,output:classroomAudioOutputState(),decode:classroomAudioDecodeState(),assetPreload:assetPreload.state,audioCache:{compressed:compressedJobs.size,decoded:audioFiles.size}}),setTime:t=>{if(beachBreak.state){beachBreak.seek(t);paint();return;}audio.pause();audio.currentTime=t;paint();}};
+window.fClassroom={selectBoard,loadCourse,skipCountdown,getState:()=>({countdownHit,board,playing,language,prepared,manifest,course,audio,beachBreak:beachBreak.state,output:classroomAudioOutputState(),decode:classroomAudioDecodeState(),assetPreload:assetPreload.state,audioCache:{compressed:compressedJobs.size,decoded:audioFiles.size}}),setTime:t=>{if(beachBreak.state){beachBreak.seek(t);paint();return;}audio.pause();audio.currentTime=t;handoff.seek(t);paint();}};
 
 const focusPause=()=>{if(beachBreak.state)return;playIntent=false;audio.pause();};addEventListener('blur',focusPause);document.addEventListener('visibilitychange',()=>{if(document.hidden)focusPause();});
 

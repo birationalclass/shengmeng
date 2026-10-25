@@ -22,7 +22,7 @@ import {boardContentJump,advanceBoardQueue} from './board-transition.js';
 import {drawClassroomMetadata} from './classroom-metadata.js?v=sylow-two-lessons-20261015';
 import {createBoardTimePanel} from './board-time.js?v=unframed-controls-1';
 import {SCREEN_FONT,SCREEN_MONO,SCREEN_COLORS,CONTROL_VISUAL_SCALE} from './smart-screen-style.js?v=unframed-controls-1';
-import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock,bindVoiceFocusPause} from './report-voice.js?v=uniform-review-20261019';
+import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock,bindVoiceFocusPause} from './report-voice.js?v=handoff-pronunciation-20261026';
 import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v=smart-voice-9';
@@ -42,7 +42,7 @@ import {stampFelt} from './eraser-contact.js';
 import {chalkCopy,chalkPageText,composeChalkPage} from './chalk-language.js?v=mali-20261017';
 
 import {REPORTS} from './report-catalog.js?v=ye2-report-14';
-import {CLASSROOM_PROGRAMS} from './classroom-catalog.js?v=multiple-speech-20261025';
+import {CLASSROOM_PROGRAMS} from './classroom-catalog.js?v=handoff-pronunciation-20261026';
 import {createHallProgramScreen} from './hall-program-screen.js?v=rings-20261022';
 import {createReportLoader} from './report-loader.js?v=report-line-sync-6';
 

@@ -1,3 +1,4 @@
+import {HandoffGate} from './handoff-gate.js?v=handoff-20261025';
 import {BoardReview,boardReviewStart} from './board-review.js?v=uniform-review-20261019';
 import {prepareClassroomAudioBlob} from './classroom-audio-decode.js?v=mp3-predecode-1';
 import {primeClassroomAudio,disconnectClassroomAudio} from './classroom-audio-output.js?v=native-pcm-20261017-1';
@@ -14,7 +15,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
  let manifestReady=Promise.resolve(null),resolveManifest=()=>{};
  let activity=null,segmentEnding=false,navigationIntent=false,navigationGate=null,retainAll=false,prefetchJob=null,assetsPreparing=false,boardReadiness=Promise.resolve(true);const blobs=new Map(),blobJobs=new Map();let preload={phase:'idle',completed:0,total:0,errors:[]};
  const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',errorKind:'',started:false,chapter:0,temporaryPause:false,rate:1,activity:null};
- const review=new BoardReview(now);let reviewTimer=null;
+ const review=new BoardReview(now);let reviewTimer=null;const handoff=new HandoffGate();
  const emit=()=>{state.transportPlaying=desired&&contextActive&&!assetsPreparing;onChange({...state});};
  const chapterDisplayTime=(chapter,time)=>{
   const next=manifest.chapters[index+1],changesBoard=next&&(next.page??index+1)!==(chapter.page??index),end=chapter.start+chapter.duration;
@@ -22,10 +23,10 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   return Math.min(state.duration,changesBoard?Math.max(chapter.start,end-.001):end,time);
  };
 
- const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index];state.time=chapterDisplayTime(c,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=chapterDisplayTime(manifest.chapters[index],manifest.chapters[index].start+activity.at);state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}if(audio&&manifest?.policy?.thinkingUsesRealSeconds){const c=manifest.chapters[index],b=manifest.boards.find(b=>b.page===c.page),at=audio.currentTime-(c.mediaStart||0),rate=classroomAudioRate(b,at,playbackRate);if(audio.playbackRate!==rate)audio.playbackRate=rate;}if(manifest){const b=manifest.boards.find(b=>b.page===(manifest.chapters[index].page??index));if(b&&!b.id?.endsWith('-break')&&state.time-b.start>=boardReviewStart(b))review.mark(b.page);}return state.time;};
+ const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index],cue=handoff.check(audio.currentTime-(c.mediaStart||0),desired&&contextActive&&!assetsPreparing);if(cue){desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio.currentTime=(c.mediaStart||0)+cue.at;audio.pause();state.phase='paused';state.manualPause=cue;queueMicrotask(emit);}state.time=chapterDisplayTime(c,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=chapterDisplayTime(manifest.chapters[index],manifest.chapters[index].start+activity.at);state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}if(audio&&manifest?.policy?.thinkingUsesRealSeconds){const c=manifest.chapters[index],b=manifest.boards.find(b=>b.page===c.page),at=audio.currentTime-(c.mediaStart||0),rate=classroomAudioRate(b,at,playbackRate);if(audio.playbackRate!==rate)audio.playbackRate=rate;}if(manifest){const b=manifest.boards.find(b=>b.page===(manifest.chapters[index].page??index));if(b&&!b.id?.endsWith('-break')&&state.time-b.start>=boardReviewStart(b))review.mark(b.page);}return state.time;};
  function pause(){sync();if(activity)activity.running=false;desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio?.pause();if(['loading','playing','buffering','preparing','away'].includes(state.phase))state.phase='paused';emit();}
  const audioWarm=createBackgroundAssets({retryDelay,load:(job,signal)=>bytes(job.src,epoch,false,job.hint,signal)});
- function release(){clearTimeout(reviewTimer);review.clear();resolveManifest(null);pause();audioWarm.cancel();navigationGate=null;boardHold=null;disconnectClassroomAudio(audio);audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
+ function release(){handoff.reset();state.manualPause=null;clearTimeout(reviewTimer);review.clear();resolveManifest(null);pause();audioWarm.cancel();navigationGate=null;boardHold=null;disconnectClassroomAudio(audio);audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
  async function fetchBytes(src,mine,show,sizeHint=0,signal){
   const controller=new AbortController();controllers.add(controller);
   const cancel=()=>controller.abort(signal.reason);signal?.addEventListener('abort',cancel,{once:true});if(signal?.aborted)cancel();
@@ -55,7 +56,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   jobs.set(i,job);try{return await job;}finally{if(jobs.get(i)===job)jobs.delete(i);}
  }
  async function attach(i,at=0){
-  const mine=epoch,attachment=++attachToken;index=i;offset=at;review.reset(manifest.chapters[i].page??i);audio?.pause();disconnectClassroomAudio(audio);audio=null;activity=null;segmentEnding=false;state.activity=null;assetsPreparing=true;
+  const mine=epoch,attachment=++attachToken;index=i;offset=at;handoff.reset(manifest.boards.find(b=>b.page===(manifest.chapters[i].page??i))?.manualPauses||[],at);state.manualPause=null;review.reset(manifest.chapters[i].page??i);audio?.pause();disconnectClassroomAudio(audio);audio=null;activity=null;segmentEnding=false;state.activity=null;assetsPreparing=true;
   state.chapter=i;state.time=manifest.chapters[i].start+at;
   const page=manifest.chapters[i].page??manifest.boards.findLast(b=>b.start<=state.time)?.page??0,boardTime=state.time;
   boardReadiness=Promise.resolve().then(()=>prepareBoard(page,boardTime));boardReadiness.catch(()=>{});
@@ -70,12 +71,12 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   target.addEventListener('waiting',()=>{if(valid()&&desired){state.phase='buffering';emit();}});
   target.addEventListener('playing',()=>{if(valid()&&desired){state.phase=boardHold?'preparing':'playing';emit();}});
   target.addEventListener('error',()=>{if(valid()){desired=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();}});
-  target.addEventListener('ended',()=>{if(!valid()||segmentEnding||boardHold)return;finishChapter();});
+  target.addEventListener('ended',()=>{if(!valid()||segmentEnding||boardHold)return;sync();if(!desired)return;finishChapter();});
   state.progress=1;state.temporaryPause=desired&&!contextActive;state.phase=state.temporaryPause?'away':state.started?'paused':'ready';state.error='';state.errorKind='';emit();return true;
  }
  async function play(){
   if(navigationGate){navigationIntent=true;navigationGate.token=playToken;state.phase="preparing";state.started=true;emit();return false;}
-  if(!audio&&!activity){if(state.phase==='paused'&&(controllers.size||jobs.size)){desired=true;state.phase='loading';emit();}return false;}const mine=epoch,token=++playToken,target=audio;desired=true;
+  if(!audio&&!activity){if(state.phase==='paused'&&(controllers.size||jobs.size)){desired=true;state.phase='loading';emit();}return false;}const mine=epoch,token=++playToken,target=audio;desired=true;state.manualPause=null;
   if(!contextActive){state.temporaryPause=true;state.phase='away';emit();return false;}state.temporaryPause=false;state.started=true;
   if(boardHold){state.phase='preparing';emit();return false;}
   // Both the complete current audio blob and the matching prepared board are
@@ -85,7 +86,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   catch(error){if(mine===epoch&&token===playToken&&desired){pause();state.phase='error';state.errorKind='board';state.error=(error.message||'当前黑板加载失败')+' · 点击重试';emit();}return false;}
   if(mine!==epoch||token!==playToken||!desired||audio!==target){return false;}assetsPreparing=false;
   if(activity){activity.stamp=now();activity.running=true;state.phase='playing';state.error='';sync();emit();return true;}
-  try{if(manifest?.policy?.thinkingUsesRealSeconds)sync();else target.playbackRate=playbackRate;await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){if(audio!==target||!desired||!contextActive)target.pause();return false;}state.phase='playing';state.error='';state.errorKind='';emit();return true;}
+  try{if(manifest?.policy?.thinkingUsesRealSeconds)sync();else target.playbackRate=playbackRate;if(!desired||token!==playToken)return false;await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){if(audio!==target||!desired||!contextActive)target.pause();return false;}state.phase='playing';state.error='';state.errorKind='';emit();return true;}
   catch{if(mine!==epoch||token!==playToken)return false;desired=false;state.phase='paused';state.error='点击黑板播放语音';emit();return false;}
  }
  function finishChapter(){
@@ -125,7 +126,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   if(!manifest)return false;const resume=preservePlayback&&(desired||navigationIntent);pause();boardHold=null;navigationIntent=resume;const mine=epoch,intent=playToken,target=Math.max(0,Math.min(manifest.duration,Number(time)||0));state.started=true;const gate=navigationGate={token:intent};
   const i=Math.max(0,manifest.chapters.findLastIndex(c=>c.start<=target)),at=Math.min(manifest.chapters[i].duration-.025,target-manifest.chapters[i].start);
   const inkReady=Promise.resolve(ready);inkReady.catch(()=>{});
-  try{let attached=true;if(activity&&i===index){activity.at=Math.max(0,at);activity.stamp=now();state.time=target;state.phase='paused';sync();emit();}else if(audio&&i===index){audio.currentTime=(manifest.chapters[i].mediaStart||0)+Math.max(0,at);state.time=target;state.phase='paused';emit();}else attached=await attach(i,Math.max(0,at));if(navigationGate===gate&&ready&&gate.token===playToken){state.phase=navigationIntent?'preparing':'paused';emit();}await inkReady;if(mine===epoch&&navigationGate===gate&&gate.token===playToken){const continuePlaying=navigationIntent;navigationGate=null;navigationIntent=false;if(attached&&continuePlaying)await play();}return attached;}
+  try{let attached=true;if(activity&&i===index){activity.at=Math.max(0,at);activity.stamp=now();state.time=target;state.phase='paused';sync();emit();}else if(audio&&i===index){handoff.seek(at);state.manualPause=null;audio.currentTime=(manifest.chapters[i].mediaStart||0)+Math.max(0,at);state.time=target;state.phase='paused';emit();}else attached=await attach(i,Math.max(0,at));if(navigationGate===gate&&ready&&gate.token===playToken){state.phase=navigationIntent?'preparing':'paused';emit();}await inkReady;if(mine===epoch&&navigationGate===gate&&gate.token===playToken){const continuePlaying=navigationIntent;navigationGate=null;navigationIntent=false;if(attached&&continuePlaying)await play();}return attached;}
   catch{if(mine===epoch&&navigationGate===gate&&gate.token===playToken){navigationIntent=false;state.phase='error';state.error='语音定位失败 · 点击重试';emit();}return false;}finally{if(navigationGate===gate)navigationGate=null;}
  }
  async function toggle(){
