@@ -1,7 +1,7 @@
 // Local-only courses and offline packages never request a published roster.
 export const COURSE_ROSTERS={'algebra-i':new URL('./assets/rosters/algebra-i.json',import.meta.url).href};
 import {SCREEN_FONT} from './smart-screen-style.js';
-export const LOTTERY_RECT=[1100,180,396,280],LOTTERY_HANDLE=[1445,290],LOTTERY_ROSTER=[1268,450];
+export const LOTTERY_RECT=[1020,180,496,456],LOTTERY_HANDLE=[1445,290],LOTTERY_ROSTER=[1268,450];
 export const SLOT_SPIN_SECONDS=2.8;
 export function slotReels(digits,age){
  return [...digits].map((digit,i)=>{const target=Number(digit),start=(target+3+i*2)%10,distance=40+i*10+(target-start+10)%10,duration=i?SLOT_SPIN_SECONDS:2.15,t=Math.max(0,Math.min(1,age/duration)),position=start+distance*(1-Math.pow(1-t,3));return{position,digit:Math.floor(position+1e-8)%10,settled:t===1};});
@@ -69,7 +69,10 @@ export function drawStudentLottery(ctx,state,language='zh'){
  const ball=new Path2D();ball.arc(...knob,15.5,0,Math.PI*2);chalkStroke(ctx,ball,'#e2bb68',3.4,7);
  const hatch=new Path2D();for(let y=-11;y<=11;y+=4){const dx=Math.sqrt(13*13-y*y);hatch.moveTo(knob[0]-dx,knob[1]+y+2);hatch.lineTo(knob[0]+dx,knob[1]+y-2);}chalkStroke(ctx,hatch,'#e2bb68',1.6,3);
  const joint=new Path2D();joint.arc(...pivot,5,0,Math.PI*2);chalkStroke(ctx,joint,ivory,2.3,0);
- ctx.font='30px '+SCREEN_FONT;ctx.fillStyle=state.error?'#ffada3':'#e3ece6';const text=state.error||state.name||(state.loading&&!state.count?(language==='en'?'Loading course roster…':'读取课程花名册…'):state.spinning?(language==='en'?'Drawing…':'摇号中…'):state.count?(state.remaining?(language==='en'?'Pull the lever':'拉动把手'):(language==='en'?'No candidates left':'本节候选已抽完')):(language==='en'?'Load course roster':'载入课程花名册'));ctx.fillText(text,1268,415,320);
+ const showName=Boolean(state.name&&!state.error);ctx.font=(showName?'60px ':'30px ')+SCREEN_FONT;ctx.fillStyle=state.error?'#ffada3':'#e3ece6';const text=state.error||state.name||(state.loading&&!state.count?(language==='en'?'Loading course roster…':'读取课程花名册…'):state.spinning?(language==='en'?'Drawing…':'摇号中…'):state.count?(state.remaining?(language==='en'?'Pull the lever':'拉动把手'):(language==='en'?'No candidates left':'本节候选已抽完')):(language==='en'?'Load course roster':'载入课程花名册'));if(showName){
+  const lines=[];let line='';for(const glyph of Array.from(text)){if(line&&ctx.measureText(line+glyph).width>480){lines.push(line);line=glyph;}else line+=glyph;}if(line)lines.push(line);
+  lines.forEach((value,i)=>ctx.fillText(value,1268,438+i*60));
+ }else ctx.fillText(text,1268,415,320);
  ctx.restore();
 }
 export function lotteryHitTargets(T,boards,W,H,boardWidth,boardHeight){const targets=[];for(const [index,b]of boards.entries())for(const [action,[x,y],width,height]of [['board:lottery',LOTTERY_HANDLE,88,186]]){const mesh=new T.Mesh(new T.PlaneGeometry(width/W*boardWidth,height/H*boardHeight),new T.MeshBasicMaterial({transparent:true,opacity:0,colorWrite:false,depthWrite:false}));mesh.position.set((x/W-.5)*boardWidth,(.5-y/H)*boardHeight,.018);mesh.userData={action,index,column:Math.floor(index/2)};mesh.visible=false;b.group.add(mesh);targets.push(mesh);}return targets;}

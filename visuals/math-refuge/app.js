@@ -64,6 +64,7 @@ import {configureCameraInput} from './camera-input.js?v=mouse-soft-110';
 import {bindCameraIntent} from './camera-intent.js?v=smart-voice-9';
 import {SHOTS,smoothProgress,advanceShot,transitionSeconds} from './camera-paths.js?v=concert-53';
 import {BoardFollow} from './board-follow.js?v=smart-voice-9';
+import {BoardCameraMotion} from './board-camera-motion.js';
 import {RetreatTime} from './retreat-time.js?v91-shore';
 import {shanghaiHour,solarEvents,solarState} from './solar-state.js?v91-shore';
 import {createShanghaiWeather} from './shanghai-weather.js?v=reflection-ready-115';
@@ -71,7 +72,7 @@ import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
 import {bindPhysicalButtons,physicalHitAction} from './physical-buttons.js?v=smart-voice-9';
 import {motionCoordinate} from './camera-motion.js';
 let boardWritingStyle='mali-italic',boardMathStyle='mali-italic';try{const english=localStorage.getItem('refuge-board-english-font-v2'),math=localStorage.getItem('refuge-board-math-font-v2');if(['mali-italic','refined','marck'].includes(english))boardWritingStyle=english;if(['mali-italic','refined'].includes(math))boardMathStyle=math;}catch{}
-const sceneTime=new RetreatTime(()=>new Date(),shanghaiHour),boardFollow=new BoardFollow();let visualHour=sceneTime.hour,lastShadowHour=sceneTime.hour,weatherReading=null,weatherStatus="loading";
+const sceneTime=new RetreatTime(()=>new Date(),shanghaiHour),boardFollow=new BoardFollow(),boardCameraMotion=new BoardCameraMotion();let visualHour=sceneTime.hour,lastShadowHour=sceneTime.hour,weatherReading=null,weatherStatus="loading";
 
 const timePresentation=new TimePresentation(sceneTime.hour);
 const sunriseIntro=new SunriseIntro(sceneTime,timePresentation);
@@ -260,12 +261,13 @@ function stopTour(){
   if(sunriseIntro.waiting){sunriseIntro.cancel();sceneTime.setRate(1);sceneTime.sync();$('timeRate').value='1';}
   opening=null;
   if(SHOTS[shot].lecture)boardFollow.touch();
+  boardCameraMotion.reset();
   const changed=touring||!free||blend;
   touring=false;free=true;blend=null;$('transition').style.opacity=0;
   if(changed)updateLabels();
 }
 function beginTransition(){
-  keys.clear();keyboardMotion.reset();
+  boardCameraMotion.reset();keys.clear();keyboardMotion.reset();
   const position=camera.position.clone(),target=controls.target.clone(),damping=controls.enableDamping;
   controls.enableDamping=false;controls.update();camera.position.copy(position);controls.target.copy(target);controls.update();controls.enableDamping=damping;
   shotPose();
@@ -305,9 +307,10 @@ function enterSpeakerView(){
 }
 function applyShot(dt,realDelta=dt){
   const s=speakerView?roomLecterns[activeRoom].speakerPose(camera.aspect):SHOTS[shot];shotPose();const position=shotPosition,target=shotTarget;
-  if(s.lecture&&lecture){
-    // A steady board-height teaching camera follows the active pair, not a room orbit.
-    if(!blend&&dt>0){const amount=1-Math.exp(-dt*2);position.lerpVectors(camera.position,position,amount);target.lerpVectors(controls.target,target,amount);shotFov=THREE.MathUtils.lerp(camera.fov,shotFov,amount);}
+  const trackingLecture=Boolean(s.lecture&&lecture&&!blend);
+  if(trackingLecture){
+    const pose=boardCameraMotion.sample({position:camera.position.toArray(),target:controls.target.toArray(),fov:camera.fov},{position:position.toArray(),target:target.toArray(),fov:shotFov},dt,{immediate:dt===0});
+    position.fromArray(pose.position);target.fromArray(pose.target);shotFov=pose.fov;
   }
   const priorFov=camera.fov;
   if(blend){
@@ -347,7 +350,8 @@ function applyShot(dt,realDelta=dt){
     camera.position.copy(position);controls.target.copy(target);camera.fov=shotFov;
     $('transition').style.opacity=0;
   }
-  if(camera.fov!==priorFov)camera.updateProjectionMatrix();controls.update();
+  if(camera.fov!==priorFov)camera.updateProjectionMatrix();
+  if(trackingLecture)camera.lookAt(controls.target);else controls.update();
 }
 function resize(){
   if(!renderer)return;
@@ -998,6 +1002,7 @@ function updateLectureUI(){
 }
 function focusLecture(){
   if(!lecture||!cameraIntent.canActivate())return;
+  if(SHOTS[shot].lecture&&!speakerView&&!choosingReport&&lecture.followEnabled){boardFollow.reset();touring=false;free=false;updateLabels();return;}
   selectShot(0);
 }
 $('lectureButton').addEventListener('click',()=>{
