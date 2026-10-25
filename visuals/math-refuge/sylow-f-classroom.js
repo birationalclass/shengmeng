@@ -1,7 +1,7 @@
 import {HandoffGate} from './handoff-gate.js?v=handoff-20261025';
 import {renderClassroomManuscript} from './classroom-manuscript.js?v=handoff-pronunciation-20261026';
 
-import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=handoff-pronunciation-20261026';
+import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=definitions-scripts-v5-20261026';
 
 import {createCoursePreload} from './course-preload.js?v=rings-20261022';
 
@@ -11,13 +11,13 @@ import {MIN_BOARD_REVIEW_SECONDS,boardReviewStart} from './board-review.js?v=uni
 
 import {prepareClassroomAudioBlob,classroomAudioDecodeState} from './classroom-audio-decode.js?v=mp3-predecode-1';
 
-import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=stabilizer-flow-20261025';
+import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=semantic-lines-v5-20261026';
 
 import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=uniform-review-20261019';
 
 import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=native-pcm-20261017-1';
 
-import {createClassroomBeachBreak} from './classroom-beach-break.js?v=handoff-pronunciation-20261026';
+import {createClassroomBeachBreak} from './classroom-beach-break.js?v=raised-walks-20261026';
 
 const $=id=>document.getElementById(id),query=new URLSearchParams(location.search);window.fRendererReady=true;
 

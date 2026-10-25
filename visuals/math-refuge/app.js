@@ -16,7 +16,7 @@ import {acceptsStartupQuality} from './startup-probe.js';
 import {RenderChangeGate} from './render-change-gate.js';
 import {renderRoomAction} from './room-actions.js?v=skill-arc-85';
 import {StartupQuality} from './startup-quality.js?v=cloud-ready-113';
-import {WALK_MENU,installCoastWalks,walkProgress} from './coast-walks.js?v=coast-walk-16';
+import {WALK_MENU,installCoastWalks,walkProgress} from './coast-walks.js?v=raised-walks-20261026';
 import {createMovementHud} from './movement-hud.js?v=altitude-speed-109';
 import {openingArrival} from './opening-arrival.js?v=opening-boards-73';
 import {KeyboardMotion} from './keyboard-motion.js?v=altitude-speed-109';

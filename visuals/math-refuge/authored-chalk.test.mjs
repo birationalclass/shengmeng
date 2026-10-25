@@ -19,3 +19,16 @@ test('recorded glyph operations retain their semantic narration row',()=>{
   const rows=recorder.rows([source]);assert.equal(rows.length,2);assert(rows.every(r=>r.mainLine===3&&r.prose==='explanation'));
  }finally{globalThis.document=previous;}
 });
+
+
+test('explicit formula-line ownership prevents the next row superscript from leaking upward',()=>{
+ const ctx={font:'28px serif',fillStyle:'#fff',fillText(){},measureText(){return{width:12,actualBoundingBoxAscent:10,actualBoundingBoxDescent:2,actualBoundingBoxRight:12}}};
+ const rec=authoredContext(ctx,null,{latin:false});rec.line(0);rec.ctx.fillText('A',10,30);rec.line(1);rec.ctx.fillText('s',12,85);
+ const rows=rec.rows([Object.assign([0,0,100,100],{mainLine:0}),Object.assign([0,80,100,100],{mainLine:1})]);
+ assert.equal(rows.filter(r=>r.mainLine===0).length,1);assert.equal(rows.filter(r=>r.mainLine===1).length,1);assert(rows.find(r=>r.mainLine===1)[1]<90);
+});
+test('untagged legacy callers retain geometric ownership',()=>{
+ const ctx={font:'28px serif',fillStyle:'#fff',fillText(){},measureText(){return{width:12,actualBoundingBoxAscent:10,actualBoundingBoxDescent:2,actualBoundingBoxRight:12}}};
+ const rec=authoredContext(ctx,null,{latin:false});rec.ctx.fillText('s',12,85);
+ const rows=rec.rows([Object.assign([0,0,100,100],{mainLine:0}),Object.assign([0,80,100,100],{mainLine:1})]);assert.equal(rows[0].mainLine,0);
+});

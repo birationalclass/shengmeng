@@ -12,7 +12,7 @@ export function createClassroomBeachBreak({inPlace=false,onStart,onFinish,onCanc
 
  if(!document.querySelector('link[data-classroom-beach-style]')){const style=document.createElement('link');style.rel='stylesheet';style.href=new URL('./classroom-beach-break.css?v=handoff-skip-20261026',import.meta.url);style.dataset.classroomBeachStyle='';document.head.append(style);}
 
- if(!inPlace&&!document.querySelector('link[data-beach-preload]')){const warm=document.createElement('link');warm.rel='modulepreload';warm.href=new URL('./classroom-beach-viewer.bundle.js?v=terrace-clear-20261025',import.meta.url);warm.fetchPriority='low';warm.dataset.beachPreload='';document.head.append(warm);}
+ if(!inPlace&&!document.querySelector('link[data-beach-preload]')){const warm=document.createElement('link');warm.rel='modulepreload';warm.href=new URL('./classroom-beach-viewer.bundle.js?v=raised-walks-20261026',import.meta.url);warm.fetchPriority='low';warm.dataset.beachPreload='';document.head.append(warm);}
 
  let active=null,frame=0,serial=0;
 

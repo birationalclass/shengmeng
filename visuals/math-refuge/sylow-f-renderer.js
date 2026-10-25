@@ -1,6 +1,6 @@
 import {prepareMaliChalk} from './mali-chalk.js?v=safari-glyph-20261019-1';
 import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=stabilizer-glyphs-20261025';
-import {authoredContext,authoredFormula} from './authored-chalk.js?v=rings-20261022';
+import {authoredContext,authoredFormula} from './authored-chalk.js?v=semantic-lines-20261026';
 import {writingPlan,inkGuides,strokeReveal,rasterStrokeReveal,inkReveal,erasingPlan} from './chalk-motion.js';
 import {paintChalkStroke} from './chalk-annotations.js';
 import {drawReferenceIcon} from './classroom-metadata.js';
@@ -41,12 +41,12 @@ export async function prepareBoard(b,language='zh',{allowShrink=true,reportOverf
  if(naturalLayout&&b.kind!=='cover'&&gap<18){if(reportOverflow)overflow.push({type:'vertical',height:bodyHeight,gap});else throw Error(`Board needs vertical reflow at normal size: ${b.id}: ${bodyHeight.toFixed(1)}px of ink`);}
  let bodyTop=128;
  for(let i=0;i<layouts.length;i++){
-  const {r,ms,size,w,x:rowX,ascent,descent}=layouts[i];let x=rowX;
+  const {r,ms,size,w,x:rowX,ascent,descent}=layouts[i];rec.line(i);let x=rowX;
   const y=r.layout?.baseline??(b.kind==='cover'?[190,320,410,520][i]:i===0?76:naturalLayout?bodyTop+ascent:158+(i-1)*83);
   if(i>0)bodyTop=y+descent+gap;
   const x0=x;cx.fillStyle=COLORS[r.color];cx.font=`${size}px RefugeLatin, RefugeChinese`;
   if(i===0&&b.kind!=='cover')drawReferenceIcon(cx,b.kind==='exercise'?'exercise':b.reference?.kind||'extension',84,38,36);
-  for(const m of ms){if(m.img){const im=await formula(m.t,COLORS[r.color]);cx.drawImage(im,x,y-m.base,m.w,m.h);}else cx.fillText(m.t.text,x,y);x+=m.w;}
+  for(const m of ms){cx.fillStyle=m.t.color||COLORS[r.color];if(m.img){const im=await formula(m.t,m.t.color||COLORS[r.color]);cx.drawImage(im,x,y-m.base,m.w,m.h);}else cx.fillText(m.t.text,x,y);x+=m.w;}
   original.push(Object.assign([i===0&&b.kind!=='cover'?80:x0-5,i===0&&b.kind!=='cover'?32:y-Math.max(...ms.map(m=>m.base))-6,w+10+(i===0&&b.kind!=='cover'?56:0),i===0&&b.kind!=='cover'?60:Math.max(size,...ms.map(m=>m.h))+14],{mainLine:i}));
  }
  const mainRows=rec.rows(original),stageRows=[];if(diagram)for(const [i,s]of diagram.stages.entries()){

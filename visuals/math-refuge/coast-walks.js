@@ -7,6 +7,7 @@ export const WALK_MENU={name:'漫步',walk:true,rooms:[
  {name:'右上沙滩',shot:'右上沙滩'},
  {name:'右下沙滩',shot:'右下沙滩'}
 ]};
+export const COAST_WALK_EYE_RAISE=4;
 const world=([x,y,z])=>{const [wx,wz]=fromBeach(x,z);return [wx,y+COAST_LIFT,wz];};
 function route(name,points,speed,description){
  const positions=points.map(world),targets=points.map((p,i)=>{
@@ -18,14 +19,14 @@ function route(name,points,speed,description){
  return {name,title:name,description,walk:true,duration:length/speed+3,fov:60,positions,targets};
 }
 export function installCoastWalks(shots){
- const ring=Array.from({length:161},(_,i)=>{const [x,z]=ringPoint(i/160*Math.PI*2);return [x,12,z];});
+ const ring=Array.from({length:161},(_,i)=>{const [x,z]=ringPoint(i/160*Math.PI*2);return [x,12+COAST_WALK_EYE_RAISE,z];});
  const routes=[route('左环漫滩',ring,6,'沿左环沙滩环行 · 可随时手动接管')];
  for(const [name,end] of [['右上沙滩',-1800],['右下沙滩',1800]]){
   const points=Array.from({length:121},(_,i)=>{
    const t=i/120,z=80+(end-80)*t;
-   // Both routes begin at the existing main-hall beach viewpoint (2040,16,80).
+   // Both routes begin above the main-hall beach viewpoint, with the same raised automatic eye height.
    const correction=(2040-branchCentre(80)-40)*Math.exp(-t*20);
-   return [branchCentre(z)+40+correction,16,z];
+   return [branchCentre(z)+40+correction,16+COAST_WALK_EYE_RAISE,z];
   });
   routes.push(route(name,points,6,'主楼沙滩出发 · 沿右滩向'+(end<0?'北':'南')+'漫步 · 可随时手动接管'));
  }
