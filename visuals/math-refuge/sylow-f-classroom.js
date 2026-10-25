@@ -1,6 +1,6 @@
 import {renderClassroomManuscript} from './classroom-manuscript.js?v=C-full-20261019';
 
-import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=zl-name-20261024';
+import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=stabilizer-20261025';
 
 import {createCoursePreload} from './course-preload.js?v=rings-20261022';
 
@@ -10,7 +10,7 @@ import {MIN_BOARD_REVIEW_SECONDS,boardReviewStart} from './board-review.js?v=uni
 
 import {prepareClassroomAudioBlob,classroomAudioDecodeState} from './classroom-audio-decode.js?v=mp3-predecode-1';
 
-import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=rings-20261022';
+import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=stabilizer-flow-20261025';
 
 import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=uniform-review-20261019';
 

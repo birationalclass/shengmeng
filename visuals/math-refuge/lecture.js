@@ -42,7 +42,7 @@ import {stampFelt} from './eraser-contact.js';
 import {chalkCopy,chalkPageText,composeChalkPage} from './chalk-language.js?v=mali-20261017';
 
 import {REPORTS} from './report-catalog.js?v=ye2-report-14';
-import {CLASSROOM_PROGRAMS} from './classroom-catalog.js?v=rings-20261022';
+import {CLASSROOM_PROGRAMS} from './classroom-catalog.js?v=stabilizer-20261025';
 import {createHallProgramScreen} from './hall-program-screen.js?v=rings-20261022';
 import {createReportLoader} from './report-loader.js?v=report-line-sync-6';
 
@@ -92,7 +92,7 @@ export async function createLecture(scene,renderer,options={}){
         const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
         let rows;
         if(pages[index].orderedBoard){
-          const {prepareBoard}=await import('./sylow-f-renderer.js?v=rings-20261022');
+          const {prepareBoard}=await import('./sylow-f-renderer.js?v=stabilizer-flow-20261025');
           const prepared=await prepareBoard(pages[index].orderedBoard,lang);
           if(epoch!==generation){resolve(null);return;}
           sampleCtx.drawImage(prepared.canvas,0,0);rows=prepared.rows;

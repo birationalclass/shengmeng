@@ -1,5 +1,5 @@
 import {prepareMaliChalk} from './mali-chalk.js?v=safari-glyph-20261019-1';
-import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=rings-20261022';
+import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=stabilizer-glyphs-20261025';
 import {authoredContext,authoredFormula} from './authored-chalk.js?v=rings-20261022';
 import {writingPlan,inkGuides,strokeReveal,rasterStrokeReveal,inkReveal,erasingPlan} from './chalk-motion.js';
 import {paintChalkStroke} from './chalk-annotations.js';
@@ -10,7 +10,8 @@ async function formula(token,color='#eee9d5'){const key=token.asset+color;if(!fo
 const glyphText=b=>b.rows.map(r=>r.display.replace(/\$[^$]+\$/g,'')).join('');
 function appendStroke(ctx,points,color,width=2.1){ctx.chalkStroke(points,width,color);}
 function object(ctx,o,language='zh'){
- if(o.type==='label'){ctx.fillStyle=o.color;ctx.font='28px RefugeLatin, RefugeChinese';ctx.fillText(language==='en'?(o.textEn||o.text):o.text,o.x,o.y);return;}
+ if(o.type==='formula'){const k=(o.size||26)/1000;ctx.drawImage(o._formula,o.x,o.y+o.viewBox[1]*k,o.viewBox[2]*k,o.viewBox[3]*k);return;}
+ if(o.type==='label'){ctx.fillStyle=o.color;ctx.font=`${o.size||28}px RefugeLatin, RefugeChinese`;ctx.fillText(language==='en'?(o.textEn||o.text):o.text,o.x,o.y);return;}
  const pts=o.points;if(o.dashed){for(let k=1;k<pts.length;k++){const [x,y]=pts[k-1],[u,v]=pts[k],n=Math.ceil(Math.hypot(u-x,v-y)/13);for(let i=0;i<n;i+=2)appendStroke(ctx,[[x+(u-x)*i/n,y+(v-y)*i/n],[x+(u-x)*Math.min(i+1,n)/n,y+(v-y)*Math.min(i+1,n)/n]],o.color,1.8);}}
  else appendStroke(ctx,pts,o.color);
  if(o.arrow){const [x,y]=pts.at(-1),[u,v]=pts.at(-2),ang=Math.atan2(y-v,x-u);appendStroke(ctx,[[x-10*Math.cos(ang-.45),y-10*Math.sin(ang-.45)],[x,y],[x-10*Math.cos(ang+.45),y-10*Math.sin(ang+.45)]],o.color);}
@@ -20,6 +21,7 @@ export async function prepareBoard(b,language='zh',{allowShrink=true,reportOverf
  libraryPromise??=createChineseChalk();const library=await libraryPromise;
  const diagram=b.diagramAsset?await fetch(b.diagramAsset).then(r=>{if(!r.ok)throw Error(r.status);return r.json()}):null,diagramText=(diagram?.objects||[]).filter(o=>o.type==='label').map(o=>language==='en'?(o.textEn||o.text):o.text).join('');
  await Promise.all([prepareMaliChalk(b.rows.map(r=>r.display+' '+r.en).join('')+diagramText),document.fonts.load('42px RefugeLatin')]);
+ if(diagram)await Promise.all(diagram.objects.filter(o=>o.type==='formula').map(async o=>{o._formula=await formula(o,o.color||COLORS.white);}));
  const chinese=await library.prepare(glyphText(b)+diagramText),canvas=document.createElement('canvas');canvas.width=1536;canvas.height=640;
  const ctx=canvas.getContext('2d'),rec=authoredContext(ctx,chinese),cx=rec.ctx,original=[],sizes=[];
  const tokens=b.rows.map(r=>language==='en'?r.enTokens:r.tokens);
@@ -28,7 +30,7 @@ export async function prepareBoard(b,language='zh',{allowShrink=true,reportOverf
  for(let i=0;i<b.rows.length;i++){
   const r=b.rows[i],ts=tokens[i],pure=ts.length===1&&!!ts[0].asset;
   let size=b.kind==='cover'?(i===0?76:42):i===0?42:38;
-  const limit=b.kind==='cover'?1360:i===0?1305:diagram?865:b.kind==='exercise'?1000:1328;
+  const limit=r.layout?.maxWidth??(b.kind==='cover'?1360:i===0?1305:diagram?865:b.kind==='exercise'?1000:1328);
   function metrics(s){cx.font=`${s}px RefugeLatin, RefugeChinese`;return ts.map(t=>{if(t.asset){const vb=t.viewBox,k=s/1000;return {w:vb[2]*k,h:vb[3]*k,base:-vb[1]*k,img:true,t};}const m=cx.measureText(t.text);return {w:m.width,h:s,base:s*.8,t};});}
   let ms=metrics(size),w=ms.reduce((n,m)=>n+m.w,0);while(allowShrink&&(w>limit||!naturalLayout&&Math.max(...ms.map(m=>m.h))>78)&&size>28){size--;ms=metrics(size);w=ms.reduce((n,m)=>n+m.w,0);}
   if(w>limit+1){if(reportOverflow)overflow.push({row:i,width:w,limit,text:language==='en'?r.en:r.display});else throw Error(`Board line needs reflow: ${b.id}/${i}: ${w.toFixed(1)} > ${limit}`);}
@@ -40,7 +42,7 @@ export async function prepareBoard(b,language='zh',{allowShrink=true,reportOverf
  let bodyTop=128;
  for(let i=0;i<layouts.length;i++){
   const {r,ms,size,w,x:rowX,ascent,descent}=layouts[i];let x=rowX;
-  const y=b.kind==='cover'?[190,320,410,520][i]:i===0?76:naturalLayout?bodyTop+ascent:158+(i-1)*83;
+  const y=r.layout?.baseline??(b.kind==='cover'?[190,320,410,520][i]:i===0?76:naturalLayout?bodyTop+ascent:158+(i-1)*83);
   if(i>0)bodyTop=y+descent+gap;
   const x0=x;cx.fillStyle=COLORS[r.color];cx.font=`${size}px RefugeLatin, RefugeChinese`;
   if(i===0&&b.kind!=='cover')drawReferenceIcon(cx,b.kind==='exercise'?'exercise':b.reference?.kind||'extension',84,38,36);
