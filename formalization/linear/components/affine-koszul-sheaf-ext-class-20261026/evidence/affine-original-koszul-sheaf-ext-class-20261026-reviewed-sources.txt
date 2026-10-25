@@ -1,0 +1,300 @@
+SOURCE Linear.TildeKoszulSourceInternalExtAcyclic
+module
+public import Linear.SchemeModuleChainSourceAcyclic
+public import Linear.TildeComplexExact
+public import Linear.SchemeModuleFiniteFreeFrameInternalExt
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+universe u
+/-- An ACTUAL original finite basis gives the actual finite-free sheaf
+frame,using mathlib's actual tilde-Finsupp comparison. -/
+def tildeOriginalBasisFreeFrame (R : CommRingCat.{u})
+    {M : Type u} [AddCommGroup M] [Module R M] {ι : Type u} (b : Module.Basis ι R M) :
+    tilde (ModuleCat.of R M) ≅ SheafOfModules.free (R:=(Spec R).ringCatSheaf) ι :=
+  (tilde.functor R).mapIso b.repr.toModuleIso ≪≫ tildeFinsupp ι
+/-- ALL SAME actual affine Koszul terms have vanishing positive derived
+SHEAF Ext for arbitrary coefficients. The finite free frames are derived
+from ORIGINAL exterior coordinate bases,no acyclicity input. -/
+theorem tildeFunctionKoszul_sourceInternalExtAcyclic (R : CommRingCat.{u})
+    {r : ℕ} (H : Fin r → R) (N : (Spec R).Modules) :
+    schemeModuleChainSourceExtAcyclic (tildeFunctionKoszulComplex R H) N := by
+  intro p j
+  let b := ((Pi.basisFun R (Fin r)).exteriorPower p).reindex
+    (Equiv.ulift.symm : Set.powersetCard (Fin r) p ≃ ULift.{u} (Set.powersetCard (Fin r) p))
+  change IsZero (schemeModuleInternalExt
+    (tilde (ModuleCat.of R (⋀[R]^p (Fin r → R)))) N (j+1))
+  exact schemeModuleFiniteFreeFrameInternalExt_succ N _ (tildeOriginalBasisFreeFrame R b) j
+/-- The SAME actual affine Koszul complex vanishes above original rank,
+using its original coordinate generators and actual tilde functor. -/
+theorem tildeFunctionKoszul_isZero_above_rank (R : CommRingCat.{u})
+    {r : ℕ} (H : Fin r → R) (p : ℕ) (hp : r < p) :
+    IsZero ((tildeFunctionKoszulComplex R H).X p) := by
+  let hz := koszulComplex.isZero_X_of_card_generators_lt
+    (Fintype.linearCombination R H) (Pi.basisFun R (Fin r))
+    (Pi.basisFun R (Fin r)).span_eq p (by simpa using hp)
+  exact (tilde.functor R).map_isZero hz
+end LinearStudy
+
+
+SOURCE Linear.AffineKoszulActualSheafExtTop
+module
+public import Linear.TildeKoszulSourceInternalExtAcyclic
+public import Linear.TildeKoszulCoforkActualModuleExt
+public import Linear.AffineKoszulActualModuleExtInternalHomTop
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+universe u
+/-- The ACTUAL original affine quotient-cofork gives the categorical
+cokernel iso. No desired cokernel iso is a hypothesis. -/
+def tildeKoszulActualCutCokernelIso (R : CommRingCat.{u}) {r : ℕ} (H : Fin r → R) :
+    cokernel ((tildeFunctionKoszulComplex R H).d 1 0) ≅
+      (tildeKoszulOriginalCutCokernelCofork R H).pt :=
+  (colimit.isColimit (parallelPair ((tildeFunctionKoszulComplex R H).d 1 0) 0)).coconePointUniqueUpToIso
+    (tildeKoszulOriginalCutCokernelCoforkIsColimit R H)
+/-- The categorical quotient projection is the SAME original cut map. -/
+theorem tildeKoszulActualCutCokernelIso_projection (R : CommRingCat.{u}) {r : ℕ}
+    (H : Fin r → R) :
+    cokernel.π ((tildeFunctionKoszulComplex R H).d 1 0) ≫
+        (tildeKoszulActualCutCokernelIso R H).hom=
+      (tildeKoszulOriginalCutCokernelCofork R H).π :=
+  IsColimit.comp_coconePointUniqueUpToIso_hom
+    (colimit.isColimit (parallelPair ((tildeFunctionKoszulComplex R H).d 1 0) 0))
+      (tildeKoszulOriginalCutCokernelCoforkIsColimit R H) .one
+/-- SAME ACTUAL whole quotient augmentation;do not replace its roof. -/
+theorem tildeKoszulActualCutCokernelAugmentation_eq_cofork
+    (R : CommRingCat.{u}) {r : ℕ} (H : Fin r → R) :
+    originalChainCokernelTargetAugmentation (tildeFunctionKoszulComplex R H)
+      (tildeKoszulOriginalCutCokernelCofork R H).pt (tildeKoszulActualCutCokernelIso R H)=
+        originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+          (tildeKoszulOriginalCutCokernelCofork R H) := by
+  apply HomologicalComplex.to_single_hom_ext
+  rw [originalChainCokernelTargetAugmentation_f_zero]
+  simpa only [originalChainCoforkAugmentation,ChainComplex.toSingle₀Equiv_symm_apply_f_zero]
+    using tildeKoszulActualCutCokernelIso_projection R H
+/-- Actual source Koszul exactness DERIVES quasiisomorphism of SAME
+actual categorical/original cut quotient augmentation. -/
+theorem tildeKoszulActualCutCokernelAugmentation_quasiIso
+    (R : CommRingCat.{u}) {r : ℕ} (H : Fin r → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j) :
+    QuasiIso (originalChainCokernelTargetAugmentation (tildeFunctionKoszulComplex R H)
+      (tildeKoszulOriginalCutCokernelCofork R H).pt (tildeKoszulActualCutCokernelIso R H)) := by
+  rw [tildeKoszulActualCutCokernelAugmentation_eq_cofork]
+  exact tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he
+/-- ACTUAL derived SHEAF Ext of original affine quotient-cut structure
+sheaf is top cohomology of SAME original Koszul internal-Hom complex.
+Source Ext acyclicity and above-rank zero are DERIVED,not new inputs. -/
+def affineKoszulActualSheafExtTopHomologyIso (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j) :
+    schemeModuleInternalExt (tildeKoszulOriginalCutCokernelCofork R H).pt (tilde N) (p+1) ≅
+      (affineKoszulInternalHomCochainComplex R N (p+1) H).homology (p+1) :=
+  schemeModuleAcyclicCokernelRankCanonicalExtIso (tildeFunctionKoszulComplex R H)
+    (tildeKoszulOriginalCutCokernelCofork R H).pt (tildeKoszulActualCutCokernelIso R H)
+    (tildeKoszulActualCutCokernelAugmentation_quasiIso R H he) (tilde N) (p+1) (by omega)
+    (tildeFunctionKoszul_sourceInternalExtAcyclic R H (tilde N))
+    (tildeFunctionKoszul_isZero_above_rank R H ((p+1)+1) (by omega))
+/-- Construct ACTUAL derived SHEAF Ext/associated MODULE Ext object iso
+for SAME original affine quotient and coefficient,through SAME actual
+Koszul internal-Hom complex. Original class/trace calibration still needs
+its actual representative square;this object iso alone does not prove it. -/
+def affineKoszulActualSheafExtTopModuleExtIso (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j) :
+    schemeModuleInternalExt (tildeKoszulOriginalCutCokernelCofork R H).pt (tilde N) (p+1) ≅
+      tilde (ModuleCat.of R
+        (CategoryTheory.Abelian.Ext.{u} (ModuleCat.of R (R ⧸ Ideal.span (Set.range H))) N (p+1))) :=
+  affineKoszulActualSheafExtTopHomologyIso R N p H he ≪≫
+    (affineKoszulActualModuleExtInternalHomTopIso R N p H he).symm
+end LinearStudy
+
+
+SOURCE Linear.SchemeModuleOriginalTopExtClassIsoLaw
+module
+public import Linear.SchemeModuleOriginalWholeTopCokernel
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+universe u
+variable {X : Scheme.{u}}
+/-- Exact calibration law for ALL original top functionals,using ONE
+specified iso and ONE specified Hom restriction map. This is a statement,
+not a proof. The original class is its actual roof followed by canonical
+lambda, never a class defined by the inverse of chi. -/
+def schemeModuleOriginalTopExtClassIsoLaw
+    (C : ChainComplex X.Modules ℕ) {E N : X.Modules} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+    {T : X.Modules} (chi : schemeModuleInternalExt E N r ≅ T)
+    (g : schemeModuleHomModuleSheaf (C.X r) N ⟶ T) : Prop :=
+  letI := HasDerivedCategory.standard X.Modules
+  ∀ (a : C.X r ⟶ N) (ha : C.d (r+1) r ≫ a = 0),
+    schemeModuleGlobalToInternalExtAll E N r
+        (schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha a ha) ≫ chi.hom =
+      (schemeModuleHomUnitAddEquiv (C.X r) N).toEquiv.symm a ≫ g
+/-- The previously verified whole original boundary calculation proves
+the law for SAME actual Hom cokernel,uniformly for every representative. -/
+theorem schemeModuleOriginalTopExtClassIsoLaw_wholeCokernel
+    (C : ChainComplex X.Modules ℕ) {E N : X.Modules} (p : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+    (I : InjectiveResolution N)
+    (hA : ∀ j q,IsZero (schemeModuleInternalExt (C.X j) N (q+1)))
+    (hAbove : IsZero (C.X (p+2))) :
+    schemeModuleOriginalTopExtClassIsoLaw C (p+1) alpha hAlpha
+      (schemeModuleOriginalWholeTopCokernelIso C N p alpha hAlpha I hA hAbove)
+      (cokernel.π (schemeModuleHomPrecompose (N:=N) (C.d (p+1) p))) := by
+  intro a ha
+  exact schemeModuleOriginalSmallClass_wholeTopCokernel C p alpha hAlpha I hA hAbove a ha
+/-- Transport the proved representative law through an actual target iso.
+The SAME original class and SAME functional are retained for all a. -/
+theorem schemeModuleOriginalTopExtClassIsoLaw_postcompose
+    (C : ChainComplex X.Modules ℕ) {E N : X.Modules} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha)
+    {T U : X.Modules} (chi : schemeModuleInternalExt E N r ≅ T)
+    (g : schemeModuleHomModuleSheaf (C.X r) N ⟶ T)
+    (h : schemeModuleOriginalTopExtClassIsoLaw C r alpha hAlpha chi g) (e : T ≅ U) :
+    schemeModuleOriginalTopExtClassIsoLaw C r alpha hAlpha (chi ≪≫ e) (g ≫ e.hom) := by
+  intro a ha
+  change _ ≫ (chi.hom ≫ e.hom) = _
+  rw [← Category.assoc,h a ha,Category.assoc]
+end LinearStudy
+
+
+SOURCE Linear.AffineKoszulOriginalSheafExtClass
+module
+public import Linear.AffineKoszulActualSheafExtTop
+public import Linear.SchemeModuleOriginalTopExtClassIsoLaw
+public import Linear.AffineKoszulHomGeometricCokernel
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+universe u
+attribute [local irreducible] schemeModuleHomPrecompose schemeModuleHomModuleSheaf
+  affineKoszulHomGeometricCokernelIso
+/-- SAME original quotient-cofork and actual derived SHEAF Ext, computed
+by SAME original top differential-Hom cokernel. All positive source-term
+Ext vanishings and above-rank zero are DERIVED from original Koszul bases.
+I is any actual coefficient injective resolution, not an Ext comparison. -/
+def affineKoszulOriginalSheafExtCokernelIso (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j)
+    (I : InjectiveResolution (tilde N)) :
+    schemeModuleInternalExt (tildeKoszulOriginalCutCokernelCofork R H).pt (tilde N) (p+1) ≅
+      cokernel (schemeModuleHomPrecompose (X:=Spec R) (N:=tilde N)
+        ((tildeFunctionKoszulComplex R H).d (p+1) p)) :=
+  schemeModuleOriginalWholeTopCokernelIso (tildeFunctionKoszulComplex R H) (tilde N) p
+    (originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+      (tildeKoszulOriginalCutCokernelCofork R H))
+    (tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he) I
+    (tildeFunctionKoszul_sourceInternalExtAcyclic R H (tilde N))
+    (tildeFunctionKoszul_isZero_above_rank R H (p+2) (by omega))
+/-- Prove the exact all-representative law for SAME original affine
+quotient roof and SAME constructed Ext/cokernel iso. The named law keeps
+concrete module-sheaf category reductions bounded; its full body records
+the actual canonical lambda and original class for every functional. -/
+theorem affineKoszulOriginalSheafExtCokernelIso_classLaw (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j)
+    (I : InjectiveResolution (tilde N)) :
+    schemeModuleOriginalTopExtClassIsoLaw (tildeFunctionKoszulComplex R H) (p+1)
+      (originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+        (tildeKoszulOriginalCutCokernelCofork R H))
+      (tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he)
+      (affineKoszulOriginalSheafExtCokernelIso R N p H he I)
+      (cokernel.π (schemeModuleHomPrecompose (X:=Spec R) (N:=tilde N)
+        ((tildeFunctionKoszulComplex R H).d (p+1) p))) :=
+  schemeModuleOriginalTopExtClassIsoLaw_wholeCokernel (tildeFunctionKoszulComplex R H) p
+    (originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+      (tildeKoszulOriginalCutCokernelCofork R H))
+    (tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he) I
+    (tildeFunctionKoszul_sourceInternalExtAcyclic R H (tilde N))
+    (tildeFunctionKoszul_isZero_above_rank R H (p+2) (by omega))
+/-- SAME actual categorical Koszul differential equals its original
+explicit exterior differential by the native library d_eq_d theorem. -/
+theorem tildeFunctionKoszulComplex_d_next (R : CommRingCat.{u})
+    {r : ℕ} (H : Fin r → R) (p : ℕ) :
+    (tildeFunctionKoszulComplex R H).d (p+1) p =
+      (tilde.functor R).map (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination R H) p)) := by
+  change (tilde.functor R).map ((koszulComplex (Fintype.linearCombination R H)).d (p+1) p) = _
+  rw [koszulComplex.d_eq_d]
+/-- Preserve the actual chain differential when passing to SAME original
+explicit geometric Hom-cokernel calculation. Equality is transported by
+mathlib cokernelIsoOfEq, not assumed definitionally. -/
+def affineKoszulOriginalTopHomCokernelGeometricIso (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R) :
+    cokernel (schemeModuleHomPrecompose (X:=Spec R) (N:=tilde N)
+      ((tildeFunctionKoszulComplex R H).d (p+1) p)) ≅
+        (affineKoszulHomGeometricRestrictionPresentation R N p H).X₃ :=
+  cokernelIsoOfEq (f:=schemeModuleHomPrecompose (X:=Spec R) (N:=tilde N)
+      ((tildeFunctionKoszulComplex R H).d (p+1) p))
+    (g:=schemeModuleHomPrecompose (X:=Spec R) (N:=tilde N)
+      ((tilde.functor R).map (ModuleCat.ofHom (koszulComplex.d (Fintype.linearCombination R H) p))))
+    (by rw [tildeFunctionKoszulComplex_d_next]) ≪≫
+      affineKoszulHomGeometricCokernelIso R N p H
+/-- The original categorical-differential cokernel projection is exactly
+the actual geometric restriction, retaining the original ordered frame. -/
+theorem affineKoszulOriginalTopHomCokernelGeometricIso_projection (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R) :
+    cokernel.π (schemeModuleHomPrecompose (X:=Spec R) (N:=tilde N)
+        ((tildeFunctionKoszulComplex R H).d (p+1) p)) ≫
+      (affineKoszulOriginalTopHomCokernelGeometricIso R N p H).hom =
+        (affineKoszulHomGeometricRestrictionPresentation R N p H).g := by
+  dsimp only [affineKoszulOriginalTopHomCokernelGeometricIso,Iso.trans_hom]
+  rw [π_comp_cokernelIsoOfEq_hom_assoc,affineKoszulHomGeometricCokernelIso_projection]
+/-- Actual derived SHEAF Ext of SAME original quotient-cut structure
+sheaf is SAME geometric pullback-pushforward coefficient. N is arbitrary;
+only exactness of the ORIGINAL source Koszul is required. -/
+def affineKoszulOriginalSheafExtGeometricIso (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j)
+    (I : InjectiveResolution (tilde N)) :
+    schemeModuleInternalExt (tildeKoszulOriginalCutCokernelCofork R H).pt (tilde N) (p+1) ≅
+      (affineKoszulHomGeometricRestrictionPresentation R N p H).X₃ :=
+  affineKoszulOriginalSheafExtCokernelIso R N p H he I ≪≫
+    affineKoszulOriginalTopHomCokernelGeometricIso R N p H
+/-- SAME original global Ext class maps to SAME geometric restriction of
+its original functional. This is a proved morphism law for ALL original
+representatives,not just an isomorphism of objects. -/
+theorem affineKoszulOriginalSheafExtGeometricIso_classLaw (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j)
+    (I : InjectiveResolution (tilde N)) :
+    schemeModuleOriginalTopExtClassIsoLaw (tildeFunctionKoszulComplex R H) (p+1)
+      (originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+        (tildeKoszulOriginalCutCokernelCofork R H))
+      (tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he)
+      (affineKoszulOriginalSheafExtGeometricIso R N p H he I)
+      (affineKoszulHomGeometricRestrictionPresentation R N p H).g := by
+  have h := schemeModuleOriginalTopExtClassIsoLaw_postcompose
+    (tildeFunctionKoszulComplex R H) (p+1)
+    (originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+      (tildeKoszulOriginalCutCokernelCofork R H))
+    (tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he)
+    (affineKoszulOriginalSheafExtCokernelIso R N p H he I)
+    (cokernel.π (schemeModuleHomPrecompose (X:=Spec R) (N:=tilde N)
+      ((tildeFunctionKoszulComplex R H).d (p+1) p)))
+    (affineKoszulOriginalSheafExtCokernelIso_classLaw R N p H he I)
+    (affineKoszulOriginalTopHomCokernelGeometricIso R N p H)
+  rw [affineKoszulOriginalTopHomCokernelGeometricIso_projection] at h
+  exact h
+end LinearStudy
