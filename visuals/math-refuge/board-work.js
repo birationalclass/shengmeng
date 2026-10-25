@@ -25,6 +25,12 @@ export function settledBoardFrame(frame,completed,time=0){
 }
 // Only unfinished whole-board work and erasing hold the transport.
 // Seek snapshots never replay previous unfinished work.
+// The media schedule is an estimate; actual contact and return finish the erase.
+export function pendingEraseWork(board,time,run,completed,eraserState){
+ if(!board||board.page<6||!run||run.page!==board.page||time<board.writeStart||completed.has('erase:'+board.page))return null;
+ if(run.elapsed>=run.duration&&eraserState==='resting')return null;
+ return{key:'erase:'+board.page,kind:'erase',page:board.page,at:board.writeStart,elapsed:Math.min(run.duration,run.elapsed),duration:run.duration};
+}
 export function narrationWork(manifest,time,previous,writing,erase,completed,reviewRemaining=0){
  if(previous===null||time<previous||time-previous>.5)return null;
  const b=manifest.boards.findLast(b=>b.start<=previous);if(!b)return null;

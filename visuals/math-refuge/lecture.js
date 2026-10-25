@@ -16,6 +16,7 @@ import {narrationHighlights,measuredHighlight,highlightFrame,createBoardHighligh
 import {createBoardPageControls} from './board-page-control.js?v=unframed-controls-1';
 import {drawClassroomActivity,classroomActivityAt,classroomCountdown} from './classroom-board.js?v=mali-20261017';
 import {boardCameraFrame,stepBoardCameraZoom} from './board-camera-framing.js';
+import {BoardLiftMotion} from './board-lift-motion.js';
 import {createBoardCameraControl} from './board-camera-control.js?v=unframed-controls-1';
 import {boardContentJump,advanceBoardQueue} from './board-transition.js';
 import {drawClassroomMetadata} from './classroom-metadata.js?v=sylow-two-lessons-20261015';
@@ -34,7 +35,7 @@ import * as THREE from 'three';
 import {LectureClock,boardSlot,boardHeights,boardFaceZ,BOARD_LAYOUT} from './lecture-state.js?v=uniform-review-20261019';
 import {inkGuides,inkReveal,strokeReveal,rasterStrokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=semantic-chalk-2';
 import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
-import {narrationWork,boardWorkFrame,writingSchedule,settledBoardFrame} from './board-work.js?v=uniform-review-20261019';
+import {narrationWork,boardWorkFrame,writingSchedule,settledBoardFrame,pendingEraseWork} from './board-work.js?v=uniform-review-20261019';
 import {BoardReview,MIN_BOARD_REVIEW_SECONDS} from './board-review.js?v=uniform-review-20261019';
 import {stampFelt} from './eraser-contact.js';
 
@@ -132,7 +133,7 @@ export async function createLecture(scene,renderer,options={}){
   if(!disabled&&hasSelection)await load(0,openingReport.cover);
   reportProgress(1);
   if(navigation?.sections?.length)clock.stopAt=navigation.sections[0].end;
-  const contentFadeQueue=[],boards=[],tracks=[],mix=[0,0,0],targets=[0,0,0];let playing=hasSelection&&!stored,accumulator=0,writingSpeed=1;
+  const contentFadeQueue=[],boards=[],tracks=[],mix=[0,0,0],targets=[0,0,0],liftMotions=mix.map(value=>new BoardLiftMotion(value));let playing=hasSelection&&!stored,accumulator=0,writingSpeed=1;
   const hardware=createBoardHardware(THREE),frameMaterial=hardware.wood;
   const metal=new THREE.MeshStandardMaterial({color:'#ad9d87',roughness:.84,metalness:.25,envMapIntensity:.25});
   const cube=new THREE.BoxGeometry(1,1,1);
@@ -484,7 +485,7 @@ export async function createLecture(scene,renderer,options={}){
           if(frame.phase==='erase')frame={...frame,progress:eraseRun.elapsed/eraseRun.duration,duration:eraseRun.duration};
         }
         if(!boardWork&&voice.state.phase==='playing'&&pageRows.has(priorPage)){
-          const work=narrationWork(voice.manifest,voice.state.time,previousNarrationTime,writingPlan(pageRows.get(priorPage),guides.get(priorPage)),erasePlans.get(priorPage-6),completedWork,boardReview.remaining(priorPage));
+          const work=pendingEraseWork(voice.manifest.boards.find(b=>b.page===frame.page),voice.state.time,eraseRun,completedWork,eraser.userData.state)||narrationWork(voice.manifest,voice.state.time,previousNarrationTime,writingPlan(pageRows.get(priorPage),guides.get(priorPage)),erasePlans.get(priorPage-6),completedWork,boardReview.remaining(priorPage));
           if(work){if(work.kind==='review')boardReview.mark(work.page);if(work.kind==='erase'){if(eraseRun?.page!==work.page)eraseRun={page:work.page,duration:work.duration,elapsed:work.elapsed};work.elapsed=eraseRun.elapsed;}const job=new Promise(resolve=>boardWork={...work,resolve});void voice.holdForBoard(job,work.at);}
         }
         if(boardWork){
@@ -525,7 +526,7 @@ export async function createLecture(scene,renderer,options={}){
     }else if(oldPhase==='erase'&&boards[oldActive].wet)boards[oldActive].wet.progress=1;
     if(reduced)for(const board of boards)board.wet=null;
     for(let pair=0;pair<3;pair++){
-      if(!narrated||voice.transportPlaying||seeking)mix[pair]=reduced?targets[pair]:THREE.MathUtils.damp(mix[pair],targets[pair],3*.7,dt);
+      mix[pair]=liftMotions[pair].step(mix[pair],targets[pair],dt,{immediate:reduced,paused:narrated&&!voice.transportPlaying&&!seeking});
       boardHeights(mix[pair]).forEach((height,side)=>boards[pair*2+side].group.position.y=height);
     }
     chalk.visible=present&&playing&&!reduced&&ready&&clock.phase==='write'&&!eraserReturn&&(!narrated||narrationWriting);
