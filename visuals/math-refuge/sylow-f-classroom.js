@@ -1,6 +1,6 @@
 import {renderClassroomManuscript} from './classroom-manuscript.js?v=C-full-20261019';
 
-import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=stabilizer-20261025';
+import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=stabilizer-central-20261025';
 
 import {createCoursePreload} from './course-preload.js?v=rings-20261022';
 
