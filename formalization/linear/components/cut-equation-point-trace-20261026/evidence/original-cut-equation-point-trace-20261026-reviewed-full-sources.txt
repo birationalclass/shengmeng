@@ -1,0 +1,687 @@
+=== Linear.HomogeneousQuotientRelation ===
+module
+public import Linear.AffineFiltered
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+attribute [local instance] MvPolynomial.gradedAlgebra
+/-- Degree-bounded homogeneous division MODULO the SAME homogeneous
+source ideal. The original quotient map and original equations retained. -/
+theorem homogeneous_quotient_bounded_relation
+    {K ι κ : Type*} [Field K] [Fintype κ]
+    (I : Ideal (MvPolynomial ι K))
+    (hI : I.IsHomogeneous (MvPolynomial.homogeneousSubmodule ι K))
+    (P : κ → MvPolynomial ι K) (q : ℕ) (hP : ∀ i,(P i).IsHomogeneous q)
+    (H : MvPolynomial ι K) (n : ℕ) (hH : H.IsHomogeneous n)
+    (hmem : H ∈ I ⊔ Ideal.span (Set.range P)) :
+    ∃ a : κ → MvPolynomial ι K,
+      Ideal.Quotient.mk I (∑ i,a i*P i)=Ideal.Quotient.mk I H ∧
+        ∀ i,(a i).IsHomogeneous (n-q) := by
+  classical
+  obtain ⟨u,hu,v,hv,he⟩ := Submodule.mem_sup.mp hmem
+  let U := MvPolynomial.homogeneousComponent n u
+  let V := MvPolynomial.homogeneousComponent n v
+  have hU : U ∈ I := MvPolynomial.homogeneousComponent_mem_of_mem hI hu n
+  have hV : V ∈ Ideal.span (Set.range P) :=
+    MvPolynomial.homogeneousComponent_mem_of_mem
+      (polynomial_equation_ideal_homogeneous P (fun _ => q) hP) hv n
+  have hUV : U+V=H := by
+    have hh := congrArg (MvPolynomial.homogeneousComponent n) he
+    simpa only [map_add,MvPolynomial.homogeneousComponent_eq_self hH] using hh
+  obtain ⟨a,ha,had⟩ := homogeneous_ideal_bounded_representation P (fun _ => q)
+    hP V n (MvPolynomial.homogeneousComponent_isHomogeneous n v) hV
+  refine ⟨a,?_,fun i => (had i).1⟩
+  rw [ha,← hUV,map_add,Ideal.Quotient.eq_zero_iff_mem.mpr hU,zero_add]
+end LinearStudy
+
+
+=== Linear.HomogeneousQuotientMapFinite ===
+module
+public import Linear.HomogeneousQuotientRelation
+public import Mathlib.RingTheory.RingHom.Finite
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 150000
+namespace LinearStudy
+attribute [local instance] MvPolynomial.gradedAlgebra
+/-- Origin-only common cone zero locus makes the ACTUAL polynomial map
+into the SAME homogeneous source quotient finite. No global CM/free input. -/
+theorem homogeneous_quotient_polynomial_map_finite_of_origin_zeroLocus
+    {K ι κ : Type*} [Field K] [IsAlgClosed K] [Finite ι] [Fintype κ]
+    (I : Ideal (MvPolynomial ι K))
+    (hI : I.IsHomogeneous (MvPolynomial.homogeneousSubmodule ι K))
+    (P : κ → MvPolynomial ι K) (q : ℕ) (hq : 0 < q)
+    (hP : ∀ i,(P i).IsHomogeneous q)
+    (hZ : MvPolynomial.zeroLocus K (I ⊔ Ideal.span (Set.range P))={0}) :
+    (((Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval P) :
+      MvPolynomial κ K →ₐ[K] MvPolynomial ι K ⧸ I).toRingHom).Finite := by
+  classical
+  let R := MvPolynomial κ K
+  let A := MvPolynomial ι K
+  let B := A ⧸ I
+  let pi := Ideal.Quotient.mk I
+  let phi : R →ₐ[K] B := (Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval P)
+  letI : Algebra R B := phi.toRingHom.toAlgebra
+  have hphiC : ∀ c : K,phi (MvPolynomial.C c)=pi (MvPolynomial.C c) :=
+    fun c => phi.commutes c
+  have hphiX : ∀ i : κ,phi (MvPolynomial.X i)=pi (P i) := by
+    intro i
+    change Ideal.Quotient.mk I ((MvPolynomial.aeval P) (MvPolynomial.X i))=pi (P i)
+    rw [MvPolynomial.aeval_X]
+  have hmon : ∀ (c : K) (m : ι →₀ ℕ),
+      MvPolynomial.C c*MvPolynomial.monomial m (1:K)=MvPolynomial.monomial m c := by
+    intro c m
+    rw [MvPolynomial.C_mul_monomial,mul_one]
+  let J := I ⊔ Ideal.span (Set.range P)
+  letI : Module.Finite K (A ⧸ J) := polynomialQuotient_finite_of_origin_zeroLocus J hZ
+  obtain ⟨D,hD⟩ := finite_homogeneous_ideal_contains_large_degree J
+    (hI.sup (polynomial_equation_ideal_homogeneous P (fun _ => q) hP))
+  let T : Set B := (fun m : ι →₀ ℕ => pi (MvPolynomial.monomial m (1:K))) ''
+    {m | m.degree ≤ D}
+  have hT : T.Finite := (Finsupp.finite_of_degree_le D).image _
+  let N : Submodule R B := Submodule.span R T
+  have hlow : ∀ p : A,p.totalDegree ≤ D → pi p ∈ N := by
+    intro p hp
+    rw [p.as_sum,map_sum]
+    apply N.sum_mem
+    intro m hm
+    have hmd : m.degree ≤ D := (MvPolynomial.le_totalDegree hm).trans hp
+    have hmN : pi (MvPolynomial.monomial m (1:K)) ∈ N :=
+      Submodule.subset_span ⟨m,hmd,rfl⟩
+    have hc := N.smul_mem (MvPolynomial.C (p.coeff m) : R) hmN
+    change phi (MvPolynomial.C (p.coeff m))*pi (MvPolynomial.monomial m (1:K)) ∈ N at hc
+    simpa only [hphiC,← pi.map_mul,hmon] using hc
+  have hall : ∀ n : ℕ,∀ p : A,p.totalDegree=n → pi p ∈ N := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | h n ih =>
+      intro p hp
+      by_cases hn : n ≤ D
+      · exact hlow p (hp.trans_le hn)
+      have hn0 : 0 < n := lt_of_le_of_lt (Nat.zero_le D) (Nat.lt_of_not_ge hn)
+      let H := MvPolynomial.homogeneousComponent n p
+      have hH : H.IsHomogeneous n := MvPolynomial.homogeneousComponent_isHomogeneous n p
+      have hHJ : H ∈ J := hD n (Nat.lt_of_not_ge hn) H hH
+      obtain ⟨a,ha,had⟩ := homogeneous_quotient_bounded_relation I hI P q hP H n hH hHJ
+      have haN : ∀ i,pi (a i) ∈ N := by
+        intro i
+        have hdeg : (a i).totalDegree ≤ n-q := (had i).totalDegree_le
+        exact ih (a i).totalDegree (lt_of_le_of_lt hdeg (Nat.sub_lt hn0 hq)) (a i) rfl
+      have hHN : pi H ∈ N := by
+        rw [← ha,map_sum]
+        apply N.sum_mem
+        intro i hi
+        have hh := N.smul_mem (MvPolynomial.X i : R) (haN i)
+        change phi (MvPolynomial.X i)*pi (a i) ∈ N at hh
+        simpa only [hphiX,← pi.map_mul,mul_comm] using hh
+      have hr : pi (p-H) ∈ N :=
+        ih (p-H).totalDegree (totalDegree_strip_top p n hn0 hp.le) (p-H) rfl
+      have hh := N.add_mem hr hHN
+      have he : pi (p-H)+pi H=pi p :=
+        (pi.map_add (p-H) H).symm.trans (congrArg pi (sub_add_cancel p H))
+      exact he ▸ hh
+  have hN : N=⊤ := Submodule.eq_top_iff'.mpr (fun z => by
+    obtain ⟨p,rfl⟩ := Ideal.Quotient.mk_surjective z
+    exact hall p.totalDegree p rfl)
+  have hfg : (⊤ : Submodule R B).FG := hN ▸ Submodule.fg_span hT
+  exact ⟨hfg⟩
+end LinearStudy
+
+
+=== Linear.HomogeneousNoBasePointFinite ===
+module
+public import Linear.HomogeneousQuotientMapFinite
+public import Linear.LinearNormalizationBasePoint
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+attribute [local instance] MvPolynomial.gradedAlgebra
+/-- Actual positive-degree cone map is finite from NO BASE POINT on the
+SAME homogeneous source. A point of that source derives its origin point.
+This does not identify a new coefficient dual with the fixed original one. -/
+theorem homogeneous_quotient_map_finite_of_no_base_points
+    {K : Type*} [Field K] [IsAlgClosed K] {n : ℕ} {κ : Type*} [Fintype κ]
+    (I : Ideal (MvPolynomial (Fin n) K))
+    (hI : I.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K))
+    (v : Fin n → K) (hv : v ∈ MvPolynomial.zeroLocus K I)
+    (P : κ → MvPolynomial (Fin n) K) (q : ℕ) (hq : 0 < q)
+    (hP : ∀ i,(P i).IsHomogeneous q)
+    (hno : ∀ z : Fin n → K,z ≠ 0 → z ∈ MvPolynomial.zeroLocus K I →
+      ∃ i,MvPolynomial.eval z (P i) ≠ 0) :
+    (((Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval P) :
+      MvPolynomial κ K →ₐ[K] MvPolynomial (Fin n) K ⧸ I).toRingHom).Finite := by
+  have hzeroI : (0 : Fin n → K) ∈ MvPolynomial.zeroLocus K I := by
+    simpa only [zero_smul] using homogeneous_zeroLocus_smul I hI v hv (0:K)
+  have hzeroP (i : κ) : MvPolynomial.eval (0 : Fin n → K) (P i)=0 := by
+    simpa only [zero_smul,zero_pow (Nat.ne_of_gt hq),zero_mul] using
+      homogeneous_eval_smul (hP i) (0:K) (0 : Fin n → K)
+  have hZ : MvPolynomial.zeroLocus K (I ⊔ Ideal.span (Set.range P))={0} := by
+    apply Set.Subset.antisymm
+    · intro z hz
+      apply Set.mem_singleton_iff.mpr
+      by_contra hn
+      obtain ⟨i,hi⟩ := hno z hn
+        (MvPolynomial.zeroLocus_anti_mono le_sup_left hz)
+      apply hi
+      simpa only [MvPolynomial.aeval_eq_eval] using
+        hz (P i) (Ideal.mem_sup_right (Ideal.subset_span (Set.mem_range_self i)))
+    · intro z hz
+      have he : z=0 := Set.mem_singleton_iff.mp hz
+      subst z
+      have hker : I ⊔ Ideal.span (Set.range P) ≤
+          RingHom.ker (MvPolynomial.aeval (R:=K) (0 : Fin n → K)).toRingHom := by
+        apply sup_le
+        · exact hzeroI
+        · apply Ideal.span_le.mpr
+          rintro _ ⟨i,rfl⟩
+          change MvPolynomial.aeval (R:=K) (0 : Fin n → K) (P i)=0
+          simpa only [MvPolynomial.aeval_eq_eval] using hzeroP i
+      exact hker
+  exact homogeneous_quotient_polynomial_map_finite_of_origin_zeroLocus I hI P q hq hP hZ
+end LinearStudy
+
+
+=== Linear.HomogeneousConeAffineFinite ===
+module
+public import Linear.HomogeneousNoBasePointFinite
+public import Linear.HomogeneousRationalPullback
+public import Mathlib.RingTheory.Ideal.Quotient.Operations
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+/-- A finite ACTUAL cone map descends to the ACTUAL original affine
+source chart when its first coordinate becomes1 on that chart. No
+weighted chart or generic-open finiteness certificate is substituted. -/
+theorem homogeneous_cone_finite_implies_actual_affine_map_finite
+    {K : Type*} [Field K] {n r : ℕ}
+    (I : Ideal (MvPolynomial (Fin (n+1)) K))
+    (P : Fin (r+1) → MvPolynomial (Fin (n+1)) K)
+    (hfin : (((Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval P) :
+      MvPolynomial (Fin (r+1)) K →ₐ[K] MvPolynomial (Fin (n+1)) K ⧸ I).toRingHom).Finite)
+    (hfirst : affineChartPolynomialMap (K:=K) (P 0)=1) :
+    (((Ideal.Quotient.mkₐ K (I.map (affineChartPolynomialMap (K:=K)).toRingHom)).comp
+      (MvPolynomial.aeval (fun i : Fin r => affineChartPolynomialMap (K:=K) (P i.succ))) :
+      MvPolynomial (Fin r) K →ₐ[K]
+        MvPolynomial (Fin n) K ⧸ I.map (affineChartPolynomialMap (K:=K)).toRingHom).toRingHom).Finite := by
+  let delta := affineChartPolynomialMap (K:=K) (n:=n)
+  let J := I.map delta.toRingHom
+  let cone := (Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval P)
+  let affine := (Ideal.Quotient.mkₐ K J).comp
+    (MvPolynomial.aeval (fun i : Fin r => delta (P i.succ)))
+  let deltaBar := Ideal.quotientMapₐ J delta Ideal.le_comap_map
+  have hdelta : Function.Surjective delta := by
+    intro a
+    refine ⟨MvPolynomial.rename Fin.succ a,?_⟩
+    have hh : delta.comp (MvPolynomial.rename Fin.succ)=AlgHom.id K (MvPolynomial (Fin n) K) := by
+      apply MvPolynomial.algHom_ext
+      intro i
+      simp [delta,affineChartPolynomialMap,AlgHom.comp_apply]
+    exact AlgHom.congr_fun hh a
+  have hbar : Function.Surjective deltaBar :=
+    Ideal.quotientMap_surjective (H:=Ideal.le_comap_map) hdelta
+  have hh : deltaBar.comp cone=affine.comp (affineChartPolynomialMap (K:=K) (n:=r)) := by
+    apply MvPolynomial.algHom_ext
+    intro i
+    simp only [AlgHom.comp_apply,cone,MvPolynomial.aeval_X]
+    cases i using Fin.cases with
+    | zero =>
+      change Ideal.Quotient.mk J (delta (P 0))=
+        affine (affineChartPolynomialMap (K:=K) (MvPolynomial.X 0))
+      rw [show delta (P 0)=1 from hfirst]
+      simp [affineChartPolynomialMap]
+    | succ i =>
+      change Ideal.Quotient.mk J (delta (P i.succ))=
+        affine (affineChartPolynomialMap (K:=K) (MvPolynomial.X i.succ))
+      simp [affine,affineChartPolynomialMap,AlgHom.comp_apply]
+  have ht : (deltaBar.comp cone).Finite :=
+    (AlgHom.Finite.of_surjective deltaBar hbar).comp hfin
+  rw [hh] at ht
+  exact AlgHom.Finite.of_comp_finite ht
+end LinearStudy
+
+
+=== Linear.HomogeneousCutAffineFinite ===
+module
+public import Linear.HomogeneousConeAffineFinite
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+attribute [local instance] MvPolynomial.gradedAlgebra
+/-- No original cut point at infinity DERIVES finiteness of the ACTUAL
+affine map defined by those SAME dehomogenized cut equations. Use the
+actual cone tuple [X0^q,H1,...,Hr],not a generic finite-map certificate.
+The resulting coefficient dual is NOT identified with the fixed original
+normalization dual;that comparison and SAME top-H calibration remain OPEN. -/
+theorem homogeneous_cut_no_infinity_actual_affine_map_finite
+    {K : Type*} [Field K] [IsAlgClosed K] {n r q : ℕ}
+    (I : Ideal (MvPolynomial (Fin (n+1)) K))
+    (hI : I.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n+1)) K))
+    (v : Fin (n+1) → K) (hv : v ∈ MvPolynomial.zeroLocus K I)
+    (H : Fin r → MvPolynomial (Fin (n+1)) K)
+    (hq : 0 < q) (hH : ∀ i,(H i).IsHomogeneous q)
+    (hno : ∀ z : Fin (n+1) → K,z ≠ 0 → z ∈ MvPolynomial.zeroLocus K I →
+      z 0=0 → ∃ i,MvPolynomial.eval z (H i) ≠ 0) :
+    (((Ideal.Quotient.mkₐ K (I.map (affineChartPolynomialMap (K:=K)).toRingHom)).comp
+      (MvPolynomial.aeval (fun i : Fin r => affineChartPolynomialMap (K:=K) (H i))) :
+      MvPolynomial (Fin r) K →ₐ[K]
+        MvPolynomial (Fin n) K ⧸ I.map (affineChartPolynomialMap (K:=K)).toRingHom).toRingHom).Finite := by
+  let P : Fin (r+1) → MvPolynomial (Fin (n+1)) K :=
+    Fin.cases ((MvPolynomial.X 0)^q) H
+  have hP (i : Fin (r+1)) : (P i).IsHomogeneous q := by
+    cases i using Fin.cases with
+    | zero => exact MvPolynomial.isHomogeneous_X_pow 0 q
+    | succ i => exact hH i
+  have hbase : ∀ z : Fin (n+1) → K,z ≠ 0 → z ∈ MvPolynomial.zeroLocus K I →
+      ∃ i,MvPolynomial.eval z (P i) ≠ 0 := by
+    intro z hz hIz
+    by_cases hz0 : z 0=0
+    · obtain ⟨i,hi⟩ := hno z hz hIz hz0
+      exact ⟨i.succ,hi⟩
+    · refine ⟨0,?_⟩
+      change MvPolynomial.eval z ((MvPolynomial.X 0)^q) ≠ 0
+      simpa only [map_pow,MvPolynomial.eval_X] using pow_ne_zero q hz0
+  have hfin := homogeneous_quotient_map_finite_of_no_base_points I hI v hv P q hq hP hbase
+  have hfirst : affineChartPolynomialMap (K:=K) (P 0)=1 := by
+    simp [P,affineChartPolynomialMap]
+  exact homogeneous_cone_finite_implies_actual_affine_map_finite I P hfin hfirst
+end LinearStudy
+
+
+=== Linear.OriginalCutEquationZeroFiber ===
+module
+public import Linear.PolynomialLocalParameters
+public import Linear.ProjectiveCutKoszulQuotient
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+/-- The zero fiber ideal of the ACTUAL equation map is generated by the
+SAME equations,not a radical or an isomorphic replacement ideal. -/
+theorem polynomial_equation_zero_fiber_ideal
+    {K S : Type*} [Field K] [CommRing S] [Algebra K S] {r : ℕ}
+    (H : Fin r → S) :
+    (RingHom.ker (MvPolynomial.aeval (R:=K) (0 : Fin r → K)).toRingHom).map
+      (MvPolynomial.aeval H).toRingHom=Ideal.span (Set.range H) := by
+  have hm := polynomial_point_kernel_eq_span_centered_coordinates (0 : Fin r → K)
+  simp only [Pi.zero_apply,map_zero,sub_zero] at hm
+  rw [hm,Ideal.map_span,← Set.range_comp']
+  apply congrArg Ideal.span
+  apply congrArg Set.range
+  funext i
+  exact MvPolynomial.aeval_X H i
+/-- The ACTUAL zero fiber of the SAME original pulled cut-equation map
+is reduced,DERIVED from original cut reducedness via the already PROVED
+original Koszul quotient equivalence. No normalized trace is asserted. -/
+theorem projectivePulledCutEquation_zero_fiber_reduced {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ)
+    [IsReduced (MvPolynomial (Fin n) ℂ ⧸
+      (projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom)] :
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+    let H : Fin r → B := fun i => Ideal.Quotient.mk V.affineIdeal
+      (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))
+    IsReduced (B ⧸ (RingHom.ker
+      (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom).map
+        (MvPolynomial.aeval H).toRingHom) := by
+  dsimp only
+  rw [polynomial_equation_zero_fiber_ideal]
+  let E := projectivePulledLinearSection_koszulQuotientAlgEquiv f V L w
+  exact isReduced_of_injective E.toRingHom E.injective
+/-- Original finite cut ring derives finiteness of the ACTUAL equation
+map zero fiber through the SAME original quotient equivalence. -/
+theorem projectivePulledCutEquation_zero_fiber_finite {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ)
+    [Module.Finite ℂ (MvPolynomial (Fin n) ℂ ⧸
+      (projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom)] :
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+    let H : Fin r → B := fun i => Ideal.Quotient.mk V.affineIdeal
+      (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))
+    Module.Finite ℂ (B ⧸ (RingHom.ker
+      (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom).map
+        (MvPolynomial.aeval H).toRingHom) := by
+  dsimp only
+  rw [polynomial_equation_zero_fiber_ideal]
+  exact Module.Finite.equiv (projectivePulledLinearSection_koszulQuotientAlgEquiv f V L w).symm.toLinearEquiv
+end LinearStudy
+
+
+=== Linear.ProjectiveAffineMaximalPoint ===
+module
+public import Linear.ProjectiveAffineSmoothLocus
+public import Mathlib.RingTheory.Nullstellensatz
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+/-- Every maximal ideal of the SAME original affine coordinate ring is
+an actual complex point of V,with equality of the actual ideals. -/
+theorem IntegralProjectiveEquations.affineMaximal_point
+    {n : ℕ} (V : IntegralProjectiveEquations n)
+    (p : Ideal (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)) [p.IsMaximal] :
+    ∃ (x : Fin n → ℂ) (hx : normalizedProjectivePoint x ∈ V.zeroSet),
+      (V.affinePoint x hx).asIdeal=p := by
+  let pi := Ideal.Quotient.mk V.affineIdeal
+  have hm : (p.comap pi).IsMaximal :=
+    Ideal.comap_isMaximal_of_surjective pi Ideal.Quotient.mk_surjective
+  obtain ⟨x,hx⟩ := MvPolynomial.eq_vanishingIdeal_singleton_of_isMaximal ℂ hm
+  have hk : p.comap pi=RingHom.ker (MvPolynomial.aeval (R:=ℂ) x).toRingHom := by
+    rw [hx]
+    ext a
+    exact MvPolynomial.mem_vanishingIdeal_singleton_iff x a
+  have hI : V.affineIdeal ≤ RingHom.ker (MvPolynomial.aeval (R:=ℂ) x).toRingHom := by
+    rw [← hk]
+    intro a ha
+    change pi a ∈ p
+    rw [show pi a=0 from Ideal.Quotient.eq_zero_iff_mem.mpr ha]
+    exact p.zero_mem
+  have hxV : normalizedProjectivePoint x ∈ V.zeroSet := by
+    apply (V.normalizedPoint_mem_iff x).mpr
+    have h := Ideal.map_le_iff_le_comap.mp hI
+    rw [affineChartPolynomialMap_pointKernel_comap] at h
+    exact h
+  refine ⟨x,hxV,?_⟩
+  apply Ideal.comap_injective_of_surjective pi Ideal.Quotient.mk_surjective
+  exact (V.affinePointIdeal_comap x hxV).trans hk.symm
+end LinearStudy
+
+
+=== Linear.ProjectiveCutEquationMapFinite ===
+module
+public import Linear.HomogeneousCutAffineFinite
+public import Linear.OriginalCutEquationZeroFiber
+public import Linear.ProjectivePulledSectionNativeCoverage
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+set_option maxHeartbeats 100000
+namespace LinearStudy
+attribute [local instance] MvPolynomial.gradedAlgebra
+/-- The ACTUAL map to the SAME original affine coordinate ring,defined
+by the SAME pulled cut equations. It may depend on the chosen cut. -/
+def projectivePulledCutEquationMap {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ) :
+    MvPolynomial (Fin r) ℂ →ₐ[ℂ] (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) :=
+  (Ideal.Quotient.mkₐ ℂ V.affineIdeal).comp
+    (MvPolynomial.aeval (fun i => affineChartPolynomialMap
+      (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i))))
+/-- Original no-infinity of the SAME pulled cut derives finiteness of
+its actual equation map. No finite/free/flat certificate is assumed. -/
+theorem projectivePulledCutEquationMap_finite_of_original_no_infinity {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (hq : 0 < f.degree) (L : Fin (r+1) → CoordinateRing n)
+    (hL : ∀ i,(L i).IsHomogeneous 1) (w : Fin (r+1) → ℂ)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet)
+    (havoid : ∀ v : CoordinateVector n,
+      v ∈ MvPolynomial.zeroLocus ℂ (projectivePulledLinearSectionIdeal f V L w) →
+      v ≠ 0 → v 0 ≠ 0) :
+    (projectivePulledCutEquationMap f V L w).toRingHom.Finite := by
+  have hno : ∀ z : CoordinateVector n,z ≠ 0 →
+      z ∈ MvPolynomial.zeroLocus ℂ V.ideal.toIdeal → z 0=0 →
+        ∃ i : Fin r,MvPolynomial.eval z
+          (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)) ≠ 0 := by
+    intro z hz hIz hz0
+    by_contra! h
+    have hcut : z ∈ MvPolynomial.zeroLocus ℂ (projectivePulledLinearSectionIdeal f V L w) := by
+      apply (show projectivePulledLinearSectionIdeal f V L w ≤
+          RingHom.ker (MvPolynomial.aeval (R:=ℂ) z).toRingHom from ?_)
+      apply sup_le hIz
+      apply Ideal.span_le.mpr
+      rintro _ ⟨i,rfl⟩
+      exact h i
+    exact havoid z hcut hz hz0
+  let H : Fin r → MvPolynomial (Fin (n+1)) ℂ :=
+    fun i => MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)
+  have hH : ∀ i,(H i).IsHomogeneous f.degree :=
+    projective_pulled_back_section_forms_homogeneous f L hL w
+  let v : Fin (n+1) → ℂ := Fin.cases 1 x0
+  have hv : v ∈ MvPolynomial.zeroLocus ℂ V.ideal.toIdeal :=
+    (V.normalizedPoint_mem_iff x0).mp hx0
+  have result := @homogeneous_cut_no_infinity_actual_affine_map_finite
+    ℂ inferInstance inferInstance n r f.degree V.ideal.toIdeal
+    V.ideal.isHomogeneous v hv H hq hH hno
+  exact result
+/-- The ORIGINAL geometric Setup supplies the no-infinity open;hence
+one nonempty original parameter open makes every actual equation map finite.
+No independent generic-free open is introduced. -/
+theorem projectivePulledCutEquationMap_exists_finite_open {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+    (hV : f.onPoints ⁻¹' V.zeroSet=V.zeroSet)
+    (L : Fin (r+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+    (hfinite : (projectiveLinearNormalizationMap V L).Finite)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet) :
+    ∃ c : MvPolynomial (Fin (r+1)) ℂ,c ≠ 0 ∧
+      (∃ w : Fin (r+1) → ℂ,MvPolynomial.eval w c ≠ 0) ∧
+      ∀ w : Fin (r+1) → ℂ,MvPolynomial.eval w c ≠ 0 →
+        (projectivePulledCutEquationMap f V L w).toRingHom.Finite := by
+  obtain ⟨c,hc,hex,hcuts⟩ := projectivePulledLinearSection_exists_chart_avoidance_open
+    f V hq hf hV L hL hinj hfinite x0 hx0
+  refine ⟨c,hc,hex,?_⟩
+  intro w hw
+  obtain ⟨_,_,_,havoid⟩ := hcuts w hw
+  exact projectivePulledCutEquationMap_finite_of_original_no_infinity
+    f V hq L hL w x0 hx0 (fun v hv hvne => (havoid v hv hvne).1)
+end LinearStudy
+
+
+=== Linear.ProjectiveCutEquationFiberLocalData ===
+module
+public import Linear.ProjectiveCutEquationMapFinite
+public import Linear.ProjectiveAffineMaximalPoint
+public import Linear.ProjectiveSmoothCutPointLocalData
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+attribute [local instance] MvPolynomial.gradedAlgebra
+/-- EVERY maximal point over zero under the ACTUAL original equation map
+is the SAME original cut point. The actual prime ideal is identified. -/
+theorem projectivePulledCutEquation_zeroFiber_original_point {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ)
+    (p : Ideal (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)) [p.IsMaximal]
+    (hp : p.comap (projectivePulledCutEquationMap f V L w).toRingHom=
+      RingHom.ker (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom) :
+    ∃ (x : Fin n → ℂ) (hxV : normalizedProjectivePoint x ∈ V.zeroSet),
+      (V.affinePoint x hxV).asIdeal=p ∧
+      x ∈ MvPolynomial.zeroLocus ℂ
+        ((projectivePulledLinearSectionIdeal f V L w).map
+          (affineChartPolynomialMap (K:=ℂ)).toRingHom) := by
+  obtain ⟨x,hxV,hpx⟩ := V.affineMaximal_point p
+  refine ⟨x,hxV,hpx,?_⟩
+  have hk : p.comap (Ideal.Quotient.mk V.affineIdeal)=
+      RingHom.ker (MvPolynomial.aeval (R:=ℂ) x).toRingHom := by
+    subst p
+    exact V.affinePointIdeal_comap x hxV
+  apply (show (projectivePulledLinearSectionIdeal f V L w).map
+      (affineChartPolynomialMap (K:=ℂ)).toRingHom ≤
+      RingHom.ker (MvPolynomial.aeval (R:=ℂ) x).toRingHom from ?_)
+  rw [projectivePulledLinearSectionIdeal_map_affine]
+  apply sup_le (V.affineIdeal_le_pointKernel x hxV)
+  apply Ideal.span_le.mpr
+  rintro _ ⟨i,rfl⟩
+  rw [← hk]
+  have hi : MvPolynomial.X i ∈
+      p.comap (projectivePulledCutEquationMap f V L w).toRingHom := by
+    rw [hp]
+    simp
+  change projectivePulledCutEquationMap f V L w (MvPolynomial.X i) ∈ p at hi
+  simpa only [projectivePulledCutEquationMap,AlgHom.comp_apply,MvPolynomial.aeval_X,Ideal.Quotient.mkₐ_eq_mk,SetLike.mem_coe,Ideal.mem_comap] using hi
+/-- Original finite reduced cut and smoothness at its actual points DERIVE
+local CM and dimension r at EVERY original maximal point above zero.
+Neither CM,point dimension,nor a chosen independent point family is assumed. -/
+theorem projectivePulledCutEquation_zeroFiber_all_point_local_data {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (hproper : V.ideal.toIdeal ≠ ⊥)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ)
+    (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)=(r : WithBot ℕ∞))
+    (hsmooth : ∀ x : Fin n → ℂ,x ∈ MvPolynomial.zeroLocus ℂ
+      ((projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom) →
+      ∃ hxV : normalizedProjectivePoint x ∈ V.zeroSet,
+        Algebra.IsSmoothAt ℂ (V.affinePoint x hxV).asIdeal)
+    [IsReduced (MvPolynomial (Fin n) ℂ ⧸
+      (projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom)]
+    [Module.Finite ℂ (MvPolynomial (Fin n) ℂ ⧸
+      (projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom)] :
+    ∀ (p : Ideal (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)) (_ : p.IsMaximal),
+      p.comap (projectivePulledCutEquationMap f V L w).toRingHom=
+        RingHom.ker (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom →
+      IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧
+        (r : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime p) := by
+  intro p hp hzero
+  letI : p.IsMaximal := hp
+  obtain ⟨x,hxV,hpx,hx⟩ := projectivePulledCutEquation_zeroFiber_original_point f V L w p hzero
+  obtain ⟨_,hs⟩ := hsmooth x hx
+  subst p
+  exact projectivePulledLinearSection_smooth_cut_point_local_data f V hproper L w hdim x hxV hs hx
+end LinearStudy
+
+
+=== Linear.ProjectiveCutEquationPointTrace ===
+module
+public import Linear.ProjectiveCutEquationFiberLocalData
+public import Linear.PolynomialPointOriginalFiberTrace
+public import Linear.ChosenProjectiveNormalizationDimensions
+public import Linear.ProjectivePulledSectionSmoothPoints
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+set_option maxHeartbeats 100000
+namespace LinearStudy
+attribute [local instance] MvPolynomial.gradedAlgebra
+open CategoryTheory TensorProduct
+/-- Statement for the ACTUAL cut-dependent equation-map coefficient dual.
+The projector is the existing original scalar projector and the trace is
+LITERAL base change of eval at1. This definition is not a proof and does
+not identify this dual with the FIXED original normalization coefficient. -/
+def projectivePulledCutEquationTraceOneStatement {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ) : Prop :=
+  let R := MvPolynomial (Fin r) ℂ
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+  let phi := projectivePulledCutEquationMap f V L w
+  letI : Algebra R B := phi.toRingHom.toAlgebra
+  letI : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom.toAlgebra
+  letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+  ∀ e : ℂ ⊗[R] B,e ≠ 0 → e*e=e →
+    ∃ z : ℂ ⊗[R] ((ModuleCat.restrictScalars (algebraMap R B)).obj
+      ((ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R))),
+      coextensionOriginalResidueFiberPointEnd
+        (show Function.Surjective (algebraMap R ℂ) from
+          fun a => ⟨MvPolynomial.C a,by
+            change (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)) (MvPolynomial.C a)=a
+            exact (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).commutes a⟩) e z=z ∧
+        coextensionOriginalBaseChangedEvaluationAtOne (R:=R) (S:=B) (K:=ℂ) z=1
+/-- Original finite reduced smooth cut DERIVES every local input and
+trace1 on each nonzero actual fiber idempotent for the actual equation
+map. The equation map is explicitly finite;global free/flat/CM are not inputs. -/
+theorem projectivePulledCutEquation_trace_one_of_original_smooth_cut {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (hproper : V.ideal.toIdeal ≠ ⊥)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ)
+    (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)=(r : WithBot ℕ∞))
+    (hfinite : (projectivePulledCutEquationMap f V L w).toRingHom.Finite)
+    (hsmooth : ∀ x : Fin n → ℂ,x ∈ MvPolynomial.zeroLocus ℂ
+      ((projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom) →
+      ∃ hxV : normalizedProjectivePoint x ∈ V.zeroSet,
+        Algebra.IsSmoothAt ℂ (V.affinePoint x hxV).asIdeal)
+    [IsReduced (MvPolynomial (Fin n) ℂ ⧸
+      (projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom)]
+    [Module.Finite ℂ (MvPolynomial (Fin n) ℂ ⧸
+      (projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K:=ℂ)).toRingHom)] :
+    projectivePulledCutEquationTraceOneStatement f V L w := by
+  let R := MvPolynomial (Fin r) ℂ
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+  let phi := projectivePulledCutEquationMap f V L w
+  letI : Algebra R B := phi.toRingHom.toAlgebra
+  letI : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+  haveI : Module.Finite R B := RingHom.finite_algebraMap.mp hfinite
+  unfold projectivePulledCutEquationTraceOneStatement
+  dsimp only
+  apply polynomial_point_original_coextension_trace_one_of_original_fiber (K:=ℂ) (S:=B) (0 : Fin r → ℂ)
+  · change IsReduced (B ⧸ (RingHom.ker
+      (MvPolynomial.aeval (R:=ℂ) (0 : Fin r → ℂ)).toRingHom).map phi.toRingHom)
+    have he : phi=MvPolynomial.aeval (fun i : Fin r => Ideal.Quotient.mk V.affineIdeal
+        (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))) := by
+      dsimp only [phi,projectivePulledCutEquationMap]
+      simpa only [Ideal.Quotient.mkₐ_eq_mk] using
+        (MvPolynomial.comp_aeval (f:=fun i : Fin r => affineChartPolynomialMap
+          (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))
+          (Ideal.Quotient.mkₐ ℂ V.affineIdeal))
+    rw [he]
+    exact projectivePulledCutEquation_zero_fiber_reduced f V L w
+  · exact projectivePulledCutEquation_zeroFiber_all_point_local_data f V hproper L w hdim hsmooth
+/-- The complete ORIGINAL geometric Setup DERIVES one nonempty original
+parameter open with finite ACTUAL equation map and literal trace1 on every
+nonzero fiber idempotent. Local CM/dimension/reducedness are DERIVED.
+This joins actual original cut points to the equation-map coextension.
+Comparison with the FIXED normalization dual and SAME top-H remain OPEN. -/
+theorem projectivePulledCutEquation_originalSetup_exists_trace_one_open {n r : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n) (hrn : r < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+    (hV : f.onPoints ⁻¹' V.zeroSet=V.zeroSet)
+    (L : Fin (r+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+    (hfinite : (projectiveLinearNormalizationMap V L).Finite)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet) :
+    ∃ c : MvPolynomial (Fin (r+1)) ℂ,c ≠ 0 ∧
+      (∃ w : Fin (r+1) → ℂ,MvPolynomial.eval w c ≠ 0) ∧
+      ∀ w : Fin (r+1) → ℂ,MvPolynomial.eval w c ≠ 0 →
+        (projectivePulledCutEquationMap f V L w).toRingHom.Finite ∧
+        projectivePulledCutEquationTraceOneStatement f V L w := by
+  obtain ⟨a,ha,_,hfiniteA⟩ := projectivePulledCutEquationMap_exists_finite_open
+    f V hq hf hV L hL hinj hfinite x0 hx0
+  obtain ⟨b,hb,_,hcuts⟩ := projectivePulledLinearSection_exists_smooth_finite_reduced_cuts
+    f V hq hf hV L hL hinj hfinite x0 hx0
+  have hc : a*b ≠ 0 := mul_ne_zero ha hb
+  have hex : ∃ w : Fin (r+1) → ℂ,MvPolynomial.eval w (a*b) ≠ 0 := by
+    by_contra h
+    push Not at h
+    exact hc (MvPolynomial.funext (fun w => by simpa using h w))
+  refine ⟨a*b,hc,hex,?_⟩
+  intro w hw
+  obtain ⟨hwa,hwb⟩ := mul_ne_zero_iff.mp (by simpa only [MvPolynomial.eval_mul] using hw)
+  obtain ⟨_,hred,hfin,_,_,hsmooth⟩ := hcuts w hwb
+  letI := hred
+  letI := hfin
+  exact ⟨hfiniteA w hwa,projectivePulledCutEquation_trace_one_of_original_smooth_cut f V
+    (chosenProjectiveNormalization_definingIdeal_ne_bot V L hinj hfinite hrn) L w
+    (chosenProjectiveNormalization_chart_dimension V L hinj hfinite x0 hx0)
+    (hfiniteA w hwa) hsmooth⟩
+end LinearStudy

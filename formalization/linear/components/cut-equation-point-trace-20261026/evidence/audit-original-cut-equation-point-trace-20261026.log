@@ -1,0 +1,286 @@
+@LinearStudy.homogeneous_quotient_bounded_relation : ∀ {K : Type u_1} {ι : Type u_2} {κ : Type u_3} [inst : Field K]
+  [inst_1 : Fintype κ] (I : Ideal (MvPolynomial ι K)),
+  Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule ι K) I →
+    ∀ (P : κ → MvPolynomial ι K) (q : ℕ),
+      (∀ (i : κ), (P i).IsHomogeneous q) →
+        ∀ (H : MvPolynomial ι K) (n : ℕ),
+          H.IsHomogeneous n →
+            H ∈ I ⊔ Ideal.span (Set.range P) →
+              ∃ (a : κ → MvPolynomial ι K),
+                (Ideal.Quotient.mk I) (∑ i : κ, a i * P i) = (Ideal.Quotient.mk I) H ∧
+                  ∀ (i : κ), (a i).IsHomogeneous (n - q)
+'LinearStudy.homogeneous_quotient_bounded_relation' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.homogeneous_quotient_polynomial_map_finite_of_origin_zeroLocus : ∀ {K : Type u_1} {ι : Type u_2}
+  {κ : Type u_3} [inst : Field K] [IsAlgClosed K] [Finite ι] [Fintype κ] (I : Ideal (MvPolynomial ι K)),
+  Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule ι K) I →
+    ∀ (P : κ → MvPolynomial ι K) (q : ℕ),
+      0 < q →
+        (∀ (i : κ), (P i).IsHomogeneous q) →
+          MvPolynomial.zeroLocus K (I ⊔ Ideal.span (Set.range P)) = {0} →
+            ((Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval P)).Finite
+'LinearStudy.homogeneous_quotient_polynomial_map_finite_of_origin_zeroLocus' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.homogeneous_quotient_map_finite_of_no_base_points : ∀ {K : Type u_1} [inst : Field K] [IsAlgClosed K]
+  {n : ℕ} {κ : Type u_2} [Fintype κ] (I : Ideal (MvPolynomial (Fin n) K)),
+  Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin n) K) I →
+    ∀ v ∈ MvPolynomial.zeroLocus K I,
+      ∀ (P : κ → MvPolynomial (Fin n) K) (q : ℕ),
+        0 < q →
+          (∀ (i : κ), (P i).IsHomogeneous q) →
+            (∀ (z : Fin n → K), z ≠ 0 → z ∈ MvPolynomial.zeroLocus K I → ∃ (i : κ), (MvPolynomial.eval z) (P i) ≠ 0) →
+              ((Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval P)).Finite
+'LinearStudy.homogeneous_quotient_map_finite_of_no_base_points' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.homogeneous_cone_finite_implies_actual_affine_map_finite : ∀ {K : Type u_1} [inst : Field K] {n r : ℕ}
+  (I : Ideal (MvPolynomial (Fin (n + 1)) K)) (P : Fin (r + 1) → MvPolynomial (Fin (n + 1)) K),
+  ((Ideal.Quotient.mkₐ K I).comp (MvPolynomial.aeval P)).Finite →
+    LinearStudy.affineChartPolynomialMap (P 0) = 1 →
+      ((Ideal.Quotient.mkₐ K (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I)).comp
+          (MvPolynomial.aeval fun (i : Fin r) => LinearStudy.affineChartPolynomialMap (P i.succ))).Finite
+'LinearStudy.homogeneous_cone_finite_implies_actual_affine_map_finite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.homogeneous_cut_no_infinity_actual_affine_map_finite : ∀ {K : Type u_1} [inst : Field K] [IsAlgClosed K]
+  {n r q : ℕ} (I : Ideal (MvPolynomial (Fin (n + 1)) K)),
+  Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I →
+    ∀ v ∈ MvPolynomial.zeroLocus K I,
+      ∀ (H : Fin r → MvPolynomial (Fin (n + 1)) K),
+        0 < q →
+          (∀ (i : Fin r), (H i).IsHomogeneous q) →
+            (∀ (z : Fin (n + 1) → K),
+                z ≠ 0 → z ∈ MvPolynomial.zeroLocus K I → z 0 = 0 → ∃ (i : Fin r), (MvPolynomial.eval z) (H i) ≠ 0) →
+              ((Ideal.Quotient.mkₐ K (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I)).comp
+                  (MvPolynomial.aeval fun (i : Fin r) => LinearStudy.affineChartPolynomialMap (H i))).Finite
+'LinearStudy.homogeneous_cut_no_infinity_actual_affine_map_finite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.polynomial_equation_zero_fiber_ideal : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] {r : ℕ} (H : Fin r → S),
+  Ideal.map (MvPolynomial.aeval H).toRingHom (RingHom.ker (MvPolynomial.aeval 0).toRingHom) = Ideal.span (Set.range H)
+'LinearStudy.polynomial_equation_zero_fiber_ideal' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledCutEquation_zero_fiber_reduced : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ)
+  [IsReduced
+      (MvPolynomial (Fin n) ℂ ⧸
+        Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+          (LinearStudy.projectivePulledLinearSectionIdeal f V L w))],
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  have H := fun (i : Fin r) =>
+    (Ideal.Quotient.mk V.affineIdeal)
+      (LinearStudy.affineChartPolynomialMap
+        ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+  IsReduced (B ⧸ Ideal.map (MvPolynomial.aeval H).toRingHom (RingHom.ker (MvPolynomial.aeval 0).toRingHom))
+'LinearStudy.projectivePulledCutEquation_zero_fiber_reduced' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledCutEquation_zero_fiber_finite : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ)
+  [Module.Finite ℂ
+      (MvPolynomial (Fin n) ℂ ⧸
+        Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+          (LinearStudy.projectivePulledLinearSectionIdeal f V L w))],
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  have H := fun (i : Fin r) =>
+    (Ideal.Quotient.mk V.affineIdeal)
+      (LinearStudy.affineChartPolynomialMap
+        ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+  Module.Finite ℂ (B ⧸ Ideal.map (MvPolynomial.aeval H).toRingHom (RingHom.ker (MvPolynomial.aeval 0).toRingHom))
+'LinearStudy.projectivePulledCutEquation_zero_fiber_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.IntegralProjectiveEquations.affineMaximal_point : ∀ {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (p : Ideal (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)) [p.IsMaximal],
+  ∃ (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet), (V.affinePoint x hx).asIdeal = p
+'LinearStudy.IntegralProjectiveEquations.affineMaximal_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledCutEquationMap : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (Fin (r + 1) → ℂ) → MvPolynomial (Fin r) ℂ →ₐ[ℂ] MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+'LinearStudy.projectivePulledCutEquationMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledCutEquationMap_finite_of_original_no_infinity : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  0 < f.degree →
+    ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+      (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+        ∀ (w : Fin (r + 1) → ℂ) (x0 : Fin n → ℂ),
+          LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+            (∀ v ∈ MvPolynomial.zeroLocus ℂ (LinearStudy.projectivePulledLinearSectionIdeal f V L w), v ≠ 0 → v 0 ≠ 0) →
+              (LinearStudy.projectivePulledCutEquationMap f V L w).Finite
+'LinearStudy.projectivePulledCutEquationMap_finite_of_original_no_infinity' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquationMap_exists_finite_open : ∀ {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n),
+  0 < f.degree →
+    Function.Surjective f.onPoints →
+      f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+        ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+          (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+            Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+              (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                ∀ (x0 : Fin n → ℂ),
+                  LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                    ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                      c ≠ 0 ∧
+                        (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                          ∀ (w : Fin (r + 1) → ℂ),
+                            (MvPolynomial.eval w) c ≠ 0 → (LinearStudy.projectivePulledCutEquationMap f V L w).Finite
+'LinearStudy.projectivePulledCutEquationMap_exists_finite_open' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_zeroFiber_original_point : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ)
+  (p : Ideal (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)) [p.IsMaximal],
+  Ideal.comap (LinearStudy.projectivePulledCutEquationMap f V L w).toRingHom p =
+      RingHom.ker (MvPolynomial.aeval 0).toRingHom →
+    ∃ (x : Fin n → ℂ) (hxV : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet),
+      (V.affinePoint x hxV).asIdeal = p ∧
+        x ∈
+          MvPolynomial.zeroLocus ℂ
+            (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+              (LinearStudy.projectivePulledLinearSectionIdeal f V L w))
+'LinearStudy.projectivePulledCutEquation_zeroFiber_original_point' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_zeroFiber_all_point_local_data : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  V.ideal.toIdeal ≠ ⊥ →
+    ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ),
+      ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r →
+        (∀
+            x ∈
+              MvPolynomial.zeroLocus ℂ
+                (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                  (LinearStudy.projectivePulledLinearSectionIdeal f V L w)),
+            ∃ (hxV : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet),
+              Algebra.IsSmoothAt ℂ (V.affinePoint x hxV).asIdeal) →
+          ∀
+            [IsReduced
+                (MvPolynomial (Fin n) ℂ ⧸
+                  Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                    (LinearStudy.projectivePulledLinearSectionIdeal f V L w))]
+            [Module.Finite ℂ
+                (MvPolynomial (Fin n) ℂ ⧸
+                  Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                    (LinearStudy.projectivePulledLinearSectionIdeal f V L w))]
+            (p : Ideal (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)) (x : p.IsMaximal),
+            Ideal.comap (LinearStudy.projectivePulledCutEquationMap f V L w).toRingHom p =
+                RingHom.ker (MvPolynomial.aeval 0).toRingHom →
+              IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧ ↑r = ringKrullDim (Localization.AtPrime p)
+'LinearStudy.projectivePulledCutEquation_zeroFiber_all_point_local_data' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquationTraceOneStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n → (Fin (r + 1) → LinearStudy.CoordinateRing n) → (Fin (r + 1) → ℂ) → Prop
+'LinearStudy.projectivePulledCutEquationTraceOneStatement' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledCutEquation_trace_one_of_original_smooth_cut : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  V.ideal.toIdeal ≠ ⊥ →
+    ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ),
+      ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r →
+        (LinearStudy.projectivePulledCutEquationMap f V L w).Finite →
+          (∀
+              x ∈
+                MvPolynomial.zeroLocus ℂ
+                  (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                    (LinearStudy.projectivePulledLinearSectionIdeal f V L w)),
+              ∃ (hxV : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet),
+                Algebra.IsSmoothAt ℂ (V.affinePoint x hxV).asIdeal) →
+            ∀
+              [IsReduced
+                  (MvPolynomial (Fin n) ℂ ⧸
+                    Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                      (LinearStudy.projectivePulledLinearSectionIdeal f V L w))]
+              [Module.Finite ℂ
+                  (MvPolynomial (Fin n) ℂ ⧸
+                    Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                      (LinearStudy.projectivePulledLinearSectionIdeal f V L w))],
+              LinearStudy.projectivePulledCutEquationTraceOneStatement f V L w
+'LinearStudy.projectivePulledCutEquation_trace_one_of_original_smooth_cut' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_originalSetup_exists_trace_one_open : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  r < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n),
+            (∀ (i : Fin (r + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+              Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+                (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (r + 1)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (r + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (r + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                (LinearStudy.projectivePulledCutEquationMap f V L w).Finite ∧
+                                  LinearStudy.projectivePulledCutEquationTraceOneStatement f V L w
+'LinearStudy.projectivePulledCutEquation_originalSetup_exists_trace_one_open' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.projectivePulledCutEquationMap : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    (V : LinearStudy.IntegralProjectiveEquations n) →
+      (Fin (r + 1) → LinearStudy.CoordinateRing n) →
+        (Fin (r + 1) → ℂ) → MvPolynomial (Fin r) ℂ →ₐ[ℂ] MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ) =>
+  (Ideal.Quotient.mkₐ ℂ V.affineIdeal).comp
+    (MvPolynomial.aeval fun (i : Fin r) =>
+      LinearStudy.affineChartPolynomialMap
+        ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)))
+def LinearStudy.projectivePulledCutEquationTraceOneStatement : {n r : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (Fin (r + 1) → LinearStudy.CoordinateRing n) → (Fin (r + 1) → ℂ) → Prop :=
+fun {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ) =>
+  let R := MvPolynomial (Fin r) ℂ;
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let phi := LinearStudy.projectivePulledCutEquationMap f V L w;
+  ∀ (e : TensorProduct R ℂ B),
+    e ≠ 0 →
+      e * e = e →
+        ∃ (z :
+          TensorProduct R ℂ
+            ↑((ModuleCat.restrictScalars (algebraMap R B)).obj ((ModuleCat.coextendScalars (algebraMap R B)).obj ↧R))),
+          (LinearStudy.coextensionOriginalResidueFiberPointEnd ⋯ e) z = z ∧
+            LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne z = 1
+ROLECHECK:LinearStudy.homogeneous_quotient_bounded_relation:true
+KINDCHECK:LinearStudy.homogeneous_quotient_bounded_relation:theorem
+ROLECHECK:LinearStudy.homogeneous_quotient_polynomial_map_finite_of_origin_zeroLocus:true
+KINDCHECK:LinearStudy.homogeneous_quotient_polynomial_map_finite_of_origin_zeroLocus:theorem
+ROLECHECK:LinearStudy.homogeneous_quotient_map_finite_of_no_base_points:true
+KINDCHECK:LinearStudy.homogeneous_quotient_map_finite_of_no_base_points:theorem
+ROLECHECK:LinearStudy.homogeneous_cone_finite_implies_actual_affine_map_finite:true
+KINDCHECK:LinearStudy.homogeneous_cone_finite_implies_actual_affine_map_finite:theorem
+ROLECHECK:LinearStudy.homogeneous_cut_no_infinity_actual_affine_map_finite:true
+KINDCHECK:LinearStudy.homogeneous_cut_no_infinity_actual_affine_map_finite:theorem
+ROLECHECK:LinearStudy.polynomial_equation_zero_fiber_ideal:true
+KINDCHECK:LinearStudy.polynomial_equation_zero_fiber_ideal:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquation_zero_fiber_reduced:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_zero_fiber_reduced:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquation_zero_fiber_finite:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_zero_fiber_finite:theorem
+ROLECHECK:LinearStudy.IntegralProjectiveEquations.affineMaximal_point:true
+KINDCHECK:LinearStudy.IntegralProjectiveEquations.affineMaximal_point:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquationMap:false
+KINDCHECK:LinearStudy.projectivePulledCutEquationMap:definition
+ROLECHECK:LinearStudy.projectivePulledCutEquationMap_finite_of_original_no_infinity:true
+KINDCHECK:LinearStudy.projectivePulledCutEquationMap_finite_of_original_no_infinity:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquationMap_exists_finite_open:true
+KINDCHECK:LinearStudy.projectivePulledCutEquationMap_exists_finite_open:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquation_zeroFiber_original_point:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_zeroFiber_original_point:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquation_zeroFiber_all_point_local_data:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_zeroFiber_all_point_local_data:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquationTraceOneStatement:false
+KINDCHECK:LinearStudy.projectivePulledCutEquationTraceOneStatement:definition
+ROLECHECK:LinearStudy.projectivePulledCutEquation_trace_one_of_original_smooth_cut:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_trace_one_of_original_smooth_cut:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_trace_one_open:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_trace_one_open:theorem
