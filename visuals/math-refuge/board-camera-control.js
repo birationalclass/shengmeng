@@ -1,3 +1,4 @@
+import {BOARD_CAMERA_MIN_ZOOM} from './board-camera-framing.js';
 import {placeTrayControl} from './board-tray-layout.js';
 import {reportControlLayout} from './report-voice.js?v=uniform-review-20261019';
 import {SCREEN_COLORS,beginControlInk} from './smart-screen-style.js?v=unframed-controls-1';
@@ -17,7 +18,7 @@ export function createBoardCameraControl(T,parent,column){
   const p=reportControlLayout(column,withVoice).camera;placeTrayControl(mesh,p);mesh.visible=visible;
   mesh.userData.label=enabled?'自动镜头 · 开启（点击关闭）':'自动镜头 · 关闭（点击开启）';mesh.userData.active=enabled;
   for(const control of zoomControls){const p=reportControlLayout(column)[control.key];placeTrayControl(control.mesh,p);control.mesh.visible=visible;
-   const limited=control.direction>0?zoom>=1:zoom<=0;control.mesh.userData.limit=limited;control.mesh.userData.label=control.direction>0?'＋ 拉远 · 最远显示全部黑板':'− 拉近 · 最近保留完整当前黑板';
+   const limited=control.direction>0?zoom>=1:zoom<=BOARD_CAMERA_MIN_ZOOM;control.mesh.userData.limit=limited;control.mesh.userData.label=control.direction>0?'＋ 拉远 · 最远显示全部黑板':'− 拉近 · 可继续放大板书细节';
    if(control.last===limited)continue;control.last=limited;const c=control.canvas.getContext('2d');c.clearRect(0,0,128,128);beginControlInk(c);c.strokeStyle=limited?SCREEN_COLORS.muted:SCREEN_COLORS.text;c.lineWidth=5;c.lineCap='square';c.beginPath();c.moveTo(40,64);c.lineTo(88,64);if(control.direction>0){c.moveTo(64,40);c.lineTo(64,88);}c.stroke();c.restore();control.texture.needsUpdate=true;
   }
   if(last===enabled)return;last=enabled;const c=canvas.getContext('2d');c.clearRect(0,0,128,128);

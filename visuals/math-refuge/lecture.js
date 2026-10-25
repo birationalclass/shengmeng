@@ -635,10 +635,12 @@ export async function createLecture(scene,renderer,options={}){
     get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},
     async prepareOpening(onProgress=()=>{}){
       if(disabled||!storageRig)return false;
+      finishOpening();storageMotion.reset(true);storageProgress=1;storageRig.position.y=-7.2;storageRig.visible=false;
+      storageLids.forEach(lid=>lid.visible=false);if(storageCap)storageCap.visible=true;screenHub?.update(0,1);
       const preparation=[],prepareAt=performance.now();
       playing=false;
       const openingDefault=reports.find(report=>report.id===(options.defaultReport||'ye'))||reports[0];
-      if(activeReport.id!==openingDefault.id&&!await this.setReport(openingDefault.id,{loadVoice:false}))return false;
+      if(activeReport.id!==openingDefault.id&&!await this.setReport(openingDefault.id,{loadVoice:false,preserveHardware:true}))return false;
       // Prepare ink without requesting audio. Narrated openings start from the cover;
       // their first audio chapter is requested only after the arrival animation.
       await voice.select(null);
@@ -679,31 +681,12 @@ export async function createLecture(scene,renderer,options={}){
       playing=false;version++;return true;
     },
     get openingNarrated(){return openingDemo?.phase==='waiting'&&openingDemo.narrated===true;},
-    async beginOpening(reduced=false){
-      options.onOpening?.({stage:'arrival',report:activeReport.id,kind:activeReport.kind,demo:openingDemo?.phase,narrated:openingDemo?.narrated});
+    beginOpening(reduced=false){
       if(openingDemo?.phase!=='waiting')return false;
-      stored=false;screenHub?.report();updateStorageLabel();
-      if(reduced){storageMotion.reset();storageProgress=0;storageRig.position.y=0;storageRig.visible=true;}
-      while(openingDemo?.phase==='waiting'&&!stored&&(storageProgress>0||!storageMotion.ready))await new Promise(requestAnimationFrame);
-      if(openingDemo?.phase!=='waiting'||stored)return false;
-      if(openingDemo.narrated){
-        if(activeReport.kind==='classroom'){
-          // Reuse the prepared clean board. Narration writes the cover once from
-          // zero; never flash a finished preview that must be erased on playback.
-          openingDemo=null;playing=false;clock.startWrite();
-          options.onOpening?.({stage:'loading',report:activeReport.id,phase:clock.phase,progress:clock.slots[clock.active].progress});
-          boards.forEach((_,i)=>draw(i,true));programScreen?.select(activeReport);setReportState();
-          void assetPreload.start(pages,{courseText:pages.map(p=>chalkPageText(p,'zh')+'\n'+chalkPageText(p,'en')).join('\n')});if(pages.length>1)void load(1,undefined,{background:true}).catch(()=>{});
-          void voice.select(voiceReport(activeReport),{autoplay:true}).then(()=>{
-            options.onOpening?.({stage:'loaded',report:activeReport.id,phase:clock.phase,progress:clock.slots[clock.active].progress});
-            void voice.prefetchAll();
-          });
-          return true;
-        }
-        return this.setReport(activeReport.id,{autoplay:true});
-      }
-      const demo=openingDemo;select(demo.page);openingDemo={...demo,phase:'writing',elapsed:0};
-      if(reduced)staticPage();playing=true;return true;
+      // Arrival never opens the teaching hardware or starts a lesson.
+      finishOpening();
+      options.onOpening?.({stage:'idle',report:activeReport.id,kind:activeReport.kind,stored,storageProgress,screenPower:screenHub?.state.power});
+      return false;
     },
     finishOpening,
     toggleStorage(){voice.pause();openingDemo=null;if(storageRig){stored=!stored;if(!stored)screenHub?.report();if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();setReportState();}return stored;},
@@ -764,12 +747,12 @@ export async function createLecture(scene,renderer,options={}){
     get pendingReport(){return pendingReport;},
     preloadReports:()=>disabled?Promise.resolve([]):Promise.allSettled(reports.filter(r=>r.kind!=='classroom').map(prepareReport)),
     reportFocus:()=>scene.localToWorld(new THREE.Vector3(reportX+1.1,2.45,-11.34)),
-    async setReport(id,{autoplay=false,loadVoice=true}={}){
+    async setReport(id,{autoplay=false,loadVoice=true,preserveHardware=false}={}){
       if(disabled)return false;
       openingDemo=null;voiceBookmark=null;assetPreload.cancel();
-      const next=reports.find(r=>r.id===id);if(!next)throw new Error('未知报告');if(voiceTone!=='off'&&voiceTone!=='original'&&!next.narration?.voices?.some(v=>v.id===voiceTone))voiceTone='original';screenHub?.report();
+      const next=reports.find(r=>r.id===id);if(!next)throw new Error('未知报告');if(voiceTone!=='off'&&voiceTone!=='original'&&!next.narration?.voices?.some(v=>v.id===voiceTone))voiceTone='original';if(!preserveHardware)screenHub?.report();
       voice.setContextActive(false);
-      if(storageRig){stored=false;storageRig.visible=true;updateStorageLabel();}
+      if(storageRig&&!preserveHardware){stored=false;storageRig.visible=true;updateStorageLabel();}
       seekRequest++;seeking=false;const request=++reportRequest;pendingReport=next;setReportState();const voicePreparation=voice.select(voiceEnabled&&loadVoice?voiceReport(next):null,{autoplay});
       try{
         const manifest=await prepareReport(next);if(request!==reportRequest)return false;
