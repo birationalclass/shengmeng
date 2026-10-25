@@ -1,0 +1,157 @@
+@LinearStudy.nativeLocalizedSourcePointEquiv : {R S : Type u_1} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra R S] →
+        (P : Submonoid R) →
+          (p : Ideal (LocalizedModule P S)) →
+            [inst_3 : p.IsPrime] →
+              Localization.AtPrime (Ideal.comap LocalizedModule.numeratorRingHom p) ≃+* Localization.AtPrime p
+'LinearStudy.nativeLocalizedSourcePointEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeLocalizedSourcePointEquiv_numerator : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] (P : Submonoid R) (p : Ideal (LocalizedModule P S)) [inst_3 : p.IsPrime] (a : S),
+  (LinearStudy.nativeLocalizedSourcePointEquiv P p)
+      ((algebraMap S (Localization.AtPrime (Ideal.comap LocalizedModule.numeratorRingHom p))) a) =
+    (algebraMap (LocalizedModule P S) (Localization.AtPrime p)) (LocalizedModule.numeratorRingHom a)
+'LinearStudy.nativeLocalizedSourcePointEquiv_numerator' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeLocalizedSourcePoint_ringKrullDim : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] (P : Submonoid R) (p : Ideal (LocalizedModule P S)) [inst_3 : p.IsPrime],
+  ringKrullDim (Localization.AtPrime p) =
+    ringKrullDim (Localization.AtPrime (Ideal.comap LocalizedModule.numeratorRingHom p))
+'LinearStudy.nativeLocalizedSourcePoint_ringKrullDim' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeLocalizedSourcePoint_localCM : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] (P : Submonoid R) [IsNoetherianRing S] (p : Ideal (LocalizedModule P S)) [inst_4 : p.IsPrime]
+  [IsCohenMacaulayLocalRing (Localization.AtPrime (Ideal.comap LocalizedModule.numeratorRingHom p))],
+  IsCohenMacaulayLocalRing (Localization.AtPrime p)
+'LinearStudy.nativeLocalizedSourcePoint_localCM' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeLocalizedSourcePoint_base_comap : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] [Module.Finite R S] (m : Ideal R) [inst_4 : m.IsPrime]
+  (p : Ideal (LocalizedModule m.primeCompl S)) [p.IsMaximal],
+  Ideal.comap (algebraMap R S) (Ideal.comap LocalizedModule.numeratorRingHom p) = m
+'LinearStudy.nativeLocalizedSourcePoint_base_comap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeLocalizedSourcePoint_original_maximal : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] [Module.Finite R S] (m : Ideal R) [inst_4 : m.IsMaximal]
+  (p : Ideal (LocalizedModule m.primeCompl S)) [p.IsMaximal], (Ideal.comap LocalizedModule.numeratorRingHom p).IsMaximal
+'LinearStudy.nativeLocalizedSourcePoint_original_maximal' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeLocalizedSourceClosedFiber_reduced : ∀ {R S : Type u_1} [inst : CommRing R] [inst_1 : CommRing S]
+  [inst_2 : Algebra R S] (m : Ideal R) [inst_3 : m.IsPrime] [IsReduced (S ⧸ Ideal.map (algebraMap R S) m)],
+  let Q := Localization.AtPrime m;
+  let A := LocalizedModule m.primeCompl S;
+  IsReduced (A ⧸ Ideal.map (algebraMap Q A) (IsLocalRing.maximalIdeal Q))
+'LinearStudy.nativeLocalizedSourceClosedFiber_reduced' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.polynomial_point_original_coextension_trace_one_of_original_points : ∀ {K S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] {r : ℕ} [inst_2 : Algebra (MvPolynomial (Fin r) K) S] [Module.Finite (MvPolynomial (Fin r) K) S]
+  (y : Fin r → K),
+  (have R := MvPolynomial (Fin r) K;
+    let m := RingHom.ker (MvPolynomial.aeval y).toRingHom;
+    let Q := Localization.AtPrime m;
+    let S' := LocalizedModule m.primeCompl S;
+    IsReduced (S' ⧸ Ideal.map (algebraMap Q S') (IsLocalRing.maximalIdeal Q))) →
+    (have R := MvPolynomial (Fin r) K;
+      let m := RingHom.ker (MvPolynomial.aeval y).toRingHom;
+      let S' := LocalizedModule m.primeCompl S;
+      ∀ (p : Ideal S') (x : p.IsMaximal),
+        IsCohenMacaulayLocalRing (Localization.AtPrime (Ideal.comap LocalizedModule.numeratorRingHom p)) ∧
+          ↑r = ringKrullDim (Localization.AtPrime (Ideal.comap LocalizedModule.numeratorRingHom p))) →
+      let R := MvPolynomial (Fin r) K;
+      ∀ (e : TensorProduct R K S),
+        e ≠ 0 →
+          e * e = e →
+            ∃ (z :
+              TensorProduct R K
+                ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                    ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+              (LinearStudy.coextensionOriginalResidueFiberPointEnd ⋯ e) z = z ∧
+                LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne z = 1
+'LinearStudy.polynomial_point_original_coextension_trace_one_of_original_points' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.polynomial_point_original_coextension_trace_one_of_original_fiber : ∀ {K S : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] {r : ℕ} [inst_2 : Algebra (MvPolynomial (Fin r) K) S] [Module.Finite (MvPolynomial (Fin r) K) S]
+  (y : Fin r → K),
+  (let R := MvPolynomial (Fin r) K;
+    have m := RingHom.ker (MvPolynomial.aeval y).toRingHom;
+    IsReduced (S ⧸ Ideal.map (algebraMap R S) m)) →
+    (∀ (p : Ideal S) (x : p.IsMaximal),
+        Ideal.comap (algebraMap (MvPolynomial (Fin r) K) S) p = RingHom.ker (MvPolynomial.aeval y).toRingHom →
+          IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧ ↑r = ringKrullDim (Localization.AtPrime p)) →
+      let R := MvPolynomial (Fin r) K;
+      ∀ (e : TensorProduct R K S),
+        e ≠ 0 →
+          e * e = e →
+            ∃ (z :
+              TensorProduct R K
+                ↑((ModuleCat.restrictScalars (algebraMap R S)).obj
+                    ((ModuleCat.coextendScalars (algebraMap R S)).obj ↧R))),
+              (LinearStudy.coextensionOriginalResidueFiberPointEnd ⋯ e) z = z ∧
+                LinearStudy.coextensionOriginalBaseChangedEvaluationAtOne z = 1
+'LinearStudy.polynomial_point_original_coextension_trace_one_of_original_fiber' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.finite_reduced_regular_cut_point_local_data : ∀ {A : Type u_1} [inst : CommRing A] [IsNoetherianRing A]
+  (rs : List A) (p : Ideal A) [inst_2 : p.IsPrime] [IsArtinianRing (A ⧸ Ideal.ofList rs)]
+  [IsReduced (A ⧸ Ideal.ofList rs)],
+  Ideal.ofList rs ≤ p →
+    RingTheory.Sequence.IsRegular (Localization.AtPrime p) (List.map (⇑(algebraMap A (Localization.AtPrime p))) rs) →
+      IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧ ↑rs.length = ringKrullDim (Localization.AtPrime p)
+'LinearStudy.finite_reduced_regular_cut_point_local_data' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.projectivePulledLinearSection_smooth_cut_point_local_data : ∀ {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  V.ideal.toIdeal ≠ ⊥ →
+    ∀ (L : Fin (r + 1) → LinearStudy.CoordinateRing n) (w : Fin (r + 1) → ℂ),
+      ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r →
+        ∀ (x : Fin n → ℂ) (hxV : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet),
+          Algebra.IsSmoothAt ℂ (V.affinePoint x hxV).asIdeal →
+            x ∈
+                MvPolynomial.zeroLocus ℂ
+                  (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                    (LinearStudy.projectivePulledLinearSectionIdeal f V L w)) →
+              ∀
+                [IsReduced
+                    (MvPolynomial (Fin n) ℂ ⧸
+                      Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                        (LinearStudy.projectivePulledLinearSectionIdeal f V L w))]
+                [Module.Finite ℂ
+                    (MvPolynomial (Fin n) ℂ ⧸
+                      Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom
+                        (LinearStudy.projectivePulledLinearSectionIdeal f V L w))],
+                let p := (V.affinePoint x hxV).asIdeal;
+                IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧ ↑r = ringKrullDim (Localization.AtPrime p)
+'LinearStudy.projectivePulledLinearSection_smooth_cut_point_local_data' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.nativeLocalizedSourcePointEquiv.{u} : {R S : Type u} →
+  [inst : CommRing R] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra R S] →
+        (P : Submonoid R) →
+          (p : Ideal (LocalizedModule P S)) →
+            [inst_3 : p.IsPrime] →
+              Localization.AtPrime (Ideal.comap LocalizedModule.numeratorRingHom p) ≃+* Localization.AtPrime p :=
+fun {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] (P : Submonoid R) (p : Ideal (LocalizedModule P S))
+    [p.IsPrime] =>
+  let A := LocalizedModule P S;
+  let L := Localization.AtPrime p;
+  (IsLocalization.algEquiv (Ideal.comap (algebraMap S A) p).primeCompl
+      (Localization.AtPrime (Ideal.comap (algebraMap S A) p)) L).toRingEquiv
+ROLECHECK:LinearStudy.nativeLocalizedSourcePointEquiv:false
+KINDCHECK:LinearStudy.nativeLocalizedSourcePointEquiv:definition
+ROLECHECK:LinearStudy.nativeLocalizedSourcePointEquiv_numerator:true
+KINDCHECK:LinearStudy.nativeLocalizedSourcePointEquiv_numerator:theorem
+ROLECHECK:LinearStudy.nativeLocalizedSourcePoint_ringKrullDim:true
+KINDCHECK:LinearStudy.nativeLocalizedSourcePoint_ringKrullDim:theorem
+ROLECHECK:LinearStudy.nativeLocalizedSourcePoint_localCM:true
+KINDCHECK:LinearStudy.nativeLocalizedSourcePoint_localCM:theorem
+ROLECHECK:LinearStudy.nativeLocalizedSourcePoint_base_comap:true
+KINDCHECK:LinearStudy.nativeLocalizedSourcePoint_base_comap:theorem
+ROLECHECK:LinearStudy.nativeLocalizedSourcePoint_original_maximal:true
+KINDCHECK:LinearStudy.nativeLocalizedSourcePoint_original_maximal:theorem
+ROLECHECK:LinearStudy.nativeLocalizedSourceClosedFiber_reduced:true
+KINDCHECK:LinearStudy.nativeLocalizedSourceClosedFiber_reduced:theorem
+ROLECHECK:LinearStudy.polynomial_point_original_coextension_trace_one_of_original_points:true
+KINDCHECK:LinearStudy.polynomial_point_original_coextension_trace_one_of_original_points:theorem
+ROLECHECK:LinearStudy.polynomial_point_original_coextension_trace_one_of_original_fiber:true
+KINDCHECK:LinearStudy.polynomial_point_original_coextension_trace_one_of_original_fiber:theorem
+ROLECHECK:LinearStudy.finite_reduced_regular_cut_point_local_data:true
+KINDCHECK:LinearStudy.finite_reduced_regular_cut_point_local_data:theorem
+ROLECHECK:LinearStudy.projectivePulledLinearSection_smooth_cut_point_local_data:true
+KINDCHECK:LinearStudy.projectivePulledLinearSection_smooth_cut_point_local_data:theorem

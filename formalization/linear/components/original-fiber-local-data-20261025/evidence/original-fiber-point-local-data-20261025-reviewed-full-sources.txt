@@ -1,0 +1,417 @@
+===== Linear.NativeLocalizedSourcePoint =====
+module
+public import Linear.NativeLocalizedUpperAlgebra
+public import Linear.Vendor.CM.CohenMacaulayBasic
+public import Mathlib.RingTheory.Localization.LocalizationLocalization
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+universe u
+variable {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+variable (P : Submonoid R)
+/-- The ACTUAL source localized along the base,then at an actual source
+prime,has the ORIGINAL source local ring. No replacement source/action. -/
+def nativeLocalizedSourcePointEquiv
+    (p : Ideal (LocalizedModule P S)) [p.IsPrime] :
+    Localization.AtPrime (p.comap (LocalizedModule.numeratorRingHom (S:=P) (A:=S))) ≃+*
+      Localization.AtPrime p := by
+  let A := LocalizedModule P S
+  letI : Algebra S A := nativeLocalizedUpperAlgebra (S:=S) P
+  letI : IsLocalization (Algebra.algebraMapSubmonoid S P) A :=
+    nativeLocalizedUpperAlgebra_isLocalization (S:=S) P
+  let L := Localization.AtPrime p
+  letI : IsLocalization.AtPrime L (p.comap (algebraMap S A)) :=
+    IsLocalization.isLocalization_isLocalization_atPrime_isLocalization
+      (Algebra.algebraMapSubmonoid S P) L p
+  exact (IsLocalization.algEquiv (p.comap (algebraMap S A)).primeCompl
+    (Localization.AtPrime (p.comap (algebraMap S A))) L).toRingEquiv
+/-- The actual point comparison preserves EVERY original source numerator. -/
+theorem nativeLocalizedSourcePointEquiv_numerator
+    (p : Ideal (LocalizedModule P S)) [p.IsPrime] (a : S) :
+    nativeLocalizedSourcePointEquiv P p
+      (algebraMap S (Localization.AtPrime
+        (p.comap (LocalizedModule.numeratorRingHom (S:=P) (A:=S)))) a)=
+      algebraMap (LocalizedModule P S) (Localization.AtPrime p)
+        (LocalizedModule.numeratorRingHom (S:=P) (A:=S) a) := by
+  let A := LocalizedModule P S
+  letI : Algebra S A := nativeLocalizedUpperAlgebra (S:=S) P
+  letI : IsLocalization (Algebra.algebraMapSubmonoid S P) A :=
+    nativeLocalizedUpperAlgebra_isLocalization (S:=S) P
+  let L := Localization.AtPrime p
+  letI : IsLocalization.AtPrime L (p.comap (algebraMap S A)) :=
+    IsLocalization.isLocalization_isLocalization_atPrime_isLocalization
+      (Algebra.algebraMapSubmonoid S P) L p
+  exact (IsLocalization.algEquiv (p.comap (algebraMap S A)).primeCompl
+    (Localization.AtPrime (p.comap (algebraMap S A))) L).commutes a
+/-- Krull dimension is preserved by the actual ORIGINAL point comparison. -/
+theorem nativeLocalizedSourcePoint_ringKrullDim
+    (p : Ideal (LocalizedModule P S)) [p.IsPrime] :
+    ringKrullDim (Localization.AtPrime p)=ringKrullDim (Localization.AtPrime
+      (p.comap (LocalizedModule.numeratorRingHom (S:=P) (A:=S)))) :=
+  (nativeLocalizedSourcePointEquiv P p).ringKrullDim.symm
+/-- LOCAL CM at the corresponding ORIGINAL source point transfers to the
+actual localized source point. No global CM assumption. -/
+theorem nativeLocalizedSourcePoint_localCM [IsNoetherianRing S]
+    (p : Ideal (LocalizedModule P S)) [p.IsPrime]
+    [IsCohenMacaulayLocalRing (Localization.AtPrime
+      (p.comap (LocalizedModule.numeratorRingHom (S:=P) (A:=S))))] :
+    IsCohenMacaulayLocalRing (Localization.AtPrime p) :=
+  isCohenMacaulayLocalRing_of_ringEquiv (nativeLocalizedSourcePointEquiv P p)
+end LinearStudy
+
+
+===== Linear.NativeLocalizedSourceFiberPoints =====
+module
+public import Linear.NativeLocalizedSourcePoint
+public import Linear.FiniteReducedFiberLocalFree
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+universe u
+variable {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] [Module.Finite R S]
+/-- EVERY actual maximal source point after base localization contracts
+to the SAME original base point;the fiber condition is derived. -/
+theorem nativeLocalizedSourcePoint_base_comap
+    (m : Ideal R) [m.IsPrime]
+    (p : Ideal (LocalizedModule m.primeCompl S)) [p.IsMaximal] :
+    (p.comap (LocalizedModule.numeratorRingHom (S:=m.primeCompl) (A:=S))).comap
+      (algebraMap R S)=m := by
+  let Q := Localization.AtPrime m
+  let A := LocalizedModule m.primeCompl S
+  letI : Module Q A := LocalizedModule.moduleOfIsLocalization
+  letI : Algebra Q A := LocalizedModule.algebraOfIsLocalization (S:=m.primeCompl) Q
+  letI : Module.Finite Q A := Module.Finite.of_isLocalizedModule m.primeCompl
+    (Rₚ:=Q) (LocalizedModule.mkLinearMap m.primeCompl S)
+  have hc : p.comap (algebraMap Q A)=IsLocalRing.maximalIdeal Q :=
+    IsLocalRing.eq_maximalIdeal
+      (Ideal.isMaximal_under_of_isIntegral_of_isMaximal (R:=Q) (S:=A) p)
+  have ht : (LocalizedModule.numeratorRingHom (S:=m.primeCompl) (A:=S)).comp
+      (algebraMap R S)=(algebraMap Q A).comp (algebraMap R Q) := by
+    ext a
+    exact IsScalarTower.algebraMap_apply R Q A a
+  rw [Ideal.comap_comap,ht,← Ideal.comap_comap,hc]
+  exact Localization.AtPrime.under_maximalIdeal
+/-- If the ORIGINAL base point is maximal,EVERY actual maximal point of
+the localized finite source is an ORIGINAL maximal source point. -/
+theorem nativeLocalizedSourcePoint_original_maximal
+    (m : Ideal R) [m.IsMaximal]
+    (p : Ideal (LocalizedModule m.primeCompl S)) [p.IsMaximal] :
+    (p.comap (LocalizedModule.numeratorRingHom (S:=m.primeCompl) (A:=S))).IsMaximal := by
+  let q := p.comap (LocalizedModule.numeratorRingHom (S:=m.primeCompl) (A:=S))
+  apply Ideal.isMaximal_of_isIntegral_of_isMaximal_under (R:=R) (S:=S) q
+  change (q.comap (algebraMap R S)).IsMaximal
+  rw [nativeLocalizedSourcePoint_base_comap m p]
+  infer_instance
+end LinearStudy
+
+
+===== Linear.NativeLocalizedSourceReducedFiber =====
+module
+public import Linear.NativeLocalizedUpperAlgebra
+public import Mathlib.RingTheory.Localization.Ideal
+public import Mathlib.RingTheory.LocalProperties.Reduced
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+universe u
+/-- Reducedness of the ORIGINAL closed fiber derives reducedness of the
+ACTUAL closed fiber after base localization. No finite/free/flat input. -/
+theorem nativeLocalizedSourceClosedFiber_reduced
+    {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+    (m : Ideal R) [m.IsPrime]
+    [IsReduced (S ⧸ m.map (algebraMap R S))] :
+    let Q := Localization.AtPrime m
+    let A := LocalizedModule m.primeCompl S
+    letI : Module Q A := LocalizedModule.moduleOfIsLocalization
+    letI : Algebra Q A := LocalizedModule.algebraOfIsLocalization (S:=m.primeCompl) Q
+    IsReduced (A ⧸ (IsLocalRing.maximalIdeal Q).map (algebraMap Q A)) := by
+  let Q := Localization.AtPrime m
+  let A := LocalizedModule m.primeCompl S
+  letI : Module Q A := LocalizedModule.moduleOfIsLocalization
+  letI : Algebra Q A := LocalizedModule.algebraOfIsLocalization (S:=m.primeCompl) Q
+  letI : Algebra S A := nativeLocalizedUpperAlgebra (S:=S) m.primeCompl
+  let N := Algebra.algebraMapSubmonoid S m.primeCompl
+  letI : IsLocalization N A := nativeLocalizedUpperAlgebra_isLocalization (S:=S) m.primeCompl
+  let I := m.map (algebraMap R S)
+  have hi : I.map (algebraMap S A)=
+      (IsLocalRing.maximalIdeal Q).map (algebraMap Q A) := by
+    rw [← Localization.AtPrime.map_eq_maximalIdeal]
+    change (m.map (algebraMap R S)).map (algebraMap S A)=_
+    rw [Ideal.map_map,Ideal.map_map]
+    congr 1
+    ext a
+    exact IsScalarTower.algebraMap_apply R Q A a
+  letI : IsReduced (A ⧸ I.map (algebraMap S A)) :=
+    isReduced_localizationPreserves (Algebra.algebraMapSubmonoid (S ⧸ I) N) _ inferInstance
+  change IsReduced (A ⧸ (IsLocalRing.maximalIdeal Q).map (algebraMap Q A))
+  rw [← hi]
+  infer_instance
+end LinearStudy
+
+
+===== Linear.PolynomialPointOriginalLocalTrace =====
+module
+public import Linear.PolynomialPointCoextensionTrace
+public import Linear.NativeLocalizedSourcePoint
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+/-- Transfer only pointwise LOCAL data from the ORIGINAL source local
+rings to the ACTUAL base-localized source,then derive the SAME ORIGINAL
+coefficient point trace1. No global CM or free/flat input. Original actual
+geometric chart identification,Ext comparison and top-H calibration OPEN. -/
+theorem polynomial_point_original_coextension_trace_one_of_original_points
+    {K S : Type u} [Field K] [CommRing S] {r : ℕ}
+    [Algebra (MvPolynomial (Fin r) K) S] [Module.Finite (MvPolynomial (Fin r) K) S]
+    (y : Fin r → K)
+    (hred : let R := MvPolynomial (Fin r) K
+      let m := RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom
+      letI : m.IsPrime := RingHom.ker_isPrime _
+      let Q := Localization.AtPrime m
+      let S' := LocalizedModule m.primeCompl S
+      letI : Module Q S' := LocalizedModule.moduleOfIsLocalization
+      letI : Algebra Q S' := LocalizedModule.algebraOfIsLocalization (S:=m.primeCompl) Q
+      IsReduced (S' ⧸ (IsLocalRing.maximalIdeal Q).map (algebraMap Q S')))
+    (hgeom : let R := MvPolynomial (Fin r) K
+      let m := RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom
+      letI : m.IsPrime := RingHom.ker_isPrime _
+      let S' := LocalizedModule m.primeCompl S
+      ∀ (p : Ideal S') (_ : p.IsMaximal),
+        IsCohenMacaulayLocalRing (Localization.AtPrime
+          (p.comap (LocalizedModule.numeratorRingHom (S:=m.primeCompl) (A:=S)))) ∧
+          (r : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime
+            (p.comap (LocalizedModule.numeratorRingHom (S:=m.primeCompl) (A:=S))))) :
+    let R := MvPolynomial (Fin r) K
+    letI : Algebra R K := (MvPolynomial.aeval (R:=K) y).toRingHom.toAlgebra
+    ∀ e : K ⊗[R] S,e ≠ 0 → e*e=e →
+      ∃ z : K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj
+        ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))),
+        coextensionOriginalResidueFiberPointEnd
+          (show Function.Surjective (algebraMap R K) from
+            fun a => ⟨MvPolynomial.C a,by
+              change (MvPolynomial.aeval (R:=K) y) (MvPolynomial.C a)=a
+              exact (MvPolynomial.aeval (R:=K) y).commutes a⟩) e z=z ∧
+          coextensionOriginalBaseChangedEvaluationAtOne (R:=R) (S:=S) (K:=K) z=1 := by
+  have hlocal : let R := MvPolynomial (Fin r) K
+      let m := RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom
+      letI : m.IsPrime := RingHom.ker_isPrime _
+      let Q := Localization.AtPrime m
+      let S' := LocalizedModule m.primeCompl S
+      letI : Module Q S' := LocalizedModule.moduleOfIsLocalization
+      letI : Algebra Q S' := LocalizedModule.algebraOfIsLocalization (S:=m.primeCompl) Q
+      IsReduced (S' ⧸ (IsLocalRing.maximalIdeal Q).map (algebraMap Q S')) ∧
+        ∀ (p : Ideal S') (_ : p.IsMaximal),
+          IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧
+            (r : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime p) := by
+    dsimp only
+    let R := MvPolynomial (Fin r) K
+    let m := RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom
+    letI : m.IsPrime := RingHom.ker_isPrime _
+    letI : IsNoetherianRing S := IsNoetherianRing.of_finite R S
+    refine ⟨hred,fun p hp => ?_⟩
+    letI : p.IsMaximal := hp
+    let q := p.comap (LocalizedModule.numeratorRingHom (S:=m.primeCompl) (A:=S))
+    letI : IsCohenMacaulayLocalRing (Localization.AtPrime q) := (hgeom p hp).1
+    refine ⟨nativeLocalizedSourcePoint_localCM m.primeCompl p,?_⟩
+    exact (hgeom p hp).2.trans (nativeLocalizedSourcePoint_ringKrullDim m.primeCompl p).symm
+  exact polynomial_point_original_coextension_trace_one y hlocal
+end LinearStudy
+
+
+===== Linear.PolynomialPointOriginalFiberTrace =====
+module
+public import Linear.PolynomialPointOriginalLocalTrace
+public import Linear.NativeLocalizedSourceFiberPoints
+public import Linear.NativeLocalizedSourceReducedFiber
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open CategoryTheory TensorProduct
+universe u
+/-- Only ORIGINAL closed-fiber reducedness and ORIGINAL source-point
+local CM/dimension at EVERY original point above y are inputs. Actual
+localized reducedness,point identification and local freeness are DERIVED.
+SAME original C,source projector and literal eval1 retained. Original
+geometric chart/Ext/top-H calibration remain OPEN. -/
+theorem polynomial_point_original_coextension_trace_one_of_original_fiber
+    {K S : Type u} [Field K] [CommRing S] {r : ℕ}
+    [Algebra (MvPolynomial (Fin r) K) S] [Module.Finite (MvPolynomial (Fin r) K) S]
+    (y : Fin r → K)
+    (hred : let R := MvPolynomial (Fin r) K
+      let m := RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom
+      IsReduced (S ⧸ m.map (algebraMap R S)))
+    (hgeom : ∀ (p : Ideal S) (_ : p.IsMaximal),
+      p.comap (algebraMap (MvPolynomial (Fin r) K) S)=
+        RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom →
+      IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧
+        (r : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime p)) :
+    let R := MvPolynomial (Fin r) K
+    letI : Algebra R K := (MvPolynomial.aeval (R:=K) y).toRingHom.toAlgebra
+    ∀ e : K ⊗[R] S,e ≠ 0 → e*e=e →
+      ∃ z : K ⊗[R] ((ModuleCat.restrictScalars (algebraMap R S)).obj
+        ((ModuleCat.coextendScalars (algebraMap R S)).obj (ModuleCat.of R R))),
+        coextensionOriginalResidueFiberPointEnd
+          (show Function.Surjective (algebraMap R K) from
+            fun a => ⟨MvPolynomial.C a,by
+              change (MvPolynomial.aeval (R:=K) y) (MvPolynomial.C a)=a
+              exact (MvPolynomial.aeval (R:=K) y).commutes a⟩) e z=z ∧
+          coextensionOriginalBaseChangedEvaluationAtOne (R:=R) (S:=S) (K:=K) z=1 := by
+  let R := MvPolynomial (Fin r) K
+  let m := RingHom.ker (MvPolynomial.aeval (R:=K) y).toRingHom
+  have hres : Function.Surjective (MvPolynomial.aeval (R:=K) y).toRingHom :=
+    fun a => ⟨MvPolynomial.C a,(MvPolynomial.aeval (R:=K) y).commutes a⟩
+  letI : m.IsMaximal := RingHom.ker_isMaximal_of_surjective _ hres
+  refine polynomial_point_original_coextension_trace_one_of_original_points y ?_ ?_
+  · letI : IsReduced (S ⧸ m.map (algebraMap R S)) := hred
+    exact nativeLocalizedSourceClosedFiber_reduced (S:=S) m
+  · dsimp only
+    intro p hp
+    letI : p.IsMaximal := hp
+    let q := p.comap (LocalizedModule.numeratorRingHom (S:=m.primeCompl) (A:=S))
+    exact hgeom q (nativeLocalizedSourcePoint_original_maximal m p)
+      (nativeLocalizedSourcePoint_base_comap m p)
+end LinearStudy
+
+
+===== Linear.FiniteReducedRegularPointLocalData =====
+module
+public import Linear.PowerSeriesCohenMacaulay
+public import Linear.FiniteReducedLocalCut
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 50000
+namespace LinearStudy
+open RingTheory.Sequence
+/-- Derive LOCAL CM and dimension from the SAME regular equations of
+an ACTUAL finite reduced cut. Reuse existing regular-generator CM theorem;
+no CM or dimension hypothesis is added to the local ring. -/
+theorem finite_reduced_regular_cut_point_local_data
+    {A : Type*} [CommRing A] [IsNoetherianRing A]
+    (rs : List A) (p : Ideal A) [p.IsPrime]
+    [IsArtinianRing (A ⧸ Ideal.ofList rs)] [IsReduced (A ⧸ Ideal.ofList rs)]
+    (hpoint : Ideal.ofList rs ≤ p)
+    (hreg : IsRegular (Localization.AtPrime p)
+      (rs.map (algebraMap A (Localization.AtPrime p)))) :
+    IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧
+      (rs.length : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime p) := by
+  let L := Localization.AtPrime p
+  let ls := rs.map (algebraMap A L)
+  have hgen : Ideal.ofList ls=IsLocalRing.maximalIdeal L := by
+    rw [← Ideal.map_ofList]
+    exact artinian_reduced_cut_local_ideal_eq_maximalIdeal_of_le (Ideal.ofList rs) p hpoint
+  refine ⟨localRing_CohenMacaulay_of_regular_maximal_generators ls hreg hgen,?_⟩
+  have hh := Ideal.ofList_height_eq_length_of_isWeaklyRegular ls hreg.1
+    (by rw [hgen];exact (IsLocalRing.maximalIdeal.isMaximal L).ne_top)
+  rw [hgen] at hh
+  have hd : ringKrullDim L=(ls.length : WithBot ℕ∞) := by
+    rw [← IsLocalRing.maximalIdeal_height_eq_ringKrullDim,hh]
+    rfl
+  simpa only [ls,List.length_map] using hd.symm
+end LinearStudy
+
+
+===== Linear.ProjectiveSmoothCutPointLocalData =====
+module
+public import Linear.ProjectiveVarietyLocalCutRegular
+public import Linear.FiniteReducedRegularPointLocalData
+public import Mathlib.RingTheory.Ideal.Quotient.Operations
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 100000
+namespace LinearStudy
+attribute [local instance] MvPolynomial.gradedAlgebra
+variable {n r : ℕ}
+/-- On the SAME original finite reduced pulled cut,derive LOCAL CM and
+actual point-local dimension from the already PROVED original smooth-point
+regular sequence. Neither local CM nor local dimension is an input.
+No global CM/S2/free canonical module or generic-open restriction. -/
+theorem projectivePulledLinearSection_smooth_cut_point_local_data
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (hproper : V.ideal.toIdeal ≠ ⊥)
+    (L : Fin (r+1) → CoordinateRing n) (w : Fin (r+1) → ℂ)
+    (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)=(r : WithBot ℕ∞))
+    (x : Fin n → ℂ) (hxV : normalizedProjectivePoint x ∈ V.zeroSet)
+    (hs : Algebra.IsSmoothAt ℂ (V.affinePoint x hxV).asIdeal)
+    (hx : x ∈ MvPolynomial.zeroLocus ℂ
+      ((projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K := ℂ)).toRingHom))
+    [_root_.IsReduced (MvPolynomial (Fin n) ℂ ⧸
+      (projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K := ℂ)).toRingHom)]
+    [Module.Finite ℂ (MvPolynomial (Fin n) ℂ ⧸
+      (projectivePulledLinearSectionIdeal f V L w).map
+        (affineChartPolynomialMap (K := ℂ)).toRingHom)] :
+    let p := (V.affinePoint x hxV).asIdeal
+    IsCohenMacaulayLocalRing (Localization.AtPrime p) ∧
+      (r : WithBot ℕ∞)=ringKrullDim (Localization.AtPrime p) := by
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+  let H : Fin r → MvPolynomial (Fin n) ℂ := fun i => affineChartPolynomialMap
+    (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i))
+  let rs := List.ofFn H
+  let J := Ideal.ofList rs
+  let pi := Ideal.Quotient.mk V.affineIdeal
+  let ts := rs.map pi
+  let p := (V.affinePoint x hxV).asIdeal
+  have hspan : J=Ideal.span (Set.range H) := by
+    simp [J,rs,Ideal.ofList,List.mem_ofFn,Set.range]
+  have hI : (projectivePulledLinearSectionIdeal f V L w).map
+      (affineChartPolynomialMap (K:=ℂ)).toRingHom=V.affineIdeal ⊔ J := by
+    rw [hspan]
+    exact projectivePulledLinearSectionIdeal_map_affine f V L w
+  let C := MvPolynomial (Fin n) ℂ ⧸ (V.affineIdeal ⊔ J)
+  let E := Ideal.quotientEquivAlgOfEq ℂ hI
+  letI : IsReduced C := isReduced_of_injective E.symm.toRingHom E.symm.injective
+  letI : Module.Finite ℂ C := by
+    dsimp only [C]
+    rw [← hI]
+    infer_instance
+  letI : IsArtinianRing C := IsArtinianRing.of_finite ℂ C
+  let F := DoubleQuot.quotQuotEquivQuotSup V.affineIdeal J
+  have hts : Ideal.ofList ts=J.map pi := by
+    exact (Ideal.map_ofList pi rs).symm
+  letI : IsReduced (B ⧸ Ideal.ofList ts) := by
+    rw [hts]
+    exact isReduced_of_injective F.toRingHom F.injective
+  letI : IsArtinianRing (B ⧸ Ideal.ofList ts) := by
+    rw [hts]
+    exact F.symm.isArtinianRing
+  have hp : Ideal.ofList ts ≤ p := by
+    rw [hts]
+    apply Ideal.map_le_iff_le_comap.mpr
+    change J ≤ ((V.affinePoint x hxV).asIdeal).comap (Ideal.Quotient.mk V.affineIdeal)
+    have he := V.affinePointIdeal_comap x hxV
+    change ((V.affinePoint x hxV).asIdeal).comap (Ideal.Quotient.mk V.affineIdeal)=
+      RingHom.ker (MvPolynomial.aeval (R:=ℂ) x).toRingHom at he
+    rw [he]
+    intro a ha
+    exact hx a (hI.symm ▸ (show a ∈ V.affineIdeal ⊔ J from Ideal.mem_sup_right ha))
+  have hreg := projectivePulledLinearSection_regular_in_variety_localRing
+    f V hproper L w hdim x hxV hs hx
+  have hreg' : RingTheory.Sequence.IsRegular (Localization.AtPrime p)
+      (ts.map (algebraMap B (Localization.AtPrime p))) := by
+    simpa only [ts,rs,H,pi,B,p,List.map_ofFn,Function.comp_def] using hreg
+  have result := finite_reduced_regular_cut_point_local_data ts p hp hreg'
+  exact ⟨result.1,by simpa only [ts,rs,List.length_map,List.length_ofFn,Fintype.card_fin] using result.2⟩
+end LinearStudy
