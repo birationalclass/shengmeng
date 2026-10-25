@@ -1,5 +1,5 @@
-import {cursiveGlyphs} from '../cursive-glyphs.js?v=17';
-import {runningGlyphs} from '../running-glyphs.js?v=17';
+import {cursiveGlyphs} from '../cursive-glyphs.js?v=18';
+import {runningGlyphs} from '../running-glyphs.js?v=18';
 import * as T from '../vendor/three.module.js';
 import {catalog} from './catalog.js';
 import {availableCharacters} from './coverage.js';

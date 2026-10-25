@@ -1,4 +1,4 @@
-import {updateFlatPreview} from '../flat-preview.js?v=17';
+import {updateFlatPreview} from '../flat-preview.js?v=18';
 import {icons} from '../icons.js';
 import {convertScript} from '../script-conversion.js';
 import * as T from '../vendor/three.module.js';
@@ -6,12 +6,12 @@ import {RoomEnvironment} from '../vendor/RoomEnvironment.js';
 import {OrbitControls} from '../vendor/OrbitControls.js';
 import {profile} from './stroke-volume.js';
 import {catalog,materialPresets,classicMaterialPresets,materialVersions} from './catalog.js';
-import {createVolume,updateVolume} from './surface.js?v=17';
+import {createVolume,updateVolume} from './surface.js?v=18';
 import {zipStore,modelFiles} from './export-format.js';
-import {createTextGlyph,cleanText} from './text-engine.js?v=17';
-import {prepareSpatialModel,constructionCurves} from './spatial-model.js?v=17';
+import {createTextGlyph,cleanText} from './text-engine.js?v=18';
+import {prepareSpatialModel,constructionCurves} from './spatial-model.js?v=18';
 import {sampleRailSection} from './yang-volume.js';
-import {writingProgress,writingPhase} from './brush-gesture.js?v=17';
+import {writingProgress,writingPhase} from './brush-gesture.js?v=18';
 import {windReferencePreset,windReferencePresetV8} from './wind-reference.js';
 import {createReferenceEnvironment} from './reference-environment.js';
 

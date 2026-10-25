@@ -1,7 +1,7 @@
 import * as T from '../vendor/three.module.js';
 import {profile} from './stroke-volume.js';
 import {sampleRailSection} from './yang-volume.js';
-import {brushHead} from './brush-gesture.js?v=17';
+import {brushHead} from './brush-gesture.js?v=18';
 
 const cubic2=(a,b,c,d,t)=>{const v=1-t;return [0,1].map(i=>a[i]*v*v*v+3*b[i]*v*v*t+3*c[i]*v*t*t+d[i]*t*t*t);};
 const continuousCaches=new WeakMap();
