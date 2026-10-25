@@ -968,17 +968,25 @@ $('hideUI').addEventListener('click',()=>immersive(true));$('showUI').addEventLi
 window.addEventListener('refuge-social-focus',()=>{keys.clear();keyboardMotion.reset();});
 window.addEventListener('keydown',event=>{
   if(document.getElementById('socialDialog')?.open)return;
-  if(/INPUT|SELECT|TEXTAREA/.test(event.target.tagName))return;
-  const key=event.key.toLowerCase();
-  if(cameraLocked()&&[' ','x','w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(key)){event.preventDefault();return;}
+  if(event.ctrlKey||event.metaKey||event.altKey||event.target.isContentEditable||/INPUT|SELECT|TEXTAREA/.test(event.target.tagName))return;
+  const key=event.code==='KeyZ'?'z':event.code==='Space'?' ':event.key.toLowerCase();
+  if(cameraLocked()&&['z','x','w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(key)){event.preventDefault();return;}
   if(key==='h'){immersive(!document.body.classList.contains('immersive'));return;}
   if(key==='escape'){immersive(false);closeTime();$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');reader?.close();return;}
+  if(key===' '){
+    if(event.target.closest('#chalkReader,#settings,button,a,[role="button"]'))return;
+    const screen=lecture?.screenMode;
+    if(lecture?.hasSelection&&lecture.present&&lecture.root.visible&&lecture.renderActive&&!classroomBeach?.state&&(!screen||screen.power&&screen.mode==='report')){
+      event.preventDefault();if(!event.repeat)$('lecturePlay').click();
+    }
+    return;
+  }
   if(event.target.closest('#chalkReader,#lecturePanel,#settings'))return;
-  if([' ','x','w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(key)){
+  if(['z','x','w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(key)){
     event.preventDefault();stopTour();keys.add(key);
   }
 });
-window.addEventListener('keyup',event=>keys.delete(event.key.toLowerCase()));window.addEventListener('blur',()=>{keys.clear();keyboardMotion.reset();});
+window.addEventListener('keyup',event=>keys.delete(event.code==='KeyZ'?'z':event.code==='Space'?' ':event.key.toLowerCase()));window.addEventListener('blur',()=>{keys.clear();keyboardMotion.reset();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){keys.clear();keyboardMotion.reset();}});
 let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(resize,180);});
 reduced.addEventListener('change',()=>{if(reduced.matches){touring=false;if(lecture){lecture.playing=false;lecture.staticPage();}updateLabels();}});

@@ -6,9 +6,9 @@ export class KeyboardMotion {
  update(keys,dt,height=0){
   dt=Math.max(0,Math.min(.1,dt));
   const has=(a,b)=>Number(keys.has(a)||Boolean(b&&keys.has(b)));
-  const input=[has('w','arrowup')-has('s','arrowdown'),has('e','arrowright')-has('q','arrowleft'),has(' ')-has('x')];
+  const input=[has('w','arrowup')-has('s','arrowdown'),has('e','arrowright')-has('q','arrowleft'),has('z')-has('x')];
   const length=Math.hypot(...input);
-  const moving=['w','s','q','e','arrowup','arrowdown','arrowleft','arrowright',' ','x'].some(key=>keys.has(key));
+  const moving=['w','s','q','e','arrowup','arrowdown','arrowleft','arrowright','z','x'].some(key=>keys.has(key));
   this.held=moving?this.held+dt:0;
   const t=Math.min(1,this.held/6),ramp=t*t*(3-2*t);
   const maximum=horizontalSpeedLimit(height)/3.6,initial=keys.has('shift')?10:4;

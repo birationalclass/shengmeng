@@ -8,7 +8,7 @@ for(const hz of [30,60,120]){
  for(let i=0;i<hz*6;i++)m.update(key('w'),dt);
  assert.ok(m.velocity[0]>27.5&&m.velocity[0]<=100/3.6);
  let held=m.held;
- for(const keys of [key('w','q'),key('q'),key('e'),key('e','a'),key('e',' '),key(' '),key('x'),key('x',' '),key('w','shift')]){
+ for(const keys of [key('w','q'),key('q'),key('e'),key('e','a'),key('e','z'),key('z'),key('x'),key('x','z'),key('w','shift')]){
   m.update(keys,dt);assert.ok(m.held>held,'direction/chord changes retain acceleration');held=m.held;
  }
  m.update(key('w'),dt);const old=m.velocity[0];m.update(key('s'),dt);assert.ok(m.velocity[0]<old);
