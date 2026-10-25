@@ -1024,7 +1024,7 @@ async function seekLecture(page){
   try{if(await targetLecture.seek(page,{preservePlayback:true})&&targetLecture===lecture){
     updateLectureUI();reader?.update();roomLecterns[activeRoom]?.update({playing:lecture.playing,...lecture.progress});
     // Manual seeking never launches a camera or board animation.
-    if(SHOTS[shot].lecture&&!speakerView&&!choosingReport){boardFollow.reset();blend=null;applyShot(0);motionVelocity.set(0,0,0);motionAcceleration.set(0,0,0);motionSample=false;}
+    if(SHOTS[shot].lecture&&!speakerView&&!choosingReport){boardFollow.reset();blend=null;motionVelocity.set(0,0,0);motionAcceleration.set(0,0,0);motionSample=false;}
   }}catch(error){$('lectureStatus').textContent=error.message;}
 }
 $('lectureProgress').addEventListener('input',event=>seekLecture(lecture.clock.startAt+Number(event.target.value)-1));

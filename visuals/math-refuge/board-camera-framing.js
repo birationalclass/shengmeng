@@ -7,7 +7,7 @@ export function stepBoardCameraZoom(value,direction){return clamp(Math.round((cl
 // Use the same complete board-and-tray envelope in every column.
 export function boardCameraFrame(aspect,fov=57,zoom=0,{column=0,boardY=BOARD_LAYOUT.low,boardZ=-10.45+BOARD_MOUNT_OFFSET,frameMargin=.04+.0025*Math.SQRT2}={}){
  const amount=clamp(zoom),cx=22.4+5.6*Math.max(0,Math.min(2,column));
- const nearX=Math.max(BOARD_LAYOUT.width/2+frameMargin,TRAY_DOCK.width/2+.08),nearY=Math.max(BOARD_LAYOUT.height/2+frameMargin,boardY-TRAY_DOCK.bottom+.08);
+ const nearX=Math.max(BOARD_LAYOUT.width/2+frameMargin,TRAY_DOCK.width/2+.025),nearY=Math.max(BOARD_LAYOUT.height/2+frameMargin,boardY-TRAY_DOCK.bottom+.02);
  const farX=Math.max(cx-19.6,36.4-cx),farY=Math.max(nearY,boardY-(TRAY_DOCK.bottom-.06),BOARD_LAYOUT.high+BOARD_LAYOUT.height/2+frameMargin-boardY);
  const halfX=nearX+(farX-nearX)*amount,halfY=nearY+(farY-nearY)*amount;
  const bounds={left:cx-halfX,right:cx+halfX,bottom:boardY-halfY,top:boardY+halfY};
