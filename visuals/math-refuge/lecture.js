@@ -42,7 +42,7 @@ import {stampFelt} from './eraser-contact.js';
 import {chalkCopy,chalkPageText,composeChalkPage} from './chalk-language.js?v=mali-20261017';
 
 import {REPORTS} from './report-catalog.js?v=ye2-report-14';
-import {CLASSROOM_PROGRAMS} from './classroom-catalog.js?v=stabilizer-central-20261025';
+import {CLASSROOM_PROGRAMS} from './classroom-catalog.js?v=multiple-speech-20261025';
 import {createHallProgramScreen} from './hall-program-screen.js?v=rings-20261022';
 import {createReportLoader} from './report-loader.js?v=report-line-sync-6';
 

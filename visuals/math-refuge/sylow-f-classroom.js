@@ -1,6 +1,6 @@
 import {renderClassroomManuscript} from './classroom-manuscript.js?v=C-full-20261019';
 
-import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=stabilizer-central-20261025';
+import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=multiple-speech-20261025';
 
 import {createCoursePreload} from './course-preload.js?v=rings-20261022';
 
@@ -16,7 +16,7 @@ import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuratio
 
 import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=native-pcm-20261017-1';
 
-import {createClassroomBeachBreak} from './classroom-beach-break.js?v=break-cloud20-20261024';
+import {createClassroomBeachBreak} from './classroom-beach-break.js?v=terrace-clear-20261025';
 
 const $=id=>document.getElementById(id),query=new URLSearchParams(location.search);window.fRendererReady=true;
 

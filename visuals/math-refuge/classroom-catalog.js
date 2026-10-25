@@ -7,7 +7,7 @@ function program({id,label,labelEn,chapter,section,sections=[section],sectionPar
   url:'./sylow-f-classroom.html?course='+id,sourceLabel:'课件、逐行讲稿与课堂任务',courseURL:COURSE_URL+'?view=lesson&section='+sections[0]};
 }
 function sylowProgram(id,label,labelEn){
- const upper=id==='sylow-theorems',suffix=upper?'-stabilizer-v2':'',version='?v=stabilizer-central-20261025',audioRoot='./assets/audio/courses/zl-c-20261019/'+id+'/';
+ const upper=id==='sylow-theorems',suffix='-stabilizer-v3',version='?v=multiple-speech-20261025',audioRoot='./assets/audio/courses/zl-c-20261019/'+id+'/';
  return program({id,label,labelEn,chapter:2,section:'2.6',sectionPart:upper?'上':'下',topic:upper?'§2.6 上 · 西罗三大定理':'§2.6 下 · 西罗定理的应用',topicEn:upper?'§2.6 A · Sylow theorems':'§2.6 B · Applications of Sylow theorems',
   courseManifest:'./assets/chalk/zl-c-20261019/'+id+suffix+'.json'+version,pagesManifest:'./assets/chalk/zl-c-20261019/'+id+suffix+'-pages.json'+version,narrationManifest:audioRoot+'narration'+suffix+'.json'+version,audioRoot});
 }

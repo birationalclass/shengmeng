@@ -43,7 +43,7 @@ export function createHallTerraceFurniture(scene,materials,offset){
   // Recessed perimeter joint defines the conversation area without a raised rug.
   for(const dx of [-2.25,2.25])part([x+dx,.007,z],[.018,.008,4.5],metal);
   for(const dz of [-2.25,2.25])part([x,.007,z+dz],[4.5,.008,.018],metal);
-  planter(52.6*S,sign*4.7*S,.8,3.2);
+  // Keep the sea-facing edge clear; both former planters are removed.
  }
  const bx=47*S,bz=-14.1*S;
  for(let i=0;i<7;i++)part([bx,.465,bz-.29+i*.085],[4,.045,.069],wood);

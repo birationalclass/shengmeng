@@ -1,4 +1,4 @@
-import {createHallTerraceFurniture} from './hall-terrace-furniture.js?v=grass-51';
+import {createHallTerraceFurniture} from './hall-terrace-furniture.js?v=terrace-clear-20261025';
 import {bridgeCurve,createCoastalBridge} from './coastal-bridges.js?v=smooth-bridges-47';
 import {createSeaPavilion} from './sea-pavilion.js?v=smooth-bridges-47';
 import {createHallSpiral} from './hall-spiral.js';
