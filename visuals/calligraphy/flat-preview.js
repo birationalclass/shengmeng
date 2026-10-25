@@ -1,4 +1,4 @@
-import {prepareVolume} from './engine/surface.js?v=18';
+import {prepareVolume} from './engine/surface.js?v=19';
 import {sampleRailSection} from './engine/yang-volume.js';
 import {sampleSection} from './engine/stroke-volume.js';
 
@@ -25,5 +25,5 @@ export function updateFlatPreview(glyph){
  if(!hasGlyph)return;
  const flat=flatGlyph(glyph),ns='http://www.w3.org/2000/svg';svg.setAttribute('viewBox',flat.viewBox.join(' '));svg.setAttribute('aria-label',glyph.text+' · 平面字样');
  for(const d of flat.paths){const path=document.createElementNS(ns,'path');path.setAttribute('d',d);svg.append(path);}
- document.getElementById('flat-style').textContent=glyph.modeling?.running?'行草':glyph.modeling?.cursive?'草书':'原有字形';
+ document.getElementById('flat-style').textContent=glyph.modeling?.kouzan?'衡山行书':glyph.modeling?.running?'行草':glyph.modeling?.cursive?'草书':'原有字形';
 }

@@ -8,8 +8,8 @@ import {createVolume,updateVolume} from '../engine/surface.js';
 const original=globalThis.fetch;
 globalThis.fetch=async url=>String(url).startsWith('data/')?new Response(await fs.readFile(new URL('../'+url,import.meta.url))):original(url);
 
-test('default running script preserves distinct components and authored motion',async()=>{
- const running=await createTextGlyph('孟晟'),cursive=await createTextGlyph('孟晟',{style:'cursive'});
+test('running script preserves distinct components and authored motion',async()=>{
+ const running=await createTextGlyph('孟晟',{style:'running'}),cursive=await createTextGlyph('孟晟',{style:'cursive'});
  assert.equal(running.glyphStyle,'running');assert.equal(running.modeling.running,2);assert.equal(running.modeling.cursive,0);
  assert.ok(running.strokes.length>cursive.strokes.length);
  assert.ok(running.strokes.some(s=>s.name.includes('双竖'))&&running.strokes.some(s=>s.name.includes('日')));
