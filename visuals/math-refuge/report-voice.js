@@ -144,6 +144,8 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
    if(boardHold||!desired||(!audio&&!activity)||!manifest)return false;
    const mine=epoch,hold={};boardHold=hold;playToken++;sync();audio?.pause();if(activity)activity.running=false;
    const start=manifest.chapters[index].start;
+   // A late handwriting gate may pause speech, but must never replay its onset.
+   if(Number.isFinite(at))at=Math.max(at,state.time);
    if(Number.isFinite(at)&&at>=start&&at-start<manifest.chapters[index].duration){if(audio)audio.currentTime=(manifest.chapters[index].mediaStart||0)+at-start;else activity.at=at-start;state.time=at;}
    state.phase='preparing';state.temporaryPause=false;emit();
    try{await job;}finally{if(boardHold===hold){boardHold=null;if(mine===epoch&&desired&&contextActive){const c=manifest.chapters[index];if(audio&&audio.currentTime-(c.mediaStart||0)>=c.duration-.015){segmentEnding=false;await finishChapter();}else await play();}}}

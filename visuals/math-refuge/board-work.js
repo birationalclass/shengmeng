@@ -15,11 +15,13 @@ export function scheduledWriting(schedule,time){
  let completed=0;for(const entry of schedule.entries){if(time<entry.start)return{progress:completed/schedule.total,writing:false};if(time<entry.end)return{progress:(entry.from+(entry.to-entry.from)*(time-entry.start)/(entry.end-entry.start))/schedule.total,writing:true};completed=entry.to;}
  return{progress:1,writing:false};
 }
-export function settledBoardFrame(frame,completed){
+export function settledBoardFrame(frame,completed,time=0){
  if(frame.phase!=='write')return frame;
  if(completed.has('write:'+frame.page+':end'))return{...frame,phase:'hold',progress:1,writing:false};
  const prefix='unit:'+frame.page+':',floor=Math.max(0,...[...completed].filter(k=>k.startsWith(prefix)).map(k=>Number(k.slice(prefix.length))));
- return floor>frame.progress?{...frame,progress:floor,writing:false,phase:floor>=1?'hold':'write'}:frame;
+ let progress=Math.max(floor,frame.progress),writing=floor>frame.progress?false:frame.writing;
+ for(const key of completed){if(!key.startsWith('resume:'+frame.page+':'))continue;const [, ,at,from,to,rate]=key.split(':').map(Number),continued=Math.min(to,from+Math.max(0,time-at)*rate);if(continued>=progress){progress=continued;writing=continued<to;}}
+ return {...frame,progress,writing:progress<1&&writing,phase:progress>=1?'hold':'write'};
 }
 // Only unfinished whole-board work and erasing hold the transport.
 // Seek snapshots never replay previous unfinished work.
@@ -33,9 +35,9 @@ export function narrationWork(manifest,time,previous,writing,erase,completed,rev
   if(erase.duration>elapsed)return{key:eraseKey,kind:'erase',page:b.page,at:b.writeStart,elapsed,duration:erase.duration};
  }
  const schedule=writingSchedule(b,writing),deadline=b.end-.25,key='write:'+b.page+':end';
- if(schedule){const units=new Map();for(const cue of b.lineCues||[])if(cue.writeBeforeSpeech){const id=cue.semanticUnit??cue.row,entry=schedule.entries.find(e=>e.row===cue.row),u=units.get(id)||{at:cue.audioStart-.02,end:0};u.end=Math.max(u.end,entry.from+(entry.to-entry.from)*(cue.speechAtWrittenFraction??1));units.set(id,u);}for(const u of units.values()){const unitKey='unit:'+b.page+':'+u.end/writing.total;if(!completed.has(unitKey)&&crossing(u.at)){const start=scheduledWriting(schedule,u.at).progress*writing.total;if(start<u.end-.0001)return{key:unitKey,kind:'write',page:b.page,at:u.at,elapsed:0,duration:(u.end-start)/writing.unitsPerSecond,start,end:u.end,total:writing.total};}}}
+ if(schedule){const units=new Map();for(const cue of b.lineCues||[])if(cue.writeBeforeSpeech){const id=cue.semanticUnit??cue.row,entry=schedule.entries.find(e=>e.row===cue.row),u=units.get(id)||{at:cue.audioStart-.02,end:0};u.end=Math.max(u.end,entry.from+(entry.to-entry.from)*(cue.speechAtWrittenFraction??1));units.set(id,u);}for(const u of units.values()){const unitKey='unit:'+b.page+':'+u.end/writing.total;if(!completed.has(unitKey)&&crossing(u.at)){const start=settledBoardFrame({page:b.page,phase:'write',...scheduledWriting(schedule,u.at)},completed,u.at).progress*writing.total;if(start<u.end-.0001)return{key:unitKey,kind:'write',page:b.page,at:u.at,elapsed:0,duration:(u.end-start)/writing.unitsPerSecond,start,end:u.end,total:writing.total,resumeEnd:schedule.entries.find(e=>e.from<u.end&&e.to>=u.end).to/writing.total,resumeRate:writing.unitsPerSecond/writing.total};}}}
  if(schedule&&!completed.has(key)&&!completed.has('unit:'+b.page+':1')&&schedule.end>deadline+.02&&crossing(deadline)){
-  const start=scheduledWriting(schedule,deadline).progress*writing.total,end=writing.total;
+  const start=settledBoardFrame({page:b.page,phase:'write',...scheduledWriting(schedule,deadline)},completed,deadline).progress*writing.total,end=writing.total;
   return{key,kind:'write',page:b.page,at:deadline,elapsed:0,duration:(end-start)/writing.unitsPerSecond,start,end,total:writing.total};
  }
  if(reviewRemaining>0&&!completed.has('review:'+b.page+':end')&&crossing(b.end-.25))return{key:'review:'+b.page+':end',kind:'review',page:b.page,at:b.end-.25,elapsed:0,duration:reviewRemaining};

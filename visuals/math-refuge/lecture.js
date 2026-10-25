@@ -195,7 +195,7 @@ export async function createLecture(scene,renderer,options={}){
   function voiceReport(report){const variant=report.narration?.voices?.find(v=>v.id===voiceTone);return variant?{...report,narration:{...report.narration,manifest:variant.manifest}}:report;}
   const highlighter=createBoardHighlight(THREE,{width:BOARD_W,height:BOARD_H});
   const voice=createReportVoice({finishBoard:async(page,time)=>{
-    const frame=settledBoardFrame(narrationFrame(voice.manifest,time,writingPlan(pageRows.get(page),guides.get(page)),erasePlans.get(page-6)),completedWork);
+    const frame=settledBoardFrame(narrationFrame(voice.manifest,time,writingPlan(pageRows.get(page),guides.get(page)),erasePlans.get(page-6)),completedWork,time);
     if(frame.progress>=1&&frame.phase==='hold')return false;
     const plan=writingPlan(pageRows.get(page),guides.get(page)),start=Math.max(0,frame.progress*plan.total);
     await new Promise(resolve=>boardWork={key:'write:'+page+':end',kind:'write',page,at:time,elapsed:0,duration:(plan.total-start)/plan.unitsPerSecond,start,end:plan.total,total:plan.total,resolve});return true;
@@ -473,7 +473,7 @@ export async function createLecture(scene,renderer,options={}){
       const priorPage=previousNarrationTime===null?frame.page:voice.manifest.boards.findLast(b=>b.start<=previousNarrationTime)?.page??frame.page;
       const needed=[frame.page,frame.phase==='erase'&&frame.page>=6?frame.page-6:-1].filter(i=>i>=0);
       if(needed.every(i=>cache.has(i))&&!seeking){
-        frame=settledBoardFrame(narrationFrame(voice.manifest,voice.state.time,writingPlan(pageRows.get(frame.page),guides.get(frame.page)),erasePlans.get(frame.page-6)),completedWork);
+        frame=settledBoardFrame(narrationFrame(voice.manifest,voice.state.time,writingPlan(pageRows.get(frame.page),guides.get(frame.page)),erasePlans.get(frame.page-6)),completedWork,voice.state.time);
         if(translatedInk){if(frame.page!==translatedInk.page)translatedInk=null;else if(frame.phase==='write'||frame.phase==='hold'){const natural=frame.progress;if(natural<translatedInk.progress)frame={...frame,progress:translatedInk.progress,phase:translatedInk.progress===1?'hold':frame.phase,writing:false};else if(voice.transportPlaying)translatedInk=null;}}
         if(revealedPages.has(frame.page))frame={...frame,phase:'hold',progress:1,writing:false};
         if(frame.phase==='hold'&&frame.progress===1)boardReview.mark(frame.page);
@@ -492,7 +492,7 @@ export async function createLecture(scene,renderer,options={}){
           else if(boardWork.kind==='review')boardWork.elapsed=boardWork.duration-boardReview.remaining(boardWork.page);
           else if(voice.transportPlaying)boardWork.elapsed+=dt*writingSpeed;
           frame=boardWorkFrame(boardWork);
-          if(boardWork.elapsed>=boardWork.duration&&(boardWork.kind!=='erase'||eraser.userData.state==='resting')){if(boardWork.kind==='write'&&boardWork.end>=boardWork.total)boardReview.mark(boardWork.page);completedWork.add(boardWork.key);boardWork.resolve();boardWork=null;}
+          if(boardWork.elapsed>=boardWork.duration&&(boardWork.kind!=='erase'||eraser.userData.state==='resting')){if(boardWork.kind==='write'&&boardWork.end>=boardWork.total)boardReview.mark(boardWork.page);completedWork.add(boardWork.key);if(boardWork.kind==='write'&&boardWork.resumeEnd>boardWork.end/boardWork.total)completedWork.add('resume:'+boardWork.page+':'+voice.state.time+':'+boardWork.end/boardWork.total+':'+boardWork.resumeEnd+':'+boardWork.resumeRate);boardWork.resolve();boardWork=null;}
         }
         if(voice.state.phase==='playing'||voice.boardHeld)previousNarrationTime=voice.state.time;
         if(!boardWork&&!proofJumping&&voice.transportPlaying&&lessonBudget.shouldSkip(frame,voice.manifest.boards.filter(b=>b.optionalProof))){void omitOptionalProof().catch(error=>{loadingError=error;});return;}
@@ -624,6 +624,7 @@ export async function createLecture(scene,renderer,options={}){
   if(options.retractable)screenHub=createSmartGlassHub(THREE,scene,{reports:[reportHeader.mesh,...(programScreen?[programScreen.group]:reportButtons)],storage:storageLabel?.mesh,onStore:()=>{
     voice.pause();stored=true;playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;consoleButtons.forEach(b=>b.visible=false);updateStorageLabel();setReportState();
   }});
+  if(options.startStored&&screenHub?.state.power)screenHub.action('screen:power');
   const movingNodes=new Set([scene,storageRig,...storageLids,...boards.map(b=>b.group),chalk,eraser]);
   scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {
@@ -655,10 +656,11 @@ export async function createLecture(scene,renderer,options={}){
         await load(page);clock.slots[boardSlot(page)]={page:-1,progress:0};
       }
       openingDemo={phase:'waiting',page,narrated,elapsed:0};
-      options.onOpening?.({stage:'prepared',report:activeReport.id,kind:activeReport.kind,narrated});
-      stored=false;storageMotion.reset();storageProgress=0;storageRig.position.y=0;storageRig.visible=true;
+
+      stored=true;storageMotion.reset(true);storageProgress=1;storageRig.position.y=-7.2;storageRig.visible=false;
       storageLids.forEach(lid=>lid.visible=false);if(storageCap)storageCap.visible=true;
-      screenHub?.report();screenHub?.update(0,0);updateStorageLabel();setReportState();
+      if(screenHub?.state.power)screenHub.action('screen:power');screenHub?.update(0,1);updateStorageLabel();setReportState();
+      options.onOpening?.({stage:'prepared',report:activeReport.id,kind:activeReport.kind,narrated,stored,storageProgress,screenPower:screenHub?.state.power});
       advanceBoardQueue(contentFadeQueue,0,true);boards.forEach(b=>b.last='');
       // Allocate and upload every board before camera movement, including the
       // clean board used by the opening writing demonstration.
@@ -677,9 +679,13 @@ export async function createLecture(scene,renderer,options={}){
       playing=false;version++;return true;
     },
     get openingNarrated(){return openingDemo?.phase==='waiting'&&openingDemo.narrated===true;},
-    beginOpening(reduced=false){
+    async beginOpening(reduced=false){
       options.onOpening?.({stage:'arrival',report:activeReport.id,kind:activeReport.kind,demo:openingDemo?.phase,narrated:openingDemo?.narrated});
       if(openingDemo?.phase!=='waiting')return false;
+      stored=false;screenHub?.report();updateStorageLabel();
+      if(reduced){storageMotion.reset();storageProgress=0;storageRig.position.y=0;storageRig.visible=true;}
+      while(openingDemo?.phase==='waiting'&&!stored&&(storageProgress>0||!storageMotion.ready))await new Promise(requestAnimationFrame);
+      if(openingDemo?.phase!=='waiting'||stored)return false;
       if(openingDemo.narrated){
         if(activeReport.kind==='classroom'){
           // Reuse the prepared clean board. Narration writes the cover once from
