@@ -1,4 +1,4 @@
-import {createBrushStroke as S} from './cursive-glyphs.js?v=19';
+import {createBrushStroke as S} from './cursive-glyphs.js?v=20';
 
 // A more legible running-script interpretation of the open Zhi Mang Xing
 // specimens. Keep 子 / 皿 and 日 / 成 distinct, with local brush continuations.

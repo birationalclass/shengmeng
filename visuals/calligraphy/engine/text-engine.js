@@ -1,6 +1,8 @@
-import {cursiveGlyphs} from '../cursive-glyphs.js?v=19';
-import {runningGlyphs} from '../running-glyphs.js?v=19';
-import {kouzanGlyphs} from '../kouzan-glyphs.js?v=19';
+import {createHomepageText} from '../homepage-font.js?v=20';
+import {textPlacements} from '../text-layout.js';
+import {cursiveGlyphs} from '../cursive-glyphs.js?v=20';
+import {runningGlyphs} from '../running-glyphs.js?v=20';
+import {kouzanGlyphs} from '../kouzan-glyphs.js?v=20';
 import * as T from '../vendor/three.module.js';
 import {catalog} from './catalog.js';
 import {availableCharacters} from './coverage.js';
@@ -10,7 +12,7 @@ const bundles=new Map(),derived=new Map();
 export function cleanText(value){
  const text=String(value).replace(/\s+/gu,'').normalize('NFC'),chars=[...text];
  if(!chars.length)throw Error('请先输入要写的汉字。');
- if(chars.length>8)throw Error('一次最多写 8 个汉字。');
+ if(chars.length>16)throw Error('一次最多写 16 个汉字。');
  if(chars.some(c=>!/^\p{Script=Han}$/u.test(c)))throw Error('请输入汉字，可去掉数字、字母和标点后再写。');
  return text;
 }
@@ -48,18 +50,19 @@ function transformStroke(s,kind,scale,offset,center){
  const move=([x,y,z])=>[(x-center.x)*scale+offset.x,(y-center.y)*scale+offset.y,z*scale];
  return kind==='centerline'?{...s,kind,points:s.points.map(move),width:s.width.map(n=>n*scale),thickness:s.thickness.map(n=>n*scale)}:{...s,kind,a:s.a.map(move),b:s.b.map(move)};
 }
-export async function createTextGlyph(value,{variantId='01',style='kouzan',loader=loadCharacter}={}){
+export async function createTextGlyph(value,{variantId='01',style='kouzan',layout='auto',homepageOptions={},loader=loadCharacter}={}){
  const inputText=cleanText(value),chars=[...inputText],parts=[];
+ if(style==='homepage')return createHomepageText(inputText,{layout,loader,...homepageOptions});
  for(const char of chars){
   const alias=char;
   let base=(style==='kouzan'&&kouzanGlyphs.find(g=>g.text===char))||(style==='running'&&runningGlyphs.find(g=>g.text===char))||(style==='cursive'&&cursiveGlyphs.find(g=>g.text===char))||catalog.find(g=>g.text===alias&&(alias!=='楊'||g.id===variantId));
   if(!base){if(!derived.has(char))derived.set(char,glyphFromData(char,await loader(char)));base=derived.get(char);}
   parts.push(base);
  }
- const columns=Math.min(4,parts.length),rows=Math.ceil(parts.length/columns),strokes=[],legacyStrokes=[],referenceV8Strokes=[],referenceV9Strokes=[],referenceV10Strokes=[],charSources=[];let clock=.06;
+ const placements=textPlacements(parts.length,layout),columns=Math.min(4,parts.length),rows=Math.ceil(parts.length/columns),strokes=[],legacyStrokes=[],referenceV8Strokes=[],referenceV9Strokes=[],referenceV10Strokes=[],charSources=[];let clock=.06;
  parts.forEach((base,index)=>{
   const row=Math.floor(index/columns),col=index%columns,rowCount=Math.min(columns,parts.length-row*columns),box=bounds(base),size=box.getSize(new T.Vector3()),center=box.getCenter(new T.Vector3());
-  const scale=parts.length===1?1:3.18/Math.max(size.x,size.y),offset=new T.Vector3((col-(rowCount-1)/2)*3.46,((rows-1)/2-row)*3.65,0);
+  const scale=parts.length===1?1:3.18/Math.max(size.x,size.y),offset=new T.Vector3(placements[index].x,placements[index].y,0);
   // Single input keeps the established model placement exactly.
   if(parts.length===1){center.set(0,0,0);offset.set(0,0,0);}
   for(const [strokeIndex,s] of base.strokes.entries()){const next=transformStroke(s,base.kind,scale,offset,center);next.name=base.text+' · '+s.name.replace(new RegExp('^'+base.text+' · '),'');next.start=clock+s.start-base.writeStart;next.end=clock+s.end-base.writeStart;next.character=index;strokes.push(next);const prior=transformStroke(base.legacyStrokes?.[strokeIndex]||s,base.kind,scale,offset,center);legacyStrokes.push({...prior,name:next.name,start:next.start,end:next.end,character:index});const v8=transformStroke(base.referenceV8Strokes?.[strokeIndex]||s,base.kind,scale,offset,center);referenceV8Strokes.push({...v8,name:next.name,start:next.start,end:next.end,character:index});for(const [field,destination] of [['referenceV9Strokes',referenceV9Strokes],['referenceV10Strokes',referenceV10Strokes]]){const old=base[field]?.[strokeIndex]||s,prior=transformStroke(old,base.kind,scale,offset,center);destination.push({...prior,name:base.text+' · '+old.name,start:clock+old.start-base.writeStart,end:clock+old.end-base.writeStart,character:index});}}
@@ -69,5 +72,5 @@ export async function createTextGlyph(value,{variantId='01',style='kouzan',loade
  const kouzan=charSources.filter(s=>s.kouzan).length,supplements=charSources.filter(s=>s.supplement).length,running=charSources.filter(s=>s.running).length,cursive=charSources.filter(s=>s.cursive).length;
  const sculpted=charSources.filter(s=>s.detailLevel==='sculpted').length,automatic=parts.length-sculpted,modeling={sculpted,automatic,label:automatic?(sculpted?`逐笔设计 ${sculpted} 字 / 自动造型 ${automatic} 字`:'通用自动造型'):'逐笔设计'};
  if(!one)source.description=`本组 ${parts.length} 字中，逐笔设计 ${sculpted} 字，通用自动造型 ${automatic} 字。每个字保留独立的笔势与空间层次，依据逐字列在下方。自动造型不等同于人工精修。`;
- return {id:'text:'+text,generated:true,inputText,text,title:one?parts[0].title:'连写',subtitle:one?parts[0].subtitle:`${parts.length} 字 · ${strokes.length} 段笔势`,kind:'mixed',strokes,legacyStrokes,referenceV9Strokes:parts.some(p=>p.referenceV9Strokes)?referenceV9Strokes:undefined,referenceV10Strokes:parts.some(p=>p.referenceV10Strokes)?referenceV10Strokes:undefined,referenceV8Strokes:parts.some(p=>p.referenceV8Strokes)?referenceV8Strokes:undefined,writeStart:.06,writeEnd,frontalAt:one?parts[0].frontalAt:writeEnd+1.45,duration:one?parts[0].duration:Math.ceil(writeEnd+2.8),source,charSources,modeling:{...modeling,kouzan,supplements,running,cursive},glyphStyle:style,components:parts.map(p=>p.id),requiresLicense:parts.some(p=>p.requiresLicense||p.kind==='centerline'||p.id.startsWith('data:'))};
+ return {id:'text:'+text,generated:true,inputText,text,title:one?parts[0].title:'连写',subtitle:one?parts[0].subtitle:`${parts.length} 字 · ${strokes.length} 段笔势`,kind:'mixed',strokes,legacyStrokes,referenceV9Strokes:parts.some(p=>p.referenceV9Strokes)?referenceV9Strokes:undefined,referenceV10Strokes:parts.some(p=>p.referenceV10Strokes)?referenceV10Strokes:undefined,referenceV8Strokes:parts.some(p=>p.referenceV8Strokes)?referenceV8Strokes:undefined,writeStart:.06,writeEnd,frontalAt:one?parts[0].frontalAt:writeEnd+1.45,duration:one?parts[0].duration:Math.ceil(writeEnd+2.8),source,charSources,modeling:{...modeling,kouzan,supplements,running,cursive},glyphStyle:style,layout,components:parts.map(p=>p.id),requiresLicense:parts.some(p=>p.requiresLicense||p.kind==='centerline'||p.id.startsWith('data:'))};
 }

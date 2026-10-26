@@ -17,12 +17,12 @@ export function zipStore(files){
 export function modelFiles(items,material,metadata){
  const obj=['# Local volumetric calligraphy','mtllib surface.mtl','usemtl Surface'];let offset=1;
  for(const item of items.filter(i=>i.mesh.visible)){
-  const g=item.g,p=g.attributes.position,n=g.attributes.normal,uv=g.attributes.uv,ix=g.index.array,move=item.mesh.position;
+  const g=item.g,p=g.attributes.position,n=g.attributes.normal,uv=g.attributes.uv,ix=g.index.array,move=item.mesh.position,vertexCount=g.userData.activeVertices??p.count,indexCount=g.userData.activeIndices??ix.length;
   obj.push('o gesture_'+String(item.i+1).padStart(2,'0'));
-  for(let k=0;k<p.count;k++)obj.push('v '+[p.getX(k)+move.x,p.getY(k)+move.y,p.getZ(k)+move.z].map(v=>v.toFixed(7)).join(' '));
-  for(let k=0;k<n.count;k++)obj.push('vn '+[n.getX(k),n.getY(k),n.getZ(k)].map(v=>v.toFixed(7)).join(' '));
-  for(let k=0;k<uv.count;k++)obj.push('vt '+uv.getX(k).toFixed(6)+' '+uv.getY(k).toFixed(6));
-  for(let k=0;k<ix.length;k+=3)obj.push('f '+[ix[k],ix[k+1],ix[k+2]].map(i=>{const v=i+offset;return `${v}/${v}/${v}`;}).join(' '));offset+=p.count;
+  for(let k=0;k<vertexCount;k++)obj.push('v '+[p.getX(k)+move.x,p.getY(k)+move.y,p.getZ(k)+move.z].map(v=>v.toFixed(7)).join(' '));
+  for(let k=0;k<vertexCount;k++)obj.push('vn '+[n.getX(k),n.getY(k),n.getZ(k)].map(v=>v.toFixed(7)).join(' '));
+  for(let k=0;k<vertexCount;k++)obj.push('vt '+uv.getX(k).toFixed(6)+' '+uv.getY(k).toFixed(6));
+  for(let k=0;k<indexCount;k+=3)obj.push('f '+[ix[k],ix[k+1],ix[k+2]].map(i=>{const v=i+offset;return `${v}/${v}/${v}`;}).join(' '));offset+=vertexCount;
  }
  const c=material.color;
  return {'calligraphy.obj':obj.join('\n')+'\n','surface.mtl':`newmtl Surface\nKd ${c.r} ${c.g} ${c.b}\nKs 1 1 1\nNs ${2/Math.max(.001,material.roughness**2)-2}\nPm ${material.metalness}\nPr ${material.roughness}\nillum 2\n`,'settings.json':JSON.stringify(metadata,null,2),'README.txt':'本地重建立体书法。OBJ 导出当前进度、可见笔画、分解距离、饱满度、空间起伏和实体细槽。模型以字心为原点，Y 朝上。MTL 含基础色、金属度和粗糙度；清漆、各向异性、布光、镜头等完整参数见 settings.json，导入其他软件需重新设置。各笔画保持独立封闭网格，未做布尔并集；不保证无自交。未取得薄煙原作者工程。天字中线数据沿用 Hanzi Writer Data，许可见项目原目录 ARPHICPL.TXT。\n'};

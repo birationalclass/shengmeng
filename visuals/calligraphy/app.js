@@ -19,7 +19,7 @@ document.addEventListener('keydown',e=>{
  if(!editing&&e.key.toLowerCase()==='h'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();setUI(!document.body.classList.contains('ui-hidden'));}
 });
 try{
- const studio=await import('./engine/studio.js?v=19');
+ const studio=await import('./engine/studio.js?v=20');
  // Fullscreen includes the controls, so playback and settings stay accessible.
  $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{$('notice').hidden=false;$('notice').textContent='当前环境不支持全屏。';}};
  document.addEventListener('fullscreenchange',()=>{$('fullscreen').setAttribute('aria-pressed',String(!!document.fullscreenElement));});

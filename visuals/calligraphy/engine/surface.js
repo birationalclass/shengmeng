@@ -1,20 +1,24 @@
+import {prepareFontVolume,updateFontVolume} from '../font-volume.js?v=20';
 import * as T from '../vendor/three.module.js';
 import {prepareStroke,updateStrokeGeometry} from './stroke-volume.js';
 import {prepareRailStroke,createStrokeGeometry,updateRailGeometry} from './yang-volume.js';
 import {guardRailBends} from './bend-guard.js';
-import {updateBrushGeometry,smoothSectionJoinNormals} from './brush-surface.js?v=19';
+import {updateBrushGeometry,smoothSectionJoinNormals} from './brush-surface.js?v=20';
 
 export function prepareVolume(stroke,kind,fullness=1,depth=1){
+ if(kind==='font-volume')return prepareFontVolume(stroke,{fullness,depth});
  if(kind==='centerline')return prepareStroke({...stroke,points:stroke.points.map(([x,y,z])=>[x,y,z*depth]),thickness:stroke.thickness.map(n=>n*fullness)});
  return guardRailBends(prepareRailStroke({...stroke,a:stroke.a.map(([x,y,z])=>[x,y,z*depth]),b:stroke.b.map(([x,y,z])=>[x,y,z*depth]),front:stroke.front.map(n=>n*fullness),back:stroke.back.map(n=>n*fullness)}));
 }
 export function createVolume(length=220,radial=72){
+ if(length===0)return new T.BufferGeometry();
  const g=createStrokeGeometry(length,radial),uv=new Float32Array(g.attributes.position.count*2),{L,R}=g.userData;
  uv[1]=.5;uv[uv.length-2]=1;uv[uv.length-1]=.5;
  for(let j=1;j<L;j++)for(let k=0;k<R;k++){const n=(1+(j-1)*R+k)*2;uv[n]=j/L;uv[n+1]=k/R;}
  g.setAttribute('uv',new T.BufferAttribute(uv,2));return g;
 }
 export function updateVolume(g,s,kind,p,ridges=0,writing='flow'){
+ if(kind==='font-volume')return updateFontVolume(g,s,p,ridges,writing);
  g.userData.deferNormals=!!(ridges>0&&s.runSegments);
  if(s.forceReveal)writing='reveal';
  if(s.brush||s.surfaceStyle==='lens')updateBrushGeometry(g,s,p,writing);else if(kind==='centerline')updateStrokeGeometry(g,s,p);else updateRailGeometry(g,s,p);

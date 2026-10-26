@@ -1,8 +1,9 @@
-import {applyBrushPlan} from '../brush-planner.js?v=19';
+import {prepareHomepageModel} from '../font-volume.js?v=20';
+import {applyBrushPlan} from '../brush-planner.js?v=20';
 import * as T from '../vendor/three.module.js';
 import {profile,sampleSection} from './stroke-volume.js';
 import {sampleRailSection} from './yang-volume.js';
-import {prepareVolume} from './surface.js?v=19';
+import {prepareVolume} from './surface.js?v=20';
 import {guardRailBends} from './bend-guard.js';
 import {attachStrokeLink} from './stroke-link.js';
 import {combineContinuousRuns} from './continuous-run.js';
@@ -164,6 +165,7 @@ function pressureMotion(spec,original){
  }motion.push(1);return motion;
 }
 export function prepareSpatialModel(glyph,settings={}){
+ if(glyph.homepage)return prepareHomepageModel(glyph,settings);
  const config={fullness:1,depth:1,model:'spatial',writing:'flow',turn:1,layering:1,harmony:.5,connection:'linked',...settings};
  const source=config.model==='legacy'?(glyph.legacyStrokes||glyph.strokes):config.model==='reference-v8'?(glyph.referenceV8Strokes||glyph.strokes):config.model==='reference-v9'?(glyph.referenceV9Strokes||glyph.strokes):config.model==='reference-v10'?(glyph.referenceV10Strokes||glyph.strokes):glyph.strokes;
  const parts=source.map((stroke,sourceIndex)=>{
@@ -236,6 +238,7 @@ export function prepareSpatialModel(glyph,settings={}){
 }
 
 export function constructionCurves(spec,kind){
+ if(kind==='font-volume')return [];
  const curves=Array.from({length:5},()=>[]);
  for(let i=0;i<=120;i++){
   const u=i/120;

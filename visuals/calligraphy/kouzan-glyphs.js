@@ -1,4 +1,4 @@
-import {createBrushStroke as S} from './cursive-glyphs.js?v=19';
+import {createBrushStroke as S} from './cursive-glyphs.js?v=20';
 
 // Font 02: independently authored 3D brush surfaces studied against Kouzan
 // Gyousho. A font has no recorded pen order: these clocks and Z gestures are

@@ -1,4 +1,4 @@
-import {updateFlatPreview} from '../flat-preview.js?v=19';
+import {updateFlatPreview} from '../flat-preview.js?v=20';
 import {icons} from '../icons.js';
 import {convertScript} from '../script-conversion.js';
 import * as T from '../vendor/three.module.js';
@@ -6,17 +6,17 @@ import {RoomEnvironment} from '../vendor/RoomEnvironment.js';
 import {OrbitControls} from '../vendor/OrbitControls.js';
 import {profile} from './stroke-volume.js';
 import {catalog,materialPresets,classicMaterialPresets,materialVersions} from './catalog.js';
-import {createVolume,updateVolume} from './surface.js?v=19';
+import {createVolume,updateVolume} from './surface.js?v=20';
 import {zipStore,modelFiles} from './export-format.js';
-import {createTextGlyph,cleanText} from './text-engine.js?v=19';
-import {prepareSpatialModel,constructionCurves} from './spatial-model.js?v=19';
+import {createTextGlyph,cleanText} from './text-engine.js?v=20';
+import {prepareSpatialModel,constructionCurves} from './spatial-model.js?v=20';
 import {sampleRailSection} from './yang-volume.js';
-import {writingProgress,writingPhase} from './brush-gesture.js?v=19';
+import {writingProgress,writingPhase} from './brush-gesture.js?v=20';
 import {windReferencePreset,windReferencePresetV8} from './wind-reference.js';
 import {createReferenceEnvironment} from './reference-environment.js';
 
 const $=id=>document.getElementById(id),canvas=$('canvas');
-const defaults={preset:'ink',materialPreset:'ink',materialVersion:'classic',...classicMaterialPresets.ink,writingScript:'traditional',glyphStyle:'kouzan',writing:'flow',connection:'linked',model:'spatial',turn:1,layering:1,harmony:.5,guides:false,trajectory:false,fullness:1,depth:1,explode:0,lighting:'reference-v9',background:'stone',display:'plain',azimuth:-35,keyPower:2.8,environment:1,exposure:1,shadows:true,wireframe:false};
+const defaults={preset:'ink',materialPreset:'ink',materialVersion:'classic',...classicMaterialPresets.ink,writingScript:'traditional',glyphStyle:'kouzan',layout:'auto',writing:'flow',connection:'linked',model:'spatial',turn:1,layering:1,harmony:.5,guides:false,trajectory:false,fullness:1,depth:1,explode:0,lighting:'reference-v9',background:'stone',display:'plain',azimuth:-35,keyPower:2.8,environment:1,exposure:1,shadows:true,wireframe:false};
 let renderScale=1.25;
 const emptyGlyph={id:'empty',text:'',title:'',subtitle:'',strokes:[],duration:0,writeStart:0,writeEnd:0,frontalAt:0,charSources:[],source:{name:'',phrase:'',url:'',image:'',caption:'',description:''}};
 let settings={...defaults},glyph=emptyGlyph,items=[],time=0,paused=true,speed=1,follow=true,spinning=false,dirty=true,shapeDirty=false,lastYang='01',viewRadius=8.4,buildRevision=0,building=false,recording=null,seamPlayback=null;
@@ -59,7 +59,7 @@ const circle=new T.Mesh(new T.CylinderGeometry(2.30,2.30,.10,96),boardMaterial);
 const square=new T.Mesh(new T.BoxGeometry(4.65,4.65,.10),boardMaterial),plinth=new T.Mesh(new T.BoxGeometry(4.8,.13,2.8),boardMaterial);
 for(const mesh of [circle,square,plinth]){mesh.receiveShadow=true;mesh.castShadow=true;displayGroup.add(mesh);}
 const numeric={metalness:[0,1],roughness:[.08,.85],clearcoat:[0,1],anisotropy:[0,1],ridges:[0,1],fullness:[.5,1.5],depth:[0,2],turn:[0,1.5],layering:[0,1.5],harmony:[0,1],explode:[0,1],azimuth:[-150,150],keyPower:[0,6],environment:[.1,2.5],exposure:[.5,1.7]};
-const enums={writingScript:['traditional','simplified','original'],glyphStyle:['kouzan','running','cursive','original'],lighting:['soft','rim','warm','reference','reference-v9'],background:['stone','dark','paper'],display:['plain','circle','square'],model:['spatial','reference-v10','reference-v9','reference-v8','legacy'],materialVersion:['smooth','classic'],writing:['flow','reveal'],connection:['linked','separate']};
+const enums={writingScript:['traditional','simplified','original'],glyphStyle:['kouzan','homepage','running','cursive','original'],layout:['auto','homepage'],lighting:['soft','rim','warm','reference','reference-v9'],background:['stone','dark','paper'],display:['plain','circle','square'],model:['spatial','reference-v10','reference-v9','reference-v8','legacy'],materialVersion:['smooth','classic'],writing:['flow','reveal'],connection:['linked','separate']};
 const duration=()=>glyph?.duration||0;
 let noticeTimeout;function notice(text){$('notice').textContent=text;$('notice').hidden=false;clearTimeout(noticeTimeout);noticeTimeout=setTimeout(()=>$('notice').hidden=true,4400);}
 function feedback(text,error=false){if(error)notice(text);$('text-feedback').textContent=text;$('text-feedback').classList.toggle('error',error);$('text-form').classList.toggle('invalid',error);$('text-input').setAttribute('aria-invalid',String(error));}
@@ -95,6 +95,7 @@ function shapeSummary(){
  $('model-v10-option').hidden=!glyph.referenceV10Strokes;$('trajectory-row').hidden=!penTransfers.length;$('model-v8-option').hidden=!glyph.referenceV8Strokes;$('model-v9-option').hidden=!glyph.referenceV8Strokes;
  $('glyph-style-note').hidden=!glyph.text;$('glyph-style-note').textContent=glyph.modeling?.cursive?'草书重写 · '+glyph.charSources.filter(s=>s.cursive).map(s=>s.character).join('、')+(glyph.charSources.some(s=>!s.cursive)?'；其余沿用已有字形。':''):(settings.glyphStyle==='original'?'原有字形':'当前文字沿用已有字形。');
  if(glyph.modeling?.kouzan){$('shape-summary').textContent='衡山行书 · '+glyph.modeling.kouzan+' 字\n斜势、折肩与回带 · 独立三维重写';$('glyph-style-note').textContent='02 · '+glyph.charSources.filter(s=>s.kouzan).map(s=>s.character).join('、')+(glyph.modeling.supplements?'；琪为本地补写，非原字体字形。':'')+(glyph.charSources.some(s=>!s.kouzan)?'；其余沿用已有字形。':'');}else if(glyph.modeling?.running){$('shape-summary').textContent='行草重写 · '+glyph.modeling.running+' 字\n保留部件结构 · 局部承转连写';$('glyph-style-note').textContent='行草重写 · '+glyph.charSources.filter(s=>s.running).map(s=>s.character).join('、')+(glyph.charSources.some(s=>!s.running)?'；其余沿用已有字形。':'');}else if(glyph.modeling?.cursive)$('shape-summary').textContent='草书重写 · '+glyph.modeling.cursive+' 字\n整段回环连续成形 · 保留自然断连';
+ if(glyph.homepage){$('shape-summary').textContent='主页原字形 · '+glyph.charSources.length+' 字\n圆润厚度 · '+(settings.layout==='homepage'?'右起双列':'横向排布');$('glyph-style-note').textContent='Zhi Mang Xing · 与主页相同的字族。原字库以简体为主；书写节奏为本地重建。';}
  if(modelReport.brushPlan?.inferredStrokes)$('shape-summary').textContent+='\n动态笔锋 · '+modelReport.brushPlan.inferredStrokes+' 笔推断运笔';
  $('stage-note').textContent=glyph.subtitle+' · '+(oldGuang?'旧广为通用自动造型':glyph.modeling?.label||'逐笔设计');
  $('model-info').textContent=(glyph.charSources?.length>1?glyph.charSources.length+' 字 · ':'')+items.length+' 段 · '+(modelReport.continuousRuns?.length?'连续生长':modelReport.sectionJoins?.length?'分段相接':modelReport.strokeLinks?.length?'连续笔势':settings.model==='spatial'?'空间塑形':'上一版造型');
@@ -111,7 +112,7 @@ function rebuildSpecs(){
  $('writing-row').hidden=!items.some(item=>item.spec.gesture);
  modelReport=next.report;penTransfers=next.transfers||[];rebuildTransferGuide();modelBounds.copy(bounds);rebuildGuides();shapeSummary();renderStrokeControls();shapeDirty=false;dirty=true;
 }
-function meshResolution(part,segments,phrase=false){const base=part.spec.brush&&segments<=40?(phrase?200:300):segments>40?110:phrase?170:220;return {L:Math.round(base*(part.spec.longitudinalScale||1)),R:part.spec.brush&&segments<=40?(phrase?72:96):segments>40?48:72};}
+function meshResolution(part,segments,phrase=false){if(part.spec.mesh)return {L:0,R:0};const base=part.spec.brush&&segments<=40?(phrase?200:300):segments>40?110:phrase?170:220;return {L:Math.round(base*(part.spec.longitudinalScale||1)),R:part.spec.brush&&segments<=40?(phrase?72:96):segments>40?48:72};}
 function makeItems(constructed,next,bounds){
  const prepared=[];
  try{constructed.parts.forEach(({stroke:s,kind,spec,sourceIndices},i)=>{const {L,R}=meshResolution({spec},next.strokes.length,next.charSources?.length>1),g=createVolume(L,R);updateVolume(g,spec,kind,1,settings.ridges,settings.writing);if(!g.attributes.position.array.every(Number.isFinite))throw Error('该字的曲面暂时无法构建。');bounds.union(g.boundingBox);const mesh=new T.Mesh(g,mat);mesh.castShadow=true;mesh.receiveShadow=true;mesh.frustumCulled=false;prepared.push({s,i,kind,g,mesh,spec,sourceIndices,last:1,enabled:true});});}catch(error){prepared.forEach(item=>item.g.dispose());throw error;}return prepared;
@@ -121,7 +122,7 @@ function renderStrokeControls(){
 }
 function dirtySurfaces(){for(const item of items)item.last=-1;dirty=true;}
 function writeURL(){
- const url=new URL(location.href);url.search='';if(glyph.text)url.searchParams.set('text',glyph.inputText||glyph.text);url.searchParams.set('script',settings.writingScript);if(settings.glyphStyle!=='kouzan')url.searchParams.set('style',settings.glyphStyle);url.searchParams.set('material',settings.materialPreset);if(settings.materialVersion!=='classic')url.searchParams.set('surface',settings.materialVersion);if(lastYang!=='01')url.searchParams.set('variant',lastYang);if(settings.model!=='spatial')url.searchParams.set('model',settings.model);history.replaceState(null,'',url);
+ const url=new URL(location.href);url.search='';if(glyph.text)url.searchParams.set('text',glyph.inputText||glyph.text);url.searchParams.set('script',settings.writingScript);if(settings.glyphStyle!=='kouzan')url.searchParams.set('style',settings.glyphStyle);if(settings.layout!=='auto')url.searchParams.set('layout',settings.layout);url.searchParams.set('material',settings.materialPreset);if(settings.materialVersion!=='classic')url.searchParams.set('surface',settings.materialVersion);if(lastYang!=='01')url.searchParams.set('variant',lastYang);if(settings.model!=='spatial')url.searchParams.set('model',settings.model);history.replaceState(null,'',url);
 }
 function updateButtons(){
  const hasGlyph=!!glyph.text;
@@ -140,17 +141,17 @@ function installGlyph(next,complete=false){
  const prepared=makeItems(constructed,next,bounds);
  for(const item of items){group.remove(item.mesh);item.g.dispose();}glyph=next;updateFlatPreview(glyph);items=prepared;for(const item of items)group.add(item.mesh);modelBounds.copy(bounds);if(glyph.text==='楊'&&!glyph.generated)lastYang=glyph.id;
  time=complete?duration():0;paused=complete;follow=true;spinning=false;controls.autoRotate=false;controls.enableDamping=false;controls.update();settings.explode=0;shapeDirty=false;$('explode').value=0;updateOutputs();fitScene();
- $('timeline').max=duration();$('variants').hidden=!glyph.text.includes('楊')||settings.glyphStyle==='kouzan';$('hook-detail').hidden=glyph.text!=='風';$('seam-replay').hidden=glyph.text!=='風';$('writing-row').hidden=!items.some(item=>item.spec.gesture);document.querySelectorAll('[data-char]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.char===glyph.text)));document.querySelectorAll('[data-variant]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.variant===lastYang)));
+ $('timeline').max=duration();$('variants').hidden=!glyph.text.includes('楊')||['kouzan','homepage'].includes(settings.glyphStyle);$('hook-detail').hidden=glyph.text!=='風';$('seam-replay').hidden=glyph.text!=='風';$('writing-row').hidden=!items.some(item=>item.spec.gesture);document.querySelectorAll('[data-char]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.char===glyph.text)));document.querySelectorAll('[data-variant]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.variant===lastYang)));
  modelReport=constructed.report;penTransfers=constructed.transfers||[];rebuildTransferGuide();rebuildGuides();shapeSummary();sourcePanel();$('version-title').textContent=glyph.text+' · '+glyph.title;
  renderStrokeControls();writeURL();updateButtons();dirty=true;
 }
 function setBuilding(value,text=''){building=value;$('generate-text').disabled=value;$('save-animation').disabled=value;$('text-form').setAttribute('aria-busy',String(value));$('generate-text').textContent=value?'构形中…':'书写';$('loading').hidden=!value;$('loading').textContent=text||'正在构形…';updateButtons();}
 async function generateText(value,complete=false){
  const revision=++buildRevision;
- try{const original=cleanText(value),script=settings.writingScript;setBuilding(true,'正在准备字形…');const text=cleanText(await convertScript(original,script));feedback('正在构建「'+text+'」…');setBuilding(true,'正在构形 · '+text);await new Promise(resolve=>requestAnimationFrame(resolve));const next=await createTextGlyph(text,{variantId:lastYang,style:settings.glyphStyle});if(revision!==buildRevision)return;next.inputText=original;next.inputScript=script;installGlyph(next,complete);$('text-input').value=original;$('resolved-text').textContent='输出 · '+next.text;feedback((text===next.text?'':text+' → ')+next.text+' · '+(next.modeling?.label||'逐笔设计')+' · '+duration().toFixed(0)+' 秒');if(params.get('看')==='回锋'&&glyph.text==='風')playSeam();}
+ try{const original=cleanText(value),script=settings.writingScript;setBuilding(true,'正在准备字形…');const text=cleanText(await convertScript(original,script));feedback('正在构建「'+text+'」…');setBuilding(true,'正在构形 · '+text);await new Promise(resolve=>requestAnimationFrame(resolve));const next=await createTextGlyph(text,{variantId:lastYang,style:settings.glyphStyle,layout:settings.layout});if(revision!==buildRevision)return;next.inputText=original;next.inputScript=script;installGlyph(next,complete);$('text-input').value=original;$('resolved-text').textContent='输出 · '+next.text;feedback((text===next.text?'':text+' → ')+next.text+' · '+(next.modeling?.label||'逐笔设计')+' · '+duration().toFixed(0)+' 秒');if(params.get('看')==='回锋'&&glyph.text==='風')playSeam();}
  catch(error){if(revision===buildRevision)feedback(error.message+' 当前画面已保留。',true);}finally{if(revision===buildRevision)setBuilding(false);}
 }
-function selectKnown(id,complete=false){++buildRevision;setBuilding(false);installGlyph(catalog.find(g=>g.id===id)||catalog[0],complete);$('text-input').value=glyph.text;feedback('本地常用字库 · 1–8 个汉字');}
+function selectKnown(id,complete=false){++buildRevision;setBuilding(false);installGlyph(catalog.find(g=>g.id===id)||catalog[0],complete);$('text-input').value=glyph.text;feedback('本地常用字库 · 1–16 个汉字');}
 const smooth=(a,b,t)=>T.MathUtils.smoothstep(t,a,b);
 function shot(t){const mix=smooth(0,glyph.writeEnd,t),finish=smooth(glyph.writeEnd,glyph.frontalAt,t),yaw=T.MathUtils.lerp(-.24,.16,mix)*(1-finish),radius=viewRadius+.12*(1-finish);controls.minDistance=4.8;controls.enableDamping=false;controls.target.copy(target);camera.position.set(Math.sin(yaw)*radius,target.y+.15*(1-finish),Math.cos(yaw)*radius);controls.update();}
 function render(){
@@ -210,7 +211,7 @@ $('settings-file').onchange=async e=>{
  const file=e.target.files[0];if(!file)return;const revision=++buildRevision;
  try{
   if(file.size>2000000)throw Error('文件过大');const data=JSON.parse(await file.text());if(data.format!=='volumetric-calligraphy-studio'||![1,2,3,4].includes(data.version))throw Error('格式不匹配');const variant=['01','02','03'].includes(data.yangVariant)?data.yangVariant:lastYang;
-  let nextGlyph;if(data.inputText){setBuilding(true);nextGlyph=await createTextGlyph(await convertScript(data.inputText,data.settings?.writingScript||'traditional'),{variantId:variant,style:data.settings?.glyphStyle||'original'});nextGlyph.inputText=data.inputText;}else nextGlyph=catalog.find(g=>g.id===data.glyphId);if(!nextGlyph)throw Error('未找到此字形');if(revision!==buildRevision)return;
+  let nextGlyph;if(data.inputText){setBuilding(true);nextGlyph=await createTextGlyph(await convertScript(data.inputText,data.settings?.writingScript||'traditional'),{variantId:variant,style:data.settings?.glyphStyle||'original',layout:data.settings?.layout||'auto'});nextGlyph.inputText=data.inputText;}else nextGlyph=catalog.find(g=>g.id===data.glyphId);if(!nextGlyph)throw Error('未找到此字形');if(revision!==buildRevision)return;
   const incoming=data.settings||{},next={...defaults,glyphStyle:'original'};if(data.version<3)next.model='legacy';for(const [id,[lo,hi]] of Object.entries(numeric))if(Number.isFinite(incoming[id]))next[id]=T.MathUtils.clamp(incoming[id],lo,hi);for(const [id,choices] of Object.entries(enums))if(choices.includes(incoming[id]))next[id]=incoming[id];if(/^#[0-9a-f]{6}$/i.test(incoming.color))next.color=incoming.color;for(const id of ['shadows','wireframe','guides','trajectory'])if(typeof incoming[id]==='boolean')next[id]=incoming[id];next.preset=Object.hasOwn(materialPresets,incoming.preset)?incoming.preset:'custom';
   if(data.spatialModel?.revision==='boundary-volume-v8-20261024'&&incoming.model==='spatial'&&nextGlyph.referenceV8Strokes)next.model='reference-v8';
   if(data.spatialModel?.revision==='boundary-volume-v9-20261024'&&incoming.model==='spatial'&&nextGlyph.referenceV8Strokes)next.model='reference-v9';
@@ -224,9 +225,9 @@ $('settings-file').onchange=async e=>{
 };
 $('export-model').onclick=async()=>{
  if(shapeDirty)rebuildSpecs();render();if(!items.some(i=>i.mesh.visible)){notice('当前没有可见笔画，请先播放或点击“看成字”。');return;}const button=$('export-model');button.disabled=true;notice('正在打包当前可见曲面…');await new Promise(resolve=>requestAnimationFrame(resolve));
- try{const capturedGlyph=glyph,metadata=snapshot(),files=modelFiles(items,mat,metadata),sources=capturedGlyph.charSources||[capturedGlyph.source];files['SOURCE.txt']=sources.map(src=>[src.name,src.phrase,src.url,src.caption,src.description].join('\n')).join('\n\n')+'\n\n体量、深度与截面为本项目重建。材质参考：https://www.bilibili.com/video/BV16a4y1P7fA/';if(capturedGlyph.requiresLicense||capturedGlyph.text==='天'){const license=await fetch('data/ARPHICPL.TXT');if(!license.ok)throw Error('字形许可文件未能载入');files['ARPHICPL.TXT']=await license.text();}download(zipStore(files),`${capturedGlyph.text}-${capturedGlyph.title}-当前模型.zip`);notice('已导出 OBJ、MTL 和参数；包含当前进度与可见笔画。');}catch(error){notice('导出失败：'+error.message);}finally{button.disabled=false;}
+ try{const capturedGlyph=glyph,metadata=snapshot(),files=modelFiles(items,mat,metadata),sources=capturedGlyph.charSources||[capturedGlyph.source];files['SOURCE.txt']=sources.map(src=>[src.name,src.phrase,src.url,src.caption,src.description].join('\n')).join('\n\n')+'\n\n体量、深度与截面为本项目重建。材质参考：https://www.bilibili.com/video/BV16a4y1P7fA/';if(capturedGlyph.requiresHomepageLicense){const license=await fetch('assets/homepage/OFL.txt');if(!license.ok)throw Error('主页字体许可未能载入');files['ZhiMangXing-OFL.txt']=await license.text();}if(capturedGlyph.requiresLicense||capturedGlyph.text==='天'){const license=await fetch('data/ARPHICPL.TXT');if(!license.ok)throw Error('字形许可文件未能载入');files['ARPHICPL.TXT']=await license.text();}download(zipStore(files),`${capturedGlyph.text}-${capturedGlyph.title}-当前模型.zip`);notice('已导出 OBJ、MTL 和参数；包含当前进度与可见笔画。');}catch(error){notice('导出失败：'+error.message);}finally{button.disabled=false;}
 };
-$('restore').onclick=()=>{settings={...defaults,writingScript:settings.writingScript,glyphStyle:settings.glyphStyle};syncUI();rebuildSpecs();applyMaterial();applyLighting();items.forEach(i=>i.enabled=true);$('strokes').querySelectorAll('input').forEach(i=>i.checked=true);speed=1;$('speed').value='1';follow=true;stopSpin();writeURL();notice('已恢复默认材质、体量、布光与运镜');};
+$('restore').onclick=()=>{settings={...defaults,writingScript:settings.writingScript,glyphStyle:settings.glyphStyle,layout:settings.layout};syncUI();rebuildSpecs();applyMaterial();applyLighting();items.forEach(i=>i.enabled=true);$('strokes').querySelectorAll('input').forEach(i=>i.checked=true);speed=1;$('speed').value='1';follow=true;stopSpin();writeURL();notice('已恢复默认材质、体量、布光与运镜');};
 function finishRecording(capture,error=null){
  if(recording!==capture)return;recording=null;seamPlayback=capture.saved.seamPlayback;capture.stream.getTracks().forEach(track=>track.stop());capture.locks.forEach(([el,disabled])=>el.disabled=disabled);controls.enabled=true;
  time=capture.saved.time;paused=capture.saved.paused;follow=capture.saved.follow;spinning=capture.saved.spinning;settings.explode=capture.saved.explode;controls.autoRotate=spinning;controls.enableDamping=false;controls.update();camera.position.copy(capture.saved.position);controls.target.copy(capture.saved.target);controls.update();syncUI();updateButtons();$('save-animation').innerHTML='保存书写动画 <span>WebM</span>';$('save-animation').setAttribute('aria-pressed','false');dirty=true;
@@ -244,7 +245,7 @@ $('save-animation').onclick=()=>{
 };
 canvas.onkeydown=e=>{if(e.code==='Space'&&!recording){e.preventDefault();$('pause').click();}};
 function resize(){const w=Math.max(1,canvas.clientWidth),h=Math.max(1,canvas.clientHeight),scale=Math.min(renderScale,2400/w,2000/h);renderer.setSize(Math.round(w*scale),Math.round(h*scale),false);camera.aspect=w/h;camera.updateProjectionMatrix();if(glyph)fitScene();dirty=true;}new ResizeObserver(resize).observe(canvas);resize();
-const params=new URL(location.href).searchParams;for(const [a,b] of [['text','文'],['material','材质'],['surface','材质版'],['model','模型'],['variant','版']])if(params.has(a))params.set(b,params.get(a));if(['simplified','traditional','original'].includes(params.get('script')))settings.writingScript=params.get('script');if(enums.glyphStyle.includes(params.get('style')))settings.glyphStyle=params.get('style');const initialPreset=params.get('材质'),calibration=params.get('校准'),hasCalibration=['風8','風9','風10','風11'].includes(calibration);
+const params=new URL(location.href).searchParams;for(const [a,b] of [['text','文'],['material','材质'],['surface','材质版'],['model','模型'],['variant','版']])if(params.has(a))params.set(b,params.get(a));if(['simplified','traditional','original'].includes(params.get('script')))settings.writingScript=params.get('script');if(enums.glyphStyle.includes(params.get('style')))settings.glyphStyle=params.get('style');if(enums.layout.includes(params.get('layout')))settings.layout=params.get('layout');const initialPreset=params.get('材质'),calibration=params.get('校准'),hasCalibration=['風8','風9','風10','風11'].includes(calibration);
 if(calibration==='風8')Object.assign(settings,windReferencePresetV8,{model:'reference-v8'});
 if(calibration==='風9'||calibration==='風10'||calibration==='風11')Object.assign(settings,windReferencePreset);
 if(params.get('接笔')==='separate')settings.connection='separate';
@@ -262,7 +263,9 @@ let last=performance.now();function loop(now){const dt=Math.min(.25,Math.max(0,(
 
 
 
-$('glyphStyle').onchange=async e=>{settings.glyphStyle=e.target.value;if($('text-input').value.trim())await generateText($('text-input').value);else writeURL();syncUI();};
+$('layout').onchange=async e=>{settings.layout=e.target.value;if($('text-input').value.trim())await generateText($('text-input').value);else writeURL();syncUI();};
+$('homepage-preset').onclick=async()=>{settings.glyphStyle='homepage';settings.layout='homepage';settings.writingScript='original';syncUI();await generateText('天之道损有余而补不足');};
+$('glyphStyle').onchange=async e=>{settings.glyphStyle=e.target.value;if(settings.glyphStyle==='homepage')settings.writingScript='original';if($('text-input').value.trim())await generateText($('text-input').value);else writeURL();syncUI();};
 $('writingScript').onchange=async e=>{settings.writingScript=e.target.value;if($('text-input').value.trim())await generateText($('text-input').value);else writeURL();syncUI();};
 export function studioState(){return {text:glyph?.text,input:glyph?.inputText,script:settings.writingScript,paused,time,duration:duration(),recording:!!recording,building,settings:{...settings},camera:{position:camera.position.toArray(),target:controls.target.toArray()},segments:items.length};}
 export function setQuality(value){const preset={draft:[.9,1024],balanced:[1.25,1536],high:[1.75,2048]}[value]||[1.25,1536];renderer.shadowMap.enabled=settings.shadows;key.shadow.mapSize.set(preset[1],preset[1]);key.shadow.map?.dispose();key.shadow.map=null;renderScale=preset[0];resize();dirty=true;}
