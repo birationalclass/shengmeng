@@ -1,0 +1,181 @@
+@LinearStudy.affineKoszulActualSheafExtNativeDirectValuesStatement : {R S : CommRingCat} →
+  (R ⟶ S) →
+    (p : ℕ) →
+      (Fin (p + 1) → ↑R) →
+        (N : ModuleCat ↑R) → (M : ModuleCat ↑S) → (U : Type u_1) → (↑N → U → ↑M → Prop) → (↑N → ↑M → Prop) → Prop
+'LinearStudy.affineKoszulActualSheafExtNativeDirectValuesStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.affineKoszulActualSheafExtNativeDirectValuesStatement_of_coefficient : ∀ {R S : CommRingCat} (phi : R ⟶ S)
+  (p : ℕ) (H : Fin (p + 1) → ↑R),
+  (∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) →
+    ∀ (N : ModuleCat ↑R) (M : ModuleCat ↑S) (U : Type u_1) (P : ↑N → U → ↑M → Prop) (P0 : ↑N → ↑M → Prop),
+      (∃ (F :
+          (↑N ⧸ Ideal.span (Set.range H) • ⊤) ≃ₗ[↑R] ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M)),
+          (∀ (x : ↑N) (v : U), P x v (F (Submodule.Quotient.mk x))) ∧ ∀ (x : ↑N), P0 x (F (Submodule.Quotient.mk x))) →
+        LinearStudy.affineKoszulActualSheafExtNativeDirectValuesStatement phi p H N M U P P0
+'LinearStudy.affineKoszulActualSheafExtNativeDirectValuesStatement_of_coefficient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquationActualSheafExtNativeStatement : {n p : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) → (Fin (p + 1 + 1) → ℂ) → Prop
+'LinearStudy.projectivePulledCutEquationActualSheafExtNativeStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_actualSheafExt_native_of_duality : ∀ {n p : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) (w : Fin (p + 1 + 1) → ℂ),
+  (let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+    have H := fun (i : Fin (p + 1)) =>
+      (Ideal.Quotient.mk V.affineIdeal)
+        (LinearStudy.affineChartPolynomialMap
+          ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+    ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination B H)) j) →
+    LinearStudy.projectivePulledCutEquationCoefficientNativeDualStatement f V L w →
+      LinearStudy.projectivePulledCutEquationActualSheafExtNativeStatement f V L w
+'LinearStudy.projectivePulledCutEquation_actualSheafExt_native_of_duality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.projectivePulledCutEquation_originalSetup_exists_actualSheafExt_native_values_open : ∀ {n p : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
+  p + 1 < n →
+    0 < f.degree →
+      Function.Surjective f.onPoints →
+        f.onPoints ⁻¹' V.zeroSet = V.zeroSet →
+          ∀ (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n),
+            (∀ (i : Fin (p + 1 + 1)), MvPolynomial.IsHomogeneous (L i) 1) →
+              Function.Injective ⇑(LinearStudy.projectiveLinearNormalizationMap V L) →
+                (LinearStudy.projectiveLinearNormalizationMap V L).Finite →
+                  ∀ (x0 : Fin n → ℂ),
+                    LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet →
+                      ∃ (c : MvPolynomial (Fin (p + 1 + 1)) ℂ),
+                        c ≠ 0 ∧
+                          (∃ (w : Fin (p + 1 + 1) → ℂ), (MvPolynomial.eval w) c ≠ 0) ∧
+                            ∀ (w : Fin (p + 1 + 1) → ℂ),
+                              (MvPolynomial.eval w) c ≠ 0 →
+                                (LinearStudy.projectivePulledCutEquationMap f V L w).Finite ∧
+                                  LinearStudy.projectivePulledCutEquationActualSheafExtNativeStatement f V L w
+'LinearStudy.projectivePulledCutEquation_originalSetup_exists_actualSheafExt_native_values_open' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.affineKoszulActualSheafExtNativeDirectValuesStatement.{u} : {R S : CommRingCat} →
+  (R ⟶ S) →
+    (p : ℕ) →
+      (Fin (p + 1) → ↑R) →
+        (N : ModuleCat ↑R) → (M : ModuleCat ↑S) → (U : Type u) → (↑N → U → ↑M → Prop) → (↑N → ↑M → Prop) → Prop :=
+fun {R S : CommRingCat} (phi : R ⟶ S) (p : ℕ) (H : Fin (p + 1) → ↑R) (N : ModuleCat ↑R) (M : ModuleCat ↑S) (U : Type u)
+    (P : ↑N → U → ↑M → Prop) (P0 : ↑N → ↑M → Prop) =>
+  LinearStudy.affineKoszulActualSheafExtNativeTwoValuesStatement phi p H N M U P P0
+def LinearStudy.projectivePulledCutEquationActualSheafExtNativeStatement : {n p : ℕ} →
+  LinearStudy.HomogeneousEndomorphism n →
+    LinearStudy.IntegralProjectiveEquations n →
+      (Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) → (Fin (p + 1 + 1) → ℂ) → Prop :=
+fun {n p : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+    (L : Fin (p + 1 + 1) → LinearStudy.CoordinateRing n) (w : Fin (p + 1 + 1) → ℂ) =>
+  let R := MvPolynomial (Fin (p + 1)) ℂ;
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let J :=
+    Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom (LinearStudy.projectivePulledLinearSectionIdeal f V L w);
+  let Q := MvPolynomial (Fin n) ℂ ⧸ J;
+  have phi := LinearStudy.projectivePulledCutEquationMap f V L w;
+  have this := phi.toAlgebra;
+  have this_1 := phi.toAlgebra.toSMul;
+  have this_2 := Algebra.toModule;
+  have this_3 := (MvPolynomial.aeval 0).toAlgebra;
+  let D := (ModuleCat.coextendScalars (algebraMap R B)).obj ↧R;
+  let Dq := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj ↧ℂ;
+  have H := fun (i : Fin (p + 1)) =>
+    (Ideal.Quotient.mk V.affineIdeal)
+      (LinearStudy.affineChartPolynomialMap
+        ((MvPolynomial.aeval f.forms) (LinearStudy.projectiveLinearSectionForms L w i)));
+  have beta := CommRingCat.ofHom (LinearStudy.projectivePulledCutOriginalRingMap f V L w).toRingHom;
+  LinearStudy.affineKoszulActualSheafExtNativeDirectValuesStatement beta p H D Dq (MvPolynomial (Fin n) ℂ)
+    (fun (ell : ↑D) (P : MvPolynomial (Fin n) ℂ) (z : ↑Dq) =>
+      ((ModuleCat.CoextendScalars.equiv (algebraMap ℂ Q) ↧ℂ)
+            (have this := z;
+            this))
+          ((Ideal.Quotient.mk J) P) =
+        (algebraMap R ℂ)
+          ((LinearStudy.coextensionOriginalDualEquiv
+              (have this := ell;
+              this))
+            ((Ideal.Quotient.mk V.affineIdeal) P)))
+    fun (ell : ↑D) (z : ↑Dq) =>
+    ((ModuleCat.CoextendScalars.equiv (algebraMap ℂ Q) ↧ℂ)
+          (have this := z;
+          this))
+        1 =
+      (algebraMap R ℂ)
+        ((LinearStudy.coextensionOriginalDualEquiv
+            (have this := ell;
+            this))
+          1)
+def LinearStudy.affineKoszulActualSheafExtNativeTwoValuesStatement.{u} : {R S : CommRingCat} →
+  (phi : R ⟶ S) →
+    (p : ℕ) →
+      (Fin (p + 1) → ↑R) →
+        (N : ModuleCat ↑R) →
+          (M : ModuleCat ↑S) →
+            (U : Type u) →
+              (↑N → U → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop) →
+                (↑N → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop) → Prop :=
+fun {R S : CommRingCat} (phi : R ⟶ S) (p : ℕ) (H : Fin (p + 1) → ↑R) (N : ModuleCat ↑R) (M : ModuleCat ↑S) (U : Type u)
+    (P : ↑N → U → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop)
+    (P0 : ↑N → ↑((ModuleCat.restrictScalars (CommRingCat.Hom.hom phi)).obj M) → Prop) =>
+  ∃ (he : ∀ (j : ℕ), 0 < j → HomologicalComplex.ExactAt (koszulComplex (Fintype.linearCombination (↑R) H)) j) (e :
+    AlgebraicGeometry.tilde ↧(↑N ⧸ Ideal.span (Set.range H) • ⊤) ≅
+      (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).obj (AlgebraicGeometry.tilde M)),
+    (∀ (I : CategoryTheory.InjectiveResolution (AlgebraicGeometry.tilde N)),
+        ∃ (chi :
+          LinearStudy.schemeModuleInternalExt (LinearStudy.tildeKoszulOriginalCutCokernelCofork R H).pt
+              (AlgebraicGeometry.tilde N) (p + 1) ≅
+            (AlgebraicGeometry.Scheme.Modules.pushforward (AlgebraicGeometry.Spec.map phi)).obj
+              (AlgebraicGeometry.tilde M)),
+          LinearStudy.schemeModuleOriginalTopExtClassIsoLaw (LinearStudy.tildeFunctionKoszulComplex R H) (p + 1)
+            (LinearStudy.originalChainCoforkAugmentation (LinearStudy.tildeFunctionKoszulComplex R H)
+              (LinearStudy.tildeKoszulOriginalCutCokernelCofork R H))
+            ⋯ chi
+            (CategoryTheory.CategoryStruct.comp (LinearStudy.affineKoszulOriginalTopCoefficientQuotientMap R N p H)
+              e.hom)) ∧
+      (∀ (x : ↑N) (v : U),
+          P x v
+            (LinearStudy.tildePushforwardOriginalGlobalValue phi M (↧(↑N ⧸ Ideal.span (Set.range H) • ⊤)) e
+              (Submodule.Quotient.mk x))) ∧
+        ∀ (x : ↑N),
+          P0 x
+            (LinearStudy.tildePushforwardOriginalGlobalValue phi M (↧(↑N ⧸ Ideal.span (Set.range H) • ⊤)) e
+              (Submodule.Quotient.mk x))
+'LinearStudy.affineKoszulActualSheafExtNativeTwoValuesStatement' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.schemeModuleOriginalTopExtClassIsoLaw.{u} : {X : AlgebraicGeometry.Scheme} →
+  (C : ChainComplex X.Modules ℕ) →
+    {E N : X.Modules} →
+      (r : ℕ) →
+        (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) →
+          QuasiIso alpha →
+            {T : X.Modules} →
+              (LinearStudy.schemeModuleInternalExt E N r ≅ T) →
+                (LinearStudy.schemeModuleHomModuleSheaf (C.X r) N ⟶ T) → Prop :=
+fun {X : AlgebraicGeometry.Scheme} (C : ChainComplex X.Modules ℕ) {E N : X.Modules} (r : ℕ)
+    (alpha : C ⟶ (ChainComplex.single₀ X.Modules).obj E) (hAlpha : QuasiIso alpha) {T : X.Modules}
+    (chi : LinearStudy.schemeModuleInternalExt E N r ≅ T) (g : LinearStudy.schemeModuleHomModuleSheaf (C.X r) N ⟶ T) =>
+  ∀ (a : C.X r ⟶ N) (ha : CategoryTheory.CategoryStruct.comp (C.d (r + 1) r) a = 0),
+    CategoryTheory.CategoryStruct.comp
+        ((LinearStudy.schemeModuleGlobalToInternalExtAll E N r)
+          (LinearStudy.schemeModuleOriginalChainTopExtClassSmall C r alpha hAlpha a ha))
+        chi.hom =
+      CategoryTheory.CategoryStruct.comp ((LinearStudy.schemeModuleHomUnitAddEquiv (C.X r) N).symm a) g
+'LinearStudy.schemeModuleOriginalTopExtClassIsoLaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+ROLECHECK:LinearStudy.affineKoszulActualSheafExtNativeDirectValuesStatement:false
+KINDCHECK:LinearStudy.affineKoszulActualSheafExtNativeDirectValuesStatement:definition
+ROLECHECK:LinearStudy.affineKoszulActualSheafExtNativeDirectValuesStatement_of_coefficient:true
+KINDCHECK:LinearStudy.affineKoszulActualSheafExtNativeDirectValuesStatement_of_coefficient:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquationActualSheafExtNativeStatement:false
+KINDCHECK:LinearStudy.projectivePulledCutEquationActualSheafExtNativeStatement:definition
+ROLECHECK:LinearStudy.projectivePulledCutEquation_actualSheafExt_native_of_duality:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_actualSheafExt_native_of_duality:theorem
+ROLECHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_actualSheafExt_native_values_open:true
+KINDCHECK:LinearStudy.projectivePulledCutEquation_originalSetup_exists_actualSheafExt_native_values_open:theorem

@@ -1,0 +1,180 @@
+Linear.AffineKoszulActualSheafExtNativeDirectValues
+module
+public import Linear.AffineKoszulActualSheafExtNativeValues
+public import Linear.TildePushforwardMappedUnitValues
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+universe u
+/-- Direct target-carrier interface for the SAME generic native class and
+value statement. The scalar-restriction carrier is literally M;hide the
+restriction functor from concrete predicate elaboration. Statement only. -/
+def affineKoszulActualSheafExtNativeDirectValuesStatement {R S : CommRingCat.{u}}
+    (phi : R ⟶ S) (p : ℕ) (H : Fin (p+1) → R)
+    (N : ModuleCat.{u} R) (M : ModuleCat.{u} S) (U : Type u)
+    (P : N → U → M → Prop) (P0 : N → M → Prop) : Prop :=
+  affineKoszulActualSheafExtNativeTwoValuesStatement phi p H N M U P P0
+/-- Derive the actual SHEAF Ext/native-target original-class diagram and
+original global coefficient values from ACTUAL original coefficient
+module duality. No SHEAF Ext iso or desired class square is assumed. -/
+theorem affineKoszulActualSheafExtNativeDirectValuesStatement_of_coefficient
+    {R S : CommRingCat.{u}} (phi : R ⟶ S) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j)
+    (N : ModuleCat.{u} R) (M : ModuleCat.{u} S) (U : Type u)
+    (P : N → U → M → Prop)
+    (P0 : N → M → Prop)
+    (h : ∃ F : (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N))) ≃ₗ[R]
+        (ModuleCat.restrictScalars phi.hom).obj M,
+      (∀ x v,P x v (F (Submodule.Quotient.mk x))) ∧
+        ∀ x,P0 x (F (Submodule.Quotient.mk x))) :
+    affineKoszulActualSheafExtNativeDirectValuesStatement phi p H N M U P P0 := by
+  exact affineKoszulActualSheafExtNativeTwoValuesStatement_of_coefficient phi p H he N M U P P0 h
+end LinearStudy
+
+Linear.OriginalCutEquationActualSheafExtNativeStatement
+module
+public import Linear.OriginalCutEquationCoefficientNativeDual
+public import Linear.AffineKoszulActualSheafExtNativeDirectValues
+public import Linear.ProjectiveCutAffineKoszul
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.defeqAttrib.useBackward true
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian
+attribute [local instance] MvPolynomial.gradedAlgebra
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+attribute [local irreducible] affineKoszulActualSheafExtNativeDirectValuesStatement
+  coextensionOriginalDualEquiv projectivePulledCutEquationMap projectivePulledCutOriginalRingMap
+/-- ACTUAL derived SHEAF Ext for SAME original ordered quotient-cut and
+actual cut-dependent native coextension C_H. One actual coefficient-sheaf
+iso preserves every original polynomial value and literal eval1;the SAME
+original roof class/canonical lambda law lands in that SAME native target.
+Statement only;fixed original C_L,global twists and SAME top-H are open. -/
+def projectivePulledCutEquationActualSheafExtNativeStatement {n p : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (w : Fin ((p+1)+1) → ℂ) : Prop :=
+    let R := MvPolynomial (Fin (p+1)) ℂ
+    let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+    let J := (projectivePulledLinearSectionIdeal f V L w).map
+      (affineChartPolynomialMap (K:=ℂ)).toRingHom
+    let Q := MvPolynomial (Fin n) ℂ ⧸ J
+    let phi := projectivePulledCutEquationMap f V L w
+    let : Algebra R B := phi.toRingHom.toAlgebra
+    let : SMul R B := phi.toRingHom.toAlgebra.toSMul
+    let : Module R B := @Algebra.toModule R B _ _ phi.toRingHom.toAlgebra
+    let : Algebra R ℂ := (MvPolynomial.aeval (R:=ℂ) (0 : Fin (p+1) → ℂ)).toRingHom.toAlgebra
+    let D : ModuleCat B := (ModuleCat.coextendScalars (algebraMap R B)).obj (ModuleCat.of R R)
+    let Dq : ModuleCat Q := (ModuleCat.coextendScalars (algebraMap ℂ Q)).obj (ModuleCat.of ℂ ℂ)
+    let H : Fin (p+1) → B := fun i => Ideal.Quotient.mk V.affineIdeal
+      (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))
+    let beta : CommRingCat.of B ⟶ CommRingCat.of Q :=
+      CommRingCat.ofHom (projectivePulledCutOriginalRingMap f V L w).toRingHom
+    affineKoszulActualSheafExtNativeDirectValuesStatement (R:=CommRingCat.of B) (S:=CommRingCat.of Q) beta p H D Dq (MvPolynomial (Fin n) ℂ)
+      (fun ell P z => (ModuleCat.CoextendScalars.equiv (algebraMap ℂ Q) (ModuleCat.of ℂ ℂ) (show Dq from z)) (Ideal.Quotient.mk J P)=
+        algebraMap R ℂ ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+          (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell))
+            (Ideal.Quotient.mk V.affineIdeal P)))
+      (fun ell z => (ModuleCat.CoextendScalars.equiv (algebraMap ℂ Q) (ModuleCat.of ℂ ℂ) (show Dq from z)) (1:Q)=algebraMap R ℂ
+        ((coextensionOriginalDualEquiv (R:=R) (S:=B)
+          (show (ModuleCat.restrictScalars (algebraMap R B)).obj D from ell)) 1))
+end LinearStudy
+
+Linear.OriginalCutEquationActualSheafExtNativeDuality
+module
+public import Linear.OriginalCutEquationCoefficientNativeDual
+public import Linear.OriginalCutEquationActualSheafExtNativeStatement
+public import Linear.ProjectiveCutAffineKoszul
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.defeqAttrib.useBackward true
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian
+attribute [local instance] MvPolynomial.gradedAlgebra
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+attribute [local irreducible] affineKoszulActualSheafExtNativeDirectValuesStatement
+  coextensionOriginalDualEquiv projectivePulledCutEquationMap projectivePulledCutOriginalRingMap
+/-- Actual original native B-linear coefficient duality and SAME source
+Koszul exactness DERIVE actual derived SHEAF Ext/native-target class law
+and coefficient values.No SHEAF Ext iso or desired class square is input. -/
+theorem projectivePulledCutEquation_actualSheafExt_native_of_duality {n p : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (w : Fin ((p+1)+1) → ℂ)
+    (he : let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+      let H : Fin (p+1) → B := fun i => Ideal.Quotient.mk V.affineIdeal
+        (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))
+      ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination B H)).ExactAt j)
+    (hdual : projectivePulledCutEquationCoefficientNativeDualStatement f V L w) :
+    projectivePulledCutEquationActualSheafExtNativeStatement f V L w := by
+  unfold projectivePulledCutEquationActualSheafExtNativeStatement
+  dsimp only
+  apply affineKoszulActualSheafExtNativeDirectValuesStatement_of_coefficient
+  · exact he
+  · exact hdual
+end LinearStudy
+
+Linear.OriginalCutEquationActualSheafExtNativeSetup
+module
+public import Linear.OriginalCutEquationCoefficientNativeDual
+public import Linear.OriginalCutEquationActualSheafExtNativeDuality
+public import Linear.ProjectiveCutAffineKoszul
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.defeqAttrib.useBackward true
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian
+attribute [local instance] MvPolynomial.gradedAlgebra
+attribute [local instance] coextensionGradedBaseModule nativeCoextensionNormalizationBaseModule
+attribute [local irreducible] affineKoszulActualSheafExtNativeDirectValuesStatement
+  coextensionOriginalDualEquiv projectivePulledCutEquationMap projectivePulledCutOriginalRingMap
+/-- FULL ORIGINAL Setup DERIVES one nonempty SAME open with actual source
+exactness,actual native C_H coefficient values and actual derived SHEAF
+Ext/original-class law. No extra comparison or coefficient condition is
+added to Setup. Fixed original C_L and SAME geometric top-H remain OPEN. -/
+theorem projectivePulledCutEquation_originalSetup_exists_actualSheafExt_native_values_open {n p : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n) (hrn : p+1 < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+    (hV : f.onPoints ⁻¹' V.zeroSet=V.zeroSet)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+    (hfinite : (projectiveLinearNormalizationMap V L).Finite)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet) :
+    ∃ c : MvPolynomial (Fin ((p+1)+1)) ℂ,c ≠ 0 ∧
+      (∃ w : Fin ((p+1)+1) → ℂ,MvPolynomial.eval w c ≠ 0) ∧
+      ∀ w : Fin ((p+1)+1) → ℂ,MvPolynomial.eval w c ≠ 0 →
+        (projectivePulledCutEquationMap f V L w).toRingHom.Finite ∧
+        projectivePulledCutEquationActualSheafExtNativeStatement f V L w := by
+  obtain ⟨a,ha,_,hdual⟩ := projectivePulledCutEquation_originalSetup_exists_native_coefficient_dual_open
+    f V hrn hq hf hV L hL hinj hfinite x0 hx0
+  obtain ⟨b,hb,_,hexact⟩ := projectivePulledLinearSection_exists_affineKoszul_exactAt f V
+    (chosenProjectiveNormalization_definingIdeal_ne_bot V L hinj hfinite hrn)
+    hq hf hV L hL hinj hfinite
+    (chosenProjectiveNormalization_chart_dimension V L hinj hfinite x0 hx0) x0 hx0
+  have hc : a*b ≠ 0 := mul_ne_zero ha hb
+  have hnonempty : ∃ w : Fin ((p+1)+1) → ℂ,MvPolynomial.eval w (a*b) ≠ 0 := by
+    by_contra h
+    push Not at h
+    exact hc (MvPolynomial.funext (fun w => by simpa using h w))
+  refine ⟨a*b,hc,hnonempty,?_⟩
+  intro w hw
+  obtain ⟨hwa,hwb⟩ := mul_ne_zero_iff.mp (by simpa only [MvPolynomial.eval_mul] using hw)
+  obtain ⟨_,_,_,_,_,he⟩ := hexact w hwb
+  exact ⟨(hdual w hwa).1,projectivePulledCutEquation_actualSheafExt_native_of_duality
+    f V L w he (hdual w hwa).2⟩
+end LinearStudy

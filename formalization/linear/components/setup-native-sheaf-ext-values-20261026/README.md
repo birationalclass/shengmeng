@@ -1,0 +1,5 @@
+# Actual affine Koszul SHEAF Ext and original class law
+
+Full ORIGINAL Setup derives one nonempty SAME original parameter open,actual ordered-cut Koszul source exactness and actual cut-dependent native C_H SHEAF Ext/original roof/canonical lambda class diagram. ONE actual coefficient-sheaf iso retains EVERY original polynomial-functional value and literal eval1; no coefficient-duality or desired class-square premise is added to full Setup. Fixed original normalization C_L/global twists/SAME geometric top-H trace,local E perfectness and original4.1/4.2/main remain OPEN.
+
+4 actual compiled roots;3 ordinary theorem proofs;0 object and2 statement definition (not a proof). Codex read all173 root lines and all181 exact-type/axiom/body/kernel-role lines;no human review claimed. 691 closed source modules;687 parents rechecked against actual public archives. Source metadata reuses ONLY exact unchanged accepted sources and freshly exports the rest in sequential bounded partitions. Resources:103holds,8GiB,2threads,CPU<=25%,20minutes via lean_runner.run_file;whole-local180. Original4.1/4.2/main OPEN.
