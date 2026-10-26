@@ -1,4 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import vm from 'node:vm';import {readFileSync} from 'node:fs';
+test('standalone build loads the shared current catalog instead of freezing its data in the bundle',()=>{const data=JSON.parse(readFileSync(new URL('./blackboard-bundles.json',import.meta.url),'utf8'));assert(data.outputs.some(o=>o.imports.some(i=>i.external&&i.path.includes('classroom-catalog.js'))));assert(!data.outputs.some(o=>o.inputs.some(i=>i.endsWith('classroom-catalog.js'))));});
 const source=readFileSync(new URL('./blackboard-app.js',import.meta.url),'utf8'),method=source.slice(source.indexOf('async function selectReport('),source.indexOf('\nfunction openLibrary()'));
 for(const autoplay of [true,false])test('selection delegates autoplay='+autoplay+' through the whole-course gate and releases its busy state',async()=>{
  const calls=[],lecture={autoCamera:true,report:{kind:'classroom'},courseLoadState:{phase:'ready'},toggleVoice(){assert.fail('startup must have one owner');}};

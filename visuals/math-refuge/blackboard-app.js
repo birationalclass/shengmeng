@@ -13,7 +13,8 @@ import {BoardFollow} from './board-follow.js';
 import {BoardCameraMotion} from './board-camera-motion.js';
 import {bindPhysicalButtons,physicalHitAction} from './physical-buttons.js';
 import {createCourseLibrary} from './course-library.js';
-import {CLASSROOM_PROGRAMS} from './classroom-catalog.js';
+import {CLASSROOM_PROGRAMS} from './classroom-catalog.js?v=neutral-de-20261026';
+import {loadErasingSpeed,saveErasingSpeed} from './board-erasing-speed.js';
 import {BlackboardFrameBudget,blackboardPixelRatio} from './blackboard-performance.js';
 import {startDeferredTextures} from './deferred-textures.js';
 
@@ -28,6 +29,9 @@ const lectureRoot=new T.Group();configureLectureRoot(lectureRoot);scene.add(lect
 const frames=new BlackboardFrameBudget(),diagnosticStart=performance.now();let cpuMs=0,raf=0,timer=0,inputUntil=0,lastUIKey='',overviewUntil=0,quality='auto',targetFPS=60,breakView=null,breakControlsEnabled=true,resizePending=true,lectureBatching=null;
 let lecture=null,view='overview',library=null,selecting=false,last=performance.now(),lastUI=0,lastPageKey='',lastDiagnostic=0;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('erasingSpeed').value=String(loadErasingSpeed());
+function applyErasingSpeed(){const value=Number($('erasingSpeed').value);lecture?.setErasingSpeed(value);saveErasingSpeed(value);$('erasingSpeedValue').textContent=value+'×';wake();}
+$('erasingSpeedValue').textContent=$('erasingSpeed').value+'×';$('erasingSpeed').addEventListener('input',applyErasingSpeed);
 function apply(pose){camera.position.fromArray(pose.position);controls.target.fromArray(pose.target);camera.fov=pose.fov;camera.updateProjectionMatrix();camera.lookAt(controls.target);}
 function pose(){return{position:camera.position.toArray(),target:controls.target.toArray(),fov:camera.fov};}
 function focus(){overviewUntil=0;view='board';if(lecture)lecture.autoCamera=true;follow.reset();setResolution();wake();}
@@ -35,14 +39,14 @@ function overview(){view='overview';overviewUntil=lecture?.hasSelection&&lecture
 apply(hallOverview(camera.aspect));constrainHallCamera(camera,controls.target);
 controls.addEventListener('start',()=>{follow.begin();if(lecture&&!lecture.autoCamera){view='manual';overviewUntil=0;}motion.reset();inputUntil=performance.now()+750;wake();});controls.addEventListener('end',()=>{follow.end();inputUntil=performance.now()+750;wake();});controls.addEventListener('change',()=>frames.invalidate());
 const editable=target=>Boolean(target.closest?.('input,select,textarea,button,dialog'));
-addEventListener('keydown',e=>{if(editable(e.target))return;const key=e.key.toLowerCase();if(breakView)return;if(['w','a','s','d','q','e',' ','x','arrowup','arrowdown','arrowleft','arrowright'].includes(key)){keys.add(key);follow.begin();if(lecture&&!lecture.autoCamera){view='manual';overviewUntil=0;}wake();e.preventDefault();}});
+addEventListener('keydown',e=>{if(editable(e.target))return;const key=e.key.toLowerCase();if(breakView)return;if(key===' '){if(!e.repeat&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&lecture?.hasSelection&&!selecting&&lecture.courseLoadState.phase==='ready'){e.preventDefault();void action('voice:toggle');}return;}if(['w','a','s','d','q','e','z','x','arrowup','arrowdown','arrowleft','arrowright'].includes(key)){keys.add(key);follow.begin();if(lecture&&!lecture.autoCamera){view='manual';overviewUntil=0;}wake();e.preventDefault();}});
 addEventListener('keyup',e=>{keys.delete(e.key.toLowerCase());if(!keys.size)follow.end();wake();});
 addEventListener('blur',()=>{keys.clear();follow.end();});
 document.addEventListener('visibilitychange',()=>{keys.clear();follow.end();lecture?.setPresence(!document.hidden);last=performance.now();if(document.hidden){cancelAnimationFrame(raf);clearTimeout(timer);raf=timer=0;}else wake();});
 function keyboard(dt){
  if(!keys.size)return;
  const forward=controls.target.clone().sub(camera.position);forward.y=0;forward.normalize();const right=new T.Vector3().crossVectors(forward,new T.Vector3(0,1,0));
- const has=(...v)=>v.some(k=>keys.has(k))?1:0,delta=forward.multiplyScalar(has('w','arrowup')-has('s','arrowdown')).addScaledVector(right,has('e','arrowright')-has('q','arrowleft'));delta.y=has(' ')-has('x');if(delta.lengthSq())delta.normalize().multiplyScalar(dt*2.5);camera.position.add(delta);controls.target.add(delta);
+ const has=(...v)=>v.some(k=>keys.has(k))?1:0,delta=forward.multiplyScalar(has('w','arrowup')-has('s','arrowdown')).addScaledVector(right,has('e','arrowright')-has('q','arrowleft'));delta.y=has('z')-has('x');if(delta.lengthSq())delta.normalize().multiplyScalar(dt*2.5);camera.position.add(delta);controls.target.add(delta);
  const yaw=(has('a')-has('d'))*dt*.8;if(yaw){const direction=controls.target.clone().sub(camera.position).applyAxisAngle(new T.Vector3(0,1,0),yaw);controls.target.copy(camera.position).add(direction);}
 }
 function setResolution(){const ratio=quality==='saver'?1:quality==='clear'?Math.max(1,Math.min(devicePixelRatio||1,2,Math.sqrt(4000000/(innerWidth*innerHeight)))):blackboardPixelRatio(devicePixelRatio,innerWidth,innerHeight,view==='board');if(renderer.getPixelRatio()!==ratio)renderer.setPixelRatio(ratio);}
@@ -124,6 +128,7 @@ scene.matrixAutoUpdate=false;scene.matrixWorldAutoUpdate=false;wake();
 async function boot(){try{
  await Promise.all([loadMathRuntime(),loadBoardFonts()]);
  lecture=await createLecture(lectureRoot,renderer,{camera,retractable:false,startStored:false,requireSelection:true,fixedBoards:true,classroomOnly:true,reports:CLASSROOM_PROGRAMS,preloadMode:'complete',defaultReport:'sylow-theorems',initialLanguage:'zh',floorMaterial:hall.carpetMaterial,isActive:()=>!document.hidden,onProgress:p=>{$('loadingText').textContent='准备报告厅 · '+Math.round(p*100)+'%';}});
+ applyErasingSpeed();
  const moving=[];lectureRoot.traverse(o=>{if(/^(Writing chalk|Moving blackboard eraser|Temporary spoken laser reference)$/.test(o.name))moving.push(o);});lectureBatching=batchStaticHall(T,lectureRoot,{exclude:moving,freeze:false,opaqueOnly:true,bucket:(_mesh,matrix)=>Math.max(0,Math.min(2,Math.round((matrix.elements[12]-22.4)/5.6)))});lectureRoot.updateMatrix();lectureRoot.matrixAutoUpdate=false;
  library=createCourseLibrary({getLecture:()=>lecture,onSelect:selectReport,classroomOnly:true});
  const ray=new T.Raycaster(),pointer=new T.Vector2();
