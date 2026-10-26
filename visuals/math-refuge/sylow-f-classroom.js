@@ -1,7 +1,7 @@
 import {HandoffGate} from './handoff-gate.js?v=handoff-20261025';
 import {renderClassroomManuscript} from './classroom-manuscript.js?v=handoff-pronunciation-20261026';
 
-import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=definitions-scripts-v5-20261026';
+import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=neutral-de-20261026';
 
 import {createCoursePreload} from './course-preload.js?v=rings-20261022';
 
