@@ -26,8 +26,8 @@ let lecture=null,view='overview',library=null,selecting=false,last=performance.n
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function apply(pose){camera.position.fromArray(pose.position);controls.target.fromArray(pose.target);camera.fov=pose.fov;camera.updateProjectionMatrix();camera.lookAt(controls.target);}
 function pose(){return{position:camera.position.toArray(),target:controls.target.toArray(),fov:camera.fov};}
-function focus(){view='board';if(lecture)lecture.autoCamera=true;follow.reset();motion.reset();}
-function overview(){view='overview';follow.reset();motion.reset();}
+function focus(){view='board';if(lecture)lecture.autoCamera=true;follow.reset();}
+function overview(){view='overview';follow.reset();}
 apply(hallOverview(camera.aspect));constrainHallCamera(camera,controls.target);
 controls.addEventListener('start',()=>{follow.begin();motion.reset();});controls.addEventListener('end',()=>follow.end());
 const editable=target=>Boolean(target.closest?.('input,select,textarea,button,dialog'));
