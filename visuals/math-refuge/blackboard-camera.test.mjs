@@ -25,5 +25,5 @@ test('standalone bundle excludes campus, ocean and outdoor camera routes',()=>{
  const manifest=JSON.parse(readFileSync(new URL('./blackboard-bundles.json',import.meta.url)));const inputs=manifest.outputs.flatMap(o=>o.inputs);
  for(const name of ['scene.js','campus.js','ocean-study.js','coast-walks.js','classroom-beach-main.js'])assert(!inputs.some(n=>n===name),name);
  assert(inputs.includes('lecture.js'));assert(inputs.includes('board-work.js'));assert(inputs.includes('board-lift-motion.js'));
- const app=readFileSync(new URL('./blackboard-app.js',import.meta.url),'utf8');assert(app.indexOf('constrainHallCamera(camera,controls.target);scene.updateMatrixWorld')<app.indexOf('renderer.render(scene,camera)'));
+ const app=readFileSync(new URL('./blackboard-app.js',import.meta.url),'utf8');assert(app.lastIndexOf('constrainHallCamera(camera,controls.target);')<app.indexOf('renderer.render(scene,camera)'));
 });

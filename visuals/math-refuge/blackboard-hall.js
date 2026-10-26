@@ -3,6 +3,7 @@ import {HALL,BUILDING_SCALE as S,DECK_Y,SEAT_ROWS,SEAT_COLUMNS} from './site-lay
 import {createSwivelChairs} from './swivel-chairs.js';
 import {curvedSeatBack} from './auditorium-furniture.js';
 import {createLectern} from './lectern.js';
+import {batchStaticHall} from './blackboard-static.js';
 
 export const SMART_SCREEN_BACKGROUND='#777b7e';
 // This factory constructs only the ground-floor auditorium: no campus or exterior.
@@ -37,5 +38,6 @@ export function createBlackboardHall(scene){
  scene.add(new T.HemisphereLight('#fff3df','#66635e',2.1));
  const key=new T.DirectionalLight('#fff0dc',2.5);key.position.set(cx*S,(y+h)*S,0);key.target.position.set(HALL.boardX*S,2.2,0);scene.add(key,key.target);
  const fill=new T.DirectionalLight('#e8eef1',1.1);fill.position.set(HALL.east*S,3,5);fill.target.position.set(HALL.west*S,2,0);scene.add(fill,fill.target);
- return{root,screen,carpetMaterial:carpet,chairs,lectern};
+ const batching=batchStaticHall(T,root,{exclude:[screen]});lectern.targets.length=0;root.traverse(o=>{if(o.isMesh&&(o.userData.action?.startsWith('lectern:')||o.userData.progress))lectern.targets.push(o);});
+ return{root,screen,carpetMaterial:carpet,lectern,batching};
 }

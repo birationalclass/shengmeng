@@ -1,9 +1,10 @@
 import {CourseDirectory} from './course-directory.js';
 const icons={classroom:'<rect x="3" y="3" width="18" height="13" rx="1"/><path d="M8 21h8m-4-5v5M7 7h10M7 11h6"/>',reports:'<path d="M12 5C8 2 4 3 2 4v15c3-1 7-1 10 2 3-3 7-3 10-2V4c-3-1-7-2-10 1Zm0 0v16"/>'};
 const icon=name=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]}</svg>`;
-export function createCourseLibrary({getLecture,onSelect}){
+export function createCourseLibrary({getLecture,onSelect,classroomOnly=false}){
  const dialog=document.createElement('dialog');dialog.className='course-library';dialog.setAttribute('aria-labelledby','courseLibraryHeading');
- dialog.innerHTML=`<header><div><small>庇护所 · 智慧屏</small><h2 id="courseLibraryHeading">课堂与报告</h2></div><button type="button" data-close aria-label="关闭课堂与报告">×</button></header><nav aria-label="智慧屏模块"><button type="button" data-tab="classroom">${icon('classroom')}课堂</button><button type="button" data-tab="reports">${icon('reports')}报告</button></nav><div class="course-library-body"></div><p class="course-library-status" role="status"></p>`;document.body.append(dialog);
+ const title=classroomOnly?'课堂':'课堂与报告';
+ dialog.innerHTML=`<header><div><small>庇护所 · 智慧屏</small><h2 id="courseLibraryHeading">${title}</h2></div><button type="button" data-close aria-label="关闭${title}">×</button></header><nav aria-label="智慧屏模块"><button type="button" data-tab="classroom">${icon('classroom')}课堂</button>${classroomOnly?'':'<button type="button" data-tab="reports">'+icon('reports')+'报告</button>'}</nav><div class="course-library-body"></div><p class="course-library-status" role="status"></p>`;document.body.append(dialog);
  const body=dialog.querySelector('.course-library-body'),status=dialog.querySelector('[role=status]'),directory=new CourseDirectory();let tab='classroom',job=null,epoch=0,selecting=false;
  const button=(text,run,description)=>{const b=document.createElement('button');b.type='button';const title=document.createElement('strong');title.textContent=text;b.append(title);if(description){const p=document.createElement('span');p.textContent=description;b.append(p);}b.onclick=run;return b;};
  async function select(id){if(selecting)return;selecting=true;status.textContent='正在加载课程…';body.querySelectorAll('button').forEach(b=>b.disabled=true);try{if(await onSelect(id,{period:1,autoplay:true})){dialog.close();status.textContent='';}else status.textContent='未能加载，请重试。';}catch(e){status.textContent=e.message;}finally{selecting=false;body.querySelectorAll('button').forEach(b=>b.disabled=false);}}
@@ -15,5 +16,5 @@ export function createCourseLibrary({getLecture,onSelect}){
   for(const e of directory.entries()){const b=button(e.title,()=>{if(e.branch){directory.enter(e.key);getLecture()?.screenAction('course:navigate:'+e.key);void paint();}else if(e.program)void select(e.program);else window.open(e.url,'_blank','noopener');},e.description);b.dataset.directoryKey=e.key;if(e.program)b.dataset.program=e.program;body.append(b);}
  }
  dialog.querySelector('[data-close]').onclick=()=>dialog.close();dialog.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;void paint();});dialog.addEventListener('close',()=>{epoch++;});
- return{open(value='classroom'){tab=value==='reports'?'reports':'classroom';dialog.showModal();void paint();},dispose(){dialog.remove();}};
+ return{open(value='classroom'){tab=!classroomOnly&&value==='reports'?'reports':'classroom';dialog.showModal();void paint();},dispose(){dialog.remove();}};
 }

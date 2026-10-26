@@ -236,7 +236,7 @@ export async function createLecture(scene,renderer,options={}){
   const reportHeader=glassLabel(4.6,.34,reportX,3.93,'Smart glass report heading');
   reportHeader.canvas.height=76;
   addTextSheen(THREE,reportHeader.mesh,reportHeader.texture,4.6,.34);
-  const programScreen=!disabled&&!navigation?.sections?createHallProgramScreen(THREE,scene,{reports,x:reportX}):null;
+  const programScreen=!disabled&&!navigation?.sections?createHallProgramScreen(THREE,scene,{reports,x:reportX,classroomOnly:options.classroomOnly===true}):null;
   if(programScreen)reportButtons.push(...programScreen.targets);
   function setReportState(){
     dateLabel=seminarDate();
@@ -529,7 +529,7 @@ export async function createLecture(scene,renderer,options={}){
     }else if(oldPhase==='erase'&&boards[oldActive].wet)boards[oldActive].wet.progress=1;
     if(reduced)for(const board of boards)board.wet=null;
     for(let pair=0;pair<3;pair++){
-      mix[pair]=liftMotions[pair].step(mix[pair],targets[pair],dt,{immediate:reduced,paused:narrated&&!voice.transportPlaying&&!seeking});
+      mix[pair]=options.fixedBoards?0:liftMotions[pair].step(mix[pair],targets[pair],dt,{immediate:reduced,paused:narrated&&!voice.transportPlaying&&!seeking});
       boardHeights(mix[pair]).forEach((height,side)=>boards[pair*2+side].group.position.y=height);
     }
     chalk.visible=present&&playing&&!reduced&&ready&&clock.phase==='write'&&!eraserReturn&&(!narrated||narrationWriting);
@@ -625,7 +625,7 @@ export async function createLecture(scene,renderer,options={}){
     storageLabel.canvas.width=storageLabel.canvas.height=256;storageLabel.mesh.userData.action='lectern:stow';storageLabel.mesh.userData.smartGlass=true;touchButtons.push(storageLabel.mesh);updateStorageLabel();
   }
   if(storageRig&&stored){storageRig.position.y=-7.2;storageRig.visible=false;consoleButtons.forEach(b=>b.visible=false);chalk.visible=false;eraser.visible=false;fallingDust.visible=false;}
-  if(options.retractable)screenHub=createSmartGlassHub(THREE,scene,{reports:[reportHeader.mesh,...(programScreen?[programScreen.group]:reportButtons)],storage:storageLabel?.mesh,onStore:()=>{
+  if(options.retractable)screenHub=createSmartGlassHub(THREE,scene,{classroomOnly:options.classroomOnly===true,reports:[reportHeader.mesh,...(programScreen?[programScreen.group]:reportButtons)],storage:storageLabel?.mesh,onStore:()=>{
     voice.pause();stored=true;playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;consoleButtons.forEach(b=>b.visible=false);updateStorageLabel();setReportState();
   }});
   if(options.startStored&&screenHub?.state.power)screenHub.action('screen:power');
@@ -633,7 +633,7 @@ export async function createLecture(scene,renderer,options={}){
   scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {
     get cameraZoom(){return cameraZoom;},adjustCameraZoom(direction){cameraZoom=stepBoardCameraZoom(cameraZoom,direction);return cameraZoom;},
-    cameraView(aspect,fov=57){const frame=boardCameraFrame(aspect,fov,cameraZoom,{column:Math.floor(clock.active/2),boardY:BOARD_LAYOUT.low,boardZ:-10.29+BOARD_MOUNT_OFFSET,frameMargin:isCrystalScheme(trayHardware.tone)?.028+.003*Math.SQRT2:.04+.0025*Math.SQRT2});return{...frame,target:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z)),position:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z+frame.distance))};},
+    cameraView(aspect,fov=57){const frame=boardCameraFrame(aspect,fov,cameraZoom,{column:Math.floor(clock.active/2),boardY:options.fixedBoards?boards[clock.active].group.position.y:BOARD_LAYOUT.low,fitTray:!options.fixedBoards,boardZ:-10.29+BOARD_MOUNT_OFFSET,frameMargin:isCrystalScheme(trayHardware.tone)?.028+.003*Math.SQRT2:.04+.0025*Math.SQRT2});return{...frame,target:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z)),position:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z+frame.distance))};},
     get autoCamera(){return autoCamera;},set autoCamera(value){autoCamera=Boolean(value);},
     get followEnabled(){return autoCamera&&!disabled&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');},
     get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},
@@ -769,7 +769,7 @@ export async function createLecture(scene,renderer,options={}){
         // Commit the prepared content independently of audio transfer readiness.
         if(request!==reportRequest)return false;
         // A new report starts on a clean board; there is no previous page to lift or erase.
-        clock.startWrite();boards.forEach((_,i)=>draw(i));if(next.kind==='classroom'){void assetPreload.start(pages,{courseText:pages.map(p=>chalkPageText(p,'zh')+'\n'+chalkPageText(p,'en')).join('\n')});if(pages.length>1)void load(1,undefined,{background:true}).catch(()=>{});if(loadVoice&&voiceEnabled)void voicePreparation.then(()=>{if(request===reportRequest)return voice.prefetchAll();});}return true;
+        clock.startWrite();boards.forEach((_,i)=>draw(i));if(next.kind==='classroom'){if(options.preloadMode!=='lookahead')void assetPreload.start(pages,{courseText:pages.map(p=>chalkPageText(p,'zh')+'\n'+chalkPageText(p,'en')).join('\n')});if(pages.length>1)void load(1,undefined,{background:true}).catch(()=>{});if(loadVoice&&voiceEnabled&&options.preloadMode!=='lookahead')void voicePreparation.then(()=>{if(request===reportRequest)return voice.prefetchAll();});}return true;
       }catch(error){if(request!==reportRequest)return false;void voice.select(null);throw error;}
       finally{if(request===reportRequest){pendingReport=null;setReportState();}}
     },
