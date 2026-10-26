@@ -1,23 +1,25 @@
-import {HandoffGate} from './handoff-gate.js?v=handoff-20261025';
-import {renderClassroomManuscript} from './classroom-manuscript.js?v=handoff-pronunciation-20261026';
+import {resourceFetch} from './resource-fetch.js?v=course-packs-20261026';
+import {configureCoursePacks,downloadCoursePacks,coursePackState} from './course-pack-cache.js?v=course-packs-20261026';
+import {HandoffGate} from './handoff-gate.js?v=course-packs-20261026';
+import {renderClassroomManuscript} from './classroom-manuscript.js?v=course-packs-20261026';
 
-import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=neutral-de-20261026';
+import {CLASSROOM_PROGRAMS,classroomProgram} from './classroom-catalog.js?v=course-packs-20261026';
 
-import {createCoursePreload} from './course-preload.js?v=rings-20261022';
+import {createCoursePreload} from './course-preload.js?v=course-packs-20261026';
 
-import {boardWaitAt,countdownTextRect,containsCountdown} from './board-countdown.js';
+import {boardWaitAt,countdownTextRect,containsCountdown} from './board-countdown.js?v=course-packs-20261026';
 
-import {MIN_BOARD_REVIEW_SECONDS,boardReviewStart} from './board-review.js?v=uniform-review-20261019';
+import {MIN_BOARD_REVIEW_SECONDS,boardReviewStart} from './board-review.js?v=course-packs-20261026';
 
-import {prepareClassroomAudioBlob,classroomAudioDecodeState} from './classroom-audio-decode.js?v=mp3-predecode-1';
+import {prepareClassroomAudioBlob,classroomAudioDecodeState} from './classroom-audio-decode.js?v=course-packs-20261026';
 
-import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=semantic-lines-v5-20261026';
+import {prepareBoard,paintPrepared} from './sylow-f-renderer.js?v=course-packs-20261026';
 
-import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=uniform-review-20261019';
+import {selectClassroomOpening,openingPeriod,classroomAudioRate,classroomDuration} from './classroom-opening.js?v=course-packs-20261026';
 
-import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=native-pcm-20261017-1';
+import {primeClassroomAudio,disconnectClassroomAudio,classroomAudioOutputState} from './classroom-audio-output.js?v=course-packs-20261026';
 
-import {createClassroomBeachBreak} from './classroom-beach-break.js?v=raised-walks-20261026';
+import {createClassroomBeachBreak} from './classroom-beach-break.js?v=course-packs-20261026';
 
 const $=id=>document.getElementById(id),query=new URLSearchParams(location.search);window.fRendererReady=true;
 
@@ -42,13 +44,14 @@ const beachBreak=createClassroomBeachBreak({
 
 async function playPrepared(target=audio,mine=generation){await primeClassroomAudio(target);if(target!==audio||mine!==generation||!playIntent){if(target!==audio)disconnectClassroomAudio(target);return false;}target.playbackRate=classroomAudioRate(manifest?.boards[board],target.currentTime,lessonRate());await target.play();return true;}
 
+let courseController=new AbortController();
 const audioJobs=new Map(),audioURLs=new Set(),compressedJobs=new Map(),audioFiles=new Map();
 
 const assetPreload=createCoursePreload({concurrency:2});
 
 function trimAudioURLs(){const keep=new Set([manifest?.boards[board]?.file,manifest?.boards[board+1]?.file]);for(const [file,url] of audioFiles)if(!keep.has(file)){URL.revokeObjectURL(url);audioURLs.delete(url);audioFiles.delete(file);audioJobs.delete(file);}}
 
-async function compressedAudio(file){if(!compressedJobs.has(file)){const job=(async()=>{const r=await fetch(file);if(!r.ok)throw Error('本板语音下载失败');return r.blob();})().catch(e=>{if(compressedJobs.get(file)===job)compressedJobs.delete(file);throw e;});compressedJobs.set(file,job);}return compressedJobs.get(file);}
+async function compressedAudio(file,{background=false}={}){if(!background)resourceFetch.promote(file);if(!compressedJobs.has(file)){const job=(async()=>{const r=await resourceFetch(file,{signal:courseController.signal,priority:background?'low':'high'});if(!r.ok)throw Error('本板语音下载失败');return r.blob();})().catch(e=>{if(compressedJobs.get(file)===job)compressedJobs.delete(file);throw e;});compressedJobs.set(file,job);}return compressedJobs.get(file);}
 
 async function audioURL(file){if(!audioJobs.has(file)){const mine=courseEpoch,job=(async()=>{const blob=await compressedAudio(file),item=manifest?.boards.find(b=>b.file===file),pcm=await prepareClassroomAudioBlob(blob,{expectedSeconds:item?.seconds});if(mine!==courseEpoch)return null;const url=URL.createObjectURL(pcm);audioURLs.add(url);audioFiles.set(file,url);trimAudioURLs();return url;})().catch(e=>{if(audioJobs.get(file)===job)audioJobs.delete(file);throw e;});audioJobs.set(file,job);}return audioJobs.get(file);}
 
@@ -76,11 +79,12 @@ function assistantPlanText(plan){
 
 }
 
-async function loadCourse(){beachBreak.cancel();const n=++courseEpoch;++generation;audio.pause();assetPreload.cancel();playing=false;playIntent=false;course=null;manifest=null;prepared=null;board=0;openingLocked=false;for(const url of audioURLs)URL.revokeObjectURL(url);audioURLs.clear();audioJobs.clear();compressedJobs.clear();audioFiles.clear();const id=$('course').value;
+async function loadCourse(){courseController.abort();courseController=new AbortController();$('download-course').textContent='保存整课';beachBreak.cancel();const n=++courseEpoch;++generation;audio.pause();assetPreload.cancel();playing=false;playIntent=false;course=null;manifest=null;prepared=null;board=0;openingLocked=false;for(const url of audioURLs)URL.revokeObjectURL(url);audioURLs.clear();audioJobs.clear();compressedJobs.clear();audioFiles.clear();const id=$('course').value;
 
  const program=classroomProgram(id);if(!program)throw Error('未找到这门板书课堂');
 
- const nextCourse=await fetch(program.courseManifest,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('本课板书下载失败');return r.json();});if(n!==courseEpoch)return;course=nextCourse;
+ await configureCoursePacks(program,{fetcher:resourceFetch});if(n!==courseEpoch)return;
+ const nextCourse=await resourceFetch(program.courseManifest,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('本课板书下载失败');return r.json();});if(n!==courseEpoch)return;course=nextCourse;
 
  for(const b of course.boards)b.sectionLabel ||= b.section?'§'+String(b.section).replace(/^§/,''):'§'+program.section;
 
@@ -88,7 +92,7 @@ async function loadCourse(){beachBreak.cancel();const n=++courseEpoch;++generati
 
  const audioRoot=program.audioRoot;
 
- const nextManifest=await fetch(program.narration.manifest,{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);if(n!==courseEpoch)return;manifest=nextManifest?selectClassroomOpening(nextManifest):null;
+ const nextManifest=await resourceFetch(program.narration.manifest,{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);if(n!==courseEpoch)return;manifest=nextManifest?selectClassroomOpening(nextManifest):null;
 
  if(manifest)for(const b of manifest.boards)b.file=audioRoot+b.file.split('/').pop();
 
@@ -108,7 +112,7 @@ async function loadCourse(){beachBreak.cancel();const n=++courseEpoch;++generati
 
  // First board ready: preload all later board MP3s in a bounded queue.
 
- if(manifest){const queue=manifest.boards.slice(board+1).filter(b=>b.file&&!b.id.endsWith('-break'));let cursor=0;void Promise.all(Array.from({length:3},async()=>{while(cursor<queue.length&&n===courseEpoch){const b=queue[cursor++];try{await compressedAudio(b.file);}catch{}}}));}
+ if(manifest){const queue=manifest.boards.slice(board+1).filter(b=>b.file&&!b.id.endsWith('-break'));let cursor=0;void Promise.all(Array.from({length:3},async()=>{while(cursor<queue.length&&n===courseEpoch){const b=queue[cursor++];try{await compressedAudio(b.file,{background:true});}catch{}}}));}
 
 }
 
@@ -178,3 +182,8 @@ window.fClassroom={selectBoard,loadCourse,skipCountdown,getState:()=>({countdown
 
 const focusPause=()=>{if(beachBreak.state)return;playIntent=false;audio.pause();};addEventListener('blur',focusPause);document.addEventListener('visibilitychange',()=>{if(document.hidden)focusPause();});
 
+
+$('download-course').addEventListener('click',async()=>{const button=$('download-course'),program=classroomProgram($('course').value);button.disabled=true;try{await downloadCoursePacks(program,{fetcher:resourceFetch,onProgress:s=>{button.textContent='保存中 '+s.completed+' / '+s.total;}});button.textContent='本课已保存';button.title='课程资源已保存在此浏览器，下次打开自动复用';}catch{button.textContent='保存失败，点击重试';}finally{button.disabled=false;}});
+window.courseDeliveryState=coursePackState;
+
+if(globalThis.REFUGE_LOCAL)$('download-course').hidden=true;

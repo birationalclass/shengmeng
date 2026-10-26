@@ -1,9 +1,9 @@
-import {resourceFetch} from './resource-fetch.js';
-import {decodeImage} from './mobile-runtime.js';
-import {preparationTurn} from './preparation-turn.js';
-import {glyphs,advance} from './refined-handwriting.js?v1';
-import {maliGlyph,maliMetrics,maliOperations,paintMali,prepareMaliChalk,fitMaliGlyph,maliInkURL} from './mali-chalk.js?v=safari-glyph-20261019-1';
-import {createChineseChalk,CHINESE_STROKE_SECONDS} from './chinese-chalk.js?v=rings-20261022';
+import {resourceFetch} from './resource-fetch.js?v=course-packs-20261026';
+import {decodeImage} from './mobile-runtime.js?v=course-packs-20261026';
+import {preparationTurn} from './preparation-turn.js?v=course-packs-20261026';
+import {glyphs,advance} from './refined-handwriting.js?v=course-packs-20261026';
+import {maliGlyph,maliMetrics,maliOperations,paintMali,prepareMaliChalk,fitMaliGlyph,maliInkURL} from './mali-chalk.js?v=course-packs-20261026';
+import {createChineseChalk,CHINESE_STROKE_SECONDS} from './chinese-chalk.js?v=course-packs-20261026';
 const NS='http://www.w3.org/2000/svg',samples=new Map();let formulaChinesePromise;
 export function authoredGlyph(char){
  if(samples.has(char))return samples.get(char);if(!glyphs[char]||typeof document.createElementNS!=='function')return null;

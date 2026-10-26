@@ -1,5 +1,5 @@
-import {resourceFetch} from './resource-fetch.js';
-import {storeBoardAssets,hasPackedAsset} from './board-asset-store.js';
+import {resourceFetch} from './resource-fetch.js?v=course-packs-20261026';
+import {storeBoardAssets,hasPackedAsset} from './board-asset-store.js?v=course-packs-20261026';
 const pending=new Map(),ready=new Map();
 export async function prepareBoardAssets(page,{baseURL=new URL('.',import.meta.url).href,background=false,signal,fetcher=resourceFetch}={}){
  if(!page?.resourcePack&&!page?.resourcePacks?.length)return false;

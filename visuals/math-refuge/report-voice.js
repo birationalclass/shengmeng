@@ -1,15 +1,16 @@
+import {configureCoursePacks} from './course-pack-cache.js';
 import {HandoffGate} from './handoff-gate.js?v=handoff-20261025';
 import {BoardReview,boardReviewStart} from './board-review.js?v=uniform-review-20261019';
 import {prepareClassroomAudioBlob} from './classroom-audio-decode.js?v=mp3-predecode-1';
 import {primeClassroomAudio,disconnectClassroomAudio} from './classroom-audio-output.js?v=native-pcm-20261017-1';
 import {selectClassroomOpening,classroomAudioRate} from './classroom-opening.js?v=uniform-review-20261019';
-import {createResourceFetch} from './resource-fetch.js';
+import {resourceFetch,createResourceFetch} from './resource-fetch.js';
 import {createBackgroundAssets} from './background-assets.js';
 import {trayControlLayout,placeTrayControl} from './board-tray-layout.js';
 import {writingSchedule,scheduledWriting} from './board-work.js?v=uniform-review-20261019';
 import {SCREEN_COLORS,CONTROL_VISUAL_SCALE} from './smart-screen-style.js?v=unframed-controls-1';
 // On-demand narration: no network or audio allocation until a report is selected.
-export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),prepareBoard=async()=>true,finishBoard=async()=>false,minimumBoardReview=true,onChange=()=>{},baseURL=new URL('.',import.meta.url).href,now=()=>performance.now()/1000,requestTimeout=15000,retryDelay=2000}={}){
+export function createReportVoice({fetcher=resourceFetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),prepareBoard=async()=>true,finishBoard=async()=>false,minimumBoardReview=true,onChange=()=>{},baseURL=new URL('.',import.meta.url).href,now=()=>performance.now()/1000,requestTimeout=15000,retryDelay=2000}={}){
  fetcher=createResourceFetch(fetcher,{idleTimeout:requestTimeout});
  let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,contextActive=true,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0,playbackRate=1,boardHold=null;
  let manifestReady=Promise.resolve(null),resolveManifest=()=>{};
@@ -113,6 +114,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   desired=Boolean(autoplay&&next?.narration);Object.assign(state,{report:next?.id,contentKind:next?.kind==='classroom'?'classroom':'report',phase:next?.narration?'loading':'idle',progress:null,time:0,duration:0,error:'',errorKind:'',started:false,chapter:0,temporaryPause:false});emit();
   if(!next?.narration){resolveManifest(null);return false;}
   try{
+   if(next.resourceIndex){await configureCoursePacks(next,{fetcher,base:baseURL});if(mine!==epoch)return false;}
    const src=new URL(next.narration.manifest,baseURL).href,controller=new AbortController();controllers.add(controller);
    let response;try{response=await fetcher(src,{signal:controller.signal,cache:"no-cache"});}finally{controllers.delete(controller);}
    if(!response.ok)throw Error('语音目录下载失败');const data=selectClassroomOpening(await response.json());if(mine!==epoch)return false;

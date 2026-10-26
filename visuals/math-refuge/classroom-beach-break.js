@@ -1,4 +1,4 @@
-import {classroomBreakHour,classroomBreakTime} from './classroom-beach-time.js?v=break-cloud20-20261024';
+import {classroomBreakHour,classroomBreakTime} from './classroom-beach-time.js?v=course-packs-20261026';
 
 export const CLASSROOM_BEACH_ROUTES=Object.freeze([
 

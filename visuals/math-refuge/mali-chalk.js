@@ -1,7 +1,7 @@
-import {resourceFetch} from './resource-fetch.js';
-import {decodeImage} from './mobile-runtime.js';
-import {preparationTurn} from './preparation-turn.js';
-import {chineseMetrics,paintGlyph} from './chinese-chalk.js?v=safari-glyph-20261019-1';
+import {resourceFetch} from './resource-fetch.js?v=course-packs-20261026';
+import {decodeImage} from './mobile-runtime.js?v=course-packs-20261026';
+import {preparationTurn} from './preparation-turn.js?v=course-packs-20261026';
+import {chineseMetrics,paintGlyph} from './chinese-chalk.js?v=course-packs-20261026';
 
 // Independent typography defaults. Math layout and structural symbols still
 // belong to the formula layer; neither choice changes Chinese or screen UI.

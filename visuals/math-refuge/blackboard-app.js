@@ -1,3 +1,5 @@
+import {downloadCoursePacks} from './course-pack-cache.js';
+import {resourceFetch} from './resource-fetch.js';
 import {startReadyCourse} from './course-ready.js';
 import * as T from 'three';
 import {OrbitControls} from '../3d/vendor/OrbitControls.js';
@@ -13,7 +15,7 @@ import {BoardFollow} from './board-follow.js';
 import {BoardCameraMotion} from './board-camera-motion.js';
 import {bindPhysicalButtons,physicalHitAction} from './physical-buttons.js';
 import {createCourseLibrary} from './course-library.js';
-import {CLASSROOM_PROGRAMS} from './classroom-catalog.js?v=neutral-de-20261026';
+import {CLASSROOM_PROGRAMS} from './classroom-catalog.js?v=course-packs-20261026';
 import {loadErasingSpeed,saveErasingSpeed} from './board-erasing-speed.js';
 import {BlackboardFrameBudget,blackboardPixelRatio} from './blackboard-performance.js';
 import {startDeferredTextures} from './deferred-textures.js';
@@ -139,3 +141,7 @@ async function boot(){try{
  }catch(error){$('loadingText').textContent='报告厅准备失败：'+error.message;$('retry').hidden=false;console.error(error);}}
 canvas.addEventListener('click',()=>{if(!selecting&&lecture?.courseLoadState.phase==='error')void selectReport(lecture.report.id);});
 $('retry').onclick=()=>location.reload();void boot();
+
+$('cacheCourse').addEventListener('click',async()=>{if(!lecture?.report?.resourceIndex)return;const button=$('cacheCourse'),report=lecture.report;button.disabled=true;try{await downloadCoursePacks(report,{fetcher:resourceFetch,onProgress:s=>{button.textContent='保存中 '+s.completed+' / '+s.total;}});button.textContent='本课已保存';}catch{button.textContent='保存失败，点击重试';}finally{button.disabled=false;}});
+
+if(globalThis.REFUGE_LOCAL){$('cacheCourse').hidden=true;$('cacheCourse').nextElementSibling.textContent='离线包已包含全部课程资源。';}

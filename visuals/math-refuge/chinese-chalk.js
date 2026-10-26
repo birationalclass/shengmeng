@@ -1,5 +1,5 @@
-import {resourceFetch} from './resource-fetch.js';
-import {decodeImage} from './mobile-runtime.js';
+import {resourceFetch} from './resource-fetch.js?v=course-packs-20261026';
+import {decodeImage} from './mobile-runtime.js?v=course-packs-20261026';
 // Original Honglei 36 raster ink, with independently owned stroke masks.
 // Load just the current page's glyphs. No font binary or runtime font fallback.
 const BASE=new URL('./assets/chalk/chinese36/',import.meta.url);

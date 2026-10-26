@@ -1,7 +1,8 @@
+const COURSE_PACK_INDEX={"sylow-theorems":"./assets/course-packs/v1/sylow-theorems-f9200f21bceb80f056df.json","algebra-sylow":"./assets/course-packs/v1/algebra-sylow-5db11f9c16b759eb3ac1.json","rings-basics":"./assets/course-packs/v1/rings-basics-908503424dfa20da71ca.json","rings-ideals":"./assets/course-packs/v1/rings-ideals-3856caa6a026f1661bac.json","rings-homomorphisms":"./assets/course-packs/v1/rings-homomorphisms-6fa7bdc2792b28c63cda.json","rings-prime-maximal":"./assets/course-packs/v1/rings-prime-maximal-25caacaeccaad417779d.json","rings-characteristic":"./assets/course-packs/v1/rings-characteristic-a386163dcf086e5f14b0.json"};
 const COURSE_URL='https://birationalclass.github.io/shengmeng/courses/abstract-algebra/2026-fall/';
 const VOICE_LABEL='ZL · C明亮开课';
 function program({id,label,labelEn,chapter,section,sections=[section],sectionPart='',topic,topicEn,courseManifest,pagesManifest,narrationManifest,audioRoot,rosterLocalOnly=false}){
- return {id,kind:'classroom',speaker:'子皿曰成',speakerEn:'Zimin Yuecheng',assistant:'孟晟',assistantEn:'Sheng Meng',label,labelEn,courseId:'algebra-i',chapter,section,sections,sectionPart,topic,topicEn,
+ return {id,resourceIndex:globalThis.REFUGE_LOCAL?undefined:COURSE_PACK_INDEX[id],kind:'classroom',speaker:'子皿曰成',speakerEn:'Zimin Yuecheng',assistant:'孟晟',assistantEn:'Sheng Meng',label,labelEn,courseId:'algebra-i',chapter,section,sections,sectionPart,topic,topicEn,
   courseManifest,audioRoot,rosterLocalOnly,manifest:pagesManifest,
   narration:{manifest:narrationManifest,language:'zh',synthetic:true,defaultPlaybackRate:1,label:VOICE_LABEL,voices:[{id:'zl',label:VOICE_LABEL,manifest:narrationManifest}]},
   url:'./sylow-f-classroom.html?course='+id,sourceLabel:'课件、逐行讲稿与课堂任务',courseURL:COURSE_URL+'?view=lesson&section='+sections[0]};

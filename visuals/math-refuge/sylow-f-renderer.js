@@ -1,10 +1,10 @@
-import {resourceFetch} from './resource-fetch.js';
-import {prepareMaliChalk} from './mali-chalk.js?v=safari-glyph-20261019-1';
-import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=stabilizer-glyphs-20261025';
-import {authoredContext,authoredFormula} from './authored-chalk.js?v=semantic-lines-20261026';
-import {writingPlan,inkGuides,strokeReveal,rasterStrokeReveal,inkReveal,erasingPlan} from './chalk-motion.js';
-import {paintChalkStroke} from './chalk-annotations.js';
-import {drawReferenceIcon} from './classroom-metadata.js';
+import {resourceFetch} from './resource-fetch.js?v=course-packs-20261026';
+import {prepareMaliChalk} from './mali-chalk.js?v=course-packs-20261026';
+import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=course-packs-20261026';
+import {authoredContext,authoredFormula} from './authored-chalk.js?v=course-packs-20261026';
+import {writingPlan,inkGuides,strokeReveal,rasterStrokeReveal,inkReveal,erasingPlan} from './chalk-motion.js?v=course-packs-20261026';
+import {paintChalkStroke} from './chalk-annotations.js?v=course-packs-20261026';
+import {drawReferenceIcon} from './classroom-metadata.js?v=course-packs-20261026';
 const COLORS={white:'#eee9d5',gold:'#e4cf9c',blue:'#93c9ff',caution:'#ffada3'};
 let libraryPromise;const formulas=new Map();
 async function formula(token,color='#eee9d5'){const key=token.asset+color;if(!formulas.has(key))formulas.set(key,authoredFormula(token.asset,{color}));return formulas.get(key);}

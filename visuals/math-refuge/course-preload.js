@@ -1,9 +1,9 @@
-import {createResourceFetch} from './resource-fetch.js';
-import {createBackgroundAssets} from './background-assets.js';
-import {chalkInlineRuns} from './chalk-typography.js';
-import {prepareBoardAssets} from './board-assets.js';
+import {resourceFetch,createResourceFetch} from './resource-fetch.js?v=course-packs-20261026';
+import {createBackgroundAssets} from './background-assets.js?v=course-packs-20261026';
+import {chalkInlineRuns} from './chalk-typography.js?v=course-packs-20261026';
+import {prepareBoardAssets} from './board-assets.js?v=course-packs-20261026';
 // Keep downloading the selected course while paused; decode only a small window.
-export function createCoursePreload({fetcher=globalThis.fetch,baseURL=new URL('.',import.meta.url).href,concurrency=2,requestTimeout=15000,retryDelay=2000,maxDelay=30000,api=globalThis}={}){
+export function createCoursePreload({fetcher=resourceFetch,baseURL=new URL('.',import.meta.url).href,concurrency=2,requestTimeout=15000,retryDelay=2000,maxDelay=30000,api=globalThis}={}){
  fetcher=createResourceFetch(fetcher,{idleTimeout:requestTimeout});let wanted=new Set(),runs=new Set(),packed=false,glyphIndex=null,glyphBase=null;
  function needGlyphs(text,add){for(const char of String(text)){wanted.add(char);const glyph=glyphIndex?.get(char);if(glyph)add(new URL(glyph.data,glyphBase).href,'glyph');}}
  const queue=createBackgroundAssets({concurrency,retryDelay,maxDelay,api,load:async(job,signal,add)=>{

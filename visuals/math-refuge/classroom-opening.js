@@ -1,4 +1,4 @@
-import {MIN_BOARD_REVIEW_SECONDS,boardReviewStart} from './board-review.js?v=uniform-review-20261019';
+import {MIN_BOARD_REVIEW_SECONDS,boardReviewStart} from './board-review.js?v=course-packs-20261026';
 // Choose a real recorded greeting using the playback device's local clock.
 export function openingPeriod(date=new Date()){
  const hour=date.getHours();return hour<12?'morning':hour<18?'afternoon':'evening';

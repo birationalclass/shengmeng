@@ -1,4 +1,4 @@
-import {glyphs as original,advance as originalAdvance} from './handwriting-glyphs.js?v66-galaxy';
+import {glyphs as original,advance as originalAdvance} from './handwriting-glyphs.js?v=course-packs-20261026';
 // Authored centre-lines, in drawing order. Every curve belongs to one pen contact.
 // Open counters and restrained entry/exit flourishes; no outline skeleton inference.
 export const glyphs={...original,

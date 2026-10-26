@@ -1,5 +1,6 @@
-import {courseResourceFetch} from './course-resource-cache.js';
-import {packedAssetResponse} from './board-asset-store.js';
+import {coursePackResponse,promoteCoursePack} from './course-pack-cache.js?v=course-packs-20261026';
+import {courseResourceFetch} from './course-resource-cache.js?v=course-packs-20261026';
+import {packedAssetResponse} from './board-asset-store.js?v=course-packs-20261026';
 // A stalled header or body must release its request slot. No response cloning.
 export function createResourceFetch(fetcher,{idleTimeout=15000,totalTimeout=0,api=globalThis,concurrency=6,backgroundLimit=2}={}){
  if(fetcher.resourceBounded)return fetcher;
@@ -36,9 +37,9 @@ export function createResourceFetch(fetcher,{idleTimeout=15000,totalTimeout=0,ap
   const job={input,options,resolve,reject,parent,low:options.priority==='low'};job.cancel=()=>{const i=queue.indexOf(job);if(i>=0){queue.splice(i,1);parent?.removeEventListener('abort',job.cancel);reject(parent.reason||new DOMException('请求已取消','AbortError'));}};
   parent?.addEventListener('abort',job.cancel,{once:true});queue.push(job);queue.sort((a,b)=>Number(a.low)-Number(b.low));pump();
  });
- bounded.promote=input=>{const target=String(input);let changed=false;for(const job of queue)if(String(job.input)===target){job.low=false;job.options={...job.options,priority:'high'};changed=true;}if(changed){queue.sort((a,b)=>Number(a.low)-Number(b.low));pump();}return changed;};
+ bounded.promote=input=>{const target=String(input);let changed=false;for(const job of queue)if(String(job.input)===target){job.low=false;job.options={...job.options,priority:'high'};changed=true;}if(changed){queue.sort((a,b)=>Number(a.low)-Number(b.low));pump();}return fetcher.promote?.(input)||changed;};
  bounded.resourceBounded=true;return bounded;
 }
 const wrappers=new WeakMap();
-export function resourceFetch(input,options){if(options?.signal?.aborted)return Promise.reject(options.signal.reason||new DOMException('请求已取消','AbortError'));const packed=packedAssetResponse(input?.url||input);if(packed)return Promise.resolve(packed);const fetcher=globalThis.fetch;let bounded=wrappers.get(fetcher);if(!bounded){bounded=createResourceFetch(fetcher);wrappers.set(fetcher,bounded);}return courseResourceFetch(input,options,bounded);}
-resourceFetch.promote=input=>{const fetcher=globalThis.fetch;const outer=wrappers.get(fetcher)?.promote?.(input)||false,inner=fetcher.promote?.(input)||false;return outer||inner;};
+export function resourceFetch(input,options){if(options?.signal?.aborted)return Promise.reject(options.signal.reason||new DOMException('请求已取消','AbortError'));const packed=packedAssetResponse(input?.url||input);if(packed)return Promise.resolve(packed);const fetcher=globalThis.fetch;let bounded=wrappers.get(fetcher);if(!bounded){bounded=createResourceFetch(fetcher);wrappers.set(fetcher,bounded);}const fromPack=coursePackResponse(input,options,bounded);return fromPack||courseResourceFetch(input,options,bounded);}
+resourceFetch.promote=input=>{const fetcher=globalThis.fetch;const outer=wrappers.get(fetcher)?.promote?.(input)||false,inner=fetcher.promote?.(input)||false;return promoteCoursePack(input,wrappers.get(fetcher)||fetcher)||outer||inner;};

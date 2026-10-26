@@ -1,4 +1,4 @@
-import {ERASER_ANGLE,FELT_HALF_WIDTH,FELT_HALF_HEIGHT,feltCoreBounds} from './eraser-contact.js';
+import {ERASER_ANGLE,FELT_HALF_WIDTH,FELT_HALF_HEIGHT,feltCoreBounds} from './eraser-contact.js?v=course-packs-20261026';
 export const ERASE_PASSES=14,DRY_SECONDS=12,ERASER_HALF_WIDTH=FELT_HALF_WIDTH,ERASER_HALF_HEIGHT=FELT_HALF_HEIGHT;
 const clamp=x=>Math.max(0,Math.min(1,x));
 const cache=new WeakMap();

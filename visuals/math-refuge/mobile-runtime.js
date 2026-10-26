@@ -1,4 +1,4 @@
-import {resourceFetch} from './resource-fetch.js';
+import {resourceFetch} from './resource-fetch.js?v=course-packs-20261026';
 // Device limits are fixed for the visit, including landscape/iPad orientations.
 export function mobilePolicy({width=1280,height=800,userAgent='',maxTouchPoints=0,coarsePointer=false,safe=false}={}){
  const ios=/iPad|iPhone|iPod/.test(userAgent)||(/Macintosh/.test(userAgent)&&maxTouchPoints>1);
