@@ -1,3 +1,4 @@
+import {loadErasingSpeed,saveErasingSpeed} from './board-erasing-speed.js?v=eraser-2x-20261026';
 import {createClassroomBeachFlight} from './classroom-beach-camera.js';
 import {bindVisitMenu} from './visit-menu.js';
 import {createMainClassroomBeachBreak} from './classroom-beach-main.js';
@@ -610,11 +611,11 @@ function prepareMainRoom(){
   $('world').dataset.hallPreparation='loading';$('world').dataset.startupPhase='hall';$('mode').textContent='正在准备报告厅';
   const hallTextures=measureCritical('P0 一楼六张材质贴图',()=>startDeferredTextures(()=>{},{phase:'hall',concurrency:2}));
   const boardFonts=measureCritical('P1 板书字体并行下载',()=>withDeadline(loadBoardFonts(),15000,'板书字体加载'));boardFonts.catch(()=>{});
-  const [lectureModule,readerModule,voiceModule,settingsModule]=await measureCritical('P1 功能模块与数学排版',()=>Promise.all([import('./lecture.js?v=uniform-review-20261019'),import('./chalk-reader.js?v=mali-20261017'),import('./report-voice.js?v=handoff-pronunciation-20261026'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]));
+  const [lectureModule,readerModule,voiceModule,settingsModule]=await measureCritical('P1 功能模块与数学排版',()=>Promise.all([import('./lecture.js?v=eraser-2x-20261026'),import('./chalk-reader.js?v=mali-20261017'),import('./report-voice.js?v=handoff-pronunciation-20261026'),import('./report-settings.js?v=ye2-report-14'),loadMathRuntime()]));
   createLecture=lectureModule.createLecture;createChalkReader=readerModule.createChalkReader;reportVoicePresentation=voiceModule.reportVoicePresentation;narrationResourceBytes=voiceModule.narrationResourceBytes;
   const root=new THREE.Group();root.name='East-facing compact auditorium blackboards';configureLectureRoot(root);root.position.add(buildingOffset('01B'));scene.add(root);
   lecture=await measureCritical('P1 板书组件与报告内容',()=>withDeadline(createLecture(root,renderer,{camera,floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,startStored:true,requireSelection:true,defaultReport:'sylow-theorems',initialLanguage:'zh',onOpening:state=>{$('world').dataset.openingClassroom=JSON.stringify(state);},boardScale:device.boardScale,writingStyle:boardWritingStyle,mathStyle:boardMathStyle,onPreparation:value=>{$('world').dataset.boardPreparation=JSON.stringify(value);}}),30000,'报告板书加载'));await boardFonts;retreat.roomFill.apply(root);
-  lecture.setWoodTone($('boardWoodTone').value);rooms.push(lecture);roomLecterns[0]=retreat.campus.lectern;registerRoomView(lecture,0);
+  lecture.setWoodTone($('boardWoodTone').value);lecture.setErasingSpeed($('erasingSpeed').value);rooms.push(lecture);roomLecterns[0]=retreat.campus.lectern;registerRoomView(lecture,0);
   reader=createChalkReader(new Proxy({}, {get:(_,key)=>lecture[key]}));buildSeminarNavigation();installPhysicalControls();populateReport();
   reportSettings=settingsModule.mountReportSettings(document,{getLecture:()=>lecture,onRate:rate=>rooms.forEach(room=>room.setVoiceRate(rate))});
   await measureCritical('P1 首屏字形与黑板纹理上传',()=>withDeadline(lecture.prepareOpening(),30000,'开场板书加载'));openingPrepared=true;
@@ -789,6 +790,8 @@ $('adaptiveQuality').addEventListener('change',()=>{if(retreat){markManualGraphi
 $('boardFollowDelay').addEventListener('input',event=>{boardFollow.setDelay(event.target.value);$('boardFollowDelayValue').textContent=boardFollow.delay+' 秒';});
 $('boardMathStyle').addEventListener('change',async event=>{const select=event.target,prior=boardMathStyle;boardMathStyle=select.value;select.disabled=true;try{await Promise.all(rooms.map(room=>room.setMathStyle(boardMathStyle)));try{localStorage.setItem('refuge-board-math-font-v2',boardMathStyle);}catch{}$('boardWritingStyleStatus').textContent='公式样式已更新，英文字体单独设置。';}catch(error){boardMathStyle=prior;select.value=prior;await Promise.allSettled(rooms.map(room=>room.setMathStyle(prior)));$('boardWritingStyleStatus').textContent='切换未完成，已恢复原样式。';console.error(error);}finally{select.disabled=false;}});
 $('boardWritingStyle').addEventListener('change',async event=>{const select=event.target,prior=boardWritingStyle;boardWritingStyle=select.value;select.disabled=true;$('boardWritingStyleStatus').textContent='正在切换书写样式…';try{await Promise.all(rooms.map(room=>room.setWritingStyle(boardWritingStyle)));try{localStorage.setItem('refuge-board-english-font-v2',boardWritingStyle);}catch{}$('boardWritingStyleStatus').textContent='英文样式已更新，公式字体单独设置。';}catch(error){boardWritingStyle=prior;select.value=prior;await Promise.allSettled(rooms.map(room=>room.setWritingStyle(prior)));$('boardWritingStyleStatus').textContent='切换未完成，已恢复原样式。';console.error(error);}finally{select.disabled=false;}});
+const savedErasingSpeed=loadErasingSpeed();$('erasingSpeed').value=String(savedErasingSpeed);$('erasingSpeedValue').textContent=savedErasingSpeed+' ×';
+$('erasingSpeed').addEventListener('input',event=>{const rate=saveErasingSpeed(event.target.value);event.target.value=String(rate);$('erasingSpeedValue').textContent=rate+' ×';rooms.forEach(room=>room.setErasingSpeed(rate));});
 $('writingSpeed').addEventListener('input',event=>{const value=Number(event.target.value);lecture?.setWritingSpeed(value);$('writingSpeedValue').textContent=value+' ×';});
 $('rotationSensitivity').addEventListener('input',event=>cameraInput?.set(event.target.value));
 $('light').addEventListener('input',()=>{if(retreat){hallSunRamp=null;sunriseIntro.cancel();timePresentation.seek();sceneTime.previewAt(Number($('light').value));}});
@@ -1059,7 +1062,7 @@ async function loadTeachingRoom(index){
  const job=(async()=>{
   try{
    const room=await createLecture(root,renderer,level===0?{camera,isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,mathStyle:boardMathStyle,highlight:$('boardHighlight').value!=='off',reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
-   room.playing=false;room.setWoodTone($('boardWoodTone').value);room.setWritingSpeed($('writingSpeed').value);room.setClarity($('boardClarity').value);retreat.roomFill.apply(root);rooms[index]=room;registerRoomView(room,index);
+   room.playing=false;room.setWoodTone($('boardWoodTone').value);room.setWritingSpeed($('writingSpeed').value);room.setErasingSpeed($('erasingSpeed').value);room.setClarity($('boardClarity').value);retreat.roomFill.apply(root);rooms[index]=room;registerRoomView(room,index);
    if(index===1)buildSeminarNavigation();visibilityAt=-Infinity;return room;
   }catch(error){scene.remove(root);roomJobs.delete(index);throw error;}
  })();roomJobs.set(index,job);return job;
@@ -1076,7 +1079,7 @@ function activateRoom(index,moveCamera=true){
  }
  ++roomActivation;pendingRoom=-1;delete $('world').dataset.pendingRoom;
   reportRequest++;changingReport=false;reportProgress='';reportLoadError='';
-  activeRoom=index;lecture=rooms[index];lecture.setWritingSpeed($('writingSpeed').value);
+  activeRoom=index;lecture=rooms[index];lecture.setWritingSpeed($('writingSpeed').value);lecture.setErasingSpeed($('erasingSpeed').value);
   $('world').dataset.room=String(index);$('reportSelect').setAttribute('aria-busy','false');
   reader?.close();populateReport();if(moveCamera)selectShot(0,!lecture.hasSelection&&!lecture.disabled);updateSeminarNavigation();
   teachingShade=index===0?retreat.campus.blind.visible:retreat.campus.discussion.blinds[index-1].visible;

@@ -25,9 +25,9 @@ export class LectureClock{
   startWrite(){this.phase='write';this.elapsed=0;this.slots[this.active]={page:this.page,progress:0};}
   setDurations(page,durations){this.timings.set(page,{...durations,hold:Math.max(10,durations.hold||0)});}
   get duration(){return this.timings.get(this.phase==='erase'?this.slots[this.active].page:this.page)?.[this.phase]||PHASE_SECONDS[this.phase];}
-  update(dt){
+  update(dt,phaseRate=1){
     if(this.ended)return;
-    this.elapsed+=Math.max(0,Math.min(dt,.1));
+    this.elapsed+=Math.max(0,Math.min(dt,.1))*Math.max(.01,Number(phaseRate)||1);
     if(this.phase==='write')this.slots[this.active].progress=Math.min(1,this.elapsed/this.duration);
     if(this.elapsed<this.duration)return;
     if(this.phase==='lift'){
