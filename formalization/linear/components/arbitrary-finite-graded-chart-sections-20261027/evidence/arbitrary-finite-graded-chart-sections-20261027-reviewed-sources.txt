@@ -1,0 +1,323 @@
+MODULE ActualChartQuotientZero
+module
+public import Mathlib.Logic.Function.Basic
+@[expose] public section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+variable {P K L T Q U : Type*}
+/-- Pure quotient-chart separation with explicit zero values. No module
+structure is transported across a comparison. -/
+theorem actualChartQuotient_zero
+    (q : P → Q) (s : P → T) (v : Q → U) (g : T → U)
+    (i : K → P) (j : L → T) (k : K → L) (qzero : Q) (uzero : U)
+    (hq : Function.Surjective q) (hs : Function.Injective s) (hk : Function.Surjective k)
+    (hex : ∀ y : T,g y = uzero → ∃ z : L,j z = y)
+    (hqs : ∀ x : P,v (q x) = g (s x))
+    (hks : ∀ x : K,s (i x) = j (k x)) (hqi : ∀ x : K,q (i x) = qzero)
+    (x : Q) (hx : v x = uzero) : x = qzero := by
+  obtain ⟨y,hy⟩ := hq x
+  obtain ⟨z,hz⟩ := hex (s y) ((hqs y).symm.trans ((congrArg v hy).trans hx))
+  obtain ⟨w,hw⟩ := hk z
+  have hi : i w = y := hs ((hks w).trans ((congrArg j hw).trans hz))
+  exact hy.symm.trans ((congrArg q hi).symm.trans (hqi w))
+end LinearStudy
+
+
+MODULE LocalizedOriginalKernelCoefficientZero
+module
+public import Mathlib.RingTheory.Localization.Module
+@[expose] public section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+variable {R M N : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+variable [AddCommGroup N] [Module R N]
+/-- The actual localized kernel inclusion is still killed by the actual
+localized original map, without flatness or torsion assumptions. -/
+theorem localizedOriginalKernelCoefficient_comp_zero
+    (f : M →ₗ[R] N) (a : R) (v : LocalizedModule (Submonoid.powers a) f.ker) :
+    LocalizedModule.map (Submonoid.powers a) f
+      (LocalizedModule.map (Submonoid.powers a) f.ker.subtype v) = 0 := by
+  induction v using LocalizedModule.induction_on with
+  | h m b =>
+    rw [LocalizedModule.map_mk,LocalizedModule.map_mk]
+    change LocalizedModule.mk (f (m : M)) b = 0
+    rw [m.property,LocalizedModule.zero_mk]
+end LinearStudy
+
+
+MODULE NativeGradedWeightedSurjection
+module
+public import Linear.NativeGradedWeightedCoefficientMap
+public import Linear.IntegerGradedSurjectionPreimage
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+universe u
+variable {K R M N : Type u} [Field K] [CommRing R] [Algebra K R]
+variable [AddCommGroup M] [Module R M] [Module K M]
+variable [AddCommGroup N] [Module R N] [Module K N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[R] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+include hE
+/-- An actual graded surjection is surjective on every actual weighted
+chart module. No torsion-freeness, flatness or chart isomorphism is assumed. -/
+theorem nativeGradedModuleAwayDegreeZeroCoefficientMap_surjective
+    (he : Function.Surjective f) (d : ℕ) (a : R) (ha : a ∈ A d) :
+    Function.Surjective (nativeGradedModuleAwayDegreeZeroCoefficientMap A D E hD f hf d a ha) := by
+  intro x
+  obtain ⟨n,m,hm,hx⟩ := nativeGradedModuleAwayDegreeZero_exists_fraction A E hE d a ha x.val x.property
+  obtain ⟨y,hy,hey⟩ := integerDegreeZeroSurjection_homogeneous_preimages D E f hf he _ m hm
+  refine ⟨⟨LocalizedModule.mk y (⟨a^n,⟨n,rfl⟩⟩ : Submonoid.powers a),
+    Submodule.subset_span ⟨n,y,hy,rfl⟩⟩,?_⟩
+  apply Subtype.ext
+  change LocalizedModule.map (Submonoid.powers a) f _ = x.val
+  rw [LocalizedModule.map_mk,hey]
+  exact hx.symm
+end LinearStudy
+
+
+MODULE NativeChartKernelQuotientInjective
+module
+public import Linear.LocalizedOriginalKernelCoefficientZero
+public import Linear.ActualChartQuotientZero
+public import Linear.NativeGradedWeightedSurjection
+public import Linear.NativeProjectiveWeightedChartCoefficient
+public import Linear.NativeProjectiveKernelSectionExact
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R M N : Type u} [Field K] [CommRing R] [Algebra K R]
+variable [AddCommGroup M] [Module R M] [Module K M] [IsScalarTower K R M]
+variable [AddCommGroup N] [Module R N] [Module K N]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+variable [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable (hE : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : N,x ∈ E j → z • x ∈ E ((n:ℤ)+j))
+variable (f : M →ₗ[R] N) (hf : ∀ j : ℤ,∀ x : M,x ∈ D j → f x ∈ E j)
+attribute [local instance] LocalizedModule.moduleOfIsLocalization nativeHomogeneousAwayModuleScalar
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+attribute [local irreducible] nativeProjectiveChartDegreeZeroSectionMap nativeProjectiveDegreeZeroSectionMap
+include hf
+/-- Actual localized kernel coefficients compose to zero. -/
+theorem nativeGradedModuleAwayDegreeZeroCoefficientMap_kernel_zero
+    (d : ℕ) (a : R) (ha : a ∈ A d)
+    (w : nativeGradedModuleAwayDegreeZero A (nativeProjectiveKernelPiece D f) d a) :
+    nativeGradedModuleAwayDegreeZeroCoefficientMap A D E hD f hf d a ha
+      (nativeGradedModuleAwayDegreeZeroCoefficientMap A (nativeProjectiveKernelPiece D f) D
+        (nativeProjectiveKernelPiece_graded A D f hD) f.ker.subtype
+          (fun _ _ hx => hx) d a ha w) = 0 := by
+  apply Subtype.ext
+  exact localizedOriginalKernelCoefficient_comp_zero f a w.val
+include hf
+/-- Actual quotient chart zero is detected by its original native section,
+using the actual source and kernel charts. -/
+theorem nativeProjectiveChartDegreeZeroSectionMap_zero_of_kernel
+    (he : Function.Surjective f) (d : ℕ) (a : R) (ha : a ∈ A d)
+    (hsource : Function.Injective (nativeProjectiveChartDegreeZeroSectionMap A D hD d a ha))
+    (hkernel : Function.Surjective (nativeProjectiveChartDegreeZeroSectionMap A
+      (nativeProjectiveKernelPiece D f) (nativeProjectiveKernelPiece_graded A D f hD) d a ha))
+    (x : nativeGradedModuleAwayDegreeZero A E d a)
+    (hx : nativeProjectiveChartDegreeZeroSectionMap A E hE d a ha x = 0) : x = 0 := by
+  let DK := nativeProjectiveKernelPiece D f
+  let hK := nativeProjectiveKernelPiece_graded A D f hD
+  let U := op (Proj.basicOpen A a)
+  exact actualChartQuotient_zero
+    (nativeGradedModuleAwayDegreeZeroCoefficientMap A D E hD f hf d a ha)
+    (nativeProjectiveChartDegreeZeroSectionMap A D hD d a ha)
+    (nativeProjectiveChartDegreeZeroSectionMap A E hE d a ha)
+    (nativeProjectiveDegreeZeroSectionMap A D E hD hE f hf 0 U)
+    (nativeGradedModuleAwayDegreeZeroCoefficientMap A DK D hK f.ker.subtype
+      (fun _ _ hx => hx) d a ha)
+    (nativeProjectiveDegreeZeroSectionMap A DK D hK hD f.ker.subtype (fun _ _ hx => hx) 0 U)
+    (nativeProjectiveChartDegreeZeroSectionMap A DK hK d a ha) 0 0
+    (nativeGradedModuleAwayDegreeZeroCoefficientMap_surjective A D E hD hE f hf he d a ha)
+    hsource hkernel
+    (fun y hy => (nativeProjectiveKernelSectionMap_exact A D E hD hE f hf 0 U y).mp hy)
+    (fun y => (nativeProjectiveChartDegreeZeroSectionMap_coefficient A D E hD hE f hf d a ha y).symm)
+    (fun y => (nativeProjectiveChartDegreeZeroSectionMap_coefficient A DK D hK hD f.ker.subtype
+      (fun _ _ hx => hx) d a ha y).symm)
+    (nativeGradedModuleAwayDegreeZeroCoefficientMap_kernel_zero A D E hD f hf d a ha) x hx
+/-- Descent of actual chart injectivity along an original graded surjection. -/
+theorem nativeProjectiveChartDegreeZeroSectionMap_injective_of_kernel
+    (he : Function.Surjective f) (d : ℕ) (a : R) (ha : a ∈ A d)
+    (hsource : Function.Injective (nativeProjectiveChartDegreeZeroSectionMap A D hD d a ha))
+    (hkernel : Function.Surjective (nativeProjectiveChartDegreeZeroSectionMap A
+      (nativeProjectiveKernelPiece D f) (nativeProjectiveKernelPiece_graded A D f hD) d a ha)) :
+    Function.Injective (nativeProjectiveChartDegreeZeroSectionMap A E hE d a ha) :=
+  (injective_iff_map_eq_zero (nativeProjectiveChartDegreeZeroSectionMap A E hE d a ha)).mpr
+    (nativeProjectiveChartDegreeZeroSectionMap_zero_of_kernel A D E hD hE f hf he d a ha hsource hkernel)
+end LinearStudy
+
+
+MODULE NativeFiniteGradedTorsionChartSections
+module
+public import Linear.NativeChartKernelQuotientInjective
+public import Linear.NativeFiniteGradedIndependentCechSections
+public import Linear.IntegerGradedFiniteFreeSurjection
+public import Linear.NativeProjectiveChartInjectiveAll
+public import Mathlib.Algebra.Module.Torsion.Pi
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+set_option diagnostics true
+set_option diagnostics.threshold 100
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+variable [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable [IsDomain S] [IsNoetherianRing S] [Module.Finite S M]
+variable {κ ι : Type u} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+variable (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+attribute [local irreducible] nativeProjectiveChartDegreeZeroSectionMap nativeProjectiveModuleSheaf
+include c hc hgenC
+/-- Actual native chart injectivity for EVERY finite graded coefficient,
+including torsion coefficients. An actual shifted free surjection and its
+finite graded kernel replace the former torsion-free coefficient assumption.
+The chart family b need not generate S. -/
+theorem nativeFiniteGradedIndependentCechProductSectionMap_injective_general
+    (b : ι → S) (hb : ∀ i,b i ∈ B 1) (p : ℕ) (t : Fin (p+1) → ι) :
+    Function.Injective (nativeProjectiveChartDegreeZeroSectionMap B D hD (p+1)
+      (∏ k : Fin (p+1),b (t k)) (nativeProjective_cechProduct_mem_degree B b hb p t)) := by
+  classical
+  have presentation := integerGradedFinite_exists_shiftedFree_surjection (K:=K) (S:=S) (M:=M) B D hD
+  rcases presentation with ⟨s,w,he,hh⟩
+  let E := integerShiftedFreePiece B w
+  let hE := integerShiftedFreePiece_smul_homogeneous B w
+  letI : DirectSum.Decomposition E := integerShiftedFreeDecomposition B w
+  let f := integerShiftedFreeGeneratorMap (S:=S) (fun i : s => (i : M))
+  let DK := nativeProjectiveKernelPiece E f
+  let hK := nativeProjectiveKernelPiece_graded B E f hE
+  letI : DirectSum.Decomposition DK := nativeProjectiveKernelDecomposition E D f hh
+  letI : IsNoetherian S (s → S) := isNoetherian_of_isNoetherianRing_of_finite S (s → S)
+  letI : IsNoetherian S f.ker := isNoetherian_of_submodule_of_noetherian S (s → S) f.ker inferInstance
+  letI : Module.Finite S f.ker := inferInstance
+  exact nativeProjectiveChartDegreeZeroSectionMap_injective_of_kernel B E D hE hD f hh he
+    (p+1) _ _
+    (nativeProjectiveChartDegreeZeroSectionMap_injective_all B E hE (p+1) (Nat.zero_lt_succ p) _ _)
+    (nativeFiniteGradedIndependentCechProductSectionMap_surjective B DK hK c hc hgenC b hb p t)
+/-- All original coordinate-intersection chart maps are actual bijections
+for arbitrary finite graded coefficients, with no coefficient torsion-free premise. -/
+theorem nativeFiniteGradedIndependentCechProductSectionMap_bijective_general
+    (b : ι → S) (hb : ∀ i,b i ∈ B 1) (p : ℕ) (t : Fin (p+1) → ι) :
+    Function.Bijective (nativeProjectiveChartDegreeZeroSectionMap B D hD (p+1)
+      (∏ k : Fin (p+1),b (t k)) (nativeProjective_cechProduct_mem_degree B b hb p t)) :=
+  ⟨nativeFiniteGradedIndependentCechProductSectionMap_injective_general B D hD c hc hgenC b hb p t,
+    nativeFiniteGradedIndependentCechProductSectionMap_surjective B D hD c hc hgenC b hb p t⟩
+end LinearStudy
+
+
+MODULE NativeFiniteGradedTorsionBaseSourceSections
+module
+public import Linear.NativeFiniteGradedTorsionChartSections
+public import Linear.NativeBaseSourceBaseChartInjective
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M]
+variable [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+variable [IsDomain S] [IsNoetherianRing S] [Module.Finite S M]
+variable {κ ι : Type u} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+variable (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+include c hc hgenC
+/-- The actual source-side image-product charts are bijective for ALL finite
+coefficients, including torsion; independent coordinates c generate the source. -/
+theorem nativeFiniteGradedIndependentSourceCechProductSectionMap_bijective_general
+    (a : ι → R) (ha : ∀ i,a i ∈ A 1) (p : ℕ) (t : Fin (p+1) → ι) :
+    Function.Bijective (nativeProjectiveChartDegreeZeroSectionMap B D hS (p+1)
+      (algebraMap R S (∏ k : Fin (p+1),a (t k)))
+      ((normalizationBaseGradedRingHom A B).map_mem (nativeProjective_cechProduct_mem_degree A a ha p t))) := by
+  let b : ι → S := fun i => algebraMap R S (a i)
+  have hb : ∀ i,b i ∈ B 1 := fun i => (normalizationBaseGradedRingHom A B).map_mem (ha i)
+  have H := nativeFiniteGradedIndependentCechProductSectionMap_bijective_general B D hS c hc hgenC b hb p t
+  have transport : ∀ (z : S) (hz : z ∈ B (p+1)),(∏ k : Fin (p+1),b (t k))=z →
+      Function.Bijective (nativeProjectiveChartDegreeZeroSectionMap B D hS (p+1) z hz) := by
+    intro z hz h
+    subst z
+    exact H
+  exact transport _ _ (map_prod (algebraMap R S) (fun k : Fin (p+1) => a (t k)) Finset.univ).symm
+end LinearStudy
+
+
+MODULE NativeGeneralSourceAmbientCechSections
+module
+public import Linear.NativeFiniteGradedTorsionBaseSourceSections
+public import Linear.NativeFiniteGradedWeightedSectionsFunctionSurjective
+public import Linear.NativeBaseSourceBaseChartInjective
+/- Arbitrary finite coefficients;the original fraction maps,ordered signs and actual-H objects are retained.Normalized dualizing trace remains OPEN. -/
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency true
+set_option backward.isDefEq.respectTransparency.types true
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory Opposite
+universe u
+variable {K R S M : Type u} [Field K] [CommRing R] [CommRing S]
+variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+variable [AddCommGroup M] [Module K M] [Module R M] [Module S M]
+variable [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M]
+variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ c : R,c ∈ A n → ∀ x : M,x ∈ D j → c • x ∈ D ((n : ℤ)+j))
+variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ c : S,c ∈ B n → ∀ x : M,x ∈ D j → c • x ∈ D ((n : ℤ)+j))
+variable [IsDomain R] [IsDomain S]
+variable [IsNoetherianRing R] [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M]
+variable {ι : Type u} (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+variable {κ : Type u} (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+attribute [local irreducible] nativeProjectiveModuleSections nativeProjectiveModuleSheaf nativeProjectiveModulePresheaf
+include c hc
+attribute [local instance] nativeHomogeneousAwayModuleScalar LocalizedModule.moduleOfIsLocalization
+  nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+/-- On EVERY original coordinate intersection,the ACTUAL ambient and source
+section groups of the SAME finite graded module are additively isomorphic.
+The independent source coordinates c generate S;normalization coordinates
+need not generate S.Arbitrary finite coefficients,including torsion,are allowed over the two domain rings.
+All section bijections are derived from the stated original algebraic data. -/
+def nativeIndependentSourceAmbientCechSectionAddEquiv_general
+    (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+    (p : ℕ) (t : Fin (p+1) → ι) :=
+  nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS (p+1)
+    (∏ k : Fin (p+1),a (t k)) (nativeProjective_cechProduct_mem_degree A a ha p t)
+    (nativeFiniteGradedIndependentCechProductSectionMap_bijective_general A D hR a ha hgenR a ha p t)
+    (nativeFiniteGradedIndependentSourceCechProductSectionMap_bijective_general A B D hS c hc hgenC a ha p t)
+end LinearStudy

@@ -1,0 +1,265 @@
+@LinearStudy.actualChartQuotient_zero : ∀ {P : Type u_1} {K : Type u_2} {L : Type u_3} {T : Type u_4} {Q : Type u_5}
+  {U : Type u_6} (q : P → Q) (s : P → T) (v : Q → U) (g : T → U) (i : K → P) (j : L → T) (k : K → L) (qzero : Q)
+  (uzero : U),
+  Function.Surjective q →
+    Function.Injective s →
+      Function.Surjective k →
+        (∀ (y : T), g y = uzero → ∃ (z : L), j z = y) →
+          (∀ (x : P), v (q x) = g (s x)) →
+            (∀ (x : K), s (i x) = j (k x)) → (∀ (x : K), q (i x) = qzero) → ∀ (x : Q), v x = uzero → x = qzero
+'LinearStudy.actualChartQuotient_zero' does not depend on any axioms
+@LinearStudy.localizedOriginalKernelCoefficient_comp_zero : ∀ {R : Type u_1} {M : Type u_2} {N : Type u_3}
+  [inst : CommRing R] [inst_1 : AddCommGroup M] [inst_2 : Module R M] [inst_3 : AddCommGroup N] [inst_4 : Module R N]
+  (f : M →ₗ[R] N) (a : R) (v : LocalizedModule (Submonoid.powers a) ↥f.ker),
+  ((LocalizedModule.map (Submonoid.powers a)) f) (((LocalizedModule.map (Submonoid.powers a)) f.ker.subtype) v) = 0
+'LinearStudy.localizedOriginalKernelCoefficient_comp_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeGradedModuleAwayDegreeZeroCoefficientMap_surjective : ∀ {K R M N : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : Algebra K R] [inst_3 : AddCommGroup M] [inst_4 : Module R M] [inst_5 : Module K M]
+  [inst_6 : AddCommGroup N] [inst_7 : Module R N] [inst_8 : Module K N] (A : ℕ → Submodule K R)
+  [inst_9 : GradedAlgebra A] (D : ℤ → Submodule K M) (E : ℤ → Submodule K N) [DirectSum.Decomposition D]
+  [DirectSum.Decomposition E] (hD : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j)),
+  (∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ E j, z • x ∈ E (↑n + j)) →
+    ∀ (f : M →ₗ[R] N) (hf : ∀ (j : ℤ), ∀ x ∈ D j, f x ∈ E j),
+      Function.Surjective ⇑f →
+        ∀ (d : ℕ) (a : R) (ha : a ∈ A d),
+          Function.Surjective (LinearStudy.nativeGradedModuleAwayDegreeZeroCoefficientMap A D E hD f hf d a ha)
+'LinearStudy.nativeGradedModuleAwayDegreeZeroCoefficientMap_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeGradedModuleAwayDegreeZeroCoefficientMap_kernel_zero : ∀ {K R M N : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : Algebra K R] [inst_3 : AddCommGroup M] [inst_4 : Module R M] [inst_5 : Module K M]
+  [inst_6 : IsScalarTower K R M] [inst_7 : AddCommGroup N] [inst_8 : Module R N] [inst_9 : Module K N]
+  (A : ℕ → Submodule K R) [inst_10 : GradedAlgebra A] (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+  [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+  (hD : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) (f : M →ₗ[R] N)
+  (hf : ∀ (j : ℤ), ∀ x ∈ D j, f x ∈ E j) (d : ℕ) (a : R) (ha : a ∈ A d)
+  (w : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero A (LinearStudy.nativeProjectiveKernelPiece D f) d a)),
+  LinearStudy.nativeGradedModuleAwayDegreeZeroCoefficientMap A D E hD f hf d a ha
+      (LinearStudy.nativeGradedModuleAwayDegreeZeroCoefficientMap A (LinearStudy.nativeProjectiveKernelPiece D f) D ⋯
+        f.ker.subtype ⋯ d a ha w) =
+    0
+'LinearStudy.nativeGradedModuleAwayDegreeZeroCoefficientMap_kernel_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveChartDegreeZeroSectionMap_zero_of_kernel : ∀ {K R M N : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : Algebra K R] [inst_3 : AddCommGroup M] [inst_4 : Module R M] [inst_5 : Module K M]
+  [inst_6 : IsScalarTower K R M] [inst_7 : AddCommGroup N] [inst_8 : Module R N] [inst_9 : Module K N]
+  (A : ℕ → Submodule K R) [inst_10 : GradedAlgebra A] (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+  [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+  (hD : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+  (hE : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ E j, z • x ∈ E (↑n + j)) (f : M →ₗ[R] N),
+  (∀ (j : ℤ), ∀ x ∈ D j, f x ∈ E j) →
+    Function.Surjective ⇑f →
+      ∀ (d : ℕ) (a : R) (ha : a ∈ A d),
+        Function.Injective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap A D hD d a ha) →
+          Function.Surjective
+              ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap A (LinearStudy.nativeProjectiveKernelPiece D f) ⋯
+                  d a ha) →
+            ∀ (x : ↥(LinearStudy.nativeGradedModuleAwayDegreeZero A E d a)),
+              (LinearStudy.nativeProjectiveChartDegreeZeroSectionMap A E hE d a ha) x = 0 → x = 0
+'LinearStudy.nativeProjectiveChartDegreeZeroSectionMap_zero_of_kernel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveChartDegreeZeroSectionMap_injective_of_kernel : ∀ {K R M N : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : Algebra K R] [inst_3 : AddCommGroup M] [inst_4 : Module R M] [inst_5 : Module K M]
+  [inst_6 : IsScalarTower K R M] [inst_7 : AddCommGroup N] [inst_8 : Module R N] [inst_9 : Module K N]
+  (A : ℕ → Submodule K R) [inst_10 : GradedAlgebra A] (D : ℤ → Submodule K M) (E : ℤ → Submodule K N)
+  [DirectSum.Decomposition D] [DirectSum.Decomposition E]
+  (hD : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+  (hE : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ E j, z • x ∈ E (↑n + j)) (f : M →ₗ[R] N),
+  (∀ (j : ℤ), ∀ x ∈ D j, f x ∈ E j) →
+    Function.Surjective ⇑f →
+      ∀ (d : ℕ) (a : R) (ha : a ∈ A d),
+        Function.Injective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap A D hD d a ha) →
+          Function.Surjective
+              ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap A (LinearStudy.nativeProjectiveKernelPiece D f) ⋯
+                  d a ha) →
+            Function.Injective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap A E hE d a ha)
+'LinearStudy.nativeProjectiveChartDegreeZeroSectionMap_injective_of_kernel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeFiniteGradedIndependentCechProductSectionMap_injective_general : ∀ {K S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] [IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  [DirectSum.Decomposition D] (hD : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [IsDomain S]
+  [IsNoetherianRing S] [Module.Finite S M] {κ ι : Type u_1} (c : κ → S),
+  (∀ (i : κ), c i ∈ B 1) →
+    Algebra.adjoin K (Set.range c) = ⊤ →
+      ∀ (b : ι → S) (hb : ∀ (i : ι), b i ∈ B 1) (p : ℕ) (t : Fin (p + 1) → ι),
+        Function.Injective
+          ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap B D hD (p + 1) (∏ k : Fin (p + 1), b (t k)) ⋯)
+'LinearStudy.nativeFiniteGradedIndependentCechProductSectionMap_injective_general' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeFiniteGradedIndependentCechProductSectionMap_bijective_general : ∀ {K S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] [IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  [DirectSum.Decomposition D] (hD : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [IsDomain S]
+  [IsNoetherianRing S] [Module.Finite S M] {κ ι : Type u_1} (c : κ → S),
+  (∀ (i : κ), c i ∈ B 1) →
+    Algebra.adjoin K (Set.range c) = ⊤ →
+      ∀ (b : ι → S) (hb : ∀ (i : ι), b i ∈ B 1) (p : ℕ) (t : Fin (p + 1) → ι),
+        Function.Bijective
+          ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap B D hD (p + 1) (∏ k : Fin (p + 1), b (t k)) ⋯)
+'LinearStudy.nativeFiniteGradedIndependentCechProductSectionMap_bijective_general' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeFiniteGradedIndependentSourceCechProductSectionMap_bijective_general : ∀ {K R S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M]
+  [inst_10 : Module S M] [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R)
+  [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B]
+  (D : ℤ → Submodule K M) [DirectSum.Decomposition D] (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+  [IsDomain S] [IsNoetherianRing S] [Module.Finite S M] {κ ι : Type u_1} (c : κ → S),
+  (∀ (i : κ), c i ∈ B 1) →
+    Algebra.adjoin K (Set.range c) = ⊤ →
+      ∀ (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) (p : ℕ) (t : Fin (p + 1) → ι),
+        Function.Bijective
+          ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap B D hS (p + 1)
+              ((algebraMap R S) (∏ k : Fin (p + 1), a (t k))) ⋯)
+'LinearStudy.nativeFiniteGradedIndependentSourceCechProductSectionMap_bijective_general' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_general : {K R S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module R M] →
+                      [inst_10 : Module S M] →
+                        [IsScalarTower R S M] →
+                          [IsScalarTower K R M] →
+                            [IsScalarTower K S M] →
+                              (A : ℕ → Submodule K R) →
+                                [inst_14 : GradedAlgebra A] →
+                                  (B : ℕ → Submodule K S) →
+                                    [inst_15 : GradedAlgebra B] →
+                                      [SetLike.GradedSMul A B] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                                [IsDomain R] →
+                                                  [IsDomain S] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Module.Finite R M] →
+                                                          [Module.Finite S M] →
+                                                            {ι : Type u_1} →
+                                                              (a : ι → R) →
+                                                                (∀ (i : ι), a i ∈ A 1) →
+                                                                  {κ : Type u_1} →
+                                                                    (c : κ → S) →
+                                                                      (∀ (i : κ), c i ∈ B 1) →
+                                                                        Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                          Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                            (p : ℕ) →
+                                                                              (t : Fin (p + 1) → ι) →
+                                                                                ↥(LinearStudy.nativeProjectiveModuleSections
+                                                                                      A D hR 0
+                                                                                      (Opposite.op
+                                                                                        (AlgebraicGeometry.Proj.basicOpen
+                                                                                          A
+                                                                                          (∏ k : Fin (p + 1),
+                                                                                            a (t k))))) ≃+
+                                                                                  ↥(LinearStudy.nativeProjectiveModuleSections
+                                                                                      B D hS 0
+                                                                                      (Opposite.op
+                                                                                        (AlgebraicGeometry.Proj.basicOpen
+                                                                                          B
+                                                                                          ((algebraMap R S)
+                                                                                            (∏ k : Fin (p + 1),
+                                                                                              a (t k))))))
+'LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_general' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_general.{u} : {K R S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                [inst_7 : AddCommGroup M] →
+                  [inst_8 : Module K M] →
+                    [inst_9 : Module R M] →
+                      [inst_10 : Module S M] →
+                        [IsScalarTower R S M] →
+                          [IsScalarTower K R M] →
+                            [IsScalarTower K S M] →
+                              (A : ℕ → Submodule K R) →
+                                [inst_14 : GradedAlgebra A] →
+                                  (B : ℕ → Submodule K S) →
+                                    [inst_15 : GradedAlgebra B] →
+                                      [SetLike.GradedSMul A B] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+                                                [IsDomain R] →
+                                                  [IsDomain S] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Module.Finite R M] →
+                                                          [Module.Finite S M] →
+                                                            {ι : Type u} →
+                                                              (a : ι → R) →
+                                                                (∀ (i : ι), a i ∈ A 1) →
+                                                                  {κ : Type u} →
+                                                                    (c : κ → S) →
+                                                                      (∀ (i : κ), c i ∈ B 1) →
+                                                                        Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                          Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                            (p : ℕ) →
+                                                                              (t : Fin (p + 1) → ι) →
+                                                                                ↥(LinearStudy.nativeProjectiveModuleSections
+                                                                                      A D hR 0
+                                                                                      (Opposite.op
+                                                                                        (AlgebraicGeometry.Proj.basicOpen
+                                                                                          A
+                                                                                          (∏ k : Fin (p + 1),
+                                                                                            a (t k))))) ≃+
+                                                                                  ↥(LinearStudy.nativeProjectiveModuleSections
+                                                                                      B D hS 0
+                                                                                      (Opposite.op
+                                                                                        (AlgebraicGeometry.Proj.basicOpen
+                                                                                          B
+                                                                                          ((algebraMap R S)
+                                                                                            (∏ k : Fin (p + 1),
+                                                                                              a (t k)))))) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] [SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [IsDomain R] [IsDomain S] [IsNoetherianRing R]
+    [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1)
+    {κ : Type u} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ) (t : Fin (p + 1) → ι) =>
+  LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS (p + 1) (∏ k : Fin (p + 1), a (t k)) ⋯ ⋯ ⋯
+ROLECHECK:LinearStudy.actualChartQuotient_zero:true
+KINDCHECK:LinearStudy.actualChartQuotient_zero:theorem
+ROLECHECK:LinearStudy.localizedOriginalKernelCoefficient_comp_zero:true
+KINDCHECK:LinearStudy.localizedOriginalKernelCoefficient_comp_zero:theorem
+ROLECHECK:LinearStudy.nativeGradedModuleAwayDegreeZeroCoefficientMap_surjective:true
+KINDCHECK:LinearStudy.nativeGradedModuleAwayDegreeZeroCoefficientMap_surjective:theorem
+ROLECHECK:LinearStudy.nativeGradedModuleAwayDegreeZeroCoefficientMap_kernel_zero:true
+KINDCHECK:LinearStudy.nativeGradedModuleAwayDegreeZeroCoefficientMap_kernel_zero:theorem
+ROLECHECK:LinearStudy.nativeProjectiveChartDegreeZeroSectionMap_zero_of_kernel:true
+KINDCHECK:LinearStudy.nativeProjectiveChartDegreeZeroSectionMap_zero_of_kernel:theorem
+ROLECHECK:LinearStudy.nativeProjectiveChartDegreeZeroSectionMap_injective_of_kernel:true
+KINDCHECK:LinearStudy.nativeProjectiveChartDegreeZeroSectionMap_injective_of_kernel:theorem
+ROLECHECK:LinearStudy.nativeFiniteGradedIndependentCechProductSectionMap_injective_general:true
+KINDCHECK:LinearStudy.nativeFiniteGradedIndependentCechProductSectionMap_injective_general:theorem
+ROLECHECK:LinearStudy.nativeFiniteGradedIndependentCechProductSectionMap_bijective_general:true
+KINDCHECK:LinearStudy.nativeFiniteGradedIndependentCechProductSectionMap_bijective_general:theorem
+ROLECHECK:LinearStudy.nativeFiniteGradedIndependentSourceCechProductSectionMap_bijective_general:true
+KINDCHECK:LinearStudy.nativeFiniteGradedIndependentSourceCechProductSectionMap_bijective_general:theorem
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_general:false
+KINDCHECK:LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_general:definition
