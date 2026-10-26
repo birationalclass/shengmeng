@@ -1,0 +1,259 @@
+Linear.OriginalCutEquationActualSheafExtClass
+module
+public import Linear.AffineKoszulOriginalSheafExtClass
+public import Linear.ProjectiveCutAffineKoszul
+public import Linear.ChosenProjectiveNormalizationDimensions
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+attribute [local instance] MvPolynomial.gradedAlgebra
+universe u
+/-- Source exactness and the SAME original SHEAF Ext/class law for EVERY
+coefficient module at ONCE. Statement only. The exactness witness is fixed
+BEFORE N and its actual injective resolution I;no comparison certificate. -/
+def affineKoszulOriginalSheafExtAllCoefficientsClassStatement
+    (R : CommRingCat.{u}) (p : ℕ) (H : Fin (p+1) → R) : Prop :=
+  ∃ he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j,
+    ∀ (N : ModuleCat.{u} R) (I : InjectiveResolution (tilde N)),
+      schemeModuleOriginalTopExtClassIsoLaw (tildeFunctionKoszulComplex R H) (p+1)
+        (originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+          (tildeKoszulOriginalCutCokernelCofork R H))
+        (tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he)
+        (affineKoszulOriginalSheafExtGeometricIso R N p H he I)
+        (affineKoszulHomGeometricRestrictionPresentation R N p H).g
+/-- The constructed actual class square works uniformly for arbitrary N.
+Original source exactness is the sole input;all Ext acyclicity is derived. -/
+theorem affineKoszulOriginalSheafExtAllCoefficientsClassStatement_of_exact
+    (R : CommRingCat.{u}) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j) :
+    affineKoszulOriginalSheafExtAllCoefficientsClassStatement R p H :=
+  ⟨he,fun N I => affineKoszulOriginalSheafExtGeometricIso_classLaw R N p H he I⟩
+/-- SAME original pulled cut equations over the actual original affine
+coordinate ring,not freely chosen equations. Statement only;fixed C_L,
+global twists and SAME original top-H trace are not asserted. -/
+def projectivePulledCutEquationActualSheafExtClassStatement {n p : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (w : Fin ((p+1)+1) → ℂ) : Prop :=
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+  let H : Fin (p+1) → B := fun i => Ideal.Quotient.mk V.affineIdeal
+    (affineChartPolynomialMap (MvPolynomial.aeval f.forms (projectiveLinearSectionForms L w i)))
+  affineKoszulOriginalSheafExtAllCoefficientsClassStatement (CommRingCat.of B) p H
+/-- FULL ORIGINAL Setup DERIVES one nonempty original parameter open on
+which actual SHEAF Ext and SAME original class/geometric restriction law
+hold for EVERY original coefficient module N. No source exactness, Ext
+vanishing, coefficient freeness or desired comparison is added to Setup. -/
+theorem projectivePulledCutEquation_originalSetup_exists_actualSheafExtClass_open {n p : ℕ}
+    (f : HomogeneousEndomorphism n) (V : IntegralProjectiveEquations n) (hrn : p+1 < n)
+    (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+    (hV : f.onPoints ⁻¹' V.zeroSet=V.zeroSet)
+    (L : Fin ((p+1)+1) → CoordinateRing n) (hL : ∀ i,(L i).IsHomogeneous 1)
+    (hinj : Function.Injective (projectiveLinearNormalizationMap V L))
+    (hfinite : (projectiveLinearNormalizationMap V L).Finite)
+    (x0 : Fin n → ℂ) (hx0 : normalizedProjectivePoint x0 ∈ V.zeroSet) :
+    ∃ c : MvPolynomial (Fin ((p+1)+1)) ℂ,c ≠ 0 ∧
+      (∃ w : Fin ((p+1)+1) → ℂ,MvPolynomial.eval w c ≠ 0) ∧
+      ∀ w : Fin ((p+1)+1) → ℂ,MvPolynomial.eval w c ≠ 0 →
+        projectivePulledCutEquationActualSheafExtClassStatement f V L w := by
+  obtain ⟨c,hc,hex,hcuts⟩ := projectivePulledLinearSection_exists_affineKoszul_exactAt f V
+    (chosenProjectiveNormalization_definingIdeal_ne_bot V L hinj hfinite hrn)
+    hq hf hV L hL hinj hfinite
+    (chosenProjectiveNormalization_chart_dimension V L hinj hfinite x0 hx0) x0 hx0
+  refine ⟨c,hc,hex,?_⟩
+  intro w hw
+  obtain ⟨_,_,_,_,_,he⟩ := hcuts w hw
+  exact affineKoszulOriginalSheafExtAllCoefficientsClassStatement_of_exact _ p _ he
+end LinearStudy
+
+Linear.AffineKoszulOriginalSheafExtQuotientClass
+module
+public import Linear.AffineKoszulOriginalSheafExtClass
+public import Linear.TildeCoefficientQuotientGeometricUnit
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+universe u
+attribute [local irreducible] schemeModuleHomPrecompose schemeModuleHomModuleSheaf
+  affineTildeTensorPullbackIso tildeCoefficientQuotientPushforwardIso
+  tildeCoefficientQuotientGeometricPullbackPushforwardIso
+/-- SAME ordered top functional goes to its ORIGINAL coefficient quotient,
+using the actual Hom/tilde comparison and actual coefficient restriction. -/
+def affineKoszulOriginalTopCoefficientQuotientMap (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R) :
+    schemeModuleHomModuleSheaf (X:=Spec R)
+      (tilde (ModuleCat.of R (⋀[R]^(p+1) (Fin (p+1) → R)))) (tilde N) ⟶
+      tilde (ModuleCat.of R (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N)))) :=
+  (affineKoszulTermHomCoefficientIso R N (p+1) (p+1)).inv ≫
+    (tilde.functor R).map (ModuleCat.ofHom (koszulTopHomCoefficientRestriction (N:=N) p H))
+/-- First retain SAME actual quotient-tensor presentation. Its third
+component is related to the original quotient without unfolding pullback. -/
+theorem affineKoszulHomCoefficientRestriction_eq_originalQuotient (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R) :
+    (affineKoszulHomCoefficientRestrictionPresentation R N p H).g =
+      affineKoszulOriginalTopCoefficientQuotientMap R N p H ≫
+        (tildeCoefficientQuotientPushforwardIso R (Ideal.span (Set.range H)) N).hom := by
+  exact (Category.assoc (affineKoszulTermHomCoefficientIso R N (p+1) (p+1)).inv
+    ((tilde.functor R).map (ModuleCat.ofHom (koszulTopHomCoefficientRestriction (N:=N) p H)))
+    (tildeCoefficientQuotientPushforwardIso R (Ideal.span (Set.range H)) N).hom).symm
+/-- Use mathlib's third projection of the ALREADY constructed original
+short-complex iso. Its exact codomain is the actual original geometry;
+no conversion between concrete pullback constructors is required. -/
+def affineKoszulOriginalCoefficientTensorGeometricIso (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R) :
+    (affineKoszulHomCoefficientRestrictionPresentation R N p H).X₃ ≅
+      (affineKoszulHomGeometricRestrictionPresentation R N p H).X₃ :=
+  ShortComplex.π₃.mapIso (affineKoszulHomGeometricRestrictionPresentationIso R N p H)
+/-- The existing whole-short-complex morphism PROVES the actual quotient
+restriction square. The second component is literally the identity. -/
+theorem affineKoszulOriginalCoefficientTensorGeometricIso_restriction (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R) :
+    (affineKoszulHomCoefficientRestrictionPresentation R N p H).g ≫
+        (affineKoszulOriginalCoefficientTensorGeometricIso R N p H).hom =
+      (affineKoszulHomGeometricRestrictionPresentation R N p H).g := by
+  let e := affineKoszulHomGeometricRestrictionPresentationIso R N p H
+  have h₂ : e.hom.τ₂ = 𝟙 _ := rfl
+  change (affineKoszulHomCoefficientRestrictionPresentation R N p H).g ≫ e.hom.τ₃ = _
+  rw [← e.hom.comm₂₃,h₂,Category.id_comp]
+/-- Actual derived SHEAF Ext to SAME quotient-tensor coefficient,using
+only the actual third component of the proved original complex iso. -/
+def affineKoszulOriginalSheafExtTensorIso (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j)
+    (I : InjectiveResolution (tilde N)) :
+    schemeModuleInternalExt (tildeKoszulOriginalCutCokernelCofork R H).pt (tilde N) (p+1) ≅
+      (affineKoszulHomCoefficientRestrictionPresentation R N p H).X₃ :=
+  affineKoszulOriginalSheafExtGeometricIso R N p H he I ≪≫
+    (affineKoszulOriginalCoefficientTensorGeometricIso R N p H).symm
+/-- SAME original class law for SAME original quotient-tensor restriction. -/
+theorem affineKoszulOriginalSheafExtTensorIso_classLaw (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j)
+    (I : InjectiveResolution (tilde N)) :
+    schemeModuleOriginalTopExtClassIsoLaw (tildeFunctionKoszulComplex R H) (p+1)
+      (originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+        (tildeKoszulOriginalCutCokernelCofork R H))
+      (tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he)
+      (affineKoszulOriginalSheafExtTensorIso R N p H he I)
+      (affineKoszulHomCoefficientRestrictionPresentation R N p H).g := by
+  have h := schemeModuleOriginalTopExtClassIsoLaw_postcompose
+    (tildeFunctionKoszulComplex R H) (p+1)
+    (originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+      (tildeKoszulOriginalCutCokernelCofork R H))
+    (tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he)
+    (affineKoszulOriginalSheafExtGeometricIso R N p H he I)
+    (affineKoszulHomGeometricRestrictionPresentation R N p H).g
+    (affineKoszulOriginalSheafExtGeometricIso_classLaw R N p H he I)
+    (affineKoszulOriginalCoefficientTensorGeometricIso R N p H).symm
+  rw [← affineKoszulOriginalCoefficientTensorGeometricIso_restriction] at h
+  simpa only [affineKoszulOriginalSheafExtTensorIso,Iso.symm_hom,Category.assoc,Iso.hom_inv_id,Category.comp_id] using h
+/-- ACTUAL derived SHEAF Ext to SAME original coefficient quotient. -/
+def affineKoszulOriginalSheafExtQuotientIso (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j)
+    (I : InjectiveResolution (tilde N)) :
+    schemeModuleInternalExt (tildeKoszulOriginalCutCokernelCofork R H).pt (tilde N) (p+1) ≅
+      tilde (ModuleCat.of R (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N)))) :=
+  affineKoszulOriginalSheafExtTensorIso R N p H he I ≪≫
+    (tildeCoefficientQuotientPushforwardIso R (Ideal.span (Set.range H)) N).symm
+/-- ALL SAME original roof classes under actual canonical lambda retain
+SAME ordered-top coefficient quotient,uniformly for one constructed iso. -/
+theorem affineKoszulOriginalSheafExtQuotientIso_classLaw (R : CommRingCat.{u})
+    (N : ModuleCat.{u} R) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j)
+    (I : InjectiveResolution (tilde N)) :
+    schemeModuleOriginalTopExtClassIsoLaw (tildeFunctionKoszulComplex R H) (p+1)
+      (originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+        (tildeKoszulOriginalCutCokernelCofork R H))
+      (tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he)
+      (affineKoszulOriginalSheafExtQuotientIso R N p H he I)
+      (affineKoszulOriginalTopCoefficientQuotientMap R N p H) := by
+  have h := schemeModuleOriginalTopExtClassIsoLaw_postcompose
+    (tildeFunctionKoszulComplex R H) (p+1)
+    (originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+      (tildeKoszulOriginalCutCokernelCofork R H))
+    (tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he)
+    (affineKoszulOriginalSheafExtTensorIso R N p H he I)
+    (affineKoszulHomCoefficientRestrictionPresentation R N p H).g
+    (affineKoszulOriginalSheafExtTensorIso_classLaw R N p H he I)
+    (tildeCoefficientQuotientPushforwardIso R (Ideal.span (Set.range H)) N).symm
+  rw [affineKoszulHomCoefficientRestriction_eq_originalQuotient] at h
+  simpa only [affineKoszulOriginalSheafExtQuotientIso,Iso.symm_hom,Category.assoc,Iso.hom_inv_id,Category.comp_id] using h
+end LinearStudy
+
+Linear.AffineKoszulActualSheafExtNativeValues
+module
+public import Linear.AffineKoszulOriginalSheafExtQuotientClass
+public import Linear.TildePushforwardMappedUnitValues
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+universe u
+/-- Actual derived SHEAF Ext,original roof/canonical lambda class diagram,
+and original native coefficient values with ONE actual coefficient iso.
+The exact source witness and coefficient iso precede ALL resolutions and
+ALL original representatives. Statement only;fixed C_L/top-H stay open. -/
+def affineKoszulActualSheafExtNativeTwoValuesStatement {R S : CommRingCat.{u}}
+    (phi : R ⟶ S) (p : ℕ) (H : Fin (p+1) → R)
+    (N : ModuleCat.{u} R) (M : ModuleCat.{u} S) (U : Type u)
+    (P : N → U → (ModuleCat.restrictScalars phi.hom).obj M → Prop)
+    (P0 : N → (ModuleCat.restrictScalars phi.hom).obj M → Prop) : Prop :=
+  ∃ he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j,
+    ∃ e : tilde (ModuleCat.of R (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N)))) ≅
+        (Scheme.Modules.pushforward (Spec.map phi)).obj (tilde M),
+      (∀ I : InjectiveResolution (tilde N),
+        ∃ chi : schemeModuleInternalExt (tildeKoszulOriginalCutCokernelCofork R H).pt (tilde N) (p+1) ≅
+            (Scheme.Modules.pushforward (Spec.map phi)).obj (tilde M),
+          schemeModuleOriginalTopExtClassIsoLaw (tildeFunctionKoszulComplex R H) (p+1)
+            (originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+              (tildeKoszulOriginalCutCokernelCofork R H))
+            (tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he) chi
+            (affineKoszulOriginalTopCoefficientQuotientMap R N p H ≫ e.hom)) ∧
+      (∀ x v,P x v (tildePushforwardOriginalGlobalValue phi M
+        (ModuleCat.of R (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N)))) e
+          (Submodule.Quotient.mk x))) ∧
+      ∀ x,P0 x (tildePushforwardOriginalGlobalValue phi M
+        (ModuleCat.of R (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N)))) e
+          (Submodule.Quotient.mk x))
+/-- Derive the actual SHEAF Ext/native-target original-class diagram and
+original global coefficient values from ACTUAL original coefficient
+module duality. No SHEAF Ext iso or desired class square is assumed. -/
+theorem affineKoszulActualSheafExtNativeTwoValuesStatement_of_coefficient
+    {R S : CommRingCat.{u}} (phi : R ⟶ S) (p : ℕ) (H : Fin (p+1) → R)
+    (he : ∀ j : ℕ,0 < j → (koszulComplex (Fintype.linearCombination R H)).ExactAt j)
+    (N : ModuleCat.{u} R) (M : ModuleCat.{u} S) (U : Type u)
+    (P : N → U → (ModuleCat.restrictScalars phi.hom).obj M → Prop)
+    (P0 : N → (ModuleCat.restrictScalars phi.hom).obj M → Prop)
+    (h : ∃ F : (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N))) ≃ₗ[R]
+        (ModuleCat.restrictScalars phi.hom).obj M,
+      (∀ x v,P x v (F (Submodule.Quotient.mk x))) ∧
+        ∀ x,P0 x (F (Submodule.Quotient.mk x))) :
+    affineKoszulActualSheafExtNativeTwoValuesStatement phi p H N M U P P0 := by
+  obtain ⟨e,hP,hP0⟩ := tildePushforward_existsOriginalTwoValues phi M
+    (ModuleCat.of R (N ⧸ (Ideal.span (Set.range H) • (⊤ : Submodule R N)))) N U
+    (fun x => Submodule.Quotient.mk x) P P0 h
+  refine ⟨he,e,?_,hP,hP0⟩
+  intro I
+  refine ⟨affineKoszulOriginalSheafExtQuotientIso R N p H he I ≪≫ e,?_⟩
+  exact schemeModuleOriginalTopExtClassIsoLaw_postcompose
+    (tildeFunctionKoszulComplex R H) (p+1)
+    (originalChainCoforkAugmentation (tildeFunctionKoszulComplex R H)
+      (tildeKoszulOriginalCutCokernelCofork R H))
+    (tildeKoszulCoforkAugmentation_quasiIso_of_exact R H he)
+    (affineKoszulOriginalSheafExtQuotientIso R N p H he I)
+    (affineKoszulOriginalTopCoefficientQuotientMap R N p H)
+    (affineKoszulOriginalSheafExtQuotientIso_classLaw R N p H he I) e
+end LinearStudy

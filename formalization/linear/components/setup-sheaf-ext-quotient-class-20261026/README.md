@@ -1,0 +1,5 @@
+# Actual affine Koszul SHEAF Ext and original class law
+
+Full original Setup derives one nonempty SAME original open,uniformly before ALL coefficient modules. Actual derived SHEAF Ext/original roof/canonical lambda class to SAME original coefficient quotient;actual native target and two original coefficient value families follow from actual module duality. Fixed original C_L/global twists/SAME geometric top-H trace and original4.1/4.2/main remain OPEN. Concrete full-Setup native C_H specialization is NOTverified;bounded concrete elaboration remains next.
+
+3 actual compiled roots;7 ordinary theorem proofs;4 object and3 statement definition (not a proof). Codex read all254 root lines and all290 exact-type/axiom/body/kernel-role lines;no human review claimed. 601 closed source modules;598 parents rechecked against actual public archives. Source metadata reuses ONLY exact unchanged accepted sources and freshly exports the rest in sequential bounded partitions. Resources:103holds,8GiB,2threads,CPU<=25%,20minutes via lean_runner.run_file;whole-local180. Original4.1/4.2/main OPEN.
