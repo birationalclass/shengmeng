@@ -6,14 +6,15 @@ export async function prepareCourseBoardFiles(page,fetcher=resourceFetch){
  const unique=[...new Set(files)];let next=0;
  await Promise.all(Array.from({length:Math.min(2,unique.length)},async()=>{while(next<unique.length){const response=await fetcher(unique[next++]);if(!response.ok)throw Error('板书资源下载未完成');await response.arrayBuffer();}}));
 }
-export async function startReadyCourse(lecture,id,{autoplay=true,onSelected=()=>{},onProgress=()=>{}}={}){
+export async function startReadyCourse(lecture,id,{autoplay=true,firstBoardOnly=false,onSelected=()=>{},onProgress=()=>{}}={}){
  const retry=lecture.hasSelection&&lecture.report.id===id&&lecture.voiceManifest&&lecture.courseLoadState?.phase==='error';
  lecture.beginCoursePreparation();
  try{
   if(!retry&&!await lecture.setReport(id,{autoplay:false}))throw Error('课程未准备好');
   await lecture.setLanguage('zh');
   onSelected();
-  await lecture.prepareCourse(onProgress);
+  if(firstBoardOnly)await lecture.prepareOpeningCourse(onProgress);
+  else await lecture.prepareCourse(onProgress);
   lecture.setVoiceRate(lecture.report.narration?.defaultPlaybackRate??lecture.voiceManifest?.policy?.defaultPlaybackRate??1);
   if(!await lecture.voiceSeek(0))throw Error('开场语音定位失败');
   lecture.finishCoursePreparation();

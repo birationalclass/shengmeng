@@ -762,6 +762,14 @@ export async function createLecture(scene,renderer,options={}){
     reportFocus:()=>scene.localToWorld(new THREE.Vector3(reportX+1.1,2.45,-11.34)),
     get courseLoadState(){return {...courseLoad,resources:courseResourceState()};},
     beginCoursePreparation(){voice.pause();playing=false;assetRetry.clear();if(courseLoad.phase==='error'&&voice.manifest&&voice.state.phase==='error')selectionVoiceReady=voice.select(voiceReport(activeReport),{autoplay:false});courseLoad={phase:'loading',ratio:0};boards.forEach(b=>b.last='');draw(0,true);},
+    async prepareOpeningCourse(onProgress=()=>{}){
+      const request=reportRequest;
+      if(!await selectionVoiceReady)throw Error('开场语音未就绪，请重试');
+      await prepareCourseBoardFiles(pages[0]);await load(0);
+      if(request!==reportRequest)throw Error('课程选择已变更');
+      courseLoad={phase:'loading',ratio:1,boards:1,totalBoards:pages.length,audio:1,totalAudio:voice.preloadState.total||1,initialOnly:true};
+      onProgress({...courseLoad});return true;
+    },
     async prepareCourse(onProgress=()=>{}){
       const request=reportRequest;
       return prepareWholeCourse({count:pages.length,prepareVoice:()=>selectionVoiceReady,
