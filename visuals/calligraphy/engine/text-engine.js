@@ -1,8 +1,8 @@
-import {createHomepageText} from '../homepage-font.js?v=20';
+import {createHomepageText} from '../homepage-font.js?v=21';
 import {textPlacements} from '../text-layout.js';
-import {cursiveGlyphs} from '../cursive-glyphs.js?v=20';
-import {runningGlyphs} from '../running-glyphs.js?v=20';
-import {kouzanGlyphs} from '../kouzan-glyphs.js?v=20';
+import {cursiveGlyphs} from '../cursive-glyphs.js?v=21';
+import {runningGlyphs} from '../running-glyphs.js?v=21';
+import {kouzanGlyphs} from '../kouzan-glyphs.js?v=21';
 import * as T from '../vendor/three.module.js';
 import {catalog} from './catalog.js';
 import {availableCharacters} from './coverage.js';

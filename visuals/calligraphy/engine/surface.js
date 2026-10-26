@@ -1,9 +1,9 @@
-import {prepareFontVolume,updateFontVolume} from '../font-volume.js?v=20';
+import {prepareFontVolume,updateFontVolume} from '../font-volume.js?v=21';
 import * as T from '../vendor/three.module.js';
 import {prepareStroke,updateStrokeGeometry} from './stroke-volume.js';
 import {prepareRailStroke,createStrokeGeometry,updateRailGeometry} from './yang-volume.js';
 import {guardRailBends} from './bend-guard.js';
-import {updateBrushGeometry,smoothSectionJoinNormals} from './brush-surface.js?v=20';
+import {updateBrushGeometry,smoothSectionJoinNormals} from './brush-surface.js?v=21';
 
 export function prepareVolume(stroke,kind,fullness=1,depth=1){
  if(kind==='font-volume')return prepareFontVolume(stroke,{fullness,depth});

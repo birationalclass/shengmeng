@@ -1,9 +1,9 @@
-import {prepareHomepageModel} from '../font-volume.js?v=20';
-import {applyBrushPlan} from '../brush-planner.js?v=20';
+import {prepareHomepageModel} from '../font-volume.js?v=21';
+import {applyBrushPlan} from '../brush-planner.js?v=21';
 import * as T from '../vendor/three.module.js';
 import {profile,sampleSection} from './stroke-volume.js';
 import {sampleRailSection} from './yang-volume.js';
-import {prepareVolume} from './surface.js?v=20';
+import {prepareVolume} from './surface.js?v=21';
 import {guardRailBends} from './bend-guard.js';
 import {attachStrokeLink} from './stroke-link.js';
 import {combineContinuousRuns} from './continuous-run.js';

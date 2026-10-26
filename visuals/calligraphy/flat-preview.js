@@ -1,7 +1,7 @@
-import {prepareVolume} from './engine/surface.js?v=20';
+import {prepareVolume} from './engine/surface.js?v=21';
 import {sampleRailSection} from './engine/yang-volume.js';
 import {sampleSection} from './engine/stroke-volume.js';
-import {flatHomepagePaths} from './homepage-font.js?v=20';
+import {flatHomepagePaths} from './homepage-font.js?v=21';
 
 // Project the selected authored geometry into XY, with no camera, lighting or
 // perspective. This is the same letter layout, never an unrelated system font.

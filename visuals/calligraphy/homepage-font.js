@@ -1,5 +1,5 @@
 import {homepageCharacters} from './homepage-coverage.js';
-import {paintHomepageGlyph,meshFromAlpha} from './font-volume.js?v=20';
+import {paintHomepageGlyph,meshFromAlpha} from './font-volume.js?v=21';
 import {textPlacements} from './text-layout.js';
 
 const bundles=new Map(),meshes=new Map();
@@ -10,15 +10,17 @@ export async function loadHomepageCharacter(char){
  return (await bundles.get(key))[char];
 }
 function rasterize(g,n){const canvas=document.createElement('canvas');canvas.width=n;canvas.height=n;const ctx=canvas.getContext('2d',{willReadFrequently:true});paintHomepageGlyph(ctx,g,n);const bytes=ctx.getImageData(0,0,n,n).data;return Uint8Array.from({length:n*n},(_,i)=>bytes[i*4+3]);}
-export async function createHomepageText(text,{layout='auto',loader,rasterizer=rasterize,resolution=260,fontLoader=loadHomepageCharacter}={}){
+export async function createHomepageText(text,{layout='auto',loader,rasterizer=rasterize,resolution:requestedResolution,fontLoader=loadHomepageCharacter}={}){
  const chars=[...text],placement=textPlacements(chars.length,layout),strokes=[],charSources=[],flatGlyphs=[];let time=.06;
+ const resolution=requestedResolution||(chars.length===1?384:260);
+ const loaded=await Promise.all(chars.map(async char=>{const font=await fontLoader(char);let medians=[];try{medians=(await loader(char)).medians;}catch{}return {font,medians};}));
  for(const [i,char] of chars.entries()){
-  const font=await fontLoader(char),key=char+':'+resolution;
-  if(!meshes.has(key)){let medians=[];try{medians=(await loader(char)).medians;}catch{}meshes.set(key,meshFromAlpha(await rasterizer(font,resolution),resolution,medians));}
-  const mesh=meshes.get(key),duration=Math.max(.58,Math.min(1.35,.28+mesh.strokeCount*.095)),offset=placement[i];
+  const {font,medians}=loaded[i],key=char+':'+resolution+':stroke2';
+  if(!meshes.has(key))meshes.set(key,meshFromAlpha(await rasterizer(font,resolution),resolution,medians,{character:char}));
+  const mesh=meshes.get(key),duration=mesh.strokePlan.seconds,offset=placement[i];
   strokes.push({name:char+' · 主页行书',kind:'font-volume',mesh,offset,start:time,end:time+duration,motion:[0,1]});time+=duration+.08;
   flatGlyphs.push({character:char,font,offset});
-  charSources.push({character:char,homepage:true,detailLevel:'font-volume',name:'主页行书 · '+char,phrase:font.titleOriginal?'与主页标题相同的原始字形':'同一 Zhi Mang Xing 字族',url:'https://birationalclass.github.io/shengmeng/',image:'',caption:'原字体轮廓',description:'保留主页字体、加粗轮廓、倾斜与等宽字格；圆润体积、空间起伏和动画为本项目重建。原字体未记录真实笔顺，表面生长节奏依可用笔顺估计。'});
+  charSources.push({character:char,homepage:true,authoredOrder:mesh.strokePlan.authored,strokeNames:mesh.strokePlan.strokes.map(s=>s.name),detailLevel:'font-volume',name:'主页行书 · '+char,phrase:font.titleOriginal?'与主页标题相同的原始字形':'同一 Zhi Mang Xing 字族',url:'https://birationalclass.github.io/shengmeng/',image:'',caption:'原字体轮廓',description:mesh.strokePlan.authored?'逐笔对照本字原字形匹配轨迹，遵循汉字笔顺，保留行书的点画变体。落笔、行笔、收锋、抬笔独立计时；不是字体作者运笔记录。':'同字族字形；通用笔顺先配准到本字，再估计运笔。尚未逐笔人工核对。'});
  }
  const writeEnd=strokes.at(-1).end;
  return {id:'homepage:'+text,text,inputText:text,title:'主页行书',subtitle:layout==='homepage'?'右起双列 · 天之道 / 损有余而补不足':'主页原字形 · 圆润立体笔面',generated:true,homepage:true,glyphStyle:'homepage',layout,kind:'font-volume',strokes,flatGlyphs,charSources,modeling:{homepage:chars.length,sculpted:0,automatic:0,label:'主页原字形 · 立体曲面'},writeStart:.06,writeEnd,frontalAt:writeEnd+1.45,duration:Math.ceil(writeEnd+2.65),source:{name:'主页「天之道」同款字势',phrase:layout==='homepage'?'右列三字，左列七字；左列下错 0.43 字格':'Zhi Mang Xing · 原字形曲面化',url:'https://birationalclass.github.io/shengmeng/',image:'assets/homepage/prototype.png',caption:'主页原字形与双列布局',description:'使用主页十字的原始标题轮廓，其余字来自同一字族。等宽字格、1.14 字格列距和 0.43 字格错位来自主页。轮廓围成闭合的圆润立体曲面，厚度随笔画宽度变化；运笔时序为本地重建。'},requiresHomepageLicense:true,requiresLicense:true};

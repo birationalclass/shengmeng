@@ -1,4 +1,5 @@
-import {updateFlatPreview} from '../flat-preview.js?v=20';
+import {fontStrokeControls} from '../stroke-controls.js?v=21';
+import {updateFlatPreview} from '../flat-preview.js?v=21';
 import {icons} from '../icons.js';
 import {convertScript} from '../script-conversion.js';
 import * as T from '../vendor/three.module.js';
@@ -6,12 +7,12 @@ import {RoomEnvironment} from '../vendor/RoomEnvironment.js';
 import {OrbitControls} from '../vendor/OrbitControls.js';
 import {profile} from './stroke-volume.js';
 import {catalog,materialPresets,classicMaterialPresets,materialVersions} from './catalog.js';
-import {createVolume,updateVolume} from './surface.js?v=20';
+import {createVolume,updateVolume} from './surface.js?v=21';
 import {zipStore,modelFiles} from './export-format.js';
-import {createTextGlyph,cleanText} from './text-engine.js?v=20';
-import {prepareSpatialModel,constructionCurves} from './spatial-model.js?v=20';
+import {createTextGlyph,cleanText} from './text-engine.js?v=21';
+import {prepareSpatialModel,constructionCurves} from './spatial-model.js?v=21';
 import {sampleRailSection} from './yang-volume.js';
-import {writingProgress,writingPhase} from './brush-gesture.js?v=20';
+import {writingProgress,writingPhase} from './brush-gesture.js?v=21';
 import {windReferencePreset,windReferencePresetV8} from './wind-reference.js';
 import {createReferenceEnvironment} from './reference-environment.js';
 
@@ -69,7 +70,7 @@ function selectMaterial(id,version=settings.materialVersion){Object.assign(setti
 function applyMaterial(){mat.color.set(settings.color);for(const id of ['metalness','roughness','clearcoat','anisotropy'])mat[id]=settings[id];mat.wireframe=settings.wireframe;mat.needsUpdate=true;dirty=true;}
 function fitScene(){
  if(modelBounds.isEmpty())return;
- const size=modelBounds.getSize(new T.Vector3()),center=modelBounds.getCenter(new T.Vector3()),phrase=glyph.generated&&glyph.charSources.length>1;
+ const size=modelBounds.getSize(new T.Vector3()),center=modelBounds.getCenter(new T.Vector3()),phrase=glyph.homepage||(glyph.generated&&glyph.charSources.length>1);
  if(phrase){group.position.set(-center.x,.28-modelBounds.min.y,0);target.set(0,group.position.y+center.y,0);}else{group.position.set(0,1.9,0);target.set(0,1.9,0);}
  const tangent=Math.tan(camera.fov*Math.PI/360);viewRadius=Math.max(8.4,(size.y*.5+.38)/tangent,(size.x*.5+.38)/(tangent*camera.aspect))+Math.max(0,size.z*.5-.5);
  controls.maxDistance=Math.max(24,viewRadius*2.3);
@@ -95,11 +96,12 @@ function shapeSummary(){
  $('model-v10-option').hidden=!glyph.referenceV10Strokes;$('trajectory-row').hidden=!penTransfers.length;$('model-v8-option').hidden=!glyph.referenceV8Strokes;$('model-v9-option').hidden=!glyph.referenceV8Strokes;
  $('glyph-style-note').hidden=!glyph.text;$('glyph-style-note').textContent=glyph.modeling?.cursive?'草书重写 · '+glyph.charSources.filter(s=>s.cursive).map(s=>s.character).join('、')+(glyph.charSources.some(s=>!s.cursive)?'；其余沿用已有字形。':''):(settings.glyphStyle==='original'?'原有字形':'当前文字沿用已有字形。');
  if(glyph.modeling?.kouzan){$('shape-summary').textContent='衡山行书 · '+glyph.modeling.kouzan+' 字\n斜势、折肩与回带 · 独立三维重写';$('glyph-style-note').textContent='02 · '+glyph.charSources.filter(s=>s.kouzan).map(s=>s.character).join('、')+(glyph.modeling.supplements?'；琪为本地补写，非原字体字形。':'')+(glyph.charSources.some(s=>!s.kouzan)?'；其余沿用已有字形。':'');}else if(glyph.modeling?.running){$('shape-summary').textContent='行草重写 · '+glyph.modeling.running+' 字\n保留部件结构 · 局部承转连写';$('glyph-style-note').textContent='行草重写 · '+glyph.charSources.filter(s=>s.running).map(s=>s.character).join('、')+(glyph.charSources.some(s=>!s.running)?'；其余沿用已有字形。':'');}else if(glyph.modeling?.cursive)$('shape-summary').textContent='草书重写 · '+glyph.modeling.cursive+' 字\n整段回环连续成形 · 保留自然断连';
- if(glyph.homepage){$('shape-summary').textContent='主页原字形 · '+glyph.charSources.length+' 字\n圆润厚度 · '+(settings.layout==='homepage'?'右起双列':'横向排布');$('glyph-style-note').textContent='Zhi Mang Xing · 与主页相同的字族。原字库以简体为主；书写节奏为本地重建。';}
+ if(glyph.homepage){$('shape-summary').textContent='主页行书 · '+modelReport.strokeCount+' 笔\n逐笔轨迹匹配 · '+modelReport.authoredCharacters+' 字';$('glyph-style-note').textContent='主页十字已逐笔匹配；其余字按配准笔顺推断。';}
  if(modelReport.brushPlan?.inferredStrokes)$('shape-summary').textContent+='\n动态笔锋 · '+modelReport.brushPlan.inferredStrokes+' 笔推断运笔';
  $('stage-note').textContent=glyph.subtitle+' · '+(oldGuang?'旧广为通用自动造型':glyph.modeling?.label||'逐笔设计');
  $('model-info').textContent=(glyph.charSources?.length>1?glyph.charSources.length+' 字 · ':'')+items.length+' 段 · '+(modelReport.continuousRuns?.length?'连续生长':modelReport.sectionJoins?.length?'分段相接':modelReport.strokeLinks?.length?'连续笔势':settings.model==='spatial'?'空间塑形':'上一版造型');
  $('connection-row').hidden=!items.some(item=>item.spec.joinable);
+ $('stroke-heading').textContent=glyph.homepage?'逐笔查看 · 点击停在收锋':'逐段查看 / 显隐';$('show-all').hidden=!!glyph.homepage;if(glyph.homepage)$('model-info').textContent=glyph.charSources.length+' 字 · '+modelReport.strokeCount+' 笔 · 逐笔匹配';
  $('shape-summary').dataset.report=JSON.stringify(modelReport);$('resolved-text').textContent='输出 · '+glyph.text;
 }
 function rebuildSpecs(){
@@ -118,6 +120,7 @@ function makeItems(constructed,next,bounds){
  try{constructed.parts.forEach(({stroke:s,kind,spec,sourceIndices},i)=>{const {L,R}=meshResolution({spec},next.strokes.length,next.charSources?.length>1),g=createVolume(L,R);updateVolume(g,spec,kind,1,settings.ridges,settings.writing);if(!g.attributes.position.array.every(Number.isFinite))throw Error('该字的曲面暂时无法构建。');bounds.union(g.boundingBox);const mesh=new T.Mesh(g,mat);mesh.castShadow=true;mesh.receiveShadow=true;mesh.frustumCulled=false;prepared.push({s,i,kind,g,mesh,spec,sourceIndices,last:1,enabled:true});});}catch(error){prepared.forEach(item=>item.g.dispose());throw error;}return prepared;
 }
 function renderStrokeControls(){
+ if(glyph.homepage){fontStrokeControls($('strokes'),items,at=>{seamPlayback=null;time=at;paused=true;updateButtons();dirty=true;});return;}
  $('strokes').replaceChildren();items.forEach(item=>{const row=document.createElement('div');row.className='stroke-row';const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=item.enabled;checkbox.setAttribute('aria-label','显示 '+item.s.name);checkbox.onchange=()=>{item.enabled=checkbox.checked;dirty=true;};const b=document.createElement('button');b.textContent=(item.i+1)+' '+item.s.name;b.dataset.stroke=item.i;b.onclick=()=>{seamPlayback=null;time=item.s.end;paused=true;updateButtons();dirty=true;};row.append(checkbox,b);$('strokes').append(row);});
 }
 function dirtySurfaces(){for(const item of items)item.last=-1;dirty=true;}
