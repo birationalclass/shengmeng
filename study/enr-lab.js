@@ -40,6 +40,7 @@ const sectionObserver = new IntersectionObserver((entries) => {
 sections.forEach((section) => sectionObserver.observe(section));
 
 const fieldNames = {
+  algebra: "抽象代数",
   topology: "代数拓扑",
   geometry: "代数几何",
   dynamics: "动力系统",
