@@ -1,3 +1,4 @@
+import {courseResourceFetch} from './course-resource-cache.js';
 import {packedAssetResponse} from './board-asset-store.js';
 // A stalled header or body must release its request slot. No response cloning.
 export function createResourceFetch(fetcher,{idleTimeout=15000,totalTimeout=0,api=globalThis,concurrency=6,backgroundLimit=2}={}){
@@ -39,5 +40,5 @@ export function createResourceFetch(fetcher,{idleTimeout=15000,totalTimeout=0,ap
  bounded.resourceBounded=true;return bounded;
 }
 const wrappers=new WeakMap();
-export function resourceFetch(input,options){if(options?.signal?.aborted)return Promise.reject(options.signal.reason||new DOMException('请求已取消','AbortError'));const packed=packedAssetResponse(input?.url||input);if(packed)return Promise.resolve(packed);const fetcher=globalThis.fetch;let bounded=wrappers.get(fetcher);if(!bounded){bounded=createResourceFetch(fetcher);wrappers.set(fetcher,bounded);}return bounded(input,options);}
+export function resourceFetch(input,options){if(options?.signal?.aborted)return Promise.reject(options.signal.reason||new DOMException('请求已取消','AbortError'));const packed=packedAssetResponse(input?.url||input);if(packed)return Promise.resolve(packed);const fetcher=globalThis.fetch;let bounded=wrappers.get(fetcher);if(!bounded){bounded=createResourceFetch(fetcher);wrappers.set(fetcher,bounded);}return courseResourceFetch(input,options,bounded);}
 resourceFetch.promote=input=>{const fetcher=globalThis.fetch;const outer=wrappers.get(fetcher)?.promote?.(input)||false,inner=fetcher.promote?.(input)||false;return outer||inner;};

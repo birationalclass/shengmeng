@@ -1,3 +1,4 @@
+import {resourceFetch} from './resource-fetch.js';
 import {prepareMaliChalk} from './mali-chalk.js?v=safari-glyph-20261019-1';
 import {createChineseChalk,paintChineseGroup} from './chinese-chalk.js?v=stabilizer-glyphs-20261025';
 import {authoredContext,authoredFormula} from './authored-chalk.js?v=semantic-lines-20261026';
@@ -19,7 +20,7 @@ function object(ctx,o,language='zh'){
 export async function prepareBoard(b,language='zh',{allowShrink=true,reportOverflow=false}={}){
  const source=b;if(b.kind==='break')b={...b,kind:'cover',rows:[{display:'课间休息',en:'Break',tokens:[{text:'课间休息'}],enTokens:[{text:'Break'}],color:'gold'}]};
  libraryPromise??=createChineseChalk();const library=await libraryPromise;
- const diagram=b.diagramAsset?await fetch(b.diagramAsset).then(r=>{if(!r.ok)throw Error(r.status);return r.json()}):null,diagramText=(diagram?.objects||[]).filter(o=>o.type==='label').map(o=>language==='en'?(o.textEn||o.text):o.text).join('');
+ const diagram=b.diagramAsset?await resourceFetch(b.diagramAsset).then(r=>{if(!r.ok)throw Error(r.status);return r.json()}):null,diagramText=(diagram?.objects||[]).filter(o=>o.type==='label').map(o=>language==='en'?(o.textEn||o.text):o.text).join('');
  await Promise.all([prepareMaliChalk(b.rows.map(r=>r.display+' '+r.en).join('')+diagramText),document.fonts.load('42px RefugeLatin')]);
  if(diagram)await Promise.all(diagram.objects.filter(o=>o.type==='formula').map(async o=>{o._formula=await formula(o,o.color||COLORS.white);}));
  const chinese=await library.prepare(glyphText(b)+diagramText),canvas=document.createElement('canvas');canvas.width=1536;canvas.height=640;

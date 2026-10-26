@@ -43,7 +43,7 @@ async function loadGlyph(meta){
  full.width=map.width=1;return {...meta,image:im,strokes,alpha,owner,phase,colors:new Map()};
 }
 export async function createChineseChalk(){
- const index=await resourceFetch(new URL('index.json?v=stabilizer-glyphs-20261025',BASE)).then(r=>{if(!r.ok)throw Error('中文板书字形索引未就绪');return r.json();}),metadata=new Map(index.glyphs.map(g=>[g.char,g])),jobs=new Map();
+ const index=await resourceFetch(new URL('index.json?v=course-ready-glyphs-20261026',BASE)).then(r=>{if(!r.ok)throw Error('中文板书字形索引未就绪');return r.json();}),metadata=new Map(index.glyphs.map(g=>[g.char,g])),jobs=new Map();
  async function prepare(text){
   const chars=[...new Set([...String(text)].filter(c=>/[\u3400-\u9fff，。；：（）！？、…·]/.test(c)))];
   for(const c of chars)if(!metadata.has(c))throw Error('36号板书字形缺失：'+c);
