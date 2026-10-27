@@ -1,0 +1,120 @@
+module
+import all Linear.CategoricalIsoHomFactorization
+import all Linear.CategoricalMorphismFactorizationEquality
+import all Linear.CategoricalScalarSquareComposition
+import all Linear.CheckedEqualityRightCache
+import all Linear.CheckedFoldEqualityRight
+import all Linear.CheckedFoldSquareRight
+import all Linear.CheckedOpaqueProof
+import all Linear.CheckedScalarMapCache
+import all Linear.CheckedSquareComparisonCache
+import all Linear.CheckedSquarePublicCodomain
+import all Linear.CheckedSquareTargetContext
+import all Linear.NativeFiniteGradedSourceActualHScalarProof
+import all Linear.NativeGeneralActualHOriginalScalar
+import all Linear.NativeGeneralActualHOriginalScalarComposite
+import all Linear.NativeGeneralPublicHAtomicIdentities
+import all Linear.NativeGeneralPublicHComparisonCalibration
+import all Linear.NativeGeneralPublicHComparisonHomCalibration
+import all Linear.NativeGeneralPublicHFactorizationHom
+import all Linear.NativeGeneralSourcePublicHCalibration
+import all Linear.NativeOriginalHScalarCachedOperator
+import all Linear.NativeProjectiveOriginalHScalarObjects
+import all Linear.NativeSourceActualHCachedComparisonScalar
+import all Linear.NativeSourceActualHCachedIdentity
+import all Linear.NativeSourceActualHCachedRightScalar
+import all Linear.NativeSourceActualHContextScalarSquare
+import all Linear.NativeSourceActualHRawScalarTheorem
+import all Linear.NativeSourcePublicHComparisonHomCalibration
+import all Linear.NativeSourcePublicHComparisonHomIdentity
+import all Linear.NativeSourcePublicHComparisonTypedHom
+import all Linear.NativeSourcePublicHScalarOperator
+set_option maxHeartbeats 5000
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.originalIsoHomFactorization_of_eq
+#print axioms LinearStudy.originalIsoHomFactorization_of_eq
+#check @LinearStudy.originalMorphismScalarSquare_of_eq
+#print axioms LinearStudy.originalMorphismScalarSquare_of_eq
+#check @LinearStudy.originalMorphismFactorization_eq_of_eq
+#print axioms LinearStudy.originalMorphismFactorization_eq_of_eq
+#check @LinearStudy.originalEndomorphismSquare_comp
+#print axioms LinearStudy.originalEndomorphismSquare_comp
+#check @LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar_proof
+#print axioms LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar_proof
+#check @LinearStudy.nativeIndependentFiniteNormalization_originalActualHComposite_baseScalar_general
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_originalActualHComposite_baseScalar_general
+#check @LinearStudy.nativeIndependentFiniteNormalization_originalActualHComposite_baseScalar_general_proof
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_originalActualHComposite_baseScalar_general_proof
+#check @LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_factorization
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_factorization
+#check @LinearStudy.nativeFiniteNormalization_sourcePublicHHom_calibration_general
+#print axioms LinearStudy.nativeFiniteNormalization_sourcePublicHHom_calibration_general
+#check @LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_eq_originalComposite
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_eq_originalComposite
+#check @LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_eq_originalComposite_proof
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_eq_originalComposite_proof
+#check @LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_factorization_proof
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_factorization_proof
+#check @LinearStudy.nativeFiniteNormalization_sourcePublicHHom_calibration_general_proof
+#print axioms LinearStudy.nativeFiniteNormalization_sourcePublicHHom_calibration_general_proof
+#check @LinearStudy.nativeOriginalActualHScalarOperator
+#print axioms LinearStudy.nativeOriginalActualHScalarOperator
+#check @LinearStudy.nativeProjectiveOrderedCechHomologyBaseScalarMap
+#print axioms LinearStudy.nativeProjectiveOrderedCechHomologyBaseScalarMap
+#check @LinearStudy.nativeProjectiveActualHBaseScalarMap
+#print axioms LinearStudy.nativeProjectiveActualHBaseScalarMap
+#check @LinearStudy.nativeOriginalSourceActualHComparisonHom
+#print axioms LinearStudy.nativeOriginalSourceActualHComparisonHom
+#check @LinearStudy.nativeFiniteGradedTwist_actualH_cachedComparisonScalar
+#print axioms LinearStudy.nativeFiniteGradedTwist_actualH_cachedComparisonScalar
+#check @LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_eq_original
+#print axioms LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_eq_original
+#check @LinearStudy.nativeFiniteGradedTwist_actualH_cachedRightScalar
+#print axioms LinearStudy.nativeFiniteGradedTwist_actualH_cachedRightScalar
+#check @LinearStudy.nativeOriginalSourceHContextObject
+#print axioms LinearStudy.nativeOriginalSourceHContextObject
+#check @LinearStudy.nativeFiniteGradedTwist_actualH_contextScalarSquare
+#print axioms LinearStudy.nativeFiniteGradedTwist_actualH_contextScalarSquare
+#check @LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar
+#print axioms LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar
+#check @LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_hom_original
+#print axioms LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_hom_original
+#check @LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_cachedOriginal
+#print axioms LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_cachedOriginal
+#check @LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_hom_original_proof
+#print axioms LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_hom_original_proof
+#check @LinearStudy.nativeOriginalSourceActualHPublicHom
+#print axioms LinearStudy.nativeOriginalSourceActualHPublicHom
+#check @LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_originalTyped
+#print axioms LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_originalTyped
+#check @LinearStudy.nativeOriginalActualHPublicScalarOperator
+#print axioms LinearStudy.nativeOriginalActualHPublicScalarOperator
+#print LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar_proof
+#print LinearStudy.nativeIndependentFiniteNormalization_originalActualHComposite_baseScalar_general_proof
+#print LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_eq_originalComposite_proof
+#print LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_factorization_proof
+#print LinearStudy.nativeFiniteNormalization_sourcePublicHHom_calibration_general_proof
+#print LinearStudy.nativeOriginalActualHScalarOperator
+#print LinearStudy.nativeProjectiveOrderedCechHomologyBaseScalarMap
+#print LinearStudy.nativeProjectiveActualHBaseScalarMap
+#print LinearStudy.nativeOriginalSourceActualHComparisonHom
+#print LinearStudy.nativeOriginalSourceHContextObject
+#print LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_hom_original_proof
+#print LinearStudy.nativeOriginalSourceActualHPublicHom
+#print LinearStudy.nativeOriginalActualHPublicScalarOperator
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool × Bool) := [(`LinearStudy.originalIsoHomFactorization_of_eq,true,true),(`LinearStudy.originalMorphismScalarSquare_of_eq,true,true),(`LinearStudy.originalMorphismFactorization_eq_of_eq,true,true),(`LinearStudy.originalEndomorphismSquare_comp,true,true),(`LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar_proof,true,false),(`LinearStudy.nativeIndependentFiniteNormalization_originalActualHComposite_baseScalar_general,true,true),(`LinearStudy.nativeIndependentFiniteNormalization_originalActualHComposite_baseScalar_general_proof,true,false),(`LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_factorization,true,true),(`LinearStudy.nativeFiniteNormalization_sourcePublicHHom_calibration_general,true,true),(`LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_eq_originalComposite,true,true),(`LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_eq_originalComposite_proof,true,false),(`LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_factorization_proof,true,false),(`LinearStudy.nativeFiniteNormalization_sourcePublicHHom_calibration_general_proof,true,false),(`LinearStudy.nativeOriginalActualHScalarOperator,false,false),(`LinearStudy.nativeProjectiveOrderedCechHomologyBaseScalarMap,false,false),(`LinearStudy.nativeProjectiveActualHBaseScalarMap,false,false),(`LinearStudy.nativeOriginalSourceActualHComparisonHom,false,false),(`LinearStudy.nativeFiniteGradedTwist_actualH_cachedComparisonScalar,true,true),(`LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_eq_original,true,true),(`LinearStudy.nativeFiniteGradedTwist_actualH_cachedRightScalar,true,true),(`LinearStudy.nativeOriginalSourceHContextObject,false,false),(`LinearStudy.nativeFiniteGradedTwist_actualH_contextScalarSquare,true,true),(`LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar,true,true),(`LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_hom_original,true,true),(`LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_cachedOriginal,true,true),(`LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_hom_original_proof,true,false),(`LinearStudy.nativeOriginalSourceActualHPublicHom,false,false),(`LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_originalTyped,true,true),(`LinearStudy.nativeOriginalActualHPublicScalarOperator,false,false)]
+  let env ← Lean.getEnv
+  for (n,want,wantTheorem) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"
+    let kernelKind := match info with
+      | .thmInfo _ => "theorem"
+      | .defnInfo _ => "definition"
+      | _ => "other"
+    unless kernelKind == (if wantTheorem then "theorem" else "definition") do
+      throwError m!"Incorrect kernel declaration kind: {n}"
+    Lean.logInfo m!"KINDCHECK:{n}:{kernelKind}"

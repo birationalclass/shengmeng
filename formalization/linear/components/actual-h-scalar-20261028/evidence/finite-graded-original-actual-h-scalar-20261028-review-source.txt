@@ -1,0 +1,926 @@
+===== Linear/CategoricalIsoHomFactorization.lean =====
+1: module
+2: public import Mathlib.CategoryTheory.Iso
+3: @[expose] public section
+4: set_option autoImplicit false
+5: set_option maxHeartbeats 5000
+6: namespace LinearStudy
+7: open CategoryTheory
+8: universe u v
+9: /-- Calibrate the underlying morphism of a specified factorization using
+10: an independently proved exact equality for its source comparison. -/
+11: theorem originalIsoHomFactorization_of_eq
+12:     {C : Type u} [Category.{v} C] {A B D : C}
+13:     (old : A ≅ D) (e : A ≅ B) (j : B ≅ D) (k : B ⟶ D)
+14:     (h : old = e ≪≫ j) (hj : j.hom = k) : old.hom = e.hom ≫ k := by
+15:   rw [h,Iso.trans_hom,hj]
+16: /-- Substitute a proved literal morphism equality in a checked scalar square. -/
+17: theorem originalMorphismScalarSquare_of_eq
+18:     {C : Type u} [Category.{v} C] {A D : C}
+19:     (old j : A ⟶ D) (h : old = j) (a : A ⟶ A) (d : D ⟶ D)
+20:     (w : a ≫ j = j ≫ d) : a ≫ old = old ≫ d := by
+21:   rw [h]
+22:   exact w
+23: end LinearStudy
+
+===== Linear/CategoricalMorphismFactorizationEquality.lean =====
+1: module
+2: public import Mathlib.CategoryTheory.Iso
+3: @[expose] public section
+4: set_option autoImplicit false
+5: set_option maxHeartbeats 5000
+6: namespace LinearStudy
+7: open CategoryTheory
+8: universe u v
+9: /-- Substitute a proved exact equality of the final morphism in a proved
+10: factorization. All categorical objects remain fixed. -/
+11: theorem originalMorphismFactorization_eq_of_eq
+12:     {C : Type u} [Category.{v} C] {A B D : C}
+13:     {old : A ⟶ D} {e : A ⟶ B} {j k : B ⟶ D}
+14:     (h : old = e ≫ j) (hj : j = k) : old = e ≫ k := by
+15:   rw [h,hj]
+16: end LinearStudy
+
+===== Linear/CategoricalScalarSquareComposition.lean =====
+1: module
+2: public import Mathlib.CategoryTheory.CommSq
+3: @[expose] public section
+4: set_option autoImplicit false
+5: set_option maxHeartbeats 5000
+6: namespace LinearStudy
+7: open CategoryTheory
+8: universe u v
+9: /-- Composition of two proved coefficient squares on fixed objects. -/
+10: theorem originalEndomorphismSquare_comp
+11:     {C : Type u} [Category.{v} C] {A B D : C}
+12:     {a : A ⟶ A} {e : A ⟶ B} {b : B ⟶ B} {j : B ⟶ D} {d : D ⟶ D}
+13:     (w1 : a ≫ e = e ≫ b) (w2 : b ≫ j = j ≫ d) :
+14:     a ≫ (e ≫ j) = (e ≫ j) ≫ d :=
+15:   ((show CommSq a e e b from ⟨w1⟩).vert_comp
+16:     (show CommSq b j j d from ⟨w2⟩)).w
+17: end LinearStudy
+
+===== Linear/CheckedEqualityRightCache.lean =====
+1: module
+2: public import Lean
+3: @[expose] public section
+4: set_option maxHeartbeats 5000
+5: open Lean Meta Elab Command
+6: /-- Cache the literal right morphism of a checked equality with the exact
+7: nominal Hom type carried by that equality. Ordinary kernel checking stays on. -/
+8: elab "cache_checked_equality_right " source:ident " as " target:ident : command => do
+9:   let stx ← getRef
+10:   withExporting (isExporting := true) <| liftTermElabM do
+11:     let ci ← getConstInfo source.getId
+12:     unless ci.isTheorem do throwError "Expected ordinary theorem"
+13:     forallTelescope ci.type fun xs prop => do
+14:       let prop ← whnf prop
+15:       let some (homTy,_,rhs) ← matchEq? prop | throwError "Expected equality"
+16:       let type ← mkForallFVars xs homTy
+17:       let value ← mkLambdaFVars xs rhs
+18:       addDecl (.defnDecl {
+19:         name := target.getId
+20:         levelParams := ci.levelParams
+21:         type := type
+22:         value := value
+23:         hints := ReducibilityHints.abbrev
+24:         safety := DefinitionSafety.safe
+25:       }) (forceExpose := true)
+26:       modifyEnv (addNoncomputable · target.getId)
+27:   addDeclarationRangesFromSyntax target.getId stx target
+
+===== Linear/CheckedFoldEqualityRight.lean =====
+1: module
+2: public import Lean
+3: @[expose] public section
+4: set_option maxHeartbeats 5000
+5: open Lean Meta Elab Command
+6: /-- Fold the right side of a checked equality using a safe public definition.
+7: Only the existing binder arguments are supplied;the normal kernel checks
+8: both the new full equality and its existing proof. -/
+9: elab "checked_fold_equality_right " source:ident " with " cached:ident
+10:     " as " target:ident : command => do
+11:   let stx ← getRef
+12:   withExporting (isExporting := true) <| liftTermElabM do
+13:     let ci ← getConstInfo source.getId
+14:     unless ci.isTheorem do throwError "Expected ordinary theorem"
+15:     let di ← getConstInfoDefn cached.getId
+16:     unless di.safety == .safe do throwError "Expected safe definition"
+17:     unless ci.levelParams == di.levelParams do throwError "Universe mismatch"
+18:     let levels := ci.levelParams.map Level.param
+19:     forallTelescope ci.type fun xs prop => do
+20:       let prop ← whnf prop
+21:       let some _ ← matchEq? prop | throwError "Expected equality"
+22:       let right := mkAppN (mkConst cached.getId levels) xs
+23:       let newProp := mkAppN prop.getAppFn (prop.getAppArgs.set! 2 right)
+24:       let type ← mkForallFVars xs newProp
+25:       let value := mkConst source.getId levels
+26:       addDecl (.thmDecl {name := target.getId,levelParams := ci.levelParams,type,value})
+27:         (forceExpose := true)
+28:   addDeclarationRangesFromSyntax target.getId stx target
+
+===== Linear/CheckedFoldSquareRight.lean =====
+1: module
+2: public import Lean
+3: public import Mathlib.CategoryTheory.Functor.Basic
+4: @[expose] public section
+5: set_option maxHeartbeats 5000
+6: open Lean Meta Elab Command
+7: /-- Fold only the literal final scalar map in a checked square.
+8: The existing public map has exactly the same arguments and the ordinary
+9: kernel checks the complete resulting proof. No equality is postulated. -/
+10: elab "checked_fold_square_right " source:ident " with " cached:ident
+11:     " as " target:ident : command => do
+12:   let stx ← getRef
+13:   withExporting (isExporting := true) <| liftTermElabM do
+14:     let ci ← getConstInfo source.getId
+15:     unless ci.isTheorem do throwError "Expected an existing ordinary theorem"
+16:     let di ← getConstInfoDefn cached.getId
+17:     unless di.safety == .safe do throwError "Expected a safe cached map"
+18:     unless ci.levelParams == di.levelParams do throwError "Universe parameters must match"
+19:     let levels := ci.levelParams.map Level.param
+20:     forallTelescope ci.type fun xs prop => do
+21:       let prop ← whnf prop
+22:       let some (_,_,rhs) ← matchEq? prop | throwError "Expected an equality"
+23:       unless rhs.isAppOf ``CategoryTheory.CategoryStruct.comp do throwError "Expected right composition"
+24:       let args := rhs.getAppArgs
+25:       let map := mkAppN (mkConst cached.getId levels) xs
+26:       let rhs2 := mkAppN rhs.getAppFn (args.set! (args.size-1) map)
+27:       let pargs := prop.getAppArgs
+28:       let newProp := mkAppN prop.getAppFn (pargs.set! 2 rhs2)
+29:       let type ← mkForallFVars xs newProp
+30:       let value := mkConst source.getId levels
+31:       addDecl (.thmDecl {name := target.getId,levelParams := ci.levelParams,type,value})
+32:         (forceExpose := true)
+33:   addDeclarationRangesFromSyntax target.getId stx target
+
+===== Linear/CheckedOpaqueProof.lean =====
+1: module
+2: public import Lean
+3: @[expose] public section
+4: set_option maxHeartbeats 5000
+5: open Lean Meta Elab Command
+6: /-- Give an existing safe proof its EXACT original type as an ordinary
+7: opaque theorem. No type is inferred again or changed. The ordinary
+8: kernel checks the supplied proof constant against that identical type. -/
+9: elab "checked_opaque_proof " source:ident " as " target:ident : command => do
+10:   let stx ← getRef
+11:   withExporting (isExporting := true) <| liftTermElabM do
+12:     let ci ← getConstInfo source.getId
+13:     match ci with
+14:     | .defnInfo d => unless d.safety == .safe do throwError "Only safe proof definitions are accepted"
+15:     | .thmInfo _ => pure ()
+16:     | _ => throwError "Expected an existing safe proof"
+17:     unless (← isProp ci.type) do throwError "The existing constant must be a proof"
+18:     let value := mkConst source.getId (ci.levelParams.map Level.param)
+19:     addDecl (.thmDecl {name := target.getId,levelParams := ci.levelParams,type := ci.type,value})
+20:       (forceExpose := true)
+21:   addDeclarationRangesFromSyntax target.getId stx target
+
+===== Linear/CheckedScalarMapCache.lean =====
+1: module
+2: public import Lean
+3: public import Mathlib.CategoryTheory.Functor.Basic
+4: @[expose] public section
+5: set_option maxHeartbeats 5000
+6: open Lean Meta Elab Command
+7: /-- Cache the EXISTING right-hand endomorphism in a checked scalar
+8: square. The value must be a literal functor map. Its endomorphism type
+9: uses the EXACT target object in that checked square. This defines an
+10: object only,never a proof,and never transports an action by an iso. -/
+11: elab "cache_original_scalar_map " source:ident " as " target:ident : command => do
+12:   let stx ← getRef
+13:   withExporting (isExporting := true) <| liftTermElabM do
+14:     let ci ← getConstInfo source.getId
+15:     unless ci.isTheorem do throwError "Expected an existing ordinary theorem"
+16:     let levels := ci.levelParams.map Level.param
+17:     forallTelescope ci.type fun xs prop => do
+18:       let prop ← whnf prop
+19:       let some (homTy,_,rhs) ← matchEq? prop | throwError "Expected an equality"
+20:       unless homTy.isAppOfArity ``Quiver.Hom 4 do throwError "Expected a categorical square"
+21:       unless rhs.isAppOf ``CategoryTheory.CategoryStruct.comp do throwError "Expected right-hand composition"
+22:       let map := rhs.getAppArgs.back!
+23:       unless map.isAppOf ``CategoryTheory.Functor.map do throwError "Expected the ORIGINAL functor map"
+24:       let args := homTy.getAppArgs
+25:       let obj := args[3]!
+26:       let endTy := mkAppN homTy.getAppFn #[args[0]!,args[1]!,obj,obj]
+27:       let type ← mkForallFVars xs endTy
+28:       let value ← mkLambdaFVars xs map
+29:       addDecl (.defnDecl {
+30:         name := target.getId
+31:         levelParams := ci.levelParams
+32:         type := type
+33:         value := value
+34:         hints := ReducibilityHints.abbrev
+35:         safety := DefinitionSafety.safe
+36:       }) (forceExpose := true)
+37:       modifyEnv (addNoncomputable · target.getId)
+38:   addDeclarationRangesFromSyntax target.getId stx target
+
+===== Linear/CheckedSquareComparisonCache.lean =====
+1: module
+2: public import Lean
+3: public import Mathlib.CategoryTheory.Functor.Basic
+4: @[expose] public section
+5: set_option maxHeartbeats 5000
+6: open Lean Meta Elab Command
+7: /-- Cache the literal comparison morphism in an original scalar square.
+8: The last scalar argument is removed; its occurrence would be rejected. -/
+9: elab "cache_original_square_comparison " source:ident " as " target:ident : command => do
+10:   let stx ← getRef
+11:   withExporting (isExporting := true) <| liftTermElabM do
+12:     let ci ← getConstInfo source.getId
+13:     unless ci.isTheorem do throwError "Expected an ordinary theorem"
+14:     forallTelescope ci.type fun xs prop => do
+15:       let prop ← whnf prop
+16:       let some (homTy,lhs,_) ← matchEq? prop | throwError "Expected equality"
+17:       unless lhs.isAppOf ``CategoryTheory.CategoryStruct.comp do throwError "Expected composition"
+18:       let hom := lhs.getAppArgs.back!
+19:       unless homTy.isAppOfArity ``Quiver.Hom 4 do throwError "Expected categorical Hom"
+20:       unless !(hom.containsFVar xs.back!.fvarId!) do throwError "Comparison depends on scalar"
+21:       let type ← mkForallFVars xs.pop homTy
+22:       let value ← mkLambdaFVars xs.pop hom
+23:       addDecl (.defnDecl {
+24:         name := target.getId
+25:         levelParams := ci.levelParams
+26:         type := type
+27:         value := value
+28:         hints := ReducibilityHints.abbrev
+29:         safety := DefinitionSafety.safe
+30:       }) (forceExpose := true)
+31:       modifyEnv (addNoncomputable · target.getId)
+32:   addDeclarationRangesFromSyntax target.getId stx target
+33: /-- Fold just the same comparison on both sides of a proved scalar square.
+34: The ordinary kernel checks the new theorem against the original proof. -/
+35: elab "checked_fold_square_comparison " source:ident " with " cached:ident
+36:     " as " target:ident : command => do
+37:   let stx ← getRef
+38:   withExporting (isExporting := true) <| liftTermElabM do
+39:     let ci ← getConstInfo source.getId
+40:     unless ci.isTheorem do throwError "Expected ordinary theorem"
+41:     let di ← getConstInfoDefn cached.getId
+42:     unless di.safety == .safe do throwError "Expected safe comparison"
+43:     unless ci.levelParams == di.levelParams do throwError "Universe mismatch"
+44:     let levels := ci.levelParams.map Level.param
+45:     forallTelescope ci.type fun xs prop => do
+46:       let prop ← whnf prop
+47:       let some (_,lhs,rhs) ← matchEq? prop | throwError "Expected equality"
+48:       unless lhs.isAppOf ``CategoryTheory.CategoryStruct.comp && rhs.isAppOf ``CategoryTheory.CategoryStruct.comp do
+49:         throwError "Expected coefficient square"
+50:       let hom := mkAppN (mkConst cached.getId levels) xs.pop
+51:       let la := lhs.getAppArgs
+52:       let ra := rhs.getAppArgs
+53:       let lhs2 := mkAppN lhs.getAppFn (la.set! (la.size-1) hom)
+54:       let rhs2 := mkAppN rhs.getAppFn (ra.set! (ra.size-2) hom)
+55:       let pa := prop.getAppArgs
+56:       let newProp := mkAppN prop.getAppFn ((pa.set! 1 lhs2).set! 2 rhs2)
+57:       let type ← mkForallFVars xs newProp
+58:       let value := mkConst source.getId levels
+59:       addDecl (.thmDecl {name := target.getId,levelParams := ci.levelParams,type,value})
+60:         (forceExpose := true)
+61:   addDeclarationRangesFromSyntax target.getId stx target
+
+===== Linear/CheckedSquarePublicCodomain.lean =====
+1: module
+2: public import Lean
+3: public import Mathlib.CategoryTheory.Functor.Basic
+4: @[expose] public section
+5: set_option maxHeartbeats 5000
+6: open Lean Meta Elab Command
+7: /-- Cache the literal scalar operator in a checked square on the exact
+8: public codomain of an independently calibrated comparison morphism. -/
+9: elab "cache_square_right_on_codomain " source:ident " of " comparison:ident
+10:     " as " target:ident : command => do
+11:   let stx ← getRef
+12:   withExporting (isExporting := true) <| liftTermElabM do
+13:     let ci ← getConstInfo source.getId
+14:     unless ci.isTheorem do throwError "Expected ordinary theorem"
+15:     let di ← getConstInfoDefn comparison.getId
+16:     unless di.safety == .safe do throwError "Expected safe comparison"
+17:     unless ci.levelParams == di.levelParams do throwError "Universe mismatch"
+18:     let levels := ci.levelParams.map Level.param
+19:     forallTelescope ci.type fun xs prop => do
+20:       let prop ← whnf prop
+21:       let some (_,_,rhs) ← matchEq? prop | throwError "Expected equality"
+22:       unless rhs.isAppOf ``CategoryTheory.CategoryStruct.comp do throwError "Expected square"
+23:       let pubHom := mkAppN (mkConst comparison.getId levels) xs.pop
+24:       let pubTy ← inferType pubHom
+25:       unless pubTy.isAppOfArity ``Quiver.Hom 4 do throwError "Expected nominal public Hom type"
+26:       let ha := pubTy.getAppArgs
+27:       let obj := ha[3]!
+28:       let endTy := mkAppN pubTy.getAppFn ((ha.set! 2 obj).set! 3 obj)
+29:       let type ← mkForallFVars xs endTy
+30:       let value ← mkLambdaFVars xs rhs.getAppArgs.back!
+31:       addDecl (.defnDecl {
+32:         name := target.getId
+33:         levelParams := ci.levelParams
+34:         type := type
+35:         value := value
+36:         hints := ReducibilityHints.abbrev
+37:         safety := DefinitionSafety.safe
+38:       }) (forceExpose := true)
+39:       modifyEnv (addNoncomputable · target.getId)
+40:   addDeclarationRangesFromSyntax target.getId stx target
+41: /-- Name the target of a checked scalar square by the exact codomain
+42: of its calibrated public comparison. Normal kernel conversion is required. -/
+43: elab "checked_square_on_codomain " source:ident " of " comparison:ident
+44:     " as " target:ident : command => do
+45:   let stx ← getRef
+46:   withExporting (isExporting := true) <| liftTermElabM do
+47:     let ci ← getConstInfo source.getId
+48:     unless ci.isTheorem do throwError "Expected ordinary theorem"
+49:     let di ← getConstInfoDefn comparison.getId
+50:     unless di.safety == .safe do throwError "Expected safe comparison"
+51:     unless ci.levelParams == di.levelParams do throwError "Universe mismatch"
+52:     let levels := ci.levelParams.map Level.param
+53:     forallTelescope ci.type fun xs prop => do
+54:       let prop ← whnf prop
+55:       let some (homTy,_,_) ← matchEq? prop | throwError "Expected equality"
+56:       unless homTy.isAppOfArity ``Quiver.Hom 4 do throwError "Expected Hom"
+57:       let obj := homTy.getAppArgs[3]!
+58:       let pubHom := mkAppN (mkConst comparison.getId levels) xs.pop
+59:       let pubTy ← inferType pubHom
+60:       unless pubTy.isAppOfArity ``Quiver.Hom 4 do throwError "Expected public Hom"
+61:       let pubObj := pubTy.getAppArgs[3]!
+62:       let newProp := prop.replace fun e => if e == obj then some pubObj else none
+63:       let type ← mkForallFVars xs newProp
+64:       let value := mkConst source.getId levels
+65:       addDecl (.thmDecl {name := target.getId,levelParams := ci.levelParams,type,value})
+66:         (forceExpose := true)
+67:   addDeclarationRangesFromSyntax target.getId stx target
+
+===== Linear/CheckedSquareTargetContext.lean =====
+1: module
+2: public import Lean
+3: public import Mathlib.CategoryTheory.Functor.Basic
+4: @[expose] public section
+5: set_option maxHeartbeats 5000
+6: open Lean Meta Elab Command
+7: /-- Cache the exact target of an original scalar square,with the scalar
+8: binder removed. This only names the original object. -/
+9: elab "cache_square_target_context " source:ident " as " target:ident : command => do
+10:   let stx ← getRef
+11:   withExporting (isExporting := true) <| liftTermElabM do
+12:     let ci ← getConstInfo source.getId
+13:     unless ci.isTheorem do throwError "Expected ordinary theorem"
+14:     forallTelescope ci.type fun xs prop => do
+15:       let prop ← whnf prop
+16:       let some (homTy,_,_) ← matchEq? prop | throwError "Expected equality"
+17:       unless homTy.isAppOfArity ``Quiver.Hom 4 do throwError "Expected Hom"
+18:       let args := homTy.getAppArgs
+19:       let obj := args[3]!
+20:       unless !(obj.containsFVar xs.back!.fvarId!) do throwError "Object depends on scalar"
+21:       let type ← mkForallFVars xs.pop args[0]!
+22:       let value ← mkLambdaFVars xs.pop obj
+23:       addDecl (.defnDecl {
+24:         name := target.getId
+25:         levelParams := ci.levelParams
+26:         type := type
+27:         value := value
+28:         hints := ReducibilityHints.abbrev
+29:         safety := DefinitionSafety.safe
+30:       }) (forceExpose := true)
+31:       modifyEnv (addNoncomputable · target.getId)
+32:   addDeclarationRangesFromSyntax target.getId stx target
+33: /-- Replace occurrences of one exact original target by its safe public
+34: abbreviation. The normal kernel checks the full statement and proof. -/
+35: elab "checked_fold_square_target " source:ident " with " cached:ident
+36:     " as " target:ident : command => do
+37:   let stx ← getRef
+38:   withExporting (isExporting := true) <| liftTermElabM do
+39:     let ci ← getConstInfo source.getId
+40:     unless ci.isTheorem do throwError "Expected ordinary theorem"
+41:     let di ← getConstInfoDefn cached.getId
+42:     unless di.safety == .safe do throwError "Expected safe object definition"
+43:     unless ci.levelParams == di.levelParams do throwError "Universe mismatch"
+44:     let levels := ci.levelParams.map Level.param
+45:     forallTelescope ci.type fun xs prop => do
+46:       let prop ← whnf prop
+47:       let some (homTy,_,_) ← matchEq? prop | throwError "Expected equality"
+48:       unless homTy.isAppOfArity ``Quiver.Hom 4 do throwError "Expected Hom"
+49:       let obj := homTy.getAppArgs[3]!
+50:       let obj2 := mkAppN (mkConst cached.getId levels) xs.pop
+51:       let newProp := prop.replace fun e => if e == obj then some obj2 else none
+52:       if newProp == prop then throwError "No exact target occurrence"
+53:       let type ← mkForallFVars xs newProp
+54:       let value := mkConst source.getId levels
+55:       addDecl (.thmDecl {name := target.getId,levelParams := ci.levelParams,type,value})
+56:         (forceExpose := true)
+57:   addDeclarationRangesFromSyntax target.getId stx target
+
+===== Linear/NativeFiniteGradedSourceActualHScalarProof.lean =====
+1: module
+2: public import Linear.NativeSourceActualHCachedComparison
+3: public import Linear.NativeProjectiveOriginalHScalarObjects
+4: @[expose] public section
+5: noncomputable section
+6: set_option autoImplicit false
+7: set_option maxHeartbeats 5000
+8: set_option backward.isDefEq.respectTransparency true
+9: set_option backward.isDefEq.respectTransparency.types true
+10: namespace LinearStudy
+11: open AlgebraicGeometry CategoryTheory CategoryTheory.Limits Opposite
+12: universe u
+13: variable {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+14: variable [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M]
+15: variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+16: variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+17: variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+18: variable [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite S M]
+19: variable {ι : Type u} [LinearOrder ι] [Finite ι] (b : ι → S) (hb : ∀ i,b i ∈ B 1)
+20: attribute [local irreducible] nativeProjectiveModuleSheaf nativeProjectiveModulePresheaf
+21:   schemeModuleToActualAbelianSheaf originalGlobalModuleScalar
+22:   finiteTypeNativeProj_orderedActualHigherHIso noetherianFiniteOrderedAffineCover_actualHigherHIso
+23:   topFiniteOrderedCech_actualHigherHIso_of_localAcyclic orderedFreeSheafActualHomComplexIso
+24:   acyclicResolutionActualCochainExtIso orderedTopAbelianCechCoefficientMap orderedTopAbelianCechComplex
+25: /-- Derived actual source-H scalar naturality before folding the SAME cached comparison name. -/
+26: def nativeFiniteGradedTwist_actualHigherHIso_baseScalar_proof
+27:     (hcover : (⨆ i,Proj.basicOpen B (b i)) = ⊤) (k : ℤ) (q : ℕ)
+28:     (r : Γ(Spec (CommRingCat.of K),⊤)) :=
+29:   letI := nativeFiniteGradedTwist_isQuasicoherent_of_cover B D hD k b hb hcover
+30:   finiteTypeNativeProj_orderedActualHigherHIso_coefficient_naturality B b hb hcover
+31:     (originalGlobalModuleScalar
+32:       ((Proj.toSpecZero B ≫ Spec.map (CommRingCat.ofHom (algebraMap K (B 0)))).appTop r)
+33:       (nativeProjectiveModuleSheaf B D hD k)) q
+34: end LinearStudy
+
+===== Linear/NativeGeneralActualHOriginalScalar.lean =====
+1: module
+2: public import Linear.CheckedOpaqueProof
+3: public import Linear.NativeGeneralActualHOriginalScalarComposite
+4: @[expose] public section
+5: set_option maxHeartbeats 5000
+6: checked_opaque_proof LinearStudy.nativeIndependentFiniteNormalization_originalActualHComposite_baseScalar_general_proof
+7:   as LinearStudy.nativeIndependentFiniteNormalization_originalActualHComposite_baseScalar_general
+8: #check LinearStudy.nativeIndependentFiniteNormalization_originalActualHComposite_baseScalar_general
+9: #print axioms LinearStudy.nativeIndependentFiniteNormalization_originalActualHComposite_baseScalar_general
+
+===== Linear/NativeGeneralActualHOriginalScalarComposite.lean =====
+1: module
+2: public import Linear.NativeGeneralSourceAmbientOrderedTwistCech
+3: public import Linear.CategoricalScalarSquareComposition
+4: public import Linear.SchemeModuleActualCohomologyGroup
+5: public import Linear.NativeGeneralSourceAmbientCechHomologyScalar
+6: public import Linear.NativeSourceActualHContextScalarSquare
+7: public import Linear.NativeOriginalHScalarCachedOperator
+8: public import Linear.CategoricalComparisonCoefficientFactorization
+9: public import Linear.FiniteNormalizationCoordinateCover
+10: public import Linear.NativeSourceActualHCachedComparison
+11: public import Linear.NativeProjectiveTwistFinitePresentation
+12: /- Arbitrary finite coefficients;the original fraction maps,ordered signs and actual-H objects are retained.Normalized dualizing trace remains OPEN. -/
+13: @[expose] public section
+14: noncomputable section
+15: set_option autoImplicit false
+16: set_option backward.isDefEq.respectTransparency true
+17: set_option backward.isDefEq.respectTransparency.types true
+18: set_option maxHeartbeats 5000
+19: namespace LinearStudy
+20: open AlgebraicGeometry CategoryTheory Opposite
+21: universe u
+22: variable {K R S M : Type u} [Field K] [CommRing R] [CommRing S]
+23: variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+24: variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+25: variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+26: variable [AddCommGroup M] [Module K M] [Module R M] [Module S M]
+27: variable [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M]
+28: variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+29: variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n : ℤ)+j))
+30: variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n : ℤ)+j))
+31: variable [IsDomain R] [IsDomain S]
+32: variable [IsNoetherianRing R] [IsNoetherianRing S] [Algebra.FiniteType K S]
+33: variable [Module.Finite R S] [Module.Finite R M] [Module.Finite S M]
+34: variable {ι κ : Type u} [LinearOrder ι] [Finite ι]
+35: variable (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+36: variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+37: attribute [local irreducible] nativeProjectiveModuleSheaf schemeModuleToActualAbelianSheaf
+38:   nativeIndependentSourceAmbientOrderedTwistCechIso_general
+39: 
+40: attribute [local irreducible] nativeProjectiveModulePresheaf originalGlobalModuleScalar
+41:   orderedFormalCechComplex CategoryTheory.Limits.FormalCoproduct.evalOp
+42:   orderedTopAbelianCechComplex orderedTopAbelianCechCoefficientMap
+43:   nativeIndependentFiniteNormalization_cachedCechHomologyIso_general
+44:   finiteTypeNativeProj_orderedActualHigherHIso noetherianFiniteOrderedAffineCover_actualHigherHIso
+45:   topFiniteOrderedCech_actualHigherHIso_of_localAcyclic
+46:   orderedFreeSheafActualHomComplexIso acyclicResolutionActualCochainExtIso
+47: /-- The ORIGINAL actual-H coefficient square obtained by composing the
+48: proved ambient/source Cech square with the proved original source-H square.
+49: Both coefficient actions are retained literally; arbitrary finite graded
+50: coefficients,including torsion,are allowed. -/
+51: def nativeIndependentFiniteNormalization_originalActualHComposite_baseScalar_general_proof
+52:     (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+53:     (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ)
+54:     (r : Γ(Spec (CommRingCat.of K),⊤)) :=
+55:   let b := fun i => algebraMap R S (a i)
+56:   let hb := fun i => (normalizationBaseGradedRingHom A B).map_mem (ha i)
+57:   let hcover := nativeFiniteNormalization_sourceCoordinateCover A B a ha hgenR
+58:   originalEndomorphismSquare_comp (C := AddCommGrpCat.{u})
+59:     (A := nativeProjectiveOrderedCechHomologyObject A D hR a k (q+1))
+60:     (B := nativeProjectiveOrderedCechHomologyObject B D hS b k (q+1))
+61:     (D := nativeOriginalSourceHContextObject B D hS b hb hcover k q)
+62:     (nativeIndependentFiniteNormalization_cachedCechHomologyIso_baseScalar_general A B D hR hS a ha c hc hgenR hgenC k q r)
+63:     (nativeFiniteGradedTwist_actualH_contextScalarSquare B D hS b hb hcover k q r)
+64: end LinearStudy
+
+===== Linear/NativeGeneralPublicHAtomicIdentities.lean =====
+1: module
+2: public import Linear.CheckedOpaqueProof
+3: public import Linear.NativeGeneralPublicHFactorizationHom
+4: public import Linear.NativeGeneralSourcePublicHCalibration
+5: @[expose] public section
+6: set_option maxHeartbeats 5000
+7: checked_opaque_proof LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_factorization_proof
+8:   as LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_factorization
+9: checked_opaque_proof LinearStudy.nativeFiniteNormalization_sourcePublicHHom_calibration_general_proof
+10:   as LinearStudy.nativeFiniteNormalization_sourcePublicHHom_calibration_general
+11: #check LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_factorization
+12: #print axioms LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_factorization
+13: #check LinearStudy.nativeFiniteNormalization_sourcePublicHHom_calibration_general
+14: #print axioms LinearStudy.nativeFiniteNormalization_sourcePublicHHom_calibration_general
+
+===== Linear/NativeGeneralPublicHComparisonCalibration.lean =====
+1: module
+2: public import Linear.CheckedOpaqueProof
+3: public import Linear.NativeGeneralPublicHComparisonHomCalibration
+4: @[expose] public section
+5: set_option maxHeartbeats 5000
+6: checked_opaque_proof LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_eq_originalComposite_proof
+7:   as LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_eq_originalComposite
+8: #check LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_eq_originalComposite
+9: #print axioms LinearStudy.nativeIndependentFiniteNormalization_publicActualHHom_eq_originalComposite
+
+===== Linear/NativeGeneralPublicHComparisonHomCalibration.lean =====
+1: module
+2: public import Linear.NativeGeneralPublicHAtomicIdentities
+3: public import Linear.CategoricalMorphismFactorizationEquality
+4: public import Linear.SchemeModuleActualCohomologyGroup
+5: @[expose] public section
+6: noncomputable section
+7: set_option autoImplicit false
+8: set_option backward.isDefEq.respectTransparency true
+9: set_option backward.isDefEq.respectTransparency.types true
+10: set_option maxHeartbeats 5000
+11: namespace LinearStudy
+12: open AlgebraicGeometry CategoryTheory Opposite
+13: universe u
+14: variable {K R S M : Type u} [Field K] [CommRing R] [CommRing S]
+15: variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+16: variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+17: variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+18: variable [AddCommGroup M] [Module K M] [Module R M] [Module S M]
+19: variable [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M]
+20: variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+21: variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n : ℤ)+j))
+22: variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n : ℤ)+j))
+23: variable [IsDomain R] [IsDomain S]
+24: variable [IsNoetherianRing R] [IsNoetherianRing S] [Algebra.FiniteType K S]
+25: variable [Module.Finite R S] [Module.Finite R M] [Module.Finite S M]
+26: variable {ι κ : Type u} [LinearOrder ι] [Finite ι]
+27: variable (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+28: variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+29: attribute [local irreducible] nativeProjectiveModuleSheaf schemeModuleToActualAbelianSheaf
+30:   nativeIndependentSourceAmbientOrderedTwistCechIso_general
+31: attribute [local instance] schemeModuleActualCohomologyAddCommGroup
+32: attribute [local irreducible] nativeIndependentFiniteNormalization_actualHigherHIso_general
+33:   nativeIndependentFiniteNormalization_cachedCechHomologyIso_general
+34:   nativeFiniteGradedTwist_cachedActualHigherHIso
+35:   nativeProjectiveOrderedCechHomologyObject schemeModuleActualHObject
+36: /-- Exact morphism calibration of the SAME public general comparison
+37: from two independently verified original equalities. -/
+38: def nativeIndependentFiniteNormalization_publicActualHHom_eq_originalComposite_proof
+39:     (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+40:     (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) :=
+41:   originalMorphismFactorization_eq_of_eq (C := AddCommGrpCat.{u})
+42:     (A := nativeProjectiveOrderedCechHomologyObject A D hR a k (q+1))
+43:     (B := nativeProjectiveOrderedCechHomologyObject B D hS (fun i => algebraMap R S (a i)) k (q+1))
+44:     (D := schemeModuleActualHObject (Proj B) (nativeProjectiveModuleSheaf B D hS k) (q+1))
+45:     (nativeIndependentFiniteNormalization_publicActualHHom_factorization A B D hR hS a ha c hc hgenR hgenC k q)
+46:     (nativeFiniteNormalization_sourcePublicHHom_calibration_general A B D hS a ha hgenR k q)
+47: end LinearStudy
+
+===== Linear/NativeGeneralPublicHFactorizationHom.lean =====
+1: module
+2: public import Linear.NativeGeneralNormalizationActualHFactorization
+3: public import Linear.NativeSourcePublicHComparisonTypedHom
+4: public import Linear.CategoricalIsoHomFactorization
+5: public import Linear.SchemeModuleActualCohomologyGroup
+6: @[expose] public section
+7: noncomputable section
+8: set_option autoImplicit false
+9: set_option backward.isDefEq.respectTransparency true
+10: set_option backward.isDefEq.respectTransparency.types true
+11: set_option maxHeartbeats 5000
+12: namespace LinearStudy
+13: open AlgebraicGeometry CategoryTheory Opposite
+14: universe u
+15: variable {K R S M : Type u} [Field K] [CommRing R] [CommRing S]
+16: variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+17: variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+18: variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+19: variable [AddCommGroup M] [Module K M] [Module R M] [Module S M]
+20: variable [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M]
+21: variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+22: variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n : ℤ)+j))
+23: variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n : ℤ)+j))
+24: variable [IsDomain R] [IsDomain S]
+25: variable [IsNoetherianRing R] [IsNoetherianRing S] [Algebra.FiniteType K S]
+26: variable [Module.Finite R S] [Module.Finite R M] [Module.Finite S M]
+27: variable {ι κ : Type u} [LinearOrder ι] [Finite ι]
+28: variable (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+29: variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+30: attribute [local irreducible] nativeProjectiveModuleSheaf schemeModuleToActualAbelianSheaf
+31:   nativeIndependentSourceAmbientOrderedTwistCechIso_general
+32: attribute [local instance] schemeModuleActualCohomologyAddCommGroup
+33: attribute [local irreducible] nativeIndependentFiniteNormalization_actualHigherHIso_general
+34:   nativeIndependentFiniteNormalization_cachedCechHomologyIso_general
+35:   nativeFiniteGradedTwist_cachedActualHigherHIso
+36:   nativeProjectiveOrderedCechHomologyObject schemeModuleActualHObject
+37: /-- The underlying Hom equality of the already proved SAME public factorization. -/
+38: def nativeIndependentFiniteNormalization_publicActualHHom_factorization_proof
+39:     (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+40:     (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) :=
+41:   congrArg (fun e => e.hom)
+42:     (nativeIndependentFiniteNormalization_actualHigherHIso_factorization_general A B D hR hS a ha c hc hgenR hgenC k q)
+43: end LinearStudy
+
+===== Linear/NativeGeneralSourcePublicHCalibration.lean =====
+1: module
+2: public import Linear.NativeGeneralNormalizationActualHFactorization
+3: public import Linear.NativeSourcePublicHComparisonTypedHom
+4: public import Linear.CategoricalIsoHomFactorization
+5: public import Linear.SchemeModuleActualCohomologyGroup
+6: @[expose] public section
+7: noncomputable section
+8: set_option autoImplicit false
+9: set_option backward.isDefEq.respectTransparency true
+10: set_option backward.isDefEq.respectTransparency.types true
+11: set_option maxHeartbeats 5000
+12: namespace LinearStudy
+13: open AlgebraicGeometry CategoryTheory Opposite
+14: universe u
+15: variable {K R S M : Type u} [Field K] [CommRing R] [CommRing S]
+16: variable [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+17: variable (A : ℕ → Submodule K R) [GradedAlgebra A]
+18: variable (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+19: variable [AddCommGroup M] [Module K M] [Module R M] [Module S M]
+20: variable [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M]
+21: variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+22: variable (hR : ∀ n : ℕ,∀ j : ℤ,∀ z : R,z ∈ A n → ∀ x : M,x ∈ D j → z • x ∈ D ((n : ℤ)+j))
+23: variable (hS : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n : ℤ)+j))
+24: variable [IsDomain R] [IsDomain S]
+25: variable [IsNoetherianRing R] [IsNoetherianRing S] [Algebra.FiniteType K S]
+26: variable [Module.Finite R S] [Module.Finite R M] [Module.Finite S M]
+27: variable {ι κ : Type u} [LinearOrder ι] [Finite ι]
+28: variable (a : ι → R) (ha : ∀ i,a i ∈ A 1)
+29: variable (c : κ → S) (hc : ∀ i,c i ∈ B 1)
+30: attribute [local irreducible] nativeProjectiveModuleSheaf schemeModuleToActualAbelianSheaf
+31:   nativeIndependentSourceAmbientOrderedTwistCechIso_general
+32: attribute [local instance] schemeModuleActualCohomologyAddCommGroup
+33: attribute [local irreducible] nativeIndependentFiniteNormalization_actualHigherHIso_general
+34:   nativeIndependentFiniteNormalization_cachedCechHomologyIso_general
+35:   nativeFiniteGradedTwist_cachedActualHigherHIso
+36:   nativeProjectiveOrderedCechHomologyObject schemeModuleActualHObject
+37: /-- Exact source comparison calibration on the pulled-back ambient cover. -/
+38: def nativeFiniteNormalization_sourcePublicHHom_calibration_general_proof
+39:     (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (k : ℤ) (q : ℕ) :=
+40:   let b := fun i => algebraMap R S (a i)
+41:   let hb := fun i => (normalizationBaseGradedRingHom A B).map_mem (ha i)
+42:   let hcover := nativeFiniteNormalization_sourceCoordinateCover A B a ha hgenR
+43:   nativeFiniteGradedTwist_publicActualHHom_eq_originalTyped B D hS b hb hcover k q
+44: end LinearStudy
+
+===== Linear/NativeOriginalHScalarCachedOperator.lean =====
+1: module
+2: public import Linear.CheckedScalarMapCache
+3: public import Linear.NativeSourceActualHRawScalarTheorem
+4: @[expose] public section
+5: set_option maxHeartbeats 5000
+6: cache_original_scalar_map LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar
+7:   as LinearStudy.nativeOriginalActualHScalarOperator
+8: #check LinearStudy.nativeOriginalActualHScalarOperator
+9: #print axioms LinearStudy.nativeOriginalActualHScalarOperator
+
+===== Linear/NativeProjectiveOriginalHScalarObjects.lean =====
+1: module
+2: public import Linear.NativeProjectiveOrderedBaseScalarMap
+3: public import Linear.NativeProjectiveCechHomologyObjects
+4: public import Linear.SchemeModuleActualHObjects
+5: public import Linear.NativeProjectiveCechCoefficientObjects
+6: public import Linear.NativeProjectiveModuleSheaf
+7: public import Linear.NativeProjectiveModuleScalarApply
+8: public import Linear.ProjBasicOpenBaseScalar
+9: public import Linear.SchemeModuleActualAbelianScalarValue
+10: public import Mathlib.Topology.Sheaves.Forget
+11: @[expose] public section
+12: noncomputable section
+13: set_option autoImplicit false
+14: set_option backward.isDefEq.respectTransparency true
+15: set_option backward.isDefEq.respectTransparency.types true
+16: set_option maxHeartbeats 5000
+17: namespace LinearStudy
+18: open AlgebraicGeometry TopCat TopologicalSpace CategoryTheory Opposite
+19: universe u
+20: variable {K S D : Type u} [Field K] [CommRing S] [Algebra K S]
+21: variable [AddCommGroup D] [Module S D] [Module K D]
+22: variable (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑]
+23: variable (𝒟 : ℤ → Submodule K D)
+24: variable (hgrade : ∀ n : ℕ, ∀ d : ℤ, ∀ b : S, b ∈ 𝓑 n →
+25:   ∀ ell : D, ell ∈ 𝒟 d → b • ell ∈ 𝒟 ((n : ℤ)+d))
+26: 
+27: attribute [local instance] nativeProjectiveAtPrimeModuleScalar nativeProjectiveAmbientSectionModule
+28: attribute [local irreducible] originalGlobalModuleScalar
+29: open CategoryTheory.Limits
+30: variable {ι : Type u} [LinearOrder ι] (U : ι → (Proj 𝓑).Opens)
+31: attribute [local irreducible] orderedFormalCechComplex FormalCoproduct.evalOp
+32:   nativeProjectiveModuleSheaf nativeProjectiveModulePresheaf schemeModuleToActualAbelianSheaf
+33: /-- The EXACT original scalar coefficient map on ordered Cech homology. -/
+34: def nativeProjectiveOrderedCechHomologyBaseScalarMap (k : ℤ) (n : ℕ)
+35:     (r : Γ(Spec (CommRingCat.of K),⊤)) :=
+36:   HomologicalComplex.homologyMap (nativeProjectiveOrderedBaseScalarMap 𝓑 𝒟 hgrade U k r) n
+37: /-- The EXACT actual H map induced by the ORIGINAL O-linear global scalar.
+38: This only names the existing coefficient functor; no action is transported. -/
+39: def nativeProjectiveActualHBaseScalarMap (k : ℤ) (n : ℕ)
+40:     (r : Γ(Spec (CommRingCat.of K),⊤)) :=
+41:   schemeModuleActualHCoefficientHom
+42:     (originalGlobalModuleScalar
+43:       ((Proj.toSpecZero 𝓑 ≫ Spec.map (CommRingCat.ofHom (algebraMap K (𝓑 0)))).appTop r)
+44:       (nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k)) n
+45: end LinearStudy
+
+===== Linear/NativeSourceActualHCachedComparisonScalar.lean =====
+1: module
+2: public import Linear.CheckedSquareComparisonCache
+3: public import Linear.NativeSourceActualHCachedRightScalar
+4: @[expose] public section
+5: set_option maxHeartbeats 5000
+6: cache_original_square_comparison LinearStudy.nativeFiniteGradedTwist_actualH_cachedRightScalar
+7:   as LinearStudy.nativeOriginalSourceActualHComparisonHom
+8: checked_fold_square_comparison LinearStudy.nativeFiniteGradedTwist_actualH_cachedRightScalar
+9:   with LinearStudy.nativeOriginalSourceActualHComparisonHom
+10:   as LinearStudy.nativeFiniteGradedTwist_actualH_cachedComparisonScalar
+11: #check LinearStudy.nativeOriginalSourceActualHComparisonHom
+12: #print axioms LinearStudy.nativeOriginalSourceActualHComparisonHom
+13: #check LinearStudy.nativeFiniteGradedTwist_actualH_cachedComparisonScalar
+14: #print axioms LinearStudy.nativeFiniteGradedTwist_actualH_cachedComparisonScalar
+
+===== Linear/NativeSourceActualHCachedIdentity.lean =====
+1: module
+2: public import Linear.NativeSourceActualHCachedComparison
+3: public import Linear.NativeProjectiveOriginalHScalarObjects
+4: @[expose] public section
+5: noncomputable section
+6: set_option autoImplicit false
+7: set_option maxHeartbeats 5000
+8: set_option diagnostics true
+9: set_option diagnostics.threshold 100
+10: set_option backward.isDefEq.respectTransparency false
+11: set_option backward.isDefEq.respectTransparency.types false
+12: namespace LinearStudy
+13: open AlgebraicGeometry CategoryTheory CategoryTheory.Limits Opposite
+14: universe u
+15: variable {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+16: variable [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M]
+17: variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+18: variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+19: variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+20: variable [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite S M]
+21: variable {ι : Type u} [LinearOrder ι] [Finite ι] (b : ι → S) (hb : ∀ i,b i ∈ B 1)
+22: attribute [local irreducible] nativeProjectiveModuleSheaf nativeProjectiveModulePresheaf
+23:   schemeModuleToActualAbelianSheaf originalGlobalModuleScalar
+24:   finiteTypeNativeProj_orderedActualHigherHIso noetherianFiniteOrderedAffineCover_actualHigherHIso
+25:   topFiniteOrderedCech_actualHigherHIso_of_localAcyclic orderedFreeSheafActualHomComplexIso
+26:   acyclicResolutionActualCochainExtIso orderedTopAbelianCechCoefficientMap orderedTopAbelianCechComplex
+27: /-- Exact identity of the public cached comparison with its original
+28: finite-type native-Proj construction. Native quasicoherence is derived. -/
+29: theorem nativeFiniteGradedTwist_cachedActualHigherHIso_eq_original
+30:     (hcover : (⨆ i,Proj.basicOpen B (b i)) = ⊤) (k : ℤ) (q : ℕ) :
+31:     nativeFiniteGradedTwist_cachedActualHigherHIso B D hD b hb hcover k q =
+32:       (by
+33:         letI :=
+34:           nativeFiniteGradedTwist_isQuasicoherent_of_cover B D hD k b hb hcover
+35:         exact finiteTypeNativeProj_orderedActualHigherHIso B b hb hcover
+36:           (nativeProjectiveModuleSheaf B D hD k) q) := by
+37:   rfl
+38: end LinearStudy
+
+===== Linear/NativeSourceActualHCachedRightScalar.lean =====
+1: module
+2: public import Linear.CheckedFoldSquareRight
+3: public import Linear.NativeSourceActualHRawScalarTheorem
+4: public import Linear.NativeOriginalHScalarCachedOperator
+5: @[expose] public section
+6: set_option maxHeartbeats 5000
+7: checked_fold_square_right LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar
+8:   with LinearStudy.nativeOriginalActualHScalarOperator
+9:   as LinearStudy.nativeFiniteGradedTwist_actualH_cachedRightScalar
+10: #check LinearStudy.nativeFiniteGradedTwist_actualH_cachedRightScalar
+11: #print axioms LinearStudy.nativeFiniteGradedTwist_actualH_cachedRightScalar
+
+===== Linear/NativeSourceActualHContextScalarSquare.lean =====
+1: module
+2: public import Linear.CheckedSquareTargetContext
+3: public import Linear.NativeSourceActualHCachedComparisonScalar
+4: @[expose] public section
+5: set_option maxHeartbeats 5000
+6: cache_square_target_context LinearStudy.nativeFiniteGradedTwist_actualH_cachedComparisonScalar
+7:   as LinearStudy.nativeOriginalSourceHContextObject
+8: checked_fold_square_target LinearStudy.nativeFiniteGradedTwist_actualH_cachedComparisonScalar
+9:   with LinearStudy.nativeOriginalSourceHContextObject
+10:   as LinearStudy.nativeFiniteGradedTwist_actualH_contextScalarSquare
+11: #check LinearStudy.nativeOriginalSourceHContextObject
+12: #print axioms LinearStudy.nativeOriginalSourceHContextObject
+13: #check LinearStudy.nativeFiniteGradedTwist_actualH_contextScalarSquare
+14: #print axioms LinearStudy.nativeFiniteGradedTwist_actualH_contextScalarSquare
+
+===== Linear/NativeSourceActualHRawScalarTheorem.lean =====
+1: module
+2: public import Linear.CheckedOpaqueProof
+3: public import Linear.NativeFiniteGradedSourceActualHScalarProof
+4: @[expose] public section
+5: set_option maxHeartbeats 5000
+6: checked_opaque_proof LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar_proof
+7:   as LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar
+8: #check LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar
+9: #print axioms LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar
+
+===== Linear/NativeSourcePublicHComparisonHomCalibration.lean =====
+1: module
+2: public import Linear.CheckedOpaqueProof
+3: public import Linear.CheckedFoldEqualityRight
+4: public import Linear.NativeSourcePublicHComparisonHomIdentity
+5: public import Linear.NativeSourceActualHCachedComparisonScalar
+6: @[expose] public section
+7: set_option maxHeartbeats 5000
+8: checked_opaque_proof LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_hom_original_proof
+9:   as LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_hom_original
+10: checked_fold_equality_right LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso_hom_original
+11:   with LinearStudy.nativeOriginalSourceActualHComparisonHom
+12:   as LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_cachedOriginal
+13: #check LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_cachedOriginal
+14: #print axioms LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_cachedOriginal
+
+===== Linear/NativeSourcePublicHComparisonHomIdentity.lean =====
+1: module
+2: public import Linear.NativeSourceActualHCachedComparison
+3: public import Linear.NativeSourceActualHCachedIdentity
+4: public import Linear.NativeProjectiveOriginalHScalarObjects
+5: @[expose] public section
+6: noncomputable section
+7: set_option autoImplicit false
+8: set_option maxHeartbeats 5000
+9: set_option diagnostics true
+10: set_option diagnostics.threshold 100
+11: set_option backward.isDefEq.respectTransparency false
+12: set_option backward.isDefEq.respectTransparency.types false
+13: namespace LinearStudy
+14: open AlgebraicGeometry CategoryTheory CategoryTheory.Limits Opposite
+15: universe u
+16: variable {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+17: variable [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M]
+18: variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+19: variable (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+20: variable (hD : ∀ n : ℕ,∀ j : ℤ,∀ z : S,z ∈ B n → ∀ x : M,x ∈ D j → z • x ∈ D ((n:ℤ)+j))
+21: variable [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite S M]
+22: variable {ι : Type u} [LinearOrder ι] [Finite ι] (b : ι → S) (hb : ∀ i,b i ∈ B 1)
+23: attribute [local irreducible] nativeProjectiveModuleSheaf nativeProjectiveModulePresheaf
+24:   schemeModuleToActualAbelianSheaf originalGlobalModuleScalar
+25:   finiteTypeNativeProj_orderedActualHigherHIso noetherianFiniteOrderedAffineCover_actualHigherHIso
+26:   topFiniteOrderedCech_actualHigherHIso_of_localAcyclic orderedFreeSheafActualHomComplexIso
+27:   acyclicResolutionActualCochainExtIso orderedTopAbelianCechCoefficientMap orderedTopAbelianCechComplex
+28: /-- Underlying morphism of the exact public source comparison identity. -/
+29: def nativeFiniteGradedTwist_cachedActualHigherHIso_hom_original_proof
+30:     (hcover : (⨆ i,Proj.basicOpen B (b i)) = ⊤) (k : ℤ) (q : ℕ) :=
+31:   congrArg (fun e => e.hom)
+32:     (nativeFiniteGradedTwist_cachedActualHigherHIso_eq_original B D hD b hb hcover k q)
+33: end LinearStudy
+
+===== Linear/NativeSourcePublicHComparisonTypedHom.lean =====
+1: module
+2: public import Linear.CheckedEqualityRightCache
+3: public import Linear.CheckedFoldEqualityRight
+4: public import Linear.NativeSourcePublicHComparisonHomCalibration
+5: @[expose] public section
+6: set_option maxHeartbeats 5000
+7: cache_checked_equality_right LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_cachedOriginal
+8:   as LinearStudy.nativeOriginalSourceActualHPublicHom
+9: checked_fold_equality_right LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_cachedOriginal
+10:   with LinearStudy.nativeOriginalSourceActualHPublicHom
+11:   as LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_originalTyped
+12: #check LinearStudy.nativeOriginalSourceActualHPublicHom
+13: #print axioms LinearStudy.nativeOriginalSourceActualHPublicHom
+14: #check LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_originalTyped
+15: #print axioms LinearStudy.nativeFiniteGradedTwist_publicActualHHom_eq_originalTyped
+
+===== Linear/NativeSourcePublicHScalarOperator.lean =====
+1: module
+2: public import Linear.CheckedSquarePublicCodomain
+3: public import Linear.NativeSourceActualHContextScalarSquare
+4: public import Linear.NativeSourcePublicHComparisonTypedHom
+5: @[expose] public section
+6: set_option maxHeartbeats 5000
+7: cache_square_right_on_codomain LinearStudy.nativeFiniteGradedTwist_actualH_contextScalarSquare
+8:   of LinearStudy.nativeOriginalSourceActualHPublicHom
+9:   as LinearStudy.nativeOriginalActualHPublicScalarOperator
+10: #check LinearStudy.nativeOriginalActualHPublicScalarOperator
+11: #print LinearStudy.nativeOriginalActualHPublicScalarOperator
+12: #print axioms LinearStudy.nativeOriginalActualHPublicScalarOperator
+
