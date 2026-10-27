@@ -1,3 +1,4 @@
+import {prepareBlackboardEntry} from './blackboard-startup.js';
 import {downloadCoursePacks} from './course-pack-cache.js';
 import {resourceFetch} from './resource-fetch.js';
 import {startReadyCourse} from './course-ready.js';
@@ -29,6 +30,7 @@ configureCameraInput(controls,canvas);
 const follow=new BoardFollow(),motion=new BoardCameraMotion(),keys=new Set(),hall=createBlackboardHall(scene);
 const lectureRoot=new T.Group();configureLectureRoot(lectureRoot);scene.add(lectureRoot);
 const frames=new BlackboardFrameBudget(),diagnosticStart=performance.now();let cpuMs=0,raf=0,timer=0,inputUntil=0,lastUIKey='',overviewUntil=0,quality='auto',targetFPS=60,breakView=null,breakControlsEnabled=true,resizePending=true,lectureBatching=null;
+let startupPreparing=true;controls.enabled=false;
 let lecture=null,view='overview',library=null,selecting=false,last=performance.now(),lastUI=0,lastPageKey='',lastDiagnostic=0;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 $('erasingSpeed').value=String(loadErasingSpeed());
@@ -41,7 +43,7 @@ function overview(){view='overview';overviewUntil=lecture?.hasSelection&&lecture
 apply(hallOverview(camera.aspect));constrainHallCamera(camera,controls.target);
 controls.addEventListener('start',()=>{follow.begin();if(lecture&&!lecture.autoCamera){view='manual';overviewUntil=0;}motion.reset();inputUntil=performance.now()+750;wake();});controls.addEventListener('end',()=>{follow.end();inputUntil=performance.now()+750;wake();});controls.addEventListener('change',()=>frames.invalidate());
 const editable=target=>Boolean(target.closest?.('input,select,textarea,button,dialog'));
-addEventListener('keydown',e=>{if(editable(e.target))return;const key=e.key.toLowerCase();if(breakView)return;if(key===' '){if(!e.repeat&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&lecture?.hasSelection&&!selecting&&lecture.courseLoadState.phase==='ready'){e.preventDefault();void action('voice:toggle');}return;}if(['w','a','s','d','q','e','z','x','arrowup','arrowdown','arrowleft','arrowright'].includes(key)){keys.add(key);follow.begin();if(lecture&&!lecture.autoCamera){view='manual';overviewUntil=0;}wake();e.preventDefault();}});
+addEventListener('keydown',e=>{if(startupPreparing||editable(e.target))return;const key=e.key.toLowerCase();if(breakView)return;if(key===' '){if(!e.repeat&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&lecture?.hasSelection&&!selecting&&lecture.courseLoadState.phase==='ready'){e.preventDefault();void action('voice:toggle');}return;}if(['w','a','s','d','q','e','z','x','arrowup','arrowdown','arrowleft','arrowright'].includes(key)){keys.add(key);follow.begin();if(lecture&&!lecture.autoCamera){view='manual';overviewUntil=0;}wake();e.preventDefault();}});
 addEventListener('keyup',e=>{keys.delete(e.key.toLowerCase());if(!keys.size)follow.end();wake();});
 addEventListener('blur',()=>{keys.clear();follow.end();});
 document.addEventListener('visibilitychange',()=>{keys.clear();follow.end();lecture?.setPresence(!document.hidden);last=performance.now();if(document.hidden){cancelAnimationFrame(raf);clearTimeout(timer);raf=timer=0;}else wake();});
@@ -51,19 +53,24 @@ function keyboard(dt){
  const has=(...v)=>v.some(k=>keys.has(k))?1:0,delta=forward.multiplyScalar(has('w','arrowup')-has('s','arrowdown')).addScaledVector(right,has('e','arrowright')-has('q','arrowleft'));delta.y=has('z')-has('x');if(delta.lengthSq())delta.normalize().multiplyScalar(dt*2.5);camera.position.add(delta);controls.target.add(delta);
  const yaw=(has('a')-has('d'))*dt*.8;if(yaw){const direction=controls.target.clone().sub(camera.position).applyAxisAngle(new T.Vector3(0,1,0),yaw);controls.target.copy(camera.position).add(direction);}
 }
-function setResolution(){const ratio=quality==='saver'?1:quality==='clear'?Math.max(1,Math.min(devicePixelRatio||1,2,Math.sqrt(4000000/(innerWidth*innerHeight)))):blackboardPixelRatio(devicePixelRatio,innerWidth,innerHeight,view==='board');if(renderer.getPixelRatio()!==ratio)renderer.setPixelRatio(ratio);}
+function setResolution(focused=view==='board'){const ratio=quality==='saver'?1:quality==='clear'?Math.max(1,Math.min(devicePixelRatio||1,2,Math.sqrt(4000000/(innerWidth*innerHeight)))):blackboardPixelRatio(devicePixelRatio,innerWidth,innerHeight,focused);if(renderer.getPixelRatio()!==ratio)renderer.setPixelRatio(ratio);}
 function resize(){resizePending=true;setResolution();renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();motion.reset();wake();}addEventListener('resize',resize);resize();
 function pageOptions(){const key=lecture.report.id+':'+lecture.clock.startAt+':'+lecture.clock.stopAt;if(key===lastPageKey)return;lastPageKey=key;$('page').replaceChildren();for(let i=lecture.clock.startAt;i<=lecture.clock.stopAt;i++){const o=document.createElement('option');o.value=i;o.textContent=(i+1)+' · '+(lecture.copy(i).title||lecture.pages[i].title);$('page').append(o);}}
 function updateUI(){if(!lecture)return;const selected=lecture.hasSelection,blocked=selecting||['loading','error'].includes(lecture.courseLoadState.phase),key=[selected,blocked,lecture.report.id,lecture.navigationPage,lecture.playing,lecture.language,lecture.status(),lecture.courseLoadState.phase,Math.floor((lecture.courseLoadState.ratio||0)*100),lecture.autoCamera,view,Math.ceil(follow.remaining)].join('|');if(key===lastUIKey)return;lastUIKey=key;$('catalog').disabled=selecting;for(const id of ['play','previous','next','page','language','rate','closer','farther','focus'])$(id).disabled=!selected||blocked;if(selected){pageOptions();$('page').value=lecture.navigationPage;}$('previous').disabled=!selected||blocked||lecture.navigationPage<=lecture.clock.startAt;$('next').disabled=!selected||blocked||lecture.navigationPage>=lecture.clock.stopAt;$('play').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="'+(lecture.playing?'M8 5v14M16 5v14':'m8 4 12 8-12 8Z')+'"/></svg>';$('play').title=lecture.playing?'暂停':'播放';$('play').setAttribute('aria-label',lecture.playing?'暂停板书':'播放板书');$('language').textContent=lecture.language==='zh'?'中文 → EN':'EN → 中文';$('autoFollow').checked=lecture.autoCamera;$('autoState').textContent=!lecture.autoCamera?'已关闭 · 自由观察':!lecture.hasSelection?'选课后自动跟随':view==='overview'?'全景预览 · 5秒后回到当前板':follow.remaining>0?'手动观察 · '+Math.ceil(follow.remaining)+'秒后回位':'已开启 · 跟随当前黑板';$('status').textContent=lecture.courseLoadState.phase==='error'?lecture.courseLoadState.error:selecting?'准备开场 '+Math.floor((lecture.courseLoadState.ratio||0)*100)+'%':selected?lecture.status():'选择课堂，开始板书';$('notice').hidden=!lecture.voiceState.error;if(lecture.voiceState.error)$('notice').textContent=lecture.voiceState.error;$('topic').textContent=selected?lecture.report.topic||lecture.report.label||lecture.report.title||'报告厅':'报告厅';}
-async function selectReport(id,{autoplay=true}={}){if(selecting)return false;selecting=true;updateUI();wake();try{
- const ready=await startReadyCourse(lecture,id,{autoplay,firstBoardOnly:true,onSelected:()=>{if(lecture.autoCamera)focus();else wake();},onProgress:state=>{canvas.dataset.courseLoading=JSON.stringify(state);$('status').textContent='准备开场 '+Math.floor(state.ratio*100)+'%';wake();}});
- if(lecture.autoCamera)focus();else wake();return ready;
- }catch(error){$('status').textContent=error.message;canvas.dataset.courseLoading=JSON.stringify(lecture.courseLoadState);return false;}
+async function selectReport(id,{autoplay=true,initial=false}={}){if(selecting)return false;selecting=true;updateUI();wake();try{
+ const ready=await startReadyCourse(lecture,id,{autoplay:autoplay&&!initial,firstBoardOnly:true,onSelected:()=>{if(!initial){if(lecture.autoCamera)focus();else wake();}},onProgress:state=>{canvas.dataset.courseLoading=JSON.stringify(state);$('status').textContent='准备开场 '+Math.floor(state.ratio*100)+'%';if(initial)$('loadingText').textContent='准备首板内容与语音 · '+Math.floor(state.ratio*100)+'%';wake();}});
+ if(initial){
+  if(!ready)throw Error('课程未准备好');setResolution(true);
+  canvas.dataset.startupPreparation=JSON.stringify(await prepareBlackboardEntry({lecture,renderer,scene,camera,target:controls.target,prepareTextures:()=>startDeferredTextures(()=>{},{phase:'hall'}),onStage:(stage,label)=>{canvas.dataset.startupPhase=stage;$('loadingText').textContent=label;}}));
+  startupPreparing=false;controls.enabled=true;motion.reset();last=performance.now();$('loading').hidden=true;
+  if(lecture.autoCamera)focus();else wake();await new Promise(resolve=>requestAnimationFrame(resolve));if(autoplay)await lecture.toggleVoice();
+ }else if(lecture.autoCamera)focus();else wake();return ready;
+ }catch(error){$('status').textContent=error.message;canvas.dataset.courseLoading=JSON.stringify(lecture.courseLoadState);if(initial)throw error;return false;}
  finally{selecting=false;lastPageKey='';updateUI();wake();}}
 
 function openLibrary(){library.open('classroom');}
 async function action(a){
- if(!lecture||selecting||breakView||['loading','error'].includes(lecture.courseLoadState.phase))return;
+ if(startupPreparing||!lecture||selecting||breakView||['loading','error'].includes(lecture.courseLoadState.phase))return;
  try{
   if(a==='voice:toggle'||a==='lectern:play')await lecture.toggleVoice();
   else if(a==='board:previous'||a==='lectern:previous'){await lecture.step(-1);focus();}
@@ -114,12 +121,12 @@ function animate(stamp){raf=0;if(document.hidden)return;if(overviewUntil&&stamp>
  const resting=isClassroomBreak(lecture?.pages[lecture.clock.page]);
  if(resting){if(!breakView){breakView=pose();breakControlsEnabled=controls.enabled;controls.enabled=false;keys.clear();motion.reset();overviewUntil=0;inputUntil=0;showSettings(false);document.body.classList.add('on-break');}const board=lecture.voiceManifest?.boards.find(b=>b.page===lecture.clock.page),count=classroomBreakTime(lecture.pages[lecture.clock.page],board,lecture.voiceState);$('breakCountdown').hidden=false;if($('breakTime').textContent!==count.text)$('breakTime').textContent=count.text;apply(breakView);}
  else if(breakView){controls.enabled=breakControlsEnabled;breakView=null;$('breakCountdown').hidden=true;document.body.classList.remove('on-break');motion.reset();if(lecture.autoCamera){view='board';follow.reset();}frames.invalidate();}
- const tracking=!resting&&follow.following&&(view==='overview'||lecture?.followEnabled);
+ const tracking=!startupPreparing&&!resting&&follow.following&&(view==='overview'||lecture?.followEnabled);
  if(tracking){const desired=view==='board'?lecture.cameraView(camera.aspect,57):hallOverview(camera.aspect);apply(motion.sample(pose(),{position:desired.position.toArray?.()||desired.position,target:desired.target.toArray?.()||desired.target,fov:desired.fov},dt,{immediate:reduced}));if(view==='overview'&&lecture&&!lecture.autoCamera&&motion.segment?.elapsed>=motion.segment?.duration)view='manual';}else if(!resting){keyboard(dt);controls.update();}
  constrainHallCamera(camera,controls.target);
  hall.lectern.update({playing:lecture?.playing,page:lecture?.navigationPage??0,total:lecture?.progress.total??0,seeking:lecture?.seeking,retractable:lecture?.retractable??false,stored:lecture?.stored??false,storageProgress:lecture?.storageProgress??1});
  if(stamp-lastUI>200){lastUI=stamp;updateUI();}
- if((!resting||resizePending)&&frames.drawDue(stamp,visualSignature())){scene.updateMatrixWorld();renderer.render(scene,camera);resizePending=false;}else if(resting)frames.dirty=false;
+ if(!startupPreparing&&(!resting||resizePending)&&frames.drawDue(stamp,visualSignature())){scene.updateMatrixWorld();renderer.render(scene,camera);resizePending=false;}else if(resting)frames.dirty=false;
  cpuMs+=performance.now()-workStart;
  if(stamp-lastDiagnostic>500){lastDiagnostic=stamp;canvas.dataset.camera=JSON.stringify({position:camera.position.toArray(),target:controls.target.toArray(),bounds:HALL_CAMERA_BOUNDS});canvas.dataset.breakState=JSON.stringify({active:resting,seconds:resting?classroomBreakTime(lecture.pages[lecture.clock.page],lecture.voiceManifest?.boards.find(b=>b.page===lecture.clock.page),lecture.voiceState).seconds:null});canvas.dataset.follow=JSON.stringify({view,enabled:lecture?.autoCamera,eligible:lecture?.followEnabled,following:follow.following,remaining:follow.remaining,temporaryOverview:Boolean(overviewUntil)});canvas.dataset.preload=JSON.stringify(lecture?.preloadState||{});canvas.dataset.courseLoading=JSON.stringify(lecture?.courseLoadState||{});canvas.dataset.board=String(lecture?.navigationPage??-1);canvas.dataset.voicePhase=lecture?.voiceState.phase||'idle';canvas.dataset.voiceTime=String(lecture?.voiceState.time||0);canvas.dataset.renderStats=JSON.stringify({frames:frames.frames,elapsed:performance.now()-diagnosticStart,calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,pixelRatio:renderer.getPixelRatio(),cpuMs,batching:hall.batching,lectureBatching});}
  next();
@@ -136,8 +143,8 @@ async function boot(){try{
  const ray=new T.Raycaster(),pointer=new T.Vector2();
  bindPhysicalButtons(canvas,controls,event=>{const rect=canvas.getBoundingClientRect();pointer.set((event.clientX-rect.left)/rect.width*2-1,1-(event.clientY-rect.top)/rect.height*2);scene.updateMatrixWorld(true);ray.setFromCamera(pointer,camera);ray.far=25;const hit=ray.intersectObjects([...lecture.hoverTargets,...hall.lectern.targets].filter(o=>{for(let p=o;p;p=p.parent)if(!p.visible)return false;return true;}),false)[0];if(!hit)return null;hit.object.userData.action=physicalHitAction(hit,lecture.clock);return hit.object;},a=>void action(a));
  canvas.addEventListener('pointermove',()=>lecture.screenWake(),{passive:true});
- void startDeferredTextures(()=>{},{phase:'hall'}).then(wake);canvas.dataset.ready='true';canvas.dataset.mode='blackboard';canvas.dataset.smartScreenBackground=SMART_SCREEN_BACKGROUND;$('loading').hidden=true;$('catalog').disabled=false;updateUI();wake();
- const course=new URLSearchParams(location.search).get('course')||'sylow-theorems';await selectReport(lecture.reports.some(r=>r.id===course)?course:'sylow-theorems');
+ canvas.dataset.mode='blackboard';canvas.dataset.smartScreenBackground=SMART_SCREEN_BACKGROUND;canvas.dataset.startupPhase='content';updateUI();wake();
+ const course=new URLSearchParams(location.search).get('course')||'sylow-theorems';await selectReport(lecture.reports.some(r=>r.id===course)?course:'sylow-theorems',{initial:true});canvas.dataset.voicePhase=lecture.voiceState.phase;canvas.dataset.voiceTime=String(lecture.voiceState.time);canvas.dataset.ready='true';updateUI();wake();
  }catch(error){$('loadingText').textContent='报告厅准备失败：'+error.message;$('retry').hidden=false;console.error(error);}}
 canvas.addEventListener('click',()=>{if(!selecting&&lecture?.courseLoadState.phase==='error')void selectReport(lecture.report.id);});
 $('retry').onclick=()=>location.reload();void boot();

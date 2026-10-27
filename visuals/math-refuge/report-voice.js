@@ -151,7 +151,7 @@ export function createReportVoice({fetcher=resourceFetch,makeAudio=()=>new Audio
   if(desired&&state.temporaryPause&&(audio||activity)&&manifest){state.temporaryPause=false;return play();}
   return false;
  }
- return{state,select,toggle,pause,seek,setContextActive,prefetchAll,get mediaState(){return{...nativeMedia.state,primed:mediaPrimed,playbackRate:audio?.playbackRate??null};},get preloadState(){return audioWarm.state;},
+ return{state,select,toggle,pause,seek,setContextActive,prefetchAll,prepareLookahead:()=>manifest&&index+1<manifest.chapters.length?load(index+1,false):Promise.resolve(null),get mediaState(){return{...nativeMedia.state,primed:mediaPrimed,playbackRate:audio?.playbackRate??null};},get preloadState(){return audioWarm.state;},
   get transportPlaying(){return desired&&contextActive&&!assetsPreparing;},
   get boardHeld(){return Boolean(boardHold);},
   async holdForBoard(job,at){

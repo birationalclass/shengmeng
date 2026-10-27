@@ -64,9 +64,9 @@ export function createCoursePackStore({baseURL=new URL('.',import.meta.url).href
  }
  function response(input,options={},fetcher=globalThis.fetch){
   const target=assets.get(keyOf(input,baseURL));if(!target||!enabled())return null;
-  return load(target.item,fetcher,options).then(pack=>{
+  return load(target.item,fetcher,options).then(async pack=>{
    if(options.signal?.aborted)throw abortReason(options.signal);
-   const entry=pack.assets[target.file],body=Uint8Array.from(atob(entry.body),c=>c.charCodeAt(0));
+   const entry=pack.assets[target.file],body=await decodeCourseBase64(entry.body,{signal:options.signal});
    return new Response(body,{headers:{'Content-Type':entry.type,'Content-Length':String(body.byteLength)}});
   }).catch(error=>{if(options.signal?.aborted)throw abortReason(options.signal);stats.originalFallbacks++;return fetcher(input,options);});
  }
@@ -87,3 +87,4 @@ export const coursePackResponse=(input,options,fetcher)=>store.response(input,op
 export const downloadCoursePacks=(program,options)=>store.download(program,options);
 export const promoteCoursePack=(input,fetcher)=>store.promote(input,fetcher);
 export const coursePackState=()=>store.state;
+import {decodeCourseBase64} from './course-pack-decode.js';
