@@ -1,0 +1,2035 @@
+@LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_smul_general_proof : ∀ {K R S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u_1} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+  (p : ℕ) (t : Fin (p + 1) → ι) (r : HomogeneousLocalization.Away A (∏ k : Fin (p + 1), a (t k)))
+  (s :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ k : Fin (p + 1), a (t k)))))),
+  (LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS (p + 1) (∏ k : Fin (p + 1), a (t k)) ⋯ ⋯ ⋯)
+      ((CommRingCat.Hom.hom (AlgebraicGeometry.Proj.awayToSection A (∏ k : Fin (p + 1), a (t k)))) r • s) =
+    ((CommRingCat.Hom.hom (AlgebraicGeometry.Proj.awayToSection B ((algebraMap R S) (∏ k : Fin (p + 1), a (t k))))).comp
+          (LinearStudy.normalizationHomogeneousChartMap A B (∏ k : Fin (p + 1), a (t k))))
+        r •
+      (LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS (p + 1) (∏ k : Fin (p + 1), a (t k)) ⋯ ⋯ ⋯) s
+'LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_smul_general_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalScalarComparison_of_calibrations : ∀ {A : Type u_1} {B : Type u_2} {C : Type u_3} {M : Type u_4}
+  {N : Type u_5} (e : M → N) (actA : A → M → M) (actB : B → N → N) (sigmaA : C → A) (sigmaB : C → B) (z : C) (a : A)
+  (b : B) (m : M),
+  a = sigmaA z → b = sigmaB z → e (actA (sigmaA z) m) = actB (sigmaB z) (e m) → e (actA a m) = actB b (e m)
+'LinearStudy.originalScalarComparison_of_calibrations' does not depend on any axioms
+@LinearStudy.projBasicOpenBaseScalar_eq_normalizationChart : ∀ {K R S : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S] [IsScalarTower K R S]
+  (A : ℕ → Submodule K R) [inst_7 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_8 : GradedAlgebra B]
+  [inst_9 : SetLike.GradedSMul A B] {d : ℕ},
+  ∀ a ∈ A d,
+    0 < d →
+      ∀ (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+        LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) a) r =
+          ((CommRingCat.Hom.hom (AlgebraicGeometry.Proj.awayToSection B ((algebraMap R S) a))).comp
+              (LinearStudy.normalizationHomogeneousChartMap A B a))
+            ((HomogeneousLocalization.fromZeroRingHom A (Submonoid.powers a))
+              ((algebraMap K ↥(A 0)) ((CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).hom) r)))
+'LinearStudy.projBasicOpenBaseScalar_eq_normalizationChart' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv_originalBaseScalar_proof : ∀ {K R S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] (A : ℕ → Submodule K R)
+  [inst_12 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_13 : GradedAlgebra B] [inst_14 : SetLike.GradedSMul A B]
+  (D : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (d : ℕ) (a : R) (ha : a ∈ A d),
+  0 < d →
+    ∀ (hA : Function.Bijective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap A D hR d a ha))
+      (hB : Function.Bijective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap B D hS d ((algebraMap R S) a) ⋯))
+      (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+      (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A a)))),
+      (LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS d a ha hA hB)
+          (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A a))
+            (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) a r) s) =
+        LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) a)))
+          (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) a) r)
+          ((LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS d a ha hA hB) s)
+'LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv_originalBaseScalar_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_originalBaseScalar_general_proof : ∀ {K R S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u_1} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+  (p : ℕ) (t : Fin (p + 1) → ι) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (s :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ j : Fin (p + 1), a (t j)))))),
+  (LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS (p + 1) (∏ j : Fin (p + 1), a (t j)) ⋯ ⋯ ⋯)
+      (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ j : Fin (p + 1), a (t j))))
+        (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) (∏ j : Fin (p + 1), a (t j)) r) s) =
+    LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+      (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (∏ j : Fin (p + 1), a (t j)))))
+      (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) (∏ j : Fin (p + 1), a (t j))) r)
+      ((LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS (p + 1) (∏ j : Fin (p + 1), a (t j)) ⋯ ⋯ ⋯)
+        s)
+'LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_originalBaseScalar_general_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_baseScalar_general_typed : ∀ {K R S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u_1} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+  (p : ℕ) (t : Fin (p + 1) → ι) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (s :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ j : Fin (p + 1), a (t j)))))),
+  (LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_general A B D hR hS a ha c hc hgenR hgenC p t)
+      (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ j : Fin (p + 1), a (t j))))
+        (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) (∏ j : Fin (p + 1), a (t j)) r) s) =
+    LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+      (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (∏ j : Fin (p + 1), a (t j)))))
+      (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) (∏ j : Fin (p + 1), a (t j))) r)
+      ((LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_general A B D hR hS a ha c hc hgenR hgenC p t) s)
+'LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_baseScalar_general_typed' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveOriginalScalarPointwiseActual : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : AddCommGroup M] [inst_7 : Module K M] [inst_8 : Module R M] [inst_9 : Module S M] (A : ℕ → Submodule K R)
+  [inst_10 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_11 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (e :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+      ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))))),
+  (∀ (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))
+            (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) z r) s) =
+        LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))
+          (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) z) r) (e s)) →
+    ∀
+      (s :
+        ↑(((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj.obj
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          ((CategoryTheory.ConcreteCategory.hom
+              (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                      (LinearStudy.originalGlobalModuleScalar
+                        ((CategoryTheory.ConcreteCategory.hom
+                            (AlgebraicGeometry.Scheme.Hom.appTop
+                              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                          r)
+                        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+                (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))))
+            s) =
+        (CategoryTheory.ConcreteCategory.hom
+            (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                    (LinearStudy.originalGlobalModuleScalar
+                      ((CategoryTheory.ConcreteCategory.hom
+                          (AlgebraicGeometry.Scheme.Hom.appTop
+                            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                        r)
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+              (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+          (e s)
+'LinearStudy.nativeProjectiveOriginalScalarPointwiseActual' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveOriginalScalarPointwiseBothActual : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : AddCommGroup M] [inst_7 : Module K M] [inst_8 : Module R M] [inst_9 : Module S M] (A : ℕ → Submodule K R)
+  [inst_10 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_11 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (e :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+      ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))))),
+  (∀ (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))
+            (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) z r) s) =
+        LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))
+          (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) z) r) (e s)) →
+    ∀
+      (s :
+        ↑(((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj.obj
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          ((CategoryTheory.ConcreteCategory.hom
+              (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                      (LinearStudy.originalGlobalModuleScalar
+                        ((CategoryTheory.ConcreteCategory.hom
+                            (AlgebraicGeometry.Scheme.Hom.appTop
+                              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                          r)
+                        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+                (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))))
+            s) =
+        (CategoryTheory.ConcreteCategory.hom
+            (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                    (LinearStudy.originalGlobalModuleScalar
+                      ((CategoryTheory.ConcreteCategory.hom
+                          (AlgebraicGeometry.Scheme.Hom.appTop
+                            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                        r)
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+              (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+          (e s)
+'LinearStudy.nativeProjectiveOriginalScalarPointwiseBothActual' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveOriginalScalarSourceBuilder : ∀ {K R S M : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S] [inst_6 : AddCommGroup M]
+  [inst_7 : Module K M] [inst_8 : Module R M] [inst_9 : Module S M] (A : ℕ → Submodule K R) [inst_10 : GradedAlgebra A]
+  (B : ℕ → Submodule K S) [inst_11 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (e :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+      ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+  (g :
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj.obj
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))) ⟶
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj.obj
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))),
+  (∀
+      (x :
+        ↑(((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj.obj
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          ((CategoryTheory.ConcreteCategory.hom
+              (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                      (LinearStudy.originalGlobalModuleScalar
+                        ((CategoryTheory.ConcreteCategory.hom
+                            (AlgebraicGeometry.Scheme.Hom.appTop
+                              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                          r)
+                        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+                (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))))
+            x) =
+        (CategoryTheory.ConcreteCategory.hom g) (e x)) →
+    CategoryTheory.CategoryStruct.comp e.toAddCommGrpIso.hom g =
+      CategoryTheory.CategoryStruct.comp
+        (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                    r)
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))
+        e.toAddCommGrpIso.hom
+'LinearStudy.nativeProjectiveOriginalScalarSourceBuilder' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveOriginalScalarTargetBuilder : ∀ {K R S M : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S] [inst_6 : AddCommGroup M]
+  [inst_7 : Module K M] [inst_8 : Module R M] [inst_9 : Module S M] (A : ℕ → Submodule K R) [inst_10 : GradedAlgebra A]
+  (B : ℕ → Submodule K S) [inst_11 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (e :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+      ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))))),
+  (∀
+      (x :
+        ↑(((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj.obj
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          ((CategoryTheory.ConcreteCategory.hom
+              (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                      (LinearStudy.originalGlobalModuleScalar
+                        ((CategoryTheory.ConcreteCategory.hom
+                            (AlgebraicGeometry.Scheme.Hom.appTop
+                              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                          r)
+                        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+                (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))))
+            x) =
+        (CategoryTheory.ConcreteCategory.hom
+            (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                    (LinearStudy.originalGlobalModuleScalar
+                      ((CategoryTheory.ConcreteCategory.hom
+                          (AlgebraicGeometry.Scheme.Hom.appTop
+                            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                        r)
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+              (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+          (e x)) →
+    CategoryTheory.CategoryStruct.comp e.toAddCommGrpIso.hom
+        (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                    r)
+                  (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))) =
+      CategoryTheory.CategoryStruct.comp
+        (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                    r)
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))
+        e.toAddCommGrpIso.hom
+'LinearStudy.nativeProjectiveOriginalScalarTargetBuilder' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveOriginalScalarSquare : ∀ {K R S M : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S] [inst_6 : AddCommGroup M]
+  [inst_7 : Module K M] [inst_8 : Module R M] [inst_9 : Module S M] (A : ℕ → Submodule K R) [inst_10 : GradedAlgebra A]
+  (B : ℕ → Submodule K S) [inst_11 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (e :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+      ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))))),
+  (∀ (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))
+            (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) z r) s) =
+        LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))
+          (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) z) r) (e s)) →
+    CategoryTheory.CategoryStruct.comp e.toAddCommGrpIso.hom
+        (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                    r)
+                  (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))) =
+      CategoryTheory.CategoryStruct.comp
+        (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                    r)
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))
+        e.toAddCommGrpIso.hom
+'LinearStudy.nativeProjectiveOriginalScalarSquare' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar_general_proof : ∀ {K R S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u_1} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+  (p : ℕ) (t : Fin (p + 1) → ι) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_general A B D hR hS a ha c hc hgenR hgenC p
+            t).toAddCommGrpIso.hom
+      (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+              (LinearStudy.originalGlobalModuleScalar
+                ((CategoryTheory.ConcreteCategory.hom
+                    (AlgebraicGeometry.Scheme.Hom.appTop
+                      (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                  r)
+                (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (∏ j : Fin (p + 1), a (t j)))))) =
+    CategoryTheory.CategoryStruct.comp
+      (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+              (LinearStudy.originalGlobalModuleScalar
+                ((CategoryTheory.ConcreteCategory.hom
+                    (AlgebraicGeometry.Scheme.Hom.appTop
+                      (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                  r)
+                (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ j : Fin (p + 1), a (t j)))))
+      (LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_general A B D hR hS a ha c hc hgenR hgenC p
+            t).toAddCommGrpIso.hom
+'LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar_general_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar_general : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M]
+  [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M] [inst_13 : IsScalarTower K S M]
+  (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_15 : GradedAlgebra B]
+  [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [inst_17 : DirectSum.Decomposition D]
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u_1} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+  (p : ℕ) (t : Fin (p + 1) → ι) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  let MA := LinearStudy.nativeProjectiveModuleSheaf A D hR 0;
+  let MB := LinearStudy.nativeProjectiveModuleSheaf B D hS 0;
+  have piA :=
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0))));
+  have piB :=
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0))));
+  have fA :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop piA)) r) MA)).hom;
+  have fB :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop piB)) r) MB)).hom;
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.nativeIndependentSourceAmbientCechProductIso_general A B D hR hS a ha c hc hgenR hgenC p t).hom
+      (fB.app (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (∏ j : Fin (p + 1), a (t j)))))) =
+    CategoryTheory.CategoryStruct.comp
+      (fA.app (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ j : Fin (p + 1), a (t j)))))
+      (LinearStudy.nativeIndependentSourceAmbientCechProductIso_general A B D hR hS a ha c hc hgenR hgenC p t).hom
+'LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar_general' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar_general_proof : ∀ {K R S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u_1} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) [inst_24 : LinearOrder ι] (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.orderedCrossSpaceAbelianCechComplexIso
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj
+          (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+          (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+          (fun (p : ℕ) (t : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) =>
+            LinearStudy.abelianOpenSectionComparisonIso
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj
+              (∏ᶜ fun (l : Fin (p + 1)) => AlgebraicGeometry.Proj.basicOpen A (a (↑t l)))
+              (LinearStudy.nativeCechProductOpen A a p t)
+              (∏ᶜ fun (l : Fin (p + 1)) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a (↑t l))))
+              (LinearStudy.nativeBaseSourceCechProductOpen B a p t) ⋯ ⋯
+              (LinearStudy.nativeIndependentSourceAmbientCechProductFamily_general A B D hR hS a ha c hc hgenR hgenC p
+                t))
+          ⋯).hom
+      ((LinearStudy.orderedFormalCechCoefficientFunctor fun (i : ι) =>
+            AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i))).map
+        ((CategoryTheory.Limits.FormalCoproduct.evalOp (AlgebraicGeometry.Proj B).Opens AddCommGrpCat).map
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+              (LinearStudy.originalGlobalModuleScalar
+                ((CategoryTheory.ConcreteCategory.hom
+                    (AlgebraicGeometry.Scheme.Hom.appTop
+                      (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                  r)
+                (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom)) =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.orderedFormalCechCoefficientFunctor fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i)).map
+        ((CategoryTheory.Limits.FormalCoproduct.evalOp (AlgebraicGeometry.Proj A).Opens AddCommGrpCat).map
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+              (LinearStudy.originalGlobalModuleScalar
+                ((CategoryTheory.ConcreteCategory.hom
+                    (AlgebraicGeometry.Scheme.Hom.appTop
+                      (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                  r)
+                (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom))
+      (LinearStudy.orderedCrossSpaceAbelianCechComplexIso
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj
+          (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+          (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+          (fun (p : ℕ) (t : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) =>
+            LinearStudy.abelianOpenSectionComparisonIso
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj
+              (∏ᶜ fun (l : Fin (p + 1)) => AlgebraicGeometry.Proj.basicOpen A (a (↑t l)))
+              (LinearStudy.nativeCechProductOpen A a p t)
+              (∏ᶜ fun (l : Fin (p + 1)) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a (↑t l))))
+              (LinearStudy.nativeBaseSourceCechProductOpen B a p t) ⋯ ⋯
+              (LinearStudy.nativeIndependentSourceAmbientCechProductFamily_general A B D hR hS a ha c hc hgenR hgenC p
+                t))
+          ⋯).hom
+'LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar_general_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar_general : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M] [inst_9 : Module R M]
+  [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M] [inst_13 : IsScalarTower K S M]
+  (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_15 : GradedAlgebra B]
+  [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [inst_17 : DirectSum.Decomposition D]
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u_1} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) [inst_24 : LinearOrder ι] (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  let MA := LinearStudy.nativeProjectiveModuleSheaf A D hR 0;
+  let MB := LinearStudy.nativeProjectiveModuleSheaf B D hS 0;
+  have piA :=
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0))));
+  have piB :=
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0))));
+  have fA :=
+    (LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop piA)) r) MA);
+  have fB :=
+    (LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop piB)) r) MB);
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_general A B D hR hS a ha c hc hgenR hgenC).hom
+      (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj B)
+        (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i))) fB) =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj A)
+        (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i)) fA)
+      (LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_general A B D hR hS a ha c hc hgenR hgenC).hom
+'LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar_general' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedTopAbelianCechCoefficientIso_moduleScalar_hom : ∀ {X : AlgebraicGeometry.Scheme} {ι : Type u_1}
+  [inst : LinearOrder ι] (U : ι → X.Opens) (r : ↑(X.presheaf.obj (Opposite.op ⊤))) {M N : X.Modules} (e : M ≅ N),
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.orderedTopAbelianCechCoefficientMap X U
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).map (LinearStudy.originalGlobalModuleScalar r M)))
+      (LinearStudy.orderedTopAbelianCechCoefficientIso U
+          ((LinearStudy.schemeModuleToActualAbelianSheaf X).mapIso e)).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.orderedTopAbelianCechCoefficientIso U
+          ((LinearStudy.schemeModuleToActualAbelianSheaf X).mapIso e)).hom
+      (LinearStudy.orderedTopAbelianCechCoefficientMap X U
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).map (LinearStudy.originalGlobalModuleScalar r N)))
+'LinearStudy.orderedTopAbelianCechCoefficientIso_moduleScalar_hom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.orderedTopAbelianCechCoefficientIso_moduleScalar_inv : ∀ {X : AlgebraicGeometry.Scheme} {ι : Type u_1}
+  [inst : LinearOrder ι] (U : ι → X.Opens) (r : ↑(X.presheaf.obj (Opposite.op ⊤))) {M N : X.Modules} (e : M ≅ N),
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.orderedTopAbelianCechCoefficientMap X U
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).map (LinearStudy.originalGlobalModuleScalar r N)))
+      (LinearStudy.orderedTopAbelianCechCoefficientIso U
+          ((LinearStudy.schemeModuleToActualAbelianSheaf X).mapIso e)).inv =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.orderedTopAbelianCechCoefficientIso U
+          ((LinearStudy.schemeModuleToActualAbelianSheaf X).mapIso e)).inv
+      (LinearStudy.orderedTopAbelianCechCoefficientMap X U
+        ((LinearStudy.schemeModuleToActualAbelianSheaf X).map (LinearStudy.originalGlobalModuleScalar r M)))
+'LinearStudy.orderedTopAbelianCechCoefficientIso_moduleScalar_inv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveOriginalBaseScalarMap : {K S D : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup D] →
+          [inst_4 : Module S D] →
+            [inst_5 : Module K D] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K D) →
+                    (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      (k : ℤ) →
+                        ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)) →
+                          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).obj
+                              (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k) ⟶
+                            (LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).obj
+                              (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k))
+'LinearStudy.nativeProjectiveOriginalBaseScalarMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveOrderedBaseScalarMap : {K S D : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup D] →
+          [inst_4 : Module S D] →
+            [inst_5 : Module K D] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K D) →
+                    (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      {ι : Type u_1} →
+                        [inst_7 : LinearOrder ι] →
+                          (U : ι → (AlgebraicGeometry.Proj 𝓑).Opens) →
+                            (k : ℤ) →
+                              ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)) →
+                                (LinearStudy.orderedTopAbelianCechComplex (AlgebraicGeometry.Proj 𝓑) U
+                                    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k)) ⟶
+                                  LinearStudy.orderedTopAbelianCechComplex (AlgebraicGeometry.Proj 𝓑) U
+                                    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k)))
+'LinearStudy.nativeProjectiveOrderedBaseScalarMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeProjectiveOrderedCechRegrading_baseScalar_hom_square : ∀ {K S D : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D] [inst_5 : Module K D]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+  (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) {ι : Type u_1} [inst_7 : LinearOrder ι]
+  (U : ι → (AlgebraicGeometry.Proj 𝓑).Opens) (k : ℤ) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  CategoryTheory.CommSq
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj 𝓑) U
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero 𝓑)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(𝓑 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.integerGradingShift 𝒟 k) ⋯ 0))))
+    (LinearStudy.orderedTopAbelianCechCoefficientIso U
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).mapIso
+          (LinearStudy.nativeProjectiveTwistRegradingIso 𝓑 𝒟 hgrade k))).hom
+    (LinearStudy.orderedTopAbelianCechCoefficientIso U
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).mapIso
+          (LinearStudy.nativeProjectiveTwistRegradingIso 𝓑 𝒟 hgrade k))).hom
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj 𝓑) U
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero 𝓑)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(𝓑 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k))))
+'LinearStudy.nativeProjectiveOrderedCechRegrading_baseScalar_hom_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveOrderedCechRegrading_baseScalar_inv_square : ∀ {K S D : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D] [inst_5 : Module K D]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+  (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) {ι : Type u_1} [inst_7 : LinearOrder ι]
+  (U : ι → (AlgebraicGeometry.Proj 𝓑).Opens) (k : ℤ) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  CategoryTheory.CommSq
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj 𝓑) U
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero 𝓑)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(𝓑 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k))))
+    (LinearStudy.orderedTopAbelianCechCoefficientIso U
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).mapIso
+          (LinearStudy.nativeProjectiveTwistRegradingIso 𝓑 𝒟 hgrade k))).inv
+    (LinearStudy.orderedTopAbelianCechCoefficientIso U
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).mapIso
+          (LinearStudy.nativeProjectiveTwistRegradingIso 𝓑 𝒟 hgrade k))).inv
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj 𝓑) U
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero 𝓑)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(𝓑 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.integerGradingShift 𝒟 k) ⋯ 0))))
+'LinearStudy.nativeProjectiveOrderedCechRegrading_baseScalar_inv_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientShiftedZeroCechIso_baseScalar_general_square : ∀ {K R S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u_1} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) [inst_24 : LinearOrder ι] (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  CategoryTheory.CommSq
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj A)
+      (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf A (LinearStudy.integerGradingShift D k) ⋯ 0))))
+    (LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_general A B (LinearStudy.integerGradingShift D k) ⋯ ⋯ a ha
+        c hc hgenR hgenC).hom
+    (LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_general A B (LinearStudy.integerGradingShift D k) ⋯ ⋯ a ha
+        c hc hgenR hgenC).hom
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj B)
+      (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.integerGradingShift D k) ⋯ 0))))
+'LinearStudy.nativeIndependentSourceAmbientShiftedZeroCechIso_baseScalar_general_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalThreeIso_endomorphism_square : ∀ {C : Type u_1} [inst : CategoryTheory.Category.{u_2, u_1} C]
+  {A0 A1 B1 B0 : C} (eA : A1 ≅ A0) (e : A1 ≅ B1) (eB : B1 ≅ B0) (a0 : A0 ⟶ A0) (a1 : A1 ⟶ A1) (b1 : B1 ⟶ B1)
+  (b0 : B0 ⟶ B0),
+  CategoryTheory.CommSq a0 eA.inv eA.inv a1 →
+    CategoryTheory.CommSq a1 e.hom e.hom b1 →
+      CategoryTheory.CommSq b1 eB.hom eB.hom b0 →
+        CategoryTheory.CategoryStruct.comp (eA.symm ≪≫ e ≪≫ eB).hom b0 =
+          CategoryTheory.CategoryStruct.comp a0 (eA.symm ≪≫ e ≪≫ eB).hom
+'LinearStudy.originalThreeIso_endomorphism_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_baseScalar_general_iso_proof : ∀ {K R S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u_1} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) [inst_24 : LinearOrder ι] (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.orderedTopAbelianCechCoefficientIso (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).mapIso
+                (LinearStudy.nativeProjectiveTwistRegradingIso A D hR k))).symm ≪≫
+          LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_general A B (LinearStudy.integerGradingShift D k) ⋯ ⋯
+              a ha c hc hgenR hgenC ≪≫
+            LinearStudy.orderedTopAbelianCechCoefficientIso
+              (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).mapIso
+                (LinearStudy.nativeProjectiveTwistRegradingIso B D hS k))).hom
+      (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj B)
+        (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+          (LinearStudy.originalGlobalModuleScalar
+            ((CategoryTheory.ConcreteCategory.hom
+                (AlgebraicGeometry.Scheme.Hom.appTop
+                  (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                    (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+              r)
+            (LinearStudy.nativeProjectiveModuleSheaf B D hS k)))) =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj A)
+        (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+          (LinearStudy.originalGlobalModuleScalar
+            ((CategoryTheory.ConcreteCategory.hom
+                (AlgebraicGeometry.Scheme.Hom.appTop
+                  (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                    (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+              r)
+            (LinearStudy.nativeProjectiveModuleSheaf A D hR k))))
+      ((LinearStudy.orderedTopAbelianCechCoefficientIso (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).mapIso
+                (LinearStudy.nativeProjectiveTwistRegradingIso A D hR k))).symm ≪≫
+          LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_general A B (LinearStudy.integerGradingShift D k) ⋯ ⋯
+              a ha c hc hgenR hgenC ≪≫
+            LinearStudy.orderedTopAbelianCechCoefficientIso
+              (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).mapIso
+                (LinearStudy.nativeProjectiveTwistRegradingIso B D hS k))).hom
+'LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_baseScalar_general_iso_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_baseScalar_general : ∀ {K R S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u_1} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) [inst_24 : LinearOrder ι] (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  let MA := LinearStudy.nativeProjectiveModuleSheaf A D hR k;
+  let MB := LinearStudy.nativeProjectiveModuleSheaf B D hS k;
+  have piA :=
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0))));
+  have piB :=
+    CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0))));
+  have fA :=
+    (LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop piA)) r) MA);
+  have fB :=
+    (LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop piB)) r) MB);
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_general A B D hR hS a ha c hc hgenR hgenC k).hom
+      (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj B)
+        (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i))) fB) =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj A)
+        (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i)) fA)
+      (LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_general A B D hR hS a ha c hc hgenR hgenC k).hom
+'LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_baseScalar_general' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentFiniteNormalization_cachedCechHomologyIso_baseScalar_general : ∀ {K R S M : Type u_1}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u_1} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u_1} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) [inst_24 : LinearOrder ι] (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  have fA :=
+    (LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Hom.appTop
+              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+          r)
+        (LinearStudy.nativeProjectiveModuleSheaf A D hR k));
+  have fB :=
+    (LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Hom.appTop
+              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+          r)
+        (LinearStudy.nativeProjectiveModuleSheaf B D hS k));
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap
+        (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj A)
+          (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i)) fA)
+        (q + 1))
+      (LinearStudy.nativeIndependentFiniteNormalization_cachedCechHomologyIso_general A B D hR hS a ha c hc hgenR hgenC
+          k q).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.nativeIndependentFiniteNormalization_cachedCechHomologyIso_general A B D hR hS a ha c hc hgenR hgenC
+          k q).hom
+      (HomologicalComplex.homologyMap
+        (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj B)
+          (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i))) fB)
+        (q + 1))
+'LinearStudy.nativeIndependentFiniteNormalization_cachedCechHomologyIso_baseScalar_general' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeProjectiveOriginalScalarPointwise : ∀ {K R S M : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S] [inst_6 : AddCommGroup M]
+  [inst_7 : Module K M] [inst_8 : Module R M] [inst_9 : Module S M] (A : ℕ → Submodule K R) [inst_10 : GradedAlgebra A]
+  (B : ℕ → Submodule K S) [inst_11 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (e :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+      ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))))),
+  (∀ (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))
+            (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) z r) s) =
+        LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))
+          (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) z) r) (e s)) →
+    ∀ (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          ((CategoryTheory.ConcreteCategory.hom
+              (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                      (LinearStudy.originalGlobalModuleScalar
+                        ((CategoryTheory.ConcreteCategory.hom
+                            (AlgebraicGeometry.Scheme.Hom.appTop
+                              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                          r)
+                        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+                (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))))
+            s) =
+        (CategoryTheory.ConcreteCategory.hom
+            (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                    (LinearStudy.originalGlobalModuleScalar
+                      ((CategoryTheory.ConcreteCategory.hom
+                          (AlgebraicGeometry.Scheme.Hom.appTop
+                            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                        r)
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+              (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+          (e s)
+'LinearStudy.nativeProjectiveOriginalScalarPointwise' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_smul_general_proof.{u} : ∀ {K R S M : Type u}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+  (p : ℕ) (t : Fin (p + 1) → ι) (r : HomogeneousLocalization.Away A (∏ k : Fin (p + 1), a (t k)))
+  (s :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ k : Fin (p + 1), a (t k)))))),
+  (LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS (p + 1) (∏ k : Fin (p + 1), a (t k)) ⋯ ⋯ ⋯)
+      ((CommRingCat.Hom.hom (AlgebraicGeometry.Proj.awayToSection A (∏ k : Fin (p + 1), a (t k)))) r • s) =
+    ((CommRingCat.Hom.hom (AlgebraicGeometry.Proj.awayToSection B ((algebraMap R S) (∏ k : Fin (p + 1), a (t k))))).comp
+          (LinearStudy.normalizationHomogeneousChartMap A B (∏ k : Fin (p + 1), a (t k))))
+        r •
+      (LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS (p + 1) (∏ k : Fin (p + 1), a (t k)) ⋯ ⋯ ⋯)
+        s :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] [SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [IsDomain R] [IsDomain S] [IsNoetherianRing R]
+    [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1)
+    {κ : Type u} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ) (t : Fin (p + 1) → ι)
+    (r : HomogeneousLocalization.Away A (∏ k : Fin (p + 1), a (t k)))
+    (s :
+      ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ k : Fin (p + 1), a (t k)))))) =>
+  let z := ∏ k : Fin (p + 1), a (t k);
+  let hz := LinearStudy.nativeProjective_cechProduct_mem_degree A a ha p t;
+  let hMaps :=
+    LinearStudy.nativeIndependentSourceAmbientCechChartBijections_general A B D hR hS a ha c hc hgenR hgenC p t;
+  LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv_smul A B D hR hS (p + 1) z hz hMaps.left hMaps.right r s
+def LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv_originalBaseScalar_proof.{u} : ∀ {K R S M : Type u}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] (A : ℕ → Submodule K R)
+  [inst_12 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_13 : GradedAlgebra B] [inst_14 : SetLike.GradedSMul A B]
+  (D : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (d : ℕ) (a : R) (ha : a ∈ A d),
+  0 < d →
+    ∀ (hA : Function.Bijective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap A D hR d a ha))
+      (hB : Function.Bijective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap B D hS d ((algebraMap R S) a) ⋯))
+      (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+      (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A a)))),
+      (LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS d a ha hA hB)
+          (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A a))
+            (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) a r) s) =
+        LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) a)))
+          (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) a) r)
+          ((LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS d a ha hA hB) s) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+    (D : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (d : ℕ) (a : R) (ha : a ∈ A d) (hd : 0 < d)
+    (hA : Function.Bijective ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap A D hR d a ha))
+    (hB :
+      Function.Bijective
+        ⇑(LinearStudy.nativeProjectiveChartDegreeZeroSectionMap B D hS d ((algebraMap R S) a)
+            ((LinearStudy.normalizationBaseGradedRingHom A B).map_mem ha)))
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+    (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A a)))) =>
+  let scalar := (CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).hom) r;
+  let z := (HomogeneousLocalization.fromZeroRingHom A (Submonoid.powers a)) ((algebraMap K ↥(A 0)) scalar);
+  let e := LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS d a ha hA hB;
+  let alpha :=
+    LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A a));
+  let beta :=
+    LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+      (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) a)));
+  let h0 := LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv_smul A B D hR hS d a ha hA hB z s;
+  LinearStudy.originalScalarComparison_of_calibrations (⇑e) alpha beta
+    (⇑(CommRingCat.Hom.hom (AlgebraicGeometry.Proj.awayToSection A a)))
+    (⇑((CommRingCat.Hom.hom (AlgebraicGeometry.Proj.awayToSection B ((algebraMap R S) a))).comp
+        (LinearStudy.normalizationHomogeneousChartMap A B a)))
+    z (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) a r)
+    (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) a) r) s
+    (LinearStudy.projBasicOpenBaseScalar_eq_chart A (algebraMap K ↥(A 0)) a ha hd r)
+    (LinearStudy.projBasicOpenBaseScalar_eq_normalizationChart A B a ha hd r) h0
+def LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_originalBaseScalar_general_proof.{u} : ∀
+  {K R S M : Type u} [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R]
+  [inst_4 : Algebra K S] [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M]
+  [inst_8 : Module K M] [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M]
+  [inst_12 : IsScalarTower K R M] [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A]
+  (B : ℕ → Submodule K S) [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+  (p : ℕ) (t : Fin (p + 1) → ι) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (s :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ j : Fin (p + 1), a (t j)))))),
+  (LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS (p + 1) (∏ j : Fin (p + 1), a (t j)) ⋯ ⋯ ⋯)
+      (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ j : Fin (p + 1), a (t j))))
+        (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) (∏ j : Fin (p + 1), a (t j)) r) s) =
+    LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+      (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (∏ j : Fin (p + 1), a (t j)))))
+      (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) (∏ j : Fin (p + 1), a (t j))) r)
+      ((LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv A B D hR hS (p + 1) (∏ j : Fin (p + 1), a (t j)) ⋯ ⋯ ⋯)
+        s) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] [SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [IsDomain R] [IsDomain S] [IsNoetherianRing R]
+    [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1)
+    {κ : Type u} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ) (t : Fin (p + 1) → ι)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+    (s :
+      ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ j : Fin (p + 1), a (t j)))))) =>
+  let z := ∏ j : Fin (p + 1), a (t j);
+  let hz := LinearStudy.nativeProjective_cechProduct_mem_degree A a ha p t;
+  let hMaps :=
+    LinearStudy.nativeIndependentSourceAmbientCechChartBijections_general A B D hR hS a ha c hc hgenR hgenC p t;
+  LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv_originalBaseScalar_proof A B D hR hS (p + 1) z hz
+    (Nat.succ_pos p) hMaps.left hMaps.right r s
+def LinearStudy.nativeProjectiveOriginalScalarPointwiseActual.{u} : ∀ {K R S M : Type u} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : AddCommGroup M] [inst_7 : Module K M] [inst_8 : Module R M] [inst_9 : Module S M] (A : ℕ → Submodule K R)
+  [inst_10 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_11 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (e :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+      ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))))),
+  (∀ (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))
+            (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) z r) s) =
+        LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))
+          (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) z) r) (e s)) →
+    ∀
+      (s :
+        ↑(((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj.obj
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          ((CategoryTheory.ConcreteCategory.hom
+              (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                      (LinearStudy.originalGlobalModuleScalar
+                        ((CategoryTheory.ConcreteCategory.hom
+                            (AlgebraicGeometry.Scheme.Hom.appTop
+                              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                          r)
+                        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+                (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))))
+            s) =
+        (CategoryTheory.ConcreteCategory.hom
+            (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                    (LinearStudy.originalGlobalModuleScalar
+                      ((CategoryTheory.ConcreteCategory.hom
+                          (AlgebraicGeometry.Scheme.Hom.appTop
+                            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                        r)
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+              (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+          (e s) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [AddCommGroup M]
+    [Module K M] [Module R M] [Module S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] (D : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+    (e :
+      ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+        ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+    (hs :
+      ∀
+        (s :
+          ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+        e
+            (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))
+              (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) z r) s) =
+          LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))
+            (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) z) r) (e s)) =>
+  let FA :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj;
+  fun (s : ↑(FA.obj (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))) =>
+  Eq.trans (congrArg (⇑e) (LinearStudy.nativeProjectiveModuleActualBaseScalar_app A D hR 0 z r s))
+    (Eq.trans (hs s)
+      (Eq.symm (LinearStudy.nativeProjectiveModuleActualBaseScalar_app B D hS 0 ((algebraMap R S) z) r (e s))))
+def LinearStudy.nativeProjectiveOriginalScalarPointwiseBothActual.{u} : ∀ {K R S M : Type u} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : AddCommGroup M] [inst_7 : Module K M] [inst_8 : Module R M] [inst_9 : Module S M] (A : ℕ → Submodule K R)
+  [inst_10 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_11 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (e :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+      ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))))),
+  (∀ (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))
+            (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) z r) s) =
+        LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))
+          (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) z) r) (e s)) →
+    ∀
+      (s :
+        ↑(((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj.obj
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          ((CategoryTheory.ConcreteCategory.hom
+              (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                      (LinearStudy.originalGlobalModuleScalar
+                        ((CategoryTheory.ConcreteCategory.hom
+                            (AlgebraicGeometry.Scheme.Hom.appTop
+                              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                          r)
+                        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+                (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))))
+            s) =
+        (CategoryTheory.ConcreteCategory.hom
+            (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                    (LinearStudy.originalGlobalModuleScalar
+                      ((CategoryTheory.ConcreteCategory.hom
+                          (AlgebraicGeometry.Scheme.Hom.appTop
+                            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                        r)
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+              (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+          (e s) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [AddCommGroup M]
+    [Module K M] [Module R M] [Module S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] (D : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+    (e :
+      ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+        ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+    (hs :
+      ∀
+        (s :
+          ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+        e
+            (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))
+              (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) z r) s) =
+          LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))
+            (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) z) r) (e s)) =>
+  let FA :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj;
+  let FB :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj;
+  fun (s : ↑(FA.obj (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))) =>
+  Eq.trans (congrArg (⇑e) (LinearStudy.nativeProjectiveModuleActualBaseScalar_app A D hR 0 z r s))
+    (Eq.trans (hs s)
+      (Eq.symm (LinearStudy.nativeProjectiveModuleActualBaseScalar_app B D hS 0 ((algebraMap R S) z) r (e s))))
+def LinearStudy.nativeProjectiveOriginalScalarSourceBuilder.{u} : ∀ {K R S M : Type u} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : AddCommGroup M] [inst_7 : Module K M] [inst_8 : Module R M] [inst_9 : Module S M] (A : ℕ → Submodule K R)
+  [inst_10 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_11 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (e :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+      ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+  (g :
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj.obj
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))) ⟶
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj.obj
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))),
+  (∀
+      (x :
+        ↑(((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj.obj
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          ((CategoryTheory.ConcreteCategory.hom
+              (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                      (LinearStudy.originalGlobalModuleScalar
+                        ((CategoryTheory.ConcreteCategory.hom
+                            (AlgebraicGeometry.Scheme.Hom.appTop
+                              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                          r)
+                        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+                (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))))
+            x) =
+        (CategoryTheory.ConcreteCategory.hom g) (e x)) →
+    CategoryTheory.CategoryStruct.comp e.toAddCommGrpIso.hom g =
+      CategoryTheory.CategoryStruct.comp
+        (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                    r)
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))
+        e.toAddCommGrpIso.hom :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [AddCommGroup M]
+    [Module K M] [Module R M] [Module S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] (D : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+    (e :
+      ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+        ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))))) =>
+  let UA := AlgebraicGeometry.Proj.basicOpen A z;
+  let UB := AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z);
+  let FA :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj;
+  let FB :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+        (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj;
+  let fA :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom;
+  LinearStudy.nativeProjectiveActualAbelianSectionIsoCoefficientTargetBuilder A B D D hR hS hR hS UA UB e e
+    (fA.app (Opposite.op UA))
+def LinearStudy.nativeProjectiveOriginalScalarTargetBuilder.{u} : ∀ {K R S M : Type u} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : AddCommGroup M] [inst_7 : Module K M] [inst_8 : Module R M] [inst_9 : Module S M] (A : ℕ → Submodule K R)
+  [inst_10 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_11 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (e :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+      ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))))),
+  (∀
+      (x :
+        ↑(((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj.obj
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          ((CategoryTheory.ConcreteCategory.hom
+              (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                      (LinearStudy.originalGlobalModuleScalar
+                        ((CategoryTheory.ConcreteCategory.hom
+                            (AlgebraicGeometry.Scheme.Hom.appTop
+                              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                          r)
+                        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+                (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))))
+            x) =
+        (CategoryTheory.ConcreteCategory.hom
+            (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                    (LinearStudy.originalGlobalModuleScalar
+                      ((CategoryTheory.ConcreteCategory.hom
+                          (AlgebraicGeometry.Scheme.Hom.appTop
+                            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                        r)
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+              (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+          (e x)) →
+    CategoryTheory.CategoryStruct.comp e.toAddCommGrpIso.hom
+        (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                    r)
+                  (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))) =
+      CategoryTheory.CategoryStruct.comp
+        (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                    r)
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))
+        e.toAddCommGrpIso.hom :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [AddCommGroup M]
+    [Module K M] [Module R M] [Module S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] (D : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+    (e :
+      ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+        ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))))) =>
+  let UB := AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z);
+  let fB :=
+    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom;
+  LinearStudy.nativeProjectiveOriginalScalarSourceBuilder A B D hR hS z r e (fB.app (Opposite.op UB))
+def LinearStudy.nativeProjectiveOriginalScalarSquare.{u} : ∀ {K R S M : Type u} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S] [inst_6 : AddCommGroup M]
+  [inst_7 : Module K M] [inst_8 : Module R M] [inst_9 : Module S M] (A : ℕ → Submodule K R) [inst_10 : GradedAlgebra A]
+  (B : ℕ → Submodule K S) [inst_11 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (e :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+      ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))))),
+  (∀ (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))
+            (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) z r) s) =
+        LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))
+          (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) z) r) (e s)) →
+    CategoryTheory.CategoryStruct.comp e.toAddCommGrpIso.hom
+        (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                    r)
+                  (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))) =
+      CategoryTheory.CategoryStruct.comp
+        (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                (LinearStudy.originalGlobalModuleScalar
+                  ((CategoryTheory.ConcreteCategory.hom
+                      (AlgebraicGeometry.Scheme.Hom.appTop
+                        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                    r)
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))
+        e.toAddCommGrpIso.hom :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [AddCommGroup M]
+    [Module K M] [Module R M] [Module S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] (D : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+    (e :
+      ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+        ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+    (hs :
+      ∀
+        (s :
+          ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+        e
+            (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))
+              (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) z r) s) =
+          LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))
+            (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) z) r) (e s)) =>
+  LinearStudy.nativeProjectiveOriginalScalarTargetBuilder A B D hR hS z r e
+    (LinearStudy.nativeProjectiveOriginalScalarPointwiseBothActual A B D hR hS z r e hs)
+def LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar_general_proof.{u} : ∀ {K R S M : Type u}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+  (p : ℕ) (t : Fin (p + 1) → ι) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_general A B D hR hS a ha c hc hgenR hgenC p
+            t).toAddCommGrpIso.hom
+      (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+              (LinearStudy.originalGlobalModuleScalar
+                ((CategoryTheory.ConcreteCategory.hom
+                    (AlgebraicGeometry.Scheme.Hom.appTop
+                      (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                  r)
+                (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (∏ j : Fin (p + 1), a (t j)))))) =
+    CategoryTheory.CategoryStruct.comp
+      (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+              (LinearStudy.originalGlobalModuleScalar
+                ((CategoryTheory.ConcreteCategory.hom
+                    (AlgebraicGeometry.Scheme.Hom.appTop
+                      (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                  r)
+                (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+        (Opposite.op (AlgebraicGeometry.Proj.basicOpen A (∏ j : Fin (p + 1), a (t j)))))
+      (LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_general A B D hR hS a ha c hc hgenR hgenC p
+            t).toAddCommGrpIso.hom :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] [SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [IsDomain R] [IsDomain S] [IsNoetherianRing R]
+    [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1)
+    {κ : Type u} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (p : ℕ) (t : Fin (p + 1) → ι)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) =>
+  LinearStudy.nativeProjectiveOriginalScalarSquare A B D hR hS (∏ j : Fin (p + 1), a (t j)) r
+    (LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_general A B D hR hS a ha c hc hgenR hgenC p t)
+    (LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_baseScalar_general_typed A B D hR hS a ha c hc hgenR
+      hgenC p t r)
+def LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar_general_proof.{u} : ∀ {K R S M : Type u}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) [inst_24 : LinearOrder ι] (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  CategoryTheory.CategoryStruct.comp
+      (LinearStudy.orderedCrossSpaceAbelianCechComplexIso
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj
+          (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+          (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+          (fun (p : ℕ) (t : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) =>
+            LinearStudy.abelianOpenSectionComparisonIso
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj
+              (∏ᶜ fun (l : Fin (p + 1)) => AlgebraicGeometry.Proj.basicOpen A (a (↑t l)))
+              (LinearStudy.nativeCechProductOpen A a p t)
+              (∏ᶜ fun (l : Fin (p + 1)) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a (↑t l))))
+              (LinearStudy.nativeBaseSourceCechProductOpen B a p t) ⋯ ⋯
+              (LinearStudy.nativeIndependentSourceAmbientCechProductFamily_general A B D hR hS a ha c hc hgenR hgenC p
+                t))
+          ⋯).hom
+      ((LinearStudy.orderedFormalCechCoefficientFunctor fun (i : ι) =>
+            AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i))).map
+        ((CategoryTheory.Limits.FormalCoproduct.evalOp (AlgebraicGeometry.Proj B).Opens AddCommGrpCat).map
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+              (LinearStudy.originalGlobalModuleScalar
+                ((CategoryTheory.ConcreteCategory.hom
+                    (AlgebraicGeometry.Scheme.Hom.appTop
+                      (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                  r)
+                (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom)) =
+    CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.orderedFormalCechCoefficientFunctor fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i)).map
+        ((CategoryTheory.Limits.FormalCoproduct.evalOp (AlgebraicGeometry.Proj A).Opens AddCommGrpCat).map
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+              (LinearStudy.originalGlobalModuleScalar
+                ((CategoryTheory.ConcreteCategory.hom
+                    (AlgebraicGeometry.Scheme.Hom.appTop
+                      (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                  r)
+                (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom))
+      (LinearStudy.orderedCrossSpaceAbelianCechComplexIso
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+              (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj
+          (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+          (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+          (fun (p : ℕ) (t : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) =>
+            LinearStudy.abelianOpenSectionComparisonIso
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf A D hR 0)).obj
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).obj
+                  (LinearStudy.nativeProjectiveModuleSheaf B D hS 0)).obj
+              (∏ᶜ fun (l : Fin (p + 1)) => AlgebraicGeometry.Proj.basicOpen A (a (↑t l)))
+              (LinearStudy.nativeCechProductOpen A a p t)
+              (∏ᶜ fun (l : Fin (p + 1)) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a (↑t l))))
+              (LinearStudy.nativeBaseSourceCechProductOpen B a p t) ⋯ ⋯
+              (LinearStudy.nativeIndependentSourceAmbientCechProductFamily_general A B D hR hS a ha c hc hgenR hgenC p
+                t))
+          ⋯).hom :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] [SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [IsDomain R] [IsDomain S] [IsNoetherianRing R]
+    [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1)
+    {κ : Type u} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) [LinearOrder ι] (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) =>
+  let fA :=
+    (LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Hom.appTop
+              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+          r)
+        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0));
+  let fB :=
+    (LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+      (LinearStudy.originalGlobalModuleScalar
+        ((CategoryTheory.ConcreteCategory.hom
+            (AlgebraicGeometry.Scheme.Hom.appTop
+              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+          r)
+        (LinearStudy.nativeProjectiveModuleSheaf B D hS 0));
+  LinearStudy.nativeIndependentSourceAmbientOrderedCechCoefficientTargetBuilder_general A B D D hR hS hR hS a ha c hc
+    hgenR hgenC fA.hom fB.hom fun (p : ℕ) (t : AlgebraicGeometry.Scheme.Modules.OrderedCechIndex ι p) =>
+    LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar_general A B D hR hS a ha c hc hgenR hgenC p (↑t)
+      r
+def LinearStudy.nativeProjectiveOriginalBaseScalarMap.{u} : {K S D : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup D] →
+          [inst_4 : Module S D] →
+            [inst_5 : Module K D] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K D) →
+                    (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      (k : ℤ) →
+                        ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)) →
+                          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).obj
+                              (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k) ⟶
+                            (LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).obj
+                              (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k)) :=
+fun {K S D : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D]
+    (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+    (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) (k : ℤ)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) =>
+  (LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).map
+    (LinearStudy.originalGlobalModuleScalar
+      ((CategoryTheory.ConcreteCategory.hom
+          (AlgebraicGeometry.Scheme.Hom.appTop
+            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero 𝓑)
+              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(𝓑 0)))))))
+        r)
+      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k))
+def LinearStudy.nativeProjectiveOrderedBaseScalarMap.{u} : {K S D : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup D] →
+          [inst_4 : Module S D] →
+            [inst_5 : Module K D] →
+              (𝓑 : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra 𝓑] →
+                  (𝒟 : ℤ → Submodule K D) →
+                    (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) →
+                      {ι : Type u} →
+                        [inst_7 : LinearOrder ι] →
+                          (U : ι → (AlgebraicGeometry.Proj 𝓑).Opens) →
+                            (k : ℤ) →
+                              ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)) →
+                                (LinearStudy.orderedTopAbelianCechComplex (AlgebraicGeometry.Proj 𝓑) U
+                                    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k)) ⟶
+                                  LinearStudy.orderedTopAbelianCechComplex (AlgebraicGeometry.Proj 𝓑) U
+                                    ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).obj
+                                      (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k))) :=
+fun {K S D : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D]
+    (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+    (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) {ι : Type u} [LinearOrder ι]
+    (U : ι → (AlgebraicGeometry.Proj 𝓑).Opens) (k : ℤ)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) =>
+  LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj 𝓑) U
+    (LinearStudy.nativeProjectiveOriginalBaseScalarMap 𝓑 𝒟 hgrade k r)
+def LinearStudy.nativeProjectiveOrderedCechRegrading_baseScalar_hom_square.{u} : ∀ {K S D : Type u} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D] [inst_5 : Module K D]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+  (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) {ι : Type u} [inst_7 : LinearOrder ι]
+  (U : ι → (AlgebraicGeometry.Proj 𝓑).Opens) (k : ℤ) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  CategoryTheory.CommSq
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj 𝓑) U
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero 𝓑)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(𝓑 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.integerGradingShift 𝒟 k) ⋯ 0))))
+    (LinearStudy.orderedTopAbelianCechCoefficientIso U
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).mapIso
+          (LinearStudy.nativeProjectiveTwistRegradingIso 𝓑 𝒟 hgrade k))).hom
+    (LinearStudy.orderedTopAbelianCechCoefficientIso U
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).mapIso
+          (LinearStudy.nativeProjectiveTwistRegradingIso 𝓑 𝒟 hgrade k))).hom
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj 𝓑) U
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero 𝓑)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(𝓑 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k)))) :=
+fun {K S D : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D]
+    (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+    (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) {ι : Type u} [LinearOrder ι]
+    (U : ι → (AlgebraicGeometry.Proj 𝓑).Opens) (k : ℤ)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) =>
+  have this :=
+    {
+      w :=
+        LinearStudy.orderedTopAbelianCechCoefficientIso_moduleScalar_hom U
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero 𝓑)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(𝓑 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveTwistRegradingIso 𝓑 𝒟 hgrade k) };
+  this
+def LinearStudy.nativeProjectiveOrderedCechRegrading_baseScalar_inv_square.{u} : ∀ {K S D : Type u} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup D] [inst_4 : Module S D] [inst_5 : Module K D]
+  (𝓑 : ℕ → Submodule K S) [inst_6 : GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+  (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) {ι : Type u} [inst_7 : LinearOrder ι]
+  (U : ι → (AlgebraicGeometry.Proj 𝓑).Opens) (k : ℤ) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  CategoryTheory.CommSq
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj 𝓑) U
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero 𝓑)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(𝓑 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf 𝓑 𝒟 hgrade k))))
+    (LinearStudy.orderedTopAbelianCechCoefficientIso U
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).mapIso
+          (LinearStudy.nativeProjectiveTwistRegradingIso 𝓑 𝒟 hgrade k))).inv
+    (LinearStudy.orderedTopAbelianCechCoefficientIso U
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).mapIso
+          (LinearStudy.nativeProjectiveTwistRegradingIso 𝓑 𝒟 hgrade k))).inv
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj 𝓑) U
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj 𝓑)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero 𝓑)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(𝓑 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf 𝓑 (LinearStudy.integerGradingShift 𝒟 k) ⋯ 0)))) :=
+fun {K S D : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup D] [Module S D] [Module K D]
+    (𝓑 : ℕ → Submodule K S) [GradedAlgebra 𝓑] (𝒟 : ℤ → Submodule K D)
+    (hgrade : ∀ (n : ℕ) (d : ℤ), ∀ b ∈ 𝓑 n, ∀ ell ∈ 𝒟 d, b • ell ∈ 𝒟 (↑n + d)) {ι : Type u} [LinearOrder ι]
+    (U : ι → (AlgebraicGeometry.Proj 𝓑).Opens) (k : ℤ)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) =>
+  have this :=
+    {
+      w :=
+        LinearStudy.orderedTopAbelianCechCoefficientIso_moduleScalar_inv U
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero 𝓑)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(𝓑 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveTwistRegradingIso 𝓑 𝒟 hgrade k) };
+  this
+def LinearStudy.nativeIndependentSourceAmbientShiftedZeroCechIso_baseScalar_general_square.{u} : ∀ {K R S M : Type u}
+  [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S]
+  [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M] [inst_8 : Module K M]
+  [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M] [inst_12 : IsScalarTower K R M]
+  [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) [inst_24 : LinearOrder ι] (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  CategoryTheory.CommSq
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj A)
+      (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf A (LinearStudy.integerGradingShift D k) ⋯ 0))))
+    (LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_general A B (LinearStudy.integerGradingShift D k) ⋯ ⋯ a ha
+        c hc hgenR hgenC).hom
+    (LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_general A B (LinearStudy.integerGradingShift D k) ⋯ ⋯ a ha
+        c hc hgenR hgenC).hom
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj B)
+      (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.integerGradingShift D k) ⋯ 0)))) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] [SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [IsDomain R] [IsDomain S] [IsNoetherianRing R]
+    [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1)
+    {κ : Type u} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) [LinearOrder ι] (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) =>
+  have this :=
+    {
+      w :=
+        Eq.symm
+          (LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar_general A B
+            (LinearStudy.integerGradingShift D k) (LinearStudy.integerGradingShift_smul_homogeneous A D hR k)
+            (LinearStudy.integerGradingShift_smul_homogeneous B D hS k) a ha c hc hgenR hgenC r) };
+  this
+def LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_baseScalar_general_iso_proof.{u} : ∀
+  {K R S M : Type u} [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R]
+  [inst_4 : Algebra K S] [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] [inst_7 : AddCommGroup M]
+  [inst_8 : Module K M] [inst_9 : Module R M] [inst_10 : Module S M] [inst_11 : IsScalarTower R S M]
+  [inst_12 : IsScalarTower K R M] [inst_13 : IsScalarTower K S M] (A : ℕ → Submodule K R) [inst_14 : GradedAlgebra A]
+  (B : ℕ → Submodule K S) [inst_15 : GradedAlgebra B] [inst_16 : SetLike.GradedSMul A B] (D : ℤ → Submodule K M)
+  [inst_17 : DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Module.Finite R M]
+  [inst_23 : Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) {κ : Type u} (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) [inst_24 : LinearOrder ι] (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+  (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+  CategoryTheory.CategoryStruct.comp
+      ((LinearStudy.orderedTopAbelianCechCoefficientIso (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).mapIso
+                (LinearStudy.nativeProjectiveTwistRegradingIso A D hR k))).symm ≪≫
+          LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_general A B (LinearStudy.integerGradingShift D k) ⋯ ⋯
+              a ha c hc hgenR hgenC ≪≫
+            LinearStudy.orderedTopAbelianCechCoefficientIso
+              (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).mapIso
+                (LinearStudy.nativeProjectiveTwistRegradingIso B D hS k))).hom
+      (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj B)
+        (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+          (LinearStudy.originalGlobalModuleScalar
+            ((CategoryTheory.ConcreteCategory.hom
+                (AlgebraicGeometry.Scheme.Hom.appTop
+                  (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                    (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+              r)
+            (LinearStudy.nativeProjectiveModuleSheaf B D hS k)))) =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj A)
+        (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+        ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+          (LinearStudy.originalGlobalModuleScalar
+            ((CategoryTheory.ConcreteCategory.hom
+                (AlgebraicGeometry.Scheme.Hom.appTop
+                  (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                    (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+              r)
+            (LinearStudy.nativeProjectiveModuleSheaf A D hR k))))
+      ((LinearStudy.orderedTopAbelianCechCoefficientIso (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).mapIso
+                (LinearStudy.nativeProjectiveTwistRegradingIso A D hR k))).symm ≪≫
+          LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_general A B (LinearStudy.integerGradingShift D k) ⋯ ⋯
+              a ha c hc hgenR hgenC ≪≫
+            LinearStudy.orderedTopAbelianCechCoefficientIso
+              (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+              ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).mapIso
+                (LinearStudy.nativeProjectiveTwistRegradingIso B D hS k))).hom :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] [SetLike.GradedSMul A B] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) [IsDomain R] [IsDomain S] [IsNoetherianRing R]
+    [IsNoetherianRing S] [Module.Finite R M] [Module.Finite S M] {ι : Type u} (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1)
+    {κ : Type u} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) [LinearOrder ι] (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) =>
+  let Dk := LinearStudy.integerGradingShift D k;
+  let hRk := LinearStudy.integerGradingShift_smul_homogeneous A D hR k;
+  let hSk := LinearStudy.integerGradingShift_smul_homogeneous B D hS k;
+  let U := fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i);
+  let V := fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i));
+  let eA :=
+    LinearStudy.orderedTopAbelianCechCoefficientIso U
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).mapIso
+        (LinearStudy.nativeProjectiveTwistRegradingIso A D hR k));
+  let eB :=
+    LinearStudy.orderedTopAbelianCechCoefficientIso V
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).mapIso
+        (LinearStudy.nativeProjectiveTwistRegradingIso B D hS k));
+  let e := LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_general A B Dk hRk hSk a ha c hc hgenR hgenC;
+  let hA :=
+    LinearStudy.nativeProjectiveOrderedCechRegrading_baseScalar_inv_square A D hR
+      (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i)) k r;
+  let hB :=
+    LinearStudy.nativeProjectiveOrderedCechRegrading_baseScalar_hom_square B D hS
+      (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i))) k r;
+  let h0 :=
+    LinearStudy.nativeIndependentSourceAmbientShiftedZeroCechIso_baseScalar_general_square A B D hR hS a ha c hc hgenR
+      hgenC k r;
+  LinearStudy.originalThreeIso_endomorphism_square eA e eB
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj A)
+      (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf A D hR k))))
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj A)
+      (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf A (LinearStudy.integerGradingShift D k)
+            (LinearStudy.integerGradingShift_smul_homogeneous A D hR k) 0))))
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj B)
+      (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf B (LinearStudy.integerGradingShift D k)
+            (LinearStudy.integerGradingShift_smul_homogeneous B D hS k) 0))))
+    (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj B)
+      (fun (i : ι) => AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) (a i)))
+      ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+        (LinearStudy.originalGlobalModuleScalar
+          ((CategoryTheory.ConcreteCategory.hom
+              (AlgebraicGeometry.Scheme.Hom.appTop
+                (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                  (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+            r)
+          (LinearStudy.nativeProjectiveModuleSheaf B D hS k))))
+    hA h0 hB
+def LinearStudy.nativeProjectiveOriginalScalarPointwise.{u} : ∀ {K R S M : Type u} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : AddCommGroup M] [inst_7 : Module K M] [inst_8 : Module R M] [inst_9 : Module S M] (A : ℕ → Submodule K R)
+  [inst_10 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_11 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+  (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+  (e :
+    ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+      ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z))))),
+  (∀ (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))
+            (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) z r) s) =
+        LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+          (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))
+          (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) z) r) (e s)) →
+    ∀ (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+      e
+          ((CategoryTheory.ConcreteCategory.hom
+              (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+                      (LinearStudy.originalGlobalModuleScalar
+                        ((CategoryTheory.ConcreteCategory.hom
+                            (AlgebraicGeometry.Scheme.Hom.appTop
+                              (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                                (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                          r)
+                        (LinearStudy.nativeProjectiveModuleSheaf A D hR 0))).hom.app
+                (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))))
+            s) =
+        (CategoryTheory.ConcreteCategory.hom
+            (((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj B)).map
+                    (LinearStudy.originalGlobalModuleScalar
+                      ((CategoryTheory.ConcreteCategory.hom
+                          (AlgebraicGeometry.Scheme.Hom.appTop
+                            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))))
+                        r)
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS 0))).hom.app
+              (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+          (e s) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [AddCommGroup M]
+    [Module K M] [Module R M] [Module S M] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S)
+    [GradedAlgebra B] (D : ℤ → Submodule K M) (hR : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ B n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) (z : R)
+    (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+    (e :
+      ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))) ≃+
+        ↥(LinearStudy.nativeProjectiveModuleSections B D hS 0
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))))
+    (hs :
+      ∀
+        (s :
+          ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))),
+        e
+            (LinearStudy.nativeProjectiveModuleScalarApply A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z))
+              (LinearStudy.projBasicOpenBaseScalar A (algebraMap K ↥(A 0)) z r) s) =
+          LinearStudy.nativeProjectiveModuleScalarApply B D hS 0
+            (Opposite.op (AlgebraicGeometry.Proj.basicOpen B ((algebraMap R S) z)))
+            (LinearStudy.projBasicOpenBaseScalar B (algebraMap K ↥(B 0)) ((algebraMap R S) z) r) (e s))
+    (s : ↥(LinearStudy.nativeProjectiveModuleSections A D hR 0 (Opposite.op (AlgebraicGeometry.Proj.basicOpen A z)))) =>
+  Eq.trans (congrArg (⇑e) (LinearStudy.nativeProjectiveModuleActualBaseScalar_app A D hR 0 z r s))
+    (Eq.trans (hs s)
+      (Eq.symm (LinearStudy.nativeProjectiveModuleActualBaseScalar_app B D hS 0 ((algebraMap R S) z) r (e s))))
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_smul_general_proof:true
+KINDCHECK:LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_smul_general_proof:definition
+ROLECHECK:LinearStudy.originalScalarComparison_of_calibrations:true
+KINDCHECK:LinearStudy.originalScalarComparison_of_calibrations:theorem
+ROLECHECK:LinearStudy.projBasicOpenBaseScalar_eq_normalizationChart:true
+KINDCHECK:LinearStudy.projBasicOpenBaseScalar_eq_normalizationChart:theorem
+ROLECHECK:LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv_originalBaseScalar_proof:true
+KINDCHECK:LinearStudy.nativeWeightedSourceAmbientSectionAddEquiv_originalBaseScalar_proof:definition
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_originalBaseScalar_general_proof:true
+KINDCHECK:LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_originalBaseScalar_general_proof:definition
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_baseScalar_general_typed:true
+KINDCHECK:LinearStudy.nativeIndependentSourceAmbientCechSectionAddEquiv_baseScalar_general_typed:theorem
+ROLECHECK:LinearStudy.nativeProjectiveOriginalScalarPointwiseActual:true
+KINDCHECK:LinearStudy.nativeProjectiveOriginalScalarPointwiseActual:definition
+ROLECHECK:LinearStudy.nativeProjectiveOriginalScalarPointwiseBothActual:true
+KINDCHECK:LinearStudy.nativeProjectiveOriginalScalarPointwiseBothActual:definition
+ROLECHECK:LinearStudy.nativeProjectiveOriginalScalarSourceBuilder:true
+KINDCHECK:LinearStudy.nativeProjectiveOriginalScalarSourceBuilder:definition
+ROLECHECK:LinearStudy.nativeProjectiveOriginalScalarTargetBuilder:true
+KINDCHECK:LinearStudy.nativeProjectiveOriginalScalarTargetBuilder:definition
+ROLECHECK:LinearStudy.nativeProjectiveOriginalScalarSquare:true
+KINDCHECK:LinearStudy.nativeProjectiveOriginalScalarSquare:definition
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar_general_proof:true
+KINDCHECK:LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar_general_proof:definition
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar_general:true
+KINDCHECK:LinearStudy.nativeIndependentSourceAmbientCechProductIso_baseScalar_general:theorem
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar_general_proof:true
+KINDCHECK:LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar_general_proof:definition
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar_general:true
+KINDCHECK:LinearStudy.nativeIndependentSourceAmbientOrderedCechIso_baseScalar_general:theorem
+ROLECHECK:LinearStudy.orderedTopAbelianCechCoefficientIso_moduleScalar_hom:true
+KINDCHECK:LinearStudy.orderedTopAbelianCechCoefficientIso_moduleScalar_hom:theorem
+ROLECHECK:LinearStudy.orderedTopAbelianCechCoefficientIso_moduleScalar_inv:true
+KINDCHECK:LinearStudy.orderedTopAbelianCechCoefficientIso_moduleScalar_inv:theorem
+ROLECHECK:LinearStudy.nativeProjectiveOriginalBaseScalarMap:false
+KINDCHECK:LinearStudy.nativeProjectiveOriginalBaseScalarMap:definition
+ROLECHECK:LinearStudy.nativeProjectiveOrderedBaseScalarMap:false
+KINDCHECK:LinearStudy.nativeProjectiveOrderedBaseScalarMap:definition
+ROLECHECK:LinearStudy.nativeProjectiveOrderedCechRegrading_baseScalar_hom_square:true
+KINDCHECK:LinearStudy.nativeProjectiveOrderedCechRegrading_baseScalar_hom_square:definition
+ROLECHECK:LinearStudy.nativeProjectiveOrderedCechRegrading_baseScalar_inv_square:true
+KINDCHECK:LinearStudy.nativeProjectiveOrderedCechRegrading_baseScalar_inv_square:definition
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientShiftedZeroCechIso_baseScalar_general_square:true
+KINDCHECK:LinearStudy.nativeIndependentSourceAmbientShiftedZeroCechIso_baseScalar_general_square:definition
+ROLECHECK:LinearStudy.originalThreeIso_endomorphism_square:true
+KINDCHECK:LinearStudy.originalThreeIso_endomorphism_square:theorem
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_baseScalar_general_iso_proof:true
+KINDCHECK:LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_baseScalar_general_iso_proof:definition
+ROLECHECK:LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_baseScalar_general:true
+KINDCHECK:LinearStudy.nativeIndependentSourceAmbientOrderedTwistCechIso_baseScalar_general:theorem
+ROLECHECK:LinearStudy.nativeIndependentFiniteNormalization_cachedCechHomologyIso_baseScalar_general:true
+KINDCHECK:LinearStudy.nativeIndependentFiniteNormalization_cachedCechHomologyIso_baseScalar_general:theorem
+ROLECHECK:LinearStudy.nativeProjectiveOriginalScalarPointwise:true
+KINDCHECK:LinearStudy.nativeProjectiveOriginalScalarPointwise:definition
