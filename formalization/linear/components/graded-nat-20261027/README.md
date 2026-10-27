@@ -1,0 +1,5 @@
+# Original coefficient naturality for finite graded modules including torsion
+
+Original degree-zero coefficient naturality,arbitrary finite graded source AND target including torsion,all integer twists,original ordered Cech and actual positive H. K-linearity,specified graded-Hom dual naturality,degree-q regrading,fixed C_L/SAME original normalized trace,original4.1/4.2/main remain OPEN.
+
+28 actual compiled roots;15 ordinary theorem proofs;11 actual proof-term definitions (kernel definitions of proved propositions);7 object and0 statement definition (not a proof). Codex read all1663 root lines and all2429 exact-type/axiom/body/kernel-role lines;no human review claimed. 541 closed source modules;513 parents rechecked against actual public archives. Source metadata reuses ONLY exact unchanged accepted sources and freshly exports the rest in sequential bounded partitions. Resources:103holds,8GiB,2threads,CPU<=25%,20minutes via lean_runner.run_file;whole-local180. Original4.1/4.2/main OPEN.
