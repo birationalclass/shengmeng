@@ -6,7 +6,7 @@ import {OrbitControls} from '../3d/vendor/OrbitControls.js';
 import {createLecture} from './lecture.js';
 import {configureLectureRoot} from './site-layout.js';
 import {loadMathRuntime,loadBoardFonts} from './staged-startup.js';
-import {batchStaticHall} from './blackboard-static.js';
+import {batchLectureGeometry} from './blackboard-lecture-batching.js';
 import {isClassroomBreak,classroomBreakTime} from './blackboard-break.js';
 import {createBlackboardHall,SMART_SCREEN_BACKGROUND} from './blackboard-hall.js';
 import {constrainHallCamera,hallOverview,HALL_CAMERA_BOUNDS} from './blackboard-camera.js';
@@ -129,9 +129,9 @@ for(const name of ['pointerdown','pointerup','pointermove','wheel'])canvas.addEv
 scene.matrixAutoUpdate=false;scene.matrixWorldAutoUpdate=false;wake();
 async function boot(){try{
  await Promise.all([loadMathRuntime(),loadBoardFonts()]);
- lecture=await createLecture(lectureRoot,renderer,{camera,retractable:false,startStored:false,requireSelection:true,fixedBoards:true,classroomOnly:true,reports:CLASSROOM_PROGRAMS,preloadMode:'background',defaultReport:'sylow-theorems',initialLanguage:'zh',floorMaterial:hall.carpetMaterial,isActive:()=>!document.hidden,onProgress:p=>{$('loadingText').textContent='准备报告厅 · '+Math.round(p*100)+'%';}});
+ lecture=await createLecture(lectureRoot,renderer,{camera,retractable:false,startStored:false,requireSelection:true,fixedBoards:false,classroomOnly:true,reports:CLASSROOM_PROGRAMS,preloadMode:'background',defaultReport:'sylow-theorems',initialLanguage:'zh',floorMaterial:hall.carpetMaterial,isActive:()=>!document.hidden,onProgress:p=>{$('loadingText').textContent='准备报告厅 · '+Math.round(p*100)+'%';}});
  applyErasingSpeed();
- const moving=[];lectureRoot.traverse(o=>{if(/^(Writing chalk|Moving blackboard eraser|Temporary spoken laser reference)$/.test(o.name))moving.push(o);});lectureBatching=batchStaticHall(T,lectureRoot,{exclude:moving,freeze:false,opaqueOnly:true,bucket:(_mesh,matrix)=>Math.max(0,Math.min(2,Math.round((matrix.elements[12]-22.4)/5.6)))});lectureRoot.updateMatrix();lectureRoot.matrixAutoUpdate=false;
+ lectureBatching=batchLectureGeometry(T,lectureRoot);lectureRoot.updateMatrix();lectureRoot.matrixAutoUpdate=false;
  library=createCourseLibrary({getLecture:()=>lecture,onSelect:selectReport,classroomOnly:true});
  const ray=new T.Raycaster(),pointer=new T.Vector2();
  bindPhysicalButtons(canvas,controls,event=>{const rect=canvas.getBoundingClientRect();pointer.set((event.clientX-rect.left)/rect.width*2-1,1-(event.clientY-rect.top)/rect.height*2);scene.updateMatrixWorld(true);ray.setFromCamera(pointer,camera);ray.far=25;const hit=ray.intersectObjects([...lecture.hoverTargets,...hall.lectern.targets].filter(o=>{for(let p=o;p;p=p.parent)if(!p.visible)return false;return true;}),false)[0];if(!hit)return null;hit.object.userData.action=physicalHitAction(hit,lecture.clock);return hit.object;},a=>void action(a));

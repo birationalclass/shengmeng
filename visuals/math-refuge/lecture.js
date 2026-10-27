@@ -1,3 +1,4 @@
+import {withBoardHardwarePreview} from './board-hardware-preview.js';
 import {coursePackState} from './course-pack-cache.js';
 import {prepareWholeCourse,paintCourseLoading,prepareCourseBoardFiles} from './course-ready.js';
 import {retainCourseResources,courseResourceState} from './course-resource-cache.js';
@@ -642,6 +643,7 @@ export async function createLecture(scene,renderer,options={}){
   const movingNodes=new Set([scene,storageRig,...storageLids,...boards.map(b=>b.group),chalk,eraser]);
   scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {
+    previewOpeningHardware(work){return withBoardHardwarePreview(scene,storageRig,work);},
     get cameraZoom(){return cameraZoom;},adjustCameraZoom(direction){cameraZoom=stepBoardCameraZoom(cameraZoom,direction);return cameraZoom;},
     cameraView(aspect,fov=57){const frame=boardCameraFrame(aspect,fov,cameraZoom,{column:Math.floor(clock.active/2),boardY:options.fixedBoards?boards[clock.active].group.position.y:BOARD_LAYOUT.low,fitTray:!options.fixedBoards,boardZ:-10.29+BOARD_MOUNT_OFFSET,frameMargin:isCrystalScheme(trayHardware.tone)?.028+.003*Math.SQRT2:.04+.0025*Math.SQRT2});return{...frame,target:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z)),position:scene.localToWorld(new THREE.Vector3(frame.x,frame.y,frame.z+frame.distance))};},
     get autoCamera(){return autoCamera;},set autoCamera(value){autoCamera=Boolean(value);},
