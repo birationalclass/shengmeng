@@ -1,3 +1,4 @@
+import {createClassroomNativeMedia} from './classroom-native-media.js';
 import {configureCoursePacks} from './course-pack-cache.js';
 import {HandoffGate} from './handoff-gate.js?v=handoff-20261025';
 import {BoardReview,boardReviewStart} from './board-review.js?v=uniform-review-20261019';
@@ -16,6 +17,8 @@ export function createReportVoice({fetcher=resourceFetch,makeAudio=()=>new Audio
  let manifestReady=Promise.resolve(null),resolveManifest=()=>{};
  let activity=null,segmentEnding=false,navigationIntent=false,navigationGate=null,retainAll=false,prefetchJob=null,assetsPreparing=false,boardReadiness=Promise.resolve(true);const blobs=new Map(),blobJobs=new Map();let preload={phase:'idle',completed:0,total:0,errors:[]};
  const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',errorKind:'',started:false,chapter:0,temporaryPause:false,rate:1,activity:null};
+ const nativeMedia=createClassroomNativeMedia(makeAudio);let mediaLease=null,mediaPrimed=false,audioListeners=[];
+ function unbindAudio(){for(const [target,name,fn]of audioListeners)target.removeEventListener(name,fn);audioListeners=[];}
  const review=new BoardReview(now);let reviewTimer=null;const handoff=new HandoffGate();
  const emit=()=>{state.transportPlaying=desired&&contextActive&&!assetsPreparing;onChange({...state});};
  const chapterDisplayTime=(chapter,time)=>{
@@ -24,10 +27,10 @@ export function createReportVoice({fetcher=resourceFetch,makeAudio=()=>new Audio
   return Math.min(state.duration,changesBoard?Math.max(chapter.start,end-.001):end,time);
  };
 
- const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index],cue=handoff.check(audio.currentTime-(c.mediaStart||0),desired&&contextActive&&!assetsPreparing);if(cue){desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio.currentTime=(c.mediaStart||0)+cue.at;audio.pause();state.phase='paused';state.manualPause=cue;queueMicrotask(emit);}state.time=chapterDisplayTime(c,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=chapterDisplayTime(manifest.chapters[index],manifest.chapters[index].start+activity.at);state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}if(audio&&manifest?.policy?.thinkingUsesRealSeconds){const c=manifest.chapters[index],b=manifest.boards.find(b=>b.page===c.page),at=audio.currentTime-(c.mediaStart||0),rate=classroomAudioRate(b,at,playbackRate);if(audio.playbackRate!==rate)audio.playbackRate=rate;}if(manifest){const b=manifest.boards.find(b=>b.page===(manifest.chapters[index].page??index));if(b&&!b.id?.endsWith('-break')&&state.time-b.start>=boardReviewStart(b))review.mark(b.page);}return state.time;};
+ const sync=()=>{if(audio&&manifest){const c=manifest.chapters[index],cue=handoff.check(audio.currentTime-(c.mediaStart||0),desired&&contextActive&&!assetsPreparing);if(cue){desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio.currentTime=(c.mediaStart||0)+cue.at;audio.pause();state.phase='paused';state.manualPause=cue;queueMicrotask(emit);}state.time=chapterDisplayTime(c,c.start+Math.min(c.duration,Math.max(0,audio.currentTime-(c.mediaStart||0))));}if(activity&&manifest){if(activity.running){const stamp=now(),rate=manifest.chapters[index].activityType==='break'?1:playbackRate;activity.at=Math.min(activity.duration,activity.at+(stamp-activity.stamp)*rate);activity.stamp=stamp;}state.time=chapterDisplayTime(manifest.chapters[index],manifest.chapters[index].start+activity.at);state.activity={...manifest.chapters[index],remaining:Math.max(0,activity.duration-activity.at)};}if(audio&&manifest?.policy?.thinkingUsesRealSeconds&&(!mediaLease||mediaPrimed)){const c=manifest.chapters[index],b=manifest.boards.find(b=>b.page===c.page),at=audio.currentTime-(c.mediaStart||0),rate=classroomAudioRate(b,at,playbackRate);if(audio.playbackRate!==rate)audio.playbackRate=rate;}if(manifest){const b=manifest.boards.find(b=>b.page===(manifest.chapters[index].page??index));if(b&&!b.id?.endsWith('-break')&&state.time-b.start>=boardReviewStart(b))review.mark(b.page);}return state.time;};
  function pause(){sync();if(activity)activity.running=false;desired=false;navigationIntent=false;state.temporaryPause=false;playToken++;audio?.pause();if(['loading','playing','buffering','preparing','away'].includes(state.phase))state.phase='paused';emit();}
  const audioWarm=createBackgroundAssets({retryDelay,load:(job,signal)=>bytes(job.src,epoch,false,job.hint,signal)});
- function release(){handoff.reset();state.manualPause=null;clearTimeout(reviewTimer);review.clear();resolveManifest(null);pause();audioWarm.cancel();navigationGate=null;boardHold=null;disconnectClassroomAudio(audio);audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
+ function release(){handoff.reset();state.manualPause=null;clearTimeout(reviewTimer);review.clear();resolveManifest(null);pause();audioWarm.cancel();navigationGate=null;boardHold=null;disconnectClassroomAudio(audio);unbindAudio();nativeMedia.clear();mediaLease=null;mediaPrimed=false;audio=null;activity=null;state.activity=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of new Set(cache.values()))revokeURL(v);cache.clear();jobs.clear();blobs.clear();blobJobs.clear();retainAll=false;prefetchJob=null;preload={phase:'idle',completed:0,total:0,errors:[]};}
  async function fetchBytes(src,mine,show,sizeHint=0,signal){
   const controller=new AbortController();controllers.add(controller);
   const cancel=()=>controller.abort(signal.reason);signal?.addEventListener('abort',cancel,{once:true});if(signal?.aborted)cancel();
@@ -57,37 +60,39 @@ export function createReportVoice({fetcher=resourceFetch,makeAudio=()=>new Audio
   jobs.set(i,job);try{return await job;}finally{if(jobs.get(i)===job)jobs.delete(i);}
  }
  async function attach(i,at=0){
-  const mine=epoch,attachment=++attachToken;index=i;offset=at;handoff.reset(manifest.boards.find(b=>b.page===(manifest.chapters[i].page??i))?.manualPauses||[],at);state.manualPause=null;review.reset(manifest.chapters[i].page??i);audio?.pause();disconnectClassroomAudio(audio);audio=null;activity=null;segmentEnding=false;state.activity=null;assetsPreparing=true;
+  const mine=epoch,attachment=++attachToken;index=i;offset=at;handoff.reset(manifest.boards.find(b=>b.page===(manifest.chapters[i].page??i))?.manualPauses||[],at);state.manualPause=null;review.reset(manifest.chapters[i].page??i);audio?.pause();disconnectClassroomAudio(audio);unbindAudio();nativeMedia.detach();mediaLease=null;mediaPrimed=false;audio=null;activity=null;segmentEnding=false;state.activity=null;assetsPreparing=true;
   state.chapter=i;state.time=manifest.chapters[i].start+at;
   const page=manifest.chapters[i].page??manifest.boards.findLast(b=>b.start<=state.time)?.page??0,boardTime=state.time;
   boardReadiness=Promise.resolve().then(()=>prepareBoard(page,boardTime));boardReadiness.catch(()=>{});
   if(manifest.chapters[i].kind==='activity'){activity={at,stamp:now(),duration:manifest.chapters[i].duration,running:false,advancing:false};state.progress=1;state.temporaryPause=desired&&!contextActive;state.phase=state.temporaryPause?'away':state.started?'paused':'ready';sync();trim();emit();return true;}
   if(!cache.has(i)){if(desired||state.phase!=='paused')state.phase='loading';state.progress=null;emit();}
   const url=await load(i);if(!url||mine!==epoch||attachment!==attachToken)return false;trim();
-  const target=makeAudio();audio=target;target.preload='auto';target.preservesPitch=true;target.playbackRate=playbackRate;target.src=url;
-  const valid=()=>mine===epoch&&audio===target;
-  const position=()=>{const mediaAt=(manifest.chapters[i].mediaStart||0)+at;if(valid()&&mediaAt){target.currentTime=mediaAt;}};
-  target.addEventListener('loadedmetadata',position,{once:true});try{position();}catch{}
-  target.addEventListener('timeupdate',()=>{if(valid()){sync();emit();}});
-  target.addEventListener('waiting',()=>{if(valid()&&desired){state.phase='buffering';emit();}});
-  target.addEventListener('playing',()=>{if(valid()&&desired){state.phase=boardHold?'preparing':'playing';emit();}});
-  target.addEventListener('error',()=>{if(valid()){desired=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();}});
-  target.addEventListener('ended',()=>{if(!valid()||segmentEnding||boardHold)return;sync();if(!desired)return;finishChapter();});
+  const nativePCM=manifest.policy?.audioTransport==='mp3-predecode-pcm',mediaAt=(manifest.chapters[i].mediaStart||0)+at;
+  const lease=nativePCM?nativeMedia.attach(url,{at:mediaAt}):null,target=lease?.audio||makeAudio();audio=target;mediaLease=lease;
+  const valid=()=>mine===epoch&&attachment===attachToken&&audio===target&&(!lease||lease.valid());
+  const listen=(name,fn)=>{target.addEventListener(name,fn);audioListeners.push([target,name,fn]);};
+  if(!lease){target.preload='auto';target.preservesPitch=true;target.playbackRate=playbackRate;target.src=url;const position=()=>{if(valid()&&mediaAt)target.currentTime=mediaAt;};listen('loadedmetadata',position);try{position();}catch{}}
+  listen('timeupdate',()=>{if(valid()){sync();emit();}});
+  listen('waiting',()=>{if(valid()&&desired){state.phase='buffering';emit();}});
+  listen('playing',()=>{if(valid()&&desired){state.phase=boardHold?'preparing':'playing';emit();}});
+  listen('error',()=>{if(valid()){desired=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();}});
+  listen('ended',()=>{if(!valid()||segmentEnding||boardHold)return;sync();if(!desired)return;finishChapter();});
+  if(lease&&(!await lease.ready||!valid()))return false;
   state.progress=1;state.temporaryPause=desired&&!contextActive;state.phase=state.temporaryPause?'away':state.started?'paused':'ready';state.error='';state.errorKind='';emit();return true;
  }
  async function play(){
   if(navigationGate){navigationIntent=true;navigationGate.token=playToken;state.phase="preparing";state.started=true;emit();return false;}
-  if(!audio&&!activity){if(state.phase==='paused'&&(controllers.size||jobs.size)){desired=true;state.phase='loading';emit();}return false;}const mine=epoch,token=++playToken,target=audio;desired=true;state.manualPause=null;
+  if(!audio&&!activity){if(state.phase==='paused'&&(controllers.size||jobs.size)){desired=true;state.phase='loading';emit();}return false;}const mine=epoch,token=++playToken,target=audio,lease=mediaLease;desired=true;state.manualPause=null;
   if(!contextActive){state.temporaryPause=true;state.phase='away';emit();return false;}state.temporaryPause=false;state.started=true;
   if(boardHold){state.phase='preparing';emit();return false;}
   // Both the complete current audio blob and the matching prepared board are
   // mandatory. This gate covers autoplay, next chapter, seek, retry and re-entry.
   assetsPreparing=true;state.phase='preparing';emit();
-  try{const ready=await boardReadiness;if(ready===false)throw Error('当前黑板尚未就绪');if(target&&manifest?.policy?.defaultPlaybackRate)await primeClassroomAudio(target);}
+  try{const ready=await boardReadiness;if(ready===false)throw Error('当前黑板尚未就绪');if(target&&(lease||manifest?.policy?.defaultPlaybackRate))await primeClassroomAudio(target,{signal:lease?.signal});}
   catch(error){if(mine===epoch&&token===playToken&&desired){pause();state.phase='error';state.errorKind='board';state.error=(error.message||'当前黑板加载失败')+' · 点击重试';emit();}return false;}
-  if(mine!==epoch||token!==playToken||!desired||audio!==target){return false;}assetsPreparing=false;
+  if(mine!==epoch||token!==playToken||!desired||audio!==target||mediaLease!==lease){return false;}mediaPrimed=Boolean(lease);assetsPreparing=false;
   if(activity){activity.stamp=now();activity.running=true;state.phase='playing';state.error='';sync();emit();return true;}
-  try{if(manifest?.policy?.thinkingUsesRealSeconds)sync();else target.playbackRate=playbackRate;if(!desired||token!==playToken)return false;await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){if(audio!==target||!desired||!contextActive)target.pause();return false;}state.phase='playing';state.error='';state.errorKind='';emit();return true;}
+  try{if(lease){const c=manifest.chapters[index],b=manifest.boards.find(b=>b.page===c.page);target.playbackRate=classroomAudioRate(b,target.currentTime-(c.mediaStart||0),playbackRate);}if(manifest?.policy?.thinkingUsesRealSeconds)sync();else if(!lease)target.playbackRate=playbackRate;if(!desired||token!==playToken)return false;await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){if(audio!==target||!desired||!contextActive)target.pause();return false;}state.phase='playing';state.error='';state.errorKind='';emit();return true;}
   catch{if(mine!==epoch||token!==playToken)return false;desired=false;state.phase='paused';state.error='点击黑板播放语音';emit();return false;}
  }
  function finishChapter(){
@@ -146,7 +151,7 @@ export function createReportVoice({fetcher=resourceFetch,makeAudio=()=>new Audio
   if(desired&&state.temporaryPause&&(audio||activity)&&manifest){state.temporaryPause=false;return play();}
   return false;
  }
- return{state,select,toggle,pause,seek,setContextActive,prefetchAll,get preloadState(){return audioWarm.state;},
+ return{state,select,toggle,pause,seek,setContextActive,prefetchAll,get mediaState(){return{...nativeMedia.state,primed:mediaPrimed,playbackRate:audio?.playbackRate??null};},get preloadState(){return audioWarm.state;},
   get transportPlaying(){return desired&&contextActive&&!assetsPreparing;},
   get boardHeld(){return Boolean(boardHold);},
   async holdForBoard(job,at){
@@ -161,7 +166,7 @@ export function createReportVoice({fetcher=resourceFetch,makeAudio=()=>new Audio
    return true;
   },
   async skipActivity(){if(!activity||!manifest)return false;if(index+1<manifest.chapters.length){await advance(index+1);return true;}pause();state.phase='ended';state.time=state.duration;emit();return true;},
-  setRate(value){sync();const n=Number(value);playbackRate=Number.isFinite(n)?Math.max(.75,Math.min(1.3,n)):1;state.rate=playbackRate;if(audio){audio.preservesPitch=true;audio.playbackRate=playbackRate;}emit();return playbackRate;},
+  setRate(value){sync();const n=Number(value);playbackRate=Number.isFinite(n)?Math.max(.75,Math.min(1.3,n)):1;state.rate=playbackRate;if(audio&&(!mediaLease||mediaPrimed)){audio.preservesPitch=true;audio.playbackRate=playbackRate;}emit();return playbackRate;},
   failForBoard(error){pause();boardHold=null;state.phase='error';state.errorKind='board';state.error=(error?.message||'板书下载失败')+' · 点击重试';emit();},
   async suspendUntil(job){
    if(!desired||state.phase==='preparing')return;
@@ -170,7 +175,7 @@ export function createReportVoice({fetcher=resourceFetch,makeAudio=()=>new Audio
    catch{if(mine===epoch&&token===playToken&&desired){pause();state.phase='error';state.error='板书尚未就绪 · 点击重试';emit();}}
   },get manifestReady(){return manifestReady;},get manifest(){return manifest;},
   update(){sync();if(audio&&desired&&!boardHold&&!segmentEnding&&manifest.chapters[index].mediaStart!==undefined&&audio.currentTime-(manifest.chapters[index].mediaStart||0)>=manifest.chapters[index].duration-.015){audio.pause();finishChapter();}if(activity&&activity.running&&!activity.advancing&&activity.at>=activity.duration){activity.advancing=true;activity.running=false;if(index+1<manifest.chapters.length)void advance(index+1);else{desired=false;state.phase='ended';state.time=state.duration;emit();}}if(manifest&&desired&&contextActive&&(audio||activity)&&index+1<manifest.chapters.length){const c=manifest.chapters[index],remaining=activity?activity.duration-activity.at:c.duration-(audio.currentTime-(c.mediaStart||0));if(remaining<20*playbackRate)void load(index+1,false).catch(()=>{});}return state;},
-  dispose(){++epoch;release();manifest=null;state.phase='idle';emit();}};
+  dispose(){++epoch;release();nativeMedia.dispose();manifest=null;state.phase='idle';emit();}};
 }
 // Use the same measured stroke costs as chalkPosition and inkReveal, so a
 // long formula is never treated as one equal-sized slice of a whole board.
