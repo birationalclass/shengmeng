@@ -1,0 +1,44 @@
+Linear\NativeGeneralModuleHScalarProof.lean:37:17: warning: Definition `LinearStudy.schemeModuleActualCohomologyAddCommGroup` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+Linear\NativeGeneralModuleHScalarProof.lean:42:0: warning: Definition `nativeFiniteNormalization_generalModuleCechActualH_baseScalar_proof` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+LinearStudy.nativeFiniteNormalization_generalModuleCechActualH_baseScalar_proof.{u} {K R S M : Type u} [Field K]
+  [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S] (A : ℕ → Submodule K R)
+  [GradedAlgebra A] (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B] [AddCommGroup M] [Module K M]
+  [Module R M] [Module S M] [IsScalarTower R S M] [IsScalarTower K R M] [IsScalarTower K S M] (D : ℤ → Submodule K M)
+  [DirectSum.Decomposition D] (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [IsDomain R] [IsDomain S] [IsNoetherianRing R]
+  [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite R S] [Module.Finite R M] [Module.Finite S M]
+  {ι κ : Type u} [LinearOrder ι] [Finite ι] (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+  (k : ℤ) (q : ℕ) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) :
+  CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.forget₂ (ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+            AddCommGrpCat).map
+        (HomologicalComplex.homologyMap
+          (LinearStudy.orderedBaseCechActualCoefficientMap
+            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))
+            (LinearStudy.originalGlobalModuleScalar
+              ((CategoryTheory.ConcreteCategory.hom
+                  (AlgebraicGeometry.Scheme.Hom.appTop
+                    (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                r)
+              (LinearStudy.nativeProjectiveModuleSheaf A D hR k))
+            fun i => AlgebraicGeometry.Proj.basicOpen A (a i))
+          (q + 1)))
+      (LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_general A B D hR hS a ha c hc
+          (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))
+          hgenR hgenC k q).hom =
+    CategoryTheory.CategoryStruct.comp
+      (LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_general A B D hR hS a ha c hc
+          (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+            (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))
+          hgenR hgenC k q).hom
+      (LinearStudy.nativeOriginalActualHPublicScalarOperator B D hS (fun i => (algebraMap R S) (a i)) ⋯ ⋯ k q r)
+'LinearStudy.nativeFiniteNormalization_generalModuleCechActualH_baseScalar_proof' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

@@ -1,0 +1,9 @@
+module
+public import Linear.CheckedSingleUnfoldIdentity
+public import Linear.NativeSourcePublicHScalarOperator
+@[expose] public section
+set_option maxHeartbeats 5000
+checked_unfold_identity LinearStudy.nativeOriginalActualHPublicScalarOperator
+  as LinearStudy.nativeOriginalActualHPublicScalarOperator_eq_raw
+#check LinearStudy.nativeOriginalActualHPublicScalarOperator_eq_raw
+#print axioms LinearStudy.nativeOriginalActualHPublicScalarOperator_eq_raw

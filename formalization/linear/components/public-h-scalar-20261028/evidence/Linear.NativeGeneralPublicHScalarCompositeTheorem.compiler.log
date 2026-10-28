@@ -1,0 +1,39 @@
+LinearStudy.nativeIndependentFiniteNormalization_publicActualHComposite_baseScalar_general.{u} {K R S M : Type u}
+  [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S] [IsScalarTower K R S]
+  (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S) [GradedAlgebra B] [SetLike.GradedSMul A B]
+  [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M] [IsScalarTower K R M]
+  [IsScalarTower K S M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [IsDomain R] [IsDomain S] [IsNoetherianRing R]
+  [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite R S] [Module.Finite R M] [Module.Finite S M]
+  {ι κ : Type u} [LinearOrder ι] [Finite ι] (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+  (k : ℤ) (q : ℕ) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) :
+  CategoryTheory.CategoryStruct.comp
+      (HomologicalComplex.homologyMap
+        (LinearStudy.orderedTopAbelianCechCoefficientMap (AlgebraicGeometry.Proj A)
+          (fun i => AlgebraicGeometry.Proj.basicOpen A (a i))
+          ((LinearStudy.schemeModuleToActualAbelianSheaf (AlgebraicGeometry.Proj A)).map
+            (LinearStudy.originalGlobalModuleScalar
+              ((CategoryTheory.ConcreteCategory.hom
+                  (AlgebraicGeometry.Scheme.Hom.appTop
+                    (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                r)
+              (LinearStudy.nativeProjectiveModuleSheaf A D hR k))))
+        (q + 1))
+      (CategoryTheory.CategoryStruct.comp
+        (LinearStudy.nativeIndependentFiniteNormalization_cachedCechHomologyIso_general A B D hR hS a ha c hc hgenR
+            hgenC k q).hom
+        (LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso B D hS (fun i => (algebraMap R S) (a i)) ⋯ ⋯ k
+            q).hom) =
+    CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.CategoryStruct.comp
+        (LinearStudy.nativeIndependentFiniteNormalization_cachedCechHomologyIso_general A B D hR hS a ha c hc hgenR
+            hgenC k q).hom
+        (LinearStudy.nativeFiniteGradedTwist_cachedActualHigherHIso B D hS (fun i => (algebraMap R S) (a i)) ⋯ ⋯ k
+            q).hom)
+      (LinearStudy.nativeOriginalActualHPublicScalarOperator B D hS (fun i => (algebraMap R S) (a i)) ⋯ ⋯ k q r)
+'LinearStudy.nativeIndependentFiniteNormalization_publicActualHComposite_baseScalar_general' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

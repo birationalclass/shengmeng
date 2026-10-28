@@ -1,0 +1,9 @@
+module
+public import Linear.CheckedOpaqueProof
+public import Linear.NativeSourcePublicHScalarSquareExtProof
+@[expose] public section
+set_option maxHeartbeats 5000
+checked_opaque_proof LinearStudy.nativeFiniteGradedTwist_publicActualHigherHIso_baseScalar_square_proof
+  as LinearStudy.nativeFiniteGradedTwist_publicActualHigherHIso_baseScalar_square
+#check LinearStudy.nativeFiniteGradedTwist_publicActualHigherHIso_baseScalar_square
+#print axioms LinearStudy.nativeFiniteGradedTwist_publicActualHigherHIso_baseScalar_square

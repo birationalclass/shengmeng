@@ -1,0 +1,11 @@
+module
+public import Linear.CheckedFoldSquareRight
+public import Linear.NativeSourceActualHRawScalarTheorem
+public import Linear.NativeOriginalHScalarCachedOperator
+@[expose] public section
+set_option maxHeartbeats 5000
+checked_fold_square_right LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar
+  with LinearStudy.nativeOriginalActualHScalarOperator
+  as LinearStudy.nativeFiniteGradedTwist_actualH_cachedRightScalar
+#check LinearStudy.nativeFiniteGradedTwist_actualH_cachedRightScalar
+#print axioms LinearStudy.nativeFiniteGradedTwist_actualH_cachedRightScalar
