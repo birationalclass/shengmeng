@@ -1,0 +1,6 @@
+LinearStudy.originalInverseCompositeForgetIso.{u, v, u', v'} {C : Type u} [CategoryTheory.Category.{v, u} C]
+  {A : Type u'} [CategoryTheory.Category.{v', u'} A] (F : CategoryTheory.Functor C A) {X U D : C} {Y : A} (I : X ≅ U)
+  (J : F.obj X ≅ Y) (B : X ≅ D) (e : F.obj U = Y)
+  (h : CategoryTheory.CategoryStruct.comp (F.map I.hom) (CategoryTheory.eqToHom e) = J.hom) :
+  CategoryTheory.eqToIso ⋯ ≪≫ F.mapIso (I.symm ≪≫ B) = J.symm ≪≫ F.mapIso B
+'LinearStudy.originalInverseCompositeForgetIso' depends on axioms: [propext, Classical.choice, Quot.sound]

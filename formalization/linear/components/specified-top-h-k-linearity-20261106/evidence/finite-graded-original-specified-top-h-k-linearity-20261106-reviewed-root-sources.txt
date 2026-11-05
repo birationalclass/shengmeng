@@ -1,0 +1,160 @@
+=== Linear.NativeGeneralSpecifiedTopHIntrinsicSpecIso SHA-256 d5ac098093531d749b7c3f357fa8506c285a91563da69a659fcbd007c4f5dc4d ===
+module
+public import Linear.NativeGeneralModuleHIntrinsicSpecForget
+public import Linear.NativeGeneralSpecifiedNormalizationTopDuality
+public import Linear.CoordinateNativeCechHomologyModel
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Lift the specified top-H duality by reusing its original coordinate
+cover and presentation-data factor with the checked general K-linear comparison. -/
+elab "check_general_specified_top_h_spec_iso " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let old ← getConstInfoDefn ``LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso_general
+    let general ← getConstInfoDefn
+      ``LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general
+    forallTelescope old.type fun xs _ => do
+      let mut body := (mkAppN old.value xs).headBeta
+      while body.isLet do
+        body := body.letBody!.instantiate1 body.letValue!
+      unless body.isAppOf ``CategoryTheory.Iso.trans do
+        throwError "Expected the specified comparison's original two factors"
+      let sides := body.getAppArgs
+      let inverse := sides[sides.size-2]!
+      let dual := sides.back!
+      unless inverse.isAppOf ``CategoryTheory.Iso.symm &&
+          dual.isAppOf ``CategoryTheory.Functor.mapIso do
+        throwError "Expected the original inverse comparison and presentation-data factor"
+      let orig := inverse.getAppArgs.back!
+      unless orig.isAppOf ``LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_general do
+        throwError "Expected the original general comparison"
+      let origArgs := orig.getAppArgs
+      let cut := origArgs.size-6
+      let levels := orig.getAppFn.constLevels!
+      let lift := mkAppN (mkConst general.name levels)
+        (origArgs.extract 0 cut ++ origArgs.extract (cut+2) origArgs.size)
+      let dualK := dual.getAppArgs.back!
+      let invK ← mkAppM ``CategoryTheory.Iso.symm #[lift]
+      let lt ← inferType invK
+      let dt ← inferType dualK
+      unless lt.isAppOfArity ``CategoryTheory.Iso 4 && dt.isAppOfArity ``CategoryTheory.Iso 4 do
+        throwError "Expected the exact K-linear factors"
+      let la := lt.getAppArgs
+      let da := dt.getAppArgs
+      let valueBody := mkAppN (mkConst ``CategoryTheory.Iso.trans lt.getAppFn.constLevels!)
+        #[la[0]!,la[1]!,la[2]!,la[3]!,da[3]!,invK,dualK]
+      let type ← mkForallFVars xs (← inferType valueBody)
+      let value ← mkLambdaFVars xs valueBody
+      addDecl (.defnDecl {
+        name := target.getId
+        levelParams := old.levelParams
+        type := type
+        value := value
+        hints := .regular 1
+        safety := .safe
+      }) (forceExpose := true)
+      modifyEnv (addNoncomputable · target.getId)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_general_specified_top_h_spec_iso LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualKLinearIso_general
+#check LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualKLinearIso_general
+#print axioms LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualKLinearIso_general
+
+=== Linear.NativeGeneralSpecifiedTopHIntrinsicForgetIso SHA-256 10fbd3070311b1dda4151ce1f1886a165b44d11e4cd1253ba4d56e2414063eda ===
+module
+public import Linear.NativeGeneralSpecifiedTopHIntrinsicSpecIso
+public import Linear.OriginalInverseCompositeForgetIso
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- The specified K-linear top-H duality forgets to its original named
+additive isomorphism, via the exact original actual-H group identification. -/
+elab "check_general_specified_top_h_forget_iso " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let d ← getConstInfoDefn ``LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualKLinearIso_general
+    let old ← getConstInfoDefn ``LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso_general
+    let levels := d.levelParams.map Level.param
+    forallTelescope d.type fun xs _ => do
+      let body := (mkAppN d.value xs).headBeta
+      let mut ob := (mkAppN old.value xs).headBeta
+      while ob.isLet do
+        ob := ob.letBody!.instantiate1 ob.letValue!
+      unless body.isAppOfArity ``CategoryTheory.Iso.trans 7 &&
+          ob.isAppOfArity ``CategoryTheory.Iso.trans 7 do
+        throwError "Expected the original two-factor dualities"
+      let ba := body.getAppArgs
+      let oa := ob.getAppArgs
+      let i := ba[5]!.getAppArgs.back!
+      let j := oa[5]!.getAppArgs.back!
+      let b := ba[6]!
+      let f := oa[6]!.getAppArgs[4]!
+      unless oa[6]!.isAppOfArity ``CategoryTheory.Functor.mapIso 8 &&
+          oa[6]!.getAppArgs.back! == b &&
+          i.isAppOf ``LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general &&
+          j.isAppOf ``LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_general do
+        throwError "The original comparison factors disagree"
+      let h := mkAppN (mkConst
+        ``LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general_forget_hom
+        i.getAppFn.constLevels!) i.getAppArgs
+      let ht ← inferType h
+      unless ht.isAppOfArity ``Eq 3 do throwError "Expected the checked forward map equality"
+      let cast := ht.getAppArgs[1]!.getAppArgs.back!
+      unless cast.isAppOf ``CategoryTheory.eqToHom do throwError "Expected the exact target identification"
+      let e := cast.getAppArgs.back!
+      let p ← mkAppM ``LinearStudy.originalInverseCompositeForgetIso #[f,i,j,b,e,h]
+      let pt ← inferType p
+      unless pt.isAppOfArity ``Eq 3 do throwError "Expected the exact inverse-composition equality"
+      let pa := pt.getAppArgs
+      let lift := mkAppN (mkConst d.name levels) xs
+      let additive := mkAppN (mkConst old.name levels) xs
+      let mapped := pa[1]!.getAppArgs.back!
+      let original := mapped.getAppArgs.back!
+      unless mapped.isAppOfArity ``CategoryTheory.Functor.mapIso 8 &&
+          original.isAppOfArity ``CategoryTheory.Iso.trans 7 &&
+          original.getAppArgs[5]!.getAppArgs.back! == i &&
+          original.getAppArgs[6]! == b do
+        throwError "Expected the two unchanged K-linear factors"
+      let left := pa[1]!.replace (fun t => if t == original then some lift else none)
+      let prop := mkApp3 pt.getAppFn pa[0]! left additive
+      let type ← mkForallFVars xs prop
+      let value ← mkLambdaFVars xs p
+      addDecl (.thmDecl {name := target.getId, levelParams := d.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_general_specified_top_h_forget_iso LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualKLinearIso_general_forget
+#check LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualKLinearIso_general_forget
+#print axioms LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualKLinearIso_general_forget
+
+=== Linear.OriginalInverseCompositeForgetIso SHA-256 1a9429da80ec0361976a0a61818ea18e7bafa790daf20abbe53cd65620d7e05f ===
+module
+public import Mathlib.CategoryTheory.EqToHom
+@[expose] public section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open CategoryTheory
+universe u v u' v'
+
+/-- Recover the original inverse comparison and its second factor
+after identifying the target of the forgotten forward comparison. -/
+theorem originalInverseCompositeForgetIso
+    {C : Type u} [Category.{v} C] {A : Type u'} [Category.{v'} A]
+    (F : C ⥤ A) {X U D : C} {Y : A}
+    (I : X ≅ U) (J : F.obj X ≅ Y) (B : X ≅ D)
+    (e : F.obj U = Y) (h : F.map I.hom ≫ eqToHom e = J.hom) :
+    eqToIso e.symm ≪≫ F.mapIso (I.symm ≪≫ B) = J.symm ≪≫ F.mapIso B := by
+  have hj : F.mapIso I ≪≫ eqToIso e = J := Iso.ext h
+  rw [← hj]
+  subst Y
+  simp [Functor.mapIso_trans, Functor.mapIso_symm]
+
+end LinearStudy
+#check LinearStudy.originalInverseCompositeForgetIso
+#print axioms LinearStudy.originalInverseCompositeForgetIso

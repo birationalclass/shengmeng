@@ -1,0 +1,19 @@
+LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualKLinearIso_general_forget {K S M : Type} [Field K]
+  {σ : Type} [Fintype σ] [LinearOrder σ] [CommRing S] [Algebra K S] [Algebra (MvPolynomial σ K) S]
+  [IsScalarTower K (MvPolynomial σ K) S] (B : ℕ → Submodule K S) [GradedAlgebra B]
+  [SetLike.GradedSMul (MvPolynomial.homogeneousSubmodule σ K) B] [AddCommGroup M] [_root_.Module K M]
+  [_root_.Module (MvPolynomial σ K) M] [_root_.Module S M] [IsScalarTower (MvPolynomial σ K) S M]
+  [IsScalarTower K (MvPolynomial σ K) M] [IsScalarTower K S M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+  (hR : ∀ (d : ℕ) (j : ℤ), ∀ z ∈ MvPolynomial.homogeneousSubmodule σ K d, ∀ x ∈ D j, z • x ∈ D (↑d + j))
+  (hS : ∀ (d : ℕ) (j : ℤ), ∀ z ∈ B d, ∀ x ∈ D j, z • x ∈ D (↑d + j)) [IsDomain S] [IsNoetherianRing S]
+  [Algebra.FiniteType K S] [Module.Finite (MvPolynomial σ K) S] [Module.Finite (MvPolynomial σ K) M] [Module.Finite S M]
+  {κ : Type} (c : κ → S) (hc : ∀ (i : κ), c i ∈ B 1) (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (q : ℕ)
+  (hcard : Fintype.card σ = q + 2) (k : ℤ) :
+  CategoryTheory.eqToIso ⋯ ≪≫
+      (CategoryTheory.forget₂ (ModuleCat K) AddCommGrpCat).mapIso
+        (LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualKLinearIso_general B D hR hS c hc hgenC q hcard
+          k) =
+    LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualIso_general B D hR hS c hc hgenC q hcard k
+'LinearStudy.nativeFiniteNormalization_specifiedActualTopHomDualKLinearIso_general_forget' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
