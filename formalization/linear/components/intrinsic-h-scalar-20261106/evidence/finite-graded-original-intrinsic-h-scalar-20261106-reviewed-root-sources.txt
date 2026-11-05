@@ -1,0 +1,632 @@
+=== Linear.NativeOriginalPublicScalarIntrinsic SHA-256 319b2623be0961f96734b117785f460ada51d0df708384a7dadb4c33ae841e68 ===
+module
+public import Linear.NativeOriginalScalarRawIntrinsic
+public import Linear.NativePublicHScalarOperatorIdentity
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Align the checked raw action with the original public coefficient
+operator while keeping the exact intrinsic group package shared. -/
+elab "check_original_public_scalar_intrinsic " part:str " as " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let p ← getConstInfo ``LinearStudy.nativeOriginalActualHPublicScalarOperator_eq_raw
+    let levels := p.levelParams.map Level.param
+    forallTelescope p.type fun xs pt => do
+      unless pt.isAppOfArity ``Eq 3 do throwError "Expected the published map identity"
+      let pa := pt.getAppArgs
+      let (prop,proof) ←
+        if part.getString == "refold" then do
+          let h := mkAppN (mkConst ``LinearStudy.nativeOriginalScalarRawToIntrinsicPackage_heq levels) xs
+          let ht ← inferType h
+          unless ht.isAppOfArity ``HEq 4 && ht.getAppArgs[1]! == pa[2]! do
+            throwError "Expected the same raw operator"
+          let a := ht.getAppArgs
+          pure (mkAppN ht.getAppFn #[pa[0]!,pa[2]!,a[2]!,a[3]!],h)
+        else if part.getString == "public" then do
+          let h ← mkAppM ``heq_of_eq_of_heq #[
+            mkAppN (mkConst p.name levels) xs,
+            mkAppN (mkConst (Name.str (Name.str .anonymous "LinearStudy")
+              "nativeOriginalRawScalarOnPublicGroup_heq") levels) xs]
+          pure (← inferType h,h)
+        else throwError "Expected refold or public"
+      let type ← mkForallFVars xs prop
+      let value ← mkLambdaFVars xs proof
+      addDecl (.thmDecl {name := target.getId, levelParams := p.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_original_public_scalar_intrinsic "refold" as LinearStudy.nativeOriginalRawScalarOnPublicGroup_heq
+check_original_public_scalar_intrinsic "public" as LinearStudy.nativeOriginalPublicScalarToIntrinsicPackage_heq
+unfold_native_original_scalar_endpoint LinearStudy.nativeOriginalPublicScalarToIntrinsicPackage_heq
+  at "right" from LinearStudy.nativeOriginalScalarPackageAction_refold_heq
+  as LinearStudy.nativeOriginalActualHPublicScalarOperator_heq_intrinsic
+#check LinearStudy.nativeOriginalRawScalarOnPublicGroup_heq
+#print axioms LinearStudy.nativeOriginalRawScalarOnPublicGroup_heq
+#check LinearStudy.nativeOriginalPublicScalarToIntrinsicPackage_heq
+#print axioms LinearStudy.nativeOriginalPublicScalarToIntrinsicPackage_heq
+#check LinearStudy.nativeOriginalActualHPublicScalarOperator_heq_intrinsic
+#print axioms LinearStudy.nativeOriginalActualHPublicScalarOperator_heq_intrinsic
+
+=== Linear.NativeOriginalRawScalarIntrinsicPieces SHA-256 0a42bd470a6066bb69d1c936f90b36f2a248a4f3e020de55762c11665cfca0c9 ===
+module
+public import Linear.NativeOriginalScalarPackages
+public import Linear.OriginalNativeScalarPackageAction
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Identify the original projective coefficient map with the
+independently defined native base scalar action through the checked
+package interfaces. The ordinary kernel verifies the proof. -/
+elab "check_native_original_raw_scalar_piece " part:str " as " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let p ← getConstInfo ``LinearStudy.nativeOriginalActualHScalarOperator_eq_rawMap
+    let levels := p.levelParams.map Level.param
+    forallTelescope p.type fun xs pt => do
+      let nativeArgs ← nativeOriginalScalarContext pt.getAppArgs.back!.getAppArgs.back! xs.back!
+      let literal := mkAppN (mkConst p.name levels) xs
+      let left := mkAppN (mkConst ``LinearStudy.nativeOriginalScalarPackageLeft_eq levels) xs
+      let packs := mkAppN (mkConst ``LinearStudy.nativeOriginalScalarPackageMaps_heq levels) xs
+      let right := mkAppN (mkConst ``LinearStudy.originalNativeScalarPackageAction_heq levels) nativeArgs
+      let proof ←
+        if part.getString == "left" then do
+          let h ← mkAppM ``heq_of_eq_of_heq #[← mkAppM ``Eq.symm #[left],packs]
+          mkAppM ``heq_of_eq_of_heq #[literal,h]
+        else if part.getString == "right" then pure right
+        else throwError "Expected left or right"
+      let type ← mkForallFVars xs (← inferType proof)
+      let value ← mkLambdaFVars xs proof
+      addDecl (.thmDecl {name := target.getId, levelParams := p.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_native_original_raw_scalar_piece "left" as LinearStudy.nativeOriginalRawScalar_toPackage_heq
+check_native_original_raw_scalar_piece "right" as LinearStudy.nativeOriginalRawScalar_fromPackage_heq
+#check LinearStudy.nativeOriginalRawScalar_toPackage_heq
+#print axioms LinearStudy.nativeOriginalRawScalar_toPackage_heq
+#check LinearStudy.nativeOriginalRawScalar_fromPackage_heq
+#print axioms LinearStudy.nativeOriginalRawScalar_fromPackage_heq
+
+=== Linear.NativeOriginalScalarEndPackageCalibration SHA-256 70ad3b2bbc36151f7144da687e6f51054302437b9a62ffb7fd554113e0acb51b ===
+module
+public import Linear.NativeOriginalScalarEndPackageEdges
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Compose the checked scalar edges on their exact shared group packages. -/
+elab "check_original_scalar_end_package_chain " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let l ← getConstInfo ``LinearStudy.nativeOriginalScalarEndPackageLeft_heq
+    let levels := l.levelParams.map Level.param
+    forallTelescope l.type fun xs _ => do
+      let p := mkAppN (mkConst l.name levels) xs
+      let q := mkAppN (mkConst ``LinearStudy.nativeOriginalScalarEndPackageRight_heq levels) xs
+      let h ← mkAppM ``HEq.trans #[p,q]
+      let type ← mkForallFVars xs (← inferType h)
+      let value ← mkLambdaFVars xs h
+      addDecl (.thmDecl {name := target.getId, levelParams := l.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_original_scalar_end_package_chain LinearStudy.nativeOriginalScalarEndPackages_heq_intrinsic
+#check LinearStudy.nativeOriginalScalarEndPackages_heq_intrinsic
+#print axioms LinearStudy.nativeOriginalScalarEndPackages_heq_intrinsic
+
+=== Linear.NativeOriginalScalarEndPackageEdges SHA-256 86c88375d8fe8ac74eaf35c86b9edfb9ed03125684b0b3876fbb7d269229ba84 ===
+module
+public import Linear.NativeOriginalScalarEndPackages
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Refold a checked edge using its exact group-and-map packages. -/
+elab "refold_native_original_scalar_edge " source:ident " from " left:ident " to " right:ident
+    " as " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let ci ← getConstInfo source.getId
+    unless ci.isTheorem do throwError "Expected a checked scalar edge"
+    let levels := ci.levelParams.map Level.param
+    forallTelescope ci.type fun xs prop => do
+      unless prop.isAppOfArity ``HEq 4 do throwError "Expected heterogeneous equality"
+      let l ← mkAppM ``Sigma.snd #[mkAppN (mkConst left.getId levels) xs]
+      let r ← mkAppM ``Sigma.snd #[mkAppN (mkConst right.getId levels) xs]
+      let type ← mkForallFVars xs (mkAppN prop.getAppFn #[← inferType l,l,← inferType r,r])
+      let value ← mkLambdaFVars xs (mkAppN (mkConst ci.name levels) xs)
+      addDecl (.thmDecl {name := target.getId, levelParams := ci.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+refold_native_original_scalar_edge LinearStudy.nativeOriginalRawScalar_toPackage_heq
+  from LinearStudy.nativeOriginalRawScalarEndPackage to LinearStudy.nativeOriginalMiddleScalarEndPackage
+  as LinearStudy.nativeOriginalScalarEndPackageLeft_heq
+refold_native_original_scalar_edge LinearStudy.nativeOriginalScalarPackageAction_refold_heq
+  from LinearStudy.nativeOriginalMiddleScalarEndPackage to LinearStudy.nativeOriginalIntrinsicScalarEndPackage
+  as LinearStudy.nativeOriginalScalarEndPackageRight_heq
+#check LinearStudy.nativeOriginalScalarEndPackageLeft_heq
+#print axioms LinearStudy.nativeOriginalScalarEndPackageLeft_heq
+#check LinearStudy.nativeOriginalScalarEndPackageRight_heq
+#print axioms LinearStudy.nativeOriginalScalarEndPackageRight_heq
+
+=== Linear.NativeOriginalScalarEndPackages SHA-256 c4b0e84dc67540fde8e2b33930426995a2632fbb2c2fb2df14df2df5daa77112 ===
+module
+public import Linear.NativeOriginalRawScalarIntrinsicPieces
+public import Linear.NativeOriginalScalarPackageActionRefold
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Recover the group of a literal endomorphism space without reducing
+the cohomology construction. -/
+meta def nativeOriginalEndGroup (type : Expr) : MetaM Expr := do
+  let t ← if type.isAppOf ``CategoryTheory.End then do
+    let d ← getConstInfoDefn ``CategoryTheory.End
+    pure ((mkAppN (d.value.instantiateLevelParams d.levelParams type.getAppFn.constLevels!)
+      type.getAppArgs).headBeta)
+  else pure type
+  unless t.isAppOfArity ``Quiver.Hom 4 do throwError "Expected an endomorphism space"
+  let args := t.getAppArgs
+  unless args[2]! == args[3]! do throwError "Expected equal endomorphism endpoints"
+  return args[2]!
+
+/-- Give the three exact group-and-map pairs short names. This only names
+existing objects. The inner maps are the original maps on each group. -/
+elab "name_native_original_scalar_end_package " part:str " as " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let l ← getConstInfo ``LinearStudy.nativeOriginalRawScalar_toPackage_heq
+    let levels := l.levelParams.map Level.param
+    forallTelescope l.type fun xs lt => do
+      let rt ← inferType (mkAppN (mkConst ``LinearStudy.nativeOriginalScalarPackageAction_refold_heq levels) xs)
+      let la := lt.getAppArgs
+      let ra := rt.getAppArgs
+      unless lt.isAppOfArity ``HEq 4 && rt.isAppOfArity ``HEq 4 &&
+          la[2]! == ra[0]! && la[3]! == ra[1]! && la[3]!.isAppOf ``Sigma.snd do
+        throwError "Expected matching checked scalar packages"
+      let middle := la[3]!.getAppArgs.back!
+      let sig ← inferType middle
+      unless sig.isAppOfArity ``Sigma 2 do throwError "Expected the group-endomorphism package"
+      let pair := mkConst ``Sigma.mk sig.getAppFn.constLevels!
+      let body ←
+        if part.getString == "left" then
+          pure (mkAppN pair (sig.getAppArgs ++ #[← nativeOriginalEndGroup la[0]!,la[1]!]))
+        else if part.getString == "middle" then pure middle
+        else if part.getString == "right" then
+          pure (mkAppN pair (sig.getAppArgs ++ #[← nativeOriginalEndGroup ra[2]!,ra[3]!]))
+        else throwError "Expected left, middle or right"
+      let type ← mkForallFVars xs sig
+      let value ← mkLambdaFVars xs body
+      addDecl (.defnDecl {
+        name := target.getId
+        levelParams := l.levelParams
+        type := type
+        value := value
+        hints := .regular 1
+        safety := .safe
+      }) (forceExpose := true)
+      modifyEnv (addNoncomputable · target.getId)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+name_native_original_scalar_end_package "left" as LinearStudy.nativeOriginalRawScalarEndPackage
+name_native_original_scalar_end_package "middle" as LinearStudy.nativeOriginalMiddleScalarEndPackage
+name_native_original_scalar_end_package "right" as LinearStudy.nativeOriginalIntrinsicScalarEndPackage
+#check LinearStudy.nativeOriginalRawScalarEndPackage
+#print axioms LinearStudy.nativeOriginalRawScalarEndPackage
+#check LinearStudy.nativeOriginalMiddleScalarEndPackage
+#print axioms LinearStudy.nativeOriginalMiddleScalarEndPackage
+#check LinearStudy.nativeOriginalIntrinsicScalarEndPackage
+#print axioms LinearStudy.nativeOriginalIntrinsicScalarEndPackage
+
+=== Linear.NativeOriginalScalarMapFormula SHA-256 7ed839d0b6e8df5dbfdcbea1fa8b9362768d6dbef94d9bfe99e90eace945a989 ===
+module
+public import Linear.NativeOriginalHScalarCachedOperator
+public import Lean
+@[expose] public section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Specialize the existing mathlib functorH_map theorem with the
+literal site, instances and coefficient map of the original operator.
+The ordinary kernel checks the resulting equality. -/
+elab "check_native_original_scalar_map_formula " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let d ← getConstInfoDefn ``LinearStudy.nativeOriginalActualHScalarOperator
+    unless d.safety == .safe do throwError "Expected safe original operator"
+    let levels := d.levelParams.map Level.param
+    forallTelescope d.type fun xs _ => do
+      let original := (mkAppN d.value xs).headBeta
+      unless original.isAppOf ``CategoryTheory.Functor.map do
+        throwError "Expected the literal original coefficient functor map"
+      let args := original.getAppArgs
+      unless args.size == 8 do throwError "Unexpected functor map arity"
+      let F := args[4]!
+      unless F.isAppOf ``CategoryTheory.Sheaf.functorH do
+        throwError "Expected actual sheaf H"
+      let proof := mkAppN
+        (mkConst ``CategoryTheory.Sheaf.functorH_map F.getAppFn.constLevels!)
+        (F.getAppArgs ++ args.extract 5 8)
+      let pt ← inferType proof
+      unless pt.isAppOfArity ``Eq 3 do throwError "Expected map equality"
+      let eqArgs := pt.getAppArgs
+      unless eqArgs[1]! == original do throwError "The original map is not the left side"
+      let folded := mkApp3 pt.getAppFn eqArgs[0]! (mkAppN (mkConst d.name levels) xs) eqArgs[2]!
+      let type ← mkForallFVars xs folded
+      let value ← mkLambdaFVars xs proof
+      addDecl (.thmDecl {name := target.getId, levelParams := d.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_native_original_scalar_map_formula LinearStudy.nativeOriginalActualHScalarOperator_eq_rawMap
+#check LinearStudy.nativeOriginalActualHScalarOperator_eq_rawMap
+#print axioms LinearStudy.nativeOriginalActualHScalarOperator_eq_rawMap
+
+=== Linear.NativeOriginalScalarPackageActionRefold SHA-256 ae77014a205ffc8f2225191e0ebb90bb62229bbe8cb496932fa7f334ce7fb1f6 ===
+module
+public import Linear.NativeOriginalScalarPackages
+public import Linear.OriginalNativeScalarPackageActionRefold
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Specialize the checked native package action while preserving the
+exact dependent type of its middle projection. -/
+elab "check_native_original_package_action_refold " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let p ← getConstInfo ``LinearStudy.nativeOriginalActualHScalarOperator_eq_rawMap
+    let levels := p.levelParams.map Level.param
+    forallTelescope p.type fun xs pt => do
+      let args ← nativeOriginalScalarContext pt.getAppArgs.back!.getAppArgs.back! xs.back!
+      let h := mkAppN (mkConst ``LinearStudy.originalNativeScalarPackageAction_refold_heq levels) args
+      let type ← mkForallFVars xs (← inferType h)
+      let value ← mkLambdaFVars xs h
+      addDecl (.thmDecl {name := target.getId, levelParams := p.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_native_original_package_action_refold LinearStudy.nativeOriginalScalarPackageAction_refold_heq
+#check LinearStudy.nativeOriginalScalarPackageAction_refold_heq
+#print axioms LinearStudy.nativeOriginalScalarPackageAction_refold_heq
+
+=== Linear.NativeOriginalScalarPackages SHA-256 95cb4e7dfc3d381e848082a06004624563728a2af665f15c270f54bcc1162d6e ===
+module
+public import Linear.NativeOriginalScalarMapFormula
+public import Linear.OriginalActualHBaseScalarRawMorphism
+public import Linear.OriginalSheafHRawMapPackage
+public import Lean
+@[expose] public section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Recover only the literal original scalar map and its scheme map from
+the type of a verified formula. -/
+meta def nativeOriginalScalarContext (hmap r : Expr) : MetaM (Array Expr) := do
+  unless hmap.isAppOfArity ``CategoryTheory.Sheaf.H.map 9 do
+    throwError "Expected actual sheaf H.map"
+  let args := hmap.getAppArgs
+  let f := args[7]!
+  unless f.isAppOfArity ``CategoryTheory.Functor.map 8 do
+    throwError "Expected original additive sheaf coefficient map"
+  let scalar := f.getAppArgs.back!
+  unless scalar.isAppOfArity ``LinearStudy.originalGlobalModuleScalar 3 do
+    throwError "Expected original global module scalar"
+  let scalarArgs := scalar.getAppArgs
+  let sectionValue := scalarArgs[1]!
+  unless sectionValue.getAppArgs.back! == r do throwError "Expected the original scalar argument"
+  let some appTop := sectionValue.find? (fun e =>
+    e.isAppOfArity ``AlgebraicGeometry.Scheme.Hom.appTop 3) |
+    throwError "Expected original global sections scheme map"
+  let pi := appTop.getAppArgs
+  unless pi[0]! == scalarArgs[0]! do throwError "Scheme map source disagrees with coefficient"
+  return #[pi[0]!,pi[1]!,pi[2]!,scalarArgs[2]!,args[8]!,r]
+
+meta def nativeOriginalRawMapPackageExpr (hmap : Expr) : Expr :=
+  let args := hmap.getAppArgs
+  mkAppN (mkConst ``LinearStudy.originalSheafHRawMapPackage hmap.getAppFn.constLevels!)
+    (args.extract 0 6 ++ args.extract 7 9)
+
+/-- Verify separately the agreement of the raw map packages and the
+left projection. The normal kernel checks each complete declaration. -/
+elab "check_native_original_scalar_package " part:str " as " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let p ← getConstInfo ``LinearStudy.nativeOriginalActualHScalarOperator_eq_rawMap
+    let levels := p.levelParams.map Level.param
+    forallTelescope p.type fun xs pt => do
+      unless pt.isAppOfArity ``Eq 3 do throwError "Expected original coefficient formula"
+      let raw := pt.getAppArgs.back!
+      let pMap := raw.getAppArgs.back!
+      let nativeArgs ← nativeOriginalScalarContext pMap xs.back!
+      let pPack := nativeOriginalRawMapPackageExpr pMap
+      let (prop,proof) ←
+        if part.getString == "left" then do
+          let proj ← mkAppM ``Sigma.snd #[pPack]
+          pure (mkApp3 pt.getAppFn (← inferType raw) proj raw, ← mkEqRefl raw)
+        else if part.getString == "packages" then do
+          let q ← inferType (mkAppN (mkConst ``LinearStudy.originalActualHBaseScalarRawMorphism levels) nativeArgs)
+          unless q.isAppOfArity ``Eq 3 do throwError "Expected intrinsic coefficient formula"
+          let qMap := q.getAppArgs.back!.getAppArgs.back!
+          unless qMap.isAppOfArity ``CategoryTheory.Sheaf.H.map 9 do throwError "Expected native H.map"
+          let qPack := nativeOriginalRawMapPackageExpr qMap
+          let h := mkAppN
+            (mkConst ``LinearStudy.originalSheafHRawMapPackage_snd_heq [levels.head!])
+            #[pPack,qPack,← mkEqRefl pPack]
+          pure (← inferType h,h)
+        else throwError "Expected left or packages"
+      let type ← mkForallFVars xs prop
+      let value ← mkLambdaFVars xs proof
+      addDecl (.thmDecl {name := target.getId, levelParams := p.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_native_original_scalar_package "left" as LinearStudy.nativeOriginalScalarPackageLeft_eq
+check_native_original_scalar_package "packages" as LinearStudy.nativeOriginalScalarPackageMaps_heq
+#check LinearStudy.nativeOriginalScalarPackageLeft_eq
+#print axioms LinearStudy.nativeOriginalScalarPackageLeft_eq
+#check LinearStudy.nativeOriginalScalarPackageMaps_heq
+#print axioms LinearStudy.nativeOriginalScalarPackageMaps_heq
+
+=== Linear.NativeOriginalScalarRawIntrinsic SHA-256 3b11e14a365ed0f1e15e5b570f54cb14efabba41766f8eae4af4087262a5cb7a ===
+module
+public import Linear.NativeOriginalScalarEndPackageCalibration
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Restore one original endpoint at a time from the checked package
+calibration. Neither endpoint map is changed. -/
+elab "unfold_native_original_scalar_endpoint " source:ident " at " side:str
+    " from " endpoint:ident " as " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let p ← getConstInfo source.getId
+    let levels := p.levelParams.map Level.param
+    forallTelescope p.type fun xs pt => do
+      let q ← inferType (mkAppN (mkConst endpoint.getId levels) xs)
+      unless pt.isAppOfArity ``HEq 4 && q.isAppOfArity ``HEq 4 do
+        throwError "Expected checked heterogeneous equalities"
+      let pa := pt.getAppArgs
+      let qa := q.getAppArgs
+      let args ←
+        if side.getString == "left" then pure (qa.extract 0 2 ++ pa.extract 2 4)
+        else if side.getString == "right" then pure (pa.extract 0 2 ++ qa.extract 2 4)
+        else throwError "Expected left or right"
+      let type ← mkForallFVars xs (mkAppN pt.getAppFn args)
+      let value ← mkLambdaFVars xs (mkAppN (mkConst p.name levels) xs)
+      addDecl (.thmDecl {name := target.getId, levelParams := p.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+unfold_native_original_scalar_endpoint LinearStudy.nativeOriginalScalarEndPackages_heq_intrinsic
+  at "left" from LinearStudy.nativeOriginalRawScalar_toPackage_heq
+  as LinearStudy.nativeOriginalScalarRawToIntrinsicPackage_heq
+unfold_native_original_scalar_endpoint LinearStudy.nativeOriginalScalarRawToIntrinsicPackage_heq
+  at "right" from LinearStudy.nativeOriginalScalarPackageAction_refold_heq
+  as LinearStudy.nativeOriginalActualHScalarOperator_heq_intrinsic
+#check LinearStudy.nativeOriginalScalarRawToIntrinsicPackage_heq
+#print axioms LinearStudy.nativeOriginalScalarRawToIntrinsicPackage_heq
+#check LinearStudy.nativeOriginalActualHScalarOperator_heq_intrinsic
+#print axioms LinearStudy.nativeOriginalActualHScalarOperator_heq_intrinsic
+
+=== Linear.OriginalActualHBaseModuleObject SHA-256 301dd33d99b862e5d5a996f5ca35f88100dd45999269f9a9f5c6bab41ae09cc5 ===
+module
+public import Linear.SchemeModuleActualHBaseScalars
+public import Linear.SchemeModuleActualCohomologyGroup
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open CategoryTheory AlgebraicGeometry
+universe u
+
+/-- Bundle the independently defined base-global-section module on the
+original actual H group. -/
+def originalActualHBaseModuleObject
+    {X S : Scheme.{u}} (pi : X ⟶ S) (M : X.Modules) (n : ℕ) :
+    ModuleCat.{u} Γ(S,⊤) :=
+  @ModuleCat.of Γ(S,⊤) _ (schemeModuleActualCohomology X M n)
+    (schemeModuleActualCohomologyAddCommGroup X M n)
+    (schemeModuleActualHBaseModule pi M n)
+
+end LinearStudy
+#check LinearStudy.originalActualHBaseModuleObject
+#print LinearStudy.originalActualHBaseModuleObject
+#print axioms LinearStudy.originalActualHBaseModuleObject
+
+=== Linear.OriginalActualHBaseScalarRawMorphism SHA-256 3a4ab0177f0b2b38402ff5c8fd3921a48d684bad9620e668b59614499a4bbeef ===
+module
+public import Linear.OriginalActualHBaseModuleObject
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open CategoryTheory AlgebraicGeometry
+universe u
+
+/-- On the original actual H group, the original base scalar morphism
+has exactly the underlying additive map of native H on the original
+coefficient scalar. -/
+theorem originalActualHBaseScalarRawMorphism
+    {X S : Scheme.{u}} (pi : X ⟶ S) (M : X.Modules) (n : ℕ) (r : Γ(S,⊤)) :
+    (originalActualHBaseModuleObject pi M n).smul r =
+      @AddCommGrpCat.ofHom (schemeModuleActualCohomology X M n)
+        (schemeModuleActualCohomology X M n)
+        (schemeModuleActualCohomologyAddCommGroup X M n)
+        (schemeModuleActualCohomologyAddCommGroup X M n)
+        (CategoryTheory.Sheaf.H.map.{u}
+        ((schemeModuleToActualAbelianSheaf X).map
+          (originalGlobalModuleScalar (pi.appTop r) M)) n) := by
+  apply AddCommGrpCat.ext
+  intro x
+  exact schemeModuleActualHBaseModule_smul pi M n r x
+
+end LinearStudy
+#check LinearStudy.originalActualHBaseScalarRawMorphism
+#print axioms LinearStudy.originalActualHBaseScalarRawMorphism
+
+=== Linear.OriginalNativeScalarPackageAction SHA-256 0fd910f6073de5308e4b653a00032fdd931f9a1f5ed220a5f2966437ae51be8b ===
+module
+public import Linear.OriginalRawScalarPackageRightInterface
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Compose the already checked native package projection, group fold,
+and intrinsic scalar formula. The normal kernel checks the full proof. -/
+elab "check_original_native_scalar_package_action " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let q ← getConstInfo ``LinearStudy.originalActualHBaseScalarRawMorphism
+    let levels := q.levelParams.map Level.param
+    forallTelescope q.type fun xs _ => do
+      let projection := mkAppN (mkConst ``LinearStudy.originalRawScalarNativePackage_projection levels) xs
+      let fold := mkAppN (mkConst ``LinearStudy.originalRawScalarNativePackage_carrier_fold levels) xs
+      let raw := mkAppN (mkConst q.name levels) xs
+      let h ← mkAppM ``Eq.trans #[projection,fold]
+      let h₁ ← mkAppM ``heq_of_eq #[h]
+      let h₂ ← mkAppM ``Eq.symm #[raw]
+      let proof ← mkAppM ``heq_of_heq_of_eq #[h₁,h₂]
+      let type ← mkForallFVars xs (← inferType proof)
+      let value ← mkLambdaFVars xs proof
+      addDecl (.thmDecl {name := target.getId, levelParams := q.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_original_native_scalar_package_action LinearStudy.originalNativeScalarPackageAction_heq
+#check LinearStudy.originalNativeScalarPackageAction_heq
+#print axioms LinearStudy.originalNativeScalarPackageAction_heq
+
+=== Linear.OriginalNativeScalarPackageActionRefold SHA-256 a747f09be40a7d5094754f3c844bdd81e0bf121285bbc8729fa2495b674c8ccc ===
+module
+public import Linear.OriginalNativeScalarPackageAction
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- State the checked native action with the dependent package projection
+type itself, so subsequent compositions share the exact same middle type. -/
+elab "check_original_native_scalar_package_refold " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let q ← getConstInfo ``LinearStudy.originalNativeScalarPackageAction_heq
+    let levels := q.levelParams.map Level.param
+    forallTelescope q.type fun xs prop => do
+      unless prop.isAppOfArity ``HEq 4 do throwError "Expected native package action"
+      let args := prop.getAppArgs
+      let leftType ← inferType args[1]!
+      let statement := mkAppN prop.getAppFn #[leftType,args[1]!,args[2]!,args[3]!]
+      let type ← mkForallFVars xs statement
+      let value ← mkLambdaFVars xs (mkAppN (mkConst q.name levels) xs)
+      addDecl (.thmDecl {name := target.getId, levelParams := q.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_original_native_scalar_package_refold LinearStudy.originalNativeScalarPackageAction_refold_heq
+#check LinearStudy.originalNativeScalarPackageAction_refold_heq
+#print axioms LinearStudy.originalNativeScalarPackageAction_refold_heq
+
+=== Linear.OriginalRawScalarPackageRightInterface SHA-256 761c1c820199b39a4454094547b6fb5ba25d0ca781f3f4ae6388e4d0c01c7996 ===
+module
+public import Linear.OriginalActualHBaseScalarRawMorphism
+public import Linear.OriginalSheafHRawMapPackage
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Split the native package projection from the equality that folds the
+existing native carrier and additive-group definitions. -/
+elab "check_native_raw_scalar_package_right " part:str " as " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let q ← getConstInfo ``LinearStudy.originalActualHBaseScalarRawMorphism
+    let p ← getConstInfoDefn ``LinearStudy.originalSheafHRawMapPackage
+    forallTelescope q.type fun xs qt => do
+      unless qt.isAppOfArity ``Eq 3 do throwError "Expected original scalar formula"
+      let raw := qt.getAppArgs.back!
+      let m := raw.getAppArgs.back!
+      unless m.isAppOfArity ``CategoryTheory.Sheaf.H.map 9 do
+        throwError "Expected native H.map"
+      let pa := m.getAppArgs
+      let levels := m.getAppFn.constLevels!
+      let args := pa.extract 0 6 ++ pa.extract 7 9
+      let pack := mkAppN (mkConst p.name levels) args
+      let mut body := (mkAppN (p.value.instantiateLevelParams p.levelParams levels) args).headBeta
+      while body.isLet do
+        body := body.letBody!.instantiate1 body.letValue!
+      unless body.isAppOf ``Sigma.mk do throwError "Expected original raw H package"
+      let expanded := body.getAppArgs.back!
+      unless expanded.getAppArgs.back! == m do throwError "Expected the same literal H.map"
+      let (left,right) ←
+        if part.getString == "projection" then pure (← mkAppM ``Sigma.snd #[pack], expanded)
+        else if part.getString == "carrier" then pure (expanded,raw)
+        else throwError "Expected projection or carrier"
+      let prop := mkApp3 qt.getAppFn (← inferType expanded) left right
+      let type ← mkForallFVars xs prop
+      let value ← mkLambdaFVars xs (← mkEqRefl expanded)
+      addDecl (.thmDecl {name := target.getId, levelParams := q.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_native_raw_scalar_package_right "projection" as LinearStudy.originalRawScalarNativePackage_projection
+check_native_raw_scalar_package_right "carrier" as LinearStudy.originalRawScalarNativePackage_carrier_fold
+#check LinearStudy.originalRawScalarNativePackage_projection
+#print axioms LinearStudy.originalRawScalarNativePackage_projection
+#check LinearStudy.originalRawScalarNativePackage_carrier_fold
+#print axioms LinearStudy.originalRawScalarNativePackage_carrier_fold
+
+=== Linear.OriginalSheafHRawMapPackage SHA-256 d44be0fbe08c51a0b18c72edd53ab9dcdbee37f602040c863cc6a5b58c83af14 ===
+module
+public import Mathlib.CategoryTheory.Sites.SheafCohomology.Basic
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open CategoryTheory CategoryTheory.Abelian
+universe w' w v u
+
+/-- Package the exact native H group and its additive H.map together. -/
+def originalSheafHRawMapPackage
+    {C : Type u} [Category.{v} C] (J : GrothendieckTopology C)
+    (s : HasSheafify J AddCommGrpCat.{w})
+    (e : HasExt.{w'} (Sheaf J AddCommGrpCat.{w}))
+    {F : Sheaf J AddCommGrpCat.{w}} (f : F ⟶ F) (n : ℕ) :
+    Σ A : AddCommGrpCat.{w'}, A ⟶ A :=
+  letI : HasSheafify J AddCommGrpCat.{w} := s
+  letI : HasExt.{w'} (Sheaf J AddCommGrpCat.{w}) := e
+  ⟨AddCommGrpCat.of (Sheaf.H.{w'} F n),
+    AddCommGrpCat.ofHom (Sheaf.H.map.{w'} f n)⟩
+
+/-- Equality of packages identifies their endomorphisms. -/
+theorem originalSheafHRawMapPackage_snd_heq
+    {P Q : Σ A : AddCommGrpCat.{w'}, A ⟶ A} (h : P = Q) :
+    HEq P.2 Q.2 := by
+  cases h
+  rfl
+
+end LinearStudy
+#check LinearStudy.originalSheafHRawMapPackage
+#print LinearStudy.originalSheafHRawMapPackage
+#print axioms LinearStudy.originalSheafHRawMapPackage
+#check LinearStudy.originalSheafHRawMapPackage_snd_heq
+#print axioms LinearStudy.originalSheafHRawMapPackage_snd_heq

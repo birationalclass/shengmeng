@@ -1,0 +1,12 @@
+module
+public import Linear.CheckedSquarePublicCodomain
+public import Linear.NativeSourceActualHContextScalarSquare
+public import Linear.NativeSourcePublicHComparisonTypedHom
+@[expose] public section
+set_option maxHeartbeats 5000
+cache_square_right_on_codomain LinearStudy.nativeFiniteGradedTwist_actualH_contextScalarSquare
+  of LinearStudy.nativeOriginalSourceActualHPublicHom
+  as LinearStudy.nativeOriginalActualHPublicScalarOperator
+#check LinearStudy.nativeOriginalActualHPublicScalarOperator
+#print LinearStudy.nativeOriginalActualHPublicScalarOperator
+#print axioms LinearStudy.nativeOriginalActualHPublicScalarOperator

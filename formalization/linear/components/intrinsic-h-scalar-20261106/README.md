@@ -1,0 +1,7 @@
+# Original scalar action on actual sheaf cohomology
+
+The exact original public coefficient-scalar operator on positive actual sheaf H of the projective module sheaf agrees by kernel-checked heterogeneous equality with the independently defined native Gamma(Spec K,O) scalar endomorphism. The same calibration is verified for the original raw operator. Keep the specified finite degree-one cover, all integer grading shifts and all degrees q+1, and arbitrary finite graded coefficients with the stated graded action. No torsion-free, Cohen-Macaulay or flatness assumption and no new generic open are used. The general finite-normalization Gamma-module/K-linear comparison, specified top-H comparison and the same normalized geometric trace remain open, as do original Lemmas 4.1 and 4.2 and the main theorem. The whole local checkpoint is 180. Native grading shifts are kept distinct from tensor-power Serre twists.
+
+This archive contains 15 compiled root modules, 20 ordinary theorems and 5 object definitions for one verified scalar calibration. It includes 507 closed project source modules. The 492 earlier sources match the verified public parent archives byte for byte. Codex reviewed all 603 root lines and all 584 audit lines. No human reviewer is claimed.
+
+The Lean toolchain and mathlib revision are pinned in source/. Start with source/RESOURCE_SAFETY.md and use the project controller for local compilation. The evidence directory contains the actual guarded compilation, exact declaration checks and dependency range receipts.

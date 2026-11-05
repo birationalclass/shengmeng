@@ -1,0 +1,6 @@
+LinearStudy.originalActualHBaseModuleObject.{u} {X S : AlgebraicGeometry.Scheme} (pi : X ⟶ S) (M : X.Modules) (n : ℕ) :
+  ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))
+@[expose] def LinearStudy.originalActualHBaseModuleObject.{u} : {X S : AlgebraicGeometry.Scheme} →
+  (X ⟶ S) → X.Modules → ℕ → ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤)) :=
+fun {X S} pi M n => ↧(LinearStudy.schemeModuleActualCohomology X M n)
+'LinearStudy.originalActualHBaseModuleObject' depends on axioms: [propext, Classical.choice, Quot.sound]

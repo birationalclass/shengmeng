@@ -1,0 +1,15 @@
+LinearStudy.originalSheafHRawMapPackage.{w', w, v, u} {C : Type u} [CategoryTheory.Category.{v, u} C]
+  (J : CategoryTheory.GrothendieckTopology C) (s : CategoryTheory.HasSheafify J AddCommGrpCat)
+  (e : CategoryTheory.HasExt (CategoryTheory.Sheaf J AddCommGrpCat)) {F : CategoryTheory.Sheaf J AddCommGrpCat}
+  (f : F ⟶ F) (n : ℕ) : (A : AddCommGrpCat) × (A ⟶ A)
+@[expose] def LinearStudy.originalSheafHRawMapPackage.{w', w, v, u} : {C : Type u} →
+  [inst : CategoryTheory.Category.{v, u} C] →
+    (J : CategoryTheory.GrothendieckTopology C) →
+      (s : CategoryTheory.HasSheafify J AddCommGrpCat) →
+        CategoryTheory.HasExt (CategoryTheory.Sheaf J AddCommGrpCat) →
+          {F : CategoryTheory.Sheaf J AddCommGrpCat} → (F ⟶ F) → ℕ → (A : AddCommGrpCat) × (A ⟶ A) :=
+fun {C} [CategoryTheory.Category.{v, u} C] J s e {F} f n =>
+  ⟨↧(F.H n), AddCommGrpCat.ofHom (CategoryTheory.Sheaf.H.map f n)⟩
+'LinearStudy.originalSheafHRawMapPackage' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalSheafHRawMapPackage_snd_heq.{w'} {P Q : (A : AddCommGrpCat) × (A ⟶ A)} (h : P = Q) : P.snd ≍ Q.snd
+'LinearStudy.originalSheafHRawMapPackage_snd_heq' depends on axioms: [propext, Quot.sound]
