@@ -1,0 +1,17 @@
+LinearStudy.coordinateCanonicalCoefficientRingEquiv_toRingHom_eq_inv (K : Type) [CommRing K] :
+  (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom =
+    CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv
+'LinearStudy.coordinateCanonicalCoefficientRingEquiv_toRingHom_eq_inv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.originalActualHSpecModuleObject.{u} {K : Type u} [CommRing K] {X : AlgebraicGeometry.Scheme}
+  (pi : X ⟶ AlgebraicGeometry.Spec ↧K) (M : X.Modules) (n : ℕ) : ModuleCat K
+'LinearStudy.originalActualHSpecModuleObject' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalActualHSpecModuleObject_eq_restrictScalars.{u} {K : Type u} [CommRing K]
+  {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) (M : X.Modules) (n : ℕ) :
+  (ModuleCat.restrictScalars (CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv)).obj
+      (LinearStudy.originalActualHBaseModuleObject pi M n) =
+    LinearStudy.originalActualHSpecModuleObject pi M n
+'LinearStudy.originalActualHSpecModuleObject_eq_restrictScalars' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

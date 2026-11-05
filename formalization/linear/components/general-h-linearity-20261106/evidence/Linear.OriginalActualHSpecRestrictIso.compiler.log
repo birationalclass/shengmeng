@@ -1,0 +1,15 @@
+LinearStudy.originalActualHSpecRestrictIso.{u} {K : Type u} [CommRing K] {X : AlgebraicGeometry.Scheme}
+  (pi : X ⟶ AlgebraicGeometry.Spec ↧K) (M : X.Modules) (n : ℕ)
+  {C : ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))}
+  (I : C ≅ LinearStudy.originalActualHBaseModuleObject pi M n) :
+  (ModuleCat.restrictScalars (CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv)).obj C ≅
+    LinearStudy.originalActualHSpecModuleObject pi M n
+'LinearStudy.originalActualHSpecRestrictIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalActualHSpecRestrictIso_forget_hom.{u} {K : Type u} [CommRing K] {X : AlgebraicGeometry.Scheme}
+  (pi : X ⟶ AlgebraicGeometry.Spec ↧K) (M : X.Modules) (n : ℕ)
+  {C : ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))}
+  (I : C ≅ LinearStudy.originalActualHBaseModuleObject pi M n) :
+  (CategoryTheory.forget₂ (ModuleCat K) AddCommGrpCat).map (LinearStudy.originalActualHSpecRestrictIso pi M n I).hom =
+    (CategoryTheory.forget₂ (ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).map
+      I.hom
+'LinearStudy.originalActualHSpecRestrictIso_forget_hom' depends on axioms: [propext, Classical.choice, Quot.sound]

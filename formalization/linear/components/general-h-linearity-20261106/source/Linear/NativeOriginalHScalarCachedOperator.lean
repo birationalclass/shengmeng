@@ -1,0 +1,9 @@
+module
+public import Linear.CheckedScalarMapCache
+public import Linear.NativeSourceActualHRawScalarTheorem
+@[expose] public section
+set_option maxHeartbeats 5000
+cache_original_scalar_map LinearStudy.nativeFiniteGradedTwist_actualHigherHIso_baseScalar
+  as LinearStudy.nativeOriginalActualHScalarOperator
+#check LinearStudy.nativeOriginalActualHScalarOperator
+#print axioms LinearStudy.nativeOriginalActualHScalarOperator

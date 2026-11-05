@@ -1,0 +1,552 @@
+=== Linear.NativeGeneralModuleHIntrinsicExactIso SHA-256 08044b01e2b878dba0c07807ccf26ed559f1e9d86a3c178840a6ec5adfb7bc92 ===
+module
+public import Linear.NativeGeneralPublicHIntrinsicWitness
+public import Linear.OriginalActualHBaseModuleForgetting
+public import Linear.OriginalOrderedModuleHomologyScalarMorphism
+public import Linear.OriginalScalarSquareModuleIsoLiteral
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Assemble the Γ-linear lift from the exact objects and maps in the
+previously checked additive comparison square. -/
+elab "check_general_module_intrinsic_iso " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let q ← getConstInfo
+      ``LinearStudy.nativeFiniteNormalization_generalModuleCechActualH_baseScalar_proof
+    let levels := q.levelParams.map Level.param
+    unless levels.length == 1 do throwError "Expected the original common universe"
+    let u := levels.head!
+    forallTelescope q.type fun xs prop => do
+      unless prop.isAppOfArity ``Eq 3 do throwError "Expected the original scalar square"
+      let r := xs.back!
+      let ls := prop.getAppArgs[1]!
+      let rs := prop.getAppArgs[2]!
+      unless ls.isAppOfArity ``CategoryTheory.CategoryStruct.comp 7 &&
+          rs.isAppOfArity ``CategoryTheory.CategoryStruct.comp 7 do
+        throwError "Expected the two original composites"
+      let a := ls.getAppArgs[5]!
+      let d := rs.getAppArgs[6]!
+      let h := rs.getAppArgs[5]!
+      unless h.isAppOf ``CategoryTheory.Iso.hom do
+        throwError "Expected the original comparison isomorphism"
+      let i := h.getAppArgs.back!
+      let it ← inferType i
+      unless it.isAppOf ``CategoryTheory.Iso do throwError "Expected an additive iso"
+      let ia := it.getAppArgs
+      let x := ia[ia.size-2]!
+      let y := ia.back!
+      unless x.isAppOf ``CategoryTheory.Functor.obj do
+        throwError "Expected the original forgotten module-valued homology"
+      let c := x.getAppArgs.back!
+      let ct ← inferType c
+      unless ct.isAppOfArity ``ModuleCat 2 do throwError "Expected the source module type"
+      let w := mkAppN (mkConst q.name levels) xs
+      let hd := mkAppN (mkConst ``LinearStudy.nativeGeneralModuleH_publicOperator_heq_intrinsic levels) xs
+      let ht ← inferType hd
+      unless ht.isAppOfArity ``HEq 4 && ht.getAppArgs[1]! == d do
+        throwError "Expected the same original target operator"
+      let some g := ht.getAppArgs[3]!.find? (fun t =>
+          t.isAppOfArity ``LinearStudy.originalActualHBaseModuleObject 5) |
+        throwError "Expected the independent original target module"
+      let e0 := mkAppN (mkConst ``LinearStudy.originalActualHBaseModuleObject_forget levels) g.getAppArgs
+      let e ← mkAppM ``Eq.symm #[e0]
+      let some coeff := a.find? (fun t =>
+          t.isAppOfArity ``LinearStudy.orderedBaseCechActualCoefficientMap 9) |
+        throwError "Expected the original source coefficient map"
+      let ca := coeff.getAppArgs
+      let some hm := a.find? (fun t =>
+          t.isAppOf ``HomologicalComplex.homologyMap && t.getAppArgs.back!.isAppOf ``HAdd.hAdd) |
+        throwError "Expected the original coefficient homology map"
+      let n := hm.getAppArgs.back!
+      let ha := mkAppN (mkConst ``LinearStudy.originalOrderedModuleHomologyScalarMorphism levels)
+        #[ca[0]!,ca[1]!,ca[2]!,ca[3]!,r,ca[6]!,ca[7]!,ca[8]!,n]
+      let af ← mkLambdaFVars #[r] a
+      let df ← mkLambdaFVars #[r] d
+      let haf ← mkLambdaFVars #[r] ha
+      let hdf ← mkLambdaFVars #[r] hd
+      let wf ← mkLambdaFVars #[r] w
+      let valueBody := mkAppN (mkConst ``LinearStudy.originalScalarSquareModuleIso_literal [u,u])
+        (ct.getAppArgs ++ #[c,g,y,i,e,af,df,haf,hdf,wf])
+      let params := xs.extract 0 (xs.size-1)
+      let type ← mkForallFVars params (← inferType valueBody)
+      let value ← mkLambdaFVars params valueBody
+      addDecl (.defnDecl {
+        name := target.getId
+        levelParams := q.levelParams
+        type := type
+        value := value
+        hints := .regular 1
+        safety := .safe
+      }) (forceExpose := true)
+      modifyEnv (addNoncomputable · target.getId)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_general_module_intrinsic_iso LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general
+#check LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general
+
+=== Linear.NativeGeneralModuleHIntrinsicForget SHA-256 1b0260d9c38d89aaed2763fcf8b1176a82b04fc024ccaf143980e666c1c30f59 ===
+module
+public import Linear.NativeGeneralModuleHIntrinsicExactIso
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- After the exact target-object identification, the Γ-linear lift has
+the same additive morphism as the original general comparison. -/
+elab "check_general_module_intrinsic_forget " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let d ← getConstInfoDefn
+      ``LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general
+    let levels := d.levelParams.map Level.param
+    forallTelescope d.type fun xs _ => do
+      let exactIso := mkAppN (mkConst d.name levels) xs
+      let body := (mkAppN d.value xs).headBeta
+      unless body.isAppOf ``LinearStudy.originalScalarSquareModuleIso_literal do
+        throwError "Expected the exact scalar-square lift"
+      let proof := mkAppN
+        (mkConst ``LinearStudy.originalScalarSquareModuleIso_literal_forget_hom
+          body.getAppFn.constLevels!)
+        body.getAppArgs
+      let pt ← inferType proof
+      unless pt.isAppOfArity ``Eq 3 do throwError "Expected the original morphism equality"
+      let some old := pt.find? (· == body) |
+        throwError "Expected the expanded exact lift in the forgotten morphism"
+      let prop := pt.replace (fun e => if e == old then some exactIso else none)
+      let type ← mkForallFVars xs prop
+      let value ← mkLambdaFVars xs proof
+      addDecl (.thmDecl {name := target.getId, levelParams := d.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_general_module_intrinsic_forget LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general_forget_hom
+#check LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general_forget_hom
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general_forget_hom
+
+=== Linear.NativeGeneralModuleHIntrinsicSpecForget SHA-256 6e27b3a2841d087148fcbbc56b0dc0cbe398ae80e0d5640fc3bd80df3f2cc274 ===
+module
+public import Linear.NativeGeneralModuleHIntrinsicSpecIso
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- The K-linear lift retains the exact underlying comparison morphism
+after the same target additive-group identification. -/
+elab "check_general_module_intrinsic_spec_forget " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let d ← getConstInfoDefn
+      ``LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general
+    let levels := d.levelParams.map Level.param
+    forallTelescope d.type fun xs _ => do
+      let iso := mkAppN (mkConst d.name levels) xs
+      let body := (mkAppN d.value xs).headBeta
+      unless body.isAppOf ``LinearStudy.originalActualHSpecRestrictIso do
+        throwError "Expected the original restriction of scalars"
+      let restrict := mkAppN
+        (mkConst ``LinearStudy.originalActualHSpecRestrictIso_forget_hom levels) body.getAppArgs
+      let gamma := mkAppN (mkConst
+        ``LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general_forget_hom
+        levels) xs
+      let rt ← inferType restrict
+      let gt ← inferType gamma
+      unless rt.isAppOfArity ``Eq 3 && gt.isAppOfArity ``Eq 3 do
+        throwError "Expected the two exact additive equalities"
+      let left := gt.getAppArgs[1]!
+      unless left.isAppOfArity ``CategoryTheory.CategoryStruct.comp 7 &&
+          left.getAppArgs[5]! == rt.getAppArgs[2]! do
+        throwError "Expected the same exact middle additive map"
+      let proof ← withLocalDeclD `f rt.getAppArgs[0]! fun f => do
+        let compose := mkAppN left.getAppFn (left.getAppArgs.set! 5 f)
+        let map ← mkLambdaFVars #[f] compose
+        let h ← mkAppM ``congrArg #[map,restrict]
+        mkAppM ``Eq.trans #[h,gamma]
+      let pt ← inferType proof
+      unless (pt.find? (· == body)).isSome do
+        throwError "Expected the expanded K-linear lift"
+      let prop := pt.replace (fun e => if e == body then some iso else none)
+      let type ← mkForallFVars xs prop
+      let value ← mkLambdaFVars xs proof
+      addDecl (.thmDecl {name := target.getId, levelParams := d.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_general_module_intrinsic_spec_forget LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general_forget_hom
+#check LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general_forget_hom
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general_forget_hom
+
+=== Linear.NativeGeneralModuleHIntrinsicSpecIso SHA-256 5ff74fd0327857ae457c1d4c9890b056ec906e3c080d7610c641796fb21a9c09 ===
+module
+public import Linear.NativeGeneralModuleHIntrinsicForget
+public import Linear.OriginalActualHSpecRestrictIso
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Restrict the exact general Γ-linear comparison along the original
+canonical coefficient map, with the independently defined K-target. -/
+elab "check_general_module_intrinsic_spec_iso " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let d ← getConstInfoDefn
+      ``LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general
+    let levels := d.levelParams.map Level.param
+    forallTelescope d.type fun xs prop => do
+      unless prop.isAppOf ``CategoryTheory.Iso do throwError "Expected the Γ-linear isomorphism"
+      let args := prop.getAppArgs
+      let c := args[args.size-2]!
+      let g := args.back!
+      unless g.isAppOfArity ``LinearStudy.originalActualHBaseModuleObject 5 do
+        throwError "Expected the independent original Γ-module"
+      let ga := g.getAppArgs
+      let k := xs[0]!
+      let some kRing := ga[1]!.find? (fun t =>
+          t.isAppOfArity ``CommRingCat.of 2 && t.getAppArgs[0]! == k) |
+        throwError "Expected the original Spec K"
+      let iso := mkAppN (mkConst d.name levels) xs
+      let body := mkAppN (mkConst ``LinearStudy.originalActualHSpecRestrictIso levels)
+        #[k,kRing.getAppArgs[1]!,ga[0]!,ga[2]!,ga[3]!,ga[4]!,c,iso]
+      let type ← mkForallFVars xs (← inferType body)
+      let value ← mkLambdaFVars xs body
+      addDecl (.defnDecl {
+        name := target.getId
+        levelParams := d.levelParams
+        type := type
+        value := value
+        hints := .regular 1
+        safety := .safe
+      }) (forceExpose := true)
+      modifyEnv (addNoncomputable · target.getId)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_general_module_intrinsic_spec_iso LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general
+#check LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general
+#print axioms LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general
+
+=== Linear.NativeGeneralPublicHIntrinsicWitness SHA-256 3f27041e10a87c392454c8c8f4fbf7240f4dfc831e2fa9ca83466b612acc0779 ===
+module
+public import Linear.NativeGeneralModuleHScalarProof
+public import Linear.NativeOriginalPublicScalarIntrinsic
+public import Lean
+@[expose] public section
+set_option maxHeartbeats 5000
+open Lean Meta Elab Command
+
+/-- Specialize the independently checked scalar calibration at the
+exact target operator of the general module-valued comparison square. -/
+elab "check_general_public_h_intrinsic_witness " target:ident : command => do
+  let stx ← getRef
+  withExporting (isExporting := true) <| liftTermElabM do
+    let square ← getConstInfo
+      ``LinearStudy.nativeFiniteNormalization_generalModuleCechActualH_baseScalar_proof
+    let calibration ← getConstInfo
+      ``LinearStudy.nativeOriginalActualHPublicScalarOperator_heq_intrinsic
+    let levels := square.levelParams.map Level.param
+    unless calibration.levelParams.length == levels.length do
+      throwError "The square and calibration universes disagree"
+    let arity ← forallTelescope calibration.type fun xs _ => pure xs.size
+    forallTelescope square.type fun xs prop => do
+      let mut eq := prop
+      while eq.isLet do
+        eq := eq.letBody!.instantiate1 eq.letValue!
+      unless eq.isAppOfArity ``Eq 3 do
+        throwError "Expected the exact original scalar square"
+      let rhs := eq.getAppArgs.back!
+      let some op := rhs.find? (fun e =>
+          e.isAppOfArity ``LinearStudy.nativeOriginalActualHPublicScalarOperator arity) |
+        throwError "The target of the square is not the literal public operator"
+      let proof := mkAppN (mkConst calibration.name levels) op.getAppArgs
+      let ht ← inferType proof
+      unless ht.isAppOfArity ``HEq 4 && ht.getAppArgs[1]! == op do
+        throwError "The intrinsic witness changed the exact operator"
+      let type ← mkForallFVars xs ht
+      let value ← mkLambdaFVars xs proof
+      addDecl (.thmDecl {name := target.getId, levelParams := square.levelParams, type, value})
+        (forceExpose := true)
+  addDeclarationRangesFromSyntax target.getId stx target
+
+check_general_public_h_intrinsic_witness LinearStudy.nativeGeneralModuleH_publicOperator_heq_intrinsic
+#check LinearStudy.nativeGeneralModuleH_publicOperator_heq_intrinsic
+#print axioms LinearStudy.nativeGeneralModuleH_publicOperator_heq_intrinsic
+
+=== Linear.OriginalActualHBaseModuleForgetting SHA-256 63e10d2b300b9812067916cf4ff63237a44993a13968333a28098a30ff1141b7 ===
+module
+public import Linear.OriginalActualHBaseModuleObject
+public import Linear.SchemeActualHRawObjectIdentity
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open CategoryTheory AlgebraicGeometry
+universe u
+
+/-- Forgetting the base scalar structure recovers the original actual H
+object used by the public coefficient comparison. -/
+theorem originalActualHBaseModuleObject_forget
+    {X S : Scheme.{u}} (pi : X ⟶ S) (M : X.Modules) (n : ℕ) :
+    (forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}).obj
+      (originalActualHBaseModuleObject pi M n) = schemeModuleActualHObject X M n :=
+  (schemeModuleActualHObject_eq_ofCohomology X M n).symm
+
+end LinearStudy
+#check LinearStudy.originalActualHBaseModuleObject_forget
+#print axioms LinearStudy.originalActualHBaseModuleObject_forget
+
+=== Linear.OriginalActualHSpecModuleObject SHA-256 d7242c2ededa52dc17196a2487d4dc956322eaa4d42cbcdeb560f1e8bf6749c5 ===
+module
+public import Linear.OriginalActualHBaseModuleObject
+public import Linear.ProjectiveCanonicalCoefficientEquiv
+public import Linear.SchemeModuleActualHSpecScalars
+public import Mathlib.Algebra.Category.ModuleCat.ChangeOfRings
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u
+
+/-- The canonical coordinate coefficient map is precisely the map
+used in the original actual-H scalar restriction. -/
+theorem coordinateCanonicalCoefficientRingEquiv_toRingHom_eq_inv (K : Type) [CommRing K] :
+    (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom =
+      (Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom := rfl
+
+/-- The original independently defined K-module on actual H. -/
+def originalActualHSpecModuleObject
+    {K : Type u} [CommRing K] {X : Scheme.{u}}
+    (pi : X ⟶ Spec (CommRingCat.of K)) (M : X.Modules) (n : ℕ) : ModuleCat.{u} K :=
+  @ModuleCat.of K _ (schemeModuleActualCohomology X M n)
+    (schemeModuleActualCohomologyAddCommGroup X M n)
+    (schemeModuleActualHSpecModule pi M n)
+
+/-- Restricting the independently defined Γ-module along the
+canonical coefficient map gives the original K-module object. -/
+theorem originalActualHSpecModuleObject_eq_restrictScalars
+    {K : Type u} [CommRing K] {X : Scheme.{u}}
+    (pi : X ⟶ Spec (CommRingCat.of K)) (M : X.Modules) (n : ℕ) :
+    (ModuleCat.restrictScalars (Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom).obj
+      (originalActualHBaseModuleObject pi M n) =
+    originalActualHSpecModuleObject pi M n := rfl
+
+end LinearStudy
+#check LinearStudy.coordinateCanonicalCoefficientRingEquiv_toRingHom_eq_inv
+#print axioms LinearStudy.coordinateCanonicalCoefficientRingEquiv_toRingHom_eq_inv
+#check LinearStudy.originalActualHSpecModuleObject
+#print axioms LinearStudy.originalActualHSpecModuleObject
+#check LinearStudy.originalActualHSpecModuleObject_eq_restrictScalars
+#print axioms LinearStudy.originalActualHSpecModuleObject_eq_restrictScalars
+
+=== Linear.OriginalActualHSpecRestrictIso SHA-256 434432336588e17af6cb422c5239a5d193c99d184bbda158be43c2f19468b1cb ===
+module
+public import Linear.OriginalActualHSpecModuleObject
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u
+
+/-- Apply the canonical restriction of scalars to a comparison with the
+independently defined original Γ-module on actual H. -/
+def originalActualHSpecRestrictIso
+    {K : Type u} [CommRing K] {X : Scheme.{u}}
+    (pi : X ⟶ Spec (CommRingCat.of K)) (M : X.Modules) (n : ℕ)
+    {C : ModuleCat.{u} Γ(Spec (CommRingCat.of K),⊤)}
+    (I : C ≅ originalActualHBaseModuleObject pi M n) :
+    (ModuleCat.restrictScalars (Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom).obj C ≅
+      originalActualHSpecModuleObject pi M n :=
+  (ModuleCat.restrictScalars (Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom).mapIso I
+
+theorem originalActualHSpecRestrictIso_forget_hom
+    {K : Type u} [CommRing K] {X : Scheme.{u}}
+    (pi : X ⟶ Spec (CommRingCat.of K)) (M : X.Modules) (n : ℕ)
+    {C : ModuleCat.{u} Γ(Spec (CommRingCat.of K),⊤)}
+    (I : C ≅ originalActualHBaseModuleObject pi M n) :
+    (forget₂ (ModuleCat.{u} K) AddCommGrpCat.{u}).map
+      (originalActualHSpecRestrictIso pi M n I).hom =
+    (forget₂ (ModuleCat.{u} Γ(Spec (CommRingCat.of K),⊤)) AddCommGrpCat.{u}).map I.hom :=
+  ModuleCat.forget₂_map_restrictScalars (Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom I.hom
+
+end LinearStudy
+#check LinearStudy.originalActualHSpecRestrictIso
+#print axioms LinearStudy.originalActualHSpecRestrictIso
+#check LinearStudy.originalActualHSpecRestrictIso_forget_hom
+#print axioms LinearStudy.originalActualHSpecRestrictIso_forget_hom
+
+=== Linear.OriginalModuleCatScalarMorphism SHA-256 2a949b1e0bf13b054c13195c1866dee61281735b7fe5e5c78095bb70d285c62a ===
+module
+/- UNCOMPILED next-window candidate. No verified result is claimed. -/
+public import Mathlib.Algebra.Category.ModuleCat.Basic
+@[expose] public section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open CategoryTheory
+universe u v
+/-- Two existing presentations of the SAME native module scalar morphism. -/
+theorem originalModuleScalarMorphism_eq_forget_smul_id
+    {R : Type u} [CommRing R] (M : ModuleCat.{v} R) (r : R) :
+    M.smul r = (forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).map (r • 𝟙 M) := by
+  apply AddCommGrpCat.ext
+  intro x
+  rfl
+end LinearStudy
+#check LinearStudy.originalModuleScalarMorphism_eq_forget_smul_id
+#print axioms LinearStudy.originalModuleScalarMorphism_eq_forget_smul_id
+
+=== Linear.OriginalOrderedModuleHomologyScalarMorphism SHA-256 413e3b9dd8d11dc922f6d01a09030815d14a47c51d18c310e238dda359b5884f ===
+module
+/- UNCOMPILED next-window candidate. No verified result is claimed. -/
+public import Linear.OriginalModuleCatScalarMorphism
+public import Linear.OrderedModuleCechActualCoefficientMap
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open CategoryTheory AlgebraicGeometry AlgebraicGeometry.Scheme.Modules
+universe u
+/-- Use the original homology scalar theorem categorically, without
+applying the large original Cech-homology object to an element. -/
+theorem originalOrderedModuleHomologyScalarMorphism
+    {X S : Scheme.{u}} (pi : X ⟶ S) (M : X.Modules) (r : Γ(S,⊤))
+    {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) (n : ℕ) :
+    (forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}).map
+      (HomologicalComplex.homologyMap (orderedBaseCechActualCoefficientMap pi
+        (originalGlobalModuleScalar (pi.appTop r) M) U) n) =
+      ((orderedBaseCechComplex pi M U).homology n).smul r := by
+  let C := (orderedBaseCechComplex pi M U).homology n
+  let F := forget₂ (ModuleCat.{u} Γ(S,⊤)) AddCommGrpCat.{u}
+  have h : HomologicalComplex.homologyMap
+      (orderedBaseCechActualCoefficientMap pi (originalGlobalModuleScalar (pi.appTop r) M) U) n =
+        r • 𝟙 C := orderedBaseCech_homologyMap_originalScalar pi M r U n
+  exact (congrArg (fun f : C ⟶ C => F.map f) h).trans
+    (originalModuleScalarMorphism_eq_forget_smul_id C r).symm
+end LinearStudy
+#check LinearStudy.originalOrderedModuleHomologyScalarMorphism
+#print axioms LinearStudy.originalOrderedModuleHomologyScalarMorphism
+
+=== Linear.OriginalScalarSquareModuleIso SHA-256 f850599873fdb00256c939e40b12d2112a535d1941d2432d35239fa9947c64e5 ===
+module
+public import Linear.CategoricalScalarSquareComposition
+public import Mathlib.Algebra.Category.ModuleCat.Basic
+public import Mathlib.CategoryTheory.EqToHom
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open CategoryTheory
+universe u v
+
+/-- Lift a fixed additive comparison using the independently given
+source and target scalar actions. The target change is the supplied
+equality of additive group objects. -/
+def originalScalarSquareModuleIso
+    {R : Type u} [Ring R] (C G : ModuleCat.{v} R) {Y : AddCommGrpCat.{v}}
+    (I : (forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).obj C ≅ Y)
+    (e : Y = (forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).obj G)
+    (a : R → End ((forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).obj C))
+    (d : R → End Y)
+    (ha : ∀ r, a r = C.smul r) (hd : ∀ r, HEq (d r).asHom (G.smul r).asHom)
+    (w : ∀ r, (a r).asHom ≫ I.hom = I.hom ≫ (d r).asHom) :
+    C ≅ G :=
+  ModuleCat.isoMk (I ≪≫ eqToIso e) (fun r => by
+    have h₁ := (congrArg (fun g => g ≫ I.hom) (ha r).symm).trans (w r)
+    have h₂ : (d r).asHom ≫ eqToHom e = eqToHom e ≫ (G.smul r).asHom :=
+      eq_of_heq ((comp_eqToHom_heq (d r).asHom e).trans
+        ((hd r).trans (eqToHom_comp_heq (G.smul r).asHom e).symm))
+    exact (originalEndomorphismSquare_comp h₁ h₂).symm)
+
+/-- After identifying the exact target group, the lifted isomorphism
+has the original comparison morphism. -/
+theorem originalScalarSquareModuleIso_forget_hom
+    {R : Type u} [Ring R] (C G : ModuleCat.{v} R) {Y : AddCommGrpCat.{v}}
+    (I : (forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).obj C ≅ Y)
+    (e : Y = (forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).obj G)
+    (a : R → End ((forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).obj C))
+    (d : R → End Y)
+    (ha : ∀ r, a r = C.smul r) (hd : ∀ r, HEq (d r).asHom (G.smul r).asHom)
+    (w : ∀ r, (a r).asHom ≫ I.hom = I.hom ≫ (d r).asHom) :
+    (forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).map
+      (originalScalarSquareModuleIso C G I e a d ha hd w).hom ≫ eqToHom e.symm = I.hom := by
+  rw [originalScalarSquareModuleIso, ModuleCat.isoMk_hom, ModuleCat.forget₂_map_homMk, Iso.trans_hom]
+  simp [Category.assoc]
+
+end LinearStudy
+#check LinearStudy.originalScalarSquareModuleIso
+#print axioms LinearStudy.originalScalarSquareModuleIso
+#check LinearStudy.originalScalarSquareModuleIso_forget_hom
+#print axioms LinearStudy.originalScalarSquareModuleIso_forget_hom
+
+=== Linear.OriginalScalarSquareModuleIsoLiteral SHA-256 018def42aacc96dc81a9af858a5760f73b113949951a59ec4b85de054eb3ef9f ===
+module
+public import Linear.OriginalScalarSquareModuleIso
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open CategoryTheory
+universe u v
+
+/-- Lift the original additive comparison with the target operator
+presented as a literal morphism of additive groups. -/
+def originalScalarSquareModuleIso_literal
+    {R : Type u} [Ring R] (C G : ModuleCat.{v} R) {Y : AddCommGrpCat.{v}}
+    (I : (forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).obj C ≅ Y)
+    (e : Y = (forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).obj G)
+    (a : R → End ((forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).obj C))
+    (d : R → (Y ⟶ Y))
+    (ha : ∀ r, a r = C.smul r) (hd : ∀ r, HEq (d r) (G.smul r))
+    (w : ∀ r, (a r).asHom ≫ I.hom = I.hom ≫ d r) :
+    C ≅ G :=
+  originalScalarSquareModuleIso C G I e a (fun r => End.of (d r)) ha hd w
+
+theorem originalScalarSquareModuleIso_literal_forget_hom
+    {R : Type u} [Ring R] (C G : ModuleCat.{v} R) {Y : AddCommGrpCat.{v}}
+    (I : (forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).obj C ≅ Y)
+    (e : Y = (forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).obj G)
+    (a : R → End ((forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).obj C))
+    (d : R → (Y ⟶ Y))
+    (ha : ∀ r, a r = C.smul r) (hd : ∀ r, HEq (d r) (G.smul r))
+    (w : ∀ r, (a r).asHom ≫ I.hom = I.hom ≫ d r) :
+    (forget₂ (ModuleCat.{v} R) AddCommGrpCat.{v}).map
+      (originalScalarSquareModuleIso_literal C G I e a d ha hd w).hom ≫ eqToHom e.symm =
+      I.hom :=
+  originalScalarSquareModuleIso_forget_hom C G I e a (fun r => End.of (d r)) ha hd w
+
+end LinearStudy
+#check LinearStudy.originalScalarSquareModuleIso_literal
+#print axioms LinearStudy.originalScalarSquareModuleIso_literal
+#check LinearStudy.originalScalarSquareModuleIso_literal_forget_hom
+#print axioms LinearStudy.originalScalarSquareModuleIso_literal_forget_hom
+
+=== Linear.SchemeActualHRawObjectIdentity SHA-256 e57f65207c30679511d3edc4c34af7c0cd429022544aadd9de315ba1bcc2d7cc ===
+module
+public import Linear.SchemeModuleActualHObjects
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u
+/-- This is an equality of the SAME actual H group object with its
+ORIGINAL Ext presentation,not a chosen mathematical duality. -/
+theorem schemeModuleActualHObject_eq_ofCohomology
+    (X : Scheme.{u}) (M : X.Modules) (n : ℕ) :
+    schemeModuleActualHObject X M n = AddCommGrpCat.of (schemeModuleActualCohomology X M n) := rfl
+end LinearStudy

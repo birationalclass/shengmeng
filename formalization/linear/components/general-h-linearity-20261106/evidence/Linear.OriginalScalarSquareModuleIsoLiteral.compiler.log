@@ -1,0 +1,24 @@
+LinearStudy.originalScalarSquareModuleIso_literal.{u, v} {R : Type u} [Ring R] (C G : ModuleCat R) {Y : AddCommGrpCat}
+  (I : (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C ≅ Y)
+  (e : Y = (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj G)
+  (a : R → CategoryTheory.End ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C)) (d : R → (Y ⟶ Y))
+  (ha : ∀ (r : R), a r = C.smul r) (hd : ∀ (r : R), d r ≍ G.smul r)
+  (w :
+    ∀ (r : R), CategoryTheory.CategoryStruct.comp (a r).asHom I.hom = CategoryTheory.CategoryStruct.comp I.hom (d r)) :
+  C ≅ G
+'LinearStudy.originalScalarSquareModuleIso_literal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalScalarSquareModuleIso_literal_forget_hom.{u, v} {R : Type u} [Ring R] (C G : ModuleCat R)
+  {Y : AddCommGrpCat} (I : (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C ≅ Y)
+  (e : Y = (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj G)
+  (a : R → CategoryTheory.End ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C)) (d : R → (Y ⟶ Y))
+  (ha : ∀ (r : R), a r = C.smul r) (hd : ∀ (r : R), d r ≍ G.smul r)
+  (w :
+    ∀ (r : R), CategoryTheory.CategoryStruct.comp (a r).asHom I.hom = CategoryTheory.CategoryStruct.comp I.hom (d r)) :
+  CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).map
+        (LinearStudy.originalScalarSquareModuleIso_literal C G I e a d ha hd w).hom)
+      (CategoryTheory.eqToHom ⋯) =
+    I.hom
+'LinearStudy.originalScalarSquareModuleIso_literal_forget_hom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

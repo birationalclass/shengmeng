@@ -1,0 +1,646 @@
+@LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general : {K R S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                (A : ℕ → Submodule K R) →
+                  [inst_7 : GradedAlgebra A] →
+                    (B : ℕ → Submodule K S) →
+                      [inst_8 : GradedAlgebra B] →
+                        [SetLike.GradedSMul A B] →
+                          [inst_10 : AddCommGroup M] →
+                            [inst_11 : Module K M] →
+                              [inst_12 : Module R M] →
+                                [inst_13 : Module S M] →
+                                  [IsScalarTower R S M] →
+                                    [IsScalarTower K R M] →
+                                      [IsScalarTower K S M] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                                [IsDomain R] →
+                                                  [IsDomain S] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Algebra.FiniteType K S] →
+                                                          [Module.Finite R S] →
+                                                            [Module.Finite R M] →
+                                                              [Module.Finite S M] →
+                                                                {ι κ : Type u_1} →
+                                                                  [inst_26 : LinearOrder ι] →
+                                                                    [Finite ι] →
+                                                                      (a : ι → R) →
+                                                                        (∀ (i : ι), a i ∈ A 1) →
+                                                                          (c : κ → S) →
+                                                                            (∀ (i : κ), c i ∈ B 1) →
+                                                                              Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                                  (k : ℤ) →
+                                                                                    (q : ℕ) →
+                                                                                      HomologicalComplex.homology
+                                                                                          (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex
+                                                                                            (CategoryTheory.CategoryStruct.comp
+                                                                                              (AlgebraicGeometry.Proj.toSpecZero
+                                                                                                A)
+                                                                                              (AlgebraicGeometry.Spec.map
+                                                                                                (CommRingCat.ofHom
+                                                                                                  (algebraMap K
+                                                                                                    ↥(A 0)))))
+                                                                                            (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                              A D hR k)
+                                                                                            fun (i : ι) =>
+                                                                                            AlgebraicGeometry.Proj.basicOpen
+                                                                                              A (a i))
+                                                                                          (q + 1) ≅
+                                                                                        LinearStudy.originalActualHBaseModuleObject
+                                                                                          (CategoryTheory.CategoryStruct.comp
+                                                                                            (AlgebraicGeometry.Proj.toSpecZero
+                                                                                              B)
+                                                                                            (AlgebraicGeometry.Spec.map
+                                                                                              (CommRingCat.ofHom
+                                                                                                (algebraMap K ↥(B 0)))))
+                                                                                          (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                            B D hS k)
+                                                                                          (q + 1)
+'LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general_forget_hom : ∀
+  {K R S M : Type u_1} [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R]
+  [inst_4 : Algebra K S] [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] (A : ℕ → Submodule K R)
+  [inst_7 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_8 : GradedAlgebra B] [inst_9 : SetLike.GradedSMul A B]
+  [inst_10 : AddCommGroup M] [inst_11 : Module K M] [inst_12 : Module R M] [inst_13 : Module S M]
+  [inst_14 : IsScalarTower R S M] [inst_15 : IsScalarTower K R M] [inst_16 : IsScalarTower K S M]
+  (D : ℤ → Submodule K M) [inst_17 : DirectSum.Decomposition D]
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Algebra.FiniteType K S]
+  [inst_23 : Module.Finite R S] [inst_24 : Module.Finite R M] [inst_25 : Module.Finite S M] {ι κ : Type u_1}
+  [inst_26 : LinearOrder ι] [inst_27 : Finite ι] (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+  (k : ℤ) (q : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.forget₂ (ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤)))
+            AddCommGrpCat).map
+        (LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general A B D hR hS a ha c
+            hc hgenR hgenC k q).hom)
+      (CategoryTheory.eqToHom ⋯) =
+    (LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_general A B D hR hS a ha c hc
+        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))
+        hgenR hgenC k q).hom
+'LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general_forget_hom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general_forget_hom : ∀
+  {K R S M : Type u_1} [inst : Field K] [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R]
+  [inst_4 : Algebra K S] [inst_5 : Algebra R S] [inst_6 : IsScalarTower K R S] (A : ℕ → Submodule K R)
+  [inst_7 : GradedAlgebra A] (B : ℕ → Submodule K S) [inst_8 : GradedAlgebra B] [inst_9 : SetLike.GradedSMul A B]
+  [inst_10 : AddCommGroup M] [inst_11 : Module K M] [inst_12 : Module R M] [inst_13 : Module S M]
+  [inst_14 : IsScalarTower R S M] [inst_15 : IsScalarTower K R M] [inst_16 : IsScalarTower K S M]
+  (D : ℤ → Submodule K M) [inst_17 : DirectSum.Decomposition D]
+  (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+  (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [inst_18 : IsDomain R] [inst_19 : IsDomain S]
+  [inst_20 : IsNoetherianRing R] [inst_21 : IsNoetherianRing S] [inst_22 : Algebra.FiniteType K S]
+  [inst_23 : Module.Finite R S] [inst_24 : Module.Finite R M] [inst_25 : Module.Finite S M] {ι κ : Type u_1}
+  [inst_26 : LinearOrder ι] [inst_27 : Finite ι] (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) (c : κ → S)
+  (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤) (hgenC : Algebra.adjoin K (Set.range c) = ⊤)
+  (k : ℤ) (q : ℕ),
+  CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.forget₂ (ModuleCat K) AddCommGrpCat).map
+        (LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general A B D hR hS a ha c hc
+            hgenR hgenC k q).hom)
+      (CategoryTheory.eqToHom ⋯) =
+    (LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_general A B D hR hS a ha c hc
+        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))
+        hgenR hgenC k q).hom
+'LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general_forget_hom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general : {K R S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                (A : ℕ → Submodule K R) →
+                  [inst_7 : GradedAlgebra A] →
+                    (B : ℕ → Submodule K S) →
+                      [inst_8 : GradedAlgebra B] →
+                        [SetLike.GradedSMul A B] →
+                          [inst_10 : AddCommGroup M] →
+                            [inst_11 : Module K M] →
+                              [inst_12 : Module R M] →
+                                [inst_13 : Module S M] →
+                                  [IsScalarTower R S M] →
+                                    [IsScalarTower K R M] →
+                                      [IsScalarTower K S M] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                                [IsDomain R] →
+                                                  [IsDomain S] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Algebra.FiniteType K S] →
+                                                          [Module.Finite R S] →
+                                                            [Module.Finite R M] →
+                                                              [Module.Finite S M] →
+                                                                {ι κ : Type u_1} →
+                                                                  [inst_26 : LinearOrder ι] →
+                                                                    [Finite ι] →
+                                                                      (a : ι → R) →
+                                                                        (∀ (i : ι), a i ∈ A 1) →
+                                                                          (c : κ → S) →
+                                                                            (∀ (i : κ), c i ∈ B 1) →
+                                                                              Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                                  (k : ℤ) →
+                                                                                    (q : ℕ) →
+                                                                                      (ModuleCat.restrictScalars
+                                                                                              (CommRingCat.Hom.hom
+                                                                                                (AlgebraicGeometry.Scheme.ΓSpecIso
+                                                                                                    ↧K).inv)).obj
+                                                                                          (HomologicalComplex.homology
+                                                                                            (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex
+                                                                                              (CategoryTheory.CategoryStruct.comp
+                                                                                                (AlgebraicGeometry.Proj.toSpecZero
+                                                                                                  A)
+                                                                                                (AlgebraicGeometry.Spec.map
+                                                                                                  (CommRingCat.ofHom
+                                                                                                    (algebraMap K
+                                                                                                      ↥(A 0)))))
+                                                                                              (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                                A D hR k)
+                                                                                              fun (i : ι) =>
+                                                                                              AlgebraicGeometry.Proj.basicOpen
+                                                                                                A (a i))
+                                                                                            (q + 1)) ≅
+                                                                                        LinearStudy.originalActualHSpecModuleObject
+                                                                                          (CategoryTheory.CategoryStruct.comp
+                                                                                            (AlgebraicGeometry.Proj.toSpecZero
+                                                                                              B)
+                                                                                            (AlgebraicGeometry.Spec.map
+                                                                                              (CommRingCat.ofHom
+                                                                                                (algebraMap K ↥(B 0)))))
+                                                                                          (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                            B D hS k)
+                                                                                          (q + 1)
+'LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeGeneralModuleH_publicOperator_heq_intrinsic : ∀ {K R S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing R] [inst_2 : CommRing S] [inst_3 : Algebra K R] [inst_4 : Algebra K S] [inst_5 : Algebra R S]
+  [inst_6 : IsScalarTower K R S] (A : ℕ → Submodule K R) [inst_7 : GradedAlgebra A] (B : ℕ → Submodule K S)
+  [inst_8 : GradedAlgebra B] [inst_9 : SetLike.GradedSMul A B] [inst_10 : AddCommGroup M] [inst_11 : Module K M]
+  [inst_12 : Module R M] [inst_13 : Module S M] [IsScalarTower R S M] [IsScalarTower K R M]
+  [inst_16 : IsScalarTower K S M] (D : ℤ → Submodule K M) [inst_17 : DirectSum.Decomposition D],
+  (∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+    ∀ (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [IsDomain R] [IsDomain S] [IsNoetherianRing R]
+      [inst_21 : IsNoetherianRing S] [inst_22 : Algebra.FiniteType K S] [inst_23 : Module.Finite R S]
+      [Module.Finite R M] [inst_25 : Module.Finite S M] {ι κ : Type u_1} [inst_26 : LinearOrder ι] [inst_27 : Finite ι]
+      (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) (c : κ → S),
+      (∀ (i : κ), c i ∈ B 1) →
+        ∀ (hgenR : Algebra.adjoin K (Set.range a) = ⊤),
+          Algebra.adjoin K (Set.range c) = ⊤ →
+            ∀ (k : ℤ) (q : ℕ) (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))),
+              LinearStudy.nativeOriginalActualHPublicScalarOperator B D hS (fun (i : ι) => (algebraMap R S) (a i)) ⋯ ⋯ k
+                  q r ≍
+                (LinearStudy.originalActualHBaseModuleObject
+                      (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+                        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))
+                      (LinearStudy.nativeProjectiveModuleSheaf B D hS k) (q + 1)).smul
+                  r
+'LinearStudy.nativeGeneralModuleH_publicOperator_heq_intrinsic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalActualHBaseModuleObject_forget : ∀ {X S : AlgebraicGeometry.Scheme} (pi : X ⟶ S) (M : X.Modules)
+  (n : ℕ),
+  (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).obj
+      (LinearStudy.originalActualHBaseModuleObject pi M n) =
+    LinearStudy.schemeModuleActualHObject X M n
+'LinearStudy.originalActualHBaseModuleObject_forget' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coordinateCanonicalCoefficientRingEquiv_toRingHom_eq_inv : ∀ (K : Type) [inst : CommRing K],
+  (MvPolynomial.coordinateCanonicalCoefficientRingEquiv K).toRingHom =
+    CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv
+'LinearStudy.coordinateCanonicalCoefficientRingEquiv_toRingHom_eq_inv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalActualHSpecModuleObject : {K : Type u_1} →
+  [inst : CommRing K] → {X : AlgebraicGeometry.Scheme} → (X ⟶ AlgebraicGeometry.Spec ↧K) → X.Modules → ℕ → ModuleCat K
+'LinearStudy.originalActualHSpecModuleObject' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalActualHSpecModuleObject_eq_restrictScalars : ∀ {K : Type u_1} [inst : CommRing K]
+  {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) (M : X.Modules) (n : ℕ),
+  (ModuleCat.restrictScalars (CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv)).obj
+      (LinearStudy.originalActualHBaseModuleObject pi M n) =
+    LinearStudy.originalActualHSpecModuleObject pi M n
+'LinearStudy.originalActualHSpecModuleObject_eq_restrictScalars' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalActualHSpecRestrictIso : {K : Type u_1} →
+  [inst : CommRing K] →
+    {X : AlgebraicGeometry.Scheme} →
+      (pi : X ⟶ AlgebraicGeometry.Spec ↧K) →
+        (M : X.Modules) →
+          (n : ℕ) →
+            {C : ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))} →
+              (C ≅ LinearStudy.originalActualHBaseModuleObject pi M n) →
+                ((ModuleCat.restrictScalars (CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv)).obj C ≅
+                  LinearStudy.originalActualHSpecModuleObject pi M n)
+'LinearStudy.originalActualHSpecRestrictIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalActualHSpecRestrictIso_forget_hom : ∀ {K : Type u_1} [inst : CommRing K]
+  {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) (M : X.Modules) (n : ℕ)
+  {C : ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))}
+  (I : C ≅ LinearStudy.originalActualHBaseModuleObject pi M n),
+  (CategoryTheory.forget₂ (ModuleCat K) AddCommGrpCat).map (LinearStudy.originalActualHSpecRestrictIso pi M n I).hom =
+    (CategoryTheory.forget₂ (ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).map
+      I.hom
+'LinearStudy.originalActualHSpecRestrictIso_forget_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalModuleScalarMorphism_eq_forget_smul_id : ∀ {R : Type u_1} [inst : CommRing R] (M : ModuleCat R)
+  (r : R), M.smul r = (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).map (r • CategoryTheory.CategoryStruct.id M)
+'LinearStudy.originalModuleScalarMorphism_eq_forget_smul_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalOrderedModuleHomologyScalarMorphism : ∀ {X S : AlgebraicGeometry.Scheme} (pi : X ⟶ S)
+  (M : X.Modules) (r : ↑(S.presheaf.obj (Opposite.op ⊤))) {ι : Type u_1} [inst : LinearOrder ι] (U : ι → X.Opens)
+  (n : ℕ),
+  (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).map
+      (HomologicalComplex.homologyMap
+        (LinearStudy.orderedBaseCechActualCoefficientMap pi
+          (LinearStudy.originalGlobalModuleScalar
+            ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop pi)) r) M)
+          U)
+        n) =
+    (HomologicalComplex.homology (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex pi M U) n).smul r
+'LinearStudy.originalOrderedModuleHomologyScalarMorphism' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalScalarSquareModuleIso : {R : Type u_1} →
+  [inst : Ring R] →
+    (C G : ModuleCat R) →
+      {Y : AddCommGrpCat} →
+        (I : (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C ≅ Y) →
+          Y = (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj G →
+            (a : R → CategoryTheory.End ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C)) →
+              (d : R → CategoryTheory.End Y) →
+                (∀ (r : R), a r = C.smul r) →
+                  (∀ (r : R), (d r).asHom ≍ (G.smul r).asHom) →
+                    (∀ (r : R),
+                        CategoryTheory.CategoryStruct.comp (a r).asHom I.hom =
+                          CategoryTheory.CategoryStruct.comp I.hom (d r).asHom) →
+                      (C ≅ G)
+'LinearStudy.originalScalarSquareModuleIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalScalarSquareModuleIso_forget_hom : ∀ {R : Type u_1} [inst : Ring R] (C G : ModuleCat R)
+  {Y : AddCommGrpCat} (I : (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C ≅ Y)
+  (e : Y = (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj G)
+  (a : R → CategoryTheory.End ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C))
+  (d : R → CategoryTheory.End Y) (ha : ∀ (r : R), a r = C.smul r) (hd : ∀ (r : R), (d r).asHom ≍ (G.smul r).asHom)
+  (w :
+    ∀ (r : R),
+      CategoryTheory.CategoryStruct.comp (a r).asHom I.hom = CategoryTheory.CategoryStruct.comp I.hom (d r).asHom),
+  CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).map
+        (LinearStudy.originalScalarSquareModuleIso C G I e a d ha hd w).hom)
+      (CategoryTheory.eqToHom ⋯) =
+    I.hom
+'LinearStudy.originalScalarSquareModuleIso_forget_hom' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalScalarSquareModuleIso_literal : {R : Type u_1} →
+  [inst : Ring R] →
+    (C G : ModuleCat R) →
+      {Y : AddCommGrpCat} →
+        (I : (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C ≅ Y) →
+          Y = (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj G →
+            (a : R → CategoryTheory.End ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C)) →
+              (d : R → (Y ⟶ Y)) →
+                (∀ (r : R), a r = C.smul r) →
+                  (∀ (r : R), d r ≍ G.smul r) →
+                    (∀ (r : R),
+                        CategoryTheory.CategoryStruct.comp (a r).asHom I.hom =
+                          CategoryTheory.CategoryStruct.comp I.hom (d r)) →
+                      (C ≅ G)
+'LinearStudy.originalScalarSquareModuleIso_literal' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalScalarSquareModuleIso_literal_forget_hom : ∀ {R : Type u_1} [inst : Ring R] (C G : ModuleCat R)
+  {Y : AddCommGrpCat} (I : (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C ≅ Y)
+  (e : Y = (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj G)
+  (a : R → CategoryTheory.End ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C)) (d : R → (Y ⟶ Y))
+  (ha : ∀ (r : R), a r = C.smul r) (hd : ∀ (r : R), d r ≍ G.smul r)
+  (w :
+    ∀ (r : R), CategoryTheory.CategoryStruct.comp (a r).asHom I.hom = CategoryTheory.CategoryStruct.comp I.hom (d r)),
+  CategoryTheory.CategoryStruct.comp
+      ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).map
+        (LinearStudy.originalScalarSquareModuleIso_literal C G I e a d ha hd w).hom)
+      (CategoryTheory.eqToHom ⋯) =
+    I.hom
+'LinearStudy.originalScalarSquareModuleIso_literal_forget_hom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.schemeModuleActualHObject_eq_ofCohomology : ∀ (X : AlgebraicGeometry.Scheme) (M : X.Modules) (n : ℕ),
+  LinearStudy.schemeModuleActualHObject X M n = ↧(LinearStudy.schemeModuleActualCohomology X M n)
+'LinearStudy.schemeModuleActualHObject_eq_ofCohomology' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general.{u} : {K R S M :
+    Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                (A : ℕ → Submodule K R) →
+                  [inst_7 : GradedAlgebra A] →
+                    (B : ℕ → Submodule K S) →
+                      [inst_8 : GradedAlgebra B] →
+                        [SetLike.GradedSMul A B] →
+                          [inst_10 : AddCommGroup M] →
+                            [inst_11 : Module K M] →
+                              [inst_12 : Module R M] →
+                                [inst_13 : Module S M] →
+                                  [IsScalarTower R S M] →
+                                    [IsScalarTower K R M] →
+                                      [IsScalarTower K S M] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                                [IsDomain R] →
+                                                  [IsDomain S] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Algebra.FiniteType K S] →
+                                                          [Module.Finite R S] →
+                                                            [Module.Finite R M] →
+                                                              [Module.Finite S M] →
+                                                                {ι κ : Type u} →
+                                                                  [inst_26 : LinearOrder ι] →
+                                                                    [Finite ι] →
+                                                                      (a : ι → R) →
+                                                                        (∀ (i : ι), a i ∈ A 1) →
+                                                                          (c : κ → S) →
+                                                                            (∀ (i : κ), c i ∈ B 1) →
+                                                                              Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                                  (k : ℤ) →
+                                                                                    (q : ℕ) →
+                                                                                      HomologicalComplex.homology
+                                                                                          (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex
+                                                                                            (CategoryTheory.CategoryStruct.comp
+                                                                                              (AlgebraicGeometry.Proj.toSpecZero
+                                                                                                A)
+                                                                                              (AlgebraicGeometry.Spec.map
+                                                                                                (CommRingCat.ofHom
+                                                                                                  (algebraMap K
+                                                                                                    ↥(A 0)))))
+                                                                                            (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                              A D hR k)
+                                                                                            fun (i : ι) =>
+                                                                                            AlgebraicGeometry.Proj.basicOpen
+                                                                                              A (a i))
+                                                                                          (q + 1) ≅
+                                                                                        LinearStudy.originalActualHBaseModuleObject
+                                                                                          (CategoryTheory.CategoryStruct.comp
+                                                                                            (AlgebraicGeometry.Proj.toSpecZero
+                                                                                              B)
+                                                                                            (AlgebraicGeometry.Spec.map
+                                                                                              (CommRingCat.ofHom
+                                                                                                (algebraMap K ↥(B 0)))))
+                                                                                          (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                            B D hS k)
+                                                                                          (q + 1) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S) [GradedAlgebra B]
+    [SetLike.GradedSMul A B] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [IsDomain R] [IsDomain S] [IsNoetherianRing R]
+    [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite R S] [Module.Finite R M] [Module.Finite S M]
+    {ι κ : Type u} [LinearOrder ι] [Finite ι] (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) (c : κ → S)
+    (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) =>
+  LinearStudy.originalScalarSquareModuleIso_literal
+    (HomologicalComplex.homology
+      (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex
+        (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+          (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))
+        (LinearStudy.nativeProjectiveModuleSheaf A D hR k) fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+      (q + 1))
+    (LinearStudy.originalActualHBaseModuleObject
+      (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))
+      (LinearStudy.nativeProjectiveModuleSheaf B D hS k) (q + 1))
+    (LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIso_general A B D hR hS a ha c hc
+      (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+        (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))
+      hgenR hgenC k q)
+    ⋯
+    (fun (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) =>
+      (CategoryTheory.forget₂ (ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).map
+        (HomologicalComplex.homologyMap
+          (LinearStudy.orderedBaseCechActualCoefficientMap
+            (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+              (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))
+            (LinearStudy.originalGlobalModuleScalar
+              ((CategoryTheory.ConcreteCategory.hom
+                  (AlgebraicGeometry.Scheme.Hom.appTop
+                    (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero A)
+                      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(A 0)))))))
+                r)
+              (LinearStudy.nativeProjectiveModuleSheaf A D hR k))
+            fun (i : ι) => AlgebraicGeometry.Proj.basicOpen A (a i))
+          (q + 1)))
+    (fun (r : ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))) =>
+      LinearStudy.nativeOriginalActualHPublicScalarOperator B D hS (fun (i : ι) => (algebraMap R S) (a i)) ⋯ ⋯ k q r)
+    ⋯ ⋯ ⋯
+def LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general.{u} : {K R S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing R] →
+      [inst_2 : CommRing S] →
+        [inst_3 : Algebra K R] →
+          [inst_4 : Algebra K S] →
+            [inst_5 : Algebra R S] →
+              [IsScalarTower K R S] →
+                (A : ℕ → Submodule K R) →
+                  [inst_7 : GradedAlgebra A] →
+                    (B : ℕ → Submodule K S) →
+                      [inst_8 : GradedAlgebra B] →
+                        [SetLike.GradedSMul A B] →
+                          [inst_10 : AddCommGroup M] →
+                            [inst_11 : Module K M] →
+                              [inst_12 : Module R M] →
+                                [inst_13 : Module S M] →
+                                  [IsScalarTower R S M] →
+                                    [IsScalarTower K R M] →
+                                      [IsScalarTower K S M] →
+                                        (D : ℤ → Submodule K M) →
+                                          [DirectSum.Decomposition D] →
+                                            (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                              (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) →
+                                                [IsDomain R] →
+                                                  [IsDomain S] →
+                                                    [IsNoetherianRing R] →
+                                                      [IsNoetherianRing S] →
+                                                        [Algebra.FiniteType K S] →
+                                                          [Module.Finite R S] →
+                                                            [Module.Finite R M] →
+                                                              [Module.Finite S M] →
+                                                                {ι κ : Type u} →
+                                                                  [inst_26 : LinearOrder ι] →
+                                                                    [Finite ι] →
+                                                                      (a : ι → R) →
+                                                                        (∀ (i : ι), a i ∈ A 1) →
+                                                                          (c : κ → S) →
+                                                                            (∀ (i : κ), c i ∈ B 1) →
+                                                                              Algebra.adjoin K (Set.range a) = ⊤ →
+                                                                                Algebra.adjoin K (Set.range c) = ⊤ →
+                                                                                  (k : ℤ) →
+                                                                                    (q : ℕ) →
+                                                                                      (ModuleCat.restrictScalars
+                                                                                              (CommRingCat.Hom.hom
+                                                                                                (AlgebraicGeometry.Scheme.ΓSpecIso
+                                                                                                    ↧K).inv)).obj
+                                                                                          (HomologicalComplex.homology
+                                                                                            (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex
+                                                                                              (CategoryTheory.CategoryStruct.comp
+                                                                                                (AlgebraicGeometry.Proj.toSpecZero
+                                                                                                  A)
+                                                                                                (AlgebraicGeometry.Spec.map
+                                                                                                  (CommRingCat.ofHom
+                                                                                                    (algebraMap K
+                                                                                                      ↥(A 0)))))
+                                                                                              (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                                A D hR k)
+                                                                                              fun (i : ι) =>
+                                                                                              AlgebraicGeometry.Proj.basicOpen
+                                                                                                A (a i))
+                                                                                            (q + 1)) ≅
+                                                                                        LinearStudy.originalActualHSpecModuleObject
+                                                                                          (CategoryTheory.CategoryStruct.comp
+                                                                                            (AlgebraicGeometry.Proj.toSpecZero
+                                                                                              B)
+                                                                                            (AlgebraicGeometry.Spec.map
+                                                                                              (CommRingCat.ofHom
+                                                                                                (algebraMap K ↥(B 0)))))
+                                                                                          (LinearStudy.nativeProjectiveModuleSheaf
+                                                                                            B D hS k)
+                                                                                          (q + 1) :=
+fun {K R S M : Type u} [Field K] [CommRing R] [CommRing S] [Algebra K R] [Algebra K S] [Algebra R S]
+    [IsScalarTower K R S] (A : ℕ → Submodule K R) [GradedAlgebra A] (B : ℕ → Submodule K S) [GradedAlgebra B]
+    [SetLike.GradedSMul A B] [AddCommGroup M] [Module K M] [Module R M] [Module S M] [IsScalarTower R S M]
+    [IsScalarTower K R M] [IsScalarTower K S M] (D : ℤ → Submodule K M) [DirectSum.Decomposition D]
+    (hR : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ A n, ∀ x ∈ D j, z • x ∈ D (↑n + j))
+    (hS : ∀ (n : ℕ) (j : ℤ), ∀ z ∈ B n, ∀ x ∈ D j, z • x ∈ D (↑n + j)) [IsDomain R] [IsDomain S] [IsNoetherianRing R]
+    [IsNoetherianRing S] [Algebra.FiniteType K S] [Module.Finite R S] [Module.Finite R M] [Module.Finite S M]
+    {ι κ : Type u} [LinearOrder ι] [Finite ι] (a : ι → R) (ha : ∀ (i : ι), a i ∈ A 1) (c : κ → S)
+    (hc : ∀ (i : κ), c i ∈ B 1) (hgenR : Algebra.adjoin K (Set.range a) = ⊤)
+    (hgenC : Algebra.adjoin K (Set.range c) = ⊤) (k : ℤ) (q : ℕ) =>
+  LinearStudy.originalActualHSpecRestrictIso
+    (CategoryTheory.CategoryStruct.comp (AlgebraicGeometry.Proj.toSpecZero B)
+      (AlgebraicGeometry.Spec.map (CommRingCat.ofHom (algebraMap K ↥(B 0)))))
+    (LinearStudy.nativeProjectiveModuleSheaf B D hS k) (q + 1)
+    (LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general A B D hR hS a ha c hc
+      hgenR hgenC k q)
+def LinearStudy.originalActualHSpecModuleObject.{u} : {K : Type u} →
+  [inst : CommRing K] →
+    {X : AlgebraicGeometry.Scheme} → (X ⟶ AlgebraicGeometry.Spec ↧K) → X.Modules → ℕ → ModuleCat K :=
+fun {K : Type u} [CommRing K] {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) (M : X.Modules)
+    (n : ℕ) =>
+  ↧(LinearStudy.schemeModuleActualCohomology X M n)
+def LinearStudy.originalActualHSpecRestrictIso.{u} : {K : Type u} →
+  [inst : CommRing K] →
+    {X : AlgebraicGeometry.Scheme} →
+      (pi : X ⟶ AlgebraicGeometry.Spec ↧K) →
+        (M : X.Modules) →
+          (n : ℕ) →
+            {C : ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))} →
+              (C ≅ LinearStudy.originalActualHBaseModuleObject pi M n) →
+                ((ModuleCat.restrictScalars (CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv)).obj C ≅
+                  LinearStudy.originalActualHSpecModuleObject pi M n) :=
+fun {K : Type u} [CommRing K] {X : AlgebraicGeometry.Scheme} (pi : X ⟶ AlgebraicGeometry.Spec ↧K) (M : X.Modules)
+    (n : ℕ) {C : ModuleCat ↑((AlgebraicGeometry.Spec ↧K).presheaf.obj (Opposite.op ⊤))}
+    (I : C ≅ LinearStudy.originalActualHBaseModuleObject pi M n) =>
+  (ModuleCat.restrictScalars (CommRingCat.Hom.hom (AlgebraicGeometry.Scheme.ΓSpecIso ↧K).inv)).mapIso I
+def LinearStudy.originalScalarSquareModuleIso.{u, v} : {R : Type u} →
+  [inst : Ring R] →
+    (C G : ModuleCat R) →
+      {Y : AddCommGrpCat} →
+        (I : (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C ≅ Y) →
+          Y = (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj G →
+            (a : R → CategoryTheory.End ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C)) →
+              (d : R → CategoryTheory.End Y) →
+                (∀ (r : R), a r = C.smul r) →
+                  (∀ (r : R), (d r).asHom ≍ (G.smul r).asHom) →
+                    (∀ (r : R),
+                        CategoryTheory.CategoryStruct.comp (a r).asHom I.hom =
+                          CategoryTheory.CategoryStruct.comp I.hom (d r).asHom) →
+                      (C ≅ G) :=
+fun {R : Type u} [Ring R] (C G : ModuleCat R) {Y : AddCommGrpCat}
+    (I : (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C ≅ Y)
+    (e : Y = (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj G)
+    (a : R → CategoryTheory.End ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C))
+    (d : R → CategoryTheory.End Y) (ha : ∀ (r : R), a r = C.smul r) (hd : ∀ (r : R), (d r).asHom ≍ (G.smul r).asHom)
+    (w :
+      ∀ (r : R),
+        CategoryTheory.CategoryStruct.comp (a r).asHom I.hom = CategoryTheory.CategoryStruct.comp I.hom (d r).asHom) =>
+  ModuleCat.isoMk (I ≪≫ CategoryTheory.eqToIso e) ⋯
+def LinearStudy.originalScalarSquareModuleIso_literal.{u, v} : {R : Type u} →
+  [inst : Ring R] →
+    (C G : ModuleCat R) →
+      {Y : AddCommGrpCat} →
+        (I : (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C ≅ Y) →
+          Y = (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj G →
+            (a : R → CategoryTheory.End ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C)) →
+              (d : R → (Y ⟶ Y)) →
+                (∀ (r : R), a r = C.smul r) →
+                  (∀ (r : R), d r ≍ G.smul r) →
+                    (∀ (r : R),
+                        CategoryTheory.CategoryStruct.comp (a r).asHom I.hom =
+                          CategoryTheory.CategoryStruct.comp I.hom (d r)) →
+                      (C ≅ G) :=
+fun {R : Type u} [Ring R] (C G : ModuleCat R) {Y : AddCommGrpCat}
+    (I : (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C ≅ Y)
+    (e : Y = (CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj G)
+    (a : R → CategoryTheory.End ((CategoryTheory.forget₂ (ModuleCat R) AddCommGrpCat).obj C)) (d : R → (Y ⟶ Y))
+    (ha : ∀ (r : R), a r = C.smul r) (hd : ∀ (r : R), d r ≍ G.smul r)
+    (w :
+      ∀ (r : R),
+        CategoryTheory.CategoryStruct.comp (a r).asHom I.hom = CategoryTheory.CategoryStruct.comp I.hom (d r)) =>
+  LinearStudy.originalScalarSquareModuleIso C G I e a (fun (r : R) => CategoryTheory.End.of (d r)) ha hd w
+ROLECHECK:LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general:false
+KINDCHECK:LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general:definition
+ROLECHECK:LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general_forget_hom:true
+KINDCHECK:LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHIntrinsicIso_general_forget_hom:theorem
+ROLECHECK:LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general_forget_hom:true
+KINDCHECK:LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general_forget_hom:theorem
+ROLECHECK:LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general:false
+KINDCHECK:LinearStudy.nativeIndependentFiniteNormalization_moduleCechActualHigherHSpecIso_general:definition
+ROLECHECK:LinearStudy.nativeGeneralModuleH_publicOperator_heq_intrinsic:true
+KINDCHECK:LinearStudy.nativeGeneralModuleH_publicOperator_heq_intrinsic:theorem
+ROLECHECK:LinearStudy.originalActualHBaseModuleObject_forget:true
+KINDCHECK:LinearStudy.originalActualHBaseModuleObject_forget:theorem
+ROLECHECK:LinearStudy.coordinateCanonicalCoefficientRingEquiv_toRingHom_eq_inv:true
+KINDCHECK:LinearStudy.coordinateCanonicalCoefficientRingEquiv_toRingHom_eq_inv:theorem
+ROLECHECK:LinearStudy.originalActualHSpecModuleObject:false
+KINDCHECK:LinearStudy.originalActualHSpecModuleObject:definition
+ROLECHECK:LinearStudy.originalActualHSpecModuleObject_eq_restrictScalars:true
+KINDCHECK:LinearStudy.originalActualHSpecModuleObject_eq_restrictScalars:theorem
+ROLECHECK:LinearStudy.originalActualHSpecRestrictIso:false
+KINDCHECK:LinearStudy.originalActualHSpecRestrictIso:definition
+ROLECHECK:LinearStudy.originalActualHSpecRestrictIso_forget_hom:true
+KINDCHECK:LinearStudy.originalActualHSpecRestrictIso_forget_hom:theorem
+ROLECHECK:LinearStudy.originalModuleScalarMorphism_eq_forget_smul_id:true
+KINDCHECK:LinearStudy.originalModuleScalarMorphism_eq_forget_smul_id:theorem
+ROLECHECK:LinearStudy.originalOrderedModuleHomologyScalarMorphism:true
+KINDCHECK:LinearStudy.originalOrderedModuleHomologyScalarMorphism:theorem
+ROLECHECK:LinearStudy.originalScalarSquareModuleIso:false
+KINDCHECK:LinearStudy.originalScalarSquareModuleIso:definition
+ROLECHECK:LinearStudy.originalScalarSquareModuleIso_forget_hom:true
+KINDCHECK:LinearStudy.originalScalarSquareModuleIso_forget_hom:theorem
+ROLECHECK:LinearStudy.originalScalarSquareModuleIso_literal:false
+KINDCHECK:LinearStudy.originalScalarSquareModuleIso_literal:definition
+ROLECHECK:LinearStudy.originalScalarSquareModuleIso_literal_forget_hom:true
+KINDCHECK:LinearStudy.originalScalarSquareModuleIso_literal_forget_hom:theorem
+ROLECHECK:LinearStudy.schemeModuleActualHObject_eq_ofCohomology:true
+KINDCHECK:LinearStudy.schemeModuleActualHObject_eq_ofCohomology:theorem

@@ -1,0 +1,11 @@
+LinearStudy.originalOrderedModuleHomologyScalarMorphism.{u} {X S : AlgebraicGeometry.Scheme} (pi : X ⟶ S)
+  (M : X.Modules) (r : ↑(S.presheaf.obj (Opposite.op ⊤))) {ι : Type u} [LinearOrder ι] (U : ι → X.Opens) (n : ℕ) :
+  (CategoryTheory.forget₂ (ModuleCat ↑(S.presheaf.obj (Opposite.op ⊤))) AddCommGrpCat).map
+      (HomologicalComplex.homologyMap
+        (LinearStudy.orderedBaseCechActualCoefficientMap pi
+          (LinearStudy.originalGlobalModuleScalar
+            ((CategoryTheory.ConcreteCategory.hom (AlgebraicGeometry.Scheme.Hom.appTop pi)) r) M)
+          U)
+        n) =
+    (HomologicalComplex.homology (AlgebraicGeometry.Scheme.Modules.orderedBaseCechComplex pi M U) n).smul r
+'LinearStudy.originalOrderedModuleHomologyScalarMorphism' depends on axioms: [propext, Classical.choice, Quot.sound]
