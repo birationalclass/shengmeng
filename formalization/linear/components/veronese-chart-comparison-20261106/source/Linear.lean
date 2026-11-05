@@ -1,0 +1,15 @@
+module
+public import Linear.OriginalDegreeVeroneseAlgebra
+public import Linear.OriginalDegreeVeroneseAmbientCover
+public import Linear.OriginalDegreeVeroneseChartInjectivity
+public import Linear.OriginalDegreeVeroneseChartMapSquare
+public import Linear.OriginalDegreeVeroneseChartRange
+public import Linear.OriginalDegreeVeroneseChartRefinement
+public import Linear.OriginalDegreeVeroneseChartRingEquiv
+public import Linear.OriginalDegreeVeroneseChartRingEquivMk
+public import Linear.OriginalDegreeVeroneseChartValues
+public import Linear.OriginalDegreeVeroneseGrading
+public import Linear.OriginalDegreeVeroneseProductChartCompat
+public import Linear.OriginalDegreeVeroneseProductValueLeft
+public import Linear.OriginalDegreeVeroneseProductValueRight
+public import Linear.OriginalRingEquivOfEqualImages

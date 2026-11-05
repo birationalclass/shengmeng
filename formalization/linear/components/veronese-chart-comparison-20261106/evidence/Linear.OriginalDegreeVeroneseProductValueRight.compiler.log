@@ -1,0 +1,12 @@
+LinearStudy.originalDegreeVeroneseProductValueRight_mk.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {d e : ℕ}
+  {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) (n : ℕ)
+  (a : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (ha : a ∈ LinearStudy.originalDegreeVeronesePiece B q (n • d)) :
+  HomogeneousLocalization.val
+      ((LinearStudy.originalDegreeVeroneseAmbientChartRestrict B q f g hg)
+        ((LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf)
+          (HomogeneousLocalization.Away.mk (LinearStudy.originalDegreeVeronesePiece B q) hf n a ha))) =
+    Localization.mk ↑(a * g ^ n) ⟨↑(f * g) ^ n, ⋯⟩
+'LinearStudy.originalDegreeVeroneseProductValueRight_mk' depends on axioms: [propext, Classical.choice, Quot.sound]

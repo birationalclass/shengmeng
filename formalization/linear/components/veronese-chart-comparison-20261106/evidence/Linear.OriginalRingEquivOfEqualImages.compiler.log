@@ -1,0 +1,8 @@
+LinearStudy.originalRingEquivOfEqualImages.{u, v, w} {A : Type u} {B : Type v} {T : Type w} [Ring A] [Ring B] [Ring T]
+  (r : A →+* T) (s : B →+* T) (hr : Function.Injective ⇑r) (hs : Function.Injective ⇑s) (h : r.range = s.range) :
+  A ≃+* B
+'LinearStudy.originalRingEquivOfEqualImages' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalRingEquivOfEqualImages_apply.{u, v, w} {A : Type u} {B : Type v} {T : Type w} [Ring A] [Ring B]
+  [Ring T] (r : A →+* T) (s : B →+* T) (hr : Function.Injective ⇑r) (hs : Function.Injective ⇑s) (h : r.range = s.range)
+  (a : A) : s ((LinearStudy.originalRingEquivOfEqualImages r s hr hs h) a) = r a
+'LinearStudy.originalRingEquivOfEqualImages_apply' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,9 @@
+LinearStudy.originalDegreeVeroneseChartRingHomSquare.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {d e : ℕ}
+  {f g x : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) (hx : x = f * g) (hxS : ↑x = ↑f * ↑g)
+  (hxP : x ∈ LinearStudy.originalDegreeVeronesePiece B q (d + e)) :
+  (LinearStudy.originalDegreeVeroneseChartRingEquiv B q hxP).toRingHom.comp
+      (HomogeneousLocalization.awayMap (LinearStudy.originalDegreeVeronesePiece B q) hg hx) =
+    (HomogeneousLocalization.awayMap B ⋯ hxS).comp (LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf).toRingHom
+'LinearStudy.originalDegreeVeroneseChartRingHomSquare' depends on axioms: [propext, Classical.choice, Quot.sound]

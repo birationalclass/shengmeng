@@ -1,0 +1,690 @@
+===== Linear.OriginalDegreeVeroneseAlgebra =====
+module
+public import Linear.GradedSubalgebraDecomposition
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+
+/-- The degree-q Veronese subalgebra consists of finite sums of the
+original degree-qn pieces. Its operations are inherited from S. -/
+def originalDegreeVeroneseAlgebra (q : ℕ) : Subalgebra K S := by
+  let P : ℕ → Submodule K S := fun n => B (q * n)
+  let V : Submodule K S := ⨆ n, P n
+  refine
+    { carrier := V
+      add_mem' := V.add_mem
+      mul_mem' := ?_
+      algebraMap_mem' := ?_ }
+  · intro x y hx hy
+    refine Submodule.iSup_induction P (motive := fun a => a * y ∈ V) hx ?_ ?_ ?_
+    · intro i a ha
+      refine Submodule.iSup_induction P (motive := fun b => a * b ∈ V) hy ?_ ?_ ?_
+      · intro j b hb
+        apply Submodule.mem_iSup_of_mem (i+j)
+        change a * b ∈ B (q * (i+j))
+        rw [Nat.mul_add]
+        exact SetLike.mul_mem_graded ha hb
+      · simpa only [mul_zero] using V.zero_mem
+      · intro b₁ b₂ h₁ h₂
+        rw [mul_add]
+        exact V.add_mem h₁ h₂
+    · simpa only [zero_mul] using V.zero_mem
+    · intro a₁ a₂ h₁ h₂
+      rw [add_mul]
+      exact V.add_mem h₁ h₂
+  · intro k
+    apply Submodule.mem_iSup_of_mem 0
+    change algebraMap K S k ∈ B (q * 0)
+    simpa only [Nat.mul_zero, Algebra.smul_def, mul_one] using
+      (B 0).smul_mem k (SetLike.one_mem_graded B)
+
+/-- The original degree-qn piece lies in the Veronese subalgebra. -/
+theorem originalDegreeVeroneseAlgebra_mem_of_mem
+    (q n : ℕ) {x : S} (hx : x ∈ B (q * n)) :
+    x ∈ originalDegreeVeroneseAlgebra B q :=
+  Submodule.mem_iSup_of_mem n hx
+
+/-- Reindexed degree n, with the exact original degree-qn condition. -/
+def originalDegreeVeronesePiece (q n : ℕ) :
+    Submodule K (originalDegreeVeroneseAlgebra B q) :=
+  (B (q * n)).comap (originalDegreeVeroneseAlgebra B q).val.toLinearMap
+
+theorem originalDegreeVeronesePiece_one_iff (q : ℕ)
+    (x : originalDegreeVeroneseAlgebra B q) :
+    x ∈ originalDegreeVeronesePiece B q 1 ↔ (x : S) ∈ B q := by
+  change ((x : S) ∈ B (q * 1)) ↔ (x : S) ∈ B q
+  rw [Nat.mul_one]
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseAlgebra
+#print axioms LinearStudy.originalDegreeVeroneseAlgebra
+#check LinearStudy.originalDegreeVeroneseAlgebra_mem_of_mem
+#print axioms LinearStudy.originalDegreeVeroneseAlgebra_mem_of_mem
+#check LinearStudy.originalDegreeVeronesePiece
+#print axioms LinearStudy.originalDegreeVeronesePiece
+#check LinearStudy.originalDegreeVeronesePiece_one_iff
+#print axioms LinearStudy.originalDegreeVeronesePiece_one_iff
+
+===== Linear.OriginalDegreeVeroneseGrading =====
+module
+public import Linear.OriginalDegreeVeroneseAlgebra
+public import Mathlib.Algebra.DirectSum.Module
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+
+theorem originalDegreeVeronesePiece_independent (q : ℕ) (hq : 0 < q) :
+    iSupIndep (originalDegreeVeronesePiece B q) := by
+  have hB : iSupIndep B := (DirectSum.Decomposition.isInternal B).submodule_iSupIndep
+  have hP : iSupIndep (fun n => B (q * n)) :=
+    hB.comp (fun _ _ h => Nat.mul_left_cancel hq h)
+  apply (iSupIndep_iff_finsetSum_eq_zero_imp_eq_zero (originalDegreeVeronesePiece B q)).mpr
+  intro s x hx hsum n hn
+  let f := (originalDegreeVeroneseAlgebra B q).val.toLinearMap
+  have hz : (∑ i ∈ s, f (x i)) = 0 := by
+    simpa only [map_sum, map_zero] using congrArg f hsum
+  apply Subtype.ext
+  exact (iSupIndep_iff_finsetSum_eq_zero_imp_eq_zero (fun i => B (q * i))).mp hP
+    s (fun i => f (x i)) (fun i hi => hx i hi) hz n hn
+
+theorem originalDegreeVeronesePiece_total (q : ℕ) :
+    (⨆ n, originalDegreeVeronesePiece B q n) = ⊤ := by
+  apply Submodule.eq_top_iff'.mpr
+  intro x
+  let V := originalDegreeVeroneseAlgebra B q
+  let W : Submodule K V := ⨆ n, originalDegreeVeronesePiece B q n
+  have hx : (x : S) ∈ ⨆ n, B (q * n) := x.property
+  refine Submodule.iSup_induction' (fun n => B (q * n))
+    (motive := fun a ha => (⟨a,ha⟩ : V) ∈ W) ?_ ?_ ?_ hx
+  · intro n a ha
+    exact Submodule.mem_iSup_of_mem n ha
+  · exact W.zero_mem
+  · intro a b ha hb h₁ h₂
+    exact W.add_mem h₁ h₂
+
+/-- The exact original degree-qn pieces are a grading of the Veronese
+subalgebra when q is positive. -/
+@[instance_reducible] def originalDegreeVeroneseGrading (q : ℕ) (hq : 0 < q) :
+    GradedAlgebra (originalDegreeVeronesePiece B q) where
+  __ := (DirectSum.isInternal_submodule_of_iSupIndep_of_iSup_eq_top
+    (originalDegreeVeronesePiece_independent B q hq)
+    (originalDegreeVeronesePiece_total B q)).chooseDecomposition
+  one_mem := by
+    change (1 : S) ∈ B (q * 0)
+    simpa only [Nat.mul_zero] using SetLike.one_mem_graded B
+  mul_mem := by
+    intro i j a b ha hb
+    change (a : S) * (b : S) ∈ B (q * (i + j))
+    rw [Nat.mul_add]
+    exact SetLike.mul_mem_graded ha hb
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeronesePiece_independent
+#print axioms LinearStudy.originalDegreeVeronesePiece_independent
+#check LinearStudy.originalDegreeVeronesePiece_total
+#print axioms LinearStudy.originalDegreeVeronesePiece_total
+#check LinearStudy.originalDegreeVeroneseGrading
+#print axioms LinearStudy.originalDegreeVeroneseGrading
+
+===== Linear.OriginalRingEquivOfEqualImages =====
+module
+public import Mathlib.Algebra.Ring.Subring.Basic
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+universe u v w
+variable {A : Type u} {B : Type v} {T : Type w} [Ring A] [Ring B] [Ring T]
+
+/-- Two rings embedded in a common ring with equal images have the
+unique ring equivalence respecting both embeddings. -/
+def originalRingEquivOfEqualImages
+    (r : A →+* T) (s : B →+* T) (hr : Function.Injective r) (hs : Function.Injective s)
+    (h : r.range = s.range) : A ≃+* B :=
+  let er := RingEquiv.ofLeftInverse hr.hasLeftInverse.choose_spec
+  let es := RingEquiv.ofLeftInverse hs.hasLeftInverse.choose_spec
+  er.trans ((RingEquiv.subringCongr h).trans es.symm)
+
+theorem originalRingEquivOfEqualImages_apply
+    (r : A →+* T) (s : B →+* T) (hr : Function.Injective r) (hs : Function.Injective s)
+    (h : r.range = s.range) (a : A) :
+    s (originalRingEquivOfEqualImages r s hr hs h a) = r a := by
+  let er := RingEquiv.ofLeftInverse hr.hasLeftInverse.choose_spec
+  let es := RingEquiv.ofLeftInverse hs.hasLeftInverse.choose_spec
+  let z := RingEquiv.subringCongr h (er a)
+  change s (es.symm z) = r a
+  calc
+    _ = ((es (es.symm z) : s.range) : T) := rfl
+    _ = (z : T) := congrArg Subtype.val (es.apply_symm_apply z)
+    _ = r a := rfl
+
+end LinearStudy
+#check LinearStudy.originalRingEquivOfEqualImages
+#print axioms LinearStudy.originalRingEquivOfEqualImages
+#check LinearStudy.originalRingEquivOfEqualImages_apply
+#print axioms LinearStudy.originalRingEquivOfEqualImages_apply
+
+===== Linear.OriginalDegreeVeroneseChartValues =====
+module
+public import Linear.OriginalDegreeVeroneseGrading
+public import Mathlib.RingTheory.GradedAlgebra.HomogeneousLocalization
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local instance : GradedAlgebra (originalDegreeVeronesePiece B q) :=
+  originalDegreeVeroneseGrading B q hq.out
+
+/-- On a regraded chart, compare the degree-zero fractions in the
+original ordinary localization. -/
+def originalDegreeVeroneseChartValue
+    (f : originalDegreeVeroneseAlgebra B q) :
+    Away (originalDegreeVeronesePiece B q) f →+* Localization.Away (f : S) :=
+  (Localization.awayMap (originalDegreeVeroneseAlgebra B q).val.toRingHom f).comp
+    (algebraMap _ _)
+
+theorem originalDegreeVeroneseChartValue_mk
+    {d : ℕ} {f : originalDegreeVeroneseAlgebra B q}
+    (hf : f ∈ originalDegreeVeronesePiece B q d)
+    (n : ℕ) {a : originalDegreeVeroneseAlgebra B q}
+    (ha : a ∈ originalDegreeVeronesePiece B q (n • d))
+    (hfS : (f : S) ∈ B (q * d)) (haS : (a : S) ∈ B (n • (q * d))) :
+    originalDegreeVeroneseChartValue B q f
+      (Away.mk (originalDegreeVeronesePiece B q) hf n a ha) =
+      (Away.mk B hfS n (a : S) haS).val := by
+  change Localization.awayMap (originalDegreeVeroneseAlgebra B q).val.toRingHom f
+    (Away.mk (originalDegreeVeronesePiece B q) hf n a ha).val =
+      (Away.mk B hfS n (a : S) haS).val
+  rw [Away.val_mk, Away.val_mk]
+  simp only [Localization.awayMap, IsLocalization.Away.map, Localization.mk_eq_mk']
+  rw [IsLocalization.map_mk']
+  congr 1
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseChartValue
+#print axioms LinearStudy.originalDegreeVeroneseChartValue
+#check LinearStudy.originalDegreeVeroneseChartValue_mk
+#print axioms LinearStudy.originalDegreeVeroneseChartValue_mk
+
+===== Linear.OriginalDegreeVeroneseChartRange =====
+module
+public import Linear.OriginalDegreeVeroneseChartValues
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local instance originalDegreeVeroneseChartRangeGraded : GradedAlgebra (originalDegreeVeronesePiece B q) :=
+  originalDegreeVeroneseGrading B q hq.out
+
+/-- The original and regraded degree-zero chart rings have the same
+fractions in the same ordinary localization. -/
+theorem originalDegreeVeroneseChartValue_range
+    {d : ℕ} {f : originalDegreeVeroneseAlgebra B q}
+    (hf : f ∈ originalDegreeVeronesePiece B q d) :
+    Set.range (originalDegreeVeroneseChartValue B q f) =
+      Set.range (algebraMap (Away B (f : S)) (Localization.Away (f : S))) := by
+  have hfS : (f : S) ∈ B (q * d) := hf
+  have degree (n : ℕ) : q * (n • d) = n • (q * d) := by
+    simp only [nsmul_eq_mul, Nat.cast_id]
+    exact Nat.mul_left_comm q n d
+  apply Set.Subset.antisymm
+  · rintro _ ⟨z, rfl⟩
+    obtain ⟨n, a, ha, rfl⟩ := Away.mk_surjective (originalDegreeVeronesePiece B q) hf z
+    have ha' : (a : S) ∈ B (q * (n • d)) := ha
+    have haS : (a : S) ∈ B (n • (q * d)) := degree n ▸ ha'
+    refine ⟨Away.mk B hfS n (a : S) haS, ?_⟩
+    exact (originalDegreeVeroneseChartValue_mk B q hf n ha hfS haS).symm
+  · rintro _ ⟨z, rfl⟩
+    obtain ⟨n, a, ha, rfl⟩ := Away.mk_surjective B hfS z
+    have ha' : a ∈ B (q * (n • d)) := (degree n).symm ▸ ha
+    let aV : originalDegreeVeroneseAlgebra B q :=
+      ⟨a, originalDegreeVeroneseAlgebra_mem_of_mem B q (n • d) ha'⟩
+    have haV : aV ∈ originalDegreeVeronesePiece B q (n • d) := ha'
+    refine ⟨Away.mk (originalDegreeVeronesePiece B q) hf n aV haV, ?_⟩
+    exact originalDegreeVeroneseChartValue_mk B q hf n haV hfS ha
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseChartValue_range
+#print axioms LinearStudy.originalDegreeVeroneseChartValue_range
+
+===== Linear.OriginalDegreeVeroneseChartInjectivity =====
+module
+public import Linear.OriginalDegreeVeroneseChartValues
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local instance originalDegreeVeroneseChartInjectivityGraded : GradedAlgebra (originalDegreeVeronesePiece B q) :=
+  originalDegreeVeroneseGrading B q hq.out
+
+omit hq in
+theorem originalDegreeVeroneseAwayMap_injective
+    (f : originalDegreeVeroneseAlgebra B q) :
+    Function.Injective (Localization.awayMap (originalDegreeVeroneseAlgebra B q).val.toRingHom f) := by
+  apply Localization.awayMap_injective_iff.mpr
+  intro x hx
+  have hx0 : x = 0 := Subtype.ext hx
+  exact ⟨0, by rw [hx0, mul_zero]⟩
+
+theorem originalDegreeVeroneseChartValue_injective
+    (f : originalDegreeVeroneseAlgebra B q) :
+    Function.Injective (originalDegreeVeroneseChartValue B q f) :=
+  (originalDegreeVeroneseAwayMap_injective B q f).comp (val_injective _)
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseAwayMap_injective
+#print axioms LinearStudy.originalDegreeVeroneseAwayMap_injective
+#check LinearStudy.originalDegreeVeroneseChartValue_injective
+#print axioms LinearStudy.originalDegreeVeroneseChartValue_injective
+
+===== Linear.OriginalDegreeVeroneseChartRingEquiv =====
+module
+public import Linear.OriginalDegreeVeroneseChartRange
+public import Linear.OriginalDegreeVeroneseChartInjectivity
+public import Linear.OriginalRingEquivOfEqualImages
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local instance originalDegreeVeroneseChartRingEquivGraded : GradedAlgebra (originalDegreeVeronesePiece B q) :=
+  originalDegreeVeroneseGrading B q hq.out
+
+/-- A homogeneous chart and its Veronese chart have the same
+degree-zero ring through their common fractions. -/
+def originalDegreeVeroneseChartRingEquiv
+    {d : ℕ} {f : originalDegreeVeroneseAlgebra B q}
+    (hf : f ∈ originalDegreeVeronesePiece B q d) :
+    Away (originalDegreeVeronesePiece B q) f ≃+* Away B (f : S) :=
+  originalRingEquivOfEqualImages
+    (originalDegreeVeroneseChartValue B q f)
+    (algebraMap (Away B (f : S)) (Localization.Away (f : S)))
+    (originalDegreeVeroneseChartValue_injective B q f)
+    (val_injective _)
+    (SetLike.coe_injective (originalDegreeVeroneseChartValue_range B q hf))
+
+theorem originalDegreeVeroneseChartRingEquiv_val
+    {d : ℕ} {f : originalDegreeVeroneseAlgebra B q}
+    (hf : f ∈ originalDegreeVeronesePiece B q d)
+    (z : Away (originalDegreeVeronesePiece B q) f) :
+    (originalDegreeVeroneseChartRingEquiv B q hf z).val =
+      originalDegreeVeroneseChartValue B q f z :=
+  originalRingEquivOfEqualImages_apply
+    (originalDegreeVeroneseChartValue B q f)
+    (algebraMap (Away B (f : S)) (Localization.Away (f : S)))
+    (originalDegreeVeroneseChartValue_injective B q f)
+    (val_injective _)
+    (SetLike.coe_injective (originalDegreeVeroneseChartValue_range B q hf)) z
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseChartRingEquiv
+#print axioms LinearStudy.originalDegreeVeroneseChartRingEquiv
+#check LinearStudy.originalDegreeVeroneseChartRingEquiv_val
+#print axioms LinearStudy.originalDegreeVeroneseChartRingEquiv_val
+
+===== Linear.OriginalDegreeVeroneseChartRingEquivMk =====
+module
+public import Linear.OriginalDegreeVeroneseChartRingEquiv
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local instance originalDegreeVeroneseChartRingEquivMkGraded :
+    GradedAlgebra (originalDegreeVeronesePiece B q) :=
+  originalDegreeVeroneseGrading B q hq.out
+
+/-- The degree-zero chart equivalence sends the actual original
+numerator and denominator to their identical values. -/
+theorem originalDegreeVeroneseChartRingEquiv_mk
+    {d : ℕ} {f : originalDegreeVeroneseAlgebra B q}
+    (hf : f ∈ originalDegreeVeronesePiece B q d)
+    (n : ℕ) {a : originalDegreeVeroneseAlgebra B q}
+    (ha : a ∈ originalDegreeVeronesePiece B q (n • d))
+    (hfS : (f : S) ∈ B (q * d)) (haS : (a : S) ∈ B (n • (q * d))) :
+    originalDegreeVeroneseChartRingEquiv B q hf
+      (Away.mk (originalDegreeVeronesePiece B q) hf n a ha) =
+      Away.mk B hfS n (a : S) haS := by
+  apply val_injective _
+  rw [originalDegreeVeroneseChartRingEquiv_val]
+  exact originalDegreeVeroneseChartValue_mk B q hf n ha hfS haS
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseChartRingEquiv_mk
+#print axioms LinearStudy.originalDegreeVeroneseChartRingEquiv_mk
+
+===== Linear.OriginalDegreeVeroneseProductChartCompat =====
+module
+public import Linear.OriginalDegreeVeroneseChartRingEquivMk
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseProductChartGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+/-- The Veronese restriction on a product chart, with all indices fixed. -/
+def originalDegreeVeroneseChartRestrict
+    {e : ℕ} (f g : V) (hg : g ∈ P e) :
+    Away P f →+* Away P (f * g) :=
+  awayMap P (f := f) (g := g) (x := f * g) hg rfl
+
+/-- The original restriction on the corresponding product chart. -/
+def originalDegreeVeroneseAmbientChartRestrict
+    {e : ℕ} (f g : V) (hg : g ∈ P e) :
+    Away B (f : S) →+* Away B ((f * g : V) : S) :=
+  awayMap B (f := (f : S)) (g := (g : S))
+    (x := ((f * g : V) : S)) (show (g : S) ∈ B (q * e) from hg) rfl
+
+theorem originalDegreeVeroneseChartRestrict_mk
+    {d e : ℕ} {f g : V} (hf : f ∈ P d) (hg : g ∈ P e)
+    (n : ℕ) (a : V) (ha : a ∈ P (n • d)) :
+    originalDegreeVeroneseChartRestrict B q f g hg (Away.mk P hf n a ha) =
+      Away.mk P (SetLike.mul_mem_graded hf hg) n (a * g ^ n) (by
+        rw [smul_add]
+        exact SetLike.mul_mem_graded ha (SetLike.pow_mem_graded n hg)) :=
+  awayMap_mk P (f := f) (g := g) (x := f * g) hg rfl n hf a ha
+
+omit hq in
+theorem originalDegreeVeroneseAmbientChartRestrict_mk
+    {d e : ℕ} {f g : V} (hg : g ∈ P e)
+    (hfS : (f : S) ∈ B d) (n : ℕ) (a : S) (haS : a ∈ B (n • d)) :
+    originalDegreeVeroneseAmbientChartRestrict B q f g hg (Away.mk B hfS n a haS) =
+      Away.mk B (SetLike.mul_mem_graded hfS (show (g : S) ∈ B (q * e) from hg))
+        n (a * (g : S) ^ n) (by
+          rw [smul_add]
+          exact SetLike.mul_mem_graded haS
+            (SetLike.pow_mem_graded n (show (g : S) ∈ B (q * e) from hg))) :=
+  awayMap_mk B (f := (f : S)) (g := (g : S)) (x := ((f * g : V) : S))
+    (show (g : S) ∈ B (q * e) from hg) rfl n hfS a haS
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseChartRestrict
+#print axioms LinearStudy.originalDegreeVeroneseChartRestrict
+#check LinearStudy.originalDegreeVeroneseAmbientChartRestrict
+#print axioms LinearStudy.originalDegreeVeroneseAmbientChartRestrict
+#check LinearStudy.originalDegreeVeroneseChartRestrict_mk
+#print axioms LinearStudy.originalDegreeVeroneseChartRestrict_mk
+#check LinearStudy.originalDegreeVeroneseAmbientChartRestrict_mk
+#print axioms LinearStudy.originalDegreeVeroneseAmbientChartRestrict_mk
+
+
+===== Linear.OriginalDegreeVeroneseProductValueLeft =====
+module
+public import Linear.OriginalDegreeVeroneseProductChartCompat
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseProductValueLeftGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+/-- Restricting a regraded fraction and then comparing it with the
+original chart gives the displayed fraction in the original localization. -/
+theorem originalDegreeVeroneseProductValueLeft_mk
+    {d e : ℕ} {f g : V} (hf : f ∈ P d) (hg : g ∈ P e)
+    (n : ℕ) (a : V) (ha : a ∈ P (n • d)) :
+    (originalDegreeVeroneseChartRingEquiv B q (SetLike.mul_mem_graded hf hg)
+      (originalDegreeVeroneseChartRestrict B q f g hg (Away.mk P hf n a ha))).val =
+    Localization.mk ((a * g ^ n : V) : S)
+      (⟨((f * g : V) : S) ^ n, ⟨n, rfl⟩⟩ : Submonoid.powers ((f * g : V) : S)) := by
+  let hfg : f * g ∈ P (d + e) := SetLike.mul_mem_graded hf hg
+  have hfgS : ((f * g : V) : S) ∈ B (q * (d + e)) := hfg
+  have hb : a * g ^ n ∈ P (n • (d + e)) := by
+    rw [smul_add]
+    exact SetLike.mul_mem_graded ha (SetLike.pow_mem_graded n hg)
+  have hbS' : ((a * g ^ n : V) : S) ∈ B (q * (n • (d + e))) := hb
+  have hdeg : q * (n • (d + e)) = n • (q * (d + e)) := by
+    simpa only [nsmul_eq_mul, Nat.cast_id] using Nat.mul_left_comm q n (d + e)
+  have hbS : ((a * g ^ n : V) : S) ∈ B (n • (q * (d + e))) := hdeg ▸ hbS'
+  calc
+    _ = (originalDegreeVeroneseChartRingEquiv B q hfg
+          (Away.mk P hfg n (a * g ^ n) hb)).val :=
+      congrArg (fun y => (originalDegreeVeroneseChartRingEquiv B q hfg y).val)
+        (originalDegreeVeroneseChartRestrict_mk B q hf hg n a ha)
+    _ = (Away.mk B hfgS n ((a * g ^ n : V) : S) hbS).val :=
+      congrArg (fun y => y.val) (originalDegreeVeroneseChartRingEquiv_mk B q hfg n hb hfgS hbS)
+    _ = _ := Away.val_mk B n hfgS _ hbS
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseProductValueLeft_mk
+#print axioms LinearStudy.originalDegreeVeroneseProductValueLeft_mk
+
+
+===== Linear.OriginalDegreeVeroneseProductValueRight =====
+module
+public import Linear.OriginalDegreeVeroneseProductChartCompat
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseProductValueRightGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+/-- Comparing a regraded fraction and then restricting on the original
+charts gives the displayed fraction in the original localization. -/
+theorem originalDegreeVeroneseProductValueRight_mk
+    {d e : ℕ} {f g : V} (hf : f ∈ P d) (hg : g ∈ P e)
+    (n : ℕ) (a : V) (ha : a ∈ P (n • d)) :
+    (originalDegreeVeroneseAmbientChartRestrict B q f g hg
+      (originalDegreeVeroneseChartRingEquiv B q hf (Away.mk P hf n a ha))).val =
+    Localization.mk ((a * g ^ n : V) : S)
+      (⟨((f * g : V) : S) ^ n, ⟨n, rfl⟩⟩ : Submonoid.powers ((f * g : V) : S)) := by
+  have hfS : (f : S) ∈ B (q * d) := hf
+  have haS' : (a : S) ∈ B (q * (n • d)) := ha
+  have hdeg : q * (n • d) = n • (q * d) := by
+    simpa only [nsmul_eq_mul, Nat.cast_id] using Nat.mul_left_comm q n d
+  have haS : (a : S) ∈ B (n • (q * d)) := hdeg ▸ haS'
+  have hgS : (g : S) ∈ B (q * e) := hg
+  have hfgS : ((f * g : V) : S) ∈ B (q * d + q * e) := SetLike.mul_mem_graded hfS hgS
+  have hbS : (a : S) * (g : S) ^ n ∈ B (n • (q * d + q * e)) := by
+    rw [smul_add]
+    exact SetLike.mul_mem_graded haS (SetLike.pow_mem_graded n hgS)
+  calc
+    _ = (originalDegreeVeroneseAmbientChartRestrict B q f g hg
+        (Away.mk B hfS n (a : S) haS)).val :=
+      congrArg (fun y => (originalDegreeVeroneseAmbientChartRestrict B q f g hg y).val)
+        (originalDegreeVeroneseChartRingEquiv_mk B q hf n ha hfS haS)
+    _ = (Away.mk B hfgS n ((a : S) * (g : S) ^ n) hbS).val :=
+      congrArg (fun y => y.val) (originalDegreeVeroneseAmbientChartRestrict_mk B q hg hfS n (a : S) haS)
+    _ = _ := Away.val_mk B n hfgS _ hbS
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseProductValueRight_mk
+#print axioms LinearStudy.originalDegreeVeroneseProductValueRight_mk
+
+
+===== Linear.OriginalDegreeVeroneseChartRefinement =====
+module
+public import Linear.OriginalDegreeVeroneseProductValueLeft
+public import Linear.OriginalDegreeVeroneseProductValueRight
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseChartRefinementGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+/-- The Veronese chart comparison commutes with both original
+product-chart fraction maps. -/
+theorem originalDegreeVeroneseChartRingEquiv_awayMap
+    {d e : ℕ} {f g : V} (hf : f ∈ P d) (hg : g ∈ P e)
+    (z : Away P f) :
+    originalDegreeVeroneseChartRingEquiv B q (SetLike.mul_mem_graded hf hg)
+      (originalDegreeVeroneseChartRestrict B q f g hg z) =
+    originalDegreeVeroneseAmbientChartRestrict B q f g hg
+      (originalDegreeVeroneseChartRingEquiv B q hf z) := by
+  obtain ⟨n, a, ha, rfl⟩ := Away.mk_surjective P hf z
+  apply val_injective _
+  exact (originalDegreeVeroneseProductValueLeft_mk B q hf hg n a ha).trans
+    (originalDegreeVeroneseProductValueRight_mk B q hf hg n a ha).symm
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseChartRingEquiv_awayMap
+#print axioms LinearStudy.originalDegreeVeroneseChartRingEquiv_awayMap
+
+
+===== Linear.OriginalDegreeVeroneseChartMapSquare =====
+module
+public import Linear.OriginalDegreeVeroneseChartRefinement
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseChartMapSquareGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+/-- The degree-zero comparison commutes as ring homomorphisms with
+each map to a chart indexed by a product. -/
+theorem originalDegreeVeroneseChartRingHomSquare
+    {d e : ℕ} {f g x : V} (hf : f ∈ P d) (hg : g ∈ P e)
+    (hx : x = f * g) (hxS : (x : S) = (f : S) * (g : S))
+    (hxP : x ∈ P (d + e)) :
+    (originalDegreeVeroneseChartRingEquiv B q hxP).toRingHom.comp
+      (awayMap P (f := f) (g := g) (x := x) hg hx) =
+    (awayMap B (f := (f : S)) (g := (g : S)) (x := (x : S))
+      (show (g : S) ∈ B (q * e) from hg) hxS).comp
+      (originalDegreeVeroneseChartRingEquiv B q hf).toRingHom := by
+  subst x
+  apply RingHom.ext
+  intro z
+  exact originalDegreeVeroneseChartRingEquiv_awayMap B q hf hg z
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseChartRingHomSquare
+#print axioms LinearStudy.originalDegreeVeroneseChartRingHomSquare
+
+
+===== Linear.OriginalDegreeVeroneseAmbientCover =====
+module
+public import Linear.OriginalDegreeVeroneseAlgebra
+public import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Basic
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry TopologicalSpace.Opens
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+
+/-- The indices of all positive regraded homogeneous charts. -/
+def OriginalDegreeVeroneseChartIndex (q : ℕ) :=
+  Σ i : PNat, originalDegreeVeronesePiece B q i
+
+/-- The original Proj is covered by the very same homogeneous denominators
+used for the Veronese Proj. The q-th power of an original denominator
+lies in the regraded piece of its original degree. -/
+theorem originalDegreeVeroneseAmbientCover (q : ℕ) (hq : 0 < q) :
+    (⨆ i : OriginalDegreeVeroneseChartIndex B q,
+      Proj.basicOpen B (i.2.1 : S)) = ⊤ := by
+  classical
+  apply top_le_iff.mp
+  intro x hx
+  have htop :
+      (⨆ j : (Σ i : PNat, B i), Proj.basicOpen B (j.2 : S)) = ⊤ := by
+    apply Proj.iSup_basicOpen_eq_top
+    intro z hz
+    rw [← DirectSum.sum_support_decompose B z]
+    refine Ideal.sum_mem _ fun c hc ↦ if hc0 : c = 0 then ?_ else
+      Ideal.subset_span ⟨⟨⟨c, Nat.pos_iff_ne_zero.mpr hc0⟩, _⟩, rfl⟩
+    convert Ideal.zero_mem _
+    subst hc0
+    exact hz
+  have hC : x ∈ (⨆ j : (Σ i : PNat, B i), Proj.basicOpen B (j.2 : S)) := htop.symm ▸ hx
+  obtain ⟨j, hj⟩ := mem_iSup.mp hC
+  have hpow : (j.2 : S) ^ q ∈ B (q * (j.1 : ℕ)) := by
+    simpa only [nsmul_eq_mul, Nat.cast_id] using SetLike.pow_mem_graded q j.2.2
+  let f : originalDegreeVeroneseAlgebra B q :=
+    ⟨(j.2 : S) ^ q, originalDegreeVeroneseAlgebra_mem_of_mem B q j.1 hpow⟩
+  have hf : f ∈ originalDegreeVeronesePiece B q j.1 := hpow
+  refine mem_iSup.mpr ⟨⟨j.1, f, hf⟩, ?_⟩
+  change x ∈ Proj.basicOpen B ((j.2 : S) ^ q)
+  rwa [Proj.basicOpen_pow _ _ q hq]
+
+end LinearStudy
+#check LinearStudy.OriginalDegreeVeroneseChartIndex
+#print axioms LinearStudy.OriginalDegreeVeroneseChartIndex
+#check LinearStudy.originalDegreeVeroneseAmbientCover
+#print axioms LinearStudy.originalDegreeVeroneseAmbientCover
+

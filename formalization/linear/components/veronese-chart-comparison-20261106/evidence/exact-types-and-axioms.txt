@@ -1,0 +1,394 @@
+@LinearStudy.originalDegreeVeroneseAlgebra : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] → [inst_2 : Algebra K S] → (B : ℕ → Submodule K S) → [GradedAlgebra B] → ℕ → Subalgebra K S
+'LinearStudy.originalDegreeVeroneseAlgebra' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseAlgebra_mem_of_mem : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q n : ℕ) {x : S},
+  x ∈ B (q * n) → x ∈ LinearStudy.originalDegreeVeroneseAlgebra B q
+'LinearStudy.originalDegreeVeroneseAlgebra_mem_of_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeronesePiece : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] → (q : ℕ) → ℕ → Submodule K ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)
+'LinearStudy.originalDegreeVeronesePiece' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeronesePiece_one_iff : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  (x : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)), x ∈ LinearStudy.originalDegreeVeronesePiece B q 1 ↔ ↑x ∈ B q
+'LinearStudy.originalDegreeVeronesePiece_one_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeronesePiece_independent : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ),
+  0 < q → iSupIndep (LinearStudy.originalDegreeVeronesePiece B q)
+'LinearStudy.originalDegreeVeronesePiece_independent' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeronesePiece_total : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ),
+  ⨆ (n : ℕ), LinearStudy.originalDegreeVeronesePiece B q n = ⊤
+'LinearStudy.originalDegreeVeronesePiece_total' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseGrading : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] → (q : ℕ) → 0 < q → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q)
+'LinearStudy.originalDegreeVeroneseGrading' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalRingEquivOfEqualImages : {A : Type u_1} →
+  {B : Type u_2} →
+    {T : Type u_3} →
+      [inst : Ring A] →
+        [inst_1 : Ring B] →
+          [inst_2 : Ring T] →
+            (r : A →+* T) → (s : B →+* T) → Function.Injective ⇑r → Function.Injective ⇑s → r.range = s.range → A ≃+* B
+'LinearStudy.originalRingEquivOfEqualImages' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalRingEquivOfEqualImages_apply : ∀ {A : Type u_1} {B : Type u_2} {T : Type u_3} [inst : Ring A]
+  [inst_1 : Ring B] [inst_2 : Ring T] (r : A →+* T) (s : B →+* T) (hr : Function.Injective ⇑r)
+  (hs : Function.Injective ⇑s) (h : r.range = s.range) (a : A),
+  s ((LinearStudy.originalRingEquivOfEqualImages r s hr hs h) a) = r a
+'LinearStudy.originalRingEquivOfEqualImages_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseChartValue : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) →
+                [hq : Fact (0 < q)] →
+                  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                    HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f →+*
+                      Localization.Away ↑f
+'LinearStudy.originalDegreeVeroneseChartValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseChartValue_mk : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  [hq : Fact (0 < q)] {d : ℕ} {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) (n : ℕ)
+  {a : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (ha : a ∈ LinearStudy.originalDegreeVeronesePiece B q (n • d))
+  (hfS : ↑f ∈ B (q * d)) (haS : ↑a ∈ B (n • (q * d))),
+  (LinearStudy.originalDegreeVeroneseChartValue B q f)
+      (HomogeneousLocalization.Away.mk (LinearStudy.originalDegreeVeronesePiece B q) hf n a ha) =
+    HomogeneousLocalization.val (HomogeneousLocalization.Away.mk B hfS n (↑a) haS)
+'LinearStudy.originalDegreeVeroneseChartValue_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseChartValue_range : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  [hq : Fact (0 < q)] {d : ℕ} {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)},
+  f ∈ LinearStudy.originalDegreeVeronesePiece B q d →
+    Set.range ⇑(LinearStudy.originalDegreeVeroneseChartValue B q f) =
+      Set.range ⇑(algebraMap (HomogeneousLocalization.Away B ↑f) (Localization.Away ↑f))
+'LinearStudy.originalDegreeVeroneseChartValue_range' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseAwayMap_injective : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)),
+  Function.Injective ⇑(Localization.awayMap (LinearStudy.originalDegreeVeroneseAlgebra B q).val.toRingHom f)
+'LinearStudy.originalDegreeVeroneseAwayMap_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseChartValue_injective : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  [hq : Fact (0 < q)] (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)),
+  Function.Injective ⇑(LinearStudy.originalDegreeVeroneseChartValue B q f)
+'LinearStudy.originalDegreeVeroneseChartValue_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseChartRingEquiv : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) →
+                [hq : Fact (0 < q)] →
+                  {d : ℕ} →
+                    {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} →
+                      f ∈ LinearStudy.originalDegreeVeronesePiece B q d →
+                        HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f ≃+*
+                          HomogeneousLocalization.Away B ↑f
+'LinearStudy.originalDegreeVeroneseChartRingEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseChartRingEquiv_val : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  [hq : Fact (0 < q)] {d : ℕ} {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (z : HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f),
+  HomogeneousLocalization.val ((LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf) z) =
+    (LinearStudy.originalDegreeVeroneseChartValue B q f) z
+'LinearStudy.originalDegreeVeroneseChartRingEquiv_val' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseChartRingEquiv_mk : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  [hq : Fact (0 < q)] {d : ℕ} {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) (n : ℕ)
+  {a : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (ha : a ∈ LinearStudy.originalDegreeVeronesePiece B q (n • d))
+  (hfS : ↑f ∈ B (q * d)) (haS : ↑a ∈ B (n • (q * d))),
+  (LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf)
+      (HomogeneousLocalization.Away.mk (LinearStudy.originalDegreeVeronesePiece B q) hf n a ha) =
+    HomogeneousLocalization.Away.mk B hfS n (↑a) haS
+'LinearStudy.originalDegreeVeroneseChartRingEquiv_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseChartRestrict : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) →
+                [hq : Fact (0 < q)] →
+                  {e : ℕ} →
+                    (f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                      g ∈ LinearStudy.originalDegreeVeronesePiece B q e →
+                        HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f →+*
+                          HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) (f * g)
+'LinearStudy.originalDegreeVeroneseChartRestrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseAmbientChartRestrict : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) →
+                {e : ℕ} →
+                  (f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                    g ∈ LinearStudy.originalDegreeVeronesePiece B q e →
+                      HomogeneousLocalization.Away B ↑f →+* HomogeneousLocalization.Away B ↑(f * g)
+'LinearStudy.originalDegreeVeroneseAmbientChartRestrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseChartRestrict_mk : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  [hq : Fact (0 < q)] {d e : ℕ} {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e)
+  (n : ℕ) (a : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (ha : a ∈ LinearStudy.originalDegreeVeronesePiece B q (n • d)),
+  (LinearStudy.originalDegreeVeroneseChartRestrict B q f g hg)
+      (HomogeneousLocalization.Away.mk (LinearStudy.originalDegreeVeronesePiece B q) hf n a ha) =
+    HomogeneousLocalization.Away.mk (LinearStudy.originalDegreeVeronesePiece B q) ⋯ n (a * g ^ n) ⋯
+'LinearStudy.originalDegreeVeroneseChartRestrict_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseAmbientChartRestrict_mk : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ) {d e : ℕ}
+  {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e)
+  (hfS : ↑f ∈ B d) (n : ℕ) (a : S) (haS : a ∈ B (n • d)),
+  (LinearStudy.originalDegreeVeroneseAmbientChartRestrict B q f g hg) (HomogeneousLocalization.Away.mk B hfS n a haS) =
+    HomogeneousLocalization.Away.mk B ⋯ n (a * ↑g ^ n) ⋯
+'LinearStudy.originalDegreeVeroneseAmbientChartRestrict_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseProductValueLeft_mk : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  [hq : Fact (0 < q)] {d e : ℕ} {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e)
+  (n : ℕ) (a : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (ha : a ∈ LinearStudy.originalDegreeVeronesePiece B q (n • d)),
+  HomogeneousLocalization.val
+      ((LinearStudy.originalDegreeVeroneseChartRingEquiv B q ⋯)
+        ((LinearStudy.originalDegreeVeroneseChartRestrict B q f g hg)
+          (HomogeneousLocalization.Away.mk (LinearStudy.originalDegreeVeronesePiece B q) hf n a ha))) =
+    Localization.mk ↑(a * g ^ n) ⟨↑(f * g) ^ n, ⋯⟩
+'LinearStudy.originalDegreeVeroneseProductValueLeft_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseProductValueRight_mk : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  [hq : Fact (0 < q)] {d e : ℕ} {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e)
+  (n : ℕ) (a : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (ha : a ∈ LinearStudy.originalDegreeVeronesePiece B q (n • d)),
+  HomogeneousLocalization.val
+      ((LinearStudy.originalDegreeVeroneseAmbientChartRestrict B q f g hg)
+        ((LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf)
+          (HomogeneousLocalization.Away.mk (LinearStudy.originalDegreeVeronesePiece B q) hf n a ha))) =
+    Localization.mk ↑(a * g ^ n) ⟨↑(f * g) ^ n, ⋯⟩
+'LinearStudy.originalDegreeVeroneseProductValueRight_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseChartRingEquiv_awayMap : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  [hq : Fact (0 < q)] {d e : ℕ} {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e)
+  (z : HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f),
+  (LinearStudy.originalDegreeVeroneseChartRingEquiv B q ⋯)
+      ((LinearStudy.originalDegreeVeroneseChartRestrict B q f g hg) z) =
+    (LinearStudy.originalDegreeVeroneseAmbientChartRestrict B q f g hg)
+      ((LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf) z)
+'LinearStudy.originalDegreeVeroneseChartRingEquiv_awayMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseChartRingHomSquare : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  [hq : Fact (0 < q)] {d e : ℕ} {f g x : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e)
+  (hx : x = f * g) (hxS : ↑x = ↑f * ↑g) (hxP : x ∈ LinearStudy.originalDegreeVeronesePiece B q (d + e)),
+  (LinearStudy.originalDegreeVeroneseChartRingEquiv B q hxP).toRingHom.comp
+      (HomogeneousLocalization.awayMap (LinearStudy.originalDegreeVeronesePiece B q) hg hx) =
+    (HomogeneousLocalization.awayMap B ⋯ hxS).comp (LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf).toRingHom
+'LinearStudy.originalDegreeVeroneseChartRingHomSquare' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.OriginalDegreeVeroneseChartIndex : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] → [inst_2 : Algebra K S] → (B : ℕ → Submodule K S) → [GradedAlgebra B] → ℕ → Type u_2
+'LinearStudy.OriginalDegreeVeroneseChartIndex' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseAmbientCover : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ),
+  0 < q → ⨆ (i : LinearStudy.OriginalDegreeVeroneseChartIndex B q), AlgebraicGeometry.Proj.basicOpen B ↑↑i.snd = ⊤
+'LinearStudy.originalDegreeVeroneseAmbientCover' depends on axioms: [propext, Classical.choice, Quot.sound]
+def LinearStudy.originalDegreeVeroneseAlgebra.{u, v} : {K : Type u} →
+  {S : Type v} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] → (B : ℕ → Submodule K S) → [GradedAlgebra B] → ℕ → Subalgebra K S :=
+fun {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) =>
+  let P := fun (n : ℕ) => B (q * n);
+  let V := ⨆ (n : ℕ), P n;
+  { carrier := ↑V, mul_mem' := ⋯, one_mem' := ⋯, add_mem' := ⋯, zero_mem' := ⋯, algebraMap_mem' := ⋯ }
+def LinearStudy.originalDegreeVeronesePiece.{u, v} : {K : Type u} →
+  {S : Type v} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] → (q : ℕ) → ℕ → Submodule K ↥(LinearStudy.originalDegreeVeroneseAlgebra B q) :=
+fun {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B]
+    (q n : ℕ) =>
+  Submodule.comap (LinearStudy.originalDegreeVeroneseAlgebra B q).val.toLinearMap (B (q * n))
+@[instance_reducible] def LinearStudy.originalDegreeVeroneseGrading.{u, v} : {K : Type u} →
+  {S : Type v} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) → 0 < q → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q) :=
+fun {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    (hq : 0 < q) =>
+  have __spread.0 := DirectSum.IsInternal.chooseDecomposition (LinearStudy.originalDegreeVeronesePiece B q) ⋯;
+  { toGradedMonoid := ⋯, toDecomposition := __spread.0 }
+def LinearStudy.originalRingEquivOfEqualImages.{u, v, w} : {A : Type u} →
+  {B : Type v} →
+    {T : Type w} →
+      [inst : Ring A] →
+        [inst_1 : Ring B] →
+          [inst_2 : Ring T] →
+            (r : A →+* T) →
+              (s : B →+* T) → Function.Injective ⇑r → Function.Injective ⇑s → r.range = s.range → A ≃+* B :=
+fun {A : Type u} {B : Type v} {T : Type w} [Ring A] [Ring B] [Ring T] (r : A →+* T) (s : B →+* T)
+    (hr : Function.Injective ⇑r) (hs : Function.Injective ⇑s) (h : r.range = s.range) =>
+  have er := RingEquiv.ofLeftInverse ⋯;
+  have es := RingEquiv.ofLeftInverse ⋯;
+  er.trans ((RingEquiv.subringCongr h).trans es.symm)
+def LinearStudy.originalDegreeVeroneseChartValue.{u, v} : {K : Type u} →
+  {S : Type v} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) →
+                [hq : Fact (0 < q)] →
+                  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                    HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f →+*
+                      Localization.Away ↑f :=
+fun {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    [Fact (0 < q)] (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) =>
+  (Localization.awayMap (LinearStudy.originalDegreeVeroneseAlgebra B q).val.toRingHom f).comp
+    (algebraMap (HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f) (Localization.Away f))
+def LinearStudy.originalDegreeVeroneseChartRingEquiv.{u, v} : {K : Type u} →
+  {S : Type v} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) →
+                [hq : Fact (0 < q)] →
+                  {d : ℕ} →
+                    {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} →
+                      f ∈ LinearStudy.originalDegreeVeronesePiece B q d →
+                        HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f ≃+*
+                          HomogeneousLocalization.Away B ↑f :=
+fun {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    [Fact (0 < q)] {d : ℕ} {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+    (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) =>
+  LinearStudy.originalRingEquivOfEqualImages (LinearStudy.originalDegreeVeroneseChartValue B q f)
+    (algebraMap (HomogeneousLocalization.Away B ↑f) (Localization.Away ↑f)) ⋯ ⋯ ⋯
+def LinearStudy.originalDegreeVeroneseChartRestrict.{u, v} : {K : Type u} →
+  {S : Type v} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) →
+                [hq : Fact (0 < q)] →
+                  {e : ℕ} →
+                    (f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                      g ∈ LinearStudy.originalDegreeVeronesePiece B q e →
+                        HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f →+*
+                          HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) (f * g) :=
+fun {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    [Fact (0 < q)] {e : ℕ} (f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+    (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) =>
+  HomogeneousLocalization.awayMap (LinearStudy.originalDegreeVeronesePiece B q) hg ⋯
+def LinearStudy.originalDegreeVeroneseAmbientChartRestrict.{u, v} : {K : Type u} →
+  {S : Type v} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) →
+                {e : ℕ} →
+                  (f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                    g ∈ LinearStudy.originalDegreeVeronesePiece B q e →
+                      HomogeneousLocalization.Away B ↑f →+* HomogeneousLocalization.Away B ↑(f * g) :=
+fun {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    {e : ℕ} (f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+    (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) =>
+  HomogeneousLocalization.awayMap B ⋯ ⋯
+def LinearStudy.OriginalDegreeVeroneseChartIndex.{u, v} : {K : Type u} →
+  {S : Type v} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] → (B : ℕ → Submodule K S) → [GradedAlgebra B] → ℕ → Type (max 0 v) :=
+fun {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) =>
+  (i : ℕ+) × ↥(LinearStudy.originalDegreeVeronesePiece B q ↑i)
+ROLECHECK:LinearStudy.originalDegreeVeroneseAlgebra:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseAlgebra:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseAlgebra_mem_of_mem:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseAlgebra_mem_of_mem:theorem
+ROLECHECK:LinearStudy.originalDegreeVeronesePiece:false
+KINDCHECK:LinearStudy.originalDegreeVeronesePiece:definition
+ROLECHECK:LinearStudy.originalDegreeVeronesePiece_one_iff:true
+KINDCHECK:LinearStudy.originalDegreeVeronesePiece_one_iff:theorem
+ROLECHECK:LinearStudy.originalDegreeVeronesePiece_independent:true
+KINDCHECK:LinearStudy.originalDegreeVeronesePiece_independent:theorem
+ROLECHECK:LinearStudy.originalDegreeVeronesePiece_total:true
+KINDCHECK:LinearStudy.originalDegreeVeronesePiece_total:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseGrading:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseGrading:definition
+ROLECHECK:LinearStudy.originalRingEquivOfEqualImages:false
+KINDCHECK:LinearStudy.originalRingEquivOfEqualImages:definition
+ROLECHECK:LinearStudy.originalRingEquivOfEqualImages_apply:true
+KINDCHECK:LinearStudy.originalRingEquivOfEqualImages_apply:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartValue:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartValue:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartValue_mk:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartValue_mk:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartValue_range:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartValue_range:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseAwayMap_injective:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseAwayMap_injective:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartValue_injective:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartValue_injective:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartRingEquiv:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartRingEquiv:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartRingEquiv_val:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartRingEquiv_val:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartRingEquiv_mk:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartRingEquiv_mk:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartRestrict:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartRestrict:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseAmbientChartRestrict:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseAmbientChartRestrict:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartRestrict_mk:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartRestrict_mk:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseAmbientChartRestrict_mk:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseAmbientChartRestrict_mk:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseProductValueLeft_mk:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseProductValueLeft_mk:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseProductValueRight_mk:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseProductValueRight_mk:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartRingEquiv_awayMap:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartRingEquiv_awayMap:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartRingHomSquare:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartRingHomSquare:theorem
+ROLECHECK:LinearStudy.OriginalDegreeVeroneseChartIndex:false
+KINDCHECK:LinearStudy.OriginalDegreeVeroneseChartIndex:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseAmbientCover:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseAmbientCover:theorem

@@ -1,0 +1,12 @@
+LinearStudy.originalDegreeVeroneseChartRingEquiv.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {d : ℕ}
+  {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) :
+  HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f ≃+* HomogeneousLocalization.Away B ↑f
+'LinearStudy.originalDegreeVeroneseChartRingEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseChartRingEquiv_val.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {d : ℕ}
+  {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (z : HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f) :
+  HomogeneousLocalization.val ((LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf) z) =
+    (LinearStudy.originalDegreeVeroneseChartValue B q f) z
+'LinearStudy.originalDegreeVeroneseChartRingEquiv_val' depends on axioms: [propext, Classical.choice, Quot.sound]

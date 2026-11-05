@@ -1,0 +1,10 @@
+LinearStudy.originalDegreeVeroneseChartRingEquiv_awayMap.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {d e : ℕ}
+  {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e)
+  (z : HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f) :
+  (LinearStudy.originalDegreeVeroneseChartRingEquiv B q ⋯)
+      ((LinearStudy.originalDegreeVeroneseChartRestrict B q f g hg) z) =
+    (LinearStudy.originalDegreeVeroneseAmbientChartRestrict B q f g hg)
+      ((LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf) z)
+'LinearStudy.originalDegreeVeroneseChartRingEquiv_awayMap' depends on axioms: [propext, Classical.choice, Quot.sound]

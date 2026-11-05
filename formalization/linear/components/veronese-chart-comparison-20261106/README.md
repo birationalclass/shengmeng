@@ -1,0 +1,7 @@
+# Original degree-q Veronese chart comparison
+
+Let K be a field and B a nonnegatively graded commutative K-algebra. For q > 0 use the exact original pieces B_(qn) in the original algebra S. The degree-zero chart rings are canonically isomorphic through equal fractions in the same original localization. For any homogeneous f,g and any x = fg, the comparison commutes with both chart restrictions as ring homomorphisms. The positive regraded denominators cover the original Proj because every positive homogeneous original denominator has the same basic open as its q-th power. The scheme gluing, original coefficient sheaf, fixed C_L and cut-dependent C_H identification, and same normalized geometric trace remain open. Original Lemmas 4.1 and 4.2 and the main theorem remain open. Whole local checkpoint 180.
+
+This archive contains 14 compiled root modules, 18 ordinary theorems and 9 object definitions for the Veronese chart comparison. It includes 17 closed project source modules. The 3 earlier sources match the verified public parent archives byte for byte. Codex reviewed all 663 root lines and all 394 audit lines. No human reviewer is claimed.
+
+The Lean toolchain and mathlib revision are pinned in source/. Start with source/RESOURCE_SAFETY.md and use the project controller for local compilation. The evidence directory contains guarded compilation, exact declaration checks and dependency range receipts. The three imported sources match a previously verified live parent archive. The new roots passed compilation and this audit.

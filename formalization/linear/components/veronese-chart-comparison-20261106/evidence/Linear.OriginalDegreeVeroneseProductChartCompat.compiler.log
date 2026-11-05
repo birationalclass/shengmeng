@@ -1,0 +1,28 @@
+LinearStudy.originalDegreeVeroneseChartRestrict.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {e : ℕ}
+  (f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) :
+  HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f →+*
+    HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) (f * g)
+'LinearStudy.originalDegreeVeroneseChartRestrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseAmbientChartRestrict.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) {e : ℕ}
+  (f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) :
+  HomogeneousLocalization.Away B ↑f →+* HomogeneousLocalization.Away B ↑(f * g)
+'LinearStudy.originalDegreeVeroneseAmbientChartRestrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseChartRestrict_mk.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {d e : ℕ}
+  {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) (n : ℕ)
+  (a : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (ha : a ∈ LinearStudy.originalDegreeVeronesePiece B q (n • d)) :
+  (LinearStudy.originalDegreeVeroneseChartRestrict B q f g hg)
+      (HomogeneousLocalization.Away.mk (LinearStudy.originalDegreeVeronesePiece B q) hf n a ha) =
+    HomogeneousLocalization.Away.mk (LinearStudy.originalDegreeVeronesePiece B q) ⋯ n (a * g ^ n) ⋯
+'LinearStudy.originalDegreeVeroneseChartRestrict_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseAmbientChartRestrict_mk.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) {d e : ℕ}
+  {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e)
+  (hfS : ↑f ∈ B d) (n : ℕ) (a : S) (haS : a ∈ B (n • d)) :
+  (LinearStudy.originalDegreeVeroneseAmbientChartRestrict B q f g hg) (HomogeneousLocalization.Away.mk B hfS n a haS) =
+    HomogeneousLocalization.Away.mk B ⋯ n (a * ↑g ^ n) ⋯
+'LinearStudy.originalDegreeVeroneseAmbientChartRestrict_mk' depends on axioms: [propext, Classical.choice, Quot.sound]

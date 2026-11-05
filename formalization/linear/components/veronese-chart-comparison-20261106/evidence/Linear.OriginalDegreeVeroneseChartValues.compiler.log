@@ -1,0 +1,14 @@
+LinearStudy.originalDegreeVeroneseChartValue.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)]
+  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) :
+  HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f →+* Localization.Away ↑f
+'LinearStudy.originalDegreeVeroneseChartValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseChartValue_mk.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {d : ℕ}
+  {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (n : ℕ) {a : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (ha : a ∈ LinearStudy.originalDegreeVeronesePiece B q (n • d)) (hfS : ↑f ∈ B (q * d)) (haS : ↑a ∈ B (n • (q * d))) :
+  (LinearStudy.originalDegreeVeroneseChartValue B q f)
+      (HomogeneousLocalization.Away.mk (LinearStudy.originalDegreeVeronesePiece B q) hf n a ha) =
+    HomogeneousLocalization.val (HomogeneousLocalization.Away.mk B hfS n (↑a) haS)
+'LinearStudy.originalDegreeVeroneseChartValue_mk' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,14 @@
+LinearStudy.originalDegreeVeroneseAlgebra.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) : Subalgebra K S
+'LinearStudy.originalDegreeVeroneseAlgebra' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseAlgebra_mem_of_mem.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q n : ℕ) {x : S} (hx : x ∈ B (q * n)) :
+  x ∈ LinearStudy.originalDegreeVeroneseAlgebra B q
+'LinearStudy.originalDegreeVeroneseAlgebra_mem_of_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeronesePiece.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q n : ℕ) : Submodule K ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)
+'LinearStudy.originalDegreeVeronesePiece' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeronesePiece_one_iff.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) (x : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) :
+  x ∈ LinearStudy.originalDegreeVeronesePiece B q 1 ↔ ↑x ∈ B q
+'LinearStudy.originalDegreeVeronesePiece_one_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
