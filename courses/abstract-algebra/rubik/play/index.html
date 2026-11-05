@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#14130f">
+<title>操作的阶 · 魔方实验室 · 孟晟</title><meta name="description" content="全屏操作二至五阶魔方。输入一套操作，精确计算其阶，逐步观察重复操作如何回到原点。">
+<link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="play.css?v=20261105a">
+<script type="module" src="app.mjs?v=20261105a"></script></head>
+<body>
+<header class="topbar"><a class="back" href="../" aria-label="返回魔方与群论">← <span>魔方与群论</span></a><div class="identity"><span>THE ORDER OF A MOVE</span><h1>操作的阶</h1></div><button id="fullscreen" class="outline">⛶ <span>全屏</span></button></header>
+<main class="workspace">
+<section class="stage" aria-label="交互魔方">
+<div class="stage-top"><label class="size-picker" for="cubeSize"><span>魔方规格</span><select id="cubeSize"><option value="2">2 × 2 × 2</option><option value="3" selected>3 × 3 × 3</option><option value="4">4 × 4 × 4</option><option value="5">5 × 5 × 5</option></select></label><span id="stateBadge" class="state-badge">原位</span></div>
+<div class="stage-watermark" aria-hidden="true">g</div>
+<canvas id="cube" tabindex="0" role="img" aria-label="交互魔方。拖动色块转动选定层，拖动空白观察；也可用右侧转动按钮操作。"></canvas>
+<div class="stage-bottom"><button id="homeView">↗ 初始视角</button><p>拖动空白观察 <i>·</i> 滚轮缩放 <i>·</i> 拖动色块试转</p><label><input id="labels" type="checkbox">贴片编号</label></div>
+<div class="journey"><div class="journey-heading"><span>已完成 <b id="repeatCount">0</b> 套</span><span id="positionLabel">g⁰ = e</span></div><progress id="cycleProgress" max="10000" value="0" aria-label="当前循环完成程度"></progress><div class="step-heading"><span id="stepCount">本套 0 / 4 步</span><span id="nextMove">下一步 R</span></div><div id="sequence" class="sequence" aria-label="操作序列及当前步骤"></div></div>
+</section>
+<aside class="console" aria-label="操作与阶">
+<section class="order-card" aria-labelledby="orderTitle"><div class="eyebrow" id="orderTitle">ORDER / 群元素的阶</div><div class="order-value"><span>ord(g)</span><strong id="order" aria-live="polite">6</strong></div><p id="orderSentence">这套操作最少重复 6 次，全部贴片回到原位。</p><div id="orderEquation" class="equation">g⁶ = e</div></section>
+<form id="algorithmForm"><label for="algorithm" class="section-label">一套操作 <span>从左到右执行</span></label><textarea id="algorithm" rows="2" maxlength="4000" autocomplete="off" spellcheck="false" aria-describedby="notationHint status">R U R' U'</textarea><div class="editor-actions"><button type="submit" class="gold">计算并载入</button><button type="button" id="invert">取逆 g⁻¹</button><button type="button" id="clear">清空</button></div></form>
+<div class="presets" aria-label="示例操作"><button data-example="R">R</button><button data-example="[R,U]">[R,U]</button><button data-example="R U">R U</button><button data-example="2R U">2R U</button><button data-example="Rw U">Rw U</button></div>
+<div class="playback"><button id="play" class="gold" aria-label="重复操作直到复原">▶ 重复至复原</button><button id="once">执行一套</button><button id="reset" title="保留操作序列，回到初始状态">↺ 归零</button></div>
+<div class="step-controls"><button id="previous" aria-label="倒退一步">‹ 上一步</button><button id="next" aria-label="执行下一步">下一步 ›</button><label for="speed">速度 <select id="speed"><option value="650">慢</option><option value="320" selected>适中</option><option value="100">快</option><option value="0">即时</option></select></label></div>
+<form id="jumpForm" class="jump"><label for="exponent">直接看 gᵏ</label><input id="exponent" inputmode="numeric" pattern="[0-9]+" value="0" maxlength="80" aria-label="重复次数 k"><button type="submit">跳转</button><button type="button" id="beforeIdentity" title="跳到复原前一套">m − 1</button><button type="button" id="atIdentity" title="跳到阶对应的复原状态">m</button></form>
+<p id="status" class="status" role="status" aria-live="polite">从原位开始，观察这套操作如何回到原点。</p>
+<section class="manual" aria-labelledby="manualTitle"><div class="section-label" id="manualTitle">试转并记录 <span>首步从原位开始新记录</span></div><div class="layer-row"><select id="layerMode" aria-label="转动层类型"><option value="single">单层转动</option><option value="wide">外侧多层</option></select><label for="layerValue" id="layerLabel">第几层</label><select id="layerValue" aria-label="层号或多层宽度"></select><select id="turns" aria-label="转动方向"><option value="1">90°</option><option value="-1">逆转 ′</option><option value="2">180°</option></select></div><div id="faceButtons" class="face-buttons"></div><p id="layerHint" class="hint">层号从所选面向内数。</p></section>
+<details class="proof" open><summary>为什么是这个阶？ <span>⌄</span></summary><div class="proof-content"><p>一次操作把贴片位置分解为若干不相交轮换。所有轮换同时归位的最少次数，是它们长度的最小公倍数。</p><div id="cycleChips" class="cycle-chips"></div><p id="lcm" class="lcm"></p><p id="fixedCount" class="hint"></p></div></details>
+<details class="notation"><summary>记号与复原约定 <span>⌄</span></summary><div class="proof-content" id="notationHint"><p><code>R U F D L B</code>：从该面外侧正对它观察，顺时针转动 90°；<code>′</code> 为逆转，<code>2</code> 为半转。</p><p><code>2R</code>：右侧第二层；<code>Rw</code>：右侧两层一起转；<code>3Rw</code>：右侧三层一起转。支持 <code>(R U)3</code>、交换子 <code>[R,U]</code> 及共轭 <code>[F:R]</code>。</p><p>这里的“复原”指每张编号贴片回到原位，高阶同色中心块的位置也区分；不记录单张中心贴片原地自转的朝向。固定空间坐标，整块转动计入操作，拖动观察不计入。</p><p>键盘 R/U/F/D/L/B 试转选定层；Shift 为逆转。空格播放或暂停。输入框内不触发快捷键。</p></div></details>
+<footer><span>Sheng Meng · 孟晟</span><a href="../../">抽象代数课程 ↗</a></footer>
+</aside></main>
+<noscript><p>请启用 JavaScript 以操作魔方并计算操作的阶。</p></noscript>
+</body></html>
