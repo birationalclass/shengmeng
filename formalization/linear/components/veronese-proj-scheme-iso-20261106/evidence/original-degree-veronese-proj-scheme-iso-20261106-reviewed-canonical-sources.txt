@@ -1,0 +1,589 @@
+===== Linear.OriginalDegreeVeroneseSpecChartRingSquare =====
+module
+public import Linear.OriginalDegreeVeroneseChartMapSquare
+public import Mathlib.Algebra.Category.Ring.Basic
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization CategoryTheory
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseChartCommRingGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+/-- The bundled regraded chart ring at f. -/
+def originalDegreeVeroneseBundledChart (f : V) : CommRingCat.{v} :=
+  CommRingCat.of (Away P f)
+
+/-- The bundled original chart ring at the image of f. -/
+def originalDegreeVeroneseBundledAmbientChart (f : V) : CommRingCat.{v} :=
+  CommRingCat.of (Away B (f : S))
+
+local notation "VC" => originalDegreeVeroneseBundledChart B q
+local notation "SC" => originalDegreeVeroneseBundledAmbientChart B q
+
+def originalDegreeVeroneseBundledChartIso
+    {d : ℕ} {f : V} (hf : f ∈ P d) : VC f ≅ SC f :=
+  (originalDegreeVeroneseChartRingEquiv B q hf).toCommRingCatIso
+
+def originalDegreeVeroneseBundledChartRes
+    {e : ℕ} {f g x : V} (hg : g ∈ P e) (hx : x = f * g) :
+    VC f ⟶ VC x :=
+  CommRingCat.ofHom (awayMap P (f := f) hg hx)
+
+def originalDegreeVeroneseBundledAmbientRes
+    {e : ℕ} {f g x : V} (hg : g ∈ P e) (hxS : (x : S) = (f : S) * (g : S)) :
+    SC f ⟶ SC x :=
+  CommRingCat.ofHom (awayMap B (f := (f : S))
+    (show (g : S) ∈ B (q * e) from hg) hxS)
+
+/-- The product square as an equality in the category of commutative rings. -/
+theorem originalDegreeVeroneseChartCommRingCatSquare
+    {d e : ℕ} {f g x : V} (hf : f ∈ P d) (hg : g ∈ P e)
+    (hx : x = f * g) (hxS : (x : S) = (f : S) * (g : S))
+    (hxP : x ∈ P (d + e)) :
+    originalDegreeVeroneseBundledChartRes B q hg hx ≫
+      (originalDegreeVeroneseBundledChartIso B q hxP).hom =
+    (originalDegreeVeroneseBundledChartIso B q hf).hom ≫
+      originalDegreeVeroneseBundledAmbientRes B q hg hxS := by
+  apply CommRingCat.hom_ext
+  exact originalDegreeVeroneseChartRingHomSquare B q hf hg hx hxS hxP
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseChartCommRingCatSquare
+#print axioms LinearStudy.originalDegreeVeroneseChartCommRingCatSquare
+
+
+===== Linear.OriginalDegreeVeroneseSpecChart =====
+module
+public import Linear.OriginalDegreeVeroneseSpecChartRingSquare
+public import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Basic
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization AlgebraicGeometry CategoryTheory
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseSpecChartGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+private theorem specBundledRingSquare
+    {A₁ A₂ C₁ C₂ : CommRingCat.{v}}
+    (a : A₁ ⟶ A₂) (c : C₁ ⟶ C₂)
+    (e₁ : A₁ ≅ C₁) (e₂ : A₂ ≅ C₂)
+    (h : a ≫ e₂.hom = e₁.hom ≫ c) :
+    Spec.map c ≫ (Scheme.Spec.mapIso e₁.op).hom =
+      (Scheme.Spec.mapIso e₂.op).hom ≫ Spec.map a := by
+  change Spec.map c ≫ Spec.map e₁.hom = Spec.map e₂.hom ≫ Spec.map a
+  rw [← Spec.map_comp, ← Spec.map_comp, h]
+
+/-- The affine scheme comparison from the original chart to its regraded chart. -/
+def originalDegreeVeroneseSpecChartIso
+    {d : ℕ} {f : V} (hf : f ∈ P d) :
+    Spec (originalDegreeVeroneseBundledAmbientChart B q f) ≅
+      Spec (originalDegreeVeroneseBundledChart B q f) :=
+  Scheme.Spec.mapIso (originalDegreeVeroneseBundledChartIso B q hf).op
+
+/-- The affine scheme chart comparison commutes with each product inclusion. -/
+theorem originalDegreeVeroneseSpecChartSquare
+    {d e : ℕ} {f g x : V} (hf : f ∈ P d) (hg : g ∈ P e)
+    (hx : x = f * g) (hxS : (x : S) = (f : S) * (g : S))
+    (hxP : x ∈ P (d + e)) :
+    Spec.map (originalDegreeVeroneseBundledAmbientRes B q hg hxS) ≫
+      (originalDegreeVeroneseSpecChartIso B q hf).hom =
+    (originalDegreeVeroneseSpecChartIso B q hxP).hom ≫
+      Spec.map (originalDegreeVeroneseBundledChartRes B q hg hx) :=
+  specBundledRingSquare
+    (originalDegreeVeroneseBundledChartRes B q hg hx)
+    (originalDegreeVeroneseBundledAmbientRes B q hg hxS)
+    (originalDegreeVeroneseBundledChartIso B q hf)
+    (originalDegreeVeroneseBundledChartIso B q hxP)
+    (originalDegreeVeroneseChartCommRingCatSquare B q hf hg hx hxS hxP)
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseSpecChartIso
+#print axioms LinearStudy.originalDegreeVeroneseSpecChartIso
+#check LinearStudy.originalDegreeVeroneseSpecChartSquare
+#print axioms LinearStudy.originalDegreeVeroneseSpecChartSquare
+
+
+===== Linear.OriginalDegreeVeroneseAffineCover =====
+module
+public import Linear.OriginalDegreeVeroneseSpecChart
+public import Linear.OriginalDegreeVeroneseAmbientCover
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization AlgebraicGeometry CategoryTheory TopologicalSpace.Opens
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseAffineCoverGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+local notation "I" => OriginalDegreeVeroneseChartIndex B q
+
+/-- The original open immersion on a positive regraded denominator. -/
+def originalDegreeVeroneseAmbientAwayImm (i : I) :
+    Spec (originalDegreeVeroneseBundledAmbientChart B q i.2.1) ⟶ Proj B :=
+  Proj.awayι B (i.2.1 : S) (m := q * (i.1 : ℕ)) i.2.2 (Nat.mul_pos hq.out i.1.2)
+
+instance originalDegreeVeroneseAmbientAwayImmOpen (i : I) :
+    IsOpenImmersion (originalDegreeVeroneseAmbientAwayImm B q i) := by
+  let e := Proj.basicOpenIsoSpec B (i.2.1 : S) (m := q * (i.1 : ℕ)) i.2.2
+    (Nat.mul_pos hq.out i.1.2)
+  letI : IsIso e.inv := e.isIso_inv
+  letI : IsOpenImmersion e.inv := IsOpenImmersion.of_isIso e.inv
+  change IsOpenImmersion (e.inv ≫ (Proj.basicOpen B (i.2.1 : S)).ι)
+  exact IsOpenImmersion.comp _ _
+
+theorem originalDegreeVeroneseAmbientAwayImm_opensRange (i : I) :
+    (originalDegreeVeroneseAmbientAwayImm B q i).opensRange = Proj.basicOpen B (i.2.1 : S) :=
+  Proj.opensRange_awayι B (i.2.1 : S) (m := q * (i.1 : ℕ)) i.2.2
+    (Nat.mul_pos hq.out i.1.2)
+
+theorem originalDegreeVeroneseAmbientIndex_exists (x : Proj B) :
+    ∃ i : I, x ∈ Proj.basicOpen B (i.2.1 : S) := by
+  have hx : x ∈ (⊤ : (Proj B).Opens) := trivial
+  exact mem_iSup.mp ((originalDegreeVeroneseAmbientCover B q hq.out).symm ▸ hx)
+
+/-- An affine cover of the original Proj by the common positive
+Veronese chart indices. -/
+def originalDegreeVeroneseAmbientAffineCover : (Proj B).AffineOpenCover where
+  I₀ := I
+  X i := originalDegreeVeroneseBundledAmbientChart B q i.2.1
+  f i := originalDegreeVeroneseAmbientAwayImm B q i
+  idx x := (originalDegreeVeroneseAmbientIndex_exists B q x).choose
+  covers x := by
+    let i := (originalDegreeVeroneseAmbientIndex_exists B q x).choose
+    change x ∈ (originalDegreeVeroneseAmbientAwayImm B q i).opensRange
+    rw [originalDegreeVeroneseAmbientAwayImm_opensRange]
+    exact (originalDegreeVeroneseAmbientIndex_exists B q x).choose_spec
+
+/-- The standard affine cover of regraded Proj, with the same indices. -/
+def originalDegreeVeroneseRegradedAffineCover : (Proj P).AffineOpenCover :=
+  Proj.affineOpenCover P
+
+theorem originalDegreeVeroneseAffineCover_sameIndex :
+    (originalDegreeVeroneseAmbientAffineCover B q).I₀ =
+      (originalDegreeVeroneseRegradedAffineCover B q).I₀ := rfl
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseAmbientAffineCover
+#print axioms LinearStudy.originalDegreeVeroneseAmbientAffineCover
+#check LinearStudy.originalDegreeVeroneseRegradedAffineCover
+#print axioms LinearStudy.originalDegreeVeroneseRegradedAffineCover
+#check LinearStudy.originalDegreeVeroneseAffineCover_sameIndex
+#print axioms LinearStudy.originalDegreeVeroneseAffineCover_sameIndex
+
+
+===== Linear.OriginalDegreeVeroneseAffineOverlap =====
+module
+public import Linear.OriginalDegreeVeroneseAffineCover
+public import Mathlib.AlgebraicGeometry.Pullbacks
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseAffineOverlapGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+local notation "I" => OriginalDegreeVeroneseChartIndex B q
+local notation "C" => originalDegreeVeroneseAmbientAffineCover B q
+local notation "D" => originalDegreeVeroneseRegradedAffineCover B q
+
+/-- The local isomorphism on each pair of equally indexed affine charts. -/
+def originalDegreeVeroneseIndexedAffineIso (i : I) :
+    Spec ((C).X i) ≅ Spec ((D).X i) :=
+  originalDegreeVeroneseSpecChartIso B q i.2.2
+
+/-- An intersection of two original charts is the original product chart. -/
+def originalDegreeVeroneseAmbientOverlap (i j : I) :
+    pullback ((C).f i) ((C).f j) ≅
+      Spec (originalDegreeVeroneseBundledAmbientChart B q (i.2.1 * j.2.1)) :=
+  Proj.pullbackAwayιIso B
+    (f := (i.2.1 : S)) (g := (j.2.1 : S))
+    (m := q * (i.1 : ℕ)) (m' := q * (j.1 : ℕ))
+    i.2.2 (Nat.mul_pos hq.out i.1.2) j.2.2 (Nat.mul_pos hq.out j.1.2) rfl
+
+/-- An intersection of two regraded charts is the regraded product chart. -/
+def originalDegreeVeroneseRegradedOverlap (i j : I) :
+    pullback ((D).f i) ((D).f j) ≅
+      Spec (originalDegreeVeroneseBundledChart B q (i.2.1 * j.2.1)) :=
+  Proj.pullbackAwayιIso P (f := i.2.1) (g := j.2.1)
+    i.2.2 i.1.2 j.2.2 j.1.2 rfl
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseIndexedAffineIso
+#print axioms LinearStudy.originalDegreeVeroneseIndexedAffineIso
+#check LinearStudy.originalDegreeVeroneseAmbientOverlap
+#print axioms LinearStudy.originalDegreeVeroneseAmbientOverlap
+#check LinearStudy.originalDegreeVeroneseRegradedOverlap
+#print axioms LinearStudy.originalDegreeVeroneseRegradedOverlap
+
+
+===== Linear.OriginalDegreeVeroneseOverlapProjection =====
+module
+public import Linear.OriginalDegreeVeroneseAffineOverlap
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseOverlapProjectionGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+local notation "I" => OriginalDegreeVeroneseChartIndex B q
+local notation "C" => originalDegreeVeroneseAmbientAffineCover B q
+local notation "D" => originalDegreeVeroneseRegradedAffineCover B q
+
+@[reassoc]
+theorem originalDegreeVeroneseAmbientOverlap_inv_fst (i j : I) :
+    (originalDegreeVeroneseAmbientOverlap B q i j).inv ≫
+        pullback.fst ((C).f i) ((C).f j) =
+      Spec.map (originalDegreeVeroneseBundledAmbientRes B q
+        (f := i.2.1) (g := j.2.1) (x := i.2.1 * j.2.1) j.2.2 rfl) :=
+  Proj.pullbackAwayιIso_inv_fst B
+    (f := (i.2.1 : S)) (g := (j.2.1 : S))
+    (m := q * (i.1 : ℕ)) (m' := q * (j.1 : ℕ))
+    i.2.2 (Nat.mul_pos hq.out i.1.2) j.2.2 (Nat.mul_pos hq.out j.1.2) rfl
+
+@[reassoc]
+theorem originalDegreeVeroneseAmbientOverlap_inv_snd (i j : I) :
+    (originalDegreeVeroneseAmbientOverlap B q i j).inv ≫
+        pullback.snd ((C).f i) ((C).f j) =
+      Spec.map (originalDegreeVeroneseBundledAmbientRes B q
+        (f := j.2.1) (g := i.2.1) (x := i.2.1 * j.2.1) i.2.2 (mul_comm _ _)) :=
+  Proj.pullbackAwayιIso_inv_snd B
+    (f := (i.2.1 : S)) (g := (j.2.1 : S))
+    (m := q * (i.1 : ℕ)) (m' := q * (j.1 : ℕ))
+    i.2.2 (Nat.mul_pos hq.out i.1.2) j.2.2 (Nat.mul_pos hq.out j.1.2) rfl
+
+@[reassoc]
+theorem originalDegreeVeroneseRegradedOverlap_inv_fst (i j : I) :
+    (originalDegreeVeroneseRegradedOverlap B q i j).inv ≫
+        pullback.fst ((D).f i) ((D).f j) =
+      Spec.map (originalDegreeVeroneseBundledChartRes B q
+        (f := i.2.1) (g := j.2.1) (x := i.2.1 * j.2.1) j.2.2 rfl) :=
+  Proj.pullbackAwayιIso_inv_fst P (f := i.2.1) (g := j.2.1)
+    i.2.2 i.1.2 j.2.2 j.1.2 rfl
+
+@[reassoc]
+theorem originalDegreeVeroneseRegradedOverlap_inv_snd (i j : I) :
+    (originalDegreeVeroneseRegradedOverlap B q i j).inv ≫
+        pullback.snd ((D).f i) ((D).f j) =
+      Spec.map (originalDegreeVeroneseBundledChartRes B q
+        (f := j.2.1) (g := i.2.1) (x := i.2.1 * j.2.1) i.2.2 (mul_comm _ _)) :=
+  Proj.pullbackAwayιIso_inv_snd P (f := i.2.1) (g := j.2.1)
+    i.2.2 i.1.2 j.2.2 j.1.2 rfl
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseAmbientOverlap_inv_fst
+#print axioms LinearStudy.originalDegreeVeroneseAmbientOverlap_inv_fst
+#check LinearStudy.originalDegreeVeroneseAmbientOverlap_inv_snd
+#print axioms LinearStudy.originalDegreeVeroneseAmbientOverlap_inv_snd
+#check LinearStudy.originalDegreeVeroneseRegradedOverlap_inv_fst
+#print axioms LinearStudy.originalDegreeVeroneseRegradedOverlap_inv_fst
+#check LinearStudy.originalDegreeVeroneseRegradedOverlap_inv_snd
+#print axioms LinearStudy.originalDegreeVeroneseRegradedOverlap_inv_snd
+
+
+===== Linear.OriginalDegreeVeroneseAffineOverlapIso =====
+module
+public import Linear.OriginalDegreeVeroneseOverlapProjection
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseOverlapIsoGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+local notation "I" => OriginalDegreeVeroneseChartIndex B q
+local notation "C" => originalDegreeVeroneseAmbientAffineCover B q
+local notation "D" => originalDegreeVeroneseRegradedAffineCover B q
+
+private theorem overlapIso_projection
+    {A A' Z Z' T U : Scheme.{v}}
+    (a : A ≅ A') (b : Z ≅ Z') (e : A' ≅ Z') (j : T ≅ U)
+    (p : A ⟶ T) (r : Z ⟶ U)
+    (h : (a.inv ≫ p) ≫ j.hom = e.hom ≫ (b.inv ≫ r)) :
+    (a ≪≫ e ≪≫ b.symm).hom ≫ r = p ≫ j.hom := by
+  rw [← cancel_epi a.inv]
+  simpa only [Iso.trans_hom, Iso.symm_hom, Category.assoc, Iso.inv_hom_id_assoc] using h.symm
+
+/-- The comparison on the actual intersection of two affine charts. -/
+def originalDegreeVeroneseAffineOverlapIso (i j : I) :
+    pullback ((C).f i) ((C).f j) ≅ pullback ((D).f i) ((D).f j) :=
+  originalDegreeVeroneseAmbientOverlap B q i j ≪≫
+    originalDegreeVeroneseSpecChartIso B q (SetLike.mul_mem_graded i.2.2 j.2.2) ≪≫
+    (originalDegreeVeroneseRegradedOverlap B q i j).symm
+
+@[reassoc]
+theorem originalDegreeVeroneseAffineOverlapIso_hom_fst (i j : I) :
+    (originalDegreeVeroneseAffineOverlapIso B q i j).hom ≫
+        pullback.fst ((D).f i) ((D).f j) =
+      pullback.fst ((C).f i) ((C).f j) ≫ (originalDegreeVeroneseIndexedAffineIso B q i).hom := by
+  apply overlapIso_projection
+  rw [originalDegreeVeroneseAmbientOverlap_inv_fst, originalDegreeVeroneseRegradedOverlap_inv_fst]
+  exact originalDegreeVeroneseSpecChartSquare B q i.2.2 j.2.2 rfl rfl
+    (SetLike.mul_mem_graded i.2.2 j.2.2)
+
+@[reassoc]
+theorem originalDegreeVeroneseAffineOverlapIso_hom_snd (i j : I) :
+    (originalDegreeVeroneseAffineOverlapIso B q i j).hom ≫
+        pullback.snd ((D).f i) ((D).f j) =
+      pullback.snd ((C).f i) ((C).f j) ≫ (originalDegreeVeroneseIndexedAffineIso B q j).hom := by
+  apply overlapIso_projection
+  rw [originalDegreeVeroneseAmbientOverlap_inv_snd, originalDegreeVeroneseRegradedOverlap_inv_snd]
+  have h : i.2.1 * j.2.1 ∈ P ((j.1 : ℕ) + (i.1 : ℕ)) :=
+    (mul_comm _ _ : i.2.1 * j.2.1 = j.2.1 * i.2.1).symm ▸ SetLike.mul_mem_graded j.2.2 i.2.2
+  exact originalDegreeVeroneseSpecChartSquare B q j.2.2 i.2.2 (mul_comm _ _) (mul_comm _ _) h
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseAffineOverlapIso
+#print axioms LinearStudy.originalDegreeVeroneseAffineOverlapIso
+#check LinearStudy.originalDegreeVeroneseAffineOverlapIso_hom_fst
+#print axioms LinearStudy.originalDegreeVeroneseAffineOverlapIso_hom_fst
+#check LinearStudy.originalDegreeVeroneseAffineOverlapIso_hom_snd
+#print axioms LinearStudy.originalDegreeVeroneseAffineOverlapIso_hom_snd
+
+
+===== Linear.OriginalDegreeVeroneseGlueCompatibility =====
+module
+public import Linear.OriginalDegreeVeroneseAffineOverlapIso
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseGlueCompatibilityGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+local notation "I" => OriginalDegreeVeroneseChartIndex B q
+local notation "C" => originalDegreeVeroneseAmbientAffineCover B q
+local notation "D" => originalDegreeVeroneseRegradedAffineCover B q
+local notation "E" => originalDegreeVeroneseIndexedAffineIso B q
+local notation "O" => originalDegreeVeroneseAffineOverlapIso B q
+
+private theorem inverseProjection
+    {W W' T T' : Scheme.{v}} (e : W ≅ W') (j : T ≅ T')
+    (p : W ⟶ T) (r : W' ⟶ T') (h : e.hom ≫ r = p ≫ j.hom) :
+    e.inv ≫ p = r ≫ j.inv := by
+  rw [← cancel_mono j.hom]
+  simp only [Category.assoc, Iso.inv_hom_id, Category.comp_id]
+  rw [← h, Iso.inv_hom_id_assoc]
+
+@[reassoc]
+theorem originalDegreeVeroneseAffineOverlapIso_inv_fst (i j : I) :
+    (O i j).inv ≫ pullback.fst ((C).f i) ((C).f j) =
+      pullback.fst ((D).f i) ((D).f j) ≫ (E i).inv :=
+  inverseProjection (O i j) (E i) _ _
+    (originalDegreeVeroneseAffineOverlapIso_hom_fst B q i j)
+
+@[reassoc]
+theorem originalDegreeVeroneseAffineOverlapIso_inv_snd (i j : I) :
+    (O i j).inv ≫ pullback.snd ((C).f i) ((C).f j) =
+      pullback.snd ((D).f i) ((D).f j) ≫ (E j).inv :=
+  inverseProjection (O i j) (E j) _ _
+    (originalDegreeVeroneseAffineOverlapIso_hom_snd B q i j)
+
+/-- The chart maps from the original Proj agree on the actual intersections. -/
+theorem originalDegreeVeroneseForwardChartCompatibility (i j : I) :
+    pullback.fst ((C).f i) ((C).f j) ≫ (E i).hom ≫ (D).f i =
+      pullback.snd ((C).f i) ((C).f j) ≫ (E j).hom ≫ (D).f j := by
+  rw [← originalDegreeVeroneseAffineOverlapIso_hom_fst_assoc B q i j,
+    ← originalDegreeVeroneseAffineOverlapIso_hom_snd_assoc B q i j, pullback.condition]
+
+/-- The inverse chart maps agree on the actual intersections. -/
+theorem originalDegreeVeroneseInverseChartCompatibility (i j : I) :
+    pullback.fst ((D).f i) ((D).f j) ≫ (E i).inv ≫ (C).f i =
+      pullback.snd ((D).f i) ((D).f j) ≫ (E j).inv ≫ (C).f j := by
+  rw [← originalDegreeVeroneseAffineOverlapIso_inv_fst_assoc B q i j,
+    ← originalDegreeVeroneseAffineOverlapIso_inv_snd_assoc B q i j, pullback.condition]
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseAffineOverlapIso_inv_fst
+#print axioms LinearStudy.originalDegreeVeroneseAffineOverlapIso_inv_fst
+#check LinearStudy.originalDegreeVeroneseAffineOverlapIso_inv_snd
+#print axioms LinearStudy.originalDegreeVeroneseAffineOverlapIso_inv_snd
+#check LinearStudy.originalDegreeVeroneseForwardChartCompatibility
+#print axioms LinearStudy.originalDegreeVeroneseForwardChartCompatibility
+#check LinearStudy.originalDegreeVeroneseInverseChartCompatibility
+#print axioms LinearStudy.originalDegreeVeroneseInverseChartCompatibility
+
+
+===== Linear.OriginalDegreeVeroneseProjGlue =====
+module
+public import Linear.OriginalDegreeVeroneseGlueCompatibility
+public import Mathlib.AlgebraicGeometry.Gluing
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization AlgebraicGeometry CategoryTheory
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseProjGlueGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+local notation "I" => OriginalDegreeVeroneseChartIndex B q
+local notation "C" => originalDegreeVeroneseAmbientAffineCover B q
+local notation "D" => originalDegreeVeroneseRegradedAffineCover B q
+local notation "E" => originalDegreeVeroneseIndexedAffineIso B q
+
+/-- Glue the original-to-Veronese maps on the common affine cover. -/
+def originalDegreeVeroneseProjHom : Proj B ⟶ Proj P :=
+  (C).openCover.glueMorphisms
+    (fun i => (E i).hom ≫ (D).f i)
+    (originalDegreeVeroneseForwardChartCompatibility B q)
+
+/-- Glue the Veronese-to-original maps on the common affine cover. -/
+def originalDegreeVeroneseProjInv : Proj P ⟶ Proj B :=
+  (D).openCover.glueMorphisms
+    (fun i => (E i).inv ≫ (C).f i)
+    (originalDegreeVeroneseInverseChartCompatibility B q)
+
+@[reassoc]
+theorem originalDegreeVeroneseProjHom_onChart (i : I) :
+    (C).f i ≫ originalDegreeVeroneseProjHom B q =
+      (E i).hom ≫ (D).f i :=
+  (C).openCover.ι_glueMorphisms _ _ i
+
+@[reassoc]
+theorem originalDegreeVeroneseProjInv_onChart (i : I) :
+    (D).f i ≫ originalDegreeVeroneseProjInv B q =
+      (E i).inv ≫ (C).f i :=
+  (D).openCover.ι_glueMorphisms _ _ i
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseProjHom
+#print axioms LinearStudy.originalDegreeVeroneseProjHom
+#check LinearStudy.originalDegreeVeroneseProjInv
+#print axioms LinearStudy.originalDegreeVeroneseProjInv
+#check LinearStudy.originalDegreeVeroneseProjHom_onChart
+#print axioms LinearStudy.originalDegreeVeroneseProjHom_onChart
+#check LinearStudy.originalDegreeVeroneseProjInv_onChart
+#print axioms LinearStudy.originalDegreeVeroneseProjInv_onChart
+
+
+===== Linear.OriginalDegreeVeroneseProjIso =====
+module
+public import Linear.OriginalDegreeVeroneseProjGlue
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open HomogeneousLocalization AlgebraicGeometry CategoryTheory
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseProjIsoGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+
+local notation "I" => OriginalDegreeVeroneseChartIndex B q
+local notation "C" => originalDegreeVeroneseAmbientAffineCover B q
+local notation "D" => originalDegreeVeroneseRegradedAffineCover B q
+local notation "E" => originalDegreeVeroneseIndexedAffineIso B q
+local notation "F" => originalDegreeVeroneseProjHom B q
+local notation "G" => originalDegreeVeroneseProjInv B q
+
+theorem originalDegreeVeroneseProjHom_comp_Inv : F ≫ G = 𝟙 (Proj B) := by
+  apply (C).openCover.hom_ext
+  intro i
+  change (C).f i ≫ F ≫ G = (C).f i ≫ 𝟙 (Proj B)
+  rw [originalDegreeVeroneseProjHom_onChart_assoc B q i,
+    originalDegreeVeroneseProjInv_onChart B q i, Iso.hom_inv_id_assoc, Category.comp_id]
+
+theorem originalDegreeVeroneseProjInv_comp_Hom : G ≫ F = 𝟙 (Proj P) := by
+  apply (D).openCover.hom_ext
+  intro i
+  change (D).f i ≫ G ≫ F = (D).f i ≫ 𝟙 (Proj P)
+  rw [originalDegreeVeroneseProjInv_onChart_assoc B q i,
+    originalDegreeVeroneseProjHom_onChart B q i, Iso.inv_hom_id_assoc, Category.comp_id]
+
+/-- The original Proj and the degree-q Veronese Proj are isomorphic
+as schemes via the exact common chart fraction maps. -/
+def originalDegreeVeroneseProjIso : Proj B ≅ Proj P where
+  hom := F
+  inv := G
+  hom_inv_id := originalDegreeVeroneseProjHom_comp_Inv B q
+  inv_hom_id := originalDegreeVeroneseProjInv_comp_Hom B q
+
+@[reassoc]
+theorem originalDegreeVeroneseProjIso_hom_onChart (i : I) :
+    (C).f i ≫ (originalDegreeVeroneseProjIso B q).hom = (E i).hom ≫ (D).f i :=
+  originalDegreeVeroneseProjHom_onChart B q i
+
+@[reassoc]
+theorem originalDegreeVeroneseProjIso_inv_onChart (i : I) :
+    (D).f i ≫ (originalDegreeVeroneseProjIso B q).inv = (E i).inv ≫ (C).f i :=
+  originalDegreeVeroneseProjInv_onChart B q i
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseProjHom_comp_Inv
+#print axioms LinearStudy.originalDegreeVeroneseProjHom_comp_Inv
+#check LinearStudy.originalDegreeVeroneseProjInv_comp_Hom
+#print axioms LinearStudy.originalDegreeVeroneseProjInv_comp_Hom
+#check LinearStudy.originalDegreeVeroneseProjIso
+#print axioms LinearStudy.originalDegreeVeroneseProjIso
+#check LinearStudy.originalDegreeVeroneseProjIso_hom_onChart
+#print axioms LinearStudy.originalDegreeVeroneseProjIso_hom_onChart
+#check LinearStudy.originalDegreeVeroneseProjIso_inv_onChart
+#print axioms LinearStudy.originalDegreeVeroneseProjIso_inv_onChart
+

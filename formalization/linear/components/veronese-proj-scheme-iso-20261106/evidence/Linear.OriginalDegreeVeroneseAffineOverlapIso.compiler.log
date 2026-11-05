@@ -1,0 +1,30 @@
+LinearStudy.originalDegreeVeroneseAffineOverlapIso.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)]
+  (i j : LinearStudy.OriginalDegreeVeroneseChartIndex B q) :
+  CategoryTheory.Limits.pullback ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f i)
+      ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f j) ≅
+    CategoryTheory.Limits.pullback ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f i)
+      ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f j)
+'LinearStudy.originalDegreeVeroneseAffineOverlapIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseAffineOverlapIso_hom_fst.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)]
+  (i j : LinearStudy.OriginalDegreeVeroneseChartIndex B q) :
+  CategoryTheory.CategoryStruct.comp (LinearStudy.originalDegreeVeroneseAffineOverlapIso B q i j).hom
+      (CategoryTheory.Limits.pullback.fst ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f i)
+        ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f j)) =
+    CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.pullback.fst ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f i)
+        ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f j))
+      (LinearStudy.originalDegreeVeroneseIndexedAffineIso B q i).hom
+'LinearStudy.originalDegreeVeroneseAffineOverlapIso_hom_fst' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseAffineOverlapIso_hom_snd.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)]
+  (i j : LinearStudy.OriginalDegreeVeroneseChartIndex B q) :
+  CategoryTheory.CategoryStruct.comp (LinearStudy.originalDegreeVeroneseAffineOverlapIso B q i j).hom
+      (CategoryTheory.Limits.pullback.snd ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f i)
+        ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f j)) =
+    CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.pullback.snd ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f i)
+        ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f j))
+      (LinearStudy.originalDegreeVeroneseIndexedAffineIso B q j).hom
+'LinearStudy.originalDegreeVeroneseAffineOverlapIso_hom_snd' depends on axioms: [propext, Classical.choice, Quot.sound]

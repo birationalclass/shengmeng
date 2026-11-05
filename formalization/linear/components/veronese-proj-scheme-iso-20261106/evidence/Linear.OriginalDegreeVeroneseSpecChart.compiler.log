@@ -1,0 +1,17 @@
+LinearStudy.originalDegreeVeroneseSpecChartIso.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {d : ℕ}
+  {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) :
+  AlgebraicGeometry.Spec (LinearStudy.originalDegreeVeroneseBundledAmbientChart B q f) ≅
+    AlgebraicGeometry.Spec (LinearStudy.originalDegreeVeroneseBundledChart B q f)
+'LinearStudy.originalDegreeVeroneseSpecChartIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseSpecChartSquare.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {d e : ℕ}
+  {f g x : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) (hx : x = f * g) (hxS : ↑x = ↑f * ↑g)
+  (hxP : x ∈ LinearStudy.originalDegreeVeronesePiece B q (d + e)) :
+  CategoryTheory.CategoryStruct.comp
+      (AlgebraicGeometry.Spec.map (LinearStudy.originalDegreeVeroneseBundledAmbientRes B q hg hxS))
+      (LinearStudy.originalDegreeVeroneseSpecChartIso B q hf).hom =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.originalDegreeVeroneseSpecChartIso B q hxP).hom
+      (AlgebraicGeometry.Spec.map (LinearStudy.originalDegreeVeroneseBundledChartRes B q hg hx))
+'LinearStudy.originalDegreeVeroneseSpecChartSquare' depends on axioms: [propext, Classical.choice, Quot.sound]

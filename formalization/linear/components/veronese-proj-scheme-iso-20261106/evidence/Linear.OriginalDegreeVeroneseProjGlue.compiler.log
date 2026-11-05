@@ -1,0 +1,24 @@
+LinearStudy.originalDegreeVeroneseProjHom.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] :
+  AlgebraicGeometry.Proj B ⟶ AlgebraicGeometry.Proj (LinearStudy.originalDegreeVeronesePiece B q)
+'LinearStudy.originalDegreeVeroneseProjHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseProjInv.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] :
+  AlgebraicGeometry.Proj (LinearStudy.originalDegreeVeronesePiece B q) ⟶ AlgebraicGeometry.Proj B
+'LinearStudy.originalDegreeVeroneseProjInv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseProjHom_onChart.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)]
+  (i : LinearStudy.OriginalDegreeVeroneseChartIndex B q) :
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f i)
+      (LinearStudy.originalDegreeVeroneseProjHom B q) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.originalDegreeVeroneseIndexedAffineIso B q i).hom
+      ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f i)
+'LinearStudy.originalDegreeVeroneseProjHom_onChart' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseProjInv_onChart.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+  (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)]
+  (i : LinearStudy.OriginalDegreeVeroneseChartIndex B q) :
+  CategoryTheory.CategoryStruct.comp ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f i)
+      (LinearStudy.originalDegreeVeroneseProjInv B q) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.originalDegreeVeroneseIndexedAffineIso B q i).inv
+      ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f i)
+'LinearStudy.originalDegreeVeroneseProjInv_onChart' depends on axioms: [propext, Classical.choice, Quot.sound]

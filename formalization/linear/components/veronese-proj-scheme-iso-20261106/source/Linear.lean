@@ -1,0 +1,10 @@
+module
+public import Linear.OriginalDegreeVeroneseAffineCover
+public import Linear.OriginalDegreeVeroneseAffineOverlap
+public import Linear.OriginalDegreeVeroneseAffineOverlapIso
+public import Linear.OriginalDegreeVeroneseGlueCompatibility
+public import Linear.OriginalDegreeVeroneseOverlapProjection
+public import Linear.OriginalDegreeVeroneseProjGlue
+public import Linear.OriginalDegreeVeroneseProjIso
+public import Linear.OriginalDegreeVeroneseSpecChart
+public import Linear.OriginalDegreeVeroneseSpecChartRingSquare

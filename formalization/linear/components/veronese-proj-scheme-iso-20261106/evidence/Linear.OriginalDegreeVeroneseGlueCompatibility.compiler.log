@@ -1,0 +1,50 @@
+LinearStudy.originalDegreeVeroneseAffineOverlapIso_inv_fst.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)]
+  (i j : LinearStudy.OriginalDegreeVeroneseChartIndex B q) :
+  CategoryTheory.CategoryStruct.comp (LinearStudy.originalDegreeVeroneseAffineOverlapIso B q i j).inv
+      (CategoryTheory.Limits.pullback.fst ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f i)
+        ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f j)) =
+    CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.pullback.fst ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f i)
+        ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f j))
+      (LinearStudy.originalDegreeVeroneseIndexedAffineIso B q i).inv
+'LinearStudy.originalDegreeVeroneseAffineOverlapIso_inv_fst' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseAffineOverlapIso_inv_snd.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)]
+  (i j : LinearStudy.OriginalDegreeVeroneseChartIndex B q) :
+  CategoryTheory.CategoryStruct.comp (LinearStudy.originalDegreeVeroneseAffineOverlapIso B q i j).inv
+      (CategoryTheory.Limits.pullback.snd ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f i)
+        ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f j)) =
+    CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.pullback.snd ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f i)
+        ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f j))
+      (LinearStudy.originalDegreeVeroneseIndexedAffineIso B q j).inv
+'LinearStudy.originalDegreeVeroneseAffineOverlapIso_inv_snd' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseForwardChartCompatibility.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)]
+  (i j : LinearStudy.OriginalDegreeVeroneseChartIndex B q) :
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.pullback.fst ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f i)
+        ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f j))
+      (CategoryTheory.CategoryStruct.comp (LinearStudy.originalDegreeVeroneseIndexedAffineIso B q i).hom
+        ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f i)) =
+    CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.pullback.snd ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f i)
+        ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f j))
+      (CategoryTheory.CategoryStruct.comp (LinearStudy.originalDegreeVeroneseIndexedAffineIso B q j).hom
+        ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f j))
+'LinearStudy.originalDegreeVeroneseForwardChartCompatibility' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseInverseChartCompatibility.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)]
+  (i j : LinearStudy.OriginalDegreeVeroneseChartIndex B q) :
+  CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.pullback.fst ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f i)
+        ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f j))
+      (CategoryTheory.CategoryStruct.comp (LinearStudy.originalDegreeVeroneseIndexedAffineIso B q i).inv
+        ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f i)) =
+    CategoryTheory.CategoryStruct.comp
+      (CategoryTheory.Limits.pullback.snd ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f i)
+        ((LinearStudy.originalDegreeVeroneseRegradedAffineCover B q).f j))
+      (CategoryTheory.CategoryStruct.comp (LinearStudy.originalDegreeVeroneseIndexedAffineIso B q j).inv
+        ((LinearStudy.originalDegreeVeroneseAmbientAffineCover B q).f j))
+'LinearStudy.originalDegreeVeroneseInverseChartCompatibility' depends on axioms: [propext, Classical.choice, Quot.sound]
