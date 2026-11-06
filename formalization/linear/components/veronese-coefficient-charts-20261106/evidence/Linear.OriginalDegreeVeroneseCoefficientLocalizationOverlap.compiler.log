@@ -1,0 +1,15 @@
+Linear\OriginalDegreeVeroneseCoefficientLocalizationOverlap.lean:47:0: warning: Definition `originalDegreeVeroneseCoefficientLocalization_overlap` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+LinearStudy.originalDegreeVeroneseCoefficientLocalization_overlap.{u, v, w} {K : Type u} {S : Type v} {M : Type w}
+  [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M] (B : ℕ → Submodule K S)
+  [GradedAlgebra B] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  (f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (z : LocalizedModule (Submonoid.powers f) ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) :
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q (f * g)
+      ((LinearStudy.originalLocalizedModuleAwayOverlap f g) z) =
+    (LinearStudy.originalLocalizedModuleAwayOverlap ↑f ↑g)
+      (LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f z)
+'LinearStudy.originalDegreeVeroneseCoefficientLocalization_overlap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

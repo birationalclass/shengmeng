@@ -1,0 +1,19 @@
+LinearStudy.originalDegreeVeroneseCoefficientNumerator_image.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (B : ℕ → Submodule K S) [GradedAlgebra B]
+  (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q d n : ℕ) (k : ℤ) :
+  (fun a => ↑a) ''
+      ↑(LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k ↑(n * d)) =
+    ↑(LinearStudy.integerGradingShift D (↑q * k) ↑(n * (q * d)))
+'LinearStudy.originalDegreeVeroneseCoefficientNumerator_image' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_pow.{u} {K S M : Type u} [Field K] [CommRing S]
+  [Algebra K S] [AddCommGroup M] [Module K M] [Module S M] (B : ℕ → Submodule K S) [GradedAlgebra B]
+  (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (n : ℕ)
+  (a : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) :
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f (LocalizedModule.mk a ⟨f ^ n, ⋯⟩) =
+    LocalizedModule.mk ↑a ⟨↑f ^ n, ⋯⟩
+'LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_pow' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

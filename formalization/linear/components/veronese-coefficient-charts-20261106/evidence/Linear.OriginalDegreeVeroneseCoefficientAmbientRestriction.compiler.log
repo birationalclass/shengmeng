@@ -1,0 +1,10 @@
+LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction.{u} {K S M : Type u} [Field K] [CommRing S]
+  [Algebra K S] [AddCommGroup M] [Module K M] [Module S M] (B : ℕ → Submodule K S) [GradedAlgebra B]
+  (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) {d e : ℕ}
+  {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) (k : ℤ)
+  (x : ↥(LinearStudy.originalDegreeVeroneseAmbientCoefficientChart B D q d f k)) :
+  ↥(LinearStudy.originalDegreeVeroneseAmbientCoefficientChart B D q (d + e) (f * g) k)
+'LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

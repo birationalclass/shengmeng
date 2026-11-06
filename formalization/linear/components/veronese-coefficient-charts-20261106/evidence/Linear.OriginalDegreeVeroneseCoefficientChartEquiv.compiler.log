@@ -1,0 +1,8 @@
+LinearStudy.originalDegreeVeroneseCoefficientChartEquiv.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (B : ℕ → Submodule K S) [GradedAlgebra B]
+  (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [hq : Fact (0 < q)]
+  {d : ℕ} {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) (k : ℤ) :
+  ↑↑(LinearStudy.originalDegreeVeroneseCoefficientRegradedChart B D hD q d f k) ≃
+    ↑↑(LinearStudy.nativeGradedModuleAwayDegreeZero B (LinearStudy.integerGradingShift D (↑q * k)) (q * d) ↑f)
+'LinearStudy.originalDegreeVeroneseCoefficientChartEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]

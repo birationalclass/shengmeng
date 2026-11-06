@@ -1,0 +1,20 @@
+LinearStudy.originalDegreeVeroneseCoefficientDenominator_mul.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (s t : ↥(Submonoid.powers f)) :
+  LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f (s * t) =
+    LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f s *
+      LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f t
+'LinearStudy.originalDegreeVeroneseCoefficientDenominator_mul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_smul.{u, v, w} {K : Type u} {S : Type v} {M : Type w}
+  [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M] (B : ℕ → Submodule K S)
+  [GradedAlgebra B] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  (f c : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (s : ↥(Submonoid.powers f))
+  (x : LocalizedModule (Submonoid.powers f) ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) :
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f (Localization.mk c s • x) =
+    Localization.mk (↑c) (LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f s) •
+      LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f x
+'LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_smul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

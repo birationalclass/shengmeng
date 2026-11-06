@@ -1,0 +1,15 @@
+LinearStudy.originalDegreeVeroneseChartNumeratorDegree (q d n : ℕ) (k : ℤ) :
+  ↑q * (↑n * ↑d + k) = ↑(n * (q * d)) + ↑q * k
+'LinearStudy.originalDegreeVeroneseChartNumeratorDegree' depends on axioms: [propext]
+LinearStudy.originalDegreeVeroneseChartNumerator_mem_iff.{u, v, w} {K : Type u} {S : Type v} {M : Type w} [Field K]
+  [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (B : ℕ → Submodule K S)
+  [GradedAlgebra B] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d))
+  (q d n : ℕ) (k : ℤ) (a : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) :
+  a ∈ LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q (↑n * ↑d + k) ↔ ↑a ∈ D (↑(n * (q * d)) + ↑q * k)
+'LinearStudy.originalDegreeVeroneseChartNumerator_mem_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseChartNumerator_exists.{u, v, w} {K : Type u} {S : Type v} {M : Type w} [Field K]
+  [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (B : ℕ → Submodule K S)
+  [GradedAlgebra B] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d))
+  (q d n : ℕ) (k : ℤ) (a : M) (ha : a ∈ D (↑(n * (q * d)) + ↑q * k)) :
+  ∃ b, ↑b = a ∧ b ∈ LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q (↑n * ↑d + k)
+'LinearStudy.originalDegreeVeroneseChartNumerator_exists' depends on axioms: [propext, Classical.choice, Quot.sound]

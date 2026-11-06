@@ -1,0 +1,31 @@
+Linear\OriginalDegreeVeroneseCoefficientChartFraction.lean:27:0: warning: Definition `originalDegreeVeroneseCoefficientShiftedAction` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+Linear\OriginalDegreeVeroneseCoefficientChartFraction.lean:36:0: warning: Definition `originalDegreeVeroneseCoefficientRegradedChart_exists_fraction` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+LinearStudy.originalDegreeVeroneseCoefficientShiftedAction.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (B : ℕ → Submodule K S) [GradedAlgebra B]
+  (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [hq : Fact (0 < q)]
+  (k : ℤ) (n : ℕ) (d : ℤ) (c : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (hc : c ∈ LinearStudy.originalDegreeVeronesePiece B q n)
+  (x : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q))
+  (hx : x ∈ LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k d) :
+  c • x ∈ LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k (↑n + d)
+'LinearStudy.originalDegreeVeroneseCoefficientShiftedAction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseCoefficientRegradedChart_exists_fraction.{u} {K S M : Type u} [Field K] [CommRing S]
+  [Algebra K S] [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (B : ℕ → Submodule K S)
+  [GradedAlgebra B] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  [hq : Fact (0 < q)] (k : ℤ) (d : ℕ) (a : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (ha : a ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (x : LocalizedModule (Submonoid.powers a) ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q))
+  (hx :
+    x ∈
+      LinearStudy.nativeGradedModuleAwayDegreeZero (LinearStudy.originalDegreeVeronesePiece B q)
+        (LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k) d a) :
+  ∃ n,
+    ∃ m ∈ LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k ↑(n * d),
+      x = LocalizedModule.mk m ⟨a ^ n, ⋯⟩
+'LinearStudy.originalDegreeVeroneseCoefficientRegradedChart_exists_fraction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

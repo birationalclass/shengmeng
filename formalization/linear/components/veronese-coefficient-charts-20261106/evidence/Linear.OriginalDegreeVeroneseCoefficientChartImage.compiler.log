@@ -1,0 +1,18 @@
+Linear\OriginalDegreeVeroneseCoefficientChartImage.lean:34:0: warning: Definition `originalDegreeVeroneseCoefficientChartImage` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+LinearStudy.originalDegreeVeroneseAmbientCoefficientChart.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup M] [Module K M] [Module S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M) (q d : ℕ)
+  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (k : ℤ) :
+  Submodule (HomogeneousLocalization.Away B ↑f) (LocalizedModule (Submonoid.powers ↑f) M)
+'LinearStudy.originalDegreeVeroneseAmbientCoefficientChart' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseCoefficientChartImage.{u} {K S M : Type u} [Field K] [CommRing S] [Algebra K S]
+  [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (B : ℕ → Submodule K S) [GradedAlgebra B]
+  (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [hq : Fact (0 < q)]
+  {d : ℕ} {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) (k : ℤ) :
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f ''
+      ↑(LinearStudy.nativeGradedModuleAwayDegreeZero (LinearStudy.originalDegreeVeronesePiece B q)
+          (LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k) d f) =
+    ↑(LinearStudy.nativeGradedModuleAwayDegreeZero B (LinearStudy.integerGradingShift D (↑q * k)) (q * d) ↑f)
+'LinearStudy.originalDegreeVeroneseCoefficientChartImage' depends on axioms: [propext, Classical.choice, Quot.sound]

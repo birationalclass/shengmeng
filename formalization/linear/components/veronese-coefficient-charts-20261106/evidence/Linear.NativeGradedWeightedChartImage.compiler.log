@@ -1,0 +1,11 @@
+LinearStudy.nativeGradedWeightedChart_image.{u} {K R T X Y : Type u} [Field K] [CommRing R] [CommRing T] [Algebra K R]
+  [Algebra K T] [AddCommGroup X] [AddCommGroup Y] [Module K X] [Module K Y] [Module R X] [Module T Y]
+  (A : ℕ → Submodule K R) (A' : ℕ → Submodule K T) [GradedAlgebra A] [GradedAlgebra A'] (D : ℤ → Submodule K X)
+  (D' : ℤ → Submodule K Y) (hD : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j))
+  (hD' : ∀ (n : ℕ) (j : ℤ), ∀ c ∈ A' n, ∀ y ∈ D' j, c • y ∈ D' (↑n + j)) (d e : ℕ) (a : R) (b : T) (ha : a ∈ A d)
+  (hb : b ∈ A' e) (i : X → Y) (hi : ∀ (n : ℕ), i '' ↑(D ↑(n * d)) = ↑(D' ↑(n * e)))
+  (φ : LocalizedModule (Submonoid.powers a) X → LocalizedModule (Submonoid.powers b) Y)
+  (hφ : ∀ (n : ℕ) (x : X), φ (LocalizedModule.mk x ⟨a ^ n, ⋯⟩) = LocalizedModule.mk (i x) ⟨b ^ n, ⋯⟩) :
+  φ '' ↑(LinearStudy.nativeGradedModuleAwayDegreeZero A D d a) =
+    ↑(LinearStudy.nativeGradedModuleAwayDegreeZero A' D' e b)
+'LinearStudy.nativeGradedWeightedChart_image' depends on axioms: [propext, Classical.choice, Quot.sound]

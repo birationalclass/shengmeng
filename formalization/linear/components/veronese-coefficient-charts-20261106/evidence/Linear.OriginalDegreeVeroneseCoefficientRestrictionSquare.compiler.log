@@ -1,0 +1,13 @@
+LinearStudy.originalDegreeVeroneseCoefficientRestriction_square.{u} {K S M : Type u} [Field K] [CommRing S]
+  [Algebra K S] [AddCommGroup M] [Module K M] [Module S M] [IsScalarTower K S M] (B : ℕ → Submodule K S)
+  [GradedAlgebra B] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  [hq : Fact (0 < q)] {d e : ℕ} {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e)
+  (k : ℤ) (x : ↥(LinearStudy.originalDegreeVeroneseCoefficientRegradedChart B D hD q d f k)) :
+  (LinearStudy.originalDegreeVeroneseCoefficientChartEquiv B D hD q ⋯ k)
+      ((LinearStudy.originalDegreeVeroneseCoefficientRegradedRestriction B D hD q hf hg k) x) =
+    LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction B D hD q hf hg k
+      ((LinearStudy.originalDegreeVeroneseCoefficientChartEquiv B D hD q hf k) x)
+'LinearStudy.originalDegreeVeroneseCoefficientRestriction_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

@@ -1,0 +1,1072 @@
+@LinearStudy.originalDegreeVeroneseCoefficient : {K : Type u_1} →
+  {S : Type u_2} →
+    {M : Type u_3} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] →
+          [inst_2 : Algebra K S] →
+            [inst_3 : AddCommGroup M] →
+              [inst_4 : Module K M] →
+                [inst_5 : Module S M] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_6 : GradedAlgebra B] →
+                      (D : ℤ → Submodule K M) →
+                        (∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                          (q : ℕ) → Submodule (↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) M
+'LinearStudy.originalDegreeVeroneseCoefficient' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficient_mem_of_mem : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] (B : ℕ → Submodule K S) [inst_6 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) (j : ℤ) {x : M},
+  x ∈ D (↑q * j) → x ∈ LinearStudy.originalDegreeVeroneseCoefficient B D hD q
+'LinearStudy.originalDegreeVeroneseCoefficient_mem_of_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientPiece : {K : Type u_1} →
+  {S : Type u_2} →
+    {M : Type u_3} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] →
+          [inst_2 : Algebra K S] →
+            [inst_3 : AddCommGroup M] →
+              [inst_4 : Module K M] →
+                [inst_5 : Module S M] →
+                  [inst_6 : IsScalarTower K S M] →
+                    (B : ℕ → Submodule K S) →
+                      [inst_7 : GradedAlgebra B] →
+                        (D : ℤ → Submodule K M) →
+                          (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                            (q : ℕ) → ℤ → Submodule K ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)
+'LinearStudy.originalDegreeVeroneseCoefficientPiece' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientPiece_mem_iff : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] [inst_6 : IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B]
+  (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) (j : ℤ)
+  (x : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)),
+  x ∈ LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q j ↔ ↑x ∈ D (↑q * j)
+'LinearStudy.originalDegreeVeroneseCoefficientPiece_mem_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficient_smul_homogeneous : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] [inst_6 : IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B]
+  (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q n : ℕ) (j : ℤ),
+  ∀ c ∈ LinearStudy.originalDegreeVeronesePiece B q n,
+    ∀ x ∈ LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q j,
+      c • x ∈ LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q (↑n + j)
+'LinearStudy.originalDegreeVeroneseCoefficient_smul_homogeneous' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.originalDegreeVeroneseChartNumeratorDegree : ∀ (q d n : ℕ) (k : ℤ),
+  ↑q * (↑n * ↑d + k) = ↑(n * (q * d)) + ↑q * k
+'LinearStudy.originalDegreeVeroneseChartNumeratorDegree' depends on axioms: [propext]
+@LinearStudy.originalDegreeVeroneseChartNumerator_mem_iff : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] [inst_6 : IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B]
+  (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q d n : ℕ) (k : ℤ)
+  (a : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)),
+  a ∈ LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q (↑n * ↑d + k) ↔ ↑a ∈ D (↑(n * (q * d)) + ↑q * k)
+'LinearStudy.originalDegreeVeroneseChartNumerator_mem_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseChartNumerator_exists : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] [inst_6 : IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B]
+  (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q d n : ℕ) (k : ℤ),
+  ∀ a ∈ D (↑(n * (q * d)) + ↑q * k),
+    ∃ (b : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)),
+      ↑b = a ∧ b ∈ LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q (↑n * ↑d + k)
+'LinearStudy.originalDegreeVeroneseChartNumerator_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientDenominator : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) →
+                (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) → ↥(Submonoid.powers f) → ↥(Submonoid.powers ↑f)
+'LinearStudy.originalDegreeVeroneseCoefficientDenominator' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientDenominator_surjective : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)),
+  Function.Surjective (LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f)
+'LinearStudy.originalDegreeVeroneseCoefficientDenominator_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientLocalization : {K : Type u_1} →
+  {S : Type u_2} →
+    {M : Type u_3} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] →
+          [inst_2 : Algebra K S] →
+            [inst_3 : AddCommGroup M] →
+              [inst_4 : Module K M] →
+                [inst_5 : Module S M] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_6 : GradedAlgebra B] →
+                      (D : ℤ → Submodule K M) →
+                        (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                          (q : ℕ) →
+                            (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                              LocalizedModule (Submonoid.powers f)
+                                  ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q) →
+                                LocalizedModule (Submonoid.powers ↑f) M
+'LinearStudy.originalDegreeVeroneseCoefficientLocalization' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] (B : ℕ → Submodule K S) [inst_6 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (a : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q))
+  (s : ↥(Submonoid.powers f)),
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f (LocalizedModule.mk a s) =
+    LocalizedModule.mk (↑a) (LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f s)
+'LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientLocalization_injective : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] (B : ℕ → Submodule K S) [inst_6 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)),
+  Function.Injective (LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f)
+'LinearStudy.originalDegreeVeroneseCoefficientLocalization_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientDenominator_mul : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (s t : ↥(Submonoid.powers f)),
+  LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f (s * t) =
+    LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f s *
+      LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f t
+'LinearStudy.originalDegreeVeroneseCoefficientDenominator_mul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_smul : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] (B : ℕ → Submodule K S) [inst_6 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  (f c : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (s : ↥(Submonoid.powers f))
+  (x : LocalizedModule (Submonoid.powers f) ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)),
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f (Localization.mk c s • x) =
+    Localization.mk (↑c) (LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f s) •
+      LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f x
+'LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_smul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localizedFractionMap_add : ∀ {R : Type u_1} {T : Type u_2} {X : Type u_3} {Y : Type u_4}
+  [inst : CommSemiring R] [inst_1 : CommSemiring T] [inst_2 : AddCommMonoid X] [inst_3 : AddCommMonoid Y]
+  [inst_4 : Module R X] [inst_5 : Module T Y] {U : Submonoid R} {U' : Submonoid T}
+  (φ : LocalizedModule U X → LocalizedModule U' Y) (i : X →+ Y) (δ : ↥U → ↥U'),
+  (∀ (s t : ↥U), δ (s * t) = δ s * δ t) →
+    (∀ (s : ↥U) (a : X), i (s • a) = δ s • i a) →
+      (∀ (a : X) (s : ↥U), φ (LocalizedModule.mk a s) = LocalizedModule.mk (i a) (δ s)) →
+        ∀ (x y : LocalizedModule U X), φ (x + y) = φ x + φ y
+'LinearStudy.localizedFractionMap_add' depends on axioms: [propext, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientInclAdd : {K : Type u_1} →
+  {S : Type u_2} →
+    {M : Type u_3} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] →
+          [inst_2 : Algebra K S] →
+            [inst_3 : AddCommGroup M] →
+              [inst_4 : Module K M] →
+                [inst_5 : Module S M] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_6 : GradedAlgebra B] →
+                      (D : ℤ → Submodule K M) →
+                        (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                          (q : ℕ) → ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q) →+ M
+'LinearStudy.originalDegreeVeroneseCoefficientInclAdd' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientInclAdd_denominator_smul : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] (B : ℕ → Submodule K S) [inst_6 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (s : ↥(Submonoid.powers f))
+  (a : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)),
+  (LinearStudy.originalDegreeVeroneseCoefficientInclAdd B D hD q) (s • a) =
+    LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f s •
+      (LinearStudy.originalDegreeVeroneseCoefficientInclAdd B D hD q) a
+'LinearStudy.originalDegreeVeroneseCoefficientInclAdd_denominator_smul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientLocalization_add : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] (B : ℕ → Submodule K S) [inst_6 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (x y : LocalizedModule (Submonoid.powers f) ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)),
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f (x + y) =
+    LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f x +
+      LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f y
+'LinearStudy.originalDegreeVeroneseCoefficientLocalization_add' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientChartImageGraded : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q)
+'LinearStudy.originalDegreeVeroneseCoefficientChartImageGraded' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientRegradedChart : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              [IsScalarTower K S M] →
+                (B : ℕ → Submodule K S) →
+                  [inst_7 : GradedAlgebra B] →
+                    (D : ℤ → Submodule K M) →
+                      (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                        (q : ℕ) →
+                          [hq : Fact (0 < q)] →
+                            ℕ →
+                              (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                                ℤ →
+                                  Submodule
+                                    (HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f)
+                                    (LocalizedModule (Submonoid.powers f)
+                                      ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q))
+'LinearStudy.originalDegreeVeroneseCoefficientRegradedChart' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientChartFractionGraded : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q)
+'LinearStudy.originalDegreeVeroneseCoefficientChartFractionGraded' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientShiftedAction : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  [inst_6 : IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [hq : Fact (0 < q)] (k : ℤ) (n : ℕ)
+  (d : ℤ),
+  ∀ c ∈ LinearStudy.originalDegreeVeronesePiece B q n,
+    ∀ x ∈ LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k d,
+      c • x ∈ LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k (↑n + d)
+'LinearStudy.originalDegreeVeroneseCoefficientShiftedAction' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientRegradedChart_exists_fraction : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  [inst_6 : IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [hq : Fact (0 < q)] (k : ℤ) (d : ℕ),
+  ∀ a ∈ LinearStudy.originalDegreeVeronesePiece B q d,
+    ∀
+      x ∈
+        LinearStudy.nativeGradedModuleAwayDegreeZero (LinearStudy.originalDegreeVeronesePiece B q)
+          (LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k) d a,
+      ∃ (n : ℕ),
+        ∃ m ∈ LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k ↑(n * d),
+          x = LocalizedModule.mk m ⟨a ^ n, ⋯⟩
+'LinearStudy.originalDegreeVeroneseCoefficientRegradedChart_exists_fraction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.nativeGradedWeightedChart_image : ∀ {K R T X Y : Type u_1} [inst : Field K] [inst_1 : CommRing R]
+  [inst_2 : CommRing T] [inst_3 : Algebra K R] [inst_4 : Algebra K T] [inst_5 : AddCommGroup X]
+  [inst_6 : AddCommGroup Y] [inst_7 : Module K X] [inst_8 : Module K Y] [inst_9 : Module R X] [inst_10 : Module T Y]
+  (A : ℕ → Submodule K R) (A' : ℕ → Submodule K T) [inst_11 : GradedAlgebra A] [inst_12 : GradedAlgebra A']
+  (D : ℤ → Submodule K X) (D' : ℤ → Submodule K Y),
+  (∀ (n : ℕ) (j : ℤ), ∀ c ∈ A n, ∀ x ∈ D j, c • x ∈ D (↑n + j)) →
+    (∀ (n : ℕ) (j : ℤ), ∀ c ∈ A' n, ∀ y ∈ D' j, c • y ∈ D' (↑n + j)) →
+      ∀ (d e : ℕ) (a : R) (b : T),
+        a ∈ A d →
+          b ∈ A' e →
+            ∀ (i : X → Y),
+              (∀ (n : ℕ), i '' ↑(D ↑(n * d)) = ↑(D' ↑(n * e))) →
+                ∀ (φ : LocalizedModule (Submonoid.powers a) X → LocalizedModule (Submonoid.powers b) Y),
+                  (∀ (n : ℕ) (x : X), φ (LocalizedModule.mk x ⟨a ^ n, ⋯⟩) = LocalizedModule.mk (i x) ⟨b ^ n, ⋯⟩) →
+                    φ '' ↑(LinearStudy.nativeGradedModuleAwayDegreeZero A D d a) =
+                      ↑(LinearStudy.nativeGradedModuleAwayDegreeZero A' D' e b)
+'LinearStudy.nativeGradedWeightedChart_image' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientNumerator_image : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  [inst_6 : IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q d n : ℕ) (k : ℤ),
+  (fun (a : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) => ↑a) ''
+      ↑(LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k ↑(n * d)) =
+    ↑(LinearStudy.integerGradingShift D (↑q * k) ↑(n * (q * d)))
+'LinearStudy.originalDegreeVeroneseCoefficientNumerator_image' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_pow : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  (B : ℕ → Submodule K S) [inst_6 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (n : ℕ)
+  (a : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)),
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f (LocalizedModule.mk a ⟨f ^ n, ⋯⟩) =
+    LocalizedModule.mk ↑a ⟨↑f ^ n, ⋯⟩
+'LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_pow' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientNativeImageGraded : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q)
+'LinearStudy.originalDegreeVeroneseCoefficientNativeImageGraded' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseAmbientCoefficientChart : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              (B : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra B] →
+                  (ℤ → Submodule K M) →
+                    (q : ℕ) →
+                      ℕ →
+                        (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                          ℤ → Submodule (HomogeneousLocalization.Away B ↑f) (LocalizedModule (Submonoid.powers ↑f) M)
+'LinearStudy.originalDegreeVeroneseAmbientCoefficientChart' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientChartImage : ∀ {K S M : Type u_1} [inst : Field K] [inst_1 : CommRing S]
+  [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  [inst_6 : IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [hq : Fact (0 < q)] {d : ℕ}
+  {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)},
+  f ∈ LinearStudy.originalDegreeVeronesePiece B q d →
+    ∀ (k : ℤ),
+      LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f ''
+          ↑(LinearStudy.nativeGradedModuleAwayDegreeZero (LinearStudy.originalDegreeVeronesePiece B q)
+              (LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k) d f) =
+        ↑(LinearStudy.nativeGradedModuleAwayDegreeZero B (LinearStudy.integerGradingShift D (↑q * k)) (q * d) ↑f)
+'LinearStudy.originalDegreeVeroneseCoefficientChartImage' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientChartEquiv : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              [inst_6 : IsScalarTower K S M] →
+                (B : ℕ → Submodule K S) →
+                  [inst_7 : GradedAlgebra B] →
+                    (D : ℤ → Submodule K M) →
+                      (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                        (q : ℕ) →
+                          [hq : Fact (0 < q)] →
+                            {d : ℕ} →
+                              {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} →
+                                f ∈ LinearStudy.originalDegreeVeronesePiece B q d →
+                                  (k : ℤ) →
+                                    ↑↑(LinearStudy.originalDegreeVeroneseCoefficientRegradedChart B D hD q d f k) ≃
+                                      ↑↑(LinearStudy.nativeGradedModuleAwayDegreeZero B
+                                            (LinearStudy.integerGradingShift D (↑q * k)) (q * d) ↑f)
+'LinearStudy.originalDegreeVeroneseCoefficientChartEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.localizedModuleAwayOverlap_compare : ∀ {R : Type u_1} {T : Type u_2} {X : Type u_3} {Y : Type u_4}
+  [inst : CommRing R] [inst_1 : CommRing T] [inst_2 : AddCommGroup X] [inst_3 : AddCommGroup Y] [inst_4 : Module R X]
+  [inst_5 : Module T Y] (a b : R) (a' b' : T) (i : X → Y)
+  (φ : LocalizedModule (Submonoid.powers a) X → LocalizedModule (Submonoid.powers a') Y)
+  (ψ : LocalizedModule (Submonoid.powers (a * b)) X → LocalizedModule (Submonoid.powers (a' * b')) Y),
+  (∀ (n : ℕ) (x : X), φ (LocalizedModule.mk x ⟨a ^ n, ⋯⟩) = LocalizedModule.mk (i x) ⟨a' ^ n, ⋯⟩) →
+    (∀ (n : ℕ) (x : X), ψ (LocalizedModule.mk x ⟨(a * b) ^ n, ⋯⟩) = LocalizedModule.mk (i x) ⟨(a' * b') ^ n, ⋯⟩) →
+      (∀ (n : ℕ) (x : X), i (b ^ n • x) = b' ^ n • i x) →
+        ∀ (z : LocalizedModule (Submonoid.powers a) X),
+          ψ ((LinearStudy.originalLocalizedModuleAwayOverlap a b) z) =
+            (LinearStudy.originalLocalizedModuleAwayOverlap a' b') (φ z)
+'LinearStudy.localizedModuleAwayOverlap_compare' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientLocalization_overlap : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] (B : ℕ → Submodule K S) [inst_6 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  (f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (z : LocalizedModule (Submonoid.powers f) ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)),
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q (f * g)
+      ((LinearStudy.originalLocalizedModuleAwayOverlap f g) z) =
+    (LinearStudy.originalLocalizedModuleAwayOverlap ↑f ↑g)
+      (LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f z)
+'LinearStudy.originalDegreeVeroneseCoefficientLocalization_overlap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientScalarValueGraded : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q)
+'LinearStudy.originalDegreeVeroneseCoefficientScalarValueGraded' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientScalarValue_mk : ∀ {K : Type u_1} {S : Type u_2} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] (B : ℕ → Submodule K S) [inst_3 : GradedAlgebra B] (q : ℕ)
+  [hq : Fact (0 < q)] {d : ℕ} {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)}
+  (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) (n : ℕ)
+  (a : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (ha : a ∈ LinearStudy.originalDegreeVeronesePiece B q (n • d)),
+  HomogeneousLocalization.val
+      ((LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf)
+        (HomogeneousLocalization.Away.mk (LinearStudy.originalDegreeVeronesePiece B q) hf n a ha)) =
+    Localization.mk (↑a) (LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f ⟨f ^ n, ⋯⟩)
+'LinearStudy.originalDegreeVeroneseCoefficientScalarValue_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientChartScalarGraded : {K : Type u_1} →
+  {S : Type u_2} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q)
+'LinearStudy.originalDegreeVeroneseCoefficientChartScalarGraded' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.localizedModule_chartScalar_compare : ∀ {F : Type u_1} {R : Type u_2} {T : Type u_3} {X : Type u_4}
+  {Y : Type u_5} [inst : Field F] [inst_1 : CommRing R] [inst_2 : CommRing T] [inst_3 : Algebra F R]
+  [inst_4 : AddCommGroup X] [inst_5 : AddCommGroup Y] [inst_6 : Module R X] [inst_7 : Module T Y]
+  (A : ℕ → Submodule F R) [inst_8 : GradedAlgebra A] {d : ℕ} {f : R} (hf : f ∈ A d) (g : T) (i : R → T)
+  (δ : ↥(Submonoid.powers f) → ↥(Submonoid.powers g)) (χ : HomogeneousLocalization.Away A f → Localization.Away g)
+  (φ : LocalizedModule (Submonoid.powers f) X → LocalizedModule (Submonoid.powers g) Y),
+  (∀ (n : ℕ) (a : R) (ha : a ∈ A (n • d)),
+      χ (HomogeneousLocalization.Away.mk A hf n a ha) = Localization.mk (i a) (δ ⟨f ^ n, ⋯⟩)) →
+    (∀ (a : R) (s : ↥(Submonoid.powers f)) (x : LocalizedModule (Submonoid.powers f) X),
+        φ (Localization.mk a s • x) = Localization.mk (i a) (δ s) • φ x) →
+      ∀ (c : HomogeneousLocalization.Away A f) (x : LocalizedModule (Submonoid.powers f) X),
+        φ (HomogeneousLocalization.val c • x) = χ c • φ x
+'LinearStudy.localizedModule_chartScalar_compare' depends on axioms: [propext, Classical.choice, Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientLocalization_chart_smul : ∀ {K : Type u_1} {S : Type u_2} {M : Type u_3}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] (B : ℕ → Submodule K S) [inst_6 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [hq : Fact (0 < q)] {d : ℕ}
+  {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (c : HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f)
+  (x : LocalizedModule (Submonoid.powers f) ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)),
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f (HomogeneousLocalization.val c • x) =
+    HomogeneousLocalization.val ((LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf) c) •
+      LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f x
+'LinearStudy.originalDegreeVeroneseCoefficientLocalization_chart_smul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientWeightedOverlapGraded : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q)
+'LinearStudy.originalDegreeVeroneseCoefficientWeightedOverlapGraded' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientRegradedRestriction : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              [inst_6 : IsScalarTower K S M] →
+                (B : ℕ → Submodule K S) →
+                  [inst_7 : GradedAlgebra B] →
+                    (D : ℤ → Submodule K M) →
+                      (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                        (q : ℕ) →
+                          [hq : Fact (0 < q)] →
+                            {d e : ℕ} →
+                              {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} →
+                                f ∈ LinearStudy.originalDegreeVeronesePiece B q d →
+                                  (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) →
+                                    (k : ℤ) →
+                                      ↥(LinearStudy.nativeGradedModuleAwayDegreeZero
+                                            (LinearStudy.originalDegreeVeronesePiece B q)
+                                            (LinearStudy.integerGradingShift
+                                              (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k)
+                                            d
+                                            f) →ₛₗ[HomogeneousLocalization.awayMap
+                                          (LinearStudy.originalDegreeVeronesePiece B q) hg ⋯]
+                                        ↥(LinearStudy.nativeGradedModuleAwayDegreeZero
+                                            (LinearStudy.originalDegreeVeronesePiece B q)
+                                            (LinearStudy.integerGradingShift
+                                              (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k)
+                                            (d + e) (f * g))
+'LinearStudy.originalDegreeVeroneseCoefficientRegradedRestriction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientAmbientOverlapGraded : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q)
+'LinearStudy.originalDegreeVeroneseCoefficientAmbientOverlapGraded' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction : {K S M : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              (B : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra B] →
+                  (D : ℤ → Submodule K M) →
+                    (∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                      (q : ℕ) →
+                        {d e : ℕ} →
+                          {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} →
+                            f ∈ LinearStudy.originalDegreeVeronesePiece B q d →
+                              g ∈ LinearStudy.originalDegreeVeronesePiece B q e →
+                                (k : ℤ) →
+                                  ↥(LinearStudy.originalDegreeVeroneseAmbientCoefficientChart B D q d f k) →
+                                    ↥(LinearStudy.originalDegreeVeroneseAmbientCoefficientChart B D q (d + e) (f * g) k)
+'LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientRestrictionSquareGraded : {K S : Type u_1} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q)
+'LinearStudy.originalDegreeVeroneseCoefficientRestrictionSquareGraded' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+@LinearStudy.originalDegreeVeroneseCoefficientRestriction_square : ∀ {K S M : Type u_1} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  [inst_6 : IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [hq : Fact (0 < q)] {d e : ℕ}
+  {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) (k : ℤ)
+  (x : ↥(LinearStudy.originalDegreeVeroneseCoefficientRegradedChart B D hD q d f k)),
+  (LinearStudy.originalDegreeVeroneseCoefficientChartEquiv B D hD q ⋯ k)
+      ((LinearStudy.originalDegreeVeroneseCoefficientRegradedRestriction B D hD q hf hg k) x) =
+    LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction B D hD q hf hg k
+      ((LinearStudy.originalDegreeVeroneseCoefficientChartEquiv B D hD q hf k) x)
+'LinearStudy.originalDegreeVeroneseCoefficientRestriction_square' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+def LinearStudy.originalDegreeVeroneseCoefficient.{u, v, w} : {K : Type u} →
+  {S : Type v} →
+    {M : Type w} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] →
+          [inst_2 : Algebra K S] →
+            [inst_3 : AddCommGroup M] →
+              [inst_4 : Module K M] →
+                [inst_5 : Module S M] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_6 : GradedAlgebra B] →
+                      (D : ℤ → Submodule K M) →
+                        (∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                          (q : ℕ) → Submodule (↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) M :=
+fun {K : Type u} {S : Type v} {M : Type w} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M]
+    [Module S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) =>
+  let W := ⨆ (j : ℤ), D (↑q * j);
+  { carrier := ↑W, add_mem' := ⋯, zero_mem' := ⋯, smul_mem' := ⋯ }
+def LinearStudy.originalDegreeVeroneseCoefficientPiece.{u, v, w} : {K : Type u} →
+  {S : Type v} →
+    {M : Type w} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] →
+          [inst_2 : Algebra K S] →
+            [inst_3 : AddCommGroup M] →
+              [inst_4 : Module K M] →
+                [inst_5 : Module S M] →
+                  [inst_6 : IsScalarTower K S M] →
+                    (B : ℕ → Submodule K S) →
+                      [inst_7 : GradedAlgebra B] →
+                        (D : ℤ → Submodule K M) →
+                          (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                            (q : ℕ) → ℤ → Submodule K ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q) :=
+fun {K : Type u} {S : Type v} {M : Type w} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M]
+    [Module S M] [IsScalarTower K S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) (j : ℤ) =>
+  Submodule.comap (Submodule.restrictScalars K (LinearStudy.originalDegreeVeroneseCoefficient B D hD q)).subtype
+    (D (↑q * j))
+def LinearStudy.originalDegreeVeroneseCoefficientDenominator.{u, v} : {K : Type u} →
+  {S : Type v} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) →
+                (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                  ↥(Submonoid.powers f) → ↥(Submonoid.powers ↑f) :=
+fun {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (s : ↥(Submonoid.powers f)) =>
+  ⟨↑↑s, ⋯⟩
+def LinearStudy.originalDegreeVeroneseCoefficientLocalization.{u, v, w} : {K : Type u} →
+  {S : Type v} →
+    {M : Type w} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] →
+          [inst_2 : Algebra K S] →
+            [inst_3 : AddCommGroup M] →
+              [inst_4 : Module K M] →
+                [inst_5 : Module S M] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_6 : GradedAlgebra B] →
+                      (D : ℤ → Submodule K M) →
+                        (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                          (q : ℕ) →
+                            (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                              LocalizedModule (Submonoid.powers f)
+                                  ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q) →
+                                LocalizedModule (Submonoid.powers ↑f) M :=
+fun {K : Type u} {S : Type v} {M : Type w} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M]
+    [Module S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+    (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+    (z : LocalizedModule (Submonoid.powers f) ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) =>
+  z.liftOn
+    (fun (p : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q) × ↥(Submonoid.powers f)) =>
+      LocalizedModule.mk (↑p.1) (LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f p.2))
+    ⋯
+def LinearStudy.originalDegreeVeroneseCoefficientInclAdd.{u, v, w} : {K : Type u} →
+  {S : Type v} →
+    {M : Type w} →
+      [inst : Field K] →
+        [inst_1 : CommRing S] →
+          [inst_2 : Algebra K S] →
+            [inst_3 : AddCommGroup M] →
+              [inst_4 : Module K M] →
+                [inst_5 : Module S M] →
+                  (B : ℕ → Submodule K S) →
+                    [inst_6 : GradedAlgebra B] →
+                      (D : ℤ → Submodule K M) →
+                        (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                          (q : ℕ) → ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q) →+ M :=
+fun {K : Type u} {S : Type v} {M : Type w} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M]
+    [Module S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) =>
+  { toFun := fun (x : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) => ↑x, map_zero' := ⋯, map_add' := ⋯ }
+def LinearStudy.originalDegreeVeroneseCoefficientLocalization_add.{u, v, w} : ∀ {K : Type u} {S : Type v} {M : Type w}
+  [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M]
+  [inst_5 : Module S M] (B : ℕ → Submodule K S) [inst_6 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (x y : LocalizedModule (Submonoid.powers f) ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)),
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f (x + y) =
+    LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f x +
+      LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f y :=
+fun {K : Type u} {S : Type v} {M : Type w} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M]
+    [Module S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+    (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) =>
+  LinearStudy.localizedFractionMap_add (LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f)
+    (LinearStudy.originalDegreeVeroneseCoefficientInclAdd B D hD q)
+    (LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f)
+    (LinearStudy.originalDegreeVeroneseCoefficientDenominator_mul B q f)
+    (LinearStudy.originalDegreeVeroneseCoefficientInclAdd_denominator_smul B D hD q f)
+    (LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk B D hD q f)
+@[instance_reducible] def LinearStudy.originalDegreeVeroneseCoefficientChartImageGraded.{u} : {K S : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q) :=
+fun {K S : Type u} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    [Fact (0 < q)] =>
+  LinearStudy.originalDegreeVeroneseGrading B q ⋯
+@[reducible] def LinearStudy.originalDegreeVeroneseCoefficientRegradedChart.{u} : {K S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              [IsScalarTower K S M] →
+                (B : ℕ → Submodule K S) →
+                  [inst_7 : GradedAlgebra B] →
+                    (D : ℤ → Submodule K M) →
+                      (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                        (q : ℕ) →
+                          [hq : Fact (0 < q)] →
+                            ℕ →
+                              (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                                ℤ →
+                                  Submodule
+                                    (HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f)
+                                    (LocalizedModule (Submonoid.powers f)
+                                      ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) :=
+fun {K S M : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M]
+    [IsScalarTower K S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [Fact (0 < q)] (d : ℕ)
+    (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (k : ℤ) =>
+  LinearStudy.nativeGradedModuleAwayDegreeZero (LinearStudy.originalDegreeVeronesePiece B q)
+    (LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k) d f
+@[instance_reducible] def LinearStudy.originalDegreeVeroneseCoefficientChartFractionGraded.{u} : {K S : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q) :=
+fun {K S : Type u} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    [Fact (0 < q)] =>
+  LinearStudy.originalDegreeVeroneseGrading B q ⋯
+def LinearStudy.originalDegreeVeroneseCoefficientShiftedAction.{u} : ∀ {K S M : Type u} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  [inst_6 : IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [hq : Fact (0 < q)] (k : ℤ) (n : ℕ)
+  (d : ℤ),
+  ∀ c ∈ LinearStudy.originalDegreeVeronesePiece B q n,
+    ∀ x ∈ LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k d,
+      c • x ∈
+        LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k (↑n + d) :=
+fun {K S M : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M]
+    [IsScalarTower K S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [Fact (0 < q)] (k : ℤ) =>
+  LinearStudy.integerGradingShift_smul_homogeneous (LinearStudy.originalDegreeVeronesePiece B q)
+    (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q)
+    (LinearStudy.originalDegreeVeroneseCoefficient_smul_homogeneous B D hD q) k
+def LinearStudy.originalDegreeVeroneseCoefficientRegradedChart_exists_fraction.{u} : ∀ {K S M : Type u} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  [inst_6 : IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [hq : Fact (0 < q)] (k : ℤ) (d : ℕ),
+  ∀ a ∈ LinearStudy.originalDegreeVeronesePiece B q d,
+    ∀
+      x ∈
+        LinearStudy.nativeGradedModuleAwayDegreeZero (LinearStudy.originalDegreeVeronesePiece B q)
+          (LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k) d a,
+      ∃ (n : ℕ),
+        ∃ m ∈ LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k ↑(n * d),
+          x = LocalizedModule.mk m ⟨a ^ n, ⋯⟩ :=
+fun {K S M : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M]
+    [IsScalarTower K S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [Fact (0 < q)] (k : ℤ) =>
+  LinearStudy.nativeGradedModuleAwayDegreeZero_exists_fraction (LinearStudy.originalDegreeVeronesePiece B q)
+    (LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k)
+    (LinearStudy.originalDegreeVeroneseCoefficientShiftedAction B D hD q k)
+@[instance_reducible] def LinearStudy.originalDegreeVeroneseCoefficientNativeImageGraded.{u} : {K S : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q) :=
+fun {K S : Type u} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    [Fact (0 < q)] =>
+  LinearStudy.originalDegreeVeroneseGrading B q ⋯
+@[reducible] def LinearStudy.originalDegreeVeroneseAmbientCoefficientChart.{u} : {K S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              (B : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra B] →
+                  (ℤ → Submodule K M) →
+                    (q : ℕ) →
+                      ℕ →
+                        (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) →
+                          ℤ → Submodule (HomogeneousLocalization.Away B ↑f) (LocalizedModule (Submonoid.powers ↑f) M) :=
+fun {K S M : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M]
+    (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M) (q d : ℕ)
+    (f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) (k : ℤ) =>
+  LinearStudy.nativeGradedModuleAwayDegreeZero B (LinearStudy.integerGradingShift D (↑q * k)) (q * d) ↑f
+def LinearStudy.originalDegreeVeroneseCoefficientChartImage.{u} : ∀ {K S M : Type u} [inst : Field K]
+  [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M] [inst_4 : Module K M] [inst_5 : Module S M]
+  [inst_6 : IsScalarTower K S M] (B : ℕ → Submodule K S) [inst_7 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [hq : Fact (0 < q)] {d : ℕ}
+  {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)},
+  f ∈ LinearStudy.originalDegreeVeronesePiece B q d →
+    ∀ (k : ℤ),
+      LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f ''
+          ↑(LinearStudy.nativeGradedModuleAwayDegreeZero (LinearStudy.originalDegreeVeronesePiece B q)
+              (LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k) d f) =
+        ↑(LinearStudy.nativeGradedModuleAwayDegreeZero B (LinearStudy.integerGradingShift D (↑q * k)) (q * d) ↑f) :=
+fun {K S M : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M]
+    [IsScalarTower K S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [Fact (0 < q)] {d : ℕ}
+    {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+    (k : ℤ) =>
+  LinearStudy.nativeGradedWeightedChart_image (LinearStudy.originalDegreeVeronesePiece B q) B
+    (LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k)
+    (LinearStudy.integerGradingShift D (↑q * k)) (LinearStudy.originalDegreeVeroneseCoefficientShiftedAction B D hD q k)
+    (LinearStudy.integerGradingShift_smul_homogeneous B D hD (↑q * k)) d (q * d) f (↑f) hf
+    (have this := hf;
+    this)
+    (fun (a : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) => ↑a)
+    (fun (n : ℕ) => LinearStudy.originalDegreeVeroneseCoefficientNumerator_image B D hD q d n k)
+    (LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f)
+    (LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_pow B D hD q f)
+def LinearStudy.originalDegreeVeroneseCoefficientChartEquiv.{u} : {K S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              [inst_6 : IsScalarTower K S M] →
+                (B : ℕ → Submodule K S) →
+                  [inst_7 : GradedAlgebra B] →
+                    (D : ℤ → Submodule K M) →
+                      (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                        (q : ℕ) →
+                          [hq : Fact (0 < q)] →
+                            {d : ℕ} →
+                              {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} →
+                                f ∈ LinearStudy.originalDegreeVeronesePiece B q d →
+                                  (k : ℤ) →
+                                    ↑↑(LinearStudy.originalDegreeVeroneseCoefficientRegradedChart B D hD q d f k) ≃
+                                      ↑↑(LinearStudy.nativeGradedModuleAwayDegreeZero B
+                                            (LinearStudy.integerGradingShift D (↑q * k)) (q * d) ↑f) :=
+fun {K S M : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M]
+    [IsScalarTower K S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [Fact (0 < q)] {d : ℕ}
+    {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+    (k : ℤ) =>
+  (Equiv.Set.image (LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f)
+        ↑(LinearStudy.originalDegreeVeroneseCoefficientRegradedChart B D hD q d f k) ⋯).trans
+    (Set.equivOfEq ⋯)
+def LinearStudy.originalDegreeVeroneseCoefficientLocalization_overlap.{u, v, w} : ∀ {K : Type u} {S : Type v}
+  {M : Type w} [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M]
+  [inst_4 : Module K M] [inst_5 : Module S M] (B : ℕ → Submodule K S) [inst_6 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+  (f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q))
+  (z : LocalizedModule (Submonoid.powers f) ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)),
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q (f * g)
+      ((LinearStudy.originalLocalizedModuleAwayOverlap f g) z) =
+    (LinearStudy.originalLocalizedModuleAwayOverlap ↑f ↑g)
+      (LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f z) :=
+fun {K : Type u} {S : Type v} {M : Type w} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M]
+    [Module S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ)
+    (f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) =>
+  LinearStudy.localizedModuleAwayOverlap_compare f g (↑f) (↑g)
+    (fun (a : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) => ↑a)
+    (LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f)
+    (LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q (f * g))
+    (fun (x : ℕ) (x_1 : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) => rfl)
+    (fun (x : ℕ) (x_1 : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) => rfl)
+    fun (x : ℕ) (x_1 : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)) => rfl
+@[instance_reducible] def LinearStudy.originalDegreeVeroneseCoefficientScalarValueGraded.{u, v} : {K : Type u} →
+  {S : Type v} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q) :=
+fun {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    [Fact (0 < q)] =>
+  LinearStudy.originalDegreeVeroneseGrading B q ⋯
+@[instance_reducible] def LinearStudy.originalDegreeVeroneseCoefficientChartScalarGraded.{u, v} : {K : Type u} →
+  {S : Type v} →
+    [inst : Field K] →
+      [inst_1 : CommRing S] →
+        [inst_2 : Algebra K S] →
+          (B : ℕ → Submodule K S) →
+            [inst_3 : GradedAlgebra B] →
+              (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q) :=
+fun {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    [Fact (0 < q)] =>
+  LinearStudy.originalDegreeVeroneseGrading B q ⋯
+def LinearStudy.originalDegreeVeroneseCoefficientLocalization_chart_smul.{u, v, w} : ∀ {K : Type u} {S : Type v}
+  {M : Type w} [inst : Field K] [inst_1 : CommRing S] [inst_2 : Algebra K S] [inst_3 : AddCommGroup M]
+  [inst_4 : Module K M] [inst_5 : Module S M] (B : ℕ → Submodule K S) [inst_6 : GradedAlgebra B] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [hq : Fact (0 < q)] {d : ℕ}
+  {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (c : HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f)
+  (x : LocalizedModule (Submonoid.powers f) ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q)),
+  LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f (HomogeneousLocalization.val c • x) =
+    HomogeneousLocalization.val ((LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf) c) •
+      LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f x :=
+fun {K : Type u} {S : Type v} {M : Type w} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M]
+    [Module S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [Fact (0 < q)] {d : ℕ}
+    {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d) =>
+  LinearStudy.localizedModule_chartScalar_compare (LinearStudy.originalDegreeVeronesePiece B q) hf (↑f)
+    (fun (a : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) => ↑a)
+    (LinearStudy.originalDegreeVeroneseCoefficientDenominator B q f)
+    (fun (c : HomogeneousLocalization.Away (LinearStudy.originalDegreeVeronesePiece B q) f) =>
+      HomogeneousLocalization.val ((LinearStudy.originalDegreeVeroneseChartRingEquiv B q hf) c))
+    (LinearStudy.originalDegreeVeroneseCoefficientLocalization B D hD q f)
+    (LinearStudy.originalDegreeVeroneseCoefficientScalarValue_mk B q hf)
+    (LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_smul B D hD q f)
+@[instance_reducible] def LinearStudy.originalDegreeVeroneseCoefficientWeightedOverlapGraded.{u} : {K S : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q) :=
+fun {K S : Type u} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    [Fact (0 < q)] =>
+  LinearStudy.originalDegreeVeroneseGrading B q ⋯
+def LinearStudy.originalDegreeVeroneseCoefficientRegradedRestriction.{u} : {K S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              [inst_6 : IsScalarTower K S M] →
+                (B : ℕ → Submodule K S) →
+                  [inst_7 : GradedAlgebra B] →
+                    (D : ℤ → Submodule K M) →
+                      (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                        (q : ℕ) →
+                          [hq : Fact (0 < q)] →
+                            {d e : ℕ} →
+                              {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} →
+                                f ∈ LinearStudy.originalDegreeVeronesePiece B q d →
+                                  (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) →
+                                    (k : ℤ) →
+                                      ↥(LinearStudy.nativeGradedModuleAwayDegreeZero
+                                            (LinearStudy.originalDegreeVeronesePiece B q)
+                                            (LinearStudy.integerGradingShift
+                                              (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k)
+                                            d
+                                            f) →ₛₗ[HomogeneousLocalization.awayMap
+                                          (LinearStudy.originalDegreeVeronesePiece B q) hg ⋯]
+                                        ↥(LinearStudy.nativeGradedModuleAwayDegreeZero
+                                            (LinearStudy.originalDegreeVeronesePiece B q)
+                                            (LinearStudy.integerGradingShift
+                                              (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k)
+                                            (d + e) (f * g)) :=
+fun {K S M : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M]
+    [IsScalarTower K S M] (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) [Fact (0 < q)] {d e : ℕ}
+    {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+    (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) (k : ℤ) =>
+  LinearStudy.nativeGradedModuleWeightedOverlapMap (LinearStudy.originalDegreeVeronesePiece B q)
+    (LinearStudy.integerGradingShift (LinearStudy.originalDegreeVeroneseCoefficientPiece B D hD q) k) ⋯ d e f g hf hg
+@[instance_reducible] def LinearStudy.originalDegreeVeroneseCoefficientAmbientOverlapGraded.{u} : {K S : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q) :=
+fun {K S : Type u} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    [Fact (0 < q)] =>
+  LinearStudy.originalDegreeVeroneseGrading B q ⋯
+def LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction.{u} : {K S M : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        [inst_3 : AddCommGroup M] →
+          [inst_4 : Module K M] →
+            [inst_5 : Module S M] →
+              (B : ℕ → Submodule K S) →
+                [inst_6 : GradedAlgebra B] →
+                  (D : ℤ → Submodule K M) →
+                    (∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) →
+                      (q : ℕ) →
+                        {d e : ℕ} →
+                          {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} →
+                            f ∈ LinearStudy.originalDegreeVeronesePiece B q d →
+                              g ∈ LinearStudy.originalDegreeVeronesePiece B q e →
+                                (k : ℤ) →
+                                  ↥(LinearStudy.originalDegreeVeroneseAmbientCoefficientChart B D q d f k) →
+                                    ↥(LinearStudy.originalDegreeVeroneseAmbientCoefficientChart B D q (d + e) (f * g)
+                                        k) :=
+fun {K S M : Type u} [Field K] [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M]
+    (B : ℕ → Submodule K S) [GradedAlgebra B] (D : ℤ → Submodule K M)
+    (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) {d e : ℕ}
+    {f g : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+    (hg : g ∈ LinearStudy.originalDegreeVeronesePiece B q e) (k : ℤ)
+    (x : ↥(LinearStudy.originalDegreeVeroneseAmbientCoefficientChart B D q d f k)) =>
+  have hfS := hf;
+  have hgS := hg;
+  ⟨(LinearStudy.originalLocalizedModuleAwayOverlap ↑f ↑g) ↑x, ⋯⟩
+@[instance_reducible] def LinearStudy.originalDegreeVeroneseCoefficientRestrictionSquareGraded.{u} : {K S : Type u} →
+  [inst : Field K] →
+    [inst_1 : CommRing S] →
+      [inst_2 : Algebra K S] →
+        (B : ℕ → Submodule K S) →
+          [inst_3 : GradedAlgebra B] →
+            (q : ℕ) → [hq : Fact (0 < q)] → GradedAlgebra (LinearStudy.originalDegreeVeronesePiece B q) :=
+fun {K S : Type u} [Field K] [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ)
+    [Fact (0 < q)] =>
+  LinearStudy.originalDegreeVeroneseGrading B q ⋯
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficient:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficient:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficient_mem_of_mem:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficient_mem_of_mem:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientPiece:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientPiece:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientPiece_mem_iff:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientPiece_mem_iff:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficient_smul_homogeneous:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficient_smul_homogeneous:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartNumeratorDegree:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartNumeratorDegree:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartNumerator_mem_iff:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartNumerator_mem_iff:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseChartNumerator_exists:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseChartNumerator_exists:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientDenominator:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientDenominator:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientDenominator_surjective:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientDenominator_surjective:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_injective:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_injective:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientDenominator_mul:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientDenominator_mul:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_smul:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_smul:theorem
+ROLECHECK:LinearStudy.localizedFractionMap_add:true
+KINDCHECK:LinearStudy.localizedFractionMap_add:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientInclAdd:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientInclAdd:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientInclAdd_denominator_smul:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientInclAdd_denominator_smul:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_add:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_add:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientChartImageGraded:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientChartImageGraded:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientRegradedChart:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientRegradedChart:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientChartFractionGraded:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientChartFractionGraded:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientShiftedAction:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientShiftedAction:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientRegradedChart_exists_fraction:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientRegradedChart_exists_fraction:definition
+ROLECHECK:LinearStudy.nativeGradedWeightedChart_image:true
+KINDCHECK:LinearStudy.nativeGradedWeightedChart_image:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientNumerator_image:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientNumerator_image:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_pow:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_pow:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientNativeImageGraded:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientNativeImageGraded:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseAmbientCoefficientChart:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseAmbientCoefficientChart:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientChartImage:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientChartImage:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientChartEquiv:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientChartEquiv:definition
+ROLECHECK:LinearStudy.localizedModuleAwayOverlap_compare:true
+KINDCHECK:LinearStudy.localizedModuleAwayOverlap_compare:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_overlap:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_overlap:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientScalarValueGraded:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientScalarValueGraded:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientScalarValue_mk:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientScalarValue_mk:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientChartScalarGraded:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientChartScalarGraded:definition
+ROLECHECK:LinearStudy.localizedModule_chartScalar_compare:true
+KINDCHECK:LinearStudy.localizedModule_chartScalar_compare:theorem
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_chart_smul:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientLocalization_chart_smul:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientWeightedOverlapGraded:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientWeightedOverlapGraded:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientRegradedRestriction:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientRegradedRestriction:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientAmbientOverlapGraded:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientAmbientOverlapGraded:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientRestrictionSquareGraded:false
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientRestrictionSquareGraded:definition
+ROLECHECK:LinearStudy.originalDegreeVeroneseCoefficientRestriction_square:true
+KINDCHECK:LinearStudy.originalDegreeVeroneseCoefficientRestriction_square:theorem

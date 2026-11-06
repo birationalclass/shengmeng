@@ -1,0 +1,150 @@
+module
+public meta import Lean.Elab.Command
+import all Linear.OriginalDegreeVeroneseCoefficient
+import all Linear.OriginalDegreeVeroneseCoefficientGrading
+import all Linear.OriginalDegreeVeroneseCoefficientChartDegree
+import all Linear.OriginalDegreeVeroneseCoefficientLocalization
+import all Linear.OriginalDegreeVeroneseCoefficientLocalizationAction
+import all Linear.OriginalDegreeVeroneseCoefficientLocalizationAdd
+import all Linear.OriginalDegreeVeroneseCoefficientRegradedChart
+import all Linear.OriginalDegreeVeroneseCoefficientChartFraction
+import all Linear.NativeGradedWeightedChartImage
+import all Linear.OriginalDegreeVeroneseCoefficientFractionValues
+import all Linear.OriginalDegreeVeroneseCoefficientChartImage
+import all Linear.OriginalDegreeVeroneseCoefficientChartEquiv
+import all Linear.OriginalDegreeVeroneseCoefficientLocalizationOverlap
+import all Linear.OriginalDegreeVeroneseCoefficientScalarValue
+import all Linear.OriginalDegreeVeroneseCoefficientChartScalar
+import all Linear.OriginalDegreeVeroneseCoefficientWeightedRestriction
+import all Linear.OriginalDegreeVeroneseCoefficientAmbientRestriction
+import all Linear.OriginalDegreeVeroneseCoefficientRestrictionSquare
+set_option maxHeartbeats 5000
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.originalDegreeVeroneseCoefficient
+#print axioms LinearStudy.originalDegreeVeroneseCoefficient
+#check @LinearStudy.originalDegreeVeroneseCoefficient_mem_of_mem
+#print axioms LinearStudy.originalDegreeVeroneseCoefficient_mem_of_mem
+#check @LinearStudy.originalDegreeVeroneseCoefficientPiece
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientPiece
+#check @LinearStudy.originalDegreeVeroneseCoefficientPiece_mem_iff
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientPiece_mem_iff
+#check @LinearStudy.originalDegreeVeroneseCoefficient_smul_homogeneous
+#print axioms LinearStudy.originalDegreeVeroneseCoefficient_smul_homogeneous
+#check @LinearStudy.originalDegreeVeroneseChartNumeratorDegree
+#print axioms LinearStudy.originalDegreeVeroneseChartNumeratorDegree
+#check @LinearStudy.originalDegreeVeroneseChartNumerator_mem_iff
+#print axioms LinearStudy.originalDegreeVeroneseChartNumerator_mem_iff
+#check @LinearStudy.originalDegreeVeroneseChartNumerator_exists
+#print axioms LinearStudy.originalDegreeVeroneseChartNumerator_exists
+#check @LinearStudy.originalDegreeVeroneseCoefficientDenominator
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientDenominator
+#check @LinearStudy.originalDegreeVeroneseCoefficientDenominator_surjective
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientDenominator_surjective
+#check @LinearStudy.originalDegreeVeroneseCoefficientLocalization
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientLocalization
+#check @LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk
+#check @LinearStudy.originalDegreeVeroneseCoefficientLocalization_injective
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientLocalization_injective
+#check @LinearStudy.originalDegreeVeroneseCoefficientDenominator_mul
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientDenominator_mul
+#check @LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_smul
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_smul
+#check @LinearStudy.localizedFractionMap_add
+#print axioms LinearStudy.localizedFractionMap_add
+#check @LinearStudy.originalDegreeVeroneseCoefficientInclAdd
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientInclAdd
+#check @LinearStudy.originalDegreeVeroneseCoefficientInclAdd_denominator_smul
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientInclAdd_denominator_smul
+#check @LinearStudy.originalDegreeVeroneseCoefficientLocalization_add
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientLocalization_add
+#check @LinearStudy.originalDegreeVeroneseCoefficientChartImageGraded
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientChartImageGraded
+#check @LinearStudy.originalDegreeVeroneseCoefficientRegradedChart
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientRegradedChart
+#check @LinearStudy.originalDegreeVeroneseCoefficientChartFractionGraded
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientChartFractionGraded
+#check @LinearStudy.originalDegreeVeroneseCoefficientShiftedAction
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientShiftedAction
+#check @LinearStudy.originalDegreeVeroneseCoefficientRegradedChart_exists_fraction
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientRegradedChart_exists_fraction
+#check @LinearStudy.nativeGradedWeightedChart_image
+#print axioms LinearStudy.nativeGradedWeightedChart_image
+#check @LinearStudy.originalDegreeVeroneseCoefficientNumerator_image
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientNumerator_image
+#check @LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_pow
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_pow
+#check @LinearStudy.originalDegreeVeroneseCoefficientNativeImageGraded
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientNativeImageGraded
+#check @LinearStudy.originalDegreeVeroneseAmbientCoefficientChart
+#print axioms LinearStudy.originalDegreeVeroneseAmbientCoefficientChart
+#check @LinearStudy.originalDegreeVeroneseCoefficientChartImage
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientChartImage
+#check @LinearStudy.originalDegreeVeroneseCoefficientChartEquiv
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientChartEquiv
+#check @LinearStudy.localizedModuleAwayOverlap_compare
+#print axioms LinearStudy.localizedModuleAwayOverlap_compare
+#check @LinearStudy.originalDegreeVeroneseCoefficientLocalization_overlap
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientLocalization_overlap
+#check @LinearStudy.originalDegreeVeroneseCoefficientScalarValueGraded
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientScalarValueGraded
+#check @LinearStudy.originalDegreeVeroneseCoefficientScalarValue_mk
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientScalarValue_mk
+#check @LinearStudy.originalDegreeVeroneseCoefficientChartScalarGraded
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientChartScalarGraded
+#check @LinearStudy.localizedModule_chartScalar_compare
+#print axioms LinearStudy.localizedModule_chartScalar_compare
+#check @LinearStudy.originalDegreeVeroneseCoefficientLocalization_chart_smul
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientLocalization_chart_smul
+#check @LinearStudy.originalDegreeVeroneseCoefficientWeightedOverlapGraded
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientWeightedOverlapGraded
+#check @LinearStudy.originalDegreeVeroneseCoefficientRegradedRestriction
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientRegradedRestriction
+#check @LinearStudy.originalDegreeVeroneseCoefficientAmbientOverlapGraded
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientAmbientOverlapGraded
+#check @LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction
+#check @LinearStudy.originalDegreeVeroneseCoefficientRestrictionSquareGraded
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientRestrictionSquareGraded
+#check @LinearStudy.originalDegreeVeroneseCoefficientRestriction_square
+#print axioms LinearStudy.originalDegreeVeroneseCoefficientRestriction_square
+#print LinearStudy.originalDegreeVeroneseCoefficient
+#print LinearStudy.originalDegreeVeroneseCoefficientPiece
+#print LinearStudy.originalDegreeVeroneseCoefficientDenominator
+#print LinearStudy.originalDegreeVeroneseCoefficientLocalization
+#print LinearStudy.originalDegreeVeroneseCoefficientInclAdd
+#print LinearStudy.originalDegreeVeroneseCoefficientLocalization_add
+#print LinearStudy.originalDegreeVeroneseCoefficientChartImageGraded
+#print LinearStudy.originalDegreeVeroneseCoefficientRegradedChart
+#print LinearStudy.originalDegreeVeroneseCoefficientChartFractionGraded
+#print LinearStudy.originalDegreeVeroneseCoefficientShiftedAction
+#print LinearStudy.originalDegreeVeroneseCoefficientRegradedChart_exists_fraction
+#print LinearStudy.originalDegreeVeroneseCoefficientNativeImageGraded
+#print LinearStudy.originalDegreeVeroneseAmbientCoefficientChart
+#print LinearStudy.originalDegreeVeroneseCoefficientChartImage
+#print LinearStudy.originalDegreeVeroneseCoefficientChartEquiv
+#print LinearStudy.originalDegreeVeroneseCoefficientLocalization_overlap
+#print LinearStudy.originalDegreeVeroneseCoefficientScalarValueGraded
+#print LinearStudy.originalDegreeVeroneseCoefficientChartScalarGraded
+#print LinearStudy.originalDegreeVeroneseCoefficientLocalization_chart_smul
+#print LinearStudy.originalDegreeVeroneseCoefficientWeightedOverlapGraded
+#print LinearStudy.originalDegreeVeroneseCoefficientRegradedRestriction
+#print LinearStudy.originalDegreeVeroneseCoefficientAmbientOverlapGraded
+#print LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction
+#print LinearStudy.originalDegreeVeroneseCoefficientRestrictionSquareGraded
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool × Bool) := [(`LinearStudy.originalDegreeVeroneseCoefficient,false,false),(`LinearStudy.originalDegreeVeroneseCoefficient_mem_of_mem,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientPiece,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientPiece_mem_iff,true,true),(`LinearStudy.originalDegreeVeroneseCoefficient_smul_homogeneous,true,true),(`LinearStudy.originalDegreeVeroneseChartNumeratorDegree,true,true),(`LinearStudy.originalDegreeVeroneseChartNumerator_mem_iff,true,true),(`LinearStudy.originalDegreeVeroneseChartNumerator_exists,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientDenominator,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientDenominator_surjective,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientLocalization,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientLocalization_injective,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientDenominator_mul,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_smul,true,true),(`LinearStudy.localizedFractionMap_add,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientInclAdd,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientInclAdd_denominator_smul,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientLocalization_add,true,false),(`LinearStudy.originalDegreeVeroneseCoefficientChartImageGraded,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientRegradedChart,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientChartFractionGraded,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientShiftedAction,true,false),(`LinearStudy.originalDegreeVeroneseCoefficientRegradedChart_exists_fraction,true,false),(`LinearStudy.nativeGradedWeightedChart_image,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientNumerator_image,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientLocalization_mk_pow,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientNativeImageGraded,false,false),(`LinearStudy.originalDegreeVeroneseAmbientCoefficientChart,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientChartImage,true,false),(`LinearStudy.originalDegreeVeroneseCoefficientChartEquiv,false,false),(`LinearStudy.localizedModuleAwayOverlap_compare,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientLocalization_overlap,true,false),(`LinearStudy.originalDegreeVeroneseCoefficientScalarValueGraded,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientScalarValue_mk,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientChartScalarGraded,false,false),(`LinearStudy.localizedModule_chartScalar_compare,true,true),(`LinearStudy.originalDegreeVeroneseCoefficientLocalization_chart_smul,true,false),(`LinearStudy.originalDegreeVeroneseCoefficientWeightedOverlapGraded,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientRegradedRestriction,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientAmbientOverlapGraded,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientAmbientRestriction,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientRestrictionSquareGraded,false,false),(`LinearStudy.originalDegreeVeroneseCoefficientRestriction_square,true,true)]
+  let env ← Lean.getEnv
+  for (n,want,wantTheorem) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"
+    let kernelKind := match info with
+      | .thmInfo _ => "theorem"
+      | .defnInfo _ => "definition"
+      | _ => "other"
+    unless kernelKind == (if wantTheorem then "theorem" else "definition") do
+      throwError m!"Incorrect kernel declaration kind: {n}"
+    Lean.logInfo m!"KINDCHECK:{n}:{kernelKind}"
