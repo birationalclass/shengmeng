@@ -1,0 +1,12 @@
+LinearStudy.gradedRing_proj_map_injectiveDegrees.{u_1, u_2, u_3} {L : Type u_1} {R : Type u_2} {T : Type u_3} [Field L]
+  [CommRing R] [CommRing T] [Algebra L R] [Algebra L T] (A : ℕ → Submodule L R) [GradedAlgebra A]
+  (A' : ℕ → Submodule L T) [GradedAlgebra A'] (j : R →+* T) (g : ℕ → ℕ) (hg : Function.Injective g)
+  (hj : ∀ (n : ℕ), ∀ z ∈ A n, j z ∈ A' (g n)) (n : ℕ) (z : R) :
+  j ((GradedRing.proj A n) z) = (GradedRing.proj A' (g n)) (j z)
+'LinearStudy.gradedRing_proj_map_injectiveDegrees' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneousIdeal_toIdeal_eq_comap_of_compare.{u_1, u_2, u_3} {L : Type u_1} {R : Type u_2} {T : Type u_3}
+  [Field L] [CommRing R] [CommRing T] [Algebra L R] [Algebra L T] (A : ℕ → Submodule L R) [GradedAlgebra A]
+  (A' : ℕ → Submodule L T) [GradedAlgebra A'] (j : R →+* T) (g : ℕ → ℕ) (hg : Function.Injective g)
+  (hj : ∀ (n : ℕ), ∀ z ∈ A n, j z ∈ A' (g n)) (I : HomogeneousIdeal A) (J : HomogeneousIdeal A')
+  (h : ∀ (n : ℕ), ∀ z ∈ A n, z ∈ I.toIdeal ↔ j z ∈ J.toIdeal) : I.toIdeal = Ideal.comap j J.toIdeal
+'LinearStudy.homogeneousIdeal_toIdeal_eq_comap_of_compare' depends on axioms: [propext, Classical.choice, Quot.sound]

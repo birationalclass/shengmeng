@@ -1,0 +1,30 @@
+LinearStudy.originalDegreeVeronesePrimeLocalization_injOn.{u, v, w} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {M : Type w} [AddCommGroup M]
+  [Module K M] [Module S M] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ a ∈ D d, c • a ∈ D (↑n + d))
+  [DirectSum.Decomposition D] (x : ↥(AlgebraicGeometry.Proj B)) (k : ℤ) :
+  Set.InjOn (LinearStudy.originalDegreeVeronesePrimeLocalization B q D hD x)
+    (LinearStudy.originalDegreeVeroneseRegradedPrimeFractions B q D hD x k)
+'LinearStudy.originalDegreeVeronesePrimeLocalization_injOn' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeronesePrimeLocalization_bijOn.{u, v, w} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {M : Type w} [AddCommGroup M]
+  [Module K M] [Module S M] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ a ∈ D d, c • a ∈ D (↑n + d))
+  [DirectSum.Decomposition D] (x : ↥(AlgebraicGeometry.Proj B)) (k : ℤ) :
+  Set.BijOn (LinearStudy.originalDegreeVeronesePrimeLocalization B q D hD x)
+    (LinearStudy.originalDegreeVeroneseRegradedPrimeFractions B q D hD x k)
+    (LinearStudy.originalDegreeVeroneseAmbientPrimeFractions B q D x k)
+'LinearStudy.originalDegreeVeronesePrimeLocalization_bijOn' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeronesePrimeFractionEquiv.{u, v, w} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {M : Type w} [AddCommGroup M]
+  [Module K M] [Module S M] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ a ∈ D d, c • a ∈ D (↑n + d))
+  [DirectSum.Decomposition D] (x : ↥(AlgebraicGeometry.Proj B)) (k : ℤ) :
+  ↑(LinearStudy.originalDegreeVeroneseRegradedPrimeFractions B q D hD x k) ≃
+    ↑(LinearStudy.originalDegreeVeroneseAmbientPrimeFractions B q D x k)
+'LinearStudy.originalDegreeVeronesePrimeFractionEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeronesePrimeFractionEquiv_val.{u, v, w} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {M : Type w} [AddCommGroup M]
+  [Module K M] [Module S M] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ a ∈ D d, c • a ∈ D (↑n + d))
+  [DirectSum.Decomposition D] (x : ↥(AlgebraicGeometry.Proj B)) (k : ℤ)
+  (z : ↑(LinearStudy.originalDegreeVeroneseRegradedPrimeFractions B q D hD x k)) :
+  ↑((LinearStudy.originalDegreeVeronesePrimeFractionEquiv B q D hD x k) z) =
+    LinearStudy.originalDegreeVeronesePrimeLocalization B q D hD x ↑z
+'LinearStudy.originalDegreeVeronesePrimeFractionEquiv_val' depends on axioms: [propext, Classical.choice, Quot.sound]

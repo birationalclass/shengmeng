@@ -1,0 +1,11 @@
+LinearStudy.originalDegreeVeroneseProjHom_prime_contraction.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)]
+  (x : ↥(AlgebraicGeometry.Proj B)) :
+  ((LinearStudy.originalDegreeVeroneseProjHom B q) x).asHomogeneousIdeal.toIdeal =
+    Ideal.comap (LinearStudy.originalDegreeVeroneseAlgebra B q).val.toRingHom x.asHomogeneousIdeal.toIdeal
+'LinearStudy.originalDegreeVeroneseProjHom_prime_contraction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseProjHom_mem_prime_iff.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] (x : ↥(AlgebraicGeometry.Proj B))
+  (a : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)) :
+  a ∈ ((LinearStudy.originalDegreeVeroneseProjHom B q) x).asHomogeneousIdeal ↔ ↑a ∈ x.asHomogeneousIdeal
+'LinearStudy.originalDegreeVeroneseProjHom_mem_prime_iff' depends on axioms: [propext, Classical.choice, Quot.sound]

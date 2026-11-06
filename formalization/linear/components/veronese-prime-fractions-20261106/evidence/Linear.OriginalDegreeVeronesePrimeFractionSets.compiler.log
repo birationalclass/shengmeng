@@ -1,0 +1,29 @@
+LinearStudy.originalDegreeVeroneseAmbientPrimeFractions.{u, v, w} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) {M : Type w} [AddCommGroup M] [Module K M]
+  [Module S M] (D : ℤ → Submodule K M) (x : ↥(AlgebraicGeometry.Proj B)) (k : ℤ) :
+  Set (LocalizedModule (LinearStudy.originalDegreeVeroneseAmbientPrimeCompl B x) M)
+'LinearStudy.originalDegreeVeroneseAmbientPrimeFractions' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeroneseRegradedPrimeFractions.{u, v, w} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {M : Type w} [AddCommGroup M]
+  [Module K M] [Module S M] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ a ∈ D d, c • a ∈ D (↑n + d))
+  (x : ↥(AlgebraicGeometry.Proj B)) (k : ℤ) :
+  Set
+    (LocalizedModule (LinearStudy.originalDegreeVeroneseRegradedPrimeCompl B q x)
+      ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q))
+'LinearStudy.originalDegreeVeroneseRegradedPrimeFractions' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeronesePrimeLocalization_surjOn.{u, v, w} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {M : Type w} [AddCommGroup M]
+  [Module K M] [Module S M] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ a ∈ D d, c • a ∈ D (↑n + d))
+  (x : ↥(AlgebraicGeometry.Proj B)) (k : ℤ) :
+  Set.SurjOn (LinearStudy.originalDegreeVeronesePrimeLocalization B q D hD x)
+    (LinearStudy.originalDegreeVeroneseRegradedPrimeFractions B q D hD x k)
+    (LinearStudy.originalDegreeVeroneseAmbientPrimeFractions B q D x k)
+'LinearStudy.originalDegreeVeronesePrimeLocalization_surjOn' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeronesePrimeLocalization_mapsTo.{u, v, w} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {M : Type w} [AddCommGroup M]
+  [Module K M] [Module S M] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ a ∈ D d, c • a ∈ D (↑n + d))
+  (x : ↥(AlgebraicGeometry.Proj B)) (k : ℤ) :
+  Set.MapsTo (LinearStudy.originalDegreeVeronesePrimeLocalization B q D hD x)
+    (LinearStudy.originalDegreeVeroneseRegradedPrimeFractions B q D hD x k)
+    (LinearStudy.originalDegreeVeroneseAmbientPrimeFractions B q D x k)
+'LinearStudy.originalDegreeVeronesePrimeLocalization_mapsTo' depends on axioms: [propext, Classical.choice, Quot.sound]

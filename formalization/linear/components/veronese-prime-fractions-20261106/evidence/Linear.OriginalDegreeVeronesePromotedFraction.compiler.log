@@ -1,0 +1,9 @@
+LinearStudy.originalDegreeVeronesePromotedNumerator_mem.{u, v, w} {K : Type u} {S : Type v} {M : Type w} [Field K]
+  [CommRing S] [Algebra K S] [AddCommGroup M] [Module K M] [Module S M] (B : ℕ → Submodule K S) [GradedAlgebra B]
+  (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ x ∈ D d, c • x ∈ D (↑n + d)) (q : ℕ) (hq : 0 < q)
+  (n : ℕ) (k : ℤ) (b : S) (hb : b ∈ B n) (x : M) (hx : x ∈ D (↑n + ↑q * k)) : b ^ (q - 1) • x ∈ D (↑q * (↑n + k))
+'LinearStudy.originalDegreeVeronesePromotedNumerator_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeronesePromotedFraction_eq.{v, w} {S : Type v} {M : Type w} [CommRing S] [AddCommGroup M]
+  [Module S M] (q : ℕ) (hq : 0 < q) (T : Submonoid S) (b : ↥T) (x : M) :
+  LocalizedModule.mk (↑b ^ (q - 1) • x) (b ^ q) = LocalizedModule.mk x b
+'LinearStudy.originalDegreeVeronesePromotedFraction_eq' depends on axioms: [propext, Quot.sound]

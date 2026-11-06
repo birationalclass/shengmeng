@@ -1,0 +1,18 @@
+LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_homogeneous.{u, v} {K : Type u} {S : Type v} [Field K]
+  [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {d : ℕ}
+  {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (x : ↥(AlgebraicGeometry.Proj B)) :
+  (LinearStudy.originalDegreeVeroneseProjHom B q) x ∈
+      AlgebraicGeometry.Proj.basicOpen (LinearStudy.originalDegreeVeronesePiece B q) f ↔
+    x ∈ AlgebraicGeometry.Proj.basicOpen B ↑f
+'LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_homogeneous' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.originalDegreeVeroneseProjHom_mem_prime_homogeneous.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {d : ℕ}
+  {f : ↥(LinearStudy.originalDegreeVeroneseAlgebra B q)} (hf : f ∈ LinearStudy.originalDegreeVeronesePiece B q d)
+  (x : ↥(AlgebraicGeometry.Proj B)) :
+  f ∈ ((LinearStudy.originalDegreeVeroneseProjHom B q) x).asHomogeneousIdeal ↔ ↑f ∈ x.asHomogeneousIdeal
+'LinearStudy.originalDegreeVeroneseProjHom_mem_prime_homogeneous' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

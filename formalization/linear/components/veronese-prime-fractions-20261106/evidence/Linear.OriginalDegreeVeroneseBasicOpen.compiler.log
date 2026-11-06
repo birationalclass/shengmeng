@@ -1,0 +1,7 @@
+LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_iff.{u, v} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)]
+  (i : LinearStudy.OriginalDegreeVeroneseChartIndex B q) (x : ↥(AlgebraicGeometry.Proj B)) :
+  (LinearStudy.originalDegreeVeroneseProjHom B q) x ∈
+      AlgebraicGeometry.Proj.basicOpen (LinearStudy.originalDegreeVeronesePiece B q) ↑i.snd ↔
+    x ∈ AlgebraicGeometry.Proj.basicOpen B ↑↑i.snd
+'LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_iff' depends on axioms: [propext, Classical.choice, Quot.sound]

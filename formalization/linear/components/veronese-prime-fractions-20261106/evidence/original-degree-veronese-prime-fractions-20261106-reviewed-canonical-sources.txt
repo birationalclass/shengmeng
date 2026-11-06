@@ -1,0 +1,807 @@
+===== Linear.OriginalDegreeVeronesePromotedFraction =====
+module
+public import Linear.OriginalDegreeVeroneseCoefficientLocalization
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+universe u v w
+variable {K : Type u} {S : Type v} {M : Type w}
+variable [Field K] [CommRing S] [Algebra K S]
+variable [AddCommGroup M] [Module K M] [Module S M]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (D : ℤ → Submodule K M)
+variable (hD : ∀ (n : ℕ) (d : ℤ) (c : S), c ∈ B n →
+  ∀ x : M, x ∈ D d → c • x ∈ D ((n : ℤ) + d))
+
+include hD in
+/-- Raise the denominator of a homogeneous fraction to the qth power.
+The new numerator lies in the original degree q*(n+k). -/
+theorem originalDegreeVeronesePromotedNumerator_mem
+    (q : ℕ) (hq : 0 < q) (n : ℕ) (k : ℤ)
+    (b : S) (hb : b ∈ B n) (x : M) (hx : x ∈ D ((n : ℤ) + (q : ℤ)*k)) :
+    b^(q-1) • x ∈ D ((q : ℤ) * ((n : ℤ) + k)) := by
+  have hpow : b^(q-1) ∈ B ((q-1)*n) := by
+    simpa only [smul_eq_mul] using SetLike.pow_mem_graded (q-1) hb
+  have h := hD ((q-1)*n) ((n : ℤ) + (q : ℤ)*k) (b^(q-1)) hpow x hx
+  have he : (q-1)*n+n = q*n := calc
+    (q-1)*n+n = (q-1)*n+1*n := by rw [one_mul]
+    _ = (q-1+1)*n := (Nat.add_mul (q-1) 1 n).symm
+    _ = q*n := congrArg (· * n) (Nat.sub_add_cancel hq)
+  rw [← add_assoc, ← Nat.cast_add, he, Nat.cast_mul, ← mul_add] at h
+  exact h
+
+/-- The promoted fraction has the same value in every localized module
+where the original denominator is permitted. -/
+theorem originalDegreeVeronesePromotedFraction_eq
+    (q : ℕ) (hq : 0 < q) (T : Submonoid S) (b : T) (x : M) :
+    LocalizedModule.mk ((b : S)^(q-1) • x) (b^q) = LocalizedModule.mk x b := by
+  have hden : b^(q-1)*b = b^q := by
+    rw [← pow_succ, Nat.sub_add_cancel hq]
+  rw [← hden]
+  exact LocalizedModule.mk_cancel_common_left (b^(q-1)) b x
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeronesePromotedNumerator_mem
+#print axioms LinearStudy.originalDegreeVeronesePromotedNumerator_mem
+#check LinearStudy.originalDegreeVeronesePromotedFraction_eq
+#print axioms LinearStudy.originalDegreeVeronesePromotedFraction_eq
+
+
+===== Linear.OriginalDegreeVeroneseBasicOpen =====
+module
+public import Linear.OriginalDegreeVeroneseProjIso
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseBasicOpenGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+local notation "I" => OriginalDegreeVeroneseChartIndex B q
+local notation "C" => originalDegreeVeroneseAmbientAffineCover B q
+local notation "D" => originalDegreeVeroneseRegradedAffineCover B q
+local notation "E" => originalDegreeVeroneseIndexedAffineIso B q
+local notation "F" => originalDegreeVeroneseProjHom B q
+
+private theorem range_point_of_square
+    {X Y U V : Type*} (fn : X → Y) (a : U → X) (b : V → Y) (i : U → V)
+    (hinj : Function.Injective fn) (hsurj : Function.Surjective i)
+    (hsquare : ∀ z, fn (a z) = b (i z))
+    (s : Set X) (t : Set Y) (hs : Set.range a = s) (ht : Set.range b = t) (x : X) :
+    fn x ∈ t ↔ x ∈ s := by
+  rw [← hs, ← ht]
+  constructor
+  · rintro ⟨v,hv⟩
+    obtain ⟨u,rfl⟩ := hsurj v
+    exact ⟨u,hinj ((hsquare u).trans hv)⟩
+  · rintro ⟨u,rfl⟩
+    exact ⟨i u,(hsquare u).symm⟩
+
+private theorem scheme_chart_point_of_square
+    {X Y U W : Scheme.{v}} (e₀ : X ≅ Y) (e₁ : U ≅ W)
+    (a : U ⟶ X) (b : W ⟶ Y) (h : a ≫ e₀.hom = e₁.hom ≫ b)
+    (s : Set X) (t : Set Y)
+    (hs : Set.range (fun z => a z) = s) (ht : Set.range (fun z => b z) = t) (x : X) :
+    e₀.hom x ∈ t ↔ x ∈ s :=
+  range_point_of_square e₀.hom a b e₁.hom
+    (Scheme.homeoOfIso e₀).injective (Scheme.homeoOfIso e₁).surjective
+    (fun z => by
+      simpa only [Scheme.Hom.comp_apply] using congrArg (fun m : U ⟶ Y => m z) h)
+    s t hs ht x
+
+/-- The established scheme isomorphism identifies membership in
+the common positive basic opens pointwise. -/
+theorem originalDegreeVeroneseProjHom_mem_basicOpen_iff (i : I) (x : Proj B) :
+    F x ∈ Proj.basicOpen P i.2.1 ↔ x ∈ Proj.basicOpen B (i.2.1 : S) := by
+  have hC : Set.range (fun y => (C).f i y) = (Proj.basicOpen B (i.2.1 : S) : Set (Proj B)) :=
+    congrArg (fun U : (Proj B).Opens => (U : Set (Proj B)))
+      (originalDegreeVeroneseAmbientAwayImm_opensRange B q i)
+  have hD : Set.range (fun y => (D).f i y) = (Proj.basicOpen P i.2.1 : Set (Proj P)) :=
+    congrArg (fun U : (Proj P).Opens => (U : Set (Proj P)))
+      (Proj.opensRange_awayι P i.2.1 i.2.2 i.1.2)
+  exact scheme_chart_point_of_square (originalDegreeVeroneseProjIso B q) (E i)
+    ((C).f i) ((D).f i) (originalDegreeVeroneseProjIso_hom_onChart B q i)
+    _ _ hC hD x
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_iff
+#print axioms LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_iff
+
+
+===== Linear.OriginalDegreeVeroneseAllHomogeneousOpen =====
+module
+public import Linear.OriginalDegreeVeroneseBasicOpen
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeroneseAllHomogeneousOpenGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+local notation "I" => OriginalDegreeVeroneseChartIndex B q
+local notation "C" => originalDegreeVeroneseAmbientAffineCover B q
+local notation "D" => originalDegreeVeroneseRegradedAffineCover B q
+local notation "E" => originalDegreeVeroneseIndexedAffineIso B q
+local notation "F" => originalDegreeVeroneseProjHom B q
+
+local notation "V" => originalDegreeVeroneseAlgebra B q
+
+private theorem projective_basicOpen_mul_cancel
+    {L R T : Type*} [Field L] [CommRing R] [CommRing T]
+    [Algebra L R] [Algebra L T]
+    (A : ℕ → Submodule L R) [GradedAlgebra A]
+    (A' : ℕ → Submodule L T) [GradedAlgebra A']
+    (x : Proj A) (y : Proj A') (f g : R) (f' g' : T)
+    (hg : x ∈ Proj.basicOpen A g) (hg' : y ∈ Proj.basicOpen A' g')
+    (h : y ∈ Proj.basicOpen A' (f'*g') ↔ x ∈ Proj.basicOpen A (f*g)) :
+    y ∈ Proj.basicOpen A' f' ↔ x ∈ Proj.basicOpen A f := by
+  rw [Proj.basicOpen_mul, Proj.basicOpen_mul] at h
+  exact ⟨fun hy => (h.mp ⟨hy,hg'⟩).1, fun hx => (h.mpr ⟨hx,hg⟩).1⟩
+
+/-- Multiply an arbitrary homogeneous denominator by a positive one. -/
+def originalDegreeVeroneseChartIndex_mul
+    (i : I) {d : ℕ} {f : V} (hf : f ∈ P d) : I :=
+  ⟨⟨d + (i.1 : ℕ), Nat.lt_of_lt_of_le i.1.2 (Nat.le_add_left _ _)⟩,
+    f * i.2.1, SetLike.mul_mem_graded hf i.2.2⟩
+
+/-- Membership is compared for every homogeneous denominator, including
+degree zero by multiplying by a positive denominator at the point. -/
+theorem originalDegreeVeroneseProjHom_mem_basicOpen_homogeneous
+    {d : ℕ} {f : V} (hf : f ∈ P d) (x : Proj B) :
+    F x ∈ Proj.basicOpen P f ↔ x ∈ Proj.basicOpen B (f : S) := by
+  obtain ⟨i, hi⟩ := originalDegreeVeroneseAmbientIndex_exists B q x
+  have hi' := (originalDegreeVeroneseProjHom_mem_basicOpen_iff B q i x).mpr hi
+  exact projective_basicOpen_mul_cancel B P x (F x) (f : S) (i.2.1 : S)
+    f i.2.1 hi hi' (originalDegreeVeroneseProjHom_mem_basicOpen_iff B q
+      (originalDegreeVeroneseChartIndex_mul B q i hf) x)
+
+/-- The established scheme isomorphism compares membership in the actual
+homogeneous primes for each homogeneous element of the subalgebra. -/
+theorem originalDegreeVeroneseProjHom_mem_prime_homogeneous
+    {d : ℕ} {f : V} (hf : f ∈ P d) (x : Proj B) :
+    f ∈ (F x).asHomogeneousIdeal ↔ (f : S) ∈ x.asHomogeneousIdeal := by
+  simpa only [Proj.mem_basicOpen, not_iff_not] using
+    (originalDegreeVeroneseProjHom_mem_basicOpen_homogeneous B q hf x)
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_homogeneous
+#print axioms LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_homogeneous
+#check LinearStudy.originalDegreeVeroneseProjHom_mem_prime_homogeneous
+#print axioms LinearStudy.originalDegreeVeroneseProjHom_mem_prime_homogeneous
+
+
+===== Linear.GradedIdealContractionByDegrees =====
+module
+public import Mathlib.RingTheory.GradedAlgebra.Homogeneous.Ideal
+public import Mathlib.RingTheory.GradedAlgebra.Basic
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+variable {L R T : Type*} [Field L] [CommRing R] [CommRing T]
+variable [Algebra L R] [Algebra L T]
+variable (A : ℕ → Submodule L R) [GradedAlgebra A]
+variable (A' : ℕ → Submodule L T) [GradedAlgebra A']
+variable (j : R →+* T) (g : ℕ → ℕ) (hg : Function.Injective g)
+variable (hj : ∀ n : ℕ, ∀ z ∈ A n, j z ∈ A' (g n))
+include hg hj
+
+/-- A map with an injective change of degree commutes with the corresponding
+original homogeneous projections. -/
+theorem gradedRing_proj_map_injectiveDegrees (n : ℕ) (z : R) :
+    j (GradedRing.proj A n z) = GradedRing.proj A' (g n) (j z) := by
+  induction z using DirectSum.Decomposition.inductionOn A with
+  | zero => simp only [map_zero]
+  | @homogeneous m z =>
+    simp only [GradedRing.proj_apply]
+    by_cases hm : m = n
+    · subst m
+      rw [DirectSum.decompose_of_mem_same A z.property,
+        DirectSum.decompose_of_mem_same A' (hj n z z.property)]
+    · rw [DirectSum.decompose_of_mem_ne A z.property hm,
+        DirectSum.decompose_of_mem_ne A' (hj m z z.property) (fun h => hm (hg h)),
+        map_zero]
+  | add x y hx hy => simp only [map_add, hx, hy]
+
+/-- Comparison on homogeneous elements determines contraction of the whole
+ideal when the ambient degrees of the source pieces are distinct. -/
+theorem homogeneousIdeal_toIdeal_eq_comap_of_compare
+    (I : HomogeneousIdeal A) (J : HomogeneousIdeal A')
+    (h : ∀ n : ℕ, ∀ z ∈ A n, z ∈ I.toIdeal ↔ j z ∈ J.toIdeal) :
+    I.toIdeal = J.toIdeal.comap j := by
+  classical
+  ext z
+  change z ∈ I.toIdeal ↔ j z ∈ J.toIdeal
+  constructor
+  · intro hz
+    have hc := (I.isHomogeneous.mem_iff.mp hz)
+    rw [← DirectSum.sum_support_decompose A z, map_sum]
+    exact Ideal.sum_mem _ (fun n _ => (h n _ (DirectSum.decompose A z n).property).mp (hc n))
+  · intro hz
+    apply I.isHomogeneous.mem_iff.mpr
+    intro n
+    apply (h n _ (DirectSum.decompose A z n).property).mpr
+    have hc := (J.isHomogeneous.mem_iff.mp hz) (g n)
+    exact (gradedRing_proj_map_injectiveDegrees A A' j g hg hj n z).symm ▸ hc
+
+end LinearStudy
+#check LinearStudy.gradedRing_proj_map_injectiveDegrees
+#print axioms LinearStudy.gradedRing_proj_map_injectiveDegrees
+#check LinearStudy.homogeneousIdeal_toIdeal_eq_comap_of_compare
+#print axioms LinearStudy.homogeneousIdeal_toIdeal_eq_comap_of_compare
+
+
+===== Linear.OriginalDegreeVeronesePrimeContraction =====
+module
+public import Linear.OriginalDegreeVeroneseAllHomogeneousOpen
+public import Linear.GradedIdealContractionByDegrees
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeronesePrimeContractionGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "F" => originalDegreeVeroneseProjHom B q
+
+/-- The point of the established scheme isomorphism is exactly contraction
+of the original homogeneous prime to the Veronese subalgebra. -/
+theorem originalDegreeVeroneseProjHom_prime_contraction (x : Proj B) :
+    (F x).asHomogeneousIdeal.toIdeal =
+      x.asHomogeneousIdeal.toIdeal.comap (V).val.toRingHom :=
+  homogeneousIdeal_toIdeal_eq_comap_of_compare P B (V).val.toRingHom (q * ·)
+    (fun _ _ h => Nat.mul_left_cancel hq.out h) (fun _ _ h => h)
+    (F x).asHomogeneousIdeal x.asHomogeneousIdeal
+    (fun _ _ h => originalDegreeVeroneseProjHom_mem_prime_homogeneous B q h x)
+
+theorem originalDegreeVeroneseProjHom_mem_prime_iff (x : Proj B) (a : V) :
+    a ∈ (F x).asHomogeneousIdeal ↔ (a : S) ∈ x.asHomogeneousIdeal := by
+  change a ∈ (F x).asHomogeneousIdeal.toIdeal ↔ _
+  rw [originalDegreeVeroneseProjHom_prime_contraction B q x]
+  rfl
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseProjHom_prime_contraction
+#print axioms LinearStudy.originalDegreeVeroneseProjHom_prime_contraction
+#check LinearStudy.originalDegreeVeroneseProjHom_mem_prime_iff
+#print axioms LinearStudy.originalDegreeVeroneseProjHom_mem_prime_iff
+
+
+===== Linear.OriginalDegreeVeronesePrimeDenominator =====
+module
+public import Linear.OriginalDegreeVeronesePrimeContraction
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u v
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeronesePrimeDenominatorGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "F" => originalDegreeVeroneseProjHom B q
+
+/-- Prime denominators at the corresponding Veronese point. -/
+abbrev originalDegreeVeroneseRegradedPrimeCompl (x : Proj B) : Submonoid V :=
+  @Ideal.primeCompl V _ (F x).asHomogeneousIdeal.toIdeal (F x).isPrime
+
+/-- Prime denominators at the original projective point. -/
+abbrev originalDegreeVeroneseAmbientPrimeCompl (x : Proj B) : Submonoid S :=
+  @Ideal.primeCompl S _ x.asHomogeneousIdeal.toIdeal x.isPrime
+
+local notation "Q" => originalDegreeVeroneseRegradedPrimeCompl B q
+local notation "T" => originalDegreeVeroneseAmbientPrimeCompl B
+
+/-- Denominators from the contracted prime complement have the same
+values in the original prime complement. -/
+def originalDegreeVeronesePrimeDenominator (x : Proj B) (s : Q x) : T x :=
+  ⟨((s : V) : S), (not_congr (originalDegreeVeroneseProjHom_mem_prime_iff B q x s)).mp s.property⟩
+
+omit hq in
+theorem originalDegreeVeronesePower_mem (n : ℕ) (b : B n) :
+    (b : S)^q ∈ B (q*n) := by
+  simpa only [nsmul_eq_mul, Nat.cast_id] using SetLike.pow_mem_graded q b.property
+
+/-- The q-th power of a homogeneous original denominator belongs to
+the exact contracted prime complement and has regraded degree n. -/
+def originalDegreeVeronesePrimeDenominatorPow
+    (x : Proj B) (n : ℕ) (b : B n) (hb : (b : S) ∉ x.asHomogeneousIdeal) : Q x := by
+  let y : V := ⟨(b : S)^q, originalDegreeVeroneseAlgebra_mem_of_mem B q n
+    (originalDegreeVeronesePower_mem B q n b)⟩
+  have hy : (y : S) ∉ x.asHomogeneousIdeal :=
+    pow_mem (show (b : S) ∈ T x from hb) q
+  exact ⟨y, (not_congr (originalDegreeVeroneseProjHom_mem_prime_iff B q x y)).mpr hy⟩
+
+theorem originalDegreeVeronesePrimeDenominatorPow_mem
+    (x : Proj B) (n : ℕ) (b : B n) (hb : (b : S) ∉ x.asHomogeneousIdeal) :
+    (originalDegreeVeronesePrimeDenominatorPow B q x n b hb : V) ∈ P n :=
+  originalDegreeVeronesePower_mem B q n b
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeronesePrimeDenominator
+#print axioms LinearStudy.originalDegreeVeronesePrimeDenominator
+#check LinearStudy.originalDegreeVeronesePrimeDenominatorPow
+#print axioms LinearStudy.originalDegreeVeronesePrimeDenominatorPow
+#check LinearStudy.originalDegreeVeronesePrimeDenominatorPow_mem
+#print axioms LinearStudy.originalDegreeVeronesePrimeDenominatorPow_mem
+
+
+===== Linear.OriginalDegreeVeronesePrimeLocalization =====
+module
+public import Linear.OriginalDegreeVeronesePrimeDenominator
+public import Linear.OriginalDegreeVeronesePromotedFraction
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u v w
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeronesePrimeLocalizationGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "F" => originalDegreeVeroneseProjHom B q
+
+local notation "Q" => originalDegreeVeroneseRegradedPrimeCompl B q
+local notation "T" => originalDegreeVeroneseAmbientPrimeCompl B
+
+variable {M : Type w} [AddCommGroup M] [Module K M] [Module S M]
+variable (D : ℤ → Submodule K M)
+variable (hD : ∀ (n : ℕ) (d : ℤ) (c : S), c ∈ B n →
+  ∀ a : M, a ∈ D d → c • a ∈ D ((n : ℤ) + d))
+local notation "W" => originalDegreeVeroneseCoefficient B D hD q
+
+/-- Send a fraction at the contracted prime to its actual original value. -/
+def originalDegreeVeronesePrimeLocalization (x : Proj B)
+    (z : LocalizedModule (Q x) W) : LocalizedModule (T x) M :=
+  @LocalizedModule.liftOn V (inferInstanceAs (CommSemiring V)) (Q x) W
+    (inferInstanceAs (AddCommMonoid W)) (Submodule.module W) (LocalizedModule (T x) M) z
+    (fun p : W × Q x => LocalizedModule.mk (p.1 : M)
+      (originalDegreeVeronesePrimeDenominator B q x p.2))
+    (by
+      intro p p' h
+      change LocalizedModule.r (Q x) W p p' at h
+      obtain ⟨t, ht⟩ := h
+      exact LocalizedModule.mk_eq.mpr
+        ⟨originalDegreeVeronesePrimeDenominator B q x t,
+          congrArg (fun z : W => (z : M)) ht⟩)
+
+theorem originalDegreeVeronesePrimeLocalization_mk (x : Proj B)
+    (a : W) (s : Q x) :
+    originalDegreeVeronesePrimeLocalization B q D hD x (LocalizedModule.mk a s) =
+      LocalizedModule.mk (a : M) (originalDegreeVeronesePrimeDenominator B q x s) := rfl
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeronesePrimeLocalization
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization
+#check LinearStudy.originalDegreeVeronesePrimeLocalization_mk
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_mk
+
+
+===== Linear.OriginalDegreeVeronesePrimeRepresent =====
+module
+public import Linear.OriginalDegreeVeronesePrimeLocalization
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u v w
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeronesePrimeRepresentGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "F" => originalDegreeVeroneseProjHom B q
+
+local notation "Q" => originalDegreeVeroneseRegradedPrimeCompl B q
+local notation "T" => originalDegreeVeroneseAmbientPrimeCompl B
+
+variable {M : Type w} [AddCommGroup M] [Module K M] [Module S M]
+variable (D : ℤ → Submodule K M)
+variable (hD : ∀ (n : ℕ) (d : ℤ) (c : S), c ∈ B n →
+  ∀ a : M, a ∈ D d → c • a ∈ D ((n : ℤ) + d))
+local notation "W" => originalDegreeVeroneseCoefficient B D hD q
+
+/-- Every original homogeneous fraction of shift q*k is represented by
+a Veronese fraction of shift k at the exact contracted prime. -/
+theorem originalDegreeVeronesePrimeLocalization_represents
+    (x : Proj B) (k : ℤ) (n : ℕ) (b : B n)
+    (hb : (b : S) ∉ x.asHomogeneousIdeal) (a : M)
+    (ha : a ∈ D ((n : ℤ) + (q : ℤ)*k)) :
+    ∃ s : Q x, ∃ y : W, (s : V) ∈ P n ∧
+      (y : M) ∈ D ((q : ℤ)*((n : ℤ)+k)) ∧
+      originalDegreeVeronesePrimeLocalization B q D hD x (LocalizedModule.mk y s) =
+        LocalizedModule.mk a (⟨(b : S), hb⟩ : T x) := by
+  let s := originalDegreeVeronesePrimeDenominatorPow B q x n b hb
+  have hy := originalDegreeVeronesePromotedNumerator_mem B D hD q hq.out n k b b.property a ha
+  let y : W := ⟨(b : S)^(q-1) • a,
+    originalDegreeVeroneseCoefficient_mem_of_mem B D hD q ((n : ℤ)+k) hy⟩
+  refine ⟨s, y, originalDegreeVeronesePrimeDenominatorPow_mem B q x n b hb, hy, ?_⟩
+  rw [originalDegreeVeronesePrimeLocalization_mk]
+  exact originalDegreeVeronesePromotedFraction_eq q hq.out (T x) ⟨(b : S), hb⟩ a
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeronesePrimeLocalization_represents
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_represents
+
+
+===== Linear.OriginalDegreeVeronesePrimeAnnihilator =====
+module
+public import Linear.OriginalDegreeVeronesePrimeDenominator
+public import Linear.IntegerGradedHomogeneousAnnihilator
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u v w
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeronesePrimeAnnihilatorGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "F" => originalDegreeVeroneseProjHom B q
+
+local notation "Q" => originalDegreeVeroneseRegradedPrimeCompl B q
+local notation "T" => originalDegreeVeroneseAmbientPrimeCompl B
+
+variable {M : Type w} [AddCommGroup M] [Module K M] [Module S M]
+variable (D : ℤ → Submodule K M)
+variable (hD : ∀ (n : ℕ) (d : ℤ) (c : S), c ∈ B n →
+  ∀ a : M, a ∈ D d → c • a ∈ D ((n : ℤ) + d))
+
+variable [DirectSum.Decomposition D]
+
+include hD in
+/-- A homogeneous original relation killed outside the original prime is
+also killed by a denominator of the contracted Veronese prime. -/
+theorem originalDegreeVeronesePrimeAnnihilator
+    (x : Proj B) (d : ℤ) (a : M) (ha : a ∈ D d)
+    (t : S) (ht : t ∉ x.asHomogeneousIdeal) (hta : t • a = 0) :
+    ∃ s : Q x, ((s : V) : S) • a = 0 := by
+  obtain ⟨n, c, hc, hca⟩ :=
+    homogeneous_annihilator_outside_projectivePrime B D hD d a ha x t ht hta
+  refine ⟨originalDegreeVeronesePrimeDenominatorPow B q x n c hc, ?_⟩
+  change (c : S)^q • a = 0
+  have hq' : q - 1 + 1 = q := Nat.sub_add_cancel hq.out
+  rw [← hq', pow_succ, mul_smul, hca, smul_zero]
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeronesePrimeAnnihilator
+#print axioms LinearStudy.originalDegreeVeronesePrimeAnnihilator
+
+
+===== Linear.OriginalDegreeVeronesePrimeReflect =====
+module
+public import Linear.OriginalDegreeVeronesePrimeLocalization
+public import Linear.OriginalDegreeVeronesePrimeAnnihilator
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u v w
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeronesePrimeReflectGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "F" => originalDegreeVeroneseProjHom B q
+
+local notation "Q" => originalDegreeVeroneseRegradedPrimeCompl B q
+local notation "T" => originalDegreeVeroneseAmbientPrimeCompl B
+
+variable {M : Type w} [AddCommGroup M] [Module K M] [Module S M]
+variable (D : ℤ → Submodule K M)
+variable (hD : ∀ (n : ℕ) (d : ℤ) (c : S), c ∈ B n →
+  ∀ a : M, a ∈ D d → c • a ∈ D ((n : ℤ) + d))
+local notation "W" => originalDegreeVeroneseCoefficient B D hD q
+
+private theorem smul_cross_eq_of_smul_sub_eq_zero (c : S) (a b : M)
+    (h : c • (a - b) = 0) : c • a = c • b :=
+  sub_eq_zero.mp ((smul_sub c a b).symm.trans h)
+
+private theorem veronese_mk_eq_of_cross (x : Proj B)
+    (a b : W) (s t u : Q x)
+    (hu : ((u : V) : S) •
+      (((t : V) : S) • (a : M) - ((s : V) : S) • (b : M)) = 0) :
+    LocalizedModule.mk a s = LocalizedModule.mk b t := by
+  apply LocalizedModule.mk_eq.mpr
+  refine ⟨u, Subtype.ext ?_⟩
+  change ((u : V) : S) • (((t : V) : S) • (a : M)) =
+    ((u : V) : S) • (((s : V) : S) • (b : M))
+  exact smul_cross_eq_of_smul_sub_eq_zero _ _ _ hu
+
+variable [DirectSum.Decomposition D]
+
+/-- Equality of fractions in the original localization reflects to the
+contracted prime when the cross difference is homogeneous. -/
+theorem originalDegreeVeronesePrimeLocalization_reflect
+    (x : Proj B) (a b : W) (s t : Q x) (d : ℤ)
+    (hd : ((t : V) : S) • (a : M) - ((s : V) : S) • (b : M) ∈ D d)
+    (h : LocalizedModule.mk (a : M) (originalDegreeVeronesePrimeDenominator B q x s) =
+      LocalizedModule.mk (b : M) (originalDegreeVeronesePrimeDenominator B q x t)) :
+    LocalizedModule.mk a s = LocalizedModule.mk b t := by
+  obtain ⟨c, hc⟩ := LocalizedModule.mk_eq.mp h
+  have hc' : (c : S) • (((t : V) : S) • (a : M) - ((s : V) : S) • (b : M)) = 0 := by
+    rw [smul_sub]
+    exact sub_eq_zero.mpr hc
+  obtain ⟨u, hu⟩ := originalDegreeVeronesePrimeAnnihilator B q D hD x d _ hd c c.property hc'
+  exact veronese_mk_eq_of_cross B q D hD x a b s t u hu
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeronesePrimeLocalization_reflect
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_reflect
+
+
+===== Linear.OriginalDegreeVeronesePrimeSameShift =====
+module
+public import Linear.OriginalDegreeVeronesePrimeReflect
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u v w
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeronesePrimeSameShiftGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "F" => originalDegreeVeroneseProjHom B q
+
+local notation "Q" => originalDegreeVeroneseRegradedPrimeCompl B q
+local notation "T" => originalDegreeVeroneseAmbientPrimeCompl B
+
+variable {M : Type w} [AddCommGroup M] [Module K M] [Module S M]
+variable (D : ℤ → Submodule K M)
+variable (hD : ∀ (n : ℕ) (d : ℤ) (c : S), c ∈ B n →
+  ∀ a : M, a ∈ D d → c • a ∈ D ((n : ℤ) + d))
+local notation "W" => originalDegreeVeroneseCoefficient B D hD q
+
+private theorem cross_degree_comm (q d e : ℕ) (k : ℤ) :
+    (↑(q*d) : ℤ) + (q : ℤ)*((e : ℤ)+k) =
+    (↑(q*e) : ℤ) + (q : ℤ)*((d : ℤ)+k) := by
+  simp only [Nat.cast_mul, mul_add]
+  exact add_left_comm ((q : ℤ)*(d : ℤ)) ((q : ℤ)*(e : ℤ)) ((q : ℤ)*k)
+
+theorem originalDegreeVeronesePrimeCrossDifference_mem
+    (x : Proj B) (k : ℤ) {d e : ℕ} (a b : W) (s t : Q x)
+    (hs : (s : V) ∈ P d) (ht : (t : V) ∈ P e)
+    (ha : (a : M) ∈ D ((q : ℤ)*((d : ℤ)+k)))
+    (hb : (b : M) ∈ D ((q : ℤ)*((e : ℤ)+k))) :
+    ((t : V) : S) • (a : M) - ((s : V) : S) • (b : M) ∈
+      D ((↑(q*e) : ℤ) + (q : ℤ)*((d : ℤ)+k)) := by
+  have h₁ := hD (q*e) ((q : ℤ)*((d : ℤ)+k)) ((t : V) : S) ht (a : M) ha
+  have h₂ := hD (q*d) ((q : ℤ)*((e : ℤ)+k)) ((s : V) : S) hs (b : M) hb
+  have h₃ : ((s : V) : S) • (b : M) ∈
+      D ((↑(q*e) : ℤ) + (q : ℤ)*((d : ℤ)+k)) :=
+    (congrArg (fun i : ℤ => ((s : V) : S) • (b : M) ∈ D i)
+      (cross_degree_comm q d e k)).mp h₂
+  exact (D _).sub_mem h₁ h₃
+
+variable [DirectSum.Decomposition D]
+
+/-- The actual prime-localization comparison reflects equality on the same shift. -/
+theorem originalDegreeVeronesePrimeLocalization_sameShift_eq_iff
+    (x : Proj B) (k : ℤ) {d e : ℕ} (a b : W) (s t : Q x)
+    (hs : (s : V) ∈ P d) (ht : (t : V) ∈ P e)
+    (ha : (a : M) ∈ D ((q : ℤ)*((d : ℤ)+k)))
+    (hb : (b : M) ∈ D ((q : ℤ)*((e : ℤ)+k))) :
+    originalDegreeVeronesePrimeLocalization B q D hD x (LocalizedModule.mk a s) =
+      originalDegreeVeronesePrimeLocalization B q D hD x (LocalizedModule.mk b t) ↔
+    LocalizedModule.mk a s = LocalizedModule.mk b t := by
+  constructor
+  · intro h
+    have h₁ := originalDegreeVeronesePrimeLocalization_mk B q D hD x a s
+    have h₂ := originalDegreeVeronesePrimeLocalization_mk B q D hD x b t
+    exact originalDegreeVeronesePrimeLocalization_reflect B q D hD x a b s t _
+      (originalDegreeVeronesePrimeCrossDifference_mem B q D hD x k a b s t hs ht ha hb)
+      (h₁.symm.trans (h.trans h₂))
+  · exact congrArg (originalDegreeVeronesePrimeLocalization B q D hD x)
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeronesePrimeCrossDifference_mem
+#print axioms LinearStudy.originalDegreeVeronesePrimeCrossDifference_mem
+#check LinearStudy.originalDegreeVeronesePrimeLocalization_sameShift_eq_iff
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_sameShift_eq_iff
+
+
+===== Linear.OriginalDegreeVeronesePrimeFractionSets =====
+module
+public import Linear.OriginalDegreeVeronesePrimeRepresent
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u v w
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeronesePrimeFractionSetsGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "F" => originalDegreeVeroneseProjHom B q
+
+local notation "Q" => originalDegreeVeroneseRegradedPrimeCompl B q
+local notation "T" => originalDegreeVeroneseAmbientPrimeCompl B
+
+variable {M : Type w} [AddCommGroup M] [Module K M] [Module S M]
+variable (D : ℤ → Submodule K M)
+variable (hD : ∀ (n : ℕ) (d : ℤ) (c : S), c ∈ B n →
+  ∀ a : M, a ∈ D d → c • a ∈ D ((n : ℤ) + d))
+local notation "W" => originalDegreeVeroneseCoefficient B D hD q
+
+/-- Actual values of homogeneous fractions at the original prime, of shift q*k. -/
+def originalDegreeVeroneseAmbientPrimeFractions (x : Proj B) (k : ℤ) :
+    Set (LocalizedModule (T x) M) :=
+  {z | ∃ (n : ℕ) (b : B n) (hb : (b : S) ∉ x.asHomogeneousIdeal) (a : M),
+    a ∈ D ((n : ℤ)+(q : ℤ)*k) ∧ z = LocalizedModule.mk a (⟨b,hb⟩ : T x)}
+
+include hD in
+/-- Actual values of homogeneous fractions of shift k at the contracted prime. -/
+def originalDegreeVeroneseRegradedPrimeFractions (x : Proj B) (k : ℤ) :
+    Set (LocalizedModule (Q x) W) :=
+  {z | ∃ (n : ℕ) (s : Q x) (a : W), (s : V) ∈ P n ∧
+    (a : M) ∈ D ((q : ℤ)*((n : ℤ)+k)) ∧ z = LocalizedModule.mk a s}
+
+include hD in
+/-- Every homogeneous fraction value on the original side has a regraded representative. -/
+theorem originalDegreeVeronesePrimeLocalization_surjOn
+    (x : Proj B) (k : ℤ) :
+    Set.SurjOn (originalDegreeVeronesePrimeLocalization B q D hD x)
+      (originalDegreeVeroneseRegradedPrimeFractions B q D hD x k)
+      (originalDegreeVeroneseAmbientPrimeFractions B q D x k) := by
+  rintro z ⟨n,b,hb,a,ha,rfl⟩
+  obtain ⟨s,y,hs,hy,h⟩ := originalDegreeVeronesePrimeLocalization_represents B q D hD x k n b hb a ha
+  exact ⟨LocalizedModule.mk y s, ⟨n,s,y,hs,hy,rfl⟩, h⟩
+
+private theorem prime_fraction_grade (q n : ℕ) (k : ℤ) :
+    (q : ℤ)*((n : ℤ)+k) = (↑(q*n) : ℤ) + (q : ℤ)*k := by
+  rw [Nat.cast_mul, mul_add]
+
+include hD in
+/-- The regraded fraction map lands in the original fraction set of the precise shift. -/
+theorem originalDegreeVeronesePrimeLocalization_mapsTo
+    (x : Proj B) (k : ℤ) :
+    Set.MapsTo (originalDegreeVeronesePrimeLocalization B q D hD x)
+      (originalDegreeVeroneseRegradedPrimeFractions B q D hD x k)
+      (originalDegreeVeroneseAmbientPrimeFractions B q D x k) := by
+  rintro z ⟨n,s,a,hs,ha,rfl⟩
+  let t := originalDegreeVeronesePrimeDenominator B q x s
+  have hA : (a : M) ∈ D ((↑(q*n) : ℤ) + (q : ℤ)*k) :=
+    (congrArg (fun d : ℤ => (a : M) ∈ D d) (prime_fraction_grade q n k)).mp ha
+  refine ⟨q*n, ⟨(t : S),hs⟩, t.property, (a : M), hA, ?_⟩
+  exact originalDegreeVeronesePrimeLocalization_mk B q D hD x a s
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeroneseAmbientPrimeFractions
+#print axioms LinearStudy.originalDegreeVeroneseAmbientPrimeFractions
+#check LinearStudy.originalDegreeVeroneseRegradedPrimeFractions
+#print axioms LinearStudy.originalDegreeVeroneseRegradedPrimeFractions
+#check LinearStudy.originalDegreeVeronesePrimeLocalization_surjOn
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_surjOn
+#check LinearStudy.originalDegreeVeronesePrimeLocalization_mapsTo
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_mapsTo
+
+
+===== Linear.OriginalDegreeVeronesePrimeFractionEquiv =====
+module
+public import Linear.OriginalDegreeVeronesePrimeFractionSets
+public import Linear.OriginalDegreeVeronesePrimeSameShift
+public import Mathlib.Logic.Equiv.Set
+@[expose] public section
+noncomputable section
+set_option autoImplicit false
+set_option maxHeartbeats 5000
+namespace LinearStudy
+open AlgebraicGeometry CategoryTheory
+universe u v w
+variable {K : Type u} {S : Type v} [Field K] [CommRing S] [Algebra K S]
+variable (B : ℕ → Submodule K S) [GradedAlgebra B]
+variable (q : ℕ) [hq : Fact (0 < q)]
+local notation "P" => originalDegreeVeronesePiece B q
+local instance originalDegreeVeronesePrimeFractionEquivGraded : GradedAlgebra P :=
+  originalDegreeVeroneseGrading B q hq.out
+local notation "V" => originalDegreeVeroneseAlgebra B q
+local notation "F" => originalDegreeVeroneseProjHom B q
+
+local notation "Q" => originalDegreeVeroneseRegradedPrimeCompl B q
+local notation "T" => originalDegreeVeroneseAmbientPrimeCompl B
+
+variable {M : Type w} [AddCommGroup M] [Module K M] [Module S M]
+variable (D : ℤ → Submodule K M)
+variable (hD : ∀ (n : ℕ) (d : ℤ) (c : S), c ∈ B n →
+  ∀ a : M, a ∈ D d → c • a ∈ D ((n : ℤ) + d))
+local notation "W" => originalDegreeVeroneseCoefficient B D hD q
+
+variable [DirectSum.Decomposition D]
+include hD in
+/-- Two regraded fractions of shift k with equal original values are equal. -/
+theorem originalDegreeVeronesePrimeLocalization_injOn
+    (x : Proj B) (k : ℤ) :
+    Set.InjOn (originalDegreeVeronesePrimeLocalization B q D hD x)
+      (originalDegreeVeroneseRegradedPrimeFractions B q D hD x k) := by
+  rintro z ⟨d,s,a,hs,ha,rfl⟩ z' ⟨e,t,b,ht,hb,rfl⟩ h
+  exact (originalDegreeVeronesePrimeLocalization_sameShift_eq_iff B q D hD x k a b s t
+    hs ht ha hb).mp h
+
+include hD in
+/-- At corresponding primes the actual homogeneous fraction value sets are in bijection. -/
+theorem originalDegreeVeronesePrimeLocalization_bijOn
+    (x : Proj B) (k : ℤ) :
+    Set.BijOn (originalDegreeVeronesePrimeLocalization B q D hD x)
+      (originalDegreeVeroneseRegradedPrimeFractions B q D hD x k)
+      (originalDegreeVeroneseAmbientPrimeFractions B q D x k) :=
+  ⟨originalDegreeVeronesePrimeLocalization_mapsTo B q D hD x k,
+    originalDegreeVeronesePrimeLocalization_injOn B q D hD x k,
+    originalDegreeVeronesePrimeLocalization_surjOn B q D hD x k⟩
+
+/-- The type equivalence has the actual prime-localization comparison as its forward map. -/
+def originalDegreeVeronesePrimeFractionEquiv (x : Proj B) (k : ℤ) :
+    (originalDegreeVeroneseRegradedPrimeFractions B q D hD x k) ≃
+      (originalDegreeVeroneseAmbientPrimeFractions B q D x k) :=
+  Set.BijOn.equiv _ (originalDegreeVeronesePrimeLocalization_bijOn B q D hD x k)
+
+theorem originalDegreeVeronesePrimeFractionEquiv_val (x : Proj B) (k : ℤ)
+    (z : originalDegreeVeroneseRegradedPrimeFractions B q D hD x k) :
+    ((originalDegreeVeronesePrimeFractionEquiv B q D hD x k z) :
+      LocalizedModule (T x) M) = originalDegreeVeronesePrimeLocalization B q D hD x z := rfl
+
+end LinearStudy
+#check LinearStudy.originalDegreeVeronesePrimeLocalization_injOn
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_injOn
+#check LinearStudy.originalDegreeVeronesePrimeLocalization_bijOn
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_bijOn
+#check LinearStudy.originalDegreeVeronesePrimeFractionEquiv
+#print axioms LinearStudy.originalDegreeVeronesePrimeFractionEquiv
+#check LinearStudy.originalDegreeVeronesePrimeFractionEquiv_val
+#print axioms LinearStudy.originalDegreeVeronesePrimeFractionEquiv_val
+

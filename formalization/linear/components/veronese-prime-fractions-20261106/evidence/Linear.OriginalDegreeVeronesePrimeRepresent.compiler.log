@@ -1,0 +1,13 @@
+LinearStudy.originalDegreeVeronesePrimeLocalization_represents.{u, v, w} {K : Type u} {S : Type v} [Field K]
+  [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {M : Type w}
+  [AddCommGroup M] [Module K M] [Module S M] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ a ∈ D d, c • a ∈ D (↑n + d)) (x : ↥(AlgebraicGeometry.Proj B)) (k : ℤ) (n : ℕ)
+  (b : ↥(B n)) (hb : ↑b ∉ x.asHomogeneousIdeal) (a : M) (ha : a ∈ D (↑n + ↑q * k)) :
+  ∃ s y,
+    ↑s ∈ LinearStudy.originalDegreeVeronesePiece B q n ∧
+      ↑y ∈ D (↑q * (↑n + k)) ∧
+        LinearStudy.originalDegreeVeronesePrimeLocalization B q D hD x (LocalizedModule.mk y s) =
+          LocalizedModule.mk a ⟨↑b, hb⟩
+'LinearStudy.originalDegreeVeronesePrimeLocalization_represents' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

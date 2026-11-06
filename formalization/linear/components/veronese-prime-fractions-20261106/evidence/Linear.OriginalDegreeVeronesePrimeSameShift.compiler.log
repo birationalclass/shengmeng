@@ -1,0 +1,22 @@
+LinearStudy.originalDegreeVeronesePrimeCrossDifference_mem.{u, v, w} {K : Type u} {S : Type v} [Field K] [CommRing S]
+  [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {M : Type w} [AddCommGroup M]
+  [Module K M] [Module S M] (D : ℤ → Submodule K M) (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ a ∈ D d, c • a ∈ D (↑n + d))
+  (x : ↥(AlgebraicGeometry.Proj B)) (k : ℤ) {d e : ℕ} (a b : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q))
+  (s t : ↥(LinearStudy.originalDegreeVeroneseRegradedPrimeCompl B q x))
+  (hs : ↑s ∈ LinearStudy.originalDegreeVeronesePiece B q d) (ht : ↑t ∈ LinearStudy.originalDegreeVeronesePiece B q e)
+  (ha : ↑a ∈ D (↑q * (↑d + k))) (hb : ↑b ∈ D (↑q * (↑e + k))) : ↑↑t • ↑a - ↑↑s • ↑b ∈ D (↑(q * e) + ↑q * (↑d + k))
+'LinearStudy.originalDegreeVeronesePrimeCrossDifference_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.originalDegreeVeronesePrimeLocalization_sameShift_eq_iff.{u, v, w} {K : Type u} {S : Type v} [Field K]
+  [CommRing S] [Algebra K S] (B : ℕ → Submodule K S) [GradedAlgebra B] (q : ℕ) [hq : Fact (0 < q)] {M : Type w}
+  [AddCommGroup M] [Module K M] [Module S M] (D : ℤ → Submodule K M)
+  (hD : ∀ (n : ℕ) (d : ℤ), ∀ c ∈ B n, ∀ a ∈ D d, c • a ∈ D (↑n + d)) [DirectSum.Decomposition D]
+  (x : ↥(AlgebraicGeometry.Proj B)) (k : ℤ) {d e : ℕ} (a b : ↥(LinearStudy.originalDegreeVeroneseCoefficient B D hD q))
+  (s t : ↥(LinearStudy.originalDegreeVeroneseRegradedPrimeCompl B q x))
+  (hs : ↑s ∈ LinearStudy.originalDegreeVeronesePiece B q d) (ht : ↑t ∈ LinearStudy.originalDegreeVeronesePiece B q e)
+  (ha : ↑a ∈ D (↑q * (↑d + k))) (hb : ↑b ∈ D (↑q * (↑e + k))) :
+  LinearStudy.originalDegreeVeronesePrimeLocalization B q D hD x (LocalizedModule.mk a s) =
+      LinearStudy.originalDegreeVeronesePrimeLocalization B q D hD x (LocalizedModule.mk b t) ↔
+    LocalizedModule.mk a s = LocalizedModule.mk b t
+'LinearStudy.originalDegreeVeronesePrimeLocalization_sameShift_eq_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

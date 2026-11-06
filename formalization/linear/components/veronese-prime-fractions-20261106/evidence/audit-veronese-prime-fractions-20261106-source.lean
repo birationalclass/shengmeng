@@ -1,0 +1,137 @@
+module
+public meta import Lean.Elab.Command
+import all Linear.OriginalDegreeVeronesePromotedFraction
+import all Linear.OriginalDegreeVeroneseBasicOpen
+import all Linear.OriginalDegreeVeroneseAllHomogeneousOpen
+import all Linear.GradedIdealContractionByDegrees
+import all Linear.OriginalDegreeVeronesePrimeContraction
+import all Linear.OriginalDegreeVeronesePrimeDenominator
+import all Linear.OriginalDegreeVeronesePrimeLocalization
+import all Linear.OriginalDegreeVeronesePrimeRepresent
+import all Linear.OriginalDegreeVeronesePrimeAnnihilator
+import all Linear.OriginalDegreeVeronesePrimeReflect
+import all Linear.OriginalDegreeVeronesePrimeSameShift
+import all Linear.OriginalDegreeVeronesePrimeFractionSets
+import all Linear.OriginalDegreeVeronesePrimeFractionEquiv
+set_option maxHeartbeats 5000
+set_option pp.deepTerms true
+set_option pp.funBinderTypes true
+#check @LinearStudy.originalDegreeVeronesePromotedNumerator_mem
+#print axioms LinearStudy.originalDegreeVeronesePromotedNumerator_mem
+#check @LinearStudy.originalDegreeVeronesePromotedFraction_eq
+#print axioms LinearStudy.originalDegreeVeronesePromotedFraction_eq
+#check @LinearStudy.originalDegreeVeroneseBasicOpenGraded
+#print axioms LinearStudy.originalDegreeVeroneseBasicOpenGraded
+#check @LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_iff
+#print axioms LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_iff
+#check @LinearStudy.originalDegreeVeroneseAllHomogeneousOpenGraded
+#print axioms LinearStudy.originalDegreeVeroneseAllHomogeneousOpenGraded
+#check @LinearStudy.originalDegreeVeroneseChartIndex_mul
+#print axioms LinearStudy.originalDegreeVeroneseChartIndex_mul
+#check @LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_homogeneous
+#print axioms LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_homogeneous
+#check @LinearStudy.originalDegreeVeroneseProjHom_mem_prime_homogeneous
+#print axioms LinearStudy.originalDegreeVeroneseProjHom_mem_prime_homogeneous
+#check @LinearStudy.gradedRing_proj_map_injectiveDegrees
+#print axioms LinearStudy.gradedRing_proj_map_injectiveDegrees
+#check @LinearStudy.homogeneousIdeal_toIdeal_eq_comap_of_compare
+#print axioms LinearStudy.homogeneousIdeal_toIdeal_eq_comap_of_compare
+#check @LinearStudy.originalDegreeVeronesePrimeContractionGraded
+#print axioms LinearStudy.originalDegreeVeronesePrimeContractionGraded
+#check @LinearStudy.originalDegreeVeroneseProjHom_prime_contraction
+#print axioms LinearStudy.originalDegreeVeroneseProjHom_prime_contraction
+#check @LinearStudy.originalDegreeVeroneseProjHom_mem_prime_iff
+#print axioms LinearStudy.originalDegreeVeroneseProjHom_mem_prime_iff
+#check @LinearStudy.originalDegreeVeronesePrimeDenominatorGraded
+#print axioms LinearStudy.originalDegreeVeronesePrimeDenominatorGraded
+#check @LinearStudy.originalDegreeVeroneseRegradedPrimeCompl
+#print axioms LinearStudy.originalDegreeVeroneseRegradedPrimeCompl
+#check @LinearStudy.originalDegreeVeroneseAmbientPrimeCompl
+#print axioms LinearStudy.originalDegreeVeroneseAmbientPrimeCompl
+#check @LinearStudy.originalDegreeVeronesePrimeDenominator
+#print axioms LinearStudy.originalDegreeVeronesePrimeDenominator
+#check @LinearStudy.originalDegreeVeronesePower_mem
+#print axioms LinearStudy.originalDegreeVeronesePower_mem
+#check @LinearStudy.originalDegreeVeronesePrimeDenominatorPow
+#print axioms LinearStudy.originalDegreeVeronesePrimeDenominatorPow
+#check @LinearStudy.originalDegreeVeronesePrimeDenominatorPow_mem
+#print axioms LinearStudy.originalDegreeVeronesePrimeDenominatorPow_mem
+#check @LinearStudy.originalDegreeVeronesePrimeLocalizationGraded
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalizationGraded
+#check @LinearStudy.originalDegreeVeronesePrimeLocalization
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization
+#check @LinearStudy.originalDegreeVeronesePrimeLocalization_mk
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_mk
+#check @LinearStudy.originalDegreeVeronesePrimeRepresentGraded
+#print axioms LinearStudy.originalDegreeVeronesePrimeRepresentGraded
+#check @LinearStudy.originalDegreeVeronesePrimeLocalization_represents
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_represents
+#check @LinearStudy.originalDegreeVeronesePrimeAnnihilatorGraded
+#print axioms LinearStudy.originalDegreeVeronesePrimeAnnihilatorGraded
+#check @LinearStudy.originalDegreeVeronesePrimeAnnihilator
+#print axioms LinearStudy.originalDegreeVeronesePrimeAnnihilator
+#check @LinearStudy.originalDegreeVeronesePrimeReflectGraded
+#print axioms LinearStudy.originalDegreeVeronesePrimeReflectGraded
+#check @LinearStudy.originalDegreeVeronesePrimeLocalization_reflect
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_reflect
+#check @LinearStudy.originalDegreeVeronesePrimeSameShiftGraded
+#print axioms LinearStudy.originalDegreeVeronesePrimeSameShiftGraded
+#check @LinearStudy.originalDegreeVeronesePrimeCrossDifference_mem
+#print axioms LinearStudy.originalDegreeVeronesePrimeCrossDifference_mem
+#check @LinearStudy.originalDegreeVeronesePrimeLocalization_sameShift_eq_iff
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_sameShift_eq_iff
+#check @LinearStudy.originalDegreeVeronesePrimeFractionSetsGraded
+#print axioms LinearStudy.originalDegreeVeronesePrimeFractionSetsGraded
+#check @LinearStudy.originalDegreeVeroneseAmbientPrimeFractions
+#print axioms LinearStudy.originalDegreeVeroneseAmbientPrimeFractions
+#check @LinearStudy.originalDegreeVeroneseRegradedPrimeFractions
+#print axioms LinearStudy.originalDegreeVeroneseRegradedPrimeFractions
+#check @LinearStudy.originalDegreeVeronesePrimeLocalization_surjOn
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_surjOn
+#check @LinearStudy.originalDegreeVeronesePrimeLocalization_mapsTo
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_mapsTo
+#check @LinearStudy.originalDegreeVeronesePrimeFractionEquivGraded
+#print axioms LinearStudy.originalDegreeVeronesePrimeFractionEquivGraded
+#check @LinearStudy.originalDegreeVeronesePrimeLocalization_injOn
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_injOn
+#check @LinearStudy.originalDegreeVeronesePrimeLocalization_bijOn
+#print axioms LinearStudy.originalDegreeVeronesePrimeLocalization_bijOn
+#check @LinearStudy.originalDegreeVeronesePrimeFractionEquiv
+#print axioms LinearStudy.originalDegreeVeronesePrimeFractionEquiv
+#check @LinearStudy.originalDegreeVeronesePrimeFractionEquiv_val
+#print axioms LinearStudy.originalDegreeVeronesePrimeFractionEquiv_val
+#print LinearStudy.originalDegreeVeroneseBasicOpenGraded
+#print LinearStudy.originalDegreeVeroneseAllHomogeneousOpenGraded
+#print LinearStudy.originalDegreeVeroneseChartIndex_mul
+#print LinearStudy.originalDegreeVeronesePrimeContractionGraded
+#print LinearStudy.originalDegreeVeronesePrimeDenominatorGraded
+#print LinearStudy.originalDegreeVeroneseRegradedPrimeCompl
+#print LinearStudy.originalDegreeVeroneseAmbientPrimeCompl
+#print LinearStudy.originalDegreeVeronesePrimeDenominator
+#print LinearStudy.originalDegreeVeronesePrimeDenominatorPow
+#print LinearStudy.originalDegreeVeronesePrimeLocalizationGraded
+#print LinearStudy.originalDegreeVeronesePrimeLocalization
+#print LinearStudy.originalDegreeVeronesePrimeRepresentGraded
+#print LinearStudy.originalDegreeVeronesePrimeAnnihilatorGraded
+#print LinearStudy.originalDegreeVeronesePrimeReflectGraded
+#print LinearStudy.originalDegreeVeronesePrimeSameShiftGraded
+#print LinearStudy.originalDegreeVeronesePrimeFractionSetsGraded
+#print LinearStudy.originalDegreeVeroneseAmbientPrimeFractions
+#print LinearStudy.originalDegreeVeroneseRegradedPrimeFractions
+#print LinearStudy.originalDegreeVeronesePrimeFractionEquivGraded
+#print LinearStudy.originalDegreeVeronesePrimeFractionEquiv
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let checks : List (Lean.Name × Bool × Bool) := [(`LinearStudy.originalDegreeVeronesePromotedNumerator_mem,true,true),(`LinearStudy.originalDegreeVeronesePromotedFraction_eq,true,true),(`LinearStudy.originalDegreeVeroneseBasicOpenGraded,false,false),(`LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_iff,true,true),(`LinearStudy.originalDegreeVeroneseAllHomogeneousOpenGraded,false,false),(`LinearStudy.originalDegreeVeroneseChartIndex_mul,false,false),(`LinearStudy.originalDegreeVeroneseProjHom_mem_basicOpen_homogeneous,true,true),(`LinearStudy.originalDegreeVeroneseProjHom_mem_prime_homogeneous,true,true),(`LinearStudy.gradedRing_proj_map_injectiveDegrees,true,true),(`LinearStudy.homogeneousIdeal_toIdeal_eq_comap_of_compare,true,true),(`LinearStudy.originalDegreeVeronesePrimeContractionGraded,false,false),(`LinearStudy.originalDegreeVeroneseProjHom_prime_contraction,true,true),(`LinearStudy.originalDegreeVeroneseProjHom_mem_prime_iff,true,true),(`LinearStudy.originalDegreeVeronesePrimeDenominatorGraded,false,false),(`LinearStudy.originalDegreeVeroneseRegradedPrimeCompl,false,false),(`LinearStudy.originalDegreeVeroneseAmbientPrimeCompl,false,false),(`LinearStudy.originalDegreeVeronesePrimeDenominator,false,false),(`LinearStudy.originalDegreeVeronesePower_mem,true,true),(`LinearStudy.originalDegreeVeronesePrimeDenominatorPow,false,false),(`LinearStudy.originalDegreeVeronesePrimeDenominatorPow_mem,true,true),(`LinearStudy.originalDegreeVeronesePrimeLocalizationGraded,false,false),(`LinearStudy.originalDegreeVeronesePrimeLocalization,false,false),(`LinearStudy.originalDegreeVeronesePrimeLocalization_mk,true,true),(`LinearStudy.originalDegreeVeronesePrimeRepresentGraded,false,false),(`LinearStudy.originalDegreeVeronesePrimeLocalization_represents,true,true),(`LinearStudy.originalDegreeVeronesePrimeAnnihilatorGraded,false,false),(`LinearStudy.originalDegreeVeronesePrimeAnnihilator,true,true),(`LinearStudy.originalDegreeVeronesePrimeReflectGraded,false,false),(`LinearStudy.originalDegreeVeronesePrimeLocalization_reflect,true,true),(`LinearStudy.originalDegreeVeronesePrimeSameShiftGraded,false,false),(`LinearStudy.originalDegreeVeronesePrimeCrossDifference_mem,true,true),(`LinearStudy.originalDegreeVeronesePrimeLocalization_sameShift_eq_iff,true,true),(`LinearStudy.originalDegreeVeronesePrimeFractionSetsGraded,false,false),(`LinearStudy.originalDegreeVeroneseAmbientPrimeFractions,false,false),(`LinearStudy.originalDegreeVeroneseRegradedPrimeFractions,false,false),(`LinearStudy.originalDegreeVeronesePrimeLocalization_surjOn,true,true),(`LinearStudy.originalDegreeVeronesePrimeLocalization_mapsTo,true,true),(`LinearStudy.originalDegreeVeronesePrimeFractionEquivGraded,false,false),(`LinearStudy.originalDegreeVeronesePrimeLocalization_injOn,true,true),(`LinearStudy.originalDegreeVeronesePrimeLocalization_bijOn,true,true),(`LinearStudy.originalDegreeVeronesePrimeFractionEquiv,false,false),(`LinearStudy.originalDegreeVeronesePrimeFractionEquiv_val,true,true)]
+  let env ← Lean.getEnv
+  for (n,want,wantTheorem) in checks do
+    let some info := env.find? n | throwError "Missing declaration"
+    unless (← Lean.Meta.isProp info.type) == want do
+      throwError m!"Incorrect semantic proof role: {n}"
+    Lean.logInfo m!"ROLECHECK:{n}:{want}"
+    let kernelKind := match info with
+      | .thmInfo _ => "theorem"
+      | .defnInfo _ => "definition"
+      | _ => "other"
+    unless kernelKind == (if wantTheorem then "theorem" else "definition") do
+      throwError m!"Incorrect kernel declaration kind: {n}"
+    Lean.logInfo m!"KINDCHECK:{n}:{kernelKind}"
