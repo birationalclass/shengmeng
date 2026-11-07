@@ -565,7 +565,9 @@ window.GroupTextbookReferences = {
         111
       ],
       "note": "中国剩余定理的群论表述，作为互素阶循环群直积的应用。"
-    }
+    },
+    "semidirect-product": {"original":true,"label":["§2.4 · 扩展","§2.4 · Extension"],"pdfPages":[],"note":"课件补充：半直积的构造、分解判据及二面体群；不使用教材定理编号。"},
+    "direct-product-uniqueness": {"original":true,"label":["§2.4 后 · 扩展","After §2.4 · Extension"],"pdfPages":[],"note":"课件补充：Krull–Remak–Schmidt 定理的有限群证明、消去律及无限群反例；不使用教材定理编号。"}
   },
   "2.5": {
     "action": {

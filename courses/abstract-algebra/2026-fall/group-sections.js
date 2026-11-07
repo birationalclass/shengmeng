@@ -354,6 +354,11 @@ window.GroupSections={
         "Internal direct products"
       ],
       [
+        "semidirect-product",
+        "半直积",
+        "Semidirect products"
+      ],
+      [
         "crt",
         "从群论看中国剩余定理",
         "The Chinese remainder map"
