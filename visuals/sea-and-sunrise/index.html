@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#131217">
+  <meta name="description" content="在浏览器里从一枚像素生成海和日出。逐步观察天空、波浪、云和光，调整时刻与视角。">
+  <title>海和日出试验</title>
+  <link rel="stylesheet" href="scene.css">
+</head>
+<body>
+  <main class="experiment">
+    <header class="masthead">
+      <a class="back" href="../">← <span>可视化</span></a>
+      <h1>海和日出试验</h1>
+      <button id="immersive" class="quiet-button" type="button" aria-pressed="false"><span aria-hidden="true">⛶</span> 沉浸模式</button>
+    </header>
+
+    <section class="viewport" id="viewport" aria-label="实时生成的海天">
+      <canvas id="scene" tabindex="0" aria-label="海天视角" aria-describedby="camera-hint"></canvas>
+      <div class="frame-label" aria-hidden="true">
+        <span id="frame-number">06 / 06</span>
+        <span><span id="frame-title">时间</span> <i id="frame-english">TIME</i></span>
+      </div>
+      <span class="live" id="live"><i></i><span id="live-status">实时生成</span></span>
+      <div class="scene-caption">
+        <p id="caption">第一次日出</p>
+        <code id="formula">t → sun, sea, clouds</code>
+      </div>
+      <p id="camera-hint" class="camera-hint">拖动转向 · 双击归位</p>
+      <button id="exit-immersive" class="quiet-button exit-immersive" type="button">退出沉浸</button>
+      <p id="render-message" class="render-message" role="status">正在生成海天…</p>
+      <noscript><p class="render-message">启用 JavaScript 后即可生成海天。</p></noscript>
+    </section>
+
+    <section class="workbench" id="workbench" aria-label="海天生成控制">
+      <div class="build-controls">
+        <div class="section-heading">
+          <h2>生成步骤</h2>
+          <button id="demo" class="quiet-button" type="button" aria-pressed="false">▶ <span>播放六步</span></button>
+        </div>
+        <div class="steps" role="group" aria-label="切换生成步骤">
+          <button type="button" data-step="0" aria-pressed="false"><span>01</span>光</button>
+          <button type="button" data-step="1" aria-pressed="false"><span>02</span>天</button>
+          <button type="button" data-step="2" aria-pressed="false"><span>03</span>日</button>
+          <button type="button" data-step="3" aria-pressed="false"><span>04</span>海</button>
+          <button type="button" data-step="4" aria-pressed="false"><span>05</span>云</button>
+          <button type="button" data-step="5" aria-pressed="true"><span>06</span>时间</button>
+        </div>
+      </div>
+
+      <div class="parameter-controls">
+        <div class="section-heading">
+          <div class="worlds" role="group" aria-label="切换天象">
+            <button type="button" data-scene="0" aria-pressed="true">日出</button>
+            <button type="button" data-scene="1" aria-pressed="false">极光</button>
+            <button type="button" data-scene="3" aria-pressed="false">土星</button>
+            <button type="button" data-scene="2" aria-pressed="false">黑洞</button>
+          </div>
+          <div class="actions">
+            <button id="audio" class="quiet-button" type="button" aria-pressed="false">声音</button>
+            <button id="motion" class="quiet-button" type="button" aria-pressed="false">暂停</button>
+            <button id="reset" class="quiet-button" type="button">复位</button>
+          </div>
+        </div>
+        <div class="sliders">
+          <label for="time"><span>时刻 <output id="time-value" for="time">05:44</output></span><input id="time" type="range" min="0" max="150" value="59"></label>
+          <label for="wind"><span>风力 <output id="wind-value" for="wind">1.00</output></span><input id="wind" type="range" min="0" max="200" value="100"></label>
+          <label for="cloud"><span>云量 <output id="cloud-value" for="cloud">78%</output></span><input id="cloud" type="range" min="0" max="100" value="78"></label>
+        </div>
+      </div>
+    </section>
+
+    <footer class="credit"><a href="https://www.bilibili.com/video/BV1d7W568EVo/" target="_blank" rel="noopener noreferrer">参考原片 · 小火火fifi ↗</a></footer>
+  </main>
+  <script type="module" src="experiment.js"></script>
+</body>
+</html>
