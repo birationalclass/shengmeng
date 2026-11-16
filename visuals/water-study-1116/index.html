@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#18201d">
+  <meta name="description" content="HPWater 水体散射的交互式浏览器试验。划动岩池，观察焦散，改变波峰的光照。">
+  <title>水体试验1116</title>
+  <link rel="icon" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="water.css">
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <a class="back" href="../">← <span>可视化</span></a>
+      <h1>水体试验1116</h1>
+      <button id="immersive" type="button" aria-pressed="false">⛶ <span>沉浸</span></button>
+    </header>
+
+    <section id="scene" class="scene" aria-label="实时三维水体">
+      <canvas id="surface" tabindex="0" aria-label="可交互水面" aria-describedby="desktop-hint touch-hint"></canvas>
+      <div class="scene-label" aria-hidden="true">
+        <small id="scene-en">ROCK POOL</small>
+        <strong id="scene-name">浑水岩池</strong>
+      </div>
+      <div class="scene-tools">
+        <button id="gesture" type="button" aria-pressed="false">转动视角</button>
+        <button id="reset-view" type="button">视角归位</button>
+        <button id="exit" type="button" hidden>退出沉浸</button>
+      </div>
+      <p id="desktop-hint" class="hint">左键划水 · 右键转向 · WASD 移动 · Q / E 升降</p>
+      <p id="touch-hint" class="hint">滑动水面可激起涟漪 · 双指缩放</p>
+      <p id="status" role="status">正在生成水体和岩石…</p>
+      <noscript><p class="no-script">启用 JavaScript 后即可操作水面。</p></noscript>
+    </section>
+
+    <section class="workbench" id="workbench" aria-label="水体实验控制台">
+      <div class="control-group">
+        <div class="group-title">
+          <h2>场景</h2>
+          <div class="small-actions">
+            <button id="pause" type="button" aria-pressed="false">暂停</button>
+            <button id="reset" type="button">复位</button>
+          </div>
+        </div>
+        <div class="settings" role="group" aria-label="切换场景">
+          <button type="button" data-setting="0" aria-pressed="true">浑水岩池</button>
+          <button type="button" data-setting="1" aria-pressed="false">清水与焦散</button>
+          <button type="button" data-setting="2" aria-pressed="false">波峰散射</button>
+        </div>
+        <div class="toggles">
+          <label><input id="boat" type="checkbox" checked> 木船</label>
+          <label><input id="drifting" type="checkbox" checked> 船尾波</label>
+          <label><input id="caustics" type="checkbox"> 水底焦散</label>
+        </div>
+      </div>
+
+      <div class="control-group optics">
+        <div class="group-title">
+          <h2>水体与光照</h2>
+          <label class="view-label"><span>观察</span>
+            <select id="view">
+              <option value="0">综合</option>
+              <option value="1">体积散射</option>
+              <option value="2">薄层散射</option>
+              <option value="3">背光透射</option>
+              <option value="4">菲涅尔反射</option>
+              <option value="5">折射</option>
+            </select>
+          </label>
+        </div>
+        <div class="sliders">
+          <label>清澈度 <output id="clarity-value" for="clarity">31%</output><input id="clarity" type="range" min="0" max="100" value="31"></label>
+          <label>风浪 <output id="wind-value" for="wind">66%</output><input id="wind" type="range" min="0" max="150" value="66"></label>
+          <label>光源高度 <output id="altitude-value" for="altitude">31°</output><input id="altitude" type="range" min="5" max="76" value="31"></label>
+          <label>光源方位 <output id="azimuth-value" for="azimuth">64°</output><input id="azimuth" type="range" min="-180" max="180" value="64"></label>
+          <label>光强 <output id="light-value" for="light">2.9</output><input id="light" type="range" min="1" max="50" value="29"></label>
+        </div>
+      </div>
+    </section>
+
+    <footer class="credits">
+      <a href="https://www.bilibili.com/video/BV1QTAYzqEGx/" target="_blank" rel="noopener noreferrer">参考演示 · 唯我憨批 ↗</a>
+      <a href="https://github.com/AshenOneArt/HPWater/wiki/BSDF%E2%80%90Model" target="_blank" rel="noopener noreferrer">HPWater 散射模型 ↗</a>
+    </footer>
+  </main>
+  <script type="module" src="study.js"></script>
+</body>
+</html>
