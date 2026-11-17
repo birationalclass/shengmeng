@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Research talks and interactive presentations by Sheng Meng. Equivariant Log Canonical Models, National University of Singapore, 20 November 2026.">
+  <meta name="theme-color" content="#f5f4ef">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Talk · Sheng Meng">
+  <meta property="og:description" content="Research talks and interactive presentations by Sheng Meng.">
+  <meta property="og:url" content="https://birationalclass.github.io/shengmeng/talk/">
+  <title>Talk · Sheng Meng</title>
+  <link rel="canonical" href="https://birationalclass.github.io/shengmeng/talk/">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f4ef;
+      --card: #fbfaf5;
+      --ink: #182b24;
+      --muted: #526256;
+      --line: #d1d7cb;
+      --green: #285846;
+      --serif: Georgia, "Songti SC", "Noto Serif CJK SC", serif;
+      --sans: Inter, system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font: 16px/1.55 var(--sans);
+    }
+
+    a { color: inherit; }
+    :is(a, button):focus-visible { outline: 2px solid var(--green); outline-offset: 5px; }
+    .shell { width: min(1136px, calc(100% - 96px)); margin-inline: auto; }
+    .site-header { border-bottom: 1px solid var(--line); }
+    .header-row { display: flex; min-height: 80px; gap: 24px; align-items: center; }
+    .brand {
+      display: inline-flex;
+      margin-right: auto;
+      gap: 11px;
+      align-items: center;
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .brand-mark { font: 32px/1 var(--serif); letter-spacing: -.08em; }
+    .home-link { font-size: 13px; text-underline-offset: 4px; }
+    .home-link:hover { color: var(--green); }
+    .language-button {
+      min-height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--muted);
+      background: transparent;
+      font: 500 13px var(--sans);
+      cursor: pointer;
+    }
+    .language-button:hover { background: var(--card); color: var(--ink); }
+
+    main { margin-block: clamp(42px, 7vw, 92px) 64px; }
+    h1, h2, p, figure { margin: 0; }
+    h1 {
+      margin-bottom: 18px;
+      font: 400 clamp(52px, 8.2vw, 106px)/.97 var(--serif);
+      letter-spacing: -.07em;
+    }
+    html[lang="zh-Hans"] :is(h1, h2) { letter-spacing: 0; }
+    .intro { max-width: 40ch; color: var(--muted); font-size: clamp(16px, 2vw, 19px); }
+    .talk {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      margin-top: clamp(28px, 5.4vw, 65px);
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+    .talk-details { padding: clamp(28px, 5vw, 62px); }
+    .event {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px 10px;
+      align-items: baseline;
+      margin-bottom: 25px;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .event .separator { color: #6b796d; }
+    h2 {
+      max-width: 17ch;
+      font: 400 clamp(38px, 4.5vw, 62px)/1.01 var(--serif);
+      letter-spacing: -.045em;
+      text-wrap: balance;
+    }
+    .subtitle {
+      max-width: 33ch;
+      margin-top: 16px;
+      color: var(--green);
+      font: 400 clamp(18px, 2vw, 23px)/1.28 var(--serif);
+      text-wrap: balance;
+    }
+    .speaker { margin-top: 20px; color: var(--ink); font-weight: 650; }
+    .summary { max-width: 44ch; margin-top: 9px; color: var(--muted); }
+    .open-talk {
+      display: inline-flex;
+      min-height: 50px;
+      gap: 20px;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 30px;
+      padding: 0 16px;
+      border: 1px solid var(--green);
+      color: var(--card);
+      background: var(--green);
+      font-size: 14px;
+      font-weight: 650;
+      text-decoration: none;
+    }
+    .open-talk:hover { color: var(--green); background: var(--card); }
+
+    .figure {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      min-height: 330px;
+      place-content: center;
+      gap: 30px;
+      padding: 34px clamp(19px, 3vw, 42px);
+      overflow: hidden;
+      color: #f2f0e5;
+      background-color: #203a2f;
+      background-image:
+        linear-gradient(rgba(224, 236, 224, .09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(224, 236, 224, .09) 1px, transparent 1px);
+      background-position: center;
+      background-size: 45px 45px;
+    }
+    .commutative-square {
+      display: grid;
+      width: min(100%, 324px);
+      grid-template-columns: 52px minmax(64px, 146px) 52px;
+      grid-template-rows: repeat(3, minmax(52px, auto));
+      place-items: center;
+      margin: auto;
+      font: italic clamp(28px, 4vw, 43px)/1 var(--serif);
+    }
+    .node {
+      display: grid;
+      width: 52px;
+      height: 52px;
+      place-content: center;
+      border: 1px solid rgba(241, 242, 226, .45);
+      border-radius: 50%;
+      background: #203a2f;
+    }
+    .map {
+      position: relative;
+      display: grid;
+      width: 76%;
+      min-height: 36px;
+      place-content: start center;
+      padding-bottom: 14px;
+      color: #f5d79d;
+      font: italic 18px/1 var(--serif);
+    }
+    .map::before, .map::after { position: absolute; content: ""; }
+    .horizontal::before {
+      right: 1px;
+      bottom: 7px;
+      left: 1px;
+      border-bottom: 1px solid currentColor;
+    }
+    .horizontal::after {
+      right: 2px;
+      bottom: 4px;
+      width: 6px;
+      height: 6px;
+      transform: rotate(45deg);
+      border-top: 1px solid currentColor;
+      border-right: 1px solid currentColor;
+    }
+    .vertical { width: 36px; height: 50px; place-content: center start; padding: 0; }
+    .vertical::before {
+      top: 5px;
+      bottom: 5px;
+      left: 18px;
+      border-left: 1px solid currentColor;
+    }
+    .vertical::after {
+      bottom: 6px;
+      left: 15px;
+      width: 6px;
+      height: 6px;
+      transform: rotate(45deg);
+      border-right: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    .figure figcaption {
+      width: min(100%, 29ch);
+      justify-self: center;
+      color: #d7e4d7;
+      text-align: center;
+      font-size: 13px;
+      text-wrap: balance;
+    }
+
+    .site-footer { margin-top: 45px; border-top: 1px solid var(--line); }
+    .site-footer .shell { padding-block: 22px; color: var(--muted); font-size: 13px; }
+
+    @media (max-width: 850px) {
+      .shell { width: calc(100% - 48px); }
+      .talk { grid-template-columns: 1fr; }
+      .figure { min-height: 295px; }
+    }
+    @media (max-width: 450px) {
+      .shell { width: calc(100% - 32px); }
+      .header-row { min-height: 67px; gap: 10px; }
+      .home-link { display: none; }
+      .talk-details { padding: 24px; }
+      .event { flex-direction: column; margin-bottom: 20px; }
+      .event .separator { display: none; }
+      main { margin-bottom: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="../">
+        <span class="brand-mark" aria-hidden="true">M.</span>
+        <span data-zh="孟晟">Sheng Meng</span>
+      </a>
+      <a class="home-link" href="../" data-zh="返回主页">Homepage</a>
+      <button class="language-button" type="button" lang="zh-Hans" aria-label="切换到中文" hidden>中文</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <h1 data-zh="报告">Talk</h1>
+    <p class="intro" data-zh="学术报告与交互式演示。">Research talks and interactive presentations.</p>
+
+    <article class="talk" aria-labelledby="lecture-title">
+      <div class="talk-details">
+        <p class="event">
+          <span data-zh="新加坡国立大学">National University of Singapore</span>
+          <span class="separator" aria-hidden="true">·</span>
+          <time datetime="2026-11-20" data-zh="2026 年 11 月 20 日">20 November 2026</time>
+        </p>
+        <h2 id="lecture-title" data-zh="等变对数典范模型">Equivariant Log Canonical Models</h2>
+        <p class="subtitle" data-zh="极化自同态的等变极小模型纲领">An Equivariant MMP for Polarized Endomorphisms</p>
+        <p class="speaker" data-zh="孟晟">Sheng Meng</p>
+        <p class="summary" data-zh="通过具体几何例子演示极小模型纲领的双有理步骤，介绍等变小对数典范模型的构造，并用两条椭圆曲线的连接说明典范除子平凡的严格对数典范端点。">Explore the birational steps of the equivariant MMP, the construction of an equivariant small lc model, and a strictly log canonical elliptic join with trivial canonical divisor.</p>
+        <a class="open-talk" href="./equivariant-lc-models-nus-2026/">
+          <span data-zh="打开交互演示">Open interactive talk</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <figure class="figure">
+        <div class="commutative-square" aria-hidden="true">
+          <span class="node">Y</span>
+          <span class="map horizontal">g</span>
+          <span class="node">Y</span>
+          <span class="map vertical">π</span>
+          <span></span>
+          <span class="map vertical">π</span>
+          <span class="node">X</span>
+          <span class="map horizontal"><span>f<sup>r</sup></span></span>
+          <span class="node">X</span>
+        </div>
+        <figcaption data-zh="小模型 π 将 f 的迭代提升为 Y 上的自同态 g。">A small model π lifts an iterate of f to an endomorphism g on Y.</figcaption>
+      </figure>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell" data-zh="© 2026 孟晟">© 2026 Sheng Meng</div>
+  </footer>
+  <script>
+    const languageButton = document.querySelector(".language-button");
+    const localizedText = Array.from(document.querySelectorAll("[data-zh]"), (element) => ({
+      element,
+      english: element.textContent,
+      chinese: element.dataset.zh
+    }));
+
+    languageButton.hidden = false;
+    languageButton.addEventListener("click", () => {
+      const showChinese = document.documentElement.lang === "en";
+      document.documentElement.lang = showChinese ? "zh-Hans" : "en";
+      document.title = showChinese ? "报告 · 孟晟" : "Talk · Sheng Meng";
+      languageButton.lang = showChinese ? "en" : "zh-Hans";
+      languageButton.textContent = showChinese ? "EN" : "中文";
+      languageButton.setAttribute("aria-label", showChinese ? "Switch to English" : "切换到中文");
+      for (const text of localizedText) {
+        text.element.textContent = showChinese ? text.chinese : text.english;
+      }
+    });
+  </script>
+</body>
+</html>
