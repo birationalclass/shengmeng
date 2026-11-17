@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d1720">
+  <meta name="description" content="用真实卫星观测构造低云与高云，在海面、云中与云上实时观察云的体积、云影和多重散射。">
+  <title>体积云子项目</title>
+  <link rel="icon" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="cloud.css">
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <a class="back" href="../">← 可视化</a>
+      <h1>体积云子项目</h1>
+      <button id="enter" class="plain" type="button" aria-pressed="false"><span aria-hidden="true">⛶</span> 沉浸</button>
+    </header>
+
+    <div class="workspace">
+      <section id="viewport" class="viewport" aria-label="三维云层场景">
+        <canvas id="cloudscape" tabindex="0" aria-label="可拖动的三维云景" aria-describedby="view-help"></canvas>
+        <div class="view-tag">
+          <output id="height-label">18 m</output>
+          <span id="view-label">从海面看云</span>
+        </div>
+        <div class="scene-tools">
+          <button id="reset-view" class="plain" type="button">视角归位</button>
+          <button id="exit" class="plain" type="button" hidden>退出沉浸</button>
+        </div>
+        <p class="hint" id="view-help">拖动转向 · 滚轮变焦<span> · WASD 移动 · Q / E 升降</span></p>
+        <p class="status" id="status" role="status">正在读取卫星观测并生成云层…</p>
+        <noscript><p class="status">启用 JavaScript 后即可查看实时云层。</p></noscript>
+      </section>
+
+      <aside class="panel" id="panel" aria-label="卫星图和云层控制">
+        <section class="map-section">
+          <div class="section-top">
+            <h2>卫星图</h2>
+            <span id="span-label">600 × 600 km</span>
+          </div>
+          <label class="dataset-picker" id="dataset-picker" hidden>
+            <span class="visually-hidden">卫星观测场景</span>
+            <select id="dataset"></select>
+          </label>
+          <button type="button" id="locate" class="map" aria-label="按地图位置移动镜头">
+            <img id="satellite-image" alt="云场卫星观测" width="600" height="600">
+            <canvas id="weather-map" width="320" height="320" aria-hidden="true" hidden></canvas>
+            <span id="map-pin" class="pin" aria-hidden="true"></span>
+            <span class="north" aria-hidden="true">N ↑</span>
+          </button>
+          <div class="map-tabs" role="group" aria-label="切换地图图层">
+            <button type="button" data-map="0" aria-pressed="true">原始观测</button>
+            <button type="button" data-map="1" aria-pressed="false">低云</button>
+            <button type="button" data-map="2" aria-pressed="false">高云</button>
+          </div>
+          <p class="dataset" id="weather-label"></p>
+        </section>
+
+        <section class="control-section">
+          <div class="section-top">
+            <h2>云层与光照</h2>
+            <button class="plain small" id="pause" type="button" aria-pressed="false">暂停风场</button>
+          </div>
+          <div class="sliders">
+            <label for="altitude">观察高度 <output id="altitude-value">18 m</output></label>
+            <input type="range" id="altitude" min="0" max="1000" value="0">
+            <label for="solar">太阳高度 <output id="solar-value">29°</output></label>
+            <input type="range" id="solar" min="1" max="72" value="29">
+            <label for="azimuth">太阳方位 <output id="azimuth-value">−42°</output></label>
+            <input type="range" id="azimuth" min="-180" max="180" value="-42">
+          </div>
+          <div class="selects">
+            <label>云层<select id="layers">
+              <option value="0">低云和高云</option><option value="1">仅低云</option><option value="2">仅高云</option>
+            </select></label>
+            <label>观察<select id="lighting">
+              <option value="0">综合光照</option><option value="1">光学厚度</option>
+              <option value="2">方向性散射</option><option value="3">各向同性扩散</option>
+              <option value="4">云层类型</option>
+            </select></label>
+            <label>画质<select id="quality">
+              <option value="auto">自动</option><option value="fast">流畅</option><option value="high">高</option>
+            </select></label>
+          </div>
+          <label class="toggle"><input type="checkbox" id="diffusion" checked> 厚云多重散射 <var>φ<sub>fwd</sub></var></label>
+        </section>
+      </aside>
+    </div>
+    <nav class="presets" id="presets" aria-label="镜头预设">
+      <button type="button" data-view="sea" aria-pressed="true">海面</button>
+      <button type="button" data-view="inside" aria-pressed="false">云中</button>
+      <button type="button" data-view="above" aria-pressed="false">云上</button>
+      <button type="button" data-view="dusk" aria-pressed="false">暮光</button>
+    </nav>
+    <footer class="footer">
+      <details>
+        <summary>卫星数据与渲染方法</summary>
+        <p id="weather-detail"></p>
+        <p>卫星图约束云的位置和云顶高度。云底、云体密度以及类型由观测量推定。低层使用三维 Perlin–Worley 密度与边缘侵蚀，高层保留较薄的层状结构。</p>
+        <p>海面视角以 50 km 为云的绘制范围。渲染沿视线和太阳方向步进，以 Beer–Lambert 定律累积消光。方向性散射保留银边，<var>φ<sub>fwd</sub></var> 给厚云内部与背光面补入缓慢衰减的漫射光。</p>
+      </details>
+      <div>
+        <a id="data-link" href="https://www.ncei.noaa.gov/products/goes-terrestrial-weather-abi-glm" target="_blank" rel="noopener noreferrer">卫星数据 ↗</a>
+        <a href="https://www.bilibili.com/video/BV1EYKS6xEo3/" target="_blank" rel="noopener noreferrer">参考原片 ↗</a>
+        <a href="https://github.com/AshenOneArt/HPVolumeCloud" target="_blank" rel="noopener noreferrer">HanPi Volume Cloud © AshenOneArt ↗</a>
+      </div>
+    </footer>
+  </main>
+  <script type="module" src="study.js"></script>
+</body>
+</html>
