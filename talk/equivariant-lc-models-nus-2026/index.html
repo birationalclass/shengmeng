@@ -1129,6 +1129,15 @@ function advance() {
   setScene(current + 1);
 }
 
+// A mouse-operated control should not keep the presenter’s Space key.
+document.addEventListener("click", event => {
+  if (event.detail === 0) return;
+  const button = event.target.closest("button");
+  if (!button || !button.matches(".scene button:not([data-jump]), #clock, #fullscreen")) return;
+  const heading = scenes[current]?.querySelector("h1, h2");
+  heading?.setAttribute("tabindex","-1");
+  heading?.focus({preventScroll:true});
+});
 document.addEventListener("click", event => {
   const jump = event.target.closest("[data-jump]");
   if (jump) {
