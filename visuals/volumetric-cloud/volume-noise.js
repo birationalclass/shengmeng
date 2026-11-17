@@ -94,13 +94,14 @@ function cellularField(period, seed) {
 
 export function generateVolumes() {
   const large = gradientField(4, 93);
-  const small = gradientField(9, 17);
-  const fine = gradientField(19, 31);
-  const lobes = cellularField(5, 131);
-  const shapes = cellularField(10, 71);
-  const details = [cellularField(4, 23), cellularField(8, 54), cellularField(15, 91)];
-  const shapeSize = 64;
-  const detailSize = 32;
+  const small = gradientField(8, 17);
+  const fine = gradientField(16, 31);
+  const lobes = cellularField(4, 131);
+  const shapes = cellularField(9, 71);
+  const smallCells = cellularField(18, 117);
+  const details = [cellularField(4, 23), cellularField(9, 54), cellularField(18, 91)];
+  const shapeSize = 80;
+  const detailSize = 48;
   const shape = new Uint8Array(shapeSize ** 3 * 4);
   const detail = new Uint8Array(detailSize ** 3 * 4);
 
@@ -108,14 +109,19 @@ export function generateVolumes() {
     for (let y = 0; y < shapeSize; y++) {
       for (let x = 0; x < shapeSize; x++) {
         const a = x / shapeSize, b = y / shapeSize, c = z / shapeSize;
-        const billow = lobes(a, b, c);
-        const worley = shapes(a, b, c);
-        const coherent = large(a, b, c) * 0.64 + small(a, b, c) * 0.28 + fine(a, b, c) * 0.08;
+        const coarse = large(a, b, c);
+        const mid = small(a, b, c);
+        const grain = fine(a, b, c);
+        const fBm = clamp(0.50 + (0.66 * coarse + 0.25 * mid + 0.09 * grain - 0.50) * 1.72);
+        const cells = lobes(a, b, c) * 0.65 + shapes(a, b, c) * 0.25 + smallCells(a, b, c) * 0.10;
+        // The cellular field shapes the low end of the connected gradient-noise body.
+        // Its higher octaves keep adjacent lobes from sharing the same silhouette.
+        const hybrid = clamp(lerp(cells * 0.78, 1.0, fBm) * 1.10 - 0.21);
         const at = 4 * index(x, y, z, shapeSize);
-        shape[at] = clamp(lerp(coherent, Math.max(coherent, billow), 0.38) * 1.3 - 0.12) * 255;
-        shape[at + 1] = (billow * 0.70 + worley * 0.30) * 255;
-        shape[at + 2] = fine(a, b, c) * 255;
-        shape[at + 3] = 255;
+        shape[at] = hybrid * 255;
+        shape[at + 1] = clamp(0.5 + (cells - 0.5) * 1.32) * 255;
+        shape[at + 2] = clamp(0.5 + (0.54 * mid + 0.46 * grain - 0.5) * 1.46) * 255;
+        shape[at + 3] = coarse * 255;
       }
     }
   }
@@ -124,7 +130,8 @@ export function generateVolumes() {
       for (let x = 0; x < detailSize; x++) {
         const at = 4 * index(x, y, z, detailSize);
         for (let channel = 0; channel < 3; channel++) {
-          detail[at + channel] = details[channel](x / detailSize, y / detailSize, z / detailSize) * 255;
+          const cellular = details[channel](x / detailSize, y / detailSize, z / detailSize);
+          detail[at + channel] = clamp(0.5 + (cellular - 0.48) * 1.35) * 255;
         }
         detail[at + 3] = 255;
       }

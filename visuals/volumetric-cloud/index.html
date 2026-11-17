@@ -7,7 +7,7 @@
   <meta name="description" content="用真实卫星观测构造低云与高云，在海面、云中与云上实时观察云的体积、云影和多重散射。">
   <title>体积云子项目</title>
   <link rel="icon" href="../../assets/favicon.svg">
-  <link rel="stylesheet" href="cloud.css">
+  <link rel="stylesheet" href="cloud.css?v=20261117b">
 </head>
 <body>
   <main>
@@ -36,7 +36,7 @@
       <aside class="panel" id="panel" aria-label="卫星图和云层控制">
         <section class="map-section">
           <div class="section-top">
-            <h2>卫星图</h2>
+            <h2 id="map-heading">云场</h2>
             <span id="span-label">600 × 600 km</span>
           </div>
           <label class="dataset-picker" id="dataset-picker" hidden>
@@ -49,7 +49,7 @@
             <span id="map-pin" class="pin" aria-hidden="true"></span>
             <span class="north" aria-hidden="true">N ↑</span>
           </button>
-          <div class="map-tabs" role="group" aria-label="切换地图图层">
+          <div class="map-tabs" id="map-tabs" role="group" aria-label="切换地图图层">
             <button type="button" data-map="0" aria-pressed="true">原始观测</button>
             <button type="button" data-map="1" aria-pressed="false">低云</button>
             <button type="button" data-map="2" aria-pressed="false">高云</button>
@@ -95,10 +95,11 @@
     </nav>
     <footer class="footer">
       <details>
-        <summary>卫星数据与渲染方法</summary>
+        <summary>云场数据与渲染方法</summary>
         <p id="weather-detail"></p>
         <p>卫星图约束云的位置和云顶高度。云底、云体密度以及类型由观测量推定。低层使用三维 Perlin–Worley 密度与边缘侵蚀，高层保留较薄的层状结构。</p>
-        <p>海面视角以 50 km 为云的绘制范围。渲染沿视线和太阳方向步进，以 Beer–Lambert 定律累积消光。方向性散射保留银边，<var>φ<sub>fwd</sub></var> 给厚云内部与背光面补入缓慢衰减的漫射光。</p>
+        <p>渲染沿视线和太阳方向积分消光，并计算云体对上方天空光的遮挡。方向性散射使用 HG–Draine 水滴相位近似。<var>φ<sub>fwd</sub></var> 给厚云内部与背光面补入缓慢衰减的漫射光。</p>
+        <p><a href="https://www.guerrilla-games.com/read/nubis-cubed" target="_blank" rel="noopener noreferrer">Guerrilla Nubis³ ↗</a> · <a href="https://research.nvidia.com/labs/rtr/approximate-mie/" target="_blank" rel="noopener noreferrer">水滴散射近似 ↗</a></p>
       </details>
       <div>
         <a id="data-link" href="https://www.ncei.noaa.gov/products/goes-terrestrial-weather-abi-glm" target="_blank" rel="noopener noreferrer">卫星数据 ↗</a>
@@ -106,7 +107,8 @@
         <a href="https://github.com/AshenOneArt/HPVolumeCloud" target="_blank" rel="noopener noreferrer">HanPi Volume Cloud © AshenOneArt ↗</a>
       </div>
     </footer>
+    <p class="asset-credit" id="reference-credit" hidden>Intel® Volumetric Clouds Library Copyright 2022 Intel Corp. All rights reserved. <a href="intel-cloud-license.txt">资产许可 ↗</a></p>
   </main>
-  <script type="module" src="study.js"></script>
+  <script type="module" src="study.js?v=20261117b"></script>
 </body>
 </html>

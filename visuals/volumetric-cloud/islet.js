@@ -1,4 +1,5 @@
 export const isletSource = `
+const float ISLET_SCALE = 0.78;
 float isletHash(vec3 p) {
   p = fract(p * 0.1031);
   p += dot(p, p.zyx + 33.33);
@@ -42,8 +43,8 @@ vec2 isletShape(vec3 p) {
   float bed = isletBoulder(p, vec3(1.0, -2.4, 0.7), vec3(43.2, 4.95, 21.2), vec2(0.98, 0.20), 0.10);
   float rock = isletBoulder(p, vec3(-14.5, 2.7, 5.9), vec3(27.2, 7.0, 19.0), vec2(0.99, 0.12), -0.16);
   rock = min(rock, isletBoulder(p, vec3(-24.6, 5.2, -4.2), vec3(17.0, 11.7, 12.4), vec2(0.95, -0.31), 0.14));
-  rock = min(rock, isletBoulder(p, vec3(-19.0, 11.3, 5.8), vec3(13.5, 10.3, 12.1), vec2(0.86, 0.51), -0.19));
-  rock = min(rock, isletBoulder(p, vec3(-23.0, 18.1, 7.2), vec3(9.5, 8.0, 8.0), vec2(0.99, -0.14), -0.08));
+  rock = min(rock, isletBoulder(p, vec3(-17.5, 11.3, 5.8), vec3(13.2, 10.0, 12.1), vec2(0.86, 0.51), -0.19));
+  rock = min(rock, isletBoulder(p, vec3(-24.7, 16.6, 7.2), vec3(9.4, 7.1, 8.2), vec2(0.99, -0.14), -0.08));
   rock = min(rock, isletBoulder(p, vec3(-4.1, 4.0, 9.0), vec3(11.3, 9.7, 13.7), vec2(0.79, 0.61), 0.33));
   rock = min(rock, isletBoulder(p, vec3(13.0, 2.0, 7.5), vec3(18.8, 6.5, 14.3), vec2(0.87, -0.49), 0.02));
   rock = min(rock, isletBoulder(p, vec3(31.9, 0.1, 4.9), vec3(12.7, 4.2, 9.3), vec2(0.95, 0.31), -0.03));
@@ -52,11 +53,15 @@ vec2 isletShape(vec3 p) {
   rock = min(rock, isletBoulder(p, vec3(11.9, 0.3, -11.6), vec3(12.0, 4.0, 10.9), vec2(1.0, 0.0), 0.03));
 
   if (rock < 3.0) {
-    vec3 bedding = vec3(p.x * 0.26, (p.y + 0.12 * p.x - 0.08 * p.z) * 0.73, p.z * 0.28);
-    float block = isletNoise(bedding);
+    float weathering = isletNoise(p * 0.18 + 19.3);
+    vec3 bedding = vec3(p.x * 0.24, (p.y + 0.13 * p.x - 0.13 * p.z) * 0.62, p.z * 0.30);
+    float block = isletNoise(bedding + weathering * 0.54);
+    float jointNoise = isletNoise(vec3(p.x * 0.45, p.y * 0.10, p.z * 0.45) + 3.71);
     float grain = isletNoise(p * 0.91 + 8.4);
-    float seam = max(0.0, sin(bedding.y * 3.1 + block * 1.6));
-    rock += (block - 0.5) * 1.43 + (grain - 0.5) * 0.50 + 0.44 * seam * seam * seam;
+    float seams = smoothstep(0.52, 0.99, sin(bedding.y * 2.7 + weathering * 2.6));
+    float joint = exp(-9.2 * abs(jointNoise - 0.47)) * smoothstep(0.27, 0.71, block);
+    rock += (weathering - 0.5) * 2.35 + (block - 0.5) * 1.20 + (grain - 0.5) * 0.40;
+    rock += 0.51 * joint + 0.31 * seams * smoothstep(0.33, 0.69, block);
   }
   vec2 hit = rock < bed ? vec2(rock, 1.0) : vec2(bed, 2.0);
 
@@ -95,13 +100,14 @@ vec3 isletAlbedo(vec3 p, vec3 n, float material) {
     float eroded = isletNoise(p * 0.17 + 14.7);
     float small = isletNoise(p * 1.85 + 1.43);
     float fracture = max(0.0, sin((p.y + 0.12 * p.x - 0.08 * p.z) * 2.25 + eroded * 2.1));
-    vec3 limestone = mix(vec3(0.23, 0.18, 0.13), vec3(0.66, 0.56, 0.38), smoothstep(0.25, 0.72, eroded));
-    limestone *= 0.69 + 0.26 * small + 0.25 * smoothstep(0.04, 0.55, n.y) - 0.12 * pow(fracture, 9.0);
-    float moss = smoothstep(0.63, 0.83, eroded) * smoothstep(0.13, 0.58, n.y) * 0.62;
-    limestone = mix(limestone, vec3(0.24, 0.25, 0.105), moss);
-    vec3 sand = mix(vec3(0.51, 0.44, 0.27), vec3(0.84, 0.75, 0.52), eroded);
+    vec3 limestone = mix(vec3(0.17, 0.146, 0.115), vec3(0.55, 0.49, 0.35), smoothstep(0.25, 0.76, eroded));
+    limestone *= 0.67 + 0.24 * small + 0.21 * smoothstep(0.08, 0.63, n.y) - 0.11 * pow(fracture, 10.0);
+    float moss = smoothstep(0.58, 0.82, eroded) * smoothstep(0.13, 0.55, n.y) * 0.48;
+    limestone = mix(limestone, vec3(0.20, 0.235, 0.13), moss);
+    vec3 sand = mix(vec3(0.35, 0.33, 0.24), vec3(0.56, 0.51, 0.37), eroded);
     vec3 rock = material < 1.5 ? limestone : sand;
-    return rock * mix(0.64, 1.0, smoothstep(-0.05, 1.45, p.y));
+    float dry = smoothstep(-0.09, 1.78, p.y + (small - 0.5) * 0.63);
+    return rock * mix(vec3(0.49, 0.58, 0.59), vec3(1.0), dry);
   }
 
   vec3 q = isletHouseSpace(p);
@@ -128,7 +134,7 @@ vec3 isletAlbedo(vec3 p, vec3 n, float material) {
 }
 
 vec4 traceIslet(vec3 eye, vec3 ray, vec3 origin, vec3 sun, vec3 sunColor, float groundShade) {
-  vec3 eyeMeters = (eye - origin) * 1000.0;
+  vec3 eyeMeters = (eye - origin) * (1000.0 / ISLET_SCALE);
   vec3 toCenter = eyeMeters - vec3(0.0, 5.0, 0.0);
   float b = dot(toCenter, ray);
   float discriminant = b * b - dot(toCenter, toCenter) + 55.0 * 55.0;
@@ -152,11 +158,22 @@ vec4 traceIslet(vec3 eye, vec3 ray, vec3 origin, vec3 sun, vec3 sunColor, float 
       float sky = smoothstep(-0.03, 0.32, sun.y);
       float sunVisibility = clamp(groundShade, 0.0, 1.0);
       float cosine = max(0.0, dot(n, sun));
-      float occlusion = clamp(isletShape(p + n * 0.75).x * 1.7 + 0.19, 0.32, 1.0);
-      vec3 ambient = mix(vec3(0.13, 0.135, 0.16), vec3(0.35, 0.38, 0.42), sky);
-      ambient *= (0.50 + 0.50 * max(n.y, 0.0)) * occlusion;
-      vec3 lit = isletAlbedo(p, n, hit.y) * (ambient + sunColor * cosine * sunVisibility * 1.04);
-      return vec4(max(lit, vec3(0.0)), distanceMeters * 0.001);
+      float occlusion = clamp(isletShape(p + n * 0.79).x * 1.35 + 0.17, 0.27, 1.0);
+      float localShadow = 1.0;
+      if (cosine > 0.025 && sunVisibility > 0.04) {
+        float stepMeters = 0.83;
+        for (int s = 0; s < 4; ++s) {
+          float d = isletShape(p + n * 0.31 + sun * stepMeters).x;
+          localShadow = min(localShadow, smoothstep(-0.07, 0.41 * stepMeters, d));
+          stepMeters *= 2.13;
+        }
+      }
+      vec3 ambient = mix(vec3(0.095, 0.10, 0.13), vec3(0.29, 0.36, 0.42), sky);
+      ambient *= (0.55 + 0.45 * max(n.y, 0.0)) * occlusion;
+      vec3 reflectedWater = vec3(0.024, 0.063, 0.062) * sky * exp(-max(0.0, p.y) * 0.26) * (1.0 - max(n.y, 0.0));
+      vec3 direct = sunColor * cosine * sunVisibility * mix(0.29, 0.91, localShadow);
+      vec3 lit = isletAlbedo(p, n, hit.y) * (ambient + reflectedWater + direct);
+      return vec4(max(lit, vec3(0.0)), distanceMeters * (0.001 * ISLET_SCALE));
     }
     distanceMeters += max(0.074, hit.x * 0.79);
   }

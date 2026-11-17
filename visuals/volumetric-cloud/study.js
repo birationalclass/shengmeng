@@ -1,6 +1,7 @@
-import { cameraBasis, createCloudRenderer } from './renderer.js';
+import { cameraBasis, createCloudRenderer } from './renderer.js?v=20261117b';
 import { weatherData } from './weather-data.js';
 import { javaWeatherData } from './weather-java.js';
+import { referenceCloud } from './reference-cloud.js';
 
 const byId = id => document.getElementById(id);
 const canvas = byId('cloudscape');
@@ -21,7 +22,19 @@ const degrees = 180 / Math.PI;
 const directionDegrees = radians => Math.round(((radians * degrees + 540) % 360) - 180);
 const minAltitude = 0.018;
 const altitudeRange = 15 - minAltitude;
-const datasets = [javaWeatherData, weatherData];
+const referenceScale = 8.5 / Math.max(referenceCloud.size[0], referenceCloud.size[2]);
+const referenceExtent = referenceCloud.size.map(n => n * referenceScale);
+const voxelDataset = {
+  ...referenceCloud,
+  label: referenceCloud.title,
+  detail: '三维密度示范 · ' + referenceCloud.title,
+  notes: '使用制作级体素密度场演示云形与光照，海面与光照实时计算。',
+  spanKm: 40,
+  start: { x: 0, z: 0, yaw: 0 },
+  reference: { center: [-0.65, 0.63 + 0.5 * referenceExtent[1], 9.40],
+    extent: referenceExtent, yaw: 0.32 }
+};
+const datasets = [voxelDataset, javaWeatherData, weatherData];
 const datasetInput = byId('dataset');
 datasetInput.disabled = true;
 let activeDataset = datasets[0];
@@ -30,22 +43,31 @@ let datasetRequest = 0;
 
 function makeViews(dataset) {
   const start = dataset.start;
+  if (dataset.reference) {
+    return {
+      sea: { label: '从海面看云', altitude: 0.032, pitch: 0.235, fov: 52, solarAltitude: 25, solarAzimuth: -54, exposure: 0.76, cloudRange: 45 },
+      inside: { label: '贴近云层', altitude: 1.92, pitch: 0.135, fov: 60, solarAltitude: 25, solarAzimuth: -54, exposure: 0.75, cloudRange: 45, zOffset: 4.1 },
+      above: { label: '从云上俯瞰', altitude: 6.3, pitch: -0.44, fov: 57, solarAltitude: 31, solarAzimuth: -54, exposure: 0.72, cloudRange: 45, zOffset: 2.7 },
+      dusk: { label: '海面暮光', altitude: 0.032, pitch: 0.155, fov: 55, solarAltitude: 6, solarAzimuth: 10, exposure: 0.66, cloudRange: 45 }
+    };
+  }
   const initialAzimuth = directionDegrees(start.yaw + 1.0);
   const marineBands = dataset === javaWeatherData;
   return {
-    sea: { label: '从海面看云', altitude: minAltitude, pitch: 0.135, fov: 55, solarAltitude: 32, solarAzimuth: initialAzimuth, exposure: 0.95, cloudRange: 50 },
-    inside: { label: '穿过云层', altitude: marineBands ? 1.63 : 2.6, pitch: 0.06, fov: 56, solarAltitude: 32, solarAzimuth: initialAzimuth, exposure: 0.87, cloudRange: 50 },
+    sea: { label: '从海面看云', altitude: minAltitude, pitch: 0.135, fov: 55, solarAltitude: 26, solarAzimuth: initialAzimuth, exposure: 0.77, cloudRange: 50 },
+    inside: { label: '穿过云层', altitude: marineBands ? 0.76 : 2.6, pitch: 0.06, fov: 56, solarAltitude: 32, solarAzimuth: initialAzimuth, exposure: 0.92, cloudRange: 50 },
     above: { label: '从云上俯瞰', altitude: marineBands ? 4.7 : 13.5, pitch: -0.27, fov: 59, solarAltitude: 32, solarAzimuth: initialAzimuth, exposure: 0.88, cloudRange: 65 },
     dusk: { label: '海面暮光', altitude: minAltitude, pitch: 0.055, fov: 53, solarAltitude: 3, solarAzimuth: directionDegrees(start.yaw - 0.13), exposure: 0.79, cloudRange: 50 }
   };
 }
 function landmark(start) {
-  return [start.x + 0.24 * Math.sin(start.yaw) + 0.082 * Math.cos(start.yaw),
-    start.z + 0.24 * Math.cos(start.yaw) - 0.082 * Math.sin(start.yaw)];
+  return [start.x + 0.34 * Math.sin(start.yaw) + 0.144 * Math.cos(start.yaw),
+    start.z + 0.34 * Math.cos(start.yaw) - 0.144 * Math.sin(start.yaw)];
 }
 let views = makeViews(activeDataset);
 const state = { ...views.sea, ...initial, span: activeDataset.spanKm,
   island: landmark(initial), islandHeading: initial.yaw,
+  reference: activeDataset.reference,
   time: 0, coverage: 1, thickness: 1, diffusion: 1, debug: 0, layers: 0, quality: 'auto' };
 let selectedView = 'sea';
 let selectedMap = 0;
@@ -111,9 +133,9 @@ function choose(name, resetAtStart = false) {
   const view = views[name];
   selectedView = name;
   Object.assign(state, view);
-  if (resetAtStart) {
+  if (resetAtStart || activeDataset.reference) {
     state.x = initial.x;
-    state.z = initial.z;
+    state.z = initial.z + (view.zOffset ?? 0);
   }
   state.yaw = initial.yaw;
   syncControls();
@@ -124,6 +146,12 @@ async function paintMap(layer) {
   selectedMap = layer;
   const request = ++mapRequest;
   for (const button of mapTabs) button.setAttribute('aria-pressed', Number(button.dataset.map) === layer);
+  if (activeDataset.reference) {
+    satellite.hidden = true;
+    weatherMap.hidden = false;
+    paintReferenceMap();
+    return;
+  }
   satellite.hidden = layer !== 0;
   weatherMap.hidden = layer === 0;
   if (layer === 0) return;
@@ -161,6 +189,37 @@ async function paintMap(layer) {
     console.error(error);
     if (request === mapRequest) paintMap(0);
   }
+}
+
+function paintReferenceMap() {
+  const bytes = renderer?.referenceBytes;
+  if (!bytes) return;
+  const { width, height } = weatherMap;
+  const ctx = weatherMap.getContext('2d');
+  const im = ctx.createImageData(width, height);
+  const [nx, ny, nz] = referenceCloud.size;
+  const { center, extent, yaw } = activeDataset.reference;
+  const cosine = Math.cos(yaw);
+  const sine = Math.sin(yaw);
+  for (let row = 0; row < height; row++) {
+    const z = ((row + 0.5) / height - 0.5) * state.span - center[2];
+    for (let col = 0; col < width; col++) {
+      const x = ((col + 0.5) / width - 0.5) * state.span - center[0];
+      const ix = Math.floor(nx * (0.5 + (cosine * x - sine * z) / extent[0]));
+      const iz = Math.floor(nz * (0.5 + (sine * x + cosine * z) / extent[2]));
+      let mass = 0;
+      if (ix >= 0 && ix < nx && iz >= 0 && iz < nz) {
+        for (let y = 0; y < ny; y++) mass += bytes[ix + nx * (y + ny * iz)];
+      }
+      const at = 4 * (col + width * row);
+      const t = 1 - Math.exp(-mass / (ny * 15));
+      im.data[at] = 16 + 192 * t;
+      im.data[at + 1] = 35 + 194 * t;
+      im.data[at + 2] = 50 + 193 * t;
+      im.data[at + 3] = 255;
+    }
+  }
+  ctx.putImageData(im, 0, 0);
 }
 
 function move(dt) {
@@ -201,6 +260,7 @@ async function init() {
     next.draw(state, 0);
     renderer = next;
     datasetInput.disabled = false;
+    if (activeDataset.reference) paintReferenceMap();
     setStatus('');
     invalidate();
   } catch (error) {
@@ -212,10 +272,23 @@ async function init() {
 }
 
 function displayDataset(data) {
+  const isVolume = Boolean(data.reference);
+  byId('map-heading').textContent = isVolume ? '密度投影' : '卫星图';
+  byId('map-tabs').hidden = isVolume;
+  byId('layers').disabled = isVolume;
+  const typeView = byId('lighting').querySelector('[value="4"]');
+  typeView.hidden = isVolume;
+  typeView.disabled = isVolume;
+  if (isVolume && state.debug === 4) {
+    state.debug = 0;
+    byId('lighting').value = '0';
+  }
+  byId('reference-credit').hidden = !isVolume;
   byId('span-label').textContent = data.spanKm + ' × ' + data.spanKm + ' km';
-  byId('weather-label').textContent = data.detail.split(' · ')[0];
+  byId('weather-label').textContent = isVolume ? '点击投影可移动镜头' : data.detail.split(' · ')[0];
   byId('weather-detail').textContent = data.detail + '。' + data.notes;
   byId('data-link').href = data.sourceUrl;
+  byId('data-link').textContent = isVolume ? '体素来源 ↗' : '卫星数据 ↗';
   satellite.src = data.preview ?? 'satellite.jpg';
   satellite.alt = data.label + '的云场观测';
   void paintMap(0);
@@ -234,6 +307,9 @@ datasetInput.addEventListener('change', async event => {
     initial = next.start;
     views = makeViews(next);
     state.span = activeDataset.spanKm;
+    state.reference = next.reference;
+    state.layers = 0;
+    byId('layers').value = '0';
     state.island = landmark(initial);
     state.islandHeading = initial.yaw;
     state.time = 0;

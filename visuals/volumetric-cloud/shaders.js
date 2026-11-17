@@ -1,6 +1,6 @@
-import { cloudSource } from './cloud-volume.js';
-import { oceanSource } from './ocean-background.js';
-import { isletSource } from './islet.js';
+import { cloudSource } from './cloud-volume.js?v=20261117b';
+import { oceanSource } from './ocean-background.js?v=20261117b';
+import { isletSource } from './islet.js?v=20261117b';
 
 const header = `#version 300 es
 precision highp float;
@@ -57,12 +57,47 @@ float pixelJitter() {
   return fract(float(n & 65535u) / 65536.0 + float(uFrame) * 0.61803398875);
 }
 
+vec4 distantMarineCloud(vec3 eye, vec3 ray, float limit, float jitter) {
+  // Subtle distant bands give the near voxel cloud an atmospheric scale cue.
+  // They reuse the independent satellite field outside the volume bounds.
+  vec2 interval = cloudShellRay(eye, ray, 0.37, 2.6, min(limit, 48.0));
+  float start = max(19.0, interval.x);
+  if (start >= interval.y) return vec4(0.0);
+  float stepSize = (interval.y - start) / 23.0;
+  float transmittance = 1.0;
+  vec3 light = vec3(0.0);
+  for (int i = 0; i < 23; i++) {
+    vec3 world = eye + ray * (start + (float(i) + 0.35 + 0.30 * jitter) * stepSize);
+    float altitude = cloudAltitude(world);
+    world.xz = vec2(-74.0, 63.0) + mat2(-0.94, 0.34, -0.34, -0.94) * world.xz;
+    vec2 uv = 0.5 + world.xz / 600.0;
+    vec4 weather = textureLod(uWeatherLo, uv, 0.0);
+    float density = cloudLowDensity(world, altitude, weather, 0.92 * weather.r, false);
+    float alpha = 1.0 - exp(-0.53 * density * stepSize);
+    float day = smoothstep(0.04, 0.38, uSun.y);
+    vec3 base = mix(vec3(0.08, 0.10, 0.16), vec3(0.24, 0.33, 0.43), day);
+    vec3 radiance = base + uSunColor * (0.16 + 0.12 * exp(-density));
+    light += radiance * alpha * transmittance;
+    transmittance *= 1.0 - alpha;
+    if (transmittance < 0.04) break;
+  }
+  return vec4(light, 1.0 - transmittance) * 0.65;
+}
+
 void main() {
   vec3 ray = viewRay(vUV);
   float distanceToCloud;
   float upper = min(uCloudRange, seaDistance(uEye, ray));
   fog = marchCloud(uEye, ray, uSun, upper, pixelJitter(), distanceToCloud);
   fog *= 1.0 - 0.94 * smoothstep(uCloudRange * 0.81, uCloudRange, distanceToCloud);
+  if (uUseReference && uDebugCloud == 0 && fog.a < 0.99) {
+    vec4 back = distantMarineCloud(uEye, ray, upper, pixelJitter());
+    float farContribution = (1.0 - fog.a) * back.a;
+    if (farContribution > 0.0001) {
+      distanceToCloud = (distanceToCloud * fog.a + 29.0 * farContribution) / (fog.a + farContribution);
+      fog += (1.0 - fog.a) * back;
+    }
+  }
   range = clamp(distanceToCloud / MAX_RANGE, 0.0, 1.0);
 }
 `;
@@ -287,8 +322,9 @@ void main() {
   if (foregroundLand && depth > land.a) fog = vec4(0.0);
   if (uDebugCloud == 1 || uDebugCloud == 4) background *= 0.34;
   if (uDebugCloud != 1 && uDebugCloud != 4) {
-    float aerial = 1.0 - exp(-depth * (0.010 + 0.009 * exp(-max(0.0, ray.y) * 10.0)));
-    fog.rgb = mix(fog.rgb, air * fog.a, aerial * 0.84);
+    float localElevation = max(0.0, dot(ray, uLocalUp));
+    float aerial = 1.0 - exp(-depth * (0.006 + 0.011 * exp(-localElevation * 9.0)));
+    fog.rgb = mix(fog.rgb, air * fog.a, aerial * 0.86);
   }
   color = vec4(toDisplay(fog.rgb + (1.0 - fog.a) * background), 1.0);
 }

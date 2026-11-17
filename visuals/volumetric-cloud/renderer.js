@@ -1,13 +1,13 @@
-import { generateVolumes } from './volume-noise.js';
-import { fullVertex, marchFragment, historyFragment, skyFragment, compositeFragment } from './shaders.js';
+import { generateVolumes } from './volume-noise.js?v=20261117b';
+import { fullVertex, marchFragment, historyFragment, skyFragment, compositeFragment } from './shaders.js?v=20261117b';
 
 const radians = Math.PI / 180;
 const seaLevel = 0.018;
 const earthRadius = 6371;
 const qualityLevels = {
-  auto: { scale: 0.51, steps: 70, lights: 4 },
-  fast: { scale: 0.39, steps: 48, lights: 3 },
-  high: { scale: 0.67, steps: 92, lights: 5 }
+  auto: { scale: 0.60, steps: 108, lights: 4 },
+  fast: { scale: 0.40, steps: 72, lights: 3 },
+  high: { scale: 0.81, steps: 144, lights: 6 }
 };
 
 export function cameraBasis(yaw, pitch) {
@@ -94,6 +94,21 @@ function allocate3D(gl, size, bytes) {
   return texture;
 }
 
+function allocateReference(gl, size, bytes) {
+  const texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_3D, texture);
+  for (const axis of [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T, gl.TEXTURE_WRAP_R]) {
+    gl.texParameteri(gl.TEXTURE_3D, axis, gl.CLAMP_TO_EDGE);
+  }
+  gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+  gl.texStorage3D(gl.TEXTURE_3D, 1, gl.R8, ...size);
+  gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, ...size, gl.RED, gl.UNSIGNED_BYTE, bytes);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
+  return texture;
+}
+
 function target(gl, width, height, hdr, hasRange) {
   const fbo = gl.createFramebuffer();
   gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
@@ -153,6 +168,24 @@ export async function createCloudRenderer(canvas, dataset = {}) {
   const { shape, detail, shapeSize, detailSize } = generateVolumes();
   const shapeTexture = allocate3D(gl, shapeSize, shape);
   const detailTexture = allocate3D(gl, detailSize, detail);
+  let reference;
+  let referenceRequest;
+
+  function loadReference(data) {
+    if (!referenceRequest) {
+      referenceRequest = (async () => {
+        const response = await fetch(new URL(data.file, import.meta.url));
+        if (!response.ok) throw new Error(data.file + ' ' + response.status);
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        if (bytes.length !== data.size.reduce((a, b) => a * b, 1)) throw new Error('体素云尺寸不一致');
+        const texture = allocateReference(gl, data.size, bytes);
+        return { texture, bytes };
+      })();
+      referenceRequest.catch(() => { referenceRequest = undefined; });
+    }
+    return referenceRequest;
+  }
+  if (dataset.reference) reference = await loadReference(dataset);
 
   const marchProgram = buildProgram(gl, marchFragment);
   const historyProgram = buildProgram(gl, historyFragment);
@@ -203,10 +236,16 @@ export async function createCloudRenderer(canvas, dataset = {}) {
     program.int('uLightSteps', info.lights);
     program.int('uDebugCloud', state.debug);
     program.int('uLayers', state.layers);
+    const volume = state.reference;
+    program.int('uUseReference', Boolean(volume && reference));
+    program.set('uReferenceCenter', volume?.center ?? [0, 0, 0]);
+    program.set('uReferenceSize', volume?.extent ?? [1, 1, 1]);
+    program.set('uReferenceHeading', volume?.yaw ?? 0);
     useTexture(program, 'uWeatherLo', 0, weatherLo);
     useTexture(program, 'uWeatherHi', 1, weatherHi);
     useTexture(program, 'uShape', 2, shapeTexture, gl.TEXTURE_3D);
     useTexture(program, 'uDetail', 3, detailTexture, gl.TEXTURE_3D);
+    useTexture(program, 'uReferenceCloud', 7, reference?.texture ?? shapeTexture, gl.TEXTURE_3D);
   }
 
   function drawTo(buffer) {
@@ -333,11 +372,14 @@ export async function createCloudRenderer(canvas, dataset = {}) {
 
   return {
     draw,
+    get referenceBytes() { return reference?.bytes; },
     async setWeather(next) {
       const request = ++weatherGeneration;
-      const pair = await loadWeather(next);
+      const [pair, volume] = await Promise.all([loadWeather(next),
+        next.reference ? loadReference(next) : Promise.resolve(undefined)]);
       if (request !== weatherGeneration) return false;
       [weatherLo, weatherHi] = pair;
+      if (volume) reference = volume;
       previousView = undefined;
       return true;
     }
