@@ -428,38 +428,39 @@ body.ready .scene{min-height:100svh;padding-block:45px 30px}
   .opening-plot canvas{height:clamp(240px,44vh,330px)}
 }
 
-html:has(#orbits:not([hidden])){background:#090b11}
-body:has(#orbits:not([hidden])){
+html:has(:is(#orbits,#space-orbits):not([hidden])){background:#090b11}
+body:has(:is(#orbits,#space-orbits):not([hidden])){
   background:
     radial-gradient(ellipse at 26% 50%,rgba(40,72,94,.25),transparent 53%),
     radial-gradient(ellipse at 63% 10%,rgba(54,46,80,.17),transparent 57%),
     #090b11;
 }
-body:has(#orbits:not([hidden])) #fullscreen{
+body:has(:is(#orbits,#space-orbits):not([hidden])) #fullscreen{
   color:#e3ebf6;background:transparent;border-color:rgba(227,235,246,.24)
 }
-body:has(#orbits:not([hidden])) #fullscreen:hover{background:rgba(227,235,246,.1)}
-#orbits{
+body:has(:is(#orbits,#space-orbits):not([hidden])) #fullscreen:hover{background:rgba(227,235,246,.1)}
+body.ready #orbits{
   --orbit-ink:#f0f4fb;
   --orbit-muted:#b0becf;
   display:grid;
   grid-template-columns:minmax(0,1.58fr) minmax(0,1fr);
+  grid-template-areas:"heading heading" "plot system";
   align-items:center;
-  align-content:center;
-  gap:clamp(14px,3.5vw,66px);
-  padding-inline:clamp(22px,4.5vw,88px);
+  align-content:start;
+  gap:clamp(8px,1.4svh,20px) clamp(16px,3.5vw,66px);
+  padding:clamp(25px,4.5svh,62px) clamp(22px,4.5vw,88px) clamp(14px,2.3svh,32px);
   color:var(--orbit-ink)
 }
-.orbit-copy{grid-area:1/2;min-width:0}
-#orbit-title{font-size:clamp(43px,6.5vw,107px);line-height:1.04;white-space:nowrap}
+.orbit-copy{grid-area:system;min-width:0}
+#orbit-title{grid-area:heading;font-size:clamp(44px,5.8vw,96px);line-height:1.04}
 .orbit-map{color:var(--orbit-ink);font-size:clamp(18px,2.24vw,36px);margin:clamp(15px,3.1vh,34px) 0}
 .orbit-polarization{color:var(--orbit-muted);font-size:clamp(15px,1.38vw,22px)}
 .orbit-polarization p{margin:0 0 .42em}
 .orbit-result{min-height:2em;margin-top:clamp(16px,4vh,54px)}
 #orbit-equation{font:italic clamp(24px,2.49vw,42px)/1.2 var(--serif);white-space:nowrap}
 #orbit-equation sup{font-size:.63em;line-height:0}
-.orbit-plot{grid-area:1/1;min-width:0}
-.orbit-plot canvas{display:block;width:100%;height:clamp(330px,77svh,810px)}
+.orbit-plot{grid-area:plot;min-width:0}
+.orbit-plot canvas{display:block;width:100%;height:clamp(275px,calc(91svh - 116px),760px)}
 .orbit-caption{
   display:flex;align-items:baseline;gap:clamp(9px,1.2vw,20px);
   margin:0;padding:0 clamp(4px,4%,32px);min-height:0;
@@ -468,16 +469,113 @@ body:has(#orbits:not([hidden])) #fullscreen:hover{background:rgba(227,235,246,.1
 #orbit-example{font-variant-numeric:tabular-nums}
 #orbit-chart{margin-left:auto;white-space:nowrap}
 @media(max-width:700px){
-  body:has(#orbits:not([hidden])){background:radial-gradient(ellipse at 45% 56%,#142133,transparent 64%),#090b11}
-  #orbits{grid-template-columns:minmax(0,1fr);gap:2px;align-content:center}
-  .orbit-copy{grid-area:1/1}
-  .orbit-plot{grid-area:2/1}
+  body:has(:is(#orbits,#space-orbits):not([hidden])){background:radial-gradient(ellipse at 45% 56%,#142133,transparent 64%),#090b11}
+  body.ready #orbits{grid-template-columns:minmax(0,1fr);grid-template-areas:"heading" "system" "plot";gap:2px;padding-top:55px}
   #orbit-title{font-size:clamp(46px,9vw,68px)}
   .orbit-map{margin:10px 0}
   .orbit-result{margin-top:12px;min-height:1.7em}
   .orbit-plot canvas{height:clamp(285px,48svh,450px)}
 }
 .scene :is(h1,h2)[tabindex="-1"]:focus-visible{outline:none}
+
+body.ready #space-orbits {
+  --space-ink: #f0f4fb;
+  --space-muted: #b0becf;
+  display: grid;
+  grid-template-columns: minmax(0, 1.62fr) minmax(0, 1fr);
+  align-items: center;
+  align-content: start;
+  column-gap: clamp(14px, 3.5vw, 66px);
+  row-gap: clamp(2px, 1.3vh, 16px);
+  padding: clamp(25px, 4.5svh, 62px) clamp(22px, 4.5vw, 88px) clamp(14px, 2.3svh, 32px);
+  color: var(--space-ink);
+}
+.space-orbits-heading { grid-area: 1 / 1 / 2 / -1; min-width: 0; }
+.space-orbits-copy { grid-area: 2 / 2; min-width: 0; }
+#space-orbits-title {
+  font-size: clamp(34px, 4.8vw, 80px);
+  line-height: 1.03;
+  text-wrap: balance;
+}
+.space-orbits-map {
+  margin: clamp(14px, 3vh, 31px) 0;
+  color: var(--space-ink);
+  font-size: clamp(17px, 2.06vw, 31px);
+  font-variant-numeric: lining-nums;
+  line-height: 1.48;
+}
+.space-orbits-results {
+  display: grid;
+  gap: clamp(8px, 2vh, 21px);
+  margin-top: clamp(7px, 1.8vh, 20px);
+}
+.space-orbits-result {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 550ms ease;
+}
+#space-orbits:is([data-phase="curve"], [data-phase="surface"], [data-phase="closures"]) [data-result="curve"],
+#space-orbits:is([data-phase="surface"], [data-phase="closures"]) [data-result="surface"] {
+  opacity: 1;
+  visibility: visible;
+}
+.space-orbits-swatch {
+  flex: 0 0 22px;
+  height: 2px;
+  margin-top: .77em;
+  border-radius: 2px;
+  background: #ffc87e;
+}
+[data-result="surface"] .space-orbits-swatch { background: #84e1d0; }
+.space-orbits-result strong {
+  color: var(--space-ink);
+  font-size: clamp(13px, 1.2vw, 18px);
+  font-weight: 600;
+}
+.space-orbits-result p {
+  margin: .16em 0 0;
+  color: var(--space-muted);
+  font-size: clamp(14px, 1.32vw, 21px);
+  white-space: nowrap;
+}
+.space-orbits-locus { color: #ffae9f; }
+.space-orbits-plot { grid-area: 2 / 1; min-width: 0; }
+.space-orbits-plot canvas {
+  display: block;
+  width: 100%;
+  height: clamp(270px, 68svh, 690px);
+}
+.space-orbits-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 0;
+  margin: 0;
+  padding: 0 clamp(4px, 4%, 28px);
+  color: var(--space-muted);
+  font-size: clamp(.72rem, 1.25vw, .94rem);
+  line-height: 1.42;
+}
+.space-orbits-caption > :last-child { white-space: nowrap; }
+@media (max-width: 700px) {
+  body.ready #space-orbits {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding-top: 55px;
+  }
+  .space-orbits-copy { grid-area: 2 / 1; }
+  .space-orbits-plot { grid-area: 3 / 1; }
+  #space-orbits-title { font-size: clamp(34px, 8.7vw, 56px); }
+  .space-orbits-map { margin: 7px 0; }
+  .space-orbits-results { margin-top: 8px; gap: 5px; }
+  .space-orbits-plot canvas { height: clamp(270px, 44svh, 460px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .space-orbits-result { transition: none; }
+}
 </style>
 </head>
 <body>
@@ -497,8 +595,8 @@ body:has(#orbits:not([hidden])) #fullscreen:hover{background:rgba(227,235,246,.1
     </section>
 
 <section class="scene opening-demo" id="orbits" data-chapter="1" data-time="01:20" data-title="Power Map" data-phase="seed" data-example="1" aria-labelledby="orbit-title" hidden>
+  <h2 id="orbit-title">Power Map</h2>
   <div class="orbit-copy">
-    <h2 id="orbit-title">Power Map</h2>
     <p class="orbit-map"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mo stretchy="false">[</mo><mi>x</mi><mo>:</mo><mi>y</mi><mo>:</mo><mi>z</mi><mo stretchy="false">]</mo><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">[</mo><msup><mi>x</mi><mn>2</mn></msup><mo>:</mo><msup><mi>y</mi><mn>2</mn></msup><mo>:</mo><msup><mi>z</mi><mn>2</mn></msup><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">f([x:y:z])=[x^2:y^2:z^2]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">([</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">])</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></p>
     <div class="orbit-polarization">
       <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>f</mi><mo>∗</mo></msup><msub><mi mathvariant="script">O</mi><msup><mi mathvariant="double-struck">P</mi><mn>2</mn></msup></msub><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo><mo>≃</mo><msub><mi mathvariant="script">O</mi><msup><mi mathvariant="double-struck">P</mi><mn>2</mn></msup></msub><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f^*\mathcal O_{\mathbb P^2}(1)\simeq\mathcal O_{\mathbb P^2}(2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6887em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathcal" style="margin-right:0.02778em;">O</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.5224em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathbb mtight">P</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1776em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≃</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.02778em;">O</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.5224em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathbb mtight">P</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1776em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span></span></span></span></p>
@@ -512,8 +610,32 @@ body:has(#orbits:not([hidden])) #fullscreen:hover{background:rgba(227,235,246,.1
     <canvas id="orbit-canvas" role="img" aria-label="A forward orbit in the real affine chart z = 1."></canvas>
     <figcaption class="orbit-caption">
       <span id="orbit-stage-label">Initial point</span>
-      <span id="orbit-example">1 / 10</span>
+      <span id="orbit-example">1 / 30</span>
       <span id="orbit-chart">Real slice · <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">z=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span>
+    </figcaption>
+  </figure>
+</section>
+
+<section class="scene opening-demo" id="space-orbits" data-chapter="1" data-time="04:10" data-title="Orbit Closures in P³" data-phase="seed" data-iterate="0" aria-labelledby="space-orbits-title" hidden>
+  <header class="space-orbits-heading"><h2 id="space-orbits-title">Orbit Closures in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="double-struck">P</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\mathbb P^3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathbb">P</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span></h2></header>
+  <div class="space-orbits-copy">
+    <p class="space-orbits-map"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mo stretchy="false">[</mo><mi>x</mi><mo>:</mo><mi>y</mi><mo>:</mo><mi>z</mi><mo>:</mo><mi>w</mi><mo stretchy="false">]</mo><mo stretchy="false">)</mo><mo>=</mo></mrow><annotation encoding="application/x-tex">f([x:y:z:w])=</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">([</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mclose">])</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span></span></span></span><br><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><msup><mi>x</mi><mn>2</mn></msup><mo>:</mo><msup><mi>y</mi><mn>2</mn></msup><mo>:</mo><msup><mi>z</mi><mn>2</mn></msup><mo>+</mo><mn>2</mn><mi>z</mi><mi>w</mi><mo>:</mo><msup><mi>w</mi><mn>2</mn></msup><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[x^2:y^2:z^2+2zw:w^2]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8974em;vertical-align:-0.0833em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></p>
+    <div class="space-orbits-results">
+      <div class="space-orbits-result" data-result="curve">
+        <span class="space-orbits-swatch" aria-hidden="true"></span>
+        <div><strong>Twisted cubic <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi></mrow><annotation encoding="application/x-tex">C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span></strong><p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mo stretchy="false">(</mo><mi>z</mi><mo>+</mo><mn>1</mn><msup><mo stretchy="false">)</mo><mn>2</mn></msup><mo separator="true">,</mo><mspace width="1em"/><mi>y</mi><mo>=</mo><mo stretchy="false">(</mo><mi>z</mi><mo>+</mo><mn>1</mn><msup><mo stretchy="false">)</mo><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">x=(z+1)^2,\quad y=(z+1)^3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span></p></div>
+      </div>
+      <div class="space-orbits-result" data-result="surface">
+        <span class="space-orbits-swatch" aria-hidden="true"></span>
+        <div><strong>Nonnormal surface <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span></span></span></span></strong><p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>3</mn></msup><mo>=</mo><msup><mi>y</mi><mn>2</mn></msup><mi>w</mi><mspace width="1em"/></mrow><annotation encoding="application/x-tex">x^3=y^2w\quad</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:1em;"></span></span></span></span> <span class="space-orbits-locus"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>:</mo><mtext> </mtext><mi>x</mi><mo>=</mo><mi>y</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">L:\ x=y=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span></p></div>
+      </div>
+    </div>
+  </div>
+  <figure class="space-orbits-plot">
+    <canvas id="space-orbits-canvas" role="img" aria-label="Real affine slice of two orbits. The gold orbit has a twisted cubic as its complex Zariski closure. The teal orbit has a cuspidal surface as its complex Zariski closure. The coral line is the nonnormal locus."></canvas>
+    <figcaption class="space-orbits-caption">
+      <span id="space-orbits-stage">Initial points</span>
+      <span>Real slice · <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">w=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span>
     </figcaption>
   </figure>
 </section>
@@ -1966,42 +2088,59 @@ document.fonts?.ready.then(scheduleFrame);
     const exampleLabel = orbit.querySelector("#orbit-example");
     const equation = orbit.querySelector("#orbit-equation");
     const subscript = value => String(value).replace(/[0-9]/g, digit => "₀₁₂₃₄₅₆₇₈₉"[Number(digit)]);
-    const playbackRate = .5;
     const lastIteration = 10;
     const firstPointMs = 800;
     const pointMs = 175;
     const closureStartMs = firstPointMs + lastIteration * pointMs + 140;
     const traceMs = 930;
-    const exampleMs = closureStartMs + traceMs + 850;
+    const pointFadeMs = 230;
+    const narratedCount = 3;
+    const directDrawMs = 1050;
+    const quickestDrawMs = 210;
 
     const palette = [
       "#79decf", "#be9df8", "#f3bf86", "#86adff", "#e79acc",
       "#b9d98c", "#ffac9b", "#82d3ff", "#c3bbfa", "#eed98b"
     ];
 
-    // Use the same affine chart for every trace so they can share one set of axes.
-    const examples = [
-      [2,3,255], [1,2,253], [1,3,251], [2,5,255], [3,4,253],
-      [5,7,255], [2,7,253], [3,5,251], [3,7,255], [4,9,253]
-    ].map(([a,b,seed], index) => {
+    // Coprime exponents give distinct irreducible curves in the same affine chart.
+    const powers = [
+      [2,3,255], [1,2,253], [1,3,251], [2,5], [3,4],
+      [5,7], [2,7], [3,5], [3,7], [4,9],
+      [2,1], [3,2], [4,1], [4,3], [5,2],
+      [5,3], [5,4], [7,2], [7,3], [7,5],
+      [1,4], [1,5], [2,9], [3,8], [4,5],
+      [4,7], [5,8], [5,9], [6,7], [7,8]
+    ];
+    let total = 0;
+    const examples = powers.map(([a,b,seed], index) => {
+      const narrated = index < narratedCount;
       const points = [];
-      let w = -seed / 256;
-      for (let i = 0; i <= lastIteration; i++) {
-        points.push({x:w**a, y:w**b});
-        w *= w;
+      if (narrated) {
+        let w = -seed / 256;
+        for (let i = 0; i <= lastIteration; i++) {
+          points.push({x:w**a, y:w**b});
+          w *= w;
+        }
       }
       const trace = [];
       let distance = 0;
-      for (let i = 0; i <= 480; i++) {
-        w = i / 240 - 1;
+      for (let i = 0; i <= 240; i++) {
+        const w = i / 120 - 1;
         const x = w**a;
         const y = w**b;
         const last = trace.at(-1);
         if (last) distance += Math.hypot(x - last.x, y - last.y);
         trace.push({x,y,distance});
       }
-      return {a,b,points,trace,distance,tint:palette[index]};
+      const drawProgress = (index - narratedCount) / (powers.length - narratedCount - 1);
+      const drawMs = narrated ? traceMs : Math.round(directDrawMs * (quickestDrawMs/directDrawMs)**drawProgress);
+      const drawStart = narrated ? closureStartMs : 0;
+      const start = total;
+      total += drawStart + drawMs + (narrated ? 850 : 0);
+      return {a,b,points,trace,distance,tint:palette[index%palette.length],narrated,start,drawStart,drawMs};
     });
+    const firstCusp = examples.findIndex(({a,b}) => a>1 && b>1);
 
     let elapsed = 0;
     let previousTime = null;
@@ -2077,16 +2216,20 @@ document.fonts?.ready.then(scheduleFrame);
       const closed = phase === "closure";
       stageLabel.textContent = closed ? "Zariski closure" : n ? "Forward orbit" : "Initial point";
       exampleLabel.textContent = (index+1) + " / " + examples.length;
-      const power = (base, exponent) => base + (exponent === 1 ? "" : "<sup>" + exponent + "</sup>");
+      let description = " " + currentPoint + ".";
       if (closed) {
-        equation.innerHTML = power("x", example.b) + " = " + power("y", example.a) + power("z", example.b-example.a);
+        const {a,b} = example;
+        const sides = [
+          [["x",b],["z",a-b]],
+          [["y",a],["z",b-a]]
+        ].map(side => side.filter(([,exponent]) => exponent>0));
+        const power = ([base,exponent]) => base + (exponent === 1 ? "" : "<sup>" + exponent + "</sup>");
+        const spokenPower = ([base,exponent]) => base + (exponent === 1 ? "" : " to the power " + exponent);
+        equation.innerHTML = sides.map(side => side.map(power).join("")).join(" = ");
         equation.style.color = example.tint;
+        description = " " + sides.map(side => side.map(spokenPower).join(" times ")).join(" equals ") + ".";
       }
       equation.hidden = !closed;
-      const {a,b} = example;
-      const description = closed
-        ? " x to the power " + b + " equals y to the power " + a + " times z to the power " + (b-a) + "."
-        : " " + currentPoint + ".";
       canvas.setAttribute("aria-label", stageLabel.textContent + "." + description + " Real affine chart z = 1.");
     }
 
@@ -2096,16 +2239,20 @@ document.fonts?.ready.then(scheduleFrame);
         previousTime = null;
         return;
       }
-      const total = examples.length * exampleMs;
-      if (previousTime !== null) elapsed = Math.min(total,elapsed+(now-previousTime)*playbackRate);
+      if (previousTime !== null) elapsed = Math.min(total,elapsed+now-previousTime);
       previousTime = now;
-      const index = Math.min(examples.length-1, Math.floor(elapsed/exampleMs));
-      const phaseTime = elapsed - index*exampleMs;
-      const n = Math.min(lastIteration, Math.max(0, Math.floor((phaseTime-firstPointMs)/pointMs)));
-      const phase = phaseTime >= closureStartMs ? "closure" : n ? "orbit" : "seed";
-      const fraction = phase === "closure" ? stopMotion.matches ? 1 : Math.min(1,(phaseTime-closureStartMs)/traceMs) : 0;
+      const index = examples.findLastIndex(example => elapsed >= example.start);
       const example = examples[index];
-      const currentPoint = pointLabel(example,n);
+      const phaseTime = elapsed - example.start;
+      const traceTime = phaseTime - example.drawStart;
+      const closing = traceTime >= 0;
+      const instant = closing && stopMotion.matches;
+      const fraction = instant ? 1 : Math.max(0,Math.min(1,traceTime/example.drawMs));
+      const n = example.narrated ? Math.min(lastIteration,Math.max(0,Math.floor((phaseTime-firstPointMs)/pointMs))) : 0;
+      const phase = closing ? "closure" : n ? "orbit" : "seed";
+      const fadeTime = Math.max(0,traceTime-example.drawMs);
+      const pointOpacity = example.narrated && !instant ? Math.max(0,1-fadeTime/pointFadeMs) : 0;
+      const currentPoint = closing ? "" : pointLabel(example,n);
       updateReadout(index,example,n,phase,currentPoint);
 
       surface(canvas, (ctx,width,height) => {
@@ -2129,19 +2276,21 @@ document.fonts?.ready.then(scheduleFrame);
         }
         if (fraction > 0) paintTrace(ctx,example,px,py,fraction,true);
 
-        if (phase !== "closure") {
+        if (index > firstCusp || (index === firstCusp && fraction >= 1)) {
+          ring(ctx,cx,cy,2.8,null,"#ffad99");
+        }
+        if (pointOpacity > 0) {
+          ctx.save();
+          ctx.globalAlpha = pointOpacity;
           for (let i = 0; i < n; i++) {
             const point = example.points[i];
-            ring(ctx,px(point.x),py(point.y),2.3,null,example.tint);
+            ring(ctx,px(point.x),py(point.y),2.3,null,"#c8ddf3");
           }
           const active = example.points[n];
           const x = px(active.x), y = py(active.y);
           ring(ctx,x,y,4,null,"#f0f5ff");
-          paintPointLabel(ctx,currentPoint,x,y,width,height);
-        }
-        if (examples.slice(0,index).some(previous => previous.a > 1) ||
-            (fraction >= 1 && example.a > 1)) {
-          ring(ctx,cx,cy,2.8,null,"#ffad99");
+          if (!closing) paintPointLabel(ctx,currentPoint,x,y,width,height);
+          ctx.restore();
         }
       });
       if (elapsed < total) schedule();
@@ -2385,6 +2534,330 @@ document.fonts?.ready.then(scheduleFrame);
   if ("ResizeObserver" in window) new ResizeObserver(schedule).observe(canvas);
   else window.addEventListener("resize", schedule);
   schedule();
+})();
+
+;(() => {
+  "use strict";
+
+  const section = document.getElementById("space-orbits");
+  if (!section) return;
+  const canvas = section.querySelector("#space-orbits-canvas");
+  const stageLabel = section.querySelector("#space-orbits-stage");
+  const context = canvas.getContext("2d");
+  if (!context) return;
+
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  const iterationCount = 8;
+  const seedHold = 1180;
+  const stepLength = 980;
+  const curveStart = seedHold + iterationCount * stepLength;
+  const surfaceStart = curveStart + 1720;
+  const finish = surfaceStart + 2420;
+  const colors = {
+    gold: "#ffc87e",
+    teal: "#84e1d0",
+    coral: "#ffae9f",
+    axis: "#798b9c",
+    grid: "#6f859b",
+    paper: "#e5edf7",
+    background: "#101a28",
+    far: "#526cb1",
+    near: "#447d89"
+  };
+
+  const xyz = (u, v) => [u * u, u * u * u, v - 1];
+  const clamp = value => Math.max(0, Math.min(1, value));
+  const ease = value => 1 - (1 - clamp(value)) ** 3;
+
+  function orbit(initialU, initialV) {
+    const points = [];
+    let u = initialU;
+    let v = initialV;
+    for (let i = 0; i <= iterationCount; i++) {
+      points.push(xyz(u, v));
+      u *= u;
+      v *= v;
+    }
+    return points;
+  }
+
+  const curveSeed = -(2 ** (-1 / 32));
+  const examples = [
+    { tint: colors.gold, points: orbit(curveSeed, curveSeed) },
+    { tint: colors.teal, points: orbit(-curveSeed, 3 ** (-1 / 32)) }
+  ];
+
+  const uMin = -1.1;
+  const uMax = 1.1;
+  const zMin = -2.12;
+  const zMax = .16;
+  const uSteps = 24;
+  const zSteps = 18;
+
+  function projectUnit([x, y, z]) {
+    return [.82 * x + .50 * y, -.90 * (z + 1) + .32 * x - .47 * y];
+  }
+
+  function sceneProjection(width, height) {
+    const left = -.64;
+    const right = 2.04;
+    const top = -1.36;
+    const bottom = 2.10;
+    const scale = Math.min((width - 8) / (right - left), (height - 20) / (bottom - top));
+    const originX = width / 2 - (left + right) * scale / 2;
+    const originY = height / 2 - (top + bottom) * scale / 2;
+    return point => {
+      const [x, y] = projectUnit(point);
+      return [originX + x * scale, originY + y * scale];
+    };
+  }
+
+  function path(points, stroke, lineWidth, alpha = 1, fill = null) {
+    if (!points.length || alpha <= 0) return;
+    context.save();
+    context.globalAlpha = alpha;
+    context.beginPath();
+    context.moveTo(...points[0]);
+    for (const point of points.slice(1)) context.lineTo(...point);
+    if (fill) {
+      context.closePath();
+      context.fillStyle = fill;
+      context.fill();
+    }
+    if (stroke) {
+      context.strokeStyle = stroke;
+      context.lineWidth = lineWidth;
+      context.lineJoin = "round";
+      context.lineCap = "round";
+      context.stroke();
+    }
+    context.restore();
+  }
+
+  function dot(point, radius, color, alpha = 1) {
+    context.save();
+    context.globalAlpha = alpha;
+    context.beginPath();
+    context.arc(...point, radius, 0, 2 * Math.PI);
+    context.fillStyle = color;
+    context.fill();
+    context.restore();
+  }
+
+  function text(content, x, y, color, size = 14, align = "left", alpha = 1) {
+    context.save();
+    context.globalAlpha = alpha;
+    context.fillStyle = color;
+    context.font = "500 " + size + "px " + sansFont;
+    context.textAlign = align;
+    context.textBaseline = "middle";
+    context.fillText(content, x, y);
+    context.restore();
+  }
+
+  function drawAxes(project, width, surfaceAlpha) {
+    const planeZ = zMin;
+    for (const mark of [0, .35, .70, 1.05, 1.4]) {
+      path([project([mark, -1.27, planeZ]), project([mark, 1.35, planeZ])], colors.grid, .8, .20);
+    }
+    for (const mark of [-1.25, -.75, -.25, .25, .75, 1.25]) {
+      path([project([0, mark, planeZ]), project([1.4, mark, planeZ])], colors.grid, .8, .20);
+    }
+    const axes = [
+      { end: [1.51, 0, planeZ], label: "x", dx: 7, dy: 7 },
+      { end: [0, 1.49, planeZ], label: "y", dx: 7, dy: -9 },
+      { end: [0, 0, zMax + .13], label: "z", dx: -8, dy: -7 }
+    ];
+    const base = project([0, 0, planeZ]);
+    for (const axis of axes) {
+      const end = project(axis.end);
+      path([base, end], colors.axis, 1.2, .58);
+      const angle = Math.atan2(end[1] - base[1], end[0] - base[0]);
+      const left = [end[0] - 7 * Math.cos(angle - .42), end[1] - 7 * Math.sin(angle - .42)];
+      const right = [end[0] - 7 * Math.cos(angle + .42), end[1] - 7 * Math.sin(angle + .42)];
+      path([left, end, right], colors.axis, 1.1, .62);
+      text(axis.label, end[0] + axis.dx, end[1] + axis.dy, colors.axis, width < 420 ? 12 : 14);
+    }
+    if (surfaceAlpha > 0) {
+      const end = project([0, 0, zMax]);
+      text("L", end[0] + 12, end[1] + 4, colors.coral, width < 420 ? 13 : 15, "left", surfaceAlpha);
+    }
+  }
+
+  function surfacePoint(u, z) {
+    return [u * u, u * u * u, z];
+  }
+
+  function drawSurface(project, fraction) {
+    if (fraction <= 0) return;
+    const top = zMin + (zMax - zMin) * fraction;
+
+    for (let i = 0; i < uSteps; i++) {
+      const a = uMin + (uMax - uMin) * i / uSteps;
+      const b = uMin + (uMax - uMin) * (i + 1) / uSteps;
+      const corners = [
+        surfacePoint(a, zMin), surfacePoint(b, zMin), surfacePoint(b, top), surfacePoint(a, top)
+      ];
+      path(corners.map(project), null, 0, .21 + .065 * Math.cos(i * Math.PI / uSteps), i < uSteps / 2 ? colors.far : colors.near);
+    }
+
+    for (let i = 0; i <= uSteps; i++) {
+      const u = uMin + (uMax - uMin) * i / uSteps;
+      const boundary = i === 0 || i === uSteps;
+      path([project(surfacePoint(u, zMin)), project(surfacePoint(u, top))],
+        colors.teal, boundary ? 1.25 : .68, boundary ? .67 : .24);
+    }
+    for (let i = 0; i <= zSteps; i++) {
+      const z = zMin + (zMax - zMin) * i / zSteps;
+      if (z > top) break;
+      const crossSection = [];
+      for (let j = 0; j <= 64; j++) {
+        const u = uMin + (uMax - uMin) * j / 64;
+        crossSection.push(project(surfacePoint(u, z)));
+      }
+      path(crossSection, colors.teal, i === 0 || i === zSteps ? 1.55 : .70, i === 0 || i === zSteps ? .72 : .27);
+    }
+    path([project([0, 0, zMin]), project([0, 0, top])], colors.coral, 1.55, .92);
+  }
+
+  function drawCurve(project, fraction) {
+    if (fraction <= 0) return;
+    const sample = [];
+    const end = uMin + (uMax - uMin) * fraction;
+    for (let i = 0; i <= 150; i++) {
+      const u = uMin + (end - uMin) * i / 150;
+      sample.push(project(xyz(u, u)));
+    }
+    path(sample, colors.background, 5.0, .72);
+    path(sample, colors.gold, 2.6, .98);
+  }
+
+  function coordinates(point) {
+    const component = value => (Math.abs(value) < .05 ? 0 : value).toFixed(1);
+    return "(" + point.map(component).join(", ") + ")";
+  }
+
+  function pointCaption(point, projection, width, height, color, align) {
+    const value = coordinates(point);
+    const size = width < 420 ? 11 : 13;
+    const margin = width < 420 ? 9 : 13;
+    const edge = size * 7.3;
+    const x = align === "left"
+      ? Math.min(width - edge - 4, projection[0] + margin)
+      : Math.max(edge + 4, projection[0] - margin);
+    const y = align === "left"
+      ? Math.max(size, projection[1] - 13)
+      : Math.min(height - size, projection[1] + 16);
+    context.save();
+    context.font = "500 " + size + "px " + sansFont;
+    context.strokeStyle = colors.background;
+    context.lineWidth = 3.8;
+    context.textAlign = align;
+    context.textBaseline = "middle";
+    context.strokeText(value, x, y);
+    context.restore();
+    text(value, x, y, color, size, align);
+  }
+
+  function drawOrbits(project, width, height, n, elapsed) {
+    for (const [index, example] of examples.entries()) {
+      for (let i = 0; i < n; i++) {
+        const center = project(example.points[i]);
+        dot(center, 3.5, colors.background, .88);
+        dot(center, 2.0, example.tint, .74);
+      }
+      const active = example.points[n];
+      const position = project(active);
+      const pulse = n === 0 ? 0 : clamp((elapsed - seedHold - (n - 1) * stepLength) / 510);
+      if (pulse > 0 && pulse < 1 && elapsed < curveStart) {
+        context.save();
+        context.strokeStyle = example.tint;
+        context.globalAlpha = .45 * (1 - pulse);
+        context.beginPath();
+        context.arc(...position, 5 + 10 * pulse, 0, 2 * Math.PI);
+        context.stroke();
+        context.restore();
+      }
+      dot(position, 6.0, colors.background, .89);
+      dot(position, 4.1, example.tint);
+      dot(position, 1.65, colors.paper, .92);
+      if (elapsed < curveStart) pointCaption(active, position, width, height, example.tint, index === 0 ? "right" : "left");
+    }
+  }
+
+  let frame = 0;
+  let elapsed = 0;
+  let previous = null;
+  let active = false;
+
+  function stateAt(time) {
+    if (time < seedHold) return { phase: "seed", n: 0, caption: "Initial points" };
+    if (time < curveStart) {
+      const n = Math.min(iterationCount, 1 + Math.floor((time - seedHold) / stepLength));
+      return { phase: "points", n, caption: "Iterate " + n };
+    }
+    if (time < surfaceStart) return { phase: "curve", n: iterationCount, caption: "Complex Zariski closure · curve" };
+    if (time < finish) return { phase: "surface", n: iterationCount, caption: "Complex Zariski closures · curve and surface" };
+    return { phase: "closures", n: iterationCount, caption: "Complex Zariski closures · curve and surface" };
+  }
+
+  function render(now) {
+    frame = 0;
+    if (!active || section.hidden || document.hidden) return;
+    if (previous !== null && !reducedMotion.matches) elapsed = Math.min(finish, elapsed + Math.min(65, now - previous));
+    previous = now;
+    const shownTime = reducedMotion.matches ? finish : elapsed;
+    const { phase, n, caption } = stateAt(shownTime);
+    if (section.dataset.phase !== phase || section.dataset.iterate !== String(n)) {
+      section.dataset.phase = phase;
+      section.dataset.iterate = String(n);
+      stageLabel.textContent = caption;
+    }
+
+    const { width, height } = canvas.getBoundingClientRect();
+    if (!width || !height) return;
+    const ratio = Math.min(2, devicePixelRatio || 1);
+    if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) {
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
+    }
+    context.setTransform(canvas.width / width, 0, 0, canvas.height / height, 0, 0);
+    context.clearRect(0, 0, width, height);
+    const project = sceneProjection(width, height);
+    const surfaceFraction = ease((shownTime - surfaceStart) / (finish - surfaceStart));
+    drawAxes(project, width, surfaceFraction);
+    drawSurface(project, surfaceFraction);
+    drawCurve(project, ease((shownTime - curveStart) / (surfaceStart - curveStart)));
+    drawOrbits(project, width, height, n, shownTime);
+    if (shownTime < finish) schedule();
+  }
+
+  function schedule() {
+    if (!frame && active && !document.hidden) frame = requestAnimationFrame(render);
+  }
+
+  function checkVisibility() {
+    const next = !section.hidden;
+    if (active === next) return;
+    active = next;
+    previous = null;
+    elapsed = 0;
+    if (active) schedule();
+    else if (frame) {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    }
+  }
+
+  new MutationObserver(checkVisibility).observe(section, { attributes: true, attributeFilter: ["hidden"] });
+  new ResizeObserver(schedule).observe(canvas);
+  document.addEventListener("visibilitychange", () => {
+    previous = null;
+    if (!document.hidden) schedule();
+  });
+  reducedMotion.addEventListener("change", schedule);
+  if (document.fonts) document.fonts.ready.then(schedule);
+  checkVisibility();
 })();
 </script>
 </body>
