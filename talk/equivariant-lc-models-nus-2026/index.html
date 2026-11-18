@@ -651,6 +651,13 @@ body.ready .scene:not(.cover) {
 #plane-orbit-closures .orbit-result,#space-orbits .space-restriction { transition: opacity .5s; }
 #plane-orbit-closures[data-step="2"] .orbit-result,#space-orbits[data-step="2"] .space-restriction { opacity: .19; }
 #plane-orbit-closures .orbit-caption { display: block; text-align: center; }
+:is(#plane-orbit-closures,#space-orbits) > .lecture-popup {
+  grid-column: 1 / -1;
+  inset: auto 0 30px auto;
+  width: min(900px,100%);
+}
+#plane-orbit-closures > .lecture-popup { grid-row: plot-start / plot-end; }
+#space-orbits > .lecture-popup { grid-row: 2 / 3; }
 #space-orbits[data-step="1"] .space-orbits-result:not([data-result="surface"]),
 #space-orbits[data-step="2"] .space-orbits-result:not([data-result="surface"]) { opacity: .17; }
 .space-orbits-result { transition: opacity .75s ease; }
@@ -736,10 +743,17 @@ body.ready .scene:not(.cover) {
   }
 }
 @media (min-width: 701px) {
+  :is(#plane-orbit-closures,#space-orbits) > .lecture-popup { inset-block-end: 34px; }
   #plane-orbit-closures .orbit-copy {
     align-self: start;
     margin-block-start: clamp(32px,11svh,108px);
   }
+}
+@media (max-width: 700px) {
+  #space-orbits > .lecture-popup { grid-row: 3 / 4; }
+}
+@media (max-width: 350px) {
+  body.ready #plane-orbit-closures { row-gap: 14px; }
 }
 @media(prefers-reduced-motion:reduce) {
   .reveal-panel,.formalization-card,.embedding-square [data-reveal],.embedding-conclusion { animation:none; }
@@ -1443,6 +1457,49 @@ body.ready #cover {
   }
 
 }
+
+body.ready #thanks {
+  justify-content: center;
+  align-items: center;
+  padding-block: clamp(60px,9svh,104px);
+  text-align: center;
+}
+
+.thanks-editorial {
+  display: grid;
+  justify-items: center;
+  width: min(100%,64rem);
+  animation: lecture-reveal .65s cubic-bezier(.22,.74,.26,1) both;
+}
+
+.thanks-ornament {
+  gap: 17px;
+  margin: 0 0 clamp(23px,4.9svh,43px);
+  color: var(--handbook-gold);
+}
+
+.thanks-ornament::before,
+.thanks-ornament::after {
+  width: clamp(34px,6vw,90px);
+}
+
+#thanks-title {
+  color: var(--handbook-title);
+  font: 400 clamp(48px,9.1vw,128px)/.98 var(--serif);
+  letter-spacing: -.04em;
+}
+
+.thanks-editorial p {
+  max-width: 44ch;
+  margin: clamp(18px,3.6svh,34px) 0 0;
+  color: var(--muted);
+  font: 500 clamp(15px,1.62vw,22px)/1.52 var(--sans);
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thanks-editorial { animation: none; }
+}
 </style>
 </head>
 <body>
@@ -2030,6 +2087,18 @@ c-10 4-16 7.7-18 11 0 8.7 6 14.3 18 17 47.3 18.7 87.8 47 121.5 85S196 441.3 208
         </div>
       </div>
     <span class="slide-folio" aria-hidden="true">14</span>
+</section>
+
+
+<section id="thanks" class="scene compact-scene closing-scene" data-chapter="3" data-time="49:45" data-title="Thank you" aria-labelledby="thanks-title" hidden>
+  <div class="thanks-editorial">
+    <div class="handbook-ornament thanks-ornament" aria-hidden="true">
+      <span class="handbook-flower"><i></i><i></i><i></i><i></i></span>
+    </div>
+    <h1 id="thanks-title">Thank you</h1>
+    <p>To our NUS hosts and everyone here today.</p>
+  </div>
+<span class="slide-folio" aria-hidden="true">15</span>
 </section>
 
 </main>
