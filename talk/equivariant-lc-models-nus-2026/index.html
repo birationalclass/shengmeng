@@ -919,46 +919,30 @@ body.ready .scene:not(.cover) {
   padding-block: clamp(14px,2.25svh,26px);
   margin-block-start: clamp(10px,2.4svh,26px);
   overflow: hidden;
+  flex-shrink: 0;
 }
+.scene .main-theorem-card .statement-heading h3 { font-size: inherit; }
 #singularities-lc-model[data-step="0"] .main-theorem-card {
   margin-block-start: clamp(24px,7svh,70px);
 }
 .lc-input {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  max-width: 550px;
-  margin-inline: auto;
+  margin: 0;
 }
 .lc-input p { margin: 0; }
 .lc-self-map {
-  color: var(--handbook-gold);
   white-space: nowrap;
 }
 .lc-lift {
-  text-align: center;
   animation: lecture-reveal .48s cubic-bezier(.22,.74,.26,1) .1s both;
 }
 .lc-lift .lc-iterate {
-  margin: 0 0 .65em;
-  color: var(--muted);
-  font: 500 .68em/1.4 var(--sans);
+  margin: .4em 0 0;
 }
 .lc-lift-action {
-  margin-block: .45em .7em;
-  font-size: clamp(18px,2.4vw,31px);
+  margin-block: .7em;
+  text-align: center;
 }
-.lc-lift-facts {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: .25em 1.28em;
-  list-style: none;
-  padding: 0;
-  margin: .22em 0 0;
-  font: 500 clamp(14px,1.24vw,18px)/1.4 var(--sans);
-}
+.lc-lift .lc-where { margin: 0; }
 .singularities-feature.lc-definition {
   margin-block-start: 0;
   padding-block: clamp(12px,1.6svh,24px);
@@ -1945,7 +1929,7 @@ body.ready #thanks {
 <span class="slide-folio" aria-hidden="true">7</span>
 </section>
 
-<section class="scene compact-scene singularities-scene" id="singularities-lc-model" data-chapter="2" data-time="15:00" data-title="Main Result" aria-labelledby="singularities-lc-title" hidden>
+<section class="scene compact-scene singularities-scene" id="singularities-lc-model" data-auto-open data-chapter="2" data-time="15:00" data-title="Main Result" aria-labelledby="singularities-lc-title" hidden>
   <header class="scene-head">
     <h2 id="singularities-lc-title" class="numbered-title"><span class="slide-section">§2 Singularities</span> Main Result</h2>
   </header>
@@ -1953,14 +1937,11 @@ body.ready #thanks {
     <header class="theorem-target-heading statement-heading">
       <h3 title="Working draft"><strong>Theorem.</strong> (Equivariant Log Canonical Small Model, J. Chen–M, In Progress)</h3>
     </header>
-    <div class="lc-input" data-reveal="0" data-until="2">
-      <p>Any normal projective <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span></span></span>.</p>
-      <div class="lc-self-map" role="img" aria-label="The polarized endomorphism f acts on X">
-        <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>↻</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">f\circlearrowright X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel amsrm">↻</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span></span></span>
-      </div>
+    <div class="lc-input">
+      <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∀</mi></mrow><annotation encoding="application/x-tex">\forall</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord">∀</span></span></span></span> normal projective <span class="lc-self-map"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>↺</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">X\circlearrowleft f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7653em;vertical-align:-0.082em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel amsrm">↺</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span></span> with <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span> polarized,</p>
     </div>
     <div class="lc-lift" data-reveal="1" hidden>
-      <p class="lc-iterate">After a positive iterate</p>
+      <p class="lc-iterate">after replacing <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span> by <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>f</mi><mi>r</mi></msup></mrow><annotation encoding="application/x-tex">f^r</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span></span></span></span></span></span></span></span></span></span></span>, there exists</p>
       <div class="lc-lift-action" role="img" aria-label="Pi maps X tilde to X, intertwining f tilde with the iterate f to the r.">
         <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>f</mi><mo stretchy="true">~</mo></mover><mo>↻</mo><mover accent="true"><mi>X</mi><mo stretchy="true">~</mo></mover><mover><mo stretchy="true" minsize="3.0em">→</mo><mpadded width="+0.6em" lspace="0.3em"><mrow><mtext> </mtext><mi>π</mi><mtext> </mtext></mrow></mpadded></mover><mi>X</mi><mo>↺</mo><msup><mi>f</mi><mi>r</mi></msup></mrow><annotation encoding="application/x-tex">\widetilde f\circlearrowright\widetilde X\xrightarrow{\ \pi\ }X\circlearrowleft f^r</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1489em;vertical-align:-0.1944em;"></span><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9544em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span><span class="svg-align" style="width:calc(100% - 0.3333em);margin-left:0.3333em;top:-3.6944em;"><span class="pstrut" style="height:3em;"></span><span style="height:0.26em;"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="0.26em" viewBox="0 0 600 260" preserveAspectRatio="none"><path d="M200 55.538c-77 0-168 73.953-177 73.953-3 0-7
 -2.175-9-5.437L2 97c-1-2-2-4-2-6 0-4 2-7 5-9l20-12C116 12 171 0 207 0c86 0
@@ -1978,19 +1959,15 @@ body.ready #thanks {
 -12.5-2.3-1.7-7.5-2.5-15.5-2.5-14 0-21 3.7-21 11 0 2 2 10.3 6 25 20.7 83.3 67
  151.7 139 205zm0 0v40h399900v-40z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.011em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7653em;vertical-align:-0.082em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel amsrm">↺</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span></span></span></span></span></span></span></span></span></span></span>
       </div>
-      <ul class="lc-lift-facts">
-        <li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>X</mi><mo stretchy="true">~</mo></mover></mrow><annotation encoding="application/x-tex">\widetilde X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9433em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9433em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span><span class="svg-align" style="width:calc(100% - 0.1667em);margin-left:0.1667em;top:-3.6833em;"><span class="pstrut" style="height:3em;"></span><span style="height:0.26em;"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="0.26em" viewBox="0 0 600 260" preserveAspectRatio="none"><path d="M200 55.538c-77 0-168 73.953-177 73.953-3 0-7
+      <p class="lc-where">where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>X</mi><mo stretchy="true">~</mo></mover></mrow><annotation encoding="application/x-tex">\widetilde X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9433em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9433em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span><span class="svg-align" style="width:calc(100% - 0.1667em);margin-left:0.1667em;top:-3.6833em;"><span class="pstrut" style="height:3em;"></span><span style="height:0.26em;"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="0.26em" viewBox="0 0 600 260" preserveAspectRatio="none"><path d="M200 55.538c-77 0-168 73.953-177 73.953-3 0-7
 -2.175-9-5.437L2 97c-1-2-2-4-2-6 0-4 2-7 5-9l20-12C116 12 171 0 207 0c86 0
  114 68 191 68 78 0 168-68 177-68 4 0 7 2 9 5l12 19c1 2.175 2 4.35 2 6.525 0
  4.35-2 7.613-5 9.788l-19 13.05c-92 63.077-116.937 75.308-183 76.128
--68.267.847-113-73.952-191-73.952z"/></svg></span></span></span></span></span></span></span></span></span> log canonical</li>
-        <li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi></mrow><annotation encoding="application/x-tex">\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">π</span></span></span></span> small projective birational</li>
-        <li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>f</mi><mo stretchy="true">~</mo></mover></mrow><annotation encoding="application/x-tex">\widetilde f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1489em;vertical-align:-0.1944em;"></span><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9544em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span><span class="svg-align" style="width:calc(100% - 0.3333em);margin-left:0.3333em;top:-3.6944em;"><span class="pstrut" style="height:3em;"></span><span style="height:0.26em;"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="0.26em" viewBox="0 0 600 260" preserveAspectRatio="none"><path d="M200 55.538c-77 0-168 73.953-177 73.953-3 0-7
+-68.267.847-113-73.952-191-73.952z"/></svg></span></span></span></span></span></span></span></span></span> is log canonical, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi></mrow><annotation encoding="application/x-tex">\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">π</span></span></span></span> is small projective birational, and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>f</mi><mo stretchy="true">~</mo></mover></mrow><annotation encoding="application/x-tex">\widetilde f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1489em;vertical-align:-0.1944em;"></span><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9544em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span><span class="svg-align" style="width:calc(100% - 0.3333em);margin-left:0.3333em;top:-3.6944em;"><span class="pstrut" style="height:3em;"></span><span style="height:0.26em;"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="0.26em" viewBox="0 0 600 260" preserveAspectRatio="none"><path d="M200 55.538c-77 0-168 73.953-177 73.953-3 0-7
 -2.175-9-5.437L2 97c-1-2-2-4-2-6 0-4 2-7 5-9l20-12C116 12 171 0 207 0c86 0
  114 68 191 68 78 0 168-68 177-68 4 0 7 2 9 5l12 19c1 2.175 2 4.35 2 6.525 0
  4.35-2 7.613-5 9.788l-19 13.05c-92 63.077-116.937 75.308-183 76.128
--68.267.847-113-73.952-191-73.952z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span></span></span></span> finite and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>q</mi><mi>r</mi></msup></mrow><annotation encoding="application/x-tex">q^r</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8588em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span></span></span></span></span></span></span></span></span></span></span>-polarized</li>
-      </ul>
+-68.267.847-113-73.952-191-73.952z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span></span></span></span> is finite and polarized.</p>
     </div>
   </article>
   <article class="reveal-panel singularities-feature lc-definition" data-reveal="2" hidden>
@@ -2415,6 +2392,7 @@ const earlierHashes = {
 const revealStarts = new Map([["flip",2],["fano",5],["emmp-theorem",7]]);
 let slideIndex = -1;
 let swipe = null;
+let autoOpenTimer = 0;
 
 function setLectureStep(record, step, animateCard = true) {
   const card = record.scene.querySelector(".main-theorem-card");
@@ -2445,10 +2423,17 @@ function skipOrbit(record) {
 
 function showSlide(index, {last = false, startAt = 0, setHash = true, focus = true} = {}) {
   if (index < 0 || index >= slideRecords.length || index === slideIndex) return;
+  clearTimeout(autoOpenTimer);
   for (const [i, record] of slideRecords.entries()) record.scene.hidden = i !== index;
   slideIndex = index;
   const record = slideRecords[index];
   setLectureStep(record, last ? record.maxStep : startAt, false);
+  if (record.scene.hasAttribute("data-auto-open") && record.step === 0) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) setLectureStep(record,1,false);
+    else autoOpenTimer = setTimeout(() => {
+      if (record === slideRecords[slideIndex] && record.step === 0) setLectureStep(record,1);
+    },160);
+  }
   if (last && record.scene.hasAttribute("data-orbit-animation")) {
     queueMicrotask(() => {
       if (!record.scene.hidden) skipOrbit(record);
