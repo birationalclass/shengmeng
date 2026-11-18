@@ -1251,6 +1251,41 @@ body.ready .scene:not(.cover) {
 @media (max-width: 700px) {
   #orbits #orbit-finite-canvas { height: clamp(275px,46svh,430px); }
 }
+.caution-label {
+  display: inline-flex;
+  align-items: center;
+  gap: .42em;
+  font-weight: 600;
+}
+.singularities-warning .caution-label {
+  margin-inline-end: .7em;
+  font: 650 .65em/1.4 var(--sans);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  vertical-align: .16em;
+}
+.formalization-card .caution-label { color: #8c5434; }
+.caution-icon {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.38em;
+  block-size: 1.24em;
+  flex: none;
+  line-height: 1;
+}
+.caution-icon::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: currentColor;
+  clip-path: polygon(evenodd,50% 1%,100% 97%,0 97%,50% 1%,50% 22%,15% 87%,85% 87%,50% 22%);
+}
+.caution-icon::after {
+  content: "!";
+  font: 700 .78em/1 var(--sans);
+  transform: translateY(.18em);
+}
 
 :root {
   --handbook-ivory: #f6f0e5;
@@ -1566,7 +1601,7 @@ body.ready .scene :is(.numbered-title,#orbit-title,#space-orbits-title) {
   <header class="scene-head">
     <h2 id="singularities-lc-title" class="numbered-title"><span class="slide-section">§2 Singularities</span> Equivariant small lc models</h2>
   </header>
-  <p class="singularities-warning">A smooth equivariant model can fail to exist, even for a surface.</p>
+  <p class="singularities-warning"><span class="caution-label"><span class="caution-icon" aria-hidden="true"></span>Caution</span><span>A smooth equivariant model can fail to exist, even for a surface.</span></p>
   <div class="split singularities-split">
     <figure class="visual singularities-figure" aria-label="A real torus slice illustrating the growing preimages of the sixteen nodes on the Kummer quotient">
       <canvas id="singularities-torus-plot" aria-hidden="true"></canvas>
@@ -1834,7 +1869,7 @@ c-10 4-16 7.7-18 11 0 8.7 6 14.3 18 17 47.3 18.7 87.8 47 121.5 85S196 441.3 208
         </ol>
         <div class="emmp-caution formalization-card" data-reveal="2" hidden>
           <div class="emmp-caution-head">
-            <header class="theorem-target-heading"><span class="theorem-target-label">Counterexample</span><h3><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>T</mi></msub><mo>∼</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">K_T\sim 0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> with strictly lc singularities</h3></header>
+            <header class="theorem-target-heading"><span class="theorem-target-label caution-label"><span class="caution-icon" aria-hidden="true"></span>Caution</span><h3><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>T</mi></msub><mo>∼</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">K_T\sim 0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> with strictly lc singularities</h3></header>
             <p class="emmp-source"><em>Augmented EMMP</em> (2026) · <a href="https://arxiv.org/abs/1710.01903">P. Cascini–M–D.-Q. Zhang (2020)</a></p>
             <p>Join two plane elliptic cubics in complementary planes of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="double-struck">P</mi><mn>5</mn></msup></mrow><annotation encoding="application/x-tex">\mathbb P^5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathbb">P</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">5</span></span></span></span></span></span></span></span></span></span></span>.</p>
           </div>
