@@ -995,9 +995,6 @@ body.ready .scene:not(.cover) {
 .lc-lift {
   animation: lecture-reveal .48s cubic-bezier(.22,.74,.26,1) .1s both;
 }
-.lc-lift .lc-iterate {
-  margin: .4em 0 0;
-}
 .lc-lift-action {
   margin-block: .7em;
   text-align: center;
@@ -1065,6 +1062,7 @@ body.ready .scene:not(.cover) {
   .scene .lc-pullback-card { font-size: clamp(15px,4.1vw,19px); }
   .lc-valuative-grid .mathline { font-size: clamp(15px,4.1vw,19px); }
 }
+.smooth-model-answer { color: #a1272d; white-space: nowrap; }
 
 .emmp-scene {
   --emmp-ink: var(--ink);
@@ -1575,6 +1573,22 @@ body.ready .scene :is(.numbered-title,#orbit-title,#plane-orbit-closures-title,#
   letter-spacing: .045em;
 }
 .scene { position: relative; }
+#presentation-clock {
+  position: fixed;
+  inset-inline-start: max(clamp(14px,2vw,35px), env(safe-area-inset-left));
+  inset-block-end: max(clamp(9px,1.6svh,18px), env(safe-area-inset-bottom));
+  z-index: 5;
+  padding: .15em .3em;
+  border-radius: .25em;
+  background: var(--paper);
+  color: var(--muted);
+  font: 600 clamp(15px,1.4vw,21px)/1.2 var(--sans);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+@media print {
+  #presentation-clock { display: none; }
+}
 .slide-folio {
   position: absolute;
   inset-inline-end: clamp(14px,2vw,35px);
@@ -2007,6 +2021,7 @@ body.ready #space-orbits {
 </style>
 </head>
 <body>
+  <time id="presentation-clock" title="Local time" hidden></time>
   <button id="fullscreen" type="button" aria-label="Enter full screen" title="Full screen (F)">⛶</button>
   <main id="stage" tabindex="-1">
 <section class="scene cover" id="cover" data-chapter="1" data-time="00:00" data-title="Birational Geometry for Complex Dynamics" aria-labelledby="title-cover">
@@ -2274,7 +2289,7 @@ body.ready #space-orbits {
 
 <section class="scene compact-scene singularities-scene" id="smooth-model-obstruction" data-chapter="2" data-time="04:00" data-title="Can we lift to a smooth model? NO!" aria-labelledby="smooth-model-title" hidden>
   <header class="scene-head">
-    <h2 id="smooth-model-title" class="numbered-title"><span class="slide-section">§2 Singularities</span> Can we lift to a smooth model? NO!</h2>
+    <h2 id="smooth-model-title" class="numbered-title"><span class="slide-section">§2 Singularities</span> Can we lift to a smooth model? <span class="smooth-model-answer">NO!</span></h2>
   </header>
   <article class="reveal-panel singularities-feature">
     <header class="theorem-target-heading statement-heading">
@@ -2299,10 +2314,9 @@ body.ready #space-orbits {
       <h3 title="Working draft"><strong>Theorem.</strong> (Equivariant Log Canonical Small Model, J. Chen–M, In Progress)</h3>
     </header>
     <div class="lc-input">
-      <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∀</mi></mrow><annotation encoding="application/x-tex">\forall</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord">∀</span></span></span></span> normal projective <span class="lc-self-map"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>↺</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">X\circlearrowleft f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7653em;vertical-align:-0.082em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel amsrm">↺</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span></span> with <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span> polarized,</p>
+      <p>For every normal projective variety <span class="lc-self-map"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>↺</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">X\circlearrowleft f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7653em;vertical-align:-0.082em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel amsrm">↺</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span></span> with <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span> polarized,<span data-reveal="1" hidden> there exists</span></p>
     </div>
     <div class="lc-lift" data-reveal="1" hidden>
-      <p class="lc-iterate">there exists</p>
       <div class="lc-lift-action" role="img" aria-label="Pi maps X tilde to X, intertwining f tilde with the iterate f to the r.">
         <span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>f</mi><mo stretchy="true">~</mo></mover><mo>↻</mo><mover accent="true"><mi>X</mi><mo stretchy="true">~</mo></mover><mover><mo stretchy="true" minsize="3.0em">→</mo><mpadded width="+0.6em" lspace="0.3em"><mrow><mtext> </mtext><mi>π</mi><mtext> </mtext></mrow></mpadded></mover><mi>X</mi><mo>↺</mo><msup><mi>f</mi><mi>r</mi></msup><mo separator="true">,</mo></mrow><annotation encoding="application/x-tex">\widetilde f\circlearrowright\widetilde X\xrightarrow{\ \pi\ }X\circlearrowleft f^r,</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1489em;vertical-align:-0.1944em;"></span><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9544em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span><span class="svg-align" style="width:calc(100% - 0.3333em);margin-left:0.3333em;top:-3.6944em;"><span class="pstrut" style="height:3em;"></span><span style="height:0.26em;"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="0.26em" viewBox="0 0 600 260" preserveAspectRatio="none"><path d="M200 55.538c-77 0-168 73.953-177 73.953-3 0-7
 -2.175-9-5.437L2 97c-1-2-2-4-2-6 0-4 2-7 5-9l20-12C116 12 171 0 207 0c86 0
@@ -2318,7 +2332,7 @@ body.ready #space-orbits {
  39-84.5 73-119.5s73.7-60.2 119-75.5c6-2 9-5.7 9-11s-3-9-9-11c-45.3-15.3-85
 -40.5-119-75.5s-58.3-74.8-73-119.5c-4.7-14-8.3-27.3-11-40-1.3-6.7-3.2-10.8-5.5
 -12.5-2.3-1.7-7.5-2.5-15.5-2.5-14 0-21 3.7-21 11 0 2 2 10.3 6 25 20.7 83.3 67
- 151.7 139 205zm0 0v40h399900v-40z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.011em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7653em;vertical-align:-0.082em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel amsrm">↺</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span></span></span></span></span></span></span></span><span class="mpunct">,</span></span></span></span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>≥</mo><mn>1.</mn></mrow><annotation encoding="application/x-tex">r\ge1.</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7719em;vertical-align:-0.136em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.</span></span></span></span></span>
+ 151.7 139 205zm0 0v40h399900v-40z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.011em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7653em;vertical-align:-0.082em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel amsrm">↺</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span></span></span></span></span></span></span></span><span class="mpunct">,</span></span></span></span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>≥</mo><mn>1</mn><mo separator="true">,</mo></mrow><annotation encoding="application/x-tex">r\ge1,</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7719em;vertical-align:-0.136em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">1</span><span class="mpunct">,</span></span></span></span></span>
       </div>
       <p class="lc-where">where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>X</mi><mo stretchy="true">~</mo></mover></mrow><annotation encoding="application/x-tex">\widetilde X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9433em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9433em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span><span class="svg-align" style="width:calc(100% - 0.1667em);margin-left:0.1667em;top:-3.6833em;"><span class="pstrut" style="height:3em;"></span><span style="height:0.26em;"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="0.26em" viewBox="0 0 600 260" preserveAspectRatio="none"><path d="M200 55.538c-77 0-168 73.953-177 73.953-3 0-7
 -2.175-9-5.437L2 97c-1-2-2-4-2-6 0-4 2-7 5-9l20-12C116 12 171 0 207 0c86 0
@@ -2328,7 +2342,7 @@ body.ready #space-orbits {
 -2.175-9-5.437L2 97c-1-2-2-4-2-6 0-4 2-7 5-9l20-12C116 12 171 0 207 0c86 0
  114 68 191 68 78 0 168-68 177-68 4 0 7 2 9 5l12 19c1 2.175 2 4.35 2 6.525 0
  4.35-2 7.613-5 9.788l-19 13.05c-92 63.077-116.937 75.308-183 76.128
--68.267.847-113-73.952-191-73.952z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span></span></span></span> is finite and polarized.</p>
+-68.267.847-113-73.952-191-73.952z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span></span></span></span> is polarized.</p>
     </div>
   </article>
 <span class="slide-folio" aria-hidden="true">8</span>
@@ -2841,6 +2855,24 @@ const serifFont = textStyles.getPropertyValue("--serif").trim();
 const stage = document.getElementById("stage");
 const fullscreen = document.getElementById("fullscreen");
 const announcement = document.getElementById("announcement");
+const presentationClock = document.getElementById("presentation-clock");
+const localTime = new Intl.DateTimeFormat("en-GB", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23"
+});
+
+function updatePresentationClock() {
+  const value = localTime.format(new Date());
+  if (presentationClock.dateTime === value) return;
+  presentationClock.dateTime = value;
+  presentationClock.textContent = value;
+}
+
+updatePresentationClock();
+presentationClock.hidden = false;
+setInterval(updatePresentationClock, 1000);
+
 const slideRecords = [...stage.querySelectorAll(":scope > .scene")].map(scene => {
   const panels = [...scene.querySelectorAll("[data-reveal]")];
   return {
