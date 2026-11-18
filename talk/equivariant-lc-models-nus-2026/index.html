@@ -722,7 +722,7 @@ body.ready .scene:not(.cover) {
   font-size: clamp(15px,1.25vw,20px);
 }
 #orbits .orbit-copy,#space-orbits .space-orbits-copy { transition: opacity .5s; }
-#orbits[data-step="1"] .orbit-copy,#space-orbits[data-step="2"] .space-orbits-copy { opacity: .19; }
+#orbits[data-step="6"] .orbit-copy,#space-orbits[data-step="2"] .space-orbits-copy { opacity: .19; }
 #space-orbits[data-step="1"] .space-orbits-result:not([data-result="surface"]),
 #space-orbits[data-step="2"] .space-orbits-result:not([data-result="surface"]) { opacity: .17; }
 .space-orbits-result { transition: opacity .75s ease; }
@@ -1194,6 +1194,160 @@ body.ready .scene:not(.cover) {
   #literature .history-results,
   #weil-pullback .columns { grid-template-columns: minmax(0,1fr); }
 }
+.orbit-endomorphism {
+  position: relative;
+  padding: .9em 0 .8em;
+  border-block: 1px solid #93aecb48;
+}
+.orbit-endomorphism::before {
+  position: absolute;
+  content: "";
+  inset: -3px auto auto 0;
+  width: 5px;
+  height: 5px;
+  background: var(--mint);
+  transform: rotate(45deg);
+}
+.orbit-map-lead {
+  margin: 0 0 .55em;
+  color: var(--mint);
+  font: 600 clamp(12px,1.16vw,17px)/1.35 var(--sans);
+}
+.orbit-endomorphism .orbit-map { margin: 0; font-size: clamp(17px,2.08vw,32px); }
+.orbit-endomorphism .orbit-map p { margin: 0; }
+.scene #orbit-title { padding-inline-end: 22px; }
+.scene .orbit-definition {
+  margin-top: clamp(14px,2.3svh,26px);
+  padding: clamp(13px,1.58vw,25px);
+  font-size: clamp(15px,1.26vw,20px);
+  min-width: 0;
+}
+.orbit-definition h3 { font-size: clamp(22px,2.02vw,33px); }
+.orbit-definition .orbit-example-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3em 1em;
+  font: 600 .83em/1.5 var(--formal-ui);
+}
+.orbit-example-legend > span::before {
+  content: "";
+  display: inline-block;
+  width: .46em;
+  height: .46em;
+  margin-inline-end: .46em;
+  border-radius: 50%;
+  vertical-align: .13em;
+  background: currentColor;
+}
+.orbit-cycle-two { color: #6f4e9b; }
+.orbit-cycle-three { color: #2864a0; }
+.orbit-tail { color: #8e5c11; }
+#orbit-finite-chart { margin-inline-start: auto; white-space: nowrap; }
+@media (max-width: 760px) {
+  .orbit-endomorphism { padding: .55em 0; }
+  .scene .orbit-definition { margin-top: 9px; }
+  #orbit-finite-chart { white-space: normal; text-align: right; }
+}
+@media (max-width: 700px) {
+  #orbits #orbit-finite-canvas { height: clamp(275px,46svh,430px); }
+}
+
+:root {
+  --handbook-ivory: #f6f0e5;
+  --handbook-gold: #c7ab75;
+  --handbook-rule: #d7c9ae58;
+}
+body.ready .scene :is(.numbered-title,#orbit-title,#space-orbits-title) {
+  color: var(--handbook-ivory);
+  font-family: var(--serif);
+  font-size: clamp(32px,4.17vw,67px);
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+.scene .numbered-title .slide-section {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 0 .57em;
+  color: var(--handbook-gold);
+  font: 600 clamp(11px,.97vw,16px)/1.4 var(--sans);
+  letter-spacing: .155em;
+  white-space: normal;
+  text-transform: uppercase;
+}
+#cover {
+  --cover-title: var(--handbook-ivory);
+  --cover-body: #c9c2b4;
+  --cover-accent: var(--handbook-gold);
+  --cover-rule: var(--handbook-rule);
+}
+#cover #title-cover em { color: inherit; font-style: normal; }
+#cover .cover-summary { margin-top: clamp(10px,1.65svh,23px); }
+#cover .cover-kicker { font-weight: 600; }
+.handbook-ornament {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: max-content;
+  margin: clamp(15px,2.7svh,28px) 0 0;
+  color: var(--handbook-gold);
+}
+.handbook-ornament::before,
+.handbook-ornament::after {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 1px;
+  background: var(--handbook-rule);
+}
+.handbook-flower {
+  position: relative;
+  display: block;
+  width: 19px;
+  height: 19px;
+}
+.handbook-flower::before,
+.handbook-flower::after {
+  position: absolute;
+  top: 8px;
+  content: "";
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.handbook-flower::before { left: -7px; }
+.handbook-flower::after { right: -7px; }
+.handbook-flower i {
+  position: absolute;
+  inset: 0 auto auto 7.5px;
+  width: 4px;
+  height: 19px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+.handbook-flower i:nth-child(2) { transform: rotate(45deg); }
+.handbook-flower i:nth-child(3) { transform: rotate(90deg); }
+.handbook-flower i:nth-child(4) { transform: rotate(135deg); }
+.orbit-endomorphism { border-color: var(--handbook-rule); }
+.orbit-endomorphism::before { background: var(--handbook-gold); }
+.orbit-map-lead {
+  color: var(--handbook-gold);
+  font-weight: 600;
+  letter-spacing: .045em;
+}
+#literature .history-results > div { border-color: var(--handbook-rule); }
+@media (max-width:700px) {
+  body.ready .scene :is(.numbered-title,#orbit-title,#space-orbits-title) {
+    font-size: clamp(31px,7.55vw,48px);
+  }
+}
+@media print {
+  :root { --handbook-ivory:#132b45; --handbook-gold:#836637; --handbook-rule:#d7c9ae; }
+  #cover { --cover-body:#536978; }
+}
 </style>
 </head>
 <body>
@@ -1203,6 +1357,7 @@ body.ready .scene:not(.cover) {
   <div class="cover-editorial">
     <p class="cover-kicker">National University of Singapore</p>
     <h1 id="title-cover"><span>Birational Geometry</span> <span>for <em>Complex Dynamics</em></span></h1>
+    <div class="handbook-ornament" aria-hidden="true"><span class="handbook-flower"><i></i><i></i><i></i><i></i></span></div>
     <p class="cover-summary">From projective orbit closures to equivariant log canonical models</p>
     <div class="cover-meta">
       <p><strong>Sheng Meng</strong><span>East China Normal University</span></p>
@@ -1211,19 +1366,53 @@ body.ready .scene:not(.cover) {
   </div>
 </section>
 
-<section class="scene opening-demo compact-scene" data-orbit-animation id="orbits" data-chapter="1" data-time="01:20" data-title="Power Map" data-phase="seed" data-example="1" aria-labelledby="orbit-title" hidden>
-  <h2 id="orbit-title" class="numbered-title"><span class="slide-section">§1 Background - </span>Power Map</h2>
+<section class="scene opening-demo compact-scene" data-orbit-animation="5" id="orbits" data-chapter="1" data-time="01:20" data-title="Power Map" data-phase="seed" data-example="1" aria-labelledby="orbit-title" hidden>
+  <h2 id="orbit-title" class="numbered-title"><span class="slide-section">§1 Background</span> Power Map</h2>
   <div class="orbit-copy">
-    <p class="orbit-map"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mo stretchy="false">[</mo><mi>x</mi><mo>:</mo><mi>y</mi><mo>:</mo><mi>z</mi><mo stretchy="false">]</mo><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">[</mo><msup><mi>x</mi><mn>2</mn></msup><mo>:</mo><msup><mi>y</mi><mn>2</mn></msup><mo>:</mo><msup><mi>z</mi><mn>2</mn></msup><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">f([x:y:z])=[x^2:y^2:z^2]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">([</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">])</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></p>
-    <div class="orbit-polarization">
-      <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>f</mi><mo>∗</mo></msup><msub><mi mathvariant="script">O</mi><msup><mi mathvariant="double-struck">P</mi><mn>2</mn></msup></msub><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo><mo>≃</mo><msub><mi mathvariant="script">O</mi><msup><mi mathvariant="double-struck">P</mi><mn>2</mn></msup></msub><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f^*\mathcal O_{\mathbb P^2}(1)\simeq\mathcal O_{\mathbb P^2}(2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6887em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathcal" style="margin-right:0.02778em;">O</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.5224em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathbb mtight">P</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1776em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≃</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.02778em;">O</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.5224em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathbb mtight">P</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1776em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span></span></span></span></p>
-      <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><msub><mi>P</mi><mi>n</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">P_{n+1}=f(P_n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8917em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></p>
+    <div class="orbit-endomorphism">
+      <p class="orbit-map-lead">Non-isomorphic surjective endomorphism</p>
+      <div class="orbit-map">
+        <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mspace></mspace><mspace width="0.1111em"/><mo lspace="0em" rspace="0.17em"></mo><mtext> ⁣</mtext><mo lspace="0em" rspace="0em">:</mo><mspace width="0.3333em"/><msup><mi mathvariant="double-struck">P</mi><mn>2</mn></msup><mo>⟶</mo><msup><mi mathvariant="double-struck">P</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">f\colon\mathbb P^2\longrightarrow\mathbb P^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mspace nobreak"></span><span class="mspace" style="margin-right:0.1111em;"></span><span class="mpunct"></span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mrel">:</span></span><span class="mspace" style="margin-right:0.3333em;"></span><span class="mord"><span class="mord mathbb">P</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">⟶</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathbb">P</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></p>
+        <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>x</mi><mo>:</mo><mi>y</mi><mo>:</mo><mi>z</mi><mo stretchy="false">]</mo><mo>⟼</mo><mo stretchy="false">[</mo><msup><mi>x</mi><mn>2</mn></msup><mo>:</mo><msup><mi>y</mi><mn>2</mn></msup><mo>:</mo><msup><mi>z</mi><mn>2</mn></msup><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[x:y:z]\longmapsto[x^2:y^2:z^2]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">⟼</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></p>
+      </div>
     </div>
-    <div class="orbit-result">
+    <article class="reveal-panel orbit-definition" data-reveal="0" data-until="1">
+      <h3>Fixed points</h3>
+      <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Fix</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">{</mo><mi>x</mi><mo>∣</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\operatorname{Fix}(f)=\{x\mid f(x)=x\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord mathrm">Fix</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">x</span><span class="mclose">}</span></span></span></span></p>
+    </article>
+    <article class="reveal-panel orbit-definition" data-reveal="1" data-until="2" hidden>
+      <h3>Periodic points</h3>
+      <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Per</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">{</mo><mi>x</mi><mo>∣</mo><mi mathvariant="normal">∃</mi><mi>n</mi><mo>≥</mo><mn>1</mn><mo separator="true">,</mo><mtext> </mtext><msup><mi>f</mi><mi>n</mi></msup><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\operatorname{Per}(f)=\{x\mid \exists n\ge1,\ f^n(x)=x\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord mathrm">Per</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8304em;vertical-align:-0.136em;"></span><span class="mord">∃</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">x</span><span class="mclose">}</span></span></span></span></p>
+      <p class="orbit-example-legend"><span class="orbit-cycle-two">Period 2 · <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ζ</mi><mn>3</mn></msub></mrow><annotation encoding="application/x-tex">\zeta_3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07378em;">ζ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0738em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span><span class="orbit-cycle-three">Period 3 · <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ζ</mi><mn>7</mn></msub></mrow><annotation encoding="application/x-tex">\zeta_7</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07378em;">ζ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0738em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span></p>
+    </article>
+    <article class="reveal-panel orbit-definition" data-reveal="2" data-until="3" hidden>
+      <h3>Preperiodic points</h3>
+      <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Prep</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mo>⋃</mo><mrow><mi>m</mi><mo>≥</mo><mn>0</mn></mrow></msub><msup><mi>f</mi><mrow><mo>−</mo><mi>m</mi></mrow></msup><mo stretchy="false">(</mo><mi mathvariant="normal">Per</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{Prep}(f)=\bigcup_{m\ge0} f^{-m}(\operatorname{Per}(f))</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord mathrm">Prep</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1662em;vertical-align:-0.3949em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">⋃</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">m</span><span class="mrel mtight">≥</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3949em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7713em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathnormal mtight">m</span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mop"><span class="mord mathrm">Per</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mclose">))</span></span></span></span></p>
+      <p class="orbit-example-legend"><span class="orbit-tail"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ζ</mi><mn>12</mn></msub><mo>↦</mo><msub><mi>ζ</mi><mn>6</mn></msub><mo>↦</mo><msub><mi>ζ</mi><mn>3</mn></msub></mrow><annotation encoding="application/x-tex">\zeta_{12}\mapsto\zeta_6\mapsto\zeta_3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07378em;">ζ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0738em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">12</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">↦</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07378em;">ζ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0738em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">6</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">↦</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07378em;">ζ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0738em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span></p>
+    </article>
+    <article class="reveal-panel orbit-definition" data-reveal="3" data-until="4" hidden>
+      <h3>Finite orbits</h3>
+      <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">O</mi><mi>f</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>:</mo><mo>=</mo><mo stretchy="false">{</mo><msup><mi>f</mi><mi>n</mi></msup><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>∣</mo><mi>n</mi><mo>≥</mo><mn>0</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\mathcal O_f(x):=\{f^n(x)\mid n\ge0\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.02778em;">O</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7719em;vertical-align:-0.136em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">0</span><span class="mclose">}</span></span></span></span></p>
+      <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Fix</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">)</mo><mo>⊆</mo><mi mathvariant="normal">Per</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">)</mo><mo>⊆</mo><mi mathvariant="normal">Prep</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{Fix}(f)\subseteq\operatorname{Per}(f)\subseteq\operatorname{Prep}(f)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord mathrm">Fix</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">⊆</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord mathrm">Per</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">⊆</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord mathrm">Prep</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mclose">)</span></span></span></span></p>
+      <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>∈</mo><mi mathvariant="normal">Prep</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">)</mo><mtext>  </mtext><mo>⟺</mo><mtext>  </mtext><mi mathvariant="normal">#</mi><msub><mi mathvariant="script">O</mi><mi>f</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>&lt;</mo><mi mathvariant="normal">∞</mi></mrow><annotation encoding="application/x-tex">x\in\operatorname{Prep}(f)\iff \#\mathcal O_f(x)&lt;\infty</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord mathrm">Prep</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">⟺</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord">#</span><span class="mord"><span class="mord mathcal" style="margin-right:0.02778em;">O</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord">∞</span></span></span></span></p>
+    </article>
+    <article class="reveal-panel orbit-definition" data-reveal="4" data-until="5" hidden>
+      <h3>A one-dimensional orbit closure</h3>
+      <p>Start at <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>t</mi></msub><mo>=</mo><mo stretchy="false">[</mo><msup><mi>t</mi><mn>2</mn></msup><mo>:</mo><msup><mi>t</mi><mn>3</mn></msup><mo>:</mo><mn>1</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">x_t=[t^2:t^3:1]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span> with <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>t</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0&lt;t&lt;1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6835em;vertical-align:-0.0391em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6542em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>. Its orbit has infinitely many distinct points on the irreducible cubic <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>=</mo><mo stretchy="false">{</mo><msup><mi>x</mi><mn>3</mn></msup><mo>=</mo><msup><mi>y</mi><mn>2</mn></msup><mi>z</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">C=\{x^3=y^2z\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">}</span></span></span></span>.</p>
+      <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mover accent="true"><mrow><msub><mi mathvariant="script">O</mi><mi>f</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mi>t</mi></msub><mo stretchy="false">)</mo></mrow><mo stretchy="true">‾</mo></mover><mrow><mtext> </mtext><mrow><mi mathvariant="normal">Z</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi></mrow></mrow></msup><mo>=</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">\overline{\mathcal O_f(x_t)}^{\,\mathrm{Zar}}=C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.4673em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord overline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.95em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathcal" style="margin-right:0.02778em;">O</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-3.87em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.1812em;"><span style="top:-3.4029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mspace mtight" style="margin-right:0.1952em;"></span><span class="mord mtight"><span class="mord mathrm mtight">Zar</span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span></p>
+    </article>
+    <div class="orbit-result" data-reveal="5" hidden>
       <span id="orbit-equation" hidden></span>
     </div>
   </div>
-  <figure class="orbit-plot">
+  <figure class="orbit-plot" data-reveal="0" data-until="5">
+    <canvas id="orbit-finite-canvas" role="img" aria-label="Fixed, periodic, preperiodic and infinite orbits of the power map"></canvas>
+    <figcaption class="orbit-caption">
+      <span id="orbit-finite-stage">Fixed points in the real chart</span>
+      <span id="orbit-finite-chart">Real slice · <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">z=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span>
+    </figcaption>
+  </figure>
+  <figure class="orbit-plot" data-reveal="5" hidden>
     <canvas id="orbit-canvas" role="img" aria-label="A forward orbit in the real affine chart z = 1."></canvas>
     <figcaption class="orbit-caption">
       <span id="orbit-stage-label">Initial point</span>
@@ -1232,7 +1421,7 @@ body.ready .scene:not(.cover) {
     </figcaption>
   </figure>
 
-  <div class="reveal-panel lecture-popup" data-reveal="1" hidden>
+  <div class="reveal-panel lecture-popup" data-reveal="6" hidden>
     <header class="theorem-target-heading">
       <h3>Existence of irreducible orbit closures</h3>
       <a class="formal-card-source" href="https://arxiv.org/pdf/1905.07021#page=21" target="_blank" rel="noopener">J. Xie (2025)</a>
@@ -1245,7 +1434,7 @@ body.ready .scene:not(.cover) {
 </section>
 
 <section class="scene opening-demo compact-scene" data-orbit-animation data-auto-reveal id="space-orbits" data-chapter="1" data-time="04:10" data-title="Orbit Closures in P³" data-phase="seed" data-iterate="0" data-example="1" aria-labelledby="space-orbits-title" hidden>
-  <header class="space-orbits-heading"><h2 id="space-orbits-title" class="numbered-title"><span class="slide-section">§1 Background - </span>Orbit Closures in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="double-struck">P</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\mathbb P^3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathbb">P</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span></h2></header>
+  <header class="space-orbits-heading"><h2 id="space-orbits-title" class="numbered-title"><span class="slide-section">§1 Background</span> Orbit Closures in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="double-struck">P</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\mathbb P^3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathbb">P</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span></h2></header>
   <div class="space-orbits-copy">
     <p class="space-orbits-map"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mo stretchy="false">[</mo><mi>x</mi><mo>:</mo><mi>y</mi><mo>:</mo><mi>z</mi><mo>:</mo><mi>w</mi><mo stretchy="false">]</mo><mo stretchy="false">)</mo><mo>=</mo></mrow><annotation encoding="application/x-tex">f([x:y:z:w])=</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">([</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mclose">])</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span></span></span></span><br><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><msup><mi>x</mi><mn>2</mn></msup><mo>:</mo><msup><mi>y</mi><mn>2</mn></msup><mo>:</mo><msup><mi>z</mi><mn>2</mn></msup><mo>+</mo><mn>2</mn><mi>z</mi><mi>w</mi><mo>:</mo><msup><mi>w</mi><mn>2</mn></msup><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[x^2:y^2:z^2+2zw:w^2]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8974em;vertical-align:-0.0833em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></p>
     <ul class="space-orbits-results" aria-label="Zariski closures">
@@ -1310,7 +1499,7 @@ body.ready .scene:not(.cover) {
 </section>
 
 <section class="scene compact-scene" id="embedding" data-chapter="1" data-title="Equivariant Embeddings" aria-labelledby="embedding-title" hidden>
-  <h2 id="embedding-title" class="numbered-title"><span class="slide-section">§1 Background - </span>Equivariant Embeddings</h2>
+  <h2 id="embedding-title" class="numbered-title"><span class="slide-section">§1 Background</span> Equivariant Embeddings</h2>
   <div class="embedding-stage">
     <div class="embedding-square" aria-label="Equivariant embedding into projective space">
       <div class="embedding-corner"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span></span></span></div>
@@ -1343,7 +1532,7 @@ body.ready .scene:not(.cover) {
 
 <section class="scene compact-scene singularities-scene" id="singularities-normalization" data-chapter="2" data-time="09:00" data-title="Equivariant normalization" aria-labelledby="singularities-normalization-title" hidden>
   <header class="scene-head">
-    <h2 id="singularities-normalization-title" class="numbered-title"><span class="slide-section">§2 Singularities - </span>Can we lift to a smooth model?</h2>
+    <h2 id="singularities-normalization-title" class="numbered-title"><span class="slide-section">§2 Singularities</span> Can we lift to a smooth model?</h2>
   </header>
   <div class="split singularities-split">
     <figure class="visual singularities-figure" aria-label="A cusp in the affine plane and its smooth strict transform in a chart of the blowup">
@@ -1375,7 +1564,7 @@ body.ready .scene:not(.cover) {
 
 <section class="scene compact-scene singularities-scene" id="singularities-lc-model" data-chapter="2" data-time="13:00" data-title="Equivariant small lc models" aria-labelledby="singularities-lc-title" hidden>
   <header class="scene-head">
-    <h2 id="singularities-lc-title" class="numbered-title"><span class="slide-section">§2 Singularities - </span>Equivariant small lc models</h2>
+    <h2 id="singularities-lc-title" class="numbered-title"><span class="slide-section">§2 Singularities</span> Equivariant small lc models</h2>
   </header>
   <p class="singularities-warning">A smooth equivariant model can fail to exist, even for a surface.</p>
   <div class="split singularities-split">
@@ -1425,7 +1614,7 @@ body.ready .scene:not(.cover) {
 
 <section class="scene compact-scene" id="literature" data-chapter="2" data-time="18:00" data-title="From surfaces to Weil canonical divisors" aria-labelledby="title-literature" hidden>
   <header class="scene-head">
-    <h2 id="title-literature" class="numbered-title"><span class="slide-section">§2 Singularities - </span>From surfaces to Weil canonical divisors</h2>
+    <h2 id="title-literature" class="numbered-title"><span class="slide-section">§2 Singularities</span> From surfaces to Weil canonical divisors</h2>
   </header>
   <div class="reason-grid history-results">
     <div>
@@ -1460,7 +1649,7 @@ body.ready .scene:not(.cover) {
 
 <section class="scene compact-scene" id="weil-pullback" data-chapter="2" data-time="21:00" data-title="Pulling back a Weil divisor" aria-labelledby="title-weil-pullback" hidden>
   <header class="scene-head">
-    <h2 id="title-weil-pullback" class="numbered-title"><span class="slide-section">§2 Singularities - </span>Pulling back a Weil divisor</h2>
+    <h2 id="title-weil-pullback" class="numbered-title"><span class="slide-section">§2 Singularities</span> Pulling back a Weil divisor</h2>
   </header>
   <p class="lead">Let <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span></span></span></span> be a Weil divisor on <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span></span></span> and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mspace></mspace><mspace width="0.1111em"/><mo lspace="0em" rspace="0.17em"></mo><mtext> ⁣</mtext><mo lspace="0em" rspace="0em">:</mo><mspace width="0.3333em"/><mi>Y</mi><mo>→</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">p\colon Y\to X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span><span class="mspace nobreak"></span><span class="mspace" style="margin-right:0.1111em;"></span><span class="mpunct"></span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mrel">:</span></span><span class="mspace" style="margin-right:0.3333em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span></span></span> a birational model.</p>
   <div class="columns example-math" data-reveal="1" data-until="3" hidden>
@@ -1496,7 +1685,7 @@ body.ready .scene:not(.cover) {
 
 <section class="scene compact-scene" id="proof" data-chapter="2" data-time="24:00" data-title="Proof of the equivariant lc model" aria-labelledby="title-proof" hidden>
   <header class="scene-head">
-    <h2 id="title-proof" class="numbered-title"><span class="slide-section">§2 Singularities - </span>Proof of the equivariant lc model</h2>
+    <h2 id="title-proof" class="numbered-title"><span class="slide-section">§2 Singularities</span> Proof of the equivariant lc model</h2>
   </header>
   <div class="proof-path" aria-label="Four steps of the proof">
     <div><strong>1 · Discrepancies</strong><span>Locate the equality case</span></div>
@@ -1534,7 +1723,7 @@ body.ready .scene:not(.cover) {
 
     <section class="scene emmp-scene" id="benchmark" data-chapter="3" data-time="32:00" data-title="The classical EMMP" aria-labelledby="title-benchmark" hidden>
       <header class="scene-head">
-        <h2 class="numbered-title" id="title-benchmark"><span class="slide-section">§3 EMMP - </span>The classical <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="double-struck">Q</mi></mrow><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8556em;vertical-align:-0.1667em;"></span><span class="mord mathbb">Q</span></span></span></span>-factorial klt program</h2>
+        <h2 class="numbered-title" id="title-benchmark"><span class="slide-section">§3 EMMP</span> The classical <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="double-struck">Q</mi></mrow><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8556em;vertical-align:-0.1667em;"></span><span class="mord mathbb">Q</span></span></span></span>-factorial klt program</h2>
       </header>
       <ol class="emmp-track" aria-label="Progress of the equivariant minimal model program">
         <li data-emmp-track="0"><strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">X_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></strong><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="double-struck">Q</mi></mrow><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8556em;vertical-align:-0.1667em;"></span><span class="mord mathbb">Q</span></span></span></span>-factorial klt</span></li>
@@ -1622,7 +1811,7 @@ body.ready .scene:not(.cover) {
 
     <section class="scene emmp-scene" id="pseudo-effective" data-chapter="3" data-time="40:00" data-title="The pseudo-effective branch" aria-labelledby="title-pseudo-effective" hidden>
       <header class="scene-head">
-        <h2 class="numbered-title" id="title-pseudo-effective"><span class="slide-section">§3 EMMP - </span>When <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>X</mi></msub></mrow><annotation encoding="application/x-tex">K_X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">X</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is pseudo-effective</h2>
+        <h2 class="numbered-title" id="title-pseudo-effective"><span class="slide-section">§3 EMMP</span> When <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>X</mi></msub></mrow><annotation encoding="application/x-tex">K_X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">X</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is pseudo-effective</h2>
       </header>
       <div class="emmp-positive">
         <ol class="emmp-proof">
@@ -1670,7 +1859,7 @@ c-10 4-16 7.7-18 11 0 8.7 6 14.3 18 17 47.3 18.7 87.8 47 121.5 85S196 441.3 208
 
     <section class="scene emmp-scene" id="program" data-chapter="3" data-time="45:00" data-title="The augmented EMMP" aria-labelledby="title-program" hidden>
       <header class="scene-head">
-        <h2 class="numbered-title" id="title-program"><span class="slide-section">§3 EMMP - </span>When <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>X</mi></msub></mrow><annotation encoding="application/x-tex">K_X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">X</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is not pseudo-effective</h2>
+        <h2 class="numbered-title" id="title-program"><span class="slide-section">§3 EMMP</span> When <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>X</mi></msub></mrow><annotation encoding="application/x-tex">K_X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">X</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is not pseudo-effective</h2>
       </header>
       <div class="emmp-stage emmp-program-stage">
         <figure class="emmp-art" aria-label="The augmented EMMP repairs divisorial targets, then runs flips with scaling and drops dimension">
@@ -1789,7 +1978,8 @@ function showSlide(index, {last = false, setHash = true, focus = true} = {}) {
 function moveLecture(direction) {
   const record = slideRecords[slideIndex];
   const step = record.step + direction;
-  if (direction > 0 && record.step === 0 && record.scene.hasAttribute("data-orbit-animation")) {
+  if (direction > 0 && record.scene.hasAttribute("data-orbit-animation") &&
+      record.step === Number(record.scene.dataset.orbitAnimation)) {
     skipOrbit(record);
   }
   if (step >= 0 && step <= record.maxStep) setLectureStep(record,step);
@@ -1864,6 +2054,350 @@ window.addEventListener("hashchange",readSlideHash);
 window.addEventListener("popstate",readSlideHash);
 document.body.classList.add("ready");
 readSlideHash();
+
+;(() => {
+  "use strict";
+
+  const canvas = document.getElementById("orbit-finite-canvas");
+  if (!canvas) return;
+  const section = canvas.closest("#orbits");
+  const ctx = canvas.getContext("2d");
+  if (!section || !ctx) return;
+
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  const fontFamily = typeof sansFont === "string" && sansFont ? sansFont : "system-ui, sans-serif";
+  const colors = {
+    grid: "#28374b",
+    axis: "#7793ad",
+    muted: "#b0becf",
+    paper: "#edf5ff",
+    background: "#101a29",
+    fixed: "#84e1d0",
+    period2: "#d4b7ff",
+    period3: "#7fbaff",
+    tail: "#ffc783",
+    infinite: "#d4b7ff"
+  };
+  const titles = ["fixed", "periodic", "preperiodic", "summary", "infinite"];
+  const captions = [
+    "Fixed points · real chart",
+    "Periodic cycles · complex invariant line",
+    "Preperiodic tails · complex invariant line",
+    "Examples of finite orbits",
+    "An infinite forward orbit · real chart"
+  ];
+  const caption = document.getElementById("orbit-finite-stage");
+  const chart = document.getElementById("orbit-finite-chart");
+  const clamp = t => Math.max(0, Math.min(1, t));
+  const mix = (a, b, t) => a + (b - a) * t;
+  const add = ([x, y], a, b) => [x + a, y + b];
+  const midpoint = ([x, y], [u, v]) => [(x + u) / 2, (y + v) / 2];
+
+  function line(points, color, width = 1, opacity = 1, dash = []) {
+    if (points.length < 2 || opacity <= 0) return;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.globalAlpha = opacity;
+    ctx.lineWidth = width;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.setLineDash(dash);
+    ctx.beginPath();
+    ctx.moveTo(...points[0]);
+    for (const point of points.slice(1)) ctx.lineTo(...point);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function ring(point, radius, fill, stroke = null, opacity = 1, width = 1.2) {
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.beginPath();
+    ctx.arc(...point, radius, 0, Math.PI * 2);
+    if (fill) {
+      ctx.fillStyle = fill;
+      ctx.fill();
+    }
+    if (stroke) {
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = width;
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function label(value, point, color, options = {}) {
+    const { size = 13, opacity = 1, align = "center", weight = 500 } = options;
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.font = weight + " " + size + "px " + fontFamily;
+    ctx.textAlign = align;
+    ctx.textBaseline = "middle";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = colors.background;
+    ctx.strokeText(value, ...point);
+    ctx.fillStyle = color;
+    ctx.fillText(value, ...point);
+    ctx.restore();
+  }
+
+  function head(previous, end, color, opacity, size = 6) {
+    const theta = Math.atan2(end[1] - previous[1], end[0] - previous[0]);
+    const wing = offset => add(end, -size * Math.cos(theta + offset), -size * Math.sin(theta + offset));
+    line([wing(-.54), end, wing(.54)], color, 1.45, opacity);
+  }
+
+  function axis(from, to) {
+    line([from, to], colors.axis, 1.12, .75);
+    head(from, to, colors.axis, .8, 5);
+  }
+
+  function quadratic(a, control, b, t) {
+    const u = 1 - t;
+    return [u * u * a[0] + 2 * u * t * control[0] + t * t * b[0],
+      u * u * a[1] + 2 * u * t * control[1] + t * t * b[1]];
+  }
+
+  function edge(a, control, b, color, strength = 1, fraction = 1) {
+    const count = 28;
+    const points = Array.from({ length: count + 1 }, (_, i) => quadratic(a, control, b, mix(.07, .92, i / count)));
+    line(points, color, 1.5, .24 * strength);
+    if (fraction <= 0) return;
+    const end = .07 + .85 * clamp(fraction);
+    const draw = Array.from({ length: count + 1 }, (_, i) => quadratic(a, control, b, mix(.07, end, i / count)));
+    line(draw, color, 1.8, .87 * strength);
+    if (fraction > .16) head(draw[count - 1], draw[count], color, .93 * strength);
+    if (fraction > .02 && fraction < .98) ring(draw[count], 3.2, color, colors.background, strength);
+  }
+
+  function pulse(position, color, time) {
+    if (time < 0 || time >= 680) return;
+    const t = time / 680;
+    ring(position, 6 + t * 13, null, color, .66 * (1 - t), 1.35);
+  }
+
+  function drawFixed(width, height, elapsed) {
+    const size = Math.min(width * .66, height * .64, 340);
+    const unit = size / 1.43;
+    const centerX = width / 2 - .46 * unit;
+    const centerY = height / 2 + .43 * unit;
+    const at = (x, y) => [centerX + x * unit, centerY - y * unit];
+    for (let i = 0; i <= 4; i++) {
+      const marking = i / 4;
+      line([at(-.14, marking), at(1.19, marking)], colors.grid, .9, .8);
+      line([at(marking, -.17), at(marking, 1.19)], colors.grid, .9, .8);
+    }
+    axis(at(-.17, 0), at(1.25, 0));
+    axis(at(0, -.19), at(0, 1.26));
+    label("x", add(at(1.25, 0), 9, 8), colors.muted);
+    label("y", add(at(0, 1.26), -8, -8), colors.muted);
+    const fixed = [
+      { x: 0, y: 0, text: "(0, 0)", dx: -12, dy: 16, align: "right" },
+      { x: 1, y: 0, text: "(1, 0)", dx: 10, dy: 16, align: "left" },
+      { x: 0, y: 1, text: "(0, 1)", dx: -12, dy: -13, align: "right" },
+      { x: 1, y: 1, text: "(1, 1)", dx: 10, dy: -13, align: "left" }
+    ];
+    fixed.forEach((item, i) => {
+      const since = elapsed - i * 280;
+      if (since < 0) return;
+      const p = at(item.x, item.y);
+      pulse(p, colors.fixed, since);
+      ring(p, 6.15, colors.fixed, colors.background, 1, 2);
+      ring(p, 2, colors.paper);
+      label(item.text, add(p, item.dx, item.dy), colors.fixed, { align: item.align, size: width > 450 ? 14 : 12 });
+    });
+    return elapsed >= 1550;
+  }
+
+  const nodeData = {
+    one: { turns: 0, label: "1", color: colors.fixed },
+    minus: { turns: .5, label: "−1", color: colors.tail },
+    three: { turns: 1 / 3, label: "ζ₃", color: colors.period2 },
+    three2: { turns: 2 / 3, label: "ζ₃²", color: colors.period2 },
+    seven: { turns: 1 / 7, label: "ζ₇", color: colors.period3 },
+    seven2: { turns: 2 / 7, label: "ζ₇²", color: colors.period3 },
+    seven4: { turns: 4 / 7, label: "ζ₇⁴", color: colors.period3 },
+    six: { turns: 1 / 6, label: "ζ₆", color: colors.tail },
+    twelve: { turns: 1 / 12, label: "ζ₁₂", color: colors.tail }
+  };
+  const period2 = ["three", "three2"];
+  const period3 = ["seven", "seven2", "seven4"];
+  const periodTime = 2400;
+  const tailTime = 1870;
+  const offset = {
+    one: [4, 8], minus: [-6, -8], three: [-4, -1], three2: [-2, 1],
+    seven: [4, 5], seven2: [6, 2], seven4: [-2, 3], six: [11, -12], twelve: [10, 4]
+  };
+
+  function drawComplex(width, height, stage, elapsed) {
+    const radius = Math.min(width * .331, height * .355, 208);
+    const center = [width / 2, height * .51];
+    const fontSize = width > 450 ? 15 : 12;
+    const at = (x, y) => add(center, radius * x, -radius * y);
+    const onCircle = (turns, factor = 1) => at(factor * Math.cos(turns * Math.PI * 2), factor * Math.sin(turns * Math.PI * 2));
+    const loc = name => onCircle(nodeData[name].turns);
+    const isSummary = stage === 3;
+
+    for (const n of [-1, -.5, .5, 1]) {
+      line([at(n, -1.05), at(n, 1.05)], colors.grid, .9, .56);
+      line([at(-1.05, n), at(1.05, n)], colors.grid, .9, .56);
+    }
+    axis(at(-1.22, 0), at(1.22, 0));
+    axis(at(0, -1.15), at(0, 1.20));
+    label("Re t", add(at(1.22, 0), 3, -12), colors.muted, { size: fontSize - 1 });
+    label("Im t", add(at(0, 1.20), 18, 0), colors.muted, { size: fontSize - 1 });
+    ring(center, radius, null, colors.axis, .6, 1.15);
+    ring(center, radius * .5, null, colors.grid, .68, .85);
+
+    const cycle = (sequence, color, duration, bend) => {
+      sequence.forEach((name, i) => {
+        const a = loc(name);
+        const b = loc(sequence[(i + 1) % sequence.length]);
+        const control = bend ? add(midpoint(a, b), radius * (i === 0 ? -.28 : .31), 0) : midpoint(a, b);
+        const fraction = stage === 1 ? clamp(elapsed / duration - i) : 1;
+        const strength = stage === 2 && sequence.length === 3 ? .40 : stage === 2 ? .65 : 1;
+        edge(a, control, b, color, strength, fraction);
+      });
+      if (stage === 1 && elapsed < duration * sequence.length) {
+        const i = Math.min(sequence.length - 1, Math.floor(elapsed / duration));
+        pulse(loc(sequence[i]), color, elapsed - i * duration);
+      }
+    };
+    cycle(period2, colors.period2, 1050, true);
+    cycle(period3, colors.period3, 735, false);
+
+    const names = [...period2, ...period3];
+    if (stage >= 2) {
+      const tails = [
+        ["twelve", "six", onCircle(1 / 8, 1.16), 0],
+        ["six", "three", onCircle(1 / 4, 1.12), 530],
+        ["minus", "one", at(0, -.66), 870]
+      ];
+      for (const [start, end, control, delay] of tails) {
+        edge(loc(start), control, loc(end), colors.tail, 1, isSummary ? 1 : clamp((elapsed - delay) / 790));
+        if (!isSummary) pulse(loc(start), colors.tail, elapsed - delay);
+      }
+      names.push("twelve", "six", "minus", "one");
+    }
+
+    for (const name of names) {
+      const { turns, label: symbol, color } = nodeData[name];
+      const p = loc(name);
+      const faint = stage === 2 && period3.includes(name);
+      ring(p, faint ? 4.1 : 5.1, color, colors.background, faint ? .53 : 1, 1.6);
+      const crowded = stage >= 2 && (name === "seven" || name === "seven2");
+      if (crowded) continue;
+      const align = Math.cos(turns * Math.PI * 2) < -.20 ? "right" : "left";
+      const radialLabel = onCircle(turns, name === "six" ? 1.14 : 1.075);
+      label(symbol, add(radialLabel, ...offset[name]), color, { align, size: fontSize, opacity: faint ? .68 : 1 });
+    }
+
+    if (isSummary) {
+      ring(center, 4.4, colors.fixed, colors.background);
+      label("0", add(center, 7, 13), colors.fixed, { align: "left", size: fontSize });
+    }
+
+    return stage === 3 || elapsed >= (stage === 1 ? periodTime : tailTime);
+  }
+
+  const infinitePoints = Array.from({ length: 8 }, (_, i) => {
+    const t = (236 / 256) ** (2 ** i);
+    return [t ** 2, t ** 3];
+  });
+
+  function drawInfinite(width, height, elapsed) {
+    const unit = Math.min(width * .64, height * .65, 350);
+    const origin = [width / 2 - .44 * unit, height / 2 + .39 * unit];
+    const at = (x, y) => add(origin, unit * x, -unit * y);
+    for (let i = 0; i <= 4; i++) {
+      const mark = i / 4;
+      line([at(-.11, mark), at(1.05, mark)], colors.grid, .9, .8);
+      line([at(mark, -.1), at(mark, 1.05)], colors.grid, .9, .8);
+    }
+    axis(at(-.13, 0), at(1.10, 0));
+    axis(at(0, -.1), at(0, 1.1));
+    label("x", add(at(1.10, 0), 8, 8), colors.muted);
+    label("y", add(at(0, 1.1), -9, -7), colors.muted);
+
+    const n = Math.min(infinitePoints.length - 1, Math.floor(elapsed / 445));
+    for (let i = 0; i <= n; i++) {
+      const point = at(...infinitePoints[i]);
+      const active = i === n;
+      if (active) pulse(point, colors.infinite, elapsed - i * 445);
+      ring(point, active ? 5.7 : 4.05, colors.infinite, colors.background, 1, 1.7);
+      if (active) ring(point, 1.8, colors.paper);
+      if (i < 4 || (active && i > 4)) {
+        const index = ["₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇"][i];
+        label("P" + index, add(point, 12, i > 3 ? 13 : -7), colors.infinite, { align: "left", size: width > 450 ? 14 : 12 });
+      }
+    }
+    return elapsed >= (infinitePoints.length - 1) * 445 + 680;
+  }
+
+  let animation = 0;
+  let lastStep = -1;
+  let started = null;
+
+  function isVisible() {
+    const step = Number(section.dataset.step || 0);
+    return !section.hidden && !canvas.hidden && !document.hidden && step >= 0 && step < titles.length;
+  }
+
+  function paint(now) {
+    animation = 0;
+    if (!isVisible()) return;
+    const step = Number(section.dataset.step || 0);
+    if (step !== lastStep) {
+      started = null;
+      lastStep = step;
+      canvas.dataset.finitePhase = titles[step];
+      if (caption) caption.textContent = captions[step];
+      if (chart) chart.textContent = step === 0 || step === 4 ? "Real slice · z = 1" : "ℂ · [t : 1 : 1] · t ↦ t²";
+    }
+    if (started === null) started = now;
+    const { width, height } = canvas.getBoundingClientRect();
+    if (!width || !height) return;
+    const ratio = Math.min(2, window.devicePixelRatio || 1);
+    const pixelsWide = Math.round(width * ratio);
+    const pixelsHigh = Math.round(height * ratio);
+    if (canvas.width !== pixelsWide || canvas.height !== pixelsHigh) {
+      canvas.width = pixelsWide;
+      canvas.height = pixelsHigh;
+    }
+    ctx.setTransform(pixelsWide / width, 0, 0, pixelsHigh / height, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    const time = reduced.matches ? Infinity : now - started;
+    const complete = step === 0 ? drawFixed(width, height, time)
+      : step === 4 ? drawInfinite(width, height, time)
+      : drawComplex(width, height, step, time);
+    if (!complete) schedule();
+  }
+
+  function schedule() {
+    if (!animation && isVisible()) animation = requestAnimationFrame(paint);
+  }
+
+  function sync() {
+    if (!isVisible()) {
+      lastStep = -1;
+      started = null;
+      if (animation) cancelAnimationFrame(animation);
+      animation = 0;
+    } else {
+      schedule();
+    }
+  }
+
+  section.addEventListener("lecture:step", sync);
+  new MutationObserver(sync).observe(section, { attributes: true, attributeFilter: ["hidden"] });
+  new MutationObserver(sync).observe(canvas, { attributes: true, attributeFilter: ["hidden"] });
+  new ResizeObserver(schedule).observe(canvas);
+  document.addEventListener("visibilitychange", sync);
+  reduced.addEventListener("change", schedule);
+  if (document.fonts) document.fonts.ready.then(schedule);
+  schedule();
+})();
 
 ;(function () {
   "use strict";
@@ -1959,7 +2493,7 @@ readSlideHash();
 
     // Coprime exponents give distinct irreducible curves in the same affine chart.
     const powers = [
-      [2,3,255], [1,2,253], [1,3,251], [2,5], [3,4],
+      [2,3,236], [1,2,224], [1,3,227], [2,5], [3,4],
       [5,7], [2,7], [3,5], [3,7], [4,9],
       [2,1], [3,2], [4,1], [4,3], [5,2],
       [5,3], [5,4], [7,2], [7,3], [7,5],
@@ -1971,7 +2505,7 @@ readSlideHash();
       const narrated = index < narratedCount;
       const points = [];
       if (narrated) {
-        let w = -seed / 256;
+        let w = seed / 256;
         for (let i = 0; i <= lastIteration; i++) {
           points.push({x:w**a, y:w**b});
           w *= w;
@@ -2000,6 +2534,7 @@ readSlideHash();
     let previousTime = null;
     let frame = 0;
     let lastReadout = "";
+    let drawingCurves = false;
 
     function paintTrace(ctx, example, px, py, fraction, active) {
       const distance = example.distance * fraction;
@@ -2089,7 +2624,7 @@ readSlideHash();
 
     function paint(now) {
       frame = 0;
-      if (orbit.hidden || document.hidden) {
+      if (!drawingCurves || orbit.hidden || document.hidden) {
         previousTime = null;
         return;
       }
@@ -2151,13 +2686,25 @@ readSlideHash();
     }
 
     function schedule() {
-      if (!frame && !orbit.hidden && !document.hidden) frame = requestAnimationFrame(paint);
+      if (!frame && drawingCurves && !orbit.hidden && !document.hidden) frame = requestAnimationFrame(paint);
     }
 
-    observe(orbit,canvas,schedule,visible => {
-      previousTime = null;
-      elapsed = 0;
-      if (visible) schedule();
+    function updateCurveMode() {
+      const active = !orbit.hidden && Number(orbit.dataset.step) >= Number(orbit.dataset.orbitAnimation);
+      if (active !== drawingCurves) {
+        drawingCurves = active;
+        previousTime = null;
+        elapsed = 0;
+        lastReadout = "";
+      }
+      if (active) schedule();
+    }
+
+    observe(orbit,canvas,schedule,updateCurveMode);
+    orbit.addEventListener("lecture:step",updateCurveMode);
+    orbit.addEventListener("lecture:skip-animation",() => {
+      elapsed = total;
+      schedule();
     });
     orbit.addEventListener("lecture:skip-animation",() => {
       elapsed = total;
