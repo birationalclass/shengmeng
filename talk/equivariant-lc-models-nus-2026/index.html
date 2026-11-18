@@ -3558,14 +3558,14 @@ readSlideHash();
     const orbitResults = orbit.querySelector("#orbit-results");
     const tableBody = orbitResults.querySelector("tbody");
     let ledgerIndex = -1;
-    const ledger = examples.map(({a,b,seed,points,tint}, index) => {
+    const ledger = examples.map(({a,b,seed,tint}, index) => {
       const row = document.createElement("tr");
       row.dataset.orbitRow = String(index + 1);
       row.style.setProperty("--orbit-tint", tint);
       const seedCell = row.insertCell();
       const [numerator,denominator] = seed;
-      const {x,y} = points[0];
-      const coordinates = [x,y].map(value => Number(value.toFixed(3)));
+      const t = numerator / denominator;
+      const coordinates = [a,b].map(exponent => Number((t ** exponent).toFixed(3)));
       seedCell.className = "orbit-seed-cell";
       seedCell.textContent = "[" + [...coordinates,1].join(" : ") + "]";
       row.dataset.seedNumerator = String(numerator);
