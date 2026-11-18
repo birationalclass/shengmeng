@@ -1453,19 +1453,20 @@ body.ready .scene :is(.numbered-title,#orbit-title,#plane-orbit-closures-title,#
   position: absolute;
   inset-inline-end: clamp(14px,2vw,35px);
   inset-block-end: clamp(9px,1.6svh,18px);
-  display: inline-flex;
-  align-items: center;
-  gap: .34em;
+  min-inline-size: 1.15em;
+  text-align: center;
   color: var(--handbook-title);
   font: italic 400 clamp(24px,2.12vw,34px)/1.12 var(--serif);
   font-variant-numeric: lining-nums proportional-nums;
   pointer-events: none;
 }
-.slide-folio::before {
+.slide-folio::after {
   content: "";
-  inline-size: clamp(10px,1.22vw,18px);
-  block-size: 1px;
-  background: var(--handbook-accent);
+  position: absolute;
+  inset: -.18em -.22em -.11em;
+  border: 1px solid var(--handbook-rule);
+  border-radius: 50%;
+  clip-path: polygon(50% 50%,100% 6%,100% 100%,28% 100%);
 }
 @media (max-width:700px) {
   body.ready .scene :is(.numbered-title,#orbit-title,#plane-orbit-closures-title,#space-orbits-title) {
