@@ -3620,21 +3620,18 @@ readSlideHash();
     trace(ctx,strand(t => point(1,t)),tint(color.orange,.90*opacity),3.1,null,[5,4]);
   }
 
-  function flipCurvePoint([x,y], side, theta) {
-    const breadth = 76 * Math.cos(theta);
-    return [x + breadth, y + 27 * Math.sin(theta) + (side === 1 ? -.19 : .19) * breadth];
+  function flipCurvePoint([x,y], side, t) {
+    const slope = side === 1 ? -25 : 25;
+    return [x + 66*t, y + slope*t + 9*(t*t-1)];
   }
 
   function flipCurve(ctx, position, side, opacity, scale = 1, origin = position) {
     const paint = side === 1 ? color.orange : color.green;
-    const point = theta => pointAt(origin,flipCurvePoint(position,side,theta),scale);
-    trace(ctx,sample(point,68),tint(paint,opacity),2.55,tint(paint,.10*opacity));
-    trace(ctx,sample(theta => {
-      const p = point(theta);
-      return [p[0],p[1]+4*scale];
-    },60),tint(paint,.36*opacity),1.05);
+    const point = t => pointAt(origin,flipCurvePoint(position,side,t),scale);
+    const arc = Array.from({length:33}, (_, index) => point(index / 16 - 1));
+    trace(ctx,arc,tint(paint,opacity),2.8);
     if (side === 1 && opacity > .15 && scale > .2) {
-      const [x,y] = point(0);
+      const [x,y] = point(.84);
       const r = 5.5*scale;
       trace(ctx,[[x,y-r],[x+r,y],[x,y+r],[x-r,y],[x,y-r]],tint(color.ink,opacity),1.2,tint(paint,opacity));
     }
@@ -3724,7 +3721,7 @@ readSlideHash();
         const destination = side === 1 ? left : right;
         const warp = (u,v) => {
           const start = flipSheetPoint(top,u,v);
-          const finish = flipCurvePoint(destination,side,(1+(side === 1 ? u : v))*Math.PI);
+          const finish = flipCurvePoint(destination,side,side === 1 ? u : v);
           return pointAt(start,finish,portion);
         };
         const intensity = .24 + .70 * Math.sin(Math.PI*portion);
@@ -3735,13 +3732,13 @@ readSlideHash();
     const leftOpacity = step === 2 ? mix(.96,.34,progress) : (step === 3 ? .52 : .9);
     flipCurve(ctx,left,1,leftOpacity);
     write(ctx,"X",left[0],179,{size:39,serif:true});
-    write(ctx,"C",left[0],left[1],{size:30,serif:true,paint:color.orange});
+    write(ctx,"C",left[0]-23,left[1]-19,{size:30,serif:true,paint:color.orange});
     write(ctx,"K · C = −½",left[0],294,{size:26,serif:true,paint:color.orange});
 
     if (step >= 3) {
       flipCurve(ctx,right,2,step===3?mix(.20,.98,progress):.9);
       write(ctx,"X⁺",right[0],179,{size:39,serif:true});
-      write(ctx,"C⁺",right[0],right[1],{size:30,serif:true,paint:color.green});
+      write(ctx,"C⁺",right[0]+23,right[1]-19,{size:30,serif:true,paint:color.green});
       write(ctx,"K · C⁺ = +1",right[0],294,{size:26,serif:true,paint:color.green});
     }
 
