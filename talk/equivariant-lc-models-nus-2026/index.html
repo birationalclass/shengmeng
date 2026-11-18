@@ -650,7 +650,11 @@ body.ready .scene:not(.cover) {
 }
 #plane-orbit-closures .orbit-result,#space-orbits .space-restriction { transition: opacity .5s; }
 #plane-orbit-closures[data-step="2"] .orbit-result,#space-orbits[data-step="2"] .space-restriction { opacity: .19; }
-#plane-orbit-closures .orbit-caption { display: block; text-align: center; }
+:is(#orbits,#plane-orbit-closures) .orbit-caption { display: block; text-align: center; }
+#orbits[data-step="1"] .orbit-caption {
+  position: relative;
+  inset-block-start: clamp(-42px,-6svh,-24px);
+}
 :is(#plane-orbit-closures,#space-orbits) > .lecture-popup {
   grid-column: 1 / -1;
   inset: auto 0 30px auto;
@@ -744,6 +748,13 @@ body.ready .scene:not(.cover) {
 }
 @media (min-width: 701px) {
   :is(#plane-orbit-closures,#space-orbits) > .lecture-popup { inset-block-end: 34px; }
+  #orbits .orbit-copy {
+    align-self: start;
+    margin-block-start: clamp(26px,6.4svh,64px);
+  }
+  #orbits[data-step="1"] .orbit-caption {
+    inset-block-start: clamp(-82px,-11svh,-44px);
+  }
   #plane-orbit-closures .orbit-copy {
     align-self: start;
     margin-block-start: clamp(32px,11svh,108px);
@@ -1356,11 +1367,9 @@ body.ready .scene:not(.cover) {
   font-size: clamp(.82rem,1.2vw,1.15rem);
   font-variant-numeric: tabular-nums;
 }
-#orbit-finite-chart { margin-inline-start: auto; white-space: nowrap; }
 @media (max-width: 760px) {
   .orbit-endomorphism { padding: .55em 0; }
   .orbit-notes { margin-top: 9px; }
-  #orbit-finite-chart { white-space: normal; text-align: right; }
 }
 @media (max-width: 700px) {
   #orbits #orbit-finite-canvas { height: clamp(275px,46svh,430px); }
@@ -1643,7 +1652,7 @@ body.ready #thanks {
 <span class="slide-folio" aria-hidden="true">1</span>
 </section>
 
-<section class="scene opening-demo compact-scene" id="orbits" data-chapter="1" data-time="01:20" data-title="Power Map" aria-labelledby="orbit-title" hidden>
+<section class="scene opening-demo compact-scene" id="orbits" data-chapter="1" data-time="01:20" data-title="Power Map" data-auto-step aria-labelledby="orbit-title" hidden>
   <h2 id="orbit-title" class="numbered-title"><span class="slide-section">§1 Background</span> Power Map</h2>
   <div class="orbit-copy">
     <div class="orbit-endomorphism">
@@ -1656,19 +1665,21 @@ body.ready #thanks {
     <div class="orbit-notes">
       <h3>Forward orbit</h3>
       <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">O</mi><mi>f</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>:</mo><mo>=</mo><mo stretchy="false">{</mo><msup><mi>f</mi><mi>n</mi></msup><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>∣</mo><mi>n</mi><mo>≥</mo><mn>0</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\mathcal O_f(x):=\{f^n(x)\mid n\ge0\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.02778em;">O</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7719em;vertical-align:-0.136em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">0</span><span class="mclose">}</span></span></span></span></p>
-      <h3>Finite orbits</h3>
-      <ul class="finite-examples">
-        <li class="orbit-fixed-type">Fixed points</li>
-        <li class="orbit-periodic-type" data-reveal="1" hidden>Periodic points</li>
-        <li class="orbit-preperiodic-type" data-reveal="2" hidden>Preperiodic points</li>
+      <h3 data-reveal="1" hidden>Finite orbits</h3>
+      <ul class="finite-examples" data-reveal="1" hidden>
+        <li class="orbit-fixed-type" data-reveal="1" hidden>Fixed points</li>
+        <li class="orbit-periodic-type" data-reveal="2" hidden>Periodic points</li>
+        <li class="orbit-preperiodic-type" data-reveal="3" hidden>Preperiodic points</li>
       </ul>
     </div>
   </div>
-  <figure class="orbit-plot">
+  <figure class="orbit-plot" data-reveal="1" hidden>
     <canvas id="orbit-finite-canvas" role="img" aria-label="Fixed, periodic and preperiodic orbits of the power map"></canvas>
     <figcaption class="orbit-caption">
-      <span id="orbit-finite-stage">Fixed points · real chart</span>
-      <span id="orbit-finite-chart">Real slice · <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">z=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span>
+      <span id="orbit-finite-chart">
+        <span data-reveal="1" data-until="2" hidden>Real slice · <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">z=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span>
+        <span data-reveal="2" hidden><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="double-struck">C</mi></mrow><annotation encoding="application/x-tex">\mathbb C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6889em;"></span><span class="mord mathbb">C</span></span></span></span> · <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>t</mi><mo>:</mo><mn>1</mn><mo>:</mo><mn>1</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[t:1:1]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span> · <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>↦</mo><msup><mi>t</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">t\mapsto t^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6261em;vertical-align:-0.011em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">↦</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span>
+      </span>
     </figcaption>
   </figure>
 <span class="slide-folio" aria-hidden="true">2</span>
@@ -2390,6 +2401,15 @@ stage.addEventListener("lecture:animation-end",event => {
       current.scene.hasAttribute("data-auto-reveal")) setLectureStep(current,1);
 });
 
+stage.addEventListener("lecture:advance-step",event => {
+  const current = slideRecords[slideIndex];
+  if (event.target !== current?.scene || !current.scene.hasAttribute("data-auto-step")) return;
+  const { from, step } = event.detail;
+  if (from === current.step && step === from + 1 && step <= current.maxStep) {
+    setLectureStep(current,step);
+  }
+});
+
 function readSlideHash() {
   const raw = location.hash.slice(1);
   const id = Object.hasOwn(earlierHashes,raw) ? earlierHashes[raw] : raw;
@@ -2483,11 +2503,6 @@ readSlideHash();
     infinite: "#6f4e9b"
   };
   const titles = ["fixed", "periodic", "preperiodic"];
-  const captions = [
-    "Fixed points · real chart",
-    "Periodic cycles · complex invariant line",
-    "Preperiodic tails · complex invariant line"
-  ];
   const clamp = t => Math.max(0, Math.min(1, t));
   const mix = (a, b, t) => a + (b - a) * t;
   const add = ([x, y], a, b) => [x + a, y + b];
@@ -2732,7 +2747,7 @@ readSlideHash();
     return elapsed >= (infinitePoints.length - 1) * 445 + 680;
   }
 
-  function mountPlot(canvasId, sceneSelector, stepCount, draw, onStep) {
+  function mountPlot(canvasId, sceneSelector, stepCount, draw, {firstStep = 0, onStep, holdMs = 0} = {}) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     const section = canvas.closest(sceneSelector);
@@ -2740,9 +2755,10 @@ readSlideHash();
     if (!section || !ctx) return;
 
     let animation = 0;
+    let advanceTimer = 0;
     let lastStep = -1;
     let started = 0;
-    const currentStep = () => Number(section.dataset.step || 0);
+    const currentStep = () => Number(section.dataset.step || 0) - firstStep;
 
     function isVisible(step) {
       return !section.hidden && !canvas.hidden && !document.hidden && step >= 0 && step < stepCount;
@@ -2769,7 +2785,18 @@ readSlideHash();
       ctx.setTransform(pixelsWide / width, 0, 0, pixelsHigh / height, 0, 0);
       ctx.clearRect(0, 0, width, height);
       const time = reduced.matches ? Infinity : now - started;
-      if (!draw(ctx, width, height, time, step)) schedule();
+      if (!draw(ctx, width, height, time, step)) {
+        schedule();
+      } else if (holdMs && !advanceTimer && step + 1 < stepCount) {
+        advanceTimer = setTimeout(() => {
+          advanceTimer = 0;
+          if (!isVisible(step) || currentStep() !== step) return;
+          const from = step + firstStep;
+          section.dispatchEvent(new CustomEvent("lecture:advance-step", {
+            bubbles: true, detail: {from, step: from + 1}
+          }));
+        }, holdMs);
+      }
     }
 
     function schedule() {
@@ -2777,7 +2804,13 @@ readSlideHash();
     }
 
     function sync() {
-      if (!isVisible(currentStep())) {
+      const step = currentStep();
+      const visible = isVisible(step);
+      if (!visible || step !== lastStep) {
+        clearTimeout(advanceTimer);
+        advanceTimer = 0;
+      }
+      if (!visible) {
         lastStep = -1;
         if (animation) cancelAnimationFrame(animation);
         animation = 0;
@@ -2796,14 +2829,14 @@ readSlideHash();
     schedule();
   }
 
-  const caption = document.getElementById("orbit-finite-stage");
-  const chart = document.getElementById("orbit-finite-chart");
   mountPlot("orbit-finite-canvas", "#orbits", titles.length, (ctx, width, height, time, step) => (
     step === 0 ? drawFixed(ctx, width, height, time) : drawComplex(ctx, width, height, step, time)
-  ), (canvas, step) => {
-    canvas.dataset.finitePhase = titles[step];
-    if (caption) caption.textContent = captions[step];
-    if (chart) chart.textContent = step === 0 ? "Real slice · z = 1" : "ℂ · [t : 1 : 1] · t ↦ t²";
+  ), {
+    firstStep: 1,
+    holdMs: 5000,
+    onStep(canvas, step) {
+      canvas.dataset.finitePhase = titles[step];
+    }
   });
   mountPlot("orbit-infinite-canvas", "#plane-orbit-closures", 1, drawInfinite);
 })();
