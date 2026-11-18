@@ -1989,6 +1989,13 @@ body.ready #space-orbits {
     grid-column: 2;
   }
 }
+
+/* Card reveals are coordinated by the clicker, including nested card groups. */
+.scene :is(.reveal-panel,.formalization-card,.emmp-theorem-card,.space-orbits-cards) { animation: none !important; }
+.lc-lift { animation: lecture-reveal .25s cubic-bezier(.2,.75,.25,1) .035s both; }
+@media (prefers-reduced-motion: reduce) {
+  .lc-lift { animation: none !important; }
+}
 </style>
 </head>
 <body>
@@ -2206,21 +2213,25 @@ body.ready #space-orbits {
     <h2 id="singularities-normalization-title" class="numbered-title"><span class="slide-section">§2 Singularities</span> Can we lift to a smooth model?</h2>
   </header>
   <div class="split singularities-split">
-    <figure class="visual singularities-figure" aria-label="The plane cusp and its strict transform on the three-dimensional visualization of a blowup chart">
+    <figure class="visual singularities-figure" aria-label="A nodal cubic and its smooth strict transform, with two distinct points projecting to the same node">
       <canvas id="singularities-cusp-plot" aria-hidden="true"></canvas>
-      <figcaption id="singularities-cusp-caption">The embedded cusp in the affine plane</figcaption>
+      <figcaption id="singularities-cusp-caption">A nodal cubic in the affine plane</figcaption>
     </figure>
     <div class="explain singularities-explain">
-      <p>Cuspidal cubic <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mspace></mspace><mspace width="0.1111em"/><mo lspace="0em" rspace="0.17em"></mo><mtext> ⁣</mtext><mo lspace="0em" rspace="0em">:</mo><mspace width="0.3333em"/><msup><mi>x</mi><mn>3</mn></msup><mo>=</mo><msup><mi>y</mi><mn>2</mn></msup><mi>z</mi></mrow><annotation encoding="application/x-tex">C\colon x^3=y^2z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mspace nobreak"></span><span class="mspace" style="margin-right:0.1111em;"></span><span class="mpunct"></span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mrel">:</span></span><span class="mspace" style="margin-right:0.3333em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span></span></span></span>, nonnormal at <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi></mrow><annotation encoding="application/x-tex">O</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span></span></span></span>.</p>
+      <p>Nodal cubic <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mspace></mspace><mspace width="0.1111em"/><mo lspace="0em" rspace="0.17em"></mo><mtext> ⁣</mtext><mo lspace="0em" rspace="0em">:</mo><mspace width="0.3333em"/><msup><mi>y</mi><mn>2</mn></msup><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mo stretchy="false">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">C\colon y^2=x^2(x+1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mspace nobreak"></span><span class="mspace" style="margin-right:0.1111em;"></span><span class="mpunct"></span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mrel">:</span></span><span class="mspace" style="margin-right:0.3333em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span>, nonnormal at <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo>=</mo><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mn>0</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O=(0,0)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0</span><span class="mclose">)</span></span></span></span>.</p>
       <div data-reveal="1" hidden>
-        <p class="normalization-label">Blowup chart over <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">z=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></p>
-        <p class="mathline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>x</mi><mi>u</mi><mo separator="true">,</mo><mspace width="2em"/><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo separator="true">,</mo><mi>u</mi><mo stretchy="false">)</mo><mo>⟼</mo><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">y=xu,\qquad (x,y,u)\longmapsto(x,y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">xu</span><span class="mpunct">,</span><span class="mspace" style="margin-right:2em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">u</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">⟼</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span></p>
+        <p class="normalization-label">Blowup of the plane at <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi></mrow><annotation encoding="application/x-tex">O</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span></span></span></span></p>
+        <p class="mathline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>x</mi><mi>t</mi><mo separator="true">,</mo><mspace width="2em"/><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo separator="true">,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>⟼</mo><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">y=xt,\qquad (x,y,t)\longmapsto(x,y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">x</span><span class="mord mathnormal">t</span><span class="mpunct">,</span><span class="mspace" style="margin-right:2em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">t</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">⟼</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span></p>
         <p>Exceptional fibre <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>=</mo><mo stretchy="false">{</mo><mi>x</mi><mo>=</mo><mi>y</mi><mo>=</mo><mn>0</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">E=\{x=y=0\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">0</span><span class="mclose">}</span></span></span></span>.</p>
       </div>
       <div data-reveal="2" hidden>
         <p class="normalization-label">Strict transform and normalization</p>
-        <p class="mathline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo separator="true">,</mo><mi>u</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><msup><mi>u</mi><mn>2</mn></msup><mo separator="true">,</mo><msup><mi>u</mi><mn>3</mn></msup><mo separator="true">,</mo><mi>u</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mspace width="2em"/><mi>ν</mi><mo stretchy="false">(</mo><mi>u</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><msup><mi>u</mi><mn>2</mn></msup><mo separator="true">,</mo><msup><mi>u</mi><mn>3</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(x,y,u)=(u^2,u^3,u),\qquad \nu(u)=(u^2,u^3)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">u</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">u</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:2em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.06366em;">ν</span><span class="mopen">(</span><span class="mord mathnormal">u</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></p>
-        <p class="mathline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>ν</mi><mo stretchy="false">(</mo><mi>u</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>ν</mi><mo stretchy="false">(</mo><msup><mi>u</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(\nu(u))=\nu(u^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.06366em;">ν</span><span class="mopen">(</span><span class="mord mathnormal">u</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.06366em;">ν</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">u</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></p>
+        <p class="mathline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>C</mi><mo stretchy="true">~</mo></mover><mspace></mspace><mspace width="0.1111em"/><mo lspace="0em" rspace="0.17em"></mo><mtext> ⁣</mtext><mo lspace="0em" rspace="0em">:</mo><mspace width="0.3333em"/><msup><mi>t</mi><mn>2</mn></msup><mo>=</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo separator="true">,</mo><mspace width="2em"/><mi>ν</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><msup><mi>t</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn><mo separator="true">,</mo><mtext> </mtext><mi>t</mi><mo stretchy="false">(</mo><msup><mi>t</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\widetilde C\colon t^2=x+1,\qquad \nu(t)=(t^2-1,\,t(t^2-1))</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9433em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9433em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span><span class="svg-align" style="width:calc(100% - 0.1667em);margin-left:0.1667em;top:-3.6833em;"><span class="pstrut" style="height:3em;"></span><span style="height:0.26em;"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="0.26em" viewBox="0 0 600 260" preserveAspectRatio="none"><path d="M200 55.538c-77 0-168 73.953-177 73.953-3 0-7
+-2.175-9-5.437L2 97c-1-2-2-4-2-6 0-4 2-7 5-9l20-12C116 12 171 0 207 0c86 0
+ 114 68 191 68 78 0 168-68 177-68 4 0 7 2 9 5l12 19c1 2.175 2 4.35 2 6.525 0
+ 4.35-2 7.613-5 9.788l-19 13.05c-92 63.077-116.937 75.308-183 76.128
+-68.267.847-113-73.952-191-73.952z"/></svg></span></span></span></span></span></span><span class="mspace nobreak"></span><span class="mspace" style="margin-right:0.1111em;"></span><span class="mpunct"></span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mrel">:</span></span><span class="mspace" style="margin-right:0.3333em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:2em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.06366em;">ν</span><span class="mopen">(</span><span class="mord mathnormal">t</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">t</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">))</span></span></span></span></p>
+        <p class="mathline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mo stretchy="false">(</mo><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>=</mo><mi>ν</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo><mo>=</mo><mi>O</mi></mrow><annotation encoding="application/x-tex">\nu(-1)=\nu(1)=O</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.06366em;">ν</span><span class="mopen">(</span><span class="mord">−</span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.06366em;">ν</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span></span></span></span></p>
       </div>
     </div>
   </div>
@@ -2321,8 +2332,8 @@ body.ready #space-orbits {
 <span class="slide-folio" aria-hidden="true">8</span>
 </section>
 
-<section class="scene compact-scene singularities-scene" id="weil-pullback" data-chapter="2" data-time="06:45" data-title="Weil Pullback and Several log canonical Singularities" aria-labelledby="title-weil-pullback" hidden>
-  <header class="scene-head"><h2 id="title-weil-pullback" class="numbered-title"><span class="slide-section">§2 Singularities</span> Weil Pullback and Several log canonical Singularities</h2></header>
+<section class="scene compact-scene singularities-scene" id="weil-pullback" data-chapter="2" data-time="06:45" data-title="Weil Pullback" aria-labelledby="title-weil-pullback" hidden>
+  <header class="scene-head"><h2 id="title-weil-pullback" class="numbered-title"><span class="slide-section">§2 Singularities</span> Weil Pullback</h2></header>
   <div class="lc-pullbacks" data-reveal="0" data-until="2">
     <p class="lc-pullback-setting" data-reveal="0" data-until="1">Weil divisor <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span></span></span></span>; proper birational <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mspace></mspace><mspace width="0.1111em"/><mo lspace="0em" rspace="0.17em"></mo><mtext> ⁣</mtext><mo lspace="0em" rspace="0em">:</mo><mspace width="0.3333em"/><mi>Y</mi><mo>→</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">p\colon Y\to X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span><span class="mspace nobreak"></span><span class="mspace" style="margin-right:0.1111em;"></span><span class="mpunct"></span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mrel">:</span></span><span class="mspace" style="margin-right:0.3333em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span></span></span> of normal varieties.</p>
     <article class="reveal-panel lc-pullback-card">
@@ -2817,6 +2828,7 @@ const slideRecords = [...stage.querySelectorAll(":scope > .scene")].map(scene =>
   const panels = [...scene.querySelectorAll("[data-reveal]")];
   return {
     scene, panels,
+    cards: [...scene.querySelectorAll(".reveal-panel,.formalization-card,.emmp-theorem-card")],
     maxStep: Math.max(0,...panels.map(panel => Number(panel.dataset.reveal))),
     step: 0
   };
@@ -2837,7 +2849,36 @@ let slideIndex = -1;
 let swipe = null;
 let autoOpenTimer = 0;
 
-function setLectureStep(record, step, animateCard = true) {
+function visibleLectureCards(record) {
+  return record.cards.filter(card => !card.closest("[hidden]") && card.getClientRects().length > 0);
+}
+
+function animateNewLectureCards(record, previousCards) {
+  const visible = visibleLectureCards(record);
+  const newlyVisible = visible.filter(card => !previousCards.has(card));
+  for (const card of record.cards) {
+    if (!visible.includes(card)) card.getAnimations()
+      .filter(animation => animation.id === "lecture-card-entrance")
+      .forEach(animation => animation.cancel());
+  }
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const surfaces = newlyVisible.filter(card => !newlyVisible.some(parent => parent !== card && parent.contains(card)));
+  surfaces.forEach((card, index) => {
+    card.getAnimations().filter(animation => animation.id === "lecture-card-entrance")
+      .forEach(animation => animation.cancel());
+    const style = getComputedStyle(card);
+    const targetTransform = style.transform === "none" ? "" : " " + style.transform;
+    const animation = card.animate([
+      { opacity: 0, transform: "translateY(13px)" + targetTransform },
+      { opacity: style.opacity, transform: "translateY(0)" + targetTransform }
+    ], { duration: 250, delay: Math.min(index * 35, 105), easing: "cubic-bezier(.2,.75,.25,1)", fill: "both" });
+    animation.id = "lecture-card-entrance";
+    animation.onfinish = () => animation.cancel();
+  });
+}
+
+function setLectureStep(record, step, animateCard = true, entering = false) {
+  const previousCards = new Set(entering ? [] : visibleLectureCards(record));
   const card = record.scene.querySelector(".main-theorem-card");
   const previousHeight = card?.getBoundingClientRect().height;
   const previousMargin = card ? getComputedStyle(card).marginBlockStart : null;
@@ -2858,6 +2899,7 @@ function setLectureStep(record, step, animateCard = true) {
     animation.id = "main-theorem-expansion";
   }
   record.scene.dispatchEvent(new CustomEvent("lecture:step", { bubbles:true, detail:{step} }));
+  animateNewLectureCards(record, previousCards);
 }
 
 function skipOrbit(record) {
@@ -2870,7 +2912,7 @@ function showSlide(index, {last = false, startAt = 0, setHash = true, focus = tr
   for (const [i, record] of slideRecords.entries()) record.scene.hidden = i !== index;
   slideIndex = index;
   const record = slideRecords[index];
-  setLectureStep(record, last ? record.maxStep : startAt, false);
+  setLectureStep(record, last ? record.maxStep : startAt, false, true);
   if (record.scene.hasAttribute("data-auto-open") && record.step === 0) {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) setLectureStep(record,1,false);
     else autoOpenTimer = setTimeout(() => {
@@ -4226,12 +4268,13 @@ readSlideHash();
     schedule();
   }
 
-  const planeBoundary = [[-.55,-1.34],[1.36,-1.34],[1.36,1.34],[-.55,1.34]];
-  const chartX = [-.55,1.16];
-  const chartU = [-1.10,1.10];
-  const curveParameters = Array.from({length:111}, (_, i) => -1.035 + 2.07 * i / 110);
-  const chartPoint = (x,u) => [x,x*u,u];
-  const curvePoint = u => chartPoint(u*u,u);
+  const planeBoundary = [[-1.23,-1.16],[1.02,-1.16],[1.02,1.16],[-1.23,1.16]];
+  const chartX = [-1.12,.88];
+  const chartT = [-1.35,1.35];
+  const curveParameters = Array.from({length:161}, (_, i) => -1.30 + 2.60 * i / 160);
+  const chartPoint = (x,t) => [x,x*t,t];
+  // Strict transform of y² = x²(x+1) in the chart y = xt.
+  const curvePoint = t => chartPoint(t*t-1,t);
   const closed = points => [...points,points[0]];
 
   function shade(hex, opacity) {
@@ -4254,15 +4297,15 @@ readSlideHash();
   }
 
   function chartView(width,height,turn,baseLevel) {
-    // The chart uses (x,y,u). The lower copy of A² has the same (x,y)
+    // The chart uses (x,y,t). The lower copy of A² has the same (x,y)
     // projection. Its constant height separates source and target visually.
-    const screen = ([x,y,u]) => [
-      mix(x,.94*x+.30*y,turn)+.52*turn*u,
-      mix(-y,.17*x-.52*y,turn)-.81*turn*u
+    const screen = ([x,y,t]) => [
+      mix(x,.94*x+.30*y,turn)+.52*turn*t,
+      mix(-y,.17*x-.52*y,turn)-.81*turn*t
     ];
     const volumeCorners = [
       ...planeBoundary.map(([x,y]) => [x,y,baseLevel]),
-      ...chartX.flatMap(x => chartU.map(u => chartPoint(x,u)))
+      ...chartX.flatMap(x => chartT.map(t => chartPoint(x,t)))
     ];
     const projected = volumeCorners.map(screen);
     const xs = projected.map(p => p[0]);
@@ -4292,29 +4335,29 @@ readSlideHash();
       const visibility = .8*(1-turn);
       ctx.save();
       ctx.globalAlpha = visibility;
-      arrow(ctx,at(-.38,0),at(1.23,0),colors.axis);
-      arrow(ctx,at(0,-1.18),at(0,1.18),colors.axis);
-      const xEnd = at(1.23,0), yEnd = at(0,1.18);
+      arrow(ctx,at(-1.12,0),at(.90,0),colors.axis);
+      arrow(ctx,at(0,-1.02),at(0,1.02),colors.axis);
+      const xEnd = at(.90,0), yEnd = at(0,1.02);
       text(ctx,"x",xEnd[0]+9,xEnd[1]-7,font,colors.axis);
       text(ctx,"y",yEnd[0]+9,yEnd[1],font,colors.axis);
       ctx.restore();
     }
 
-    const curve = curveParameters.map(u => at(u*u,u**3));
+    const curve = curveParameters.map(t => at(t*t-1,t*(t*t-1)));
     path(ctx,curve,colors.gold,2.7);
     const origin = at(0,0);
     point(ctx,origin,4.2,colors.coral,colors.paper);
     text(ctx,"O",origin[0]-11,origin[1]+12,font,colors.coral,"right");
-    const right = at(1.23,1.05);
+    const right = at(.73,.96);
     text(ctx,"C",right[0]-6,right[1]+1,font,colors.gold,"right");
   }
 
   function upstairs(ctx,project,opacity,font) {
     if (opacity <= 0) return;
-    const at = (x,u) => project(chartPoint(x,u));
+    const at = (x,t) => project(chartPoint(x,t));
     const [x0,x1] = chartX;
-    const [u0,u1] = chartU;
-    const boundary = [at(x0,u0),at(x1,u0),at(x1,u1),at(x0,u1)];
+    const [t0,t1] = chartT;
+    const boundary = [at(x0,t0),at(x1,t0),at(x1,t1),at(x0,t1)];
     const gradient = ctx.createLinearGradient(...boundary[3],...boundary[1]);
     gradient.addColorStop(0,shade(colors.mint,.065));
     gradient.addColorStop(.68,shade(colors.mint,.19));
@@ -4322,54 +4365,84 @@ readSlideHash();
     ctx.save();
     ctx.globalAlpha = opacity;
     fillShape(ctx,boundary,gradient,shade(colors.mint,.50),1.25);
-    for (const u of [-.76,-.38,.38,.76]) {
-      path(ctx,[at(x0,u),at(x1,u)],shade(colors.mint,.29),.95);
+    // These are chart rulings, not a background coordinate grid.
+    for (const t of [-.9,-.45,.45,.9]) {
+      path(ctx,[at(x0,t),at(x1,t)],shade(colors.mint,.24),.9);
     }
-    for (const x of [-.28,.32,.74]) {
-      path(ctx,[at(x,u0),at(x,u1)],shade(colors.mint,.24),.9);
+    for (const x of [-.75,-.35,.4]) {
+      path(ctx,[at(x,t0),at(x,t1)],shade(colors.mint,.21),.9);
     }
-    path(ctx,[at(0,u0),at(0,u1)],colors.coral,2.3);
-    path(ctx,curveParameters.map(u => project(curvePoint(u))),colors.mint,3);
-    const meeting = at(0,0);
-    point(ctx,meeting,4.1,colors.coral,colors.paper);
-    const e = at(0,1.01);
-    text(ctx,"E",e[0]-8,e[1]-4,font,colors.coral,"right");
-    const strict = project(curvePoint(.93));
-    text(ctx,"C̃",strict[0]+10,strict[1]-5,font,colors.mint);
+    path(ctx,[at(0,t0),at(0,t1)],colors.coral,2.2);
+    path(ctx,curveParameters.map(t => project(curvePoint(t))),colors.mint,3);
+    const e = at(0,1.29);
+    text(ctx,"E",e[0]+11,e[1]-9,font,colors.coral);
+    const strict = project(curvePoint(-.20));
+    text(ctx,"C̃",strict[0]-9,strict[1]-11,font,colors.mint,"right");
+    for (const [t,color] of [[-1,colors.gold],[1,colors.mint]]) {
+      const marked = at(0,t);
+      point(ctx,marked,4.8,color,colors.paper);
+      const labelOffset = t < 0 ? [-9,11] : [10,11];
+      text(ctx,t < 0 ? "t = −1" : "t = 1",marked[0]+labelOffset[0],marked[1]+labelOffset[1],font,color,t < 0 ? "right" : "left");
+    }
     ctx.restore();
   }
 
-  function projectCurve(ctx,project,baseLevel,fraction,font) {
-    const [x,y,u] = curvePoint(.77);
-    const begin = project([x,y,u]);
-    const finish = project([x,y,baseLevel]);
-    path(ctx,[begin,finish],shade(colors.ink,.66),1.45,[5,5]);
-    const middle = project([x,y,(u + baseLevel)/2]);
-    text(ctx,"ν",middle[0]+9,middle[1]+3,font,colors.ink);
-    const marker = project([x,y,mix(u,baseLevel,fraction)]);
-    point(ctx,marker,3.8,colors.ink,colors.paper);
-    point(ctx,begin,3,colors.mint,colors.paper);
+  function projectBranches(ctx,project,baseLevel,fraction,font) {
+    const target = project([0,0,baseLevel]);
+    // The two exceptional intersections are distinct, although the blowdown
+    // forgets t and sends both (0,0,−1) and (0,0,1) to the same node O.
+    for (const [t,color] of [[1,colors.mint],[-1,colors.gold]]) {
+      const begin = project([0,0,t]);
+      path(ctx,[begin,target],shade(color,.45),1.4,[4,5]);
+      const marker = project([0,0,mix(t,baseLevel,fraction)]);
+      point(ctx,marker,4.5,color,colors.paper);
+      point(ctx,begin,4.2,color,colors.paper);
+    }
+    const middle = project([0,0,(1+baseLevel)/2]);
+    text(ctx,"ν",middle[0]+12,middle[1]-2,font,colors.ink);
+    if (fraction > .94) {
+      // Split disk preserves both branch colours after their images coincide.
+      const alpha = clamp((fraction-.94)/.06);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.arc(...target,5.5,Math.PI/2,Math.PI*1.5);
+      ctx.closePath();
+      ctx.fillStyle = colors.gold;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(...target,5.5,-Math.PI/2,Math.PI/2);
+      ctx.closePath();
+      ctx.fillStyle = colors.mint;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(...target,5.5,0,Math.PI*2);
+      ctx.strokeStyle = colors.paper;
+      ctx.lineWidth = 1.3;
+      ctx.stroke();
+      ctx.restore();
+    }
   }
 
   graphic("singularities-cusp-plot", (ctx,width,height,stage,elapsed) => {
     const caption = document.getElementById("singularities-cusp-caption");
     const turn = stage > 1 ? 1 : stage === 1 ? ease(elapsed/1070) : 0;
-    const baseLevel = -1.91*turn;
+    const baseLevel = -2.06*turn;
     const project = chartView(width,height,turn,baseLevel);
     const font = width < 390 || height < 200 ? 12 : 15;
     downstairs(ctx,project,baseLevel,turn,font);
-    if (baseLevel < chartU[0]) {
-      const extension = [project([0,0,chartU[0]]),project([0,0,baseLevel])];
+    if (baseLevel < chartT[0]) {
+      const extension = [project([0,0,chartT[0]]),project([0,0,baseLevel])];
       path(ctx,extension,shade(colors.coral,.63*clamp((turn-.58)/.42)),1.45,[4,5]);
     }
     upstairs(ctx,project,clamp((turn-.12)/.88),font);
     const projection = stage > 2 ? 1 : stage === 2 ? ease(elapsed/960) : 0;
-    if (stage >= 2) projectCurve(ctx,project,baseLevel,projection,font);
+    if (stage >= 2) projectBranches(ctx,project,baseLevel,projection,font);
     const note = stage === 0
-      ? "The cusp in the affine plane."
+      ? "The nodal cubic in the affine plane."
       : stage === 1
-        ? "Blowup chart y = xu. The exceptional line E lies over O."
-        : "Projection sends the smooth strict transform C̃ to C.";
+        ? "The smooth strict transform meets E at two distinct points."
+        : "The two points t = −1 and t = 1 both project to the node O.";
     if (caption.textContent !== note) caption.textContent = note;
     return (stage !== 1 || turn === 1) && (stage !== 2 || projection === 1);
   });
