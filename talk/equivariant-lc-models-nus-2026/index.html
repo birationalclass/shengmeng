@@ -474,9 +474,9 @@ body.ready #space-orbits {
 }
 .space-orbits-results {
   display: grid;
-  grid-template-rows: repeat(5,minmax(1.50em,auto));
+  grid-template-rows: repeat(7,minmax(1.45em,auto));
   gap: .6em;
-  min-height: 9.9em;
+  min-height: 13.7em;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -500,6 +500,8 @@ body.ready #space-orbits {
 [data-result="slice"] .space-orbits-swatch { background: #d4bcff; }
 [data-result="ruling"] .space-orbits-swatch { background: #93bfff; }
 [data-result="plane"] .space-orbits-swatch { background: #f2a9ca; }
+[data-result="saddle"] .space-orbits-swatch { background: #ebae80; }
+[data-result="cylinder"] .space-orbits-swatch { background: #afd991; }
 [data-result="surface"] .space-orbits-swatch { background: #84e1d0; }
 .space-orbits-locus { color: #ffae9f; margin-inline-start: .55em; white-space: nowrap; }
 .space-orbits-plot { grid-area: 2 / 1; min-width: 0; }
@@ -743,6 +745,14 @@ body.ready #cover {
         <span class="space-orbits-swatch" aria-hidden="true"></span>
         <strong>Plane</strong><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">z=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span>
       </li>
+      <li class="space-orbits-result" data-result="saddle" hidden>
+        <span class="space-orbits-swatch" aria-hidden="true"></span>
+        <strong>Saddle quadric</strong><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo stretchy="false">(</mo><mi>z</mi><mo>+</mo><mi>w</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mi>y</mi></mrow><annotation encoding="application/x-tex">w(z+w)=xy</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">x</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span>
+      </li>
+      <li class="space-orbits-result" data-result="cylinder" hidden>
+        <span class="space-orbits-swatch" aria-hidden="true"></span>
+        <strong>Parabolic cylinder</strong><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo stretchy="false">(</mo><mi>z</mi><mo>+</mo><mi>w</mi><mo stretchy="false">)</mo><mo>=</mo><msup><mi>y</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">w(z+w)=y^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span>
+      </li>
       <li class="space-orbits-result" data-result="surface" hidden>
         <span class="space-orbits-swatch" aria-hidden="true"></span>
         <strong>Nonnormal surface</strong><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>3</mn></msup><mo>=</mo><msup><mi>y</mi><mn>2</mn></msup><mi>w</mi></mrow><annotation encoding="application/x-tex">x^3=y^2w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span></span></span></span><span class="space-orbits-locus"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>:</mo><mtext> </mtext><mi>x</mi><mo>=</mo><mi>y</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">L:\ x=y=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span></span>
@@ -750,9 +760,9 @@ body.ready #cover {
     </ul>
   </div>
   <figure class="space-orbits-plot">
-    <canvas id="space-orbits-canvas" role="img" aria-label="Real affine slices of five Zariski closures. Three curves lie in a cuspidal surface. The plane meets the surface along the cuspidal cubic. The coral line is the nonnormal locus."></canvas>
+    <canvas id="space-orbits-canvas" role="img" aria-label="Real affine slices of seven Zariski closures. Three curves lie in the cuspidal surface. The surfaces are a plane, a saddle, a parabolic cylinder, and the cuspidal surface. The coral line is the nonnormal locus."></canvas>
     <figcaption class="space-orbits-caption">
-      <span id="space-orbits-stage">Orbit 1 / 5 · Initial point</span>
+      <span id="space-orbits-stage">Orbit 1 / 7 · Initial point</span>
       <span>Real slice · <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">w=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span>
     </figcaption>
   </figure>
@@ -2657,6 +2667,8 @@ document.fonts?.ready.then(scheduleFrame);
     lilac: "#d4bcff",
     blue: "#93bfff",
     rose: "#f2a9ca",
+    peach: "#ebae80",
+    green: "#afd991",
     coral: "#ffae9f",
     axis: "#798b9c",
     grid: "#6f859b",
@@ -2686,11 +2698,29 @@ document.fonts?.ready.then(scheduleFrame);
 
   let finish = 0;
   const seed = 2 ** (-1 / 32);
+  const otherSeed = 3 ** (-1 / 32);
   const examples = [
     { tint: colors.gold, initial: xyz(-seed, -seed), trace: u => xyz(u, u), range: [uMin,uMax], drawMs: 920 },
-    { tint: colors.lilac, initial: xyz(-(3 ** (-1 / 32)), 1), trace: u => xyz(u, 1), range: [uMin,uMax], drawMs: 920 },
+    { tint: colors.lilac, initial: xyz(-otherSeed, 1), trace: u => xyz(u, 1), range: [uMin,uMax], drawMs: 920 },
     { tint: colors.blue, initial: xyz(1, -seed), trace: z => [1,1,z], range: [zMin,zMax], drawMs: 800 },
-    { tint: colors.rose, initial: [2 ** (-1 / 24), -(3 ** (-1 / 12)), 0], drawMs: 1150 },
+    {
+      tint: colors.rose,
+      initial: [2 ** (-1 / 24), -(3 ** (-1 / 12)), 0],
+      graph: { maxX:1.26, minY:-1.34, maxY:1.34, height:() => 0 },
+      drawMs: 1150
+    },
+    {
+      tint: colors.peach,
+      initial: [seed, -otherSeed, -seed * otherSeed - 1],
+      graph: { minX:-1.02, maxX:1.12, minY:-.99, maxY:1.02, height:(x,y) => x*y - 1 },
+      drawMs: 1250
+    },
+    {
+      tint: colors.green,
+      initial: [otherSeed, -seed, seed**2 - 1],
+      graph: { maxX:1.14, minY:-1.02, maxY:1.02, height:(_x,y) => y*y - 1 },
+      drawMs: 1200
+    },
     { tint: colors.teal, initial: xyz(seed, 3 ** (-1 / 16)), drawMs: 1450 }
   ].map(example => {
     const start = finish;
@@ -2698,6 +2728,9 @@ document.fonts?.ready.then(scheduleFrame);
     return { ...example, start, points: orbit(example.initial) };
   });
 
+  const curves = examples.filter(example => example.trace);
+  const graphs = examples.filter(example => example.graph);
+  const cusp = examples.at(-1);
   const uSteps = 24;
   const zSteps = 18;
 
@@ -2706,7 +2739,7 @@ document.fonts?.ready.then(scheduleFrame);
   }
 
   function sceneProjection(width, height) {
-    const left = -.64;
+    const left = -1.44;
     const right = 2.04;
     const top = -1.57;
     const bottom = 2.10;
@@ -2827,20 +2860,29 @@ document.fonts?.ready.then(scheduleFrame);
     path([project([0, 0, zMin]), project([0, 0, top])], colors.coral, 1.55, .92);
   }
 
-  function drawPlane(project, fraction) {
+  function drawGraph(project, example, fraction, opacity) {
     if (fraction <= 0) return;
-    const maxX = 1.26;
-    const minY = -1.34;
-    const maxY = 1.34;
-    const front = maxX * fraction;
-    const corners = [[0,minY,0], [front,minY,0], [front,maxY,0], [0,maxY,0]];
-    path(corners.map(project), null, 0, .19, colors.rose);
-    path([...corners, corners[0]].map(project), colors.rose, 1.25, .61);
-    for (let x = .18; x < front; x += .18) {
-      path([[x,minY,0], [x,maxY,0]].map(project), colors.rose, .7, .26);
+    const { minX = 0, maxX, minY, maxY, height } = example.graph;
+    const drawnWidth = (maxX-minX) * fraction;
+    const front = minX + drawnWidth;
+    const xSteps = 10;
+    const ySteps = 28;
+    const { tint } = example;
+    const projectPoint = (x,y) => project([x,y,height(x,y)]);
+    const profile = x => Array.from({ length:ySteps + 1 }, (_,i) => projectPoint(x,minY + (maxY-minY)*i/ySteps));
+    let previousProfile = profile(minX);
+
+    path(previousProfile, tint, 1.3, opacity*.68);
+    for (let i = 1; i <= xSteps; i++) {
+      const section = profile(minX + drawnWidth*i/xSteps);
+      path([...previousProfile,...section.slice().reverse()], null, 0, opacity*(.12 + .055*i/xSteps), tint);
+      path(section, tint, i === xSteps ? 1.3 : .65, opacity*(i === xSteps ? .68 : .25));
+      previousProfile = section;
     }
-    for (let y = -1.08; y <= 1.08; y += .27) {
-      path([[0,y,0], [front,y,0]].map(project), colors.rose, .7, .26);
+    for (let i = 0; i <= 10; i++) {
+      const y = minY + (maxY-minY)*i/10;
+      const boundary = i === 0 || i === 10;
+      path([projectPoint(minX,y),projectPoint(front,y)], tint, boundary ? 1.3 : .65, opacity*(boundary ? .68 : .25));
     }
   }
 
@@ -2907,7 +2949,7 @@ document.fonts?.ready.then(scheduleFrame);
 
   function stateAt(time, example) {
     const local = time - example.start;
-    if (time >= finish) return { phase: "complete", n: iterationCount, caption: "Five Zariski closures" };
+    if (time >= finish) return { phase: "complete", n: iterationCount, caption: "Seven Zariski closures" };
     if (local < seedHold) return { phase: "seed", n: 0, caption: "Initial point" };
     if (local < drawStart) {
       const n = Math.min(iterationCount, 1 + Math.floor((local - seedHold) / stepLength));
@@ -2947,12 +2989,15 @@ document.fonts?.ready.then(scheduleFrame);
     context.clearRect(0, 0, width, height);
     const project = sceneProjection(width, height);
     const fraction = item => ease((shownTime - item.start - drawStart) / item.drawMs);
-    const [cubic, slice, ruling, plane, surface] = examples;
-    const surfaceFraction = fraction(surface);
+    const surfaceFraction = fraction(cusp);
     drawAxes(project, width, surfaceFraction);
-    drawPlane(project, fraction(plane));
+    for (const graph of graphs) {
+      const sinceTrace = Math.max(0, shownTime - graph.start - drawStart - graph.drawMs - pointFadeMs);
+      const opacity = 1 - .59 * clamp(sinceTrace/550);
+      drawGraph(project, graph, fraction(graph), opacity);
+    }
     drawSurface(project, surfaceFraction);
-    for (const curve of [cubic, slice, ruling]) {
+    for (const curve of curves) {
       drawCurve(project, curve, fraction(curve));
     }
     const fadeTime = Math.max(0, shownTime - example.start - drawStart - example.drawMs);
