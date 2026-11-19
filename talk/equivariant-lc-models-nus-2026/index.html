@@ -1795,16 +1795,16 @@ body.ready #cover {
   letter-spacing: -.021em;
 }
 
-#cover .handbook-ornament {
-  gap: 14px;
-  margin: clamp(26px, 5svh, 45px) auto 0;
-  color: var(--cover-accent);
+#cover .cover-curves {
+  width: clamp(110px, 18svh, 140px);
+  aspect-ratio: 1;
+  margin: clamp(18px, 3.3svh, 30px) auto 0;
 }
 
-#cover .handbook-ornament::before,
-#cover .handbook-ornament::after {
-  width: clamp(28px, 4.3vw, 58px);
-  background: var(--cover-rule);
+#cover .cover-curves canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 #cover .cover-meta {
@@ -1837,6 +1837,11 @@ body.ready #cover {
 }
 
 @media (max-width: 700px) {
+  #cover .cover-curves {
+    width: 100px;
+    margin-top: 22px;
+  }
+
   #cover #title-cover {
     font-size: clamp(25px, 8.55vw, 51px);
     letter-spacing: -.025em;
@@ -2268,8 +2273,8 @@ body.ready #space-orbits {
 <section class="scene cover" id="cover" data-chapter="1" data-time="00:00" data-title="Birational Geometry for Complex Dynamics" aria-labelledby="title-cover">
   <div class="cover-editorial">
     <h1 id="title-cover"><span>Birational Geometry</span> <span>for Complex Dynamics</span></h1>
-    <div class="handbook-ornament" aria-hidden="true">
-      <span class="handbook-flower"><i></i><i></i><i></i><i></i></span>
+    <div class="cover-curves" aria-hidden="true">
+      <canvas id="cover-orbit-curves"></canvas>
     </div>
     <div class="cover-meta">
       <p class="cover-speaker"><strong>Sheng Meng (ECNU)</strong></p>
@@ -3877,6 +3882,21 @@ readSlideHash();
       }
       ctx.stroke();
       ctx.restore();
+    }
+
+    const coverCurves = document.getElementById("cover-orbit-curves");
+    if (coverCurves) {
+      const coverScene = document.getElementById("cover");
+      function paintCoverCurves() {
+        surface(coverCurves, (ctx, width, height) => {
+          const scale = Math.min(width, height) / 260;
+          ctx.scale(scale, scale);
+          const px = value => 130 + 118 * value;
+          const py = value => 130 - 118 * value;
+          for (const example of examples) paintTrace(ctx, example, px, py, 1, false);
+        });
+      }
+      observe(coverScene, coverCurves, paintCoverCurves);
     }
 
     function coordinate(value) {
