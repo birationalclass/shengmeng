@@ -1172,6 +1172,39 @@ body.ready .scene:not(.cover) {
   font-weight: 650;
 }
 .emmp-step-detail { margin-block-start: .88em; }
+
+.emmp-klt-path {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .3em .5em;
+}
+.emmp-klt-arrow {
+  position: relative;
+  padding: 0 .24em .18em;
+  transform: translateY(-.6em);
+}
+.emmp-klt-arrow > .katex { font-size: .88em; }
+.emmp-klt-arrow::before,
+.emmp-klt-arrow::after {
+  content: "";
+  position: absolute;
+}
+.emmp-klt-arrow::before {
+  inset-inline: 0 .08em;
+  inset-block-end: 0;
+  border-block-end: 1.5px dashed currentColor;
+}
+.emmp-klt-arrow::after {
+  inset-inline-end: 0;
+  inset-block-end: -.093em;
+  inline-size: .17em;
+  block-size: .17em;
+  border-block-start: 1.5px solid currentColor;
+  border-inline-end: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+
 #benchmark:is([data-step="6"],[data-step="7"]) .emmp-stage {
   grid-template-columns: minmax(0,1fr);
   justify-items: center;
@@ -1192,6 +1225,27 @@ body.ready .scene:not(.cover) {
 .emmp-theorem-trigger:hover { border-color: currentColor; }
 .emmp-theorem-card { width: min(100%,960px); }
 .emmp-endpoint-type { white-space: nowrap; }
+
+.emmp-theorem-card .lc-definition-list { margin-block: .3em 0; }
+.emmp-abelian-cover:not([hidden]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: .15em .8em;
+  color: var(--emmp-ink);
+  font: var(--talk-card-body, 21px)/1.38 var(--serif);
+  text-align: center;
+}
+.emmp-abelian-cover :is(.mathline,p) { margin: 0; font-size: inherit; }
+
+@media (min-width: 900px) and (max-height: 800px) {
+  body.ready #benchmark[data-step="7"] { padding-block: 18px 25px; gap: 12px; }
+  #benchmark[data-step="7"] .emmp-stage { row-gap: 12px; }
+  #benchmark[data-step="7"] .emmp-endpoint { margin-block-start: 5px; }
+  #benchmark[data-step="7"] .emmp-theorem-card { padding-block: 12px; }
+}
+
 
 .emmp-art {
   position: relative;
@@ -2870,10 +2924,16 @@ c-10 4-16 7.7-18 11 0 8.7 6 14.3 18 17 47.3 18.7 87.8 47 121.5 85S196 441.3 208
           <header class="theorem-target-heading statement-heading">
             <h3><strong>Theorem.</strong> (Equivariant MMP, <a href="https://arxiv.org/pdf/1806.05828#page=2">M–D.-Q. Zhang 2020</a>)</h3>
           </header>
-          <p>For polarized <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span>, every prescribed finite <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span></span></span></span>-MMP from <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">X_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is equivariant after a positive iterate.</p>
-          <p>Some finite sequence reaches <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><msub><mi>X</mi><mi>n</mi></msub></msub></mrow><annotation encoding="application/x-tex">K_{X_n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9334em;vertical-align:-0.2501em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1645em;"><span style="top:-2.357em;margin-left:-0.0785em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span></span></span></span> pseudo-effective. Every such endpoint <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">X_n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is <span class="emmp-endpoint-type"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="double-struck">Q</mi></mrow><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8556em;vertical-align:-0.1667em;"></span><span class="mord mathbb">Q</span></span></span></span>-abelian</span>.</p>
-          <footer class="theorem-target-footnote"><p class="reveal-muted">After a Fano contraction, the sequence continues on its base.</p></footer>
+          <p>Let <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mspace></mspace><mspace width="0.1111em"/><mo lspace="0em" rspace="0.17em"></mo><mtext> ⁣</mtext><mo lspace="0em" rspace="0em">:</mo><mspace width="0.3333em"/><msub><mi>X</mi><mn>0</mn></msub><mo>→</mo><msub><mi>X</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">f\colon X_0\to X_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mspace nobreak"></span><span class="mspace" style="margin-right:0.1111em;"></span><span class="mpunct"></span><span class="mspace" style="margin-right:-0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mrel">:</span></span><span class="mspace" style="margin-right:0.3333em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> be polarized.</p>
+          <ul class="lc-definition-list">
+            <li>Any finite MMP is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span>-equivariant after iteration.</li>
+            <li>A finite sequence reaches an end product <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">X_n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> with <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><msub><mi>X</mi><mi>n</mi></msub></msub></mrow><annotation encoding="application/x-tex">K_{X_n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9334em;vertical-align:-0.2501em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1645em;"><span style="top:-2.357em;margin-left:-0.0785em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span></span></span></span> pseudo-effective. Every such end product is <span class="emmp-endpoint-type"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="double-struck">Q</mi></mrow><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8556em;vertical-align:-0.1667em;"></span><span class="mord mathbb">Q</span></span></span></span>-abelian</span>.</li>
+          </ul>
         </article>
+        <div id="emmp-abelian-cover" class="emmp-abelian-cover" data-reveal="7" hidden>
+          <div class="mathline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>A</mi></msub><mo>↻</mo><mi>A</mi><mo>⟶</mo><msub><mi>X</mi><mi>n</mi></msub><mo>↺</mo><msub><mi>f</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">f_A\circlearrowright A\longrightarrow X_n\circlearrowleft f_n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">A</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel amsrm">↻</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6943em;vertical-align:-0.011em;"></span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">⟶</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel amsrm">↺</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></div>
+          <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi></mrow><annotation encoding="application/x-tex">A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">A</span></span></span></span> abelian. The cover is finite surjective and étale in codimension one.</p>
+        </div>
       </div>
     <span class="slide-folio" aria-hidden="true">15</span>
 </section>
@@ -2890,13 +2950,16 @@ c-10 4-16 7.7-18 11 0 8.7 6 14.3 18 17 47.3 18.7 87.8 47 121.5 85S196 441.3 208
             <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msub><mi>K</mi><mi>X</mi></msub><msub><mo>∼</mo><mi mathvariant="double-struck">Q</mi></msub><mi>D</mi><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">-K_X\sim_{\mathbb Q}D\ge0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.95em;vertical-align:-0.2667em;"></span><span class="mord">−</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">X</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel"><span class="mrel">∼</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3322em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathbb mtight">Q</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2667em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8193em;vertical-align:-0.136em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>X</mi></msub></mrow><annotation encoding="application/x-tex">K_X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">X</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> pseudo-effective force <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">D=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>.</p>
           </li>
           <li class="formalization-card" data-reveal="1" hidden>
-            <div class="emmp-formula"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mtext>  </mtext><munderover><mo stretchy="true" minsize="3.0em">←</mo><mpadded width="+0.6em" lspace="0.3em"><mtext>equivariant</mtext></mpadded><mpadded width="+0.6em" lspace="0.3em"><mtext>projective birational</mtext></mpadded></munderover><mtext>  </mtext><mi>W</mi><mtext>  </mtext><mo><mover><mo><mo>⇢</mo></mo><mrow><mtext>klt </mtext><mi mathvariant="double-struck">Q</mi><mtext>-factorial EMMP</mtext></mrow></mover></mo><mtext>  </mtext><mi>A</mi></mrow><annotation encoding="application/x-tex">X \;\xleftarrow[\text{equivariant}]{\text{projective birational}}\; W \;\overset{\text{klt } \mathbb Q\text{-factorial EMMP}}{\dashrightarrow}\; A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.8337em;vertical-align:-0.7256em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel x-arrow"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.1081em;"><span style="top:-3.322em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">projective birational</span></span></span></span></span><span class="svg-align" style="top:-2.689em;"><span class="pstrut" style="height:2.7em;"></span><span class="hide-tail" style="height:0.522em;min-width:1.469em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="0.522em" viewBox="0 0 400000 522" preserveAspectRatio="xMinYMin slice"><path d="M400000 241H110l3-3c68.7-52.7 113.7-120
+            <div class="emmp-formula emmp-klt-path">
+              <span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mtext>  </mtext><munderover><mo stretchy="true" minsize="3.0em">←</mo><mpadded width="+0.6em" lspace="0.3em"><mtext>equivariant</mtext></mpadded><mpadded width="+0.6em" lspace="0.3em"><mtext>projective birational</mtext></mpadded></munderover><mtext>  </mtext><mi>W</mi></mrow><annotation encoding="application/x-tex">X\;\xleftarrow[\text{equivariant}]{\text{projective birational}}\;W</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.8337em;vertical-align:-0.7256em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel x-arrow"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.1081em;"><span style="top:-3.322em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">projective birational</span></span></span></span></span><span class="svg-align" style="top:-2.689em;"><span class="pstrut" style="height:2.7em;"></span><span class="hide-tail" style="height:0.522em;min-width:1.469em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="0.522em" viewBox="0 0 400000 522" preserveAspectRatio="xMinYMin slice"><path d="M400000 241H110l3-3c68.7-52.7 113.7-120
  135-202 4-14.7 6-23 6-25 0-7.3-7-11-21-11-8 0-13.2.8-15.5 2.5-2.3 1.7-4.2 5.8
 -5.5 12.5-1.3 4.7-2.7 10.3-4 17-12 48.7-34.8 92-68.5 130S65.3 228.3 18 247
 c-10 4-16 7.7-18 11 0 8.7 6 14.3 18 17 47.3 18.7 87.8 47 121.5 85S196 441.3 208
  490c.7 2 1.3 5 2 9s1.2 6.7 1.5 8c.3 1.3 1 3.3 2 6s2.2 4.5 3.5 5.5c1.3 1 3.3
  1.8 6 2.5s6 1 10 1c14 0 21-3.7 21-11 0-2-2-10.3-6-25-20-79.3-65-146.7-135-202
- l-3-3h399890zM100 241v40h399900v-40z"/></svg></span></span><span style="top:-2.1105em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">equivariant</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7256em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2508em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel"><span class="mop op-limits"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.2508em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span><span class="mop amsrm">⇢</span></span></span><span style="top:-3.6647em;margin-left:0em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">klt </span></span><span class="mord mathbb mtight">Q</span><span class="mord text mtight"><span class="mord mtight">-factorial EMMP</span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">A</span></span></span></span></div>
+ l-3-3h399890zM100 241v40h399900v-40z"/></svg></span></span><span style="top:-2.1105em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">equivariant</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7256em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span></span></span></span></span>
+              <span class="emmp-klt-arrow" aria-label="Dashed arrow labelled klt Q-factorial EMMP"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>klt </mtext><mi mathvariant="double-struck">Q</mi><mtext>-factorial EMMP</mtext></mrow><annotation encoding="application/x-tex">\text{klt }\mathbb Q\text{-factorial EMMP}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8611em;vertical-align:-0.1667em;"></span><span class="mord text"><span class="mord">klt </span></span><span class="mord mathbb">Q</span><span class="mord text"><span class="mord">-factorial EMMP</span></span></span></span></span></span>
+            </div>
             <p class="emmp-source">OpenAI (2026) · <a href="https://arxiv.org/abs/1606.01345">M–D.-Q. Zhang (2018)</a></p>
             <p>After an iterate, take <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi></mrow><annotation encoding="application/x-tex">W</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span></span></span></span> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="double-struck">Q</mi></mrow><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8556em;vertical-align:-0.1667em;"></span><span class="mord mathbb">Q</span></span></span></span>-factorial klt.</p>
             <p>For the reduced exceptional divisor <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi></mrow><annotation encoding="application/x-tex">E</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>W</mi></msub><mo>+</mo><mi>E</mi><msub><mo>∼</mo><mi mathvariant="double-struck">Q</mi></msub><mn>0</mn></mrow><annotation encoding="application/x-tex">K_W+E\sim_{\mathbb Q}0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">W</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.95em;vertical-align:-0.2667em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel"><span class="mrel">∼</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3322em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathbb mtight">Q</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2667em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>. If <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo mathvariant="normal">≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">E\ne0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel"><span class="mrel"><span class="mord vbox"><span class="thinbox"><span class="rlap"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="inner"><span class="mord"><span class="mrel"></span></span></span><span class="fix"></span></span></span></span></span><span class="mrel">=</span></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>, then <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>W</mi></msub></mrow><annotation encoding="application/x-tex">K_W</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">W</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is non-pseudo-effective.</p>
@@ -4869,25 +4932,6 @@ readSlideHash();
     disk(ctx, [x, y], r, gradient);
   }
 
-  function blowdown(ctx, center, progress) {
-    const plane = [[-159,-61],[-64,98],[168,21], [27,-105]].map(([x,y]) => [center[0]+x,center[1]+y]);
-    const radius = 1 - progress;
-    const plot = point => pointAt(center, point, radius);
-    const directions = [...plane, ...plane.map((corner, index) => pointAt(corner, plane[(index + 1) % 4], .5))];
-    directions.forEach((point, index) => {
-      trace(ctx, [pointAt(center, point, -.68), plot(point)], tint(color.faded, .34), 1.2, null, [5, 7]);
-      trace(ctx, [plot(point), pointAt(center, point, 1.42)], tint(color.green, .37), index < 4 ? 1.7 : .8);
-    });
-    trace(ctx, [...plane, plane[0]].map(plot), tint(color.orange, .9 * radius), 2.4, tint(color.orange, .24 * radius));
-    for (let i = 1; i < 6; i++) {
-      const t = i / 6;
-      trace(ctx, [plot(pointAt(plane[0], plane[1], t)), plot(pointAt(plane[3], plane[2], t))], tint(color.orange, radius * .74));
-      trace(ctx, [plot(pointAt(plane[0], plane[3], t)), plot(pointAt(plane[1], plane[2], t))], tint(color.orange, radius * .74));
-    }
-    if (progress > .045) glow(ctx, center, 26 * progress + 5, color.orange);
-    disk(ctx, center, 4 * progress + 2, tint(color.ink, progress));
-  }
-
   function flipSheetPoint([x,y], u,v) {
     return [x + 138*u - 69*v, y + 13*u + 38*v + 15*u*v + 4*(1-u*u)*v];
   }
@@ -4920,70 +4964,35 @@ readSlideHash();
     trace(ctx,arc,tint(paint,opacity),2.8);
   }
 
-  function flipOutline(boundary) {
-    const segments = 7;
-    return boundary.flatMap((corner, index) => {
-      const before = pointAt(boundary.at(index - 1), corner, .5);
-      const after = pointAt(corner, boundary[(index + 1) % boundary.length], .5);
-      return Array.from({length:segments}, (_, sample) => {
-        const t = sample / segments;
-        return pointAt(pointAt(before,corner,t),pointAt(corner,after,t),t);
-      });
-    });
-  }
+  function flipVolume(ctx, [x,y]) {
+    const corners = [[-1.06,-1.08],[1.06,-1.08],[1.06,1.08],[-1.06,1.08]];
+    const project = ([u,v], height) => [
+      x + 138*u - 69*v + 9*height,
+      y + 13*u + 38*v - 26*height
+    ];
+    const roof = corners.map(point => project(point, .87));
+    const floor = corners.map(point => project(point,-1.02));
+    const shade = amount => tint(color.faded,amount);
+    const closed = points => [...points,points[0]];
 
-  function flipVolume(ctx, boundary, paint, opacity, depth) {
-    const outline = flipOutline(boundary);
-    const slice = t => outline.map(([x,y]) => [x + t*depth[0],y + t*depth[1]]);
-    const front = slice(-.43);
-    const back = slice(.57);
-    const closed = contour => [...contour,contour[0]];
-    const bounds = outline.reduce(
-      ([l,r,t,b],[x,y]) => [Math.min(l,x),Math.max(r,x),Math.min(t,y),Math.max(b,y)],
-      [Infinity,-Infinity,Infinity,-Infinity]
-    );
-    const [left,right,top,bottom] = bounds;
-    const shade = (amount) => tint(paint,amount*opacity);
-    const lighting = ctx.createLinearGradient(left,top,right,bottom);
-    lighting.addColorStop(0,shade(.025));
-    lighting.addColorStop(.35,shade(.10));
-    lighting.addColorStop(.76,shade(.21));
-    lighting.addColorStop(1,shade(.16));
+    // A local three-dimensional box, with the ruled surface in its middle.
+    trace(ctx,closed(floor),shade(.43),1.15,null,[4,5]);
+    trace(ctx,[floor[0],roof[0]],shade(.37),1.15,null,[4,5]);
+    function wall(first,last,light,dark) {
+      const gradient = ctx.createLinearGradient(...roof[first],...floor[last]);
+      gradient.addColorStop(0,shade(light));
+      gradient.addColorStop(1,shade(dark));
+      trace(ctx,closed([roof[first],roof[last],floor[last],floor[first]]),
+        shade(.56),1.35,gradient);
+    }
+    wall(3,2,.055,.19);
+    wall(2,1,.11,.30);
 
-    // The obscured contour stays faint. Only the outward-facing side wall is filled.
-    trace(ctx,closed(back),shade(.27),1.05,shade(.042),[3,5]);
-    const area = outline.reduce((sum,p,index) => {
-      const q = outline[(index + 1) % outline.length];
-      return sum + p[0]*q[1] - q[0]*p[1];
-    },0);
-    const visible = outline.map((p,index) => {
-      const q = outline[(index + 1) % outline.length];
-      return area*((q[0]-p[0])*depth[1] - (q[1]-p[1])*depth[0]) < 0;
-    });
-    const start = visible.indexOf(false);
-    let wall = [];
-    function paintWall() {
-      if (wall.length < 2) return;
-      const face = wall.map(index => front[index]);
-      const rim = wall.map(index => back[index]);
-      const sideLight = ctx.createLinearGradient(left,top,right,bottom+depth[1]);
-      sideLight.addColorStop(0,shade(.075));
-      sideLight.addColorStop(1,shade(.25));
-      trace(ctx,[...face,...rim.slice().reverse(),face[0]],null,0,sideLight);
-      trace(ctx,rim,shade(.46),1.1);
-    }
-    for (let count = 1; count <= outline.length; count++) {
-      const i = (start + count) % outline.length;
-      if (visible[i]) {
-        if (!wall.length) wall.push(i);
-        wall.push((i+1)%outline.length);
-      } else {
-        paintWall();
-        wall = [];
-      }
-    }
-    paintWall();
-    trace(ctx,closed(front),shade(.53),1.24,lighting);
+    const lighting = ctx.createLinearGradient(...roof[0],...roof[2]);
+    lighting.addColorStop(0,shade(.035));
+    lighting.addColorStop(1,shade(.11));
+    trace(ctx,closed(roof),shade(.54),1.4,lighting);
+    trace(ctx,[roof[2],floor[2]],shade(.69),1.65);
   }
 
   const flipBlobs = new Map();
@@ -5104,10 +5113,7 @@ readSlideHash();
     if (step >= 3) flipSideRegion(ctx,right,2,side===2?.83:.58);
     flipBlob(ctx,bridge,[87,55],color.faded,.72,-1);
     if (step === 4) {
-      flipVolume(ctx,[[157,113],[168,85],[205,65],[268,63],[330,49],[380,56],
-        [445,46],[505,48],[553,45],[618,59],[638,83],[621,110],[578,133],
-        [548,161],[491,181],[454,186],[388,174],[347,175],[288,162],[228,160],[174,144]],
-      color.faded,.52,[9,15]);
+      flipVolume(ctx,top);
     }
 
     arrow(ctx,[221,263],[364,352],leftPaint,2.55);
@@ -5121,7 +5127,7 @@ readSlideHash();
       arrow(ctx,[318,151],[219,211],leftPaint,2.55);
       arrow(ctx,[485,151],[581,211],rightPaint,2.55);
       flipSheet(ctx,(u,v) => flipSheetPoint(top,u,v),side,side ? .78 : 1);
-      write(ctx,"E",400,24,{size:35,serif:true});
+      write(ctx,"E",400,16,{size:30,serif:true});
       if (side && portion < .999) {
         const destination = side === 1 ? left : right;
         const warp = (u,v) => {
@@ -5136,7 +5142,7 @@ readSlideHash();
 
     const leftOpacity = step === 2 ? mix(.96,.34,progress) : (step === 3 ? .52 : .9);
     flipCurve(ctx,left,1,leftOpacity);
-    write(ctx,"Xᵢ",left[0],155,{size:39,serif:true});
+    write(ctx,"Xᵢ",left[0] - (step === 4 ? 23 : 0),155,{size:39,serif:true});
     write(ctx,"C",left[0]-23,left[1]-19,{size:30,serif:true,paint:color.orange});
     write(ctx,"K · C < 0",left[0],323,{size:26,serif:true,paint:color.orange});
 
@@ -5150,6 +5156,33 @@ readSlideHash();
     flipBridge(ctx,bridge);
     if (step === 2 && progress < .995) flipCurve(ctx,left,1,1-progress*.43,1-progress,bridge);
     if (step === 3 && progress < .995) flipCurve(ctx,right,2,.48+progress*.44,progress,bridge);
+  }
+
+  function exceptionalPlanePoint(center, u, v) {
+    return pointAt(center, flipSheetPoint(center, u, v), .76);
+  }
+
+  function divisorialContraction(ctx, progress) {
+    const source = [232,191];
+    const target = [622,294];
+    const warm = tint(color.orange, .88);
+    const plane = (u,v) => exceptionalPlanePoint(source,u,v);
+
+    flipBlob(ctx,source,[121,78],color.orange,.73);
+    flipBlob(ctx,target,[81,51],color.faded,.72,-1);
+    arrow(ctx,[349,224],[595,287],warm,2.55);
+    flipSheet(ctx,plane,1,mix(.95,.62,progress));
+    if (progress > .01 && progress < .995) {
+      const projectedPlane = (u,v) => pointAt(plane(u,v),target,progress);
+      const opacity = .38 + .57 * Math.sin(Math.PI * progress);
+      flipSheet(ctx,projectedPlane,1,opacity);
+    }
+
+    disk(ctx,target,5.3,color.dark);
+    disk(ctx,target,3.7,color.ink);
+    write(ctx,"E ≃ ℙ²",source[0],91,{size:39,serif:true,paint:color.orange});
+    write(ctx,"πᵢ",470,288,{size:33,serif:true,paint:warm});
+    write(ctx,"0 ∈ 𝔸³",target[0],354,{size:39,serif:true});
   }
 
   function ruledFibre(ctx, center, progress) {
@@ -5174,89 +5207,68 @@ readSlideHash();
   }
 
   function fanoContraction(ctx, progress) {
-    const collapse = eased(Math.max(0,Math.min(1,(progress-.13)/.79)));
+    const collapse = eased(Math.max(0, Math.min(1, (progress-.13)/.79)));
     const height = 1-collapse;
-    const wave = (u,v) => .35*Math.sin(2*u)*Math.cos(1.6*v)
-      +.15*Math.sin(2.5*v)+.10*u*v;
-    const project = (u,v,h = 0) => [
-      398+201*u+93*v,
-      313+37*u+66*v-86*wave(u,v)-155*h
-    ];
-    const rim = angle => {
-      const r = 1+.105*Math.sin(3*angle+.3)+.045*Math.cos(5*angle);
-      return [r*Math.cos(angle),r*Math.sin(angle)];
-    };
+    // An affine chart of the product. The two base coordinates and the
+    // fibre coordinate share one projection in both the solid and the grid.
+    const project = (u,v,h = 0) => [394+203*u-95*v, 297+45*u+50*v-162*h];
+    const corners = [[-1,-1], [1,-1], [1,1], [-1,1]];
+    const base = corners.map(([u,v]) => project(u,v));
+    const cap = corners.map(([u,v]) => project(u,v,height));
+    const closed = points => [...points,points[0]];
+    const gridLines = [-.6,-.2,.2,.6];
 
-    if (height > .008) {
-      const volume = flipBlobTexture(color.green,-1,670,310);
-      const w = 500;
-      const h = 280*height;
-      ctx.save();
-      ctx.globalAlpha = .79*height;
-      ctx.drawImage(volume,398-w/2,313-94*height-h/2,w,h);
-      ctx.restore();
+    const baseLight = ctx.createLinearGradient(...base[0],...base[2]);
+    baseLight.addColorStop(0,tint(color.orange,.07));
+    baseLight.addColorStop(1,tint(color.orange,.25));
+    trace(ctx,closed(base),tint(color.orange,.63),2,baseLight);
+    for (const t of gridLines) {
+      trace(ctx,[project(t,-1),project(t,1)],tint(color.orange,.24),1);
+      trace(ctx,[project(-1,t),project(1,t)],tint(color.orange,.24),1);
     }
 
-    // A wavy two-parameter surface. Its cells are filled without mesh strokes.
-    const rings = 11;
-    const segments = 58;
-    for (let ring = 0; ring < rings; ring++) {
-      const r0 = ring/rings;
-      const r1 = (ring+1)/rings;
-      for (let segment = 0; segment < segments; segment++) {
-        const p0 = rim(tau*segment/segments);
-        const p1 = rim(tau*(segment+1)/segments);
-        const u = (p0[0]+p1[0])*(r0+r1)/4;
-        const v = (p0[1]+p1[1])*(r0+r1)/4;
-        const du = .70*Math.cos(2*u)*Math.cos(1.6*v)+.10*v;
-        const dv = -.56*Math.sin(2*u)*Math.sin(1.6*v)+.375*Math.cos(2.5*v)+.10*u;
-        const illumination = (.76+.44*du+.40*dv)/Math.hypot(du,dv,1);
-        const fill = tint(color.orange,.21+.13*(1-illumination));
-        const cell = [
-          project(p0[0]*r0,p0[1]*r0),
-          project(p0[0]*r1,p0[1]*r1),
-          project(p1[0]*r1,p1[1]*r1),
-          project(p1[0]*r0,p1[1]*r0)
-        ];
-        trace(ctx,[...cell,cell[0]],null,0,fill);
-      }
-    }
-    const edge = sample(angle => project(...rim(angle)),116);
-    trace(ctx,edge,tint(color.orange,.62),1.5);
-    const nearRim = Array.from({length:55}, (_, i) => {
-      const angle = Math.PI*(i/54);
-      return project(...rim(angle));
-    });
-    trace(ctx,nearRim,tint(color.orange,.81),1.85);
-
-    for (const v of [-.63,0,.63]) {
-      for (const u of [-.65,0,.65]) {
-        const selected = u === .65 && v === .63;
+    const fibreExtent = [-.64,0,.64];
+    for (const v of fibreExtent) {
+      for (const u of fibreExtent) {
+        const selected = u === .64 && v === .64;
         const paint = selected ? color.orange : color.green;
         const root = project(u,v);
         if (height > .008) {
-          const fibre = Array.from({length:43}, (_,i) => {
-            const t = i/42;
-            const bend = Math.sin(Math.PI*t)*height;
-            return project(
-              u+.105*bend,
-              v-.045*bend,
-              height*(.015+.89*t)
-            );
-          });
-          trace(ctx,fibre,tint(paint,selected?.99:.78),selected?3.1:1.9);
-          if (selected && height > .28) {
-            arrow(ctx,project(u+.05,v,height*.70),project(u+.05,v,height*.18),
-              tint(color.orange,.70),1.3,[4,5]);
-          }
+          trace(ctx,[root,project(u,v,height)],tint(paint,selected ? .78 : .44),selected ? 2.5 : 1.45);
         }
-        disk(ctx,root,selected?mix(3.5,5.1,collapse):mix(1.85,3.1,collapse),
-          tint(selected?color.orange:color.ink,selected?.97:mix(.36,.67,collapse)));
+        disk(ctx,root,selected ? 4.1 : 2.4,tint(selected ? color.orange : color.ink,selected ? .92 : .58));
       }
     }
 
-    if (height > .14) write(ctx,"ℙ¹ × A",398,44,{size:39,serif:true,paint:color.green});
-    write(ctx,"A",412,400,{size:45,serif:true,paint:color.orange});
+    if (height > .008) {
+      const shade = Math.min(1,height/.28);
+      trace(ctx,[base[0],cap[0]],tint(color.green,.42*shade),1.5,null,[4,5]);
+      for (const [from,to,opacity] of [[3,2,.24],[2,1,.13]]) {
+        const light = ctx.createLinearGradient(...cap[from],...base[to]);
+        light.addColorStop(0,tint(color.green,.07*shade));
+        light.addColorStop(1,tint(color.green,opacity*shade));
+        trace(ctx,closed([cap[from],cap[to],base[to],base[from]]),tint(color.green,.58*shade),1.7,light);
+      }
+      for (const t of gridLines) {
+        trace(ctx,[project(t,1),project(t,1,height)],tint(color.green,.24*shade),1);
+        trace(ctx,[project(1,t),project(1,t,height)],tint(color.green,.24*shade),1);
+      }
+      const capLight = ctx.createLinearGradient(...cap[0],...cap[2]);
+      capLight.addColorStop(0,tint(color.green,.08*shade));
+      capLight.addColorStop(1,tint(color.green,.19*shade));
+      trace(ctx,closed(cap),tint(color.green,.75*shade),2.2,capLight);
+      for (const t of gridLines) {
+        trace(ctx,[project(t,-1,height),project(t,1,height)],tint(color.green,.29*shade),1.05);
+        trace(ctx,[project(-1,t,height),project(1,t,height)],tint(color.green,.29*shade),1.05);
+      }
+      if (height > .21) {
+        const labelledFibre = t => project(.64,.64,t*height);
+        arrow(ctx,labelledFibre(.86),labelledFibre(.18),tint(color.orange,.93),2.8);
+        disk(ctx,labelledFibre(1),3.8,tint(color.orange,.88));
+      }
+      write(ctx,"ℙ¹ × A",466,31,{size:39,serif:true,paint:tint(color.green,shade)});
+    }
+    write(ctx,"A",624,382,{size:43,serif:true,paint:color.orange});
   }
 
   function thumbnail(ctx,x,paint,render) {
@@ -5269,11 +5281,11 @@ readSlideHash();
   }
 
   function benchmark(ctx, step, progress, ruling) {
-    if (step < 2) grid(ctx);
+    if (step === 0) grid(ctx);
     const center = [400,201];
     switch (step) {
       case 0:
-        thumbnail(ctx,151,color.orange,() => blowdown(ctx,center,0));
+        thumbnail(ctx,151,color.orange,() => flipSheet(ctx,(u,v) => exceptionalPlanePoint(center,u,v),1));
         thumbnail(ctx,400,color.green,() => flipSheet(ctx,(u,v) => flipSheetPoint(center,u,v)));
         thumbnail(ctx,649,color.ink,() => ruledFibre(ctx,center,0));
         write(ctx,"divisor",151,343,{size:24,paint:color.orange});
@@ -5281,8 +5293,7 @@ readSlideHash();
         write(ctx,"fibre",649,343,{size:24});
         break;
       case 1:
-        blowdown(ctx,center,progress);
-        write(ctx,progress < .9?"E ≃ ℙ²":"0 ∈ 𝔸³",400,360,{size:40,serif:true,paint:color.orange});
+        divisorialContraction(ctx,progress);
         break;
       case 2:
       case 3:
