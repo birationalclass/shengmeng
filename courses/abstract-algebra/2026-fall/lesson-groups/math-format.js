@@ -7,7 +7,7 @@
  const sup={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁺':'+','⁻':'-','ⁱ':'i','ʲ':'j','ᵏ':'k','ᵐ':'m','ⁿ':'n','ʳ':'r','ˢ':'s','ᵗ':'t'};
  const greek={'λ':'\\lambda','ρ':'\\rho','σ':'\\sigma','ϕ':'\\phi','φ':'\\phi','α':'\\alpha','β':'\\beta'};
  function tex(text){return text.replace(/[₀-₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜᵤᵥₓ]+/gu,s=>'_{'+[...s].map(c=>sub[c]).join('')+'}').replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻ⁱʲᵏᵐⁿʳˢᵗ]+/gu,s=>'^{'+[...s].map(c=>sup[c]).join('')+'}').replace(/[λρσϕφαβ]/gu,c=>greek[c]+' ');}
- function inline(text){
+ function plain(text){
   text=String(text);let result='',end=0;
   const pattern=/([A-Za-zλρσϕφαβ])_(\([^()]+\)|[A-Za-zλρσϕφαβ0-9]+[₀-₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜᵤᵥₓ]*)/gu;
   for(const match of text.matchAll(pattern)){
@@ -17,6 +17,17 @@
    end=match.index+match[0].length;
   }
   return result+escape(text.slice(end));
+ }
+ // Explicit TeX is opt-in; surrounding prose remains escaped text.
+ function inline(text){
+  text=String(text);let result='',end=0;
+  const pattern=/\\\(([\s\S]+?)\\\)|\\\[([\s\S]+?)\\\]/g;
+  for(const match of text.matchAll(pattern)){
+   result+=plain(text.slice(end,match.index));
+   result+=window.katex.renderToString(match[1]??match[2],{displayMode:match[2]!==undefined,throwOnError:true,strict:'ignore',output:'htmlAndMathml'});
+   end=match.index+match[0].length;
+  }
+  return result+plain(text.slice(end));
  }
  window.GroupLessonMath=Object.freeze({escape,inline});
 })();

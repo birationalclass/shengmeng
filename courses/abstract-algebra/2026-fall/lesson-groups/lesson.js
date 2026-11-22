@@ -27,7 +27,7 @@ window.addEventListener('resize',()=>requestAnimationFrame(fitMath));
 document.fonts?.ready.then(()=>requestAnimationFrame(fitMath));
 const reference=e=>window.GroupTextbookReferences[id][e.id];
 const entries=book.entries.filter(e=>!e.afterSelfCheck).concat({id:'check',title:['自测与书面练习','Self-check and written exercise'],tex:'',text:['本节原创练习。先独立作答，再查看理由；最后完成一道书面证明。答案与进度保存在当前浏览器中。','Original exercises for this section. Answer independently, then review the reasoning and finish a written proof. Progress is stored in this browser.']},book.entries.filter(e=>e.afterSelfCheck));
-window.LessonNotebookContent={[id]:entries.map(e=>({topic:e.id,extension:!!e.extension,statementOnly:!!e.statementOnly,ref:e.id==='check'?['本节自测','Section self-check']:reference(e).label,title:e.title,formula:formula(e.tex),text:e.text.map(window.GroupLessonMath.inline),detail:book.optional?['拓展阅读 · 不增加既定课表中的必讲课时。','Optional reading · outside the required scheduled teaching.']:undefined}))};
+window.LessonNotebookContent={[id]:entries.map(e=>({topic:e.id,extension:!!(e.extension||e.supplement),statementOnly:!!e.statementOnly,ref:e.id==='check'?['本节自测','Section self-check']:reference(e).label,title:e.title,formula:formula(e.tex),text:e.text.map(window.GroupLessonMath.inline),detail:book.optional?['拓展阅读 · 不增加既定课表中的必讲课时。','Optional reading · outside the required scheduled teaching.']:undefined}))};
 let current=0,quizIndex=0,disposeExtension=()=>{};
 const key=`algebra-groups-v1-${id}`;let saved={};try{saved=JSON.parse(localStorage.getItem(key)||'{}');}catch{}
 const save=()=>{try{localStorage.setItem(key,JSON.stringify(saved));}catch{}};

@@ -624,6 +624,26 @@ window.GroupSections={
     "optional": false,
     "topics": [
       [
+        "module-definition",
+        "模：把标量从域推广到环",
+        "Modules: scalars from a ring"
+      ],
+      [
+        "module-vector-spaces",
+        "线性空间就是域上的模",
+        "Vector spaces are modules over fields"
+      ],
+      [
+        "submodule",
+        "子模：子空间的推广",
+        "Submodules generalize subspaces"
+      ],
+      [
+        "ideals-as-submodules",
+        "理想：环作为自身模时的子模",
+        "Ideals: submodules of the ring itself"
+      ],
+      [
         "ideal",
         "理想比子环多一个吸收条件",
         "An ideal also absorbs multiplication"
