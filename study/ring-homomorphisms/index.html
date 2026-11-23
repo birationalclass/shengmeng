@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef">
+  <meta name="description" content="抽象代数 I 环同态拓展讲义。三个同构定理、多个子模的推广、中国剩余定理、商环的理想对应及有限生成代数，附可展开证明。">
+  <title>环的三个同构定理 · 抽象代数 I</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../visuals/catalog.css?v=20261001-gallery">
+  <link rel="stylesheet" href="../spectral/vendor/katex.min.css">
+  <link rel="stylesheet" href="../abundance/note.css?v=3">
+  <link rel="stylesheet" href="../abundance/threefold.css?v=2">
+  <link rel="stylesheet" href="ring-note.css">
+  <script src="../spectral/vendor/katex.min.js" defer></script>
+  <script src="../abundance/jets.js?v=1" defer></script>
+</head>
+<body>
+<main class="study-note ring-note">
+  <header class="note-header">
+    <a href="../../courses/abstract-algebra/2026-fall/?view=lesson&amp;section=3.4&amp;lang=zh#ring-isomorphism-reading" class="back-link">← 环的同态 · §3.4</a>
+    <a href="../#notes" class="back-link study-link">学习笔记</a>
+    <h1>环的三个同构定理</h1>
+    <nav class="note-downloads" aria-label="讲义 PDF">
+      <a href="commutative.pdf">交换环版 PDF</a>
+      <a href="noncommutative.pdf">非交换环版 PDF</a>
+    </nav>
+  </header>
+  <article class="note-content">
+<div class="note-prose">
+  <p>本讲义的环有单位元，允许零环。子环与原环共用单位元，环同态保持加法、乘法和单位元。前三节允许乘法不交换，理想同时对左乘和右乘封闭。第四节设 <span class="math-source" data-math="R" data-display="false">R</span> 为交换环。</p>
+</div>
+<h2 id="first-isomorphism"><span>1.</span> 第一同构定理</h2>
+<section class="statement">
+<h3>定理 1.</h3>
+<p>设 <span class="math-source" data-display="false" data-math="f\colon R\to S">\(f\colon R\to S\)</span> 为环同态。 核 <span class="math-source" data-display="false" data-math="\operatorname{Ker} f">\(\operatorname{Ker} f\)</span> 是 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 的理想，像 <span class="math-source" data-display="false" data-math="\operatorname{Im} f">\(\operatorname{Im} f\)</span> 是 <span class="math-source" data-display="false" data-math="S">\(S\)</span> 的子环，且</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="R/\operatorname{Ker} f\ \cong\ \operatorname{Im} f,\qquad r+\operatorname{Ker} f\longmapsto f(r).">\[R/\operatorname{Ker} f\ \cong\ \operatorname{Im} f,\qquad r+\operatorname{Ker} f\longmapsto f(r).\]</span></div>
+<p>若 <span class="math-source" data-display="false" data-math="f">\(f\)</span> 满射，则 <span class="math-source" data-display="false" data-math="R/\operatorname{Ker} f\cong S">\(R/\operatorname{Ker} f\cong S\)</span>。</p>
+</section>
+<details class="proof" id="proof-1">
+  <summary id="proof-1-toggle" aria-controls="proof-1-body" aria-expanded="false"><span class="proof-heading">证明</span><span class="proof-icon" aria-hidden="true"></span></summary>
+  <div class="proof-body" id="proof-1-body">
+<p>记 <span class="math-source" data-display="false" data-math="K=\operatorname{Ker} f">\(K=\operatorname{Ker} f\)</span>。由于 <span class="math-source" data-display="false" data-math="f">\(f\)</span> 保持加法，<span class="math-source" data-display="false" data-math="K">\(K\)</span> 是加法子群。 对 <span class="math-source" data-display="false" data-math="r\in R">\(r\in R\)</span> 和 <span class="math-source" data-display="false" data-math="k\in K">\(k\in K\)</span>，有</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="f(rk)=f(r)f(k)=0,\qquad f(kr)=f(k)f(r)=0.">\[f(rk)=f(r)f(k)=0,\qquad f(kr)=f(k)f(r)=0.\]</span></div>
+<p>所以 <span class="math-source" data-display="false" data-math="rk,kr\in K">\(rk,kr\in K\)</span>，故 <span class="math-source" data-display="false" data-math="K">\(K\)</span> 是理想。</p>
+<p>像 <span class="math-source" data-display="false" data-math="\operatorname{Im} f">\(\operatorname{Im} f\)</span> 含 <span class="math-source" data-display="false" data-math="1_S=f(1_R)">\(1_S=f(1_R)\)</span>，且对减法和乘法封闭，故为子环。</p>
+<p>考虑映射 <span class="math-source" data-display="false" data-math="r+K\mapsto f(r)">\(r+K\mapsto f(r)\)</span>。对任意 <span class="math-source" data-display="false" data-math="r,s\in R">\(r,s\in R\)</span>，有</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="r+K=s+K\quad\Longleftrightarrow\quad r-s\in K
+ \quad\Longleftrightarrow\quad f(r)=f(s).">\[r+K=s+K\quad\Longleftrightarrow\quad r-s\in K
+ \quad\Longleftrightarrow\quad f(r)=f(s).\]</span></div>
+<p>这说明映射良定义且为单射。</p>
+<p>由商环的运算知该映射是环同态。它满射到 <span class="math-source" data-display="false" data-math="\operatorname{Im} f">\(\operatorname{Im} f\)</span>，故为环同构。</p>
+    <span class="qed" aria-label="证毕">□</span>
+  </div>
+</details>
+<h2 id="second-isomorphism"><span>2.</span> 第二同构定理</h2>
+<section class="statement">
+<h3>定理 2.</h3>
+<p>设 <span class="math-source" data-display="false" data-math="M,N">\(M,N\)</span> 是左 <span class="math-source" data-display="false" data-math="R">\(R\)</span>-模 <span class="math-source" data-display="false" data-math="V">\(V\)</span> 的两个子模。则有自然的 <span class="math-source" data-display="false" data-math="R">\(R\)</span>-模同构</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="(M+N)/N\ \cong\ M/(M\cap N).">\[(M+N)/N\ \cong\ M/(M\cap N).\]</span></div>
+</section>
+<details class="proof" id="proof-2">
+  <summary id="proof-2-toggle" aria-controls="proof-2-body" aria-expanded="false"><span class="proof-heading">证明</span><span class="proof-icon" aria-hidden="true"></span></summary>
+  <div class="proof-body" id="proof-2-body">
+<p>将商映射 <span class="math-source" data-display="false" data-math="M+N\to(M+N)/N">\(M+N\to(M+N)/N\)</span> 限制到 <span class="math-source" data-display="false" data-math="M">\(M\)</span>，得到 <span class="math-source" data-display="false" data-math="R">\(R\)</span>-线性映射 <span class="math-source" data-display="false" data-math="m\mapsto m+N">\(m\mapsto m+N\)</span>。</p>
+<p>由 <span class="math-source" data-display="false" data-math="(m+n)+N=m+N">\((m+n)+N=m+N\)</span> 可知它是满射。对 <span class="math-source" data-display="false" data-math="m,m&#x27;\in M">\(m,m&#x27;\in M\)</span>，有</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="m+N=m&#x27;+N\quad\Longleftrightarrow\quad m-m&#x27;\in M\cap N.">\[m+N=m&#x27;+N\quad\Longleftrightarrow\quad m-m&#x27;\in M\cap N.\]</span></div>
+<p>因此它诱导出 <span class="math-source" data-display="false" data-math="R">\(R\)</span>-线性的双射</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="M/(M\cap N)\longrightarrow (M+N)/N,\qquad m+(M\cap N)\longmapsto m+N.">\[M/(M\cap N)\longrightarrow (M+N)/N,\qquad m+(M\cap N)\longmapsto m+N.\]</span></div>
+<p>这就是所需的同构。</p>
+    <span class="qed" aria-label="证毕">□</span>
+  </div>
+</details>
+<section class="statement">
+<h3>推论.</h3>
+<p>设 <span class="math-source" data-display="false" data-math="I,J">\(I,J\)</span> 是 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 的两个理想。则有自然的 <span class="math-source" data-display="false" data-math="R">\(R\)</span>-模同构</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="(I+J)/J\ \cong\ I/(I\cap J).">\[(I+J)/J\ \cong\ I/(I\cap J).\]</span></div>
+</section>
+<details class="proof" id="proof-3">
+  <summary id="proof-3-toggle" aria-controls="proof-3-body" aria-expanded="false"><span class="proof-heading">证明</span><span class="proof-icon" aria-hidden="true"></span></summary>
+  <div class="proof-body" id="proof-3-body">
+<p>让 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 通过左乘作用在自身上。在定理 2 中取 <span class="math-source" data-display="false" data-math="V=R">\(V=R\)</span>，<span class="math-source" data-display="false" data-math="M=I">\(M=I\)</span>，<span class="math-source" data-display="false" data-math="N=J">\(N=J\)</span> 即得结论。 自然同构也与右乘相容，所以还是 <span class="math-source" data-display="false" data-math="R">\(R\)</span>-双模同构。</p>
+<p>它由环的商映射诱导，因此也保持两边的乘法。</p>
+    <span class="qed" aria-label="证毕">□</span>
+  </div>
+</details>
+<h3 class="note-subsection" id="module-crt">2.1 多个子模的推广</h3>
+<section class="statement">
+<h3>定理.</h3>
+<p>设 <span class="math-source" data-display="false" data-math="M_1,\ldots,M_n">\(M_1,\ldots,M_n\)</span> 是左 <span class="math-source" data-display="false" data-math="R">\(R\)</span>-模 <span class="math-source" data-display="false" data-math="M">\(M\)</span> 的子模，<span class="math-source" data-display="false" data-math="n\ge 2">\(n\ge 2\)</span>。自然映射</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="\rho\colon M/\left(\bigcap_{i=1}^n M_i\right)\longrightarrow\prod_{i=1}^n M/M_i,
+ \qquad [m]\longmapsto (m+M_1,\ldots,m+M_n)">\[\rho\colon M/\left(\bigcap_{i=1}^n M_i\right)\longrightarrow\prod_{i=1}^n M/M_i,
+ \qquad [m]\longmapsto (m+M_1,\ldots,m+M_n)\]</span></div>
+<p>是单射。它为同构，当且仅当对每个 <span class="math-source" data-display="false" data-math="i">\(i\)</span> 都有</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="M_i+\bigcap_{j\ne i}M_j=M.">\[M_i+\bigcap_{j\ne i}M_j=M.\]</span></div>
+</section>
+<details class="proof" id="proof-4">
+  <summary id="proof-4-toggle" aria-controls="proof-4-body" aria-expanded="false"><span class="proof-heading">证明</span><span class="proof-icon" aria-hidden="true"></span></summary>
+  <div class="proof-body" id="proof-4-body">
+<p>因为 <span class="math-source" data-display="false" data-math="\bigcap_i M_i\subseteq M_j">\(\bigcap_i M_i\subseteq M_j\)</span> 对每个 <span class="math-source" data-display="false" data-math="j">\(j\)</span> 都成立，<span class="math-source" data-display="false" data-math="\rho">\(\rho\)</span> 是良定义的 <span class="math-source" data-display="false" data-math="R">\(R\)</span>-线性映射。 <span class="math-source" data-display="false" data-math="m">\(m\)</span> 在各商模中的像都为零，当且仅当 <span class="math-source" data-display="false" data-math="m">\(m\)</span> 属于所有 <span class="math-source" data-display="false" data-math="M_i">\(M_i\)</span>，故 <span class="math-source" data-display="false" data-math="\rho">\(\rho\)</span> 是单射。</p>
+<p>若 <span class="math-source" data-display="false" data-math="\rho">\(\rho\)</span> 满射，给定 <span class="math-source" data-display="false" data-math="m\in M">\(m\in M\)</span>，取第 <span class="math-source" data-display="false" data-math="i">\(i\)</span> 个分量为 <span class="math-source" data-display="false" data-math="m+M_i">\(m+M_i\)</span>、其余分量为零的元。 它来自某个 <span class="math-source" data-display="false" data-math="u\in M">\(u\in M\)</span>，于是 <span class="math-source" data-display="false" data-math="u\in\bigcap_{j\ne i}M_j">\(u\in\bigcap_{j\ne i}M_j\)</span> 且 <span class="math-source" data-display="false" data-math="m-u\in M_i">\(m-u\in M_i\)</span>。因此所需的和等于 <span class="math-source" data-display="false" data-math="M">\(M\)</span>。</p>
+<p>反过来，若上述条件成立，给定一组剩余类 <span class="math-source" data-display="false" data-math="(m_i+M_i)_{i=1}^n">\((m_i+M_i)_{i=1}^n\)</span>，可对每个 <span class="math-source" data-display="false" data-math="i">\(i\)</span> 取</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="u_i\in\bigcap_{j\ne i}M_j,\qquad m_i-u_i\in M_i.">\[u_i\in\bigcap_{j\ne i}M_j,\qquad m_i-u_i\in M_i.\]</span></div>
+<p>取 <span class="math-source" data-display="false" data-math="u=\sum_i u_i">\(u=\sum_i u_i\)</span>。在 <span class="math-source" data-display="false" data-math="M/M_j">\(M/M_j\)</span> 中，除 <span class="math-source" data-display="false" data-math="u_j">\(u_j\)</span> 外的各项都为零，故</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="u+M_j=u_j+M_j=m_j+M_j.">\[u+M_j=u_j+M_j=m_j+M_j.\]</span></div>
+<p>因此 <span class="math-source" data-display="false" data-math="\rho">\(\rho\)</span> 满射。</p>
+    <span class="qed" aria-label="证毕">□</span>
+  </div>
+</details>
+<h3 class="note-subsection" id="module-counterexample">两两条件为何不够</h3>
+<div class="note-prose">
+<p>当 <span class="math-source" data-display="false" data-math="n=2">\(n=2\)</span> 时，条件正是 <span class="math-source" data-display="false" data-math="M_1+M_2=M">\(M_1+M_2=M\)</span>。当 <span class="math-source" data-display="false" data-math="n=3">\(n=3\)</span> 时，在实平面 <span class="math-source" data-display="false" data-math="M=\mathbb R^2">\(M=\mathbb R^2\)</span> 中取三条直线</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="M_1=\langle(1,0)\rangle,\qquad M_2=\langle(0,1)\rangle,\qquad M_3=\langle(1,1)\rangle.">\[M_1=\langle(1,0)\rangle,\qquad M_2=\langle(0,1)\rangle,\qquad M_3=\langle(1,1)\rangle.\]</span></div>
+<figure class="line-diagram">
+  <svg viewBox="0 0 320 160" role="img" aria-labelledby="lines-title" aria-describedby="lines-desc">
+    <title id="lines-title">实平面中的三个一维子空间</title>
+    <desc id="lines-desc">M1 是横轴，M2 是纵轴，M3 是对角线。任意两条直线张成平面。</desc>
+    <path d="M43 86H277" stroke="#82967d"/>
+    <path d="M160 143V29" stroke="#49634e"/>
+    <path d="M106 140L214 32" stroke="#a06852"/>
+    <g font-size="15" font-family="Georgia, serif">
+      <text x="283" y="91" fill="#49634e">M₁</text>
+      <text x="147" y="21" fill="#49634e">M₂</text>
+      <text x="220" y="34" fill="#a06852">M₃</text>
+    </g>
+  </svg>
+</figure>
+</div>
+<h3 class="note-subsection" id="chinese-remainder">2.2 中国剩余定理</h3>
+<section class="statement">
+<h3>定理.</h3>
+<p>设 <span class="math-source" data-display="false" data-math="I_1,\ldots,I_n">\(I_1,\ldots,I_n\)</span> 是 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 的理想，<span class="math-source" data-display="false" data-math="n\ge 2">\(n\ge 2\)</span>。 若对 <span class="math-source" data-display="false" data-math="i\ne j">\(i\ne j\)</span> 都有 <span class="math-source" data-display="false" data-math="I_i+I_j=R">\(I_i+I_j=R\)</span>，则有自然的环同构</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="R/\left(\bigcap_{i=1}^n I_i\right)\ \cong\ \prod_{i=1}^n R/I_i.">\[R/\left(\bigcap_{i=1}^n I_i\right)\ \cong\ \prod_{i=1}^n R/I_i.\]</span></div>
+</section>
+<details class="proof" id="proof-5">
+  <summary id="proof-5-toggle" aria-controls="proof-5-body" aria-expanded="false"><span class="proof-heading">证明</span><span class="proof-icon" aria-hidden="true"></span></summary>
+  <div class="proof-body" id="proof-5-body">
+<p>固定 <span class="math-source" data-display="false" data-math="i">\(i\)</span>。对每个 <span class="math-source" data-display="false" data-math="j\ne i">\(j\ne i\)</span>，由 <span class="math-source" data-display="false" data-math="I_i+I_j=R">\(I_i+I_j=R\)</span>，可取 <span class="math-source" data-display="false" data-math="b_{ij}\in I_j">\(b_{ij}\in I_j\)</span>，使</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="b_{ij}+I_i=1+I_i.">\[b_{ij}+I_i=1+I_i.\]</span></div>
+<p>按固定顺序取乘积 <span class="math-source" data-display="false" data-math="e_i=\prod_{j\ne i}b_{ij}">\(e_i=\prod_{j\ne i}b_{ij}\)</span>，则</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="e_i+I_i=1+I_i,\qquad e_i\in\bigcap_{j\ne i}I_j.">\[e_i+I_i=1+I_i,\qquad e_i\in\bigcap_{j\ne i}I_j.\]</span></div>
+<p>后者成立，因为对每个 <span class="math-source" data-display="false" data-math="j\ne i">\(j\ne i\)</span>，乘积中都有一个因子属于理想 <span class="math-source" data-display="false" data-math="I_j">\(I_j\)</span>。</p>
+<p>于是 <span class="math-source" data-display="false" data-math="1=(1-e_i)+e_i">\(1=(1-e_i)+e_i\)</span> 属于 <span class="math-source" data-display="false" data-math="I_i+\bigcap_{j\ne i} I_j">\(I_i+\bigcap_{j\ne i} I_j\)</span>。这个理想含 <span class="math-source" data-display="false" data-math="1">\(1\)</span>，故等于 <span class="math-source" data-display="false" data-math="R">\(R\)</span>。</p>
+<p>在多个子模的推广中取 <span class="math-source" data-display="false" data-math="M=R">\(M=R\)</span>、<span class="math-source" data-display="false" data-math="M_i=I_i">\(M_i=I_i\)</span>，得到所述的自然双射。 它由各商环的投影诱导，因此也保持乘法和单位元。</p>
+    <span class="qed" aria-label="证毕">□</span>
+  </div>
+</details>
+<section class="statement">
+<h3>推论（整数情形）.</h3>
+<p>设正整数 <span class="math-source" data-display="false" data-math="m_1,\ldots,m_n">\(m_1,\ldots,m_n\)</span> 两两互素。对任意 <span class="math-source" data-display="false" data-math="a_1,\ldots,a_n\in\mathbb Z">\(a_1,\ldots,a_n\in\mathbb Z\)</span>，同余组</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="x\equiv a_i\pmod{m_i}\qquad(1\le i\le n)">\[x\equiv a_i\pmod{m_i}\qquad(1\le i\le n)\]</span></div>
+<p>在模 <span class="math-source" data-display="false" data-math="m_1\cdots m_n">\(m_1\cdots m_n\)</span> 的意义下恰有一个解。</p>
+</section>
+<details class="proof" id="proof-6">
+  <summary id="proof-6-toggle" aria-controls="proof-6-body" aria-expanded="false"><span class="proof-heading">证明</span><span class="proof-icon" aria-hidden="true"></span></summary>
+  <div class="proof-body" id="proof-6-body">
+<p>由裴蜀等式，理想 <span class="math-source" data-display="false" data-math="m_i\mathbb Z">\(m_i\mathbb Z\)</span> 两两互素。它们的交是 <span class="math-source" data-display="false" data-math="(m_1\cdots m_n)\mathbb Z">\((m_1\cdots m_n)\mathbb Z\)</span>，故可应用中国剩余定理。</p>
+    <span class="qed" aria-label="证毕">□</span>
+  </div>
+</details>
+<section class="statement">
+<h3>推论（多项式情形）.</h3>
+<p>设 <span class="math-source" data-display="false" data-math="k">\(k\)</span> 是域，<span class="math-source" data-display="false" data-math="p_1,\ldots,p_n\in k[t]">\(p_1,\ldots,p_n\in k[t]\)</span> 是两两互素的非零多项式。对任意 <span class="math-source" data-display="false" data-math="g_1,\ldots,g_n\in k[t]">\(g_1,\ldots,g_n\in k[t]\)</span>，同余组</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="f\equiv g_i\pmod{p_i}\qquad(1\le i\le n)">\[f\equiv g_i\pmod{p_i}\qquad(1\le i\le n)\]</span></div>
+<p>在模 <span class="math-source" data-display="false" data-math="p_1\cdots p_n">\(p_1\cdots p_n\)</span> 的意义下恰有一个解。</p>
+</section>
+<details class="proof" id="proof-7">
+  <summary id="proof-7-toggle" aria-controls="proof-7-body" aria-expanded="false"><span class="proof-heading">证明</span><span class="proof-icon" aria-hidden="true"></span></summary>
+  <div class="proof-body" id="proof-7-body">
+<p>由 <span class="math-source" data-display="false" data-math="k[t]">\(k[t]\)</span> 中的裴蜀等式，理想 <span class="math-source" data-display="false" data-math="(p_i)">\((p_i)\)</span> 两两互素。它们的交是 <span class="math-source" data-display="false" data-math="(p_1\cdots p_n)">\((p_1\cdots p_n)\)</span>，故可应用中国剩余定理。</p>
+    <span class="qed" aria-label="证毕">□</span>
+  </div>
+</details>
+<h2 id="third-isomorphism"><span>3.</span> 第三同构定理</h2>
+<section class="statement">
+<h3>定理 3.</h3>
+<p>设 <span class="math-source" data-display="false" data-math="J\subseteq I">\(J\subseteq I\)</span> 是 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 的两个理想。 则 <span class="math-source" data-display="false" data-math="I/J">\(I/J\)</span> 是 <span class="math-source" data-display="false" data-math="R/J">\(R/J\)</span> 的理想，且</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="(R/J)/(I/J)\ \cong\ R/I,\qquad (r+J)+(I/J)\longmapsto r+I.">\[(R/J)/(I/J)\ \cong\ R/I,\qquad (r+J)+(I/J)\longmapsto r+I.\]</span></div>
+</section>
+<details class="proof" id="proof-8">
+  <summary id="proof-8-toggle" aria-controls="proof-8-body" aria-expanded="false"><span class="proof-heading">证明</span><span class="proof-icon" aria-hidden="true"></span></summary>
+  <div class="proof-body" id="proof-8-body">
+<p>考虑映射</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="g\colon R/J\longrightarrow R/I,\qquad r+J\longmapsto r+I.">\[g\colon R/J\longrightarrow R/I,\qquad r+J\longmapsto r+I.\]</span></div>
+<p>若 <span class="math-source" data-display="false" data-math="r+J=s+J">\(r+J=s+J\)</span>，则 <span class="math-source" data-display="false" data-math="r-s\in J\subseteq I">\(r-s\in J\subseteq I\)</span>，从而 <span class="math-source" data-display="false" data-math="r+I=s+I">\(r+I=s+I\)</span>。故 <span class="math-source" data-display="false" data-math="g">\(g\)</span> 良定义。</p>
+<p>由商环的运算知 <span class="math-source" data-display="false" data-math="g">\(g\)</span> 保持加法和乘法。它将 <span class="math-source" data-display="false" data-math="1_R+J">\(1_R+J\)</span> 送到 <span class="math-source" data-display="false" data-math="1_R+I">\(1_R+I\)</span>，且为满射。</p>
+<p>它的核为</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="\operatorname{Ker} g=\{r+J:r\in I\}=I/J.">\[\operatorname{Ker} g=\{r+J:r\in I\}=I/J.\]</span></div>
+<p>应用第一同构定理即得结论。</p>
+    <span class="qed" aria-label="证毕">□</span>
+  </div>
+</details>
+<h3 class="note-subsection" id="ideal-correspondence">3.1 商环的理想对应</h3>
+<section class="statement">
+<h3>命题.</h3>
+<p>设 <span class="math-source" data-display="false" data-math="J">\(J\)</span> 是 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 的理想，<span class="math-source" data-display="false" data-math="q\colon R\to R/J">\(q\colon R\to R/J\)</span> 是自然投影。 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 中包含 <span class="math-source" data-display="false" data-math="J">\(J\)</span> 的理想与 <span class="math-source" data-display="false" data-math="R/J">\(R/J\)</span> 的理想一一对应，两方向的映射为</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="I\longmapsto I/J,\qquad L\longmapsto q^{-1}(L).">\[I\longmapsto I/J,\qquad L\longmapsto q^{-1}(L).\]</span></div>
+<p>这个对应保持包含关系。</p>
+</section>
+<details class="proof" id="proof-9">
+  <summary id="proof-9-toggle" aria-controls="proof-9-body" aria-expanded="false"><span class="proof-heading">证明</span><span class="proof-icon" aria-hidden="true"></span></summary>
+  <div class="proof-body" id="proof-9-body">
+<p>若 <span class="math-source" data-display="false" data-math="I">\(I\)</span> 是包含 <span class="math-source" data-display="false" data-math="J">\(J\)</span> 的理想，则由定理 3，<span class="math-source" data-display="false" data-math="I/J">\(I/J\)</span> 是 <span class="math-source" data-display="false" data-math="R/J">\(R/J\)</span> 的理想。</p>
+<p>若 <span class="math-source" data-display="false" data-math="L">\(L\)</span> 是 <span class="math-source" data-display="false" data-math="R/J">\(R/J\)</span> 的理想，则 <span class="math-source" data-display="false" data-math="q^{-1}(L)">\(q^{-1}(L)\)</span> 是 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 的理想，因为 <span class="math-source" data-display="false" data-math="q">\(q\)</span> 保持减法和乘法。 又因 <span class="math-source" data-display="false" data-math="q(J)=\{0\}">\(q(J)=\{0\}\)</span>，故 <span class="math-source" data-display="false" data-math="J\subseteq q^{-1}(L)">\(J\subseteq q^{-1}(L)\)</span>。</p>
+<p>由于 <span class="math-source" data-display="false" data-math="J\subseteq I">\(J\subseteq I\)</span>，有 <span class="math-source" data-display="false" data-math="r+J\in I/J">\(r+J\in I/J\)</span> 当且仅当 <span class="math-source" data-display="false" data-math="r\in I">\(r\in I\)</span>，所以 <span class="math-source" data-display="false" data-math="q^{-1}(I/J)=I">\(q^{-1}(I/J)=I\)</span>。</p>
+<p>反过来，由于 <span class="math-source" data-display="false" data-math="q">\(q\)</span> 满射，</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="q^{-1}(L)/J=q\bigl(q^{-1}(L)\bigr)=L.">\[q^{-1}(L)/J=q\bigl(q^{-1}(L)\bigr)=L.\]</span></div>
+<p>因此两个映射互为逆映射。取像和取原像都保持包含关系。</p>
+    <span class="qed" aria-label="证毕">□</span>
+  </div>
+</details>
+<h2 id="algebras"><span>4.</span> 有限生成 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 代数</h2>
+<div class="note-prose">
+<p>本节设 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 是交换环 <span class="math-source" data-display="false" data-math="A">\(A\)</span> 的子环。 在本节中称这样的 <span class="math-source" data-display="false" data-math="A">\(A\)</span> 为 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 代数。两个这样的 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 代数之间的同态逐点固定 <span class="math-source" data-display="false" data-math="R">\(R\)</span>。</p>
+</div>
+<section class="statement">
+<h3>定义.</h3>
+<p>给定 <span class="math-source" data-display="false" data-math="a_1,\ldots,a_n\in A">\(a_1,\ldots,a_n\in A\)</span>，记 <span class="math-source" data-display="false" data-math="R[a_1,\ldots,a_n]">\(R[a_1,\ldots,a_n]\)</span> 为 <span class="math-source" data-display="false" data-math="A">\(A\)</span> 中包含 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 和各 <span class="math-source" data-display="false" data-math="a_j">\(a_j\)</span> 的最小子环。 它的元素是以 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 为系数、在 <span class="math-source" data-display="false" data-math="a_1,\ldots,a_n">\(a_1,\ldots,a_n\)</span> 处取到的多项式值。</p>
+<p>若存在有限多个 <span class="math-source" data-display="false" data-math="a_1,\ldots,a_n\in A">\(a_1,\ldots,a_n\in A\)</span> 使 <span class="math-source" data-display="false" data-math="A=R[a_1,\ldots,a_n]">\(A=R[a_1,\ldots,a_n]\)</span>，则称 <span class="math-source" data-display="false" data-math="A">\(A\)</span> 为有限生成 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 代数。</p>
+</section>
+<section class="statement">
+<h3>定理（多项式同态基本定理）.</h3>
+<p>设 <span class="math-source" data-display="false" data-math="A">\(A\)</span> 是 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 代数。给定 <span class="math-source" data-display="false" data-math="a_1,\ldots,a_n\in A">\(a_1,\ldots,a_n\in A\)</span>，存在唯一的 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 代数同态</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="\Phi\colon R[x_1,\ldots,x_n]\longrightarrow A,\qquad x_j\longmapsto a_j.">\[\Phi\colon R[x_1,\ldots,x_n]\longrightarrow A,\qquad x_j\longmapsto a_j.\]</span></div>
+<p>其像为 <span class="math-source" data-display="false" data-math="R[a_1,\ldots,a_n]">\(R[a_1,\ldots,a_n]\)</span>。</p>
+</section>
+<details class="proof" id="proof-10">
+  <summary id="proof-10-toggle" aria-controls="proof-10-body" aria-expanded="false"><span class="proof-heading">证明</span><span class="proof-icon" aria-hidden="true"></span></summary>
+  <div class="proof-body" id="proof-10-body">
+<p>保留系数 <span class="math-source" data-display="false" data-math="r_\alpha\in R">\(r_\alpha\in R\)</span>，并把 <span class="math-source" data-display="false" data-math="x_j">\(x_j\)</span> 换成 <span class="math-source" data-display="false" data-math="a_j">\(a_j\)</span>，得到</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="\Phi\!\left(\sum_\alpha r_\alpha x_1^{\alpha_1}\cdots x_n^{\alpha_n}\right)
+ =\sum_\alpha r_\alpha a_1^{\alpha_1}\cdots a_n^{\alpha_n}.">\[\Phi\!\left(\sum_\alpha r_\alpha x_1^{\alpha_1}\cdots x_n^{\alpha_n}\right)
+ =\sum_\alpha r_\alpha a_1^{\alpha_1}\cdots a_n^{\alpha_n}.\]</span></div>
+<p>多项式的系数展开唯一，所以 <span class="math-source" data-display="false" data-math="\Phi">\(\Phi\)</span> 良定义。</p>
+<p>由 <span class="math-source" data-display="false" data-math="A">\(A\)</span> 的交换律和分配律，<span class="math-source" data-display="false" data-math="\Phi">\(\Phi\)</span> 保持加法与乘法。 它逐点固定 <span class="math-source" data-display="false" data-math="R">\(R\)</span>，故为 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 代数同态。</p>
+<p>任何满足题设的同态在系数和变量上的取值都已确定，所以只能由上式给出。 上式的全部取值构成 <span class="math-source" data-display="false" data-math="R[a_1,\ldots,a_n]">\(R[a_1,\ldots,a_n]\)</span>。</p>
+    <span class="qed" aria-label="证毕">□</span>
+  </div>
+</details>
+<section class="statement">
+<h3>推论.</h3>
+<p><span class="math-source" data-display="false" data-math="A">\(A\)</span> 是有限生成 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 代数，当且仅当存在整数 <span class="math-source" data-display="false" data-math="n\geq 0">\(n\geq 0\)</span> 和理想 <span class="math-source" data-display="false" data-math="I\subseteq R[x_1,\ldots,x_n]">\(I\subseteq R[x_1,\ldots,x_n]\)</span>，使得</p>
+<div class="display-equation"><span class="math-source" data-display="true" data-math="I\cap R=\{0\},\qquad A\cong R[x_1,\ldots,x_n]/I\quad\text{作为 $R$ 代数}.">\[I\cap R=\{0\},\qquad A\cong R[x_1,\ldots,x_n]/I\quad\text{作为 $R$ 代数}.\]</span></div>
+</section>
+<details class="proof" id="proof-11">
+  <summary id="proof-11-toggle" aria-controls="proof-11-body" aria-expanded="false"><span class="proof-heading">证明</span><span class="proof-icon" aria-hidden="true"></span></summary>
+  <div class="proof-body" id="proof-11-body">
+<p>若 <span class="math-source" data-display="false" data-math="a_1,\ldots,a_n">\(a_1,\ldots,a_n\)</span> 生成 <span class="math-source" data-display="false" data-math="A">\(A\)</span>，则 <span class="math-source" data-display="false" data-math="\Phi">\(\Phi\)</span> 满射。取 <span class="math-source" data-display="false" data-math="I=\operatorname{Ker}\Phi">\(I=\operatorname{Ker}\Phi\)</span>。</p>
+<p>因为 <span class="math-source" data-display="false" data-math="\Phi">\(\Phi\)</span> 逐点固定 <span class="math-source" data-display="false" data-math="R">\(R\)</span>，所以 <span class="math-source" data-display="false" data-math="I\cap R=\{0\}">\(I\cap R=\{0\}\)</span>。第一同构定理给出所需同构。</p>
+<p>反之，条件 <span class="math-source" data-display="false" data-math="I\cap R=\{0\}">\(I\cap R=\{0\}\)</span> 保证 <span class="math-source" data-display="false" data-math="r\mapsto r+I">\(r\mapsto r+I\)</span> 将 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 嵌入商环。 商环作为 <span class="math-source" data-display="false" data-math="R">\(R\)</span> 代数由各 <span class="math-source" data-display="false" data-math="x_j+I">\(x_j+I\)</span> 生成。</p>
+    <span class="qed" aria-label="证毕">□</span>
+  </div>
+</details>
+  </article>
+</main>
+</body>
+</html>

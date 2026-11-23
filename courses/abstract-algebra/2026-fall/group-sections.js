@@ -732,6 +732,11 @@ window.GroupSections={
         "check",
         "自测与书面练习",
         "Self-check and written exercise"
+      ],
+      [
+        "ring-isomorphism-reading",
+        "环的三个同构定理",
+        "The three isomorphism theorems for rings"
       ]
     ]
   },

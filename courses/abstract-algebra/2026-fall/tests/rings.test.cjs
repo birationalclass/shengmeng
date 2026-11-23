@@ -50,5 +50,5 @@ for(const [id,book] of Object.entries(context.window.GroupCourseContent).filter(
 // Every numbered definition/theorem in these textbook sections is represented.
 const counts={'3.1':[2,3],'3.2':[5,1],'3.3':[3,4],'3.4':[2,5],'3.5':[2,3],'3.6':[2,5],'4.1':[3,3],'4.2':[1,2],'4.3':[10,9],'4.4':[2,6],'4.5':[1,6]};
 for(const[id,[defs,thms]]of Object.entries(counts))for(const[type,n]of [['定义',defs],['定理',thms]])for(let i=1;i<=n;i++)assert(seen.has(type+id+'.'+i),'Missing textbook '+type+id+'.'+i);
-assert.equal(cards,84);assert.equal(questions,55);
+assert.equal(cards,85);assert.equal(questions,55);
 console.log({status:'PASS',modelCases:checks,sections:11,cards,proofs,questions,textbookCoverage:'all numbered definitions and theorems'});
